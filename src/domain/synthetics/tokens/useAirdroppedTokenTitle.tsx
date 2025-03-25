@@ -1,11 +1,13 @@
-import { getTokens } from "sdk/configs/tokens";
-import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useLiquidityProvidersIncentives, useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
 import find from "lodash/find";
 import { Address, isAddressEqual } from "viem";
-import { getMarketIndexName, getMarketPoolName } from "../markets";
-import { useSelector } from "context/SyntheticsStateContext/utils";
+
+import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useLiquidityProvidersIncentives, useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
+import { getTokens } from "sdk/configs/tokens";
+
+import { getMarketIndexName, getMarketPoolName } from "../markets";
 
 export function useLpAirdroppedTokenTitle(): string | JSX.Element {
   const chainId = useSelector(selectChainId);

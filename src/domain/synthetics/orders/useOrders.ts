@@ -1,10 +1,6 @@
 import { useMemo } from "react";
 import { Address, isAddressEqual } from "viem";
 
-import type {
-  MarketFilterLongShortDirection,
-  MarketFilterLongShortItemData,
-} from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { getContract } from "config/contracts";
 import { accountOrderListKey } from "config/dataStore";
 import { CacheKey, MulticallRequestConfig, MulticallResult, useMulticall } from "lib/multicall";
@@ -17,6 +13,12 @@ import {
   isTriggerDecreaseOrderType,
   isVisibleOrder,
 } from "sdk/utils/orders";
+
+import type {
+  MarketFilterLongShortDirection,
+  MarketFilterLongShortItemData,
+} from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
+
 import type { MarketsInfoData } from "../markets/types";
 import { getSwapPathOutputAddresses } from "../trade";
 import { DecreasePositionSwapType, OrderType, OrdersData } from "./types";

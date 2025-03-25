@@ -9,7 +9,6 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 
 export function useTradeboxTPSLReset(setIsDismissed: (isDismissed: boolean) => void) {

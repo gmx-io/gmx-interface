@@ -1,6 +1,11 @@
-import React, { useState, useCallback } from "react";
 import { t, Trans } from "@lingui/macro";
+import React, { useState, useCallback } from "react";
 
+import { getContract } from "config/contracts";
+import { USD_DECIMALS } from "config/factors";
+import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
+import { handleCancelOrder } from "domain/legacy";
+import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import {
   SWAP,
   INCREASE,
@@ -10,22 +15,17 @@ import {
   getExchangeRate,
   getPositionForOrder,
 } from "lib/legacy";
-import { USD_DECIMALS } from "config/factors";
-import { handleCancelOrder } from "domain/legacy";
-import { getContract } from "config/contracts";
+import { formatAmount } from "lib/numbers";
+import { getPriceDecimals } from "sdk/configs/tokens";
 
-import Tooltip from "../Tooltip/Tooltip";
+import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+
 import OrderEditor from "./OrderEditor";
-
 import Checkbox from "../Checkbox/Checkbox";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
-import { getTokenInfo, getUsd } from "domain/tokens/utils";
-import { formatAmount } from "lib/numbers";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getPriceDecimals } from "sdk/configs/tokens";
-import Button from "components/Button/Button";
-import TokenIcon from "components/TokenIcon/TokenIcon";
+import Tooltip from "../Tooltip/Tooltip";
 
 function getOrderTitle(order, indexTokenSymbol) {
   const orderTypeText = order.type === INCREASE ? t`Increase` : t`Decrease`;

@@ -1,22 +1,23 @@
 import { Trans, t } from "@lingui/macro";
-import Modal from "components/Modal/Modal";
+import { useState } from "react";
+
+import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   MarketInfo,
   getMarketIndexName,
   getMarketPoolName,
   getTotalClaimableFundingUsd,
 } from "domain/synthetics/markets";
+import { claimFundingFeesTxn } from "domain/synthetics/markets/claimFundingFeesTxn";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
-
-import Tooltip from "components/Tooltip/Tooltip";
-import { claimFundingFeesTxn } from "domain/synthetics/markets/claimFundingFeesTxn";
+import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
-import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import useWallet from "lib/wallets/useWallet";
-import { useState } from "react";
+import Modal from "components/Modal/Modal";
+import Tooltip from "components/Tooltip/Tooltip";
+
 import "./ClaimModal.scss";
 
 type Props = {

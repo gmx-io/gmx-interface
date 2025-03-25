@@ -8,13 +8,13 @@ import {
   selectDebugSwapMarketsConfig,
   selectSetDebugSwapMarketsConfig,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
-import { selectMarketAdjacencyGraph } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import {
   selectTradeboxFindSwapPath,
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
   selectTradeboxSelectSwapToToken,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectMarketAdjacencyGraph } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMarketsForTokenPair, getTokenSwapPathsForTokenPairPrebuilt } from "domain/synthetics/trade";
 import { formatUsd } from "lib/numbers";

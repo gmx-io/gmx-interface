@@ -23,13 +23,11 @@ import type { CategoricalChartFunc } from "recharts/types/chart/generateCategori
 import type { ImplicitLabelType } from "recharts/types/component/Label";
 import type { AxisDomainItem, Margin } from "recharts/types/util/types";
 
+import { USD_DECIMALS } from "config/factors";
 import type { MarketInfo } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets/utils";
 import { getNextPositionExecutionPrice } from "domain/synthetics/trade/utils/common";
 import { getMidPrice } from "domain/tokens/utils";
-import { getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
-
-import { USD_DECIMALS } from "config/factors";
 import {
   bigintToNumber,
   calculateDisplayDecimals,
@@ -39,8 +37,10 @@ import {
   numberToBigint,
 } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
+import { getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
 
 import { GREEN, RED } from "components/TVChartContainer/constants";
+
 import { ChartTooltip, ChartTooltipHandle } from "./DepthChartTooltip";
 
 const getYAxisLabel = (): LabelProps => ({

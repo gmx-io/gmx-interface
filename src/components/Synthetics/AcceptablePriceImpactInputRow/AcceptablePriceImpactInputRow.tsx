@@ -3,11 +3,12 @@ import { memo, useCallback, useMemo } from "react";
 
 import { HIGH_ACCEPTABLE_POSITION_IMPACT_BPS } from "config/factors";
 import { formatPercentage } from "lib/numbers";
+import { bigMath } from "sdk/utils/bigmath";
 
-import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 
-import { bigMath } from "sdk/utils/bigmath";
+import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+
 import "./AcceptablePriceImpactInputRow.scss";
 
 type Props = {

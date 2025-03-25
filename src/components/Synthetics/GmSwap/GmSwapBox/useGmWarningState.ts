@@ -5,10 +5,9 @@ import { getExcessiveExecutionFee } from "config/chains";
 import { HIGH_PRICE_IMPACT_BPS, USD_DECIMALS } from "config/factors";
 import { ExecutionFee } from "domain/synthetics/fees";
 import { GmSwapFees } from "domain/synthetics/trade";
-
-import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { expandDecimals } from "lib/numbers";
+import { bigMath } from "sdk/utils/bigmath";
 
 export function useGmWarningState({
   executionFee,

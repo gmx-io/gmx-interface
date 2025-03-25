@@ -2,19 +2,17 @@ import cx from "classnames";
 import { useMemo } from "react";
 import type { Address } from "viem";
 
-import { selectChartHeaderInfo, selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-
 import { USD_DECIMALS } from "config/factors";
-import { getToken } from "sdk/configs/tokens";
+import { selectChartHeaderInfo, selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
   selectTradeboxMarketInfo,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { use24hPriceDeltaMap } from "domain/synthetics/tokens";
 import { use24hVolumes } from "domain/synthetics/tokens/use24Volumes";
-import { bigMath } from "sdk/utils/bigmath";
 import {
   formatAmountHuman,
   formatPercentageDisplay,
@@ -22,13 +20,15 @@ import {
   formatUsdPrice,
   numberWithCommas,
 } from "lib/numbers";
+import { getToken } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { AvailableLiquidityTooltip } from "./components/AvailableLiquidityTooltip";
 
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
+
+import { AvailableLiquidityTooltip } from "./components/AvailableLiquidityTooltip";
 
 export function useChartHeaderFormattedValues() {
   const chainId = useSelector(selectChainId);

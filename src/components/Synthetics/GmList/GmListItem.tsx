@@ -30,8 +30,9 @@ import { MintableAmount } from "components/MintableAmount/MintableAmount";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
+
 import { GmTokensBalanceInfo } from "./GmTokensTotalBalanceInfo";
+import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
 
 export const tokenAddressStyle = { fontSize: 5 };
 

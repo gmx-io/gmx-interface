@@ -1,11 +1,13 @@
+import debounce from "lodash/debounce";
+
 import { getChainName } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { OrderType } from "domain/synthetics/orders";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
 import { formatAmountForMetrics, formatPercentageForMetrics, metrics } from "lib/metrics";
-import { parseError } from "lib/parseError";
 import { OrderMetricData, OrderMetricId } from "lib/metrics/types";
 import { bigintToNumber, formatRatePercentage, roundToOrder } from "lib/numbers";
+import { parseError } from "lib/parseError";
 import { userAnalytics } from "lib/userAnalytics";
 import {
   ConnectWalletClickEvent,
@@ -15,7 +17,6 @@ import {
   TradeBoxInteractionStartedEvent,
   TradeBoxResultEvent,
 } from "lib/userAnalytics/types";
-import debounce from "lodash/debounce";
 
 export function getTradeInteractionKey(pair: string) {
   return `trade-${pair}`;

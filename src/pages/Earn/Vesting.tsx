@@ -19,6 +19,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import PageTitle from "components/PageTitle/PageTitle";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
+
 import { AffiliateClaimModal } from "./AffiliateClaimModal";
 import { AffiliateVesterWithdrawModal } from "./AffiliateVesterWithdrawModal";
 import { VesterDepositModal } from "./VesterDepositModal";

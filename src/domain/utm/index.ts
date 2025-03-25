@@ -1,5 +1,6 @@
-import useRouteQuery from "lib/useRouteQuery";
 import { useMemo } from "react";
+
+import useRouteQuery from "lib/useRouteQuery";
 
 type UtmParams = {
   source?: string;

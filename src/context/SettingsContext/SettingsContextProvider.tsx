@@ -20,10 +20,10 @@ import {
   getLeverageEnabledKey as getLeverageSliderEnabledKey,
   getSyntheticsAcceptablePriceImpactBufferKey,
 } from "config/localStorage";
-import { getOracleKeeperRandomIndex } from "config/oracleKeeper";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { tenderlyLsKeys } from "lib/tenderly";
+import { getOracleKeeperRandomIndex } from "sdk/configs/oracleKeeper";
 
 export type SettingsContextType = {
   showDebugValues: boolean;

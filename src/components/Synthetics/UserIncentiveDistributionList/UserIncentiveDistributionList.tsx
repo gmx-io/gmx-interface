@@ -12,7 +12,6 @@ import useUserIncentiveData, { UserIncentiveData } from "domain/synthetics/commo
 import { MarketsData, useMarketTokensData } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
 import { GM_DECIMALS } from "lib/legacy";
@@ -20,6 +19,7 @@ import { expandDecimals, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { getTokens } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
 import Button from "components/Button/Button";
 import Card from "components/Common/Card";

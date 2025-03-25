@@ -1,16 +1,11 @@
-import { SwapRoute } from "types/trade";
-
-import type { SwapAmounts, SwapOptimizationOrderArray } from "types/trade";
-import type { FindSwapPath } from "types/trade";
-import type { TokenData } from "types/tokens";
-import type { TokensRatio } from "types/tokens";
-
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
-
-import { applyFactor } from "utils/numbers";
+import type { TokenData, TokensRatio } from "types/tokens";
+import { SwapRoute } from "types/trade";
+import type { FindSwapPath, SwapAmounts, SwapOptimizationOrderArray } from "types/trade";
 import { bigMath } from "utils/bigmath";
-import { convertToUsd, getIsEquivalentTokens, convertToTokenAmount, getAmountByRatio } from "utils/tokens";
 import { getTotalSwapVolumeFromSwapStats } from "utils/fees";
+import { applyFactor } from "utils/numbers";
+import { convertToTokenAmount, convertToUsd, getAmountByRatio, getIsEquivalentTokens } from "utils/tokens";
 
 export function getSwapAmountsByFromValue(p: {
   tokenIn: TokenData;

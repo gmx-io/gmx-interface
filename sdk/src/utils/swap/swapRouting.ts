@@ -20,6 +20,7 @@ import { getByKey } from "utils/objects";
 import { MarketsGraph } from "utils/swap/buildMarketsAdjacencyGraph";
 import { DEFAULT_NAIVE_TOP_PATHS_COUNT } from "utils/swap/constants";
 import { MARKETS_ADJACENCY_GRAPH, REACHABLE_TOKENS, TOKEN_SWAP_PATHS } from "utils/swap/preparedSwapData";
+
 import { getSwapStats } from "./swapStats";
 
 export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstimator => {

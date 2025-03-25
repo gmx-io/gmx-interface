@@ -6,6 +6,7 @@ import { getByKey } from "lib/objects";
 import { bigMath } from "sdk/utils/bigmath";
 import { isIncreaseOrderType, isStopIncreaseOrderType, isStopLossOrderType, isSwapOrderType } from "sdk/utils/orders";
 import { applySlippageToPrice } from "sdk/utils/trade";
+
 import { OrderInfo, OrdersInfoData, PositionOrderInfo } from "./types";
 
 export type OrderEditorState = ReturnType<typeof useOrderEditorState>;

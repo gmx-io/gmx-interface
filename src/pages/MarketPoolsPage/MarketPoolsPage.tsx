@@ -1,7 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import { useEffect, useRef, useState } from "react";
 
-import { Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/types";
 import { getSyntheticsDepositMarketKey } from "config/localStorage";
 import {
   selectDepositMarketTokensData,
@@ -24,6 +23,7 @@ import { GlvList } from "components/Synthetics/GmList/GlvList";
 import { GmList } from "components/Synthetics/GmList/GmList";
 import { getGmSwapBoxAvailableModes } from "components/Synthetics/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
 import { GmSwapBox } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
+import { Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/types";
 import { MarketStatsWithComposition } from "components/Synthetics/MarketStats/MarketStatsWithComposition";
 
 import "./MarketPoolsPage.scss";

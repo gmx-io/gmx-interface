@@ -1,12 +1,13 @@
 import { t } from "@lingui/macro";
 
-import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxCollateralSpreadInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxCollateralSpreadInfo";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { expandDecimals, formatPercentage } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
+
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
 export function CollateralSpreadRow() {
   const tradeFlags = useSelector(selectTradeboxTradeFlags);

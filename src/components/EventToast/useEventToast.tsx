@@ -1,13 +1,15 @@
+import { isFuture, parse } from "date-fns";
+import { useEffect, useMemo } from "react";
+import toast from "react-hot-toast";
+import { useLocalStorage } from "react-use";
+
 import { ARBITRUM } from "config/chains";
 import { appEventsData, homeEventsData } from "config/events";
-import { isFuture, parse } from "date-fns";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
 import { isHomeSite } from "lib/legacy";
-import { useEffect, useMemo } from "react";
-import toast from "react-hot-toast";
-import { useLocalStorage } from "react-use";
+
 import EventToast from "./EventToast";
 
 function useEventToast() {

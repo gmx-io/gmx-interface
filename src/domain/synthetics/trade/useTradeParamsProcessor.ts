@@ -1,4 +1,7 @@
-import { getTokenBySymbolSafe, isTokenInList } from "sdk/configs/tokens";
+import isMatch from "lodash/isMatch";
+import { useEffect, useRef } from "react";
+import { useHistory, useParams } from "react-router-dom";
+
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxSetTradeConfig,
@@ -9,11 +12,10 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { getMatchingValueFromObject } from "lib/objects";
 import useSearchParams from "lib/useSearchParams";
-import isMatch from "lodash/isMatch";
-import { useEffect, useRef } from "react";
-import { useHistory, useParams } from "react-router-dom";
-import { getMarketPoolName } from "../markets";
+import { getTokenBySymbolSafe, isTokenInList } from "sdk/configs/tokens";
 import { TradeMode, TradeSearchParams, TradeType } from "sdk/types/trade";
+
+import { getMarketPoolName } from "../markets";
 
 type TradeOptions = {
   fromTokenAddress?: string;

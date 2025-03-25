@@ -3,17 +3,6 @@ import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
-import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "sdk/configs/tokens";
-
-import { getByKey } from "lib/objects";
-import { searchBy } from "lib/searchBy";
-
-import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
-import SearchInput from "components/SearchInput/SearchInput";
-import { useGlvGmMarketsWithComposition } from "components/Synthetics/MarketStats/hooks/useMarketGlvGmMarketsCompositions";
-import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-
 import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import {
   GlvInfo,
@@ -26,8 +15,17 @@ import {
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
+import { getByKey } from "lib/objects";
+import { searchBy } from "lib/searchBy";
+import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
+import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { SlideModal } from "components/Modal/SlideModal";
+import SearchInput from "components/SearchInput/SearchInput";
+import { useGlvGmMarketsWithComposition } from "components/Synthetics/MarketStats/hooks/useMarketGlvGmMarketsCompositions";
+import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+
 import { PoolListItem } from "./PoolListItem";
 import { CommonPoolSelectorProps, MarketOption } from "./types";
 

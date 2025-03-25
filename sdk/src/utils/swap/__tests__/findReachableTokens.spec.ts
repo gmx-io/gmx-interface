@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { findReachableTokens } from "../findReachableTokens";
+
 import type { MarketsGraph } from "../buildMarketsAdjacencyGraph";
+import { findReachableTokens } from "../findReachableTokens";
 
 describe("findReachableTokens", () => {
   it("should find directly reachable tokens", () => {

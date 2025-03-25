@@ -1,7 +1,5 @@
 import { t } from "@lingui/macro";
 
-import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
-import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import {
   selectTradeboxMarkPrice,
   selectTradeboxNextPositionValues,
@@ -10,6 +8,9 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatUsdPrice } from "lib/numbers";
+
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
+import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 export function EntryPriceRow() {
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);

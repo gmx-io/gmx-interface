@@ -1,16 +1,19 @@
 import { Trans, t } from "@lingui/macro";
-import ExternalLink from "components/ExternalLink/ExternalLink";
+import { Contract, Overrides, Wallet } from "ethers";
+import React, { ReactNode } from "react";
+
 import { getExplorerUrl } from "config/chains";
 import {
   PendingTransaction,
   PendingTransactionData,
   SetPendingTransactions,
 } from "context/PendingTxnsContext/PendingTxnsContext";
-import { Contract, Overrides, Wallet } from "ethers";
 import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
-import React, { ReactNode } from "react";
+
+import ExternalLink from "components/ExternalLink/ExternalLink";
+
 import { helperToast } from "../helperToast";
 import { getErrorMessage, makeTransactionErrorHandler } from "./transactionErrors";
 import { GasPriceData, getBestNonce, getGasLimit, getGasPrice } from "./utils";

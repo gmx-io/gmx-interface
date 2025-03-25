@@ -1,7 +1,8 @@
 import type { SwapPaths } from "types/trade";
+import { objectKeysDeep } from "utils/objects";
+
 import type { MarketsGraph } from "./buildMarketsAdjacencyGraph";
 import { MAX_EDGE_PATH_LENGTH } from "./constants";
-import { objectKeysDeep } from "utils/objects";
 
 export function findSwapPathsBetweenTokens(graph: MarketsGraph): SwapPaths {
   const swapRoutes: SwapPaths = {};

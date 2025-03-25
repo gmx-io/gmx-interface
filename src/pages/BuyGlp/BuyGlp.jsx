@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from "react";
+import { Trans, t } from "@lingui/macro";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import GlpSwap from "components/Glp/GlpSwap";
-import Footer from "components/Footer/Footer";
-import "./BuyGlp.css";
-
-import { Trans, t } from "@lingui/macro";
-import { getNativeToken } from "sdk/configs/tokens";
-import { useChainId } from "lib/chains";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import PageTitle from "components/PageTitle/PageTitle";
-import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { getIncentivesV2Url } from "config/links";
+import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
+import { useChainId } from "lib/chains";
+import { getNativeToken } from "sdk/configs/tokens";
+
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import Footer from "components/Footer/Footer";
+import GlpSwap from "components/Glp/GlpSwap";
+import PageTitle from "components/PageTitle/PageTitle";
+
+import "./BuyGlp.css";
 
 export default function BuyGlp() {
   const { chainId } = useChainId();

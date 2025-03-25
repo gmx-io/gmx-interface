@@ -1,18 +1,18 @@
-import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { getLeverage, getLiquidationPrice } from "domain/synthetics/positions";
-import { convertToTokenAmount } from "domain/synthetics/tokens";
 import { useMemo } from "react";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionEditorPosition } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
-import { bigMath } from "sdk/utils/bigmath";
-import { Operation } from "../types";
-
 import {
   selectPositionEditorCollateralInputAmountAndUsd,
   selectPositionEditorSelectedCollateralToken,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getLeverage, getLiquidationPrice } from "domain/synthetics/positions";
+import { convertToTokenAmount } from "domain/synthetics/tokens";
+import { bigMath } from "sdk/utils/bigmath";
+
+import { Operation } from "../types";
 import { Options, usePositionEditorFees } from "./usePositionEditorFees";
 
 export function usePositionEditorData({ operation }: Options) {

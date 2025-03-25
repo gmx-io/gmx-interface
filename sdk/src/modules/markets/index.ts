@@ -2,10 +2,8 @@ import { zeroAddress } from "viem";
 
 import { getContract } from "configs/contracts";
 import { convertTokenAddress, getToken } from "configs/tokens";
-
 import { ClaimableFundingData, MarketInfo, MarketsData, MarketSdkConfig, MarketsInfoData } from "types/markets";
 import { TokensData } from "types/tokens";
-
 import { TIMEZONE_OFFSET_SEC } from "utils/common";
 import graphqlFetcher from "utils/graphqlFetcher";
 import { getMarketDivisor, getMarketFullName } from "utils/markets";

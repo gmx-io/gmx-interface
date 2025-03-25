@@ -1,3 +1,6 @@
+import entries from "lodash/entries";
+import { useMemo } from "react";
+
 import { getContract } from "config/contracts";
 import {
   glvMaxMarketTokenBalanceAmountKey,
@@ -15,9 +18,8 @@ import {
 import { GM_DECIMALS } from "lib/legacy";
 import { ContractCallConfig, ContractCallsConfig, MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
-import entries from "lodash/entries";
-import { useMemo } from "react";
 import { getTokenBySymbol } from "sdk/configs/tokens";
+
 import { GlvInfoData, MarketsInfoData, getContractMarketPrices, getGlvMarketName } from ".";
 import { convertToContractTokenPrices } from "../tokens";
 import { TokenData, TokensData } from "../tokens/types";

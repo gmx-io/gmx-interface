@@ -3,13 +3,11 @@ import { Abi, encodeFunctionData, zeroAddress, zeroHash } from "viem";
 import { abis } from "abis";
 import { getContract } from "configs/contracts";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "configs/tokens";
-
 import { DecreasePositionSwapType, OrderType } from "types/orders";
 import { TokensData } from "types/tokens";
-
 import { isMarketOrderType } from "utils/orders";
-import { applySlippageToMinOut } from "utils/trade";
 import { simulateExecuteOrder } from "utils/simulateExecuteOrder";
+import { applySlippageToMinOut } from "utils/trade";
 
 import type { GmxSdk } from "../../..";
 

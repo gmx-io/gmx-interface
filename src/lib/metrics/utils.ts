@@ -1,3 +1,5 @@
+import { ethers } from "ethers";
+
 import { USD_DECIMALS } from "config/factors";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { EventLogData } from "context/SyntheticsEvents";
@@ -6,10 +8,10 @@ import { getMarketIndexName, getMarketPoolName, MarketInfo } from "domain/synthe
 import { getCollateralAndSwapAddresses, OrderType } from "domain/synthetics/orders";
 import { TokenData } from "domain/synthetics/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "domain/synthetics/trade";
-import { ethers } from "ethers";
 import { bigintToNumber, formatPercentage, formatRatePercentage, getBasisPoints, roundToOrder } from "lib/numbers";
 import { ErrorLike } from "lib/parseError";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+
 import { metrics, OrderErrorContext, SubmittedOrderEvent } from ".";
 import { parseError } from "../parseError";
 import {

@@ -1,4 +1,9 @@
 import { Trans } from "@lingui/macro";
+import cryptoJs from "crypto-js";
+import { ethers } from "ethers";
+import { Context, PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
+import { createContext, useContextSelector } from "use-context-selector";
+
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR } from "config/chains";
 import { getContract } from "config/contracts";
 import {
@@ -9,7 +14,6 @@ import {
   subaccountListKey,
 } from "config/dataStore";
 import { getSubaccountConfigKey } from "config/localStorage";
-import cryptoJs from "crypto-js";
 import { useTransactionPending } from "domain/synthetics/common/useTransactionReceipt";
 import {
   estimateExecuteIncreaseOrderGasLimit,
@@ -20,7 +24,6 @@ import {
 import { STRING_FOR_SIGNING } from "domain/synthetics/subaccount/constants";
 import { SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
 import { useTokenBalances, useTokensDataRequest } from "domain/synthetics/tokens";
-import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMulticall } from "lib/multicall";
@@ -29,10 +32,8 @@ import { getByKey } from "lib/objects";
 import { useCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
 import { clientToSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
-import { Context, PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
 import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
-import { createContext, useContextSelector } from "use-context-selector";
 
 export type Subaccount = ReturnType<typeof useSubaccount>;
 

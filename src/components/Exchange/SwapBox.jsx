@@ -1,16 +1,36 @@
 import { Trans, msg, t } from "@lingui/macro";
-import React, { useEffect, useMemo, useState } from "react";
-import Tooltip from "../Tooltip/Tooltip";
-import "./SwapBox.scss";
-
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ethers } from "ethers";
-
+import { useEffect, useMemo, useState } from "react";
 import { BsArrowRight } from "react-icons/bs";
 import { IoMdSwap } from "react-icons/io";
+import { useHistory } from "react-router-dom";
 
 import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant, isSupportedChain } from "config/chains";
 import { getContract } from "config/contracts";
+import { isDevelopment } from "config/env";
+import {
+  USD_DECIMALS,
+  BASIS_POINTS_DIVISOR_BIGINT,
+  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
+  BASIS_POINTS_DIVISOR,
+  MAX_ALLOWED_LEVERAGE,
+} from "config/factors";
+import { get1InchSwapUrl } from "config/links";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import * as Api from "domain/legacy";
+import { useUserReferralCode } from "domain/referrals/hooks";
+import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
+import {
+  approveTokens,
+  getMostAbundantStableToken,
+  replaceNativeTokenAddress,
+  shouldRaiseGasError,
+} from "domain/tokens";
+import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
+import { callContract } from "lib/contracts";
+import { helperToast } from "lib/helperToast";
+import { useLocalizedMap } from "lib/i18n";
 import {
   DUST_BNB,
   LEVERAGE_ORDER_OPTIONS,
@@ -35,43 +55,6 @@ import {
   getPositionKey,
   isTriggerRatioInverted,
 } from "lib/legacy";
-import {
-  USD_DECIMALS,
-  BASIS_POINTS_DIVISOR_BIGINT,
-  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
-  BASIS_POINTS_DIVISOR,
-  MAX_ALLOWED_LEVERAGE,
-} from "config/factors";
-
-import TokenSelector from "components/TokenSelector/TokenSelector";
-import Tab from "../Tab/Tab";
-import ConfirmationBox from "./ConfirmationBox";
-import ExchangeInfoRow from "./ExchangeInfoRow";
-import OrdersToa from "./OrdersToa";
-
-import { abis } from "sdk/abis";
-
-import LongIcon from "img/long.svg?react";
-import ShortIcon from "img/short.svg?react";
-import SwapIcon from "img/swap.svg?react";
-
-import Button from "components/Button/Button";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
-import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import { get1InchSwapUrl } from "config/links";
-import { getPriceDecimals, getToken, getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
-import { useUserReferralCode } from "domain/referrals/hooks";
-import {
-  approveTokens,
-  getMostAbundantStableToken,
-  replaceNativeTokenAddress,
-  shouldRaiseGasError,
-} from "domain/tokens";
-import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
-import { callContract } from "lib/contracts";
-import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   bigNumberify,
@@ -84,23 +67,38 @@ import {
 } from "lib/numbers";
 import { getLeverage } from "lib/positions/getLeverage";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { usePrevious } from "lib/usePrevious";
-import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import useWallet from "lib/wallets/useWallet";
+import { abis } from "sdk/abis";
+import { getPriceDecimals, getToken, getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
+
+import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
+import Tabs from "components/Tabs/Tabs";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
+import TokenSelector from "components/TokenSelector/TokenSelector";
+
+import LongIcon from "img/long.svg?react";
+import ShortIcon from "img/short.svg?react";
+import SwapIcon from "img/swap.svg?react";
+
+import ConfirmationBox from "./ConfirmationBox";
+import { ErrorCode, ErrorDisplayType } from "./constants";
+import ExchangeInfoRow from "./ExchangeInfoRow";
 import FeesTooltip from "./FeesTooltip";
 import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
+import OrdersToa from "./OrdersToa";
 import UsefulLinks from "./UsefulLinks";
-import { ErrorCode, ErrorDisplayType } from "./constants";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import useWallet from "lib/wallets/useWallet";
-import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
-import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import { useHistory } from "react-router-dom";
-import { bigMath } from "sdk/utils/bigmath";
-import { useLocalizedMap } from "lib/i18n";
-import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import { isDevelopment } from "config/env";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
+import Tooltip from "../Tooltip/Tooltip";
+
+import "./SwapBox.scss";
 
 const SWAP_ICONS = {
   [LONG]: <LongIcon />,
@@ -1996,6 +1994,18 @@ export default function SwapBox(props) {
     );
   }
 
+  const swapTabsOptions = SWAP_OPTIONS.map((option) => ({
+    value: option,
+    label: localizedSwapLabels[option],
+    className: SWAP_OPTIONS_CLASSNAMES[option],
+    icon: SWAP_ICONS[option],
+  }));
+
+  const orderTabsOptions = orderOptions.map((option) => ({
+    value: option,
+    label: localizedOrderOptionLabels[option],
+  }));
+
   return (
     <div className="Exchange-swap-box">
       <form
@@ -2006,22 +2016,18 @@ export default function SwapBox(props) {
       >
         <div className="Exchange-swap-box-inner App-box-highlight">
           <div>
-            <Tab
-              icons={SWAP_ICONS}
-              options={SWAP_OPTIONS}
-              optionLabels={localizedSwapLabels}
-              optionClassnames={SWAP_OPTIONS_CLASSNAMES}
-              option={swapOption}
+            <Tabs
+              options={swapTabsOptions}
+              selectedValue={swapOption}
               onChange={onSwapOptionChange}
               className="Exchange-swap-option-tabs"
             />
             {flagOrdersEnabled && (
-              <Tab
-                options={orderOptions}
-                optionLabels={localizedOrderOptionLabels}
+              <Tabs
+                options={orderTabsOptions}
                 className="Exchange-swap-order-type-tabs"
                 type="inline"
-                option={orderOption}
+                selectedValue={orderOption}
                 onChange={onOrderOptionChange}
               />
             )}

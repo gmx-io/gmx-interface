@@ -1,6 +1,5 @@
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import type { GlvAndGmMarketsInfoData, GlvOrMarketInfo } from "domain/synthetics/markets/types";
-
 import { EMPTY_ARRAY } from "lib/objects";
 
 export function getShiftAvailableRelatedMarkets({

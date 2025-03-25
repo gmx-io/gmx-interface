@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import { USD_DECIMALS } from "configs/factors";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { GasLimitsConfig } from "types/fees";
+import { MarketInfo } from "types/markets";
+import { expandDecimals } from "utils/numbers";
 import { buildMarketsAdjacencyGraph } from "utils/swap/buildMarketsAdjacencyGraph";
 import { findSwapPathsBetweenTokens } from "utils/swap/findSwapPathsBetweenTokens";
 import {
@@ -12,9 +15,7 @@ import {
   getNaiveBestMarketSwapPathsFromTokenSwapPaths,
   getTokenSwapPathsForTokenPair,
 } from "utils/swap/swapRouting";
-import { GasLimitsConfig } from "types/fees";
-import { MarketInfo } from "types/markets";
-import { expandDecimals } from "utils/numbers";
+
 import { mockMarketsInfoData, mockTokensData, usdToToken } from "../../../test/mock";
 
 const marketKeys = [

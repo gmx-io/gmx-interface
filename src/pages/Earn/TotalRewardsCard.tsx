@@ -21,6 +21,7 @@ import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
+
 import { ClaimModal } from "./ClaimModal";
 
 export function TotalRewardsCard({

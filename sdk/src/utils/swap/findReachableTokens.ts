@@ -1,6 +1,7 @@
+import { objectKeysDeep } from "utils/objects";
+
 import type { MarketsGraph } from "./buildMarketsAdjacencyGraph";
 import { MAX_EDGE_PATH_LENGTH } from "./constants";
-import { objectKeysDeep } from "utils/objects";
 
 export function findReachableTokens(graph: MarketsGraph): Record<string, string[]> {
   const reachableTokens: Record<string, string[]> = {};

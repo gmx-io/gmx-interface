@@ -1,9 +1,12 @@
 import { t, Trans } from "@lingui/macro";
-import Button from "components/Button/Button";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
+
 import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageAgreementConfirmationEvent } from "lib/userAnalytics/types";
+import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
+
+import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+
 import Checkbox from "../Checkbox/Checkbox";
 import Modal from "../Modal/Modal";
 import "./RedirectModal.css";

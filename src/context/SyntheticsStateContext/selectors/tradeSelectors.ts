@@ -13,10 +13,17 @@ import {
 } from "domain/synthetics/trade";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { MARKETS } from "sdk/configs/markets";
-import { buildMarketsAdjacencyGraph } from "sdk/utils/swap/buildMarketsAdjacencyGraph";
 import { ExternalSwapQuote } from "sdk/types/trade";
+import { buildMarketsAdjacencyGraph } from "sdk/utils/swap/buildMarketsAdjacencyGraph";
 import { createFindSwapPath, getWrappedAddress } from "sdk/utils/swap/swapPath";
+import {
+  createMarketEdgeLiquidityGetter,
+  getMarketAdjacencyGraph,
+  getTokenSwapPathsForTokenPairPrebuilt,
+} from "sdk/utils/swap/swapRouting";
+import { getMaxLiquidityMarketSwapPathFromTokenSwapPaths } from "sdk/utils/swap/swapRouting";
 import { createTradeFlags } from "sdk/utils/trade";
+
 import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
 import { selectExternalSwapQuote } from "./externalSwapSelectors";
 import {
@@ -31,12 +38,6 @@ import {
   selectUserReferralInfo,
 } from "./globalSelectors";
 import { selectDebugSwapMarketsConfig, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
-import {
-  createMarketEdgeLiquidityGetter,
-  getMarketAdjacencyGraph,
-  getTokenSwapPathsForTokenPairPrebuilt,
-} from "sdk/utils/swap/swapRouting";
-import { getMaxLiquidityMarketSwapPathFromTokenSwapPaths } from "sdk/utils/swap/swapRouting";
 
 export type TokenTypeForSwapRoute = "collateralToken" | "indexToken";
 

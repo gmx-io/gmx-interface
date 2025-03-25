@@ -3,6 +3,7 @@ import { affiliateRewardKey } from "config/dataStore";
 import { useMarkets } from "domain/synthetics/markets";
 import { useMulticall } from "lib/multicall";
 import useWallet from "lib/wallets/useWallet";
+
 import { AffiliateRewardsData } from "./types";
 
 export type AffiliateRewardsResult = {

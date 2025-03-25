@@ -1,4 +1,3 @@
-import { DynamicChartLine } from "components/TVChartContainer/types";
 import { USD_DECIMALS } from "config/factors";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import {
@@ -12,6 +11,8 @@ import { getTokenData } from "domain/synthetics/tokens";
 import { formatAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { convertTokenAddress, getPriceDecimals } from "sdk/configs/tokens";
+
+import { DynamicChartLine } from "components/TVChartContainer/types";
 
 export const selectChartDynamicLines = createSelector<DynamicChartLine[]>((q) => {
   const chainId = q(selectChainId);

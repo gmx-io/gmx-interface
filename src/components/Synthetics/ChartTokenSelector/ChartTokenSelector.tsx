@@ -6,6 +6,7 @@ import { useMedia } from "react-use";
 import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
+import type { SortDirection } from "context/SorterContext/types";
 import { selectAvailableChartTokens } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIndexTokenStatsMap } from "context/SyntheticsStateContext/selectors/statsSelectors";
@@ -32,16 +33,15 @@ import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
 import { stripBlacklistedWords, type Token } from "domain/tokens";
 import { getMidPrice } from "domain/tokens/utils";
+import { formatAmountHuman, formatUsdPrice } from "lib/numbers";
+import { EMPTY_ARRAY } from "lib/objects";
+import { searchBy } from "lib/searchBy";
 import {
   convertTokenAddress,
   getCategoryTokenAddresses,
   getTokenVisualMultiplier,
   isChartAvailableForToken,
 } from "sdk/configs/tokens";
-
-import { formatAmountHuman, formatUsdPrice } from "lib/numbers";
-import { EMPTY_ARRAY } from "lib/objects";
-import { searchBy } from "lib/searchBy";
 
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
@@ -50,16 +50,16 @@ import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { TableTd, TableTr } from "components/Table/Table";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import type { SortDirection } from "context/SorterContext/types";
+
+import LongIcon from "img/long.svg?react";
+import ShortIcon from "img/short.svg?react";
+
 import {
   SELECTOR_BASE_MOBILE_THRESHOLD,
   SelectorBase,
   SelectorBaseMobileHeaderContent,
   useSelectorClose,
 } from "../SelectorBase/SelectorBase";
-
-import LongIcon from "img/long.svg?react";
-import ShortIcon from "img/short.svg?react";
 
 type Props = {
   selectedToken: Token | undefined;

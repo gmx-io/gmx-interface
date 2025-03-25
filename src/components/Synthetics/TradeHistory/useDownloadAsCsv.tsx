@@ -6,8 +6,8 @@ import { getExplorerUrl } from "config/chains";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { OrderType } from "domain/synthetics/orders/types";
 import { isSwapOrderType } from "domain/synthetics/orders";
+import { OrderType } from "domain/synthetics/orders/types";
 import {
   fetchTradeActions,
   PositionTradeAction,
@@ -20,6 +20,7 @@ import { helperToast } from "lib/helperToast";
 import { getSyntheticsGraphClient } from "lib/subgraph/clients";
 
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
+
 import type { MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
 import { formatPositionMessage } from "./TradeHistoryRow/utils/position";
 import type { RowDetails } from "./TradeHistoryRow/utils/shared";

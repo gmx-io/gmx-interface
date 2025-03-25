@@ -1,10 +1,11 @@
 import { Provider, Result, Signer, ethers } from "ethers";
 import { stableHash } from "swr/_internal";
 
-import { getFallbackProvider, getProvider } from "../rpc";
-import { executeMulticall } from "lib/multicall";
 import { swrCache, SWRConfigProp } from "App/swrConfig";
+import { executeMulticall } from "lib/multicall";
 import { abis, AbiId } from "sdk/abis";
+
+import { getFallbackProvider, getProvider } from "../rpc";
 
 const CONTRACT_FETCHER_WORKER_SETUP_TIMEOUT = 1000;
 const CONTRACT_FETCHER_DEFAULT_FETCH_TIMEOUT = 2000;

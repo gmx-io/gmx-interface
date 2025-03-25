@@ -2,6 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { useKey } from "react-use";
 
+import { getIsFlagEnabled } from "config/ab";
 import { EXECUTION_FEE_CONFIG_V2 } from "config/chains";
 import { isDevelopment } from "config/env";
 import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
@@ -11,16 +12,15 @@ import { helperToast } from "lib/helperToast";
 import { roundToTwoDecimals } from "lib/numbers";
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
-import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import Button from "components/Button/Button";
+import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { SlideModal } from "components/Modal/SlideModal";
 import NumberInput from "components/NumberInput/NumberInput";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { getIsFlagEnabled } from "config/ab";
 
 const defaultSippageDisplay = (DEFAULT_SLIPPAGE_AMOUNT / BASIS_POINTS_DIVISOR) * 100;
 

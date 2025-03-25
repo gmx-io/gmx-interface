@@ -1,8 +1,10 @@
-import { ReactNode } from "react";
-import { getIcon } from "config/icons";
-import "./PageTitle.scss";
-import { useChainId } from "lib/chains";
 import cx from "classnames";
+import { ReactNode } from "react";
+
+import { getIcon } from "config/icons";
+import { useChainId } from "lib/chains";
+
+import "./PageTitle.scss";
 
 type Props = {
   title: ReactNode;

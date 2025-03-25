@@ -11,6 +11,7 @@ import {
 import { sleep } from "lib/sleep";
 import { getAppVersion } from "lib/version";
 import { getWalletNames, WalletNames } from "lib/wallets/getWalletNames";
+
 import {
   METRIC_COUNTER_DISPATCH_NAME,
   METRIC_EVENT_DISPATCH_NAME,

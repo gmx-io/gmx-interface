@@ -1,11 +1,12 @@
 import { t } from "@lingui/macro";
+import { Signer, ethers } from "ethers";
+
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { SetPendingFundingFeeSettlement, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
 import { TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
-import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { OrderMetricId } from "lib/metrics";
@@ -13,6 +14,7 @@ import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { isMarketOrderType } from "sdk/utils/orders";
+
 import { getPositionKey } from "../positions";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";

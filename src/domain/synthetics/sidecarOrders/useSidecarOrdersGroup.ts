@@ -10,8 +10,9 @@ import {
   selectTradeboxSidecarOrdersTotalSizeUsd,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxSidecarOrders";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { bigMath } from "sdk/utils/bigmath";
 import { usePrevious } from "lib/usePrevious";
+import { bigMath } from "sdk/utils/bigmath";
+
 import { EntryField, GroupPrefix, SidecarOrderEntryBase, SidecarOrderEntryGroupBase } from "./types";
 import { MAX_PERCENTAGE, PERCENTAGE_DECIMALS, getDefaultEntry, getDefaultEntryField } from "./utils";
 

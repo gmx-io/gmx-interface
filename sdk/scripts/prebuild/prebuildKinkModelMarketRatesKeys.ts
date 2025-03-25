@@ -1,7 +1,6 @@
 import fs from "fs";
-import { resolve } from "path";
 import entries from "lodash/entries";
-
+import { resolve } from "path";
 import { hashDataMap } from "utils/hash";
 
 import {
@@ -9,7 +8,6 @@ import {
   BASE_BORROWING_FACTOR,
   ABOVE_OPTIMAL_USAGE_BORROWING_FACTOR,
 } from "../../src/configs/dataStore";
-
 import { MARKETS } from "../../src/configs/markets";
 
 export function prebuildKinkModelMarketRatesKeys(outputDir: string) {

@@ -1,19 +1,12 @@
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
-import { getContract } from "config/contracts";
+import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
 import { useMemo, useState } from "react";
+import { FaCheck, FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
+import { zeroAddress } from "viem";
 
-import Footer from "components/Footer/Footer";
-import Modal from "components/Modal/Modal";
-
-import { FaCheck, FaTimes } from "react-icons/fa";
-
-import { Trans, t } from "@lingui/macro";
-
-import Button from "components/Button/Button";
-import Checkbox from "components/Checkbox/Checkbox";
+import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { getNeedTokenApprove, useTokenBalances, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
@@ -21,7 +14,13 @@ import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
-import { zeroAddress } from "viem";
+
+import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
+import Button from "components/Button/Button";
+import Checkbox from "components/Checkbox/Checkbox";
+import Footer from "components/Footer/Footer";
+import Modal from "components/Modal/Modal";
+
 import "./BeginAccountTransfer.css";
 
 function ValidationRow({ isValid, children }) {

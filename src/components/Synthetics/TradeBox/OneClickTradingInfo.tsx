@@ -11,12 +11,12 @@ import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 
-import { useShowOneClickTradingInfo } from "./hooks/useShowOneClickTradingInfo";
-
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 
 import CrossIconComponent from "img/cross.svg?react";
+
+import { useShowOneClickTradingInfo } from "./hooks/useShowOneClickTradingInfo";
 
 export function OneClickTradingInfo() {
   const [, setModalOpen] = useSubaccountModalOpen();

@@ -1,9 +1,10 @@
-import { getToken } from "sdk/configs/tokens";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
 import { getTokenData } from "domain/synthetics/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 import { CHART_PERIODS } from "lib/legacy";
+import { getToken } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
+
 import { createSelector } from "../../utils";
 import { selectChainId, selectTokensData } from "../globalSelectors";
 import {

@@ -1,7 +1,9 @@
+import { describe, expect, it } from "vitest";
+
 import { USD_DECIMALS } from "configs/factors";
 import type { MarketConfig } from "configs/markets";
 import { bigMath } from "utils/bigmath";
-import { describe, expect, it } from "vitest";
+
 import { mockMarketsInfoData, mockTokensData } from "../../../test/mock";
 import { buildMarketsAdjacencyGraph } from "../buildMarketsAdjacencyGraph";
 import {

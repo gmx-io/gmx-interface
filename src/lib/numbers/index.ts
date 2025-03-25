@@ -1,6 +1,7 @@
+import { BigNumberish, ethers } from "ethers";
+
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
-import { BigNumberish, ethers } from "ethers";
 import { bigMath } from "sdk/utils/bigmath";
 import { bigintToNumber, PRECISION_DECIMALS } from "sdk/utils/numbers";
 

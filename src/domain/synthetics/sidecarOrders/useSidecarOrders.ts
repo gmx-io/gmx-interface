@@ -1,3 +1,5 @@
+import { useCallback, useEffect, useMemo } from "react";
+
 import {
   usePositionsConstants,
   useUiFeeFactor,
@@ -24,13 +26,13 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
 import { getDecreasePositionAmounts, getIncreasePositionAmounts } from "domain/synthetics/trade";
-import { useCallback, useEffect, useMemo } from "react";
+import { usePrevious } from "lib/usePrevious";
+
 import { convertToTokenAmount } from "../tokens";
 import { SidecarLimitOrderEntry, SidecarOrderEntry, SidecarSlTpOrderEntry, SidecarSlTpOrderEntryValid } from "./types";
+import { useSidecarOrdersChanged } from "./useSidecarOrdersChanged";
 import { useSidecarOrdersGroup } from "./useSidecarOrdersGroup";
 import { getCommonError, handleEntryError } from "./utils";
-import { useSidecarOrdersChanged } from "./useSidecarOrdersChanged";
-import { usePrevious } from "lib/usePrevious";
 
 export * from "./types";
 

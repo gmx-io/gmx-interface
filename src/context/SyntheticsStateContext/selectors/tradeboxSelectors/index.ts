@@ -40,6 +40,7 @@ import { convertTokenAddress } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { createTradeFlags } from "sdk/utils/trade";
+
 import { selectExternalSwapQuote } from "../externalSwapSelectors";
 import {
   selectAccount,

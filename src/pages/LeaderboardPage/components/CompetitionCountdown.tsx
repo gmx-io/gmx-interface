@@ -1,7 +1,8 @@
 import { Trans, t } from "@lingui/macro";
-import { useLeaderboardTiming } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
-import { ReactNode, useEffect, useState } from "react";
 import cx from "classnames";
+import { ReactNode, useEffect, useState } from "react";
+
+import { useLeaderboardTiming } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 
 export function CompetitionCountdown({ className, size }: { className?: string; size: "mobile" | "desktop" }) {
   const { isEndInFuture, isStartInFuture, timeframe } = useLeaderboardTiming();

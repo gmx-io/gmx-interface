@@ -7,25 +7,26 @@ import {
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { estimateExecuteDecreaseOrderGasLimit, useGasLimits, useGasPrice } from "domain/synthetics/fees";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import { getTotalAccruedFundingUsd } from "domain/synthetics/markets";
 import { createDecreaseOrderTxn, DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { useChainId } from "lib/chains";
 import { formatDeltaUsd, formatUsd } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
+import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import Tooltip from "components/Tooltip/Tooltip";
+
 import { SettleAccruedFundingFeeRow } from "./SettleAccruedFundingFeeRow";
 import { shouldPreSelectPosition } from "./utils";
 
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import "./SettleAccruedFundingFeeModal.scss";
-import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 type Props = {
   allowedSlippage: number;

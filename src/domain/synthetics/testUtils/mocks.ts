@@ -1,3 +1,5 @@
+import { expect } from "vitest";
+
 import { AVALANCHE } from "config/chains";
 import { MarketInfo, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { convertToTokenAmount } from "domain/synthetics/tokens/utils";
@@ -5,7 +7,7 @@ import { getTokenBySymbol } from "sdk/configs/tokens";
 import type { PositionInfo } from "sdk/types/positions";
 import { bigMath } from "sdk/utils/bigmath";
 import { getLeverage } from "sdk/utils/positions";
-import { expect } from "vitest";
+
 import { getPositionKey } from "../positions";
 import { ExternalSwapAggregator, ExternalSwapQuote, getMarkPrice } from "../trade";
 

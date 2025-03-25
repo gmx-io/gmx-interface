@@ -14,10 +14,11 @@ import { sumBigInts } from "lib/sumBigInts";
 import useWallet from "lib/wallets/useWallet";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
-import type { ChainStats } from "./useDashboardChainStatsMulticall";
 
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
+
+import type { ChainStats } from "./useDashboardChainStatsMulticall";
 
 const ethTreasuryFund = expandDecimals(350 + 148 + 384, 18);
 const glpTreasuryFund = expandDecimals(660001, 18);

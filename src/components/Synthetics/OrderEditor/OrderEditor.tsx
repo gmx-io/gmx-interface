@@ -4,46 +4,9 @@ import { useKey } from "react-use";
 
 import { BASIS_POINTS_DIVISOR, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS, USD_DECIMALS } from "config/factors";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
-import {
-  OrderInfo,
-  PositionOrderInfo,
-  SwapOrderInfo,
-  isLimitIncreaseOrderType,
-  isLimitSwapOrderType,
-  isStopIncreaseOrderType,
-  isStopLossOrderType,
-  isSwapOrderType,
-  isTriggerDecreaseOrderType,
-} from "domain/synthetics/orders";
-import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
-import {
-  formatAcceptablePrice,
-  formatLeverage,
-  formatLiquidationPrice,
-  getNameByOrderType,
-  substractMaxLeverageSlippage,
-} from "domain/synthetics/positions";
-import { convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
-import { useChainId } from "lib/chains";
-import {
-  calculateDisplayDecimals,
-  formatAmount,
-  formatAmountFree,
-  formatBalanceAmount,
-  formatDeltaUsd,
-  formatTokenAmountWithUsd,
-  formatUsdPrice,
-} from "lib/numbers";
-
-import Button from "components/Button/Button";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import {
   usePositionsConstants,
   useTokensData,
@@ -84,23 +47,59 @@ import {
   selectOrderEditorTriggerPrice,
   selectOrderEditorTriggerRatio,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
+import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
+import {
+  OrderInfo,
+  PositionOrderInfo,
+  SwapOrderInfo,
+  isLimitIncreaseOrderType,
+  isLimitSwapOrderType,
+  isStopIncreaseOrderType,
+  isStopLossOrderType,
+  isSwapOrderType,
+  isTriggerDecreaseOrderType,
+} from "domain/synthetics/orders";
+import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
+import {
+  formatAcceptablePrice,
+  formatLeverage,
+  formatLiquidationPrice,
+  getNameByOrderType,
+  substractMaxLeverageSlippage,
+} from "domain/synthetics/positions";
+import { convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { getIncreasePositionAmounts, getNextPositionValuesForIncreaseTrade } from "domain/synthetics/trade";
 import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
-
+import { TokensRatioAndSlippage } from "domain/tokens";
 import { numericBinarySearch } from "lib/binarySearch";
+import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
+import {
+  calculateDisplayDecimals,
+  formatAmount,
+  formatAmountFree,
+  formatBalanceAmount,
+  formatDeltaUsd,
+  formatTokenAmountWithUsd,
+  formatUsdPrice,
+} from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
+import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { ValueTransition } from "components/ValueTransition/ValueTransition";
+
+import { AllowedSwapSlippageInputRow } from "../AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
-import { TokensRatioAndSlippage } from "domain/tokens";
-import { AllowedSwapSlippageInputRow } from "../AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
 import "./OrderEditor.scss";
 
 type Props = {

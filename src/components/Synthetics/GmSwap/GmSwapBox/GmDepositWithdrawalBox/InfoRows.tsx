@@ -2,20 +2,19 @@ import { t } from "@lingui/macro";
 import values from "lodash/values";
 import { useCallback } from "react";
 
+import { selectChainId, selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { ExecutionFee } from "domain/synthetics/fees";
+import { getGlvOrMarketAddress, GlvInfo, GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets";
+import { TokensData } from "domain/synthetics/tokens";
+import { GmSwapFees } from "domain/synthetics/trade";
+
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { GmPoolsSelectorForGlvMarket } from "components/MarketSelector/GmPoolsSelectorForGlvMarket";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
-
-import { selectChainId, selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { ExecutionFee } from "domain/synthetics/fees";
-import { getGlvOrMarketAddress, GlvInfo, GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets";
-import { TokensData } from "domain/synthetics/tokens";
-import { GmSwapFees } from "domain/synthetics/trade";
 
 import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
 import { Operation } from "../types";

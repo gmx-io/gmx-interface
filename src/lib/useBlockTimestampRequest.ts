@@ -1,5 +1,7 @@
-import { getContract } from "config/contracts";
 import { useMemo } from "react";
+
+import { getContract } from "config/contracts";
+
 import { useMulticall } from "./multicall";
 import { FREQUENT_UPDATE_INTERVAL } from "./timeConstants";
 

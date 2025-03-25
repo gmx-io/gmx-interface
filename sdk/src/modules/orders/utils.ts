@@ -4,19 +4,18 @@ import { getContract } from "configs/contracts";
 import { accountOrderListKey } from "configs/dataStore";
 import { getWrappedToken } from "configs/tokens";
 import { MarketFilterLongShortDirection, MarketFilterLongShortItemData } from "modules/trades/trades";
-import type { GmxSdk } from "../../index";
-
 import { GasLimitsConfig } from "types/fees";
 import { MarketsInfoData } from "types/markets";
 import { DecreasePositionSwapType, Order, OrderType } from "types/orders";
 import { SidecarLimitOrderEntry, SidecarSlTpOrderEntry } from "types/sidecarOrders";
 import { TokensData } from "types/tokens";
-
 import { estimateOrderOraclePriceCount } from "utils/fees/estimateOraclePriceCount";
 import { estimateExecuteDecreaseOrderGasLimit, getExecutionFee } from "utils/fees/executionFee";
 import type { MulticallRequestConfig, MulticallResult } from "utils/multicall";
 import { isIncreaseOrderType, isLimitOrderType, isSwapOrderType, isTriggerDecreaseOrderType } from "utils/orders";
 import { getSwapPathOutputAddresses } from "utils/swap/swapStats";
+
+import type { GmxSdk } from "../../index";
 
 export const getOrderExecutionFee = (
   sdk: GmxSdk,

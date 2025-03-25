@@ -1,5 +1,7 @@
 import { useState } from "react";
+
 import { ExternalSwapOutput } from "sdk/types/trade";
+
 import { ExternalSwapState } from "./types";
 
 export function useInitExternalSwapState(): ExternalSwapState {

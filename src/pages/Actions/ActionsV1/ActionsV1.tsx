@@ -11,6 +11,7 @@ import { getTokenInfo } from "domain/tokens/utils";
 import { contractFetcher } from "lib/contracts";
 import { useAccountOrders } from "lib/legacy";
 import useWallet from "lib/wallets/useWallet";
+import { VersionNetworkSwitcherRow } from "pages/AccountDashboard/VersionNetworkSwitcherRow";
 import { getPositionQuery, getPositions } from "pages/Exchange/Exchange";
 import { getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 
@@ -19,7 +20,6 @@ import PositionsList from "components/Exchange/PositionsList";
 import TradeHistory from "components/Exchange/TradeHistory";
 import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
-import { VersionNetworkSwitcherRow } from "pages/AccountDashboard/VersionNetworkSwitcherRow";
 
 import "./ActionsV1.css";
 

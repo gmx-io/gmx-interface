@@ -1,5 +1,3 @@
-import { TokenBalancesData, TokenData, TokensData } from "domain/synthetics/tokens";
-import { useChainId } from "lib/chains";
 import entries from "lodash/entries";
 import {
   Dispatch,
@@ -12,6 +10,9 @@ import {
   useMemo,
   useState,
 } from "react";
+
+import { TokenBalancesData, TokenData, TokensData } from "domain/synthetics/tokens";
+import { useChainId } from "lib/chains";
 
 export type TokenBalanceUpdate = {
   balance?: bigint;

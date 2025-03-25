@@ -18,12 +18,10 @@ import {
   uiFeeFactorKey,
   withdrawalGasLimitKey,
 } from "configs/dataStore";
-
-import type { IncreasePositionAmounts } from "types/trade";
 import type { GasLimitsConfig } from "types/fees";
-import type { DecreasePositionAmounts, SwapAmounts, TradeFeesType } from "types/trade";
 import { TokensData } from "types/tokens";
-
+import type { IncreasePositionAmounts } from "types/trade";
+import type { DecreasePositionAmounts, SwapAmounts, TradeFeesType } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { estimateOrderOraclePriceCount } from "utils/fees/estimateOraclePriceCount";
 import {
