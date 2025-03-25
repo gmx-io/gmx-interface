@@ -9,10 +9,7 @@ import {
 } from "modules/markets/types";
 
 import hashedKinkModelMarketRatesKeys from "./hashedKinkModelMarketRatesKeys.json";
-import hashedKinkModelMarketRatesKeys from "./hashedKinkModelMarketRatesKeys.json";
 import hashedMarketConfigKeysJson from "./hashedMarketConfigKeys.json";
-import hashedMarketConfigKeysJson from "./hashedMarketConfigKeys.json";
-import hashedMarketValuesKeysJson from "./hashedMarketValuesKeys.json";
 import hashedMarketValuesKeysJson from "./hashedMarketValuesKeys.json";
 
 type HashedMarketValuesKeys = Omit<
