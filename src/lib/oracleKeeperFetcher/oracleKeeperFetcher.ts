@@ -1,6 +1,6 @@
 import { isLocal } from "config/env";
-import { getOracleKeeperNextIndex, getOracleKeeperUrl } from "config/oracleKeeper";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
+import { getOracleKeeperNextIndex, getOracleKeeperUrl } from "sdk/configs/oracleKeeper";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { buildUrl } from "sdk/utils/buildUrl";
 
