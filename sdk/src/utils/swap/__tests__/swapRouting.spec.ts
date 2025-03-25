@@ -1,11 +1,9 @@
 import { USD_DECIMALS } from "configs/factors";
 import type { MarketConfig } from "configs/markets";
-import { NaiveSwapEstimator, SwapPaths } from "types/trade";
 import { bigMath } from "utils/bigmath";
-import { convertToTokenAmount, getMidPrice } from "utils/tokens";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { mockMarketsInfoData, mockTokensData } from "../../../test/mock";
-import { MarketsGraph, buildMarketsAdjacencyGraph } from "../buildMarketsAdjacencyGraph";
+import { buildMarketsAdjacencyGraph } from "../buildMarketsAdjacencyGraph";
 import {
   createMarketEdgeLiquidityGetter,
   createNaiveSwapEstimator,
@@ -15,7 +13,6 @@ import {
   getMaxLiquidityMarketForTokenEdge,
   getMaxLiquidityMarketSwapPathFromTokenSwapPaths,
   getNaiveBestMarketSwapPathsFromTokenSwapPaths,
-  getNextMarketInfoAfterEncounters,
 } from "../swapRouting";
 
 const dollar = 10n ** BigInt(USD_DECIMALS);
@@ -110,7 +107,7 @@ describe("getBestMarketForTokenEdge", () => {
     });
   });
 
-  it("should return first market if all have zero yield", () => {
+  it("should return undefined if all have zero yield", () => {
     const result = getBestMarketForTokenEdge({
       marketAddresses: ["ETH [ETH-USDC]", "ETH [ETH-USDC-2]"],
       usdIn: 1_000_000n * dollar,
@@ -119,10 +116,7 @@ describe("getBestMarketForTokenEdge", () => {
       estimator: () => ({ swapYield: 0 }),
     });
 
-    expect(result).toEqual({
-      marketAddress: "ETH [ETH-USDC]",
-      swapYield: 0,
-    });
+    expect(result).toBeUndefined();
   });
 
   it("should pass correct parameters to estimator", () => {
@@ -302,180 +296,6 @@ describe("getNaiveBestMarketSwapPathsFromTokenSwapPaths", () => {
 
     expect(result).toEqual([["BTC [BTC-ETH]"]]);
   });
-
-  describe("cycles", () => {
-    const graph: MarketsGraph = {
-      ETH: {
-        USDC: ["ETH [ETH-USDC]", "PEPE [ETH-USDC]"],
-      },
-      USDC: {
-        ETH: ["ETH [ETH-USDC]", "PEPE [ETH-USDC]"],
-      },
-    };
-
-    const swapPaths: SwapPaths = { USDC: { ETH: [[], ["ETH", "USDC"]] } };
-    const tokenSwapPaths = swapPaths["USDC"]["ETH"];
-
-    /*
-    https://dreampuf.github.io/GraphvizOnline/
-
-  digraph G {
-    USDC_1->ETH_1[label=<ETH [<sup>ETH</sup>-<sub>USDC</sub>] <br/><br/> imbalance reduction>]
-    USDC_1[label=USDC]
-    ETH_1[label=ETH]
-    ETH_1 -> USDC_2[label=<PEPE [<sub>ETH</sub>-<sup>USDC</sup>] <br/><br/> imbalance reduction>]
-    USDC_2[label=USDC]
-    USDC_2->ETH_2[label=<ETH [ETH-USDC] <br/><br/> imbalance worsening. but is it worth it?>]
-    ETH_2[label=ETH]
-}
-     */
-
-    it("avoids cyclic path when subsequent swap penalties outweigh initial profit", () => {
-      const estimatorSpy = vi.fn<NaiveSwapEstimator>((edge, usdIn, encounters) => {
-        if (edge.marketAddress === "ETH [ETH-USDC]") {
-          if (edge.from === "USDC") {
-            if (encounters === 0) {
-              // First encounter, profit
-              return { swapYield: 1.2 };
-            } else if (encounters > 0) {
-              // Punish hard for worsening imbalance
-              return { swapYield: 0.1 };
-            } else if (encounters < 0) {
-              // Means that we have performed opposite operation in the past
-              // So now we are even
-              return { swapYield: 0.83 };
-            }
-          } else if (edge.from === "ETH") {
-            if (encounters === 0) {
-              // First encounter, punish for worsening imbalance
-              return { swapYield: 0.1 };
-            } else if (encounters > 0) {
-              // Punish for worsening imbalance
-              return { swapYield: 0.1 };
-            } else if (encounters < 0) {
-              // Means that we have performed opposite operation in the past
-              // So now we are even
-              return { swapYield: 0.83 };
-            }
-          }
-        } else if (edge.marketAddress === "PEPE [ETH-USDC]") {
-          if (edge.from === "USDC") {
-            if (encounters === 0) {
-              // First encounter, punish for worsening imbalance
-              return { swapYield: 0.1 };
-            } else if (encounters > 0) {
-              // Punish for worsening imbalance
-              return { swapYield: 0.1 };
-            } else if (encounters < 0) {
-              // Means that we have performed opposite operation in the past
-              // So now we are even BUT for the sake of test punish
-              return { swapYield: 0.1 };
-            }
-          } else if (edge.from === "ETH") {
-            if (encounters === 0) {
-              // First encounter, profit
-              return { swapYield: 1.1 };
-            } else if (encounters > 0) {
-              // Punish for worsening imbalance
-              return { swapYield: 0.1 };
-            } else if (encounters < 0) {
-              // Means that we have performed opposite operation in the past
-              // So now we are even
-              return { swapYield: 0.83 };
-            }
-          }
-        }
-
-        return { swapYield: 0.99 };
-      });
-
-      const result = getNaiveBestMarketSwapPathsFromTokenSwapPaths({
-        topPathsCount: 1,
-        graph,
-        tokenSwapPaths: tokenSwapPaths,
-        tokenInAddress: "USDC",
-        tokenOutAddress: "ETH",
-        usdIn: 50n * dollar,
-        estimator: estimatorSpy,
-      });
-
-      const topPath = result![0];
-      expect(topPath).toEqual(["ETH [ETH-USDC]"]);
-    });
-
-    it("selects cyclic path when total yield exceeds direct path", () => {
-      const estimatorSpy = vi.fn<NaiveSwapEstimator>((edge, usdIn, encounters) => {
-        if (edge.marketAddress === "ETH [ETH-USDC]") {
-          if (edge.from === "USDC") {
-            if (encounters === 0) {
-              // First encounter, profit
-              return { swapYield: 1.2 };
-            } else if (encounters === 1) {
-              // Simulate the case when the market can still be profitable even if we have performed the same operation in the past
-              return { swapYield: 1 };
-            } else if (encounters === -1) {
-              // Means that we have performed opposite operation in the past
-              // So now we are even
-              return { swapYield: 1.0 };
-            }
-          } else if (edge.from === "ETH") {
-            if (encounters === 0) {
-              // First encounter, punish for worsening imbalance
-              return { swapYield: 0.6 };
-            } else if (encounters === 1) {
-              // Punish for worsening imbalance
-              return { swapYield: 0.6 };
-            } else if (encounters === -1) {
-              // Means that we have performed opposite operation in the past
-              // So now we are even
-              return { swapYield: 1.0 };
-            }
-          }
-        } else if (edge.marketAddress === "PEPE [ETH-USDC]") {
-          if (edge.from === "USDC") {
-            if (encounters === 0) {
-              // First encounter, punish for worsening imbalance
-              return { swapYield: 0.6 };
-            } else if (encounters === 1) {
-              // Punish for worsening imbalance
-              return { swapYield: 0.6 };
-            } else if (encounters === -1) {
-              // Means that we have performed opposite operation in the past
-              // So now we are even BUT for the sake of test punish
-              return { swapYield: 0.6 };
-            }
-          } else if (edge.from === "ETH") {
-            if (encounters === 0) {
-              // First encounter, profit
-              return { swapYield: 1.2 };
-            } else if (encounters === 1) {
-              // Punish for worsening imbalance
-              return { swapYield: 0.6 };
-            } else if (encounters === -1) {
-              // Means that we have performed opposite operation in the past
-              // So now we are even BUT for the sake of test punish
-              return { swapYield: 0.6 };
-            }
-          }
-        }
-
-        return { swapYield: 0.99 };
-      });
-
-      const result = getNaiveBestMarketSwapPathsFromTokenSwapPaths({
-        topPathsCount: 1,
-        graph,
-        tokenSwapPaths: tokenSwapPaths,
-        tokenInAddress: "USDC",
-        tokenOutAddress: "ETH",
-        usdIn: 50n * dollar,
-        estimator: estimatorSpy,
-      });
-
-      const topPath = result![0];
-      expect(topPath).toEqual(["ETH [ETH-USDC]", "PEPE [ETH-USDC]", "ETH [ETH-USDC]"]);
-    });
-  });
 });
 
 describe("getBestSwapPath", () => {
@@ -628,133 +448,6 @@ describe("getBestSwapPath", () => {
     });
 
     expect(result).toEqual(routes[0]);
-  });
-});
-
-describe("getNextMarketInfoAfterEncounters", () => {
-  const marketKeys = ["ETH-ETH-USDC"];
-
-  const tokensData = mockTokensData();
-  const longToken = tokensData.ETH;
-  const shortToken = tokensData.USDC;
-
-  const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys, {
-    "ETH-ETH-USDC": {
-      longPoolAmount: 100_000n * 10n ** BigInt(longToken.decimals),
-      shortPoolAmount: 100_000n * 10n ** BigInt(shortToken.decimals),
-    },
-  });
-
-  const baseMarketInfo = marketsInfoData["ETH-ETH-USDC"];
-
-  it("should not modify market info for zero encounters", () => {
-    const marketInfo = {
-      ...baseMarketInfo,
-    };
-    const edge = {
-      marketAddress: "ETH [ETH-USDC]",
-      from: "ETH",
-      to: "USDC",
-    };
-    const usdIn = 50_000n * dollar;
-
-    const result = getNextMarketInfoAfterEncounters(marketInfo, edge, usdIn, 0);
-
-    expect(result.longPoolAmount).toEqual(marketInfo.longPoolAmount);
-    expect(result.shortPoolAmount).toEqual(marketInfo.shortPoolAmount);
-  });
-
-  it("should adjust pool amounts for positive encounters when swapping from long to short", () => {
-    const marketInfo = { ...baseMarketInfo };
-    const edge = {
-      marketAddress: "ETH [ETH-USDC]",
-      from: "ETH",
-      to: "USDC",
-    };
-    const usdIn = 50_000n * dollar;
-    const encounters = 2;
-
-    const expectedLongPoolAmount =
-      convertToTokenAmount(usdIn * 2n, longToken.decimals, getMidPrice(longToken.prices))! + marketInfo.longPoolAmount;
-    const expectedShortPoolAmount =
-      marketInfo.shortPoolAmount -
-      convertToTokenAmount(usdIn * 2n, shortToken.decimals, getMidPrice(shortToken.prices))!;
-
-    const result = getNextMarketInfoAfterEncounters(marketInfo, edge, usdIn, encounters);
-
-    // For 2 encounters of 50,000 USD worth of ETH to USDC swaps:
-    // - Long pool should increase by equivalent of 100,000 USD worth of ETH
-    // - Short pool should decrease by equivalent of 100,000 USD worth of USDC
-    expect(result.longPoolAmount).toEqual(expectedLongPoolAmount);
-    expect(result.shortPoolAmount).toEqual(expectedShortPoolAmount);
-  });
-
-  it("should adjust pool amounts for positive encounters when swapping from short to long", () => {
-    const marketInfo = { ...baseMarketInfo };
-    const edge = {
-      marketAddress: "ETH [ETH-USDC]",
-      from: "USDC",
-      to: "ETH",
-    };
-    const usdIn = 50_000n * dollar;
-    const encounters = 2;
-    const expectedShortPoolAmount =
-      convertToTokenAmount(usdIn * 2n, shortToken.decimals, getMidPrice(shortToken.prices))! +
-      marketInfo.shortPoolAmount;
-    const expectedLongPoolAmount =
-      marketInfo.longPoolAmount - convertToTokenAmount(usdIn * 2n, longToken.decimals, getMidPrice(longToken.prices))!;
-
-    const result = getNextMarketInfoAfterEncounters(marketInfo, edge, usdIn, encounters);
-
-    // For 2 encounters of 50,000 USD worth of USDC to ETH swaps:
-    // - Short pool should increase by equivalent of 100,000 USD worth of USDC
-    // - Long pool should decrease by equivalent of 100,000 USD worth of ETH
-    expect(result.shortPoolAmount).toEqual(expectedShortPoolAmount);
-    expect(result.longPoolAmount).toEqual(expectedLongPoolAmount);
-  });
-
-  it("should handle negative encounters", () => {
-    const marketInfo = { ...baseMarketInfo };
-    const edge = {
-      marketAddress: "ETH [ETH-USDC]",
-      from: "ETH",
-      to: "USDC",
-    };
-    const usdIn = 50_000n * dollar;
-    const encounters = -1;
-
-    const expectedLongPoolAmount =
-      marketInfo.longPoolAmount - convertToTokenAmount(usdIn, longToken.decimals, getMidPrice(longToken.prices))!;
-    const expectedShortPoolAmount =
-      convertToTokenAmount(usdIn, shortToken.decimals, getMidPrice(shortToken.prices))! + marketInfo.shortPoolAmount;
-
-    const result = getNextMarketInfoAfterEncounters(marketInfo, edge, usdIn, encounters);
-
-    // For -1 encounters, the effect should be opposite to a positive encounter
-    // - Long pool should decrease
-    // - Short pool should increase
-    expect(result.longPoolAmount).toEqual(expectedLongPoolAmount);
-    expect(result.shortPoolAmount).toEqual(expectedShortPoolAmount);
-  });
-
-  it("should preserve original market info object", () => {
-    const marketInfo = { ...baseMarketInfo };
-    const originalLongPoolAmount = marketInfo.longPoolAmount;
-    const originalShortPoolAmount = marketInfo.shortPoolAmount;
-
-    const edge = {
-      marketAddress: "ETH [ETH-USDC]",
-      from: "ETH",
-      to: "USDC",
-    };
-    const usdIn = 50_000n * dollar;
-    const encounters = 1;
-
-    getNextMarketInfoAfterEncounters(marketInfo, edge, usdIn, encounters);
-
-    // Original market info should not be modified
-    expect(marketInfo.longPoolAmount).toBe(originalLongPoolAmount);
-    expect(marketInfo.shortPoolAmount).toBe(originalShortPoolAmount);
   });
 });
 
@@ -991,8 +684,7 @@ describe("createNaiveSwapEstimator", () => {
         from: "ETH",
         to: "USDC",
       },
-      100n * dollar,
-      0
+      100n * dollar
     );
 
     expect(result).toEqual({
@@ -1012,8 +704,7 @@ describe("createNaiveSwapEstimator", () => {
         from: "ETH",
         to: "USDC",
       },
-      100n * dollar,
-      0
+      100n * dollar
     );
 
     expect(result).toEqual({

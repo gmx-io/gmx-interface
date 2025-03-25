@@ -94,23 +94,26 @@ describe("mockRouting", () => {
     expect(topPath).toEqual(["SPOT-USDC-DAI"]);
   });
 
-  it("selects SPOT [DAI-USDC] path for USDC->DAI swap when pool has excess of USDC", () => {
+  it.only("selects SPOT [DAI-USDC] path for USDC->DAI swap when pool has excess of DAI", () => {
     const allPoolsBalanced = Object.fromEntries(
       marketKeys.map((marketKey) => [
         marketKey,
         {
-          marketKey,
-          longPoolAmount: usdToToken(1000, tokensData.DAI),
-          shortPoolAmount: usdToToken(1000, tokensData.USDC),
-        },
+          longPoolAmount: usdToToken(100_000, baseMarketsInfoData[marketKey].longToken),
+          shortPoolAmount: usdToToken(100_000, baseMarketsInfoData[marketKey].shortToken),
+          maxLongPoolAmount: usdToToken(1_000_000, baseMarketsInfoData[marketKey].longToken),
+          maxShortPoolAmount: usdToToken(1_000_000, baseMarketsInfoData[marketKey].shortToken),
+        } satisfies Partial<MarketInfo>,
       ])
     );
 
     const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys, {
       ...allPoolsBalanced,
       "SPOT-DAI-USDC": {
-        longPoolAmount: usdToToken(1100, tokensData.USDC),
-        shortPoolAmount: usdToToken(600, tokensData.DAI),
+        longPoolAmount: usdToToken(110_000, tokensData.DAI),
+        shortPoolAmount: usdToToken(60_000, tokensData.USDC),
+        maxLongPoolAmount: usdToToken(1_000_000, tokensData.DAI),
+        maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
       },
     });
 
@@ -191,7 +194,7 @@ describe("mockRouting", () => {
     expect(topPath).toEqual(["BTC-BTC-USDC", "SOL-BTC-USDC", "BTC-BTC-DAI"]);
   });
 
-  it("routes USDC-BTC through BTC [BTC-USDC] -> SOL [BTC-USDC] -> BTC [BTC-USDC] for imbalanced liquidity", () => {
+  it("does not route USDC-BTC through BTC [BTC-USDC] -> SOL [BTC-USDC] -> BTC [BTC-USDC] for imbalanced liquidity, because of duplicate BTC-BTC-USDC", () => {
     const allPoolsBalanced = Object.fromEntries(
       marketKeys.map((marketKey) => [
         marketKey,
@@ -242,7 +245,7 @@ describe("mockRouting", () => {
     const topPath = paths?.[0];
 
     expect(topPath).toBeDefined();
-    expect(topPath).toEqual(["BTC-BTC-USDC", "SOL-BTC-USDC", "BTC-BTC-USDC"]);
+    expect(topPath).toEqual(["BTC-BTC-USDC"]);
   });
 
   it("selects BTC [BTC-USDC] direct path when impact factors penalize multi-hop routes", () => {

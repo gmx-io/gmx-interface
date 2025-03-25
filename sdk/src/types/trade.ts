@@ -226,8 +226,7 @@ export type SwapEstimator = (
 
 export type NaiveSwapEstimator = (
   e: MarketEdge,
-  usdIn: bigint,
-  encounters: number
+  usdIn: bigint
 ) => {
   /**
    * 1.1 means output is 10% greater than input
