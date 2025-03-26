@@ -1,6 +1,5 @@
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BASE_MAINNET, SONIC_MAINNET } from "config/chains";
 import { isDevelopment } from "config/env";
-import { base, sonic } from "viem/chains";
 
 // we need to have a token bare config for each chain and map it to the settlement chain token
 
@@ -60,12 +59,12 @@ const TOKEN_GROUPS: MultichainTokenGroup[] = [
       decimals: 6,
     },
     {
-      chainId: base.id,
+      chainId: BASE_MAINNET,
       address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
       decimals: 6,
     },
     {
-      chainId: sonic.id,
+      chainId: SONIC_MAINNET,
       // Technically this is USDC.e
       address: "0x29219dd400f2Bf60E5a23d13Be72B486D4038894",
       decimals: 6,
@@ -84,12 +83,12 @@ const TOKEN_GROUPS: MultichainTokenGroup[] = [
       decimals: 18,
     },
     {
-      chainId: base.id,
+      chainId: BASE_MAINNET,
       address: "0x4200000000000000000000000000000000000006",
       decimals: 18,
     },
     {
-      chainId: sonic.id,
+      chainId: SONIC_MAINNET,
       address: "0x50c42dEAcD8Fc9773493ED674b675bE577f2634b",
       decimals: 18,
     },
@@ -107,12 +106,12 @@ const TOKEN_GROUPS: MultichainTokenGroup[] = [
       decimals: 8,
     },
     {
-      chainId: base.id,
+      chainId: BASE_MAINNET,
       address: "0x0555E30da8f98308EdB960aa94C0Db47230d2B9c",
       decimals: 8,
     },
     {
-      chainId: sonic.id,
+      chainId: SONIC_MAINNET,
       address: "0x0555E30da8f98308EdB960aa94C0Db47230d2B9c",
       decimals: 8,
     },
@@ -181,14 +180,14 @@ console.log({ MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS });
 //     "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7", // USDT
 //     "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70", // DAI
 //   ],
-//   [base.id]: [
+//   [BASE_MAINNET]: [
 //     "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", // USDC
 //     "0x4200000000000000000000000000000000000006", // WETH
 //     "0x3aAB2285ddcDdaD8edf438C1bAB47e1a9D05a9b4", // WBTC
 //     "0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb", // USDT
 //     "0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb", // DAI
 //   ],
-//   [sonic.id]: [
+//   [SONIC_MAINNET]: [
 //     "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", // USDC
 //     "0x4200000000000000000000000000000000000006", // WETH
 //     "0x3aAB2285ddcDdaD8edf438C1bAB47e1a9D05a9b4", // WAVAX

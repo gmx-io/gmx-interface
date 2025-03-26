@@ -1,10 +1,11 @@
 import { ethers } from "ethers";
 import type { NetworkMetadata } from "lib/wallets";
 import sample from "lodash/sample";
-import { base, sonic } from "viem/chains";
 import {
+  BASE_MAINNET,
   SUPPORTED_CHAIN_IDS as SDK_SUPPORTED_CHAIN_IDS,
   SUPPORTED_CHAIN_IDS_DEV as SDK_SUPPORTED_CHAIN_IDS_DEV,
+  SONIC_MAINNET,
 } from "../../sdk/src/configs/chains";
 import { isDevelopment } from "./env";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET, ETH_MAINNET } from "./static/chains";
@@ -34,8 +35,10 @@ export const CHAIN_NAMES_MAP = {
   [ARBITRUM]: "Arbitrum",
   [AVALANCHE]: "Avalanche",
   [AVALANCHE_FUJI]: "Avalanche Fuji",
-  [base.id]: "Base",
-  [sonic.id]: "Sonic",
+  [BASE_MAINNET]: "Base",
+  // [BASE_SEPOLIA]: "Base Sepolia",
+  [SONIC_MAINNET]: "Sonic",
+  // [SONIC_BLAZE]: "Sonic Blaze Testnet",
 };
 
 export const NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR = {

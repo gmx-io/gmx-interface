@@ -1,4 +1,12 @@
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import {
+  ARBITRUM,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  BASE_MAINNET,
+  // BASE_SEPOLIA,
+  // SONIC_BLAZE,
+  SONIC_MAINNET,
+} from "config/chains";
 import arbitrum from "img/ic_arbitrum_24.svg";
 import avalanche from "img/ic_avalanche_24.svg";
 import avalancheTestnet from "img/ic_avalanche_testnet_24.svg";
@@ -19,7 +27,6 @@ import gmxAvax from "img/ic_gmx_avax.svg";
 import glpArbitrum from "img/ic_glp_arbitrum.svg";
 import glpAvax from "img/ic_glp_avalanche.svg";
 import glvIcon from "img/ic_glv_40.svg";
-import { base, sonic } from "viem/chains";
 
 type ChainIcons = {
   network?: string;
@@ -66,8 +73,10 @@ export const CHAIN_ID_TO_NETWORK_ICON = {
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
   [AVALANCHE_FUJI]: avalancheTestnet,
-  [base.id]: baseIcon,
-  [sonic.id]: sonicIcon,
+  [BASE_MAINNET]: baseIcon,
+  // [BASE_SEPOLIA]: baseIcon,
+  [SONIC_MAINNET]: sonicIcon,
+  // [SONIC_BLAZE]: sonicIcon,
   0: gmxIcon,
 };
 

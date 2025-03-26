@@ -27,14 +27,6 @@ export const WithdrawView = () => {
           onClickMax={() => {
             console.log("clicked max");
           }}
-          //   <button
-          //   type="button"
-          //   className="-my-4 rounded-4 bg-cold-blue-500 px-8 py-2 hover:bg-[#484e92] active:bg-[#505699]"
-          //   onClick={handleMaxClick}
-          //   data-qa="input-max"
-          // >
-          //   <Trans>MAX</Trans>
-          // </button>
           topRightValue={
             <button
               type="button"
@@ -43,10 +35,9 @@ export const WithdrawView = () => {
               onClick={() => {}}
               data-qa="input-max"
             >
-              {/* chain icon with chain name */}
               <img
-                src={CHAIN_ID_TO_NETWORK_ICON[sonic.id]}
-                alt={CHAIN_ID_TO_EXPLORER_NAME[sonic.id]}
+                src={CHAIN_ID_TO_NETWORK_ICON[SONIC_MAINNET]}
+                alt={CHAIN_ID_TO_EXPLORER_NAME[SONIC_MAINNET]}
                 className="size-16"
               />
               <div>{sonic.name}</div>
@@ -54,7 +45,7 @@ export const WithdrawView = () => {
           }
         >
           <div className="flex cursor-pointer items-center" onClick={() => setIsVisibleOrView("selectAssetToWithdraw")}>
-            <TokenIcon symbol="SOL" displaySize={20} importSize={40} chainIdBadge={sonic.id} />
+            <TokenIcon symbol="SOL" displaySize={20} importSize={40} chainIdBadge={SONIC_MAINNET} />
             <div className="ml-4">SOL</div>
             <BiChevronRight />
           </div>

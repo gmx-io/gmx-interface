@@ -95,7 +95,7 @@
     "swr": "2.2.1",
     "typescript": "5.4.2",
     "use-context-selector": "1.4.1",
-    "viem": "2.23.13",
+    "viem": "2.7.20",
     "wagmi": "2.12.29",
     "web-vitals": "1.1.2",
     "worker-loader": "3.0.8"

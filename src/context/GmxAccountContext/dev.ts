@@ -1,6 +1,5 @@
-import { ARBITRUM, AVALANCHE } from "config/chains";
+import { ARBITRUM, AVALANCHE, BASE_MAINNET, SONIC_MAINNET } from "config/chains";
 import { getTokenBySymbol } from "sdk/configs/tokens";
-import { base, sonic } from "viem/chains";
 import { FundingHistoryItem } from "./types";
 
 export const DEV_FUNDING_HISTORY: FundingHistoryItem[] = [
@@ -30,7 +29,7 @@ export const DEV_FUNDING_HISTORY: FundingHistoryItem[] = [
   },
   {
     id: "3",
-    chainId: sonic.id,
+    chainId: SONIC_MAINNET,
     walletAddress: "0x414dA6C7c50eADFBD4c67C902c7DAf59F58d32c7",
     txnId: "0x2d3c4eaacc2b0b02af14af93d91ca846b72240e2e82e4bd4b316b5be9f89a75c",
     token: getTokenBySymbol(ARBITRUM, "DAI"),
@@ -42,7 +41,7 @@ export const DEV_FUNDING_HISTORY: FundingHistoryItem[] = [
   },
   {
     id: "4",
-    chainId: base.id,
+    chainId: BASE_MAINNET,
     walletAddress: "0x414dA6C7c50eADFBD4c67C902c7DAf59F58d32c7",
     txnId: "0x2d3c4eaacc2b0b02af14af93d91ca846b72240e2e82e4bd4b316b5be9f89a75c",
     token: getTokenBySymbol(ARBITRUM, "USDC"),
@@ -78,7 +77,7 @@ export const DEV_FUNDING_HISTORY: FundingHistoryItem[] = [
   },
   {
     id: "7",
-    chainId: sonic.id,
+    chainId: SONIC_MAINNET,
     walletAddress: "0x414dA6C7c50eADFBD4c67C902c7DAf59F58d32c7",
     txnId: "0x2d3c4eaacc2b0b02af14af93d91ca846b72240e2e82e4bd4b316b5be9f89a75c",
     token: getTokenBySymbol(ARBITRUM, "USDC"),
@@ -90,7 +89,7 @@ export const DEV_FUNDING_HISTORY: FundingHistoryItem[] = [
   },
   {
     id: "8",
-    chainId: sonic.id,
+    chainId: SONIC_MAINNET,
     walletAddress: "0x414dA6C7c50eADFBD4c67C902c7DAf59F58d32c7",
     txnId: "0x2d3c4eaacc2b0b02af14af93d91ca846b72240e2e82e4bd4b316b5be9f89a75c",
     token: getTokenBySymbol(ARBITRUM, "USDC"),
@@ -102,7 +101,7 @@ export const DEV_FUNDING_HISTORY: FundingHistoryItem[] = [
   },
   {
     id: "9",
-    chainId: sonic.id,
+    chainId: SONIC_MAINNET,
     walletAddress: "0x414dA6C7c50eADFBD4c67C902c7DAf59F58d32c7",
     txnId: "0x2d3c4eaacc2b0b02af14af93d91ca846b72240e2e82e4bd4b316b5be9f89a75c",
     token: getTokenBySymbol(ARBITRUM, "USDC"),
@@ -114,7 +113,7 @@ export const DEV_FUNDING_HISTORY: FundingHistoryItem[] = [
   },
   {
     id: "10",
-    chainId: sonic.id,
+    chainId: SONIC_MAINNET,
     walletAddress: "0x414dA6C7c50eADFBD4c67C902c7DAf59F58d32c7",
     txnId: "0x2d3c4eaacc2b0b02af14af93d91ca846b72240e2e82e4bd4b316b5be9f89a75c",
     token: getTokenBySymbol(ARBITRUM, "USDC"),
@@ -126,7 +125,7 @@ export const DEV_FUNDING_HISTORY: FundingHistoryItem[] = [
   },
   {
     id: "11",
-    chainId: sonic.id,
+    chainId: SONIC_MAINNET,
     walletAddress: "0x414dA6C7c50eADFBD4c67C902c7DAf59F58d32c7",
     txnId: "0x2d3c4eaacc2b0b02af14af93d91ca846b72240e2e82e4bd4b316b5be9f89a75c",
     token: getTokenBySymbol(ARBITRUM, "USDC"),
@@ -138,7 +137,7 @@ export const DEV_FUNDING_HISTORY: FundingHistoryItem[] = [
   },
   {
     id: "12",
-    chainId: sonic.id,
+    chainId: SONIC_MAINNET,
     walletAddress: "0x414dA6C7c50eADFBD4c67C902c7DAf59F58d32c7",
     txnId: "0x2d3c4eaacc2b0b02af14af93d91ca846b72240e2e82e4bd4b316b5be9f89a75c",
     token: getTokenBySymbol(ARBITRUM, "USDC"),
@@ -150,7 +149,7 @@ export const DEV_FUNDING_HISTORY: FundingHistoryItem[] = [
   },
   {
     id: "13",
-    chainId: sonic.id,
+    chainId: SONIC_MAINNET,
     walletAddress: "0x414dA6C7c50eADFBD4c67C902c7DAf59F58d32c7",
     txnId: "0x2d3c4eaacc2b0b02af14af93d91ca846b72240e2e82e4bd4b316b5be9f89a75c",
     token: getTokenBySymbol(ARBITRUM, "USDC"),

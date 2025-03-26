@@ -6,6 +6,10 @@ export const ARBITRUM = 42161;
 export const BSС_MAINNET = 56;
 export const BSС_TESTNET = 97;
 export const ETH_MAINNET = 1;
+export const BASE_MAINNET = 8453;
+// export const BASE_SEPOLIA = 84532;
+export const SONIC_MAINNET = 146;
+// export const SONIC_BLAZE = 57054;
 
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 export const SUPPORTED_CHAIN_IDS_DEV = [...SUPPORTED_CHAIN_IDS, AVALANCHE_FUJI];

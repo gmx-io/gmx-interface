@@ -6,7 +6,7 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { formatUsd } from "lib/numbers";
 import { BiChevronRight } from "react-icons/bi";
-import { sonic } from "viem/chains";
+import { SONIC_MAINNET } from "sdk/configs/chains";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
 // Dev: left this in case manager wants to use it again
@@ -26,7 +26,7 @@ export const DepositView = () => {
           }}
         >
           <div className="flex cursor-pointer items-center" onClick={() => setIsVisibleOrView("selectAssetToDeposit")}>
-            <TokenIcon symbol="SOL" displaySize={20} importSize={40} chainIdBadge={sonic.id} />
+            <TokenIcon symbol="SOL" displaySize={20} importSize={40} chainIdBadge={SONIC_MAINNET} />
             <div className="ml-4">SOL</div>
             <BiChevronRight />
           </div>

@@ -9,7 +9,7 @@ import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableSc
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { ARBITRUM, AVALANCHE, getChainName, getExplorerUrl } from "config/chains";
+import { ARBITRUM, AVALANCHE, BASE_MAINNET, SONIC_MAINNET, getChainName, getExplorerUrl } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import { CURRENT_PROVIDER_LOCALSTORAGE_KEY, SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY } from "config/localStorage";
@@ -53,7 +53,7 @@ import { TbLoader2, TbProgressAlert } from "react-icons/tb";
 import { useCopyToClipboard } from "react-use";
 import { getToken } from "sdk/configs/tokens";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "sdk/utils/tokens";
-import { base, sonic } from "viem/chains";
+
 import { useDisconnect } from "wagmi";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
@@ -61,15 +61,15 @@ import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/util
 const CHAIN_ID_TO_TX_URL_BUILDER: Record<number, (txId: string) => string> = {
   [ARBITRUM]: (txId: string) => `https://arbiscan.io/tx/${txId}`,
   [AVALANCHE]: (txId: string) => `https://snowtrace.io/tx/${txId}`,
-  [base.id]: (txId: string) => `https://basescan.org/tx/${txId}`,
-  [sonic.id]: (txId: string) => `https://sonicscan.org/tx/${txId}`,
+  [BASE_MAINNET]: (txId: string) => `https://basescan.org/tx/${txId}`,
+  [SONIC_MAINNET]: (txId: string) => `https://sonicscan.org/tx/${txId}`,
 };
 
 const CHAIN_ID_TO_EXPLORER_NAME: Record<number, string> = {
   [ARBITRUM]: "Arbiscan",
   [AVALANCHE]: "Snowtrace",
-  [base.id]: "Basescan",
-  [sonic.id]: "Sonicscan",
+  [BASE_MAINNET]: "Basescan",
+  [SONIC_MAINNET]: "Sonicscan",
 };
 
 const AvailableToTradeAssetsTitle = () => {
@@ -755,8 +755,8 @@ const NETWORKS_FILTER = [
   { id: "all", name: "All Networks" },
   { id: ARBITRUM, name: "Arbitrum" },
   { id: AVALANCHE, name: "Avalanche" },
-  { id: base.id, name: "Base" },
-  { id: sonic.id, name: "Sonic" },
+  { id: BASE_MAINNET, name: "Base" },
+  { id: SONIC_MAINNET, name: "Sonic" },
 ];
 
 const SelectAssetToDepositView = () => {
@@ -847,7 +847,7 @@ const DepositView = () => {
           </div>
         </div>
         <div className="flex items-center gap-8 rounded-4 border border-cold-blue-900 px-14 py-12">
-          <img src={CHAIN_ID_TO_NETWORK_ICON[base.id]} alt="Base" className="size-20" />
+          <img src={CHAIN_ID_TO_NETWORK_ICON[BASE_MAINNET]} alt="Base" className="size-20" />
           <span className="text-body-large text-slate-100">Base</span>
         </div>
       </div>
@@ -993,8 +993,8 @@ function useGmxAccountWithdrawNetworks() {
     () => [
       { id: ARBITRUM, name: "Arbitrum", fee: "0.32 USDC" },
       { id: AVALANCHE, name: "Avalanche", fee: "0.15 USDC" },
-      { id: sonic.id, name: "Sonic", fee: "0.59 USDC" },
-      { id: base.id, name: "Base", fee: "Free" },
+      { id: SONIC_MAINNET, name: "Sonic", fee: "0.59 USDC" },
+      { id: BASE_MAINNET, name: "Base", fee: "Free" },
     ],
     []
   );
@@ -1004,7 +1004,7 @@ function useGmxAccountWithdrawNetworks() {
 
 const WithdrawView = () => {
   const [amount, setAmount] = useState("");
-  const [selectedNetwork, setSelectedNetwork] = useState<number>(base.id);
+  const [selectedNetwork, setSelectedNetwork] = useState<number>(BASE_MAINNET);
   const [selectedTokenAddress, setSelectedTokenAddress] = useState<string | undefined>(undefined);
 
   // Get unique tokens from GMX balances (chainId === 0)
