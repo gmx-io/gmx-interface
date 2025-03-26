@@ -1,17 +1,17 @@
 import { Popover } from "@headlessui/react";
 import { t } from "@lingui/macro";
 import cx from "classnames";
+import { BigNumberish } from "ethers";
 import { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
-import { BigNumberish } from "ethers";
 
 import { USD_DECIMALS } from "config/factors";
-import { getTokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { getUsd } from "domain/tokens";
-import { InfoTokens, Token } from "sdk/types/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 import { LONG, SHORT, SWAP, USDG_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmount } from "lib/numbers";
+import { getTokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
+import { InfoTokens, Token } from "sdk/types/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
 import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";

@@ -1,13 +1,16 @@
-import { getWrappedToken } from "sdk/configs/tokens";
-import { getByKey } from "lib/objects";
 import { useMemo } from "react";
+
+import { getByKey } from "lib/objects";
+import { getWrappedToken } from "sdk/configs/tokens";
+import { getOrderInfo } from "sdk/utils/orders";
+
+import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
+
 import { MarketsInfoData } from "../markets";
 import { TokensData } from "../tokens";
 import { OrderType, OrdersInfoData } from "./types";
 import { useOrders } from "./useOrders";
 import { setOrderInfoTitle } from "./utils";
-import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
-import { getOrderInfo } from "sdk/utils/orders";
 
 export type AggregatedOrdersDataResult = {
   ordersInfoData?: OrdersInfoData;

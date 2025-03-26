@@ -1,6 +1,6 @@
 import fs from "fs";
-import { resolve } from "path";
 import entries from "lodash/entries";
+import { resolve } from "path";
 
 import { MARKETS } from "../../src/configs/markets";
 import { hashMarketConfigKeys } from "../../src/utils/marketKeysAndConfigs";

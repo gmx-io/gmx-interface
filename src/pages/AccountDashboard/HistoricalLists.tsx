@@ -15,6 +15,12 @@ import { useAccountOrders } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
+import {
+  AccountActionsV1,
+  AccountOrdersV1,
+  AccountPositionsV1,
+  usePositionsV1,
+} from "pages/Actions/ActionsV1/ActionsV1";
 
 import { ClaimsHistory } from "components/Synthetics/Claims/ClaimsHistory";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
@@ -22,12 +28,6 @@ import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tabs from "components/Tabs/Tabs";
-import {
-  AccountActionsV1,
-  AccountOrdersV1,
-  AccountPositionsV1,
-  usePositionsV1,
-} from "pages/Actions/ActionsV1/ActionsV1";
 
 enum TabKey {
   Positions = "Positions",

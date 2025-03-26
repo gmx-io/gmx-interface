@@ -1,22 +1,25 @@
 import { t } from "@lingui/macro";
+import { Signer, ethers } from "ethers";
+
 import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { PendingOrderData, SetPendingOrder } from "context/SyntheticsEvents";
-import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
+import { OrderMetricId } from "lib/metrics/types";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import { abis } from "sdk/abis";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
+import { isMarketOrderType } from "sdk/utils/orders";
+
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
+import { prepareOrderTxn } from "./prepareOrderTxn";
 import { simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
-import { isMarketOrderType } from "sdk/utils/orders";
-import { OrderMetricId } from "lib/metrics/types";
-import { prepareOrderTxn } from "./prepareOrderTxn";
-import { validateSignerAddress } from "lib/contracts/transactionErrors";
-import { BlockTimestampData } from "lib/useBlockTimestampRequest";
-import { abis } from "sdk/abis";
+
 const { ZeroAddress } = ethers;
 
 export type SwapOrderParams = {

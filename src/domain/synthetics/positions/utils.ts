@@ -1,4 +1,6 @@
 import { t } from "@lingui/macro";
+import { ethers } from "ethers";
+
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
 import {
@@ -9,9 +11,6 @@ import {
   getPoolUsdWithoutPnl,
 } from "domain/synthetics/markets";
 import { Token } from "domain/tokens";
-import { getIsEquivalentTokens } from "sdk/utils/tokens";
-import { ethers } from "ethers";
-import { bigMath } from "sdk/utils/bigmath";
 import { CHART_PERIODS } from "lib/legacy";
 import {
   applyFactor,
@@ -22,6 +21,9 @@ import {
   PRECISION,
   formatUsdPrice,
 } from "lib/numbers";
+import { bigMath } from "sdk/utils/bigmath";
+import { getIsEquivalentTokens } from "sdk/utils/tokens";
+
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceImpactForPosition } from "../fees";
 import { OrderType } from "../orders/types";
 import { TokenData, convertToUsd } from "../tokens";

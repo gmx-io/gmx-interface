@@ -1,4 +1,5 @@
 import { ClientConfig, MulticallBatchOptions } from "viem";
+
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
 export const BATCH_CONFIGS: Record<

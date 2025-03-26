@@ -5,11 +5,10 @@ import { useState } from "react";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 import { callContract } from "lib/contracts";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
+import { abis } from "sdk/abis";
 
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
-
-import { abis } from "sdk/abis";
 
 export function VesterWithdrawModal(props: {
   isVisible: boolean;

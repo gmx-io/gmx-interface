@@ -1,7 +1,6 @@
 import { t, Trans } from "@lingui/macro";
-import Button from "components/Button/Button";
-import Modal from "components/Modal/Modal";
-import { Textarea } from "components/Textarea/Textarea";
+import { useCallback, useEffect, useMemo, useState } from "react";
+
 import {
   selectAccountStats,
   selectLastMonthAccountStats,
@@ -12,7 +11,10 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { COIN_REGEXP } from "domain/synthetics/userFeedback";
 import { sendMissedCoinsFeedback } from "domain/synthetics/userFeedback/requests";
 import { helperToast } from "lib/helperToast";
-import { useCallback, useEffect, useMemo, useState } from "react";
+
+import Button from "components/Button/Button";
+import Modal from "components/Modal/Modal";
+import { Textarea } from "components/Textarea/Textarea";
 
 export function MissedCoinsModal() {
   const missedCoinsModalPlace = useSelector(selectMissedCoinsModalPlace);

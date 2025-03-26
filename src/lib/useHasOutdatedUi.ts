@@ -1,7 +1,6 @@
 import useSWR from "swr";
 
 import { UI_VERSION } from "config/env";
-
 import { isDevelopment } from "config/env";
 import { PRODUCTION_HOST } from "config/links";
 import { REQUIRED_UI_VERSION_KEY } from "config/localStorage";

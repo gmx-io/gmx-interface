@@ -1,9 +1,10 @@
-import { useSyntheticsStateSelector as useSelector } from "../SyntheticsStateContextProvider";
 import {
+  selectDebugSwapMarketsConfig,
   selectExecutionFeeBufferBps,
   selectOracleKeeperInstancesConfig,
   selectSavedAcceptablePriceImpactBuffer,
   selectSavedAllowedSlippage,
+  selectSetDebugSwapMarketsConfig,
   selectSetExecutionFeeBufferBps,
   selectSetOracleKeeperInstancesConfig,
   selectSetSavedAcceptablePriceImpactBuffer,
@@ -12,6 +13,7 @@ import {
   selectShouldUseExecutionFeeBuffer,
   selectShowDebugValues,
 } from "../selectors/settingsSelectors";
+import { useSyntheticsStateSelector as useSelector } from "../SyntheticsStateContextProvider";
 
 export const useShowDebugValues = () => useSelector(selectShowDebugValues);
 export const useSetShowDebugValues = () => useSelector(selectSetShowDebugValues);
@@ -24,3 +26,5 @@ export const useSetSavedAcceptablePriceImpactBuffer = () => useSelector(selectSe
 export const useShouldUseExecutionFeeBuffer = () => useSelector(selectShouldUseExecutionFeeBuffer);
 export const useOracleKeeperInstancesConfig = () => useSelector(selectOracleKeeperInstancesConfig);
 export const useSetOracleKeeperInstancesConfig = () => useSelector(selectSetOracleKeeperInstancesConfig);
+export const useDebugSwapMarketsConfig = () => useSelector(selectDebugSwapMarketsConfig);
+export const useSetDebugSwapMarketsConfig = () => useSelector(selectSetDebugSwapMarketsConfig);

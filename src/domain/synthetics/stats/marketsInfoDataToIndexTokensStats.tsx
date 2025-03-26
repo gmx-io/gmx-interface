@@ -9,8 +9,8 @@ import {
   getUsedLiquidity,
 } from "domain/synthetics/markets";
 import { TokenData, getMidPrice } from "domain/synthetics/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 import { CHART_PERIODS } from "lib/legacy";
+import { bigMath } from "sdk/utils/bigmath";
 export type MarketStat = {
   marketInfo: MarketInfo;
   poolValueUsd: bigint;

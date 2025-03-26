@@ -23,18 +23,14 @@ export default function TradeBoxLongShortInfoIcon({ isLong, isMobile }: { isLong
       </li>
       <li className={LI_CLASS_NAME}>
         <Trans>Long TP/SL: Decrease a long position when the trigger price is reached.</Trans>{" "}
-        <ExternalLink
-          href="https://docs.gmx.io/docs/trading/v2/#take-profit-and-stop-loss-orders"
-        >
+        <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#take-profit-and-stop-loss-orders">
           <Trans>Read more</Trans>
         </ExternalLink>
         .
       </li>
       <li className={LI_CLASS_NAME}>
         <Trans>Long Stop Market: Increase a long position when the price is above the trigger price.</Trans>{" "}
-        <ExternalLink
-          href="https://docs.gmx.io/docs/trading/v2/#stop-market-orders"
-        >
+        <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#stop-market-orders">
           <Trans>Read more</Trans>
         </ExternalLink>
         .
@@ -56,18 +52,14 @@ export default function TradeBoxLongShortInfoIcon({ isLong, isMobile }: { isLong
       </li>
       <li className={LI_CLASS_NAME}>
         <Trans>Short TP/SL: Decrease a short position when the trigger price is reached.</Trans>{" "}
-        <ExternalLink
-          href="https://docs.gmx.io/docs/trading/v2/#take-profit-and-stop-loss-orders"
-        >
+        <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#take-profit-and-stop-loss-orders">
           <Trans>Read more</Trans>
         </ExternalLink>
         .
       </li>
       <li className={LI_CLASS_NAME}>
         <Trans>Short Stop Market: Increase a short position when the price is below the trigger price.</Trans>{" "}
-        <ExternalLink
-          href="https://docs.gmx.io/docs/trading/v2/#stop-market-orders"
-        >
+        <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#stop-market-orders">
           <Trans>Read more</Trans>
         </ExternalLink>
         .

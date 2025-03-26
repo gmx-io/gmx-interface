@@ -1,3 +1,5 @@
+import { useCallback, useMemo } from "react";
+
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectTradeboxExecutionFee } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -14,7 +16,6 @@ import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEnt
 import { convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
-import { useCallback, useMemo } from "react";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 export const useTPSLSummaryExecutionFee = () => {

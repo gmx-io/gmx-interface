@@ -8,7 +8,6 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ClaimCollateralAction, ClaimType } from "domain/synthetics/claimHistory";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -16,12 +15,13 @@ import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import NewLink20ReactComponent from "img/ic_new_link_20.svg?react";
+
+import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
 import {
   formatTradeActionTimestamp,
   formatTradeActionTimestampISO,
 } from "../../TradeHistory/TradeHistoryRow/utils/shared";
-
-import NewLink20ReactComponent from "img/ic_new_link_20.svg?react";
 
 export type ClaimCollateralHistoryRowProps = {
   claimAction: ClaimCollateralAction;

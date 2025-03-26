@@ -1,10 +1,11 @@
+import { Abi, Address, encodeFunctionData } from "viem";
+
 import { abis } from "abis";
 import { getContract } from "configs/contracts";
-
-import type { GmxSdk } from "../../../index";
 import { Token } from "types/tokens";
 import { convertToContractPrice } from "utils/tokens";
-import { Abi, Address, encodeFunctionData } from "viem";
+
+import type { GmxSdk } from "../../../index";
 
 export type UpdateOrderParams = {
   orderKey: string;

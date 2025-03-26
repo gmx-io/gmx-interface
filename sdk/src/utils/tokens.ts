@@ -1,8 +1,9 @@
-import { Token, TokenPrices, TokensData, TokensRatio, TokensRatioAndSlippage } from "types/tokens";
-import { adjustForDecimals, expandDecimals, PRECISION } from "./numbers";
-import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS } from "configs/factors";
+import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { Token, TokenPrices, TokensData, TokensRatio, TokensRatioAndSlippage } from "types/tokens";
+
 import { bigMath } from "./bigmath";
+import { adjustForDecimals, expandDecimals, PRECISION } from "./numbers";
 
 export function parseContractPrice(price: bigint, tokenDecimals: number) {
   return price * expandDecimals(1, tokenDecimals);

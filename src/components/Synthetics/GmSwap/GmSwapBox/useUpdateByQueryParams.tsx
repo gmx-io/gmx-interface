@@ -3,17 +3,14 @@ import values from "lodash/values";
 import { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
-import { convertTokenAddress, getTokenBySymbolSafe } from "sdk/configs/tokens";
-
 import { selectChainId, selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { getGlvOrMarketAddress } from "domain/synthetics/markets/utils";
-
 import { getMatchingValueFromObject } from "lib/objects";
 import useSearchParams from "lib/useSearchParams";
+import { convertTokenAddress, getTokenBySymbolSafe } from "sdk/configs/tokens";
 
 import { Mode, Operation } from "./types";
 

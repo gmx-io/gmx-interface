@@ -2,14 +2,15 @@ import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } f
 import { MarketInfo } from "types/markets";
 import { OrderType } from "types/orders";
 import { TokenPrices } from "types/tokens";
-import { getPriceImpactByAcceptablePrice } from "./fees";
+import { TriggerThresholdType } from "types/trade";
+
 import { bigMath } from "./bigmath";
+import { getPriceImpactByAcceptablePrice } from "./fees";
 import { getCappedPositionImpactUsd } from "./fees";
-import { convertToTokenAmount } from "./tokens";
 import { expandDecimals, getBasisPoints } from "./numbers";
 import { roundUpMagnitudeDivision } from "./numbers";
 import { applyFactor } from "./numbers";
-import { TriggerThresholdType } from "types/trade";
+import { convertToTokenAmount } from "./tokens";
 
 export function getMarkPrice(p: { prices: TokenPrices; isIncrease: boolean; isLong: boolean }) {
   const { prices, isIncrease, isLong } = p;

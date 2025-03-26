@@ -1,9 +1,10 @@
 import { gql, useQuery as useGqlQuery } from "@apollo/client";
+import { useMemo } from "react";
+import type { Address } from "viem";
+
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { EMPTY_ARRAY } from "lib/objects";
 import { getSubsquidGraphClient } from "lib/subgraph";
-import { useMemo } from "react";
-import type { Address } from "viem";
 
 export type PnlSummaryPoint = {
   bucketLabel: string;

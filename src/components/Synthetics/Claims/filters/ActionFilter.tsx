@@ -3,8 +3,8 @@ import { msg, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { useMemo } from "react";
 
-import { ClaimType } from "domain/synthetics/claimHistory/types";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { ClaimType } from "domain/synthetics/claimHistory/types";
 
 import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/TableOptionsFilter";
 

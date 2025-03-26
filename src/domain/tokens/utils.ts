@@ -1,6 +1,8 @@
-import { getExplorerUrl } from "config/chains";
-import { getVisibleV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { ethers } from "ethers";
+
+import { getExplorerUrl } from "config/chains";
+import { USD_DECIMALS } from "config/factors";
+import { convertToTokenAmount } from "domain/synthetics/tokens/utils";
 import {
   DUST_BNB,
   MARKET,
@@ -11,10 +13,9 @@ import {
   adjustForDecimals,
   getFeeBasisPoints,
 } from "lib/legacy";
-import { USD_DECIMALS } from "config/factors";
 import { expandDecimals, PRECISION } from "lib/numbers";
+import { getVisibleV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { InfoTokens, Token, TokenInfo, TokenPrices } from "sdk/types/tokens";
-import { convertToTokenAmount } from "domain/synthetics/tokens/utils";
 
 export * from "sdk/utils/tokens";
 

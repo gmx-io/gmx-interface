@@ -10,8 +10,8 @@ import {
 } from "domain/synthetics/fees";
 import { estimateShiftOraclePriceCount } from "domain/synthetics/fees";
 import type { TokensData } from "domain/synthetics/tokens/types";
-import type { GmSwapFees } from "sdk/types/trade";
 import type { ShiftAmounts } from "domain/synthetics/trade/utils/shift";
+import type { GmSwapFees } from "sdk/types/trade";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 export function useShiftFees({

@@ -1,13 +1,16 @@
-import { useEffect, useRef, useState } from "react";
 import { Trans, t } from "@lingui/macro";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import { getCodeError, getReferralCodeTakenStatus, getSampleReferrarStat } from "./referralsHelper";
+import { useEffect, useRef, useState } from "react";
+
 import { ARBITRUM } from "config/chains";
 import { helperToast } from "lib/helperToast";
 import { useDebounce } from "lib/useDebounce";
-import Button from "components/Button/Button";
 import useWallet from "lib/wallets/useWallet";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+
+import Button from "components/Button/Button";
+
+import { getCodeError, getReferralCodeTakenStatus, getSampleReferrarStat } from "./referralsHelper";
 
 function AddAffiliateCode({ handleCreateReferralCode, active, setRecentlyAddedCodes, recentlyAddedCodes }) {
   const { openConnectModal } = useConnectModal();

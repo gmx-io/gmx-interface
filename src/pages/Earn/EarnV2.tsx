@@ -6,6 +6,7 @@ import { zeroAddress } from "viem";
 import { AVALANCHE, getChainName } from "config/chains";
 import { getContract } from "config/contracts";
 import { getIncentivesV2Url } from "config/links";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
@@ -17,24 +18,23 @@ import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 
-import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
+import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import PageTitle from "components/PageTitle/PageTitle";
 import { GlvList } from "components/Synthetics/GmList/GlvList";
 import { GmList } from "components/Synthetics/GmList/GmList";
 import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
+
 import { EscrowedGmxCard } from "./EscrowedGmxCard";
 import { GlpCard } from "./GlpCard";
 import { GmxAndVotingPowerCard } from "./GmxAndVotingPowerCard";
 import { StakeModal } from "./StakeModal";
 import { TotalRewardsCard } from "./TotalRewardsCard";
 import { UnstakeModal } from "./UnstakeModal";
-import { Vesting } from "./Vesting";
-
 import { useProcessedData } from "./useProcessedData";
+import { Vesting } from "./Vesting";
 
 import "./EarnV2.css";
 

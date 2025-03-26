@@ -10,6 +10,7 @@ import { OrderType } from "domain/synthetics/orders/types";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
 import { TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
 import Button from "components/Button/Button";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
@@ -19,16 +20,14 @@ import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table"
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
-import { DateRangeSelect } from "../DateRangeSelect/DateRangeSelect";
-import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
-import { TradeHistoryRow } from "./TradeHistoryRow/TradeHistoryRow";
-import { ActionFilter } from "./filters/ActionFilter";
-
-import { useDownloadAsCsv } from "./useDownloadAsCsv";
-
 import downloadIcon from "img/ic_download_simple.svg";
 import PnlAnalysisIcon from "img/ic_pnl_analysis_20.svg?react";
+
+import { DateRangeSelect } from "../DateRangeSelect/DateRangeSelect";
+import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
+import { ActionFilter } from "./filters/ActionFilter";
+import { TradeHistoryRow } from "./TradeHistoryRow/TradeHistoryRow";
+import { useDownloadAsCsv } from "./useDownloadAsCsv";
 
 import "./TradeHistorySynthetics.scss";
 

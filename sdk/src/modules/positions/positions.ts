@@ -9,14 +9,19 @@ import {
   uiFeeFactorKey,
 } from "configs/dataStore";
 import { ContractMarketPrices, MarketsData, MarketsInfoData } from "types/markets";
+import { OrderInfo } from "types/orders";
 import { Position, PositionsData, PositionsInfoData } from "types/positions";
+import { UserReferralInfo } from "types/referrals";
 import { TokensData } from "types/tokens";
+import { getPositionFee, getPriceImpactForPosition } from "utils/fees";
 import {
   getContractMarketPrices,
   getMarketIndexName,
   getMarketPoolName,
   getMaxAllowedLeverageByMinCollateralFactor,
 } from "utils/markets";
+import type { MulticallRequestConfig } from "utils/multicall";
+import { basisPointsToFloat, getBasisPoints } from "utils/numbers";
 import { getByKey } from "utils/objects";
 import {
   getEntryPrice,
@@ -26,18 +31,12 @@ import {
   getPositionNetValue,
   getPositionPnlUsd,
 } from "utils/positions";
-
-import { Module } from "../base";
-
-import { UserReferralInfo } from "types/referrals";
-import { getPositionFee, getPriceImpactForPosition } from "utils/fees";
-import { basisPointsToFloat, getBasisPoints } from "utils/numbers";
 import { getPositionPendingFeesUsd } from "utils/positions";
 import { getMarkPrice } from "utils/prices";
 import { decodeReferralCode } from "utils/referrals";
 import { convertToTokenAmount, convertToUsd } from "utils/tokens";
-import { OrderInfo } from "types/orders";
-import type { MulticallRequestConfig } from "utils/multicall";
+
+import { Module } from "../base";
 
 type PositionsResult = {
   positionsData?: PositionsData;

@@ -15,7 +15,6 @@ import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
-import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { AmountWithUsdBalance, AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
@@ -25,6 +24,8 @@ import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
+
+import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
 
 export function GmxAndVotingPowerCard({
   processedData,

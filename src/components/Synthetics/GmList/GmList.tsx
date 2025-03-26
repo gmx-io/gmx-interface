@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
-import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
 import { getIcons } from "config/icons";
 import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
@@ -13,12 +12,14 @@ import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
+import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { ButtonRowScrollFadeContainer, TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import { ApyTooltipContent } from "./ApyTooltipContent";
 import { GmListItem } from "./GmListItem";
 import { GmTokensTotalBalanceInfo } from "./GmTokensTotalBalanceInfo";

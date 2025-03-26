@@ -16,7 +16,6 @@ import {
 } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-
 import type { GasLimitsConfig } from "sdk/types/fees";
 
 export function useGasLimits(chainId: number): GasLimitsConfig | undefined {

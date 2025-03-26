@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import {
   selectTradeboxMarkPrice,
@@ -8,8 +10,6 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isTriggerDecreaseOrderType } from "domain/synthetics/orders";
 import { TriggerThresholdType } from "domain/synthetics/trade";
 import { EMPTY_ARRAY } from "lib/objects";
-
-import { useMemo } from "react";
 
 export function useDecreaseOrdersThatWillBeExecuted() {
   const markPrice = useSelector(selectTradeboxMarkPrice);

@@ -3,13 +3,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
 import { MAX_FEEDBACK_LENGTH } from "config/ui";
+import { useAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats";
+import { formatAnswersByQuestionType, QuestionType } from "domain/synthetics/userFeedback";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { formatAmountForMetrics } from "lib/metrics";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import useWallet from "lib/wallets/useWallet";
-import { useAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats";
-import { formatAnswersByQuestionType, QuestionType } from "domain/synthetics/userFeedback";
 
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";

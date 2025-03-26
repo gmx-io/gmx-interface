@@ -1,7 +1,7 @@
-import cx from "classnames";
-import { t } from "@lingui/macro";
-import { Menu } from "@headlessui/react";
 import { FloatingPortal, autoUpdate, flip, shift, useFloating } from "@floating-ui/react";
+import { Menu } from "@headlessui/react";
+import { t } from "@lingui/macro";
+import cx from "classnames";
 import { BiChevronDown } from "react-icons/bi";
 
 import { NestedOption } from "./types";

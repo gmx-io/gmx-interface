@@ -5,8 +5,18 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useSt
 import useSWR from "swr";
 
 import { getConstant, getExplorerUrl } from "config/chains";
+import { getContract } from "config/contracts";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { getIsV1Supported } from "config/features";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { approvePlugin, cancelMultipleOrders, useExecutionFee } from "domain/legacy";
+import { useInfoTokens } from "domain/tokens";
+import { getTokenInfo } from "domain/tokens/utils";
+import useV1TradeParamsProcessor from "domain/trade/useV1TradeParamsProcessor";
+import { useChainId } from "lib/chains";
+import { contractFetcher } from "lib/contracts";
+import { helperToast } from "lib/helperToast";
 import {
   LONG,
   MARGIN_FEE_BASIS_POINTS,
@@ -20,8 +30,12 @@ import {
   getPositionKey,
   useAccountOrders,
 } from "lib/legacy";
-
-import { getContract } from "config/contracts";
+import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
+import { formatAmount } from "lib/numbers";
+import { getLeverage, getLeverageStr } from "lib/positions/getLeverage";
+import useWallet from "lib/wallets/useWallet";
+import { getPriceDecimals, getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import ExchangeBanner from "components/Exchange/ExchangeBanner";
@@ -31,26 +45,11 @@ import OrdersList from "components/Exchange/OrdersList";
 import PositionsList from "components/Exchange/PositionsList";
 import SwapBox from "components/Exchange/SwapBox";
 import TradeHistory from "components/Exchange/TradeHistory";
+import UsefulLinks from "components/Exchange/UsefulLinks";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
 import Tabs from "components/Tabs/Tabs";
 
-import UsefulLinks from "components/Exchange/UsefulLinks";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getIsV1Supported } from "config/features";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useInfoTokens } from "domain/tokens";
-import { getTokenInfo } from "domain/tokens/utils";
-import useV1TradeParamsProcessor from "domain/trade/useV1TradeParamsProcessor";
-import { useChainId } from "lib/chains";
-import { contractFetcher } from "lib/contracts";
-import { helperToast } from "lib/helperToast";
-import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmount } from "lib/numbers";
-import { getLeverage, getLeverageStr } from "lib/positions/getLeverage";
-import useWallet from "lib/wallets/useWallet";
-import { getPriceDecimals, getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 import "./Exchange.css";
 
 const { ZeroAddress } = ethers;

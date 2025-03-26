@@ -3,12 +3,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BsArrowRight } from "react-icons/bs";
 import { useKey } from "react-use";
 
-import { cancelDecreaseOrder, handleCancelOrder } from "domain/legacy";
-import { getTokenInfo, getUsd } from "domain/tokens";
-
 import { getConstant } from "config/chains";
-import { getContract } from "config/contracts";
 import { HIGH_SPREAD_THRESHOLD } from "config/constants";
+import { getContract } from "config/contracts";
 import {
   BASIS_POINTS_DIVISOR_BIGINT,
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
@@ -17,8 +14,9 @@ import {
   USD_DECIMALS,
 } from "config/factors";
 import { SLIPPAGE_BPS_KEY } from "config/localStorage";
-import { getPriceDecimals, getToken, getWrappedToken } from "sdk/configs/tokens";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
+import { cancelDecreaseOrder, handleCancelOrder } from "domain/legacy";
+import { getTokenInfo, getUsd } from "domain/tokens";
 import {
   DECREASE,
   INCREASE,
@@ -31,20 +29,22 @@ import {
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { expandDecimals, formatAmount, formatPercentage, PRECISION } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
+import { getPriceDecimals, getToken, getWrappedToken } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
 import Button from "components/Button/Button";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import ExchangeInfoRow from "./ExchangeInfoRow";
+import FeesTooltip from "./FeesTooltip";
 import Checkbox from "../Checkbox/Checkbox";
 import Modal from "../Modal/Modal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import Tooltip from "../Tooltip/Tooltip";
-import ExchangeInfoRow from "./ExchangeInfoRow";
-import FeesTooltip from "./FeesTooltip";
 
 import "./ConfirmationBox.css";
-import { bigMath } from "sdk/utils/bigmath";
 
 function getSwapSpreadInfo(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress) {
   if (fromTokenInfo?.spread && toTokenInfo?.spread) {

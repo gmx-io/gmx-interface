@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { DEFAULT_CHAIN_ID, isSupportedChain } from "config/chains";
+import { isDevelopment } from "config/env";
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
 import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
-import { isDevelopment } from "config/env";
 
 /**
  * This returns default chainId if chainId is not supported or not found

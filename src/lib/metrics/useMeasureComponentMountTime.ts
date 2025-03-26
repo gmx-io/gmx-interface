@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+
 import { getRequestId, LoadingSuccessEvent, MeasureMetricType, metrics } from ".";
 
 const measurementByMetricType: {

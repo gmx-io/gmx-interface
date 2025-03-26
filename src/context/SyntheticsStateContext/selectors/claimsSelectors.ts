@@ -1,8 +1,10 @@
+import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { getTotalAccruedFundingUsd, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
+
+import { calcTotalRebateUsd } from "components/Synthetics/Claims/utils";
+
 import { createSelector } from "../utils";
 import { selectMarketsInfoData, selectPositionsInfoData, selectTokensData } from "./globalSelectors";
-import { calcTotalRebateUsd } from "components/Synthetics/Claims/utils";
-import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 
 export const selectClaimablePositionPriceImpactFees = (s: SyntheticsState) => s.claims.claimablePositionPriceImpactFees;

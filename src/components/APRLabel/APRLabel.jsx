@@ -1,6 +1,11 @@
 // @ts-check
 import useSWR from "swr";
 
+import { getServerUrl } from "config/backend";
+import { getContract } from "config/contracts";
+import { useGmxPrice } from "domain/legacy";
+import useVestingData from "domain/vesting/useVestingData";
+import { contractFetcher } from "lib/contracts";
 import {
   PLACEHOLDER_ACCOUNT,
   getBalanceAndSupplyData,
@@ -8,13 +13,6 @@ import {
   getProcessedData,
   getStakingData,
 } from "lib/legacy";
-
-import { useGmxPrice } from "domain/legacy";
-
-import { getServerUrl } from "config/backend";
-import { getContract } from "config/contracts";
-import useVestingData from "domain/vesting/useVestingData";
-import { contractFetcher } from "lib/contracts";
 import { formatKeyAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 

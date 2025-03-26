@@ -1,11 +1,13 @@
-import Footer from "components/Footer/Footer";
 import { Trans } from "@lingui/macro";
 import { useEffect, useState } from "react";
-import { sleep } from "lib/sleep";
+
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
-import { switchNetwork } from "lib/wallets";
 import { isDevelopment } from "config/env";
+import { sleep } from "lib/sleep";
+import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
+
+import Footer from "components/Footer/Footer";
 
 export function SyntheticsFallbackPage() {
   const { active } = useWallet();

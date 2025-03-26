@@ -1,9 +1,12 @@
 import "./EventToast.css";
-import Icon from "./AnnouncementIcon";
-import { MdOutlineClose } from "react-icons/md";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Toast } from "react-hot-toast";
+import { MdOutlineClose } from "react-icons/md";
+
 import { EventData } from "config/events";
+
+import ExternalLink from "components/ExternalLink/ExternalLink";
+
+import Icon from "./AnnouncementIcon";
 
 export default function EventToast({
   event,

@@ -1,15 +1,15 @@
 import uniqueId from "lodash/uniqueId";
 
-import { PRODUCTION_PREVIEW_KEY } from "config/localStorage";
-import { sleep } from "lib/sleep";
-
 import { getAbFlags } from "config/ab";
+import { PRODUCTION_PREVIEW_KEY } from "config/localStorage";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { MetricEventParams, MulticallTimeoutEvent } from "lib/metrics";
 import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 import { getCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
-import { MAX_TIMEOUT, MulticallProviderUrls } from "./Multicall";
+import { sleep } from "lib/sleep";
+
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
+import { MAX_TIMEOUT, MulticallProviderUrls } from "./Multicall";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
 const executorWorker: Worker = new Worker(new URL("./multicall.worker", import.meta.url), { type: "module" });

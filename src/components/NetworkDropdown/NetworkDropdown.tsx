@@ -4,24 +4,25 @@ import { useLingui } from "@lingui/react";
 import cx from "classnames";
 import noop from "lodash/noop";
 import { useCallback, useState } from "react";
+import { BiChevronDown } from "react-icons/bi";
 
 import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";
+import { useTradePageVersion } from "lib/useTradePageVersion";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
 import type { ModalProps } from "components/Modal/Modal";
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
-import ModalWithPortal from "../Modal/ModalWithPortal";
-import LanguageModalContent from "./LanguageModalContent";
 
 import language24Icon from "img/ic_language24.svg";
 import SettingsIcon16 from "img/ic_settings_16.svg?react";
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
 
+import LanguageModalContent from "./LanguageModalContent";
+import ModalWithPortal from "../Modal/ModalWithPortal";
+
 import "./NetworkDropdown.css";
-import { BiChevronDown } from "react-icons/bi";
-import { useTradePageVersion } from "lib/useTradePageVersion";
 
 const LANGUAGE_MODAL_KEY = "LANGUAGE";
 const NETWORK_MODAL_KEY = "NETWORK";

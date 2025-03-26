@@ -2,7 +2,6 @@ import { t } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo } from "react";
 
-import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import { selectChainId, selectUserReferralInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxFees,
@@ -15,6 +14,8 @@ import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats
 import { PRECISION, formatPercentage } from "lib/numbers";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "sdk/configs/factors";
 import { bigMath } from "sdk/utils/bigmath";
+
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
 export function PriceImpactFeesRow() {
   const chainId = useSelector(selectChainId);

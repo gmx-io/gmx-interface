@@ -1,10 +1,12 @@
 import { Signer } from "ethers";
+
+import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 import { callContract } from "lib/contracts";
+import { BN_ZERO } from "lib/numbers";
+
 import { SUBACCOUNT_ORDER_ACTION } from "./constants";
 import { getSubaccountRouterContract } from "./getSubaccountContract";
 import { SubaccountParams } from "./types";
-import { BN_ZERO } from "lib/numbers";
-import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 
 export async function initSubaccount(
   chainId: number,

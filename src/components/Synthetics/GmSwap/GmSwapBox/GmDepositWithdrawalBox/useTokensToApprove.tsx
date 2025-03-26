@@ -3,7 +3,6 @@ import { useMemo } from "react";
 
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-
 import { GlvInfo } from "domain/synthetics/markets";
 import { getNeedTokenApprove, TokenData, useTokensAllowanceData } from "domain/synthetics/tokens";
 

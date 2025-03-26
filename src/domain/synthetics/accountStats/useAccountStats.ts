@@ -1,7 +1,8 @@
 import { gql } from "@apollo/client";
-import { getSubsquidGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
+
+import { getSubsquidGraphClient } from "lib/subgraph";
 
 export type AccountStats = {
   closedCount: number;

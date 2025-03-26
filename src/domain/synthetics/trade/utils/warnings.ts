@@ -1,7 +1,8 @@
+import { HIGH_EXTERNAL_SWAP_FEES_BPS } from "config/externalSwaps";
 import { HIGH_COLLATERAL_IMPACT_BPS, HIGH_SWAP_IMPACT_BPS, HIGH_POSITION_IMPACT_BPS } from "config/factors";
 import { bigMath } from "sdk/utils/bigmath";
+
 import type { FeeItem } from "../../fees";
-import { HIGH_EXTERNAL_SWAP_FEES_BPS } from "config/externalSwaps";
 
 export function getIsHighCollateralImpact(collateralImpact?: FeeItem) {
   return Boolean(

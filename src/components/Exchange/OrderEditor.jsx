@@ -1,6 +1,13 @@
+import { t, Trans } from "@lingui/macro";
 import React, { useState, useMemo } from "react";
 import { BsArrowRight } from "react-icons/bs";
 
+import { getContract } from "config/contracts";
+import { USD_DECIMALS } from "config/factors";
+import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
+import { updateSwapOrder, updateIncreaseOrder, updateDecreaseOrder } from "domain/legacy";
+import { getTokenInfo } from "domain/tokens/utils";
+import { useChainId } from "lib/chains";
 import {
   SWAP,
   DECREASE,
@@ -11,22 +18,17 @@ import {
   getExchangeRateDisplay,
   calculatePositionDelta,
 } from "lib/legacy";
-import { USD_DECIMALS } from "config/factors";
-import { updateSwapOrder, updateIncreaseOrder, updateDecreaseOrder } from "domain/legacy";
-import Modal from "../Modal/Modal";
-import ExchangeInfoRow from "./ExchangeInfoRow";
-import { getContract } from "config/contracts";
-import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
-import { getTokenInfo } from "domain/tokens/utils";
 import { formatAmount, formatAmountFree, parseValue, PRECISION } from "lib/numbers";
-import { useChainId } from "lib/chains";
-import { t, Trans } from "@lingui/macro";
-import Button from "components/Button/Button";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getPriceDecimals, getToken } from "sdk/configs/tokens";
-import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { bigMath } from "sdk/utils/bigmath";
+
+import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
+
+import ExchangeInfoRow from "./ExchangeInfoRow";
+import Modal from "../Modal/Modal";
 
 export default function OrderEditor(props) {
   const {

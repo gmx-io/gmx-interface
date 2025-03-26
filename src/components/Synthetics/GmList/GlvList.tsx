@@ -10,16 +10,17 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
-import { sortGmTokensDefault } from "./sortGmTokensDefault";
 
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import { TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import { ApyTooltipContent } from "./ApyTooltipContent";
 import type { Props } from "./GmList";
 import { GmListItem } from "./GmListItem";
 import { GmTokensTotalBalanceInfo } from "./GmTokensTotalBalanceInfo";
+import { sortGmTokensDefault } from "./sortGmTokensDefault";
 
 export function GlvList({
   marketsTokensApyData,

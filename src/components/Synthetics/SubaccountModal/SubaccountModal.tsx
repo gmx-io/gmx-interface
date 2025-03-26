@@ -1,15 +1,10 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
-import Button from "components/Button/Button";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import Modal from "components/Modal/Modal";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
-import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
+import { ChangeEvent, ReactNode, memo, useCallback, useEffect, useMemo, useState, forwardRef, useRef } from "react";
+import { useCopyToClipboard, usePrevious } from "react-use";
+
 import { getContract } from "config/contracts";
-import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import {
   useIsSubaccountActive,
   useSubaccount,
@@ -37,23 +32,33 @@ import {
   useTokensDataRequest,
   getTokenData,
 } from "domain/synthetics/tokens";
-import copyIcon from "img/ic_copy_20.svg";
-import externalLinkIcon from "img/ic_new_link_20.svg";
+import { convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { getAccountUrl } from "lib/legacy";
+import { formatUsd, expandDecimals, formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
-import { formatUsd, expandDecimals, formatTokenAmount } from "lib/numbers";
-import { convertToUsd } from "domain/synthetics/tokens";
-import { ChangeEvent, ReactNode, memo, useCallback, useEffect, useMemo, useState, forwardRef, useRef } from "react";
-import { useCopyToClipboard, usePrevious } from "react-use";
-import { SubaccountNotification } from "../StatusNotification/SubaccountNotification";
-import "./SubaccountModal.scss";
+import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
+
+import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
+import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import Modal from "components/Modal/Modal";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
+
+import copyIcon from "img/ic_copy_20.svg";
+import externalLinkIcon from "img/ic_new_link_20.svg";
+
 import { SubaccountStatus } from "./SubaccountStatus";
 import { getApproxSubaccountActionsCountByBalance, getButtonState, getDefaultValues } from "./utils";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { SubaccountNotification } from "../StatusNotification/SubaccountNotification";
+
+import "./SubaccountModal.scss";
 
 export type FormState = "empty" | "inactive" | "activated";
 
