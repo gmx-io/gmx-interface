@@ -25,7 +25,8 @@ export function useTokenBalances(
     address: string;
     isSynthetic?: boolean;
   }[],
-  refreshInterval?: number
+  refreshInterval?: number,
+  enabled = true
 ): BalancesDataResult {
   const { resetTokensBalancesUpdates } = useTokensBalancesUpdates();
 
@@ -34,7 +35,7 @@ export function useTokenBalances(
   const account = overrideAccount ?? currentAccount;
 
   const { data, error } = useMulticall(chainId, "useTokenBalances", {
-    key: account ? [account, ...(overrideTokenList || []).map((t) => t.address)] : null,
+    key: account && enabled ? [account, ...(overrideTokenList || []).map((t) => t.address)] : null,
 
     refreshInterval,
 

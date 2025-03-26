@@ -6,7 +6,7 @@ import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
-import { useGmxAccountModalOpen } from "context/GmxAccountContext/GmxAccountContext";
+import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { formatUsd } from "lib/numbers";
 import { BiChevronRight } from "react-icons/bi";
 import { sonic } from "viem/chains";

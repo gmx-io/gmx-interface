@@ -5,7 +5,7 @@ import { useENS } from "lib/legacy";
 import { shortenAddressOrEns } from "lib/wallets";
 import { Avatar } from "components/Avatar/Avatar";
 import "./AddressDropdown.scss";
-import { useGmxAccountModalOpen } from "context/GmxAccountContext/GmxAccountContext";
+import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 
 type Props = {
   account: string;
