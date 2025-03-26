@@ -95,7 +95,7 @@ describe("mockRouting", () => {
     expect(topPath).toEqual(["SPOT-USDC-DAI"]);
   });
 
-  it.only("selects SPOT [DAI-USDC] path for USDC->DAI swap when pool has excess of DAI", () => {
+  it("selects SPOT [DAI-USDC] path for USDC->DAI swap when pool has excess of DAI", () => {
     const allPoolsBalanced = Object.fromEntries(
       marketKeys.map((marketKey) => [
         marketKey,
