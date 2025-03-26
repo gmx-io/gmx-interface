@@ -24,7 +24,6 @@ import { ExternalSwapQuote } from "sdk/types/trade";
 import { extractError } from "sdk/utils/contracts";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
 
-
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
 import { isGlvEnabled } from "../markets/glv";
@@ -202,7 +201,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
         <div>
           {errorTitle}
           {p.additionalErrorContent}
-          <br />
+          <br />n
           <br />
           <ToastifyDebug
             error={`${txnError?.info?.error?.message ?? parsedError?.name ?? txnError?.message} ${JSON.stringify(parsedArgs, null, 2)}`}

@@ -369,10 +369,6 @@ export function OrderEditor(p: Props) {
       ? triggerRatio?.ratio ?? triggerPrice ?? positionOrder.triggerPrice
       : triggerPrice ?? positionOrder.triggerPrice;
 
-    if (market) {
-      sendEditOrderEvent({ order: p.order, source: p.source, marketInfo: market });
-    }
-
     const txnPromise = updateOrderTxn(
       chainId,
       signer,
@@ -396,11 +392,19 @@ export function OrderEditor(p: Props) {
     if (subaccount) {
       p.onClose();
       setIsSubmitting(false);
+      if (market) {
+        sendEditOrderEvent({ order: p.order, source: p.source, marketInfo: market });
+      }
       return;
     }
 
     txnPromise
-      .then(() => p.onClose())
+      .then(() => {
+        p.onClose();
+        if (market) {
+          sendEditOrderEvent({ order: p.order, source: p.source, marketInfo: market });
+        }
+      })
       .finally(() => {
         setIsSubmitting(false);
       });
