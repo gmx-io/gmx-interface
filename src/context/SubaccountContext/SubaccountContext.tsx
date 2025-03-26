@@ -35,7 +35,6 @@ import useWallet from "lib/wallets/useWallet";
 import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
-
 export type Subaccount = ReturnType<typeof useSubaccount>;
 
 export type SubaccountNotificationState =

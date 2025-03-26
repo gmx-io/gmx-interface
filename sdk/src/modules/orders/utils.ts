@@ -11,9 +11,9 @@ import { SidecarLimitOrderEntry, SidecarSlTpOrderEntry } from "types/sidecarOrde
 import { TokensData } from "types/tokens";
 import { estimateOrderOraclePriceCount } from "utils/fees/estimateOraclePriceCount";
 import { estimateExecuteDecreaseOrderGasLimit, getExecutionFee } from "utils/fees/executionFee";
-import type { MulticallResult, MulticallRequestConfig } from "utils/multicall";
+import type { MulticallRequestConfig, MulticallResult } from "utils/multicall";
 import { isIncreaseOrderType, isLimitOrderType, isSwapOrderType, isTriggerDecreaseOrderType } from "utils/orders";
-import { getSwapPathOutputAddresses } from "utils/swap";
+import { getSwapPathOutputAddresses } from "utils/swap/swapStats";
 
 import type { GmxSdk } from "../../index";
 

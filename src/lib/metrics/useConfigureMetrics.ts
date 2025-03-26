@@ -14,7 +14,6 @@ import useWallet from "lib/wallets/useWallet";
 import { isHomeSite } from "../legacy";
 import { metrics } from "./Metrics";
 
-
 export function useConfigureMetrics() {
   const { chainId } = useChainId();
   const fetcher = useOracleKeeperFetcher(chainId);

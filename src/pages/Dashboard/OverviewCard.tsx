@@ -17,7 +17,6 @@ import { sumBigInts } from "lib/sumBigInts";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
-
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";

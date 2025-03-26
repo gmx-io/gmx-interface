@@ -68,7 +68,6 @@ import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
 import { useTradeboxTransactions } from "./useTradeboxTransactions";
 
-
 interface TradeboxButtonStateOptions {
   account?: string;
   setToTokenInputValue: (value: string, shouldResetPriceImpactWarning: boolean) => void;

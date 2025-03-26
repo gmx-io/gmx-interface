@@ -19,7 +19,6 @@ import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/Tab
 import type { Group, Item } from "components/Synthetics/TableOptionsFilter/types";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
-
 export type MarketFilterLongShortDirection = "long" | "short" | "swap" | "any";
 export type MarketFilterLongShortItemData = {
   marketAddress: Address | "any";

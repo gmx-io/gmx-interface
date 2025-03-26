@@ -3,7 +3,6 @@ import { useCallback, useRef } from "react";
 import useSWR, { SWRConfiguration, useSWRConfig } from "swr";
 import { KeyedMutator, stableHash } from "swr/_internal";
 
-
 import type { ErrorEvent } from "lib/metrics";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
 import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";

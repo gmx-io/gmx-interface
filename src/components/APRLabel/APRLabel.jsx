@@ -1,8 +1,6 @@
 // @ts-check
 import useSWR from "swr";
 
-
-
 import { getServerUrl } from "config/backend";
 import { getContract } from "config/contracts";
 import { useGmxPrice } from "domain/legacy";

@@ -10,7 +10,6 @@ import { TokenData } from "domain/synthetics/tokens";
 import { bigintToNumber, formatAmountHuman } from "lib/numbers";
 import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
 
-
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 

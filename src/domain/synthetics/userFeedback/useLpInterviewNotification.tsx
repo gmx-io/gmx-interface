@@ -14,7 +14,6 @@ import { InterviewToast } from "components/InterviewToast/InterviewToast";
 import { useMarketTokensData } from "../markets/useMarketTokensData";
 import { getTotalGlvInfo, getTotalGmInfo } from "../markets/utils";
 
-
 function useTotalProvidedLiquidityUsd() {
   const chainId = useSelector(selectChainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false, withGlv: true });

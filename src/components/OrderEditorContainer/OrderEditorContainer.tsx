@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
+import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { selectOrderEditorOrder } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
@@ -8,13 +8,13 @@ import { OrderEditor } from "components/Synthetics/OrderEditor/OrderEditor";
 
 export function OrderEditorContainer() {
   const editingOrder = useSelector(selectOrderEditorOrder);
-  const [, setEditingOrderKey] = useEditingOrderKeyState();
+  const [editingOrderState, setEditingOrderState] = useEditingOrderState();
 
-  const handleClose = useMemo(() => () => setEditingOrderKey(undefined), [setEditingOrderKey]);
+  const handleClose = useMemo(() => () => setEditingOrderState(undefined), [setEditingOrderState]);
 
-  if (!editingOrder) {
+  if (!editingOrderState || !editingOrder) {
     return null;
   }
 
-  return <OrderEditor order={editingOrder} onClose={handleClose} />;
+  return <OrderEditor order={editingOrder} source={editingOrderState.source} onClose={handleClose} />;
 }

@@ -17,7 +17,6 @@ import { bigMath } from "sdk/utils/bigmath";
 import Modal from "components/Modal/Modal";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-
 export const AccruedPositionPriceImpactRebateModal = memo(
   ({ isVisible, onClose }: { isVisible: boolean; onClose: () => void }) => {
     const totalUsd = useSelector(selectClaimsPriceImpactAccruedTotal);

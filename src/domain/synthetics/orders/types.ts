@@ -13,4 +13,11 @@ export type OrderErrors = {
   level: "error" | "warning" | undefined;
 };
 
+export type EditingOrderState = {
+  orderKey: string | undefined;
+  source: EditingOrderSource;
+};
+
+export type EditingOrderSource = "PositionsList" | "PriceChart";
+
 export type OrderActionSource = "position-seller" | "tradebox" | "claims";

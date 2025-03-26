@@ -5,7 +5,6 @@ import { getCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
 import { MAX_TIMEOUT, Multicall } from "./Multicall";
 import type { MulticallRequestConfig } from "./types";
 
-
 export async function executeMulticallMainThread(chainId: number, request: MulticallRequestConfig<any>) {
   const multicall = await Multicall.getInstance(chainId, getAbFlags());
   const providerUrls = getCurrentRpcUrls(chainId);

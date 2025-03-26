@@ -68,8 +68,8 @@ import { makeSelectFindSwapPath, makeSelectNextPositionValuesForIncrease } from 
 
 export const selectCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.cancellingOrdersKeys;
 export const selectSetCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.setCancellingOrdersKeys;
-export const selectEditingOrderKey = (s: SyntheticsState) => s.orderEditor.editingOrderKey;
-export const selectSetEditingOrderKey = (s: SyntheticsState) => s.orderEditor.setEditingOrderKey;
+export const selectEditingOrderState = (s: SyntheticsState) => s.orderEditor.editingOrderState;
+export const selectSetEditingOrderState = (s: SyntheticsState) => s.orderEditor.setEditingOrderState;
 
 export const selectOrderEditorIsSubmitting = (s: SyntheticsState) => s.orderEditor.isSubmitting;
 export const selectOrderEditorSetIsSubmitting = (s: SyntheticsState) => s.orderEditor.setIsSubmitting;
@@ -197,8 +197,8 @@ export const selectOrdersList = createSelector((q) => {
 });
 
 export const selectOrderEditorOrder = createSelector((q): PositionOrderInfo | SwapOrderInfo | undefined => {
-  const editingOrderKey = q(selectEditingOrderKey);
-  const order = q((state) => getByKey(selectOrdersInfoData(state), editingOrderKey));
+  const editingOrderState = q(selectEditingOrderState);
+  const order = q((state) => getByKey(selectOrdersInfoData(state), editingOrderState?.orderKey));
 
   return order;
 });

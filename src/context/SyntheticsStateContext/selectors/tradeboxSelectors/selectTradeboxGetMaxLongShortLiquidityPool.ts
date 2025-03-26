@@ -8,7 +8,6 @@ import { BN_ZERO } from "lib/numbers";
 
 import { selectTradeboxAvailableTokensOptions } from ".";
 
-
 export type TokenOption = {
   maxLongLiquidity: bigint;
   maxShortLiquidity: bigint;

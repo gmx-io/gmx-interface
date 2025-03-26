@@ -9,7 +9,6 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
-
 import { InterviewToast } from "components/InterviewToast/InterviewToast";
 
 export function useInterviewNotification() {

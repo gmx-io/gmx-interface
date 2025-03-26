@@ -6,7 +6,6 @@ import { getChainName } from "config/chains";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useChainId } from "lib/chains";
 
-
 import AddressView from "components/AddressView/AddressView";
 import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";

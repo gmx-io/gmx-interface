@@ -12,7 +12,6 @@ import { abis } from "sdk/abis";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 
-
 export function AffiliateClaimModal(props: {
   isVisible: boolean;
   setIsVisible: (isVisible: boolean) => void;

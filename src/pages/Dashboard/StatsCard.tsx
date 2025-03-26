@@ -15,7 +15,6 @@ import useWallet from "lib/wallets/useWallet";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
-
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
 

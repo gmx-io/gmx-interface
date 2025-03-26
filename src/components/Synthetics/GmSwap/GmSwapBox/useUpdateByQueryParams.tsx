@@ -3,7 +3,6 @@ import values from "lodash/values";
 import { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
-
 import { selectChainId, selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";

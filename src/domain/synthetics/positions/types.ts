@@ -3,7 +3,6 @@ import { Position as BasePosition, PositionInfo as BasePositionInfo } from "sdk/
 
 import { MarketInfo } from "../markets";
 
-
 export * from "sdk/types/positions";
 
 export type Position = BasePosition & {

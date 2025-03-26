@@ -8,7 +8,6 @@ import { formatAmount } from "lib/numbers";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
-
 type Props = {
   position: Position;
   isMobile?: boolean;

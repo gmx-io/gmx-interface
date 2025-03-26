@@ -16,7 +16,6 @@ import { useMarkets } from "../useMarkets";
 import { useFastMarketsInfoRequest } from "./useFastMarketsInfoRequest";
 import { getMarketDivisor } from "../utils";
 
-
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;

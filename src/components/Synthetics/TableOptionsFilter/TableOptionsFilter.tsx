@@ -13,7 +13,6 @@ import { FlatItems, useFilteredFlatItems } from "./flat";
 import { Groups, useFilteredGroups } from "./groups";
 import { FilteredGroup, Group, Item } from "./types";
 
-
 import "./TableOptionsFilter.scss";
 
 type Props<T> = {

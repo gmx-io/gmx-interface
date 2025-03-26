@@ -17,7 +17,6 @@ import { TradeMode, TradeSearchParams, TradeType } from "sdk/types/trade";
 
 import { getMarketPoolName } from "../markets";
 
-
 type TradeOptions = {
   fromTokenAddress?: string;
   toTokenAddress?: string;

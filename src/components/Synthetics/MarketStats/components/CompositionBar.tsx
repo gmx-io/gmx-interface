@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 
-
 import {
   getMarketIndexName,
   getPoolUsdWithoutPnl,

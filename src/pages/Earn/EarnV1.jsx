@@ -23,7 +23,6 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
 import Modal from "components/Modal/Modal";
 
-
 import "./EarnV1.scss";
 
 const BASIS_POINTS_DIVISOR = 10000n;

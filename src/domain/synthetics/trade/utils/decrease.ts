@@ -18,6 +18,7 @@ import { DUST_USD } from "lib/legacy";
 import { applyFactor, getBasisPoints, roundUpDivision } from "lib/numbers";
 import { DecreasePositionAmounts, NextPositionValues } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
+import { getSwapStats } from "sdk/utils/swap/swapStats";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
 import {
@@ -26,7 +27,6 @@ import {
   getMarkPrice,
   getOrderThresholdType,
 } from "./prices";
-import { getSwapStats } from "./swapStats";
 
 export function getDecreasePositionAmounts(p: {
   marketInfo: MarketInfo;

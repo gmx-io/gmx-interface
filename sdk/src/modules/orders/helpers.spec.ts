@@ -68,9 +68,12 @@ describe("increaseOrderHelper", () => {
         fromTokenAddress: payToken.address,
         toTokenAddress: collateralToken.address,
         marketsInfoData: expect.any(Object),
-        estimator: expect.any(Function),
-        allPaths: expect.any(Array),
-      })
+        gasEstimationParams: expect.objectContaining({
+          gasPrice: expect.any(BigInt),
+          gasLimits: expect.any(Object),
+          tokensData: expect.any(Object),
+        }),
+      } satisfies Parameters<typeof swapPath.createFindSwapPath>[0])
     );
 
     expect(getIncreasePositionAmountsSpy).toHaveBeenCalledWith(

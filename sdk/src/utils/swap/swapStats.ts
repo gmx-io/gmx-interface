@@ -149,7 +149,17 @@ export function getSwapPathStats(p: {
     const marketAddress = swapPath[i];
     const marketInfo = marketsInfoData[marketAddress];
 
-    tokenOutAddress = getOppositeCollateral(marketInfo, tokenInAddress)!.address;
+    if (!marketInfo) {
+      return undefined;
+    }
+
+    const nextTokenOutAddress = getOppositeCollateral(marketInfo, tokenInAddress)?.address;
+
+    if (!nextTokenOutAddress) {
+      return undefined;
+    }
+
+    tokenOutAddress = nextTokenOutAddress;
 
     if (i === swapPath.length - 1 && shouldUnwrapNativeToken && tokenOutAddress === wrappedNativeTokenAddress) {
       tokenOutAddress = NATIVE_TOKEN_ADDRESS;
@@ -180,7 +190,7 @@ export function getSwapPathStats(p: {
 
   return {
     swapPath,
-    tokenInAddress,
+    tokenInAddress: initialCollateralAddress,
     tokenOutAddress,
     targetMarketAddress,
     swapSteps,
@@ -220,6 +230,12 @@ export function getSwapStats(p: {
   try {
     priceImpactDeltaUsd = getPriceImpactForSwap(marketInfo, tokenIn, tokenOut, usdIn, usdIn * -1n);
   } catch (e) {
+    // Approximate if the market would be out of capacity
+    const capacityUsd = getSwapCapacityUsd(marketInfo, getTokenPoolType(marketInfo, tokenInAddress) === "long");
+    const swapFeeUsd = getSwapFee(marketInfo, usdIn, false);
+    const usdInAfterFees = usdIn - swapFeeUsd;
+    const isOutCapacity = capacityUsd < usdInAfterFees;
+
     return {
       swapFeeUsd: 0n,
       swapFeeAmount: 0n,
@@ -235,6 +251,7 @@ export function getSwapStats(p: {
       amountOut: 0n,
       usdOut: 0n,
       isOutLiquidity: true,
+      isOutCapacity,
     };
   }
 

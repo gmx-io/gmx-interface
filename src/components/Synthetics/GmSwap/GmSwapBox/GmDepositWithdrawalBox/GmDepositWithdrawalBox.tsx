@@ -40,7 +40,6 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-
 import { useGmWarningState } from "../useGmWarningState";
 import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";

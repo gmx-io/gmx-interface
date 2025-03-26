@@ -29,7 +29,6 @@ import { ActionFilter } from "./filters/ActionFilter";
 import { TradeHistoryRow } from "./TradeHistoryRow/TradeHistoryRow";
 import { useDownloadAsCsv } from "./useDownloadAsCsv";
 
-
 import "./TradeHistorySynthetics.scss";
 
 const TRADE_HISTORY_PREFETCH_SIZE = 100;

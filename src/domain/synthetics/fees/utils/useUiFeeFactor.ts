@@ -7,7 +7,6 @@ import { useMulticall } from "lib/multicall";
 import { BN_ZERO } from "lib/numbers";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
-
 export default function useUiFeeFactorRequest(chainId: number) {
   const account = UI_FEE_RECEIVER_ACCOUNT;
   const { data: uiFeeFactor, error } = useMulticall(chainId, "uiFeeFactorForAccount", {

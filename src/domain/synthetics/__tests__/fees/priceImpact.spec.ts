@@ -5,7 +5,6 @@ import { applyImpactFactor } from "domain/synthetics/fees";
 import { expandDecimals } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 
-
 describe("applyImpactFactor", () => {
   for (const [diffUsd, exponentFactor, impactFactor, expected] of [
     [10000, 3, "0.000000000001", "999999999999999971996569854874"],

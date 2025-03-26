@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 
-
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { UserEarningsData } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";

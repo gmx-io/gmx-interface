@@ -17,7 +17,6 @@ import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
-
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
@@ -26,7 +25,6 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 
 import { GMX_DAO_LINKS } from "./constants";
-
 
 export function ClaimModal(props: {
   isVisible: boolean;

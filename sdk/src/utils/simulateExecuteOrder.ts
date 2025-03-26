@@ -6,7 +6,6 @@ import { convertTokenAddress } from "configs/tokens";
 import { SwapPricingType } from "types/orders";
 import { TokenPrices, TokensData } from "types/tokens";
 
-
 import type { GmxSdk } from "..";
 import { extractError } from "./contracts";
 import { convertToContractPrice, getTokenData } from "./tokens";

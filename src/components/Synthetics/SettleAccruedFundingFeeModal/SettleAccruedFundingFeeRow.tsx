@@ -8,7 +8,6 @@ import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 import Checkbox from "components/Checkbox/Checkbox";
 import Tooltip from "components/Tooltip/Tooltip";
 
-
 type Props = {
   position: PositionInfo;
   isSelected: boolean;

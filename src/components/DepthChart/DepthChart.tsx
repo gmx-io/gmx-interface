@@ -36,6 +36,7 @@ import {
   formatAmount,
   numberToBigint,
 } from "lib/numbers";
+import { sendDepthChartInteractionEvent } from "lib/userAnalytics";
 import { bigMath } from "sdk/utils/bigmath";
 import { getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
 
@@ -294,6 +295,10 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
     [isLeftEmpty, isRightEmpty, isZeroPriceImpact]
   );
 
+  const handleMouseEnter = useCallback(() => {
+    sendDepthChartInteractionEvent(marketInfo.name);
+  }, [marketInfo?.name]);
+
   return (
     <ResponsiveContainer onResize={handleResize} className="DepthChart" width="100%" height="100%" ref={containerRef}>
       <ComposedChart
@@ -302,6 +307,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
         margin={CHART_MARGIN}
         onMouseMove={handleMouseMove}
         onMouseDown={handleMouseDown}
+        onMouseEnter={handleMouseEnter}
       >
         <defs>
           <linearGradient id="colorGreen" x1="0" y1="0" x2="0" y2="1">

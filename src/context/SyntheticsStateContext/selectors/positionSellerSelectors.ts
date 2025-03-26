@@ -41,9 +41,7 @@ import {
   makeSelectFindSwapPath,
   makeSelectMaxLiquidityPath,
   makeSelectNextPositionValuesForDecrease,
-  selectSwapGraph,
 } from "./tradeSelectors";
-
 
 export const selectPositionSeller = (state: SyntheticsState) => state.positionSeller;
 export const selectPositionSellerOrderOption = (state: SyntheticsState) => state.positionSeller.orderOption;
@@ -282,13 +280,12 @@ export const selectPositionSellerReceiveToken = createSelector((q) => {
   const orderOption = q(selectPositionSellerOrderOption);
   const position = q(selectPositionSellerPosition);
   const isTrigger = orderOption === OrderOption.Trigger;
-  const tokensData = q(selectTokensData);
   const isChanged = q(selectPositionSellerReceiveTokenAddressChanged);
   const defaultReceiveTokenAddress = q(selectPositionSellerDefaultReceiveToken);
   const receiveTokenAddress = isChanged
     ? q(selectPositionSellerReceiveTokenAddress)
     : defaultReceiveTokenAddress ?? q(selectPositionSellerReceiveTokenAddress);
-  return isTrigger ? position?.collateralToken : getByKey(tokensData, receiveTokenAddress);
+  return isTrigger ? position?.collateralToken : q((state) => getByKey(selectTokensData(state), receiveTokenAddress));
 });
 
 export const selectPositionSellerShouldSwap = createSelector((q) => {
@@ -316,16 +313,16 @@ export const selectPositionSellerFindSwapPath = createSelector((q) => {
 
 export const selectPositionSellerAvailableReceiveTokens = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
-  const graph = q(selectSwapGraph);
+  const chainId = q(selectChainId);
   const tokensData = q(selectTokensData);
 
-  if (!graph || !position?.collateralTokenAddress || !tokensData) {
+  if (!position?.collateralTokenAddress || !tokensData) {
     return EMPTY_ARRAY;
   }
 
   let wasNativeTokenInserted = false;
 
-  const reachableAddresses = findAllReachableTokens(graph, position.collateralTokenAddress);
+  const reachableAddresses = findAllReachableTokens(chainId, position.collateralTokenAddress);
   const reachableTokens = reachableAddresses
     .flatMap((address) => {
       const token = getByKey(tokensData, address)!;

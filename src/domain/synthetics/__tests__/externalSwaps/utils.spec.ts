@@ -8,16 +8,13 @@ import {
   expectEqualWithPrecision,
   MOCK_TXN_DATA,
   mockExternalSwapQuote,
-  mockMarketsInfoData,
   mockPositionInfo,
-  mockTokensData,
-  usdToToken,
 } from "domain/synthetics/testUtils/mocks";
 import { expandDecimals, getBasisPoints } from "lib/numbers";
 import Token from "sdk/abis/Token.json";
 import { getNativeToken } from "sdk/configs/tokens";
+import { mockMarketsInfoData, mockTokensData, usdToToken } from "sdk/test/mock";
 import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
-
 
 import {
   getExternalCallsParams,

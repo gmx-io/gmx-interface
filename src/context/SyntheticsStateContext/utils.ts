@@ -2,11 +2,10 @@ import { EnhancedSelector, createSelectionContext } from "@taskworld.com/reresel
 import { Selector, createSelector as createSelectorCommon } from "reselect";
 
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
-import { TradeMode, TradeType } from "sdk/types/trade";
-import { ExternalSwapQuote } from "sdk/types/trade";
+import { ExternalSwapQuote, TradeMode, TradeType } from "sdk/types/trade";
 import { LRUCache } from "sdk/utils/LruCache";
 
-import { SyntheticsState } from "./SyntheticsStateContextProvider";
+import type { SyntheticsState } from "./SyntheticsStateContextProvider";
 
 export { useSyntheticsStateSelector as useSelector } from "./SyntheticsStateContextProvider";
 

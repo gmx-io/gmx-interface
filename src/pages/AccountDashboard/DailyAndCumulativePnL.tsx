@@ -43,7 +43,6 @@ import {
   type AccountPnlHistoryPointDebugFields,
 } from "./dailyAndCumulativePnLDebug";
 
-
 import "./DailyAndCumulativePnL.css";
 
 const CHART_TOOLTIP_WRAPPER_STYLE: React.CSSProperties = { zIndex: 10000 };

@@ -8,7 +8,6 @@ import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { MarketsData } from "./types";
 import { getMarketFullName } from "./utils";
 
-
 export type MarketsResult = {
   marketsData?: MarketsData;
   marketsAddresses?: string[];

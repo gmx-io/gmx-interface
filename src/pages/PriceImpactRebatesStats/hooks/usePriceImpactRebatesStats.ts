@@ -9,7 +9,6 @@ import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 
-
 type RawRebateGroup = {
   id: string;
   timeKey: string;

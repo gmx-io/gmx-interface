@@ -6,7 +6,6 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { SUPPORTED_CHAIN_IDS } from "sdk/configs/chains";
 import { getTokens } from "sdk/configs/tokens";
 
-
 import { parsePositionKey } from "../positions";
 
 export type PositionEditorState = ReturnType<typeof usePositionEditorState>;

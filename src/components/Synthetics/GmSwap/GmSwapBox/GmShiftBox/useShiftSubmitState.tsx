@@ -14,7 +14,6 @@ import { getCommonError, getGmShiftError } from "domain/synthetics/trade/utils/v
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import type { GmSwapFees } from "sdk/types/trade";
 
-
 import { useShiftTransactions } from "./useShiftTransactions";
 
 export function useShiftSubmitState({

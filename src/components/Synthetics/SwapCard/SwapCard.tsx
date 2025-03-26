@@ -11,8 +11,6 @@ import Tooltip from "components/Tooltip/Tooltip";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
-
-
 export type Props = {
   maxLiquidityUsd?: bigint;
   fromToken?: TokenData;

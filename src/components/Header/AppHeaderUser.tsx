@@ -4,7 +4,6 @@ import cx from "classnames";
 import { useCallback } from "react";
 import { useRouteMatch } from "react-router-dom";
 
-
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";

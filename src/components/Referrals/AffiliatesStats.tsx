@@ -20,7 +20,6 @@ import { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/t
 import useWallet from "lib/wallets/useWallet";
 import { getNativeToken, getToken, getTokenBySymbol } from "sdk/configs/tokens";
 
-
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";

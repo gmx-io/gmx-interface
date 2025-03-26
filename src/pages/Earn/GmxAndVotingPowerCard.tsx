@@ -16,7 +16,6 @@ import useWallet from "lib/wallets/useWallet";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
-
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { AmountWithUsdBalance, AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";

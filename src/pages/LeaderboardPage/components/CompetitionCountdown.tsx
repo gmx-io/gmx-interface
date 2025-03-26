@@ -4,7 +4,6 @@ import { ReactNode, useEffect, useState } from "react";
 
 import { useLeaderboardTiming } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 
-
 export function CompetitionCountdown({ className, size }: { className?: string; size: "mobile" | "desktop" }) {
   const { isEndInFuture, isStartInFuture, timeframe } = useLeaderboardTiming();
 

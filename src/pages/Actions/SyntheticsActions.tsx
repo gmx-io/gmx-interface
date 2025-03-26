@@ -9,7 +9,6 @@ import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 
-
 import "./SyntheticsActions.scss";
 
 const VERSION_NAME = "V2";
