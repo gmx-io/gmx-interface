@@ -1,3 +1,4 @@
+import { EditingOrderSource } from "domain/synthetics/orders/types";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
 
 export type LandingPageViewEvent = {
@@ -110,7 +111,7 @@ export type TradeBoxConfirmClickEvent = {
     pair: string;
     pool: string;
     type: "Short" | "Long" | "Swap";
-    orderType: "Limit" | "Market" | "TPSL";
+    orderType: AnalyticsOrderType;
     tradeType: "InitialTrade" | "IncreaseSize" | "DecreaseSize" | "ClosePosition";
     sizeDeltaUsd?: number;
     amountUsd?: number;
@@ -129,6 +130,8 @@ export type TradeBoxConfirmClickEvent = {
   };
 };
 
+export type AnalyticsOrderType = "Limit" | "Market" | "TPSL";
+
 export type TradeBoxResultEvent = {
   event: "TradeBoxAction";
   data: {
@@ -142,7 +145,7 @@ export type TradeBoxResultEvent = {
     pair: string;
     pool: string;
     type: "Short" | "Long" | "Swap";
-    orderType: "Limit" | "Market" | "TPSL";
+    orderType: AnalyticsOrderType;
     tradeType: "InitialTrade" | "IncreaseSize" | "DecreaseSize" | "ClosePosition";
     sizeDeltaUsd?: number;
     amountUsd?: number;
@@ -178,7 +181,7 @@ export type TradeBoxWarningShownEvent = {
     pair: string;
     pool: string;
     type: "Short" | "Long" | "Swap";
-    orderType: "Limit" | "Market" | "TPSL";
+    orderType: AnalyticsOrderType;
     tradeType: "InitialTrade" | "IncreaseSize";
     sizeDeltaUsd: number;
     leverage: string;
@@ -251,5 +254,23 @@ export type LandingPageAgreementConfirmationEvent = {
   event: "LandingPageAction";
   data: {
     action: "AgreementConfirmationDialogShown" | "AgreementConfirmationAgreeClick";
+  };
+};
+
+export type DepthChartInteractionEvent = {
+  event: "TradePageAction";
+  data: {
+    action: "DepthChartInteraction";
+    pair: string;
+  };
+};
+
+export type TradePageEditOrderEvent = {
+  event: "TradePageAction";
+  data: {
+    action: "EditOrder";
+    orderType: AnalyticsOrderType;
+    pair: string;
+    source: EditingOrderSource;
   };
 };

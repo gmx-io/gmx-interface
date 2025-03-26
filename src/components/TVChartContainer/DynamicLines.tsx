@@ -6,7 +6,7 @@ import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
 import {
   useCancellingOrdersKeysState,
-  useEditingOrderKeyState,
+  useEditingOrderState,
   useOrderEditorIsSubmittingState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { selectChartDynamicLines } from "context/SyntheticsStateContext/selectors/chartSelectors/selectChartDynamicLines";
@@ -46,7 +46,7 @@ export function DynamicLines({
   const [, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, 1);
   const [isSubmitting] = useOrderEditorIsSubmittingState();
-  const [editingOrderKey, setEditingOrderKey] = useEditingOrderKeyState();
+  const [editingOrderState, setEditingOrderState] = useEditingOrderState();
   const setTriggerPriceInputValue = useSelector(selectOrderEditorSetTriggerPriceInputValue);
   const ordersInfoData = useSelector(selectOrdersInfoData);
   const { marketsData } = useMarkets(chainId);
@@ -98,7 +98,7 @@ export function DynamicLines({
 
   const onEditOrder = useCallback(
     (id: string, price?: number) => {
-      setEditingOrderKey(id);
+      setEditingOrderState({ orderKey: id, source: "PriceChart" });
       const order = getByKey(ordersInfoData, id) as PositionOrderInfo;
       if (!order) return;
 
@@ -119,7 +119,7 @@ export function DynamicLines({
       );
       setTriggerPriceInputValue(price !== undefined ? String(price) : formattedInitialPrice);
     },
-    [chainId, marketsData, ordersInfoData, setEditingOrderKey, setTriggerPriceInputValue]
+    [chainId, marketsData, ordersInfoData, setEditingOrderState, setTriggerPriceInputValue]
   );
 
   return dynamicChartLines.map((line) => (
@@ -131,8 +131,8 @@ export function DynamicLines({
       getError={getError}
       tvWidgetRef={tvWidgetRef}
       isMobile={isMobile}
-      isEdited={editingOrderKey === line.id}
-      isPending={(isSubmitting && editingOrderKey === line.id) || line.id in pendingOrdersUpdates}
+      isEdited={editingOrderState?.orderKey === line.id}
+      isPending={(isSubmitting && editingOrderState?.orderKey === line.id) || line.id in pendingOrdersUpdates}
     />
   ));
 }

@@ -1,8 +1,8 @@
 import {
   selectCancellingOrdersKeys,
-  selectEditingOrderKey,
+  selectEditingOrderState,
   selectSetCancellingOrdersKeys,
-  selectSetEditingOrderKey,
+  selectSetEditingOrderState,
   selectOrderEditorSetSizeInputValue,
   selectOrderEditorSetTriggerPriceInputValue,
   selectOrderEditorSetTriggerRatioInputValue,
@@ -20,10 +20,10 @@ export const useCancellingOrdersKeysState = () => {
   return [cancellingOrdersKeys, setCancellingOrdersKeys] as const;
 };
 
-export const useEditingOrderKeyState = () => {
-  const editingOrderKey = useSelector(selectEditingOrderKey);
-  const setEditingOrderKey = useSelector(selectSetEditingOrderKey);
-  return [editingOrderKey, setEditingOrderKey] as const;
+export const useEditingOrderState = () => {
+  const editingOrderState = useSelector(selectEditingOrderState);
+  const setEditingOrderState = useSelector(selectSetEditingOrderState);
+  return [editingOrderState, setEditingOrderState] as const;
 };
 
 export const useOrderEditorIsSubmittingState = () => {

@@ -12,3 +12,10 @@ export type OrderErrors = {
   errors: OrderError[];
   level: "error" | "warning" | undefined;
 };
+
+export type EditingOrderState = {
+  orderKey: string | undefined;
+  source: EditingOrderSource;
+};
+
+export type EditingOrderSource = "PositionsList" | "PriceChart";

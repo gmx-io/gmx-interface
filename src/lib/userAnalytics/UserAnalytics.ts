@@ -21,6 +21,7 @@ type ProfileProps = {
   languageCode: string;
   ref?: string;
   utm?: string;
+  isChartPositionsEnabled?: boolean;
 };
 
 type DedupEventsStorage = {

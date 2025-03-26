@@ -6,7 +6,7 @@ import { MdClose } from "react-icons/md";
 
 import { USD_DECIMALS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
+import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useOrderErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -58,11 +58,11 @@ type Props = {
 export function OrderItem(p: Props) {
   const { showDebugValues } = useSettings();
 
-  const [, setEditingOrderKeyWithArg] = useEditingOrderKeyState();
+  const [, setEditingOrderState] = useEditingOrderState();
 
   const setEditingOrderKey = useCallback(() => {
-    setEditingOrderKeyWithArg(p.order.key);
-  }, [p.order.key, setEditingOrderKeyWithArg]);
+    setEditingOrderState({ orderKey: p.order.key, source: "PositionsList" });
+  }, [p.order.key, setEditingOrderState]);
 
   return p.isLarge ? (
     <OrderItemLarge
