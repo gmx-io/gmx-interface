@@ -12,3 +12,5 @@ export type OrderErrors = {
   errors: OrderError[];
   level: "error" | "warning" | undefined;
 };
+
+export type OrderActionSource = "position-seller" | "tradebox" | "claims";

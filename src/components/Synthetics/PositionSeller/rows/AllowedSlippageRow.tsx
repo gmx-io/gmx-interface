@@ -44,6 +44,7 @@ export function AllowedSlippageRow({
         value={allowedSlippage}
         highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
         highValueWarningText={t`Slippage is too high`}
+        inputId={"position-seller-allowed-slippage-input"}
         negativeSign
       />
     </SyntheticsInfoRow>

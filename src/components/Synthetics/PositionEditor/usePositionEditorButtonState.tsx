@@ -67,7 +67,6 @@ import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 import { OPERATION_LABELS, Operation } from "./types";
 
-
 export function usePositionEditorButtonState(operation: Operation): {
   text: ReactNode;
   tooltipContent: ReactNode | null;
@@ -366,6 +365,7 @@ export function usePositionEditorButtonState(operation: Operation): {
           setPendingTxns,
           setPendingOrder,
           setPendingPosition,
+          orderActionSource: "position-seller",
         },
       });
     } else {
@@ -402,6 +402,7 @@ export function usePositionEditorButtonState(operation: Operation): {
           tokensData,
           skipSimulation: shouldDisableValidationForTesting,
           autoCancel: false,
+          orderActionSource: "position-seller",
         },
         {
           setPendingTxns,

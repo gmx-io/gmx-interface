@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { BaseContract, ethers } from "ethers";
+import { ReactNode } from "react";
 import { withRetry } from "viem";
 
 import {
@@ -9,7 +10,7 @@ import {
   getMulticallContract,
   getZeroAddressContract,
 } from "config/contracts";
-import { SwapPricingType } from "domain/synthetics/orders";
+import { OrderActionSource, SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { extractDataFromError, getErrorMessage } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
@@ -24,7 +25,7 @@ import { ExternalSwapQuote } from "sdk/types/trade";
 import { extractError } from "sdk/utils/contracts";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
 
-
+import { CustomErrorName } from "components/Synthetics/TradeHistory/TradeHistoryRow/utils/CustomErrorName";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
 import { isGlvEnabled } from "../markets/glv";
@@ -52,6 +53,7 @@ type SimulateExecuteParams = {
   blockTimestampData: BlockTimestampData | undefined;
   additionalErrorContent?: React.ReactNode;
   externalSwapQuote?: ExternalSwapQuote;
+  orderActionSource?: OrderActionSource;
 };
 
 export async function simulateExecuteTxn(chainId: number, p: SimulateExecuteParams) {
@@ -194,13 +196,30 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
         return acc;
       }, {});
 
-      if (parsedError?.name === "OrderNotFulfillableAtAcceptablePrice") {
-        errorTitle = t`Prices are now volatile for this market, try again with increased Allowed Slippage value in Execution Details section.`;
+      let errorContent: ReactNode = errorTitle;
+      if (parsedError?.name === CustomErrorName.OrderNotFulfillableAtAcceptablePrice) {
+        const isCorrectSource = p.orderActionSource === "position-seller" || p.orderActionSource === "tradebox";
+        errorContent = (
+          <Trans>
+            Prices are currently volatile for this market, try again by{" "}
+            <span
+              onClick={() => {
+                if (isCorrectSource) {
+                  document.getElementById(`${p.orderActionSource}-allowed-slippage-input`)?.focus();
+                }
+              }}
+              className={isCorrectSource ? "cursor-pointer underline" : undefined}
+            >
+              <Trans>increasing the allowed slippage</Trans>
+            </span>{" "}
+            under the advanced display section
+          </Trans>
+        );
       }
 
       msg = (
         <div>
-          {errorTitle}
+          {errorContent}
           {p.additionalErrorContent}
           <br />
           <br />

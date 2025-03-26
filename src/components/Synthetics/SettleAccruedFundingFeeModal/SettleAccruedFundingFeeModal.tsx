@@ -146,6 +146,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
           tokensData,
           skipSimulation: true,
           autoCancel: false,
+          orderActionSource: "claims",
         };
       }),
       {

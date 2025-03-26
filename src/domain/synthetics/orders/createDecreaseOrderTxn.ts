@@ -20,7 +20,7 @@ import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
 import { prepareOrderTxn } from "./prepareOrderTxn";
 import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
-import { DecreasePositionSwapType, OrderType } from "./types";
+import { DecreasePositionSwapType, OrderActionSource, OrderType } from "./types";
 import { getPendingOrderFromParams } from "./utils";
 
 const { ZeroAddress } = ethers;
@@ -48,6 +48,7 @@ export type DecreaseOrderParams = {
   indexToken: Token;
   tokensData: TokensData;
   autoCancel: boolean;
+  orderActionSource: OrderActionSource;
 };
 
 export type DecreaseOrderCallbacks = {
@@ -118,6 +119,7 @@ export async function createDecreaseOrderTxn(
           errorTitle: t`Order error.`,
           metricId,
           blockTimestampData,
+          orderActionSource: p.orderActionSource,
         });
       }
     })

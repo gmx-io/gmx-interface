@@ -176,6 +176,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         metricId: metricData.metricId,
         skipSimulation: shouldDisableValidationForTesting,
         blockTimestampData,
+        orderActionSource: "tradebox",
       })
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
@@ -316,6 +317,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           setPendingTxns: setPendingTxns,
           setPendingOrder,
           setPendingPosition,
+          orderActionSource: "tradebox",
         },
         createDecreaseOrderParams: createSltpEntries.map((entry, i) => {
           return {
@@ -335,6 +337,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
             txnType: entry.txnType!,
             skipSimulation: isLimit || shouldDisableValidationForTesting,
             autoCancel: i < autoCancelOrdersLimit,
+            orderActionSource: "tradebox",
           };
         }),
         cancelOrderParams: cancelSltpEntries.map((entry) => ({
@@ -481,6 +484,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           indexToken: marketInfo.indexToken,
           tokensData,
           autoCancel: autoCancelOrdersLimit > 0,
+          orderActionSource: "tradebox",
         },
         {
           setPendingTxns,

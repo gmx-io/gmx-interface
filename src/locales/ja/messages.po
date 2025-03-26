@@ -2030,8 +2030,8 @@ msgid "Could not increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2
 msgstr ""
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
-msgid "Prices are now volatile for this market, try again with increased Allowed Slippage value in Execution Details section."
-msgstr ""
+#~ msgid "Prices are now volatile for this market, try again with increased Allowed Slippage value in Execution Details section."
+#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on {chainName}"
@@ -4260,6 +4260,10 @@ msgstr ""
 #: src/pages/Dashboard/MarketsListV1.tsx
 msgid "GLP Index Composition"
 msgstr "GLPインデックス構成"
+
+#: src/domain/synthetics/orders/simulateExecuteTxn.tsx
+msgid "Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section"
+msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"

@@ -362,6 +362,7 @@ export function PositionSeller(p: Props) {
         tokensData,
         skipSimulation: orderOption === OrderOption.Trigger || shouldDisableValidationForTesting,
         autoCancel: orderOption === OrderOption.Trigger ? autoCancelOrdersLimit > 0 : false,
+        orderActionSource: "position-seller",
       },
       {
         setPendingOrder,

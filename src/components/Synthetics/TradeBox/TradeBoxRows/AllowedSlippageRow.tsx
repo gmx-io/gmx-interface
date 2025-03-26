@@ -59,6 +59,7 @@ export function AllowedSlippageRow() {
         value={allowedSlippage}
         highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
         highValueWarningText={t`Slippage is too high`}
+        inputId={"tradebox-allowed-slippage-input"}
       />
     </SyntheticsInfoRow>
   );
