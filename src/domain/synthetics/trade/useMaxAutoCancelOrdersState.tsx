@@ -11,7 +11,6 @@ import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrde
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-
 export function useMaxAutoCancelOrdersState({
   positionKey,
   isCreatingNewAutoCancel,

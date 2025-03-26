@@ -9,13 +9,11 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ClaimCollateralAction, ClaimType } from "domain/synthetics/claimHistory";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 
-
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-
 
 import NewLink20ReactComponent from "img/ic_new_link_20.svg?react";
 

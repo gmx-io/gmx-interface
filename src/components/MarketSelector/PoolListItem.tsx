@@ -1,7 +1,6 @@
 import cx from "classnames";
 import { useCallback } from "react";
 
-
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getGlvDisplayName, getMarketBadge, getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";

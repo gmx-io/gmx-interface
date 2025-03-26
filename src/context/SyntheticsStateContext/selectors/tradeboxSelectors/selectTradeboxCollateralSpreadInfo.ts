@@ -1,4 +1,3 @@
-
 import { HIGH_SPREAD_THRESHOLD } from "config/constants";
 import {
   selectTradeboxCollateralToken,

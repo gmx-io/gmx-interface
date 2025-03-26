@@ -11,7 +11,6 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 
-
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import { TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";

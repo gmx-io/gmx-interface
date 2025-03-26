@@ -1,11 +1,11 @@
+import type { GasLimitsConfig } from "types/fees";
 import { MarketsInfoData } from "types/markets";
 import { OrderType } from "types/orders";
 import { TokenData, TokensData, TokensRatio } from "types/tokens";
-import { FindSwapPath, SwapAmounts } from "types/trade";
+import { SwapAmounts, SwapOptimizationOrderArray } from "types/trade";
 import { getByKey } from "utils/objects";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "utils/swap";
-import { createFindSwapPath, findAllSwapPaths, getWrappedAddress } from "utils/swap/swapPath";
-import { createSwapEstimator, getMarketsGraph } from "utils/swap/swapRouting";
+import { createFindSwapPath } from "utils/swap/swapPath";
 import { convertToUsd, getIsUnwrap, getIsWrap, getTokensRatioByPrice } from "utils/tokens";
 import { getIncreasePositionAmounts } from "utils/trade/amounts";
 
@@ -16,6 +16,8 @@ interface BaseOptionalParams {
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   uiFeeFactor?: bigint;
+  gasPrice?: bigint;
+  gasLimits?: GasLimitsConfig;
 }
 
 export type PositionIncreaseParams = (
@@ -45,33 +47,70 @@ export type PositionIncreaseParams = (
   skipSimulation?: boolean;
 } & BaseOptionalParams;
 
-async function getAndValidateBaseParams(sdk: GmxSdk, params: BaseOptionalParams) {
-  let tokensData: TokensData | undefined = params.tokensData;
-  let marketsInfoData: MarketsInfoData | undefined = params.marketsInfoData;
-
-  if (!params.marketsInfoData && !params.tokensData) {
-    const result = await sdk.markets.getMarketsInfo();
-    marketsInfoData = result.marketsInfoData;
-    tokensData = result.tokensData;
+function passThoughOrFetch<T>(value: T, condition: (input: T) => boolean, fetchFn: () => Promise<T>) {
+  if (condition(value)) {
+    return value;
   }
 
-  if (!tokensData) {
-    throw new Error("Tokens data is not available");
-  }
+  return fetchFn();
+}
 
-  if (!marketsInfoData) {
+async function getAndValidateBaseParams(
+  sdk: GmxSdk,
+  params: BaseOptionalParams
+): Promise<Required<BaseOptionalParams>> {
+  const [marketsInfoResult, uiFeeFactor, gasPrice, gasLimits] = await Promise.all([
+    passThoughOrFetch(
+      {
+        marketsInfoData: params.marketsInfoData,
+        tokensData: params.tokensData,
+      },
+      (input) => Boolean(input.marketsInfoData) && Boolean(input.tokensData),
+      () => sdk.markets.getMarketsInfo()
+    ),
+    passThoughOrFetch(
+      params.uiFeeFactor,
+      (input) => input !== undefined,
+      () => sdk.utils.getUiFeeFactor()
+    ),
+    passThoughOrFetch(
+      params.gasPrice,
+      (input) => input !== undefined,
+      () => sdk.utils.getGasPrice()
+    ),
+    passThoughOrFetch(
+      params.gasLimits,
+      (input) => input !== undefined,
+      () => sdk.utils.getGasLimits()
+    ),
+  ]);
+
+  if (!marketsInfoResult.marketsInfoData) {
     throw new Error("Markets info data is not available");
   }
 
-  let uiFeeFactor = params.uiFeeFactor;
-  if (!uiFeeFactor) {
-    uiFeeFactor = await sdk.utils.getUiFeeFactor();
+  if (!marketsInfoResult.tokensData) {
+    throw new Error("Tokens data is not available");
+  }
+
+  if (uiFeeFactor === undefined) {
+    throw new Error("Ui fee factor is not available");
+  }
+
+  if (gasPrice === undefined) {
+    throw new Error("Gas price is not available");
+  }
+
+  if (gasLimits === undefined) {
+    throw new Error("Gas limits are not available");
   }
 
   return {
-    tokensData,
-    marketsInfoData,
+    tokensData: marketsInfoResult.tokensData,
+    marketsInfoData: marketsInfoResult.marketsInfoData,
     uiFeeFactor,
+    gasPrice,
+    gasLimits,
   };
 }
 
@@ -81,7 +120,7 @@ export async function increaseOrderHelper(
     isLong: boolean;
   }
 ) {
-  const { tokensData, marketsInfoData, uiFeeFactor } = await getAndValidateBaseParams(sdk, params);
+  const { tokensData, marketsInfoData, uiFeeFactor, gasLimits, gasPrice } = await getAndValidateBaseParams(sdk, params);
 
   const isLimit = Boolean(params.limitPrice);
 
@@ -105,29 +144,16 @@ export async function increaseOrderHelper(
   const collateralTokenAddress = collateralToken.address;
   const allowedSlippage = params.allowedSlippageBps ?? 100;
 
-  const graph = getMarketsGraph(Object.values(marketsInfoData));
-  const wrappedFromAddress = getWrappedAddress(sdk.chainId, params.payTokenAddress);
-  const wrappedToAddress = getWrappedAddress(sdk.chainId, collateralTokenAddress);
-
-  const allPaths = findAllSwapPaths({
-    chainId: sdk.chainId,
-    fromTokenAddress: params.payTokenAddress,
-    toTokenAddress: collateralTokenAddress,
-    marketsInfoData,
-    graph,
-    wrappedFromAddress,
-    wrappedToAddress,
-  });
-
-  const estimator = createSwapEstimator(marketsInfoData);
-
   const findSwapPath = createFindSwapPath({
     chainId: sdk.chainId,
     fromTokenAddress: params.payTokenAddress,
     toTokenAddress: collateralTokenAddress,
     marketsInfoData,
-    estimator,
-    allPaths,
+    gasEstimationParams: {
+      gasLimits,
+      gasPrice,
+      tokensData,
+    },
   });
 
   const payOrSizeAmount = "payAmount" in params ? params.payAmount : params.sizeAmount;
@@ -221,7 +247,7 @@ export type SwapParams = (
 } & BaseOptionalParams;
 
 export async function swap(sdk: GmxSdk, params: SwapParams) {
-  const { tokensData, marketsInfoData, uiFeeFactor } = await getAndValidateBaseParams(sdk, params);
+  const { tokensData, marketsInfoData, uiFeeFactor, gasLimits, gasPrice } = await getAndValidateBaseParams(sdk, params);
 
   const fromToken = tokensData[params.fromTokenAddress];
   const toToken = tokensData[params.toTokenAddress];
@@ -236,36 +262,23 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
     return undefined;
   }
 
-  const graph = getMarketsGraph(Object.values(marketsInfoData));
-  const wrappedFromAddress = getWrappedAddress(sdk.chainId, params.fromTokenAddress);
-  const wrappedToAddress = getWrappedAddress(sdk.chainId, params.toTokenAddress);
-
-  const allPaths = findAllSwapPaths({
-    chainId: sdk.chainId,
-    fromTokenAddress: params.fromTokenAddress,
-    toTokenAddress: params.toTokenAddress,
-    marketsInfoData,
-    graph,
-    wrappedFromAddress,
-    wrappedToAddress,
-  });
-
-  const estimator = createSwapEstimator(marketsInfoData);
-
   const findSwapPath = createFindSwapPath({
     chainId: sdk.chainId,
     fromTokenAddress: params.fromTokenAddress,
     toTokenAddress: params.toTokenAddress,
     marketsInfoData,
-    estimator,
-    allPaths,
+    gasEstimationParams: {
+      gasLimits,
+      gasPrice,
+      tokensData,
+    },
   });
 
   const isWrapOrUnwrap = Boolean(
     fromToken && toToken && (getIsWrap(fromToken, toToken) || getIsUnwrap(fromToken, toToken))
   );
 
-  const swapOptimizationOrder: Parameters<FindSwapPath>[1]["order"] = isLimit ? ["length", "liquidity"] : undefined;
+  const swapOptimizationOrder: SwapOptimizationOrderArray | undefined = isLimit ? ["length", "liquidity"] : undefined;
 
   let swapAmounts: SwapAmounts | undefined;
 

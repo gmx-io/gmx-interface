@@ -9,7 +9,6 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ClaimFundingFeeAction, ClaimType } from "domain/synthetics/claimHistory";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 
-
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";

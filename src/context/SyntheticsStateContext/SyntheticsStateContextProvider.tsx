@@ -49,7 +49,6 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { BlockTimestampData, useBlockTimestampRequest } from "lib/useBlockTimestampRequest";
 import useWallet from "lib/wallets/useWallet";
 
-
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
 

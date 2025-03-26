@@ -19,7 +19,6 @@ import { ExpandableRow } from "components/Synthetics/ExpandableRow";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-
 import { EntryButton } from "../components/EntryButton";
 import { SideOrderEntries } from "../components/SideOrderEntries";
 

@@ -3,15 +3,14 @@
  * No need to edit them manually, use `yarn run prebuild` command instead.
  */
 import {
+  KinkModelMarketRateMulticallRequestConfig,
   MarketConfigMulticallRequestConfig,
   MarketValuesMulticallRequestConfig,
-  KinkModelMarketRateMulticallRequestConfig,
 } from "modules/markets/types";
 
 import hashedKinkModelMarketRatesKeys from "./hashedKinkModelMarketRatesKeys.json";
 import hashedMarketConfigKeysJson from "./hashedMarketConfigKeys.json";
 import hashedMarketValuesKeysJson from "./hashedMarketValuesKeys.json";
-
 
 type HashedMarketValuesKeys = Omit<
   Record<keyof MarketValuesMulticallRequestConfig[`${string}-dataStore`]["calls"], string>,
@@ -43,4 +42,4 @@ const HASHED_KINK_MODEL_MARKET_RATES_KEYS: {
   };
 } = hashedKinkModelMarketRatesKeys;
 
-export { HASHED_MARKET_VALUES_KEYS, HASHED_MARKET_CONFIG_KEYS, HASHED_KINK_MODEL_MARKET_RATES_KEYS };
+export { HASHED_KINK_MODEL_MARKET_RATES_KEYS, HASHED_MARKET_CONFIG_KEYS, HASHED_MARKET_VALUES_KEYS };

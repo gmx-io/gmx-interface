@@ -15,7 +15,6 @@ import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import { PoolSelector2 } from "../PoolSelector2/PoolSelector2";
 import { TradeboxPoolWarnings } from "../TradeboxPoolWarnings/TradeboxPoolWarnings";
 
-
 export function MarketPoolSelectorRow() {
   const { relatedMarketStats, relatedMarketsPositionStats } = useSelector(selectTradeboxRelatedMarketsStats);
   const { marketAddress, setMarketAddress } = useSelector(selectTradeboxState);

@@ -30,7 +30,6 @@ import Modal from "components/Modal/Modal";
 
 import { GMX_DAO_LINKS } from "./constants";
 
-
 export function StakeModal(props: {
   isVisible: boolean;
   setIsVisible: (isVisible: boolean) => void;

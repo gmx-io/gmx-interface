@@ -28,6 +28,7 @@
       "configs/*": ["configs/*"],
       "types/*": ["types/*"],
       "abis/*": ["abis/*"],
+      "swap/*": ["swap/*"],
       "prebuilt": ["prebuild/index"]
     },
     "plugins": [

@@ -8,14 +8,12 @@ import dateEn from "date-fns/locale/en-US";
 import { BytesLike, ethers } from "ethers";
 import words from "lodash/words";
 
-
 import { abis } from "sdk/abis";
 import { TradeActionType } from "sdk/types/tradeHistory";
 
 import { LOCALE_DATE_LOCALE_MAP } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
 
 import { CustomErrorName } from "./CustomErrorName";
-
 
 export function getOrderActionText(eventName: TradeActionType) {
   let actionText = "";

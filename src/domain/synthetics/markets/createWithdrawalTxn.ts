@@ -18,7 +18,6 @@ import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 
-
 export type CreateWithdrawalParams = {
   account: string;
   marketTokenAddress: string;

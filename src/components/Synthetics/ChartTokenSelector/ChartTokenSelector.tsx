@@ -51,7 +51,6 @@ import { TableTd, TableTr } from "components/Table/Table";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
-
 import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
 

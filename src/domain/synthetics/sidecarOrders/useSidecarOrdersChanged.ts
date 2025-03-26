@@ -11,7 +11,6 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { InitialEntry } from "./types";
 
-
 function isEqualOrders(a?: InitialEntry[], b?: InitialEntry[]) {
   return (
     a?.length === b?.length &&

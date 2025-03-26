@@ -18,7 +18,6 @@ import { AppHeaderUser } from "./AppHeaderUser";
 import { HeaderLink } from "./HeaderLink";
 import { HomeHeaderLinks } from "./HomeHeaderLinks";
 
-
 import "./Header.scss";
 
 // Fix framer-motion old React FC type (solved in react 18)

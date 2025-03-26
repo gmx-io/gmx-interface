@@ -15,7 +15,6 @@ import useWallet from "lib/wallets/useWallet";
 import type { ModalProps } from "components/Modal/Modal";
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 
-
 import language24Icon from "img/ic_language24.svg";
 import SettingsIcon16 from "img/ic_settings_16.svg?react";
 import SettingsIcon24 from "img/ic_settings_24.svg?react";

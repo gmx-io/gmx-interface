@@ -20,7 +20,6 @@ import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
-
 export type PendingTransactionData = {
   estimatedExecutionFee: bigint;
   estimatedExecutionGasLimit: bigint;

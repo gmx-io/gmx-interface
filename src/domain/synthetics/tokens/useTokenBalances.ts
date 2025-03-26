@@ -11,7 +11,6 @@ import { getV2Tokens, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import { TokenBalancesData } from "./types";
 
-
 type BalancesDataResult = {
   balancesData?: TokenBalancesData;
   error?: Error;

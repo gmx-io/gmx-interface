@@ -16,8 +16,6 @@ import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 
-
-
 import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
 import { Operation } from "../types";
 

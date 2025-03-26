@@ -12,7 +12,6 @@ import { formatBalanceAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { getNativeToken, getToken } from "sdk/configs/tokens";
 
-
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";

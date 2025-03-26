@@ -14,7 +14,6 @@ import { getByKey } from "lib/objects";
 
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 
-
 import "./StatusNotification.scss";
 import { StatusNotification } from "./StatusNotification";
 import { useToastAutoClose } from "./useToastAutoClose";

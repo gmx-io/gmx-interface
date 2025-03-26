@@ -22,7 +22,6 @@ import { formatUsd } from "lib/numbers";
 import { bigintToNumber } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
-
 import { AmountWithUsdBalance, AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import { CardRow } from "components/CardRow/CardRow";

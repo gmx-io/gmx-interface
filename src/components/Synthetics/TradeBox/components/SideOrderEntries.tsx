@@ -16,7 +16,6 @@ import { NUMBER_WITH_TWO_DECIMALS } from "components/PercentageInput/PercentageI
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-
 import { EntryButton } from "./EntryButton";
 
 const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];

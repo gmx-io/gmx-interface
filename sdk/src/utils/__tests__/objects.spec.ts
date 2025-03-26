@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { setByKey, updateByKey, getByKey } from "../objects";
+import { setByKey, updateByKey, getByKey, objectKeysDeep } from "../objects";
 describe("setByKey", () => {
   it("should set a key in an object", () => {
     const obj = { a: 1, b: 2 };
@@ -73,5 +73,90 @@ describe("getByKey", () => {
     const key = "c";
 
     expect(getByKey(obj, key)).toEqual(undefined);
+  });
+});
+
+describe("objectKeysDeep", () => {
+  it("should get all keys from a flat object", () => {
+    const obj = { a: 1, b: 2, c: 3 };
+    const keys = objectKeysDeep(obj);
+    expect(keys).toEqual(["a", "b", "c"]);
+  });
+
+  it("should get all keys from a nested object with default depth", () => {
+    const obj = {
+      a: 1,
+      b: {
+        x: 2,
+        y: 3,
+      },
+      c: 4,
+    };
+    const keys = objectKeysDeep(obj);
+    expect(keys).toEqual(["a", "b", "c", "x", "y"]);
+  });
+
+  it("should get all keys from a deeply nested object with custom depth", () => {
+    const obj = {
+      a: 1,
+      b: {
+        x: 2,
+        y: {
+          m: 3,
+          n: 4,
+        },
+      },
+      c: 5,
+    };
+    const keys = objectKeysDeep(obj, 2);
+    expect(keys).toEqual(["a", "b", "c", "x", "y", "m", "n"]);
+  });
+
+  it("should respect depth limit when specified", () => {
+    const obj = {
+      a: 1,
+      b: {
+        x: 2,
+        y: {
+          m: 3,
+          n: 4,
+        },
+      },
+      c: 5,
+    };
+    const keys = objectKeysDeep(obj, 1);
+    expect(keys).toEqual(["a", "b", "c", "x", "y"]);
+  });
+
+  it("should handle empty objects", () => {
+    const obj = {};
+    const keys = objectKeysDeep(obj);
+    expect(keys).toEqual([]);
+  });
+
+  it("should handle objects with arrays", () => {
+    const obj = {
+      a: 1,
+      b: [2, 3],
+      c: {
+        x: 4,
+        y: [5, 6],
+      },
+    };
+    const keys = objectKeysDeep(obj);
+    expect(keys).toEqual(["a", "b", "c", "x", "y"]);
+  });
+
+  it("should handle objects with null values", () => {
+    const obj = {
+      a: 1,
+      b: null,
+      c: {
+        x: 2,
+        y: null,
+      },
+    };
+    const keys = objectKeysDeep(obj);
+    expect(keys).toEqual(["a", "b", "c", "x", "y"]);
   });
 });

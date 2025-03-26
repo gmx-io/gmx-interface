@@ -18,7 +18,6 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
-
 type Props = {
   executionFee?: ExecutionFee;
   isAdditionOrdersMsg?: boolean;

@@ -10,9 +10,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-
 import { ClaimableCardUI } from "./ClaimableCardUI";
-
 
 type Props = {
   onClaimClick: () => void;

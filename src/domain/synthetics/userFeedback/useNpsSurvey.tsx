@@ -20,7 +20,6 @@ import { formatAmountForMetrics } from "lib/metrics";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import useWallet from "lib/wallets/useWallet";
 
-
 import { RatingToast } from "components/RatingToast/RatingToast";
 
 import { Answer } from "./types";

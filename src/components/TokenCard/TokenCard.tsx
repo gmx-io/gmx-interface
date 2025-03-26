@@ -33,9 +33,6 @@ import sparkleIcon from "img/sparkle.svg";
 import APRLabel from "../APRLabel/APRLabel";
 import { HeaderLink } from "../Header/HeaderLink";
 
-
-
-
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
 const gmIcon = getIcon("common", "gm");

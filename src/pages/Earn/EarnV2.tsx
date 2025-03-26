@@ -36,7 +36,6 @@ import { UnstakeModal } from "./UnstakeModal";
 import { useProcessedData } from "./useProcessedData";
 import { Vesting } from "./Vesting";
 
-
 import "./EarnV2.css";
 
 export default function EarnV2() {

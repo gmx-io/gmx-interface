@@ -6,7 +6,6 @@ import { TRADE_LOST_FOCUS_TIMEOUT, WS_LOST_FOCUS_TIMEOUT } from "config/ui";
 
 import useIsWindowVisible from "./useIsWindowVisible";
 
-
 function useHasLostFocusHelper(p: {
   timeout: number;
   checkIsTabFocused?: boolean;

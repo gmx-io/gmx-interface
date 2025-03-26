@@ -17,7 +17,6 @@ import { useDepositWithdrawalTransactions } from "./useDepositWithdrawalTransact
 import { useTokensToApprove } from "./useTokensToApprove";
 import { Operation } from "../types";
 
-
 interface Props {
   amounts: ReturnType<typeof useDepositWithdrawalAmounts>;
   fees: ReturnType<typeof useDepositWithdrawalFees>["fees"];

@@ -9,7 +9,6 @@ import { abis } from "sdk/abis";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 
-
 export function AffiliateVesterWithdrawModal(props) {
   const { isVisible, setIsVisible, chainId, signer, setPendingTxns } = props;
   const [isWithdrawing, setIsWithdrawing] = useState(false);

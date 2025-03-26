@@ -6,7 +6,6 @@ import { parseContractPrice } from "utils/tokens";
 
 import { Module } from "../base";
 
-
 type TokenPricesDataResult = {
   pricesData?: TokenPricesData;
   updatedAt?: number;

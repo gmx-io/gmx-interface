@@ -16,7 +16,6 @@ import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import { Textarea } from "components/Textarea/Textarea";
 
-
 export function MissedCoinsModal() {
   const missedCoinsModalPlace = useSelector(selectMissedCoinsModalPlace);
   const setMissedCoinsModalPlace = useSelector(selectSetMissedCoinsModalPlace);

@@ -1,6 +1,5 @@
 import { ethers } from "ethers";
 
-
 import { getSwapDebugSettings } from "config/externalSwaps";
 import { UserReferralInfo } from "domain/referrals";
 import { applyFactor } from "lib/numbers";

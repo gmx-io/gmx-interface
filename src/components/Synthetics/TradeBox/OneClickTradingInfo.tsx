@@ -11,7 +11,6 @@ import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 
-
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 

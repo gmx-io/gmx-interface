@@ -1,6 +1,5 @@
 import { useCallback } from "react";
 
-
 import { USD_DECIMALS } from "config/factors";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";

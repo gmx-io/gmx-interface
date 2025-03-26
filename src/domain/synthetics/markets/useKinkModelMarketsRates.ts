@@ -7,8 +7,6 @@ import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import type { KinkModelMarketRateMulticallRequestConfig } from "sdk/modules/markets/types";
 import { HASHED_KINK_MODEL_MARKET_RATES_KEYS } from "sdk/prebuilt";
 
-
-
 export type KinkModelMarketsRatesResult = {
   kinkMarketsBorrowingRatesData: Record<
     string,

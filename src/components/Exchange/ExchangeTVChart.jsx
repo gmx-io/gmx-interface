@@ -1,5 +1,3 @@
-
-
 import { t } from "@lingui/macro";
 import cx from "classnames";
 import { useEffect, useMemo, useRef, useState } from "react";

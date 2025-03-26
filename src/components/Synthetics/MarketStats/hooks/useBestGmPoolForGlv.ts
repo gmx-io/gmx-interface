@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from "react";
 
-
 import { getAvailableUsdLiquidityForCollateral, GlvInfo } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokensData } from "domain/synthetics/tokens";

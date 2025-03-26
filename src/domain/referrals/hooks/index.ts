@@ -20,7 +20,6 @@ import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
 
 import { UserReferralInfo } from "../types";
 
-
 export * from "./useReferralsData";
 export * from "./useUserCodesOnAllChain";
 export * from "./useReferralCodeFromUrl";

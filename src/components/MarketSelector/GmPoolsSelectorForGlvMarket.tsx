@@ -19,14 +19,12 @@ import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
 import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
-
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
 import { useGlvGmMarketsWithComposition } from "components/Synthetics/MarketStats/hooks/useMarketGlvGmMarketsCompositions";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-
 
 import { PoolListItem } from "./PoolListItem";
 import { CommonPoolSelectorProps, MarketOption } from "./types";

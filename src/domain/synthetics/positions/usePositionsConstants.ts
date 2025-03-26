@@ -5,7 +5,6 @@ import { MAX_AUTO_CANCEL_ORDERS_KEY, MIN_COLLATERAL_USD_KEY, MIN_POSITION_SIZE_U
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
-
 export type PositionsConstantsResult = {
   positionsConstants: {
     minCollateralUsd?: bigint;

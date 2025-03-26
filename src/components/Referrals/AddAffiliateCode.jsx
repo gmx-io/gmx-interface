@@ -12,7 +12,6 @@ import Button from "components/Button/Button";
 
 import { getCodeError, getReferralCodeTakenStatus, getSampleReferrarStat } from "./referralsHelper";
 
-
 function AddAffiliateCode({ handleCreateReferralCode, active, setRecentlyAddedCodes, recentlyAddedCodes }) {
   const { openConnectModal } = useConnectModal();
   return (

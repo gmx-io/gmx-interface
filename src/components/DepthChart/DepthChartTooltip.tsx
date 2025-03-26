@@ -12,7 +12,6 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 import type { DataPoint } from "./DepthChart";
 
-
 const LEFT_OPAQUE_TOOLTIP = (
   <Trans>
     Execution prices for increasing shorts and

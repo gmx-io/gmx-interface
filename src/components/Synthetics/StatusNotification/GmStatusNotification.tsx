@@ -24,7 +24,6 @@ import { convertTokenAddress } from "sdk/configs/tokens";
 
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 
-
 import { StatusNotification } from "./StatusNotification";
 import { useToastAutoClose } from "./useToastAutoClose";
 

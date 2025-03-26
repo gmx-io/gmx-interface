@@ -11,7 +11,6 @@ import { getByKey } from "utils/objects";
 import { MarketConfigMulticallRequestConfig, MarketValuesMulticallRequestConfig } from "./types";
 import { HASHED_MARKET_CONFIG_KEYS, HASHED_MARKET_VALUES_KEYS } from "../../prebuilt";
 
-
 export function buildClaimableFundingDataRequest({
   marketsAddresses,
   marketsData,

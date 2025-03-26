@@ -15,7 +15,6 @@ import { formatAmount } from "lib/numbers";
 
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
-
 export function SwapSpreadRow() {
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const fromToken = useSelector(selectTradeboxFromToken);

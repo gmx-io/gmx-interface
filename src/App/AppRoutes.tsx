@@ -31,10 +31,8 @@ import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
 import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 
-
 import { HomeRoutes } from "./HomeRoutes";
 import { MainRoutes } from "./MainRoutes";
-
 
 const Zoom = cssTransition({
   enter: "zoomIn",

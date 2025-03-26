@@ -11,7 +11,6 @@ import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-
 export function MintableAmount({
   mintableInfo,
   market,

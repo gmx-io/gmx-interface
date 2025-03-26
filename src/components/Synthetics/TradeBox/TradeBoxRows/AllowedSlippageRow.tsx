@@ -16,7 +16,6 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { useTradeboxChanges } from "../hooks/useTradeboxChanges";
 
-
 export function AllowedSlippageRow() {
   const { savedAllowedSlippage } = useSettings();
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);

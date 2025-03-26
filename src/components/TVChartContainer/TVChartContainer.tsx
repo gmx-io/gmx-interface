@@ -11,7 +11,6 @@ import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import { isChartAvailableForToken } from "sdk/configs/tokens";
 
-
 import Loader from "components/Common/Loader";
 
 import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";

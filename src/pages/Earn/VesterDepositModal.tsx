@@ -19,7 +19,6 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-
 export function VesterDepositModal(props: {
   isVisible: boolean;
   setIsVisible: (isVisible: boolean) => void;

@@ -14,7 +14,6 @@ import type { TokenData } from "domain/synthetics/tokens/types";
 import type { TradeType } from "domain/synthetics/trade";
 import { helperToast } from "lib/helperToast";
 
-
 import { TableTd } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 

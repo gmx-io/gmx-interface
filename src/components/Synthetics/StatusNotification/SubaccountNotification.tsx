@@ -14,7 +14,6 @@ import { usePrevious } from "lib/usePrevious";
 import SpinningLoader from "components/Common/SpinningLoader";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-
 import { StatusNotification } from "./StatusNotification";
 import { useToastAutoClose } from "./useToastAutoClose";
 

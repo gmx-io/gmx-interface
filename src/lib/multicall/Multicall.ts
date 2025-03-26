@@ -21,7 +21,6 @@ import { abis as allAbis } from "sdk/abis";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 import { serializeMulticallErrors } from "./utils";
 
-
 export const MAX_TIMEOUT = 20000;
 
 const CHAIN_BY_CHAIN_ID = {

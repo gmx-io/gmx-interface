@@ -11,7 +11,6 @@ import { isTriggerDecreaseOrderType } from "domain/synthetics/orders";
 import { TriggerThresholdType } from "domain/synthetics/trade";
 import { EMPTY_ARRAY } from "lib/objects";
 
-
 export function useDecreaseOrdersThatWillBeExecuted() {
   const markPrice = useSelector(selectTradeboxMarkPrice);
   const existingPosition = useSelector(selectTradeboxSelectedPosition);

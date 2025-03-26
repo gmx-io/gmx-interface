@@ -10,7 +10,6 @@ import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
 import { isHomeSite } from "lib/legacy";
 
-
 import EventToast from "./EventToast";
 
 function useEventToast() {

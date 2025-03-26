@@ -31,7 +31,6 @@ import { ClaimHistoryRow } from "./ClaimHistoryRow/ClaimHistoryRow";
 import { ActionFilter } from "./filters/ActionFilter";
 import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
 
-
 import "./ClaimsHistory.scss";
 
 const CLAIMS_HISTORY_PREFETCH_SIZE = 100;
