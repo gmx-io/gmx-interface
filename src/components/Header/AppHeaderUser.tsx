@@ -12,12 +12,12 @@ import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
 
 import { useChainId } from "lib/chains";
-import { getAccountUrl, isHomeSite, shouldShowRedirectModal } from "lib/legacy";
+import { isHomeSite, shouldShowRedirectModal } from "lib/legacy";
+import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
 import { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
-import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
 
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
@@ -31,7 +31,6 @@ import "./Header.scss";
 type Props = {
   openSettings: () => void;
   small?: boolean;
-  disconnectAccountAndCloseSettings: () => void;
   showRedirectModal: (to: string) => void;
   menuToggle?: React.ReactNode;
 };
@@ -64,7 +63,7 @@ export function AppHeaderUser({
   small,
   menuToggle,
   openSettings,
-  disconnectAccountAndCloseSettings,
+
   showRedirectModal,
 }: Props) {
   const { chainId } = useChainId();
@@ -141,8 +140,6 @@ export function AppHeaderUser({
     );
   }
 
-  const accountUrl = getAccountUrl(chainId, account);
-
   return (
     <div className="App-header-user">
       <div data-qa="trade" className="App-header-trade-link text-body-medium">
@@ -161,11 +158,7 @@ export function AppHeaderUser({
       {showConnectionOptions ? (
         <>
           <div data-qa="user-address" className="App-header-user-address">
-            <AddressDropdown
-              account={account}
-              accountUrl={accountUrl}
-              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-            />
+            <AddressDropdown account={account} />
           </div>
           {!small && <NotifyButton />}
           <NetworkDropdown

@@ -23,6 +23,7 @@ import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
 import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
+import { GmxAccountModal } from "components/Synthetics/GmxAccountModal/GmxAccountModal";
 
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
@@ -155,6 +156,7 @@ export function AppRoutes() {
       />
       <SettingsModal isSettingsVisible={isSettingsVisible} setIsSettingsVisible={setIsSettingsVisible} />
       <SubaccountModal />
+      <GmxAccountModal />
       <NotifyModal />
     </>
   );

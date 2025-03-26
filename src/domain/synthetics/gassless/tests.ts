@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { expect } from "chai";
 import {
   impersonateAccount,

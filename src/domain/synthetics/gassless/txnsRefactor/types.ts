@@ -108,20 +108,3 @@ function getCreateOrderPayloadForSwap({
     referralCode: orderParams.referralCode,
   };
 }
-
-function handleSwapAddresses({ chainId, collateralParams }: { chainId: number; collateralParams: CollateralParams }) {
-  let swapPath = collateralParams.swapPath;
-  let initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
-  const tokenToSendAddress = initialCollateralTokenAddress;
-
-  if (p.externalSwapQuote?.txnData) {
-    swapPath = [];
-    initialCollateralTokenAddress = ;
-  }
-
-  return {
-    swapPath,
-    initialCollateralTokenAddress,
-    tokenToSendAddress,
-  };
-}

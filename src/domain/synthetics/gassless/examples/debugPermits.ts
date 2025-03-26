@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Signer, ethers } from "ethers";
 import { debugPermitSignature, createTokenPermit } from "../permitUtils";
 
@@ -86,11 +88,11 @@ async function runTest() {
   // Use your wallet signer here
   const provider = new ethers.JsonRpcProvider("https://arb1.arbitrum.io/rpc");
   const signer = new ethers.Wallet("YOUR_PRIVATE_KEY", provider);
-  
+
   // USDC on Arbitrum
   const usdcAddress = "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9";
   const chainId = 42161; // Arbitrum
-  
+
   await runPermitDiagnostic(usdcAddress, signer, chainId);
 }
 

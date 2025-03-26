@@ -2,6 +2,8 @@ import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
 import arbitrum from "img/ic_arbitrum_24.svg";
 import avalanche from "img/ic_avalanche_24.svg";
 import avalancheTestnet from "img/ic_avalanche_testnet_24.svg";
+import baseIcon from "img/ic_base_24.svg";
+import sonicIcon from "img/ic_s_24.svg";
 
 import gmxIcon from "img/ic_gmx_40.svg";
 import gmxOutlineIcon from "img/ic_gmxv1flat.svg";
@@ -17,6 +19,7 @@ import gmxAvax from "img/ic_gmx_avax.svg";
 import glpArbitrum from "img/ic_glp_arbitrum.svg";
 import glpAvax from "img/ic_glp_avalanche.svg";
 import glvIcon from "img/ic_glv_40.svg";
+import { base, sonic } from "viem/chains";
 
 type ChainIcons = {
   network?: string;
@@ -57,6 +60,15 @@ const ICONS: Record<number | "common", ChainIcons> = {
     gm: gmIcon,
     glv: glvIcon,
   },
+};
+
+export const CHAIN_ID_TO_NETWORK_ICON = {
+  [ARBITRUM]: arbitrum,
+  [AVALANCHE]: avalanche,
+  [AVALANCHE_FUJI]: avalancheTestnet,
+  [base.id]: baseIcon,
+  [sonic.id]: sonicIcon,
+  0: gmxIcon,
 };
 
 export function getIcon(chainId: number | "common", label: keyof ChainIcons) {

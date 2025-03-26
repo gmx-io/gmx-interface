@@ -113,11 +113,7 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
               )}
             </div>
             <div className="App-header-container-right">
-              <AppHeaderUser
-                disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-                openSettings={openSettings}
-                showRedirectModal={showRedirectModal}
-              />
+              <AppHeaderUser openSettings={openSettings} showRedirectModal={showRedirectModal} />
             </div>
           </div>
         )}
@@ -136,7 +132,6 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
               </div>
               <div className="App-header-container-right">
                 <AppHeaderUser
-                  disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
                   openSettings={openSettings}
                   small
                   showRedirectModal={showRedirectModal}

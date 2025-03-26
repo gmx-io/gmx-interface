@@ -13,7 +13,7 @@ type Props = {
   bottomRightValue?: string;
   onClickBottomRightLabel?: () => void;
   topRightLabel?: string;
-  topRightValue?: string;
+  topRightValue?: ReactNode;
   onClickTopRightLabel?: () => void;
   inputValue?: number | string;
   onInputValueChange?: (e: ChangeEvent<HTMLInputElement>) => void;

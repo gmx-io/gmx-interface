@@ -27,6 +27,7 @@ import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTx
 import { SettingsContextProvider } from "context/SettingsContext/SettingsContextProvider";
 import { SorterContextProvider } from "context/SorterContext/SorterContextProvider";
 import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
+import { GmxAccountContextProvider } from "context/GmxAccountContext/GmxAccountContext";
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
@@ -51,6 +52,7 @@ function App() {
   app = <TokensFavoritesContextProvider>{app}</TokensFavoritesContextProvider>;
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
+  app = <GmxAccountContextProvider>{app}</GmxAccountContextProvider>;
   app = <TokensBalancesContextProvider>{app}</TokensBalancesContextProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
   app = <SEO>{app}</SEO>;

@@ -1,5 +1,4 @@
-import { ClientConfig, createPublicClient, http } from "viem";
-import type { BatchOptions } from "viem/_types/clients/transports/http";
+import { ClientConfig, HttpTransportConfig, createPublicClient, http } from "viem";
 import { arbitrum, avalanche, avalancheFuji } from "viem/chains";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
@@ -7,7 +6,6 @@ import { isWebWorker } from "config/env";
 import { sleep } from "lib/sleep";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
-import CustomErrors from "sdk/abis/CustomErrors.json";
 import {
   MulticallErrorEvent,
   MulticallFallbackRpcModeCounter,
@@ -15,11 +13,11 @@ import {
   MulticallRequestTiming,
   MulticallTimeoutEvent,
 } from "lib/metrics";
-import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
-import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
-import { serializeMulticallErrors } from "./utils";
+import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
-import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
+import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
+import CustomErrors from "sdk/abis/CustomErrors.json";
+import { serializeMulticallErrors } from "./utils";
 
 export const MAX_TIMEOUT = 20000;
 
@@ -37,7 +35,7 @@ export type MulticallProviderUrls = {
 const BATCH_CONFIGS: Record<
   number,
   {
-    http: BatchOptions;
+    http: HttpTransportConfig["batch"];
     client: ClientConfig["batch"];
   }
 > = {
