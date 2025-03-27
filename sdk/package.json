@@ -37,7 +37,7 @@
     "query-string": "7.1.1",
     "typescript": "5.4.2",
     "universal-perf-hooks": "1.0.1",
-    "viem": "^2.23.13"
+    "viem": "^2.7.20"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
