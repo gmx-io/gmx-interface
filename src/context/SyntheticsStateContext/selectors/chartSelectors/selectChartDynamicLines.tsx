@@ -51,6 +51,7 @@ export const selectChartDynamicLines = createSelector<DynamicChartLine[]>((q) =>
 
       return {
         id: positionOrder.key,
+        marketName: positionOrder.marketInfo.name,
         orderType: positionOrder.orderType,
         isLong: order.isLong,
         price: parseFloat(

@@ -28,6 +28,7 @@ export function DynamicLine({
   isEdited,
   isPending,
   getError,
+  marketName,
 }: {
   isMobile: boolean;
   isEdited: boolean;
@@ -50,8 +51,8 @@ export function DynamicLine({
   const title = useMemo(() => {
     const predefinedKey = orderTypeToTitle[`${orderType}-${isLong ? "long" : "short"}`];
     const title = predefinedKey ? _(predefinedKey) : t`Unknown Order`;
-    return title;
-  }, [_, isLong, orderType]);
+    return `${title} ${marketName}`;
+  }, [_, isLong, orderType, marketName]);
 
   useEffect(() => {
     const chart = tvWidgetRef.current?.activeChart();
