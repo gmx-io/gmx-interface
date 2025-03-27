@@ -12,7 +12,7 @@ import type { IChartingLibraryWidget, IOrderLineAdapter } from "../../charting_l
 
 const BODY_BACKGROUND_COLOR = "#3a3e5e";
 const BUTTON_BACKGROUND_COLOR = "#16182e";
-const BORDER_COLOR = "#252a47";
+const BORDER_COLOR = "#9295ad";
 const BODY_ERROR_BACKGROUND_COLOR = "#831e2d";
 const LOADER_ANIMATION_STEP_MS = 1000;
 
