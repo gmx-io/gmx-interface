@@ -16,7 +16,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { useTradeboxChanges } from "../hooks/useTradeboxChanges";
 
-export function AllowedSlippageRow() {
+export function AllowedSlippageRow({ slippageInputId }: { slippageInputId: string }) {
   const { savedAllowedSlippage } = useSettings();
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
   const setAllowedSlippage = useSelector(selectSetTradeboxAllowedSlippage);
@@ -58,7 +58,7 @@ export function AllowedSlippageRow() {
         value={allowedSlippage}
         highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
         highValueWarningText={t`Slippage is too high`}
-        inputId={"tradebox-allowed-slippage-input"}
+        inputId={slippageInputId}
       />
     </SyntheticsInfoRow>
   );

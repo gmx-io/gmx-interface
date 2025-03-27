@@ -10,7 +10,7 @@ import {
   getMulticallContract,
   getZeroAddressContract,
 } from "config/contracts";
-import { OrderActionSource, SwapPricingType } from "domain/synthetics/orders";
+import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { extractDataFromError, getErrorMessage } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
@@ -51,9 +51,11 @@ type SimulateExecuteParams = {
   swapPricingType?: SwapPricingType;
   metricId?: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
-  additionalErrorContent?: React.ReactNode;
+  additionalErrorParams?: {
+    content?: React.ReactNode;
+    slippageInputId?: string;
+  };
   externalSwapQuote?: ExternalSwapQuote;
-  orderActionSource?: OrderActionSource;
 };
 
 export async function simulateExecuteTxn(chainId: number, p: SimulateExecuteParams) {
@@ -197,18 +199,20 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
       }, {});
 
       let errorContent: ReactNode = errorTitle;
-      if (parsedError?.name === CustomErrorName.OrderNotFulfillableAtAcceptablePrice) {
-        const isCorrectSource = p.orderActionSource === "position-seller" || p.orderActionSource === "tradebox";
+      if (
+        parsedError?.name === CustomErrorName.OrderNotFulfillableAtAcceptablePrice ||
+        parsedError?.name === CustomErrorName.InsufficientSwapOutputAmount
+      ) {
         errorContent = (
           <Trans>
             Prices are currently volatile for this market, try again by{" "}
             <span
               onClick={() => {
-                if (isCorrectSource) {
-                  document.getElementById(`${p.orderActionSource}-allowed-slippage-input`)?.focus();
+                if (p.additionalErrorParams?.slippageInputId) {
+                  document.getElementById(p.additionalErrorParams?.slippageInputId)?.focus();
                 }
               }}
-              className={isCorrectSource ? "cursor-pointer underline" : undefined}
+              className={p.additionalErrorParams?.slippageInputId ? "cursor-pointer underline" : undefined}
             >
               <Trans>increasing the allowed slippage</Trans>
             </span>{" "}
@@ -220,7 +224,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
       msg = (
         <div>
           {errorContent}
-          {p.additionalErrorContent}
+          {p.additionalErrorParams?.content}
           <br />n
           <br />
           <ToastifyDebug
@@ -232,7 +236,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
       // eslint-disable-next-line no-console
       console.error(parsingError);
 
-      const commonError = getErrorMessage(chainId, txnError, errorTitle, p.additionalErrorContent);
+      const commonError = getErrorMessage(chainId, txnError, errorTitle, p.additionalErrorParams?.content);
       msg = commonError.failMsg;
     }
 

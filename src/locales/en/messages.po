@@ -2029,10 +2029,6 @@ msgstr "Buying {symbol}..."
 msgid "Could not increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}  USD"
 msgstr "Could not increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}  USD"
 
-#: src/domain/synthetics/orders/simulateExecuteTxn.tsx
-#~ msgid "Prices are now volatile for this market, try again with increased Allowed Slippage value in Execution Details section."
-#~ msgstr "Prices are now volatile for this market, try again with increased Allowed Slippage value in Execution Details section."
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on {chainName}"
 msgstr "Buy GMX on {chainName}"

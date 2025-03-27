@@ -19,5 +19,3 @@ export type EditingOrderState = {
 };
 
 export type EditingOrderSource = "PositionsList" | "PriceChart";
-
-export type OrderActionSource = "position-seller" | "tradebox" | "claims";

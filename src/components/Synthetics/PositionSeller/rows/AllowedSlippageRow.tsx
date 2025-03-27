@@ -10,9 +10,11 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 export function AllowedSlippageRow({
   allowedSlippage,
   setAllowedSlippage,
+  slippageInputId,
 }: {
   setAllowedSlippage: (value: number) => void;
   allowedSlippage: number;
+  slippageInputId: string;
 }) {
   return (
     <SyntheticsInfoRow
@@ -44,7 +46,7 @@ export function AllowedSlippageRow({
         value={allowedSlippage}
         highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
         highValueWarningText={t`Slippage is too high`}
-        inputId={"position-seller-allowed-slippage-input"}
+        inputId={slippageInputId}
         negativeSign
       />
     </SyntheticsInfoRow>

@@ -18,7 +18,7 @@ import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 import { prepareOrderTxn } from "./prepareOrderTxn";
 import { simulateExecuteTxn } from "./simulateExecuteTxn";
-import { DecreasePositionSwapType, OrderType, OrderActionSource } from "./types";
+import { DecreasePositionSwapType, OrderType } from "./types";
 
 const { ZeroAddress } = ethers;
 
@@ -41,7 +41,7 @@ export type SwapOrderParams = {
   skipSimulation: boolean;
   metricId: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
-  orderActionSource: OrderActionSource;
+  slippageInputId: string | undefined;
 };
 
 export async function createSwapOrderTxn(chainId: number, signer: Signer, subaccount: Subaccount, p: SwapOrderParams) {
@@ -95,7 +95,9 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
           errorTitle: t`Order error.`,
           metricId: p.metricId,
           blockTimestampData: p.blockTimestampData,
-          orderActionSource: p.orderActionSource,
+          additionalErrorParams: {
+            slippageInputId: p.slippageInputId,
+          },
         })
       : undefined;
 

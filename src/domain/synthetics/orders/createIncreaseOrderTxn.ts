@@ -23,7 +23,7 @@ import { createCancelEncodedPayload } from "./cancelOrdersTxn";
 import { DecreaseOrderParams as BaseDecreaseOrderParams, createDecreaseEncodedPayload } from "./createDecreaseOrderTxn";
 import { prepareOrderTxn } from "./prepareOrderTxn";
 import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
-import { DecreasePositionSwapType, OrderActionSource, OrderTxnType, OrderType } from "./types";
+import { DecreasePositionSwapType, OrderTxnType, OrderType } from "./types";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
 import { getPendingOrderFromParams } from "./utils";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
@@ -52,7 +52,7 @@ type IncreaseOrderParams = {
   referralCode: string | undefined;
   indexToken: TokenData;
   tokensData: TokensData;
-  orderActionSource: OrderActionSource;
+  slippageInputId: string | undefined;
   setPendingTxns: (txns: any) => void;
   setPendingOrder: SetPendingOrder;
   setPendingPosition: SetPendingPosition;
@@ -251,11 +251,13 @@ export async function createIncreaseOrderTxn({
         createMulticallPayload: simulationEncodedPayload,
         value: totalWntAmount,
         errorTitle: t`Order error.`,
-        additionalErrorContent,
+        additionalErrorParams: {
+          content: additionalErrorContent,
+          slippageInputId: p.slippageInputId,
+        },
         metricId,
         blockTimestampData,
         externalSwapQuote: p.externalSwapQuote,
-        orderActionSource: p.orderActionSource,
       })
     : undefined;
 
