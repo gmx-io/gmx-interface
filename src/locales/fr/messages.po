@@ -4258,8 +4258,8 @@ msgid "GLP Index Composition"
 msgstr "Composition de l'indice GLP"
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
-msgid "Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section"
-msgstr ""
+#~ msgid "Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section"
+#~ msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
@@ -4990,6 +4990,10 @@ msgstr ""
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
 msgstr "<<<<<<< HEAD"
+
+#: src/domain/synthetics/orders/simulateExecuteTxn.tsx
+msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
+msgstr ""
 
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Swap Price Impact for External Swap Threshold"

@@ -205,7 +205,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
       ) {
         errorContent = (
           <Trans>
-            Prices are currently volatile for this market, try again by{" "}
+            Order error. Prices are currently volatile for this market, try again by{" "}
             <span
               onClick={() => {
                 if (p.additionalErrorParams?.slippageInputId) {
@@ -216,7 +216,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
             >
               <Trans>increasing the allowed slippage</Trans>
             </span>{" "}
-            under the advanced display section
+            under the advanced display section.
           </Trans>
         );
       }
@@ -225,7 +225,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
         <div>
           {errorContent}
           {p.additionalErrorParams?.content}
-          <br />n
+          <br />
           <br />
           <ToastifyDebug
             error={`${txnError?.info?.error?.message ?? parsedError?.name ?? txnError?.message} ${JSON.stringify(parsedArgs, null, 2)}`}
