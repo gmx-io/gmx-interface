@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { BaseContract, ethers } from "ethers";
+import { ReactNode } from "react";
 import { withRetry } from "viem";
 
 import {
@@ -24,6 +25,7 @@ import { ExternalSwapQuote } from "sdk/types/trade";
 import { extractError } from "sdk/utils/contracts";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
 
+import { CustomErrorName } from "components/Synthetics/TradeHistory/TradeHistoryRow/utils/CustomErrorName";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
 import { isGlvEnabled } from "../markets/glv";
@@ -49,7 +51,10 @@ type SimulateExecuteParams = {
   swapPricingType?: SwapPricingType;
   metricId?: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
-  additionalErrorContent?: React.ReactNode;
+  additionalErrorParams?: {
+    content?: React.ReactNode;
+    slippageInputId?: string;
+  };
   externalSwapQuote?: ExternalSwapQuote;
 };
 
@@ -193,15 +198,34 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
         return acc;
       }, {});
 
-      if (parsedError?.name === "OrderNotFulfillableAtAcceptablePrice") {
-        errorTitle = t`Prices are now volatile for this market, try again with increased Allowed Slippage value in Execution Details section.`;
+      let errorContent: ReactNode = errorTitle;
+      if (
+        parsedError?.name === CustomErrorName.OrderNotFulfillableAtAcceptablePrice ||
+        parsedError?.name === CustomErrorName.InsufficientSwapOutputAmount
+      ) {
+        errorContent = (
+          <Trans>
+            Order error. Prices are currently volatile for this market, try again by{" "}
+            <span
+              onClick={() => {
+                if (p.additionalErrorParams?.slippageInputId) {
+                  document.getElementById(p.additionalErrorParams?.slippageInputId)?.focus();
+                }
+              }}
+              className={p.additionalErrorParams?.slippageInputId ? "cursor-pointer underline" : undefined}
+            >
+              <Trans>increasing the allowed slippage</Trans>
+            </span>{" "}
+            under the advanced display section.
+          </Trans>
+        );
       }
 
       msg = (
         <div>
-          {errorTitle}
-          {p.additionalErrorContent}
-          <br />n
+          {errorContent}
+          {p.additionalErrorParams?.content}
+          <br />
           <br />
           <ToastifyDebug
             error={`${txnError?.info?.error?.message ?? parsedError?.name ?? txnError?.message} ${JSON.stringify(parsedArgs, null, 2)}`}
@@ -212,7 +236,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
       // eslint-disable-next-line no-console
       console.error(parsingError);
 
-      const commonError = getErrorMessage(chainId, txnError, errorTitle, p.additionalErrorContent);
+      const commonError = getErrorMessage(chainId, txnError, errorTitle, p.additionalErrorParams?.content);
       msg = commonError.failMsg;
     }
 

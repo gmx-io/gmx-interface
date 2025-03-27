@@ -2029,10 +2029,6 @@ msgstr "Buying {symbol}..."
 msgid "Could not increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}  USD"
 msgstr "Could not increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}  USD"
 
-#: src/domain/synthetics/orders/simulateExecuteTxn.tsx
-msgid "Prices are now volatile for this market, try again with increased Allowed Slippage value in Execution Details section."
-msgstr "Prices are now volatile for this market, try again with increased Allowed Slippage value in Execution Details section."
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on {chainName}"
 msgstr "Buy GMX on {chainName}"
@@ -4264,6 +4260,10 @@ msgstr "Invalid Transfer Addresses: Please check the url."
 msgid "GLP Index Composition"
 msgstr "GLP Index Composition"
 
+#: src/domain/synthetics/orders/simulateExecuteTxn.tsx
+#~ msgid "Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section"
+#~ msgstr "Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
 msgstr "TP"
@@ -4993,6 +4993,10 @@ msgstr "Sell order executed"
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
 msgstr "Affiliate Rewards Claimed"
+
+#: src/domain/synthetics/orders/simulateExecuteTxn.tsx
+msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
+msgstr "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
 
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Swap Price Impact for External Swap Threshold"

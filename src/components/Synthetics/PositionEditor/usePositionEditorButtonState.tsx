@@ -365,6 +365,7 @@ export function usePositionEditorButtonState(operation: Operation): {
           setPendingTxns,
           setPendingOrder,
           setPendingPosition,
+          slippageInputId: undefined,
         },
       });
     } else {
@@ -401,6 +402,7 @@ export function usePositionEditorButtonState(operation: Operation): {
           tokensData,
           skipSimulation: shouldDisableValidationForTesting,
           autoCancel: false,
+          slippageInputId: undefined,
         },
         {
           setPendingTxns,

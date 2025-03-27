@@ -48,6 +48,7 @@ export type DecreaseOrderParams = {
   indexToken: Token;
   tokensData: TokensData;
   autoCancel: boolean;
+  slippageInputId?: string;
 };
 
 export type DecreaseOrderCallbacks = {
@@ -118,6 +119,9 @@ export async function createDecreaseOrderTxn(
           errorTitle: t`Order error.`,
           metricId,
           blockTimestampData,
+          additionalErrorParams: {
+            slippageInputId: p.slippageInputId,
+          },
         });
       }
     })
