@@ -4,7 +4,8 @@ import { FundingHistoryItem } from "context/GmxAccountContext/types";
 import { formatBalanceAmount } from "lib/numbers";
 import { useState } from "react";
 import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
-import { useGmxAccountFundingHistory, FundingHistoryItemLabel } from "./GmxAccountModal";
+import { FundingHistoryItemLabel } from "./MainView";
+import { useGmxAccountFundingHistory } from "components/Synthetics/GmxAccountModal/hooks";
 
 const FundingHistoryView = () => {
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();

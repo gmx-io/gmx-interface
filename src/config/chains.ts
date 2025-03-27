@@ -1,7 +1,8 @@
 import { ethers } from "ethers";
-import type { NetworkMetadata } from "lib/wallets";
 import sample from "lodash/sample";
+import { arbitrumSepolia, base } from "viem/chains";
 import {
+  ARBITRUM_SEPOLIA,
   BASE_MAINNET,
   SUPPORTED_CHAIN_IDS as SDK_SUPPORTED_CHAIN_IDS,
   SUPPORTED_CHAIN_IDS_DEV as SDK_SUPPORTED_CHAIN_IDS_DEV,
@@ -27,6 +28,9 @@ export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: false,
   [AVALANCHE]: false,
   [BSС_MAINNET]: false,
+  [ARBITRUM_SEPOLIA]: false,
+  [BASE_MAINNET]: false,
+  [SONIC_MAINNET]: false,
 };
 
 export const CHAIN_NAMES_MAP = {
@@ -146,6 +150,9 @@ export const RPC_PROVIDERS = {
     // "https://ava-testnet.public.blastapi.io/v1/avax/fuji/public",
     // "https://rpc.ankr.com/avalanche_fuji",
   ],
+  [ARBITRUM_SEPOLIA]: [...arbitrumSepolia.rpcUrls.default.http],
+  [BASE_MAINNET]: [...base.rpcUrls.default.http],
+  [SONIC_MAINNET]: ["https://rpc.soniclabs.com"],
 };
 
 export const FALLBACK_PROVIDERS = {
@@ -156,64 +163,9 @@ export const FALLBACK_PROVIDERS = {
     "https://api.avax-test.network/ext/bc/C/rpc",
     "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
   ],
-};
-
-export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
-  [BSС_MAINNET]: {
-    chainId: "0x" + BSС_MAINNET.toString(16),
-    chainName: "BSC",
-    nativeCurrency: {
-      name: "BNB",
-      symbol: "BNB",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[BSС_MAINNET],
-    blockExplorerUrls: ["https://bscscan.com"],
-  },
-  [BSС_TESTNET]: {
-    chainId: "0x" + BSС_TESTNET.toString(16),
-    chainName: "BSC Testnet",
-    nativeCurrency: {
-      name: "BNB",
-      symbol: "BNB",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[BSС_TESTNET],
-    blockExplorerUrls: ["https://testnet.bscscan.com/"],
-  },
-  [ARBITRUM]: {
-    chainId: "0x" + ARBITRUM.toString(16),
-    chainName: "Arbitrum",
-    nativeCurrency: {
-      name: "ETH",
-      symbol: "ETH",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[ARBITRUM],
-    blockExplorerUrls: [getExplorerUrl(ARBITRUM)],
-  },
-  [AVALANCHE]: {
-    chainId: "0x" + AVALANCHE.toString(16),
-    chainName: "Avalanche",
-    nativeCurrency: {
-      name: "AVAX",
-      symbol: "AVAX",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[AVALANCHE],
-    blockExplorerUrls: [getExplorerUrl(AVALANCHE)],
-  },
-  [AVALANCHE_FUJI]: {
-    chainId: "0x" + AVALANCHE_FUJI.toString(16),
-    chainName: "Avalanche Fuji Testnet",
-    nativeCurrency: {
-      name: "AVAX",
-      symbol: "AVAX",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[AVALANCHE_FUJI],
-    blockExplorerUrls: [getExplorerUrl(AVALANCHE_FUJI)],
-  },
+  [ARBITRUM_SEPOLIA]: [],
+  [BASE_MAINNET]: [],
+  [SONIC_MAINNET]: [],
 };
 
 export const getConstant = (chainId: number, key: string) => {
