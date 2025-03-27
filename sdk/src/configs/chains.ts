@@ -1,4 +1,4 @@
-import { arbitrum, avalanche, avalancheFuji, Chain } from "viem/chains";
+import { arbitrum, avalanche, avalancheFuji, arbitrumSepolia, Chain } from "viem/chains";
 
 export const AVALANCHE = 43114;
 export const AVALANCHE_FUJI = 43113;
@@ -10,14 +10,16 @@ export const BASE_MAINNET = 8453;
 // export const BASE_SEPOLIA = 84532;
 export const SONIC_MAINNET = 146;
 // export const SONIC_BLAZE = 57054;
+export const ARBITRUM_SEPOLIA = 421614;
 
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
-export const SUPPORTED_CHAIN_IDS_DEV = [...SUPPORTED_CHAIN_IDS, AVALANCHE_FUJI];
+export const SUPPORTED_CHAIN_IDS_DEV = [...SUPPORTED_CHAIN_IDS, AVALANCHE_FUJI, ARBITRUM_SEPOLIA];
 
 export const HIGH_EXECUTION_FEES_MAP = {
   [ARBITRUM]: 5, // 5 USD
   [AVALANCHE]: 5, // 5 USD
   [AVALANCHE_FUJI]: 5, // 5 USD
+  [ARBITRUM_SEPOLIA]: 5, // 5 USD
 };
 
 // added to maxPriorityFeePerGas
@@ -42,6 +44,7 @@ export const MAX_PRIORITY_FEE_PER_GAS_MAP: Record<number, bigint | undefined> = 
   [ARBITRUM]: 1500000000n,
   [AVALANCHE]: 1500000000n,
   [AVALANCHE_FUJI]: 1500000000n,
+  [ARBITRUM_SEPOLIA]: 1500000000n,
 };
 
 export const EXCESSIVE_EXECUTION_FEES_MAP = {
@@ -75,6 +78,7 @@ const CHAIN_BY_CHAIN_ID = {
   [AVALANCHE_FUJI]: avalancheFuji,
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
+  [ARBITRUM_SEPOLIA]: arbitrumSepolia,
 };
 
 export const getChain = (chainId: number): Chain => {
@@ -110,5 +114,9 @@ export const EXECUTION_FEE_CONFIG_V2: {
   [ARBITRUM]: {
     shouldUseMaxPriorityFeePerGas: false,
     defaultBufferBps: 3000, // 30%
+  },
+  [ARBITRUM_SEPOLIA]: {
+    shouldUseMaxPriorityFeePerGas: true,
+    defaultBufferBps: 1000, // 10%
   },
 };
