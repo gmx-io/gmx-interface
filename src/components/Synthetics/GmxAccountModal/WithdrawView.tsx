@@ -7,22 +7,26 @@ import { TokenData } from "domain/tokens";
 import noop from "lodash/noop";
 import { useMemo, useState } from "react";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { useGmxAccountBalances, useGmxAccountWithdrawNetworks } from "components/Synthetics/GmxAccountModal/hooks";
+import { useGmxAccountTokensData, useGmxAccountWithdrawNetworks } from "components/Synthetics/GmxAccountModal/hooks";
 import { Selector } from "./Selector";
+import { getByKey } from "lib/objects";
 
 export const WithdrawView = () => {
   const [amount, setAmount] = useState("");
   const [selectedNetwork, setSelectedNetwork] = useState<number>(BASE_MAINNET);
   const [selectedTokenAddress, setSelectedTokenAddress] = useState<string | undefined>(undefined);
 
-  // Get unique tokens from GMX balances (chainId === 0)
-  const gmxAccountBalances = useGmxAccountBalances();
+  const gmxAccountTokensData = useGmxAccountTokensData();
 
   const networks = useGmxAccountWithdrawNetworks();
 
   const selectedToken = useMemo(() => {
-    return gmxAccountBalances.find((token) => token.address === selectedTokenAddress);
-  }, [selectedTokenAddress, gmxAccountBalances]);
+    return getByKey(gmxAccountTokensData, selectedTokenAddress);
+  }, [selectedTokenAddress, gmxAccountTokensData]);
+
+  const options = useMemo(() => {
+    return Object.values(gmxAccountTokensData);
+  }, [gmxAccountTokensData]);
 
   return (
     <div className=" grow  overflow-y-auto p-16">
@@ -41,7 +45,7 @@ export const WithdrawView = () => {
                 </div>
               ) : undefined
             }
-            options={gmxAccountBalances}
+            options={options}
             item={WithdrawAssetItem}
             itemKey={withdrawAssetItemKey}
           />

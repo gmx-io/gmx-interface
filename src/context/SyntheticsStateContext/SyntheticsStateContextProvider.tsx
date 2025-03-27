@@ -66,6 +66,7 @@ export type SyntheticsState = {
   pageType: SyntheticsPageType;
   globals: {
     chainId: number;
+    walletChainId: number | undefined;
     markets: MarketsResult;
     marketsInfo: MarketsInfoResult;
     positionsInfo: PositionsInfoResult;
@@ -131,7 +132,7 @@ export function SyntheticsStateContextProvider({
 }) {
   const { chainId: selectedChainId } = useChainId();
 
-  const { account: walletAccount, signer } = useWallet();
+  const { account: walletAccount, signer, chainId: walletChainId } = useWallet();
   const { account: paramsAccount } = useParams<{ account?: string }>();
 
   let checkSummedAccount: string | undefined;
@@ -273,6 +274,7 @@ export function SyntheticsStateContextProvider({
       pageType,
       globals: {
         chainId,
+        walletChainId,
         account,
         markets,
         marketsInfo,
@@ -324,6 +326,7 @@ export function SyntheticsStateContextProvider({
   }, [
     pageType,
     chainId,
+    walletChainId,
     account,
     markets,
     marketsInfo,

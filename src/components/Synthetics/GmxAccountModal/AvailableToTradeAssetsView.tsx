@@ -5,7 +5,7 @@ import { getChainName } from "config/chains";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { useState } from "react";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
-import { useGmxAccountBalances } from "components/Synthetics/GmxAccountModal/hooks";
+import { useGmxAccountTokensData } from "components/Synthetics/GmxAccountModal/hooks";
 import useWallet from "lib/wallets/useWallet";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { isSettlementChain } from "context/GmxAccountContext/config";
@@ -110,9 +110,9 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
 };
 
 const AssetListMultichain = () => {
-  const gmxAccountBalances = useGmxAccountBalances();
+  const gmxAccountTokensData = useGmxAccountTokensData();
 
-  const displayTokens = gmxAccountBalances.map(
+  const displayTokens = Object.values(gmxAccountTokensData).map(
     (token): DisplayToken => ({
       chainId: 0,
       symbol: token.symbol,
@@ -129,9 +129,9 @@ const AssetListMultichain = () => {
 const AssetListSettlementChain = () => {
   const { chainId } = useWallet();
   const { tokensData } = useTokensDataRequest(chainId!);
-  const gmxAccountBalances = useGmxAccountBalances();
+  const gmxAccountTokensData = useGmxAccountTokensData();
 
-  const gmxAccountDisplayTokens = gmxAccountBalances.map(
+  const gmxAccountDisplayTokens = Object.values(gmxAccountTokensData).map(
     (token): DisplayToken => ({
       chainId: 0,
       symbol: token.symbol,

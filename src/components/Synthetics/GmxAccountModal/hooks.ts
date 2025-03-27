@@ -7,8 +7,8 @@ import {
   useTokenBalances,
   useTokensDataRequest,
 } from "domain/synthetics/tokens";
-import { TokenData, TokenPrices } from "domain/tokens";
-import { EMPTY_ARRAY } from "lib/objects";
+import { TokenData, TokenPrices, TokensData } from "domain/tokens";
+import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { useMemo } from "react";
 import { getToken } from "sdk/configs/tokens";
@@ -23,7 +23,7 @@ import { useGmxAccountSettlementChainId } from "../../../context/GmxAccountConte
 import { TokenChainData } from "../../../context/GmxAccountContext/types";
 
 export function useAvailableToTradeAssetSymbolsSettlementChain(): string[] {
-  const gmxAccountBalances = useGmxAccountBalances();
+  const gmxAccountTokensData = useGmxAccountTokensData();
   const { chainId, account } = useWallet();
 
   const currentChainTokenBalances = useTokenBalances(
@@ -36,7 +36,7 @@ export function useAvailableToTradeAssetSymbolsSettlementChain(): string[] {
 
   const tokenSymbols = new Set<string>();
 
-  for (const token of gmxAccountBalances) {
+  for (const token of Object.values(gmxAccountTokensData)) {
     if (token.balance !== undefined && token.balance > 0n) {
       tokenSymbols.add(token.symbol);
     }
@@ -52,11 +52,11 @@ export function useAvailableToTradeAssetSymbolsSettlementChain(): string[] {
 }
 
 export function useAvailableToTradeAssetSymbolsMultichain(): string[] {
-  const gmxAccountBalances = useGmxAccountBalances();
+  const gmxAccountTokensData = useGmxAccountTokensData();
 
   const tokenSymbols = new Set<string>();
 
-  for (const token of gmxAccountBalances) {
+  for (const token of Object.values(gmxAccountTokensData)) {
     if (token.balance !== undefined && token.balance > 0n) {
       tokenSymbols.add(token.symbol);
     }
@@ -71,12 +71,12 @@ export function useAvailableToTradeAssetSettlementChain(): {
   walletUsd: bigint;
 } {
   const { chainId } = useWallet();
-  const gmxAccountBalances = useGmxAccountBalances();
+  const gmxAccountTokensData = useGmxAccountTokensData();
   const { tokensData } = useTokensDataRequest(chainId!);
 
   let gmxAccountUsd = 0n;
 
-  for (const token of gmxAccountBalances) {
+  for (const token of Object.values(gmxAccountTokensData)) {
     if (token.balance === undefined || token.balance === 0n) {
       continue;
     }
@@ -102,11 +102,11 @@ export function useAvailableToTradeAssetSettlementChain(): {
 export function useAvailableToTradeAssetMultichain(): {
   gmxAccountUsd: bigint;
 } {
-  const gmxAccountBalances = useGmxAccountBalances();
+  const gmxAccountTokensData = useGmxAccountTokensData();
 
   let gmxAccountUsd = 0n;
 
-  for (const token of gmxAccountBalances) {
+  for (const token of Object.values(gmxAccountTokensData)) {
     if (token.balance === undefined || token.balance === 0n) {
       continue;
     }
@@ -161,19 +161,30 @@ export function useMultichainBalances(): TokenChainData[] {
     .filter((token): token is TokenChainData => token !== undefined);
 }
 
-export function useGmxAccountBalances(): TokenData[] {
+export function useGmxAccountTokensData(): TokensData {
   const [settlementChainId] = useGmxAccountSettlementChainId();
 
   const settlementChainWithdrawSupportedTokens = MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS[settlementChainId];
 
   if (!settlementChainWithdrawSupportedTokens) {
-    return EMPTY_ARRAY;
+    return EMPTY_OBJECT;
   }
 
-  return settlementChainWithdrawSupportedTokens.map((tokenAddress) => {
+  const gmxAccountTokensData: TokensData = {};
+
+  for (const tokenAddress of settlementChainWithdrawSupportedTokens) {
     const token = getToken(settlementChainId, tokenAddress);
-    return { ...token, prices: { minPrice: 100n, maxPrice: 100n }, balance: 100n };
-  });
+    gmxAccountTokensData[tokenAddress] = {
+      ...token,
+      prices: {
+        minPrice: 10n * 10n ** (30n - BigInt(token.decimals)),
+        maxPrice: 10n * 10n ** (30n - BigInt(token.decimals)),
+      },
+      balance: 10n * 10n ** BigInt(token.decimals),
+    };
+  }
+
+  return gmxAccountTokensData;
 }
 
 export function useGmxAccountWithdrawNetworks() {

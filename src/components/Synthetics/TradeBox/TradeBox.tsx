@@ -98,6 +98,8 @@ import SettingsIcon24 from "img/ic_settings_24.svg?react";
 
 import { selectShowDebugValues } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import "./TradeBox.scss";
+import { useGmxAccountTokensData } from "../GmxAccountModal/hooks";
+import { selectWalletPayableTokensData } from "context/SyntheticsStateContext/selectors/multichainSelectors";
 
 export function TradeBox() {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
@@ -116,6 +118,8 @@ export function TradeBox() {
 
   const { swapTokens, infoTokens, sortedLongAndShortTokens, sortedAllMarkets } = availableTokenOptions;
   const tokensData = useTokensData();
+  const walletPayableTokensData = useSelector(selectWalletPayableTokensData);
+  const gmxAccountTokensData = useGmxAccountTokensData();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
@@ -450,8 +454,12 @@ export function TradeBox() {
     },
     [setFocusedInput, setToTokenInputValue]
   );
-  const handleSelectFromTokenAddress = useCallback(
+  const handleSelectFromToken = useCallback(
     (token: Token) => onSelectFromTokenAddress(token.address),
+    [onSelectFromTokenAddress]
+  );
+  const handleSelectFromTokenAddress = useCallback(
+    (tokenAddress: string) => onSelectFromTokenAddress(tokenAddress),
     [onSelectFromTokenAddress]
   );
   const handleSelectToTokenAddress = useCallback(
@@ -569,21 +577,27 @@ export function TradeBox() {
           onClickMax={showClickMax ? onMaxClick : undefined}
           qa="pay"
         >
-          {fromTokenAddress && (
+          {fromTokenAddress && walletChainId !== undefined && (
             <MultichainTokenSelector
+              walletChainId={walletChainId}
+              settlementChainId={settlementChainId}
               label={t`Pay`}
-              chainId={settlementChainId}
-              // walletChainId={walletChainId}
+              // chainId={settlementChainId}
               tokenAddress={fromTokenAddress}
-              onSelectToken={handleSelectFromTokenAddress}
-              tokens={swapTokens}
-              infoTokens={infoTokens}
+              // onSelectTokenAddress={handleSelectFromTokenAddress}
+              onSelectTokenAddress={(tokenAddress, isGmxAccount) =>
+                console.log("tokenAddress", tokenAddress, "isGmxAccount", isGmxAccount)
+              }
+              // tokens={swapTokens}
+              // infoTokens={infoTokens}
               size="l"
-              showSymbolImage={true}
-              showTokenImgInDropdown={true}
-              missedCoinsPlace={MissedCoinsPlace.payToken}
+              // showSymbolImage={true}
+              // showTokenImgInDropdown={true}
+              // missedCoinsPlace={MissedCoinsPlace.payToken}
               extendedSortSequence={sortedLongAndShortTokens}
               qa="collateral-selector"
+              walletPayableTokensData={walletPayableTokensData}
+              gmxAccountTokensData={gmxAccountTokensData}
             />
           )}
         </BuyInputSection>

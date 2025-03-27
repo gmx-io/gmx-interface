@@ -19,10 +19,3 @@ export type FundingHistoryItem = {
   sizeUsd: bigint;
   status: "pending" | "completed" | "failed";
 };
-
-export type MultichainBalances = {
-  token: TokenChainData;
-  chainId: number;
-  balanceAmount: bigint;
-  balanceUsd: bigint;
-}[];

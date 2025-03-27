@@ -4,93 +4,75 @@ import { ReactNode, useEffect, useMemo, useState } from "react";
 
 import { BiChevronDown } from "react-icons/bi";
 
-import { getMarketUiConfig } from "config/markets";
-import { getMarketBadge, MarketsInfoData } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
-import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import type { InfoTokens, Token, TokenInfo } from "domain/tokens";
+import type { Token, TokenData, TokensData } from "domain/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
-import { expandDecimals, formatAmount, formatBalanceAmount } from "lib/numbers";
+import { formatAmount, formatBalanceAmount } from "lib/numbers";
 import { searchBy } from "lib/searchBy";
-import { getToken } from "sdk/configs/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 
 import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
-import { WithMissedCoinsSearch } from "../WithMissedCoinsSearch/WithMissedCoinsSearch";
 
 import Button from "components/Button/Button";
+import { TokenChainData } from "context/GmxAccountContext/types";
+import { EMPTY_OBJECT } from "lib/objects";
+import { USD_DECIMALS } from "sdk/configs/factors";
+import { getToken } from "sdk/configs/tokens";
 import "./TokenSelector.scss";
 
-type TokenState = {
-  disabled?: boolean;
-  message?: string;
-};
-
-type ExtendedToken = Token & { isMarketToken?: boolean };
-
 type Props = {
-  chainId: number;
+  walletChainId: number;
+  settlementChainId: number;
+
   label?: string;
   size?: "m" | "l";
   className?: string;
   tokenAddress: string;
-  tokens: ExtendedToken[];
-  infoTokens?: InfoTokens;
-  tokenInfo?: TokenInfo;
+
+  walletPayableTokensData: TokensData | undefined;
   selectedTokenLabel?: ReactNode | string;
-  showBalances?: boolean;
-  showTokenImgInDropdown?: boolean;
-  showSymbolImage?: boolean;
-  getTokenState?: (info: TokenInfo) => TokenState | undefined;
-  onSelectToken: (token: Token) => void;
+
+  onSelectTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
   extendedSortSequence?: string[] | undefined;
-  missedCoinsPlace?: MissedCoinsPlace;
-  showTokenName?: boolean;
+
   footerContent?: ReactNode;
-  marketsInfoData?: MarketsInfoData;
   qa?: string;
-  // gmxAccountTokens?: TokensData;
+  gmxAccountTokensData: TokensData | undefined;
+  multichainTokens?: TokenChainData[];
 };
 
-export function MultichainTokenSelector(props: Props) {
+export function MultichainTokenSelector({
+  walletChainId,
+  settlementChainId,
+  // tokens,
+  // infoTokens,
+  walletPayableTokensData: tokensData,
+  selectedTokenLabel,
+  // showBalances = true,
+  // showTokenImgInDropdown = false,
+  extendedSortSequence,
+  footerContent,
+  // missedCoinsPlace,
+
+  // chainId,
+  size = "m",
+  qa,
+  gmxAccountTokensData = EMPTY_OBJECT,
+  onSelectTokenAddress: propsOnSelectTokenAddress,
+  // tokenInfo: maybeTokenInfo,
+  tokenAddress,
+  className,
+  label,
+  multichainTokens,
+}: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
-  let tokenInfo: TokenInfo | undefined = props.tokenInfo;
+  let token: Token | undefined = getToken(settlementChainId, tokenAddress);
 
-  if (!tokenInfo) {
-    try {
-      tokenInfo = getToken(props.chainId, props.tokenAddress);
-    } catch (e) {
-      // ...ignore unsupported tokens
-    }
-  }
-
-  const {
-    tokens,
-    infoTokens,
-    selectedTokenLabel,
-    showBalances = true,
-    showTokenImgInDropdown = false,
-    showSymbolImage = false,
-    getTokenState = () => ({ disabled: false, message: null }),
-    extendedSortSequence,
-    showTokenName,
-    footerContent,
-    missedCoinsPlace,
-    marketsInfoData,
-    chainId,
-    size = "m",
-    qa,
-  } = props;
-
-  const visibleTokens = tokens.filter((t) => t && !t.isTempHidden);
-
-  const onSelectToken = (token) => {
+  const onSelectTokenAddress = (tokenAddress: string, isGmxAccount: boolean) => {
     setIsModalVisible(false);
-    props.onSelectToken(token);
+    propsOnSelectTokenAddress(tokenAddress, isGmxAccount);
   };
 
   useEffect(() => {
@@ -99,101 +81,36 @@ export function MultichainTokenSelector(props: Props) {
     }
   }, [isModalVisible]);
 
-  const filteredTokens = useMemo(() => {
-    if (!searchKeyword.trim()) {
-      return visibleTokens;
-    }
+  // TODO implement
+  // const _handleKeyDown = (e) => {
+  //   if (e.key === "Enter") {
+  //     e.preventDefault();
+  //     e.stopPropagation();
+  //     if (filteredTokens.length > 0) {
+  //       onSelectToken(filteredTokens[0]);
+  //     }
+  //   }
+  // };
 
-    return searchBy(
-      visibleTokens,
-      [
-        (item) => {
-          let name = item.name;
-          if (item.isMarketToken) {
-            const indexTokenAddress = getMarketUiConfig(props.chainId, item.address)?.indexTokenAddress;
-            const indexToken = getToken(props.chainId, indexTokenAddress);
-            name = indexToken.name ? `GM ${indexToken.name}` : name;
-          }
-          return stripBlacklistedWords(name);
-        },
-        "symbol",
-      ],
-      searchKeyword
+  const isGmxAccountEmpty = useMemo(() => {
+    if (!gmxAccountTokensData) return true;
+
+    const allEmpty = Object.values(gmxAccountTokensData).every(
+      (token) => token.balance === undefined || token.balance === 0n
     );
-  }, [props.chainId, searchKeyword, visibleTokens]);
 
-  const sortedFilteredTokens = useMemo(() => {
-    const tokensWithBalance: ExtendedToken[] = [];
-    const tokensWithoutBalance: ExtendedToken[] = showBalances ? [] : filteredTokens;
+    return allEmpty;
+  }, [gmxAccountTokensData]);
 
-    for (const token of filteredTokens) {
-      const info = infoTokens?.[token.address];
-      if (showBalances) {
-        if (info?.balance && info?.balance > 0) {
-          tokensWithBalance.push(token);
-        } else {
-          tokensWithoutBalance.push(token);
-        }
-      }
+  const [activeFilter, setActiveFilter] = useState<"pay" | "deposit">(isGmxAccountEmpty ? "deposit" : "pay");
+
+  useEffect(() => {
+    if (isModalVisible) {
+      setSearchKeyword("");
     }
+  }, [isModalVisible, setSearchKeyword]);
 
-    const sortedTokensWithBalance = tokensWithBalance.sort((a, b) => {
-      const aInfo = infoTokens?.[a.address];
-      const bInfo = infoTokens?.[b.address];
-
-      if (!aInfo || !bInfo) return 0;
-
-      if (aInfo?.balance && bInfo?.balance && aInfo?.maxPrice && bInfo?.maxPrice) {
-        const aBalanceUsd = convertToUsd(aInfo.balance, a.decimals, aInfo.minPrice);
-        const bBalanceUsd = convertToUsd(bInfo.balance, b.decimals, bInfo.minPrice);
-
-        if (bBalanceUsd === undefined) return -1;
-
-        return bBalanceUsd - (aBalanceUsd ?? 0n) > 0 ? 1 : -1;
-      }
-      return 0;
-    });
-
-    const sortedTokensWithoutBalance = tokensWithoutBalance.sort((a, b) => {
-      const aInfo = infoTokens?.[a.address];
-      const bInfo = infoTokens?.[b.address];
-
-      if (!aInfo || !bInfo) return 0;
-
-      if (extendedSortSequence) {
-        // making sure to use the wrapped address if it exists in the extended sort sequence
-        const aAddress =
-          aInfo.wrappedAddress && extendedSortSequence.includes(aInfo.wrappedAddress)
-            ? aInfo.wrappedAddress
-            : aInfo.address;
-
-        const bAddress =
-          bInfo.wrappedAddress && extendedSortSequence.includes(bInfo.wrappedAddress)
-            ? bInfo.wrappedAddress
-            : bInfo.address;
-
-        return extendedSortSequence.indexOf(aAddress) - extendedSortSequence.indexOf(bAddress);
-      }
-
-      return 0;
-    });
-
-    return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
-  }, [filteredTokens, infoTokens, extendedSortSequence, showBalances]);
-
-  const _handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      e.stopPropagation();
-      if (filteredTokens.length > 0) {
-        onSelectToken(filteredTokens[0]);
-      }
-    }
-  };
-
-  const [activeFilter, setActiveFilter] = useState<"pay" | "deposit">("pay");
-
-  if (!tokenInfo) {
+  if (!token) {
     return null;
   }
 
@@ -205,7 +122,7 @@ export function MultichainTokenSelector(props: Props) {
           "-mr-2": size === "m",
           "text-h2 -mr-5": size === "l",
         },
-        props.className
+        className
       )}
       onClick={(event) => event.stopPropagation()}
     >
@@ -214,7 +131,7 @@ export function MultichainTokenSelector(props: Props) {
         className="TokenSelector-modal text-white"
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
-        label={props.label}
+        label={label}
         footerContent={footerContent}
         headerContent={
           <>
@@ -222,119 +139,77 @@ export function MultichainTokenSelector(props: Props) {
               className="*:!text-body-medium min-[700px]:mt-15"
               value={searchKeyword}
               setValue={setSearchKeyword}
-              onKeyDown={_handleKeyDown}
+              // onKeyDown={_handleKeyDown}
             />
-            <div className="mt-8 flex gap-4">
-              <Button
-                type="button"
-                variant="ghost"
-                slim
-                className={cx({
-                  "!bg-cold-blue-500": activeFilter === "pay",
-                })}
-                onClick={() => setActiveFilter("pay")}
-              >
-                <Trans>Available to Pay</Trans>
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                slim
-                className={cx({
-                  "!bg-cold-blue-500": activeFilter === "deposit",
-                })}
-                onClick={() => setActiveFilter("deposit")}
-              >
-                <Trans>Available to Deposit</Trans>
-              </Button>
-            </div>
+            {isGmxAccountEmpty ? (
+              <div className="text-body-medium mt-8 text-slate-100">
+                <Trans>To begin trading on GMX deposit assets into GMX account</Trans>
+              </div>
+            ) : (
+              <div className="mt-8 flex gap-4">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  slim
+                  className={cx({
+                    "!bg-cold-blue-500": activeFilter === "pay",
+                  })}
+                  onClick={() => setActiveFilter("pay")}
+                >
+                  <Trans>Available to Pay</Trans>
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  slim
+                  className={cx({
+                    "!bg-cold-blue-500": activeFilter === "deposit",
+                  })}
+                  onClick={() => setActiveFilter("deposit")}
+                >
+                  <Trans>Available to Deposit</Trans>
+                </Button>
+              </div>
+            )}
           </>
         }
       >
-        {missedCoinsPlace && (
+        {/* {missedCoinsPlace && (
           <WithMissedCoinsSearch
             searchKeyword={searchKeyword}
             place={missedCoinsPlace}
             isEmpty={!filteredTokens.length}
             isLoaded={Boolean(visibleTokens.length)}
           />
+        )} */}
+
+        {activeFilter === "pay" && tokensData && (
+          <AvailableToTradeTokenList
+            isModalVisible={isModalVisible}
+            setSearchKeyword={setSearchKeyword}
+            onSelectTokenAddress={onSelectTokenAddress}
+            searchKeyword={searchKeyword}
+            tokensData={tokensData}
+            extendedSortSequence={extendedSortSequence}
+            gmxAccountTokensData={gmxAccountTokensData}
+            walletChainId={walletChainId}
+            settlementChainId={settlementChainId}
+          />
         )}
-        {/* Available to Pay
-        Available to Deposit */}
-
-        <div>
-          {sortedFilteredTokens.map((token, tokenIndex) => {
-            let info = infoTokens?.[token.address] || ({} as TokenInfo);
-
-            let balance = info.balance;
-
-            let balanceUsd: bigint | undefined = undefined;
-            if (balance !== undefined && info.maxPrice !== undefined) {
-              balanceUsd = bigMath.mulDiv(balance, info.maxPrice, expandDecimals(1, token.decimals));
-            }
-
-            const tokenState = getTokenState(info) || {};
-            const marketToken = Object.values(marketsInfoData ?? {}).find(
-              (market) => market.marketTokenAddress === token.address
-            );
-            const tokenBadge = token.isMarketToken && marketToken ? getMarketBadge(chainId, marketToken) : undefined;
-
-            return (
-              <div
-                key={token.address}
-                data-qa={`${qa}-token-${token.symbol}`}
-                className={cx("TokenSelector-token-row", { disabled: tokenState.disabled })}
-                onClick={() => !tokenState.disabled && onSelectToken(token)}
-              >
-                {tokenState.disabled && tokenState.message && (
-                  <TooltipWithPortal
-                    className="TokenSelector-tooltip"
-                    handle={<div className="TokenSelector-tooltip-backing" />}
-                    position={tokenIndex < filteredTokens.length / 2 ? "bottom" : "top"}
-                    disableHandleStyle
-                    closeOnDoubleClick
-                    fitHandleWidth
-                    renderContent={() => tokenState.message}
-                  />
-                )}
-                <div className="Token-info">
-                  {showTokenImgInDropdown && (
-                    <TokenIcon
-                      symbol={token.symbol}
-                      className="token-logo"
-                      displaySize={40}
-                      importSize={40}
-                      badge={tokenBadge}
-                    />
-                  )}
-                  <div className="Token-symbol">
-                    <div className="Token-text">{token.isMarketToken ? "GM" : token.symbol}</div>
-                    <span className="text-accent">{token.name}</span>
-                  </div>
-                </div>
-                <div className="Token-balance">
-                  {(showBalances && balance !== undefined && (
-                    <div className="Token-text">
-                      {balance > 0 && formatBalanceAmount(balance, token.decimals)}
-                      {balance == 0n && "-"}
-                    </div>
-                  )) ||
-                    null}
-                  <span className="text-accent">
-                    {showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
-                      <div>${formatAmount(balanceUsd, 30, 2, true)}</div>
-                    )}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        {sortedFilteredTokens.length === 0 && (
+        {activeFilter === "deposit" && multichainTokens && (
+          <MultichainTokenList
+            isModalVisible={isModalVisible}
+            setSearchKeyword={setSearchKeyword}
+            searchKeyword={searchKeyword}
+            multichainTokens={multichainTokens}
+            extendedSortSequence={extendedSortSequence}
+          />
+        )}
+        {/* {sortedFilteredTokens.length === 0 && (
           <div className="text-16 text-slate-100">
             <Trans>No tokens matched.</Trans>
           </div>
-        )}
+        )} */}
       </SlideModal>
       <div
         data-qa={qa}
@@ -343,14 +218,265 @@ export function MultichainTokenSelector(props: Props) {
       >
         {selectedTokenLabel || (
           <span className="inline-flex items-center">
-            {showSymbolImage && (
-              <TokenIcon className="mr-5" symbol={tokenInfo.symbol} importSize={24} displaySize={20} />
-            )}
-            <span>{showTokenName ? tokenInfo.name : tokenInfo.symbol}</span>
+            <TokenIcon className="mr-5" symbol={token.symbol} importSize={24} displaySize={20} />
+            <span>{token.symbol}</span>
           </span>
         )}
         <BiChevronDown className="text-body-large" />
       </div>
+    </div>
+  );
+}
+
+function AvailableToTradeTokenList({
+  walletChainId,
+  settlementChainId,
+  isModalVisible,
+  setSearchKeyword,
+  searchKeyword,
+  tokensData,
+  gmxAccountTokensData,
+  extendedSortSequence,
+  onSelectTokenAddress,
+}: {
+  walletChainId: number;
+  settlementChainId: number;
+  isModalVisible: boolean;
+  setSearchKeyword: (searchKeyword: string) => void;
+  searchKeyword: string;
+  tokensData: TokensData;
+  gmxAccountTokensData: TokensData;
+  extendedSortSequence?: string[];
+  onSelectTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
+}) {
+  useEffect(() => {
+    if (isModalVisible) {
+      setSearchKeyword("");
+    }
+  }, [isModalVisible, setSearchKeyword]);
+
+  const sortedFilteredTokens = useMemo(() => {
+    type DisplayToken = TokenData & { balance: bigint; balanceUsd: bigint; isGmxAccount: boolean };
+
+    const concatenatedTokens: DisplayToken[] = [];
+    for (const token of Object.values(tokensData)) {
+      concatenatedTokens.push({ ...token, isGmxAccount: false, balance: token.balance ?? 0n, balanceUsd: 0n });
+    }
+    for (const token of Object.values(gmxAccountTokensData)) {
+      concatenatedTokens.push({ ...token, isGmxAccount: true, balance: token.balance ?? 0n, balanceUsd: 0n });
+    }
+
+    let filteredTokens: DisplayToken[];
+    if (!searchKeyword.trim()) {
+      filteredTokens = concatenatedTokens;
+    } else {
+      filteredTokens = searchBy(
+        concatenatedTokens,
+        [
+          (item) => {
+            let name = item.name;
+
+            return stripBlacklistedWords(name);
+          },
+          "symbol",
+        ],
+        searchKeyword
+      );
+    }
+
+    const tokensWithBalance: DisplayToken[] = [];
+    const tokensWithoutBalance: DisplayToken[] = [];
+
+    for (const token of filteredTokens) {
+      const balance = tokensData?.[token.address]?.balance;
+
+      if (balance !== undefined && balance > 0n) {
+        const balanceUsd = convertToUsd(balance, token.decimals, token.prices.maxPrice) ?? 0n;
+        tokensWithBalance.push({ ...token, balanceUsd });
+      } else {
+        tokensWithoutBalance.push({ ...token, balanceUsd: 0n });
+      }
+    }
+
+    const sortedTokensWithBalance: DisplayToken[] = tokensWithBalance.sort((a, b) => {
+      if (a.balanceUsd === b.balanceUsd) {
+        return 0;
+      }
+      return b.balanceUsd - a.balanceUsd > 0n ? 1 : -1;
+    });
+
+    const sortedTokensWithoutBalance: DisplayToken[] = tokensWithoutBalance.sort((a, b) => {
+      if (extendedSortSequence) {
+        // making sure to use the wrapped address if it exists in the extended sort sequence
+        const aAddress =
+          a.wrappedAddress && extendedSortSequence.includes(a.wrappedAddress) ? a.wrappedAddress : a.address;
+
+        const bAddress =
+          b.wrappedAddress && extendedSortSequence.includes(b.wrappedAddress) ? b.wrappedAddress : b.address;
+
+        return extendedSortSequence.indexOf(aAddress) - extendedSortSequence.indexOf(bAddress);
+      }
+
+      return 0;
+    });
+
+    return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
+  }, [tokensData, gmxAccountTokensData, searchKeyword, extendedSortSequence]);
+
+  return (
+    <div>
+      {sortedFilteredTokens.map((token) => {
+        return (
+          <div
+            key={token.address}
+            // data-qa={`${qa}-token-${token.symbol}`}
+            className={cx("TokenSelector-token-row")}
+            onClick={() => onSelectTokenAddress(token.address, token.isGmxAccount)}
+          >
+            <div className="Token-info">
+              <TokenIcon
+                symbol={token.symbol}
+                className="token-logo"
+                displaySize={40}
+                importSize={40}
+                chainIdBadge={settlementChainId !== walletChainId ? 0 : token.isGmxAccount ? 0 : walletChainId}
+              />
+
+              <div className="Token-symbol">
+                <div className="Token-text">{token.symbol}</div>
+                <span className="text-accent">{token.name}</span>
+              </div>
+            </div>
+            <div className="Token-balance">
+              <div className="Token-text">
+                {token.balance > 0n && formatBalanceAmount(token.balance, token.decimals)}
+                {token.balance == 0n && "-"}
+              </div>
+
+              <span className="text-accent">
+                {token.balanceUsd > 0n && <div>${formatAmount(token.balanceUsd, USD_DECIMALS, 2, true)}</div>}
+              </span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function MultichainTokenList({
+  isModalVisible,
+  setSearchKeyword,
+  searchKeyword,
+  multichainTokens,
+  extendedSortSequence,
+}: {
+  isModalVisible: boolean;
+  setSearchKeyword: (searchKeyword: string) => void;
+  searchKeyword: string;
+  multichainTokens: TokenChainData[];
+  extendedSortSequence?: string[];
+}) {
+  useEffect(() => {
+    if (isModalVisible) {
+      setSearchKeyword("");
+    }
+  }, [isModalVisible, setSearchKeyword]);
+
+  const filteredTokens = useMemo(() => {
+    if (!searchKeyword.trim()) {
+      return multichainTokens;
+    }
+
+    return searchBy(
+      multichainTokens,
+      [
+        (item) => {
+          let name = item.name;
+
+          return stripBlacklistedWords(name);
+        },
+        "symbol",
+      ],
+      searchKeyword
+    );
+  }, [searchKeyword, multichainTokens]);
+
+  type DisplayToken = TokenChainData & { sourceChainBalanceUsd: bigint };
+
+  const sortedFilteredTokens: DisplayToken[] = useMemo((): DisplayToken[] => {
+    const tokensWithBalance: DisplayToken[] = [];
+    const tokensWithoutBalance: DisplayToken[] = [];
+
+    for (const token of filteredTokens) {
+      const balance = token.sourceChainBalance;
+
+      if (balance !== undefined && balance > 0n) {
+        const balanceUsd = convertToUsd(balance, token.sourceChainDecimals, token.sourceChainPrices.maxPrice) ?? 0n;
+        tokensWithBalance.push({ ...token, sourceChainBalanceUsd: balanceUsd });
+      } else {
+        tokensWithoutBalance.push({ ...token, sourceChainBalanceUsd: 0n });
+      }
+    }
+
+    const sortedTokensWithBalance = tokensWithBalance.sort((a, b) => {
+      return b.sourceChainBalanceUsd - a.sourceChainBalanceUsd > 0n ? 1 : -1;
+    });
+
+    const sortedTokensWithoutBalance = tokensWithoutBalance.sort((a, b) => {
+      if (extendedSortSequence) {
+        // making sure to use the wrapped address if it exists in the extended sort sequence
+        const aAddress =
+          a.wrappedAddress && extendedSortSequence.includes(a.wrappedAddress) ? a.wrappedAddress : a.address;
+
+        const bAddress =
+          b.wrappedAddress && extendedSortSequence.includes(b.wrappedAddress) ? b.wrappedAddress : b.address;
+
+        return extendedSortSequence.indexOf(aAddress) - extendedSortSequence.indexOf(bAddress);
+      }
+
+      return 0;
+    });
+
+    return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
+  }, [filteredTokens, extendedSortSequence]);
+
+  return (
+    <div>
+      {sortedFilteredTokens.map((token) => {
+        return (
+          <div
+            key={token.address}
+            // data-qa={`${qa}-token-${token.symbol}`}
+            className={cx("TokenSelector-token-row")}
+            // onClick={() => onSelectToken(token)}
+          >
+            <div className="Token-info">
+              <TokenIcon symbol={token.symbol} className="token-logo" displaySize={40} importSize={40} />
+
+              <div className="Token-symbol">
+                <div className="Token-text">{token.symbol}</div>
+                <span className="text-accent">{token.name}</span>
+              </div>
+            </div>
+            <div className="Token-balance">
+              {(token.sourceChainBalance !== undefined && (
+                <div className="Token-text">
+                  {token.sourceChainBalance > 0 &&
+                    formatBalanceAmount(token.sourceChainBalance, token.sourceChainDecimals)}
+                  {token.sourceChainBalance == 0n && "-"}
+                </div>
+              )) ||
+                null}
+              <span className="text-accent">
+                {token.sourceChainBalanceUsd !== undefined && token.sourceChainBalanceUsd > 0 && (
+                  <div>${formatAmount(token.sourceChainBalanceUsd, USD_DECIMALS, 2, true)}</div>
+                )}
+              </span>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
