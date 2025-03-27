@@ -236,13 +236,11 @@ export function SettingsModal({
           </ToggleSwitch>
         </div>
 
-        {getIsFlagEnabled("testExternalSwap") && (
-          <div className="Exchange-settings-row">
-            <ToggleSwitch isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
-              <Trans>Enable external swaps</Trans>
-            </ToggleSwitch>
-          </div>
-        )}
+        <div className="Exchange-settings-row">
+          <ToggleSwitch isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
+            <Trans>Enable external swaps</Trans>
+          </ToggleSwitch>
+        </div>
 
         {isDevelopment() && (
           <ToggleSwitch
