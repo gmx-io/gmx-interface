@@ -92,6 +92,7 @@ import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
+import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
 
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
 
@@ -119,8 +120,8 @@ export function TradeBox() {
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
 
-  const chainId = useSelector(selectChainId);
-  const { account } = useWallet();
+  const settlementChainId = useSelector(selectChainId);
+  const { account, chainId: walletChainId } = useWallet();
   const { shouldDisableValidationForTesting: shouldDisableValidation } = useSettings();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
@@ -376,12 +377,15 @@ export function TradeBox() {
       }
     },
     [
-      chainId,
-      chartHeaderInfo,
+      chartHeaderInfo?.fundingRateLong,
+      chartHeaderInfo?.fundingRateShort,
+      chartHeaderInfo?.longOpenInterestPercentage,
+      chartHeaderInfo?.shortOpenInterestPercentage,
       decreaseAmounts,
-      fees,
+      fees?.positionPriceImpact?.precisePercentage,
+      fees?.swapPriceImpact?.precisePercentage,
       fromToken?.symbol,
-      fromTokenInputValue,
+      fromTokenInputValue.length,
       increaseAmounts,
       isIncrease,
       isLong,
@@ -566,9 +570,10 @@ export function TradeBox() {
           qa="pay"
         >
           {fromTokenAddress && (
-            <TokenSelector
+            <MultichainTokenSelector
               label={t`Pay`}
-              chainId={chainId}
+              chainId={settlementChainId}
+              // walletChainId={walletChainId}
               tokenAddress={fromTokenAddress}
               onSelectToken={handleSelectFromTokenAddress}
               tokens={swapTokens}
@@ -612,7 +617,7 @@ export function TradeBox() {
                 {toTokenAddress && (
                   <TokenSelector
                     label={t`Receive`}
-                    chainId={chainId}
+                    chainId={settlementChainId}
                     tokenAddress={toTokenAddress}
                     onSelectToken={handleSelectToTokenAddress}
                     tokens={swapTokens}
@@ -648,7 +653,7 @@ export function TradeBox() {
           >
             {toTokenAddress && (
               <MarketSelector
-                chainId={chainId}
+                chainId={settlementChainId}
                 label={localizedTradeTypeLabels[tradeType!]}
                 selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
                 selectedMarketLabel={
@@ -886,7 +891,7 @@ export function TradeBox() {
                     label={t`Market`}
                     value={
                       <MarketSelector
-                        chainId={chainId}
+                        chainId={settlementChainId}
                         label={t`Market`}
                         className="-mr-4"
                         selectedIndexName={
