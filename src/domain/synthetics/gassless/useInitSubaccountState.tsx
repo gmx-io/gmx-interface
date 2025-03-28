@@ -223,6 +223,12 @@ export function useInitSubaccountState() {
       return;
     }
 
+    if (subaccountConfig?.address && !signedApproval) {
+      setIsTryingToEnableSubaccount(true);
+      refreshSubaccountData();
+      return;
+    }
+
     settings.setOneClickTradingEnabled(true);
 
     try {
@@ -269,7 +275,7 @@ export function useInitSubaccountState() {
       settings.setOneClickTradingEnabled(false);
       return undefined;
     }
-  }, [signer, settings, subaccountConfig, setSubaccountConfig, refreshSubaccountData]);
+  }, [signer, subaccountConfig, signedApproval, settings, refreshSubaccountData, setSubaccountConfig]);
 
   const tryDisableSubaccount = useCallback(async () => {
     if (!signer || !subaccount?.address) {
