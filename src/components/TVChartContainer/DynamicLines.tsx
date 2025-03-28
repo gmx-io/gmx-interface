@@ -3,7 +3,7 @@ import type { IChartingLibraryWidget } from "../../charting_library";
 
 import { USD_DECIMALS } from "config/factors";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
+import { useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/useSubaccountCancelOrdersDetailsMessage";
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import {
@@ -31,6 +31,7 @@ import { getToken } from "sdk/configs/tokens";
 import { PositionOrderInfo } from "sdk/types/orders";
 
 import { DynamicLine } from "./DynamicLine";
+import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 export function DynamicLines({
   tvWidgetRef,
@@ -42,9 +43,9 @@ export function DynamicLines({
   const dynamicChartLines = useSelector(selectChartDynamicLines);
   const { signer } = useWallet();
   const chainId = useSelector(selectChainId);
-  const subaccount = useSubaccount(null);
+  const subaccount = useSelector(makeSelectSubaccountForActions(1));
   const [, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
-  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, 1);
+  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(1);
   const [isSubmitting] = useOrderEditorIsSubmittingState();
   const [editingOrderKey, setEditingOrderKey] = useEditingOrderKeyState();
   const setTriggerPriceInputValue = useSelector(selectOrderEditorSetTriggerPriceInputValue);

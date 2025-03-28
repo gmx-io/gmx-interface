@@ -74,15 +74,15 @@ export const GAS_PRICE_BUFFER_MAP = {
   [ARBITRUM]: 2000n, // 20%
 };
 
-const CHAIN_BY_CHAIN_ID = {
+const VIEM_CHAIN_BY_CHAIN_ID = {
   [AVALANCHE_FUJI]: avalancheFuji,
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
 };
 
-export const getChain = (chainId: number): Chain => {
-  return CHAIN_BY_CHAIN_ID[chainId];
+export const getViemChain = (chainId: number): Chain => {
+  return VIEM_CHAIN_BY_CHAIN_ID[chainId];
 };
 
 export function getHighExecutionFee(chainId) {

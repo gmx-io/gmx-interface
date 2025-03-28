@@ -1,14 +1,14 @@
 import { Trans } from "@lingui/macro";
-import { getWrappedToken } from "sdk/configs/tokens";
 import { approveTokens } from "domain/tokens";
 import { isAddressZero } from "lib/legacy";
 import { useState } from "react";
 import { ImCheckboxUnchecked, ImSpinner2 } from "react-icons/im";
+import { getWrappedToken } from "sdk/configs/tokens";
 
-import "./ApproveTokenButton.scss";
-import useWallet from "lib/wallets/useWallet";
 import { userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
+import useWallet from "lib/wallets/useWallet";
+import "./ApproveTokenButton.scss";
 
 type Props = {
   spenderAddress: string;

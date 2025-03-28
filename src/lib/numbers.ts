@@ -18,6 +18,8 @@ export const BN_ZERO = 0n;
 export const BN_ONE = 1n;
 export const BN_NEGATIVE_ONE = -1n;
 
+export const MaxUint256 = BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+
 /**
  *
  * @deprecated Use BigInt instead

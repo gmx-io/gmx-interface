@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
-import { ethers, Wallet } from "ethers";
-import { getBestNonce, getGasLimit, getGasPrice } from "lib/contracts";
+import { ethers } from "ethers";
+import { getGasLimit, getGasPrice } from "lib/contracts";
 import { getErrorMessage } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
 import { OrderErrorContext, OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
@@ -15,7 +15,6 @@ export async function prepareOrderTxn(
   method: string,
   params: any[],
   value: bigint,
-  customSigners?: Wallet[],
   simulationPromise?: Promise<any>,
   metricId?: OrderMetricId,
   additinalErrorContent?: React.ReactNode
@@ -25,40 +24,18 @@ export async function prepareOrderTxn(
     throw new Error("Provider is not defined");
   }
 
-  const customSignerContracts = customSigners?.map((signer) => contract.connect(signer)) || [];
-
-  const [gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce] = await Promise.all([
+  const [gasLimit, gasPriceData] = await Promise.all([
     getGasLimit(contract, method, params, value).catch(
       makeCatchTransactionError(chainId, metricId, "gasLimit", additinalErrorContent)
     ),
     getGasPrice(contract.runner.provider, chainId).catch(
       makeCatchTransactionError(chainId, metricId, "gasPrice", additinalErrorContent)
     ),
-    // subaccount
-    Promise.all(
-      customSignerContracts.map((cntrct) =>
-        getGasLimit(cntrct, method, params, value).catch(
-          makeCatchTransactionError(chainId, metricId, "gasLimit", additinalErrorContent)
-        )
-      )
-    ),
-    Promise.all(
-      customSignerContracts.map((cntrct) =>
-        getGasPrice(cntrct.runner!.provider!, chainId).catch(
-          makeCatchTransactionError(chainId, metricId, "gasPrice", additinalErrorContent)
-        )
-      )
-    ),
-    customSigners?.length
-      ? getBestNonce([contract.runner as Wallet, ...customSigners]).catch(
-          makeCatchTransactionError(chainId, metricId, "bestNonce", additinalErrorContent)
-        )
-      : undefined,
     // simulation
     simulationPromise,
   ]);
 
-  return { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce };
+  return { gasLimit, gasPriceData };
 }
 
 export const makeCatchTransactionError =

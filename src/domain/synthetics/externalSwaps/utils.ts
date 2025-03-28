@@ -1,9 +1,8 @@
-import { ethers } from "ethers";
 import Token from "sdk/abis/Token.json";
 
 import { getSwapDebugSettings } from "config/externalSwaps";
 import { UserReferralInfo } from "domain/referrals";
-import { applyFactor } from "lib/numbers";
+import { applyFactor, MaxUint256 } from "lib/numbers";
 import { parseError } from "lib/parseError";
 import { convertTokenAddress, getNativeToken } from "sdk/configs/tokens";
 import { MarketInfo } from "sdk/types/markets";
@@ -12,6 +11,7 @@ import { TokenData } from "sdk/types/tokens";
 import { ExternalSwapInputs } from "sdk/types/trade";
 import { getFeeItem, getPositionFee } from "sdk/utils/fees";
 import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
+import { encodeFunctionData } from "viem";
 import {
   ExternalSwapQuote,
   FindSwapPath,
@@ -20,8 +20,6 @@ import {
   getSwapAmountsByToValue,
   leverageBySizeValues,
 } from "../trade";
-
-const tokenContract = new ethers.Interface(Token.abi);
 
 export function getExternalCallsParams(chainId: number, account: string, quote: ExternalSwapQuote) {
   if (!quote.txnData) {
@@ -35,7 +33,13 @@ export function getExternalCallsParams(chainId: number, account: string, quote: 
 
   if (quote.needSpenderApproval) {
     addresses.push(inTokenAddress);
-    callData.push(tokenContract.encodeFunctionData("approve", [quote.txnData.to, ethers.MaxUint256]));
+    callData.push(
+      encodeFunctionData({
+        abi: Token.abi,
+        functionName: "approve",
+        args: [quote.txnData.to, MaxUint256],
+      })
+    );
   }
 
   if (getSwapDebugSettings()?.failExternalSwaps) {

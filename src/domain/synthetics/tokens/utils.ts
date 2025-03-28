@@ -12,15 +12,13 @@ export function getNeedTokenApprove(
   tokenAddress: string | undefined,
   amountToSpend: bigint | undefined
 ): boolean {
-  // DEBUG: DELETE
-  return false;
-  // if (tokenAddress === NATIVE_TOKEN_ADDRESS || amountToSpend === undefined || amountToSpend <= 0n) {
-  //   return false;
-  // }
-  // if (!tokenAllowanceData || !tokenAddress || tokenAllowanceData?.[tokenAddress] === undefined) {
-  //   return true;
-  // }
-  // return amountToSpend > tokenAllowanceData[tokenAddress];
+  if (tokenAddress === NATIVE_TOKEN_ADDRESS || amountToSpend === undefined || amountToSpend <= 0n) {
+    return false;
+  }
+  if (!tokenAllowanceData || !tokenAddress || tokenAllowanceData?.[tokenAddress] === undefined) {
+    return true;
+  }
+  return amountToSpend > tokenAllowanceData[tokenAddress];
 }
 
 export function getTokensRatioByPrice(p: {

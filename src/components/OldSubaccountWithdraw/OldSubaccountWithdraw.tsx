@@ -1,60 +1,101 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
+import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
+import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import {
+  useSubaccountWithdrawalAmount,
+  withdrawFromSubaccount,
+} from "domain/synthetics/subaccount/withdrawFromSubaccount";
 import IconInfo from "img/ic_info.svg?react";
+import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
+import { metrics } from "lib/metrics";
+import { formatTokenAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { useState } from "react";
+import { getNativeToken } from "sdk/configs/tokens";
+import "./OldSubaccountWithdraw.scss";
 
-type Props = {
-  isVisible: boolean;
-};
-
-export function OldSubaccountWithdraw({ isVisible }: Props) {
+export function OldSubaccountWithdraw() {
   const { account } = useWallet();
-  const [balance, setBalance] = useState<string | null>("0.0008644876"); // Hardcoded for demo
+  const { chainId } = useChainId();
+  const nativeToken = getNativeToken(chainId);
+  const [isVisible, setIsVisible] = useState(true);
+  const { subaccount } = useSubaccountContext();
+
   const [isWithdrawing, setIsWithdrawing] = useState(false);
 
-  // Simulated function for withdrawing ETH from the old subaccount
+  const estimatedWithdrawalAmounts = useSubaccountWithdrawalAmount(chainId, subaccount);
+
+  const balanceFormatted = formatTokenAmount(
+    estimatedWithdrawalAmounts?.amountToSend ?? 0n,
+    nativeToken.decimals,
+    nativeToken.symbol,
+    {
+      showAllSignificant: true,
+    }
+  );
+
   const withdrawWeth = async () => {
-    if (!account || !balance) {
+    if (!account || !subaccount) {
       return;
     }
 
     try {
       setIsWithdrawing(true);
-      // This is a mock implementation - replace with actual withdrawal logic
-      // In reality, this would involve sending a transaction
 
-      // Simulate transaction delay
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      helperToast.success(
+        <StatusNotification title={t`Withdrawing from Subaccount`}>
+          <TransactionStatus status="loading" text={t`Withdrawing ${balanceFormatted}  to Main Account`} />
+        </StatusNotification>,
+        {
+          className: "SubaccountNotification",
+        }
+      );
 
-      helperToast.success("Successfully withdrew WETH from old subaccount");
-      setBalance("0");
+      await withdrawFromSubaccount({
+        mainAccountAddress: account,
+        subaccount,
+      });
+
+      helperToast.success(
+        <StatusNotification title={t`Withdrawing from Subaccount`}>
+          {t`Withdrawn ${balanceFormatted} to Main Account`}
+        </StatusNotification>
+      );
+
+      setIsVisible(false);
     } catch (error) {
-      console.error("Error withdrawing WETH:", error);
-      helperToast.error("Failed to withdraw WETH from old subaccount");
+      metrics.pushError(error, "subaccount.withdrawOldBalance");
+      helperToast.error(
+        <StatusNotification title={t`Withdrawing from Subaccount`}>
+          {t`Failed to withdraw ${balanceFormatted} to Main Account`}
+        </StatusNotification>
+      );
     } finally {
       setIsWithdrawing(false);
     }
   };
 
-  if (!isVisible || !balance || parseFloat(balance) === 0) {
+  if (
+    !isVisible ||
+    estimatedWithdrawalAmounts?.amountToSend === undefined ||
+    estimatedWithdrawalAmounts?.amountToSend === 0n
+  ) {
     return null;
   }
 
   return (
-    <div className="relative flex items-center rounded-4 border-l-2 border-l-slate-100 bg-slate-600 px-8 py-8">
-      <div className="mr-12 w-16">
-        <IconInfo className="absolute top-12" />
-      </div>
-      <div className="pr-8 text-12">
-        <Trans>You have {balance} ETH remaining in your old version 1CT subaccount.</Trans>
+    <ColorfulBanner color="slate" icon={<IconInfo />}>
+      <div className="text-12">
+        <Trans>You have {balanceFormatted} remaining in your old version 1CT subaccount.</Trans>
         <br />
         <Button variant="link" className="mt-8 !text-12" onClick={withdrawWeth} disabled={isWithdrawing}>
-          <Trans>Withdraw</Trans>
+          {isWithdrawing ? <Trans>Withdrawing...</Trans> : <Trans>Withdraw</Trans>}
         </Button>
       </div>
-      <div className="flex gap-8"></div>
-    </div>
+    </ColorfulBanner>
   );
 }

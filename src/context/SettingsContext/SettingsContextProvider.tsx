@@ -15,18 +15,18 @@ import {
   SHOW_PNL_AFTER_FEES_KEY,
   getAllowedSlippageKey,
   getExecutionFeeBufferBpsKey,
+  getExpressOrdersEnabledKey,
+  getGasPaymentTokenAddressKey,
   getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
   getLeverageEnabledKey as getLeverageSliderEnabledKey,
-  getSyntheticsAcceptablePriceImpactBufferKey,
-  getExpressOrdersEnabledKey,
   getOneClickTradingEnabledKey,
-  getGasPaymentTokenAddressKey,
+  getSyntheticsAcceptablePriceImpactBufferKey,
 } from "config/localStorage";
 import { getOracleKeeperRandomIndex } from "config/oracleKeeper";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { tenderlyLsKeys } from "lib/tenderly";
-import { getDefaultGasPaymentToken } from "sdk/configs/gassless";
+import { getDefaultGasPaymentToken } from "sdk/configs/express";
 
 export type SettingsContextType = {
   showDebugValues: boolean;
@@ -279,7 +279,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     tenderlyProjectSlug,
     tenderlySimulationEnabled,
     isSettingsVisible,
-    setIsSettingsVisible,
     expressOrdersEnabled,
     setExpressOrdersEnabled,
     oneClickTradingEnabled,

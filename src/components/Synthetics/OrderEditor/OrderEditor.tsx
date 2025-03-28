@@ -41,7 +41,6 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import {
@@ -102,6 +101,7 @@ import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { TokensRatioAndSlippage } from "domain/tokens";
 import { AllowedSwapSlippageInputRow } from "../AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
 import "./OrderEditor.scss";
+import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 type Props = {
   order: OrderInfo;
@@ -154,7 +154,7 @@ export function OrderEditor(p: Props) {
     };
   }, [executionFee, tokensData, p.order.executionFee]);
 
-  const subaccount = useSubaccount(additionalExecutionFee?.feeTokenAmount ?? null);
+  const subaccount = useSelector(makeSelectSubaccountForActions(1));
 
   const positionOrder = p.order as PositionOrderInfo | undefined;
   const positionIndexToken = positionOrder?.indexToken;

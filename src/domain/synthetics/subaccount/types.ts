@@ -1,7 +1,7 @@
 export type SubaccountSerializedConfig = {
   privateKey: string;
   address: string;
-} | null;
+};
 
 export type SubaccountParams = {
   topUp: bigint | null;

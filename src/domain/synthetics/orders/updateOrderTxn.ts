@@ -2,14 +2,13 @@ import { t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
 
 import { getContract } from "config/contracts";
-import type { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
-import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import type { SetPendingOrderUpdate } from "context/SyntheticsEvents";
-import { getSubaccountRouterContract } from "domain/synthetics/subaccount/getSubaccountContract";
 import { convertToContractPrice } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { callContract } from "lib/contracts";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
+import { Subaccount } from "../gassless/txns/subaccountUtils";
+import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 
 export type UpdateOrderParams = {
   orderKey: string;
@@ -46,9 +45,7 @@ export async function updateOrderTxn(
     autoCancel,
   } = p;
 
-  const router = subaccount
-    ? getSubaccountRouterContract(chainId, subaccount.signer)
-    : new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+  const router = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
 
   const encodedPayload = createUpdateEncodedPayload({
     chainId,
@@ -71,7 +68,6 @@ export async function updateOrderTxn(
       sentMsg: t`Updating order`,
       successMsg: t`Update order executed`,
       failMsg: t`Failed to update order`,
-      customSigners: subaccount?.customSigners,
       setPendingTxns: callbacks.setPendingTxns,
       showPreliminaryMsg: Boolean(subaccount),
     });

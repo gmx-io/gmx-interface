@@ -50,6 +50,9 @@ import { Context, createContext, useContext, useContextSelector } from "use-cont
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
 import { RelayerFeeState } from "domain/synthetics/gassless/types";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { TokenPermitsState, useInitTokenPermitsState } from "domain/synthetics/gassless/useInitTokenPermitsState";
+import { SubaccountState } from "domain/synthetics/gassless/useInitSubaccountState";
 
 export type SyntheticsPageType =
   | "accounts"
@@ -105,8 +108,10 @@ export type SyntheticsState = {
   };
   leaderboard: LeaderboardState;
   settings: SettingsContextType;
+  subaccountState: SubaccountState;
   tradebox: TradeboxState;
   externalSwap: ExternalSwapState;
+  tokenPermitsState: TokenPermitsState;
   relayerFeeState: RelayerFeeState | undefined;
   setRelayerFeeState: (state: RelayerFeeState | undefined) => void;
   orderEditor: OrderEditorState;
@@ -190,6 +195,7 @@ export function SyntheticsStateContextProvider({
   const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace>();
 
   const settings = useSettings();
+  const subaccountState = useSubaccountContext();
 
   const {
     isLoading,
@@ -267,6 +273,8 @@ export function SyntheticsStateContextProvider({
   });
 
   const externalSwapState = useInitExternalSwapState();
+  const tokenPermitsState = useInitTokenPermitsState();
+
   const [relayerFeeState, setRelayerFeeState] = useState<RelayerFeeState | undefined>();
 
   const state = useMemo(() => {
@@ -312,10 +320,12 @@ export function SyntheticsStateContextProvider({
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
       settings,
+      subaccountState,
       tradebox: tradeboxState,
       externalSwap: externalSwapState,
       relayerFeeState,
       setRelayerFeeState,
+      tokenPermitsState,
       orderEditor,
       positionSeller: positionSellerState,
       positionEditor: positionEditorState,
@@ -355,9 +365,11 @@ export function SyntheticsStateContextProvider({
     claimablePositionPriceImpactFees,
     leaderboard,
     settings,
+    subaccountState,
     tradeboxState,
     externalSwapState,
     relayerFeeState,
+    tokenPermitsState,
     orderEditor,
     positionSellerState,
     positionEditorState,

@@ -1,11 +1,11 @@
-import { Trans } from "@lingui/macro";
-import { useCallback } from "react";
-import { createBreakpoint } from "react-use";
+import { Avatar } from "components/Avatar/Avatar";
+import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { useENS } from "lib/legacy";
 import { shortenAddressOrEns } from "lib/wallets";
-import { Avatar } from "components/Avatar/Avatar";
+import { useCallback } from "react";
+import { createBreakpoint } from "react-use";
+
 import "./AddressDropdown.scss";
-import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 
 type Props = {
   account: string;

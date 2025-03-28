@@ -1,61 +1,60 @@
 import {
-  ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN,
-  ONE_CLICK_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN,
+  EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY,
+  EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY,
 } from "config/localStorage";
+import { selectExpressOrdersEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import { selectRawSubaccount } from "context/SyntheticsStateContext/selectors/subaccountSelectors";
 import {
-  useIsSubaccountActive,
-  useSubaccountActionCounts,
-  useSubaccountInsufficientFunds,
-} from "context/SubaccountContext/SubaccountContext";
-import {
-  selectTradeboxExecutionFee,
   selectTradeboxFromToken,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import {
+  getIsNonceExpired,
+  getIsSubaccountExpired,
+  getRemainingSubaccountActions,
+} from "domain/synthetics/gassless/txns/subaccountUtils";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useRequiredActions } from "./useRequiredActions";
 
-export function useShowOneClickTradingInfo() {
-  const executionFee = useSelector(selectTradeboxExecutionFee);
+export function useExpressTradingWarnings() {
   const fromToken = useSelector(selectTradeboxFromToken);
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
+  const isExpressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
   const { requiredActions } = useRequiredActions();
 
-  const isSubaccountActive = useIsSubaccountActive();
+  const subaccount = useSelector(selectRawSubaccount);
 
-  const insufficientFunds = useSubaccountInsufficientFunds(executionFee?.feeTokenAmount);
+  const isSubaccountActive = subaccount?.optimisticActive;
 
-  const [nativeTokenWarningHidden] = useLocalStorageSerializeKey(ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN, false);
+  const [nativeTokenWarningHidden] = useLocalStorageSerializeKey(EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY, false);
 
-  const [wrapOrUnwrapWarningHidden] = useLocalStorageSerializeKey(ONE_CLICK_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN, false);
+  const [wrapOrUnwrapWarningHidden] = useLocalStorageSerializeKey(
+    EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY,
+    false
+  );
 
-  const { remaining } = useSubaccountActionCounts();
+  const remaining = subaccount ? getRemainingSubaccountActions(subaccount) : 0n;
 
   const isNativeToken = fromToken?.isNative;
 
-  const shouldShowInsufficientFundsButton = isSubaccountActive && insufficientFunds && !isNativeToken;
+  const conditions = {
+    shouldShowWrapOrUnwrapWarning:
+      !tradeFlags?.isTrigger && isExpressOrdersEnabled && !wrapOrUnwrapWarningHidden && isWrapOrUnwrap,
+    shouldShowNativeTokenWarning:
+      !tradeFlags?.isTrigger && isExpressOrdersEnabled && !nativeTokenWarningHidden && isNativeToken,
+    shouldShowExpiredSubaccountWarning: isSubaccountActive && getIsSubaccountExpired(subaccount),
+    shouldShowNonceExpiredWarning: isSubaccountActive && getIsNonceExpired(subaccount),
+    shouldShowAllowedActionsWarning:
+      isSubaccountActive && (remaining === 0n || remaining < requiredActions) && !isNativeToken,
+  };
 
-  const shouldShowAllowedActionsWarning =
-    isSubaccountActive && (remaining === 0n || remaining < requiredActions) && !isNativeToken;
-  const shouldShowWrapOrUnwrapWarning =
-    !tradeFlags?.isTrigger && isSubaccountActive && !wrapOrUnwrapWarningHidden && isWrapOrUnwrap;
-  const shouldShowNativeTokenWarning =
-    !tradeFlags?.isTrigger && isSubaccountActive && !nativeTokenWarningHidden && isNativeToken;
-
-  const shouldShowWarning =
-    shouldShowWrapOrUnwrapWarning ||
-    shouldShowNativeTokenWarning ||
-    shouldShowAllowedActionsWarning ||
-    shouldShowInsufficientFundsButton;
+  const shouldShowWarning = Object.values(conditions).some(Boolean);
 
   return {
-    shouldShowWrapOrUnwrapWarning,
-    shouldShowNativeTokenWarning,
-    shouldShowAllowedActionsWarning,
-    shouldShowInsufficientFundsButton,
+    ...conditions,
     shouldShowWarning,
   };
 }

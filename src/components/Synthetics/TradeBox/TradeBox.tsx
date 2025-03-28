@@ -63,7 +63,7 @@ import useWallet from "lib/wallets/useWallet";
 import { TradeMode } from "sdk/types/trade";
 
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
-import { useShowOneClickTradingInfo } from "./hooks/useShowOneClickTradingInfo";
+import { useExpressTradingWarnings } from "./hooks/useShowOneClickTradingInfo";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
 import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
@@ -85,7 +85,7 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
-import { OneClickTradingInfo } from "./OneClickTradingInfo";
+import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
@@ -830,7 +830,7 @@ export function TradeBox() {
 
   const { setIsSettingsVisible, isLeverageSliderEnabled } = useSettings();
 
-  const { shouldShowWarning: shouldShowOneClickTradingWarning } = useShowOneClickTradingInfo();
+  const { shouldShowWarning: shouldShowOneClickTradingWarning } = useExpressTradingWarnings();
 
   const showSectionBetweenInputsAndButton =
     isPosition ||
@@ -868,7 +868,6 @@ export function TradeBox() {
 
         {showSectionBetweenInputsAndButton && (
           <div className="flex flex-col gap-14 pt-12">
-            <OneClickTradingInfo />
             {maxAutoCancelOrdersWarning}
             {isSwap && isLimit && (
               <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
@@ -959,6 +958,7 @@ export function TradeBox() {
         )}
         <div className="flex flex-col gap-14 pt-14">
           <div>{button}</div>
+          <ExpressTradingWarningCard />
           <div className="h-1 bg-stroke-primary" />
           {isSwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
           {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (

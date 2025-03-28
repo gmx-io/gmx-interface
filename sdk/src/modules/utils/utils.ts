@@ -1,6 +1,11 @@
 import { withRetry } from "viem";
 
-import { EXECUTION_FEE_CONFIG_V2, GAS_PRICE_PREMIUM_MAP, getChain, MAX_PRIORITY_FEE_PER_GAS_MAP } from "configs/chains";
+import {
+  EXECUTION_FEE_CONFIG_V2,
+  GAS_PRICE_PREMIUM_MAP,
+  getViemChain,
+  MAX_PRIORITY_FEE_PER_GAS_MAP,
+} from "configs/chains";
 import { getContract } from "configs/contracts";
 import {
   decreaseOrderGasLimitKey,
@@ -224,7 +229,7 @@ export class Utils extends Module {
     const feeData = await withRetry(
       () =>
         this.sdk.publicClient.estimateFeesPerGas({
-          chain: getChain(this.chainId),
+          chain: getViemChain(this.chainId),
           type: "legacy",
         }),
       {

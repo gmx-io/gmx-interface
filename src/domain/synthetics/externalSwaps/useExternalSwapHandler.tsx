@@ -1,7 +1,6 @@
 import { getIsFlagEnabled } from "config/ab";
 import { isDevelopment } from "config/env";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   selectBaseExternalSwapOutput,
@@ -24,6 +23,7 @@ import { throttleLog } from "lib/logging";
 import { useEffect } from "react";
 import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
 import { getContract } from "sdk/configs/contracts";
+import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 export function useExternalSwapHandler() {
   const { chainId } = useChainId();
@@ -46,7 +46,7 @@ export function useExternalSwapHandler() {
   const shouldFallbackToInternalSwap = useSelector(selectShouldFallbackToInternalSwap);
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
 
-  const subaccount = useSubaccount(null);
+  const subaccount = useSelector(makeSelectSubaccountForActions(1));
 
   const { externalSwapOutput } = useExternalSwapOutputRequest({
     chainId,

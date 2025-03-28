@@ -7,6 +7,7 @@ import { LRUCache } from "sdk/utils/LruCache";
 
 import { SyntheticsState } from "./SyntheticsStateContextProvider";
 import { ExternalSwapQuote } from "sdk/types/trade";
+
 export { useSyntheticsStateSelector as useSelector } from "./SyntheticsStateContextProvider";
 
 /**

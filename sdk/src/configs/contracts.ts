@@ -115,7 +115,7 @@ export const CONTRACTS = {
     DataStore: "0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8",
     EventEmitter: "0xC8ee91A54287DB53897056e12D9819156D3822Fb",
     SubaccountRouter: "0xa329221a77BE08485f59310b873b14815c82E10D",
-    ExchangeRouter: "0x5ac4e27341e4cccb3e5fd62f9e62db2adf43dd57",
+    ExchangeRouter: "0x602b805EedddBbD9ddff44A7dcBD46cb07849685",
     DepositVault: "0xF89e77e8Dc11691C9e8757e84aaFbCD8A67d7A55",
     WithdrawalVault: "0x0628D46b5D145f183AdB6Ef1f2c97eD1C4701C55",
     OrderVault: "0x31eF83a530Fde1B38EE9A18093A333D8Bbbc40D5",
@@ -129,8 +129,11 @@ export const CONTRACTS = {
 
     GelatoRelayRouter: "0x63daFB2CA71767129AB8D0a0909383023C4AfF6E",
     SubaccountGelatoRelayRouter: "0x8964c82e1878d35bEd66d377f97e4F518b7A024F",
+
     ExternalHandler: "0x389CEf541397e872dC04421f166B5Bc2E0b374a5",
     OpenOceanRouter: "0x6352a56caadC4F1E25CD6c75970Fa768A3304e64",
+
+    ChainlinkPriceFeedProvider: "0x527FB0bCfF63C47761039bB386cFE181A92a4701",
 
     Multicall: "0x842ec2c7d803033edf55e478f461fc547bc54eb2",
   },
@@ -183,7 +186,7 @@ export const CONTRACTS = {
     DataStore: "0x2F0b22339414ADeD7D5F06f9D604c7fF5b2fe3f6",
     EventEmitter: "0xDb17B211c34240B014ab6d61d4A31FA0C0e20c26",
     SubaccountRouter: "0x5aEb6AD978f59e220aA9099e09574e1c5E03AafD",
-    ExchangeRouter: "0xe37d052e1deb99901de205e7186e31a36e4ef70c",
+    ExchangeRouter: "0xFa843af557824Be5127eaCB3c4B5D86EADEB73A1",
     DepositVault: "0x90c670825d0C62ede1c5ee9571d6d9a17A722DFF",
     WithdrawalVault: "0xf5F30B10141E1F63FC11eD772931A8294a591996",
     OrderVault: "0xD3D60D22d415aD43b7e64b510D86A30f19B1B12C",
@@ -195,10 +198,13 @@ export const CONTRACTS = {
     GlvRouter: "0x16500c1d8ffe2f695d8dcadf753f664993287ae4",
     GlvVault: "0x527FB0bCfF63C47761039bB386cFE181A92a4701",
 
-    SubaccountGelatoRelayRouter: zeroAddress,
-    GelatoRelayRouter: zeroAddress,
+    GelatoRelayRouter: "0xb33D87b6Be2a6772eebD38C3222F5872A62Cca2A",
+    SubaccountGelatoRelayRouter: "0xE26052e5676E636230A9B05652acD3ACA23fc35f",
+
     ExternalHandler: "0xD149573a098223a9185433290a5A5CDbFa54a8A9",
     OpenOceanRouter: "0x6352a56caadC4F1E25CD6c75970Fa768A3304e64",
+
+    ChainlinkPriceFeedProvider: "0x713c6a2479f6C079055A6AD3690D95dEDCEf9e1e",
 
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   },

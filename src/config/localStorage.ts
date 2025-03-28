@@ -48,9 +48,10 @@ export const REQUIRED_UI_VERSION_KEY = "required-ui-version";
 export const DEBUG_SWAP_SETTINGS_KEY = "debug-swap-settings";
 export const EXTERNAL_SWAPS_ENABLED_KEY = "external-swaps-enabled";
 
-export const ONE_CLICK_TRADING_OFFER_HIDDEN = "one-click-trading-offer-hidden";
-export const ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN = "one-click-trading-native-token-warn-hidden";
-export const ONE_CLICK_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN = "one-click-trading-wrap-or-unwrap-warn-hidden";
+export const ONE_CLICK_TRADING_PROMO_HIDDEN_KEY = "one-click-trading-promo-hidden";
+export const EXPRESS_TRADING_PROMO_HIDDEN_KEY = "express-trading-promo-hidden";
+export const EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY = "express-trading-native-token-warn-hidden";
+export const EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY = "express-trading-wrap-or-unwrap-warn-hidden";
 
 export const INTERVIEW_INVITATION_SHOWN_TIME_KEY = "interview-invitation-shown-time";
 export const NPS_SURVEY_SHOWN_TIME_KEY = "nps-survey-shown-time";
@@ -80,7 +81,18 @@ export const ONE_CLICK_TRADING_ENABLED_KEY = "one-click-trading-enabled";
 export const GAS_PAYMENT_TOKEN_ADDRESS_KEY = "gas-payment-token-address";
 export const EXPRESS_TRADING_BANNER_DISMISSED_KEY = "express-trading-banner-dismissed";
 
+export const SUBACCOUNT_APPROVAL_KEY = "subaccount-approval";
+export const TOKEN_PERMITS_KEY = "token-permits";
+
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
+
+export function getSubaccountApprovalKey(chainId: number) {
+  return [chainId, SUBACCOUNT_APPROVAL_KEY];
+}
+
+export function getTokenPermitsKey(chainId: number) {
+  return [chainId, TOKEN_PERMITS_KEY];
+}
 
 export function getSyntheticsDepositIndexTokenKey(chainId: number) {
   return [chainId, SYNTHETICS_DEPOSIT_INDEX_TOKEN_KEY];
@@ -186,4 +198,12 @@ export function getGasPaymentTokenAddressKey(chainId: number) {
 
 export function getExpressTradingBannerDismissedKey(chainId: number) {
   return `${chainId}-${EXPRESS_TRADING_BANNER_DISMISSED_KEY}`;
+}
+
+export function getOneClickTradingPromoHiddenKey(chainId: number) {
+  return `${chainId}-${ONE_CLICK_TRADING_PROMO_HIDDEN_KEY}`;
+}
+
+export function getExpressTradingPromoHiddenKey(chainId: number) {
+  return `${chainId}-${EXPRESS_TRADING_PROMO_HIDDEN_KEY}`;
 }

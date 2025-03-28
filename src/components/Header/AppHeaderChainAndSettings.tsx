@@ -110,8 +110,6 @@ export function AppHeaderChainAndSettings({ small, menuToggle, openSettings, sho
 
   const visualChainId = walletChainId !== undefined && isSourceChain(walletChainId) ? walletChainId : settlementChainId;
 
-  const selectedLabel = getChainName(visualChainId);
-
   const trackLaunchApp = useCallback(() => {
     userAnalytics.pushEvent<LandingPageLaunchAppEvent>(
       {

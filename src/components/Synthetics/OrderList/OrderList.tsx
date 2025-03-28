@@ -2,7 +2,7 @@ import { Plural, Trans, t } from "@lingui/macro";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef } from "react";
 import { useMeasure, useMedia } from "react-use";
 
-import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
+import { useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/useSubaccountCancelOrdersDetailsMessage";
 import {
   useIsOrdersLoading,
   useMarketsInfoData,
@@ -35,6 +35,7 @@ import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateCon
 import { OrderItem } from "../OrderItem/OrderItem";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
 import { OrderTypeFilter } from "./filters/OrderTypeFilter";
+import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 type Props = {
   hideActions?: boolean;
@@ -73,7 +74,7 @@ export function OrderList({
   const chainId = useSelector(selectChainId);
   const { signer } = useWallet();
 
-  const subaccount = useSubaccount(null);
+  const subaccount = useSelector(makeSelectSubaccountForActions(1));
   const account = useSelector(selectAccount);
 
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
@@ -91,7 +92,7 @@ export function OrderList({
     const allSelected = orders.length > 0 && orders.every((o) => selectedOrdersKeys?.includes(o.key));
     return [onlySomeSelected, allSelected];
   }, [selectedOrdersKeys, orders]);
-  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, 1);
+  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(1);
 
   const orderRefs = useRef<{ [key: string]: HTMLElement | null }>({});
 

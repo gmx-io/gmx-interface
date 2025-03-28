@@ -8,7 +8,6 @@ import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { get1InchSwapUrlFromAddresses } from "config/links";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import {
   usePositionsConstants,
   useUiFeeFactor,
@@ -61,12 +60,13 @@ import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 
 import { tradeTypeLabels } from "../tradeboxConstants";
 import { useRequiredActions } from "./useRequiredActions";
-import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
 import { useTradeboxTransactions } from "./useTradeboxTransactions";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";
 import { selectExternalSwapQuote } from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
+import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectAddTokenPermit } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 
 interface TradeboxButtonStateOptions {
   account?: string;
@@ -227,10 +227,10 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
 
   const { setPendingTxns } = usePendingTxns();
   const { openConnectModal } = useConnectModal();
-  const { summaryExecutionFee } = useTPSLSummaryExecutionFee();
   const { requiredActions } = useRequiredActions();
 
-  const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, requiredActions);
+  const subaccount = useSelector(makeSelectSubaccountForActions(requiredActions));
+  const addTokenPermit = useSelector(selectAddTokenPermit);
 
   const { onSubmitWrapOrUnwrap, onSubmitSwap, onSubmitIncreaseOrder, onSubmitDecreaseOrder } = useTradeboxTransactions({
     setPendingTxns,
@@ -265,6 +265,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
         setPendingTxns: () => null,
         infoTokens: {},
         chainId,
+        addTokenPermit,
         onApproveFail: () => {
           userAnalytics.pushEvent<TokenApproveResultEvent>({
             event: "TokenApproveAction",

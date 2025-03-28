@@ -15,7 +15,7 @@ import "./App.scss";
 
 import SEO from "components/Common/SEO";
 
-import { LANGUAGE_LOCALSTORAGE_KEY, SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
+import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
 import { useChainId } from "lib/chains";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
@@ -26,14 +26,13 @@ import { SWRConfigProp } from "./swrConfig";
 import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTxnsContext";
 import { SettingsContextProvider } from "context/SettingsContext/SettingsContextProvider";
 import { SorterContextProvider } from "context/SorterContext/SorterContextProvider";
-import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
+
 import { GmxAccountContextProvider } from "context/GmxAccountContext/GmxAccountContext";
+import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContextProvider";
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { WebsocketContextProvider } from "context/WebsocketContext/WebsocketContextProvider";
-import useWallet from "lib/wallets/useWallet";
-import { ARBITRUM } from "config/chains";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
