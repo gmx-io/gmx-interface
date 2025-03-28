@@ -1,4 +1,5 @@
 import { ClaimAction } from "domain/synthetics/claimHistory";
+
 import { ClaimCollateralHistoryRow } from "./ClaimCollateralHistoryRow";
 import { ClaimFundingFeesHistoryRow } from "./ClaimFundingFeesHistoryRow";
 

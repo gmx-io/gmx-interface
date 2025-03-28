@@ -1,30 +1,27 @@
+import { Trans, t } from "@lingui/macro";
+import { ethers } from "ethers";
 import React, { useState } from "react";
 import useSWR from "swr";
-import { ethers } from "ethers";
-import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 
+import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getContract } from "config/contracts";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { useChainId } from "lib/chains";
+import { callContract, contractFetcher } from "lib/contracts";
+import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
+import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
+import useWallet from "lib/wallets/useWallet";
+import { abis } from "sdk/abis";
+import { bigMath } from "sdk/utils/bigmath";
 
-import Token from "sdk/abis/Token.json";
-import RewardReader from "sdk/abis/RewardReader.json";
-
+import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
-
-import "./ClaimEsGmx.css";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import arbitrumIcon from "img/ic_arbitrum_96.svg";
 import avaIcon from "img/ic_avalanche_96.svg";
 
-import { Trans, t } from "@lingui/macro";
-import { ARBITRUM, AVALANCHE } from "config/chains";
-import { callContract, contractFetcher } from "lib/contracts";
-import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
-import { useChainId } from "lib/chains";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import Button from "components/Button/Button";
-import useWallet from "lib/wallets/useWallet";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { bigMath } from "sdk/utils/bigmath";
+import "./ClaimEsGmx.css";
 
 const VEST_WITH_GMX_ARB = "VEST_WITH_GMX_ARB";
 const VEST_WITH_GLP_ARB = "VEST_WITH_GLP_ARB";
@@ -149,7 +146,7 @@ export default function ClaimEsGmx() {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: contractFetcher(signer, Token),
+      fetcher: contractFetcher(signer, "Token"),
     }
   );
 
@@ -168,7 +165,7 @@ export default function ClaimEsGmx() {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: contractFetcher(undefined, RewardReader, [arbVesterAdddresses]),
+      fetcher: contractFetcher(undefined, "RewardReader", [arbVesterAdddresses]),
     }
   );
 
@@ -181,7 +178,7 @@ export default function ClaimEsGmx() {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: contractFetcher(undefined, RewardReader, [avaxVesterAdddresses]),
+      fetcher: contractFetcher(undefined, "RewardReader", [avaxVesterAdddresses]),
     }
   );
 
@@ -318,7 +315,7 @@ export default function ClaimEsGmx() {
       receiver = "0x28863Dd19fb52DF38A9f2C6dfed40eeB996e3818";
     }
 
-    const contract = new ethers.Contract(esGmxIouAddress, Token.abi, signer);
+    const contract = new ethers.Contract(esGmxIouAddress, abis.Token, signer);
     callContract(chainId, contract, "transfer", [receiver, amount], {
       sentMsg: t`Claim submitted!`,
       failMsg: t`Claim failed.`,

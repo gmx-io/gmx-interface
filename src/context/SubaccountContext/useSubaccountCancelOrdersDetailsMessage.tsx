@@ -1,5 +1,6 @@
-import { useCallback, useMemo } from "react";
 import { Trans } from "@lingui/macro";
+import { useCallback, useMemo } from "react";
+
 import { selectSetIsSettingsVisible } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectRawSubaccount } from "context/SyntheticsStateContext/selectors/subaccountSelectors";
 import { useSyntheticsStateSelector as useSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";

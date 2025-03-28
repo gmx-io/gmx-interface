@@ -1,3 +1,5 @@
+import { zeroAddress, zeroHash } from "viem";
+
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { PriceOverrides } from "domain/synthetics/orders/simulateExecuteTxn";
 import { convertTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -6,7 +8,6 @@ import { ExternalSwapQuote } from "sdk/types/trade";
 import { isDecreaseOrderType } from "sdk/utils/orders";
 import { convertToContractPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut, applySlippageToPrice } from "sdk/utils/trade";
-import { zeroAddress, zeroHash } from "viem";
 
 export type OrderCreatePayload = {
   orderPayload: OrderPayload;

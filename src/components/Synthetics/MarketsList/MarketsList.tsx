@@ -1,19 +1,21 @@
 import { Trans } from "@lingui/macro";
 import { useMemo, useState } from "react";
 
-import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
+import { USD_DECIMALS } from "config/factors";
 import { getIcon } from "config/icons";
-import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { useMarketsInfoDataToIndexTokensStats } from "context/SyntheticsStateContext/hooks/statsHooks";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { IndexTokenStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { stripBlacklistedWords } from "domain/tokens/utils";
 import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";
-import { formatAmount, formatRatePercentage, formatUsd, formatUsdPrice } from "lib/numbers";
+import { formatAmount, formatAmountHuman, formatRatePercentage, formatUsdPrice } from "lib/numbers";
 import { searchBy } from "lib/searchBy";
+import AssetDropdown from "pages/Dashboard/AssetDropdown";
+import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
+import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { MarketListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
@@ -21,7 +23,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import AssetDropdown from "pages/Dashboard/AssetDropdown";
+
 import { renderNetFeeHeaderTooltipContent } from "./NetFeeHeaderTooltipContent";
 import { NetFeeTooltip } from "./NetFeeTooltip";
 
@@ -211,7 +213,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
               <div className="text-body-large">{marketIndexName}</div>
             </div>
             <div>
-              <AssetDropdown token={stats.token} />
+              <AssetDropdown token={stats.token} marketsStats={stats.marketsStats} />
             </div>
           </div>
         </div>
@@ -224,8 +226,8 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
       <TableTd>
         <TooltipWithPortal
           className="nowrap"
-          handle={formatUsd(stats.totalPoolValue)}
-          renderContent={() => (
+          handle={formatAmountHuman(stats.totalPoolValue, USD_DECIMALS, true, 2)}
+          content={
             <>
               {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
                 <StatsTooltipRow
@@ -238,18 +240,18 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                       <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>:
                     </div>
                   }
-                  value={formatUsd(poolValueUsd)}
+                  value={formatAmountHuman(poolValueUsd, USD_DECIMALS, true, 2)}
                 />
               ))}
             </>
-          )}
+          }
         />
       </TableTd>
       <TableTd>
         <TooltipWithPortal
           className="nowrap"
-          handle={formatUsd(stats.totalMaxLiquidity)}
-          renderContent={() => (
+          handle={formatAmountHuman(stats.totalMaxLiquidity, USD_DECIMALS, true, 2)}
+          content={
             <>
               {stats.marketsStats.map(({ marketInfo, maxLiquidity }) => (
                 <StatsTooltipRow
@@ -262,11 +264,11 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                       <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>:
                     </div>
                   }
-                  value={formatUsd(maxLiquidity)}
+                  value={formatAmountHuman(maxLiquidity, USD_DECIMALS, true, 2)}
                 />
               ))}
             </>
-          )}
+          }
         />
       </TableTd>
       <TableTd>

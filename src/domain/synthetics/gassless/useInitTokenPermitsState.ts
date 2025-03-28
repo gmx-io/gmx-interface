@@ -1,10 +1,12 @@
+import { useMemo } from "react";
+
 import { getTokenPermitsKey } from "config/localStorage";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useWallet from "lib/wallets/useWallet";
-import { useMemo } from "react";
 import { DEFAULT_PERMIT_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
+
 import { createAndSignTokenPermit, TokenPermitPayload } from "./txns/tokenPermitUtils";
 
 export type TokenPermitsState = ReturnType<typeof useInitTokenPermitsState>;

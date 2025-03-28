@@ -7,11 +7,10 @@ import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsCo
 import { callContract } from "lib/contracts";
 import { formatAmount } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
+import { abis } from "sdk/abis";
 
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
-
-import Vester from "sdk/abis/Vester.json";
 
 export function AffiliateClaimModal(props: {
   isVisible: boolean;
@@ -35,7 +34,7 @@ export function AffiliateClaimModal(props: {
   const onClickPrimary = useCallback(() => {
     setIsClaiming(true);
 
-    const affiliateVesterContract = new ethers.Contract(affiliateVesterAddress, Vester.abi, signer);
+    const affiliateVesterContract = new ethers.Contract(affiliateVesterAddress, abis.Vester, signer);
 
     callContract(chainId, affiliateVesterContract, "claim", [], {
       sentMsg: t`Claim submitted.`,

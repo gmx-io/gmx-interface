@@ -6,6 +6,7 @@ import { useMedia } from "react-use";
 import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
+import type { SortDirection } from "context/SorterContext/types";
 import { selectAvailableChartTokens } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIndexTokenStatsMap } from "context/SyntheticsStateContext/selectors/statsSelectors";
@@ -32,16 +33,15 @@ import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
 import { stripBlacklistedWords, type Token } from "domain/tokens";
 import { getMidPrice } from "domain/tokens/utils";
+import { formatAmountHuman, formatUsdPrice } from "lib/numbers";
+import { EMPTY_ARRAY } from "lib/objects";
+import { searchBy } from "lib/searchBy";
 import {
   convertTokenAddress,
   getCategoryTokenAddresses,
   getTokenVisualMultiplier,
   isChartAvailableForToken,
 } from "sdk/configs/tokens";
-
-import { formatAmountHuman, formatUsdPrice } from "lib/numbers";
-import { EMPTY_ARRAY } from "lib/objects";
-import { searchBy } from "lib/searchBy";
 
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
@@ -50,16 +50,16 @@ import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { TableTd, TableTr } from "components/Table/Table";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import type { SortDirection } from "context/SorterContext/types";
+
+import LongIcon from "img/long.svg?react";
+import ShortIcon from "img/short.svg?react";
+
 import {
   SELECTOR_BASE_MOBILE_THRESHOLD,
   SelectorBase,
   SelectorBaseMobileHeaderContent,
   useSelectorClose,
 } from "../SelectorBase/SelectorBase";
-
-import LongIcon from "img/long.svg?react";
-import ShortIcon from "img/short.svg?react";
 
 type Props = {
   selectedToken: Token | undefined;
@@ -80,9 +80,9 @@ export default function ChartTokenSelector(props: Props) {
       popoverPlacement="bottom-start"
       popoverYOffset={16}
       popoverXOffset={-8}
-      handleClassName={oneRowLabels === false ? "mr-24" : undefined}
+      handleClassName={cx("group", { "mr-24": oneRowLabels === false })}
       chevronClassName={chevronClassName}
-      desktopPanelClassName="w-[800px] max-w-[100vw]"
+      desktopPanelClassName="w-[880px] max-w-[100vw]"
       label={
         selectedToken ? (
           <span
@@ -91,7 +91,7 @@ export default function ChartTokenSelector(props: Props) {
               "items-center": oneRowLabels,
             })}
           >
-            <TokenIcon className="mr-8 mt-4" symbol={selectedToken.symbol} displaySize={20} importSize={24} />
+            <TokenIcon className="mr-8 mt-2" symbol={selectedToken.symbol} displaySize={20} importSize={24} />
             <span
               className={cx("flex justify-start", {
                 "flex-col": !oneRowLabels,
@@ -100,15 +100,15 @@ export default function ChartTokenSelector(props: Props) {
             >
               <span className="text-body-large">
                 {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
-                {selectedToken.symbol} / USD
+                {selectedToken.symbol}/USD
               </span>
               {poolName && (
                 <span
-                  className={cx("text-body-small font-normal text-slate-100", {
+                  className={cx("text-body-small font-normal text-slate-100 group-hover:text-blue-300", {
                     "ml-8": oneRowLabels,
                   })}
                 >
-                  [{poolName}]
+                  <span>[{poolName}]</span>
                 </span>
               )}
             </span>
@@ -160,7 +160,7 @@ function MarketsList() {
   const indexTokenStatsMap = useSelector(selectIndexTokenStatsMap).indexMap;
 
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
-  const isSmallMobile = useMedia("(max-width: 400px)");
+  const isSmallMobile = useMedia("(max-width: 450px)");
 
   const close = useSelectorClose();
 
@@ -226,16 +226,22 @@ function MarketsList() {
     "py-8": isMobile && isSwap,
   });
   const rowHorizontalPadding = isMobile
-    ? cx("px-6 first-of-type:pl-8 last-of-type:pr-8")
+    ? cx("px-2 first-of-type:pl-5 last-of-type:pr-8")
     : cx("px-5 first-of-type:pl-16 last-of-type:pr-16");
   const thClassName = cx(
     "text-body-medium sticky top-0 z-10 whitespace-nowrap border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-slate-100",
-    "first-of-type:text-left last-of-type:[&:not(:first-of-type)]:text-right",
+    "first-of-type:text-left",
     isMobile ? "first-of-type:!pl-40" : "first-of-type:!pl-37",
     rowVerticalPadding,
     rowHorizontalPadding
   );
-  const tdClassName = cx("text-body-medium last-of-type:text-right", rowVerticalPadding, rowHorizontalPadding);
+
+  const tdClassName = cx(
+    "text-body-medium",
+    isMobile ? "align-top" : "align-middle",
+    rowVerticalPadding,
+    rowHorizontalPadding
+  );
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -254,6 +260,8 @@ function MarketsList() {
 
     return t`Search Market`;
   }, [isSwap]);
+
+  const availableLiquidityLabel = isMobile ? (isSmallMobile ? t`LIQ.` : t`AVAIL. LIQ.`) : t`AVAILABLE LIQ.`;
 
   return (
     <>
@@ -297,7 +305,7 @@ function MarketsList() {
         <table className="text-sm w-full border-separate border-spacing-0">
           <thead className="bg-slate-800">
             <tr>
-              <th className={thClassName} colSpan={2}>
+              <th className={cx(thClassName, isMobile ? "min-w-[18ch]" : "min-w-[28ch]")} colSpan={2}>
                 <Trans>Market</Trans>
               </th>
               {!isSwap && (
@@ -308,28 +316,26 @@ function MarketsList() {
                     </Sorter>
                   </th>
                   {!isMobile && (
-                    <>
-                      <th className={thClassName}>
-                        <Sorter {...getSorterProps("24hChange")}>
-                          <Trans>24H%</Trans>
-                        </Sorter>
-                      </th>
-                      <th className={thClassName}>
-                        <Sorter {...getSorterProps("24hVolume")}>
-                          <Trans>24H VOL.</Trans>
-                        </Sorter>
-                      </th>
-                      <th className={thClassName} colSpan={2}>
-                        <Sorter {...getSorterProps("combinedOpenInterest")}>
-                          <Trans>OPEN INTEREST</Trans>
-                        </Sorter>
-                      </th>
-                    </>
+                    <th className={thClassName}>
+                      <Sorter {...getSorterProps("24hChange")}>
+                        <Trans>24H%</Trans>
+                      </Sorter>
+                    </th>
+                  )}
+                  <th className={thClassName}>
+                    <Sorter {...getSorterProps("24hVolume")}>
+                      {isSmallMobile ? <Trans>VOL.</Trans> : <Trans>24H VOL.</Trans>}
+                    </Sorter>
+                  </th>
+                  {!isMobile && (
+                    <th className={thClassName} colSpan={2}>
+                      <Sorter {...getSorterProps("combinedOpenInterest")}>
+                        <Trans>OPEN INTEREST</Trans>
+                      </Sorter>
+                    </th>
                   )}
                   <th className={thClassName} colSpan={2}>
-                    <Sorter {...getSorterProps("combinedAvailableLiquidity")}>
-                      {isSmallMobile ? <Trans>AVAIL. LIQ.</Trans> : <Trans>AVAILABLE LIQ.</Trans>}
-                    </Sorter>
+                    <Sorter {...getSorterProps("combinedAvailableLiquidity")}>{availableLiquidityLabel}</Sorter>
                   </th>
                 </>
               )}
@@ -551,7 +557,7 @@ function MarketListItem({
   if (isSwap) {
     return (
       <tr key={token.symbol} className="group/row cursor-pointer hover:bg-cold-blue-900">
-        <td className={cx("pl-16 pr-4 text-center", rowVerticalPadding)} onClick={handleFavoriteClick}>
+        <td className={cx("pl-9 pr-9 text-center", rowVerticalPadding)} onClick={handleFavoriteClick}>
           <FavoriteStar isFavorite={isFavorite} />
         </td>
         <td
@@ -579,22 +585,17 @@ function MarketListItem({
       onClick={handleSelectLargePosition}
     >
       <td
-        className={cx("pr-4 text-center", rowVerticalPadding, isMobile ? "pl-8" : "pl-16")}
+        className={cx("text-center", rowVerticalPadding, isMobile ? "pl-10 pr-4 pt-6 align-top" : "px-9 text-center")}
         onClick={handleFavoriteClick}
       >
         <FavoriteStar isFavorite={isFavorite} />
       </td>
-      <td className={cx("text-body-medium pl-4", rowVerticalPadding, isMobile ? "pr-6" : "pr-8")}>
-        <div className="flex items-center">
-          <TokenIcon
-            className="ChartToken-list-icon -my-5 mr-8"
-            symbol={token.symbol}
-            displaySize={16}
-            importSize={24}
-          />
-          <span className="flex flex-wrap items-center gap-4">
+      <td className={cx("text-body-medium pl-4", rowVerticalPadding, isMobile ? "pr-2" : "pr-8")}>
+        <div className={cx("flex", isMobile ? "items-start" : "items-center")}>
+          <TokenIcon className="ChartToken-list-icon mr-8" symbol={token.symbol} displaySize={16} importSize={24} />
+          <span className={cx("flex flex-wrap gap-4", isMobile ? "flex-col items-start" : "items-center")}>
             <span className="-mt-2 leading-1">{getMarketIndexName({ indexToken: token, isSpotOnly: false })}</span>
-            <span className="text-body-small rounded-2 bg-slate-700 px-2 pb-3 pt-1 leading-1">
+            <span className="rounded-4 bg-slate-700 px-4 pb-5 pt-3 leading-1">
               {maxLeverage ? `${maxLeverage}x` : "-"}
             </span>
           </span>
@@ -611,10 +612,10 @@ function MarketListItem({
           {isMobile && <span>{dayPriceDeltaComponent}</span>}
         </div>
       </td>
+      {!isMobile && <td className={tdClassName}>{dayPriceDeltaComponent}</td>}
+      <td className={tdClassName}>{dayVolume ? formatAmountHuman(dayVolume, USD_DECIMALS, true) : "-"}</td>
       {!isMobile && (
         <>
-          <td className={tdClassName}>{dayPriceDeltaComponent}</td>
-          <td className={tdClassName}>{dayVolume ? formatAmountHuman(dayVolume, USD_DECIMALS, true) : "-"}</td>
           <td className={tdClassName}>
             <span className="inline-flex items-center gap-4">
               <LongIcon width={12} className="relative top-1 opacity-70" />
@@ -629,9 +630,10 @@ function MarketListItem({
           </td>
         </>
       )}
+
       {!isMobile ? (
         <>
-          <td className={cx(tdClassName, "group text-right hover:bg-cold-blue-700")} onClick={handleSelectLong}>
+          <td className={cx(tdClassName, "group hover:bg-cold-blue-700")} onClick={handleSelectLong}>
             <div className="inline-flex items-center justify-end gap-4">
               <LongIcon width={12} className="relative top-1 opacity-70" />
               {formatAmountHuman(maxLongLiquidityPool?.maxLongLiquidity, USD_DECIMALS, true)}

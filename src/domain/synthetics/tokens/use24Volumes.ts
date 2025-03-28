@@ -1,15 +1,13 @@
 import { gql } from "@apollo/client";
+import { useMemo } from "react";
 import useSWR from "swr";
 import type { Address } from "viem";
 
 import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getByKey } from "sdk/utils/objects";
-
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
-import { TIMEZONE_OFFSET_SEC } from "domain/prices/constants";
 import { getSubsquidGraphClient } from "lib/subgraph/clients";
-import { useMemo } from "react";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
+import { getByKey } from "sdk/utils/objects";
 
 type PositionVolumeInfosResponse = Record<Address, bigint>;
 
@@ -27,7 +25,7 @@ export function use24hVolumes() {
   const marketsInfoData = useSelector(selectMarketsInfoData);
 
   const LAST_DAY_UNIX_TIMESTAMP = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
-  const timestamp = LAST_DAY_UNIX_TIMESTAMP + TIMEZONE_OFFSET_SEC;
+  const timestamp = LAST_DAY_UNIX_TIMESTAMP;
 
   const variables = {
     timestamp: timestamp,

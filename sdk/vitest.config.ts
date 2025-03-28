@@ -1,5 +1,5 @@
-import { defineConfig } from "vitest/config";
 import path from "path";
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
@@ -15,6 +15,7 @@ export default defineConfig({
       types: path.resolve(__dirname, "./src/types"),
       prebuilt: path.resolve(__dirname, "./src/prebuilt/index.ts"),
       abis: path.resolve(__dirname, "./src/abis"),
+      swap: path.resolve(__dirname, "./src/swap"),
     },
   },
 });

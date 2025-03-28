@@ -3,7 +3,6 @@ import keyBy from "lodash/keyBy";
 import values from "lodash/values";
 
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
-import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import {
   selectMarketsInfoData,
   selectOrdersInfoData,
@@ -28,6 +27,7 @@ import {
   selectTradeboxTradeType,
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getCappedPositionImpactUsd, getFeeItem } from "domain/synthetics/fees";
 import {
@@ -47,6 +47,7 @@ import { getAcceptablePriceByPriceImpact, getMarkPrice } from "domain/synthetics
 import { expandDecimals, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { createTradeFlags } from "sdk/utils/trade";
+
 import { selectIsLeverageSliderEnabled } from "../settingsSelectors";
 import { makeSelectIncreasePositionAmounts } from "../tradeSelectors";
 import { selectTradeboxAvailableMarkets } from "./selectTradeboxAvailableMarkets";

@@ -1,31 +1,26 @@
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
-import { getContract } from "config/contracts";
+import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
 import { useMemo, useState } from "react";
+import { FaCheck, FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
+import { zeroAddress } from "viem";
 
-import Footer from "components/Footer/Footer";
-import Modal from "components/Modal/Modal";
-
-import RewardRouter from "sdk/abis/RewardRouter.json";
-import RewardTracker from "sdk/abis/RewardTracker.json";
-import Token from "sdk/abis/Token.json";
-import Vester from "sdk/abis/Vester.json";
-
-import { FaCheck, FaTimes } from "react-icons/fa";
-
-import { Trans, t } from "@lingui/macro";
-
-import Button from "components/Button/Button";
-import Checkbox from "components/Checkbox/Checkbox";
+import { getContract } from "config/contracts";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { getNeedTokenApprove, useTokenBalances, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useWallet from "lib/wallets/useWallet";
-import { zeroAddress } from "viem";
+import { abis } from "sdk/abis";
+
+import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
+import Button from "components/Button/Button";
+import Checkbox from "components/Checkbox/Checkbox";
+import Footer from "components/Footer/Footer";
+import Modal from "components/Modal/Modal";
+
 import "./BeginAccountTransfer.css";
 
 function ValidationRow({ isValid, children }) {
@@ -62,17 +57,17 @@ export default function BeginAccountTransfer() {
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
 
   const { data: gmxVesterBalance } = useSWR(active && [active, chainId, gmxVesterAddress, "balanceOf", account], {
-    fetcher: contractFetcher(signer, Token),
+    fetcher: contractFetcher(signer, "Token"),
   });
 
   const { data: glpVesterBalance } = useSWR(active && [active, chainId, glpVesterAddress, "balanceOf", account], {
-    fetcher: contractFetcher(signer, Token),
+    fetcher: contractFetcher(signer, "Token"),
   });
 
   const { data: affiliateVesterBalance } = useSWR(
     active && [active, chainId, affiliateVesterAddress, "balanceOf", account],
     {
-      fetcher: contractFetcher(signer, Token),
+      fetcher: contractFetcher(signer, "Token"),
     }
   );
 
@@ -80,7 +75,7 @@ export default function BeginAccountTransfer() {
   const { data: cumulativeGmxRewards } = useSWR(
     [active, chainId, stakedGmxTrackerAddress, "cumulativeRewards", parsedReceiver],
     {
-      fetcher: contractFetcher(signer, RewardTracker),
+      fetcher: contractFetcher(signer, "RewardTracker"),
     }
   );
 
@@ -88,7 +83,7 @@ export default function BeginAccountTransfer() {
   const { data: cumulativeBonusGmxTrackerRewards } = useSWR(
     [active, chainId, bonusGmxTrackerAddress, "cumulativeRewards", parsedReceiver],
     {
-      fetcher: contractFetcher(signer, RewardTracker),
+      fetcher: contractFetcher(signer, "RewardTracker"),
     }
   );
 
@@ -96,7 +91,7 @@ export default function BeginAccountTransfer() {
   const { data: cumulativeFeeGlpTrackerRewards } = useSWR(
     [active, chainId, feeGlpTrackerAddress, "cumulativeRewards", parsedReceiver],
     {
-      fetcher: contractFetcher(signer, RewardTracker),
+      fetcher: contractFetcher(signer, "RewardTracker"),
     }
   );
 
@@ -104,28 +99,28 @@ export default function BeginAccountTransfer() {
   const { data: cumulativeGlpRewards } = useSWR(
     [active, chainId, stakedGlpTrackerAddress, "cumulativeRewards", parsedReceiver],
     {
-      fetcher: contractFetcher(signer, RewardTracker),
+      fetcher: contractFetcher(signer, "RewardTracker"),
     }
   );
 
   const { data: transferredCumulativeGmxRewards } = useSWR(
     [active, chainId, gmxVesterAddress, "transferredCumulativeRewards", parsedReceiver],
     {
-      fetcher: contractFetcher(signer, Vester),
+      fetcher: contractFetcher(signer, "Vester"),
     }
   );
 
   const { data: transferredCumulativeGlpRewards } = useSWR(
     [active, chainId, glpVesterAddress, "transferredCumulativeRewards", parsedReceiver],
     {
-      fetcher: contractFetcher(signer, Vester),
+      fetcher: contractFetcher(signer, "Vester"),
     }
   );
 
   const { data: pendingReceiver } = useSWR(
     active && [active, chainId, rewardRouterAddress, "pendingReceivers", account],
     {
-      fetcher: contractFetcher(signer, RewardRouter),
+      fetcher: contractFetcher(signer, "RewardRouter"),
     }
   );
 
@@ -138,7 +133,7 @@ export default function BeginAccountTransfer() {
   const { data: gmxStaked } = useSWR(
     active && [active, chainId, stakedGmxTrackerAddress, "depositBalances", account, gmxAddress],
     {
-      fetcher: contractFetcher(signer, RewardTracker),
+      fetcher: contractFetcher(signer, "RewardTracker"),
     }
   );
 
@@ -255,7 +250,7 @@ export default function BeginAccountTransfer() {
     }
 
     setIsTransferring(true);
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
+    const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
 
     callContract(chainId, contract, "signalTransfer", [parsedReceiver], {
       sentMsg: t`Transfer submitted!`,

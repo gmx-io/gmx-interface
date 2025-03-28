@@ -1,13 +1,12 @@
 import { describe, expect, it } from "vitest";
 
+import { ARBITRUM } from "configs/chains";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-
 import type { GasLimitsConfig } from "types/fees";
 import type { TokensData } from "types/tokens";
+import { expandDecimals } from "utils/numbers";
 
 import { getExecutionFee } from "./executionFee";
-import { expandDecimals } from "utils/numbers";
-import { ARBITRUM } from "configs/chains";
 
 describe("getExecutionFee", () => {
   const chainId = ARBITRUM;

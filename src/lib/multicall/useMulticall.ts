@@ -3,10 +3,10 @@ import { useCallback, useRef } from "react";
 import useSWR, { SWRConfiguration, useSWRConfig } from "swr";
 import { KeyedMutator, stableHash } from "swr/_internal";
 
-import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
-
 import type { ErrorEvent } from "lib/metrics";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
+import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
+
 import { debugLog } from "./debug";
 import { executeMulticall } from "./executeMulticall";
 import type { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";

@@ -1,6 +1,7 @@
 import type { PublicClient, WalletClient } from "viem";
-import type { Token } from "./tokens";
+
 import type { MarketSdkConfig } from "./markets";
+import type { Token } from "./tokens";
 
 export interface GmxSdkConfig {
   /** Chain ID */
@@ -24,4 +25,8 @@ export interface GmxSdkConfig {
   tokens?: Record<string, Partial<Token>>;
   /** Markets override configurations */
   markets?: Record<string, Partial<MarketSdkConfig>>;
+
+  settings?: {
+    uiFeeReceiverAccount?: string;
+  };
 }

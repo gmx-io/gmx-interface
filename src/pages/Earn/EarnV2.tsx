@@ -6,42 +6,43 @@ import { zeroAddress } from "viem";
 import { AVALANCHE, getChainName } from "config/chains";
 import { getContract } from "config/contracts";
 import { getIncentivesV2Url } from "config/links";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { useAnyAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
-import { bigMath } from "sdk/utils/bigmath";
+import { useLpInterviewNotification } from "domain/synthetics/userFeedback/useLpInterviewNotification";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
+import { bigMath } from "sdk/utils/bigmath";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
+import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import PageTitle from "components/PageTitle/PageTitle";
 import { GlvList } from "components/Synthetics/GmList/GlvList";
 import { GmList } from "components/Synthetics/GmList/GmList";
 import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
+
 import { EscrowedGmxCard } from "./EscrowedGmxCard";
 import { GlpCard } from "./GlpCard";
 import { GmxAndVotingPowerCard } from "./GmxAndVotingPowerCard";
 import { StakeModal } from "./StakeModal";
 import { TotalRewardsCard } from "./TotalRewardsCard";
 import { UnstakeModal } from "./UnstakeModal";
+import { useProcessedData } from "./useProcessedData";
 import { Vesting } from "./Vesting";
 
-import { useProcessedData } from "./useProcessedData";
-
-import Token from "sdk/abis/Token.json";
-
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import "./EarnV2.css";
 
 export default function EarnV2() {
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
   const incentiveStats = useIncentiveStats(chainId);
+  const { isLpInterviewModalVisible, setIsLpInterviewModalVisible } = useLpInterviewNotification();
 
   const incentivesMessage = useMemo(() => {
     const avalancheLink = (
@@ -106,7 +107,7 @@ export default function EarnV2() {
   const { data: sbfGmxBalance } = useSWR(
     [`StakeV2:sbfGmxBalance:${active}`, chainId, feeGmxTrackerAddress, "balanceOf", account ?? PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, "Token"),
     }
   );
 
@@ -341,6 +342,8 @@ export default function EarnV2() {
       </div>
       <UserIncentiveDistributionList />
       <Footer />
+
+      <InterviewModal type="lp" isVisible={isLpInterviewModalVisible} setIsVisible={setIsLpInterviewModalVisible} />
     </div>
   );
 }

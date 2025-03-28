@@ -1,15 +1,17 @@
 import { Trans } from "@lingui/macro";
-import Button from "components/Button/Button";
-import { InputRow } from "components/InputRow/InputRow";
-import { ExpandableRow } from "components/Synthetics/ExpandableRow";
+import { useEffect, useState } from "react";
+
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useBigNumberInput } from "domain/synthetics/common/useBigNumberInput";
 import {
   getRemainingSubaccountActions,
   getRemainingSubaccountSeconds,
 } from "domain/synthetics/gassless/txns/subaccountUtils";
-import { useEffect, useState } from "react";
 import { periodToSeconds, secondsToPeriod } from "sdk/utils/time";
+
+import Button from "components/Button/Button";
+import { InputRow } from "components/InputRow/InputRow";
+import { ExpandableRow } from "components/Synthetics/ExpandableRow";
 
 export function OneClickAdvancedSettings() {
   const { subaccount, updateSubaccountSettings } = useSubaccountContext();

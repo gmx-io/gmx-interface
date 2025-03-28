@@ -1,20 +1,22 @@
 import { t } from "@lingui/macro";
-import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
+import { Signer, ethers } from "ethers";
+
 import { getContract } from "config/contracts";
-import { convertTokenAddress } from "sdk/configs/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { SetPendingWithdrawal } from "context/SyntheticsEvents";
-import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { isAddressZero } from "lib/legacy";
 import { OrderMetricId } from "lib/metrics/types";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import { abis } from "sdk/abis";
+import { convertTokenAddress } from "sdk/configs/tokens";
+
 import { SwapPricingType } from "../orders";
+import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
-import { prepareOrderTxn } from "../orders/prepareOrderTxn";
-import { validateSignerAddress } from "lib/contracts/transactionErrors";
-import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 
 export type CreateWithdrawalParams = {
   account: string;
@@ -38,7 +40,7 @@ export type CreateWithdrawalParams = {
 };
 
 export async function createWithdrawalTxn(chainId: number, signer: Signer, p: CreateWithdrawalParams) {
-  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const withdrawalVaultAddress = getContract(chainId, "WithdrawalVault");
 
   const isNativeWithdrawal = isAddressZero(p.initialLongTokenAddress) || isAddressZero(p.initialShortTokenAddress);
@@ -104,7 +106,6 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Cr
     "multicall",
     [encodedPayload],
     wntAmount,
-    undefined,
     simulationPromise,
     p.metricId
   );

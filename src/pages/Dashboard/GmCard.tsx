@@ -2,9 +2,8 @@ import { Trans, t } from "@lingui/macro";
 import groupBy from "lodash/groupBy";
 import { useMemo } from "react";
 
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getIcons } from "config/icons";
-import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
 import {
   getMarketIndexName,
   getMarketPoolName,
@@ -12,12 +11,14 @@ import {
   useMarketsInfoRequest,
 } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
-import { BN_ZERO, formatTokenAmount, formatUsd } from "lib/numbers";
+import { BN_ZERO, formatAmountHuman } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
+import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
 import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
+
 import AssetDropdown from "./AssetDropdown";
 
 export function GmCard() {
@@ -86,24 +87,13 @@ export function GmCard() {
             <div className="label">
               <Trans>Supply</Trans>
             </div>
-
-            <div>
-              {formatTokenAmount(totalGMSupply?.amount, 18, "GM", {
-                useCommas: true,
-                fallbackToZero: true,
-                displayDecimals: 0,
-              })}
-            </div>
+            <div>{formatAmountHuman(totalGMSupply?.amount, 18, false, 2)}</div>
           </div>
           <div className="App-card-row">
             <div className="label">
               <Trans>Market Cap</Trans>
             </div>
-            <div>
-              {formatUsd(totalGMSupply?.usd, {
-                displayDecimals: 0,
-              })}
-            </div>
+            <div>{formatAmountHuman(totalGMSupply?.usd, USD_DECIMALS, true, 2)}</div>
           </div>
         </div>
       </div>

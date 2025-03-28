@@ -1,4 +1,5 @@
 import { UseWalletClientReturnType, useAccount, useConnectorClient, useWalletClient } from "wagmi";
+
 import { useEthersSigner } from "./useEthersSigner";
 
 export type WalletClient = UseWalletClientReturnType["data"];

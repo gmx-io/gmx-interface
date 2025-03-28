@@ -1,6 +1,8 @@
-import { bigMath } from "sdk/utils/bigmath";
-import { Subaccount } from "../gassless/txns/subaccountUtils";
 import useSWR from "swr";
+
+import { bigMath } from "sdk/utils/bigmath";
+
+import { Subaccount } from "../gassless/txns/subaccountUtils";
 
 export function useSubaccountWithdrawalAmount(chainId: number, subaccount: Subaccount | undefined) {
   const { data: estimatedWithdrawalAmounts } = useSWR(
@@ -71,7 +73,13 @@ export async function withdrawFromSubaccount({
 
   if (!wallet.provider) throw new Error("No provider available.");
 
-  const { amountToSend, gasPrice, estimatedGas } = await getEstimatedWithdrawalAmount(subaccount);
+  const result = await getEstimatedWithdrawalAmount(subaccount);
+
+  if (!result) {
+    throw new Error("Insufficient funds to cover gas cost.");
+  }
+
+  const { amountToSend, gasPrice, estimatedGas } = result;
 
   if (amountToSend < 0n) {
     throw new Error("Insufficient funds to cover gas cost.");

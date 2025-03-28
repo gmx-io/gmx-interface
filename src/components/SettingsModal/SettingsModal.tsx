@@ -3,14 +3,18 @@ import cx from "classnames";
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { useKey } from "react-use";
 
+import { getIsFlagEnabled } from "config/ab";
+import { isDevelopment } from "config/env";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { helperToast } from "lib/helperToast";
 import { roundToTwoDecimals } from "lib/numbers";
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
 import Button from "components/Button/Button";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
+import { ExpressTradingEnabledBanner } from "components/ExpressTradingEnabledBanner/ExpressTradingEnabledBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
 import { SlideModal } from "components/Modal/SlideModal";
@@ -20,10 +24,6 @@ import PercentageInput from "components/PercentageInput/PercentageInput";
 import TenderlySettings from "components/TenderlySettings/TenderlySettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { getIsFlagEnabled } from "config/ab";
-import { isDevelopment } from "config/env";
-import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
-import { ExpressTradingEnabledBanner } from "components/ExpressTradingEnabledBanner/ExpressTradingEnabledBanner";
 
 export function SettingsModal({
   isSettingsVisible,

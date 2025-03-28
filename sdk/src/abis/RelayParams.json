@@ -1,0 +1,102 @@
+{
+  "abi": [
+    {
+      "type": "tuple",
+      "components": [
+        {
+          "type": "address[]",
+          "name": "tokens"
+        },
+        {
+          "type": "address[]",
+          "name": "providers"
+        },
+        {
+          "type": "bytes[]",
+          "name": "data"
+        }
+      ]
+    },
+    {
+      "type": "tuple",
+      "components": [
+        {
+          "type": "address[]",
+          "name": "externalCallTargets"
+        },
+        {
+          "type": "bytes[]",
+          "name": "externalCallDataList"
+        },
+        {
+          "type": "address[]",
+          "name": "refundTokens"
+        },
+        {
+          "type": "address[]",
+          "name": "refundReceivers"
+        }
+      ]
+    },
+    {
+      "type": "tuple[]",
+      "components": [
+        {
+          "type": "address",
+          "name": "owner"
+        },
+        {
+          "type": "address",
+          "name": "spender"
+        },
+        {
+          "type": "uint256",
+          "name": "value"
+        },
+        {
+          "type": "uint256",
+          "name": "deadline"
+        },
+        {
+          "type": "uint8",
+          "name": "v"
+        },
+        {
+          "type": "bytes32",
+          "name": "r"
+        },
+        {
+          "type": "bytes32",
+          "name": "s"
+        },
+        {
+          "type": "address",
+          "name": "token"
+        }
+      ]
+    },
+    {
+      "type": "tuple",
+      "components": [
+        {
+          "type": "address",
+          "name": "feeToken"
+        },
+        {
+          "type": "uint256",
+          "name": "feeAmount"
+        },
+        {
+          "type": "address[]",
+          "name": "feeSwapPath"
+        }
+      ]
+    },
+    {
+      "type": "uint256"
+    },
+    {
+      "type": "uint256"
+    }
+  ]
+}

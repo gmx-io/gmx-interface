@@ -3,13 +3,14 @@ import { useLingui } from "@lingui/react";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getIcon } from "config/icons";
-import { communityProjects, dashboardProjects, gmxPages, integrations, telegramGroups } from "./ecosystemConstants";
 import { getPageTitle } from "lib/legacy";
 
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
+
+import { communityProjects, dashboardProjects, gmxPages, integrations, telegramGroups } from "./ecosystemConstants";
 
 import "./Ecosystem.css";
 

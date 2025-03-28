@@ -1,10 +1,10 @@
-import EventEmitter from "sdk/abis/EventEmitter.json";
-import Token from "sdk/abis/Token.json";
-import { getContract, tryGetContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, getTokens } from "sdk/configs/tokens";
-import type { EventLogData, EventTxnParams } from "context/SyntheticsEvents/types";
 import { AbiCoder, Contract, LogParams, Provider, ProviderEvent, ZeroAddress, ethers, isAddress } from "ethers";
 import { MutableRefObject } from "react";
+
+import { getContract, tryGetContract } from "config/contracts";
+import type { EventLogData, EventTxnParams } from "context/SyntheticsEvents/types";
+import { abis } from "sdk/abis";
+import { NATIVE_TOKEN_ADDRESS, getTokens } from "sdk/configs/tokens";
 
 const coder = AbiCoder.defaultAbiCoder();
 
@@ -85,7 +85,7 @@ export function subscribeToV2Events(
     Record<string, undefined | ((data: EventLogData, txnOpts: EventTxnParams) => void)>
   >
 ) {
-  const eventEmitter = new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, provider);
+  const eventEmitter = new ethers.Contract(getContract(chainId, "EventEmitter"), abis.EventEmitter, provider);
 
   function handleEventLog(sender, eventName, eventNameHash, eventData, txnOpts) {
     eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
@@ -168,7 +168,7 @@ export function subscribeToTransferEvents(
     .map((token) => token.address);
   const allTokenAddresses = [...marketTokensAddresses, ...tokenAddresses];
 
-  const tokenContract = new ethers.Contract(ZeroAddress, Token.abi, provider);
+  const tokenContract = new ethers.Contract(ZeroAddress, abis.Token, provider);
 
   const sendFilters: ProviderEvent = {
     address: allTokenAddresses,
@@ -282,7 +282,7 @@ function parseEventLogData(eventData): EventLogData {
 
 function createV2EventFilters(chainId: number, account: string, wsProvider: Provider): ProviderEvent[] {
   const addressHash = AbiCoder.defaultAbiCoder().encode(["address"], [account]);
-  const eventEmitter = new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, wsProvider);
+  const eventEmitter = new ethers.Contract(getContract(chainId, "EventEmitter"), abis.EventEmitter, wsProvider);
   const EVENT_LOG_TOPIC = eventEmitter.interface.getEvent("EventLog")?.topicHash ?? null;
   const EVENT_LOG1_TOPIC = eventEmitter.interface.getEvent("EventLog1")?.topicHash ?? null;
   const EVENT_LOG2_TOPIC = eventEmitter.interface.getEvent("EventLog2")?.topicHash ?? null;

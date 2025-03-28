@@ -5,6 +5,7 @@ import { ARBITRUM, EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/c
 import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
+  DEBUG_SWAP_MARKETS_CONFIG_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
   EXTERNAL_SWAPS_ENABLED_KEY,
   IS_AUTO_CANCEL_TPSL_KEY,
@@ -22,11 +23,11 @@ import {
   getOneClickTradingEnabledKey,
   getSyntheticsAcceptablePriceImpactBufferKey,
 } from "config/localStorage";
-import { getOracleKeeperRandomIndex } from "config/oracleKeeper";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { tenderlyLsKeys } from "lib/tenderly";
 import { getDefaultGasPaymentToken } from "sdk/configs/express";
+import { getOracleKeeperRandomIndex } from "sdk/configs/oracleKeeper";
 
 export type SettingsContextType = {
   showDebugValues: boolean;
@@ -74,6 +75,14 @@ export type SettingsContextType = {
 
   externalSwapsEnabled: boolean;
   setExternalSwapsEnabled: (val: boolean) => void;
+
+  debugSwapMarketsConfig:
+    | {
+        disabledSwapMarkets?: string[];
+        manualPath?: string[];
+      }
+    | undefined;
+  setDebugSwapMarketsConfig: (val: { disabledSwapMarkets?: string[]; manualPath?: string[] }) => void;
 };
 
 export const SettingsContext = createContext({});
@@ -145,6 +154,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   );
 
   const [externalSwapsEnabled, setExternalSwapsEnabled] = useLocalStorageSerializeKey(EXTERNAL_SWAPS_ENABLED_KEY, true);
+  const [debugSwapMarketsConfig, setDebugSwapMarketsConfig] = useLocalStorageSerializeKey<
+    undefined | { disabledSwapMarkets?: string[]; manualPath?: string[] }
+  >([chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY], undefined);
 
   const [expressOrdersEnabled, setExpressOrdersEnabled] = useLocalStorageSerializeKey(
     getExpressOrdersEnabledKey(chainId),
@@ -245,6 +257,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       externalSwapsEnabled: externalSwapsEnabled!,
       setExternalSwapsEnabled,
+
+      debugSwapMarketsConfig: debugSwapMarketsConfig!,
+      setDebugSwapMarketsConfig,
     };
   }, [
     showDebugValues,
@@ -287,6 +302,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setGasPaymentTokenAddress,
     externalSwapsEnabled,
     setExternalSwapsEnabled,
+    debugSwapMarketsConfig,
+    setDebugSwapMarketsConfig,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

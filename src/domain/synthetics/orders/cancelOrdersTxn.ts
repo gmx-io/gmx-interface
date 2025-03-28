@@ -1,8 +1,9 @@
 import { plural, t } from "@lingui/macro";
-import { getContract } from "config/contracts";
 import { Signer, ethers } from "ethers";
-import { callContract } from "lib/contracts";
 import { ReactNode } from "react";
+
+import { getContract } from "config/contracts";
+import { callContract } from "lib/contracts";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 
 export type CancelOrderParams = {

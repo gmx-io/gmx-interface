@@ -1,5 +1,6 @@
 import { Token } from "types/tokens";
 import { periodToSeconds } from "utils/time";
+
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 import { getTokenBySymbol, getWrappedToken } from "./tokens";
 

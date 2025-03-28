@@ -1,12 +1,13 @@
 // @ts-check
-import { useKey } from "react-use";
-import { useEffect, useState, useMemo, useRef } from "react";
 import { Trans, msg, t } from "@lingui/macro";
-import { ethers } from "ethers";
-import { BsArrowRight } from "react-icons/bs";
 import { useLingui } from "@lingui/react";
+import { ethers } from "ethers";
+import { useEffect, useState, useMemo, useRef } from "react";
+import { BsArrowRight } from "react-icons/bs";
+import { useKey } from "react-use";
 
-import { DEPOSIT_FEE, DUST_BNB, getFundingFee, LIQUIDATION_FEE } from "lib/legacy";
+import { getChainName, IS_NETWORK_DISABLED } from "config/chains";
+import { getContract } from "config/contracts";
 import {
   BASIS_POINTS_DIVISOR,
   BASIS_POINTS_DIVISOR_BIGINT,
@@ -14,33 +15,32 @@ import {
   MAX_LEVERAGE,
   USD_DECIMALS,
 } from "config/factors";
-import { getContract } from "config/contracts";
-import Tab from "../Tab/Tab";
-import Modal from "../Modal/Modal";
-
-import PositionRouter from "sdk/abis/PositionRouter.json";
-import Tooltip from "../Tooltip/Tooltip";
-
-import { getChainName, IS_NETWORK_DISABLED } from "config/chains";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
+import { approveTokens } from "domain/tokens";
+import { getTokenInfo, shouldRaiseGasError } from "domain/tokens/utils";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
-import { getTokenInfo } from "domain/tokens/utils";
-import { approveTokens, shouldRaiseGasError } from "domain/tokens";
-import { usePrevious } from "lib/usePrevious";
-import { expandDecimals, formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
-import { ErrorCode, ErrorDisplayType } from "./constants";
-import Button from "components/Button/Button";
-import FeesTooltip from "./FeesTooltip";
-import getLiquidationPrice from "lib/positions/getLiquidationPrice";
-import { getLeverage } from "lib/positions/getLeverage";
-import { getPriceDecimals } from "sdk/configs/tokens";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import { bigMath } from "sdk/utils/bigmath";
 import { useLocalizedMap } from "lib/i18n";
-import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
+import { DEPOSIT_FEE, DUST_BNB, getFundingFee, LIQUIDATION_FEE } from "lib/legacy";
+import { expandDecimals, formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
+import { getLeverage } from "lib/positions/getLeverage";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { usePrevious } from "lib/usePrevious";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import { abis } from "sdk/abis";
+import { getPriceDecimals } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
+
+import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import Tabs from "components/Tabs/Tabs";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import { ErrorCode, ErrorDisplayType } from "./constants";
+import FeesTooltip from "./FeesTooltip";
+import Modal from "../Modal/Modal";
+import Tooltip from "../Tooltip/Tooltip";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -101,6 +101,13 @@ export default function PositionEditor(props) {
   const submitButtonRef = useRef(null);
   const { _ } = useLingui();
   const localizedEditOptionLabels = useLocalizedMap(EDIT_OPTIONS_LABELS);
+
+  const tabsOptions = useMemo(() => {
+    return EDIT_OPTIONS.map((option) => ({
+      value: option,
+      label: localizedEditOptionLabels[option],
+    }));
+  }, [localizedEditOptionLabels]);
 
   const routerAddress = getContract(chainId, "Router");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
@@ -394,7 +401,7 @@ export default function PositionEditor(props) {
       return;
     }
 
-    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, signer);
+    const contract = new ethers.Contract(positionRouterAddress, abis.PositionRouter, signer);
     callContract(chainId, contract, method, params, {
       value,
       sentMsg: t`Deposit submitted.`,
@@ -452,7 +459,7 @@ export default function PositionEditor(props) {
 
     const method = "createDecreasePosition";
 
-    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, signer);
+    const contract = new ethers.Contract(positionRouterAddress, abis.PositionRouter, signer);
     callContract(chainId, contract, method, params, {
       value: minExecutionFee,
       sentMsg: t`Withdrawal submitted.`,
@@ -568,18 +575,17 @@ export default function PositionEditor(props) {
     [minExecutionFee, minExecutionFeeUSD]
   );
 
+  const onSelectOption = (option) => {
+    setOption(option);
+    resetForm();
+  };
+
   return (
     <div className="PositionEditor">
       {position && (
         <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
           <div>
-            <Tab
-              options={EDIT_OPTIONS}
-              optionLabels={localizedEditOptionLabels}
-              option={option}
-              setOption={setOption}
-              onChange={resetForm}
-            />
+            <Tabs options={tabsOptions} selectedValue={option} onChange={onSelectOption} />
             {(isDeposit || isWithdrawal) && (
               <div>
                 <div className="mb-12">

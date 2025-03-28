@@ -1,34 +1,26 @@
 import { gql } from "@apollo/client";
+import { t } from "@lingui/macro";
 import { Token as UniToken } from "@uniswap/sdk-core";
 import { Pool } from "@uniswap/v3-sdk";
 import { ethers } from "ethers";
+import groupBy from "lodash/groupBy";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
+import useSWRInfinite from "swr/infinite";
 
-import OrderBook from "sdk/abis/OrderBook.json";
-import PositionManager from "sdk/abis/PositionManager.json";
-import PositionRouter from "sdk/abis/PositionRouter.json";
-import Router from "sdk/abis/Router.json";
-import Token from "sdk/abis/Token.json";
-import UniPool from "sdk/abis/UniPool.json";
-import UniswapV2 from "sdk/abis/UniswapV2.json";
-import Vault from "sdk/abis/Vault.json";
-
+import { getServerBaseUrl, getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName, getConstant, getHighExecutionFee } from "config/chains";
 import { getContract } from "config/contracts";
 import { USD_DECIMALS } from "config/factors";
-import { DECREASE, INCREASE, SWAP, getOrderKey } from "lib/legacy";
-
-import { t } from "@lingui/macro";
-import { getServerBaseUrl, getServerUrl } from "config/backend";
-import { bigMath } from "sdk/utils/bigmath";
 import { callContract, contractFetcher } from "lib/contracts";
+import { DECREASE, INCREASE, SWAP, getOrderKey } from "lib/legacy";
 import { BN_ZERO, bigNumberify, expandDecimals, parseValue } from "lib/numbers";
 import { getProvider, useJsonRpcProvider } from "lib/rpc";
 import { getGmxGraphClient, nissohGraphClient } from "lib/subgraph/clients";
-import groupBy from "lodash/groupBy";
+import { abis } from "sdk/abis";
 import { getTokenBySymbol } from "sdk/configs/tokens";
-import useSWRInfinite from "swr/infinite";
+import { bigMath } from "sdk/utils/bigmath";
+
 import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
 
@@ -163,7 +155,7 @@ export function useAllPositions(chainId, signer) {
   const { data: positions = [] } = useSWR(key, async () => {
     const provider = getProvider(signer, chainId);
     const vaultAddress = getContract(chainId, "Vault");
-    const contract = new ethers.Contract(vaultAddress, Vault.abi, provider);
+    const contract = new ethers.Contract(vaultAddress, abis.Vault, provider);
     const ret = await Promise.all(
       res.data.aggregatedTradeOpens.map(async (dataItem) => {
         try {
@@ -223,7 +215,7 @@ export function useAllOrders(chainId, signer) {
   const { data: orders = [] } = useSWR(key, () => {
     const provider = getProvider(signer, chainId);
     const orderBookAddress = getContract(chainId, "OrderBook");
-    const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, provider);
+    const contract = new ethers.Contract(orderBookAddress, abis.OrderBook, provider);
     return Promise.all(
       res.data.orders.map(async (order) => {
         try {
@@ -258,7 +250,7 @@ export function usePositionsForOrders(chainId, signer, orders) {
   const { data: positions = {} } = useSWR(key, async () => {
     const provider = getProvider(signer, chainId);
     const vaultAddress = getContract(chainId, "Vault");
-    const contract = new ethers.Contract(vaultAddress, Vault.abi, provider);
+    const contract = new ethers.Contract(vaultAddress, abis.Vault, provider);
     const data = await Promise.all(
       orders.map(async (order) => {
         try {
@@ -376,7 +368,7 @@ export function useExecutionFee(active, chainId, infoTokens) {
   let { provider } = useJsonRpcProvider(chainId);
 
   const { data: minExecutionFee } = useSWR<bigint>([active, chainId, positionRouterAddress, "minExecutionFee"], {
-    fetcher: contractFetcher(provider, PositionRouter) as any,
+    fetcher: contractFetcher(provider, "PositionRouter") as any,
   });
 
   const { data: gasPrice } = useSWR<bigint | undefined>(["gasPrice", chainId], {
@@ -444,7 +436,7 @@ export function useStakedGmxSupply(signer, active) {
   const { data: arbData, mutate: arbMutate } = useSWR<any>(
     [`StakeV2:stakedGmxSupply:${active}`, ARBITRUM, gmxAddressArb, "balanceOf", stakedGmxTrackerAddressArb],
     {
-      fetcher: contractFetcher(signer, Token),
+      fetcher: contractFetcher(signer, "Token"),
     }
   );
 
@@ -454,7 +446,7 @@ export function useStakedGmxSupply(signer, active) {
   const { data: avaxData, mutate: avaxMutate } = useSWR(
     [`StakeV2:stakedGmxSupply:${active}`, AVALANCHE, gmxAddressAvax, "balanceOf", stakedGmxTrackerAddressAvax],
     {
-      fetcher: contractFetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, "Token"),
     }
   );
 
@@ -518,7 +510,7 @@ export function useTotalGmxStaked() {
       stakedGmxTrackerAddressArbitrum,
     ],
     {
-      fetcher: contractFetcher(undefined, Token) as any,
+      fetcher: contractFetcher(undefined, "Token") as any,
     }
   );
   const { data: stakedGmxSupplyAvax, mutate: updateStakedGmxSupplyAvax } = useSWR<bigint>(
@@ -530,7 +522,7 @@ export function useTotalGmxStaked() {
       stakedGmxTrackerAddressAvax,
     ],
     {
-      fetcher: contractFetcher(undefined, Token) as any,
+      fetcher: contractFetcher(undefined, "Token") as any,
     }
   );
 
@@ -560,13 +552,13 @@ export function useTotalGmxInLiquidity() {
   const { data: gmxInLiquidityOnArbitrum, mutate: mutateGMXInLiquidityOnArbitrum } = useSWR<any>(
     [`StakeV2:gmxInLiquidity:${ARBITRUM}`, ARBITRUM, getContract(ARBITRUM, "GMX"), "balanceOf", poolAddressArbitrum],
     {
-      fetcher: contractFetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, "Token"),
     }
   );
   const { data: gmxInLiquidityOnAvax, mutate: mutateGMXInLiquidityOnAvax } = useSWR<any>(
     [`StakeV2:gmxInLiquidity:${AVALANCHE}`, AVALANCHE, getContract(AVALANCHE, "GMX"), "balanceOf", poolAddressAvax],
     {
-      fetcher: contractFetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, "Token"),
     }
   );
   const mutate = useCallback(() => {
@@ -590,7 +582,7 @@ function useGmxPriceFromAvalanche() {
   const poolAddress = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
 
   const { data, mutate: updateReserves } = useSWR(["TraderJoeGmxAvaxReserves", AVALANCHE, poolAddress, "getReserves"], {
-    fetcher: contractFetcher(undefined, UniswapV2),
+    fetcher: contractFetcher(undefined, "UniswapV2"),
   });
   const { _reserve0: gmxReserve, _reserve1: avaxReserve }: any = data || {};
 
@@ -599,7 +591,7 @@ function useGmxPriceFromAvalanche() {
   const { data: avaxPrice, mutate: updateAvaxPrice } = useSWR(
     [`StakeV2:avaxPrice`, AVALANCHE, vaultAddress, "getMinPrice", avaxAddress],
     {
-      fetcher: contractFetcher(undefined, Vault),
+      fetcher: contractFetcher(undefined, "Vault"),
     }
   );
 
@@ -622,7 +614,7 @@ function useGmxPriceFromArbitrum(signer, active) {
   const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR<any>(
     [`StakeV2:uniPoolSlot0:${active}`, ARBITRUM, poolAddress, "slot0"],
     {
-      fetcher: contractFetcher(signer, UniPool),
+      fetcher: contractFetcher(signer, "UniPool"),
     }
   );
 
@@ -631,7 +623,7 @@ function useGmxPriceFromArbitrum(signer, active) {
   const { data: ethPrice, mutate: updateEthPrice } = useSWR<bigint>(
     [`StakeV2:ethPrice:${active}`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress],
     {
-      fetcher: contractFetcher(signer, Vault) as any,
+      fetcher: contractFetcher(signer, "Vault") as any,
     }
   );
 
@@ -670,7 +662,7 @@ function useGmxPriceFromArbitrum(signer, active) {
 
 export async function approvePlugin(chainId, pluginAddress, { signer, setPendingTxns, sentMsg, failMsg }) {
   const routerAddress = getContract(chainId, "Router");
-  const contract = new ethers.Contract(routerAddress, Router.abi, signer);
+  const contract = new ethers.Contract(routerAddress, abis.Router, signer);
   return callContract(chainId, contract, "approvePlugin", [pluginAddress], {
     sentMsg,
     failMsg,
@@ -706,7 +698,7 @@ export async function createSwapOrder(
   const params = [path, amountIn, minOut, triggerRatio, triggerAboveThreshold, executionFee, shouldWrap, shouldUnwrap];
 
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, signer);
+  const contract = new ethers.Contract(orderBookAddress, abis.OrderBook, signer);
 
   return callContract(chainId, contract, "createSwapOrder", params, opts);
 }
@@ -755,7 +747,7 @@ export async function createIncreaseOrder(
   }
 
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, signer);
+  const contract = new ethers.Contract(orderBookAddress, abis.OrderBook, signer);
 
   return callContract(chainId, contract, "createIncreaseOrder", params, opts);
 }
@@ -789,7 +781,7 @@ export async function createDecreaseOrder(
   ];
   opts.value = executionFee;
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, signer);
+  const contract = new ethers.Contract(orderBookAddress, abis.OrderBook, signer);
 
   return callContract(chainId, contract, "createDecreaseOrder", params, opts);
 }
@@ -798,7 +790,7 @@ export async function cancelSwapOrder(chainId, signer, index, opts) {
   const params = [index];
   const method = "cancelSwapOrder";
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, signer);
+  const contract = new ethers.Contract(orderBookAddress, abis.OrderBook, signer);
 
   return callContract(chainId, contract, method, params, opts);
 }
@@ -807,7 +799,7 @@ export async function cancelDecreaseOrder(chainId, signer, index, opts) {
   const params = [index];
   const method = "cancelDecreaseOrder";
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, signer);
+  const contract = new ethers.Contract(orderBookAddress, abis.OrderBook, signer);
 
   return callContract(chainId, contract, method, params, opts);
 }
@@ -816,7 +808,7 @@ export async function cancelIncreaseOrder(chainId, signer, index, opts) {
   const params = [index];
   const method = "cancelIncreaseOrder";
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, signer);
+  const contract = new ethers.Contract(orderBookAddress, abis.OrderBook, signer);
 
   return callContract(chainId, contract, method, params, opts);
 }
@@ -850,7 +842,7 @@ export async function cancelMultipleOrders(chainId, signer, allIndexes: any[] = 
   const params = ["Swap", "Increase", "Decrease"].map((key) => getIndexes(key) || []);
   const method = "cancelMultiple";
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, signer);
+  const contract = new ethers.Contract(orderBookAddress, abis.OrderBook, signer);
   return callContract(chainId, contract, method, params, opts);
 }
 
@@ -867,7 +859,7 @@ export async function updateDecreaseOrder(
   const params = [index, collateralDelta, sizeDelta, triggerPrice, triggerAboveThreshold];
   const method = "updateDecreaseOrder";
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, signer);
+  const contract = new ethers.Contract(orderBookAddress, abis.OrderBook, signer);
 
   return callContract(chainId, contract, method, params, opts);
 }
@@ -884,7 +876,7 @@ export async function updateIncreaseOrder(
   const params = [index, sizeDelta, triggerPrice, triggerAboveThreshold];
   const method = "updateIncreaseOrder";
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, signer);
+  const contract = new ethers.Contract(orderBookAddress, abis.OrderBook, signer);
 
   return callContract(chainId, contract, method, params, opts);
 }
@@ -893,7 +885,7 @@ export async function updateSwapOrder(chainId, signer, index, minOut, triggerRat
   const params = [index, minOut, triggerRatio, triggerAboveThreshold];
   const method = "updateSwapOrder";
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, signer);
+  const contract = new ethers.Contract(orderBookAddress, abis.OrderBook, signer);
 
   return callContract(chainId, contract, method, params, opts);
 }
@@ -901,7 +893,7 @@ export async function updateSwapOrder(chainId, signer, index, minOut, triggerRat
 export async function _executeOrder(chainId, signer, method, account, index, feeReceiver, opts) {
   const params = [account, index, feeReceiver];
   const positionManagerAddress = getContract(chainId, "PositionManager");
-  const contract = new ethers.Contract(positionManagerAddress, PositionManager.abi, signer);
+  const contract = new ethers.Contract(positionManagerAddress, abis.PositionManager, signer);
   return callContract(chainId, contract, method, params, opts);
 }
 

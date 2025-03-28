@@ -16,10 +16,7 @@ import {
 } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-
 import type { GasLimitsConfig } from "sdk/types/fees";
-
-import DataStore from "sdk/abis/DataStore.json";
 
 export function useGasLimits(chainId: number): GasLimitsConfig | undefined {
   const { data } = useMulticall(chainId, "useGasLimitsConfig", {
@@ -30,7 +27,7 @@ export function useGasLimits(chainId: number): GasLimitsConfig | undefined {
     request: () => ({
       dataStore: {
         contractAddress: getContract(chainId, "DataStore"),
-        abi: DataStore.abi,
+        abiId: "DataStore",
         calls: {
           depositToken: {
             methodName: "getUint",

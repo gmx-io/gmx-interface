@@ -4,6 +4,7 @@ import { GlvInfo, MarketInfo } from "domain/synthetics/markets/types";
 import { TokenData } from "domain/synthetics/tokens";
 import type { DepositAmounts, WithdrawalAmounts } from "domain/synthetics/trade";
 import { formatAmountFree } from "lib/numbers";
+
 import { TokenInputState } from "./types";
 
 export function useUpdateInputAmounts({

@@ -1,17 +1,15 @@
 import { useAccount } from "wagmi";
 
 import { getContract } from "config/contracts";
-import { getV2Tokens, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
-import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
-import { useMulticall } from "lib/multicall";
-import { TokenBalancesData } from "./types";
-
-import Multicall from "sdk/abis/Multicall.json";
-import Token from "sdk/abis/Token.json";
 import {
   useTokensBalancesUpdates,
   useUpdatedTokensBalances,
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
+import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
+import { MulticallRequestConfig, useMulticall } from "lib/multicall";
+import { getV2Tokens, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+
+import { TokenBalancesData } from "./types";
 
 type BalancesDataResult = {
   balancesData?: TokenBalancesData;
@@ -48,7 +46,7 @@ export function useTokenBalances(
         if (address === NATIVE_TOKEN_ADDRESS) {
           acc[address] = {
             contractAddress: getContract(chainId, "Multicall"),
-            abi: Multicall.abi,
+            abiId: "Multicall",
             calls: {
               balance: {
                 methodName: "getEthBalance",
@@ -59,7 +57,7 @@ export function useTokenBalances(
         } else {
           acc[address] = {
             contractAddress: address,
-            abi: Token.abi,
+            abiId: "Token",
             calls: {
               balance: {
                 methodName: "balanceOf",
@@ -70,7 +68,7 @@ export function useTokenBalances(
         }
 
         return acc;
-      }, {}),
+      }, {} as MulticallRequestConfig<any>),
     parseResponse: (res) => {
       const result: TokenBalancesData = {};
 

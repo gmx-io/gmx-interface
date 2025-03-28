@@ -1,18 +1,14 @@
 import { Abi, Address, decodeErrorResult, encodeFunctionData, withRetry } from "viem";
 
-import CustomErrors from "abis/CustomErrors.json";
-import ExchangeRouter from "abis/ExchangeRouter.json";
-import Multicall from "abis/Multicall.json";
-
+import { abis } from "abis";
 import { getContract } from "configs/contracts";
 import { convertTokenAddress } from "configs/tokens";
-
 import { SwapPricingType } from "types/orders";
 import { TokenPrices, TokensData } from "types/tokens";
-import { convertToContractPrice, getTokenData } from "./tokens";
 
 import type { GmxSdk } from "..";
 import { extractError } from "./contracts";
+import { convertToContractPrice, getTokenData } from "./tokens";
 
 export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;
@@ -41,7 +37,7 @@ export async function simulateExecuteOrder(sdk: GmxSdk, p: SimulateExecuteParams
 
   const blockTimestamp = await client.readContract({
     address: multicallAddress,
-    abi: Multicall.abi,
+    abi: abis.Multicall as Abi,
     functionName: "getCurrentBlockTimestamp",
     args: [],
   });
@@ -60,7 +56,7 @@ export async function simulateExecuteOrder(sdk: GmxSdk, p: SimulateExecuteParams
 
   let simulationPayloadData = [...p.createMulticallPayload];
 
-  const routerAbi = ExchangeRouter.abi as Abi;
+  const routerAbi = abis.ExchangeRouter as Abi;
   const routerAddress = exchangeRouterAddress;
 
   let encodedFunctionData: string;
@@ -104,7 +100,7 @@ export async function simulateExecuteOrder(sdk: GmxSdk, p: SimulateExecuteParams
       if (!errorData) throw error;
 
       const decodedError = decodeErrorResult({
-        abi: CustomErrors.abi,
+        abi: abis.CustomErrors as Abi,
         data: errorData as Address,
       });
 

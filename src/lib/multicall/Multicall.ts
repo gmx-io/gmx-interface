@@ -4,10 +4,6 @@ import { arbitrum, avalanche, avalancheFuji } from "viem/chains";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
 import { isWebWorker } from "config/env";
-import { sleep } from "lib/sleep";
-import type { MulticallRequestConfig, MulticallResult } from "./types";
-
-import CustomErrors from "sdk/abis/CustomErrors.json";
 import {
   MulticallErrorEvent,
   MulticallFallbackRpcModeCounter,
@@ -16,10 +12,14 @@ import {
   MulticallTimeoutEvent,
 } from "lib/metrics";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
-import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
-import { serializeMulticallErrors } from "./utils";
-import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
+import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
+import { sleep } from "lib/sleep";
+import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
+import { abis as allAbis } from "sdk/abis";
+
+import type { MulticallRequestConfig, MulticallResult } from "./types";
+import { serializeMulticallErrors } from "./utils";
 
 export const MAX_TIMEOUT = 20000;
 
@@ -172,8 +172,10 @@ export class Multicall {
         }
 
         // Add Errors ABI to each contract ABI to correctly parse errors
-        abis[contractCallConfig.contractAddress] =
-          abis[contractCallConfig.contractAddress] || contractCallConfig.abi.concat(CustomErrors.abi);
+        abis[contractCallConfig.contractAddress] = abis[contractCallConfig.contractAddress] || [
+          ...allAbis[contractCallConfig.abiId],
+          ...allAbis.CustomErrors,
+        ];
 
         const abi = abis[contractCallConfig.contractAddress];
 

@@ -1,8 +1,10 @@
-import { isDevelopment } from "config/env";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
-import useIsWindowVisible from "./useIsWindowVisible";
+
+import { isDevelopment } from "config/env";
 import { TRADE_LOST_FOCUS_TIMEOUT, WS_LOST_FOCUS_TIMEOUT } from "config/ui";
+
+import useIsWindowVisible from "./useIsWindowVisible";
 
 function useHasLostFocusHelper(p: {
   timeout: number;

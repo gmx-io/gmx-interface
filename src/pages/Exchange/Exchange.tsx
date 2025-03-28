@@ -5,8 +5,18 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useSt
 import useSWR from "swr";
 
 import { getConstant, getExplorerUrl } from "config/chains";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { getContract } from "config/contracts";
+import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { getIsV1Supported } from "config/features";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { approvePlugin, cancelMultipleOrders, useExecutionFee } from "domain/legacy";
+import { useInfoTokens } from "domain/tokens";
+import { getTokenInfo } from "domain/tokens/utils";
+import useV1TradeParamsProcessor from "domain/trade/useV1TradeParamsProcessor";
+import { useChainId } from "lib/chains";
+import { contractFetcher } from "lib/contracts";
+import { helperToast } from "lib/helperToast";
 import {
   LONG,
   MARGIN_FEE_BASIS_POINTS,
@@ -20,14 +30,12 @@ import {
   getPositionKey,
   useAccountOrders,
 } from "lib/legacy";
-import { USD_DECIMALS } from "config/factors";
-
-import { getContract } from "config/contracts";
-
-import Reader from "sdk/abis/ReaderV2.json";
-import Router from "sdk/abis/Router.json";
-import Token from "sdk/abis/Token.json";
-import VaultV2 from "sdk/abis/VaultV2.json";
+import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
+import { formatAmount } from "lib/numbers";
+import { getLeverage, getLeverageStr } from "lib/positions/getLeverage";
+import useWallet from "lib/wallets/useWallet";
+import { getPriceDecimals, getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import ExchangeBanner from "components/Exchange/ExchangeBanner";
@@ -37,27 +45,13 @@ import OrdersList from "components/Exchange/OrdersList";
 import PositionsList from "components/Exchange/PositionsList";
 import SwapBox from "components/Exchange/SwapBox";
 import TradeHistory from "components/Exchange/TradeHistory";
-import Footer from "components/Footer/Footer";
-import Tab from "components/Tab/Tab";
-
 import UsefulLinks from "components/Exchange/UsefulLinks";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getIsV1Supported } from "config/features";
-import { getPriceDecimals, getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useInfoTokens } from "domain/tokens";
-import { getTokenInfo } from "domain/tokens/utils";
-import useV1TradeParamsProcessor from "domain/trade/useV1TradeParamsProcessor";
-import { bigMath } from "sdk/utils/bigmath";
-import { useChainId } from "lib/chains";
-import { contractFetcher } from "lib/contracts";
-import { helperToast } from "lib/helperToast";
-import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmount } from "lib/numbers";
-import { getLeverage, getLeverageStr } from "lib/positions/getLeverage";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import useWallet from "lib/wallets/useWallet";
+import Footer from "components/Footer/Footer";
+import Tabs from "components/Tabs/Tabs";
+
 import "./Exchange.css";
+
 const { ZeroAddress } = ethers;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -536,13 +530,13 @@ export const Exchange = forwardRef(
 
     const tokenAddresses = tokens.map((token) => token.address);
     const { data: tokenBalances } = useSWR(active && [active, chainId, readerAddress, "getTokenBalances", account], {
-      fetcher: contractFetcher(signer, Reader, [tokenAddresses]),
+      fetcher: contractFetcher(signer, "Reader", [tokenAddresses]),
     });
 
     const { data: positionData, error: positionDataError } = useSWR(
       active && [active, chainId, readerAddress, "getPositions", vaultAddress, account],
       {
-        fetcher: contractFetcher(signer, Reader, [
+        fetcher: contractFetcher(signer, "Reader", [
           positionQuery.collateralTokens,
           positionQuery.indexTokens,
           positionQuery.isLong,
@@ -553,7 +547,7 @@ export const Exchange = forwardRef(
     const positionsDataIsLoading = active && !positionData && !positionDataError;
 
     const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
-      fetcher: contractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+      fetcher: contractFetcher(signer, "Reader", [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
     });
 
     const updateTradeOptions = useCallback(
@@ -594,12 +588,12 @@ export const Exchange = forwardRef(
     const { data: totalTokenWeights } = useSWR(
       [`Exchange:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
       {
-        fetcher: contractFetcher(signer, VaultV2),
+        fetcher: contractFetcher(signer, "VaultV2"),
       }
     );
 
     const { data: usdgSupply } = useSWR([`Exchange:usdgSupply:${active}`, chainId, usdgAddress, "totalSupply"], {
-      fetcher: contractFetcher(signer, Token),
+      fetcher: contractFetcher(signer, "Token"),
     });
 
     const orderBookAddress = getContract(chainId, "OrderBook");
@@ -607,14 +601,14 @@ export const Exchange = forwardRef(
     const { data: orderBookApproved } = useSWR(
       active && [active, chainId, routerAddress, "approvedPlugins", account, orderBookAddress],
       {
-        fetcher: contractFetcher(signer, Router),
+        fetcher: contractFetcher(signer, "Router"),
       }
     );
 
     const { data: positionRouterApproved } = useSWR(
       active && [active, chainId, routerAddress, "approvedPlugins", account, positionRouterAddress],
       {
-        fetcher: contractFetcher(signer, Router),
+        fetcher: contractFetcher(signer, "Router"),
       }
     );
 
@@ -931,6 +925,7 @@ export const Exchange = forwardRef(
       [POSITIONS]: positions.length ? t`Positions (${positions.length})` : t`Positions`,
       [TRADES]: t`Trades`,
     };
+
     if (!LIST_SECTIONS.includes(listSection as any)) {
       listSection = LIST_SECTIONS[0];
     }
@@ -953,15 +948,19 @@ export const Exchange = forwardRef(
       );
     };
 
+    const tabsOptions = LIST_SECTIONS.map((section) => ({
+      value: section,
+      label: LIST_SECTIONS_LABELS[section],
+    }));
+
     const getListSection = () => {
       return (
         <div>
           <div className="Exchange-list-tab-container">
-            <Tab
-              options={LIST_SECTIONS}
-              optionLabels={LIST_SECTIONS_LABELS}
-              option={listSection}
-              onChange={(section) => setListSection(section)}
+            <Tabs
+              options={tabsOptions}
+              selectedValue={listSection}
+              onChange={setListSection}
               type="inline"
               className="Exchange-list-tabs"
             />

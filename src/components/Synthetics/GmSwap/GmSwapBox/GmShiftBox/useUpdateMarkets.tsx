@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 
+import { getGlvOrMarketAddress } from "domain/synthetics/markets";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import type { GlvAndGmMarketsInfoData, GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets/types";
 import { getByKey } from "lib/objects";
 
 import { getShiftAvailableRelatedMarkets } from "./getShiftAvailableRelatedMarkets";
-import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { getGlvOrMarketAddress } from "domain/synthetics/markets";
 
 export function useUpdateMarkets({
   marketsInfoData,

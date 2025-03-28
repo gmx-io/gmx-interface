@@ -1,10 +1,12 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import Button from "components/Button/Button";
-import Tooltip from "components/Tooltip/Tooltip";
-import { formatDeltaUsd } from "lib/numbers";
 import { CSSProperties, ReactNode, useCallback, useMemo } from "react";
 import { useMedia } from "react-use";
+
+import { formatDeltaUsd } from "lib/numbers";
+
+import Button from "components/Button/Button";
+import Tooltip from "components/Tooltip/Tooltip";
 
 type Section = {
   buttonText: ReactNode;

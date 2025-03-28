@@ -7,23 +7,24 @@ import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useGmxPrice, useTotalGmxStaked } from "domain/legacy";
 import { useV1FeesInfo, useVolumeInfo } from "domain/stats";
+import { usePositionsTotalCollateral } from "domain/synthetics/positions/usePositionsTotalCollateral";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
-import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { arrayURLFetcher } from "lib/fetcher";
 import { GLP_DECIMALS, GMX_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatAmount } from "lib/numbers";
+import { expandDecimals, formatAmountHuman } from "lib/numbers";
 import { sumBigInts } from "lib/sumBigInts";
 import useWallet from "lib/wallets/useWallet";
-import { ACTIVE_CHAIN_IDS } from "./DashboardV2";
-import { getPositionStats } from "./getPositionStats";
-import type { ChainStats } from "./useDashboardChainStatsMulticall";
+import { bigMath } from "sdk/utils/bigmath";
 
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
-import { usePositionsTotalCollateral } from "domain/synthetics/positions/usePositionsTotalCollateral";
+
+import { ACTIVE_CHAIN_IDS } from "./DashboardV2";
 import { getFormattedFeesDuration } from "./getFormattedFeesDuration";
+import { getPositionStats } from "./getPositionStats";
+import type { ChainStats } from "./useDashboardChainStatsMulticall";
 
 export function OverviewCard({
   statsArbitrum,
@@ -297,13 +298,13 @@ export function OverviewCard({
           <span className="label">
             <Trans>Annualized:</Trans>
           </span>
-          <span className="amount">${formatAmount(annualizedTotal, USD_DECIMALS, 0, true)}</span>
+          <span className="amount">{formatAmountHuman(annualizedTotal, USD_DECIMALS, true, 2)}</span>
         </p>
         <p className="Tooltip-row">
           <span className="label">
             <Trans>Annualized Buy Pressure (BB&D):</Trans>
           </span>
-          <span className="amount">${formatAmount(annualizedTotalBuyingPressure, USD_DECIMALS, 0, true)}</span>
+          <span className="amount">{formatAmountHuman(annualizedTotalBuyingPressure, USD_DECIMALS, true, 2)}</span>
         </p>
         <p className="Tooltip-row !mt-16">
           <Trans>Annualized data based on the past 7 days.</Trans>
@@ -325,7 +326,7 @@ export function OverviewCard({
           </div>
           <div>
             <TooltipComponent
-              handle={`$${formatAmount(displayTvl, USD_DECIMALS, 0, true)}`}
+              handle={formatAmountHuman(displayTvl, USD_DECIMALS, true, 2)}
               position="bottom-end"
               content={
                 <>
@@ -337,10 +338,22 @@ export function OverviewCard({
                     <li className="p-2">GM Pools</li>
                     <li className="p-2">Positions' Collateral</li>
                   </ul>
-                  <StatsTooltipRow label="Arbitrum" value={formatAmount(displayTvlArbitrum, USD_DECIMALS, 0, true)} />
-                  <StatsTooltipRow label="Avalanche" value={formatAmount(displayTvlAvalanche, USD_DECIMALS, 0, true)} />
+                  <StatsTooltipRow
+                    label="Arbitrum"
+                    showDollar={false}
+                    value={formatAmountHuman(displayTvlArbitrum, USD_DECIMALS, true, 2)}
+                  />
+                  <StatsTooltipRow
+                    label="Avalanche"
+                    showDollar={false}
+                    value={formatAmountHuman(displayTvlAvalanche, USD_DECIMALS, true, 2)}
+                  />
                   <div className="!my-8 h-1 bg-gray-800" />
-                  <StatsTooltipRow label="Total" value={formatAmount(displayTvl, USD_DECIMALS, 0, true)} />
+                  <StatsTooltipRow
+                    label="Total"
+                    showDollar={false}
+                    value={formatAmountHuman(displayTvl, USD_DECIMALS, true, 2)}
+                  />
                 </>
               }
             />
@@ -352,17 +365,29 @@ export function OverviewCard({
           </div>
           <div>
             <TooltipComponent
-              handle={`$${formatAmount(totalGlpTvl, USD_DECIMALS, 0, true)}`}
+              handle={formatAmountHuman(totalGlpTvl, USD_DECIMALS, true, 2)}
               position="bottom-end"
               content={
                 <>
                   <Trans>Total value of tokens in the GLP pools.</Trans>
                   <br />
                   <br />
-                  <StatsTooltipRow label="Arbitrum" value={formatAmount(glpTvlArbitrum, USD_DECIMALS, 0, true)} />
-                  <StatsTooltipRow label="Avalanche" value={formatAmount(glpTvlAvalanche, USD_DECIMALS, 0, true)} />
+                  <StatsTooltipRow
+                    label="Arbitrum"
+                    showDollar={false}
+                    value={formatAmountHuman(glpTvlArbitrum, USD_DECIMALS, true, 2)}
+                  />
+                  <StatsTooltipRow
+                    label="Avalanche"
+                    showDollar={false}
+                    value={formatAmountHuman(glpTvlAvalanche, USD_DECIMALS, true, 2)}
+                  />
                   <div className="my-8 h-1 bg-gray-800" />
-                  <StatsTooltipRow label="Total" value={formatAmount(totalGlpTvl, USD_DECIMALS, 0, true)} />
+                  <StatsTooltipRow
+                    label="Total"
+                    showDollar={false}
+                    value={formatAmountHuman(totalGlpTvl, USD_DECIMALS, true, 2)}
+                  />
                   <br />
                   <Trans>
                     This value may be higher on other websites due to the collateral of positions being included in the
@@ -379,17 +404,29 @@ export function OverviewCard({
           </div>
           <div>
             <TooltipComponent
-              handle={`$${formatAmount(totalGmTvl, USD_DECIMALS, 0, true)}`}
+              handle={formatAmountHuman(totalGmTvl, USD_DECIMALS, true, 2)}
               position="bottom-end"
               content={
                 <>
                   <Trans>Total value of tokens in GM Pools.</Trans>
                   <br />
                   <br />
-                  <StatsTooltipRow label="Arbitrum" value={formatAmount(gmTvlArbitrum, USD_DECIMALS, 0, true)} />
-                  <StatsTooltipRow label="Avalanche" value={formatAmount(gmTvlAvalanche, USD_DECIMALS, 0, true)} />
+                  <StatsTooltipRow
+                    label="Arbitrum"
+                    showDollar={false}
+                    value={formatAmountHuman(gmTvlArbitrum, USD_DECIMALS, true, 2)}
+                  />
+                  <StatsTooltipRow
+                    label="Avalanche"
+                    showDollar={false}
+                    value={formatAmountHuman(gmTvlAvalanche, USD_DECIMALS, true, 2)}
+                  />
                   <div className="!my-8 h-1 bg-gray-800" />
-                  <StatsTooltipRow label="Total" value={formatAmount(totalGmTvl, USD_DECIMALS, 0, true)} />
+                  <StatsTooltipRow
+                    label="Total"
+                    showDollar={false}
+                    value={formatAmountHuman(totalGmTvl, USD_DECIMALS, true, 2)}
+                  />
                 </>
               }
             />
@@ -403,7 +440,7 @@ export function OverviewCard({
             <TooltipComponent
               position="bottom-end"
               className="whitespace-nowrap"
-              handle={`$${formatAmount(totalDailyVolume, USD_DECIMALS, 0, true)}`}
+              handle={formatAmountHuman(totalDailyVolume, USD_DECIMALS, true, 2)}
               content={<ChainsStatsTooltipRow entries={dailyVolumeEntries} />}
             />
           </div>
@@ -416,7 +453,7 @@ export function OverviewCard({
             <TooltipComponent
               position="bottom-end"
               className="whitespace-nowrap"
-              handle={`$${formatAmount(totalOpenInterest, USD_DECIMALS, 0, true)}`}
+              handle={formatAmountHuman(totalOpenInterest, USD_DECIMALS, true, 2)}
               content={<ChainsStatsTooltipRow entries={openInterestEntries} />}
             />
           </div>
@@ -429,7 +466,7 @@ export function OverviewCard({
             <TooltipComponent
               position="bottom-end"
               className="whitespace-nowrap"
-              handle={`$${formatAmount(totalLongPositionSizes, USD_DECIMALS, 0, true)}`}
+              handle={formatAmountHuman(totalLongPositionSizes, USD_DECIMALS, true, 2)}
               content={<ChainsStatsTooltipRow entries={totalLongPositionSizesEntries} />}
             />
           </div>
@@ -442,7 +479,7 @@ export function OverviewCard({
             <TooltipComponent
               position="bottom-end"
               className="whitespace-nowrap"
-              handle={`$${formatAmount(totalShortPositionSizes, USD_DECIMALS, 0, true)}`}
+              handle={formatAmountHuman(totalShortPositionSizes, USD_DECIMALS, true, 2)}
               content={<ChainsStatsTooltipRow entries={totalShortPositionSizesEntries} />}
             />
           </div>
@@ -455,7 +492,7 @@ export function OverviewCard({
             <TooltipComponent
               position="bottom-end"
               className="whitespace-nowrap"
-              handle={`$${formatAmount(totalEpochFeesUsd, USD_DECIMALS, 2, true)}`}
+              handle={formatAmountHuman(totalEpochFeesUsd, USD_DECIMALS, true, 2)}
               content={<ChainsStatsTooltipRow entries={epochFeesEntries} subtotal={feesSubtotal} />}
             />
           </div>

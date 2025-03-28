@@ -1,10 +1,10 @@
-import DataStore from "sdk/abis/DataStore.json";
 import { getContract } from "config/contracts";
 import { affiliateRewardKey } from "config/dataStore";
 import { useMarkets } from "domain/synthetics/markets";
 import { useMulticall } from "lib/multicall";
-import { AffiliateRewardsData } from "./types";
 import useWallet from "lib/wallets/useWallet";
+
+import { AffiliateRewardsData } from "./types";
 
 export type AffiliateRewardsResult = {
   affiliateRewardsData?: AffiliateRewardsData;
@@ -20,7 +20,7 @@ export function useAffiliateRewards(chainId: number) {
       return {
         dataStore: {
           contractAddress: getContract(chainId, "DataStore"),
-          abi: DataStore.abi,
+          abiId: "DataStore",
           calls: marketsAddresses!.reduce((acc, marketAddress) => {
             const market = marketsData![marketAddress];
 

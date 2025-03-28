@@ -1,18 +1,21 @@
 import cx from "classnames";
-import NumberInput from "components/NumberInput/NumberInput";
-import { NUMBER_WITH_TWO_DECIMALS } from "components/PercentageInput/PercentageInput";
-import SuggestionInput from "components/SuggestionInput/SuggestionInput";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { getTokenVisualMultiplier } from "sdk/configs/tokens";
+import { useCallback, useMemo, useRef } from "react";
+import { FaPlus } from "react-icons/fa";
+import { useMedia } from "react-use";
+
 import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isIncreaseOrderType } from "domain/synthetics/orders";
 import { SidecarOrderEntry, SidecarOrderEntryGroup } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { TokenData } from "domain/synthetics/tokens";
 import { formatUsd, formatUsdPrice } from "lib/numbers";
-import { useCallback, useMemo, useRef } from "react";
-import { FaPlus } from "react-icons/fa";
-import { useMedia } from "react-use";
+import { getTokenVisualMultiplier } from "sdk/configs/tokens";
+
+import NumberInput from "components/NumberInput/NumberInput";
+import { NUMBER_WITH_TWO_DECIMALS } from "components/PercentageInput/PercentageInput";
+import SuggestionInput from "components/SuggestionInput/SuggestionInput";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import { EntryButton } from "./EntryButton";
 
 const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];

@@ -1,9 +1,9 @@
-import { ReactNode, useCallback, useState } from "react";
 import cx from "classnames";
+import { ReactNode, useCallback, useState } from "react";
+import { MdClose } from "react-icons/md";
 
 import InfoIconComponent from "img/ic_info.svg?react";
 import WarnIconComponent from "img/ic_warn.svg?react";
-import { MdClose } from "react-icons/md";
 
 type Props = {
   /**

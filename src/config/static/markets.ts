@@ -7,13 +7,13 @@
 
 import { parse } from "date-fns";
 
+import { MARKETS as SDK_MARKETS } from "sdk/configs/markets";
+
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
 const p = (date: string) => parse(date, "dd MMM yyyy", new Date());
 
 export const DEFAULT_LISTING = p("01 Jan 1970");
-
-import { MARKETS as SDK_MARKETS } from "sdk/configs/markets";
 
 type MarketUiConfig = {
   enabled: boolean;

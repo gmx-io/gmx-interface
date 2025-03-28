@@ -3,8 +3,6 @@ import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
-
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
@@ -12,7 +10,6 @@ import {
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { useMarketTokensData } from "domain/synthetics/markets";
@@ -29,20 +26,20 @@ import { useAvailableTokenOptions } from "domain/synthetics/trade";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { Token } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
-
 import { useChainId } from "lib/chains";
 import { formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
+import { useBestGmPoolAddressForGlv } from "components/Synthetics/MarketStats/hooks/useBestGmPoolForGlv";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import { useBestGmPoolAddressForGlv } from "components/Synthetics/MarketStats/hooks/useBestGmPoolForGlv";
 import { useGmWarningState } from "../useGmWarningState";
 import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
@@ -51,7 +48,6 @@ import { useGmDepositWithdrawalBoxState } from "./useGmDepositWithdrawalBoxState
 import { useSubmitButtonState } from "./useSubmitButtonState";
 import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
 import { useUpdateTokens } from "./useUpdateTokens";
-
 import type { GmSwapBoxProps } from "../GmSwapBox";
 import { Swap } from "../Swap";
 import { Mode, Operation } from "../types";

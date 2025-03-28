@@ -20,16 +20,13 @@ import {
   shiftGasLimitKey,
   singleSwapGasLimitKey,
   swapOrderGasLimitKey,
+  uiFeeFactorKey,
   withdrawalGasLimitKey,
 } from "configs/dataStore";
-
-import DataStore from "abis/DataStore.json";
-
-import type { IncreasePositionAmounts } from "types/trade";
 import type { GasLimitsConfig } from "types/fees";
-import type { DecreasePositionAmounts, SwapAmounts, TradeFeesType } from "types/trade";
 import { TokensData } from "types/tokens";
-
+import type { IncreasePositionAmounts } from "types/trade";
+import type { DecreasePositionAmounts, SwapAmounts, TradeFeesType } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { estimateOrderOraclePriceCount } from "utils/fees/estimateOraclePriceCount";
 import {
@@ -42,6 +39,8 @@ import { getSwapCount } from "utils/trade";
 
 import { Module } from "../base";
 
+const DEFAULT_UI_FEE_RECEIVER_ACCOUNT = "0xff00000000000000000000000000000000000001";
+
 export class Utils extends Module {
   private _gasLimits: GasLimitsConfig | null = null;
   async getGasLimits(): Promise<GasLimitsConfig> {
@@ -53,7 +52,7 @@ export class Utils extends Module {
       .executeMulticall({
         dataStore: {
           contractAddress: getContract(this.chainId, "DataStore"),
-          abi: DataStore.abi,
+          abiId: "DataStore",
           calls: {
             depositToken: {
               methodName: "getUint",
@@ -257,5 +256,33 @@ export class Utils extends Module {
     const price = gasPrice + premium;
 
     return price === undefined ? undefined : BigInt(gasPrice);
+  }
+
+  private _uiFeeFactor = 0n;
+  async getUiFeeFactor() {
+    if (this._uiFeeFactor) {
+      return this._uiFeeFactor;
+    }
+
+    const uiFeeReceiverAccount = this.sdk.config.settings?.uiFeeReceiverAccount ?? DEFAULT_UI_FEE_RECEIVER_ACCOUNT;
+
+    const uiFeeFactor = await this.sdk
+      .executeMulticall({
+        dataStore: {
+          contractAddress: getContract(this.chainId, "DataStore"),
+          abiId: "DataStore",
+          calls: {
+            keys: {
+              methodName: "getUint",
+              params: [uiFeeFactorKey(uiFeeReceiverAccount)],
+            },
+          },
+        },
+      })
+      .then((res) => {
+        return BigInt(res.data.dataStore.keys.returnValues[0]);
+      });
+
+    return uiFeeFactor ?? 0n;
   }
 }

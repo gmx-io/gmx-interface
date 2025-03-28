@@ -1,13 +1,10 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
+import { useEffect, useMemo, useState } from "react";
+
 import { getExplorerUrl } from "config/chains";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
-import { useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/useSubaccountCancelOrdersDetailsMessage";
 import { OrderStatus, PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
-import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import {
   isIncreaseOrderType,
@@ -26,10 +23,15 @@ import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
 import useWallet from "lib/wallets/useWallet";
-import { useEffect, useMemo, useState } from "react";
 import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
+
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
+
 import "./StatusNotification.scss";
 import { useToastAutoClose } from "./useToastAutoClose";
+
+import "./StatusNotification.scss";
 
 type Props = {
   toastTimestamp: number;
@@ -393,17 +395,17 @@ export function OrdersStatusNotificiation({
     }, [] as string[]);
   }, [matchedOrderStatuses, pendingOrders]);
 
-  const subaccount = useSelector(makeSelectSubaccountForActions(newlyCreatedTriggerOrderKeys.length));
-  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(newlyCreatedTriggerOrderKeys.length);
+  // const subaccount = useSelector(makeSelectSubaccountForActions(newlyCreatedTriggerOrderKeys.length));
+  // const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(newlyCreatedTriggerOrderKeys.length);
 
   function onCancelOrdersClick() {
     if (!signer || !newlyCreatedTriggerOrderKeys.length || !setPendingTxns) return;
 
     setIsCancelOrderProcessing(true);
-    cancelOrdersTxn(chainId, signer, subaccount, {
+    cancelOrdersTxn(chainId, signer, {
       orderKeys: newlyCreatedTriggerOrderKeys,
       setPendingTxns,
-      detailsMsg: cancelOrdersDetailsMessage,
+      // detailsMsg: cancelOrdersDetailsMessage,
     }).finally(() => setIsCancelOrderProcessing(false));
   }
 

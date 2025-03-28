@@ -1,4 +1,7 @@
 import { GelatoRelay } from "@gelatonetwork/relay-sdk";
+import { useEffect, useMemo } from "react";
+import useSWR from "swr";
+
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { selectGasPrice, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
@@ -13,10 +16,9 @@ import { makeSelectFindSwapPath } from "context/SyntheticsStateContext/selectors
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
-import { useEffect, useMemo } from "react";
 import { getContract } from "sdk/configs/contracts";
 import { getWrappedToken } from "sdk/configs/tokens";
-import useSWR from "swr";
+
 import { useExternalSwapOutputRequest } from "../externalSwaps/useExternalSwapOutputRequest";
 import { convertToTokenAmount, convertToUsd } from "../tokens";
 import { getSwapAmountsByToValue } from "../trade";

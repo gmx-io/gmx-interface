@@ -1,31 +1,35 @@
+import { isDevelopment } from "config/env";
 import { OrderType } from "domain/synthetics/orders";
 import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import {
-  FindSwapPath,
   TradeMode,
   TradeType,
-  createSwapEstimator,
-  findAllPaths,
-  getBestSwapPath,
   getDecreasePositionAmounts,
   getIncreasePositionAmounts,
   getMarkPrice,
-  getMarketsGraph,
-  getMaxSwapPathLiquidity,
   getNextPositionValuesForDecreaseTrade,
   getNextPositionValuesForIncreaseTrade,
-  getSwapPathComparator,
-  getSwapPathStats,
   getTriggerDecreaseOrderType,
 } from "domain/synthetics/trade";
-import { getByKey } from "lib/objects";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { MARKETS } from "sdk/configs/markets";
 import { ExternalSwapQuote } from "sdk/types/trade";
+import { buildMarketsAdjacencyGraph } from "sdk/utils/swap/buildMarketsAdjacencyGraph";
+import { createFindSwapPath, getWrappedAddress } from "sdk/utils/swap/swapPath";
+import {
+  createMarketEdgeLiquidityGetter,
+  getMarketAdjacencyGraph,
+  getTokenSwapPathsForTokenPairPrebuilt,
+} from "sdk/utils/swap/swapRouting";
+import { getMaxLiquidityMarketSwapPathFromTokenSwapPaths } from "sdk/utils/swap/swapRouting";
 import { createTradeFlags } from "sdk/utils/trade";
+
 import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
 import { selectExternalSwapQuote } from "./externalSwapSelectors";
 import {
   selectChainId,
+  selectGasLimits,
+  selectGasPrice,
   selectMarketsInfoData,
   selectPositionConstants,
   selectPositionsInfoData,
@@ -33,91 +37,111 @@ import {
   selectUiFeeFactor,
   selectUserReferralInfo,
 } from "./globalSelectors";
-import { selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
+import { selectDebugSwapMarketsConfig, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
 
 export type TokenTypeForSwapRoute = "collateralToken" | "indexToken";
 
-export const selectSwapGraph = createSelector((q) => {
+export const selectMarketEdgeLiquidityGetter = createSelector((q) => {
   const marketsInfoData = q(selectMarketsInfoData);
   if (!marketsInfoData) return undefined;
-  return getMarketsGraph(Object.values(marketsInfoData));
+  return createMarketEdgeLiquidityGetter(marketsInfoData);
 });
 
-const selectSwapEstimator = createSelector((q) => {
-  const marketsInfoData = q(selectMarketsInfoData);
-  if (!marketsInfoData) return undefined;
-  return createSwapEstimator(marketsInfoData);
+export const selectGasEstimationParams = createSelector((q) => {
+  const gasLimits = q(selectGasLimits);
+  if (!gasLimits) return undefined;
+
+  const tokensData = q(selectTokensData);
+  if (!tokensData) return undefined;
+
+  const gasPrice = q(selectGasPrice);
+  if (gasPrice === undefined) return undefined;
+
+  return {
+    gasLimits,
+    tokensData,
+    gasPrice,
+  };
 });
+
+export const selectMarketAdjacencyGraph = isDevelopment()
+  ? createSelector((q) => {
+      const chainId = q(selectChainId);
+
+      const debugSwapMarketsConfig = q(selectDebugSwapMarketsConfig);
+
+      if (!debugSwapMarketsConfig?.disabledSwapMarkets?.length) {
+        return getMarketAdjacencyGraph(chainId);
+      }
+
+      const disabledMarketAddresses = debugSwapMarketsConfig.disabledSwapMarkets;
+
+      const strippedMarkets = Object.fromEntries(
+        Object.entries(MARKETS[chainId]).filter(([marketAddress]) => !disabledMarketAddresses.includes(marketAddress))
+      );
+
+      return buildMarketsAdjacencyGraph(strippedMarkets);
+    })
+  : createSelector((q) => {
+      const chainId = q(selectChainId);
+
+      return getMarketAdjacencyGraph(chainId);
+    });
 
 const makeSelectWrappedFromAddress = (fromTokenAddress: string | undefined) =>
   createSelector((q) => {
     const chainId = q(selectChainId);
-    const wrappedFromAddress = fromTokenAddress ? convertTokenAddress(chainId, fromTokenAddress, "wrapped") : undefined;
+    const wrappedFromAddress = getWrappedAddress(chainId, fromTokenAddress);
     return wrappedFromAddress;
   });
 
 const makeSelectWrappedToAddress = (toTokenAddress: string | undefined) => {
   return createSelector((q) => {
     const chainId = q(selectChainId);
-    const wrappedToAddress = toTokenAddress ? convertTokenAddress(chainId, toTokenAddress, "wrapped") : undefined;
+    const wrappedToAddress = getWrappedAddress(chainId, toTokenAddress);
     return wrappedToAddress;
-  });
-};
-
-const makeSelectAllPaths = (fromTokenAddress: string | undefined, toTokenAddress: string | undefined) => {
-  const selectWrappedFromAddress = makeSelectWrappedFromAddress(fromTokenAddress);
-  const selectWrappedToAddress = makeSelectWrappedToAddress(toTokenAddress);
-
-  return createSelector((q) => {
-    const marketsInfoData = q(selectMarketsInfoData);
-    if (!marketsInfoData) return undefined;
-
-    const graph = q(selectSwapGraph);
-    const wrappedFromAddress = q(selectWrappedFromAddress);
-    const wrappedToAddress = q(selectWrappedToAddress);
-    const chainId = q(selectChainId);
-    const wrappedToken = getWrappedToken(chainId);
-    const isWrap = fromTokenAddress === NATIVE_TOKEN_ADDRESS && toTokenAddress === wrappedToken.address;
-    const isUnwrap = fromTokenAddress === wrappedToken.address && toTokenAddress === NATIVE_TOKEN_ADDRESS;
-    const isSameToken = fromTokenAddress === toTokenAddress;
-
-    if (!graph || !wrappedFromAddress || !wrappedToAddress || isWrap || isUnwrap || isSameToken) {
-      return undefined;
-    }
-
-    return findAllPaths(marketsInfoData, graph, wrappedFromAddress, wrappedToAddress)?.sort((a, b) =>
-      b.liquidity - a.liquidity > 0 ? 1 : -1
-    );
   });
 };
 
 export const makeSelectMaxLiquidityPath = createSelectorFactory(
   (fromTokenAddress: string | undefined, toTokenAddress: string | undefined) => {
     const selectWrappedFromAddress = makeSelectWrappedFromAddress(fromTokenAddress);
-    const selectAllPaths = makeSelectAllPaths(fromTokenAddress, toTokenAddress);
+    const selectWrappedToAddress = makeSelectWrappedToAddress(toTokenAddress);
 
     return createSelector((q) => {
+      const chainId = q(selectChainId);
       let maxLiquidity = 0n;
       let maxLiquidityPath: string[] | undefined = undefined;
-      const allPaths = q(selectAllPaths);
       const marketsInfoData = q(selectMarketsInfoData);
       const wrappedFromAddress = q(selectWrappedFromAddress);
+      const wrappedToAddress = q(selectWrappedToAddress);
+      const tokenSwapRoutes =
+        wrappedFromAddress && wrappedToAddress
+          ? getTokenSwapPathsForTokenPairPrebuilt(chainId, wrappedFromAddress, wrappedToAddress)
+          : EMPTY_ARRAY;
 
-      if (!allPaths || !marketsInfoData || !wrappedFromAddress) {
+      if (!marketsInfoData || !wrappedFromAddress || !wrappedToAddress) {
         return { maxLiquidity, maxLiquidityPath };
       }
 
-      for (const route of allPaths) {
-        const liquidity = getMaxSwapPathLiquidity({
-          marketsInfoData,
-          swapPath: route.path,
-          initialCollateralAddress: wrappedFromAddress,
-        });
+      const marketAdjacencyGraph = q(selectMarketAdjacencyGraph);
+      const marketEdgeLiquidityGetter = q(selectMarketEdgeLiquidityGetter);
 
-        if (liquidity > maxLiquidity) {
-          maxLiquidity = liquidity;
-          maxLiquidityPath = route.path;
-        }
+      if (!marketEdgeLiquidityGetter) {
+        return { maxLiquidity, maxLiquidityPath };
+      }
+
+      const maxLiquidityPathInfo = getMaxLiquidityMarketSwapPathFromTokenSwapPaths({
+        graph: marketAdjacencyGraph,
+        tokenSwapPaths: tokenSwapRoutes,
+        tokenInAddress: wrappedFromAddress,
+        tokenOutAddress: wrappedToAddress,
+        getLiquidity: marketEdgeLiquidityGetter,
+      });
+
+      if (maxLiquidityPathInfo) {
+        maxLiquidity = maxLiquidityPathInfo.liquidity;
+        maxLiquidityPath = maxLiquidityPathInfo.path;
       }
 
       return { maxLiquidity, maxLiquidityPath };
@@ -125,46 +149,24 @@ export const makeSelectMaxLiquidityPath = createSelectorFactory(
   }
 );
 
+const ENABLE_DEBUG_SWAP_MARKETS_CONFIG = isDevelopment();
 export const makeSelectFindSwapPath = createSelectorFactory(
   (fromTokenAddress: string | undefined, toTokenAddress: string | undefined) => {
-    const selectAllPaths = makeSelectAllPaths(fromTokenAddress, toTokenAddress);
-
     return createSelector((q) => {
       const chainId = q(selectChainId);
       const marketsInfoData = q(selectMarketsInfoData);
-      const wrappedToken = getWrappedToken(chainId);
-      const allPaths = q(selectAllPaths);
-      const estimator = q(selectSwapEstimator);
+      const gasEstimationParams = q(selectGasEstimationParams);
 
-      const findSwapPath: FindSwapPath = (usdIn: bigint, opts: { order?: ("liquidity" | "length")[] }) => {
-        if (!allPaths?.length || !estimator || !marketsInfoData || !fromTokenAddress) {
-          return undefined;
-        }
+      const debugSwapMarketsConfig = ENABLE_DEBUG_SWAP_MARKETS_CONFIG ? q(selectDebugSwapMarketsConfig) : undefined;
 
-        let swapPath: string[] | undefined = undefined;
-        const sortedPaths = opts.order ? [...allPaths].sort(getSwapPathComparator(opts.order ?? [])) : allPaths;
-
-        if (opts.order) {
-          swapPath = sortedPaths[0].path;
-        } else {
-          swapPath = getBestSwapPath(allPaths, usdIn, estimator);
-        }
-
-        if (!swapPath) {
-          return undefined;
-        }
-
-        return getSwapPathStats({
-          marketsInfoData,
-          swapPath,
-          initialCollateralAddress: fromTokenAddress,
-          wrappedNativeTokenAddress: wrappedToken.address,
-          shouldUnwrapNativeToken: toTokenAddress === NATIVE_TOKEN_ADDRESS,
-          shouldApplyPriceImpact: true,
-          usdIn,
-        });
-      };
-
+      const findSwapPath = createFindSwapPath({
+        chainId,
+        fromTokenAddress,
+        toTokenAddress,
+        marketsInfoData,
+        debugSwapMarketsConfig,
+        gasEstimationParams,
+      });
       return findSwapPath;
     });
   }
@@ -201,8 +203,13 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
     fixedAcceptablePriceImpactBps: bigint | undefined;
     strategy: "leverageByCollateral" | "leverageBySize" | "independent";
     tokenTypeForSwapRoute: TokenTypeForSwapRoute;
-  }) =>
-    createSelector((q) => {
+  }) => {
+    const selectFindSwapPath = makeSelectFindSwapPath(
+      initialCollateralTokenAddress,
+      tokenTypeForSwapRoute === "indexToken" ? indexTokenAddress : collateralTokenAddress
+    );
+
+    return createSelector((q) => {
       const indexToken = q((state) => getByKey(selectTokensData(state), indexTokenAddress));
       const initialCollateralToken = q((state) => getByKey(selectTokensData(state), initialCollateralTokenAddress));
       const collateralToken = q((state) => getByKey(selectTokensData(state), collateralTokenAddress));
@@ -211,12 +218,7 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
       const externalSwapQuote = q(selectExternalSwapQuote);
 
       const acceptablePriceImpactBuffer = q(selectSavedAcceptablePriceImpactBuffer);
-      const findSwapPath = q(
-        makeSelectFindSwapPath(
-          initialCollateralTokenAddress,
-          tokenTypeForSwapRoute === "indexToken" ? indexTokenAddress : collateralTokenAddress
-        )
-      );
+      const findSwapPath = q(selectFindSwapPath);
       const userReferralInfo = q(selectUserReferralInfo);
       const uiFeeFactor = q(selectUiFeeFactor);
 
@@ -262,7 +264,8 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
         uiFeeFactor,
         strategy,
       });
-    })
+    });
+  }
 );
 
 export const makeSelectDecreasePositionAmounts = createSelectorFactory(

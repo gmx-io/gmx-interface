@@ -1,4 +1,5 @@
 import { differenceInDays, differenceInHours } from "date-fns";
+
 import { getCurrentEpochStartedTimestamp } from "domain/stats";
 
 export function getFormattedFeesDuration() {

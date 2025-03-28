@@ -1,7 +1,8 @@
+import { useMemo } from "react";
+
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-import { useMemo } from "react";
 import DataStore from "sdk/abis/DataStore.json";
 import SubaccountGelatoRelayRouterAbi from "sdk/abis/SubaccountGelatoRelayRouter.json";
 import {

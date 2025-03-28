@@ -1,7 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import { useEffect, useRef, useState } from "react";
 
-import { Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/types";
 import { getSyntheticsDepositMarketKey } from "config/localStorage";
 import {
   selectDepositMarketTokensData,
@@ -11,7 +10,6 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarketTokensData } from "domain/synthetics/markets";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { getTokenData } from "domain/synthetics/tokens";
-import { useLpInterviewNotification } from "domain/synthetics/userFeedback/useLpInterviewNotification";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -20,12 +18,12 @@ import { getByKey } from "lib/objects";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
-import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import PageTitle from "components/PageTitle/PageTitle";
 import { GlvList } from "components/Synthetics/GmList/GlvList";
 import { GmList } from "components/Synthetics/GmList/GmList";
 import { getGmSwapBoxAvailableModes } from "components/Synthetics/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
 import { GmSwapBox } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
+import { Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/types";
 import { MarketStatsWithComposition } from "components/Synthetics/MarketStats/MarketStatsWithComposition";
 
 import "./MarketPoolsPage.scss";
@@ -33,7 +31,6 @@ import "./MarketPoolsPage.scss";
 export function MarketPoolsPage() {
   const { chainId } = useChainId();
   const gmSwapBoxRef = useRef<HTMLDivElement>(null);
-  const { isLpInterviewModalVisible, setIsLpInterviewModalVisible } = useLpInterviewNotification();
 
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
 
@@ -162,7 +159,6 @@ export function MarketPoolsPage() {
         />
       </div>
       <Footer />
-      <InterviewModal type="lp" isVisible={isLpInterviewModalVisible} setIsVisible={setIsLpInterviewModalVisible} />
     </SEO>
   );
 }

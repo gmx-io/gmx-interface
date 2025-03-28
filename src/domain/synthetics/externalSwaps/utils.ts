@@ -1,9 +1,10 @@
-import Token from "sdk/abis/Token.json";
+import { encodeFunctionData } from "viem";
 
 import { getSwapDebugSettings } from "config/externalSwaps";
 import { UserReferralInfo } from "domain/referrals";
 import { applyFactor, MaxUint256 } from "lib/numbers";
 import { parseError } from "lib/parseError";
+import Token from "sdk/abis/Token.json";
 import { convertTokenAddress, getNativeToken } from "sdk/configs/tokens";
 import { MarketInfo } from "sdk/types/markets";
 import { PositionInfo } from "sdk/types/positions";
@@ -11,7 +12,7 @@ import { TokenData } from "sdk/types/tokens";
 import { ExternalSwapInputs } from "sdk/types/trade";
 import { getFeeItem, getPositionFee } from "sdk/utils/fees";
 import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
-import { encodeFunctionData } from "viem";
+
 import {
   ExternalSwapQuote,
   FindSwapPath,

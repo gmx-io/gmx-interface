@@ -1,5 +1,6 @@
-import { usePrevious } from "lib/usePrevious";
 import { useCallback, useEffect, useMemo, useState } from "react";
+
+import { usePrevious } from "lib/usePrevious";
 
 type PaginateParams = {
   total: number;

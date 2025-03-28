@@ -1,17 +1,15 @@
+import { getContract } from "configs/contracts";
+import { CLAIMABLE_FUNDING_AMOUNT, MAX_PNL_FACTOR_FOR_TRADERS_KEY } from "configs/dataStore";
 import { MarketsData } from "types/markets";
 import { TokensData } from "types/tokens";
+import { hashDataMap } from "utils/hash";
+import { hashMarketConfigKeys, hashMarketValuesKeys } from "utils/marketKeysAndConfigs";
 import { getContractMarketPrices } from "utils/markets";
+import type { ContractCallsConfig } from "utils/multicall";
 import { getByKey } from "utils/objects";
 
-import DataStore from "abis/DataStore.json";
-import SyntheticsReader from "abis/SyntheticsReader.json";
-
-import { CLAIMABLE_FUNDING_AMOUNT, MAX_PNL_FACTOR_FOR_TRADERS_KEY } from "configs/dataStore";
-import { HASHED_MARKET_CONFIG_KEYS, HASHED_MARKET_VALUES_KEYS } from "../../prebuilt";
 import { MarketConfigMulticallRequestConfig, MarketValuesMulticallRequestConfig } from "./types";
-import { hashDataMap } from "utils/hash";
-import { getContract } from "configs/contracts";
-import { hashMarketConfigKeys, hashMarketValuesKeys } from "utils/marketKeysAndConfigs";
+import { HASHED_MARKET_CONFIG_KEYS, HASHED_MARKET_VALUES_KEYS } from "../../prebuilt";
 
 export function buildClaimableFundingDataRequest({
   marketsAddresses,
@@ -48,7 +46,7 @@ export function buildClaimableFundingDataRequest({
 
     request[marketAddress] = {
       contractAddress: getContract(chainId, "DataStore"),
-      abi: DataStore.abi,
+      abiId: "DataStore",
       calls: {
         claimableFundingAmountLong: {
           methodName: "getUint",
@@ -59,7 +57,7 @@ export function buildClaimableFundingDataRequest({
           params: [keys.claimableFundingAmountShort],
         },
       },
-    };
+    } satisfies ContractCallsConfig<any>;
 
     return request;
   }, {});
@@ -102,7 +100,7 @@ export async function buildMarketsValuesRequest(
 
     request[`${marketAddress}-reader`] = {
       contractAddress: syntheticsReaderAddress,
-      abi: SyntheticsReader.abi,
+      abiId: "SyntheticsReader",
       calls: {
         marketInfo: {
           methodName: "getMarketInfo",
@@ -133,7 +131,7 @@ export async function buildMarketsValuesRequest(
           ],
         },
       },
-    };
+    } satisfies ContractCallsConfig<any>;
 
     let prebuiltHashedKeys = HASHED_MARKET_VALUES_KEYS[chainId]?.[marketAddress];
 
@@ -156,7 +154,7 @@ export async function buildMarketsValuesRequest(
 
     request[`${marketAddress}-dataStore`] = {
       contractAddress: dataStoreAddress,
-      abi: DataStore.abi,
+      abiId: "DataStore",
       calls: {
         longPoolAmount: {
           methodName: "getUint",
@@ -211,7 +209,7 @@ export async function buildMarketsValuesRequest(
           params: [keys.shortInterestInTokensUsingShortToken],
         },
       },
-    };
+    } satisfies ContractCallsConfig<any>;
   }
 
   return request;
@@ -248,7 +246,7 @@ export async function buildMarketsConfigsRequest(
 
     request[`${marketAddress}-dataStore`] = {
       contractAddress: dataStoreAddress,
-      abi: DataStore.abi,
+      abiId: "DataStore",
       calls: {
         isDisabled: {
           methodName: "getBool",
@@ -443,7 +441,7 @@ export async function buildMarketsConfigsRequest(
           params: [prebuiltHashedKeys.virtualLongTokenId],
         },
       },
-    };
+    } satisfies ContractCallsConfig<any>;
   }
 
   return request;

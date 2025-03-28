@@ -1,4 +1,3 @@
-import { MarketInfo } from "types/markets";
 import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "./fees";
 import { DecreasePositionSwapType, OrderType } from "./orders";
 
@@ -195,10 +194,13 @@ export type SwapPathStats = {
 
 export type MarketEdge = {
   marketAddress: string;
-  marketInfo: MarketInfo;
-  // from token
+  /**
+   * Token Address
+   */
   from: string;
-  // to token
+  /**
+   * Token Address
+   */
   to: string;
 };
 
@@ -208,9 +210,11 @@ export type SwapRoute = {
   liquidity: bigint;
 };
 
-export type MarketsGraph = {
-  abjacencyList: { [token: string]: MarketEdge[] };
-  edges: MarketEdge[];
+type TokenAddress = string;
+export type SwapPaths = {
+  [from: TokenAddress]: {
+    [to: TokenAddress]: TokenAddress[][];
+  };
 };
 
 export type SwapEstimator = (
@@ -220,7 +224,29 @@ export type SwapEstimator = (
   usdOut: bigint;
 };
 
-export type FindSwapPath = (usdIn: bigint, opts: { order?: ("liquidity" | "length")[] }) => SwapPathStats | undefined;
+export type NaiveSwapEstimator = (
+  e: MarketEdge,
+  usdIn: bigint
+) => {
+  /**
+   * 1.1 means output is 10% greater than input
+   * 0.9 means output is 10% less than input
+   */
+  swapYield: number;
+};
+
+export type NaiveNetworkEstimator = (
+  usdIn: bigint,
+  swapCount: number
+) => {
+  networkYield: number;
+  usdOut: bigint;
+};
+
+export type MarketEdgeLiquidityGetter = (e: MarketEdge) => bigint;
+
+export type SwapOptimizationOrderArray = ("liquidity" | "length")[];
+export type FindSwapPath = (usdIn: bigint, opts?: { order?: SwapOptimizationOrderArray }) => SwapPathStats | undefined;
 
 export type TradeFeesType = "swap" | "increase" | "decrease" | "edit";
 

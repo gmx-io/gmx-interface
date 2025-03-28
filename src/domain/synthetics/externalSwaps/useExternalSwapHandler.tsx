@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import { getIsFlagEnabled } from "config/ab";
 import { isDevelopment } from "config/env";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -12,6 +14,7 @@ import {
   selectShouldRequestExternalSwapQuote,
 } from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
 import { selectGasPrice, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxFromTokenAddress,
@@ -20,10 +23,9 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { throttleLog } from "lib/logging";
-import { useEffect } from "react";
-import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
 import { getContract } from "sdk/configs/contracts";
-import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
+
+import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
 
 export function useExternalSwapHandler() {
   const { chainId } = useChainId();

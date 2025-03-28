@@ -1,10 +1,12 @@
+import { useEffect, useMemo, useRef } from "react";
+
 import { getSortedMarketsAddressesKey } from "config/localStorage";
 import { SORTED_MARKETS } from "config/static/sortedMarkets";
-import { NATIVE_TOKEN_ADDRESS, getTokensMap } from "sdk/configs/tokens";
 import { GlvAndGmMarketsInfoData, Market, MarketInfo, MarketsData, isMarketInfo } from "domain/synthetics/markets";
 import { InfoTokens, Token, getMidPrice } from "domain/tokens";
 import { getByKey } from "lib/objects";
-import { useEffect, useMemo, useRef } from "react";
+import { NATIVE_TOKEN_ADDRESS, getTokensMap } from "sdk/configs/tokens";
+
 import { isGlvInfo } from "../markets/glv";
 import { TokenData, TokensData, adaptToV1InfoTokens, convertToUsd } from "../tokens";
 

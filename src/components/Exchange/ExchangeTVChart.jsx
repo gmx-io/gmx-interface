@@ -1,20 +1,20 @@
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { useChartPrices } from "domain/legacy";
-import { CHART_PERIODS, INCREASE, SWAP } from "lib/legacy";
 import { USD_DECIMALS } from "config/factors";
-
-import { t } from "@lingui/macro";
-import TVChartContainer from "components/TVChartContainer/TVChartContainer";
-import { DEFAULT_PERIOD, availableNetworksForChart } from "components/TVChartContainer/constants";
-import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
-import { getPriceDecimals, getToken, getV1Tokens } from "sdk/configs/tokens";
 import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
+import { useChartPrices } from "domain/legacy";
 import { getTokenInfo } from "domain/tokens/utils";
+import { CHART_PERIODS, INCREASE, SWAP } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, numberWithCommas } from "lib/numbers";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { getPriceDecimals, getToken, getV1Tokens } from "sdk/configs/tokens";
+
+import { DEFAULT_PERIOD, availableNetworksForChart } from "components/TVChartContainer/constants";
+import TVChartContainer from "components/TVChartContainer/TVChartContainer";
+
 import ChartTokenSelector from "./ChartTokenSelector";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
@@ -354,9 +354,6 @@ export default function ExchangeTVChart(props) {
               </div>
             </div>
           </div>
-        </div>
-        <div className="ExchangeChart-info VersionSwitch-wrapper">
-          <VersionSwitch />
         </div>
       </div>
       <div className="ExchangeChart-bottom App-box App-box-border">

@@ -1,11 +1,13 @@
 import cx from "classnames";
 import { AnimatePresence, Variants, motion } from "framer-motion";
-import { useMedia } from "react-use";
-
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { usePrevious } from "lib/usePrevious";
 import { ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
+import { useMedia } from "react-use";
+
+import { usePrevious } from "lib/usePrevious";
+
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import { SyntheticsInfoRow } from "./SyntheticsInfoRow";
 
 const ANIMATION_DURATION = 0.2;

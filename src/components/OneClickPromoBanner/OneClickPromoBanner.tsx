@@ -1,12 +1,15 @@
 import { Trans } from "@lingui/macro";
 import { useLocalStorage } from "react-use";
-import { useChainId } from "lib/chains";
-import useWallet from "lib/wallets/useWallet";
+
+import { getOneClickTradingPromoHiddenKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
-import { getOneClickTradingPromoHiddenKey } from "config/localStorage";
+import { useChainId } from "lib/chains";
+import useWallet from "lib/wallets/useWallet";
+
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import OneClickIcon from "img/ic_one_click.svg?react";
 
 export function OneClickPromoBanner() {

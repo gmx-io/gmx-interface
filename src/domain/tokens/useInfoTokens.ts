@@ -3,19 +3,16 @@ import useSWR from "swr";
 
 import { getServerUrl } from "config/backend";
 import { getContract } from "config/contracts";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
-import { bigMath } from "sdk/utils/bigmath";
+import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { contractFetcher } from "lib/contracts";
 import { DEFAULT_MAX_USDG_AMOUNT, MAX_PRICE_DEVIATION_BASIS_POINTS, USDG_ADDRESS } from "lib/legacy";
-import { USD_DECIMALS } from "config/factors";
 import { expandDecimals } from "lib/numbers";
 import { PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
-
+import { getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { InfoTokens, Token, TokenInfo } from "sdk/types/tokens";
-import { getSpread } from "./utils";
+import { bigMath } from "sdk/utils/bigmath";
 
-import VaultReader from "sdk/abis/VaultReader.json";
+import { getSpread } from "./utils";
 
 export function useInfoTokens(
   signer: Signer | undefined,
@@ -37,7 +34,7 @@ export function useInfoTokens(
   const { data: vaultTokenInfo } = useSWR<bigint[], any>(
     [`useInfoTokens:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV4"],
     {
-      fetcher: contractFetcher(signer, VaultReader, [
+      fetcher: contractFetcher(signer, "VaultReader", [
         vaultAddress,
         positionRouterAddress,
         nativeTokenAddress,

@@ -1,21 +1,18 @@
 import { differenceInDays } from "date-fns";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import { useUnmount } from "react-use";
 
-import { HIGH_LIQUIDITY_FOR_FEEDBACK } from "config/constants";
+import { HIGH_LIQUIDITY_FOR_FEEDBACK, TIME_SPENT_ON_EARN_PAGE_FOR_INVITATION_TOAST } from "config/constants";
 import { LP_INTERVIEW_INVITATION_SHOWN_TIME_KEY } from "config/localStorage";
-import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useMarketTokensData } from "../markets/useMarketTokensData";
-import { getTotalGlvInfo, getTotalGmInfo } from "../markets/utils";
 
 import { InterviewToast } from "components/InterviewToast/InterviewToast";
 
-const ACTION_TRIGGERED_DELAY = 5000;
+import { useMarketTokensData } from "../markets/useMarketTokensData";
+import { getTotalGlvInfo, getTotalGmInfo } from "../markets/utils";
 
 function useTotalProvidedLiquidityUsd() {
   const chainId = useSelector(selectChainId);
@@ -31,7 +28,6 @@ function useTotalProvidedLiquidityUsd() {
 
 export function useLpInterviewNotification() {
   const totalProvidedLiquidityUsd = useTotalProvidedLiquidityUsd();
-  const { depositStatuses, withdrawalStatuses, shiftStatuses } = useSyntheticsEvents();
 
   const [isLpInterviewModalVisible, setIsLpInterviewModalVisible] = useState(false);
   const [lpInterviewInvitationShownTime, setLpInterviewInvitationShownTime] = useLocalStorageSerializeKey<
@@ -39,7 +35,6 @@ export function useLpInterviewNotification() {
   >(LP_INTERVIEW_INVITATION_SHOWN_TIME_KEY, undefined);
 
   const [isTriggerActionPerformed, setIsTriggerActionPerformed] = useState(false);
-  const isTriggerActionPerformedRef = useRef<number>();
 
   useEffect(
     function showLpInterviewToast() {
@@ -79,31 +74,13 @@ export function useLpInterviewNotification() {
     ]
   );
 
-  useEffect(
-    function checkTriggerActionRef() {
-      const dsLength = Object.keys(depositStatuses).length;
-      const wsLength = Object.keys(withdrawalStatuses).length;
-      const ssLength = Object.keys(shiftStatuses).length;
+  useEffect(function runTriggerAction() {
+    const timeout = setTimeout(() => {
+      setIsTriggerActionPerformed(true);
+    }, TIME_SPENT_ON_EARN_PAGE_FOR_INVITATION_TOAST);
 
-      const dsExecuted = dsLength > 0 && Object.values(depositStatuses).every((ds) => ds.executedTxnHash);
-      const wsExecuted = wsLength > 0 && Object.values(withdrawalStatuses).every((ws) => ws.executedTxnHash);
-      const ssExecuted = ssLength > 0 && Object.values(shiftStatuses).every((ss) => ss.executedTxnHash);
-
-      const isLastAcceptableActionExecuted = dsExecuted || wsExecuted || ssExecuted;
-
-      if (isLastAcceptableActionExecuted && isTriggerActionPerformedRef.current === undefined) {
-        isTriggerActionPerformedRef.current = window.setTimeout(() => {
-          setIsTriggerActionPerformed(true);
-        }, ACTION_TRIGGERED_DELAY);
-      }
-    },
-    [depositStatuses, shiftStatuses, withdrawalStatuses]
-  );
-
-  useUnmount(() => {
-    clearTimeout(isTriggerActionPerformedRef.current);
-    isTriggerActionPerformedRef.current = undefined;
-  });
+    return () => clearTimeout(timeout);
+  }, []);
 
   return {
     isLpInterviewModalVisible,

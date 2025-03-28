@@ -1,10 +1,12 @@
-import { getExternalCallsParams } from "domain/synthetics/externalSwaps/utils";
 import { Contract, Signer } from "ethers";
+import { encodeFunctionData } from "viem";
+
+import { getExternalCallsParams } from "domain/synthetics/externalSwaps/utils";
 import { callContract } from "lib/contracts";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getContract } from "sdk/configs/contracts";
 import { OrderType } from "sdk/types/orders";
-import { encodeFunctionData } from "viem";
+
 import { CollateralTransferParams, OrderCreatePayload } from "./createOrderBuilders";
 
 export function encodeCreateOrderMulticallPayload(p: { chainId: number; createOrderPayload: OrderCreatePayload }) {

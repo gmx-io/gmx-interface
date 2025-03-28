@@ -1,8 +1,9 @@
 import cryptoJs from "crypto-js";
 import { ethers } from "ethers";
+
 import { extractDataFromError, getIsUserError, getIsUserRejectedError } from "lib/contracts/transactionErrors";
-import CustomErrors from "sdk/abis/CustomErrors.json";
-import { extractError, TxErrorType } from "sdk/utils/contracts";
+import { abis } from "sdk/abis";
+import { TxErrorType, extractError } from "sdk/utils/contracts";
 
 import { OrderErrorContext } from "./metrics/types";
 
@@ -48,7 +49,7 @@ export type ErrorData = {
 const URL_REGEXP =
   /((?:http[s]?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\.[a-z]{2,6}\b(?::\d+)?)(?:[-a-zA-Z0-9@:%_\\+.~#?&\\/\\/=]*)/gi;
 
-const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
+const customErrors = new ethers.Contract(ethers.ZeroAddress, abis.CustomErrors);
 const MAX_ERRORS_DEPTH = 1;
 
 export function parseError(error: ErrorLike | string | undefined, errorDepth = 0): ErrorData | undefined {

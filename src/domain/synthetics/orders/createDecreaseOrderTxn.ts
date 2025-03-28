@@ -1,10 +1,11 @@
 import { t } from "@lingui/macro";
+import { Signer, ethers } from "ethers";
+
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { SetPendingFundingFeeSettlement, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
 import { TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
-import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { OrderMetricId } from "lib/metrics";
@@ -12,12 +13,14 @@ import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { isMarketOrderType } from "sdk/utils/orders";
+
 import { getPositionKey } from "../positions";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
 import { prepareOrderTxn } from "./prepareOrderTxn";
 import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { getPendingOrderFromParams } from "./utils";
+import { Subaccount } from "../gassless/txns/subaccountUtils";
 
 const { ZeroAddress } = ethers;
 
@@ -56,7 +59,7 @@ export type DecreaseOrderCallbacks = {
 export async function createDecreaseOrderTxn(
   chainId: number,
   signer: Signer,
-  subaccount: Subaccount,
+  subaccount: Subaccount | undefined,
   params: DecreaseOrderParams | DecreaseOrderParams[],
   callbacks: DecreaseOrderCallbacks,
   blockTimestampData: BlockTimestampData | undefined,
@@ -86,7 +89,7 @@ export async function createDecreaseOrderTxn(
     router: exchangeRouter,
     orderVaultAddress,
     ps,
-    subaccount: null,
+    subaccount: undefined,
     mainAccountAddress: account,
     chainId,
   });
@@ -197,7 +200,7 @@ export function createDecreaseEncodedPayload({
   router: ethers.Contract;
   orderVaultAddress: string;
   ps: DecreaseOrderParams[];
-  subaccount: Subaccount;
+  subaccount: Subaccount | undefined;
   mainAccountAddress: string;
   chainId: number;
 }) {

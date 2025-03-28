@@ -47,6 +47,7 @@ export const PRODUCTION_PREVIEW_KEY = "production-preview";
 export const REQUIRED_UI_VERSION_KEY = "required-ui-version";
 export const DEBUG_SWAP_SETTINGS_KEY = "debug-swap-settings";
 export const EXTERNAL_SWAPS_ENABLED_KEY = "external-swaps-enabled";
+export const DEBUG_SWAP_MARKETS_CONFIG_KEY = "debug-swap-markets-config";
 
 export const ONE_CLICK_TRADING_PROMO_HIDDEN_KEY = "one-click-trading-promo-hidden";
 export const EXPRESS_TRADING_PROMO_HIDDEN_KEY = "express-trading-promo-hidden";

@@ -2,13 +2,14 @@ import { t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
 
 import { getContract } from "config/contracts";
+import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 import type { SetPendingOrderUpdate } from "context/SyntheticsEvents";
 import { convertToContractPrice } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { callContract } from "lib/contracts";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
+
 import { Subaccount } from "../gassless/txns/subaccountUtils";
-import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 
 export type UpdateOrderParams = {
   orderKey: string;
@@ -30,7 +31,7 @@ export type UpdateOrderCallbacks = {
 export async function updateOrderTxn(
   chainId: number,
   signer: Signer,
-  subaccount: Subaccount,
+  subaccount: Subaccount | undefined,
   p: UpdateOrderParams,
   callbacks: UpdateOrderCallbacks
 ): Promise<void> {

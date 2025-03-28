@@ -1,6 +1,7 @@
-import { TradeType } from "sdk/types/trade";
-import { chooseSuitableMarket } from "domain/synthetics/markets/chooseSuitableMarket";
 import { describe, expect, it } from "vitest";
+
+import { chooseSuitableMarket } from "domain/synthetics/markets/chooseSuitableMarket";
+import { TradeType } from "sdk/types/trade";
 
 type Input = Parameters<typeof chooseSuitableMarket>[0];
 

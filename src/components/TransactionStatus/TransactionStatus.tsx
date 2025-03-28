@@ -2,9 +2,10 @@ import cx from "classnames";
 import { ReactNode } from "react";
 import { ImSpinner2 } from "react-icons/im";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getExplorerUrl } from "config/chains";
 import { useChainId } from "lib/chains";
+
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export type TransactionStatusType = "muted" | "loading" | "success" | "error";
 

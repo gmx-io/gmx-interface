@@ -1,19 +1,17 @@
+import { ethers } from "ethers";
+
 import { USD_DECIMALS } from "config/factors";
-import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { EventLogData } from "context/SyntheticsEvents";
 import { ExecutionFee } from "domain/synthetics/fees";
+import { Subaccount } from "domain/synthetics/gassless/txns/subaccountUtils";
 import { getMarketIndexName, getMarketPoolName, MarketInfo } from "domain/synthetics/markets";
-import { OrderType } from "domain/synthetics/orders";
+import { getCollateralAndSwapAddresses, OrderType } from "domain/synthetics/orders";
 import { TokenData } from "domain/synthetics/tokens";
-import {
-  DecreasePositionAmounts,
-  ExternalSwapQuote,
-  IncreasePositionAmounts,
-  SwapAmounts,
-} from "domain/synthetics/trade";
+import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "domain/synthetics/trade";
+import { bigintToNumber, formatPercentage, formatRatePercentage, getBasisPoints, roundToOrder } from "lib/numbers";
 import { ErrorLike } from "lib/parseError";
-import { bigintToNumber, formatPercentage, formatRatePercentage, roundToOrder } from "lib/numbers";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+
 import { metrics, OrderErrorContext, SubmittedOrderEvent } from ".";
 import { parseError } from "../parseError";
 import {
@@ -131,11 +129,12 @@ export function initSwapMetricData({
 }
 
 export function initIncreaseOrderMetricData({
+  chainId,
   fromToken,
   increaseAmounts,
+  collateralToken,
   initialCollateralAllowance,
   hasExistingPosition,
-  externalSwapQuote,
   leverage,
   executionFee,
   orderType,
@@ -154,8 +153,10 @@ export function initIncreaseOrderMetricData({
   netRate1h,
   interactionId,
 }: {
+  chainId: number;
   fromToken: TokenData | undefined;
   increaseAmounts: IncreasePositionAmounts | undefined;
+  collateralToken: TokenData | undefined;
   initialCollateralAllowance: bigint | undefined;
   leverage: string | undefined;
   executionFee: ExecutionFee | undefined;
@@ -163,7 +164,6 @@ export function initIncreaseOrderMetricData({
   allowedSlippage: number | undefined;
   hasReferralCode: boolean;
   hasExistingPosition: boolean | undefined;
-  externalSwapQuote: ExternalSwapQuote | undefined;
   triggerPrice: bigint | undefined;
   marketInfo: MarketInfo | undefined;
   subaccount: Subaccount | undefined;
@@ -178,11 +178,19 @@ export function initIncreaseOrderMetricData({
   netRate1h: bigint | undefined;
   interactionId: string | undefined;
 }) {
+  // Use actual collateral and swap params to identify the order after execution
+  const { initialCollateralTokenAddress, swapPath } = getCollateralAndSwapAddresses(chainId, {
+    swapPath: increaseAmounts?.swapPathStats?.swapPath || [],
+    initialCollateralAddress: fromToken?.address || ethers.ZeroAddress,
+    targetCollateralAddress: collateralToken?.address || ethers.ZeroAddress,
+    externalSwapQuote: increaseAmounts?.externalSwapQuote,
+  });
+
   return metrics.setCachedMetricData<IncreaseOrderMetricData>({
     metricId: getPositionOrderMetricId({
       marketAddress: marketInfo?.marketTokenAddress,
-      initialCollateralTokenAddress: fromToken?.wrappedAddress || fromToken?.address,
-      swapPath: increaseAmounts?.swapPathStats?.swapPath,
+      initialCollateralTokenAddress,
+      swapPath,
       isLong,
       orderType,
       sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd,
@@ -220,17 +228,16 @@ export function initIncreaseOrderMetricData({
       priceImpactDeltaUsd !== undefined ? bigintToNumber(roundToOrder(priceImpactDeltaUsd, 2), USD_DECIMALS) : 0,
     priceImpactPercentage: formatPercentageForMetrics(priceImpactPercentage) ?? 0,
     netRate1h: parseFloat(formatRatePercentage(netRate1h)),
-    externalSwapQuote: externalSwapQuote
-      ? {
-          inTokenAddress: externalSwapQuote.inTokenAddress,
-          outTokenAddress: externalSwapQuote.outTokenAddress,
-          amountIn: formatAmountForMetrics(externalSwapQuote.amountIn),
-          amountOut: formatAmountForMetrics(externalSwapQuote.amountOut),
-          usdIn: formatAmountForMetrics(externalSwapQuote.usdIn),
-          usdOut: formatAmountForMetrics(externalSwapQuote.usdOut),
-          feesUsd: formatAmountForMetrics(externalSwapQuote.feesUsd),
-        }
-      : undefined,
+    internalSwapTotalFeesBps:
+      increaseAmounts?.swapPathStats && increaseAmounts.initialCollateralAmount > 0
+        ? Number(getBasisPoints(increaseAmounts.swapPathStats.totalFeesDeltaUsd, increaseAmounts.initialCollateralUsd))
+        : undefined,
+    internalSwapTotalFeesDeltaUsd: formatAmountForMetrics(increaseAmounts?.swapPathStats?.totalFeesDeltaUsd),
+    externalSwapUsdIn: formatAmountForMetrics(increaseAmounts?.externalSwapQuote?.usdIn),
+    externalSwapUsdOut: formatAmountForMetrics(increaseAmounts?.externalSwapQuote?.usdOut),
+    externalSwapFeesUsd: formatAmountForMetrics(increaseAmounts?.externalSwapQuote?.feesUsd),
+    externalSwapInTokenAddress: increaseAmounts?.externalSwapQuote?.inTokenAddress,
+    externalSwapOutTokenAddress: increaseAmounts?.externalSwapQuote?.outTokenAddress,
     interactionId,
   });
 }
@@ -546,7 +553,6 @@ export function getPositionOrderMetricId(p: {
     p.isLong || "isLong",
     p.orderType || "orderType",
     p.sizeDeltaUsd?.toString() || "sizeDeltaUsd",
-    p.initialCollateralDeltaAmount?.toString() || "initialCollateralDeltaAmount",
   ].join(":")}`;
 }
 

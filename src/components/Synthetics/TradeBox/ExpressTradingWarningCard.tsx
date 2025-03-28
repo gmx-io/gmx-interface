@@ -1,24 +1,24 @@
 import { Trans } from "@lingui/macro";
-import OneClickIcon from "img/ic_one_click.svg?react";
 import { ReactNode, useCallback, useState } from "react";
 
 import {
   EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY,
   EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY,
 } from "config/localStorage";
-import IconBolt from "img/icon-bolt.svg?react";
-import { useChainId } from "lib/chains";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
-
-import { useExpressTradingWarnings } from "./hooks/useShowOneClickTradingInfo";
-
-import Button from "components/Button/Button";
-
-import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { selectUpdateSubaccountSettings } from "context/SyntheticsStateContext/selectors/subaccountSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useChainId } from "lib/chains";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
+import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
+
+import Button from "components/Button/Button";
+import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+
+import OneClickIcon from "img/ic_one_click.svg?react";
+import IconBolt from "img/icon-bolt.svg?react";
+
+import { useExpressTradingWarnings } from "./hooks/useShowOneClickTradingInfo";
 
 export function ExpressTradingWarningCard() {
   const [isVisible, setIsVisible] = useState(true);

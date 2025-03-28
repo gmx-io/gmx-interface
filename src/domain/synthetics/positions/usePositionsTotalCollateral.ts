@@ -2,9 +2,9 @@ import { gql } from "@apollo/client";
 import useSWR from "swr";
 import type { Address } from "viem";
 
+import { getSubsquidGraphClient } from "lib/subgraph/clients";
 import { getByKey } from "sdk/utils/objects";
 
-import { getSubsquidGraphClient } from "lib/subgraph/clients";
 import { convertToUsd, useTokensDataRequest } from "../tokens";
 
 const POSITIONS_COLLATERAL_QUERY = gql`

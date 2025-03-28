@@ -1,8 +1,9 @@
-import { Token, TokenPrices, TokensData, TokensRatio, TokensRatioAndSlippage } from "types/tokens";
-import { adjustForDecimals, expandDecimals, PRECISION } from "./numbers";
-import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS } from "configs/factors";
+import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { Token, TokenPrices, TokensData, TokensRatio, TokensRatioAndSlippage } from "types/tokens";
+
 import { bigMath } from "./bigmath";
+import { adjustForDecimals, expandDecimals, PRECISION } from "./numbers";
 
 export function parseContractPrice(price: bigint, tokenDecimals: number) {
   return price * expandDecimals(1, tokenDecimals);
@@ -179,4 +180,28 @@ export function getAmountByRatio(p: {
       : 0n;
 
   return amount - swapSlippageAmount;
+}
+
+export function getIsWrap(token1: Token, token2: Token) {
+  return token1.isNative && token2.isWrapped;
+}
+
+export function getIsUnwrap(token1: Token, token2: Token) {
+  return token1.isWrapped && token2.isNative;
+}
+
+export function getTokensRatioByPrice(p: {
+  fromToken: Token;
+  toToken: Token;
+  fromPrice: bigint;
+  toPrice: bigint;
+}): TokensRatio {
+  const { fromToken, toToken, fromPrice, toPrice } = p;
+
+  const [largestToken, smallestToken, largestPrice, smallestPrice] =
+    fromPrice > toPrice ? [fromToken, toToken, fromPrice, toPrice] : [toToken, fromToken, toPrice, fromPrice];
+
+  const ratio = (largestPrice * PRECISION) / smallestPrice;
+
+  return { ratio, largestToken, smallestToken };
 }

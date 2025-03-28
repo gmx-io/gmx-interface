@@ -7,9 +7,12 @@ import type { Address } from "viem";
 
 import { helperToast } from "lib/helperToast";
 import { useENS } from "lib/legacy";
+import { userAnalytics } from "lib/userAnalytics";
+import { DisconnectWalletEvent } from "lib/userAnalytics/types";
 import { shortenAddressOrEns } from "lib/wallets";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
+import { Avatar } from "components/Avatar/Avatar";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import copy from "img/ic_copy_20.svg";
@@ -17,9 +20,6 @@ import externalLink from "img/ic_new_link_20.svg";
 import PnlAnalysisIcon from "img/ic_pnl_analysis_20.svg?react";
 import disconnect from "img/ic_sign_out_20.svg";
 
-import { Avatar } from "components/Avatar/Avatar";
-import { userAnalytics } from "lib/userAnalytics";
-import { DisconnectWalletEvent } from "lib/userAnalytics/types";
 import "./AddressDropdown.scss";
 
 type Props = {

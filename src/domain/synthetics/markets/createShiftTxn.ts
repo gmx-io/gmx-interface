@@ -5,16 +5,15 @@ import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import type { SetPendingShift } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
+import { OrderMetricId } from "lib/metrics/types";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import { abis } from "sdk/abis";
 
+import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import type { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
-
-import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
-import { OrderMetricId } from "lib/metrics/types";
-import { prepareOrderTxn } from "../orders/prepareOrderTxn";
-import { validateSignerAddress } from "lib/contracts/transactionErrors";
-import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 
 type Params = {
   account: string;
@@ -34,7 +33,7 @@ type Params = {
 };
 
 export async function createShiftTxn(chainId: number, signer: Signer, p: Params) {
-  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const shiftVaultAddress = getContract(chainId, "ShiftVault");
 
   const minToMarketTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minToMarketTokenAmount);
@@ -83,7 +82,6 @@ export async function createShiftTxn(chainId: number, signer: Signer, p: Params)
     "multicall",
     [encodedPayload],
     p.executionFee,
-    undefined,
     simulationPromise,
     p.metricId
   );

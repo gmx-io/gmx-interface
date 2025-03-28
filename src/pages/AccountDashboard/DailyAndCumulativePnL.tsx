@@ -16,12 +16,12 @@ import {
 } from "recharts";
 import type { Address } from "viem";
 
+import { USD_DECIMALS } from "config/factors";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import type { FromOldToNewArray } from "domain/tradingview/types";
-import { formatDate, formatDateTime, toUtcDayStart } from "lib/dates";
+import { SECONDS_IN_DAY, formatDate, formatDateTime, toUtcDayStart } from "lib/dates";
 import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
-import { USD_DECIMALS } from "config/factors";
 import { bigintToNumber, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { getSubsquidGraphClient } from "lib/subgraph";
@@ -32,6 +32,8 @@ import Loader from "components/Common/Loader";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { DateSelect } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
 
+import downloadIcon from "img/ic_download_simple.svg";
+
 import {
   DEBUG_FIELDS,
   DEV_QUERY,
@@ -40,8 +42,6 @@ import {
   DebugTooltip,
   type AccountPnlHistoryPointDebugFields,
 } from "./dailyAndCumulativePnLDebug";
-
-import downloadIcon from "img/ic_download_simple.svg";
 
 import "./DailyAndCumulativePnL.css";
 
@@ -214,6 +214,8 @@ const PROD_QUERY = gql`
   }
 `;
 
+const MINIMUM_DATA_POINTS = 7;
+
 function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: number | undefined) {
   const showDebugValues = useShowDebugValues();
   const res = useGqlQuery(showDebugValues ? DEV_QUERY : PROD_QUERY, {
@@ -222,7 +224,7 @@ function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: 
   });
 
   const transformedData: PnlHistoricalData = useMemo(() => {
-    return (
+    let dataPoints =
       res.data?.accountPnlHistoryStats?.map((row: any) => {
         const parsedDebugFields = showDebugValues
           ? DEBUG_FIELDS.reduce(
@@ -240,17 +242,54 @@ function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: 
 
         return {
           date: showDebugValues
-            ? formatDateTime(row.timestamp) + " - " + formatDateTime(row.timestamp + 86400) + " local"
+            ? formatDateTime(row.timestamp) + " - " + formatDateTime(row.timestamp + SECONDS_IN_DAY) + " local"
             : formatDate(row.timestamp),
           dateCompact: lightFormat(row.timestamp * 1000, "dd/MM"),
+          timestamp: row.timestamp,
           pnl: BigInt(row.pnl),
           pnlFloat: bigintToNumber(BigInt(row.pnl), USD_DECIMALS),
           cumulativePnl: BigInt(row.cumulativePnl),
           cumulativePnlFloat: bigintToNumber(BigInt(row.cumulativePnl), USD_DECIMALS),
           ...parsedDebugFields,
         };
-      }) || EMPTY_ARRAY
-    );
+      }) || EMPTY_ARRAY;
+
+    if (dataPoints.length === 0) {
+      return EMPTY_ARRAY;
+    }
+
+    if (dataPoints.length < MINIMUM_DATA_POINTS) {
+      const lastTimestamp = dataPoints.length > 0 ? dataPoints[0].timestamp : Math.floor(Date.now() / 1000);
+
+      const pointsLength = dataPoints.length;
+      for (let i = pointsLength; i < MINIMUM_DATA_POINTS; i++) {
+        const newTimestamp = lastTimestamp - SECONDS_IN_DAY * (i - pointsLength + 1);
+        const emptyPoint = {
+          date: showDebugValues
+            ? formatDateTime(newTimestamp) + " - " + formatDateTime(newTimestamp + SECONDS_IN_DAY) + " local"
+            : formatDate(newTimestamp),
+          dateCompact: lightFormat(newTimestamp * 1000, "dd/MM"),
+          pnl: undefined,
+          pnlFloat: undefined,
+          cumulativePnl: undefined,
+          cumulativePnlFloat: undefined,
+          ...(showDebugValues
+            ? DEBUG_FIELDS.reduce(
+                (acc, key) => {
+                  acc[key] = 0n;
+                  acc[`${key}Float`] = 0;
+                  return acc;
+                },
+                {} as Record<string, bigint | number>
+              )
+            : EMPTY_OBJECT),
+        };
+
+        dataPoints = [emptyPoint].concat(dataPoints);
+      }
+    }
+
+    return dataPoints;
   }, [res.data?.accountPnlHistoryStats, showDebugValues]);
 
   return { data: transformedData, error: res.error, loading: res.loading };

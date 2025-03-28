@@ -1,25 +1,30 @@
 import { Trans, t } from "@lingui/macro";
-import Button from "components/Button/Button";
+import { toJpeg } from "html-to-image";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { BiCopy } from "react-icons/bi";
+import { FiTwitter } from "react-icons/fi";
+import { RiFileDownloadLine } from "react-icons/ri";
+import { useCopyToClipboard } from "react-use";
+
 import { useAffiliateCodes } from "domain/referrals/hooks";
 import { Token } from "domain/tokens";
-
-import { TrackingLink } from "components/TrackingLink/TrackingLink";
-import { toJpeg } from "html-to-image";
-import shareBgImg from "img/position-share-bg.png";
 import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
 import { getRootShareApiUrl, getTwitterIntentURL } from "lib/legacy";
 import useLoadImage from "lib/useLoadImage";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionActionEvent } from "lib/userAnalytics/types";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { BiCopy } from "react-icons/bi";
-import { FiTwitter } from "react-icons/fi";
-import { RiFileDownloadLine } from "react-icons/ri";
-import { useCopyToClipboard } from "react-use";
-import Modal from "../Modal/Modal";
-import "./PositionShare.css";
+
+import Button from "components/Button/Button";
+import { TrackingLink } from "components/TrackingLink/TrackingLink";
+
+import shareBgImg from "img/position-share-bg.png";
+
 import { PositionShareCard } from "./PositionShareCard";
+import Modal from "../Modal/Modal";
+
+import "./PositionShare.css";
+
 const ROOT_SHARE_URL = getRootShareApiUrl();
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
 const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";

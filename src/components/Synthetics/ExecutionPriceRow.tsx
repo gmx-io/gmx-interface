@@ -13,6 +13,7 @@ import { isStopIncreaseOrderType } from "sdk/utils/orders";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import { SyntheticsInfoRow } from "./SyntheticsInfoRow";
 
 interface Props {

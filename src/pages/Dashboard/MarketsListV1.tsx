@@ -2,17 +2,18 @@ import { Trans, t } from "@lingui/macro";
 
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getIcons } from "config/icons";
-import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { InfoTokens } from "domain/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 import { DEFAULT_MAX_USDG_AMOUNT } from "lib/legacy";
-import { formatAmount, formatKeyAmount, formatUsdPrice } from "lib/numbers";
+import { formatAmount, formatAmountHuman, formatKeyAmount, formatUsdPrice } from "lib/numbers";
+import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
 import PageTitle from "components/PageTitle/PageTitle";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipComponent from "components/Tooltip/Tooltip";
+
 import AssetDropdown from "./AssetDropdown";
 import { WeightText } from "./WeightText";
 
@@ -106,42 +107,40 @@ export function MarketsListV1({
                   <TableTd>{formatUsdPrice(tokenInfo?.minPrice)}</TableTd>
                   <TableTd>
                     <TooltipComponent
-                      handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
+                      handle={formatAmountHuman(tokenInfo?.managedUsd, USD_DECIMALS, true, 2)}
                       position="bottom-end"
                       className="whitespace-nowrap"
-                      renderContent={() => {
-                        return (
-                          <>
-                            <StatsTooltipRow
-                              label={t`Pool Amount`}
-                              value={`${formatKeyAmount(
-                                tokenInfo,
-                                "managedAmount",
-                                token.decimals,
-                                0,
-                                true
-                              )} ${token.symbol}`}
-                              showDollar={false}
-                            />
-                            <StatsTooltipRow
-                              label={t`Target Min Amount`}
-                              value={`${formatKeyAmount(
-                                tokenInfo,
-                                "bufferAmount",
-                                token.decimals,
-                                0,
-                                true
-                              )} ${token.symbol}`}
-                              showDollar={false}
-                            />
-                            <StatsTooltipRow
-                              label={t`Max ${tokenInfo.symbol} Capacity`}
-                              value={formatAmount(maxUsdgAmount, 18, 0, true)}
-                              showDollar={true}
-                            />
-                          </>
-                        );
-                      }}
+                      content={
+                        <>
+                          <StatsTooltipRow
+                            label={t`Pool Amount`}
+                            value={`${formatKeyAmount(
+                              tokenInfo,
+                              "managedAmount",
+                              token.decimals,
+                              0,
+                              true
+                            )} ${token.symbol}`}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label={t`Target Min Amount`}
+                            value={`${formatKeyAmount(
+                              tokenInfo,
+                              "bufferAmount",
+                              token.decimals,
+                              0,
+                              true
+                            )} ${token.symbol}`}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label={t`Max ${tokenInfo.symbol} Capacity`}
+                            value={formatAmountHuman(maxUsdgAmount, 18, true, 2)}
+                            showDollar={false}
+                          />
+                        </>
+                      }
                     />
                   </TableTd>
                   <TableTd>

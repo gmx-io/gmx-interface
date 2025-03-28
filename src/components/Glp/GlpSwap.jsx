@@ -1,8 +1,29 @@
 import { t, Trans } from "@lingui/macro";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
+import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
+import { ethers } from "ethers";
+import { useEffect, useMemo, useState } from "react";
+import { IoChevronDownOutline } from "react-icons/io5";
+import { useHistory } from "react-router-dom";
+import useSWR from "swr";
+
+import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "config/chains";
 import { getContract } from "config/contracts";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
-import { ethers } from "ethers";
+import { getIcon } from "config/icons";
+import { getIncentivesV2Url } from "config/links";
+import { GLP_PRICE_DECIMALS, MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useGmxPrice } from "domain/legacy";
+import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
+import { getFeeItem } from "domain/synthetics/fees";
+import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
+import { approveTokens, useInfoTokens } from "domain/tokens";
+import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
+import { useChainId } from "lib/chains";
+import { callContract, contractFetcher } from "lib/contracts";
 import {
   adjustForDecimals,
   getBuyGlpFromAmount,
@@ -14,47 +35,6 @@ import {
   SECONDS_PER_YEAR,
   USDG_DECIMALS,
 } from "lib/legacy";
-import { formatBalanceAmount, formatBalanceAmountWithUsd } from "lib/numbers";
-import { useEffect, useMemo, useState } from "react";
-import { useHistory } from "react-router-dom";
-import useSWR from "swr";
-import Tab from "../Tab/Tab";
-
-import { useGmxPrice } from "domain/legacy";
-
-import TokenSelector from "components/TokenSelector/TokenSelector";
-import BuyInputSection from "../BuyInputSection/BuyInputSection";
-import Tooltip from "../Tooltip/Tooltip";
-
-import GlpManager from "sdk/abis/GlpManager.json";
-import ReaderV2 from "sdk/abis/ReaderV2.json";
-import RewardReader from "sdk/abis/RewardReader.json";
-import RewardRouter from "sdk/abis/RewardRouter.json";
-import RewardTracker from "sdk/abis/RewardTracker.json";
-import VaultV2 from "sdk/abis/VaultV2.json";
-import Vester from "sdk/abis/Vester.json";
-
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import Button from "components/Button/Button";
-import Checkbox from "components/Checkbox/Checkbox";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import PageTitle from "components/PageTitle/PageTitle";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "config/chains";
-import { getIcon } from "config/icons";
-import { getIncentivesV2Url } from "config/links";
-import { GLP_PRICE_DECIMALS, MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
-import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
-import { getFeeItem } from "domain/synthetics/fees";
-import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
-import { approveTokens, useInfoTokens } from "domain/tokens";
-import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
-import { bigMath } from "sdk/utils/bigmath";
-import { useChainId } from "lib/chains";
-import { callContract, contractFetcher } from "lib/contracts";
 import { useLocalStorageByChainId } from "lib/localStorage";
 import {
   applyFactor,
@@ -62,17 +42,18 @@ import {
   expandDecimals,
   formatAmount,
   formatAmountFree,
+  formatAmountHuman,
   formatDeltaUsd,
-  formatKeyAmount,
   formatUsdPrice,
   limitDecimals,
   parseValue,
 } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 import useSearchParams from "lib/useSearchParams";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
-import { IoChevronDownOutline } from "react-icons/io5";
+import { abis } from "sdk/abis";
 import {
   getNativeToken,
   getToken,
@@ -81,9 +62,23 @@ import {
   getWhitelistedV1Tokens,
   getWrappedToken,
 } from "sdk/configs/tokens";
-import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import "./GlpSwap.css";
+import { bigMath } from "sdk/utils/bigmath";
+
+import { AmountWithUsdBalance, AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
+import Button from "components/Button/Button";
+import Checkbox from "components/Checkbox/Checkbox";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import PageTitle from "components/PageTitle/PageTitle";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import TokenSelector from "components/TokenSelector/TokenSelector";
+
 import SwapErrorModal from "./SwapErrorModal";
+import BuyInputSection from "../BuyInputSection/BuyInputSection";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
+import Tabs from "../Tabs/Tabs";
+import Tooltip from "../Tooltip/Tooltip";
+
+import "./GlpSwap.css";
 
 const { ZeroAddress } = ethers;
 
@@ -149,11 +144,15 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
         label={t`Current Pool Amount`}
         // eslint-disable-next-line react-perf/jsx-no-new-array-as-prop
         value={[
-          `$${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`,
-          `(${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 0, true)} ${token.symbol})`,
+          formatAmountHuman(managedUsd, USD_DECIMALS, true, 2),
+          `${formatAmountHuman(tokenInfo?.managedAmount, token.decimals, false, 2)} ${token.symbol}`,
         ]}
       />
-      <StatsTooltipRow label={t`Max Pool Capacity`} value={formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)} />
+      <StatsTooltipRow
+        label={t`Max Pool Capacity`}
+        showDollar={false}
+        value={formatAmountHuman(tokenInfo.maxUsdgAmount, 18, true, 2)}
+      />
     </>
   );
 }
@@ -180,6 +179,16 @@ export default function GlpSwap(props) {
       },
     }),
     [tabOptions]
+  );
+
+  const tabsOptions = useMemo(
+    () =>
+      tabOptions.map((tab) => ({
+        value: tab,
+        label: tab,
+        className: tabOptionClassNames[tab],
+      })),
+    [tabOptions, tabOptionClassNames]
   );
 
   const { active, signer, account } = useWallet();
@@ -225,7 +234,7 @@ export default function GlpSwap(props) {
   const { data: tokenBalances } = useSWR(
     [`GlpSwap:getTokenBalances:${active}`, chainId, readerAddress, "getTokenBalances", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(signer, ReaderV2, [tokenAddresses]),
+      fetcher: contractFetcher(signer, "ReaderV2", [tokenAddresses]),
     }
   );
 
@@ -252,18 +261,18 @@ export default function GlpSwap(props) {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: contractFetcher(signer, ReaderV2, [tokensForBalanceAndSupplyQuery]),
+      fetcher: contractFetcher(signer, "ReaderV2", [tokensForBalanceAndSupplyQuery]),
     }
   );
 
   const { data: aums } = useSWR([`GlpSwap:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
-    fetcher: contractFetcher(signer, GlpManager),
+    fetcher: contractFetcher(signer, "GlpManager"),
   });
 
   const { data: totalTokenWeights } = useSWR(
     [`GlpSwap:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
     {
-      fetcher: contractFetcher(signer, VaultV2),
+      fetcher: contractFetcher(signer, "VaultV2"),
     }
   );
 
@@ -277,14 +286,14 @@ export default function GlpSwap(props) {
   const { data: lastPurchaseTime } = useSWR(
     [`GlpSwap:lastPurchaseTime:${active}`, chainId, glpManagerAddress, "lastAddedAt", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(signer, GlpManager),
+      fetcher: contractFetcher(signer, "GlpManager"),
     }
   );
 
   const { data: glpBalance } = useSWR(
     [`GlpSwap:glpBalance:${active}`, chainId, feeGlpTrackerAddress, "stakedAmounts", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(signer, RewardTracker),
+      fetcher: contractFetcher(signer, "RewardTracker"),
     }
   );
 
@@ -292,7 +301,7 @@ export default function GlpSwap(props) {
   const { data: reservedAmount } = useSWR(
     [`GlpSwap:reservedAmount:${active}`, chainId, glpVesterAddress, "pairAmounts", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(signer, Vester),
+      fetcher: contractFetcher(signer, "Vester"),
     }
   );
 
@@ -302,7 +311,7 @@ export default function GlpSwap(props) {
   const { data: stakingInfo } = useSWR(
     [`GlpSwap:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(signer, RewardReader, [rewardTrackersForStakingInfo]),
+      fetcher: contractFetcher(signer, "RewardReader", [rewardTrackersForStakingInfo]),
     }
   );
 
@@ -753,7 +762,7 @@ export default function GlpSwap(props) {
       BASIS_POINTS_DIVISOR_BIGINT
     );
 
-    const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, signer);
+    const contract = new ethers.Contract(glpRewardRouterAddress, abis.RewardRouter, signer);
     const method = swapTokenAddress === ZeroAddress ? "mintAndStakeGlpETH" : "mintAndStakeGlp";
     const params = swapTokenAddress === ZeroAddress ? [0, minGlp] : [swapTokenAddress, swapAmount, 0, minGlp];
     const value = swapTokenAddress === ZeroAddress ? swapAmount : 0;
@@ -783,7 +792,7 @@ export default function GlpSwap(props) {
       BASIS_POINTS_DIVISOR_BIGINT
     );
 
-    const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, signer);
+    const contract = new ethers.Contract(glpRewardRouterAddress, abis.RewardRouter, signer);
     const method = swapTokenAddress === ZeroAddress ? "unstakeAndRedeemGlpETH" : "unstakeAndRedeemGlp";
     const params =
       swapTokenAddress === ZeroAddress ? [glpAmount, minOut, account] : [swapTokenAddress, glpAmount, minOut, account];
@@ -977,9 +986,7 @@ export default function GlpSwap(props) {
                 <Trans>Wallet</Trans>
               </div>
               <div className="value">
-                {glpBalance === undefined || glpBalanceUsd === undefined
-                  ? "..."
-                  : formatBalanceAmountWithUsd(glpBalance, glpBalanceUsd, GLP_DECIMALS, "GLP", true)}
+                <AmountWithUsdBalance amount={glpBalance} decimals={GLP_DECIMALS} symbol="GLP" usd={glpBalanceUsd} />
               </div>
             </div>
             <div className="App-card-row">
@@ -987,9 +994,7 @@ export default function GlpSwap(props) {
                 <Trans>Staked</Trans>
               </div>
               <div className="value">
-                {glpBalance === undefined || glpBalanceUsd === undefined
-                  ? "..."
-                  : formatBalanceAmountWithUsd(glpBalance, glpBalanceUsd, GLP_DECIMALS, "GLP", true)}
+                <AmountWithUsdBalance amount={glpBalance} decimals={GLP_DECIMALS} symbol="GLP" usd={glpBalanceUsd} />
               </div>
             </div>
           </div>
@@ -1048,10 +1053,7 @@ export default function GlpSwap(props) {
                 <Trans>Total Supply</Trans>
               </div>
               <div className="value">
-                <Trans>
-                  {formatAmount(glpSupply, GLP_DECIMALS, 4, true)} GLP ($
-                  {formatAmount(glpSupplyUsd, USD_DECIMALS, 2, true)})
-                </Trans>
+                <AmountWithUsdHuman amount={glpSupply} usd={glpSupplyUsd} decimals={GLP_DECIMALS} />
               </div>
             </div>
           </div>
@@ -1063,12 +1065,11 @@ export default function GlpSwap(props) {
               onClickPrimary();
             }}
           >
-            <Tab
-              options={tabOptions}
-              option={tabLabel}
+            <Tabs
+              options={tabsOptions}
+              selectedValue={tabLabel}
               onChange={onSwapOptionChange}
               className="Exchange-swap-option-tabs"
-              optionClassnames={tabOptionClassNames}
             />
             <div className="mb-12 flex flex-col gap-4">
               {isBuying && (
@@ -1459,12 +1460,12 @@ export default function GlpSwap(props) {
                           handle={
                             amountLeftToDeposit !== undefined && amountLeftToDeposit < 0
                               ? "$0.00"
-                              : `$${formatAmount(amountLeftToDeposit, USD_DECIMALS, 2, true)}`
+                              : formatAmountHuman(amountLeftToDeposit, USD_DECIMALS, true, 2)
                           }
                           className="whitespace-nowrap"
                           position="bottom-end"
                           tooltipIconPosition="right"
-                          renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
+                          content={getTooltipContent(managedUsd, tokenInfo, token)}
                         />
                       </div>
                     )}
@@ -1474,20 +1475,23 @@ export default function GlpSwap(props) {
                           handle={
                             availableAmountUsd !== undefined && availableAmountUsd < 0
                               ? "$0.00"
-                              : `$${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}`
+                              : formatAmountHuman(availableAmountUsd, USD_DECIMALS, true, 2)
                           }
                           className="whitespace-nowrap"
                           position="bottom-end"
                           tooltipIconPosition="right"
-                          renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
+                          content={getTooltipContent(managedUsd, tokenInfo, token)}
                         />
                       </div>
                     )}
                   </td>
                   <td>
-                    {tokenInfo.balance === undefined || balanceUsd === undefined
-                      ? "..."
-                      : formatBalanceAmountWithUsd(tokenInfo.balance, balanceUsd, tokenInfo.decimals, tokenInfo.symbol)}
+                    <AmountWithUsdBalance
+                      amount={tokenInfo.balance}
+                      decimals={tokenInfo.decimals}
+                      symbol={tokenInfo.symbol}
+                      usd={balanceUsd}
+                    />
                   </td>
                   <td>{renderFees()}</td>
                   <td>
@@ -1659,8 +1663,12 @@ export default function GlpSwap(props) {
                       <Trans>Wallet</Trans>
                     </div>
                     <div>
-                      {formatKeyAmount(tokenInfo, "balance", tokenInfo.decimals, 2, true)} {tokenInfo.symbol} ($
-                      {formatAmount(balanceUsd, USD_DECIMALS, 2, true)})
+                      <AmountWithUsdBalance
+                        amount={tokenInfo?.balance}
+                        decimals={tokenInfo?.decimals ?? 0}
+                        symbol={tokenInfo?.symbol}
+                        usd={balanceUsd}
+                      />
                     </div>
                   </div>
                   <div className="App-card-row">

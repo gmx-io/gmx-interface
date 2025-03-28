@@ -2,19 +2,19 @@ import { t, Trans } from "@lingui/macro";
 import { useMemo } from "react";
 
 import { USD_DECIMALS } from "config/factors";
-import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
 import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getPoolUsdWithoutPnl, GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData } from "domain/synthetics/tokens";
-
 import { bigintToNumber, formatAmountHuman } from "lib/numbers";
-import { getGlvOrMarketAddress, getMarketIndexName } from "../../../../domain/synthetics/markets/utils";
-import { useGlvGmMarketsWithComposition } from "../hooks/useMarketGlvGmMarketsCompositions";
+import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
 
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import { getGlvOrMarketAddress, getMarketIndexName } from "../../../../domain/synthetics/markets/utils";
+import { useGlvGmMarketsWithComposition } from "../hooks/useMarketGlvGmMarketsCompositions";
 
 interface CompositionTableGmProps {
   marketInfo?: GlvOrMarketInfo;

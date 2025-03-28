@@ -1,11 +1,14 @@
 import { t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import cx from "classnames";
-import language24Icon from "img/ic_language24.svg";
-import { isHomeSite } from "lib/legacy";
 import { useCallback, useState } from "react";
-import ModalWithPortal from "../Modal/ModalWithPortal";
+
+import { isHomeSite } from "lib/legacy";
+
+import language24Icon from "img/ic_language24.svg";
+
 import LanguageModalContent from "./LanguageModalContent";
+import ModalWithPortal from "../Modal/ModalWithPortal";
 import "./NetworkDropdown.css";
 
 export default function LanguagePopupHome() {

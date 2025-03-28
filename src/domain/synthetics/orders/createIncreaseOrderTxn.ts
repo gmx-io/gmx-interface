@@ -1,19 +1,21 @@
 import { t } from "@lingui/macro";
+import { Signer, ethers } from "ethers";
+import concat from "lodash/concat";
+
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { PendingOrderData, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
 import { TokenData, TokensData, convertToContractPrice } from "domain/synthetics/tokens";
-import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { OrderMetricId } from "lib/metrics/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
-import concat from "lodash/concat";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { ExternalSwapQuote } from "sdk/types/trade";
 import { isMarketOrderType } from "sdk/utils/orders";
 import { applySlippageToPrice } from "sdk/utils/trade";
+
 import { getExternalCallsParams } from "../externalSwaps/utils";
 import { getPositionKey } from "../positions";
 import { createCancelEncodedPayload } from "./cancelOrdersTxn";
@@ -23,6 +25,7 @@ import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderTxnType, OrderType } from "./types";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
 import { getPendingOrderFromParams } from "./utils";
+import { Subaccount } from "../gassless/txns/subaccountUtils";
 
 const { ZeroAddress } = ethers;
 
@@ -99,7 +102,7 @@ export async function createIncreaseOrderTxn({
 }: {
   chainId: number;
   signer: Signer;
-  subaccount: Subaccount;
+  subaccount: Subaccount | undefined;
   metricId?: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
   createIncreaseOrderParams: IncreaseOrderParams;
@@ -109,7 +112,7 @@ export async function createIncreaseOrderTxn({
   additionalErrorContent?: React.ReactNode;
 }) {
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
-  subaccount = isNativePayment ? null : subaccount;
+  subaccount = isNativePayment ? undefined : subaccount;
 
   const walletExchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
   const exchangeRouter = walletExchangeRouter;
@@ -180,7 +183,7 @@ export async function createIncreaseOrderTxn({
     totalWntAmount: wntAmountToIncrease,
     p,
     acceptablePrice,
-    subaccount: null,
+    subaccount: undefined,
     isNativePayment,
     initialCollateralTokenAddress,
     tokenToSendAddress,
@@ -320,7 +323,7 @@ async function createEncodedPayload({
   totalWntAmount: bigint;
   p: IncreaseOrderParams;
   acceptablePrice: bigint;
-  subaccount: Subaccount;
+  subaccount: Subaccount | undefined;
   isNativePayment: boolean;
   initialCollateralTokenAddress: string;
   tokenToSendAddress;
@@ -392,7 +395,7 @@ function createOrderParams({
   acceptablePrice: bigint;
   initialCollateralTokenAddress: string;
   swapPath: string[];
-  subaccount: Subaccount | null;
+  subaccount: Subaccount | undefined;
   isNativePayment: boolean;
 }) {
   return {
@@ -424,7 +427,15 @@ function createOrderParams({
   };
 }
 
-function getCollateralAndSwapAddresses(chainId: number, p: IncreaseOrderParams) {
+export function getCollateralAndSwapAddresses(
+  chainId: number,
+  p: {
+    swapPath: string[];
+    initialCollateralAddress: string;
+    targetCollateralAddress: string;
+    externalSwapQuote: ExternalSwapQuote | undefined;
+  }
+) {
   let swapPath = p.swapPath;
   let initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
   const tokenToSendAddress = initialCollateralTokenAddress;

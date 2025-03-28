@@ -1,7 +1,6 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useEffect, useMemo, useState } from "react";
-
 import { BiChevronDown } from "react-icons/bi";
 
 import { getMarketUiConfig } from "config/markets";
@@ -10,14 +9,15 @@ import { convertToUsd } from "domain/synthetics/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { InfoTokens, Token, TokenInfo } from "domain/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
-import { bigMath } from "sdk/utils/bigmath";
 import { expandDecimals, formatAmount, formatBalanceAmount } from "lib/numbers";
 import { searchBy } from "lib/searchBy";
 import { getToken } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
 import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import { WithMissedCoinsSearch } from "../WithMissedCoinsSearch/WithMissedCoinsSearch";
 
@@ -305,7 +305,7 @@ export default function TokenSelector(props: Props) {
       </SlideModal>
       <div
         data-qa={qa}
-        className="flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300"
+        className="group/hoverable flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300"
         onClick={() => setIsModalVisible(true)}
       >
         {selectedTokenLabel || (

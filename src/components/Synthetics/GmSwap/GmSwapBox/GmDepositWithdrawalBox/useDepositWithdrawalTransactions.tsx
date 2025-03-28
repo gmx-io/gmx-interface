@@ -1,6 +1,8 @@
+import { t } from "@lingui/macro";
 import { useCallback, useState } from "react";
 
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { selectBlockTimestampData, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -9,10 +11,6 @@ import { createDepositTxn, createWithdrawalTxn, GlvInfo, MarketInfo } from "doma
 import { createGlvDepositTxn } from "domain/synthetics/markets/createGlvDepositTxn";
 import { createGlvWithdrawalTxn } from "domain/synthetics/markets/createGlvWithdrawalTxn";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import useWallet from "lib/wallets/useWallet";
-
-import { t } from "@lingui/macro";
 import { helperToast } from "lib/helperToast";
 import {
   initGLVSwapMetricData,
@@ -23,6 +21,8 @@ import {
   sendTxnValidationErrorMetric,
 } from "lib/metrics";
 import { makeUserAnalyticsOrderFailResultHandler, sendUserAnalyticsOrderConfirmClickEvent } from "lib/userAnalytics";
+import useWallet from "lib/wallets/useWallet";
+
 import { Operation } from "../types";
 
 interface Props {

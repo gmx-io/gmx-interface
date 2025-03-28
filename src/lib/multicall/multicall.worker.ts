@@ -1,3 +1,4 @@
+import { isWebWorker } from "config/env";
 import {
   METRIC_EVENT_DISPATCH_NAME,
   METRIC_COUNTER_DISPATCH_NAME,
@@ -6,7 +7,6 @@ import {
 
 import { MAX_TIMEOUT, Multicall, MulticallProviderUrls } from "./Multicall";
 import type { MulticallRequestConfig } from "./types";
-import { isWebWorker } from "config/env";
 
 async function executeMulticall(
   chainId: number,

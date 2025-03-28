@@ -1,5 +1,7 @@
 import { Trans, t } from "@lingui/macro";
-import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
+import { BaseContract, ethers } from "ethers";
+import { withRetry } from "viem";
+
 import {
   getContract,
   getExchangeRouterContract,
@@ -9,7 +11,6 @@ import {
 } from "config/contracts";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
-import { BaseContract, ethers } from "ethers";
 import { extractDataFromError, getErrorMessage } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId } from "lib/metrics/types";
@@ -17,11 +18,13 @@ import { sendOrderSimulatedMetric, sendTxnErrorMetric } from "lib/metrics/utils"
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
-import CustomErrors from "sdk/abis/CustomErrors.json";
+import { abis } from "sdk/abis";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { extractError } from "sdk/utils/contracts";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
-import { withRetry } from "viem";
+
+import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
+
 import { isGlvEnabled } from "../markets/glv";
 
 export type PriceOverrides = {
@@ -156,7 +159,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
       }
     );
   } catch (txnError) {
-    const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
+    const customErrors = new ethers.Contract(ethers.ZeroAddress, abis.CustomErrors);
     let msg: React.ReactNode = undefined;
 
     try {
@@ -196,7 +199,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
         <div>
           {errorTitle}
           {p.additionalErrorContent}
-          <br />
+          <br />n
           <br />
           <ToastifyDebug
             error={`${txnError?.info?.error?.message ?? parsedError?.name ?? txnError?.message} ${JSON.stringify(parsedArgs, null, 2)}`}

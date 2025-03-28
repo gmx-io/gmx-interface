@@ -1,7 +1,6 @@
 import values from "lodash/values";
 
 import { getMarketListingDate } from "config/markets";
-
 import type { SortDirection } from "context/SorterContext/types";
 import { MarketTokensAPRData, MarketsInfoData, getMintableMarketTokens } from "domain/synthetics/markets";
 import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseApyReadyToBeShown";

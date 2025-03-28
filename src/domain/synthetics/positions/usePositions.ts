@@ -12,13 +12,11 @@ import {
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
+import { getPositionKey, parsePositionKey } from "sdk/utils/positions";
 
 import { ContractMarketPrices, MarketsData, getContractMarketPrices } from "../markets";
 import { TokensData } from "../tokens";
 import { Position, PositionsData } from "./types";
-import { getPositionKey, parsePositionKey } from "sdk/utils/positions";
-
-import SyntheticsReader from "sdk/abis/SyntheticsReader.json";
 
 const MAX_PENDING_UPDATE_AGE = 600 * 1000; // 10 minutes
 
@@ -60,7 +58,7 @@ export function usePositions(
     request: () => ({
       reader: {
         contractAddress: getContract(chainId, "SyntheticsReader"),
-        abi: SyntheticsReader.abi,
+        abiId: "SyntheticsReader",
         calls: {
           positions: {
             methodName: "getAccountPositionInfoList",

@@ -1,9 +1,11 @@
 import { Provider, Result, Signer, ethers } from "ethers";
 import { stableHash } from "swr/_internal";
 
-import { getFallbackProvider, getProvider } from "../rpc";
-import { executeMulticall } from "lib/multicall";
 import { swrCache, SWRConfigProp } from "App/swrConfig";
+import { executeMulticall } from "lib/multicall";
+import { abis, AbiId } from "sdk/abis";
+
+import { getFallbackProvider, getProvider } from "../rpc";
 
 const CONTRACT_FETCHER_WORKER_SETUP_TIMEOUT = 1000;
 const CONTRACT_FETCHER_DEFAULT_FETCH_TIMEOUT = 2000;
@@ -11,7 +13,7 @@ const CONTRACT_FETCHER_WORKER_TIMEOUT = 5000;
 const CONTRACT_FETCHER_MAIN_THREAD_TIMEOUT = 5000;
 
 export const contractFetcher =
-  <T>(signer: Provider | Signer | undefined, contractInfo: any, additionalArgs?: any[]) =>
+  <T>(signer: Provider | Signer | undefined, abiId: AbiId, additionalArgs?: any[]) =>
   (args: any): Promise<T> => {
     // eslint-disable-next-line
     const [id, chainId, arg0, arg1, ...params] = args;
@@ -40,7 +42,7 @@ export const contractFetcher =
     const contractCall = fetchContractData({
       chainId,
       provider,
-      contractInfo,
+      abiId,
       arg0,
       arg1,
       method,
@@ -71,7 +73,7 @@ export const contractFetcher =
       const fallbackContractCall = fetchContractData({
         chainId,
         provider: fallbackProvider,
-        contractInfo,
+        abiId,
         arg0,
         arg1,
         method,
@@ -85,7 +87,7 @@ export const contractFetcher =
         .then((result) => resolve(result))
         .catch((e) => {
           // eslint-disable-next-line no-console
-          console.error("fallback fetcher error", id, contractInfo.contractName, method, e);
+          console.error("fallback fetcher error", id, abiId, method, e);
 
           const errorStack = e.stack;
           const connectionUrl = fallbackProvider.provider._getConnection().url;
@@ -110,7 +112,7 @@ export const contractFetcher =
         })
         .catch((e) => {
           // eslint-disable-next-line no-console
-          console.error("fetcher error", id, contractInfo.contractName, method, e);
+          console.error("fetcher error", id, abiId, method, e);
           handleFallback(resolve, reject, e);
         });
 
@@ -136,7 +138,7 @@ export const contractFetcher =
 async function fetchContractData({
   chainId,
   provider,
-  contractInfo,
+  abiId,
   arg0,
   arg1,
   method,
@@ -147,7 +149,7 @@ async function fetchContractData({
 }: {
   chainId: number;
   provider: Provider | Signer | undefined;
-  contractInfo: any;
+  abiId: AbiId;
   arg0: any;
   arg1: any;
   method: any;
@@ -158,13 +160,13 @@ async function fetchContractData({
 }): Promise<any | undefined> {
   if (ethers.isAddress(arg0)) {
     const address = arg0;
-    const contract = new ethers.Contract(address, contractInfo.abi, provider);
+    const contract = new ethers.Contract(address, abis[abiId], provider);
 
     const result = await executeMulticall(
       chainId,
       {
         getContractCall: {
-          abi: contractInfo.abi,
+          abiId,
           contractAddress: address,
           calls: {
             call: {

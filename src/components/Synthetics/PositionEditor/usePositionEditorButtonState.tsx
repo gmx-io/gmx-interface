@@ -19,12 +19,14 @@ import {
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 import { useSavedAllowedSlippage } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectPositionEditorCollateralInputAmountAndUsd,
   selectPositionEditorSelectedCollateralAddress,
   selectPositionEditorSelectedCollateralToken,
   selectPositionEditorSetCollateralInputValue,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
+import { selectAddTokenPermit } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   DecreasePositionSwapType,
@@ -60,13 +62,12 @@ import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalyti
 import useWallet from "lib/wallets/useWallet";
 import { getWrappedToken } from "sdk/configs/tokens";
 
+import ExternalLink from "components/ExternalLink/ExternalLink";
+
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 import { OPERATION_LABELS, Operation } from "./types";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectAddTokenPermit } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 export function usePositionEditorButtonState(operation: Operation): {
   text: ReactNode;
   tooltipContent: ReactNode | null;

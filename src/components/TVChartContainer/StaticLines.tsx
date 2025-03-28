@@ -1,6 +1,6 @@
-import type { IChartingLibraryWidget } from "../../charting_library";
-import type { StaticChartLine } from "./types";
 import { StaticLine } from "./StaticLine";
+import type { StaticChartLine } from "./types";
+import type { IChartingLibraryWidget } from "../../charting_library";
 
 export function StaticLines({
   chartLines,

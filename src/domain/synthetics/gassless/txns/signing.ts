@@ -27,11 +27,6 @@ export async function signTypedData(
 
   const primaryType = Object.keys(types).filter((t) => t !== "EIP712Domain")[0];
 
-  console.log("Using primaryType:", primaryType);
-  console.log("Domain:", JSON.stringify(domain, null, 2));
-  console.log("Types:", JSON.stringify(types, null, 2));
-  console.log("TypedData:", JSON.stringify(typedData, null, 2));
-
   if (signer.signTypedData) {
     return await signer.signTypedData(domain, types, typedData);
   }
@@ -54,11 +49,13 @@ export async function signTypedData(
     message: typedData,
   };
 
+  // eslint-disable-next-line no-console
   console.log("Sending EIP-712 data:", JSON.stringify(eip712, null, 2));
 
   // Use the standard JSON-RPC method for EIP-712 signing
   const signature = await (provider as any).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]);
 
+  // eslint-disable-next-line no-console
   console.log("Signature received:", signature);
 
   return signature;
