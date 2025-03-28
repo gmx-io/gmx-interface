@@ -11,7 +11,6 @@ import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { USD_DECIMALS } from "config/factors";
-import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   useClosingPositionKeyState,
@@ -87,6 +86,7 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import "./PositionSeller.scss";
 
@@ -281,7 +281,7 @@ export function PositionSeller(p: Props) {
 
   const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: position?.key });
 
-  const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
+  const subaccount = useSelector(makeSelectSubaccountForActions(1));
 
   function onSubmit() {
     if (!account) {

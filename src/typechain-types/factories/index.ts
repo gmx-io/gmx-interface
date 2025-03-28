@@ -3,6 +3,7 @@
 /* eslint-disable */
 export { CustomErrors__factory } from "./CustomErrors__factory";
 export { DataStore__factory } from "./DataStore__factory";
+export { ERC20Permit__factory } from "./ERC20Permit__factory";
 export { ERC721__factory } from "./ERC721__factory";
 export { EventEmitter__factory } from "./EventEmitter__factory";
 export { ExchangeRouter__factory } from "./ExchangeRouter__factory";
@@ -28,6 +29,8 @@ export { RewardRouter__factory } from "./RewardRouter__factory";
 export { RewardTracker__factory } from "./RewardTracker__factory";
 export { Router__factory } from "./Router__factory";
 export { RouterV2__factory } from "./RouterV2__factory";
+export { SubaccountApproval__factory } from "./SubaccountApproval__factory";
+export { SubaccountGelatoRelayRouter__factory } from "./SubaccountGelatoRelayRouter__factory";
 export { SubaccountRouter__factory } from "./SubaccountRouter__factory";
 export { SyntheticsReader__factory } from "./SyntheticsReader__factory";
 export { SyntheticsRouter__factory } from "./SyntheticsRouter__factory";

@@ -1,7 +1,6 @@
 import { t } from "@lingui/macro";
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
-import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { PendingOrderData, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
 import { TokenData, TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Signer, ethers } from "ethers";
@@ -17,7 +16,6 @@ import { isMarketOrderType } from "sdk/utils/orders";
 import { applySlippageToPrice } from "sdk/utils/trade";
 import { getExternalCallsParams } from "../externalSwaps/utils";
 import { getPositionKey } from "../positions";
-import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { createCancelEncodedPayload } from "./cancelOrdersTxn";
 import { DecreaseOrderParams as BaseDecreaseOrderParams, createDecreaseEncodedPayload } from "./createDecreaseOrderTxn";
 import { prepareOrderTxn } from "./prepareOrderTxn";
@@ -114,7 +112,7 @@ export async function createIncreaseOrderTxn({
   subaccount = isNativePayment ? null : subaccount;
 
   const walletExchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
-  const exchangeRouter = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : walletExchangeRouter;
+  const exchangeRouter = walletExchangeRouter;
 
   await validateSignerAddress(signer, p.account);
 
@@ -251,17 +249,15 @@ export async function createIncreaseOrderTxn({
         additionalErrorContent,
         metricId,
         blockTimestampData,
-        externalSwapQuote: p.externalSwapQuote,
       })
     : undefined;
 
-  const { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce } = await prepareOrderTxn(
+  const { gasLimit, gasPriceData } = await prepareOrderTxn(
     chainId,
     exchangeRouter,
     "multicall",
     [finalPayload],
     totalWntAmount,
-    subaccount?.customSigners,
     simulationPromise,
     metricId,
     additionalErrorContent
@@ -273,13 +269,9 @@ export async function createIncreaseOrderTxn({
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
-    customSigners: subaccount?.customSigners,
-    customSignersGasLimits,
-    customSignersGasPrices,
     metricId,
     gasLimit,
     gasPriceData,
-    bestNonce,
     setPendingTxns: p.setPendingTxns,
     pendingTransactionData: {
       estimatedExecutionFee: p.executionFee,

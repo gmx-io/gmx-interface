@@ -1,9 +1,10 @@
-import { Signer } from "ethers";
+import { ethers, Signer } from "ethers";
 import { callContract } from "lib/contracts";
-import { getSubaccountRouterContract } from "./getSubaccountContract";
+import SubaccountRouter from "sdk/abis/SubaccountRouter.json";
+import { getContract } from "config/contracts";
 
-export async function removeSubaccount(chainId: number, signer: Signer, subaccountAddress: string) {
-  const subaccountRouter = getSubaccountRouterContract(chainId, signer);
+export async function removeSubaccountTxn(chainId: number, signer: Signer, subaccountAddress: string) {
+  const subaccountRouter = new ethers.Contract(getContract(chainId, "SubaccountRouter"), SubaccountRouter.abi, signer);
 
   return callContract(chainId, subaccountRouter, "removeSubaccount", [subaccountAddress], {
     value: 0n,

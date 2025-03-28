@@ -1,5 +1,8 @@
+import { getRemainingSubaccountActions } from "domain/synthetics/gassless/txns/subaccountUtils";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { createSelector, createSelectorDeprecated } from "../utils";
+import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
+import { selectRawSubaccount } from "./subaccountSelectors";
+import { bigMath } from "sdk/utils/bigmath";
 
 export const selectAccount = (s: SyntheticsState) => s.globals.account;
 export const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.ordersInfoData;
@@ -21,6 +24,7 @@ export const selectBlockTimestampData = (s: SyntheticsState) => s.globals.blockT
 export const selectGlvInfo = (s: SyntheticsState) => s.globals.glvInfo.glvData;
 export const selectGlvs = (s: SyntheticsState) => s.globals.glvInfo.glvs;
 export const selectGlvInfoLoading = (s: SyntheticsState) => s.globals.glvInfo.isLoading;
+
 export const selectGlvAndMarketsInfoData = createSelector((q) => {
   const glvsInfoData = q(selectGlvInfo);
   const marketsInfoData = q(selectMarketsInfoData);
@@ -77,4 +81,16 @@ export const selectPositiveFeePositionsSortedByUsd = createSelector((q) => {
   return positiveFeePositions.sort((a, b) =>
     a.pendingClaimableFundingFeesUsd > b.pendingClaimableFundingFeesUsd ? -1 : 1
   );
+});
+
+export const makeSelectSubaccountForActions = createSelectorFactory((requiredActions: number) => {
+  return createSelector((q) => {
+    const subaccount = q(selectRawSubaccount);
+
+    if (!subaccount || getRemainingSubaccountActions(subaccount) < bigMath.max(1n, BigInt(requiredActions))) {
+      return undefined;
+    }
+
+    return subaccount;
+  });
 });

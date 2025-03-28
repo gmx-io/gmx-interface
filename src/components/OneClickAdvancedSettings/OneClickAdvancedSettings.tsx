@@ -1,19 +1,62 @@
 import { Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
-import { useBigNumberInput } from "domain/synthetics/common/useBigNumberInput";
 import { InputRow } from "components/InputRow/InputRow";
 import { ExpandableRow } from "components/Synthetics/ExpandableRow";
-import { useState } from "react";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { useBigNumberInput } from "domain/synthetics/common/useBigNumberInput";
+import {
+  getRemainingSubaccountActions,
+  getRemainingSubaccountSeconds,
+} from "domain/synthetics/gassless/txns/subaccountUtils";
+import { useEffect, useState } from "react";
+import { periodToSeconds, secondsToPeriod } from "sdk/utils/time";
 
 export function OneClickAdvancedSettings() {
+  const { subaccount, updateSubaccountSettings } = useSubaccountContext();
+
   const [isExpanded, setIsExpanded] = useState(true);
-  const { displayValue: maxAllowedActionsString, setDisplayValue: setMaxAllowedActionsString } = useBigNumberInput(
-    10n,
+
+  const { displayValue: remainingActionsString, setDisplayValue: setRemainingActionsString } = useBigNumberInput(
+    0n,
     0,
     0
   );
 
-  const { displayValue: timeLimitString, setDisplayValue: setTimeLimitString } = useBigNumberInput(7n, 0, 0);
+  const { displayValue: daysLimitString, setDisplayValue: setDaysLimitString } = useBigNumberInput(0n, 0, 0);
+
+  function handleSave() {
+    if (!subaccount) {
+      return;
+    }
+
+    const nextRemainigActions = BigInt(remainingActionsString);
+    const nextRemainingSeconds = BigInt(periodToSeconds(Number(daysLimitString), "1d"));
+
+    updateSubaccountSettings({
+      nextRemainigActions,
+      nextRemainingSeconds,
+    });
+  }
+
+  useEffect(
+    function initSettings() {
+      if (!subaccount) {
+        return;
+      }
+
+      const remainingActions = getRemainingSubaccountActions(subaccount);
+      const remainingSeconds = getRemainingSubaccountSeconds(subaccount);
+      const remainingDays = secondsToPeriod(Number(remainingSeconds), "1d", true);
+
+      setRemainingActionsString(remainingActions.toString());
+      setDaysLimitString(remainingDays.toString());
+    },
+    [setRemainingActionsString, setDaysLimitString, subaccount]
+  );
+
+  if (!subaccount) {
+    return null;
+  }
 
   return (
     <div>
@@ -25,8 +68,10 @@ export function OneClickAdvancedSettings() {
       >
         <div className="mt-12">
           <InputRow
-            value={maxAllowedActionsString}
-            setValue={setMaxAllowedActionsString}
+            value={remainingActionsString}
+            setValue={(value) => {
+              setRemainingActionsString(value);
+            }}
             label="Remained Allowed Actions"
             symbol="Actions"
             placeholder="0"
@@ -34,15 +79,21 @@ export function OneClickAdvancedSettings() {
           />
 
           <InputRow
-            value={timeLimitString}
-            setValue={setTimeLimitString}
+            value={daysLimitString}
+            setValue={(value) => {
+              setDaysLimitString(value);
+            }}
             label="Time Limit"
             symbol="Days"
             placeholder="0"
             description="Maximum number of days before requiring reauthorization"
           />
 
-          <Button variant="primary-action" className="mt-6 h-36 w-full bg-blue-600 py-3 text-white">
+          <Button
+            onClick={handleSave}
+            variant="primary-action"
+            className="mt-6 h-36 w-full bg-blue-600 py-3 text-white"
+          >
             <Trans>Save limit settings</Trans>
           </Button>
         </div>

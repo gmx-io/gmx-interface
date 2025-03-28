@@ -115,7 +115,7 @@ export function NetworkFeeRow({
     );
 
     return estimatedRefundText;
-  }, [displayDecimals, executionFee, executionFeeBufferBps, tokenData]);
+  }, [displayDecimals, executionFee, executionFeeBufferBps, gasPaymentToken, tokenData]);
 
   const value: ReactNode = useMemo(() => {
     let feeUsd = executionFee?.feeUsd;

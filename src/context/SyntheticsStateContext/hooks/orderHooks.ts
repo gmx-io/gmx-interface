@@ -1,9 +1,9 @@
 import uniq from "lodash/uniq";
 import { useCallback, useMemo } from "react";
 
-import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
-import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/useSubaccountCancelOrdersDetailsMessage";
+import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { selectChainId } from "../selectors/globalSelectors";
 import {
@@ -12,6 +12,7 @@ import {
   selectOrderErrorsByOrderKeyMap,
   selectOrderErrorsCount,
 } from "../selectors/orderSelectors";
+import { makeSelectSubaccountForActions } from "../selectors/globalSelectors";
 import { useSelector } from "../utils";
 import { useCancellingOrdersKeysState } from "./orderEditorHooks";
 
@@ -34,8 +35,8 @@ export function useCancelOrder(orderKey: string) {
   const signer = useEthersSigner();
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const { setPendingTxns } = usePendingTxns();
-  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, 1);
-  const subaccount = useSubaccount(null, 1);
+  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(1);
+  const subaccount = useSelector(makeSelectSubaccountForActions(1));
 
   const isCancelOrderProcessing = cancellingOrdersKeys.includes(orderKey);
 

@@ -8,7 +8,7 @@ import type { MarketFilterLongShortItemData } from "components/Synthetics/TableM
 import { getSyntheticsListSectionKey } from "config/localStorage";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
+import { useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/useSubaccountCancelOrdersDetailsMessage";
 import { useClosingPositionKeyState, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderHooks";
@@ -53,10 +53,10 @@ import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSel
 import { SwapCard } from "components/Synthetics/SwapCard/SwapCard";
 import { useIsCurtainOpen } from "components/Synthetics/TradeBox/Curtain";
 import { TradeBoxResponsiveContainer } from "components/Synthetics/TradeBox/TradeBoxResponsiveContainer";
-import { TradeBoxOneClickTrading } from "components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import { Chart } from "components/Synthetics/TVChart/Chart";
 import Tab from "components/Tab/Tab";
+import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
 import { useRelayerFeeHandler } from "domain/synthetics/gassless/useRelayerFeeHandler";
 
@@ -250,7 +250,6 @@ export function SyntheticsPage(p: Props) {
       })}
     >
       <div className="-mt-15 grid grid-cols-[1fr_auto] gap-15 px-10 pt-0 max-[1100px]:grid-cols-1 max-[800px]:p-10">
-        {isMobile && <TradeBoxOneClickTrading />}
         <div className="Exchange-left">
           <Chart />
           {!isMobile && (
@@ -330,7 +329,6 @@ export function SyntheticsPage(p: Props) {
 
             <div className="mt-12 flex flex-col gap-12">
               {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
-              <TradeBoxOneClickTrading />
             </div>
           </div>
         )}
@@ -390,8 +388,10 @@ function useOrdersControl() {
   const [cancellingOrdersKeys, setCanellingOrdersKeys] = useCancellingOrdersKeysState();
   const { setPendingTxns } = usePendingTxns();
   const [selectedOrderKeys, setSelectedOrderKeys] = useState<string[]>(EMPTY_ARRAY);
-  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, selectedOrderKeys.length);
-  const subaccount = useSubaccount(null, selectedOrderKeys.length);
+  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(selectedOrderKeys.length);
+
+  const subaccount = useSelector(makeSelectSubaccountForActions(selectedOrderKeys.length));
+
   const isCancelOrdersProcessing = cancellingOrdersKeys.length > 0;
 
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);

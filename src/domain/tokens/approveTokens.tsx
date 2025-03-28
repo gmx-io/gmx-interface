@@ -11,6 +11,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
 import Token from "sdk/abis/Token.json";
+import { TokenPermitsState } from "domain/synthetics/gassless/useInitTokenPermitsState";
 
 type Params = {
   setIsApproving: (val: boolean) => void;
@@ -26,9 +27,10 @@ type Params = {
   setPendingTxns?: (txns: any[]) => void;
   includeMessage?: boolean;
   approveAmount?: bigint;
+  addTokenPermit?: TokenPermitsState["addTokenPermit"];
 };
 
-export function approveTokens({
+export async function approveTokens({
   setIsApproving,
   signer,
   tokenAddress,
@@ -42,72 +44,101 @@ export function approveTokens({
   setPendingTxns,
   includeMessage,
   approveAmount,
+  addTokenPermit,
 }: Params) {
   setIsApproving(true);
-  const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
-  const nativeToken = getNativeToken(chainId);
-  const networkName = getChainName(chainId);
-  contract
-    .approve(spender, approveAmount ?? ethers.MaxUint256)
-    .then(async (res) => {
-      const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
-      helperToast.success(
-        <div>
-          <Trans>
-            Approval submitted! <ExternalLink href={txUrl}>View status.</ExternalLink>
-          </Trans>
-          <br />
-        </div>
-      );
-      if (onApproveSubmitted) {
-        onApproveSubmitted();
-      }
-      if (getTokenInfo && infoTokens && pendingTxns && setPendingTxns) {
-        const token = getTokenInfo(infoTokens, tokenAddress);
-        const pendingTxn = {
-          hash: res.hash,
-          message: includeMessage ? t`${token.symbol} Approved!` : false,
-        };
-        setPendingTxns([...pendingTxns, pendingTxn]);
-      }
-    })
-    .catch((e) => {
-      onApproveFail?.(e);
-      // eslint-disable-next-line no-console
-      console.error(e);
-      let failMsg;
-      if (
-        ["not enough funds for gas", "failed to execute call with revert code InsufficientGasFunds"].includes(
-          e.data?.message
-        )
-      ) {
-        failMsg = (
+
+  if (addTokenPermit) {
+    await addTokenPermit(tokenAddress, spender, approveAmount ?? ethers.MaxUint256)
+      .then(() => {
+        helperToast.success(
           <div>
-            <Trans>
-              There is not enough {nativeToken.symbol} in your account on {networkName} to send this transaction.
-              <br />
-              <br />
-              <Link to="/buy_gmx#bridge">
-                Buy or Transfer {nativeToken.symbol} to {networkName}
-              </Link>
-            </Trans>
+            <Trans>Permit signed!</Trans>
+            <br />
           </div>
         );
-      } else if (e.message?.includes("User denied transaction signature")) {
-        failMsg = t`Approval was cancelled`;
-      } else {
-        failMsg = (
-          <>
-            <Trans>Approval failed</Trans>
-            <br />
+
+        onApproveSubmitted?.();
+      })
+      .catch((e) => {
+        helperToast.error(
+          <div>
+            <Trans>Permit signing failed</Trans>
             <br />
             <ToastifyDebug error={String(e)} />
-          </>
+          </div>
         );
-      }
-      helperToast.error(failMsg);
-    })
-    .finally(() => {
-      setIsApproving(false);
-    });
+        onApproveFail?.(e);
+      })
+      .finally(() => {
+        setIsApproving(false);
+      });
+  } else {
+    const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
+    const nativeToken = getNativeToken(chainId);
+    const networkName = getChainName(chainId);
+    contract
+      .approve(spender, approveAmount ?? ethers.MaxUint256)
+      .then(async (res) => {
+        const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
+        helperToast.success(
+          <div>
+            <Trans>
+              Approval submitted! <ExternalLink href={txUrl}>View status.</ExternalLink>
+            </Trans>
+            <br />
+          </div>
+        );
+        if (onApproveSubmitted) {
+          onApproveSubmitted();
+        }
+        if (getTokenInfo && infoTokens && pendingTxns && setPendingTxns) {
+          const token = getTokenInfo(infoTokens, tokenAddress);
+          const pendingTxn = {
+            hash: res.hash,
+            message: includeMessage ? t`${token.symbol} Approved!` : false,
+          };
+          setPendingTxns([...pendingTxns, pendingTxn]);
+        }
+      })
+      .catch((e) => {
+        onApproveFail?.(e);
+        // eslint-disable-next-line no-console
+        console.error(e);
+        let failMsg;
+        if (
+          ["not enough funds for gas", "failed to execute call with revert code InsufficientGasFunds"].includes(
+            e.data?.message
+          )
+        ) {
+          failMsg = (
+            <div>
+              <Trans>
+                There is not enough {nativeToken.symbol} in your account on {networkName} to send this transaction.
+                <br />
+                <br />
+                <Link to="/buy_gmx#bridge">
+                  Buy or Transfer {nativeToken.symbol} to {networkName}
+                </Link>
+              </Trans>
+            </div>
+          );
+        } else if (e.message?.includes("User denied transaction signature")) {
+          failMsg = t`Approval was cancelled`;
+        } else {
+          failMsg = (
+            <>
+              <Trans>Approval failed</Trans>
+              <br />
+              <br />
+              <ToastifyDebug error={String(e)} />
+            </>
+          );
+        }
+        helperToast.error(failMsg);
+      })
+      .finally(() => {
+        setIsApproving(false);
+      });
+  }
 }

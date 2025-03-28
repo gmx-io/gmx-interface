@@ -6,7 +6,6 @@ import { ImSpinner2 } from "react-icons/im";
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   usePositionsConstants,
@@ -66,7 +65,8 @@ import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 import { OPERATION_LABELS, Operation } from "./types";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
-
+import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectAddTokenPermit } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 export function usePositionEditorButtonState(operation: Operation): {
   text: ReactNode;
   tooltipContent: ReactNode | null;
@@ -255,7 +255,8 @@ export function usePositionEditorButtonState(operation: Operation): {
     );
   }, [detectAndSetMaxSize, tooltipName]);
 
-  const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
+  const subaccount = useSelector(makeSelectSubaccountForActions(1));
+  const addTokenPermit = useSelector(selectAddTokenPermit);
 
   function onSubmit() {
     if (!account) {
@@ -287,6 +288,7 @@ export function usePositionEditorButtonState(operation: Operation): {
         setPendingTxns: () => null,
         infoTokens: {},
         chainId,
+        addTokenPermit,
         onApproveFail: () => {
           userAnalytics.pushEvent<TokenApproveResultEvent>({
             event: "TokenApproveAction",

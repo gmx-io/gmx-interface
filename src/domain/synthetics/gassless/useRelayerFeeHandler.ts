@@ -2,34 +2,41 @@ import { GelatoRelay } from "@gelatonetwork/relay-sdk";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { selectGasPrice, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
+  selectRelayerFeeState,
+  selectSetRelayerFeeState,
+} from "context/SyntheticsStateContext/selectors/relayserFeeSelectors";
+import {
   selectTradeboxAllowedSlippage,
   selectTradeboxExecutionFee,
-  selectTradeboxFindSwapPath,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { makeSelectFindSwapPath } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { useEffect, useMemo } from "react";
+import { getContract } from "sdk/configs/contracts";
 import { getWrappedToken } from "sdk/configs/tokens";
 import useSWR from "swr";
 import { useExternalSwapOutputRequest } from "../externalSwaps/useExternalSwapOutputRequest";
 import { convertToTokenAmount, convertToUsd } from "../tokens";
 import { getSwapAmountsByToValue } from "../trade";
-import { getContract } from "sdk/configs/contracts";
 import { RelayerFeeState } from "./types";
-import {
-  selectRelayerFeeState,
-  selectSetRelayerFeeState,
-} from "context/SyntheticsStateContext/selectors/relayserFeeSelectors";
-import { useThrottle } from "react-use";
 
 const DEFAULT_GAS_LIMIT = 1000000n;
 const relay = new GelatoRelay();
 
+function roundBigIntToDecimals(value: bigint, tokenDecimals: number, roundToDecimals: number): bigint {
+  const excessDecimals = tokenDecimals - roundToDecimals;
+  const divisor = BigInt(10 ** excessDecimals);
+  const scaledValue = value / divisor;
+  const remainder = scaledValue % 10n;
+  const roundedValue = remainder >= 5n ? scaledValue + 10n - remainder : scaledValue - remainder;
+  return roundedValue * divisor;
+}
+
 export function useRelayerFeeHandler(): RelayerFeeState | undefined {
   const { chainId } = useChainId();
   const tokensData = useSelector(selectTokensData);
-  const findSwapPath = useSelector(selectTradeboxFindSwapPath);
   const relayerFeeToken = getWrappedToken(chainId);
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const gasPrice = useSelector(selectGasPrice);
@@ -41,6 +48,8 @@ export function useRelayerFeeHandler(): RelayerFeeState | undefined {
   const gasPaymentTokenAddress = settings.gasPaymentTokenAddress;
   const is1ctEnabled = settings.oneClickTradingEnabled;
 
+  const findSwapPath = useSelector(makeSelectFindSwapPath(gasPaymentTokenAddress, relayerFeeToken.address));
+
   const gasPaymentTokenData = getByKey(tokensData, gasPaymentTokenAddress);
   const relayerFeeTokenData = getByKey(tokensData, relayerFeeToken?.address);
 
@@ -51,9 +60,20 @@ export function useRelayerFeeHandler(): RelayerFeeState | undefined {
         return undefined;
       }
 
-      const feeAmount = await relay.getEstimatedFee(BigInt(chainId), relayerFeeToken.address, DEFAULT_GAS_LIMIT, false);
+      try {
+        const feeAmount = await relay.getEstimatedFee(
+          BigInt(chainId),
+          relayerFeeToken.address,
+          DEFAULT_GAS_LIMIT,
+          false
+        );
 
-      return feeAmount;
+        return feeAmount;
+      } catch (error) {
+        // TODO: metrics
+        // console.error("relayerFeeAmount error", error);
+        return undefined;
+      }
     }
   );
 
@@ -68,7 +88,7 @@ export function useRelayerFeeHandler(): RelayerFeeState | undefined {
   const internalSwapAmounts = useMemo(() => {
     if (
       !isExpressOrdersEnabled ||
-      !totalNetworkFeeAmount ||
+      totalNetworkFeeAmount === undefined ||
       !gasPaymentTokenData ||
       !relayerFeeTokenData ||
       !findSwapPath
@@ -87,10 +107,12 @@ export function useRelayerFeeHandler(): RelayerFeeState | undefined {
   }, [isExpressOrdersEnabled, totalNetworkFeeAmount, gasPaymentTokenData, relayerFeeTokenData, findSwapPath]);
 
   const feeUsd = convertToUsd(totalNetworkFeeAmount, relayerFeeToken.decimals, relayerFeeTokenData?.prices.maxPrice);
-  const tokenInAmount = useThrottle(
-    convertToTokenAmount(feeUsd, gasPaymentTokenData?.decimals, gasPaymentTokenData?.prices.minPrice),
-    5000
-  );
+
+  let tokenInAmount = convertToTokenAmount(feeUsd, gasPaymentTokenData?.decimals, gasPaymentTokenData?.prices.minPrice);
+  tokenInAmount =
+    tokenInAmount !== undefined && gasPaymentTokenData
+      ? roundBigIntToDecimals(tokenInAmount, gasPaymentTokenData?.decimals, 2)
+      : undefined;
 
   const { externalSwapOutput } = useExternalSwapOutputRequest({
     tokenInAddress: gasPaymentTokenAddress,
@@ -126,9 +148,9 @@ export function useRelayerFeeHandler(): RelayerFeeState | undefined {
     };
 
     if (
-      externalSwapOutput?.usdOut &&
-      internalSwapAmounts?.usdOut &&
-      externalSwapOutput.usdOut > internalSwapAmounts.usdOut
+      externalSwapOutput?.usdOut
+      // internalSwapAmounts?.usdOut &&
+      // externalSwapOutput.usdOut > internalSwapAmounts.usdOut
     ) {
       relayerFeeeState.externalSwapOutput = externalSwapOutput;
       relayerFeeeState.gasPaymentTokenAmount = externalSwapOutput.amountIn;
@@ -146,12 +168,10 @@ export function useRelayerFeeHandler(): RelayerFeeState | undefined {
     executionFee?.feeTokenAmount,
     externalSwapOutput,
     gasPaymentTokenAddress,
-    internalSwapAmounts?.amountIn,
-    internalSwapAmounts?.swapPathStats,
-    internalSwapAmounts?.usdOut,
+    internalSwapAmounts,
     isExpressOrdersEnabled,
     relayerFeeAmount,
-    relayerFeeToken?.address,
+    relayerFeeToken,
     totalNetworkFeeAmount,
   ]);
 

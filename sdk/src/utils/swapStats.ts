@@ -18,6 +18,39 @@ export function getSwapCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
   return capacityUsd;
 }
 
+export function getSwapPathTokenAddresses({
+  marketsInfoData,
+  initialCollateralAddress,
+  swapPath,
+}: {
+  marketsInfoData: MarketsInfoData;
+  chainId: number;
+  initialCollateralAddress: string;
+  swapPath: string[];
+}): string[] | undefined {
+  const tokenAddresses: string[] = [];
+
+  let currentTokenAddress = initialCollateralAddress;
+
+  for (const marketAddress of swapPath) {
+    const marketInfo = getByKey(marketsInfoData, marketAddress);
+
+    if (!marketInfo) {
+      return undefined;
+    }
+
+    const tokenOut = getOppositeCollateral(marketInfo, currentTokenAddress);
+
+    if (!tokenOut) {
+      return undefined;
+    }
+
+    currentTokenAddress = tokenOut.address;
+    tokenAddresses.push(currentTokenAddress);
+  }
+
+  return tokenAddresses;
+}
 export function getSwapPathOutputAddresses(p: {
   marketsInfoData: MarketsInfoData;
   initialCollateralAddress: string;

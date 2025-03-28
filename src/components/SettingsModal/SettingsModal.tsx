@@ -22,9 +22,8 @@ import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { getIsFlagEnabled } from "config/ab";
 import { isDevelopment } from "config/env";
-import { useChainId } from "lib/chains";
-import { getDefaultGasPaymentToken } from "sdk/configs/gassless";
-import { ExpressTradingBanner } from "../ExpressTradingBanner/ExpressTradingBanner";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { ExpressTradingEnabledBanner } from "components/ExpressTradingEnabledBanner/ExpressTradingEnabledBanner";
 
 export function SettingsModal({
   isSettingsVisible,
@@ -33,8 +32,8 @@ export function SettingsModal({
   isSettingsVisible: boolean;
   setIsSettingsVisible: (value: boolean) => void;
 }) {
-  const { chainId } = useChainId();
   const settings = useSettings();
+  const subaccountState = useSubaccountContext();
 
   const [slippageAmount, setSlippageAmount] = useState<string>("0");
   const [executionFeeBufferBps, setExecutionFeeBufferBps] = useState<string>("0");
@@ -44,11 +43,6 @@ export function SettingsModal({
   const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
   const [showDebugValues, setShowDebugValues] = useState(false);
   const [isLeverageSliderEnabled, setIsLeverageSliderEnabled] = useState(false);
-
-  const [expressOrdersEnabled, setExpressOrdersEnabled] = useState(false);
-  const [oneClickTradingEnabled, setOneClickTradingEnabled] = useState(false);
-
-  const [gasPaymentTokenAddress, setGasPaymentTokenAddress] = useState<string>(getDefaultGasPaymentToken(chainId));
 
   useEffect(() => {
     if (!isSettingsVisible) return;
@@ -66,9 +60,7 @@ export function SettingsModal({
     setShouldDisableValidationForTesting(settings.shouldDisableValidationForTesting);
     setIsLeverageSliderEnabled(settings.isLeverageSliderEnabled);
 
-    setExpressOrdersEnabled(settings.expressOrdersEnabled);
-    setOneClickTradingEnabled(settings.oneClickTradingEnabled);
-    setGasPaymentTokenAddress(settings.gasPaymentTokenAddress);
+    subaccountState.refreshSubaccountData();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSettingsVisible]);
@@ -117,11 +109,6 @@ export function SettingsModal({
     settings.setShowDebugValues(showDebugValues);
     settings.setIsLeverageSliderEnabled(isLeverageSliderEnabled);
 
-    // Save Express Orders and One-Click Trading settings
-    settings.setExpressOrdersEnabled(expressOrdersEnabled);
-    settings.setOneClickTradingEnabled(oneClickTradingEnabled);
-    settings.setGasPaymentTokenAddress(gasPaymentTokenAddress);
-
     setIsSettingsVisible(false);
   }, [
     slippageAmount,
@@ -132,9 +119,6 @@ export function SettingsModal({
     shouldDisableValidationForTesting,
     showDebugValues,
     isLeverageSliderEnabled,
-    expressOrdersEnabled,
-    oneClickTradingEnabled,
-    gasPaymentTokenAddress,
     setIsSettingsVisible,
     executionFeeBufferBps,
   ]);
@@ -151,15 +135,20 @@ export function SettingsModal({
   );
 
   const handleExpressOrdersToggle = (enabled: boolean) => {
-    setExpressOrdersEnabled(enabled);
-    // If One-Click Trading is enabled but Express Orders is disabled, also disable One-Click Trading
-    if (!enabled && oneClickTradingEnabled) {
-      setOneClickTradingEnabled(false);
+    settings.setExpressOrdersEnabled(enabled);
+    if (!enabled && subaccountState.subaccount) {
+      subaccountState.tryDisableSubaccount().catch(() => {
+        settings.setExpressOrdersEnabled(true);
+      });
     }
   };
 
   const handleOneClickTradingToggle = (enabled: boolean) => {
-    setOneClickTradingEnabled(enabled);
+    if (enabled) {
+      subaccountState.tryEnableSubaccount();
+    } else {
+      subaccountState.tryDisableSubaccount();
+    }
   };
 
   return (
@@ -177,7 +166,7 @@ export function SettingsModal({
         </h1>
         <div className="mt-16">
           <SettingsSection>
-            <ToggleSwitch isChecked={expressOrdersEnabled} setIsChecked={handleExpressOrdersToggle}>
+            <ToggleSwitch isChecked={settings.expressOrdersEnabled} setIsChecked={handleExpressOrdersToggle}>
               <TooltipWithPortal
                 content={
                   <Trans>
@@ -193,11 +182,10 @@ export function SettingsModal({
               />
             </ToggleSwitch>
 
-            {expressOrdersEnabled && <ExpressTradingBanner />}
+            {settings.expressOrdersEnabled && <ExpressTradingEnabledBanner />}
 
             <ToggleSwitch
-              isChecked={oneClickTradingEnabled}
-              disabled={!expressOrdersEnabled}
+              isChecked={Boolean(subaccountState.subaccount?.optimisticActive)}
               setIsChecked={handleOneClickTradingToggle}
             >
               <TooltipWithPortal
@@ -206,19 +194,19 @@ export function SettingsModal({
               />
             </ToggleSwitch>
 
-            <OldSubaccountWithdraw isVisible={oneClickTradingEnabled} />
+            <OldSubaccountWithdraw />
 
-            {oneClickTradingEnabled && <OneClickAdvancedSettings />}
+            {settings.oneClickTradingEnabled && <OneClickAdvancedSettings />}
           </SettingsSection>
 
-          {expressOrdersEnabled && (
+          {settings.expressOrdersEnabled && (
             <SettingsSection className="mt-2">
               <div>
                 <Trans>Gas Payment Token</Trans>
               </div>
               <GasPaymentTokenSelector
-                curentTokenAddress={gasPaymentTokenAddress}
-                onSelectToken={setGasPaymentTokenAddress}
+                curentTokenAddress={settings.gasPaymentTokenAddress}
+                onSelectToken={settings.setGasPaymentTokenAddress}
               />
             </SettingsSection>
           )}

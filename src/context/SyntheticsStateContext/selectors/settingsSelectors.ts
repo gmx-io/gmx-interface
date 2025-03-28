@@ -1,5 +1,7 @@
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 
+export const selectIsSettingsVisible = (s: SyntheticsState) => s.settings.isSettingsVisible;
+export const selectSetIsSettingsVisible = (s: SyntheticsState) => s.settings.setIsSettingsVisible;
 export const selectShowDebugValues = (s: SyntheticsState) => s.settings.showDebugValues;
 export const selectSetShowDebugValues = (s: SyntheticsState) => s.settings.setShowDebugValues;
 export const selectSavedAllowedSlippage = (s: SyntheticsState) => s.settings.savedAllowedSlippage;
@@ -16,3 +18,7 @@ export const selectSetOracleKeeperInstancesConfig = (s: SyntheticsState) => s.se
 export const selectIsPnlInLeverage = (s: SyntheticsState) => s.settings.isPnlInLeverage;
 export const selectShowPnlAfterFees = (s: SyntheticsState) => s.settings.showPnlAfterFees;
 export const selectIsLeverageSliderEnabled = (s: SyntheticsState) => s.settings.isLeverageSliderEnabled;
+export const selectOneClickTradingEnabled = (s: SyntheticsState) => s.settings.oneClickTradingEnabled;
+export const selectSetOneClickTradingEnabled = (s: SyntheticsState) => s.settings.setOneClickTradingEnabled;
+export const selectExpressOrdersEnabled = (s: SyntheticsState) => s.settings.expressOrdersEnabled;
+export const selectSetExpressOrdersEnabled = (s: SyntheticsState) => s.settings.setExpressOrdersEnabled;

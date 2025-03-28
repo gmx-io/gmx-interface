@@ -8,8 +8,10 @@ export function parseContractPrice(price: bigint, tokenDecimals: number) {
   return price * expandDecimals(1, tokenDecimals);
 }
 
-export function convertToContractPrice(price: bigint, tokenDecimals: number) {
-  return price / expandDecimals(1, tokenDecimals);
+type ContractPrice = bigint & { __brand: "ContractPrice" };
+
+export function convertToContractPrice(price: bigint, tokenDecimals: number): ContractPrice {
+  return (price / expandDecimals(1, tokenDecimals)) as ContractPrice;
 }
 
 export function convertToContractTokenPrices(prices: TokenPrices, tokenDecimals: number) {
