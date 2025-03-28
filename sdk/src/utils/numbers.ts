@@ -560,7 +560,7 @@ export const padDecimals = (amount: BigNumberish, minDecimals: number) => {
       amountStr = amountStr.padEnd(amountStr.length + (minDecimals - decimals), "0");
     }
   } else {
-    amountStr = amountStr + ".0000";
+    amountStr = amountStr + "." + "0".repeat(minDecimals);
   }
   return amountStr;
 };
