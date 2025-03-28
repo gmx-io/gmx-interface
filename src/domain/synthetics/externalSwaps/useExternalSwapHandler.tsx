@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { getIsFlagEnabled } from "config/ab";
 import { isDevelopment } from "config/env";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   selectBaseExternalSwapOutput,
@@ -15,6 +14,7 @@ import {
   selectShouldRequestExternalSwapQuote,
 } from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
 import { selectGasPrice, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxFromTokenAddress,
@@ -23,6 +23,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { throttleLog } from "lib/logging";
+import { getContract } from "sdk/configs/contracts";
 
 import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
 
@@ -47,7 +48,7 @@ export function useExternalSwapHandler() {
   const shouldFallbackToInternalSwap = useSelector(selectShouldFallbackToInternalSwap);
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
 
-  const subaccount = useSubaccount(null);
+  const subaccount = useSelector(makeSelectSubaccountForActions(1));
 
   const { externalSwapOutput } = useExternalSwapOutputRequest({
     chainId,
@@ -55,6 +56,7 @@ export function useExternalSwapHandler() {
     tokenInAddress: fromTokenAddress,
     tokenOutAddress: swapToToken?.address,
     amountIn: externalSwapInputs?.amountIn,
+    receiverAddress: getContract(chainId, "OrderVault"),
     slippage,
     gasPrice,
     enabled: getIsFlagEnabled("testExternalSwap") && !subaccount && shouldRequestExternalSwapQuote,

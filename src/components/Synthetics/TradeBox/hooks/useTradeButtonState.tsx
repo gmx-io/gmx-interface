@@ -8,7 +8,6 @@ import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { get1InchSwapUrlFromAddresses } from "config/links";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import {
   usePositionsConstants,
   useUiFeeFactor,
@@ -16,7 +15,9 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectExternalSwapQuote } from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import { selectAddTokenPermit } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import {
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxFindSwapPath,
@@ -65,7 +66,6 @@ import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";
 
 import { tradeTypeLabels } from "../tradeboxConstants";
 import { useRequiredActions } from "./useRequiredActions";
-import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
 import { useTradeboxTransactions } from "./useTradeboxTransactions";
 
 interface TradeboxButtonStateOptions {
@@ -227,10 +227,10 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
 
   const { setPendingTxns } = usePendingTxns();
   const { openConnectModal } = useConnectModal();
-  const { summaryExecutionFee } = useTPSLSummaryExecutionFee();
   const { requiredActions } = useRequiredActions();
 
-  const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, requiredActions);
+  const subaccount = useSelector(makeSelectSubaccountForActions(requiredActions));
+  const addTokenPermit = useSelector(selectAddTokenPermit);
 
   const { onSubmitWrapOrUnwrap, onSubmitSwap, onSubmitIncreaseOrder, onSubmitDecreaseOrder } = useTradeboxTransactions({
     setPendingTxns,
@@ -265,6 +265,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
         setPendingTxns: () => null,
         infoTokens: {},
         chainId,
+        addTokenPermit,
         onApproveFail: () => {
           userAnalytics.pushEvent<TokenApproveResultEvent>({
             event: "TokenApproveAction",
@@ -287,7 +288,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
     } else if (isSwap) {
       txnPromise = onSubmitSwap();
     } else if (isIncrease) {
-      txnPromise = onSubmitIncreaseOrder();
+      txnPromise = Promise.resolve(onSubmitIncreaseOrder());
     } else {
       txnPromise = onSubmitDecreaseOrder();
     }
@@ -320,6 +321,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
     chainId,
     isApproving,
     signer,
+    addTokenPermit,
     onSubmitWrapOrUnwrap,
     onSubmitSwap,
     onSubmitIncreaseOrder,

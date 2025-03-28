@@ -2,7 +2,7 @@ import { useCallback } from "react";
 
 import { USD_DECIMALS } from "config/factors";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
+import { useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/useSubaccountCancelOrdersDetailsMessage";
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
 import {
   useCancellingOrdersKeysState,
@@ -42,9 +42,9 @@ export function DynamicLines({
   const dynamicChartLines = useSelector(selectChartDynamicLines);
   const { signer } = useWallet();
   const chainId = useSelector(selectChainId);
-  const subaccount = useSubaccount(null);
+  // const subaccount = useSelector(makeSelectSubaccountForActions(1));
   const [, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
-  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, 1);
+  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(1);
   const [isSubmitting] = useOrderEditorIsSubmittingState();
   const [editingOrderState, setEditingOrderState] = useEditingOrderState();
   const setTriggerPriceInputValue = useSelector(selectOrderEditorSetTriggerPriceInputValue);
@@ -58,7 +58,7 @@ export function DynamicLines({
       if (!signer) return;
       setCancellingOrdersKeys((prev) => [...prev, key]);
 
-      cancelOrdersTxn(chainId, signer, subaccount, {
+      cancelOrdersTxn(chainId, signer, {
         orderKeys: [key],
         setPendingTxns: setPendingTxns,
         detailsMsg: cancelOrdersDetailsMessage,
@@ -66,7 +66,7 @@ export function DynamicLines({
         setCancellingOrdersKeys((prev) => prev.filter((k) => k !== key));
       });
     },
-    [cancelOrdersDetailsMessage, chainId, setCancellingOrdersKeys, setPendingTxns, signer, subaccount]
+    [cancelOrdersDetailsMessage, chainId, setCancellingOrdersKeys, setPendingTxns, signer]
   );
 
   const calcSelector = useCalcSelector();

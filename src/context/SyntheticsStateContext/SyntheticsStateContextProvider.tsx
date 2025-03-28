@@ -5,6 +5,7 @@ import { Context, createContext, useContext, useContextSelector } from "use-cont
 
 import { getKeepLeverageKey } from "config/localStorage";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
 import { useIsLargeAccountTracker } from "domain/stats/isLargeAccount";
 import {
@@ -18,6 +19,9 @@ import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useIni
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
+import { RelayerFeeState } from "domain/synthetics/gassless/types";
+import { SubaccountState } from "domain/synthetics/gassless/useInitSubaccountState";
+import { TokenPermitsState, useInitTokenPermitsState } from "domain/synthetics/gassless/useInitTokenPermitsState";
 import {
   MarketsInfoResult,
   MarketsResult,
@@ -105,8 +109,12 @@ export type SyntheticsState = {
   };
   leaderboard: LeaderboardState;
   settings: SettingsContextType;
+  subaccountState: SubaccountState;
   tradebox: TradeboxState;
   externalSwap: ExternalSwapState;
+  tokenPermitsState: TokenPermitsState;
+  relayerFeeState: RelayerFeeState | undefined;
+  setRelayerFeeState: (state: RelayerFeeState | undefined) => void;
   orderEditor: OrderEditorState;
   positionSeller: PositionSellerState;
   positionEditor: PositionEditorState;
@@ -188,6 +196,7 @@ export function SyntheticsStateContextProvider({
   const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace>();
 
   const settings = useSettings();
+  const subaccountState = useSubaccountContext();
 
   const {
     isLoading,
@@ -265,6 +274,9 @@ export function SyntheticsStateContextProvider({
   });
 
   const externalSwapState = useInitExternalSwapState();
+  const tokenPermitsState = useInitTokenPermitsState();
+
+  const [relayerFeeState, setRelayerFeeState] = useState<RelayerFeeState | undefined>();
 
   const state = useMemo(() => {
     const s: SyntheticsState = {
@@ -308,8 +320,12 @@ export function SyntheticsStateContextProvider({
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
       settings,
+      subaccountState,
       tradebox: tradeboxState,
       externalSwap: externalSwapState,
+      relayerFeeState,
+      setRelayerFeeState,
+      tokenPermitsState,
       orderEditor,
       positionSeller: positionSellerState,
       positionEditor: positionEditorState,
@@ -348,8 +364,11 @@ export function SyntheticsStateContextProvider({
     claimablePositionPriceImpactFees,
     leaderboard,
     settings,
+    subaccountState,
     tradeboxState,
     externalSwapState,
+    relayerFeeState,
+    tokenPermitsState,
     orderEditor,
     positionSellerState,
     positionEditorState,

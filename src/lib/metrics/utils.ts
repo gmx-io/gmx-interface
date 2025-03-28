@@ -1,9 +1,9 @@
 import { ethers } from "ethers";
 
 import { USD_DECIMALS } from "config/factors";
-import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { EventLogData } from "context/SyntheticsEvents";
 import { ExecutionFee } from "domain/synthetics/fees";
+import { Subaccount } from "domain/synthetics/gassless/txns/subaccountUtils";
 import { getMarketIndexName, getMarketPoolName, MarketInfo } from "domain/synthetics/markets";
 import { getCollateralAndSwapAddresses, OrderType } from "domain/synthetics/orders";
 import { TokenData } from "domain/synthetics/tokens";

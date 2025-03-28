@@ -20,7 +20,6 @@ import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { ExternalSwapQuote } from "sdk/types/trade";
 import { extractError } from "sdk/utils/contracts";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
 
@@ -32,7 +31,7 @@ export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;
 };
 
-type SimulateExecuteParams = {
+export type SimulateExecuteParams = {
   account: string;
   createMulticallPayload: string[];
   primaryPriceOverrides: PriceOverrides;
@@ -50,7 +49,6 @@ type SimulateExecuteParams = {
   metricId?: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
   additionalErrorContent?: React.ReactNode;
-  externalSwapQuote?: ExternalSwapQuote;
 };
 
 export async function simulateExecuteTxn(chainId: number, p: SimulateExecuteParams) {
@@ -233,7 +231,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
   }
 }
 
-function getSimulationPrices(chainId: number, tokensData: TokensData, primaryPricesMap: PriceOverrides) {
+export function getSimulationPrices(chainId: number, tokensData: TokensData, primaryPricesMap: PriceOverrides) {
   const tokenAddresses = Object.keys(tokensData);
 
   const primaryTokens: string[] = [];

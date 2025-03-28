@@ -125,7 +125,6 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Creat
     "multicall",
     [encodedPayload],
     wntAmount,
-    undefined,
     simulationPromise,
     p.metricId
   );

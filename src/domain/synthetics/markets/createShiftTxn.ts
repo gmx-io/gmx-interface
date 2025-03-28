@@ -82,7 +82,6 @@ export async function createShiftTxn(chainId: number, signer: Signer, p: Params)
     "multicall",
     [encodedPayload],
     p.executionFee,
-    undefined,
     simulationPromise,
     p.metricId
   );

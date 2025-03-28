@@ -83,7 +83,6 @@ export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p:
     "multicall",
     [encodedPayload],
     wntAmount,
-    undefined,
     simulationPromise,
     p.metricId
   );
