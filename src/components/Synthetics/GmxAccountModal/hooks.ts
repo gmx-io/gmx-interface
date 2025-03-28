@@ -5,12 +5,13 @@ import {
   convertToUsd,
   getMidPrice,
   useTokenBalances,
+  useTokenRecentPricesRequest,
   useTokensDataRequest,
 } from "domain/synthetics/tokens";
 import { TokenData, TokenPrices, TokensData } from "domain/tokens";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { getToken } from "sdk/configs/tokens";
 import {
   MULTI_CHAIN_DEPOSIT_SUPPORTED_TOKENS,
@@ -21,6 +22,11 @@ import {
 import { DEV_FUNDING_HISTORY } from "../../../context/GmxAccountContext/dev";
 import { useGmxAccountSettlementChainId } from "../../../context/GmxAccountContext/hooks";
 import { TokenChainData } from "../../../context/GmxAccountContext/types";
+import { ContractCallConfig, ContractCallsConfig } from "lib/multicall/types";
+import useSWR from "swr";
+import { fetchMultichainTokenBalances } from "./fetchMultichainTokenBalances";
+import { FREQUENT_MULTICALL_REFRESH_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
+import { bigMath } from "sdk/utils/bigmath";
 
 export function useAvailableToTradeAssetSymbolsSettlementChain(): string[] {
   const gmxAccountTokensData = useGmxAccountTokensData();
@@ -125,40 +131,104 @@ export function useGmxAccountFundingHistory() {
 
 export function useMultichainTokens(): TokenChainData[] {
   const [settlementChainId] = useGmxAccountSettlementChainId();
-  const multichainTokenIds = MULTI_CHAIN_DEPOSIT_SUPPORTED_TOKENS[settlementChainId];
+  const { account } = useWallet();
 
-  if (!multichainTokenIds) {
-    return EMPTY_ARRAY;
-  }
+  const { pricesData } = useTokenRecentPricesRequest(settlementChainId);
 
-  return multichainTokenIds
-    .map((tokenId): TokenChainData | undefined => {
-      const mapping = MULTI_CHAIN_TOKEN_MAPPING[settlementChainId]?.[tokenId.chainId]?.[tokenId.address];
+  useEffect(() => {
+    console.log(pricesData);
+  }, [pricesData]);
 
-      if (!mapping) {
-        return undefined;
+  const { data: tokenBalances } = useSWR<Record<number, Record<string, bigint>>>(
+    account ? ["multichain-tokens", settlementChainId, account] : null,
+    async () => {
+      if (!account) {
+        return EMPTY_OBJECT;
       }
+      return await fetchMultichainTokenBalances(settlementChainId, account);
+    },
+    {
+      refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
+    }
+  );
 
-      const token = getToken(settlementChainId, mapping.settlementChainTokenAddress);
+  const tokenChainDataArray: TokenChainData[] = useMemo(() => {
+    const tokenChainDataArray: TokenChainData[] = [];
 
-      const prices: TokenPrices = {
-        maxPrice: (10n * 10n ** BigInt(USD_DECIMALS)) / 10n ** BigInt(mapping.sourceChainTokenDecimals),
-        minPrice: (10n * 10n ** BigInt(USD_DECIMALS)) / 10n ** BigInt(mapping.sourceChainTokenDecimals),
-      };
+    for (const sourceChainIdString in tokenBalances) {
+      const sourceChainId = parseInt(sourceChainIdString);
+      const tokensChainBalanceData = tokenBalances[sourceChainId];
 
-      return {
-        ...token,
-        sourceChainId: tokenId.chainId,
-        sourceChainDecimals: mapping.sourceChainTokenDecimals,
-        sourceChainPrices: prices,
-        sourceChainBalance: convertToTokenAmount(
-          10n * 10n ** BigInt(USD_DECIMALS),
-          mapping.sourceChainTokenDecimals,
-          getMidPrice(prices)
-        ),
-      } satisfies TokenChainData;
-    })
-    .filter((token): token is TokenChainData => token !== undefined);
+      for (const sourceChainTokenAddress in tokensChainBalanceData) {
+        const mapping = MULTI_CHAIN_TOKEN_MAPPING[settlementChainId]?.[sourceChainId]?.[sourceChainTokenAddress];
+
+        if (!mapping) {
+          continue;
+        }
+
+        const balance = tokensChainBalanceData[sourceChainTokenAddress];
+
+        if (balance === undefined || balance === 0n) {
+          continue;
+        }
+
+        const settlementChainTokenAddress = mapping.settlementChainTokenAddress;
+
+        const token = getToken(settlementChainId, settlementChainTokenAddress);
+
+        const tokenChainData: TokenChainData = {
+          ...token,
+          sourceChainId,
+          sourceChainDecimals: mapping.sourceChainTokenDecimals,
+          sourceChainPrices: undefined,
+          sourceChainBalance: balance,
+        };
+
+        console.log(
+          "pricesData is",
+          pricesData ? "defined" : "undefined",
+          "and settlement chain token addresss is",
+          pricesData && settlementChainTokenAddress in pricesData ? "in it" : "not in it"
+        );
+
+        if (pricesData && settlementChainTokenAddress in pricesData) {
+          // convert prices from settlement chain decimals to source chain decimals if decimals are different
+
+          const settlementChainTokenDecimals = token.decimals;
+          const sourceChainTokenDecimals = mapping.sourceChainTokenDecimals;
+
+          let adjustedPrices = pricesData[settlementChainTokenAddress];
+
+          if (settlementChainTokenDecimals !== sourceChainTokenDecimals) {
+            // if current price is 1000 with 1 decimal (100_0) on settlement chain
+            // and source chain has 3 decimals
+            // then price should be 100_000
+            // so, 1000 * 10 ** 3 / 10 ** 1 = 100_000
+            adjustedPrices = {
+              minPrice: bigMath.mulDiv(
+                adjustedPrices.minPrice,
+                10n ** BigInt(sourceChainTokenDecimals),
+                10n ** BigInt(settlementChainTokenDecimals)
+              ),
+              maxPrice: bigMath.mulDiv(
+                adjustedPrices.maxPrice,
+                10n ** BigInt(sourceChainTokenDecimals),
+                10n ** BigInt(settlementChainTokenDecimals)
+              ),
+            };
+          }
+
+          tokenChainData.sourceChainPrices = adjustedPrices;
+        }
+
+        tokenChainDataArray.push(tokenChainData);
+      }
+    }
+
+    return tokenChainDataArray;
+  }, [pricesData, settlementChainId, tokenBalances]);
+
+  return tokenChainDataArray;
 }
 
 export function useGmxAccountTokensData(): TokensData {

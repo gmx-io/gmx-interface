@@ -1,7 +1,7 @@
 import { ClientConfig, HttpTransportConfig, createPublicClient, http } from "viem";
-import { arbitrum, avalanche, avalancheFuji } from "viem/chains";
+import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, base, sonic } from "viem/chains";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BASE_MAINNET, SONIC_MAINNET } from "config/chains";
 import { isWebWorker } from "config/env";
 import { sleep } from "lib/sleep";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
@@ -22,9 +22,13 @@ import { serializeMulticallErrors } from "./utils";
 export const MAX_TIMEOUT = 20000;
 
 const CHAIN_BY_CHAIN_ID = {
-  [AVALANCHE_FUJI]: avalancheFuji,
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
+  [SONIC_MAINNET]: sonic,
+  [BASE_MAINNET]: base,
+
+  [AVALANCHE_FUJI]: avalancheFuji,
+  [ARBITRUM_SEPOLIA]: arbitrumSepolia,
 };
 
 export type MulticallProviderUrls = {
@@ -63,7 +67,44 @@ const BATCH_CONFIGS: Record<
       },
     },
   },
+  [SONIC_MAINNET]: {
+    http: {
+      batchSize: 0,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
+  },
+  [BASE_MAINNET]: {
+    http: {
+      batchSize: 0,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
+  },
+
   [AVALANCHE_FUJI]: {
+    http: {
+      batchSize: 40,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
+  },
+  [ARBITRUM_SEPOLIA]: {
     http: {
       batchSize: 40,
       wait: 0,

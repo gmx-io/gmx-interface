@@ -3,7 +3,7 @@ import { Token, TokenPrices } from "domain/tokens";
 export type TokenChainData = Token & {
   sourceChainId: number;
   sourceChainDecimals: number;
-  sourceChainPrices: TokenPrices;
+  sourceChainPrices: TokenPrices | undefined;
   sourceChainBalance: bigint | undefined;
 };
 

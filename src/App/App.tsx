@@ -51,9 +51,6 @@ function KeydSwrConfig({ children }: { children: React.ReactNode }) {
 }
 
 function App() {
-  // const { chainId } = useChainId();
-  const { chainId } = useWallet();
-
   useEffect(() => {
     const defaultLanguage = localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale;
     dynamicActivate(defaultLanguage);

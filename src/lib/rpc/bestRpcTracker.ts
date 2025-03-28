@@ -1,29 +1,28 @@
-import { Provider, ethers } from "ethers";
 import {
-  RPC_PROVIDERS,
-  FALLBACK_PROVIDERS,
-  SUPPORTED_CHAIN_IDS,
   ARBITRUM,
   AVALANCHE,
   AVALANCHE_FUJI,
+  FALLBACK_PROVIDERS,
+  RPC_PROVIDERS,
   getFallbackRpcUrl,
 } from "config/chains";
+import { getContract, getDataStoreContract, getMulticallContract } from "config/contracts";
 import { getRpcProviderKey } from "config/localStorage";
-import { isDebugMode } from "lib/localStorage";
-import orderBy from "lodash/orderBy";
-import minBy from "lodash/minBy";
-import maxBy from "lodash/maxBy";
 import { differenceInMilliseconds } from "date-fns";
-import { getMulticallContract, getDataStoreContract } from "config/contracts";
-import { getContract } from "config/contracts";
-import { HASHED_MARKET_CONFIG_KEYS } from "sdk/prebuilt";
+import { Provider, ethers } from "ethers";
+import { isDebugMode } from "lib/localStorage";
 import { sleep } from "lib/sleep";
+import maxBy from "lodash/maxBy";
+import minBy from "lodash/minBy";
+import orderBy from "lodash/orderBy";
 import { useEffect, useState } from "react";
+import { HASHED_MARKET_CONFIG_KEYS } from "sdk/prebuilt";
 
-import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
-import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
-import { RpcTrackerRankingCounter } from "lib/metrics";
+import { SOURCE_CHAINS } from "context/GmxAccountContext/config";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
+import { RpcTrackerRankingCounter } from "lib/metrics";
+import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
+import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 
 const PROBE_TIMEOUT = 10 * 1000; // 10 seconds / Frequency of RPC probing
 const PROBE_FAIL_TIMEOUT = 10 * 1000; // 10 seconds / Abort RPC probe if it takes longer
@@ -353,7 +352,8 @@ async function probeRpc(
 function initTrackerState() {
   const now = Date.now();
 
-  return SUPPORTED_CHAIN_IDS.reduce<RpcTrackerState>((acc, chainId) => {
+  // here
+  return SOURCE_CHAINS.reduce<RpcTrackerState>((acc, chainId) => {
     const prepareProviders = (urls: string[], { isPublic }: { isPublic: boolean }) => {
       return urls.reduce<Record<string, ProviderData>>((acc, rpcUrl) => {
         acc[rpcUrl] = {

@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import sample from "lodash/sample";
-import { arbitrumSepolia, base } from "viem/chains";
+import { arbitrumSepolia, base, sonic } from "viem/chains";
 import {
   ARBITRUM_SEPOLIA,
   BASE_MAINNET,
@@ -152,7 +152,7 @@ export const RPC_PROVIDERS = {
   ],
   [ARBITRUM_SEPOLIA]: [...arbitrumSepolia.rpcUrls.default.http],
   [BASE_MAINNET]: [...base.rpcUrls.default.http],
-  [SONIC_MAINNET]: ["https://rpc.soniclabs.com"],
+  [SONIC_MAINNET]: [...sonic.rpcUrls.default.http],
 };
 
 export const FALLBACK_PROVIDERS = {

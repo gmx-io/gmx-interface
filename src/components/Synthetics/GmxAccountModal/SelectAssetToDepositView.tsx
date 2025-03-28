@@ -4,23 +4,16 @@ import { useMultichainTokens } from "components/Synthetics/GmxAccountModal/hooks
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ARBITRUM, AVALANCHE, BASE_MAINNET, SONIC_MAINNET, getChainName } from "config/chains";
-import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
+import { MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "context/GmxAccountContext/config";
+import { useGmxAccountModalOpen, useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { TokenChainData } from "context/GmxAccountContext/types";
 import InfoIconComponent from "img/ic_info.svg?react";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
-const NETWORKS_FILTER = [
-  { id: "all", name: "All Networks" },
-  { id: ARBITRUM, name: "Arbitrum" },
-  { id: AVALANCHE, name: "Avalanche" },
-  { id: BASE_MAINNET, name: "Base" },
-  { id: SONIC_MAINNET, name: "Sonic" },
-];
-
 type TokenListItemProps = {
-  tokenChainData: TokenChainData;
+  tokenChainData: DisplayTokenChainData;
   onClick?: () => void;
   className?: string;
 };
@@ -53,31 +46,68 @@ const TokenListItem = ({ tokenChainData, onClick, className }: TokenListItemProp
           )}
         </div>
         <div className="text-body-small text-slate-100">
-          {formatUsd(
-            convertToUsd(
-              tokenChainData.sourceChainBalance,
-              tokenChainData.sourceChainDecimals,
-              getMidPrice(tokenChainData.sourceChainPrices)
-            )
-          )}
+          {tokenChainData.sourceChainBalanceUsd > 0n ? formatUsd(tokenChainData.sourceChainBalanceUsd) : "-"}
         </div>
       </div>
     </div>
   );
 };
 
+type DisplayTokenChainData = TokenChainData & {
+  sourceChainBalanceUsd: bigint;
+};
+
 export const SelectAssetToDepositView = () => {
+  const [settlementChainId] = useGmxAccountSettlementChainId();
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   const [selectedNetwork, setSelectedNetwork] = useState<number | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
 
   const balances = useMultichainTokens();
 
-  const filteredBalances = balances.filter((balance) => {
-    const matchesSearch = balance.symbol.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesNetwork = selectedNetwork === "all" || balance.sourceChainId === selectedNetwork;
-    return matchesSearch && matchesNetwork;
-  });
+  const NETWORKS_FILTER = useMemo(() => {
+    const wildCard = { id: "all", name: "All Networks" };
+
+    const chainFilters = Object.keys(MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChainId]).map((sourceChainId) => ({
+      id: parseInt(sourceChainId),
+      name: getChainName(parseInt(sourceChainId)),
+    }));
+
+    return [wildCard, ...chainFilters];
+  }, [settlementChainId]);
+
+  const filteredBalances: DisplayTokenChainData[] = useMemo(() => {
+    return balances
+      .filter((balance) => {
+        const matchesSearch = balance.symbol.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesNetwork = selectedNetwork === "all" || balance.sourceChainId === selectedNetwork;
+        return matchesSearch && matchesNetwork;
+      })
+      .map((balance) => {
+        let balanceUsd = 0n;
+
+        if (balance.sourceChainPrices) {
+          balanceUsd =
+            convertToUsd(
+              balance.sourceChainBalance,
+              balance.sourceChainDecimals,
+              getMidPrice(balance.sourceChainPrices)
+            ) ?? 0n;
+        }
+
+        return {
+          ...balance,
+          sourceChainBalanceUsd: balanceUsd,
+        };
+      })
+      .sort((a, b) => {
+        if (a.sourceChainBalanceUsd === b.sourceChainBalanceUsd) {
+          return 0;
+        }
+
+        return a.sourceChainBalanceUsd > b.sourceChainBalanceUsd ? -1 : 1;
+      });
+  }, [balances, searchQuery, selectedNetwork]);
 
   return (
     <div className="flex grow flex-col gap-8 overflow-y-hidden">

@@ -1,5 +1,6 @@
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BASE_MAINNET, SONIC_MAINNET } from "config/chains";
 import { isDevelopment } from "config/env";
+import uniq from "lodash/uniq";
 
 // we need to have a token bare config for each chain and map it to the settlement chain token
 
@@ -28,6 +29,18 @@ type MultichainDepositSupportedTokens = Record<
   // settlement chain id
   number,
   MultichainTokenId[]
+>;
+
+type MultichainSupportedTokenMap = Record<
+  // settlement chain id
+  number,
+  // source chain id
+  Record<
+    // source chain id
+    number,
+    // source chain token address
+    string[]
+  >
 >;
 
 type MultichainWithdrawSupportedTokens = Record<
@@ -116,38 +129,45 @@ const TOKEN_GROUPS: MultichainTokenGroup[] = [
       decimals: 8,
     },
   ],
-  // USDC - testnets
-  [
-    {
-      chainId: ARBITRUM_SEPOLIA,
-      address: "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d",
-      decimals: 6,
-    },
-    {
-      chainId: AVALANCHE_FUJI,
-      // Technically different from offical USDC on Avalanche Fuji
-      address: "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
-      decimals: 6,
-    },
-  ],
-  // WETH - testnets
-  [
-    {
-      chainId: ARBITRUM_SEPOLIA,
-      address: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
-      decimals: 18,
-    },
-    {
-      chainId: AVALANCHE_FUJI,
-      address: "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
-      decimals: 18,
-    },
-  ],
 ];
 
-const SETTLEMENT_CHAINS = !isDevelopment() ? [ARBITRUM, AVALANCHE] : [ARBITRUM, AVALANCHE /* ARBITRUM_SEPOLIA */];
+if (isDevelopment()) {
+  TOKEN_GROUPS.push(
+    // USDC - testnets
+    [
+      {
+        chainId: ARBITRUM_SEPOLIA,
+        address: "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d",
+        decimals: 6,
+      },
+      {
+        chainId: AVALANCHE_FUJI,
+        // Technically different from offical USDC on Avalanche Fuji
+        address: "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
+        decimals: 6,
+      },
+    ],
+    // WETH - testnets
+    [
+      {
+        chainId: ARBITRUM_SEPOLIA,
+        address: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
+        decimals: 18,
+      },
+      {
+        chainId: AVALANCHE_FUJI,
+        address: "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
+        decimals: 18,
+      },
+    ]
+  );
+}
 
-const SOURCE_CHAINS = !isDevelopment()
+export const SETTLEMENT_CHAINS = !isDevelopment()
+  ? [ARBITRUM, AVALANCHE]
+  : [ARBITRUM, AVALANCHE /* ARBITRUM_SEPOLIA */];
+
+export const SOURCE_CHAINS = !isDevelopment()
   ? [BASE_MAINNET, SONIC_MAINNET, ARBITRUM, AVALANCHE]
   : [BASE_MAINNET, SONIC_MAINNET, ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ARBITRUM_SEPOLIA];
 
@@ -162,6 +182,7 @@ export function isSourceChain(chainId: number) {
 export const MULTI_CHAIN_TOKEN_MAPPING: MultichainTokenMapping = {};
 
 export const MULTI_CHAIN_DEPOSIT_SUPPORTED_TOKENS: MultichainDepositSupportedTokens = {};
+export const MULTI_CHAIN_SUPPORTED_TOKEN_MAP: MultichainSupportedTokenMap = {};
 
 export const MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS: MultichainWithdrawSupportedTokens = {};
 
@@ -193,6 +214,56 @@ for (const tokenGroup of TOKEN_GROUPS) {
       MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS[settlementToken.chainId] =
         MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS[settlementToken.chainId] || [];
       MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS[settlementToken.chainId].push(settlementToken.address);
+    }
+  }
+}
+
+// for (const settlementChain of SETTLEMENT_CHAINS) {
+//   MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChain] = [];
+
+//   for (const sourceChain of SOURCE_CHAINS) {
+//     MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChain][sourceChain] = [];
+
+//     for (const tokenGroup of TOKEN_GROUPS) {
+//       const hasTokenInSettlementChain = tokenGroup.some((token) => token.chainId === settlementChain);
+//       const sourceChainTokenId = tokenGroup.find((token) => token.chainId === sourceChain);
+//       const hasTokenInSourceChain = sourceChainTokenId !== undefined;
+
+//       if (hasTokenInSettlementChain && hasTokenInSourceChain) {
+//         MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChain][sourceChain].push(sourceChainTokenId.address);
+//       }
+//     }
+//   }
+// }
+
+for (const tokenGroup of TOKEN_GROUPS) {
+  for (const firstTokenId of tokenGroup) {
+    for (const secondTokenId of tokenGroup) {
+      if (firstTokenId.chainId === secondTokenId.chainId) continue;
+
+      if (isSettlementChain(firstTokenId.chainId) && isSourceChain(secondTokenId.chainId)) {
+        MULTI_CHAIN_SUPPORTED_TOKEN_MAP[firstTokenId.chainId] =
+          MULTI_CHAIN_SUPPORTED_TOKEN_MAP[firstTokenId.chainId] || {};
+        MULTI_CHAIN_SUPPORTED_TOKEN_MAP[firstTokenId.chainId][secondTokenId.chainId] =
+          MULTI_CHAIN_SUPPORTED_TOKEN_MAP[firstTokenId.chainId][secondTokenId.chainId] || [];
+
+        MULTI_CHAIN_SUPPORTED_TOKEN_MAP[firstTokenId.chainId][secondTokenId.chainId].push(secondTokenId.address);
+        MULTI_CHAIN_SUPPORTED_TOKEN_MAP[firstTokenId.chainId][secondTokenId.chainId] = uniq(
+          MULTI_CHAIN_SUPPORTED_TOKEN_MAP[firstTokenId.chainId][secondTokenId.chainId]
+        );
+      }
+
+      if (isSourceChain(firstTokenId.chainId) && isSettlementChain(secondTokenId.chainId)) {
+        MULTI_CHAIN_SUPPORTED_TOKEN_MAP[secondTokenId.chainId] =
+          MULTI_CHAIN_SUPPORTED_TOKEN_MAP[secondTokenId.chainId] || {};
+        MULTI_CHAIN_SUPPORTED_TOKEN_MAP[secondTokenId.chainId][firstTokenId.chainId] =
+          MULTI_CHAIN_SUPPORTED_TOKEN_MAP[secondTokenId.chainId][firstTokenId.chainId] || [];
+
+        MULTI_CHAIN_SUPPORTED_TOKEN_MAP[secondTokenId.chainId][firstTokenId.chainId].push(firstTokenId.address);
+        MULTI_CHAIN_SUPPORTED_TOKEN_MAP[secondTokenId.chainId][firstTokenId.chainId] = uniq(
+          MULTI_CHAIN_SUPPORTED_TOKEN_MAP[secondTokenId.chainId][firstTokenId.chainId]
+        );
+      }
     }
   }
 }
