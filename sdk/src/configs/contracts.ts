@@ -195,9 +195,10 @@ export const CONTRACTS = {
     GlvRouter: "0x16500c1d8ffe2f695d8dcadf753f664993287ae4",
     GlvVault: "0x527FB0bCfF63C47761039bB386cFE181A92a4701",
 
-    OpenOceanRouter: "0x6352a56caadC4F1E25CD6c75970Fa768A3304e64",
-
+    SubaccountGelatoRelayRouter: zeroAddress,
+    GelatoRelayRouter: zeroAddress,
     ExternalHandler: "0xD149573a098223a9185433290a5A5CDbFa54a8A9",
+    OpenOceanRouter: "0x6352a56caadC4F1E25CD6c75970Fa768A3304e64",
 
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   },
@@ -260,6 +261,11 @@ export const CONTRACTS = {
     GlvReader: "0x4599Ed5939C673505B7AFcd020E1d603b0dCAf69",
     GlvRouter: "0x377d979AB35Cd848497707ffa6Ee91783f925b80",
     GlvVault: "0x76f93b5240DF811a3fc32bEDd58daA5784e46C96",
+
+    SubaccountGelatoRelayRouter: zeroAddress,
+    GelatoRelayRouter: zeroAddress,
+    ExternalHandler: zeroAddress,
+    OpenOceanRouter: zeroAddress,
 
     Multicall: "0x0f53e512b49202a37c81c6085417C9a9005F2196",
   },

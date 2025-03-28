@@ -14,6 +14,6 @@ export function getGasPaymentTokens(chainId: number): string[] {
   return GAS_PAYMENT_TOKENS[chainId];
 }
 
-export function getDefaultGasPaymentToken(chainId: number): string {
-  return GAS_PAYMENT_TOKENS[chainId][0];
+export function getDefaultGasPaymentToken(chainId: number): string | undefined {
+  return GAS_PAYMENT_TOKENS[chainId]?.[0];
 }

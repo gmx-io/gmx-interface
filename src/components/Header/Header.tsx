@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { useMedia } from "react-use";
 
 import { AppHeaderLinks } from "./AppHeaderLinks";
-import { AppHeaderUser } from "./AppHeaderUser";
+import { AppHeaderChainAndSettings } from "./AppHeaderChainAndSettings";
 
 import logoImg from "img/logo_GMX.svg";
 import logoSmallImg from "img/logo_GMX_small.svg";
@@ -113,7 +113,7 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
               )}
             </div>
             <div className="App-header-container-right">
-              <AppHeaderUser openSettings={openSettings} showRedirectModal={showRedirectModal} />
+              <AppHeaderChainAndSettings openSettings={openSettings} showRedirectModal={showRedirectModal} />
             </div>
           </div>
         )}
@@ -131,7 +131,7 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
                 </div>
               </div>
               <div className="App-header-container-right">
-                <AppHeaderUser
+                <AppHeaderChainAndSettings
                   openSettings={openSettings}
                   small
                   showRedirectModal={showRedirectModal}

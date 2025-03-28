@@ -35,14 +35,14 @@ export const IS_NETWORK_DISABLED = {
 
 export const CHAIN_NAMES_MAP = {
   [BSС_MAINNET]: "BSC",
-  [BSС_TESTNET]: "BSC Testnet",
   [ARBITRUM]: "Arbitrum",
+  [BASE_MAINNET]: "Base",
+  [SONIC_MAINNET]: "Sonic",
+
+  [ARBITRUM_SEPOLIA]: "Arbitrum Sepolia",
   [AVALANCHE]: "Avalanche",
   [AVALANCHE_FUJI]: "Avalanche Fuji",
-  [BASE_MAINNET]: "Base",
-  // [BASE_SEPOLIA]: "Base Sepolia",
-  [SONIC_MAINNET]: "Sonic",
-  // [SONIC_BLAZE]: "Sonic Blaze Testnet",
+  [BSС_TESTNET]: "BSC Testnet",
 };
 
 export const NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR = {

@@ -1,9 +1,9 @@
-import { MARKETS } from "sdk/configs/markets";
-import { createSelector } from "../utils";
-import { selectChainId, selectTokensData, selectWalletChainId } from "./globalSelectors";
-import { convertTokenAddress } from "sdk/configs/tokens";
+import { isSettlementChain, isSourceChain } from "context/GmxAccountContext/config";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
-import { isSettlementChain } from "context/GmxAccountContext/config";
+import { MARKETS } from "sdk/configs/markets";
+import { convertTokenAddress } from "sdk/configs/tokens";
+import { createSelector } from "../utils";
+import { selectTokensData, selectWalletChainId } from "./globalSelectors";
 
 const LONG_SHORT_TOKENS_MAP: Record<number, string[]> = {};
 
@@ -23,6 +23,16 @@ for (const chainId in MARKETS) {
   LONG_SHORT_TOKENS_MAP[chainId] = Array.from(set);
 }
 
+export const selectSourceChainId = createSelector((q) => {
+  const chainId = q(selectWalletChainId);
+
+  if (!chainId || !isSourceChain(chainId)) {
+    return undefined;
+  }
+
+  return chainId;
+});
+
 // Select tokensdata with only tokens that are possible to pay with
 // meaning the token is either long or short part of any market
 export const selectWalletPayableTokensData = createSelector((q) => {
@@ -33,6 +43,10 @@ export const selectWalletPayableTokensData = createSelector((q) => {
   }
 
   const longShortTokens = LONG_SHORT_TOKENS_MAP[chainId];
+
+  if (!longShortTokens) {
+    return EMPTY_OBJECT;
+  }
 
   const tokensData = {};
 

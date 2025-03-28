@@ -1,5 +1,6 @@
 import {
   ARBITRUM,
+  ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
   BASE_MAINNET,
@@ -12,6 +13,7 @@ import avalanche from "img/ic_avalanche_24.svg";
 import avalancheTestnet from "img/ic_avalanche_testnet_24.svg";
 import baseIcon from "img/ic_base_24.svg";
 import sonicIcon from "img/ic_s_24.svg";
+import arbitrumSepolia from "img/ic_arbitrum_sepolia_24.svg";
 
 import gmxIcon from "img/ic_gmx_40.svg";
 import gmxOutlineIcon from "img/ic_gmxv1flat.svg";
@@ -72,12 +74,14 @@ const ICONS: Record<number | "common", ChainIcons> = {
 export const CHAIN_ID_TO_NETWORK_ICON = {
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
-  [AVALANCHE_FUJI]: avalancheTestnet,
-  [BASE_MAINNET]: baseIcon,
-  // [BASE_SEPOLIA]: baseIcon,
-  [SONIC_MAINNET]: sonicIcon,
-  // [SONIC_BLAZE]: sonicIcon,
   0: gmxIcon,
+  [BASE_MAINNET]: baseIcon,
+  [SONIC_MAINNET]: sonicIcon,
+
+  [AVALANCHE_FUJI]: avalancheTestnet,
+  [ARBITRUM_SEPOLIA]: arbitrumSepolia,
+  // [BASE_SEPOLIA]: baseIcon,
+  // [SONIC_BLAZE]: sonicIcon,
 };
 
 export function getIcon(chainId: number | "common", label: keyof ChainIcons) {
@@ -87,6 +91,15 @@ export function getIcon(chainId: number | "common", label: keyof ChainIcons) {
 
   return ICONS[chainId][label];
 }
+
+export function getChainIcon(chainId: number) {
+  if (!(chainId in CHAIN_ID_TO_NETWORK_ICON)) {
+    throw new Error(`No icon found for chain: ${chainId}`);
+  }
+
+  return CHAIN_ID_TO_NETWORK_ICON[chainId];
+}
+
 export function getIcons(chainId: number | "common") {
   if (!chainId || !(chainId in ICONS)) {
     throw new Error(`No icons found for chain: ${chainId}`);

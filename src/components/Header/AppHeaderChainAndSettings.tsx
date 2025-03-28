@@ -7,9 +7,17 @@ import { useRouteMatch } from "react-router-dom";
 
 import connectWalletImg from "img/ic_wallet_24.svg";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  BASE_MAINNET,
+  SONIC_MAINNET,
+  getChainName,
+} from "config/chains";
 import { isDevelopment } from "config/env";
-import { getIcon } from "config/icons";
+import { getChainIcon, getIcon } from "config/icons";
 
 import { useChainId } from "lib/chains";
 import { isHomeSite, shouldShowRedirectModal } from "lib/legacy";
@@ -27,6 +35,7 @@ import { NotifyButton } from "../NotifyButton/NotifyButton";
 import { HeaderLink } from "./HeaderLink";
 
 import "./Header.scss";
+import { isSettlementChain, isSourceChain } from "context/GmxAccountContext/config";
 
 type Props = {
   openSettings: () => void;
@@ -35,39 +44,60 @@ type Props = {
   menuToggle?: React.ReactNode;
 };
 
-const NETWORK_OPTIONS = [
+export type NetworkOption = {
+  label: string;
+  value: number;
+  icon: string;
+  color: string;
+};
+
+const NETWORK_OPTIONS: NetworkOption[] = [
   {
     label: getChainName(ARBITRUM),
     value: ARBITRUM,
-    icon: getIcon(ARBITRUM, "network"),
+    icon: getChainIcon(ARBITRUM),
     color: "#264f79",
   },
   {
     label: getChainName(AVALANCHE),
     value: AVALANCHE,
-    icon: getIcon(AVALANCHE, "network"),
+    icon: getChainIcon(AVALANCHE),
     color: "#E841424D",
+  },
+  {
+    label: getChainName(BASE_MAINNET),
+    value: BASE_MAINNET,
+    icon: getChainIcon(BASE_MAINNET),
+    color: "#0052ff",
+  },
+  {
+    label: getChainName(SONIC_MAINNET),
+    value: SONIC_MAINNET,
+    icon: getChainIcon(SONIC_MAINNET),
+    color: "#ffffff",
   },
 ];
 
 if (isDevelopment()) {
-  NETWORK_OPTIONS.push({
-    label: getChainName(AVALANCHE_FUJI),
-    value: AVALANCHE_FUJI,
-    icon: getIcon(AVALANCHE_FUJI, "network"),
-    color: "#E841424D",
-  });
+  NETWORK_OPTIONS.push(
+    {
+      label: getChainName(AVALANCHE_FUJI),
+      value: AVALANCHE_FUJI,
+      icon: getChainIcon(AVALANCHE_FUJI),
+      color: "#E841424D",
+    },
+    {
+      label: getChainName(ARBITRUM_SEPOLIA),
+      value: ARBITRUM_SEPOLIA,
+      icon: getChainIcon(ARBITRUM_SEPOLIA),
+      color: "#0052ff",
+    }
+  );
 }
 
-export function AppHeaderUser({
-  small,
-  menuToggle,
-  openSettings,
-
-  showRedirectModal,
-}: Props) {
-  const { chainId } = useChainId();
-  const { active, account } = useWallet();
+export function AppHeaderChainAndSettings({ small, menuToggle, openSettings, showRedirectModal }: Props) {
+  const { chainId: settlementChainId } = useChainId();
+  const { active, account, chainId: walletChainId } = useWallet();
   const { openConnectModal } = useConnectModal();
   const showConnectionOptions = !isHomeSite();
   const [tradePageVersion] = useTradePageVersion();
@@ -78,7 +108,9 @@ export function AppHeaderUser({
   const isOnTradePageV2 = useRouteMatch("/trade");
   const shouldHideTradeButton = isOnTradePageV1 || isOnTradePageV2;
 
-  const selectorLabel = getChainName(chainId);
+  const visualChainId = walletChainId !== undefined && isSourceChain(walletChainId) ? walletChainId : settlementChainId;
+
+  const selectedLabel = getChainName(visualChainId);
 
   const trackLaunchApp = useCallback(() => {
     userAnalytics.pushEvent<LandingPageLaunchAppEvent>(
@@ -126,9 +158,9 @@ export function AppHeaderUser({
             </ConnectWalletButton>
             {!small && <NotifyButton />}
             <NetworkDropdown
+              chainId={visualChainId}
               small={small}
               networkOptions={NETWORK_OPTIONS}
-              selectorLabel={selectorLabel}
               openSettings={openSettings}
             />
           </>
@@ -162,9 +194,9 @@ export function AppHeaderUser({
           </div>
           {!small && <NotifyButton />}
           <NetworkDropdown
+            chainId={visualChainId}
             small={small}
             networkOptions={NETWORK_OPTIONS}
-            selectorLabel={selectorLabel}
             openSettings={openSettings}
           />
         </>

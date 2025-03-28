@@ -7,6 +7,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { getExplorerUrl } from "config/chains";
 import { CURRENT_PROVIDER_LOCALSTORAGE_KEY, SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY } from "config/localStorage";
+import { isSettlementChain } from "context/GmxAccountContext/config";
 import { useGmxAccountModalOpen, useGmxAccountSelectedTransactionHash } from "context/GmxAccountContext/hooks";
 import { FundingHistoryItem } from "context/GmxAccountContext/types";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -38,7 +39,6 @@ import {
   useAvailableToTradeAssetSymbolsSettlementChain,
   useGmxAccountFundingHistory,
 } from "./hooks";
-import { isSettlementChain } from "context/GmxAccountContext/config";
 
 const TokenIcons = ({ tokens }: { tokens: string[] }) => {
   const displayTokens = tokens.slice(0, 3);

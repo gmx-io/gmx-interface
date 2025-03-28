@@ -4,11 +4,11 @@ import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequ
 import { GasPaymentTokenOption } from "./GasPaymentTokenOptionCard";
 
 type Props = {
-  curentTokenAddress: string;
+  currentTokenAddress: string | undefined;
   onSelectToken: (address: string) => void;
 };
 
-export function GasPaymentTokenSelector({ curentTokenAddress, onSelectToken }: Props) {
+export function GasPaymentTokenSelector({ currentTokenAddress, onSelectToken }: Props) {
   const { chainId } = useChainId();
   const { tokensData } = useTokensDataRequest(chainId);
   const gasPaymentTokens = getGasPaymentTokens(chainId);
@@ -21,7 +21,7 @@ export function GasPaymentTokenSelector({ curentTokenAddress, onSelectToken }: P
             tokensData={tokensData}
             key={tokenAddress}
             tokenAddress={tokenAddress}
-            isSelected={curentTokenAddress === tokenAddress}
+            isSelected={currentTokenAddress === tokenAddress}
             onSelect={() => onSelectToken(tokenAddress)}
           />
         ))}

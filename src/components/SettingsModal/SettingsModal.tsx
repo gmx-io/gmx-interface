@@ -48,7 +48,9 @@ export function SettingsModal({
   const [expressOrdersEnabled, setExpressOrdersEnabled] = useState(false);
   const [oneClickTradingEnabled, setOneClickTradingEnabled] = useState(false);
 
-  const [gasPaymentTokenAddress, setGasPaymentTokenAddress] = useState<string>(getDefaultGasPaymentToken(chainId));
+  const [gasPaymentTokenAddress, setGasPaymentTokenAddress] = useState<string | undefined>(
+    getDefaultGasPaymentToken(chainId)
+  );
 
   useEffect(() => {
     if (!isSettingsVisible) return;
@@ -120,7 +122,7 @@ export function SettingsModal({
     // Save Express Orders and One-Click Trading settings
     settings.setExpressOrdersEnabled(expressOrdersEnabled);
     settings.setOneClickTradingEnabled(oneClickTradingEnabled);
-    settings.setGasPaymentTokenAddress(gasPaymentTokenAddress);
+    settings.setGasPaymentTokenAddress(gasPaymentTokenAddress ?? "");
 
     setIsSettingsVisible(false);
   }, [
@@ -217,7 +219,7 @@ export function SettingsModal({
                 <Trans>Gas Payment Token</Trans>
               </div>
               <GasPaymentTokenSelector
-                curentTokenAddress={gasPaymentTokenAddress}
+                currentTokenAddress={gasPaymentTokenAddress}
                 onSelectToken={setGasPaymentTokenAddress}
               />
             </SettingsSection>

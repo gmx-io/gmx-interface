@@ -145,10 +145,18 @@ const TOKEN_GROUPS: MultichainTokenGroup[] = [
   ],
 ];
 
-const SETTLEMENT_CHAINS = isDevelopment() ? [ARBITRUM, AVALANCHE] : [ARBITRUM, AVALANCHE, ARBITRUM_SEPOLIA];
+const SETTLEMENT_CHAINS = !isDevelopment() ? [ARBITRUM, AVALANCHE] : [ARBITRUM, AVALANCHE /* ARBITRUM_SEPOLIA */];
+
+const SOURCE_CHAINS = !isDevelopment()
+  ? [BASE_MAINNET, SONIC_MAINNET, ARBITRUM, AVALANCHE]
+  : [BASE_MAINNET, SONIC_MAINNET, ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ARBITRUM_SEPOLIA];
 
 export function isSettlementChain(chainId: number) {
   return SETTLEMENT_CHAINS.includes(chainId);
+}
+
+export function isSourceChain(chainId: number) {
+  return SOURCE_CHAINS.includes(chainId);
 }
 
 export const MULTI_CHAIN_TOKEN_MAPPING: MultichainTokenMapping = {};

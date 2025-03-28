@@ -180,12 +180,12 @@
   height: 0.8rem;
   border-radius: 50%;
 }
-.active-dot.Arbitrum {
+/* .active-dot.Arbitrum {
   background-color: #4275a8;
 }
 .active-dot.Avalanche {
   background-color: #e84142;
-}
+} */
 .network-dropdown-label {
   font-size: 1.25rem;
   margin-bottom: 0.8rem;
