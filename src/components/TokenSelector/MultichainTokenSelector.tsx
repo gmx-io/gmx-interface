@@ -39,7 +39,7 @@ type Props = {
   footerContent?: ReactNode;
   qa?: string;
   gmxAccountTokensData: TokensData | undefined;
-  multichainTokens?: TokenChainData[];
+  multichainTokens: TokenChainData[] | undefined;
 };
 
 export function MultichainTokenSelector({
@@ -446,13 +446,19 @@ function MultichainTokenList({
       {sortedFilteredTokens.map((token) => {
         return (
           <div
-            key={token.address}
+            key={token.address + "_" + token.sourceChainId}
             // data-qa={`${qa}-token-${token.symbol}`}
             className={cx("TokenSelector-token-row")}
             // onClick={() => onSelectToken(token)}
           >
             <div className="Token-info">
-              <TokenIcon symbol={token.symbol} className="token-logo" displaySize={40} importSize={40} />
+              <TokenIcon
+                symbol={token.symbol}
+                className="token-logo"
+                displaySize={40}
+                importSize={40}
+                chainIdBadge={token.sourceChainId}
+              />
 
               <div className="Token-symbol">
                 <div className="Token-text">{token.symbol}</div>

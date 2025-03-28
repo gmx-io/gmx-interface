@@ -1,6 +1,6 @@
 import cx from "classnames";
 import Button from "components/Button/Button";
-import { useMultichainBalances } from "components/Synthetics/GmxAccountModal/hooks";
+import { useMultichainTokens } from "components/Synthetics/GmxAccountModal/hooks";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ARBITRUM, AVALANCHE, BASE_MAINNET, SONIC_MAINNET, getChainName } from "config/chains";
@@ -71,7 +71,7 @@ export const SelectAssetToDepositView = () => {
   const [selectedNetwork, setSelectedNetwork] = useState<number | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const balances = useMultichainBalances();
+  const balances = useMultichainTokens();
 
   const filteredBalances = balances.filter((balance) => {
     const matchesSearch = balance.symbol.toLowerCase().includes(searchQuery.toLowerCase());

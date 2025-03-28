@@ -3070,6 +3070,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@layerzerolabs/lz-definitions@npm:3.0.83":
+  version: 3.0.83
+  resolution: "@layerzerolabs/lz-definitions@npm:3.0.83"
+  dependencies:
+    tiny-invariant: ^1.3.1
+  checksum: cfde5ade7126a3a2739f46c6d0268c659d10712b1380a9abfaf797381153b1a9b0eff70b380d52bed084644e59718f64bca48363306f9be4812f2945b9aec3d3
+  languageName: node
+  linkType: hard
+
 "@lingui/babel-plugin-extract-messages@npm:4.10.0":
   version: 4.10.0
   resolution: "@lingui/babel-plugin-extract-messages@npm:4.10.0"
@@ -4343,6 +4352,13 @@ __metadata:
     "@stablelib/random": ^1.0.2
     "@stablelib/wipe": ^1.0.1
   checksum: f8537066b542b6770c1b5b2ae5ad0688d1b986e4bf818067c152c123a5471531987bbf024224f75f387f481ccc5b628e391e49e92102b8b1a3e2d449d6105402
+  languageName: node
+  linkType: hard
+
+"@stargatefinance/stg-definitions-v2@npm:2.0.1":
+  version: 2.0.1
+  resolution: "@stargatefinance/stg-definitions-v2@npm:2.0.1"
+  checksum: 8cd1c0a79a2e03a0dfbc1adb71453e9675050401475cb8e6a65765a67987043709c0c555c3f2aba33963889c2317b1b643f6b9e55a427765f35c58f10beef489
   languageName: node
   linkType: hard
 
@@ -9845,6 +9861,7 @@ __metadata:
     "@floating-ui/react": 0.26.19
     "@gelatonetwork/relay-sdk": 5.6.0
     "@headlessui/react": 1.7.19
+    "@layerzerolabs/lz-definitions": 3.0.83
     "@lingui/cli": 4.10.0
     "@lingui/core": 4.10.0
     "@lingui/loader": 4.10.0
@@ -9852,6 +9869,7 @@ __metadata:
     "@lingui/react": 4.10.0
     "@lingui/vite-plugin": 4.11.3
     "@rainbow-me/rainbowkit": 2.2.0
+    "@stargatefinance/stg-definitions-v2": 2.0.1
     "@tanstack/react-query": 5.25.0
     "@taskworld.com/rereselect": 0.3.0
     "@testing-library/jest-dom": 5.16.1

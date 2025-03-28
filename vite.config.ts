@@ -48,7 +48,7 @@ export default defineConfig({
   build: {
     assetsInlineLimit: 0,
     outDir: "build",
-    sourcemap: true,
+    sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks: {

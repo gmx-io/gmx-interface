@@ -98,7 +98,7 @@ import SettingsIcon24 from "img/ic_settings_24.svg?react";
 
 import { selectShowDebugValues } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import "./TradeBox.scss";
-import { useGmxAccountTokensData } from "../GmxAccountModal/hooks";
+import { useGmxAccountTokensData, useMultichainTokens } from "../GmxAccountModal/hooks";
 import { selectWalletPayableTokensData } from "context/SyntheticsStateContext/selectors/multichainSelectors";
 
 export function TradeBox() {
@@ -120,6 +120,7 @@ export function TradeBox() {
   const tokensData = useTokensData();
   const walletPayableTokensData = useSelector(selectWalletPayableTokensData);
   const gmxAccountTokensData = useGmxAccountTokensData();
+  const multichainTokens = useMultichainTokens();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
@@ -598,6 +599,7 @@ export function TradeBox() {
               qa="collateral-selector"
               walletPayableTokensData={walletPayableTokensData}
               gmxAccountTokensData={gmxAccountTokensData}
+              multichainTokens={multichainTokens}
             />
           )}
         </BuyInputSection>

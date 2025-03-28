@@ -123,7 +123,7 @@ export function useGmxAccountFundingHistory() {
   return fundingHistory;
 }
 
-export function useMultichainBalances(): TokenChainData[] {
+export function useMultichainTokens(): TokenChainData[] {
   const [settlementChainId] = useGmxAccountSettlementChainId();
   const multichainTokenIds = MULTI_CHAIN_DEPOSIT_SUPPORTED_TOKENS[settlementChainId];
 
