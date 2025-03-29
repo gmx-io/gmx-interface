@@ -13,10 +13,10 @@ import {
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
+import { parseError } from "lib/errors";
 import { formatAmountForMetrics, formatPercentageForMetrics, metrics } from "lib/metrics";
 import { OrderMetricData, OrderMetricId } from "lib/metrics/types";
 import { bigintToNumber, formatRatePercentage, roundToOrder } from "lib/numbers";
-import { parseError } from "lib/parseError";
 import { userAnalytics } from "lib/userAnalytics";
 import {
   AnalyticsOrderType,

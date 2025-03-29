@@ -7,7 +7,7 @@ import { SwapPricingType } from "types/orders";
 import { TokenPrices, TokensData } from "types/tokens";
 
 import type { GmxSdk } from "..";
-import { extractError } from "./contracts";
+import { extractError } from "./errors";
 import { convertToContractPrice, getTokenData } from "./tokens";
 
 export type PriceOverrides = {

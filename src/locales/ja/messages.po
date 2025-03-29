@@ -2259,11 +2259,11 @@ msgstr "DeFiダッシュボード"
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "{0}アップグレード未完了のためGLP購入は停止中です"
 
-#: src/lib/contracts/transactionErrors.tsx
+#: src/components/Errors/txnErrorsToasts.tsx
 msgid "<0>Error submitting order.</0><1/><2>Signer address does not match receiver address.</2><3/><4>Please reload the page and try again.</4>"
 msgstr ""
 
-#: src/lib/contracts/transactionErrors.tsx
+#: src/components/Errors/txnErrorsToasts.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 msgstr ""
 
@@ -2417,7 +2417,7 @@ msgstr ""
 msgid "Failed to cancel {ordersText}"
 msgstr ""
 
-#: src/lib/contracts/transactionErrors.tsx
+#: src/components/Errors/txnErrorsToasts.tsx
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "マーク価格が変化したため、アドレスの横に表示されている\"...\"アイコンをクリックして最大許容スリッページを増やすことを検討してください。"
 
@@ -7659,11 +7659,11 @@ msgstr "サイズ"
 msgid "Create Limit Swap"
 msgstr "指値スワップの作成"
 
-#: src/lib/contracts/transactionErrors.tsx
+#: src/components/Errors/txnErrorsToasts.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr ""
 
-#: src/lib/contracts/transactionErrors.tsx
+#: src/components/Errors/txnErrorsToasts.tsx
 msgid "Transaction was cancelled."
 msgstr "取引はキャンセルされました。"
 
@@ -7817,7 +7817,7 @@ msgstr "ガスのため最低 {0} {1} を残しておいてください"
 msgid "staked"
 msgstr "ステーク済"
 
-#: src/lib/contracts/transactionErrors.tsx
+#: src/components/Errors/txnErrorsToasts.tsx
 msgid "There is not enough {0} in your account on {1} to send this transaction.<0/><1/><2>Buy or Transfer {2} to {3}</2>"
 msgstr ""
 
@@ -8114,7 +8114,7 @@ msgstr ""
 msgid "Max 110 symbols exceeded"
 msgstr ""
 
-#: src/lib/contracts/transactionErrors.tsx
+#: src/components/Errors/txnErrorsToasts.tsx
 msgid "Transaction failed"
 msgstr "取引に失敗しました"
 

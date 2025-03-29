@@ -7,12 +7,13 @@ import { SetPendingFundingFeeSettlement, SetPendingOrder, SetPendingPosition } f
 import { TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { callContract } from "lib/contracts";
-import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { OrderMetricId } from "lib/metrics";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { isMarketOrderType } from "sdk/utils/orders";
+
+import { validateSignerAddress } from "components/Errors/txnErrorsToasts";
 
 import { getPositionKey } from "../positions";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";

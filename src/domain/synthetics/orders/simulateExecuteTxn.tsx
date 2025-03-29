@@ -11,7 +11,7 @@ import {
 } from "config/contracts";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
-import { extractDataFromError, getErrorMessage } from "lib/contracts/transactionErrors";
+import { ErrorData } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderSimulatedMetric, sendTxnErrorMetric } from "lib/metrics/utils";
@@ -20,9 +20,10 @@ import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { extractError } from "sdk/utils/contracts";
+import { extractDataFromError, extractError } from "sdk/utils/errors";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
 
+import { getTxnErrorToastContent } from "components/Errors/txnErrorsToasts";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
 import { isGlvEnabled } from "../markets/glv";
@@ -50,6 +51,10 @@ export type SimulateExecuteParams = {
   blockTimestampData: BlockTimestampData | undefined;
   additionalErrorContent?: React.ReactNode;
 };
+
+export function isSimulationPassed(errorData: ErrorData) {
+  return errorData?.contractError === "EndOfOracleSimulation";
+}
 
 export async function simulateExecuteTxn(chainId: number, p: SimulateExecuteParams) {
   const provider = getProvider(undefined, chainId);
@@ -210,7 +215,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
       // eslint-disable-next-line no-console
       console.error(parsingError);
 
-      const commonError = getErrorMessage(chainId, txnError, errorTitle, p.additionalErrorContent);
+      const commonError = getTxnErrorToastContent(chainId, txnError, errorTitle, p.additionalErrorContent);
       msg = commonError.failMsg;
     }
 

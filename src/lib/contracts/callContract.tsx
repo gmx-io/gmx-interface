@@ -8,14 +8,15 @@ import {
   PendingTransactionData,
   SetPendingTransactions,
 } from "context/PendingTxnsContext/PendingTxnsContext";
+import { makeTransactionErrorHandler } from "lib/errors/additionalValidation";
 import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 
+import { getTxnErrorToastContent } from "components/Errors/txnErrorsToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import { helperToast } from "../helperToast";
-import { getErrorMessage, makeTransactionErrorHandler } from "./transactionErrors";
 import { GasPriceData, getBestNonce, getGasLimit, getGasPrice } from "./utils";
 
 export async function callContract(
@@ -169,7 +170,7 @@ export async function callContract(
 
     return res;
   } catch (e) {
-    const { failMsg, autoCloseToast } = getErrorMessage(chainId, e, opts?.failMsg);
+    const { failMsg, autoCloseToast } = getTxnErrorToastContent(chainId, e, opts?.failMsg);
 
     helperToast.error(failMsg, { autoClose: autoCloseToast });
     throw e;

@@ -3,7 +3,8 @@ import { toast } from "react-toastify";
 import { useAccount } from "wagmi";
 
 import { useChainId as useDisplayedChainId } from "lib/chains";
-import { INVALID_NETWORK_TOAST_ID, getInvalidNetworkErrorMessage } from "lib/contracts/transactionErrors";
+
+import { INVALID_NETWORK_TOAST_ID, getInvalidNetworkToastContent } from "components/Errors/txnErrorsToasts";
 
 const toastSubscribe = (onStoreChange: () => void): (() => void) => {
   const cleanup = toast.onChange(({ id }) => {
@@ -25,7 +26,7 @@ export function useRealChainIdWarning() {
 
   useEffect(() => {
     if (!isConnectedToChainId && !isActive && isConnected) {
-      toast.error(getInvalidNetworkErrorMessage(displayedChainId), {
+      toast.error(getInvalidNetworkToastContent(displayedChainId), {
         toastId: INVALID_NETWORK_TOAST_ID,
         autoClose: false,
         closeButton: false,

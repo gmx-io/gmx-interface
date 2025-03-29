@@ -52,9 +52,24 @@ const TX_ERROR_PATTERNS: { [key in TxErrorType]: ErrorPattern[] } = {
   ],
 };
 
+export enum CustomErrorName {
+  EndOfOracleSimulation = "EndOfOracleSimulation",
+  InsufficientExecutionFee = "InsufficientExecutionFee",
+}
+
+export function getIsUserRejectedError(errorType: TxErrorType) {
+  return errorType === TxErrorType.UserDenied;
+}
+
+export function getIsUserError(errorType: TxErrorType) {
+  return [TxErrorType.UserDenied, TxErrorType.NetworkChanged, TxErrorType.Expired, TxErrorType.NotEnoughFunds].includes(
+    errorType
+  );
+}
+
 export type TxError = {
   message?: string;
-  code?: number;
+  code?: number | string;
   data?: any;
   error?: any;
 };
