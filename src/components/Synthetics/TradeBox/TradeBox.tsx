@@ -100,6 +100,11 @@ import { selectShowDebugValues } from "context/SyntheticsStateContext/selectors/
 import "./TradeBox.scss";
 import { useGmxAccountTokensData, useMultichainTokens } from "../GmxAccountModal/hooks";
 import { selectWalletPayableTokensData } from "context/SyntheticsStateContext/selectors/multichainSelectors";
+import {
+  useGmxAccountDepositViewChain,
+  useGmxAccountDepositViewTokenAddress,
+  useGmxAccountModalOpen,
+} from "context/GmxAccountContext/hooks";
 
 export function TradeBox() {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
@@ -128,6 +133,20 @@ export function TradeBox() {
   const settlementChainId = useSelector(selectChainId);
   const { account, chainId: walletChainId } = useWallet();
   const { shouldDisableValidationForTesting: shouldDisableValidation } = useSettings();
+
+  const [, setDepositViewChain] = useGmxAccountDepositViewChain();
+  const [, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
+  const [, setIsVisibleOrView] = useGmxAccountModalOpen();
+
+  const onDepositTokenAddress = useCallback(
+    (tokenAddress: string, chainId: number) => {
+      setDepositViewChain(chainId);
+      setDepositViewTokenAddress(tokenAddress);
+
+      setIsVisibleOrView("deposit");
+    },
+    [setDepositViewChain, setDepositViewTokenAddress, setIsVisibleOrView]
+  );
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
 
@@ -600,6 +619,7 @@ export function TradeBox() {
               walletPayableTokensData={walletPayableTokensData}
               gmxAccountTokensData={gmxAccountTokensData}
               multichainTokens={multichainTokens}
+              onDepositTokenAddress={onDepositTokenAddress}
             />
           )}
         </BuyInputSection>

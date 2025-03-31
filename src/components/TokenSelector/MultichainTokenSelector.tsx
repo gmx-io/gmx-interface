@@ -40,6 +40,8 @@ type Props = {
   qa?: string;
   gmxAccountTokensData: TokensData | undefined;
   multichainTokens: TokenChainData[] | undefined;
+
+  onDepositTokenAddress: (tokenAddress: string, chainId: number) => void;
 };
 
 export function MultichainTokenSelector({
@@ -65,6 +67,7 @@ export function MultichainTokenSelector({
   className,
   label,
   multichainTokens,
+  onDepositTokenAddress: propsOnDepositTokenAddress,
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -73,6 +76,11 @@ export function MultichainTokenSelector({
   const onSelectTokenAddress = (tokenAddress: string, isGmxAccount: boolean) => {
     setIsModalVisible(false);
     propsOnSelectTokenAddress(tokenAddress, isGmxAccount);
+  };
+
+  const onDepositTokenAddress = (tokenAddress: string, chainId: number) => {
+    setIsModalVisible(false);
+    propsOnDepositTokenAddress(tokenAddress, chainId);
   };
 
   useEffect(() => {
@@ -203,6 +211,7 @@ export function MultichainTokenSelector({
             searchKeyword={searchKeyword}
             multichainTokens={multichainTokens}
             extendedSortSequence={extendedSortSequence}
+            onDepositTokenAddress={onDepositTokenAddress}
           />
         )}
         {/* {sortedFilteredTokens.length === 0 && (
@@ -370,12 +379,14 @@ function MultichainTokenList({
   searchKeyword,
   multichainTokens,
   extendedSortSequence,
+  onDepositTokenAddress,
 }: {
   isModalVisible: boolean;
   setSearchKeyword: (searchKeyword: string) => void;
   searchKeyword: string;
   multichainTokens: TokenChainData[];
   extendedSortSequence?: string[];
+  onDepositTokenAddress: (tokenAddress: string, chainId: number) => void;
 }) {
   useEffect(() => {
     if (isModalVisible) {
@@ -449,7 +460,7 @@ function MultichainTokenList({
             key={token.address + "_" + token.sourceChainId}
             // data-qa={`${qa}-token-${token.symbol}`}
             className={cx("TokenSelector-token-row")}
-            // onClick={() => onSelectToken(token)}
+            onClick={() => onDepositTokenAddress(token.address, token.sourceChainId)}
           >
             <div className="Token-info">
               <TokenIcon
