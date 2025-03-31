@@ -4,11 +4,10 @@ import { useCallback, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
 import { callContract } from "lib/contracts";
+import { abis } from "sdk/abis";
 
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
-
-import Vester from "sdk/abis/Vester.json";
 
 export function AffiliateVesterWithdrawModal(props) {
   const { isVisible, setIsVisible, chainId, signer, setPendingTxns } = props;
@@ -20,7 +19,7 @@ export function AffiliateVesterWithdrawModal(props) {
 
   const onClickPrimary = useCallback(() => {
     setIsWithdrawing(true);
-    const contract = new ethers.Contract(affiliateVesterAddress, Vester.abi, signer);
+    const contract = new ethers.Contract(affiliateVesterAddress, abis.Vester, signer);
 
     callContract(chainId, contract, "withdraw", [], {
       sentMsg: t`Withdraw submitted.`,

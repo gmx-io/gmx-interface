@@ -1,5 +1,7 @@
-import useWallet from "lib/wallets/useWallet";
 import { useEffect } from "react";
+
+import useWallet from "lib/wallets/useWallet";
+
 import { AccountInitedEvent, metrics } from ".";
 
 let isSent = false;

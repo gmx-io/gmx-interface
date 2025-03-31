@@ -4,7 +4,6 @@ import uniq from "lodash/uniq";
 import { startTransition, useCallback, useEffect, useMemo, useState } from "react";
 import { useMedia } from "react-use";
 
-import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { getSyntheticsListSectionKey } from "config/localStorage";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -24,6 +23,8 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
+import { useRelayerFeeHandler } from "domain/synthetics/gassless/useRelayerFeeHandler";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import type { OrderType } from "domain/synthetics/orders/types";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
@@ -51,14 +52,12 @@ import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEdi
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSeller";
 import { SwapCard } from "components/Synthetics/SwapCard/SwapCard";
+import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { useIsCurtainOpen } from "components/Synthetics/TradeBox/Curtain";
 import { TradeBoxResponsiveContainer } from "components/Synthetics/TradeBox/TradeBoxResponsiveContainer";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import { Chart } from "components/Synthetics/TVChart/Chart";
-import Tab from "components/Tab/Tab";
-import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
-import { useRelayerFeeHandler } from "domain/synthetics/gassless/useRelayerFeeHandler";
+import Tabs from "components/Tabs/Tabs";
 
 export type Props = {
   openSettings: () => void;
@@ -215,7 +214,14 @@ export function SyntheticsPage(p: Props) {
     }),
     [positionsCount, renderOrdersTabTitle, totalClaimables]
   );
-  const tabOptions = useMemo(() => Object.keys(ListSection), []);
+  const tabsOptions = useMemo(
+    () =>
+      Object.values(ListSection).map((value) => ({
+        value,
+        label: tabLabels[value],
+      })),
+    [tabLabels]
+  );
 
   function renderClaims() {
     return (
@@ -255,10 +261,9 @@ export function SyntheticsPage(p: Props) {
           {!isMobile && (
             <div className="Exchange-lists large" data-qa="trade-table-large">
               <div className="Exchange-list-tab-container">
-                <Tab
-                  options={tabOptions}
-                  optionLabels={tabLabels}
-                  option={listSection}
+                <Tabs
+                  options={tabsOptions}
+                  selectedValue={listSection}
                   onChange={handleTabChange}
                   type="inline"
                   className="Exchange-list-tabs"
@@ -336,10 +341,9 @@ export function SyntheticsPage(p: Props) {
         {isMobile && (
           <div className="Exchange-lists small min-w-0" data-qa="trade-table-small">
             <div className="Exchange-list-tab-container">
-              <Tab
-                options={tabOptions}
-                optionLabels={tabLabels}
-                option={listSection}
+              <Tabs
+                options={tabsOptions}
+                selectedValue={listSection}
                 onChange={handleTabChange}
                 type="inline"
                 className="Exchange-list-tabs"
@@ -390,8 +394,6 @@ function useOrdersControl() {
   const [selectedOrderKeys, setSelectedOrderKeys] = useState<string[]>(EMPTY_ARRAY);
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(selectedOrderKeys.length);
 
-  const subaccount = useSelector(makeSelectSubaccountForActions(selectedOrderKeys.length));
-
   const isCancelOrdersProcessing = cancellingOrdersKeys.length > 0;
 
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
@@ -402,7 +404,7 @@ function useOrdersControl() {
       if (!signer) return;
       const keys = selectedOrderKeys;
       setCanellingOrdersKeys((p) => uniq(p.concat(keys)));
-      cancelOrdersTxn(chainId, signer, subaccount, {
+      cancelOrdersTxn(chainId, signer, {
         orderKeys: keys,
         setPendingTxns: setPendingTxns,
         detailsMsg: cancelOrdersDetailsMessage,
@@ -417,7 +419,7 @@ function useOrdersControl() {
           setCanellingOrdersKeys((p) => p.filter((e) => !keys.includes(e)));
         });
     },
-    [cancelOrdersDetailsMessage, chainId, selectedOrderKeys, setCanellingOrdersKeys, setPendingTxns, signer, subaccount]
+    [cancelOrdersDetailsMessage, chainId, selectedOrderKeys, setCanellingOrdersKeys, setPendingTxns, signer]
   );
 
   const onCancelOrder = useCallback(
@@ -425,7 +427,7 @@ function useOrdersControl() {
       if (!signer) return;
 
       setCanellingOrdersKeys((p) => uniq(p.concat(key)));
-      cancelOrdersTxn(chainId, signer, subaccount, {
+      cancelOrdersTxn(chainId, signer, {
         orderKeys: [key],
         setPendingTxns: setPendingTxns,
         detailsMsg: cancelOrdersDetailsMessage,
@@ -434,7 +436,7 @@ function useOrdersControl() {
         setSelectedOrderKeys((prev) => prev.filter((k) => k !== key));
       });
     },
-    [cancelOrdersDetailsMessage, chainId, setCanellingOrdersKeys, setPendingTxns, signer, subaccount]
+    [cancelOrdersDetailsMessage, chainId, setCanellingOrdersKeys, setPendingTxns, signer]
   );
 
   return {

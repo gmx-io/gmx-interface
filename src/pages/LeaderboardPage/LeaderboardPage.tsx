@@ -1,9 +1,12 @@
-import Footer from "components/Footer/Footer";
+import { useEffect } from "react";
+import { useHistory } from "react-router-dom";
+
 import { LeaderboardPageConfig } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { useChainId } from "lib/chains";
-import { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+
+import Footer from "components/Footer/Footer";
+
 import "./LeaderboardPage.scss";
 import { LeaderboardContainer } from "./components/LeaderboardContainer";
 

@@ -1,8 +1,9 @@
 import { getRemainingSubaccountActions } from "domain/synthetics/gassless/txns/subaccountUtils";
+import { bigMath } from "sdk/utils/bigmath";
+
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
 import { selectRawSubaccount } from "./subaccountSelectors";
-import { bigMath } from "sdk/utils/bigmath";
 
 export const selectAccount = (s: SyntheticsState) => s.globals.account;
 export const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.ordersInfoData;

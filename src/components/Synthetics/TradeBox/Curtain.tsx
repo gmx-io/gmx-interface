@@ -1,8 +1,8 @@
 import cx from "classnames";
 import throttle from "lodash/throttle";
 import { CSSProperties, PropsWithChildren, useCallback, useEffect, useRef, useState } from "react";
-import { createGlobalState } from "react-use";
 import { RemoveScroll } from "react-remove-scroll";
+import { createGlobalState } from "react-use";
 
 import Button from "components/Button/Button";
 

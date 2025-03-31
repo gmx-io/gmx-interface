@@ -1,31 +1,33 @@
+import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { AnimatePresence as FramerAnimatePresence, motion } from "framer-motion";
-import OneClickIcon from "img/ic_one_click.svg?react";
-import IconBolt from "img/icon-bolt.svg?react";
 import React, { ReactNode, useCallback, useEffect, useState } from "react";
 import { RiMenuLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { useLocalStorage, useMedia } from "react-use";
-import { AppHeaderChainAndSettings } from "./AppHeaderChainAndSettings";
-import { AppHeaderLinks } from "./AppHeaderLinks";
 
-import logoImg from "img/logo_GMX.svg";
-import logoSmallImg from "img/logo_GMX_small.svg";
 
-import { Trans } from "@lingui/macro";
-import { HeaderPromoBanner } from "components/HeaderPromoBanner/HeaderPromoBanner";
-import { isHomeSite } from "lib/legacy";
-import { HomeHeaderLinks } from "./HomeHeaderLinks";
-
-import { HeaderLink } from "./HeaderLink";
-
-import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { getExpressTradingBannerDismissedKey, getOneClickTradingPromoHiddenKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useChainId } from "lib/chains";
+import { isHomeSite } from "lib/legacy";
 import useWallet from "lib/wallets/useWallet";
+
+import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+import { HeaderPromoBanner } from "components/HeaderPromoBanner/HeaderPromoBanner";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import OneClickIcon from "img/ic_one_click.svg?react";
+import IconBolt from "img/icon-bolt.svg?react";
+import logoImg from "img/logo_GMX.svg";
+import logoSmallImg from "img/logo_GMX_small.svg";
+
+import { AppHeaderChainAndSettings } from "./AppHeaderChainAndSettings";
+import { AppHeaderLinks } from "./AppHeaderLinks";
+import { HeaderLink } from "./HeaderLink";
+import { HomeHeaderLinks } from "./HomeHeaderLinks";
+
 import "./Header.scss";
 
 // Fix framer-motion old React FC type (solved in react 18)

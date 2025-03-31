@@ -1,6 +1,7 @@
 import { t } from "@lingui/macro";
-import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
-import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
+
 import { getSubaccountApprovalKey, getSubaccountConfigKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useChainId } from "lib/chains";
@@ -8,9 +9,12 @@ import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { metrics } from "lib/metrics";
 import useWallet from "lib/wallets/useWallet";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import { DEFAULT_SUBACCOUNT_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
+
+import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
+import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
+
 import { generateSubaccount } from "../subaccount/generateSubaccount";
 import { removeSubaccountTxn } from "../subaccount/removeSubaccount";
 import { SubaccountSerializedConfig } from "../subaccount/types";
@@ -27,7 +31,6 @@ import {
   SignedSubbacountApproval,
   Subaccount,
 } from "./txns/subaccountUtils";
-import { toast } from "react-toastify";
 
 export type SubaccountState = ReturnType<typeof useInitSubaccountState>;
 

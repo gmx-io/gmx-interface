@@ -6,19 +6,18 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 import { useExecutionFeeBufferBps } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-
 import { getExecutionFeeWarning, type ExecutionFee } from "domain/synthetics/fees";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens/utils";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { getByKey } from "lib/objects";
+import { bigMath } from "sdk/utils/bigmath";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
-import { bigMath } from "sdk/utils/bigmath";
-import { getByKey } from "lib/objects";
+import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
 type Props = {
   executionFee?: ExecutionFee;
@@ -65,7 +64,7 @@ export function NetworkFeeRow({
     [isAdditionOrdersMsg]
   );
 
-  const estimatedRefundText = useMemo(() => {
+  const estimatedRefund = useMemo(() => {
     let estimatedRefundTokenAmount: bigint | undefined;
     let feeToken = executionFee?.feeToken;
     if (!executionFee || executionFeeBufferBps === undefined) {
@@ -143,6 +142,7 @@ export function NetworkFeeRow({
     );
 
     const warning = executionFee ? getExecutionFeeWarning(chainId, executionFee) : undefined;
+    const estimatedRefundText = estimatedRefund?.toString();
 
     return (
       <TooltipWithPortal
@@ -183,7 +183,7 @@ export function NetworkFeeRow({
     gasPaymentTokenAmount,
     displayDecimals,
     chainId,
-    estimatedRefundText,
+    estimatedRefund,
     additionalOrdersMsg,
   ]);
 

@@ -1,24 +1,21 @@
-import DataStore from "abis/DataStore.json";
-import SyntheticsReader from "abis/SyntheticsReader.json";
+import { Address, isAddressEqual } from "viem";
 
 import { getContract } from "configs/contracts";
 import { accountOrderListKey } from "configs/dataStore";
 import { getWrappedToken } from "configs/tokens";
-import type { GmxSdk } from "../../index";
 import { MarketFilterLongShortDirection, MarketFilterLongShortItemData } from "modules/trades/trades";
-
 import { GasLimitsConfig } from "types/fees";
 import { MarketsInfoData } from "types/markets";
 import { DecreasePositionSwapType, Order, OrderType } from "types/orders";
 import { SidecarLimitOrderEntry, SidecarSlTpOrderEntry } from "types/sidecarOrders";
 import { TokensData } from "types/tokens";
-
 import { estimateOrderOraclePriceCount } from "utils/fees/estimateOraclePriceCount";
 import { estimateExecuteDecreaseOrderGasLimit, getExecutionFee } from "utils/fees/executionFee";
-import { MulticallResult } from "utils/multicall";
+import type { MulticallRequestConfig, MulticallResult } from "utils/multicall";
 import { isIncreaseOrderType, isLimitOrderType, isSwapOrderType, isTriggerDecreaseOrderType } from "utils/orders";
-import { getSwapPathOutputAddresses } from "utils/swapStats";
-import { Address, isAddressEqual } from "viem";
+import { getSwapPathOutputAddresses } from "utils/swap/swapStats";
+
+import type { GmxSdk } from "../../index";
 
 export const getOrderExecutionFee = (
   sdk: GmxSdk,
@@ -161,7 +158,7 @@ export function buildGetOrdersMulticall(chainId: number, account: string) {
   return {
     dataStore: {
       contractAddress: getContract(chainId, "DataStore"),
-      abi: DataStore.abi,
+      abiId: "DataStore",
       calls: {
         count: {
           methodName: "getBytes32Count",
@@ -175,7 +172,7 @@ export function buildGetOrdersMulticall(chainId: number, account: string) {
     },
     reader: {
       contractAddress: getContract(chainId, "SyntheticsReader"),
-      abi: SyntheticsReader.abi,
+      abiId: "SyntheticsReader",
       calls: {
         orders: {
           methodName: "getAccountOrders",
@@ -183,7 +180,7 @@ export function buildGetOrdersMulticall(chainId: number, account: string) {
         },
       },
     },
-  };
+  } satisfies MulticallRequestConfig<any>;
 }
 
 export function parseGetOrdersResponse(res: MulticallResult<ReturnType<typeof buildGetOrdersMulticall>>) {

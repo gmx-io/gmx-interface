@@ -7,6 +7,7 @@ import {
 } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens/utils";
 import { parseValue } from "lib/numbers";
+
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
 import { selectPositionsInfoData, selectTokensData } from "./globalSelectors";

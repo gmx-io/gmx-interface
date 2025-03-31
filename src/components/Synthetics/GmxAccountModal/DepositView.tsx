@@ -1,7 +1,8 @@
 import { Trans, t } from "@lingui/macro";
-import Button from "components/Button/Button";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import { ValueTransition } from "components/ValueTransition/ValueTransition";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { BiChevronRight } from "react-icons/bi";
+import Skeleton from "react-loading-skeleton";
+
 import { getChainName } from "config/chains";
 import { getChainIcon } from "config/icons";
 import { isSourceChain } from "context/GmxAccountContext/config";
@@ -14,11 +15,13 @@ import {
 import { formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { BiChevronRight } from "react-icons/bi";
-import Skeleton from "react-loading-skeleton";
 import { getToken } from "sdk/configs/tokens";
 import { convertToUsd } from "sdk/utils/tokens";
+
+import Button from "components/Button/Button";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import { ValueTransition } from "components/ValueTransition/ValueTransition";
+
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { useMultichainTokens } from "./hooks";
 

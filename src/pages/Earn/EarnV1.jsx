@@ -10,21 +10,18 @@ import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "config/contracts";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { approveTokens } from "domain/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue, PRECISION } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
+import { abis } from "sdk/abis";
 import { getTokenBySymbol } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
 import Modal from "components/Modal/Modal";
-
-import Reader from "sdk/abis/Reader.json";
-import YieldFarm from "sdk/abis/YieldFarm.json";
-import YieldToken from "sdk/abis/YieldToken.json";
 
 import "./EarnV1.scss";
 
@@ -334,7 +331,7 @@ function StakeModal(props) {
     }
 
     setIsStaking(true);
-    const contract = new ethers.Contract(farmAddress, YieldFarm.abi, signer);
+    const contract = new ethers.Contract(farmAddress, abis.YieldFarm, signer);
     contract
       .stake(amount)
       .then(async (res) => {
@@ -444,7 +441,7 @@ function UnstakeModal(props) {
 
   const onClickPrimary = () => {
     setIsUnstaking(true);
-    const contract = new ethers.Contract(farmAddress, YieldFarm.abi, signer);
+    const contract = new ethers.Contract(farmAddress, abis.YieldFarm, signer);
     contract
       .unstake(amount)
       .then(async (res) => {
@@ -610,35 +607,35 @@ export default function EarnV1() {
   const { data: xgmtSupply, mutate: updateXgmtSupply } = useSWR(
     [active, chainId, readerAddress, "getTokenSupply", xgmtAddress],
     {
-      fetcher: contractFetcher(signer, Reader, [XGMT_EXCLUDED_ACCOUNTS]),
+      fetcher: contractFetcher(signer, "Reader", [XGMT_EXCLUDED_ACCOUNTS]),
     }
   );
 
   const { data: balances, mutate: updateBalances } = useSWR(
     ["Stake:balances", chainId, readerAddress, "getTokenBalancesWithSupplies", account || ZeroAddress],
     {
-      fetcher: contractFetcher(signer, Reader, [tokens]),
+      fetcher: contractFetcher(signer, "Reader", [tokens]),
     }
   );
 
   const { data: stakingInfo, mutate: updateStakingInfo } = useSWR(
     [active, chainId, readerAddress, "getStakingInfo", account || ZeroAddress],
     {
-      fetcher: contractFetcher(signer, Reader, [yieldTrackers]),
+      fetcher: contractFetcher(signer, "Reader", [yieldTrackers]),
     }
   );
 
   const { data: totalStakedInfo, mutate: updateTotalStakedInfo } = useSWR(
     [active, chainId, readerAddress, "getTotalStaked"],
     {
-      fetcher: contractFetcher(signer, Reader, [yieldTokens]),
+      fetcher: contractFetcher(signer, "Reader", [yieldTokens]),
     }
   );
 
   const { data: pairInfo, mutate: updatePairInfo } = useSWR(
     [active, chainId, readerAddress, "getPairInfo", ammFactoryAddressV2],
     {
-      fetcher: contractFetcher(signer, Reader, [pairTokens]),
+      fetcher: contractFetcher(signer, "Reader", [pairTokens]),
     }
   );
 
@@ -687,7 +684,7 @@ export default function EarnV1() {
       return;
     }
 
-    const contract = new ethers.Contract(farmAddress, YieldToken.abi, signer);
+    const contract = new ethers.Contract(farmAddress, abis.YieldToken, signer);
     contract
       .claim(account)
       .then(async (res) => {

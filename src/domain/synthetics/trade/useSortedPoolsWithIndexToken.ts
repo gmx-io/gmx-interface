@@ -11,7 +11,6 @@ import {
   type GlvOrMarketInfo,
 } from "../markets";
 import { isGlvInfo } from "../markets/glv";
-
 import { convertToUsd, type TokenData, type TokensData } from "../tokens";
 
 const DEFAULT_VALUE = {

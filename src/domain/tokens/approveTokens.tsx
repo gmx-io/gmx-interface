@@ -3,15 +3,14 @@ import { Signer, ethers } from "ethers";
 import { Link } from "react-router-dom";
 
 import { getChainName, getExplorerUrl } from "config/chains";
-import { getNativeToken } from "sdk/configs/tokens";
+import { TokenPermitsState } from "domain/synthetics/gassless/useInitTokenPermitsState";
 import { helperToast } from "lib/helperToast";
+import Token from "sdk/abis/Token.json";
+import { getNativeToken } from "sdk/configs/tokens";
 import { InfoTokens, TokenInfo } from "sdk/types/tokens";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
-
-import Token from "sdk/abis/Token.json";
-import { TokenPermitsState } from "domain/synthetics/gassless/useInitTokenPermitsState";
 
 type Params = {
   setIsApproving: (val: boolean) => void;

@@ -1,6 +1,5 @@
-import DataStore from "sdk/abis/DataStore.json";
-import GlvReader from "sdk/abis/GlvReader.json";
-import TokenAbi from "sdk/abis/Token.json";
+import entries from "lodash/entries";
+import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
 import {
@@ -12,17 +11,16 @@ import {
 } from "config/dataStore";
 import { USD_DECIMALS } from "config/factors";
 import { GLV_MARKETS } from "config/markets";
-import { getTokenBySymbol } from "sdk/configs/tokens";
 import {
   updateTokenBalance,
   useTokensBalancesUpdates,
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { GM_DECIMALS } from "lib/legacy";
-import { MulticallRequestConfig, useMulticall } from "lib/multicall";
+import { ContractCallConfig, ContractCallsConfig, MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
-import entries from "lodash/entries";
-import { useMemo } from "react";
-import { getContractMarketPrices, getGlvMarketName, GlvInfoData, MarketsInfoData } from ".";
+import { getTokenBySymbol } from "sdk/configs/tokens";
+
+import { GlvInfoData, MarketsInfoData, getContractMarketPrices, getGlvMarketName } from ".";
 import { convertToContractTokenPrices } from "../tokens";
 import { TokenData, TokensData } from "../tokens/types";
 
@@ -71,7 +69,7 @@ export function useGlvMarketsInfo(
         return {
           glvs: {
             contractAddress: glvReaderAddress,
-            abi: GlvReader.abi,
+            abiId: "GlvReader",
             calls: {
               list: {
                 methodName: "getGlvInfoList",
@@ -134,7 +132,7 @@ export function useGlvMarketsInfo(
 
           acc[glv.glvToken + "-prices"] = {
             contractAddress: glvReaderAddress,
-            abi: GlvReader.abi,
+            abiId: "GlvReader",
             calls: {
               glvTokenPriceMin: {
                 methodName: "getGlvTokenPrice",
@@ -145,11 +143,11 @@ export function useGlvMarketsInfo(
                 params: [...glvPricesQuery, true],
               },
             },
-          };
+          } satisfies ContractCallsConfig<any>;
 
           acc[glv.glvToken + "-glvValue"] = {
             contractAddress: glvReaderAddress,
-            abi: GlvReader.abi,
+            abiId: "GlvReader",
             calls: {
               glvValueMax: {
                 methodName: "getGlvValue",
@@ -160,29 +158,29 @@ export function useGlvMarketsInfo(
                 params: [...glvPricesQuery, false],
               },
             },
-          };
+          } satisfies ContractCallsConfig<any>;
 
           acc[glv.glvToken + "-tokenData"] = {
             contractAddress: glv.glvToken,
-            abi: TokenAbi.abi,
+            abiId: "Token",
             calls: {
               symbol: {
                 methodName: "symbol",
                 params: [],
               },
             },
-          };
+          } satisfies ContractCallsConfig<any>;
 
           if (account) {
             acc[glv.glvToken + "-tokenData"].calls.balance = {
               methodName: "balanceOf",
               params: [account],
-            };
+            } satisfies ContractCallConfig;
           }
 
           acc[glv.glvToken + "-info"] = {
             contractAddress: dataStoreAddress,
-            abi: DataStore.abi,
+            abiId: "DataStore",
             calls: {
               glvShiftLastExecutedAt: {
                 methodName: "getUint",
@@ -193,12 +191,12 @@ export function useGlvMarketsInfo(
                 params: [glvShiftMinIntervalKey(glv.glvToken)],
               },
             },
-          };
+          } satisfies ContractCallsConfig<any>;
 
           markets.forEach((market) => {
             acc[glv.glvToken + "-" + market + "-info"] = {
               contractAddress: dataStoreAddress,
-              abi: DataStore.abi,
+              abiId: "DataStore",
               calls: {
                 maxMarketTokenBalanceUsd: {
                   methodName: "getUint",
@@ -213,20 +211,20 @@ export function useGlvMarketsInfo(
                   params: [isGlvDisabledKey(glv.glvToken, market)],
                 },
               },
-            };
+            } satisfies ContractCallsConfig<any>;
           });
 
           markets.forEach((market) => {
             acc[glv.glvToken + "-" + market + "-gm-balance"] = {
               contractAddress: market,
-              abi: TokenAbi.abi,
+              abiId: "Token",
               calls: {
                 balance: {
                   methodName: "balanceOf",
                   params: [glv.glvToken],
                 },
               },
-            };
+            } satisfies ContractCallsConfig<any>;
           });
 
           return acc;

@@ -3,7 +3,7 @@
 /* eslint-disable */
 export { CustomErrors__factory } from "./CustomErrors__factory";
 export { DataStore__factory } from "./DataStore__factory";
-export { ERC20Permit__factory } from "./ERC20Permit__factory";
+export { ERC20PermitInterface__factory } from "./ERC20PermitInterface__factory";
 export { ERC721__factory } from "./ERC721__factory";
 export { EventEmitter__factory } from "./EventEmitter__factory";
 export { ExchangeRouter__factory } from "./ExchangeRouter__factory";
@@ -32,6 +32,7 @@ export { PositionRouter__factory } from "./PositionRouter__factory";
 export { Reader__factory } from "./Reader__factory";
 export { ReaderV2__factory } from "./ReaderV2__factory";
 export { ReferralStorage__factory } from "./ReferralStorage__factory";
+export { RelayParams__factory } from "./RelayParams__factory";
 export { RewardReader__factory } from "./RewardReader__factory";
 export { RewardRouter__factory } from "./RewardRouter__factory";
 export { RewardTracker__factory } from "./RewardTracker__factory";

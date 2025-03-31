@@ -1,4 +1,6 @@
 import { useContextSelector, Context } from "use-context-selector";
+
+import { GmxAccountContext, context } from "./GmxAccountContext";
 import {
   selectGmxAccountModalOpen,
   selectGmxAccountSetModalOpen,
@@ -19,7 +21,6 @@ import {
   selectGmxAccountSettlementChainId,
   selectGmxAccountSetSettlementChainId,
 } from "./selectors";
-import { GmxAccountContext, context } from "./GmxAccountContext";
 
 export function useGmxAccountSelector<Selected>(selector: (s: GmxAccountContext) => Selected) {
   return useContextSelector(context as Context<GmxAccountContext>, selector) as Selected;

@@ -1,15 +1,20 @@
-import Button from "components/Button/Button";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import { ValueTransition } from "components/ValueTransition/ValueTransition";
+import noop from "lodash/noop";
+import { useMemo, useState } from "react";
+
 import { BASE_MAINNET, getChainName } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import { TokenData } from "domain/tokens";
-import noop from "lodash/noop";
-import { useMemo, useState } from "react";
-import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { useGmxAccountTokensData, useGmxAccountWithdrawNetworks } from "components/Synthetics/GmxAccountModal/hooks";
-import { Selector } from "./Selector";
 import { getByKey } from "lib/objects";
+
+import Button from "components/Button/Button";
+import { useGmxAccountTokensData, useGmxAccountWithdrawNetworks } from "components/Synthetics/GmxAccountModal/hooks";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import { ValueTransition } from "components/ValueTransition/ValueTransition";
+
+
+import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { Selector } from "./Selector";
+
 
 export const WithdrawView = () => {
   const [amount, setAmount] = useState("");

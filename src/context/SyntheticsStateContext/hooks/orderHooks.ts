@@ -5,6 +5,7 @@ import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/useSubaccountCancelOrdersDetailsMessage";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
+
 import { selectChainId } from "../selectors/globalSelectors";
 import {
   makeSelectOrderErrorByOrderKey,
@@ -12,7 +13,6 @@ import {
   selectOrderErrorsByOrderKeyMap,
   selectOrderErrorsCount,
 } from "../selectors/orderSelectors";
-import { makeSelectSubaccountForActions } from "../selectors/globalSelectors";
 import { useSelector } from "../utils";
 import { useCancellingOrdersKeysState } from "./orderEditorHooks";
 
@@ -36,7 +36,7 @@ export function useCancelOrder(orderKey: string) {
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const { setPendingTxns } = usePendingTxns();
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(1);
-  const subaccount = useSelector(makeSelectSubaccountForActions(1));
+  // const subaccount = useSelector(makeSelectSubaccountForActions(1));
 
   const isCancelOrderProcessing = cancellingOrdersKeys.includes(orderKey);
 
@@ -46,7 +46,7 @@ export function useCancelOrder(orderKey: string) {
 
       setCancellingOrdersKeys((p) => uniq(p.concat(orderKey)));
 
-      cancelOrdersTxn(chainId, signer, subaccount, {
+      cancelOrdersTxn(chainId, signer, {
         orderKeys: [orderKey],
         setPendingTxns: setPendingTxns,
         detailsMsg: cancelOrdersDetailsMessage,
@@ -54,7 +54,7 @@ export function useCancelOrder(orderKey: string) {
         setCancellingOrdersKeys((prev) => prev.filter((k) => k !== orderKey));
       });
     },
-    [cancelOrdersDetailsMessage, chainId, orderKey, setCancellingOrdersKeys, setPendingTxns, signer, subaccount]
+    [cancelOrdersDetailsMessage, chainId, orderKey, setCancellingOrdersKeys, setPendingTxns, signer]
   );
 
   return [isCancelOrderProcessing, onCancelOrder] as const;

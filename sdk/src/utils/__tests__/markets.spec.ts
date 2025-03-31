@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
 
+import { ARBITRUM } from "configs/chains";
+import { TOKENS } from "configs/tokens";
+
+import { MarketInfo } from "../../types/markets";
+import { Token, TokensData } from "../../types/tokens";
 import {
   getMarketFullName,
   getMarketIndexName,
@@ -19,10 +24,6 @@ import {
   getOpenInterestInTokens,
   getPriceForPnl,
 } from "../markets";
-import { MarketInfo } from "../../types/markets";
-import { Token, TokensData } from "../../types/tokens";
-import { TOKENS } from "configs/tokens";
-import { ARBITRUM } from "configs/chains";
 import { expandDecimals } from "../numbers";
 
 function getToken(symbol: string) {
@@ -52,7 +53,7 @@ describe("getMarketFullName", () => {
       indexToken,
       isSpotOnly: true,
     });
-    expect(name).toBe("SWAP-ONLY [ETH]");
+    expect(name).toBe("SWAP-ONLY [ETH-ETH]");
   });
 });
 
@@ -78,7 +79,7 @@ describe("getMarketIndexName", () => {
 describe("getMarketPoolName", () => {
   it("returns single token symbol if long and short are the same", () => {
     const token = getToken("ETH");
-    expect(getMarketPoolName({ longToken: token, shortToken: token })).toBe("ETH");
+    expect(getMarketPoolName({ longToken: token, shortToken: token })).toBe("ETH-ETH");
   });
 
   it("returns combined symbol otherwise", () => {

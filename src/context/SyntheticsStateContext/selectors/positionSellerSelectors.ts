@@ -1,10 +1,31 @@
-import { TradeMode, TradeType } from "sdk/types/trade";
-import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { USD_DECIMALS } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { estimateExecuteDecreaseOrderGasLimit } from "domain/synthetics/fees";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
+import {
+  getIsPositionInfoLoaded,
+  getMinCollateralFactorForPosition,
+  willPositionCollateralBeSufficientForPosition,
+} from "domain/synthetics/positions";
+import {
+  applySlippageToPrice,
+  getSwapAmountsByFromValue,
+  getNextPositionExecutionPrice,
+  findAllReachableTokens,
+} from "domain/synthetics/trade";
+import { getMarkPrice, getTradeFees } from "domain/synthetics/trade";
+import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { parseValue } from "lib/numbers";
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { mustNeverExist } from "lib/types";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { TradeMode, TradeType } from "sdk/types/trade";
+import { bigMath } from "sdk/utils/bigmath";
+import { getExecutionFee } from "sdk/utils/fees/executionFee";
+import { getIsEquivalentTokens } from "sdk/utils/tokens";
+
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
-import { bigMath } from "sdk/utils/bigmath";
 import {
   selectClosingPositionKey,
   selectPositionsInfoData,
@@ -14,34 +35,13 @@ import {
   selectGasPrice,
   selectChainId,
 } from "./globalSelectors";
+import { selectIsPnlInLeverage } from "./settingsSelectors";
 import {
   makeSelectDecreasePositionAmounts,
   makeSelectFindSwapPath,
   makeSelectMaxLiquidityPath,
   makeSelectNextPositionValuesForDecrease,
-  selectSwapGraph,
 } from "./tradeSelectors";
-import {
-  getIsPositionInfoLoaded,
-  getMinCollateralFactorForPosition,
-  willPositionCollateralBeSufficientForPosition,
-} from "domain/synthetics/positions";
-import { selectIsPnlInLeverage } from "./settingsSelectors";
-import {
-  applySlippageToPrice,
-  getSwapAmountsByFromValue,
-  getNextPositionExecutionPrice,
-  findAllReachableTokens,
-} from "domain/synthetics/trade";
-import { mustNeverExist } from "lib/types";
-import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { getIsEquivalentTokens } from "sdk/utils/tokens";
-import { getMarkPrice, getTradeFees } from "domain/synthetics/trade";
-import { estimateExecuteDecreaseOrderGasLimit } from "domain/synthetics/fees";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { getExecutionFee } from "sdk/utils/fees/executionFee";
-import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 export const selectPositionSeller = (state: SyntheticsState) => state.positionSeller;
 export const selectPositionSellerOrderOption = (state: SyntheticsState) => state.positionSeller.orderOption;
@@ -280,13 +280,12 @@ export const selectPositionSellerReceiveToken = createSelector((q) => {
   const orderOption = q(selectPositionSellerOrderOption);
   const position = q(selectPositionSellerPosition);
   const isTrigger = orderOption === OrderOption.Trigger;
-  const tokensData = q(selectTokensData);
   const isChanged = q(selectPositionSellerReceiveTokenAddressChanged);
   const defaultReceiveTokenAddress = q(selectPositionSellerDefaultReceiveToken);
   const receiveTokenAddress = isChanged
     ? q(selectPositionSellerReceiveTokenAddress)
     : defaultReceiveTokenAddress ?? q(selectPositionSellerReceiveTokenAddress);
-  return isTrigger ? position?.collateralToken : getByKey(tokensData, receiveTokenAddress);
+  return isTrigger ? position?.collateralToken : q((state) => getByKey(selectTokensData(state), receiveTokenAddress));
 });
 
 export const selectPositionSellerShouldSwap = createSelector((q) => {
@@ -314,16 +313,16 @@ export const selectPositionSellerFindSwapPath = createSelector((q) => {
 
 export const selectPositionSellerAvailableReceiveTokens = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
-  const graph = q(selectSwapGraph);
+  const chainId = q(selectChainId);
   const tokensData = q(selectTokensData);
 
-  if (!graph || !position?.collateralTokenAddress || !tokensData) {
+  if (!position?.collateralTokenAddress || !tokensData) {
     return EMPTY_ARRAY;
   }
 
   let wasNativeTokenInserted = false;
 
-  const reachableAddresses = findAllReachableTokens(graph, position.collateralTokenAddress);
+  const reachableAddresses = findAllReachableTokens(chainId, position.collateralTokenAddress);
   const reachableTokens = reachableAddresses
     .flatMap((address) => {
       const token = getByKey(tokensData, address)!;

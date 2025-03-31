@@ -1,12 +1,14 @@
-import { useCallback, useState } from "react";
 import range from "lodash/range";
+import { useCallback, useState } from "react";
+
+import { useReferrerTier, setAffiliateTier as contractSetAffiliateTier } from "domain/referrals";
+import { useChainId } from "lib/chains";
+import useWallet from "lib/wallets/useWallet";
+
 import Button from "components/Button/Button";
 import Select from "components/Select/Select";
 
 import "./ReferralsTier.scss";
-import { useReferrerTier, setAffiliateTier as contractSetAffiliateTier } from "domain/referrals";
-import { useChainId } from "lib/chains";
-import useWallet from "lib/wallets/useWallet";
 
 export default function ReferralsTier() {
   const { active, signer } = useWallet();

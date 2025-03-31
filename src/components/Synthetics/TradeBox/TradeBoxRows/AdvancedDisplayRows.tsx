@@ -1,9 +1,7 @@
 import { t } from "@lingui/macro";
 import { ReactNode, useCallback, useMemo } from "react";
 
-import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
-import { ExpandableRow } from "components/Synthetics/ExpandableRow";
-import { ValueTransition } from "components/ValueTransition/ValueTransition";
+import { selectRelayerFeeState } from "context/SyntheticsStateContext/selectors/relayserFeeSelectors";
 import {
   selectTradeboxAdvancedOptions,
   selectTradeboxAllowedSlippage,
@@ -35,20 +33,23 @@ import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { formatUsd } from "lib/numbers";
 import { isStopIncreaseOrderType } from "sdk/utils/orders";
+import { applySlippageToPrice } from "sdk/utils/trade";
 
+import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
+import { AllowedSwapSlippageInputRow } from "components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
 import { ExecutionPriceRow } from "components/Synthetics/ExecutionPriceRow";
+import { ExpandableRow } from "components/Synthetics/ExpandableRow";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import { TradeFeesRow } from "components/Synthetics/TradeFeesRow/TradeFeesRow";
-import { applySlippageToPrice } from "sdk/utils/trade";
+import { ValueTransition } from "components/ValueTransition/ValueTransition";
+
 import { AllowedSlippageRow } from "./AllowedSlippageRow";
 import { AvailableLiquidityRow } from "./AvailableLiquidityRow";
 import { CollateralSpreadRow } from "./CollateralSpreadRow";
 import { EntryPriceRow } from "./EntryPriceRow";
 import { SwapSpreadRow } from "./SwapSpreadRow";
 import { useTradeboxAllowedSwapSlippageValues } from "../hooks/useTradeboxAllowedSwapSlippageValues";
-import { AllowedSwapSlippageInputRow } from "components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
-import { selectRelayerFeeState } from "context/SyntheticsStateContext/selectors/relayserFeeSelectors";
 
 function LeverageInfoRows() {
   const { isIncrease, isTrigger } = useSelector(selectTradeboxTradeFlags);

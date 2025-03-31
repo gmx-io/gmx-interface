@@ -1,11 +1,16 @@
-import TokenIcon from "components/TokenIcon/TokenIcon";
+import { useState } from "react";
+
 import { useGmxAccountModalOpen, useGmxAccountSelectedTransactionHash } from "context/GmxAccountContext/hooks";
 import { FundingHistoryItem } from "context/GmxAccountContext/types";
 import { formatBalanceAmount } from "lib/numbers";
-import { useState } from "react";
-import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
-import { FundingHistoryItemLabel } from "./MainView";
+
 import { useGmxAccountFundingHistory } from "components/Synthetics/GmxAccountModal/hooks";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+
+
+import { FundingHistoryItemLabel } from "./MainView";
+import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
+
 
 const FundingHistoryView = () => {
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();

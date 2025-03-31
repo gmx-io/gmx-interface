@@ -1,3 +1,4 @@
+/* eslint-disable import/order */
 import { getExplorerUrl } from "config/chains";
 import { getContract } from "config/contracts";
 import { MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
@@ -6,7 +7,7 @@ import { getTokenBySymbol } from "sdk/configs/tokens";
 import { USD_DECIMALS } from "config/factors";
 import { useSyntheticsStateSelector as useSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
-import { useMulticall } from "lib/multicall";
+import { ContractCallsConfig, useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
@@ -14,8 +15,6 @@ import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
 
-import SyntheticsReader from "sdk/abis/SyntheticsReader.json";
-import TokenAbi from "sdk/abis/Token.json";
 import { selectGlvInfo, selectGlvs } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   useTokensBalancesUpdates,
@@ -80,7 +79,7 @@ export function useMarketTokensDataRequest(
 
           requests[`${marketAddress}-prices`] = {
             contractAddress: getContract(chainId, "SyntheticsReader"),
-            abi: SyntheticsReader.abi,
+            abiId: "SyntheticsReader",
             calls: {
               minPrice: {
                 methodName: "getMarketTokenPrice",
@@ -107,12 +106,12 @@ export function useMarketTokensDataRequest(
                 ],
               },
             },
-          };
+          } satisfies ContractCallsConfig<any>;
         }
 
         requests[`${marketAddress}-tokenData`] = {
           contractAddress: marketAddress,
-          abi: TokenAbi.abi,
+          abiId: "Token",
           calls: {
             totalSupply: {
               methodName: "totalSupply",
@@ -125,7 +124,7 @@ export function useMarketTokensDataRequest(
                 }
               : undefined,
           },
-        };
+        } satisfies ContractCallsConfig<any>;
 
         return requests;
       }, {}),

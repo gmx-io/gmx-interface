@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 
+import { selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxRelatedMarketsStats,
   selectTradeboxState,
@@ -7,13 +8,12 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMarketPoolName } from "domain/synthetics/markets";
+import { getByKey } from "lib/objects";
+
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
 import { PoolSelector2 } from "../PoolSelector2/PoolSelector2";
 import { TradeboxPoolWarnings } from "../TradeboxPoolWarnings/TradeboxPoolWarnings";
-
-import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
-import { selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { getByKey } from "lib/objects";
 
 export function MarketPoolSelectorRow() {
   const { relatedMarketStats, relatedMarketsPositionStats } = useSelector(selectTradeboxRelatedMarketsStats);

@@ -1,11 +1,13 @@
 import cx from "classnames";
-import TokenIcon from "components/TokenIcon/TokenIcon";
+
 import { TokensData } from "domain/synthetics/tokens/types";
 import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getToken } from "sdk/configs/tokens";
 import { convertToUsd } from "sdk/utils/tokens";
+
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 type Props = {
   tokensData?: TokensData;

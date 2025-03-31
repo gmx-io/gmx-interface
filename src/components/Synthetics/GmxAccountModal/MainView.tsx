@@ -1,22 +1,27 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { Avatar } from "components/Avatar/Avatar";
-import Button from "components/Button/Button";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { useMemo, useState } from "react";
+import { IoArrowDown } from "react-icons/io5";
+import { TbLoader2, TbProgressAlert } from "react-icons/tb";
+import { useCopyToClipboard } from "react-use";
+import { useDisconnect } from "wagmi";
+
 import { getExplorerUrl } from "config/chains";
+
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { CURRENT_PROVIDER_LOCALSTORAGE_KEY, SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY } from "config/localStorage";
 import { isSettlementChain } from "context/GmxAccountContext/config";
 import { useGmxAccountModalOpen, useGmxAccountSelectedTransactionHash } from "context/GmxAccountContext/hooks";
 import { FundingHistoryItem } from "context/GmxAccountContext/types";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+
 import BellIcon from "img/bell.svg?react";
 import copy from "img/ic_copy_20.svg";
 import InfoIconComponent from "img/ic_info.svg?react";
 import externalLink from "img/ic_new_link_20.svg";
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
 import disconnectIcon from "img/ic_sign_out_20.svg";
+
 import { helperToast } from "lib/helperToast";
 import { useENS } from "lib/legacy";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
@@ -25,13 +30,13 @@ import { userAnalytics } from "lib/userAnalytics";
 import { DisconnectWalletEvent } from "lib/userAnalytics/types";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
-import { useMemo, useState } from "react";
-import { IoArrowDown } from "react-icons/io5";
-import { TbLoader2, TbProgressAlert } from "react-icons/tb";
-import { useCopyToClipboard } from "react-use";
-import { useDisconnect } from "wagmi";
+import { Avatar } from "components/Avatar/Avatar";
+import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+
+
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
 import {
   useAvailableToTradeAssetMultichain,
   useAvailableToTradeAssetSettlementChain,
@@ -39,6 +44,7 @@ import {
   useAvailableToTradeAssetSymbolsSettlementChain,
   useGmxAccountFundingHistory,
 } from "./hooks";
+import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
 
 const TokenIcons = ({ tokens }: { tokens: string[] }) => {
   const displayTokens = tokens.slice(0, 3);

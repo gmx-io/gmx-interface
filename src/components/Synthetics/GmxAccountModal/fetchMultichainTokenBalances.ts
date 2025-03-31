@@ -1,12 +1,15 @@
 import "lib/polyfills";
 import "lib/monkeyPatching";
 
+import { erc20Abi } from "viem";
+
 import { getChainName } from "config/chains";
 import { executeMulticall } from "lib/multicall/executeMulticall";
 import { MulticallRequestConfig } from "lib/multicall/types";
-import { erc20Abi } from "viem";
-import { MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "../../../context/GmxAccountContext/config";
 import { EMPTY_OBJECT } from "lib/objects";
+
+import { MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "../../../context/GmxAccountContext/config";
+
 
 export async function fetchMultichainTokenBalances(
   currentSettlementChainId: number,

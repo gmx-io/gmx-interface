@@ -1,7 +1,9 @@
 import { describe, it, beforeAll, afterAll } from "vitest";
-import { fetchMultichainTokenBalances } from "./fetchMultichainTokenBalances";
+
 import { ARBITRUM } from "config/chains";
 import { getMulticallBatchingLoggingEnabledKey } from "config/localStorage";
+
+import { fetchMultichainTokenBalances } from "./fetchMultichainTokenBalances";
 
 describe("fetchMultichainTokenBalances", () => {
   beforeAll(() => {

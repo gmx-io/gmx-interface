@@ -2,24 +2,23 @@ import { Trans, t } from "@lingui/macro";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
-
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxSupply } from "domain/legacy";
 import { useInfoTokens } from "domain/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { GLP_DECIMALS, GMX_DECIMALS, getPageTitle } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import useWallet from "lib/wallets/useWallet";
 import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
-import { useDashboardChainStatsMulticall } from "./useDashboardChainStatsMulticall";
+import { bigMath } from "sdk/utils/bigmath";
 
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
 import { MarketsList } from "components/Synthetics/MarketsList/MarketsList";
+
 import { DashboardPageTitle } from "./DashboardPageTitle";
 import { GlpCard } from "./GlpCard";
 import { GmCard } from "./GmCard";
@@ -27,6 +26,7 @@ import { GmxCard } from "./GmxCard";
 import { MarketsListV1 } from "./MarketsListV1";
 import { OverviewCard } from "./OverviewCard";
 import { StatsCard } from "./StatsCard";
+import { useDashboardChainStatsMulticall } from "./useDashboardChainStatsMulticall";
 
 import "./DashboardV2.css";
 

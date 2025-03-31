@@ -1,7 +1,8 @@
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-
-import { getProvider } from "lib/rpc";
 import useSWR from "swr";
+
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { getProvider } from "lib/rpc";
+
 import {
   estimateExecutionGasPrice,
   getExecutionFeeBufferBps,

@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
-import { getSyntheticsGraphClient } from "lib/subgraph";
 import useSWR from "swr";
+
+import { getSyntheticsGraphClient } from "lib/subgraph";
 
 export type UserIncentiveData = {
   id: string;

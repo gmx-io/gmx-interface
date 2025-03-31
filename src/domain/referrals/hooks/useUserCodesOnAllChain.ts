@@ -1,10 +1,10 @@
 import { gql } from "@apollo/client";
+import { Hash } from "viem";
 
 import { getReferralsGraphClient } from "lib/subgraph";
+import { decodeReferralCode } from "sdk/utils/referrals";
 
 import type { CodeOwnershipInfo } from "../types";
-import { decodeReferralCode } from "sdk/utils/referrals";
-import { Hash } from "viem";
 
 const CODE_OWNERS_GQL = gql`
   query allCodes($codes: [String!]!) {

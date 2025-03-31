@@ -1,19 +1,20 @@
-import { getContract } from "config/contracts";
+import cryptoJs from "crypto-js";
 import { ethers, Signer } from "ethers";
-import { SUBACCOUNT_ORDER_ACTION } from "sdk/configs/dataStore";
-import SubaccountGelatoRelayRouterAbi from "sdk/abis/SubaccountGelatoRelayRouter.json";
 import { encodeAbiParameters, keccak256, zeroHash } from "viem";
-import { getGelatoRelayRouterDomain } from "./relayRouterUtils";
-import { signTypedData } from "./signing";
-import { nowInSeconds } from "sdk/utils/time";
+
+import { getContract } from "config/contracts";
+import { SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
+import { SubaccountOnchainData } from "domain/synthetics/subaccount/useSubaccountFromContractsRequest";
+import { SUBACCOUNT_ORDER_ACTION } from "sdk/configs/dataStore";
 import {
   DEFAULT_SUBACCOUNT_DEADLINE_DURATION,
   DEFAULT_SUBACCOUNT_EXPIRY_DURATION,
   DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT,
 } from "sdk/configs/express";
-import cryptoJs from "crypto-js";
-import { SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
-import { SubaccountOnchainData } from "domain/synthetics/subaccount/useSubaccountFromContractsRequest";
+import { nowInSeconds } from "sdk/utils/time";
+
+import { getGelatoRelayRouterDomain } from "./relayRouterUtils";
+import { signTypedData } from "./signing";
 
 export type Subaccount = {
   address: string;

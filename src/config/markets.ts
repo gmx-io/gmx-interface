@@ -1,13 +1,12 @@
 import mapValues from "lodash/mapValues";
 
 import { isDevelopment } from "config/env";
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 import { MARKETS, DEFAULT_LISTING } from "./static/markets";
 export * from "./static/markets";
 
 export const ENOUGH_DAYS_SINCE_LISTING_FOR_APY = 8;
-export const SWAP_GRAPH_MAX_MARKETS_PER_TOKEN = 5;
 
 export const MARKETS_INDEX: Record<number, Record<string, boolean>> = mapValues(MARKETS, (markets) =>
   mapValues(markets, (market) => Boolean(market.enabled))

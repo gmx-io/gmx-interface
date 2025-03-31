@@ -1,4 +1,5 @@
 import cx from "classnames";
+
 import { getIsV1Supported } from "config/features";
 import { useChainId } from "lib/chains";
 import { useTradePageVersion } from "lib/useTradePageVersion";

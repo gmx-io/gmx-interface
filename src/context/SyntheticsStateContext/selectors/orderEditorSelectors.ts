@@ -45,8 +45,10 @@ import { BN_ZERO, parseValue } from "lib/numbers";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { getByKey } from "sdk/utils/objects";
+
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorFactory } from "../utils";
+import { selectExternalSwapQuote } from "./externalSwapSelectors";
 import {
   selectChainId,
   selectGasLimits,
@@ -60,15 +62,14 @@ import {
   selectUiFeeFactor,
   selectUserReferralInfo,
 } from "./globalSelectors";
-import { selectExternalSwapQuote } from "./externalSwapSelectors";
 import { selectIsPnlInLeverage, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
-import { makeSelectFindSwapPath, makeSelectNextPositionValuesForIncrease } from "./tradeSelectors";
 import { selectTradeboxAvailableTokensOptions } from "./tradeboxSelectors";
+import { makeSelectFindSwapPath, makeSelectNextPositionValuesForIncrease } from "./tradeSelectors";
 
 export const selectCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.cancellingOrdersKeys;
 export const selectSetCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.setCancellingOrdersKeys;
-export const selectEditingOrderKey = (s: SyntheticsState) => s.orderEditor.editingOrderKey;
-export const selectSetEditingOrderKey = (s: SyntheticsState) => s.orderEditor.setEditingOrderKey;
+export const selectEditingOrderState = (s: SyntheticsState) => s.orderEditor.editingOrderState;
+export const selectSetEditingOrderState = (s: SyntheticsState) => s.orderEditor.setEditingOrderState;
 
 export const selectOrderEditorIsSubmitting = (s: SyntheticsState) => s.orderEditor.isSubmitting;
 export const selectOrderEditorSetIsSubmitting = (s: SyntheticsState) => s.orderEditor.setIsSubmitting;
@@ -196,8 +197,8 @@ export const selectOrdersList = createSelector((q) => {
 });
 
 export const selectOrderEditorOrder = createSelector((q): PositionOrderInfo | SwapOrderInfo | undefined => {
-  const editingOrderKey = q(selectEditingOrderKey);
-  const order = q((state) => getByKey(selectOrdersInfoData(state), editingOrderKey));
+  const editingOrderState = q(selectEditingOrderState);
+  const order = q((state) => getByKey(selectOrdersInfoData(state), editingOrderState?.orderKey));
 
   return order;
 });

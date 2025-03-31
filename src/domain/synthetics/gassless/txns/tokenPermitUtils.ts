@@ -1,5 +1,7 @@
 import { Contract, Signer, ethers } from "ethers";
-import ERC20PermitAbi from "sdk/abis/ERC20Permit.json";
+
+import ERC20PermitInterfaceAbi from "sdk/abis/ERC20PermitInterface.json";
+
 import { splitSignature } from "./signing";
 
 export type TokenPermitPayload = {
@@ -33,7 +35,7 @@ export async function createAndSignTokenPermit(
     throw new Error(`Token ${token} does not support EIP-2612 permits`);
   }
 
-  const tokenContract = new Contract(token, ERC20PermitAbi.abi, signer);
+  const tokenContract = new Contract(token, ERC20PermitInterfaceAbi.abi, signer);
 
   // TODO: multicall
   const [name, version, nonce] = await Promise.all([
@@ -85,13 +87,12 @@ export async function createAndSignTokenPermit(
 
 export async function supportsPermit(token: string, provider: ethers.Provider): Promise<boolean> {
   try {
-    const contract = new ethers.Contract(token, ERC20PermitAbi.abi, provider);
+    const contract = new ethers.Contract(token, ERC20PermitInterfaceAbi.abi, provider);
 
     await Promise.all([contract.DOMAIN_SEPARATOR(), contract.nonces(ethers.ZeroAddress)]);
 
     return true;
   } catch (error) {
-    console.log(`Token ${token} does not support permit:`, error);
     return false;
   }
 }

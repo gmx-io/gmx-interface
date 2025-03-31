@@ -1,6 +1,7 @@
 import { PropsWithChildren, useMemo, useState } from "react";
-import { ARBITRUM } from "sdk/configs/chains";
 import { createContext } from "use-context-selector";
+
+import { ARBITRUM } from "sdk/configs/chains";
 import "./config";
 
 export type GmxAccountModalView =

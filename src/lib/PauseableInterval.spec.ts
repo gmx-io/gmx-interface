@@ -1,5 +1,6 @@
-import { PauseableInterval } from "./PauseableInterval";
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+
+import { PauseableInterval } from "./PauseableInterval";
 
 describe("PauseableInterval", () => {
   beforeEach(() => {

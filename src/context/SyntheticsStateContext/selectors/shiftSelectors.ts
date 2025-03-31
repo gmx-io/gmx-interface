@@ -1,4 +1,5 @@
 import { getShiftAvailableMarkets } from "components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/getShiftAvailableMarkets";
+
 import { createSelector } from "../utils";
 import { selectSortedMarketInfoByIndexToken } from "./selectSortedMarketInfoByIndexToken";
 

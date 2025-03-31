@@ -1,3 +1,6 @@
+import { useEffect, useMemo } from "react";
+import useSWR from "swr";
+
 import { ARBITRUM, AVALANCHE, BASE_MAINNET, SONIC_MAINNET } from "config/chains";
 import {
   convertToUsd,
@@ -10,10 +13,11 @@ import { TokensData } from "domain/tokens";
 import { EMPTY_OBJECT } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import useWallet from "lib/wallets/useWallet";
-import { useEffect, useMemo } from "react";
 import { getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
-import useSWR from "swr";
+
+
+import { fetchMultichainTokenBalances } from "./fetchMultichainTokenBalances";
 import {
   MULTI_CHAIN_TOKEN_MAPPING,
   MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS,
@@ -22,7 +26,6 @@ import {
 import { DEV_FUNDING_HISTORY } from "../../../context/GmxAccountContext/dev";
 import { useGmxAccountSettlementChainId } from "../../../context/GmxAccountContext/hooks";
 import { TokenChainData } from "../../../context/GmxAccountContext/types";
-import { fetchMultichainTokenBalances } from "./fetchMultichainTokenBalances";
 
 export function useAvailableToTradeAssetSymbolsSettlementChain(): string[] {
   const gmxAccountTokensData = useGmxAccountTokensData();

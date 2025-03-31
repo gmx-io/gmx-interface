@@ -1,14 +1,12 @@
+import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/numbers";
 import { AVALANCHE } from "sdk/configs/chains";
+
 import { ARBITRUM } from "./chains";
 import { isDevelopment } from "./env";
 import { DEBUG_SWAP_SETTINGS_KEY } from "./localStorage";
-import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/numbers";
 
 // Enable external swap if price impact delta is less than this threshold
-export const SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS = -30n;
-
-// Disable external swap aggregator if this number of build transactions fail
-export const DISABLE_EXTERNAL_SWAP_AGGREGATOR_FAILS_COUNT = 3;
+export const SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS = -15n;
 
 export const HIGH_EXTERNAL_SWAP_FEES_BPS = 200; // 2%
 

@@ -1,10 +1,13 @@
 import { Trans } from "@lingui/macro";
-import { SlideModal } from "components/Modal/SlideModal";
+import { memo, useEffect } from "react";
+import { IoArrowBack } from "react-icons/io5";
+
 import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import useWallet from "lib/wallets/useWallet";
-import { memo, useEffect } from "react";
-import { IoArrowBack } from "react-icons/io5";
+
+import { SlideModal } from "components/Modal/SlideModal";
+
 import { AvailableToTradeAssetsView } from "./AvailableToTradeAssetsView";
 import { DepositView } from "./DepositView";
 import { MainView } from "./MainView";

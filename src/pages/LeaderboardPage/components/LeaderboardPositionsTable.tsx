@@ -17,13 +17,13 @@ import { LeaderboardPosition, RemoteData } from "domain/synthetics/leaderboard";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getLiquidationPrice } from "domain/synthetics/positions";
-import { bigMath } from "sdk/utils/bigmath";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmount, formatBalanceAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatAmount, formatUsd } from "lib/numbers";
 import { useDebounce } from "lib/useDebounce";
-import { getTokenVisualMultiplier } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
 import AddressView from "components/AddressView/AddressView";
+import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { TopPositionsSkeleton } from "components/Skeleton/Skeleton";
@@ -140,7 +140,7 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
                 })} in "Capital Used" are ranked.`}
                 tooltipPosition="bottom-start"
               />
-              <TableHeaderCell title={t`Address`} width={16} tooltipPosition="bottom-end" />
+              <TableHeaderCell title={t`Address`} width={14} tooltipPosition="bottom-end" />
               <TableHeaderCell
                 {...getSorterProps("qualifyingPnl")}
                 title={t`PnL ($)`}
@@ -148,7 +148,7 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
                 tooltip={t`The total realized and unrealized profit and loss for the period, considering price impact and fees but excluding swap fees.`}
                 tooltipPosition="bottom-end"
               />
-              <TableHeaderCell title={t`Position`} width={10} tooltipPosition="bottom-end" />
+              <TableHeaderCell title={t`Position`} width={12} tooltipPosition="bottom-end" />
               <TableHeaderCell {...getSorterProps("entryPrice")} title={t`Entry Price`} width={10} />
               <TableHeaderCell {...getSorterProps("sizeInUsd")} title={t`Size`} width={12} />
               <TableHeaderCell {...getSorterProps("leverage")} title={t`Lev.`} width={4} />
@@ -290,14 +290,12 @@ const TableRow = memo(
             label={t`Collateral`}
             showDollar={false}
             value={
-              collateralToken
-                ? formatBalanceAmountWithUsd(
-                    position.collateralAmount,
-                    position.collateralUsd,
-                    collateralToken.decimals,
-                    collateralToken.symbol
-                  )
-                : "..."
+              <AmountWithUsdBalance
+                amount={position.collateralAmount}
+                decimals={collateralToken?.decimals ?? 0}
+                symbol={collateralToken?.symbol}
+                usd={position.collateralUsd}
+              />
             }
           />
         </>
@@ -378,9 +376,9 @@ const TableRow = memo(
                   />
                 ) : null}
                 <span>
-                  {marketInfo?.indexToken && getTokenVisualMultiplier(marketInfo.indexToken)}
-                  {marketInfo?.indexToken.symbol}
+                  {marketInfo ? getMarketIndexName({ indexToken: marketInfo?.indexToken, isSpotOnly: false }) : null}
                 </span>
+
                 <span className={cx("TopPositionsDirection", position.isLong ? "positive" : "negative")}>
                   {position.isLong ? t`Long` : t`Short`}
                 </span>

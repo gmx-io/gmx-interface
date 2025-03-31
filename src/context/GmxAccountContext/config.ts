@@ -1,6 +1,7 @@
+import uniq from "lodash/uniq";
+
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BASE_MAINNET, SONIC_MAINNET } from "config/chains";
 import { isDevelopment } from "config/env";
-import uniq from "lodash/uniq";
 
 // we need to have a token bare config for each chain and map it to the settlement chain token
 

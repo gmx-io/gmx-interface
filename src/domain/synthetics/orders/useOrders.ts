@@ -1,18 +1,11 @@
 import { useMemo } from "react";
 import { Address, isAddressEqual } from "viem";
 
-import type {
-  MarketFilterLongShortDirection,
-  MarketFilterLongShortItemData,
-} from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { getContract } from "config/contracts";
 import { accountOrderListKey } from "config/dataStore";
-import { getWrappedToken } from "sdk/configs/tokens";
-import { CacheKey, MulticallResult, useMulticall } from "lib/multicall";
+import { CacheKey, MulticallRequestConfig, MulticallResult, useMulticall } from "lib/multicall";
 import { EMPTY_ARRAY } from "lib/objects";
-import type { MarketsInfoData } from "../markets/types";
-import { getSwapPathOutputAddresses } from "../trade";
-import { DecreasePositionSwapType, OrderType, OrdersData } from "./types";
+import { getWrappedToken } from "sdk/configs/tokens";
 import {
   isIncreaseOrderType,
   isLimitOrderType,
@@ -21,8 +14,14 @@ import {
   isVisibleOrder,
 } from "sdk/utils/orders";
 
-import DataStore from "sdk/abis/DataStore.json";
-import SyntheticsReader from "sdk/abis/SyntheticsReader.json";
+import type {
+  MarketFilterLongShortDirection,
+  MarketFilterLongShortItemData,
+} from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
+
+import type { MarketsInfoData } from "../markets/types";
+import { getSwapPathOutputAddresses } from "../trade";
+import { DecreasePositionSwapType, OrderType, OrdersData } from "./types";
 
 type OrdersResult = {
   ordersData?: OrdersData;
@@ -151,7 +150,7 @@ function buildUseOrdersMulticall(chainId: number, key: CacheKey) {
   return {
     dataStore: {
       contractAddress: getContract(chainId, "DataStore"),
-      abi: DataStore.abi,
+      abiId: "DataStore",
       calls: {
         count: {
           methodName: "getBytes32Count",
@@ -165,7 +164,7 @@ function buildUseOrdersMulticall(chainId: number, key: CacheKey) {
     },
     reader: {
       contractAddress: getContract(chainId, "SyntheticsReader"),
-      abi: SyntheticsReader.abi,
+      abiId: "SyntheticsReader",
       calls: {
         orders: {
           methodName: "getAccountOrders",
@@ -173,7 +172,7 @@ function buildUseOrdersMulticall(chainId: number, key: CacheKey) {
         },
       },
     },
-  };
+  } satisfies MulticallRequestConfig<any>;
 }
 
 function parseResponse(res: MulticallResult<ReturnType<typeof buildUseOrdersMulticall>>) {

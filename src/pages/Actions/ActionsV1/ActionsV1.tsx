@@ -5,23 +5,21 @@ import type { Address } from "viem";
 
 import { getChainName } from "config/chains";
 import { getContract } from "config/contracts";
-import { getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
 import { contractFetcher } from "lib/contracts";
 import { useAccountOrders } from "lib/legacy";
 import useWallet from "lib/wallets/useWallet";
+import { VersionNetworkSwitcherRow } from "pages/AccountDashboard/VersionNetworkSwitcherRow";
 import { getPositionQuery, getPositions } from "pages/Exchange/Exchange";
+import { getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 
 import OrdersList from "components/Exchange/OrdersList";
 import PositionsList from "components/Exchange/PositionsList";
 import TradeHistory from "components/Exchange/TradeHistory";
 import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
-import { VersionNetworkSwitcherRow } from "pages/AccountDashboard/VersionNetworkSwitcherRow";
-
-import Reader from "sdk/abis/Reader.json";
 
 import "./ActionsV1.css";
 
@@ -54,11 +52,11 @@ function ActionsV1({
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR([active, chainId, readerAddress, "getTokenBalances", undefined], {
-    fetcher: contractFetcher(signer, Reader, [tokenAddresses]),
+    fetcher: contractFetcher(signer, "Reader", [tokenAddresses]),
   });
 
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
-    fetcher: contractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+    fetcher: contractFetcher(signer, "Reader", [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
 
   const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, fundingRateInfo);
@@ -116,11 +114,11 @@ export function usePositionsV1(
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR([active, chainId, readerAddress, "getTokenBalances", account], {
-    fetcher: contractFetcher(signer, Reader, [tokenAddresses]),
+    fetcher: contractFetcher(signer, "Reader", [tokenAddresses]),
   });
 
   const { data: positionData } = useSWR([active, chainId, readerAddress, "getPositions", vaultAddress, account], {
-    fetcher: contractFetcher(signer, Reader, [
+    fetcher: contractFetcher(signer, "Reader", [
       positionQuery.collateralTokens,
       positionQuery.indexTokens,
       positionQuery.isLong,
@@ -128,7 +126,7 @@ export function usePositionsV1(
   });
 
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
-    fetcher: contractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+    fetcher: contractFetcher(signer, "Reader", [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
 
   const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, fundingRateInfo);
@@ -172,11 +170,11 @@ export function AccountPositionsV1({
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR([active, chainId, readerAddress, "getTokenBalances", account], {
-    fetcher: contractFetcher(signer, Reader, [tokenAddresses]),
+    fetcher: contractFetcher(signer, "Reader", [tokenAddresses]),
   });
 
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
-    fetcher: contractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+    fetcher: contractFetcher(signer, "Reader", [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
 
   const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, fundingRateInfo);
@@ -234,11 +232,11 @@ export function AccountOrdersV1({
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR([active, chainId, readerAddress, "getTokenBalances", account], {
-    fetcher: contractFetcher(signer, Reader, [tokenAddresses]),
+    fetcher: contractFetcher(signer, "Reader", [tokenAddresses]),
   });
 
   const { data: positionData } = useSWR([active, chainId, readerAddress, "getPositions", vaultAddress, account], {
-    fetcher: contractFetcher(signer, Reader, [
+    fetcher: contractFetcher(signer, "Reader", [
       positionQuery.collateralTokens,
       positionQuery.indexTokens,
       positionQuery.isLong,
@@ -246,7 +244,7 @@ export function AccountOrdersV1({
   });
 
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
-    fetcher: contractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+    fetcher: contractFetcher(signer, "Reader", [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
 
   const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, fundingRateInfo);
@@ -305,11 +303,11 @@ export function AccountActionsV1({
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR([active, chainId, readerAddress, "getTokenBalances", account], {
-    fetcher: contractFetcher(signer, Reader, [tokenAddresses]),
+    fetcher: contractFetcher(signer, "Reader", [tokenAddresses]),
   });
 
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
-    fetcher: contractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+    fetcher: contractFetcher(signer, "Reader", [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
 
   const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, fundingRateInfo);

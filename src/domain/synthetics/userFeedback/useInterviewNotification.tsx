@@ -1,13 +1,15 @@
-import { InterviewToast } from "components/InterviewToast/InterviewToast";
+import { differenceInDays } from "date-fns";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+
 import { HIGH_TRADE_VOLUME_FOR_FEEDBACK } from "config/constants";
 import { INTERVIEW_INVITATION_SHOWN_TIME_KEY } from "config/localStorage";
 import { selectLastWeekAccountStats } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { differenceInDays } from "date-fns";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+
+import { InterviewToast } from "components/InterviewToast/InterviewToast";
 
 export function useInterviewNotification() {
   const lastWeekAccountStats = useSelector(selectLastWeekAccountStats);

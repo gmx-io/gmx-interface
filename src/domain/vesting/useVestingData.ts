@@ -1,11 +1,11 @@
+import { useMemo } from "react";
+import useSWR from "swr";
+
 import { getContract } from "config/contracts";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT, getVestingData } from "lib/legacy";
 import useWallet from "lib/wallets/useWallet";
-import useSWR from "swr";
-import ReaderV2 from "sdk/abis/ReaderV2.json";
-import { useMemo } from "react";
 
 export default function useVestingData(account?: string) {
   const { active } = useWallet();
@@ -19,7 +19,7 @@ export default function useVestingData(account?: string) {
   const { data: vestingInfo } = useSWR(
     [`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", account ?? PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(undefined, ReaderV2, [vesterAddresses.filter(Boolean)]),
+      fetcher: contractFetcher(undefined, "ReaderV2", [vesterAddresses.filter(Boolean)]),
     }
   );
 

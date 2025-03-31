@@ -1,6 +1,7 @@
+import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
 import { useChainId } from "lib/chains";
 import { getGasPaymentTokens } from "sdk/configs/express";
-import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
+
 import { GasPaymentTokenOption } from "./GasPaymentTokenOptionCard";
 
 type Props = {

@@ -22,3 +22,5 @@ export const selectOneClickTradingEnabled = (s: SyntheticsState) => s.settings.o
 export const selectSetOneClickTradingEnabled = (s: SyntheticsState) => s.settings.setOneClickTradingEnabled;
 export const selectExpressOrdersEnabled = (s: SyntheticsState) => s.settings.expressOrdersEnabled;
 export const selectSetExpressOrdersEnabled = (s: SyntheticsState) => s.settings.setExpressOrdersEnabled;
+export const selectDebugSwapMarketsConfig = (s: SyntheticsState) => s.settings.debugSwapMarketsConfig;
+export const selectSetDebugSwapMarketsConfig = (s: SyntheticsState) => s.settings.setDebugSwapMarketsConfig;

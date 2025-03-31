@@ -1,5 +1,6 @@
-import sample from "lodash/sample";
 import random from "lodash/random";
+import sample from "lodash/sample";
+
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
 const ORACLE_KEEPER_URLS = {

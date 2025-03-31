@@ -8,6 +8,7 @@ import { callContract } from "lib/contracts";
 import { getPageTitle } from "lib/legacy";
 import { formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
+import { abis } from "sdk/abis";
 import { bigMath } from "sdk/utils/bigmath";
 
 import Button from "components/Button/Button";
@@ -17,8 +18,6 @@ import Modal from "components/Modal/Modal";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-
-import Vester from "sdk/abis/Vester.json";
 
 export function VesterDepositModal(props: {
   isVisible: boolean;
@@ -116,7 +115,7 @@ export function VesterDepositModal(props: {
 
   const onClickPrimary = useCallback(() => {
     setIsDepositing(true);
-    const contract = new ethers.Contract(vesterAddress, Vester.abi, signer);
+    const contract = new ethers.Contract(vesterAddress, abis.Vester, signer);
 
     callContract(chainId, contract, "deposit", [amount], {
       sentMsg: t`Deposit submitted!`,

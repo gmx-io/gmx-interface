@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { GmxSdk } from "../..";
 import { arbitrumSdk, arbitrumSdkConfig } from "utils/testUtil";
+
+import { GmxSdk } from "../..";
 
 describe("Tokens", () => {
   it("should be able to fetch tokens", async () => {

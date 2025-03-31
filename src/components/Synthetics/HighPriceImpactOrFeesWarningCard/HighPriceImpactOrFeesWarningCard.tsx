@@ -1,10 +1,11 @@
 import { t } from "@lingui/macro";
 import { useMemo } from "react";
 
-import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { FeeItem } from "domain/synthetics/fees";
 import { WarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { formatPercentage, formatUsd } from "lib/numbers";
+
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 
 export type Props = {
   priceImpactWarningState: WarningState;

@@ -1,16 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import React, { useMemo } from "react";
 
-import Tooltip from "components/Tooltip/Tooltip";
-import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { usePositionSeller } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
-import { OrderType } from "domain/synthetics/orders";
-import { formatLeverage } from "domain/synthetics/positions";
-import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
-import { formatUsd } from "lib/numbers";
-import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
-import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
-
 import {
   selectPositionSellerDecreaseAmounts,
   selectPositionSellerExecutionPrice,
@@ -20,8 +11,17 @@ import {
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import { selectTradeboxAdvancedOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-
+import { OrderType } from "domain/synthetics/orders";
+import { formatLeverage } from "domain/synthetics/positions";
+import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { applySlippageToPrice } from "domain/synthetics/trade/utils";
+import { formatUsd } from "lib/numbers";
+
+import Tooltip from "components/Tooltip/Tooltip";
+import { ValueTransition } from "components/ValueTransition/ValueTransition";
+
+import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
+import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { ExecutionPriceRow } from "../ExecutionPriceRow";
 import { ExpandableRow } from "../ExpandableRow";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";

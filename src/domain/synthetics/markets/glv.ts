@@ -1,5 +1,6 @@
 import values from "lodash/values";
 
+import { GLV_MARKETS } from "config/markets";
 import {
   getMintableMarketTokens,
   getSellableMarketToken,
@@ -9,10 +10,8 @@ import {
   GlvOrMarketInfo,
   MarketInfo,
 } from "domain/synthetics/markets";
-
 import { bigMath } from "sdk/utils/bigmath";
 
-import { GLV_MARKETS } from "config/markets";
 import { TokenData, TokensData } from "../tokens";
 import { convertToTokenAmount, convertToUsd } from "../tokens/utils";
 

@@ -12,14 +12,14 @@ import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmoun
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 import { callContract } from "lib/contracts";
 import { ProcessedData } from "lib/legacy";
 import { formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
-import { GMX_DAO_LINKS } from "./constants";
+import { bigMath } from "sdk/utils/bigmath";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
@@ -28,7 +28,7 @@ import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 
-import RewardRouter from "sdk/abis/RewardRouter.json";
+import { GMX_DAO_LINKS } from "./constants";
 
 export function StakeModal(props: {
   isVisible: boolean;
@@ -146,7 +146,7 @@ export function StakeModal(props: {
     }
 
     setIsStaking(true);
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
+    const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
 
     callContract(chainId, contract, stakeMethodName, [amount], {
       sentMsg: t`Stake submitted!`,

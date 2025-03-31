@@ -1,5 +1,6 @@
 import { ARBITRUM, AVALANCHE, BASE_MAINNET, SONIC_MAINNET } from "config/chains";
 import { getTokenBySymbol } from "sdk/configs/tokens";
+
 import { FundingHistoryItem } from "./types";
 
 export const DEV_FUNDING_HISTORY: FundingHistoryItem[] = [

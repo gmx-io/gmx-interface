@@ -8,19 +8,18 @@ import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { subscribeToV1Events } from "context/WebsocketContext/subscribeToEvents";
+import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { useChainId } from "lib/chains";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
-
 import { AccountDashboard } from "pages/AccountDashboard/AccountDashboard";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { VERSION_QUERY_PARAM } from "pages/AccountDashboard/constants";
 import { AccountsRouter } from "pages/Actions/ActionsRouter";
 import BeginAccountTransfer from "pages/BeginAccountTransfer/BeginAccountTransfer";
 import Buy from "pages/Buy/Buy";
-import BuyGMX from "pages/BuyGMX/BuyGMX";
 import BuyGlp from "pages/BuyGlp/BuyGlp";
+import BuyGMX from "pages/BuyGMX/BuyGMX";
 import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
@@ -33,6 +32,7 @@ import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import NftWallet from "pages/NftWallet/NftWallet";
 import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
+import { ParseTransactionPage } from "pages/ParseTransaction/ParseTransaction";
 import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import Referrals from "pages/Referrals/Referrals";
@@ -40,11 +40,7 @@ import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
 import Stats from "pages/Stats/Stats";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
-
-import { ParseTransactionPage } from "pages/ParseTransaction/ParseTransaction";
-import PositionRouter from "sdk/abis/PositionRouter.json";
-import VaultV2 from "sdk/abis/VaultV2.json";
-import VaultV2b from "sdk/abis/VaultV2b.json";
+import { abis } from "sdk/abis";
 
 const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
 export const UiPage = () => <Suspense fallback={<Trans>Loading...</Trans>}>{<LazyUiPage />}</Suspense>;
@@ -60,13 +56,13 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
   const positionRouterAddress = getContract(chainId, "PositionRouter");
 
   useEffect(() => {
-    const wsVaultAbi = chainId === ARBITRUM ? VaultV2.abi : VaultV2b.abi;
+    const wsVaultAbi = chainId === ARBITRUM ? abis.VaultV2 : abis.VaultV2b;
     if (hasV1LostFocus || !wsProvider) {
       return;
     }
 
     const wsVault = new ethers.Contract(vaultAddress, wsVaultAbi, wsProvider as Provider);
-    const wsPositionRouter = new ethers.Contract(positionRouterAddress, PositionRouter.abi, wsProvider as Provider);
+    const wsPositionRouter = new ethers.Contract(positionRouterAddress, abis.PositionRouter, wsProvider as Provider);
 
     const callExchangeRef = (method, ...args) => {
       if (!exchangeRef || !exchangeRef.current) {

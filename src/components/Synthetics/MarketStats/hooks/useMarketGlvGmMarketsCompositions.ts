@@ -5,11 +5,9 @@ import {
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-
 import { useMarketTokensData } from "domain/synthetics/markets";
 import { getMaxUsdCapUsdInGmGlvMarket, isGlvInfo } from "domain/synthetics/markets/glv";
 import { convertToUsd } from "domain/synthetics/tokens";
-
 import { useChainId } from "lib/chains";
 import { bigintToNumber } from "lib/numbers";
 

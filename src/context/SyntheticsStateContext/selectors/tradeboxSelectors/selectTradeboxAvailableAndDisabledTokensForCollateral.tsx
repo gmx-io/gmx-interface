@@ -3,6 +3,7 @@ import flatMap from "lodash/flatMap";
 import pickBy from "lodash/pickBy";
 import uniqBy from "lodash/uniqBy";
 import values from "lodash/values";
+
 import { selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";

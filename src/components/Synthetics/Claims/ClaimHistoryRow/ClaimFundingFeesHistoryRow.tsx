@@ -8,9 +8,8 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ClaimFundingFeeAction, ClaimType } from "domain/synthetics/claimHistory";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { formatBalanceAmountWithUsd } from "lib/numbers";
-import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
 
+import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import {
@@ -22,6 +21,8 @@ import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import NewLink20ReactComponent from "img/ic_new_link_20.svg?react";
+
+import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
 
 export type ClaimFundingFeesHistoryRowProps = {
   claimAction: ClaimFundingFeeAction;
@@ -161,22 +162,22 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
                 <div>
                   {longTokenAmount > 0 && (
                     <div>
-                      {formatBalanceAmountWithUsd(
-                        longTokenAmount,
-                        longTokenAmountUsd,
-                        market.longToken.decimals,
-                        market.longToken.symbol
-                      )}
+                      <AmountWithUsdBalance
+                        amount={longTokenAmount}
+                        decimals={market.longToken.decimals}
+                        symbol={market.longToken.symbol}
+                        usd={longTokenAmountUsd}
+                      />
                     </div>
                   )}
                   {shortTokenAmount > 0 && (
                     <div>
-                      {formatBalanceAmountWithUsd(
-                        shortTokenAmount,
-                        shortTokenAmountUsd,
-                        market.shortToken.decimals,
-                        market.shortToken.symbol
-                      )}
+                      <AmountWithUsdBalance
+                        amount={shortTokenAmount}
+                        decimals={market.shortToken.decimals}
+                        symbol={market.shortToken.symbol}
+                        usd={shortTokenAmountUsd}
+                      />
                     </div>
                   )}
                 </div>

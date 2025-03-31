@@ -1,5 +1,6 @@
-import { SubaccountState, useInitSubaccountState } from "domain/synthetics/gassless/useInitSubaccountState";
 import React, { createContext, useContext } from "react";
+
+import { SubaccountState, useInitSubaccountState } from "domain/synthetics/gassless/useInitSubaccountState";
 
 const SubaccountContext = createContext<SubaccountState | undefined>(undefined);
 

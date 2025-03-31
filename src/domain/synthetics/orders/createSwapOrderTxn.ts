@@ -1,22 +1,23 @@
 import { t } from "@lingui/macro";
-import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
+import { Signer, ethers } from "ethers";
+
 import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { PendingOrderData, SetPendingOrder } from "context/SyntheticsEvents";
-import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
+import { OrderMetricId } from "lib/metrics/types";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import ExchangeRouterAbi from "sdk/abis/ExchangeRouter.json";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
+import { isMarketOrderType } from "sdk/utils/orders";
+
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
+import { prepareOrderTxn } from "./prepareOrderTxn";
 import { simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
-import { isMarketOrderType } from "sdk/utils/orders";
-import { OrderMetricId } from "lib/metrics/types";
-import { prepareOrderTxn } from "./prepareOrderTxn";
-import { validateSignerAddress } from "lib/contracts/transactionErrors";
-import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { Subaccount } from "../gassless/txns/subaccountUtils";
-
 const { ZeroAddress } = ethers;
 
 export type SwapOrderParams = {
@@ -46,7 +47,7 @@ export async function createSwapOrderTxn(
   subaccount: Subaccount | null,
   p: SwapOrderParams
 ) {
-  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouterAbi.abi, signer);
 
   const isNativeReceive = p.toTokenAddress === NATIVE_TOKEN_ADDRESS;
   const router = exchangeRouter;

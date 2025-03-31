@@ -1,4 +1,9 @@
+import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { isLimitDecreaseOrderType, isLimitIncreaseOrderType, isStopLossOrderType } from "domain/synthetics/orders";
+import { getPendingMockPosition } from "domain/synthetics/positions";
+import { prepareInitialEntries } from "domain/synthetics/sidecarOrders/utils";
+
 import {
   selectTradeboxCollateralToken,
   selectTradeboxMarketInfo,
@@ -6,19 +11,14 @@ import {
   selectTradeboxSelectedPositionKey,
   selectTradeboxTriggerPrice,
 } from ".";
-
-import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { getPendingMockPosition } from "domain/synthetics/positions";
-import { prepareInitialEntries } from "domain/synthetics/sidecarOrders/utils";
 import { createSelector, createSelectorFactory } from "../../utils";
 import { makeSelectOrdersByPositionKey } from "../orderSelectors";
+import { selectSelectedMarketVisualMultiplier } from "../statsSelectors";
 import {
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxSelectedPosition,
   selectTradeboxTradeFlags,
 } from "../tradeboxSelectors";
-import { selectSelectedMarketVisualMultiplier } from "../statsSelectors";
-import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 
 export const selectTradeboxExistingSlOrders = createSelector((q) => {
   const positionKey = q(selectTradeboxSelectedPositionKey);

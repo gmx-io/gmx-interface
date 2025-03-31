@@ -1,12 +1,11 @@
 import { Trans } from "@lingui/macro";
+import { useState } from "react";
+
+import { getSwapDebugSettings, setSwapDebugSetting } from "config/externalSwaps";
+import { SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS } from "config/externalSwaps";
+
 import NumberInput from "components/NumberInput/NumberInput";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import {
-  getSwapDebugSettings,
-  setSwapDebugSetting,
-  SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS,
-} from "config/externalSwaps";
-import { useState } from "react";
 
 export function DebugSwapsSettings() {
   const [isShown, setIsShown] = useState(false);

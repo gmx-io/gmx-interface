@@ -4,13 +4,8 @@ import cx from "classnames";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useKey, useLatest } from "react-use";
 
-import Button from "components/Button/Button";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import Modal from "components/Modal/Modal";
-import Tab from "components/Tab/Tab";
-import TokenSelector from "components/TokenSelector/TokenSelector";
-import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { USD_DECIMALS } from "config/factors";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   useClosingPositionKeyState,
@@ -23,31 +18,8 @@ import {
   usePositionSellerKeepLeverage,
   usePositionSellerLeverageDisabledByCollateral,
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
-import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
-import { formatLeverage, formatLiquidationPrice, getNameByOrderType } from "domain/synthetics/positions";
-import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
-import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
-import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
-import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
-import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/validation";
-import { useChainId } from "lib/chains";
-import {
-  calculateDisplayDecimals,
-  formatAmount,
-  formatAmountFree,
-  formatBalanceAmountWithUsd,
-  formatDeltaUsd,
-  formatPercentage,
-  formatUsd,
-  parseValue,
-} from "lib/numbers";
-import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
-import useWallet from "lib/wallets/useWallet";
-import { convertTokenAddress, getTokenVisualMultiplier } from "sdk/configs/tokens";
-import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
-
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectPositionSellerAvailableReceiveTokens,
   selectPositionSellerDecreaseAmounts,
@@ -62,18 +34,23 @@ import {
   selectPositionSellerSwapAmounts,
   selectPositionSellerTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
+import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
+import { formatLeverage, formatLiquidationPrice, getNameByOrderType } from "domain/synthetics/positions";
+import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
+import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
+import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
+import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
+import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/validation";
 import { Token } from "domain/tokens";
-import { useLocalizedMap } from "lib/i18n";
-import { bigMath } from "sdk/utils/bigmath";
-import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
-
-import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
+import { useLocalizedMap } from "lib/i18n";
 import {
   initDecreaseOrderMetricData,
   makeTxnErrorMetricsHandler,
@@ -81,13 +58,36 @@ import {
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
+import {
+  calculateDisplayDecimals,
+  formatAmount,
+  formatAmountFree,
+  formatDeltaUsd,
+  formatPercentage,
+  formatUsd,
+  parseValue,
+} from "lib/numbers";
+import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import useWallet from "lib/wallets/useWallet";
+import { convertTokenAddress, getTokenVisualMultiplier } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
+import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
+import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Modal from "components/Modal/Modal";
+import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { ValueTransition } from "components/ValueTransition/ValueTransition";
+
+import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
+
 import "./PositionSeller.scss";
 
 export type Props = {
@@ -496,15 +496,12 @@ export function PositionSeller(p: Props) {
       className="SwapBox-info-row"
       label={t`Receive`}
       value={
-        decreaseAmounts?.receiveTokenAmount !== undefined && position !== undefined
-          ? formatBalanceAmountWithUsd(
-              decreaseAmounts.receiveTokenAmount,
-              decreaseAmounts.receiveUsd,
-              position.collateralToken.decimals,
-              position.collateralToken.symbol,
-              true
-            )
-          : "..."
+        <AmountWithUsdBalance
+          amount={decreaseAmounts?.receiveTokenAmount}
+          decimals={position?.collateralToken.decimals ?? 0}
+          symbol={position?.collateralToken.symbol}
+          usd={decreaseAmounts?.receiveUsd}
+        />
       }
     />
   ) : (
@@ -527,15 +524,15 @@ export function PositionSeller(p: Props) {
             showTokenImgInDropdown={true}
             selectedTokenLabel={
               <span className="PositionSelector-selected-receive-token">
-                {receiveTokenAmount !== undefined && receiveUsd !== undefined
-                  ? formatBalanceAmountWithUsd(
-                      receiveTokenAmount,
-                      receiveUsd,
-                      receiveToken.decimals,
-                      receiveToken.symbol,
-                      true
-                    )
-                  : "..."}
+                <AmountWithUsdBalance
+                  className={cx({
+                    "*:!text-yellow-500 hover:!text-yellow-500": isNotEnoughReceiveTokenLiquidity,
+                  })}
+                  amount={receiveTokenAmount}
+                  decimals={receiveToken.decimals}
+                  symbol={receiveToken.symbol}
+                  usd={receiveUsd}
+                />
               </span>
             }
             extendedSortSequence={availableTokensOptions?.sortedLongAndShortTokens}
@@ -610,6 +607,13 @@ export function PositionSeller(p: Props) {
       />
     ));
 
+  const tabsOptions = useMemo(() => {
+    return Object.values(OrderOption).map((option) => ({
+      value: option,
+      label: localizedOrderOptionLabels[option],
+    }));
+  }, [localizedOrderOptionLabels]);
+
   return (
     <div className="text-body-medium">
       <Modal
@@ -625,12 +629,11 @@ export function PositionSeller(p: Props) {
         qa="position-close-modal"
         contentClassName="w-[380px]"
       >
-        <Tab
+        <Tabs
           className="mb-[10.5px]"
-          options={Object.values(OrderOption)}
-          option={orderOption}
+          options={tabsOptions}
+          selectedValue={orderOption}
           type="inline"
-          optionLabels={localizedOrderOptionLabels}
           onChange={handleSetOrderOption}
           qa="operation-tabs"
         />

@@ -1,4 +1,5 @@
 import { getAccount } from "@wagmi/core";
+
 import { getRainbowKitConfig } from "./rainbowKitConfig";
 
 export type WalletNames = {

@@ -3,15 +3,16 @@ import { useMemo } from "react";
 
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getIcons } from "config/icons";
-import { TOKEN_COLOR_MAP, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { GLP_PRICE_DECIMALS } from "config/ui";
 import { useInfoTokens } from "domain/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 import { GLP_DECIMALS } from "lib/legacy";
-import { formatAmount } from "lib/numbers";
+import { formatAmount, formatAmountHuman } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
+import { TOKEN_COLOR_MAP, getWhitelistedV1Tokens } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
 import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
+
 import AssetDropdown from "./AssetDropdown";
 
 export function GlpCard({
@@ -98,19 +99,19 @@ export function GlpCard({
             <div className="label">
               <Trans>Supply</Trans>
             </div>
-            <div>{formatAmount(glpSupply, GLP_DECIMALS, 0, true)} GLP</div>
+            <div>{formatAmountHuman(glpSupply, GLP_DECIMALS, false, 2)}</div>
           </div>
           <div className="App-card-row">
             <div className="label">
               <Trans>Total Staked</Trans>
             </div>
-            <div>${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}</div>
+            <div>{formatAmountHuman(glpMarketCap, USD_DECIMALS, true, 2)}</div>
           </div>
           <div className="App-card-row">
             <div className="label">
               <Trans>Market Cap</Trans>
             </div>
-            <div>${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}</div>
+            <div>{formatAmountHuman(glpMarketCap, USD_DECIMALS, true, 2)}</div>
           </div>
           <div className="App-card-row">
             <div className="label">

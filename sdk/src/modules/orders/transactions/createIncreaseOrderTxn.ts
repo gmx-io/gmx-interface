@@ -1,19 +1,20 @@
-import ExchangeRouter from "abis/ExchangeRouter.json";
+import concat from "lodash/concat";
+import { Abi, encodeFunctionData, zeroAddress, zeroHash } from "viem";
+
+import { abis } from "abis";
 import { getContract } from "configs/contracts";
 import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-
 import type { GmxSdk } from "index";
-import concat from "lodash/concat";
 import { DecreasePositionSwapType, OrderTxnType, OrderType } from "types/orders";
 import { TokenData, TokenPrices, TokensData } from "types/tokens";
 import { isMarketOrderType } from "utils/orders";
+import { simulateExecuteOrder } from "utils/simulateExecuteOrder";
 import { convertToContractPrice } from "utils/tokens";
 import { applySlippageToMinOut, applySlippageToPrice } from "utils/trade";
-import { Abi, encodeFunctionData, zeroAddress, zeroHash } from "viem";
+
 import { createCancelEncodedPayload } from "./cancelOrdersTxn";
 import { createDecreaseEncodedPayload, DecreaseOrderParams } from "./createDecreaseOrderTxn";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
-import { simulateExecuteOrder } from "utils/simulateExecuteOrder";
 
 export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;
@@ -106,7 +107,7 @@ export async function createIncreaseOrderTxn({
   ).reduce((acc, p) => (p ? acc + p.executionFee : acc), wntAmountToIncrease);
 
   const encodedPayload = await createEncodedPayload({
-    routerAbi: ExchangeRouter.abi as Abi,
+    routerAbi: abis.ExchangeRouter as Abi,
     orderVaultAddress,
     totalWntAmount: wntAmountToIncrease,
     p,
@@ -116,7 +117,7 @@ export async function createIncreaseOrderTxn({
   });
 
   const simulationEncodedPayload = await createEncodedPayload({
-    routerAbi: ExchangeRouter.abi as Abi,
+    routerAbi: abis.ExchangeRouter as Abi,
     orderVaultAddress,
     totalWntAmount: wntAmountToIncrease,
     p,
@@ -176,7 +177,7 @@ export async function createIncreaseOrderTxn({
 
   const finalPayload = [...encodedPayload, ...decreaseEncodedPayload, ...cancelEncodedPayload, ...updateEncodedPayload];
 
-  await sdk.callContract(exchangeRouter, ExchangeRouter.abi as Abi, "multicall", [finalPayload], {
+  await sdk.callContract(exchangeRouter, abis.ExchangeRouter as Abi, "multicall", [finalPayload], {
     value: totalWntAmount,
   });
 }
@@ -275,6 +276,7 @@ export function getPendingOrderFromParams(
   const shouldApplySlippage = isMarketOrderType(p.orderType);
   let minOutputAmount = 0n;
   if ("minOutputUsd" in p) {
+    // eslint-disable-next-line
     shouldApplySlippage ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd) : p.minOutputUsd;
   }
   if ("minOutputAmount" in p) {

@@ -1,12 +1,12 @@
 import { useMemo } from "react";
-import { erc20Abi } from "viem";
 
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { useMulticall } from "lib/multicall";
+import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { EMPTY_OBJECT } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import useWallet from "lib/wallets/useWallet";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+
 import type { TokensAllowanceData } from "./types";
 
 type TokenAllowanceResult = { tokensAllowanceData?: TokensAllowanceData; isLoading: boolean; isLoaded: boolean };
@@ -35,7 +35,7 @@ export function useTokensAllowanceData(
       validAddresses.reduce((contracts, address) => {
         contracts[address!] = {
           contractAddress: address,
-          abi: erc20Abi,
+          abiId: "ERC20",
           calls: {
             allowance: {
               methodName: "allowance",
@@ -45,7 +45,7 @@ export function useTokensAllowanceData(
         };
 
         return contracts;
-      }, {}),
+      }, {} as MulticallRequestConfig<any>),
     parseResponse: (res) => {
       const now = Date.now();
 

@@ -1,12 +1,13 @@
-import { solidityPacked, ZeroHash } from "ethers";
+import { Contract, Signer, solidityPacked, ZeroHash } from "ethers";
 
 import { getContract } from "config/contracts";
-import { Contract, Signer } from "ethers";
 import GelatoRelayRouterAbi from "sdk/abis/GelatoRelayRouter.json";
 import SubaccountGelatoRelayRouterAbi from "sdk/abis/SubaccountGelatoRelayRouter.json";
-import { getGelatoRelayRouterDomain, hashRelayParams, hashSubaccountApproval, signTypedData } from "./signing";
-import { SignedSubbacountApproval } from "./subaccountUtils";
-import { getRelayParams } from "./txnsRefactor/types";
+
+import { OrderPayload } from "./createOrderBuilders";
+import { getGelatoRelayRouterDomain, hashRelayParams } from "./relayRouterUtils";
+import { signTypedData } from "./signing";
+import { hashSubaccountApproval, SignedSubbacountApproval } from "./subaccountUtils";
 
 export type ExpressOrderParams = {
   signer: Signer;
@@ -38,7 +39,7 @@ export type ExpressOrderParams = {
   };
   collateralDeltaAmount: bigint;
   account: string;
-  params: CreateOrderParams;
+  params: OrderPayload;
   signature?: string;
   userNonce?: bigint;
   deadline: bigint;
@@ -114,16 +115,10 @@ export async function getCreateOrderCalldata(chainId: number, p: ExpressOrderPar
     p.signer
   );
 
-  const relayParams = await getRelayParams({
-    ...p,
-    relayRouter,
-    account: p.account,
-  });
-
   let signature = await getCreateOrderSignature({
     account: p.account,
     signer: p.signer,
-    relayParams,
+    relayParams: p,
     collateralDeltaAmount: p.collateralDeltaAmount,
     verifyingContract: await relayRouter.getAddress(),
     params: p.params,
@@ -131,29 +126,20 @@ export async function getCreateOrderCalldata(chainId: number, p: ExpressOrderPar
     subaccountApproval: p.subaccountApproval,
   });
 
-  console.log("Using signature:", signature);
-
-  // Determine which function to call based on whether we're using a subaccount or not
   let createOrderCalldata: string;
 
   if (p.subaccountApproval) {
-    // For subaccount transactions, use the createOrder method in SubaccountGelatoRelayRouter
-    // Note the different parameter order in this contract compared to GelatoRelayRouter
-    console.log("Creating subaccount order calldata");
-
     createOrderCalldata = relayRouter.interface.encodeFunctionData("createOrder", [
-      { ...relayParams, signature, tokenPermits: p.tokenPermits },
+      { ...p, signature, tokenPermits: p.tokenPermits },
       p.subaccountApproval,
-      p.account, // Main account address
-      p.subaccountApproval.subaccount, // Subaccount address
+      p.account,
+      p.subaccountApproval.subaccount,
       p.collateralDeltaAmount,
       p.params,
     ]);
   } else {
-    console.log("Creating main account order calldata");
-
     createOrderCalldata = relayRouter.interface.encodeFunctionData("createOrder", [
-      { ...relayParams, signature, tokenPermits: p.tokenPermits },
+      { ...p, signature, tokenPermits: p.tokenPermits },
       p.account,
       p.collateralDeltaAmount,
       p.params,
@@ -188,7 +174,7 @@ async function getCreateOrderSignature({
   collateralDeltaAmount: bigint;
   account: string;
   verifyingContract: string;
-  params: CreateOrderParams;
+  params: OrderPayload;
   chainId: number;
 }) {
   // These types MUST match exactly what's in the contract's CREATE_ORDER_TYPEHASH
@@ -228,7 +214,7 @@ async function getCreateOrderSignature({
     ],
   };
 
-  const domain = getGelatoRelayRouterDomain(BigInt(chainId), verifyingContract);
+  const domain = getGelatoRelayRouterDomain(chainId, verifyingContract);
   const typedData = {
     collateralDeltaAmount,
     account,
@@ -244,16 +230,5 @@ async function getCreateOrderSignature({
     subaccountApproval: subaccountApproval ? hashSubaccountApproval(subaccountApproval) : ZeroHash,
   };
 
-  console.log("Creating order signature", {
-    domain,
-    signerAddress: await signer.getAddress(),
-    relayParams,
-    subaccountApproval,
-    types,
-    typedData,
-  });
-
-  return subaccountApproval
-    ? signer.signTypedData(domain, types, typedData)
-    : signTypedData(signer, domain, types, typedData);
+  return signTypedData(signer, domain, types, typedData);
 }

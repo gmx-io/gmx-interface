@@ -5,6 +5,7 @@ import {
   buildSwapOrderPayload,
 } from "domain/synthetics/gassless/txns/createOrderBuilders";
 import { OrderType } from "sdk/types/orders";
+
 import { selectExternalSwapQuote } from "../externalSwapSelectors";
 import { selectAccount, selectChainId, selectUserReferralInfo } from "../globalSelectors";
 import {

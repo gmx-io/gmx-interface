@@ -3,7 +3,10 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type { MultichainOrderRouterUtils, MultichainOrderRouterUtilsInterface } from "../MultichainOrderRouterUtils";
+import type {
+  MultichainOrderRouterUtils,
+  MultichainOrderRouterUtilsInterface,
+} from "../MultichainOrderRouterUtils";
 
 const _abi = [
   {
@@ -28,7 +31,14 @@ export class MultichainOrderRouterUtils__factory {
   static createInterface(): MultichainOrderRouterUtilsInterface {
     return new Interface(_abi) as MultichainOrderRouterUtilsInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): MultichainOrderRouterUtils {
-    return new Contract(address, _abi, runner) as unknown as MultichainOrderRouterUtils;
+  static connect(
+    address: string,
+    runner?: ContractRunner | null
+  ): MultichainOrderRouterUtils {
+    return new Contract(
+      address,
+      _abi,
+      runner
+    ) as unknown as MultichainOrderRouterUtils;
   }
 }

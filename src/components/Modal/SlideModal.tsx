@@ -1,10 +1,11 @@
 import cx from "classnames";
 import React, { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { MdClose } from "react-icons/md";
 import { RemoveScroll } from "react-remove-scroll";
+import { useMedia } from "react-use";
 
 import Portal from "components/Common/Portal";
-import { MdClose } from "react-icons/md";
-import { useMedia } from "react-use";
+
 import Modal from "./Modal";
 
 const TOP_OFFSET = 52;

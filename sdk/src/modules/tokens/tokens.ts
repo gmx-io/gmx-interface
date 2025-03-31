@@ -1,12 +1,10 @@
 import { getContract } from "configs/contracts";
 import { NATIVE_TOKEN_ADDRESS, getToken, getTokensMap, getV2Tokens, getWrappedToken } from "configs/tokens";
 import { TokenBalancesData, TokenPricesData, TokensData, Token as TToken } from "types/tokens";
-
-import Multicall from "abis/Multicall.json";
-import Token from "abis/Token.json";
+import type { ContractCallsConfig } from "utils/multicall";
+import { parseContractPrice } from "utils/tokens";
 
 import { Module } from "../base";
-import { parseContractPrice } from "utils/tokens";
 
 type TokenPricesDataResult = {
   pricesData?: TokenPricesData;
@@ -94,25 +92,25 @@ export class Tokens extends Module {
           if (address === NATIVE_TOKEN_ADDRESS) {
             acc[address] = {
               contractAddress: getContract(this.chainId, "Multicall"),
-              abi: Multicall.abi,
+              abiId: "Multicall",
               calls: {
                 balance: {
                   methodName: "getEthBalance",
                   params: [account],
                 },
               },
-            };
+            } satisfies ContractCallsConfig<any>;
           } else {
             acc[address] = {
               contractAddress: address,
-              abi: Token.abi,
+              abiId: "Token",
               calls: {
                 balance: {
                   methodName: "balanceOf",
                   params: [account],
                 },
               },
-            };
+            } satisfies ContractCallsConfig<any>;
           }
 
           return acc;

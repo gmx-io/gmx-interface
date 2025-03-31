@@ -1,13 +1,15 @@
 import { Trans, t } from "@lingui/macro";
 import { useMemo } from "react";
 
+import { USD_DECIMALS } from "config/factors";
+import { TokenData, TokensRatio, convertToTokenAmount, getTokensRatioByPrice } from "domain/synthetics/tokens";
+import { calculateDisplayDecimals, formatAmount, formatUsd, formatUsdPrice } from "lib/numbers";
+
+import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { TokenData, TokensRatio, convertToTokenAmount, getTokensRatioByPrice } from "domain/synthetics/tokens";
-import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
-import { USD_DECIMALS } from "config/factors";
-import { calculateDisplayDecimals, formatAmount, formatTokenAmount, formatUsd, formatUsdPrice } from "lib/numbers";
+import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
 export type Props = {
   maxLiquidityUsd?: bigint;
@@ -39,17 +41,6 @@ export function SwapCard(p: Props) {
     return `${formatAmount(markRatio.ratio, USD_DECIMALS, ratioDecimals)} ${smallest.symbol} / ${largest.symbol}`;
   }, [fromToken, toToken]);
 
-  const maxOutValue = useMemo(
-    () => [
-      formatTokenAmount(maxLiquidityAmount, toToken?.decimals, toToken?.symbol, {
-        useCommas: true,
-        displayDecimals: 0,
-      }),
-      `(${formatUsd(maxLiquidityUsd, { displayDecimals: 0 })})`,
-    ],
-    [maxLiquidityAmount, maxLiquidityUsd, toToken?.decimals, toToken?.symbol]
-  );
-
   return (
     <div className="text-body-medium relative rounded-4 bg-slate-800 p-15 max-[1100px]:mt-0">
       <div className="text-[15px]">
@@ -78,7 +69,15 @@ export function SwapCard(p: Props) {
                 <StatsTooltipRow
                   textClassName="al-swap"
                   label={t`Max ${toToken?.symbol} out`}
-                  value={maxOutValue}
+                  value={
+                    <AmountWithUsdBalance
+                      multiline
+                      amount={maxLiquidityAmount}
+                      decimals={toToken?.decimals ?? 0}
+                      symbol={toToken?.symbol}
+                      usd={maxLiquidityUsd}
+                    />
+                  }
                   showDollar={false}
                 />
               }

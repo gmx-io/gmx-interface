@@ -4,17 +4,16 @@ import type { Locale as DateLocale } from "date-fns";
 import format from "date-fns/format";
 import formatISO from "date-fns/formatISO";
 import formatRelative from "date-fns/formatRelative";
+import dateEn from "date-fns/locale/en-US";
 import { BytesLike, ethers } from "ethers";
 import words from "lodash/words";
 
-import dateEn from "date-fns/locale/en-US";
-
-import { LOCALE_DATE_LOCALE_MAP } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
+import { abis } from "sdk/abis";
 import { TradeActionType } from "sdk/types/tradeHistory";
 
-import { CustomErrorName } from "./CustomErrorName";
+import { LOCALE_DATE_LOCALE_MAP } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
 
-import CustomErrors from "sdk/abis/CustomErrors.json";
+import { CustomErrorName } from "./CustomErrorName";
 
 export function getOrderActionText(eventName: TradeActionType) {
   let actionText = "";
@@ -167,7 +166,7 @@ export function formatTradeActionTimestampISO(timestamp: number) {
 
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
-const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
+const customErrors = new ethers.Contract(ethers.ZeroAddress, abis.CustomErrors);
 
 export function tryGetError(reasonBytes: BytesLike): ReturnType<typeof customErrors.interface.parseError> | undefined {
   let error: ReturnType<typeof customErrors.interface.parseError> | undefined;

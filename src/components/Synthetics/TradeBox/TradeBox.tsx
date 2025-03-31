@@ -4,12 +4,17 @@ import { IoArrowDown } from "react-icons/io5";
 import { useKey, useLatest, usePrevious } from "react-use";
 
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
-import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "sdk/configs/tokens";
-
+import {
+  useGmxAccountDepositViewChain,
+  useGmxAccountDepositViewTokenAddress,
+  useGmxAccountModalOpen,
+} from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectWalletPayableTokensData } from "context/SyntheticsStateContext/selectors/multichainSelectors";
+import { selectShowDebugValues } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxAvailableTokensOptions,
@@ -38,6 +43,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
+import { TradeType } from "domain/synthetics/trade/types";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
@@ -60,13 +66,8 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { TradeMode } from "sdk/types/trade";
-
-import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
-import { useExpressTradingWarnings } from "./hooks/useShowOneClickTradingInfo";
-import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
-import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
-import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
@@ -75,38 +76,36 @@ import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
-import Tab from "components/Tab/Tab";
+import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
+import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
-import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
+import SettingsIcon24 from "img/ic_settings_24.svg?react";
+
+import TradeBoxLongShortInfoIcon from "./components/TradeBoxLongShortInfoIcon";
 import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
+import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
+import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
+import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
+import { useExpressTradingWarnings } from "./hooks/useShowOneClickTradingInfo";
+import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
+import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
+import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
+import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
+import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
-import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
-import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
-import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
-
-import SettingsIcon24 from "img/ic_settings_24.svg?react";
-
-import { selectShowDebugValues } from "context/SyntheticsStateContext/selectors/settingsSelectors";
-import "./TradeBox.scss";
 import { useGmxAccountTokensData, useMultichainTokens } from "../GmxAccountModal/hooks";
-import { selectWalletPayableTokensData } from "context/SyntheticsStateContext/selectors/multichainSelectors";
-import {
-  useGmxAccountDepositViewChain,
-  useGmxAccountDepositViewTokenAddress,
-  useGmxAccountModalOpen,
-} from "context/GmxAccountContext/hooks";
+import "./TradeBox.scss";
 
-export function TradeBox() {
+export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
 
@@ -697,10 +696,7 @@ export function TradeBox() {
                     <>
                       <span className="inline-flex items-center">
                         <TokenIcon className="mr-5" symbol={toToken.symbol} importSize={24} displaySize={20} />
-                        <span>
-                          {getTokenVisualMultiplier(toToken)}
-                          {toToken.symbol}
-                        </span>
+                        <span>{getMarketIndexName({ indexToken: toToken, isSpotOnly: false })}</span>
                       </span>
                     </>
                   )
@@ -860,22 +856,42 @@ export function TradeBox() {
     maxAutoCancelOrdersWarning ||
     shouldShowOneClickTradingWarning;
 
+  const tabsOptions = useMemo(() => {
+    const modeToOptions = (mode: TradeMode) => ({
+      value: mode,
+      label: localizedTradeModeLabels[mode],
+    });
+
+    return availableTradeModes.map((mode) =>
+      Array.isArray(mode)
+        ? {
+            label: t`More`,
+            options: mode.map(modeToOptions),
+          }
+        : modeToOptions(mode)
+    );
+  }, [availableTradeModes, localizedTradeModeLabels]);
+
   return (
     <>
       <div className="flex items-center justify-between">
-        <Tab
-          options={availableTradeModes}
-          optionLabels={localizedTradeModeLabels}
-          commonOptionClassname="py-10"
+        <Tabs
+          options={tabsOptions}
+          regularOptionClassname="py-10"
           type="inline"
-          option={tradeMode}
+          selectedValue={tradeMode}
           onChange={onSelectTradeMode}
           qa="trade-mode"
         />
-        <SettingsIcon24
-          className="cursor-pointer text-slate-100 gmx-hover:text-white"
-          onClick={() => setIsSettingsVisible(true)}
-        />
+        <div className="flex gap-4">
+          {[TradeType.Long, TradeType.Short].includes(tradeType) && (
+            <TradeBoxLongShortInfoIcon isMobile={isMobile} isLong={isLong} />
+          )}
+          <SettingsIcon24
+            className="cursor-pointer text-slate-100 gmx-hover:text-white"
+            onClick={() => setIsSettingsVisible(true)}
+          />
+        </div>
       </div>
       <form onSubmit={handleFormSubmit} ref={formRef} className="text-body-medium flex grow flex-col">
         <div className="flex flex-col gap-2">

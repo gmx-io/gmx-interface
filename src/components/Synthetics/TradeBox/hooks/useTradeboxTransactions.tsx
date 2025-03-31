@@ -1,4 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { t, Trans } from "@lingui/macro";
+import { useCallback } from "react";
+
 import { getContract } from "config/contracts";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -11,6 +14,8 @@ import {
   selectMarketsInfoData,
   selectUserReferralInfo,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectRelayerFeeState } from "context/SyntheticsStateContext/selectors/relayserFeeSelectors";
 import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAllowedSlippage,
@@ -28,14 +33,9 @@ import {
   selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectTradeBoxOrderPayload } from "context/SyntheticsStateContext/selectors/transactionsSelectors/tradeBoxOrdersSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUserReferralCode } from "domain/referrals";
-import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
-import { useTokensAllowanceData } from "domain/synthetics/tokens";
-import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
-
-import { selectRelayerFeeState } from "context/SyntheticsStateContext/selectors/relayserFeeSelectors";
-import { selectTradeBoxOrderPayload } from "context/SyntheticsStateContext/selectors/transactionsSelectors/tradeBoxOrdersSelectors";
 import { buildCancelOrderMulticallPayload } from "domain/synthetics/gassless/txns/cancelOrderBuilders";
 import { buildDecreaseOrderPayload } from "domain/synthetics/gassless/txns/createOrderBuilders";
 import { buildUpdateOrderMulticallPayload } from "domain/synthetics/gassless/txns/updateOrderBuilders";
@@ -44,14 +44,17 @@ import {
   encodeCreateOrderMulticallPayload,
   sendCreateOrderOrderTxn,
 } from "domain/synthetics/gassless/txns/walletTxnBuilder";
+import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
+import { useTokensAllowanceData } from "domain/synthetics/tokens";
+import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
-import { useCallback } from "react";
+
 import { useRequiredActions, useSecondaryOrderPayloads } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
-import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
+
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
 }
@@ -181,6 +184,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       encodedCancelOrderPayloads,
     ]);
 
+    // eslint-disable-next-line no-console
     console.log("payloads", {
       orderCreatePayload,
       encodedPrimaryOrderPayload,

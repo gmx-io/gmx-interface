@@ -5,12 +5,11 @@ import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets
 import { OrderType } from "domain/synthetics/orders";
 import type { TokenData } from "domain/synthetics/tokens";
 import { adaptToV1TokenInfo, getTokensRatioByAmounts } from "domain/synthetics/tokens/utils";
-import { SwapTradeAction, TradeActionType } from "sdk/types/tradeHistory";
-import type { Token, TokenInfo } from "sdk/types/tokens";
 import { getExchangeRateDisplay } from "lib/legacy";
 import { formatBalanceAmount } from "lib/numbers";
+import type { Token, TokenInfo } from "sdk/types/tokens";
+import { SwapTradeAction, TradeActionType } from "sdk/types/tradeHistory";
 
-import { getActionTitle } from "../../keys";
 import {
   INEQUALITY_GT,
   INEQUALITY_LT,
@@ -23,6 +22,7 @@ import {
   lines,
   tryGetError,
 } from "./shared";
+import { getActionTitle } from "../../keys";
 
 const ELLIPSIS = "...";
 const ARROW_SEPARATOR = " → ";

@@ -11,6 +11,7 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   OrderType,
@@ -31,11 +32,10 @@ import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
-import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+
 import { OrderItem } from "../OrderItem/OrderItem";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
 import { OrderTypeFilter } from "./filters/OrderTypeFilter";
-import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 type Props = {
   hideActions?: boolean;
@@ -74,7 +74,7 @@ export function OrderList({
   const chainId = useSelector(selectChainId);
   const { signer } = useWallet();
 
-  const subaccount = useSelector(makeSelectSubaccountForActions(1));
+  // const subaccount = useSelector(makeSelectSubaccountForActions(1));
   const account = useSelector(selectAccount);
 
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
@@ -140,7 +140,7 @@ export function OrderList({
     if (!signer) return;
     setCancellingOrdersKeys((prev) => [...prev, key]);
 
-    cancelOrdersTxn(chainId, signer, subaccount, {
+    cancelOrdersTxn(chainId, signer, {
       orderKeys: [key],
       setPendingTxns: setPendingTxns,
       detailsMsg: cancelOrdersDetailsMessage,

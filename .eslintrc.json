@@ -7,7 +7,7 @@
     "plugin:react-perf/recommended",
     "plugin:es-x/restrict-to-es2017"
   ],
-  "plugins": ["eslint-plugin-local-rules"],
+  "plugins": ["eslint-plugin-local-rules", "import"],
   "rules": {
     "no-undef": "error",
     "no-console": "warn",
@@ -19,14 +19,44 @@
     "no-empty": "error",
     "@typescript-eslint/no-inferrable-types": "error",
     "@typescript-eslint/no-non-null-asserted-optional-chain": "error",
+    "@typescript-eslint/no-empty-object-type": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      { "argsIgnorePattern": "^_", "caughtErrors": "none", "varsIgnorePattern": "^_" }
+    ],
     "react/no-unused-prop-types": "error",
     "react-hooks/rules-of-hooks": "warn",
     "react/hook-use-state": "warn",
-    "@typescript-eslint/no-unused-vars": "warn",
     "react/jsx-fragments": "warn",
     "react-perf/jsx-no-new-array-as-prop": "warn",
     "react-perf/jsx-no-new-object-as-prop": "warn",
     "react-perf/jsx-no-new-function-as-prop": "off",
+
+    "import/order": [
+      "warn",
+      {
+        "groups": [["builtin", "external"], ["internal"], ["parent", "sibling", "index"]],
+        "newlines-between": "always",
+        "pathGroups": [
+          {
+            "pattern": "components/**",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "img/**",
+            "group": "internal",
+            "position": "after"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["builtin"],
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
+    "import/namespace": "off",
 
     /* might be useful */
     "@typescript-eslint/no-non-null-assertion": "off",
@@ -99,6 +129,15 @@
   "settings": {
     "react": {
       "version": "detect"
+    },
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": "./tsconfig.json"
+      }
     }
   },
   "overrides": [

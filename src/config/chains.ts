@@ -1,6 +1,9 @@
 import { ethers } from "ethers";
 import sample from "lodash/sample";
 import { arbitrumSepolia, base, sonic } from "viem/chains";
+
+import { isDevelopment } from "./env";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET, ETH_MAINNET } from "./static/chains";
 import {
   ARBITRUM_SEPOLIA,
   BASE_MAINNET,
@@ -8,8 +11,6 @@ import {
   SUPPORTED_CHAIN_IDS_DEV as SDK_SUPPORTED_CHAIN_IDS_DEV,
   SONIC_MAINNET,
 } from "../../sdk/src/configs/chains";
-import { isDevelopment } from "./env";
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET, ETH_MAINNET } from "./static/chains";
 
 export * from "./static/chains";
 

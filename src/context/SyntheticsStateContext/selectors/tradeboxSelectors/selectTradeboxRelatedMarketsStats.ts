@@ -18,6 +18,7 @@ import {
 } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { getAcceptablePriceByPriceImpact, getMarkPrice } from "domain/synthetics/trade/utils/prices";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
+
 import { selectTradeboxAvailableMarkets } from "./selectTradeboxAvailableMarkets";
 
 export type MarketLiquidityAndFeeStat = {

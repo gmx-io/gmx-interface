@@ -87,8 +87,8 @@ msgid "What would have made your rating a 9 or 10?"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount generation failed"
-msgstr ""
+#~ msgid "Subaccount generation failed"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
@@ -119,8 +119,8 @@ msgid "Daily Loss"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount activated"
-msgstr ""
+#~ msgid "Subaccount activated"
+#~ msgstr ""
 
 #: src/pages/Home/Home.tsx
 msgid "GMX is currently live on Arbitrum and Avalanche."
@@ -225,8 +225,7 @@ msgstr "레버리지 유효화 제출 완료"
 msgid "Show error"
 msgstr ""
 
-#: src/components/Synthetics/GmList/MintableAmount.tsx
-#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
+#: src/components/MintableAmount/MintableAmount.tsx
 msgid "{0} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
@@ -317,6 +316,11 @@ msgstr "NFT 주소 입력"
 msgid "AVAILABLE"
 msgstr "사용가능"
 
+#: src/components/NpsModal/NpsModal.tsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "@username"
+msgstr ""
+
 #: src/components/TVChartContainer/constants.ts
 msgid "Stop Market - Short Inc."
 msgstr ""
@@ -406,10 +410,6 @@ msgstr "포지션"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr ""
 
-#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
-#~ msgid "Auto Swap Fallback Max Fees"
-#~ msgstr ""
-
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding Claimed"
 msgstr ""
@@ -435,8 +435,8 @@ msgid "Treasury"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "View status"
-msgstr ""
+#~ msgid "View status"
+#~ msgstr ""
 
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "Swap {0} to {1} on 1inch"
@@ -502,7 +502,6 @@ msgstr ""
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr "아래의 옵션중 하나를 사용해, ETH를 Arbitrum에 보낼 수 있습니다."
 
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 #: src/domain/synthetics/gassless/useInitSubaccountState.tsx
 msgid "Subaccount deactivated"
 msgstr ""
@@ -540,6 +539,11 @@ msgstr "시장 스왑"
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Trade History"
 msgstr "트레이딩 히스토리"
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Tabs/NestedTab.tsx
+msgid "More"
+msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price."
@@ -606,6 +610,11 @@ msgstr "메타마스크에 추가해주세요"
 
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Insufficient staked tokens"
+msgstr ""
+
+#: src/components/NpsModal/NpsModal.tsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "Telegram contact (optional)"
 msgstr ""
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
@@ -792,6 +801,10 @@ msgstr "주문에 대한 허용 가능한 가격"
 msgid "The order could not be updated"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Short Stop Market: Increase a short position when the price is below the trigger price."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Cross-chain one-click deposits into GM"
 msgstr ""
@@ -812,8 +825,8 @@ msgid "MAX"
 msgstr "최대"
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Activating Subaccount"
-msgstr ""
+#~ msgid "Activating Subaccount"
+#~ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
@@ -850,6 +863,11 @@ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Slippage should be less than -5%"
+msgstr ""
+
+#: src/components/NpsModal/NpsModal.tsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "Leave your Telegram if you’re okay with being contacted for a quick follow-up"
 msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
@@ -970,6 +988,10 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 msgid "Buy {operationTokenSymbol}"
+msgstr ""
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Buy GM: {0}"
 msgstr ""
 
 #: src/pages/Dashboard/GlpCard.tsx
@@ -1175,6 +1197,10 @@ msgstr "토큰"
 msgid "Request Withdraw"
 msgstr "인출 요청"
 
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Long Market: Increase a long position at the current price."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "1inch"
 msgstr ""
@@ -1230,8 +1256,8 @@ msgid "Total value of tokens in the GLP pools."
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Generating and activating Subaccount"
-msgstr ""
+#~ msgid "Generating and activating Subaccount"
+#~ msgstr ""
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Select pool"
@@ -1612,6 +1638,10 @@ msgstr "주문을 위한 시장 평균가"
 msgid "Net Value"
 msgstr "순이익"
 
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Short TP/SL: Decrease a short position when the trigger price is reached."
+msgstr ""
+
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
@@ -1692,8 +1722,6 @@ msgstr "마켓"
 
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
-#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
-#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 msgid "Max {0}"
 msgstr ""
 
@@ -1722,9 +1750,9 @@ msgstr "GLP의 베스팅 볼트에서 모든 토큰을 인출했습니다."
 msgid "High Swap Profit Fee"
 msgstr ""
 
-#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-#~ msgid "High External Swap Fee"
-#~ msgstr ""
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Long Stop Market: Increase a long position when the price is above the trigger price."
+msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
@@ -1806,8 +1834,8 @@ msgid "Max {0} out"
 msgstr "최대 {0} out"
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Updating Subaccount"
-msgstr ""
+#~ msgid "Updating Subaccount"
+#~ msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "There is no price impact. There is a single<0/>execution price for increasing shorts or<1/>decreasing longs for this size."
@@ -1992,6 +2020,10 @@ msgstr "코드 확인중..."
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "GM Pools"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Long Limit: Increase a long position when the price is below the trigger price."
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
@@ -2215,10 +2247,6 @@ msgstr ""
 msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
 msgstr ""
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Fees {rebatedTextWithSparkle}"
-#~ msgstr ""
-
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Index"
 msgstr "인덱스"
@@ -2312,6 +2340,10 @@ msgstr ""
 msgid "Trading Volume"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Short Market: Increase a short position at the current price."
+msgstr ""
+
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing limit order in the {0} market pool but it lacks liquidity for this order."
 msgstr ""
@@ -2354,10 +2386,6 @@ msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger ord
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 #~ msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
-#~ msgstr ""
-
-#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
-#~ msgid "Switch to internal swap"
 #~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
@@ -2750,8 +2778,8 @@ msgid "Stop Market - Long Inc."
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Pending Wallet message sign"
-msgstr ""
+#~ msgid "Pending Wallet message sign"
+#~ msgstr ""
 
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to Claim Price Impact Rebate"
@@ -2975,6 +3003,10 @@ msgstr "청산을 위한 시장 평균가"
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Long TP/SL: Decrease a long position when the trigger price is reached."
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.jsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max close amount exceeded"
@@ -3000,8 +3032,8 @@ msgid "Please enter the names of the coins you'd like to see added:"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount created"
-msgstr ""
+#~ msgid "Subaccount created"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Forfeit profit and Short"
@@ -3131,8 +3163,6 @@ msgstr ""
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
@@ -3239,7 +3269,6 @@ msgstr ""
 msgid "Swap UI Fee"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 #: src/domain/synthetics/gassless/useInitSubaccountState.tsx
 #: src/domain/synthetics/gassless/useInitSubaccountState.tsx
 #: src/domain/synthetics/gassless/useInitSubaccountState.tsx
@@ -3304,6 +3333,10 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order Acceptable Price"
 msgstr "주문 가능 가격"
+
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "VOL."
+msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Max Capacity for {0} Reached"
@@ -3526,8 +3559,8 @@ msgid "{longShortText} {0} Open Interest"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount activation failed"
-msgstr ""
+#~ msgid "Subaccount activation failed"
+#~ msgstr ""
 
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
@@ -3926,6 +3959,12 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
@@ -4372,6 +4411,10 @@ msgstr ""
 msgid "Address copied to your clipboard"
 msgstr ""
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Version and Network"
+msgstr ""
+
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -4430,8 +4473,8 @@ msgid "Enter a code"
 msgstr "코드 입력"
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount is updated"
-msgstr ""
+#~ msgid "Subaccount is updated"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Umami DAO"
@@ -4645,7 +4688,6 @@ msgstr "추천 코드 생성"
 msgid "Combined take profits are at maximum (100%). Decrease existing values to add more orders."
 msgstr ""
 
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks"
 msgstr "네트워크"
@@ -4887,6 +4929,10 @@ msgstr ""
 msgid "Invalid NFT Address"
 msgstr "유요하지 않은 NFT 주소"
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "LIQ."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP and GMX autocompounding vaults"
 msgstr ""
@@ -4921,8 +4967,8 @@ msgstr "스왑 제출완료"
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Pending Wallet transaction sign"
-msgstr ""
+#~ msgid "Pending Wallet transaction sign"
+#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -5529,6 +5575,10 @@ msgstr ""
 msgid "Available"
 msgstr "사용가능"
 
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Short Limit: Increase a short position when the price is above the trigger price."
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Last 7 days"
 msgstr ""
@@ -5784,8 +5834,8 @@ msgid "Epoch ending is not acknowledged"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount deactivation failed"
-msgstr ""
+#~ msgid "Subaccount deactivation failed"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
@@ -6207,8 +6257,8 @@ msgstr ""
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Deactivation"
-msgstr ""
+#~ msgid "Deactivation"
+#~ msgstr ""
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "Next"
@@ -6557,8 +6607,7 @@ msgstr "GLP 구매 / 판매"
 msgid "Open {0} in Explorer"
 msgstr ""
 
-#: src/components/Synthetics/GmList/MintableAmount.tsx
-#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
+#: src/components/MintableAmount/MintableAmount.tsx
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
@@ -7204,10 +7253,6 @@ msgstr ""
 msgid "Request Settlement of Funding Fees"
 msgstr "자금 수수료 결제 요청"
 
-#: src/components/Glp/GlpSwap.jsx
-msgid "{0} GLP (${1})"
-msgstr "{0} GLP (${1})"
-
 #: src/pages/Earn/EarnV1.jsx
 msgid "Approving {stakingTokenSymbol}..."
 msgstr "{stakingTokenSymbol} 승인중..."
@@ -7374,6 +7419,8 @@ msgstr "롱"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Pool"
@@ -7544,10 +7591,6 @@ msgstr ""
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Increase"
 msgstr "증가"
-
-#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
-#~ msgid "External swap was temporarily disabled. Please try again."
-#~ msgstr ""
 
 #: src/pages/Earn/ClaimModal.tsx
 msgid "Claim {wrappedTokenSymbol} Rewards"

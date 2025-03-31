@@ -1,4 +1,3 @@
-import { getTokenBySymbolSafe } from "sdk/configs/tokens";
 import {
   selectChainId,
   selectMarketsInfoData,
@@ -7,6 +6,8 @@ import {
 import { marketsInfoData2IndexTokenStatsMap } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { calculateDisplayDecimals } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { getTokenBySymbolSafe } from "sdk/configs/tokens";
+
 import { createSelector, createSelectorFactory } from "../utils";
 import { selectChartToken } from "./chartSelectors";
 import { selectTradeboxTradeFlags } from "./tradeboxSelectors";

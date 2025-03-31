@@ -3,7 +3,10 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type { MultichainUtils, MultichainUtilsInterface } from "../MultichainUtils";
+import type {
+  MultichainUtils,
+  MultichainUtilsInterface,
+} from "../MultichainUtils";
 
 const _abi = [
   {
@@ -158,7 +161,10 @@ export class MultichainUtils__factory {
   static createInterface(): MultichainUtilsInterface {
     return new Interface(_abi) as MultichainUtilsInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): MultichainUtils {
+  static connect(
+    address: string,
+    runner?: ContractRunner | null
+  ): MultichainUtils {
     return new Contract(address, _abi, runner) as unknown as MultichainUtils;
   }
 }

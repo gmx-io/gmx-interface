@@ -1,4 +1,5 @@
 import { type Address, zeroAddress } from "viem";
+
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET } from "./chains";
 
 export const CONTRACTS = {
@@ -270,8 +271,9 @@ export const CONTRACTS = {
 
     SubaccountGelatoRelayRouter: zeroAddress,
     GelatoRelayRouter: zeroAddress,
-    ExternalHandler: zeroAddress,
     OpenOceanRouter: zeroAddress,
+
+    ExternalHandler: "0x0d9F90c66C392c4d0e70EE0d399c43729B942512",
 
     Multicall: "0x0f53e512b49202a37c81c6085417C9a9005F2196",
   },

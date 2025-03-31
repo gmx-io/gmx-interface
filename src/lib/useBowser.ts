@@ -1,4 +1,5 @@
 import Bowser from "bowser";
+
 import { usePolling } from "./usePolling";
 
 export function useBowser() {

@@ -1,23 +1,22 @@
+import { formatDistance } from "date-fns";
+import { BigNumberish } from "ethers";
+import useSWR from "swr";
+
+import { getServerUrl } from "config/backend";
 import { getContract } from "config/contracts";
-import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { TokenInfo, useInfoTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import useSWR from "swr";
-import { getServerUrl } from "config/backend";
-import { formatDistance } from "date-fns";
-
-import Reader from "sdk/abis/Reader.json";
-import VaultV2 from "sdk/abis/VaultV2.json";
-import { BigNumberish } from "ethers";
 import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
+import { formatAmountHuman } from "lib/numbers";
+import useWallet from "lib/wallets/useWallet";
+import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
+
+import Tooltip from "components/Tooltip/Tooltip";
 
 import "./Stats.css";
-import Tooltip from "components/Tooltip/Tooltip";
-import useWallet from "lib/wallets/useWallet";
-import { bigMath } from "sdk/utils/bigmath";
-import { formatAmountHuman } from "lib/numbers";
 
 function shareBar(share?: BigNumberish, total?: BigNumberish) {
   if (!share || !total) {
@@ -53,12 +52,12 @@ export default function Stats() {
   const { data: totalTokenWeights } = useSWR<bigint>(
     [`GlpSwap:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
     {
-      fetcher: contractFetcher(signer, VaultV2) as any,
+      fetcher: contractFetcher(signer, "VaultV2") as any,
     }
   );
 
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
-    fetcher: contractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+    fetcher: contractFetcher(signer, "Reader", [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
   const { infoTokens } = useInfoTokens(signer, chainId, active, undefined, fundingRateInfo as any);
 

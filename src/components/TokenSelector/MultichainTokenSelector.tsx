@@ -1,24 +1,23 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useEffect, useMemo, useState } from "react";
-
 import { BiChevronDown } from "react-icons/bi";
 
+import { TokenChainData } from "context/GmxAccountContext/types";
 import { convertToUsd } from "domain/synthetics/tokens";
 import type { Token, TokenData, TokensData } from "domain/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
 import { formatAmount, formatBalanceAmount } from "lib/numbers";
+import { EMPTY_OBJECT } from "lib/objects";
 import { searchBy } from "lib/searchBy";
+import { USD_DECIMALS } from "sdk/configs/factors";
+import { getToken } from "sdk/configs/tokens";
 
+import Button from "components/Button/Button";
 import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
-import Button from "components/Button/Button";
-import { TokenChainData } from "context/GmxAccountContext/types";
-import { EMPTY_OBJECT } from "lib/objects";
-import { USD_DECIMALS } from "sdk/configs/factors";
-import { getToken } from "sdk/configs/tokens";
 import "./TokenSelector.scss";
 
 type Props = {

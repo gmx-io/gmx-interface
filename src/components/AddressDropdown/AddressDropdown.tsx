@@ -1,9 +1,11 @@
-import { Avatar } from "components/Avatar/Avatar";
+import { useCallback } from "react";
+import { createBreakpoint } from "react-use";
+
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { useENS } from "lib/legacy";
 import { shortenAddressOrEns } from "lib/wallets";
-import { useCallback } from "react";
-import { createBreakpoint } from "react-use";
+
+import { Avatar } from "components/Avatar/Avatar";
 
 import "./AddressDropdown.scss";
 

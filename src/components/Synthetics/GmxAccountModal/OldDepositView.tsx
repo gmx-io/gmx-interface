@@ -1,12 +1,17 @@
 import { t } from "@lingui/macro";
+import { BiChevronRight } from "react-icons/bi";
+
+import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
+import { formatUsd } from "lib/numbers";
+import { SONIC_MAINNET } from "sdk/configs/chains";
+
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
-import { formatUsd } from "lib/numbers";
-import { BiChevronRight } from "react-icons/bi";
-import { SONIC_MAINNET } from "sdk/configs/chains";
+
+
+
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
 // Dev: left this in case manager wants to use it again

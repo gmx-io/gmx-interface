@@ -1,3 +1,10 @@
+import { differenceInMilliseconds } from "date-fns";
+import { Provider, ethers } from "ethers";
+import maxBy from "lodash/maxBy";
+import minBy from "lodash/minBy";
+import orderBy from "lodash/orderBy";
+import { useEffect, useState } from "react";
+
 import {
   ARBITRUM,
   AVALANCHE,
@@ -8,21 +15,14 @@ import {
 } from "config/chains";
 import { getContract, getDataStoreContract, getMulticallContract } from "config/contracts";
 import { getRpcProviderKey } from "config/localStorage";
-import { differenceInMilliseconds } from "date-fns";
-import { Provider, ethers } from "ethers";
-import { isDebugMode } from "lib/localStorage";
-import { sleep } from "lib/sleep";
-import maxBy from "lodash/maxBy";
-import minBy from "lodash/minBy";
-import orderBy from "lodash/orderBy";
-import { useEffect, useState } from "react";
-import { HASHED_MARKET_CONFIG_KEYS } from "sdk/prebuilt";
-
 import { SOURCE_CHAINS } from "context/GmxAccountContext/config";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
+import { isDebugMode } from "lib/localStorage";
 import { RpcTrackerRankingCounter } from "lib/metrics";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
 import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
+import { sleep } from "lib/sleep";
+import { HASHED_MARKET_CONFIG_KEYS } from "sdk/prebuilt";
 
 const PROBE_TIMEOUT = 10 * 1000; // 10 seconds / Frequency of RPC probing
 const PROBE_FAIL_TIMEOUT = 10 * 1000; // 10 seconds / Abort RPC probe if it takes longer

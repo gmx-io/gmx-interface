@@ -1,10 +1,12 @@
 import { Trans } from "@lingui/macro";
-import IconBolt from "img/icon-bolt.svg?react";
 import { useLocalStorage } from "react-use";
 
-import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { getExpressTradingBannerDismissedKey } from "config/localStorage";
 import { useChainId } from "lib/chains";
+
+import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+
+import IconBolt from "img/icon-bolt.svg?react";
 
 export function ExpressTradingEnabledBanner() {
   const { chainId } = useChainId();

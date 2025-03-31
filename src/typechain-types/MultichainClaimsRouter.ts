@@ -45,7 +45,7 @@ export declare namespace MultichainRouter {
     orderVault: string,
     orderHandler: string,
     externalHandler: string,
-    multichainVault: string,
+    multichainVault: string
   ] & {
     router: string;
     roleStore: string;
@@ -66,11 +66,11 @@ export declare namespace OracleUtils {
     data: BytesLike[];
   };
 
-  export type SetPricesParamsStructOutput = [tokens: string[], providers: string[], data: string[]] & {
-    tokens: string[];
-    providers: string[];
-    data: string[];
-  };
+  export type SetPricesParamsStructOutput = [
+    tokens: string[],
+    providers: string[],
+    data: string[]
+  ] & { tokens: string[]; providers: string[]; data: string[] };
 }
 
 export declare namespace RelayUtils {
@@ -85,7 +85,7 @@ export declare namespace RelayUtils {
     externalCallTargets: string[],
     externalCallDataList: string[],
     refundTokens: string[],
-    refundReceivers: string[],
+    refundReceivers: string[]
   ] & {
     externalCallTargets: string[];
     externalCallDataList: string[];
@@ -112,7 +112,7 @@ export declare namespace RelayUtils {
     v: bigint,
     r: string,
     s: string,
-    token: string,
+    token: string
   ] & {
     owner: string;
     spender: string;
@@ -130,11 +130,11 @@ export declare namespace RelayUtils {
     feeSwapPath: AddressLike[];
   };
 
-  export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
-    feeToken: string;
-    feeAmount: bigint;
-    feeSwapPath: string[];
-  };
+  export type FeeParamsStructOutput = [
+    feeToken: string,
+    feeAmount: bigint,
+    feeSwapPath: string[]
+  ] & { feeToken: string; feeAmount: bigint; feeSwapPath: string[] };
 
   export type RelayParamsStruct = {
     oracleParams: OracleUtils.SetPricesParamsStruct;
@@ -155,7 +155,7 @@ export declare namespace RelayUtils {
     userNonce: bigint,
     deadline: bigint,
     signature: string,
-    desChainId: bigint,
+    desChainId: bigint
   ] & {
     oracleParams: OracleUtils.SetPricesParamsStructOutput;
     externalCalls: RelayUtils.ExternalCallsStructOutput;
@@ -195,12 +195,28 @@ export interface MultichainClaimsRouterInterface extends Interface {
 
   getEvent(nameOrSignatureOrTopic: "TokenTransferReverted"): EventFragment;
 
-  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_NAME_HASH", values?: undefined): string;
-  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_TYPEHASH", values?: undefined): string;
-  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "DOMAIN_SEPARATOR_NAME_HASH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "DOMAIN_SEPARATOR_TYPEHASH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "claimAffiliateRewards",
-    values: [RelayUtils.RelayParamsStruct, AddressLike, BigNumberish, AddressLike[], AddressLike[], AddressLike]
+    values: [
+      RelayUtils.RelayParamsStruct,
+      AddressLike,
+      BigNumberish,
+      AddressLike[],
+      AddressLike[],
+      AddressLike
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "claimCollateral",
@@ -211,45 +227,115 @@ export interface MultichainClaimsRouterInterface extends Interface {
       AddressLike[],
       AddressLike[],
       BigNumberish[],
-      AddressLike,
+      AddressLike
     ]
   ): string;
   encodeFunctionData(
     functionFragment: "claimFundingFees",
-    values: [RelayUtils.RelayParamsStruct, AddressLike, BigNumberish, AddressLike[], AddressLike[], AddressLike]
+    values: [
+      RelayUtils.RelayParamsStruct,
+      AddressLike,
+      BigNumberish,
+      AddressLike[],
+      AddressLike[],
+      AddressLike
+    ]
   ): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
-  encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
-  encodeFunctionData(functionFragment: "externalHandler", values?: undefined): string;
-  encodeFunctionData(functionFragment: "multicall", values: [BytesLike[]]): string;
-  encodeFunctionData(functionFragment: "multichainVault", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "eventEmitter",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "externalHandler",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "multicall",
+    values: [BytesLike[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "multichainVault",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "oracle", values?: undefined): string;
-  encodeFunctionData(functionFragment: "orderHandler", values?: undefined): string;
-  encodeFunctionData(functionFragment: "orderVault", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "orderHandler",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "orderVault",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "roleStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "router", values?: undefined): string;
-  encodeFunctionData(functionFragment: "sendNativeToken", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "sendTokens", values: [AddressLike, AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "sendWnt", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "userNonces", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "sendNativeToken",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "sendTokens",
+    values: [AddressLike, AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "sendWnt",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "userNonces",
+    values: [AddressLike]
+  ): string;
 
-  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_NAME_HASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_TYPEHASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "claimAffiliateRewards", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "claimCollateral", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "claimFundingFees", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "DOMAIN_SEPARATOR_NAME_HASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "DOMAIN_SEPARATOR_TYPEHASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "claimAffiliateRewards",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "claimCollateral",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "claimFundingFees",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "eventEmitter", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "externalHandler", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "eventEmitter",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "externalHandler",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "multicall", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "multichainVault", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "multichainVault",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "oracle", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "orderHandler", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "orderHandler",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "orderVault", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "roleStore", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "router", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "sendNativeToken", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "sendNativeToken",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "sendTokens", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendWnt", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "userNonces", data: BytesLike): Result;
@@ -285,21 +371,31 @@ export interface MultichainClaimsRouter extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
   DOMAIN_SEPARATOR_NAME_HASH: TypedContractMethod<[], [string], "view">;
 
@@ -314,7 +410,7 @@ export interface MultichainClaimsRouter extends BaseContract {
       srcChainId: BigNumberish,
       markets: AddressLike[],
       tokens: AddressLike[],
-      receiver: AddressLike,
+      receiver: AddressLike
     ],
     [bigint[]],
     "nonpayable"
@@ -328,7 +424,7 @@ export interface MultichainClaimsRouter extends BaseContract {
       markets: AddressLike[],
       tokens: AddressLike[],
       timeKeys: BigNumberish[],
-      receiver: AddressLike,
+      receiver: AddressLike
     ],
     [bigint[]],
     "nonpayable"
@@ -341,7 +437,7 @@ export interface MultichainClaimsRouter extends BaseContract {
       srcChainId: BigNumberish,
       markets: AddressLike[],
       tokens: AddressLike[],
-      receiver: AddressLike,
+      receiver: AddressLike
     ],
     [bigint[]],
     "nonpayable"
@@ -370,19 +466,39 @@ export interface MultichainClaimsRouter extends BaseContract {
 
   router: TypedContractMethod<[], [string], "view">;
 
-  sendNativeToken: TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
+  sendNativeToken: TypedContractMethod<
+    [receiver: AddressLike, amount: BigNumberish],
+    [void],
+    "payable"
+  >;
 
-  sendTokens: TypedContractMethod<[token: AddressLike, receiver: AddressLike, amount: BigNumberish], [void], "payable">;
+  sendTokens: TypedContractMethod<
+    [token: AddressLike, receiver: AddressLike, amount: BigNumberish],
+    [void],
+    "payable"
+  >;
 
-  sendWnt: TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
+  sendWnt: TypedContractMethod<
+    [receiver: AddressLike, amount: BigNumberish],
+    [void],
+    "payable"
+  >;
 
   userNonces: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
-  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_NAME_HASH"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_TYPEHASH"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_VERSION_HASH"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "DOMAIN_SEPARATOR_NAME_HASH"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "DOMAIN_SEPARATOR_TYPEHASH"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "DOMAIN_SEPARATOR_VERSION_HASH"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "claimAffiliateRewards"
   ): TypedContractMethod<
@@ -392,7 +508,7 @@ export interface MultichainClaimsRouter extends BaseContract {
       srcChainId: BigNumberish,
       markets: AddressLike[],
       tokens: AddressLike[],
-      receiver: AddressLike,
+      receiver: AddressLike
     ],
     [bigint[]],
     "nonpayable"
@@ -407,7 +523,7 @@ export interface MultichainClaimsRouter extends BaseContract {
       markets: AddressLike[],
       tokens: AddressLike[],
       timeKeys: BigNumberish[],
-      receiver: AddressLike,
+      receiver: AddressLike
     ],
     [bigint[]],
     "nonpayable"
@@ -421,31 +537,65 @@ export interface MultichainClaimsRouter extends BaseContract {
       srcChainId: BigNumberish,
       markets: AddressLike[],
       tokens: AddressLike[],
-      receiver: AddressLike,
+      receiver: AddressLike
     ],
     [bigint[]],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "externalHandler"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "multicall"): TypedContractMethod<[data: BytesLike[]], [string[]], "payable">;
-  getFunction(nameOrSignature: "multichainVault"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "oracle"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "orderHandler"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "orderVault"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "roleStore"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "router"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "dataStore"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "eventEmitter"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "externalHandler"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "multicall"
+  ): TypedContractMethod<[data: BytesLike[]], [string[]], "payable">;
+  getFunction(
+    nameOrSignature: "multichainVault"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "oracle"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "orderHandler"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "orderVault"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "roleStore"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "router"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "sendNativeToken"
-  ): TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
+  ): TypedContractMethod<
+    [receiver: AddressLike, amount: BigNumberish],
+    [void],
+    "payable"
+  >;
   getFunction(
     nameOrSignature: "sendTokens"
-  ): TypedContractMethod<[token: AddressLike, receiver: AddressLike, amount: BigNumberish], [void], "payable">;
+  ): TypedContractMethod<
+    [token: AddressLike, receiver: AddressLike, amount: BigNumberish],
+    [void],
+    "payable"
+  >;
   getFunction(
     nameOrSignature: "sendWnt"
-  ): TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
-  getFunction(nameOrSignature: "userNonces"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  ): TypedContractMethod<
+    [receiver: AddressLike, amount: BigNumberish],
+    [void],
+    "payable"
+  >;
+  getFunction(
+    nameOrSignature: "userNonces"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
   getEvent(
     key: "TokenTransferReverted"

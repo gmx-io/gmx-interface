@@ -2,6 +2,7 @@ import { isSettlementChain, isSourceChain } from "context/GmxAccountContext/conf
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { MARKETS } from "sdk/configs/markets";
 import { convertTokenAddress } from "sdk/configs/tokens";
+
 import { createSelector } from "../utils";
 import { selectTokensData, selectWalletChainId } from "./globalSelectors";
 

@@ -1,9 +1,8 @@
 import "./SpinningLoader.css";
 
 import cx from "classnames";
-
-import { ImSpinner2 } from "react-icons/im";
 import { useMemo } from "react";
+import { ImSpinner2 } from "react-icons/im";
 
 interface Props {
   size?: string;

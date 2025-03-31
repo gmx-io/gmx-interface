@@ -1,21 +1,24 @@
 import { t, Trans } from "@lingui/macro";
-import Button from "components/Button/Button";
-import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
-import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
-import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
+import { useState } from "react";
+
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import {
   useSubaccountWithdrawalAmount,
   withdrawFromSubaccount,
 } from "domain/synthetics/subaccount/withdrawFromSubaccount";
-import IconInfo from "img/ic_info.svg?react";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { formatTokenAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
-import { useState } from "react";
 import { getNativeToken } from "sdk/configs/tokens";
+
+import Button from "components/Button/Button";
+import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
+import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
+
+import IconInfo from "img/ic_info.svg?react";
 import "./OldSubaccountWithdraw.scss";
 
 export function OldSubaccountWithdraw() {

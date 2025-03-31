@@ -4,22 +4,24 @@ import { useLingui } from "@lingui/react";
 import cx from "classnames";
 import noop from "lodash/noop";
 import { useCallback, useState } from "react";
-import { HiDotsVertical } from "react-icons/hi";
+import { BiChevronDown } from "react-icons/bi";
 
+import { getChainName } from "config/chains";
 import { getChainIcon } from "config/icons";
+import { useTradePageVersion } from "lib/useTradePageVersion";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
+import type { NetworkOption } from "components/Header/AppHeaderChainAndSettings";
 import type { ModalProps } from "components/Modal/Modal";
-import ModalWithPortal from "../Modal/ModalWithPortal";
-import LanguageModalContent from "./LanguageModalContent";
+import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 
 import language24Icon from "img/ic_language24.svg";
 import SettingsIcon16 from "img/ic_settings_16.svg?react";
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
 
-import type { NetworkOption } from "components/Header/AppHeaderChainAndSettings";
-import { getChainName } from "config/chains";
+import LanguageModalContent from "./LanguageModalContent";
+import ModalWithPortal from "../Modal/ModalWithPortal";
 
 import "./NetworkDropdown.css";
 
@@ -84,44 +86,30 @@ export default function NetworkDropdown(props: {
 
   return (
     <>
-      {props.small ? (
-        <div className="App-header-network" onClick={() => setActiveModal(NETWORK_MODAL_KEY)}>
-          <div className="network-dropdown">
-            <ChainIcon chainId={props.chainId} />
-          </div>
-        </div>
-      ) : (
-        <DesktopDropdown
-          // currentLanguage={currentLanguage}
-          // activeModal={activeModal}
-          // setActiveModal={setActiveModal}
-          // {...props}
-
-          chainId={props.chainId}
-          networkOptions={props.networkOptions}
-          openSettings={props.openSettings}
-          setActiveModal={setActiveModal}
-        />
-      )}
+      <DesktopDropdown
+        chainId={props.chainId}
+        networkOptions={props.networkOptions}
+        openSettings={props.openSettings}
+        setActiveModal={setActiveModal}
+      />
       <ModalWithPortal {...getModalProps(activeModal)}>{getModalContent(activeModal)}</ModalWithPortal>
     </>
   );
 }
 
 function ChainIcon({ chainId }: { chainId: number }) {
-  // const { chainId } = useChainId();
-  // const icon = getIcon(chainId, "network");
+  const [currentVersion] = useTradePageVersion();
   const icon = getChainIcon(chainId);
   const chainName = getChainName(chainId);
 
   return (
     <>
-      <button className="transparent">
+      <span className="text-body-small mr-7 inline-block h-fit rounded-4 bg-cold-blue-500 p-4">V{currentVersion}</span>
+      <button className="mr-4">
         <img className="network-dropdown-icon" src={icon} alt={chainName} />
       </button>
-      <div className="network-dropdown-seperator" />
-      <button className="transparent">
-        <HiDotsVertical color="white" size={20} />
+      <button>
+        <BiChevronDown color="white" size={20} />
       </button>
     </>
   );
@@ -141,12 +129,15 @@ function DesktopDropdown({
   return (
     <div className="App-header-network">
       <Menu>
-        <Menu.Button as="div" className="network-dropdown" data-qa="networks-dropdown-handle">
+        <Menu.Button as="div" className="network-dropdown px-6 py-5" data-qa="networks-dropdown-handle">
           <ChainIcon chainId={chainId} />
         </Menu.Button>
         <Menu.Items as="div" className="menu-items network-dropdown-items" data-qa="networks-dropdown">
           <div className="dropdown-label">
-            <Trans>Networks</Trans>
+            <Trans>Version and Network</Trans>
+          </div>
+          <div className="px-8 pb-8">
+            <VersionSwitch />
           </div>
           <div className="network-dropdown-list">
             <NetworkMenuItems networkOptions={networkOptions} chainId={chainId} />

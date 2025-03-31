@@ -1,17 +1,19 @@
-import cx from "classnames";
-import Button from "components/Button/Button";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import { getChainName } from "config/chains";
-import { formatBalanceAmount, formatUsd } from "lib/numbers";
-import { useState } from "react";
-import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
-import { useGmxAccountTokensData } from "components/Synthetics/GmxAccountModal/hooks";
-import useWallet from "lib/wallets/useWallet";
-import { useTokensDataRequest } from "domain/synthetics/tokens";
-import { isSettlementChain } from "context/GmxAccountContext/config";
-import { msg } from "@lingui/macro";
 import { MessageDescriptor } from "@lingui/core";
+import { msg } from "@lingui/macro";
+import cx from "classnames";
+import { useState } from "react";
+
+import { getChainName } from "config/chains";
+import { isSettlementChain } from "context/GmxAccountContext/config";
+import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useLocalizedMap } from "lib/i18n";
+import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import useWallet from "lib/wallets/useWallet";
+import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
+
+import Button from "components/Button/Button";
+import { useGmxAccountTokensData } from "components/Synthetics/GmxAccountModal/hooks";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 type FilterType = "all" | "gmxBalance" | "wallet";
 

@@ -1,6 +1,8 @@
 import { Trans } from "@lingui/macro";
+import { Suspense, lazy } from "react";
 import { useMedia } from "react-use";
 
+import { isDevelopment } from "config/env";
 import {
   selectTradeboxMarketInfo,
   selectTradeboxTradeFlags,
@@ -8,17 +10,19 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
-import { ChartHeader } from "./ChartHeader";
 import { DepthChart } from "components/DepthChart/DepthChart";
-import Tab from "components/Tab/Tab";
-import { TVChart } from "./TVChart";
+import Tabs from "components/Tabs/Tabs";
 
 import AntennaBarsIcon from "img/ic_antenna_bars.svg?react";
 import CandlestickChartIcon from "img/ic_candlestick_chart.svg?react";
 
+import { ChartHeader } from "./ChartHeader";
+import { TVChart } from "./TVChart";
+
 import "./TVChart.scss";
 
-const TABS = ["PRICE", "DEPTH"];
+const LazyBiNetworkChart = lazy(() => import("react-icons/bi").then((mod) => ({ default: mod.BiNetworkChart })));
+const LazyMarketGraph = lazy(() => import("components/DebugMarketGraph/DebugMarketGraph"));
 
 const TAB_LABELS = {
   PRICE: (
@@ -33,7 +37,32 @@ const TAB_LABELS = {
       <Trans>DEPTH</Trans>
     </div>
   ),
+  MARKET_GRAPH: (
+    <div className="flex items-center gap-8">
+      <Suspense fallback={<div>...</div>}>
+        <LazyBiNetworkChart />
+      </Suspense>
+      MARKET GRAPH
+    </div>
+  ),
 };
+
+const TAB_CONTENTS = {
+  PRICE: <TVChart />,
+  DEPTH: <DepthChartContainer />,
+  MARKET_GRAPH: (
+    <Suspense fallback={<div>...</div>}>
+      <LazyMarketGraph />
+    </Suspense>
+  ),
+};
+
+const TABS = isDevelopment() ? ["PRICE", "DEPTH", "MARKET_GRAPH"] : ["PRICE", "DEPTH"];
+
+const TABS_OPTIONS = TABS.map((tab) => ({
+  value: tab,
+  label: TAB_LABELS[tab],
+}));
 
 export function Chart() {
   const isMobile = useMedia("(max-width: 700px)");
@@ -46,21 +75,18 @@ export function Chart() {
 
       <div className="flex h-[49.6rem] flex-col overflow-hidden rounded-4 bg-slate-800">
         {isSwap ? (
-          <TVChart />
+          tab === "MARKET_GRAPH" ? (
+            TAB_CONTENTS.MARKET_GRAPH
+          ) : (
+            <TVChart />
+          )
         ) : (
           <>
             <div className="text-body-medium border-b border-stroke-primary px-20 py-10">
-              <Tab
-                type="inline"
-                className="flex"
-                options={TABS}
-                option={tab}
-                optionLabels={TAB_LABELS}
-                onChange={setTab}
-              />
+              <Tabs type="inline" className="flex" options={TABS_OPTIONS} selectedValue={tab} onChange={setTab} />
             </div>
 
-            {tab === "PRICE" ? <TVChart /> : <DepthChartContainer />}
+            {TAB_CONTENTS[tab || "PRICE"]}
           </>
         )}
       </div>

@@ -1,7 +1,9 @@
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
+
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
 export function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boolean }) {
   const {

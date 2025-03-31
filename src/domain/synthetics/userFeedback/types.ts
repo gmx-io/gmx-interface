@@ -20,6 +20,7 @@ export type UserFeedback = {
   isGeneralFeedback: boolean | undefined;
   totalVolume: number;
   monthVolume: number;
+  contact: string;
   answers: {
     [questionType in QuestionType]?: Answer;
   };

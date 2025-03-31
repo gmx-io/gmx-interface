@@ -1,5 +1,6 @@
-import { ChangeEvent, KeyboardEvent, useCallback, useRef, useState } from "react";
 import cx from "classnames";
+import { ChangeEvent, KeyboardEvent, useCallback, useRef, useState } from "react";
+
 import NumberInput from "components/NumberInput/NumberInput";
 
 import "./SuggestionInput.scss";

@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { ToastContainer, cssTransition } from "react-toastify";
+import { cssTransition, ToastContainer } from "react-toastify";
 import { Hash } from "viem";
 import { useDisconnect } from "wagmi";
 
@@ -11,8 +11,15 @@ import {
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
 } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
-import { REFERRAL_CODE_QUERY_PARAM, getAppBaseUrl, isHomeSite } from "lib/legacy";
+import { getAppBaseUrl, isHomeSite, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
+import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
+import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
+import { LandingPageAgreementConfirmationEvent } from "lib/userAnalytics/types";
+import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigureUserAnalyticsProfile";
+import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
+import { useWalletConnectedUserAnalyticsEvent } from "lib/userAnalytics/useWalletConnectedEvent";
 import useRouteQuery from "lib/useRouteQuery";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 
@@ -24,13 +31,6 @@ import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
 import { GmxAccountModal } from "components/Synthetics/GmxAccountModal/GmxAccountModal";
 
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
-import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
-import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
-import { LandingPageAgreementConfirmationEvent } from "lib/userAnalytics/types";
-import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigureUserAnalyticsProfile";
-import { useWalletConnectedUserAnalyticsEvent } from "lib/userAnalytics/useWalletConnectedEvent";
 import { HomeRoutes } from "./HomeRoutes";
 import { MainRoutes } from "./MainRoutes";
 

@@ -19,12 +19,11 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import PageTitle from "components/PageTitle/PageTitle";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
+
 import { AffiliateClaimModal } from "./AffiliateClaimModal";
 import { AffiliateVesterWithdrawModal } from "./AffiliateVesterWithdrawModal";
 import { VesterDepositModal } from "./VesterDepositModal";
 import { VesterWithdrawModal } from "./VesterWithdrawModal";
-
-import Token from "sdk/abis/Token.json";
 
 export function Vesting({ processedData }: { processedData: ProcessedData | undefined }) {
   const { active, signer, account } = useWallet();
@@ -63,7 +62,7 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
   const { data: sbfGmxBalance } = useSWR(
     [`StakeV2:sbfGmxBalance:${active}`, chainId, feeGmxTrackerAddress, "balanceOf", account ?? PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, "Token"),
     }
   );
 
@@ -275,23 +274,21 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                     <Tooltip
                       handle={formatAmount(totalRewardTokens, 18, 2, true)}
                       position="bottom-end"
-                      renderContent={() => {
-                        return (
-                          <>
-                            <StatsTooltipRow
-                              showDollar={false}
-                              label="GMX"
-                              value={formatAmount(processedData?.gmxInStakedGmx, 18, 2, true)}
-                            />
+                      content={
+                        <>
+                          <StatsTooltipRow
+                            showDollar={false}
+                            label="GMX"
+                            value={formatAmount(processedData?.gmxInStakedGmx, 18, 2, true)}
+                          />
 
-                            <StatsTooltipRow
-                              showDollar={false}
-                              label="esGMX"
-                              value={formatAmount(processedData?.esGmxInStakedGmx, 18, 2, true)}
-                            />
-                          </>
-                        );
-                      }}
+                          <StatsTooltipRow
+                            showDollar={false}
+                            label="esGMX"
+                            value={formatAmount(processedData?.esGmxInStakedGmx, 18, 2, true)}
+                          />
+                        </>
+                      }
                     />
                   </div>
                 </div>
@@ -335,14 +332,14 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                   </div>
                   <div>
                     <Tooltip
-                      handle={`${formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)} GMX`}
+                      handle={formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)}
                       position="bottom-end"
-                      renderContent={() => (
+                      content={
                         <Trans>
                           {formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)} GMX tokens can be claimed,
                           use the options under the Total Rewards section to claim them.
                         </Trans>
-                      )}
+                      }
                     />
                   </div>
                 </div>
@@ -404,18 +401,15 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                         true
                       )}`}
                       position="bottom-end"
-                      renderContent={() => {
-                        return (
-                          <div>
-                            <Trans>
-                              {formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)} tokens have been
-                              converted to GMX from the{" "}
-                              {formatKeyAmount(vestingData, "glpVesterVestedAmount", 18, 4, true)} esGMX deposited for
-                              vesting.
-                            </Trans>
-                          </div>
-                        );
-                      }}
+                      content={
+                        <div>
+                          <Trans>
+                            {formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)} tokens have been converted
+                            to GMX from the {formatKeyAmount(vestingData, "glpVesterVestedAmount", 18, 4, true)} esGMX
+                            deposited for vesting.
+                          </Trans>
+                        </div>
+                      }
                     />
                   </div>
                 </div>
@@ -425,14 +419,14 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                   </div>
                   <div>
                     <Tooltip
-                      handle={`${formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)} GMX`}
+                      handle={formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)}
                       position="bottom-end"
-                      renderContent={() => (
+                      content={
                         <Trans>
                           {formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)} GMX tokens can be claimed,
                           use the options under the Total Rewards section to claim them.
                         </Trans>
-                      )}
+                      }
                     />
                   </div>
                 </div>
@@ -480,18 +474,16 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                           true
                         )} / ${formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)}`}
                         position="bottom-end"
-                        renderContent={() => {
-                          return (
-                            <div>
-                              <Trans>
-                                {formatKeyAmount(vestingData, "affiliateVesterClaimSum", 18, 4, true)} tokens have been
-                                converted to GMX from the{" "}
-                                {formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)} esGMX
-                                deposited for vesting.
-                              </Trans>
-                            </div>
-                          );
-                        }}
+                        content={
+                          <div>
+                            <Trans>
+                              {formatKeyAmount(vestingData, "affiliateVesterClaimSum", 18, 4, true)} tokens have been
+                              converted to GMX from the{" "}
+                              {formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)} esGMX deposited
+                              for vesting.
+                            </Trans>
+                          </div>
+                        }
                       />
                     </div>
                   </div>
@@ -499,7 +491,7 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                     <div className="label">
                       <Trans>Claimable</Trans>
                     </div>
-                    <div>{formatKeyAmount(vestingData, "affiliateVesterClaimable", 18, 4, true)} GMX</div>
+                    <div>{formatKeyAmount(vestingData, "affiliateVesterClaimable", 18, 4, true)}</div>
                   </div>
                   <div className="App-card-divider" />
                   <div className="App-card-buttons m-0">

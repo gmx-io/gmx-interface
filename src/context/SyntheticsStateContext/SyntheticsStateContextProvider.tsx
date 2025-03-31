@@ -1,5 +1,11 @@
+import { ethers } from "ethers";
+import { ReactNode, useCallback, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
+
 import { getKeepLeverageKey } from "config/localStorage";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
 import { useIsLargeAccountTracker } from "domain/stats/isLargeAccount";
 import {
@@ -13,6 +19,9 @@ import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useIni
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
+import { RelayerFeeState } from "domain/synthetics/gassless/types";
+import { SubaccountState } from "domain/synthetics/gassless/useInitSubaccountState";
+import { TokenPermitsState, useInitTokenPermitsState } from "domain/synthetics/gassless/useInitTokenPermitsState";
 import {
   MarketsInfoResult,
   MarketsResult,
@@ -38,21 +47,14 @@ import { PositionSellerState, usePositionSellerState } from "domain/synthetics/t
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import useIsFirstOrder from "domain/synthetics/tradeHistory/useIsFirstOrder";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { BlockTimestampData, useBlockTimestampRequest } from "lib/useBlockTimestampRequest";
 import useWallet from "lib/wallets/useWallet";
-import { ReactNode, useCallback, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
+
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
-import { RelayerFeeState } from "domain/synthetics/gassless/types";
-import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
-import { TokenPermitsState, useInitTokenPermitsState } from "domain/synthetics/gassless/useInitTokenPermitsState";
-import { SubaccountState } from "domain/synthetics/gassless/useInitSubaccountState";
 
 export type SyntheticsPageType =
   | "accounts"

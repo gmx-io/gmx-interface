@@ -1,5 +1,6 @@
-import { useGlobalContext } from "context/GlobalContext/GlobalContextProvider";
 import { useCallback } from "react";
+
+import { useGlobalContext } from "context/GlobalContext/GlobalContextProvider";
 
 export function useNotifyModalState() {
   const { setNotifyModalOpen, notifyModalOpen } = useGlobalContext();

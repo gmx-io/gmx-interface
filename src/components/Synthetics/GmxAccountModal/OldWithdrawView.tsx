@@ -1,15 +1,19 @@
 // @ts-nocheck
 
 import { t } from "@lingui/macro";
+import { BiChevronRight } from "react-icons/bi";
+import { sonic } from "viem/chains";
+
+import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
+import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
+import { formatUsd } from "lib/numbers";
+
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
-import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
-import { formatUsd } from "lib/numbers";
-import { BiChevronRight } from "react-icons/bi";
-import { sonic } from "viem/chains";
+
+
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
 // Dev: left this in case manager wants to use it again

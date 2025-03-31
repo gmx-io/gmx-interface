@@ -1,14 +1,17 @@
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getChainName } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import { DEV_FUNDING_HISTORY } from "context/GmxAccountContext/dev";
 import { useGmxAccountSelectedTransactionHash } from "context/GmxAccountContext/hooks";
-import externalLink from "img/ic_new_link_20.svg";
 import { formatBalanceAmount } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
+
+import ExternalLink from "components/ExternalLink/ExternalLink";
+
+import externalLink from "img/ic_new_link_20.svg";
+
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
 import { CHAIN_ID_TO_EXPLORER_NAME, CHAIN_ID_TO_TX_URL_BUILDER } from "./constants";
+import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
 
 export const TransactionDetailsView = () => {
   const [selectedTransactionHash] = useGmxAccountSelectedTransactionHash();

@@ -1,8 +1,6 @@
 import cx from "classnames";
-import Button from "components/Button/Button";
-import { useMultichainTokens } from "components/Synthetics/GmxAccountModal/hooks";
-import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
-import TokenIcon from "components/TokenIcon/TokenIcon";
+import { useMemo, useState } from "react";
+
 import { getChainName } from "config/chains";
 import { MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "context/GmxAccountContext/config";
 import {
@@ -12,10 +10,16 @@ import {
   useGmxAccountSettlementChainId,
 } from "context/GmxAccountContext/hooks";
 import { TokenChainData } from "context/GmxAccountContext/types";
-import InfoIconComponent from "img/ic_info.svg?react";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
-import { useMemo, useState } from "react";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
+
+import Button from "components/Button/Button";
+import { useMultichainTokens } from "components/Synthetics/GmxAccountModal/hooks";
+import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import InfoIconComponent from "img/ic_info.svg?react";
+
 
 type TokenListItemProps = {
   tokenChainData: DisplayTokenChainData;

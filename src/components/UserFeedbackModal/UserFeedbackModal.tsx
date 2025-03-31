@@ -1,17 +1,20 @@
+import { t, Trans } from "@lingui/macro";
+import { useCallback, useEffect, useMemo, useState } from "react";
+
 import { USD_DECIMALS } from "config/factors";
 import { MAX_FEEDBACK_LENGTH } from "config/ui";
 import { useAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats";
+import { formatAnswersByQuestionType, QuestionType } from "domain/synthetics/userFeedback";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { formatAmountForMetrics } from "lib/metrics";
+import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import useWallet from "lib/wallets/useWallet";
-import { t } from "@lingui/macro";
+
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import { Textarea } from "components/Textarea/Textarea";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { formatAnswersByQuestionType, QuestionType } from "domain/synthetics/userFeedback";
-import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 type Props = {
   isVisible: boolean;
@@ -38,6 +41,7 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
   });
 
   const [feedback, setFeedback] = useState<string>("");
+  const [contact, setContact] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<Error>();
 
@@ -51,7 +55,7 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
     setFeedback(val);
   }, []);
 
-  const onSubmitFeedback = useCallback(() => {
+  const onSubmitFeedback = () => {
     setIsSubmitting(true);
 
     fetcher
@@ -62,6 +66,7 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
           isGeneralFeedback: true,
           monthVolume: formatAmountForMetrics(lastMonthAccountStats?.volume || 0n, USD_DECIMALS, "toSecondOrderInt")!,
           totalVolume: formatAmountForMetrics(accountStats?.volume || 0n, USD_DECIMALS, "toSecondOrderInt")!,
+          contact,
           answers: formatAnswersByQuestionType([
             {
               questionType: QuestionType.generalFeedback,
@@ -79,7 +84,7 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
         setIsSubmitting(false);
         setError(error);
       });
-  }, [accountStats?.volume, feedback, feedbackQuestion, fetcher, lastMonthAccountStats?.volume, setIsVisible]);
+  };
 
   const submitButtonState = useMemo(() => {
     if (isSubmitting) {
@@ -105,6 +110,7 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
   useEffect(
     function resetEff() {
       setFeedback("");
+      setContact("");
     },
     [isVisible]
   );
@@ -114,6 +120,22 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
       <div className="mb-15 max-w-xl">
         {feedbackQuestion}
         <Textarea value={feedback} onChange={onChangeFeedback} placeholder={t`Enter your feedback here`} />
+      </div>
+      <div className="mb-15 flex flex-col">
+        <TooltipWithPortal
+          position="top-start"
+          content={<Trans>Leave your Telegram if you’re okay with being contacted for a quick follow-up</Trans>}
+        >
+          <Trans>Telegram contact (optional)</Trans>
+        </TooltipWithPortal>
+        <input
+          className="mt-15 text-input-bg"
+          name="contact"
+          type="text"
+          value={contact}
+          onChange={(evt) => setContact(evt.target.value)}
+          placeholder={t`@username`}
+        />
       </div>
       <Button
         variant="primary-action"
