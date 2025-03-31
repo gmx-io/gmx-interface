@@ -412,7 +412,7 @@ function MultichainTokenList({
       const balance = token.sourceChainBalance;
 
       if (balance !== undefined && balance > 0n) {
-        const balanceUsd = convertToUsd(balance, token.sourceChainDecimals, token.sourceChainPrices.maxPrice) ?? 0n;
+        const balanceUsd = convertToUsd(balance, token.sourceChainDecimals, token.sourceChainPrices?.maxPrice) ?? 0n;
         tokensWithBalance.push({ ...token, sourceChainBalanceUsd: balanceUsd });
       } else {
         tokensWithoutBalance.push({ ...token, sourceChainBalanceUsd: 0n });

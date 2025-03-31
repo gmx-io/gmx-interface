@@ -3,9 +3,14 @@ import Button from "components/Button/Button";
 import { useMultichainTokens } from "components/Synthetics/GmxAccountModal/hooks";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import { ARBITRUM, AVALANCHE, BASE_MAINNET, SONIC_MAINNET, getChainName } from "config/chains";
+import { getChainName } from "config/chains";
 import { MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "context/GmxAccountContext/config";
-import { useGmxAccountModalOpen, useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
+import {
+  useGmxAccountDepositViewChain,
+  useGmxAccountDepositViewTokenAddress,
+  useGmxAccountModalOpen,
+  useGmxAccountSettlementChainId,
+} from "context/GmxAccountContext/hooks";
 import { TokenChainData } from "context/GmxAccountContext/types";
 import InfoIconComponent from "img/ic_info.svg?react";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
@@ -60,6 +65,9 @@ type DisplayTokenChainData = TokenChainData & {
 export const SelectAssetToDepositView = () => {
   const [settlementChainId] = useGmxAccountSettlementChainId();
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
+  const [, setDepositViewChain] = useGmxAccountDepositViewChain();
+  const [, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
+
   const [selectedNetwork, setSelectedNetwork] = useState<number | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -147,7 +155,11 @@ export const SelectAssetToDepositView = () => {
           <TokenListItem
             key={tokenChainData.symbol + "_" + tokenChainData.sourceChainId}
             tokenChainData={tokenChainData}
-            onClick={() => setIsVisibleOrView("deposit")}
+            onClick={() => {
+              setDepositViewChain(tokenChainData.sourceChainId);
+              setDepositViewTokenAddress(tokenChainData.address);
+              setIsVisibleOrView("deposit");
+            }}
           />
         ))}
         {filteredBalances.length === 0 && (

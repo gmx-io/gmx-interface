@@ -1,20 +1,20 @@
 import { ARBITRUM, AVALANCHE, BASE_MAINNET, SONIC_MAINNET } from "config/chains";
-import { USD_DECIMALS } from "config/factors";
 import {
-  convertToTokenAmount,
   convertToUsd,
   getMidPrice,
   useTokenBalances,
   useTokenRecentPricesRequest,
   useTokensDataRequest,
 } from "domain/synthetics/tokens";
-import { TokenData, TokenPrices, TokensData } from "domain/tokens";
-import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
+import { TokensData } from "domain/tokens";
+import { EMPTY_OBJECT } from "lib/objects";
+import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import useWallet from "lib/wallets/useWallet";
 import { useEffect, useMemo } from "react";
 import { getToken } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
+import useSWR from "swr";
 import {
-  MULTI_CHAIN_DEPOSIT_SUPPORTED_TOKENS,
   MULTI_CHAIN_TOKEN_MAPPING,
   MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS,
   isSettlementChain,
@@ -22,11 +22,7 @@ import {
 import { DEV_FUNDING_HISTORY } from "../../../context/GmxAccountContext/dev";
 import { useGmxAccountSettlementChainId } from "../../../context/GmxAccountContext/hooks";
 import { TokenChainData } from "../../../context/GmxAccountContext/types";
-import { ContractCallConfig, ContractCallsConfig } from "lib/multicall/types";
-import useSWR from "swr";
 import { fetchMultichainTokenBalances } from "./fetchMultichainTokenBalances";
-import { FREQUENT_MULTICALL_REFRESH_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-import { bigMath } from "sdk/utils/bigmath";
 
 export function useAvailableToTradeAssetSymbolsSettlementChain(): string[] {
   const gmxAccountTokensData = useGmxAccountTokensData();
@@ -135,10 +131,6 @@ export function useMultichainTokens(): TokenChainData[] {
 
   const { pricesData } = useTokenRecentPricesRequest(settlementChainId);
 
-  useEffect(() => {
-    console.log(pricesData);
-  }, [pricesData]);
-
   const { data: tokenBalances } = useSWR<Record<number, Record<string, bigint>>>(
     account ? ["multichain-tokens", settlementChainId, account] : null,
     async () => {
@@ -183,13 +175,6 @@ export function useMultichainTokens(): TokenChainData[] {
           sourceChainPrices: undefined,
           sourceChainBalance: balance,
         };
-
-        console.log(
-          "pricesData is",
-          pricesData ? "defined" : "undefined",
-          "and settlement chain token addresss is",
-          pricesData && settlementChainTokenAddress in pricesData ? "in it" : "not in it"
-        );
 
         if (pricesData && settlementChainTokenAddress in pricesData) {
           // convert prices from settlement chain decimals to source chain decimals if decimals are different
