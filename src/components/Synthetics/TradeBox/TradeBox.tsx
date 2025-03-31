@@ -116,7 +116,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const tokensData = useTokensData();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
+  const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket, isTimeWeighted } = tradeFlags;
 
   const chainId = useSelector(selectChainId);
   const { account } = useWallet();
@@ -856,7 +856,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         <div className="flex flex-col gap-2">
           {(isSwap || isIncrease) && renderTokenInputs()}
           {isTrigger && renderDecreaseSizeInput()}
-
+          {}
           {isSwap && isLimit && renderTriggerRatioInput()}
           {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
         </div>
@@ -938,7 +938,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 )}
               </>
             )}
-            {!isTrigger && !isSwap && <LimitAndTPSLGroup />}
+            {!isTrigger && !isSwap && !isTimeWeighted && <LimitAndTPSLGroup />}
             {priceImpactWarningState.shouldShowWarning && (
               <HighPriceImpactOrFeesWarningCard
                 priceImpactWarningState={priceImpactWarningState}

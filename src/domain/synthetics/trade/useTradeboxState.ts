@@ -263,9 +263,17 @@ export function useTradeboxState(
     }
 
     return {
-      [TradeType.Long]: [TradeMode.Market, TradeMode.Limit, [TradeMode.Trigger, TradeMode.StopMarket]] as const,
-      [TradeType.Short]: [TradeMode.Market, TradeMode.Limit, [TradeMode.Trigger, TradeMode.StopMarket]] as const,
-      [TradeType.Swap]: [TradeMode.Market, TradeMode.Limit] as const,
+      [TradeType.Long]: [
+        TradeMode.Market,
+        TradeMode.Limit,
+        [TradeMode.Trigger, TradeMode.StopMarket, TradeMode.TimeWeighted],
+      ] as const,
+      [TradeType.Short]: [
+        TradeMode.Market,
+        TradeMode.Limit,
+        [TradeMode.Trigger, TradeMode.StopMarket, TradeMode.TimeWeighted],
+      ] as const,
+      [TradeType.Swap]: [TradeMode.Market, TradeMode.Limit, TradeMode.TimeWeighted] as const,
     }[tradeType];
   }, [tradeType]);
 

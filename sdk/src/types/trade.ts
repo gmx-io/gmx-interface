@@ -12,6 +12,7 @@ export enum TradeMode {
   Limit = "Limit",
   StopMarket = "StopMarket",
   Trigger = "Trigger",
+  TimeWeighted = "TimeWeighted",
 }
 
 export enum TriggerThresholdType {
@@ -33,6 +34,7 @@ export type TradeFlags = {
   isTrigger: boolean;
   isMarket: boolean;
   isLimit: boolean;
+  isTimeWeighted: boolean;
 };
 
 export type SwapAmounts = {

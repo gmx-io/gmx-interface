@@ -1,3 +1,4 @@
+import { MessageDescriptor } from "@lingui/core";
 import { msg } from "@lingui/macro";
 
 import { TradeMode, TradeType } from "domain/synthetics/trade";
@@ -12,11 +13,12 @@ export const tradeTypeIcons = {
   [TradeType.Swap]: <SwapIcon />,
 };
 
-export const tradeModeLabels = {
+export const tradeModeLabels: Record<TradeMode, MessageDescriptor> = {
   [TradeMode.Market]: msg`Market`,
   [TradeMode.Limit]: msg`Limit`,
   [TradeMode.Trigger]: msg`TP/SL`,
   [TradeMode.StopMarket]: msg`Stop Market`,
+  [TradeMode.TimeWeighted]: msg`TWAP`,
 };
 
 export const tradeTypeLabels = {
