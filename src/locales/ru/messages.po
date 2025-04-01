@@ -1308,6 +1308,10 @@ msgstr "Одобрить {stakingTokenSymbol}"
 msgid "Failed Limit Swap"
 msgstr "Лимитный обмен не удался"
 
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Liq. {longOrShortText} - {marketIndexName}"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Longing..."
 msgstr "Лонгин..."
@@ -1888,8 +1892,8 @@ msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsT
 msgstr ""
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Open {longOrShortText} {prefix}{tokenSymbol}"
-msgstr ""
+#~ msgid "Open {longOrShortText} {prefix}{tokenSymbol}"
+#~ msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Show details"
@@ -3031,8 +3035,8 @@ msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "Уменьшено {tokenSymbol} {longOrShortText}, -{0} USD."
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Liq. {longOrShortText} {prefix}{tokenSymbol}"
-msgstr ""
+#~ msgid "Liq. {longOrShortText} {prefix}{tokenSymbol}"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Leave at least {0} ETH for gas"
@@ -3863,6 +3867,10 @@ msgstr ""
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr "Руководство по трейдингу"
+
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Open {longOrShortText} - {marketIndexName}"
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "TRADING Airdrop"

@@ -1308,6 +1308,10 @@ msgstr "核准"
 msgid "Failed Limit Swap"
 msgstr "限价交换失败"
 
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Liq. {longOrShortText} - {marketIndexName}"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Longing..."
 msgstr "做多中"
@@ -1888,8 +1892,8 @@ msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsT
 msgstr ""
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Open {longOrShortText} {prefix}{tokenSymbol}"
-msgstr ""
+#~ msgid "Open {longOrShortText} {prefix}{tokenSymbol}"
+#~ msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Show details"
@@ -3031,8 +3035,8 @@ msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "已减少{tokenSymbol} {longOrShortText}, -{0} USD"
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Liq. {longOrShortText} {prefix}{tokenSymbol}"
-msgstr ""
+#~ msgid "Liq. {longOrShortText} {prefix}{tokenSymbol}"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Leave at least {0} ETH for gas"
@@ -3863,6 +3867,10 @@ msgstr ""
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr "交易指南"
+
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Open {longOrShortText} - {marketIndexName}"
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "TRADING Airdrop"

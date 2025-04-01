@@ -11,6 +11,7 @@ import { getTokenData } from "domain/synthetics/tokens";
 import { formatAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { convertTokenAddress, getPriceDecimals } from "sdk/configs/tokens";
+import { getMarketIndexName } from "sdk/utils/markets";
 
 import { DynamicChartLine } from "components/TVChartContainer/types";
 
@@ -51,7 +52,7 @@ export const selectChartDynamicLines = createSelector<DynamicChartLine[]>((q) =>
 
       return {
         id: positionOrder.key,
-        marketName: positionOrder.marketInfo.name,
+        marketName: getMarketIndexName(positionOrder.marketInfo),
         orderType: positionOrder.orderType,
         isLong: order.isLong,
         price: parseFloat(
