@@ -1308,6 +1308,10 @@ msgstr "{stakingTokenSymbol} 승인"
 msgid "Failed Limit Swap"
 msgstr "지정가 스왑 실패"
 
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Liq. {longOrShortText} - {marketIndexName}"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Longing..."
 msgstr "롱 실행중..."
@@ -1888,8 +1892,8 @@ msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsT
 msgstr ""
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Open {longOrShortText} {prefix}{tokenSymbol}"
-msgstr ""
+#~ msgid "Open {longOrShortText} {prefix}{tokenSymbol}"
+#~ msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Show details"
@@ -1974,6 +1978,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/pages/Earn/StakeModal.tsx
@@ -3026,8 +3031,8 @@ msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "{tokenSymbol} {longOrShortText} 감소, -{0} USD."
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Liq. {longOrShortText} {prefix}{tokenSymbol}"
-msgstr ""
+#~ msgid "Liq. {longOrShortText} {prefix}{tokenSymbol}"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Leave at least {0} ETH for gas"
@@ -3858,6 +3863,10 @@ msgstr ""
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr "트레이딩 가이드"
+
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Open {longOrShortText} - {marketIndexName}"
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "TRADING Airdrop"
