@@ -515,6 +515,10 @@ msgstr ""
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr "Ordre limite créé pour {0} {1}: {2} USD!"
 
+#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+msgid "<0>every</0> {0}{minutes} minutes"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 msgstr "Token invalide duToken:: \"{0}\" àToken: \"{toTokenAddress}\""
@@ -3383,6 +3387,10 @@ msgstr ""
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
+msgid "TWAP"
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Updating Order..."
@@ -4350,6 +4358,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Close submitted!"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+msgid "Hour(s)"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5535,6 +5547,10 @@ msgstr ""
 msgid "Order cancelled."
 msgstr "Ordre annulé."
 
+#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+msgid "<0>every</0> {seconds} seconds"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer AVAX to Avalanche"
 msgstr ""
@@ -5829,6 +5845,10 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Couldn't find a swap path with enough liquidity"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+msgid "<0>every</0> {0}{hours} hours"
 msgstr ""
 
 #: src/pages/Earn/AffiliateVesterWithdrawModal.tsx
@@ -6384,6 +6404,10 @@ msgstr "Liquidé partiellement"
 msgid "Insufficient GLP balance"
 msgstr "Équilibre insuffisant de GLP"
 
+#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+msgid "Minute(s)"
+msgstr ""
+
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Unrealized Fees"
@@ -6708,6 +6732,10 @@ msgstr ""
 msgid "V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually."
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+msgid "Duration"
+msgstr ""
+
 #: src/components/Common/SEO.tsx
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet on Arbitrum and Avalanche."
 msgstr ""
@@ -6752,6 +6780,10 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a collateral"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+msgid "Size per part"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
@@ -8253,6 +8285,10 @@ msgstr ""
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+msgid "Frequency"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Enable deposit sent."
 msgstr ""
@@ -8404,6 +8440,10 @@ msgstr "Demander un dépôt"
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Deposit not enough to cover fees"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+msgid "Number of Parts"
 msgstr ""
 
 #: src/pages/Earn/EarnV1.jsx

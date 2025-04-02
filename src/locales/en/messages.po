@@ -515,6 +515,10 @@ msgstr "Yield-optimized vaults enabling trading across multiple markets, backed 
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr "Created limit order for {0} {1}: {2} USD!"
 
+#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+msgid "<0>every</0> {0}{minutes} minutes"
+msgstr "<0>every</0> {0}{minutes} minutes"
+
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 msgstr "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
@@ -3383,6 +3387,10 @@ msgstr "Claimable price impact rebates.<0/><1/><2>Read more</2>."
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
 msgstr "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
 
+#: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
+msgid "TWAP"
+msgstr "TWAP"
+
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Updating Order..."
@@ -4354,6 +4362,10 @@ msgstr "Take Profit"
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Close submitted!"
 msgstr "Close submitted!"
+
+#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+msgid "Hour(s)"
+msgstr "Hour(s)"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5538,6 +5550,10 @@ msgstr "Telegram Bot"
 msgid "Order cancelled."
 msgstr "Order cancelled."
 
+#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+msgid "<0>every</0> {seconds} seconds"
+msgstr "<0>every</0> {seconds} seconds"
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer AVAX to Avalanche"
 msgstr "Buy or Transfer AVAX to Avalanche"
@@ -5833,6 +5849,10 @@ msgstr "Increase Size (Market)"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Couldn't find a swap path with enough liquidity"
 msgstr "Couldn't find a swap path with enough liquidity"
+
+#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+msgid "<0>every</0> {0}{hours} hours"
+msgstr "<0>every</0> {0}{hours} hours"
 
 #: src/pages/Earn/AffiliateVesterWithdrawModal.tsx
 #: src/pages/Earn/VesterWithdrawModal.tsx
@@ -6387,6 +6407,10 @@ msgstr "Partially Liquidated"
 msgid "Insufficient GLP balance"
 msgstr "Insufficient GLP balance"
 
+#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+msgid "Minute(s)"
+msgstr "Minute(s)"
+
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Unrealized Fees"
@@ -6714,6 +6738,10 @@ msgstr "Error submitting order"
 msgid "V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually."
 msgstr "V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually."
 
+#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+msgid "Duration"
+msgstr "Duration"
+
 #: src/components/Common/SEO.tsx
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet on Arbitrum and Avalanche."
 msgstr "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet on Arbitrum and Avalanche."
@@ -6759,6 +6787,10 @@ msgstr "What areas can we improve to make your experience better?"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a collateral"
 msgstr "Select a collateral"
+
+#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+msgid "Size per part"
+msgstr "Size per part"
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -8259,6 +8291,10 @@ msgstr "Total Stats"
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
 
+#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+msgid "Frequency"
+msgstr "Frequency"
+
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Enable deposit sent."
 msgstr "Enable deposit sent."
@@ -8411,6 +8447,10 @@ msgstr "Request Deposit"
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Deposit not enough to cover fees"
 msgstr "Deposit not enough to cover fees"
+
+#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+msgid "Number of Parts"
+msgstr "Number of Parts"
 
 #: src/pages/Earn/EarnV1.jsx
 #: src/pages/Earn/EarnV1.jsx

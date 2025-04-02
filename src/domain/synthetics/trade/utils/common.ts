@@ -20,6 +20,7 @@ export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode): Trade
   const isLimit = tradeMode === TradeMode.Limit;
   const isTrigger = tradeMode === TradeMode.Trigger;
   const isIncrease = isPosition && (isMarket || isLimit);
+  const isTimeWeighted = tradeMode === TradeMode.TimeWeighted;
 
   return {
     isLong,
@@ -30,6 +31,7 @@ export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode): Trade
     isTrigger,
     isMarket,
     isLimit,
+    isTimeWeighted,
   };
 }
 
@@ -66,6 +68,7 @@ export function getTradeFlagsForCollateralEdit(isLong: boolean | undefined, isIn
     isSwap: false,
     isPosition: true,
     isTrigger: false,
+    isTimeWeighted: false,
   };
 }
 

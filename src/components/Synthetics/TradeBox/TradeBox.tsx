@@ -80,6 +80,7 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
 
+import TimeWeightedRows from "./components/TimeWeightedRows";
 import TradeBoxLongShortInfoIcon from "./components/TradeBoxLongShortInfoIcon";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
 import { useShowOneClickTradingInfo } from "./hooks/useShowOneClickTradingInfo";
@@ -153,6 +154,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     marketInfo,
     toTokenAddress,
     availableTradeModes,
+    duration,
+    numberOfParts,
+    setNumberOfParts,
+    setDuration,
   } = useSelector(selectTradeboxState);
 
   const fromToken = getByKey(tokensData, fromTokenAddress);
@@ -546,8 +551,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     [leverageOption, leverageSliderMarks, setLeverageOption]
   );
 
+  const payUsd = isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd;
+
   function renderTokenInputs() {
-    const payUsd = isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd;
     return (
       <>
         <BuyInputSection
@@ -812,6 +818,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     priceImpactWarningState.shouldShowWarning ||
     (!isTrigger && !isSwap) ||
     (isSwap && isLimit) ||
+    (isSwap && isTimeWeighted) ||
     maxAutoCancelOrdersWarning ||
     shouldShowOneClickTradingWarning;
 
@@ -938,6 +945,17 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 )}
               </>
             )}
+
+            {isTimeWeighted && (
+              <TimeWeightedRows
+                duration={duration}
+                numberOfParts={numberOfParts}
+                setNumberOfParts={setNumberOfParts}
+                setDuration={setDuration}
+                sizeUsd={payUsd}
+              />
+            )}
+
             {!isTrigger && !isSwap && !isTimeWeighted && <LimitAndTPSLGroup />}
             {priceImpactWarningState.shouldShowWarning && (
               <HighPriceImpactOrFeesWarningCard

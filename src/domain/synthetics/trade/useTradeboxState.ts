@@ -19,6 +19,8 @@ import { getToken, isSimilarToken } from "sdk/configs/tokens";
 import { TradeMode, TradeType } from "sdk/types/trade";
 import { createTradeFlags } from "sdk/utils/trade";
 
+import { Duration } from "components/Synthetics/TradeBox/components/TimeWeightedRows";
+
 import { MarketsData, MarketsInfoData } from "../markets";
 import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
 import { OrdersInfoData } from "../orders";
@@ -242,6 +244,8 @@ export function useTradeboxState(
   const [closeSizeInputValue, setCloseSizeInputValue] = useState("");
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState<string>("");
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
+  const [numberOfParts, setNumberOfParts] = useState<number>(5);
+  const [duration, setDuration] = useState<Duration>({ hours: 10, minutes: 0 });
 
   const [advancedOptions, setAdvancedOptions] = useSafeState<TradeboxAdvancedOptions>(
     storedOptions.advanced ?? INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE.advanced
@@ -734,6 +738,10 @@ export function useTradeboxState(
     setAdvancedOptions,
     allowedSlippage,
     setAllowedSlippage,
+    numberOfParts,
+    setNumberOfParts,
+    duration,
+    setDuration,
   };
 }
 
