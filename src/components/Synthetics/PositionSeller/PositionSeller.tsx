@@ -1,7 +1,7 @@
 import { Trans, msg, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { useKey, useLatest } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
@@ -221,6 +221,8 @@ export function PositionSeller(p: Props) {
   const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity < (receiveUsd ?? 0n) : false;
   const setIsDismissedLatestRef = useLatest(priceImpactWarningState.setIsDismissed);
 
+  const slippageInputId = useId();
+
   useEffect(() => {
     if (isVisible) {
       setIsDismissedLatestRef.current(false);
@@ -362,6 +364,7 @@ export function PositionSeller(p: Props) {
         tokensData,
         skipSimulation: orderOption === OrderOption.Trigger || shouldDisableValidationForTesting,
         autoCancel: orderOption === OrderOption.Trigger ? autoCancelOrdersLimit > 0 : false,
+        slippageInputId,
       },
       {
         setPendingOrder,
@@ -730,7 +733,10 @@ export function PositionSeller(p: Props) {
               {liqPriceRow}
               {pnlRow}
 
-              <PositionSellerAdvancedRows triggerPriceInputValue={triggerPriceInputValue} />
+              <PositionSellerAdvancedRows
+                triggerPriceInputValue={triggerPriceInputValue}
+                slippageInputId={slippageInputId}
+              />
             </div>
           </>
         )}

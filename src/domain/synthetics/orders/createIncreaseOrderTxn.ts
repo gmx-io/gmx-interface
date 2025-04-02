@@ -52,6 +52,7 @@ type IncreaseOrderParams = {
   referralCode: string | undefined;
   indexToken: TokenData;
   tokensData: TokensData;
+  slippageInputId: string | undefined;
   setPendingTxns: (txns: any) => void;
   setPendingOrder: SetPendingOrder;
   setPendingPosition: SetPendingPosition;
@@ -250,7 +251,10 @@ export async function createIncreaseOrderTxn({
         createMulticallPayload: simulationEncodedPayload,
         value: totalWntAmount,
         errorTitle: t`Order error.`,
-        additionalErrorContent,
+        additionalErrorParams: {
+          content: additionalErrorContent,
+          slippageInputId: p.slippageInputId,
+        },
         metricId,
         blockTimestampData,
         externalSwapQuote: p.externalSwapQuote,

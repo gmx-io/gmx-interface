@@ -30,9 +30,10 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 
 export type Props = {
   triggerPriceInputValue: string;
+  slippageInputId: string;
 };
 
-export function PositionSellerAdvancedRows({ triggerPriceInputValue }: Props) {
+export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInputId }: Props) {
   const tradeboxAdvancedOptions = useSelector(selectTradeboxAdvancedOptions);
   const [open, setOpen] = React.useState(tradeboxAdvancedOptions.advancedDisplay);
   const position = useSelector(selectPositionSellerPosition);
@@ -139,7 +140,13 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue }: Props) {
       <TradeFeesRow {...fees} feesType="decrease" />
       <NetworkFeeRow executionFee={executionFee} />
       {isTrigger && acceptablePriceImpactInputRow}
-      {!isTrigger && <AllowedSlippageRow allowedSlippage={allowedSlippage} setAllowedSlippage={setAllowedSlippage} />}
+      {!isTrigger && (
+        <AllowedSlippageRow
+          allowedSlippage={allowedSlippage}
+          setAllowedSlippage={setAllowedSlippage}
+          slippageInputId={slippageInputId}
+        />
+      )}
       <div className="h-1 bg-stroke-primary" />
       <SyntheticsInfoRow label={t`Leverage`} value={leverageValue} />
 

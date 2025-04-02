@@ -1,5 +1,5 @@
 import { t, Trans } from "@lingui/macro";
-import { useCallback } from "react";
+import { useCallback, useId } from "react";
 
 import { getContract } from "config/contracts";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -121,6 +121,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
   const initialCollateralAllowance = getByKey(tokensAllowanceData, fromToken?.address);
 
+  const slippageInputId = useId();
+
   const onSubmitSwap = useCallback(
     function onSubmitSwap() {
       const orderType = isLimit ? OrderType.LimitSwap : OrderType.MarketSwap;
@@ -176,6 +178,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         metricId: metricData.metricId,
         skipSimulation: shouldDisableValidationForTesting,
         blockTimestampData,
+        slippageInputId,
       })
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
@@ -201,6 +204,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       shouldDisableValidationForTesting,
       blockTimestampData,
       triggerRatio,
+      slippageInputId,
     ]
   );
 
@@ -316,6 +320,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           setPendingTxns: setPendingTxns,
           setPendingOrder,
           setPendingPosition,
+          slippageInputId,
         },
         createDecreaseOrderParams: createSltpEntries.map((entry, i) => {
           return {
@@ -335,6 +340,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
             txnType: entry.txnType!,
             skipSimulation: isLimit || shouldDisableValidationForTesting,
             autoCancel: i < autoCancelOrdersLimit,
+            slippageInputId,
           };
         }),
         cancelOrderParams: cancelSltpEntries.map((entry) => ({
@@ -405,6 +411,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       getExecutionFeeAmountForEntry,
       autoCancelOrdersLimit,
       setShouldFallbackToInternalSwap,
+      slippageInputId,
     ]
   );
 
@@ -481,6 +488,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           indexToken: marketInfo.indexToken,
           tokensData,
           autoCancel: autoCancelOrdersLimit > 0,
+          slippageInputId,
         },
         {
           setPendingTxns,
@@ -517,6 +525,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       setPendingOrder,
       setPendingPosition,
       blockTimestampData,
+      slippageInputId,
     ]
   );
 
@@ -537,5 +546,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     onSubmitIncreaseOrder,
     onSubmitDecreaseOrder,
     onSubmitWrapOrUnwrap,
+    slippageInputId,
   };
 }

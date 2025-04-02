@@ -229,7 +229,7 @@ export const dashboardProjects: EcosystemDashboardProject[] = [
 export const integrations: EcosystemGmxPage[] = [
   {
     title: msg`DeBank`,
-    link: "debank.com",
+    link: "https://debank.com",
     linkLabel: "debank.com",
     about: msg`DeFi Portfolio Tracker`,
 

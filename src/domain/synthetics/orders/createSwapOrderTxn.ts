@@ -41,6 +41,7 @@ export type SwapOrderParams = {
   skipSimulation: boolean;
   metricId: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
+  slippageInputId: string | undefined;
 };
 
 export async function createSwapOrderTxn(chainId: number, signer: Signer, subaccount: Subaccount, p: SwapOrderParams) {
@@ -94,6 +95,9 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
           errorTitle: t`Order error.`,
           metricId: p.metricId,
           blockTimestampData: p.blockTimestampData,
+          additionalErrorParams: {
+            slippageInputId: p.slippageInputId,
+          },
         })
       : undefined;
 
