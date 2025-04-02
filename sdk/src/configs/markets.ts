@@ -2,7 +2,7 @@
   This files is used to pre-build data during the build process.
   Avoid adding client-side code here, as it can break the build process.
 */
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
 export const SWAP_GRAPH_MAX_MARKETS_PER_TOKEN = 5;
 
@@ -841,6 +841,22 @@ export const MARKETS: Record<string, Record<string, MarketConfig>> = {
       indexTokenAddress: "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
       longTokenAddress: "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
       shortTokenAddress: "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
+    },
+  },
+  [ARBITRUM_SEPOLIA]: {
+    // ETH/USD [WETH-USDC]
+    "0x482df3d320c964808579b585a8ac7dd5d144efaf": {
+      marketTokenAddress: "0x482df3d320c964808579b585a8ac7dd5d144efaf",
+      indexTokenAddress: "0x980b62da83eff3d4576c647993b0c1d7faf17c73",
+      longTokenAddress: "0x980b62da83eff3d4576c647993b0c1d7faf17c73",
+      shortTokenAddress: "0x3321fd36aeab0d5cdfd26f4a3a93e2d2aaccb99f",
+    },
+    // BTC/USD [BTC-USDC]
+    "0xbb532ab4923c23c2bfa455151b14fec177a34c0d": {
+      marketTokenAddress: "0xbb532ab4923c23c2bfa455151b14fec177a34c0d",
+      indexTokenAddress: "0xf79ce1cf38a09d572b021b4c5548b75a14082f12",
+      longTokenAddress: "0xf79ce1cf38a09d572b021b4c5548b75a14082f12",
+      shortTokenAddress: "0x3321fd36aeab0d5cdfd26f4a3a93e2d2aaccb99f",
     },
   },
 };

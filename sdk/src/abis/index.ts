@@ -14,6 +14,14 @@ import GmxMigrator from "./GmxMigrator.json";
 import GovToken from "./GovToken.json";
 import MintableBaseToken from "./MintableBaseToken.json";
 import Multicall from "./Multicall.json";
+import MultichainClaimsRouter from "./MultichainClaimsRouter.json";
+import MultichainGlvRouter from "./MultichainGlvRouter.json";
+import MultichainGmRouter from "./MultichainGmRouter.json";
+import MultichainOrderRouter from "./MultichainOrderRouter.json";
+import MultichainOrderRouterUtils from "./MultichainOrderRouterUtils.json";
+import MultichainTransferRouter from "./MultichainTransferRouter.json";
+import MultichainUtils from "./MultichainUtils.json";
+import MultichainVault from "./MultichainVault.json";
 import OrderBook from "./OrderBook.json";
 import OrderBookReader from "./OrderBookReader.json";
 import OrderExecutor from "./OrderExecutor.json";
@@ -87,7 +95,15 @@ export type AbiId =
   | "Vester"
   | "WETH"
   | "YieldFarm"
-  | "YieldToken";
+  | "YieldToken"
+  | "MultichainClaimsRouter"
+  | "MultichainGlvRouter"
+  | "MultichainGmRouter"
+  | "MultichainOrderRouter"
+  | "MultichainOrderRouterUtils"
+  | "MultichainTransferRouter"
+  | "MultichainUtils"
+  | "MultichainVault";
 
 export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   CustomErrors: CustomErrors.abi,
@@ -133,4 +149,12 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   WETH: WETH.abi,
   YieldFarm: YieldFarm.abi,
   YieldToken: YieldToken.abi,
+  MultichainClaimsRouter: MultichainClaimsRouter.abi,
+  MultichainGlvRouter: MultichainGlvRouter.abi,
+  MultichainGmRouter: MultichainGmRouter.abi,
+  MultichainOrderRouter: MultichainOrderRouter.abi,
+  MultichainOrderRouterUtils: MultichainOrderRouterUtils.abi,
+  MultichainTransferRouter: MultichainTransferRouter.abi,
+  MultichainUtils: MultichainUtils.abi,
+  MultichainVault: MultichainVault.abi,
 } as any;

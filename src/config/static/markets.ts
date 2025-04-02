@@ -9,7 +9,7 @@ import { parse } from "date-fns";
 
 import { MARKETS as SDK_MARKETS } from "sdk/configs/markets";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
 const p = (date: string) => parse(date, "dd MMM yyyy", new Date());
 
@@ -616,6 +616,7 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
       listingDate: DEFAULT_LISTING,
     },
   },
+  [ARBITRUM_SEPOLIA]: {},
 };
 
 export const MARKETS = Object.keys(MARKETS_UI_CONFIGS).reduce(

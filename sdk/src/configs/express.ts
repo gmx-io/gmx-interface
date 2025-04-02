@@ -1,7 +1,7 @@
 import { Token } from "types/tokens";
 import { periodToSeconds } from "utils/time";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 import { getTokenBySymbol, getWrappedToken } from "./tokens";
 
 export const SUBACCOUNT_MESSAGE = "Generate a GMX subaccount. Only sign this message on a trusted website.";
@@ -20,6 +20,7 @@ const GAS_PAYMENT_TOKENS = {
     getTokenBySymbol(AVALANCHE_FUJI, "USDC").address,
     getTokenBySymbol(AVALANCHE_FUJI, "WAVAX").address,
   ],
+  [ARBITRUM_SEPOLIA]: [getTokenBySymbol(ARBITRUM_SEPOLIA, "USDC").address],
 };
 
 export function getGasPaymentTokens(chainId: number): string[] {

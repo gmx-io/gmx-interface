@@ -1,7 +1,7 @@
 import "lib/polyfills";
 import "lib/monkeyPatching";
 
-import { erc20Abi } from "viem";
+import { erc20Abi, zeroAddress } from "viem";
 
 import { getChainName } from "config/chains";
 import { executeMulticall } from "lib/multicall/executeMulticall";
@@ -9,7 +9,9 @@ import { MulticallRequestConfig } from "lib/multicall/types";
 import { EMPTY_OBJECT } from "lib/objects";
 
 import { MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "../../../context/GmxAccountContext/config";
+import { getContract } from "sdk/configs/contracts";
 
+console.log({ MULTI_CHAIN_SUPPORTED_TOKEN_MAP });
 
 export async function fetchMultichainTokenBalances(
   currentSettlementChainId: number,
@@ -27,13 +29,32 @@ export async function fetchMultichainTokenBalances(
     const tokenAddresses = sourceChainMap[sourceChainId];
 
     const requestConfig: MulticallRequestConfig<
-      Record<string, { calls: Record<"balanceOf", { methodName: "balanceOf"; params: [string] }> }>
+      Record<
+        string,
+        {
+          calls: Record<"balanceOf", { methodName: "balanceOf" | "getEthBalance"; params: [string] | [] }>;
+        }
+      >
     > = {};
 
     for (const tokenAddress of tokenAddresses) {
+      if (tokenAddress === zeroAddress) {
+        requestConfig[tokenAddress] = {
+          contractAddress: getContract(sourceChainId, "Multicall"),
+          abiId: "Multicall",
+          calls: {
+            balanceOf: {
+              methodName: "getEthBalance",
+              params: [account],
+            },
+          },
+        };
+        continue;
+      }
+
       requestConfig[tokenAddress] = {
         contractAddress: tokenAddress,
-        abi: erc20Abi,
+        abiId: "ERC20",
         calls: {
           balanceOf: {
             methodName: "balanceOf",
@@ -53,6 +74,12 @@ export async function fetchMultichainTokenBalances(
         const tokensChainData: Record<string, bigint> = {};
 
         for (const tokenAddress of tokenAddresses) {
+          if (tokenAddress === zeroAddress) {
+            const balance = res.data[tokenAddress].balanceOf.returnValues[0] ?? 0n;
+            tokensChainData[tokenAddress] = balance;
+            continue;
+          }
+
           const balance = res.data[tokenAddress].balanceOf.returnValues[0] ?? 0n;
           tokensChainData[tokenAddress] = balance;
         }

@@ -14,7 +14,6 @@ import {
 } from "context/GmxAccountContext/hooks";
 import { formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
-import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 import { convertToUsd } from "sdk/utils/tokens";
 
@@ -22,11 +21,26 @@ import Button from "components/Button/Button";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
+import NumberInput from "components/NumberInput/NumberInput";
+import { getContract } from "config/contracts";
+import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
+import { approveTokens } from "domain/tokens";
+import { helperToast } from "lib/helperToast";
+import { executeMulticall } from "lib/multicall";
+import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import { useAccount } from "wagmi";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { useMultichainTokens } from "./hooks";
+import { MulticallResult } from "sdk/utils/multicall";
+import { Address, encodeFunctionData, zeroAddress } from "viem";
+import { callContract } from "lib/contracts";
+import { Multicall__factory, MultichainTransferRouter__factory } from "typechain-types";
+import { Contract } from "ethers";
 
 export const DepositView = () => {
-  const { chainId: walletChainId } = useWallet();
+  const { address: account, chainId: walletChainId } = useAccount();
+  const signer = useEthersSigner({ chainId: walletChainId });
+
   const [settlementChainId] = useGmxAccountSettlementChainId();
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
 
@@ -110,6 +124,149 @@ export const DepositView = () => {
     }
   }, [depositViewChain, walletChainId, setDepositViewChain]);
 
+  const [isApproving, setIsApproving] = useState(false);
+
+  const { tokensAllowanceData, isLoaded: isAllowanceLoaded } = useTokensAllowanceData(settlementChainId, {
+    spenderAddress: getContract(settlementChainId, "MultichainTransferRouter"),
+    tokenAddresses: depositViewTokenAddress ? [depositViewTokenAddress] : [],
+  });
+
+  const needTokenApprove = getNeedTokenApprove(tokensAllowanceData, depositViewTokenAddress, inputAmount);
+
+  const handleApprove = useCallback(async () => {
+    if (
+      !walletChainId ||
+      settlementChainId !== walletChainId ||
+      !depositViewTokenAddress ||
+      inputAmount === undefined
+    ) {
+      return;
+    }
+
+    approveTokens({
+      chainId: walletChainId,
+      tokenAddress: depositViewTokenAddress,
+      signer: signer,
+      spender: getContract(settlementChainId, "MultichainTransferRouter"),
+      setIsApproving,
+    });
+  }, [depositViewTokenAddress, inputAmount, settlementChainId, signer, walletChainId]);
+
+  const handleDeposit = useCallback(async () => {
+    if (!account || !depositViewTokenAddress || inputAmount === undefined || !walletChainId || !depositViewChain) {
+      return;
+    }
+
+    const multichainTransferRouterAddress = getContract(settlementChainId, "MultichainTransferRouter");
+    const multichainVaultAddress = getContract(settlementChainId, "MultichainVault");
+
+    let response: any;
+    const contract = new Contract(
+      getContract(walletChainId, "MultichainTransferRouter")!,
+      MultichainTransferRouter__factory.abi,
+      signer
+    );
+
+    if (depositViewTokenAddress === zeroAddress) {
+      // const multichainTranserRouterContract = MultichainTransferRouter__factory.connect(
+      //   getContract(walletChainId, "MultichainTransferRouter")!,
+      //   signer
+      // );
+
+      response = await callContract(
+        walletChainId,
+        contract,
+        "multicall",
+        [
+          [
+            contract.interface.encodeFunctionData("sendWnt", [multichainVaultAddress, inputAmount]),
+            contract.interface.encodeFunctionData("bridgeIn", [
+              account,
+              depositViewTokenAddress,
+              BigInt(depositViewChain),
+            ]),
+          ],
+        ],
+        {
+          value: inputAmount,
+        }
+      );
+
+      console.log({ response });
+    } else {
+      // response = await executeMulticall(walletChainId, {
+      //   MultichainTransferRouter: {
+      //     contractAddress: multichainTransferRouterAddress,
+      //     abiId: "MultichainTransferRouter",
+      //     calls: {
+      //       sendTokens: {
+      //         methodName: "sendTokens",
+      //         params: [depositViewTokenAddress, multichainVaultAddress, inputAmount],
+      //       },
+      //       bridgeIn: {
+      //         methodName: "bridgeIn",
+      //         params: [account, depositViewTokenAddress, depositViewChain],
+      //       },
+      //     },
+      //   },
+      // });
+
+      response = await callContract(
+        walletChainId,
+        contract,
+        "multicall",
+        [
+          [
+            contract.interface.encodeFunctionData("sendTokens", [
+              depositViewTokenAddress,
+              multichainVaultAddress,
+              inputAmount,
+            ]),
+            contract.interface.encodeFunctionData("bridgeIn", [
+              account,
+              depositViewTokenAddress,
+              BigInt(depositViewChain),
+            ]),
+          ],
+        ],
+        {}
+      );
+
+      console.log({ response });
+    }
+
+    if (response.success) {
+      setIsVisibleOrView("main");
+      helperToast.success("Deposit successful");
+    } else {
+      console.log(response);
+      helperToast.error("Deposit failed");
+    }
+  }, [
+    account,
+    depositViewChain,
+    depositViewTokenAddress,
+    inputAmount,
+    setIsVisibleOrView,
+    settlementChainId,
+    signer,
+    walletChainId,
+  ]);
+
+  const buttonState: {
+    text: string;
+    disabled?: boolean;
+    onClick?: () => void;
+  } = useMemo(() => {
+    if (isApproving) {
+      return { text: t`Approving`, disabled: true };
+    }
+    if (needTokenApprove) {
+      return { text: t`Allow ${selectedToken?.symbol} to be spent`, onClick: handleApprove };
+    }
+    return { text: t`Deposit`, onClick: handleDeposit };
+  }, [isApproving, needTokenApprove, handleDeposit, selectedToken?.symbol, handleApprove]);
+
   return (
     <div className="flex grow flex-col overflow-y-hidden p-16">
       <div className="flex flex-col gap-8">
@@ -165,11 +322,10 @@ export const DepositView = () => {
           )}
         </div>
         <div className="text-body-large relative">
-          <input
-            type="text"
+          <NumberInput
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            className="text-body-large w-full rounded-4 bg-cold-blue-900 py-12 pl-14 pr-72 text-white"
+            onValueChange={(e) => setInputValue(e.target.value)}
+            className="text-body-large w-full rounded-4 bg-cold-blue-900 py-12 pl-14 pr-72"
           />
           <div className="pointer-events-none absolute left-14 top-1/2 flex max-w-[calc(100%-72px)] -translate-y-1/2 overflow-hidden">
             <div className="invisible whitespace-pre font-[RelativeNumber]">
@@ -208,9 +364,8 @@ export const DepositView = () => {
         />
       </div>
 
-      {/* Deposit button */}
-      <Button variant="primary" className="mt-auto w-full">
-        Deposit
+      <Button variant="primary" className="mt-auto w-full" onClick={buttonState.onClick}>
+        {buttonState.text}
       </Button>
     </div>
   );

@@ -2,6 +2,7 @@ import uniq from "lodash/uniq";
 
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BASE_MAINNET, SONIC_MAINNET } from "config/chains";
 import { isDevelopment } from "config/env";
+import { zeroAddress } from "viem";
 
 // we need to have a token bare config for each chain and map it to the settlement chain token
 
@@ -138,13 +139,7 @@ if (isDevelopment()) {
     [
       {
         chainId: ARBITRUM_SEPOLIA,
-        address: "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d",
-        decimals: 6,
-      },
-      {
-        chainId: AVALANCHE_FUJI,
-        // Technically different from offical USDC on Avalanche Fuji
-        address: "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
+        address: "0x3321fd36aeab0d5cdfd26f4a3a93e2d2aaccb99f",
         decimals: 6,
       },
     ],
@@ -152,25 +147,34 @@ if (isDevelopment()) {
     [
       {
         chainId: ARBITRUM_SEPOLIA,
-        address: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
+        address: "0x980b62da83eff3d4576c647993b0c1d7faf17c73",
         decimals: 18,
       },
+    ],
+    // BTC - testnets
+    [
       {
-        chainId: AVALANCHE_FUJI,
-        address: "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
+        chainId: ARBITRUM_SEPOLIA,
+        address: "0xf79ce1cf38a09d572b021b4c5548b75a14082f12",
+        decimals: 8,
+      },
+    ],
+    // Native currecncies separately
+    [
+      {
+        chainId: ARBITRUM_SEPOLIA,
+        address: zeroAddress,
         decimals: 18,
       },
     ]
   );
 }
 
-export const SETTLEMENT_CHAINS = !isDevelopment()
-  ? [ARBITRUM, AVALANCHE]
-  : [ARBITRUM, AVALANCHE /* ARBITRUM_SEPOLIA */];
+export const SETTLEMENT_CHAINS = !isDevelopment() ? [ARBITRUM, AVALANCHE] : [ARBITRUM, AVALANCHE, ARBITRUM_SEPOLIA];
 
 export const SOURCE_CHAINS = !isDevelopment()
   ? [BASE_MAINNET, SONIC_MAINNET, ARBITRUM, AVALANCHE]
-  : [BASE_MAINNET, SONIC_MAINNET, ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ARBITRUM_SEPOLIA];
+  : [BASE_MAINNET, SONIC_MAINNET, ARBITRUM, AVALANCHE, ARBITRUM_SEPOLIA];
 
 export function isSettlementChain(chainId: number) {
   return SETTLEMENT_CHAINS.includes(chainId);
@@ -193,7 +197,7 @@ for (const tokenGroup of TOKEN_GROUPS) {
 
     let empty = true;
     for (const sourceToken of tokenGroup) {
-      if (settlementToken.chainId === sourceToken.chainId) continue;
+      if (!isDevelopment() && settlementToken.chainId === sourceToken.chainId) continue;
       empty = false;
 
       MULTI_CHAIN_TOKEN_MAPPING[settlementToken.chainId] = MULTI_CHAIN_TOKEN_MAPPING[settlementToken.chainId] || {};
@@ -219,28 +223,10 @@ for (const tokenGroup of TOKEN_GROUPS) {
   }
 }
 
-// for (const settlementChain of SETTLEMENT_CHAINS) {
-//   MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChain] = [];
-
-//   for (const sourceChain of SOURCE_CHAINS) {
-//     MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChain][sourceChain] = [];
-
-//     for (const tokenGroup of TOKEN_GROUPS) {
-//       const hasTokenInSettlementChain = tokenGroup.some((token) => token.chainId === settlementChain);
-//       const sourceChainTokenId = tokenGroup.find((token) => token.chainId === sourceChain);
-//       const hasTokenInSourceChain = sourceChainTokenId !== undefined;
-
-//       if (hasTokenInSettlementChain && hasTokenInSourceChain) {
-//         MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChain][sourceChain].push(sourceChainTokenId.address);
-//       }
-//     }
-//   }
-// }
-
 for (const tokenGroup of TOKEN_GROUPS) {
   for (const firstTokenId of tokenGroup) {
     for (const secondTokenId of tokenGroup) {
-      if (firstTokenId.chainId === secondTokenId.chainId) continue;
+      if (!isDevelopment() && firstTokenId.chainId === secondTokenId.chainId) continue;
 
       if (isSettlementChain(firstTokenId.chainId) && isSourceChain(secondTokenId.chainId)) {
         MULTI_CHAIN_SUPPORTED_TOKEN_MAP[firstTokenId.chainId] =
@@ -268,3 +254,13 @@ for (const tokenGroup of TOKEN_GROUPS) {
     }
   }
 }
+
+export const DEFAULT_SETTLEMENT_CHAIN_ID_MAP = {
+  [ARBITRUM]: ARBITRUM,
+  [AVALANCHE]: AVALANCHE,
+  [BASE_MAINNET]: ARBITRUM,
+  [SONIC_MAINNET]: ARBITRUM,
+
+  [AVALANCHE_FUJI]: ARBITRUM_SEPOLIA,
+  [ARBITRUM_SEPOLIA]: ARBITRUM_SEPOLIA,
+};

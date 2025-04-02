@@ -7,21 +7,13 @@ import { useCopyToClipboard } from "react-use";
 import { useDisconnect } from "wagmi";
 
 import { getExplorerUrl } from "config/chains";
-
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { CURRENT_PROVIDER_LOCALSTORAGE_KEY, SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY } from "config/localStorage";
 import { isSettlementChain } from "context/GmxAccountContext/config";
 import { useGmxAccountModalOpen, useGmxAccountSelectedTransactionHash } from "context/GmxAccountContext/hooks";
 import { FundingHistoryItem } from "context/GmxAccountContext/types";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
-import BellIcon from "img/bell.svg?react";
-import copy from "img/ic_copy_20.svg";
-import InfoIconComponent from "img/ic_info.svg?react";
-import externalLink from "img/ic_new_link_20.svg";
-import SettingsIcon24 from "img/ic_settings_24.svg?react";
-import disconnectIcon from "img/ic_sign_out_20.svg";
-
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import { helperToast } from "lib/helperToast";
 import { useENS } from "lib/legacy";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
@@ -33,8 +25,14 @@ import useWallet from "lib/wallets/useWallet";
 import { Avatar } from "components/Avatar/Avatar";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import TokenIcon from "components/TokenIcon/TokenIcon";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import BellIcon from "img/bell.svg?react";
+import copy from "img/ic_copy_20.svg";
+import InfoIconComponent from "img/ic_info.svg?react";
+import externalLink from "img/ic_new_link_20.svg";
+import SettingsIcon24 from "img/ic_settings_24.svg?react";
+import disconnectIcon from "img/ic_sign_out_20.svg";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import {

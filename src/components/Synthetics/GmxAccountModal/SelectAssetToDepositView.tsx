@@ -19,7 +19,7 @@ import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableSc
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import InfoIconComponent from "img/ic_info.svg?react";
-
+import { EMPTY_OBJECT } from "lib/objects";
 
 type TokenListItemProps = {
   tokenChainData: DisplayTokenChainData;
@@ -80,10 +80,12 @@ export const SelectAssetToDepositView = () => {
   const NETWORKS_FILTER = useMemo(() => {
     const wildCard = { id: "all", name: "All Networks" };
 
-    const chainFilters = Object.keys(MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChainId]).map((sourceChainId) => ({
-      id: parseInt(sourceChainId),
-      name: getChainName(parseInt(sourceChainId)),
-    }));
+    const chainFilters = Object.keys(MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChainId] ?? EMPTY_OBJECT).map(
+      (sourceChainId) => ({
+        id: parseInt(sourceChainId),
+        name: getChainName(parseInt(sourceChainId)),
+      })
+    );
 
     return [wildCard, ...chainFilters];
   }, [settlementChainId]);
