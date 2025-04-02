@@ -1,26 +1,35 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useEffect } from "react";
 
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { TWAPDuration } from "domain/synthetics/trade/twap/types";
+import { changeTWAPNumberOfPartsValue } from "domain/synthetics/trade/twap/utils";
 import { formatUsd } from "lib/numbers";
 
 import NumberInput from "components/NumberInput/NumberInput";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
-export type Duration = {
-  minutes: number;
-  hours: number;
-};
+import { useTradeboxChanges } from "../hooks/useTradeboxChanges";
 
 type Props = {
-  duration: Duration;
+  duration: TWAPDuration;
   numberOfParts: number;
   setNumberOfParts: (numberOfParts: number) => void;
-  setDuration: (duration: Duration) => void;
+  setDuration: (duration: TWAPDuration) => void;
   sizeUsd: bigint | undefined;
 };
 
-const TimeWeightedRows = ({ duration, numberOfParts, setNumberOfParts, setDuration, sizeUsd }: Props) => {
+const TwapRows = ({ duration, numberOfParts, setNumberOfParts, setDuration, sizeUsd }: Props) => {
+  const { savedTWAPNumberOfParts } = useSettings();
+  const tradeboxChanges = useTradeboxChanges();
+
+  useEffect(() => {
+    if (tradeboxChanges.direction || tradeboxChanges.toTokenAddress) {
+      setNumberOfParts(savedTWAPNumberOfParts);
+    }
+  }, [tradeboxChanges.direction, tradeboxChanges.toTokenAddress, savedTWAPNumberOfParts, setNumberOfParts]);
+
   return (
     <div className="flex flex-col">
       <SyntheticsInfoRow label={t`Duration`} className="mb-11">
@@ -28,7 +37,11 @@ const TimeWeightedRows = ({ duration, numberOfParts, setNumberOfParts, setDurati
       </SyntheticsInfoRow>
       <SyntheticsInfoRow label={t`Number of Parts`} className="mb-14">
         <div className="flex">
-          <ValueInput value={numberOfParts} onChange={(value) => setNumberOfParts(value)} />
+          <ValueInput
+            value={numberOfParts}
+            onChange={(value) => setNumberOfParts(value)}
+            onBlur={() => setNumberOfParts(changeTWAPNumberOfPartsValue(numberOfParts))}
+          />
         </div>
       </SyntheticsInfoRow>
       <SyntheticsInfoRow label={t`Frequency`} className="mb-14">
@@ -41,7 +54,7 @@ const TimeWeightedRows = ({ duration, numberOfParts, setNumberOfParts, setDurati
   );
 };
 
-const FrequencyField = ({ duration, numberOfParts }: { duration: Duration; numberOfParts: number }) => {
+const FrequencyField = ({ duration, numberOfParts }: { duration: TWAPDuration; numberOfParts: number }) => {
   const seconds = numberOfParts ? ((duration.hours * 60 + duration.minutes) * 60) / numberOfParts : 0;
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(seconds / 3600);
@@ -77,8 +90,8 @@ const DurationField = ({
   duration,
   setDuration,
 }: {
-  duration: Duration;
-  setDuration: (duration: Duration) => void;
+  duration: TWAPDuration;
+  setDuration: (duration: TWAPDuration) => void;
 }) => {
   return (
     <div className="flex gap-4">
@@ -100,24 +113,18 @@ const ValueInput = ({
   value,
   onChange,
   label,
-  min = 0,
-  max,
+  onBlur,
 }: {
   value: number;
   onChange: (value: number) => void;
+  onBlur?: () => void;
   label?: string;
-  min?: number;
-  max?: number;
 }) => {
   const onValueChange = (e: ChangeEvent<HTMLInputElement>) => {
     const parsedValue = parseInt(e.target.value);
 
     if (isNaN(parsedValue)) {
-      onChange(min ?? 0);
-    } else if (max && parsedValue > max) {
-      onChange(max);
-    } else if (parsedValue < min) {
-      onChange(min);
+      onChange(0);
     } else {
       onChange(parsedValue);
     }
@@ -131,10 +138,10 @@ const ValueInput = ({
     >
       {label && <span className="opacity-70">{label}</span>}
       <div>
-        <NumberInput className="w-full p-0 text-right" value={value} onValueChange={onValueChange} />
+        <NumberInput className="w-full p-0 text-right" value={value} onValueChange={onValueChange} onBlur={onBlur} />
       </div>
     </label>
   );
 };
 
-export default TimeWeightedRows;
+export default TwapRows;

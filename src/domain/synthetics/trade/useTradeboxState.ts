@@ -19,13 +19,12 @@ import { getToken, isSimilarToken } from "sdk/configs/tokens";
 import { TradeMode, TradeType } from "sdk/types/trade";
 import { createTradeFlags } from "sdk/utils/trade";
 
-import { Duration } from "components/Synthetics/TradeBox/components/TimeWeightedRows";
-
 import { MarketsData, MarketsInfoData } from "../markets";
 import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
 import { OrdersInfoData } from "../orders";
 import { PositionInfo, PositionsInfoData } from "../positions";
 import { TokensData } from "../tokens";
+import { TWAPDuration } from "./twap/types";
 import { useAvailableTokenOptions } from "./useAvailableTokenOptions";
 import { useSidecarOrdersState } from "./useSidecarOrdersState";
 
@@ -146,7 +145,7 @@ export function useTradeboxState(
     [chainId]
   );
 
-  const { savedAllowedSlippage } = useSettings();
+  const { savedAllowedSlippage, savedTWAPNumberOfParts } = useSettings();
   const [syncedChainId, setSyncedChainId] = useState<number | undefined>(undefined);
   const [allowedSlippage, setAllowedSlippage] = useState<number>(savedAllowedSlippage);
 
@@ -244,8 +243,8 @@ export function useTradeboxState(
   const [closeSizeInputValue, setCloseSizeInputValue] = useState("");
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState<string>("");
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
-  const [numberOfParts, setNumberOfParts] = useState<number>(5);
-  const [duration, setDuration] = useState<Duration>({ hours: 10, minutes: 0 });
+  const [numberOfParts, setNumberOfParts] = useState<number>(savedTWAPNumberOfParts);
+  const [duration, setDuration] = useState<TWAPDuration>({ hours: 10, minutes: 0 });
 
   const [advancedOptions, setAdvancedOptions] = useSafeState<TradeboxAdvancedOptions>(
     storedOptions.advanced ?? INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE.advanced
@@ -270,14 +269,14 @@ export function useTradeboxState(
       [TradeType.Long]: [
         TradeMode.Market,
         TradeMode.Limit,
-        [TradeMode.Trigger, TradeMode.StopMarket, TradeMode.TimeWeighted],
+        [TradeMode.Trigger, TradeMode.StopMarket, TradeMode.TWAP],
       ] as const,
       [TradeType.Short]: [
         TradeMode.Market,
         TradeMode.Limit,
-        [TradeMode.Trigger, TradeMode.StopMarket, TradeMode.TimeWeighted],
+        [TradeMode.Trigger, TradeMode.StopMarket, TradeMode.TWAP],
       ] as const,
-      [TradeType.Swap]: [TradeMode.Market, TradeMode.Limit, TradeMode.TimeWeighted] as const,
+      [TradeType.Swap]: [TradeMode.Market, TradeMode.Limit, TradeMode.TWAP] as const,
     }[tradeType];
   }, [tradeType]);
 

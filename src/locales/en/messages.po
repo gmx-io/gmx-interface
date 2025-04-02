@@ -287,6 +287,10 @@ msgstr "Buyable"
 msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
 msgstr "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "TWAP Number of Parts"
+msgstr "TWAP Number of Parts"
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
 msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
@@ -515,7 +519,7 @@ msgstr "Yield-optimized vaults enabling trading across multiple markets, backed 
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr "Created limit order for {0} {1}: {2} USD!"
 
-#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
 msgid "<0>every</0> {0}{minutes} minutes"
 msgstr "<0>every</0> {0}{minutes} minutes"
 
@@ -581,6 +585,7 @@ msgstr "hide"
 msgid "in liquidity"
 msgstr "in liquidity"
 
+#: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max Network Fee buffer below {0}% may result in failed orders."
 msgstr "Max Network Fee buffer below {0}% may result in failed orders."
@@ -1648,6 +1653,10 @@ msgstr "Transaction ID"
 #: src/components/Exchange/PositionsList.jsx
 msgid "Borrow Fee / Day"
 msgstr "Borrow Fee / Day"
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP_NUMBER_OF_PARTS}"
+msgstr "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP_NUMBER_OF_PARTS}"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Chinese)"
@@ -4363,7 +4372,7 @@ msgstr "Take Profit"
 msgid "Close submitted!"
 msgstr "Close submitted!"
 
-#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
 msgid "Hour(s)"
 msgstr "Hour(s)"
 
@@ -4823,6 +4832,10 @@ msgstr "All time"
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Select your vesting option below then click \"Claim\"."
 msgstr "Select your vesting option below then click \"Claim\"."
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
+msgstr "The default number of parts for Time-Weighted Average Price (TWAP) orders."
 
 #: src/pages/Home/Home.tsx
 msgid "Save on Costs"
@@ -5550,7 +5563,7 @@ msgstr "Telegram Bot"
 msgid "Order cancelled."
 msgstr "Order cancelled."
 
-#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
 msgid "<0>every</0> {seconds} seconds"
 msgstr "<0>every</0> {seconds} seconds"
 
@@ -5850,7 +5863,7 @@ msgstr "Increase Size (Market)"
 msgid "Couldn't find a swap path with enough liquidity"
 msgstr "Couldn't find a swap path with enough liquidity"
 
-#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
 msgid "<0>every</0> {0}{hours} hours"
 msgstr "<0>every</0> {0}{hours} hours"
 
@@ -6407,7 +6420,7 @@ msgstr "Partially Liquidated"
 msgid "Insufficient GLP balance"
 msgstr "Insufficient GLP balance"
 
-#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
 msgid "Minute(s)"
 msgstr "Minute(s)"
 
@@ -6738,7 +6751,7 @@ msgstr "Error submitting order"
 msgid "V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually."
 msgstr "V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually."
 
-#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
 msgid "Duration"
 msgstr "Duration"
 
@@ -6788,7 +6801,7 @@ msgstr "What areas can we improve to make your experience better?"
 msgid "Select a collateral"
 msgstr "Select a collateral"
 
-#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
 msgid "Size per part"
 msgstr "Size per part"
 
@@ -8291,7 +8304,7 @@ msgstr "Total Stats"
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
 
-#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
 msgid "Frequency"
 msgstr "Frequency"
 
@@ -8448,7 +8461,7 @@ msgstr "Request Deposit"
 msgid "Deposit not enough to cover fees"
 msgstr "Deposit not enough to cover fees"
 
-#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
 msgid "Number of Parts"
 msgstr "Number of Parts"
 

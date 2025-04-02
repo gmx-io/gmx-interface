@@ -80,8 +80,8 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
 
-import TimeWeightedRows from "./components/TimeWeightedRows";
 import TradeBoxLongShortInfoIcon from "./components/TradeBoxLongShortInfoIcon";
+import TWAPRows from "./components/TWAPRows";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
 import { useShowOneClickTradingInfo } from "./hooks/useShowOneClickTradingInfo";
 import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
@@ -117,7 +117,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const tokensData = useTokensData();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket, isTimeWeighted } = tradeFlags;
+  const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket, isTWAP } = tradeFlags;
 
   const chainId = useSelector(selectChainId);
   const { account } = useWallet();
@@ -818,7 +818,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     priceImpactWarningState.shouldShowWarning ||
     (!isTrigger && !isSwap) ||
     (isSwap && isLimit) ||
-    (isSwap && isTimeWeighted) ||
+    (isSwap && isTWAP) ||
     maxAutoCancelOrdersWarning ||
     shouldShowOneClickTradingWarning;
 
@@ -946,8 +946,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               </>
             )}
 
-            {isTimeWeighted && (
-              <TimeWeightedRows
+            {isTWAP && (
+              <TWAPRows
                 duration={duration}
                 numberOfParts={numberOfParts}
                 setNumberOfParts={setNumberOfParts}
@@ -956,7 +956,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               />
             )}
 
-            {!isTrigger && !isSwap && !isTimeWeighted && <LimitAndTPSLGroup />}
+            {!isTrigger && !isSwap && !isTWAP && <LimitAndTPSLGroup />}
             {priceImpactWarningState.shouldShowWarning && (
               <HighPriceImpactOrFeesWarningCard
                 priceImpactWarningState={priceImpactWarningState}

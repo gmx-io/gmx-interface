@@ -287,6 +287,10 @@ msgstr ""
 msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
 msgstr ""
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "TWAP Number of Parts"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
 msgstr ""
@@ -515,7 +519,7 @@ msgstr ""
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr "为{0} {1}: {2} USD!创建限量的指令"
 
-#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
 msgid "<0>every</0> {0}{minutes} minutes"
 msgstr ""
 
@@ -581,6 +585,7 @@ msgstr "隐藏"
 msgid "in liquidity"
 msgstr "流动性中"
 
+#: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max Network Fee buffer below {0}% may result in failed orders."
 msgstr ""
@@ -1648,6 +1653,10 @@ msgstr "交易ID"
 #: src/components/Exchange/PositionsList.jsx
 msgid "Borrow Fee / Day"
 msgstr "借款费用/天"
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP_NUMBER_OF_PARTS}"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Chinese)"
@@ -4360,7 +4369,7 @@ msgstr ""
 msgid "Close submitted!"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
 msgid "Hour(s)"
 msgstr ""
 
@@ -4820,6 +4829,10 @@ msgstr "所有时间"
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Select your vesting option below then click \"Claim\"."
 msgstr "在下面选择你的归属选项，然后点击 \"Claim\""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
+msgstr ""
 
 #: src/pages/Home/Home.tsx
 msgid "Save on Costs"
@@ -5547,7 +5560,7 @@ msgstr ""
 msgid "Order cancelled."
 msgstr "订单已取消"
 
-#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
 msgid "<0>every</0> {seconds} seconds"
 msgstr ""
 
@@ -5847,7 +5860,7 @@ msgstr ""
 msgid "Couldn't find a swap path with enough liquidity"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
 msgid "<0>every</0> {0}{hours} hours"
 msgstr ""
 
@@ -6404,7 +6417,7 @@ msgstr "部分已清偿"
 msgid "Insufficient GLP balance"
 msgstr "GLP余额不足"
 
-#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
 msgid "Minute(s)"
 msgstr ""
 
@@ -6732,7 +6745,7 @@ msgstr ""
 msgid "V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually."
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
 msgid "Duration"
 msgstr ""
 
@@ -6782,7 +6795,7 @@ msgstr ""
 msgid "Select a collateral"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
 msgid "Size per part"
 msgstr ""
 
@@ -8285,7 +8298,7 @@ msgstr ""
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
 msgid "Frequency"
 msgstr ""
 
@@ -8442,7 +8455,7 @@ msgstr "要求押金"
 msgid "Deposit not enough to cover fees"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/components/TimeWeightedRows.tsx
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
 msgid "Number of Parts"
 msgstr ""
 
