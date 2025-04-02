@@ -7,7 +7,12 @@ import set from "lodash/set";
 import values from "lodash/values";
 import { SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 
-import { getKeepLeverageKey, getLeverageKey, getSyntheticsTradeOptionsKey } from "config/localStorage";
+import {
+  getFromTokenIsGmxAccountKey,
+  getKeepLeverageKey,
+  getLeverageKey,
+  getSyntheticsTradeOptionsKey,
+} from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { MarketInfo } from "domain/synthetics/markets";
@@ -595,6 +600,11 @@ export function useTradeboxState(
 
   const sidecarOrders = useSidecarOrdersState();
 
+  const [isFromTokenGmxAccount = false, setFromTokenIsGmxAccount] = useLocalStorageSerializeKey(
+    getFromTokenIsGmxAccountKey(chainId),
+    false
+  );
+
   useEffect(
     function fallbackStoredOptions() {
       if (!enabled) {
@@ -718,14 +728,14 @@ export function useTradeboxState(
     setLeverageInputValue: handleLeverageInputChange,
     leverageOption,
     setLeverageOption: handleLeverageSliderChange,
-    // isLeverageEnabled,
-    // setIsLeverageEnabled,
     keepLeverage,
     setKeepLeverage,
     advancedOptions,
     setAdvancedOptions,
     allowedSlippage,
     setAllowedSlippage,
+    isFromTokenGmxAccount,
+    setFromTokenIsGmxAccount,
   };
 }
 

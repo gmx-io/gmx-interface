@@ -3,9 +3,17 @@ import useSWR from "swr";
 import { zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import { ARBITRUM, AVALANCHE, BASE_MAINNET, SONIC_MAINNET } from "config/chains";
+import { getChainName } from "config/chains";
 import { multichainBalanceKey } from "config/dataStore";
 import { MARKETS } from "config/markets";
+import {
+  MULTI_CHAIN_SUPPORTED_TOKEN_MAP,
+  MULTI_CHAIN_TOKEN_MAPPING,
+  isSettlementChain,
+} from "context/GmxAccountContext/config";
+import { DEV_FUNDING_HISTORY } from "context/GmxAccountContext/dev";
+import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
+import { TokenChainData } from "context/GmxAccountContext/types";
 import {
   convertToUsd,
   getMidPrice,
@@ -23,10 +31,6 @@ import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { fetchMultichainTokenBalances } from "./fetchMultichainTokenBalances";
-import { MULTI_CHAIN_TOKEN_MAPPING, isSettlementChain } from "../../../context/GmxAccountContext/config";
-import { DEV_FUNDING_HISTORY } from "../../../context/GmxAccountContext/dev";
-import { useGmxAccountSettlementChainId } from "../../../context/GmxAccountContext/hooks";
-import { TokenChainData } from "../../../context/GmxAccountContext/types";
 
 export function useAvailableToTradeAssetSymbolsSettlementChain(): string[] {
   const gmxAccountTokensData = useGmxAccountTokensData();
@@ -272,8 +276,6 @@ export async function fetchGmxAccountTokenBalancesData(
 
   const result = await executeMulticall(settlementChainId, request, "background", "fetchGmxAccountTokensData");
 
-  console.log({ result });
-
   return Object.fromEntries(
     Object.entries(result.data.DataStore).map(([tokenAddress, callResult]) => [
       tokenAddress,
@@ -325,15 +327,19 @@ export function useGmxAccountTokensData(): TokensData {
 }
 
 export function useGmxAccountWithdrawNetworks() {
-  const networks = useMemo(
-    () => [
-      { id: ARBITRUM, name: "Arbitrum", fee: "0.32 USDC" },
-      { id: AVALANCHE, name: "Avalanche", fee: "0.15 USDC" },
-      { id: SONIC_MAINNET, name: "Sonic", fee: "0.59 USDC" },
-      { id: BASE_MAINNET, name: "Base", fee: "Free" },
-    ],
-    []
-  );
+  const [settlementChainId] = useGmxAccountSettlementChainId();
+
+  const sourceChains = Object.keys(MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChainId] || {}).map(Number);
+
+  const networks = useMemo(() => {
+    return sourceChains.map((sourceChainId) => {
+      return {
+        id: sourceChainId,
+        name: getChainName(sourceChainId),
+        fee: "0.13 USDC",
+      };
+    });
+  }, [sourceChains]);
 
   return networks;
 }

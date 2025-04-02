@@ -208,3 +208,7 @@ export function getOneClickTradingPromoHiddenKey(chainId: number) {
 export function getExpressTradingPromoHiddenKey(chainId: number) {
   return `${chainId}-${EXPRESS_TRADING_PROMO_HIDDEN_KEY}`;
 }
+
+export function getFromTokenIsGmxAccountKey(chainId: number) {
+  return [chainId, "from-token-is-gmx-account"];
+}

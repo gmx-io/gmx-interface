@@ -238,7 +238,14 @@ export function getExplorerUrl(chainId) {
     return "https://snowtrace.io/";
   } else if (chainId === AVALANCHE_FUJI) {
     return "https://testnet.snowtrace.io/";
+  } else if (chainId === BASE_MAINNET) {
+    return "https://basescan.org/";
+  } else if (chainId === SONIC_MAINNET) {
+    return "https://sonicscan.org/";
+  } else if (chainId === ARBITRUM_SEPOLIA) {
+    return "https://sepolia.arbiscan.io/";
   }
+
   return "https://etherscan.io/";
 }
 

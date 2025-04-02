@@ -27,7 +27,9 @@ type Props = {
   label?: string;
   size?: "m" | "l";
   className?: string;
+
   tokenAddress: string;
+  isGmxAccount: boolean;
 
   walletPayableTokensData: TokensData | undefined;
   selectedTokenLabel?: ReactNode | string;
@@ -61,8 +63,8 @@ export function MultichainTokenSelector({
   qa,
   gmxAccountTokensData = EMPTY_OBJECT,
   onSelectTokenAddress: propsOnSelectTokenAddress,
-  // tokenInfo: maybeTokenInfo,
   tokenAddress,
+  isGmxAccount,
   className,
   label,
   multichainTokens,
@@ -226,7 +228,13 @@ export function MultichainTokenSelector({
       >
         {selectedTokenLabel || (
           <span className="inline-flex items-center">
-            <TokenIcon className="mr-5" symbol={token.symbol} importSize={24} displaySize={20} />
+            <TokenIcon
+              className="mr-5"
+              symbol={token.symbol}
+              importSize={24}
+              displaySize={20}
+              chainIdBadge={isGmxAccount ? 0 : undefined}
+            />
             <span>{token.symbol}</span>
           </span>
         )}

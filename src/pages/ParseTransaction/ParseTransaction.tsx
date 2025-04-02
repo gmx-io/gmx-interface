@@ -8,7 +8,15 @@ import useSWR from "swr";
 import { Hash, isHash, PublicClient } from "viem";
 import { usePublicClient } from "wagmi";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  BASE_MAINNET,
+  SONIC_MAINNET,
+  getExplorerUrl,
+} from "config/chains";
 import { getIcon } from "config/icons";
 import {
   getGlvDisplayName,
@@ -57,18 +65,27 @@ const NETWORKS = {
   arbitrum: ARBITRUM,
   avalanche: AVALANCHE,
   fuji: AVALANCHE_FUJI,
+  sonic: SONIC_MAINNET,
+  "arbitrum-sepolia": ARBITRUM_SEPOLIA,
+  base: BASE_MAINNET,
 };
 
 export const NETWORKS_BY_CHAIN_IDS = {
   [ARBITRUM]: "arbitrum",
   [AVALANCHE]: "avalanche",
   [AVALANCHE_FUJI]: "fuji",
+  [BASE_MAINNET]: "base",
+  [SONIC_MAINNET]: "sonic",
+  [ARBITRUM_SEPOLIA]: "arbitrum-sepolia",
 };
 
 const EXPLORER_TX_URLS = {
   [ARBITRUM]: getExplorerUrl(ARBITRUM) + "tx/",
   [AVALANCHE]: getExplorerUrl(AVALANCHE) + "tx/",
   [AVALANCHE_FUJI]: getExplorerUrl(AVALANCHE_FUJI) + "tx/",
+  [BASE_MAINNET]: getExplorerUrl(BASE_MAINNET) + "tx/",
+  [SONIC_MAINNET]: getExplorerUrl(SONIC_MAINNET) + "tx/",
+  [ARBITRUM_SEPOLIA]: getExplorerUrl(ARBITRUM_SEPOLIA) + "tx/",
 };
 
 export function ParseTransactionPage() {

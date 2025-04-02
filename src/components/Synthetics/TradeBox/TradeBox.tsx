@@ -156,6 +156,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     setToTokenInputValue: setToTokenInputValueRaw,
     setCollateralAddress: onSelectCollateralAddress,
     setFromTokenAddress: onSelectFromTokenAddress,
+    isFromTokenGmxAccount,
+    setFromTokenIsGmxAccount,
     setTradeMode: onSelectTradeMode,
     focusedInput,
     setFocusedInput,
@@ -180,7 +182,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     availableTradeModes,
   } = useSelector(selectTradeboxState);
 
-  const fromToken = getByKey(tokensData, fromTokenAddress);
+  const fromToken = isFromTokenGmxAccount
+    ? getByKey(gmxAccountTokensData, fromTokenAddress)
+    : getByKey(tokensData, fromTokenAddress);
   const toToken = getByKey(tokensData, toTokenAddress);
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
   const fromTokenPrice = fromToken?.prices.minPrice;
@@ -473,13 +477,16 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     },
     [setFocusedInput, setToTokenInputValue]
   );
-  const handleSelectFromToken = useCallback(
-    (token: Token) => onSelectFromTokenAddress(token.address),
-    [onSelectFromTokenAddress]
-  );
+  // const handleSelectFromToken = useCallback(
+  //   (token: Token) => onSelectFromTokenAddress(token.address),
+  //   [onSelectFromTokenAddress]
+  // );
   const handleSelectFromTokenAddress = useCallback(
-    (tokenAddress: string) => onSelectFromTokenAddress(tokenAddress),
-    [onSelectFromTokenAddress]
+    (tokenAddress: string, isGmxAccount: boolean) => {
+      onSelectFromTokenAddress(tokenAddress);
+      setFromTokenIsGmxAccount(isGmxAccount);
+    },
+    [onSelectFromTokenAddress, setFromTokenIsGmxAccount]
   );
   const handleSelectToTokenAddress = useCallback(
     (token: Token) => onSelectToTokenAddress(token.address),
@@ -603,10 +610,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               label={t`Pay`}
               // chainId={settlementChainId}
               tokenAddress={fromTokenAddress}
+              isGmxAccount={isFromTokenGmxAccount}
               // onSelectTokenAddress={handleSelectFromTokenAddress}
-              onSelectTokenAddress={(tokenAddress, isGmxAccount) =>
-                console.log("tokenAddress", tokenAddress, "isGmxAccount", isGmxAccount)
-              }
+              onSelectTokenAddress={handleSelectFromTokenAddress}
               // tokens={swapTokens}
               // infoTokens={infoTokens}
               size="l"

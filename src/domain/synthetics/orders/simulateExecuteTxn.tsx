@@ -164,7 +164,6 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
 
     try {
       const errorData = extractDataFromError(txnError?.info?.error?.message) ?? extractDataFromError(txnError?.message);
-
       const error = new Error("No data found in error.");
       error.cause = txnError;
       if (!errorData) throw error;
