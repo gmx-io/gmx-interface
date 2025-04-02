@@ -21,8 +21,9 @@ import { approveTokens } from "domain/tokens";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
-import { EMPTY_OBJECT } from "lib/objects";
+import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import { abis } from "sdk/abis";
 import { getToken } from "sdk/configs/tokens";
 import { convertToUsd } from "sdk/utils/tokens";
 
@@ -31,9 +32,8 @@ import NumberInput from "components/NumberInput/NumberInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import { abis } from "sdk/abis";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { useMultichainTokens } from "./hooks";
+import { useGmxAccountTokensData, useMultichainTokens } from "./hooks";
 
 export const DepositView = () => {
   const { address: account, chainId: walletChainId } = useAccount();
@@ -93,22 +93,6 @@ export const DepositView = () => {
     return { inputAmount, inputAmountUsd };
   }, [inputValue, selectedToken, selectedTokenChainData?.sourceChainPrices?.maxPrice]);
 
-  const { nextGmxBalanceUsd, nextSourceChainBalanceUsd } = useMemo((): {
-    nextGmxBalanceUsd?: bigint;
-    nextSourceChainBalanceUsd?: bigint;
-  } => {
-    if (selectedToken === undefined || selectedTokenSourceChainBalanceUsd === undefined || inputAmountUsd === undefined)
-      return EMPTY_OBJECT;
-
-    const nextSourceChainBalanceUsd = selectedTokenSourceChainBalanceUsd - inputAmountUsd;
-    const nextGmxBalanceUsd = 0n + inputAmountUsd;
-
-    return {
-      nextSourceChainBalanceUsd,
-      nextGmxBalanceUsd,
-    };
-  }, [inputAmountUsd, selectedToken, selectedTokenSourceChainBalanceUsd]);
-
   const handleMaxButtonClick = useCallback(() => {
     if (selectedToken === undefined || selectedTokenSourceChainBalance === undefined) {
       return;
@@ -121,6 +105,31 @@ export const DepositView = () => {
       setDepositViewChain(walletChainId);
     }
   }, [depositViewChain, walletChainId, setDepositViewChain]);
+
+  const gmxAccountTokensData = useGmxAccountTokensData();
+  const gmxAccountToken = getByKey(gmxAccountTokensData, depositViewTokenAddress);
+  const gmxAccountTokenBalance = gmxAccountToken?.balance;
+  const gmxAccountTokenBalanceUsd = convertToUsd(
+    gmxAccountTokenBalance,
+    gmxAccountToken?.decimals,
+    gmxAccountToken?.prices?.maxPrice
+  );
+
+  const { nextGmxAccountBalanceUsd, nextSourceChainBalanceUsd } = useMemo((): {
+    nextGmxAccountBalanceUsd?: bigint;
+    nextSourceChainBalanceUsd?: bigint;
+  } => {
+    if (selectedToken === undefined || selectedTokenSourceChainBalanceUsd === undefined || inputAmountUsd === undefined)
+      return EMPTY_OBJECT;
+
+    const nextSourceChainBalanceUsd = selectedTokenSourceChainBalanceUsd - inputAmountUsd;
+    const nextGmxAccountBalanceUsd = (gmxAccountTokenBalanceUsd ?? 0n) + inputAmountUsd;
+
+    return {
+      nextSourceChainBalanceUsd,
+      nextGmxAccountBalanceUsd,
+    };
+  }, [gmxAccountTokenBalanceUsd, inputAmountUsd, selectedToken, selectedTokenSourceChainBalanceUsd]);
 
   const [isApproving, setIsApproving] = useState(false);
 
@@ -321,7 +330,9 @@ export const DepositView = () => {
         <SyntheticsInfoRow label="Deposit Fee" value="$0.22" />
         <SyntheticsInfoRow
           label={t`GMX Balance`}
-          value={<ValueTransition from={formatUsd(0n)} to={formatUsd(nextGmxBalanceUsd)} />}
+          value={
+            <ValueTransition from={formatUsd(gmxAccountTokenBalanceUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />
+          }
         />
         <SyntheticsInfoRow
           label={t`Asset Balance`}

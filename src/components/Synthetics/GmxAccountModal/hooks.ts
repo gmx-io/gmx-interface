@@ -265,10 +265,6 @@ export async function fetchGmxAccountTokenBalancesData(
       abiId: "DataStore",
       contractAddress: getContract(settlementChainId, "DataStore"),
       calls: {
-        // [zeroAddress]: {
-        //   methodName: "getUint",
-        //   params: [multichainBalanceKey(account, zeroAddress)],
-        // },
         ...erc20Calls,
       },
     },
