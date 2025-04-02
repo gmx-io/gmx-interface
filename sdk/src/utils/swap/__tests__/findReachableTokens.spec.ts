@@ -17,8 +17,8 @@ describe("findReachableTokens", () => {
     const result = findReachableTokens(graph);
 
     expect(result).toEqual({
-      ETH: ["USDC"],
-      USDC: ["ETH"],
+      ETH: ["ETH", "USDC"],
+      USDC: ["USDC", "ETH"],
     });
   });
 
@@ -41,9 +41,9 @@ describe("findReachableTokens", () => {
     const result = findReachableTokens(graph);
 
     expect(result).toEqual({
-      ETH: ["USDC", "BTC"],
-      USDC: ["ETH", "BTC"],
-      BTC: ["ETH", "USDC"],
+      ETH: ["ETH", "USDC", "BTC"],
+      USDC: ["USDC", "ETH", "BTC"],
+      BTC: ["BTC", "ETH", "USDC"],
     });
   });
 
@@ -60,8 +60,8 @@ describe("findReachableTokens", () => {
     const result = findReachableTokens(graph);
 
     expect(result).toEqual({
-      ETH: ["USDC"],
-      USDC: ["ETH"],
+      ETH: ["ETH", "USDC"],
+      USDC: ["USDC", "ETH"],
     });
   });
 
@@ -75,7 +75,7 @@ describe("findReachableTokens", () => {
     const result = findReachableTokens(graph);
 
     expect(result).toEqual({
-      ETH: [],
+      ETH: ["ETH"],
     });
   });
 
@@ -94,8 +94,8 @@ describe("findReachableTokens", () => {
     const result = findReachableTokens(graph);
 
     expect(result).toEqual({
-      ETH: [],
-      USDC: [],
+      ETH: ["ETH"],
+      USDC: ["USDC"],
     });
   });
 
@@ -127,11 +127,11 @@ describe("findReachableTokens", () => {
 
     const result = findReachableTokens(graph);
 
-    expect(result.ETH).toEqual(["USDC", "BTC", "WBTC"]);
-    expect(result.USDC).toEqual(["ETH", "BTC", "WBTC", "USDT"]);
-    expect(result.BTC).toEqual(["USDC", "WBTC", "ETH", "USDT", "DAI"]);
-    expect(result.WBTC).toEqual(["BTC", "USDT", "USDC", "DAI", "ETH"]);
-    expect(result.USDT).toEqual(["WBTC", "DAI", "BTC", "USDC"]);
-    expect(result.DAI).toEqual(["USDT", "WBTC", "BTC"]);
+    expect(result.ETH).toEqual(["ETH", "USDC", "BTC", "WBTC"]);
+    expect(result.USDC).toEqual(["USDC", "ETH", "BTC", "WBTC", "USDT"]);
+    expect(result.BTC).toEqual(["BTC", "USDC", "WBTC", "ETH", "USDT", "DAI"]);
+    expect(result.WBTC).toEqual(["WBTC", "BTC", "USDT", "USDC", "DAI", "ETH"]);
+    expect(result.USDT).toEqual(["USDT", "WBTC", "DAI", "BTC", "USDC"]);
+    expect(result.DAI).toEqual(["DAI", "USDT", "WBTC", "BTC"]);
   });
 });
