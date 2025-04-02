@@ -1,7 +1,11 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import useSWR from "swr";
+import { zeroAddress } from "viem";
+import { useAccount } from "wagmi";
 
 import { ARBITRUM, AVALANCHE, BASE_MAINNET, SONIC_MAINNET } from "config/chains";
+import { multichainBalanceKey } from "config/dataStore";
+import { MARKETS } from "config/markets";
 import {
   convertToUsd,
   getMidPrice,
@@ -10,19 +14,16 @@ import {
   useTokensDataRequest,
 } from "domain/synthetics/tokens";
 import { TokensData } from "domain/tokens";
+import { MulticallRequestConfig, executeMulticall } from "lib/multicall";
 import { EMPTY_OBJECT } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import useWallet from "lib/wallets/useWallet";
-import { getToken } from "sdk/configs/tokens";
+import { getContract } from "sdk/configs/contracts";
+import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
-
 import { fetchMultichainTokenBalances } from "./fetchMultichainTokenBalances";
-import {
-  MULTI_CHAIN_TOKEN_MAPPING,
-  MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS,
-  isSettlementChain,
-} from "../../../context/GmxAccountContext/config";
+import { MULTI_CHAIN_TOKEN_MAPPING, isSettlementChain } from "../../../context/GmxAccountContext/config";
 import { DEV_FUNDING_HISTORY } from "../../../context/GmxAccountContext/dev";
 import { useGmxAccountSettlementChainId } from "../../../context/GmxAccountContext/hooks";
 import { TokenChainData } from "../../../context/GmxAccountContext/types";
@@ -47,9 +48,12 @@ export function useAvailableToTradeAssetSymbolsSettlementChain(): string[] {
     }
   }
 
-  for (const [tokenAddress, balance] of Object.entries(currentChainTokenBalances.balancesData || {})) {
-    if (balance !== undefined && balance > 0n) {
-      tokenSymbols.add(tokenAddress);
+  if (chainId) {
+    for (const [tokenAddress, balance] of Object.entries(currentChainTokenBalances.balancesData || {})) {
+      if (balance !== undefined && balance > 0n) {
+        const token = getToken(chainId, tokenAddress);
+        tokenSymbols.add(token.symbol);
+      }
     }
   }
 
@@ -130,7 +134,7 @@ export function useGmxAccountFundingHistory() {
 
 export function useMultichainTokens(): TokenChainData[] {
   const [settlementChainId] = useGmxAccountSettlementChainId();
-  const { account } = useWallet();
+  const { address: account } = useAccount();
 
   const { pricesData } = useTokenRecentPricesRequest(settlementChainId);
 
@@ -219,28 +223,107 @@ export function useMultichainTokens(): TokenChainData[] {
   return tokenChainDataArray;
 }
 
+export async function fetchGmxAccountTokenBalancesData(
+  settlementChainId: number,
+  account: string
+): Promise<Record<string, bigint>> {
+  const tradableTokenAddressesSet = new Set<string>();
+
+  tradableTokenAddressesSet.add(zeroAddress);
+
+  for (const marketAddress in MARKETS[settlementChainId]) {
+    const marketConfig = MARKETS[settlementChainId][marketAddress];
+
+    tradableTokenAddressesSet.add(marketConfig.longTokenAddress);
+    tradableTokenAddressesSet.add(marketConfig.shortTokenAddress);
+
+    tradableTokenAddressesSet.add(convertTokenAddress(settlementChainId, marketConfig.longTokenAddress, "native"));
+    tradableTokenAddressesSet.add(convertTokenAddress(settlementChainId, marketConfig.shortTokenAddress, "native"));
+  }
+
+  const tradableTokenAddresses = Array.from(tradableTokenAddressesSet);
+
+  const erc20Calls = Object.fromEntries(
+    tradableTokenAddresses.map((tokenAddress) => [
+      tokenAddress,
+      {
+        methodName: "getUint",
+        params: [multichainBalanceKey(account, tokenAddress)],
+      },
+    ])
+  );
+
+  const request: MulticallRequestConfig<
+    Record<
+      string,
+      {
+        calls: Record<string, { methodName: "getUint"; params: [string] }>;
+      }
+    >
+  > = {
+    DataStore: {
+      abiId: "DataStore",
+      contractAddress: getContract(settlementChainId, "DataStore"),
+      calls: {
+        // [zeroAddress]: {
+        //   methodName: "getUint",
+        //   params: [multichainBalanceKey(account, zeroAddress)],
+        // },
+        ...erc20Calls,
+      },
+    },
+  };
+
+  const result = await executeMulticall(settlementChainId, request, "background", "fetchGmxAccountTokensData");
+
+  console.log({ result });
+
+  return Object.fromEntries(
+    Object.entries(result.data.DataStore).map(([tokenAddress, callResult]) => [
+      tokenAddress,
+      callResult.returnValues[0],
+    ])
+  );
+}
+
 export function useGmxAccountTokensData(): TokensData {
   const [settlementChainId] = useGmxAccountSettlementChainId();
+  const { address: account } = useAccount();
 
-  const settlementChainWithdrawSupportedTokens = MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS[settlementChainId];
+  const { pricesData } = useTokenRecentPricesRequest(settlementChainId);
 
-  if (!settlementChainWithdrawSupportedTokens) {
-    return EMPTY_OBJECT;
-  }
+  const { data: tokenBalances } = useSWR<Record<string, bigint>>(
+    account ? ["gmx-account-tokens", settlementChainId, account] : null,
+    async () => {
+      return await fetchGmxAccountTokenBalancesData(settlementChainId, account!);
+    },
+    {
+      refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
+    }
+  );
 
-  const gmxAccountTokensData: TokensData = {};
+  const gmxAccountTokensData: TokensData = useMemo(() => {
+    const gmxAccountTokensData: TokensData = {};
 
-  for (const tokenAddress of settlementChainWithdrawSupportedTokens) {
-    const token = getToken(settlementChainId, tokenAddress);
-    gmxAccountTokensData[tokenAddress] = {
-      ...token,
-      prices: {
-        minPrice: 10n * 10n ** (30n - BigInt(token.decimals)),
-        maxPrice: 10n * 10n ** (30n - BigInt(token.decimals)),
-      },
-      balance: 10n * 10n ** BigInt(token.decimals),
-    };
-  }
+    for (const tokenAddress in tokenBalances) {
+      const token = getToken(settlementChainId, tokenAddress);
+      if (!pricesData || !(tokenAddress in pricesData)) {
+        continue;
+      }
+
+      if (tokenBalances[tokenAddress] <= 0n) {
+        continue;
+      }
+
+      gmxAccountTokensData[tokenAddress] = {
+        ...token,
+        prices: pricesData[tokenAddress],
+        balance: tokenBalances[tokenAddress],
+      };
+    }
+
+    return gmxAccountTokensData;
+  }, [pricesData, settlementChainId, tokenBalances]);
 
   return gmxAccountTokensData;
 }

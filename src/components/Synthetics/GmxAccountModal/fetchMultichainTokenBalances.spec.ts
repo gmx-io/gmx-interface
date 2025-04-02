@@ -1,3 +1,6 @@
+import "lib/monkeyPatching";
+import "lib/polyfills";
+
 import { describe, it, beforeAll, afterAll } from "vitest";
 
 import { ARBITRUM } from "config/chains";

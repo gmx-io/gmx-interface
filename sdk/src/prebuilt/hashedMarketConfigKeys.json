@@ -5856,7 +5856,7 @@
     }
   },
   "421614": {
-    "0x482df3d320c964808579b585a8ac7dd5d144efaf": {
+    "0x482Df3D320C964808579b585a8AC7Dd5D144eFaF": {
       "isDisabled": "0xce6c0c2ecb98c1d352f3d852f960de84f48fe3867311b66232f955f673daf585",
       "maxLongPoolAmount": "0x89492e9183bb65131fe32ce8973237cc253240e3060139aaacf9acc66925862b",
       "maxShortPoolAmount": "0x73e597a69c0dec119e8916093d87e7b56b82ac29ab3667e27826914aaac30e05",
@@ -5906,7 +5906,7 @@
       "virtualLongTokenId": "0xbeb8096910fd4d4b3ade12aad31c27a0e5f047fce87d1279b0c71579a8c4ef5b",
       "virtualShortTokenId": "0x14f396b003aeaa96ad78845dcb7d6d9789c777a23d4ea1e14a7dc58704a595b3"
     },
-    "0xbb532ab4923c23c2bfa455151b14fec177a34c0d": {
+    "0xBb532Ab4923C23c2bfA455151B14fec177a34C0D": {
       "isDisabled": "0xe1e304a1d3f1b7aed5d7643887746b17682425b7b06073c08a2054e8b5721b9b",
       "maxLongPoolAmount": "0xd695cb6384004da9658032d6fd69874a10da52bb13a19813f816a0d14b0f719e",
       "maxShortPoolAmount": "0x4f0f32930b9a140ba510ffe0ce2d85cd60848909bfd7efe19b1aafefabc6838d",

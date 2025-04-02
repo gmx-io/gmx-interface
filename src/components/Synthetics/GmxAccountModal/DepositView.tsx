@@ -1,9 +1,13 @@
 import { Trans, t } from "@lingui/macro";
+import { Contract } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
 import Skeleton from "react-loading-skeleton";
+import { zeroAddress } from "viem";
+import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
+import { getContract } from "config/contracts";
 import { getChainIcon } from "config/icons";
 import { isSourceChain } from "context/GmxAccountContext/config";
 import {
@@ -12,30 +16,24 @@ import {
   useGmxAccountModalOpen,
   useGmxAccountSettlementChainId,
 } from "context/GmxAccountContext/hooks";
+import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
+import { approveTokens } from "domain/tokens";
+import { callContract } from "lib/contracts";
+import { helperToast } from "lib/helperToast";
 import { formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
+import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { getToken } from "sdk/configs/tokens";
 import { convertToUsd } from "sdk/utils/tokens";
+import { MultichainTransferRouter__factory } from "typechain-types";
 
 import Button from "components/Button/Button";
+import NumberInput from "components/NumberInput/NumberInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import NumberInput from "components/NumberInput/NumberInput";
-import { getContract } from "config/contracts";
-import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
-import { approveTokens } from "domain/tokens";
-import { helperToast } from "lib/helperToast";
-import { executeMulticall } from "lib/multicall";
-import { useEthersSigner } from "lib/wallets/useEthersSigner";
-import { useAccount } from "wagmi";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { useMultichainTokens } from "./hooks";
-import { MulticallResult } from "sdk/utils/multicall";
-import { Address, encodeFunctionData, zeroAddress } from "viem";
-import { callContract } from "lib/contracts";
-import { Multicall__factory, MultichainTransferRouter__factory } from "typechain-types";
-import { Contract } from "ethers";
 
 export const DepositView = () => {
   const { address: account, chainId: walletChainId } = useAccount();

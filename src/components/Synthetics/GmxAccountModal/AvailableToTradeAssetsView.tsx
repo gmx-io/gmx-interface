@@ -144,16 +144,18 @@ const AssetListSettlementChain = () => {
     })
   );
 
-  const settlementChainDisplayTokens = Object.values(tokensData || {}).map(
-    (token): DisplayToken => ({
-      chainId: chainId!,
-      symbol: token.symbol,
-      isGmxAccountBalance: false,
-      balance: token.balance,
-      balanceUsd: convertToUsd(token.balance, token.decimals, getMidPrice(token.prices)),
-      decimals: token.decimals,
-    })
-  );
+  const settlementChainDisplayTokens = Object.values(tokensData || {})
+    .map(
+      (token): DisplayToken => ({
+        chainId: chainId!,
+        symbol: token.symbol,
+        isGmxAccountBalance: false,
+        balance: token.balance,
+        balanceUsd: convertToUsd(token.balance, token.decimals, getMidPrice(token.prices)),
+        decimals: token.decimals,
+      })
+    )
+    .filter((token) => token.balance !== undefined && token.balance > 0n);
 
   const displayTokens: DisplayToken[] = [...gmxAccountDisplayTokens, ...settlementChainDisplayTokens];
 

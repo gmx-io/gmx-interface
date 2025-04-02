@@ -845,18 +845,18 @@ export const MARKETS: Record<string, Record<string, MarketConfig>> = {
   },
   [ARBITRUM_SEPOLIA]: {
     // ETH/USD [WETH-USDC]
-    "0x482df3d320c964808579b585a8ac7dd5d144efaf": {
-      marketTokenAddress: "0x482df3d320c964808579b585a8ac7dd5d144efaf",
-      indexTokenAddress: "0x980b62da83eff3d4576c647993b0c1d7faf17c73",
-      longTokenAddress: "0x980b62da83eff3d4576c647993b0c1d7faf17c73",
-      shortTokenAddress: "0x3321fd36aeab0d5cdfd26f4a3a93e2d2aaccb99f",
+    "0x482Df3D320C964808579b585a8AC7Dd5D144eFaF": {
+      marketTokenAddress: "0x482Df3D320C964808579b585a8AC7Dd5D144eFaF",
+      indexTokenAddress: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
+      longTokenAddress: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
+      shortTokenAddress: "0x3321Fd36aEaB0d5CdfD26f4A3A93E2D2aAcCB99f",
     },
     // BTC/USD [BTC-USDC]
-    "0xbb532ab4923c23c2bfa455151b14fec177a34c0d": {
-      marketTokenAddress: "0xbb532ab4923c23c2bfa455151b14fec177a34c0d",
-      indexTokenAddress: "0xf79ce1cf38a09d572b021b4c5548b75a14082f12",
-      longTokenAddress: "0xf79ce1cf38a09d572b021b4c5548b75a14082f12",
-      shortTokenAddress: "0x3321fd36aeab0d5cdfd26f4a3a93e2d2aaccb99f",
+    "0xBb532Ab4923C23c2bfA455151B14fec177a34C0D": {
+      marketTokenAddress: "0xBb532Ab4923C23c2bfA455151B14fec177a34C0D",
+      indexTokenAddress: "0xF79cE1Cf38A09D572b021B4C5548b75A14082F12",
+      longTokenAddress: "0xF79cE1Cf38A09D572b021B4C5548b75A14082F12",
+      shortTokenAddress: "0x3321Fd36aEaB0d5CdfD26f4A3A93E2D2aAcCB99f",
     },
   },
 };

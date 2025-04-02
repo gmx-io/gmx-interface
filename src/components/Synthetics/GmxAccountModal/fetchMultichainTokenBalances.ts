@@ -1,15 +1,12 @@
-import "lib/polyfills";
-import "lib/monkeyPatching";
-
-import { erc20Abi, zeroAddress } from "viem";
+import { zeroAddress } from "viem";
 
 import { getChainName } from "config/chains";
 import { executeMulticall } from "lib/multicall/executeMulticall";
 import { MulticallRequestConfig } from "lib/multicall/types";
 import { EMPTY_OBJECT } from "lib/objects";
 
-import { MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "../../../context/GmxAccountContext/config";
 import { getContract } from "sdk/configs/contracts";
+import { MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "../../../context/GmxAccountContext/config";
 
 console.log({ MULTI_CHAIN_SUPPORTED_TOKEN_MAP });
 

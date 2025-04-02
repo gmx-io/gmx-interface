@@ -9,8 +9,6 @@ import {
   SONIC_MAINNET,
 } from "config/chains";
 
-
-
 import gmIcon from "img/gm_icon.svg";
 import arbitrum from "img/ic_arbitrum_24.svg";
 import arbitrumSepolia from "img/ic_arbitrum_sepolia_24.svg";
@@ -45,6 +43,13 @@ type ChainIcons = {
 const ICONS: Record<number | "common", ChainIcons> = {
   [ARBITRUM]: {
     network: arbitrum,
+    gmx: gmxArbitrum,
+    glp: glpArbitrum,
+    esgmx: esGMXArbitrumIcon,
+    gm: gmArbitrum,
+  },
+  [ARBITRUM_SEPOLIA]: {
+    network: arbitrumSepolia,
     gmx: gmxArbitrum,
     glp: glpArbitrum,
     esgmx: esGMXArbitrumIcon,

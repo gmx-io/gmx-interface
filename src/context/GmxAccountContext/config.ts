@@ -139,7 +139,7 @@ if (isDevelopment()) {
     [
       {
         chainId: ARBITRUM_SEPOLIA,
-        address: "0x3321fd36aeab0d5cdfd26f4a3a93e2d2aaccb99f",
+        address: "0x3321Fd36aEaB0d5CdfD26f4A3A93E2D2aAcCB99f",
         decimals: 6,
       },
     ],
@@ -147,7 +147,7 @@ if (isDevelopment()) {
     [
       {
         chainId: ARBITRUM_SEPOLIA,
-        address: "0x980b62da83eff3d4576c647993b0c1d7faf17c73",
+        address: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
         decimals: 18,
       },
     ],
@@ -155,7 +155,7 @@ if (isDevelopment()) {
     [
       {
         chainId: ARBITRUM_SEPOLIA,
-        address: "0xf79ce1cf38a09d572b021b4c5548b75a14082f12",
+        address: "0xF79cE1Cf38A09D572b021B4C5548b75A14082F12",
         decimals: 8,
       },
     ],

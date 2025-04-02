@@ -616,7 +616,16 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
       listingDate: DEFAULT_LISTING,
     },
   },
-  [ARBITRUM_SEPOLIA]: {},
+  [ARBITRUM_SEPOLIA]: {
+    "0x482Df3D320C964808579b585a8AC7Dd5D144eFaF": {
+      enabled: true,
+      listingDate: DEFAULT_LISTING,
+    },
+    "0xBb532Ab4923C23c2bfA455151B14fec177a34C0D": {
+      enabled: true,
+      listingDate: DEFAULT_LISTING,
+    },
+  },
 };
 
 export const MARKETS = Object.keys(MARKETS_UI_CONFIGS).reduce(
