@@ -25,13 +25,13 @@ import { EMPTY_OBJECT } from "lib/objects";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { getToken } from "sdk/configs/tokens";
 import { convertToUsd } from "sdk/utils/tokens";
-import { MultichainTransferRouter__factory } from "typechain-types";
 
 import Button from "components/Button/Button";
 import NumberInput from "components/NumberInput/NumberInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
+import { abis } from "sdk/abis";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { useMultichainTokens } from "./hooks";
 
@@ -125,7 +125,7 @@ export const DepositView = () => {
   const [isApproving, setIsApproving] = useState(false);
 
   const { tokensAllowanceData, isLoaded: isAllowanceLoaded } = useTokensAllowanceData(settlementChainId, {
-    spenderAddress: getContract(settlementChainId, "MultichainTransferRouter"),
+    spenderAddress: getContract(settlementChainId, "SyntheticsRouter"),
     tokenAddresses: depositViewTokenAddress ? [depositViewTokenAddress] : [],
   });
 
@@ -145,7 +145,7 @@ export const DepositView = () => {
       chainId: walletChainId,
       tokenAddress: depositViewTokenAddress,
       signer: signer,
-      spender: getContract(settlementChainId, "MultichainTransferRouter"),
+      spender: getContract(settlementChainId, "SyntheticsRouter"),
       setIsApproving,
     });
   }, [depositViewTokenAddress, inputAmount, settlementChainId, signer, walletChainId]);
@@ -155,22 +155,16 @@ export const DepositView = () => {
       return;
     }
 
-    const multichainTransferRouterAddress = getContract(settlementChainId, "MultichainTransferRouter");
     const multichainVaultAddress = getContract(settlementChainId, "MultichainVault");
 
     let response: any;
     const contract = new Contract(
       getContract(walletChainId, "MultichainTransferRouter")!,
-      MultichainTransferRouter__factory.abi,
+      abis.MultichainTransferRouter,
       signer
     );
 
     if (depositViewTokenAddress === zeroAddress) {
-      // const multichainTranserRouterContract = MultichainTransferRouter__factory.connect(
-      //   getContract(walletChainId, "MultichainTransferRouter")!,
-      //   signer
-      // );
-
       response = await callContract(
         walletChainId,
         contract,
@@ -189,26 +183,7 @@ export const DepositView = () => {
           value: inputAmount,
         }
       );
-
-      console.log({ response });
     } else {
-      // response = await executeMulticall(walletChainId, {
-      //   MultichainTransferRouter: {
-      //     contractAddress: multichainTransferRouterAddress,
-      //     abiId: "MultichainTransferRouter",
-      //     calls: {
-      //       sendTokens: {
-      //         methodName: "sendTokens",
-      //         params: [depositViewTokenAddress, multichainVaultAddress, inputAmount],
-      //       },
-      //       bridgeIn: {
-      //         methodName: "bridgeIn",
-      //         params: [account, depositViewTokenAddress, depositViewChain],
-      //       },
-      //     },
-      //   },
-      // });
-
       response = await callContract(
         walletChainId,
         contract,
@@ -229,15 +204,12 @@ export const DepositView = () => {
         ],
         {}
       );
-
-      console.log({ response });
     }
 
     if (response.success) {
       setIsVisibleOrView("main");
       helperToast.success("Deposit successful");
     } else {
-      console.log(response);
       helperToast.error("Deposit failed");
     }
   }, [
