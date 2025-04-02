@@ -1,5 +1,4 @@
 .Exchange {
-  max-width: 160rem;
   margin: auto;
   justify-content: space-between;
 }
@@ -257,7 +256,6 @@
 }
 
 .ExchangeChart {
-  max-width: 120rem;
   position: relative;
 }
 
