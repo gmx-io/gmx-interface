@@ -43,7 +43,7 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
     const matchesSearch = token.symbol.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesChainFilter =
-      !noChainFilter ||
+      noChainFilter ||
       activeFilter === "all" ||
       (activeFilter === "gmxBalance" && token.isGmxAccountBalance) ||
       (activeFilter === "wallet" && !token.isGmxAccountBalance);
