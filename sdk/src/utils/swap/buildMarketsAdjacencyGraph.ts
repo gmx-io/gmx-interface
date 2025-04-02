@@ -19,6 +19,12 @@ export function buildMarketsAdjacencyGraph(marketsMap: Record<string, MarketConf
     const isSameCollaterals = longTokenAddress === shortTokenAddress;
 
     if (isSameCollaterals) {
+      const tokenAddress = longTokenAddress;
+
+      graph[tokenAddress] = graph[tokenAddress] || {};
+      graph[tokenAddress][tokenAddress] = graph[tokenAddress][tokenAddress] || [];
+      graph[tokenAddress][tokenAddress].push(marketTokenAddress);
+
       continue;
     }
 
