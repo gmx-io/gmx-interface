@@ -40,6 +40,7 @@ export type SwapOrderParams = {
   skipSimulation: boolean;
   metricId: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
+  slippageInputId: string | undefined;
 };
 
 export async function createSwapOrderTxn(
@@ -97,6 +98,9 @@ export async function createSwapOrderTxn(
           errorTitle: t`Order error.`,
           metricId: p.metricId,
           blockTimestampData: p.blockTimestampData,
+          additionalErrorParams: {
+            slippageInputId: p.slippageInputId,
+          },
         })
       : undefined;
 

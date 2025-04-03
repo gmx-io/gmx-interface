@@ -187,7 +187,7 @@ function DecreaseOrderRow() {
   );
 }
 
-export function TradeBoxAdvancedGroups() {
+export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: string }) {
   const options = useSelector(selectTradeboxAdvancedOptions);
   const setOptions = useSelector(selectTradeboxSetAdvancedOptions);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
@@ -312,7 +312,7 @@ export function TradeBoxAdvancedGroups() {
       {isLimit && <AvailableLiquidityRow />}
       {/* only when isMarket and not a swap */}
       {isMarket && !isSwap && <CollateralSpreadRow />}
-      {isMarket && <AllowedSlippageRow />}
+      {isMarket && <AllowedSlippageRow slippageInputId={slippageInputId} />}
 
       {((isIncrease && selectedPosition) || (isTrigger && selectedPosition)) && (
         <div className="h-1 shrink-0 bg-stroke-primary" />

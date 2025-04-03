@@ -115,6 +115,7 @@ describe("buildMarketsAdjacencyGraph", () => {
 
     expect(result).toEqual({
       ETH: {
+        ETH: ["ETH [ETH-ETH]"],
         USDC: ["ETH [ETH-USDC]"],
       },
       USDC: {

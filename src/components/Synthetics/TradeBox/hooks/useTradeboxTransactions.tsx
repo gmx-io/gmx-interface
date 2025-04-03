@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { t, Trans } from "@lingui/macro";
-import { useCallback } from "react";
+import { useCallback, useId } from "react";
 
 import { getContract } from "config/contracts";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -72,6 +72,7 @@ import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
 import { getActualApproval } from "domain/synthetics/gassless/txns/subaccountUtils";
 import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
+import { OrderType } from "domain/synthetics/orders/types";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
@@ -142,6 +143,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   });
 
   const orderCreatePayload = useSelector(selectTradeBoxOrderPayload);
+  const slippageInputId = useId();
 
   const initialCollateralAllowance = fromToken?.address
     ? getByKey(tokensAllowanceData.tokensAllowanceData, fromToken.address)
@@ -808,5 +810,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     onSubmitIncreaseOrder: onSubmitOrder,
     onSubmitDecreaseOrder: onSubmitOrder,
     onSubmitWrapOrUnwrap,
+    slippageInputId,
   };
 }
