@@ -6,18 +6,21 @@ import { getChainName } from "config/chains";
 import { helperToast } from "lib/helperToast";
 import { switchNetwork } from "lib/wallets";
 import { getNativeToken } from "sdk/configs/tokens";
-import { extractError, TxError, TxErrorType } from "sdk/utils/errors/transactionsErrors";
+import { extractTxnError, TxError, TxErrorType } from "sdk/utils/errors/transactionsErrors";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
+/**
+ * @deprecated Use `parseError` instead.
+ */
 export function getTxnErrorToastContent(
   chainId: number,
   ex: TxError,
   txnMessage?: string,
   additionalContent?: React.ReactNode
 ) {
-  const [message, type, errorData] = extractError(ex);
+  const [message, type, errorData] = extractTxnError(ex);
   const nativeToken = getNativeToken(chainId);
 
   let failMsg;

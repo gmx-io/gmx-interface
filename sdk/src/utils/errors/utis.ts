@@ -1,4 +1,3 @@
-import { CustomErrorName } from ".";
 import { ParsedError } from "./parseError";
 
 export function isContractError(error: ParsedError, errorType: CustomErrorName) {

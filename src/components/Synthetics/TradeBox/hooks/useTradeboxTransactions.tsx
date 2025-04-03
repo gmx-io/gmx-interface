@@ -15,7 +15,10 @@ import {
   selectUserReferralInfo,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectRelayerFeeState } from "context/SyntheticsStateContext/selectors/relayserFeeSelectors";
+import {
+  selectRelayerFeeState,
+  selectRelayerFeeSwapParams,
+} from "context/SyntheticsStateContext/selectors/relayserFeeSelectors";
 import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAllowedSlippage,
@@ -54,6 +57,21 @@ import useWallet from "lib/wallets/useWallet";
 
 import { useRequiredActions, useSecondaryOrderPayloads } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
+import {
+  buildAndSignExpressCreateOrderTxn,
+  buildExpressOrderCallData,
+  getExpressOrderOracleParams,
+  getRelayerFeeSwapParams,
+  sendExpressOrderTxn,
+  signExpressOrderPayload,
+} from "domain/synthetics/gassless/txns/expressOrderUtils";
+import { getSwapPathTokenAddresses } from "sdk/utils/swap";
+import { RelayParamsPayload } from "domain/synthetics/gassless/txns/relayRouterUtils";
+import { useRelayRouterNonce } from "domain/synthetics/gassless/txns/useRelayRouterNonce";
+import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
+import { nowInSeconds } from "sdk/utils/time";
+import { getActualApproval } from "domain/synthetics/gassless/txns/subaccountUtils";
+import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
@@ -73,6 +91,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const { shouldDisableValidationForTesting, expressOrdersEnabled } = useSettings();
   const relayerFeeState = useSelector(selectRelayerFeeState);
   const { getExecutionFeeAmountForEntry, summaryExecutionFee } = useTPSLSummaryExecutionFee();
+  const { relayRouterNonce } = useRelayRouterNonce();
 
   const isFirstOrder = useSelector(selectIsFirstOrder);
   const blockTimestampData = useSelector(selectBlockTimestampData);
@@ -90,6 +109,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const fees = useSelector(selectTradeboxFees);
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
   const marketsInfoData = useSelector(selectMarketsInfoData);
+  const relayerFeeSwapParams = useSelector(selectRelayerFeeSwapParams);
+  const tokenPermits = useSelector(selectTokenPermits);
 
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
 
@@ -100,14 +121,12 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const { referralCodeForTxn } = useUserReferralCode(signer, chainId, account);
 
   const fromToken = getByKey(tokensData, fromTokenAddress);
-  const toToken = getByKey(tokensData, toTokenAddress);
 
   const { requiredActions, createSltpEntries, cancelSltpEntries, updateSltpEntries } = useRequiredActions();
 
   const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: selectedPosition?.key });
 
   const subaccount = useSelector(makeSelectSubaccountForActions(requiredActions));
-  const userReferralInfo = useSelector(selectUserReferralInfo);
 
   const tokensAllowanceData = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
@@ -128,10 +147,10 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     ? getByKey(tokensAllowanceData.tokensAllowanceData, fromToken.address)
     : undefined;
 
-  const onSubmitOrder = useCallback(() => {
+  const onSubmitOrder = useCallback(async () => {
     // sendOrderSubmittedMetric(metricData.metricId);
 
-    if (!orderCreatePayload || !signer || !tokensData) {
+    if (!orderCreatePayload || !signer || !tokensData || !account) {
       helperToast.error(t`Error submitting order`);
       // sendTxnValidationErrorMetric(metricData.metricId);
       return Promise.reject();
@@ -149,6 +168,35 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     //   isFirstOrder,
     //   initialCollateralAllowance,
     // });
+
+    const EXPRESS_ORDERS = true;
+
+    if (EXPRESS_ORDERS && relayerFeeSwapParams && marketsInfoData && relayRouterNonce !== undefined) {
+      return sendExpressOrderTxn({
+        chainId,
+        txnData: await buildAndSignExpressCreateOrderTxn({
+          chainId,
+          signer,
+          subaccount,
+          relayParamsPayload: {
+            oracleParams: getExpressOrderOracleParams({
+              chainId,
+              initialCollateralAddress: orderCreatePayload.orderPayload.addresses.initialCollateralToken,
+              collateralSwapPath: orderCreatePayload.orderPayload.addresses.swapPath,
+              gasPaymentTokenAddress: relayerFeeSwapParams.feeParams.feeToken,
+              feeSwapPath: relayerFeeSwapParams.feeParams.feeSwapPath,
+              marketsInfoData,
+            }),
+            tokenPermits: tokenPermits ?? [],
+            externalCalls: relayerFeeSwapParams.externalCalls,
+            fee: relayerFeeSwapParams.feeParams,
+            userNonce: relayRouterNonce,
+            deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
+          },
+          orderPayload: orderCreatePayload.orderPayload,
+        }),
+      });
+    }
 
     const additionalErrorContent = orderCreatePayload.collateralTransferParams.externalSwapQuote ? (
       <>
@@ -204,10 +252,16 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     orderCreatePayload,
     signer,
     tokensData,
+    account,
+    relayerFeeSwapParams,
+    marketsInfoData,
+    relayRouterNonce,
     chainId,
     secondaryOrderPayloads?.createPayloads,
     secondaryOrderPayloads?.updatePayloads,
     secondaryOrderPayloads?.cancelPayloads,
+    subaccount,
+    tokenPermits,
   ]);
 
   // const onSubmitSwap = useCallback(

@@ -3,7 +3,13 @@ import { Abi, Address, decodeErrorResult } from "viem";
 
 import { abis } from "abis";
 
-import { TxErrorType, extractError, getIsUserError, getIsUserRejectedError } from "./transactionsErrors";
+import {
+  TxErrorType,
+  extractDataFromError,
+  extractTxnError,
+  getIsUserError,
+  getIsUserRejectedError,
+} from "./transactionsErrors";
 
 export type OrderErrorContext =
   | "simulation"
@@ -99,12 +105,12 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
     }
 
     try {
-      let txError: ReturnType<typeof extractError> | undefined;
+      let txError: ReturnType<typeof extractTxnError> | undefined;
 
       if (errorInfo) {
-        txError = extractError(errorInfo);
+        txError = extractTxnError(errorInfo);
       } else if (error && typeof error === "object") {
-        txError = extractError(error);
+        txError = extractTxnError(error);
       }
 
       if (txError && txError.length) {
@@ -181,17 +187,12 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
   };
 }
 
-export function extractDataFromError(errorMessage: unknown) {
-  if (typeof errorMessage !== "string") return null;
-
-  const pattern = /data="([^"]+)"/;
-  const match = errorMessage.match(pattern);
-
-  if (match && match[1]) {
-    return match[1];
-  }
-  return null;
-}
+// function standardizeError(error: ErrorLike | ErrorData | string | undefined): ErrorLike {
+//   if (typeof error === "string") {
+//     return { message: error };
+//   }
+//   return error;
+// }
 
 function hasMessage(error: unknown): error is { message: string } {
   return !!error && typeof error === "object" && typeof (error as { message: string }).message === "string";

@@ -204,7 +204,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
         <div>
           {errorTitle}
           {p.additionalErrorContent}
-          <br />n
+          <br />
           <br />
           <ToastifyDebug
             error={`${txnError?.info?.error?.message ?? parsedError?.name ?? txnError?.message} ${JSON.stringify(parsedArgs, null, 2)}`}

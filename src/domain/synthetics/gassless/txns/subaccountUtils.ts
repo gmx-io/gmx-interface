@@ -130,7 +130,7 @@ export async function getActualApproval(
 
   if (getIsApprovalExpired(signedApproval)) {
     const now = BigInt(nowInSeconds());
-    // Extend time for expired approval while keeping other values
+
     return createAndSignSubaccountApproval(chainId, signer, address, signedApproval.nonce, {
       ...signedApproval,
       expiresAt: now + BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION),

@@ -3,6 +3,7 @@ import { encodeAbiParameters, keccak256 } from "viem";
 import RelayParamsAbi from "sdk/abis/RelayParams.json";
 
 import { TokenPermitPayload } from "./tokenPermitUtils";
+import { getContract } from "sdk/configs/contracts";
 
 export type RelayParamsPayload = {
   oracleParams: OracleParamsPayload;
@@ -33,12 +34,12 @@ export type ExternalCallsPayload = {
   refundReceivers: string[];
 };
 
-export function getGelatoRelayRouterDomain(chainId: number, verifyingContract: string) {
+export function getGelatoRelayRouterDomain(chainId: number, isSubaccount: boolean) {
   return {
-    name: "GmxBaseGelatoRelayRouter",
+    name: isSubaccount ? "GmxBaseSubaccountGelatoRelayRouter" : "GmxBaseGelatoRelayRouter",
     version: "1",
     chainId: BigInt(chainId),
-    verifyingContract,
+    verifyingContract: getContract(chainId, isSubaccount ? "SubaccountGelatoRelayRouter" : "GelatoRelayRouter"),
   };
 }
 

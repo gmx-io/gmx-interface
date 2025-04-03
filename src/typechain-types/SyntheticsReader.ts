@@ -901,7 +901,6 @@ export interface SyntheticsReaderInterface extends Interface {
       | "getAccountOrders"
       | "getAccountPositionInfoList"
       | "getAccountPositions"
-      | "getAdlState"
       | "getDeposit"
       | "getDepositAmountOut"
       | "getExecutionPrice"
@@ -948,10 +947,6 @@ export interface SyntheticsReaderInterface extends Interface {
   encodeFunctionData(
     functionFragment: "getAccountPositions",
     values: [AddressLike, AddressLike, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getAdlState",
-    values: [AddressLike, AddressLike, boolean, MarketUtils.MarketPricesStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "getDeposit",
@@ -1159,10 +1154,6 @@ export interface SyntheticsReaderInterface extends Interface {
     functionFragment: "getAccountPositions",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "getAdlState",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "getDeposit", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getDepositAmountOut",
@@ -1317,17 +1308,6 @@ export interface SyntheticsReader extends BaseContract {
       end: BigNumberish
     ],
     [Position.PropsStructOutput[]],
-    "view"
-  >;
-
-  getAdlState: TypedContractMethod<
-    [
-      dataStore: AddressLike,
-      market: AddressLike,
-      isLong: boolean,
-      prices: MarketUtils.MarketPricesStruct
-    ],
-    [[bigint, boolean, bigint, bigint]],
     "view"
   >;
 
@@ -1627,18 +1607,6 @@ export interface SyntheticsReader extends BaseContract {
       end: BigNumberish
     ],
     [Position.PropsStructOutput[]],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "getAdlState"
-  ): TypedContractMethod<
-    [
-      dataStore: AddressLike,
-      market: AddressLike,
-      isLong: boolean,
-      prices: MarketUtils.MarketPricesStruct
-    ],
-    [[bigint, boolean, bigint, bigint]],
     "view"
   >;
   getFunction(

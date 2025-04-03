@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { parseError } from "utils/errors";
+import { parseError, ErrorLike } from "utils/errors";
+import { TxErrorType } from "utils/errors/transactionsErrors";
 
 describe("parseError", () => {
   describe("general errors", () => {
@@ -122,6 +123,223 @@ describe("parseError", () => {
             at processData (https://app.example.com)
             at handleRequest (https://app.example.com)`);
       });
+    });
+  });
+
+  describe("transaction errors", () => {
+    it("should handle ethers v6 user rejected error", () => {
+      const error: ErrorLike = {
+        info: {
+          error: {
+            code: "ACTION_REJECTED",
+            message: "User denied transaction signature",
+          },
+        },
+      };
+
+      const result = parseError(error);
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          errorMessage: "User denied transaction signature",
+          txErrorType: TxErrorType.UserDenied,
+          isUserError: true,
+          isUserRejectedError: true,
+          errorGroup: "Txn Error: USER_DENIED",
+        })
+      );
+    });
+
+    it("should handle ethers v6 insufficient funds error", () => {
+      const error: ErrorLike = {
+        info: {
+          error: {
+            message: "insufficient funds for gas",
+          },
+        },
+      };
+
+      const result = parseError(error);
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          errorMessage: "insufficient funds for gas",
+          txErrorType: TxErrorType.NotEnoughFunds,
+          isUserError: true,
+          isUserRejectedError: false,
+          errorGroup: "Txn Error: NOT_ENOUGH_FUNDS",
+        })
+      );
+    });
+
+    it("should handle RPC errors with code", () => {
+      const error: ErrorLike = {
+        info: {
+          error: {
+            code: -32603,
+            message: "Internal JSON-RPC error",
+          },
+        },
+      };
+
+      const result = parseError(error);
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          errorMessage: "Internal JSON-RPC error",
+          txErrorType: TxErrorType.RpcError,
+          isUserError: false,
+          isUserRejectedError: false,
+          errorGroup: "Txn Error: RPC_ERROR",
+        })
+      );
+    });
+
+    it("should handle nested error in error.body", () => {
+      const error: ErrorLike = {
+        info: {
+          error: {
+            message: JSON.stringify({
+              error: {
+                code: -32000,
+                message: "Invalid input parameters",
+              },
+            }),
+          },
+        },
+      };
+
+      const result = parseError(error);
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          errorMessage: JSON.stringify({
+            error: {
+              code: -32000,
+              message: "Invalid input parameters",
+            },
+          }),
+          errorGroup: JSON.stringify({
+            error: {
+              code: -32000,
+              message: "Invalid input parameters",
+            },
+          }).slice(0, 50),
+          errorStackGroup: "Unknown stack group",
+          errorDepth: 0,
+          isUserError: false,
+          isUserRejectedError: false,
+        })
+      );
+    });
+
+    it("should handle contract errors with data", () => {
+      const error: ErrorLike = {
+        message: "execution reverted",
+        data: "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001a4f726465724e6f7446756c66696c6c61626c6541744c696d697400000000000000",
+      };
+
+      const result = parseError(error);
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          errorMessage: "execution reverted",
+          errorGroup: "execution reverted",
+          errorStackGroup: "Unknown stack group",
+          txErrorData:
+            "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001a4f726465724e6f7446756c66696c6c61626c6541744c696d697400000000000000",
+          isUserError: false,
+          isUserRejectedError: false,
+        })
+      );
+    });
+
+    it("should handle parent errors", () => {
+      const error: ErrorLike = {
+        message: "Failed to execute transaction",
+        parentError: {
+          message: "User denied transaction signature",
+          info: {
+            error: {
+              code: "ACTION_REJECTED",
+            },
+          },
+        },
+      };
+
+      const result = parseError(error);
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          errorMessage: "Failed to execute transaction",
+          errorGroup: "Failed to execute transaction",
+          errorStackGroup: "Unknown stack group",
+          isUserError: false,
+          isUserRejectedError: false,
+          parentError: expect.objectContaining({
+            errorMessage: undefined,
+            errorGroup: "Unknown group",
+            errorStackGroup: "Unknown stack group",
+            errorDepth: 1,
+            isUserError: false,
+            isUserRejectedError: false,
+          }),
+        })
+      );
+    });
+
+    it("should handle slippage errors", () => {
+      const error: ErrorLike = {
+        message: "Router: mark price lower than limit",
+      };
+
+      const result = parseError(error);
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          errorMessage: "Router: mark price lower than limit",
+          txErrorType: TxErrorType.Slippage,
+          isUserError: false,
+          errorGroup: "Txn Error: SLIPPAGE",
+        })
+      );
+    });
+
+    it("should handle network change errors", () => {
+      const error: ErrorLike = {
+        message: "network changed",
+      };
+
+      const result = parseError(error);
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          errorMessage: "network changed",
+          txErrorType: TxErrorType.NetworkChanged,
+          isUserError: true,
+          errorGroup: "Txn Error: NETWORK_CHANGED",
+        })
+      );
+    });
+
+    it("should handle additional validation info", () => {
+      const error: ErrorLike = {
+        message: "Transaction failed",
+        errorSource: "getCallStaticError",
+        isAdditinalValidationPassed: false,
+        additionalValidationType: "tryCallStatic",
+      };
+
+      const result = parseError(error);
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          errorMessage: "Transaction failed",
+          errorSource: "getCallStaticError",
+          isAdditinalValidationPassed: false,
+          additionalValidationType: "tryCallStatic",
+        })
+      );
     });
   });
 });

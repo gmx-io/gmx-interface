@@ -1,4 +1,3 @@
-import { GelatoRelay } from "@gelatonetwork/relay-sdk";
 import { useEffect, useMemo } from "react";
 import useSWR from "swr";
 
@@ -17,6 +16,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { getContract } from "sdk/configs/contracts";
+import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { getWrappedToken } from "sdk/configs/tokens";
 
 import { useExternalSwapOutputRequest } from "../externalSwaps/useExternalSwapOutputRequest";
@@ -25,7 +25,6 @@ import { getSwapAmountsByToValue } from "../trade";
 import { RelayerFeeState } from "./types";
 
 const DEFAULT_GAS_LIMIT = 1000000n;
-const relay = new GelatoRelay();
 
 function roundBigIntToDecimals(value: bigint, tokenDecimals: number, roundToDecimals: number): bigint {
   const excessDecimals = tokenDecimals - roundToDecimals;
@@ -63,7 +62,7 @@ export function useRelayerFeeHandler(): RelayerFeeState | undefined {
       }
 
       try {
-        const feeAmount = await relay.getEstimatedFee(
+        const feeAmount = await gelatoRelay.getEstimatedFee(
           BigInt(chainId),
           relayerFeeToken.address,
           DEFAULT_GAS_LIMIT,
