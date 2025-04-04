@@ -1,7 +1,7 @@
 import { zeroAddress, zeroHash } from "viem";
 
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
-import { PriceOverrides } from "domain/synthetics/orders/simulateExecuteTxn";
+import { PriceOverrides } from "ab/testMultichain/simulateExecuteTxn";
 import { convertTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { DecreasePositionSwapType, OrderTxnType, OrderType } from "sdk/types/orders";
 import { ExternalSwapQuote } from "sdk/types/trade";

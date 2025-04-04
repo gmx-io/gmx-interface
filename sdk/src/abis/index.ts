@@ -3,12 +3,10 @@ import { Abi, erc20Abi } from "viem";
 
 import CustomErrorsArbitrumSepolia from "./arbitrumSepolia/CustomErrors.json";
 import DataStoreArbitrumSepolia from "./arbitrumSepolia/DataStore.json";
-import EventEmitterArbitrumSepolia from "./arbitrumSepolia/EventEmitter.json";
 import ExchangeRouterArbitrumSepolia from "./arbitrumSepolia/ExchangeRouter.json";
 import GelatoRelayRouterArbitrumSepolia from "./arbitrumSepolia/GelatoRelayRouter.json";
 import GlvReaderArbitrumSepolia from "./arbitrumSepolia/GlvReader.json";
 import GlvRouterArbitrumSepolia from "./arbitrumSepolia/GlvRouter.json";
-import GovTokenArbitrumSepolia from "./arbitrumSepolia/GovToken.json";
 import MultichainClaimsRouterArbitrumSepolia from "./arbitrumSepolia/MultichainClaimsRouter.json";
 import MultichainGlvRouterArbitrumSepolia from "./arbitrumSepolia/MultichainGlvRouter.json";
 import MultichainGmRouterArbitrumSepolia from "./arbitrumSepolia/MultichainGmRouter.json";
@@ -21,7 +19,6 @@ import ReferralStorageArbitrumSepolia from "./arbitrumSepolia/ReferralStorage.js
 import SubaccountGelatoRelayRouterArbitrumSepolia from "./arbitrumSepolia/SubaccountGelatoRelayRouter.json";
 import SubaccountRouterArbitrumSepolia from "./arbitrumSepolia/SubaccountRouter.json";
 import SyntheticsReaderArbitrumSepolia from "./arbitrumSepolia/SyntheticsReader.json";
-import SyntheticsRouterArbitrumSepolia from "./arbitrumSepolia/SyntheticsRouter.json";
 import TimelockArbitrumSepolia from "./arbitrumSepolia/Timelock.json";
 import CustomErrors from "./CustomErrors.json";
 import DataStore from "./DataStore.json";
@@ -112,12 +109,10 @@ export type AbiId =
   | "YieldToken"
   | "CustomErrorsArbitrumSepolia"
   | "DataStoreArbitrumSepolia"
-  | "EventEmitterArbitrumSepolia"
   | "ExchangeRouterArbitrumSepolia"
   | "GelatoRelayRouterArbitrumSepolia"
   | "GlvReaderArbitrumSepolia"
   | "GlvRouterArbitrumSepolia"
-  | "GovTokenArbitrumSepolia"
   | "MultichainClaimsRouterArbitrumSepolia"
   | "MultichainGlvRouterArbitrumSepolia"
   | "MultichainGmRouterArbitrumSepolia"
@@ -126,9 +121,7 @@ export type AbiId =
   | "MultichainTransferRouterArbitrumSepolia"
   | "MultichainUtilsArbitrumSepolia"
   | "MultichainVaultArbitrumSepolia"
-  | "ReaderArbitrumSepolia"
   | "ReferralStorageArbitrumSepolia"
-  | "RouterArbitrumSepolia"
   | "SubaccountGelatoRelayRouterArbitrumSepolia"
   | "SubaccountRouterArbitrumSepolia"
   | "SyntheticsReaderArbitrumSepolia"
@@ -180,12 +173,10 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   YieldToken: YieldToken.abi,
   CustomErrorsArbitrumSepolia: CustomErrorsArbitrumSepolia.abi,
   DataStoreArbitrumSepolia: DataStoreArbitrumSepolia.abi,
-  EventEmitterArbitrumSepolia: EventEmitterArbitrumSepolia.abi,
   ExchangeRouterArbitrumSepolia: ExchangeRouterArbitrumSepolia.abi,
   GelatoRelayRouterArbitrumSepolia: GelatoRelayRouterArbitrumSepolia.abi,
   GlvReaderArbitrumSepolia: GlvReaderArbitrumSepolia.abi,
   GlvRouterArbitrumSepolia: GlvRouterArbitrumSepolia.abi,
-  GovTokenArbitrumSepolia: GovTokenArbitrumSepolia.abi,
   MultichainClaimsRouterArbitrumSepolia: MultichainClaimsRouterArbitrumSepolia.abi,
   MultichainGlvRouterArbitrumSepolia: MultichainGlvRouterArbitrumSepolia.abi,
   MultichainGmRouterArbitrumSepolia: MultichainGmRouterArbitrumSepolia.abi,
@@ -196,7 +187,6 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   MultichainVaultArbitrumSepolia: MultichainVaultArbitrumSepolia.abi,
   SyntheticsReaderArbitrumSepolia: SyntheticsReaderArbitrumSepolia.abi,
   ReferralStorageArbitrumSepolia: ReferralStorageArbitrumSepolia.abi,
-  SyntheticsRouterArbitrumSepolia: SyntheticsRouterArbitrumSepolia.abi,
   SubaccountGelatoRelayRouterArbitrumSepolia: SubaccountGelatoRelayRouterArbitrumSepolia.abi,
   SubaccountRouterArbitrumSepolia: SubaccountRouterArbitrumSepolia.abi,
   TimelockArbitrumSepolia: TimelockArbitrumSepolia.abi,

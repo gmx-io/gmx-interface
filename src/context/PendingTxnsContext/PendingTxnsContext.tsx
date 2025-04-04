@@ -13,7 +13,7 @@ import { getCallStaticError } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
 import { formatPercentage } from "lib/numbers";
-import { parseError } from "lib/parseError";
+import { parseError } from "ab/testMultichain/parseError";
 import { sendUserAnalyticsOrderResultEvent } from "lib/userAnalytics";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 

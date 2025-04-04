@@ -25,7 +25,7 @@ import { OracleUtils } from "typechain-types/ExchangeRouter";
 
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
-import { isGlvEnabled } from "../markets/glv";
+import { isGlvEnabled } from "../../domain/synthetics/markets/glv";
 
 export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;

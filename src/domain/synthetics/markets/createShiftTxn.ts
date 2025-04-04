@@ -11,7 +11,7 @@ import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
-import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
+import { simulateExecuteTxn } from "../../../ab/testMultichain/simulateExecuteTxn";
 import type { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 

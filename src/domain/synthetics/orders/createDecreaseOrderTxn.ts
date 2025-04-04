@@ -17,7 +17,7 @@ import { isMarketOrderType } from "sdk/utils/orders";
 import { getPositionKey } from "../positions";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
 import { prepareOrderTxn } from "./prepareOrderTxn";
-import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
+import { PriceOverrides, simulateExecuteTxn } from "../../../ab/testMultichain/simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { getPendingOrderFromParams } from "./utils";
 import { Subaccount } from "../gassless/txns/subaccountUtils";

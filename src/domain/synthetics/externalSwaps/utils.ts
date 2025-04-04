@@ -3,7 +3,7 @@ import { encodeFunctionData } from "viem";
 import { getSwapDebugSettings } from "config/externalSwaps";
 import { UserReferralInfo } from "domain/referrals";
 import { applyFactor, MaxUint256 } from "lib/numbers";
-import { parseError } from "lib/parseError";
+import { parseError } from "ab/testMultichain/parseError";
 import Token from "sdk/abis/Token.json";
 import { convertTokenAddress, getNativeToken } from "sdk/configs/tokens";
 import { MarketInfo } from "sdk/types/markets";

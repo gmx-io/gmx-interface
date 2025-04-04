@@ -12,7 +12,7 @@ import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
-import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
+import { simulateExecuteTxn } from "../../../ab/testMultichain/simulateExecuteTxn";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 import type { DepositUtils } from "typechain-types-arbitrum-sepolia/ExchangeRouter";

@@ -2,10 +2,10 @@ import cryptoJs from "crypto-js";
 import { ethers } from "ethers";
 
 import { extractDataFromError, getIsUserError, getIsUserRejectedError } from "lib/contracts/transactionErrors";
+import { OrderErrorContext } from "lib/metrics/types";
 import { abis } from "sdk/abis";
-import { TxErrorType, extractError } from "sdk/utils/contracts";
 
-import { OrderErrorContext } from "./metrics/types";
+import { TxErrorType, extractError } from "sdk/utils/contracts";
 
 export type ErrorLike = {
   message?: string;

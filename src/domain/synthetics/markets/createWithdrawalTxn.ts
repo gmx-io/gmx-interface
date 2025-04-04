@@ -14,7 +14,7 @@ import { convertTokenAddress } from "sdk/configs/tokens";
 
 import { SwapPricingType } from "../orders";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
-import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
+import { simulateExecuteTxn } from "../../../ab/testMultichain/simulateExecuteTxn";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 

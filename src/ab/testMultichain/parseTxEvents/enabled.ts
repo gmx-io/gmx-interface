@@ -20,7 +20,7 @@ const PANIC_MAP = {
 };
 
 const errorsInterface = new ethers.Interface(abis.CustomErrorsArbitrumSepolia);
-const eventEmitterInterface = new ethers.Interface(abis.EventEmitterArbitrumSepolia);
+const eventEmitterInterface = new ethers.Interface(abis.EventEmitter);
 const defaultAbiCoder = new ethers.AbiCoder();
 
 function getErrorString(error: { name: string; args: any[] }) {

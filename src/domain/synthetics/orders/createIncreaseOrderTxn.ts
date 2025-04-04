@@ -21,7 +21,7 @@ import { getPositionKey } from "../positions";
 import { createCancelEncodedPayload } from "./cancelOrdersTxn";
 import { DecreaseOrderParams as BaseDecreaseOrderParams, createDecreaseEncodedPayload } from "./createDecreaseOrderTxn";
 import { prepareOrderTxn } from "./prepareOrderTxn";
-import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
+import { PriceOverrides, simulateExecuteTxn } from "../../../ab/testMultichain/simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderTxnType, OrderType } from "./types";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
 import { getPendingOrderFromParams } from "./utils";
