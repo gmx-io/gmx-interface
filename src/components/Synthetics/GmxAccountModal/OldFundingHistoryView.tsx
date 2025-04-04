@@ -7,10 +7,8 @@ import { formatBalanceAmount } from "lib/numbers";
 import { useGmxAccountFundingHistory } from "components/Synthetics/GmxAccountModal/hooks";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
-
 import { FundingHistoryItemLabel } from "./MainView";
-import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
-
+import { formatTradeActionTimestamp } from "../../../ab/testMultichain/shared";
 
 const FundingHistoryView = () => {
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();

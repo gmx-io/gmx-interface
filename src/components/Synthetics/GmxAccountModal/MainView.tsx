@@ -35,7 +35,7 @@ import SettingsIcon24 from "img/ic_settings_24.svg?react";
 import disconnectIcon from "img/ic_sign_out_20.svg";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
+import { formatTradeActionTimestamp } from "../../../ab/testMultichain/shared";
 import {
   useAvailableToTradeAssetMultichain,
   useAvailableToTradeAssetSettlementChain,

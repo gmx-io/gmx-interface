@@ -5,7 +5,7 @@ import {
   METRIC_TIMING_DISPATCH_NAME,
 } from "lib/metrics/emitMetricEvent";
 
-import { MAX_TIMEOUT, Multicall, MulticallProviderUrls } from "./Multicall";
+import { MAX_TIMEOUT, Multicall, MulticallProviderUrls } from "../../ab/testMultichain/Multicall";
 import type { MulticallRequestConfig } from "./types";
 
 async function executeMulticall(

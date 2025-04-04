@@ -15,6 +15,7 @@ import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
+import type { DepositUtils } from "typechain-types-arbitrum-sepolia/ExchangeRouter";
 
 export type CreateDepositParams = {
   account: string;
@@ -82,6 +83,7 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Creat
 
     {
       method: "createDeposit",
+      // TODO update to conform to arbitrum sepolia abi
       params: [
         {
           receiver: p.account,
@@ -97,6 +99,7 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Creat
           callbackGasLimit: 0n,
           uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
         },
+        // satisfies DepositUtils.CreateDepositParamsStruct,
       ],
     },
   ];

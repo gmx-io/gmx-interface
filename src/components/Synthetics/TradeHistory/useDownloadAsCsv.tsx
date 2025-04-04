@@ -23,7 +23,7 @@ import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
 import type { MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
 import { formatPositionMessage } from "./TradeHistoryRow/utils/position";
-import type { RowDetails } from "./TradeHistoryRow/utils/shared";
+import type { RowDetails } from "../../../ab/testMultichain/shared";
 import { formatSwapMessage } from "./TradeHistoryRow/utils/swap";
 
 const GRAPHQL_MAX_SIZE = 10_000;

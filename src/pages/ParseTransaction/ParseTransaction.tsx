@@ -8,6 +8,7 @@ import useSWR from "swr";
 import { Hash, isHash, PublicClient } from "viem";
 import { usePublicClient } from "wagmi";
 
+import { parseTxEvents } from "ab/testMultichain/parseTxEvents";
 import {
   ARBITRUM,
   ARBITRUM_SEPOLIA,
@@ -58,7 +59,6 @@ import {
   formatRoleKey,
   formatSwapPath,
 } from "./formatting";
-import { parseTxEvents } from "./parseTxEvents";
 import { LogEntryComponentProps } from "./types";
 
 const NETWORKS = {

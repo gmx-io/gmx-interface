@@ -10,8 +10,6 @@ import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-
-
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
 // Dev: left this in case manager wants to use it again

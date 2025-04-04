@@ -12,10 +12,7 @@ import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
-import {
-  formatTradeActionTimestamp,
-  formatTradeActionTimestampISO,
-} from "components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared";
+import { formatTradeActionTimestamp, formatTradeActionTimestampISO } from "ab/testMultichain/shared";
 import { TableTd, TableTr } from "components/Table/Table";
 import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";

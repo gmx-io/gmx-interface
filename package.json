@@ -25,6 +25,7 @@
     "tscheck": "tsc -p tsconfig.json --noEmit",
     "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss}",
     "typechain": "typechain --target ethers-v6 --out-dir ./src/typechain-types './sdk/src/abis/*.json'",
+    "typechain:arbitrum-sepolia": "typechain --target ethers-v6 --out-dir ./src/typechain-types-arbitrum-sepolia './sdk/src/abis/arbitrumSepolia/*.json'",
     "postinstall": "yarn typechain && cd ./sdk && echo \"Building SDK\" && yarn && yarn build",
     "prebuild": "cd ./sdk && yarn tsx scripts/prebuild"
   },

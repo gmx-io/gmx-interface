@@ -266,7 +266,7 @@ export async function fetchGmxAccountTokenBalancesData(
     >
   > = {
     DataStore: {
-      abiId: "DataStore",
+      abiId: "DataStoreArbitrumSepolia",
       contractAddress: getContract(settlementChainId, "DataStore"),
       calls: {
         ...erc20Calls,

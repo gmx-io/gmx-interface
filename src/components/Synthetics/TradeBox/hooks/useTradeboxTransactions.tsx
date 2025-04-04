@@ -179,9 +179,9 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
     const multicallPayloads = combineMulticallPayloads([
       encodedPrimaryOrderPayload,
-      ...encodedCreateOrderPayloads,
-      ...encodedUpdateOrderPayloads,
-      encodedCancelOrderPayloads,
+      // ...encodedCreateOrderPayloads,
+      // ...encodedUpdateOrderPayloads,
+      // encodedCancelOrderPayloads,
     ]);
 
     // eslint-disable-next-line no-console

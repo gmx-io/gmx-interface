@@ -22,6 +22,18 @@ export type Position = {
   positionFeeAmount: bigint;
   traderDiscountAmount: bigint;
   uiFeeAmount: bigint;
+  /** @deprecated Only available when multicall ab flag is enabled */
+  pendingImpactAmount?: bigint;
+  /** @deprecated Only available when multicall ab flag is enabled */
+  pendingImpactUsd?: bigint;
+  /** @deprecated Only available when multicall ab flag is enabled */
+  borrowingFactor?: bigint;
+  /** @deprecated Only available when multicall ab flag is enabled */
+  fundingFeeAmountPerSize?: bigint;
+  /** @deprecated Only available when multicall ab flag is enabled */
+  longTokenClaimableFundingAmountPerSize?: bigint;
+  /** @deprecated Only available when multicall ab flag is enabled */
+  shortTokenClaimableFundingAmountPerSize?: bigint;
   data: string;
 };
 

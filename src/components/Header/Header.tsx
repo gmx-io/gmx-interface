@@ -6,7 +6,6 @@ import { RiMenuLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { useLocalStorage, useMedia } from "react-use";
 
-
 import { getExpressTradingBannerDismissedKey, getOneClickTradingPromoHiddenKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";

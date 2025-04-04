@@ -11,7 +11,7 @@ import externalLink from "img/ic_new_link_20.svg";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { CHAIN_ID_TO_EXPLORER_NAME, CHAIN_ID_TO_TX_URL_BUILDER } from "./constants";
-import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
+import { formatTradeActionTimestamp } from "../../../ab/testMultichain/shared";
 
 export const TransactionDetailsView = () => {
   const [selectedTransactionHash] = useGmxAccountSelectedTransactionHash();

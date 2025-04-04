@@ -169,7 +169,7 @@ export const DepositView = () => {
     let response: any;
     const contract = new Contract(
       getContract(walletChainId, "MultichainTransferRouter")!,
-      abis.MultichainTransferRouter,
+      abis.MultichainTransferRouterArbitrumSepolia,
       signer
     );
 

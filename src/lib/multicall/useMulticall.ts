@@ -129,6 +129,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
         if (responseOrFailure?.success) {
           successDataByChainIdRef.current[chainId] = responseOrFailure;
         } else if (Object.keys(responseOrFailure.errors).length > 0) {
+          // debugger;
           throw new Error(`Response error ${serializeMulticallErrors(responseOrFailure.errors)}`);
         }
 
