@@ -57,7 +57,7 @@ export function useExternalSwapHandler() {
     amountIn: externalSwapInputs?.amountIn,
     slippage,
     gasPrice,
-    enabled: getIsFlagEnabled("testExternalSwap") && !subaccount && shouldRequestExternalSwapQuote,
+    enabled: !subaccount && shouldRequestExternalSwapQuote,
   });
 
   if (isDevelopment() && settings.showDebugValues) {
