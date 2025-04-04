@@ -172,6 +172,24 @@ export function AppHeaderLinks({
           <Trans>Docs</Trans> <FiExternalLink fontSize={14} style={{ marginLeft: "0.5rem", opacity: 0.25 }} />
         </ExternalLink>
       </motion.div>
+      <motion.div
+        className="App-header-link-container"
+        data-tour="step-2"
+        style={{ display: "flex", alignItems: "center" }}
+        variants={linkVariants}
+        initial="initial"
+        whileHover="hover"
+        whileTap="tap"
+      >
+        <HeaderLink
+          to="/v1"
+          redirectPopupTimestamp={redirectPopupTimestamp}
+          showRedirectModal={showRedirectModal}
+          style={{ width: "100%" }}
+        >
+          <Trans>V1</Trans>
+        </HeaderLink>
+      </motion.div>
       {small && !isHomeSite() && (
         <motion.div
           className="App-header-link-container"

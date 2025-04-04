@@ -1,3 +1,38 @@
 .buy-glp-content {
   padding-top: 4.65rem;
 }
+
+/* Special styles for the v1 deprecation banner */
+.v1-deprecation-banner {
+  position: relative !important;
+  z-index: 10;
+  margin: 0;
+  background: rgba(255, 112, 40, 0.25);
+  backdrop-filter: blur(10px);
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.063);
+  color: #eee;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.v1-deprecation-banner .custom-banner-content {
+  font-size: 1.5rem;
+  font-weight: 500;
+  padding-right: 0;
+}
+
+/* Override default banner styles for morph launch banner */
+.v1-deprecation-banner.custom-banner {
+  background: rgba(255, 112, 40, 0.25);
+  border: none;
+  box-shadow: none;
+}
+
+.v1-deprecation-banner.custom-banner a {
+  color: #ff7028 !important;
+}
+
+.v1-deprecation-banner.custom-banner a:hover {
+  color: #ff8f55 !important;
+}
