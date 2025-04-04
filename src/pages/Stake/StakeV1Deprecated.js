@@ -53,6 +53,9 @@ import StatsTooltip from "components/StatsTooltip/StatsTooltip";
 
 const { AddressZero } = ethers.constants;
 
+const rewardRouterAddressV1 = '0x7325eE195B52A7eF5A1F50E14C987d323E9bd4FB';
+const rewardRouterAddress = rewardRouterAddressV1;
+
 function StakeModal(props) {
   const {
     isVisible,
@@ -68,7 +71,6 @@ function StakeModal(props) {
     stakingTokenSymbol,
     stakingTokenAddress,
     farmAddress,
-    rewardRouterAddress,
     stakeMethodName,
     setPendingTxns,
   } = props;
@@ -794,7 +796,7 @@ function CompoundModal(props) {
   );
 }
 
-function ClaimModal(props) {
+function ClaimModalV1(props) {
   const {
     isVisible,
     setIsVisible,
@@ -836,8 +838,8 @@ function ClaimModal(props) {
 
   const onClickPrimary = () => {
     setIsClaiming(true);
-
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library);
+    const rewardRouterAddressV1 = '0x7325eE195B52A7eF5A1F50E14C987d323E9bd4FB';
+    const contract = new ethers.Contract(rewardRouterAddressV1, RewardRouter.abi, library);
     callContract(
       chainId,
       contract,
@@ -1447,7 +1449,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         library={signer}
         chainId={chainId}
       />
-      <ClaimModal
+      <ClaimModalV1
         active={active}
         account={account}
         setPendingTxns={setPendingTxns}
