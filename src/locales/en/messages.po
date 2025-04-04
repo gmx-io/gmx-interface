@@ -6911,6 +6911,7 @@ msgstr "Buy GMX using FIAT gateways:"
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createSwapOrderTxn.ts
+#: src/domain/synthetics/orders/createTWAPIncreaseOrderTxn.ts
 msgid "Order error."
 msgstr "Order error."
 

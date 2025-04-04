@@ -25,6 +25,8 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
+  selectTradeboxTWAPDuration,
+  selectTradeboxTWAPNumberOfParts,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUserReferralCode } from "domain/referrals";
@@ -35,6 +37,7 @@ import {
   createSwapOrderTxn,
   OrderType,
 } from "domain/synthetics/orders";
+import { createTWAPIncreaseOrderTxn } from "domain/synthetics/orders/createTWAPIncreaseOrderTxn";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
 import { formatLeverage } from "domain/synthetics/positions/utils";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
@@ -78,7 +81,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const marketInfo = useSelector(selectTradeboxMarketInfo);
   const collateralToken = useSelector(selectTradeboxCollateralToken);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isLong, isLimit } = tradeFlags;
+  const { isLong, isLimit, isTWAP } = tradeFlags;
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
   const isLeverageSliderEnabled = useSelector(selectIsLeverageSliderEnabled);
   const isFirstOrder = useSelector(selectIsFirstOrder);
@@ -87,6 +90,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
+  const duration = useSelector(selectTradeboxTWAPDuration);
+  const numberOfParts = useSelector(selectTradeboxTWAPNumberOfParts);
 
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
@@ -288,84 +293,128 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         </>
       ) : undefined;
 
-      return createIncreaseOrderTxn({
-        chainId,
-        signer,
-        subaccount,
-        metricId: metricData.metricId,
-        blockTimestampData,
-        additionalErrorContent,
-        createIncreaseOrderParams: {
-          account,
-          marketAddress: marketInfo.marketTokenAddress,
-          initialCollateralAddress: fromToken?.address,
-          initialCollateralAmount: increaseAmounts.initialCollateralAmount,
-          targetCollateralAddress: collateralToken.address,
-          collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
-          swapPath: increaseAmounts.swapPathStats?.swapPath || [],
-          externalSwapQuote: increaseAmounts.externalSwapQuote,
-          sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
-          sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
-          triggerPrice: isLimit ? triggerPrice : undefined,
-          acceptablePrice: increaseAmounts.acceptablePrice,
-          isLong,
-          orderType: isLimit ? increaseAmounts.limitOrderType! : OrderType.MarketIncrease,
-          executionFee: executionFee.feeTokenAmount,
-          executionGasLimit: executionFee.gasLimit,
-          allowedSlippage,
-          referralCode: referralCodeForTxn,
-          indexToken: marketInfo.indexToken,
-          tokensData,
-          skipSimulation: isLimit || shouldDisableValidationForTesting,
-          setPendingTxns: setPendingTxns,
-          setPendingOrder,
-          setPendingPosition,
-          slippageInputId,
-        },
-        createDecreaseOrderParams: createSltpEntries.map((entry, i) => {
-          return {
-            ...commonSecondaryOrderParams,
-            initialCollateralDeltaAmount: entry.decreaseAmounts.collateralDeltaAmount ?? 0n,
-            sizeDeltaUsd: entry.decreaseAmounts.sizeDeltaUsd,
-            sizeDeltaInTokens: entry.decreaseAmounts.sizeDeltaInTokens,
-            acceptablePrice: entry.decreaseAmounts.acceptablePrice,
-            triggerPrice: entry.decreaseAmounts.triggerPrice,
-            minOutputUsd: 0n,
-            decreasePositionSwapType: entry.decreaseAmounts.decreaseSwapType,
-            orderType: entry.decreaseAmounts.triggerOrderType!,
+      let txnPromise: Promise<void>;
+
+      if (isTWAP) {
+        txnPromise = createTWAPIncreaseOrderTxn({
+          chainId,
+          signer,
+          subaccount,
+          metricId: metricData.metricId,
+          blockTimestampData,
+          additionalErrorContent,
+          createTWAPIncreaseOrderParams: {
+            account,
+            marketAddress: marketInfo.marketTokenAddress,
+            initialCollateralAddress: fromToken?.address,
+            initialCollateralAmount: increaseAmounts.initialCollateralAmount,
+            targetCollateralAddress: collateralToken.address,
+            collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+            swapPath: increaseAmounts.swapPathStats?.swapPath || [],
+            externalSwapQuote: increaseAmounts.externalSwapQuote,
+            sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+            sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+            triggerPrice: isLimit ? triggerPrice : undefined,
+            acceptablePrice: increaseAmounts.acceptablePrice,
+            isLong,
+            orderType: isLimit ? increaseAmounts.limitOrderType! : OrderType.MarketIncrease,
+            executionFee: executionFee.feeTokenAmount,
+            executionGasLimit: executionFee.gasLimit,
+            allowedSlippage,
             referralCode: referralCodeForTxn,
-            executionFee: getExecutionFeeAmountForEntry(entry) ?? 0n,
-            executionGasLimit: 0n, // Don't need for tp/sl entries
+            indexToken: marketInfo.indexToken,
             tokensData,
-            txnType: entry.txnType!,
             skipSimulation: isLimit || shouldDisableValidationForTesting,
-            autoCancel: i < autoCancelOrdersLimit,
+            setPendingTxns: setPendingTxns,
+            setPendingOrder,
+            setPendingPosition,
             slippageInputId,
-          };
-        }),
-        cancelOrderParams: cancelSltpEntries.map((entry) => ({
-          ...commonSecondaryOrderParams,
-          orderKey: entry.order!.key,
-          orderType: entry.order!.orderType,
-          minOutputAmount: 0n,
-          sizeDeltaUsd: entry.order!.sizeDeltaUsd,
-          txnType: entry.txnType!,
-          initialCollateralDeltaAmount: entry.order?.initialCollateralDeltaAmount ?? 0n,
-        })),
-        updateOrderParams: updateSltpEntries.map((entry) => ({
-          ...commonSecondaryOrderParams,
-          orderKey: entry.order!.key,
-          orderType: entry.order!.orderType,
-          sizeDeltaUsd: (entry.increaseAmounts?.sizeDeltaUsd || entry.decreaseAmounts?.sizeDeltaUsd)!,
-          acceptablePrice: (entry.increaseAmounts?.acceptablePrice || entry.decreaseAmounts?.acceptablePrice)!,
-          triggerPrice: (entry.increaseAmounts?.triggerPrice || entry.decreaseAmounts?.triggerPrice)!,
-          executionFee: getExecutionFeeAmountForEntry(entry) ?? 0n,
-          minOutputAmount: 0n,
-          txnType: entry.txnType!,
-          initialCollateralDeltaAmount: entry.order?.initialCollateralDeltaAmount ?? 0n,
-          autoCancel: entry.order!.autoCancel,
-        })),
-      })
+            duration,
+            numberOfParts,
+          },
+        });
+      } else {
+        txnPromise = createIncreaseOrderTxn({
+          chainId,
+          signer,
+          subaccount,
+          metricId: metricData.metricId,
+          blockTimestampData,
+          additionalErrorContent,
+          createIncreaseOrderParams: {
+            account,
+            marketAddress: marketInfo.marketTokenAddress,
+            initialCollateralAddress: fromToken?.address,
+            initialCollateralAmount: increaseAmounts.initialCollateralAmount,
+            targetCollateralAddress: collateralToken.address,
+            collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+            swapPath: increaseAmounts.swapPathStats?.swapPath || [],
+            externalSwapQuote: increaseAmounts.externalSwapQuote,
+            sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+            sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+            triggerPrice: isLimit ? triggerPrice : undefined,
+            acceptablePrice: increaseAmounts.acceptablePrice,
+            isLong,
+            orderType: isLimit ? increaseAmounts.limitOrderType! : OrderType.MarketIncrease,
+            executionFee: executionFee.feeTokenAmount,
+            executionGasLimit: executionFee.gasLimit,
+            allowedSlippage,
+            referralCode: referralCodeForTxn,
+            indexToken: marketInfo.indexToken,
+            tokensData,
+            skipSimulation: isLimit || shouldDisableValidationForTesting,
+            setPendingTxns: setPendingTxns,
+            setPendingOrder,
+            setPendingPosition,
+            slippageInputId,
+          },
+          createDecreaseOrderParams: createSltpEntries.map((entry, i) => {
+            return {
+              ...commonSecondaryOrderParams,
+              initialCollateralDeltaAmount: entry.decreaseAmounts.collateralDeltaAmount ?? 0n,
+              sizeDeltaUsd: entry.decreaseAmounts.sizeDeltaUsd,
+              sizeDeltaInTokens: entry.decreaseAmounts.sizeDeltaInTokens,
+              acceptablePrice: entry.decreaseAmounts.acceptablePrice,
+              triggerPrice: entry.decreaseAmounts.triggerPrice,
+              minOutputUsd: 0n,
+              decreasePositionSwapType: entry.decreaseAmounts.decreaseSwapType,
+              orderType: entry.decreaseAmounts.triggerOrderType!,
+              referralCode: referralCodeForTxn,
+              executionFee: getExecutionFeeAmountForEntry(entry) ?? 0n,
+              executionGasLimit: 0n, // Don't need for tp/sl entries
+              tokensData,
+              txnType: entry.txnType!,
+              skipSimulation: isLimit || shouldDisableValidationForTesting,
+              autoCancel: i < autoCancelOrdersLimit,
+              slippageInputId,
+            };
+          }),
+          cancelOrderParams: cancelSltpEntries.map((entry) => ({
+            ...commonSecondaryOrderParams,
+            orderKey: entry.order!.key,
+            orderType: entry.order!.orderType,
+            minOutputAmount: 0n,
+            sizeDeltaUsd: entry.order!.sizeDeltaUsd,
+            txnType: entry.txnType!,
+            initialCollateralDeltaAmount: entry.order?.initialCollateralDeltaAmount ?? 0n,
+          })),
+          updateOrderParams: updateSltpEntries.map((entry) => ({
+            ...commonSecondaryOrderParams,
+            orderKey: entry.order!.key,
+            orderType: entry.order!.orderType,
+            sizeDeltaUsd: (entry.increaseAmounts?.sizeDeltaUsd || entry.decreaseAmounts?.sizeDeltaUsd)!,
+            acceptablePrice: (entry.increaseAmounts?.acceptablePrice || entry.decreaseAmounts?.acceptablePrice)!,
+            triggerPrice: (entry.increaseAmounts?.triggerPrice || entry.decreaseAmounts?.triggerPrice)!,
+            executionFee: getExecutionFeeAmountForEntry(entry) ?? 0n,
+            minOutputAmount: 0n,
+            txnType: entry.txnType!,
+            initialCollateralDeltaAmount: entry.order?.initialCollateralDeltaAmount ?? 0n,
+            autoCancel: entry.order!.autoCancel,
+          })),
+        });
+      }
+
+      return txnPromise
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
         .catch((e) => {
@@ -378,9 +427,11 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
     },
     [
-      isLimit,
-      fromToken,
       increaseAmounts,
+      isLimit,
+      chainId,
+      fromToken,
+      collateralToken,
       selectedPosition,
       executionFee,
       referralCodeForTxn,
@@ -398,20 +449,21 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       chartHeaderInfo?.fundingRateShort,
       tokensData,
       account,
-      collateralToken,
       signer,
-      chainId,
+      isTWAP,
       blockTimestampData,
       shouldDisableValidationForTesting,
       setPendingTxns,
       setPendingOrder,
       setPendingPosition,
+      slippageInputId,
       cancelSltpEntries,
       updateSltpEntries,
       getExecutionFeeAmountForEntry,
       autoCancelOrdersLimit,
       setShouldFallbackToInternalSwap,
-      slippageInputId,
+      duration,
+      numberOfParts,
     ]
   );
 
