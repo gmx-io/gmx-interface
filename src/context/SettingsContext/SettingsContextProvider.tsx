@@ -168,7 +168,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   const [savedShouldShowPositionLines, setSavedShouldShowPositionLines] = useLocalStorageSerializeKey(
     [chainId, SHOULD_SHOW_POSITION_LINES_KEY],
-    false
+    true
   );
 
   const [savedTWAPNumberOfParts, setSavedTWAPNumberOfParts] = useLocalStorageSerializeKey(
