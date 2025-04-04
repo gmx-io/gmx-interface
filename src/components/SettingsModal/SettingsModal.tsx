@@ -5,8 +5,13 @@ import { useKey } from "react-use";
 import { getIsFlagEnabled } from "config/ab";
 import { EXECUTION_FEE_CONFIG_V2 } from "config/chains";
 import { isDevelopment } from "config/env";
-import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT, DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import {
+  changeTWAPNumberOfPartsValue,
+  MAX_TWAP_NUMBER_OF_PARTS,
+  MIN_TWAP_NUMBER_OF_PARTS,
+} from "domain/synthetics/trade/twap/utils";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { roundToTwoDecimals } from "lib/numbers";
@@ -42,6 +47,7 @@ export function SettingsModal({
   const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
   const [showDebugValues, setShowDebugValues] = useState(false);
   const [isLeverageSliderEnabled, setIsLeverageSliderEnabled] = useState(false);
+  const [numberOfParts, setNumberOfParts] = useState<string>("0");
 
   useEffect(() => {
     if (!isSettingsVisible) return;
@@ -58,7 +64,7 @@ export function SettingsModal({
     setShowDebugValues(settings.showDebugValues);
     setShouldDisableValidationForTesting(settings.shouldDisableValidationForTesting);
     setIsLeverageSliderEnabled(settings.isLeverageSliderEnabled);
-
+    setNumberOfParts(String(settings.savedTWAPNumberOfParts));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSettingsVisible]);
 
@@ -96,12 +102,20 @@ export function SettingsModal({
       settings.setExecutionFeeBufferBps(nextExecutionBufferFeeBps);
     }
 
+    const numberOfPartsValue = parseInt(String(numberOfParts));
+
+    if (numberOfPartsValue < MIN_TWAP_NUMBER_OF_PARTS || numberOfPartsValue > MAX_TWAP_NUMBER_OF_PARTS) {
+      helperToast.error(t`Number of parts must be between ${MIN_TWAP_NUMBER_OF_PARTS} and ${MAX_TWAP_NUMBER_OF_PARTS}`);
+      return;
+    }
+
     settings.setIsPnlInLeverage(isPnlInLeverage);
     settings.setIsAutoCancelTPSL(isAutoCancelTPSL);
     settings.setShowPnlAfterFees(showPnlAfterFees);
     settings.setShouldDisableValidationForTesting(shouldDisableValidationForTesting);
     settings.setShowDebugValues(showDebugValues);
     settings.setIsLeverageSliderEnabled(isLeverageSliderEnabled);
+    settings.setSavedTWAPNumberOfParts(numberOfPartsValue);
 
     setIsSettingsVisible(false);
   }, [
@@ -113,6 +127,7 @@ export function SettingsModal({
     shouldDisableValidationForTesting,
     showDebugValues,
     isLeverageSliderEnabled,
+    numberOfParts,
     setIsSettingsVisible,
     executionFeeBufferBps,
   ]);
@@ -158,6 +173,37 @@ export function SettingsModal({
           </AlertInfo>
         )}
       </div>
+
+      <div className="mb-8">
+        <div>
+          <Tooltip
+            handle={<Trans>TWAP Number of Parts</Trans>}
+            content={<Trans>The default number of parts for Time-Weighted Average Price (TWAP) orders.</Trans>}
+          />
+        </div>
+        <div className="relative">
+          <NumberInput
+            className="mb-8 mt-8 w-full rounded-4 border border-gray-700"
+            value={numberOfParts}
+            onValueChange={(e) => setNumberOfParts(e.target.value ?? "0")}
+            placeholder={DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS.toString()}
+            onBlur={() => setNumberOfParts(changeTWAPNumberOfPartsValue(parseInt(numberOfParts)).toString())}
+          />
+        </div>
+        {parseFloat(executionFeeBufferBps) <
+          (EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps! / BASIS_POINTS_DIVISOR) * 100 && (
+          <div className="mb-15">
+            <AlertInfo type="warning">
+              <Trans>
+                Max Network Fee buffer below{" "}
+                {(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps! / BASIS_POINTS_DIVISOR) * 100}% may result in
+                failed orders.
+              </Trans>
+            </AlertInfo>
+          </div>
+        )}
+      </div>
+
       {settings.shouldUseExecutionFeeBuffer && (
         <div className="mb-8">
           <div>

@@ -119,6 +119,8 @@ export const selectTradeboxAdvancedOptions = (s: SyntheticsState) => s.tradebox.
 export const selectTradeboxSetAdvancedOptions = (s: SyntheticsState) => s.tradebox.setAdvancedOptions;
 export const selectTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradebox.allowedSlippage;
 export const selectSetTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradebox.setAllowedSlippage;
+export const selectTradeboxTWAPDuration = (s: SyntheticsState) => s.tradebox.duration;
+export const selectTradeboxTWAPNumberOfParts = (s: SyntheticsState) => s.tradebox.numberOfParts;
 
 export const selectTradeboxTotalSwapImpactBps = createSelector((q) => {
   const fees = q(selectTradeboxFees);
