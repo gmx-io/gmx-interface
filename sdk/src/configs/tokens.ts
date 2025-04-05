@@ -1440,7 +1440,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "USD Coin Stargate",
-      symbol: "USDC1",
+      symbol: "USDC.SG",
       address: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773",
       decimals: 6,
       isStable: true,

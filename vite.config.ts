@@ -1,12 +1,12 @@
 /// <reference types="vitest" />
 
-import { defineConfig, type PluginOption } from "vite";
-import { visualizer } from "rollup-plugin-visualizer";
+import { lingui } from "@lingui/vite-plugin";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import { visualizer } from "rollup-plugin-visualizer";
+import { defineConfig, type PluginOption } from "vite";
 import svgr from "vite-plugin-svgr";
 import tsconfigPaths from "vite-tsconfig-paths";
-import { lingui } from "@lingui/vite-plugin";
 
 export default defineConfig({
   worker: {
@@ -61,5 +61,8 @@ export default defineConfig({
     globalSetup: "./vitest.global-setup.js",
     exclude: ["./autotests", "node_modules", "./sdk"],
     setupFiles: ["@vitest/web-worker"],
+  },
+  define: {
+    "process.env": {},
   },
 });
