@@ -1,13 +1,15 @@
 import { ethers } from "ethers";
 import sample from "lodash/sample";
-
-import type { NetworkMetadata } from "lib/wallets";
+import { arbitrumSepolia, base, sonic } from "viem/chains";
 
 import { isDevelopment } from "./env";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET, ETH_MAINNET } from "./static/chains";
 import {
+  ARBITRUM_SEPOLIA,
+  BASE_MAINNET,
   SUPPORTED_CHAIN_IDS as SDK_SUPPORTED_CHAIN_IDS,
   SUPPORTED_CHAIN_IDS_DEV as SDK_SUPPORTED_CHAIN_IDS_DEV,
+  SONIC_MAINNET,
 } from "../../sdk/src/configs/chains";
 
 export * from "./static/chains";
@@ -27,14 +29,21 @@ export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: false,
   [AVALANCHE]: false,
   [BSС_MAINNET]: false,
+  [ARBITRUM_SEPOLIA]: false,
+  [BASE_MAINNET]: false,
+  [SONIC_MAINNET]: false,
 };
 
 export const CHAIN_NAMES_MAP = {
   [BSС_MAINNET]: "BSC",
-  [BSС_TESTNET]: "BSC Testnet",
   [ARBITRUM]: "Arbitrum",
+  [BASE_MAINNET]: "Base",
+  [SONIC_MAINNET]: "Sonic",
+
+  [ARBITRUM_SEPOLIA]: "Arbitrum Sepolia",
   [AVALANCHE]: "Avalanche",
   [AVALANCHE_FUJI]: "Avalanche Fuji",
+  [BSС_TESTNET]: "BSC Testnet",
 };
 
 export const NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR = {
@@ -101,6 +110,20 @@ const constants = {
     // contract requires that execution fee be strictly greater than instead of gte
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
   },
+
+  [ARBITRUM_SEPOLIA]: {
+    nativeTokenSymbol: "ETH",
+    wrappedTokenSymbol: "WETH",
+    defaultCollateralSymbol: "USDC",
+    defaultFlagOrdersEnabled: true,
+    positionReaderPropsLength: 9,
+    v2: true,
+
+    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
+    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
+    // contract requires that execution fee be strictly greater than instead of gte
+    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
+  },
 };
 
 const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io"];
@@ -142,6 +165,9 @@ export const RPC_PROVIDERS = {
     // "https://ava-testnet.public.blastapi.io/v1/avax/fuji/public",
     // "https://rpc.ankr.com/avalanche_fuji",
   ],
+  [ARBITRUM_SEPOLIA]: [...arbitrumSepolia.rpcUrls.default.http],
+  [BASE_MAINNET]: [...base.rpcUrls.default.http],
+  [SONIC_MAINNET]: [...sonic.rpcUrls.default.http],
 };
 
 export const FALLBACK_PROVIDERS = {
@@ -152,64 +178,9 @@ export const FALLBACK_PROVIDERS = {
     "https://api.avax-test.network/ext/bc/C/rpc",
     "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
   ],
-};
-
-export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
-  [BSС_MAINNET]: {
-    chainId: "0x" + BSС_MAINNET.toString(16),
-    chainName: "BSC",
-    nativeCurrency: {
-      name: "BNB",
-      symbol: "BNB",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[BSС_MAINNET],
-    blockExplorerUrls: ["https://bscscan.com"],
-  },
-  [BSС_TESTNET]: {
-    chainId: "0x" + BSС_TESTNET.toString(16),
-    chainName: "BSC Testnet",
-    nativeCurrency: {
-      name: "BNB",
-      symbol: "BNB",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[BSС_TESTNET],
-    blockExplorerUrls: ["https://testnet.bscscan.com/"],
-  },
-  [ARBITRUM]: {
-    chainId: "0x" + ARBITRUM.toString(16),
-    chainName: "Arbitrum",
-    nativeCurrency: {
-      name: "ETH",
-      symbol: "ETH",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[ARBITRUM],
-    blockExplorerUrls: [getExplorerUrl(ARBITRUM)],
-  },
-  [AVALANCHE]: {
-    chainId: "0x" + AVALANCHE.toString(16),
-    chainName: "Avalanche",
-    nativeCurrency: {
-      name: "AVAX",
-      symbol: "AVAX",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[AVALANCHE],
-    blockExplorerUrls: [getExplorerUrl(AVALANCHE)],
-  },
-  [AVALANCHE_FUJI]: {
-    chainId: "0x" + AVALANCHE_FUJI.toString(16),
-    chainName: "Avalanche Fuji Testnet",
-    nativeCurrency: {
-      name: "AVAX",
-      symbol: "AVAX",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[AVALANCHE_FUJI],
-    blockExplorerUrls: [getExplorerUrl(AVALANCHE_FUJI)],
-  },
+  [ARBITRUM_SEPOLIA]: [],
+  [BASE_MAINNET]: [],
+  [SONIC_MAINNET]: [],
 };
 
 export const getConstant = (chainId: number, key: string) => {
@@ -251,6 +222,7 @@ export function getAlchemyArbitrumWsUrl() {
   return `wss://arb-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
 }
 
+// TODO: add sonic and base explorers
 export function getExplorerUrl(chainId) {
   if (chainId === 3) {
     return "https://ropsten.etherscan.io/";
@@ -266,7 +238,14 @@ export function getExplorerUrl(chainId) {
     return "https://snowtrace.io/";
   } else if (chainId === AVALANCHE_FUJI) {
     return "https://testnet.snowtrace.io/";
+  } else if (chainId === BASE_MAINNET) {
+    return "https://basescan.org/";
+  } else if (chainId === SONIC_MAINNET) {
+    return "https://sonicscan.org/";
+  } else if (chainId === ARBITRUM_SEPOLIA) {
+    return "https://sepolia.arbiscan.io/";
   }
+
   return "https://etherscan.io/";
 }
 

@@ -9,7 +9,7 @@ import { parse } from "date-fns";
 
 import { MARKETS as SDK_MARKETS } from "sdk/configs/markets";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
 const p = (date: string) => parse(date, "dd MMM yyyy", new Date());
 
@@ -612,6 +612,16 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
     },
     // WBTC/USD [WBTC]
     "0x3b649015Fe0a4d15617e57aA11c0FbbfA03A9e11": {
+      enabled: true,
+      listingDate: DEFAULT_LISTING,
+    },
+  },
+  [ARBITRUM_SEPOLIA]: {
+    "0x482Df3D320C964808579b585a8AC7Dd5D144eFaF": {
+      enabled: true,
+      listingDate: DEFAULT_LISTING,
+    },
+    "0xBb532Ab4923C23c2bfA455151B14fec177a34C0D": {
       enabled: true,
       listingDate: DEFAULT_LISTING,
     },

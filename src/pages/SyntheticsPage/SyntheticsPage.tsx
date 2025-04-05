@@ -7,7 +7,7 @@ import { useMedia } from "react-use";
 import { getSyntheticsListSectionKey } from "config/localStorage";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
+import { useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/useSubaccountCancelOrdersDetailsMessage";
 import { useClosingPositionKeyState, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderHooks";
@@ -24,6 +24,7 @@ import {
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
+import { useRelayerFeeHandler } from "domain/synthetics/gassless/useRelayerFeeHandler";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import type { OrderType } from "domain/synthetics/orders/types";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
@@ -54,7 +55,6 @@ import { SwapCard } from "components/Synthetics/SwapCard/SwapCard";
 import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { useIsCurtainOpen } from "components/Synthetics/TradeBox/Curtain";
 import { TradeBoxResponsiveContainer } from "components/Synthetics/TradeBox/TradeBoxResponsiveContainer";
-import { TradeBoxOneClickTrading } from "components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import { Chart } from "components/Synthetics/TVChart/Chart";
 import Tabs from "components/Tabs/Tabs";
@@ -78,6 +78,7 @@ export function SyntheticsPage(p: Props) {
   const { setPendingTxns } = usePendingTxns();
 
   useExternalSwapHandler();
+  useRelayerFeeHandler();
 
   const isMobile = useMedia("(max-width: 1100px)");
 
@@ -255,7 +256,6 @@ export function SyntheticsPage(p: Props) {
       })}
     >
       <div className="-mt-15 grid grid-cols-[1fr_auto] gap-15 px-10 pt-0 max-[1100px]:grid-cols-1 max-[800px]:p-10">
-        {isMobile && <TradeBoxOneClickTrading />}
         <div className="Exchange-left">
           <Chart />
           {!isMobile && (
@@ -334,7 +334,6 @@ export function SyntheticsPage(p: Props) {
 
             <div className="mt-12 flex flex-col gap-12">
               {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
-              <TradeBoxOneClickTrading />
             </div>
           </div>
         )}
@@ -393,8 +392,8 @@ function useOrdersControl() {
   const [cancellingOrdersKeys, setCanellingOrdersKeys] = useCancellingOrdersKeysState();
   const { setPendingTxns } = usePendingTxns();
   const [selectedOrderKeys, setSelectedOrderKeys] = useState<string[]>(EMPTY_ARRAY);
-  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, selectedOrderKeys.length);
-  const subaccount = useSubaccount(null, selectedOrderKeys.length);
+  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(selectedOrderKeys.length);
+
   const isCancelOrdersProcessing = cancellingOrdersKeys.length > 0;
 
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
@@ -405,7 +404,7 @@ function useOrdersControl() {
       if (!signer) return;
       const keys = selectedOrderKeys;
       setCanellingOrdersKeys((p) => uniq(p.concat(keys)));
-      cancelOrdersTxn(chainId, signer, subaccount, {
+      cancelOrdersTxn(chainId, signer, {
         orderKeys: keys,
         setPendingTxns: setPendingTxns,
         detailsMsg: cancelOrdersDetailsMessage,
@@ -420,7 +419,7 @@ function useOrdersControl() {
           setCanellingOrdersKeys((p) => p.filter((e) => !keys.includes(e)));
         });
     },
-    [cancelOrdersDetailsMessage, chainId, selectedOrderKeys, setCanellingOrdersKeys, setPendingTxns, signer, subaccount]
+    [cancelOrdersDetailsMessage, chainId, selectedOrderKeys, setCanellingOrdersKeys, setPendingTxns, signer]
   );
 
   const onCancelOrder = useCallback(
@@ -428,7 +427,7 @@ function useOrdersControl() {
       if (!signer) return;
 
       setCanellingOrdersKeys((p) => uniq(p.concat(key)));
-      cancelOrdersTxn(chainId, signer, subaccount, {
+      cancelOrdersTxn(chainId, signer, {
         orderKeys: [key],
         setPendingTxns: setPendingTxns,
         detailsMsg: cancelOrdersDetailsMessage,
@@ -437,7 +436,7 @@ function useOrdersControl() {
         setSelectedOrderKeys((prev) => prev.filter((k) => k !== key));
       });
     },
-    [cancelOrdersDetailsMessage, chainId, setCanellingOrdersKeys, setPendingTxns, signer, subaccount]
+    [cancelOrdersDetailsMessage, chainId, setCanellingOrdersKeys, setPendingTxns, signer]
   );
 
   return {

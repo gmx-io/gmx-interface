@@ -11,7 +11,7 @@ import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
-import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
+import { simulateExecuteTxn } from "../../../ab/testMultichain/simulateExecuteTxn";
 import type { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 
@@ -82,7 +82,6 @@ export async function createShiftTxn(chainId: number, signer: Signer, p: Params)
     "multicall",
     [encodedPayload],
     p.executionFee,
-    undefined,
     simulationPromise,
     p.metricId
   );

@@ -18,10 +18,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import NewLink20ReactComponent from "img/ic_new_link_20.svg?react";
 
 import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
-import {
-  formatTradeActionTimestamp,
-  formatTradeActionTimestampISO,
-} from "../../TradeHistory/TradeHistoryRow/utils/shared";
+import { formatTradeActionTimestamp, formatTradeActionTimestampISO } from "../../../../ab/testMultichain/shared";
 
 export type ClaimCollateralHistoryRowProps = {
   claimAction: ClaimCollateralAction;

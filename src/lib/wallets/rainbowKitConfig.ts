@@ -12,7 +12,7 @@ import {
 } from "@rainbow-me/rainbowkit/wallets";
 import once from "lodash/once";
 import { http } from "viem";
-import { arbitrum, avalanche, avalancheFuji } from "viem/chains";
+import { arbitrum, avalanche, avalancheFuji, arbitrumSepolia, base, sonic } from "viem/chains";
 
 import { isDevelopment } from "config/env";
 
@@ -48,11 +48,14 @@ export const getRainbowKitConfig = once(() =>
   getDefaultConfig({
     appName: APP_NAME,
     projectId: WALLET_CONNECT_PROJECT_ID,
-    chains: [arbitrum, avalanche, ...(isDevelopment() ? [avalancheFuji] : [])],
+    chains: [arbitrum, avalanche, base, sonic, ...(isDevelopment() ? [avalancheFuji, arbitrumSepolia] : [])],
     transports: {
       [arbitrum.id]: http(),
       [avalanche.id]: http(),
       [avalancheFuji.id]: http(),
+      [arbitrumSepolia.id]: http(),
+      [base.id]: http(),
+      [sonic.id]: http(),
     },
     wallets: [...popularWalletList, ...othersWalletList],
   })

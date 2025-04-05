@@ -8,8 +8,8 @@ import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { subscribeToV1Events } from "context/WebsocketContext/subscribeToEvents";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
+import { subscribeToV1Events } from "context/WebsocketContext/subscribeToEvents";
 import { useChainId } from "lib/chains";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { AccountDashboard } from "pages/AccountDashboard/AccountDashboard";
@@ -18,8 +18,8 @@ import { VERSION_QUERY_PARAM } from "pages/AccountDashboard/constants";
 import { AccountsRouter } from "pages/Actions/ActionsRouter";
 import BeginAccountTransfer from "pages/BeginAccountTransfer/BeginAccountTransfer";
 import Buy from "pages/Buy/Buy";
-import BuyGlp from "pages/BuyGlp/BuyGlp";
 import BuyGMX from "pages/BuyGMX/BuyGMX";
+import BuyGlp from "pages/BuyGlp/BuyGlp";
 import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
@@ -43,7 +43,18 @@ import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { abis } from "sdk/abis";
 
 const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
-export const UiPage = () => <Suspense fallback={<Trans>Loading...</Trans>}>{<LazyUiPage />}</Suspense>;
+export const UiPage = () => (
+  <Suspense fallback={<Trans>Loading...</Trans>}>
+    <LazyUiPage />
+  </Suspense>
+);
+
+const LazyDebugStargate = lazy(() => import("pages/DebugStargate/DebugStargate"));
+export const DebugStargate = () => (
+  <Suspense fallback={<Trans>Loading...</Trans>}>
+    <LazyDebugStargate />
+  </Suspense>
+);
 
 export function MainRoutes({ openSettings }: { openSettings: () => void }) {
   const exchangeRef = useRef<any>();
@@ -204,9 +215,14 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         <CompleteAccountTransfer />
       </Route>
       {isDevelopment() && (
-        <Route exact path="/ui">
-          <UiPage />
-        </Route>
+        <>
+          <Route exact path="/ui">
+            <UiPage />
+          </Route>
+          <Route exact path="/debug-stargate">
+            <DebugStargate />
+          </Route>
+        </>
       )}
       <Route path="/parsetx/:network/:tx">
         <ParseTransactionPage />

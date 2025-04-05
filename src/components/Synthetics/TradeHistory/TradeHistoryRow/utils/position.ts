@@ -32,7 +32,7 @@ import {
   lines,
   numberToState,
   tryGetError,
-} from "./shared";
+} from "../../../../../ab/testMultichain/shared";
 import { actionTextMap, getActionTitle } from "../../keys";
 
 export const formatPositionMessage = (

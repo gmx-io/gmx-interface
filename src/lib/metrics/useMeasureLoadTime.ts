@@ -10,7 +10,7 @@ import {
   MeasureMetricType,
 } from "lib/metrics/types";
 import { getRequestId } from "lib/metrics/utils";
-import { parseError } from "lib/parseError";
+import { parseError } from "ab/testMultichain/parseError";
 
 const measurementByMetricType: {
   [key: string]: {

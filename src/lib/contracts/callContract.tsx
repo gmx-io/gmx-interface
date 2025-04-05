@@ -104,7 +104,8 @@ export async function callContract(
       async function retrieveGasLimit() {
         return customGasLimits[i] !== undefined
           ? (customGasLimits[i] as bigint | number)
-          : await getGasLimit(cntrct, method, params, opts.value);
+          : // here
+            await getGasLimit(cntrct, method, params, opts.value);
       }
 
       async function retrieveGasPrice() {

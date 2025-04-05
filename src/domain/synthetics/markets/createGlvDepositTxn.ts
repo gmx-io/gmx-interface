@@ -9,7 +9,7 @@ import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
-import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
+import { simulateExecuteTxn } from "../../../ab/testMultichain/simulateExecuteTxn";
 import { applySlippageToMinOut } from "../trade";
 import { CreateDepositParams } from "./createDepositTxn";
 
@@ -113,7 +113,6 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
     "multicall",
     [encodedPayload],
     wntAmount,
-    undefined,
     simulationPromise,
     p.metricId
   );

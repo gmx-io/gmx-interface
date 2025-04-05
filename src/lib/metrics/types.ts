@@ -1,6 +1,6 @@
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { ErrorData } from "lib/parseError";
+import { ErrorData } from "ab/testMultichain/parseError";
 
 export type GlobalMetricData = {
   isMobileMetamask: boolean;

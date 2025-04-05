@@ -10,7 +10,7 @@ import { abis } from "sdk/abis";
 
 import { SwapPricingType } from "../orders";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
-import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
+import { simulateExecuteTxn } from "../../../ab/testMultichain/simulateExecuteTxn";
 import { applySlippageToMinOut } from "../trade";
 import { CreateWithdrawalParams } from "./createWithdrawalTxn";
 
@@ -83,7 +83,6 @@ export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p:
     "multicall",
     [encodedPayload],
     wntAmount,
-    undefined,
     simulationPromise,
     p.metricId
   );

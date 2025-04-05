@@ -1,8 +1,8 @@
+import { MAX_TIMEOUT, Multicall } from "ab/testMultichain/Multicall";
 import { getAbFlags } from "config/ab";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { getCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
 
-import { MAX_TIMEOUT, Multicall } from "./Multicall";
 import type { MulticallRequestConfig } from "./types";
 
 export async function executeMulticallMainThread(chainId: number, request: MulticallRequestConfig<any>) {

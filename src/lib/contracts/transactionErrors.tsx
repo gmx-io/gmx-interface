@@ -6,7 +6,7 @@ import { EXECUTION_FEE_CONFIG_V2, getChainName } from "config/chains";
 import { helperToast } from "lib/helperToast";
 import { ErrorEvent } from "lib/metrics";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
-import { ErrorLike, parseError } from "lib/parseError";
+import { ErrorLike, parseError } from "ab/testMultichain/parseError";
 import { mustNeverExist } from "lib/types";
 import { switchNetwork } from "lib/wallets";
 import { getNativeToken } from "sdk/configs/tokens";

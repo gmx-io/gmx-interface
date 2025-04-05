@@ -22,7 +22,7 @@ import {
 } from "domain/tradingview/utils";
 import { LoadingFailedEvent, LoadingStartEvent, LoadingSuccessEvent, getRequestId, metrics } from "lib/metrics";
 import { OracleFetcher } from "lib/oracleKeeperFetcher/types";
-import { parseError } from "lib/parseError";
+import { parseError } from "ab/testMultichain/parseError";
 import { PauseableInterval } from "lib/PauseableInterval";
 import { sleep } from "lib/sleep";
 import {

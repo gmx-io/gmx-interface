@@ -6,17 +6,16 @@ import orderBy from "lodash/orderBy";
 import { useEffect, useState } from "react";
 
 import {
-  RPC_PROVIDERS,
-  FALLBACK_PROVIDERS,
-  SUPPORTED_CHAIN_IDS,
   ARBITRUM,
   AVALANCHE,
   AVALANCHE_FUJI,
+  FALLBACK_PROVIDERS,
+  RPC_PROVIDERS,
   getFallbackRpcUrl,
 } from "config/chains";
-import { getMulticallContract, getDataStoreContract } from "config/contracts";
-import { getContract } from "config/contracts";
+import { getContract, getDataStoreContract, getMulticallContract } from "config/contracts";
 import { getRpcProviderKey } from "config/localStorage";
+import { SOURCE_CHAINS } from "context/GmxAccountContext/config";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { isDebugMode } from "lib/localStorage";
 import { RpcTrackerRankingCounter } from "lib/metrics";
@@ -353,7 +352,8 @@ async function probeRpc(
 function initTrackerState() {
   const now = Date.now();
 
-  return SUPPORTED_CHAIN_IDS.reduce<RpcTrackerState>((acc, chainId) => {
+  // here
+  return SOURCE_CHAINS.reduce<RpcTrackerState>((acc, chainId) => {
     const prepareProviders = (urls: string[], { isPublic }: { isPublic: boolean }) => {
       return urls.reduce<Record<string, ProviderData>>((acc, rpcUrl) => {
         acc[rpcUrl] = {

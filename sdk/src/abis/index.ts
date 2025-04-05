@@ -1,6 +1,25 @@
 import type { JsonFragment } from "ethers";
 import { Abi, erc20Abi } from "viem";
 
+import CustomErrorsArbitrumSepolia from "./arbitrumSepolia/CustomErrors.json";
+import DataStoreArbitrumSepolia from "./arbitrumSepolia/DataStore.json";
+import ExchangeRouterArbitrumSepolia from "./arbitrumSepolia/ExchangeRouter.json";
+import GelatoRelayRouterArbitrumSepolia from "./arbitrumSepolia/GelatoRelayRouter.json";
+import GlvReaderArbitrumSepolia from "./arbitrumSepolia/GlvReader.json";
+import GlvRouterArbitrumSepolia from "./arbitrumSepolia/GlvRouter.json";
+import MultichainClaimsRouterArbitrumSepolia from "./arbitrumSepolia/MultichainClaimsRouter.json";
+import MultichainGlvRouterArbitrumSepolia from "./arbitrumSepolia/MultichainGlvRouter.json";
+import MultichainGmRouterArbitrumSepolia from "./arbitrumSepolia/MultichainGmRouter.json";
+import MultichainOrderRouterArbitrumSepolia from "./arbitrumSepolia/MultichainOrderRouter.json";
+import MultichainOrderRouterUtilsArbitrumSepolia from "./arbitrumSepolia/MultichainOrderRouterUtils.json";
+import MultichainTransferRouterArbitrumSepolia from "./arbitrumSepolia/MultichainTransferRouter.json";
+import MultichainUtilsArbitrumSepolia from "./arbitrumSepolia/MultichainUtils.json";
+import MultichainVaultArbitrumSepolia from "./arbitrumSepolia/MultichainVault.json";
+import ReferralStorageArbitrumSepolia from "./arbitrumSepolia/ReferralStorage.json";
+import SubaccountGelatoRelayRouterArbitrumSepolia from "./arbitrumSepolia/SubaccountGelatoRelayRouter.json";
+import SubaccountRouterArbitrumSepolia from "./arbitrumSepolia/SubaccountRouter.json";
+import SyntheticsReaderArbitrumSepolia from "./arbitrumSepolia/SyntheticsReader.json";
+import TimelockArbitrumSepolia from "./arbitrumSepolia/Timelock.json";
 import CustomErrors from "./CustomErrors.json";
 import DataStore from "./DataStore.json";
 import ERC721 from "./ERC721.json";
@@ -87,7 +106,26 @@ export type AbiId =
   | "Vester"
   | "WETH"
   | "YieldFarm"
-  | "YieldToken";
+  | "YieldToken"
+  | "CustomErrorsArbitrumSepolia"
+  | "DataStoreArbitrumSepolia"
+  | "ExchangeRouterArbitrumSepolia"
+  | "GelatoRelayRouterArbitrumSepolia"
+  | "GlvReaderArbitrumSepolia"
+  | "GlvRouterArbitrumSepolia"
+  | "MultichainClaimsRouterArbitrumSepolia"
+  | "MultichainGlvRouterArbitrumSepolia"
+  | "MultichainGmRouterArbitrumSepolia"
+  | "MultichainOrderRouterArbitrumSepolia"
+  | "MultichainOrderRouterUtilsArbitrumSepolia"
+  | "MultichainTransferRouterArbitrumSepolia"
+  | "MultichainUtilsArbitrumSepolia"
+  | "MultichainVaultArbitrumSepolia"
+  | "ReferralStorageArbitrumSepolia"
+  | "SubaccountGelatoRelayRouterArbitrumSepolia"
+  | "SubaccountRouterArbitrumSepolia"
+  | "SyntheticsReaderArbitrumSepolia"
+  | "TimelockArbitrumSepolia";
 
 export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   CustomErrors: CustomErrors.abi,
@@ -133,4 +171,23 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   WETH: WETH.abi,
   YieldFarm: YieldFarm.abi,
   YieldToken: YieldToken.abi,
+  CustomErrorsArbitrumSepolia: CustomErrorsArbitrumSepolia.abi,
+  DataStoreArbitrumSepolia: DataStoreArbitrumSepolia.abi,
+  ExchangeRouterArbitrumSepolia: ExchangeRouterArbitrumSepolia.abi,
+  GelatoRelayRouterArbitrumSepolia: GelatoRelayRouterArbitrumSepolia.abi,
+  GlvReaderArbitrumSepolia: GlvReaderArbitrumSepolia.abi,
+  GlvRouterArbitrumSepolia: GlvRouterArbitrumSepolia.abi,
+  MultichainClaimsRouterArbitrumSepolia: MultichainClaimsRouterArbitrumSepolia.abi,
+  MultichainGlvRouterArbitrumSepolia: MultichainGlvRouterArbitrumSepolia.abi,
+  MultichainGmRouterArbitrumSepolia: MultichainGmRouterArbitrumSepolia.abi,
+  MultichainOrderRouterArbitrumSepolia: MultichainOrderRouterArbitrumSepolia.abi,
+  MultichainOrderRouterUtilsArbitrumSepolia: MultichainOrderRouterUtilsArbitrumSepolia.abi,
+  MultichainTransferRouterArbitrumSepolia: MultichainTransferRouterArbitrumSepolia.abi,
+  MultichainUtilsArbitrumSepolia: MultichainUtilsArbitrumSepolia.abi,
+  MultichainVaultArbitrumSepolia: MultichainVaultArbitrumSepolia.abi,
+  SyntheticsReaderArbitrumSepolia: SyntheticsReaderArbitrumSepolia.abi,
+  ReferralStorageArbitrumSepolia: ReferralStorageArbitrumSepolia.abi,
+  SubaccountGelatoRelayRouterArbitrumSepolia: SubaccountGelatoRelayRouterArbitrumSepolia.abi,
+  SubaccountRouterArbitrumSepolia: SubaccountRouterArbitrumSepolia.abi,
+  TimelockArbitrumSepolia: TimelockArbitrumSepolia.abi,
 } as any;
