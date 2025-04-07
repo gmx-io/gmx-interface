@@ -1,9 +1,9 @@
+import { useMemo } from "react";
+
 import { getContract } from "config/contracts";
 import { MAX_AUTO_CANCEL_ORDERS_KEY, MIN_COLLATERAL_USD_KEY, MIN_POSITION_SIZE_USD_KEY } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-
-import { useMemo } from "react";
 
 export type PositionsConstantsResult = {
   positionsConstants: {

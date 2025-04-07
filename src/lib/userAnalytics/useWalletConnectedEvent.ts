@@ -1,9 +1,11 @@
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useEffect, useState } from "react";
+import { useAccount } from "wagmi";
+
 import { useAccountStats } from "domain/synthetics/accountStats/useAccountStats";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
-import { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
+
 import { userAnalytics } from ".";
 import { ConnectWalletResultEvent } from "./types";
 

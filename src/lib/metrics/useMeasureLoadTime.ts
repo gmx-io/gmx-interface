@@ -1,6 +1,7 @@
+import { useEffect } from "react";
+
 import { DATA_LOAD_TIMEOUT_FOR_METRICS } from "config/ui";
 import { metrics } from "lib/metrics";
-import { parseError } from "lib/parseError";
 import {
   LoadingFailedEvent,
   LoadingStartEvent,
@@ -9,7 +10,7 @@ import {
   MeasureMetricType,
 } from "lib/metrics/types";
 import { getRequestId } from "lib/metrics/utils";
-import { useEffect } from "react";
+import { parseError } from "lib/parseError";
 
 const measurementByMetricType: {
   [key: string]: {

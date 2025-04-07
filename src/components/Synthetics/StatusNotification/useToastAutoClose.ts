@@ -1,6 +1,7 @@
-import { toast } from "react-toastify";
-import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useEffect } from "react";
+import { toast } from "react-toastify";
+
+import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 
 export const useToastAutoClose = (isCompleted: boolean, toastTimestamp: number) => {
   useEffect(

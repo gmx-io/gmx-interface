@@ -14,13 +14,12 @@ import {
   type FeeItem,
   type GasLimitsConfig,
 } from "domain/synthetics/fees";
-
+import { GlvInfo } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import { GmSwapFees } from "domain/synthetics/trade";
+import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
-import { GlvInfo } from "domain/synthetics/markets";
-import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 export const useDepositWithdrawalFees = ({
   amounts,

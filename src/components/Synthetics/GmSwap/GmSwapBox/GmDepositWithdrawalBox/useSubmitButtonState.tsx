@@ -4,21 +4,18 @@ import { useCallback, useMemo } from "react";
 
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-
 import { ExecutionFee } from "domain/synthetics/fees";
 import { GlvInfo, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
 import { getTokenData, TokenData, TokensData } from "domain/synthetics/tokens";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
-
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
 import { useDepositWithdrawalTransactions } from "./useDepositWithdrawalTransactions";
 import { useTokensToApprove } from "./useTokensToApprove";
-
 import { Operation } from "../types";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 
 interface Props {
   amounts: ReturnType<typeof useDepositWithdrawalAmounts>;

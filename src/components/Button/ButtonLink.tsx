@@ -1,6 +1,7 @@
+import cx from "classnames";
 import React, { ReactNode } from "react";
 import { Link } from "react-router-dom";
-import cx from "classnames";
+
 import openInNewTab from "img/open-new-tab.svg";
 
 type ButtonProps = {

@@ -1,6 +1,8 @@
+import debounce from "lodash/debounce";
+
 import { USD_DECIMALS } from "config/factors";
 import { formatAmountForMetrics, metrics, MissedCoinEvent } from "lib/metrics";
-import debounce from "lodash/debounce";
+
 import { MissedCoinsPlace } from "./types";
 import { COIN_REGEXP } from "./utils";
 

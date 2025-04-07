@@ -1,13 +1,18 @@
-import { ExternalSwapQuote, FindSwapPath, TriggerThresholdType } from "types/trade";
-
-import { TokenData, TokensRatio } from "types/tokens";
+import { maxUint256 } from "viem";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 import { MarketInfo } from "types/markets";
 import { OrderType } from "types/orders";
 import { PositionInfo } from "types/positions";
 import { UserReferralInfo } from "types/referrals";
-import { IncreasePositionAmounts } from "types/trade";
+import { TokenData, TokensRatio } from "types/tokens";
+import {
+  ExternalSwapQuote,
+  FindSwapPath,
+  IncreasePositionAmounts,
+  SwapOptimizationOrderArray,
+  TriggerThresholdType,
+} from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { getPositionFee, getPriceImpactForPosition, getTotalSwapVolumeFromSwapStats } from "utils/fees";
 import { applyFactor } from "utils/numbers";
@@ -20,7 +25,6 @@ import {
 } from "utils/prices";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "utils/swap";
 import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens, getTokensRatioByPrice } from "utils/tokens";
-import { maxUint256 } from "viem";
 
 type IncreasePositionParams = {
   marketInfo: MarketInfo;
@@ -103,7 +107,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
 
   const isLimit = limitOrderType !== undefined;
 
-  const swapOptimizationOrder: Parameters<FindSwapPath>[1]["order"] = isLimit ? ["length", "liquidity"] : undefined;
+  const swapOptimizationOrder: SwapOptimizationOrderArray | undefined = isLimit ? ["length", "liquidity"] : undefined;
 
   const prices = getIncreasePositionPrices({
     triggerPrice,

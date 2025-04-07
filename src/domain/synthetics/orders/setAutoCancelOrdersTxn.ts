@@ -1,11 +1,12 @@
 import { t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
+import flatten from "lodash/flatten";
 
 import { getContract } from "config/contracts";
 import { Token } from "domain/tokens";
 import { callContract } from "lib/contracts";
-import flatten from "lodash/flatten";
 import { abis } from "sdk/abis";
+
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
 
 export type SetAutoCancelOrdersParams = {

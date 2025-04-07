@@ -22,14 +22,14 @@ import { DateRangeSelect } from "components/Synthetics/DateRangeSelect/DateRange
 import { MarketFilter } from "components/Synthetics/TableMarketFilter/MarketFilter";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
-import { ClaimHistoryRow } from "./ClaimHistoryRow/ClaimHistoryRow";
-import { ActionFilter } from "./filters/ActionFilter";
-
-import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
-import { claimCollateralEventTitles } from "./ClaimHistoryRow/ClaimCollateralHistoryRow";
-import { claimFundingFeeEventTitles } from "./ClaimHistoryRow/ClaimFundingFeesHistoryRow";
 
 import downloadIcon from "img/ic_download_simple.svg";
+
+import { claimCollateralEventTitles } from "./ClaimHistoryRow/ClaimCollateralHistoryRow";
+import { claimFundingFeeEventTitles } from "./ClaimHistoryRow/ClaimFundingFeesHistoryRow";
+import { ClaimHistoryRow } from "./ClaimHistoryRow/ClaimHistoryRow";
+import { ActionFilter } from "./filters/ActionFilter";
+import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
 
 import "./ClaimsHistory.scss";
 

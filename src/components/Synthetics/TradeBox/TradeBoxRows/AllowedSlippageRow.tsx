@@ -1,21 +1,22 @@
 import { Trans, t } from "@lingui/macro";
+import { useEffect } from "react";
 
 import { DEFAULT_SLIPPAGE_AMOUNT, EXCESSIVE_SLIPPAGE_AMOUNT } from "config/factors";
-import { formatPercentage } from "lib/numbers";
-
-import PercentageInput from "components/PercentageInput/PercentageInput";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   selectSetTradeboxAllowedSlippage,
   selectTradeboxAllowedSlippage,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useEffect } from "react";
-import { useTradeboxChanges } from "../hooks/useTradeboxChanges";
-import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
+import { formatPercentage } from "lib/numbers";
 
-export function AllowedSlippageRow() {
+import PercentageInput from "components/PercentageInput/PercentageInput";
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import { useTradeboxChanges } from "../hooks/useTradeboxChanges";
+
+export function AllowedSlippageRow({ slippageInputId }: { slippageInputId: string }) {
   const { savedAllowedSlippage } = useSettings();
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
   const setAllowedSlippage = useSelector(selectSetTradeboxAllowedSlippage);
@@ -57,6 +58,7 @@ export function AllowedSlippageRow() {
         value={allowedSlippage}
         highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
         highValueWarningText={t`Slippage is too high`}
+        inputId={slippageInputId}
       />
     </SyntheticsInfoRow>
   );

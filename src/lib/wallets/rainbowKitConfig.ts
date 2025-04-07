@@ -10,10 +10,11 @@ import {
   trustWallet,
   walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
-import { isDevelopment } from "config/env";
 import once from "lodash/once";
 import { http } from "viem";
 import { arbitrum, avalanche, avalancheFuji } from "viem/chains";
+
+import { isDevelopment } from "config/env";
 
 import binanceWallet from "./connecters/binanceW3W/binanceWallet";
 

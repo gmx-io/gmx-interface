@@ -2,11 +2,12 @@ import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS } from "
 import { MarketsInfoData } from "types/markets";
 import { Order, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo } from "types/orders";
 import { Token, TokensData } from "types/tokens";
+import { getSwapPathOutputAddresses, getSwapPathStats } from "utils/swap/swapStats";
+
 import { bigMath } from "./bigmath";
 import { getByKey } from "./objects";
 import { parsePositionKey } from "./positions";
 import { getOrderThresholdType } from "./prices";
-import { getSwapPathOutputAddresses, getSwapPathStats } from "./swap/swapStats";
 import {
   convertToTokenAmount,
   convertToUsd,

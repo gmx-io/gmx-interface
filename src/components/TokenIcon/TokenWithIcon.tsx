@@ -1,5 +1,6 @@
-import TokenIcon from "./TokenIcon";
 import cx from "classnames";
+
+import TokenIcon from "./TokenIcon";
 
 type Props = {
   displaySize: number;

@@ -1,14 +1,17 @@
 import { Trans } from "@lingui/macro";
-import SpinningLoader from "components/Common/SpinningLoader";
-import { Token } from "domain/tokens";
-import gmxLogo from "img/gmx-logo-with-name.svg";
-import { getHomeUrl } from "lib/legacy";
-import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
-import { calculateDisplayDecimals } from "lib/numbers";
 import { QRCodeSVG } from "qrcode.react";
 import { forwardRef, useMemo } from "react";
 import { useMedia } from "react-use";
+
+import { Token } from "domain/tokens";
+import { getHomeUrl } from "lib/legacy";
+import { calculateDisplayDecimals } from "lib/numbers";
+import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
+
+import SpinningLoader from "components/Common/SpinningLoader";
+
+import gmxLogo from "img/gmx-logo-with-name.svg";
 
 type Props = {
   entryPrice: bigint | undefined;

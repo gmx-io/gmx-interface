@@ -3,6 +3,7 @@ import { PropsWithChildren, createContext, useCallback, useContext, useMemo, use
 
 import { SORTER_CONFIG_KEY } from "config/localStorage";
 import { updateByKey } from "sdk/utils/objects";
+
 import { SorterConfig, SorterKey } from "./types";
 
 localStorage.removeItem(SORTER_CONFIG_KEY);

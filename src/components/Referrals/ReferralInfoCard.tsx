@@ -1,6 +1,7 @@
-import Tooltip, { TooltipPosition } from "../Tooltip/Tooltip";
 import cx from "classnames";
 import { ReactNode } from "react";
+
+import Tooltip, { TooltipPosition } from "../Tooltip/Tooltip";
 
 type Props = {
   label: string;

@@ -26,6 +26,7 @@ import { mustNeverExist } from "lib/types";
 import { ExternalSwapQuote } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 import { createTradeFlags } from "sdk/utils/trade";
+
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 
 export const selectBaseExternalSwapOutput = (s: SyntheticsState) => s.externalSwap.baseOutput;

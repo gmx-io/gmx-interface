@@ -3,7 +3,6 @@ import cx from "classnames";
 import React, { useCallback } from "react";
 import { useMedia } from "react-use";
 
-import { numberToState } from "components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared";
 import { USD_DECIMALS } from "config/factors";
 import type { MarketLiquidityAndFeeStat } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { getMarketPoolName } from "domain/synthetics/markets/utils";
@@ -11,8 +10,10 @@ import type { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexT
 import { TradeType } from "domain/synthetics/trade";
 import { formatAmountHuman, formatPercentage, formatRatePercentage, formatUsd } from "lib/numbers";
 
+import { numberToState } from "components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared";
 import { TableTd, TableTh, TableTheadTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
 import {
   SELECTOR_BASE_MOBILE_THRESHOLD,
   SelectorBase,

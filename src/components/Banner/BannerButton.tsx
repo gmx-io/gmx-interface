@@ -1,5 +1,4 @@
 import cx from "classnames";
-
 import { FiChevronRight } from "react-icons/fi";
 
 import "./BannerButton.scss";

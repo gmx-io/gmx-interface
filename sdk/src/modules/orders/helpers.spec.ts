@@ -1,11 +1,12 @@
 import { describe, it, expect, vi, beforeEach, beforeAll } from "vitest";
-import * as swapPath from "utils/swap/swapPath";
-import * as tradeAmounts from "utils/trade/amounts";
-import { arbitrumSdk } from "utils/testUtil";
+
 import { ARBITRUM } from "configs/chains";
-import { getByKey } from "utils/objects";
 import { MarketInfo, MarketsInfoData } from "types/markets";
 import { TokenData, TokensData } from "types/tokens";
+import { getByKey } from "utils/objects";
+import * as swapPath from "utils/swap/swapPath";
+import { arbitrumSdk } from "utils/testUtil";
+import * as tradeAmounts from "utils/trade/amounts";
 
 describe("increaseOrderHelper", () => {
   let marketsInfoData: MarketsInfoData;
@@ -81,8 +82,6 @@ describe("increaseOrderHelper", () => {
           fromTokenAddress: payToken.address,
           toTokenAddress: collateralToken.address,
           marketsInfoData: expect.any(Object),
-          estimator: expect.any(Function),
-          allPaths: expect.any(Array),
         })
       );
 

@@ -3,9 +3,10 @@ import cx from "classnames";
 import React, { useCallback, useState } from "react";
 import { useMedia } from "react-use";
 
+import { useOutsideClick } from "lib/useOutsideClick";
+
 import CrossIconComponent from "img/cross.svg?react";
 import SearchIconComponent from "img/search.svg?react";
-import { useOutsideClick } from "lib/useOutsideClick";
 
 type Props = {
   value: string;

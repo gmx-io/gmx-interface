@@ -1,3 +1,4 @@
+import { CSSProperties, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useLatest, useLocalStorage, useMedia } from "react-use";
 
 import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
@@ -8,21 +9,21 @@ import { DataFeed } from "domain/tradingview/DataFeed";
 import { getObjectKeyFromValue, getSymbolName } from "domain/tradingview/utils";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { useTradePageVersion } from "lib/useTradePageVersion";
-import { CSSProperties, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { isChartAvailableForToken } from "sdk/configs/tokens";
+
+import Loader from "components/Common/Loader";
+
+import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
+import { DynamicLines } from "./DynamicLines";
+import { SaveLoadAdapter } from "./SaveLoadAdapter";
+import { StaticLines } from "./StaticLines";
+import type { StaticChartLine } from "./types";
 import type {
   ChartData,
   ChartingLibraryWidgetOptions,
   IChartingLibraryWidget,
   ResolutionString,
 } from "../../charting_library";
-import { SaveLoadAdapter } from "./SaveLoadAdapter";
-import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
-import type { StaticChartLine } from "./types";
-
-import Loader from "components/Common/Loader";
-import { DynamicLines } from "./DynamicLines";
-import { StaticLines } from "./StaticLines";
 
 type Props = {
   chainId: number;

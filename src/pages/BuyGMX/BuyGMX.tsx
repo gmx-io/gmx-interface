@@ -1,19 +1,26 @@
-import React, { useCallback, useEffect } from "react";
-import Footer from "components/Footer/Footer";
-import "./BuyGMX.css";
 import { Trans, t } from "@lingui/macro";
-import Button from "components/Button/Button";
-import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";
-import { switchNetwork } from "lib/wallets";
-import { useChainId } from "lib/chains";
-import Card from "components/Common/Card";
-import { importImage } from "lib/legacy";
-import ExternalLink from "components/ExternalLink/ExternalLink";
+import { useCallback, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
-import gmxArbitrumIcon from "img/ic_gmx_arbitrum.svg";
+import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";
+import { getIcons } from "config/icons";
+import { useChainId } from "lib/chains";
+import { importImage } from "lib/legacy";
+import { switchNetwork } from "lib/wallets";
+import useWallet from "lib/wallets/useWallet";
+
+import Button from "components/Button/Button";
+import Card from "components/Common/Card";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import Footer from "components/Footer/Footer";
+
 import bondProtocolIcon from "img/ic_bondprotocol_arbitrum.svg";
-import uniswapArbitrumIcon from "img/ic_uni_arbitrum.svg";
+import gmxArbitrumIcon from "img/ic_gmx_arbitrum.svg";
 import traderjoeIcon from "img/ic_traderjoe_avax.png";
+import uniswapArbitrumIcon from "img/ic_uni_arbitrum.svg";
+
+import "./BuyGMX.css";
+
 import {
   BUY_NATIVE_TOKENS,
   CENTRALISED_EXCHANGES,
@@ -23,9 +30,6 @@ import {
   GMX_FROM_ANY_NETWORKS,
   TRANSFER_EXCHANGES,
 } from "./constants";
-import useWallet from "lib/wallets/useWallet";
-import { getIcons } from "config/icons";
-import { useLocation } from "react-router-dom";
 
 export default function BuyGMX() {
   const { chainId } = useChainId();

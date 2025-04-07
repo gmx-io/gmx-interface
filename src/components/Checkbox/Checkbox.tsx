@@ -1,8 +1,7 @@
-import React, { ReactNode } from "react";
-
 import cx from "classnames";
-
+import React, { ReactNode } from "react";
 import { ImCheckboxUnchecked, ImCheckboxChecked } from "react-icons/im";
+
 import PartialCheckedIcon from "img/ic_partial_checked.svg?react";
 
 import "./Checkbox.css";

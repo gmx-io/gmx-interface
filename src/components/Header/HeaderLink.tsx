@@ -1,11 +1,12 @@
 import cx from "classnames";
-import { getAppBaseUrl, getHomeUrl } from "lib/legacy";
 import { MouseEventHandler, ReactNode } from "react";
 import { NavLink, NavLinkProps } from "react-router-dom";
 
-import { TrackingLink } from "components/TrackingLink/TrackingLink";
+import { getAppBaseUrl, getHomeUrl } from "lib/legacy";
 import { isHomeSite, shouldShowRedirectModal } from "lib/legacy";
 import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
+
+import { TrackingLink } from "components/TrackingLink/TrackingLink";
 import "./Header.scss";
 
 type Props = {

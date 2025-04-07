@@ -12,8 +12,8 @@ import {
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
-
 import { getPositionKey, parsePositionKey } from "sdk/utils/positions";
+
 import { ContractMarketPrices, MarketsData, getContractMarketPrices } from "../markets";
 import { TokensData } from "../tokens";
 import { Position, PositionsData } from "./types";

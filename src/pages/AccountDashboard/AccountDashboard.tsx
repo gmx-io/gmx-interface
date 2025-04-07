@@ -5,14 +5,15 @@ import { isAddress } from "viem";
 import { getChainName } from "config/chains";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useChainId } from "lib/chains";
-import { usePageParams } from "./usePageParams";
 
 import AddressView from "components/AddressView/AddressView";
 import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
+
 import { DailyAndCumulativePnL } from "./DailyAndCumulativePnL";
 import { GeneralPerformanceDetails } from "./GeneralPerformanceDetails";
 import { HistoricalLists, HistoricalListsV1 } from "./HistoricalLists";
+import { usePageParams } from "./usePageParams";
 import { VersionNetworkSwitcherRow } from "./VersionNetworkSwitcherRow";
 
 export function AccountDashboard() {

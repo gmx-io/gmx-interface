@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
 import { Trans, t } from "@lingui/macro";
+import { useEffect, useMemo, useState } from "react";
 
 import { MAX_FEEDBACK_LENGTH } from "config/ui";
 import { Answer, getQuestionsByRating, useNpsSurvey } from "domain/synthetics/userFeedback";

@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { TokenInfo } from "domain/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 import { formatAmount } from "lib/numbers";
+import { bigMath } from "sdk/utils/bigmath";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";

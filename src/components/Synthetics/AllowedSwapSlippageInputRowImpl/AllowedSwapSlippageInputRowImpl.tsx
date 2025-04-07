@@ -5,6 +5,7 @@ import { HIGH_ALLOWED_SWAP_SLIPPAGE_BPS } from "config/factors";
 import { formatPercentage } from "lib/numbers";
 
 import PercentageInput from "components/PercentageInput/PercentageInput";
+
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
 import "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.scss";

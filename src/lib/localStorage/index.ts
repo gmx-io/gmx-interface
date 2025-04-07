@@ -1,5 +1,6 @@
 import React, { useCallback, useRef } from "react";
 import { useLocalStorage } from "react-use";
+
 import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
 
 export function useLocalStorageByChainId<T>(

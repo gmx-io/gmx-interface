@@ -1,9 +1,10 @@
-import { getContract, tryGetContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, getTokens } from "sdk/configs/tokens";
-import type { EventLogData, EventTxnParams } from "context/SyntheticsEvents/types";
 import { AbiCoder, Contract, LogParams, Provider, ProviderEvent, ZeroAddress, ethers, isAddress } from "ethers";
 import { MutableRefObject } from "react";
+
+import { getContract, tryGetContract } from "config/contracts";
+import type { EventLogData, EventTxnParams } from "context/SyntheticsEvents/types";
 import { abis } from "sdk/abis";
+import { NATIVE_TOKEN_ADDRESS, getTokens } from "sdk/configs/tokens";
 
 const coder = AbiCoder.defaultAbiCoder();
 

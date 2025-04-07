@@ -3,16 +3,11 @@ import cx from "classnames";
 import { ethers } from "ethers";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BsArrowRight } from "react-icons/bs";
+import { useKey } from "react-use";
 
-import Button from "components/Button/Button";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import PercentageInput from "components/PercentageInput/PercentageInput";
-import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import TokenSelector from "components/TokenSelector/TokenSelector";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant } from "config/chains";
-import { getContract } from "config/contracts";
 import { HIGH_SPREAD_THRESHOLD } from "config/constants";
+import { getContract } from "config/contracts";
 import {
   BASIS_POINTS_DIVISOR,
   BASIS_POINTS_DIVISOR_BIGINT,
@@ -22,13 +17,14 @@ import {
   MAX_ALLOWED_LEVERAGE,
   MAX_LEVERAGE,
 } from "config/factors";
+import { USD_DECIMALS } from "config/factors";
 import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
-import { getPriceDecimals, getV1Tokens, getWrappedToken } from "sdk/configs/tokens";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { createDecreaseOrder } from "domain/legacy";
 import { getTokenAmountFromUsd } from "domain/tokens";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { callContract } from "lib/contracts";
+import { useLocalizedMap } from "lib/i18n";
 import {
   DECREASE,
   DUST_USD,
@@ -44,7 +40,6 @@ import {
   getProfitPrice,
   isAddressZero,
 } from "lib/legacy";
-import { USD_DECIMALS } from "config/factors";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   bigNumberify,
@@ -57,21 +52,30 @@ import {
 } from "lib/numbers";
 import { getLeverage } from "lib/positions/getLeverage";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { usePrevious } from "lib/usePrevious";
+import { abis } from "sdk/abis";
+import { getPriceDecimals, getV1Tokens, getWrappedToken } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
+
+import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import PercentageInput from "components/PercentageInput/PercentageInput";
+import Tabs from "components/Tabs/Tabs";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import TokenSelector from "components/TokenSelector/TokenSelector";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import { ErrorCode, ErrorDisplayType } from "./constants";
+import ExchangeInfoRow from "./ExchangeInfoRow";
+import FeesTooltip from "./FeesTooltip";
 import Checkbox from "../Checkbox/Checkbox";
 import Modal from "../Modal/Modal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import Tab from "../Tab/Tab";
 import Tooltip from "../Tooltip/Tooltip";
-import ExchangeInfoRow from "./ExchangeInfoRow";
-import FeesTooltip from "./FeesTooltip";
+
 import "./PositionSeller.css";
-import { ErrorCode, ErrorDisplayType } from "./constants";
-import { useKey } from "react-use";
-import { bigMath } from "sdk/utils/bigmath";
-import { useLocalizedMap } from "lib/i18n";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import { abis } from "sdk/abis";
+
 const { ZeroAddress } = ethers;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
 
@@ -79,6 +83,8 @@ const ORDER_OPTION_LABELS = {
   [MARKET]: msg`Market`,
   [STOP]: msg`Trigger`,
 };
+
+const ORDER_OPTIONS = [MARKET, STOP];
 
 function applySpread(amount, spread) {
   if (!amount || !spread) {
@@ -256,8 +262,6 @@ export default function PositionSeller(props) {
   const [swapToToken, setSwapToToken] = useState(() =>
     savedRecieveTokenAddress ? toTokens.find((token) => token.address === savedRecieveTokenAddress) : undefined
   );
-
-  const ORDER_OPTIONS = useMemo(() => [MARKET, STOP], []);
 
   let [orderOption, setOrderOption] = useState(MARKET);
 
@@ -1090,17 +1094,19 @@ export default function PositionSeller(props) {
     );
   }
 
+  const tabsOptions = useMemo(() => {
+    return ORDER_OPTIONS.map((option) => ({
+      value: option,
+      label: localizedOrderOptionLabels[option],
+    }));
+  }, [localizedOrderOptionLabels]);
+
   return (
     <div className="PositionEditor">
       {position && (
         <Modal className="PositionSeller-modal" isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
           {flagOrdersEnabled && (
-            <Tab
-              options={ORDER_OPTIONS}
-              option={orderOption}
-              optionLabels={localizedOrderOptionLabels}
-              onChange={onOrderOptionChange}
-            />
+            <Tabs options={tabsOptions} selectedValue={orderOption} onChange={onOrderOptionChange} />
           )}
           <div className="mb-12 flex flex-col gap-4">
             <BuyInputSection

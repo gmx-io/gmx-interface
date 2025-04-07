@@ -1,6 +1,8 @@
+import cx from "classnames";
+
 import { dynamicActivate, isTestLanguage, locales } from "lib/i18n";
 import { importImage } from "lib/legacy";
-import cx from "classnames";
+
 import checkedIcon from "img/ic_checked.svg";
 
 type Props = {

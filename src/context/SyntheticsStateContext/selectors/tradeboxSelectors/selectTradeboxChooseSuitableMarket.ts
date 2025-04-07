@@ -2,6 +2,7 @@ import { createSelector } from "context/SyntheticsStateContext/utils";
 import { chooseSuitableMarket, PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
 import { TradeType } from "domain/synthetics/trade";
 import { getByKey } from "lib/objects";
+
 import { selectTradeboxSetTradeConfig, selectTradeboxTradeType } from ".";
 import { selectOrdersInfoData, selectPositionsInfoData, selectTokensData } from "../globalSelectors";
 import { selectTradeboxGetMaxLongShortLiquidityPool } from "./selectTradeboxGetMaxLongShortLiquidityPool";

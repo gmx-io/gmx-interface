@@ -1,8 +1,9 @@
 import { addDays, set, startOfWeek } from "date-fns";
-import { useChainId } from "lib/chains";
 import mapValues from "lodash/mapValues";
 import { useMemo } from "react";
 import useSWR from "swr";
+
+import { useChainId } from "lib/chains";
 import type { RawIncentivesStats } from "lib/oracleKeeperFetcher";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 

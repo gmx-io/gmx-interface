@@ -4,7 +4,6 @@ import noop from "lodash/noop";
 import { PropsWithChildren, createContext, useCallback, useContext, useMemo, useState } from "react";
 
 import { TOKEN_FAVORITE_PREFERENCE_SETTINGS_KEY } from "config/localStorage";
-
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import type { TokenCategory } from "sdk/types/tokens";
 

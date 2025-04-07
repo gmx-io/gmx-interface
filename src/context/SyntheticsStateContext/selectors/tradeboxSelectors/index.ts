@@ -22,8 +22,8 @@ import {
   getTokensRatioByPrice,
 } from "domain/synthetics/tokens";
 import {
-  FindSwapPath,
   SwapAmounts,
+  SwapOptimizationOrderArray,
   TradeFeesType,
   TradeType,
   getMarkPrice,
@@ -40,6 +40,7 @@ import { convertTokenAddress } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { createTradeFlags } from "sdk/utils/trade";
+
 import { selectExternalSwapQuote } from "../externalSwapSelectors";
 import {
   selectAccount,
@@ -62,11 +63,11 @@ import {
   makeSelectNextPositionValuesForIncrease,
 } from "../tradeSelectors";
 
+export * from "./selectTradeboxAvailableAndDisabledTokensForCollateral";
+export * from "./selectTradeboxAvailableMarketsOptions";
 export * from "./selectTradeboxChooseSuitableMarket";
 export * from "./selectTradeboxGetMaxLongShortLiquidityPool";
 export * from "./selectTradeboxRelatedMarketsStats";
-export * from "./selectTradeboxAvailableAndDisabledTokensForCollateral";
-export * from "./selectTradeboxAvailableMarketsOptions";
 
 const selectOnlyOnTradeboxPage = <T>(s: SyntheticsState, selection: T) =>
   s.pageType === "trade" ? selection : undefined;
@@ -137,13 +138,9 @@ export const selectTradeboxTotalSwapImpactBps = createSelector((q) => {
 
 export const selectTradeboxFindSwapPath = createSelector((q) => {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
-  const toTokenAddress = q(selectTradeboxToTokenAddress);
-  const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
-  const tradeMode = q(selectTradeboxTradeMode);
-  const tradeType = q(selectTradeboxTradeType);
-  const tradeFlags = createTradeFlags(tradeType, tradeMode);
+  const swapToTokenAddress = q(selectTradeboxSwapToTokenAddress);
 
-  return q(makeSelectFindSwapPath(fromTokenAddress, tradeFlags.isPosition ? collateralTokenAddress : toTokenAddress));
+  return q(makeSelectFindSwapPath(fromTokenAddress, swapToTokenAddress));
 });
 
 export const selectTradeboxMaxLiquidityPath = createSelector((q) => {
@@ -278,20 +275,17 @@ export const selectTradeboxDecreasePositionAmounts = createSelector((q) => {
 });
 
 export const selectTradeboxSwapAmounts = createSelector((q) => {
-  const tokensData = q(selectTokensData);
   const tradeMode = q(selectTradeboxTradeMode);
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
-  const fromTokenInputValue = q(selectTradeboxFromTokenInputValue);
-  const toTokenAddress = q(selectTradeboxToTokenAddress);
+  const fromToken = q(selectTradeboxFromToken);
+  const fromTokenAmount = q(selectTradeboxFromTokenAmount);
+
+  const toToken = q(selectTradeboxToToken);
   const toTokenAmount = q(selectTradeboxToTokenAmount);
   const amountBy = q(selectTradeboxFocusedInput);
   const uiFeeFactor = q(selectUiFeeFactor);
-  const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
   const allowedSwapSlippageBps = q(selectTradeboxSelectedAllowedSwapSlippageBps);
 
-  const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
-  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
-  const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
   const tradeFlags = createTradeFlags(TradeType.Swap, tradeMode);
   const isWrapOrUnwrap = q(selectTradeboxIsWrapOrUnwrap);
   const fromTokenPrice = fromToken?.prices.minPrice;
@@ -299,15 +293,6 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
   if (!fromToken || !toToken || fromTokenPrice === undefined) {
     return undefined;
   }
-
-  const findSwapPath = q(
-    makeSelectFindSwapPath(fromTokenAddress, tradeFlags.isPosition ? collateralTokenAddress : toTokenAddress)
-  );
-
-  const { markRatio, triggerRatio } = q(selectTradeboxTradeRatios);
-  const swapOptimizationOrder: Parameters<FindSwapPath>[1]["order"] = tradeFlags.isLimit
-    ? ["length", "liquidity"]
-    : undefined;
 
   if (isWrapOrUnwrap) {
     const tokenAmount = amountBy === "from" ? fromTokenAmount : toTokenAmount;
@@ -326,14 +311,24 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
     };
 
     return swapAmounts;
-  } else if (amountBy === "from") {
+  }
+
+  const toSwapToken = q(selectTradeboxSwapToTokenAddress);
+  const findSwapPath = q(makeSelectFindSwapPath(fromTokenAddress, toSwapToken));
+  const swapOptimizationOrder: SwapOptimizationOrderArray | undefined = tradeFlags.isLimit
+    ? ["length", "liquidity"]
+    : undefined;
+
+  const { markRatio, triggerRatio } = q(selectTradeboxTradeRatios);
+
+  if (amountBy === "from") {
     return getSwapAmountsByFromValue({
       tokenIn: fromToken,
       tokenOut: toToken,
       amountIn: fromTokenAmount,
       triggerRatio: triggerRatio || markRatio,
       isLimit: tradeFlags.isLimit,
-      findSwapPath: findSwapPath,
+      findSwapPath,
       uiFeeFactor,
       swapOptimizationOrder,
       allowedSwapSlippageBps: tradeFlags.isLimit && tradeFlags.isSwap ? allowedSwapSlippageBps : undefined,
@@ -345,7 +340,7 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
       amountOut: toTokenAmount,
       triggerRatio: triggerRatio || markRatio,
       isLimit: tradeFlags.isLimit,
-      findSwapPath: findSwapPath,
+      findSwapPath,
       uiFeeFactor,
       swapOptimizationOrder,
       allowedSwapSlippageBps: tradeFlags.isLimit && tradeFlags.isSwap ? allowedSwapSlippageBps : undefined,
@@ -951,35 +946,34 @@ export const selectTradeboxMarketsSortMap = createSelector((q) => {
 
 export const selectTradeboxToToken = createSelector((q) => {
   const toToken = q(selectTradeboxToTokenAddress);
-  const tokenData = q(selectTokensData);
 
-  return getByKey(tokenData, toToken);
+  return q((state) => getByKey(selectTokensData(state), toToken));
 });
 
 export const selectTradeboxFromToken = createSelector((q) => {
   const fromToken = q(selectTradeboxFromTokenAddress);
-  const tokenData = q(selectTokensData);
 
-  return getByKey(tokenData, fromToken);
+  return q((state) => getByKey(selectTokensData(state), fromToken));
 });
 
 export const selectTradeboxSwapToTokenAddress = createSelector((q) => {
   const { isSwap } = q(selectTradeboxTradeFlags);
-  const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
+
   const toTokenAddress = q(selectTradeboxToTokenAddress);
 
   if (isSwap) {
     return toTokenAddress;
   }
 
+  const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
+
   return collateralTokenAddress;
 });
 
 export const selectTradeboxSelectSwapToToken = createSelector((q) => {
   const tokenAddress = q(selectTradeboxSwapToTokenAddress);
-  const tokensData = q(selectTokensData);
 
-  return getByKey(tokensData, tokenAddress);
+  return q((state) => getByKey(selectTokensData(state), tokenAddress));
 });
 
 export const selectTradeboxIsNeedSwap = createSelector((q) => {

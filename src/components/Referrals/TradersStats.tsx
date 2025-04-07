@@ -11,20 +11,21 @@ import { shortenAddress } from "lib/legacy";
 import { formatBalanceAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { getNativeToken, getToken } from "sdk/configs/tokens";
-import { getSharePercentage, getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
-import usePagination, { DEFAULT_PAGE_SIZE } from "./usePagination";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
-import Card from "../Common/Card";
-import Modal from "../Modal/Modal";
-import Tooltip from "../Tooltip/Tooltip";
+
 import EmptyMessage from "./EmptyMessage";
 import { ReferralCodeForm } from "./JoinReferralCode";
 import ReferralInfoCard from "./ReferralInfoCard";
+import { getSharePercentage, getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
+import usePagination, { DEFAULT_PAGE_SIZE } from "./usePagination";
+import Card from "../Common/Card";
+import Modal from "../Modal/Modal";
+import Tooltip from "../Tooltip/Tooltip";
 
 import "./TradersStats.scss";
 

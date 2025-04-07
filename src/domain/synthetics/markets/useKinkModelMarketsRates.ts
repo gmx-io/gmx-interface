@@ -1,12 +1,11 @@
+import { useMemo } from "react";
+
 import { getContract } from "config/contracts";
 import { useMarkets } from "domain/synthetics/markets";
 import { ContractCallsConfig, useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-import { HASHED_KINK_MODEL_MARKET_RATES_KEYS } from "sdk/prebuilt";
-
 import type { KinkModelMarketRateMulticallRequestConfig } from "sdk/modules/markets/types";
-
-import { useMemo } from "react";
+import { HASHED_KINK_MODEL_MARKET_RATES_KEYS } from "sdk/prebuilt";
 
 export type KinkModelMarketsRatesResult = {
   kinkMarketsBorrowingRatesData: Record<

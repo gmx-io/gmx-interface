@@ -1,3 +1,5 @@
+import { ethers } from "ethers";
+
 import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
 import { getPositionFee } from "domain/synthetics/fees";
@@ -12,19 +14,19 @@ import {
   getPositionPnlUsd,
 } from "domain/synthetics/positions";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
-import { getIsEquivalentTokens } from "sdk/utils/tokens";
-import { ethers } from "ethers";
-import { bigMath } from "sdk/utils/bigmath";
 import { DUST_USD } from "lib/legacy";
 import { applyFactor, getBasisPoints, roundUpDivision } from "lib/numbers";
 import { DecreasePositionAmounts, NextPositionValues } from "sdk/types/trade";
+import { bigMath } from "sdk/utils/bigmath";
+import { getSwapStats } from "sdk/utils/swap/swapStats";
+import { getIsEquivalentTokens } from "sdk/utils/tokens";
+
 import {
   getAcceptablePriceInfo,
   getDefaultAcceptablePriceImpactBps,
   getMarkPrice,
   getOrderThresholdType,
 } from "./prices";
-import { getSwapStats } from "./swapStats";
 
 export function getDecreasePositionAmounts(p: {
   marketInfo: MarketInfo;

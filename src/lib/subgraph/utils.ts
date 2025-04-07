@@ -1,4 +1,5 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
+
 import { getSubgraphUrl } from "config/subgraph";
 
 export function createClient(

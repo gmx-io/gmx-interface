@@ -1,9 +1,10 @@
 // current v2
 import { useMemo } from "react";
-import useVolumeInfo from "../stats/useVolumeInfo";
+
 import useV2FeesInfo from "./useV2FeesInfo";
-import useUsers from "../stats/useUsers";
 import { useMarketsInfoRequest } from "../markets";
+import useUsers from "../stats/useUsers";
+import useVolumeInfo from "../stats/useVolumeInfo";
 
 type DashboardOverview = {
   totalGMLiquidity: bigint;

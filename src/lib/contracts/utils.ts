@@ -1,3 +1,6 @@
+import { BaseContract, Contract, Provider, Wallet } from "ethers";
+import { withRetry } from "viem";
+
 import {
   GAS_PRICE_BUFFER_MAP,
   GAS_PRICE_PREMIUM_MAP,
@@ -5,11 +8,9 @@ import {
   MAX_PRIORITY_FEE_PER_GAS_MAP,
 } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { BaseContract, Contract, Provider, Wallet } from "ethers";
-import { bigMath } from "sdk/utils/bigmath";
 import { GetFeeDataBlockError } from "lib/metrics";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
-import { withRetry } from "viem";
+import { bigMath } from "sdk/utils/bigmath";
 
 export type GasPriceData = {
   gasPrice?: bigint;

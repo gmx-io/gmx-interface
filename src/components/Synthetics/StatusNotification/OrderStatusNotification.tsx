@@ -1,7 +1,10 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
-import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
+import { useEffect, useMemo, useState } from "react";
+
+import { getExplorerUrl } from "config/chains";
+import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
+import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import { OrderStatus, PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import {
@@ -12,22 +15,23 @@ import {
   isSwapOrderType,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
+import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
+import { getNameByOrderType } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { useEffect, useMemo, useState } from "react";
-import "./StatusNotification.scss";
-import { useToastAutoClose } from "./useToastAutoClose";
-import { getNameByOrderType } from "domain/synthetics/positions";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import useWallet from "lib/wallets/useWallet";
-import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
-import { getExplorerUrl } from "config/chains";
 import { mustNeverExist } from "lib/types";
-import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
+import useWallet from "lib/wallets/useWallet";
+import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
+
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
+
+import { useToastAutoClose } from "./useToastAutoClose";
+
+import "./StatusNotification.scss";
 
 type Props = {
   toastTimestamp: number;

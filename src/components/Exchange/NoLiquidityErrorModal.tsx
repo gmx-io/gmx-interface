@@ -1,10 +1,13 @@
+import { t, Trans } from "@lingui/macro";
 import { ethers } from "ethers";
-import Modal from "../Modal/Modal";
+
 import { get1InchSwapUrl } from "config/links";
 import { Token, TokenInfo } from "domain/tokens";
 import { getNativeToken } from "sdk/configs/tokens";
-import { t, Trans } from "@lingui/macro";
+
 import ExternalLink from "components/ExternalLink/ExternalLink";
+
+import Modal from "../Modal/Modal";
 
 const { ZeroAddress } = ethers;
 

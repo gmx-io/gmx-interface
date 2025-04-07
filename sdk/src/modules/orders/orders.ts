@@ -2,13 +2,11 @@ import { Address } from "viem";
 
 import { getWrappedToken } from "configs/tokens";
 import { MarketFilterLongShortItemData } from "modules/trades/trades";
-
 import { MarketInfo, MarketsInfoData } from "types/markets";
 import { OrdersData, OrdersInfoData, OrderType, PositionOrderInfo } from "types/orders";
 import { SidecarLimitOrderEntryValid, SidecarSlTpOrderEntryValid } from "types/sidecarOrders";
 import { TokenData, TokensData } from "types/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "types/trade";
-
 import { getByKey } from "utils/objects";
 import { getOrderInfo, isOrderForPositionByData, isVisibleOrder } from "utils/orders";
 
@@ -16,10 +14,10 @@ import { createDecreaseOrderTxn } from "./transactions/createDecreaseOrderTxn";
 import { createIncreaseOrderTxn } from "./transactions/createIncreaseOrderTxn";
 import { buildGetOrdersMulticall, getExecutionFeeAmountForEntry, matchByMarket, parseGetOrdersResponse } from "./utils";
 import { Module } from "../base";
+import { PositionIncreaseParams, SwapParams, increaseOrderHelper, swap } from "./helpers";
+import { cancelOrdersTxn } from "./transactions/cancelOrdersTxn";
 import { createSwapOrderTxn } from "./transactions/createSwapOrderTxn";
 import { createWrapOrUnwrapTxn, WrapOrUnwrapParams } from "./transactions/createWrapOrUnwrapTxn";
-import { cancelOrdersTxn } from "./transactions/cancelOrdersTxn";
-import { PositionIncreaseParams, SwapParams, increaseOrderHelper, swap } from "./helpers";
 
 export class Orders extends Module {
   async getOrders({

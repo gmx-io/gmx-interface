@@ -19,17 +19,6 @@ import { getTokenData } from "domain/synthetics/tokens";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { Mode, Operation } from "../types";
-
-import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
-import { useGmWarningState } from "../useGmWarningState";
-import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
-import { useShiftAmounts } from "./useShiftAmounts";
-import { useShiftAvailableRelatedMarkets } from "./useShiftAvailableRelatedMarkets";
-import { useShiftFees } from "./useShiftFees";
-import { useShiftSubmitState } from "./useShiftSubmitState";
-import { useUpdateMarkets } from "./useUpdateMarkets";
-import { useUpdateTokens } from "./useUpdateTokens";
 
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
@@ -39,6 +28,16 @@ import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { MarketState } from "components/MarketSelector/types";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 
+import { Mode, Operation } from "../types";
+import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
+import { useGmWarningState } from "../useGmWarningState";
+import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
+import { useShiftAmounts } from "./useShiftAmounts";
+import { useShiftAvailableRelatedMarkets } from "./useShiftAvailableRelatedMarkets";
+import { useShiftFees } from "./useShiftFees";
+import { useShiftSubmitState } from "./useShiftSubmitState";
+import { useUpdateMarkets } from "./useUpdateMarkets";
+import { useUpdateTokens } from "./useUpdateTokens";
 import { GmFees } from "../../GmFees/GmFees";
 import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
 import { Swap } from "../Swap";

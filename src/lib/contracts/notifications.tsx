@@ -1,8 +1,10 @@
 import { Trans } from "@lingui/macro";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getExplorerUrl } from "config/chains";
 import { ethers } from "ethers";
+
+import { getExplorerUrl } from "config/chains";
 import { helperToast } from "lib/helperToast";
+
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const notifications: { [id: string]: boolean } = {};
 
