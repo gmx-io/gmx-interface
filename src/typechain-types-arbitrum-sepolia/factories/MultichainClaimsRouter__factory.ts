@@ -1243,7 +1243,14 @@ export class MultichainClaimsRouter__factory {
   static createInterface(): MultichainClaimsRouterInterface {
     return new Interface(_abi) as MultichainClaimsRouterInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): MultichainClaimsRouter {
-    return new Contract(address, _abi, runner) as unknown as MultichainClaimsRouter;
+  static connect(
+    address: string,
+    runner?: ContractRunner | null
+  ): MultichainClaimsRouter {
+    return new Contract(
+      address,
+      _abi,
+      runner
+    ) as unknown as MultichainClaimsRouter;
   }
 }

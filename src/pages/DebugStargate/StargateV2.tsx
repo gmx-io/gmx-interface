@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import {
   Chain,
   EndpointVersion,
@@ -8,13 +9,13 @@ import {
 import { Options, addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { ASSETS, TokenName } from "@stargatefinance/stg-definitions-v2";
 import { errors as StargateV2ErrorsAbi } from "@stargatefinance/stg-evm-sdk-v2";
-import StargatePoolUSDCArbitrumSepolia from "@stargatefinance/stg-evm-sdk-v2/deployments/arbsep-testnet/StargatePoolUSDC.json";
-import TokenMessagingArbitrumSepolia from "@stargatefinance/stg-evm-sdk-v2/deployments/arbsep-testnet/TokenMessaging.json";
 import {
+  AbiCoder,
   BrowserProvider,
   BytesLike,
   Contract,
-  EventLog,
+  InterfaceAbi,
+  JsonRpcApiProvider,
   JsonRpcProvider,
   MaxUint256,
   ZeroAddress,
@@ -25,47 +26,55 @@ import {
   solidityPacked,
   toUtf8Bytes,
 } from "ethers";
-import noop from "lodash/noop";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { useAccount } from "wagmi";
 
-import { ARBITRUM_SEPOLIA, AVALANCHE_FUJI } from "config/chains";
-import { approveTokens } from "domain/tokens";
+import { ARBITRUM_SEPOLIA, RPC_PROVIDERS } from "config/chains";
 import { formatBalanceAmount, parseValue } from "lib/numbers";
 import { abis } from "sdk/abis";
 import { getTokenBySymbol } from "sdk/configs/tokens";
-import { IStargate__factory, TokenMessaging__factory } from "typechain-types-stargate";
-import { SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
-import { BusRodeEvent } from "typechain-types-stargate/messaging/TokenMessaging";
+import { IStargate__factory } from "typechain-types-stargate";
+import { IStargate, SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
 
 import Button from "components/Button/Button";
 import NumberInput from "components/NumberInput/NumberInput";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
-import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+
+import { OPTIMISM_SEPOLIA, USDC_SG_POOL_ADDRESSES } from "./stargatePools";
 
 const USDC_SG = getTokenBySymbol(ARBITRUM_SEPOLIA, "USDC.SG");
 
-const tokenMessagingInterface = TokenMessaging__factory.createInterface();
+// const tokenMessagingInterface = TokenMessaging__factory.createInterface();
 
 const usdcSgConfig = ASSETS[TokenName.USDC];
 
-const sourceId = chainAndStageToEndpointId(Chain.ARBSEP, Stage.TESTNET, EndpointVersion.V2);
-const destinationId = chainAndStageToEndpointId(Chain.OPTSEP, Stage.TESTNET, EndpointVersion.V2);
+const ARBITRUM_SEPOLIA_ENDPOINT_ID = chainAndStageToEndpointId(Chain.ARBSEP, Stage.TESTNET, EndpointVersion.V2);
+const OPTIMISM_SEPOLIA_ENDPOINT_ID = chainAndStageToEndpointId(Chain.OPTSEP, Stage.TESTNET, EndpointVersion.V2);
 
-// To sign use BrowserProvider
-const arbitrumSepoliaProvider = new BrowserProvider(window.ethereum, ARBITRUM_SEPOLIA);
-// To read use JsonRpcProvider
-const optimismSepoliaProvider = new JsonRpcProvider("https://sepolia.optimism.io", 11155420);
+const USDC_SG_TOKEN_ADDRESSES = {
+  [ARBITRUM_SEPOLIA]: usdcSgConfig.networks[ARBITRUM_SEPOLIA_ENDPOINT_ID]!.address,
+  [OPTIMISM_SEPOLIA]: usdcSgConfig.networks[OPTIMISM_SEPOLIA_ENDPOINT_ID]!.address,
+};
 
-const stargatePoolUSDCArbitrumSepoliaContract = IStargate__factory.connect(StargatePoolUSDCArbitrumSepolia.address);
+const CHAIN_ID_TO_ENDPOINT_ID = {
+  [ARBITRUM_SEPOLIA]: ARBITRUM_SEPOLIA_ENDPOINT_ID,
+  [OPTIMISM_SEPOLIA]: OPTIMISM_SEPOLIA_ENDPOINT_ID,
+};
 
-const usdcSgArbitrumSepoliaContract = new Contract("0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773", abis.ERC20);
-const usdcSgOptimismSepoliaContract = new Contract("0x488327236B65C61A6c083e8d811a4E0D3d1D4268", abis.ERC20);
+const stargateV2Abi = IStargate__factory.abi as InterfaceAbi;
+const stargateV2ErrorsAbi = StargateV2ErrorsAbi as InterfaceAbi;
+
+const stargateV2AbiConcatErrorsAbi = [...stargateV2Abi, ...stargateV2ErrorsAbi];
+
+function getStargateV2(address: string) {
+  return new Contract(address, stargateV2AbiConcatErrorsAbi) as unknown as IStargate;
+}
+
+const reieverArbitrumSSepoliaAddress = "0xa132826C0D28f6626534b1Ca6fD7b2c32dd289e5";
 
 const SEND_MODE_TAXI = 0;
 const SEND_MODE_BUS = 1;
-const SEND_MODE_DRIVE = 2;
 
 class OftCmd {
   constructor(
@@ -82,42 +91,72 @@ class OftCmd {
   }
 }
 
+// address account, uint256 srcChainId
+function encodeDepositMessage(account: string, srcChainId: number): string {
+  return AbiCoder.defaultAbiCoder().encode(["address", "uint256"], [account, srcChainId]);
+}
+
 export function StargateV2() {
-  const { address, chainId } = useAccount();
+  const { address, chainId, connector } = useAccount();
+
+  const sourceId = chainId !== undefined ? CHAIN_ID_TO_ENDPOINT_ID[chainId] : undefined;
+
+  const [destinationChainId, setDestinationChainId] = useState<number>(ARBITRUM_SEPOLIA);
+  const destinationId = destinationChainId !== undefined ? CHAIN_ID_TO_ENDPOINT_ID[destinationChainId] : undefined;
+
   const [inputValue, setInputValue] = useState<string>("");
-  const [busMode, setBusMode] = useState<boolean>(false);
-  const [tickets, setTickets] = useState<
-    {
-      ticketId: string;
-      passenger: string;
-    }[]
-  >([]);
+
+  const [sourceChainProvider, setSourceChainProvider] = useState<JsonRpcApiProvider | undefined>();
+  const [destinationChainReadonlyProvider, setDestinationChainReadonlyProvider] = useState<
+    JsonRpcApiProvider | undefined
+  >();
+
+  useEffect(() => {
+    // connector?.getProvider?.().then((res) => setSourceChainProvider(res as JsonRpcApiProvider));
+    setSourceChainProvider(new BrowserProvider(window.ethereum, chainId));
+  }, [chainId, connector]);
+
+  useEffect(() => {
+    setDestinationChainReadonlyProvider(new JsonRpcProvider(RPC_PROVIDERS[destinationChainId][0], destinationChainId));
+  }, [destinationChainId]);
 
   const amount = parseValue(inputValue, USDC_SG.decimals);
 
   const handleSwap = async () => {
-    if (!chainId || !address || amount === undefined || amount <= 0n) return;
+    if (
+      !chainId ||
+      !sourceChainProvider ||
+      !address ||
+      amount === undefined ||
+      amount <= 0n ||
+      destinationId === undefined
+    )
+      return;
 
-    const connectedPool = stargatePoolUSDCArbitrumSepoliaContract.connect(await arbitrumSepoliaProvider.getSigner());
+    const signer = await sourceChainProvider.getSigner();
+
+    const sourceChainStargate = getStargateV2(USDC_SG_POOL_ADDRESSES[chainId]);
+
+    const connectedPool = sourceChainStargate.connect(signer);
 
     const nativeDrop = false;
-    const mode = busMode ? SEND_MODE_BUS : SEND_MODE_TAXI;
+    const mode = SEND_MODE_TAXI;
     const tokenAddress = await connectedPool.token();
     const isNative = tokenAddress === ZeroAddress;
-    let decimals = 18;
+    let decimals = USDC_SG.decimals;
     // let amount = ethers.utils.parseUnits(amountArgument ?? "0", decimals).toString();
     let adjustedAmount = amount;
     const value = isNative ? amount : 0n;
     if (isNative) {
-      console.log(`native balance: ${formatEther(await arbitrumSepoliaProvider.getBalance(address))}`);
+      console.log(`native balance: ${formatEther(await sourceChainProvider.getBalance(address))}`);
     } else {
       // const tokenContract = (await hre.ethers.getContractAt("ERC20Token", tokenAddress)) as ERC20Token;
-      const tokenContract = new Contract(tokenAddress, abis.ERC20, arbitrumSepoliaProvider);
+      const tokenContract = new Contract(tokenAddress, abis.ERC20, sourceChainProvider);
       decimals = await tokenContract.decimals();
       const balance: bigint = await tokenContract.balanceOf(address);
       console.log(
         `token: ${tokenAddress} balance: ${formatUnits(balance, decimals)} eth: ${formatEther(
-          await arbitrumSepoliaProvider.getBalance(address)
+          await sourceChainProvider.getBalance(address)
         )}`
       );
       const allowance: bigint = await tokenContract.allowance(address, await connectedPool.getAddress());
@@ -125,7 +164,8 @@ export function StargateV2() {
       if (allowance < balance) {
         await (
           await tokenContract
-            .connect(await arbitrumSepoliaProvider.getSigner())
+            .connect(signer)
+            // @ts-ignore
             .approve(await connectedPool.getAddress(), MaxUint256)
         ).wait();
       }
@@ -137,7 +177,7 @@ export function StargateV2() {
     console.log(
       `stargateType:${stargateType} stargateAddress:${await connectedPool.getAddress()}, oftCmd:${oftCmd.toBytes()}`
     );
-    let extraOptions: BytesLike = "0x";
+    let extraOptions: BytesLike = "";
     if (nativeDrop) {
       if (mode === SEND_MODE_TAXI) {
         extraOptions = Options.newOptions()
@@ -149,11 +189,11 @@ export function StargateV2() {
       }
     }
 
-    let composeMsg: BytesLike = "";
+    let composeMsg: BytesLike = encodeDepositMessage(address, ARBITRUM_SEPOLIA);
     if (composeMsg) {
       if (mode === SEND_MODE_TAXI) {
         const builder = extraOptions.length === 0 ? Options.newOptions() : Options.fromOptions(hexlify(extraOptions));
-        extraOptions = builder.addExecutorComposeOption(0, 50000, 0).toBytes();
+        extraOptions = builder.addExecutorComposeOption(0, 700_000, 0).toBytes();
       } else if (mode === SEND_MODE_BUS) {
         const OPTIONS_TYPE = 1;
         if (extraOptions.length === 0) {
@@ -166,7 +206,7 @@ export function StargateV2() {
     }
     const sendParams: SendParamStruct = {
       dstEid: destinationId,
-      to: hexlify(addressToBytes32(address)),
+      to: hexlify(addressToBytes32(reieverArbitrumSSepoliaAddress)),
       amountLD: adjustedAmount,
       minAmountLD: minAmount,
       extraOptions: hexlify(extraOptions),
@@ -192,162 +232,80 @@ export function StargateV2() {
     console.log(`Gas used: ${receipt.gasUsed.toString()}`);
   };
 
-  const balanceUsdcSgArbitrumSepolia = useSWR(address ? ["balance", address, ARBITRUM_SEPOLIA] : null, {
-    fetcher: async () => {
-      try {
-        const balance = await usdcSgArbitrumSepoliaContract.connect(arbitrumSepoliaProvider).balanceOf(address);
+  const balanceUsdcSgSourceChain = useSWR(
+    address && chainId !== undefined && sourceChainProvider ? ["balance", address, chainId] : null,
+    {
+      fetcher: async () => {
+        try {
+          const tokenContract = new Contract(USDC_SG_TOKEN_ADDRESSES[chainId!], abis.ERC20, sourceChainProvider);
+          const balance = await tokenContract.balanceOf(address);
+          return balance;
+        } catch (error) {
+          return 0n;
+        }
+      },
+      refreshInterval: 5000,
+    }
+  );
+
+  const balanceUsdcSgDestinationChain = useSWR(
+    address && destinationChainReadonlyProvider ? ["balance", address, destinationChainId] : null,
+    {
+      fetcher: async () => {
+        const tokenContract = new Contract(
+          USDC_SG_TOKEN_ADDRESSES[destinationChainId],
+          abis.ERC20,
+          destinationChainReadonlyProvider
+        );
+        const balance = await tokenContract.balanceOf(address);
         return balance;
-      } catch (error) {
-        return 0n;
-      }
-    },
-    refreshInterval: 5000,
-  });
-
-  const balanceUsdcDestinationFuji = useSWR(address ? ["balance", address, AVALANCHE_FUJI] : null, {
-    fetcher: async () => {
-      try {
-        const balance = await usdcSgOptimismSepoliaContract.connect(optimismSepoliaProvider).balanceOf(address);
-        return balance;
-      } catch (error) {
-        return 0n;
-      }
-    },
-    refreshInterval: 5000,
-  });
-
-  // const handleFlush = async () => {
-  //   if (!chainId || !address || amount === undefined || amount <= 0n) return;
-
-  //   // const connectedRouter = stargateRouter.connect(await arbitrumSepoliaProvider.getSigner()) as Contract;
-  //   const connectedPool = stargatePoolUSDCArbitrumSepoliaContract.connect(await arbitrumSepoliaProvider.getSigner());
-
-  //   let passengersInfo = "0x" + tickets.map((p) => p.passenger.replace("0x", "")).join("");
-
-  //   const sendParams: SendParamStruct = {
-  //     dstEid: destinationId,
-  //     to: addressToBytes32(address),
-  //     amountLD: amount,
-  //     minAmountLD: amount / 2n,
-  //     extraOptions: new Uint8Array(),
-  //     composeMsg: new Uint8Array(),
-  //     oftCmd: busMode ? passengersInfo : new Uint8Array(),
-  //   };
-
-  //   const [nativeFee]: [nativeFee: bigint, lzTokenFee: bigint] = await connectedPool.quoteSend(sendParams, false);
-
-  //   try {
-  //     const tx = await connectedPool.sendToken(
-  //       sendParams,
-  //       {
-  //         nativeFee: nativeFee,
-  //         lzTokenFee: 0n,
-  //       },
-  //       address,
-  //       {
-  //         value: nativeFee,
-  //       }
-  //     );
-
-  //     console.log("tx", tx);
-
-  //     // print return data
-  //     console.log("waiting for tx");
-
-  //     const returnData = await tx.wait(1);
-  //     console.log("returnData", returnData);
-  //   } catch (error) {
-  //     const stargateV2Error = new Contract(ZeroAddress, StargateV2ErrorsAbi);
-
-  //     const errorMessage = stargateV2Error.interface.parseError(error.data);
-  //     console.log("errorMessage", errorMessage);
-  //   }
-  // };
+      },
+      refreshInterval: 5000,
+    }
+  );
 
   return (
     <div className="flex flex-col gap-16">
       <div className="flex min-w-[400px] flex-col gap-8 rounded-4 bg-slate-800 p-16">
         <h1 className="text-h1 leading-base">Debug Stargate V2</h1>
-        <p>Wallet chain must be {endpointIdToChainKey(sourceId).toString()}</p>
-        <ToggleSwitch isChecked={busMode} setIsChecked={setBusMode}>
-          Bus mode
-        </ToggleSwitch>
+        {sourceId ? (
+          <p>Wallet chain must is {endpointIdToChainKey(sourceId).toString()}</p>
+        ) : (
+          <p>Wallet chain not set</p>
+        )}
+
         <SyntheticsInfoRow label="Source Chain endpoint id" value={sourceId} />
         <SyntheticsInfoRow label="Destination Chain endpoint id" value={destinationId} />
-        <SyntheticsInfoRow label="Source Chain key" value={endpointIdToChainKey(sourceId).toString()} />
-        <SyntheticsInfoRow label="Destination Chain key" value={endpointIdToChainKey(destinationId).toString()} />
-        <SyntheticsInfoRow label="Source Chain config" value={usdcSgConfig.networks[sourceId] ? "True" : "False"} />
+        <SyntheticsInfoRow
+          label="Source Chain key"
+          value={sourceId ? endpointIdToChainKey(sourceId).toString() : "N/A"}
+        />
+        <SyntheticsInfoRow
+          label="Destination Chain key"
+          value={destinationId ? endpointIdToChainKey(destinationId).toString() : "N/A"}
+        />
+        <SyntheticsInfoRow
+          label="Source Chain config"
+          value={sourceId ? (usdcSgConfig.networks[sourceId] ? "True" : "False") : "N/A"}
+        />
         <SyntheticsInfoRow
           label="Destination Chain config"
-          value={usdcSgConfig.networks[destinationId] ? "True" : "False"}
+          value={destinationId ? (usdcSgConfig.networks[destinationId] ? "True" : "False") : "N/A"}
         />
 
         <SyntheticsInfoRow
-          label={`Balance ${endpointIdToChainKey(sourceId).toString()} USDC.SG`}
-          value={formatBalanceAmount(balanceUsdcSgArbitrumSepolia.data, USDC_SG.decimals)}
+          label={`Balance ${sourceId ? endpointIdToChainKey(sourceId).toString() : "N/A"} USDC.SG`}
+          value={formatBalanceAmount(balanceUsdcSgSourceChain.data, USDC_SG.decimals)}
         />
         <SyntheticsInfoRow
-          label={`Balance ${endpointIdToChainKey(destinationId).toString()} USDC.SG`}
-          value={formatBalanceAmount(balanceUsdcDestinationFuji.data, USDC_SG.decimals)}
+          label={`Balance ${destinationId ? endpointIdToChainKey(destinationId).toString() : "N/A"} USDC.SG`}
+          value={formatBalanceAmount(balanceUsdcSgDestinationChain.data, USDC_SG.decimals)}
         />
         <NumberInput value={inputValue} onValueChange={(e) => setInputValue(e.target.value)} placeholder="0.0" />
         <Button type="button" variant="primary" onClick={handleSwap}>
           Swap
         </Button>
       </div>
-
-      {busMode && (
-        <div className="flex min-w-[400px] flex-col gap-8 rounded-4 bg-slate-800 p-16">
-          <Button
-            type="button"
-            variant="primary"
-            onClick={async () => {
-              const messaging = TokenMessaging__factory.connect(
-                TokenMessagingArbitrumSepolia.address,
-                arbitrumSepoliaProvider
-              );
-
-              // const queue = await messaging.busQueues(dstEid)
-              const queue = await messaging.busQueues(destinationId);
-
-              const nextTicketId = queue.nextTicketId;
-              const queueLength = queue.qLength;
-              console.log("nextTicketId:", nextTicketId.toString());
-              console.log("queue length:", queueLength.toString());
-              if (queueLength === 0n) {
-                console.error("No passengers found!");
-                return;
-              }
-              let allRideEvents = (await messaging.queryFilter(messaging.filters.BusRode())).filter(
-                (e) => e.args.dstEid === BigInt(destinationId) && e.args.ticketId >= nextTicketId
-              );
-
-              // sort by oldest to newest
-              allRideEvents = allRideEvents.toSorted((a, b) => Number(a.args.ticketId) - Number(b.args.ticketId));
-
-              allRideEvents = allRideEvents.slice(0, Number(queue.maxNumPassengers));
-
-              const passengers = allRideEvents.map((e) => e.args.passenger);
-              console.log("passengers:", passengers);
-              let passengersInfo = "0x" + passengers.map((p) => p.replace("0x", "")).join("");
-              // passengersInfo = solidityPacked(["uint8", "uint56"], [passengers.length, nextTicketId]) + passengersInfo;
-              const [nativeFee] = await messaging.quoteDriveBus(destinationId, passengersInfo);
-              const receipt = await (
-                await messaging
-                  .connect(await arbitrumSepoliaProvider.getSigner())
-                  .driveBus(destinationId, passengersInfo, { value: nativeFee })
-              ).wait();
-              if (!receipt) {
-                throw new Error("No receipt");
-              }
-              console.log(`Messaging.driveBus() tx hash: ${receipt.hash}`);
-              console.log(`Gas used: ${receipt.gasUsed.toString()}`);
-            }}
-          >
-            Drive bus
-          </Button>
-        </div>
-      )}
     </div>
   );
 }

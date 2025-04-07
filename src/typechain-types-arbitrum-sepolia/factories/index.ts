@@ -7,6 +7,7 @@ export { ExchangeRouter__factory } from "./ExchangeRouter__factory";
 export { GelatoRelayRouter__factory } from "./GelatoRelayRouter__factory";
 export { GlvReader__factory } from "./GlvReader__factory";
 export { GlvRouter__factory } from "./GlvRouter__factory";
+export { LayerZeroProvider__factory } from "./LayerZeroProvider__factory";
 export { MultichainClaimsRouter__factory } from "./MultichainClaimsRouter__factory";
 export { MultichainGlvRouter__factory } from "./MultichainGlvRouter__factory";
 export { MultichainGmRouter__factory } from "./MultichainGmRouter__factory";

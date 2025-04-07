@@ -3189,7 +3189,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@layerzerolabs/lz-v2-utilities@npm:3.0.85":
+"@layerzerolabs/lz-v2-utilities@npm:latest":
   version: 3.0.85
   resolution: "@layerzerolabs/lz-v2-utilities@npm:3.0.85"
   dependencies:
@@ -10272,7 +10272,7 @@ __metadata:
     "@gelatonetwork/relay-sdk": 5.6.0
     "@headlessui/react": 1.7.19
     "@layerzerolabs/lz-definitions": 3.0.83
-    "@layerzerolabs/lz-v2-utilities": 3.0.85
+    "@layerzerolabs/lz-v2-utilities": latest
     "@lingui/cli": 4.10.0
     "@lingui/core": 4.10.0
     "@lingui/loader": 4.10.0

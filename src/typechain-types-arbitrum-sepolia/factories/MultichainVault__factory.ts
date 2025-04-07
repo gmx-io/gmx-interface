@@ -3,7 +3,10 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type { MultichainVault, MultichainVaultInterface } from "../MultichainVault";
+import type {
+  MultichainVault,
+  MultichainVaultInterface,
+} from "../MultichainVault";
 
 const _abi = [
   {
@@ -324,7 +327,10 @@ export class MultichainVault__factory {
   static createInterface(): MultichainVaultInterface {
     return new Interface(_abi) as MultichainVaultInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): MultichainVault {
+  static connect(
+    address: string,
+    runner?: ContractRunner | null
+  ): MultichainVault {
     return new Contract(address, _abi, runner) as unknown as MultichainVault;
   }
 }

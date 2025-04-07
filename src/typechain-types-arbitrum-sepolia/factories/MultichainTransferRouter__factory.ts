@@ -746,7 +746,14 @@ export class MultichainTransferRouter__factory {
   static createInterface(): MultichainTransferRouterInterface {
     return new Interface(_abi) as MultichainTransferRouterInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): MultichainTransferRouter {
-    return new Contract(address, _abi, runner) as unknown as MultichainTransferRouter;
+  static connect(
+    address: string,
+    runner?: ContractRunner | null
+  ): MultichainTransferRouter {
+    return new Contract(
+      address,
+      _abi,
+      runner
+    ) as unknown as MultichainTransferRouter;
   }
 }
