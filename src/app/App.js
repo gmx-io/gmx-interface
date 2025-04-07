@@ -21,12 +21,14 @@ import AppHome from "pages/AppHome/AppHome";
 import Dashboard from "pages/Dashboard/Dashboard";
 import Stats from "pages/Stats/Stats";
 import Stake from "pages/Stake/Stake";
+import StakeV1Deprecated from "pages/Stake/StakeV1Deprecated";
 import { Exchange } from "pages/Exchange/Exchange";
 import Actions from "pages/Actions/Actions";
 import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
 import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
 import Referrals from "pages/Referrals/Referrals";
 import BuyGlp from "pages/BuyGlp/BuyGlp";
+import SellGlpV1 from "pages/BuyGlp/SellGlpV1";
 import BuyGMX from "pages/BuyGMX/BuyGMX";
 import Buy from "pages/Buy/Buy";
 import NftWallet from "pages/NftWallet/NftWallet";
@@ -708,6 +710,9 @@ function FullApp() {
                 <Route exact path="/earn">
                   <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
                 </Route>
+                <Route exact path="/v1">
+                  <StakeV1Deprecated setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
+                </Route>
                 <Route exact path="/swap">
                   <SwapBox
                     ref={exchangeRef}
@@ -732,6 +737,14 @@ function FullApp() {
                 </Route>
                 <Route exact path="/buy_tlp">
                   <BuyGlp
+                    savedSlippageAmount={savedSlippageAmount}
+                    setPendingTxns={setPendingTxns}
+                    connectWallet={connectWallet}
+                    savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
+                  />
+                </Route>
+                <Route exact path="/v1/sell_tlp">
+                  <SellGlpV1
                     savedSlippageAmount={savedSlippageAmount}
                     setPendingTxns={setPendingTxns}
                     connectWallet={connectWallet}
