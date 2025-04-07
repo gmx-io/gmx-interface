@@ -1,7 +1,10 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo } from "react";
+import { useMedia } from "react-use";
+import { zeroAddress } from "viem";
 
+import { MARKET_STATS_DECIMALS } from "config/ui";
 import {
   GlvAndGmMarketsInfoData,
   GlvOrMarketInfo,
@@ -11,28 +14,24 @@ import {
   getMarketIndexName,
   getMarketPoolName,
 } from "domain/synthetics/markets";
+import { getMintableInfoGlv, getTotalSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData, TokensData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { formatUsd } from "lib/numbers";
-import { getByKey } from "lib/objects";
-import MarketTokenSelector from "../MarketTokenSelector/MarketTokenSelector";
-
-import { CardRow } from "components/CardRow/CardRow";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip from "components/Tooltip/Tooltip";
-import { BridgingInfo } from "../BridgingInfo/BridgingInfo";
-
-import { AprInfo } from "components/AprInfo/AprInfo";
-import { MARKET_STATS_DECIMALS } from "config/ui";
-import { getMintableInfoGlv, getTotalSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import { formatDateTime } from "lib/dates";
+import { formatUsd } from "lib/numbers";
 import { bigintToNumber } from "lib/numbers";
-import { useMedia } from "react-use";
-import { zeroAddress } from "viem";
+import { getByKey } from "lib/objects";
 
 import { AmountWithUsdBalance, AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
+import { AprInfo } from "components/AprInfo/AprInfo";
+import { CardRow } from "components/CardRow/CardRow";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MintableAmount } from "components/MintableAmount/MintableAmount";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import Tooltip from "components/Tooltip/Tooltip";
+
+import { BridgingInfo } from "../BridgingInfo/BridgingInfo";
+import MarketTokenSelector from "../MarketTokenSelector/MarketTokenSelector";
 import { CompositionBar } from "./components/CompositionBar";
 import { CompositionTableGm } from "./components/CompositionTable";
 import { MarketDescription } from "./components/MarketDescription";

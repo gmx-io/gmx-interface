@@ -1,8 +1,8 @@
 import mapValues from "lodash/mapValues";
 
 import { isDevelopment } from "config/env";
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 import { MARKETS, DEFAULT_LISTING } from "./static/markets";
 export * from "./static/markets";
 

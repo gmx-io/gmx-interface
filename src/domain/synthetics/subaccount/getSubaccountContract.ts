@@ -1,5 +1,6 @@
-import { getContract } from "config/contracts";
 import { Signer, ethers } from "ethers";
+
+import { getContract } from "config/contracts";
 import { abis } from "sdk/abis";
 
 export function getSubaccountRouterContract(chainId: number, signer: Signer) {

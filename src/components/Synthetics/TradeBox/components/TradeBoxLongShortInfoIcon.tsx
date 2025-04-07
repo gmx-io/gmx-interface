@@ -71,8 +71,6 @@ export default function TradeBoxLongShortInfoIcon({ isLong, isMobile }: { isLong
     <Tooltip
       position={isMobile ? "bottom-end" : "top-end"}
       content={isLong ? longMarketTooltipContent : shortMarketTooltipContent}
-      openDelay={0}
-      closeDelay={10000}
       tooltipClassName="p-10"
     >
       <InfoCircleOutlineIcon className="h-24 w-24 cursor-pointer text-slate-100 gmx-hover:text-white" />

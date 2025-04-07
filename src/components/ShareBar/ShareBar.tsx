@@ -1,8 +1,8 @@
 import cx from "classnames";
 import { useMemo } from "react";
 
-import { bigMath } from "sdk/utils/bigmath";
 import { formatPercentageDisplay } from "lib/numbers";
+import { bigMath } from "sdk/utils/bigmath";
 
 import "./ShareBar.scss";
 

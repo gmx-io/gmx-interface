@@ -1,6 +1,8 @@
-import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import { AbFlag, getAbStorage, setAbFlagEnabled } from "config/ab";
 import { useState } from "react";
+
+import { AbFlag, getAbStorage, setAbFlagEnabled } from "config/ab";
+
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
 export function AbFlagSettings() {
   const [isShown, setIsShown] = useState(false);

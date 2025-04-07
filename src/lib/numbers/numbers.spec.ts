@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import { USD_DECIMALS } from "config/factors";
 
-import { formatAmount } from "./formatting";
 import { toBigNumberWithDecimals, roundBigNumberWithDecimals, PRECISION_DECIMALS } from ".";
+import { formatAmount } from "./formatting";
 
 describe("toBigNumberWithDecimals", () => {
   it("should convert string to big number with decimals", () => {

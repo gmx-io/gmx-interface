@@ -1,9 +1,11 @@
 import { Trans } from "@lingui/macro";
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import cx from "classnames";
+
 import { selectSetMissedCoinsModalPlace } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
+
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
 
 export function MissedCoinsHint({
   place,

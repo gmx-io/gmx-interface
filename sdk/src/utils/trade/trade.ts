@@ -8,6 +8,7 @@ import {
   TradeMode,
   TradeType,
 } from "types/trade";
+
 import { bigMath } from "../bigmath";
 import { getShouldUseMaxPrice } from "../prices";
 

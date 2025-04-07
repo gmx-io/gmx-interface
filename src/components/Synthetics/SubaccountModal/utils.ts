@@ -1,7 +1,9 @@
 import { t } from "@lingui/macro";
+
 import { SubaccountNotificationState } from "context/SubaccountContext/SubaccountContext";
 import { TokenData, convertToTokenAmount } from "domain/synthetics/tokens";
 import { BN_ZERO, expandDecimals } from "lib/numbers";
+
 import { FormState } from "./SubaccountModal";
 
 export function getButtonState({

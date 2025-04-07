@@ -1,6 +1,6 @@
 import type { InfoTokens } from "domain/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 import { BN_ZERO, expandDecimals } from "lib/numbers";
+import { bigMath } from "sdk/utils/bigmath";
 
 export function getCurrentFeesUsd(tokenAddresses: string[], fees: bigint[], infoTokens: InfoTokens) {
   if (!fees || !infoTokens) {

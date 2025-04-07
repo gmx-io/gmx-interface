@@ -16,4 +16,5 @@ export type DynamicChartLine = {
   price: number;
   orderType: OrderType;
   isLong: boolean;
+  marketName: string;
 };

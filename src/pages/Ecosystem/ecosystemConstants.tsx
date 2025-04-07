@@ -1,6 +1,7 @@
-import { ARBITRUM, AVALANCHE, ChainId } from "config/chains";
-import { msg } from "@lingui/macro";
 import { MessageDescriptor } from "@lingui/core";
+import { msg } from "@lingui/macro";
+
+import { ARBITRUM, AVALANCHE, ChainId } from "config/chains";
 
 type EcosystemGmxPage = {
   title: MessageDescriptor;
@@ -228,7 +229,7 @@ export const dashboardProjects: EcosystemDashboardProject[] = [
 export const integrations: EcosystemGmxPage[] = [
   {
     title: msg`DeBank`,
-    link: "debank.com",
+    link: "https://debank.com",
     linkLabel: "debank.com",
     about: msg`DeFi Portfolio Tracker`,
 

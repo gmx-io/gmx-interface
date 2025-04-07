@@ -3,19 +3,19 @@ import useSWR from "swr";
 
 import { USD_DECIMALS } from "config/factors";
 import { getMarketListingDate } from "config/markets";
+import { getSubgraphUrl } from "config/subgraph";
 import { GMX_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 import graphqlFetcher from "sdk/utils/graphqlFetcher";
 
-import { getSubgraphUrl } from "config/subgraph";
 import { getIsBaseApyReadyToBeShown } from "./getIsBaseApyReadyToBeShown";
 import { UserEarningsData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useGmMarketsApy } from "./useGmMarketsApy";
-import { useMarketTokensData } from "./useMarketTokensData";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
+import { useMarketTokensData } from "./useMarketTokensData";
 
 type RawBalanceChange = {
   cumulativeIncome: string;

@@ -1,9 +1,11 @@
+import { useEffect } from "react";
+
 import {
   selectAccountStats,
   selectLastMonthAccountStats,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useEffect } from "react";
+
 import { sendMissedCoinSearchDebounced } from "./requests";
 import { MissedCoinsPlace } from "./types";
 

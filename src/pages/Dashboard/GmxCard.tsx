@@ -15,6 +15,7 @@ import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
+
 import AssetDropdown from "./AssetDropdown";
 
 export function GmxCard({

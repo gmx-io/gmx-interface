@@ -1,10 +1,12 @@
+import { useMemo } from "react";
+
 import { useUserReferralInfoRequest } from "domain/referrals";
 import { getBasisPoints } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
-import { useMemo } from "react";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { getEntryPrice, getPositionPnlUsd } from "sdk/utils/positions";
+
 import useUiFeeFactorRequest from "../fees/utils/useUiFeeFactor";
 import {
   MarketsData,

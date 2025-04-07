@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import cx from "classnames";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useMedia } from "react-use";
 
 import { getChainName } from "config/chains";
@@ -15,16 +15,17 @@ import {
   useLeaderboardTimeframeTypeState,
   useLeaderboardTiming,
 } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
+import { selectLeaderboardIsLoading } from "context/SyntheticsStateContext/selectors/leaderboardSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { CompetitionType } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { useChainId } from "lib/chains";
 import { mustNeverExist } from "lib/types";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { selectLeaderboardIsLoading } from "context/SyntheticsStateContext/selectors/leaderboardSelectors";
-import Tabs from "components/Tabs/Tabs";
+
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Tabs from "components/Tabs/Tabs";
 
 import { CompetitionCountdown } from "./CompetitionCountdown";
 import { CompetitionPrizes } from "./CompetitionPrizes";
@@ -232,7 +233,6 @@ export function LeaderboardContainer() {
               selectedValue={activeCompetitionIndex}
               onChange={handleCompetitionTabChange}
               options={competitionsTabsOptions}
-              type="inline"
             />
             {!isMobile && <CompetitionCountdown className="default-container" size="desktop" />}
           </div>

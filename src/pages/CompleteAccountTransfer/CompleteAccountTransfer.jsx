@@ -1,23 +1,22 @@
+import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 
 import { getContract } from "config/contracts";
-
-import Footer from "components/Footer/Footer";
-import Modal from "components/Modal/Modal";
-
-import "./CompleteAccountTransfer.css";
-
-import { Trans, t } from "@lingui/macro";
-import Button from "components/Button/Button";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useChainId } from "lib/chains";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
+
+import Button from "components/Button/Button";
+import Footer from "components/Footer/Footer";
+import Modal from "components/Modal/Modal";
+
+import "./CompleteAccountTransfer.css";
 
 export default function CompleteAccountTransfer() {
   const [, copyToClipboard] = useCopyToClipboard();

@@ -1,3 +1,6 @@
+import { useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
+
 import {
   LeaderboardPageKey,
   LeaderboardTimeframe,
@@ -9,8 +12,6 @@ import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { useChainId } from "lib/chains";
 import { getTimestampByDaysAgo } from "lib/dates";
 import { mustNeverExist } from "lib/types";
-import { useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
 
 export type LeaderboardState = ReturnType<typeof useLeaderboardState>;
 

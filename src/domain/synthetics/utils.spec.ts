@@ -1,6 +1,8 @@
-import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { getMaxLeverageByMinCollateralFactor } from "./markets";
 import { describe, expect, it } from "vitest";
+
+import { BASIS_POINTS_DIVISOR } from "config/factors";
+
+import { getMaxLeverageByMinCollateralFactor } from "./markets";
 
 describe("domain/synthetics/utils", () => {
   it("getMaxLeverageByMinCollateralFactor", () => {

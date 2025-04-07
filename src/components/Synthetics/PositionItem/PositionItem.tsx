@@ -9,7 +9,7 @@ import Skeleton from "react-loading-skeleton";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
+import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useCancelOrder, usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
@@ -780,7 +780,7 @@ function PositionItemOrder({
   orderErrors: OrderErrors;
   onOrdersClick?: (key?: string) => void;
 }) {
-  const [, setEditingOrderKey] = useEditingOrderKeyState();
+  const [, setEditingOrderState] = useEditingOrderState();
   const [isCancelling, cancel] = useCancelOrder(order.key);
   const handleOrdersClick = useCallback(() => {
     onOrdersClick?.(order.key);
@@ -789,8 +789,8 @@ function PositionItemOrder({
   const errors = orderErrors.errors;
 
   const handleEditClick = useCallback(() => {
-    setEditingOrderKey(order.key);
-  }, [order.key, setEditingOrderKey]);
+    setEditingOrderState({ orderKey: order.key, source: "PositionsList" });
+  }, [order.key, setEditingOrderState]);
 
   return (
     <div key={order.key}>

@@ -7,13 +7,13 @@ import { selectAccount, selectChainId } from "context/SyntheticsStateContext/sel
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useClaimCollateralHistory } from "domain/synthetics/claimHistory";
 
-import { AccruedPositionPriceImpactRebateModal } from "../AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal";
-import { ClaimModal } from "../ClaimModal/ClaimModal";
-import { ClaimablePositionPriceImpactRebateModal } from "../ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal";
-import { SettleAccruedFundingFeeModal } from "../SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal";
 import { ClaimableCard } from "./ClaimableCard";
 import { ClaimsHistory } from "./ClaimsHistory";
 import { SettleAccruedCard } from "./SettleAccruedCard";
+import { AccruedPositionPriceImpactRebateModal } from "../AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal";
+import { ClaimablePositionPriceImpactRebateModal } from "../ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal";
+import { ClaimModal } from "../ClaimModal/ClaimModal";
+import { SettleAccruedFundingFeeModal } from "../SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal";
 
 import "./Claims.scss";
 

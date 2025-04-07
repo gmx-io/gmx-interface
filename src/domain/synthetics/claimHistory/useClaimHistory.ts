@@ -14,8 +14,8 @@ import { getSubsquidGraphClient } from "lib/subgraph";
 import { getToken } from "sdk/configs/tokens";
 import { buildFiltersBody } from "sdk/utils/subgraph";
 
-import { useFixedAddreseses } from "../common/useFixedAddresses";
 import { ClaimAction, ClaimCollateralAction, ClaimFundingFeeAction, ClaimMarketItem, ClaimType } from "./types";
+import { useFixedAddreseses } from "../common/useFixedAddresses";
 
 export type ClaimCollateralHistoryResult = {
   claimActions?: ClaimAction[];

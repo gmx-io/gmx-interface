@@ -1,3 +1,6 @@
+import entries from "lodash/entries";
+import { useMemo } from "react";
+
 import { getContract } from "config/contracts";
 import {
   glvMaxMarketTokenBalanceAmountKey,
@@ -15,9 +18,8 @@ import {
 import { GM_DECIMALS } from "lib/legacy";
 import { ContractCallConfig, ContractCallsConfig, MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
-import entries from "lodash/entries";
-import { useMemo } from "react";
 import { getTokenBySymbol } from "sdk/configs/tokens";
+
 import { GlvInfoData, MarketsInfoData, getContractMarketPrices, getGlvMarketName } from ".";
 import { convertToContractTokenPrices } from "../tokens";
 import { TokenData, TokensData } from "../tokens/types";
@@ -49,11 +51,10 @@ export function useGlvMarketsInfo(
     tokensData: TokensData | undefined;
     chainId: number;
     account: string | undefined;
-    filterIncorrectMarkets?: boolean;
   }
 ) {
   const { tokensBalancesUpdates, resetTokensBalancesUpdates } = useTokensBalancesUpdates();
-  const { marketsInfoData, tokensData, chainId, account, filterIncorrectMarkets } = deps;
+  const { marketsInfoData, tokensData, chainId, account } = deps;
 
   const dataStoreAddress = enabled ? getContract(chainId, "DataStore") : "";
   const glvReaderAddress = enabled ? getContract(chainId, "GlvReader") : "";
@@ -86,11 +87,11 @@ export function useGlvMarketsInfo(
   );
 
   const glvs = useMemo(() => {
-    if (filterIncorrectMarkets === false) {
-      return glvList;
-    }
-    return glvList?.filter(({ markets }) => markets.length > 0 && markets.every((market) => marketsInfoData?.[market]));
-  }, [glvList, marketsInfoData, filterIncorrectMarkets]);
+    return glvList?.map(({ glv, markets }) => ({
+      glv,
+      markets: markets.filter((market) => marketsInfoData?.[market]),
+    }));
+  }, [glvList, marketsInfoData]);
 
   const shouldRequest = enabled && marketsInfoData && tokensData && glvs && glvs.length > 0;
 

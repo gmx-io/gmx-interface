@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
-import { getSyntheticsGraphClient } from "lib/subgraph/clients";
 import { useMemo } from "react";
-
 import useSWR from "swr";
+
+import { getSyntheticsGraphClient } from "lib/subgraph/clients";
 
 export default function useIsFirstOrder(chainId: number, p: { account?: string }) {
   const { account } = p;

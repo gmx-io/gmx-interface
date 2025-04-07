@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 
+import { DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS } from "config/factors";
 import {
   selectTradeboxDefaultAllowedSwapSlippageBps,
   selectTradeboxSelectedAllowedSwapSlippageBps,
@@ -9,9 +10,8 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-
-import { DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS } from "config/factors";
 import { bigMath } from "sdk/utils/bigmath";
+
 import { useTradeboxChanges } from "./useTradeboxChanges";
 
 export function useTradeboxAllowedSwapSlippageValues() {

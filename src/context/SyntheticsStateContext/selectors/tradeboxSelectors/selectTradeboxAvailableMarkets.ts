@@ -1,9 +1,10 @@
+import values from "lodash/values";
+
 import { selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxToTokenAddress } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { isMarketIndexToken } from "domain/synthetics/markets";
 import { EMPTY_ARRAY } from "lib/objects";
-import values from "lodash/values";
 
 export const selectTradeboxAvailableMarkets = createSelector((q) => {
   const marketsInfoData = q(selectMarketsInfoData);

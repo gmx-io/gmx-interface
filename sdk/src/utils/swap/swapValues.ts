@@ -1,16 +1,11 @@
-import { SwapRoute } from "types/trade";
-
-import type { SwapAmounts } from "types/trade";
-import type { FindSwapPath } from "types/trade";
-import type { TokenData } from "types/tokens";
-import type { TokensRatio } from "types/tokens";
-
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
-
-import { applyFactor } from "utils/numbers";
+import type { TokenData, TokensRatio } from "types/tokens";
+import { SwapRoute } from "types/trade";
+import type { FindSwapPath, SwapAmounts, SwapOptimizationOrderArray } from "types/trade";
 import { bigMath } from "utils/bigmath";
-import { convertToUsd, getIsEquivalentTokens, convertToTokenAmount, getAmountByRatio } from "utils/tokens";
 import { getTotalSwapVolumeFromSwapStats } from "utils/fees";
+import { applyFactor } from "utils/numbers";
+import { convertToTokenAmount, convertToUsd, getAmountByRatio, getIsEquivalentTokens } from "utils/tokens";
 
 export function getSwapAmountsByFromValue(p: {
   tokenIn: TokenData;
@@ -18,7 +13,7 @@ export function getSwapAmountsByFromValue(p: {
   amountIn: bigint;
   triggerRatio?: TokensRatio;
   isLimit: boolean;
-  swapOptimizationOrder?: Parameters<FindSwapPath>[1]["order"];
+  swapOptimizationOrder?: SwapOptimizationOrderArray;
   allowedSwapSlippageBps?: bigint;
   findSwapPath: FindSwapPath;
   uiFeeFactor: bigint;
@@ -134,7 +129,7 @@ export function getSwapAmountsByToValue(p: {
   triggerRatio?: TokensRatio;
   isLimit: boolean;
   findSwapPath: FindSwapPath;
-  swapOptimizationOrder?: Parameters<FindSwapPath>[1]["order"];
+  swapOptimizationOrder?: SwapOptimizationOrderArray;
   allowedSwapSlippageBps?: bigint;
   uiFeeFactor: bigint;
 }): SwapAmounts {
@@ -243,7 +238,7 @@ export function getSwapAmountsByToValue(p: {
   };
 }
 
-export function getSwapPathComparator(order: Parameters<FindSwapPath>[1]["order"]) {
+export function getSwapPathComparator(order?: SwapOptimizationOrderArray | undefined) {
   return function (a: SwapRoute, b: SwapRoute) {
     for (const field of order || []) {
       const isLiquidity = field === "liquidity";

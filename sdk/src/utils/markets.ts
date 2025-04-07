@@ -1,6 +1,5 @@
 import { BASIS_POINTS_DIVISOR } from "configs/factors";
 import { getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-
 import { ContractMarketPrices, Market, MarketInfo } from "types/markets";
 import { Token, TokenPrices, TokensData } from "types/tokens";
 

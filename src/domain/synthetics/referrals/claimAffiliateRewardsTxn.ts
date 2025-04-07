@@ -1,6 +1,7 @@
 import { t } from "@lingui/macro";
-import { getContract } from "config/contracts";
 import { Signer, ethers } from "ethers";
+
+import { getContract } from "config/contracts";
 import { callContract } from "lib/contracts";
 import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { abis } from "sdk/abis";

@@ -3,9 +3,9 @@ import { msg, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { useMemo } from "react";
 
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { OrderType } from "domain/synthetics/orders/types";
 import { TradeActionType } from "sdk/types/tradeHistory";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/TableOptionsFilter";
 

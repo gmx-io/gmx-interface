@@ -1,16 +1,17 @@
-import { getByKey } from "./objects";
 
-import { getSwapPathOutputAddresses } from "./swap/swapStats";
 
-import { Token, TokensData } from "types/tokens";
 import { getAddress } from "viem";
 
-import { isIncreaseOrderType, isSwapOrderType } from "./orders";
 
+import type { MarketsInfoData } from "types/markets";
+import { Token, TokensData } from "types/tokens";
 import type { PositionTradeAction } from "types/tradeHistory";
 import type { RawTradeAction } from "types/tradeHistory";
-import type { MarketsInfoData } from "types/markets";
 import type { SwapTradeAction } from "types/tradeHistory";
+
+import { getByKey } from "./objects";
+import { isIncreaseOrderType, isSwapOrderType } from "./orders";
+import { getSwapPathOutputAddresses } from "./swap/swapStats";
 import { parseContractPrice } from "./tokens";
 
 export function createRawTradeActionTransformer(

@@ -1,6 +1,7 @@
 import { Image } from "@davatar/react";
-import { ETH_MAINNET } from "config/chains";
 import { useEnsAvatar } from "wagmi";
+
+import { ETH_MAINNET } from "config/chains";
 
 export type Props = {
   size: number;

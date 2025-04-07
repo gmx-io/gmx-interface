@@ -1,32 +1,33 @@
 import { sub } from "date-fns";
+import mapValues from "lodash/mapValues";
+import { useCallback, useMemo } from "react";
+import useSWR from "swr";
+
+import { getMarketListingDate } from "config/markets";
+import { getSubgraphUrl } from "config/subgraph";
+import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLidoStakeApr } from "domain/stake/useLidoStakeApr";
 import { GlvInfoData, getPoolUsdWithoutPnl, isMarketInfo } from "domain/synthetics/markets";
 import { CHART_PERIODS, GM_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { BN_ZERO, PRECISION, bigintToNumber, expandDecimals, numberToBigint } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import mapValues from "lodash/mapValues";
-import { useCallback, useMemo } from "react";
 import { getTokenBySymbolSafe } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
-import useSWR from "swr";
+import graphqlFetcher from "sdk/utils/graphqlFetcher";
+
 import { useLiquidityProvidersIncentives } from "../common/useIncentiveStats";
 import { getBorrowingFactorPerPeriod } from "../fees";
 import { useTokensDataRequest } from "../tokens";
-import { GlvAndGmMarketsInfoData, MarketInfo, MarketTokensAPRData } from "./types";
-import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
-import { useMarketTokensData } from "./useMarketTokensData";
-
-import { getMarketListingDate } from "config/markets";
-import { getSubgraphUrl } from "config/subgraph";
-import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import graphqlFetcher from "sdk/utils/graphqlFetcher";
-import { convertToUsd } from "../tokens/utils";
 import { getIsBaseApyReadyToBeShown } from "./getIsBaseApyReadyToBeShown";
 import { isGlvEnabled, isGlvInfo } from "./glv";
+import { GlvAndGmMarketsInfoData, MarketInfo, MarketTokensAPRData } from "./types";
+import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useGlvMarketsInfo } from "./useGlvMarkets";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
+import { useMarketTokensData } from "./useMarketTokensData";
+import { convertToUsd } from "../tokens/utils";
 
 type RawCollectedFee = {
   cumulativeFeeUsdPerPoolValue: string;

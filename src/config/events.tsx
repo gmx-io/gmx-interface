@@ -4,12 +4,13 @@ import { Trans } from "@lingui/macro";
 import { type JSX } from "react";
 import { Link } from "react-router-dom";
 
-import { ARBITRUM, AVALANCHE } from "./chains";
-import { getIncentivesV2Url } from "./links";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { TokenSymbolWithIcon } from "components/TokenSymbolWithIcon/TokenSymbolWithIcon";
+
+import { ARBITRUM, AVALANCHE } from "./chains";
+import { getIncentivesV2Url } from "./links";
 
 export type EventData = {
   id: string;

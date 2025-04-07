@@ -1,16 +1,17 @@
-import { useMemo } from "react";
 import { gql } from "@apollo/client";
+import { useMemo } from "react";
 import useSWR from "swr";
 
-import { CHART_PERIODS } from "lib/legacy";
-import { USD_DECIMALS } from "config/factors";
 import { GMX_STATS_API_URL } from "config/backend";
-import { chainlinkClient } from "lib/subgraph/clients";
-import { sleep } from "lib/sleep";
+import { USD_DECIMALS } from "config/factors";
+import { CHART_PERIODS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
+import { sleep } from "lib/sleep";
+import { chainlinkClient } from "lib/subgraph/clients";
 import { getNativeToken, getNormalizedTokenSymbol, isChartAvailableForToken } from "sdk/configs/tokens";
-import type { Bar, FromOldToNewArray } from "../tradingview/types";
+
 import { FEED_ID_MAP } from "./constants";
+import type { Bar, FromOldToNewArray } from "../tradingview/types";
 
 type CompactBar = {
   t: number;

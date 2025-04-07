@@ -1,7 +1,9 @@
-import { USD_DECIMALS } from "config/factors";
 import { BigNumberish, ethers } from "ethers";
+
+import { USD_DECIMALS } from "config/factors";
 import { getPlusOrMinusSymbol } from "lib/utils";
 import { bigMath } from "sdk/utils/bigmath";
+
 import {
   bigintToNumber,
   calculateDisplayDecimals,

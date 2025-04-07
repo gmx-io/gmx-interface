@@ -1,4 +1,5 @@
 import { type Address, zeroAddress } from "viem";
+
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET } from "./chains";
 
 export const CONTRACTS = {

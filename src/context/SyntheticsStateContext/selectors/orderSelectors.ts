@@ -5,6 +5,7 @@ import {
   isOrderForPosition,
   sortPositionOrders,
 } from "domain/synthetics/orders";
+
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorFactory } from "../utils";
 import { selectMarketsInfoData, selectPositionsInfoData, selectUiFeeFactor } from "./globalSelectors";

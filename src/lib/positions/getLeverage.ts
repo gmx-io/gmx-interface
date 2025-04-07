@@ -1,6 +1,6 @@
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { bigMath } from "sdk/utils/bigmath";
 import { formatAmount } from "lib/numbers";
+import { bigMath } from "sdk/utils/bigmath";
 
 type GetLeverageParams = {
   size: bigint;

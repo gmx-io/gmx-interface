@@ -1,6 +1,7 @@
 import useSWR from "swr";
-import { expandDecimals } from "lib/numbers";
+
 import { LIDO_STAKE_APR_URL } from "config/lido";
+import { expandDecimals } from "lib/numbers";
 
 export const LIDO_APR_DECIMALS = 28;
 export const LIDO_APR_DIVISOR = expandDecimals(1, LIDO_APR_DECIMALS);

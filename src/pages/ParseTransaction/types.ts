@@ -1,6 +1,7 @@
+import { Address } from "viem";
+
 import { GlvInfoData, MarketsInfoData } from "domain/synthetics/markets";
 import { TokensData } from "domain/tokens";
-import { Address } from "viem";
 
 export type Event = {
   key: string;

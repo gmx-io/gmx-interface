@@ -1,5 +1,8 @@
-import { USD_DECIMALS } from "config/factors";
 import { describe, expect, it } from "vitest";
+
+import { USD_DECIMALS } from "config/factors";
+
+import { PERCENT_PRECISION_DECIMALS, toBigNumberWithDecimals } from ".";
 import {
   formatAmountHuman,
   formatBalanceAmount,
@@ -8,7 +11,6 @@ import {
   formatUsdPrice,
   formatPercentage,
 } from "./formatting";
-import { PERCENT_PRECISION_DECIMALS, toBigNumberWithDecimals } from ".";
 
 const ONE_USD = 1000000000000000000000000000000n;
 

@@ -5,6 +5,7 @@ import React, { useCallback, useMemo, useState } from "react";
 
 import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
+import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
@@ -13,8 +14,8 @@ import { callContract } from "lib/contracts";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
+import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
-import { GMX_DAO_LINKS } from "./constants";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
@@ -23,8 +24,7 @@ import Checkbox from "components/Checkbox/Checkbox";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 
-import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
-import { abis } from "sdk/abis";
+import { GMX_DAO_LINKS } from "./constants";
 
 export function ClaimModal(props: {
   isVisible: boolean;

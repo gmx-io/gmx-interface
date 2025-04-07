@@ -1,10 +1,13 @@
 import { gql } from "@apollo/client";
-import { SUPPORTED_CHAIN_IDS } from "config/chains";
 import { BigNumberish, ethers } from "ethers";
+import { useEffect, useState } from "react";
+
+import { SUPPORTED_CHAIN_IDS } from "config/chains";
 import { BN_ZERO } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { getReferralsGraphClient } from "lib/subgraph";
-import { useEffect, useState } from "react";
+import { decodeReferralCode } from "sdk/utils/referrals";
+
 import {
   AffiliateTotalStats,
   CodeOwnershipInfo,
@@ -15,7 +18,6 @@ import {
   TotalReferralsStats,
   TraderReferralTotalStats,
 } from "../types";
-import { decodeReferralCode } from "sdk/utils/referrals";
 import { getCodeOwnersData } from "./useUserCodesOnAllChain";
 
 const REFERRALS_GQL = gql`

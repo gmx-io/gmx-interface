@@ -1,17 +1,11 @@
 import { Trans, msg, t } from "@lingui/macro";
+import { ethers } from "ethers";
 import { useMemo } from "react";
+import { useParams } from "react-router-dom";
+import { useLocalStorage } from "react-use";
 
-import Loader from "components/Common/Loader";
-import SEO from "components/Common/SEO";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import Footer from "components/Footer/Footer";
-import AddAffiliateCode from "components/Referrals/AddAffiliateCode";
-import AffiliatesStats from "components/Referrals/AffiliatesStats";
-import JoinReferralCode from "components/Referrals/JoinReferralCode";
-import TradersStats from "components/Referrals/TradersStats";
-import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "components/Referrals/referralsHelper";
-import Tabs from "components/Tabs/Tabs";
 import { REFERRALS_SELECTED_TAB_KEY } from "config/localStorage";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import {
   ReferralCodeStats,
   registerReferralCode,
@@ -21,18 +15,26 @@ import {
   useReferrerDiscountShare,
   useUserReferralCode,
 } from "domain/referrals";
-import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
+import { useLocalizedMap } from "lib/i18n";
 import { getPageTitle, isHashZero } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useParams } from "react-router-dom";
-import { useLocalStorage } from "react-use";
-import "./Referrals.css";
-import useWallet from "lib/wallets/useWallet";
-import PageTitle from "components/PageTitle/PageTitle";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { serializeBigIntsInObject } from "lib/numbers";
-import { useLocalizedMap } from "lib/i18n";
+import useWallet from "lib/wallets/useWallet";
+
+import Loader from "components/Common/Loader";
+import SEO from "components/Common/SEO";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import Footer from "components/Footer/Footer";
+import PageTitle from "components/PageTitle/PageTitle";
+import AddAffiliateCode from "components/Referrals/AddAffiliateCode";
+import AffiliatesStats from "components/Referrals/AffiliatesStats";
+import JoinReferralCode from "components/Referrals/JoinReferralCode";
+import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "components/Referrals/referralsHelper";
+import TradersStats from "components/Referrals/TradersStats";
+import Tabs from "components/Tabs/Tabs";
+
+import "./Referrals.css";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
