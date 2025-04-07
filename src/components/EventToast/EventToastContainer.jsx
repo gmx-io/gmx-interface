@@ -1,5 +1,5 @@
-import { Toaster } from "react-hot-toast";
 import { useMemo } from "react";
+import { Toaster } from "react-hot-toast";
 import { useWindowScroll, createBreakpoint } from "react-use";
 
 const TOAST_OPTIONS = {

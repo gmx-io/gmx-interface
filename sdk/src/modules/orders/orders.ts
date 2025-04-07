@@ -2,13 +2,11 @@ import { Address } from "viem";
 
 import { getWrappedToken } from "configs/tokens";
 import { MarketFilterLongShortItemData } from "modules/trades/trades";
-
 import { MarketInfo, MarketsInfoData } from "types/markets";
 import { OrdersData, OrdersInfoData, OrderType, PositionOrderInfo } from "types/orders";
 import { SidecarLimitOrderEntryValid, SidecarSlTpOrderEntryValid } from "types/sidecarOrders";
 import { TokenData, TokensData } from "types/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "types/trade";
-
 import { getByKey } from "utils/objects";
 import { getOrderInfo, isOrderForPositionByData, isVisibleOrder } from "utils/orders";
 
@@ -16,9 +14,10 @@ import { createDecreaseOrderTxn } from "./transactions/createDecreaseOrderTxn";
 import { createIncreaseOrderTxn } from "./transactions/createIncreaseOrderTxn";
 import { buildGetOrdersMulticall, getExecutionFeeAmountForEntry, matchByMarket, parseGetOrdersResponse } from "./utils";
 import { Module } from "../base";
+import { PositionIncreaseParams, SwapParams, increaseOrderHelper, swap } from "./helpers";
+import { cancelOrdersTxn } from "./transactions/cancelOrdersTxn";
 import { createSwapOrderTxn } from "./transactions/createSwapOrderTxn";
 import { createWrapOrUnwrapTxn, WrapOrUnwrapParams } from "./transactions/createWrapOrUnwrapTxn";
-import { cancelOrdersTxn } from "./transactions/cancelOrdersTxn";
 
 export class Orders extends Module {
   async getOrders({
@@ -368,6 +367,7 @@ export class Orders extends Module {
     toToken,
     referralCodeForTxn,
     tokensData,
+    triggerPrice,
   }: {
     isLimit: boolean;
     allowedSlippage: number;
@@ -376,6 +376,7 @@ export class Orders extends Module {
     referralCodeForTxn?: string;
     toToken: TokenData;
     tokensData: TokensData;
+    triggerPrice?: bigint;
   }) {
     const orderType = isLimit ? OrderType.LimitSwap : OrderType.MarketSwap;
 
@@ -398,6 +399,7 @@ export class Orders extends Module {
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage,
       tokensData,
+      triggerPrice: isLimit && triggerPrice !== undefined ? triggerPrice : undefined,
     });
   }
 
@@ -409,5 +411,17 @@ export class Orders extends Module {
 
   async createWrapOrUnwrapOrder(p: WrapOrUnwrapParams) {
     return createWrapOrUnwrapTxn(this.sdk, p);
+  }
+
+  async long(params: PositionIncreaseParams) {
+    return increaseOrderHelper(this.sdk, { ...params, isLong: true });
+  }
+
+  async short(params: PositionIncreaseParams) {
+    return increaseOrderHelper(this.sdk, { ...params, isLong: false });
+  }
+
+  async swap(params: SwapParams) {
+    return swap(this.sdk, params);
   }
 }

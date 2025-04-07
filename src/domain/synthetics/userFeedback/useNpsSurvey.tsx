@@ -1,26 +1,29 @@
-import { RatingToast } from "components/RatingToast/RatingToast";
+import { differenceInDays } from "date-fns";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { toast } from "react-toastify";
+import { useUnmount } from "react-use";
+
+import { USD_DECIMALS } from "config/factors";
 import { NPS_SURVEY_SHOWN_TIME_KEY } from "config/localStorage";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import {
   selectAccountStats,
   selectLastMonthAccountStats,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { OrderType } from "domain/synthetics/orders";
+import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { toast } from "react-toastify";
-import { useChainId } from "lib/chains";
 import { formatAmountForMetrics } from "lib/metrics";
-import { USD_DECIMALS } from "config/factors";
-import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
-import useWallet from "lib/wallets/useWallet";
-import { differenceInDays } from "date-fns";
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { OrderType } from "domain/synthetics/orders";
-import { useUnmount } from "react-use";
-import { formatAnswersByQuestionType } from "./utils";
-import { Answer } from "./types";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
+import useWallet from "lib/wallets/useWallet";
+
+import { RatingToast } from "components/RatingToast/RatingToast";
+
+import { Answer } from "./types";
+import { formatAnswersByQuestionType } from "./utils";
 
 const ACTION_TRIGGERED_DELAY = 5000;
 
@@ -49,7 +52,7 @@ export function useNpsSurvey() {
   const isTriggerActionPerformedRef = useRef<number>();
 
   const onSubmitSurvey = useCallback(
-    (answers: Answer[]) => {
+    ({ answers, contact }: { answers: Answer[]; contact: string }) => {
       if (!rating || !account) {
         setError(new Error("Error occurred. Please try again"));
         return;
@@ -64,6 +67,7 @@ export function useNpsSurvey() {
               account: "",
               rating,
               isGeneralFeedback: false,
+              contact,
               monthVolume: formatAmountForMetrics(
                 lastMonthAccountStats?.volume || 0n,
                 USD_DECIMALS,

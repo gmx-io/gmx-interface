@@ -61,11 +61,11 @@ import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalyti
 import useWallet from "lib/wallets/useWallet";
 import { getWrappedToken } from "sdk/configs/tokens";
 
+import ExternalLink from "components/ExternalLink/ExternalLink";
+
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 import { OPERATION_LABELS, Operation } from "./types";
-
-import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export function usePositionEditorButtonState(operation: Operation): {
   text: ReactNode;
@@ -365,6 +365,7 @@ export function usePositionEditorButtonState(operation: Operation): {
           setPendingTxns,
           setPendingOrder,
           setPendingPosition,
+          slippageInputId: undefined,
         },
       });
     } else {
@@ -401,6 +402,7 @@ export function usePositionEditorButtonState(operation: Operation): {
           tokensData,
           skipSimulation: shouldDisableValidationForTesting,
           autoCancel: false,
+          slippageInputId: undefined,
         },
         {
           setPendingTxns,

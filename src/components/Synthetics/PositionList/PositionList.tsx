@@ -11,13 +11,13 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { PositionInfo } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
 import { getByKey } from "lib/objects";
+import { userAnalytics } from "lib/userAnalytics";
+import { SharePositionClickEvent } from "lib/userAnalytics/types";
 
 import PositionShare from "components/Exchange/PositionShare";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
-import { userAnalytics } from "lib/userAnalytics";
-import { SharePositionClickEvent } from "lib/userAnalytics/types";
 
 type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode, showCurtain?: boolean) => void;

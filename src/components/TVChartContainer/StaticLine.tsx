@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
-import type { IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
 import { LineStyle, StaticChartLine } from "./types";
+import type { IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
 
 export function StaticLine({
   title,

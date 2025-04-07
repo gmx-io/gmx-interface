@@ -1,15 +1,15 @@
 import { useAccount } from "wagmi";
 
 import { getContract } from "config/contracts";
-import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
-import { MulticallRequestConfig, useMulticall } from "lib/multicall";
-import { getV2Tokens, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
-import { TokenBalancesData } from "./types";
-
 import {
   useTokensBalancesUpdates,
   useUpdatedTokensBalances,
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
+import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
+import { MulticallRequestConfig, useMulticall } from "lib/multicall";
+import { getV2Tokens, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+
+import { TokenBalancesData } from "./types";
 
 type BalancesDataResult = {
   balancesData?: TokenBalancesData;

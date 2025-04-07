@@ -1,21 +1,34 @@
+import debounce from "lodash/debounce";
+
 import { getChainName } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
-import { OrderType } from "domain/synthetics/orders";
+import { MarketInfo } from "domain/synthetics/markets";
+import {
+  EditingOrderSource,
+  OrderInfo,
+  OrderType,
+  isLimitOrderType,
+  isMarketOrderType,
+  isSwapOrderType,
+  isTriggerDecreaseOrderType,
+} from "domain/synthetics/orders";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
 import { formatAmountForMetrics, formatPercentageForMetrics, metrics } from "lib/metrics";
-import { parseError } from "lib/parseError";
 import { OrderMetricData, OrderMetricId } from "lib/metrics/types";
 import { bigintToNumber, formatRatePercentage, roundToOrder } from "lib/numbers";
+import { parseError } from "lib/parseError";
 import { userAnalytics } from "lib/userAnalytics";
 import {
+  AnalyticsOrderType,
   ConnectWalletClickEvent,
+  DepthChartInteractionEvent,
   PoolsPageBuyConfirmEvent,
   PoolsPageBuyResultEvent,
   TradeBoxConfirmClickEvent,
   TradeBoxInteractionStartedEvent,
   TradeBoxResultEvent,
+  TradePageEditOrderEvent,
 } from "lib/userAnalytics/types";
-import debounce from "lodash/debounce";
 
 export function getTradeInteractionKey(pair: string) {
   return `trade-${pair}`;
@@ -325,3 +338,54 @@ export function makeUserAnalyticsOrderFailResultHandler(chainId: number, metricI
     throw error;
   };
 }
+
+export const sendDepthChartInteractionEvent = (pair: string) => {
+  userAnalytics.pushEvent<DepthChartInteractionEvent>(
+    {
+      event: "TradePageAction",
+      data: {
+        action: "DepthChartInteraction",
+        pair,
+      },
+    },
+    { dedupKey: pair }
+  );
+};
+
+const getAnalyticsOrderType = (orderType: OrderType): AnalyticsOrderType | undefined => {
+  if (isMarketOrderType(orderType)) return "Market";
+  if (isLimitOrderType(orderType)) return "Limit";
+  if (isTriggerDecreaseOrderType(orderType)) return "TPSL";
+
+  return undefined;
+};
+
+export const sendEditOrderEvent = ({
+  order,
+  source,
+  marketInfo,
+}: {
+  order: OrderInfo;
+  source: EditingOrderSource;
+  marketInfo: MarketInfo;
+}) => {
+  const orderType = getAnalyticsOrderType(order.orderType);
+
+  if (!orderType) {
+    return;
+  }
+
+  const pair = isSwapOrderType(order.orderType)
+    ? `${order.initialCollateralToken.symbol}/${order.targetCollateralToken.symbol}`
+    : marketInfo.name;
+
+  userAnalytics.pushEvent<TradePageEditOrderEvent>({
+    event: "TradePageAction",
+    data: {
+      action: "EditOrder",
+      orderType,
+      pair,
+      source,
+    },
+  });
+};

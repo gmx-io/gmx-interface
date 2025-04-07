@@ -3,15 +3,16 @@ import { useLingui } from "@lingui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLatest, usePrevious } from "react-use";
 
+import { helperToast } from "lib/helperToast";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-import type { IChartingLibraryWidget, IOrderLineAdapter } from "../../charting_library";
+
 import { orderTypeToTitle } from "./constants";
 import { DynamicChartLine, LineStyle } from "./types";
-import { helperToast } from "lib/helperToast";
+import type { IChartingLibraryWidget, IOrderLineAdapter } from "../../charting_library";
 
 const BODY_BACKGROUND_COLOR = "#3a3e5e";
 const BUTTON_BACKGROUND_COLOR = "#16182e";
-const BORDER_COLOR = "#252a47";
+const BORDER_COLOR = "#9295ad";
 const BODY_ERROR_BACKGROUND_COLOR = "#831e2d";
 const LOADER_ANIMATION_STEP_MS = 1000;
 
@@ -27,6 +28,7 @@ export function DynamicLine({
   isEdited,
   isPending,
   getError,
+  marketName,
 }: {
   isMobile: boolean;
   isEdited: boolean;
@@ -49,8 +51,8 @@ export function DynamicLine({
   const title = useMemo(() => {
     const predefinedKey = orderTypeToTitle[`${orderType}-${isLong ? "long" : "short"}`];
     const title = predefinedKey ? _(predefinedKey) : t`Unknown Order`;
-    return title;
-  }, [_, isLong, orderType]);
+    return `${title} - ${marketName}`;
+  }, [_, isLong, orderType, marketName]);
 
   useEffect(() => {
     const chart = tvWidgetRef.current?.activeChart();

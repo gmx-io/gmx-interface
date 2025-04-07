@@ -3,17 +3,16 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import uniq from "lodash/uniq";
 import { useMemo } from "react";
 
-import { ExecutionFee } from "domain/synthetics/fees";
-import { getNeedTokenApprove, getTokenData, useTokensAllowanceData } from "domain/synthetics/tokens";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import type { MarketInfo } from "domain/synthetics/markets/types";
-import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
-import type { GmSwapFees } from "sdk/types/trade";
-import type { ShiftAmounts } from "domain/synthetics/trade/utils/shift";
-import { getCommonError, getGmShiftError } from "domain/synthetics/trade/utils/validation";
-
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { ExecutionFee } from "domain/synthetics/fees";
+import type { MarketInfo } from "domain/synthetics/markets/types";
+import { getNeedTokenApprove, getTokenData, useTokensAllowanceData } from "domain/synthetics/tokens";
+import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
+import type { ShiftAmounts } from "domain/synthetics/trade/utils/shift";
+import { getCommonError, getGmShiftError } from "domain/synthetics/trade/utils/validation";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import type { GmSwapFees } from "sdk/types/trade";
 
 import { useShiftTransactions } from "./useShiftTransactions";
 

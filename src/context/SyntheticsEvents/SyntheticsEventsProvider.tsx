@@ -1,15 +1,14 @@
 import { t } from "@lingui/macro";
-import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
-import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
-import { OrdersStatusNotificiation } from "components/Synthetics/StatusNotification/OrderStatusNotification";
-import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useTokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
-import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import {
   subscribeToApprovalEvents,
   subscribeToTransferEvents,
   subscribeToV2Events,
 } from "context/WebsocketContext/subscribeToEvents";
+import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
@@ -42,9 +41,15 @@ import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { deleteByKey, getByKey, setByKey, updateByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { sendUserAnalyticsOrderResultEvent, userAnalytics } from "lib/userAnalytics";
+import { TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
-import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+
+import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
+import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
+import { OrdersStatusNotificiation } from "components/Synthetics/StatusNotification/OrderStatusNotification";
+
 import {
   ApprovalStatuses,
   DepositCreatedEventData,
@@ -70,8 +75,6 @@ import {
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
-import { sendUserAnalyticsOrderResultEvent, userAnalytics } from "lib/userAnalytics";
-import { TokenApproveResultEvent } from "lib/userAnalytics/types";
 
 export const SyntheticsEventsContext = createContext({});
 

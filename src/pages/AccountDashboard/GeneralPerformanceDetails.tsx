@@ -4,6 +4,7 @@ import cx from "classnames";
 import type { Address } from "viem";
 
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
+import { PnlSummaryPoint, usePnlSummaryData } from "domain/synthetics/accountStats";
 import { formatPercentage, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
@@ -12,7 +13,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { PnlSummaryPoint, usePnlSummaryData } from "domain/synthetics/accountStats";
+
 import { GeneralPerformanceDetailsDebugTooltip } from "./generalPerformanceDetailsDebug";
 
 const bucketLabelMap = {

@@ -1,5 +1,6 @@
-import { formatAmount } from "lib/numbers";
 import { useCallback, useState } from "react";
+
+import { formatAmount } from "lib/numbers";
 
 function numberToString(value: bigint | null, decimals: number, displayDecimals: number) {
   if (value === null) return "";

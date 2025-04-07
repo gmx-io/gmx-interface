@@ -1,14 +1,16 @@
-import { sleep } from "lib/sleep";
-import { useDebounce } from "lib/useDebounce";
 import { useMemo } from "react";
+import { usePrevious } from "react-use";
+import useSWR from "swr";
+
+import { metrics, OpenOceanQuoteTiming } from "lib/metrics";
+import { useDebounce } from "lib/useDebounce";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { TokensData } from "sdk/types/tokens";
 import { ExternalSwapAggregator, ExternalSwapOutput } from "sdk/types/trade";
-import useSWR from "swr";
+
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
 import { getOpenOceanTxnData } from "./openOcean";
-import { usePrevious } from "react-use";
 
 export function useExternalSwapOutputRequest({
   chainId,
@@ -59,21 +61,20 @@ export function useExternalSwapOutputRequest({
           throw new Error("Invalid swap parameters");
         }
 
-        const result = await Promise.race([
-          getOpenOceanTxnData({
-            chainId,
-            senderAddress: getContract(chainId, "ExternalHandler"),
-            receiverAddress: getContract(chainId, "OrderVault"),
-            tokenInAddress: convertTokenAddress(chainId, tokenInAddress, "wrapped"),
-            tokenOutAddress: convertTokenAddress(chainId, tokenOutAddress, "wrapped"),
-            amountIn,
-            gasPrice,
-            slippage,
-          }),
-          sleep(5000).then(() => {
-            throw new Error("External swap request timeout");
-          }),
-        ]);
+        const startTime = Date.now();
+
+        const result = await getOpenOceanTxnData({
+          chainId,
+          senderAddress: getContract(chainId, "ExternalHandler"),
+          receiverAddress: getContract(chainId, "OrderVault"),
+          tokenInAddress: convertTokenAddress(chainId, tokenInAddress, "wrapped"),
+          tokenOutAddress: convertTokenAddress(chainId, tokenOutAddress, "wrapped"),
+          amountIn,
+          gasPrice,
+          slippage,
+        });
+
+        metrics.pushTiming<OpenOceanQuoteTiming>("openOcean.quote.timing", Date.now() - startTime);
 
         if (!result) {
           throw new Error("Failed to fetch open ocean txn data");
@@ -105,6 +106,7 @@ export function useExternalSwapOutputRequest({
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error("Error fetching external swap quote", error);
+        metrics.pushError(error, "externalSwap.useExternalSwapOutputRequest");
         throw error;
       }
     },

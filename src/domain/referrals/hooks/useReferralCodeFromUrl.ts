@@ -1,6 +1,7 @@
+import { useMemo } from "react";
+
 import { REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 import useRouteQuery from "lib/useRouteQuery";
-import { useMemo } from "react";
 
 export function useReferralCodeFromUrl() {
   const query = useRouteQuery();

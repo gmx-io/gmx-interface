@@ -1,6 +1,6 @@
 import { zeroAddress } from "viem";
 
-import { Token, TokenCategory } from "types/tokens";
+import type { Token, TokenCategory } from "types/tokens";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 import { getContract } from "./contracts";

@@ -1,8 +1,9 @@
 import fetch from "cross-fetch";
 
-import type { GmxSdk } from "../index";
-import { buildUrl } from "utils/buildUrl";
 import { MarketSdkConfig } from "types/markets";
+import { buildUrl } from "utils/buildUrl";
+
+import type { GmxSdk } from "../index";
 
 export type TickersResponse = {
   minPrice: string;

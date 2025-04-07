@@ -1,29 +1,27 @@
-import useSWR from "swr";
 import { useCallback, useMemo } from "react";
+import useSWR from "swr";
 
+import { getSubgraphUrl } from "config/subgraph";
+import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLidoStakeApr } from "domain/stake/useLidoStakeApr";
 import { getPoolUsdWithoutPnl, GlvInfoData } from "domain/synthetics/markets";
 import { GM_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { BN_ZERO, expandDecimals, numberToBigint, PRECISION } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-
+import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { getTokenBySymbolSafe } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
-import { useLiquidityProvidersIncentives } from "../common/useIncentiveStats";
-import { useTokensDataRequest } from "../tokens";
-import { GlvAndGmMarketsInfoData, MarketTokensAPRData } from "./types";
-import { useMarketTokensData } from "./useMarketTokensData";
-
-import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
-import { convertToUsd } from "../tokens/utils";
 import { isGlvEnabled, isGlvInfo } from "./glv";
+import { GlvAndGmMarketsInfoData, MarketTokensAPRData } from "./types";
 import { useGlvMarketsInfo } from "./useGlvMarkets";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
-import { getSubgraphUrl } from "config/subgraph";
+import { useMarketTokensData } from "./useMarketTokensData";
+import { useLiquidityProvidersIncentives } from "../common/useIncentiveStats";
+import { useTokensDataRequest } from "../tokens";
+import { convertToUsd } from "../tokens/utils";
 
 type GmGlvTokensAPRResult = {
   glvApyInfoData: MarketTokensAPRData;

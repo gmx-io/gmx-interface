@@ -1,23 +1,24 @@
 import { t } from "@lingui/macro";
+import { Signer, ethers } from "ethers";
+import concat from "lodash/concat";
+
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { PendingOrderData, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
 import { TokenData, TokensData, convertToContractPrice } from "domain/synthetics/tokens";
-import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { OrderMetricId } from "lib/metrics/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
-import concat from "lodash/concat";
 import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { ExternalSwapQuote } from "sdk/types/trade";
 import { isMarketOrderType } from "sdk/utils/orders";
 import { applySlippageToPrice } from "sdk/utils/trade";
+
 import { getExternalCallsParams } from "../externalSwaps/utils";
 import { getPositionKey } from "../positions";
-import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { createCancelEncodedPayload } from "./cancelOrdersTxn";
 import { DecreaseOrderParams as BaseDecreaseOrderParams, createDecreaseEncodedPayload } from "./createDecreaseOrderTxn";
 import { prepareOrderTxn } from "./prepareOrderTxn";
@@ -25,6 +26,7 @@ import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderTxnType, OrderType } from "./types";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
 import { getPendingOrderFromParams } from "./utils";
+import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 
 const { ZeroAddress } = ethers;
 
@@ -50,6 +52,7 @@ type IncreaseOrderParams = {
   referralCode: string | undefined;
   indexToken: TokenData;
   tokensData: TokensData;
+  slippageInputId: string | undefined;
   setPendingTxns: (txns: any) => void;
   setPendingOrder: SetPendingOrder;
   setPendingPosition: SetPendingPosition;
@@ -248,7 +251,10 @@ export async function createIncreaseOrderTxn({
         createMulticallPayload: simulationEncodedPayload,
         value: totalWntAmount,
         errorTitle: t`Order error.`,
-        additionalErrorContent,
+        additionalErrorParams: {
+          content: additionalErrorContent,
+          slippageInputId: p.slippageInputId,
+        },
         metricId,
         blockTimestampData,
         externalSwapQuote: p.externalSwapQuote,
@@ -432,7 +438,15 @@ function createOrderParams({
   };
 }
 
-function getCollateralAndSwapAddresses(chainId: number, p: IncreaseOrderParams) {
+export function getCollateralAndSwapAddresses(
+  chainId: number,
+  p: {
+    swapPath: string[];
+    initialCollateralAddress: string;
+    targetCollateralAddress: string;
+    externalSwapQuote: ExternalSwapQuote | undefined;
+  }
+) {
   let swapPath = p.swapPath;
   let initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
   const tokenToSendAddress = initialCollateralTokenAddress;

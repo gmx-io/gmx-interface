@@ -1,7 +1,9 @@
-import { USD_DECIMALS } from "config/factors";
 import { BigNumberish, ethers } from "ethers";
+
+import { USD_DECIMALS } from "config/factors";
 import { getPlusOrMinusSymbol } from "lib/utils";
 import { bigMath } from "sdk/utils/bigmath";
+
 import {
   bigintToNumber,
   calculateDisplayDecimals,
@@ -10,6 +12,7 @@ import {
   padDecimals,
   PERCENT_PRECISION_DECIMALS,
   PRECISION,
+  roundBigNumberWithDecimals,
   trimZeroDecimals,
 } from ".";
 
@@ -81,9 +84,9 @@ export function formatPercentage(
 ) {
   const { fallbackToZero = false, signed = false, displayDecimals = 2, bps = true } = opts;
 
-  if (typeof percentage !== "bigint") {
+  if (percentage === undefined) {
     if (fallbackToZero) {
-      return `${formatAmount(0n, bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
+      return `${formatAmount(0n, PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
     }
 
     return undefined;
@@ -358,7 +361,11 @@ export const formatAmount = (
   if (displayDecimals === undefined) {
     displayDecimals = 4;
   }
-  let amountStr = ethers.formatUnits(BigInt(amount) * BigInt(visualMultiplier ?? 1), tokenDecimals);
+  const amountBigInt = roundBigNumberWithDecimals(BigInt(amount) * BigInt(visualMultiplier ?? 1), {
+    displayDecimals,
+    tokenDecimals,
+  });
+  let amountStr = ethers.formatUnits(amountBigInt, tokenDecimals);
   amountStr = limitDecimals(amountStr, displayDecimals);
   if (displayDecimals !== 0) {
     amountStr = padDecimals(amountStr, displayDecimals);

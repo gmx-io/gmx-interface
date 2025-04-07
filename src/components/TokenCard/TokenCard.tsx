@@ -8,27 +8,27 @@ import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getIcon } from "config/icons";
 import { getIncentivesV2Url } from "config/links";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
+import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import type { MarketTokensAPRData } from "domain/synthetics/markets/types";
+import { GlvList, useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { useChainId } from "lib/chains";
 import { isHomeSite } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
-import { switchNetwork } from "lib/wallets";
-import useWallet from "lib/wallets/useWallet";
-
-import BannerButton from "components/Banner/BannerButton";
-import Button from "components/Button/Button";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import APRLabel from "../APRLabel/APRLabel";
-import { HeaderLink } from "../Header/HeaderLink";
-
-import { TrackingLink } from "components/TrackingLink/TrackingLink";
-import { isGlvEnabled } from "domain/synthetics/markets/glv";
-import { GlvList, useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
-import sparkleIcon from "img/sparkle.svg";
 import { RawIncentivesStats } from "lib/oracleKeeperFetcher";
 import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageProtocolReadMoreEvent, LandingPageProtocolTokenEvent } from "lib/userAnalytics/types";
+import { switchNetwork } from "lib/wallets";
+import useWallet from "lib/wallets/useWallet";
+
+import APRLabel from "components/APRLabel/APRLabel";
+import BannerButton from "components/Banner/BannerButton";
+import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { HeaderLink } from "components/Header/HeaderLink";
+import { TrackingLink } from "components/TrackingLink/TrackingLink";
+
+import sparkleIcon from "img/sparkle.svg";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
@@ -179,7 +179,6 @@ export default function TokenCard({ showRedirectModal }: Props) {
     account,
     marketsInfoData: undefined,
     tokensData: undefined,
-    filterIncorrectMarkets: false,
   });
 
   const { glvs: glvAvax } = useGlvMarketsInfo(isGlvEnabled(AVALANCHE), {
@@ -187,7 +186,6 @@ export default function TokenCard({ showRedirectModal }: Props) {
     marketsInfoData: undefined,
     tokensData: undefined,
     account,
-    filterIncorrectMarkets: false,
   });
 
   const {

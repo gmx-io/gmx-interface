@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 import { useMedia } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
+import { SortDirection } from "context/SorterContext/types";
 import {
   TokenFavoritesTabOption,
   useTokensFavorites,
@@ -23,6 +24,7 @@ import {
   getMintableMarketTokens,
   getSellableMarketToken,
 } from "domain/synthetics/markets";
+import { getTotalSellableInfoGlv, getMintableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { formatAmountHuman, formatTokenAmount, formatUsd } from "lib/numbers";
@@ -38,8 +40,7 @@ import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { TableTd, TableTr } from "components/Table/Table";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import type { SortDirection } from "context/SorterContext/types";
-import { getMintableInfoGlv, getTotalSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
+
 import {
   SELECTOR_BASE_MOBILE_THRESHOLD,
   SelectorBase,

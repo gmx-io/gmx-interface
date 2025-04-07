@@ -316,6 +316,11 @@ msgstr "Введите Адрес NFT"
 msgid "AVAILABLE"
 msgstr "ДОСТУПНО"
 
+#: src/components/NpsModal/NpsModal.tsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "@username"
+msgstr ""
+
 #: src/components/TVChartContainer/constants.ts
 msgid "Stop Market - Short Inc."
 msgstr ""
@@ -535,6 +540,11 @@ msgstr ""
 msgid "Trade History"
 msgstr "История торгов"
 
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Tabs/NestedTab.tsx
+msgid "More"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price."
 msgstr ""
@@ -600,6 +610,11 @@ msgstr "Добавить в MetaMask"
 
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Insufficient staked tokens"
+msgstr ""
+
+#: src/components/NpsModal/NpsModal.tsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "Telegram contact (optional)"
 msgstr ""
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
@@ -786,6 +801,10 @@ msgstr "Допустимая цена для ордера."
 msgid "The order could not be updated"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Short Stop Market: Increase a short position when the price is below the trigger price."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Cross-chain one-click deposits into GM"
 msgstr ""
@@ -844,6 +863,11 @@ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Slippage should be less than -5%"
+msgstr ""
+
+#: src/components/NpsModal/NpsModal.tsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "Leave your Telegram if you’re okay with being contacted for a quick follow-up"
 msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
@@ -1169,6 +1193,10 @@ msgstr "Токены"
 msgid "Request Withdraw"
 msgstr "Запрос на вывод"
 
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Long Market: Increase a long position at the current price."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "1inch"
 msgstr ""
@@ -1279,6 +1307,10 @@ msgstr "Одобрить {stakingTokenSymbol}"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Limit Swap"
 msgstr "Лимитный обмен не удался"
+
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Liq. {longOrShortText} - {marketIndexName}"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Longing..."
@@ -1588,6 +1620,10 @@ msgstr "Рыночная цена для ордера."
 msgid "Net Value"
 msgstr "Чистая Прибыль"
 
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Short TP/SL: Decrease a short position when the trigger price is reached."
+msgstr ""
+
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
@@ -1694,6 +1730,10 @@ msgstr "Отправитель вывел все токены из Хранил�
 
 #: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High Swap Profit Fee"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Long Stop Market: Increase a long position when the price is above the trigger price."
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -1852,8 +1892,8 @@ msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsT
 msgstr ""
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Open {longOrShortText} {prefix}{tokenSymbol}"
-msgstr ""
+#~ msgid "Open {longOrShortText} {prefix}{tokenSymbol}"
+#~ msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Show details"
@@ -1938,6 +1978,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/pages/Earn/StakeModal.tsx
@@ -1954,6 +1995,10 @@ msgstr "Проверка кода..."
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "GM Pools"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Long Limit: Increase a long position when the price is below the trigger price."
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
@@ -1987,10 +2032,6 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Could not increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}  USD"
-msgstr ""
-
-#: src/domain/synthetics/orders/simulateExecuteTxn.tsx
-msgid "Prices are now volatile for this market, try again with increased Allowed Slippage value in Execution Details section."
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -2264,6 +2305,10 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Trading Volume"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Short Market: Increase a short position at the current price."
 msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
@@ -2900,6 +2945,10 @@ msgstr "Рыночная цена для ликвидации."
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Long TP/SL: Decrease a long position when the trigger price is reached."
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.jsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max close amount exceeded"
@@ -2982,8 +3031,8 @@ msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "Уменьшено {tokenSymbol} {longOrShortText}, -{0} USD."
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Liq. {longOrShortText} {prefix}{tokenSymbol}"
-msgstr ""
+#~ msgid "Liq. {longOrShortText} {prefix}{tokenSymbol}"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Leave at least {0} ETH for gas"
@@ -3815,6 +3864,10 @@ msgstr ""
 msgid "Trading guide"
 msgstr "Руководство по трейдингу"
 
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Open {longOrShortText} - {marketIndexName}"
+msgstr ""
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "TRADING Airdrop"
 msgstr ""
@@ -3830,6 +3883,12 @@ msgstr "Рибейты, заработанные этим аккаунтом в 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
@@ -4204,6 +4263,10 @@ msgstr ""
 #: src/pages/Dashboard/MarketsListV1.tsx
 msgid "GLP Index Composition"
 msgstr "Состав Индекса GLP"
+
+#: src/domain/synthetics/orders/simulateExecuteTxn.tsx
+#~ msgid "Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section"
+#~ msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
@@ -4935,6 +4998,10 @@ msgstr ""
 msgid "Affiliate Rewards Claimed"
 msgstr ""
 
+#: src/domain/synthetics/orders/simulateExecuteTxn.tsx
+msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
+msgstr ""
+
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Swap Price Impact for External Swap Threshold"
 msgstr ""
@@ -5395,6 +5462,10 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 msgid "Available"
 msgstr "Доступно"
+
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Short Limit: Increase a short position when the price is above the trigger price."
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Last 7 days"

@@ -1,6 +1,8 @@
 import { Trans } from "@lingui/macro";
-import { TokenSymbolWithIcon } from "components/TokenSymbolWithIcon/TokenSymbolWithIcon";
+
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
+
+import { TokenSymbolWithIcon } from "components/TokenSymbolWithIcon/TokenSymbolWithIcon";
 
 type Props = {
   type: "trader" | "lp";

@@ -23,13 +23,11 @@ import type { CategoricalChartFunc } from "recharts/types/chart/generateCategori
 import type { ImplicitLabelType } from "recharts/types/component/Label";
 import type { AxisDomainItem, Margin } from "recharts/types/util/types";
 
+import { USD_DECIMALS } from "config/factors";
 import type { MarketInfo } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets/utils";
 import { getNextPositionExecutionPrice } from "domain/synthetics/trade/utils/common";
 import { getMidPrice } from "domain/tokens/utils";
-import { getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
-
-import { USD_DECIMALS } from "config/factors";
 import {
   bigintToNumber,
   calculateDisplayDecimals,
@@ -38,9 +36,12 @@ import {
   formatAmount,
   numberToBigint,
 } from "lib/numbers";
+import { sendDepthChartInteractionEvent } from "lib/userAnalytics";
 import { bigMath } from "sdk/utils/bigmath";
+import { getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
 
 import { GREEN, RED } from "components/TVChartContainer/constants";
+
 import { ChartTooltip, ChartTooltipHandle } from "./DepthChartTooltip";
 
 const getYAxisLabel = (): LabelProps => ({
@@ -294,6 +295,10 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
     [isLeftEmpty, isRightEmpty, isZeroPriceImpact]
   );
 
+  const handleMouseEnter = useCallback(() => {
+    sendDepthChartInteractionEvent(marketInfo.name);
+  }, [marketInfo?.name]);
+
   return (
     <ResponsiveContainer onResize={handleResize} className="DepthChart" width="100%" height="100%" ref={containerRef}>
       <ComposedChart
@@ -302,6 +307,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
         margin={CHART_MARGIN}
         onMouseMove={handleMouseMove}
         onMouseDown={handleMouseDown}
+        onMouseEnter={handleMouseEnter}
       >
         <defs>
           <linearGradient id="colorGreen" x1="0" y1="0" x2="0" y2="1">

@@ -1,9 +1,6 @@
 import { t } from "@lingui/macro";
 import { ReactNode, useCallback, useMemo } from "react";
 
-import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
-import { ExpandableRow } from "components/Synthetics/ExpandableRow";
-import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import {
   selectTradeboxAdvancedOptions,
   selectTradeboxAllowedSlippage,
@@ -35,19 +32,23 @@ import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { formatUsd } from "lib/numbers";
 import { isStopIncreaseOrderType } from "sdk/utils/orders";
+import { applySlippageToPrice } from "sdk/utils/trade";
 
+import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
+import { AllowedSwapSlippageInputRow } from "components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
 import { ExecutionPriceRow } from "components/Synthetics/ExecutionPriceRow";
+import { ExpandableRow } from "components/Synthetics/ExpandableRow";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import { TradeFeesRow } from "components/Synthetics/TradeFeesRow/TradeFeesRow";
-import { applySlippageToPrice } from "sdk/utils/trade";
+import { ValueTransition } from "components/ValueTransition/ValueTransition";
+
 import { AllowedSlippageRow } from "./AllowedSlippageRow";
 import { AvailableLiquidityRow } from "./AvailableLiquidityRow";
 import { CollateralSpreadRow } from "./CollateralSpreadRow";
 import { EntryPriceRow } from "./EntryPriceRow";
 import { SwapSpreadRow } from "./SwapSpreadRow";
 import { useTradeboxAllowedSwapSlippageValues } from "../hooks/useTradeboxAllowedSwapSlippageValues";
-import { AllowedSwapSlippageInputRow } from "components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
 
 function LeverageInfoRows() {
   const { isIncrease, isTrigger } = useSelector(selectTradeboxTradeFlags);
@@ -185,7 +186,7 @@ function DecreaseOrderRow() {
   );
 }
 
-export function TradeBoxAdvancedGroups() {
+export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: string }) {
   const options = useSelector(selectTradeboxAdvancedOptions);
   const setOptions = useSelector(selectTradeboxSetAdvancedOptions);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
@@ -305,7 +306,7 @@ export function TradeBoxAdvancedGroups() {
       {isLimit && <AvailableLiquidityRow />}
       {/* only when isMarket and not a swap */}
       {isMarket && !isSwap && <CollateralSpreadRow />}
-      {isMarket && <AllowedSlippageRow />}
+      {isMarket && <AllowedSlippageRow slippageInputId={slippageInputId} />}
 
       {((isIncrease && selectedPosition) || (isTrigger && selectedPosition)) && (
         <div className="h-1 shrink-0 bg-stroke-primary" />

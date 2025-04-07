@@ -4,9 +4,9 @@
 
   However, this files can be a dependency for the client code.
 */
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
-
 import { MARKETS as SDK_MARKETS } from "sdk/configs/markets";
+
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
 type MarketUiConfig = {
   enabled: boolean;

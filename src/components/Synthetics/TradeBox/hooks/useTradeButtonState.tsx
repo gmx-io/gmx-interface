@@ -14,6 +14,7 @@ import {
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectExternalSwapQuote } from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
@@ -59,14 +60,13 @@ import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";
+
 import { tradeTypeLabels } from "../tradeboxConstants";
 import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
 import { useTradeboxTransactions } from "./useTradeboxTransactions";
-
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";
-import { selectExternalSwapQuote } from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
 
 interface TradeboxButtonStateOptions {
   account?: string;
@@ -95,6 +95,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
   tooltipContent: ReactNode | null;
   disabled: boolean;
   onSubmit: () => Promise<void>;
+  slippageInputId: string;
 } {
   const chainId = useSelector(selectChainId);
   const { signer } = useWallet();
@@ -232,9 +233,10 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
 
   const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, requiredActions);
 
-  const { onSubmitWrapOrUnwrap, onSubmitSwap, onSubmitIncreaseOrder, onSubmitDecreaseOrder } = useTradeboxTransactions({
-    setPendingTxns,
-  });
+  const { onSubmitWrapOrUnwrap, onSubmitSwap, onSubmitIncreaseOrder, onSubmitDecreaseOrder, slippageInputId } =
+    useTradeboxTransactions({
+      setPendingTxns,
+    });
 
   const onSubmit = useCallback(async () => {
     if (!account) {
@@ -333,6 +335,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
         tooltipContent,
         disabled: false,
         onSubmit,
+        slippageInputId,
       };
     }
 
@@ -342,6 +345,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
         tooltipContent,
         disabled: true,
         onSubmit,
+        slippageInputId,
       };
     }
 
@@ -351,6 +355,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
         tooltipContent,
         disabled: true,
         onSubmit,
+        slippageInputId,
       };
     }
 
@@ -365,6 +370,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
         tooltipContent,
         disabled: true,
         onSubmit,
+        slippageInputId,
       };
     }
 
@@ -374,6 +380,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
         tooltipContent,
         disabled: false,
         onSubmit,
+        slippageInputId,
       };
     }
 
@@ -383,6 +390,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
         tooltipContent,
         disabled: true,
         onSubmit,
+        slippageInputId,
       };
     }
 
@@ -422,6 +430,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
         tooltipContent,
         disabled: isError,
         onSubmit,
+        slippageInputId,
       };
     }
 
@@ -430,6 +439,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
       tooltipContent,
       disabled: false,
       onSubmit,
+      slippageInputId,
     };
   }, [
     account,
@@ -453,6 +463,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
     tradeType,
     increaseAmounts?.limitOrderType,
     decreaseAmounts?.triggerOrderType,
+    slippageInputId,
   ]);
 }
 

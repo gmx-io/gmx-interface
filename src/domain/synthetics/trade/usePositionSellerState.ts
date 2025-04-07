@@ -1,7 +1,9 @@
+import { useCallback, useMemo, useState } from "react";
+
 import { getKeepLeverageKey, getSyntheticsReceiveMoneyTokenKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useCallback, useMemo, useState } from "react";
+
 import { PositionInfo } from "../positions";
 
 export enum OrderOption {

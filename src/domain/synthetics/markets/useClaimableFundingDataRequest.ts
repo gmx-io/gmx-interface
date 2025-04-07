@@ -1,11 +1,13 @@
+import { useMemo } from "react";
+
 import { getContract } from "config/contracts";
 import { CLAIMABLE_FUNDING_AMOUNT } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import useWallet from "lib/wallets/useWallet";
-import { useMemo } from "react";
 import { hashDataMap } from "sdk/utils/hash";
+
 import { ClaimableFundingData, getMarketDivisor, useMarkets } from ".";
 
 export function useClaimableFundingDataRequest(chainId: number) {

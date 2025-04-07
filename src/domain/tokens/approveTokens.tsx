@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 
 import { getChainName, getExplorerUrl } from "config/chains";
 import { helperToast } from "lib/helperToast";
+import { abis } from "sdk/abis";
 import { getNativeToken } from "sdk/configs/tokens";
 import { InfoTokens, TokenInfo } from "sdk/types/tokens";
-import { abis } from "sdk/abis";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";

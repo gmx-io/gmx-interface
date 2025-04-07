@@ -1,8 +1,9 @@
+import useSWR from "swr";
+
 import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { arrayURLFetcher } from "lib/fetcher";
 import { getTotalVolumeSum } from "lib/legacy";
-import useSWR from "swr";
 
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 

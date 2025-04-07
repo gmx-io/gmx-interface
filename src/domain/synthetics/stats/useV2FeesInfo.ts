@@ -1,10 +1,10 @@
 import { gql } from "@apollo/client";
 import useSWR from "swr";
 
+import { getCurrentEpochStartedTimestamp } from "domain/stats";
+import { getWeekAgoTimestamp } from "domain/stats/getWeekAgoTimestamp";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-import { getWeekAgoTimestamp } from "domain/stats/getWeekAgoTimestamp";
-import { getCurrentEpochStartedTimestamp } from "domain/stats";
 
 const totalFeeQuery = gql`
   query totalFeesInfo {

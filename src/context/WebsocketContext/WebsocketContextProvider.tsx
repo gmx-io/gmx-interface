@@ -1,12 +1,14 @@
-import { isDevelopment } from "config/env";
 import { JsonRpcProvider, WebSocketProvider } from "ethers";
+import { ReactNode, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+
+import { isDevelopment } from "config/env";
 import { useChainId } from "lib/chains";
+import { metrics, WsProviderConnected, WsProviderDisconnected, WsProviderHealthCheckFailed } from "lib/metrics";
 import { closeWsConnection, getWsProvider, isProviderInClosedState, isWebsocketProvider } from "lib/rpc";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import useWallet from "lib/wallets/useWallet";
-import { ReactNode, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+
 import { getTotalSubscribersEventsCount } from "./subscribeToEvents";
-import { metrics, WsProviderConnected, WsProviderDisconnected, WsProviderHealthCheckFailed } from "lib/metrics";
 
 const WS_HEALTH_CHECK_INTERVAL = 1000 * 30;
 const WS_RECONNECT_INTERVAL = 1000 * 5;

@@ -2,16 +2,16 @@ import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useMemo } from "react";
 
-import { FeeItem } from "sdk/types/fees";
 import { formatDeltaUsd, formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
+import { FeeItem } from "sdk/types/fees";
+import { bigMath } from "sdk/utils/bigmath";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
 import "./GmFees.scss";
-import { bigMath } from "sdk/utils/bigmath";
 import { Operation } from "../GmSwapBox/types";
 
 type Props = {

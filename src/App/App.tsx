@@ -13,16 +13,8 @@ import "styles/Shared.scss";
 import "styles/recharts.css";
 import "./App.scss";
 
-import SEO from "components/Common/SEO";
-
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
-import { useChainId } from "lib/chains";
-import { defaultLocale, dynamicActivate } from "lib/i18n";
-import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
-import { AppRoutes } from "./AppRoutes";
-import { SWRConfigProp } from "./swrConfig";
-
 import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTxnsContext";
 import { SettingsContextProvider } from "context/SettingsContext/SettingsContextProvider";
 import { SorterContextProvider } from "context/SorterContext/SorterContextProvider";
@@ -31,6 +23,14 @@ import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { WebsocketContextProvider } from "context/WebsocketContext/WebsocketContextProvider";
+import { useChainId } from "lib/chains";
+import { defaultLocale, dynamicActivate } from "lib/i18n";
+import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
+
+import SEO from "components/Common/SEO";
+
+import { AppRoutes } from "./AppRoutes";
+import { SWRConfigProp } from "./swrConfig";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {

@@ -3,8 +3,8 @@ import values from "lodash/values";
 import type { Address } from "viem";
 
 import type { GlvAndGmMarketsInfoData } from "domain/synthetics/markets";
-import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
 
 /**
  * Sorts GM tokens by:

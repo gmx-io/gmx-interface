@@ -1,22 +1,22 @@
+import { t } from "@lingui/macro";
 import { useCallback, useState } from "react";
 
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { ExecutionFee } from "domain/synthetics/fees";
-import { createShiftTxn } from "domain/synthetics/markets/createShiftTxn";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import useWallet from "lib/wallets/useWallet";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { selectBlockTimestampData, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { ExecutionFee } from "domain/synthetics/fees";
+import { createShiftTxn } from "domain/synthetics/markets/createShiftTxn";
 import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
+import { helperToast } from "lib/helperToast";
 import {
   initShiftGmMetricData,
   makeTxnErrorMetricsHandler,
   makeTxnSentMetricsHandler,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
-import { helperToast } from "lib/helperToast";
-import { t } from "@lingui/macro";
+import useWallet from "lib/wallets/useWallet";
 
 interface Props {
   fromMarketToken: TokenData | undefined;

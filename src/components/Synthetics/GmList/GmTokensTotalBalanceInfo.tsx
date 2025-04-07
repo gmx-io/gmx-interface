@@ -1,19 +1,18 @@
 import { Trans, t } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { TooltipPosition } from "components/Tooltip/Tooltip";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { UserEarningsData } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
-
 import { formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { TooltipPosition } from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import { TokenValuesInfoCell } from "./TokenValuesInfoCell";
 
 export const GmTokensBalanceInfo = ({
@@ -31,7 +30,7 @@ export const GmTokensBalanceInfo = ({
 }) => {
   const content = (
     <TokenValuesInfoCell
-      token={formatBalanceAmount(token.balance ?? 0n, token.decimals)}
+      value={formatBalanceAmount(token.balance ?? 0n, token.decimals)}
       usd={
         token.balance !== undefined && token.balance !== 0n
           ? formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
@@ -39,6 +38,7 @@ export const GmTokensBalanceInfo = ({
             })
           : undefined
       }
+      symbol={token.symbol}
     />
   );
 

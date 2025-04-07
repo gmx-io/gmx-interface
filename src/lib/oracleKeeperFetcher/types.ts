@@ -1,6 +1,7 @@
-import { FromNewToOldArray, Bar } from "domain/tradingview/types";
-import { UserFeedback } from "domain/synthetics/userFeedback";
 import type { Address } from "viem";
+
+import { UserFeedback } from "domain/synthetics/userFeedback";
+import { FromNewToOldArray, Bar } from "domain/tradingview/types";
 
 export type EventPayload = {
   isError: boolean;

@@ -1,7 +1,6 @@
 import { Trans } from "@lingui/macro";
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
+import { ReactNode, memo } from "react";
+
 import {
   useIsSubaccountActive,
   useMainAccountInsufficientFunds,
@@ -11,7 +10,11 @@ import {
 } from "context/SubaccountContext/SubaccountContext";
 import { SUBACCOUNT_DOCS_URL } from "domain/synthetics/subaccount/constants";
 import { useChainId } from "lib/chains";
-import { ReactNode, memo } from "react";
+import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
+
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+
 import "./SubaccountStatus.scss";
 
 function SubaccountStatusImpl({

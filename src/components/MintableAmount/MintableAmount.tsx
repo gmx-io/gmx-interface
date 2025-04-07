@@ -1,16 +1,15 @@
 import { Trans } from "@lingui/macro";
 import { useMemo } from "react";
 
+import { USD_DECIMALS } from "config/factors";
+import { getPoolUsdWithoutPnl, getStrictestMaxPoolUsdForDeposit, GlvOrMarketInfo } from "domain/synthetics/markets";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { TokenData } from "domain/synthetics/tokens";
 import { formatAmountHuman } from "lib/numbers/formatting";
 
 import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-
-import { USD_DECIMALS } from "config/factors";
-import { getPoolUsdWithoutPnl, getStrictestMaxPoolUsdForDeposit, GlvOrMarketInfo } from "domain/synthetics/markets";
-import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { TokenData } from "domain/synthetics/tokens";
 
 export function MintableAmount({
   mintableInfo,
@@ -79,6 +78,7 @@ export function MintableAmount({
         amount={mintableInfo?.longDepositCapacityAmount}
         decimals={longToken.decimals}
         usd={mintableInfo?.longDepositCapacityUsd}
+        symbol={longToken.symbol}
       />,
       <span key="longTokenMaxValue-ratio" className="text-body-small text-slate-100">
         ({poolUsd} / {maxPoolUsd})
@@ -108,6 +108,7 @@ export function MintableAmount({
         amount={mintableInfo?.shortDepositCapacityAmount}
         decimals={shortToken.decimals}
         usd={mintableInfo?.shortDepositCapacityUsd}
+        symbol={shortToken.symbol}
       />,
       <span key="shortTokenMaxValue-ratio" className="text-body-small text-slate-100">
         ({poolUsd} / {maxPoolUsd})
@@ -121,6 +122,7 @@ export function MintableAmount({
       amount={mintableInfo?.mintableAmount}
       decimals={token.decimals}
       usd={mintableInfo?.mintableUsd}
+      symbol={token.symbol}
     />
   );
 

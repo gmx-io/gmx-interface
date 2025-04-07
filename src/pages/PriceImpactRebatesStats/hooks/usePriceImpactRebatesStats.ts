@@ -1,12 +1,13 @@
 import { gql } from "@apollo/client";
+import { getAddress } from "ethers";
+import { useEffect, useState } from "react";
+import { useLatest } from "react-use";
+
 import { MarketInfo, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { TokenData } from "domain/synthetics/tokens";
-import { getAddress } from "ethers";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { getSyntheticsGraphClient } from "lib/subgraph";
-import { useEffect, useState } from "react";
-import { useLatest } from "react-use";
 
 type RawRebateGroup = {
   id: string;
