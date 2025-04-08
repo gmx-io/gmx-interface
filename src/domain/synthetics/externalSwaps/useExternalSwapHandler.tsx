@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 
-import { getIsFlagEnabled } from "config/ab";
 import { isDevelopment } from "config/env";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
