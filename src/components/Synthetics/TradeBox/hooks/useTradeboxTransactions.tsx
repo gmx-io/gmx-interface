@@ -301,7 +301,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           signer,
           subaccount,
           metricId: metricData.metricId,
-          blockTimestampData,
           additionalErrorContent,
           createTWAPIncreaseOrderParams: {
             account,
@@ -314,10 +313,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
             externalSwapQuote: increaseAmounts.externalSwapQuote,
             sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
             sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
-            triggerPrice: isLimit ? triggerPrice : undefined,
-            acceptablePrice: increaseAmounts.acceptablePrice,
             isLong,
-            orderType: isLimit ? increaseAmounts.limitOrderType! : OrderType.MarketIncrease,
             executionFee: executionFee.feeTokenAmount,
             executionGasLimit: executionFee.gasLimit,
             allowedSlippage,
