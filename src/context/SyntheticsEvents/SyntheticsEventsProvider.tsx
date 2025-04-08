@@ -1026,9 +1026,19 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   ]);
 
   useEffect(function subscribeGelatoRelayEvents() {
-    function handleTaskStatusUpdate(taskStatus) {
-      I;
+    async function handleTaskStatusUpdate(taskStatus) {
       console.log("gelatoTaskStatusUpdate", taskStatus);
+
+      const debugRes = await fetch(
+        `https://api.gelato.digital/tasks/status/${taskStatus.taskId}/debug?tenderlyUsername=divhead&tenderlyProjectName=project`,
+        {
+          method: "GET",
+        }
+      );
+
+      const debugData = await debugRes.json();
+
+      console.log("gelatoDebugData", debugData);
     }
 
     gelatoRelay.onTaskStatusUpdate(handleTaskStatusUpdate);

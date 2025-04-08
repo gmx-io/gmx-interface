@@ -1,12 +1,11 @@
 import { t } from "@lingui/macro";
+import { getErrorMessage } from "components/Errors/errorToasts";
 import { ethers } from "ethers";
 
 import { getGasLimit, getGasPrice } from "lib/contracts";
 import { OrderErrorContext } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
-
-import { getTxnErrorToastContent } from "components/Errors/txnErrorsToasts";
 
 export type PrepareOrderTxnParams = {
   simulationPromise?: Promise<void>;
@@ -53,7 +52,7 @@ export const makeCatchTransactionError =
       sendTxnErrorMetric(metricId, e, errorContext);
     }
 
-    const { failMsg, autoCloseToast } = getTxnErrorToastContent(chainId, e, undefined, additinalErrorContent);
+    const { failMsg, autoCloseToast } = getErrorMessage(chainId, e, undefined, additinalErrorContent);
     helperToast.error(failMsg, { autoClose: autoCloseToast });
 
     throw e;

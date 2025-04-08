@@ -13,7 +13,7 @@ import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 
-import { getTxnErrorToastContent } from "components/Errors/txnErrorsToasts";
+import { getErrorMessage } from "components/Errors/errorToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import { helperToast } from "../helperToast";
@@ -170,7 +170,7 @@ export async function callContract(
 
     return res;
   } catch (e) {
-    const { failMsg, autoCloseToast } = getTxnErrorToastContent(chainId, e, opts?.failMsg);
+    const { failMsg, autoCloseToast } = getErrorMessage(chainId, e, opts?.failMsg);
 
     helperToast.error(failMsg, { autoClose: autoCloseToast });
     throw e;

@@ -11,7 +11,7 @@ import ExchangeRouterAbi from "sdk/abis/ExchangeRouter.json";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { isMarketOrderType } from "sdk/utils/orders";
 
-import { validateSignerAddress } from "components/Errors/txnErrorsToasts";
+import { validateSignerAddress } from "components/Errors/errorToasts";
 
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";

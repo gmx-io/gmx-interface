@@ -4,7 +4,7 @@ import { useAccount } from "wagmi";
 
 import { useChainId as useDisplayedChainId } from "lib/chains";
 
-import { INVALID_NETWORK_TOAST_ID, getInvalidNetworkToastContent } from "components/Errors/txnErrorsToasts";
+import { INVALID_NETWORK_TOAST_ID, getInvalidNetworkToastContent } from "components/Errors/errorToasts";
 
 const toastSubscribe = (onStoreChange: () => void): (() => void) => {
   const cleanup = toast.onChange(({ id }) => {

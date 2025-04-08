@@ -3,17 +3,7 @@ import { Contract, Signer, ethers } from "ethers";
 import ERC20PermitInterfaceAbi from "sdk/abis/ERC20PermitInterface.json";
 
 import { splitSignature } from "./signing";
-
-export type TokenPermitPayload = {
-  owner: string;
-  spender: string;
-  value: bigint;
-  deadline: bigint;
-  v: number;
-  r: string;
-  s: string;
-  token: string;
-};
+import { SignedTokenPermit } from "sdk/types/tokens";
 
 export async function createAndSignTokenPermit(
   chainId: number,
@@ -22,7 +12,7 @@ export async function createAndSignTokenPermit(
   spender: string,
   value: bigint,
   deadline: bigint
-): Promise<TokenPermitPayload> {
+): Promise<SignedTokenPermit> {
   const owner = await signer.getAddress();
 
   if (!signer.provider) {

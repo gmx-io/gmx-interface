@@ -55,6 +55,8 @@ const TX_ERROR_PATTERNS: { [key in TxErrorType]: ErrorPattern[] } = {
 export enum CustomErrorName {
   EndOfOracleSimulation = "EndOfOracleSimulation",
   InsufficientExecutionFee = "InsufficientExecutionFee",
+  OrderNotFulfillableAtAcceptablePrice = "OrderNotFulfillableAtAcceptablePrice",
+  InsufficientSwapOutputAmount = "InsufficientSwapOutputAmount",
 }
 
 export function getIsUserRejectedError(errorType: TxErrorType) {

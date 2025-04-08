@@ -5,7 +5,7 @@ import { getContract } from "config/contracts";
 import { callContract } from "lib/contracts";
 import { abis } from "sdk/abis";
 
-import { validateSignerAddress } from "components/Errors/txnErrorsToasts";
+import { validateSignerAddress } from "components/Errors/errorToasts";
 
 type Params = {
   account: string;

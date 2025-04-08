@@ -11,7 +11,7 @@ import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import { convertTokenAddress } from "sdk/configs/tokens";
 
-import { validateSignerAddress } from "components/Errors/txnErrorsToasts";
+import { validateSignerAddress } from "components/Errors/errorToasts";
 
 import { SwapPricingType } from "../orders";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";

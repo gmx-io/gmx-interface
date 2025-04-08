@@ -1,12 +1,12 @@
 import { createSelector } from "context/SyntheticsStateContext/utils";
+import { OrderType } from "sdk/types/orders";
 import {
   buildDecreaseOrderPayload,
   buildIncreaseOrderPayload,
   buildSwapOrderPayload,
-} from "domain/synthetics/gassless/txns/createOrderBuilders";
-import { OrderType } from "sdk/types/orders";
+} from "sdk/utils/orderTransactions";
 
-import { selectExternalSwapQuote } from "../externalSwapSelectors";
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { selectAccount, selectChainId, selectUserReferralInfo } from "../globalSelectors";
 import {
   selectTradeboxAllowedSlippage,
@@ -24,7 +24,7 @@ import {
   selectTradeboxTriggerPrice,
 } from "../tradeboxSelectors";
 
-export const selectTradeBoxOrderPayload = createSelector((q) => {
+export const selectTradeBoxCreateOrderParams = createSelector((q) => {
   const { isSwap, isIncrease } = q(selectTradeboxTradeFlags);
 
   if (isSwap) {
@@ -32,10 +32,10 @@ export const selectTradeBoxOrderPayload = createSelector((q) => {
   }
 
   if (isIncrease) {
-    return q(selectTradeboxIncreaseOrderPayload);
+    return q(selectTradeboxIncreaseOrderParams);
   }
 
-  return q(selectTradeboxDecreaseOrderPayload);
+  return q(selectTradeboxDecreaseOrderParams);
 });
 
 export const selectCommonOrderParams = createSelector((q) => {
@@ -51,12 +51,14 @@ export const selectCommonOrderParams = createSelector((q) => {
   }
 
   return {
-    account,
+    receiver: account,
     chainId,
-    executionFee: executionFee.feeTokenAmount,
+    executionFeeAmount: executionFee.feeTokenAmount,
+    executionGasLimit: executionFee.gasLimit,
     referralCode: referralInfo?.referralCodeForTxn,
     allowedSlippage: isMarket ? allowedSlippage : undefined,
     autoCancel: false,
+    uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT,
   };
 });
 
@@ -66,7 +68,6 @@ export const selectTradeboxSwapOrderPayload = createSelector((q) => {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const toTokenAddress = q(selectTradeboxToTokenAddress);
   const swapAmounts = q(selectTradeboxSwapAmounts);
-  const externalSwapQuote = q(selectExternalSwapQuote);
   const { triggerRatio } = q(selectTradeboxTradeRatios);
   const { isLimit, isMarket } = q(selectTradeboxTradeFlags);
   const allowedSlippage = q(selectTradeboxAllowedSlippage);
@@ -79,19 +80,19 @@ export const selectTradeboxSwapOrderPayload = createSelector((q) => {
 
   return buildSwapOrderPayload({
     ...commonParams,
-    orderType,
-    initialCollateralAddress: fromTokenAddress,
-    targetCollateralAddress: toTokenAddress,
-    initialCollateralDeltaAmount: swapAmounts.amountIn,
+    payTokenAddress: fromTokenAddress,
+    payTokenAmount: swapAmounts.amountIn,
+    receiveTokenAddress: toTokenAddress,
     minOutputAmount: swapAmounts.minOutputAmount,
     swapPath: swapAmounts.swapPathStats?.swapPath ?? [],
     triggerRatio: triggerRatio?.ratio ?? undefined,
-    externalSwapQuote,
+    externalSwapQuote: undefined,
     allowedSlippage: isMarket ? allowedSlippage : 0,
+    orderType,
   });
 });
 
-export const selectTradeboxIncreaseOrderPayload = createSelector((q) => {
+export const selectTradeboxIncreaseOrderParams = createSelector((q) => {
   const commonParams = q(selectCommonOrderParams);
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const indexTokenAddress = q(selectTradeboxToTokenAddress);
@@ -114,18 +115,20 @@ export const selectTradeboxIncreaseOrderPayload = createSelector((q) => {
   }
 
   const orderType = increaseAmounts.limitOrderType ?? OrderType.MarketIncrease;
+  // TODO: External swap handling here!!!!!!!
 
   return buildIncreaseOrderPayload({
     ...commonParams,
-    orderType,
-    initialCollateralAddress: fromTokenAddress,
-    initialCollateralDeltaAmount: increaseAmounts.initialCollateralAmount,
-    targetCollateralAddress: collateralTokenAddress,
+    payTokenAddress: fromTokenAddress,
+    payTokenAmount: increaseAmounts.initialCollateralAmount,
+    collateralTokenAddress: collateralTokenAddress,
     swapPath: increaseAmounts.swapPathStats?.swapPath ?? [],
     externalSwapQuote: increaseAmounts.externalSwapQuote,
     sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+    sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
     acceptablePrice: increaseAmounts.acceptablePrice,
     triggerPrice: isLimit ? triggerPrice : undefined,
+    orderType,
     isLong,
     marketAddress,
     indexTokenAddress,
@@ -133,7 +136,7 @@ export const selectTradeboxIncreaseOrderPayload = createSelector((q) => {
   });
 });
 
-export const selectTradeboxDecreaseOrderPayload = createSelector((q) => {
+export const selectTradeboxDecreaseOrderParams = createSelector((q) => {
   const commonParams = q(selectCommonOrderParams);
   const marketInfo = q(selectTradeboxMarketInfo);
   const collateralTokenAddress: string | undefined = q(selectTradeboxCollateralTokenAddress);
@@ -154,18 +157,19 @@ export const selectTradeboxDecreaseOrderPayload = createSelector((q) => {
     ...commonParams,
     orderType: decreaseAmounts.triggerOrderType,
     marketAddress: marketInfo.marketTokenAddress,
-    initialCollateralAddress: collateralTokenAddress,
-    targetCollateralAddress: collateralTokenAddress,
+    indexTokenAddress: marketInfo.indexToken.address,
+    initialCollateralTokenAddress: collateralTokenAddress,
+    collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
+    receiveTokenAddress: collateralTokenAddress,
     swapPath: [],
-    initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
     sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+    sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
     triggerPrice: decreaseAmounts.triggerPrice,
     acceptablePrice: decreaseAmounts.acceptablePrice,
-    minOutputUsd: 0n,
-    isLong,
-    indexTokenAddress: marketInfo.indexToken.address,
     decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
     externalSwapQuote: undefined,
     allowedSlippage: 0,
+    minOutputUsd: 0n,
+    isLong,
   });
 });

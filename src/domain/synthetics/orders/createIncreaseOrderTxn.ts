@@ -15,7 +15,7 @@ import { ExternalSwapQuote } from "sdk/types/trade";
 import { isMarketOrderType } from "sdk/utils/orders";
 import { applySlippageToPrice } from "sdk/utils/trade";
 
-import { validateSignerAddress } from "components/Errors/txnErrorsToasts";
+import { validateSignerAddress } from "components/Errors/errorToasts";
 
 import { getExternalCallsParams } from "../externalSwaps/utils";
 import { getPositionKey } from "../positions";

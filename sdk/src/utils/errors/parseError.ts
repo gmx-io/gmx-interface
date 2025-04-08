@@ -4,6 +4,7 @@ import { Abi, Address, decodeErrorResult } from "viem";
 import { abis } from "abis";
 
 import {
+  CustomErrorName,
   TxErrorType,
   extractDataFromError,
   extractTxnError,
@@ -31,6 +32,7 @@ export type ErrorLike = {
   errorSource?: string;
   errorContext?: OrderErrorContext;
   parentError?: ErrorLike;
+  tags?: string;
   isAdditinalValidationPassed?: boolean;
   additionalValidationType?: string;
   info?: {
@@ -64,6 +66,20 @@ const URL_REGEXP =
   /((?:http[s]?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\.[a-z]{2,6}\b(?::\d+)?)(?:[-a-zA-Z0-9@:%_\\+.~#?&\\/\\/=]*)/gi;
 
 const MAX_ERRORS_DEPTH = 1;
+
+export function extendError(
+  error: Error,
+  params: {
+    errorContext?: OrderErrorContext;
+    errorSource?: string;
+    isAdditinalValidationPassed?: boolean;
+    additionalValidationType?: string;
+  }
+): ErrorLike {
+  Object.assign(error, params);
+
+  return error;
+}
 
 export function parseError(error: ErrorLike | string | undefined, errorDepth = 0): ErrorData | undefined {
   if (errorDepth > MAX_ERRORS_DEPTH) {
@@ -187,12 +203,9 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
   };
 }
 
-// function standardizeError(error: ErrorLike | ErrorData | string | undefined): ErrorLike {
-//   if (typeof error === "string") {
-//     return { message: error };
-//   }
-//   return error;
-// }
+export function isContractError(error: ErrorData, errorType: CustomErrorName) {
+  return error.contractError === errorType;
+}
 
 function hasMessage(error: unknown): error is { message: string } {
   return !!error && typeof error === "object" && typeof (error as { message: string }).message === "string";

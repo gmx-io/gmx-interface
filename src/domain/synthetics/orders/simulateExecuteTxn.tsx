@@ -3,6 +3,7 @@ import { BaseContract, ethers } from "ethers";
 import { ReactNode } from "react";
 import { withRetry } from "viem";
 
+import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import {
   getContract,
   getExchangeRouterContract,
@@ -20,11 +21,11 @@ import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { CustomErrorName, extractDataFromError, extractTxnError, isContractError } from "sdk/utils/errors";
+import { ExternalSwapQuote } from "sdk/types/trade";
+import { CustomErrorName, ErrorData, extractDataFromError, extractTxnError, isContractError } from "sdk/utils/errors";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
 
-import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
-
+import { getErrorMessage } from "components/Errors/errorToasts";
 import { isGlvEnabled } from "../markets/glv";
 
 export type PriceOverrides = {
@@ -55,7 +56,7 @@ export type SimulateExecuteParams = {
   externalSwapQuote?: ExternalSwapQuote;
 };
 
-export function isSimulationPassed(errorData: ParsedError) {
+export function isSimulationPassed(errorData: ErrorData) {
   return isContractError(errorData, CustomErrorName.EndOfOracleSimulation);
 }
 

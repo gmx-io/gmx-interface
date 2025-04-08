@@ -7,7 +7,7 @@ import { callContract } from "lib/contracts";
 import { isAddressZero } from "lib/legacy";
 import { abis } from "sdk/abis";
 
-import { validateSignerAddress } from "components/Errors/txnErrorsToasts";
+import { validateSignerAddress } from "components/Errors/errorToasts";
 
 import { SwapPricingType } from "../orders";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";

@@ -1,5 +1,4 @@
-import { Trans, t } from "@lingui/macro";
-import { BaseContract, ethers } from "ethers";
+import { BaseContract } from "ethers";
 import { withRetry } from "viem";
 
 import {
@@ -9,34 +8,20 @@ import {
   getMulticallContract,
   getZeroAddressContract,
 } from "config/contracts";
-import { SwapPricingType } from "domain/synthetics/orders";
+import { isGlvEnabled } from "domain/synthetics/markets/glv";
+import { SwapPricingType, isSwapOrderType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
-import { ParsedError } from "lib/errors";
-import { helperToast } from "lib/helperToast";
-import { OrderMetricId } from "lib/metrics/types";
-import { sendOrderSimulatedMetric, sendTxnErrorMetric } from "lib/metrics/utils";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
-import { abis } from "sdk/abis";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { CustomErrorName, extractDataFromError, extractTxnError, isContractError } from "sdk/utils/errors";
-import { OracleUtils } from "typechain-types/ExchangeRouter";
-
-import { getTxnErrorToastContent } from "components/Errors/txnErrorsToasts";
-import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
-
-import { isGlvEnabled } from "../markets/glv";
-
-export type PriceOverrides = {
-  [address: string]: TokenPrices | undefined;
-};
+import { CustomErrorName, ErrorData, extractTxnError, isContractError, parseError } from "sdk/utils/errors";
+import { CreateOrderPayload, CreateOrderTxnParams } from "sdk/utils/orderTransactions";
 
 export type SimulateExecuteParams = {
   account: string;
   createMulticallPayload: string[];
-  primaryPriceOverrides: PriceOverrides;
-  tokensData: TokensData;
+  prices: SimulationPrices;
   value: bigint;
   method?:
     | "simulateExecuteLatestDeposit"
@@ -45,18 +30,15 @@ export type SimulateExecuteParams = {
     | "simulateExecuteLatestShift"
     | "simulateExecuteLatestGlvDeposit"
     | "simulateExecuteLatestGlvWithdrawal";
-  errorTitle?: string;
   swapPricingType?: SwapPricingType;
-  metricId?: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
-  additionalErrorContent?: React.ReactNode;
 };
 
-export function isSimulationPassed(errorData: ParsedError) {
+export function isSimulationPassed(errorData: ErrorData) {
   return isContractError(errorData, CustomErrorName.EndOfOracleSimulation);
 }
 
-export async function simulateExecuteTxn(chainId: number, p: SimulateExecuteParams) {
+export async function simulateExecution(chainId: number, p: SimulateExecuteParams) {
   const provider = getProvider(undefined, chainId);
 
   const multicallAddress = getContract(chainId, "Multicall");
@@ -83,18 +65,17 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
     blockTag = Number(result.blockNumber);
   }
 
-  const { primaryTokens, primaryPrices } = getSimulationPrices(chainId, p.tokensData, p.primaryPriceOverrides);
   const priceTimestamp = blockTimestamp + 10n;
   const method = p.method || "simulateExecuteLatestOrder";
 
   const isGlv = method === "simulateExecuteLatestGlvDeposit" || method === "simulateExecuteLatestGlvWithdrawal";
 
   const simulationPriceParams = {
-    primaryTokens: primaryTokens,
-    primaryPrices: primaryPrices,
+    primaryTokens: p.prices.primaryTokens,
+    primaryPrices: p.prices.primaryPrices,
     minTimestamp: priceTimestamp,
     maxTimestamp: priceTimestamp,
-  } as OracleUtils.SimulatePricesParamsStruct;
+  };
 
   let simulationPayloadData = [...p.createMulticallPayload];
 
@@ -133,8 +114,6 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
     throw new Error(`Unknown method: ${method}`);
   }
 
-  let errorTitle = p.errorTitle || t`Execute order simulation failed.`;
-
   const tenderlyConfig = getTenderlyConfig();
   const router = isGlv ? glvRouter : exchangeRouter;
 
@@ -164,81 +143,40 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
       }
     );
   } catch (txnError) {
-    const customErrors = new ethers.Contract(ethers.ZeroAddress, abis.CustomErrors);
-    let msg: React.ReactNode = undefined;
+    const errorData = parseError(txnError);
 
-    try {
-      const errorData = extractDataFromError(txnError?.info?.error?.message) ?? extractDataFromError(txnError?.message);
-
-      const error = new Error("No data found in error.");
-      error.cause = txnError;
-      if (!errorData) throw error;
-
-      const parsedError = customErrors.interface.parseError(errorData);
-      const isSimulationPassed = parsedError?.name === "EndOfOracleSimulation";
-
-      if (isSimulationPassed) {
-        if (p.metricId) {
-          sendOrderSimulatedMetric(p.metricId);
-        }
-        return;
-      }
-
-      if (p.metricId) {
-        sendTxnErrorMetric(p.metricId, txnError, "simulation");
-      }
-
-      const parsedArgs = Object.keys(parsedError?.args ?? []).reduce((acc, k) => {
-        if (!Number.isNaN(Number(k))) {
-          return acc;
-        }
-        acc[k] = parsedError?.args[k].toString();
-        return acc;
-      }, {});
-
-      if (parsedError?.name === "OrderNotFulfillableAtAcceptablePrice") {
-        errorTitle = t`Prices are now volatile for this market, try again with increased Allowed Slippage value in Execution Details section.`;
-      }
-
-      msg = (
-        <div>
-          {errorTitle}
-          {p.additionalErrorContent}
-          <br />
-          <br />
-          <ToastifyDebug
-            error={`${txnError?.info?.error?.message ?? parsedError?.name ?? txnError?.message} ${JSON.stringify(parsedArgs, null, 2)}`}
-          />
-        </div>
-      );
-    } catch (parsingError) {
-      // eslint-disable-next-line no-console
-      console.error(parsingError);
-
-      const commonError = getTxnErrorToastContent(chainId, txnError, errorTitle, p.additionalErrorContent);
-      msg = commonError.failMsg;
+    if (errorData && isSimulationPassed(errorData)) {
+      return;
+    } else {
+      throw txnError;
     }
-
-    if (!msg) {
-      msg = (
-        <div>
-          <Trans>Execute order simulation failed.</Trans>
-          <br />
-          <br />
-          <ToastifyDebug error={t`Unknown Error`} />
-        </div>
-      );
-    }
-
-    helperToast.error(msg);
-
-    throw txnError;
   }
 }
 
-export function getSimulationPrices(chainId: number, tokensData: TokensData, primaryPricesMap: PriceOverrides) {
-  const tokenAddresses = Object.keys(tokensData);
+export function getOrdersTriggerPriceOverrides(createOrderPayloads: CreateOrderTxnParams[]) {
+  const overrides: PriceOverride[] = [];
 
+  for (const co of createOrderPayloads) {
+    if (co.orderPayload.numbers.triggerPrice !== 0n && "indexTokenAddress" in co.params) {
+      overrides.push({
+        tokenAddress: co.params.indexTokenAddress,
+        contractPrices: {
+          minPrice: co.orderPayload.numbers.triggerPrice,
+          maxPrice: co.orderPayload.numbers.triggerPrice,
+        },
+      });
+    }
+  }
+
+  return overrides;
+}
+
+export type SimulationPrices = ReturnType<typeof getSimulationPrices>;
+
+export type PriceOverride = { tokenAddress: string; contractPrices?: TokenPrices; prices?: TokenPrices };
+
+export function getSimulationPrices(chainId: number, tokensData: TokensData, overrides: PriceOverride[]) {
+  const tokenAddresses = Object.keys(tokensData);
   const primaryTokens: string[] = [];
   const primaryPrices: { min: bigint; max: bigint }[] = [];
 
@@ -257,12 +195,13 @@ export function getSimulationPrices(chainId: number, tokensData: TokensData, pri
       max: convertToContractPrice(token.prices.maxPrice, token.decimals),
     };
 
-    const primaryOverriddenPrice = primaryPricesMap[address];
+    const override = overrides.find((o) => o.tokenAddress === address);
+    const primaryOverriddenPrice = override?.contractPrices ?? override?.prices;
 
     if (primaryOverriddenPrice) {
       primaryPrices.push({
-        min: convertToContractPrice(primaryOverriddenPrice.minPrice, token.decimals),
-        max: convertToContractPrice(primaryOverriddenPrice.maxPrice, token.decimals),
+        min: primaryOverriddenPrice.minPrice,
+        max: primaryOverriddenPrice.maxPrice,
       });
     } else {
       primaryPrices.push(currentPrice);
