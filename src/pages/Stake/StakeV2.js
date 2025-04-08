@@ -1912,11 +1912,11 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               <div className="App-card-footer">
                 <div className="App-card-divider"></div>
                 <div className="App-card-buttons m-0">
-                  {active && (
+                  {/* {active && (
                     <Button variant="semi-clear" onClick={() => setIsCompoundModalVisible(true)}>
                       <Trans>Compound</Trans>
                     </Button>
-                  )}
+                  )} */}
                   {active && (
                     <Button variant="semi-clear" onClick={() => setIsClaimModalVisible(true)}>
                       <Trans>Claim</Trans>
