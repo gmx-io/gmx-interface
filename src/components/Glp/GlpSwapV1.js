@@ -45,7 +45,7 @@ import SwapErrorModal from "./SwapErrorModal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { ARBITRUM, getChainName, IS_NETWORK_DISABLED } from "config/chains";
 import { callContract, dynamicContractFetcher } from "lib/contracts";
-import { approveTokens, useInfoTokens } from "domain/tokens";
+import { approveTokens, useInfoTokensV1 as useInfoTokens } from "domain/tokens";
 import { useLocalStorageByChainId } from "lib/localStorage";
 import { helperToast } from "lib/helperToast";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
@@ -133,23 +133,31 @@ export default function GlpSwap(props) {
   const [modalError, setModalError] = useState(false);
 
   const readerAddress = getContract(chainId, "Reader");
+  const readerAddressV1 = '0xA527DD86b7b67CE93a8607dcAf94921e882eB746';
   const rewardReaderAddress = getContract(chainId, "RewardReader");
+  const rewardReaderAddressV1 = '0xA7449D41913442d918226F48E944d913123CCF28';
   const vaultAddress = getContract(chainId, "Vault");
+  const vaultAddressV1 = '0x860608Ab3CE0Ef7b668067553E22d8022f22E045';
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
+  const nativeTokenAddressV1 = '0x5300000000000000000000000000000000000011';
   const stakedGlpTrackerAddress = getContract(chainId, "StakedGlpTracker");
+  const stakedGlpTrackerAddressV1 = '0x92f4917f0dc1C064c8883997b1ea55c7D2B9adfd';
   const feeGlpTrackerAddress = getContract(chainId, "FeeGlpTracker");
+  const feeGlpTrackerAddressV1 = '0xD7577D8EAe040a8E8fbc39D810907AD240311521';
   const usdgAddress = getContract(chainId, "USDG");
+  const usdgAddressV1 = '0x969C91378e0D2C27FE3cE39d49231F17aB635854';
   const glpManagerAddress = getContract(chainId, "GlpManager");
+  const glpManagerAddressV1 = '0x011C7B2Ab03292Fc82D3f90a92E3743f39d06ABc';
   const glpRewardRouterAddress = getContract(chainId, "GlpRewardRouter");
 
-  const tokensForBalanceAndSupplyQuery = [stakedGlpTrackerAddress, usdgAddress];
+  const tokensForBalanceAndSupplyQuery = [stakedGlpTrackerAddressV1, usdgAddressV1];
   const glpIcon = getIcon(chainId, "glp");
 
   // const isFeesHigh = feeBasisPoints > FEES_HIGH_BPS;
 
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR(
-    [`GlpSwap:getTokenBalances:${active}`, chainId, readerAddress, "getTokenBalances", account || PLACEHOLDER_ACCOUNT],
+    [`GlpSwap:getTokenBalances:${active}`, chainId, readerAddressV1, "getTokenBalances", account || PLACEHOLDER_ACCOUNT],
     {
       fetcher: dynamicContractFetcher(signer, ReaderV2, [tokenAddresses]),
     }
@@ -159,7 +167,7 @@ export default function GlpSwap(props) {
     [
       `GlpSwap:getTokenBalancesWithSupplies:${active}`,
       chainId,
-      readerAddress,
+      readerAddressV1,
       "getTokenBalancesWithSupplies",
       account || PLACEHOLDER_ACCOUNT,
     ],
@@ -168,34 +176,34 @@ export default function GlpSwap(props) {
     }
   );
 
-  const { data: aums } = useSWR([`GlpSwap:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
+  const { data: aums } = useSWR([`GlpSwap:getAums:${active}`, chainId, glpManagerAddressV1, "getAums"], {
     fetcher: dynamicContractFetcher(signer, GlpManager),
   });
 
   const { data: totalTokenWeights } = useSWR(
-    [`GlpSwap:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
+    [`GlpSwap:totalTokenWeights:${active}`, chainId, vaultAddressV1, "totalTokenWeights"],
     {
       fetcher: dynamicContractFetcher(signer, VaultV2),
     }
   );
 
-  const tokenAllowanceAddress = swapTokenAddress === AddressZero ? nativeTokenAddress : swapTokenAddress;
+  const tokenAllowanceAddress = swapTokenAddress === AddressZero ? nativeTokenAddressV1 : swapTokenAddress;
   const { data: tokenAllowance } = useSWR(
-    [active, chainId, tokenAllowanceAddress, "allowance", account || PLACEHOLDER_ACCOUNT, glpManagerAddress],
+    [active, chainId, tokenAllowanceAddress, "allowance", account || PLACEHOLDER_ACCOUNT, glpManagerAddressV1],
     {
       fetcher: dynamicContractFetcher(signer, Token),
     }
   );
 
   const { data: lastPurchaseTime } = useSWR(
-    [`GlpSwap:lastPurchaseTime:${active}`, chainId, glpManagerAddress, "lastAddedAt", account || PLACEHOLDER_ACCOUNT],
+    [`GlpSwap:lastPurchaseTime:${active}`, chainId, glpManagerAddressV1, "lastAddedAt", account || PLACEHOLDER_ACCOUNT],
     {
       fetcher: dynamicContractFetcher(signer, GlpManager),
     }
   );
 
   const { data: glpBalance } = useSWR(
-    [`GlpSwap:glpBalance:${active}`, chainId, feeGlpTrackerAddress, "stakedAmounts", account || PLACEHOLDER_ACCOUNT],
+    [`GlpSwap:glpBalance:${active}`, chainId, feeGlpTrackerAddressV1, "stakedAmounts", account || PLACEHOLDER_ACCOUNT],
     {
       fetcher: dynamicContractFetcher(signer, RewardTracker),
     }
@@ -211,9 +219,9 @@ export default function GlpSwap(props) {
 
   const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
 
-  const rewardTrackersForStakingInfo = [stakedGlpTrackerAddress, feeGlpTrackerAddress];
+  const rewardTrackersForStakingInfo = [stakedGlpTrackerAddressV1, feeGlpTrackerAddressV1];
   const { data: stakingInfo } = useSWR(
-    [`GlpSwap:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT],
+    [`GlpSwap:stakingInfo:${active}`, chainId, rewardReaderAddressV1, "getStakingInfo", account || PLACEHOLDER_ACCOUNT],
     {
       fetcher: dynamicContractFetcher(signer, RewardReader, [rewardTrackersForStakingInfo]),
     }
@@ -552,7 +560,7 @@ export default function GlpSwap(props) {
       setIsApproving,
       library: signer,
       tokenAddress: swapToken.address,
-      spender: glpManagerAddress, // TODO
+      spender: glpManagerAddressV1, // TODO
       chainId: chainId,
       onApproveSubmitted: () => {
         setIsWaitingForApproval(true);
