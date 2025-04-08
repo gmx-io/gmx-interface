@@ -45,7 +45,7 @@ import SwapErrorModal from "./SwapErrorModal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { ARBITRUM, getChainName, IS_NETWORK_DISABLED } from "config/chains";
 import { callContract, dynamicContractFetcher } from "lib/contracts";
-import { approveTokens, useInfoTokens } from "domain/tokens";
+import { approveTokens, useInfoTokensV1 as useInfoTokens } from "domain/tokens";
 import { useLocalStorageByChainId } from "lib/localStorage";
 import { helperToast } from "lib/helperToast";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
