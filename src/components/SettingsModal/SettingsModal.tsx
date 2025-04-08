@@ -3,7 +3,6 @@ import cx from "classnames";
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { useKey } from "react-use";
 
-import { getIsFlagEnabled } from "config/ab";
 import { isDevelopment } from "config/env";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -263,11 +262,9 @@ export function SettingsModal({
               />
             </ToggleSwitch>
 
-            {getIsFlagEnabled("testExternalSwap") && (
-              <ToggleSwitch isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
-                <Trans>Enable external swaps</Trans>
-              </ToggleSwitch>
-            )}
+            <ToggleSwitch isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
+              <Trans>Enable external swaps</Trans>
+            </ToggleSwitch>
           </SettingsSection>
 
           <div className="divider mt-16"></div>
