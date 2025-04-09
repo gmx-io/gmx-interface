@@ -5,6 +5,7 @@ import { getTokensMap, getV2Tokens } from "sdk/configs/tokens";
 import { TokensData } from "./types";
 import { useTokenBalances } from "./useTokenBalances";
 import { useTokenRecentPricesRequest } from "./useTokenRecentPricesData";
+import { useOnchainTokensConfigs } from "../gassless/txns/useOnchainTokenConfigs";
 
 type TokensDataResult = {
   tokensData?: TokensData;
@@ -17,8 +18,9 @@ export function useTokensDataRequest(chainId: number): TokensDataResult {
   const tokenConfigs = getTokensMap(chainId);
   const { balancesData, error: balancesError } = useTokenBalances(chainId);
   const { pricesData, updatedAt: pricesUpdatedAt, error: pricesError } = useTokenRecentPricesRequest(chainId);
+  const { data: tokenConfigsData, error: tokenConfigsError } = useOnchainTokensConfigs(chainId);
 
-  const error = balancesError || pricesError;
+  const error = balancesError || pricesError || tokenConfigsError;
 
   return useMemo(() => {
     if (error) {
@@ -43,6 +45,7 @@ export function useTokensDataRequest(chainId: number): TokensDataResult {
         const prices = pricesData[tokenAddress];
         const balance = balancesData?.[tokenAddress];
         const tokenConfig = tokenConfigs[tokenAddress];
+        const tokenConfigData = tokenConfigsData?.[tokenAddress];
 
         if (!prices) {
           return acc;
@@ -52,11 +55,12 @@ export function useTokensDataRequest(chainId: number): TokensDataResult {
           ...tokenConfig,
           prices,
           balance,
+          priceFeedAddress: tokenConfigData?.priceFeedAddress,
         };
         return acc;
       }, {} as TokensData),
       pricesUpdatedAt,
       isBalancesLoaded,
     };
-  }, [error, chainId, pricesData, pricesUpdatedAt, balancesData, tokenConfigs]);
+  }, [error, chainId, pricesData, pricesUpdatedAt, balancesData, tokenConfigs, tokenConfigsData]);
 }

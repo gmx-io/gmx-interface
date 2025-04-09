@@ -2,6 +2,7 @@ import { ethers, Signer } from "ethers";
 import uniq from "lodash/uniq";
 import { Address, encodeFunctionData, encodePacked } from "viem";
 
+import { abis } from "sdk/abis";
 import { getContract } from "config/contracts";
 import { MarketsInfoData } from "domain/synthetics/markets/types";
 import { getSwapPathTokenAddresses } from "domain/synthetics/trade/utils";
@@ -17,6 +18,7 @@ import { RelayerFeeState } from "../types";
 import { getGelatoRelayRouterDomain, hashRelayParams } from "./relayParams";
 import { signTypedData } from "./signing";
 import { getActualApproval, hashSubaccountApproval, SignedSubbacountApproval, Subaccount } from "./subaccountUtils";
+import { MaxUint256 } from "sdk/utils/numbers";
 
 type UpdateOrderParams = {
   sizeDeltaUsd: bigint;
@@ -294,8 +296,15 @@ export function getRelayerFeeSwapParams(account: string, relayFeeParams: Relayer
 
   if (relayFeeParams.externalSwapOutput) {
     externalCalls = {
-      externalCallTargets: [relayFeeParams.externalSwapOutput.txnData.to],
-      externalCallDataList: [relayFeeParams.externalSwapOutput.txnData.data],
+      externalCallTargets: [relayFeeParams.gasPaymentTokenAddress, relayFeeParams.externalSwapOutput.txnData.to],
+      externalCallDataList: [
+        encodeFunctionData({
+          abi: abis.ERC20,
+          functionName: "approve",
+          args: [relayFeeParams.externalSwapOutput.txnData.to, MaxUint256],
+        }),
+        relayFeeParams.externalSwapOutput.txnData.data,
+      ],
       refundReceivers: [account, account],
       refundTokens: [relayFeeParams.gasPaymentTokenAddress, relayFeeParams.relayerFeeTokenAddress],
     } as ExternalCallsPayload;

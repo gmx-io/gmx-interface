@@ -94,6 +94,7 @@ export const OPTIMAL_USAGE_FACTOR = hashString("OPTIMAL_USAGE_FACTOR");
 export const BASE_BORROWING_FACTOR = hashString("BASE_BORROWING_FACTOR");
 export const ABOVE_OPTIMAL_USAGE_BORROWING_FACTOR = hashString("ABOVE_OPTIMAL_USAGE_BORROWING_FACTOR");
 export const SUBACCOUNT_EXPIRES_AT = hashString("SUBACCOUNT_EXPIRES_AT");
+export const PRICE_FEED_KEY = hashString("PRICE_FEED");
 
 export function subaccountExpiresAtKey(account: string, subaccount: string, actionType: string) {
   return hashData(
@@ -363,4 +364,8 @@ export function subaccountActionCountKey(account: string, subaccount: string, ac
 
 export function subaccountAutoTopUpAmountKey(account: string, subaccount: string) {
   return hashData(["bytes32", "address", "address"], [SUBACCOUNT_AUTO_TOP_UP_AMOUNT, account, subaccount]);
+}
+
+export function priceFeedKey(token: string) {
+  return hashData(["bytes32", "address"], [PRICE_FEED_KEY, token]);
 }

@@ -4,6 +4,7 @@ import { Abi, erc20Abi } from "viem";
 import CustomErrors from "./CustomErrors.json";
 import DataStore from "./DataStore.json";
 import ERC721 from "./ERC721.json";
+import ERC20PermitInterface from "./ERC20PermitInterface.json";
 import EventEmitter from "./EventEmitter.json";
 import ExchangeRouter from "./ExchangeRouter.json";
 import GelatoRelayRouter from "./GelatoRelayRouter.json";
@@ -91,6 +92,7 @@ export type AbiId =
   | "YieldFarm"
   | "YieldToken"
   | "SubaccountGelatoRelayRouter"
+  | "ERC20Permit"
   | "GelatoRelayRouter";
 
 export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
@@ -98,6 +100,7 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   DataStore: DataStore.abi,
   ERC721: ERC721.abi,
   ERC20: erc20Abi,
+  ERC20PermitInterface: ERC20PermitInterface.abi,
   EventEmitter: EventEmitter.abi,
   ExchangeRouter: ExchangeRouter.abi,
   GlpManager: GlpManager.abi,
