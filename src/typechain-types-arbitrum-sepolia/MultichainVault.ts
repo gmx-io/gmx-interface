@@ -40,23 +40,14 @@ export interface MultichainVaultInterface extends Interface {
   getEvent(nameOrSignatureOrTopic: "TokenTransferReverted"): EventFragment;
 
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "recordTransferIn(address)",
-    values: [AddressLike]
-  ): string;
+  encodeFunctionData(functionFragment: "recordTransferIn(address)", values: [AddressLike]): string;
   encodeFunctionData(
     functionFragment: "recordTransferIn(address,uint256)",
     values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "roleStore", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "syncTokenBalance",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokenBalances",
-    values: [AddressLike]
-  ): string;
+  encodeFunctionData(functionFragment: "syncTokenBalance", values: [AddressLike]): string;
+  encodeFunctionData(functionFragment: "tokenBalances", values: [AddressLike]): string;
   encodeFunctionData(
     functionFragment: "transferOut(address,address,uint256)",
     values: [AddressLike, AddressLike, BigNumberish]
@@ -65,41 +56,17 @@ export interface MultichainVaultInterface extends Interface {
     functionFragment: "transferOut(address,address,uint256,bool)",
     values: [AddressLike, AddressLike, BigNumberish, boolean]
   ): string;
-  encodeFunctionData(
-    functionFragment: "transferOutNativeToken",
-    values: [AddressLike, BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "transferOutNativeToken", values: [AddressLike, BigNumberish]): string;
 
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "recordTransferIn(address)",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "recordTransferIn(address,uint256)",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "recordTransferIn(address)", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "recordTransferIn(address,uint256)", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "roleStore", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "syncTokenBalance",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenBalances",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOut(address,address,uint256)",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOut(address,address,uint256,bool)",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOutNativeToken",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "syncTokenBalance", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "tokenBalances", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "transferOut(address,address,uint256)", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "transferOut(address,address,uint256,bool)", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "transferOutNativeToken", data: BytesLike): Result;
 }
 
 export namespace TokenTransferRevertedEvent {
@@ -132,39 +99,25 @@ export interface MultichainVault extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(
-    event: TCEvent
-  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(
-    event?: TCEvent
-  ): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
   dataStore: TypedContractMethod<[], [string], "view">;
 
-  "recordTransferIn(address)": TypedContractMethod<
-    [token: AddressLike],
-    [bigint],
-    "nonpayable"
-  >;
+  "recordTransferIn(address)": TypedContractMethod<[token: AddressLike], [bigint], "nonpayable">;
 
   "recordTransferIn(address,uint256)": TypedContractMethod<
     [token: AddressLike, amount: BigNumberish],
@@ -174,11 +127,7 @@ export interface MultichainVault extends BaseContract {
 
   roleStore: TypedContractMethod<[], [string], "view">;
 
-  syncTokenBalance: TypedContractMethod<
-    [token: AddressLike],
-    [bigint],
-    "nonpayable"
-  >;
+  syncTokenBalance: TypedContractMethod<[token: AddressLike], [bigint], "nonpayable">;
 
   tokenBalances: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
@@ -189,74 +138,38 @@ export interface MultichainVault extends BaseContract {
   >;
 
   "transferOut(address,address,uint256,bool)": TypedContractMethod<
-    [
-      token: AddressLike,
-      receiver: AddressLike,
-      amount: BigNumberish,
-      shouldUnwrapNativeToken: boolean
-    ],
+    [token: AddressLike, receiver: AddressLike, amount: BigNumberish, shouldUnwrapNativeToken: boolean],
     [void],
     "nonpayable"
   >;
 
-  transferOutNativeToken: TypedContractMethod<
-    [receiver: AddressLike, amount: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+  transferOutNativeToken: TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "nonpayable">;
 
-  getFunction<T extends ContractMethod = ContractMethod>(
-    key: string | FunctionFragment
-  ): T;
+  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
-  getFunction(
-    nameOrSignature: "dataStore"
-  ): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "recordTransferIn(address)"
   ): TypedContractMethod<[token: AddressLike], [bigint], "nonpayable">;
   getFunction(
     nameOrSignature: "recordTransferIn(address,uint256)"
-  ): TypedContractMethod<
-    [token: AddressLike, amount: BigNumberish],
-    [bigint],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "roleStore"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "syncTokenBalance"
-  ): TypedContractMethod<[token: AddressLike], [bigint], "nonpayable">;
-  getFunction(
-    nameOrSignature: "tokenBalances"
-  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  ): TypedContractMethod<[token: AddressLike, amount: BigNumberish], [bigint], "nonpayable">;
+  getFunction(nameOrSignature: "roleStore"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "syncTokenBalance"): TypedContractMethod<[token: AddressLike], [bigint], "nonpayable">;
+  getFunction(nameOrSignature: "tokenBalances"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "transferOut(address,address,uint256)"
-  ): TypedContractMethod<
-    [token: AddressLike, receiver: AddressLike, amount: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[token: AddressLike, receiver: AddressLike, amount: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "transferOut(address,address,uint256,bool)"
   ): TypedContractMethod<
-    [
-      token: AddressLike,
-      receiver: AddressLike,
-      amount: BigNumberish,
-      shouldUnwrapNativeToken: boolean
-    ],
+    [token: AddressLike, receiver: AddressLike, amount: BigNumberish, shouldUnwrapNativeToken: boolean],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "transferOutNativeToken"
-  ): TypedContractMethod<
-    [receiver: AddressLike, amount: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "nonpayable">;
 
   getEvent(
     key: "TokenTransferReverted"

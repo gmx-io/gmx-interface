@@ -52,64 +52,22 @@ export interface TimelockInterface extends Interface {
       | "timelockDelay"
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: "MAX_TIMELOCK_DELAY",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "addOracleSignerAfterSignal",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "cancelAction",
-    values: [BytesLike]
-  ): string;
+  encodeFunctionData(functionFragment: "MAX_TIMELOCK_DELAY", values?: undefined): string;
+  encodeFunctionData(functionFragment: "addOracleSignerAfterSignal", values: [AddressLike]): string;
+  encodeFunctionData(functionFragment: "cancelAction", values: [BytesLike]): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "eventEmitter",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "grantRoleAfterSignal",
-    values: [AddressLike, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "increaseTimelockDelay",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "multicall",
-    values: [BytesLike[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "oracleStore",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "pendingActions",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "removeOracleSignerAfterSignal",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "revokeRole",
-    values: [AddressLike, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "revokeRoleAfterSignal",
-    values: [AddressLike, BytesLike]
-  ): string;
+  encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
+  encodeFunctionData(functionFragment: "grantRoleAfterSignal", values: [AddressLike, BytesLike]): string;
+  encodeFunctionData(functionFragment: "increaseTimelockDelay", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "multicall", values: [BytesLike[]]): string;
+  encodeFunctionData(functionFragment: "oracleStore", values?: undefined): string;
+  encodeFunctionData(functionFragment: "pendingActions", values: [BytesLike]): string;
+  encodeFunctionData(functionFragment: "removeOracleSignerAfterSignal", values: [AddressLike]): string;
+  encodeFunctionData(functionFragment: "revokeRole", values: [AddressLike, BytesLike]): string;
+  encodeFunctionData(functionFragment: "revokeRoleAfterSignal", values: [AddressLike, BytesLike]): string;
   encodeFunctionData(functionFragment: "roleStore", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "setFeeReceiverAfterSignal",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setInStrictPriceFeedMode",
-    values: [boolean]
-  ): string;
+  encodeFunctionData(functionFragment: "setFeeReceiverAfterSignal", values: [AddressLike]): string;
+  encodeFunctionData(functionFragment: "setInStrictPriceFeedMode", values: [boolean]): string;
   encodeFunctionData(
     functionFragment: "setPriceFeedAfterSignal",
     values: [AddressLike, AddressLike, BigNumberish, BigNumberish, BigNumberish]
@@ -118,131 +76,44 @@ export interface TimelockInterface extends Interface {
     functionFragment: "setRealtimeFeedAfterSignal",
     values: [AddressLike, BytesLike, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "signalAddOracleSigner",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "signalGrantRole",
-    values: [AddressLike, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "signalRemoveOracleSigner",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "signalRevokeRole",
-    values: [AddressLike, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "signalSetFeeReceiver",
-    values: [AddressLike]
-  ): string;
+  encodeFunctionData(functionFragment: "signalAddOracleSigner", values: [AddressLike]): string;
+  encodeFunctionData(functionFragment: "signalGrantRole", values: [AddressLike, BytesLike]): string;
+  encodeFunctionData(functionFragment: "signalRemoveOracleSigner", values: [AddressLike]): string;
+  encodeFunctionData(functionFragment: "signalRevokeRole", values: [AddressLike, BytesLike]): string;
+  encodeFunctionData(functionFragment: "signalSetFeeReceiver", values: [AddressLike]): string;
   encodeFunctionData(
     functionFragment: "signalSetPriceFeed",
     values: [AddressLike, AddressLike, BigNumberish, BigNumberish, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "signalSetRealtimeFeed",
-    values: [AddressLike, BytesLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "timelockDelay",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "signalSetRealtimeFeed", values: [AddressLike, BytesLike, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "timelockDelay", values?: undefined): string;
 
-  decodeFunctionResult(
-    functionFragment: "MAX_TIMELOCK_DELAY",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "addOracleSignerAfterSignal",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "cancelAction",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "MAX_TIMELOCK_DELAY", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "addOracleSignerAfterSignal", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "cancelAction", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "eventEmitter",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "grantRoleAfterSignal",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "increaseTimelockDelay",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "eventEmitter", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "grantRoleAfterSignal", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "increaseTimelockDelay", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "multicall", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "oracleStore",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "pendingActions",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "removeOracleSignerAfterSignal",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "oracleStore", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "pendingActions", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "removeOracleSignerAfterSignal", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "revokeRoleAfterSignal",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "revokeRoleAfterSignal", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "roleStore", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "setFeeReceiverAfterSignal",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setInStrictPriceFeedMode",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setPriceFeedAfterSignal",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setRealtimeFeedAfterSignal",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "signalAddOracleSigner",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "signalGrantRole",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "signalRemoveOracleSigner",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "signalRevokeRole",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "signalSetFeeReceiver",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "signalSetPriceFeed",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "signalSetRealtimeFeed",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "timelockDelay",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "setFeeReceiverAfterSignal", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setInStrictPriceFeedMode", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setPriceFeedAfterSignal", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setRealtimeFeedAfterSignal", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "signalAddOracleSigner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "signalGrantRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "signalRemoveOracleSigner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "signalRevokeRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "signalSetFeeReceiver", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "signalSetPriceFeed", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "signalSetRealtimeFeed", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "timelockDelay", data: BytesLike): Result;
 }
 
 export interface Timelock extends BaseContract {
@@ -262,61 +133,35 @@ export interface Timelock extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(
-    event: TCEvent
-  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(
-    event?: TCEvent
-  ): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
   MAX_TIMELOCK_DELAY: TypedContractMethod<[], [bigint], "view">;
 
-  addOracleSignerAfterSignal: TypedContractMethod<
-    [account: AddressLike],
-    [void],
-    "nonpayable"
-  >;
+  addOracleSignerAfterSignal: TypedContractMethod<[account: AddressLike], [void], "nonpayable">;
 
-  cancelAction: TypedContractMethod<
-    [actionKey: BytesLike],
-    [void],
-    "nonpayable"
-  >;
+  cancelAction: TypedContractMethod<[actionKey: BytesLike], [void], "nonpayable">;
 
   dataStore: TypedContractMethod<[], [string], "view">;
 
   eventEmitter: TypedContractMethod<[], [string], "view">;
 
-  grantRoleAfterSignal: TypedContractMethod<
-    [account: AddressLike, roleKey: BytesLike],
-    [void],
-    "nonpayable"
-  >;
+  grantRoleAfterSignal: TypedContractMethod<[account: AddressLike, roleKey: BytesLike], [void], "nonpayable">;
 
-  increaseTimelockDelay: TypedContractMethod<
-    [_timelockDelay: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+  increaseTimelockDelay: TypedContractMethod<[_timelockDelay: BigNumberish], [void], "nonpayable">;
 
   multicall: TypedContractMethod<[data: BytesLike[]], [string[]], "nonpayable">;
 
@@ -324,37 +169,17 @@ export interface Timelock extends BaseContract {
 
   pendingActions: TypedContractMethod<[arg0: BytesLike], [bigint], "view">;
 
-  removeOracleSignerAfterSignal: TypedContractMethod<
-    [account: AddressLike],
-    [void],
-    "nonpayable"
-  >;
+  removeOracleSignerAfterSignal: TypedContractMethod<[account: AddressLike], [void], "nonpayable">;
 
-  revokeRole: TypedContractMethod<
-    [account: AddressLike, roleKey: BytesLike],
-    [void],
-    "nonpayable"
-  >;
+  revokeRole: TypedContractMethod<[account: AddressLike, roleKey: BytesLike], [void], "nonpayable">;
 
-  revokeRoleAfterSignal: TypedContractMethod<
-    [account: AddressLike, roleKey: BytesLike],
-    [void],
-    "nonpayable"
-  >;
+  revokeRoleAfterSignal: TypedContractMethod<[account: AddressLike, roleKey: BytesLike], [void], "nonpayable">;
 
   roleStore: TypedContractMethod<[], [string], "view">;
 
-  setFeeReceiverAfterSignal: TypedContractMethod<
-    [account: AddressLike],
-    [void],
-    "nonpayable"
-  >;
+  setFeeReceiverAfterSignal: TypedContractMethod<[account: AddressLike], [void], "nonpayable">;
 
-  setInStrictPriceFeedMode: TypedContractMethod<
-    [value: boolean],
-    [void],
-    "nonpayable"
-  >;
+  setInStrictPriceFeedMode: TypedContractMethod<[value: boolean], [void], "nonpayable">;
 
   setPriceFeedAfterSignal: TypedContractMethod<
     [
@@ -362,51 +187,27 @@ export interface Timelock extends BaseContract {
       priceFeed: AddressLike,
       priceFeedMultiplier: BigNumberish,
       priceFeedHeartbeatDuration: BigNumberish,
-      stablePrice: BigNumberish
+      stablePrice: BigNumberish,
     ],
     [void],
     "nonpayable"
   >;
 
   setRealtimeFeedAfterSignal: TypedContractMethod<
-    [
-      token: AddressLike,
-      feedId: BytesLike,
-      realtimeFeedMultiplier: BigNumberish
-    ],
+    [token: AddressLike, feedId: BytesLike, realtimeFeedMultiplier: BigNumberish],
     [void],
     "nonpayable"
   >;
 
-  signalAddOracleSigner: TypedContractMethod<
-    [account: AddressLike],
-    [void],
-    "nonpayable"
-  >;
+  signalAddOracleSigner: TypedContractMethod<[account: AddressLike], [void], "nonpayable">;
 
-  signalGrantRole: TypedContractMethod<
-    [account: AddressLike, roleKey: BytesLike],
-    [void],
-    "nonpayable"
-  >;
+  signalGrantRole: TypedContractMethod<[account: AddressLike, roleKey: BytesLike], [void], "nonpayable">;
 
-  signalRemoveOracleSigner: TypedContractMethod<
-    [account: AddressLike],
-    [void],
-    "nonpayable"
-  >;
+  signalRemoveOracleSigner: TypedContractMethod<[account: AddressLike], [void], "nonpayable">;
 
-  signalRevokeRole: TypedContractMethod<
-    [account: AddressLike, roleKey: BytesLike],
-    [void],
-    "nonpayable"
-  >;
+  signalRevokeRole: TypedContractMethod<[account: AddressLike, roleKey: BytesLike], [void], "nonpayable">;
 
-  signalSetFeeReceiver: TypedContractMethod<
-    [account: AddressLike],
-    [void],
-    "nonpayable"
-  >;
+  signalSetFeeReceiver: TypedContractMethod<[account: AddressLike], [void], "nonpayable">;
 
   signalSetPriceFeed: TypedContractMethod<
     [
@@ -414,88 +215,52 @@ export interface Timelock extends BaseContract {
       priceFeed: AddressLike,
       priceFeedMultiplier: BigNumberish,
       priceFeedHeartbeatDuration: BigNumberish,
-      stablePrice: BigNumberish
+      stablePrice: BigNumberish,
     ],
     [void],
     "nonpayable"
   >;
 
   signalSetRealtimeFeed: TypedContractMethod<
-    [
-      token: AddressLike,
-      feedId: BytesLike,
-      realtimeFeedMultiplier: BigNumberish
-    ],
+    [token: AddressLike, feedId: BytesLike, realtimeFeedMultiplier: BigNumberish],
     [void],
     "nonpayable"
   >;
 
   timelockDelay: TypedContractMethod<[], [bigint], "view">;
 
-  getFunction<T extends ContractMethod = ContractMethod>(
-    key: string | FunctionFragment
-  ): T;
+  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
-  getFunction(
-    nameOrSignature: "MAX_TIMELOCK_DELAY"
-  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(nameOrSignature: "MAX_TIMELOCK_DELAY"): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "addOracleSignerAfterSignal"
   ): TypedContractMethod<[account: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "cancelAction"
-  ): TypedContractMethod<[actionKey: BytesLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "dataStore"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "eventEmitter"
-  ): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "cancelAction"): TypedContractMethod<[actionKey: BytesLike], [void], "nonpayable">;
+  getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "grantRoleAfterSignal"
-  ): TypedContractMethod<
-    [account: AddressLike, roleKey: BytesLike],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[account: AddressLike, roleKey: BytesLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "increaseTimelockDelay"
   ): TypedContractMethod<[_timelockDelay: BigNumberish], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "multicall"
-  ): TypedContractMethod<[data: BytesLike[]], [string[]], "nonpayable">;
-  getFunction(
-    nameOrSignature: "oracleStore"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "pendingActions"
-  ): TypedContractMethod<[arg0: BytesLike], [bigint], "view">;
+  getFunction(nameOrSignature: "multicall"): TypedContractMethod<[data: BytesLike[]], [string[]], "nonpayable">;
+  getFunction(nameOrSignature: "oracleStore"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "pendingActions"): TypedContractMethod<[arg0: BytesLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "removeOracleSignerAfterSignal"
   ): TypedContractMethod<[account: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "revokeRole"
-  ): TypedContractMethod<
-    [account: AddressLike, roleKey: BytesLike],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[account: AddressLike, roleKey: BytesLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "revokeRoleAfterSignal"
-  ): TypedContractMethod<
-    [account: AddressLike, roleKey: BytesLike],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "roleStore"
-  ): TypedContractMethod<[], [string], "view">;
+  ): TypedContractMethod<[account: AddressLike, roleKey: BytesLike], [void], "nonpayable">;
+  getFunction(nameOrSignature: "roleStore"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "setFeeReceiverAfterSignal"
   ): TypedContractMethod<[account: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "setInStrictPriceFeedMode"
-  ): TypedContractMethod<[value: boolean], [void], "nonpayable">;
+  getFunction(nameOrSignature: "setInStrictPriceFeedMode"): TypedContractMethod<[value: boolean], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setPriceFeedAfterSignal"
   ): TypedContractMethod<
@@ -504,7 +269,7 @@ export interface Timelock extends BaseContract {
       priceFeed: AddressLike,
       priceFeedMultiplier: BigNumberish,
       priceFeedHeartbeatDuration: BigNumberish,
-      stablePrice: BigNumberish
+      stablePrice: BigNumberish,
     ],
     [void],
     "nonpayable"
@@ -512,11 +277,7 @@ export interface Timelock extends BaseContract {
   getFunction(
     nameOrSignature: "setRealtimeFeedAfterSignal"
   ): TypedContractMethod<
-    [
-      token: AddressLike,
-      feedId: BytesLike,
-      realtimeFeedMultiplier: BigNumberish
-    ],
+    [token: AddressLike, feedId: BytesLike, realtimeFeedMultiplier: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -525,21 +286,13 @@ export interface Timelock extends BaseContract {
   ): TypedContractMethod<[account: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "signalGrantRole"
-  ): TypedContractMethod<
-    [account: AddressLike, roleKey: BytesLike],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[account: AddressLike, roleKey: BytesLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "signalRemoveOracleSigner"
   ): TypedContractMethod<[account: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "signalRevokeRole"
-  ): TypedContractMethod<
-    [account: AddressLike, roleKey: BytesLike],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[account: AddressLike, roleKey: BytesLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "signalSetFeeReceiver"
   ): TypedContractMethod<[account: AddressLike], [void], "nonpayable">;
@@ -551,7 +304,7 @@ export interface Timelock extends BaseContract {
       priceFeed: AddressLike,
       priceFeedMultiplier: BigNumberish,
       priceFeedHeartbeatDuration: BigNumberish,
-      stablePrice: BigNumberish
+      stablePrice: BigNumberish,
     ],
     [void],
     "nonpayable"
@@ -559,17 +312,11 @@ export interface Timelock extends BaseContract {
   getFunction(
     nameOrSignature: "signalSetRealtimeFeed"
   ): TypedContractMethod<
-    [
-      token: AddressLike,
-      feedId: BytesLike,
-      realtimeFeedMultiplier: BigNumberish
-    ],
+    [token: AddressLike, feedId: BytesLike, realtimeFeedMultiplier: BigNumberish],
     [void],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "timelockDelay"
-  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(nameOrSignature: "timelockDelay"): TypedContractMethod<[], [bigint], "view">;
 
   filters: {};
 }

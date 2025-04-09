@@ -7,15 +7,23 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import {
-  SecondaryCancelOrderParams,
-  SecondaryDecreaseOrderParams,
-  SecondaryOrderCommonParams,
-  SecondaryUpdateOrderParams,
-} from "domain/synthetics/gassless/txns/createOrderBuilders";
 import { SidecarLimitOrderEntryValid, SidecarSlTpOrderEntryValid } from "domain/synthetics/sidecarOrders/types";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useChainId } from "lib/chains";
+import {
+  SecondaryCancelOrderParams,
+  SecondaryUpdateOrderParams,
+} from "domain/synthetics/orders/createIncreaseOrderTxn";
+import {
+  buildDecreaseOrderPayload,
+  buildUpdateOrderPayload,
+  CancelOrderTxnParams,
+  CreateOrderTxnParams,
+  DecreasePositionOrderParams,
+  UpdateOrderTxnParams,
+} from "sdk/utils/orderTransactions";
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { DecreasePositionSwapType } from "sdk/types/orders";
 
 // TODO: REWRITE ALL THIS STUFF TO SELECTORS
 export function useRequiredActions() {
@@ -77,63 +85,59 @@ export function useSecondaryOrderPayloads({
       return undefined;
     }
 
-    const commonSecondaryOrderParams: SecondaryOrderCommonParams = {
-      chainId,
-      account,
-      marketAddress: marketInfo.marketTokenAddress,
-      indexTokenAddress: marketInfo.indexToken.address,
-      swapPath: [],
-      initialCollateralAddress: collateralAddress,
-      targetCollateralAddress: collateralAddress,
-      isLong,
-      allowedSlippage: 0,
-      sizeDeltaUsd: 0n,
-      initialCollateralDeltaAmount: 0n,
-      referralCode: userReferralInfo?.referralCodeForTxn,
-    };
+    const createPayloads = createSltpEntries.map((entry, i) => {
+      const amounts = entry.decreaseAmounts;
 
-    const createPayloads = createSltpEntries.map((entry, i): SecondaryDecreaseOrderParams => {
-      return {
-        ...commonSecondaryOrderParams,
-        ...entry.decreaseAmounts,
-        txnType: "create",
-        orderType: entry.decreaseAmounts.triggerOrderType!,
-        triggerPrice: entry.decreaseAmounts.triggerPrice,
-        decreasePositionSwapType: entry.decreaseAmounts.decreaseSwapType,
-        minOutputUsd: 0n,
+      return buildDecreaseOrderPayload({
+        chainId,
+        receiver: account,
+        collateralDeltaAmount: amounts.collateralDeltaAmount ?? 0n,
+        initialCollateralTokenAddress: collateralAddress,
+        sizeDeltaUsd: amounts.sizeDeltaUsd,
+        sizeDeltaInTokens: amounts.sizeDeltaInTokens,
+        referralCode: userReferralInfo?.referralCodeForTxn,
+        uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT,
+        allowedSlippage: 0,
+        orderType: amounts.triggerOrderType!,
         autoCancel: i < autoCancelOrdersLimit,
-        executionFee: getExecutionFeeAmountForEntry(entry) ?? 0n,
+        swapPath: [],
         externalSwapQuote: undefined,
-      };
+        marketAddress: marketInfo.marketTokenAddress,
+        indexTokenAddress: marketInfo.indexTokenAddress,
+        isLong,
+        acceptablePrice: amounts.acceptablePrice,
+        triggerPrice: amounts.triggerPrice,
+        receiveTokenAddress: collateralAddress,
+        minOutputUsd: 0n,
+        decreasePositionSwapType: amounts.decreaseSwapType,
+        executionFeeAmount: getExecutionFeeAmountForEntry(entry) ?? 0n,
+        executionGasLimit: 0n, // Don't need for tp/sl entries
+      });
     });
 
-    const cancelPayloads = cancelSltpEntries.map((entry): SecondaryCancelOrderParams => {
-      const order = entry.order!;
-
-      return {
-        ...commonSecondaryOrderParams,
-        ...order,
-        txnType: "cancel",
-        orderKey: order.key,
-      };
-    });
-
-    const updatePayloads = updateSltpEntries.map((entry): SecondaryUpdateOrderParams => {
+    const updatePayloads = updateSltpEntries.map((entry) => {
       const amounts = entry.increaseAmounts || entry.decreaseAmounts;
       const order = entry.order!;
 
-      return {
-        ...commonSecondaryOrderParams,
-        ...order,
+      return buildUpdateOrderPayload({
+        chainId,
+        indexTokenAddress: marketInfo.indexTokenAddress,
         orderKey: order.key,
-        txnType: "update",
         sizeDeltaUsd: amounts.sizeDeltaUsd ?? 0n,
-        acceptablePrice: amounts.acceptablePrice ?? 0n,
         triggerPrice: amounts.triggerPrice ?? 0n,
-        executionFee: getExecutionFeeAmountForEntry(entry) ?? 0n,
+        acceptablePrice: amounts.acceptablePrice ?? 0n,
         minOutputAmount: 0n,
-        initialCollateralDeltaAmount: order.initialCollateralDeltaAmount ?? 0n,
+        validFromTime: 0n,
         autoCancel: order.autoCancel,
+        executionFeeTopUp: getExecutionFeeAmountForEntry(entry) ?? 0n,
+      });
+    });
+
+    const cancelPayloads = cancelSltpEntries.map((entry): CancelOrderTxnParams => {
+      const order = entry.order!;
+
+      return {
+        orderKey: order.key,
       };
     });
 

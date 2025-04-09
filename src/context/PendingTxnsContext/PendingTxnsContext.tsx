@@ -1,6 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useMemo, useState } from "react";
 
+import { parseError } from "ab/testMultichain/parseError";
 import { getExplorerUrl } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
@@ -9,11 +10,10 @@ import {
   getMinimumExecutionFeeBufferBps,
 } from "domain/synthetics/fees/utils/executionFee";
 import { useChainId } from "lib/chains";
-import { getCallStaticError } from "lib/contracts/transactionErrors";
+import { getCallStaticError } from "lib/errors/additionalValidation";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
 import { formatPercentage } from "lib/numbers";
-import { parseError } from "ab/testMultichain/parseError";
 import { sendUserAnalyticsOrderResultEvent } from "lib/userAnalytics";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 
@@ -75,7 +75,7 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
               undefined,
               pendingTxn.hash
             );
-            const errorData = onchainError ? parseError(onchainError) : undefined;
+            const errorData = onchainError ? parseError(onchainError as any) : undefined;
 
             let toastMsg: ReactNode;
 

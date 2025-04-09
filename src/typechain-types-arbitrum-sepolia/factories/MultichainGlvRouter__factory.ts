@@ -3,11 +3,7 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type {
-  MultichainGlvRouter,
-  MultichainGlvRouterInterface,
-  MultichainRouter,
-} from "../MultichainGlvRouter";
+import type { MultichainGlvRouter, MultichainGlvRouterInterface, MultichainRouter } from "../MultichainGlvRouter";
 
 const _abi = [
   {
@@ -551,8 +547,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType:
-              "struct GlvDepositUtils.CreateGlvDepositParamsAddresses",
+            internalType: "struct GlvDepositUtils.CreateGlvDepositParamsAddresses",
             name: "addresses",
             type: "tuple",
           },
@@ -822,8 +817,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType:
-              "struct GlvWithdrawalUtils.CreateGlvWithdrawalParamsAddresses",
+            internalType: "struct GlvWithdrawalUtils.CreateGlvWithdrawalParamsAddresses",
             name: "addresses",
             type: "tuple",
           },
@@ -1121,14 +1115,7 @@ export class MultichainGlvRouter__factory {
   static createInterface(): MultichainGlvRouterInterface {
     return new Interface(_abi) as MultichainGlvRouterInterface;
   }
-  static connect(
-    address: string,
-    runner?: ContractRunner | null
-  ): MultichainGlvRouter {
-    return new Contract(
-      address,
-      _abi,
-      runner
-    ) as unknown as MultichainGlvRouter;
+  static connect(address: string, runner?: ContractRunner | null): MultichainGlvRouter {
+    return new Contract(address, _abi, runner) as unknown as MultichainGlvRouter;
   }
 }

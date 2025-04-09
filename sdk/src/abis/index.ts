@@ -25,6 +25,7 @@ import DataStore from "./DataStore.json";
 import ERC721 from "./ERC721.json";
 import EventEmitter from "./EventEmitter.json";
 import ExchangeRouter from "./ExchangeRouter.json";
+import GelatoRelayRouter from "./GelatoRelayRouter.json";
 import GlpManager from "./GlpManager.json";
 import GlvReader from "./GlvReader.json";
 import GlvRouter from "./GlvRouter.json";
@@ -46,6 +47,7 @@ import RewardRouter from "./RewardRouter.json";
 import RewardTracker from "./RewardTracker.json";
 import RouterV2 from "./Router-v2.json";
 import Router from "./Router.json";
+import SubaccountGelatoRelayRouter from "./SubaccountGelatoRelayRouter.json";
 import SubaccountRouter from "./SubaccountRouter.json";
 import SyntheticsReader from "./SyntheticsReader.json";
 import SyntheticsRouter from "./SyntheticsRouter.json";
@@ -107,6 +109,8 @@ export type AbiId =
   | "WETH"
   | "YieldFarm"
   | "YieldToken"
+  | "SubaccountGelatoRelayRouter"
+  | "GelatoRelayRouter"
   | "CustomErrorsArbitrumSepolia"
   | "DataStoreArbitrumSepolia"
   | "ExchangeRouterArbitrumSepolia"
@@ -171,6 +175,8 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   WETH: WETH.abi,
   YieldFarm: YieldFarm.abi,
   YieldToken: YieldToken.abi,
+  SubaccountGelatoRelayRouter: SubaccountGelatoRelayRouter.abi,
+  GelatoRelayRouter: GelatoRelayRouter.abi,
   CustomErrorsArbitrumSepolia: CustomErrorsArbitrumSepolia.abi,
   DataStoreArbitrumSepolia: DataStoreArbitrumSepolia.abi,
   ExchangeRouterArbitrumSepolia: ExchangeRouterArbitrumSepolia.abi,

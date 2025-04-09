@@ -5,12 +5,13 @@ import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { PendingOrderData, SetPendingOrder } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
-import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { OrderMetricId } from "lib/metrics/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import ExchangeRouterAbi from "sdk/abis/ExchangeRouter.json";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { isMarketOrderType } from "sdk/utils/orders";
+
+import { validateSignerAddress } from "components/Errors/errorToasts";
 
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
@@ -39,6 +40,7 @@ export type SwapOrderParams = {
   skipSimulation: boolean;
   metricId: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
+  slippageInputId: string | undefined;
 };
 
 export async function createSwapOrderTxn(
@@ -96,6 +98,9 @@ export async function createSwapOrderTxn(
           errorTitle: t`Order error.`,
           metricId: p.metricId,
           blockTimestampData: p.blockTimestampData,
+          additionalErrorParams: {
+            slippageInputId: p.slippageInputId,
+          },
         })
       : undefined;
 

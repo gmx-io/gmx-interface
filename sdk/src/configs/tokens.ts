@@ -1,6 +1,6 @@
 import { zeroAddress } from "viem";
 
-import type { Token, TokenCategory } from "types/tokens";
+import type { Token, TokenAddressType, TokenCategory } from "types/tokens";
 
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 import { getContract } from "./contracts";
@@ -1666,18 +1666,22 @@ export function getTokenBySymbol(
   return token;
 }
 
-export function convertTokenAddress(chainId: number, address: string, convertTo?: "wrapped" | "native") {
+export function convertTokenAddress<T extends keyof TokenAddressType, R extends TokenAddressType[T]>(
+  chainId: number,
+  address: string,
+  convertTo?: T
+): R {
   const wrappedToken = getWrappedToken(chainId);
 
   if (convertTo === "wrapped" && address === NATIVE_TOKEN_ADDRESS) {
-    return wrappedToken.address;
+    return wrappedToken.address as R;
   }
 
   if (convertTo === "native" && address === wrappedToken.address) {
-    return NATIVE_TOKEN_ADDRESS;
+    return NATIVE_TOKEN_ADDRESS as R;
   }
 
-  return address;
+  return address as R;
 }
 
 export function getNormalizedTokenSymbol(tokenSymbol) {

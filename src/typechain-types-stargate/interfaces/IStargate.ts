@@ -40,7 +40,7 @@ export type SendParamStructOutput = [
   minAmountLD: bigint,
   extraOptions: string,
   composeMsg: string,
-  oftCmd: string
+  oftCmd: string,
 ] & {
   dstEid: bigint;
   to: string;
@@ -56,40 +56,40 @@ export type OFTLimitStruct = {
   maxAmountLD: BigNumberish;
 };
 
-export type OFTLimitStructOutput = [
-  minAmountLD: bigint,
-  maxAmountLD: bigint
-] & { minAmountLD: bigint; maxAmountLD: bigint };
+export type OFTLimitStructOutput = [minAmountLD: bigint, maxAmountLD: bigint] & {
+  minAmountLD: bigint;
+  maxAmountLD: bigint;
+};
 
 export type OFTFeeDetailStruct = {
   feeAmountLD: BigNumberish;
   description: string;
 };
 
-export type OFTFeeDetailStructOutput = [
-  feeAmountLD: bigint,
-  description: string
-] & { feeAmountLD: bigint; description: string };
+export type OFTFeeDetailStructOutput = [feeAmountLD: bigint, description: string] & {
+  feeAmountLD: bigint;
+  description: string;
+};
 
 export type OFTReceiptStruct = {
   amountSentLD: BigNumberish;
   amountReceivedLD: BigNumberish;
 };
 
-export type OFTReceiptStructOutput = [
-  amountSentLD: bigint,
-  amountReceivedLD: bigint
-] & { amountSentLD: bigint; amountReceivedLD: bigint };
+export type OFTReceiptStructOutput = [amountSentLD: bigint, amountReceivedLD: bigint] & {
+  amountSentLD: bigint;
+  amountReceivedLD: bigint;
+};
 
 export type MessagingFeeStruct = {
   nativeFee: BigNumberish;
   lzTokenFee: BigNumberish;
 };
 
-export type MessagingFeeStructOutput = [
-  nativeFee: bigint,
-  lzTokenFee: bigint
-] & { nativeFee: bigint; lzTokenFee: bigint };
+export type MessagingFeeStructOutput = [nativeFee: bigint, lzTokenFee: bigint] & {
+  nativeFee: bigint;
+  lzTokenFee: bigint;
+};
 
 export type MessagingReceiptStruct = {
   guid: BytesLike;
@@ -97,11 +97,11 @@ export type MessagingReceiptStruct = {
   fee: MessagingFeeStruct;
 };
 
-export type MessagingReceiptStructOutput = [
-  guid: string,
-  nonce: bigint,
-  fee: MessagingFeeStructOutput
-] & { guid: string; nonce: bigint; fee: MessagingFeeStructOutput };
+export type MessagingReceiptStructOutput = [guid: string, nonce: bigint, fee: MessagingFeeStructOutput] & {
+  guid: string;
+  nonce: bigint;
+  fee: MessagingFeeStructOutput;
+};
 
 export type TicketStruct = {
   ticketId: BigNumberish;
@@ -129,57 +129,24 @@ export interface IStargateInterface extends Interface {
 
   getEvent(nameOrSignatureOrTopic: "OFTReceived" | "OFTSent"): EventFragment;
 
-  encodeFunctionData(
-    functionFragment: "approvalRequired",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "oftVersion",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "quoteOFT",
-    values: [SendParamStruct]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "quoteSend",
-    values: [SendParamStruct, boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "send",
-    values: [SendParamStruct, MessagingFeeStruct, AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "sendToken",
-    values: [SendParamStruct, MessagingFeeStruct, AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "sharedDecimals",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "stargateType",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "approvalRequired", values?: undefined): string;
+  encodeFunctionData(functionFragment: "oftVersion", values?: undefined): string;
+  encodeFunctionData(functionFragment: "quoteOFT", values: [SendParamStruct]): string;
+  encodeFunctionData(functionFragment: "quoteSend", values: [SendParamStruct, boolean]): string;
+  encodeFunctionData(functionFragment: "send", values: [SendParamStruct, MessagingFeeStruct, AddressLike]): string;
+  encodeFunctionData(functionFragment: "sendToken", values: [SendParamStruct, MessagingFeeStruct, AddressLike]): string;
+  encodeFunctionData(functionFragment: "sharedDecimals", values?: undefined): string;
+  encodeFunctionData(functionFragment: "stargateType", values?: undefined): string;
   encodeFunctionData(functionFragment: "token", values?: undefined): string;
 
-  decodeFunctionResult(
-    functionFragment: "approvalRequired",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "approvalRequired", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "oftVersion", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "quoteOFT", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "quoteSend", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "send", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendToken", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "sharedDecimals",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "stargateType",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "sharedDecimals", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "stargateType", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "token", data: BytesLike): Result;
 }
 
@@ -188,14 +155,9 @@ export namespace OFTReceivedEvent {
     guid: BytesLike,
     srcEid: BigNumberish,
     toAddress: AddressLike,
-    amountReceivedLD: BigNumberish
+    amountReceivedLD: BigNumberish,
   ];
-  export type OutputTuple = [
-    guid: string,
-    srcEid: bigint,
-    toAddress: string,
-    amountReceivedLD: bigint
-  ];
+  export type OutputTuple = [guid: string, srcEid: bigint, toAddress: string, amountReceivedLD: bigint];
   export interface OutputObject {
     guid: string;
     srcEid: bigint;
@@ -214,14 +176,14 @@ export namespace OFTSentEvent {
     dstEid: BigNumberish,
     fromAddress: AddressLike,
     amountSentLD: BigNumberish,
-    amountReceivedLD: BigNumberish
+    amountReceivedLD: BigNumberish,
   ];
   export type OutputTuple = [
     guid: string,
     dstEid: bigint,
     fromAddress: string,
     amountSentLD: bigint,
-    amountReceivedLD: bigint
+    amountReceivedLD: bigint,
   ];
   export interface OutputObject {
     guid: string;
@@ -253,48 +215,32 @@ export interface IStargate extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(
-    event: TCEvent
-  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(
-    event?: TCEvent
-  ): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
   approvalRequired: TypedContractMethod<[], [boolean], "view">;
 
-  oftVersion: TypedContractMethod<
-    [],
-    [[string, bigint] & { interfaceId: string; version: bigint }],
-    "view"
-  >;
+  oftVersion: TypedContractMethod<[], [[string, bigint] & { interfaceId: string; version: bigint }], "view">;
 
   quoteOFT: TypedContractMethod<
     [_sendParam: SendParamStruct],
     [
-      [
-        OFTLimitStructOutput,
-        OFTFeeDetailStructOutput[],
-        OFTReceiptStructOutput
-      ] & { oftFeeDetails: OFTFeeDetailStructOutput[] }
+      [OFTLimitStructOutput, OFTFeeDetailStructOutput[], OFTReceiptStructOutput] & {
+        oftFeeDetails: OFTFeeDetailStructOutput[];
+      },
     ],
     "view"
   >;
@@ -306,31 +252,19 @@ export interface IStargate extends BaseContract {
   >;
 
   send: TypedContractMethod<
-    [
-      _sendParam: SendParamStruct,
-      _fee: MessagingFeeStruct,
-      _refundAddress: AddressLike
-    ],
+    [_sendParam: SendParamStruct, _fee: MessagingFeeStruct, _refundAddress: AddressLike],
     [[MessagingReceiptStructOutput, OFTReceiptStructOutput]],
     "payable"
   >;
 
   sendToken: TypedContractMethod<
+    [_sendParam: SendParamStruct, _fee: MessagingFeeStruct, _refundAddress: AddressLike],
     [
-      _sendParam: SendParamStruct,
-      _fee: MessagingFeeStruct,
-      _refundAddress: AddressLike
-    ],
-    [
-      [
-        MessagingReceiptStructOutput,
-        OFTReceiptStructOutput,
-        TicketStructOutput
-      ] & {
+      [MessagingReceiptStructOutput, OFTReceiptStructOutput, TicketStructOutput] & {
         msgReceipt: MessagingReceiptStructOutput;
         oftReceipt: OFTReceiptStructOutput;
         ticket: TicketStructOutput;
-      }
+      },
     ],
     "payable"
   >;
@@ -341,96 +275,54 @@ export interface IStargate extends BaseContract {
 
   token: TypedContractMethod<[], [string], "view">;
 
-  getFunction<T extends ContractMethod = ContractMethod>(
-    key: string | FunctionFragment
-  ): T;
+  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
-  getFunction(
-    nameOrSignature: "approvalRequired"
-  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(nameOrSignature: "approvalRequired"): TypedContractMethod<[], [boolean], "view">;
   getFunction(
     nameOrSignature: "oftVersion"
-  ): TypedContractMethod<
-    [],
-    [[string, bigint] & { interfaceId: string; version: bigint }],
-    "view"
-  >;
+  ): TypedContractMethod<[], [[string, bigint] & { interfaceId: string; version: bigint }], "view">;
   getFunction(
     nameOrSignature: "quoteOFT"
   ): TypedContractMethod<
     [_sendParam: SendParamStruct],
     [
-      [
-        OFTLimitStructOutput,
-        OFTFeeDetailStructOutput[],
-        OFTReceiptStructOutput
-      ] & { oftFeeDetails: OFTFeeDetailStructOutput[] }
+      [OFTLimitStructOutput, OFTFeeDetailStructOutput[], OFTReceiptStructOutput] & {
+        oftFeeDetails: OFTFeeDetailStructOutput[];
+      },
     ],
     "view"
   >;
   getFunction(
     nameOrSignature: "quoteSend"
-  ): TypedContractMethod<
-    [_sendParam: SendParamStruct, _payInLzToken: boolean],
-    [MessagingFeeStructOutput],
-    "view"
-  >;
+  ): TypedContractMethod<[_sendParam: SendParamStruct, _payInLzToken: boolean], [MessagingFeeStructOutput], "view">;
   getFunction(
     nameOrSignature: "send"
   ): TypedContractMethod<
-    [
-      _sendParam: SendParamStruct,
-      _fee: MessagingFeeStruct,
-      _refundAddress: AddressLike
-    ],
+    [_sendParam: SendParamStruct, _fee: MessagingFeeStruct, _refundAddress: AddressLike],
     [[MessagingReceiptStructOutput, OFTReceiptStructOutput]],
     "payable"
   >;
-  getFunction(
-    nameOrSignature: "sendToken"
-  ): TypedContractMethod<
+  getFunction(nameOrSignature: "sendToken"): TypedContractMethod<
+    [_sendParam: SendParamStruct, _fee: MessagingFeeStruct, _refundAddress: AddressLike],
     [
-      _sendParam: SendParamStruct,
-      _fee: MessagingFeeStruct,
-      _refundAddress: AddressLike
-    ],
-    [
-      [
-        MessagingReceiptStructOutput,
-        OFTReceiptStructOutput,
-        TicketStructOutput
-      ] & {
+      [MessagingReceiptStructOutput, OFTReceiptStructOutput, TicketStructOutput] & {
         msgReceipt: MessagingReceiptStructOutput;
         oftReceipt: OFTReceiptStructOutput;
         ticket: TicketStructOutput;
-      }
+      },
     ],
     "payable"
   >;
-  getFunction(
-    nameOrSignature: "sharedDecimals"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "stargateType"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "token"
-  ): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "sharedDecimals"): TypedContractMethod<[], [bigint], "view">;
+  getFunction(nameOrSignature: "stargateType"): TypedContractMethod<[], [bigint], "view">;
+  getFunction(nameOrSignature: "token"): TypedContractMethod<[], [string], "view">;
 
   getEvent(
     key: "OFTReceived"
-  ): TypedContractEvent<
-    OFTReceivedEvent.InputTuple,
-    OFTReceivedEvent.OutputTuple,
-    OFTReceivedEvent.OutputObject
-  >;
+  ): TypedContractEvent<OFTReceivedEvent.InputTuple, OFTReceivedEvent.OutputTuple, OFTReceivedEvent.OutputObject>;
   getEvent(
     key: "OFTSent"
-  ): TypedContractEvent<
-    OFTSentEvent.InputTuple,
-    OFTSentEvent.OutputTuple,
-    OFTSentEvent.OutputObject
-  >;
+  ): TypedContractEvent<OFTSentEvent.InputTuple, OFTSentEvent.OutputTuple, OFTSentEvent.OutputObject>;
 
   filters: {
     "OFTReceived(bytes32,uint32,address,uint256)": TypedContractEvent<
@@ -449,10 +341,6 @@ export interface IStargate extends BaseContract {
       OFTSentEvent.OutputTuple,
       OFTSentEvent.OutputObject
     >;
-    OFTSent: TypedContractEvent<
-      OFTSentEvent.InputTuple,
-      OFTSentEvent.OutputTuple,
-      OFTSentEvent.OutputObject
-    >;
+    OFTSent: TypedContractEvent<OFTSentEvent.InputTuple, OFTSentEvent.OutputTuple, OFTSentEvent.OutputObject>;
   };
 }

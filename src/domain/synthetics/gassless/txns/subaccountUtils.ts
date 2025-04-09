@@ -2,7 +2,6 @@ import cryptoJs from "crypto-js";
 import { ethers, Signer } from "ethers";
 import { encodeAbiParameters, keccak256, zeroHash } from "viem";
 
-import { getContract } from "config/contracts";
 import { SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
 import { SubaccountOnchainData } from "domain/synthetics/subaccount/useSubaccountFromContractsRequest";
 import { SUBACCOUNT_ORDER_ACTION } from "sdk/configs/dataStore";
@@ -13,7 +12,7 @@ import {
 } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
 
-import { getGelatoRelayRouterDomain } from "./relayRouterUtils";
+import { getGelatoRelayRouterDomain } from "./relayParams";
 import { signTypedData } from "./signing";
 
 export type Subaccount = {
@@ -130,7 +129,7 @@ export async function getActualApproval(
 
   if (getIsApprovalExpired(signedApproval)) {
     const now = BigInt(nowInSeconds());
-    // Extend time for expired approval while keeping other values
+
     return createAndSignSubaccountApproval(chainId, signer, address, signedApproval.nonce, {
       ...signedApproval,
       expiresAt: now + BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION),
@@ -186,8 +185,6 @@ export async function createAndSignSubaccountApproval(
     deadline: bigint;
   }
 ): Promise<SignedSubbacountApproval> {
-  const routerAddress = getContract(chainId, "SubaccountGelatoRelayRouter");
-
   const types = {
     SubaccountApproval: [
       { name: "subaccount", type: "address" },
@@ -201,7 +198,7 @@ export async function createAndSignSubaccountApproval(
   };
 
   // Create domain separator
-  const domain = getGelatoRelayRouterDomain(chainId, routerAddress);
+  const domain = getGelatoRelayRouterDomain(chainId, true);
 
   const typedData = {
     subaccount: subaccountAddress,

@@ -1,4 +1,3 @@
-import { GelatoRelay } from "@gelatonetwork/relay-sdk";
 import { useEffect, useMemo } from "react";
 import useSWR from "swr";
 
@@ -18,14 +17,15 @@ import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { getContract } from "sdk/configs/contracts";
 import { getWrappedToken } from "sdk/configs/tokens";
+import { gelatoRelay } from "sdk/utils/gelatoRelay";
 
 import { useExternalSwapOutputRequest } from "../externalSwaps/useExternalSwapOutputRequest";
 import { convertToTokenAmount, convertToUsd } from "../tokens";
 import { getSwapAmountsByToValue } from "../trade";
 import { RelayerFeeState } from "./types";
+import { getSwapDebugSettings } from "config/externalSwaps";
 
-const DEFAULT_GAS_LIMIT = 1000000n;
-const relay = new GelatoRelay();
+const DEFAULT_GAS_LIMIT = 10000000n;
 
 function roundBigIntToDecimals(value: bigint, tokenDecimals: number, roundToDecimals: number): bigint {
   const excessDecimals = tokenDecimals - roundToDecimals;
@@ -58,15 +58,15 @@ export function useRelayerFeeHandler(): RelayerFeeState | undefined {
   const { data: relayerFeeAmount } = useSWR(
     isExpressOrdersEnabled ? ["relayerFee", chainId, relayerFeeToken?.address] : null,
     async () => {
-      if (!relayerFeeToken) {
+      if (!relayerFeeToken || !executionFee) {
         return undefined;
       }
 
       try {
-        const feeAmount = await relay.getEstimatedFee(
+        const feeAmount = await gelatoRelay.getEstimatedFee(
           BigInt(chainId),
           relayerFeeToken.address,
-          DEFAULT_GAS_LIMIT,
+          executionFee.gasLimit,
           false
         );
 
@@ -150,9 +150,10 @@ export function useRelayerFeeHandler(): RelayerFeeState | undefined {
     };
 
     if (
-      externalSwapOutput?.usdOut
-      // internalSwapAmounts?.usdOut &&
-      // externalSwapOutput.usdOut > internalSwapAmounts.usdOut
+      externalSwapOutput?.usdOut &&
+      (getSwapDebugSettings()?.forceExternalSwaps ||
+        internalSwapAmounts?.usdOut === undefined ||
+        externalSwapOutput.usdOut > internalSwapAmounts.usdOut)
     ) {
       relayerFeeeState.externalSwapOutput = externalSwapOutput;
       relayerFeeeState.gasPaymentTokenAmount = externalSwapOutput.amountIn;

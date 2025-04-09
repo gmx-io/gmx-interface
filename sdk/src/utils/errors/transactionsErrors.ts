@@ -52,14 +52,34 @@ const TX_ERROR_PATTERNS: { [key in TxErrorType]: ErrorPattern[] } = {
   ],
 };
 
+export enum CustomErrorName {
+  EndOfOracleSimulation = "EndOfOracleSimulation",
+  InsufficientExecutionFee = "InsufficientExecutionFee",
+  OrderNotFulfillableAtAcceptablePrice = "OrderNotFulfillableAtAcceptablePrice",
+  InsufficientSwapOutputAmount = "InsufficientSwapOutputAmount",
+}
+
+export function getIsUserRejectedError(errorType: TxErrorType) {
+  return errorType === TxErrorType.UserDenied;
+}
+
+export function getIsUserError(errorType: TxErrorType) {
+  return [TxErrorType.UserDenied, TxErrorType.NetworkChanged, TxErrorType.Expired, TxErrorType.NotEnoughFunds].includes(
+    errorType
+  );
+}
+
 export type TxError = {
   message?: string;
-  code?: number;
+  code?: number | string;
   data?: any;
   error?: any;
 };
 
-export function extractError(ex: TxError): [string, TxErrorType | null, any] | [] {
+/**
+ * @deprecated Use `parseError` instead.
+ */
+export function extractTxnError(ex: TxError): [string, TxErrorType | null, any] | [] {
   if (!ex) {
     return [];
   }
@@ -101,4 +121,19 @@ export function extractError(ex: TxError): [string, TxErrorType | null, any] | [
   }
 
   return [message, null, ex.data];
+}
+
+/**
+ * @deprecated Use `parseError` instead.
+ */
+export function extractDataFromError(errorMessage: unknown) {
+  if (typeof errorMessage !== "string") return null;
+
+  const pattern = /data="([^"]+)"/;
+  const match = errorMessage.match(pattern);
+
+  if (match && match[1]) {
+    return match[1];
+  }
+  return null;
 }

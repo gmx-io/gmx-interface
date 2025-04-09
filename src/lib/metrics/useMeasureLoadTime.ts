@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 
+import { parseError } from "ab/testMultichain/parseError";
 import { DATA_LOAD_TIMEOUT_FOR_METRICS } from "config/ui";
 import { metrics } from "lib/metrics";
 import {
@@ -10,7 +11,6 @@ import {
   MeasureMetricType,
 } from "lib/metrics/types";
 import { getRequestId } from "lib/metrics/utils";
-import { parseError } from "ab/testMultichain/parseError";
 
 const measurementByMetricType: {
   [key: string]: {

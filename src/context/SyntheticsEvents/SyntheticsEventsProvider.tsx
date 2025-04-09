@@ -50,6 +50,8 @@ import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNo
 import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
 import { OrdersStatusNotificiation } from "components/Synthetics/StatusNotification/OrderStatusNotification";
 
+import { I } from "@lingui/react/dist/shared/react.80f80298";
+import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import {
   ApprovalStatuses,
   DepositCreatedEventData,
@@ -1022,6 +1024,29 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     setPendingTxns,
     glvAndGmMarketsData,
   ]);
+
+  useEffect(function subscribeGelatoRelayEvents() {
+    async function handleTaskStatusUpdate(taskStatus) {
+      console.log("gelatoTaskStatusUpdate", taskStatus);
+
+      const debugRes = await fetch(
+        `https://api.gelato.digital/tasks/status/${taskStatus.taskId}/debug?tenderlyUsername=divhead&tenderlyProjectName=project`,
+        {
+          method: "GET",
+        }
+      );
+
+      const debugData = await debugRes.json();
+
+      console.log("gelatoDebugData", debugData);
+    }
+
+    gelatoRelay.onTaskStatusUpdate(handleTaskStatusUpdate);
+
+    return () => {
+      gelatoRelay.offTaskStatusUpdate(handleTaskStatusUpdate);
+    };
+  }, []);
 
   return <SyntheticsEventsContext.Provider value={contextState}>{children}</SyntheticsEventsContext.Provider>;
 }

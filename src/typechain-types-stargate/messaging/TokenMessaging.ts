@@ -29,11 +29,11 @@ export type EnforcedOptionParamStruct = {
   options: BytesLike;
 };
 
-export type EnforcedOptionParamStructOutput = [
-  eid: bigint,
-  msgType: bigint,
-  options: string
-] & { eid: bigint; msgType: bigint; options: string };
+export type EnforcedOptionParamStructOutput = [eid: bigint, msgType: bigint, options: string] & {
+  eid: bigint;
+  msgType: bigint;
+  options: string;
+};
 
 export type OriginStruct = {
   srcEid: BigNumberish;
@@ -41,21 +41,21 @@ export type OriginStruct = {
   nonce: BigNumberish;
 };
 
-export type OriginStructOutput = [
-  srcEid: bigint,
-  sender: string,
-  nonce: bigint
-] & { srcEid: bigint; sender: string; nonce: bigint };
+export type OriginStructOutput = [srcEid: bigint, sender: string, nonce: bigint] & {
+  srcEid: bigint;
+  sender: string;
+  nonce: bigint;
+};
 
 export type MessagingFeeStruct = {
   nativeFee: BigNumberish;
   lzTokenFee: BigNumberish;
 };
 
-export type MessagingFeeStructOutput = [
-  nativeFee: bigint,
-  lzTokenFee: bigint
-] & { nativeFee: bigint; lzTokenFee: bigint };
+export type MessagingFeeStructOutput = [nativeFee: bigint, lzTokenFee: bigint] & {
+  nativeFee: bigint;
+  lzTokenFee: bigint;
+};
 
 export type MessagingReceiptStruct = {
   guid: BytesLike;
@@ -63,11 +63,11 @@ export type MessagingReceiptStruct = {
   fee: MessagingFeeStruct;
 };
 
-export type MessagingReceiptStructOutput = [
-  guid: string,
-  nonce: bigint,
-  fee: MessagingFeeStructOutput
-] & { guid: string; nonce: bigint; fee: MessagingFeeStructOutput };
+export type MessagingReceiptStructOutput = [guid: string, nonce: bigint, fee: MessagingFeeStructOutput] & {
+  guid: string;
+  nonce: bigint;
+  fee: MessagingFeeStructOutput;
+};
 
 export type InboundPacketStruct = {
   origin: OriginStruct;
@@ -88,7 +88,7 @@ export type InboundPacketStructOutput = [
   value: bigint,
   executor: string,
   message: string,
-  extraData: string
+  extraData: string,
 ] & {
   origin: OriginStructOutput;
   dstEid: bigint;
@@ -115,7 +115,7 @@ export type TaxiParamsStructOutput = [
   receiver: string,
   amountSD: bigint,
   composeMsg: string,
-  extraOptions: string
+  extraOptions: string,
 ] & {
   sender: string;
   dstEid: bigint;
@@ -138,7 +138,7 @@ export type RideBusParamsStructOutput = [
   dstEid: bigint,
   receiver: string,
   amountSD: bigint,
-  nativeDrop: boolean
+  nativeDrop: boolean,
 ] & {
   sender: string;
   dstEid: bigint;
@@ -231,315 +231,114 @@ export interface TokenMessagingInterface extends Interface {
       | "PreCrimeSet"
   ): EventFragment;
 
-  encodeFunctionData(
-    functionFragment: "MSG_TYPE_BUS",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "MSG_TYPE_TAXI",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "allowInitializePath",
-    values: [OriginStruct]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "assetIds",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "busQueues",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "combineOptions",
-    values: [BigNumberish, BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "driveBus",
-    values: [BigNumberish, BytesLike]
-  ): string;
+  encodeFunctionData(functionFragment: "MSG_TYPE_BUS", values?: undefined): string;
+  encodeFunctionData(functionFragment: "MSG_TYPE_TAXI", values?: undefined): string;
+  encodeFunctionData(functionFragment: "allowInitializePath", values: [OriginStruct]): string;
+  encodeFunctionData(functionFragment: "assetIds", values: [AddressLike]): string;
+  encodeFunctionData(functionFragment: "busQueues", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "combineOptions", values: [BigNumberish, BigNumberish, BytesLike]): string;
+  encodeFunctionData(functionFragment: "driveBus", values: [BigNumberish, BytesLike]): string;
   encodeFunctionData(functionFragment: "endpoint", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "enforcedOptions",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "gasLimits",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getPassengerHash",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getTransferGasLimit",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "enforcedOptions", values: [BigNumberish, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "gasLimits", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "getPassengerHash", values: [BigNumberish, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "getTransferGasLimit", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "initializeBusQueueStorage",
     values: [BigNumberish[], BigNumberish, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "isComposeMsgSender",
-    values: [OriginStruct, BytesLike, AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isPeer",
-    values: [BigNumberish, BytesLike]
-  ): string;
+  encodeFunctionData(functionFragment: "isComposeMsgSender", values: [OriginStruct, BytesLike, AddressLike]): string;
+  encodeFunctionData(functionFragment: "isPeer", values: [BigNumberish, BytesLike]): string;
   encodeFunctionData(
     functionFragment: "lzReceive",
     values: [OriginStruct, BytesLike, BytesLike, AddressLike, BytesLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "lzReceiveAndRevert",
-    values: [InboundPacketStruct[]]
-  ): string;
+  encodeFunctionData(functionFragment: "lzReceiveAndRevert", values: [InboundPacketStruct[]]): string;
   encodeFunctionData(
     functionFragment: "lzReceiveSimulate",
     values: [OriginStruct, BytesLike, BytesLike, AddressLike, BytesLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "maxAssetId",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "nativeDropAmounts",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "nextNonce",
-    values: [BigNumberish, BytesLike]
-  ): string;
+  encodeFunctionData(functionFragment: "maxAssetId", values?: undefined): string;
+  encodeFunctionData(functionFragment: "nativeDropAmounts", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "nextNonce", values: [BigNumberish, BytesLike]): string;
   encodeFunctionData(functionFragment: "oApp", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "oAppVersion",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "oAppVersion", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(functionFragment: "peers", values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: "planner", values?: undefined): string;
   encodeFunctionData(functionFragment: "preCrime", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "queueCapacity",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "quoteDriveBus",
-    values: [BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "quoteFares",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "quoteRideBus",
-    values: [BigNumberish, boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "quoteTaxi",
-    values: [TaxiParamsStruct, boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "rideBus",
-    values: [RideBusParamsStruct]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setAssetId",
-    values: [AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setDelegate",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setEnforcedOptions",
-    values: [EnforcedOptionParamStruct[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setFares",
-    values: [BigNumberish, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setGasLimit",
-    values: [BigNumberish, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setMaxAssetId",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setMaxNumPassengers",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setNativeDropAmount",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setPeer",
-    values: [BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setPlanner",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setPreCrime",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setTransferGasLimit",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "stargateImpls",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "taxi",
-    values: [TaxiParamsStruct, MessagingFeeStruct, AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [AddressLike]
-  ): string;
+  encodeFunctionData(functionFragment: "queueCapacity", values?: undefined): string;
+  encodeFunctionData(functionFragment: "quoteDriveBus", values: [BigNumberish, BytesLike]): string;
+  encodeFunctionData(functionFragment: "quoteFares", values: [BigNumberish, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "quoteRideBus", values: [BigNumberish, boolean]): string;
+  encodeFunctionData(functionFragment: "quoteTaxi", values: [TaxiParamsStruct, boolean]): string;
+  encodeFunctionData(functionFragment: "renounceOwnership", values?: undefined): string;
+  encodeFunctionData(functionFragment: "rideBus", values: [RideBusParamsStruct]): string;
+  encodeFunctionData(functionFragment: "setAssetId", values: [AddressLike, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "setDelegate", values: [AddressLike]): string;
+  encodeFunctionData(functionFragment: "setEnforcedOptions", values: [EnforcedOptionParamStruct[]]): string;
+  encodeFunctionData(functionFragment: "setFares", values: [BigNumberish, BigNumberish, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "setGasLimit", values: [BigNumberish, BigNumberish, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "setMaxAssetId", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "setMaxNumPassengers", values: [BigNumberish, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "setNativeDropAmount", values: [BigNumberish, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "setPeer", values: [BigNumberish, BytesLike]): string;
+  encodeFunctionData(functionFragment: "setPlanner", values: [AddressLike]): string;
+  encodeFunctionData(functionFragment: "setPreCrime", values: [AddressLike]): string;
+  encodeFunctionData(functionFragment: "setTransferGasLimit", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "stargateImpls", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "taxi", values: [TaxiParamsStruct, MessagingFeeStruct, AddressLike]): string;
+  encodeFunctionData(functionFragment: "transferOwnership", values: [AddressLike]): string;
 
-  decodeFunctionResult(
-    functionFragment: "MSG_TYPE_BUS",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "MSG_TYPE_TAXI",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "allowInitializePath",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "MSG_TYPE_BUS", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "MSG_TYPE_TAXI", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "allowInitializePath", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "assetIds", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "busQueues", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "combineOptions",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "combineOptions", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "driveBus", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "endpoint", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "enforcedOptions",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "enforcedOptions", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "gasLimits", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getPassengerHash",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getTransferGasLimit",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "initializeBusQueueStorage",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isComposeMsgSender",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "getPassengerHash", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getTransferGasLimit", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "initializeBusQueueStorage", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "isComposeMsgSender", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "isPeer", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "lzReceive", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "lzReceiveAndRevert",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "lzReceiveSimulate",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "lzReceiveAndRevert", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "lzReceiveSimulate", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "maxAssetId", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "nativeDropAmounts",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "nativeDropAmounts", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nextNonce", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "oApp", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "oAppVersion",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "oAppVersion", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "peers", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "planner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "preCrime", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "queueCapacity",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "quoteDriveBus",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "queueCapacity", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "quoteDriveBus", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "quoteFares", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "quoteRideBus",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "quoteRideBus", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "quoteTaxi", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "renounceOwnership", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "rideBus", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setAssetId", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "setDelegate",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setEnforcedOptions",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "setDelegate", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setEnforcedOptions", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setFares", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "setGasLimit",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setMaxAssetId",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setMaxNumPassengers",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setNativeDropAmount",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "setGasLimit", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setMaxAssetId", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setMaxNumPassengers", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setNativeDropAmount", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setPeer", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setPlanner", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "setPreCrime",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setTransferGasLimit",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "stargateImpls",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "setPreCrime", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setTransferGasLimit", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "stargateImpls", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "taxi", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOwnership",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "transferOwnership", data: BytesLike): Result;
 }
 
 export namespace AssetIdSetEvent {
@@ -560,14 +359,9 @@ export namespace BusDrivenEvent {
     dstEid: BigNumberish,
     startTicketId: BigNumberish,
     numPassengers: BigNumberish,
-    guid: BytesLike
+    guid: BytesLike,
   ];
-  export type OutputTuple = [
-    dstEid: bigint,
-    startTicketId: bigint,
-    numPassengers: bigint,
-    guid: string
-  ];
+  export type OutputTuple = [dstEid: bigint, startTicketId: bigint, numPassengers: bigint, guid: string];
   export interface OutputObject {
     dstEid: bigint;
     startTicketId: bigint;
@@ -581,16 +375,8 @@ export namespace BusDrivenEvent {
 }
 
 export namespace BusQueueStorageInitializedEvent {
-  export type InputTuple = [
-    dstEid: BigNumberish,
-    startSlot: BigNumberish,
-    endSlot: BigNumberish
-  ];
-  export type OutputTuple = [
-    dstEid: bigint,
-    startSlot: bigint,
-    endSlot: bigint
-  ];
+  export type InputTuple = [dstEid: BigNumberish, startSlot: BigNumberish, endSlot: BigNumberish];
+  export type OutputTuple = [dstEid: bigint, startSlot: bigint, endSlot: bigint];
   export interface OutputObject {
     dstEid: bigint;
     startSlot: bigint;
@@ -603,18 +389,8 @@ export namespace BusQueueStorageInitializedEvent {
 }
 
 export namespace BusRodeEvent {
-  export type InputTuple = [
-    dstEid: BigNumberish,
-    ticketId: BigNumberish,
-    fare: BigNumberish,
-    passenger: BytesLike
-  ];
-  export type OutputTuple = [
-    dstEid: bigint,
-    ticketId: bigint,
-    fare: bigint,
-    passenger: string
-  ];
+  export type InputTuple = [dstEid: BigNumberish, ticketId: BigNumberish, fare: BigNumberish, passenger: BytesLike];
+  export type OutputTuple = [dstEid: bigint, ticketId: bigint, fare: bigint, passenger: string];
   export interface OutputObject {
     dstEid: bigint;
     ticketId: bigint;
@@ -629,9 +405,7 @@ export namespace BusRodeEvent {
 
 export namespace EnforcedOptionSetEvent {
   export type InputTuple = [_enforcedOptions: EnforcedOptionParamStruct[]];
-  export type OutputTuple = [
-    _enforcedOptions: EnforcedOptionParamStructOutput[]
-  ];
+  export type OutputTuple = [_enforcedOptions: EnforcedOptionParamStructOutput[]];
   export interface OutputObject {
     _enforcedOptions: EnforcedOptionParamStructOutput[];
   }
@@ -642,16 +416,8 @@ export namespace EnforcedOptionSetEvent {
 }
 
 export namespace FaresSetEvent {
-  export type InputTuple = [
-    dstEid: BigNumberish,
-    busFare: BigNumberish,
-    busAndNativeDropFare: BigNumberish
-  ];
-  export type OutputTuple = [
-    dstEid: bigint,
-    busFare: bigint,
-    busAndNativeDropFare: bigint
-  ];
+  export type InputTuple = [dstEid: BigNumberish, busFare: BigNumberish, busAndNativeDropFare: BigNumberish];
+  export type OutputTuple = [dstEid: bigint, busFare: bigint, busAndNativeDropFare: bigint];
   export interface OutputObject {
     dstEid: bigint;
     busFare: bigint;
@@ -664,16 +430,8 @@ export namespace FaresSetEvent {
 }
 
 export namespace GasLimitSetEvent {
-  export type InputTuple = [
-    eid: BigNumberish,
-    gasLimit: BigNumberish,
-    nativeDropGasLimit: BigNumberish
-  ];
-  export type OutputTuple = [
-    eid: bigint,
-    gasLimit: bigint,
-    nativeDropGasLimit: bigint
-  ];
+  export type InputTuple = [eid: BigNumberish, gasLimit: BigNumberish, nativeDropGasLimit: BigNumberish];
+  export type OutputTuple = [eid: bigint, gasLimit: bigint, nativeDropGasLimit: bigint];
   export interface OutputObject {
     eid: bigint;
     gasLimit: bigint;
@@ -698,10 +456,7 @@ export namespace MaxAssetIdSetEvent {
 }
 
 export namespace MaxNumPassengersSetEvent {
-  export type InputTuple = [
-    dstEid: BigNumberish,
-    maxNumPassengers: BigNumberish
-  ];
+  export type InputTuple = [dstEid: BigNumberish, maxNumPassengers: BigNumberish];
   export type OutputTuple = [dstEid: bigint, maxNumPassengers: bigint];
   export interface OutputObject {
     dstEid: bigint;
@@ -714,10 +469,7 @@ export namespace MaxNumPassengersSetEvent {
 }
 
 export namespace NativeDropAmountSetEvent {
-  export type InputTuple = [
-    dstEid: BigNumberish,
-    nativeDropAmount: BigNumberish
-  ];
+  export type InputTuple = [dstEid: BigNumberish, nativeDropAmount: BigNumberish];
   export type OutputTuple = [dstEid: bigint, nativeDropAmount: bigint];
   export interface OutputObject {
     dstEid: bigint;
@@ -822,41 +574,27 @@ export interface TokenMessaging extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(
-    event: TCEvent
-  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(
-    event?: TCEvent
-  ): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
   MSG_TYPE_BUS: TypedContractMethod<[], [bigint], "view">;
 
   MSG_TYPE_TAXI: TypedContractMethod<[], [bigint], "view">;
 
-  allowInitializePath: TypedContractMethod<
-    [origin: OriginStruct],
-    [boolean],
-    "view"
-  >;
+  allowInitializePath: TypedContractMethod<[origin: OriginStruct], [boolean], "view">;
 
   assetIds: TypedContractMethod<[stargateImpl: AddressLike], [bigint], "view">;
 
@@ -869,7 +607,7 @@ export interface TokenMessaging extends BaseContract {
         busAndNativeDropFare: bigint;
         qLength: bigint;
         nextTicketId: bigint;
-      }
+      },
     ],
     "view"
   >;
@@ -888,11 +626,7 @@ export interface TokenMessaging extends BaseContract {
 
   endpoint: TypedContractMethod<[], [string], "view">;
 
-  enforcedOptions: TypedContractMethod<
-    [eid: BigNumberish, msgType: BigNumberish],
-    [string],
-    "view"
-  >;
+  enforcedOptions: TypedContractMethod<[eid: BigNumberish, msgType: BigNumberish], [string], "view">;
 
   gasLimits: TypedContractMethod<
     [eid: BigNumberish],
@@ -900,20 +634,12 @@ export interface TokenMessaging extends BaseContract {
     "view"
   >;
 
-  getPassengerHash: TypedContractMethod<
-    [_dstEid: BigNumberish, _index: BigNumberish],
-    [string],
-    "view"
-  >;
+  getPassengerHash: TypedContractMethod<[_dstEid: BigNumberish, _index: BigNumberish], [string], "view">;
 
   getTransferGasLimit: TypedContractMethod<[], [bigint], "view">;
 
   initializeBusQueueStorage: TypedContractMethod<
-    [
-      _dstEids: BigNumberish[],
-      _startSlot: BigNumberish,
-      _endSlot: BigNumberish
-    ],
+    [_dstEids: BigNumberish[], _startSlot: BigNumberish, _endSlot: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -924,63 +650,31 @@ export interface TokenMessaging extends BaseContract {
     "view"
   >;
 
-  isPeer: TypedContractMethod<
-    [_eid: BigNumberish, _peer: BytesLike],
-    [boolean],
-    "view"
-  >;
+  isPeer: TypedContractMethod<[_eid: BigNumberish, _peer: BytesLike], [boolean], "view">;
 
   lzReceive: TypedContractMethod<
-    [
-      _origin: OriginStruct,
-      _guid: BytesLike,
-      _message: BytesLike,
-      _executor: AddressLike,
-      _extraData: BytesLike
-    ],
+    [_origin: OriginStruct, _guid: BytesLike, _message: BytesLike, _executor: AddressLike, _extraData: BytesLike],
     [void],
     "payable"
   >;
 
-  lzReceiveAndRevert: TypedContractMethod<
-    [_packets: InboundPacketStruct[]],
-    [void],
-    "payable"
-  >;
+  lzReceiveAndRevert: TypedContractMethod<[_packets: InboundPacketStruct[]], [void], "payable">;
 
   lzReceiveSimulate: TypedContractMethod<
-    [
-      _origin: OriginStruct,
-      _guid: BytesLike,
-      _message: BytesLike,
-      _executor: AddressLike,
-      _extraData: BytesLike
-    ],
+    [_origin: OriginStruct, _guid: BytesLike, _message: BytesLike, _executor: AddressLike, _extraData: BytesLike],
     [void],
     "payable"
   >;
 
   maxAssetId: TypedContractMethod<[], [bigint], "view">;
 
-  nativeDropAmounts: TypedContractMethod<
-    [dstEid: BigNumberish],
-    [bigint],
-    "view"
-  >;
+  nativeDropAmounts: TypedContractMethod<[dstEid: BigNumberish], [bigint], "view">;
 
-  nextNonce: TypedContractMethod<
-    [arg0: BigNumberish, arg1: BytesLike],
-    [bigint],
-    "view"
-  >;
+  nextNonce: TypedContractMethod<[arg0: BigNumberish, arg1: BytesLike], [bigint], "view">;
 
   oApp: TypedContractMethod<[], [string], "view">;
 
-  oAppVersion: TypedContractMethod<
-    [],
-    [[bigint, bigint] & { senderVersion: bigint; receiverVersion: bigint }],
-    "view"
-  >;
+  oAppVersion: TypedContractMethod<[], [[bigint, bigint] & { senderVersion: bigint; receiverVersion: bigint }], "view">;
 
   owner: TypedContractMethod<[], [string], "view">;
 
@@ -1004,11 +698,7 @@ export interface TokenMessaging extends BaseContract {
     "view"
   >;
 
-  quoteRideBus: TypedContractMethod<
-    [_dstEid: BigNumberish, _airdrop: boolean],
-    [MessagingFeeStructOutput],
-    "view"
-  >;
+  quoteRideBus: TypedContractMethod<[_dstEid: BigNumberish, _airdrop: boolean], [MessagingFeeStructOutput], "view">;
 
   quoteTaxi: TypedContractMethod<
     [_params: TaxiParamsStruct, _payInLzToken: boolean],
@@ -1024,54 +714,30 @@ export interface TokenMessaging extends BaseContract {
       [MessagingReceiptStructOutput, TicketStructOutput] & {
         receipt: MessagingReceiptStructOutput;
         ticket: TicketStructOutput;
-      }
+      },
     ],
     "nonpayable"
   >;
 
-  setAssetId: TypedContractMethod<
-    [_stargateImpl: AddressLike, _assetId: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+  setAssetId: TypedContractMethod<[_stargateImpl: AddressLike, _assetId: BigNumberish], [void], "nonpayable">;
 
-  setDelegate: TypedContractMethod<
-    [_delegate: AddressLike],
-    [void],
-    "nonpayable"
-  >;
+  setDelegate: TypedContractMethod<[_delegate: AddressLike], [void], "nonpayable">;
 
-  setEnforcedOptions: TypedContractMethod<
-    [_enforcedOptions: EnforcedOptionParamStruct[]],
-    [void],
-    "nonpayable"
-  >;
+  setEnforcedOptions: TypedContractMethod<[_enforcedOptions: EnforcedOptionParamStruct[]], [void], "nonpayable">;
 
   setFares: TypedContractMethod<
-    [
-      _dstEid: BigNumberish,
-      _busFare: BigNumberish,
-      _busAndNativeDropFare: BigNumberish
-    ],
+    [_dstEid: BigNumberish, _busFare: BigNumberish, _busAndNativeDropFare: BigNumberish],
     [void],
     "nonpayable"
   >;
 
   setGasLimit: TypedContractMethod<
-    [
-      _eid: BigNumberish,
-      _gasLimit: BigNumberish,
-      _nativeDropGasLimit: BigNumberish
-    ],
+    [_eid: BigNumberish, _gasLimit: BigNumberish, _nativeDropGasLimit: BigNumberish],
     [void],
     "nonpayable"
   >;
 
-  setMaxAssetId: TypedContractMethod<
-    [_maxAssetId: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+  setMaxAssetId: TypedContractMethod<[_maxAssetId: BigNumberish], [void], "nonpayable">;
 
   setMaxNumPassengers: TypedContractMethod<
     [_dstEid: BigNumberish, _maxNumPassengers: BigNumberish],
@@ -1085,67 +751,31 @@ export interface TokenMessaging extends BaseContract {
     "nonpayable"
   >;
 
-  setPeer: TypedContractMethod<
-    [_eid: BigNumberish, _peer: BytesLike],
-    [void],
-    "nonpayable"
-  >;
+  setPeer: TypedContractMethod<[_eid: BigNumberish, _peer: BytesLike], [void], "nonpayable">;
 
-  setPlanner: TypedContractMethod<
-    [_planner: AddressLike],
-    [void],
-    "nonpayable"
-  >;
+  setPlanner: TypedContractMethod<[_planner: AddressLike], [void], "nonpayable">;
 
-  setPreCrime: TypedContractMethod<
-    [_preCrime: AddressLike],
-    [void],
-    "nonpayable"
-  >;
+  setPreCrime: TypedContractMethod<[_preCrime: AddressLike], [void], "nonpayable">;
 
-  setTransferGasLimit: TypedContractMethod<
-    [_gasLimit: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+  setTransferGasLimit: TypedContractMethod<[_gasLimit: BigNumberish], [void], "nonpayable">;
 
   stargateImpls: TypedContractMethod<[assetId: BigNumberish], [string], "view">;
 
   taxi: TypedContractMethod<
-    [
-      _params: TaxiParamsStruct,
-      _messagingFee: MessagingFeeStruct,
-      _refundAddress: AddressLike
-    ],
+    [_params: TaxiParamsStruct, _messagingFee: MessagingFeeStruct, _refundAddress: AddressLike],
     [MessagingReceiptStructOutput],
     "payable"
   >;
 
-  transferOwnership: TypedContractMethod<
-    [newOwner: AddressLike],
-    [void],
-    "nonpayable"
-  >;
+  transferOwnership: TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
 
-  getFunction<T extends ContractMethod = ContractMethod>(
-    key: string | FunctionFragment
-  ): T;
+  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
-  getFunction(
-    nameOrSignature: "MSG_TYPE_BUS"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "MSG_TYPE_TAXI"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "allowInitializePath"
-  ): TypedContractMethod<[origin: OriginStruct], [boolean], "view">;
-  getFunction(
-    nameOrSignature: "assetIds"
-  ): TypedContractMethod<[stargateImpl: AddressLike], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "busQueues"
-  ): TypedContractMethod<
+  getFunction(nameOrSignature: "MSG_TYPE_BUS"): TypedContractMethod<[], [bigint], "view">;
+  getFunction(nameOrSignature: "MSG_TYPE_TAXI"): TypedContractMethod<[], [bigint], "view">;
+  getFunction(nameOrSignature: "allowInitializePath"): TypedContractMethod<[origin: OriginStruct], [boolean], "view">;
+  getFunction(nameOrSignature: "assetIds"): TypedContractMethod<[stargateImpl: AddressLike], [bigint], "view">;
+  getFunction(nameOrSignature: "busQueues"): TypedContractMethod<
     [dstEid: BigNumberish],
     [
       [bigint, bigint, bigint, bigint, bigint] & {
@@ -1154,34 +784,20 @@ export interface TokenMessaging extends BaseContract {
         busAndNativeDropFare: bigint;
         qLength: bigint;
         nextTicketId: bigint;
-      }
+      },
     ],
     "view"
   >;
   getFunction(
     nameOrSignature: "combineOptions"
-  ): TypedContractMethod<
-    [_eid: BigNumberish, _msgType: BigNumberish, _extraOptions: BytesLike],
-    [string],
-    "view"
-  >;
+  ): TypedContractMethod<[_eid: BigNumberish, _msgType: BigNumberish, _extraOptions: BytesLike], [string], "view">;
   getFunction(
     nameOrSignature: "driveBus"
-  ): TypedContractMethod<
-    [_dstEid: BigNumberish, _passengers: BytesLike],
-    [MessagingReceiptStructOutput],
-    "payable"
-  >;
-  getFunction(
-    nameOrSignature: "endpoint"
-  ): TypedContractMethod<[], [string], "view">;
+  ): TypedContractMethod<[_dstEid: BigNumberish, _passengers: BytesLike], [MessagingReceiptStructOutput], "payable">;
+  getFunction(nameOrSignature: "endpoint"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "enforcedOptions"
-  ): TypedContractMethod<
-    [eid: BigNumberish, msgType: BigNumberish],
-    [string],
-    "view"
-  >;
+  ): TypedContractMethod<[eid: BigNumberish, msgType: BigNumberish], [string], "view">;
   getFunction(
     nameOrSignature: "gasLimits"
   ): TypedContractMethod<
@@ -1191,49 +807,25 @@ export interface TokenMessaging extends BaseContract {
   >;
   getFunction(
     nameOrSignature: "getPassengerHash"
-  ): TypedContractMethod<
-    [_dstEid: BigNumberish, _index: BigNumberish],
-    [string],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "getTransferGasLimit"
-  ): TypedContractMethod<[], [bigint], "view">;
+  ): TypedContractMethod<[_dstEid: BigNumberish, _index: BigNumberish], [string], "view">;
+  getFunction(nameOrSignature: "getTransferGasLimit"): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "initializeBusQueueStorage"
   ): TypedContractMethod<
-    [
-      _dstEids: BigNumberish[],
-      _startSlot: BigNumberish,
-      _endSlot: BigNumberish
-    ],
+    [_dstEids: BigNumberish[], _startSlot: BigNumberish, _endSlot: BigNumberish],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "isComposeMsgSender"
-  ): TypedContractMethod<
-    [arg0: OriginStruct, _message: BytesLike, _sender: AddressLike],
-    [boolean],
-    "view"
-  >;
+  ): TypedContractMethod<[arg0: OriginStruct, _message: BytesLike, _sender: AddressLike], [boolean], "view">;
   getFunction(
     nameOrSignature: "isPeer"
-  ): TypedContractMethod<
-    [_eid: BigNumberish, _peer: BytesLike],
-    [boolean],
-    "view"
-  >;
+  ): TypedContractMethod<[_eid: BigNumberish, _peer: BytesLike], [boolean], "view">;
   getFunction(
     nameOrSignature: "lzReceive"
   ): TypedContractMethod<
-    [
-      _origin: OriginStruct,
-      _guid: BytesLike,
-      _message: BytesLike,
-      _executor: AddressLike,
-      _extraData: BytesLike
-    ],
+    [_origin: OriginStruct, _guid: BytesLike, _message: BytesLike, _executor: AddressLike, _extraData: BytesLike],
     [void],
     "payable"
   >;
@@ -1243,61 +835,27 @@ export interface TokenMessaging extends BaseContract {
   getFunction(
     nameOrSignature: "lzReceiveSimulate"
   ): TypedContractMethod<
-    [
-      _origin: OriginStruct,
-      _guid: BytesLike,
-      _message: BytesLike,
-      _executor: AddressLike,
-      _extraData: BytesLike
-    ],
+    [_origin: OriginStruct, _guid: BytesLike, _message: BytesLike, _executor: AddressLike, _extraData: BytesLike],
     [void],
     "payable"
   >;
-  getFunction(
-    nameOrSignature: "maxAssetId"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "nativeDropAmounts"
-  ): TypedContractMethod<[dstEid: BigNumberish], [bigint], "view">;
+  getFunction(nameOrSignature: "maxAssetId"): TypedContractMethod<[], [bigint], "view">;
+  getFunction(nameOrSignature: "nativeDropAmounts"): TypedContractMethod<[dstEid: BigNumberish], [bigint], "view">;
   getFunction(
     nameOrSignature: "nextNonce"
-  ): TypedContractMethod<
-    [arg0: BigNumberish, arg1: BytesLike],
-    [bigint],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "oApp"
-  ): TypedContractMethod<[], [string], "view">;
+  ): TypedContractMethod<[arg0: BigNumberish, arg1: BytesLike], [bigint], "view">;
+  getFunction(nameOrSignature: "oApp"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "oAppVersion"
-  ): TypedContractMethod<
-    [],
-    [[bigint, bigint] & { senderVersion: bigint; receiverVersion: bigint }],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "owner"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "peers"
-  ): TypedContractMethod<[eid: BigNumberish], [string], "view">;
-  getFunction(
-    nameOrSignature: "planner"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "preCrime"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "queueCapacity"
-  ): TypedContractMethod<[], [bigint], "view">;
+  ): TypedContractMethod<[], [[bigint, bigint] & { senderVersion: bigint; receiverVersion: bigint }], "view">;
+  getFunction(nameOrSignature: "owner"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "peers"): TypedContractMethod<[eid: BigNumberish], [string], "view">;
+  getFunction(nameOrSignature: "planner"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "preCrime"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "queueCapacity"): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "quoteDriveBus"
-  ): TypedContractMethod<
-    [_dstEid: BigNumberish, _passengers: BytesLike],
-    [MessagingFeeStructOutput],
-    "view"
-  >;
+  ): TypedContractMethod<[_dstEid: BigNumberish, _passengers: BytesLike], [MessagingFeeStructOutput], "view">;
   getFunction(
     nameOrSignature: "quoteFares"
   ): TypedContractMethod<
@@ -1307,137 +865,73 @@ export interface TokenMessaging extends BaseContract {
   >;
   getFunction(
     nameOrSignature: "quoteRideBus"
-  ): TypedContractMethod<
-    [_dstEid: BigNumberish, _airdrop: boolean],
-    [MessagingFeeStructOutput],
-    "view"
-  >;
+  ): TypedContractMethod<[_dstEid: BigNumberish, _airdrop: boolean], [MessagingFeeStructOutput], "view">;
   getFunction(
     nameOrSignature: "quoteTaxi"
-  ): TypedContractMethod<
-    [_params: TaxiParamsStruct, _payInLzToken: boolean],
-    [MessagingFeeStructOutput],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "renounceOwnership"
-  ): TypedContractMethod<[], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "rideBus"
-  ): TypedContractMethod<
+  ): TypedContractMethod<[_params: TaxiParamsStruct, _payInLzToken: boolean], [MessagingFeeStructOutput], "view">;
+  getFunction(nameOrSignature: "renounceOwnership"): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(nameOrSignature: "rideBus"): TypedContractMethod<
     [_params: RideBusParamsStruct],
     [
       [MessagingReceiptStructOutput, TicketStructOutput] & {
         receipt: MessagingReceiptStructOutput;
         ticket: TicketStructOutput;
-      }
+      },
     ],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "setAssetId"
-  ): TypedContractMethod<
-    [_stargateImpl: AddressLike, _assetId: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "setDelegate"
-  ): TypedContractMethod<[_delegate: AddressLike], [void], "nonpayable">;
+  ): TypedContractMethod<[_stargateImpl: AddressLike, _assetId: BigNumberish], [void], "nonpayable">;
+  getFunction(nameOrSignature: "setDelegate"): TypedContractMethod<[_delegate: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setEnforcedOptions"
-  ): TypedContractMethod<
-    [_enforcedOptions: EnforcedOptionParamStruct[]],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[_enforcedOptions: EnforcedOptionParamStruct[]], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setFares"
   ): TypedContractMethod<
-    [
-      _dstEid: BigNumberish,
-      _busFare: BigNumberish,
-      _busAndNativeDropFare: BigNumberish
-    ],
+    [_dstEid: BigNumberish, _busFare: BigNumberish, _busAndNativeDropFare: BigNumberish],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "setGasLimit"
   ): TypedContractMethod<
-    [
-      _eid: BigNumberish,
-      _gasLimit: BigNumberish,
-      _nativeDropGasLimit: BigNumberish
-    ],
+    [_eid: BigNumberish, _gasLimit: BigNumberish, _nativeDropGasLimit: BigNumberish],
     [void],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "setMaxAssetId"
-  ): TypedContractMethod<[_maxAssetId: BigNumberish], [void], "nonpayable">;
+  getFunction(nameOrSignature: "setMaxAssetId"): TypedContractMethod<[_maxAssetId: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setMaxNumPassengers"
-  ): TypedContractMethod<
-    [_dstEid: BigNumberish, _maxNumPassengers: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[_dstEid: BigNumberish, _maxNumPassengers: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setNativeDropAmount"
-  ): TypedContractMethod<
-    [_dstEid: BigNumberish, _nativeDropAmount: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[_dstEid: BigNumberish, _nativeDropAmount: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setPeer"
-  ): TypedContractMethod<
-    [_eid: BigNumberish, _peer: BytesLike],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "setPlanner"
-  ): TypedContractMethod<[_planner: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "setPreCrime"
-  ): TypedContractMethod<[_preCrime: AddressLike], [void], "nonpayable">;
+  ): TypedContractMethod<[_eid: BigNumberish, _peer: BytesLike], [void], "nonpayable">;
+  getFunction(nameOrSignature: "setPlanner"): TypedContractMethod<[_planner: AddressLike], [void], "nonpayable">;
+  getFunction(nameOrSignature: "setPreCrime"): TypedContractMethod<[_preCrime: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setTransferGasLimit"
   ): TypedContractMethod<[_gasLimit: BigNumberish], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "stargateImpls"
-  ): TypedContractMethod<[assetId: BigNumberish], [string], "view">;
+  getFunction(nameOrSignature: "stargateImpls"): TypedContractMethod<[assetId: BigNumberish], [string], "view">;
   getFunction(
     nameOrSignature: "taxi"
   ): TypedContractMethod<
-    [
-      _params: TaxiParamsStruct,
-      _messagingFee: MessagingFeeStruct,
-      _refundAddress: AddressLike
-    ],
+    [_params: TaxiParamsStruct, _messagingFee: MessagingFeeStruct, _refundAddress: AddressLike],
     [MessagingReceiptStructOutput],
     "payable"
   >;
-  getFunction(
-    nameOrSignature: "transferOwnership"
-  ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
+  getFunction(nameOrSignature: "transferOwnership"): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
 
   getEvent(
     key: "AssetIdSet"
-  ): TypedContractEvent<
-    AssetIdSetEvent.InputTuple,
-    AssetIdSetEvent.OutputTuple,
-    AssetIdSetEvent.OutputObject
-  >;
+  ): TypedContractEvent<AssetIdSetEvent.InputTuple, AssetIdSetEvent.OutputTuple, AssetIdSetEvent.OutputObject>;
   getEvent(
     key: "BusDriven"
-  ): TypedContractEvent<
-    BusDrivenEvent.InputTuple,
-    BusDrivenEvent.OutputTuple,
-    BusDrivenEvent.OutputObject
-  >;
+  ): TypedContractEvent<BusDrivenEvent.InputTuple, BusDrivenEvent.OutputTuple, BusDrivenEvent.OutputObject>;
   getEvent(
     key: "BusQueueStorageInitialized"
   ): TypedContractEvent<
@@ -1447,11 +941,7 @@ export interface TokenMessaging extends BaseContract {
   >;
   getEvent(
     key: "BusRode"
-  ): TypedContractEvent<
-    BusRodeEvent.InputTuple,
-    BusRodeEvent.OutputTuple,
-    BusRodeEvent.OutputObject
-  >;
+  ): TypedContractEvent<BusRodeEvent.InputTuple, BusRodeEvent.OutputTuple, BusRodeEvent.OutputObject>;
   getEvent(
     key: "EnforcedOptionSet"
   ): TypedContractEvent<
@@ -1461,25 +951,13 @@ export interface TokenMessaging extends BaseContract {
   >;
   getEvent(
     key: "FaresSet"
-  ): TypedContractEvent<
-    FaresSetEvent.InputTuple,
-    FaresSetEvent.OutputTuple,
-    FaresSetEvent.OutputObject
-  >;
+  ): TypedContractEvent<FaresSetEvent.InputTuple, FaresSetEvent.OutputTuple, FaresSetEvent.OutputObject>;
   getEvent(
     key: "GasLimitSet"
-  ): TypedContractEvent<
-    GasLimitSetEvent.InputTuple,
-    GasLimitSetEvent.OutputTuple,
-    GasLimitSetEvent.OutputObject
-  >;
+  ): TypedContractEvent<GasLimitSetEvent.InputTuple, GasLimitSetEvent.OutputTuple, GasLimitSetEvent.OutputObject>;
   getEvent(
     key: "MaxAssetIdSet"
-  ): TypedContractEvent<
-    MaxAssetIdSetEvent.InputTuple,
-    MaxAssetIdSetEvent.OutputTuple,
-    MaxAssetIdSetEvent.OutputObject
-  >;
+  ): TypedContractEvent<MaxAssetIdSetEvent.InputTuple, MaxAssetIdSetEvent.OutputTuple, MaxAssetIdSetEvent.OutputObject>;
   getEvent(
     key: "MaxNumPassengersSet"
   ): TypedContractEvent<
@@ -1517,25 +995,13 @@ export interface TokenMessaging extends BaseContract {
   >;
   getEvent(
     key: "PeerSet"
-  ): TypedContractEvent<
-    PeerSetEvent.InputTuple,
-    PeerSetEvent.OutputTuple,
-    PeerSetEvent.OutputObject
-  >;
+  ): TypedContractEvent<PeerSetEvent.InputTuple, PeerSetEvent.OutputTuple, PeerSetEvent.OutputObject>;
   getEvent(
     key: "PlannerSet"
-  ): TypedContractEvent<
-    PlannerSetEvent.InputTuple,
-    PlannerSetEvent.OutputTuple,
-    PlannerSetEvent.OutputObject
-  >;
+  ): TypedContractEvent<PlannerSetEvent.InputTuple, PlannerSetEvent.OutputTuple, PlannerSetEvent.OutputObject>;
   getEvent(
     key: "PreCrimeSet"
-  ): TypedContractEvent<
-    PreCrimeSetEvent.InputTuple,
-    PreCrimeSetEvent.OutputTuple,
-    PreCrimeSetEvent.OutputObject
-  >;
+  ): TypedContractEvent<PreCrimeSetEvent.InputTuple, PreCrimeSetEvent.OutputTuple, PreCrimeSetEvent.OutputObject>;
 
   filters: {
     "AssetIdSet(address,uint16)": TypedContractEvent<
@@ -1554,11 +1020,7 @@ export interface TokenMessaging extends BaseContract {
       BusDrivenEvent.OutputTuple,
       BusDrivenEvent.OutputObject
     >;
-    BusDriven: TypedContractEvent<
-      BusDrivenEvent.InputTuple,
-      BusDrivenEvent.OutputTuple,
-      BusDrivenEvent.OutputObject
-    >;
+    BusDriven: TypedContractEvent<BusDrivenEvent.InputTuple, BusDrivenEvent.OutputTuple, BusDrivenEvent.OutputObject>;
 
     "BusQueueStorageInitialized(uint32,uint16,uint16)": TypedContractEvent<
       BusQueueStorageInitializedEvent.InputTuple,
@@ -1576,11 +1038,7 @@ export interface TokenMessaging extends BaseContract {
       BusRodeEvent.OutputTuple,
       BusRodeEvent.OutputObject
     >;
-    BusRode: TypedContractEvent<
-      BusRodeEvent.InputTuple,
-      BusRodeEvent.OutputTuple,
-      BusRodeEvent.OutputObject
-    >;
+    BusRode: TypedContractEvent<BusRodeEvent.InputTuple, BusRodeEvent.OutputTuple, BusRodeEvent.OutputObject>;
 
     "EnforcedOptionSet(tuple[])": TypedContractEvent<
       EnforcedOptionSetEvent.InputTuple,
@@ -1598,11 +1056,7 @@ export interface TokenMessaging extends BaseContract {
       FaresSetEvent.OutputTuple,
       FaresSetEvent.OutputObject
     >;
-    FaresSet: TypedContractEvent<
-      FaresSetEvent.InputTuple,
-      FaresSetEvent.OutputTuple,
-      FaresSetEvent.OutputObject
-    >;
+    FaresSet: TypedContractEvent<FaresSetEvent.InputTuple, FaresSetEvent.OutputTuple, FaresSetEvent.OutputObject>;
 
     "GasLimitSet(uint32,uint128,uint128)": TypedContractEvent<
       GasLimitSetEvent.InputTuple,
@@ -1686,11 +1140,7 @@ export interface TokenMessaging extends BaseContract {
       PeerSetEvent.OutputTuple,
       PeerSetEvent.OutputObject
     >;
-    PeerSet: TypedContractEvent<
-      PeerSetEvent.InputTuple,
-      PeerSetEvent.OutputTuple,
-      PeerSetEvent.OutputObject
-    >;
+    PeerSet: TypedContractEvent<PeerSetEvent.InputTuple, PeerSetEvent.OutputTuple, PeerSetEvent.OutputObject>;
 
     "PlannerSet(address)": TypedContractEvent<
       PlannerSetEvent.InputTuple,

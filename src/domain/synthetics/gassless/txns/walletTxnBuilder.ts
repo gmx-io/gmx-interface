@@ -1,191 +1,235 @@
 import { Contract, Signer } from "ethers";
-import { encodeFunctionData } from "viem";
 
-import { getExternalCallsParams } from "domain/synthetics/externalSwaps/utils";
-import { callContract } from "lib/contracts";
+import { getGasLimit, getGasPrice } from "lib/contracts";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getContract } from "sdk/configs/contracts";
-import { OrderType } from "sdk/types/orders";
 
-import { CollateralTransferParams, OrderCreatePayload } from "./createOrderBuilders";
+import { collContract } from "components/Synthetics/TradeBox/hooks/callContract";
+import { ErrorLike, extendError } from "lib/errors";
+import { OrderMetricId } from "lib/metrics";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import { TokensData } from "sdk/types/tokens";
+import { BatchOrderTxnParams, getBatchOrderMulticallPayload } from "sdk/utils/orderTransactions";
+import { isLimitSwapOrderType } from "sdk/utils/orders";
+import { getOrdersTriggerPriceOverrides, getSimulationPrices, simulateExecution } from "./simulation";
 
-export function encodeCreateOrderMulticallPayload(p: { chainId: number; createOrderPayload: OrderCreatePayload }) {
-  const { createOrderPayload, chainId } = p;
-  const { collateralTransferParams, orderPayload } = createOrderPayload;
+export type OnPreparedParams = {};
 
-  const {
-    sendWntPayloads,
-    sendTokenPayloads,
-    value: totalWntAmount,
-  } = buildTokenTransfers({
-    chainId,
-    collateralTransferParams,
-    executionFee: orderPayload.numbers.executionFee,
-    orderType: orderPayload.orderType,
-  });
+export type OnSimulatedParams = {};
 
-  const externalCalls = collateralTransferParams.externalSwapQuote?.txnData
-    ? [
-        {
-          method: "makeExternalCalls",
-          params: getExternalCallsParams(
-            chainId,
-            orderPayload.addresses.receiver,
-            collateralTransferParams.externalSwapQuote
-          ),
-        },
-      ]
-    : [];
+export type OnSentParams = {
+  txnHash: string;
+  metricId: OrderMetricId | undefined;
+  blockNumber: bigint;
+  createdAt: number;
+};
 
-  const multicall = [
-    ...sendWntPayloads.map((payload) => ({
-      method: "sendWnt",
-      params: [payload.destination, payload.amount],
-    })),
-    ...sendTokenPayloads.map((payload) => ({
-      method: "sendTokens",
-      params: [payload.tokenAddress, payload.destination, payload.amount],
-    })),
-    ...externalCalls,
-    {
-      method: "createOrder",
-      params: [orderPayload],
-    },
-  ];
+export type OnErrorParams = {
+  error: ErrorLike;
+};
 
-  const callData = multicall.map((call) =>
-    encodeFunctionData({
-      abi: ExchangeRouter.abi,
-      functionName: call.method,
-      args: call.params,
-    })
-  );
+export type TxnCallbakcs = {
+  onPrepared: (p: OnPreparedParams) => void;
+  onSimulated: (p: OnSimulatedParams) => void;
+  onSent: (p: OnSentParams) => void;
+  onError: (p: OnErrorParams) => void;
+};
 
-  return {
-    multicall,
-    callData,
-    value: totalWntAmount,
+export enum TxnEventName {
+  TxnPrepared = "TxnPrepared",
+  TxnSimulated = "TxnSimulated",
+  TxnSent = "TxnSent",
+  TxnError = "TxnError",
+}
+
+export type TxnPreparedEvent<TParams> = {
+  event: TxnEventName.TxnPrepared;
+  data: {
+    params: TParams;
   };
-}
-
-function buildTokenTransfers(p: {
-  chainId: number;
-  collateralTransferParams: CollateralTransferParams;
-  executionFee: bigint;
-  orderType: OrderType;
-}) {
-  const { isNativePayment, externalSwapQuote, tokenToSendAmount, tokenToSendAddress } = p.collateralTransferParams;
-  const orderVaultAddress = getContract(p.chainId, "OrderVault");
-  const externalHandlerAddress = getContract(p.chainId, "ExternalHandler");
-
-  const collateralWntAmount = isNativePayment ? tokenToSendAmount : 0n;
-  const totalWntAmount = collateralWntAmount + p.executionFee;
-
-  const externalSwapWntAmount = isNativePayment && externalSwapQuote?.txnData ? externalSwapQuote.amountIn : 0n;
-  const orderVaultWntAmount = totalWntAmount - externalSwapWntAmount;
-  const sendTokensDestination = externalSwapQuote?.txnData ? externalHandlerAddress : orderVaultAddress;
-
-  const sendTokensAmount = isNativePayment ? 0n : tokenToSendAmount;
-
-  const sendWntPayloads: SendWntPayload[] = [];
-
-  const value = orderVaultWntAmount + externalSwapWntAmount;
-
-  if (orderVaultWntAmount > 0n) {
-    sendWntPayloads.push({
-      amount: orderVaultWntAmount,
-      destination: orderVaultAddress,
-    });
-  }
-
-  if (externalSwapWntAmount > 0n) {
-    sendWntPayloads.push({
-      amount: externalSwapWntAmount,
-      destination: externalHandlerAddress,
-    });
-  }
-
-  const sendTokenPayloads: SendTokenPayload[] = [];
-
-  if (sendTokensAmount > 0n && tokenToSendAddress) {
-    sendTokenPayloads.push({
-      tokenAddress: tokenToSendAddress,
-      amount: sendTokensAmount,
-      destination: sendTokensDestination,
-    });
-  }
-
-  return { sendWntPayloads, sendTokenPayloads, value };
-}
-
-export type SendWntPayload = {
-  amount: bigint;
-  destination: string;
 };
 
-export type SendTokenPayload = {
-  tokenAddress: string;
-  amount: bigint;
-  destination: string;
+export type TxnSimulatedEvent<TParams> = {
+  event: TxnEventName.TxnSimulated;
+  data: {
+    params: TParams;
+  };
 };
 
-type MulticallPayload = {
-  callData: string[];
-  value?: bigint;
+export type TxnSentEvent<TParams> = {
+  event: TxnEventName.TxnSent;
+  data: {
+    params: TParams;
+    txnHash: string;
+    blockNumber: bigint;
+    createdAt: number;
+  };
 };
 
-export function combineMulticallPayloads(multicallPayloads: MulticallPayload[]) {
-  const value = multicallPayloads.reduce((acc, p) => acc + (p.value ?? 0n), 0n);
-  const callData = multicallPayloads.flatMap((p) => p.callData);
+export type TxnErrorEvent<TParams> = {
+  event: TxnEventName.TxnError;
+  data: {
+    params: TParams;
+    error: ErrorLike;
+  };
+};
 
-  return { value, callData };
-}
+export type TxnEvent<TParams> =
+  | TxnPreparedEvent<TParams>
+  | TxnSimulatedEvent<TParams>
+  | TxnSentEvent<TParams>
+  | TxnErrorEvent<TParams>;
 
-export async function sendCreateOrderOrderTxn({
+export type TxnCallback<TParams> = (event: TxnEvent<TParams>) => void;
+
+export const makeSimulation =
+  ({
+    chainId,
+    signer,
+    params,
+    blockTimestampData,
+    tokensData,
+  }: {
+    chainId: number;
+    signer: Signer;
+    params: BatchOrderTxnParams;
+    blockTimestampData: BlockTimestampData | undefined;
+    tokensData: TokensData;
+  }) =>
+  async () => {
+    const primaryOrderParams = params.createOrderParams[0];
+
+    if (!primaryOrderParams) {
+      throw new Error("No primary order params");
+    }
+
+    const isSimulationAllowed = primaryOrderParams && !isLimitSwapOrderType(primaryOrderParams.orderPayload.orderType);
+
+    if (!isSimulationAllowed) {
+      return;
+    }
+
+    const prices = getSimulationPrices(chainId, tokensData, getOrdersTriggerPriceOverrides(params.createOrderParams));
+
+    const { callData, value } = getBatchOrderMulticallPayload({ chainId, params });
+
+    return simulateExecution(chainId, {
+      account: await signer.getAddress(),
+      prices,
+      createMulticallPayload: callData,
+      blockTimestampData,
+      value,
+    });
+  };
+
+// export async function sendUpdateOrderTxn({
+//   chainId,
+//   signer,
+//   params,
+//   callback,
+// }: {
+//   chainId: number;
+//   signer: Signer;
+//   params: UpdateOrderTxnParams;
+//   callback: TxnCallback | undefined;
+// }) {
+//   try {
+//   } catch (error) {
+//     callback?.({
+//       event: TxnEventName.TxnError,
+//       data: {
+//         error,
+//       },
+//     });
+
+//     throw error;
+//   }
+// }
+
+export async function sendBatchOrderWalletTxn({
   chainId,
   signer,
-  callData,
-  value,
+  params,
+  simulation,
+  callback,
 }: {
   chainId: number;
   signer: Signer;
-  callData: string[];
-  value: bigint;
+  params: BatchOrderTxnParams;
+  simulation: () => Promise<void> | undefined;
+  callback: TxnCallback<BatchOrderTxnParams> | undefined;
 }) {
-  // TODO: prepare txn shit
-  //   const simulationPromise = !p.skipSimulation
-  //     ? simulateExecuteTxn(chainId, {
-  //         account: p.orderPayload.addresses.receiver,
-  //         tokensData: p.tokensData,
-  //         primaryPriceOverrides: p.simulationParams.primaryPriceOverrides,
-  //         createMulticallPayload: callData,
-  //         value,
-  //         errorTitle: t`Order error.`,
-  //         additionalErrorContent: p.additionalErrorContent,
-  //         metricId: undefined,
-  //         blockTimestampData: undefined,
-  //       })
-  //     : undefined;
+  try {
+    const { callData, value } = getBatchOrderMulticallPayload({ chainId, params });
+    const routerAddress = getContract(chainId, "ExchangeRouter");
+    const contract = new Contract(routerAddress, ExchangeRouter.abi, signer);
 
-  //   const { gasLimit, gasPriceData } = await prepareOrderTxn(
-  //     p.chainId,
-  //     contract,
-  //     method,
-  //     multicall,
-  //     value,
-  //     simulationPromise,
-  //     undefined,
-  //     p.additionalErrorContent
-  //   );
+    const [gasLimit, gasPriceData] = await Promise.all([
+      getGasLimit(contract, "multicall", [callData], value).catch((error) => {
+        throw extendError(error, {
+          errorContext: "gasLimit",
+        });
+      }),
+      getGasPrice(contract.runner!.provider!, chainId).catch((error) => {
+        throw extendError(error, {
+          errorContext: "gasPrice",
+        });
+      }),
+      simulation?.()
+        ?.then(() => {
+          callback?.({
+            event: TxnEventName.TxnSimulated,
+            data: { params },
+          });
+        })
+        .catch((error) => {
+          throw extendError(error, {
+            errorContext: "simulation",
+          });
+        }),
+    ]);
 
-  const routerAddress = getContract(chainId, "ExchangeRouter");
-  const contract = new Contract(routerAddress, ExchangeRouter.abi, signer);
+    callback?.({
+      event: TxnEventName.TxnPrepared,
+      data: {
+        params,
+      },
+    });
 
-  await callContract(chainId, contract, "multicall", [callData], {
-    value,
-    hideSentMsg: true,
-    hideSuccessMsg: true,
-    // gasLimit,
-    // gasPriceData,
-  });
+    const createdAt = Date.now();
+
+    await collContract(chainId, contract, "multicall", [callData], {
+      value,
+      hideSentMsg: true,
+      hideSuccessMsg: true,
+      gasLimit,
+      gasPriceData,
+    })
+      .then((res) => {
+        callback?.({
+          event: TxnEventName.TxnSent,
+          data: {
+            params,
+            txnHash: res?.hash ?? "0x",
+            blockNumber: res?.blockNumber ?? 0n,
+            createdAt,
+          },
+        });
+      })
+      .catch((error) => {
+        throw extendError(error, {
+          errorContext: "sending",
+        });
+      });
+  } catch (error) {
+    callback?.({
+      event: TxnEventName.TxnError,
+      data: {
+        params,
+        error,
+      },
+    });
+
+    throw error;
+  }
 }

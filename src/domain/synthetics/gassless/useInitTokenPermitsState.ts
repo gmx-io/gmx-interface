@@ -7,7 +7,8 @@ import useWallet from "lib/wallets/useWallet";
 import { DEFAULT_PERMIT_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
 
-import { createAndSignTokenPermit, TokenPermitPayload } from "./txns/tokenPermitUtils";
+import { createAndSignTokenPermit } from "./txns/tokenPermitUtils";
+import { SignedTokenPermit } from "sdk/types/tokens";
 
 export type TokenPermitsState = ReturnType<typeof useInitTokenPermitsState>;
 
@@ -15,7 +16,7 @@ export function useInitTokenPermitsState() {
   const { chainId } = useChainId();
   const { signer } = useWallet();
 
-  const [tokenPermits, setTokenPermits] = useLocalStorageSerializeKey<TokenPermitPayload[]>(
+  const [tokenPermits, setTokenPermits] = useLocalStorageSerializeKey<SignedTokenPermit[]>(
     getTokenPermitsKey(chainId),
     []
   );

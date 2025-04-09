@@ -22,37 +22,19 @@ import type {
 
 export interface MultichainUtilsInterface extends Interface {
   getFunction(
-    nameOrSignature:
-      | "getMultichainBalanceAmount"
-      | "validateMultichainEndpoint"
-      | "validateMultichainProvider"
+    nameOrSignature: "getMultichainBalanceAmount" | "validateMultichainEndpoint" | "validateMultichainProvider"
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "getMultichainBalanceAmount",
     values: [AddressLike, AddressLike, AddressLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "validateMultichainEndpoint",
-    values: [AddressLike, AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "validateMultichainProvider",
-    values: [AddressLike, AddressLike]
-  ): string;
+  encodeFunctionData(functionFragment: "validateMultichainEndpoint", values: [AddressLike, AddressLike]): string;
+  encodeFunctionData(functionFragment: "validateMultichainProvider", values: [AddressLike, AddressLike]): string;
 
-  decodeFunctionResult(
-    functionFragment: "getMultichainBalanceAmount",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "validateMultichainEndpoint",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "validateMultichainProvider",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "getMultichainBalanceAmount", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "validateMultichainEndpoint", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "validateMultichainProvider", data: BytesLike): Result;
 }
 
 export interface MultichainUtils extends BaseContract {
@@ -72,31 +54,21 @@ export interface MultichainUtils extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(
-    event: TCEvent
-  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(
-    event?: TCEvent
-  ): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
   getMultichainBalanceAmount: TypedContractMethod<
     [dataStore: AddressLike, account: AddressLike, token: AddressLike],
@@ -104,43 +76,21 @@ export interface MultichainUtils extends BaseContract {
     "view"
   >;
 
-  validateMultichainEndpoint: TypedContractMethod<
-    [dataStore: AddressLike, endpoint: AddressLike],
-    [void],
-    "view"
-  >;
+  validateMultichainEndpoint: TypedContractMethod<[dataStore: AddressLike, endpoint: AddressLike], [void], "view">;
 
-  validateMultichainProvider: TypedContractMethod<
-    [dataStore: AddressLike, provider: AddressLike],
-    [void],
-    "view"
-  >;
+  validateMultichainProvider: TypedContractMethod<[dataStore: AddressLike, provider: AddressLike], [void], "view">;
 
-  getFunction<T extends ContractMethod = ContractMethod>(
-    key: string | FunctionFragment
-  ): T;
+  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
   getFunction(
     nameOrSignature: "getMultichainBalanceAmount"
-  ): TypedContractMethod<
-    [dataStore: AddressLike, account: AddressLike, token: AddressLike],
-    [bigint],
-    "view"
-  >;
+  ): TypedContractMethod<[dataStore: AddressLike, account: AddressLike, token: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "validateMultichainEndpoint"
-  ): TypedContractMethod<
-    [dataStore: AddressLike, endpoint: AddressLike],
-    [void],
-    "view"
-  >;
+  ): TypedContractMethod<[dataStore: AddressLike, endpoint: AddressLike], [void], "view">;
   getFunction(
     nameOrSignature: "validateMultichainProvider"
-  ): TypedContractMethod<
-    [dataStore: AddressLike, provider: AddressLike],
-    [void],
-    "view"
-  >;
+  ): TypedContractMethod<[dataStore: AddressLike, provider: AddressLike], [void], "view">;
 
   filters: {};
 }

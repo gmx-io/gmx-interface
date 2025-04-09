@@ -1260,10 +1260,9 @@ msgstr "Approve {stakingTokenSymbol}"
 msgid "Failed Limit Swap"
 msgstr "Failed Limit Swap"
 
-#: src/components/ExpressTradingBanner/ExpressTradingBanner.tsx
-#: src/components/Header/Header.tsx
-msgid "Enable Express Trading"
-msgstr "Enable Express Trading"
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Liq. {longOrShortText} - {marketIndexName}"
+msgstr "Liq. {longOrShortText} - {marketIndexName}"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Longing..."
@@ -1850,8 +1849,8 @@ msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsT
 msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Open {longOrShortText} {prefix}{tokenSymbol}"
-msgstr "Open {longOrShortText} {prefix}{tokenSymbol}"
+#~ msgid "Open {longOrShortText} {prefix}{tokenSymbol}"
+#~ msgstr "Open {longOrShortText} {prefix}{tokenSymbol}"
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Show details"
@@ -1940,6 +1939,7 @@ msgstr "{txnTypeText} {0} order for"
 
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/pages/Earn/StakeModal.tsx
@@ -1990,10 +1990,6 @@ msgstr "Buying {symbol}..."
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Could not increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}  USD"
 msgstr "Could not increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}  USD"
-
-#: src/domain/synthetics/orders/simulateExecuteTxn.tsx
-msgid "Prices are now volatile for this market, try again with increased Allowed Slippage value in Execution Details section."
-msgstr "Prices are now volatile for this market, try again with increased Allowed Slippage value in Execution Details section."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on {chainName}"
@@ -2191,11 +2187,11 @@ msgstr "Decentralized Finance Dashboard"
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "GLP buy disabled, pending {0} upgrade"
 
-#: src/lib/contracts/transactionErrors.tsx
+#: src/components/Errors/txnErrorsToasts.tsx
 msgid "<0>Error submitting order.</0><1/><2>Signer address does not match receiver address.</2><3/><4>Please reload the page and try again.</4>"
 msgstr "<0>Error submitting order.</0><1/><2>Signer address does not match receiver address.</2><3/><4>Please reload the page and try again.</4>"
 
-#: src/lib/contracts/transactionErrors.tsx
+#: src/components/Errors/txnErrorsToasts.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 msgstr "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 
@@ -2329,7 +2325,7 @@ msgstr "The order will not be executed as its trigger price is beyond the positi
 msgid "Failed to cancel {ordersText}"
 msgstr "Failed to cancel {ordersText}"
 
-#: src/lib/contracts/transactionErrors.tsx
+#: src/components/Errors/txnErrorsToasts.tsx
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 
@@ -2981,8 +2977,8 @@ msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Liq. {longOrShortText} {prefix}{tokenSymbol}"
-msgstr "Liq. {longOrShortText} {prefix}{tokenSymbol}"
+#~ msgid "Liq. {longOrShortText} {prefix}{tokenSymbol}"
+#~ msgstr "Liq. {longOrShortText} {prefix}{tokenSymbol}"
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Leave at least {0} ETH for gas"
@@ -3815,6 +3811,10 @@ msgstr "Stake <0>GMX</0> and buy <1>GM</1> or <2>GLP</2> to earn rewards."
 msgid "Trading guide"
 msgstr "Trading guide"
 
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Open {longOrShortText} - {marketIndexName}"
+msgstr "Open {longOrShortText} - {marketIndexName}"
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "TRADING Airdrop"
 msgstr "TRADING Airdrop"
@@ -4222,6 +4222,10 @@ msgstr "Invalid Transfer Addresses: Please check the url."
 #: src/pages/Dashboard/MarketsListV1.tsx
 msgid "GLP Index Composition"
 msgstr "GLP Index Composition"
+
+#: src/domain/synthetics/orders/simulateExecuteTxn.tsx
+#~ msgid "Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section"
+#~ msgstr "Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section"
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
@@ -4947,6 +4951,10 @@ msgstr "Sell order executed"
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
 msgstr "Affiliate Rewards Claimed"
+
+#: src/domain/synthetics/orders/simulateExecuteTxn.tsx
+msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
+msgstr "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
 
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Swap Price Impact for External Swap Threshold"
@@ -7476,11 +7484,11 @@ msgstr "size"
 msgid "Create Limit Swap"
 msgstr "Create Limit Swap"
 
-#: src/lib/contracts/transactionErrors.tsx
+#: src/components/Errors/txnErrorsToasts.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 
-#: src/lib/contracts/transactionErrors.tsx
+#: src/components/Errors/txnErrorsToasts.tsx
 msgid "Transaction was cancelled."
 msgstr "Transaction was cancelled."
 
@@ -7638,7 +7646,7 @@ msgstr "Leave at least {0} {1} for gas"
 msgid "staked"
 msgstr "staked"
 
-#: src/lib/contracts/transactionErrors.tsx
+#: src/components/Errors/txnErrorsToasts.tsx
 msgid "There is not enough {0} in your account on {1} to send this transaction.<0/><1/><2>Buy or Transfer {2} to {3}</2>"
 msgstr "There is not enough {0} in your account on {1} to send this transaction.<0/><1/><2>Buy or Transfer {2} to {3}</2>"
 
@@ -7928,7 +7936,7 @@ msgstr "Buy ETH directly on Arbitrum or transfer it there."
 msgid "Max 110 symbols exceeded"
 msgstr "Max 110 symbols exceeded"
 
-#: src/lib/contracts/transactionErrors.tsx
+#: src/components/Errors/txnErrorsToasts.tsx
 msgid "Transaction failed"
 msgstr "Transaction failed"
 

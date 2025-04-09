@@ -1,6 +1,6 @@
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { ErrorData } from "ab/testMultichain/parseError";
+import { ParsedError } from "lib/errors";
 
 export type GlobalMetricData = {
   isMobileMetamask: boolean;
@@ -52,16 +52,6 @@ export type OrderMetricType =
   | SwapGmMetricData["metricType"]
   | SwapGLVMetricData["metricType"]
   | ShiftGmMetricData["metricType"];
-
-export type OrderErrorContext =
-  | "simulation"
-  | "gasLimit"
-  | "gasPrice"
-  | "bestNonce"
-  | "sending"
-  | "pending"
-  | "minting"
-  | "execution";
 
 export type OrderEventName = `${OrderMetricType}.${OrderStage}`;
 export type MeasureEventName = `${MeasureMetricType}.${LoadingStage}`;
@@ -152,7 +142,7 @@ export type LoadingFailedEvent = {
   data: {
     requestId: string;
     isFirstTimeLoad?: boolean;
-  } & ErrorData;
+  } & ParsedError;
 };
 
 // Transactions tracking
@@ -165,7 +155,7 @@ export type SubmittedOrderEvent = {
 export type ValidationErrorEvent = {
   event: `${OrderMetricType}.${OrderStage.Failed}`;
   isError: true;
-  data: OrderMetricData & ErrorData;
+  data: OrderMetricData & ParsedError;
 };
 
 export type OrderSentEvent = {
@@ -199,14 +189,14 @@ export type OrderCreatedEvent = {
 export type OrderTxnFailedEvent = {
   event: `${OrderMetricType}.${OrderStage.Failed | OrderStage.Rejected}`;
   isError: true;
-  data: OrderMetricData & ErrorData;
+  data: OrderMetricData & ParsedError;
 };
 
 export type PendingTxnErrorEvent = {
   event: `${OrderMetricType}.${OrderStage.Failed}`;
   isError: true;
   time: number | undefined;
-  data: OrderMetricData & ErrorData;
+  data: OrderMetricData & ParsedError;
 };
 
 export type OrderExecutedEvent = {
@@ -220,7 +210,7 @@ export type OrderCancelledEvent = {
   event: `${OrderMetricType}.${OrderStage.Failed}`;
   isError: true;
   time: number | undefined;
-  data: OrderMetricData & ErrorData;
+  data: OrderMetricData & ParsedError;
 };
 
 // Multicall tracking
@@ -253,7 +243,7 @@ export type MulticallErrorEvent = {
 export type ErrorEvent = {
   event: "error";
   isError: true;
-  data: ErrorData;
+  data: ParsedError;
 };
 
 // Entities metric data

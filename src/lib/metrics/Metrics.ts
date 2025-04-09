@@ -10,14 +10,14 @@ import {
 } from "lib/oracleKeeperFetcher/types";
 import { sleep } from "lib/sleep";
 import { getAppVersion } from "lib/version";
-import { getWalletNames, WalletNames } from "lib/wallets/getWalletNames";
+import { WalletNames, getWalletNames } from "lib/wallets/getWalletNames";
+import { ErrorLike, parseError } from "sdk/utils/errors";
 
 import {
   METRIC_COUNTER_DISPATCH_NAME,
   METRIC_EVENT_DISPATCH_NAME,
   METRIC_TIMING_DISPATCH_NAME,
 } from "./emitMetricEvent";
-import { ErrorLike, parseError } from "../../ab/testMultichain/parseError";
 import { getStorageItem, setStorageItem } from "./storage";
 import { ErrorEvent, GlobalMetricData, LongTaskTiming } from "./types";
 

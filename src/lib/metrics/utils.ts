@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 
+import { ErrorLike } from "ab/testMultichain/parseError";
 import { USD_DECIMALS } from "config/factors";
 import { EventLogData } from "context/SyntheticsEvents";
 import { ExecutionFee } from "domain/synthetics/fees";
@@ -8,12 +9,11 @@ import { getMarketIndexName, getMarketPoolName, MarketInfo } from "domain/synthe
 import { getCollateralAndSwapAddresses, OrderType } from "domain/synthetics/orders";
 import { TokenData } from "domain/synthetics/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "domain/synthetics/trade";
+import { OrderErrorContext, parseError } from "lib/errors";
 import { bigintToNumber, formatPercentage, formatRatePercentage, getBasisPoints, roundToOrder } from "lib/numbers";
-import { ErrorLike } from "ab/testMultichain/parseError";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
-import { metrics, OrderErrorContext, SubmittedOrderEvent } from ".";
-import { parseError } from "../../ab/testMultichain/parseError";
+import { metrics, SubmittedOrderEvent } from ".";
 import {
   DecreaseOrderMetricData,
   EditCollateralMetricData,

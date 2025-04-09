@@ -7,12 +7,13 @@ import { SetPendingFundingFeeSettlement, SetPendingOrder, SetPendingPosition } f
 import { TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { callContract } from "lib/contracts";
-import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { OrderMetricId } from "lib/metrics";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { isMarketOrderType } from "sdk/utils/orders";
+
+import { validateSignerAddress } from "components/Errors/errorToasts";
 
 import { getPositionKey } from "../positions";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
@@ -47,6 +48,7 @@ export type DecreaseOrderParams = {
   indexToken: Token;
   tokensData: TokensData;
   autoCancel: boolean;
+  slippageInputId?: string;
 };
 
 export type DecreaseOrderCallbacks = {
@@ -85,6 +87,7 @@ export async function createDecreaseOrderTxn(
     mainAccountAddress: account,
     chainId,
   });
+
   const simulationEncodedPayload = createDecreaseEncodedPayload({
     router: exchangeRouter,
     orderVaultAddress,
@@ -117,6 +120,9 @@ export async function createDecreaseOrderTxn(
           errorTitle: t`Order error.`,
           metricId,
           blockTimestampData,
+          additionalErrorParams: {
+            slippageInputId: p.slippageInputId,
+          },
         });
       }
     })

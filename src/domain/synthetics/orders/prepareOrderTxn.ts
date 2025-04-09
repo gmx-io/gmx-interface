@@ -1,10 +1,11 @@
 import { t } from "@lingui/macro";
+import { getErrorMessage } from "components/Errors/errorToasts";
 import { ethers } from "ethers";
 
 import { getGasLimit, getGasPrice } from "lib/contracts";
-import { getErrorMessage } from "lib/contracts/transactionErrors";
+import { OrderErrorContext } from "lib/errors";
 import { helperToast } from "lib/helperToast";
-import { OrderErrorContext, OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
+import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
 
 export type PrepareOrderTxnParams = {
   simulationPromise?: Promise<void>;

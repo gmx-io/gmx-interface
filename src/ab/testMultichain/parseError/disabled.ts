@@ -1,22 +1,31 @@
 import cryptoJs from "crypto-js";
-import { ethers } from "ethers";
+import { Abi, Address, decodeErrorResult } from "viem";
 
 import { extractDataFromError, getIsUserError, getIsUserRejectedError } from "lib/contracts/transactionErrors";
-import { OrderErrorContext } from "lib/metrics/types";
+import { CustomErrorName, TxErrorType, extractTxnError } from "lib/errors";
 import { abis } from "sdk/abis";
 
-import { TxErrorType, extractError } from "sdk/utils/contracts";
+export type OrderErrorContext =
+  | "simulation"
+  | "gasLimit"
+  | "gasPrice"
+  | "bestNonce"
+  | "sending"
+  | "pending"
+  | "minting"
+  | "execution";
 
 export type ErrorLike = {
   message?: string;
   stack?: string;
   name?: string;
-  code?: number;
+  code?: number | string;
   data?: any;
-  error?: any;
+  error?: ErrorLike;
   errorSource?: string;
   errorContext?: OrderErrorContext;
   parentError?: ErrorLike;
+  tags?: string;
   isAdditinalValidationPassed?: boolean;
   additionalValidationType?: string;
   info?: {
@@ -49,8 +58,21 @@ export type ErrorData = {
 const URL_REGEXP =
   /((?:http[s]?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\.[a-z]{2,6}\b(?::\d+)?)(?:[-a-zA-Z0-9@:%_\\+.~#?&\\/\\/=]*)/gi;
 
-const customErrors = new ethers.Contract(ethers.ZeroAddress, abis.CustomErrors);
 const MAX_ERRORS_DEPTH = 1;
+
+export function extendError(
+  error: Error,
+  params: {
+    errorContext?: OrderErrorContext;
+    errorSource?: string;
+    isAdditinalValidationPassed?: boolean;
+    additionalValidationType?: string;
+  }
+): ErrorLike {
+  Object.assign(error, params);
+
+  return error;
+}
 
 export function parseError(error: ErrorLike | string | undefined, errorDepth = 0): ErrorData | undefined {
   if (errorDepth > MAX_ERRORS_DEPTH) {
@@ -92,12 +114,12 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
     }
 
     try {
-      let txError: ReturnType<typeof extractError> | undefined;
+      let txError: ReturnType<typeof extractTxnError> | undefined;
 
       if (errorInfo) {
-        txError = extractError(errorInfo);
+        txError = extractTxnError(errorInfo);
       } else if (error && typeof error === "object") {
-        txError = extractError(error);
+        txError = extractTxnError(error);
       }
 
       if (txError && txError.length) {
@@ -115,10 +137,13 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
     if (errorMessage) {
       const errorData = extractDataFromError(errorMessage) ?? extractDataFromError((error as any)?.message);
       if (errorData) {
-        const parsedError = customErrors.interface.parseError(errorData);
+        const parsedError = decodeErrorResult({
+          abi: abis.CustomErrors as Abi,
+          data: errorData as Address,
+        });
 
         if (parsedError) {
-          contractError = parsedError.name;
+          contractError = parsedError.errorName;
           contractErrorArgs = parsedError.args;
         }
       }
@@ -169,6 +194,10 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
     additionalValidationType,
     errorDepth,
   };
+}
+
+export function isContractError(error: ErrorData, errorType: CustomErrorName) {
+  return error.contractError === errorType;
 }
 
 function hasMessage(error: unknown): error is { message: string } {

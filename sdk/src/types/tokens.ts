@@ -1,3 +1,13 @@
+export type WrappedTokenAddress = string & { __brand: "wrapped" };
+export type NativeTokenAddress = string & { __brand: "native" };
+
+export type TokenAddressType = {
+  wrapped: WrappedTokenAddress;
+  native: NativeTokenAddress;
+};
+
+export type ContractPrice = bigint & { __brand: "contractPrice" };
+
 export type TokenCategory = "meme" | "layer1" | "layer2" | "defi";
 
 export type Token = {
@@ -78,6 +88,17 @@ export type TokenInfo = Token & {
   maxGlobalShortSize?: bigint;
 
   maxLongCapacity?: bigint;
+};
+
+export type SignedTokenPermit = {
+  owner: string;
+  spender: string;
+  value: bigint;
+  deadline: bigint;
+  v: number;
+  r: string;
+  s: string;
+  token: string;
 };
 
 export type InfoTokens = {

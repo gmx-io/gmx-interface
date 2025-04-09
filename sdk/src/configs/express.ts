@@ -12,6 +12,7 @@ export const DEFAULT_SUBACCOUNT_DEADLINE_DURATION = periodToSeconds(1, "1h");
 export const DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT = 10;
 
 export const DEFAULT_PERMIT_DEADLINE_DURATION = periodToSeconds(1, "1h");
+export const DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION = periodToSeconds(1, "1h");
 
 const GAS_PAYMENT_TOKENS = {
   [ARBITRUM]: [getTokenBySymbol(ARBITRUM, "USDC").address, getTokenBySymbol(ARBITRUM, "WETH").address],

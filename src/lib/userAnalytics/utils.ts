@@ -1,5 +1,6 @@
 import debounce from "lodash/debounce";
 
+import { parseError } from "ab/testMultichain/parseError";
 import { getChainName } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { MarketInfo } from "domain/synthetics/markets";
@@ -16,7 +17,6 @@ import { TradeMode, TradeType } from "domain/synthetics/trade";
 import { formatAmountForMetrics, formatPercentageForMetrics, metrics } from "lib/metrics";
 import { OrderMetricData, OrderMetricId } from "lib/metrics/types";
 import { bigintToNumber, formatRatePercentage, roundToOrder } from "lib/numbers";
-import { parseError } from "ab/testMultichain/parseError";
 import { userAnalytics } from "lib/userAnalytics";
 import {
   AnalyticsOrderType,

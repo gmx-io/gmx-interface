@@ -41,7 +41,7 @@ export declare namespace Order {
     uiFeeReceiver: string,
     market: string,
     initialCollateralToken: string,
-    swapPath: string[]
+    swapPath: string[],
   ] & {
     account: string;
     receiver: string;
@@ -80,7 +80,7 @@ export declare namespace Order {
     minOutputAmount: bigint,
     updatedAtTime: bigint,
     validFromTime: bigint,
-    srcChainId: bigint
+    srcChainId: bigint,
   ] & {
     orderType: bigint;
     decreasePositionSwapType: bigint;
@@ -107,7 +107,7 @@ export declare namespace Order {
     isLong: boolean,
     shouldUnwrapNativeToken: boolean,
     isFrozen: boolean,
-    autoCancel: boolean
+    autoCancel: boolean,
   ] & {
     isLong: boolean;
     shouldUnwrapNativeToken: boolean;
@@ -126,7 +126,7 @@ export declare namespace Order {
     addresses: Order.AddressesStructOutput,
     numbers: Order.NumbersStructOutput,
     flags: Order.FlagsStructOutput,
-    _dataList: string[]
+    _dataList: string[],
   ] & {
     addresses: Order.AddressesStructOutput;
     numbers: Order.NumbersStructOutput;
@@ -141,10 +141,10 @@ export declare namespace ReaderUtils {
     order: Order.PropsStruct;
   };
 
-  export type OrderInfoStructOutput = [
-    orderKey: string,
-    order: Order.PropsStructOutput
-  ] & { orderKey: string; order: Order.PropsStructOutput };
+  export type OrderInfoStructOutput = [orderKey: string, order: Order.PropsStructOutput] & {
+    orderKey: string;
+    order: Order.PropsStructOutput;
+  };
 
   export type BaseFundingValuesStruct = {
     fundingFeeAmountPerSize: MarketUtils.PositionTypeStruct;
@@ -153,7 +153,7 @@ export declare namespace ReaderUtils {
 
   export type BaseFundingValuesStructOutput = [
     fundingFeeAmountPerSize: MarketUtils.PositionTypeStructOutput,
-    claimableFundingAmountPerSize: MarketUtils.PositionTypeStructOutput
+    claimableFundingAmountPerSize: MarketUtils.PositionTypeStructOutput,
   ] & {
     fundingFeeAmountPerSize: MarketUtils.PositionTypeStructOutput;
     claimableFundingAmountPerSize: MarketUtils.PositionTypeStructOutput;
@@ -168,7 +168,7 @@ export declare namespace ReaderUtils {
   export type VirtualInventoryStructOutput = [
     virtualPoolAmountForLongToken: bigint,
     virtualPoolAmountForShortToken: bigint,
-    virtualInventoryForPositions: bigint
+    virtualInventoryForPositions: bigint,
   ] & {
     virtualPoolAmountForLongToken: bigint;
     virtualPoolAmountForShortToken: bigint;
@@ -192,7 +192,7 @@ export declare namespace ReaderUtils {
     baseFunding: ReaderUtils.BaseFundingValuesStructOutput,
     nextFunding: MarketUtils.GetNextFundingAmountPerSizeResultStructOutput,
     virtualInventory: ReaderUtils.VirtualInventoryStructOutput,
-    isDisabled: boolean
+    isDisabled: boolean,
   ] & {
     market: Market.PropsStructOutput;
     borrowingFactorPerSecondForLongs: bigint;
@@ -223,7 +223,7 @@ export declare namespace MarketUtils {
   export type MarketPricesStructOutput = [
     indexTokenPrice: Price.PropsStructOutput,
     longTokenPrice: Price.PropsStructOutput,
-    shortTokenPrice: Price.PropsStructOutput
+    shortTokenPrice: Price.PropsStructOutput,
   ] & {
     indexTokenPrice: Price.PropsStructOutput;
     longTokenPrice: Price.PropsStructOutput;
@@ -235,10 +235,10 @@ export declare namespace MarketUtils {
     shortToken: BigNumberish;
   };
 
-  export type CollateralTypeStructOutput = [
-    longToken: bigint,
-    shortToken: bigint
-  ] & { longToken: bigint; shortToken: bigint };
+  export type CollateralTypeStructOutput = [longToken: bigint, shortToken: bigint] & {
+    longToken: bigint;
+    shortToken: bigint;
+  };
 
   export type PositionTypeStruct = {
     long: MarketUtils.CollateralTypeStruct;
@@ -247,7 +247,7 @@ export declare namespace MarketUtils {
 
   export type PositionTypeStructOutput = [
     long: MarketUtils.CollateralTypeStructOutput,
-    short: MarketUtils.CollateralTypeStructOutput
+    short: MarketUtils.CollateralTypeStructOutput,
   ] & {
     long: MarketUtils.CollateralTypeStructOutput;
     short: MarketUtils.CollateralTypeStructOutput;
@@ -266,7 +266,7 @@ export declare namespace MarketUtils {
     fundingFactorPerSecond: bigint,
     nextSavedFundingFactorPerSecond: bigint,
     fundingFeeAmountPerSizeDelta: MarketUtils.PositionTypeStructOutput,
-    claimableFundingAmountPerSizeDelta: MarketUtils.PositionTypeStructOutput
+    claimableFundingAmountPerSizeDelta: MarketUtils.PositionTypeStructOutput,
   ] & {
     longsPayShorts: boolean;
     fundingFactorPerSecond: bigint;
@@ -283,11 +283,11 @@ export declare namespace Position {
     collateralToken: AddressLike;
   };
 
-  export type AddressesStructOutput = [
-    account: string,
-    market: string,
-    collateralToken: string
-  ] & { account: string; market: string; collateralToken: string };
+  export type AddressesStructOutput = [account: string, market: string, collateralToken: string] & {
+    account: string;
+    market: string;
+    collateralToken: string;
+  };
 
   export type NumbersStruct = {
     sizeInUsd: BigNumberish;
@@ -314,7 +314,7 @@ export declare namespace Position {
     longTokenClaimableFundingAmountPerSize: bigint,
     shortTokenClaimableFundingAmountPerSize: bigint,
     increasedAtTime: bigint,
-    decreasedAtTime: bigint
+    decreasedAtTime: bigint,
   ] & {
     sizeInUsd: bigint;
     sizeInTokens: bigint;
@@ -342,7 +342,7 @@ export declare namespace Position {
   export type PropsStructOutput = [
     addresses: Position.AddressesStructOutput,
     numbers: Position.NumbersStructOutput,
-    flags: Position.FlagsStructOutput
+    flags: Position.FlagsStructOutput,
   ] & {
     addresses: Position.AddressesStructOutput;
     numbers: Position.NumbersStructOutput;
@@ -374,7 +374,7 @@ export declare namespace PositionPricingUtils {
     traderDiscountFactor: bigint,
     totalRebateAmount: bigint,
     traderDiscountAmount: bigint,
-    affiliateRewardAmount: bigint
+    affiliateRewardAmount: bigint,
   ] & {
     referralCode: string;
     affiliate: string;
@@ -397,7 +397,7 @@ export declare namespace PositionPricingUtils {
   export type PositionProFeesStructOutput = [
     traderTier: bigint,
     traderDiscountFactor: bigint,
-    traderDiscountAmount: bigint
+    traderDiscountAmount: bigint,
   ] & {
     traderTier: bigint;
     traderDiscountFactor: bigint;
@@ -419,7 +419,7 @@ export declare namespace PositionPricingUtils {
     claimableShortTokenAmount: bigint,
     latestFundingFeeAmountPerSize: bigint,
     latestLongTokenClaimableFundingAmountPerSize: bigint,
-    latestShortTokenClaimableFundingAmountPerSize: bigint
+    latestShortTokenClaimableFundingAmountPerSize: bigint,
   ] & {
     fundingFeeAmount: bigint;
     claimableLongTokenAmount: bigint;
@@ -440,7 +440,7 @@ export declare namespace PositionPricingUtils {
     borrowingFeeUsd: bigint,
     borrowingFeeAmount: bigint,
     borrowingFeeReceiverFactor: bigint,
-    borrowingFeeAmountForFeeReceiver: bigint
+    borrowingFeeAmountForFeeReceiver: bigint,
   ] & {
     borrowingFeeUsd: bigint;
     borrowingFeeAmount: bigint;
@@ -454,11 +454,7 @@ export declare namespace PositionPricingUtils {
     uiFeeAmount: BigNumberish;
   };
 
-  export type PositionUiFeesStructOutput = [
-    uiFeeReceiver: string,
-    uiFeeReceiverFactor: bigint,
-    uiFeeAmount: bigint
-  ] & {
+  export type PositionUiFeesStructOutput = [uiFeeReceiver: string, uiFeeReceiverFactor: bigint, uiFeeAmount: bigint] & {
     uiFeeReceiver: string;
     uiFeeReceiverFactor: bigint;
     uiFeeAmount: bigint;
@@ -475,7 +471,7 @@ export declare namespace PositionPricingUtils {
     liquidationFeeUsd: bigint,
     liquidationFeeAmount: bigint,
     liquidationFeeReceiverFactor: bigint,
-    liquidationFeeAmountForFeeReceiver: bigint
+    liquidationFeeAmountForFeeReceiver: bigint,
   ] & {
     liquidationFeeUsd: bigint;
     liquidationFeeAmount: bigint;
@@ -520,7 +516,7 @@ export declare namespace PositionPricingUtils {
     positionFeeAmount: bigint,
     totalCostAmountExcludingFunding: bigint,
     totalCostAmount: bigint,
-    totalDiscountAmount: bigint
+    totalDiscountAmount: bigint,
   ] & {
     referral: PositionPricingUtils.PositionReferralFeesStructOutput;
     pro: PositionPricingUtils.PositionProFeesStructOutput;
@@ -552,7 +548,7 @@ export declare namespace ReaderPricingUtils {
   export type ExecutionPriceResultStructOutput = [
     priceImpactUsd: bigint,
     executionPrice: bigint,
-    balanceWasImproved: boolean
+    balanceWasImproved: boolean,
   ] & {
     priceImpactUsd: bigint;
     executionPrice: bigint;
@@ -578,7 +574,7 @@ export declare namespace ReaderPositionUtils {
     executionPriceResult: ReaderPricingUtils.ExecutionPriceResultStructOutput,
     basePnlUsd: bigint,
     uncappedBasePnlUsd: bigint,
-    pnlAfterPriceImpactUsd: bigint
+    pnlAfterPriceImpactUsd: bigint,
   ] & {
     positionKey: string;
     position: Position.PropsStructOutput;
@@ -612,7 +608,7 @@ export declare namespace Deposit {
     initialLongToken: string,
     initialShortToken: string,
     longTokenSwapPath: string[],
-    shortTokenSwapPath: string[]
+    shortTokenSwapPath: string[],
   ] & {
     account: string;
     receiver: string;
@@ -642,7 +638,7 @@ export declare namespace Deposit {
     updatedAtTime: bigint,
     executionFee: bigint,
     callbackGasLimit: bigint,
-    srcChainId: bigint
+    srcChainId: bigint,
   ] & {
     initialLongTokenAmount: bigint;
     initialShortTokenAmount: bigint;
@@ -670,7 +666,7 @@ export declare namespace Deposit {
     addresses: Deposit.AddressesStructOutput,
     numbers: Deposit.NumbersStructOutput,
     flags: Deposit.FlagsStructOutput,
-    _dataList: string[]
+    _dataList: string[],
   ] & {
     addresses: Deposit.AddressesStructOutput;
     numbers: Deposit.NumbersStructOutput;
@@ -687,12 +683,7 @@ export declare namespace Market {
     shortToken: AddressLike;
   };
 
-  export type PropsStructOutput = [
-    marketToken: string,
-    indexToken: string,
-    longToken: string,
-    shortToken: string
-  ] & {
+  export type PropsStructOutput = [marketToken: string, indexToken: string, longToken: string, shortToken: string] & {
     marketToken: string;
     indexToken: string;
     longToken: string;
@@ -726,7 +717,7 @@ export declare namespace MarketPoolValueInfo {
     shortTokenUsd: bigint,
     totalBorrowingFees: bigint,
     borrowingFeePoolFactor: bigint,
-    impactPoolAmount: bigint
+    impactPoolAmount: bigint,
   ] & {
     poolValue: bigint;
     longPnl: bigint;
@@ -758,7 +749,7 @@ export declare namespace Shift {
     callbackContract: string,
     uiFeeReceiver: string,
     fromMarket: string,
-    toMarket: string
+    toMarket: string,
   ] & {
     account: string;
     receiver: string;
@@ -783,7 +774,7 @@ export declare namespace Shift {
     updatedAtTime: bigint,
     executionFee: bigint,
     callbackGasLimit: bigint,
-    srcChainId: bigint
+    srcChainId: bigint,
   ] & {
     marketTokenAmount: bigint;
     minMarketTokens: bigint;
@@ -802,7 +793,7 @@ export declare namespace Shift {
   export type PropsStructOutput = [
     addresses: Shift.AddressesStructOutput,
     numbers: Shift.NumbersStructOutput,
-    _dataList: string[]
+    _dataList: string[],
   ] & {
     addresses: Shift.AddressesStructOutput;
     numbers: Shift.NumbersStructOutput;
@@ -826,7 +817,7 @@ export declare namespace SwapPricingUtils {
     amountAfterFees: bigint,
     uiFeeReceiver: string,
     uiFeeReceiverFactor: bigint,
-    uiFeeAmount: bigint
+    uiFeeAmount: bigint,
   ] & {
     feeReceiverAmount: bigint;
     feeAmountForPool: bigint;
@@ -855,7 +846,7 @@ export declare namespace Withdrawal {
     uiFeeReceiver: string,
     market: string,
     longTokenSwapPath: string[],
-    shortTokenSwapPath: string[]
+    shortTokenSwapPath: string[],
   ] & {
     account: string;
     receiver: string;
@@ -883,7 +874,7 @@ export declare namespace Withdrawal {
     updatedAtTime: bigint,
     executionFee: bigint,
     callbackGasLimit: bigint,
-    srcChainId: bigint
+    srcChainId: bigint,
   ] & {
     marketTokenAmount: bigint;
     minLongTokenAmount: bigint;
@@ -911,7 +902,7 @@ export declare namespace Withdrawal {
     addresses: Withdrawal.AddressesStructOutput,
     numbers: Withdrawal.NumbersStructOutput,
     flags: Withdrawal.FlagsStructOutput,
-    _dataList: string[]
+    _dataList: string[],
   ] & {
     addresses: Withdrawal.AddressesStructOutput;
     numbers: Withdrawal.NumbersStructOutput;
@@ -930,7 +921,7 @@ export declare namespace PositionUtils {
   export type IsPositionLiquidatableInfoStructOutput = [
     remainingCollateralUsd: bigint,
     minCollateralUsd: bigint,
-    minCollateralUsdForLeverage: bigint
+    minCollateralUsdForLeverage: bigint,
   ] & {
     remainingCollateralUsd: bigint;
     minCollateralUsd: bigint;
@@ -985,7 +976,7 @@ export interface SyntheticsReaderInterface extends Interface {
       MarketUtils.MarketPricesStruct[],
       AddressLike,
       BigNumberish,
-      BigNumberish
+      BigNumberish,
     ]
   ): string;
   encodeFunctionData(
@@ -996,10 +987,7 @@ export interface SyntheticsReaderInterface extends Interface {
     functionFragment: "getAdlState",
     values: [AddressLike, AddressLike, boolean, MarketUtils.MarketPricesStruct]
   ): string;
-  encodeFunctionData(
-    functionFragment: "getDeposit",
-    values: [AddressLike, BytesLike]
-  ): string;
+  encodeFunctionData(functionFragment: "getDeposit", values: [AddressLike, BytesLike]): string;
   encodeFunctionData(
     functionFragment: "getDepositAmountOut",
     values: [
@@ -1010,41 +998,22 @@ export interface SyntheticsReaderInterface extends Interface {
       BigNumberish,
       AddressLike,
       BigNumberish,
-      boolean
+      boolean,
     ]
   ): string;
   encodeFunctionData(
     functionFragment: "getExecutionPrice",
-    values: [
-      AddressLike,
-      AddressLike,
-      Price.PropsStruct,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      boolean
-    ]
+    values: [AddressLike, AddressLike, Price.PropsStruct, BigNumberish, BigNumberish, BigNumberish, boolean]
   ): string;
-  encodeFunctionData(
-    functionFragment: "getMarket",
-    values: [AddressLike, AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getMarketBySalt",
-    values: [AddressLike, BytesLike]
-  ): string;
+  encodeFunctionData(functionFragment: "getMarket", values: [AddressLike, AddressLike]): string;
+  encodeFunctionData(functionFragment: "getMarketBySalt", values: [AddressLike, BytesLike]): string;
   encodeFunctionData(
     functionFragment: "getMarketInfo",
     values: [AddressLike, MarketUtils.MarketPricesStruct, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "getMarketInfoList",
-    values: [
-      AddressLike,
-      MarketUtils.MarketPricesStruct[],
-      BigNumberish,
-      BigNumberish
-    ]
+    values: [AddressLike, MarketUtils.MarketPricesStruct[], BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getMarketTokenPrice",
@@ -1055,233 +1024,87 @@ export interface SyntheticsReaderInterface extends Interface {
       Price.PropsStruct,
       Price.PropsStruct,
       BytesLike,
-      boolean
+      boolean,
     ]
   ): string;
-  encodeFunctionData(
-    functionFragment: "getMarkets",
-    values: [AddressLike, BigNumberish, BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "getMarkets", values: [AddressLike, BigNumberish, BigNumberish]): string;
   encodeFunctionData(
     functionFragment: "getNetPnl",
     values: [AddressLike, Market.PropsStruct, Price.PropsStruct, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "getOpenInterestWithPnl",
-    values: [
-      AddressLike,
-      Market.PropsStruct,
-      Price.PropsStruct,
-      boolean,
-      boolean
-    ]
+    values: [AddressLike, Market.PropsStruct, Price.PropsStruct, boolean, boolean]
   ): string;
-  encodeFunctionData(
-    functionFragment: "getOrder",
-    values: [AddressLike, BytesLike]
-  ): string;
+  encodeFunctionData(functionFragment: "getOrder", values: [AddressLike, BytesLike]): string;
   encodeFunctionData(
     functionFragment: "getPnl",
-    values: [
-      AddressLike,
-      Market.PropsStruct,
-      Price.PropsStruct,
-      boolean,
-      boolean
-    ]
+    values: [AddressLike, Market.PropsStruct, Price.PropsStruct, boolean, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "getPnlToPoolFactor",
-    values: [
-      AddressLike,
-      AddressLike,
-      MarketUtils.MarketPricesStruct,
-      boolean,
-      boolean
-    ]
+    values: [AddressLike, AddressLike, MarketUtils.MarketPricesStruct, boolean, boolean]
   ): string;
-  encodeFunctionData(
-    functionFragment: "getPosition",
-    values: [AddressLike, BytesLike]
-  ): string;
+  encodeFunctionData(functionFragment: "getPosition", values: [AddressLike, BytesLike]): string;
   encodeFunctionData(
     functionFragment: "getPositionInfo",
-    values: [
-      AddressLike,
-      AddressLike,
-      BytesLike,
-      MarketUtils.MarketPricesStruct,
-      BigNumberish,
-      AddressLike,
-      boolean
-    ]
+    values: [AddressLike, AddressLike, BytesLike, MarketUtils.MarketPricesStruct, BigNumberish, AddressLike, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "getPositionInfoList",
-    values: [
-      AddressLike,
-      AddressLike,
-      BytesLike[],
-      MarketUtils.MarketPricesStruct[],
-      AddressLike
-    ]
+    values: [AddressLike, AddressLike, BytesLike[], MarketUtils.MarketPricesStruct[], AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "getPositionPnlUsd",
-    values: [
-      AddressLike,
-      Market.PropsStruct,
-      MarketUtils.MarketPricesStruct,
-      BytesLike,
-      BigNumberish
-    ]
+    values: [AddressLike, Market.PropsStruct, MarketUtils.MarketPricesStruct, BytesLike, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "getShift",
-    values: [AddressLike, BytesLike]
-  ): string;
+  encodeFunctionData(functionFragment: "getShift", values: [AddressLike, BytesLike]): string;
   encodeFunctionData(
     functionFragment: "getSwapAmountOut",
-    values: [
-      AddressLike,
-      Market.PropsStruct,
-      MarketUtils.MarketPricesStruct,
-      AddressLike,
-      BigNumberish,
-      AddressLike
-    ]
+    values: [AddressLike, Market.PropsStruct, MarketUtils.MarketPricesStruct, AddressLike, BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "getSwapPriceImpact",
-    values: [
-      AddressLike,
-      AddressLike,
-      AddressLike,
-      AddressLike,
-      BigNumberish,
-      Price.PropsStruct,
-      Price.PropsStruct
-    ]
+    values: [AddressLike, AddressLike, AddressLike, AddressLike, BigNumberish, Price.PropsStruct, Price.PropsStruct]
   ): string;
-  encodeFunctionData(
-    functionFragment: "getWithdrawal",
-    values: [AddressLike, BytesLike]
-  ): string;
+  encodeFunctionData(functionFragment: "getWithdrawal", values: [AddressLike, BytesLike]): string;
   encodeFunctionData(
     functionFragment: "getWithdrawalAmountOut",
-    values: [
-      AddressLike,
-      Market.PropsStruct,
-      MarketUtils.MarketPricesStruct,
-      BigNumberish,
-      AddressLike,
-      BigNumberish
-    ]
+    values: [AddressLike, Market.PropsStruct, MarketUtils.MarketPricesStruct, BigNumberish, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "isPositionLiquidatable",
-    values: [
-      AddressLike,
-      AddressLike,
-      BytesLike,
-      Market.PropsStruct,
-      MarketUtils.MarketPricesStruct,
-      boolean,
-      boolean
-    ]
+    values: [AddressLike, AddressLike, BytesLike, Market.PropsStruct, MarketUtils.MarketPricesStruct, boolean, boolean]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: "getAccountOrders",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getAccountPositionInfoList",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getAccountPositions",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getAdlState",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "getAccountOrders", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getAccountPositionInfoList", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getAccountPositions", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getAdlState", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getDeposit", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getDepositAmountOut",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getExecutionPrice",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "getDepositAmountOut", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getExecutionPrice", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getMarket", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getMarketBySalt",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getMarketInfo",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getMarketInfoList",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getMarketTokenPrice",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "getMarketBySalt", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getMarketInfo", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getMarketInfoList", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getMarketTokenPrice", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getMarkets", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getNetPnl", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getOpenInterestWithPnl",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "getOpenInterestWithPnl", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getOrder", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getPnl", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getPnlToPoolFactor",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getPosition",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getPositionInfo",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getPositionInfoList",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getPositionPnlUsd",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "getPnlToPoolFactor", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getPosition", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getPositionInfo", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getPositionInfoList", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getPositionPnlUsd", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getShift", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getSwapAmountOut",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getSwapPriceImpact",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getWithdrawal",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getWithdrawalAmountOut",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isPositionLiquidatable",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "getSwapAmountOut", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getSwapPriceImpact", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getWithdrawal", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getWithdrawalAmountOut", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "isPositionLiquidatable", data: BytesLike): Result;
 }
 
 export interface SyntheticsReader extends BaseContract {
@@ -1301,39 +1124,24 @@ export interface SyntheticsReader extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(
-    event: TCEvent
-  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(
-    event?: TCEvent
-  ): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
   getAccountOrders: TypedContractMethod<
-    [
-      dataStore: AddressLike,
-      account: AddressLike,
-      start: BigNumberish,
-      end: BigNumberish
-    ],
+    [dataStore: AddressLike, account: AddressLike, start: BigNumberish, end: BigNumberish],
     [ReaderUtils.OrderInfoStructOutput[]],
     "view"
   >;
@@ -1347,39 +1155,25 @@ export interface SyntheticsReader extends BaseContract {
       marketPrices: MarketUtils.MarketPricesStruct[],
       uiFeeReceiver: AddressLike,
       start: BigNumberish,
-      end: BigNumberish
+      end: BigNumberish,
     ],
     [ReaderPositionUtils.PositionInfoStructOutput[]],
     "view"
   >;
 
   getAccountPositions: TypedContractMethod<
-    [
-      dataStore: AddressLike,
-      account: AddressLike,
-      start: BigNumberish,
-      end: BigNumberish
-    ],
+    [dataStore: AddressLike, account: AddressLike, start: BigNumberish, end: BigNumberish],
     [Position.PropsStructOutput[]],
     "view"
   >;
 
   getAdlState: TypedContractMethod<
-    [
-      dataStore: AddressLike,
-      market: AddressLike,
-      isLong: boolean,
-      prices: MarketUtils.MarketPricesStruct
-    ],
+    [dataStore: AddressLike, market: AddressLike, isLong: boolean, prices: MarketUtils.MarketPricesStruct],
     [[bigint, boolean, bigint, bigint]],
     "view"
   >;
 
-  getDeposit: TypedContractMethod<
-    [dataStore: AddressLike, key: BytesLike],
-    [Deposit.PropsStructOutput],
-    "view"
-  >;
+  getDeposit: TypedContractMethod<[dataStore: AddressLike, key: BytesLike], [Deposit.PropsStructOutput], "view">;
 
   getDepositAmountOut: TypedContractMethod<
     [
@@ -1390,7 +1184,7 @@ export interface SyntheticsReader extends BaseContract {
       shortTokenAmount: BigNumberish,
       uiFeeReceiver: AddressLike,
       swapPricingType: BigNumberish,
-      includeVirtualInventoryImpact: boolean
+      includeVirtualInventoryImpact: boolean,
     ],
     [bigint],
     "view"
@@ -1404,30 +1198,18 @@ export interface SyntheticsReader extends BaseContract {
       positionSizeInUsd: BigNumberish,
       positionSizeInTokens: BigNumberish,
       sizeDeltaUsd: BigNumberish,
-      isLong: boolean
+      isLong: boolean,
     ],
     [ReaderPricingUtils.ExecutionPriceResultStructOutput],
     "view"
   >;
 
-  getMarket: TypedContractMethod<
-    [dataStore: AddressLike, key: AddressLike],
-    [Market.PropsStructOutput],
-    "view"
-  >;
+  getMarket: TypedContractMethod<[dataStore: AddressLike, key: AddressLike], [Market.PropsStructOutput], "view">;
 
-  getMarketBySalt: TypedContractMethod<
-    [dataStore: AddressLike, salt: BytesLike],
-    [Market.PropsStructOutput],
-    "view"
-  >;
+  getMarketBySalt: TypedContractMethod<[dataStore: AddressLike, salt: BytesLike], [Market.PropsStructOutput], "view">;
 
   getMarketInfo: TypedContractMethod<
-    [
-      dataStore: AddressLike,
-      prices: MarketUtils.MarketPricesStruct,
-      marketKey: AddressLike
-    ],
+    [dataStore: AddressLike, prices: MarketUtils.MarketPricesStruct, marketKey: AddressLike],
     [ReaderUtils.MarketInfoStructOutput],
     "view"
   >;
@@ -1437,7 +1219,7 @@ export interface SyntheticsReader extends BaseContract {
       dataStore: AddressLike,
       marketPricesList: MarketUtils.MarketPricesStruct[],
       start: BigNumberish,
-      end: BigNumberish
+      end: BigNumberish,
     ],
     [ReaderUtils.MarketInfoStructOutput[]],
     "view"
@@ -1451,7 +1233,7 @@ export interface SyntheticsReader extends BaseContract {
       longTokenPrice: Price.PropsStruct,
       shortTokenPrice: Price.PropsStruct,
       pnlFactorType: BytesLike,
-      maximize: boolean
+      maximize: boolean,
     ],
     [[bigint, MarketPoolValueInfo.PropsStructOutput]],
     "view"
@@ -1464,12 +1246,7 @@ export interface SyntheticsReader extends BaseContract {
   >;
 
   getNetPnl: TypedContractMethod<
-    [
-      dataStore: AddressLike,
-      market: Market.PropsStruct,
-      indexTokenPrice: Price.PropsStruct,
-      maximize: boolean
-    ],
+    [dataStore: AddressLike, market: Market.PropsStruct, indexTokenPrice: Price.PropsStruct, maximize: boolean],
     [bigint],
     "view"
   >;
@@ -1480,17 +1257,13 @@ export interface SyntheticsReader extends BaseContract {
       market: Market.PropsStruct,
       indexTokenPrice: Price.PropsStruct,
       isLong: boolean,
-      maximize: boolean
+      maximize: boolean,
     ],
     [bigint],
     "view"
   >;
 
-  getOrder: TypedContractMethod<
-    [dataStore: AddressLike, key: BytesLike],
-    [Order.PropsStructOutput],
-    "view"
-  >;
+  getOrder: TypedContractMethod<[dataStore: AddressLike, key: BytesLike], [Order.PropsStructOutput], "view">;
 
   getPnl: TypedContractMethod<
     [
@@ -1498,7 +1271,7 @@ export interface SyntheticsReader extends BaseContract {
       market: Market.PropsStruct,
       indexTokenPrice: Price.PropsStruct,
       isLong: boolean,
-      maximize: boolean
+      maximize: boolean,
     ],
     [bigint],
     "view"
@@ -1510,17 +1283,13 @@ export interface SyntheticsReader extends BaseContract {
       marketAddress: AddressLike,
       prices: MarketUtils.MarketPricesStruct,
       isLong: boolean,
-      maximize: boolean
+      maximize: boolean,
     ],
     [bigint],
     "view"
   >;
 
-  getPosition: TypedContractMethod<
-    [dataStore: AddressLike, key: BytesLike],
-    [Position.PropsStructOutput],
-    "view"
-  >;
+  getPosition: TypedContractMethod<[dataStore: AddressLike, key: BytesLike], [Position.PropsStructOutput], "view">;
 
   getPositionInfo: TypedContractMethod<
     [
@@ -1530,7 +1299,7 @@ export interface SyntheticsReader extends BaseContract {
       prices: MarketUtils.MarketPricesStruct,
       sizeDeltaUsd: BigNumberish,
       uiFeeReceiver: AddressLike,
-      usePositionSizeAsSizeDeltaUsd: boolean
+      usePositionSizeAsSizeDeltaUsd: boolean,
     ],
     [ReaderPositionUtils.PositionInfoStructOutput],
     "view"
@@ -1542,7 +1311,7 @@ export interface SyntheticsReader extends BaseContract {
       referralStorage: AddressLike,
       positionKeys: BytesLike[],
       prices: MarketUtils.MarketPricesStruct[],
-      uiFeeReceiver: AddressLike
+      uiFeeReceiver: AddressLike,
     ],
     [ReaderPositionUtils.PositionInfoStructOutput[]],
     "view"
@@ -1554,17 +1323,13 @@ export interface SyntheticsReader extends BaseContract {
       market: Market.PropsStruct,
       prices: MarketUtils.MarketPricesStruct,
       positionKey: BytesLike,
-      sizeDeltaUsd: BigNumberish
+      sizeDeltaUsd: BigNumberish,
     ],
     [[bigint, bigint, bigint]],
     "view"
   >;
 
-  getShift: TypedContractMethod<
-    [dataStore: AddressLike, key: BytesLike],
-    [Shift.PropsStructOutput],
-    "view"
-  >;
+  getShift: TypedContractMethod<[dataStore: AddressLike, key: BytesLike], [Shift.PropsStructOutput], "view">;
 
   getSwapAmountOut: TypedContractMethod<
     [
@@ -1573,12 +1338,12 @@ export interface SyntheticsReader extends BaseContract {
       prices: MarketUtils.MarketPricesStruct,
       tokenIn: AddressLike,
       amountIn: BigNumberish,
-      uiFeeReceiver: AddressLike
+      uiFeeReceiver: AddressLike,
     ],
     [
       [bigint, bigint, SwapPricingUtils.SwapFeesStructOutput] & {
         fees: SwapPricingUtils.SwapFeesStructOutput;
-      }
+      },
     ],
     "view"
   >;
@@ -1591,17 +1356,13 @@ export interface SyntheticsReader extends BaseContract {
       tokenOut: AddressLike,
       amountIn: BigNumberish,
       tokenInPrice: Price.PropsStruct,
-      tokenOutPrice: Price.PropsStruct
+      tokenOutPrice: Price.PropsStruct,
     ],
     [[bigint, bigint, bigint]],
     "view"
   >;
 
-  getWithdrawal: TypedContractMethod<
-    [dataStore: AddressLike, key: BytesLike],
-    [Withdrawal.PropsStructOutput],
-    "view"
-  >;
+  getWithdrawal: TypedContractMethod<[dataStore: AddressLike, key: BytesLike], [Withdrawal.PropsStructOutput], "view">;
 
   getWithdrawalAmountOut: TypedContractMethod<
     [
@@ -1610,7 +1371,7 @@ export interface SyntheticsReader extends BaseContract {
       prices: MarketUtils.MarketPricesStruct,
       marketTokenAmount: BigNumberish,
       uiFeeReceiver: AddressLike,
-      swapPricingType: BigNumberish
+      swapPricingType: BigNumberish,
     ],
     [[bigint, bigint]],
     "view"
@@ -1624,25 +1385,18 @@ export interface SyntheticsReader extends BaseContract {
       market: Market.PropsStruct,
       prices: MarketUtils.MarketPricesStruct,
       shouldValidateMinCollateralUsd: boolean,
-      forLiquidation: boolean
+      forLiquidation: boolean,
     ],
     [[boolean, string, PositionUtils.IsPositionLiquidatableInfoStructOutput]],
     "view"
   >;
 
-  getFunction<T extends ContractMethod = ContractMethod>(
-    key: string | FunctionFragment
-  ): T;
+  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
   getFunction(
     nameOrSignature: "getAccountOrders"
   ): TypedContractMethod<
-    [
-      dataStore: AddressLike,
-      account: AddressLike,
-      start: BigNumberish,
-      end: BigNumberish
-    ],
+    [dataStore: AddressLike, account: AddressLike, start: BigNumberish, end: BigNumberish],
     [ReaderUtils.OrderInfoStructOutput[]],
     "view"
   >;
@@ -1657,7 +1411,7 @@ export interface SyntheticsReader extends BaseContract {
       marketPrices: MarketUtils.MarketPricesStruct[],
       uiFeeReceiver: AddressLike,
       start: BigNumberish,
-      end: BigNumberish
+      end: BigNumberish,
     ],
     [ReaderPositionUtils.PositionInfoStructOutput[]],
     "view"
@@ -1665,34 +1419,20 @@ export interface SyntheticsReader extends BaseContract {
   getFunction(
     nameOrSignature: "getAccountPositions"
   ): TypedContractMethod<
-    [
-      dataStore: AddressLike,
-      account: AddressLike,
-      start: BigNumberish,
-      end: BigNumberish
-    ],
+    [dataStore: AddressLike, account: AddressLike, start: BigNumberish, end: BigNumberish],
     [Position.PropsStructOutput[]],
     "view"
   >;
   getFunction(
     nameOrSignature: "getAdlState"
   ): TypedContractMethod<
-    [
-      dataStore: AddressLike,
-      market: AddressLike,
-      isLong: boolean,
-      prices: MarketUtils.MarketPricesStruct
-    ],
+    [dataStore: AddressLike, market: AddressLike, isLong: boolean, prices: MarketUtils.MarketPricesStruct],
     [[bigint, boolean, bigint, bigint]],
     "view"
   >;
   getFunction(
     nameOrSignature: "getDeposit"
-  ): TypedContractMethod<
-    [dataStore: AddressLike, key: BytesLike],
-    [Deposit.PropsStructOutput],
-    "view"
-  >;
+  ): TypedContractMethod<[dataStore: AddressLike, key: BytesLike], [Deposit.PropsStructOutput], "view">;
   getFunction(
     nameOrSignature: "getDepositAmountOut"
   ): TypedContractMethod<
@@ -1704,7 +1444,7 @@ export interface SyntheticsReader extends BaseContract {
       shortTokenAmount: BigNumberish,
       uiFeeReceiver: AddressLike,
       swapPricingType: BigNumberish,
-      includeVirtualInventoryImpact: boolean
+      includeVirtualInventoryImpact: boolean,
     ],
     [bigint],
     "view"
@@ -1719,33 +1459,21 @@ export interface SyntheticsReader extends BaseContract {
       positionSizeInUsd: BigNumberish,
       positionSizeInTokens: BigNumberish,
       sizeDeltaUsd: BigNumberish,
-      isLong: boolean
+      isLong: boolean,
     ],
     [ReaderPricingUtils.ExecutionPriceResultStructOutput],
     "view"
   >;
   getFunction(
     nameOrSignature: "getMarket"
-  ): TypedContractMethod<
-    [dataStore: AddressLike, key: AddressLike],
-    [Market.PropsStructOutput],
-    "view"
-  >;
+  ): TypedContractMethod<[dataStore: AddressLike, key: AddressLike], [Market.PropsStructOutput], "view">;
   getFunction(
     nameOrSignature: "getMarketBySalt"
-  ): TypedContractMethod<
-    [dataStore: AddressLike, salt: BytesLike],
-    [Market.PropsStructOutput],
-    "view"
-  >;
+  ): TypedContractMethod<[dataStore: AddressLike, salt: BytesLike], [Market.PropsStructOutput], "view">;
   getFunction(
     nameOrSignature: "getMarketInfo"
   ): TypedContractMethod<
-    [
-      dataStore: AddressLike,
-      prices: MarketUtils.MarketPricesStruct,
-      marketKey: AddressLike
-    ],
+    [dataStore: AddressLike, prices: MarketUtils.MarketPricesStruct, marketKey: AddressLike],
     [ReaderUtils.MarketInfoStructOutput],
     "view"
   >;
@@ -1756,7 +1484,7 @@ export interface SyntheticsReader extends BaseContract {
       dataStore: AddressLike,
       marketPricesList: MarketUtils.MarketPricesStruct[],
       start: BigNumberish,
-      end: BigNumberish
+      end: BigNumberish,
     ],
     [ReaderUtils.MarketInfoStructOutput[]],
     "view"
@@ -1771,7 +1499,7 @@ export interface SyntheticsReader extends BaseContract {
       longTokenPrice: Price.PropsStruct,
       shortTokenPrice: Price.PropsStruct,
       pnlFactorType: BytesLike,
-      maximize: boolean
+      maximize: boolean,
     ],
     [[bigint, MarketPoolValueInfo.PropsStructOutput]],
     "view"
@@ -1786,12 +1514,7 @@ export interface SyntheticsReader extends BaseContract {
   getFunction(
     nameOrSignature: "getNetPnl"
   ): TypedContractMethod<
-    [
-      dataStore: AddressLike,
-      market: Market.PropsStruct,
-      indexTokenPrice: Price.PropsStruct,
-      maximize: boolean
-    ],
+    [dataStore: AddressLike, market: Market.PropsStruct, indexTokenPrice: Price.PropsStruct, maximize: boolean],
     [bigint],
     "view"
   >;
@@ -1803,18 +1526,14 @@ export interface SyntheticsReader extends BaseContract {
       market: Market.PropsStruct,
       indexTokenPrice: Price.PropsStruct,
       isLong: boolean,
-      maximize: boolean
+      maximize: boolean,
     ],
     [bigint],
     "view"
   >;
   getFunction(
     nameOrSignature: "getOrder"
-  ): TypedContractMethod<
-    [dataStore: AddressLike, key: BytesLike],
-    [Order.PropsStructOutput],
-    "view"
-  >;
+  ): TypedContractMethod<[dataStore: AddressLike, key: BytesLike], [Order.PropsStructOutput], "view">;
   getFunction(
     nameOrSignature: "getPnl"
   ): TypedContractMethod<
@@ -1823,7 +1542,7 @@ export interface SyntheticsReader extends BaseContract {
       market: Market.PropsStruct,
       indexTokenPrice: Price.PropsStruct,
       isLong: boolean,
-      maximize: boolean
+      maximize: boolean,
     ],
     [bigint],
     "view"
@@ -1836,18 +1555,14 @@ export interface SyntheticsReader extends BaseContract {
       marketAddress: AddressLike,
       prices: MarketUtils.MarketPricesStruct,
       isLong: boolean,
-      maximize: boolean
+      maximize: boolean,
     ],
     [bigint],
     "view"
   >;
   getFunction(
     nameOrSignature: "getPosition"
-  ): TypedContractMethod<
-    [dataStore: AddressLike, key: BytesLike],
-    [Position.PropsStructOutput],
-    "view"
-  >;
+  ): TypedContractMethod<[dataStore: AddressLike, key: BytesLike], [Position.PropsStructOutput], "view">;
   getFunction(
     nameOrSignature: "getPositionInfo"
   ): TypedContractMethod<
@@ -1858,7 +1573,7 @@ export interface SyntheticsReader extends BaseContract {
       prices: MarketUtils.MarketPricesStruct,
       sizeDeltaUsd: BigNumberish,
       uiFeeReceiver: AddressLike,
-      usePositionSizeAsSizeDeltaUsd: boolean
+      usePositionSizeAsSizeDeltaUsd: boolean,
     ],
     [ReaderPositionUtils.PositionInfoStructOutput],
     "view"
@@ -1871,7 +1586,7 @@ export interface SyntheticsReader extends BaseContract {
       referralStorage: AddressLike,
       positionKeys: BytesLike[],
       prices: MarketUtils.MarketPricesStruct[],
-      uiFeeReceiver: AddressLike
+      uiFeeReceiver: AddressLike,
     ],
     [ReaderPositionUtils.PositionInfoStructOutput[]],
     "view"
@@ -1884,33 +1599,27 @@ export interface SyntheticsReader extends BaseContract {
       market: Market.PropsStruct,
       prices: MarketUtils.MarketPricesStruct,
       positionKey: BytesLike,
-      sizeDeltaUsd: BigNumberish
+      sizeDeltaUsd: BigNumberish,
     ],
     [[bigint, bigint, bigint]],
     "view"
   >;
   getFunction(
     nameOrSignature: "getShift"
-  ): TypedContractMethod<
-    [dataStore: AddressLike, key: BytesLike],
-    [Shift.PropsStructOutput],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "getSwapAmountOut"
-  ): TypedContractMethod<
+  ): TypedContractMethod<[dataStore: AddressLike, key: BytesLike], [Shift.PropsStructOutput], "view">;
+  getFunction(nameOrSignature: "getSwapAmountOut"): TypedContractMethod<
     [
       dataStore: AddressLike,
       market: Market.PropsStruct,
       prices: MarketUtils.MarketPricesStruct,
       tokenIn: AddressLike,
       amountIn: BigNumberish,
-      uiFeeReceiver: AddressLike
+      uiFeeReceiver: AddressLike,
     ],
     [
       [bigint, bigint, SwapPricingUtils.SwapFeesStructOutput] & {
         fees: SwapPricingUtils.SwapFeesStructOutput;
-      }
+      },
     ],
     "view"
   >;
@@ -1924,18 +1633,14 @@ export interface SyntheticsReader extends BaseContract {
       tokenOut: AddressLike,
       amountIn: BigNumberish,
       tokenInPrice: Price.PropsStruct,
-      tokenOutPrice: Price.PropsStruct
+      tokenOutPrice: Price.PropsStruct,
     ],
     [[bigint, bigint, bigint]],
     "view"
   >;
   getFunction(
     nameOrSignature: "getWithdrawal"
-  ): TypedContractMethod<
-    [dataStore: AddressLike, key: BytesLike],
-    [Withdrawal.PropsStructOutput],
-    "view"
-  >;
+  ): TypedContractMethod<[dataStore: AddressLike, key: BytesLike], [Withdrawal.PropsStructOutput], "view">;
   getFunction(
     nameOrSignature: "getWithdrawalAmountOut"
   ): TypedContractMethod<
@@ -1945,7 +1650,7 @@ export interface SyntheticsReader extends BaseContract {
       prices: MarketUtils.MarketPricesStruct,
       marketTokenAmount: BigNumberish,
       uiFeeReceiver: AddressLike,
-      swapPricingType: BigNumberish
+      swapPricingType: BigNumberish,
     ],
     [[bigint, bigint]],
     "view"
@@ -1960,7 +1665,7 @@ export interface SyntheticsReader extends BaseContract {
       market: Market.PropsStruct,
       prices: MarketUtils.MarketPricesStruct,
       shouldValidateMinCollateralUsd: boolean,
-      forLiquidation: boolean
+      forLiquidation: boolean,
     ],
     [[boolean, string, PositionUtils.IsPositionLiquidatableInfoStructOutput]],
     "view"

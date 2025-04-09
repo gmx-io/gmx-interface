@@ -1,73 +1,280 @@
-import { GelatoRelay } from "@gelatonetwork/relay-sdk";
-import { Signer } from "ethers";
+import { ethers, Signer } from "ethers";
 import uniq from "lodash/uniq";
 import { Address, encodeFunctionData, encodePacked } from "viem";
 
 import { getContract } from "config/contracts";
+import { MarketsInfoData } from "domain/synthetics/markets/types";
+import { getSwapPathTokenAddresses } from "domain/synthetics/trade/utils";
 import GelatoRelayRouterAbi from "sdk/abis/GelatoRelayRouter.json";
 import SubaccountGelatoRelayRouterAbi from "sdk/abis/SubaccountGelatoRelayRouter.json";
-import { getRelayerFeeToken } from "sdk/configs/express";
-
-import { OrderPayload } from "./createOrderBuilders";
-import {
-  ExternalCallsPayload,
-  getGelatoRelayRouterDomain,
-  hashRelayParams,
-  OracleParamsPayload,
-  RelayFeeParamsPayload,
-  RelayParamsPayload,
-} from "./relayRouterUtils";
+import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION, getRelayerFeeToken } from "sdk/configs/express";
+import { convertTokenAddress } from "sdk/configs/tokens";
+import { OracleParamsPayload, RelayFeePayload, RelayParamsPayload } from "sdk/types/expressTransactions";
+import { gelatoRelay } from "sdk/utils/gelatoRelay";
+import { CreateOrderPayload, ExternalCallsPayload } from "sdk/utils/orderTransactions";
+import { nowInSeconds } from "sdk/utils/time";
+import { RelayerFeeState } from "../types";
+import { getGelatoRelayRouterDomain, hashRelayParams } from "./relayParams";
 import { signTypedData } from "./signing";
-import { hashSubaccountApproval, SignedSubbacountApproval } from "./subaccountUtils";
-const relay = new GelatoRelay();
+import { getActualApproval, hashSubaccountApproval, SignedSubbacountApproval, Subaccount } from "./subaccountUtils";
 
-export type ExpressOrderParams = {
-  chainId: number;
-  signer: Signer;
-  relayPayload: RelayParamsPayload;
-  orderPayload: OrderPayload;
-  relayFeeParams: RelayFeeParams;
-  collateralDeltaAmount: bigint;
-  subaccountApproval: SignedSubbacountApproval | undefined;
+type UpdateOrderParams = {
+  sizeDeltaUsd: bigint;
+  acceptablePrice: bigint;
+  triggerPrice: bigint;
+  minOutputAmount: bigint;
+  validFromTime: bigint;
+  autoCancel: boolean;
 };
 
-export type RelayFeeParams = {
-  gasPaymentTokenAddress: string;
-  relayerFeeTokenAddress: string;
-  gasPaymentTokenAmount: bigint;
-  relayerFeeTokenAmount: bigint;
-  swapPath: string[];
-  externalSwapQuote?: {
-    to: string;
-    data: string;
-  };
-};
-
-export function getExpressOrderOracleParams({
+export async function buildAndSignExpressUpdateOrderTxn({
   chainId,
-  swapCollateralAddresses,
-  swapFeeAddresses,
-  initialCollateralAddress,
-  relayFeeTokenAddress,
-  gasPaymentTokenAddress,
+  relayParamsPayload,
+  subaccount,
+  signer,
+  orderKey,
+  increaseExecutionFee,
+  updateOrderParams,
 }: {
   chainId: number;
-  swapCollateralAddresses: string[];
-  swapFeeAddresses: string[];
-  initialCollateralAddress: string;
-  relayFeeTokenAddress: string;
-  gasPaymentTokenAddress: string;
-}): OracleParamsPayload {
-  const allSwapAddresses = uniq([
-    ...swapCollateralAddresses,
-    ...swapFeeAddresses,
-    initialCollateralAddress,
-    gasPaymentTokenAddress,
-    relayFeeTokenAddress,
-  ]);
+  relayParamsPayload: RelayParamsPayload;
+  orderPayload: CreateOrderPayload;
+  subaccount: Subaccount | undefined;
+  signer: Signer;
+  orderKey: string;
+  increaseExecutionFee: boolean;
+  updateOrderParams: UpdateOrderParams;
+}) {
+  const params = {
+    signer: subaccount?.signer ?? signer,
+    account: await signer.getAddress(),
+    chainId,
+    orderKey,
+    updateOrderParams,
+    increaseExecutionFee,
+    relayParams: relayParamsPayload,
+    subaccountApproval: await getActualApproval(chainId, subaccount),
+  };
 
-  const priceProviders = allSwapAddresses.map(() => getContract(chainId, "ChainlinkPriceFeedProvider"));
+  const signature = await signUpdateOrderPayload(params);
+
+  const updateOrderCallData = params.subaccountApproval
+    ? encodeFunctionData({
+        abi: SubaccountGelatoRelayRouterAbi.abi,
+        functionName: "updateOrder",
+        args: [
+          { ...relayParamsPayload, signature },
+          params.subaccountApproval,
+          params.account,
+          params.subaccountApproval.subaccount,
+          orderKey,
+          updateOrderParams,
+          increaseExecutionFee,
+        ],
+      })
+    : encodeFunctionData({
+        abi: GelatoRelayRouterAbi.abi,
+        functionName: "updateOrder",
+        args: [{ ...relayParamsPayload, signature }, params.account, orderKey, updateOrderParams, increaseExecutionFee],
+      });
+
+  return {
+    callData: updateOrderCallData,
+    contractAddress: getContract(
+      chainId,
+      params.subaccountApproval ? "SubaccountGelatoRelayRouter" : "GelatoRelayRouter"
+    ),
+    feeToken: relayParamsPayload.fee.feeToken,
+    feeAmount: relayParamsPayload.fee.feeAmount,
+  };
+}
+
+export async function buildAndSignExpressCancelOrderTxn({
+  chainId,
+  subaccount,
+  signer,
+  relayParamsPayload,
+  orderKey,
+}: {
+  chainId: number;
+  subaccount: Subaccount | undefined;
+  signer: Signer;
+  relayParamsPayload: Omit<RelayParamsPayload, "deadline">;
+  orderKey: string;
+}) {
+  const finalRelayParamsPayload = {
+    ...relayParamsPayload,
+    deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
+  };
+
+  const params = {
+    signer: subaccount?.signer ?? signer,
+    account: await signer.getAddress(),
+    chainId,
+    orderKey,
+    relayParams: finalRelayParamsPayload,
+    subaccountApproval: await getActualApproval(chainId, subaccount),
+  };
+
+  const signature = await signCancelOrderPayload(params);
+
+  const cancelOrderCallData = encodeFunctionData({
+    abi: GelatoRelayRouterAbi.abi,
+    functionName: "cancelOrder",
+    args: [relayParamsPayload, orderKey, signature],
+  });
+
+  return {
+    callData: cancelOrderCallData,
+    contractAddress: getContract(chainId, "GelatoRelayRouter"),
+    feeToken: relayParamsPayload.fee.feeToken,
+    feeAmount: relayParamsPayload.fee.feeAmount,
+  };
+}
+
+export async function buildAndSignExpressCreateOrderTxn({
+  chainId,
+  relayFeeParams,
+  relayParamsPayload,
+  orderPayload,
+  subaccount,
+  signer,
+}: {
+  chainId: number;
+  relayFeeParams: RelayFeeParams;
+  relayParamsPayload: Omit<RelayParamsPayload, "deadline">;
+  orderPayload: CreateOrderPayload;
+  subaccount: Subaccount | undefined;
+  signer: Signer;
+}) {
+  const finalRelayParamsPayload = {
+    ...relayParamsPayload,
+    deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
+  };
+
+  const params = {
+    signer: subaccount?.signer ?? signer,
+    chainId,
+    relayPayload: finalRelayParamsPayload,
+    orderPayload: orderPayload,
+    subaccountApproval: await getActualApproval(chainId, subaccount),
+  };
+
+  const signature = await signExpressOrderPayload(params);
+
+  const createOrderCallData =
+    params.subaccountApproval !== undefined
+      ? encodeFunctionData({
+          abi: SubaccountGelatoRelayRouterAbi.abi,
+          functionName: "createOrder",
+          args: [
+            { ...relayParamsPayload, signature },
+            params.subaccountApproval,
+            params.orderPayload.addresses.receiver,
+            params.subaccountApproval.subaccount,
+            params.orderPayload.numbers.initialCollateralDeltaAmount,
+            params.orderPayload,
+          ],
+        })
+      : encodeFunctionData({
+          abi: GelatoRelayRouterAbi.abi,
+          functionName: "createOrder",
+          args: [
+            { ...params.relayPayload, signature },
+            params.orderPayload.addresses.receiver,
+            params.orderPayload.numbers.initialCollateralDeltaAmount,
+            params.orderPayload,
+          ],
+        });
+
+  const relayRouterAddress = getContract(
+    chainId,
+    params.subaccountApproval ? "SubaccountGelatoRelayRouter" : "GelatoRelayRouter"
+  );
+
+  return {
+    callData: createOrderCallData,
+    contractAddress: relayRouterAddress,
+    feeToken: relayFeeParams.relayFeeToken,
+    feeAmount: relayFeeParams.relayFeeAmount,
+  };
+}
+
+export async function buildAndSignRemoveSubaccountTxn({
+  chainId,
+  relayParamsPayload,
+  subaccount,
+  signer,
+}: {
+  chainId: number;
+  relayParamsPayload: RelayParamsPayload;
+  subaccount: Subaccount;
+  signer: Signer;
+}) {
+  const signature = await signRemoveSubaccountPayload({
+    signer,
+    relayParams: relayParamsPayload,
+    subaccountAddress: subaccount.address,
+    chainId,
+  });
+
+  const removeSubaccountCallData = encodeFunctionData({
+    abi: SubaccountGelatoRelayRouterAbi.abi,
+    functionName: "removeSubaccount",
+    args: [{ ...relayParamsPayload, signature }, await signer.getAddress(), subaccount.address],
+  });
+
+  return {
+    callData: removeSubaccountCallData,
+    contractAddress: getContract(chainId, "SubaccountGelatoRelayRouter"),
+    feeToken: relayParamsPayload.fee.feeToken,
+    feeAmount: relayParamsPayload.fee.feeAmount,
+  };
+}
+
+export function getExpressOrderOracleParams({
+  marketsInfoData,
+  chainId,
+  initialCollateralAddress,
+  collateralSwapPath,
+  feeSwapPath,
+  gasPaymentTokenAddress,
+}: {
+  marketsInfoData: MarketsInfoData;
+  chainId: number;
+  initialCollateralAddress: string;
+  collateralSwapPath: string[];
+  gasPaymentTokenAddress: string;
+  feeSwapPath: string[];
+}): OracleParamsPayload {
+  const collateralSwapAddresses =
+    getSwapPathTokenAddresses({
+      marketsInfoData,
+      chainId,
+      initialCollateralAddress,
+      swapPath: collateralSwapPath,
+    }) ?? [];
+
+  const feeSwapAddresses =
+    getSwapPathTokenAddresses({
+      marketsInfoData,
+      chainId,
+      initialCollateralAddress: gasPaymentTokenAddress,
+      swapPath: feeSwapPath,
+    }) ?? [];
+
+  const allSwapAddresses = uniq([
+    getRelayerFeeToken(chainId)?.address,
+    convertTokenAddress(chainId, initialCollateralAddress, "wrapped"),
+    convertTokenAddress(chainId, gasPaymentTokenAddress, "wrapped"),
+    ...collateralSwapAddresses,
+    ...feeSwapAddresses,
+  ]).map((s) => ethers.getAddress(s));
+
+  const priceProviders = Array(allSwapAddresses.length).fill(getContract(chainId, "ChainlinkPriceFeedProvider"));
   const data = Array(allSwapAddresses.length).fill("0x");
+
+  console.log("addresses", allSwapAddresses);
 
   return {
     tokens: allSwapAddresses,
@@ -76,47 +283,22 @@ export function getExpressOrderOracleParams({
   };
 }
 
-export async function buildExpressOrderCallData(p: ExpressOrderParams, signature: string) {
-  const createOrderCallData = p.subaccountApproval
-    ? encodeCreateSubaccountOrderCallData(p, signature)
-    : encodeCreateExpressOrderCallData(p, signature);
+export type RelayFeeParams = ReturnType<typeof getRelayerFeeSwapParams>;
 
-  const relayRouterAddress = getContract(
-    p.chainId,
-    p.subaccountApproval ? "SubaccountGelatoRelayRouter" : "GelatoRelayRouter"
-  );
-
-  const gelatoCallData = encodePacked(
-    ["bytes", "address", "address", "uint256"],
-    [
-      createOrderCallData as Address,
-      relayRouterAddress,
-      p.relayFeeParams.relayerFeeTokenAddress as Address,
-      p.relayFeeParams.relayerFeeTokenAmount,
-    ]
-  );
-
-  return {
-    relayRouterAddress,
-    createOrderCallData,
-    gelatoCallData,
-  };
-}
-
-export function getRelayerFeeSwapParams(account: string, relayFeeParams: RelayFeeParams) {
+export function getRelayerFeeSwapParams(account: string, relayFeeParams: RelayerFeeState) {
   const relayFeeToken = relayFeeParams.relayerFeeTokenAddress;
-  const relayFeeAmount = relayFeeParams.relayerFeeTokenAmount;
+  const relayFeeAmount = relayFeeParams.relayerFeeAmount;
 
-  let feeParams: RelayFeeParamsPayload;
+  let feeParams: RelayFeePayload;
   let externalCalls: ExternalCallsPayload;
 
-  if (relayFeeParams.externalSwapQuote) {
+  if (relayFeeParams.externalSwapOutput) {
     externalCalls = {
-      externalCallTargets: [relayFeeParams.externalSwapQuote.to],
-      externalCallDataList: [relayFeeParams.externalSwapQuote.data],
+      externalCallTargets: [relayFeeParams.externalSwapOutput.txnData.to],
+      externalCallDataList: [relayFeeParams.externalSwapOutput.txnData.data],
       refundReceivers: [account, account],
       refundTokens: [relayFeeParams.gasPaymentTokenAddress, relayFeeParams.relayerFeeTokenAddress],
-    };
+    } as ExternalCallsPayload;
     feeParams = {
       feeToken: relayFeeParams.gasPaymentTokenAddress,
       feeAmount: relayFeeParams.gasPaymentTokenAmount,
@@ -126,14 +308,16 @@ export function getRelayerFeeSwapParams(account: string, relayFeeParams: RelayFe
     feeParams = {
       feeToken: relayFeeParams.gasPaymentTokenAddress,
       feeAmount: relayFeeParams.gasPaymentTokenAmount,
-      feeSwapPath: relayFeeParams.swapPath,
+      feeSwapPath: relayFeeParams.internalSwapStats?.swapPath ?? [],
     };
     externalCalls = {
       externalCallTargets: [],
       externalCallDataList: [],
       refundReceivers: [],
       refundTokens: [],
-    };
+      sendTokens: [],
+      sendAmounts: [],
+    } as ExternalCallsPayload;
   }
 
   return {
@@ -144,53 +328,103 @@ export function getRelayerFeeSwapParams(account: string, relayFeeParams: RelayFe
   };
 }
 
-function encodeCreateExpressOrderCallData(p: ExpressOrderParams, signature: string) {
-  return encodeFunctionData({
-    abi: GelatoRelayRouterAbi.abi,
-    functionName: "createOrder",
-    args: [
-      { ...p.relayPayload, signature },
-      p.orderPayload.addresses.receiver,
-      p.collateralDeltaAmount,
-      p.orderPayload,
-    ],
-  });
+async function signCancelOrderPayload({
+  signer,
+  relayParams,
+  subaccountApproval,
+  account,
+  orderKey,
+  chainId,
+}: {
+  signer: Signer;
+  relayParams: RelayParamsPayload;
+  subaccountApproval: SignedSubbacountApproval | undefined;
+  account: string;
+  orderKey: string;
+  chainId: number;
+}) {
+  const types = {
+    CancelOrder: [
+      { name: "account", type: "address" },
+      { name: "key", type: "bytes32" },
+      { name: "relayParams", type: "bytes32" },
+      subaccountApproval ? { name: "subaccountApproval", type: "bytes32" } : undefined,
+    ].filter((type) => type !== undefined),
+  };
+
+  const domain = getGelatoRelayRouterDomain(chainId, subaccountApproval !== undefined);
+
+  const typedData = {
+    account,
+    key: orderKey,
+    relayParams: hashRelayParams(relayParams),
+    subaccountApproval: subaccountApproval ? hashSubaccountApproval(subaccountApproval) : undefined,
+  };
+
+  return signTypedData(signer, domain, types, typedData);
 }
 
-function encodeCreateSubaccountOrderCallData(p: ExpressOrderParams, signature: string) {
-  return encodeFunctionData({
-    abi: SubaccountGelatoRelayRouterAbi.abi,
-    functionName: "createOrder",
-    args: [
-      { ...p.relayPayload, signature },
-      p.subaccountApproval,
-      p.orderPayload.addresses.receiver,
-      p.collateralDeltaAmount,
-      p.orderPayload,
+export function signUpdateOrderPayload({
+  chainId,
+  signer,
+  orderKey,
+  updateOrderParams,
+  increaseExecutionFee,
+  relayParams,
+  subaccountApproval,
+}: {
+  chainId: number;
+  signer: Signer;
+  orderKey: string;
+  updateOrderParams: UpdateOrderParams;
+  increaseExecutionFee: boolean;
+  relayParams: RelayParamsPayload;
+  subaccountApproval: SignedSubbacountApproval | undefined;
+}) {
+  const types = {
+    UpdateOrder: [
+      { name: "key", type: "bytes32" },
+      { name: "params", type: "UpdateOrderParams" },
+      { name: "increaseExecutionFee", type: "bool" },
+      { name: "relayParams", type: "bytes32" },
+      subaccountApproval ? { name: "subaccountApproval", type: "bytes32" } : undefined,
+    ].filter((type) => type !== undefined),
+    UpdateOrderParams: [
+      { name: "sizeDeltaUsd", type: "uint256" },
+      { name: "acceptablePrice", type: "uint256" },
+      { name: "triggerPrice", type: "uint256" },
+      { name: "minOutputAmount", type: "uint256" },
+      { name: "validFromTime", type: "uint256" },
+      { name: "autoCancel", type: "bool" },
     ],
-  });
+  };
+
+  const domain = getGelatoRelayRouterDomain(chainId, subaccountApproval !== undefined);
+
+  const typedData = {
+    key: orderKey,
+    params: updateOrderParams,
+    increaseExecutionFee,
+    relayParams: hashRelayParams(relayParams),
+    subaccountApproval: subaccountApproval ? hashSubaccountApproval(subaccountApproval) : undefined,
+  };
+
+  return signTypedData(signer, domain, types, typedData);
 }
 
 export async function signExpressOrderPayload({
   signer,
   relayPayload: relayParams,
   subaccountApproval,
-  collateralDeltaAmount,
   orderPayload,
   chainId,
 }: {
   signer: Signer;
   relayPayload: RelayParamsPayload;
-  orderPayload: OrderPayload;
+  orderPayload: CreateOrderPayload;
   subaccountApproval: SignedSubbacountApproval | undefined;
-  collateralDeltaAmount: bigint;
   chainId: number;
 }) {
-  const verifyingContract = getContract(
-    chainId,
-    subaccountApproval ? "SubaccountGelatoRelayRouter" : "GelatoRelayRouter"
-  );
-
   const types = {
     CreateOrder: [
       { name: "collateralDeltaAmount", type: "uint256" },
@@ -230,7 +464,7 @@ export async function signExpressOrderPayload({
   };
 
   const typedData = {
-    collateralDeltaAmount,
+    collateralDeltaAmount: orderPayload.numbers.initialCollateralDeltaAmount,
     account: orderPayload.addresses.receiver,
     addresses: orderPayload.addresses,
     numbers: orderPayload.numbers,
@@ -244,24 +478,68 @@ export async function signExpressOrderPayload({
     subaccountApproval: subaccountApproval ? hashSubaccountApproval(subaccountApproval) : undefined,
   };
 
-  const domain = getGelatoRelayRouterDomain(chainId, verifyingContract);
+  const domain = getGelatoRelayRouterDomain(chainId, subaccountApproval !== undefined);
 
   return signTypedData(signer, domain, types, typedData);
 }
 
-export async function sendExpressOrderTxn(p: {
+async function signRemoveSubaccountPayload({
+  signer,
+  relayParams,
+  subaccountAddress,
+  chainId,
+}: {
+  signer: Signer;
+  relayParams: RelayParamsPayload;
+  subaccountAddress: string;
   chainId: number;
-  relayRouterAddress: string;
-  gelatoCallData: string;
-  relayFeeToken: string;
 }) {
-  const relayRequest = {
-    chainId: BigInt(p.chainId),
-    target: p.relayRouterAddress,
-    data: p.gelatoCallData,
-    feeToken: getRelayerFeeToken(p.chainId).address,
-    isRelayContext: true,
+  const types = {
+    RemoveSubaccount: [
+      { name: "subaccount", type: "address" },
+      { name: "relayParams", type: "bytes32" },
+    ],
   };
 
-  return relay.callWithSyncFee(relayRequest);
+  const domain = getGelatoRelayRouterDomain(chainId, true);
+
+  const typedData = {
+    subaccountAddress,
+    relayParams: hashRelayParams(relayParams),
+  };
+
+  return signTypedData(signer, domain, types, typedData);
+}
+
+export async function sendExpressTxn(p: {
+  chainId: number;
+  txnData: {
+    callData: string;
+    contractAddress: string;
+    feeToken: string;
+    feeAmount: bigint;
+  };
+}) {
+  const data = encodePacked(
+    ["bytes", "address", "address", "uint256"],
+    [
+      p.txnData.callData as Address,
+      p.txnData.contractAddress as Address,
+      p.txnData.feeToken as Address,
+      p.txnData.feeAmount,
+    ]
+  );
+
+  console.log("sending express txn", p.txnData);
+  return gelatoRelay
+    .callWithSyncFee({
+      chainId: BigInt(p.chainId),
+      target: p.txnData.contractAddress,
+      feeToken: p.txnData.feeToken,
+      isRelayContext: true,
+      data,
+    })
+    .then((res) => {
+      console.log("express txn res", res);
+    });
 }

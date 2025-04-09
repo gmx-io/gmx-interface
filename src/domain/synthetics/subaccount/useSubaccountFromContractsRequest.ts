@@ -3,8 +3,6 @@ import { useMemo } from "react";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-import DataStore from "sdk/abis/DataStore.json";
-import SubaccountGelatoRelayRouterAbi from "sdk/abis/SubaccountGelatoRelayRouter.json";
 import {
   maxAllowedSubaccountActionCountKey,
   SUBACCOUNT_ORDER_ACTION,
@@ -48,7 +46,7 @@ export function useSubaccountFromContractsRequest(
       return {
         subaccountRelay: {
           contractAddress: getContract(chainId, "SubaccountGelatoRelayRouter"),
-          abi: SubaccountGelatoRelayRouterAbi.abi,
+          abiId: "SubaccountGelatoRelayRouter",
           calls: {
             nonce: {
               methodName: "subaccountApprovalNonces",
@@ -58,7 +56,7 @@ export function useSubaccountFromContractsRequest(
         },
         dataStore: {
           contractAddress: getContract(chainId, "DataStore"),
-          abi: DataStore.abi,
+          abiId: "DataStore",
           calls: {
             isSubaccountActive: {
               methodName: "containsAddress",

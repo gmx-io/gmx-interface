@@ -39,7 +39,7 @@ export declare namespace IMultichainProvider {
     token: string,
     amount: bigint,
     srcChainId: bigint,
-    data: string
+    data: string,
   ] & {
     provider: string;
     account: string;
@@ -52,47 +52,26 @@ export declare namespace IMultichainProvider {
 
 export interface LayerZeroProviderInterface extends Interface {
   getFunction(
-    nameOrSignature:
-      | "bridgeOut"
-      | "dataStore"
-      | "eventEmitter"
-      | "lzCompose"
-      | "multichainVault"
-      | "roleStore"
+    nameOrSignature: "bridgeOut" | "dataStore" | "eventEmitter" | "lzCompose" | "multichainVault" | "roleStore"
   ): FunctionFragment;
 
   getEvent(nameOrSignatureOrTopic: "TokenTransferReverted"): EventFragment;
 
-  encodeFunctionData(
-    functionFragment: "bridgeOut",
-    values: [IMultichainProvider.BridgeOutParamsStruct]
-  ): string;
+  encodeFunctionData(functionFragment: "bridgeOut", values: [IMultichainProvider.BridgeOutParamsStruct]): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "eventEmitter",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "lzCompose",
     values: [AddressLike, BytesLike, BytesLike, AddressLike, BytesLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "multichainVault",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "multichainVault", values?: undefined): string;
   encodeFunctionData(functionFragment: "roleStore", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "bridgeOut", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "eventEmitter",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "eventEmitter", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "lzCompose", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "multichainVault",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "multichainVault", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "roleStore", data: BytesLike): Result;
 }
 
@@ -126,50 +105,30 @@ export interface LayerZeroProvider extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(
-    event: TCEvent
-  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(
-    event?: TCEvent
-  ): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
-  bridgeOut: TypedContractMethod<
-    [params: IMultichainProvider.BridgeOutParamsStruct],
-    [void],
-    "nonpayable"
-  >;
+  bridgeOut: TypedContractMethod<[params: IMultichainProvider.BridgeOutParamsStruct], [void], "nonpayable">;
 
   dataStore: TypedContractMethod<[], [string], "view">;
 
   eventEmitter: TypedContractMethod<[], [string], "view">;
 
   lzCompose: TypedContractMethod<
-    [
-      from: AddressLike,
-      arg1: BytesLike,
-      message: BytesLike,
-      arg3: AddressLike,
-      arg4: BytesLike
-    ],
+    [from: AddressLike, arg1: BytesLike, message: BytesLike, arg3: AddressLike, arg4: BytesLike],
     [void],
     "payable"
   >;
@@ -178,42 +137,22 @@ export interface LayerZeroProvider extends BaseContract {
 
   roleStore: TypedContractMethod<[], [string], "view">;
 
-  getFunction<T extends ContractMethod = ContractMethod>(
-    key: string | FunctionFragment
-  ): T;
+  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
   getFunction(
     nameOrSignature: "bridgeOut"
-  ): TypedContractMethod<
-    [params: IMultichainProvider.BridgeOutParamsStruct],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "dataStore"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "eventEmitter"
-  ): TypedContractMethod<[], [string], "view">;
+  ): TypedContractMethod<[params: IMultichainProvider.BridgeOutParamsStruct], [void], "nonpayable">;
+  getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "lzCompose"
   ): TypedContractMethod<
-    [
-      from: AddressLike,
-      arg1: BytesLike,
-      message: BytesLike,
-      arg3: AddressLike,
-      arg4: BytesLike
-    ],
+    [from: AddressLike, arg1: BytesLike, message: BytesLike, arg3: AddressLike, arg4: BytesLike],
     [void],
     "payable"
   >;
-  getFunction(
-    nameOrSignature: "multichainVault"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "roleStore"
-  ): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "multichainVault"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "roleStore"): TypedContractMethod<[], [string], "view">;
 
   getEvent(
     key: "TokenTransferReverted"

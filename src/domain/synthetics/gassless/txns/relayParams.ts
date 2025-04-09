@@ -1,44 +1,16 @@
 import { encodeAbiParameters, keccak256 } from "viem";
 
 import RelayParamsAbi from "sdk/abis/RelayParams.json";
+import { RelayParamsPayload } from "sdk/types/expressTransactions";
 
-import { TokenPermitPayload } from "./tokenPermitUtils";
+import { getContract } from "sdk/configs/contracts";
 
-export type RelayParamsPayload = {
-  oracleParams: OracleParamsPayload;
-  tokenPermits: TokenPermitPayload[];
-  externalCalls: ExternalCallsPayload;
-  fee: RelayFeeParamsPayload;
-  // TODO: request in hook
-  userNonce: bigint;
-  deadline: bigint;
-};
-
-export type OracleParamsPayload = {
-  tokens: string[];
-  providers: string[];
-  data: string[];
-};
-
-export type RelayFeeParamsPayload = {
-  feeToken: string;
-  feeAmount: bigint;
-  feeSwapPath: string[];
-};
-
-export type ExternalCallsPayload = {
-  externalCallTargets: string[];
-  externalCallDataList: string[];
-  refundTokens: string[];
-  refundReceivers: string[];
-};
-
-export function getGelatoRelayRouterDomain(chainId: number, verifyingContract: string) {
+export function getGelatoRelayRouterDomain(chainId: number, isSubaccount: boolean) {
   return {
-    name: "GmxBaseGelatoRelayRouter",
+    name: isSubaccount ? "GmxBaseSubaccountGelatoRelayRouter" : "GmxBaseGelatoRelayRouter",
     version: "1",
     chainId: BigInt(chainId),
-    verifyingContract,
+    verifyingContract: getContract(chainId, isSubaccount ? "SubaccountGelatoRelayRouter" : "GelatoRelayRouter"),
   };
 }
 

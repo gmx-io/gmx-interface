@@ -3,10 +3,7 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type {
-  SubaccountRouter,
-  SubaccountRouterInterface,
-} from "../SubaccountRouter";
+import type { SubaccountRouter, SubaccountRouterInterface } from "../SubaccountRouter";
 
 const _abi = [
   {
@@ -628,10 +625,7 @@ export class SubaccountRouter__factory {
   static createInterface(): SubaccountRouterInterface {
     return new Interface(_abi) as SubaccountRouterInterface;
   }
-  static connect(
-    address: string,
-    runner?: ContractRunner | null
-  ): SubaccountRouter {
+  static connect(address: string, runner?: ContractRunner | null): SubaccountRouter {
     return new Contract(address, _abi, runner) as unknown as SubaccountRouter;
   }
 }
