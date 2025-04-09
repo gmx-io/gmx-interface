@@ -9,14 +9,14 @@ import {
   getZeroAddressContract,
 } from "config/contracts";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
-import { SwapPricingType, isSwapOrderType } from "domain/synthetics/orders";
+import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { CustomErrorName, ErrorData, extractTxnError, isContractError, parseError } from "sdk/utils/errors";
-import { CreateOrderPayload, CreateOrderTxnParams } from "sdk/utils/orderTransactions";
+import { CreateOrderTxnParams } from "sdk/utils/orderTransactions";
 
 export type SimulateExecuteParams = {
   account: string;
