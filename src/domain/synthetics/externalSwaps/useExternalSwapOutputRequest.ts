@@ -70,7 +70,7 @@ export function useExternalSwapOutputRequest({
         const result = await getOpenOceanTxnData({
           chainId,
           senderAddress: getContract(chainId, "ExternalHandler"),
-          receiverAddress: getContract(chainId, "OrderVault"),
+          receiverAddress: receiverAddress,
           tokenInAddress: convertTokenAddress(chainId, tokenInAddress, "wrapped"),
           tokenOutAddress: convertTokenAddress(chainId, tokenOutAddress, "wrapped"),
           amountIn,

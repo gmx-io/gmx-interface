@@ -19,11 +19,12 @@ import { getContract } from "sdk/configs/contracts";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 
+import { getSwapDebugSettings } from "config/externalSwaps";
 import { useExternalSwapOutputRequest } from "../externalSwaps/useExternalSwapOutputRequest";
 import { convertToTokenAmount, convertToUsd } from "../tokens";
 import { getSwapAmountsByToValue } from "../trade";
 import { RelayerFeeState } from "./types";
-import { getSwapDebugSettings } from "config/externalSwaps";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 
 const DEFAULT_GAS_LIMIT = 10000000n;
 
@@ -48,9 +49,9 @@ export function useRelayerFeeHandler(): RelayerFeeState | undefined {
   const settings = useSettings();
   const isExpressOrdersEnabled = settings.expressOrdersEnabled;
   const gasPaymentTokenAddress = settings.gasPaymentTokenAddress;
-  const is1ctEnabled = settings.oneClickTradingEnabled;
+  const { subaccount } = useSubaccountContext();
 
-  const findSwapPath = useSelector(makeSelectFindSwapPath(gasPaymentTokenAddress, relayerFeeToken.address));
+  const findSwapPath = useSelector(makeSelectFindSwapPath(gasPaymentTokenAddress, relayerFeeToken.address, true));
 
   const gasPaymentTokenData = getByKey(tokensData, gasPaymentTokenAddress);
   const relayerFeeTokenData = getByKey(tokensData, relayerFeeToken?.address);
@@ -122,7 +123,7 @@ export function useRelayerFeeHandler(): RelayerFeeState | undefined {
     amountIn: tokenInAmount,
     chainId,
     tokensData,
-    receiverAddress: getContract(chainId, is1ctEnabled ? "SubaccountGelatoRelayRouter" : "GelatoRelayRouter"),
+    receiverAddress: getContract(chainId, subaccount ? "SubaccountGelatoRelayRouter" : "GelatoRelayRouter"),
     slippage,
     gasPrice,
     enabled: isExpressOrdersEnabled,

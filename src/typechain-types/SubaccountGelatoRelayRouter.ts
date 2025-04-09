@@ -28,11 +28,11 @@ export declare namespace OracleUtils {
     data: BytesLike[];
   };
 
-  export type SetPricesParamsStructOutput = [tokens: string[], providers: string[], data: string[]] & {
-    tokens: string[];
-    providers: string[];
-    data: string[];
-  };
+  export type SetPricesParamsStructOutput = [
+    tokens: string[],
+    providers: string[],
+    data: string[]
+  ] & { tokens: string[]; providers: string[]; data: string[] };
 }
 
 export declare namespace BaseGelatoRelayRouter {
@@ -47,7 +47,7 @@ export declare namespace BaseGelatoRelayRouter {
     externalCallTargets: string[],
     externalCallDataList: string[],
     refundTokens: string[],
-    refundReceivers: string[],
+    refundReceivers: string[]
   ] & {
     externalCallTargets: string[];
     externalCallDataList: string[];
@@ -74,7 +74,7 @@ export declare namespace BaseGelatoRelayRouter {
     v: bigint,
     r: string,
     s: string,
-    token: string,
+    token: string
   ] & {
     owner: string;
     spender: string;
@@ -92,11 +92,11 @@ export declare namespace BaseGelatoRelayRouter {
     feeSwapPath: AddressLike[];
   };
 
-  export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
-    feeToken: string;
-    feeAmount: bigint;
-    feeSwapPath: string[];
-  };
+  export type FeeParamsStructOutput = [
+    feeToken: string,
+    feeAmount: bigint,
+    feeSwapPath: string[]
+  ] & { feeToken: string; feeAmount: bigint; feeSwapPath: string[] };
 
   export type RelayParamsStruct = {
     oracleParams: OracleUtils.SetPricesParamsStruct;
@@ -115,7 +115,7 @@ export declare namespace BaseGelatoRelayRouter {
     fee: BaseGelatoRelayRouter.FeeParamsStructOutput,
     userNonce: bigint,
     deadline: bigint,
-    signature: string,
+    signature: string
   ] & {
     oracleParams: OracleUtils.SetPricesParamsStructOutput;
     externalCalls: BaseGelatoRelayRouter.ExternalCallsStructOutput;
@@ -141,7 +141,7 @@ export declare namespace BaseGelatoRelayRouter {
     triggerPrice: bigint,
     minOutputAmount: bigint,
     validFromTime: bigint,
-    autoCancel: boolean,
+    autoCancel: boolean
   ] & {
     sizeDeltaUsd: bigint;
     acceptablePrice: bigint;
@@ -172,7 +172,7 @@ export declare namespace SubaccountGelatoRelayRouter {
     actionType: string,
     nonce: bigint,
     deadline: bigint,
-    signature: string,
+    signature: string
   ] & {
     subaccount: string;
     shouldAdd: boolean;
@@ -203,7 +203,7 @@ export declare namespace IBaseOrderUtils {
     uiFeeReceiver: string,
     market: string,
     initialCollateralToken: string,
-    swapPath: string[],
+    swapPath: string[]
   ] & {
     receiver: string;
     cancellationReceiver: string;
@@ -233,7 +233,7 @@ export declare namespace IBaseOrderUtils {
     executionFee: bigint,
     callbackGasLimit: bigint,
     minOutputAmount: bigint,
-    validFromTime: bigint,
+    validFromTime: bigint
   ] & {
     sizeDeltaUsd: bigint;
     initialCollateralDeltaAmount: bigint;
@@ -264,7 +264,7 @@ export declare namespace IBaseOrderUtils {
     isLong: boolean,
     shouldUnwrapNativeToken: boolean,
     autoCancel: boolean,
-    referralCode: string,
+    referralCode: string
   ] & {
     addresses: IBaseOrderUtils.CreateOrderParamsAddressesStructOutput;
     numbers: IBaseOrderUtils.CreateOrderParamsNumbersStructOutput;
@@ -306,17 +306,50 @@ export interface SubaccountGelatoRelayRouterInterface extends Interface {
       | "userNonces"
   ): FunctionFragment;
 
-  encodeFunctionData(functionFragment: "CANCEL_ORDER_TYPEHASH", values?: undefined): string;
-  encodeFunctionData(functionFragment: "CREATE_ORDER_ADDRESSES_TYPEHASH", values?: undefined): string;
-  encodeFunctionData(functionFragment: "CREATE_ORDER_NUMBERS_TYPEHASH", values?: undefined): string;
-  encodeFunctionData(functionFragment: "CREATE_ORDER_TYPEHASH", values?: undefined): string;
-  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_NAME_HASH", values?: undefined): string;
-  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_TYPEHASH", values?: undefined): string;
-  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH", values?: undefined): string;
-  encodeFunctionData(functionFragment: "REMOVE_SUBACCOUNT_TYPEHASH", values?: undefined): string;
-  encodeFunctionData(functionFragment: "SUBACCOUNT_APPROVAL_TYPEHASH", values?: undefined): string;
-  encodeFunctionData(functionFragment: "UPDATE_ORDER_PARAMS_TYPEHASH", values?: undefined): string;
-  encodeFunctionData(functionFragment: "UPDATE_ORDER_TYPEHASH", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "CANCEL_ORDER_TYPEHASH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "CREATE_ORDER_ADDRESSES_TYPEHASH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "CREATE_ORDER_NUMBERS_TYPEHASH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "CREATE_ORDER_TYPEHASH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "DOMAIN_SEPARATOR_NAME_HASH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "DOMAIN_SEPARATOR_TYPEHASH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "REMOVE_SUBACCOUNT_TYPEHASH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "SUBACCOUNT_APPROVAL_TYPEHASH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "UPDATE_ORDER_PARAMS_TYPEHASH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "UPDATE_ORDER_TYPEHASH",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "cancelOrder",
     values: [
@@ -324,7 +357,7 @@ export interface SubaccountGelatoRelayRouterInterface extends Interface {
       SubaccountGelatoRelayRouter.SubaccountApprovalStruct,
       AddressLike,
       AddressLike,
-      BytesLike,
+      BytesLike
     ]
   ): string;
   encodeFunctionData(
@@ -335,21 +368,36 @@ export interface SubaccountGelatoRelayRouterInterface extends Interface {
       AddressLike,
       AddressLike,
       BigNumberish,
-      IBaseOrderUtils.CreateOrderParamsStruct,
+      IBaseOrderUtils.CreateOrderParamsStruct
     ]
   ): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
-  encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
-  encodeFunctionData(functionFragment: "externalHandler", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "eventEmitter",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "externalHandler",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "oracle", values?: undefined): string;
-  encodeFunctionData(functionFragment: "orderHandler", values?: undefined): string;
-  encodeFunctionData(functionFragment: "orderVault", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "orderHandler",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "orderVault",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "removeSubaccount",
     values: [BaseGelatoRelayRouter.RelayParamsStruct, AddressLike, AddressLike]
   ): string;
   encodeFunctionData(functionFragment: "router", values?: undefined): string;
-  encodeFunctionData(functionFragment: "subaccountApprovalNonces", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "subaccountApprovalNonces",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "updateOrder",
     values: [
@@ -359,34 +407,94 @@ export interface SubaccountGelatoRelayRouterInterface extends Interface {
       AddressLike,
       BytesLike,
       BaseGelatoRelayRouter.UpdateOrderParamsStruct,
-      boolean,
+      boolean
     ]
   ): string;
-  encodeFunctionData(functionFragment: "userNonces", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "userNonces",
+    values: [AddressLike]
+  ): string;
 
-  decodeFunctionResult(functionFragment: "CANCEL_ORDER_TYPEHASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "CREATE_ORDER_ADDRESSES_TYPEHASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "CREATE_ORDER_NUMBERS_TYPEHASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "CREATE_ORDER_TYPEHASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_NAME_HASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_TYPEHASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "REMOVE_SUBACCOUNT_TYPEHASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "SUBACCOUNT_APPROVAL_TYPEHASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "UPDATE_ORDER_PARAMS_TYPEHASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "UPDATE_ORDER_TYPEHASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "cancelOrder", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "createOrder", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "CANCEL_ORDER_TYPEHASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "CREATE_ORDER_ADDRESSES_TYPEHASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "CREATE_ORDER_NUMBERS_TYPEHASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "CREATE_ORDER_TYPEHASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "DOMAIN_SEPARATOR_NAME_HASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "DOMAIN_SEPARATOR_TYPEHASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "REMOVE_SUBACCOUNT_TYPEHASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "SUBACCOUNT_APPROVAL_TYPEHASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "UPDATE_ORDER_PARAMS_TYPEHASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "UPDATE_ORDER_TYPEHASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "cancelOrder",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "createOrder",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "eventEmitter", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "externalHandler", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "eventEmitter",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "externalHandler",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "oracle", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "orderHandler", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "orderHandler",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "orderVault", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeSubaccount", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "removeSubaccount",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "router", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "subaccountApprovalNonces", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "updateOrder", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "subaccountApprovalNonces",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateOrder",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "userNonces", data: BytesLike): Result;
 }
 
@@ -407,21 +515,31 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
   CANCEL_ORDER_TYPEHASH: TypedContractMethod<[], [string], "view">;
 
@@ -451,7 +569,7 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
       subaccountApproval: SubaccountGelatoRelayRouter.SubaccountApprovalStruct,
       account: AddressLike,
       subaccount: AddressLike,
-      key: BytesLike,
+      key: BytesLike
     ],
     [void],
     "nonpayable"
@@ -464,7 +582,7 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
       account: AddressLike,
       subaccount: AddressLike,
       collateralDeltaAmount: BigNumberish,
-      params: IBaseOrderUtils.CreateOrderParamsStruct,
+      params: IBaseOrderUtils.CreateOrderParamsStruct
     ],
     [string],
     "nonpayable"
@@ -483,14 +601,22 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
   orderVault: TypedContractMethod<[], [string], "view">;
 
   removeSubaccount: TypedContractMethod<
-    [relayParams: BaseGelatoRelayRouter.RelayParamsStruct, account: AddressLike, subaccount: AddressLike],
+    [
+      relayParams: BaseGelatoRelayRouter.RelayParamsStruct,
+      account: AddressLike,
+      subaccount: AddressLike
+    ],
     [void],
     "nonpayable"
   >;
 
   router: TypedContractMethod<[], [string], "view">;
 
-  subaccountApprovalNonces: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  subaccountApprovalNonces: TypedContractMethod<
+    [arg0: AddressLike],
+    [bigint],
+    "view"
+  >;
 
   updateOrder: TypedContractMethod<
     [
@@ -500,7 +626,7 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
       subaccount: AddressLike,
       key: BytesLike,
       params: BaseGelatoRelayRouter.UpdateOrderParamsStruct,
-      increaseExecutionFee: boolean,
+      increaseExecutionFee: boolean
     ],
     [void],
     "nonpayable"
@@ -508,19 +634,43 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
 
   userNonces: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
-  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  getFunction(nameOrSignature: "CANCEL_ORDER_TYPEHASH"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "CREATE_ORDER_ADDRESSES_TYPEHASH"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "CREATE_ORDER_NUMBERS_TYPEHASH"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "CREATE_ORDER_TYPEHASH"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_NAME_HASH"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_TYPEHASH"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_VERSION_HASH"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "REMOVE_SUBACCOUNT_TYPEHASH"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "SUBACCOUNT_APPROVAL_TYPEHASH"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "UPDATE_ORDER_PARAMS_TYPEHASH"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "UPDATE_ORDER_TYPEHASH"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "CANCEL_ORDER_TYPEHASH"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "CREATE_ORDER_ADDRESSES_TYPEHASH"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "CREATE_ORDER_NUMBERS_TYPEHASH"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "CREATE_ORDER_TYPEHASH"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "DOMAIN_SEPARATOR_NAME_HASH"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "DOMAIN_SEPARATOR_TYPEHASH"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "DOMAIN_SEPARATOR_VERSION_HASH"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "REMOVE_SUBACCOUNT_TYPEHASH"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "SUBACCOUNT_APPROVAL_TYPEHASH"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "UPDATE_ORDER_PARAMS_TYPEHASH"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "UPDATE_ORDER_TYPEHASH"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "cancelOrder"
   ): TypedContractMethod<
@@ -529,7 +679,7 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
       subaccountApproval: SubaccountGelatoRelayRouter.SubaccountApprovalStruct,
       account: AddressLike,
       subaccount: AddressLike,
-      key: BytesLike,
+      key: BytesLike
     ],
     [void],
     "nonpayable"
@@ -543,26 +693,46 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
       account: AddressLike,
       subaccount: AddressLike,
       collateralDeltaAmount: BigNumberish,
-      params: IBaseOrderUtils.CreateOrderParamsStruct,
+      params: IBaseOrderUtils.CreateOrderParamsStruct
     ],
     [string],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "externalHandler"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "oracle"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "orderHandler"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "orderVault"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "dataStore"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "eventEmitter"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "externalHandler"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "oracle"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "orderHandler"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "orderVault"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "removeSubaccount"
   ): TypedContractMethod<
-    [relayParams: BaseGelatoRelayRouter.RelayParamsStruct, account: AddressLike, subaccount: AddressLike],
+    [
+      relayParams: BaseGelatoRelayRouter.RelayParamsStruct,
+      account: AddressLike,
+      subaccount: AddressLike
+    ],
     [void],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "router"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "subaccountApprovalNonces"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "router"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "subaccountApprovalNonces"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "updateOrder"
   ): TypedContractMethod<
@@ -573,12 +743,14 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
       subaccount: AddressLike,
       key: BytesLike,
       params: BaseGelatoRelayRouter.UpdateOrderParamsStruct,
-      increaseExecutionFee: boolean,
+      increaseExecutionFee: boolean
     ],
     [void],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "userNonces"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "userNonces"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
   filters: {};
 }

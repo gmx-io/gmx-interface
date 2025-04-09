@@ -22,6 +22,7 @@ import SyntheticsReaderArbitrumSepolia from "./arbitrumSepolia/SyntheticsReader.
 import TimelockArbitrumSepolia from "./arbitrumSepolia/Timelock.json";
 import CustomErrors from "./CustomErrors.json";
 import DataStore from "./DataStore.json";
+import ERC20PermitInterface from "./ERC20PermitInterface.json";
 import ERC721 from "./ERC721.json";
 import EventEmitter from "./EventEmitter.json";
 import ExchangeRouter from "./ExchangeRouter.json";
@@ -91,7 +92,7 @@ export type AbiId =
   | "RewardReader"
   | "RewardRouter"
   | "RewardTracker"
-  | "Router-v2"
+  | "RouterV2"
   | "Router"
   | "SubaccountRouter"
   | "SyntheticsReader"
@@ -110,6 +111,7 @@ export type AbiId =
   | "YieldFarm"
   | "YieldToken"
   | "SubaccountGelatoRelayRouter"
+  | "ERC20PermitInterface"
   | "GelatoRelayRouter"
   | "CustomErrorsArbitrumSepolia"
   | "DataStoreArbitrumSepolia"
@@ -136,6 +138,7 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   DataStore: DataStore.abi,
   ERC721: ERC721.abi,
   ERC20: erc20Abi,
+  ERC20PermitInterface: ERC20PermitInterface.abi,
   EventEmitter: EventEmitter.abi,
   ExchangeRouter: ExchangeRouter.abi,
   GlpManager: GlpManager.abi,
@@ -196,4 +199,4 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   SubaccountGelatoRelayRouterArbitrumSepolia: SubaccountGelatoRelayRouterArbitrumSepolia.abi,
   SubaccountRouterArbitrumSepolia: SubaccountRouterArbitrumSepolia.abi,
   TimelockArbitrumSepolia: TimelockArbitrumSepolia.abi,
-} as any;
+} satisfies Record<AbiId, any> as any;
