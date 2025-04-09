@@ -1,6 +1,6 @@
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { ParsedError } from "lib/errors";
+import { ErrorData } from "lib/errors";
 
 export type GlobalMetricData = {
   isMobileMetamask: boolean;
@@ -142,7 +142,7 @@ export type LoadingFailedEvent = {
   data: {
     requestId: string;
     isFirstTimeLoad?: boolean;
-  } & ParsedError;
+  } & ErrorData;
 };
 
 // Transactions tracking
@@ -155,7 +155,7 @@ export type SubmittedOrderEvent = {
 export type ValidationErrorEvent = {
   event: `${OrderMetricType}.${OrderStage.Failed}`;
   isError: true;
-  data: OrderMetricData & ParsedError;
+  data: OrderMetricData & ErrorData;
 };
 
 export type OrderSentEvent = {
@@ -189,14 +189,14 @@ export type OrderCreatedEvent = {
 export type OrderTxnFailedEvent = {
   event: `${OrderMetricType}.${OrderStage.Failed | OrderStage.Rejected}`;
   isError: true;
-  data: OrderMetricData & ParsedError;
+  data: OrderMetricData & ErrorData;
 };
 
 export type PendingTxnErrorEvent = {
   event: `${OrderMetricType}.${OrderStage.Failed}`;
   isError: true;
   time: number | undefined;
-  data: OrderMetricData & ParsedError;
+  data: OrderMetricData & ErrorData;
 };
 
 export type OrderExecutedEvent = {
@@ -210,7 +210,7 @@ export type OrderCancelledEvent = {
   event: `${OrderMetricType}.${OrderStage.Failed}`;
   isError: true;
   time: number | undefined;
-  data: OrderMetricData & ParsedError;
+  data: OrderMetricData & ErrorData;
 };
 
 // Multicall tracking
@@ -243,7 +243,7 @@ export type MulticallErrorEvent = {
 export type ErrorEvent = {
   event: "error";
   isError: true;
-  data: ParsedError;
+  data: ErrorData;
 };
 
 // Entities metric data
