@@ -15,7 +15,6 @@ import { getToken } from "sdk/configs/tokens";
 import { buildFiltersBody } from "sdk/utils/subgraph";
 
 import { ClaimAction, ClaimCollateralAction, ClaimFundingFeeAction, ClaimMarketItem, ClaimType } from "./types";
-import { useFixedAddreseses } from "../common/useFixedAddresses";
 
 export type ClaimCollateralHistoryResult = {
   claimActions?: ClaimAction[];
@@ -55,7 +54,6 @@ export function useClaimCollateralHistory(
   const { showDebugValues } = useSettings();
 
   const account = useSelector(selectAccount);
-  const fixedAddresses = useFixedAddreseses(marketsInfoData, tokensData);
   const client = getSubsquidGraphClient(chainId);
 
   const queryDisabled = !chainId || !client || !account;
@@ -160,13 +158,7 @@ export function useClaimCollateralHistory(
       switch (eventName) {
         case ClaimType.ClaimFunding:
         case ClaimType.ClaimPriceImpact: {
-          const claimCollateralAction = createClaimCollateralAction(
-            chainId,
-            eventName,
-            rawAction,
-            fixedAddresses,
-            marketsInfoData
-          );
+          const claimCollateralAction = createClaimCollateralAction(chainId, eventName, rawAction, marketsInfoData);
 
           return claimCollateralAction ? [...acc, claimCollateralAction] : acc;
         }
@@ -174,20 +166,14 @@ export function useClaimCollateralHistory(
         case ClaimType.SettleFundingFeeCreated:
         case ClaimType.SettleFundingFeeExecuted:
         case ClaimType.SettleFundingFeeCancelled: {
-          const settleAction = createSettleFundingFeeAction(
-            chainId,
-            eventName,
-            rawAction,
-            fixedAddresses,
-            marketsInfoData
-          );
+          const settleAction = createSettleFundingFeeAction(chainId, eventName, rawAction, marketsInfoData);
           return settleAction ? [...acc, settleAction] : acc;
         }
         default:
           return acc;
       }
     }, [] as ClaimAction[]);
-  }, [chainId, data, fixedAddresses, marketsInfoData, tokensData]);
+  }, [chainId, data, marketsInfoData, tokensData]);
 
   return {
     claimActions,
@@ -201,7 +187,6 @@ function createClaimCollateralAction(
   chainId: number,
   eventName: ClaimCollateralAction["eventName"],
   rawAction: RawClaimAction,
-  fixedAddresses: Record<string, string>,
   marketsInfoData: MarketsInfoData | undefined
 ): ClaimCollateralAction | null {
   const tokens = rawAction.tokenAddresses.map((address) => getToken(chainId, getAddress(address))).filter(Boolean);
@@ -265,7 +250,6 @@ function createSettleFundingFeeAction(
   chainId: number,
   eventName: ClaimFundingFeeAction["eventName"],
   rawAction: RawClaimAction,
-  fixedAddresses: Record<string, string>,
   marketsInfoData: MarketsInfoData | null
 ): ClaimFundingFeeAction | null {
   if (!marketsInfoData) return null;
@@ -281,8 +265,8 @@ function createSettleFundingFeeAction(
   const claimItemsMap: { [marketAddress: string]: ClaimMarketItem } = {};
   if (rawAction.eventName === ClaimType.SettleFundingFeeExecuted) {
     for (let i = 0; i < rawAction.marketAddresses.length; i++) {
-      const marketAddress = fixedAddresses[rawAction.marketAddresses[i]];
-      const tokenAddress = fixedAddresses[rawAction.tokenAddresses[i]];
+      const marketAddress = rawAction.marketAddresses[i];
+      const tokenAddress = rawAction.tokenAddresses[i];
 
       const amount = bigNumberify(rawAction.amounts[i])!;
       const price = bigNumberify(rawAction.tokenPrices[i])!;
