@@ -851,7 +851,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         />
         <div className="flex gap-4">
           {[TradeType.Long, TradeType.Short].includes(tradeType) && (
-            <TradeBoxLongShortInfoIcon isMobile={isMobile} isLong={isLong} />
+            <TradeBoxLongShortInfoIcon isMobile={isMobile} isLong={isLong} isTWAP={isTWAP} />
           )}
           <SettingsIcon24
             className="cursor-pointer text-slate-100 gmx-hover:text-white"
@@ -953,6 +953,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 setNumberOfParts={setNumberOfParts}
                 setDuration={setDuration}
                 sizeUsd={payUsd}
+                marketInfo={marketInfo}
               />
             )}
 

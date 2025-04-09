@@ -25,6 +25,7 @@ import {
   SwapAmounts,
   SwapOptimizationOrderArray,
   TradeFeesType,
+  TradeMode,
   TradeType,
   getMarkPrice,
   getNextPositionExecutionPrice,
@@ -385,6 +386,21 @@ export const selectTradeboxTradeFeesType = createSelector(
 );
 
 const selectTradeboxEstimatedGas = createSelector(function selectTradeboxEstimatedGas(q) {
+  const gasLimit = q(selectTradeboxOrderGasLimit);
+
+  if (gasLimit === null) return null;
+
+  const tradeMode = q(selectTradeboxTradeMode);
+  const numberOfParts = q(selectTradeboxTWAPNumberOfParts);
+
+  if (tradeMode === TradeMode.TWAP && numberOfParts) {
+    return gasLimit * BigInt(numberOfParts);
+  }
+
+  return gasLimit;
+});
+
+const selectTradeboxOrderGasLimit = createSelector(function selectTradeboxOrderGasLimit(q) {
   const tradeFeesType = q(selectTradeboxTradeFeesType);
 
   if (!tradeFeesType) return null;

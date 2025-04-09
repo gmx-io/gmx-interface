@@ -1560,6 +1560,14 @@ msgstr "Order executed"
 msgid "Select Positions"
 msgstr "Select Positions"
 
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Long TWAP: Increase a long position in evenly distributed parts over a specified time. Read more."
+msgstr "Long TWAP: Increase a long position in evenly distributed parts over a specified time. Read more."
+
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Short TWAP: Increase a short position in evenly distributed parts over a specified time. Read more."
+msgstr "Short TWAP: Increase a short position in evenly distributed parts over a specified time. Read more."
+
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
 msgstr "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
@@ -1817,6 +1825,10 @@ msgstr "No results found"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Pair"
 msgstr "Pair"
+
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
+msgid "This TWAP order will execute {numberOfParts} long increase orders of {0} each over the next {1} for the {2} pool."
+msgstr "This TWAP order will execute {numberOfParts} long increase orders of {0} each over the next {1} for the {2} pool."
 
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -2542,6 +2554,10 @@ msgstr "You have an existing position with {0} as collateral."
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "Transfer Account"
 msgstr "Transfer Account"
+
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
+msgid "{0} minutes"
+msgstr "{0} minutes"
 
 #: src/pages/Actions/ActionsRouter.tsx
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx
@@ -3914,6 +3930,10 @@ msgstr "Rebates earned by this account as a trader."
 msgid "Read more"
 msgstr "Read more"
 
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
+msgid "{0} days"
+msgstr "{0} days"
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "This Year"
 msgstr "This Year"
@@ -4390,6 +4410,10 @@ msgstr "Hour(s)"
 msgid "Insufficient {0} liquidity"
 msgstr "Insufficient {0} liquidity"
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Create TWAP Increase order"
+msgstr "Create TWAP Increase order"
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Creator"
@@ -4718,6 +4742,10 @@ msgstr "You will be long {indexSymbol} only from your long position."
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
+
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
+msgid "{0} hours and {1} minutes"
+msgstr "{0} hours and {1} minutes"
 
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
@@ -5083,6 +5111,10 @@ msgstr "There are insufficient funds in your subaccount for One-Click Trading"
 #: src/components/Exchange/PositionsList.jsx
 msgid "Share"
 msgstr "Share"
+
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
+msgid "{0} hours"
+msgstr "{0} hours"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/pages/OrdersOverview/OrdersOverview.jsx

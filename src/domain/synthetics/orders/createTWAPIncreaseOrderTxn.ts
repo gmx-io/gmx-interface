@@ -21,8 +21,6 @@ import { createTWAPUiFeeReceiver } from "../trade/twap/uiFeeReciver";
 
 const { ZeroAddress } = ethers;
 
-const BIGINT_MAX = 999999999999999999999999999999999999999999999999999999999999999999999999999n;
-
 type TWAPIncreaseOrderParams = {
   account: string;
   marketAddress: string;
@@ -80,7 +78,7 @@ export async function createTWAPIncreaseOrderTxn({
 
   const { initialCollateralTokenAddress, swapPath, tokenToSendAddress } = getCollateralAndSwapAddresses(chainId, p);
 
-  const acceptablePrice = p.isLong ? BIGINT_MAX : 0n;
+  const acceptablePrice = p.isLong ? 999999999999999999999999999999999999999999999999999999999999999999999999999n : 0n;
   const triggerPrice = acceptablePrice;
 
   const totalExecutionFee = p.executionFee * BigInt(p.numberOfParts);

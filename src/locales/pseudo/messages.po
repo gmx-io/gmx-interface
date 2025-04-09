@@ -1560,6 +1560,14 @@ msgstr ""
 msgid "Select Positions"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Long TWAP: Increase a long position in evenly distributed parts over a specified time. Read more."
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Short TWAP: Increase a short position in evenly distributed parts over a specified time. Read more."
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
 msgstr ""
@@ -1816,6 +1824,10 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Pair"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
+msgid "This TWAP order will execute {numberOfParts} long increase orders of {0} each over the next {1} for the {2} pool."
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
@@ -2541,6 +2553,10 @@ msgstr ""
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "Transfer Account"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
+msgid "{0} minutes"
 msgstr ""
 
 #: src/pages/Actions/ActionsRouter.tsx
@@ -3914,6 +3930,10 @@ msgstr ""
 msgid "Read more"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
+msgid "{0} days"
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "This Year"
 msgstr ""
@@ -4387,6 +4407,10 @@ msgstr ""
 msgid "Insufficient {0} liquidity"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Create TWAP Increase order"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Creator"
@@ -4714,6 +4738,10 @@ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
+msgid "{0} hours and {1} minutes"
 msgstr ""
 
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
@@ -5079,6 +5107,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.jsx
 msgid "Share"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
+msgid "{0} hours"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts

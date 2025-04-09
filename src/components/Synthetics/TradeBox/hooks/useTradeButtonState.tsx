@@ -101,7 +101,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
   const { signer } = useWallet();
 
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isSwap, isIncrease, isLimit, isMarket } = tradeFlags;
+  const { isSwap, isIncrease, isLimit, isMarket, isTWAP } = tradeFlags;
   const { stopLoss, takeProfit } = useSidecarOrders();
   const sidecarEntries = useSidecarEntries();
   const hasOutdatedUi = useHasOutdatedUi();
@@ -413,6 +413,8 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
         }
       } else if (isLimit) {
         submitButtonText = t`Create ${getNameByOrderType(increaseAmounts?.limitOrderType)} order`;
+      } else if (isTWAP) {
+        submitButtonText = t`Create TWAP Increase order`;
       } else {
         submitButtonText = t`Create ${getNameByOrderType(decreaseAmounts?.triggerOrderType)} Order`;
       }
@@ -464,6 +466,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
     increaseAmounts?.limitOrderType,
     decreaseAmounts?.triggerOrderType,
     slippageInputId,
+    isTWAP,
   ]);
 }
 

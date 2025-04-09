@@ -21,7 +21,10 @@ export function AlertInfoCard({ children, type = "info", onClose, className }: P
 
   const handleClose = useCallback(() => {
     setClosed(true);
-  }, []);
+    if (onClose) {
+      onClose();
+    }
+  }, [onClose]);
 
   if (closed) {
     return null;
@@ -37,7 +40,6 @@ export function AlertInfoCard({ children, type = "info", onClose, className }: P
         },
         className
       )}
-      onClick={onClose}
     >
       <div className="pr-5 pt-2">
         <Icon aria-label="Alert Icon" className="block size-12" fontSize={12} />

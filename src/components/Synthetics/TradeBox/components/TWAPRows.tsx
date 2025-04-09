@@ -6,7 +6,9 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { TWAPDuration } from "domain/synthetics/trade/twap/types";
 import { changeTWAPNumberOfPartsValue } from "domain/synthetics/trade/twap/utils";
 import { formatUsd } from "lib/numbers";
+import { MarketInfo } from "sdk/types/markets";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import NumberInput from "components/NumberInput/NumberInput";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
@@ -18,9 +20,32 @@ type Props = {
   setNumberOfParts: (numberOfParts: number) => void;
   setDuration: (duration: TWAPDuration) => void;
   sizeUsd: bigint | undefined;
+  marketInfo: MarketInfo | undefined;
 };
 
-const TwapRows = ({ duration, numberOfParts, setNumberOfParts, setDuration, sizeUsd }: Props) => {
+const HOURS_IN_A_DAY = 24;
+
+const getTwapDurationText = (duration: TWAPDuration) => {
+  if (duration.hours > HOURS_IN_A_DAY * 2) {
+    const daysMessage = t`${duration.hours / HOURS_IN_A_DAY} days`;
+
+    return duration.hours % HOURS_IN_A_DAY > 0
+      ? `${daysMessage} and ${duration.hours % HOURS_IN_A_DAY} hours`
+      : daysMessage;
+  }
+
+  if (duration.hours > 0 && duration.minutes > 0) {
+    return t`${duration.hours} hours and ${duration.minutes} minutes`;
+  }
+
+  if (duration.hours > 0) {
+    return t`${duration.hours} hours`;
+  }
+
+  return t`${duration.minutes} minutes`;
+};
+
+const TwapRows = ({ duration, numberOfParts, setNumberOfParts, setDuration, sizeUsd, marketInfo }: Props) => {
   const { savedTWAPNumberOfParts } = useSettings();
   const tradeboxChanges = useTradeboxChanges();
 
@@ -50,6 +75,15 @@ const TwapRows = ({ duration, numberOfParts, setNumberOfParts, setDuration, size
       <SyntheticsInfoRow label={t`Size per part`} className="mb-14">
         {formatUsd(typeof sizeUsd === "bigint" && numberOfParts ? sizeUsd / BigInt(numberOfParts) : 0n)}
       </SyntheticsInfoRow>
+
+      {marketInfo && typeof sizeUsd === "bigint" && sizeUsd > 0n && (
+        <AlertInfoCard>
+          <Trans>
+            This TWAP order will execute {numberOfParts} long increase orders of {formatUsd(sizeUsd)} each over the next{" "}
+            {getTwapDurationText(duration)} for the {marketInfo.name} pool.
+          </Trans>
+        </AlertInfoCard>
+      )}
     </div>
   );
 };
