@@ -277,7 +277,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         basePriceImpactDeltaUsd > 0,
         userReferralInfo
       );
-      values.positionFeeUsd = 0n;
+      values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
       values.feeDiscountUsd = positionFeeInfo.discountUsd;
       values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
     }
