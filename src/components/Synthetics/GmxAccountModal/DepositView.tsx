@@ -603,29 +603,21 @@ function useMultichainNetworkComposeFeeUsd(): {
   });
   const composeGas = composeGasQuery.data;
 
-  // const settlementChainGasPriceQuery = useSWR<bigint>(
-  //   settlementChainPublicClient ? ["gasPrice", settlementChainId] : null,
-  //   {
-  //     fetcher: async () => {
-  //       return await settlementChainPublicClient!.getGasPrice();
-  //     },
-  //   }
-  // );
-  // const settlementChainGasPrice = settlementChainGasPriceQuery.data;
-
-  // const { pricesData: settlementChainTokenPricesData } = useTokenRecentPricesRequest(settlementChainId);
-
-  // const settlementChainNativeTokenPrices = settlementChainTokenPricesData?.[zeroAddress];
-  // const settlementChainNativeTokenDecimals = BigInt(getToken(settlementChainId, zeroAddress)?.decimals ?? 18);
-
-  // const composeGasFee =
-  //   ((composeGas ?? 0n) * (settlementChainGasPrice ?? 0n) * (settlementChainNativeTokenPrices?.maxPrice ?? 0n)) /
-  //   10n ** settlementChainNativeTokenDecimals;
-
   return {
     composeGas,
   };
 }
+
+// i gave gas | was given                     | was spent
+// 10m        | 27.2m                         | 208k
+// 174k       | 3.2m (from estimated)         | 208k
+// 1          | failed                        |
+// 1k         | failed                        |
+// 100k       | failed                        |
+// 174k       | 3.2m (from estimated)         | 208k
+// 157k       | 3.2m (from estimated - 10%)   | 208k
+// 139k       | failed (from estimated - 20%) |
+// 122k       | failed (from estimated - 30%) |
 
 const SEND_MODE_TAXI = 0;
 
