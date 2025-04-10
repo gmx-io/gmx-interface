@@ -7,8 +7,8 @@ import useWallet from "lib/wallets/useWallet";
 import { DEFAULT_PERMIT_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
 
-import { createAndSignTokenPermit } from "./txns/tokenPermitUtils";
 import { SignedTokenPermit } from "sdk/types/tokens";
+import { createAndSignTokenPermit } from "./txns/tokenPermitUtils";
 
 export type TokenPermitsState = ReturnType<typeof useInitTokenPermitsState>;
 

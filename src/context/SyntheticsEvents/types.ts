@@ -1,4 +1,4 @@
-import { OrderTxnType, OrderType, UpdateOrderParams } from "domain/synthetics/orders";
+import { OrderTxnType, OrderType } from "domain/synthetics/orders";
 import { ExternalSwapQuote } from "sdk/types/trade";
 
 export type MultiTransactionStatus<TEventData> = {
@@ -126,7 +126,7 @@ export type SyntheticsEventsContextType = {
 };
 
 export type SetPendingOrder = (data: PendingOrderData | PendingOrderData[]) => void;
-export type SetPendingOrderUpdate = (data: UpdateOrderParams, remove?: "remove") => void;
+export type SetPendingOrderUpdate = (data: PendingOrderData, remove?: "remove") => void;
 export type SetPendingPosition = (update: PendingPositionUpdate) => void;
 export type SetPendingDeposit = (data: PendingDepositData) => void;
 export type SetPendingWithdrawal = (data: PendingWithdrawalData) => void;
@@ -169,6 +169,9 @@ export type PendingOrderData = {
   swapPath: string[];
   externalSwapQuote: ExternalSwapQuote | undefined;
   initialCollateralDeltaAmount: bigint;
+  triggerPrice: bigint;
+  acceptablePrice: bigint;
+  autoCancel: boolean;
   minOutputAmount: bigint;
   sizeDeltaUsd: bigint;
   isLong: boolean;

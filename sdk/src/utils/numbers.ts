@@ -671,6 +671,15 @@ export function roundToOrder(n: bigint, significantDigits = 1) {
   return (n / expandDecimals(1, decimals)) * expandDecimals(1, decimals);
 }
 
+export function roundBigIntToDecimals(value: bigint, tokenDecimals: number, roundToDecimals: number): bigint {
+  const excessDecimals = tokenDecimals - roundToDecimals;
+  const divisor = BigInt(10 ** excessDecimals);
+  const scaledValue = value / divisor;
+  const remainder = scaledValue % 10n;
+  const roundedValue = remainder >= 5n ? scaledValue + 10n - remainder : scaledValue - remainder;
+  return roundedValue * divisor;
+}
+
 export function minBigNumber(...args: bigint[]) {
   if (!args.length) return undefined;
 

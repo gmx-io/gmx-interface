@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
@@ -14,11 +14,14 @@ import {
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectExternalSwapQuote } from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  makeSelectSubaccountForActions,
+  selectChainId,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectAddTokenPermit } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import {
+  selectNeedTradeboxPayTokenApproval,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxFindSwapPath,
   selectTradeboxFromToken,
@@ -28,19 +31,17 @@ import {
   selectTradeboxMaxLeverage,
   selectTradeboxSelectedPosition,
   selectTradeboxState,
-  selectTradeboxSwapAmounts,
+  selectTradeBoxTokensAllowanceLoaded,
   selectTradeboxToToken,
   selectTradeboxToTokenAmount,
   selectTradeboxTradeFlags,
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
-import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getNameByOrderType, substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
-import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
-import { getNeedTokenApprove } from "domain/synthetics/tokens/utils";
 import {
   getIncreasePositionAmounts,
   getNextPositionValuesForIncreaseTrade,
@@ -73,23 +74,6 @@ interface TradeboxButtonStateOptions {
   setToTokenInputValue: (value: string, shouldResetPriceImpactWarning: boolean) => void;
 }
 
-const selectTradeboxPayAmount = createSelector((q) => {
-  const { isSwap, isIncrease } = q(selectTradeboxTradeFlags);
-  const isWrapOrUnwrap = q(selectTradeboxIsWrapOrUnwrap);
-
-  if (isSwap && !isWrapOrUnwrap) {
-    const swapAmounts = q(selectTradeboxSwapAmounts);
-    return swapAmounts?.amountIn;
-  }
-
-  if (isIncrease) {
-    const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
-    return increaseAmounts?.initialCollateralAmount;
-  }
-
-  return undefined;
-});
-
 export function useTradeboxButtonState({ account, setToTokenInputValue }: TradeboxButtonStateOptions): {
   text: ReactNode;
   tooltipContent: ReactNode | null;
@@ -113,19 +97,10 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
   const toToken = useSelector(selectTradeboxToToken);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
-  const payAmount = useSelector(selectTradeboxPayAmount);
 
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
-
-  const {
-    tokensAllowanceData,
-
-    isLoaded: isAllowanceLoaded,
-  } = useTokensAllowanceData(chainId, {
-    spenderAddress: getContract(chainId, "SyntheticsRouter"),
-    tokenAddresses: fromToken ? [fromToken.address] : [],
-  });
-  const needPayTokenApproval = getNeedTokenApprove(tokensAllowanceData, fromToken?.address, payAmount);
+  const isAllowanceLoaded = useSelector(selectTradeBoxTokensAllowanceLoaded);
+  const needPayTokenApproval = useSelector(selectNeedTradeboxPayTokenApproval);
   const [isApproving, setIsApproving] = useState(false);
 
   useEffect(() => {
