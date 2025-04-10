@@ -3,6 +3,7 @@ import { BaseContract, ethers } from "ethers";
 import { ReactNode } from "react";
 import { withRetry } from "viem";
 
+import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import {
   getContract,
   getExchangeRouterContract,
@@ -12,7 +13,6 @@ import {
 } from "config/contracts";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
-import { extractDataFromError, getErrorMessage } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderSimulatedMetric, sendTxnErrorMetric } from "lib/metrics/utils";
@@ -22,19 +22,17 @@ import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampR
 import { abis } from "sdk/abis";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { ExternalSwapQuote } from "sdk/types/trade";
-import { extractError } from "sdk/utils/contracts";
+import { CustomErrorName, ErrorData, extractDataFromError, extractTxnError, isContractError } from "sdk/utils/errors";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
 
-import { CustomErrorName } from "components/Synthetics/TradeHistory/TradeHistoryRow/utils/CustomErrorName";
-import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
-
+import { getErrorMessage } from "components/Errors/errorToasts";
 import { isGlvEnabled } from "../markets/glv";
 
 export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;
 };
 
-type SimulateExecuteParams = {
+export type SimulateExecuteParams = {
   account: string;
   createMulticallPayload: string[];
   primaryPriceOverrides: PriceOverrides;
@@ -57,6 +55,10 @@ type SimulateExecuteParams = {
   };
   externalSwapQuote?: ExternalSwapQuote;
 };
+
+export function isSimulationPassed(errorData: ErrorData) {
+  return isContractError(errorData, CustomErrorName.EndOfOracleSimulation);
+}
 
 export async function simulateExecuteTxn(chainId: number, p: SimulateExecuteParams) {
   const provider = getProvider(undefined, chainId);
@@ -160,7 +162,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
         retryCount: 2,
         delay: 200,
         shouldRetry: ({ error }) => {
-          const [message] = extractError(error);
+          const [message] = extractTxnError(error);
           return message?.includes("unsupported block number") ?? false;
         },
       }
@@ -257,7 +259,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
   }
 }
 
-function getSimulationPrices(chainId: number, tokensData: TokensData, primaryPricesMap: PriceOverrides) {
+export function getSimulationPrices(chainId: number, tokensData: TokensData, primaryPricesMap: PriceOverrides) {
   const tokenAddresses = Object.keys(tokensData);
 
   const primaryTokens: string[] = [];

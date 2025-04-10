@@ -29,7 +29,6 @@ import { Header } from "components/Header/Header";
 import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
-import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 
 import { HomeRoutes } from "./HomeRoutes";
 import { MainRoutes } from "./MainRoutes";
@@ -154,7 +153,6 @@ export function AppRoutes() {
         shouldHideRedirectModal={shouldHideRedirectModal}
       />
       <SettingsModal isSettingsVisible={isSettingsVisible} setIsSettingsVisible={setIsSettingsVisible} />
-      <SubaccountModal />
       <NotifyModal />
     </>
   );

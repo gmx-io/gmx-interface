@@ -20,9 +20,9 @@ import {
   multiplyBarValues,
   parseSymbolName,
 } from "domain/tradingview/utils";
+import { parseError } from "lib/errors";
 import { LoadingFailedEvent, LoadingStartEvent, LoadingSuccessEvent, getRequestId, metrics } from "lib/metrics";
 import { OracleFetcher } from "lib/oracleKeeperFetcher/types";
-import { parseError } from "lib/parseError";
 import { PauseableInterval } from "lib/PauseableInterval";
 import { sleep } from "lib/sleep";
 import {

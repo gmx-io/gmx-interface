@@ -18,7 +18,7 @@ import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider
 import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTxnsContext";
 import { SettingsContextProvider } from "context/SettingsContext/SettingsContextProvider";
 import { SorterContextProvider } from "context/SorterContext/SorterContextProvider";
-import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
+import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContextProvider";
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";

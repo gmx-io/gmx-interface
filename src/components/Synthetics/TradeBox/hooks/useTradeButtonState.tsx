@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
@@ -8,16 +8,20 @@ import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { get1InchSwapUrlFromAddresses } from "config/links";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import {
   usePositionsConstants,
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectExternalSwapQuote } from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
+  makeSelectSubaccountForActions,
+  selectChainId,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import { selectAddTokenPermit } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
+import {
+  selectNeedTradeboxPayTokenApproval,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxFindSwapPath,
   selectTradeboxFromToken,
@@ -27,19 +31,17 @@ import {
   selectTradeboxMaxLeverage,
   selectTradeboxSelectedPosition,
   selectTradeboxState,
-  selectTradeboxSwapAmounts,
+  selectTradeBoxTokensAllowanceLoaded,
   selectTradeboxToToken,
   selectTradeboxToTokenAmount,
   selectTradeboxTradeFlags,
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
-import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getNameByOrderType, substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
-import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
-import { getNeedTokenApprove } from "domain/synthetics/tokens/utils";
 import {
   getIncreasePositionAmounts,
   getNextPositionValuesForIncreaseTrade,
@@ -65,30 +67,12 @@ import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";
 
 import { tradeTypeLabels } from "../tradeboxConstants";
 import { useRequiredActions } from "./useRequiredActions";
-import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
 import { useTradeboxTransactions } from "./useTradeboxTransactions";
 
 interface TradeboxButtonStateOptions {
   account?: string;
   setToTokenInputValue: (value: string, shouldResetPriceImpactWarning: boolean) => void;
 }
-
-const selectTradeboxPayAmount = createSelector((q) => {
-  const { isSwap, isIncrease } = q(selectTradeboxTradeFlags);
-  const isWrapOrUnwrap = q(selectTradeboxIsWrapOrUnwrap);
-
-  if (isSwap && !isWrapOrUnwrap) {
-    const swapAmounts = q(selectTradeboxSwapAmounts);
-    return swapAmounts?.amountIn;
-  }
-
-  if (isIncrease) {
-    const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
-    return increaseAmounts?.initialCollateralAmount;
-  }
-
-  return undefined;
-});
 
 export function useTradeboxButtonState({ account, setToTokenInputValue }: TradeboxButtonStateOptions): {
   text: ReactNode;
@@ -113,19 +97,10 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
   const toToken = useSelector(selectTradeboxToToken);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
-  const payAmount = useSelector(selectTradeboxPayAmount);
 
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
-
-  const {
-    tokensAllowanceData,
-
-    isLoaded: isAllowanceLoaded,
-  } = useTokensAllowanceData(chainId, {
-    spenderAddress: getContract(chainId, "SyntheticsRouter"),
-    tokenAddresses: fromToken ? [fromToken.address] : [],
-  });
-  const needPayTokenApproval = getNeedTokenApprove(tokensAllowanceData, fromToken?.address, payAmount);
+  const isAllowanceLoaded = useSelector(selectTradeBoxTokensAllowanceLoaded);
+  const needPayTokenApproval = useSelector(selectNeedTradeboxPayTokenApproval);
   const [isApproving, setIsApproving] = useState(false);
 
   useEffect(() => {
@@ -228,10 +203,10 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
 
   const { setPendingTxns } = usePendingTxns();
   const { openConnectModal } = useConnectModal();
-  const { summaryExecutionFee } = useTPSLSummaryExecutionFee();
   const { requiredActions } = useRequiredActions();
 
-  const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, requiredActions);
+  const subaccount = useSelector(makeSelectSubaccountForActions(requiredActions));
+  const addTokenPermit = useSelector(selectAddTokenPermit);
 
   const { onSubmitWrapOrUnwrap, onSubmitSwap, onSubmitIncreaseOrder, onSubmitDecreaseOrder, slippageInputId } =
     useTradeboxTransactions({
@@ -267,6 +242,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
         setPendingTxns: () => null,
         infoTokens: {},
         chainId,
+        addTokenPermit,
         onApproveFail: () => {
           userAnalytics.pushEvent<TokenApproveResultEvent>({
             event: "TokenApproveAction",
@@ -289,7 +265,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
     } else if (isSwap) {
       txnPromise = onSubmitSwap();
     } else if (isIncrease) {
-      txnPromise = onSubmitIncreaseOrder();
+      txnPromise = Promise.resolve(onSubmitIncreaseOrder());
     } else {
       txnPromise = onSubmitDecreaseOrder();
     }
@@ -322,6 +298,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
     chainId,
     isApproving,
     signer,
+    addTokenPermit,
     onSubmitWrapOrUnwrap,
     onSubmitSwap,
     onSubmitIncreaseOrder,

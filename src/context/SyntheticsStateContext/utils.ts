@@ -5,7 +5,7 @@ import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { ExternalSwapQuote, TradeMode, TradeType } from "sdk/types/trade";
 import { LRUCache } from "sdk/utils/LruCache";
 
-import type { SyntheticsState } from "./SyntheticsStateContextProvider";
+import { SyntheticsState } from "./SyntheticsStateContextProvider";
 
 export { useSyntheticsStateSelector as useSelector } from "./SyntheticsStateContextProvider";
 
