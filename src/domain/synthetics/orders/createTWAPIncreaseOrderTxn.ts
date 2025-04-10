@@ -17,7 +17,7 @@ import { DecreasePositionSwapType, OrderType } from "./types";
 import { getExternalCallsParams } from "../externalSwaps/utils";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { TWAPDuration } from "../trade/twap/types";
-import { createTWAPUiFeeReceiver } from "../trade/twap/uiFeeReciver";
+import { createTWAPUiFeeReceiver } from "../trade/twap/uiFeeReceiver";
 
 const { ZeroAddress } = ethers;
 

@@ -1916,10 +1916,6 @@ msgstr "GMX Alerts"
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-#~ msgid "Open {longOrShortText} {prefix}{tokenSymbol}"
-#~ msgstr "Open {longOrShortText} {prefix}{tokenSymbol}"
-
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Show details"
 msgstr "Show details"
@@ -3058,10 +3054,6 @@ msgstr "{col2}"
 #: src/pages/Exchange/Exchange.tsx
 msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
-
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-#~ msgid "Liq. {longOrShortText} {prefix}{tokenSymbol}"
-#~ msgstr "Liq. {longOrShortText} {prefix}{tokenSymbol}"
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Leave at least {0} ETH for gas"

@@ -1916,10 +1916,6 @@ msgstr ""
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr ""
 
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-#~ msgid "Open {longOrShortText} {prefix}{tokenSymbol}"
-#~ msgstr ""
-
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Show details"
 msgstr ""
@@ -3058,10 +3054,6 @@ msgstr ""
 #: src/pages/Exchange/Exchange.tsx
 msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "Verringert {tokenSymbol} {longOrShortText}, -{0} USD."
-
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-#~ msgid "Liq. {longOrShortText} {prefix}{tokenSymbol}"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Leave at least {0} ETH for gas"

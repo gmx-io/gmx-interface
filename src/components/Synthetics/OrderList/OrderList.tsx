@@ -18,7 +18,8 @@ import {
   PositionOrderInfo,
   SwapOrderInfo,
   isLimitOrderType,
-  isSwapOrderType,
+  isPositionOrderInfo,
+  isSwapOrderInfo,
   isTriggerDecreaseOrderType,
   sortPositionOrders,
   sortSwapOrders,
@@ -311,10 +312,10 @@ function useFilteredOrders({
     const { swapOrders, positionOrders } = Object.values(ordersResponse.ordersInfoData || {}).reduce(
       (acc, order) => {
         if (isLimitOrderType(order.orderType) || isTriggerDecreaseOrderType(order.orderType)) {
-          if (isSwapOrderType(order.orderType)) {
+          if (isSwapOrderInfo(order)) {
             acc.swapOrders.push(order);
-          } else {
-            acc.positionOrders.push(order as PositionOrderInfo);
+          } else if (isPositionOrderInfo(order)) {
+            acc.positionOrders.push(order);
           }
         }
         return acc;
