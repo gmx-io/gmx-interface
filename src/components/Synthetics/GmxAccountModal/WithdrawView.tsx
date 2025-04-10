@@ -1,7 +1,9 @@
 import { Trans } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import { useAccount } from "wagmi";
 
-import { BASE_MAINNET, getChainName } from "config/chains";
+import { getChainName } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import { MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "context/GmxAccountContext/config";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
@@ -24,8 +26,9 @@ import { Selector } from "./Selector";
 
 export const WithdrawView = () => {
   const [settlementChainId] = useGmxAccountSettlementChainId();
+  const { chainId: walletChainId } = useAccount();
   const [inputValue, setInputValue] = useState("");
-  const [selectedNetwork, setSelectedNetwork] = useState<number>(BASE_MAINNET);
+  const [selectedNetwork, setSelectedNetwork] = useState<number | undefined>(walletChainId);
 
   useEffect(() => {
     const sourceChains = Object.keys(MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChainId] || {}).map(Number);
@@ -34,7 +37,7 @@ export const WithdrawView = () => {
       return;
     }
 
-    if (sourceChains.includes(selectedNetwork)) {
+    if (selectedNetwork !== undefined && sourceChains.includes(selectedNetwork)) {
       return;
     }
 
@@ -139,12 +142,27 @@ export const WithdrawView = () => {
             placeholder="Select network"
             button={
               <div className="flex items-center gap-8">
-                <img
-                  src={CHAIN_ID_TO_NETWORK_ICON[selectedNetwork]}
-                  alt={getChainName(selectedNetwork)}
-                  className="size-20"
-                />
-                <span className="text-body-large">{getChainName(selectedNetwork)}</span>
+                {selectedNetwork !== undefined ? (
+                  <>
+                    <img
+                      src={CHAIN_ID_TO_NETWORK_ICON[selectedNetwork]}
+                      alt={getChainName(selectedNetwork)}
+                      className="size-20"
+                    />
+                    <span className="text-body-large">{getChainName(selectedNetwork)}</span>
+                  </>
+                ) : (
+                  <>
+                    <Skeleton
+                      baseColor="#B4BBFF1A"
+                      highlightColor="#B4BBFF1A"
+                      width={20}
+                      height={20}
+                      borderRadius={10}
+                    />
+                    <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={40} height={16} />
+                  </>
+                )}
               </div>
             }
             options={networks}

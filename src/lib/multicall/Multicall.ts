@@ -1,7 +1,17 @@
-import { ClientConfig, HttpTransportConfig, createPublicClient, http } from "viem";
-import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, base, sonic } from "viem/chains";
+import { Chain, ClientConfig, HttpTransportConfig, createPublicClient, http } from "viem";
+import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, base, optimismSepolia, sonic } from "viem/chains";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BASE_MAINNET, SONIC_MAINNET } from "config/chains";
+import { CustomErrorsAbi } from "ab/testMultichain/getCustomErrorsAbi/getCustomErrorsAbi";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  BASE_MAINNET,
+  OPTIMISM_SEPOLIA,
+  SONIC_MAINNET,
+  UiSupportedChain,
+} from "config/chains";
 import { isWebWorker } from "config/env";
 import {
   MulticallErrorEvent,
@@ -20,7 +30,7 @@ import { abis as allAbis } from "sdk/abis";
 
 export const MAX_TIMEOUT = 20000;
 
-const CHAIN_BY_CHAIN_ID = {
+const CHAIN_BY_CHAIN_ID: Record<UiSupportedChain, Chain> = {
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
   [SONIC_MAINNET]: sonic,
@@ -28,6 +38,7 @@ const CHAIN_BY_CHAIN_ID = {
 
   [AVALANCHE_FUJI]: avalancheFuji,
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
+  [OPTIMISM_SEPOLIA]: optimismSepolia,
 };
 
 export type MulticallProviderUrls = {
@@ -36,7 +47,7 @@ export type MulticallProviderUrls = {
 };
 
 const BATCH_CONFIGS: Record<
-  number,
+  UiSupportedChain,
   {
     http: HttpTransportConfig["batch"];
     client: ClientConfig["batch"];
@@ -104,6 +115,18 @@ const BATCH_CONFIGS: Record<
     },
   },
   [ARBITRUM_SEPOLIA]: {
+    http: {
+      batchSize: 40,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
+  },
+  [OPTIMISM_SEPOLIA]: {
     http: {
       batchSize: 40,
       wait: 0,
@@ -212,7 +235,7 @@ export class Multicall {
         // Add Errors ABI to each contract ABI to correctly parse errors
         abis[contractCallConfig.contractAddress] = abis[contractCallConfig.contractAddress] || [
           ...allAbis[contractCallConfig.abiId],
-          ...allAbis.CustomErrors,
+          ...CustomErrorsAbi,
         ];
 
         const abi = abis[contractCallConfig.contractAddress];

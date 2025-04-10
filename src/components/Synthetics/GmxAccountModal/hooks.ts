@@ -235,8 +235,6 @@ export async function fetchGmxAccountTokenBalancesData(
 
   tradableTokenAddressesSet.add(zeroAddress);
 
-  tradableTokenAddressesSet.add("0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773");
-
   for (const marketAddress in MARKETS[settlementChainId]) {
     const marketConfig = MARKETS[settlementChainId][marketAddress];
 
@@ -304,12 +302,13 @@ export function useGmxAccountTokensData(): TokensData {
 
   const gmxAccountTokensData: TokensData = useMemo(() => {
     const gmxAccountTokensData: TokensData = {};
-    console.log("tokenBalances", tokenBalances);
+
     for (const tokenAddress in tokenBalances) {
       const token = getToken(settlementChainId, tokenAddress);
-      // if (!pricesData || !(tokenAddress in pricesData)) {
-      //   continue;
-      // }
+      // TODO: decide whether to block the token if prices are not available
+      if (!pricesData || !(tokenAddress in pricesData)) {
+        continue;
+      }
 
       if (tokenBalances[tokenAddress] <= 0n) {
         continue;
@@ -317,10 +316,7 @@ export function useGmxAccountTokensData(): TokensData {
 
       gmxAccountTokensData[tokenAddress] = {
         ...token,
-        prices: pricesData?.[tokenAddress] ?? {
-          minPrice: 1n,
-          maxPrice: 1n,
-        },
+        prices: pricesData[tokenAddress],
         balance: tokenBalances[tokenAddress],
       };
     }

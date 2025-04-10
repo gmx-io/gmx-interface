@@ -67,7 +67,6 @@ export async function fetchMultichainTokenBalances(
     ).then(
       (res) => {
         const tokensChainData: Record<string, bigint> = {};
-
         for (const tokenAddress of tokenAddresses) {
           if (tokenAddress === zeroAddress) {
             const balance = res.data[tokenAddress].balanceOf.returnValues[0] ?? 0n;

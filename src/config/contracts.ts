@@ -1,4 +1,5 @@
 import { Contract, ContractRunner, ethers, InterfaceAbi } from "ethers";
+import type { Address } from "viem";
 
 import { getContract, CONTRACTS } from "sdk/configs/contracts";
 import { GlvRouter__factory } from "typechain-types";
@@ -32,7 +33,7 @@ export const getGlvRouterContract = makeGetContract("GlvRouter", GlvRouter__fact
 
 export const getZeroAddressContract = (provider?: ContractRunner) => new Contract(ZeroAddress, [], provider);
 
-export function tryGetContract(chainId: number, name: string): string | undefined {
+export function tryGetContract(chainId: number, name: string): Address | undefined {
   try {
     return getContract(chainId, name);
   } catch (e) {

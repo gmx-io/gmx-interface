@@ -2,7 +2,7 @@ import { zeroAddress } from "viem";
 
 import type { Token, TokenAddressType, TokenCategory } from "types/tokens";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, OPTIMISM_SEPOLIA } from "./chains";
 import { getContract } from "./contracts";
 
 export const NATIVE_TOKEN_ADDRESS = zeroAddress;
@@ -1488,6 +1488,17 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isPlatformToken: true,
     },
   ],
+  // [OPTIMISM_SEPOLIA]: [
+  //   {
+  //     name: "USD Coin Stargate",
+  //     symbol: "USDC.SG",
+  //     address: "0x488327236B65C61A6c083e8d811a4E0D3d1D4268",
+  //     decimals: 6,
+  //     isStable: true,
+  //     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+  //     coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
+  //   },
+  // ],
 };
 
 export const TOKEN_COLOR_MAP = {

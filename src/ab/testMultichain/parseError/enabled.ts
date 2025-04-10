@@ -1,54 +1,19 @@
 import cryptoJs from "crypto-js";
-import { ethers } from "ethers";
+import { Abi, Address, decodeErrorResult } from "viem";
 
-import { extractDataFromError, getIsUserError, getIsUserRejectedError } from "lib/contracts/transactionErrors";
-import { OrderErrorContext } from "lib/metrics/types";
 import { abis } from "sdk/abis";
-import { TxErrorType, extractError } from "sdk/utils/contracts";
-
-export type ErrorLike = {
-  message?: string;
-  stack?: string;
-  name?: string;
-  code?: number;
-  data?: any;
-  error?: any;
-  errorSource?: string;
-  errorContext?: OrderErrorContext;
-  parentError?: ErrorLike;
-  isAdditinalValidationPassed?: boolean;
-  additionalValidationType?: string;
-  info?: {
-    error?: ErrorLike;
-  };
-};
-
-export type ErrorData = {
-  errorContext?: OrderErrorContext;
-  errorMessage?: string;
-  errorGroup?: string;
-  errorStack?: string;
-  errorStackHash?: string;
-  errorStackGroup?: string;
-  errorName?: string;
-  contractError?: string;
-  contractErrorArgs?: any;
-  isUserError?: boolean;
-  isUserRejectedError?: boolean;
-  reason?: string;
-  txErrorType?: TxErrorType;
-  txErrorData?: unknown;
-  errorSource?: string;
-  isAdditinalValidationPassed?: boolean;
-  additionalValidationType?: string;
-  parentError?: ErrorData;
-  errorDepth?: number;
-};
+import { ErrorData, ErrorLike, OrderErrorContext } from "sdk/utils/errors/parseError";
+import {
+  TxErrorType,
+  extractDataFromError,
+  extractTxnError,
+  getIsUserError,
+  getIsUserRejectedError,
+} from "sdk/utils/errors/transactionsErrors";
 
 const URL_REGEXP =
   /((?:http[s]?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\.[a-z]{2,6}\b(?::\d+)?)(?:[-a-zA-Z0-9@:%_\\+.~#?&\\/\\/=]*)/gi;
 
-const customErrors = new ethers.Contract(ethers.ZeroAddress, abis.CustomErrorsArbitrumSepolia);
 const MAX_ERRORS_DEPTH = 1;
 
 export function parseError(error: ErrorLike | string | undefined, errorDepth = 0): ErrorData | undefined {
@@ -91,12 +56,12 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
     }
 
     try {
-      let txError: ReturnType<typeof extractError> | undefined;
+      let txError: ReturnType<typeof extractTxnError> | undefined;
 
       if (errorInfo) {
-        txError = extractError(errorInfo);
+        txError = extractTxnError(errorInfo);
       } else if (error && typeof error === "object") {
-        txError = extractError(error);
+        txError = extractTxnError(error);
       }
 
       if (txError && txError.length) {
@@ -114,10 +79,13 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
     if (errorMessage) {
       const errorData = extractDataFromError(errorMessage) ?? extractDataFromError((error as any)?.message);
       if (errorData) {
-        const parsedError = customErrors.interface.parseError(errorData);
+        const parsedError = decodeErrorResult({
+          abi: abis.CustomErrorsArbitrumSepolia as Abi,
+          data: errorData as Address,
+        });
 
         if (parsedError) {
-          contractError = parsedError.name;
+          contractError = parsedError.errorName;
           contractErrorArgs = parsedError.args;
         }
       }

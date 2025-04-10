@@ -1,8 +1,7 @@
 import { ethers } from "ethers";
 import { useMemo } from "react";
 
-import { isMarketEnabled } from "config/markets";
-import { MARKETS } from "config/markets";
+import { MARKETS, isMarketEnabled } from "config/markets";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 
 import { MarketsData } from "./types";
@@ -31,8 +30,6 @@ export function useMarkets(chainId: number): MarketsResult {
         }
 
         try {
-          console.log({ market });
-
           const indexToken = getToken(chainId, convertTokenAddress(chainId, market.indexTokenAddress, "native"));
           const longToken = getToken(chainId, market.longTokenAddress);
           const shortToken = getToken(chainId, market.shortTokenAddress);

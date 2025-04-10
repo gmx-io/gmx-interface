@@ -13,12 +13,12 @@ import { isMarketOrderType } from "sdk/utils/orders";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
+import { Subaccount } from "../gassless/txns/subaccountUtils";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 import { prepareOrderTxn } from "./prepareOrderTxn";
-import { simulateExecuteTxn } from "../../../ab/testMultichain/simulateExecuteTxn";
+import { simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
-import { Subaccount } from "../gassless/txns/subaccountUtils";
 const { ZeroAddress } = ethers;
 
 export type SwapOrderParams = {

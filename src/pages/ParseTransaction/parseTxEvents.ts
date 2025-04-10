@@ -1,6 +1,7 @@
 import * as ethers from "ethers";
 import { Abi, Hash, parseEventLogs, ParseEventLogsReturnType, PublicClient } from "viem";
 
+import { CustomErrorsAbi } from "ab/testMultichain/getCustomErrorsAbi/getCustomErrorsAbi";
 import { expandDecimals } from "lib/numbers";
 import { LogEntry } from "pages/ParseTransaction/types";
 import { abis } from "sdk/abis";
@@ -19,7 +20,7 @@ const PANIC_MAP = {
   0x51: "call a zero-initialized variable of internal function type.",
 };
 
-const errorsInterface = new ethers.Interface(abis.CustomErrorsArbitrumSepolia);
+const errorsInterface = new ethers.Interface(CustomErrorsAbi);
 const eventEmitterInterface = new ethers.Interface(abis.EventEmitter);
 const defaultAbiCoder = new ethers.AbiCoder();
 
@@ -51,6 +52,14 @@ function parseError(reasonBytes, shouldThrow = true) {
     }
     throw new Error(`Could not parse errorBytes ${reasonBytes}`);
   }
+}
+
+export function convertToContractPrice(price: bigint, tokenDecimals: number) {
+  return price / expandDecimals(1, tokenDecimals);
+}
+
+export function convertFromContractPrice(price: bigint, tokenDecimals: number) {
+  return price * expandDecimals(1, tokenDecimals);
 }
 
 function parseEvent(event: ParseEventLogsReturnType<Abi, undefined, true, undefined>[number]) {

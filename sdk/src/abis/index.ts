@@ -7,6 +7,7 @@ import ExchangeRouterArbitrumSepolia from "./arbitrumSepolia/ExchangeRouter.json
 import GelatoRelayRouterArbitrumSepolia from "./arbitrumSepolia/GelatoRelayRouter.json";
 import GlvReaderArbitrumSepolia from "./arbitrumSepolia/GlvReader.json";
 import GlvRouterArbitrumSepolia from "./arbitrumSepolia/GlvRouter.json";
+import LayerZeroProviderArbitrumSepolia from "./arbitrumSepolia/LayerZeroProvider.json";
 import MultichainClaimsRouterArbitrumSepolia from "./arbitrumSepolia/MultichainClaimsRouter.json";
 import MultichainGlvRouterArbitrumSepolia from "./arbitrumSepolia/MultichainGlvRouter.json";
 import MultichainGmRouterArbitrumSepolia from "./arbitrumSepolia/MultichainGmRouter.json";
@@ -131,7 +132,8 @@ export type AbiId =
   | "SubaccountGelatoRelayRouterArbitrumSepolia"
   | "SubaccountRouterArbitrumSepolia"
   | "SyntheticsReaderArbitrumSepolia"
-  | "TimelockArbitrumSepolia";
+  | "TimelockArbitrumSepolia"
+  | "LayerZeroProviderArbitrumSepolia";
 
 export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   CustomErrors: CustomErrors.abi,
@@ -199,4 +201,5 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   SubaccountGelatoRelayRouterArbitrumSepolia: SubaccountGelatoRelayRouterArbitrumSepolia.abi,
   SubaccountRouterArbitrumSepolia: SubaccountRouterArbitrumSepolia.abi,
   TimelockArbitrumSepolia: TimelockArbitrumSepolia.abi,
+  LayerZeroProviderArbitrumSepolia: LayerZeroProviderArbitrumSepolia.abi,
 } satisfies Record<AbiId, any> as any;

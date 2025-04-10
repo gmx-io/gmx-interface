@@ -10,8 +10,8 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import externalLink from "img/ic_new_link_20.svg";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { CHAIN_ID_TO_EXPLORER_NAME, CHAIN_ID_TO_TX_URL_BUILDER } from "./constants";
-import { formatTradeActionTimestamp } from "../../../ab/testMultichain/shared";
+import { CHAIN_ID_TO_EXPLORER_NAME, CHAIN_ID_TO_TX_URL_BUILDER } from "../../../lib/chains/blockExplorers";
+import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
 
 export const TransactionDetailsView = () => {
   const [selectedTransactionHash] = useGmxAccountSelectedTransactionHash();

@@ -41,6 +41,7 @@
     "@headlessui/react": "1.7.19",
     "@layerzerolabs/lz-definitions": "3.0.83",
     "@layerzerolabs/lz-v2-utilities": "3.0.85",
+    "@layerzerolabs/scan-client": "0.0.8",
     "@lingui/core": "4.10.0",
     "@lingui/macro": "4.11.3",
     "@lingui/react": "4.10.0",

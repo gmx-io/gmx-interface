@@ -13,10 +13,9 @@ import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
-import { simulateExecuteTxn } from "../../../ab/testMultichain/simulateExecuteTxn";
+import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
-import type { DepositUtils } from "typechain-types-arbitrum-sepolia/ExchangeRouter";
 
 export type CreateDepositParams = {
   account: string;

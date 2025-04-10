@@ -18,15 +18,15 @@ import { applySlippageToPrice } from "sdk/utils/trade";
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
 import { getExternalCallsParams } from "../externalSwaps/utils";
+import { Subaccount } from "../gassless/txns/subaccountUtils";
 import { getPositionKey } from "../positions";
 import { createCancelEncodedPayload } from "./cancelOrdersTxn";
 import { DecreaseOrderParams as BaseDecreaseOrderParams, createDecreaseEncodedPayload } from "./createDecreaseOrderTxn";
 import { prepareOrderTxn } from "./prepareOrderTxn";
-import { PriceOverrides, simulateExecuteTxn } from "../../../ab/testMultichain/simulateExecuteTxn";
+import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderTxnType, OrderType } from "./types";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
 import { getPendingOrderFromParams } from "./utils";
-import { Subaccount } from "../gassless/txns/subaccountUtils";
 
 const { ZeroAddress } = ethers;
 

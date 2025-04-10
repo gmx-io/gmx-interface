@@ -1,6 +1,7 @@
 import { BaseContract } from "ethers";
 import { withRetry } from "viem";
 
+import { CustomErrorName, ErrorData, extractTxnError, isContractError, parseError } from "ab/testMultichain/parseError";
 import {
   getContract,
   getExchangeRouterContract,
@@ -15,7 +16,6 @@ import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { CustomErrorName, ErrorData, extractTxnError, isContractError, parseError } from "sdk/utils/errors";
 import { CreateOrderTxnParams } from "sdk/utils/orderTransactions";
 
 export type SimulateExecuteParams = {
@@ -153,7 +153,7 @@ export async function simulateExecution(chainId: number, p: SimulateExecuteParam
   }
 }
 
-export function getOrdersTriggerPriceOverrides(createOrderPayloads: CreateOrderTxnParams[]) {
+export function getOrdersTriggerPriceOverrides(createOrderPayloads: CreateOrderTxnParams<any>[]) {
   const overrides: PriceOverride[] = [];
 
   for (const co of createOrderPayloads) {

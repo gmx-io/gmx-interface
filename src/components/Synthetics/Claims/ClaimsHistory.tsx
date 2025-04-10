@@ -29,7 +29,7 @@ import { claimCollateralEventTitles } from "./ClaimHistoryRow/ClaimCollateralHis
 import { claimFundingFeeEventTitles } from "./ClaimHistoryRow/ClaimFundingFeesHistoryRow";
 import { ClaimHistoryRow } from "./ClaimHistoryRow/ClaimHistoryRow";
 import { ActionFilter } from "./filters/ActionFilter";
-import { formatTradeActionTimestamp } from "../../../ab/testMultichain/shared";
+import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
 
 import "./ClaimsHistory.scss";
 

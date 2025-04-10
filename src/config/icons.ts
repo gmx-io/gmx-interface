@@ -4,9 +4,9 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BASE_MAINNET,
-  // BASE_SEPOLIA,
-  // SONIC_BLAZE,
   SONIC_MAINNET,
+  OPTIMISM_SEPOLIA,
+  UiSupportedChain,
 } from "config/chains";
 
 import gmIcon from "img/gm_icon.svg";
@@ -28,6 +28,7 @@ import gmxIcon from "img/ic_gmx_40.svg";
 import gmxArbitrum from "img/ic_gmx_arbitrum.svg";
 import gmxAvax from "img/ic_gmx_avax.svg";
 import gmxOutlineIcon from "img/ic_gmxv1flat.svg";
+import optimismSepolia from "img/ic_op_24.svg";
 import sonicIcon from "img/ic_s_24.svg";
 
 type ChainIcons = {
@@ -78,7 +79,7 @@ const ICONS: Record<number | "common", ChainIcons> = {
   },
 };
 
-export const CHAIN_ID_TO_NETWORK_ICON = {
+export const CHAIN_ID_TO_NETWORK_ICON: Record<UiSupportedChain | 0, string> = {
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
   0: gmxIcon,
@@ -87,8 +88,7 @@ export const CHAIN_ID_TO_NETWORK_ICON = {
 
   [AVALANCHE_FUJI]: avalancheTestnet,
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
-  // [BASE_SEPOLIA]: baseIcon,
-  // [SONIC_BLAZE]: sonicIcon,
+  [OPTIMISM_SEPOLIA]: optimismSepolia,
 };
 
 export function getIcon(chainId: number | "common", label: keyof ChainIcons) {

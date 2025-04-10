@@ -1,35 +1,40 @@
 import cx from "classnames";
+import invert from "lodash/invert";
+import mapValues from "lodash/mapValues";
 import { useCallback, useMemo, useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 import { BiCopy } from "react-icons/bi";
 import { Link, useParams } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 import useSWR from "swr";
-import { Hash, isHash, PublicClient } from "viem";
+import { Hash, PublicClient, isHash } from "viem";
 import { usePublicClient } from "wagmi";
 
-import { parseTxEvents } from "ab/testMultichain/parseTxEvents";
 import {
   ARBITRUM,
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
   BASE_MAINNET,
+  OPTIMISM_SEPOLIA,
   SONIC_MAINNET,
+  UiSupportedChain,
   getExplorerUrl,
 } from "config/chains";
 import { getIcon } from "config/icons";
 import {
   getGlvDisplayName,
   getMarketFullName,
-  useMarketsInfoRequest,
   useMarketTokensDataRequest,
+  useMarketsInfoRequest,
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { getOrderTypeLabel } from "domain/synthetics/orders";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
+import { CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
 import { formatFactor, formatUsd } from "lib/numbers";
+import { parseTxEvents } from "pages/ParseTransaction/parseTxEvents";
 
 import Loader from "components/Common/Loader";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -61,32 +66,17 @@ import {
 } from "./formatting";
 import { LogEntryComponentProps } from "./types";
 
-const NETWORKS = {
-  arbitrum: ARBITRUM,
-  avalanche: AVALANCHE,
-  fuji: AVALANCHE_FUJI,
-  sonic: SONIC_MAINNET,
-  "arbitrum-sepolia": ARBITRUM_SEPOLIA,
-  base: BASE_MAINNET,
-};
-
-export const NETWORKS_BY_CHAIN_IDS = {
+export const NETWORKS_BY_CHAIN_IDS: Record<UiSupportedChain, string> = {
   [ARBITRUM]: "arbitrum",
   [AVALANCHE]: "avalanche",
   [AVALANCHE_FUJI]: "fuji",
   [BASE_MAINNET]: "base",
   [SONIC_MAINNET]: "sonic",
   [ARBITRUM_SEPOLIA]: "arbitrum-sepolia",
+  [OPTIMISM_SEPOLIA]: "optimism-sepolia",
 };
 
-const EXPLORER_TX_URLS = {
-  [ARBITRUM]: getExplorerUrl(ARBITRUM) + "tx/",
-  [AVALANCHE]: getExplorerUrl(AVALANCHE) + "tx/",
-  [AVALANCHE_FUJI]: getExplorerUrl(AVALANCHE_FUJI) + "tx/",
-  [BASE_MAINNET]: getExplorerUrl(BASE_MAINNET) + "tx/",
-  [SONIC_MAINNET]: getExplorerUrl(SONIC_MAINNET) + "tx/",
-  [ARBITRUM_SEPOLIA]: getExplorerUrl(ARBITRUM_SEPOLIA) + "tx/",
-};
+const NETWORKS = mapValues(invert(NETWORKS_BY_CHAIN_IDS), Number);
 
 export function ParseTransactionPage() {
   const { tx, network } = useParams<{ tx: string; network: string }>();
@@ -152,7 +142,7 @@ export function ParseTransactionPage() {
   return (
     <div className="mx-auto max-w-[1280px] pt-24">
       <h1 className="text-body-large mb-24">
-        Transaction: <ExternalLink href={EXPLORER_TX_URLS[chainId] + tx}>{tx}</ExternalLink>
+        Transaction: <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](tx)}>{tx}</ExternalLink>
       </h1>
       <Table className="mb-12 ">
         <tbody>

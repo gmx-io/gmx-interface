@@ -15,13 +15,13 @@ import { isMarketOrderType } from "sdk/utils/orders";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
+import { Subaccount } from "../gassless/txns/subaccountUtils";
 import { getPositionKey } from "../positions";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
 import { prepareOrderTxn } from "./prepareOrderTxn";
-import { PriceOverrides, simulateExecuteTxn } from "../../../ab/testMultichain/simulateExecuteTxn";
+import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { getPendingOrderFromParams } from "./utils";
-import { Subaccount } from "../gassless/txns/subaccountUtils";
 
 const { ZeroAddress } = ethers;
 

@@ -1,6 +1,7 @@
 import { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { createContext } from "use-context-selector";
-import { useChainId } from "wagmi";
+import { useAccount, useChainId } from "wagmi";
+
 import { ARBITRUM } from "sdk/configs/chains";
 
 import "./config";
@@ -57,7 +58,7 @@ export type GmxAccountContext = {
 export const context = createContext<GmxAccountContext | null>(null);
 
 export function GmxAccountContextProvider({ children }: PropsWithChildren) {
-  const walletChainId = useChainId();
+  const { chainId: walletChainId } = useAccount();
 
   const [modalOpen, setModalOpen] = useState<GmxAccountContext["modalOpen"]>("main");
 
@@ -79,6 +80,10 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
     useState<GmxAccountContext["selectedTransactionHash"]>(undefined);
 
   useEffect(() => {
+    if (walletChainId === undefined) {
+      return;
+    }
+
     const areChainsConnected =
       Object.keys(MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChainId]?.[walletChainId] || {}).length > 0;
 

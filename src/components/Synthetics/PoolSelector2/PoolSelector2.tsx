@@ -10,7 +10,7 @@ import type { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexT
 import { TradeType } from "domain/synthetics/trade";
 import { formatAmountHuman, formatPercentage, formatRatePercentage, formatUsd } from "lib/numbers";
 
-import { numberToState } from "ab/testMultichain/shared";
+import { numberToState } from "components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared";
 import { TableTd, TableTh, TableTheadTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 

@@ -21,7 +21,7 @@ import {
   infoRow,
   lines,
   tryGetError,
-} from "../../../../../ab/testMultichain/shared";
+} from "./shared";
 import { getActionTitle } from "../../keys";
 
 const ELLIPSIS = "...";

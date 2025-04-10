@@ -858,5 +858,19 @@ export const MARKETS: Record<string, Record<string, MarketConfig>> = {
       longTokenAddress: "0xF79cE1Cf38A09D572b021B4C5548b75A14082F12",
       shortTokenAddress: "0x3321Fd36aEaB0d5CdfD26f4A3A93E2D2aAcCB99f",
     },
+    // ETH/USD [WETH-USDC.SG]
+    "0xEaf29e5dD8d40A969c2a4d5D77Bc7a02D314C703": {
+      marketTokenAddress: "0xEaf29e5dD8d40A969c2a4d5D77Bc7a02D314C703",
+      indexTokenAddress: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
+      longTokenAddress: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
+      shortTokenAddress: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773",
+    },
+    // BTC/USD [BTC-USDC.SG]
+    "0xa28E22281d66aa813661A9e92214e76802328949": {
+      marketTokenAddress: "0xa28E22281d66aa813661A9e92214e76802328949",
+      indexTokenAddress: "0xF79cE1Cf38A09D572b021B4C5548b75A14082F12",
+      longTokenAddress: "0xF79cE1Cf38A09D572b021B4C5548b75A14082F12",
+      shortTokenAddress: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773",
+    },
   },
 };

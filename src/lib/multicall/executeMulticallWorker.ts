@@ -1,6 +1,5 @@
 import uniqueId from "lodash/uniqueId";
 
-import { MAX_TIMEOUT, MulticallProviderUrls } from "ab/testMultichain/Multicall";
 import { getAbFlags } from "config/ab";
 import { PRODUCTION_PREVIEW_KEY } from "config/localStorage";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
@@ -10,6 +9,8 @@ import { getCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
 import { sleep } from "lib/sleep";
 
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
+import { MulticallProviderUrls } from "./Multicall";
+import { MAX_TIMEOUT } from "./Multicall";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
 const executorWorker: Worker = new Worker(new URL("./multicall.worker", import.meta.url), { type: "module" });

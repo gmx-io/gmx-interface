@@ -11,9 +11,22 @@ export const BASE_MAINNET = 8453;
 export const SONIC_MAINNET = 146;
 // export const SONIC_BLAZE = 57054;
 export const ARBITRUM_SEPOLIA = 421614;
+export const OPTIMISM_SEPOLIA = 11155420;
 
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 export const SUPPORTED_CHAIN_IDS_DEV = [...SUPPORTED_CHAIN_IDS, AVALANCHE_FUJI, ARBITRUM_SEPOLIA];
+
+export type UiContractsChain = typeof ARBITRUM | typeof AVALANCHE | typeof AVALANCHE_FUJI | typeof ARBITRUM_SEPOLIA;
+export type UiSupportedChain =
+  | typeof ARBITRUM
+  | typeof AVALANCHE
+  | typeof AVALANCHE_FUJI
+  | typeof ARBITRUM_SEPOLIA
+  | typeof BASE_MAINNET
+  | typeof SONIC_MAINNET
+  | typeof OPTIMISM_SEPOLIA;
+export type UiSettlementChain = typeof ARBITRUM_SEPOLIA;
+export type UiSourceChain = typeof OPTIMISM_SEPOLIA;
 
 export const HIGH_EXECUTION_FEES_MAP = {
   [ARBITRUM]: 5, // 5 USD

@@ -20,7 +20,7 @@ import {
   selectGmxAccountSetSelectedTransactionHash,
   selectGmxAccountSettlementChainId,
   selectGmxAccountSetSettlementChainId,
-} from "./selectors";
+} from "./selectors/pure";
 
 export function useGmxAccountSelector<Selected>(selector: (s: GmxAccountContext) => Selected) {
   return useContextSelector(context as Context<GmxAccountContext>, selector) as Selected;

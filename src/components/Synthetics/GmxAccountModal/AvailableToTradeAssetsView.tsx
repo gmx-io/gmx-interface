@@ -1,7 +1,7 @@
 import { MessageDescriptor } from "@lingui/core";
 import { msg } from "@lingui/macro";
 import cx from "classnames";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { getChainName } from "config/chains";
 import { isSettlementChain } from "context/GmxAccountContext/config";
@@ -19,7 +19,7 @@ type FilterType = "all" | "gmxBalance" | "wallet";
 
 const FILTERS: FilterType[] = ["all", "gmxBalance", "wallet"];
 
-const FILTER_TITLLE_MAP: Record<FilterType, MessageDescriptor> = {
+const FILTER_TITLE_MAP: Record<FilterType, MessageDescriptor> = {
   all: msg`All`,
   gmxBalance: msg`Gmx Balance`,
   wallet: msg`Wallet`,
@@ -37,7 +37,7 @@ type DisplayToken = {
 const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChainFilter?: boolean }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
-  const titles = useLocalizedMap(FILTER_TITLLE_MAP);
+  const titles = useLocalizedMap(FILTER_TITLE_MAP);
 
   const filteredTokens = tokens.filter((token) => {
     const matchesSearch = token.symbol.toLowerCase().includes(searchQuery.toLowerCase());
@@ -113,6 +113,10 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
 
 const AssetListMultichain = () => {
   const gmxAccountTokensData = useGmxAccountTokensData();
+
+  useEffect(() => {
+    console.log({ gmxAccountTokensData });
+  }, [gmxAccountTokensData]);
 
   const displayTokens = Object.values(gmxAccountTokensData).map(
     (token): DisplayToken => ({

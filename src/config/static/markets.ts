@@ -625,6 +625,14 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
       enabled: true,
       listingDate: DEFAULT_LISTING,
     },
+    "0xEaf29e5dD8d40A969c2a4d5D77Bc7a02D314C703": {
+      enabled: true,
+      listingDate: DEFAULT_LISTING,
+    },
+    "0xa28E22281d66aa813661A9e92214e76802328949": {
+      enabled: true,
+      listingDate: DEFAULT_LISTING,
+    },
   },
 };
 

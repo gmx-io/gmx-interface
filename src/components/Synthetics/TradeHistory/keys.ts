@@ -6,7 +6,7 @@ import { getNameByOrderType } from "domain/synthetics/positions";
 import type { TradeActionType } from "domain/synthetics/tradeHistory";
 import { mustNeverExist } from "lib/types";
 
-import { getOrderActionText } from "../../../ab/testMultichain/shared";
+import { getOrderActionText } from "./TradeHistoryRow/utils/shared";
 
 type OrderTypes = keyof typeof OrderType;
 
