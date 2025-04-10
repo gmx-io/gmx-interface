@@ -8,6 +8,7 @@ import { applySwapImpactWithCap, getPriceImpactForSwap, getSwapFee } from "../fe
 import { getAvailableUsdLiquidityForCollateral, getOppositeCollateral, getTokenPoolType } from "../markets";
 import { getByKey } from "../objects";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
+import { TokenData, TokensData } from "types/tokens";
 
 export function getSwapCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
   const poolAmount = isLong ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;
@@ -21,20 +22,25 @@ export function getSwapCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
   return capacityUsd;
 }
 
-export function getSwapPathTokenAddresses({
-  chainId,
+export function getSwapPathTokens({
   marketsInfoData,
+  tokensData,
   initialCollateralAddress,
   swapPath,
 }: {
   marketsInfoData: MarketsInfoData;
+  tokensData: TokensData;
   chainId: number;
   initialCollateralAddress: string;
   swapPath: string[];
-}): string[] | undefined {
-  const tokenAddresses: string[] = [];
+}): TokenData[] | undefined {
+  let currentToken = getByKey(tokensData, initialCollateralAddress);
 
-  let currentTokenAddress: string = convertTokenAddress(chainId, initialCollateralAddress, "wrapped");
+  if (!currentToken) {
+    return undefined;
+  }
+
+  const tokens: TokenData[] = [currentToken];
 
   for (const marketAddress of swapPath) {
     const marketInfo = getByKey(marketsInfoData, marketAddress);
@@ -43,17 +49,22 @@ export function getSwapPathTokenAddresses({
       return undefined;
     }
 
-    const tokenOut = getOppositeCollateral(marketInfo, currentTokenAddress);
+    const tokenOut = getOppositeCollateral(marketInfo, currentToken?.address);
 
     if (!tokenOut) {
       return undefined;
     }
 
-    currentTokenAddress = tokenOut.address;
-    tokenAddresses.push(currentTokenAddress, marketInfo.indexTokenAddress);
+    currentToken = getByKey(tokensData, tokenOut.address);
+
+    if (!currentToken) {
+      return undefined;
+    }
+
+    tokens.push(currentToken, marketInfo.indexToken);
   }
 
-  return tokenAddresses;
+  return tokens;
 }
 export function getSwapPathOutputAddresses(p: {
   marketsInfoData: MarketsInfoData;

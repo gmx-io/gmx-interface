@@ -1,44 +1,232 @@
 import { t } from "@lingui/macro";
-import { AdditionalErrorParams, getTxnErrorToast } from "components/Errors/errorToasts";
-import {
-  PendingTransaction,
-  PendingTransactionData,
-  usePendingTxns,
-} from "context/PendingTxnsContext/PendingTxnsContext";
+import { getTxnErrorToast } from "components/Errors/errorToasts";
+import { PendingTransaction, usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { PendingOrderData, PendingPositionUpdate, useSyntheticsEvents } from "context/SyntheticsEvents";
+import { selectOrdersInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getPositionKey } from "domain/synthetics/positions/utils";
-import { useChainId } from "lib/chains";
-import { ErrorLike, parseError } from "lib/errors";
+import { parseError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
-import { makeTxnSentMetricsHandler, OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
-import { ReactNode, useCallback } from "react";
+import { OrderMetricId, sendOrderSimulatedMetric, sendTxnErrorMetric, sendTxnSentMetric } from "lib/metrics";
+import { getByKey } from "lib/objects";
+import { useCallback, useMemo } from "react";
+import { OrderInfo, OrdersInfoData } from "sdk/types/orders";
 import { isIncreaseOrderType } from "sdk/utils/orders";
-import { OrderCreatePayload, SecondaryCancelOrderParams, SecondaryUpdateOrderParams } from "./createOrderBuilders";
-import { OnSentParams } from "./walletTxnBuilder";
+import {
+  BatchOrderTxnParams,
+  CancelOrderTxnParams,
+  CreateOrderTxnParams,
+  DecreasePositionOrderParams,
+  getTotalExecutionFeeForOrders,
+  IncreasePositionOrderParams,
+  SwapOrderParams,
+  UpdateOrderTxnParams,
+} from "sdk/utils/orderTransactions";
+import { BatchOrderTxnEventParams, TxnEvent, TxnEventName } from "./walletTxnBuilder";
 
-type TxnCallbacksInput = {
-  successSent?: boolean;
-  error?: ErrorLike;
-  pendingTxn?: PendingTransaction;
+export type OrderTxnCallbackCtx = {
+  metricId: OrderMetricId;
+  slippageInputId: string | undefined;
+  additionalErrorContent?: React.ReactNode;
 };
 
-export function combineCallbacks<T>(cbcs: ((p: T) => void)[]) {
-  return (p: T) => {
-    cbcs.forEach((c) => c(p));
-  };
+export function useOrderTxnCallbacks() {
+  const { setPendingTxns } = usePendingTxns();
+  const { setPendingOrder, setPendingPosition, setPendingOrderUpdate } = useSyntheticsEvents();
+  const ordersInfoData = useSelector(selectOrdersInfoData);
+
+  const orderTxnCallback = useCallback(
+    (ctx: OrderTxnCallbackCtx, e: TxnEvent<BatchOrderTxnEventParams>) => {
+      switch (e.event) {
+        case TxnEventName.TxnSimulated: {
+          sendOrderSimulatedMetric(ctx.metricId);
+          return;
+        }
+
+        // TODO: express signed?
+        // TODO: subaccount signed?
+
+        case TxnEventName.TxnPrepared: {
+          // TODO: remove?
+          return;
+        }
+
+        case TxnEventName.TxnSent: {
+          const pendingOrders = getBatchPendingOrders(e.txnParams.params, ordersInfoData);
+
+          if (e.txnParams.mode === "wallet") {
+            const { totalExecutionFeeAmount, totalExecutionGasLimit } = getTotalExecutionFeeForOrders(
+              e.txnParams.params
+            );
+
+            const pendingTxn: PendingTransaction = {
+              hash: e.data.txnHash,
+              message: undefined,
+              metricId: ctx.metricId,
+              data: {
+                estimatedExecutionFee: totalExecutionFeeAmount,
+                estimatedExecutionGasLimit: totalExecutionGasLimit,
+              },
+            };
+
+            setPendingTxns((txns) => [...txns, pendingTxn]);
+          }
+
+          const pendingPositions = e.txnParams.params.createOrderParams.map((cp) =>
+            getPendingPositionFromParams({
+              createOrderParams: cp,
+              blockNumber: e.data.blockNumber,
+              timestamp: e.data.createdAt,
+            })
+          );
+
+          if (pendingOrders.length > 0) {
+            setPendingOrder(pendingOrders);
+          }
+
+          if (pendingPositions.length > 0) {
+            setPendingPosition(pendingPositions[0]);
+          }
+
+          sendTxnSentMetric(ctx.metricId);
+
+          return;
+        }
+
+        case TxnEventName.TxnError: {
+          const { error } = e.data;
+          const { chainId } = e.txnParams;
+          const { metricId } = ctx;
+
+          const errorData = parseError(error);
+
+          const toastParams = getTxnErrorToast(chainId, errorData, {
+            defaultMessage: t`Order error.`,
+            slippageInputId: ctx.slippageInputId,
+            additionalContent: ctx.additionalErrorContent,
+          });
+
+          helperToast.error(toastParams.errorContent, {
+            autoClose: toastParams.autoCloseToast,
+          });
+
+          sendTxnErrorMetric(metricId, error, errorData?.errorContext ?? "unknown");
+
+          return;
+        }
+      }
+    },
+    [ordersInfoData, setPendingOrder, setPendingPosition, setPendingTxns]
+  );
+
+  const updateOrderTxnCallback = useCallback(
+    (e: TxnEvent<BatchOrderTxnEventParams>) => {
+      const updateOrderParams = e.txnParams.params.updateOrderParams[0];
+      const order = getByKey(ordersInfoData, updateOrderParams.params.orderKey);
+
+      const pendingOrderUpdate =
+        updateOrderParams && order ? getPendingUpdateOrder(updateOrderParams, order) : undefined;
+
+      switch (e.event) {
+        case TxnEventName.TxnPrepared: {
+          helperToast.success(t`Updating order`);
+          if (pendingOrderUpdate) {
+            setPendingOrderUpdate(pendingOrderUpdate);
+          }
+          return;
+        }
+
+        case TxnEventName.TxnSent: {
+          // TODO: for express order flow?
+          helperToast.success(t`Update order executed`);
+          return;
+        }
+
+        case TxnEventName.TxnError: {
+          const { error } = e.data;
+          const { chainId } = e.txnParams;
+
+          const errorData = parseError(error);
+          const toastParams = getTxnErrorToast(chainId, errorData, {
+            defaultMessage: t`Order error.`,
+            slippageInputId: undefined,
+            additionalContent: undefined,
+          });
+
+          helperToast.error(toastParams.errorContent, {
+            autoClose: toastParams.autoCloseToast,
+          });
+
+          if (pendingOrderUpdate) {
+            setPendingOrderUpdate(pendingOrderUpdate, "remove");
+          }
+
+          return;
+        }
+
+        default: {
+          return;
+        }
+      }
+    },
+    [ordersInfoData, setPendingOrderUpdate]
+  );
+
+  return useMemo(
+    () => ({
+      orderTxnCallback,
+      makeOrderTxnCallback: (ctx: OrderTxnCallbackCtx) => (e: TxnEvent<BatchOrderTxnEventParams>) =>
+        orderTxnCallback(ctx, e),
+      updateOrderTxnCallback,
+    }),
+    [orderTxnCallback, updateOrderTxnCallback]
+  );
 }
 
-export function getPendingCancelOrder(params: SecondaryCancelOrderParams): PendingOrderData {
+export function getBatchPendingOrders(
+  txnParams: BatchOrderTxnParams,
+  ordersInfoData: OrdersInfoData | undefined
+): PendingOrderData[] {
+  const createPendingOrders = txnParams.createOrderParams.map(getPedningCreateOrder);
+
+  const updatePendingOrders = txnParams.updateOrderParams
+    .map((updateOrderParams) => {
+      const order = getByKey(ordersInfoData, updateOrderParams.params.orderKey);
+      if (!order) {
+        return undefined;
+      }
+
+      return getPendingUpdateOrder(updateOrderParams, order);
+    })
+    .filter((o) => o !== undefined);
+
+  const cancelPendingOrders = txnParams.cancelOrderParams
+    .map((cancelOrderParams) => {
+      const order = getByKey(ordersInfoData, cancelOrderParams.orderKey);
+      if (!order) {
+        return undefined;
+      }
+
+      return getPendingCancelOrder(cancelOrderParams, order);
+    })
+    .filter((o) => o !== undefined);
+
+  return [...createPendingOrders, ...updatePendingOrders, ...cancelPendingOrders];
+}
+export function getPendingCancelOrder(params: CancelOrderTxnParams, order: OrderInfo): PendingOrderData {
   return {
     txnType: "cancel",
-    account: params.account,
-    marketAddress: params.marketAddress,
-    initialCollateralTokenAddress: params.initialCollateralAddress,
-    initialCollateralDeltaAmount: params.initialCollateralDeltaAmount,
-    swapPath: params.swapPath,
-    sizeDeltaUsd: params.sizeDeltaUsd,
-    isLong: params.isLong,
-    orderType: params.orderType,
+    account: order.account,
+    marketAddress: order.marketAddress,
+    initialCollateralTokenAddress: order.initialCollateralTokenAddress,
+    initialCollateralDeltaAmount: order.initialCollateralDeltaAmount,
+    swapPath: order.swapPath,
+    triggerPrice: "triggerPrice" in order ? order.triggerPrice : 0n,
+    acceptablePrice: "acceptablePrice" in order ? order.acceptablePrice : 0n,
+    autoCancel: "autoCancel" in order ? order.autoCancel : false,
+    sizeDeltaUsd: order.sizeDeltaUsd,
+    isLong: order.isLong,
+    orderType: order.orderType,
     shouldUnwrapNativeToken: false,
     externalSwapQuote: undefined,
     orderKey: params.orderKey,
@@ -46,42 +234,66 @@ export function getPendingCancelOrder(params: SecondaryCancelOrderParams): Pendi
   };
 }
 
-export function getPendingPositionFromParams({ createOrderPayload }: { createOrderPayload: OrderCreatePayload }) {
+export function getPendingPositionFromParams({
+  createOrderParams: createOrderPayload,
+  blockNumber,
+  timestamp,
+}: {
+  createOrderParams: CreateOrderTxnParams<IncreasePositionOrderParams | DecreasePositionOrderParams>;
+  blockNumber: bigint;
+  timestamp: number;
+}): PendingPositionUpdate {
+  // TODO: types magic
+  const collateralAddress = isIncreaseOrderType(createOrderPayload.params.orderType)
+    ? (createOrderPayload.params as IncreasePositionOrderParams).collateralTokenAddress
+    : (createOrderPayload.params as DecreasePositionOrderParams).initialCollateralTokenAddress;
+
+  const collateralDeltaAmount = createOrderPayload.params.collateralDeltaAmount;
+  const sizeDeltaUsd = createOrderPayload.params.sizeDeltaUsd;
+  const sizeDeltaInTokens = createOrderPayload.params.sizeDeltaInTokens;
+
   const positionKey = getPositionKey(
     createOrderPayload.orderPayload.addresses.receiver,
     createOrderPayload.orderPayload.addresses.market,
-    createOrderPayload.orderPayload.addresses.initialCollateralToken,
+    collateralAddress,
     createOrderPayload.orderPayload.isLong
   );
 
   return {
     isIncrease: isIncreaseOrderType(createOrderPayload.orderPayload.orderType),
     positionKey,
-    collateralDeltaAmount: createOrderPayload.orderPayload.numbers.initialCollateralDeltaAmount,
-    sizeDeltaUsd: createOrderPayload.orderPayload.numbers.sizeDeltaUsd,
-    sizeDeltaInTokens: createOrderPayload.sizeDeltaInTokens,
+    collateralDeltaAmount,
+    sizeDeltaUsd,
+    sizeDeltaInTokens,
+    updatedAtBlock: blockNumber,
+    updatedAt: timestamp,
   };
 }
 
-export function getPendingUpdateOrder(params: SecondaryUpdateOrderParams): PendingOrderData {
+export function getPendingUpdateOrder(updateOrderParams: UpdateOrderTxnParams, order: OrderInfo): PendingOrderData {
   return {
     txnType: "update",
-    account: params.account,
-    marketAddress: params.marketAddress,
-    initialCollateralTokenAddress: params.initialCollateralAddress,
-    initialCollateralDeltaAmount: params.initialCollateralDeltaAmount,
-    swapPath: params.swapPath,
-    sizeDeltaUsd: params.sizeDeltaUsd,
-    minOutputAmount: params.minOutputAmount,
-    isLong: params.isLong,
-    orderType: params.orderType,
+    account: order.account,
+    marketAddress: order.marketAddress,
+    initialCollateralTokenAddress: order.initialCollateralTokenAddress,
+    initialCollateralDeltaAmount: order.initialCollateralDeltaAmount,
+    swapPath: order.swapPath,
+    triggerPrice: "triggerPrice" in order ? order.triggerPrice : 0n,
+    acceptablePrice: "acceptablePrice" in order ? order.acceptablePrice : 0n,
+    autoCancel: "autoCancel" in order ? order.autoCancel : false,
+    sizeDeltaUsd: order.sizeDeltaUsd,
+    minOutputAmount: order.minOutputAmount,
+    isLong: order.isLong,
+    orderType: order.orderType,
     shouldUnwrapNativeToken: false,
     externalSwapQuote: undefined,
-    orderKey: params.orderKey,
+    orderKey: updateOrderParams.params.orderKey,
   };
 }
 
-export function getPedningCreateOrder(createOrderPayload: OrderCreatePayload): PendingOrderData {
+export function getPedningCreateOrder(
+  createOrderPayload: CreateOrderTxnParams<IncreasePositionOrderParams | DecreasePositionOrderParams | SwapOrderParams>
+): PendingOrderData {
   return {
     account: createOrderPayload.orderPayload.addresses.receiver,
     marketAddress: createOrderPayload.orderPayload.addresses.market,
@@ -90,91 +302,13 @@ export function getPedningCreateOrder(createOrderPayload: OrderCreatePayload): P
     swapPath: createOrderPayload.orderPayload.addresses.swapPath,
     sizeDeltaUsd: createOrderPayload.orderPayload.numbers.sizeDeltaUsd,
     minOutputAmount: createOrderPayload.orderPayload.numbers.minOutputAmount,
+    triggerPrice: createOrderPayload.orderPayload.numbers.triggerPrice,
+    acceptablePrice: createOrderPayload.orderPayload.numbers.acceptablePrice,
+    autoCancel: createOrderPayload.orderPayload.autoCancel,
     isLong: createOrderPayload.orderPayload.isLong,
     orderType: createOrderPayload.orderPayload.orderType,
     shouldUnwrapNativeToken: createOrderPayload.orderPayload.shouldUnwrapNativeToken,
-    externalSwapQuote: createOrderPayload.collateralTransferParams.externalSwapQuote,
+    externalSwapQuote: createOrderPayload.params.externalSwapQuote,
     txnType: "create",
-  };
-}
-
-export function useOrderTxnCallbacks() {
-  const commonTxnCallbacks = useTxnCallbacks();
-  const { setPendingOrder, setPendingPosition } = useSyntheticsEvents();
-
-  const handlePendingOrderFactory = useCallback(
-    (orders: PendingOrderData[]) => () => {
-      setPendingOrder(orders);
-    },
-    [setPendingOrder]
-  );
-
-  const handlePendingPositionFactory = useCallback(
-    (position: Omit<PendingPositionUpdate, "updatedAtBlock" | "updatedAt">) => (p: OnSentParams) => {
-      setPendingPosition({ ...position, updatedAtBlock: p.blockNumber, updatedAt: p.createdAt });
-    },
-    [setPendingPosition]
-  );
-
-  return {
-    ...commonTxnCallbacks,
-    handlePendingOrderFactory,
-    handlePendingPositionFactory,
-  };
-}
-
-export function useTxnCallbacks() {
-  const { chainId } = useChainId();
-
-  const { setPendingTxns } = usePendingTxns();
-
-  const handleErrorFactory = useCallback(
-    (p: AdditionalErrorParams, metricId?: OrderMetricId) =>
-      ({ error }: TxnCallbacksInput) => {
-        if (!error) {
-          return;
-        }
-
-        const errorData = parseError(error);
-
-        const toastParams = getTxnErrorToast(chainId, errorData, p);
-
-        helperToast.error(toastParams.errorContent, {
-          autoClose: toastParams.autoCloseToast,
-        });
-
-        if (metricId && errorData?.errorContext) {
-          sendTxnErrorMetric(metricId, error, errorData.errorContext);
-        }
-      },
-    [chainId]
-  );
-
-  const notifyTxnSentFactory = useCallback(
-    (p: { message: ReactNode; autoClose: false | number } | undefined) => () => {
-      if (!p) {
-        return;
-      }
-
-      helperToast.success(p.message, { autoClose: p.autoClose });
-    },
-    []
-  );
-
-  const registerPendingTxnFactory = useCallback(
-    (data: PendingTransactionData) =>
-      ({ txnHash, metricId }: { txnHash: string; metricId: OrderMetricId | undefined }) => {
-        setPendingTxns((txns) => [...txns, { hash: txnHash, message: t`Transaction sent.`, metricId, data }]);
-      },
-    [setPendingTxns]
-  );
-
-  const txnSentMetricFactory = makeTxnSentMetricsHandler;
-
-  return {
-    handleErrorFactory,
-    notifyTxnSentFactory,
-    registerPendingTxnFactory,
-    txnSentMetricFactory,
   };
 }

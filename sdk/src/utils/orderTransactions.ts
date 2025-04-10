@@ -117,50 +117,6 @@ export type ExternalCallsPayload = {
   refundReceivers: string[];
 };
 
-// export type SecondaryOrderCommonParams = {
-//   chainId: number;
-//   referralCode: string | undefined;
-//   account: string;
-//   marketAddress: string;
-//   indexTokenAddress: string;
-//   swapPath: string[];
-//   initialCollateralAddress: string;
-//   targetCollateralAddress: string;
-//   isLong: boolean;
-//   sizeDeltaUsd: bigint;
-//   initialCollateralDeltaAmount: bigint;
-//   allowedSlippage: number;
-// };
-
-// export type SecondaryDecreaseOrderParams = DecreasePositionOrderParams &
-//   SecondaryOrderCommonParams & {
-//     txnType: "create";
-//     allowedSlippage: number;
-//   };
-
-// export type SecondaryCancelOrderParams = SecondaryOrderCommonParams & {
-//   txnType: "cancel";
-//   orderType: OrderType;
-//   orderKey: string | undefined;
-// };
-
-// export type SecondaryUpdateOrderParams = SecondaryOrderCommonParams & {
-//   txnType: "update";
-//   orderType: OrderType;
-//   orderKey: string;
-//   sizeDeltaUsd: bigint;
-//   acceptablePrice: bigint;
-//   triggerPrice: bigint;
-//   executionFee: bigint;
-//   minOutputAmount: bigint;
-//   autoCancel: boolean;
-// };
-
-// export type SecondaryOrderPayload = DecreasePositionOrderParams & {
-//   orderKey: string | undefined;
-//   txnType: OrderTxnType;
-// };
-
 export type CommonOrderParams<OT extends OrderType> = {
   chainId: number;
   receiver: string;
@@ -202,6 +158,7 @@ export type IncreasePositionOrderParams = CollateralParams &
   CommonOrderParams<OrderType.MarketIncrease | OrderType.LimitIncrease | OrderType.StopIncrease> & {
     payTokenAddress: string;
     payTokenAmount: bigint;
+    collateralDeltaAmount: bigint;
     collateralTokenAddress: string;
   };
 
@@ -260,7 +217,6 @@ export function buildIncreaseOrderPayload(
   p: IncreasePositionOrderParams
 ): CreateOrderTxnParams<IncreasePositionOrderParams> {
   const tokenTransfersParams = buildSendTokensTransfers({ ...p, minOutputAmount: 0n });
-
   const indexToken = getToken(p.chainId, p.indexTokenAddress);
 
   const orderPayload: CreateOrderPayload<typeof p.orderType> = {
@@ -306,6 +262,15 @@ export function buildDecreaseOrderPayload(
 ): CreateOrderTxnParams<DecreasePositionOrderParams> {
   const indexToken = getToken(p.chainId, p.indexTokenAddress);
 
+  const tokenTransfersParams = buildTokenTransfersForDecrease({
+    chainId: p.chainId,
+    executionFeeAmount: p.executionFeeAmount,
+    collateralTokenAddress: p.initialCollateralTokenAddress,
+    collateralTokenAmount: p.collateralDeltaAmount,
+    swapPath: p.swapPath,
+    minOutputAmount: p.minOutputUsd,
+  });
+
   const orderPayload: CreateOrderPayload<typeof p.orderType> = {
     addresses: {
       receiver: p.receiver,
@@ -340,7 +305,7 @@ export function buildDecreaseOrderPayload(
   return {
     params: p,
     orderPayload,
-    tokenTransfersParams: undefined,
+    tokenTransfersParams,
   };
 }
 
@@ -359,6 +324,65 @@ export function buildUpdateOrderPayload(p: UpdateOrderParams): UpdateOrderTxnPar
       validFromTime: 0n,
       executionFeeTopUp: 0n,
     },
+  };
+}
+
+export function getTotalExecutionFeeForOrders({
+  createOrderParams,
+  updateOrderParams,
+}: {
+  createOrderParams: CreateOrderTxnParams<any>[];
+  updateOrderParams: UpdateOrderTxnParams[];
+}) {
+  let totalExecutionFeeAmount = 0n;
+  let totalExecutionGasLimit = 0n;
+
+  for (const co of createOrderParams) {
+    totalExecutionFeeAmount += co.params.executionFeeAmount;
+    totalExecutionGasLimit += co.params.executionGasLimit;
+  }
+
+  for (const uo of updateOrderParams) {
+    totalExecutionFeeAmount += uo.params.executionFeeTopUp;
+  }
+
+  return { totalExecutionFeeAmount, totalExecutionGasLimit };
+}
+
+export function buildTokenTransfersForDecrease({
+  chainId,
+  executionFeeAmount,
+  collateralTokenAddress,
+  collateralTokenAmount,
+  swapPath,
+  minOutputAmount,
+}: {
+  chainId: number;
+  executionFeeAmount: bigint;
+  collateralTokenAddress: string;
+  collateralTokenAmount: bigint;
+  swapPath: string[];
+  minOutputAmount: bigint;
+}): TokenTransfersParams {
+  const orderVaultAddress = getContract(chainId, "OrderVault");
+
+  const tokenTransfers: TokenTransfer[] = [
+    {
+      tokenAddress: NATIVE_TOKEN_ADDRESS,
+      destination: orderVaultAddress,
+      amount: executionFeeAmount,
+    },
+  ];
+
+  return {
+    isNativePayment: false,
+    initialCollateralTokenAddress: convertTokenAddress(chainId, collateralTokenAddress, "wrapped"),
+    initialCollateralDeltaAmount: collateralTokenAmount,
+    tokenTransfers,
+    minOutputAmount,
+    swapPath,
+    value: executionFeeAmount,
+    externalCalls: undefined,
   };
 }
 

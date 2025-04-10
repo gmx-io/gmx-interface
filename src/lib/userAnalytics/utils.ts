@@ -1,6 +1,5 @@
 import debounce from "lodash/debounce";
 
-import { parseError } from "ab/testMultichain/parseError";
 import { getChainName } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { MarketInfo } from "domain/synthetics/markets";
@@ -14,6 +13,7 @@ import {
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
+import { ErrorLike, parseError } from "lib/errors";
 import { formatAmountForMetrics, formatPercentageForMetrics, metrics } from "lib/metrics";
 import { OrderMetricData, OrderMetricId } from "lib/metrics/types";
 import { bigintToNumber, formatRatePercentage, roundToOrder } from "lib/numbers";
@@ -209,7 +209,7 @@ export function sendUserAnalyticsOrderResultEvent(
   chainId: number,
   metricId: OrderMetricId,
   isSuccess: boolean,
-  error?: Error
+  error?: ErrorLike
 ) {
   let metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
 

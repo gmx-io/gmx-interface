@@ -607,24 +607,26 @@ export function sendOrderTxnSubmittedMetric(metricId: OrderMetricId) {
 
 export function makeTxnSentMetricsHandler(metricId: OrderMetricId) {
   return () => {
-    const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
-
-    if (!metricData) {
-      metrics.pushError("Order metric data not found", "makeTxnSentMetricsHandler");
-      return;
-    }
-
-    metrics.startTimer(metricId);
-
-    metrics.pushEvent<OrderSentEvent>({
-      event: `${metricData.metricType}.sent`,
-      isError: false,
-      time: metrics.getTime(metricId)!,
-      data: metricData,
-    });
-
-    return Promise.resolve();
+    sendTxnSentMetric(metricId);
   };
+}
+
+export function sendTxnSentMetric(metricId: OrderMetricId) {
+  const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
+
+  if (!metricData) {
+    metrics.pushError("Order metric data not found", "sendTxnSentMetric");
+    return;
+  }
+
+  metrics.pushEvent<OrderSentEvent>({
+    event: `${metricData.metricType}.sent`,
+    isError: false,
+    time: metrics.getTime(metricId)!,
+    data: metricData,
+  });
+
+  return Promise.resolve();
 }
 
 export function sendTxnValidationErrorMetric(metricId: OrderMetricId) {

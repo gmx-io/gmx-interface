@@ -6,34 +6,12 @@ import { getContract } from "sdk/configs/contracts";
 
 import { collContract } from "components/Synthetics/TradeBox/hooks/callContract";
 import { ErrorLike, extendError } from "lib/errors";
-import { OrderMetricId } from "lib/metrics";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { TokensData } from "sdk/types/tokens";
 import { BatchOrderTxnParams, getBatchOrderMulticallPayload } from "sdk/utils/orderTransactions";
 import { isLimitSwapOrderType } from "sdk/utils/orders";
+import { zeroHash } from "viem";
 import { getOrdersTriggerPriceOverrides, getSimulationPrices, simulateExecution } from "./simulation";
-
-export type OnPreparedParams = {};
-
-export type OnSimulatedParams = {};
-
-export type OnSentParams = {
-  txnHash: string;
-  metricId: OrderMetricId | undefined;
-  blockNumber: bigint;
-  createdAt: number;
-};
-
-export type OnErrorParams = {
-  error: ErrorLike;
-};
-
-export type TxnCallbakcs = {
-  onPrepared: (p: OnPreparedParams) => void;
-  onSimulated: (p: OnSimulatedParams) => void;
-  onSent: (p: OnSentParams) => void;
-  onError: (p: OnErrorParams) => void;
-};
 
 export enum TxnEventName {
   TxnPrepared = "TxnPrepared",
@@ -42,43 +20,48 @@ export enum TxnEventName {
   TxnError = "TxnError",
 }
 
-export type TxnPreparedEvent<TParams> = {
+export enum TxnMode {
+  Wallet = "wallet",
+  Express = "express",
+  Subaccount = "subaccount",
+}
+
+export type TxnPreparedEvent = {
   event: TxnEventName.TxnPrepared;
-  data: {
-    params: TParams;
-  };
+  data: {};
 };
 
-export type TxnSimulatedEvent<TParams> = {
+export type TxnSimulatedEvent = {
   event: TxnEventName.TxnSimulated;
-  data: {
-    params: TParams;
-  };
+  data: {};
 };
 
-export type TxnSentEvent<TParams> = {
+export type TxnSentEvent = {
   event: TxnEventName.TxnSent;
   data: {
-    params: TParams;
     txnHash: string;
     blockNumber: bigint;
     createdAt: number;
   };
 };
 
-export type TxnErrorEvent<TParams> = {
+export type TxnErrorEvent = {
   event: TxnEventName.TxnError;
   data: {
-    params: TParams;
     error: ErrorLike;
   };
 };
 
-export type TxnEvent<TParams> =
-  | TxnPreparedEvent<TParams>
-  | TxnSimulatedEvent<TParams>
-  | TxnSentEvent<TParams>
-  | TxnErrorEvent<TParams>;
+export type BaseTxnEvent = TxnPreparedEvent | TxnSimulatedEvent | TxnSentEvent | TxnErrorEvent;
+export type BatchOrderTxnEventParams = {
+  type: "batchOrder";
+  mode: "wallet" | "express" | "subaccount";
+  chainId: number;
+  signer: Signer;
+  params: BatchOrderTxnParams;
+};
+
+export type TxnEvent<TxnParams> = BaseTxnEvent & { txnParams: TxnParams };
 
 export type TxnCallback<TParams> = (event: TxnEvent<TParams>) => void;
 
@@ -122,30 +105,6 @@ export const makeSimulation =
     });
   };
 
-// export async function sendUpdateOrderTxn({
-//   chainId,
-//   signer,
-//   params,
-//   callback,
-// }: {
-//   chainId: number;
-//   signer: Signer;
-//   params: UpdateOrderTxnParams;
-//   callback: TxnCallback | undefined;
-// }) {
-//   try {
-//   } catch (error) {
-//     callback?.({
-//       event: TxnEventName.TxnError,
-//       data: {
-//         error,
-//       },
-//     });
-
-//     throw error;
-//   }
-// }
-
 export async function sendBatchOrderWalletTxn({
   chainId,
   signer,
@@ -157,8 +116,16 @@ export async function sendBatchOrderWalletTxn({
   signer: Signer;
   params: BatchOrderTxnParams;
   simulation: () => Promise<void> | undefined;
-  callback: TxnCallback<BatchOrderTxnParams> | undefined;
+  callback: TxnCallback<BatchOrderTxnEventParams> | undefined;
 }) {
+  const baseEventParams: BatchOrderTxnEventParams = {
+    type: "batchOrder",
+    mode: "wallet",
+    chainId,
+    signer,
+    params,
+  };
+
   try {
     const { callData, value } = getBatchOrderMulticallPayload({ chainId, params });
     const routerAddress = getContract(chainId, "ExchangeRouter");
@@ -178,8 +145,9 @@ export async function sendBatchOrderWalletTxn({
       simulation?.()
         ?.then(() => {
           callback?.({
+            txnParams: baseEventParams,
             event: TxnEventName.TxnSimulated,
-            data: { params },
+            data: {},
           });
         })
         .catch((error) => {
@@ -190,10 +158,9 @@ export async function sendBatchOrderWalletTxn({
     ]);
 
     callback?.({
+      txnParams: baseEventParams,
       event: TxnEventName.TxnPrepared,
-      data: {
-        params,
-      },
+      data: {},
     });
 
     const createdAt = Date.now();
@@ -207,10 +174,10 @@ export async function sendBatchOrderWalletTxn({
     })
       .then((res) => {
         callback?.({
+          txnParams: baseEventParams,
           event: TxnEventName.TxnSent,
           data: {
-            params,
-            txnHash: res?.hash ?? "0x",
+            txnHash: res?.hash ?? zeroHash,
             blockNumber: res?.blockNumber ?? 0n,
             createdAt,
           },
@@ -223,9 +190,9 @@ export async function sendBatchOrderWalletTxn({
       });
   } catch (error) {
     callback?.({
+      txnParams: baseEventParams,
       event: TxnEventName.TxnError,
       data: {
-        params,
         error,
       },
     });

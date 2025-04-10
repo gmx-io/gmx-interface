@@ -20,21 +20,29 @@ import { getWrappedToken } from "sdk/configs/tokens";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 
 import { getSwapDebugSettings } from "config/externalSwaps";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { roundBigIntToDecimals } from "sdk/utils/numbers";
+import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
 import { useExternalSwapOutputRequest } from "../externalSwaps/useExternalSwapOutputRequest";
 import { convertToTokenAmount, convertToUsd } from "../tokens";
 import { getSwapAmountsByToValue } from "../trade";
 import { RelayerFeeState } from "./types";
-import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 
 const DEFAULT_GAS_LIMIT = 10000000n;
 
-function roundBigIntToDecimals(value: bigint, tokenDecimals: number, roundToDecimals: number): bigint {
-  const excessDecimals = tokenDecimals - roundToDecimals;
-  const divisor = BigInt(10 ** excessDecimals);
-  const scaledValue = value / divisor;
-  const remainder = scaledValue % 10n;
-  const roundedValue = remainder >= 5n ? scaledValue + 10n - remainder : scaledValue - remainder;
-  return roundedValue * divisor;
+/**
+ *
+ * order contain external swap quote
+ *  -> create base params -> (debounce / throttle) estimate gas (in variants)
+ *
+ *
+ *
+ */
+export function useExpressOrdersParams({ params }: { params: BatchOrderTxnParams }) {
+  // subaccount
+  // permits
+  // oracle params
+  // relayparams
 }
 
 export function useRelayerFeeHandler(): RelayerFeeState | undefined {

@@ -2,7 +2,7 @@ import { encodeFunctionData } from "viem";
 
 import { getSwapDebugSettings } from "config/externalSwaps";
 import { UserReferralInfo } from "domain/referrals";
-import { parseError } from "lib/errors";
+import { ErrorLike, parseError } from "lib/errors";
 import { applyFactor, MaxUint256 } from "lib/numbers";
 import Token from "sdk/abis/Token.json";
 import { convertTokenAddress, getNativeToken } from "sdk/configs/tokens";
@@ -23,10 +23,6 @@ import {
 } from "../trade";
 
 export function getExternalCallsParams(chainId: number, account: string, quote: ExternalSwapQuote) {
-  if (!quote.txnData) {
-    return [];
-  }
-
   const inTokenAddress = convertTokenAddress(chainId, quote.inTokenAddress, "wrapped");
 
   const addresses: string[] = [];
@@ -183,7 +179,7 @@ export function getExternalSwapInputsByLeverageSize({
   };
 }
 
-export function isPossibleExternalSwapError(error: Error) {
+export function getIsPossibleExternalSwapError(error: ErrorLike) {
   const parsedError = parseError(error);
 
   const isExternalCallError = parsedError?.contractError === "ExternalCallFailed";

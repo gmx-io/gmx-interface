@@ -20,7 +20,8 @@ export type OrderErrorContext =
   | "sending"
   | "pending"
   | "minting"
-  | "execution";
+  | "execution"
+  | "unknown";
 
 export type ErrorLike = {
   message?: string;

@@ -27,6 +27,8 @@ export function getTxnErrorToast(
 ) {
   const nativeToken = getNativeToken(chainId);
 
+  const debugErrorMessage = getDebugErrorMessage(errorData);
+
   const toastParams: {
     autoCloseToast: number | false;
     errorContent: ReactNode | undefined;
@@ -38,7 +40,7 @@ export function getTxnErrorToast(
         {additionalContent}
         <br />
         <br />
-        {errorData?.errorMessage && <ToastifyDebug error={errorData.errorMessage} />}
+        {debugErrorMessage && <ToastifyDebug error={debugErrorMessage} />}
       </div>
     ),
   };
@@ -109,8 +111,6 @@ export function getTxnErrorToast(
     case TxErrorType.RpcError: {
       toastParams.autoCloseToast = false;
 
-      const originalError = errorData.errorMessage ?? errorData.errorName;
-
       toastParams.errorContent = (
         <div>
           <Trans>
@@ -125,7 +125,7 @@ export function getTxnErrorToast(
           </Trans>
           <br />
           <br />
-          {originalError && <ToastifyDebug error={originalError} />}
+          {debugErrorMessage && <ToastifyDebug error={debugErrorMessage} />}
         </div>
       );
       break;
@@ -143,6 +143,14 @@ export function getDefaultErrorMessage(errorData: ErrorData | undefined) {
   }
 
   return t`Transaction failed`;
+}
+
+export function getDebugErrorMessage(errorData: ErrorData | undefined) {
+  if (errorData?.contractError) {
+    return `${errorData.contractError} [${errorData.contractErrorArgs}] ${errorData.errorMessage}`;
+  }
+
+  return errorData?.errorMessage;
 }
 
 /**

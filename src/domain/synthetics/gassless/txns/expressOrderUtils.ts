@@ -1,37 +1,38 @@
-import { ethers, Signer } from "ethers";
+import { Signer } from "ethers";
 import uniq from "lodash/uniq";
 import { Address, encodeFunctionData, encodePacked } from "viem";
 
-import { abis } from "sdk/abis";
 import { getContract } from "config/contracts";
 import { MarketsInfoData } from "domain/synthetics/markets/types";
-import { getSwapPathTokenAddresses } from "domain/synthetics/trade/utils";
+import { getSwapPathTokens } from "domain/synthetics/trade/utils";
+import { abis } from "sdk/abis";
 import GelatoRelayRouterAbi from "sdk/abis/GelatoRelayRouter.json";
 import SubaccountGelatoRelayRouterAbi from "sdk/abis/SubaccountGelatoRelayRouter.json";
-import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION, getRelayerFeeToken } from "sdk/configs/express";
-import { convertTokenAddress } from "sdk/configs/tokens";
+import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { OracleParamsPayload, RelayFeePayload, RelayParamsPayload } from "sdk/types/expressTransactions";
+import { TokensData } from "sdk/types/tokens";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
-import { CreateOrderPayload, ExternalCallsPayload } from "sdk/utils/orderTransactions";
+import { MaxUint256 } from "sdk/utils/numbers";
+import { getByKey } from "sdk/utils/objects";
+import {
+  CreateOrderPayload,
+  CreateOrderTxnParams,
+  DecreasePositionOrderParams,
+  ExternalCallsPayload,
+  IncreasePositionOrderParams,
+  SwapOrderParams,
+  UpdateOrderPayload,
+} from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 import { RelayerFeeState } from "../types";
 import { getGelatoRelayRouterDomain, hashRelayParams } from "./relayParams";
 import { signTypedData } from "./signing";
 import { getActualApproval, hashSubaccountApproval, SignedSubbacountApproval, Subaccount } from "./subaccountUtils";
-import { MaxUint256 } from "sdk/utils/numbers";
-
-type UpdateOrderParams = {
-  sizeDeltaUsd: bigint;
-  acceptablePrice: bigint;
-  triggerPrice: bigint;
-  minOutputAmount: bigint;
-  validFromTime: bigint;
-  autoCancel: boolean;
-};
 
 export async function buildAndSignExpressUpdateOrderTxn({
   chainId,
   relayParamsPayload,
+  relayFeeParams,
   subaccount,
   signer,
   orderKey,
@@ -39,14 +40,19 @@ export async function buildAndSignExpressUpdateOrderTxn({
   updateOrderParams,
 }: {
   chainId: number;
-  relayParamsPayload: RelayParamsPayload;
-  orderPayload: CreateOrderPayload;
+  relayParamsPayload: Omit<RelayParamsPayload, "deadline">;
+  relayFeeParams: RelayFeeParams;
   subaccount: Subaccount | undefined;
   signer: Signer;
   orderKey: string;
   increaseExecutionFee: boolean;
-  updateOrderParams: UpdateOrderParams;
+  updateOrderParams: UpdateOrderPayload;
 }) {
+  const finalRelayParamsPayload = {
+    ...relayParamsPayload,
+    deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
+  };
+
   const params = {
     signer: subaccount?.signer ?? signer,
     account: await signer.getAddress(),
@@ -54,7 +60,7 @@ export async function buildAndSignExpressUpdateOrderTxn({
     orderKey,
     updateOrderParams,
     increaseExecutionFee,
-    relayParams: relayParamsPayload,
+    relayParams: finalRelayParamsPayload,
     subaccountApproval: await getActualApproval(chainId, subaccount),
   };
 
@@ -65,7 +71,7 @@ export async function buildAndSignExpressUpdateOrderTxn({
         abi: SubaccountGelatoRelayRouterAbi.abi,
         functionName: "updateOrder",
         args: [
-          { ...relayParamsPayload, signature },
+          { ...params.relayParams, signature },
           params.subaccountApproval,
           params.account,
           params.subaccountApproval.subaccount,
@@ -77,7 +83,7 @@ export async function buildAndSignExpressUpdateOrderTxn({
     : encodeFunctionData({
         abi: GelatoRelayRouterAbi.abi,
         functionName: "updateOrder",
-        args: [{ ...relayParamsPayload, signature }, params.account, orderKey, updateOrderParams, increaseExecutionFee],
+        args: [{ ...params.relayParams, signature }, params.account, orderKey, updateOrderParams, increaseExecutionFee],
       });
 
   return {
@@ -86,22 +92,24 @@ export async function buildAndSignExpressUpdateOrderTxn({
       chainId,
       params.subaccountApproval ? "SubaccountGelatoRelayRouter" : "GelatoRelayRouter"
     ),
-    feeToken: relayParamsPayload.fee.feeToken,
-    feeAmount: relayParamsPayload.fee.feeAmount,
+    feeToken: relayFeeParams.relayFeeToken,
+    feeAmount: relayFeeParams.relayFeeAmount,
   };
 }
 
 export async function buildAndSignExpressCancelOrderTxn({
   chainId,
+  relayParamsPayload,
+  relayFeeParams,
   subaccount,
   signer,
-  relayParamsPayload,
   orderKey,
 }: {
   chainId: number;
   subaccount: Subaccount | undefined;
   signer: Signer;
   relayParamsPayload: Omit<RelayParamsPayload, "deadline">;
+  relayFeeParams: RelayFeeParams;
   orderKey: string;
 }) {
   const finalRelayParamsPayload = {
@@ -129,8 +137,8 @@ export async function buildAndSignExpressCancelOrderTxn({
   return {
     callData: cancelOrderCallData,
     contractAddress: getContract(chainId, "GelatoRelayRouter"),
-    feeToken: relayParamsPayload.fee.feeToken,
-    feeAmount: relayParamsPayload.fee.feeAmount,
+    feeToken: relayFeeParams.relayFeeToken,
+    feeAmount: relayFeeParams.relayFeeAmount,
   };
 }
 
@@ -235,48 +243,67 @@ export async function buildAndSignRemoveSubaccountTxn({
 }
 
 export function getExpressOrderOracleParams({
+  createOrderParams,
   marketsInfoData,
+  tokensData,
   chainId,
-  initialCollateralAddress,
-  collateralSwapPath,
   feeSwapPath,
   gasPaymentTokenAddress,
+  feeTokenAddress,
 }: {
+  createOrderParams: CreateOrderTxnParams<any>[];
   marketsInfoData: MarketsInfoData;
+  tokensData: TokensData;
   chainId: number;
-  initialCollateralAddress: string;
-  collateralSwapPath: string[];
   gasPaymentTokenAddress: string;
   feeSwapPath: string[];
+  feeTokenAddress: string;
 }): OracleParamsPayload {
-  const collateralSwapAddresses =
-    getSwapPathTokenAddresses({
-      marketsInfoData,
-      chainId,
-      initialCollateralAddress,
-      swapPath: collateralSwapPath,
-    }) ?? [];
+  const collateralSwapTokens = createOrderParams
+    .map((p) => {
+      const swapTokens =
+        getSwapPathTokens({
+          tokensData,
+          marketsInfoData,
+          chainId,
+          initialCollateralAddress: p.orderPayload.addresses.initialCollateralToken,
+          swapPath: p.orderPayload.addresses.swapPath,
+        }) ?? [];
 
-  const feeSwapAddresses =
-    getSwapPathTokenAddresses({
+      const targetCollateralAddress =
+        (p.params as SwapOrderParams).receiveTokenAddress ||
+        (p.params as IncreasePositionOrderParams).collateralTokenAddress ||
+        (p.params as DecreasePositionOrderParams).receiveTokenAddress;
+
+      const targetCollateralToken = getByKey(tokensData, targetCollateralAddress);
+
+      if (targetCollateralToken) {
+        swapTokens.push(targetCollateralToken);
+      }
+
+      return swapTokens;
+    })
+    .flat();
+
+  const feeSwapTokens =
+    getSwapPathTokens({
+      tokensData,
       marketsInfoData,
       chainId,
       initialCollateralAddress: gasPaymentTokenAddress,
       swapPath: feeSwapPath,
     }) ?? [];
 
-  const allSwapAddresses = uniq([
-    getRelayerFeeToken(chainId)?.address,
-    convertTokenAddress(chainId, initialCollateralAddress, "wrapped"),
-    convertTokenAddress(chainId, gasPaymentTokenAddress, "wrapped"),
-    ...collateralSwapAddresses,
-    ...feeSwapAddresses,
-  ]).map((s) => ethers.getAddress(s));
+  const feeToken = getByKey(tokensData, feeTokenAddress);
 
-  const priceProviders = Array(allSwapAddresses.length).fill(getContract(chainId, "ChainlinkPriceFeedProvider"));
-  const data = Array(allSwapAddresses.length).fill("0x");
+  if (feeToken) {
+    feeSwapTokens.push(feeToken);
+  }
 
-  console.log("addresses", allSwapAddresses);
+  const allSwapTokens = uniq([...collateralSwapTokens, ...feeSwapTokens]);
+  const allSwapAddresses = allSwapTokens.map((t) => t.wrappedAddress ?? t.address);
+  const priceProviders = allSwapTokens.map((t) => getContract(chainId, "ChainlinkPriceFeedProvider"));
+  const data = allSwapTokens.map(() => "0x");
 
   return {
     tokens: allSwapAddresses,
@@ -385,7 +412,7 @@ export function signUpdateOrderPayload({
   chainId: number;
   signer: Signer;
   orderKey: string;
-  updateOrderParams: UpdateOrderParams;
+  updateOrderParams: UpdateOrderPayload;
   increaseExecutionFee: boolean;
   relayParams: RelayParamsPayload;
   subaccountApproval: SignedSubbacountApproval | undefined;

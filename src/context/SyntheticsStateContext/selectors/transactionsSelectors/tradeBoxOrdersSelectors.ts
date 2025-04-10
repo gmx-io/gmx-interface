@@ -1,4 +1,4 @@
-import { createSelector } from "context/SyntheticsStateContext/utils";
+import { createSelector, createSelectorFactory } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "sdk/types/orders";
 import {
   buildDecreaseOrderPayload,
@@ -7,7 +7,12 @@ import {
 } from "sdk/utils/orderTransactions";
 
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
-import { selectAccount, selectChainId, selectUserReferralInfo } from "../globalSelectors";
+import {
+  makeSelectSubaccountForActions,
+  selectAccount,
+  selectChainId,
+  selectUserReferralInfo,
+} from "../globalSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxCollateralTokenAddress,
@@ -23,6 +28,9 @@ import {
   selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
 } from "../tradeboxSelectors";
+import { selectRelayerFeeSwapParams } from "../relayserFeeSelectors";
+import { selectTokenPermits } from "../tokenPermitsSelectors";
+import { ExpressParams } from "domain/synthetics/gassless/txns/universalTxn";
 
 export const selectTradeBoxCreateOrderParams = createSelector((q) => {
   const { isSwap, isIncrease } = q(selectTradeboxTradeFlags);
@@ -126,6 +134,7 @@ export const selectTradeboxIncreaseOrderParams = createSelector((q) => {
     externalSwapQuote: increaseAmounts.externalSwapQuote,
     sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
     sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+    collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
     acceptablePrice: increaseAmounts.acceptablePrice,
     triggerPrice: isLimit ? triggerPrice : undefined,
     orderType,
@@ -173,3 +182,17 @@ export const selectTradeboxDecreaseOrderParams = createSelector((q) => {
     isLong,
   });
 });
+
+export const makeSelectExpressParams = createSelectorFactory((requiredActions: number) =>
+  createSelector((q): ExpressParams | undefined => {
+    const relayFeeParams = q(selectRelayerFeeSwapParams);
+    const tokenPermits = q(selectTokenPermits);
+    const subaccount = q(makeSelectSubaccountForActions(requiredActions));
+
+    if (!relayFeeParams || !tokenPermits || !subaccount) {
+      return undefined;
+    }
+
+    return { relayFeeParams, tokenPermits: tokenPermits ?? [], subaccount };
+  })
+);
