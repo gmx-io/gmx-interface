@@ -6,18 +6,17 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
 import Skeleton from "react-loading-skeleton";
 import useSWR from "swr";
-import { Address, encodeFunctionData, maxUint256, toHex, zeroAddress } from "viem";
-import { useAccount, usePublicClient, useConnectorClient, useWalletClient } from "wagmi";
-// node_modules/@stargatefinance/stg-evm-sdk-v2/artifacts/src/{interfaces/IStargate.sol/IStargate.json,messaging/TokenMessaging.sol/TokenMessaging.json}
+import { Address, parseEther, toHex, zeroAddress } from "viem";
+import { estimateTotalGas } from "viem/op-stack";
+import { useAccount, usePublicClient } from "wagmi";
 
 import { UiSettlementChain, UiSourceChain, getChainName } from "config/chains";
 import { getContract, tryGetContract } from "config/contracts";
 import { getChainIcon } from "config/icons";
 import {
-  getMultichainTokenId,
+  getMappedTokenId,
   getStargateEndpointId,
   getStargatePoolAddress,
-  getMappedTokenId,
   isSourceChain,
 } from "context/GmxAccountContext/config";
 import {
@@ -39,15 +38,12 @@ import {
   formatBalanceAmount,
   formatPercentage,
   formatUsd,
-  parseValue,
 } from "lib/numbers";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
-import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
-import useWallet from "lib/wallets/useWallet";
 import { CodecUiHelper, OFTComposeMsgCodec } from "pages/DebugStargate/OFTComposeMsgCodec";
 import { abis } from "sdk/abis";
-import { NATIVE_TOKEN_ADDRESS, getToken } from "sdk/configs/tokens";
+import { getToken } from "sdk/configs/tokens";
 import { convertToUsd } from "sdk/utils/tokens";
 import {
   MessagingFeeStruct,
@@ -232,7 +228,7 @@ export const DepositView = () => {
     });
   }, [depositViewChain, depositViewTokenAddress, inputAmount, selectedTokenSourceChainTokenId, signer]);
 
-  const { composeGas } = useMultichainNetworkComposeFeeUsd();
+  const { composeGas } = useMultichainNetworkComposeGas();
 
   const { nativeFeeUsd, amountReceivedLD } = useMultichainQuoteFeeUsd(composeGas);
 
@@ -542,7 +538,7 @@ export const DepositView = () => {
 
 const FALLBACK_COMPOSE_GAS = 230_000n;
 
-function useMultichainNetworkComposeFeeUsd(): {
+function useMultichainNetworkComposeGas(): {
   composeGas: bigint | undefined;
 } {
   const [settlementChainId] = useGmxAccountSettlementChainId();

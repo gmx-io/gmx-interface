@@ -10375,7 +10375,7 @@ __metadata:
     typechain: 8.3.2
     typescript: 5.4.2
     use-context-selector: 1.4.1
-    viem: 2.24.1
+    viem: 2.26.2
     vite: 5.4.0
     vite-plugin-svgr: 4.2.0
     vite-tsconfig-paths: 5.0.1
@@ -16427,7 +16427,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:2.24.1, viem@npm:^2.1.1":
+"viem@npm:2.26.2":
+  version: 2.26.2
+  resolution: "viem@npm:2.26.2"
+  dependencies:
+    "@noble/curves": 1.8.1
+    "@noble/hashes": 1.7.1
+    "@scure/bip32": 1.6.2
+    "@scure/bip39": 1.5.4
+    abitype: 1.0.8
+    isows: 1.0.6
+    ox: 0.6.9
+    ws: 8.18.1
+  peerDependencies:
+    typescript: ">=5.0.4"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: b1d6f67979f3a2a0f9918af5b20aee42cbeb2662046eba3aac73aea260c29fa16898b9824afe2eea6a9fa1510329a141ef511b92cc45f1b7a224caffef24215b
+  languageName: node
+  linkType: hard
+
+"viem@npm:^2.1.1":
   version: 2.24.1
   resolution: "viem@npm:2.24.1"
   dependencies:

@@ -568,7 +568,7 @@ __metadata:
     typescript: 5.4.2
     typescript-transform-paths: 3.5.1
     universal-perf-hooks: 1.0.1
-    viem: ^2.24.1
+    viem: ^2.26.2
     vitest: 3.0.4
   languageName: unknown
   linkType: soft
@@ -2947,9 +2947,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:^2.24.1":
-  version: 2.24.1
-  resolution: "viem@npm:2.24.1"
+"viem@npm:^2.26.2":
+  version: 2.26.2
+  resolution: "viem@npm:2.26.2"
   dependencies:
     "@noble/curves": 1.8.1
     "@noble/hashes": 1.7.1
@@ -2964,7 +2964,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: ad6acd7f779b5901d09e3efdc6a84590e95caa79a947a03cb01534d323c412f69546ffa61563ec0951f07396e87c0dd4d03a82d3c485654ecaf823d040b66f58
+  checksum: b1d6f67979f3a2a0f9918af5b20aee42cbeb2662046eba3aac73aea260c29fa16898b9824afe2eea6a9fa1510329a141ef511b92cc45f1b7a224caffef24215b
   languageName: node
   linkType: hard
 
