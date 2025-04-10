@@ -16,8 +16,8 @@ import {
   isIncreaseOrderType,
   isLimitOrderType,
   isLimitSwapOrderType,
-  isPositionOrderInfo,
-  isSwapOrderInfo,
+  isPositionOrder,
+  isSwapOrder,
   isSwapOrderType,
   isTriggerDecreaseOrderType,
   sortPositionOrders,
@@ -109,7 +109,7 @@ export const selectOrderEditorSwapFees = createSelector((q) => {
 
   if (!order) return undefined;
 
-  if (!isSwapOrderInfo(order)) {
+  if (!isSwapOrder(order)) {
     return undefined;
   }
 
@@ -182,9 +182,9 @@ export const selectOrdersList = createSelector((q) => {
   const { swapOrders, positionOrders } = Object.values(ordersData || {}).reduce(
     (acc, order) => {
       if (isLimitOrderType(order.orderType) || isTriggerDecreaseOrderType(order.orderType)) {
-        if (isSwapOrderInfo(order)) {
+        if (isSwapOrder(order)) {
           acc.swapOrders.push(order);
-        } else if (isPositionOrderInfo(order)) {
+        } else if (isPositionOrder(order)) {
           acc.positionOrders.push(order);
         }
       }
@@ -531,7 +531,7 @@ export const selectOrderEditorMinOutputAmount = createSelector((q) => {
     return minOutputAmount;
   }
 
-  if (triggerRatio && isSwapOrderInfo(order)) {
+  if (triggerRatio && isSwapOrder(order)) {
     minOutputAmount = getAmountByRatio({
       fromToken,
       toToken,

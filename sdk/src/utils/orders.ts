@@ -72,19 +72,23 @@ export function isStopIncreaseOrderType(orderType: OrderType) {
   return orderType === OrderType.StopIncrease;
 }
 
-export function isTwapSwapOrderInfo(orderInfo: OrderInfo): orderInfo is TwapSwapOrderInfo {
+export function isTwapOrder(orderInfo: OrderInfo) {
+  return orderInfo.__groupType === "twap";
+}
+
+export function isTwapSwapOrder(orderInfo: OrderInfo): orderInfo is TwapSwapOrderInfo {
   return orderInfo.__groupType === "twap" && orderInfo.__orderInfoType === "swap";
 }
 
-export function isTwapPositionOrderInfo(orderInfo: OrderInfo): orderInfo is TwapPositionOrderInfo {
+export function isTwapPositionOrder(orderInfo: OrderInfo): orderInfo is TwapPositionOrderInfo {
   return orderInfo.__groupType === "twap" && orderInfo.__orderInfoType === "position";
 }
 
-export function isSwapOrderInfo(orderInfo: OrderInfo): orderInfo is SwapOrderInfo {
+export function isSwapOrder(orderInfo: OrderInfo): orderInfo is SwapOrderInfo {
   return orderInfo.__orderInfoType === "swap";
 }
 
-export function isPositionOrderInfo(orderInfo: OrderInfo): orderInfo is PositionOrderInfo {
+export function isPositionOrder(orderInfo: OrderInfo): orderInfo is PositionOrderInfo {
   return orderInfo.__orderInfoType === "position";
 }
 

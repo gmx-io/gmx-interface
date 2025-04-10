@@ -5,10 +5,10 @@ import { getByKey } from "lib/objects";
 import { getWrappedToken } from "sdk/configs/tokens";
 import {
   getOrderInfo,
-  isPositionOrderInfo,
-  isSwapOrderInfo,
-  isTwapPositionOrderInfo,
-  isTwapSwapOrderInfo,
+  isPositionOrder,
+  isSwapOrder,
+  isTwapPositionOrder,
+  isTwapSwapOrder,
 } from "sdk/utils/orders";
 
 import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
@@ -139,11 +139,11 @@ const createOrderInfo = ({
       };
     }
 
-    if (twapOrderInfo && isTwapSwapOrderInfo(twapOrderInfo) && isSwapOrderInfo(orderInfo)) {
+    if (twapOrderInfo && isTwapSwapOrder(twapOrderInfo) && isSwapOrder(orderInfo)) {
       twapOrderInfo.orders.push(orderInfo);
     }
 
-    if (twapOrderInfo && isTwapPositionOrderInfo(twapOrderInfo) && isPositionOrderInfo(orderInfo)) {
+    if (twapOrderInfo && isTwapPositionOrder(twapOrderInfo) && isPositionOrder(orderInfo)) {
       twapOrderInfo.orders.push(orderInfo);
     }
 

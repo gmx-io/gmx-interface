@@ -21,8 +21,9 @@ import {
   isLimitSwapOrderType,
   isStopIncreaseOrderType,
   isStopLossOrderType,
+  isTwapOrder,
 } from "domain/synthetics/orders";
-import { PositionsInfoData, getNameByOrderType } from "domain/synthetics/positions";
+import { PositionsInfoData, getNameByOrder } from "domain/synthetics/positions";
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { TokensRatioAndSlippage } from "domain/tokens";
@@ -274,6 +275,10 @@ function MarkPrice({ order }: { order: OrderInfo }) {
     });
   }, [markPrice, priceDecimals, positionOrder.indexToken?.visualMultiplier]);
 
+  if (isTwapOrder(order)) {
+    return <>{markPriceFormatted}</>;
+  }
+
   if (isLimitSwapOrderType(order.orderType)) {
     const { markSwapRatioText } = getSwapRatioText(order);
 
@@ -310,6 +315,10 @@ function MarkPrice({ order }: { order: OrderInfo }) {
 }
 
 function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: boolean | undefined }) {
+  if (isTwapOrder(order)) {
+    return <Trans>N/A</Trans>;
+  }
+
   if (isLimitSwapOrderType(order.orderType)) {
     const swapOrder = order as SwapOrderInfo;
     const toAmount = swapOrder.minOutputAmount;
@@ -684,7 +693,7 @@ function getSwapRatioText(order: OrderInfo) {
 function OrderItemTypeLabel({ order }: { order: OrderInfo }) {
   const { errors, level } = useOrderErrors(order.key);
 
-  const handle = getNameByOrderType(order.orderType);
+  const handle = getNameByOrder(order);
 
   if (errors.length === 0) {
     return <>{handle}</>;

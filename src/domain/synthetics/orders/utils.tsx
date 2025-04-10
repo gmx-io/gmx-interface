@@ -9,7 +9,7 @@ import {
   isIncreaseOrderType,
   isMarketOrderType,
   isOrderForPosition,
-  isSwapOrderInfo,
+  isSwapOrder,
   isSwapOrderType,
 } from "sdk/utils/orders";
 
@@ -121,7 +121,7 @@ export function getOrderErrors(p: {
 
   const errors: OrderError[] = [];
 
-  if (isSwapOrderInfo(order)) {
+  if (isSwapOrder(order)) {
     const swapPathLiquidity = getMaxSwapPathLiquidity({
       marketsInfoData,
       swapPath: order.swapPath,
