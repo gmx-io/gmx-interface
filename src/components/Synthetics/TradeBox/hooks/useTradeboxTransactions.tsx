@@ -81,7 +81,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const marketInfo = useSelector(selectTradeboxMarketInfo);
   const collateralToken = useSelector(selectTradeboxCollateralToken);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isLong, isLimit, isTWAP } = tradeFlags;
+  const { isLong, isLimit, isTwap: isTWAP } = tradeFlags;
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
   const isLeverageSliderEnabled = useSelector(selectIsLeverageSliderEnabled);
   const isFirstOrder = useSelector(selectIsFirstOrder);

@@ -107,7 +107,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
       isSwap: false,
       isPosition: true,
       isTrigger: orderOption === OrderOption.Trigger,
-      isTWAP: false,
+      isTwap: false,
     }),
     [position?.isLong, orderOption]
   );

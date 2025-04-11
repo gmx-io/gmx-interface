@@ -17,6 +17,7 @@ import {
   selectTradeboxSelectedPosition,
   selectTradeboxStage,
   selectTradeboxSwapAmounts,
+  selectTradeboxTWAPNumberOfParts,
   selectTradeboxToToken,
   selectTradeboxToTokenAmount,
   selectTradeboxTradeFlags,
@@ -73,11 +74,12 @@ export const selectTradeboxIncreaseTradeError = createSelector((q) => {
   const { maxLiquidity: swapOutLiquidity } = q(selectTradeboxMaxLiquidityPath);
   const { minCollateralUsd } = q(selectPositionConstants);
   const { longLiquidity, shortLiquidity } = q(selectTradeboxLiquidity);
-  const { isLong, isLimit } = q(selectTradeboxTradeFlags);
+  const { isLong, isLimit, isTwap } = q(selectTradeboxTradeFlags);
   const markPrice = q(selectTradeboxMarkPrice);
   const triggerPrice = q(selectTradeboxTriggerPrice);
   const nextPositionValues = q(selectTradeboxNextPositionValues);
   const nextLeverageWithoutPnl = q(selectTradeboxNextLeverageWithoutPnl);
+  const numberOfParts = q(selectTradeboxTWAPNumberOfParts);
 
   return getIncreaseError({
     marketInfo,
@@ -103,6 +105,8 @@ export const selectTradeboxIncreaseTradeError = createSelector((q) => {
     nextPositionValues,
     nextLeverageWithoutPnl,
     thresholdType: increaseAmounts?.triggerThresholdType,
+    numberOfParts,
+    isTwap,
   });
 });
 

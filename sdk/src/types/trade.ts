@@ -34,7 +34,7 @@ export type TradeFlags = {
   isTrigger: boolean;
   isMarket: boolean;
   isLimit: boolean;
-  isTWAP: boolean;
+  isTwap: boolean;
 };
 
 export type SwapAmounts = {

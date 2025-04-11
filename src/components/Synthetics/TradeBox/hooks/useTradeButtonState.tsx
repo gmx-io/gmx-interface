@@ -101,7 +101,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
   const { signer } = useWallet();
 
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isSwap, isIncrease, isLimit, isMarket, isTWAP } = tradeFlags;
+  const { isSwap, isIncrease, isLimit, isMarket, isTwap: isTWAP } = tradeFlags;
   const { stopLoss, takeProfit } = useSidecarOrders();
   const sidecarEntries = useSidecarEntries();
   const hasOutdatedUi = useHasOutdatedUi();

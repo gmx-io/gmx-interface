@@ -31,7 +31,7 @@ export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode): Trade
     isTrigger,
     isMarket,
     isLimit,
-    isTWAP,
+    isTwap: isTWAP,
   };
 }
 
@@ -68,7 +68,7 @@ export function getTradeFlagsForCollateralEdit(isLong: boolean | undefined, isIn
     isSwap: false,
     isPosition: true,
     isTrigger: false,
-    isTWAP: false,
+    isTwap: false,
   };
 }
 

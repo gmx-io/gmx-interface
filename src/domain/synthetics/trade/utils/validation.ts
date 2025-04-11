@@ -175,8 +175,10 @@ export function getIncreaseError(p: {
   minCollateralUsd: bigint | undefined;
   isLong: boolean;
   isLimit: boolean;
+  isTwap: boolean;
   nextLeverageWithoutPnl: bigint | undefined;
   thresholdType: TriggerThresholdType | undefined;
+  numberOfParts: number;
 }): ValidationResult {
   const {
     marketInfo,
@@ -201,6 +203,8 @@ export function getIncreaseError(p: {
     isLimit,
     nextPositionValues,
     nextLeverageWithoutPnl,
+    isTwap,
+    numberOfParts,
   } = p;
 
   if (!marketInfo || !indexToken) {
@@ -257,6 +261,14 @@ export function getIncreaseError(p: {
 
   // Hardcoded for Odyssey
   const _minCollateralUsd = expandDecimals(2, USD_DECIMALS);
+
+  if (
+    !existingPosition &&
+    isTwap &&
+    (collateralUsd === undefined ? undefined : collateralUsd / BigInt(numberOfParts) < _minCollateralUsd / 2n)
+  ) {
+    return [t`Min size per part: ${formatUsd(_minCollateralUsd / 2n)}`];
+  }
 
   if (!existingPosition && (collateralUsd === undefined ? undefined : collateralUsd < _minCollateralUsd)) {
     return [t`Min order: ${formatUsd(_minCollateralUsd)}`];

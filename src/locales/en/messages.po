@@ -1811,6 +1811,10 @@ msgstr "Close to execution price"
 msgid "Global Leaderboard"
 msgstr "Global Leaderboard"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min size per part: {0}"
+msgstr "Min size per part: {0}"
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
