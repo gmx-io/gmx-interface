@@ -84,24 +84,25 @@ export async function createTWAPIncreaseOrderTxn({
   const totalExecutionFee = p.executionFee * BigInt(p.numberOfParts);
   const totalWntAmount = wntCollateralAmount + totalExecutionFee;
 
-  const increaseOrders = new Array(p.numberOfParts).fill(0).map(() => {
-    const increaseOrder: PendingOrderData = {
-      account: p.account,
-      marketAddress: p.marketAddress,
-      initialCollateralTokenAddress,
-      initialCollateralDeltaAmount: p.initialCollateralAmount / BigInt(p.numberOfParts),
-      swapPath,
-      externalSwapQuote: p.externalSwapQuote,
-      sizeDeltaUsd: p.sizeDeltaUsd / BigInt(p.numberOfParts),
-      minOutputAmount: 0n,
-      isLong: p.isLong,
-      orderType: OrderType.LimitIncrease,
-      shouldUnwrapNativeToken: isNativePayment,
-      txnType: "create",
-    };
+  const pendingOrder: PendingOrderData = {
+    account: p.account,
+    marketAddress: p.marketAddress,
+    initialCollateralTokenAddress,
+    initialCollateralDeltaAmount: p.initialCollateralAmount / BigInt(p.numberOfParts),
+    swapPath,
+    externalSwapQuote: p.externalSwapQuote,
+    sizeDeltaUsd: p.sizeDeltaUsd / BigInt(p.numberOfParts),
+    minOutputAmount: 0n,
+    isLong: p.isLong,
+    orderType: OrderType.LimitIncrease,
+    shouldUnwrapNativeToken: isNativePayment,
+    txnType: "create",
+    isTwapOrder: true,
+  };
 
-    return increaseOrder;
-  });
+  if (subaccount) {
+    p.setPendingOrder(pendingOrder);
+  }
 
   const encodedPayload = await createEncodedPayload({
     chainId,
@@ -117,10 +118,6 @@ export async function createTWAPIncreaseOrderTxn({
     swapPath,
     signer,
   });
-
-  if (subaccount) {
-    p.setPendingOrder(increaseOrders);
-  }
 
   const primaryPriceOverrides: PriceOverrides = {};
 
@@ -160,7 +157,7 @@ export async function createTWAPIncreaseOrderTxn({
   });
 
   if (!subaccount) {
-    p.setPendingOrder(increaseOrders);
+    p.setPendingOrder(pendingOrder);
   }
 }
 

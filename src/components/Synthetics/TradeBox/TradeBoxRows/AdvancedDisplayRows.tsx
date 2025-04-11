@@ -190,7 +190,7 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
   const options = useSelector(selectTradeboxAdvancedOptions);
   const setOptions = useSelector(selectTradeboxSetAdvancedOptions);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isSwap, isIncrease, isMarket, isLimit, isTrigger } = tradeFlags;
+  const { isSwap, isIncrease, isMarket, isLimit, isTrigger, isTwap } = tradeFlags;
 
   const { isLiquidityRisk } = useSelector(selectTradeboxLiquidityInfo);
 
@@ -263,7 +263,7 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
       contentClassName="flex flex-col gap-14"
       scrollIntoViewOnMobile
     >
-      {(isLimit || isTrigger) && !isSwap && (
+      {(isLimit || isTrigger || isTwap) && !isSwap && (
         <>
           <AcceptablePriceImpactInputRow
             notAvailable={

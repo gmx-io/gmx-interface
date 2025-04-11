@@ -110,3 +110,16 @@ export type OrdersInfoData = {
 };
 
 export type OrderTxnType = "create" | "update" | "cancel";
+
+type SingleOrderParams = {
+  key: string;
+  __groupType: "none";
+};
+
+type TwapOrderParams = {
+  key: string;
+  __groupType: "twap";
+  orders: SingleOrderParams[];
+};
+
+export type OrderParams = SingleOrderParams | TwapOrderParams;

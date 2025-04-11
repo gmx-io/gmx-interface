@@ -1010,7 +1010,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               }
             />
           )}
-          {!(isTrigger && !selectedPosition) && !isSwap && (
+          {!(isTrigger && !selectedPosition) && !isSwap && !isTWAP && (
             <SyntheticsInfoRow
               label={t`Liquidation Price`}
               value={
@@ -1027,7 +1027,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               }
             />
           )}
-          <PriceImpactFeesRow />
+          {!isTWAP && <PriceImpactFeesRow />}
           <TradeBoxAdvancedGroups slippageInputId={submitButtonState.slippageInputId} />
         </div>
       </form>

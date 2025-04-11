@@ -14,13 +14,17 @@ import { selectAccount, selectChainId } from "context/SyntheticsStateContext/sel
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
+  OrderInfo,
   OrderType,
   PositionOrderInfo,
   SwapOrderInfo,
+  TwapPositionOrderInfo,
+  TwapSwapOrderInfo,
   isLimitOrderType,
   isPositionOrder,
   isSwapOrder,
   isTriggerDecreaseOrderType,
+  isTwapOrder,
   sortPositionOrders,
   sortSwapOrders,
 } from "domain/synthetics/orders";
@@ -137,16 +141,18 @@ export function OrderList({
     setSelectedOrderKeys?.(allSelectedOrders);
   }
 
-  function onCancelOrder(key: string) {
+  function onCancelOrder(order: OrderInfo) {
     if (!signer) return;
-    setCancellingOrdersKeys((prev) => [...prev, key]);
+
+    const orderKeys = isTwapOrder(order) ? order.orders.map((o) => o.key) : [order.key];
+    setCancellingOrdersKeys((prev) => [...prev, order.key]);
 
     cancelOrdersTxn(chainId, signer, subaccount, {
-      orderKeys: [key],
+      orders: [order],
       setPendingTxns: setPendingTxns,
       detailsMsg: cancelOrdersDetailsMessage,
     }).finally(() => {
-      setCancellingOrdersKeys((prev) => prev.filter((k) => k !== key));
+      setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));
       setSelectedOrderKeys?.(EMPTY_ARRAY);
     });
   }
@@ -206,7 +212,7 @@ export function OrderList({
                   isSelected={selectedOrdersKeys?.includes(order.key)}
                   onToggleOrder={() => onToggleOrder(order.key)}
                   isCanceling={cancellingOrdersKeys.includes(order.key)}
-                  onCancelOrder={() => onCancelOrder(order.key)}
+                  onCancelOrder={() => onCancelOrder(order)}
                   positionsInfoData={positionsData}
                   hideActions={hideActions}
                   setRef={handleSetRef}
@@ -271,7 +277,7 @@ export function OrderList({
                   order={order}
                   onToggleOrder={() => onToggleOrder(order.key)}
                   isCanceling={cancellingOrdersKeys.includes(order.key)}
-                  onCancelOrder={() => onCancelOrder(order.key)}
+                  onCancelOrder={() => onCancelOrder(order)}
                   hideActions={hideActions}
                   positionsInfoData={positionsData}
                   setRef={(el) => (orderRefs.current[order.key] = el)}
@@ -320,7 +326,10 @@ function useFilteredOrders({
         }
         return acc;
       },
-      { swapOrders: [] as SwapOrderInfo[], positionOrders: [] as PositionOrderInfo[] }
+      {
+        swapOrders: [] as (SwapOrderInfo | TwapSwapOrderInfo)[],
+        positionOrders: [] as (PositionOrderInfo | TwapPositionOrderInfo)[],
+      }
     );
 
     return [

@@ -3,6 +3,7 @@ import { MarketsInfoData } from "types/markets";
 import {
   Order,
   OrderInfo,
+  OrderParams,
   OrderType,
   PositionOrderInfo,
   SwapOrderInfo,
@@ -72,7 +73,7 @@ export function isStopIncreaseOrderType(orderType: OrderType) {
   return orderType === OrderType.StopIncrease;
 }
 
-export function isTwapOrder(orderInfo: OrderInfo) {
+export function isTwapOrder<T extends OrderParams>(orderInfo: T): orderInfo is Extract<T, { __groupType: "twap" }> {
   return orderInfo.__groupType === "twap";
 }
 

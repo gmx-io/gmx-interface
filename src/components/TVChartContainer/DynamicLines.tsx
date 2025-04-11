@@ -58,15 +58,18 @@ export function DynamicLines({
       if (!signer) return;
       setCancellingOrdersKeys((prev) => [...prev, key]);
 
+      const order = ordersInfoData?.[key];
+      if (!order) return;
+
       cancelOrdersTxn(chainId, signer, subaccount, {
-        orderKeys: [key],
+        orders: [order],
         setPendingTxns: setPendingTxns,
         detailsMsg: cancelOrdersDetailsMessage,
       }).finally(() => {
         setCancellingOrdersKeys((prev) => prev.filter((k) => k !== key));
       });
     },
-    [cancelOrdersDetailsMessage, chainId, setCancellingOrdersKeys, setPendingTxns, signer, subaccount]
+    [cancelOrdersDetailsMessage, chainId, setCancellingOrdersKeys, setPendingTxns, signer, subaccount, ordersInfoData]
   );
 
   const calcSelector = useCalcSelector();

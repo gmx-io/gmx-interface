@@ -505,9 +505,11 @@ function OrderItemLarge({
       {!hideActions && (
         <TableTd>
           <div className="inline-flex items-center">
-            <button className="cursor-pointer p-6 text-slate-100 hover:text-white" onClick={setEditingOrderKey}>
-              <AiOutlineEdit title={t`Edit order`} fontSize={16} />
-            </button>
+            {!isTwapOrder(order) && (
+              <button className="cursor-pointer p-6 text-slate-100 hover:text-white" onClick={setEditingOrderKey}>
+                <AiOutlineEdit title={t`Edit order`} fontSize={16} />
+              </button>
+            )}
             {onCancelOrder && (
               <button
                 className="cursor-pointer p-6 text-slate-100 hover:text-white disabled:cursor-wait"
@@ -640,9 +642,11 @@ function OrderItemSmall({
         <div className="App-card-actions">
           <div className="App-card-divider"></div>
           <div className="remove-top-margin">
-            <Button variant="secondary" className="mr-15 mt-15" onClick={setEditingOrderKey}>
-              <Trans>Edit</Trans>
-            </Button>
+            {!isTwapOrder(order) && (
+              <Button variant="secondary" className="mr-15 mt-15" onClick={setEditingOrderKey}>
+                <Trans>Edit</Trans>
+              </Button>
+            )}
 
             {onCancelOrder && (
               <Button variant="secondary" className="mt-15" onClick={onCancelOrder}>
