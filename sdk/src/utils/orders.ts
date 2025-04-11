@@ -1,6 +1,15 @@
 import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS } from "configs/factors";
 import { MarketsInfoData } from "types/markets";
-import { Order, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo } from "types/orders";
+import {
+  Order,
+  OrderInfo,
+  OrderParams,
+  OrderType,
+  PositionOrderInfo,
+  SwapOrderInfo,
+  TwapPositionOrderInfo,
+  TwapSwapOrderInfo,
+} from "types/orders";
 import { Token, TokensData } from "types/tokens";
 import { getSwapPathOutputAddresses, getSwapPathStats } from "utils/swap/swapStats";
 
@@ -62,6 +71,26 @@ export function isLimitIncreaseOrderType(orderType: OrderType) {
 
 export function isStopIncreaseOrderType(orderType: OrderType) {
   return orderType === OrderType.StopIncrease;
+}
+
+export function isTwapOrder<T extends OrderParams>(orderInfo: T): orderInfo is Extract<T, { __groupType: "twap" }> {
+  return orderInfo.__groupType === "twap";
+}
+
+export function isTwapSwapOrder(orderInfo: OrderInfo): orderInfo is TwapSwapOrderInfo {
+  return orderInfo.__groupType === "twap" && orderInfo.__orderInfoType === "swap";
+}
+
+export function isTwapPositionOrder(orderInfo: OrderInfo): orderInfo is TwapPositionOrderInfo {
+  return orderInfo.__groupType === "twap" && orderInfo.__orderInfoType === "position";
+}
+
+export function isSwapOrder(orderInfo: OrderInfo): orderInfo is SwapOrderInfo {
+  return orderInfo.__orderInfoType === "swap";
+}
+
+export function isPositionOrder(orderInfo: OrderInfo): orderInfo is PositionOrderInfo {
+  return orderInfo.__orderInfoType === "position";
 }
 
 export function getOrderInfo(p: {
@@ -154,6 +183,8 @@ export function getOrderInfo(p: {
       triggerRatio,
       initialCollateralToken,
       targetCollateralToken,
+      __orderInfoType: "swap",
+      __groupType: "none",
     };
 
     return orderInfo;
@@ -206,6 +237,8 @@ export function getOrderInfo(p: {
       acceptablePrice,
       triggerPrice,
       triggerThresholdType,
+      __orderInfoType: "position",
+      __groupType: "none",
     };
 
     return orderInfo;

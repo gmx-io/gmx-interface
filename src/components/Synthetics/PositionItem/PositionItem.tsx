@@ -16,14 +16,14 @@ import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/se
 import { selectTradeboxSelectedPositionKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
-import { OrderErrors, PositionOrderInfo, isIncreaseOrderType } from "domain/synthetics/orders";
+import { OrderErrors, PositionOrderInfo, isIncreaseOrderType, isTwapOrder } from "domain/synthetics/orders";
 import {
   PositionInfo,
   formatEstimatedLiquidationTime,
   formatLeverage,
   formatLiquidationPrice,
   getEstimatedLiquidationTimeInHours,
-  getNameByOrderType,
+  getNameByOrder,
 } from "domain/synthetics/positions";
 import { TradeMode, getOrderThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
@@ -781,7 +781,7 @@ function PositionItemOrder({
   onOrdersClick?: (key?: string) => void;
 }) {
   const [, setEditingOrderState] = useEditingOrderState();
-  const [isCancelling, cancel] = useCancelOrder(order.key);
+  const [isCancelling, cancel] = useCancelOrder(order);
   const handleOrdersClick = useCallback(() => {
     onOrdersClick?.(order.key);
   }, [onOrdersClick, order.key]);
@@ -844,14 +844,22 @@ function PositionItemOrder({
 function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
   const triggerThresholdType = getOrderThresholdType(order.orderType, order.isLong);
   const isIncrease = isIncreaseOrderType(order.orderType);
+  const isTwap = isTwapOrder(order);
 
   return (
     <div key={order.key} className="text-start">
-      {getNameByOrderType(order.orderType, { abbr: true })}: {triggerThresholdType}{" "}
-      {formatUsd(order.triggerPrice, {
-        displayDecimals: calculateDisplayDecimals(order.triggerPrice, undefined, order.indexToken?.visualMultiplier),
-        visualMultiplier: order.indexToken?.visualMultiplier,
-      })}
+      {getNameByOrder(order, { abbr: true })}
+      {!isTwap
+        ? `: ${triggerThresholdType} ` +
+          formatUsd(order.triggerPrice, {
+            displayDecimals: calculateDisplayDecimals(
+              order.triggerPrice,
+              undefined,
+              order.indexToken?.visualMultiplier
+            ),
+            visualMultiplier: order.indexToken?.visualMultiplier,
+          })
+        : null}
       :{" "}
       <span>
         {isIncrease ? "+" : "-"}

@@ -24,6 +24,7 @@ import {
 import { getPositionKey } from "domain/synthetics/positions";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
+import { decodeTWAPUiFeeReceiver } from "domain/synthetics/trade/twap/uiFeeReceiver";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
@@ -149,6 +150,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     OrderCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       updateNativeTokenBalance();
 
+      const uiFeeReceiver = eventData.addressItems.items.uiFeeReceiver;
+      const { twapId } = decodeTWAPUiFeeReceiver(uiFeeReceiver);
+
       const data: OrderCreatedEventData = {
         account: eventData.addressItems.items.account,
         receiver: eventData.addressItems.items.receiver,
@@ -170,6 +174,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         isFrozen: eventData.boolItems.items.isFrozen,
         externalSwapQuote: undefined,
         key: eventData.bytes32Items.items.key,
+        isTwapOrder: twapId !== undefined,
       };
 
       if (data.account !== currentAccount) {

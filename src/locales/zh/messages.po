@@ -287,6 +287,10 @@ msgstr ""
 msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
 msgstr ""
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "TWAP Number of Parts"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
 msgstr ""
@@ -494,6 +498,10 @@ msgstr ""
 msgid "Realized PnL"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+msgid "{hours} hours"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX V2 Data Analytics within Telegram"
 msgstr ""
@@ -514,6 +522,10 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr "为{0} {1}: {2} USD!创建限量的指令"
+
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
+#~ msgid "<0>every</0> {0}{minutes} minutes"
+#~ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
@@ -577,6 +589,7 @@ msgstr "隐藏"
 msgid "in liquidity"
 msgstr "流动性中"
 
+#: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max Network Fee buffer below {0}% may result in failed orders."
 msgstr ""
@@ -1551,6 +1564,14 @@ msgstr ""
 msgid "Select Positions"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+#~ msgid "Long TWAP: Increase a long position in evenly distributed parts over a specified time. Read more."
+#~ msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+#~ msgid "Short TWAP: Increase a short position in evenly distributed parts over a specified time. Read more."
+#~ msgstr ""
+
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
 msgstr ""
@@ -1648,6 +1669,10 @@ msgstr "交易ID"
 #: src/components/Exchange/PositionsList.jsx
 msgid "Borrow Fee / Day"
 msgstr "借款费用/天"
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP_NUMBER_OF_PARTS}"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Chinese)"
@@ -1786,6 +1811,10 @@ msgstr "关闭执行价格"
 msgid "Global Leaderboard"
 msgstr ""
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min size per part: {0}"
+msgstr ""
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -1803,6 +1832,10 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Pair"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+msgid "This TWAP order will execute {numberOfParts} long increase orders of {0} each over the next {1} for the {2} pool."
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
@@ -1890,10 +1923,6 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr ""
-
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-#~ msgid "Open {longOrShortText} {prefix}{tokenSymbol}"
-#~ msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Show details"
@@ -2416,6 +2445,10 @@ msgstr "GLP池"
 msgid "Cancel submitted."
 msgstr "送出取消"
 
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Increase a long position in evenly distributed parts over a specified time. Read more."
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Traderjoe:"
 msgstr ""
@@ -2529,6 +2562,10 @@ msgstr "您有一个现有仓位，抵押品为{0}"
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "Transfer Account"
 msgstr "转移账户"
+
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
+#~ msgid "{0} minutes"
+#~ msgstr ""
 
 #: src/pages/Actions/ActionsRouter.tsx
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx
@@ -3030,10 +3067,6 @@ msgstr ""
 msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "已减少{tokenSymbol} {longOrShortText}, -{0} USD"
 
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-#~ msgid "Liq. {longOrShortText} {prefix}{tokenSymbol}"
-#~ msgstr ""
-
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Leave at least {0} ETH for gas"
 msgstr ""
@@ -3388,6 +3421,11 @@ msgstr ""
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
+#: src/domain/synthetics/positions/utils.ts
+msgid "TWAP"
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Updating Order..."
@@ -3570,6 +3608,10 @@ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"<0>Top-up</0>\" field to increase the Subaccount Balance."
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+msgid "<0>every</0> {hours} hours{0}"
 msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
@@ -3896,6 +3938,10 @@ msgstr "该账户作为交易商所赚取的回扣"
 #: src/pages/Dashboard/WeightText.tsx
 msgid "Read more"
 msgstr "了解更多"
+
+#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+msgid "{0} days"
+msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "This Year"
@@ -4306,6 +4352,10 @@ msgstr ""
 msgid "Creating Order..."
 msgstr "创建指令中..."
 
+#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+msgid "{hours} hours and {minutes} minutes"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Deposit disabled, pending {0} upgrade"
 msgstr ""
@@ -4361,9 +4411,17 @@ msgstr ""
 msgid "Close submitted!"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+msgid "Hour(s)"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Create TWAP Increase order"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
@@ -4695,6 +4753,10 @@ msgstr ""
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "活跃总数： {openTotal}, 已执行: {executedTotal}, 已取消: {cancelledTotal}"
 
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
+#~ msgid "{0} hours and {1} minutes"
+#~ msgstr ""
+
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "24h Low"
@@ -4817,6 +4879,10 @@ msgstr "所有时间"
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Select your vesting option below then click \"Claim\"."
 msgstr "在下面选择你的归属选项，然后点击 \"Claim\""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
+msgstr ""
 
 #: src/pages/Home/Home.tsx
 msgid "Save on Costs"
@@ -5056,6 +5122,10 @@ msgstr ""
 msgid "Share"
 msgstr "分享"
 
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
+#~ msgid "{0} hours"
+#~ msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Execute"
@@ -5178,6 +5248,10 @@ msgstr "账户错误"
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Min residual collateral: 10 USD"
+msgstr ""
+
+#: src/domain/synthetics/positions/utils.ts
+msgid "twap"
 msgstr ""
 
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
@@ -5326,6 +5400,10 @@ msgstr "最高{0}以内"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop Loss Decrease"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Increase a short position in evenly distributed parts over a specified time. Read more."
 msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
@@ -5544,9 +5622,17 @@ msgstr ""
 msgid "Order cancelled."
 msgstr "订单已取消"
 
+#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+msgid "<0>every</0> {seconds} seconds"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer AVAX to Avalanche"
 msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+#~ msgid "<0>every</0> {minutes} minutes"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
@@ -5824,6 +5910,10 @@ msgstr ""
 msgid "Traders Referred"
 msgstr "推荐的交易商"
 
+#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+#~ msgid "<0>every</0> {hours} hours"
+#~ msgstr ""
+
 #: src/pages/Earn/StakeModal.tsx
 msgid "Stake submitted!"
 msgstr ""
@@ -5839,6 +5929,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Couldn't find a swap path with enough liquidity"
 msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
+#~ msgid "<0>every</0> {0}{hours} hours"
+#~ msgstr ""
 
 #: src/pages/Earn/AffiliateVesterWithdrawModal.tsx
 #: src/pages/Earn/VesterWithdrawModal.tsx
@@ -5873,6 +5967,10 @@ msgstr "核准"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} long exceeded"
 msgstr "超过了最大{0}做多范围"
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "N/A"
+msgstr ""
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Stop Market price is below mark price"
@@ -6393,6 +6491,10 @@ msgstr "部分已清偿"
 msgid "Insufficient GLP balance"
 msgstr "GLP余额不足"
 
+#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+msgid "Minute(s)"
+msgstr ""
+
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Unrealized Fees"
@@ -6717,6 +6819,10 @@ msgstr ""
 msgid "V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually."
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+msgid "Duration"
+msgstr ""
+
 #: src/components/Common/SEO.tsx
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet on Arbitrum and Avalanche."
 msgstr ""
@@ -6761,6 +6867,10 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a collateral"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+msgid "Size per part"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
@@ -7462,6 +7572,10 @@ msgstr ""
 msgid "{ordersText} cancelled"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+msgid "{minutes} minutes"
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "take profit"
 msgstr ""
@@ -7770,6 +7884,10 @@ msgstr ""
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GLP not withdrawn"
 msgstr "归属的GLP未被撤回"
+
+#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+msgid "<0>every</0> {minutes} minutes{0}"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/PositionEditor.jsx
@@ -8262,6 +8380,10 @@ msgstr ""
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+msgid "Frequency"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Enable deposit sent."
 msgstr ""
@@ -8413,6 +8535,10 @@ msgstr "要求押金"
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Deposit not enough to cover fees"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+msgid "Number of Parts"
 msgstr ""
 
 #: src/pages/Earn/EarnV1.jsx

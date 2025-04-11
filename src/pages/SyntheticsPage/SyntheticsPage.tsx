@@ -13,7 +13,11 @@ import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hoo
 import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectClaimablesCount } from "context/SyntheticsStateContext/selectors/claimsSelectors";
-import { selectChainId, selectPositionsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectChainId,
+  selectOrdersInfoData,
+  selectPositionsInfoData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import {
   selectTradeboxMaxLiquidityPath,
@@ -37,6 +41,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMeasureComponentMountTime } from "lib/metrics/useMeasureComponentMountTime";
 import { formatUsdPrice } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { isNotNull } from "lib/utils";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
@@ -399,14 +404,16 @@ function useOrdersControl() {
 
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [orderTypesFilter, setOrderTypesFilter] = useState<OrderType[]>([]);
+  const ordersInfoData = useSelector(selectOrdersInfoData);
 
   const onCancelSelectedOrders = useCallback(
     function cancelSelectedOrders() {
       if (!signer) return;
       const keys = selectedOrderKeys;
       setCanellingOrdersKeys((p) => uniq(p.concat(keys)));
+      const orders = keys.map((k) => ordersInfoData?.[k]).filter(isNotNull);
       cancelOrdersTxn(chainId, signer, subaccount, {
-        orderKeys: keys,
+        orders,
         setPendingTxns: setPendingTxns,
         detailsMsg: cancelOrdersDetailsMessage,
       })
@@ -420,7 +427,16 @@ function useOrdersControl() {
           setCanellingOrdersKeys((p) => p.filter((e) => !keys.includes(e)));
         });
     },
-    [cancelOrdersDetailsMessage, chainId, selectedOrderKeys, setCanellingOrdersKeys, setPendingTxns, signer, subaccount]
+    [
+      cancelOrdersDetailsMessage,
+      chainId,
+      selectedOrderKeys,
+      setCanellingOrdersKeys,
+      setPendingTxns,
+      signer,
+      subaccount,
+      ordersInfoData,
+    ]
   );
 
   const onCancelOrder = useCallback(
@@ -428,8 +444,10 @@ function useOrdersControl() {
       if (!signer) return;
 
       setCanellingOrdersKeys((p) => uniq(p.concat(key)));
+      const order = ordersInfoData?.[key];
+      if (!order) return;
       cancelOrdersTxn(chainId, signer, subaccount, {
-        orderKeys: [key],
+        orders: [order],
         setPendingTxns: setPendingTxns,
         detailsMsg: cancelOrdersDetailsMessage,
       }).finally(() => {
@@ -437,7 +455,7 @@ function useOrdersControl() {
         setSelectedOrderKeys((prev) => prev.filter((k) => k !== key));
       });
     },
-    [cancelOrdersDetailsMessage, chainId, setCanellingOrdersKeys, setPendingTxns, signer, subaccount]
+    [cancelOrdersDetailsMessage, chainId, setCanellingOrdersKeys, setPendingTxns, signer, subaccount, ordersInfoData]
   );
 
   return {

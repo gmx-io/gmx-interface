@@ -16,3 +16,7 @@ export function getPlusOrMinusSymbol(value?: bigint, opts: { showPlusForZero?: b
   const { showPlusForZero = false } = opts;
   return value === 0n ? (showPlusForZero ? "+" : "") : value < 0n ? "-" : "+";
 }
+
+export function isNotNull<T>(value: T): value is NonNullable<T> {
+  return value !== null && value !== undefined;
+}
