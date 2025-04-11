@@ -14,8 +14,6 @@ export interface GmxSdkConfig {
   rpcUrl: string;
   /** GMX Subsquid URL */
   subsquidUrl: string;
-  /** GMX Subgraph Synthetics Stats URL */
-  subgraphUrl: string;
 
   /** Custom viem's public and private client */
   publicClient?: PublicClient;

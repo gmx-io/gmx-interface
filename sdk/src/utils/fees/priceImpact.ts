@@ -1,10 +1,10 @@
-import { bigNumberify } from "modules/trades/trades";
 import { MarketInfo } from "types/markets";
 import { TokenData } from "types/tokens";
 import { bigMath } from "utils/bigmath";
 import { getTokenPoolType } from "utils/markets";
 import { applyFactor, expandDecimals, getBasisPoints, roundUpMagnitudeDivision } from "utils/numbers";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "utils/tokens";
+import { bigNumberify } from "utils/tradeHistory";
 
 export function getPriceImpactByAcceptablePrice(p: {
   sizeDeltaUsd: bigint;
