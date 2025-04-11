@@ -525,10 +525,14 @@ export function OrderEditor(p: Props) {
                 bottomLeftValue={isTriggerDecreaseOrderType(p.order.orderType) ? formatUsd(sizeUsd) : undefined}
                 isBottomLeftValueMuted={sizeUsd === 0n}
                 bottomRightLabel={isTriggerDecreaseOrderType(p.order.orderType) ? t`Max` : undefined}
-                bottomRightValue={isTriggerDecreaseOrderType(p.order.orderType) ? formatUsdPrice(positionSize) : undefined}
+                bottomRightValue={
+                  isTriggerDecreaseOrderType(p.order.orderType) ? formatUsdPrice(positionSize) : undefined
+                }
                 onClickMax={
-                  isTriggerDecreaseOrderType(p.order.orderType) && positionSize !== undefined &&
-                  positionSize > 0 && sizeUsd !== positionSize
+                  isTriggerDecreaseOrderType(p.order.orderType) &&
+                  positionSize !== undefined &&
+                  positionSize > 0 &&
+                  sizeUsd !== positionSize
                     ? () => setSizeInputValue(formatAmountFree(positionSize, USD_DECIMALS))
                     : undefined
                 }
