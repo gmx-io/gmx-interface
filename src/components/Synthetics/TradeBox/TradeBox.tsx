@@ -81,7 +81,7 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
 
 import TradeBoxLongShortInfoIcon from "./components/TradeBoxLongShortInfoIcon";
-import TWAPRows from "./components/TWAPRows";
+import TwapRows from "./components/TwapRows";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
 import { useShowOneClickTradingInfo } from "./hooks/useShowOneClickTradingInfo";
 import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
@@ -947,7 +947,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             )}
 
             {isTWAP && (
-              <TWAPRows
+              <TwapRows
                 duration={duration}
                 numberOfParts={numberOfParts}
                 setNumberOfParts={setNumberOfParts}

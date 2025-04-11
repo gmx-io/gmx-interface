@@ -26,23 +26,23 @@ type Props = {
 const HOURS_IN_A_DAY = 24;
 
 const getTwapDurationText = (duration: TWAPDuration) => {
-  if (duration.hours > HOURS_IN_A_DAY * 2) {
-    const daysMessage = t`${duration.hours / HOURS_IN_A_DAY} days`;
+  const hours = Math.floor(duration.hours + duration.minutes / 60);
+  const minutes = duration.minutes % 60;
+  if (hours > HOURS_IN_A_DAY * 2) {
+    const daysMessage = t`${Math.floor(hours / HOURS_IN_A_DAY)} days`;
 
-    return duration.hours % HOURS_IN_A_DAY > 0
-      ? `${daysMessage} and ${duration.hours % HOURS_IN_A_DAY} hours`
-      : daysMessage;
+    return hours % HOURS_IN_A_DAY > 0 ? `${daysMessage} and ${hours % HOURS_IN_A_DAY} hours` : daysMessage;
   }
 
-  if (duration.hours > 0 && duration.minutes > 0) {
-    return t`${duration.hours} hours and ${duration.minutes} minutes`;
+  if (hours > 0 && minutes > 0) {
+    return t`${hours} hours and ${minutes} minutes`;
   }
 
-  if (duration.hours > 0) {
-    return t`${duration.hours} hours`;
+  if (hours > 0) {
+    return t`${hours} hours`;
   }
 
-  return t`${duration.minutes} minutes`;
+  return t`${minutes} minutes`;
 };
 
 const TwapRows = ({ duration, numberOfParts, setNumberOfParts, setDuration, sizeUsd, marketInfo }: Props) => {
@@ -94,21 +94,17 @@ const FrequencyField = ({ duration, numberOfParts }: { duration: TWAPDuration; n
   const hours = Math.floor(seconds / 3600);
 
   if (hours > 10) {
-    const remainder = seconds % 3600;
     return (
       <Trans>
-        <span className="text-slate-100">every</span> {remainder ? "~" : ""}
-        {hours} hours
+        <span className="text-slate-100">every</span> {hours} hours
       </Trans>
     );
   }
 
   if (minutes > 10) {
-    const remainder = seconds % 60;
     return (
       <Trans>
-        <span className="text-slate-100">every</span> {remainder ? "~" : ""}
-        {minutes} minutes
+        <span className="text-slate-100">every</span> {minutes} minutes
       </Trans>
     );
   }

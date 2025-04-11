@@ -17,17 +17,10 @@ export default function TradeBoxLongShortInfoIcon({
   isMobile: boolean;
   isTWAP: boolean;
 }) {
-  const twapTooltipContent = (
-    <ul className={UL_CLASS_NAME}>
-      <li className={LI_CLASS_NAME}>
-        <Trans>Long TWAP: Increase a long position in evenly distributed parts over a specified time. Read more.</Trans>
-      </li>
-      <li className={LI_CLASS_NAME}>
-        <Trans>
-          Short TWAP: Increase a short position in evenly distributed parts over a specified time. Read more.
-        </Trans>
-      </li>
-    </ul>
+  const twapTooltipContent = isLong ? (
+    <Trans>Increase a long position in evenly distributed parts over a specified time. Read more.</Trans>
+  ) : (
+    <Trans>Increase a short position in evenly distributed parts over a specified time. Read more.</Trans>
   );
 
   const longTooltipContent = (

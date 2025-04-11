@@ -37,7 +37,7 @@ import {
   createSwapOrderTxn,
   OrderType,
 } from "domain/synthetics/orders";
-import { createTWAPIncreaseOrderTxn } from "domain/synthetics/orders/createTWAPIncreaseOrderTxn";
+import { createTWAPIncreaseOrderTxn } from "domain/synthetics/orders/createTwapIncreaseOrderTxn";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
 import { formatLeverage } from "domain/synthetics/positions/utils";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";

@@ -78,7 +78,7 @@ export async function createTWAPIncreaseOrderTxn({
 
   const { initialCollateralTokenAddress, swapPath, tokenToSendAddress } = getCollateralAndSwapAddresses(chainId, p);
 
-  const acceptablePrice = p.isLong ? 999999999999999999999999999999999999999999999999999999999999999999999999999n : 0n;
+  const acceptablePrice = p.isLong ? ethers.MaxUint256 : 0n;
   const triggerPrice = acceptablePrice;
 
   const totalExecutionFee = p.executionFee * BigInt(p.numberOfParts);
