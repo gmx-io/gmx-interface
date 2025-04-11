@@ -93,18 +93,22 @@ const FrequencyField = ({ duration, numberOfParts }: { duration: TWAPDuration; n
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(seconds / 3600);
 
-  if (hours > 10) {
+  if (hours >= 2) {
+    const remainMinutes = Math.floor((seconds % 3600) / 60);
     return (
       <Trans>
         <span className="text-slate-100">every</span> {hours} hours
+        {remainMinutes > 0 ? <> and {remainMinutes} minutes</> : undefined}
       </Trans>
     );
   }
 
-  if (minutes > 10) {
+  if (minutes > 2) {
+    const remainSeconds = seconds % 60;
     return (
       <Trans>
         <span className="text-slate-100">every</span> {minutes} minutes
+        {remainSeconds > 0 ? <> and {remainSeconds} seconds</> : undefined}
       </Trans>
     );
   }
