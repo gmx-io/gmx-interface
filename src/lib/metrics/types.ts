@@ -1,6 +1,6 @@
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { ErrorData } from "lib/parseError";
+import { ErrorData } from "lib/errors";
 
 export type GlobalMetricData = {
   isMobileMetamask: boolean;
@@ -52,16 +52,6 @@ export type OrderMetricType =
   | SwapGmMetricData["metricType"]
   | SwapGLVMetricData["metricType"]
   | ShiftGmMetricData["metricType"];
-
-export type OrderErrorContext =
-  | "simulation"
-  | "gasLimit"
-  | "gasPrice"
-  | "bestNonce"
-  | "sending"
-  | "pending"
-  | "minting"
-  | "execution";
 
 export type OrderEventName = `${OrderMetricType}.${OrderStage}`;
 export type MeasureEventName = `${MeasureMetricType}.${LoadingStage}`;

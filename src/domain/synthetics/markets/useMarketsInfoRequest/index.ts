@@ -26,7 +26,9 @@ export type MarketsInfoResult = {
 
 export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
   const { marketsData, marketsAddresses } = useMarkets(chainId);
+
   const { tokensData, pricesUpdatedAt, error: tokensDataError, isBalancesLoaded } = useTokensDataRequest(chainId);
+
   const { claimableFundingData } = useClaimableFundingDataRequest(chainId);
   const { fastMarketInfoData } = useFastMarketsInfoRequest(chainId);
 

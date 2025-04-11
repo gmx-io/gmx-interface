@@ -121,7 +121,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     createDecreaseOrderTxn(
       chainId,
       signer,
-      null, // Decided don't use subaccount for this action
+      undefined, // Decided don't use subaccount for this action
       selectedPositions.map((position) => {
         return {
           account,
@@ -146,6 +146,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
           tokensData,
           skipSimulation: true,
           autoCancel: false,
+          slippageInputId: undefined,
         };
       }),
       {

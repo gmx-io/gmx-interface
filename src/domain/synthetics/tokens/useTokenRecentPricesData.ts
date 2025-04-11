@@ -1,19 +1,23 @@
 import { useMemo } from "react";
 import { useLocation } from "react-router-dom";
 
+import { ARBITRUM_SEPOLIA } from "config/chains";
+import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { LEADERBOARD_PRICES_UPDATE_INTERVAL, PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
-import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { getToken, getTokenBySymbol, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import { TokenPricesData } from "./types";
 import { useSequentialTimedSWR } from "./useSequentialTimedSWR";
 import { parseContractPrice } from "./utils";
-import { useOracleKeeperFetcher } from "../../../lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 
 type TokenPricesDataResult = {
   pricesData?: TokenPricesData;
   updatedAt?: number;
   error?: Error;
 };
+
+const ARBITRUM_SEPOLIA_USDC = getTokenBySymbol(ARBITRUM_SEPOLIA, "USDC");
+const ARBITRUM_SEPOLIA_USDC_SG = getTokenBySymbol(ARBITRUM_SEPOLIA, "USDC.SG");
 
 export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataResult {
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
@@ -41,6 +45,14 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
             // ignore unknown token errors
 
             return;
+          }
+
+          // TODO: remove this once we have a proper price for USDC.SG
+          if (chainId === ARBITRUM_SEPOLIA && priceItem.tokenAddress === ARBITRUM_SEPOLIA_USDC.address) {
+            result[ARBITRUM_SEPOLIA_USDC_SG.address] = {
+              minPrice: parseContractPrice(BigInt(priceItem.minPrice), ARBITRUM_SEPOLIA_USDC_SG.decimals),
+              maxPrice: parseContractPrice(BigInt(priceItem.maxPrice), ARBITRUM_SEPOLIA_USDC_SG.decimals),
+            };
           }
 
           result[tokenConfig.address] = {

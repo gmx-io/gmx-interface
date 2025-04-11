@@ -45,7 +45,7 @@ export declare namespace GlvDeposit {
     initialLongToken: string,
     initialShortToken: string,
     longTokenSwapPath: string[],
-    shortTokenSwapPath: string[],
+    shortTokenSwapPath: string[]
   ] & {
     glv: string;
     account: string;
@@ -76,7 +76,7 @@ export declare namespace GlvDeposit {
     minGlvTokens: bigint,
     updatedAtTime: bigint,
     executionFee: bigint,
-    callbackGasLimit: bigint,
+    callbackGasLimit: bigint
   ] & {
     marketTokenAmount: bigint;
     initialLongTokenAmount: bigint;
@@ -92,10 +92,10 @@ export declare namespace GlvDeposit {
     isMarketTokenDeposit: boolean;
   };
 
-  export type FlagsStructOutput = [shouldUnwrapNativeToken: boolean, isMarketTokenDeposit: boolean] & {
-    shouldUnwrapNativeToken: boolean;
-    isMarketTokenDeposit: boolean;
-  };
+  export type FlagsStructOutput = [
+    shouldUnwrapNativeToken: boolean,
+    isMarketTokenDeposit: boolean
+  ] & { shouldUnwrapNativeToken: boolean; isMarketTokenDeposit: boolean };
 
   export type PropsStruct = {
     addresses: GlvDeposit.AddressesStruct;
@@ -106,7 +106,7 @@ export declare namespace GlvDeposit {
   export type PropsStructOutput = [
     addresses: GlvDeposit.AddressesStructOutput,
     numbers: GlvDeposit.NumbersStructOutput,
-    flags: GlvDeposit.FlagsStructOutput,
+    flags: GlvDeposit.FlagsStructOutput
   ] & {
     addresses: GlvDeposit.AddressesStructOutput;
     numbers: GlvDeposit.NumbersStructOutput;
@@ -134,7 +134,7 @@ export declare namespace GlvWithdrawal {
     callbackContract: string,
     uiFeeReceiver: string,
     longTokenSwapPath: string[],
-    shortTokenSwapPath: string[],
+    shortTokenSwapPath: string[]
   ] & {
     glv: string;
     market: string;
@@ -161,7 +161,7 @@ export declare namespace GlvWithdrawal {
     minShortTokenAmount: bigint,
     updatedAtTime: bigint,
     executionFee: bigint,
-    callbackGasLimit: bigint,
+    callbackGasLimit: bigint
   ] & {
     glvTokenAmount: bigint;
     minLongTokenAmount: bigint;
@@ -186,7 +186,7 @@ export declare namespace GlvWithdrawal {
   export type PropsStructOutput = [
     addresses: GlvWithdrawal.AddressesStructOutput,
     numbers: GlvWithdrawal.NumbersStructOutput,
-    flags: GlvWithdrawal.FlagsStructOutput,
+    flags: GlvWithdrawal.FlagsStructOutput
   ] & {
     addresses: GlvWithdrawal.AddressesStructOutput;
     numbers: GlvWithdrawal.NumbersStructOutput;
@@ -201,20 +201,20 @@ export declare namespace Glv {
     shortToken: AddressLike;
   };
 
-  export type PropsStructOutput = [glvToken: string, longToken: string, shortToken: string] & {
-    glvToken: string;
-    longToken: string;
-    shortToken: string;
-  };
+  export type PropsStructOutput = [
+    glvToken: string,
+    longToken: string,
+    shortToken: string
+  ] & { glvToken: string; longToken: string; shortToken: string };
 }
 
 export declare namespace GlvReader {
   export type GlvInfoStruct = { glv: Glv.PropsStruct; markets: AddressLike[] };
 
-  export type GlvInfoStructOutput = [glv: Glv.PropsStructOutput, markets: string[]] & {
-    glv: Glv.PropsStructOutput;
-    markets: string[];
-  };
+  export type GlvInfoStructOutput = [
+    glv: Glv.PropsStructOutput,
+    markets: string[]
+  ] & { glv: Glv.PropsStructOutput; markets: string[] };
 }
 
 export declare namespace GlvShift {
@@ -224,11 +224,11 @@ export declare namespace GlvShift {
     toMarket: AddressLike;
   };
 
-  export type AddressesStructOutput = [glv: string, fromMarket: string, toMarket: string] & {
-    glv: string;
-    fromMarket: string;
-    toMarket: string;
-  };
+  export type AddressesStructOutput = [
+    glv: string,
+    fromMarket: string,
+    toMarket: string
+  ] & { glv: string; fromMarket: string; toMarket: string };
 
   export type NumbersStruct = {
     marketTokenAmount: BigNumberish;
@@ -236,7 +236,11 @@ export declare namespace GlvShift {
     updatedAtTime: BigNumberish;
   };
 
-  export type NumbersStructOutput = [marketTokenAmount: bigint, minMarketTokens: bigint, updatedAtTime: bigint] & {
+  export type NumbersStructOutput = [
+    marketTokenAmount: bigint,
+    minMarketTokens: bigint,
+    updatedAtTime: bigint
+  ] & {
     marketTokenAmount: bigint;
     minMarketTokens: bigint;
     updatedAtTime: bigint;
@@ -247,7 +251,10 @@ export declare namespace GlvShift {
     numbers: GlvShift.NumbersStruct;
   };
 
-  export type PropsStructOutput = [addresses: GlvShift.AddressesStructOutput, numbers: GlvShift.NumbersStructOutput] & {
+  export type PropsStructOutput = [
+    addresses: GlvShift.AddressesStructOutput,
+    numbers: GlvShift.NumbersStructOutput
+  ] & {
     addresses: GlvShift.AddressesStructOutput;
     numbers: GlvShift.NumbersStructOutput;
   };
@@ -290,14 +297,38 @@ export interface GlvReaderInterface extends Interface {
     functionFragment: "getAccountGlvWithdrawals",
     values: [AddressLike, AddressLike, BigNumberish, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "getGlv", values: [AddressLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "getGlvBySalt", values: [AddressLike, BytesLike]): string;
-  encodeFunctionData(functionFragment: "getGlvDeposit", values: [AddressLike, BytesLike]): string;
-  encodeFunctionData(functionFragment: "getGlvDeposits", values: [AddressLike, BigNumberish, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "getGlvInfo", values: [AddressLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "getGlvInfoList", values: [AddressLike, BigNumberish, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "getGlvShift", values: [AddressLike, BytesLike]): string;
-  encodeFunctionData(functionFragment: "getGlvShifts", values: [AddressLike, BigNumberish, BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "getGlv",
+    values: [AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getGlvBySalt",
+    values: [AddressLike, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getGlvDeposit",
+    values: [AddressLike, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getGlvDeposits",
+    values: [AddressLike, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getGlvInfo",
+    values: [AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getGlvInfoList",
+    values: [AddressLike, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getGlvShift",
+    values: [AddressLike, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getGlvShifts",
+    values: [AddressLike, BigNumberish, BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "getGlvTokenPrice",
     values: [
@@ -307,7 +338,7 @@ export interface GlvReaderInterface extends Interface {
       Price.PropsStruct,
       Price.PropsStruct,
       AddressLike,
-      boolean,
+      boolean
     ]
   ): string;
   encodeFunctionData(
@@ -319,27 +350,72 @@ export interface GlvReaderInterface extends Interface {
       Price.PropsStruct,
       Price.PropsStruct,
       AddressLike,
-      boolean,
+      boolean
     ]
   ): string;
-  encodeFunctionData(functionFragment: "getGlvWithdrawal", values: [AddressLike, BytesLike]): string;
-  encodeFunctionData(functionFragment: "getGlvWithdrawals", values: [AddressLike, BigNumberish, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "getGlvs", values: [AddressLike, BigNumberish, BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "getGlvWithdrawal",
+    values: [AddressLike, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getGlvWithdrawals",
+    values: [AddressLike, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getGlvs",
+    values: [AddressLike, BigNumberish, BigNumberish]
+  ): string;
 
-  decodeFunctionResult(functionFragment: "getAccountGlvDeposits", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getAccountGlvWithdrawals", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getAccountGlvDeposits",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAccountGlvWithdrawals",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getGlv", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getGlvBySalt", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getGlvDeposit", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getGlvDeposits", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getGlvBySalt",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getGlvDeposit",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getGlvDeposits",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getGlvInfo", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getGlvInfoList", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getGlvShift", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getGlvShifts", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getGlvTokenPrice", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getGlvValue", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getGlvWithdrawal", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getGlvWithdrawals", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getGlvInfoList",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getGlvShift",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getGlvShifts",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getGlvTokenPrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getGlvValue",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getGlvWithdrawal",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getGlvWithdrawals",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getGlvs", data: BytesLike): Result;
 }
 
@@ -360,39 +436,71 @@ export interface GlvReader extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
   getAccountGlvDeposits: TypedContractMethod<
-    [dataStore: AddressLike, account: AddressLike, start: BigNumberish, end: BigNumberish],
+    [
+      dataStore: AddressLike,
+      account: AddressLike,
+      start: BigNumberish,
+      end: BigNumberish
+    ],
     [GlvDeposit.PropsStructOutput[]],
     "view"
   >;
 
   getAccountGlvWithdrawals: TypedContractMethod<
-    [dataStore: AddressLike, account: AddressLike, start: BigNumberish, end: BigNumberish],
+    [
+      dataStore: AddressLike,
+      account: AddressLike,
+      start: BigNumberish,
+      end: BigNumberish
+    ],
     [GlvWithdrawal.PropsStructOutput[]],
     "view"
   >;
 
-  getGlv: TypedContractMethod<[dataStore: AddressLike, glv: AddressLike], [Glv.PropsStructOutput], "view">;
+  getGlv: TypedContractMethod<
+    [dataStore: AddressLike, glv: AddressLike],
+    [Glv.PropsStructOutput],
+    "view"
+  >;
 
-  getGlvBySalt: TypedContractMethod<[dataStore: AddressLike, salt: BytesLike], [Glv.PropsStructOutput], "view">;
+  getGlvBySalt: TypedContractMethod<
+    [dataStore: AddressLike, salt: BytesLike],
+    [Glv.PropsStructOutput],
+    "view"
+  >;
 
-  getGlvDeposit: TypedContractMethod<[dataStore: AddressLike, key: BytesLike], [GlvDeposit.PropsStructOutput], "view">;
+  getGlvDeposit: TypedContractMethod<
+    [dataStore: AddressLike, key: BytesLike],
+    [GlvDeposit.PropsStructOutput],
+    "view"
+  >;
 
   getGlvDeposits: TypedContractMethod<
     [dataStore: AddressLike, start: BigNumberish, end: BigNumberish],
@@ -400,7 +508,11 @@ export interface GlvReader extends BaseContract {
     "view"
   >;
 
-  getGlvInfo: TypedContractMethod<[dataStore: AddressLike, glv: AddressLike], [GlvReader.GlvInfoStructOutput], "view">;
+  getGlvInfo: TypedContractMethod<
+    [dataStore: AddressLike, glv: AddressLike],
+    [GlvReader.GlvInfoStructOutput],
+    "view"
+  >;
 
   getGlvInfoList: TypedContractMethod<
     [dataStore: AddressLike, start: BigNumberish, end: BigNumberish],
@@ -408,7 +520,11 @@ export interface GlvReader extends BaseContract {
     "view"
   >;
 
-  getGlvShift: TypedContractMethod<[dataStore: AddressLike, key: BytesLike], [GlvShift.PropsStructOutput], "view">;
+  getGlvShift: TypedContractMethod<
+    [dataStore: AddressLike, key: BytesLike],
+    [GlvShift.PropsStructOutput],
+    "view"
+  >;
 
   getGlvShifts: TypedContractMethod<
     [dataStore: AddressLike, start: BigNumberish, end: BigNumberish],
@@ -424,7 +540,7 @@ export interface GlvReader extends BaseContract {
       longTokenPrice: Price.PropsStruct,
       shortTokenPrice: Price.PropsStruct,
       glv: AddressLike,
-      maximize: boolean,
+      maximize: boolean
     ],
     [[bigint, bigint, bigint]],
     "view"
@@ -438,7 +554,7 @@ export interface GlvReader extends BaseContract {
       longTokenPrice: Price.PropsStruct,
       shortTokenPrice: Price.PropsStruct,
       glv: AddressLike,
-      maximize: boolean,
+      maximize: boolean
     ],
     [bigint],
     "view"
@@ -462,31 +578,55 @@ export interface GlvReader extends BaseContract {
     "view"
   >;
 
-  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
   getFunction(
     nameOrSignature: "getAccountGlvDeposits"
   ): TypedContractMethod<
-    [dataStore: AddressLike, account: AddressLike, start: BigNumberish, end: BigNumberish],
+    [
+      dataStore: AddressLike,
+      account: AddressLike,
+      start: BigNumberish,
+      end: BigNumberish
+    ],
     [GlvDeposit.PropsStructOutput[]],
     "view"
   >;
   getFunction(
     nameOrSignature: "getAccountGlvWithdrawals"
   ): TypedContractMethod<
-    [dataStore: AddressLike, account: AddressLike, start: BigNumberish, end: BigNumberish],
+    [
+      dataStore: AddressLike,
+      account: AddressLike,
+      start: BigNumberish,
+      end: BigNumberish
+    ],
     [GlvWithdrawal.PropsStructOutput[]],
     "view"
   >;
   getFunction(
     nameOrSignature: "getGlv"
-  ): TypedContractMethod<[dataStore: AddressLike, glv: AddressLike], [Glv.PropsStructOutput], "view">;
+  ): TypedContractMethod<
+    [dataStore: AddressLike, glv: AddressLike],
+    [Glv.PropsStructOutput],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "getGlvBySalt"
-  ): TypedContractMethod<[dataStore: AddressLike, salt: BytesLike], [Glv.PropsStructOutput], "view">;
+  ): TypedContractMethod<
+    [dataStore: AddressLike, salt: BytesLike],
+    [Glv.PropsStructOutput],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "getGlvDeposit"
-  ): TypedContractMethod<[dataStore: AddressLike, key: BytesLike], [GlvDeposit.PropsStructOutput], "view">;
+  ): TypedContractMethod<
+    [dataStore: AddressLike, key: BytesLike],
+    [GlvDeposit.PropsStructOutput],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "getGlvDeposits"
   ): TypedContractMethod<
@@ -496,7 +636,11 @@ export interface GlvReader extends BaseContract {
   >;
   getFunction(
     nameOrSignature: "getGlvInfo"
-  ): TypedContractMethod<[dataStore: AddressLike, glv: AddressLike], [GlvReader.GlvInfoStructOutput], "view">;
+  ): TypedContractMethod<
+    [dataStore: AddressLike, glv: AddressLike],
+    [GlvReader.GlvInfoStructOutput],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "getGlvInfoList"
   ): TypedContractMethod<
@@ -506,7 +650,11 @@ export interface GlvReader extends BaseContract {
   >;
   getFunction(
     nameOrSignature: "getGlvShift"
-  ): TypedContractMethod<[dataStore: AddressLike, key: BytesLike], [GlvShift.PropsStructOutput], "view">;
+  ): TypedContractMethod<
+    [dataStore: AddressLike, key: BytesLike],
+    [GlvShift.PropsStructOutput],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "getGlvShifts"
   ): TypedContractMethod<
@@ -524,7 +672,7 @@ export interface GlvReader extends BaseContract {
       longTokenPrice: Price.PropsStruct,
       shortTokenPrice: Price.PropsStruct,
       glv: AddressLike,
-      maximize: boolean,
+      maximize: boolean
     ],
     [[bigint, bigint, bigint]],
     "view"
@@ -539,14 +687,18 @@ export interface GlvReader extends BaseContract {
       longTokenPrice: Price.PropsStruct,
       shortTokenPrice: Price.PropsStruct,
       glv: AddressLike,
-      maximize: boolean,
+      maximize: boolean
     ],
     [bigint],
     "view"
   >;
   getFunction(
     nameOrSignature: "getGlvWithdrawal"
-  ): TypedContractMethod<[dataStore: AddressLike, key: BytesLike], [GlvWithdrawal.PropsStructOutput], "view">;
+  ): TypedContractMethod<
+    [dataStore: AddressLike, key: BytesLike],
+    [GlvWithdrawal.PropsStructOutput],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "getGlvWithdrawals"
   ): TypedContractMethod<

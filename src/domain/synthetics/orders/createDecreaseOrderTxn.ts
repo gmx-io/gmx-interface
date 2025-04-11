@@ -3,20 +3,20 @@ import { Signer, ethers } from "ethers";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
-import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { SetPendingFundingFeeSettlement, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
 import { TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { callContract } from "lib/contracts";
-import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { OrderMetricId } from "lib/metrics";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
-import { abis } from "sdk/abis";
+import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { isMarketOrderType } from "sdk/utils/orders";
 
+import { validateSignerAddress } from "components/Errors/errorToasts";
+
+import { Subaccount } from "../gassless/txns/subaccountUtils";
 import { getPositionKey } from "../positions";
-import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
 import { prepareOrderTxn } from "./prepareOrderTxn";
 import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
@@ -48,6 +48,7 @@ export type DecreaseOrderParams = {
   indexToken: Token;
   tokensData: TokensData;
   autoCancel: boolean;
+  slippageInputId?: string;
 };
 
 export type DecreaseOrderCallbacks = {
@@ -60,15 +61,15 @@ export type DecreaseOrderCallbacks = {
 export async function createDecreaseOrderTxn(
   chainId: number,
   signer: Signer,
-  subaccount: Subaccount,
+  subaccount: Subaccount | undefined,
   params: DecreaseOrderParams | DecreaseOrderParams[],
   callbacks: DecreaseOrderCallbacks,
   blockTimestampData: BlockTimestampData | undefined,
   metricId?: OrderMetricId
 ) {
   const ps = Array.isArray(params) ? params : [params];
-  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
-  const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
+  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+  const router = exchangeRouter;
 
   const orderVaultAddress = getContract(chainId, "OrderVault");
   const totalWntAmount = ps.reduce((acc, p) => acc + p.executionFee, 0n);
@@ -86,11 +87,12 @@ export async function createDecreaseOrderTxn(
     mainAccountAddress: account,
     chainId,
   });
+
   const simulationEncodedPayload = createDecreaseEncodedPayload({
     router: exchangeRouter,
     orderVaultAddress,
     ps,
-    subaccount: null,
+    subaccount: undefined,
     mainAccountAddress: account,
     chainId,
   });
@@ -118,18 +120,20 @@ export async function createDecreaseOrderTxn(
           errorTitle: t`Order error.`,
           metricId,
           blockTimestampData,
+          additionalErrorParams: {
+            slippageInputId: p.slippageInputId,
+          },
         });
       }
     })
   );
 
-  const { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce } = await prepareOrderTxn(
+  const { gasLimit, gasPriceData } = await prepareOrderTxn(
     chainId,
     router,
     "multicall",
     [encodedPayload],
     totalWntAmount,
-    subaccount?.customSigners,
     simulationPromise,
     metricId
   );
@@ -149,13 +153,9 @@ export async function createDecreaseOrderTxn(
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
-    customSigners: subaccount?.customSigners,
-    customSignersGasLimits,
-    customSignersGasPrices,
     gasLimit,
     gasPriceData,
     metricId,
-    bestNonce,
     pendingTransactionData,
     setPendingTxns: callbacks.setPendingTxns,
   });
@@ -206,7 +206,7 @@ export function createDecreaseEncodedPayload({
   router: ethers.Contract;
   orderVaultAddress: string;
   ps: DecreaseOrderParams[];
-  subaccount: Subaccount;
+  subaccount: Subaccount | undefined;
   mainAccountAddress: string;
   chainId: number;
 }) {

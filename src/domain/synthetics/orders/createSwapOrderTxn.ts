@@ -3,23 +3,22 @@ import { Signer, ethers } from "ethers";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
-import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { PendingOrderData, SetPendingOrder } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
-import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { OrderMetricId } from "lib/metrics/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
-import { abis } from "sdk/abis";
+import ExchangeRouterAbi from "sdk/abis/ExchangeRouter.json";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { isMarketOrderType } from "sdk/utils/orders";
 
-import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
+import { validateSignerAddress } from "components/Errors/errorToasts";
+
+import { Subaccount } from "../gassless/txns/subaccountUtils";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 import { prepareOrderTxn } from "./prepareOrderTxn";
 import { simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
-
 const { ZeroAddress } = ethers;
 
 export type SwapOrderParams = {
@@ -41,14 +40,19 @@ export type SwapOrderParams = {
   skipSimulation: boolean;
   metricId: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
+  slippageInputId: string | undefined;
 };
 
-export async function createSwapOrderTxn(chainId: number, signer: Signer, subaccount: Subaccount, p: SwapOrderParams) {
-  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
-  const isNativePayment = p.fromTokenAddress === NATIVE_TOKEN_ADDRESS;
+export async function createSwapOrderTxn(
+  chainId: number,
+  signer: Signer,
+  subaccount: Subaccount | null,
+  p: SwapOrderParams
+) {
+  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouterAbi.abi, signer);
+
   const isNativeReceive = p.toTokenAddress === NATIVE_TOKEN_ADDRESS;
-  subaccount = isNativePayment ? null : subaccount;
-  const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
+  const router = exchangeRouter;
 
   await validateSignerAddress(signer, p.account);
 
@@ -94,16 +98,18 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
           errorTitle: t`Order error.`,
           metricId: p.metricId,
           blockTimestampData: p.blockTimestampData,
+          additionalErrorParams: {
+            slippageInputId: p.slippageInputId,
+          },
         })
       : undefined;
 
-  const { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce } = await prepareOrderTxn(
+  const { gasLimit, gasPriceData } = await prepareOrderTxn(
     chainId,
     router,
     "multicall",
     [encodedPayload],
     totalWntAmount,
-    subaccount?.customSigners,
     simulationPromise,
     p.metricId
   );
@@ -112,10 +118,6 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
-    customSigners: subaccount?.customSigners,
-    customSignersGasLimits,
-    customSignersGasPrices,
-    bestNonce,
     setPendingTxns: p.setPendingTxns,
     metricId: p.metricId,
     gasLimit,
@@ -134,7 +136,7 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
 async function getParams(
   router: ethers.Contract,
   signer: Signer,
-  subaccount: Subaccount,
+  subaccount: Subaccount | null,
   chainId: number,
   p: SwapOrderParams
 ) {

@@ -1,0 +1,19 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "name": "RelayPriceOutdated",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "UnableToPayOrderFee",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "UnableToPayOrderFeeFromCollateral",
+      "type": "error"
+    }
+  ]
+}

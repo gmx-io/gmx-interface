@@ -3,15 +3,8 @@ import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useKey } from "react-use";
 
 import { BASIS_POINTS_DIVISOR, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS, USD_DECIMALS } from "config/factors";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import {
-  usePositionsConstants,
-  useTokensData,
-  useUserReferralInfo,
-} from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 import {
   useOrderEditorIsSubmittingState,
@@ -19,6 +12,11 @@ import {
   useOrderEditorTriggerPriceInputValueState,
   useOrderEditorTriggerRatioInputValueState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
+import {
+  makeSelectSubaccountForActions,
+  selectMarketsInfoData,
+  selectTokensData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectOrderEditorAcceptablePrice,
   selectOrderEditorAcceptablePriceImpactBps,
@@ -62,7 +60,6 @@ import {
   isSwapOrderType,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
-import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
 import {
   formatAcceptablePrice,
   formatLeverage,
@@ -84,7 +81,9 @@ import {
   formatBalanceAmount,
   formatDeltaUsd,
   formatTokenAmountWithUsd,
+  formatUsd,
   formatUsdPrice,
+  parseValue,
 } from "lib/numbers";
 import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
@@ -102,6 +101,11 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { AllowedSwapSlippageInputRow } from "../AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
+import { selectRelayerFeeSwapParams } from "context/SyntheticsStateContext/selectors/relayserFeeSelectors";
+import { sendUniversalBatchTxn } from "domain/synthetics/gassless/txns/universalTxn";
+import { useOrderTxnCallbacks } from "domain/synthetics/gassless/txns/useOrderTxnCallbacks";
+import { useRelayRouterNonce } from "domain/synthetics/gassless/txns/useRelayRouterNonce";
+import { buildUpdateOrderPayload } from "sdk/utils/orderTransactions";
 import "./OrderEditor.scss";
 
 type Props = {
@@ -113,16 +117,15 @@ type Props = {
 export function OrderEditor(p: Props) {
   const { chainId } = useChainId();
   const { signer } = useWallet();
-  const tokensData = useTokensData();
-  const { setPendingTxns } = usePendingTxns();
-  const { setPendingOrderUpdate } = useSyntheticsEvents();
-
-  const [isInited, setIsInited] = useState(false);
+  const tokensData = useSelector(selectTokensData);
+  const marketsInfoData = useSelector(selectMarketsInfoData);
+  const { updateOrderTxnCallback } = useOrderTxnCallbacks();
   const [isSubmitting, setIsSubmitting] = useOrderEditorIsSubmittingState();
 
   const [sizeInputValue, setSizeInputValue] = useOrderEditorSizeInputValueState();
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useOrderEditorTriggerPriceInputValueState();
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useOrderEditorTriggerRatioInputValueState();
+  const [isInited, setIsInited] = useState(false);
 
   const calcSelector = useCalcSelector();
 
@@ -156,7 +159,7 @@ export function OrderEditor(p: Props) {
     };
   }, [executionFee, tokensData, p.order.executionFee]);
 
-  const subaccount = useSubaccount(additionalExecutionFee?.feeTokenAmount ?? null);
+  const subaccount = useSelector(makeSelectSubaccountForActions(1));
 
   const positionOrder = p.order as PositionOrderInfo | undefined;
   const positionIndexToken = positionOrder?.indexToken;
@@ -243,7 +246,8 @@ export function OrderEditor(p: Props) {
     return false;
   }
 
-  const { savedAcceptablePriceImpactBuffer } = useSettings();
+  const { savedAcceptablePriceImpactBuffer, expressOrdersEnabled } = useSettings();
+  const relayerFeeSwapParams = useSelector(selectRelayerFeeSwapParams);
 
   function detectAndSetAvailableMaxLeverage() {
     const positionOrder = p.order as PositionOrderInfo;
@@ -360,7 +364,7 @@ export function OrderEditor(p: Props) {
   }
 
   function onSubmit() {
-    if (!signer) return;
+    if (!signer || !tokensData || !marketsInfoData) return;
     const positionOrder = p.order as PositionOrderInfo;
 
     setIsSubmitting(true);
@@ -369,25 +373,42 @@ export function OrderEditor(p: Props) {
       ? triggerRatio?.ratio ?? triggerPrice ?? positionOrder.triggerPrice
       : triggerPrice ?? positionOrder.triggerPrice;
 
-    const txnPromise = updateOrderTxn(
+    const updateOrderParams = buildUpdateOrderPayload({
+      chainId,
+      indexTokenAddress: positionOrder.indexToken.address,
+      orderKey: p.order.key,
+      sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
+      triggerPrice: orderTriggerPrice,
+      acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
+      minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
+      autoCancel: positionOrder.autoCancel,
+      validFromTime: 0n,
+      executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
+    });
+
+    const txnPromise = sendUniversalBatchTxn({
       chainId,
       signer,
-      subaccount,
-      {
-        orderKey: p.order.key,
-        sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
-        triggerPrice: orderTriggerPrice,
-        acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
-        minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
-        executionFee: additionalExecutionFee?.feeTokenAmount,
-        indexToken: indexToken,
-        autoCancel: positionOrder.autoCancel,
+      batchParams: {
+        createOrderParams: [],
+        updateOrderParams: [updateOrderParams],
+        cancelOrderParams: [],
       },
-      {
-        setPendingTxns,
-        setPendingOrderUpdate,
-      }
-    );
+      tokensData,
+      marketsInfoData,
+      skipSimulation: true,
+      blockTimestampData: undefined,
+      expressParams:
+        expressOrdersEnabled && relayerFeeSwapParams
+          ? {
+              subaccount,
+              relayFeeParams: relayerFeeSwapParams,
+              tokenPermits: [],
+            }
+          : undefined,
+      callback: updateOrderTxnCallback,
+      __type: "updateOrder",
+    });
 
     if (subaccount) {
       p.onClose();
@@ -501,6 +522,10 @@ export function OrderEditor(p: Props) {
       ? t`Stop Price`
       : t`Limit Price`;
 
+  const positionSize = existingPosition?.sizeInUsd;
+
+  const sizeUsd = parseValue(sizeInputValue || "0", USD_DECIMALS)!;
+
   return (
     <div className="PositionEditor">
       <Modal
@@ -516,6 +541,20 @@ export function OrderEditor(p: Props) {
                 topLeftLabel={isTriggerDecreaseOrderType(p.order.orderType) ? t`Close` : t`Size`}
                 inputValue={sizeInputValue}
                 onInputValueChange={(e) => setSizeInputValue(e.target.value)}
+                bottomLeftValue={isTriggerDecreaseOrderType(p.order.orderType) ? formatUsd(sizeUsd) : undefined}
+                isBottomLeftValueMuted={sizeUsd === 0n}
+                bottomRightLabel={isTriggerDecreaseOrderType(p.order.orderType) ? t`Max` : undefined}
+                bottomRightValue={
+                  isTriggerDecreaseOrderType(p.order.orderType) ? formatUsdPrice(positionSize) : undefined
+                }
+                onClickMax={
+                  isTriggerDecreaseOrderType(p.order.orderType) &&
+                  positionSize !== undefined &&
+                  positionSize > 0 &&
+                  sizeUsd !== positionSize
+                    ? () => setSizeInputValue(formatAmountFree(positionSize, USD_DECIMALS))
+                    : undefined
+                }
               >
                 USD
               </BuyInputSection>

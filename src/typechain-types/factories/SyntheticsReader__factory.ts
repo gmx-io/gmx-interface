@@ -3,7 +3,10 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type { SyntheticsReader, SyntheticsReaderInterface } from "../SyntheticsReader";
+import type {
+  SyntheticsReader,
+  SyntheticsReaderInterface,
+} from "../SyntheticsReader";
 
 const _abi = [
   {
@@ -426,7 +429,8 @@ const _abi = [
                     type: "uint256",
                   },
                 ],
-                internalType: "struct PositionPricingUtils.PositionReferralFees",
+                internalType:
+                  "struct PositionPricingUtils.PositionReferralFees",
                 name: "referral",
                 type: "tuple",
               },
@@ -512,7 +516,8 @@ const _abi = [
                     type: "uint256",
                   },
                 ],
-                internalType: "struct PositionPricingUtils.PositionBorrowingFees",
+                internalType:
+                  "struct PositionPricingUtils.PositionBorrowingFees",
                 name: "borrowing",
                 type: "tuple",
               },
@@ -561,7 +566,8 @@ const _abi = [
                     type: "uint256",
                   },
                 ],
-                internalType: "struct PositionPricingUtils.PositionLiquidationFees",
+                internalType:
+                  "struct PositionPricingUtils.PositionLiquidationFees",
                 name: "liquidation",
                 type: "tuple",
               },
@@ -800,108 +806,6 @@ const _abi = [
         internalType: "struct Position.Props[]",
         name: "",
         type: "tuple[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "contract DataStore",
-        name: "dataStore",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "market",
-        type: "address",
-      },
-      {
-        internalType: "bool",
-        name: "isLong",
-        type: "bool",
-      },
-      {
-        components: [
-          {
-            components: [
-              {
-                internalType: "uint256",
-                name: "min",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "max",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct Price.Props",
-            name: "indexTokenPrice",
-            type: "tuple",
-          },
-          {
-            components: [
-              {
-                internalType: "uint256",
-                name: "min",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "max",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct Price.Props",
-            name: "longTokenPrice",
-            type: "tuple",
-          },
-          {
-            components: [
-              {
-                internalType: "uint256",
-                name: "min",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "max",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct Price.Props",
-            name: "shortTokenPrice",
-            type: "tuple",
-          },
-        ],
-        internalType: "struct MarketUtils.MarketPrices",
-        name: "prices",
-        type: "tuple",
-      },
-    ],
-    name: "getAdlState",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-      {
-        internalType: "int256",
-        name: "",
-        type: "int256",
-      },
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -1634,7 +1538,8 @@ const _abi = [
                 type: "tuple",
               },
             ],
-            internalType: "struct MarketUtils.GetNextFundingAmountPerSizeResult",
+            internalType:
+              "struct MarketUtils.GetNextFundingAmountPerSizeResult",
             name: "nextFunding",
             type: "tuple",
           },
@@ -1980,7 +1885,8 @@ const _abi = [
                 type: "tuple",
               },
             ],
-            internalType: "struct MarketUtils.GetNextFundingAmountPerSizeResult",
+            internalType:
+              "struct MarketUtils.GetNextFundingAmountPerSizeResult",
             name: "nextFunding",
             type: "tuple",
           },
@@ -3063,7 +2969,8 @@ const _abi = [
                     type: "uint256",
                   },
                 ],
-                internalType: "struct PositionPricingUtils.PositionReferralFees",
+                internalType:
+                  "struct PositionPricingUtils.PositionReferralFees",
                 name: "referral",
                 type: "tuple",
               },
@@ -3149,7 +3056,8 @@ const _abi = [
                     type: "uint256",
                   },
                 ],
-                internalType: "struct PositionPricingUtils.PositionBorrowingFees",
+                internalType:
+                  "struct PositionPricingUtils.PositionBorrowingFees",
                 name: "borrowing",
                 type: "tuple",
               },
@@ -3198,7 +3106,8 @@ const _abi = [
                     type: "uint256",
                   },
                 ],
-                internalType: "struct PositionPricingUtils.PositionLiquidationFees",
+                internalType:
+                  "struct PositionPricingUtils.PositionLiquidationFees",
                 name: "liquidation",
                 type: "tuple",
               },
@@ -3553,7 +3462,8 @@ const _abi = [
                     type: "uint256",
                   },
                 ],
-                internalType: "struct PositionPricingUtils.PositionReferralFees",
+                internalType:
+                  "struct PositionPricingUtils.PositionReferralFees",
                 name: "referral",
                 type: "tuple",
               },
@@ -3639,7 +3549,8 @@ const _abi = [
                     type: "uint256",
                   },
                 ],
-                internalType: "struct PositionPricingUtils.PositionBorrowingFees",
+                internalType:
+                  "struct PositionPricingUtils.PositionBorrowingFees",
                 name: "borrowing",
                 type: "tuple",
               },
@@ -3688,7 +3599,8 @@ const _abi = [
                     type: "uint256",
                   },
                 ],
-                internalType: "struct PositionPricingUtils.PositionLiquidationFees",
+                internalType:
+                  "struct PositionPricingUtils.PositionLiquidationFees",
                 name: "liquidation",
                 type: "tuple",
               },
@@ -4667,7 +4579,10 @@ export class SyntheticsReader__factory {
   static createInterface(): SyntheticsReaderInterface {
     return new Interface(_abi) as SyntheticsReaderInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): SyntheticsReader {
+  static connect(
+    address: string,
+    runner?: ContractRunner | null
+  ): SyntheticsReader {
     return new Contract(address, _abi, runner) as unknown as SyntheticsReader;
   }
 }

@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 
 import { getExplorerUrl } from "config/chains";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
-import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import { OrderStatus, PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import {
@@ -29,6 +28,7 @@ import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 
+import "./StatusNotification.scss";
 import { useToastAutoClose } from "./useToastAutoClose";
 
 import "./StatusNotification.scss";
@@ -395,20 +395,17 @@ export function OrdersStatusNotificiation({
     }, [] as string[]);
   }, [matchedOrderStatuses, pendingOrders]);
 
-  const subaccount = useSubaccount(null, newlyCreatedTriggerOrderKeys.length);
-  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(
-    undefined,
-    newlyCreatedTriggerOrderKeys.length
-  );
+  // const subaccount = useSelector(makeSelectSubaccountForActions(newlyCreatedTriggerOrderKeys.length));
+  // const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(newlyCreatedTriggerOrderKeys.length);
 
   function onCancelOrdersClick() {
     if (!signer || !newlyCreatedTriggerOrderKeys.length || !setPendingTxns) return;
 
     setIsCancelOrderProcessing(true);
-    cancelOrdersTxn(chainId, signer, subaccount, {
+    cancelOrdersTxn(chainId, signer, {
       orderKeys: newlyCreatedTriggerOrderKeys,
       setPendingTxns,
-      detailsMsg: cancelOrdersDetailsMessage,
+      // detailsMsg: cancelOrdersDetailsMessage,
     }).finally(() => setIsCancelOrderProcessing(false));
   }
 

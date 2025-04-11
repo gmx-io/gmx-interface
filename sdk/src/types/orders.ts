@@ -25,6 +25,10 @@ export enum OrderType {
   StopIncrease = 8,
 }
 
+export type SwapOrderType = OrderType.MarketSwap | OrderType.LimitSwap;
+export type IncreaseOrderType = OrderType.MarketIncrease | OrderType.LimitIncrease | OrderType.StopIncrease;
+export type DecreaseOrderType = OrderType.MarketDecrease | OrderType.LimitDecrease | OrderType.StopLossDecrease;
+
 export enum SwapPricingType {
   TwoStep = 0,
   Shift = 1,

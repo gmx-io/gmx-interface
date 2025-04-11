@@ -1,7 +1,7 @@
 import { Abi, Address, createPublicClient, createWalletClient, http, PublicClient, WalletClient } from "viem";
 
 import { BATCH_CONFIGS } from "configs/batch";
-import { getChain } from "configs/chains";
+import { getViemChain } from "configs/chains";
 import { Accounts } from "modules/accounts/accounts";
 import { Markets } from "modules/markets";
 import { Oracle } from "modules/oracle";
@@ -42,13 +42,13 @@ export class GmxSdk {
         }),
         pollingInterval: undefined,
         batch: BATCH_CONFIGS[this.config.chainId].client,
-        chain: getChain(this.config.chainId),
+        chain: getViemChain(this.config.chainId),
       });
     this.walletClient =
       config.walletClient ??
       createWalletClient({
         account: config.account as Address,
-        chain: getChain(config.chainId),
+        chain: getViemChain(config.chainId),
         transport: http(config.rpcUrl, {
           retryCount: 0,
           retryDelay: 10000000,
@@ -76,7 +76,7 @@ export class GmxSdk {
   }
 
   get chain() {
-    return getChain(this.chainId);
+    return getViemChain(this.chainId);
   }
 
   get account() {
