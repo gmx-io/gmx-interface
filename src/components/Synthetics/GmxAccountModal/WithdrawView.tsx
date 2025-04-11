@@ -1,15 +1,35 @@
 import { Trans } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { useAccount } from "wagmi";
+import { encodeAbiParameters, encodeFunctionData, zeroAddress } from "viem";
+import { useAccount, usePublicClient } from "wagmi";
 
 import { getChainName } from "config/chains";
+import { getContract } from "config/contracts";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
-import { MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "context/GmxAccountContext/config";
+import {
+  MULTI_CHAIN_SUPPORTED_TOKEN_MAP,
+  getStargateEndpointId,
+  getStargatePoolAddress,
+} from "context/GmxAccountContext/config";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
+import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectRelayerFeeSwapParams } from "context/SyntheticsStateContext/selectors/relayserFeeSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import {
+  buildAndSignBridgeOutTxn,
+  getExpressOrderOracleParams,
+  sendExpressTxn,
+} from "domain/synthetics/gassless/txns/expressOrderUtils";
+import { useRelayerFeeHandler } from "domain/synthetics/gassless/useRelayerFeeHandler";
 import { TokenData, convertToUsd } from "domain/tokens";
 import { formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import { abis } from "sdk/abis";
+import { gelatoRelay } from "sdk/utils/gelatoRelay";
+import { RelayUtils } from "typechain-types-arbitrum-sepolia/MultichainTransferRouter";
 
 import Button from "components/Button/Button";
 import NumberInput from "components/NumberInput/NumberInput";
@@ -26,7 +46,7 @@ import { Selector } from "./Selector";
 
 export const WithdrawView = () => {
   const [settlementChainId] = useGmxAccountSettlementChainId();
-  const { chainId: walletChainId } = useAccount();
+  const { chainId: walletChainId, address: account } = useAccount();
   const [inputValue, setInputValue] = useState("");
   const [selectedNetwork, setSelectedNetwork] = useState<number | undefined>(walletChainId);
 
@@ -109,6 +129,123 @@ export const WithdrawView = () => {
 
     return { nextGmxAccountBalanceUsd, nextSourceChainBalanceUsd };
   }, [selectedToken, amount, amountUsd, gmxAccountTokenBalanceUsd, sourceChainTokenBalanceUsd]);
+
+  const relayFeeState = useRelayerFeeHandler();
+  const relayerFeeSwapParams = useSelector(selectRelayerFeeSwapParams);
+  const signer = useEthersSigner();
+  const tokensData = useTokensData();
+  const marketsInfoData = useSelector(selectMarketsInfoData);
+  const settlementChainPublicClient = usePublicClient({ chainId: settlementChainId });
+
+  const handleWithdraw = useCallback(async () => {
+    console.log({ relayFeeState, relayerFeeSwapParams });
+    const paymentTokens = await gelatoRelay.getPaymentTokens(BigInt(settlementChainId));
+
+    console.log({ paymentTokens });
+
+    if (selectedNetwork === undefined || selectedTokenAddress === undefined) {
+      return;
+    }
+
+    const dstEid = getStargateEndpointId(selectedNetwork);
+    const stargateAddress = getStargatePoolAddress(settlementChainId, selectedTokenAddress);
+
+    if (
+      selectedToken === undefined ||
+      amount === undefined ||
+      dstEid === undefined ||
+      stargateAddress === undefined ||
+      signer === undefined ||
+      marketsInfoData === undefined ||
+      tokensData === undefined ||
+      // relayerFeeSwapParams === undefined ||
+      settlementChainPublicClient === undefined
+    ) {
+      return;
+    }
+
+    // oracleParams: getExpressOrderOracleParams({
+    //   chainId,
+    //   createOrderParams: [],
+    //   marketsInfoData,
+    //   tokensData,
+    //   gasPaymentTokenAddress: relayFeeParams.feeParams.feeToken,
+    //   feeSwapPath: relayFeeParams.feeParams.feeSwapPath,
+    //   feeTokenAddress: relayFeeParams.relayFeeToken,
+    // }),
+    // tokenPermits: tokenPermits ?? [],
+    // externalCalls: relayFeeParams.externalCalls,
+    // fee: relayFeeParams.feeParams,
+    // userNonce: userNonce,
+
+    const bridgeOutParams: RelayUtils.BridgeOutParamsStruct = {
+      token: selectedTokenAddress,
+      amount: amount,
+      data: encodeAbiParameters([{ name: "dstEid", type: "uint32" }], [dstEid]),
+      provider: stargateAddress, // "0x543BdA7c6cA4384FE90B1F5929bb851F52888983",
+    };
+
+    const relayContractAddress = getContract(settlementChainId, "GelatoRelayRouter");
+
+    const userNonce = await settlementChainPublicClient.readContract({
+      address: relayContractAddress,
+      abi: abis.GelatoRelayRouterArbitrumSepolia,
+      functionName: "userNonces",
+      args: [account],
+    });
+
+    const signedTxnData = await buildAndSignBridgeOutTxn({
+      chainId: settlementChainId,
+      signer: signer,
+      relayParamsPayload: {
+        oracleParams: getExpressOrderOracleParams({
+          chainId: settlementChainId,
+          createOrderParams: [],
+          marketsInfoData,
+          tokensData,
+          gasPaymentTokenAddress: zeroAddress,
+          feeSwapPath: [],
+          feeTokenAddress: zeroAddress,
+        }),
+        tokenPermits: [],
+        externalCalls: {
+          sendTokens: [],
+          sendAmounts: [],
+          externalCallTargets: [],
+          externalCallDataList: [],
+          refundTokens: [],
+          refundReceivers: [],
+        },
+        fee: {
+          feeToken: zeroAddress,
+          feeAmount: 0n,
+          feeSwapPath: [],
+        },
+        userNonce: userNonce,
+        deadline: 9999999999999n,
+      },
+      params: bridgeOutParams,
+    });
+
+    await sendExpressTxn({
+      chainId: settlementChainId,
+      txnData: signedTxnData,
+      sponsored: true,
+    });
+  }, [
+    account,
+    amount,
+    marketsInfoData,
+    relayFeeState,
+    relayerFeeSwapParams,
+    selectedNetwork,
+    selectedToken,
+    selectedTokenAddress,
+    settlementChainId,
+    settlementChainPublicClient,
+    signer,
+    tokensData,
+  ]);
 
   return (
     <div className=" grow  overflow-y-auto p-16">
@@ -229,7 +366,7 @@ export const WithdrawView = () => {
       <div className="h-16" />
 
       {/* Withdraw button */}
-      <Button variant="primary" className="w-full">
+      <Button variant="primary" className="w-full" onClick={handleWithdraw}>
         Withdraw
       </Button>
     </div>

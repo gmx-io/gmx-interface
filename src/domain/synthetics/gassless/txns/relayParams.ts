@@ -1,9 +1,8 @@
 import { encodeAbiParameters, keccak256 } from "viem";
 
 import RelayParamsAbi from "sdk/abis/RelayParams.json";
-import { RelayParamsPayload } from "sdk/types/expressTransactions";
-
 import { getContract } from "sdk/configs/contracts";
+import { RelayParamsPayload } from "sdk/types/expressTransactions";
 
 export function getGelatoRelayRouterDomain(chainId: number, isSubaccount: boolean) {
   return {
@@ -11,6 +10,11 @@ export function getGelatoRelayRouterDomain(chainId: number, isSubaccount: boolea
     version: "1",
     chainId: BigInt(chainId),
     verifyingContract: getContract(chainId, isSubaccount ? "SubaccountGelatoRelayRouter" : "GelatoRelayRouter"),
+
+    // chainId: srcChainId ? BigInt(srcChainId) : BigInt(chainId),
+    // verifyingContract: srcChainId
+    //   ? getContract(chainId, "MultichainTransferRouter")
+    //   : getContract(chainId, isSubaccount ? "SubaccountGelatoRelayRouter" : "GelatoRelayRouter"),
   };
 }
 

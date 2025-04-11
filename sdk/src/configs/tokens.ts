@@ -1422,6 +1422,17 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
     },
     {
+      name: "Wrapped ETH Gelato",
+      symbol: "WETH.G",
+      address: "0xeBDCbab722f9B4614b7ec1C261c9E52acF109CF8",
+      decimals: 18,
+      // isWrapped: true,
+      baseSymbol: "ETH",
+      categories: ["layer1"],
+      imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
+    },
+    {
       name: "Bitcoin",
       symbol: "BTC",
       address: "0xF79cE1Cf38A09D572b021B4C5548b75A14082F12",

@@ -4,6 +4,7 @@ import { IoArrowBack } from "react-icons/io5";
 
 import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
+import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import useWallet from "lib/wallets/useWallet";
 
 import { SlideModal } from "components/Modal/SlideModal";
@@ -127,7 +128,11 @@ export const GmxAccountModal = memo(() => {
       {view === "transactionDetails" && <TransactionDetailsView />}
       {view === "deposit" && <DepositView />}
       {view === "selectAssetToDeposit" && <SelectAssetToDepositView />}
-      {view === "withdraw" && <WithdrawView />}
+      {view === "withdraw" && (
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="gmxAccount">
+          <WithdrawView />
+        </SyntheticsStateContextProvider>
+      )}
     </SlideModal>
   );
 });

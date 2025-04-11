@@ -1,7 +1,10 @@
 import { useEffect, useMemo } from "react";
 import useSWR from "swr";
 
+import { ARBITRUM_SEPOLIA } from "config/chains";
+import { getSwapDebugSettings } from "config/externalSwaps";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { selectGasPrice, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectRelayerFeeState,
@@ -16,13 +19,11 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { getContract } from "sdk/configs/contracts";
-import { getWrappedToken } from "sdk/configs/tokens";
+import { getNativeToken, getTokenBySymbol, getWrappedToken } from "sdk/configs/tokens";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
-
-import { getSwapDebugSettings } from "config/externalSwaps";
-import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { roundBigIntToDecimals } from "sdk/utils/numbers";
 import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
+
 import { useExternalSwapOutputRequest } from "../externalSwaps/useExternalSwapOutputRequest";
 import { convertToTokenAmount, convertToUsd } from "../tokens";
 import { getSwapAmountsByToValue } from "../trade";
@@ -45,10 +46,19 @@ export function useExpressOrdersParams({ params }: { params: BatchOrderTxnParams
   // relayparams
 }
 
+const ARBITRUM_SEPOLIA_RELAYER_FEE_TOKEN = getTokenBySymbol(ARBITRUM_SEPOLIA, "WETH.G");
+function getRelayerFeeToken(chainId: number) {
+  if (chainId === ARBITRUM_SEPOLIA) {
+    return ARBITRUM_SEPOLIA_RELAYER_FEE_TOKEN;
+  }
+
+  return getWrappedToken(chainId);
+}
+
 export function useRelayerFeeHandler(): RelayerFeeState | undefined {
   const { chainId } = useChainId();
   const tokensData = useSelector(selectTokensData);
-  const relayerFeeToken = getWrappedToken(chainId);
+  const relayerFeeToken = getRelayerFeeToken(chainId);
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const gasPrice = useSelector(selectGasPrice);
   const slippage = useSelector(selectTradeboxAllowedSlippage);
@@ -138,6 +148,13 @@ export function useRelayerFeeHandler(): RelayerFeeState | undefined {
   });
 
   const relayerFeeState = useMemo(() => {
+    console.log({
+      isExpressOrdersEnabled,
+      relayerFeeAmount,
+      executionFee,
+      totalNetworkFeeAmount,
+    });
+
     if (
       !isExpressOrdersEnabled ||
       relayerFeeAmount === undefined ||

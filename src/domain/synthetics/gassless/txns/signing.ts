@@ -5,7 +5,7 @@ export async function signTypedData(
   domain: Record<string, any>,
   types: Record<string, any>,
   typedData: Record<string, any>
-) {
+): Promise<string> {
   // filter inputs
   for (const [key, value] of Object.entries(domain)) {
     if (value === undefined) {
