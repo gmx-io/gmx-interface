@@ -16,12 +16,12 @@ import { PriceOverrides } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { getExternalCallsParams } from "../externalSwaps/utils";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
-import { TWAPDuration } from "../trade/twap/types";
-import { createTWAPUiFeeReceiver } from "../trade/twap/uiFeeReceiver";
+import { TwapDuration } from "../trade/twap/types";
+import { createTwapUiFeeReceiver } from "../trade/twap/uiFeeReceiver";
 
 const { ZeroAddress } = ethers;
 
-type TWAPIncreaseOrderParams = {
+type TwapIncreaseOrderParams = {
   account: string;
   marketAddress: string;
   initialCollateralAddress: string;
@@ -44,12 +44,11 @@ type TWAPIncreaseOrderParams = {
   setPendingTxns: (txns: any) => void;
   setPendingOrder: SetPendingOrder;
   setPendingPosition: SetPendingPosition;
-
-  duration: TWAPDuration;
+  duration: TwapDuration;
   numberOfParts: number;
 };
 
-export async function createTWAPIncreaseOrderTxn({
+export async function createTwapIncreaseOrderTxn({
   chainId,
   signer,
   subaccount,
@@ -61,7 +60,7 @@ export async function createTWAPIncreaseOrderTxn({
   signer: Signer;
   subaccount: Subaccount;
   metricId?: OrderMetricId;
-  createTWAPIncreaseOrderParams: TWAPIncreaseOrderParams;
+  createTWAPIncreaseOrderParams: TwapIncreaseOrderParams;
   additionalErrorContent?: React.ReactNode;
 }) {
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
@@ -81,7 +80,7 @@ export async function createTWAPIncreaseOrderTxn({
   const acceptablePrice = p.isLong ? ethers.MaxUint256 : 0n;
   const triggerPrice = acceptablePrice;
 
-  const totalExecutionFee = p.executionFee * BigInt(p.numberOfParts);
+  const totalExecutionFee = p.executionFee;
   const totalWntAmount = wntCollateralAmount + totalExecutionFee;
 
   const pendingOrder: PendingOrderData = {
@@ -178,7 +177,7 @@ async function createEncodedPayload({
   chainId: number;
   router: ethers.Contract;
   orderVaultAddress: string;
-  p: TWAPIncreaseOrderParams;
+  p: TwapIncreaseOrderParams;
   acceptablePrice: bigint;
   triggerPrice: bigint;
   subaccount: Subaccount;
@@ -192,7 +191,7 @@ async function createEncodedPayload({
   const durationMs = durationMinutes * 60;
   const startTime = Math.ceil(Date.now() / 1000);
 
-  const uiFeeReceiver = createTWAPUiFeeReceiver();
+  const uiFeeReceiver = createTwapUiFeeReceiver();
 
   const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount / BigInt(p.numberOfParts) : 0n;
   const totalWntAmount = wntCollateralAmount + p.executionFee;
@@ -218,7 +217,7 @@ async function createEncodedPayload({
       account: p.account,
       marketAddress: p.marketAddress,
       indexToken: p.indexToken,
-      executionFee: p.executionFee,
+      executionFee: p.executionFee / BigInt(p.numberOfParts),
       isLong: p.isLong,
       referralCode: p.referralCode,
       externalSwapQuote: p.externalSwapQuote,
@@ -232,7 +231,7 @@ async function createEncodedPayload({
   return payloads;
 }
 
-type SingleTWAPIncreaseOrderParams = {
+type SingleTwapIncreaseOrderParams = {
   chainId: number;
   router: ethers.Contract;
   orderVaultAddress: string;
@@ -258,7 +257,7 @@ type SingleTWAPIncreaseOrderParams = {
   externalSwapQuote: ExternalSwapQuote | undefined;
 };
 
-function createSingleOrderEncodedPayload(params: SingleTWAPIncreaseOrderParams) {
+function createSingleOrderEncodedPayload(params: SingleTwapIncreaseOrderParams) {
   const {
     chainId,
     router,
@@ -331,7 +330,7 @@ function createOrderPayloadParams({
   isLong,
   referralCode,
   initialCollateralDeltaAmount,
-}: SingleTWAPIncreaseOrderParams) {
+}: SingleTwapIncreaseOrderParams) {
   return {
     addresses: {
       cancellationReceiver: ethers.ZeroAddress,

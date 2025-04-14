@@ -523,10 +523,6 @@ msgstr ""
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr "{0} {1}: {2} USD의 지정가 주문을 생성하였습니다!"
 
-#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
-#~ msgid "<0>every</0> {0}{minutes} minutes"
-#~ msgstr ""
-
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 msgstr "유요하지 않은 fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
@@ -1564,14 +1560,6 @@ msgstr ""
 msgid "Select Positions"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#~ msgid "Long TWAP: Increase a long position in evenly distributed parts over a specified time. Read more."
-#~ msgstr ""
-
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#~ msgid "Short TWAP: Increase a short position in evenly distributed parts over a specified time. Read more."
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
 msgstr ""
@@ -2562,10 +2550,6 @@ msgstr ""
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "Transfer Account"
 msgstr "계정 이전"
-
-#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
-#~ msgid "{0} minutes"
-#~ msgstr ""
 
 #: src/pages/Actions/ActionsRouter.tsx
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx
@@ -4753,10 +4737,6 @@ msgstr ""
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "전체 액티브: {openTotal}, 실행 완료: {executedTotal}, 취소 완료: {cancelledTotal}"
 
-#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
-#~ msgid "{0} hours and {1} minutes"
-#~ msgstr ""
-
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "24h Low"
@@ -5121,10 +5101,6 @@ msgstr ""
 #: src/components/Exchange/PositionsList.jsx
 msgid "Share"
 msgstr "공유"
-
-#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
-#~ msgid "{0} hours"
-#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/pages/OrdersOverview/OrdersOverview.jsx
@@ -5630,10 +5606,6 @@ msgstr ""
 msgid "Buy or Transfer AVAX to Avalanche"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
-#~ msgid "<0>every</0> {minutes} minutes"
-#~ msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
 msgstr ""
@@ -5910,10 +5882,6 @@ msgstr ""
 msgid "Traders Referred"
 msgstr "추천한 트레이더"
 
-#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
-#~ msgid "<0>every</0> {hours} hours"
-#~ msgstr ""
-
 #: src/pages/Earn/StakeModal.tsx
 msgid "Stake submitted!"
 msgstr ""
@@ -5929,10 +5897,6 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Couldn't find a swap path with enough liquidity"
 msgstr ""
-
-#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
-#~ msgid "<0>every</0> {0}{hours} hours"
-#~ msgstr ""
 
 #: src/pages/Earn/AffiliateVesterWithdrawModal.tsx
 #: src/pages/Earn/VesterWithdrawModal.tsx

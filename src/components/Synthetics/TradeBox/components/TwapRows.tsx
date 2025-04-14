@@ -3,7 +3,7 @@ import cx from "classnames";
 import { ChangeEvent, useEffect } from "react";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { TWAPDuration } from "domain/synthetics/trade/twap/types";
+import { TwapDuration } from "domain/synthetics/trade/twap/types";
 import { changeTWAPNumberOfPartsValue } from "domain/synthetics/trade/twap/utils";
 import { formatUsd } from "lib/numbers";
 import { MarketInfo } from "sdk/types/markets";
@@ -15,17 +15,17 @@ import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import { useTradeboxChanges } from "../hooks/useTradeboxChanges";
 
 type Props = {
-  duration: TWAPDuration;
+  duration: TwapDuration;
   numberOfParts: number;
   setNumberOfParts: (numberOfParts: number) => void;
-  setDuration: (duration: TWAPDuration) => void;
+  setDuration: (duration: TwapDuration) => void;
   sizeUsd: bigint | undefined;
   marketInfo: MarketInfo | undefined;
 };
 
 const HOURS_IN_A_DAY = 24;
 
-const getTwapDurationText = (duration: TWAPDuration) => {
+const getTwapDurationText = (duration: TwapDuration) => {
   const hours = Math.floor(duration.hours + duration.minutes / 60);
   const minutes = duration.minutes % 60;
   if (hours > HOURS_IN_A_DAY * 2) {
@@ -88,7 +88,7 @@ const TwapRows = ({ duration, numberOfParts, setNumberOfParts, setDuration, size
   );
 };
 
-const FrequencyField = ({ duration, numberOfParts }: { duration: TWAPDuration; numberOfParts: number }) => {
+const FrequencyField = ({ duration, numberOfParts }: { duration: TwapDuration; numberOfParts: number }) => {
   const seconds = numberOfParts ? ((duration.hours * 60 + duration.minutes) * 60) / numberOfParts : 0;
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(seconds / 3600);
@@ -124,8 +124,8 @@ const DurationField = ({
   duration,
   setDuration,
 }: {
-  duration: TWAPDuration;
-  setDuration: (duration: TWAPDuration) => void;
+  duration: TwapDuration;
+  setDuration: (duration: TwapDuration) => void;
 }) => {
   return (
     <div className="flex gap-4">

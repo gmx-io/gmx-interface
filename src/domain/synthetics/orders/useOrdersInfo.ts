@@ -3,13 +3,7 @@ import { useMemo } from "react";
 import { Token } from "domain/tokens";
 import { getByKey } from "lib/objects";
 import { getWrappedToken } from "sdk/configs/tokens";
-import {
-  getOrderInfo,
-  isPositionOrder,
-  isSwapOrder,
-  isTwapPositionOrder,
-  isTwapSwapOrder,
-} from "sdk/utils/orders";
+import { getOrderInfo, isPositionOrder, isSwapOrder, isTwapPositionOrder, isTwapSwapOrder } from "sdk/utils/orders";
 
 import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 
@@ -18,7 +12,7 @@ import { TokensData } from "../tokens";
 import { Order, OrderType, OrdersInfoData } from "./types";
 import { useOrders } from "./useOrders";
 import { setOrderInfoTitle } from "./utils";
-import { decodeTWAPUiFeeReceiver } from "../trade/twap/uiFeeReceiver";
+import { decodeTwapUiFeeReceiver } from "../trade/twap/uiFeeReceiver";
 import { getTWAPOrderKey } from "../trade/twap/utils";
 
 export type AggregatedOrdersDataResult = {
@@ -109,7 +103,7 @@ const createOrderInfo = ({
   wrappedNativeToken: Token;
   acc: OrdersInfoData;
 }) => {
-  const { twapId } = decodeTWAPUiFeeReceiver(order.uiFeeReceiver);
+  const { twapId } = decodeTwapUiFeeReceiver(order.uiFeeReceiver);
 
   const orderInfo = getOrderInfo({
     marketsInfoData,

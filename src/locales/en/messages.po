@@ -523,10 +523,6 @@ msgstr "Yield-optimized vaults enabling trading across multiple markets, backed 
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr "Created limit order for {0} {1}: {2} USD!"
 
-#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
-#~ msgid "<0>every</0> {0}{minutes} minutes"
-#~ msgstr "<0>every</0> {0}{minutes} minutes"
-
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 msgstr "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
@@ -1564,14 +1560,6 @@ msgstr "Order executed"
 msgid "Select Positions"
 msgstr "Select Positions"
 
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#~ msgid "Long TWAP: Increase a long position in evenly distributed parts over a specified time. Read more."
-#~ msgstr "Long TWAP: Increase a long position in evenly distributed parts over a specified time. Read more."
-
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#~ msgid "Short TWAP: Increase a short position in evenly distributed parts over a specified time. Read more."
-#~ msgstr "Short TWAP: Increase a short position in evenly distributed parts over a specified time. Read more."
-
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
 msgstr "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
@@ -2562,10 +2550,6 @@ msgstr "You have an existing position with {0} as collateral."
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "Transfer Account"
 msgstr "Transfer Account"
-
-#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
-#~ msgid "{0} minutes"
-#~ msgstr "{0} minutes"
 
 #: src/pages/Actions/ActionsRouter.tsx
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx
@@ -4756,10 +4740,6 @@ msgstr "You will be long {indexSymbol} only from your long position."
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 
-#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
-#~ msgid "{0} hours and {1} minutes"
-#~ msgstr "{0} hours and {1} minutes"
-
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "24h Low"
@@ -5124,10 +5104,6 @@ msgstr "There are insufficient funds in your subaccount for One-Click Trading"
 #: src/components/Exchange/PositionsList.jsx
 msgid "Share"
 msgstr "Share"
-
-#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
-#~ msgid "{0} hours"
-#~ msgstr "{0} hours"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/pages/OrdersOverview/OrdersOverview.jsx
@@ -5633,10 +5609,6 @@ msgstr "<0>every</0> {seconds} seconds"
 msgid "Buy or Transfer AVAX to Avalanche"
 msgstr "Buy or Transfer AVAX to Avalanche"
 
-#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
-#~ msgid "<0>every</0> {minutes} minutes"
-#~ msgstr "<0>every</0> {minutes} minutes"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
 msgstr "TokenTerminal"
@@ -5913,10 +5885,6 @@ msgstr "Unrealized Fees"
 msgid "Traders Referred"
 msgstr "Traders Referred"
 
-#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
-#~ msgid "<0>every</0> {hours} hours"
-#~ msgstr "<0>every</0> {hours} hours"
-
 #: src/pages/Earn/StakeModal.tsx
 msgid "Stake submitted!"
 msgstr "Stake submitted!"
@@ -5932,10 +5900,6 @@ msgstr "Increase Size (Market)"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Couldn't find a swap path with enough liquidity"
 msgstr "Couldn't find a swap path with enough liquidity"
-
-#: src/components/Synthetics/TradeBox/components/TWAPRows.tsx
-#~ msgid "<0>every</0> {0}{hours} hours"
-#~ msgstr "<0>every</0> {0}{hours} hours"
 
 #: src/pages/Earn/AffiliateVesterWithdrawModal.tsx
 #: src/pages/Earn/VesterWithdrawModal.tsx

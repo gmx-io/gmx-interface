@@ -24,7 +24,7 @@ import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
 import { OrdersInfoData } from "../orders";
 import { PositionInfo, PositionsInfoData } from "../positions";
 import { TokensData } from "../tokens";
-import { TWAPDuration } from "./twap/types";
+import { TwapDuration } from "./twap/types";
 import { useAvailableTokenOptions } from "./useAvailableTokenOptions";
 import { useSidecarOrdersState } from "./useSidecarOrdersState";
 
@@ -244,7 +244,7 @@ export function useTradeboxState(
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState<string>("");
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
   const [numberOfParts, setNumberOfParts] = useState<number>(savedTWAPNumberOfParts);
-  const [duration, setDuration] = useState<TWAPDuration>({ hours: 10, minutes: 0 });
+  const [duration, setDuration] = useState<TwapDuration>({ hours: 10, minutes: 0 });
 
   const [advancedOptions, setAdvancedOptions] = useSafeState<TradeboxAdvancedOptions>(
     storedOptions.advanced ?? INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE.advanced

@@ -1,4 +1,4 @@
-export type TWAPDuration = {
+export type TwapDuration = {
   minutes: number;
   hours: number;
 };

@@ -42,7 +42,11 @@ export function AlertInfoCard({ children, type = "info", onClose, className }: P
       )}
     >
       <div className="pr-5 pt-2">
-        <Icon aria-label="Alert Icon" className="block size-12 text-blue-300" fontSize={12} />
+        <Icon
+          aria-label="Alert Icon"
+          className={cx("block size-12 ", { "text-blue-300": type === "info" })}
+          fontSize={12}
+        />
       </div>
       <div className="grow">{children}</div>
 
