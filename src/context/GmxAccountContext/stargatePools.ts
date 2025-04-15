@@ -1,8 +1,10 @@
 import { Chain, EndpointId, EndpointVersion, Stage, chainAndStageToEndpointId } from "@layerzerolabs/lz-definitions";
+import { address as ethPoolArbitrumSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbsep-testnet/StargatePoolNative.json";
 import { address as usdcSgPoolArbitrumSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbsep-testnet/StargatePoolUSDC.json";
+import { address as ethPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolNative.json";
 import { address as usdcSgPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolUSDC.json";
 
-export { usdcSgPoolArbitrumSepolia, usdcSgPoolOptimismSepolia };
+export { usdcSgPoolArbitrumSepolia, usdcSgPoolOptimismSepolia, ethPoolArbitrumSepolia, ethPoolOptimismSepolia };
 
 import { ARBITRUM_SEPOLIA, OPTIMISM_SEPOLIA, UiSettlementChain, UiSourceChain } from "config/chains";
 

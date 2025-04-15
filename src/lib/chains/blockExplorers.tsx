@@ -29,5 +29,5 @@ export const CHAIN_ID_TO_EXPLORER_NAME: Record<UiSupportedChain, string> = {
   [ARBITRUM_SEPOLIA]: arbitrumSepolia.blockExplorers.default.name,
   [BASE_MAINNET]: base.blockExplorers.default.name,
   [SONIC_MAINNET]: sonic.blockExplorers.default.name,
-  [OPTIMISM_SEPOLIA]: optimismSepolia.blockExplorers.default.name,
+  [OPTIMISM_SEPOLIA]: "OP Sepolia Etherscan",
 };

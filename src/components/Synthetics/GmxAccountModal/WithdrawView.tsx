@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { encodeAbiParameters, encodeFunctionData, zeroAddress } from "viem";
+import { encodeAbiParameters, encodeFunctionData, encodePacked, zeroAddress, encode } from "viem";
 import { useAccount, usePublicClient } from "wagmi";
 
 import { getChainName } from "config/chains";
@@ -28,6 +28,7 @@ import { formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "li
 import { getByKey } from "lib/objects";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { abis } from "sdk/abis";
+import { getTokenBySymbol } from "sdk/configs/tokens";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { RelayUtils } from "typechain-types-arbitrum-sepolia/MultichainTransferRouter";
 
@@ -60,6 +61,8 @@ export const WithdrawView = () => {
     if (selectedNetwork !== undefined && sourceChains.includes(selectedNetwork)) {
       return;
     }
+
+    console.log("resetting selected network", { sourceChains, selectedNetwork });
 
     setSelectedNetwork(sourceChains[0]);
   }, [settlementChainId, selectedNetwork]);
@@ -181,11 +184,20 @@ export const WithdrawView = () => {
     const bridgeOutParams: RelayUtils.BridgeOutParamsStruct = {
       token: selectedTokenAddress,
       amount: amount,
-      data: encodeAbiParameters([{ name: "dstEid", type: "uint32" }], [dstEid]),
+      // data: encodePacked(["uint32"], [dstEid]),
+      data: encodeAbiParameters(
+        [
+          {
+            type: "uint32",
+            name: "dstEid",
+          },
+        ],
+        [dstEid]
+      ),
       provider: stargateAddress, // "0x543BdA7c6cA4384FE90B1F5929bb851F52888983",
     };
 
-    const relayContractAddress = getContract(settlementChainId, "GelatoRelayRouter");
+    const relayContractAddress = getContract(settlementChainId, "MultichainTransferRouter");
 
     const userNonce = await settlementChainPublicClient.readContract({
       address: relayContractAddress,
@@ -203,9 +215,9 @@ export const WithdrawView = () => {
           createOrderParams: [],
           marketsInfoData,
           tokensData,
-          gasPaymentTokenAddress: zeroAddress,
+          gasPaymentTokenAddress: getTokenBySymbol(settlementChainId, "WETH").address,
           feeSwapPath: [],
-          feeTokenAddress: zeroAddress,
+          feeTokenAddress: getTokenBySymbol(settlementChainId, "WETH").address,
         }),
         tokenPermits: [],
         externalCalls: {
@@ -217,12 +229,13 @@ export const WithdrawView = () => {
           refundReceivers: [],
         },
         fee: {
-          feeToken: zeroAddress,
-          feeAmount: 0n,
+          feeToken: getTokenBySymbol(settlementChainId, "WETH").address,
+          feeAmount: 666n,
           feeSwapPath: [],
         },
         userNonce: userNonce,
         deadline: 9999999999999n,
+        desChainId: BigInt(settlementChainId),
       },
       params: bridgeOutParams,
     });
@@ -230,8 +243,12 @@ export const WithdrawView = () => {
     await sendExpressTxn({
       chainId: settlementChainId,
       txnData: signedTxnData,
-      sponsored: true,
+      // relayFeeToken: "0xeBDCbab722f9B4614b7ec1C261c9E52acF109CF8", // WETH.G
     });
+
+    // MultichainVault -> MultichainTransferRouter 666wei
+    // MultichainTransferRouter -> EIP173 1wei
+    // MultichainTransferRouter -> MultichainVault 666wei (but the balance is 665wei)
   }, [
     account,
     amount,
@@ -275,7 +292,7 @@ export const WithdrawView = () => {
           <div className="text-body-small text-slate-100">To Network</div>
           <Selector
             value={selectedNetwork}
-            onChange={(value) => setSelectedNetwork(value)}
+            onChange={(value) => setSelectedNetwork(Number(value))}
             placeholder="Select network"
             button={
               <div className="flex items-center gap-8">

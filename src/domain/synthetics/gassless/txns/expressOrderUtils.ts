@@ -9,7 +9,12 @@ import { abis } from "sdk/abis";
 import GelatoRelayRouterAbi from "sdk/abis/GelatoRelayRouter.json";
 import SubaccountGelatoRelayRouterAbi from "sdk/abis/SubaccountGelatoRelayRouter.json";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
-import { OracleParamsPayload, RelayFeePayload, RelayParamsPayload } from "sdk/types/expressTransactions";
+import {
+  MultichainRelayParamsPayload,
+  OracleParamsPayload,
+  RelayFeePayload,
+  RelayParamsPayload,
+} from "sdk/types/expressTransactions";
 import { TokensData } from "sdk/types/tokens";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { MaxUint256 } from "sdk/utils/numbers";
@@ -27,7 +32,7 @@ import { nowInSeconds } from "sdk/utils/time";
 import { RelayUtils } from "typechain-types-arbitrum-sepolia/MultichainTransferRouter";
 
 import { RelayerFeeState } from "../types";
-import { getGelatoRelayRouterDomain, hashRelayParams } from "./relayParams";
+import { getGelatoRelayRouterDomain, hashRelayParams, hashRelayParamsMultichain } from "./relayParams";
 import { signTypedData } from "./signing";
 import { getActualApproval, hashSubaccountApproval, SignedSubbacountApproval, Subaccount } from "./subaccountUtils";
 
@@ -251,7 +256,7 @@ export async function buildAndSignBridgeOutTxn({
   signer,
 }: {
   chainId: number;
-  relayParamsPayload: RelayParamsPayload;
+  relayParamsPayload: MultichainRelayParamsPayload;
   params: RelayUtils.BridgeOutParamsStruct;
   signer: Signer;
 }) {
@@ -608,7 +613,7 @@ async function signBridgeOutPayload({
   srcChainId,
 }: {
   signer: Signer;
-  relayParams: RelayParamsPayload;
+  relayParams: MultichainRelayParamsPayload;
   params: RelayUtils.BridgeOutParamsStruct;
   chainId: number;
   srcChainId: number;
@@ -632,13 +637,13 @@ async function signBridgeOutPayload({
     amount: params.amount,
     provider: params.provider,
     data: params.data,
-    relayParams: hashRelayParams(relayParams),
+    relayParams: hashRelayParamsMultichain(relayParams),
   };
 
-  // const domain = getGelatoRelayRouterDomain(chainId, true, srcChainId);
-  const domain = getGelatoRelayRouterDomain(chainId, true);
+  const domain = getGelatoRelayRouterDomain(chainId, true, srcChainId);
+  // const domain = getGelatoRelayRouterDomain(chainId, true);
 
-  return signTypedData(signer, { ...domain, chainId: srcChainId }, types, typedData);
+  return signTypedData(signer, { ...domain }, types, typedData);
 }
 
 export async function sendExpressTxn(p: {
@@ -649,7 +654,7 @@ export async function sendExpressTxn(p: {
     feeToken: string;
     feeAmount: bigint;
   };
-  sponsored?: boolean;
+  relayFeeToken?: string;
 }) {
   const data = encodePacked(
     ["bytes", "address", "address", "uint256"],
@@ -661,25 +666,12 @@ export async function sendExpressTxn(p: {
     ]
   );
 
-  if (p.sponsored) {
-    // request: BaseRelayParams, sponsorApiKey: string, options?: RelayRequestOptions | undefined
-    return gelatoRelay.sponsoredCall(
-      {
-        chainId: BigInt(p.chainId),
-        target: p.txnData.contractAddress,
-        data,
-      },
-      "5rbFWd0Xff9IpEqy80FC8oBpVzWXVDSu4i05d3CuReA_",
-      {}
-    );
-  }
-
   console.log("sending express txn", p.txnData);
   return gelatoRelay
     .callWithSyncFee({
       chainId: BigInt(p.chainId),
       target: p.txnData.contractAddress,
-      feeToken: p.txnData.feeToken,
+      feeToken: p.relayFeeToken ?? p.txnData.feeToken,
       isRelayContext: true,
       data,
     })

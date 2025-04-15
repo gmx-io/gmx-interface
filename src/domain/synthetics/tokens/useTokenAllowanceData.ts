@@ -12,7 +12,7 @@ import type { TokensAllowanceData } from "./types";
 type TokenAllowanceResult = { tokensAllowanceData?: TokensAllowanceData; isLoading: boolean; isLoaded: boolean };
 
 export function useTokensAllowanceData(
-  chainId: number,
+  chainId: number | undefined,
   p: {
     spenderAddress?: string;
     tokenAddresses: string[];

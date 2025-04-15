@@ -1,4 +1,5 @@
 import { ExternalCallsPayload } from "utils/orderTransactions";
+
 import { SignedTokenPermit } from "./tokens";
 
 export type RelayParamsPayload = {
@@ -8,6 +9,16 @@ export type RelayParamsPayload = {
   fee: RelayFeePayload;
   userNonce: bigint;
   deadline: bigint;
+};
+
+export type MultichainRelayParamsPayload = {
+  oracleParams: OracleParamsPayload;
+  tokenPermits: SignedTokenPermit[];
+  externalCalls: ExternalCallsPayload;
+  fee: RelayFeePayload;
+  userNonce: bigint;
+  deadline: bigint;
+  desChainId: bigint;
 };
 
 export type OracleParamsPayload = {

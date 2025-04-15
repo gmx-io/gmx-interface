@@ -1,5 +1,6 @@
 import { EndpointId } from "@layerzerolabs/lz-definitions";
 import uniq from "lodash/uniq";
+import { Address, zeroAddress } from "viem";
 
 import {
   ARBITRUM,
@@ -14,7 +15,13 @@ import {
 } from "config/chains";
 import { isDevelopment } from "config/env";
 
-import { CHAIN_ID_TO_ENDPOINT_ID, usdcSgPoolArbitrumSepolia, usdcSgPoolOptimismSepolia } from "./stargatePools";
+import {
+  CHAIN_ID_TO_ENDPOINT_ID,
+  ethPoolArbitrumSepolia,
+  ethPoolOptimismSepolia,
+  usdcSgPoolArbitrumSepolia,
+  usdcSgPoolOptimismSepolia,
+} from "./stargatePools";
 
 // we need to have a token bare config for each chain and map it to the settlement chain token
 
@@ -160,11 +167,45 @@ if (isDevelopment()) {
       symbol: "USDC.SG",
     },
   };
+
+  TOKEN_GROUPS["ETH"] = {
+    [ARBITRUM_SEPOLIA]: {
+      address: zeroAddress,
+      decimals: 18,
+      chainId: ARBITRUM_SEPOLIA,
+      stargate: ethPoolArbitrumSepolia,
+      symbol: "ETH",
+    },
+    [OPTIMISM_SEPOLIA]: {
+      address: zeroAddress,
+      decimals: 18,
+      chainId: OPTIMISM_SEPOLIA,
+      stargate: ethPoolOptimismSepolia,
+      symbol: "ETH",
+    },
+  };
+
+  TOKEN_GROUPS["WETH"] = {
+    [ARBITRUM_SEPOLIA]: {
+      address: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
+      decimals: 18,
+      chainId: ARBITRUM_SEPOLIA,
+      stargate: ethPoolArbitrumSepolia,
+      symbol: "WETH",
+    },
+  };
 }
+
+export const DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT = true;
 
 export const SETTLEMENT_CHAINS = !isDevelopment() ? [] : [ARBITRUM_SEPOLIA];
 
+// To test bridge in from the same network add ARBITRUM_SEPOLIA to source chains
 export const SOURCE_CHAINS = !isDevelopment() ? [] : [OPTIMISM_SEPOLIA];
+
+if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
+  SOURCE_CHAINS.push(ARBITRUM_SEPOLIA);
+}
 
 export function isSettlementChain(chainId: number) {
   return SETTLEMENT_CHAINS.includes(chainId);
@@ -318,4 +359,12 @@ export function getMappedTokenId(
   const mappedTokenId = TOKEN_GROUPS[symbol]?.[toChainId];
 
   return mappedTokenId;
+}
+
+export const MULTICALLS_MAP: Record<UiSourceChain, Address> = {
+  [OPTIMISM_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
+};
+
+if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
+  MULTICALLS_MAP[ARBITRUM_SEPOLIA as UiSourceChain] = "0xca11bde05977b3631167028862be2a173976ca11";
 }

@@ -37,6 +37,7 @@ import {
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { CodecUiHelper } from "pages/DebugStargate/OFTComposeMsgCodec";
+import { abis } from "sdk/abis";
 import { getToken } from "sdk/configs/tokens";
 import { convertToUsd } from "sdk/utils/tokens";
 import {
@@ -67,7 +68,8 @@ export const DepositView = () => {
   const [settlementChainId] = useGmxAccountSettlementChainId();
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
 
-  const [depositViewChain, setDepositViewChain] = useGmxAccountDepositViewChain();
+  // const [depositViewChain, setDepositViewChain] = useGmxAccountDepositViewChain();
+  const depositViewChain = walletChainId;
   const sourceChainPublicClient = usePublicClient({ chainId: depositViewChain });
 
   const [depositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
@@ -127,11 +129,16 @@ export const DepositView = () => {
     setInputValue(formatAmountFree(selectedTokenSourceChainBalance, selectedToken.decimals));
   }, [selectedToken, selectedTokenSourceChainBalance, setInputValue]);
 
-  useEffect(() => {
-    if (depositViewChain === undefined && walletChainId && isSourceChain(walletChainId)) {
-      setDepositViewChain(walletChainId);
-    }
-  }, [depositViewChain, walletChainId, setDepositViewChain]);
+  // useEffect(() => {
+  //   console.log("useEffect", {
+  //     depositViewChain,
+  //     walletChainId,
+  //     isSourceChain: walletChainId ? isSourceChain(walletChainId) : undefined,
+  //   });
+  //   if (depositViewChain === undefined && walletChainId !== undefined && isSourceChain(walletChainId)) {
+  //     setDepositViewChain(walletChainId);
+  //   }
+  // }, [depositViewChain, setDepositViewChain, walletChainId]);
 
   const gmxAccountTokensData = useGmxAccountTokensData();
   const gmxAccountToken = getByKey(gmxAccountTokensData, depositViewTokenAddress);
@@ -160,8 +167,14 @@ export const DepositView = () => {
 
   const [isApproving, setIsApproving] = useState(false);
 
-  const tokensAllowanceResult = useTokensAllowanceData(depositViewChain ?? settlementChainId, {
-    spenderAddress: selectedTokenSourceChainTokenId?.stargate,
+  const spenderAddress =
+    // Only when DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT
+    depositViewChain === settlementChainId
+      ? getContract(settlementChainId, "SyntheticsRouter")
+      : selectedTokenSourceChainTokenId?.stargate;
+
+  const tokensAllowanceResult = useTokensAllowanceData(depositViewChain, {
+    spenderAddress,
     tokenAddresses: selectedTokenSourceChainTokenId ? [selectedTokenSourceChainTokenId.address] : [],
   });
   const tokensAllowanceData = depositViewChain !== undefined ? tokensAllowanceResult.tokensAllowanceData : undefined;
@@ -172,8 +185,26 @@ export const DepositView = () => {
     inputAmount
   );
 
+  useEffect(() => {
+    console.log({
+      depositViewChain,
+      tokensAllowanceData,
+      needTokenApprove,
+      spenderAddress,
+      selectedTokenSourceChainTokenId,
+      depositViewTokenAddress,
+    });
+  }, [
+    depositViewChain,
+    tokensAllowanceData,
+    needTokenApprove,
+    spenderAddress,
+    selectedTokenSourceChainTokenId,
+    depositViewTokenAddress,
+  ]);
+
   const handleApprove = useCallback(async () => {
-    if (!depositViewChain || !depositViewTokenAddress || inputAmount === undefined) {
+    if (!depositViewChain || !depositViewTokenAddress || inputAmount === undefined || !spenderAddress) {
       helperToast.error("Approve failed");
       return;
     }
@@ -218,177 +249,187 @@ export const DepositView = () => {
       chainId: depositViewChain,
       tokenAddress: selectedTokenSourceChainTokenId.address,
       signer: signer,
-      spender: selectedTokenSourceChainTokenId.stargate,
+      spender: spenderAddress,
       setIsApproving,
     });
-  }, [depositViewChain, depositViewTokenAddress, inputAmount, selectedTokenSourceChainTokenId, signer]);
+  }, [depositViewChain, depositViewTokenAddress, inputAmount, selectedTokenSourceChainTokenId, signer, spenderAddress]);
 
   const { composeGas } = useMultichainDepositNetworkComposeGas();
 
   const { nativeFeeUsd, amountReceivedLD } = useMultichainQuoteFeeUsd(composeGas);
 
   const handleDeposit = useCallback(async () => {
-    // if (!account || !depositViewTokenAddress || inputAmount === undefined || !walletChainId || !depositViewChain) {
-    //   return;
-    // }
+    console.log("handleDeposit", {
+      depositViewChain,
+      settlementChainId,
+    });
+    if (depositViewChain === settlementChainId) {
+      // #region DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT
+      if (!account || !depositViewTokenAddress || inputAmount === undefined || !walletChainId || !depositViewChain) {
+        return;
+      }
 
-    // const multichainVaultAddress = getContract(settlementChainId, "MultichainVault");
+      const multichainVaultAddress = getContract(settlementChainId, "MultichainVault");
 
-    // let response: any;
-    // const contract = new Contract(
-    //   getContract(walletChainId, "MultichainTransferRouter")!,
-    //   abis.MultichainTransferRouterArbitrumSepolia,
-    //   signer
-    // );
+      let response: any;
+      const contract = new Contract(
+        getContract(walletChainId, "MultichainTransferRouter")!,
+        abis.MultichainTransferRouterArbitrumSepolia,
+        signer
+      );
 
-    // if (depositViewTokenAddress === zeroAddress) {
-    //   response = await callContract(
-    //     walletChainId,
-    //     contract,
-    //     "multicall",
-    //     [
-    //       [
-    //         contract.interface.encodeFunctionData("sendWnt", [multichainVaultAddress, inputAmount]),
-    //         contract.interface.encodeFunctionData("bridgeIn", [
-    //           account,
-    //           depositViewTokenAddress,
-    //           BigInt(depositViewChain),
-    //         ]),
-    //       ],
-    //     ],
-    //     {
-    //       value: inputAmount,
-    //     }
-    //   );
-    // } else {
-    //   response = await callContract(
-    //     walletChainId,
-    //     contract,
-    //     "multicall",
-    //     [
-    //       [
-    //         contract.interface.encodeFunctionData("sendTokens", [
-    //           depositViewTokenAddress,
-    //           multichainVaultAddress,
-    //           inputAmount,
-    //         ]),
-    //         contract.interface.encodeFunctionData("bridgeIn", [
-    //           account,
-    //           depositViewTokenAddress,
-    //           BigInt(depositViewChain),
-    //         ]),
-    //       ],
-    //     ],
-    //     {}
-    //   );
-    // }
+      if (depositViewTokenAddress === zeroAddress) {
+        response = await callContract(
+          walletChainId,
+          contract,
+          "multicall",
+          [
+            [
+              contract.interface.encodeFunctionData("sendWnt", [multichainVaultAddress, inputAmount]),
+              contract.interface.encodeFunctionData("bridgeIn", [
+                account,
+                depositViewTokenAddress,
+                BigInt(depositViewChain),
+              ]),
+            ],
+          ],
+          {
+            value: inputAmount,
+          }
+        );
+      } else {
+        response = await callContract(
+          walletChainId,
+          contract,
+          "multicall",
+          [
+            [
+              contract.interface.encodeFunctionData("sendTokens", [
+                depositViewTokenAddress,
+                multichainVaultAddress,
+                inputAmount,
+              ]),
+              contract.interface.encodeFunctionData("bridgeIn", [
+                account,
+                depositViewTokenAddress,
+                BigInt(depositViewChain),
+              ]),
+            ],
+          ],
+          {}
+        );
+      }
 
-    // if (response.success) {
-    //   setIsVisibleOrView("main");
-    //   helperToast.success("Deposit successful");
-    // } else {
-    //   helperToast.error("Deposit failed");
-    // }
+      if (response.success) {
+        setIsVisibleOrView("main");
+        helperToast.success("Deposit successful");
+      } else {
+        helperToast.error("Deposit failed");
+      }
+      // #endregion DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT
+    } else {
+      if (
+        !depositViewTokenAddress ||
+        !account ||
+        inputAmount === undefined ||
+        inputAmount <= 0n ||
+        depositViewChain === undefined ||
+        composeGas === undefined ||
+        sourceChainPublicClient === undefined
+      ) {
+        helperToast.error("Deposit failed");
+        return;
+      }
 
-    if (
-      !depositViewTokenAddress ||
-      !account ||
-      inputAmount === undefined ||
-      inputAmount <= 0n ||
-      depositViewChain === undefined ||
-      composeGas === undefined ||
-      sourceChainPublicClient === undefined
-    ) {
-      helperToast.error("Deposit failed");
-      return;
-    }
+      const sourceChainTokenId = getMappedTokenId(
+        settlementChainId as UiSettlementChain,
+        depositViewTokenAddress,
+        depositViewChain as UiSourceChain
+      );
 
-    const sourceChainTokenId = getMappedTokenId(
-      settlementChainId as UiSettlementChain,
-      depositViewTokenAddress,
-      depositViewChain as UiSourceChain
-    );
+      if (!sourceChainTokenId) {
+        return;
+      }
 
-    if (!sourceChainTokenId) {
-      return;
-    }
+      const sourceChainTokenAddress = sourceChainTokenId.address;
 
-    const sourceChainTokenAddress = sourceChainTokenId.address;
+      const sourceChainStargateAddress = sourceChainTokenId.stargate;
 
-    const sourceChainStargateAddress = sourceChainTokenId.stargate;
+      const tokenAddress = sourceChainTokenAddress;
+      const isNative = tokenAddress === zeroAddress;
+      let adjustedAmount = inputAmount;
+      const value = isNative ? inputAmount : 0n;
 
-    const tokenAddress = sourceChainTokenAddress;
-    const isNative = tokenAddress === zeroAddress;
-    let adjustedAmount = inputAmount;
-    const value = isNative ? inputAmount : 0n;
+      const oftCmd: OftCmd = new OftCmd(SEND_MODE_TAXI, []);
 
-    const oftCmd: OftCmd = new OftCmd(SEND_MODE_TAXI, []);
+      const dstEid = getStargateEndpointId(settlementChainId);
 
-    const dstEid = getStargateEndpointId(settlementChainId);
+      if (dstEid === undefined) {
+        return;
+      }
 
-    if (dstEid === undefined) {
-      return;
-    }
+      const to = toHex(addressToBytes32(getContract(settlementChainId, "LayerZeroProvider")));
 
-    const to = toHex(addressToBytes32(getContract(settlementChainId, "LayerZeroProvider")));
+      let composeMsg: string = CodecUiHelper.encodeDepositMessage(account, depositViewChain);
 
-    let composeMsg: string = CodecUiHelper.encodeDepositMessage(account, depositViewChain);
+      const builder = Options.newOptions();
+      const extraOptions = builder.addExecutorComposeOption(0, composeGas, 0).toHex();
 
-    const builder = Options.newOptions();
-    const extraOptions = builder.addExecutorComposeOption(0, composeGas, 0).toHex();
+      const sendParams: SendParamStruct = {
+        dstEid,
+        to,
+        amountLD: adjustedAmount,
+        minAmountLD: 0n,
+        extraOptions: extraOptions,
+        composeMsg: composeMsg ?? "",
+        oftCmd: oftCmd.toBytes(),
+      };
 
-    const sendParams: SendParamStruct = {
-      dstEid,
-      to,
-      amountLD: adjustedAmount,
-      minAmountLD: 0n,
-      extraOptions: extraOptions,
-      composeMsg: composeMsg ?? "",
-      oftCmd: oftCmd.toBytes(),
-    };
+      const [limit, oftFeeDetails, receipt]: [OFTLimitStruct, OFTFeeDetailStruct[], OFTReceiptStruct] =
+        (await sourceChainPublicClient.readContract({
+          address: sourceChainStargateAddress as Address,
+          abi: IStargateAbi,
+          functionName: "quoteOFT",
+          args: [sendParams],
+        })) as any;
 
-    const [limit, oftFeeDetails, receipt]: [OFTLimitStruct, OFTFeeDetailStruct[], OFTReceiptStruct] =
-      (await sourceChainPublicClient.readContract({
+      const minAmountLD = applySlippage(receipt.amountReceivedLD as bigint, SLIPPAGE_BPS);
+
+      const newSendParams: SendParamStruct = {
+        ...sendParams,
+        minAmountLD,
+      };
+
+      const result: MessagingFeeStruct = (await sourceChainPublicClient.readContract({
         address: sourceChainStargateAddress as Address,
         abi: IStargateAbi,
-        functionName: "quoteOFT",
-        args: [sendParams],
+        functionName: "quoteSend",
+        args: [newSendParams, false],
       })) as any;
 
-    const minAmountLD = applySlippage(receipt.amountReceivedLD as bigint, SLIPPAGE_BPS);
-
-    const newSendParams: SendParamStruct = {
-      ...sendParams,
-      minAmountLD,
-    };
-
-    const result: MessagingFeeStruct = (await sourceChainPublicClient.readContract({
-      address: sourceChainStargateAddress as Address,
-      abi: IStargateAbi,
-      functionName: "quoteSend",
-      args: [newSendParams, false],
-    })) as any;
-
-    await callContract(
-      depositViewChain,
-      new Contract(sourceChainStargateAddress, IStargateAbi, signer),
-      "sendToken",
-      [newSendParams, { nativeFee: result.nativeFee, lzTokenFee: result.lzTokenFee }, account],
-      {
-        value: (result.nativeFee as bigint) + value,
-        sentMsg: "Deposit sent",
-        successMsg: "Deposit sent successfully",
-      }
-    );
+      await callContract(
+        depositViewChain,
+        new Contract(sourceChainStargateAddress, IStargateAbi, signer),
+        "sendToken",
+        [newSendParams, { nativeFee: result.nativeFee, lzTokenFee: result.lzTokenFee }, account],
+        {
+          value: (result.nativeFee as bigint) + value,
+          sentMsg: "Deposit sent",
+          successMsg: "Deposit sent successfully",
+        }
+      );
+    }
   }, [
     account,
     composeGas,
     depositViewChain,
     depositViewTokenAddress,
     inputAmount,
+    setIsVisibleOrView,
     settlementChainId,
     signer,
     sourceChainPublicClient,
+    walletChainId,
   ]);
 
   const buttonState: {

@@ -241,7 +241,7 @@ export function getExplorerUrl(chainId: number): string {
     case ARBITRUM_SEPOLIA:
       return arbitrumSepolia.blockExplorers.default.url + "/";
     case OPTIMISM_SEPOLIA:
-      return optimismSepolia.blockExplorers.default.url + "/";
+      return "https://sepolia-optimism.etherscan.io/";
   }
 }
 

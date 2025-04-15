@@ -1,4 +1,5 @@
 import { t } from "@lingui/macro";
+import { I } from "@lingui/react/dist/shared/react.80f80298";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -45,13 +46,12 @@ import { sendUserAnalyticsOrderResultEvent, userAnalytics } from "lib/userAnalyt
 import { TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { gelatoRelay } from "sdk/utils/gelatoRelay";
 
 import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
 import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
 import { OrdersStatusNotificiation } from "components/Synthetics/StatusNotification/OrderStatusNotification";
 
-import { I } from "@lingui/react/dist/shared/react.80f80298";
-import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import {
   ApprovalStatuses,
   DepositCreatedEventData,
@@ -1034,7 +1034,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       console.log("gelatoTaskStatusUpdate", taskStatus);
 
       const debugRes = await fetch(
-        `https://api.gelato.digital/tasks/status/${taskStatus.taskId}/debug?tenderlyUsername=divhead&tenderlyProjectName=project`,
+        `https://api.gelato.digital/tasks/status/${taskStatus.taskId}/debug?tenderlyUsername=midas-myth&tenderlyProjectName=project`,
         {
           method: "GET",
         }

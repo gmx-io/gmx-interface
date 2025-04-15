@@ -19,7 +19,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { getContract } from "sdk/configs/contracts";
-import { getNativeToken, getTokenBySymbol, getWrappedToken } from "sdk/configs/tokens";
+import { getTokenBySymbol, getWrappedToken } from "sdk/configs/tokens";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { roundBigIntToDecimals } from "sdk/utils/numbers";
 import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
@@ -46,11 +46,10 @@ export function useExpressOrdersParams({ params }: { params: BatchOrderTxnParams
   // relayparams
 }
 
-const ARBITRUM_SEPOLIA_RELAYER_FEE_TOKEN = getTokenBySymbol(ARBITRUM_SEPOLIA, "WETH.G");
 function getRelayerFeeToken(chainId: number) {
-  if (chainId === ARBITRUM_SEPOLIA) {
-    return ARBITRUM_SEPOLIA_RELAYER_FEE_TOKEN;
-  }
+  // if (chainId === ARBITRUM_SEPOLIA) {
+  //   return "0xeBDCbab722f9B4614b7ec1C261c9E52acF109CF8"; // WETH.G
+  // }
 
   return getWrappedToken(chainId);
 }
@@ -148,13 +147,6 @@ export function useRelayerFeeHandler(): RelayerFeeState | undefined {
   });
 
   const relayerFeeState = useMemo(() => {
-    console.log({
-      isExpressOrdersEnabled,
-      relayerFeeAmount,
-      executionFee,
-      totalNetworkFeeAmount,
-    });
-
     if (
       !isExpressOrdersEnabled ||
       relayerFeeAmount === undefined ||
