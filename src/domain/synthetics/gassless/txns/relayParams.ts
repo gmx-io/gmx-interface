@@ -17,7 +17,6 @@ export function getGelatoRelayRouterDomain(
 } {
   let name: string;
   if (srcChainId) {
-    // GmxBaseGelatoRelayRouter
     name = "GmxBaseGelatoRelayRouter";
   } else if (isSubaccount) {
     name = "GmxBaseSubaccountGelatoRelayRouter";
