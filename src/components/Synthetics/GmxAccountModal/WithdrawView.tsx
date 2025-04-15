@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { encodeAbiParameters, encodeFunctionData, encodePacked, zeroAddress, encode } from "viem";
+import { encodeAbiParameters } from "viem";
 import { useAccount, usePublicClient } from "wagmi";
 
 import { getChainName } from "config/chains";
@@ -15,20 +15,21 @@ import {
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectRelayerFeeSwapParams } from "context/SyntheticsStateContext/selectors/relayserFeeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { buildAndSignBridgeOutTxn, sendExpressTxn } from "domain/synthetics/gassless/txns/expressOrderUtils";
 import {
-  buildAndSignBridgeOutTxn,
-  getExpressOrderOracleParams,
-  sendExpressTxn,
-} from "domain/synthetics/gassless/txns/expressOrderUtils";
-import { useRelayerFeeHandler } from "domain/synthetics/gassless/useRelayerFeeHandler";
+  getOracleParamsPayload,
+  getOraclePriceParamsForRelayFee,
+} from "domain/synthetics/gassless/txns/oracleParamsUtils";
+import { useExpressOrdersParams } from "domain/synthetics/gassless/useRelayerFeeHandler";
 import { TokenData, convertToUsd } from "domain/tokens";
+import { helperToast } from "lib/helperToast";
 import { formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { abis } from "sdk/abis";
 import { getTokenBySymbol } from "sdk/configs/tokens";
+import { MultichainRelayParamsPayload } from "sdk/types/expressTransactions";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { RelayUtils } from "typechain-types-arbitrum-sepolia/MultichainTransferRouter";
 
@@ -133,15 +134,22 @@ export const WithdrawView = () => {
     return { nextGmxAccountBalanceUsd, nextSourceChainBalanceUsd };
   }, [selectedToken, amount, amountUsd, gmxAccountTokenBalanceUsd, sourceChainTokenBalanceUsd]);
 
-  const relayFeeState = useRelayerFeeHandler();
-  const relayerFeeSwapParams = useSelector(selectRelayerFeeSwapParams);
+  // const relayFeeState = useRelayerFeeHandler();
+  // const relayerFeeSwapParams = useSelector(selectRelayerFeeSwapParams);
+  const expressOrdersParams = useExpressOrdersParams({
+    orderParams: {
+      cancelOrderParams: [],
+      createOrderParams: [],
+      updateOrderParams: [],
+    },
+  });
   const signer = useEthersSigner();
   const tokensData = useTokensData();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const settlementChainPublicClient = usePublicClient({ chainId: settlementChainId });
 
   const handleWithdraw = useCallback(async () => {
-    console.log({ relayFeeState, relayerFeeSwapParams });
+    // console.log({ relayFeeState, relayerFeeSwapParams });
     const paymentTokens = await gelatoRelay.getPaymentTokens(BigInt(settlementChainId));
 
     console.log({ paymentTokens });
@@ -164,6 +172,7 @@ export const WithdrawView = () => {
       // relayerFeeSwapParams === undefined ||
       settlementChainPublicClient === undefined
     ) {
+      helperToast.error("Missing required parameters");
       return;
     }
 
@@ -206,37 +215,68 @@ export const WithdrawView = () => {
       args: [account],
     });
 
+    // oracleParams: expressOrdersParams.relayParamsPayload.oracleParams,
+    // oracleParams: getExpressOrderOracleParams({
+    //   chainId: settlementChainId,
+    //   createOrderParams: [],
+    //   marketsInfoData,
+    //   tokensData,
+    //   gasPaymentTokenAddress: getTokenBySymbol(settlementChainId, "WETH").address,
+    //   feeSwapPath: [],
+    //   feeTokenAddress: getTokenBySymbol(settlementChainId, "WETH").address,
+    // }),
+
+    const relayParamsPayload: MultichainRelayParamsPayload = {
+      oracleParams: getOracleParamsPayload(
+        getOraclePriceParamsForRelayFee({
+          chainId: settlementChainId,
+          marketsInfoData,
+          tokensData,
+          relayFeeParams: {
+            externalCalls: {
+              sendTokens: [],
+              sendAmounts: [],
+              externalCallTargets: [],
+              externalCallDataList: [],
+              refundTokens: [],
+              refundReceivers: [],
+            },
+            feeParams: {
+              feeToken: getTokenBySymbol(settlementChainId, "WETH").address,
+              feeAmount: (93372639126447n * 130n) / 100n,
+              feeSwapPath: [],
+            },
+            relayerTokenAddress: getTokenBySymbol(settlementChainId, "WETH").address,
+            relayerTokenAmount: (93372639126447n * 130n) / 100n,
+            totalNetworkFeeAmount: 2n,
+          },
+        })
+      ),
+      tokenPermits: [],
+      externalCalls: {
+        sendTokens: [],
+        sendAmounts: [],
+        externalCallTargets: [],
+        externalCallDataList: [],
+        refundTokens: [],
+        refundReceivers: [],
+      },
+      fee: {
+        feeToken: getTokenBySymbol(settlementChainId, "WETH").address,
+        feeAmount: (93372639126447n * 130n) / 100n,
+        feeSwapPath: [],
+      },
+      userNonce: userNonce,
+      deadline: 9999999999999n,
+      desChainId: BigInt(settlementChainId),
+    };
+
+    console.log({ relayParamsPayload });
+
     const signedTxnData = await buildAndSignBridgeOutTxn({
       chainId: settlementChainId,
       signer: signer,
-      relayParamsPayload: {
-        oracleParams: getExpressOrderOracleParams({
-          chainId: settlementChainId,
-          createOrderParams: [],
-          marketsInfoData,
-          tokensData,
-          gasPaymentTokenAddress: getTokenBySymbol(settlementChainId, "WETH").address,
-          feeSwapPath: [],
-          feeTokenAddress: getTokenBySymbol(settlementChainId, "WETH").address,
-        }),
-        tokenPermits: [],
-        externalCalls: {
-          sendTokens: [],
-          sendAmounts: [],
-          externalCallTargets: [],
-          externalCallDataList: [],
-          refundTokens: [],
-          refundReceivers: [],
-        },
-        fee: {
-          feeToken: getTokenBySymbol(settlementChainId, "WETH").address,
-          feeAmount: 666n,
-          feeSwapPath: [],
-        },
-        userNonce: userNonce,
-        deadline: 9999999999999n,
-        desChainId: BigInt(settlementChainId),
-      },
+      relayParamsPayload,
       params: bridgeOutParams,
     });
 
@@ -253,8 +293,6 @@ export const WithdrawView = () => {
     account,
     amount,
     marketsInfoData,
-    relayFeeState,
-    relayerFeeSwapParams,
     selectedNetwork,
     selectedToken,
     selectedTokenAddress,

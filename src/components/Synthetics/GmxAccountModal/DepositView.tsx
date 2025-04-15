@@ -393,7 +393,7 @@ export const DepositView = () => {
           args: [sendParams],
         })) as any;
 
-      const minAmountLD = applySlippage(receipt.amountReceivedLD as bigint, SLIPPAGE_BPS);
+      const minAmountLD = applySlippageBps(receipt.amountReceivedLD as bigint, SLIPPAGE_BPS);
 
       const newSendParams: SendParamStruct = {
         ...sendParams,
@@ -673,7 +673,7 @@ function useMultichainQuoteFeeUsd(composeGas: bigint | undefined): {
             args: [sendParams],
           })) as any;
 
-        const minAmountLD = applySlippage(receipt.amountReceivedLD as bigint, SLIPPAGE_BPS);
+        const minAmountLD = applySlippageBps(receipt.amountReceivedLD as bigint, SLIPPAGE_BPS);
 
         const newSendParams: SendParamStruct = {
           ...sendParams,
@@ -738,6 +738,6 @@ function useMultichainQuoteFeeUsd(composeGas: bigint | undefined): {
 //   return minAmount;
 // }
 
-function applySlippage(amount: bigint, slippageBps: bigint) {
+export function applySlippageBps(amount: bigint, slippageBps: bigint) {
   return (amount * (BASIS_POINTS_DIVISOR_BIGINT - slippageBps)) / BASIS_POINTS_DIVISOR_BIGINT;
 }

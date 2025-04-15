@@ -17,6 +17,7 @@ export function getGelatoRelayRouterDomain(
 } {
   let name: string;
   if (srcChainId) {
+    // GmxBaseGelatoRelayRouter
     name = "GmxBaseGelatoRelayRouter";
   } else if (isSubaccount) {
     name = "GmxBaseSubaccountGelatoRelayRouter";
@@ -74,6 +75,8 @@ export function hashRelayParamsMultichain(relayParams: MultichainRelayParamsPayl
   const encoded = encodeAbiParameters(abis.RelayParamsArbitrumSepolia, [
     [relayParams.oracleParams.tokens, relayParams.oracleParams.providers, relayParams.oracleParams.data],
     [
+      relayParams.externalCalls.sendTokens,
+      relayParams.externalCalls.sendAmounts,
       relayParams.externalCalls.externalCallTargets,
       relayParams.externalCalls.externalCallDataList,
       relayParams.externalCalls.refundTokens,

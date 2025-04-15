@@ -26,6 +26,16 @@
       "components": [
         {
           "internalType": "address[]",
+          "name": "sendTokens",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "sendAmounts",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "address[]",
           "name": "externalCallTargets",
           "type": "address[]"
         },
@@ -45,7 +55,7 @@
           "type": "address[]"
         }
       ],
-      "internalType": "struct RelayUtils.ExternalCalls",
+      "internalType": "struct ExternalCalls",
       "name": "externalCalls",
       "type": "tuple"
     },
@@ -92,7 +102,7 @@
           "type": "address"
         }
       ],
-      "internalType": "struct RelayUtils.TokenPermit[]",
+      "internalType": "struct TokenPermit[]",
       "name": "tokenPermits",
       "type": "tuple[]"
     },
@@ -114,7 +124,7 @@
           "type": "address[]"
         }
       ],
-      "internalType": "struct RelayUtils.FeeParams",
+      "internalType": "struct FeeParams",
       "name": "fee",
       "type": "tuple"
     },
