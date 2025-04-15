@@ -114,12 +114,14 @@ export type OrderTxnType = "create" | "update" | "cancel";
 type SingleOrderParams = {
   key: string;
   __groupType: "none";
+  orderType: OrderType;
 };
 
 type TwapOrderParams = {
   key: string;
   __groupType: "twap";
   orders: SingleOrderParams[];
+  orderType: OrderType;
 };
 
 export type OrderParams = SingleOrderParams | TwapOrderParams;

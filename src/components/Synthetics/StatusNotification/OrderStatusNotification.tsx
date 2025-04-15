@@ -100,7 +100,11 @@ export function OrderStatusNotification({
       const { initialCollateralToken, targetCollateralToken, initialCollateralDeltaAmount, minOutputAmount } =
         orderData;
 
-      const orderTypeText = isLimitSwapOrderType(orderData.orderType) ? t`Limit Swap` : t`Swap`;
+      let orderTypeText = isLimitSwapOrderType(orderData.orderType) ? t`Limit Swap` : t`Swap`;
+
+      if (orderData.isTwapOrder) {
+        orderTypeText = t`TWAP Swap`;
+      }
 
       return t`${orderTypeText} ${formatTokenAmount(
         initialCollateralDeltaAmount,
@@ -152,10 +156,14 @@ export function OrderStatusNotification({
             update: t`Update`,
           }[txnType];
 
-          orderTypeText = t`${txnTypeText} ${getNameByOrderType(orderType, {
-            abbr: true,
-            lower: true,
-          })} order for`;
+          if (orderData.isTwapOrder) {
+            orderTypeText = t`${txnTypeText} TWAP order for`;
+          } else {
+            orderTypeText = t`${txnTypeText} ${getNameByOrderType(orderType, {
+              abbr: true,
+              lower: true,
+            })} order for`;
+          }
         }
 
         const sign = isIncreaseOrderType(orderType) ? "+" : "-";
@@ -413,6 +421,7 @@ export function OrdersStatusNotificiation({
             ? {
                 key: order.orderKey,
                 __groupType: order.isTwapOrder ? ("twap" as const) : ("none" as const),
+                orderType: order.orderType,
                 orders: [],
               }
             : undefined

@@ -10,10 +10,9 @@ import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 
-import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
-import { TokensData } from "../tokens";
 import { prepareOrderTxn } from "./prepareOrderTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
+import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { TwapDuration } from "../trade/twap/types";
 import { createTwapUiFeeReceiver } from "../trade/twap/uiFeeReceiver";
 
@@ -26,24 +25,22 @@ export type SwapOrderParams = {
   toTokenAddress: string;
   swapPath: string[];
   referralCode?: string;
-  tokensData: TokensData;
-  triggerRatio: bigint;
-  minOutputAmount: bigint;
-  orderType: OrderType.MarketSwap | OrderType.LimitSwap;
   executionFee: bigint;
   executionGasLimit: bigint;
-  allowedSlippage: number;
   setPendingTxns: (txns: any) => void;
   setPendingOrder: SetPendingOrder;
-  skipSimulation: boolean;
   metricId: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
-  slippageInputId: string | undefined;
   duration: TwapDuration;
   numberOfParts: number;
 };
 
-export async function createSwapOrderTxn(chainId: number, signer: Signer, subaccount: Subaccount, p: SwapOrderParams) {
+export async function createTwapSwapOrderTxn(
+  chainId: number,
+  signer: Signer,
+  subaccount: Subaccount,
+  p: SwapOrderParams
+) {
   const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const isNativePayment = p.fromTokenAddress === NATIVE_TOKEN_ADDRESS;
   const isNativeReceive = p.toTokenAddress === NATIVE_TOKEN_ADDRESS;
@@ -67,9 +64,9 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     swapPath: p.swapPath,
     externalSwapQuote: undefined,
     sizeDeltaUsd: 0n,
-    minOutputAmount: p.minOutputAmount,
+    minOutputAmount: 0n,
     isLong: false,
-    orderType: p.orderType,
+    orderType: OrderType.LimitSwap,
     shouldUnwrapNativeToken: isNativeReceive,
     referralCode: p.referralCode,
     txnType: "create",
@@ -131,13 +128,13 @@ async function getParams(
 
   const signerAddress = await signer.getAddress();
 
-  const payloads = new Array(p.numberOfParts).fill(0).map((_, i) => {
+  const payload = new Array(p.numberOfParts).fill(0).flatMap((_, i) => {
     return createSingleSwapTwapOrderPayload({
       account: p.account,
       swapPath: p.swapPath,
-      triggerRatio: p.triggerRatio,
-      minOutputAmount: p.minOutputAmount / BigInt(p.numberOfParts), // TODO: check if this is correct
-      orderType: p.orderType,
+      triggerRatio: 0n,
+      minOutputAmount: 0n,
+      orderType: OrderType.LimitSwap,
       executionFee: p.executionFee / BigInt(p.numberOfParts),
       uiFeeReceiver,
       isNativeReceive: p.toTokenAddress === NATIVE_TOKEN_ADDRESS,
@@ -155,7 +152,7 @@ async function getParams(
     });
   });
 
-  return payloads;
+  return payload;
 }
 
 function createSingleSwapTwapOrderPayload(p: CreateSwapTwapOrderPayloadParams) {

@@ -498,6 +498,10 @@ msgstr ""
 msgid "Realized PnL"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "{txnTypeText} TWAP order for"
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/components/TwapRows.tsx
 msgid "{hours} hours"
 msgstr ""
@@ -872,6 +876,10 @@ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Slippage should be less than -5%"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
+msgid "Acceptable Swap Impact"
 msgstr ""
 
 #: src/components/NpsModal/NpsModal.tsx
@@ -1354,6 +1362,10 @@ msgstr "Noch keine Belohnungen zu beanspruchen"
 msgid "Withdrawing {0} to Main Account"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "TWAP Swap"
+msgstr ""
+
 #: src/components/TokenCard/TokenCard.tsx
 #: src/pages/Dashboard/DashboardPageTitle.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
@@ -1823,8 +1835,8 @@ msgid "Pair"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/components/TwapRows.tsx
-msgid "This TWAP order will execute {numberOfParts} long increase orders of {0} each over the next {1} for the {2} pool."
-msgstr ""
+#~ msgid "This TWAP order will execute {numberOfParts} long increase orders of {0} each over the next {1} for the {2} pool."
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -3241,6 +3253,10 @@ msgstr ""
 msgid "Accrued Positive Funding Fee"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+msgid "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} each over the next {2} for the {3} pool."
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from Affiliate Vesting Vault"
 msgstr ""
@@ -4405,8 +4421,8 @@ msgid "Insufficient {0} liquidity"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Create TWAP Increase order"
-msgstr ""
+#~ msgid "Create TWAP Increase order"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
@@ -5933,6 +5949,7 @@ msgid "Max {0} long exceeded"
 msgstr "Max {0} Long überschritten"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "N/A"
 msgstr ""
 
@@ -8263,6 +8280,10 @@ msgstr ""
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Dashboards"
 msgstr "Dashboards"
+
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Create TWAP {0} order"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover collateral below {0} USD"

@@ -35,12 +35,9 @@ type TwapIncreaseOrderParams = {
   isLong: boolean;
   executionFee: bigint;
   executionGasLimit: bigint;
-  allowedSlippage: number;
-  skipSimulation?: boolean;
   referralCode: string | undefined;
   indexToken: TokenData;
   tokensData: TokensData;
-  slippageInputId: string | undefined;
   setPendingTxns: (txns: any) => void;
   setPendingOrder: SetPendingOrder;
   setPendingPosition: SetPendingPosition;
@@ -87,10 +84,10 @@ export async function createTwapIncreaseOrderTxn({
     account: p.account,
     marketAddress: p.marketAddress,
     initialCollateralTokenAddress,
-    initialCollateralDeltaAmount: p.initialCollateralAmount / BigInt(p.numberOfParts),
+    initialCollateralDeltaAmount: p.initialCollateralAmount,
     swapPath,
     externalSwapQuote: p.externalSwapQuote,
-    sizeDeltaUsd: p.sizeDeltaUsd / BigInt(p.numberOfParts),
+    sizeDeltaUsd: p.sizeDeltaUsd,
     minOutputAmount: 0n,
     isLong: p.isLong,
     orderType: OrderType.LimitIncrease,
@@ -194,7 +191,7 @@ async function createEncodedPayload({
   const uiFeeReceiver = createTwapUiFeeReceiver();
 
   const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount / BigInt(p.numberOfParts) : 0n;
-  const totalWntAmount = wntCollateralAmount + p.executionFee;
+  const totalWntAmount = wntCollateralAmount + p.executionFee / BigInt(p.numberOfParts);
   const externalSwapWntAmount = isNativePayment && p.externalSwapQuote?.txnData ? p.externalSwapQuote.amountIn : 0n;
   const orderVaultWntAmount = totalWntAmount - externalSwapWntAmount;
 

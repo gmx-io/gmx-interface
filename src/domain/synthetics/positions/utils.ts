@@ -22,11 +22,11 @@ import {
   formatUsdPrice,
 } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
-import { isTwapPositionOrder, isTwapSwapOrder } from "sdk/utils/orders";
+import { isTwapOrder } from "sdk/utils/orders";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceImpactForPosition } from "../fees";
-import { OrderInfo, OrderType } from "../orders/types";
+import { OrderParams, OrderType } from "../orders/types";
 import { TokenData, convertToUsd } from "../tokens";
 import { PositionInfo, PositionInfoLoaded } from "./types";
 
@@ -317,10 +317,10 @@ export function formatEstimatedLiquidationTime(hours?: number | undefined) {
   return `${days} days`;
 }
 
-export function getNameByOrder(order: OrderInfo, opts: { abbr?: boolean; lower?: boolean } = {}) {
+export function getNameByOrder(order: OrderParams, opts: { abbr?: boolean; lower?: boolean } = {}) {
   const { lower } = opts;
 
-  if (isTwapSwapOrder(order) || isTwapPositionOrder(order)) {
+  if (isTwapOrder(order)) {
     if (lower) {
       return t`twap`;
     }

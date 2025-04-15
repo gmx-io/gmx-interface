@@ -414,7 +414,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
       } else if (isLimit) {
         submitButtonText = t`Create ${getNameByOrderType(increaseAmounts?.limitOrderType)} order`;
       } else if (isTWAP) {
-        submitButtonText = t`Create TWAP Increase order`;
+        submitButtonText = t`Create TWAP ${isSwap ? "swap" : "increase"} order`;
       } else {
         submitButtonText = t`Create ${getNameByOrderType(decreaseAmounts?.triggerOrderType)} Order`;
       }

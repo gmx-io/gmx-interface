@@ -38,6 +38,7 @@ import {
   OrderType,
 } from "domain/synthetics/orders";
 import { createTwapIncreaseOrderTxn } from "domain/synthetics/orders/createTwapIncreaseOrderTxn";
+import { createTwapSwapOrderTxn } from "domain/synthetics/orders/createTwapSwapOrderTxn";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
 import { formatLeverage } from "domain/synthetics/positions/utils";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
@@ -164,27 +165,50 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
       sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
-      return createSwapOrderTxn(chainId, signer, subaccount, {
-        account,
-        fromTokenAddress: fromToken.address,
-        fromTokenAmount: swapAmounts.amountIn,
-        swapPath: swapAmounts.swapPathStats?.swapPath,
-        toTokenAddress: toToken.address,
-        orderType,
-        minOutputAmount: swapAmounts.minOutputAmount,
-        triggerRatio: triggerRatio?.ratio ?? 0n,
-        referralCode: referralCodeForTxn,
-        executionFee: executionFee.feeTokenAmount,
-        executionGasLimit: executionFee.gasLimit,
-        allowedSlippage,
-        tokensData,
-        setPendingTxns,
-        setPendingOrder,
-        metricId: metricData.metricId,
-        skipSimulation: shouldDisableValidationForTesting,
-        blockTimestampData,
-        slippageInputId,
-      })
+      let txnPromise: Promise<void>;
+
+      if (isTWAP) {
+        txnPromise = createTwapSwapOrderTxn(chainId, signer, subaccount, {
+          account,
+          fromTokenAddress: fromToken.address,
+          fromTokenAmount: swapAmounts.amountIn,
+          swapPath: swapAmounts.swapPathStats?.swapPath,
+          toTokenAddress: toToken.address,
+          referralCode: referralCodeForTxn,
+          executionFee: executionFee.feeTokenAmount,
+          executionGasLimit: executionFee.gasLimit,
+          setPendingTxns,
+          setPendingOrder,
+          metricId: metricData.metricId,
+          blockTimestampData,
+          duration,
+          numberOfParts,
+        });
+      } else {
+        txnPromise = createSwapOrderTxn(chainId, signer, subaccount, {
+          account,
+          fromTokenAddress: fromToken.address,
+          fromTokenAmount: swapAmounts.amountIn,
+          swapPath: swapAmounts.swapPathStats?.swapPath,
+          toTokenAddress: toToken.address,
+          orderType,
+          minOutputAmount: swapAmounts.minOutputAmount,
+          triggerRatio: triggerRatio?.ratio ?? 0n,
+          referralCode: referralCodeForTxn,
+          executionFee: executionFee.feeTokenAmount,
+          executionGasLimit: executionFee.gasLimit,
+          allowedSlippage,
+          tokensData,
+          setPendingTxns,
+          setPendingOrder,
+          metricId: metricData.metricId,
+          skipSimulation: shouldDisableValidationForTesting,
+          blockTimestampData,
+          slippageInputId,
+        });
+      }
+
+      return txnPromise
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
         .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
@@ -204,11 +228,14 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       tokensData,
       signer,
       chainId,
+      isTWAP,
       setPendingTxns,
       setPendingOrder,
-      shouldDisableValidationForTesting,
       blockTimestampData,
-      triggerRatio,
+      duration,
+      numberOfParts,
+      triggerRatio?.ratio,
+      shouldDisableValidationForTesting,
       slippageInputId,
     ]
   );
@@ -316,15 +343,12 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
             isLong,
             executionFee: executionFee.feeTokenAmount,
             executionGasLimit: executionFee.gasLimit,
-            allowedSlippage,
             referralCode: referralCodeForTxn,
             indexToken: marketInfo.indexToken,
             tokensData,
-            skipSimulation: isLimit || shouldDisableValidationForTesting,
             setPendingTxns: setPendingTxns,
             setPendingOrder,
             setPendingPosition,
-            slippageInputId,
             duration,
             numberOfParts,
           },

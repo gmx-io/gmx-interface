@@ -21,6 +21,8 @@ type Props = {
   setDuration: (duration: TwapDuration) => void;
   sizeUsd: bigint | undefined;
   marketInfo: MarketInfo | undefined;
+  type: "swap" | "increase";
+  isLong: boolean;
 };
 
 const HOURS_IN_A_DAY = 24;
@@ -45,7 +47,16 @@ const getTwapDurationText = (duration: TwapDuration) => {
   return t`${minutes} minutes`;
 };
 
-const TwapRows = ({ duration, numberOfParts, setNumberOfParts, setDuration, sizeUsd, marketInfo }: Props) => {
+const TwapRows = ({
+  duration,
+  numberOfParts,
+  setNumberOfParts,
+  setDuration,
+  sizeUsd,
+  marketInfo,
+  type,
+  isLong,
+}: Props) => {
   const { savedTWAPNumberOfParts } = useSettings();
   const tradeboxChanges = useTradeboxChanges();
 
@@ -79,8 +90,8 @@ const TwapRows = ({ duration, numberOfParts, setNumberOfParts, setDuration, size
       {marketInfo && typeof sizeUsd === "bigint" && sizeUsd > 0n && (
         <AlertInfoCard>
           <Trans>
-            This TWAP order will execute {numberOfParts} long increase orders of {formatUsd(sizeUsd)} each over the next{" "}
-            {getTwapDurationText(duration)} for the {marketInfo.name} pool.
+            This TWAP order will execute {numberOfParts} {isLong ? "long" : "short"} {type} orders of{" "}
+            {formatUsd(sizeUsd)} each over the next {getTwapDurationText(duration)} for the {marketInfo.name} pool.
           </Trans>
         </AlertInfoCard>
       )}
