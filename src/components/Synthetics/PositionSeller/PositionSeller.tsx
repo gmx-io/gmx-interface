@@ -5,6 +5,7 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react"
 import { useKey, useLatest } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   useClosingPositionKeyState,
@@ -42,6 +43,9 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { sendUniversalBatchTxn } from "domain/synthetics/gassless/txns/universalTxn";
+import { useOrderTxnCallbacks } from "domain/synthetics/gassless/txns/useOrderTxnCallbacks";
+import { useExpressOrdersParams } from "domain/synthetics/gassless/useRelayerFeeHandler";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { formatLeverage, formatLiquidationPrice, getNameByOrderType } from "domain/synthetics/positions";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
@@ -68,6 +72,7 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { convertTokenAddress, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
+import { BatchOrderTxnParams, buildDecreaseOrderPayload } from "sdk/utils/orderTransactions";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
@@ -84,24 +89,14 @@ import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarnin
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
-import { selectRelayerFeeSwapParams } from "context/SyntheticsStateContext/selectors/relayserFeeSelectors";
-import { sendUniversalBatchTxn } from "domain/synthetics/gassless/txns/universalTxn";
-import { useOrderTxnCallbacks } from "domain/synthetics/gassless/txns/useOrderTxnCallbacks";
-import { useRelayRouterNonce } from "domain/synthetics/gassless/txns/useRelayRouterNonce";
-import { buildDecreaseOrderPayload } from "sdk/utils/orderTransactions";
 import "./PositionSeller.scss";
-
-export type Props = {
-  setPendingTxns: (txns: any) => void;
-};
 
 const ORDER_OPTION_LABELS = {
   [OrderOption.Market]: msg`Market`,
   [OrderOption.Trigger]: msg`TP/SL`,
 };
 
-export function PositionSeller(p: Props) {
+export function PositionSeller() {
   const [, setClosingPositionKey] = useClosingPositionKeyState();
 
   const onClose = useCallback(() => {
@@ -120,10 +115,9 @@ export function PositionSeller(p: Props) {
   const toToken = position?.indexToken;
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
-  const { shouldDisableValidationForTesting, expressOrdersEnabled } = useSettings();
+  const { shouldDisableValidationForTesting } = useSettings();
   const localizedOrderOptionLabels = useLocalizedMap(ORDER_OPTION_LABELS);
   const blockTimestampData = useSelector(selectBlockTimestampData);
-  const relayerFeeSwapParams = useSelector(selectRelayerFeeSwapParams);
   const marketsInfoData = useSelector(selectMarketsInfoData);
 
   const isVisible = Boolean(position);
@@ -289,12 +283,7 @@ export function PositionSeller(p: Props) {
 
   const subaccount = useSelector(makeSelectSubaccountForActions(1));
 
-  function onSubmit() {
-    if (!account) {
-      openConnectModal?.();
-      return;
-    }
-
+  const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
     const orderType = isTrigger ? decreaseAmounts?.triggerOrderType : OrderType.MarketDecrease;
     // TODO findSwapPath considering decreasePositionSwapType?
     const swapPath =
@@ -302,13 +291,97 @@ export function PositionSeller(p: Props) {
         ? []
         : swapAmounts?.swapPathStats?.swapPath || [];
 
+    if (
+      !account ||
+      !tokensData ||
+      !marketsInfoData ||
+      !position ||
+      executionFee?.feeTokenAmount == undefined ||
+      !receiveToken?.address ||
+      receiveUsd === undefined ||
+      decreaseAmounts?.acceptablePrice === undefined ||
+      !signer ||
+      !orderType
+    ) {
+      return undefined;
+    }
+
+    return {
+      createOrderParams: [
+        buildDecreaseOrderPayload({
+          receiver: account,
+          chainId,
+          executionFeeAmount: executionFee.feeTokenAmount,
+          executionGasLimit: executionFee.gasLimit,
+          referralCode: userReferralInfo?.referralCodeForTxn,
+          allowedSlippage: !isTrigger ? allowedSlippage : 0,
+          autoCancel: orderOption === OrderOption.Trigger ? autoCancelOrdersLimit > 0 : false,
+          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT,
+          orderType,
+          marketAddress: position.marketAddress,
+          indexTokenAddress: position.indexToken.address,
+          initialCollateralTokenAddress: position.collateralTokenAddress,
+          collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
+          receiveTokenAddress: receiveToken.address,
+          swapPath,
+          sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+          sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
+          triggerPrice: isTrigger ? triggerPrice : undefined,
+          acceptablePrice: decreaseAmounts.acceptablePrice,
+          decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
+          externalSwapQuote: undefined,
+          isLong: position.isLong,
+          minOutputUsd: 0n,
+        }),
+      ],
+      updateOrderParams: [],
+      cancelOrderParams: [],
+    };
+  }, [
+    account,
+    allowedSlippage,
+    autoCancelOrdersLimit,
+    chainId,
+    decreaseAmounts?.acceptablePrice,
+    decreaseAmounts?.collateralDeltaAmount,
+    decreaseAmounts?.decreaseSwapType,
+    decreaseAmounts?.sizeDeltaInTokens,
+    decreaseAmounts?.sizeDeltaUsd,
+    decreaseAmounts?.triggerOrderType,
+    executionFee?.feeTokenAmount,
+    executionFee?.gasLimit,
+    isTrigger,
+    marketsInfoData,
+    orderOption,
+    position,
+    receiveToken?.address,
+    receiveUsd,
+    signer,
+    swapAmounts?.swapPathStats?.swapPath,
+    tokensData,
+    triggerPrice,
+    userReferralInfo?.referralCodeForTxn,
+  ]);
+
+  const expressParams = useExpressOrdersParams({
+    orderParams: batchParams,
+  });
+
+  function onSubmit() {
+    if (!account) {
+      openConnectModal?.();
+      return;
+    }
+
+    const params = batchParams?.createOrderParams[0];
+
     const metricData = initDecreaseOrderMetricData({
       collateralToken: position?.collateralToken,
       decreaseAmounts,
       hasExistingPosition: true,
-      swapPath,
+      swapPath: params?.orderPayload.addresses.swapPath,
       executionFee,
-      orderType: orderType,
+      orderType: params?.orderPayload.orderType,
       hasReferralCode: Boolean(userReferralInfo?.referralCodeForTxn),
       subaccount,
       triggerPrice,
@@ -325,6 +398,7 @@ export function PositionSeller(p: Props) {
     sendOrderSubmittedMetric(metricData.metricId);
 
     if (
+      !batchParams ||
       !tokensData ||
       !marketsInfoData ||
       !position ||
@@ -332,8 +406,7 @@ export function PositionSeller(p: Props) {
       !receiveToken?.address ||
       receiveUsd === undefined ||
       decreaseAmounts?.acceptablePrice === undefined ||
-      !signer ||
-      !orderType
+      !signer
     ) {
       helperToast.error(t`Error submitting order`);
       sendTxnValidationErrorMetric(metricData.metricId);
@@ -345,49 +418,14 @@ export function PositionSeller(p: Props) {
     const txnPromise = sendUniversalBatchTxn({
       chainId,
       signer,
-      batchParams: {
-        createOrderParams: [
-          buildDecreaseOrderPayload({
-            receiver: account,
-            chainId,
-            executionFeeAmount: executionFee.feeTokenAmount,
-            executionGasLimit: executionFee.gasLimit,
-            referralCode: userReferralInfo?.referralCodeForTxn,
-            allowedSlippage: !isTrigger ? allowedSlippage : 0,
-            autoCancel: orderOption === OrderOption.Trigger ? autoCancelOrdersLimit > 0 : false,
-            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT,
-            orderType,
-            marketAddress: position.marketAddress,
-            indexTokenAddress: position.indexToken.address,
-            initialCollateralTokenAddress: position.collateralTokenAddress,
-            collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
-            receiveTokenAddress: receiveToken.address,
-            swapPath,
-            sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-            sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
-            triggerPrice: isTrigger ? triggerPrice : undefined,
-            acceptablePrice: decreaseAmounts.acceptablePrice,
-            decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
-            externalSwapQuote: undefined,
-            isLong: position.isLong,
-            minOutputUsd: 0n,
-          }),
-        ],
-        updateOrderParams: [],
-        cancelOrderParams: [],
-      },
-      expressParams:
-        expressOrdersEnabled && relayerFeeSwapParams
-          ? {
-              subaccount,
-              relayFeeParams: relayerFeeSwapParams,
-              tokenPermits: [],
-            }
-          : undefined,
-      tokensData,
-      marketsInfoData,
-      blockTimestampData,
-      skipSimulation: shouldDisableValidationForTesting,
+      batchParams,
+      expressParams,
+      simulationParams: shouldDisableValidationForTesting
+        ? undefined
+        : {
+            tokensData,
+            blockTimestampData,
+          },
       callback: makeOrderTxnCallback({
         metricId: metricData.metricId,
         slippageInputId,

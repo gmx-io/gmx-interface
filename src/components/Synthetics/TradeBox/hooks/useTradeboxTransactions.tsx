@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { t, Trans } from "@lingui/macro";
-import { useCallback, useId } from "react";
+import { useCallback, useId, useMemo } from "react";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -13,10 +13,6 @@ import {
   selectIsFirstOrder,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import {
-  selectRelayerFeeState,
-  selectRelayerFeeSwapParams,
-} from "context/SyntheticsStateContext/selectors/relayserFeeSelectors";
 import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import {
@@ -33,7 +29,6 @@ import {
   selectTradeboxSwapAmounts,
   selectTradeboxToTokenAddress,
   selectTradeboxTradeFlags,
-  selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeBoxCreateOrderParams } from "context/SyntheticsStateContext/selectors/transactionsSelectors/tradeBoxOrdersSelectors";
@@ -43,6 +38,7 @@ import { getIsPossibleExternalSwapError } from "domain/synthetics/externalSwaps/
 import { sendUniversalBatchTxn } from "domain/synthetics/gassless/txns/universalTxn";
 import { OrderTxnCallbackCtx, useOrderTxnCallbacks } from "domain/synthetics/gassless/txns/useOrderTxnCallbacks";
 import { BatchOrderTxnEventParams, TxnEvent, TxnEventName } from "domain/synthetics/gassless/txns/walletTxnBuilder";
+import { useExpressOrdersParams } from "domain/synthetics/gassless/useRelayerFeeHandler";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
 import { formatLeverage } from "domain/synthetics/positions/utils";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
@@ -55,6 +51,7 @@ import {
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
+import { formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import {
   getTradeInteractionKey,
@@ -64,6 +61,7 @@ import {
 } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { OrderType } from "sdk/types/orders";
+import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
 
 import { useRequiredActions, useSecondaryOrderPayloads } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
@@ -83,9 +81,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const { signer, account } = useWallet();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const tokensData = useTokensData();
-  const { shouldDisableValidationForTesting, expressOrdersEnabled } = useSettings();
-  const relayerFeeState = useSelector(selectRelayerFeeState);
-  const { getExecutionFeeAmountForEntry, summaryExecutionFee } = useTPSLSummaryExecutionFee();
+  const { shouldDisableValidationForTesting } = useSettings();
+  const { getExecutionFeeAmountForEntry } = useTPSLSummaryExecutionFee();
   const { orderTxnCallback } = useOrderTxnCallbacks();
 
   const isFirstOrder = useSelector(selectIsFirstOrder);
@@ -104,15 +101,12 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const fees = useSelector(selectTradeboxFees);
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
   const marketsInfoData = useSelector(selectMarketsInfoData);
-  const relayerFeeSwapParams = useSelector(selectRelayerFeeSwapParams);
-  const tokenPermits = useSelector(selectTokenPermits);
 
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
 
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
-  const { triggerRatio = EMPTY_TRIGGER_RATIO } = useSelector(selectTradeboxTradeRatios);
   const { referralCodeForTxn } = useUserReferralCode(signer, chainId, account);
 
   const fromToken = getByKey(tokensData, fromTokenAddress);
@@ -134,6 +128,33 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
   const primaryCreateOrderParams = useSelector(selectTradeBoxCreateOrderParams);
   const slippageInputId = useId();
+
+  const batchParams: BatchOrderTxnParams = useMemo(() => {
+    if (!primaryCreateOrderParams) {
+      return {
+        createOrderParams: [],
+        updateOrderParams: [],
+        cancelOrderParams: [],
+      };
+    }
+
+    return {
+      createOrderParams: [primaryCreateOrderParams, ...(secondaryOrderPayloads?.createPayloads ?? [])],
+      updateOrderParams: secondaryOrderPayloads?.updatePayloads ?? [],
+      cancelOrderParams: secondaryOrderPayloads?.cancelPayloads ?? [],
+    };
+  }, [primaryCreateOrderParams, secondaryOrderPayloads]);
+
+  const expressParams = useExpressOrdersParams({ orderParams: batchParams });
+
+  if (expressParams) {
+    // TEMP DEBUG
+    // eslint-disable-next-line no-console
+    console.log("expressParams", expressParams, {
+      gasPaymentFee: formatTokenAmount(expressParams?.relayFeeParams.feeParams.feeAmount, 6, "USDC"),
+      relayerFee: formatTokenAmount(expressParams?.relayFeeParams.relayerTokenAmount, 18, "WETH"),
+    });
+  }
 
   const initOrderMetricData = useCallback(() => {
     if (isSwap) {
@@ -248,23 +269,14 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     return sendUniversalBatchTxn({
       chainId,
       signer,
-      batchParams: {
-        createOrderParams: [primaryCreateOrderParams, ...(secondaryOrderPayloads?.createPayloads ?? [])],
-        updateOrderParams: secondaryOrderPayloads?.updatePayloads ?? [],
-        cancelOrderParams: secondaryOrderPayloads?.cancelPayloads ?? [],
-      },
-      expressParams:
-        expressOrdersEnabled && relayerFeeSwapParams
-          ? {
-              subaccount,
-              relayFeeParams: relayerFeeSwapParams,
-              tokenPermits: tokenPermits ?? [],
-            }
-          : undefined,
-      tokensData,
-      marketsInfoData,
-      blockTimestampData,
-      skipSimulation: shouldDisableValidationForTesting,
+      batchParams,
+      expressParams,
+      simulationParams: shouldDisableValidationForTesting
+        ? undefined
+        : {
+            tokensData,
+            blockTimestampData,
+          },
       callback: (e: TxnEvent<BatchOrderTxnEventParams>) => {
         const ctx: OrderTxnCallbackCtx = {
           metricId: metricData.metricId,
@@ -297,15 +309,10 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     account,
     marketsInfoData,
     chainId,
-    secondaryOrderPayloads?.createPayloads,
-    secondaryOrderPayloads?.updatePayloads,
-    secondaryOrderPayloads?.cancelPayloads,
-    expressOrdersEnabled,
-    relayerFeeSwapParams,
-    subaccount,
-    tokenPermits,
-    blockTimestampData,
+    batchParams,
+    expressParams,
     shouldDisableValidationForTesting,
+    blockTimestampData,
     slippageInputId,
     orderTxnCallback,
     setShouldFallbackToInternalSwap,

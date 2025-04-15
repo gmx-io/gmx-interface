@@ -109,7 +109,7 @@ export function getEmptySubaccountApproval(subaccountAddress: string): SignedSub
     actionType: SUBACCOUNT_ORDER_ACTION,
     nonce: 0n,
     deadline: 0n,
-    signature: "0x",
+    signature: zeroHash,
   };
 }
 

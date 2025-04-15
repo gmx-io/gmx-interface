@@ -5,7 +5,7 @@ import useSWR from "swr";
 import { metrics, OpenOceanQuoteTiming } from "lib/metrics";
 import { useDebounce } from "lib/useDebounce";
 import { getContract } from "sdk/configs/contracts";
-import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
+import { convertTokenAddress } from "sdk/configs/tokens";
 import { TokensData } from "sdk/types/tokens";
 import { ExternalSwapAggregator, ExternalSwapOutput } from "sdk/types/trade";
 
@@ -71,8 +71,8 @@ export function useExternalSwapOutputRequest({
           chainId,
           senderAddress: getContract(chainId, "ExternalHandler"),
           receiverAddress: receiverAddress,
-          tokenInAddress: convertTokenAddress(chainId, tokenInAddress, "wrapped"),
-          tokenOutAddress: convertTokenAddress(chainId, tokenOutAddress, "wrapped"),
+          tokenInAddress,
+          tokenOutAddress,
           amountIn,
           gasPrice,
           slippage,
@@ -86,8 +86,8 @@ export function useExternalSwapOutputRequest({
 
         const quote: ExternalSwapOutput = {
           aggregator: ExternalSwapAggregator.OpenOcean,
-          inTokenAddress: getTokenBySymbol(chainId, "USDC")?.address,
-          outTokenAddress: getTokenBySymbol(chainId, "WETH")?.address,
+          inTokenAddress: tokenInAddress,
+          outTokenAddress: tokenOutAddress,
           amountIn,
           amountOut: result.outputAmount,
           usdIn: result.usdIn,

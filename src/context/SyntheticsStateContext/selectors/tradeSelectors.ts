@@ -1,3 +1,5 @@
+import { zeroAddress } from "viem";
+
 import { isDevelopment } from "config/env";
 import { OrderType } from "domain/synthetics/orders";
 import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
@@ -29,16 +31,17 @@ import { selectExternalSwapQuote } from "./externalSwapSelectors";
 import {
   selectChainId,
   selectGasLimits,
+  selectGasPaymentToken,
   selectGasPrice,
   selectMarketsInfoData,
   selectPositionConstants,
   selectPositionsInfoData,
+  selectRelayerFeeToken,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
 } from "./globalSelectors";
 import { selectDebugSwapMarketsConfig, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
-import { zeroAddress } from "viem";
 
 export type TokenTypeForSwapRoute = "collateralToken" | "indexToken";
 
@@ -149,6 +152,14 @@ export const makeSelectMaxLiquidityPath = createSelectorFactory(
     });
   }
 );
+
+export const selectRelayFeeTokens = createSelector((q) => {
+  const relayerFeeToken = q(selectRelayerFeeToken);
+  const gasPaymentToken = q(selectGasPaymentToken);
+  const findSwapPath = q(makeSelectFindSwapPath(gasPaymentToken?.address, relayerFeeToken?.address, true));
+
+  return { relayerFeeToken, gasPaymentToken, findSwapPath };
+});
 
 const ENABLE_DEBUG_SWAP_MARKETS_CONFIG = isDevelopment();
 export const makeSelectFindSwapPath = createSelectorFactory(

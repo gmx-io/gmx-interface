@@ -2,11 +2,11 @@ import { Contract, Overrides, Wallet } from "ethers";
 import { ReactNode } from "react";
 
 import { PendingTransactionData, SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
+import { GasPriceData, getBestNonce, getGasLimit, getGasPrice } from "lib/contracts";
 import { makeTransactionErrorHandler } from "lib/errors/additionalValidation";
 import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
-import { GasPriceData, getBestNonce, getGasLimit, getGasPrice } from "lib/contracts";
 
 export async function collContract(
   chainId: number,
@@ -127,5 +127,5 @@ export async function collContract(
     throw errors[0];
   });
 
-  return res as { hash: string; blockNumber: bigint };
+  return res as { hash: string; blockNumber: bigint; wait: () => Promise<any> };
 }

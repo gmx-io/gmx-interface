@@ -1,8 +1,11 @@
 import { t, Trans } from "@lingui/macro";
 import { Signer } from "ethers";
+import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 import { getChainName } from "config/chains";
+import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
+import { ErrorData } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { switchNetwork } from "lib/wallets";
 import { getNativeToken } from "sdk/configs/tokens";
@@ -10,9 +13,6 @@ import { CustomErrorName, extractTxnError, TxError, TxErrorType } from "sdk/util
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
-import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
-import { ErrorData } from "lib/errors";
-import { ReactNode } from "react";
 
 export type AdditionalErrorParams = {
   additionalContent?: ReactNode;

@@ -147,6 +147,9 @@ export async function createIncreaseOrderTxn({
     sizeDeltaUsd: p.sizeDeltaUsd,
     minOutputAmount: 0n,
     isLong: p.isLong,
+    triggerPrice: 0n,
+    acceptablePrice: 0n,
+    autoCancel: false,
     orderType: p.orderType,
     shouldUnwrapNativeToken: isNativePayment,
     txnType: "create",
@@ -447,7 +450,7 @@ export function getCollateralAndSwapAddresses(
 
   if (p.externalSwapQuote?.txnData) {
     swapPath = [];
-    initialCollateralTokenAddress = p.targetCollateralAddress;
+    initialCollateralTokenAddress = convertTokenAddress(chainId, p.targetCollateralAddress, "wrapped");
   }
 
   return {

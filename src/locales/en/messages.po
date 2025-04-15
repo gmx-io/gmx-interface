@@ -776,6 +776,7 @@ msgstr "Incentives Distribution History"
 #: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/InputSection/InputSection.jsx
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "MAX"
 msgstr "MAX"
@@ -1056,6 +1057,10 @@ msgstr "Estimated Fee Refund"
 msgid "GMX Swaps"
 msgstr "GMX Swaps"
 
+#: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
+msgid "Cancel {ordersText} failed."
+msgstr "Cancel {ordersText} failed."
+
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Protocol"
 msgstr "Protocol"
@@ -1259,6 +1264,11 @@ msgstr "Approve {stakingTokenSymbol}"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Limit Swap"
 msgstr "Failed Limit Swap"
+
+#: src/components/ExpressTradingBanner/ExpressTradingBanner.tsx
+#: src/components/Header/Header.tsx
+msgid "Enable Express Trading"
+msgstr "Enable Express Trading"
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
@@ -1797,10 +1807,6 @@ msgstr "Mark"
 msgid "Keep leverage at {keepLeverageAtValue}"
 msgstr "Keep leverage at {keepLeverageAtValue}"
 
-#: src/domain/synthetics/orders/updateOrderTxn.ts
-msgid "Update order executed"
-msgstr "Update order executed"
-
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "not staked"
 msgstr "not staked"
@@ -1847,10 +1853,6 @@ msgstr "GMX Alerts"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
-
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-#~ msgid "Open {longOrShortText} {prefix}{tokenSymbol}"
-#~ msgstr "Open {longOrShortText} {prefix}{tokenSymbol}"
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Show details"
@@ -2187,11 +2189,13 @@ msgstr "Decentralized Finance Dashboard"
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "GLP buy disabled, pending {0} upgrade"
 
-#: src/components/Errors/txnErrorsToasts.tsx
+#: src/components/Errors/errorToasts.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "<0>Error submitting order.</0><1/><2>Signer address does not match receiver address.</2><3/><4>Please reload the page and try again.</4>"
 msgstr "<0>Error submitting order.</0><1/><2>Signer address does not match receiver address.</2><3/><4>Please reload the page and try again.</4>"
 
-#: src/components/Errors/txnErrorsToasts.tsx
+#: src/components/Errors/errorToasts.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 msgstr "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 
@@ -2236,6 +2240,7 @@ msgid "Swaps"
 msgstr "Swaps"
 
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
@@ -2325,7 +2330,8 @@ msgstr "The order will not be executed as its trigger price is beyond the positi
 msgid "Failed to cancel {ordersText}"
 msgstr "Failed to cancel {ordersText}"
 
-#: src/components/Errors/txnErrorsToasts.tsx
+#: src/components/Errors/errorToasts.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 
@@ -2454,6 +2460,10 @@ msgstr "Vest with GMX on Avalanche"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take Profit / Stop Loss Orders."
 msgstr "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take Profit / Stop Loss Orders."
+
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "Relayer request failed"
+msgstr "Relayer request failed"
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"
@@ -2975,10 +2985,6 @@ msgstr "{col2}"
 #: src/pages/Exchange/Exchange.tsx
 msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
-
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-#~ msgid "Liq. {longOrShortText} {prefix}{tokenSymbol}"
-#~ msgstr "Liq. {longOrShortText} {prefix}{tokenSymbol}"
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Leave at least {0} ETH for gas"
@@ -3581,6 +3587,7 @@ msgstr "Cancel Order"
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/Synthetics/GmxAccountModal/OldWithdrawView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/pages/Earn/Vesting.tsx
@@ -3746,10 +3753,6 @@ msgstr "You can edit the default Allowed Slippage in the settings menu on the to
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "RPnL ($)"
 msgstr "RPnL ($)"
-
-#: src/domain/synthetics/orders/updateOrderTxn.ts
-msgid "Updating order"
-msgstr "Updating order"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "There is no price impact. There is a single<0/>execution price for increasing longs or<1/>decreasing shorts for this size."
@@ -4209,6 +4212,7 @@ msgstr "Select a token"
 msgid "UI Fee"
 msgstr "UI Fee"
 
+#: src/components/Errors/errorToasts.tsx
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Execute order simulation failed."
@@ -4222,10 +4226,6 @@ msgstr "Invalid Transfer Addresses: Please check the url."
 #: src/pages/Dashboard/MarketsListV1.tsx
 msgid "GLP Index Composition"
 msgstr "GLP Index Composition"
-
-#: src/domain/synthetics/orders/simulateExecuteTxn.tsx
-#~ msgid "Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section"
-#~ msgstr "Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section"
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
@@ -4952,6 +4952,7 @@ msgstr "Sell order executed"
 msgid "Affiliate Rewards Claimed"
 msgstr "Affiliate Rewards Claimed"
 
+#: src/components/Errors/errorToasts.tsx
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
 msgstr "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
@@ -4981,6 +4982,11 @@ msgstr "Swap {0}"
 #: src/components/Exchange/SwapBox.jsx
 msgid "Swap Order submitted!"
 msgstr "Swap Order submitted!"
+
+#: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
+#: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
+msgid "Cancelling {ordersText}."
+msgstr "Cancelling {ordersText}."
 
 #: src/App/MainRoutes.tsx
 #: src/components/Exchange/PositionsList.jsx
@@ -5288,6 +5294,10 @@ msgstr "Available to Deposit"
 msgid "Close {longOrShortText} {0}"
 msgstr "Close {longOrShortText} {0}"
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Disable validation for testing"
+msgstr "Disable validation for testing"
+
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Deposited!"
 msgstr "Deposited!"
@@ -5302,6 +5312,10 @@ msgstr "TP/SL"
 #: src/components/Exchange/SwapBox.jsx
 msgid "Max {0} in"
 msgstr "Max {0} in"
+
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "Asset"
+msgstr "Asset"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop Loss Decrease"
@@ -6353,6 +6367,10 @@ msgstr "GM Airdrop"
 msgid "Save on Fees"
 msgstr "Save on Fees"
 
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "Approving"
+msgstr "Approving"
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Take Profit"
 msgstr "Update Take Profit"
@@ -6550,6 +6568,7 @@ msgstr "Could not execute deposit into {0} {longOrShortText}"
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/Synthetics/GmxAccountModal/OldDepositView.tsx
@@ -6859,6 +6878,8 @@ msgstr "Date"
 msgid "Buy GMX using FIAT gateways:"
 msgstr "Buy GMX using FIAT gateways:"
 
+#: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
+#: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createSwapOrderTxn.ts
@@ -7484,11 +7505,12 @@ msgstr "size"
 msgid "Create Limit Swap"
 msgstr "Create Limit Swap"
 
-#: src/components/Errors/txnErrorsToasts.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 
-#: src/components/Errors/txnErrorsToasts.tsx
+#: src/components/Errors/errorToasts.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "Transaction was cancelled."
 msgstr "Transaction was cancelled."
 
@@ -7646,7 +7668,8 @@ msgstr "Leave at least {0} {1} for gas"
 msgid "staked"
 msgstr "staked"
 
-#: src/components/Errors/txnErrorsToasts.tsx
+#: src/components/Errors/errorToasts.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "There is not enough {0} in your account on {1} to send this transaction.<0/><1/><2>Buy or Transfer {2} to {3}</2>"
 msgstr "There is not enough {0} in your account on {1} to send this transaction.<0/><1/><2>Buy or Transfer {2} to {3}</2>"
 
@@ -7675,10 +7698,6 @@ msgstr "Price Impact Rebates"
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Take Profit and Stop Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
 msgstr "Take Profit and Stop Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
-
-#: src/domain/synthetics/orders/updateOrderTxn.ts
-msgid "Failed to update order"
-msgstr "Failed to update order"
 
 #: src/components/Exchange/ExchangeTVChart.jsx
 msgid "Open {0} {longOrShortText}"
@@ -7936,7 +7955,8 @@ msgstr "Buy ETH directly on Arbitrum or transfer it there."
 msgid "Max 110 symbols exceeded"
 msgstr "Max 110 symbols exceeded"
 
-#: src/components/Errors/txnErrorsToasts.tsx
+#: src/components/Errors/errorToasts.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed"
 msgstr "Transaction failed"
 
@@ -8334,6 +8354,7 @@ msgstr "Very likely"
 msgid "I am aware of the trigger orders"
 msgstr "I am aware of the trigger orders"
 
+#: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {Order} other {# Orders}}"
@@ -8449,11 +8470,17 @@ msgstr "You will receive at least {toAmountText} if this order is executed. This
 msgid "Acceptable price does not apply to stop loss orders, as they will be executed regardless of any price impact."
 msgstr "Acceptable price does not apply to stop loss orders, as they will be executed regardless of any price impact."
 
+#: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
+#: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
+msgid "Updating order."
+msgstr "Updating order."
+
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We'll then schedule a chat or interview with you. As a thank you, you'll receive <0>100 <1/></0> for providing your feedback."
 msgstr "We'll then schedule a chat or interview with you. As a thank you, you'll receive <0>100 <1/></0> for providing your feedback."
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 msgid "Available:"
 msgstr "Available:"
 

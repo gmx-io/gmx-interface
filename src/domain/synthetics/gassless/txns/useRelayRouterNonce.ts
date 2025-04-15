@@ -1,8 +1,8 @@
+import { ethers, Signer } from "ethers";
 import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
-import { ethers, Signer } from "ethers";
 import { useChainId } from "lib/chains";
 import { useMulticall } from "lib/multicall";
 import useWallet from "lib/wallets/useWallet";
@@ -51,8 +51,8 @@ export function useRelayRouterNonce() {
   }, [nonces, mutate]);
 }
 
-export async function getRelayRouterNonceForSigner(chainId: number, signer: Signer) {
-  const contractAddress = getContract(chainId, "GelatoRelayRouter");
+export async function getRelayRouterNonceForSigner(chainId: number, signer: Signer, isSubaccount: boolean) {
+  const contractAddress = getContract(chainId, isSubaccount ? "SubaccountGelatoRelayRouter" : "GelatoRelayRouter");
   const contract = new ethers.Contract(contractAddress, abis.GelatoRelayRouter, signer);
 
   return contract.userNonces(await signer.getAddress());

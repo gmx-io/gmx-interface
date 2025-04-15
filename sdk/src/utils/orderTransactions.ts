@@ -8,7 +8,7 @@ import { getToken } from "configs/tokens";
 import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { DecreasePositionSwapType, OrderType } from "types/orders";
 import { ContractPrice, WrappedTokenAddress } from "types/tokens";
-import { ExternalSwapQuote } from "types/trade";
+import { ExternalSwapOutput } from "types/trade";
 
 import { convertToContractPrice } from "./tokens";
 import { applySlippageToMinOut, applySlippageToPrice } from "./trade";
@@ -108,7 +108,6 @@ export type TokenTransfer = {
 };
 
 export type ExternalCallsPayload = {
-  // TODO: Support new contracts
   sendTokens: WrappedTokenAddress[];
   sendAmounts: bigint[];
   externalCallTargets: string[];
@@ -131,7 +130,7 @@ export type CommonOrderParams<OT extends OrderType> = {
 
 export type CollateralParams = {
   swapPath: string[];
-  externalSwapQuote: ExternalSwapQuote | undefined;
+  externalSwapQuote: ExternalSwapOutput | undefined;
 };
 
 export type PositionOrderParams = {
@@ -401,7 +400,7 @@ export function buildSendTokensTransfers({
   payTokenAddress: string;
   payTokenAmount: bigint;
   executionFeeAmount: bigint;
-  externalSwapQuote: ExternalSwapQuote | undefined;
+  externalSwapQuote: ExternalSwapOutput | undefined;
   minOutputAmount: bigint;
   swapPath: string[];
 }): TokenTransfersParams {
@@ -451,6 +450,35 @@ export function buildSendTokensTransfers({
   };
 }
 
+export function combineExternalCalls(externalCalls: ExternalCallsPayload[]): ExternalCallsPayload {
+  const sendTokensMap: { [tokenAddress: string]: bigint } = {};
+  const refundTokensMap: { [tokenAddress: string]: string } = {};
+  const externalCallTargets: string[] = [];
+  const externalCallDataList: string[] = [];
+
+  for (const call of externalCalls) {
+    for (const tokenAddress of call.sendTokens) {
+      sendTokensMap[tokenAddress] = (sendTokensMap[tokenAddress] ?? 0n) + call.sendAmounts[tokenAddress];
+    }
+
+    for (const tokenAddress of call.refundTokens) {
+      refundTokensMap[tokenAddress] = call.refundReceivers[tokenAddress];
+    }
+
+    externalCallTargets.push(...call.externalCallTargets);
+    externalCallDataList.push(...call.externalCallDataList);
+  }
+
+  return {
+    sendTokens: Object.keys(sendTokensMap) as WrappedTokenAddress[],
+    sendAmounts: Object.values(sendTokensMap),
+    externalCallTargets,
+    externalCallDataList,
+    refundReceivers: Object.values(refundTokensMap),
+    refundTokens: Object.keys(refundTokensMap),
+  };
+}
+
 export function getExternalCallsPayload({
   chainId,
   account,
@@ -458,7 +486,7 @@ export function getExternalCallsPayload({
 }: {
   chainId: number;
   account: string;
-  quote: ExternalSwapQuote;
+  quote: ExternalSwapOutput;
 }): ExternalCallsPayload {
   const inTokenAddress = convertTokenAddress(chainId, quote.inTokenAddress, "wrapped");
 

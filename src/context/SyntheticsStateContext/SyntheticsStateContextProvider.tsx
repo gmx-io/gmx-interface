@@ -16,6 +16,7 @@ import {
 } from "domain/synthetics/accountStats";
 import { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
+import { DisabledFeatures, useDisabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
@@ -120,6 +121,7 @@ export type SyntheticsState = {
   positionSeller: PositionSellerState;
   positionEditor: PositionEditorState;
   confirmationBox: ConfirmationBoxState;
+  disabledFeatures: DisabledFeatures | undefined;
 };
 
 const StateCtx = createContext<SyntheticsState | null>(null);
@@ -198,6 +200,7 @@ export function SyntheticsStateContextProvider({
 
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
+  const { disabledFeatures } = useDisabledFeaturesRequest(chainId);
 
   const {
     isLoading,
@@ -332,6 +335,7 @@ export function SyntheticsStateContextProvider({
       positionSeller: positionSellerState,
       positionEditor: positionEditorState,
       confirmationBox: confirmationBoxState,
+      disabledFeatures,
     };
 
     return s;
@@ -363,6 +367,7 @@ export function SyntheticsStateContextProvider({
     isLargeAccount,
     isFirstOrder,
     blockTimestampData,
+    disabledFeatures,
     accruedPositionPriceImpactFees,
     claimablePositionPriceImpactFees,
     leaderboard,

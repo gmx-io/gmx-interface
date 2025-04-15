@@ -4,9 +4,8 @@ import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
 
 import { getContract } from "config/contracts";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   usePositionsConstants,
   useTokensData,
@@ -31,6 +30,9 @@ import {
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { selectAddTokenPermit } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { sendUniversalBatchTxn } from "domain/synthetics/gassless/txns/universalTxn";
+import { useOrderTxnCallbacks } from "domain/synthetics/gassless/txns/useOrderTxnCallbacks";
+import { useExpressOrdersParams } from "domain/synthetics/gassless/useRelayerFeeHandler";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import {
   getIsPositionInfoLoaded,
@@ -57,21 +59,17 @@ import { userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getWrappedToken } from "sdk/configs/tokens";
-
-import ExternalLink from "components/ExternalLink/ExternalLink";
-
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
-import { selectRelayerFeeSwapParams } from "context/SyntheticsStateContext/selectors/relayserFeeSelectors";
-import { sendUniversalBatchTxn } from "domain/synthetics/gassless/txns/universalTxn";
-import { useOrderTxnCallbacks } from "domain/synthetics/gassless/txns/useOrderTxnCallbacks";
-import { useRelayRouterNonce } from "domain/synthetics/gassless/txns/useRelayRouterNonce";
 import {
+  BatchOrderTxnParams,
   CreateOrderTxnParams,
   DecreasePositionOrderParams,
   IncreasePositionOrderParams,
   buildDecreaseOrderPayload,
   buildIncreaseOrderPayload,
 } from "sdk/utils/orderTransactions";
+
+import ExternalLink from "components/ExternalLink/ExternalLink";
+
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 import { OPERATION_LABELS, Operation } from "./types";
@@ -83,14 +81,12 @@ export function usePositionEditorButtonState(operation: Operation): {
   onSubmit: () => void;
 } {
   const [, setEditingPositionKey] = usePositionEditorPositionState();
-  const { setPendingTxns } = usePendingTxns();
   const allowedSlippage = useSavedAllowedSlippage();
   const { chainId } = useChainId();
-  const { shouldDisableValidationForTesting, expressOrdersEnabled } = useSettings();
+  const { shouldDisableValidationForTesting } = useSettings();
   const tokensData = useTokensData();
   const { account, signer } = useWallet();
   const { openConnectModal } = useConnectModal();
-  const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
@@ -102,7 +98,6 @@ export function usePositionEditorButtonState(operation: Operation): {
   const selectedCollateralToken = useSelector(selectPositionEditorSelectedCollateralToken);
   const setCollateralInputValue = useSelector(selectPositionEditorSetCollateralInputValue);
   const { collateralDeltaAmount, collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
-  const relayerFeeSwapParams = useSelector(selectRelayerFeeSwapParams);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const marketsInfoData = useSelector(selectMarketsInfoData);
 
@@ -270,6 +265,107 @@ export function usePositionEditorButtonState(operation: Operation): {
   const subaccount = useSelector(makeSelectSubaccountForActions(1));
   const addTokenPermit = useSelector(selectAddTokenPermit);
 
+  const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
+    if (
+      !account ||
+      !tokensData ||
+      !marketsInfoData ||
+      !position ||
+      !selectedCollateralAddress ||
+      !signer ||
+      !executionFee ||
+      markPrice === undefined ||
+      collateralDeltaAmount === undefined ||
+      !selectedCollateralToken
+    ) {
+      return undefined;
+    }
+
+    let createOrderParams: CreateOrderTxnParams<IncreasePositionOrderParams | DecreasePositionOrderParams>;
+
+    if (isDeposit) {
+      createOrderParams = buildIncreaseOrderPayload({
+        chainId,
+        receiver: account,
+        executionFeeAmount: executionFee.feeTokenAmount,
+        executionGasLimit: executionFee.gasLimit,
+        referralCode: userReferralInfo?.referralCodeForTxn,
+        swapPath: [],
+        externalSwapQuote: undefined,
+        payTokenAddress: selectedCollateralAddress,
+        payTokenAmount: collateralDeltaAmount,
+        collateralTokenAddress: selectedCollateralAddress,
+        collateralDeltaAmount: collateralDeltaAmount,
+        sizeDeltaUsd: 0n,
+        sizeDeltaInTokens: 0n,
+        acceptablePrice: markPrice,
+        triggerPrice: undefined,
+        orderType: OrderType.MarketIncrease,
+        isLong: position.isLong,
+        marketAddress: position.marketAddress,
+        indexTokenAddress: position.indexToken.address,
+        uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT,
+        allowedSlippage,
+        autoCancel: false,
+      });
+    } else {
+      if (receiveUsd === undefined) {
+        return;
+      }
+      createOrderParams = buildDecreaseOrderPayload({
+        chainId,
+        receiver: account,
+        executionFeeAmount: executionFee.feeTokenAmount,
+        executionGasLimit: executionFee.gasLimit,
+        referralCode: userReferralInfo?.referralCodeForTxn,
+        swapPath: [],
+        externalSwapQuote: undefined,
+        initialCollateralTokenAddress: selectedCollateralAddress,
+        collateralDeltaAmount: collateralDeltaAmount,
+        receiveTokenAddress: selectedCollateralAddress,
+        minOutputUsd: receiveUsd,
+        decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
+        orderType: OrderType.MarketDecrease,
+        isLong: position.isLong,
+        marketAddress: position.marketAddress,
+        indexTokenAddress: position.indexToken.address,
+        uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT,
+        allowedSlippage,
+        sizeDeltaUsd: 0n,
+        sizeDeltaInTokens: 0n,
+        acceptablePrice: markPrice,
+        triggerPrice: undefined,
+        autoCancel: false,
+      });
+    }
+
+    return {
+      createOrderParams: [createOrderParams],
+      updateOrderParams: [],
+      cancelOrderParams: [],
+    };
+  }, [
+    account,
+    allowedSlippage,
+    chainId,
+    collateralDeltaAmount,
+    executionFee,
+    isDeposit,
+    markPrice,
+    marketsInfoData,
+    position,
+    receiveUsd,
+    selectedCollateralAddress,
+    selectedCollateralToken,
+    signer,
+    tokensData,
+    userReferralInfo?.referralCodeForTxn,
+  ]);
+
+  const expressParams = useExpressOrdersParams({
+    orderParams: batchParams,
+  });
+
   function onSubmit() {
     if (!account) {
       openConnectModal?.();
@@ -329,100 +425,23 @@ export function usePositionEditorButtonState(operation: Operation): {
 
     sendOrderSubmittedMetric(metricData.metricId);
 
-    if (
-      executionFee?.feeTokenAmount === undefined ||
-      !tokensData ||
-      !marketsInfoData ||
-      markPrice === undefined ||
-      !position?.indexToken ||
-      collateralDeltaAmount === undefined ||
-      !selectedCollateralAddress ||
-      !signer
-    ) {
+    if (!batchParams || !tokensData || !signer) {
       helperToast.error(t`Error submitting order`);
       sendTxnValidationErrorMetric(metricData.metricId);
       return;
     }
 
-    let createOrderParams: CreateOrderTxnParams<IncreasePositionOrderParams | DecreasePositionOrderParams>;
-
-    if (isDeposit) {
-      createOrderParams = buildIncreaseOrderPayload({
-        chainId,
-        receiver: account,
-        executionFeeAmount: executionFee.feeTokenAmount,
-        executionGasLimit: executionFee.gasLimit,
-        referralCode: userReferralInfo?.referralCodeForTxn,
-        swapPath: [],
-        externalSwapQuote: undefined,
-        payTokenAddress: selectedCollateralAddress,
-        payTokenAmount: collateralDeltaAmount,
-        collateralTokenAddress: selectedCollateralAddress,
-        collateralDeltaAmount: collateralDeltaAmount,
-        sizeDeltaUsd: 0n,
-        sizeDeltaInTokens: 0n,
-        acceptablePrice: markPrice,
-        triggerPrice: undefined,
-        orderType: OrderType.MarketIncrease,
-        isLong: position.isLong,
-        marketAddress: position.marketAddress,
-        indexTokenAddress: position.indexToken.address,
-        uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT,
-        allowedSlippage,
-        autoCancel: false,
-      });
-    } else {
-      if (receiveUsd === undefined) {
-        return;
-      }
-
-      createOrderParams = buildDecreaseOrderPayload({
-        chainId,
-        receiver: account,
-        executionFeeAmount: executionFee.feeTokenAmount,
-        executionGasLimit: executionFee.gasLimit,
-        referralCode: userReferralInfo?.referralCodeForTxn,
-        swapPath: [],
-        externalSwapQuote: undefined,
-        initialCollateralTokenAddress: selectedCollateralAddress,
-        collateralDeltaAmount: collateralDeltaAmount,
-        receiveTokenAddress: selectedCollateralAddress,
-        minOutputUsd: receiveUsd,
-        decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
-        orderType: OrderType.MarketDecrease,
-        isLong: position.isLong,
-        marketAddress: position.marketAddress,
-        indexTokenAddress: position.indexToken.address,
-        uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT,
-        allowedSlippage,
-        sizeDeltaUsd: 0n,
-        sizeDeltaInTokens: 0n,
-        acceptablePrice: markPrice,
-        triggerPrice: undefined,
-        autoCancel: false,
-      });
-    }
-
     const txnPromise = sendUniversalBatchTxn({
       chainId,
       signer,
-      batchParams: {
-        createOrderParams: [createOrderParams],
-        updateOrderParams: [],
-        cancelOrderParams: [],
-      },
-      tokensData,
-      marketsInfoData,
-      blockTimestampData,
-      skipSimulation: shouldDisableValidationForTesting,
-      expressParams:
-        expressOrdersEnabled && relayerFeeSwapParams
-          ? {
-              subaccount,
-              relayFeeParams: relayerFeeSwapParams,
-              tokenPermits: [],
-            }
-          : undefined,
+      batchParams,
+      expressParams,
+      simulationParams: shouldDisableValidationForTesting
+        ? undefined
+        : {
+            tokensData,
+            blockTimestampData,
+          },
       callback: makeOrderTxnCallback({
         metricId: metricData.metricId,
         slippageInputId: undefined,

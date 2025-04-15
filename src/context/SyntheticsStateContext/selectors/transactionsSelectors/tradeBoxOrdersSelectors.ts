@@ -1,4 +1,5 @@
-import { createSelector, createSelectorFactory } from "context/SyntheticsStateContext/utils";
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { createSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "sdk/types/orders";
 import {
   buildDecreaseOrderPayload,
@@ -6,13 +7,7 @@ import {
   buildSwapOrderPayload,
 } from "sdk/utils/orderTransactions";
 
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
-import {
-  makeSelectSubaccountForActions,
-  selectAccount,
-  selectChainId,
-  selectUserReferralInfo,
-} from "../globalSelectors";
+import { selectAccount, selectChainId, selectUserReferralInfo } from "../globalSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxCollateralTokenAddress,
@@ -28,9 +23,6 @@ import {
   selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
 } from "../tradeboxSelectors";
-import { selectRelayerFeeSwapParams } from "../relayserFeeSelectors";
-import { selectTokenPermits } from "../tokenPermitsSelectors";
-import { ExpressParams } from "domain/synthetics/gassless/txns/universalTxn";
 
 export const selectTradeBoxCreateOrderParams = createSelector((q) => {
   const { isSwap, isIncrease } = q(selectTradeboxTradeFlags);
@@ -182,17 +174,3 @@ export const selectTradeboxDecreaseOrderParams = createSelector((q) => {
     isLong,
   });
 });
-
-export const makeSelectExpressParams = createSelectorFactory((requiredActions: number) =>
-  createSelector((q): ExpressParams | undefined => {
-    const relayFeeParams = q(selectRelayerFeeSwapParams);
-    const tokenPermits = q(selectTokenPermits);
-    const subaccount = q(makeSelectSubaccountForActions(requiredActions));
-
-    if (!relayFeeParams || !tokenPermits || !subaccount) {
-      return undefined;
-    }
-
-    return { relayFeeParams, tokenPermits: tokenPermits ?? [], subaccount };
-  })
-);

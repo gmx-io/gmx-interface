@@ -48,6 +48,9 @@ import {
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
+import { sendUniversalBatchTxn } from "domain/synthetics/gassless/txns/universalTxn";
+import { useOrderTxnCallbacks } from "domain/synthetics/gassless/txns/useOrderTxnCallbacks";
+import { useExpressOrdersParams } from "domain/synthetics/gassless/useRelayerFeeHandler";
 import {
   EditingOrderSource,
   OrderInfo,
@@ -88,6 +91,7 @@ import {
 import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
+import { BatchOrderTxnParams, buildUpdateOrderPayload } from "sdk/utils/orderTransactions";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -101,11 +105,6 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { AllowedSwapSlippageInputRow } from "../AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
-import { selectRelayerFeeSwapParams } from "context/SyntheticsStateContext/selectors/relayserFeeSelectors";
-import { sendUniversalBatchTxn } from "domain/synthetics/gassless/txns/universalTxn";
-import { useOrderTxnCallbacks } from "domain/synthetics/gassless/txns/useOrderTxnCallbacks";
-import { useRelayRouterNonce } from "domain/synthetics/gassless/txns/useRelayRouterNonce";
-import { buildUpdateOrderPayload } from "sdk/utils/orderTransactions";
 import "./OrderEditor.scss";
 
 type Props = {
@@ -119,7 +118,7 @@ export function OrderEditor(p: Props) {
   const { signer } = useWallet();
   const tokensData = useSelector(selectTokensData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
-  const { updateOrderTxnCallback } = useOrderTxnCallbacks();
+  const { makeUpdateOrderTxnCallback } = useOrderTxnCallbacks();
   const [isSubmitting, setIsSubmitting] = useOrderEditorIsSubmittingState();
 
   const [sizeInputValue, setSizeInputValue] = useOrderEditorSizeInputValueState();
@@ -246,8 +245,7 @@ export function OrderEditor(p: Props) {
     return false;
   }
 
-  const { savedAcceptablePriceImpactBuffer, expressOrdersEnabled } = useSettings();
-  const relayerFeeSwapParams = useSelector(selectRelayerFeeSwapParams);
+  const { savedAcceptablePriceImpactBuffer } = useSettings();
 
   function detectAndSetAvailableMaxLeverage() {
     const positionOrder = p.order as PositionOrderInfo;
@@ -363,11 +361,12 @@ export function OrderEditor(p: Props) {
     };
   }
 
-  function onSubmit() {
-    if (!signer || !tokensData || !marketsInfoData) return;
-    const positionOrder = p.order as PositionOrderInfo;
+  const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
+    if (!signer || !tokensData || !marketsInfoData) {
+      return undefined;
+    }
 
-    setIsSubmitting(true);
+    const positionOrder = p.order as PositionOrderInfo;
 
     const orderTriggerPrice = isSwapOrderType(p.order.orderType)
       ? triggerRatio?.ratio ?? triggerPrice ?? positionOrder.triggerPrice
@@ -386,28 +385,47 @@ export function OrderEditor(p: Props) {
       executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
     });
 
+    return {
+      createOrderParams: [],
+      updateOrderParams: [updateOrderParams],
+      cancelOrderParams: [],
+    };
+  }, [
+    signer,
+    tokensData,
+    marketsInfoData,
+    p.order,
+    triggerRatio?.ratio,
+    triggerPrice,
+    chainId,
+    sizeDeltaUsd,
+    acceptablePrice,
+    minOutputAmount,
+    additionalExecutionFee?.feeTokenAmount,
+  ]);
+
+  const expressParams = useExpressOrdersParams({
+    orderParams: batchParams,
+  });
+
+  function onSubmit() {
+    if (!batchParams || !signer || !tokensData || !marketsInfoData) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
     const txnPromise = sendUniversalBatchTxn({
       chainId,
       signer,
-      batchParams: {
-        createOrderParams: [],
-        updateOrderParams: [updateOrderParams],
-        cancelOrderParams: [],
-      },
-      tokensData,
-      marketsInfoData,
-      skipSimulation: true,
-      blockTimestampData: undefined,
-      expressParams:
-        expressOrdersEnabled && relayerFeeSwapParams
-          ? {
-              subaccount,
-              relayFeeParams: relayerFeeSwapParams,
-              tokenPermits: [],
-            }
-          : undefined,
-      callback: updateOrderTxnCallback,
-      __type: "updateOrder",
+      batchParams,
+      expressParams,
+      simulationParams: undefined,
+      callback: makeUpdateOrderTxnCallback({
+        metricId: undefined,
+        slippageInputId: undefined,
+        showPreliminaryMsg: Boolean(expressParams?.subaccount),
+      }),
     });
 
     if (subaccount) {

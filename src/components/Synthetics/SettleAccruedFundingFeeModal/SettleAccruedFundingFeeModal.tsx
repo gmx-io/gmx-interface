@@ -9,10 +9,15 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { estimateExecuteDecreaseOrderGasLimit, useGasLimits, useGasPrice } from "domain/synthetics/fees";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
+import {
+  estimateExecuteDecreaseOrderGasLimit,
+  estimateOrderOraclePriceCount,
+  useGasLimits,
+  useGasPrice,
+} from "domain/synthetics/fees";
 import { getTotalAccruedFundingUsd } from "domain/synthetics/markets";
-import { createDecreaseOrderTxn, DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { createDecreaseOrderTxn } from "domain/synthetics/orders/createDecreaseOrderTxn";
 import { useChainId } from "lib/chains";
 import { formatDeltaUsd, formatUsd } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";

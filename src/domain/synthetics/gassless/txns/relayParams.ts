@@ -52,6 +52,8 @@ export function hashRelayParams(relayParams: RelayParamsPayload) {
   const encoded = encodeAbiParameters(RelayParamsAbi.abi, [
     [relayParams.oracleParams.tokens, relayParams.oracleParams.providers, relayParams.oracleParams.data],
     [
+      relayParams.externalCalls.sendTokens,
+      relayParams.externalCalls.sendAmounts,
       relayParams.externalCalls.externalCallTargets,
       relayParams.externalCalls.externalCallDataList,
       relayParams.externalCalls.refundTokens,

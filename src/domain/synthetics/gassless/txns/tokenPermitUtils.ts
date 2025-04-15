@@ -1,9 +1,9 @@
 import { Contract, Signer, ethers } from "ethers";
 
 import ERC20PermitInterfaceAbi from "sdk/abis/ERC20PermitInterface.json";
-
-import { splitSignature } from "./signing";
 import { SignedTokenPermit } from "sdk/types/tokens";
+
+import { signTypedData, splitSignature } from "./signing";
 
 export async function createAndSignTokenPermit(
   chainId: number,
@@ -59,7 +59,7 @@ export async function createAndSignTokenPermit(
     deadline,
   };
 
-  const signature = await signer.signTypedData(domain, types, permitData);
+  const signature = await signTypedData(signer, domain, types, permitData);
 
   const { r, s, v } = splitSignature(signature);
 
