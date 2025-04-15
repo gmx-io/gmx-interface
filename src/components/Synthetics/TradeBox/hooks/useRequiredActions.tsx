@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { selectAccount, selectUserReferralInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxCollateralTokenAddress,
@@ -10,20 +11,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { SidecarLimitOrderEntryValid, SidecarSlTpOrderEntryValid } from "domain/synthetics/sidecarOrders/types";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useChainId } from "lib/chains";
-import {
-  SecondaryCancelOrderParams,
-  SecondaryUpdateOrderParams,
-} from "domain/synthetics/orders/createIncreaseOrderTxn";
-import {
-  buildDecreaseOrderPayload,
-  buildUpdateOrderPayload,
-  CancelOrderTxnParams,
-  CreateOrderTxnParams,
-  DecreasePositionOrderParams,
-  UpdateOrderTxnParams,
-} from "sdk/utils/orderTransactions";
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
-import { DecreasePositionSwapType } from "sdk/types/orders";
+import { buildDecreaseOrderPayload, buildUpdateOrderPayload, CancelOrderTxnParams } from "sdk/utils/orderTransactions";
 
 // TODO: REWRITE ALL THIS STUFF TO SELECTORS
 export function useRequiredActions() {

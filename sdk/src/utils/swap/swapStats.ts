@@ -1,6 +1,6 @@
 import { maxUint256 } from "viem";
 
-import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { MarketInfo, MarketsInfoData } from "types/markets";
 import { SwapPathStats, SwapStats } from "types/trade";
 
@@ -8,7 +8,6 @@ import { applySwapImpactWithCap, getPriceImpactForSwap, getSwapFee } from "../fe
 import { getAvailableUsdLiquidityForCollateral, getOppositeCollateral, getTokenPoolType } from "../markets";
 import { getByKey } from "../objects";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
-import { TokenData, TokensData } from "types/tokens";
 
 export function getSwapCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
   const poolAmount = isLong ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;
@@ -22,50 +21,6 @@ export function getSwapCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
   return capacityUsd;
 }
 
-export function getSwapPathTokens({
-  marketsInfoData,
-  tokensData,
-  initialCollateralAddress,
-  swapPath,
-}: {
-  marketsInfoData: MarketsInfoData;
-  tokensData: TokensData;
-  chainId: number;
-  initialCollateralAddress: string;
-  swapPath: string[];
-}): TokenData[] | undefined {
-  let currentToken = getByKey(tokensData, initialCollateralAddress);
-
-  if (!currentToken) {
-    return undefined;
-  }
-
-  const tokens: TokenData[] = [currentToken];
-
-  for (const marketAddress of swapPath) {
-    const marketInfo = getByKey(marketsInfoData, marketAddress);
-
-    if (!marketInfo) {
-      return undefined;
-    }
-
-    const tokenOut = getOppositeCollateral(marketInfo, currentToken?.address);
-
-    if (!tokenOut) {
-      return undefined;
-    }
-
-    currentToken = getByKey(tokensData, tokenOut.address);
-
-    if (!currentToken) {
-      return undefined;
-    }
-
-    tokens.push(currentToken, marketInfo.indexToken);
-  }
-
-  return tokens;
-}
 export function getSwapPathOutputAddresses(p: {
   marketsInfoData: MarketsInfoData;
   initialCollateralAddress: string;

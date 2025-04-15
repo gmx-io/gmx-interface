@@ -9,7 +9,7 @@ import {
   getZeroAddressContract,
 } from "config/contracts";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
-import { SwapPricingType } from "domain/synthetics/orders";
+import { isLimitSwapOrderType, SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
@@ -153,11 +153,15 @@ export async function simulateExecution(chainId: number, p: SimulateExecuteParam
   }
 }
 
-export function getOrdersTriggerPriceOverrides(createOrderPayloads: CreateOrderTxnParams[]) {
+export function getOrdersTriggerPriceOverrides(createOrderPayloads: CreateOrderTxnParams<any>[]) {
   const overrides: PriceOverride[] = [];
 
   for (const co of createOrderPayloads) {
-    if (co.orderPayload.numbers.triggerPrice !== 0n && "indexTokenAddress" in co.params) {
+    if (
+      !isLimitSwapOrderType(co.orderPayload.orderType) &&
+      co.orderPayload.numbers.triggerPrice !== 0n &&
+      "indexTokenAddress" in co.params
+    ) {
       overrides.push({
         tokenAddress: co.params.indexTokenAddress,
         contractPrices: {

@@ -1,7 +1,6 @@
 import { t } from "@lingui/macro";
 import { ReactNode, useCallback, useMemo } from "react";
 
-import { selectRelayerFeeState } from "context/SyntheticsStateContext/selectors/relayserFeeSelectors";
 import {
   selectTradeboxAdvancedOptions,
   selectTradeboxAllowedSlippage,
@@ -204,7 +203,6 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
   const triggerRatioInputValue = useSelector(selectTradeboxTriggerRatioInputValue);
   const totalSwapImpactBps = useSelector(selectTradeboxTotalSwapImpactBps);
-  const relayerFee = useSelector(selectRelayerFeeState);
 
   const setSelectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSetSelectedAcceptablePriceImpactBps);
   const selectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
@@ -287,8 +285,8 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
       <TradeFeesRow {...fees} feesType={feesType} />
       <NetworkFeeRow
         executionFee={executionFee}
-        gasPaymentTokenAddress={relayerFee?.gasPaymentTokenAddress}
-        gasPaymentTokenAmount={relayerFee?.gasPaymentTokenAmount}
+        // gasPaymentTokenAddress={relayerFee?.gasPaymentTokenAddress}
+        // gasPaymentTokenAmount={relayerFee?.gasPaymentTokenAmount}
       />
 
       {(isSwap || isLimit || (isMarket && !isSwap) || isMarket) && <div className="h-1 shrink-0 bg-stroke-primary" />}

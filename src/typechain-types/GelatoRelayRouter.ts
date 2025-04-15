@@ -21,6 +21,149 @@ import type {
   TypedContractMethod,
 } from "./common";
 
+export type ExternalCallsStruct = {
+  sendTokens: AddressLike[];
+  sendAmounts: BigNumberish[];
+  externalCallTargets: AddressLike[];
+  externalCallDataList: BytesLike[];
+  refundTokens: AddressLike[];
+  refundReceivers: AddressLike[];
+};
+
+export type ExternalCallsStructOutput = [
+  sendTokens: string[],
+  sendAmounts: bigint[],
+  externalCallTargets: string[],
+  externalCallDataList: string[],
+  refundTokens: string[],
+  refundReceivers: string[],
+] & {
+  sendTokens: string[];
+  sendAmounts: bigint[];
+  externalCallTargets: string[];
+  externalCallDataList: string[];
+  refundTokens: string[];
+  refundReceivers: string[];
+};
+
+export type TokenPermitStruct = {
+  owner: AddressLike;
+  spender: AddressLike;
+  value: BigNumberish;
+  deadline: BigNumberish;
+  v: BigNumberish;
+  r: BytesLike;
+  s: BytesLike;
+  token: AddressLike;
+};
+
+export type TokenPermitStructOutput = [
+  owner: string,
+  spender: string,
+  value: bigint,
+  deadline: bigint,
+  v: bigint,
+  r: string,
+  s: string,
+  token: string,
+] & {
+  owner: string;
+  spender: string;
+  value: bigint;
+  deadline: bigint;
+  v: bigint;
+  r: string;
+  s: string;
+  token: string;
+};
+
+export type FeeParamsStruct = {
+  feeToken: AddressLike;
+  feeAmount: BigNumberish;
+  feeSwapPath: AddressLike[];
+};
+
+export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
+  feeToken: string;
+  feeAmount: bigint;
+  feeSwapPath: string[];
+};
+
+export type RelayParamsStruct = {
+  oracleParams: OracleUtils.SetPricesParamsStruct;
+  externalCalls: ExternalCallsStruct;
+  tokenPermits: TokenPermitStruct[];
+  fee: FeeParamsStruct;
+  userNonce: BigNumberish;
+  deadline: BigNumberish;
+  signature: BytesLike;
+};
+
+export type RelayParamsStructOutput = [
+  oracleParams: OracleUtils.SetPricesParamsStructOutput,
+  externalCalls: ExternalCallsStructOutput,
+  tokenPermits: TokenPermitStructOutput[],
+  fee: FeeParamsStructOutput,
+  userNonce: bigint,
+  deadline: bigint,
+  signature: string,
+] & {
+  oracleParams: OracleUtils.SetPricesParamsStructOutput;
+  externalCalls: ExternalCallsStructOutput;
+  tokenPermits: TokenPermitStructOutput[];
+  fee: FeeParamsStructOutput;
+  userNonce: bigint;
+  deadline: bigint;
+  signature: string;
+};
+
+export type UpdateOrderParamsStruct = {
+  key: BytesLike;
+  sizeDeltaUsd: BigNumberish;
+  acceptablePrice: BigNumberish;
+  triggerPrice: BigNumberish;
+  minOutputAmount: BigNumberish;
+  validFromTime: BigNumberish;
+  autoCancel: boolean;
+  executionFeeIncrease: BigNumberish;
+};
+
+export type UpdateOrderParamsStructOutput = [
+  key: string,
+  sizeDeltaUsd: bigint,
+  acceptablePrice: bigint,
+  triggerPrice: bigint,
+  minOutputAmount: bigint,
+  validFromTime: bigint,
+  autoCancel: boolean,
+  executionFeeIncrease: bigint,
+] & {
+  key: string;
+  sizeDeltaUsd: bigint;
+  acceptablePrice: bigint;
+  triggerPrice: bigint;
+  minOutputAmount: bigint;
+  validFromTime: bigint;
+  autoCancel: boolean;
+  executionFeeIncrease: bigint;
+};
+
+export type BatchParamsStruct = {
+  createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStruct[];
+  updateOrderParamsList: UpdateOrderParamsStruct[];
+  cancelOrderKeys: BytesLike[];
+};
+
+export type BatchParamsStructOutput = [
+  createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[],
+  updateOrderParamsList: UpdateOrderParamsStructOutput[],
+  cancelOrderKeys: string[],
+] & {
+  createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[];
+  updateOrderParamsList: UpdateOrderParamsStructOutput[];
+  cancelOrderKeys: string[];
+};
+
 export declare namespace OracleUtils {
   export type SetPricesParamsStruct = {
     tokens: AddressLike[];
@@ -28,127 +171,10 @@ export declare namespace OracleUtils {
     data: BytesLike[];
   };
 
-  export type SetPricesParamsStructOutput = [
-    tokens: string[],
-    providers: string[],
-    data: string[]
-  ] & { tokens: string[]; providers: string[]; data: string[] };
-}
-
-export declare namespace BaseGelatoRelayRouter {
-  export type ExternalCallsStruct = {
-    externalCallTargets: AddressLike[];
-    externalCallDataList: BytesLike[];
-    refundTokens: AddressLike[];
-    refundReceivers: AddressLike[];
-  };
-
-  export type ExternalCallsStructOutput = [
-    externalCallTargets: string[],
-    externalCallDataList: string[],
-    refundTokens: string[],
-    refundReceivers: string[]
-  ] & {
-    externalCallTargets: string[];
-    externalCallDataList: string[];
-    refundTokens: string[];
-    refundReceivers: string[];
-  };
-
-  export type TokenPermitStruct = {
-    owner: AddressLike;
-    spender: AddressLike;
-    value: BigNumberish;
-    deadline: BigNumberish;
-    v: BigNumberish;
-    r: BytesLike;
-    s: BytesLike;
-    token: AddressLike;
-  };
-
-  export type TokenPermitStructOutput = [
-    owner: string,
-    spender: string,
-    value: bigint,
-    deadline: bigint,
-    v: bigint,
-    r: string,
-    s: string,
-    token: string
-  ] & {
-    owner: string;
-    spender: string;
-    value: bigint;
-    deadline: bigint;
-    v: bigint;
-    r: string;
-    s: string;
-    token: string;
-  };
-
-  export type FeeParamsStruct = {
-    feeToken: AddressLike;
-    feeAmount: BigNumberish;
-    feeSwapPath: AddressLike[];
-  };
-
-  export type FeeParamsStructOutput = [
-    feeToken: string,
-    feeAmount: bigint,
-    feeSwapPath: string[]
-  ] & { feeToken: string; feeAmount: bigint; feeSwapPath: string[] };
-
-  export type RelayParamsStruct = {
-    oracleParams: OracleUtils.SetPricesParamsStruct;
-    externalCalls: BaseGelatoRelayRouter.ExternalCallsStruct;
-    tokenPermits: BaseGelatoRelayRouter.TokenPermitStruct[];
-    fee: BaseGelatoRelayRouter.FeeParamsStruct;
-    userNonce: BigNumberish;
-    deadline: BigNumberish;
-    signature: BytesLike;
-  };
-
-  export type RelayParamsStructOutput = [
-    oracleParams: OracleUtils.SetPricesParamsStructOutput,
-    externalCalls: BaseGelatoRelayRouter.ExternalCallsStructOutput,
-    tokenPermits: BaseGelatoRelayRouter.TokenPermitStructOutput[],
-    fee: BaseGelatoRelayRouter.FeeParamsStructOutput,
-    userNonce: bigint,
-    deadline: bigint,
-    signature: string
-  ] & {
-    oracleParams: OracleUtils.SetPricesParamsStructOutput;
-    externalCalls: BaseGelatoRelayRouter.ExternalCallsStructOutput;
-    tokenPermits: BaseGelatoRelayRouter.TokenPermitStructOutput[];
-    fee: BaseGelatoRelayRouter.FeeParamsStructOutput;
-    userNonce: bigint;
-    deadline: bigint;
-    signature: string;
-  };
-
-  export type UpdateOrderParamsStruct = {
-    sizeDeltaUsd: BigNumberish;
-    acceptablePrice: BigNumberish;
-    triggerPrice: BigNumberish;
-    minOutputAmount: BigNumberish;
-    validFromTime: BigNumberish;
-    autoCancel: boolean;
-  };
-
-  export type UpdateOrderParamsStructOutput = [
-    sizeDeltaUsd: bigint,
-    acceptablePrice: bigint,
-    triggerPrice: bigint,
-    minOutputAmount: bigint,
-    validFromTime: bigint,
-    autoCancel: boolean
-  ] & {
-    sizeDeltaUsd: bigint;
-    acceptablePrice: bigint;
-    triggerPrice: bigint;
-    minOutputAmount: bigint;
-    validFromTime: bigint;
-    autoCancel: boolean;
+  export type SetPricesParamsStructOutput = [tokens: string[], providers: string[], data: string[]] & {
+    tokens: string[];
+    providers: string[];
+    data: string[];
   };
 }
 
@@ -170,7 +196,7 @@ export declare namespace IBaseOrderUtils {
     uiFeeReceiver: string,
     market: string,
     initialCollateralToken: string,
-    swapPath: string[]
+    swapPath: string[],
   ] & {
     receiver: string;
     cancellationReceiver: string;
@@ -200,7 +226,7 @@ export declare namespace IBaseOrderUtils {
     executionFee: bigint,
     callbackGasLimit: bigint,
     minOutputAmount: bigint,
-    validFromTime: bigint
+    validFromTime: bigint,
   ] & {
     sizeDeltaUsd: bigint;
     initialCollateralDeltaAmount: bigint;
@@ -231,7 +257,7 @@ export declare namespace IBaseOrderUtils {
     isLong: boolean,
     shouldUnwrapNativeToken: boolean,
     autoCancel: boolean,
-    referralCode: string
+    referralCode: string,
   ] & {
     addresses: IBaseOrderUtils.CreateOrderParamsAddressesStructOutput;
     numbers: IBaseOrderUtils.CreateOrderParamsNumbersStructOutput;
@@ -247,15 +273,10 @@ export declare namespace IBaseOrderUtils {
 export interface GelatoRelayRouterInterface extends Interface {
   getFunction(
     nameOrSignature:
-      | "CANCEL_ORDER_TYPEHASH"
-      | "CREATE_ORDER_ADDRESSES_TYPEHASH"
-      | "CREATE_ORDER_NUMBERS_TYPEHASH"
-      | "CREATE_ORDER_TYPEHASH"
       | "DOMAIN_SEPARATOR_NAME_HASH"
       | "DOMAIN_SEPARATOR_TYPEHASH"
       | "DOMAIN_SEPARATOR_VERSION_HASH"
-      | "UPDATE_ORDER_PARAMS_TYPEHASH"
-      | "UPDATE_ORDER_TYPEHASH"
+      | "batch"
       | "cancelOrder"
       | "createOrder"
       | "dataStore"
@@ -269,153 +290,42 @@ export interface GelatoRelayRouterInterface extends Interface {
       | "userNonces"
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: "CANCEL_ORDER_TYPEHASH",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "CREATE_ORDER_ADDRESSES_TYPEHASH",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "CREATE_ORDER_NUMBERS_TYPEHASH",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "CREATE_ORDER_TYPEHASH",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "DOMAIN_SEPARATOR_NAME_HASH",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "DOMAIN_SEPARATOR_TYPEHASH",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "UPDATE_ORDER_PARAMS_TYPEHASH",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "UPDATE_ORDER_TYPEHASH",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "cancelOrder",
-    values: [BaseGelatoRelayRouter.RelayParamsStruct, AddressLike, BytesLike]
-  ): string;
+  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_NAME_HASH", values?: undefined): string;
+  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_TYPEHASH", values?: undefined): string;
+  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH", values?: undefined): string;
+  encodeFunctionData(functionFragment: "batch", values: [RelayParamsStruct, AddressLike, BatchParamsStruct]): string;
+  encodeFunctionData(functionFragment: "cancelOrder", values: [RelayParamsStruct, AddressLike, BytesLike]): string;
   encodeFunctionData(
     functionFragment: "createOrder",
-    values: [
-      BaseGelatoRelayRouter.RelayParamsStruct,
-      AddressLike,
-      BigNumberish,
-      IBaseOrderUtils.CreateOrderParamsStruct
-    ]
+    values: [RelayParamsStruct, AddressLike, IBaseOrderUtils.CreateOrderParamsStruct]
   ): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "eventEmitter",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "externalHandler",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
+  encodeFunctionData(functionFragment: "externalHandler", values?: undefined): string;
   encodeFunctionData(functionFragment: "oracle", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "orderHandler",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "orderVault",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "orderHandler", values?: undefined): string;
+  encodeFunctionData(functionFragment: "orderVault", values?: undefined): string;
   encodeFunctionData(functionFragment: "router", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "updateOrder",
-    values: [
-      BaseGelatoRelayRouter.RelayParamsStruct,
-      AddressLike,
-      BytesLike,
-      BaseGelatoRelayRouter.UpdateOrderParamsStruct,
-      boolean
-    ]
+    values: [RelayParamsStruct, AddressLike, UpdateOrderParamsStruct]
   ): string;
-  encodeFunctionData(
-    functionFragment: "userNonces",
-    values: [AddressLike]
-  ): string;
+  encodeFunctionData(functionFragment: "userNonces", values: [AddressLike]): string;
 
-  decodeFunctionResult(
-    functionFragment: "CANCEL_ORDER_TYPEHASH",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "CREATE_ORDER_ADDRESSES_TYPEHASH",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "CREATE_ORDER_NUMBERS_TYPEHASH",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "CREATE_ORDER_TYPEHASH",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "DOMAIN_SEPARATOR_NAME_HASH",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "DOMAIN_SEPARATOR_TYPEHASH",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "UPDATE_ORDER_PARAMS_TYPEHASH",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "UPDATE_ORDER_TYPEHASH",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "cancelOrder",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "createOrder",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_NAME_HASH", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_TYPEHASH", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "batch", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "cancelOrder", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "createOrder", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "eventEmitter",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "externalHandler",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "eventEmitter", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "externalHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "oracle", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "orderHandler",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "orderHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "orderVault", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "router", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "updateOrder",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "updateOrder", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "userNonces", data: BytesLike): Result;
 }
 
@@ -436,39 +346,21 @@ export interface GelatoRelayRouter extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(
-    event: TCEvent
-  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(
-    event?: TCEvent
-  ): Promise<this>;
-
-  CANCEL_ORDER_TYPEHASH: TypedContractMethod<[], [string], "view">;
-
-  CREATE_ORDER_ADDRESSES_TYPEHASH: TypedContractMethod<[], [string], "view">;
-
-  CREATE_ORDER_NUMBERS_TYPEHASH: TypedContractMethod<[], [string], "view">;
-
-  CREATE_ORDER_TYPEHASH: TypedContractMethod<[], [string], "view">;
+  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
   DOMAIN_SEPARATOR_NAME_HASH: TypedContractMethod<[], [string], "view">;
 
@@ -476,27 +368,20 @@ export interface GelatoRelayRouter extends BaseContract {
 
   DOMAIN_SEPARATOR_VERSION_HASH: TypedContractMethod<[], [string], "view">;
 
-  UPDATE_ORDER_PARAMS_TYPEHASH: TypedContractMethod<[], [string], "view">;
-
-  UPDATE_ORDER_TYPEHASH: TypedContractMethod<[], [string], "view">;
+  batch: TypedContractMethod<
+    [relayParams: RelayParamsStruct, account: AddressLike, params: BatchParamsStruct],
+    [string[]],
+    "nonpayable"
+  >;
 
   cancelOrder: TypedContractMethod<
-    [
-      relayParams: BaseGelatoRelayRouter.RelayParamsStruct,
-      account: AddressLike,
-      key: BytesLike
-    ],
+    [relayParams: RelayParamsStruct, account: AddressLike, key: BytesLike],
     [void],
     "nonpayable"
   >;
 
   createOrder: TypedContractMethod<
-    [
-      relayParams: BaseGelatoRelayRouter.RelayParamsStruct,
-      account: AddressLike,
-      collateralDeltaAmount: BigNumberish,
-      params: IBaseOrderUtils.CreateOrderParamsStruct
-    ],
+    [relayParams: RelayParamsStruct, account: AddressLike, params: IBaseOrderUtils.CreateOrderParamsStruct],
     [string],
     "nonpayable"
   >;
@@ -516,110 +401,50 @@ export interface GelatoRelayRouter extends BaseContract {
   router: TypedContractMethod<[], [string], "view">;
 
   updateOrder: TypedContractMethod<
-    [
-      relayParams: BaseGelatoRelayRouter.RelayParamsStruct,
-      account: AddressLike,
-      key: BytesLike,
-      params: BaseGelatoRelayRouter.UpdateOrderParamsStruct,
-      increaseExecutionFee: boolean
-    ],
+    [relayParams: RelayParamsStruct, account: AddressLike, params: UpdateOrderParamsStruct],
     [void],
     "nonpayable"
   >;
 
   userNonces: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
-  getFunction<T extends ContractMethod = ContractMethod>(
-    key: string | FunctionFragment
-  ): T;
+  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
+  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_NAME_HASH"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_TYPEHASH"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_VERSION_HASH"): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "CANCEL_ORDER_TYPEHASH"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "CREATE_ORDER_ADDRESSES_TYPEHASH"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "CREATE_ORDER_NUMBERS_TYPEHASH"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "CREATE_ORDER_TYPEHASH"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "DOMAIN_SEPARATOR_NAME_HASH"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "DOMAIN_SEPARATOR_TYPEHASH"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "DOMAIN_SEPARATOR_VERSION_HASH"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "UPDATE_ORDER_PARAMS_TYPEHASH"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "UPDATE_ORDER_TYPEHASH"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "cancelOrder"
+    nameOrSignature: "batch"
   ): TypedContractMethod<
-    [
-      relayParams: BaseGelatoRelayRouter.RelayParamsStruct,
-      account: AddressLike,
-      key: BytesLike
-    ],
-    [void],
+    [relayParams: RelayParamsStruct, account: AddressLike, params: BatchParamsStruct],
+    [string[]],
     "nonpayable"
   >;
+  getFunction(
+    nameOrSignature: "cancelOrder"
+  ): TypedContractMethod<[relayParams: RelayParamsStruct, account: AddressLike, key: BytesLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "createOrder"
   ): TypedContractMethod<
-    [
-      relayParams: BaseGelatoRelayRouter.RelayParamsStruct,
-      account: AddressLike,
-      collateralDeltaAmount: BigNumberish,
-      params: IBaseOrderUtils.CreateOrderParamsStruct
-    ],
+    [relayParams: RelayParamsStruct, account: AddressLike, params: IBaseOrderUtils.CreateOrderParamsStruct],
     [string],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "dataStore"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "eventEmitter"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "externalHandler"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "oracle"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "orderHandler"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "orderVault"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "router"
-  ): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "externalHandler"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "oracle"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "orderHandler"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "orderVault"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "router"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "updateOrder"
   ): TypedContractMethod<
-    [
-      relayParams: BaseGelatoRelayRouter.RelayParamsStruct,
-      account: AddressLike,
-      key: BytesLike,
-      params: BaseGelatoRelayRouter.UpdateOrderParamsStruct,
-      increaseExecutionFee: boolean
-    ],
+    [relayParams: RelayParamsStruct, account: AddressLike, params: UpdateOrderParamsStruct],
     [void],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "userNonces"
-  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(nameOrSignature: "userNonces"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
   filters: {};
 }

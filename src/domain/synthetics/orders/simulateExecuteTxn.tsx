@@ -3,7 +3,6 @@ import { BaseContract, ethers } from "ethers";
 import { ReactNode } from "react";
 import { withRetry } from "viem";
 
-import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import {
   getContract,
   getExchangeRouterContract,
@@ -26,6 +25,8 @@ import { CustomErrorName, ErrorData, extractDataFromError, extractTxnError, isCo
 import { OracleUtils } from "typechain-types/ExchangeRouter";
 
 import { getErrorMessage } from "components/Errors/errorToasts";
+import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
+
 import { isGlvEnabled } from "../markets/glv";
 
 export type PriceOverrides = {

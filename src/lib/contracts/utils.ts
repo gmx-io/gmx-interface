@@ -74,7 +74,8 @@ export async function getGasLimit(
   contract: Contract | BaseContract,
   method,
   params: any[] = [],
-  value?: bigint | number
+  value?: bigint | number,
+  from?: string
 ) {
   const defaultValue = 0n;
 
@@ -84,10 +85,10 @@ export async function getGasLimit(
 
   let gasLimit = 0n;
   try {
-    gasLimit = await contract[method].estimateGas(...params, { value });
+    gasLimit = await contract[method].estimateGas(...params, { value, from });
   } catch (error) {
     // this call should throw another error instead of the `error`
-    await contract[method].staticCall(...params, { value });
+    await contract[method].staticCall(...params, { value, from });
 
     // if not we throw estimateGas error
     throw error;

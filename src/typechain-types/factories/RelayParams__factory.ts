@@ -28,6 +28,14 @@ const _abi = [
     components: [
       {
         type: "address[]",
+        name: "sendTokens",
+      },
+      {
+        type: "uint256[]",
+        name: "sendAmounts",
+      },
+      {
+        type: "address[]",
         name: "externalCallTargets",
       },
       {

@@ -1,9 +1,8 @@
-import { getV2Tokens } from "sdk/configs/tokens";
-
 import { getContract } from "config/contracts";
 import { priceFeedKey } from "config/dataStore";
 import { PermitConfig } from "domain/tokens";
 import { useMulticall } from "lib/multicall";
+import { getV2Tokens, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 export function useOnchainTokensConfigs(chainId: number) {
   const tokens = getV2Tokens(chainId);
 
@@ -58,6 +57,8 @@ export function useOnchainTokensConfigs(chainId: number) {
           //     : undefined,
         };
       }
+
+      result[NATIVE_TOKEN_ADDRESS] = result[getWrappedToken(chainId).address];
 
       return result;
     },

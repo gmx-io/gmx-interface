@@ -1104,6 +1104,10 @@ msgstr ""
 #~ msgid "Deactivating..."
 #~ msgstr ""
 
+#: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
+msgid "Cancel {ordersText} failed."
+msgstr ""
+
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 #~ msgid "Deactivate"
 #~ msgstr ""
@@ -1311,6 +1315,11 @@ msgstr "Genehmige {stakingTokenSymbol}"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Limit Swap"
 msgstr "Limit Swap fehlgeschlagen"
+
+#: src/components/ExpressTradingBanner/ExpressTradingBanner.tsx
+#: src/components/Header/Header.tsx
+msgid "Enable Express Trading"
+msgstr ""
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
@@ -1862,8 +1871,8 @@ msgid "Keep leverage at {keepLeverageAtValue}"
 msgstr ""
 
 #: src/domain/synthetics/orders/updateOrderTxn.ts
-msgid "Update order executed"
-msgstr ""
+#~ msgid "Update order executed"
+#~ msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "not staked"
@@ -2255,11 +2264,13 @@ msgstr "Dezentrales Finanz-Dashboard"
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "GLP-Kauf deaktiviert, {0} Aktualisierung steht noch aus"
 
-#: src/components/Errors/txnErrorsToasts.tsx
+#: src/components/Errors/errorToasts.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "<0>Error submitting order.</0><1/><2>Signer address does not match receiver address.</2><3/><4>Please reload the page and try again.</4>"
 msgstr ""
 
-#: src/components/Errors/txnErrorsToasts.tsx
+#: src/components/Errors/errorToasts.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 msgstr ""
 
@@ -2413,7 +2424,8 @@ msgstr ""
 msgid "Failed to cancel {ordersText}"
 msgstr ""
 
-#: src/components/Errors/txnErrorsToasts.tsx
+#: src/components/Errors/errorToasts.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "Der Mark-Preis hat sich geändert. Erhöhe dein zulässiges Slippage, indem du auf das Symbol \"...\" neben deiner Adresse klickst."
 
@@ -2541,6 +2553,10 @@ msgstr "Vesting mit GMX auf Avalanche"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take Profit / Stop Loss Orders."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "Relayer request failed"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
@@ -3869,8 +3885,8 @@ msgid "RPnL ($)"
 msgstr ""
 
 #: src/domain/synthetics/orders/updateOrderTxn.ts
-msgid "Updating order"
-msgstr ""
+#~ msgid "Updating order"
+#~ msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "There is no price impact. There is a single<0/>execution price for increasing longs or<1/>decreasing shorts for this size."
@@ -4332,6 +4348,7 @@ msgstr ""
 msgid "UI Fee"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Execute order simulation failed."
@@ -5087,6 +5104,7 @@ msgstr ""
 msgid "Affiliate Rewards Claimed"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
 msgstr ""
@@ -5116,6 +5134,11 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 msgid "Swap Order submitted!"
 msgstr "Swap Order übermittelt!"
+
+#: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
+#: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
+msgid "Cancelling {ordersText}."
+msgstr ""
 
 #: src/App/MainRoutes.tsx
 #: src/components/Exchange/PositionsList.jsx
@@ -7030,6 +7053,8 @@ msgstr "Datum"
 msgid "Buy GMX using FIAT gateways:"
 msgstr ""
 
+#: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
+#: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createSwapOrderTxn.ts
@@ -7667,11 +7692,12 @@ msgstr "Größe"
 msgid "Create Limit Swap"
 msgstr "Limit Swap erstellen"
 
-#: src/components/Errors/txnErrorsToasts.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr "<0>Dein Wallet ist nicht mit {0} verbunden.</0><1/><2>Wechsle zu {1}</2>"
 
-#: src/components/Errors/txnErrorsToasts.tsx
+#: src/components/Errors/errorToasts.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "Transaction was cancelled."
 msgstr "Transaktion wurde abgebrochen."
 
@@ -7825,7 +7851,8 @@ msgstr "Mindestens {0} {1} für Gas lassen"
 msgid "staked"
 msgstr "Gestaket"
 
-#: src/components/Errors/txnErrorsToasts.tsx
+#: src/components/Errors/errorToasts.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "There is not enough {0} in your account on {1} to send this transaction.<0/><1/><2>Buy or Transfer {2} to {3}</2>"
 msgstr ""
 
@@ -7860,8 +7887,8 @@ msgid "Take Profit and Stop Loss orders will be automatically cancelled when the
 msgstr ""
 
 #: src/domain/synthetics/orders/updateOrderTxn.ts
-msgid "Failed to update order"
-msgstr ""
+#~ msgid "Failed to update order"
+#~ msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.jsx
 msgid "Open {0} {longOrShortText}"
@@ -8122,7 +8149,8 @@ msgstr ""
 msgid "Max 110 symbols exceeded"
 msgstr ""
 
-#: src/components/Errors/txnErrorsToasts.tsx
+#: src/components/Errors/errorToasts.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed"
 msgstr "Transaktion fehlgeschlagen"
 
@@ -8540,6 +8568,7 @@ msgstr ""
 msgid "I am aware of the trigger orders"
 msgstr "Ich bin mir der Trigger-Orders bewusst"
 
+#: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr ""
@@ -8653,6 +8682,11 @@ msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "Acceptable price does not apply to stop loss orders, as they will be executed regardless of any price impact."
+msgstr ""
+
+#: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
+#: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
+msgid "Updating order."
 msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx

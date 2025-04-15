@@ -3,8 +3,8 @@ import { Abi, erc20Abi } from "viem";
 
 import CustomErrors from "./CustomErrors.json";
 import DataStore from "./DataStore.json";
-import ERC721 from "./ERC721.json";
 import ERC20PermitInterface from "./ERC20PermitInterface.json";
+import ERC721 from "./ERC721.json";
 import EventEmitter from "./EventEmitter.json";
 import ExchangeRouter from "./ExchangeRouter.json";
 import GelatoRelayRouter from "./GelatoRelayRouter.json";
