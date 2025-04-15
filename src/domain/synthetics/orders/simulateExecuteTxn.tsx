@@ -86,7 +86,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
   }
 
   const { primaryTokens, primaryPrices } = getSimulationPrices(chainId, p.tokensData, p.primaryPriceOverrides);
-  const priceTimestamp = blockTimestamp + 10n;
+  const priceTimestamp = blockTimestamp + 30n;
   const method = p.method || "simulateExecuteLatestOrder";
 
   const isGlv = method === "simulateExecuteLatestGlvDeposit" || method === "simulateExecuteLatestGlvWithdrawal";
