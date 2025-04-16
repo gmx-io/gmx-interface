@@ -90,7 +90,7 @@ export const createNaiveSwapEstimator = (marketsInfoData: MarketsInfoData): Naiv
 
     const usdOut = swapStats?.usdOut;
 
-    if (usdOut === undefined || usdOut === 0n) {
+    if (usdOut === undefined || usdOut === 0n || swapStats.isOutCapacity || swapStats.isOutLiquidity) {
       return { swapYield: 0 };
     }
 

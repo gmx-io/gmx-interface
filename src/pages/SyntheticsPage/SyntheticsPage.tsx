@@ -267,8 +267,8 @@ export function SyntheticsPage(p: Props) {
         "!pb-[333px]": isMobile,
       })}
     >
-      <div className="-mt-15 grid grid-cols-[1fr_auto] gap-15 px-10 pt-0 max-[1100px]:grid-cols-1 max-[800px]:p-10">
-        <div className="Exchange-left">
+      <div className="-mt-15 grid grow grid-cols-[1fr_auto] gap-12 px-32 pt-0 max-[1100px]:grid-cols-1 max-[800px]:p-10">
+        <div className="Exchange-left flex flex-col">
           <Chart />
           {!isMobile && (
             <div className="Exchange-lists large" data-qa="trade-table-large">
@@ -340,10 +340,10 @@ export function SyntheticsPage(p: Props) {
             {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
           </>
         ) : (
-          <div className="w-[38.75rem] min-[1501px]:w-[41.85rem]">
+          <div className="w-[40rem] min-[1501px]:w-[41.85rem]">
             <TradeBoxResponsiveContainer />
 
-            <div className="mt-12 flex flex-col gap-12">
+            <div className="flex flex-col gap-12">
               {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
             </div>
           </div>

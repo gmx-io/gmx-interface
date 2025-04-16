@@ -4,8 +4,11 @@ import { Address, encodeFunctionData, encodePacked, zeroAddress, zeroHash } from
 import { getContract } from "config/contracts";
 import { getSwapDebugSettings } from "config/externalSwaps";
 import { MarketsInfoData } from "domain/synthetics/markets/types";
+import { getNeedTokenApprove } from "domain/synthetics/tokens";
 import { ExternalSwapOutput, SwapAmounts } from "domain/synthetics/trade";
 import { SignedTokenPermit, TokensAllowanceData, TokensData } from "domain/tokens";
+import { expandDecimals } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import GelatoRelayRouterAbi from "sdk/abis/GelatoRelayRouter.json";
 import SubaccountGelatoRelayRouterAbi from "sdk/abis/SubaccountGelatoRelayRouter.json";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION, getRelayerFeeToken } from "sdk/configs/express";
@@ -20,9 +23,6 @@ import {
 } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 
-import { getNeedTokenApprove } from "domain/synthetics/tokens";
-import { expandDecimals } from "lib/numbers";
-import { getByKey } from "lib/objects";
 import {
   getOracleParamsPayload,
   getOraclePriceParamsForOrders,

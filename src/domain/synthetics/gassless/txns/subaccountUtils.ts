@@ -10,12 +10,12 @@ import {
   DEFAULT_SUBACCOUNT_EXPIRY_DURATION,
   DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT,
 } from "sdk/configs/express";
+import { bigMath } from "sdk/utils/bigmath";
+import { ZERO_DATA } from "sdk/utils/hash";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { getGelatoRelayRouterDomain } from "./relayParams";
 import { signTypedData } from "./signing";
-import { bigMath } from "sdk/utils/bigmath";
-import { ZERO_DATA } from "sdk/utils/hash";
 
 export type Subaccount = {
   address: string;

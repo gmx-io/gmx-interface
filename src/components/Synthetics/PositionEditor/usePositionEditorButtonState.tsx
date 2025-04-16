@@ -30,6 +30,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { selectAddTokenPermit } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { RelayFeeSwapParams } from "domain/synthetics/gassless/txns/expressOrderUtils";
 import { sendUniversalBatchTxn } from "domain/synthetics/gassless/txns/universalTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/gassless/txns/useOrderTxnCallbacks";
 import { useExpressOrdersParams } from "domain/synthetics/gassless/useRelayerFeeHandler";
@@ -73,7 +74,6 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 import { OPERATION_LABELS, Operation } from "./types";
-import { RelayFeeSwapParams } from "domain/synthetics/gassless/txns/expressOrderUtils";
 
 export function usePositionEditorButtonState(operation: Operation): {
   text: ReactNode;

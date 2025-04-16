@@ -2,11 +2,13 @@ import { t, Trans } from "@lingui/macro";
 import { useState } from "react";
 
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import {
   useSubaccountWithdrawalAmount,
   withdrawFromSubaccount,
 } from "domain/synthetics/subaccount/withdrawFromSubaccount";
 import { useChainId } from "lib/chains";
+import { parseError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { formatTokenAmount } from "lib/numbers";
@@ -18,10 +20,9 @@ import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
 import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
 
-import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import IconInfo from "img/ic_info.svg?react";
+
 import "./OldSubaccountWithdraw.scss";
-import { parseError } from "lib/errors";
 
 export function OldSubaccountWithdraw() {
   const { account } = useWallet();

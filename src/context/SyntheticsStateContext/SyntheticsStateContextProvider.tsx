@@ -20,6 +20,8 @@ import { DisabledFeatures, useDisabledFeaturesRequest } from "domain/synthetics/
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
+import { SponsoredCallParams } from "domain/synthetics/gassless/txns/useGelatoRelayFeeMultiplierRequest";
+import { useSponsoredCallParamsRequest } from "domain/synthetics/gassless/txns/useGelatoRelayFeeMultiplierRequest";
 import { SubaccountState } from "domain/synthetics/gassless/useInitSubaccountState";
 import { TokenPermitsState, useInitTokenPermitsState } from "domain/synthetics/gassless/useInitTokenPermitsState";
 import {
@@ -55,7 +57,6 @@ import useWallet from "lib/wallets/useWallet";
 
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
-import { useSponsoredCallParamsRequest } from "domain/synthetics/gassless/txns/useGelatoRelayFeeMultiplierRequest";
 
 export type SyntheticsPageType =
   | "accounts"

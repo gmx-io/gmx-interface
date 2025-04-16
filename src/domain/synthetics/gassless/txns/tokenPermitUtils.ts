@@ -1,12 +1,12 @@
 import { Contract, Signer, ethers } from "ethers";
 
-import ERC20PermitInterfaceAbi from "sdk/abis/ERC20PermitInterface.json";
-import { SignedTokenPermit } from "sdk/types/tokens";
-
 import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { getProvider } from "lib/rpc";
 import { sleep } from "lib/sleep";
+import ERC20PermitInterfaceAbi from "sdk/abis/ERC20PermitInterface.json";
 import { getTokens } from "sdk/configs/tokens";
+import { SignedTokenPermit } from "sdk/types/tokens";
+
 import { signTypedData, splitSignature } from "./signing";
 
 export async function createAndSignTokenPermit(

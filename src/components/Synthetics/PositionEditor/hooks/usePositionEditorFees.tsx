@@ -12,13 +12,13 @@ import {
   getTotalFeeItem,
 } from "domain/synthetics/fees";
 import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
+import { RelayFeeSwapParams } from "domain/synthetics/gassless/txns/expressOrderUtils";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import { TradeFees } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 import { Operation } from "../types";
-import { RelayFeeSwapParams } from "domain/synthetics/gassless/txns/expressOrderUtils";
 
 export type Options = {
   operation: Operation;

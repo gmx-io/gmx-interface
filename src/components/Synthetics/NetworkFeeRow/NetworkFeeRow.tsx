@@ -7,9 +7,11 @@ import { useExecutionFeeBufferBps } from "context/SyntheticsStateContext/hooks/s
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getExecutionFeeWarning, type ExecutionFee } from "domain/synthetics/fees";
+import { RelayFeeSwapParams } from "domain/synthetics/gassless/txns/expressOrderUtils";
 import { convertToUsd } from "domain/synthetics/tokens/utils";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { convertTokenAddress } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
@@ -17,8 +19,6 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import { RelayFeeSwapParams } from "domain/synthetics/gassless/txns/expressOrderUtils";
-import { convertTokenAddress } from "sdk/configs/tokens";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
 type Props = {

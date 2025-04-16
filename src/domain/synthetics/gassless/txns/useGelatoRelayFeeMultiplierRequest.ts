@@ -1,10 +1,12 @@
+import { useMemo } from "react";
+import useSWR from "swr";
+
 import { getIsFlagEnabled } from "config/ab";
 import { GELATO_RELAY_FEE_MULTIPLIER_FACTOR_KEY } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-import { useMemo } from "react";
 import { getContract } from "sdk/configs/contracts";
-import useSWR from "swr";
+
 import { getIsSponsoredCallAllowed } from "./expressOrderUtils";
 
 export type SponsoredCallParams = {
