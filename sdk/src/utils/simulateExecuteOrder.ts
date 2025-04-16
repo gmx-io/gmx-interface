@@ -14,6 +14,15 @@ export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;
 };
 
+class SimulateExecuteOrderError extends Error {
+  constructor(
+    message: string,
+    public cause: Error
+  ) {
+    super(message);
+  }
+}
+
 type SimulateExecuteParams = {
   createMulticallPayload: string[];
   primaryPriceOverrides: PriceOverrides;
@@ -90,17 +99,17 @@ export async function simulateExecuteOrder(sdk: GmxSdk, p: SimulateExecuteParams
         },
       }
     );
-  } catch (txnError) {
+  } catch (txnError: any) {
     let msg: string | undefined = undefined;
     try {
       const errorData = extractDataFromError(txnError?.info?.error?.message) ?? extractDataFromError(txnError?.message);
 
-      const error = new Error("No data found in error.");
-      error.cause = txnError;
+      const error = new SimulateExecuteOrderError("No data found in error.", txnError);
+
       if (!errorData) throw error;
 
-      const decodedError = decodeErrorResult({
-        abi: abis.CustomErrors as Abi,
+      const decodedError = decodeErrorResult<typeof abis.CustomErrors>({
+        abi: abis.CustomErrors,
         data: errorData as Address,
       });
 
@@ -112,7 +121,8 @@ export async function simulateExecuteOrder(sdk: GmxSdk, p: SimulateExecuteParams
 
       const parsedArgs = Object.keys(decodedError.args ?? {}).reduce(
         (acc, k) => {
-          acc[k] = decodedError.args?.[k].toString();
+          const args = (decodedError.args ?? {}) as unknown as Record<string, any>;
+          acc[k] = args[k]?.toString();
           return acc;
         },
         {} as Record<string, string>

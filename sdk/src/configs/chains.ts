@@ -10,7 +10,7 @@ export const ETH_MAINNET = 1;
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 export const SUPPORTED_CHAIN_IDS_DEV = [...SUPPORTED_CHAIN_IDS, AVALANCHE_FUJI];
 
-export const HIGH_EXECUTION_FEES_MAP = {
+export const HIGH_EXECUTION_FEES_MAP: Record<number, number> = {
   [ARBITRUM]: 5, // 5 USD
   [AVALANCHE]: 5, // 5 USD
   [AVALANCHE_FUJI]: 5, // 5 USD
@@ -40,7 +40,7 @@ export const MAX_PRIORITY_FEE_PER_GAS_MAP: Record<number, bigint | undefined> = 
   [AVALANCHE_FUJI]: 1500000000n,
 };
 
-export const EXCESSIVE_EXECUTION_FEES_MAP = {
+export const EXCESSIVE_EXECUTION_FEES_MAP: Record<number, number> = {
   [ARBITRUM]: 10, // 10 USD
   [AVALANCHE]: 10, // 10 USD
   [AVALANCHE_FUJI]: 10, // 10 USD
@@ -67,7 +67,7 @@ export const GAS_PRICE_BUFFER_MAP = {
   [ARBITRUM]: 2000n, // 20%
 };
 
-const CHAIN_BY_CHAIN_ID = {
+const CHAIN_BY_CHAIN_ID: Record<number, Chain> = {
   [AVALANCHE_FUJI]: avalancheFuji,
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
@@ -77,11 +77,11 @@ export const getChain = (chainId: number): Chain => {
   return CHAIN_BY_CHAIN_ID[chainId];
 };
 
-export function getHighExecutionFee(chainId) {
+export function getHighExecutionFee(chainId: number) {
   return HIGH_EXECUTION_FEES_MAP[chainId] ?? 5;
 }
 
-export function getExcessiveExecutionFee(chainId) {
+export function getExcessiveExecutionFee(chainId: number) {
   return EXCESSIVE_EXECUTION_FEES_MAP[chainId] ?? 10;
 }
 
