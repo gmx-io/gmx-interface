@@ -66,7 +66,8 @@ export type SyntheticsPageType =
   | "dashboard"
   | "earn"
   | "buy"
-  | "home";
+  | "home"
+  | "gmxAccount";
 
 export type SyntheticsState = {
   pageType: SyntheticsPageType;

@@ -11,7 +11,6 @@ import {
   MULTI_CHAIN_TOKEN_MAPPING,
   isSettlementChain,
 } from "context/GmxAccountContext/config";
-import { DEV_FUNDING_HISTORY } from "context/GmxAccountContext/dev";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { TokenChainData } from "context/GmxAccountContext/types";
 import {
@@ -128,12 +127,6 @@ export function useAvailableToTradeAssetMultichain(): {
   }
 
   return { gmxAccountUsd };
-}
-
-export function useGmxAccountFundingHistory() {
-  const fundingHistory = useMemo(() => [...DEV_FUNDING_HISTORY].sort((a, b) => b.timestamp - a.timestamp), []);
-
-  return fundingHistory;
 }
 
 export function useMultichainTokens(): TokenChainData[] {

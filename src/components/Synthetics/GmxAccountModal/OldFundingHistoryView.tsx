@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import { useGmxAccountModalOpen, useGmxAccountSelectedTransactionHash } from "context/GmxAccountContext/hooks";
-import { FundingHistoryItem } from "context/GmxAccountContext/types";
+import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
+import { MultichainFundingHistoryItem } from "context/GmxAccountContext/types";
 import { formatBalanceAmount } from "lib/numbers";
 
 import { useGmxAccountFundingHistory } from "components/Synthetics/GmxAccountModal/hooks";
@@ -12,7 +12,7 @@ import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/util
 
 const FundingHistoryView = () => {
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
-  const [, setSelectedTransactionHash] = useGmxAccountSelectedTransactionHash();
+  const [, setSelectedTransactionHash] = useGmxAccountSelectedTransferGuid();
   const [searchQuery, setSearchQuery] = useState("");
 
   const fundingHistory = useGmxAccountFundingHistory();
@@ -22,7 +22,7 @@ const FundingHistoryView = () => {
     return matchesSearch;
   });
 
-  const handleTransactionClick = (transaction: FundingHistoryItem) => {
+  const handleTransactionClick = (transaction: MultichainFundingHistoryItem) => {
     setSelectedTransactionHash(transaction.txnId);
     setIsVisibleOrView("transactionDetails");
   };

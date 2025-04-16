@@ -16,8 +16,8 @@ import {
   selectGmxAccountSetWithdrawViewTokenAddress,
   selectGmxAccountWithdrawViewTokenInputValue,
   selectGmxAccountSetWithdrawViewTokenInputValue,
-  selectGmxAccountSelectedTransactionHash,
-  selectGmxAccountSetSelectedTransactionHash,
+  selectGmxAccountSelectedTransferGuid,
+  selectGmxAccountSetSelectedTransferGuid,
   selectGmxAccountSettlementChainId,
   selectGmxAccountSetSettlementChainId,
 } from "./selectors/pure";
@@ -86,9 +86,9 @@ export function useGmxAccountWithdrawViewTokenInputValue() {
 }
 // funding history
 
-export function useGmxAccountSelectedTransactionHash() {
+export function useGmxAccountSelectedTransferGuid() {
   return [
-    useGmxAccountSelector(selectGmxAccountSelectedTransactionHash),
-    useGmxAccountSelector(selectGmxAccountSetSelectedTransactionHash),
+    useGmxAccountSelector(selectGmxAccountSelectedTransferGuid),
+    useGmxAccountSelector(selectGmxAccountSetSelectedTransferGuid),
   ] as const;
 }

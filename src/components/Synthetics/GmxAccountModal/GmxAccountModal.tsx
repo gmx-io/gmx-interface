@@ -13,7 +13,7 @@ import { AvailableToTradeAssetsView } from "./AvailableToTradeAssetsView";
 import { DepositView } from "./DepositView";
 import { MainView } from "./MainView";
 import { SelectAssetToDepositView } from "./SelectAssetToDepositView";
-import { TransactionDetailsView } from "./TransactionDetailsView";
+import { TransferDetailsView } from "./TransferDetailsView";
 import { WithdrawView } from "./WithdrawView";
 
 const AvailableToTradeAssetsTitle = () => {
@@ -31,7 +31,7 @@ const AvailableToTradeAssetsTitle = () => {
   );
 };
 
-const TransactionDetailsTitle = () => {
+const TransferDetailsTitle = () => {
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   return (
     <div className="flex items-center gap-8">
@@ -41,7 +41,7 @@ const TransactionDetailsTitle = () => {
         role="button"
         onClick={() => setIsVisibleOrView("main")}
       />
-      <Trans>Transaction Details</Trans>
+      <Trans>Transfer Details</Trans>
     </div>
   );
 };
@@ -94,7 +94,7 @@ const WithdrawTitle = () => {
 const VIEW_TITLE: Record<GmxAccountModalView, React.ReactNode> = {
   main: <Trans>GMX Account</Trans>,
   availableToTradeAssets: <AvailableToTradeAssetsTitle />,
-  transactionDetails: <TransactionDetailsTitle />,
+  transferDetails: <TransferDetailsTitle />,
   deposit: <DepositTitle />,
   selectAssetToDeposit: <SelectAssetToDepositTitle />,
   withdraw: <WithdrawTitle />,
@@ -125,7 +125,7 @@ export const GmxAccountModal = memo(() => {
     >
       {view === "main" && account && <MainView account={account} />}
       {view === "availableToTradeAssets" && <AvailableToTradeAssetsView />}
-      {view === "transactionDetails" && <TransactionDetailsView />}
+      {view === "transferDetails" && <TransferDetailsView />}
       {view === "deposit" && <DepositView />}
       {view === "selectAssetToDeposit" && <SelectAssetToDepositView />}
       {view === "withdraw" && (
