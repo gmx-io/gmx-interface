@@ -9,6 +9,7 @@ import {
   isIncreaseOrderType,
   isMarketOrderType,
   isOrderForPosition,
+  isSwapOrder,
   isSwapOrderType,
 } from "sdk/utils/orders";
 
@@ -27,7 +28,17 @@ import {
 } from "../trade";
 import { DecreaseOrderParams } from "./createDecreaseOrderTxn";
 import { SecondaryCancelOrderParams, SecondaryUpdateOrderParams } from "./createIncreaseOrderTxn";
-import { OrderError, OrderInfo, OrderTxnType, OrderType, PositionOrderInfo, SwapOrderInfo } from "./types";
+import { TwapDecreaseOrderParams } from "./createTwapDecreaseOrderTxn";
+import {
+  OrderError,
+  OrderInfo,
+  OrderTxnType,
+  OrderType,
+  PositionOrderInfo,
+  SwapOrderInfo,
+  TwapPositionOrderInfo,
+  TwapSwapOrderInfo,
+} from "./types";
 import { getIsMaxLeverageExceeded } from "../trade/utils/validation";
 
 export function getSwapOrderTitle(p: {
@@ -120,7 +131,7 @@ export function getOrderErrors(p: {
 
   const errors: OrderError[] = [];
 
-  if (isSwapOrderType(order.orderType)) {
+  if (isSwapOrder(order)) {
     const swapPathLiquidity = getMaxSwapPathLiquidity({
       marketsInfoData,
       swapPath: order.swapPath,
@@ -333,7 +344,10 @@ function getTokenIndex(token: Token, referenceArray: string[]): number {
   );
 }
 
-export function sortPositionOrders(orders: PositionOrderInfo[], tokenSortOrder?: string[]): PositionOrderInfo[] {
+export function sortPositionOrders(
+  orders: (PositionOrderInfo | TwapPositionOrderInfo)[],
+  tokenSortOrder?: string[]
+): (PositionOrderInfo | TwapPositionOrderInfo)[] {
   return orders.sort((a, b) => {
     if (tokenSortOrder) {
       const indexA = getTokenIndex(a.marketInfo.indexToken, tokenSortOrder);
@@ -357,7 +371,10 @@ export function sortPositionOrders(orders: PositionOrderInfo[], tokenSortOrder?:
   });
 }
 
-export function sortSwapOrders(orders: SwapOrderInfo[], tokenSortOrder?: string[]): SwapOrderInfo[] {
+export function sortSwapOrders(
+  orders: (SwapOrderInfo | TwapSwapOrderInfo)[],
+  tokenSortOrder?: string[]
+): (SwapOrderInfo | TwapSwapOrderInfo)[] {
   return orders.sort((a, b) => {
     if (tokenSortOrder) {
       const indexA = getTokenIndex(a.targetCollateralToken, tokenSortOrder);
@@ -420,13 +437,13 @@ function getIsMaxLeverageError(
 export function getPendingOrderFromParams(
   chainId: number,
   txnType: OrderTxnType,
-  p: DecreaseOrderParams | SecondaryUpdateOrderParams | SecondaryCancelOrderParams
+  p: DecreaseOrderParams | SecondaryUpdateOrderParams | SecondaryCancelOrderParams | TwapDecreaseOrderParams
 ): PendingOrderData {
   const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
 
   const shouldApplySlippage = isMarketOrderType(p.orderType);
   let minOutputAmount = 0n;
-  if ("minOutputUsd" in p) {
+  if ("minOutputUsd" in p && "allowedSlippage" in p) {
     shouldApplySlippage ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd) : p.minOutputUsd; // eslint-disable-line
   }
   if ("minOutputAmount" in p) {
@@ -450,5 +467,6 @@ export function getPendingOrderFromParams(
     shouldUnwrapNativeToken: isNativeReceive,
     orderKey,
     externalSwapQuote: undefined,
+    isTwapOrder: false,
   };
 }

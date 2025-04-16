@@ -1,3 +1,4 @@
+import { MessageDescriptor } from "@lingui/core";
 import { Trans, msg, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
@@ -41,6 +42,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
+import { createTwapDecreaseOrderTxn } from "domain/synthetics/orders/createTwapDecreaseOrderTxn";
 import { formatLeverage, formatLiquidationPrice, getNameByOrderType } from "domain/synthetics/positions";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
@@ -87,6 +89,7 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import TwapRows from "../TradeBox/components/TwapRows";
 
 import "./PositionSeller.scss";
 
@@ -94,9 +97,10 @@ export type Props = {
   setPendingTxns: (txns: any) => void;
 };
 
-const ORDER_OPTION_LABELS = {
+const ORDER_OPTION_LABELS: Record<OrderOption, MessageDescriptor> = {
   [OrderOption.Market]: msg`Market`,
   [OrderOption.Trigger]: msg`TP/SL`,
+  [OrderOption.Twap]: msg`TWAP`,
 };
 
 export function PositionSeller(p: Props) {
@@ -147,6 +151,10 @@ export function PositionSeller(p: Props) {
     resetPositionSeller,
     setIsReceiveTokenChanged,
     setKeepLeverage,
+    duration,
+    numberOfParts,
+    setDuration,
+    setNumberOfParts,
   } = usePositionSeller();
 
   const [closeUsdInputValue, setCloseUsdInputValue] = useDebouncedInputValue(
@@ -163,7 +171,7 @@ export function PositionSeller(p: Props) {
   const triggerPrice = useSelector(selectPositionSellerTriggerPrice);
 
   const isTrigger = orderOption === OrderOption.Trigger;
-
+  const isTwap = orderOption === OrderOption.Twap;
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
   const maxCloseSize = position?.sizeInUsd || 0n;
 
@@ -337,7 +345,44 @@ export function PositionSeller(p: Props) {
 
     setIsSubmitting(true);
 
-    const txnPromise = createDecreaseOrderTxn(
+    let txnPromise;
+
+    if (orderOption === OrderOption.Twap) {
+      txnPromise = createTwapDecreaseOrderTxn(
+        chainId,
+        signer,
+        subaccount,
+        {
+          account,
+          marketAddress: position.marketAddress,
+          initialCollateralAddress: position.collateralTokenAddress,
+          initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
+          receiveTokenAddress: receiveToken.address,
+          swapPath,
+          sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+          sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
+          isLong: position.isLong,
+          minOutputUsd: 0n,
+          decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
+          orderType,
+          referralCode: userReferralInfo?.referralCodeForTxn,
+          executionFee: executionFee.feeTokenAmount,
+          executionGasLimit: executionFee.gasLimit,
+          indexToken: position.indexToken,
+          tokensData,
+          autoCancel: false,
+          duration,
+          numberOfParts,
+        },
+        {
+          setPendingOrder,
+          setPendingTxns,
+          setPendingPosition,
+        },
+        metricData.metricId
+      )
+    } else {
+      txnPromise = createDecreaseOrderTxn(
       chainId,
       signer,
       subaccount,
@@ -374,6 +419,9 @@ export function PositionSeller(p: Props) {
       blockTimestampData,
       metricData.metricId
     )
+  }
+
+    txnPromise
       .then(makeTxnSentMetricsHandler(metricData.metricId))
       .catch(makeTxnErrorMetricsHandler(metricData.metricId));
 
@@ -697,6 +745,21 @@ export function PositionSeller(p: Props) {
               )}
             </div>
 
+            <div className="pt-14">
+              {isTwap && (
+                <TwapRows
+                  duration={duration}
+                  numberOfParts={numberOfParts}
+                  setNumberOfParts={setNumberOfParts}
+                  setDuration={setDuration}
+                  isLong={position.isLong}
+                  sizeUsd={closeSizeUsd}
+                  marketInfo={position.marketInfo}
+                  type="decrease"
+                />
+              )}
+            </div>
+
             <div className="flex flex-col gap-14 pt-14">
               {isTrigger && maxAutoCancelOrdersWarning}
               <HighPriceImpactOrFeesWarningCard
@@ -707,14 +770,16 @@ export function PositionSeller(p: Props) {
                 swapProfitFee={fees?.swapProfitFee}
                 executionFeeUsd={executionFee?.feeUsd}
               />
-              <ToggleSwitch
-                textClassName="text-slate-100"
-                isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
-                setIsChecked={setKeepLeverage}
-                disabled={leverageCheckboxDisabledByCollateral || decreaseAmounts?.isFullClose}
-              >
-                {keepLeverageTextElem}
-              </ToggleSwitch>
+              {!isTwap && (
+                <ToggleSwitch
+                  textClassName="text-slate-100"
+                  isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
+                  setIsChecked={setKeepLeverage}
+                  disabled={leverageCheckboxDisabledByCollateral || decreaseAmounts?.isFullClose}
+                >
+                  {keepLeverageTextElem}
+                </ToggleSwitch>
+              )}
 
               <Button
                 className="w-full"
@@ -729,9 +794,13 @@ export function PositionSeller(p: Props) {
               </Button>
 
               <div className="h-1 bg-stroke-primary" />
-              {receiveTokenRow}
-              {liqPriceRow}
-              {pnlRow}
+              {!isTwap && (
+                <>
+                  {receiveTokenRow}
+                  {liqPriceRow}
+                  {pnlRow}
+                </>
+              )}
 
               <PositionSellerAdvancedRows
                 triggerPriceInputValue={triggerPriceInputValue}

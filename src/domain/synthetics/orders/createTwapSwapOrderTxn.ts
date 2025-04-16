@@ -1,8 +1,6 @@
-import { t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
 
 import { getContract } from "config/contracts";
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { PendingOrderData, SetPendingOrder } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
@@ -11,40 +9,39 @@ import { OrderMetricId } from "lib/metrics/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
-import { isMarketOrderType } from "sdk/utils/orders";
 
-import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
-import { TokensData } from "../tokens";
-import { applySlippageToMinOut } from "../trade";
 import { prepareOrderTxn } from "./prepareOrderTxn";
-import { simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
+import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
+import { TwapDuration } from "../trade/twap/types";
+import { createTwapUiFeeReceiver } from "../trade/twap/uiFeeReceiver";
+import { createTwapValidFromTimeGetter } from "../trade/twap/utils";
 
 const { ZeroAddress } = ethers;
 
-export type SwapOrderParams = {
+export type TwapSwapOrderParams = {
   account: string;
   fromTokenAddress: string;
   fromTokenAmount: bigint;
   toTokenAddress: string;
   swapPath: string[];
   referralCode?: string;
-  tokensData: TokensData;
-  triggerRatio: bigint;
-  minOutputAmount: bigint;
-  orderType: OrderType.MarketSwap | OrderType.LimitSwap;
   executionFee: bigint;
   executionGasLimit: bigint;
-  allowedSlippage: number;
   setPendingTxns: (txns: any) => void;
   setPendingOrder: SetPendingOrder;
-  skipSimulation: boolean;
   metricId: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
-  slippageInputId: string | undefined;
+  duration: TwapDuration;
+  numberOfParts: number;
 };
 
-export async function createSwapOrderTxn(chainId: number, signer: Signer, subaccount: Subaccount, p: SwapOrderParams) {
+export async function createTwapSwapOrderTxn(
+  chainId: number,
+  signer: Signer,
+  subaccount: Subaccount,
+  p: TwapSwapOrderParams
+) {
   const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const isNativePayment = p.fromTokenAddress === NATIVE_TOKEN_ADDRESS;
   const isNativeReceive = p.toTokenAddress === NATIVE_TOKEN_ADDRESS;
@@ -53,14 +50,10 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
 
   await validateSignerAddress(signer, p.account);
 
-  const { encodedPayload, totalWntAmount, minOutputAmount } = await getParams(router, signer, subaccount, chainId, p);
-  const { encodedPayload: simulationEncodedPayload, totalWntAmount: sumaltionTotalWntAmount } = await getParams(
-    exchangeRouter,
-    signer,
-    null,
-    chainId,
-    p
-  );
+  const encodedPayload = await getParams(router, signer, subaccount, chainId, p);
+
+  const wntSwapAmount = isNativePayment ? p.fromTokenAmount : 0n;
+  const totalWntAmount = wntSwapAmount + p.executionFee;
 
   const initialCollateralTokenAddress = convertTokenAddress(chainId, p.fromTokenAddress, "wrapped");
 
@@ -72,35 +65,18 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     swapPath: p.swapPath,
     externalSwapQuote: undefined,
     sizeDeltaUsd: 0n,
-    minOutputAmount,
+    minOutputAmount: 0n,
     isLong: false,
-    orderType: p.orderType,
+    orderType: OrderType.LimitSwap,
     shouldUnwrapNativeToken: isNativeReceive,
     referralCode: p.referralCode,
     txnType: "create",
-    isTwapOrder: false,
+    isTwapOrder: true,
   };
 
   if (subaccount) {
     p.setPendingOrder(swapOrder);
   }
-
-  const simulationPromise =
-    !p.skipSimulation && p.orderType !== OrderType.LimitSwap
-      ? simulateExecuteTxn(chainId, {
-          account: p.account,
-          primaryPriceOverrides: {},
-          createMulticallPayload: simulationEncodedPayload,
-          value: sumaltionTotalWntAmount,
-          tokensData: p.tokensData,
-          errorTitle: t`Order error.`,
-          metricId: p.metricId,
-          blockTimestampData: p.blockTimestampData,
-          additionalErrorParams: {
-            slippageInputId: p.slippageInputId,
-          },
-        })
-      : undefined;
 
   const { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce } = await prepareOrderTxn(
     chainId,
@@ -109,7 +85,7 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     [encodedPayload],
     totalWntAmount,
     subaccount?.customSigners,
-    simulationPromise,
+    undefined,
     p.metricId
   );
 
@@ -141,33 +117,106 @@ async function getParams(
   signer: Signer,
   subaccount: Subaccount,
   chainId: number,
-  p: SwapOrderParams
+  p: TwapSwapOrderParams
 ) {
-  const isNativePayment = p.fromTokenAddress === NATIVE_TOKEN_ADDRESS;
-  const isNativeReceive = p.toTokenAddress === NATIVE_TOKEN_ADDRESS;
-  const orderVaultAddress = getContract(chainId, "OrderVault");
-  const wntSwapAmount = isNativePayment ? p.fromTokenAmount : 0n;
-  const totalWntAmount = wntSwapAmount + p.executionFee;
-
-  const initialCollateralTokenAddress = convertTokenAddress(chainId, p.fromTokenAddress, "wrapped");
-
-  const shouldApplySlippage = isMarketOrderType(p.orderType);
-
-  const minOutputAmount = shouldApplySlippage
-    ? applySlippageToMinOut(p.allowedSlippage, p.minOutputAmount)
-    : p.minOutputAmount;
+  const validFromTimeGetter = createTwapValidFromTimeGetter(p.duration, p.numberOfParts);
+  const uiFeeReceiver = createTwapUiFeeReceiver();
+  const signerAddress = await signer.getAddress();
 
   const initialCollateralDeltaAmount = subaccount ? p.fromTokenAmount : 0n;
 
-  const createOrderParams = {
+  const payload = new Array(p.numberOfParts).fill(0).flatMap((_, i) => {
+    return createSingleSwapTwapOrderPayload({
+      account: p.account,
+      swapPath: p.swapPath,
+      triggerRatio: 0n,
+      minOutputAmount: 0n,
+      executionFee: p.executionFee / BigInt(p.numberOfParts),
+      uiFeeReceiver,
+      referralCode: p.referralCode,
+      initialCollateralDeltaAmount: initialCollateralDeltaAmount / BigInt(p.numberOfParts),
+      validFromTime: validFromTimeGetter(i),
+      fromTokenAddress: p.fromTokenAddress,
+      fromTokenAmount: p.fromTokenAmount / BigInt(p.numberOfParts),
+      toTokenAddress: p.toTokenAddress,
+      subaccount,
+      router,
+      chainId,
+      signerAddress,
+    });
+  });
+
+  return payload;
+}
+
+function createSingleSwapTwapOrderPayload(p: CreateSwapTwapOrderPayloadParams) {
+  const isNativePayment = p.fromTokenAddress === NATIVE_TOKEN_ADDRESS;
+  const orderVaultAddress = getContract(p.chainId, "OrderVault");
+  const wntSwapAmount = isNativePayment ? p.fromTokenAmount : 0n;
+  const totalWntAmount = wntSwapAmount + p.executionFee;
+
+  const createOrderParams = getCreateSwapTwapOrderPayload(p);
+
+  const multicall = [
+    { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
+
+    !isNativePayment && !p.subaccount
+      ? { method: "sendTokens", params: [p.fromTokenAddress, orderVaultAddress, p.fromTokenAmount] }
+      : undefined,
+
+    {
+      method: "createOrder",
+      params: p.subaccount ? [p.signerAddress, createOrderParams] : [createOrderParams],
+    },
+  ];
+
+  return multicall.filter(Boolean).map((call) => p.router.interface.encodeFunctionData(call!.method, call!.params));
+}
+
+type CreateSwapTwapOrderPayloadParams = {
+  account: string;
+  swapPath: string[];
+  triggerRatio: bigint;
+  minOutputAmount: bigint;
+  executionFee: bigint;
+  uiFeeReceiver: string;
+  referralCode: string | undefined;
+  initialCollateralDeltaAmount: bigint;
+  validFromTime: bigint;
+  fromTokenAddress: string;
+  fromTokenAmount: bigint;
+  toTokenAddress: string;
+  subaccount: Subaccount;
+  router: ethers.Contract;
+  chainId: number;
+  signerAddress: string;
+};
+
+const getCreateSwapTwapOrderPayload = ({
+  account,
+  swapPath,
+  triggerRatio,
+  minOutputAmount,
+  executionFee,
+  uiFeeReceiver,
+  referralCode,
+  initialCollateralDeltaAmount,
+  validFromTime,
+  fromTokenAddress,
+  chainId,
+  toTokenAddress,
+}: CreateSwapTwapOrderPayloadParams) => {
+  const initialCollateralTokenAddress = convertTokenAddress(chainId, fromTokenAddress, "wrapped");
+
+  return {
     addresses: {
-      receiver: p.account,
+      receiver: account,
       cancellationReceiver: ethers.ZeroAddress,
       initialCollateralToken: initialCollateralTokenAddress,
       callbackContract: ZeroAddress,
       market: ZeroAddress,
-      swapPath: p.swapPath,
-      uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
+      swapPath,
+      uiFeeReceiver,
     },
     numbers: {
       sizeDeltaUsd: 0n,
@@ -176,39 +225,18 @@ async function getParams(
        * We're passing trigger ratio in here to display actual ratio in table of positions
        * @see https://app.asana.com/0/1207525044994982/1209109731071143/f
        */
-      triggerPrice: p.triggerRatio,
+      triggerPrice: triggerRatio,
       acceptablePrice: 0n,
-      executionFee: p.executionFee,
+      executionFee,
       callbackGasLimit: 0n,
       minOutputAmount,
-      validFromTime: 0n,
+      validFromTime,
     },
     autoCancel: false,
-    orderType: p.orderType,
+    orderType: OrderType.LimitSwap,
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
     isLong: false,
-    shouldUnwrapNativeToken: isNativeReceive,
-    referralCode: p.referralCode || ethers.ZeroHash,
+    shouldUnwrapNativeToken: toTokenAddress === NATIVE_TOKEN_ADDRESS,
+    referralCode: referralCode || ethers.ZeroHash,
   };
-
-  const multicall = [
-    { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
-
-    !isNativePayment && !subaccount
-      ? { method: "sendTokens", params: [p.fromTokenAddress, orderVaultAddress, p.fromTokenAmount] }
-      : undefined,
-
-    {
-      method: "createOrder",
-      params: subaccount ? [await signer.getAddress(), createOrderParams] : [createOrderParams],
-    },
-  ];
-
-  return {
-    minOutputAmount,
-    totalWntAmount,
-    encodedPayload: multicall
-      .filter(Boolean)
-      .map((call) => router.interface.encodeFunctionData(call!.method, call!.params)),
-  };
-}
+};

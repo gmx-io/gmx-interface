@@ -21,8 +21,9 @@ import {
   isLimitSwapOrderType,
   isStopIncreaseOrderType,
   isStopLossOrderType,
+  isTwapOrder,
 } from "domain/synthetics/orders";
-import { PositionsInfoData, getNameByOrderType } from "domain/synthetics/positions";
+import { PositionsInfoData, getNameByOrder } from "domain/synthetics/positions";
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { TokensRatioAndSlippage } from "domain/tokens";
@@ -274,6 +275,10 @@ function MarkPrice({ order }: { order: OrderInfo }) {
     });
   }, [markPrice, priceDecimals, positionOrder.indexToken?.visualMultiplier]);
 
+  if (isTwapOrder(order)) {
+    return <>{markPriceFormatted}</>;
+  }
+
   if (isLimitSwapOrderType(order.orderType)) {
     const { markSwapRatioText } = getSwapRatioText(order);
 
@@ -310,6 +315,10 @@ function MarkPrice({ order }: { order: OrderInfo }) {
 }
 
 function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: boolean | undefined }) {
+  if (isTwapOrder(order)) {
+    return <Trans>N/A</Trans>;
+  }
+
   if (isLimitSwapOrderType(order.orderType)) {
     const swapOrder = order as SwapOrderInfo;
     const toAmount = swapOrder.minOutputAmount;
@@ -496,9 +505,11 @@ function OrderItemLarge({
       {!hideActions && (
         <TableTd>
           <div className="inline-flex items-center">
-            <button className="cursor-pointer p-6 text-slate-100 hover:text-white" onClick={setEditingOrderKey}>
-              <AiOutlineEdit title={t`Edit order`} fontSize={16} />
-            </button>
+            {!isTwapOrder(order) && (
+              <button className="cursor-pointer p-6 text-slate-100 hover:text-white" onClick={setEditingOrderKey}>
+                <AiOutlineEdit title={t`Edit order`} fontSize={16} />
+              </button>
+            )}
             {onCancelOrder && (
               <button
                 className="cursor-pointer p-6 text-slate-100 hover:text-white disabled:cursor-wait"
@@ -631,9 +642,11 @@ function OrderItemSmall({
         <div className="App-card-actions">
           <div className="App-card-divider"></div>
           <div className="remove-top-margin">
-            <Button variant="secondary" className="mr-15 mt-15" onClick={setEditingOrderKey}>
-              <Trans>Edit</Trans>
-            </Button>
+            {!isTwapOrder(order) && (
+              <Button variant="secondary" className="mr-15 mt-15" onClick={setEditingOrderKey}>
+                <Trans>Edit</Trans>
+              </Button>
+            )}
 
             {onCancelOrder && (
               <Button variant="secondary" className="mt-15" onClick={onCancelOrder}>
@@ -684,7 +697,7 @@ function getSwapRatioText(order: OrderInfo) {
 function OrderItemTypeLabel({ order }: { order: OrderInfo }) {
   const { errors, level } = useOrderErrors(order.key);
 
-  const handle = getNameByOrderType(order.orderType);
+  const handle = getNameByOrder(order);
 
   if (errors.length === 0) {
     return <>{handle}</>;

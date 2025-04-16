@@ -8,8 +8,22 @@ import InfoCircleOutlineIcon from "img/ic_info_circle_outline.svg?react";
 const UL_CLASS_NAME = "text-body-medium flex list-disc flex-col gap-2";
 const LI_CLASS_NAME = "p-0";
 
-export default function TradeBoxLongShortInfoIcon({ isLong, isMobile }: { isLong: boolean; isMobile: boolean }) {
-  const longMarketTooltipContent = (
+export default function TradeBoxLongShortInfoIcon({
+  isLong,
+  isMobile,
+  isTWAP,
+}: {
+  isLong: boolean;
+  isMobile: boolean;
+  isTWAP: boolean;
+}) {
+  const twapTooltipContent = isLong ? (
+    <Trans>Increase a long position in evenly distributed parts over a specified time. Read more.</Trans>
+  ) : (
+    <Trans>Increase a short position in evenly distributed parts over a specified time. Read more.</Trans>
+  );
+
+  const longTooltipContent = (
     <ul className={UL_CLASS_NAME}>
       <li className={LI_CLASS_NAME}>
         <Trans>Long Market: Increase a long position at the current price.</Trans>
@@ -38,7 +52,7 @@ export default function TradeBoxLongShortInfoIcon({ isLong, isMobile }: { isLong
     </ul>
   );
 
-  const shortMarketTooltipContent = (
+  const shortTooltipContent = (
     <ul className={UL_CLASS_NAME}>
       <li className={LI_CLASS_NAME}>
         <Trans>Short Market: Increase a short position at the current price.</Trans>
@@ -70,7 +84,7 @@ export default function TradeBoxLongShortInfoIcon({ isLong, isMobile }: { isLong
   return (
     <Tooltip
       position={isMobile ? "bottom-end" : "top-end"}
-      content={isLong ? longMarketTooltipContent : shortMarketTooltipContent}
+      content={isTWAP ? twapTooltipContent : isLong ? longTooltipContent : shortTooltipContent}
       tooltipClassName="p-10"
     >
       <InfoCircleOutlineIcon className="h-24 w-24 cursor-pointer text-slate-100 gmx-hover:text-white" />

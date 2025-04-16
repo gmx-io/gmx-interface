@@ -1,16 +1,19 @@
 import { useMemo } from "react";
 
+import { Token } from "domain/tokens";
 import { getByKey } from "lib/objects";
 import { getWrappedToken } from "sdk/configs/tokens";
-import { getOrderInfo } from "sdk/utils/orders";
+import { getOrderInfo, isPositionOrder, isSwapOrder, isTwapPositionOrder, isTwapSwapOrder } from "sdk/utils/orders";
 
 import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 
 import { MarketsInfoData } from "../markets";
 import { TokensData } from "../tokens";
-import { OrderType, OrdersInfoData } from "./types";
+import { Order, OrderType, OrdersInfoData } from "./types";
 import { useOrders } from "./useOrders";
 import { setOrderInfoTitle } from "./utils";
+import { decodeTwapUiFeeReceiver } from "../trade/twap/uiFeeReceiver";
+import { getTwapOrderKey } from "../trade/twap/utils";
 
 export type AggregatedOrdersDataResult = {
   ordersInfoData?: OrdersInfoData;
@@ -54,11 +57,12 @@ export function useOrdersInfoRequest(
     const ordersInfoData = Object.keys(ordersData).reduce((acc: OrdersInfoData, orderKey: string) => {
       const order = getByKey(ordersData, orderKey)!;
 
-      const orderInfo = getOrderInfo({
+      const orderInfo = createOrderInfo({
         marketsInfoData,
         tokensData,
         wrappedNativeToken: wrappedToken,
         order,
+        acc,
       });
 
       if (!orderInfo) {
@@ -73,7 +77,7 @@ export function useOrdersInfoRequest(
 
       setOrderInfoTitle(orderInfo, indexToken);
 
-      acc[orderKey] = orderInfo;
+      acc[orderInfo.key] = orderInfo;
 
       return acc;
     }, {} as OrdersInfoData);
@@ -85,3 +89,63 @@ export function useOrdersInfoRequest(
     };
   }, [account, count, marketsInfoData, ordersData, tokensData, wrappedToken]);
 }
+
+const createOrderInfo = ({
+  order,
+  marketsInfoData,
+  tokensData,
+  wrappedNativeToken,
+  acc,
+}: {
+  order: Order;
+  marketsInfoData: MarketsInfoData;
+  tokensData: TokensData;
+  wrappedNativeToken: Token;
+  acc: OrdersInfoData;
+}) => {
+  const { twapId } = decodeTwapUiFeeReceiver(order.uiFeeReceiver);
+
+  const orderInfo = getOrderInfo({
+    marketsInfoData,
+    tokensData,
+    wrappedNativeToken,
+    order,
+  });
+
+  if (twapId && orderInfo) {
+    const twapOrderKey = getTwapOrderKey({
+      twapId,
+      orderType: order.orderType,
+      pool: order.marketAddress,
+      collateralTokenSymbol: orderInfo.targetCollateralToken.symbol,
+      isLong: order.isLong,
+      swapPath: order.swapPath,
+      account: order.account,
+      initialCollateralTokenSymbol: orderInfo.targetCollateralToken.symbol,
+    });
+
+    let twapOrderInfo = getByKey(acc, twapOrderKey);
+
+    if (!twapOrderInfo) {
+      twapOrderInfo = {
+        ...orderInfo,
+        __groupType: "twap",
+        key: twapOrderKey,
+        orders: [],
+        twapId,
+      };
+    }
+
+    if (twapOrderInfo && isTwapSwapOrder(twapOrderInfo) && isSwapOrder(orderInfo)) {
+      twapOrderInfo.orders.push(orderInfo);
+    }
+
+    if (twapOrderInfo && isTwapPositionOrder(twapOrderInfo) && isPositionOrder(orderInfo)) {
+      twapOrderInfo.orders.push(orderInfo);
+    }
+
+    return twapOrderInfo;
+  }
+
+  return orderInfo;
+};

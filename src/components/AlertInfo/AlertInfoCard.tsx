@@ -21,7 +21,10 @@ export function AlertInfoCard({ children, type = "info", onClose, className }: P
 
   const handleClose = useCallback(() => {
     setClosed(true);
-  }, []);
+    if (onClose) {
+      onClose();
+    }
+  }, [onClose]);
 
   if (closed) {
     return null;
@@ -32,15 +35,18 @@ export function AlertInfoCard({ children, type = "info", onClose, className }: P
       className={cx(
         "text-body-small flex rounded-4 border-l-2 px-8 py-8",
         {
-          "border-slate-100 bg-slate-600 text-white": type === "info",
+          "border-blue-300 bg-cold-blue-900 text-white": type === "info",
           "border-yellow-500 bg-[#423727] text-yellow-500": type === "warning",
         },
         className
       )}
-      onClick={onClose}
     >
       <div className="pr-5 pt-2">
-        <Icon aria-label="Alert Icon" className="block size-12" fontSize={12} />
+        <Icon
+          aria-label="Alert Icon"
+          className={cx("block size-12 ", { "text-blue-300": type === "info" })}
+          fontSize={12}
+        />
       </div>
       <div className="grow">{children}</div>
 
