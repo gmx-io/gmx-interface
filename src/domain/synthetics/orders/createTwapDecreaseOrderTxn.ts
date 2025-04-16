@@ -1,4 +1,3 @@
-
 import { Signer, ethers } from "ethers";
 
 import { getContract } from "config/contracts";
@@ -155,7 +154,7 @@ export function createTwapDecreaseEncodedPayload({
   chainId: number;
 }) {
   const validFromTimeGetter = createTwapValidFromTimeGetter(p.duration, p.numberOfParts);
-  const uiFeeReceiver = createTwapUiFeeReceiver();
+  const uiFeeReceiver = createTwapUiFeeReceiver({ numberOfParts: p.numberOfParts });
 
   const acceptablePrice = !p.isLong ? ethers.MaxUint256 : 0n;
   const triggerPrice = acceptablePrice;

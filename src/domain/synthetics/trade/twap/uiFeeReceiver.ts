@@ -3,22 +3,27 @@ import { isAddress } from "viem";
 const VERSION = "01";
 const PREFIX = "0xff";
 
-export function createTwapUiFeeReceiver() {
+export function createTwapUiFeeReceiver({ numberOfParts }: { numberOfParts: number }) {
   const twapId = Math.floor(Math.random() * 256 * 256)
     .toString(16)
     .padStart(4, "0");
 
-  return PREFIX + "00".repeat(16) + twapId + VERSION;
+  const numberOfPartsInHex = numberOfParts.toString(16).padStart(2, "0");
+
+  return `${PREFIX}00${"00".repeat(14)}${numberOfPartsInHex}${twapId}${VERSION}`;
 }
 
-export function decodeTwapUiFeeReceiver(address: string): { twapId: string | undefined } {
-  const twapId = address.slice(34, 38);
-
+export function decodeTwapUiFeeReceiver(
+  address: string
+): { twapId: undefined; numberOfParts: undefined } | { twapId: string; numberOfParts: number } {
+  const twapId = address.slice(36, 40);
   if (!isValidTwapUiFeeReceiver(address) || twapId === "0000") {
-    return { twapId: undefined };
+    return { twapId: undefined, numberOfParts: undefined };
   }
 
-  return { twapId };
+  const numberOfParts = parseInt(address.slice(34, 36), 16);
+
+  return { twapId, numberOfParts };
 }
 
 export function isValidTwapUiFeeReceiver(address: string) {

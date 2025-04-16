@@ -120,7 +120,7 @@ async function getParams(
   p: TwapSwapOrderParams
 ) {
   const validFromTimeGetter = createTwapValidFromTimeGetter(p.duration, p.numberOfParts);
-  const uiFeeReceiver = createTwapUiFeeReceiver();
+  const uiFeeReceiver = createTwapUiFeeReceiver({ numberOfParts: p.numberOfParts });
   const signerAddress = await signer.getAddress();
 
   const initialCollateralDeltaAmount = subaccount ? p.fromTokenAmount : 0n;

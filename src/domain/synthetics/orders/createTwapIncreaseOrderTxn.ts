@@ -133,7 +133,7 @@ export async function createTwapIncreaseOrderTxn({
     undefined,
     metricId,
     additionalErrorContent
-  )
+  );
 
   await callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
     value: totalWntAmount,
@@ -187,7 +187,7 @@ async function createEncodedPayload({
 }) {
   const validFromTimeGetter = createTwapValidFromTimeGetter(p.duration, p.numberOfParts);
 
-  const uiFeeReceiver = createTwapUiFeeReceiver();
+  const uiFeeReceiver = createTwapUiFeeReceiver({ numberOfParts: p.numberOfParts });
 
   const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : 0n;
   const totalWntAmount = wntCollateralAmount + p.executionFee;

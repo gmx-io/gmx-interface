@@ -91,12 +91,14 @@ export type TwapSwapOrderInfo = Omit<SwapOrderInfo, "__groupType"> & {
   __groupType: "twap";
   orders: SwapOrderInfo[];
   twapId: string;
+  numberOfParts: number;
 };
 
 export type TwapPositionOrderInfo = Omit<PositionOrderInfo, "__groupType"> & {
   __groupType: "twap";
   orders: PositionOrderInfo[];
   twapId: string;
+  numberOfParts: number;
 };
 
 export type OrderInfo = SwapOrderInfo | PositionOrderInfo | TwapSwapOrderInfo | TwapPositionOrderInfo;

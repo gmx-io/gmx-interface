@@ -9,7 +9,7 @@ import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarket
 
 import { MarketsInfoData } from "../markets";
 import { TokensData } from "../tokens";
-import { Order, OrderType, OrdersInfoData } from "./types";
+import { Order, OrderType, OrdersInfoData, TwapPositionOrderInfo, TwapSwapOrderInfo } from "./types";
 import { useOrders } from "./useOrders";
 import { setOrderInfoTitle } from "./utils";
 import { decodeTwapUiFeeReceiver } from "../trade/twap/uiFeeReceiver";
@@ -103,7 +103,7 @@ const createOrderInfo = ({
   wrappedNativeToken: Token;
   acc: OrdersInfoData;
 }) => {
-  const { twapId } = decodeTwapUiFeeReceiver(order.uiFeeReceiver);
+  const { twapId, numberOfParts } = decodeTwapUiFeeReceiver(order.uiFeeReceiver);
 
   const orderInfo = getOrderInfo({
     marketsInfoData,
@@ -127,13 +127,19 @@ const createOrderInfo = ({
     let twapOrderInfo = getByKey(acc, twapOrderKey);
 
     if (!twapOrderInfo) {
-      twapOrderInfo = {
+      const twap: TwapSwapOrderInfo | TwapPositionOrderInfo = {
         ...orderInfo,
         __groupType: "twap",
         key: twapOrderKey,
         orders: [],
         twapId,
+        numberOfParts,
+        initialCollateralDeltaAmount: orderInfo.initialCollateralDeltaAmount * BigInt(numberOfParts),
+        sizeDeltaUsd: orderInfo.sizeDeltaUsd * BigInt(numberOfParts),
+        executionFee: orderInfo.executionFee * BigInt(numberOfParts),
       };
+
+      twapOrderInfo = twap;
     }
 
     if (twapOrderInfo && isTwapSwapOrder(twapOrderInfo) && isSwapOrder(orderInfo)) {
