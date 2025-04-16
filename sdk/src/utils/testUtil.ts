@@ -1,6 +1,7 @@
 import { createTestClient, http, publicActions, walletActions } from "viem";
 
 import { ARBITRUM, getChain } from "configs/chains";
+import { GmxSdkConfig } from "types/sdk";
 
 import { GmxSdk } from "../index";
 
@@ -12,7 +13,7 @@ const client = createTestClient({
   .extend(publicActions)
   .extend(walletActions);
 
-export const arbitrumSdkConfig = {
+export const arbitrumSdkConfig: GmxSdkConfig = {
   chainId: ARBITRUM,
   account: "0x9f7198eb1b9Ccc0Eb7A07eD228d8FbC12963ea33",
   oracleUrl: "https://arbitrum-api.gmxinfra.io",

@@ -157,7 +157,7 @@ export class Positions extends Module {
     const positions = await this.sdk.executeMulticall(request).then((res) => {
       const positions = res.data.reader.positions.returnValues;
 
-      return positions.reduce((positionsMap: PositionsData, positionInfo) => {
+      return positions.reduce((positionsMap: PositionsData, positionInfo: any) => {
         const { position, fees, basePnlUsd } = positionInfo;
         const { addresses, numbers, flags, data } = position;
         const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;

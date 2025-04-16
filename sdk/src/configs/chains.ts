@@ -19,14 +19,14 @@ export const HIGH_EXECUTION_FEES_MAP: Record<number, number> = {
 // added to maxPriorityFeePerGas
 // applied to EIP-1559 transactions only
 // is not applied to execution fee calculation
-export const MAX_FEE_PER_GAS_MAP = {
+export const MAX_FEE_PER_GAS_MAP: Record<number, bigint> = {
   [AVALANCHE]: 200000000000n, // 200 gwei
 };
 
 // added to maxPriorityFeePerGas
 // applied to EIP-1559 transactions only
 // is also applied to the execution fee calculation
-export const GAS_PRICE_PREMIUM_MAP = {
+export const GAS_PRICE_PREMIUM_MAP: Record<number, bigint> = {
   [ARBITRUM]: 0n,
   [AVALANCHE]: 6000000000n, // 6 gwei
 };
@@ -63,7 +63,7 @@ export const EXCESSIVE_EXECUTION_FEES_MAP: Record<number, number> = {
 //
 // this buffer could also cause issues on a blockchain that uses passed gas price
 // especially if execution fee buffer and lower than gas price buffer defined bellow
-export const GAS_PRICE_BUFFER_MAP = {
+export const GAS_PRICE_BUFFER_MAP: Record<number, bigint> = {
   [ARBITRUM]: 2000n, // 20%
 };
 

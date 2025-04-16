@@ -2,26 +2,50 @@
   "name": "@gmx-io/sdk",
   "version": "0.2.0",
   "type": "module",
-  "main": "build/src/index.js",
+  "main": "./build/cjs/index.js",
+  "module": "./build/esm/index.js",
+  "types": "./build/types/index.d.ts",
   "exports": {
     ".": {
-      "import": "./build/src/index.js",
-      "require": "./build/src/index.js"
+      "import": "./build/esm/index.js",
+      "require": "./build/cjs/index.js",
+      "types": "./build/types/index.d.ts"
     },
-    "./abis/*": "./build/abis/*",
-    "./prebuilt/*": "./build/prebuilt/*",
-    "./utils/*": "./build/src/utils/*",
-    "./types/*": "./build/src/types/*",
-    "./configs/*": "./build/src/configs/*"
+    "./abis/*": {
+      "import": "./build/esm/abis/*",
+      "require": "./build/cjs/abis/*",
+      "types": "./build/types/abis/*"
+    },
+    "./prebuilt/*": {
+      "import": "./build/esm/prebuilt/*",
+      "require": "./build/cjs/prebuilt/*",
+      "types": "./build/types/prebuilt/*"
+    },
+    "./utils/*": {
+      "import": "./build/esm/utils/*",
+      "require": "./build/cjs/utils/*",
+      "types": "./build/types/utils/*"
+    },
+    "./types/*": {
+      "import": "./build/esm/types/*",
+      "require": "./build/cjs/types/*",
+      "types": "./build/types/types/*"
+    },
+    "./configs/*": {
+      "import": "./build/esm/configs/*",
+      "require": "./build/cjs/configs/*",
+      "types": "./build/types/configs/*"
+    }
   },
   "scripts": {
     "prebuild": "yarn tsx scripts/prebuild",
     "prepare": "ts-patch install -s",
-    "copy:jsons": "cp -r src/abis build/src && cp -r src/prebuilt build/src",
+    "copy:jsons": "cp -r src/abis build/esm && cp -r src/prebuilt build/esm && cp -r src/abis build/cjs && cp -r src/prebuilt build/cjs",
     "test": "vitest",
     "test:ci": "vitest run",
     "tscheck": "tsc -p tsconfig.json --noEmit",
-    "build": "rm -rf build && tsc -p tsconfig.json && yarn copy:jsons"
+    "compile": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json",
+    "build": "rm -rf build && yarn compile && yarn copy:jsons"
   },
   "publishConfig": {
     "access": "public"

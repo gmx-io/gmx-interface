@@ -1589,7 +1589,7 @@ export function convertTokenAddress(chainId: number, address: string, convertTo?
   return address;
 }
 
-export function getNormalizedTokenSymbol(tokenSymbol) {
+export function getNormalizedTokenSymbol(tokenSymbol: string) {
   if (["WBTC", "WETH", "WAVAX"].includes(tokenSymbol)) {
     return tokenSymbol.substr(1);
   } else if (tokenSymbol.includes(".")) {
@@ -1664,8 +1664,11 @@ export function getCategoryTokenAddresses(chainId: number, category: TokenCatego
 }
 
 export const createTokensMap = (tokens: Token[]) => {
-  return tokens.reduce((acc, token) => {
-    acc[token.address] = token;
-    return acc;
-  }, {});
+  return tokens.reduce(
+    (acc, token) => {
+      acc[token.address] = token;
+      return acc;
+    },
+    {} as Record<string, Token>
+  );
 };
