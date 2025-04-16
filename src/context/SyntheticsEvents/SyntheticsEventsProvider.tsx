@@ -1,7 +1,11 @@
+import { TaskState } from "@gelatonetwork/relay-sdk";
 import { t } from "@lingui/macro";
+import { I } from "@lingui/react/dist/shared/react.80f80298";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { useTokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import {
   subscribeToApprovalEvents,
@@ -19,7 +23,6 @@ import {
   isMarketOrderType,
   isSwapOrderType,
   OrderTxnType,
-  UpdateOrderParams,
 } from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
@@ -45,6 +48,7 @@ import { sendUserAnalyticsOrderResultEvent, userAnalytics } from "lib/userAnalyt
 import { TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { gelatoRelay } from "sdk/utils/gelatoRelay";
 
 import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
 import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
@@ -60,6 +64,7 @@ import {
   OrderCreatedEventData,
   OrderStatuses,
   PendingDepositData,
+  PendingExpressTxnParams,
   PendingFundingFeeSettlementData,
   PendingOrderData,
   PendingOrdersUpdates,
@@ -89,6 +94,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { wsProvider } = useWebsocketProvider();
   const { hasV2LostFocus, hasPageLostFocus } = useHasLostFocus();
 
+  const { resetTokenPermits } = useTokenPermitsContext();
+  const { refreshSubaccountData, resetSubaccountApproval } = useSubaccountContext();
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
@@ -125,6 +132,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [pendingPositionsUpdates, setPendingPositionsUpdates] = useState<PendingPositionsUpdates>({});
   const [positionIncreaseEvents, setPositionIncreaseEvents] = useState<PositionIncreaseEvent[]>([]);
   const [positionDecreaseEvents, setPositionDecreaseEvents] = useState<PositionDecreaseEvent[]>([]);
+
+  const [pendingExpressTxnParams, setPendingExpressTxnParams] = useState<{ [taskId: string]: PendingExpressTxnParams }>(
+    {}
+  );
 
   const eventLogHandlers = useRef({});
 
@@ -892,6 +903,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       pendingPositionsUpdates,
       positionIncreaseEvents,
       positionDecreaseEvents,
+      pendingExpressTxns: pendingExpressTxnParams,
+      setPendingExpressTxn: (params: PendingExpressTxnParams) => {
+        setPendingExpressTxnParams((old) => setByKey(old, params.taskId!, params));
+      },
       setPendingOrder: (data: PendingOrderData | PendingOrderData[]) => {
         const toastId = Date.now();
 
@@ -918,10 +933,14 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
         setPendingOrdersUpdates((old) => ({ ...old, ...objData }));
       },
-      setPendingOrderUpdate: (data: UpdateOrderParams, remove?: "remove") => {
-        setPendingOrdersUpdates((old) =>
-          remove ? deleteByKey(old, data.orderKey) : setByKey(old, data.orderKey, "update")
-        );
+      setPendingOrderUpdate: (data: PendingOrderData, remove?: "remove") => {
+        setPendingOrdersUpdates((old) => {
+          if (!data.orderKey) {
+            return old;
+          }
+
+          return remove ? deleteByKey(old, data.orderKey) : setByKey(old, data.orderKey, "update");
+        });
       },
       setPendingFundingFeeSettlement: (data: PendingFundingFeeSettlementData) => {
         const toastId = Date.now();
@@ -1017,11 +1036,96 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     pendingPositionsUpdates,
     positionIncreaseEvents,
     positionDecreaseEvents,
+    pendingExpressTxnParams,
     marketsInfoData,
     tokensData,
     setPendingTxns,
     glvAndGmMarketsData,
   ]);
+
+  useEffect(
+    function subscribeGelatoRelayEvents() {
+      async function handleTaskStatusUpdate(taskStatus) {
+        switch (taskStatus.taskState) {
+          case TaskState.ExecSuccess:
+            {
+              const pendingExpressParams = getByKey(pendingExpressTxnParams, taskStatus.taskId);
+
+              if (pendingExpressParams?.shouldResetSubaccountApproval) {
+                resetSubaccountApproval();
+              }
+
+              if (pendingExpressParams?.shouldResetTokenPermits) {
+                resetTokenPermits();
+              }
+
+              setByKey(pendingExpressTxnParams, taskStatus.taskId, undefined);
+
+              refreshSubaccountData();
+            }
+            break;
+          case TaskState.ExecReverted:
+          case TaskState.Cancelled: {
+            const pendingExpressParams = getByKey(pendingExpressTxnParams, taskStatus.taskId);
+            pendingExpressParams?.pendingOrdersKeys?.forEach((key) => {
+              setOrderStatuses((old) => {
+                if (old[key]) {
+                  return updateByKey(old, key, {
+                    gelatoTaskId: taskStatus.taskId,
+                    isGelatoTaskFailed: true,
+                    isViewed: false,
+                  });
+                } else {
+                  return setByKey(old, key, {
+                    key,
+                    createdAt: Date.now(),
+                    gelatoTaskId: taskStatus.taskId,
+                    isGelatoTaskFailed: true,
+                    isViewed: false,
+                  });
+                }
+              });
+            });
+
+            pendingExpressParams?.pendingPositionsKeys?.forEach((key) => {
+              setByKey(pendingPositionsUpdates, key, undefined);
+            });
+
+            setByKey(pendingExpressTxnParams, taskStatus.taskId, undefined);
+
+            break;
+          }
+          default:
+            break;
+        }
+
+        const debugRes = await fetch(
+          `https://api.gelato.digital/tasks/status/${taskStatus.taskId}/debug?tenderlyUsername=divhead&tenderlyProjectName=project`,
+          {
+            method: "GET",
+          }
+        );
+
+        const debugData = await debugRes.json();
+        // TEMP DEBUG
+        // eslint-disable-next-line no-console
+        console.log("gelatoDebugData", debugData);
+      }
+
+      gelatoRelay.onTaskStatusUpdate(handleTaskStatusUpdate);
+
+      return () => {
+        gelatoRelay.offTaskStatusUpdate(handleTaskStatusUpdate);
+      };
+    },
+    [
+      pendingExpressTxnParams,
+      pendingPositionsUpdates,
+      refreshSubaccountData,
+      resetSubaccountApproval,
+      resetTokenPermits,
+    ]
+  );
 
   return <SyntheticsEventsContext.Provider value={contextState}>{children}</SyntheticsEventsContext.Provider>;
 }

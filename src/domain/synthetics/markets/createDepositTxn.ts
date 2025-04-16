@@ -5,11 +5,12 @@ import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { SetPendingDeposit } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
-import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { OrderMetricId } from "lib/metrics/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
+
+import { validateSignerAddress } from "components/Errors/errorToasts";
 
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
@@ -82,6 +83,7 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Creat
 
     {
       method: "createDeposit",
+      // TODO update to conform to arbitrum sepolia abi
       params: [
         {
           receiver: p.account,
@@ -97,6 +99,7 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Creat
           callbackGasLimit: 0n,
           uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
         },
+        // satisfies DepositUtils.CreateDepositParamsStruct,
       ],
     },
   ];
@@ -125,7 +128,6 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Creat
     "multicall",
     [encodedPayload],
     wntAmount,
-    undefined,
     simulationPromise,
     p.metricId
   );

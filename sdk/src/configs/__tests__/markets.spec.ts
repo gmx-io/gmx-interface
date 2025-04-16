@@ -1,7 +1,7 @@
 import { withRetry } from "viem";
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 
-import { SUPPORTED_CHAIN_IDS } from "configs/chains";
+import { SUPPORTED_CHAIN_IDS_DEV } from "configs/chains";
 import { MARKETS } from "configs/markets";
 import { getOracleKeeperUrl } from "configs/oracleKeeper";
 
@@ -24,7 +24,7 @@ const getKeeperMarkets = async (chainId: number): Promise<{ markets: KeeperMarke
 };
 
 describe("markets config", () => {
-  SUPPORTED_CHAIN_IDS.forEach(async (chainId) => {
+  SUPPORTED_CHAIN_IDS_DEV.forEach(async (chainId) => {
     it(`markets should be consistent with keeper for ${chainId}`, async () => {
       const keeperMarkets = await withRetry(() => getKeeperMarkets(chainId), {
         retryCount: 2,

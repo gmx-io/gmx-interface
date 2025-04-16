@@ -323,6 +323,11 @@ export const selectPositionSellerAvailableReceiveTokens = createSelector((q) => 
   let wasNativeTokenInserted = false;
 
   const reachableAddresses = findAllReachableTokens(chainId, position.collateralTokenAddress);
+
+  if (!reachableAddresses?.length) {
+    return EMPTY_ARRAY;
+  }
+
   const reachableTokens = reachableAddresses
     .flatMap((address) => {
       const token = getByKey(tokensData, address)!;

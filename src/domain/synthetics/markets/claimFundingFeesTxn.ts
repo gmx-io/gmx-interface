@@ -3,8 +3,9 @@ import { Signer, ethers } from "ethers";
 
 import { getContract } from "config/contracts";
 import { callContract } from "lib/contracts";
-import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { abis } from "sdk/abis";
+
+import { validateSignerAddress } from "components/Errors/errorToasts";
 
 type Params = {
   account: string;

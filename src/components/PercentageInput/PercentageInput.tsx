@@ -29,6 +29,7 @@ type Props = {
   highValueCheckStrategy?: "gte" | "gt";
   value?: number;
   tooltipPosition?: TooltipPosition;
+  inputId?: string;
 };
 
 const DEFAULT_SUGGESTIONS = [0.3, 0.5, 1, 1.5];
@@ -46,6 +47,7 @@ export default function PercentageInput({
   negativeSign,
   highValueCheckStrategy: checkStrategy = "gte",
   tooltipPosition,
+  inputId,
 }: Props) {
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState(() => (value === undefined ? "" : getValueText(value)));
@@ -119,7 +121,7 @@ export default function PercentageInput({
     }
   }, [inputValue, highValue, checkStrategy, lowValueWarningText, lowValue, highValueWarningText]);
 
-  const id = useMemo(() => Math.random().toString(36), []);
+  const id = useMemo(() => inputId ?? Math.random().toString(36), [inputId]);
 
   const shouldShowPanel = isPanelVisible && Boolean(suggestions.length);
 
@@ -155,6 +157,7 @@ export default function PercentageInput({
             autoComplete="off"
             onChange={handleChange}
           />
+
           <label htmlFor={id}>
             <span>%</span>
           </label>

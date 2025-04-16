@@ -169,7 +169,6 @@ export function HistoricalLists({ chainId, account }: Props) {
         <OrderList
           selectedOrdersKeys={undefined}
           setSelectedOrderKeys={noop}
-          setPendingTxns={noop}
           selectedPositionOrderKey={undefined}
           setSelectedPositionOrderKey={noop}
           hideActions

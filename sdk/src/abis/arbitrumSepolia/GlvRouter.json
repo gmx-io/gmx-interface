@@ -1,0 +1,746 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "contract Router",
+          "name": "_router",
+          "type": "address"
+        },
+        {
+          "internalType": "contract RoleStore",
+          "name": "_roleStore",
+          "type": "address"
+        },
+        {
+          "internalType": "contract DataStore",
+          "name": "_dataStore",
+          "type": "address"
+        },
+        {
+          "internalType": "contract EventEmitter",
+          "name": "_eventEmitter",
+          "type": "address"
+        },
+        {
+          "internalType": "contract IGlvHandler",
+          "name": "_glvHandler",
+          "type": "address"
+        },
+        {
+          "internalType": "contract IExternalHandler",
+          "name": "_externalHandler",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "EmptyGlvDeposit",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "EmptyGlvWithdrawal",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "EmptyHoldingAddress",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "EmptyReceiver",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "EmptyTokenTranferGasLimit",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "msgSender",
+          "type": "address"
+        }
+      ],
+      "name": "InvalidNativeTokenSender",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "TokenTransferError",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "msgSender",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "role",
+          "type": "string"
+        }
+      ],
+      "name": "Unauthorized",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "reason",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes",
+          "name": "returndata",
+          "type": "bytes"
+        }
+      ],
+      "name": "TokenTransferReverted",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "key",
+          "type": "bytes32"
+        }
+      ],
+      "name": "cancelGlvDeposit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "key",
+          "type": "bytes32"
+        }
+      ],
+      "name": "cancelGlvWithdrawal",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "glv",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "market",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "receiver",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "callbackContract",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "uiFeeReceiver",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "initialLongToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "initialShortToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address[]",
+                  "name": "longTokenSwapPath",
+                  "type": "address[]"
+                },
+                {
+                  "internalType": "address[]",
+                  "name": "shortTokenSwapPath",
+                  "type": "address[]"
+                }
+              ],
+              "internalType": "struct GlvDepositUtils.CreateGlvDepositParamsAddresses",
+              "name": "addresses",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minGlvTokens",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "executionFee",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "callbackGasLimit",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "shouldUnwrapNativeToken",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "isMarketTokenDeposit",
+              "type": "bool"
+            },
+            {
+              "internalType": "bytes32[]",
+              "name": "dataList",
+              "type": "bytes32[]"
+            }
+          ],
+          "internalType": "struct GlvDepositUtils.CreateGlvDepositParams",
+          "name": "params",
+          "type": "tuple"
+        }
+      ],
+      "name": "createGlvDeposit",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "receiver",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "callbackContract",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "uiFeeReceiver",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "market",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "glv",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address[]",
+                  "name": "longTokenSwapPath",
+                  "type": "address[]"
+                },
+                {
+                  "internalType": "address[]",
+                  "name": "shortTokenSwapPath",
+                  "type": "address[]"
+                }
+              ],
+              "internalType": "struct GlvWithdrawalUtils.CreateGlvWithdrawalParamsAddresses",
+              "name": "addresses",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minLongTokenAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minShortTokenAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "shouldUnwrapNativeToken",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "executionFee",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "callbackGasLimit",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32[]",
+              "name": "dataList",
+              "type": "bytes32[]"
+            }
+          ],
+          "internalType": "struct GlvWithdrawalUtils.CreateGlvWithdrawalParams",
+          "name": "params",
+          "type": "tuple"
+        }
+      ],
+      "name": "createGlvWithdrawal",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "dataStore",
+      "outputs": [
+        {
+          "internalType": "contract DataStore",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "eventEmitter",
+      "outputs": [
+        {
+          "internalType": "contract EventEmitter",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "externalHandler",
+      "outputs": [
+        {
+          "internalType": "contract IExternalHandler",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "glvHandler",
+      "outputs": [
+        {
+          "internalType": "contract IGlvHandler",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "externalCallTargets",
+          "type": "address[]"
+        },
+        {
+          "internalType": "bytes[]",
+          "name": "externalCallDataList",
+          "type": "bytes[]"
+        },
+        {
+          "internalType": "address[]",
+          "name": "refundTokens",
+          "type": "address[]"
+        },
+        {
+          "internalType": "address[]",
+          "name": "refundReceivers",
+          "type": "address[]"
+        }
+      ],
+      "name": "makeExternalCalls",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes[]",
+          "name": "data",
+          "type": "bytes[]"
+        }
+      ],
+      "name": "multicall",
+      "outputs": [
+        {
+          "internalType": "bytes[]",
+          "name": "results",
+          "type": "bytes[]"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "roleStore",
+      "outputs": [
+        {
+          "internalType": "contract RoleStore",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "router",
+      "outputs": [
+        {
+          "internalType": "contract Router",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "sendNativeToken",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "sendTokens",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "sendWnt",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "key",
+          "type": "bytes32"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address[]",
+              "name": "primaryTokens",
+              "type": "address[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "min",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "max",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct Price.Props[]",
+              "name": "primaryPrices",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxTimestamp",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct OracleUtils.SimulatePricesParams",
+          "name": "simulatedOracleParams",
+          "type": "tuple"
+        }
+      ],
+      "name": "simulateExecuteGlvDeposit",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "key",
+          "type": "bytes32"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address[]",
+              "name": "primaryTokens",
+              "type": "address[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "min",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "max",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct Price.Props[]",
+              "name": "primaryPrices",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxTimestamp",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct OracleUtils.SimulatePricesParams",
+          "name": "simulatedOracleParams",
+          "type": "tuple"
+        }
+      ],
+      "name": "simulateExecuteGlvWithdrawal",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address[]",
+              "name": "primaryTokens",
+              "type": "address[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "min",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "max",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct Price.Props[]",
+              "name": "primaryPrices",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxTimestamp",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct OracleUtils.SimulatePricesParams",
+          "name": "simulatedOracleParams",
+          "type": "tuple"
+        }
+      ],
+      "name": "simulateExecuteLatestGlvDeposit",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address[]",
+              "name": "primaryTokens",
+              "type": "address[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "min",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "max",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct Price.Props[]",
+              "name": "primaryPrices",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxTimestamp",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct OracleUtils.SimulatePricesParams",
+          "name": "simulatedOracleParams",
+          "type": "tuple"
+        }
+      ],
+      "name": "simulateExecuteLatestGlvWithdrawal",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive"
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import { Context, createContext, useContext, useContextSelector } from "use-cont
 
 import { getKeepLeverageKey } from "config/localStorage";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
 import { useIsLargeAccountTracker } from "domain/stats/isLargeAccount";
 import {
@@ -15,9 +16,13 @@ import {
 } from "domain/synthetics/accountStats";
 import { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
+import { DisabledFeatures, useDisabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
+import { RelayerFeeState } from "domain/synthetics/gassless/types";
+import { SubaccountState } from "domain/synthetics/gassless/useInitSubaccountState";
+import { TokenPermitsState, useInitTokenPermitsState } from "domain/synthetics/gassless/useInitTokenPermitsState";
 import {
   MarketsInfoResult,
   MarketsResult,
@@ -61,12 +66,14 @@ export type SyntheticsPageType =
   | "dashboard"
   | "earn"
   | "buy"
-  | "home";
+  | "home"
+  | "gmxAccount";
 
 export type SyntheticsState = {
   pageType: SyntheticsPageType;
   globals: {
     chainId: number;
+    walletChainId: number | undefined;
     markets: MarketsResult;
     marketsInfo: MarketsInfoResult;
     positionsInfo: PositionsInfoResult;
@@ -105,12 +112,17 @@ export type SyntheticsState = {
   };
   leaderboard: LeaderboardState;
   settings: SettingsContextType;
+  subaccountState: SubaccountState;
   tradebox: TradeboxState;
   externalSwap: ExternalSwapState;
+  tokenPermitsState: TokenPermitsState;
+  relayerFeeState: RelayerFeeState | undefined;
+  setRelayerFeeState: (state: RelayerFeeState | undefined) => void;
   orderEditor: OrderEditorState;
   positionSeller: PositionSellerState;
   positionEditor: PositionEditorState;
   confirmationBox: ConfirmationBoxState;
+  disabledFeatures: DisabledFeatures | undefined;
 };
 
 const StateCtx = createContext<SyntheticsState | null>(null);
@@ -130,7 +142,7 @@ export function SyntheticsStateContextProvider({
 }) {
   const { chainId: selectedChainId } = useChainId();
 
-  const { account: walletAccount, signer } = useWallet();
+  const { account: walletAccount, signer, chainId: walletChainId } = useWallet();
   const { account: paramsAccount } = useParams<{ account?: string }>();
 
   let checkSummedAccount: string | undefined;
@@ -188,6 +200,8 @@ export function SyntheticsStateContextProvider({
   const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace>();
 
   const settings = useSettings();
+  const subaccountState = useSubaccountContext();
+  const { disabledFeatures } = useDisabledFeaturesRequest(chainId);
 
   const {
     isLoading,
@@ -265,12 +279,16 @@ export function SyntheticsStateContextProvider({
   });
 
   const externalSwapState = useInitExternalSwapState();
+  const tokenPermitsState = useInitTokenPermitsState();
+
+  const [relayerFeeState, setRelayerFeeState] = useState<RelayerFeeState | undefined>();
 
   const state = useMemo(() => {
     const s: SyntheticsState = {
       pageType,
       globals: {
         chainId,
+        walletChainId,
         account,
         markets,
         marketsInfo,
@@ -308,18 +326,24 @@ export function SyntheticsStateContextProvider({
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
       settings,
+      subaccountState,
       tradebox: tradeboxState,
       externalSwap: externalSwapState,
+      relayerFeeState,
+      setRelayerFeeState,
+      tokenPermitsState,
       orderEditor,
       positionSeller: positionSellerState,
       positionEditor: positionEditorState,
       confirmationBox: confirmationBoxState,
+      disabledFeatures,
     };
 
     return s;
   }, [
     pageType,
     chainId,
+    walletChainId,
     account,
     markets,
     marketsInfo,
@@ -344,12 +368,16 @@ export function SyntheticsStateContextProvider({
     isLargeAccount,
     isFirstOrder,
     blockTimestampData,
+    disabledFeatures,
     accruedPositionPriceImpactFees,
     claimablePositionPriceImpactFees,
     leaderboard,
     settings,
+    subaccountState,
     tradeboxState,
     externalSwapState,
+    relayerFeeState,
+    tokenPermitsState,
     orderEditor,
     positionSellerState,
     positionEditorState,

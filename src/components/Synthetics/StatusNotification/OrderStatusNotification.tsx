@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { getExplorerUrl } from "config/chains";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
-import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { OrderStatus, PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import {
@@ -29,6 +29,7 @@ import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 
+import "./StatusNotification.scss";
 import { useToastAutoClose } from "./useToastAutoClose";
 
 import "./StatusNotification.scss";
@@ -51,6 +52,7 @@ export function OrderStatusNotification({
   const { chainId } = useChainId();
   const wrappedNativeToken = getWrappedToken(chainId);
   const { orderStatuses, setOrderStatusViewed } = useSyntheticsEvents();
+  const { tenderlyAccountSlug, tenderlyProjectSlug } = useSettings();
 
   const [orderStatusKey, setOrderStatusKey] = useState<string>();
 
@@ -192,7 +194,8 @@ export function OrderStatusNotification({
   const sendingStatus = useMemo(() => {
     let text = t`Sending order request`;
     let status: TransactionStatusType = "loading";
-
+    let txnHash: string | undefined;
+    let txnLink: string | undefined;
     let isCompleted = false;
 
     if (orderData?.txnType === "create") {
@@ -203,19 +206,33 @@ export function OrderStatusNotification({
       isCompleted = Boolean(orderStatus?.cancelledTxnHash);
     }
 
-    if (isCompleted) {
+    if (orderStatus?.isGelatoTaskFailed) {
+      status = "error";
+      text = t`Relayer request failed`;
+      const tenderlySlugs =
+        tenderlyAccountSlug && tenderlyProjectSlug
+          ? `tenderlyUsername=${tenderlyAccountSlug}&tenderlyProjectName=${tenderlyProjectSlug}`
+          : "";
+
+      txnLink = `https://api.gelato.digital/tasks/status/${orderStatus?.gelatoTaskId}/debug?${tenderlySlugs}`;
+    } else if (isCompleted) {
       status = "success";
       text = t`Order request sent`;
+      txnHash = hideTxLink !== "creation" && orderData?.txnType === "create" ? orderStatus?.createdTxnHash : undefined;
     }
 
-    return (
-      <TransactionStatus
-        status={status}
-        txnHash={hideTxLink !== "creation" && orderData?.txnType === "create" ? orderStatus?.createdTxnHash : undefined}
-        text={text}
-      />
-    );
-  }, [orderData, orderStatus, hideTxLink]);
+    return <TransactionStatus status={status} txnHash={txnHash} txnLink={txnLink} text={text} />;
+  }, [
+    orderData?.txnType,
+    orderStatus?.isGelatoTaskFailed,
+    orderStatus?.createdTxnHash,
+    orderStatus?.updatedTxnHash,
+    orderStatus?.cancelledTxnHash,
+    orderStatus?.gelatoTaskId,
+    tenderlyAccountSlug,
+    tenderlyProjectSlug,
+    hideTxLink,
+  ]);
 
   const executionStatus = useMemo(() => {
     if (!orderData || !isMarketOrderType(orderData?.orderType)) {
@@ -395,20 +412,17 @@ export function OrdersStatusNotificiation({
     }, [] as string[]);
   }, [matchedOrderStatuses, pendingOrders]);
 
-  const subaccount = useSubaccount(null, newlyCreatedTriggerOrderKeys.length);
-  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(
-    undefined,
-    newlyCreatedTriggerOrderKeys.length
-  );
+  // const subaccount = useSelector(makeSelectSubaccountForActions(newlyCreatedTriggerOrderKeys.length));
+  // const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(newlyCreatedTriggerOrderKeys.length);
 
-  function onCancelOrdersClick() {
+  async function onCancelOrdersClick() {
     if (!signer || !newlyCreatedTriggerOrderKeys.length || !setPendingTxns) return;
 
     setIsCancelOrderProcessing(true);
-    cancelOrdersTxn(chainId, signer, subaccount, {
+    cancelOrdersTxn(chainId, signer, {
       orderKeys: newlyCreatedTriggerOrderKeys,
       setPendingTxns,
-      detailsMsg: cancelOrdersDetailsMessage,
+      // detailsMsg: cancelOrdersDetailsMessage,
     }).finally(() => setIsCancelOrderProcessing(false));
   }
 

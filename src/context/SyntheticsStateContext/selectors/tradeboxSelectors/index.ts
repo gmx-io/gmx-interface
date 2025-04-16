@@ -19,6 +19,7 @@ import {
   TokensRatio,
   convertToUsd,
   getIsEquivalentTokens,
+  getNeedTokenApprove,
   getTokensRatioByPrice,
 } from "domain/synthetics/tokens";
 import {
@@ -119,6 +120,8 @@ export const selectTradeboxAdvancedOptions = (s: SyntheticsState) => s.tradebox.
 export const selectTradeboxSetAdvancedOptions = (s: SyntheticsState) => s.tradebox.setAdvancedOptions;
 export const selectTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradebox.allowedSlippage;
 export const selectSetTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradebox.setAllowedSlippage;
+export const selectTradeboxTokensAllowance = (s: SyntheticsState) => s.tradebox.tokensAllowance;
+export const selectTradeBoxTokensAllowanceLoaded = (s: SyntheticsState) => s.tradebox.tokensAllowance.isLoaded;
 
 export const selectTradeboxTotalSwapImpactBps = createSelector((q) => {
   const fees = q(selectTradeboxFees);
@@ -1036,4 +1039,36 @@ export const selectTradeboxFeesPercentage = createSelector((q) => {
   const fees = q(selectTradeboxFees);
 
   return fees?.positionFee?.precisePercentage ?? 0n;
+});
+
+export const selectTradeboxPayAmount = createSelector((q) => {
+  const { isSwap, isIncrease } = q(selectTradeboxTradeFlags);
+  const isWrapOrUnwrap = q(selectTradeboxIsWrapOrUnwrap);
+
+  if (isSwap && !isWrapOrUnwrap) {
+    const swapAmounts = q(selectTradeboxSwapAmounts);
+    return swapAmounts?.amountIn;
+  }
+
+  if (isIncrease) {
+    const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
+    return increaseAmounts?.initialCollateralAmount;
+  }
+
+  return undefined;
+});
+
+export const selectTradeboxPayTokenAllowance = createSelector((q) => {
+  const fromTokenAddress = q(selectTradeboxFromTokenAddress);
+  const tokensAllowance = q(selectTradeboxTokensAllowance);
+
+  return getByKey(tokensAllowance.tokensAllowanceData, fromTokenAddress);
+});
+
+export const selectNeedTradeboxPayTokenApproval = createSelector((q) => {
+  const fromTokenAddress = q(selectTradeboxFromTokenAddress);
+  const payAmount = q(selectTradeboxPayAmount);
+  const tokensAllowance = q(selectTradeboxTokensAllowance);
+
+  return getNeedTokenApprove(tokensAllowance.tokensAllowanceData, fromTokenAddress, payAmount);
 });

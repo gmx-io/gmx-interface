@@ -7,7 +7,12 @@ import set from "lodash/set";
 import values from "lodash/values";
 import { SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 
-import { getKeepLeverageKey, getLeverageKey, getSyntheticsTradeOptionsKey } from "config/localStorage";
+import {
+  getFromTokenIsGmxAccountKey,
+  getKeepLeverageKey,
+  getLeverageKey,
+  getSyntheticsTradeOptionsKey,
+} from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { MarketInfo } from "domain/synthetics/markets";
@@ -15,6 +20,7 @@ import { getIsUnwrap, getIsWrap } from "domain/tokens";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useSafeState } from "lib/useSafeState";
+import { getContract } from "sdk/configs/contracts";
 import { getToken, isSimilarToken } from "sdk/configs/tokens";
 import { TradeMode, TradeType } from "sdk/types/trade";
 import { createTradeFlags } from "sdk/utils/trade";
@@ -23,7 +29,7 @@ import { MarketsData, MarketsInfoData } from "../markets";
 import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
 import { OrdersInfoData } from "../orders";
 import { PositionInfo, PositionsInfoData } from "../positions";
-import { TokensData } from "../tokens";
+import { TokensData, useTokensAllowanceData } from "../tokens";
 import { useAvailableTokenOptions } from "./useAvailableTokenOptions";
 import { useSidecarOrdersState } from "./useSidecarOrdersState";
 
@@ -291,6 +297,11 @@ export function useTradeboxState(
 
   const collateralAddress = marketAddress && get(storedOptions, ["collaterals", marketAddress, longOrShort]);
   const collateralToken = getByKey(tokensData, collateralAddress);
+
+  const tokensAllowance = useTokensAllowanceData(chainId, {
+    spenderAddress: getContract(chainId, "SyntheticsRouter"),
+    tokenAddresses: fromTokenAddress ? [fromTokenAddress] : [],
+  });
 
   const getMaxLongShortLiquidityPool = useMemo(
     () => createGetMaxLongShortLiquidityPool(availableTokensOptions.sortedAllMarkets || []),
@@ -595,6 +606,11 @@ export function useTradeboxState(
 
   const sidecarOrders = useSidecarOrdersState();
 
+  const [isFromTokenGmxAccount = false, setFromTokenIsGmxAccount] = useLocalStorageSerializeKey(
+    getFromTokenIsGmxAccountKey(chainId),
+    false
+  );
+
   useEffect(
     function fallbackStoredOptions() {
       if (!enabled) {
@@ -683,6 +699,7 @@ export function useTradeboxState(
     availableTradeModes,
     sidecarOrders,
     isSwitchTokensAllowed,
+    tokensAllowance,
     setActivePosition,
     setFromTokenAddress,
     setToTokenAddress,
@@ -718,14 +735,14 @@ export function useTradeboxState(
     setLeverageInputValue: handleLeverageInputChange,
     leverageOption,
     setLeverageOption: handleLeverageSliderChange,
-    // isLeverageEnabled,
-    // setIsLeverageEnabled,
     keepLeverage,
     setKeepLeverage,
     advancedOptions,
     setAdvancedOptions,
     allowedSlippage,
     setAllowedSlippage,
+    isFromTokenGmxAccount,
+    setFromTokenIsGmxAccount,
   };
 }
 
