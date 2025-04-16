@@ -1009,7 +1009,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             />
           )}
           <PriceImpactFeesRow />
-          <TradeBoxAdvancedGroups slippageInputId={submitButtonState.slippageInputId} />
+          <TradeBoxAdvancedGroups
+            slippageInputId={submitButtonState.slippageInputId}
+            relayerFeeParams={submitButtonState.relayerFeeParams}
+          />
         </div>
       </form>
     </>

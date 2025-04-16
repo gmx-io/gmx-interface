@@ -363,7 +363,7 @@ export function PositionSeller() {
     userReferralInfo?.referralCodeForTxn,
   ]);
 
-  const expressParams = useExpressOrdersParams({
+  const { expressParams } = useExpressOrdersParams({
     orderParams: batchParams,
   });
 
@@ -791,6 +791,7 @@ export function PositionSeller() {
               <PositionSellerAdvancedRows
                 triggerPriceInputValue={triggerPriceInputValue}
                 slippageInputId={slippageInputId}
+                relayerFeeParams={expressParams?.relayFeeParams}
               />
             </div>
           </>

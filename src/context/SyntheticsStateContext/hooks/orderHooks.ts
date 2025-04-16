@@ -4,12 +4,17 @@ import { useCallback, useMemo } from "react";
 import { useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/useSubaccountCancelOrdersDetailsMessage";
 import { sendUniversalBatchTxn } from "domain/synthetics/gassless/txns/universalTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/gassless/txns/useOrderTxnCallbacks";
-import { getExpressCancelOrdersParams } from "domain/synthetics/gassless/useRelayerFeeHandler";
+import {
+  getExpressCancelOrdersParams,
+  useGasPaymentTokenAllowanceData,
+} from "domain/synthetics/gassless/useRelayerFeeHandler";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 
 import {
   makeSelectSubaccountForActions,
   selectChainId,
+  selectGasPrice,
+  selectSponsoredCallMultiplierFactor,
   selectMarketsInfoData,
   selectTokensData,
 } from "../selectors/globalSelectors";
@@ -44,9 +49,12 @@ export function useCancelOrder(orderKey: string) {
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(1);
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tokensData = useSelector(selectTokensData);
+  const sponsoredCallMultiplierFactor = useSelector(selectSponsoredCallMultiplierFactor);
+  const gasPrice = useSelector(selectGasPrice);
   const relayFeeTokens = useSelector(selectRelayFeeTokens);
   const { makeCancelOrderTxnCallback } = useOrderTxnCallbacks();
   const subaccount = useSelector(makeSelectSubaccountForActions(1));
+  const gasPaymentAllowanceData = useGasPaymentTokenAllowanceData(chainId, relayFeeTokens.gasPaymentToken?.address);
 
   const isCancelOrderProcessing = cancellingOrdersKeys.includes(orderKey);
 
@@ -65,6 +73,9 @@ export function useCancelOrder(orderKey: string) {
         tokensData,
         marketsInfoData,
         findSwapPath: relayFeeTokens.findSwapPath,
+        sponsoredCallMultiplierFactor,
+        gasPrice,
+        gasPaymentAllowanceData,
       });
 
       sendUniversalBatchTxn({
@@ -90,6 +101,8 @@ export function useCancelOrder(orderKey: string) {
     [
       cancelOrdersDetailsMessage,
       chainId,
+      gasPaymentAllowanceData,
+      gasPrice,
       makeCancelOrderTxnCallback,
       marketsInfoData,
       orderKey,
@@ -97,6 +110,7 @@ export function useCancelOrder(orderKey: string) {
       relayFeeTokens.gasPaymentToken?.address,
       setCancellingOrdersKeys,
       signer,
+      sponsoredCallMultiplierFactor,
       subaccount,
       tokensData,
     ]

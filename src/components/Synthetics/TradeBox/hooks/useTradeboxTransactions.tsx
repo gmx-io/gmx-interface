@@ -144,12 +144,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     };
   }, [primaryCreateOrderParams, secondaryOrderPayloads]);
 
-  const expressParams = useExpressOrdersParams({ orderParams: batchParams });
+  const { expressParams, needGasPaymentTokenApproval } = useExpressOrdersParams({ orderParams: batchParams });
 
-  if (expressParams) {
+  if (expressParams || needGasPaymentTokenApproval) {
     // TEMP DEBUG
     // eslint-disable-next-line no-console
     console.log("expressParams", expressParams, {
+      needGasPaymentTokenApproval,
       gasPaymentFee: formatTokenAmount(expressParams?.relayFeeParams.feeParams.feeAmount, 6, "USDC"),
       relayerFee: formatTokenAmount(expressParams?.relayFeeParams.relayerTokenAmount, 18, "WETH"),
     });
@@ -335,5 +336,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     onSubmitDecreaseOrder: onSubmitOrder,
     onSubmitWrapOrUnwrap,
     slippageInputId,
+    relayerFeeParams: expressParams?.relayFeeParams,
+    needGasPaymentTokenApproval,
   };
 }

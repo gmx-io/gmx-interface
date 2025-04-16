@@ -17,6 +17,7 @@ import { selectExternalSwapQuote } from "context/SyntheticsStateContext/selector
 import {
   makeSelectSubaccountForActions,
   selectChainId,
+  selectGasPaymentToken,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectAddTokenPermit } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
@@ -65,6 +66,7 @@ import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";
 
+import { RelayFeeSwapParams } from "domain/synthetics/gassless/txns/expressOrderUtils";
 import { tradeTypeLabels } from "../tradeboxConstants";
 import { useRequiredActions } from "./useRequiredActions";
 import { useTradeboxTransactions } from "./useTradeboxTransactions";
@@ -74,13 +76,19 @@ interface TradeboxButtonStateOptions {
   setToTokenInputValue: (value: string, shouldResetPriceImpactWarning: boolean) => void;
 }
 
-export function useTradeboxButtonState({ account, setToTokenInputValue }: TradeboxButtonStateOptions): {
+type TradeboxButtonState = {
   text: ReactNode;
   tooltipContent: ReactNode | null;
   disabled: boolean;
   onSubmit: () => Promise<void>;
   slippageInputId: string;
-} {
+  relayerFeeParams?: RelayFeeSwapParams;
+};
+
+export function useTradeboxButtonState({
+  account,
+  setToTokenInputValue,
+}: TradeboxButtonStateOptions): TradeboxButtonState {
   const chainId = useSelector(selectChainId);
   const { signer } = useWallet();
 
@@ -95,6 +103,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
 
   const fromToken = useSelector(selectTradeboxFromToken);
   const toToken = useSelector(selectTradeboxToToken);
+  const gasPaymentToken = useSelector(selectGasPaymentToken);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
 
@@ -102,12 +111,6 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
   const isAllowanceLoaded = useSelector(selectTradeBoxTokensAllowanceLoaded);
   const needPayTokenApproval = useSelector(selectNeedTradeboxPayTokenApproval);
   const [isApproving, setIsApproving] = useState(false);
-
-  useEffect(() => {
-    if (!needPayTokenApproval && isApproving) {
-      setIsApproving(false);
-    }
-  }, [isApproving, needPayTokenApproval]);
 
   const detectAndSetAvailableMaxLeverage = useDetectAndSetAvailableMaxLeverage({ setToTokenInputValue });
 
@@ -208,10 +211,20 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
   const subaccount = useSelector(makeSelectSubaccountForActions(requiredActions));
   const addTokenPermit = useSelector(selectAddTokenPermit);
 
-  const { onSubmitWrapOrUnwrap, onSubmitSwap, onSubmitIncreaseOrder, onSubmitDecreaseOrder, slippageInputId } =
-    useTradeboxTransactions({
-      setPendingTxns,
-    });
+  const {
+    onSubmitWrapOrUnwrap,
+    onSubmitSwap,
+    onSubmitIncreaseOrder,
+    onSubmitDecreaseOrder,
+    slippageInputId,
+    relayerFeeParams,
+    needGasPaymentTokenApproval,
+  } = useTradeboxTransactions({
+    setPendingTxns,
+  });
+
+  const needTokenApproval = needPayTokenApproval || needGasPaymentTokenApproval;
+  const tokenToApprove = needPayTokenApproval ? fromToken : needGasPaymentTokenApproval ? gasPaymentToken : undefined;
 
   const onSubmit = useCallback(async () => {
     if (!account) {
@@ -220,11 +233,13 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
       return;
     }
 
-    if (isAllowanceLoaded && needPayTokenApproval && fromToken) {
-      if (!chainId || isApproving) return;
-
+    if (isAllowanceLoaded && (needPayTokenApproval || needGasPaymentTokenApproval)) {
       const wrappedToken = getWrappedToken(chainId);
-      const tokenAddress = isAddressZero(fromToken.address) ? wrappedToken.address : fromToken.address;
+      const tokenToApprove = needPayTokenApproval ? fromToken : gasPaymentToken;
+
+      if (!chainId || isApproving || !tokenToApprove) return;
+
+      const tokenAddress = isAddressZero(tokenToApprove.address) ? wrappedToken.address : tokenToApprove.address;
 
       userAnalytics.pushEvent<TokenApproveClickEvent>({
         event: "TokenApproveAction",
@@ -288,7 +303,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
     account,
     isAllowanceLoaded,
     needPayTokenApproval,
-    fromToken,
+    needGasPaymentTokenApproval,
     setStage,
     isWrapOrUnwrap,
     isSwap,
@@ -296,6 +311,8 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
     subaccount,
     openConnectModal,
     chainId,
+    fromToken,
+    gasPaymentToken,
     isApproving,
     signer,
     addTokenPermit,
@@ -305,69 +322,70 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
     onSubmitDecreaseOrder,
   ]);
 
+  useEffect(() => {
+    if (!needTokenApproval && isApproving) {
+      setIsApproving(false);
+    }
+  }, [isApproving, needTokenApproval]);
+
   return useMemo(() => {
+    const commonState = {
+      tooltipContent,
+      onSubmit,
+      relayerFeeParams,
+      slippageInputId,
+    };
+
     if (!account && buttonErrorText) {
       return {
+        ...commonState,
         text: buttonErrorText,
-        tooltipContent,
         disabled: false,
-        onSubmit,
-        slippageInputId,
       };
     }
 
     if (buttonErrorText) {
       return {
+        ...commonState,
         text: buttonErrorText,
-        tooltipContent,
         disabled: true,
-        onSubmit,
-        slippageInputId,
       };
     }
 
     if (stopLoss.error?.percentage || takeProfit.error?.percentage) {
       return {
+        ...commonState,
         text: t`TP/SL orders exceed the position`,
-        tooltipContent,
         disabled: true,
-        onSubmit,
-        slippageInputId,
       };
     }
 
     if (isApproving) {
       return {
+        ...commonState,
         text: (
           <>
             {t`Allow ${fromToken?.assetSymbol ?? fromToken?.symbol} to be spent`}{" "}
             <ImSpinner2 className="ml-4 animate-spin" />
           </>
         ),
-        tooltipContent,
         disabled: true,
-        onSubmit,
-        slippageInputId,
       };
     }
 
-    if (isAllowanceLoaded && needPayTokenApproval && fromToken) {
+    if (isAllowanceLoaded && needTokenApproval && tokenToApprove) {
       return {
-        text: t`Allow ${fromToken?.assetSymbol ?? fromToken?.symbol} to be spent`,
-        tooltipContent,
+        ...commonState,
+        text: t`Allow ${tokenToApprove.assetSymbol ?? tokenToApprove.symbol} to be spent`,
         disabled: false,
-        onSubmit,
-        slippageInputId,
       };
     }
 
     if (stage === "processing") {
       return {
+        ...commonState,
         text: t`Creating Order...`,
-        tooltipContent,
         disabled: true,
-        onSubmit,
-        slippageInputId,
       };
     }
 
@@ -403,35 +421,35 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
       });
 
       return {
+        ...commonState,
         text: submitButtonText,
-        tooltipContent,
         disabled: isError,
-        onSubmit,
-        slippageInputId,
       };
     }
 
     return {
+      ...commonState,
       text: submitButtonText,
-      tooltipContent,
       disabled: false,
-      onSubmit,
-      slippageInputId,
     };
   }, [
+    tooltipContent,
+    onSubmit,
+    relayerFeeParams,
+    slippageInputId,
     account,
     buttonErrorText,
     stopLoss.error?.percentage,
     takeProfit.error?.percentage,
     isApproving,
     isAllowanceLoaded,
-    needPayTokenApproval,
-    fromToken,
+    needTokenApproval,
+    tokenToApprove,
     stage,
     isIncrease,
     sidecarEntries,
-    tooltipContent,
-    onSubmit,
+    fromToken?.assetSymbol,
+    fromToken?.symbol,
     isMarket,
     isLimit,
     isSwap,
@@ -440,7 +458,6 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
     tradeType,
     increaseAmounts?.limitOrderType,
     decreaseAmounts?.triggerOrderType,
-    slippageInputId,
   ]);
 }
 

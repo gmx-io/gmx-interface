@@ -5,7 +5,7 @@ import { getContract } from "config/contracts";
 import { getSwapDebugSettings } from "config/externalSwaps";
 import { MarketsInfoData } from "domain/synthetics/markets/types";
 import { ExternalSwapOutput, SwapAmounts } from "domain/synthetics/trade";
-import { SignedTokenPermit, TokensData } from "domain/tokens";
+import { SignedTokenPermit, TokensAllowanceData, TokensData } from "domain/tokens";
 import GelatoRelayRouterAbi from "sdk/abis/GelatoRelayRouter.json";
 import SubaccountGelatoRelayRouterAbi from "sdk/abis/SubaccountGelatoRelayRouter.json";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION, getRelayerFeeToken } from "sdk/configs/express";
@@ -20,6 +20,9 @@ import {
 } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 
+import { getNeedTokenApprove } from "domain/synthetics/tokens";
+import { expandDecimals } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import {
   getOracleParamsPayload,
   getOraclePriceParamsForOrders,
@@ -27,7 +30,7 @@ import {
 } from "./oracleParamsUtils";
 import { getGelatoRelayRouterDomain, hashRelayParams } from "./relayParams";
 import { signTypedData } from "./signing";
-import { getActualApproval, hashSubaccountApproval, SignedSubbacountApproval, Subaccount } from "./subaccountUtils";
+import { hashSubaccountApproval, SignedSubbacountApproval, Subaccount } from "./subaccountUtils";
 import { getRelayRouterNonceForSigner } from "./useRelayRouterNonce";
 
 export function getExpressOrdersContract(chainId: number, provider: Provider, isSubaccount: boolean) {
@@ -129,7 +132,7 @@ export async function buildAndSignExpressUpdateOrderTxn({
     updateOrderParams,
     increaseExecutionFee,
     relayParams: finalRelayParamsPayload,
-    subaccountApproval: await getActualApproval(chainId, subaccount),
+    subaccountApproval: subaccount?.signedApproval,
   };
 
   const signature = await signUpdateOrderPayload(params);
@@ -191,7 +194,7 @@ export async function buildAndSignExpressCancelOrderTxn({
     chainId,
     orderKey,
     relayParams: finalRelayParamsPayload,
-    subaccountApproval: await getActualApproval(chainId, subaccount),
+    subaccountApproval: subaccount?.signedApproval,
   };
 
   const signature = await signCancelOrderPayload(params);
@@ -235,7 +238,7 @@ export async function buildAndSignExpressBatchOrderTxn({
   emptySignature?: boolean;
 }) {
   const mainAccountSigner = signer;
-  const subaccountApproval = await getActualApproval(chainId, subaccount);
+  const subaccountApproval = subaccount?.signedApproval;
   const messageSigner = subaccountApproval ? subaccount!.signer : mainAccountSigner;
 
   const params = {
@@ -248,7 +251,7 @@ export async function buildAndSignExpressBatchOrderTxn({
       userNonce: await getRelayRouterNonceForSigner(chainId, messageSigner, subaccountApproval !== undefined),
     },
     paramsLists: getBatchContractOrderParamsLists(batchParams),
-    subaccountApproval: await getActualApproval(chainId, subaccount),
+    subaccountApproval,
   };
 
   const signature = emptySignature
@@ -324,7 +327,7 @@ export async function buildAndSignExpressCreateOrderTxn({
     chainId,
     relayPayload: finalRelayParamsPayload,
     orderPayload: orderPayload,
-    subaccountApproval: await getActualApproval(chainId, subaccount),
+    subaccountApproval: subaccount?.signedApproval,
   };
 
   const signature = emptySignature ? "0x" : await signExpressOrderPayload(params);
@@ -405,24 +408,39 @@ export type RelayFeeSwapParams = {
   relayerTokenAddress: string;
   relayerTokenAmount: bigint;
   totalNetworkFeeAmount: bigint;
+  gasPaymentTokenAmount: bigint;
+  gasPaymentTokenAddress: string;
+  isOutGasTokenBalance: boolean;
+  needGasPaymentTokenApproval: boolean;
 };
 
 export function getRelayerFeeSwapParams({
   chainId,
   account,
   relayerFeeTokenAmount,
+  relayerFeeTokenAddress,
+  gasPaymentTokenAddress,
+  totalNetworkFeeAmount,
   internalSwapAmounts,
   externalSwapQuote,
+  tokensData,
+  gasPaymentAllowanceData,
 }: {
   chainId: number;
   account: string;
   relayerFeeTokenAmount: bigint;
+  totalNetworkFeeAmount: bigint;
+  relayerFeeTokenAddress: string;
+  gasPaymentTokenAddress: string;
   internalSwapAmounts: SwapAmounts | undefined;
   externalSwapQuote: ExternalSwapOutput | undefined;
+  tokensData: TokensData;
+  gasPaymentAllowanceData: TokensAllowanceData;
 }): RelayFeeSwapParams | undefined {
   let feeParams: RelayFeePayload;
   let externalCalls: ExternalCallsPayload;
-  let totalNetworkFeeAmount: bigint;
+
+  let gasPaymentTokenAmount: bigint;
 
   const isExternalSwapBetter =
     externalSwapQuote?.usdOut &&
@@ -430,7 +448,22 @@ export function getRelayerFeeSwapParams({
       internalSwapAmounts?.usdOut === undefined ||
       externalSwapQuote.usdOut > internalSwapAmounts.usdOut);
 
-  if (isExternalSwapBetter) {
+  if (gasPaymentTokenAddress === relayerFeeTokenAddress) {
+    externalCalls = {
+      externalCallTargets: [],
+      externalCallDataList: [],
+      refundReceivers: [],
+      refundTokens: [],
+      sendTokens: [],
+      sendAmounts: [],
+    } as ExternalCallsPayload;
+    feeParams = {
+      feeToken: relayerFeeTokenAddress,
+      feeAmount: totalNetworkFeeAmount,
+      feeSwapPath: [],
+    };
+    gasPaymentTokenAmount = totalNetworkFeeAmount;
+  } else if (isExternalSwapBetter) {
     externalCalls = getExternalCallsPayload({
       chainId,
       account,
@@ -441,6 +474,7 @@ export function getRelayerFeeSwapParams({
       feeAmount: 0n, // fee already sent in external calls
       feeSwapPath: [],
     };
+    gasPaymentTokenAmount = externalSwapQuote.amountIn;
     totalNetworkFeeAmount = externalSwapQuote.amountOut;
   } else if (internalSwapAmounts?.swapPathStats) {
     feeParams = {
@@ -448,7 +482,6 @@ export function getRelayerFeeSwapParams({
       feeAmount: internalSwapAmounts.amountIn,
       feeSwapPath: internalSwapAmounts.swapPathStats.swapPath,
     };
-    totalNetworkFeeAmount = internalSwapAmounts.amountOut;
     externalCalls = {
       externalCallTargets: [],
       externalCallDataList: [],
@@ -457,16 +490,33 @@ export function getRelayerFeeSwapParams({
       sendTokens: [],
       sendAmounts: [],
     } as ExternalCallsPayload;
+    totalNetworkFeeAmount = internalSwapAmounts.amountOut;
+    gasPaymentTokenAmount = internalSwapAmounts.amountIn;
+    gasPaymentTokenAddress = internalSwapAmounts.swapPathStats.tokenInAddress;
   } else {
     return undefined;
   }
+
+  const gasPaymentToken = getByKey(tokensData, gasPaymentTokenAddress);
+  const isOutGasTokenBalance =
+    gasPaymentToken?.balance === undefined || gasPaymentTokenAmount > gasPaymentToken.balance;
+
+  const needGasPaymentTokenApproval = getNeedTokenApprove(
+    gasPaymentAllowanceData,
+    gasPaymentTokenAddress,
+    gasPaymentTokenAmount
+  );
 
   return {
     feeParams,
     externalCalls,
     relayerTokenAddress: getRelayerFeeToken(chainId).address,
-    totalNetworkFeeAmount,
     relayerTokenAmount: relayerFeeTokenAmount,
+    totalNetworkFeeAmount,
+    gasPaymentTokenAmount,
+    isOutGasTokenBalance,
+    needGasPaymentTokenApproval,
+    gasPaymentTokenAddress,
   };
 }
 
@@ -768,6 +818,7 @@ export async function sendExpressTxn(p: {
     feeToken: string;
     feeAmount: bigint;
   };
+  isSponsoredCall: boolean;
 }) {
   const data = encodePacked(
     ["bytes", "address", "address", "uint256"],
@@ -779,20 +830,47 @@ export async function sendExpressTxn(p: {
     ]
   );
 
-  return gelatoRelay
-    .callWithSyncFee({
+  let gelatoPromise: Promise<{ taskId: string }> | undefined;
+
+  if (p.isSponsoredCall) {
+    gelatoPromise = gelatoRelay.sponsoredCall(
+      {
+        chainId: BigInt(p.chainId),
+        target: p.txnData.contractAddress,
+        data,
+      },
+      "FalsQh9loL6V0rwPy4gWgnQPR6uTHfWjSVT2qlTzUq4_"
+    );
+  } else {
+    gelatoPromise = gelatoRelay.callWithSyncFee({
       chainId: BigInt(p.chainId),
       target: p.txnData.contractAddress,
       feeToken: p.txnData.feeToken,
       isRelayContext: true,
       data,
-    })
-    .then((res) => {
-      return {
-        taskId: res.taskId,
-        wait: makeExpressTxnResultWaiter(res),
-      };
     });
+  }
+
+  return gelatoPromise.then((res) => {
+    return {
+      taskId: res.taskId,
+      wait: makeExpressTxnResultWaiter(res),
+    };
+  });
+}
+
+export async function getIsSponsoredCallAllowed() {
+  const gelatoBalance = await fetch(
+    "https://api.gelato.digital/1balance/networks/mainnets/sponsors/0x88FcCAC36031949001Df4bB0b68CBbd07f033161"
+  );
+
+  const gelatoBalanceData = await gelatoBalance.json();
+
+  const mainBalance = gelatoBalanceData.sponsor.mainBalance;
+  const mainBalanceToken = mainBalance.token;
+  const remainingBalance = BigInt(mainBalance.remainingBalance);
+
+  return remainingBalance > expandDecimals(10, Number(mainBalanceToken.decimals));
 }
 
 // TODO: Tests

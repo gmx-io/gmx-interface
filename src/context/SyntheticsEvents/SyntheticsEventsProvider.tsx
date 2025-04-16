@@ -2,7 +2,6 @@ import { TaskState } from "@gelatonetwork/relay-sdk";
 import { t } from "@lingui/macro";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { useTokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
@@ -137,8 +136,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   );
 
   const eventLogHandlers = useRef({});
-
-  const { setPendingTxns } = usePendingTxns();
 
   const updateNativeTokenBalance = useCallback(() => {
     if (!currentAccount) {
@@ -915,7 +912,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}
             toastTimestamp={toastId}
-            setPendingTxns={setPendingTxns}
           />,
           {
             autoClose: false,
@@ -1038,18 +1034,17 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     pendingExpressTxnParams,
     marketsInfoData,
     tokensData,
-    setPendingTxns,
     glvAndGmMarketsData,
   ]);
 
   useEffect(
     function subscribeGelatoRelayEvents() {
       async function handleTaskStatusUpdate(taskStatus) {
+        const pendingExpressParams = getByKey(pendingExpressTxnParams, taskStatus.taskId);
+
         switch (taskStatus.taskState) {
           case TaskState.ExecSuccess:
             {
-              const pendingExpressParams = getByKey(pendingExpressTxnParams, taskStatus.taskId);
-
               if (pendingExpressParams?.shouldResetSubaccountApproval) {
                 resetSubaccountApproval();
               }
@@ -1065,7 +1060,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             break;
           case TaskState.ExecReverted:
           case TaskState.Cancelled: {
-            const pendingExpressParams = getByKey(pendingExpressTxnParams, taskStatus.taskId);
             pendingExpressParams?.pendingOrdersKeys?.forEach((key) => {
               setOrderStatuses((old) => {
                 if (old[key]) {
@@ -1108,7 +1102,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         const debugData = await debugRes.json();
         // TEMP DEBUG
         // eslint-disable-next-line no-console
-        console.log("gelatoDebugData", debugData);
+        console.log("gelatoDebugData", taskStatus.taskState, pendingExpressParams, debugData);
       }
 
       gelatoRelay.onTaskStatusUpdate(handleTaskStatusUpdate);

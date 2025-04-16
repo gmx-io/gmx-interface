@@ -2,6 +2,8 @@ import { encodeAbiParameters, keccak256, stringToBytes } from "viem";
 
 import { LRUCache } from "./LruCache";
 
+export const ZERO_DATA = "0x";
+
 const dataCache = new LRUCache<string>(10_000);
 
 export function hashData(dataTypes, dataValues) {

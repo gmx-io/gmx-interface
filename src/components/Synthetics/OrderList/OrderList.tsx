@@ -14,7 +14,9 @@ import {
   makeSelectSubaccountForActions,
   selectAccount,
   selectChainId,
+  selectGasPrice,
   selectMarketsInfoData,
+  selectSponsoredCallMultiplierFactor,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -22,7 +24,10 @@ import { selectRelayFeeTokens } from "context/SyntheticsStateContext/selectors/t
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { sendUniversalBatchTxn } from "domain/synthetics/gassless/txns/universalTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/gassless/txns/useOrderTxnCallbacks";
-import { getExpressCancelOrdersParams } from "domain/synthetics/gassless/useRelayerFeeHandler";
+import {
+  getExpressCancelOrdersParams,
+  useGasPaymentTokenAllowanceData,
+} from "domain/synthetics/gassless/useRelayerFeeHandler";
 import {
   OrderType,
   PositionOrderInfo,
@@ -87,6 +92,9 @@ export function OrderList({
   const tokensData = useSelector(selectTokensData);
   const relayFeeTokens = useSelector(selectRelayFeeTokens);
   const marketsInfoData = useSelector(selectMarketsInfoData);
+  const sponsoredCallMultiplierFactor = useSelector(selectSponsoredCallMultiplierFactor);
+  const gasPrice = useSelector(selectGasPrice);
+  const gasPaymentAllowanceData = useGasPaymentTokenAllowanceData(chainId, relayFeeTokens.gasPaymentToken?.address);
 
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
 
@@ -161,6 +169,9 @@ export function OrderList({
       tokensData,
       marketsInfoData,
       findSwapPath: relayFeeTokens.findSwapPath,
+      sponsoredCallMultiplierFactor,
+      gasPrice,
+      gasPaymentAllowanceData,
     });
 
     sendUniversalBatchTxn({

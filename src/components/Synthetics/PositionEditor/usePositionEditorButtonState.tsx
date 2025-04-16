@@ -73,12 +73,14 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 import { OPERATION_LABELS, Operation } from "./types";
+import { RelayFeeSwapParams } from "domain/synthetics/gassless/txns/expressOrderUtils";
 
 export function usePositionEditorButtonState(operation: Operation): {
   text: ReactNode;
   tooltipContent: ReactNode | null;
   disabled: boolean;
   onSubmit: () => void;
+  relayerFeeParams?: RelayFeeSwapParams;
 } {
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const allowedSlippage = useSavedAllowedSlippage();
@@ -362,7 +364,7 @@ export function usePositionEditorButtonState(operation: Operation): {
     userReferralInfo?.referralCodeForTxn,
   ]);
 
-  const expressParams = useExpressOrdersParams({
+  const { expressParams } = useExpressOrdersParams({
     orderParams: batchParams,
   });
 
@@ -469,6 +471,7 @@ export function usePositionEditorButtonState(operation: Operation): {
       ),
       tooltipContent: errorTooltipContent,
       disabled: true,
+      relayerFeeParams: expressParams?.relayFeeParams,
       onSubmit,
     };
   }
@@ -478,6 +481,7 @@ export function usePositionEditorButtonState(operation: Operation): {
       text: t`Allow ${selectedCollateralToken?.assetSymbol ?? selectedCollateralToken?.symbol} to be spent`,
       tooltipContent: errorTooltipContent,
       disabled: false,
+      relayerFeeParams: expressParams?.relayFeeParams,
       onSubmit,
     };
   }
@@ -486,6 +490,7 @@ export function usePositionEditorButtonState(operation: Operation): {
     text: error || localizedOperationLabels[operation],
     tooltipContent: errorTooltipContent,
     disabled: Boolean(error) && !shouldDisableValidationForTesting,
+    relayerFeeParams: expressParams?.relayFeeParams,
     onSubmit,
   };
 }

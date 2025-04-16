@@ -16,8 +16,10 @@ import { selectClaimablesCount } from "context/SyntheticsStateContext/selectors/
 import {
   makeSelectSubaccountForActions,
   selectChainId,
+  selectGasPrice,
   selectMarketsInfoData,
   selectPositionsInfoData,
+  selectSponsoredCallMultiplierFactor,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
@@ -33,7 +35,10 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
 import { sendUniversalBatchTxn } from "domain/synthetics/gassless/txns/universalTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/gassless/txns/useOrderTxnCallbacks";
-import { getExpressCancelOrdersParams } from "domain/synthetics/gassless/useRelayerFeeHandler";
+import {
+  getExpressCancelOrdersParams,
+  useGasPaymentTokenAllowanceData,
+} from "domain/synthetics/gassless/useRelayerFeeHandler";
 import type { OrderType } from "domain/synthetics/orders/types";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
 import { TradeMode } from "domain/synthetics/trade";
@@ -401,7 +406,10 @@ function useOrdersControl() {
   const relayFeeTokens = useSelector(selectRelayFeeTokens);
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const { makeCancelOrderTxnCallback } = useOrderTxnCallbacks();
+  const sponsoredCallMultiplierFactor = useSelector(selectSponsoredCallMultiplierFactor);
+  const gasPrice = useSelector(selectGasPrice);
   const tokensData = useSelector(selectTokensData);
+  const gasPaymentAllowanceData = useGasPaymentTokenAllowanceData(chainId, relayFeeTokens.gasPaymentToken?.address);
 
   const isCancelOrdersProcessing = cancellingOrdersKeys.length > 0;
 
@@ -423,6 +431,9 @@ function useOrdersControl() {
         tokensData,
         marketsInfoData,
         findSwapPath: relayFeeTokens.findSwapPath,
+        sponsoredCallMultiplierFactor,
+        gasPaymentAllowanceData,
+        gasPrice,
       });
 
       sendUniversalBatchTxn({
@@ -456,6 +467,8 @@ function useOrdersControl() {
     [
       cancelOrdersDetailsMessage,
       chainId,
+      gasPaymentAllowanceData,
+      gasPrice,
       makeCancelOrderTxnCallback,
       marketsInfoData,
       relayFeeTokens.findSwapPath,
@@ -463,6 +476,7 @@ function useOrdersControl() {
       selectedOrderKeys,
       setCanellingOrdersKeys,
       signer,
+      sponsoredCallMultiplierFactor,
       subaccount,
       tokensData,
     ]
@@ -482,6 +496,9 @@ function useOrdersControl() {
         tokensData,
         marketsInfoData,
         findSwapPath: relayFeeTokens.findSwapPath,
+        sponsoredCallMultiplierFactor,
+        gasPrice,
+        gasPaymentAllowanceData,
       });
 
       sendUniversalBatchTxn({
@@ -508,12 +525,15 @@ function useOrdersControl() {
     [
       cancelOrdersDetailsMessage,
       chainId,
+      gasPaymentAllowanceData,
+      gasPrice,
       makeCancelOrderTxnCallback,
       marketsInfoData,
       relayFeeTokens.findSwapPath,
       relayFeeTokens.gasPaymentToken?.address,
       setCanellingOrdersKeys,
       signer,
+      sponsoredCallMultiplierFactor,
       subaccount,
       tokensData,
     ]

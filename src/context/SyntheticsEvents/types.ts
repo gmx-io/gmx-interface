@@ -312,6 +312,7 @@ export type ApprovalStatuses = {
 
 export type PendingExpressTxnParams = {
   taskId: string;
+  isSponsoredCall: boolean;
   shouldResetSubaccountApproval: boolean;
   shouldResetTokenPermits: boolean;
   pendingOrdersKeys?: string[];

@@ -404,7 +404,7 @@ export function OrderEditor(p: Props) {
     additionalExecutionFee?.feeTokenAmount,
   ]);
 
-  const expressParams = useExpressOrdersParams({
+  const { expressParams } = useExpressOrdersParams({
     orderParams: batchParams,
   });
 

@@ -3,7 +3,6 @@ import cx from "classnames";
 import { useEffect, useMemo, useState } from "react";
 
 import { getExplorerUrl } from "config/chains";
-import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { OrderStatus, PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
 import { MarketsInfoData } from "domain/synthetics/markets";
@@ -15,7 +14,6 @@ import {
   isSwapOrderType,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
-import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { getNameByOrderType } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
@@ -23,7 +21,6 @@ import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
-import useWallet from "lib/wallets/useWallet";
 import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -31,6 +28,10 @@ import { TransactionStatus, TransactionStatusType } from "components/Transaction
 
 import "./StatusNotification.scss";
 import { useToastAutoClose } from "./useToastAutoClose";
+
+import useWallet from "lib/wallets/useWallet";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 
 import "./StatusNotification.scss";
 
@@ -60,7 +61,9 @@ export function OrderStatusNotification({
   const pendingOrderKey = useMemo(() => getPendingOrderKey(pendingOrderData), [pendingOrderData]);
   const orderStatus = getByKey(orderStatuses, orderStatusKey);
 
-  const hasError = Boolean(orderStatus?.cancelledTxnHash) && pendingOrderData.txnType !== "cancel";
+  const hasError =
+    orderStatus?.isGelatoTaskFailed ||
+    (Boolean(orderStatus?.cancelledTxnHash) && pendingOrderData.txnType !== "cancel");
 
   const orderData = useMemo(() => {
     if (!marketsInfoData || !orderStatuses || !tokensData || !wrappedNativeToken) {
@@ -213,7 +216,6 @@ export function OrderStatusNotification({
         tenderlyAccountSlug && tenderlyProjectSlug
           ? `tenderlyUsername=${tenderlyAccountSlug}&tenderlyProjectName=${tenderlyProjectSlug}`
           : "";
-
       txnLink = `https://api.gelato.digital/tasks/status/${orderStatus?.gelatoTaskId}/debug?${tenderlySlugs}`;
     } else if (isCompleted) {
       status = "success";
@@ -222,17 +224,7 @@ export function OrderStatusNotification({
     }
 
     return <TransactionStatus status={status} txnHash={txnHash} txnLink={txnLink} text={text} />;
-  }, [
-    orderData?.txnType,
-    orderStatus?.isGelatoTaskFailed,
-    orderStatus?.createdTxnHash,
-    orderStatus?.updatedTxnHash,
-    orderStatus?.cancelledTxnHash,
-    orderStatus?.gelatoTaskId,
-    tenderlyAccountSlug,
-    tenderlyProjectSlug,
-    hideTxLink,
-  ]);
+  }, [orderData?.txnType, orderStatus, tenderlyAccountSlug, tenderlyProjectSlug, hideTxLink]);
 
   const executionStatus = useMemo(() => {
     if (!orderData || !isMarketOrderType(orderData?.orderType)) {
@@ -274,7 +266,8 @@ export function OrderStatusNotification({
       const matchedStatusKey = Object.values(orderStatuses).find((orderStatus) => {
         if (orderStatus.isViewed) return false;
         if (contractOrderKey && orderStatus.key === contractOrderKey) return true;
-        return orderStatus.data && getPendingOrderKey(orderStatus.data) === pendingOrderKey;
+        if (orderStatus.data && getPendingOrderKey(orderStatus.data) === pendingOrderKey) return true;
+        return orderStatus.key === pendingOrderKey;
       })?.key;
 
       if (matchedStatusKey) {
@@ -313,14 +306,13 @@ export function OrdersStatusNotificiation({
   marketsInfoData,
   tokensData,
   toastTimestamp,
-  setPendingTxns,
 }: {
   pendingOrderData: PendingOrderData | PendingOrderData[];
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   toastTimestamp: number;
-  setPendingTxns: SetPendingTransactions;
 }) {
+  const { setPendingTxns } = usePendingTxns();
   const [isCancelOrderProcessing, setIsCancelOrderProcessing] = useState(false);
   const { chainId } = useChainId();
   const { signer } = useWallet();

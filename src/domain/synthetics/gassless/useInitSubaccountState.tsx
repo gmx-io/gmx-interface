@@ -21,6 +21,7 @@ import { SubaccountSerializedConfig } from "../subaccount/types";
 import { useSubaccountFromContractsRequest } from "../subaccount/useSubaccountFromContractsRequest";
 import {
   createAndSignSubaccountApproval,
+  getActualApproval,
   getInitialSubaccountApprovalParams,
   getIsSubaccountActive,
   getMaxSubaccountActions,
@@ -63,7 +64,7 @@ export function useInitSubaccountState() {
 
     const subaccountSigner = getSubaccountSigner(subaccountConfig, account, signer?.provider);
 
-    return {
+    const result = {
       address: subaccountConfig.address,
       signer: subaccountSigner,
       signedApproval,
@@ -81,6 +82,10 @@ export function useInitSubaccountState() {
         onchainData: subaccountData,
       }),
     };
+
+    result.signedApproval = getActualApproval(result);
+
+    return result;
   }, [account, signedApproval, signer?.provider, subaccountConfig, subaccountData]);
 
   const updateSubaccountSettings = useCallback(
@@ -180,7 +185,7 @@ export function useInitSubaccountState() {
         chainId,
         signer,
         subaccountConfig.address,
-        subaccountData.approvalNonce + 1n,
+        subaccountData.approvalNonce,
         {
           shouldAdd: !subaccountData.active,
           expiresAt: initialParams.expiresAt,
@@ -313,19 +318,6 @@ export function useInitSubaccountState() {
     refreshSubaccountData();
     settings.setOneClickTradingEnabled(false);
   }, [signer, subaccount, chainId, resetStoredApproval, resetStoredConfig, refreshSubaccountData, settings]);
-
-  useEffect(
-    function resetApporvalByNonce() {
-      if (
-        signedApproval?.nonce &&
-        subaccountData?.approvalNonce &&
-        subaccountData.approvalNonce > signedApproval.nonce
-      ) {
-        resetSubaccountApproval();
-      }
-    },
-    [signedApproval?.nonce, subaccountData?.approvalNonce, resetSubaccountApproval]
-  );
 
   useEffect(() => {
     if (isTryingToEnableSubaccount && !isTryingToSignDefaultSubaccountApproval) {

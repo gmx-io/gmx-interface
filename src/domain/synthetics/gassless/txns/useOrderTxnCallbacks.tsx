@@ -47,19 +47,15 @@ export function useOrderTxnCallbacks() {
 
   const orderTxnCallback = useCallback(
     (ctx: OrderTxnCallbackCtx, e: TxnEvent<BatchOrderTxnEventParams>) => {
+      // TEMP DEBUG
+      // eslint-disable-next-line no-console
+      console.log("TXN EVENT", e, ctx);
+
       switch (e.event) {
         case TxnEventName.TxnSimulated: {
           if (ctx.metricId) {
             sendOrderSimulatedMetric(ctx.metricId);
           }
-          return;
-        }
-
-        // TODO: express signed?
-        // TODO: subaccount signed?
-
-        case TxnEventName.TxnPrepared: {
-          // TODO: remove?
           return;
         }
 

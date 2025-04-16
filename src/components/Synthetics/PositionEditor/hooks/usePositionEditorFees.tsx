@@ -18,13 +18,15 @@ import { useChainId } from "lib/chains";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 import { Operation } from "../types";
+import { RelayFeeSwapParams } from "domain/synthetics/gassless/txns/expressOrderUtils";
 
 export type Options = {
   operation: Operation;
+  relayerFeeParams?: RelayFeeSwapParams;
 };
 
 // todo make it a selector
-export function usePositionEditorFees({ operation }: Options) {
+export function usePositionEditorFees({ operation, relayerFeeParams }: Options) {
   const { chainId } = useChainId();
   const tokensData = useTokensData();
 
@@ -69,6 +71,7 @@ export function usePositionEditorFees({ operation }: Options) {
     return {
       fees,
       executionFee,
+      relayerFeeParams,
     };
-  }, [chainId, collateralDeltaUsd, gasLimits, gasPrice, isDeposit, position, tokensData]);
+  }, [chainId, collateralDeltaUsd, gasLimits, gasPrice, isDeposit, position, tokensData, relayerFeeParams]);
 }

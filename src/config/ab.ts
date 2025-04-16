@@ -11,6 +11,7 @@ type AbStorage = {
 };
 
 const abFlagsConfig = {
+  testSponsoredCall: 0,
   testExampleAb: 0,
 };
 

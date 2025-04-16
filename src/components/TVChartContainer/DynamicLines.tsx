@@ -12,8 +12,10 @@ import { selectChartDynamicLines } from "context/SyntheticsStateContext/selector
 import {
   makeSelectSubaccountForActions,
   selectChainId,
+  selectGasPrice,
   selectMarketsInfoData,
   selectOrdersInfoData,
+  selectSponsoredCallMultiplierFactor,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
@@ -25,7 +27,10 @@ import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateC
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { sendUniversalBatchTxn } from "domain/synthetics/gassless/txns/universalTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/gassless/txns/useOrderTxnCallbacks";
-import { getExpressCancelOrdersParams } from "domain/synthetics/gassless/useRelayerFeeHandler";
+import {
+  getExpressCancelOrdersParams,
+  useGasPaymentTokenAllowanceData,
+} from "domain/synthetics/gassless/useRelayerFeeHandler";
 import { useMarkets } from "domain/synthetics/markets";
 import { calculateDisplayDecimals, formatAmount, numberToBigint } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -57,8 +62,11 @@ export function DynamicLines({
   const relayFeeTokens = useSelector(selectRelayFeeTokens);
   const { marketsData } = useMarkets(chainId);
   const marketsInfoData = useSelector(selectMarketsInfoData);
+  const sponsoredCallMultiplierFactor = useSelector(selectSponsoredCallMultiplierFactor);
+  const gasPrice = useSelector(selectGasPrice);
   const tokensData = useSelector(selectTokensData);
   const { pendingOrdersUpdates } = useSyntheticsEvents();
+  const gasPaymentAllowanceData = useGasPaymentTokenAllowanceData(chainId, relayFeeTokens.gasPaymentToken?.address);
 
   const onCancelOrder = useCallback(
     async (key: string) => {
@@ -74,6 +82,9 @@ export function DynamicLines({
         tokensData,
         marketsInfoData,
         findSwapPath: relayFeeTokens.findSwapPath,
+        sponsoredCallMultiplierFactor,
+        gasPrice,
+        gasPaymentAllowanceData,
       });
 
       sendUniversalBatchTxn({
@@ -99,12 +110,15 @@ export function DynamicLines({
     [
       cancelOrdersDetailsMessage,
       chainId,
+      gasPaymentAllowanceData,
+      gasPrice,
       makeCancelOrderTxnCallback,
       marketsInfoData,
       relayFeeTokens.findSwapPath,
       relayFeeTokens.gasPaymentToken?.address,
       setCancellingOrdersKeys,
       signer,
+      sponsoredCallMultiplierFactor,
       subaccount,
       tokensData,
     ]

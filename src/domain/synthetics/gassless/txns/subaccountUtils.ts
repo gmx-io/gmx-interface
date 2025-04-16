@@ -1,6 +1,6 @@
 import cryptoJs from "crypto-js";
 import { ethers, Signer } from "ethers";
-import { encodeAbiParameters, keccak256, zeroHash } from "viem";
+import { encodeAbiParameters, keccak256, maxUint256, zeroHash } from "viem";
 
 import { SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
 import { SubaccountOnchainData } from "domain/synthetics/subaccount/useSubaccountFromContractsRequest";
@@ -14,6 +14,8 @@ import { nowInSeconds } from "sdk/utils/time";
 
 import { getGelatoRelayRouterDomain } from "./relayParams";
 import { signTypedData } from "./signing";
+import { bigMath } from "sdk/utils/bigmath";
+import { ZERO_DATA } from "sdk/utils/hash";
 
 export type Subaccount = {
   address: string;
@@ -108,45 +110,60 @@ export function getEmptySubaccountApproval(subaccountAddress: string): SignedSub
     maxAllowedCount: 0n,
     actionType: SUBACCOUNT_ORDER_ACTION,
     nonce: 0n,
-    deadline: 0n,
-    signature: zeroHash,
+    deadline: maxUint256,
+    signature: ZERO_DATA,
   };
 }
 
-export async function getActualApproval(
-  chainId: number,
-  subaccount: Subaccount | undefined
-): Promise<SignedSubbacountApproval | undefined> {
+export function getIsEmptySubaccountApproval(subaccountApproval: SignedSubbacountApproval): boolean {
+  return (
+    subaccountApproval.signature === ZERO_DATA &&
+    subaccountApproval.nonce === 0n &&
+    subaccountApproval.expiresAt === 0n &&
+    subaccountApproval.maxAllowedCount === 0n &&
+    subaccountApproval.shouldAdd === false
+  );
+}
+
+export function getActualApproval(subaccount: Subaccount | undefined): SignedSubbacountApproval | undefined {
   if (!subaccount) {
     return undefined;
   }
 
-  const { signedApproval, signer, address } = subaccount;
+  const { signedApproval, address } = subaccount;
 
-  if (!signedApproval) {
+  if (!signedApproval || getIsSubaccountApprovalSynced(subaccount)) {
     return getEmptySubaccountApproval(address);
-  }
-
-  if (getIsApprovalExpired(signedApproval)) {
-    const now = BigInt(nowInSeconds());
-
-    return createAndSignSubaccountApproval(chainId, signer, address, signedApproval.nonce, {
-      ...signedApproval,
-      expiresAt: now + BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION),
-      deadline: now + BigInt(DEFAULT_SUBACCOUNT_DEADLINE_DURATION),
-    });
   }
 
   return signedApproval;
 }
 
-export function getIsApprovalExpired(approval: SubaccountApproval): boolean {
+export function getIsSubaccountApprovalSynced(subaccount: Subaccount): boolean {
+  const { signedApproval, onchainData } = subaccount;
+
+  if (!signedApproval) {
+    return false;
+  }
+
+  return (
+    onchainData.maxAllowedCount === signedApproval.maxAllowedCount && onchainData.expiresAt === signedApproval.expiresAt
+  );
+}
+
+export function getIsApprovalExpired(subaccount: Subaccount): boolean {
+  const { signedApproval, onchainData } = subaccount;
+
+  if (!signedApproval || getIsEmptySubaccountApproval(signedApproval)) {
+    return false;
+  }
+
   const now = BigInt(nowInSeconds());
 
-  const expiresAt = approval.expiresAt;
-  const deadline = approval.deadline;
+  const expiresAt = signedApproval.expiresAt;
+  const deadline = signedApproval.deadline;
 
-  return now >= expiresAt || now >= deadline;
+  return now >= expiresAt || now >= deadline || onchainData.approvalNonce !== signedApproval.nonce;
 }
 
 export function getIsApprovalDeadlineExpired(approval: SubaccountApproval): boolean {
@@ -156,14 +173,22 @@ export function getIsApprovalDeadlineExpired(approval: SubaccountApproval): bool
   return now >= deadline;
 }
 
+export function getIsSubaccountActionsExceeded(subaccount: Subaccount, requiredActions: number) {
+  return getRemainingSubaccountActions(subaccount) < bigMath.max(1n, BigInt(requiredActions));
+}
+
 export function getIsSubaccountExpired(subaccount: Subaccount): boolean {
   const now = BigInt(nowInSeconds());
+  const isApprovalExpired = getIsApprovalExpired(subaccount);
+
+  if (isApprovalExpired) {
+    return true;
+  }
+
   const expiresAt = getSubaccountExpiresAt(subaccount);
-
   const isExpired = now >= expiresAt;
-  const isApprovalExpired = !subaccount.signedApproval || getIsApprovalExpired(subaccount.signedApproval);
 
-  return isExpired || isApprovalExpired;
+  return isExpired;
 }
 
 export function getIsNonceExpired(subaccount: Subaccount): boolean {

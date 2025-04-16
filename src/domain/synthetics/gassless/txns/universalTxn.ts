@@ -20,6 +20,8 @@ export type ExpressParams = {
   subaccount: Subaccount | undefined;
   relayParamsPayload: Omit<RelayParamsPayload, "deadline" | "userNonce">;
   relayFeeParams: RelayFeeSwapParams;
+  needGasPaymentTokenApproval: boolean;
+  isSponsoredCall: boolean;
 };
 
 export async function sendUniversalBatchTxn({
@@ -43,7 +45,12 @@ export async function sendUniversalBatchTxn({
     chainId,
     signer,
     params: batchParams,
-    pendingExpressTxnParams: undefined,
+    pendingExpressTxnParams: {
+      shouldResetSubaccountApproval: false,
+      shouldResetTokenPermits: false,
+      isSponsoredCall: expressParams?.isSponsoredCall ?? false,
+      taskId: "",
+    },
   };
 
   try {
@@ -79,6 +86,9 @@ export async function sendUniversalBatchTxn({
         subaccount: expressParams.subaccount,
       });
 
+      eventParams.pendingExpressTxnParams!.shouldResetSubaccountApproval = !txnData.isEmptySubaccountApproval;
+      eventParams.pendingExpressTxnParams!.shouldResetTokenPermits = txnData.tokenPermits.length > 0;
+
       callback?.({
         event: TxnEventName.TxnPrepared,
         txnParams: eventParams,
@@ -87,43 +97,50 @@ export async function sendUniversalBatchTxn({
 
       const createdAt = Date.now();
 
-      return await withRetry(
+      const res = await withRetry(
         () =>
           sendExpressTxn({
             chainId,
             txnData,
-          }).then(async (res) => {
-            eventParams.pendingExpressTxnParams = {
-              shouldResetSubaccountApproval: !txnData.isEmptySubaccountApproval,
-              shouldResetTokenPermits: txnData.tokenPermits.length > 0,
-              taskId: res.taskId,
-            };
+            isSponsoredCall: expressParams.isSponsoredCall,
+          })
+            .then(async (res) => {
+              eventParams.pendingExpressTxnParams!.taskId = res.taskId;
 
-            callback?.({
-              event: TxnEventName.TxnSent,
-              txnParams: eventParams,
-              data: {
-                txnHash: zeroHash,
-                blockNumber: BigInt(await signer.provider!.getBlockNumber()),
-                createdAt,
-              },
-            });
+              callback?.({
+                event: TxnEventName.TxnSent,
+                txnParams: eventParams,
+                data: {
+                  txnHash: zeroHash,
+                  blockNumber: BigInt(await signer.provider!.getBlockNumber()),
+                  createdAt,
+                },
+              });
 
-            return res;
-          }),
+              return res;
+            })
+            .catch((error) => {
+              throw extendError(error, {
+                errorContext: "sending",
+              });
+            }),
         {
           retryCount: 3,
         }
       );
-    } else {
-      return sendBatchOrderWalletTxn({
-        chainId,
-        signer,
-        params: batchParams,
-        simulationParams: undefined,
-        callback,
-      });
+
+      if (res) {
+        return res;
+      }
     }
+
+    return sendBatchOrderWalletTxn({
+      chainId,
+      signer,
+      params: batchParams,
+      simulationParams: undefined,
+      callback,
+    });
   } catch (error) {
     callback?.({
       txnParams: eventParams,

@@ -49,6 +49,7 @@ import { CollateralSpreadRow } from "./CollateralSpreadRow";
 import { EntryPriceRow } from "./EntryPriceRow";
 import { SwapSpreadRow } from "./SwapSpreadRow";
 import { useTradeboxAllowedSwapSlippageValues } from "../hooks/useTradeboxAllowedSwapSlippageValues";
+import { RelayFeeSwapParams } from "domain/synthetics/gassless/txns/expressOrderUtils";
 
 function LeverageInfoRows() {
   const { isIncrease, isTrigger } = useSelector(selectTradeboxTradeFlags);
@@ -186,7 +187,13 @@ function DecreaseOrderRow() {
   );
 }
 
-export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: string }) {
+export function TradeBoxAdvancedGroups({
+  slippageInputId,
+  relayerFeeParams,
+}: {
+  slippageInputId: string;
+  relayerFeeParams?: RelayFeeSwapParams;
+}) {
   const options = useSelector(selectTradeboxAdvancedOptions);
   const setOptions = useSelector(selectTradeboxSetAdvancedOptions);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
@@ -283,11 +290,7 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
       {isIncrease && <IncreaseOrderRow />}
       {isTrigger && <DecreaseOrderRow />}
       <TradeFeesRow {...fees} feesType={feesType} />
-      <NetworkFeeRow
-        executionFee={executionFee}
-        // gasPaymentTokenAddress={relayerFee?.gasPaymentTokenAddress}
-        // gasPaymentTokenAmount={relayerFee?.gasPaymentTokenAmount}
-      />
+      <NetworkFeeRow executionFee={executionFee} relayerFeeParams={relayerFeeParams} />
 
       {(isSwap || isLimit || (isMarket && !isSwap) || isMarket) && <div className="h-1 shrink-0 bg-stroke-primary" />}
 

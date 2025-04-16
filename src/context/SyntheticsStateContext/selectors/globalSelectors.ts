@@ -1,7 +1,9 @@
 import { DisabledFeatures } from "domain/synthetics/features/useDisabledFeatures";
-import { getRemainingSubaccountActions } from "domain/synthetics/gassless/txns/subaccountUtils";
+import {
+  getIsSubaccountActionsExceeded,
+  getIsSubaccountExpired,
+} from "domain/synthetics/gassless/txns/subaccountUtils";
 import { getRelayerFeeToken } from "sdk/configs/express";
-import { bigMath } from "sdk/utils/bigmath";
 import { getByKey } from "sdk/utils/objects";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
@@ -24,6 +26,14 @@ export const selectChainId = (s: SyntheticsState) => s.globals.chainId;
 export const selectDepositMarketTokensData = (s: SyntheticsState) => s.globals.depositMarketTokensData;
 export const selectIsFirstOrder = (s: SyntheticsState) => s.globals.isFirstOrder;
 export const selectDisabledFeatures = (s: SyntheticsState) => s.disabledFeatures;
+export const selectSponsoredCallParams = (s: SyntheticsState) => s.sponsoredCallParams;
+export const selectSponsoredCallMultiplierFactor = (s: SyntheticsState) => {
+  if (!s.sponsoredCallParams?.isSponsoredCallAllowed) {
+    return undefined;
+  }
+
+  return s.sponsoredCallParams.gelatoRelayFeeMultiplierFactor;
+};
 
 export const makeSelectDisableFeature = createSelectorFactory((feature: keyof DisabledFeatures) => {
   return createSelector((q) => {
@@ -104,7 +114,8 @@ export const makeSelectSubaccountForActions = createSelectorFactory((requiredAct
     if (
       isDisabled ||
       !subaccount ||
-      getRemainingSubaccountActions(subaccount) < bigMath.max(1n, BigInt(requiredActions))
+      getIsSubaccountActionsExceeded(subaccount, requiredActions) ||
+      getIsSubaccountExpired(subaccount)
     ) {
       return undefined;
     }

@@ -29,6 +29,7 @@ export type Token = {
   reservesUrl?: string;
   imageUrl?: string;
   categories?: TokenCategory[];
+  isPermitSupported?: boolean;
 
   isUsdg?: boolean;
   isNative?: boolean;
