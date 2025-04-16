@@ -13,7 +13,7 @@ import { Order, OrderType, OrdersInfoData } from "./types";
 import { useOrders } from "./useOrders";
 import { setOrderInfoTitle } from "./utils";
 import { decodeTwapUiFeeReceiver } from "../trade/twap/uiFeeReceiver";
-import { getTWAPOrderKey } from "../trade/twap/utils";
+import { getTwapOrderKey } from "../trade/twap/utils";
 
 export type AggregatedOrdersDataResult = {
   ordersInfoData?: OrdersInfoData;
@@ -113,12 +113,15 @@ const createOrderInfo = ({
   });
 
   if (twapId && orderInfo) {
-    const twapOrderKey = getTWAPOrderKey({
+    const twapOrderKey = getTwapOrderKey({
       twapId,
       orderType: order.orderType,
       pool: order.marketAddress,
       collateralTokenSymbol: orderInfo.targetCollateralToken.symbol,
       isLong: order.isLong,
+      swapPath: order.swapPath,
+      account: order.account,
+      initialCollateralTokenSymbol: orderInfo.targetCollateralToken.symbol,
     });
 
     let twapOrderInfo = getByKey(acc, twapOrderKey);

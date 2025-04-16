@@ -15,10 +15,11 @@ import { DecreasePositionSwapType, OrderType } from "./types";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { TwapDuration } from "../trade/twap/types";
 import { createTwapUiFeeReceiver } from "../trade/twap/uiFeeReceiver";
+import { createTwapValidFromTimeGetter } from "../trade/twap/utils";
 
 const { ZeroAddress } = ethers;
 
-export type SwapOrderParams = {
+export type TwapSwapOrderParams = {
   account: string;
   fromTokenAddress: string;
   fromTokenAmount: bigint;
@@ -39,7 +40,7 @@ export async function createTwapSwapOrderTxn(
   chainId: number,
   signer: Signer,
   subaccount: Subaccount,
-  p: SwapOrderParams
+  p: TwapSwapOrderParams
 ) {
   const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const isNativePayment = p.fromTokenAddress === NATIVE_TOKEN_ADDRESS;
@@ -116,17 +117,13 @@ async function getParams(
   signer: Signer,
   subaccount: Subaccount,
   chainId: number,
-  p: SwapOrderParams
+  p: TwapSwapOrderParams
 ) {
-  const durationMinutes = p.duration.hours * 60 + p.duration.minutes;
-  const durationMs = durationMinutes * 60;
-  const startTime = Math.ceil(Date.now() / 1000);
-
+  const validFromTimeGetter = createTwapValidFromTimeGetter(p.duration, p.numberOfParts);
   const uiFeeReceiver = createTwapUiFeeReceiver();
+  const signerAddress = await signer.getAddress();
 
   const initialCollateralDeltaAmount = subaccount ? p.fromTokenAmount : 0n;
-
-  const signerAddress = await signer.getAddress();
 
   const payload = new Array(p.numberOfParts).fill(0).flatMap((_, i) => {
     return createSingleSwapTwapOrderPayload({
@@ -134,18 +131,15 @@ async function getParams(
       swapPath: p.swapPath,
       triggerRatio: 0n,
       minOutputAmount: 0n,
-      orderType: OrderType.LimitSwap,
       executionFee: p.executionFee / BigInt(p.numberOfParts),
       uiFeeReceiver,
-      isNativeReceive: p.toTokenAddress === NATIVE_TOKEN_ADDRESS,
       referralCode: p.referralCode,
       initialCollateralDeltaAmount: initialCollateralDeltaAmount / BigInt(p.numberOfParts),
-      validFromTime: BigInt(startTime + (durationMs / p.numberOfParts) * i),
+      validFromTime: validFromTimeGetter(i),
       fromTokenAddress: p.fromTokenAddress,
       fromTokenAmount: p.fromTokenAmount / BigInt(p.numberOfParts),
       toTokenAddress: p.toTokenAddress,
       subaccount,
-      signer,
       router,
       chainId,
       signerAddress,
@@ -184,10 +178,8 @@ type CreateSwapTwapOrderPayloadParams = {
   swapPath: string[];
   triggerRatio: bigint;
   minOutputAmount: bigint;
-  orderType: OrderType;
   executionFee: bigint;
   uiFeeReceiver: string;
-  isNativeReceive: boolean;
   referralCode: string | undefined;
   initialCollateralDeltaAmount: bigint;
   validFromTime: bigint;
@@ -195,7 +187,6 @@ type CreateSwapTwapOrderPayloadParams = {
   fromTokenAmount: bigint;
   toTokenAddress: string;
   subaccount: Subaccount;
-  signer: Signer;
   router: ethers.Contract;
   chainId: number;
   signerAddress: string;
@@ -206,15 +197,14 @@ const getCreateSwapTwapOrderPayload = ({
   swapPath,
   triggerRatio,
   minOutputAmount,
-  orderType,
   executionFee,
   uiFeeReceiver,
-  isNativeReceive,
   referralCode,
   initialCollateralDeltaAmount,
   validFromTime,
   fromTokenAddress,
   chainId,
+  toTokenAddress,
 }: CreateSwapTwapOrderPayloadParams) => {
   const initialCollateralTokenAddress = convertTokenAddress(chainId, fromTokenAddress, "wrapped");
 
@@ -243,10 +233,10 @@ const getCreateSwapTwapOrderPayload = ({
       validFromTime,
     },
     autoCancel: false,
-    orderType,
+    orderType: OrderType.LimitSwap,
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
     isLong: false,
-    shouldUnwrapNativeToken: isNativeReceive,
+    shouldUnwrapNativeToken: toTokenAddress === NATIVE_TOKEN_ADDRESS,
     referralCode: referralCode || ethers.ZeroHash,
   };
 };

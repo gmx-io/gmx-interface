@@ -48,7 +48,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
   } = usePositionSeller();
 
   const isTrigger = orderOption === OrderOption.Trigger;
-
+  const isTwap = orderOption === OrderOption.Twap;
   const decreaseAmounts = useSelector(selectPositionSellerDecreaseAmounts);
 
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
@@ -141,7 +141,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
       <TradeFeesRow {...fees} feesType="decrease" />
       <NetworkFeeRow executionFee={executionFee} />
       {isTrigger && acceptablePriceImpactInputRow}
-      {!isTrigger && (
+      {!isTrigger && !isTwap && (
         <AllowedSlippageRow
           allowedSlippage={allowedSlippage}
           setAllowedSlippage={setAllowedSlippage}

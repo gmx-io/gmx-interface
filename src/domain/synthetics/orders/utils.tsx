@@ -28,6 +28,7 @@ import {
 } from "../trade";
 import { DecreaseOrderParams } from "./createDecreaseOrderTxn";
 import { SecondaryCancelOrderParams, SecondaryUpdateOrderParams } from "./createIncreaseOrderTxn";
+import { TwapDecreaseOrderParams } from "./createTwapDecreaseOrderTxn";
 import {
   OrderError,
   OrderInfo,
@@ -436,13 +437,13 @@ function getIsMaxLeverageError(
 export function getPendingOrderFromParams(
   chainId: number,
   txnType: OrderTxnType,
-  p: DecreaseOrderParams | SecondaryUpdateOrderParams | SecondaryCancelOrderParams
+  p: DecreaseOrderParams | SecondaryUpdateOrderParams | SecondaryCancelOrderParams | TwapDecreaseOrderParams
 ): PendingOrderData {
   const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
 
   const shouldApplySlippage = isMarketOrderType(p.orderType);
   let minOutputAmount = 0n;
-  if ("minOutputUsd" in p) {
+  if ("minOutputUsd" in p && "allowedSlippage" in p) {
     shouldApplySlippage ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd) : p.minOutputUsd; // eslint-disable-line
   }
   if ("minOutputAmount" in p) {

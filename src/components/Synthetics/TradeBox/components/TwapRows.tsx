@@ -21,7 +21,7 @@ type Props = {
   setDuration: (duration: TwapDuration) => void;
   sizeUsd: bigint | undefined;
   marketInfo: MarketInfo | undefined;
-  type: "swap" | "increase";
+  type: "swap" | "increase" | "decrease";
   isLong: boolean;
 };
 
@@ -115,7 +115,7 @@ const FrequencyField = ({ duration, numberOfParts }: { duration: TwapDuration; n
   }
 
   if (minutes > 2) {
-    const remainSeconds = seconds % 60;
+    const remainSeconds = Math.floor(seconds % 60);
     return (
       <Trans>
         <span className="text-slate-100">every</span> {minutes} minutes

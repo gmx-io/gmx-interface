@@ -18,6 +18,7 @@ import { getExternalCallsParams } from "../externalSwaps/utils";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { TwapDuration } from "../trade/twap/types";
 import { createTwapUiFeeReceiver } from "../trade/twap/uiFeeReceiver";
+import { createTwapValidFromTimeGetter } from "../trade/twap/utils";
 
 const { ZeroAddress } = ethers;
 
@@ -132,7 +133,7 @@ export async function createTwapIncreaseOrderTxn({
     undefined,
     metricId,
     additionalErrorContent
-  );
+  )
 
   await callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
     value: totalWntAmount,
@@ -184,14 +185,12 @@ async function createEncodedPayload({
   swapPath: string[];
   signer: Signer;
 }) {
-  const durationMinutes = p.duration.hours * 60 + p.duration.minutes;
-  const durationMs = durationMinutes * 60;
-  const startTime = Math.ceil(Date.now() / 1000);
+  const validFromTimeGetter = createTwapValidFromTimeGetter(p.duration, p.numberOfParts);
 
   const uiFeeReceiver = createTwapUiFeeReceiver();
 
-  const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount / BigInt(p.numberOfParts) : 0n;
-  const totalWntAmount = wntCollateralAmount + p.executionFee / BigInt(p.numberOfParts);
+  const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : 0n;
+  const totalWntAmount = wntCollateralAmount + p.executionFee;
   const externalSwapWntAmount = isNativePayment && p.externalSwapQuote?.txnData ? p.externalSwapQuote.amountIn : 0n;
   const orderVaultWntAmount = totalWntAmount - externalSwapWntAmount;
 
@@ -209,7 +208,7 @@ async function createEncodedPayload({
       isNativePayment,
       uiFeeReceiver: uiFeeReceiver,
       sizeDeltaUsd: p.sizeDeltaUsd / BigInt(p.numberOfParts),
-      validFromTime: BigInt(startTime + (durationMs / p.numberOfParts) * i),
+      validFromTime: validFromTimeGetter(i),
       triggerPrice,
       account: p.account,
       marketAddress: p.marketAddress,
@@ -220,7 +219,7 @@ async function createEncodedPayload({
       externalSwapQuote: p.externalSwapQuote,
       initialCollateralDeltaAmount: p.initialCollateralAmount / BigInt(p.numberOfParts),
       tokenToSendAddress,
-      wntAmount: orderVaultWntAmount,
+      wntAmount: orderVaultWntAmount / BigInt(p.numberOfParts),
       signerAddress,
     });
   });
@@ -228,7 +227,7 @@ async function createEncodedPayload({
   return payloads;
 }
 
-type SingleTwapIncreaseOrderParams = {
+type SingleTwapIncreaseOrderPayload = {
   chainId: number;
   router: ethers.Contract;
   orderVaultAddress: string;
@@ -254,7 +253,7 @@ type SingleTwapIncreaseOrderParams = {
   externalSwapQuote: ExternalSwapQuote | undefined;
 };
 
-function createSingleOrderEncodedPayload(params: SingleTwapIncreaseOrderParams) {
+function createSingleOrderEncodedPayload(params: SingleTwapIncreaseOrderPayload) {
   const {
     chainId,
     router,
@@ -327,7 +326,7 @@ function createOrderPayloadParams({
   isLong,
   referralCode,
   initialCollateralDeltaAmount,
-}: SingleTwapIncreaseOrderParams) {
+}: SingleTwapIncreaseOrderPayload) {
   return {
     addresses: {
       cancellationReceiver: ethers.ZeroAddress,
