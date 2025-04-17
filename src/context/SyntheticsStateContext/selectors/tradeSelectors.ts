@@ -440,7 +440,7 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
           return undefined;
         }
 
-        if (tradeFlags.isIncrease && increaseAmounts?.acceptablePrice && initialCollateralAmount > 0) {
+        if (tradeFlags.isIncrease && increaseAmounts?.acceptablePrice !== undefined && initialCollateralAmount > 0) {
           return getNextPositionValuesForIncreaseTrade({
             marketInfo,
             collateralToken,
