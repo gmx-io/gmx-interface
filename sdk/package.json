@@ -2,50 +2,56 @@
   "name": "@gmx-io/sdk",
   "version": "0.2.0",
   "type": "module",
-  "main": "./build/cjs/index.js",
-  "module": "./build/esm/index.js",
-  "types": "./build/types/index.d.ts",
+  "main": "./build/cjs/src/index.js",
+  "module": "./build/esm/src/index.js",
+  "types": "./build/src/index.d.ts",
   "exports": {
     ".": {
-      "import": "./build/esm/index.js",
-      "require": "./build/cjs/index.js",
-      "types": "./build/types/index.d.ts"
+      "import": "./build/esm/src/index.js",
+      "require": "./build/cjs/src/index.js",
+      "types": "./build/types/index.d.ts",
+      "default": "./build/cjs/src/index.js"
     },
     "./abis/*": {
-      "import": "./build/esm/abis/*",
-      "require": "./build/cjs/abis/*",
-      "types": "./build/types/abis/*"
+      "import": "./build/esm/src/abis/*",
+      "require": "./build/cjs/src/abis/*",
+      "types": "./build/types/abis/*",
+      "default": "./build/cjs/src/abis/*"
     },
     "./prebuilt/*": {
-      "import": "./build/esm/prebuilt/*",
-      "require": "./build/cjs/prebuilt/*",
-      "types": "./build/types/prebuilt/*"
+      "import": "./build/esm/src/prebuilt/*",
+      "require": "./build/cjs/src/prebuilt/*",
+      "types": "./build/types/prebuilt/*",
+      "default": "./build/cjs/src/prebuilt/*"
     },
     "./utils/*": {
-      "import": "./build/esm/utils/*",
-      "require": "./build/cjs/utils/*",
-      "types": "./build/types/utils/*"
+      "import": "./build/esm/src/utils/*",
+      "require": "./build/cjs/src/utils/*",
+      "types": "./build/types/utils/*",
+      "default": "./build/cjs/src/utils/*"
     },
     "./types/*": {
-      "import": "./build/esm/types/*",
-      "require": "./build/cjs/types/*",
-      "types": "./build/types/types/*"
+      "import": "./build/esm/src/types/*",
+      "require": "./build/cjs/src/types/*",
+      "types": "./build/types/types/*",
+      "default": "./build/cjs/src/types/*"
     },
     "./configs/*": {
-      "import": "./build/esm/configs/*",
-      "require": "./build/cjs/configs/*",
-      "types": "./build/types/configs/*"
+      "import": "./build/esm/src/configs/*",
+      "require": "./build/cjs/src/configs/*",
+      "types": "./build/types/configs/*",
+      "default": "./build/cjs/src/configs/*"
     }
   },
   "scripts": {
     "prebuild": "yarn tsx scripts/prebuild",
     "prepare": "ts-patch install -s",
-    "copy:jsons": "cp -r src/abis build/esm && cp -r src/prebuilt build/esm && cp -r src/abis build/cjs && cp -r src/prebuilt build/cjs",
     "test": "vitest",
     "test:ci": "vitest run",
+    "build:cjs": "tsc -p tsconfig.cjs.json; echo '{\"type\": \"commonjs\"}' > build/cjs/src/package.json",
+    "build:esm": "tsc -p tsconfig.esm.json; echo '{\"type\": \"module\"}' > build/esm/src/package.json",    
     "tscheck": "tsc -p tsconfig.json --noEmit",
-    "compile": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json",
-    "build": "rm -rf build && yarn compile && yarn copy:jsons"
+    "build": "rm -rf build && yarn build:cjs && yarn build:esm"
   },
   "publishConfig": {
     "access": "public"
