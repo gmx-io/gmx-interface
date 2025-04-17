@@ -30,7 +30,14 @@ export function useConfigureUserAnalyticsProfile() {
   const { chainId } = useChainId();
   const { account, active } = useWallet();
   const { data: bowser } = useBowser();
-  const { shouldShowPositionLines } = useSettings();
+  const {
+    shouldShowPositionLines,
+    isLeverageSliderEnabled,
+    showPnlAfterFees,
+    isPnlInLeverage,
+    isAutoCancelTPSL,
+    externalSwapsEnabled,
+  } = useSettings();
 
   const timePeriods = useMemo(() => getTimePeriodsInSeconds(), []);
 
@@ -106,8 +113,25 @@ export function useConfigureUserAnalyticsProfile() {
       isChartPositionsEnabled: shouldShowPositionLines,
       ref: referralCode,
       utm: utmParams?.utmString,
+      showLeverageSlider: isLeverageSliderEnabled,
+      displayPnLAfterFees: showPnlAfterFees,
+      includePnlInLeverageDisplay: isPnlInLeverage,
+      autoCancelTPSL: isAutoCancelTPSL,
+      enableExternalSwaps: externalSwapsEnabled,
     });
-  }, [currentLanguage, last30DVolume, totalVolume, referralCode, utmParams?.utmString, shouldShowPositionLines]);
+  }, [
+    currentLanguage,
+    last30DVolume,
+    totalVolume,
+    referralCode,
+    utmParams?.utmString,
+    shouldShowPositionLines,
+    isLeverageSliderEnabled,
+    showPnlAfterFees,
+    isPnlInLeverage,
+    isAutoCancelTPSL,
+    externalSwapsEnabled,
+  ]);
 
   useEffect(() => {
     userAnalytics.setDebug(showDebugValues || false);
