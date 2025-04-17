@@ -1,7 +1,4 @@
-
-
 import { getAddress } from "viem";
-
 
 import type { MarketsInfoData } from "types/markets";
 import { Token, TokensData } from "types/tokens";
