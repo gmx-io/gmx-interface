@@ -40,6 +40,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 
 import "./PositionItem.scss";
+import { TwapOrderProgress } from "../OrderItem/OrderItem";
 
 export type Props = {
   position: PositionInfo;
@@ -864,6 +865,8 @@ function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
       <span>
         {isIncrease ? "+" : "-"}
         {formatUsd(order.sizeDeltaUsd)}
+
+        {isTwapOrder(order) && <TwapOrderProgress order={order} />}
       </span>
     </div>
   );

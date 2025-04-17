@@ -15,6 +15,8 @@ import {
   OrderInfo,
   PositionOrderInfo,
   SwapOrderInfo,
+  TwapPositionOrderInfo,
+  TwapSwapOrderInfo,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLimitOrderType,
@@ -40,6 +42,7 @@ import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 
+import TwapOrdersList from "./TwapOrdersList/TwapOrdersList";
 import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
 
 import "./OrderItem.scss";
@@ -168,38 +171,59 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
       handle={<TitleWithIcon bordered order={order} />}
       position="bottom-start"
       content={
-        <>
-          <StatsTooltipRow label={getCollateralLabel()} value={getCollateralText()} showDollar={false} />
+        isTwapOrder(order) ? (
+          <TwapOrdersList order={order} />
+        ) : (
+          <>
+            <StatsTooltipRow label={getCollateralLabel()} value={getCollateralText()} showDollar={false} />
 
-          {isCollateralSwap && (
-            <div className="OrderItem-tooltip-row">
-              <Trans>
-                {formatBalanceAmount(
-                  positionOrder.initialCollateralDeltaAmount,
-                  positionOrder.initialCollateralToken.decimals,
-                  positionOrder.initialCollateralToken[positionOrder.shouldUnwrapNativeToken ? "baseSymbol" : "symbol"]
-                )}{" "}
-                will be swapped to{" "}
-                {positionOrder.targetCollateralToken.isNative
-                  ? wrappedToken.symbol
-                  : positionOrder.targetCollateralToken.symbol}{" "}
-                on order execution.
-              </Trans>
-            </div>
-          )}
+            {isCollateralSwap && (
+              <div className="OrderItem-tooltip-row">
+                <Trans>
+                  {formatBalanceAmount(
+                    positionOrder.initialCollateralDeltaAmount,
+                    positionOrder.initialCollateralToken.decimals,
+                    positionOrder.initialCollateralToken[
+                      positionOrder.shouldUnwrapNativeToken ? "baseSymbol" : "symbol"
+                    ]
+                  )}{" "}
+                  will be swapped to{" "}
+                  {positionOrder.targetCollateralToken.isNative
+                    ? wrappedToken.symbol
+                    : positionOrder.targetCollateralToken.symbol}{" "}
+                  on order execution.
+                </Trans>
+              </div>
+            )}
 
-          {showDebugValues && (
-            <div className="OrderItem-tooltip-row">
-              <StatsTooltipRow
-                label={"Key"}
-                value={<div className="debug-key muted">{positionOrder.key}</div>}
-                showDollar={false}
-              />
-            </div>
-          )}
-        </>
+            {showDebugValues && (
+              <div className="OrderItem-tooltip-row">
+                <StatsTooltipRow
+                  label={"Key"}
+                  value={<div className="debug-key muted">{positionOrder.key}</div>}
+                  showDollar={false}
+                />
+              </div>
+            )}
+          </>
+        )
       }
     />
+  );
+}
+
+export function TwapOrderProgress({
+  order,
+  className,
+}: {
+  order: TwapSwapOrderInfo | TwapPositionOrderInfo;
+  className?: string;
+}) {
+  return (
+    <span className={className}>
+      {" "}
+      ({order.numberOfParts - order.orders.length}/{order.numberOfParts})
+    </span>
   );
 }
 
@@ -226,6 +250,8 @@ export function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?
           <span>{toTokenText} </span>
           {toTokenIcon}
         </Trans>
+
+        {isTwapOrder(order) && <TwapOrderProgress order={order} className="text-slate-100" />}
       </div>
     );
   }
@@ -242,6 +268,7 @@ export function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?
       })}
     >
       {sizeText}
+      {isTwapOrder(order) && <TwapOrderProgress order={order} className="text-slate-100" />}
     </span>
   );
 }

@@ -1834,10 +1834,6 @@ msgstr ""
 msgid "Pair"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
-#~ msgid "This TWAP order will execute {numberOfParts} long increase orders of {0} each over the next {1} for the {2} pool."
-#~ msgstr ""
-
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
@@ -2882,6 +2878,10 @@ msgstr "正在获取代币信息"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "This swap is routed through several GM pools for the lowest possible fees and price impact."
+msgstr ""
+
+#: src/components/Synthetics/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+msgid "{0}"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
@@ -4420,10 +4420,6 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
 msgstr ""
-
-#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "Create TWAP Increase order"
-#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
