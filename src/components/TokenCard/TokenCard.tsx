@@ -7,9 +7,7 @@ import { Link } from "react-router-dom";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getIcon } from "config/icons";
 import { getIncentivesV2Url } from "config/links";
-import { getMarketListingDate } from "config/markets";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
-import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseApyReadyToBeShown";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import type { MarketTokensAPRData } from "domain/synthetics/markets/types";
 import { GlvList, useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
@@ -23,33 +21,28 @@ import { LandingPageProtocolReadMoreEvent, LandingPageProtocolTokenEvent } from 
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
+import APRLabel from "components/APRLabel/APRLabel";
 import BannerButton from "components/Banner/BannerButton";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { HeaderLink } from "components/Header/HeaderLink";
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
 import sparkleIcon from "img/sparkle.svg";
-
-import APRLabel from "../APRLabel/APRLabel";
-import { HeaderLink } from "../Header/HeaderLink";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
 const gmIcon = getIcon("common", "gm");
 const glvIcon = getIcon("common", "glv");
 
-function calculateMaxApr(apr: MarketTokensAPRData, incentiveApr: MarketTokensAPRData, chainId?: number) {
+function calculateMaxApr(apr: MarketTokensAPRData, incentiveApr: MarketTokensAPRData) {
   const allKeys = uniq(keys(apr).concat(keys(incentiveApr)));
 
   let maxApr = 0n;
 
   for (const key of allKeys) {
-    const isBaseApyReadyToBeShown = chainId ? getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, key)) : true;
-
     let aprValue = 0n;
-    if (isBaseApyReadyToBeShown) {
-      aprValue = apr[key] ?? 0n;
-    }
+    aprValue = apr[key] ?? 0n;
 
     const incentiveAprValue = incentiveApr[key] ?? 0n;
     const totalApr = aprValue + incentiveAprValue;
@@ -215,8 +208,8 @@ export default function TokenCard({ showRedirectModal }: Props) {
         [AVALANCHE]: "...%",
       };
 
-    const maxArbApy = calculateMaxApr(arbApy, arbIncentiveApr, ARBITRUM);
-    const maxAvaxApy = calculateMaxApr(avaxApy, avaxIncentiveApr, AVALANCHE);
+    const maxArbApy = calculateMaxApr(arbApy, arbIncentiveApr);
+    const maxAvaxApy = calculateMaxApr(avaxApy, avaxIncentiveApr);
 
     return {
       [ARBITRUM]: `${formatAmount(maxArbApy, 28, 2)}%`,
@@ -225,12 +218,10 @@ export default function TokenCard({ showRedirectModal }: Props) {
   }, [arbApy, arbIncentiveApr, avaxApy, avaxIncentiveApr]);
 
   const maxGlvApyText = useMemo(() => {
-    const arb = !arbGlvApy
-      ? "...%"
-      : `${formatAmount(calculateMaxApr(arbGlvApy, arbGlvIncentiveApr ?? {}, ARBITRUM), 28, 2)}%`;
+    const arb = !arbGlvApy ? "...%" : `${formatAmount(calculateMaxApr(arbGlvApy, arbGlvIncentiveApr ?? {}), 28, 2)}%`;
     const avax = !avaxGlvApy
       ? "...%"
-      : `${formatAmount(calculateMaxApr(avaxGlvApy, avaxGlvIncentiveApr ?? {}, AVALANCHE), 28, 2)}%`;
+      : `${formatAmount(calculateMaxApr(avaxGlvApy, avaxGlvIncentiveApr ?? {}), 28, 2)}%`;
     return {
       [ARBITRUM]: isGlvEnabled(ARBITRUM) ? arb : undefined,
       [AVALANCHE]: isGlvEnabled(AVALANCHE) ? avax : undefined,
