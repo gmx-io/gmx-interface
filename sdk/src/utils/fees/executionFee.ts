@@ -112,7 +112,7 @@ export function estimateExecuteGlvDepositGasLimit(
     marketsCount,
     isMarketTokenDeposit,
   }: {
-    isMarketTokenDeposit;
+    isMarketTokenDeposit: boolean;
     marketsCount: bigint;
     initialLongTokenAmount: bigint;
     initialShortTokenAmount: bigint;

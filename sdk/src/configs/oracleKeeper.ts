@@ -3,7 +3,7 @@ import sample from "lodash/sample";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
-const ORACLE_KEEPER_URLS = {
+const ORACLE_KEEPER_URLS: Record<number, string[]> = {
   [ARBITRUM]: ["https://arbitrum-api.gmxinfra.io", "https://arbitrum-api.gmxinfra2.io"],
 
   [AVALANCHE]: ["https://avalanche-api.gmxinfra.io", "https://avalanche-api.gmxinfra2.io"],
@@ -39,6 +39,11 @@ export function getOracleKeeperRandomIndex(chainId: number, bannedIndexes?: numb
 
     if (filteredUrls.length) {
       const url = sample(filteredUrls);
+
+      if (!url) {
+        throw new Error(`No oracle keeper urls for chain ${chainId}`);
+      }
+
       return urls.indexOf(url);
     }
   }

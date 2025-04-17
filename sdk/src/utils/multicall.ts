@@ -94,7 +94,7 @@ export class Multicall {
         data: {},
       };
 
-      response.forEach(({ result, status, error }, i) => {
+      response.forEach(({ result, status, error }: { result: any; status: string; error: any }, i: number) => {
         const { contractKey, callKey } = originalKeys[i];
 
         if (status === "success") {

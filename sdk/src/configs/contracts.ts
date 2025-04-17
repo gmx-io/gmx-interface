@@ -2,7 +2,7 @@ import { type Address, zeroAddress } from "viem";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET } from "./chains";
 
-export const CONTRACTS = {
+export const CONTRACTS: Record<number, Record<string, Address>> = {
   [BSС_MAINNET]: {
     // bsc mainnet
     Treasury: "0xa44E7252a0C137748F523F112644042E5987FfC7",

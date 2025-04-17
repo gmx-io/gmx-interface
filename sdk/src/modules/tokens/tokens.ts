@@ -1,6 +1,6 @@
 import { getContract } from "configs/contracts";
 import { NATIVE_TOKEN_ADDRESS, getToken, getTokensMap, getV2Tokens, getWrappedToken } from "configs/tokens";
-import { TokenBalancesData, TokenPricesData, TokensData, Token as TToken } from "types/tokens";
+import { Token, TokenBalancesData, TokenPricesData, TokensData, Token as TToken } from "types/tokens";
 import type { ContractCallsConfig } from "utils/multicall";
 import { parseContractPrice } from "utils/tokens";
 
@@ -83,38 +83,41 @@ export class Tokens extends Module {
 
     return this.sdk
       .executeMulticall(
-        tokensList.reduce((acc, token) => {
-          // Skip synthetic tokens
-          if (token.isSynthetic) return acc;
+        tokensList.reduce(
+          (acc, token) => {
+            // Skip synthetic tokens
+            if (token.isSynthetic) return acc;
 
-          const address = token.address;
+            const address = token.address;
 
-          if (address === NATIVE_TOKEN_ADDRESS) {
-            acc[address] = {
-              contractAddress: getContract(this.chainId, "Multicall"),
-              abiId: "Multicall",
-              calls: {
-                balance: {
-                  methodName: "getEthBalance",
-                  params: [account],
+            if (address === NATIVE_TOKEN_ADDRESS) {
+              acc[address] = {
+                contractAddress: getContract(this.chainId, "Multicall"),
+                abiId: "Multicall",
+                calls: {
+                  balance: {
+                    methodName: "getEthBalance",
+                    params: [account],
+                  },
                 },
-              },
-            } satisfies ContractCallsConfig<any>;
-          } else {
-            acc[address] = {
-              contractAddress: address,
-              abiId: "Token",
-              calls: {
-                balance: {
-                  methodName: "balanceOf",
-                  params: [account],
+              } satisfies ContractCallsConfig<any>;
+            } else {
+              acc[address] = {
+                contractAddress: address,
+                abiId: "Token",
+                calls: {
+                  balance: {
+                    methodName: "balanceOf",
+                    params: [account],
+                  },
                 },
-              },
-            } satisfies ContractCallsConfig<any>;
-          }
+              } satisfies ContractCallsConfig<any>;
+            }
 
-          return acc;
-        }, {})
+            return acc;
+          },
+          {} as Record<string, ContractCallsConfig<any>>
+        )
       )
       .then((res) => {
         return Object.keys(res.data).reduce((tokenBalances: TokenBalancesData, tokenAddress) => {
@@ -140,11 +143,7 @@ export class Tokens extends Module {
     const nativeToken = this.getNativeToken();
     const tokens = [nativeToken, ...apiTokens];
 
-    const { balancesData } = this.account
-      ? await this.getTokensBalances(this.account, tokens)
-      : {
-          balancesData: {},
-        };
+    const balancesData = this.account ? await this.getTokensBalances(this.account, tokens) : ({} as TokenBalancesData);
 
     if (!pricesData) {
       return {

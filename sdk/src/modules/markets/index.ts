@@ -69,7 +69,9 @@ export class Markets extends Module {
     marketsAddresses: string[] | undefined;
     marketsData: MarketsData | undefined;
     tokensData: TokensData | undefined;
-  }): Promise<MarketsResult> {
+  }): Promise<{
+    [marketAddress: string]: MarketValues;
+  }> {
     const dataStoreAddress = getContract(this.chainId, "DataStore");
     const syntheticsReaderAddress = getContract(this.chainId, "SyntheticsReader");
 
@@ -332,7 +334,15 @@ export class Markets extends Module {
     const chainId = this.chainId;
 
     const marketsResult = markets.reduce(
-      (acc: MarketsResult, market) => {
+      (
+        acc: MarketsResult,
+        market: {
+          marketTokenAddress: string;
+          indexTokenAddress: string;
+          longTokenAddress: string;
+          shortTokenAddress: string;
+        }
+      ) => {
         try {
           if (!marketsMap[market.marketTokenAddress]?.isListed) {
             return acc;
