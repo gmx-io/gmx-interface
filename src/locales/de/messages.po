@@ -5816,6 +5816,10 @@ msgstr "Von den von dir empfohlenen Tradern gehandeltes Volumen."
 msgid "Stablecoin Percentage"
 msgstr "Prozentsatz von Stablecoins"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Parts of this order will be executed once there is sufficient liquidity."
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>."
 msgstr ""
@@ -7952,6 +7956,10 @@ msgstr ""
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Leaderboard"
 msgstr "Bestenliste"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "There may not be enough liquidity to execute parts of this order when the time conditions are met."
+msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx

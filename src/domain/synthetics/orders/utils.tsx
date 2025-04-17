@@ -11,6 +11,7 @@ import {
   isOrderForPosition,
   isSwapOrder,
   isSwapOrderType,
+  isTwapOrder,
 } from "sdk/utils/orders";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -174,7 +175,31 @@ export function getOrderErrors(p: {
 
   const position = Object.values(positionsInfoData || {}).find((pos) => isOrderForPosition(positionOrder, pos.key));
 
-  if ([OrderType.LimitDecrease, OrderType.LimitIncrease].includes(positionOrder.orderType)) {
+  if (isTwapOrder(order) && isIncreaseOrderType(order.orderType)) {
+    const currentLiquidity = getAvailableUsdLiquidityForPosition(positionOrder.marketInfo, positionOrder.isLong);
+
+    const orderWithValidFromTimeExceeded = order.orders.find(
+      (order) => order.validFromTime < BigInt(Math.floor(Date.now() / 1000))
+    );
+
+    if (currentLiquidity < order.sizeDeltaUsd) {
+      if (orderWithValidFromTimeExceeded) {
+        errors.push({
+          msg: t`There may not be enough liquidity to execute parts of this order when the time conditions are met.`,
+          level: "error",
+          key: "twap-liquidity1",
+        });
+      } else {
+        errors.push({
+          msg: t`Parts of this order will be executed once there is sufficient liquidity.`,
+          level: "error",
+          key: "twap-liquidity2",
+        });
+      }
+    }
+  }
+
+  if ([OrderType.LimitDecrease, OrderType.LimitIncrease].includes(positionOrder.orderType) && !isTwapOrder(order)) {
     const { acceptablePriceDeltaBps: currentAcceptablePriceDeltaBps } = getAcceptablePriceInfo({
       marketInfo: positionOrder.marketInfo,
       isIncrease: isIncreaseOrderType(positionOrder.orderType),
@@ -206,7 +231,7 @@ export function getOrderErrors(p: {
     }
   }
 
-  if (positionOrder.orderType === OrderType.LimitIncrease) {
+  if (positionOrder.orderType === OrderType.LimitIncrease && !isTwapOrder(order)) {
     const currentLiquidity = getAvailableUsdLiquidityForPosition(positionOrder.marketInfo, positionOrder.isLong);
 
     if (currentLiquidity < positionOrder.sizeDeltaUsd) {

@@ -5819,6 +5819,10 @@ msgstr "Volume traded by your referred traders."
 msgid "Stablecoin Percentage"
 msgstr "Stablecoin Percentage"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Parts of this order will be executed once there is sufficient liquidity."
+msgstr "Parts of this order will be executed once there is sufficient liquidity."
+
 #: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>."
 msgstr "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>."
@@ -7958,6 +7962,10 @@ msgstr "Settling..."
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Leaderboard"
 msgstr "Leaderboard"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "There may not be enough liquidity to execute parts of this order when the time conditions are met."
+msgstr "There may not be enough liquidity to execute parts of this order when the time conditions are met."
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
