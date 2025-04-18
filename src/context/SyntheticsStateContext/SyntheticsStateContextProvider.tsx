@@ -5,6 +5,7 @@ import { Context, createContext, useContext, useContextSelector } from "use-cont
 
 import { getKeepLeverageKey } from "config/localStorage";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
 import { useIsLargeAccountTracker } from "domain/stats/isLargeAccount";
 import {
@@ -15,9 +16,14 @@ import {
 } from "domain/synthetics/accountStats";
 import { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
+import { DisabledFeatures, useDisabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
+import { SponsoredCallParams } from "domain/synthetics/gassless/txns/useGelatoRelayFeeMultiplierRequest";
+import { useSponsoredCallParamsRequest } from "domain/synthetics/gassless/txns/useGelatoRelayFeeMultiplierRequest";
+import { SubaccountState } from "domain/synthetics/gassless/useInitSubaccountState";
+import { TokenPermitsState, useInitTokenPermitsState } from "domain/synthetics/gassless/useInitTokenPermitsState";
 import {
   MarketsInfoResult,
   MarketsResult,
@@ -105,12 +111,16 @@ export type SyntheticsState = {
   };
   leaderboard: LeaderboardState;
   settings: SettingsContextType;
+  subaccountState: SubaccountState;
   tradebox: TradeboxState;
   externalSwap: ExternalSwapState;
+  tokenPermitsState: TokenPermitsState;
   orderEditor: OrderEditorState;
   positionSeller: PositionSellerState;
   positionEditor: PositionEditorState;
   confirmationBox: ConfirmationBoxState;
+  disabledFeatures: DisabledFeatures | undefined;
+  sponsoredCallParams: SponsoredCallParams | undefined;
 };
 
 const StateCtx = createContext<SyntheticsState | null>(null);
@@ -188,6 +198,8 @@ export function SyntheticsStateContextProvider({
   const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace>();
 
   const settings = useSettings();
+  const subaccountState = useSubaccountContext();
+  const { disabledFeatures } = useDisabledFeaturesRequest(chainId);
 
   const {
     isLoading,
@@ -265,6 +277,8 @@ export function SyntheticsStateContextProvider({
   });
 
   const externalSwapState = useInitExternalSwapState();
+  const tokenPermitsState = useInitTokenPermitsState();
+  const sponsoredCallParams = useSponsoredCallParamsRequest(chainId);
 
   const state = useMemo(() => {
     const s: SyntheticsState = {
@@ -308,12 +322,16 @@ export function SyntheticsStateContextProvider({
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
       settings,
+      subaccountState,
       tradebox: tradeboxState,
       externalSwap: externalSwapState,
+      tokenPermitsState,
       orderEditor,
       positionSeller: positionSellerState,
       positionEditor: positionEditorState,
       confirmationBox: confirmationBoxState,
+      disabledFeatures,
+      sponsoredCallParams,
     };
 
     return s;
@@ -348,12 +366,16 @@ export function SyntheticsStateContextProvider({
     claimablePositionPriceImpactFees,
     leaderboard,
     settings,
+    subaccountState,
     tradeboxState,
     externalSwapState,
+    tokenPermitsState,
     orderEditor,
     positionSellerState,
     positionEditorState,
     confirmationBoxState,
+    disabledFeatures,
+    sponsoredCallParams,
   ]);
 
   latestState = state;

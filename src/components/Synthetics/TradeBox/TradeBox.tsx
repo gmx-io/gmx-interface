@@ -80,22 +80,22 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
 
-import TradeBoxLongShortInfoIcon from "./components/TradeBoxLongShortInfoIcon";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
-import { useShowOneClickTradingInfo } from "./hooks/useShowOneClickTradingInfo";
+import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
+import TradeBoxLongShortInfoIcon from "./components/TradeBoxLongShortInfoIcon";
+import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
+import { useExpressTradingWarnings } from "./hooks/useShowOneClickTradingInfo";
 import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
-import { OneClickTradingInfo } from "./OneClickTradingInfo";
+import "./TradeBox.scss";
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
-import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
-import "./TradeBox.scss";
 
 export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
@@ -805,7 +805,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const { setIsSettingsVisible, isLeverageSliderEnabled } = useSettings();
 
-  const { shouldShowWarning: shouldShowOneClickTradingWarning } = useShowOneClickTradingInfo();
+  const { shouldShowWarning: shouldShowOneClickTradingWarning } = useExpressTradingWarnings();
 
   const showSectionBetweenInputsAndButton =
     isPosition ||
@@ -863,7 +863,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
         {showSectionBetweenInputsAndButton && (
           <div className="flex flex-col gap-14 pt-12">
-            <OneClickTradingInfo />
             {maxAutoCancelOrdersWarning}
             {isSwap && isLimit && (
               <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
@@ -954,6 +953,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         )}
         <div className="flex flex-col gap-14 pt-14">
           <div>{button}</div>
+          <ExpressTradingWarningCard />
           <div className="h-1 bg-stroke-primary" />
           {isSwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
           {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
@@ -1009,7 +1009,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             />
           )}
           <PriceImpactFeesRow />
-          <TradeBoxAdvancedGroups slippageInputId={submitButtonState.slippageInputId} />
+          <TradeBoxAdvancedGroups
+            slippageInputId={submitButtonState.slippageInputId}
+            relayerFeeParams={submitButtonState.relayerFeeParams}
+          />
         </div>
       </form>
     </>

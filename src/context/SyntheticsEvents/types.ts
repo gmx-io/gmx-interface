@@ -1,11 +1,14 @@
-import { OrderTxnType, OrderType, UpdateOrderParams } from "domain/synthetics/orders";
-import { ExternalSwapQuote } from "sdk/types/trade";
+import { OrderTxnType, OrderType } from "domain/synthetics/orders";
+import { OrderMetricId } from "lib/metrics/types";
+import { ExternalSwapOutput } from "sdk/types/trade";
 
 export type MultiTransactionStatus<TEventData> = {
   key: string;
   data?: TEventData;
   createdTxnHash?: string;
   cancelledTxnHash?: string;
+  gelatoTaskId?: string;
+  isGelatoTaskFailed?: boolean;
   updatedTxnHash?: string;
   executedTxnHash?: string;
   createdAt: number;
@@ -82,6 +85,10 @@ export type EventLogArrayItems<T> = {
   [key: string]: T[];
 };
 
+export type PendingExpressTxns = {
+  [taskId: string]: PendingExpressTxnParams;
+};
+
 export type EventLogSection<T> = {
   items: EventLogItems<T>;
   arrayItems: EventLogArrayItems<T>;
@@ -112,6 +119,8 @@ export type SyntheticsEventsContextType = {
   pendingPositionsUpdates: PendingPositionsUpdates;
   positionIncreaseEvents: PositionIncreaseEvent[] | undefined;
   positionDecreaseEvents: PositionDecreaseEvent[] | undefined;
+  pendingExpressTxns: PendingExpressTxns;
+  setPendingExpressTxn: (params: PendingExpressTxnParams) => void;
   setPendingOrder: SetPendingOrder;
   setPendingOrderUpdate: SetPendingOrderUpdate;
   setPendingFundingFeeSettlement: SetPendingFundingFeeSettlement;
@@ -126,7 +135,7 @@ export type SyntheticsEventsContextType = {
 };
 
 export type SetPendingOrder = (data: PendingOrderData | PendingOrderData[]) => void;
-export type SetPendingOrderUpdate = (data: UpdateOrderParams, remove?: "remove") => void;
+export type SetPendingOrderUpdate = (data: PendingOrderData, remove?: "remove") => void;
 export type SetPendingPosition = (update: PendingPositionUpdate) => void;
 export type SetPendingDeposit = (data: PendingDepositData) => void;
 export type SetPendingWithdrawal = (data: PendingWithdrawalData) => void;
@@ -167,8 +176,11 @@ export type PendingOrderData = {
   marketAddress: string;
   initialCollateralTokenAddress: string;
   swapPath: string[];
-  externalSwapQuote: ExternalSwapQuote | undefined;
+  externalSwapQuote: ExternalSwapOutput | undefined;
   initialCollateralDeltaAmount: bigint;
+  triggerPrice: bigint;
+  acceptablePrice: bigint;
+  autoCancel: boolean;
   minOutputAmount: bigint;
   sizeDeltaUsd: bigint;
   isLong: boolean;
@@ -296,4 +308,14 @@ export type ApprovalStatuses = {
   [tokenAddress: string]: {
     [spender: string]: { value: bigint; createdAt: number };
   };
+};
+
+export type PendingExpressTxnParams = {
+  taskId: string;
+  isSponsoredCall: boolean;
+  shouldResetSubaccountApproval: boolean;
+  shouldResetTokenPermits: boolean;
+  pendingOrdersKeys?: string[];
+  pendingPositionsKeys?: string[];
+  metricId?: OrderMetricId;
 };

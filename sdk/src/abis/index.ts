@@ -3,9 +3,11 @@ import { Abi, erc20Abi } from "viem";
 
 import CustomErrors from "./CustomErrors.json";
 import DataStore from "./DataStore.json";
+import ERC20PermitInterface from "./ERC20PermitInterface.json";
 import ERC721 from "./ERC721.json";
 import EventEmitter from "./EventEmitter.json";
 import ExchangeRouter from "./ExchangeRouter.json";
+import GelatoRelayRouter from "./GelatoRelayRouter.json";
 import GlpManager from "./GlpManager.json";
 import GlvReader from "./GlvReader.json";
 import GlvRouter from "./GlvRouter.json";
@@ -27,6 +29,7 @@ import RewardRouter from "./RewardRouter.json";
 import RewardTracker from "./RewardTracker.json";
 import RouterV2 from "./Router-v2.json";
 import Router from "./Router.json";
+import SubaccountGelatoRelayRouter from "./SubaccountGelatoRelayRouter.json";
 import SubaccountRouter from "./SubaccountRouter.json";
 import SyntheticsReader from "./SyntheticsReader.json";
 import SyntheticsRouter from "./SyntheticsRouter.json";
@@ -87,13 +90,17 @@ export type AbiId =
   | "Vester"
   | "WETH"
   | "YieldFarm"
-  | "YieldToken";
+  | "YieldToken"
+  | "SubaccountGelatoRelayRouter"
+  | "ERC20Permit"
+  | "GelatoRelayRouter";
 
 export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   CustomErrors: CustomErrors.abi,
   DataStore: DataStore.abi,
   ERC721: ERC721.abi,
   ERC20: erc20Abi,
+  ERC20PermitInterface: ERC20PermitInterface.abi,
   EventEmitter: EventEmitter.abi,
   ExchangeRouter: ExchangeRouter.abi,
   GlpManager: GlpManager.abi,
@@ -133,4 +140,6 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   WETH: WETH.abi,
   YieldFarm: YieldFarm.abi,
   YieldToken: YieldToken.abi,
+  SubaccountGelatoRelayRouter: SubaccountGelatoRelayRouter.abi,
+  GelatoRelayRouter: GelatoRelayRouter.abi,
 } as any;

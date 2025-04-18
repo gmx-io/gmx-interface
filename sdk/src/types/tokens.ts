@@ -1,3 +1,13 @@
+export type WrappedTokenAddress = string & { __brand: "wrapped" };
+export type NativeTokenAddress = string & { __brand: "native" };
+
+export type TokenAddressType = {
+  wrapped: WrappedTokenAddress;
+  native: NativeTokenAddress;
+};
+
+export type ContractPrice = bigint & { __brand: "contractPrice" };
+
 export type TokenCategory = "meme" | "layer1" | "layer2" | "defi";
 
 export type Token = {
@@ -19,6 +29,7 @@ export type Token = {
   reservesUrl?: string;
   imageUrl?: string;
   categories?: TokenCategory[];
+  isPermitSupported?: boolean;
 
   isUsdg?: boolean;
   isNative?: boolean;
@@ -80,6 +91,17 @@ export type TokenInfo = Token & {
   maxLongCapacity?: bigint;
 };
 
+export type SignedTokenPermit = {
+  owner: string;
+  spender: string;
+  value: bigint;
+  deadline: bigint;
+  v: number;
+  r: string;
+  s: string;
+  token: string;
+};
+
 export type InfoTokens = {
   [key: string]: TokenInfo;
 };
@@ -93,6 +115,15 @@ export type TokenData = Token & {
   prices: TokenPrices;
   balance?: bigint;
   totalSupply?: bigint;
+  priceFeedAddress?: string;
+  permitConfig?: PermitConfig;
+};
+
+export type PermitConfig = {
+  domainSeparator: string;
+  nonce: bigint;
+  name: string;
+  version: string;
 };
 
 export type TokensRatio = {

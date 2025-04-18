@@ -4,8 +4,9 @@ import { Selector, createSelector as createSelectorCommon } from "reselect";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { ExternalSwapQuote, TradeMode, TradeType } from "sdk/types/trade";
 import { LRUCache } from "sdk/utils/LruCache";
+import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
 
-import type { SyntheticsState } from "./SyntheticsStateContextProvider";
+import { SyntheticsState } from "./SyntheticsStateContextProvider";
 
 export { useSyntheticsStateSelector as useSelector } from "./SyntheticsStateContextProvider";
 
@@ -27,7 +28,9 @@ type Arg =
   | TradeType
   | OrderOption
   | bigint
-  | ExternalSwapQuote;
+  | ExternalSwapQuote
+  | BatchOrderTxnParams;
+
 type SupportedArg = Arg | Record<string, Arg>;
 
 type CachedSelector<T> = EnhancedSelector<SyntheticsState, T> | Selector<SyntheticsState, T>;

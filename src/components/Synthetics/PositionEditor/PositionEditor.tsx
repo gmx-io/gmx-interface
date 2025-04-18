@@ -129,7 +129,7 @@ export function PositionEditor() {
     operation,
   });
 
-  const { text, tooltipContent, onSubmit, disabled } = usePositionEditorButtonState(operation);
+  const { text, tooltipContent, onSubmit, disabled, relayerFeeParams } = usePositionEditorButtonState(operation);
 
   useKey(
     "Enter",
@@ -346,7 +346,7 @@ export function PositionEditor() {
                 }
               />
 
-              <PositionEditorAdvancedRows operation={operation} />
+              <PositionEditorAdvancedRows operation={operation} relayerFeeParams={relayerFeeParams} />
             </div>
           </>
         )}

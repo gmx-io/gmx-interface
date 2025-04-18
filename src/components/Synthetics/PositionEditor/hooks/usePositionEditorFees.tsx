@@ -12,6 +12,7 @@ import {
   getTotalFeeItem,
 } from "domain/synthetics/fees";
 import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
+import { RelayFeeSwapParams } from "domain/synthetics/gassless/txns/expressOrderUtils";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import { TradeFees } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
@@ -21,10 +22,11 @@ import { Operation } from "../types";
 
 export type Options = {
   operation: Operation;
+  relayerFeeParams?: RelayFeeSwapParams;
 };
 
 // todo make it a selector
-export function usePositionEditorFees({ operation }: Options) {
+export function usePositionEditorFees({ operation, relayerFeeParams }: Options) {
   const { chainId } = useChainId();
   const tokensData = useTokensData();
 
@@ -69,6 +71,7 @@ export function usePositionEditorFees({ operation }: Options) {
     return {
       fees,
       executionFee,
+      relayerFeeParams,
     };
-  }, [chainId, collateralDeltaUsd, gasLimits, gasPrice, isDeposit, position, tokensData]);
+  }, [chainId, collateralDeltaUsd, gasLimits, gasPrice, isDeposit, position, tokensData, relayerFeeParams]);
 }

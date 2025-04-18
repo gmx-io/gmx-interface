@@ -1,5 +1,15 @@
+import { DisabledFeatures } from "domain/synthetics/features/useDisabledFeatures";
+import {
+  getIsSubaccountActionsExceeded,
+  getIsSubaccountExpired,
+} from "domain/synthetics/gassless/txns/subaccountUtils";
+import { getRelayerFeeToken } from "sdk/configs/express";
+import { getByKey } from "sdk/utils/objects";
+
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { createSelector, createSelectorDeprecated } from "../utils";
+import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
+import { selectExpressOrdersEnabled, selectGasPaymentTokenAddress } from "./settingsSelectors";
+import { selectRawSubaccount } from "./subaccountSelectors";
 
 export const selectAccount = (s: SyntheticsState) => s.globals.account;
 export const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.ordersInfoData;
@@ -15,12 +25,29 @@ export const selectUserReferralInfo = (s: SyntheticsState) => s.globals.userRefe
 export const selectChainId = (s: SyntheticsState) => s.globals.chainId;
 export const selectDepositMarketTokensData = (s: SyntheticsState) => s.globals.depositMarketTokensData;
 export const selectIsFirstOrder = (s: SyntheticsState) => s.globals.isFirstOrder;
+export const selectDisabledFeatures = (s: SyntheticsState) => s.disabledFeatures;
+export const selectSponsoredCallParams = (s: SyntheticsState) => s.sponsoredCallParams;
+export const selectSponsoredCallMultiplierFactor = (s: SyntheticsState) => {
+  if (!s.sponsoredCallParams?.isSponsoredCallAllowed) {
+    return undefined;
+  }
+
+  return s.sponsoredCallParams.gelatoRelayFeeMultiplierFactor;
+};
+
+export const makeSelectDisableFeature = createSelectorFactory((feature: keyof DisabledFeatures) => {
+  return createSelector((q) => {
+    const disabledFeatures = q(selectDisabledFeatures);
+    return disabledFeatures?.[feature] ?? false;
+  });
+});
 
 export const selectBlockTimestampData = (s: SyntheticsState) => s.globals.blockTimestampData;
 
 export const selectGlvInfo = (s: SyntheticsState) => s.globals.glvInfo.glvData;
 export const selectGlvs = (s: SyntheticsState) => s.globals.glvInfo.glvs;
 export const selectGlvInfoLoading = (s: SyntheticsState) => s.globals.glvInfo.isLoading;
+
 export const selectGlvAndMarketsInfoData = createSelector((q) => {
   const glvsInfoData = q(selectGlvInfo);
   const marketsInfoData = q(selectMarketsInfoData);
@@ -77,4 +104,44 @@ export const selectPositiveFeePositionsSortedByUsd = createSelector((q) => {
   return positiveFeePositions.sort((a, b) =>
     a.pendingClaimableFundingFeesUsd > b.pendingClaimableFundingFeesUsd ? -1 : 1
   );
+});
+
+export const makeSelectSubaccountForActions = createSelectorFactory((requiredActions: number) => {
+  return createSelector((q) => {
+    const subaccount = q(selectRawSubaccount);
+    const isDisabled = q(makeSelectDisableFeature("subaccountRelayRouterDisabled"));
+
+    if (
+      isDisabled ||
+      !subaccount ||
+      getIsSubaccountActionsExceeded(subaccount, requiredActions) ||
+      getIsSubaccountExpired(subaccount)
+    ) {
+      return undefined;
+    }
+
+    return subaccount;
+  });
+});
+
+export const selectGasPaymentToken = createSelector((q) => {
+  const gasPaymentTokenAddress = q(selectGasPaymentTokenAddress);
+  const tokensData = q(selectTokensData);
+  return getByKey(tokensData, gasPaymentTokenAddress);
+});
+
+export const selectRelayerFeeToken = createSelector((q) => {
+  const chainId = q(selectChainId);
+  const relayerFeeTokenAddress = getRelayerFeeToken(chainId).address;
+  const tokensData = q(selectTokensData);
+  return getByKey(tokensData, relayerFeeTokenAddress);
+});
+
+export const selectIsExpressOrdersEnabledForActions = createSelector((q) => {
+  const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
+  const isFeatureDisabled = q(makeSelectDisableFeature("relayRouterDisabled"));
+  const gasPaymentToken = q(selectGasPaymentToken);
+  const isZeroGasBalance = gasPaymentToken?.balance === 0n || gasPaymentToken?.balance === undefined;
+
+  return isExpressOrdersEnabledSetting && !isFeatureDisabled && !isZeroGasBalance;
 });

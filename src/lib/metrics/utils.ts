@@ -1,19 +1,16 @@
-import { ethers } from "ethers";
-
 import { USD_DECIMALS } from "config/factors";
-import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { EventLogData } from "context/SyntheticsEvents";
 import { ExecutionFee } from "domain/synthetics/fees";
+import { Subaccount } from "domain/synthetics/gassless/txns/subaccountUtils";
 import { getMarketIndexName, getMarketPoolName, MarketInfo } from "domain/synthetics/markets";
-import { getCollateralAndSwapAddresses, OrderType } from "domain/synthetics/orders";
+import { OrderType } from "domain/synthetics/orders";
 import { TokenData } from "domain/synthetics/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "domain/synthetics/trade";
+import { ErrorLike, OrderErrorContext, parseError } from "lib/errors";
 import { bigintToNumber, formatPercentage, formatRatePercentage, getBasisPoints, roundToOrder } from "lib/numbers";
-import { ErrorLike } from "lib/parseError";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
-import { metrics, OrderErrorContext, SubmittedOrderEvent } from ".";
-import { parseError } from "../parseError";
+import { metrics, SubmittedOrderEvent } from ".";
 import {
   DecreaseOrderMetricData,
   EditCollateralMetricData,
@@ -129,10 +126,8 @@ export function initSwapMetricData({
 }
 
 export function initIncreaseOrderMetricData({
-  chainId,
   fromToken,
   increaseAmounts,
-  collateralToken,
   initialCollateralAllowance,
   hasExistingPosition,
   leverage,
@@ -178,19 +173,11 @@ export function initIncreaseOrderMetricData({
   netRate1h: bigint | undefined;
   interactionId: string | undefined;
 }) {
-  // Use actual collateral and swap params to identify the order after execution
-  const { initialCollateralTokenAddress, swapPath } = getCollateralAndSwapAddresses(chainId, {
-    swapPath: increaseAmounts?.swapPathStats?.swapPath || [],
-    initialCollateralAddress: fromToken?.address || ethers.ZeroAddress,
-    targetCollateralAddress: collateralToken?.address || ethers.ZeroAddress,
-    externalSwapQuote: increaseAmounts?.externalSwapQuote,
-  });
-
   return metrics.setCachedMetricData<IncreaseOrderMetricData>({
     metricId: getPositionOrderMetricId({
       marketAddress: marketInfo?.marketTokenAddress,
-      initialCollateralTokenAddress,
-      swapPath,
+      initialCollateralTokenAddress: fromToken?.address,
+      swapPath: increaseAmounts?.swapPathStats?.swapPath || [],
       isLong,
       orderType,
       sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd,
@@ -607,24 +594,26 @@ export function sendOrderTxnSubmittedMetric(metricId: OrderMetricId) {
 
 export function makeTxnSentMetricsHandler(metricId: OrderMetricId) {
   return () => {
-    const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
-
-    if (!metricData) {
-      metrics.pushError("Order metric data not found", "makeTxnSentMetricsHandler");
-      return;
-    }
-
-    metrics.startTimer(metricId);
-
-    metrics.pushEvent<OrderSentEvent>({
-      event: `${metricData.metricType}.sent`,
-      isError: false,
-      time: metrics.getTime(metricId)!,
-      data: metricData,
-    });
-
-    return Promise.resolve();
+    sendTxnSentMetric(metricId);
   };
+}
+
+export function sendTxnSentMetric(metricId: OrderMetricId) {
+  const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
+
+  if (!metricData) {
+    metrics.pushError("Order metric data not found", "sendTxnSentMetric");
+    return;
+  }
+
+  metrics.pushEvent<OrderSentEvent>({
+    event: `${metricData.metricType}.sent`,
+    isError: false,
+    time: metrics.getTime(metricId)!,
+    data: metricData,
+  });
+
+  return Promise.resolve();
 }
 
 export function sendTxnValidationErrorMetric(metricId: OrderMetricId) {

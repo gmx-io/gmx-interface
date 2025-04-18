@@ -1,3 +1,5 @@
+import { zeroAddress } from "viem";
+
 import { isDevelopment } from "config/env";
 import { OrderType } from "domain/synthetics/orders";
 import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
@@ -29,10 +31,12 @@ import { selectExternalSwapQuote } from "./externalSwapSelectors";
 import {
   selectChainId,
   selectGasLimits,
+  selectGasPaymentToken,
   selectGasPrice,
   selectMarketsInfoData,
   selectPositionConstants,
   selectPositionsInfoData,
+  selectRelayerFeeToken,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -149,22 +153,46 @@ export const makeSelectMaxLiquidityPath = createSelectorFactory(
   }
 );
 
+export const selectRelayFeeTokens = createSelector((q) => {
+  const relayerFeeToken = q(selectRelayerFeeToken);
+  const gasPaymentToken = q(selectGasPaymentToken);
+  const findSwapPath = q(makeSelectFindSwapPath(gasPaymentToken?.address, relayerFeeToken?.address, true));
+
+  return { relayerFeeToken, gasPaymentToken, findSwapPath };
+});
+
 const ENABLE_DEBUG_SWAP_MARKETS_CONFIG = isDevelopment();
 export const makeSelectFindSwapPath = createSelectorFactory(
-  (fromTokenAddress: string | undefined, toTokenAddress: string | undefined) => {
+  (fromTokenAddress: string | undefined, toTokenAddress: string | undefined, isExpressOrders = false) => {
     return createSelector((q) => {
       const chainId = q(selectChainId);
       const marketsInfoData = q(selectMarketsInfoData);
       const gasEstimationParams = q(selectGasEstimationParams);
 
-      const debugSwapMarketsConfig = ENABLE_DEBUG_SWAP_MARKETS_CONFIG ? q(selectDebugSwapMarketsConfig) : undefined;
+      const _debugSwapMarketsConfig = ENABLE_DEBUG_SWAP_MARKETS_CONFIG ? q(selectDebugSwapMarketsConfig) : undefined;
+      const diabledMarkets: string[] = [];
+
+      if (isExpressOrders) {
+        const marketsWithoutPriceFeeds = Object.values(marketsInfoData ?? {}).filter((market) =>
+          [market.indexToken, market.longToken, market.shortToken].some(
+            (token) => !token.priceFeedAddress || token.priceFeedAddress === zeroAddress
+          )
+        );
+
+        if (marketsWithoutPriceFeeds.length > 0) {
+          diabledMarkets.push(...marketsWithoutPriceFeeds.map((market) => market.marketTokenAddress));
+        }
+      }
 
       const findSwapPath = createFindSwapPath({
         chainId,
         fromTokenAddress,
         toTokenAddress,
         marketsInfoData,
-        debugSwapMarketsConfig,
+        debugSwapMarketsConfig: {
+          ..._debugSwapMarketsConfig,
+          disabledSwapMarkets: [...(_debugSwapMarketsConfig?.disabledSwapMarkets ?? []), ...diabledMarkets],
+        },
         gasEstimationParams,
       });
       return findSwapPath;

@@ -1,6 +1,8 @@
-import { encodeAbiParameters, keccak256 } from "viem";
+import { encodeAbiParameters, keccak256, stringToBytes } from "viem";
 
 import { LRUCache } from "./LruCache";
+
+export const ZERO_DATA = "0x";
 
 const dataCache = new LRUCache<string>(10_000);
 
@@ -55,4 +57,8 @@ export function hashDataMap<
   return result as {
     [K in keyof R]: string;
   };
+}
+
+export function keccakString(string: string) {
+  return keccak256(stringToBytes(string));
 }
