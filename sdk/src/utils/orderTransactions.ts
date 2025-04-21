@@ -11,7 +11,6 @@ import { ExternalSwapOutput } from "types/trade";
 
 import { convertToContractPrice } from "./tokens";
 import { applySlippageToMinOut, applySlippageToPrice } from "./trade";
-import { multicall } from "viem/_types/actions/public/multicall";
 
 export type BatchOrderTxnParams = {
   createOrderParams: CreateOrderTxnParams<any>[];
@@ -553,27 +552,7 @@ function combineTransfers(tokenTransfers: TokenTransfer[]) {
     }
   }
 
-  const combinedTransfers = Object.values(transfersMap);
-
-  const sendWnt: { destination: string; amount: bigint }[] = [];
-  const sendTokens: { tokenAddress: string; destination: string; amount: bigint }[] = [];
-
-  for (const transfer of combinedTransfers) {
-    if (transfer.tokenAddress === NATIVE_TOKEN_ADDRESS) {
-      sendWnt.push({
-        destination: transfer.destination,
-        amount: transfer.amount,
-      });
-    } else {
-      sendTokens.push({
-        tokenAddress: transfer.tokenAddress,
-        destination: transfer.destination,
-        amount: transfer.amount,
-      });
-    }
-  }
-
-  return { sendWnt, sendTokens, value };
+  return { tokenTransfers: Object.values(transfersMap), value };
 }
 
 export function getBatchOrderMulticallPayload({ chainId, params }: { chainId: number; params: BatchOrderTxnParams }) {
@@ -613,6 +592,14 @@ export function buildCreateOrderMulticall(params: CreateOrderTxnParams<any>) {
   const { tokenTransfers = [], value = 0n, externalCalls = undefined } = tokenTransfersParams ?? {};
 
   const multicall: ExchangeRouterCall[] = [];
+
+  for (const transfer of tokenTransfers) {
+    if (transfer.tokenAddress === NATIVE_TOKEN_ADDRESS) {
+      multicall.push({ method: "sendWnt", params: [transfer.destination, transfer.amount] });
+    } else {
+      multicall.push({ method: "sendToken", params: [transfer.tokenAddress, transfer.destination, transfer.amount] });
+    }
+  }
 
   if (externalCalls) {
     multicall.push({
