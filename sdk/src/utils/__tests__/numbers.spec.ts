@@ -24,7 +24,7 @@ import {
   PERCENT_PRECISION_DECIMALS,
   PRECISION,
   PRECISION_DECIMALS,
-  roundBigNumberWithDecimals,
+  roundWithDecimals,
   roundUpMagnitudeDivision,
   toBigNumberWithDecimals,
 } from "../numbers";
@@ -146,29 +146,29 @@ describe("toBigNumberWithDecimals", () => {
   });
 });
 
-describe("roundBigNumberWithDecimals", () => {
+describe("roundWithDecimals", () => {
   it("should round small numbers correctly", () => {
     expect(
-      roundBigNumberWithDecimals(toBigNumberWithDecimals("0.0000001", PRECISION_DECIMALS), {
-        tokenDecimals: PRECISION_DECIMALS,
+      roundWithDecimals(toBigNumberWithDecimals("0.0000001", PRECISION_DECIMALS), {
+        decimals: PRECISION_DECIMALS,
         displayDecimals: 0,
       })
     ).toBe(0n);
     expect(
-      roundBigNumberWithDecimals(toBigNumberWithDecimals("0.5", PRECISION_DECIMALS), {
-        tokenDecimals: PRECISION_DECIMALS,
+      roundWithDecimals(toBigNumberWithDecimals("0.5", PRECISION_DECIMALS), {
+        decimals: PRECISION_DECIMALS,
         displayDecimals: 0,
       })
     ).toBe(toBigNumberWithDecimals("1", PRECISION_DECIMALS));
     expect(
-      roundBigNumberWithDecimals(toBigNumberWithDecimals("0.499", PRECISION_DECIMALS), {
-        tokenDecimals: PRECISION_DECIMALS,
+      roundWithDecimals(toBigNumberWithDecimals("0.499", PRECISION_DECIMALS), {
+        decimals: PRECISION_DECIMALS,
         displayDecimals: 0,
       })
     ).toBe(0n);
     expect(
-      roundBigNumberWithDecimals(toBigNumberWithDecimals("1", PRECISION_DECIMALS), {
-        tokenDecimals: PRECISION_DECIMALS,
+      roundWithDecimals(toBigNumberWithDecimals("1", PRECISION_DECIMALS), {
+        decimals: PRECISION_DECIMALS,
         displayDecimals: 1,
       })
     ).toBe(toBigNumberWithDecimals("1", PRECISION_DECIMALS));
@@ -176,26 +176,26 @@ describe("roundBigNumberWithDecimals", () => {
 
   it("should round numbers at specific decimal places", () => {
     expect(
-      roundBigNumberWithDecimals(toBigNumberWithDecimals("1.49", PRECISION_DECIMALS), {
-        tokenDecimals: PRECISION_DECIMALS,
+      roundWithDecimals(toBigNumberWithDecimals("1.49", PRECISION_DECIMALS), {
+        decimals: PRECISION_DECIMALS,
         displayDecimals: 1,
       })
     ).toBe(toBigNumberWithDecimals("1.5", PRECISION_DECIMALS));
     expect(
-      roundBigNumberWithDecimals(toBigNumberWithDecimals("1.44", PRECISION_DECIMALS), {
-        tokenDecimals: PRECISION_DECIMALS,
+      roundWithDecimals(toBigNumberWithDecimals("1.44", PRECISION_DECIMALS), {
+        decimals: PRECISION_DECIMALS,
         displayDecimals: 1,
       })
     ).toBe(toBigNumberWithDecimals("1.4", PRECISION_DECIMALS));
     expect(
-      roundBigNumberWithDecimals(toBigNumberWithDecimals("1.499", PRECISION_DECIMALS), {
-        tokenDecimals: PRECISION_DECIMALS,
+      roundWithDecimals(toBigNumberWithDecimals("1.499", PRECISION_DECIMALS), {
+        decimals: PRECISION_DECIMALS,
         displayDecimals: 2,
       })
     ).toBe(toBigNumberWithDecimals("1.50", PRECISION_DECIMALS));
     expect(
-      roundBigNumberWithDecimals(toBigNumberWithDecimals("1.495", PRECISION_DECIMALS), {
-        tokenDecimals: PRECISION_DECIMALS,
+      roundWithDecimals(toBigNumberWithDecimals("1.495", PRECISION_DECIMALS), {
+        decimals: PRECISION_DECIMALS,
         displayDecimals: 2,
       })
     ).toBe(toBigNumberWithDecimals("1.50", PRECISION_DECIMALS));
@@ -203,8 +203,8 @@ describe("roundBigNumberWithDecimals", () => {
 
   it("should round large numbers correctly", () => {
     expect(
-      roundBigNumberWithDecimals(toBigNumberWithDecimals("499.999999", PRECISION_DECIMALS), {
-        tokenDecimals: PRECISION_DECIMALS,
+      roundWithDecimals(toBigNumberWithDecimals("499.999999", PRECISION_DECIMALS), {
+        decimals: PRECISION_DECIMALS,
         displayDecimals: 5,
       })
     ).toBe(toBigNumberWithDecimals("500.00000", PRECISION_DECIMALS));
@@ -212,20 +212,20 @@ describe("roundBigNumberWithDecimals", () => {
 
   it("should handle complex rounding cases", () => {
     expect(
-      roundBigNumberWithDecimals(toBigNumberWithDecimals("0.0000000000000000000000000001", PRECISION_DECIMALS), {
-        tokenDecimals: PRECISION_DECIMALS,
+      roundWithDecimals(toBigNumberWithDecimals("0.0000000000000000000000000001", PRECISION_DECIMALS), {
+        decimals: PRECISION_DECIMALS,
         displayDecimals: 25,
       })
     ).toBe(0n);
     expect(
-      roundBigNumberWithDecimals(toBigNumberWithDecimals("0.4999999999999999999999999999", PRECISION_DECIMALS), {
-        tokenDecimals: PRECISION_DECIMALS,
+      roundWithDecimals(toBigNumberWithDecimals("0.4999999999999999999999999999", PRECISION_DECIMALS), {
+        decimals: PRECISION_DECIMALS,
         displayDecimals: 25,
       })
     ).toBe(toBigNumberWithDecimals("0.5", PRECISION_DECIMALS));
     expect(
-      roundBigNumberWithDecimals(toBigNumberWithDecimals("123.456789", PRECISION_DECIMALS), {
-        tokenDecimals: PRECISION_DECIMALS,
+      roundWithDecimals(toBigNumberWithDecimals("123.456789", PRECISION_DECIMALS), {
+        decimals: PRECISION_DECIMALS,
         displayDecimals: 4,
       })
     ).toBe(toBigNumberWithDecimals("123.4568", PRECISION_DECIMALS));
@@ -235,8 +235,8 @@ describe("roundBigNumberWithDecimals", () => {
     const differentTokenDecimals = [18, 5, 1, 22];
     for (const tokenDecimals of differentTokenDecimals) {
       expect(
-        roundBigNumberWithDecimals(toBigNumberWithDecimals("123.456789", tokenDecimals), {
-          tokenDecimals,
+        roundWithDecimals(toBigNumberWithDecimals("123.456789", tokenDecimals), {
+          decimals: tokenDecimals,
           displayDecimals: 4,
         })
       ).toBe(toBigNumberWithDecimals("123.4568", tokenDecimals));
@@ -244,22 +244,22 @@ describe("roundBigNumberWithDecimals", () => {
   });
 
   it("should handle edge cases", () => {
-    expect(roundBigNumberWithDecimals(0n, { tokenDecimals: PRECISION_DECIMALS, displayDecimals: 10 })).toBe(0n);
+    expect(roundWithDecimals(0n, { decimals: PRECISION_DECIMALS, displayDecimals: 10 })).toBe(0n);
     expect(
-      roundBigNumberWithDecimals(toBigNumberWithDecimals("-1.5", PRECISION_DECIMALS), {
-        tokenDecimals: PRECISION_DECIMALS,
+      roundWithDecimals(toBigNumberWithDecimals("-1.5", PRECISION_DECIMALS), {
+        decimals: PRECISION_DECIMALS,
         displayDecimals: 0,
       })
     ).toBe(toBigNumberWithDecimals("-2", PRECISION_DECIMALS));
     expect(
-      roundBigNumberWithDecimals(toBigNumberWithDecimals("-1.4", PRECISION_DECIMALS), {
-        tokenDecimals: PRECISION_DECIMALS,
+      roundWithDecimals(toBigNumberWithDecimals("-1.4", PRECISION_DECIMALS), {
+        decimals: PRECISION_DECIMALS,
         displayDecimals: 0,
       })
     ).toBe(toBigNumberWithDecimals("-1", PRECISION_DECIMALS));
     expect(
-      roundBigNumberWithDecimals(toBigNumberWithDecimals("0.0000001", PRECISION_DECIMALS), {
-        tokenDecimals: PRECISION_DECIMALS,
+      roundWithDecimals(toBigNumberWithDecimals("0.0000001", PRECISION_DECIMALS), {
+        decimals: PRECISION_DECIMALS,
         displayDecimals: 5,
       })
     ).toBe(0n);

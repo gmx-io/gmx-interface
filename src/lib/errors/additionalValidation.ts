@@ -124,7 +124,7 @@ export function makeTransactionErrorHandler(
             callStaticError.parentError = errorToLog;
             errorToLog = callStaticError;
           } else {
-            errorToLog.isAdditinalValidationPassed = true;
+            errorToLog.isAdditionalValidationPassed = true;
           }
 
           errorToLog.additionalValidationType = "tryCallStatic";
@@ -139,7 +139,7 @@ export function makeTransactionErrorHandler(
             estimateGasError.parentError = errorToLog;
             errorToLog = estimateGasError;
           } else {
-            errorToLog.isAdditinalValidationPassed = true;
+            errorToLog.isAdditionalValidationPassed = true;
           }
 
           errorToLog.additionalValidationType = "tryEstimateGas";

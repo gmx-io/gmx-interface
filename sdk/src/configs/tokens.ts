@@ -1,6 +1,6 @@
 import { zeroAddress } from "viem";
 
-import type { Token, TokenAddressType, TokenCategory } from "types/tokens";
+import type { Token, TokenAddressTypesMap, TokenCategory } from "types/tokens";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 import { getContract } from "./contracts";
@@ -1599,7 +1599,7 @@ export function getTokenBySymbol(
   return token;
 }
 
-export function convertTokenAddress<T extends keyof TokenAddressType, R extends TokenAddressType[T]>(
+export function convertTokenAddress<T extends keyof TokenAddressTypesMap, R extends TokenAddressTypesMap[T]>(
   chainId: number,
   address: string,
   convertTo?: T

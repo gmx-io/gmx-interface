@@ -326,7 +326,7 @@ describe("parseError", () => {
       const error: ErrorLike = {
         message: "Transaction failed",
         errorSource: "getCallStaticError",
-        isAdditinalValidationPassed: false,
+        isAdditionalValidationPassed: false,
         additionalValidationType: "tryCallStatic",
       };
 

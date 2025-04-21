@@ -1,9 +1,9 @@
-export type WrappedTokenAddress = string & { __brand: "wrapped" };
-export type NativeTokenAddress = string & { __brand: "native" };
+export type ERC20Address = string & { __brand: "ERC20Address" };
+export type NativeTokenSupportedAddress = string & { __brand: "NativeTokenSupportedAddress" };
 
-export type TokenAddressType = {
-  wrapped: WrappedTokenAddress;
-  native: NativeTokenAddress;
+export type TokenAddressTypesMap = {
+  wrapped: ERC20Address;
+  native: NativeTokenSupportedAddress;
 };
 
 export type ContractPrice = bigint & { __brand: "contractPrice" };
@@ -92,13 +92,19 @@ export type TokenInfo = Token & {
 };
 
 export type SignedTokenPermit = {
+  // account address
   owner: string;
+  // spender contract address
   spender: string;
+  // amount
   value: bigint;
+  // validity period of the permit
   deadline: bigint;
+  // ECDSA signature components
   v: number;
   r: string;
   s: string;
+  // token address
   token: string;
 };
 
