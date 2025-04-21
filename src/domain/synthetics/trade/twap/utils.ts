@@ -34,26 +34,26 @@ export function getTwapOrderKey({
   collateralTokenSymbol,
   swapPath,
   account,
-  initialCollateralTokenSymbol,
+  initialCollateralToken,
 }: {
   twapId: string;
   orderType: OrderType;
   pool: string;
   collateralTokenSymbol: string;
-  initialCollateralTokenSymbol: string;
+  initialCollateralToken: string;
   isLong: boolean;
   swapPath: string[];
   account: string;
 }) {
   if (isSwapOrderType(orderType)) {
-    return `${twapId}-${swapPath.join("-")}-${account}-${initialCollateralTokenSymbol}`;
+    return `${twapId}-${swapPath.join("-")}-${account}-${initialCollateralToken}`;
   }
 
-  let type = isLong ? "long" : "short";
+  const type = isLong ? "long" : "short";
   return `${twapId}-${type}-${pool}-${collateralTokenSymbol}`;
 }
 
-export function createTwapValidFromTimeGetter(duration: TwapDuration, numberOfParts: number) {
+export function makeTwapValidFromTimeGetter(duration: TwapDuration, numberOfParts: number) {
   const durationMinutes = duration.hours * 60 + duration.minutes;
   const durationMs = durationMinutes * 60;
   const startTime = Math.ceil(Date.now() / 1000);

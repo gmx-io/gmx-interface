@@ -18,7 +18,7 @@ import { getPendingOrderFromParams } from "./utils";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { TwapDuration } from "../trade/twap/types";
 import { createTwapUiFeeReceiver } from "../trade/twap/uiFeeReceiver";
-import { createTwapValidFromTimeGetter } from "../trade/twap/utils";
+import { makeTwapValidFromTimeGetter } from "../trade/twap/utils";
 
 const { ZeroAddress } = ethers;
 
@@ -153,7 +153,7 @@ export function createTwapDecreaseEncodedPayload({
   mainAccountAddress: string;
   chainId: number;
 }) {
-  const validFromTimeGetter = createTwapValidFromTimeGetter(p.duration, p.numberOfParts);
+  const validFromTimeGetter = makeTwapValidFromTimeGetter(p.duration, p.numberOfParts);
   const uiFeeReceiver = createTwapUiFeeReceiver({ numberOfParts: p.numberOfParts });
 
   const acceptablePrice = !p.isLong ? ethers.MaxUint256 : 0n;

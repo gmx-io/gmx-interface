@@ -121,7 +121,7 @@ const createOrderInfo = ({
       isLong: order.isLong,
       swapPath: order.swapPath,
       account: order.account,
-      initialCollateralTokenSymbol: orderInfo.targetCollateralToken.symbol,
+      initialCollateralToken: orderInfo.initialCollateralToken.address,
     });
 
     let twapOrderInfo = getByKey(acc, twapOrderKey);

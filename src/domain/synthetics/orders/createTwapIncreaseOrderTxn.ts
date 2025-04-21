@@ -18,7 +18,7 @@ import { getExternalCallsParams } from "../externalSwaps/utils";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { TwapDuration } from "../trade/twap/types";
 import { createTwapUiFeeReceiver } from "../trade/twap/uiFeeReceiver";
-import { createTwapValidFromTimeGetter } from "../trade/twap/utils";
+import { makeTwapValidFromTimeGetter } from "../trade/twap/utils";
 
 const { ZeroAddress } = ethers;
 
@@ -185,7 +185,7 @@ async function createEncodedPayload({
   swapPath: string[];
   signer: Signer;
 }) {
-  const validFromTimeGetter = createTwapValidFromTimeGetter(p.duration, p.numberOfParts);
+  const validFromTimeGetter = makeTwapValidFromTimeGetter(p.duration, p.numberOfParts);
 
   const uiFeeReceiver = createTwapUiFeeReceiver({ numberOfParts: p.numberOfParts });
 
