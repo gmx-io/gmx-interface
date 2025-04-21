@@ -596,6 +596,14 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     },
     [onGlvOrMarketChange, onSelectedMarketForGlv]
   );
+
+  const onSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      submitState.onSubmit?.();
+    },
+    [submitState]
+  );
   // #endregion
 
   // #region Effects
@@ -675,12 +683,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   // #region Render
   const submitButton = useMemo(() => {
     const btn = (
-      <Button
-        className="w-full"
-        variant="primary-action"
-        onClick={submitState.onSubmit}
-        disabled={submitState.disabled}
-      >
+      <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
         {submitState.text}
       </Button>
     );
@@ -723,7 +726,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
   return (
     <>
-      <form>
+      <form onSubmit={onSubmit}>
         <div className={cx("mb-12 flex gap-4", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
           <BuyInputSection
             topLeftLabel={isDeposit ? t`Pay` : t`Receive`}

@@ -7,6 +7,7 @@ import {
   SONIC_MAINNET,
   OPTIMISM_SEPOLIA,
   UiSupportedChain,
+  SEPOLIA,
 } from "config/chains";
 
 import gmIcon from "img/gm_icon.svg";
@@ -30,6 +31,7 @@ import gmxAvax from "img/ic_gmx_avax.svg";
 import gmxOutlineIcon from "img/ic_gmxv1flat.svg";
 import optimismSepolia from "img/ic_op_24.svg";
 import sonicIcon from "img/ic_s_24.svg";
+import sepolia from "img/ic_sepolia_24.svg";
 
 type ChainIcons = {
   network?: string;
@@ -89,6 +91,7 @@ export const CHAIN_ID_TO_NETWORK_ICON: Record<UiSupportedChain | 0, string> = {
   [AVALANCHE_FUJI]: avalancheTestnet,
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
   [OPTIMISM_SEPOLIA]: optimismSepolia,
+  [SEPOLIA]: sepolia,
 };
 
 export function getIcon(chainId: number | "common", label: keyof ChainIcons) {

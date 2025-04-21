@@ -12,6 +12,7 @@ export const SONIC_MAINNET = 146;
 // export const SONIC_BLAZE = 57054;
 export const ARBITRUM_SEPOLIA = 421614;
 export const OPTIMISM_SEPOLIA = 11155420;
+export const SEPOLIA = 11155111;
 
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 export const SUPPORTED_CHAIN_IDS_DEV = [...SUPPORTED_CHAIN_IDS, AVALANCHE_FUJI, ARBITRUM_SEPOLIA];
@@ -24,9 +25,11 @@ export type UiSupportedChain =
   | typeof ARBITRUM_SEPOLIA
   | typeof BASE_MAINNET
   | typeof SONIC_MAINNET
-  | typeof OPTIMISM_SEPOLIA;
+  | typeof OPTIMISM_SEPOLIA
+  | typeof SEPOLIA;
+
 export type UiSettlementChain = typeof ARBITRUM_SEPOLIA;
-export type UiSourceChain = typeof OPTIMISM_SEPOLIA;
+export type UiSourceChain = typeof OPTIMISM_SEPOLIA | typeof SEPOLIA;
 
 export const HIGH_EXECUTION_FEES_MAP = {
   [ARBITRUM]: 5, // 5 USD
@@ -87,7 +90,7 @@ export const GAS_PRICE_BUFFER_MAP = {
   [ARBITRUM]: 2000n, // 20%
 };
 
-const VIEM_CHAIN_BY_CHAIN_ID = {
+const VIEM_CHAIN_BY_CHAIN_ID: Record<UiContractsChain, Chain> = {
   [AVALANCHE_FUJI]: avalancheFuji,
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,

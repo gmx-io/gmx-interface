@@ -1,8 +1,9 @@
-import { Trans, t } from "@lingui/macro";
+import { MessageDescriptor } from "@lingui/core";
+import { Trans, msg, t } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
 import { IoArrowDown } from "react-icons/io5";
-import { TbLoader2, TbProgressAlert } from "react-icons/tb";
+import { TbLoader2 } from "react-icons/tb";
 import { useCopyToClipboard } from "react-use";
 import { useAccount, useDisconnect } from "wagmi";
 
@@ -13,6 +14,7 @@ import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "conte
 import { MultichainFundingHistoryItem } from "context/GmxAccountContext/types";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { helperToast } from "lib/helperToast";
+import { useLocalizedMap } from "lib/i18n";
 import { useENS } from "lib/legacy";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { useNotifyModalState } from "lib/useNotifyModalState";
@@ -44,7 +46,6 @@ import {
   useAvailableToTradeAssetSymbolsSettlementChain,
 } from "./hooks";
 import { useGmxAccountFundingHistory } from "./useGmxAccountFundingHistory";
-import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
 
 const TokenIcons = ({ tokens }: { tokens: string[] }) => {
   const displayTokens = tokens.slice(0, 3);
@@ -72,30 +73,49 @@ const TokenIcons = ({ tokens }: { tokens: string[] }) => {
   );
 };
 
+const FUNDING_OP_LABELS: Partial<
+  Record<`${"deposit" | "withdrawal"}-${"sent" | "received" | "executed"}`, MessageDescriptor>
+> = {
+  "deposit-sent": msg`Deposit Sent`,
+  "deposit-received": msg`Deposit Received`,
+  "deposit-executed": msg`Deposit Executed`,
+  "withdrawal-sent": msg`Withdrawal Sent`,
+  "withdrawal-received": msg`Withdrawal Received`,
+};
+
 export function FundingHistoryItemLabel({ step, operation }: Pick<MultichainFundingHistoryItem, "step" | "operation">) {
+  const labels = useLocalizedMap(FUNDING_OP_LABELS);
+
   if (step === "sent") {
     return (
       <div className="text-body-small flex items-center gap-4 text-slate-100">
         <TbLoader2 className="size-16 animate-spin" />
-        Sent
+        {labels[`${operation}-sent`]}
       </div>
     );
   }
 
-  if (step === "received") {
+  if (operation === "deposit" && step === "received") {
     return (
       <div className="text-body-small flex items-center gap-4 text-slate-100">
         <TbLoader2 className="size-16 animate-spin" />
-        Received
+        {labels[`${operation}-received`]}
       </div>
     );
   }
 
-  if (step === "executed") {
-    return <div className="text-body-small text-slate-100">Executed</div>;
+  if (step === "executed" && operation === "deposit") {
+    return <div className="text-body-small text-slate-100">{labels[`deposit-executed`]}</div>;
+  }
+  if (operation === "withdrawal" && step === "received") {
+    return <div className="text-body-small text-slate-100">{labels[`withdrawal-received`]}</div>;
   }
 
-  return <div className="text-body-small text-slate-100">{operation === "deposit" ? "Deposit" : "Withdraw"}</div>;
+  return (
+    <div className="text-body-small text-slate-100">
+      {operation} {step}
+    </div>
+  );
 }
 
 const Toolbar = ({ account }: { account: string }) => {
