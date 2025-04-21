@@ -1,12 +1,15 @@
 import { EndpointId } from "@layerzerolabs/lz-definitions";
 import uniq from "lodash/uniq";
+import { Address, zeroAddress } from "viem";
 
 import {
   ARBITRUM,
   ARBITRUM_SEPOLIA,
   AVALANCHE,
+  AVALANCHE_FUJI,
   BASE_MAINNET,
   OPTIMISM_SEPOLIA,
+  SEPOLIA,
   SONIC_MAINNET,
   UiSettlementChain,
   UiSourceChain,
@@ -14,7 +17,15 @@ import {
 } from "config/chains";
 import { isDevelopment } from "config/env";
 
-import { CHAIN_ID_TO_ENDPOINT_ID, usdcSgPoolArbitrumSepolia, usdcSgPoolOptimismSepolia } from "./stargatePools";
+import {
+  CHAIN_ID_TO_ENDPOINT_ID,
+  ethPoolArbitrumSepolia,
+  ethPoolOptimismSepolia,
+  ethPoolSepolia,
+  usdcSgPoolArbitrumSepolia,
+  usdcSgPoolOptimismSepolia,
+  usdcSgPoolSepolia,
+} from "./stargatePools";
 
 // we need to have a token bare config for each chain and map it to the settlement chain token
 
@@ -159,19 +170,76 @@ if (isDevelopment()) {
       stargate: usdcSgPoolOptimismSepolia,
       symbol: "USDC.SG",
     },
+    [SEPOLIA]: {
+      address: "0x2F6F07CDcf3588944Bf4C42aC74ff24bF56e7590",
+      decimals: 6,
+      chainId: SEPOLIA,
+      stargate: usdcSgPoolSepolia,
+      symbol: "USDC.SG",
+    },
+  };
+
+  TOKEN_GROUPS["ETH"] = {
+    [ARBITRUM_SEPOLIA]: {
+      address: zeroAddress,
+      decimals: 18,
+      chainId: ARBITRUM_SEPOLIA,
+      stargate: ethPoolArbitrumSepolia,
+      symbol: "ETH",
+    },
+    [OPTIMISM_SEPOLIA]: {
+      address: zeroAddress,
+      decimals: 18,
+      chainId: OPTIMISM_SEPOLIA,
+      stargate: ethPoolOptimismSepolia,
+      symbol: "ETH",
+    },
+    [SEPOLIA]: {
+      address: zeroAddress,
+      decimals: 18,
+      chainId: SEPOLIA,
+      stargate: ethPoolSepolia,
+      symbol: "ETH",
+    },
+  };
+
+  TOKEN_GROUPS["WETH"] = {
+    [ARBITRUM_SEPOLIA]: {
+      address: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
+      decimals: 18,
+      chainId: ARBITRUM_SEPOLIA,
+      stargate: ethPoolArbitrumSepolia,
+      symbol: "WETH",
+    },
   };
 }
 
-export const SETTLEMENT_CHAINS = !isDevelopment() ? [] : [ARBITRUM_SEPOLIA];
+export const DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT = true;
 
-export const SOURCE_CHAINS = !isDevelopment() ? [] : [OPTIMISM_SEPOLIA];
+export const SETTLEMENT_CHAINS: UiSettlementChain[] = !isDevelopment()
+  ? []
+  : (Object.keys({
+      [ARBITRUM_SEPOLIA]: true,
+    } satisfies Record<UiSettlementChain, true>).map(Number) as UiSettlementChain[]);
 
-export function isSettlementChain(chainId: number) {
-  return SETTLEMENT_CHAINS.includes(chainId);
+// To test bridge in from the same network add ARBITRUM_SEPOLIA to source chains
+export const SOURCE_CHAINS: UiSourceChain[] = !isDevelopment()
+  ? []
+  : (Object.keys({
+      [OPTIMISM_SEPOLIA]: true,
+      [SEPOLIA]: true,
+    } satisfies Record<UiSourceChain, true>).map(Number) as UiSourceChain[]);
+
+if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
+  SOURCE_CHAINS.push(ARBITRUM_SEPOLIA as UiSourceChain);
 }
 
-export function isSourceChain(chainId: number) {
-  return SOURCE_CHAINS.includes(chainId);
+export function isSettlementChain(chainId: number): chainId is UiSettlementChain {
+  return SETTLEMENT_CHAINS.includes(chainId as UiSettlementChain);
+}
+
+export function isSourceChain(chainId: number): chainId is UiSourceChain {
+  return SOURCE_CHAINS.includes(chainId as UiSourceChain);
 }
 
 export const MULTI_CHAIN_TOKEN_MAPPING: MultichainTokenMapping = {};
@@ -189,14 +257,14 @@ export const CHAIN_ID_TO_TOKEN_ID_MAP: Record<
 for (const tokenSymbol in TOKEN_GROUPS) {
   for (const settlementChainIdString in TOKEN_GROUPS[tokenSymbol]) {
     const settlementChainId = parseInt(settlementChainIdString) as UiSettlementChain | UiSourceChain;
-    if (!SETTLEMENT_CHAINS.includes(settlementChainId)) continue;
+    if (!isSettlementChain(settlementChainId)) continue;
 
     let empty = true;
     for (const sourceChainIdString in TOKEN_GROUPS[tokenSymbol]) {
       const sourceChainId = parseInt(sourceChainIdString) as UiSettlementChain | UiSourceChain;
-      if (!SOURCE_CHAINS.includes(sourceChainId)) continue;
+      if (!isSourceChain(sourceChainId)) continue;
 
-      if (!isDevelopment() && settlementChainId === sourceChainId) continue;
+      if (!isDevelopment() && (settlementChainId as number) === (sourceChainId as number)) continue;
       empty = false;
 
       MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] = MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] || {};
@@ -278,14 +346,18 @@ for (const tokenSymbol in TOKEN_GROUPS) {
   }
 }
 
-export const DEFAULT_SETTLEMENT_CHAIN_ID_MAP: Partial<Record<UiSupportedChain, UiSupportedChain>> = {
-  [ARBITRUM]: ARBITRUM,
-  [AVALANCHE]: AVALANCHE,
+export const DEFAULT_SETTLEMENT_CHAIN_ID_MAP: Record<UiSupportedChain, UiSupportedChain> = {
   [BASE_MAINNET]: ARBITRUM,
   [SONIC_MAINNET]: ARBITRUM,
 
   [ARBITRUM_SEPOLIA]: ARBITRUM_SEPOLIA,
   [OPTIMISM_SEPOLIA]: ARBITRUM_SEPOLIA,
+  [SEPOLIA]: ARBITRUM_SEPOLIA,
+
+  // Stubs
+  [ARBITRUM]: ARBITRUM,
+  [AVALANCHE]: AVALANCHE,
+  [AVALANCHE_FUJI]: AVALANCHE_FUJI,
 };
 
 export function getMultichainTokenId(chainId: number, tokenAddress: string): MultichainTokenId | undefined {
@@ -318,4 +390,13 @@ export function getMappedTokenId(
   const mappedTokenId = TOKEN_GROUPS[symbol]?.[toChainId];
 
   return mappedTokenId;
+}
+
+export const MULTICALLS_MAP: Record<UiSourceChain, Address> = {
+  [OPTIMISM_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
+  [SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
+};
+
+if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
+  MULTICALLS_MAP[ARBITRUM_SEPOLIA as UiSourceChain] = "0xca11bde05977b3631167028862be2a173976ca11";
 }

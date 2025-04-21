@@ -17,6 +17,7 @@ import MultichainTransferRouterArbitrumSepolia from "./arbitrumSepolia/Multichai
 import MultichainUtilsArbitrumSepolia from "./arbitrumSepolia/MultichainUtils.json";
 import MultichainVaultArbitrumSepolia from "./arbitrumSepolia/MultichainVault.json";
 import ReferralStorageArbitrumSepolia from "./arbitrumSepolia/ReferralStorage.json";
+import RelayParamsArbitrumSepolia from "./arbitrumSepolia/RelayParams.json";
 import SubaccountGelatoRelayRouterArbitrumSepolia from "./arbitrumSepolia/SubaccountGelatoRelayRouter.json";
 import SubaccountRouterArbitrumSepolia from "./arbitrumSepolia/SubaccountRouter.json";
 import SyntheticsReaderArbitrumSepolia from "./arbitrumSepolia/SyntheticsReader.json";
@@ -133,7 +134,8 @@ export type AbiId =
   | "SubaccountRouterArbitrumSepolia"
   | "SyntheticsReaderArbitrumSepolia"
   | "TimelockArbitrumSepolia"
-  | "LayerZeroProviderArbitrumSepolia";
+  | "LayerZeroProviderArbitrumSepolia"
+  | "RelayParamsArbitrumSepolia";
 
 export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   CustomErrors: CustomErrors.abi,
@@ -202,4 +204,5 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   SubaccountRouterArbitrumSepolia: SubaccountRouterArbitrumSepolia.abi,
   TimelockArbitrumSepolia: TimelockArbitrumSepolia.abi,
   LayerZeroProviderArbitrumSepolia: LayerZeroProviderArbitrumSepolia.abi,
+  RelayParamsArbitrumSepolia: RelayParamsArbitrumSepolia.abi,
 } satisfies Record<AbiId, any> as any;

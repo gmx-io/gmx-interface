@@ -18,6 +18,7 @@ import {
   BASE_MAINNET,
   OPTIMISM_SEPOLIA,
   SONIC_MAINNET,
+  SEPOLIA,
   UiSupportedChain,
   getExplorerUrl,
 } from "config/chains";
@@ -74,6 +75,7 @@ export const NETWORKS_BY_CHAIN_IDS: Record<UiSupportedChain, string> = {
   [SONIC_MAINNET]: "sonic",
   [ARBITRUM_SEPOLIA]: "arbitrum-sepolia",
   [OPTIMISM_SEPOLIA]: "optimism-sepolia",
+  [SEPOLIA]: "sepolia",
 };
 
 const NETWORKS = mapValues(invert(NETWORKS_BY_CHAIN_IDS), Number);

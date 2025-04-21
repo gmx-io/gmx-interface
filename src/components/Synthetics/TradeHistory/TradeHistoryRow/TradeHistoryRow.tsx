@@ -23,8 +23,8 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import NewLink20ReactComponent from "img/ic_new_link_20.svg?react";
 
-import { TooltipContent, TooltipString } from "./utils";
 import { formatPositionMessage } from "./utils/position";
+import { TooltipContent, TooltipString } from "./utils/shared";
 import { formatSwapMessage } from "./utils/swap";
 
 import "./TradeHistoryRow.scss";

@@ -51,6 +51,16 @@ const processingTextMap = {
   [Operation.Shift]: (symbol: string) => t`Shifting ${symbol}...`,
 };
 
+type SubmitButtonState = {
+  text: string;
+  disabled?: boolean;
+  onSubmit?: () => void;
+  tokensToApprove?: string[];
+  isAllowanceLoaded: boolean;
+  isAllowanceLoading: boolean;
+  errorDescription?: string;
+};
+
 export const useSubmitButtonState = ({
   isDeposit,
   routerAddress,
@@ -76,7 +86,7 @@ export const useSubmitButtonState = ({
   selectedMarketInfoForGlv,
   glvInfo,
   isMarketTokenDeposit,
-}: Props) => {
+}: Props): SubmitButtonState => {
   const chainId = useSelector(selectChainId);
   const hasOutdatedUi = useHasOutdatedUi();
   const { openConnectModal } = useConnectModal();
@@ -169,7 +179,7 @@ export const useSubmitButtonState = ({
     isMarketTokenDeposit,
   });
 
-  return useMemo(() => {
+  return useMemo((): SubmitButtonState => {
     if (!account) {
       return {
         text: t`Connect Wallet`,
@@ -194,7 +204,7 @@ export const useSubmitButtonState = ({
       return {
         text: error,
         disabled: !shouldDisableValidation,
-        onClick: onSubmit,
+        onSubmit: onSubmit,
         tokensToApprove,
         isAllowanceLoaded,
         isAllowanceLoading,

@@ -12,7 +12,16 @@ import {
 } from "@rainbow-me/rainbowkit/wallets";
 import once from "lodash/once";
 import { http } from "viem";
-import { arbitrum, avalanche, avalancheFuji, arbitrumSepolia, base, sonic, optimismSepolia } from "viem/chains";
+import {
+  arbitrum,
+  avalanche,
+  avalancheFuji,
+  arbitrumSepolia,
+  base,
+  sonic,
+  optimismSepolia,
+  sepolia,
+} from "viem/chains";
 
 import { isDevelopment } from "config/env";
 
@@ -53,7 +62,7 @@ export const getRainbowKitConfig = once(() =>
       avalanche,
       base,
       sonic,
-      ...(isDevelopment() ? [avalancheFuji, arbitrumSepolia, optimismSepolia] : []),
+      ...(isDevelopment() ? [avalancheFuji, arbitrumSepolia, optimismSepolia, sepolia] : []),
     ],
     transports: {
       [arbitrum.id]: http(),
@@ -63,6 +72,7 @@ export const getRainbowKitConfig = once(() =>
       [base.id]: http(),
       [sonic.id]: http(),
       [optimismSepolia.id]: http(),
+      [sepolia.id]: http(),
     },
     wallets: [...popularWalletList, ...othersWalletList],
   })

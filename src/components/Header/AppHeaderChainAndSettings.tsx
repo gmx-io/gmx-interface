@@ -11,6 +11,7 @@ import {
   AVALANCHE_FUJI,
   BASE_MAINNET,
   OPTIMISM_SEPOLIA,
+  SEPOLIA,
   SONIC_MAINNET,
   getChainName,
 } from "config/chains";
@@ -96,6 +97,12 @@ if (isDevelopment()) {
       value: OPTIMISM_SEPOLIA,
       icon: getChainIcon(OPTIMISM_SEPOLIA),
       color: "#ff0420",
+    },
+    {
+      label: getChainName(SEPOLIA),
+      value: SEPOLIA,
+      icon: getChainIcon(SEPOLIA),
+      color: "#aa00ff",
     }
   );
 }

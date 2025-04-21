@@ -1,7 +1,7 @@
 import { MessageDescriptor } from "@lingui/core";
 import { msg } from "@lingui/macro";
 import cx from "classnames";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { getChainName } from "config/chains";
 import { isSettlementChain } from "context/GmxAccountContext/config";
@@ -114,10 +114,6 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
 const AssetListMultichain = () => {
   const gmxAccountTokensData = useGmxAccountTokensData();
 
-  useEffect(() => {
-    console.log({ gmxAccountTokensData });
-  }, [gmxAccountTokensData]);
-
   const displayTokens = Object.values(gmxAccountTokensData).map(
     (token): DisplayToken => ({
       chainId: 0,
@@ -137,31 +133,35 @@ const AssetListSettlementChain = () => {
   const { tokensData } = useTokensDataRequest(chainId!);
   const gmxAccountTokensData = useGmxAccountTokensData();
 
-  const gmxAccountDisplayTokens = Object.values(gmxAccountTokensData).map(
-    (token): DisplayToken => ({
-      chainId: 0,
-      symbol: token.symbol,
-      isGmxAccountBalance: true,
-      balance: token.balance,
-      balanceUsd: convertToUsd(token.balance, token.decimals, getMidPrice(token.prices)),
-      decimals: token.decimals,
-    })
-  );
-
-  const settlementChainDisplayTokens = Object.values(tokensData || {})
-    .map(
+  const displayTokens = useMemo(() => {
+    const gmxAccountDisplayTokens = Object.values(gmxAccountTokensData).map(
       (token): DisplayToken => ({
-        chainId: chainId!,
+        chainId: 0,
         symbol: token.symbol,
-        isGmxAccountBalance: false,
+        isGmxAccountBalance: true,
         balance: token.balance,
         balanceUsd: convertToUsd(token.balance, token.decimals, getMidPrice(token.prices)),
         decimals: token.decimals,
       })
-    )
-    .filter((token) => token.balance !== undefined && token.balance > 0n);
+    );
 
-  const displayTokens: DisplayToken[] = [...gmxAccountDisplayTokens, ...settlementChainDisplayTokens];
+    const settlementChainDisplayTokens = Object.values(tokensData || {})
+      .map(
+        (token): DisplayToken => ({
+          chainId: chainId!,
+          symbol: token.symbol,
+          isGmxAccountBalance: false,
+          balance: token.balance,
+          balanceUsd: convertToUsd(token.balance, token.decimals, getMidPrice(token.prices)),
+          decimals: token.decimals,
+        })
+      )
+      .filter((token) => token.balance !== undefined && token.balance > 0n);
+
+    const displayTokens: DisplayToken[] = [...gmxAccountDisplayTokens, ...settlementChainDisplayTokens];
+
+    return displayTokens;
+  }, [chainId, gmxAccountTokensData, tokensData]);
 
   return <AssetsList tokens={displayTokens} />;
 };

@@ -3,6 +3,7 @@ import { BaseContract, ethers } from "ethers";
 import { ReactNode } from "react";
 import { withRetry } from "viem";
 
+import { CustomErrorsAbi } from "ab/testMultichain/getCustomErrorsAbi/getCustomErrorsAbi";
 import {
   getContract,
   getExchangeRouterContract,
@@ -10,7 +11,6 @@ import {
   getMulticallContract,
   getZeroAddressContract,
 } from "config/contracts";
-import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { helperToast } from "lib/helperToast";
@@ -26,8 +26,6 @@ import { OracleUtils } from "typechain-types/ExchangeRouter";
 
 import { getErrorMessage } from "components/Errors/errorToasts";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
-
-import { CustomErrorsAbi } from "ab/testMultichain/getCustomErrorsAbi/getCustomErrorsAbi";
 
 export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;

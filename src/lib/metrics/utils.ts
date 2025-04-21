@@ -1,3 +1,4 @@
+import { ErrorLike } from "ab/testMultichain/parseError";
 import { USD_DECIMALS } from "config/factors";
 import { EventLogData } from "context/SyntheticsEvents";
 import { ExecutionFee } from "domain/synthetics/fees";

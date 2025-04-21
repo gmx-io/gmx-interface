@@ -1,4 +1,4 @@
-import { base, optimismSepolia, sonic, arbitrumSepolia } from "viem/chains";
+import { arbitrumSepolia, base, sonic } from "viem/chains";
 
 import {
   ARBITRUM,
@@ -7,6 +7,7 @@ import {
   AVALANCHE_FUJI,
   BASE_MAINNET,
   OPTIMISM_SEPOLIA,
+  SEPOLIA,
   SONIC_MAINNET,
   UiSupportedChain,
   getExplorerUrl,
@@ -20,6 +21,7 @@ export const CHAIN_ID_TO_TX_URL_BUILDER: Record<UiSupportedChain, (txId: string)
   [OPTIMISM_SEPOLIA]: (txId: string) => `${getExplorerUrl(OPTIMISM_SEPOLIA)}tx/${txId}`,
   [ARBITRUM_SEPOLIA]: (txId: string) => `${getExplorerUrl(ARBITRUM_SEPOLIA)}tx/${txId}`,
   [AVALANCHE_FUJI]: (txId: string) => `${getExplorerUrl(AVALANCHE_FUJI)}tx/${txId}`,
+  [SEPOLIA]: (txId: string) => `${getExplorerUrl(SEPOLIA)}tx/${txId}`,
 };
 
 export const CHAIN_ID_TO_EXPLORER_NAME: Record<UiSupportedChain, string> = {
@@ -29,5 +31,6 @@ export const CHAIN_ID_TO_EXPLORER_NAME: Record<UiSupportedChain, string> = {
   [ARBITRUM_SEPOLIA]: arbitrumSepolia.blockExplorers.default.name,
   [BASE_MAINNET]: base.blockExplorers.default.name,
   [SONIC_MAINNET]: sonic.blockExplorers.default.name,
-  [OPTIMISM_SEPOLIA]: optimismSepolia.blockExplorers.default.name,
+  [OPTIMISM_SEPOLIA]: "OP Sepolia Etherscan",
+  [SEPOLIA]: "Sepolia Etherscan",
 };

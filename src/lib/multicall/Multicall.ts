@@ -1,5 +1,14 @@
 import { Chain, ClientConfig, HttpTransportConfig, createPublicClient, http } from "viem";
-import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, base, optimismSepolia, sonic } from "viem/chains";
+import {
+  arbitrum,
+  arbitrumSepolia,
+  avalanche,
+  avalancheFuji,
+  base,
+  optimismSepolia,
+  sepolia,
+  sonic,
+} from "viem/chains";
 
 import { CustomErrorsAbi } from "ab/testMultichain/getCustomErrorsAbi/getCustomErrorsAbi";
 import {
@@ -9,6 +18,7 @@ import {
   AVALANCHE_FUJI,
   BASE_MAINNET,
   OPTIMISM_SEPOLIA,
+  SEPOLIA,
   SONIC_MAINNET,
   UiSupportedChain,
 } from "config/chains";
@@ -39,6 +49,7 @@ const CHAIN_BY_CHAIN_ID: Record<UiSupportedChain, Chain> = {
   [AVALANCHE_FUJI]: avalancheFuji,
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
   [OPTIMISM_SEPOLIA]: optimismSepolia,
+  [SEPOLIA]: sepolia,
 };
 
 export type MulticallProviderUrls = {
@@ -127,6 +138,18 @@ const BATCH_CONFIGS: Record<
     },
   },
   [OPTIMISM_SEPOLIA]: {
+    http: {
+      batchSize: 40,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
+  },
+  [SEPOLIA]: {
     http: {
       batchSize: 40,
       wait: 0,

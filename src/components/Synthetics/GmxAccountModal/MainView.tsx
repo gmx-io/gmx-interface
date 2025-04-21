@@ -1,18 +1,20 @@
-import { Trans, t } from "@lingui/macro";
+import { MessageDescriptor } from "@lingui/core";
+import { Trans, msg, t } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
 import { IoArrowDown } from "react-icons/io5";
-import { TbLoader2, TbProgressAlert } from "react-icons/tb";
+import { TbLoader2 } from "react-icons/tb";
 import { useCopyToClipboard } from "react-use";
-import { useDisconnect } from "wagmi";
+import { useAccount, useDisconnect } from "wagmi";
 
 import { getExplorerUrl } from "config/chains";
 import { CURRENT_PROVIDER_LOCALSTORAGE_KEY, SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY } from "config/localStorage";
 import { isSettlementChain } from "context/GmxAccountContext/config";
-import { useGmxAccountModalOpen, useGmxAccountSelectedTransactionHash } from "context/GmxAccountContext/hooks";
-import { FundingHistoryItem } from "context/GmxAccountContext/types";
+import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
+import { MultichainFundingHistoryItem } from "context/GmxAccountContext/types";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { helperToast } from "lib/helperToast";
+import { useLocalizedMap } from "lib/i18n";
 import { useENS } from "lib/legacy";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { useNotifyModalState } from "lib/useNotifyModalState";
@@ -20,6 +22,8 @@ import { userAnalytics } from "lib/userAnalytics";
 import { DisconnectWalletEvent } from "lib/userAnalytics/types";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
+import { getToken } from "sdk/configs/tokens";
+import { Token } from "sdk/types/tokens";
 
 import { Avatar } from "components/Avatar/Avatar";
 import Button from "components/Button/Button";
@@ -40,9 +44,8 @@ import {
   useAvailableToTradeAssetSettlementChain,
   useAvailableToTradeAssetSymbolsMultichain,
   useAvailableToTradeAssetSymbolsSettlementChain,
-  useGmxAccountFundingHistory,
 } from "./hooks";
-import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
+import { useGmxAccountFundingHistory } from "./useGmxAccountFundingHistory";
 
 const TokenIcons = ({ tokens }: { tokens: string[] }) => {
   const displayTokens = tokens.slice(0, 3);
@@ -70,32 +73,56 @@ const TokenIcons = ({ tokens }: { tokens: string[] }) => {
   );
 };
 
-export function FundingHistoryItemLabel({ status, operation }: Pick<FundingHistoryItem, "status" | "operation">) {
-  if (status === "pending") {
+const FUNDING_OP_LABELS: Partial<
+  Record<`${"deposit" | "withdrawal"}-${"sent" | "received" | "executed"}`, MessageDescriptor>
+> = {
+  "deposit-sent": msg`Deposit Sent`,
+  "deposit-received": msg`Deposit Received`,
+  "deposit-executed": msg`Deposit Executed`,
+  "withdrawal-sent": msg`Withdrawal Sent`,
+  "withdrawal-received": msg`Withdrawal Received`,
+};
+
+export function FundingHistoryItemLabel({ step, operation }: Pick<MultichainFundingHistoryItem, "step" | "operation">) {
+  const labels = useLocalizedMap(FUNDING_OP_LABELS);
+
+  if (step === "sent") {
     return (
       <div className="text-body-small flex items-center gap-4 text-slate-100">
         <TbLoader2 className="size-16 animate-spin" />
-        Pending
+        {labels[`${operation}-sent`]}
       </div>
     );
   }
 
-  if (status === "failed") {
+  if (operation === "deposit" && step === "received") {
     return (
-      <div className="text-body-small flex items-center gap-4 text-red-500">
-        <TbProgressAlert className="size-16" />
-        {operation === "deposit" ? "Deposit error" : "Withdraw error"}
+      <div className="text-body-small flex items-center gap-4 text-slate-100">
+        <TbLoader2 className="size-16 animate-spin" />
+        {labels[`${operation}-received`]}
       </div>
     );
   }
 
-  return <div className="text-body-small text-slate-100">{operation === "deposit" ? "Deposit" : "Withdraw"}</div>;
+  if (step === "executed" && operation === "deposit") {
+    return <div className="text-body-small text-slate-100">{labels[`deposit-executed`]}</div>;
+  }
+  if (operation === "withdrawal" && step === "received") {
+    return <div className="text-body-small text-slate-100">{labels[`withdrawal-received`]}</div>;
+  }
+
+  return (
+    <div className="text-body-small text-slate-100">
+      {operation} {step}
+    </div>
+  );
 }
 
 const Toolbar = ({ account }: { account: string }) => {
   const { disconnect } = useDisconnect();
   const [, setIsVisible] = useGmxAccountModalOpen();
-  const { chainId } = useWallet();
+  // const { chainId } = useWallet();
+  const { chainId } = useAccount();
   const { openNotifyModal } = useNotifyModalState();
   const { setIsSettingsVisible } = useSettings();
   const { ensName } = useENS(account);
@@ -109,7 +136,7 @@ const Toolbar = ({ account }: { account: string }) => {
   };
 
   const accountUrl = useMemo(() => {
-    if (!account) return "";
+    if (!account || !chainId) return "";
     return `${getExplorerUrl(chainId)}address/${account}`;
   }, [account, chainId]);
 
@@ -279,21 +306,39 @@ const ActionButtons = () => {
   );
 };
 
+type DisplayFundingHistoryItem = Omit<MultichainFundingHistoryItem, "token"> & {
+  token: Token;
+};
+
 const FundingHistorySection = () => {
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   const [searchQuery, setSearchQuery] = useState("");
-  const [, setSelectedTransactionHash] = useGmxAccountSelectedTransactionHash();
+  const [, setSelectedTransferGuid] = useGmxAccountSelectedTransferGuid();
 
   const fundingHistory = useGmxAccountFundingHistory();
 
-  const filteredFundingHistory = fundingHistory.filter((transaction) => {
-    const matchesSearch = transaction.token.symbol.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesSearch;
-  });
+  const filteredFundingHistory: DisplayFundingHistoryItem[] | undefined = fundingHistory
+    ?.map((transfer): DisplayFundingHistoryItem | undefined => {
+      const token = getToken(transfer.settlementChainId, transfer.token);
 
-  const handleTransactionClick = (transaction: FundingHistoryItem) => {
-    setSelectedTransactionHash(transaction.txnId);
-    setIsVisibleOrView("transactionDetails");
+      if (!token) {
+        return undefined;
+      }
+
+      return { ...transfer, token };
+    })
+    .filter((transfer): transfer is DisplayFundingHistoryItem => {
+      if (!transfer) {
+        return false;
+      }
+
+      const matchesSearch = transfer.token.symbol.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesSearch;
+    });
+
+  const handleTransferClick = (transfer: DisplayFundingHistoryItem) => {
+    setSelectedTransferGuid(transfer.id);
+    setIsVisibleOrView("transferDetails");
   };
 
   return (
@@ -311,35 +356,35 @@ const FundingHistorySection = () => {
         />
       </div>
       <div className="grow overflow-y-auto">
-        {filteredFundingHistory.map((transaction) => (
+        {filteredFundingHistory?.map((transfer) => (
           <div
             role="button"
             tabIndex={0}
-            key={transaction.id}
+            key={transfer.id}
             className="flex w-full cursor-pointer items-center justify-between px-16 py-8 text-left -outline-offset-4 gmx-hover:bg-slate-700"
-            onClick={() => handleTransactionClick(transaction)}
+            onClick={() => handleTransferClick(transfer)}
           >
             <div className="flex items-center gap-8">
-              <TokenIcon symbol={transaction.token.symbol} displaySize={40} importSize={40} />
+              <TokenIcon symbol={transfer.token.symbol} displaySize={40} importSize={40} />
               <div>
-                <div>{transaction.token.symbol}</div>
-                <FundingHistoryItemLabel status={transaction.status} operation={transaction.operation} />
+                <div>{transfer.token.symbol}</div>
+                <FundingHistoryItemLabel step={transfer.step} operation={transfer.operation} />
               </div>
             </div>
             <div className="text-right">
-              <div>{formatBalanceAmount(transaction.size, transaction.token.decimals, transaction.token.symbol)}</div>
-              <div className="text-body-small text-slate-100">{formatTradeActionTimestamp(transaction.timestamp)}</div>
+              <div>{formatBalanceAmount(transfer.amount, transfer.token.decimals, transfer.token.symbol)}</div>
+              {/* <div className="text-body-small text-slate-100">{formatTradeActionTimestamp(transfer.timestamp)}</div> */}
             </div>
           </div>
         ))}
 
-        {fundingHistory.length === 0 && (
+        {fundingHistory && fundingHistory.length === 0 && (
           <div className="flex h-full flex-col items-center justify-center gap-8 px-16 text-slate-100">
             <InfoIconComponent className="size-24" />
             <Trans>No funding activity</Trans>
           </div>
         )}
-        {filteredFundingHistory.length === 0 && fundingHistory.length > 0 && (
+        {filteredFundingHistory?.length === 0 && fundingHistory && fundingHistory.length > 0 && (
           <div className="flex h-full flex-col items-center justify-center gap-8 px-16 text-slate-100">
             <InfoIconComponent className="size-24" />
             <Trans>No funding activity matching your search</Trans>

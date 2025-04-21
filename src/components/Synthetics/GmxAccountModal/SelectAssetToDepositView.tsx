@@ -11,6 +11,7 @@ import {
 } from "context/GmxAccountContext/hooks";
 import { TokenChainData } from "context/GmxAccountContext/types";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { EMPTY_OBJECT } from "lib/objects";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import Button from "components/Button/Button";
@@ -19,7 +20,6 @@ import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableSc
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import InfoIconComponent from "img/ic_info.svg?react";
-import { EMPTY_OBJECT } from "lib/objects";
 
 type TokenListItemProps = {
   tokenChainData: DisplayTokenChainData;

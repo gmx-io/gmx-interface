@@ -21,7 +21,7 @@ const GAS_PAYMENT_TOKENS = {
     getTokenBySymbol(AVALANCHE_FUJI, "USDC").address,
     getTokenBySymbol(AVALANCHE_FUJI, "WAVAX").address,
   ],
-  [ARBITRUM_SEPOLIA]: [getTokenBySymbol(ARBITRUM_SEPOLIA, "USDC").address],
+  [ARBITRUM_SEPOLIA]: [getTokenBySymbol(ARBITRUM_SEPOLIA, "USDC.SG").address],
 };
 
 export function getGasPaymentTokens(chainId: number): string[] {

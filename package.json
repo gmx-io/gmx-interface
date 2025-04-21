@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.5.6",
+    "@arbitrum/sdk": "4.0.4",
     "@binance/w3w-utils": "1.1.4",
     "@davatar/react": "1.8.1",
     "@ensdomains/ens-avatar": "1.0.0-alpha.0.ethers.6",
@@ -103,7 +104,7 @@
     "swr": "2.2.1",
     "typescript": "5.4.2",
     "use-context-selector": "1.4.1",
-    "viem": "2.24.1",
+    "viem": "2.26.2",
     "wagmi": "2.12.29",
     "web-vitals": "1.1.2",
     "worker-loader": "3.0.8"

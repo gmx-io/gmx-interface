@@ -9,10 +9,11 @@ import { ExternalSwapOutput, SwapAmounts } from "domain/synthetics/trade";
 import { SignedTokenPermit, TokensAllowanceData, TokensData } from "domain/tokens";
 import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { abis } from "sdk/abis";
 import GelatoRelayRouterAbi from "sdk/abis/GelatoRelayRouter.json";
 import SubaccountGelatoRelayRouterAbi from "sdk/abis/SubaccountGelatoRelayRouter.json";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION, getRelayerFeeToken } from "sdk/configs/express";
-import { RelayFeePayload, RelayParamsPayload } from "sdk/types/expressTransactions";
+import { MultichainRelayParamsPayload, RelayFeePayload, RelayParamsPayload } from "sdk/types/expressTransactions";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import {
   BatchOrderTxnParams,
@@ -22,13 +23,14 @@ import {
   UpdateOrderPayload,
 } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
+import { RelayUtils } from "typechain-types-arbitrum-sepolia/MultichainTransferRouter";
 
 import {
   getOracleParamsPayload,
   getOraclePriceParamsForOrders,
   getOraclePriceParamsForRelayFee,
 } from "./oracleParamsUtils";
-import { getGelatoRelayRouterDomain, hashRelayParams } from "./relayParams";
+import { getGelatoRelayRouterDomain, hashRelayParams, hashRelayParamsMultichain } from "./relayParams";
 import { signTypedData } from "./signing";
 import { hashSubaccountApproval, SignedSubbacountApproval, Subaccount } from "./subaccountUtils";
 import { getRelayRouterNonceForSigner } from "./useRelayRouterNonce";
@@ -397,6 +399,57 @@ export async function buildAndSignRemoveSubaccountTxn({
   return {
     callData: removeSubaccountCallData,
     contractAddress: getContract(chainId, "SubaccountGelatoRelayRouter"),
+    feeToken: relayParamsPayload.fee.feeToken,
+    feeAmount: relayParamsPayload.fee.feeAmount,
+  };
+}
+
+export async function buildAndSignBridgeOutTxn({
+  chainId,
+  relayParamsPayload,
+  params,
+  signer,
+}: {
+  chainId: number;
+  relayParamsPayload: MultichainRelayParamsPayload;
+  params: RelayUtils.BridgeOutParamsStruct;
+  signer: Signer;
+}) {
+  const [address, srcChainId] = await Promise.all([
+    signer.getAddress(),
+    signer.provider!.getNetwork().then((n) => Number(n.chainId)),
+  ]);
+
+  const signature = await signBridgeOutPayload({
+    relayParams: relayParamsPayload,
+    params,
+    signer,
+    chainId,
+    srcChainId,
+  });
+
+  const bridgeOutCallData = encodeFunctionData({
+    abi: abis.MultichainTransferRouterArbitrumSepolia,
+    functionName: "bridgeOut",
+    args: [
+      {
+        ...relayParamsPayload,
+        signature,
+        desChainId: chainId,
+      } satisfies RelayUtils.RelayParamsStruct,
+      // address account,
+      address,
+      // uint256 srcChainId,
+      srcChainId,
+      // (await signer.provider!.getNetwork()).chainId,
+      // RelayUtils.BridgeOutParams calldata params
+      params,
+    ],
+  });
+
+  return {
+    callData: bridgeOutCallData,
+    contractAddress: getContract(chainId, "MultichainTransferRouter"),
     feeToken: relayParamsPayload.fee.feeToken,
     feeAmount: relayParamsPayload.fee.feeAmount,
   };
@@ -808,6 +861,47 @@ async function signRemoveSubaccountPayload({
   };
 
   return signTypedData(signer, domain, types, typedData);
+}
+
+async function signBridgeOutPayload({
+  signer,
+  relayParams,
+  params,
+  chainId,
+  srcChainId,
+}: {
+  signer: Signer;
+  relayParams: MultichainRelayParamsPayload;
+  params: RelayUtils.BridgeOutParamsStruct;
+  chainId: number;
+  srcChainId: number;
+}): Promise<string> {
+  if (relayParams.userNonce === undefined) {
+    throw new Error("userNonce is required");
+  }
+
+  const types = {
+    BridgeOut: [
+      { name: "token", type: "address" },
+      { name: "amount", type: "uint256" },
+      { name: "provider", type: "address" },
+      { name: "data", type: "bytes" },
+      { name: "relayParams", type: "bytes32" },
+    ],
+  };
+
+  const typedData = {
+    token: params.token,
+    amount: params.amount,
+    provider: params.provider,
+    data: params.data,
+    relayParams: hashRelayParamsMultichain(relayParams),
+  };
+
+  const domain = getGelatoRelayRouterDomain(chainId, true, srcChainId);
+  // const domain = getGelatoRelayRouterDomain(chainId, true);
+
+  return signTypedData(signer, { ...domain }, types, typedData);
 }
 
 export async function sendExpressTxn(p: {

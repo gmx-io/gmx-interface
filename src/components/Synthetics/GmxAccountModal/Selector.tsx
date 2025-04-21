@@ -20,7 +20,7 @@ export const Selector = <V, T>({
   placeholder?: string;
 }) => {
   return (
-    <Listbox value={value} onChange={onChange}>
+    <Listbox value={value ?? null} onChange={onChange}>
       <div className="relative">
         <Listbox.Button className="text-body-large flex w-full items-center justify-between rounded-4 bg-cold-blue-900 px-14 py-12 active:bg-cold-blue-500 gmx-hover:bg-cold-blue-700">
           {value === undefined ? <div className="text-slate-100">{placeholder}</div> : button}

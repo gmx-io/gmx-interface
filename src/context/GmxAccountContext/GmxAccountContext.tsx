@@ -1,21 +1,16 @@
 import { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { createContext } from "use-context-selector";
-import { useAccount, useChainId } from "wagmi";
+import { useAccount } from "wagmi";
 
 import { ARBITRUM } from "sdk/configs/chains";
 
 import "./config";
-import {
-  DEFAULT_SETTLEMENT_CHAIN_ID_MAP,
-  MULTI_CHAIN_SUPPORTED_TOKEN_MAP,
-  isSettlementChain,
-  isSourceChain,
-} from "./config";
+import { DEFAULT_SETTLEMENT_CHAIN_ID_MAP, MULTI_CHAIN_SUPPORTED_TOKEN_MAP, isSourceChain } from "./config";
 
 export type GmxAccountModalView =
   | "main"
   | "availableToTradeAssets"
-  | "transactionDetails"
+  | "transferDetails"
   | "deposit"
   | "selectAssetToDeposit"
   | "withdraw";
@@ -51,8 +46,8 @@ export type GmxAccountContext = {
 
   // funding history
 
-  selectedTransactionHash: string | undefined;
-  setSelectedTransactionHash: (hash: string) => void;
+  selectedTransferGuid: string | undefined;
+  setSelectedTransferGuid: (guid: string) => void;
 };
 
 export const context = createContext<GmxAccountContext | null>(null);
@@ -76,8 +71,8 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
   const [withdrawViewTokenInputValue, setWithdrawViewTokenInputValue] =
     useState<GmxAccountContext["withdrawViewTokenInputValue"]>(undefined);
 
-  const [selectedTransactionHash, setSelectedTransactionHash] =
-    useState<GmxAccountContext["selectedTransactionHash"]>(undefined);
+  const [selectedTransferGuid, setSelectedTransferGuid] =
+    useState<GmxAccountContext["selectedTransferGuid"]>(undefined);
 
   useEffect(() => {
     if (walletChainId === undefined) {
@@ -120,8 +115,8 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
 
       // funding history
 
-      selectedTransactionHash,
-      setSelectedTransactionHash,
+      selectedTransferGuid,
+      setSelectedTransferGuid,
     }),
     [
       modalOpen,
@@ -132,7 +127,7 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
       withdrawViewChain,
       withdrawViewTokenAddress,
       withdrawViewTokenInputValue,
-      selectedTransactionHash,
+      selectedTransferGuid,
     ]
   );
 

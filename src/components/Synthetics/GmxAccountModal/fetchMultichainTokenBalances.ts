@@ -1,12 +1,10 @@
 import { zeroAddress } from "viem";
 
-import { getChainName } from "config/chains";
+import { UiSourceChain, getChainName } from "config/chains";
+import { MULTICALLS_MAP, MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "context/GmxAccountContext/config";
 import { executeMulticall } from "lib/multicall/executeMulticall";
 import { MulticallRequestConfig } from "lib/multicall/types";
 import { EMPTY_OBJECT } from "lib/objects";
-import { getContract } from "sdk/configs/contracts";
-
-import { MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "../../../context/GmxAccountContext/config";
 
 export async function fetchMultichainTokenBalances(
   currentSettlementChainId: number,
@@ -35,7 +33,8 @@ export async function fetchMultichainTokenBalances(
     for (const tokenAddress of tokenAddresses) {
       if (tokenAddress === zeroAddress) {
         requestConfig[tokenAddress] = {
-          contractAddress: getContract(sourceChainId, "Multicall"),
+          // TODO there might not be a multicall contract on the source chain
+          contractAddress: MULTICALLS_MAP[sourceChainId as UiSourceChain],
           abiId: "Multicall",
           calls: {
             balanceOf: {
@@ -62,7 +61,8 @@ export async function fetchMultichainTokenBalances(
     const request = executeMulticall(
       sourceChainId,
       requestConfig,
-      "background",
+      // TODO pass priority from args
+      "urgent",
       `fetchMultichainTokens-${getChainName(sourceChainId)}`
     ).then(
       (res) => {

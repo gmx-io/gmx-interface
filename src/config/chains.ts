@@ -1,8 +1,6 @@
 import { ethers } from "ethers";
 import sample from "lodash/sample";
-import { arbitrumSepolia, base, optimismSepolia, sonic } from "viem/chains";
-
-import { mustNeverExist } from "lib/types";
+import { arbitrumSepolia, base, optimismSepolia, sepolia, sonic } from "viem/chains";
 
 import { isDevelopment } from "./env";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET, ETH_MAINNET } from "./static/chains";
@@ -12,6 +10,7 @@ import {
   OPTIMISM_SEPOLIA,
   SUPPORTED_CHAIN_IDS as SDK_SUPPORTED_CHAIN_IDS,
   SUPPORTED_CHAIN_IDS_DEV as SDK_SUPPORTED_CHAIN_IDS_DEV,
+  SEPOLIA,
   SONIC_MAINNET,
   UiContractsChain,
   UiSupportedChain,
@@ -46,6 +45,7 @@ export const CHAIN_NAMES_MAP: Record<UiSupportedChain, string> = {
   [AVALANCHE_FUJI]: "Avalanche Fuji",
   [ARBITRUM_SEPOLIA]: arbitrumSepolia.name,
   [OPTIMISM_SEPOLIA]: optimismSepolia.name,
+  [SEPOLIA]: sepolia.name,
 };
 
 export const NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR = {
@@ -171,6 +171,7 @@ export const RPC_PROVIDERS: Record<UiSupportedChain | typeof ETH_MAINNET, string
   [BASE_MAINNET]: [...base.rpcUrls.default.http],
   [SONIC_MAINNET]: [...sonic.rpcUrls.default.http],
   [OPTIMISM_SEPOLIA]: [...optimismSepolia.rpcUrls.default.http],
+  [SEPOLIA]: [...sepolia.rpcUrls.default.http],
 };
 
 export const FALLBACK_PROVIDERS: Record<UiSupportedChain, string[]> = {
@@ -185,6 +186,7 @@ export const FALLBACK_PROVIDERS: Record<UiSupportedChain, string[]> = {
   [BASE_MAINNET]: [],
   [SONIC_MAINNET]: [],
   [OPTIMISM_SEPOLIA]: [],
+  [SEPOLIA]: [],
 };
 
 export const getConstant = (chainId: number, key: string) => {
@@ -241,7 +243,9 @@ export function getExplorerUrl(chainId: number): string {
     case ARBITRUM_SEPOLIA:
       return arbitrumSepolia.blockExplorers.default.url + "/";
     case OPTIMISM_SEPOLIA:
-      return optimismSepolia.blockExplorers.default.url + "/";
+      return "https://sepolia-optimism.etherscan.io/";
+    case SEPOLIA:
+      return "https://sepolia.etherscan.io/";
   }
 }
 

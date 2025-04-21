@@ -28,7 +28,7 @@ export const selectGmxAccountSetWithdrawViewTokenInputValue = (s: GmxAccountCont
 
 //#region Funding history
 
-export const selectGmxAccountSelectedTransactionHash = (s: GmxAccountContext) => s.selectedTransactionHash;
-export const selectGmxAccountSetSelectedTransactionHash = (s: GmxAccountContext) => s.setSelectedTransactionHash;
+export const selectGmxAccountSelectedTransferGuid = (s: GmxAccountContext) => s.selectedTransferGuid;
+export const selectGmxAccountSetSelectedTransferGuid = (s: GmxAccountContext) => s.setSelectedTransferGuid;
 
 //#endregion

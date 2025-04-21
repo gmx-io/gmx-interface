@@ -7,15 +7,36 @@ export type TokenChainData = Token & {
   sourceChainBalance: bigint | undefined;
 };
 
-export type FundingHistoryItem = {
+// operation: "deposit" | "withdraw";
+// step: "sent" | "received" | "executed";
+// settlementChainId: number;
+// sourceChainId: number;
+// account: Address;
+// token: Address;
+// amount: bigint;
+// id: string;
+
+// sentTxn: string;
+// sentTimestamp: number;
+// receivedTxn: string | undefined;
+// receivedTimestamp: number | undefined;
+// executedTxn: string | undefined;
+// executedTimestamp: number | undefined;
+
+export type MultichainFundingHistoryItem = {
   id: string;
-  chainId: number;
-  walletAddress: string;
-  txnId: string;
-  token: Token;
-  operation: "deposit" | "withdraw";
-  timestamp: number;
-  size: bigint;
-  sizeUsd: bigint;
-  status: "pending" | "completed" | "failed";
+  operation: "deposit" | "withdrawal";
+  step: "executed" | "received" | "sent";
+  settlementChainId: number;
+  sourceChainId: number;
+  account: string;
+  token: string;
+  amount: bigint;
+
+  sentTxn: string;
+  sentTimestamp: number;
+  receivedTxn: string | undefined;
+  receivedTimestamp: number | undefined;
+  executedTxn: string | undefined;
+  executedTimestamp: number | undefined;
 };

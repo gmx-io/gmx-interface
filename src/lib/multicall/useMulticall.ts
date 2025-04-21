@@ -25,7 +25,7 @@ const mutateFlagsRef: { current: Record<string, boolean> } = { current: {} };
  * @param params.parseResponse - optional callback to pre-process and format the response
  */
 export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResult = MulticallResult<TConfig>>(
-  chainId: number,
+  chainId: number | undefined,
   name: string,
   params: {
     key: CacheKey | SkipKey;
@@ -70,7 +70,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
           // prettier-ignore
           request =
             typeof params.request === "function"
-              ? await params.request(chainId, params.key as CacheKey)
+              ? await params.request(chainId!, params.key as CacheKey)
               : params.request;
 
           debugLog(() => {
@@ -97,7 +97,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
         } else if (params.refreshInterval === undefined) {
           if (typeof defaultConfig.refreshInterval === "number") {
             isInterval = true;
-          } else if (hasData && defaultConfig.refreshInterval?.(successDataByChainIdRef.current[chainId])) {
+          } else if (hasData && defaultConfig.refreshInterval?.(successDataByChainIdRef.current[chainId!])) {
             isInterval = true;
           }
         }
@@ -116,7 +116,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
             startTime = Date.now();
           });
 
-          responseOrFailure = await executeMulticall(chainId, request, priority, name, params.disableBatching);
+          responseOrFailure = await executeMulticall(chainId!, request, priority, name, params.disableBatching);
 
           debugLog(() => {
             const endTime = Date.now();
@@ -127,12 +127,12 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
         }
 
         if (responseOrFailure?.success) {
-          successDataByChainIdRef.current[chainId] = responseOrFailure;
+          successDataByChainIdRef.current[chainId!] = responseOrFailure;
         } else if (Object.keys(responseOrFailure.errors).length > 0) {
           throw new Error(`Response error ${serializeMulticallErrors(responseOrFailure.errors)}`);
         }
 
-        const response = successDataByChainIdRef.current[chainId];
+        const response = successDataByChainIdRef.current[chainId!];
 
         if (!response) {
           throw new Error(`Multicall response is empty`);
@@ -140,7 +140,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
 
         // prettier-ignore
         const result = typeof params.parseResponse === "function"
-            ? params.parseResponse(response, chainId, params.key as CacheKey)
+            ? params.parseResponse(response, chainId!, params.key as CacheKey)
             : response;
 
         return result as TResult;

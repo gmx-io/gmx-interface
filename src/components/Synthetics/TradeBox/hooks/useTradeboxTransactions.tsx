@@ -43,7 +43,6 @@ import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwr
 import { formatLeverage } from "domain/synthetics/positions/utils";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { useChainId } from "lib/chains";
-import { parseError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import {
   initDecreaseOrderMetricData,
