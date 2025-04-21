@@ -3,7 +3,10 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type { SubaccountGelatoRelayRouter, SubaccountGelatoRelayRouterInterface } from "../SubaccountGelatoRelayRouter";
+import type {
+  SubaccountGelatoRelayRouter,
+  SubaccountGelatoRelayRouterInterface,
+} from "../SubaccountGelatoRelayRouter";
 
 const _abi = [
   {
@@ -603,7 +606,8 @@ const _abi = [
                     type: "address[]",
                   },
                 ],
-                internalType: "struct IBaseOrderUtils.CreateOrderParamsAddresses",
+                internalType:
+                  "struct IBaseOrderUtils.CreateOrderParamsAddresses",
                 name: "addresses",
                 type: "tuple",
               },
@@ -1891,7 +1895,14 @@ export class SubaccountGelatoRelayRouter__factory {
   static createInterface(): SubaccountGelatoRelayRouterInterface {
     return new Interface(_abi) as SubaccountGelatoRelayRouterInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): SubaccountGelatoRelayRouter {
-    return new Contract(address, _abi, runner) as unknown as SubaccountGelatoRelayRouter;
+  static connect(
+    address: string,
+    runner?: ContractRunner | null
+  ): SubaccountGelatoRelayRouter {
+    return new Contract(
+      address,
+      _abi,
+      runner
+    ) as unknown as SubaccountGelatoRelayRouter;
   }
 }

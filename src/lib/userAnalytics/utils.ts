@@ -1,6 +1,5 @@
 import debounce from "lodash/debounce";
 
-import { parseError } from "ab/testMultichain/parseError";
 import { getChainName } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { MarketInfo } from "domain/synthetics/markets";
