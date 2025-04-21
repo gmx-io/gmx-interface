@@ -6,7 +6,7 @@ import { getChainName, getExplorerUrl } from "config/chains";
 import { TokenPermitsState } from "domain/synthetics/gassless/useInitTokenPermitsState";
 import { helperToast } from "lib/helperToast";
 import Token from "sdk/abis/Token.json";
-import { getNativeToken } from "sdk/configs/tokens";
+import { getNativeToken, getToken } from "sdk/configs/tokens";
 import { InfoTokens, TokenInfo } from "sdk/types/tokens";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -47,7 +47,7 @@ export async function approveTokens({
 }: Params) {
   setIsApproving(true);
 
-  if (addTokenPermit) {
+  if (addTokenPermit && getToken(chainId, tokenAddress).isPermitSupported) {
     await addTokenPermit(tokenAddress, spender, approveAmount ?? ethers.MaxUint256)
       .then(() => {
         helperToast.success(

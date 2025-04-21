@@ -7,6 +7,8 @@ import { isDevelopment } from "config/env";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { useDisabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
+import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { roundToTwoDecimals } from "lib/numbers";
 
@@ -31,7 +33,9 @@ export function SettingsModal({
   isSettingsVisible: boolean;
   setIsSettingsVisible: (value: boolean) => void;
 }) {
+  const { chainId } = useChainId();
   const settings = useSettings();
+  const { disabledFeatures } = useDisabledFeaturesRequest(chainId);
   const subaccountState = useSubaccountContext();
 
   const [slippageAmount, setSlippageAmount] = useState<string>("0");
@@ -165,7 +169,11 @@ export function SettingsModal({
         </h1>
         <div className="mt-16">
           <SettingsSection>
-            <ToggleSwitch isChecked={settings.expressOrdersEnabled} setIsChecked={handleExpressOrdersToggle}>
+            <ToggleSwitch
+              disabled={disabledFeatures?.relayRouterDisabled}
+              isChecked={settings.expressOrdersEnabled}
+              setIsChecked={handleExpressOrdersToggle}
+            >
               <TooltipWithPortal
                 content={
                   <Trans>
@@ -186,6 +194,7 @@ export function SettingsModal({
             <ToggleSwitch
               isChecked={Boolean(subaccountState.subaccount?.optimisticActive)}
               setIsChecked={handleOneClickTradingToggle}
+              disabled={disabledFeatures?.subaccountRelayRouterDisabled}
             >
               <TooltipWithPortal
                 content={<Trans>One-Click Trading requires Express Trading to function.</Trans>}

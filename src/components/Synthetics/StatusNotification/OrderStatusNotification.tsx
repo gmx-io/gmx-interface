@@ -3,7 +3,8 @@ import cx from "classnames";
 import { useEffect, useMemo, useState } from "react";
 
 import { getExplorerUrl } from "config/chains";
-import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { OrderStatus, PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import {
@@ -51,6 +52,7 @@ export function OrderStatusNotification({
   const { chainId } = useChainId();
   const wrappedNativeToken = getWrappedToken(chainId);
   const { orderStatuses, setOrderStatusViewed } = useSyntheticsEvents();
+  const { tenderlyAccountSlug, tenderlyProjectSlug } = useSettings();
 
   const [orderStatusKey, setOrderStatusKey] = useState<string>();
 
@@ -58,7 +60,9 @@ export function OrderStatusNotification({
   const pendingOrderKey = useMemo(() => getPendingOrderKey(pendingOrderData), [pendingOrderData]);
   const orderStatus = getByKey(orderStatuses, orderStatusKey);
 
-  const hasError = Boolean(orderStatus?.cancelledTxnHash) && pendingOrderData.txnType !== "cancel";
+  const hasError =
+    orderStatus?.isGelatoTaskFailed ||
+    (Boolean(orderStatus?.cancelledTxnHash) && pendingOrderData.txnType !== "cancel");
 
   const orderData = useMemo(() => {
     if (!marketsInfoData || !orderStatuses || !tokensData || !wrappedNativeToken) {
@@ -192,7 +196,8 @@ export function OrderStatusNotification({
   const sendingStatus = useMemo(() => {
     let text = t`Sending order request`;
     let status: TransactionStatusType = "loading";
-
+    let txnHash: string | undefined;
+    let txnLink: string | undefined;
     let isCompleted = false;
 
     if (orderData?.txnType === "create") {
@@ -203,19 +208,22 @@ export function OrderStatusNotification({
       isCompleted = Boolean(orderStatus?.cancelledTxnHash);
     }
 
-    if (isCompleted) {
+    if (orderStatus?.isGelatoTaskFailed) {
+      status = "error";
+      text = t`Relayer request failed`;
+      const tenderlySlugs =
+        tenderlyAccountSlug && tenderlyProjectSlug
+          ? `tenderlyUsername=${tenderlyAccountSlug}&tenderlyProjectName=${tenderlyProjectSlug}`
+          : "";
+      txnLink = `https://api.gelato.digital/tasks/status/${orderStatus?.gelatoTaskId}/debug?${tenderlySlugs}`;
+    } else if (isCompleted) {
       status = "success";
       text = t`Order request sent`;
+      txnHash = hideTxLink !== "creation" && orderData?.txnType === "create" ? orderStatus?.createdTxnHash : undefined;
     }
 
-    return (
-      <TransactionStatus
-        status={status}
-        txnHash={hideTxLink !== "creation" && orderData?.txnType === "create" ? orderStatus?.createdTxnHash : undefined}
-        text={text}
-      />
-    );
-  }, [orderData, orderStatus, hideTxLink]);
+    return <TransactionStatus status={status} txnHash={txnHash} txnLink={txnLink} text={text} />;
+  }, [orderData?.txnType, orderStatus, tenderlyAccountSlug, tenderlyProjectSlug, hideTxLink]);
 
   const executionStatus = useMemo(() => {
     if (!orderData || !isMarketOrderType(orderData?.orderType)) {
@@ -257,7 +265,8 @@ export function OrderStatusNotification({
       const matchedStatusKey = Object.values(orderStatuses).find((orderStatus) => {
         if (orderStatus.isViewed) return false;
         if (contractOrderKey && orderStatus.key === contractOrderKey) return true;
-        return orderStatus.data && getPendingOrderKey(orderStatus.data) === pendingOrderKey;
+        if (orderStatus.data && getPendingOrderKey(orderStatus.data) === pendingOrderKey) return true;
+        return orderStatus.key === pendingOrderKey;
       })?.key;
 
       if (matchedStatusKey) {
@@ -296,14 +305,13 @@ export function OrdersStatusNotificiation({
   marketsInfoData,
   tokensData,
   toastTimestamp,
-  setPendingTxns,
 }: {
   pendingOrderData: PendingOrderData | PendingOrderData[];
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   toastTimestamp: number;
-  setPendingTxns: SetPendingTransactions;
 }) {
+  const { setPendingTxns } = usePendingTxns();
   const [isCancelOrderProcessing, setIsCancelOrderProcessing] = useState(false);
   const { chainId } = useChainId();
   const { signer } = useWallet();
@@ -398,7 +406,7 @@ export function OrdersStatusNotificiation({
   // const subaccount = useSelector(makeSelectSubaccountForActions(newlyCreatedTriggerOrderKeys.length));
   // const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(newlyCreatedTriggerOrderKeys.length);
 
-  function onCancelOrdersClick() {
+  async function onCancelOrdersClick() {
     if (!signer || !newlyCreatedTriggerOrderKeys.length || !setPendingTxns) return;
 
     setIsCancelOrderProcessing(true);

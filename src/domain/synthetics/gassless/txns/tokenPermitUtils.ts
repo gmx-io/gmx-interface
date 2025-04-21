@@ -1,9 +1,13 @@
 import { Contract, Signer, ethers } from "ethers";
 
+import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
+import { getProvider } from "lib/rpc";
+import { sleep } from "lib/sleep";
 import ERC20PermitInterfaceAbi from "sdk/abis/ERC20PermitInterface.json";
-
-import { splitSignature } from "./signing";
+import { getTokens } from "sdk/configs/tokens";
 import { SignedTokenPermit } from "sdk/types/tokens";
+
+import { signTypedData, splitSignature } from "./signing";
 
 export async function createAndSignTokenPermit(
   chainId: number,
@@ -59,7 +63,7 @@ export async function createAndSignTokenPermit(
     deadline,
   };
 
-  const signature = await signer.signTypedData(domain, types, permitData);
+  const signature = await signTypedData(signer, domain, types, permitData);
 
   const { r, s, v } = splitSignature(signature);
 
@@ -84,5 +88,31 @@ export async function supportsPermit(token: string, provider: ethers.Provider): 
     return true;
   } catch (error) {
     return false;
+  }
+}
+
+export async function checkSupportPermitTokens() {
+  const chains = [ARBITRUM, AVALANCHE];
+
+  for (const chain of chains) {
+    const provider = getProvider(undefined, chain);
+    const tokens = getTokens(chain);
+    const supportedTokens: any[] = [];
+
+    for (const token of tokens) {
+      const supportsPerm = await supportsPermit(token.address, provider);
+      await sleep(50);
+
+      if (supportsPerm) {
+        supportedTokens.push({
+          symbol: token.symbol,
+          address: token.address,
+        });
+      }
+    }
+
+    // TODO: TEMP DEBUG
+    // eslint-disable-next-line no-console
+    console.log(`Supported tokens on ${getChainName(chain)}:`, supportedTokens);
   }
 }

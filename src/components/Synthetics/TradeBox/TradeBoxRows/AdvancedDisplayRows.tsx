@@ -1,7 +1,6 @@
 import { t } from "@lingui/macro";
 import { ReactNode, useCallback, useMemo } from "react";
 
-import { selectRelayerFeeState } from "context/SyntheticsStateContext/selectors/relayserFeeSelectors";
 import {
   selectTradeboxAdvancedOptions,
   selectTradeboxAllowedSlippage,
@@ -29,6 +28,7 @@ import {
 import { selectTradeboxCollateralSpreadInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxCollateralSpreadInfo";
 import { selectTradeboxLiquidityInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxLiquidityInfo";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { RelayFeeSwapParams } from "domain/synthetics/gassless/txns/expressOrderUtils";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { formatUsd } from "lib/numbers";
@@ -187,7 +187,13 @@ function DecreaseOrderRow() {
   );
 }
 
-export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: string }) {
+export function TradeBoxAdvancedGroups({
+  slippageInputId,
+  relayerFeeParams,
+}: {
+  slippageInputId: string;
+  relayerFeeParams?: RelayFeeSwapParams;
+}) {
   const options = useSelector(selectTradeboxAdvancedOptions);
   const setOptions = useSelector(selectTradeboxSetAdvancedOptions);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
@@ -204,7 +210,6 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
   const triggerRatioInputValue = useSelector(selectTradeboxTriggerRatioInputValue);
   const totalSwapImpactBps = useSelector(selectTradeboxTotalSwapImpactBps);
-  const relayerFee = useSelector(selectRelayerFeeState);
 
   const setSelectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSetSelectedAcceptablePriceImpactBps);
   const selectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
@@ -285,11 +290,7 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
       {isIncrease && <IncreaseOrderRow />}
       {isTrigger && <DecreaseOrderRow />}
       <TradeFeesRow {...fees} feesType={feesType} />
-      <NetworkFeeRow
-        executionFee={executionFee}
-        gasPaymentTokenAddress={relayerFee?.gasPaymentTokenAddress}
-        gasPaymentTokenAmount={relayerFee?.gasPaymentTokenAmount}
-      />
+      <NetworkFeeRow executionFee={executionFee} relayerFeeParams={relayerFeeParams} />
 
       {(isSwap || isLimit || (isMarket && !isSwap) || isMarket) && <div className="h-1 shrink-0 bg-stroke-primary" />}
 

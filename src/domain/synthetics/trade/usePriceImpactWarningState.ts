@@ -148,9 +148,11 @@ export function usePriceImpactWarningState({
   shouldShowWarningForExecutionFee = isHightExecutionPrice;
   shouldShowWarningForTriggerOrders = willDecreaseOrdersBeExecuted ?? false;
   shouldShowWarningForExternalSwap = isHighExternalSwapFees;
+  shouldShowWarningForCollateral = isHighCollateralImpact;
 
-  if (!shouldShowWarningForPosition) {
-    shouldShowWarningForCollateral = isHighCollateralImpact;
+  // If the position and collateral warnings are both active, only show the collateral warning
+  if (shouldShowWarningForPosition && shouldShowWarningForCollateral) {
+    shouldShowWarningForPosition = false;
   }
 
   shouldShowWarning =

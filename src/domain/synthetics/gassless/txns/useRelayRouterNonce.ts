@@ -1,3 +1,4 @@
+import { ethers, Signer } from "ethers";
 import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
@@ -5,37 +6,54 @@ import { useSubaccountContext } from "context/SubaccountContext/SubaccountContex
 import { useChainId } from "lib/chains";
 import { useMulticall } from "lib/multicall";
 import useWallet from "lib/wallets/useWallet";
+import { abis } from "sdk/abis";
 
 export function useRelayRouterNonce() {
   const { chainId } = useChainId();
   const { account } = useWallet();
   const { subaccount } = useSubaccountContext();
 
-  const { data: nonce } = useMulticall(chainId, "useRelayRouterNonce", {
+  const { data: nonces, mutate } = useMulticall(chainId, "useRelayRouterNonce", {
     key: account ? [account, subaccount?.address] : null,
     request: {
       relayRouter: {
-        contractAddress: getContract(
-          chainId,
-          subaccount?.address ? "SubaccountGelatoRelayRouter" : "GelatoRelayRouter"
-        ),
+        contractAddress: getContract(chainId, "GelatoRelayRouter"),
         abiId: "GelatoRelayRouter",
         calls: {
-          nonce: {
+          accountNonce: {
             methodName: "userNonces",
             params: [account],
           },
+          subaccountNonce: subaccount?.address
+            ? {
+                methodName: "userNonces",
+                params: [subaccount.address],
+              }
+            : undefined,
         },
       },
     },
     parseResponse: (result) => {
-      return BigInt(result.data.relayRouter.nonce.returnValues[0]);
+      return {
+        accountNonce: BigInt(result.data.relayRouter.accountNonce.returnValues[0]),
+        subaccountNonce: result.data.relayRouter.subaccountNonce?.returnValues[0]
+          ? BigInt(result.data.relayRouter.subaccountNonce.returnValues[0])
+          : undefined,
+      };
     },
   });
 
   return useMemo(() => {
     return {
-      relayRouterNonce: nonce,
+      relayRouterNonces: nonces,
+      updateRelayRouterNonces: mutate,
     };
-  }, [nonce]);
+  }, [nonces, mutate]);
+}
+
+export async function getRelayRouterNonceForSigner(chainId: number, signer: Signer, isSubaccount: boolean) {
+  const contractAddress = getContract(chainId, isSubaccount ? "SubaccountGelatoRelayRouter" : "GelatoRelayRouter");
+  const contract = new ethers.Contract(contractAddress, abis.GelatoRelayRouter, signer);
+
+  return contract.userNonces(await signer.getAddress());
 }

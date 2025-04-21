@@ -5,10 +5,10 @@ import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useWallet from "lib/wallets/useWallet";
 import { DEFAULT_PERMIT_DEADLINE_DURATION } from "sdk/configs/express";
+import { SignedTokenPermit } from "sdk/types/tokens";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { createAndSignTokenPermit } from "./txns/tokenPermitUtils";
-import { SignedTokenPermit } from "sdk/types/tokens";
 
 export type TokenPermitsState = ReturnType<typeof useInitTokenPermitsState>;
 

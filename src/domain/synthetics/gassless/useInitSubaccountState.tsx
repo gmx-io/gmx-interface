@@ -21,6 +21,7 @@ import { SubaccountSerializedConfig } from "../subaccount/types";
 import { useSubaccountFromContractsRequest } from "../subaccount/useSubaccountFromContractsRequest";
 import {
   createAndSignSubaccountApproval,
+  getActualApproval,
   getInitialSubaccountApprovalParams,
   getIsSubaccountActive,
   getMaxSubaccountActions,
@@ -63,7 +64,7 @@ export function useInitSubaccountState() {
 
     const subaccountSigner = getSubaccountSigner(subaccountConfig, account, signer?.provider);
 
-    return {
+    const result = {
       address: subaccountConfig.address,
       signer: subaccountSigner,
       signedApproval,
@@ -81,6 +82,10 @@ export function useInitSubaccountState() {
         onchainData: subaccountData,
       }),
     };
+
+    result.signedApproval = getActualApproval(result);
+
+    return result;
   }, [account, signedApproval, signer?.provider, subaccountConfig, subaccountData]);
 
   const updateSubaccountSettings = useCallback(

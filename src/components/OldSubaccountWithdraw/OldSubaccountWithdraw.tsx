@@ -2,11 +2,13 @@ import { t, Trans } from "@lingui/macro";
 import { useState } from "react";
 
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import {
   useSubaccountWithdrawalAmount,
   withdrawFromSubaccount,
 } from "domain/synthetics/subaccount/withdrawFromSubaccount";
 import { useChainId } from "lib/chains";
+import { parseError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { formatTokenAmount } from "lib/numbers";
@@ -19,6 +21,7 @@ import { StatusNotification } from "components/Synthetics/StatusNotification/Sta
 import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
 
 import IconInfo from "img/ic_info.svg?react";
+
 import "./OldSubaccountWithdraw.scss";
 
 export function OldSubaccountWithdraw() {
@@ -27,10 +30,11 @@ export function OldSubaccountWithdraw() {
   const nativeToken = getNativeToken(chainId);
   const [isVisible, setIsVisible] = useState(true);
   const { subaccount } = useSubaccountContext();
+  const gasPrice = useGasPrice(chainId);
 
   const [isWithdrawing, setIsWithdrawing] = useState(false);
 
-  const estimatedWithdrawalAmounts = useSubaccountWithdrawalAmount(chainId, subaccount);
+  const estimatedWithdrawalAmounts = useSubaccountWithdrawalAmount(chainId, subaccount, gasPrice);
 
   const balanceFormatted = formatTokenAmount(
     estimatedWithdrawalAmounts?.amountToSend ?? 0n,
@@ -42,7 +46,7 @@ export function OldSubaccountWithdraw() {
   );
 
   const withdrawWeth = async () => {
-    if (!account || !subaccount) {
+    if (!account || !subaccount || gasPrice === undefined) {
       return;
     }
 
@@ -61,6 +65,7 @@ export function OldSubaccountWithdraw() {
       await withdrawFromSubaccount({
         mainAccountAddress: account,
         subaccount,
+        gasPrice,
       });
 
       helperToast.success(
@@ -71,6 +76,9 @@ export function OldSubaccountWithdraw() {
 
       setIsVisible(false);
     } catch (error) {
+      // TEMP DEBUG
+      // eslint-disable-next-line no-console
+      console.error("Error withdrawing from subaccount", parseError(error));
       metrics.pushError(error, "subaccount.withdrawOldBalance");
       helperToast.error(
         <StatusNotification title={t`Withdrawing from Subaccount`}>

@@ -11,6 +11,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import { selectTradeboxAdvancedOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { RelayFeeSwapParams } from "domain/synthetics/gassless/txns/expressOrderUtils";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
@@ -31,9 +32,10 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 export type Props = {
   triggerPriceInputValue: string;
   slippageInputId: string;
+  relayerFeeParams?: RelayFeeSwapParams;
 };
 
-export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInputId }: Props) {
+export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInputId, relayerFeeParams }: Props) {
   const tradeboxAdvancedOptions = useSelector(selectTradeboxAdvancedOptions);
   const [open, setOpen] = React.useState(tradeboxAdvancedOptions.advancedDisplay);
   const position = useSelector(selectPositionSellerPosition);
@@ -138,7 +140,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
       />
 
       <TradeFeesRow {...fees} feesType="decrease" />
-      <NetworkFeeRow executionFee={executionFee} />
+      <NetworkFeeRow executionFee={executionFee} relayerFeeParams={relayerFeeParams} />
       {isTrigger && acceptablePriceImpactInputRow}
       {!isTrigger && (
         <AllowedSlippageRow

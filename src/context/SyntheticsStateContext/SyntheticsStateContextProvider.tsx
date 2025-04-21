@@ -16,10 +16,12 @@ import {
 } from "domain/synthetics/accountStats";
 import { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
+import { DisabledFeatures, useDisabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
-import { RelayerFeeState } from "domain/synthetics/gassless/types";
+import { SponsoredCallParams } from "domain/synthetics/gassless/txns/useGelatoRelayFeeMultiplierRequest";
+import { useSponsoredCallParamsRequest } from "domain/synthetics/gassless/txns/useGelatoRelayFeeMultiplierRequest";
 import { SubaccountState } from "domain/synthetics/gassless/useInitSubaccountState";
 import { TokenPermitsState, useInitTokenPermitsState } from "domain/synthetics/gassless/useInitTokenPermitsState";
 import {
@@ -114,12 +116,12 @@ export type SyntheticsState = {
   tradebox: TradeboxState;
   externalSwap: ExternalSwapState;
   tokenPermitsState: TokenPermitsState;
-  relayerFeeState: RelayerFeeState | undefined;
-  setRelayerFeeState: (state: RelayerFeeState | undefined) => void;
   orderEditor: OrderEditorState;
   positionSeller: PositionSellerState;
   positionEditor: PositionEditorState;
   confirmationBox: ConfirmationBoxState;
+  disabledFeatures: DisabledFeatures | undefined;
+  sponsoredCallParams: SponsoredCallParams | undefined;
 };
 
 const StateCtx = createContext<SyntheticsState | null>(null);
@@ -198,6 +200,7 @@ export function SyntheticsStateContextProvider({
 
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
+  const { disabledFeatures } = useDisabledFeaturesRequest(chainId);
 
   const {
     isLoading,
@@ -276,8 +279,7 @@ export function SyntheticsStateContextProvider({
 
   const externalSwapState = useInitExternalSwapState();
   const tokenPermitsState = useInitTokenPermitsState();
-
-  const [relayerFeeState, setRelayerFeeState] = useState<RelayerFeeState | undefined>();
+  const sponsoredCallParams = useSponsoredCallParamsRequest(chainId);
 
   const state = useMemo(() => {
     const s: SyntheticsState = {
@@ -325,13 +327,13 @@ export function SyntheticsStateContextProvider({
       subaccountState,
       tradebox: tradeboxState,
       externalSwap: externalSwapState,
-      relayerFeeState,
-      setRelayerFeeState,
       tokenPermitsState,
       orderEditor,
       positionSeller: positionSellerState,
       positionEditor: positionEditorState,
       confirmationBox: confirmationBoxState,
+      disabledFeatures,
+      sponsoredCallParams,
     };
 
     return s;
@@ -370,12 +372,13 @@ export function SyntheticsStateContextProvider({
     subaccountState,
     tradeboxState,
     externalSwapState,
-    relayerFeeState,
     tokenPermitsState,
     orderEditor,
     positionSellerState,
     positionEditorState,
     confirmationBoxState,
+    disabledFeatures,
+    sponsoredCallParams,
   ]);
 
   latestState = state;

@@ -1,6 +1,6 @@
 import { maxUint256 } from "viem";
 
-import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { MarketInfo, MarketsInfoData } from "types/markets";
 import { SwapPathStats, SwapStats } from "types/trade";
 
@@ -21,40 +21,6 @@ export function getSwapCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
   return capacityUsd;
 }
 
-export function getSwapPathTokenAddresses({
-  chainId,
-  marketsInfoData,
-  initialCollateralAddress,
-  swapPath,
-}: {
-  marketsInfoData: MarketsInfoData;
-  chainId: number;
-  initialCollateralAddress: string;
-  swapPath: string[];
-}): string[] | undefined {
-  const tokenAddresses: string[] = [];
-
-  let currentTokenAddress: string = convertTokenAddress(chainId, initialCollateralAddress, "wrapped");
-
-  for (const marketAddress of swapPath) {
-    const marketInfo = getByKey(marketsInfoData, marketAddress);
-
-    if (!marketInfo) {
-      return undefined;
-    }
-
-    const tokenOut = getOppositeCollateral(marketInfo, currentTokenAddress);
-
-    if (!tokenOut) {
-      return undefined;
-    }
-
-    currentTokenAddress = tokenOut.address;
-    tokenAddresses.push(currentTokenAddress, marketInfo.indexTokenAddress);
-  }
-
-  return tokenAddresses;
-}
 export function getSwapPathOutputAddresses(p: {
   marketsInfoData: MarketsInfoData;
   initialCollateralAddress: string;

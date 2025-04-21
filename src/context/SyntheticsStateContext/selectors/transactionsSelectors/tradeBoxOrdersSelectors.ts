@@ -1,3 +1,4 @@
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "sdk/types/orders";
 import {
@@ -6,7 +7,6 @@ import {
   buildSwapOrderPayload,
 } from "sdk/utils/orderTransactions";
 
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { selectAccount, selectChainId, selectUserReferralInfo } from "../globalSelectors";
 import {
   selectTradeboxAllowedSlippage,
@@ -126,6 +126,7 @@ export const selectTradeboxIncreaseOrderParams = createSelector((q) => {
     externalSwapQuote: increaseAmounts.externalSwapQuote,
     sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
     sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+    collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
     acceptablePrice: increaseAmounts.acceptablePrice,
     triggerPrice: isLimit ? triggerPrice : undefined,
     orderType,

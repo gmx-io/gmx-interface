@@ -1,8 +1,11 @@
 import { t, Trans } from "@lingui/macro";
 import { Signer } from "ethers";
+import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 import { getChainName } from "config/chains";
+import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
+import { ErrorData } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { switchNetwork } from "lib/wallets";
 import { getNativeToken } from "sdk/configs/tokens";
@@ -10,9 +13,6 @@ import { CustomErrorName, extractTxnError, TxError, TxErrorType } from "sdk/util
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
-import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
-import { ErrorData } from "lib/errors";
-import { ReactNode } from "react";
 
 export type AdditionalErrorParams = {
   additionalContent?: ReactNode;
@@ -27,6 +27,8 @@ export function getTxnErrorToast(
 ) {
   const nativeToken = getNativeToken(chainId);
 
+  const debugErrorMessage = getDebugErrorMessage(errorData);
+
   const toastParams: {
     autoCloseToast: number | false;
     errorContent: ReactNode | undefined;
@@ -38,7 +40,7 @@ export function getTxnErrorToast(
         {additionalContent}
         <br />
         <br />
-        {errorData?.errorMessage && <ToastifyDebug error={errorData.errorMessage} />}
+        {debugErrorMessage && <ToastifyDebug error={debugErrorMessage} />}
       </div>
     ),
   };
@@ -109,8 +111,6 @@ export function getTxnErrorToast(
     case TxErrorType.RpcError: {
       toastParams.autoCloseToast = false;
 
-      const originalError = errorData.errorMessage ?? errorData.errorName;
-
       toastParams.errorContent = (
         <div>
           <Trans>
@@ -125,7 +125,7 @@ export function getTxnErrorToast(
           </Trans>
           <br />
           <br />
-          {originalError && <ToastifyDebug error={originalError} />}
+          {debugErrorMessage && <ToastifyDebug error={debugErrorMessage} />}
         </div>
       );
       break;
@@ -143,6 +143,14 @@ export function getDefaultErrorMessage(errorData: ErrorData | undefined) {
   }
 
   return t`Transaction failed`;
+}
+
+export function getDebugErrorMessage(errorData: ErrorData | undefined) {
+  if (errorData?.contractError) {
+    return `${errorData.contractError} [${errorData.contractErrorArgs}] ${errorData.errorMessage}`;
+  }
+
+  return errorData?.errorMessage;
 }
 
 /**
