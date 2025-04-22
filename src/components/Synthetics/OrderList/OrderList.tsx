@@ -167,13 +167,7 @@ export function OrderList({
 
   return (
     <div ref={ref}>
-      {isContainerSmall && orders.length === 0 && (
-        <div className="rounded-4 bg-slate-800 p-14 text-slate-100">
-          {isLoading ? t`Loading...` : t`No open orders`}
-        </div>
-      )}
-
-      {(isContainerSmall || isScreenSmall) && !isLoading && orders.length !== 0 && (
+      {(isContainerSmall || isScreenSmall) && !isLoading && (
         <div className="flex flex-col gap-8">
           <div className="flex flex-wrap items-center justify-between gap-8 bg-slate-950">
             {isContainerSmall ? (
@@ -221,6 +215,12 @@ export function OrderList({
             </div>
           )}
           {!isContainerSmall && <div />}
+        </div>
+      )}
+
+      {isContainerSmall && orders.length === 0 && (
+        <div className="rounded-4 bg-slate-800 p-14 text-slate-100">
+          {isLoading ? t`Loading...` : t`No open orders`}
         </div>
       )}
 
