@@ -224,6 +224,7 @@ export function PositionSeller(p: Props) {
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
     tradeFlags,
+    payUsd: closeSizeUsd,
   });
 
   const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity < (receiveUsd ?? 0n) : false;
@@ -380,46 +381,46 @@ export function PositionSeller(p: Props) {
           setPendingPosition,
         },
         metricData.metricId
-      )
+      );
     } else {
       txnPromise = createDecreaseOrderTxn(
-      chainId,
-      signer,
-      subaccount,
-      {
-        account,
-        marketAddress: position.marketAddress,
-        initialCollateralAddress: position.collateralTokenAddress,
-        initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
-        receiveTokenAddress: receiveToken.address,
-        swapPath,
-        sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-        sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
-        isLong: position.isLong,
-        acceptablePrice: decreaseAmounts.acceptablePrice,
-        triggerPrice: isTrigger ? triggerPrice : undefined,
-        minOutputUsd: 0n,
-        decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
-        orderType,
-        referralCode: userReferralInfo?.referralCodeForTxn,
-        executionFee: executionFee.feeTokenAmount,
-        executionGasLimit: executionFee.gasLimit,
-        allowedSlippage,
-        indexToken: position.indexToken,
-        tokensData,
-        skipSimulation: orderOption === OrderOption.Trigger || shouldDisableValidationForTesting,
-        autoCancel: orderOption === OrderOption.Trigger ? autoCancelOrdersLimit > 0 : false,
-        slippageInputId,
-      },
-      {
-        setPendingOrder,
-        setPendingTxns,
-        setPendingPosition,
-      },
-      blockTimestampData,
-      metricData.metricId
-    )
-  }
+        chainId,
+        signer,
+        subaccount,
+        {
+          account,
+          marketAddress: position.marketAddress,
+          initialCollateralAddress: position.collateralTokenAddress,
+          initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
+          receiveTokenAddress: receiveToken.address,
+          swapPath,
+          sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+          sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
+          isLong: position.isLong,
+          acceptablePrice: decreaseAmounts.acceptablePrice,
+          triggerPrice: isTrigger ? triggerPrice : undefined,
+          minOutputUsd: 0n,
+          decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
+          orderType,
+          referralCode: userReferralInfo?.referralCodeForTxn,
+          executionFee: executionFee.feeTokenAmount,
+          executionGasLimit: executionFee.gasLimit,
+          allowedSlippage,
+          indexToken: position.indexToken,
+          tokensData,
+          skipSimulation: orderOption === OrderOption.Trigger || shouldDisableValidationForTesting,
+          autoCancel: orderOption === OrderOption.Trigger ? autoCancelOrdersLimit > 0 : false,
+          slippageInputId,
+        },
+        {
+          setPendingOrder,
+          setPendingTxns,
+          setPendingPosition,
+        },
+        blockTimestampData,
+        metricData.metricId
+      );
+    }
 
     txnPromise
       .then(makeTxnSentMetricsHandler(metricData.metricId))

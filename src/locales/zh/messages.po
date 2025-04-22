@@ -229,6 +229,10 @@ msgstr ""
 msgid "{0} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
+#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High TWAP Network Fee"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Market Swap"
 msgstr "执行市场交换"

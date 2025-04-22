@@ -229,6 +229,10 @@ msgstr "Show error"
 msgid "{0} can be used to buy GM for this market up to the specified buying caps."
 msgstr "{0} can be used to buy GM for this market up to the specified buying caps."
 
+#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High TWAP Network Fee"
+msgstr "High TWAP Network Fee"
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Market Swap"
 msgstr "Execute Market Swap"

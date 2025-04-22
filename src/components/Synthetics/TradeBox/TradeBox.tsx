@@ -204,6 +204,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     willDecreaseOrdersBeExecuted: decreaseOrdersThatWillBeExecuted.length > 0,
     externalSwapFeeItem: fees?.externalSwapFee,
     tradeFlags,
+    payUsd: fromUsd,
   });
 
   const setIsDismissedRef = useLatest(priceImpactWarningState.setIsDismissed);
