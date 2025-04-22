@@ -2881,6 +2881,7 @@ msgid "This swap is routed through several GM pools for the lowest possible fees
 msgstr ""
 
 #: src/components/Synthetics/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+#: src/components/Synthetics/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "{0}"
 msgstr ""
 
@@ -5167,6 +5168,10 @@ msgstr ""
 msgid "Telegram Group"
 msgstr ""
 
+#: src/components/Synthetics/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{toTokenIcon}"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Open a position"
 msgstr ""
@@ -6225,6 +6230,10 @@ msgstr ""
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Amount"
+msgstr ""
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "{0}{fromTokenIcon}<0> to </0>{1}{toTokenIcon}"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
@@ -8367,8 +8376,8 @@ msgid "Total Stats"
 msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
-msgstr ""
+#~ msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeBox/components/TwapRows.tsx
 msgid "Frequency"

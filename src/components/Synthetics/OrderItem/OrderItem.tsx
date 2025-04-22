@@ -170,6 +170,7 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
       disableHandleStyle
       handle={<TitleWithIcon bordered order={order} />}
       position="bottom-start"
+      tooltipClassName={isTwapOrder(order) ? "!p-0" : undefined}
       content={
         isTwapOrder(order) ? (
           <TwapOrdersList order={order} />
@@ -244,10 +245,19 @@ export function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?
         })}
       >
         <Trans>
-          <span>{fromTokenText} </span>
+          {isTwapOrder(order) ? (
+            <Tooltip
+              handle={<span>{fromTokenText} </span>}
+              position="bottom-start"
+              content={<TwapOrdersList order={order} />}
+              tooltipClassName="!p-0"
+            />
+          ) : (
+            <span>{fromTokenText} </span>
+          )}
           {fromTokenIcon}
           <span> to </span>
-          <span>{toTokenText} </span>
+          {isTwapOrder(order) ? null : <span>{toTokenText} </span>}
           {toTokenIcon}
         </Trans>
 
@@ -303,6 +313,12 @@ function MarkPrice({ order }: { order: OrderInfo }) {
   }, [markPrice, priceDecimals, positionOrder.indexToken?.visualMultiplier]);
 
   if (isTwapOrder(order)) {
+    if (isLimitSwapOrderType(order.orderType)) {
+      const { markSwapRatioText } = getSwapRatioText(order);
+
+      return markSwapRatioText;
+    }
+
     return <>{markPriceFormatted}</>;
   }
 

@@ -59,6 +59,6 @@ export function makeTwapValidFromTimeGetter(duration: TwapDuration, numberOfPart
   const startTime = Math.ceil(Date.now() / 1000);
 
   return (part: number) => {
-    return BigInt(startTime + (durationMs / (numberOfParts - 1)) * part);
+    return BigInt(Math.floor(startTime + (durationMs / (numberOfParts - 1)) * part));
   };
 }

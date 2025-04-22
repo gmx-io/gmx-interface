@@ -2881,6 +2881,7 @@ msgid "This swap is routed through several GM pools for the lowest possible fees
 msgstr "This swap is routed through several GM pools for the lowest possible fees and price impact."
 
 #: src/components/Synthetics/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+#: src/components/Synthetics/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "{0}"
 msgstr "{0}"
 
@@ -5170,6 +5171,10 @@ msgstr "wstETH APR"
 msgid "Telegram Group"
 msgstr "Telegram Group"
 
+#: src/components/Synthetics/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{toTokenIcon}"
+msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{toTokenIcon}"
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Open a position"
 msgstr "Open a position"
@@ -6229,6 +6234,10 @@ msgstr "Copy"
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Amount"
 msgstr "Amount"
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "{0}{fromTokenIcon}<0> to </0>{1}{toTokenIcon}"
+msgstr "{0}{fromTokenIcon}<0> to </0>{1}{toTokenIcon}"
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} Available Liquidity. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
@@ -8373,8 +8382,8 @@ msgid "Total Stats"
 msgstr "Total Stats"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
-msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
+#~ msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
+#~ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
 
 #: src/components/Synthetics/TradeBox/components/TwapRows.tsx
 msgid "Frequency"
