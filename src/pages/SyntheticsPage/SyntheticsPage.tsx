@@ -29,7 +29,7 @@ import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateC
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import type { OrderType } from "domain/synthetics/orders/types";
+import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
 import { TradeMode } from "domain/synthetics/trade";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
@@ -63,7 +63,6 @@ import { TradeBoxOneClickTrading } from "components/Synthetics/TradeBox/TradeBox
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import { Chart } from "components/Synthetics/TVChart/Chart";
 import Tabs from "components/Tabs/Tabs";
-
 export type Props = {
   openSettings: () => void;
 };
@@ -403,7 +402,7 @@ function useOrdersControl() {
   const isCancelOrdersProcessing = cancellingOrdersKeys.length > 0;
 
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
-  const [orderTypesFilter, setOrderTypesFilter] = useState<OrderType[]>([]);
+  const [orderTypesFilter, setOrderTypesFilter] = useState<OrderTypeFilterValue[]>([]);
   const ordersInfoData = useSelector(selectOrdersInfoData);
 
   const onCancelSelectedOrders = useCallback(

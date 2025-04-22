@@ -15,7 +15,6 @@ import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateCon
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   OrderInfo,
-  OrderType,
   PositionOrderInfo,
   SwapOrderInfo,
   TwapPositionOrderInfo,
@@ -29,6 +28,7 @@ import {
   sortSwapOrders,
 } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
+import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import { EMPTY_ARRAY } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
@@ -51,8 +51,8 @@ type Props = {
   setSelectedPositionOrderKey?: Dispatch<SetStateAction<string | undefined>>;
   marketsDirectionsFilter: MarketFilterLongShortItemData[];
   setMarketsDirectionsFilter: Dispatch<SetStateAction<MarketFilterLongShortItemData[]>>;
-  orderTypesFilter: OrderType[];
-  setOrderTypesFilter: Dispatch<SetStateAction<OrderType[]>>;
+  orderTypesFilter: OrderTypeFilterValue[];
+  setOrderTypesFilter: Dispatch<SetStateAction<OrderTypeFilterValue[]>>;
   onCancelSelectedOrders?: () => void;
 };
 
@@ -301,7 +301,7 @@ function useFilteredOrders({
   chainId: number;
   account: string | undefined;
   marketsDirectionsFilter: MarketFilterLongShortItemData[];
-  orderTypesFilter: OrderType[];
+  orderTypesFilter: OrderTypeFilterValue[];
 }) {
   const ordersResponse = useOrdersInfoRequest(chainId, {
     account: account,

@@ -151,7 +151,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const uiFeeReceiver = eventData.addressItems.items.uiFeeReceiver;
-      const { twapId } = decodeTwapUiFeeReceiver(uiFeeReceiver);
+      const twapParams = decodeTwapUiFeeReceiver(uiFeeReceiver);
 
       const data: OrderCreatedEventData = {
         account: eventData.addressItems.items.account,
@@ -174,7 +174,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         isFrozen: eventData.boolItems.items.isFrozen,
         externalSwapQuote: undefined,
         key: eventData.bytes32Items.items.key,
-        isTwapOrder: twapId !== undefined,
+        isTwapOrder: twapParams !== undefined,
       };
 
       if (data.account !== currentAccount) {

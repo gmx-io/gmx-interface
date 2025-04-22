@@ -13,12 +13,10 @@ export function createTwapUiFeeReceiver({ numberOfParts }: { numberOfParts: numb
   return `${PREFIX}00${"00".repeat(14)}${numberOfPartsInHex}${twapId}${VERSION}`;
 }
 
-export function decodeTwapUiFeeReceiver(
-  address: string
-): { twapId: undefined; numberOfParts: undefined } | { twapId: string; numberOfParts: number } {
+export function decodeTwapUiFeeReceiver(address: string): { twapId: string; numberOfParts: number } | void {
   const twapId = address.slice(36, 40);
   if (!isValidTwapUiFeeReceiver(address) || twapId === "0000") {
-    return { twapId: undefined, numberOfParts: undefined };
+    return;
   }
 
   const numberOfParts = parseInt(address.slice(34, 36), 16);
