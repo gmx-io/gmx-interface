@@ -50,7 +50,7 @@ export const BASIS_POINTS_DIVISOR_BIGINT = BigInt(10000);
 export const TAX_BASIS_POINTS = 10;
 export const STABLE_TAX_BASIS_POINTS = 5;
 export const MINT_BURN_FEE_BASIS_POINTS = 25;
-export const SWAP_FEE_BASIS_POINTS = 25;
+export const SWAP_FEE_BASIS_POINTS = 20;
 export const STABLE_SWAP_FEE_BASIS_POINTS = 1;
 export const MARGIN_FEE_BASIS_POINTS = 40;
 
