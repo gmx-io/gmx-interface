@@ -2,7 +2,6 @@ import { t, Trans } from "@lingui/macro";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { useKey } from "react-use";
 
-import { getIsFlagEnabled } from "config/ab";
 import { EXECUTION_FEE_CONFIG_V2 } from "config/chains";
 import { isDevelopment } from "config/env";
 import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT, DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/factors";
@@ -282,13 +281,11 @@ export function SettingsModal({
           </ToggleSwitch>
         </div>
 
-        {getIsFlagEnabled("testExternalSwap") && (
-          <div className="Exchange-settings-row">
-            <ToggleSwitch isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
-              <Trans>Enable external swaps</Trans>
-            </ToggleSwitch>
-          </div>
-        )}
+        <div className="Exchange-settings-row">
+          <ToggleSwitch isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
+            <Trans>Enable external swaps</Trans>
+          </ToggleSwitch>
+        </div>
 
         {isDevelopment() && (
           <ToggleSwitch
