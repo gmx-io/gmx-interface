@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState } from "react";
 import { getKeepLeverageKey, getSyntheticsReceiveMoneyTokenKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { TradeMode } from "sdk/types/trade";
 
 import { PositionInfo } from "../positions";
 import { TwapDuration } from "./twap/types";
@@ -13,6 +14,12 @@ export enum OrderOption {
   Trigger = "Trigger",
   Twap = "TWAP",
 }
+
+export const ORDER_OPTION_TO_TRADE_MODE: Record<OrderOption, TradeMode> = {
+  [OrderOption.Market]: TradeMode.Market,
+  [OrderOption.Trigger]: TradeMode.Trigger,
+  [OrderOption.Twap]: TradeMode.TWAP,
+};
 
 export type PositionSellerState = ReturnType<typeof usePositionSellerState>;
 

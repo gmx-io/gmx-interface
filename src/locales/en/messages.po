@@ -539,6 +539,10 @@ msgstr "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 msgid "Stats"
 msgstr "Stats"
 
+#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+msgid "Swap tokens at the current market price."
+msgstr "Swap tokens at the current market price."
+
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Claim Price Impact Rebates"
@@ -819,8 +823,8 @@ msgid "The order could not be updated"
 msgstr "The order could not be updated"
 
 #: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-msgid "Short Stop Market: Increase a short position when the price is below the trigger price."
-msgstr "Short Stop Market: Increase a short position when the price is below the trigger price."
+#~ msgid "Short Stop Market: Increase a short position when the price is below the trigger price."
+#~ msgstr "Short Stop Market: Increase a short position when the price is below the trigger price."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Cross-chain one-click deposits into GM"
@@ -1215,8 +1219,8 @@ msgid "Request Withdraw"
 msgstr "Request Withdraw"
 
 #: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-msgid "Long Market: Increase a long position at the current price."
-msgstr "Long Market: Increase a long position at the current price."
+#~ msgid "Long Market: Increase a long position at the current price."
+#~ msgstr "Long Market: Increase a long position at the current price."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "1inch"
@@ -1646,8 +1650,8 @@ msgid "Net Value"
 msgstr "Net Value"
 
 #: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-msgid "Short TP/SL: Decrease a short position when the trigger price is reached."
-msgstr "Short TP/SL: Decrease a short position when the trigger price is reached."
+#~ msgid "Short TP/SL: Decrease a short position when the trigger price is reached."
+#~ msgstr "Short TP/SL: Decrease a short position when the trigger price is reached."
 
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
@@ -1762,8 +1766,8 @@ msgid "High Swap Profit Fee"
 msgstr "High Swap Profit Fee"
 
 #: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-msgid "Long Stop Market: Increase a long position when the price is above the trigger price."
-msgstr "Long Stop Market: Increase a long position when the price is above the trigger price."
+#~ msgid "Long Stop Market: Increase a long position when the price is above the trigger price."
+#~ msgstr "Long Stop Market: Increase a long position when the price is above the trigger price."
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
@@ -2027,8 +2031,8 @@ msgid "GM Pools"
 msgstr "GM Pools"
 
 #: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-msgid "Long Limit: Increase a long position when the price is below the trigger price."
-msgstr "Long Limit: Increase a long position when the price is below the trigger price."
+#~ msgid "Long Limit: Increase a long position when the price is below the trigger price."
+#~ msgstr "Long Limit: Increase a long position when the price is below the trigger price."
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity."
@@ -2221,6 +2225,10 @@ msgstr "Address"
 msgid "Winner:"
 msgstr "Winner:"
 
+#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+msgid "{tradeTypeLabel} a {positionLabel} position at the current price."
+msgstr "{tradeTypeLabel} a {positionLabel} position at the current price."
+
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 msgid "Liquidity data not loaded"
@@ -2337,8 +2345,8 @@ msgid "Trading Volume"
 msgstr "Trading Volume"
 
 #: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-msgid "Short Market: Increase a short position at the current price."
-msgstr "Short Market: Increase a short position at the current price."
+#~ msgid "Short Market: Increase a short position at the current price."
+#~ msgstr "Short Market: Increase a short position at the current price."
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing limit order in the {0} market pool but it lacks liquidity for this order."
@@ -2412,6 +2420,10 @@ msgstr "Clear selection"
 msgid "The order will not be executed as its trigger price is beyond the position's liquidation price."
 msgstr "The order will not be executed as its trigger price is beyond the position's liquidation price."
 
+#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+msgid "Swap tokens in evenly distributed parts over a specified time."
+msgstr "Swap tokens in evenly distributed parts over a specified time."
+
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Failed to cancel {ordersText}"
 msgstr "Failed to cancel {ordersText}"
@@ -2446,8 +2458,8 @@ msgid "Cancel submitted."
 msgstr "Cancel submitted."
 
 #: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-msgid "Increase a long position in evenly distributed parts over a specified time. Read more."
-msgstr "Increase a long position in evenly distributed parts over a specified time. Read more."
+#~ msgid "Increase a long position in evenly distributed parts over a specified time. Read more."
+#~ msgstr "Increase a long position in evenly distributed parts over a specified time. Read more."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Traderjoe:"
@@ -2579,6 +2591,10 @@ msgstr "Amount to claim"
 #: src/pages/Jobs/Jobs.jsx
 msgid "Job openings at GMX."
 msgstr "Job openings at GMX."
+
+#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+msgid "Swap tokens when the price is below the trigger price."
+msgstr "Swap tokens when the price is below the trigger price."
 
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -2984,8 +3000,8 @@ msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>Selling {0}{1}<1>{poolName}</1></0>"
 
 #: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-msgid "Long TP/SL: Decrease a long position when the trigger price is reached."
-msgstr "Long TP/SL: Decrease a long position when the trigger price is reached."
+#~ msgid "Long TP/SL: Decrease a long position when the trigger price is reached."
+#~ msgstr "Long TP/SL: Decrease a long position when the trigger price is reached."
 
 #: src/components/Exchange/PositionSeller.jsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3169,6 +3185,10 @@ msgstr "Read the rules"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Lev."
 msgstr "Lev."
+
+#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+msgid "{tradeTypeLabel} a {positionLabel} position when the trigger price is reached."
+msgstr "{tradeTypeLabel} a {positionLabel} position when the trigger price is reached."
 
 #: src/pages/Earn/StakeModal.tsx
 msgid "Stake failed."
@@ -3932,12 +3952,7 @@ msgstr "Rebates earned by this account as a trader."
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
@@ -4714,6 +4729,7 @@ msgstr "Decreased"
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Exchange/TradeHistory.jsx
+#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Decrease"
@@ -5405,8 +5421,8 @@ msgid "Stop Loss Decrease"
 msgstr "Stop Loss Decrease"
 
 #: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-msgid "Increase a short position in evenly distributed parts over a specified time. Read more."
-msgstr "Increase a short position in evenly distributed parts over a specified time. Read more."
+#~ msgid "Increase a short position in evenly distributed parts over a specified time. Read more."
+#~ msgstr "Increase a short position in evenly distributed parts over a specified time. Read more."
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Diff"
@@ -5508,6 +5524,10 @@ msgstr "Search Pool"
 msgid "GMX Trading Chat"
 msgstr "GMX Trading Chat"
 
+#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+msgid "{tradeTypeLabel} a {positionLabel} position in evenly distributed parts over a specified time."
+msgstr "{tradeTypeLabel} a {positionLabel} position in evenly distributed parts over a specified time."
+
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H%"
 msgstr "24H%"
@@ -5542,8 +5562,8 @@ msgid "Available"
 msgstr "Available"
 
 #: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-msgid "Short Limit: Increase a short position when the price is above the trigger price."
-msgstr "Short Limit: Increase a short position when the price is above the trigger price."
+#~ msgid "Short Limit: Increase a short position when the price is above the trigger price."
+#~ msgstr "Short Limit: Increase a short position when the price is above the trigger price."
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Last 7 days"
@@ -5665,6 +5685,11 @@ msgstr "Current {0} long"
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
 msgstr "{0} orders were not updated as max order limit reached"
+
+#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+msgid "Swap tokens when the trigger price is reached."
+msgstr "Swap tokens when the trigger price is reached."
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order created!"
@@ -7522,6 +7547,7 @@ msgstr "Confirming..."
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Exchange/TradeHistory.jsx
+#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Increase"
@@ -8198,6 +8224,7 @@ msgstr "Activate Subaccount"
 msgid "Swap"
 msgstr "Swap"
 
+#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "long"
 msgstr "long"
@@ -8218,6 +8245,11 @@ msgstr "Deposit {0} USD into {1} {longOrShortText}"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Distribution"
 msgstr "Distribution"
+
+#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+msgid "{tradeTypeLabel} a {positionLabel} position when the price is below the trigger price."
+msgstr "{tradeTypeLabel} a {positionLabel} position when the price is below the trigger price."
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Language"
@@ -8464,6 +8496,7 @@ msgstr "Sell"
 msgid "Сonvert {0} to {1}"
 msgstr "Сonvert {0} to {1}"
 
+#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
 msgstr "short"

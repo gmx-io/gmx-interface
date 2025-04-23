@@ -3,7 +3,7 @@ import { Trans, msg, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
-import { useKey, useLatest } from "react-use";
+import { useKey, useLatest, useMedia } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -44,9 +44,10 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import { createTwapDecreaseOrderTxn } from "domain/synthetics/orders/createTwapDecreaseOrderTxn";
 import { formatLeverage, formatLiquidationPrice, getNameByOrderType } from "domain/synthetics/positions";
+import { TradeType } from "domain/synthetics/trade/types";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
-import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
+import { ORDER_OPTION_TO_TRADE_MODE, OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/validation";
 import { Token } from "domain/tokens";
@@ -89,6 +90,7 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import TradeInfoIcon from "../TradeBox/components/TradeInfoIcon";
 import TwapRows from "../TradeBox/components/TwapRows";
 
 import "./PositionSeller.scss";
@@ -666,6 +668,8 @@ export function PositionSeller(p: Props) {
     }));
   }, [localizedOrderOptionLabels]);
 
+  const isMobile = useMedia("(max-width: 1100px)");
+
   return (
     <div className="text-body-medium">
       <Modal
@@ -681,14 +685,22 @@ export function PositionSeller(p: Props) {
         qa="position-close-modal"
         contentClassName="w-[380px]"
       >
-        <Tabs
-          className="mb-[10.5px]"
-          options={tabsOptions}
-          selectedValue={orderOption}
-          type="inline"
-          onChange={handleSetOrderOption}
-          qa="operation-tabs"
-        />
+        <div className="mb-[10.5px] flex items-center justify-between">
+          <Tabs
+            options={tabsOptions}
+            selectedValue={orderOption}
+            type="inline"
+            onChange={handleSetOrderOption}
+            qa="operation-tabs"
+          />
+
+          <TradeInfoIcon
+            isMobile={isMobile}
+            tradeType={position?.isLong ? TradeType.Long : TradeType.Short}
+            tradeMode={ORDER_OPTION_TO_TRADE_MODE[orderOption]}
+            tradePlace="position-seller"
+          />
+        </div>
 
         {position && (
           <>

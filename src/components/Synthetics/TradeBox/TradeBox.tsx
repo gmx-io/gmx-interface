@@ -80,7 +80,7 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
 
-import TradeBoxLongShortInfoIcon from "./components/TradeBoxLongShortInfoIcon";
+import TradeInfoIcon from "./components/TradeInfoIcon";
 import TwapRows from "./components/TwapRows";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
 import { useShowOneClickTradingInfo } from "./hooks/useShowOneClickTradingInfo";
@@ -852,7 +852,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         />
         <div className="flex gap-4">
           {[TradeType.Long, TradeType.Short].includes(tradeType) && (
-            <TradeBoxLongShortInfoIcon isMobile={isMobile} isLong={isLong} isTWAP={isTwap} />
+            <TradeInfoIcon isMobile={isMobile} tradeType={tradeType} tradeMode={tradeMode} tradePlace="tradebox" />
           )}
           <SettingsIcon24
             className="cursor-pointer text-slate-100 gmx-hover:text-white"
