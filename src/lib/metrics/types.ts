@@ -1,6 +1,8 @@
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { TwapDuration } from "domain/synthetics/trade/twap/types";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { ErrorData } from "lib/parseError";
+import { TradeMode } from "sdk/types/trade";
 
 export type GlobalMetricData = {
   isMobileMetamask: boolean;
@@ -277,6 +279,9 @@ export type SwapMetricData = {
   orderType: OrderType | undefined;
   isFirstOrder: boolean | undefined;
   amountUsd: number | undefined;
+  duration: TwapDuration | undefined;
+  partsCount: number | undefined;
+  tradeMode: TradeMode | undefined;
 };
 
 export type IncreaseOrderMetricData = PositionOrderMetricParams & {
@@ -332,6 +337,9 @@ export type PositionOrderMetricParams = {
   priceImpactPercentage: number | undefined;
   netRate1h: number | undefined;
   interactionId: string | undefined;
+  duration: TwapDuration | undefined;
+  partsCount: number | undefined;
+  tradeMode: TradeMode | undefined;
 };
 
 export type EditCollateralMetricData = {

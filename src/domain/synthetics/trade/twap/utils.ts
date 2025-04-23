@@ -62,3 +62,10 @@ export function makeTwapValidFromTimeGetter(duration: TwapDuration, numberOfPart
     return BigInt(Math.floor(startTime + (durationMs / (numberOfParts - 1)) * part));
   };
 }
+
+export function getTwapDurationInSeconds(duration: TwapDuration | undefined) {
+  if (!duration) {
+    return undefined;
+  }
+  return duration.hours * 60 * 60 + duration.minutes * 60;
+}

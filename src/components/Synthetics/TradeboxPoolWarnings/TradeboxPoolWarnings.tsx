@@ -12,6 +12,7 @@ import {
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxState,
   selectTradeboxTradeFlags,
+  selectTradeboxTradeMode,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getFeeItem } from "domain/synthetics/fees";
@@ -22,7 +23,7 @@ import { useChainId } from "lib/chains";
 import { formatAmountForMetrics } from "lib/metrics";
 import { BN_ZERO, formatPercentage } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { userAnalytics } from "lib/userAnalytics";
+import { getAnalyticsOrderTypeByTradeMode, userAnalytics } from "lib/userAnalytics";
 import { TradeBoxWarningShownEvent } from "lib/userAnalytics/types";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -141,6 +142,8 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
   const marketName = marketInfo ? marketInfo.name : "";
   const marketPoolName = marketInfo ? getMarketPoolName(marketInfo) : "";
 
+  const tradeMode = useSelector(selectTradeboxTradeMode);
+
   useEffect(() => {
     if (
       !marketName ||
@@ -166,7 +169,7 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
             pair: marketName,
             pool: marketPoolName,
             type: isLong ? "Long" : "Short",
-            orderType: isLimit ? "Limit" : "Market",
+            orderType: getAnalyticsOrderTypeByTradeMode(tradeMode),
             sizeDeltaUsd: formatAmountForMetrics(increaseAmounts?.sizeDeltaUsd) ?? 0,
             tradeType: hasExistingPosition ? "IncreaseSize" : "InitialTrade",
             leverage: formatLeverage(increaseAmounts?.estimatedLeverage) || "",
@@ -194,6 +197,7 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
     marketPoolName,
     showHasInsufficientLiquidityAndPositionWarning,
     showHasNoSufficientLiquidityInAnyMarketWarning,
+    tradeMode,
   ]);
 
   const showHasExistingOrderButNoLiquidityWarning =

@@ -23,6 +23,7 @@ import {
   selectTradeboxSwapAmounts,
   selectTradeboxToTokenAddress,
   selectTradeboxTradeFlags,
+  selectTradeboxTradeMode,
   selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
   selectTradeboxTWAPDuration,
@@ -127,6 +128,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
   const initialCollateralAllowance = getByKey(tokensAllowanceData, fromToken?.address);
 
+  const tradeMode = useSelector(selectTradeboxTradeMode);
+
   const slippageInputId = useId();
 
   const onSubmitSwap = useCallback(
@@ -144,6 +147,9 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         subaccount,
         isFirstOrder,
         initialCollateralAllowance,
+        duration,
+        partsCount: numberOfParts,
+        tradeMode,
       });
 
       sendOrderSubmittedMetric(metricData.metricId);
@@ -224,6 +230,9 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       subaccount,
       isFirstOrder,
       initialCollateralAllowance,
+      duration,
+      numberOfParts,
+      tradeMode,
       account,
       tokensData,
       signer,
@@ -232,8 +241,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       setPendingTxns,
       setPendingOrder,
       blockTimestampData,
-      duration,
-      numberOfParts,
       triggerRatio?.ratio,
       shouldDisableValidationForTesting,
       slippageInputId,
@@ -279,6 +286,9 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         interactionId: marketInfo?.name
           ? userAnalytics.getInteractionId(getTradeInteractionKey(marketInfo.name))
           : undefined,
+        duration,
+        partsCount: numberOfParts,
+        tradeMode: tradeMode,
       });
 
       sendOrderSubmittedMetric(metricData.metricId);
@@ -467,23 +477,24 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       fees?.positionPriceImpact?.precisePercentage,
       chartHeaderInfo?.fundingRateLong,
       chartHeaderInfo?.fundingRateShort,
+      duration,
+      numberOfParts,
+      tradeMode,
       tokensData,
       account,
       signer,
       isTWAP,
-      blockTimestampData,
-      shouldDisableValidationForTesting,
       setPendingTxns,
       setPendingOrder,
       setPendingPosition,
+      blockTimestampData,
+      shouldDisableValidationForTesting,
       slippageInputId,
       cancelSltpEntries,
       updateSltpEntries,
       getExecutionFeeAmountForEntry,
       autoCancelOrdersLimit,
       setShouldFallbackToInternalSwap,
-      duration,
-      numberOfParts,
     ]
   );
 
@@ -507,6 +518,9 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         priceImpactDeltaUsd: decreaseAmounts?.positionPriceImpactDeltaUsd,
         priceImpactPercentage: fees?.positionPriceImpact?.precisePercentage,
         netRate1h: isLong ? chartHeaderInfo?.fundingRateLong : chartHeaderInfo?.fundingRateShort,
+        duration,
+        partsCount: numberOfParts,
+        tradeMode,
       });
 
       sendOrderSubmittedMetric(metricData.metricId);
@@ -588,16 +602,19 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       fees?.positionPriceImpact?.precisePercentage,
       chartHeaderInfo?.fundingRateLong,
       chartHeaderInfo?.fundingRateShort,
+      duration,
+      numberOfParts,
+      tradeMode,
       account,
       tokensData,
       signer,
       chainId,
       autoCancelOrdersLimit,
+      slippageInputId,
       setPendingTxns,
       setPendingOrder,
       setPendingPosition,
       blockTimestampData,
-      slippageInputId,
     ]
   );
 

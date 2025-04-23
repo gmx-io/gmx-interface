@@ -327,6 +327,9 @@ export function PositionSeller(p: Props) {
       priceImpactDeltaUsd: undefined,
       priceImpactPercentage: undefined,
       netRate1h: undefined,
+      duration,
+      partsCount: numberOfParts,
+      tradeMode: ORDER_OPTION_TO_TRADE_MODE[orderOption],
     });
 
     sendOrderSubmittedMetric(metricData.metricId);

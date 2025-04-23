@@ -7,7 +7,8 @@ import { ExecutionFee } from "domain/synthetics/fees";
 import { getMarketIndexName, getMarketPoolName, MarketInfo } from "domain/synthetics/markets";
 import { getCollateralAndSwapAddresses, OrderType } from "domain/synthetics/orders";
 import { TokenData } from "domain/synthetics/tokens";
-import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "domain/synthetics/trade";
+import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts, TradeMode } from "domain/synthetics/trade";
+import { TwapDuration } from "domain/synthetics/trade/twap/types";
 import { bigintToNumber, formatPercentage, formatRatePercentage, getBasisPoints, roundToOrder } from "lib/numbers";
 import { ErrorLike } from "lib/parseError";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -87,6 +88,9 @@ export function initSwapMetricData({
   subaccount,
   allowedSlippage,
   isFirstOrder,
+  duration,
+  partsCount,
+  tradeMode,
 }: {
   fromToken: TokenData | undefined;
   toToken: TokenData | undefined;
@@ -98,6 +102,9 @@ export function initSwapMetricData({
   hasReferralCode: boolean | undefined;
   subaccount: Subaccount | undefined;
   isFirstOrder: boolean | undefined;
+  duration: TwapDuration | undefined;
+  partsCount: number | undefined;
+  tradeMode: TradeMode | undefined;
 }) {
   return metrics.setCachedMetricData<SwapMetricData>({
     metricId: getSwapOrderMetricId({
@@ -125,6 +132,9 @@ export function initSwapMetricData({
     is1ct: Boolean(subaccount && fromToken?.address !== NATIVE_TOKEN_ADDRESS),
     requestId: getRequestId(),
     isFirstOrder,
+    duration,
+    partsCount,
+    tradeMode,
   });
 }
 
@@ -152,6 +162,9 @@ export function initIncreaseOrderMetricData({
   priceImpactPercentage,
   netRate1h,
   interactionId,
+  duration,
+  partsCount,
+  tradeMode,
 }: {
   chainId: number;
   fromToken: TokenData | undefined;
@@ -177,6 +190,9 @@ export function initIncreaseOrderMetricData({
   priceImpactPercentage: bigint | undefined;
   netRate1h: bigint | undefined;
   interactionId: string | undefined;
+  duration: TwapDuration | undefined;
+  partsCount: number | undefined;
+  tradeMode: TradeMode | undefined;
 }) {
   // Use actual collateral and swap params to identify the order after execution
   const { initialCollateralTokenAddress, swapPath } = getCollateralAndSwapAddresses(chainId, {
@@ -239,6 +255,9 @@ export function initIncreaseOrderMetricData({
     externalSwapInTokenAddress: increaseAmounts?.externalSwapQuote?.inTokenAddress,
     externalSwapOutTokenAddress: increaseAmounts?.externalSwapQuote?.outTokenAddress,
     interactionId,
+    duration,
+    partsCount,
+    tradeMode,
   });
 }
 
@@ -259,6 +278,9 @@ export function initDecreaseOrderMetricData({
   priceImpactPercentage,
   netRate1h,
   interactionId,
+  duration,
+  partsCount,
+  tradeMode,
 }: {
   collateralToken: TokenData | undefined;
   decreaseAmounts: DecreasePositionAmounts | undefined;
@@ -277,6 +299,9 @@ export function initDecreaseOrderMetricData({
   priceImpactPercentage: bigint | undefined;
   netRate1h: bigint | undefined;
   interactionId: string | undefined;
+  duration: TwapDuration | undefined;
+  partsCount: number | undefined;
+  tradeMode: TradeMode | undefined;
 }) {
   let metricType;
   if (orderType === OrderType.LimitDecrease) {
@@ -329,6 +354,9 @@ export function initDecreaseOrderMetricData({
     priceImpactPercentage: formatPercentageForMetrics(priceImpactPercentage) ?? 0,
     netRate1h: parseFloat(formatRatePercentage(netRate1h)),
     interactionId,
+    duration,
+    partsCount,
+    tradeMode,
   });
 }
 
