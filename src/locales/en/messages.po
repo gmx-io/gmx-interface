@@ -216,6 +216,10 @@ msgstr "EIP-4844, 13-20 Mar"
 msgid "Total size"
 msgstr "Total size"
 
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if there is not enough available liquidity."
+msgstr "Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if there is not enough available liquidity."
+
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/SwapBox.jsx
 msgid "Enable leverage sent."
@@ -1713,6 +1717,10 @@ msgstr "Fees for the past"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Optimizations"
 msgstr "Yield Optimizations"
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Receive (Approximate)"
+msgstr "Receive (Approximate)"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"

@@ -149,7 +149,7 @@ export function SyntheticsPage(p: Props) {
     [setListSection, setMarketsDirectionsFilter, setOrderTypesFilter, setSelectedOrderKeys]
   );
 
-  const { isSwap } = useSelector(selectTradeboxTradeFlags);
+  const { isSwap, isTwap } = useSelector(selectTradeboxTradeFlags);
 
   useEffect(() => {
     if (!chartToken) return;
@@ -330,14 +330,18 @@ export function SyntheticsPage(p: Props) {
             <div className="absolute">
               <TradeBoxResponsiveContainer />
             </div>
-            {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
+            {isSwap && !isTwap && (
+              <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
+            )}
           </>
         ) : (
           <div className="w-[40rem] min-[1501px]:w-[41.85rem]">
             <TradeBoxResponsiveContainer />
 
             <div className="flex flex-col gap-12">
-              {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
+              {isSwap && !isTwap && (
+                <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
+              )}
               <TradeBoxOneClickTrading />
             </div>
           </div>

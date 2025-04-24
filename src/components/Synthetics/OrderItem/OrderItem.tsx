@@ -313,13 +313,20 @@ function MarkPrice({ order }: { order: OrderInfo }) {
   }, [markPrice, priceDecimals, positionOrder.indexToken?.visualMultiplier]);
 
   if (isTwapOrder(order)) {
-    if (isLimitSwapOrderType(order.orderType)) {
-      const { markSwapRatioText } = getSwapRatioText(order);
+    const { markSwapRatioText } = getSwapRatioText(order);
 
-      return markSwapRatioText;
-    }
-
-    return <>{markPriceFormatted}</>;
+    return (
+      <Tooltip
+        handle={isLimitSwapOrderType(order.orderType) ? markSwapRatioText : markPriceFormatted}
+        position="bottom-end"
+        content={
+          <Trans>
+            Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and
+            no oracle reports are produced or if there is not enough available liquidity.
+          </Trans>
+        }
+      />
+    );
   }
 
   if (isLimitSwapOrderType(order.orderType)) {

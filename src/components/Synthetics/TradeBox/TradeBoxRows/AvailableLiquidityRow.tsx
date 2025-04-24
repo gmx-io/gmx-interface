@@ -18,11 +18,11 @@ export function AvailableLiquidityRow() {
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const toToken = useSelector(selectTradeboxToToken);
-  const { isLimit, isSwap, isIncrease } = tradeFlags;
+  const { isLimit, isSwap, isIncrease, isTwap } = tradeFlags;
 
   const { isLiquidityRisk, availableLiquidityUsd, availableLiquidityAmount } = useSelector(selectTradeboxLiquidityInfo);
 
-  if (!isLimit) {
+  if (!isLimit && !isTwap) {
     return null;
   }
 

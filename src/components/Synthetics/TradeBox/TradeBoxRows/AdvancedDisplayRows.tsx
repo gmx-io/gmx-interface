@@ -276,11 +276,11 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
             priceImpactFeeBps={fees?.positionPriceImpact?.bps}
             setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
           />
-          <div className="h-1 shrink-0 bg-stroke-primary" />
+          {!isTwap && <div className="h-1 shrink-0 bg-stroke-primary" />}
         </>
       )}
 
-      {isIncrease && <IncreaseOrderRow />}
+      {isIncrease && !isTwap && <IncreaseOrderRow />}
       {isTrigger && <DecreaseOrderRow />}
       <TradeFeesRow {...fees} feesType={feesType} />
       <NetworkFeeRow executionFee={executionFee} />
@@ -311,16 +311,20 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
       )}
       {(isLimit || isTwap) && <AvailableLiquidityRow />}
       {/* only when isMarket and not a swap */}
-      {isMarket && !isSwap && <CollateralSpreadRow />}
-      {isMarket && <AllowedSlippageRow slippageInputId={slippageInputId} />}
+      {!isTwap && (
+        <>
+          {isMarket && !isSwap && <CollateralSpreadRow />}
+          {isMarket && <AllowedSlippageRow slippageInputId={slippageInputId} />}
 
-      {((isIncrease && selectedPosition) || (isTrigger && selectedPosition)) && (
-        <div className="h-1 shrink-0 bg-stroke-primary" />
+          {((isIncrease && selectedPosition) || (isTrigger && selectedPosition)) && (
+            <div className="h-1 shrink-0 bg-stroke-primary" />
+          )}
+
+          <LeverageInfoRows />
+          <EntryPriceRow />
+          <ExistingPositionInfoRows />
+        </>
       )}
-
-      <LeverageInfoRows />
-      <EntryPriceRow />
-      <ExistingPositionInfoRows />
     </ExpandableRow>
   );
 }

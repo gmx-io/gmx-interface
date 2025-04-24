@@ -145,7 +145,7 @@ export function getOrderErrors(p: {
       order.targetCollateralToken.prices.maxPrice
     )!;
 
-    if (swapPathLiquidity < minOutputUsd) {
+    if (swapPathLiquidity < minOutputUsd && !isTwapOrder(order)) {
       errors.push({
         msg: t`There may not be sufficient liquidity to execute the swap when the min. receive conditions are met.`,
         level: "error",
@@ -175,8 +175,14 @@ export function getOrderErrors(p: {
 
   const position = Object.values(positionsInfoData || {}).find((pos) => isOrderForPosition(positionOrder, pos.key));
 
-  if (isTwapOrder(order) && isIncreaseOrderType(order.orderType)) {
-    const currentLiquidity = getAvailableUsdLiquidityForPosition(positionOrder.marketInfo, positionOrder.isLong);
+  if (isTwapOrder(order) && (isIncreaseOrderType(order.orderType) || isSwapOrderType(order.orderType))) {
+    const currentLiquidity = isSwapOrderType(order.orderType)
+      ? getMaxSwapPathLiquidity({
+          marketsInfoData,
+          swapPath: order.swapPath,
+          initialCollateralAddress: order.initialCollateralTokenAddress,
+        })
+      : getAvailableUsdLiquidityForPosition(positionOrder.marketInfo, positionOrder.isLong);
 
     const orderWithValidFromTimeExceeded = order.orders.find(
       (order) => order.validFromTime < BigInt(Math.floor(Date.now() / 1000))
@@ -185,13 +191,13 @@ export function getOrderErrors(p: {
     if (currentLiquidity < order.sizeDeltaUsd) {
       if (orderWithValidFromTimeExceeded) {
         errors.push({
-          msg: t`There may not be enough liquidity to execute parts of this order when the time conditions are met.`,
+          msg: t`Parts of this order will be executed once there is sufficient liquidity.`,
           level: "error",
           key: "twap-liquidity1",
         });
       } else {
         errors.push({
-          msg: t`Parts of this order will be executed once there is sufficient liquidity.`,
+          msg: t`There may not be enough liquidity to execute parts of this order when the time conditions are met.`,
           level: "error",
           key: "twap-liquidity2",
         });

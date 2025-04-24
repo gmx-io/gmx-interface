@@ -806,7 +806,9 @@ export function PositionSeller(p: Props) {
                 qa="confirm-button"
               >
                 {error ||
-                  (isTrigger ? t`Create ${getNameByOrderType(decreaseAmounts?.triggerOrderType)} Order` : t`Close`)}
+                  (isTrigger || isTwap
+                    ? t`Create ${isTwap ? "TWAP Decrease" : getNameByOrderType(decreaseAmounts?.triggerOrderType)} Order`
+                    : t`Close`)}
               </Button>
 
               <div className="h-1 bg-stroke-primary" />

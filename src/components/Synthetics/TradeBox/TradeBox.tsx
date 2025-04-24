@@ -873,7 +873,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           <div className="flex flex-col gap-14 pt-12">
             <OneClickTradingInfo />
             {maxAutoCancelOrdersWarning}
-            {isSwap && isLimit && (
+            {isSwap && isLimit && !isTwap && (
               <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
                 <Trans>
                   The actual trigger price at which order gets filled will depend on fees and price impact at the time
