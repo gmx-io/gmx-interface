@@ -24,6 +24,11 @@ type ProfileProps = {
   ref?: string;
   utm?: string;
   isChartPositionsEnabled?: boolean;
+  showLeverageSlider?: boolean;
+  displayPnLAfterFees?: boolean;
+  includePnlInLeverageDisplay?: boolean;
+  autoCancelTPSL?: boolean;
+  enableExternalSwaps?: boolean;
 };
 
 type DedupEventsStorage = {

@@ -18,9 +18,8 @@ import { useBowser } from "lib/useBowser";
 import useRouteQuery from "lib/useRouteQuery";
 import useWallet from "lib/wallets/useWallet";
 
-import { SESSION_ID_KEY, userAnalytics } from "./UserAnalytics";
-import { useSubmitButtonState } from "components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { SESSION_ID_KEY, userAnalytics } from "./UserAnalytics";
 
 export function useConfigureUserAnalyticsProfile() {
   const history = useHistory();
@@ -32,8 +31,16 @@ export function useConfigureUserAnalyticsProfile() {
   const { chainId } = useChainId();
   const { account, active } = useWallet();
   const { data: bowser } = useBowser();
-  const { shouldShowPositionLines, expressOrdersEnabled } = useSettings();
   const { subaccount } = useSubaccountContext();
+  const {
+    shouldShowPositionLines,
+    expressOrdersEnabled,
+    isLeverageSliderEnabled,
+    showPnlAfterFees,
+    isPnlInLeverage,
+    isAutoCancelTPSL,
+    externalSwapsEnabled,
+  } = useSettings();
 
   const timePeriods = useMemo(() => getTimePeriodsInSeconds(), []);
 
@@ -111,6 +118,11 @@ export function useConfigureUserAnalyticsProfile() {
       utm: utmParams?.utmString,
       ExpressEnabled: expressOrdersEnabled,
       Express1CTEnabled: Boolean(subaccount),
+      showLeverageSlider: isLeverageSliderEnabled,
+      displayPnLAfterFees: showPnlAfterFees,
+      includePnlInLeverageDisplay: isPnlInLeverage,
+      autoCancelTPSL: isAutoCancelTPSL,
+      enableExternalSwaps: externalSwapsEnabled,
     });
   }, [
     currentLanguage,
@@ -121,6 +133,11 @@ export function useConfigureUserAnalyticsProfile() {
     shouldShowPositionLines,
     expressOrdersEnabled,
     subaccount,
+    isLeverageSliderEnabled,
+    showPnlAfterFees,
+    isPnlInLeverage,
+    isAutoCancelTPSL,
+    externalSwapsEnabled,
   ]);
 
   useEffect(() => {
