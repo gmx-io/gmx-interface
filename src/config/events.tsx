@@ -34,6 +34,23 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "dolo-listing",
+    title: "DOLO market added on Arbitrum",
+    isActive: true,
+    startDate: "24 Apr 2025, 14:00",
+    endDate: "30 Apr 2025, 14:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="DOLO" />
+        /USD, or <Link to="/pools">provide liquidity</Link> by purchasing{" "}
+        <span className="whitespace-nowrap">
+          <TokenSymbolWithIcon symbol="GLV" />
+        </span>{" "}
+        or using <TokenSymbolWithIcon symbol="WETH" /> or <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
+  {
     id: "mkr-om-listing",
     title: "MKR and OM markets added on Arbitrum",
     isActive: true,

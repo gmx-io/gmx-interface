@@ -431,6 +431,10 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
       enabled: true,
       listingDate: p("13 Mar 2025"),
     },
+    // DOLO/USD [WETH-USDC]
+    "0x4D3Eb91efd36C2b74181F34B111bc1E91a0d0cb4": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
