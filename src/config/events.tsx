@@ -37,8 +37,8 @@ export const appEventsData: EventData[] = [
     id: "dolo-listing",
     title: "DOLO market added on Arbitrum",
     isActive: true,
-    startDate: "24 Apr 2025, 14:00",
-    endDate: "30 Apr 2025, 14:00",
+    startDate: "24 Apr 2025, 16:00",
+    endDate: "30 Apr 2025, 16:00",
     bodyText: (
       <>
         <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="DOLO" />
