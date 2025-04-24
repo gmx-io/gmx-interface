@@ -131,8 +131,8 @@ export const formatPositionMessage = (
   })!;
 
   const action = getActionTitle(tradeAction.orderType, tradeAction.eventName);
-  const timestamp = formatTradeActionTimestamp(tradeAction.transaction.timestamp, relativeTimestamp);
-  const timestampISO = formatTradeActionTimestampISO(tradeAction.transaction.timestamp);
+  const timestamp = formatTradeActionTimestamp(tradeAction.timestamp, relativeTimestamp);
+  const timestampISO = formatTradeActionTimestampISO(tradeAction.timestamp);
 
   const market = `${longShortText} ${indexName}`;
 

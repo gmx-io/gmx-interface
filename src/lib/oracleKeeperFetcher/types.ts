@@ -79,6 +79,11 @@ export type BatchReportBody = {
   items: BatchReportItem[];
 };
 
+export type ApyInfo = {
+  markets: { address: string; baseApy: number; bonusApy: number; apy: number }[];
+  glvs: { address: string; baseApy: number; bonusApy: number; apy: number }[];
+};
+
 export interface OracleFetcher {
   readonly url: string;
   fetchTickers(): Promise<TickersResponse>;
@@ -88,6 +93,7 @@ export interface OracleFetcher {
   fetchPostBatchReport(body: BatchReportBody, debug?: boolean): Promise<Response>;
   fetchPostFeedback(body: UserFeedbackBody, debug?: boolean): Promise<Response>;
   fetchUiVersion(currentVersion: number, active: boolean): Promise<number>;
+  fetchApys(debug?: boolean): Promise<ApyInfo>;
 }
 export type TickersResponse = {
   minPrice: string;

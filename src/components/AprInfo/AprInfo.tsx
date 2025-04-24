@@ -1,13 +1,10 @@
 import { Trans, t } from "@lingui/macro";
-import { addDays, formatDistanceToNowStrict } from "date-fns";
 import { useCallback, useMemo } from "react";
 
 import { getIncentivesV2Url } from "config/links";
-import { ENOUGH_DAYS_SINCE_LISTING_FOR_APY, getMarketListingDate } from "config/markets";
 import { TBTC_INFORMATION_URL, isTbtcIncentivizedMarket } from "config/tbtc";
 import { LIDO_APR_DECIMALS } from "domain/stake/useLidoStakeApr";
 import { useLiquidityProvidersIncentives } from "domain/synthetics/common/useIncentiveStats";
-import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseApyReadyToBeShown";
 import { useLpAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import { useChainId } from "lib/chains";
 import { formatAmount } from "lib/numbers";
@@ -17,10 +14,6 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import sparkleIcon from "img/sparkle.svg";
-
-function getApyReadyToBeShownDate(listingDate: Date): Date {
-  return addDays(listingDate, ENOUGH_DAYS_SINCE_LISTING_FOR_APY);
-}
 
 export function AprInfo({
   apy,
@@ -37,19 +30,8 @@ export function AprInfo({
 }) {
   const { chainId } = useChainId();
 
-  const listingDate = getMarketListingDate(chainId, marketAddress);
-  const { isBaseAprReadyToBeShown, apyReadyToBeShownDate } = useMemo(
-    () => ({
-      isBaseAprReadyToBeShown: getIsBaseApyReadyToBeShown(listingDate),
-      apyReadyToBeShownDate: getApyReadyToBeShownDate(listingDate),
-    }),
-    [listingDate]
-  );
+  let totalApr = (incentiveApr ?? 0n) + (lidoApr ?? 0n) + (apy ?? 0n);
 
-  let totalApr = (incentiveApr ?? 0n) + (lidoApr ?? 0n);
-  if (isBaseAprReadyToBeShown) {
-    totalApr += apy ?? 0n;
-  }
   const incentivesData = useLiquidityProvidersIncentives(chainId);
   const isIncentiveActive = !!incentivesData && incentivesData?.rewardsPerMarket[marketAddress] !== undefined;
   const isLidoApr = lidoApr !== undefined && lidoApr > 0n;
@@ -61,11 +43,7 @@ export function AprInfo({
     return (
       <div className="flex flex-col gap-y-14">
         <div>
-          <StatsTooltipRow
-            showDollar={false}
-            label={t`Base APY`}
-            value={isBaseAprReadyToBeShown ? `${formatAmount(apy, 28, 2)}%` : t`NA`}
-          />
+          <StatsTooltipRow showDollar={false} label={t`Base APY`} value={`${formatAmount(apy, 28, 2)}%`} />
           {isIncentiveActive && (
             <StatsTooltipRow showDollar={false} label={t`Bonus APR`} value={`${formatAmount(incentiveApr, 28, 2)}%`} />
           )}
@@ -77,15 +55,6 @@ export function AprInfo({
             />
           )}
         </div>
-        {!isBaseAprReadyToBeShown && (
-          <div>
-            <Trans>
-              The base APY estimate will be available{" "}
-              {formatDistanceToNowStrict(apyReadyToBeShownDate as Date, { addSuffix: true })} to ensure accurate data
-              display.
-            </Trans>
-          </div>
-        )}
         {isIncentiveActive && (
           <div>
             <Trans>
@@ -99,27 +68,11 @@ export function AprInfo({
         )}
       </div>
     );
-  }, [
-    airdropTokenTitle,
-    apy,
-    apyReadyToBeShownDate,
-    chainId,
-    incentiveApr,
-    isBaseAprReadyToBeShown,
-    isIncentiveActive,
-    lidoApr,
-    isLidoApr,
-    isTbtcIncentive,
-  ]);
+  }, [airdropTokenTitle, apy, chainId, incentiveApr, isIncentiveActive, lidoApr, isLidoApr, isTbtcIncentive]);
 
   const aprNode = useMemo(() => {
     const isIncentiveApr = incentiveApr !== undefined && incentiveApr > 0;
-    const node =
-      isBaseAprReadyToBeShown || isIncentiveApr ? (
-        <>{apy !== undefined ? `${formatAmount(totalApr, 28, 2)}%` : "..."}</>
-      ) : (
-        <>{t`NA`}</>
-      );
+    const node = <>{apy !== undefined ? `${formatAmount(totalApr, 28, 2)}%` : "..."}</>;
 
     if (isIncentiveApr) {
       return (
@@ -131,9 +84,9 @@ export function AprInfo({
     } else {
       return node;
     }
-  }, [apy, incentiveApr, totalApr, isBaseAprReadyToBeShown]);
+  }, [apy, incentiveApr, totalApr]);
 
-  return showTooltip && (isIncentiveActive || !isBaseAprReadyToBeShown || isLidoApr) ? (
+  return showTooltip && (isIncentiveActive || isLidoApr) ? (
     <TooltipWithPortal
       maxAllowedWidth={280}
       handle={aprNode}

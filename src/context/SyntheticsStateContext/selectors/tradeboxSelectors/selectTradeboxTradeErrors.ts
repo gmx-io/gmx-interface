@@ -72,7 +72,7 @@ export const selectTradeboxIncreaseTradeError = createSelector((q) => {
   const selectedPosition = q(selectTradeboxSelectedPosition);
   const fees = q(selectTradeboxFees);
   const { maxLiquidity: swapOutLiquidity } = q(selectTradeboxMaxLiquidityPath);
-  const { minCollateralUsd } = q(selectPositionConstants);
+  const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
   const { longLiquidity, shortLiquidity } = q(selectTradeboxLiquidity);
   const { isLong, isLimit, isTwap } = q(selectTradeboxTradeFlags);
   const markPrice = q(selectTradeboxMarkPrice);
@@ -107,6 +107,7 @@ export const selectTradeboxIncreaseTradeError = createSelector((q) => {
     thresholdType: increaseAmounts?.triggerThresholdType,
     numberOfParts,
     isTwap,
+    minPositionSizeUsd,
   });
 });
 
@@ -119,7 +120,7 @@ export const selectTradeboxDecreaseTradeError = createSelector((q) => {
   const markPrice = q(selectTradeboxMarkPrice);
   const nextPositionValues = q(selectTradeboxNextPositionValues);
   const { isLong } = q(selectTradeboxTradeFlags);
-  const { minCollateralUsd } = q(selectPositionConstants);
+  const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
   const stage = q(selectTradeboxStage);
 
   return getDecreaseError({
@@ -137,6 +138,7 @@ export const selectTradeboxDecreaseTradeError = createSelector((q) => {
     minCollateralUsd,
     isNotEnoughReceiveTokenLiquidity: false,
     triggerThresholdType: stage !== "trade" ? decreaseAmounts?.triggerThresholdType : undefined,
+    minPositionSizeUsd,
   });
 });
 
