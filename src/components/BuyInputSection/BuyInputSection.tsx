@@ -29,6 +29,7 @@ type Props = {
   showPercentSelector?: boolean;
   onPercentChange?: (percentage: number) => void;
   qa?: string;
+  isDisabled?: boolean;
 };
 
 function getMaxButtonPosition({
@@ -72,6 +73,7 @@ export default function BuyInputSection(props: Props) {
     showPercentSelector,
     onPercentChange,
     qa,
+    isDisabled = false,
   } = props;
   const [isPercentSelectorVisible, setIsPercentSelectorVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -144,11 +146,14 @@ export default function BuyInputSection(props: Props) {
   return (
     <div data-qa={qa}>
       <div
-        className="flex cursor-text flex-col justify-between gap-8 rounded-4 bg-cold-blue-900 px-14 pb-16
-                  pt-12 text-12 leading-[16px]
-                  shadow-[inset_0_0_0_1px] shadow-[transparent]
-                  focus-within:shadow-cold-blue-500
-                  hover:[&:not(:focus-within)]:shadow-[rgba(58,63,121,0.4)]"
+        className={cx(
+          `flex cursor-text flex-col justify-between gap-8 rounded-4 bg-cold-blue-900
+          px-14 pb-16 pt-12 text-12 leading-[16px] shadow-[inset_0_0_0_1px] shadow-[transparent]`,
+          {
+            "bg-slate-800": isDisabled,
+            "focus-within:shadow-cold-blue-500 hover:[&:not(:focus-within)]:shadow-[rgba(58,63,121,0.4)]": !isDisabled,
+          }
+        )}
         onClick={handleBoxClick}
       >
         <div className="flex justify-between">
@@ -191,6 +196,7 @@ export default function BuyInputSection(props: Props) {
               onBlur={handleOnBlur}
               placeholder="0.0"
               qa={qa ? qa + "-input" : undefined}
+              isDisabled={isDisabled}
             />
             <div className="absolute right-0 top-0 h-full w-8 bg-gradient-to-r from-[rgba(0,0,0,0)] to-cold-blue-900" />
 

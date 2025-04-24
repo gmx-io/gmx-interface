@@ -592,21 +592,25 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         {isSwap && (
           <>
             <div className="relative">
-              <button
-                type="button"
-                disabled={!isSwitchTokensAllowed}
-                className="absolute -top-19 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full bg-cold-blue-500 active:bg-[#505699]
+              {!isTwap && (
+                <button
+                  type="button"
+                  disabled={!isSwitchTokensAllowed}
+                  className="absolute -top-19 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full bg-cold-blue-500 active:bg-[#505699]
                            desktop-hover:bg-[#484e92]"
-                onClick={onSwitchTokens}
-                data-qa="swap-ball"
-              >
-                <IoArrowDown size={24} className="block" />
-              </button>
+                  onClick={onSwitchTokens}
+                  data-qa="swap-ball"
+                >
+                  <IoArrowDown size={24} className="block" />
+                </button>
+              )}
               <BuyInputSection
-                topLeftLabel={t`Receive`}
-                bottomLeftValue={swapAmounts?.usdOut !== undefined ? formatUsd(swapAmounts?.usdOut) : undefined}
+                topLeftLabel={isTwap ? t`Receive (Approximate)` : t`Receive`}
+                bottomLeftValue={
+                  !isTwap && swapAmounts?.usdOut !== undefined ? formatUsd(swapAmounts?.usdOut) : undefined
+                }
                 bottomRightValue={
-                  toToken && toToken.balance !== undefined && toToken.balance > 0n
+                  !isTwap && toToken && toToken.balance !== undefined && toToken.balance > 0n
                     ? formatBalanceAmount(toToken.balance, toToken.decimals, toToken.symbol)
                     : undefined
                 }
@@ -614,6 +618,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 inputValue={toTokenInputValue}
                 onInputValueChange={handleToInputTokenChange}
                 qa="swap-receive"
+                isDisabled={isTwap}
               >
                 {toTokenAddress && (
                   <TokenSelector
