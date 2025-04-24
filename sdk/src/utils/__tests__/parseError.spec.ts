@@ -221,7 +221,7 @@ describe("parseError", () => {
           }),
           errorGroup: JSON.stringify({
             error: {
-              code: `-XXX`,
+              code: -"XXX",
               message: "Invalid input parameters",
             },
           }).slice(0, 50),
