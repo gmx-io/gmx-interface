@@ -405,7 +405,6 @@ export function getDecreaseError(p: {
     minCollateralUsd,
     isNotEnoughReceiveTokenLiquidity,
     triggerThresholdType,
-    minPositionSizeUsd,
   } = p;
 
   if (isContractAccount && isAddressZero(receiveToken?.address)) {
