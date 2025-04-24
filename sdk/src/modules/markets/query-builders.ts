@@ -1,4 +1,3 @@
-import { AbiId } from "abis/index";
 import { getContract } from "configs/contracts";
 import { CLAIMABLE_FUNDING_AMOUNT, MAX_PNL_FACTOR_FOR_TRADERS_KEY } from "configs/dataStore";
 import { MarketsData } from "types/markets";
