@@ -1,11 +1,6 @@
-import { encodeFunctionData } from "viem";
-
-import { getSwapDebugSettings } from "config/externalSwaps";
 import { UserReferralInfo } from "domain/referrals";
 import { ErrorLike, parseError } from "lib/errors";
-import { applyFactor, MaxUint256 } from "lib/numbers";
-import Token from "sdk/abis/Token.json";
-import { convertTokenAddress, getNativeToken } from "sdk/configs/tokens";
+import { applyFactor } from "lib/numbers";
 import { MarketInfo } from "sdk/types/markets";
 import { PositionInfo } from "sdk/types/positions";
 import { TokenData } from "sdk/types/tokens";
@@ -14,44 +9,12 @@ import { getFeeItem, getPositionFee } from "sdk/utils/fees";
 import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
 
 import {
-  ExternalSwapQuote,
   FindSwapPath,
   getIncreasePositionPrices,
   getSwapAmountsByFromValue,
   getSwapAmountsByToValue,
   leverageBySizeValues,
 } from "../trade";
-
-export function getExternalCallsParams(chainId: number, account: string, quote: ExternalSwapQuote) {
-  const inTokenAddress = convertTokenAddress(chainId, quote.inTokenAddress, "wrapped");
-
-  const addresses: string[] = [];
-  const callData: string[] = [];
-
-  if (quote.needSpenderApproval) {
-    addresses.push(inTokenAddress);
-    callData.push(
-      encodeFunctionData({
-        abi: Token.abi,
-        functionName: "approve",
-        args: [quote.txnData.to, MaxUint256],
-      })
-    );
-  }
-
-  if (getSwapDebugSettings()?.failExternalSwaps) {
-    addresses.push(quote.inTokenAddress);
-  } else {
-    addresses.push(quote.txnData.to);
-  }
-
-  callData.push(quote.txnData.data);
-
-  const refundTokens = [getNativeToken(chainId).wrappedAddress, inTokenAddress];
-  const refundReceivers = [account, account];
-
-  return [addresses, callData, refundTokens, refundReceivers];
-}
 
 export function getExternalSwapInputsByFromValue({
   tokenIn,

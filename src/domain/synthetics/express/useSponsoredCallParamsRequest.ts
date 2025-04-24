@@ -8,7 +8,7 @@ import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { getContract } from "sdk/configs/contracts";
-import { MIN_GELATO_BALANCE_FOR_SPONSORED_CALL } from "sdk/configs/express";
+import { MIN_GELATO_USD_BALANCE_FOR_SPONSORED_CALL } from "sdk/configs/express";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
 export type SponsoredCallParams = {
@@ -68,7 +68,7 @@ export function useSponsoredCallParamsRequest(
         mainBalanceTokenData?.prices.minPrice
       );
 
-      return usdBalance !== undefined && usdBalance > MIN_GELATO_BALANCE_FOR_SPONSORED_CALL;
+      return usdBalance !== undefined && usdBalance > MIN_GELATO_USD_BALANCE_FOR_SPONSORED_CALL;
     },
   });
 

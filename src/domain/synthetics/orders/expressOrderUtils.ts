@@ -25,7 +25,7 @@ import { nowInSeconds } from "sdk/utils/time";
 
 export async function getExpressBatchOrderParams({
   chainId,
-  RelayFeeParams,
+  relayFeeParams,
   orderParams,
   signer,
   subaccount,
@@ -35,7 +35,7 @@ export async function getExpressBatchOrderParams({
   emptySignature = false,
 }: {
   chainId: number;
-  RelayFeeParams: RelayerFeeParams;
+  relayFeeParams: RelayerFeeParams;
   orderParams: BatchOrderTxnParams;
   signer: Signer;
   subaccount: Subaccount | undefined;
@@ -46,7 +46,7 @@ export async function getExpressBatchOrderParams({
 }) {
   const feeOracleParams = getOraclePriceParamsForRelayFee({
     chainId,
-    relayFeeParams: RelayFeeParams,
+    relayFeeParams,
     tokensData,
     marketsInfoData,
   });
@@ -63,12 +63,12 @@ export async function getExpressBatchOrderParams({
   const txnData = await buildAndSignExpressBatchOrderTxn({
     signer,
     chainId,
-    relayFeeParams: RelayFeeParams,
+    relayFeeParams,
     relayParamsPayload: {
       oracleParams: oracleParamsPayload,
       tokenPermits: tokenPermits ?? [],
-      externalCalls: RelayFeeParams.externalCalls,
-      fee: RelayFeeParams.feeParams,
+      externalCalls: relayFeeParams.externalCalls,
+      fee: relayFeeParams.feeParams,
       deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
       userNonce: 0n,
     },

@@ -238,7 +238,8 @@ describe("externalSwapSelectors", () => {
 
       expect(vi.mocked(tradeSelectors.makeSelectFindSwapPath)).toHaveBeenCalledWith(
         tokensData.ETH.address,
-        tokensData.USDC.address
+        tokensData.USDC.address,
+        undefined
       );
     });
   });

@@ -142,14 +142,14 @@ export const selectRelayerFeeToken = createSelector((q) => {
 
 export const makeSelectIsExpressTransactionAvailable = (isNativePayment: boolean) =>
   createSelector((q) => {
-    if (isNativePayment) {
-      return false;
-    }
-
     const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
     const isFeatureDisabled = q(makeSelectDisableFeature("relayRouterDisabled"));
     const gasPaymentToken = q(selectGasPaymentToken);
     const isZeroGasBalance = gasPaymentToken?.balance === 0n || gasPaymentToken?.balance === undefined;
+
+    if (isNativePayment) {
+      return false;
+    }
 
     return isExpressOrdersEnabledSetting && !isFeatureDisabled && !isZeroGasBalance;
   });
