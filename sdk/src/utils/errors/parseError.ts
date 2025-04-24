@@ -198,7 +198,7 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
     txErrorData,
     errorSource,
     parentError,
-    isAdditionalValidationPassed: isAdditionalValidationPassed,
+    isAdditionalValidationPassed,
     additionalValidationType,
     errorDepth,
   };
