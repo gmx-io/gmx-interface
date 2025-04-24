@@ -405,7 +405,6 @@ export function getDecreaseError(p: {
     minCollateralUsd,
     isNotEnoughReceiveTokenLiquidity,
     triggerThresholdType,
-    minPositionSizeUsd,
   } = p;
 
   if (isContractAccount && isAddressZero(receiveToken?.address)) {
@@ -448,14 +447,6 @@ export function getDecreaseError(p: {
 
   if (nextPositionValues?.nextLeverage !== undefined && nextPositionValues?.nextLeverage > maxAllowedLeverage) {
     return [t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
-  }
-
-  if (
-    minPositionSizeUsd !== undefined &&
-    nextPositionValues?.nextSizeUsd !== undefined &&
-    nextPositionValues.nextSizeUsd < minPositionSizeUsd
-  ) {
-    return [t`Min position size: ${formatUsd(minPositionSizeUsd)}`];
   }
 
   if (existingPosition) {
