@@ -69,9 +69,11 @@ sdk.positions
 
 #### Quick methods:
 
-- `long(p: Parameters)` - creates long positions (see [examples](#examples-helpers))
-- `short(p: Parameters)` - creates short positions (see [examples](#examples-helpers))
-- `swap(p: Parameters)` - creates a swap order (see [examples](#examples-helpers))
+- `long(p: Parameters)` - creates long positions (see [examples](#helpers))
+- `short(p: Parameters)` - creates short positions (see [examples](#helpers))
+- `swap(p: Parameters)` - creates a swap order (see [examples](#helpers))
+
+#### Full methods:
 
 - `cancelOrders(orderKeys: string[])` - cancels orders by order keys
 - `createIncreaseOrder(p: Parameters)` - creates an increase order (see [examples](#examples))
