@@ -336,7 +336,7 @@ describe("parseError", () => {
         expect.objectContaining({
           errorMessage: "Transaction failed",
           errorSource: "getCallStaticError",
-          isAdditinalValidationPassed: false,
+          isAdditionalValidationPassed: false,
           additionalValidationType: "tryCallStatic",
         })
       );
