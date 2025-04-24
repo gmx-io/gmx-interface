@@ -215,7 +215,7 @@ describe("parseError", () => {
         expect.objectContaining({
           errorMessage: JSON.stringify({
             error: {
-              code: "-XXX",
+              code: -32000,
               message: "Invalid input parameters",
             },
           }),
