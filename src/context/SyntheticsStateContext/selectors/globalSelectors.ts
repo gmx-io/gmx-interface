@@ -1,8 +1,5 @@
 import { DisabledFeatures } from "domain/synthetics/features/useDisabledFeatures";
-import {
-  getIsSubaccountActionsExceeded,
-  getIsSubaccountExpired,
-} from "domain/synthetics/gassless/txns/subaccountUtils";
+import { getIsSubaccountActionsExceeded, getIsSubaccountExpired } from "domain/synthetics/subaccount";
 import { getRelayerFeeToken } from "sdk/configs/express";
 import { getByKey } from "sdk/utils/objects";
 
@@ -137,11 +134,17 @@ export const selectRelayerFeeToken = createSelector((q) => {
   return getByKey(tokensData, relayerFeeTokenAddress);
 });
 
-export const selectIsExpressOrdersEnabledForActions = createSelector((q) => {
-  const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
-  const isFeatureDisabled = q(makeSelectDisableFeature("relayRouterDisabled"));
-  const gasPaymentToken = q(selectGasPaymentToken);
-  const isZeroGasBalance = gasPaymentToken?.balance === 0n || gasPaymentToken?.balance === undefined;
+export const makeSelectIsExpressTransactionAvailable = createSelectorFactory((isNativePayment: boolean) =>
+  createSelector((q) => {
+    if (isNativePayment) {
+      return false;
+    }
 
-  return isExpressOrdersEnabledSetting && !isFeatureDisabled && !isZeroGasBalance;
-});
+    const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
+    const isFeatureDisabled = q(makeSelectDisableFeature("relayRouterDisabled"));
+    const gasPaymentToken = q(selectGasPaymentToken);
+    const isZeroGasBalance = gasPaymentToken?.balance === 0n || gasPaymentToken?.balance === undefined;
+
+    return isExpressOrdersEnabledSetting && !isFeatureDisabled && !isZeroGasBalance;
+  })
+);

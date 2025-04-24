@@ -3,9 +3,9 @@ import { useMemo } from "react";
 import { getTokensMap, getV2Tokens } from "sdk/configs/tokens";
 
 import { TokensData } from "./types";
+import { useOnchainTokenConfigs } from "./useOnchainTokenConfigs";
 import { useTokenBalances } from "./useTokenBalances";
 import { useTokenRecentPricesRequest } from "./useTokenRecentPricesData";
-import { useOnchainTokensConfigs } from "../gassless/txns/useOnchainTokenConfigs";
 
 type TokensDataResult = {
   tokensData?: TokensData;
@@ -18,9 +18,9 @@ export function useTokensDataRequest(chainId: number): TokensDataResult {
   const tokenConfigs = getTokensMap(chainId);
   const { balancesData, error: balancesError } = useTokenBalances(chainId);
   const { pricesData, updatedAt: pricesUpdatedAt, error: pricesError } = useTokenRecentPricesRequest(chainId);
-  const { data: tokenConfigsData, error: tokenConfigsError } = useOnchainTokensConfigs(chainId);
+  const { data: onchainConfigsData, error: onchainConfigsError } = useOnchainTokenConfigs(chainId);
 
-  const error = balancesError || pricesError || tokenConfigsError;
+  const error = balancesError || pricesError || onchainConfigsError;
 
   return useMemo(() => {
     if (error) {
@@ -45,7 +45,7 @@ export function useTokensDataRequest(chainId: number): TokensDataResult {
         const prices = pricesData[tokenAddress];
         const balance = balancesData?.[tokenAddress];
         const tokenConfig = tokenConfigs[tokenAddress];
-        const tokenConfigData = tokenConfigsData?.[tokenAddress];
+        const onchainConfig = onchainConfigsData?.[tokenAddress];
 
         if (!prices) {
           return acc;
@@ -53,14 +53,15 @@ export function useTokensDataRequest(chainId: number): TokensDataResult {
 
         acc[tokenAddress] = {
           ...tokenConfig,
+          ...onchainConfig,
           prices,
           balance,
-          priceFeedAddress: tokenConfigData?.priceFeedAddress,
         };
+
         return acc;
       }, {} as TokensData),
       pricesUpdatedAt,
       isBalancesLoaded,
     };
-  }, [error, chainId, pricesData, pricesUpdatedAt, balancesData, tokenConfigs, tokenConfigsData]);
+  }, [error, chainId, pricesData, pricesUpdatedAt, balancesData, tokenConfigs, onchainConfigsData]);
 }

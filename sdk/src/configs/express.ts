@@ -3,6 +3,7 @@ import { periodToSeconds } from "utils/time";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 import { getTokenBySymbol, getWrappedToken } from "./tokens";
+import { expandDecimals, USD_DECIMALS } from "utils/numbers";
 
 export const SUBACCOUNT_MESSAGE = "Generate a GMX subaccount. Only sign this message on a trusted website.";
 export const SUBACCOUNT_DOCS_URL = "https://docs.gmx.io/docs/trading/v2/#one-click-trading";
@@ -13,6 +14,8 @@ export const DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT = 10;
 
 export const DEFAULT_PERMIT_DEADLINE_DURATION = periodToSeconds(1, "1h");
 export const DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION = periodToSeconds(1, "1h");
+
+export const MIN_GELATO_BALANCE_FOR_SPONSORED_CALL = 10n ** BigInt(USD_DECIMALS); // 10$
 
 const GAS_PAYMENT_TOKENS = {
   [ARBITRUM]: [getTokenBySymbol(ARBITRUM, "USDC").address, getTokenBySymbol(ARBITRUM, "WETH").address],

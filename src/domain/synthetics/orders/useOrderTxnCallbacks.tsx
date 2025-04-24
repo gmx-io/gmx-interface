@@ -1,0 +1,497 @@
+import { plural, t, Trans } from "@lingui/macro";
+import { useCallback, useMemo } from "react";
+
+import { PendingTransaction, usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import {
+  getPendingOrderKey,
+  PendingOrderData,
+  PendingPositionUpdate,
+  useSyntheticsEvents,
+} from "context/SyntheticsEvents";
+import { selectOrdersInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getIsPossibleExternalSwapError } from "domain/synthetics/externalSwaps/utils";
+import { getPositionKey } from "domain/synthetics/positions/utils";
+import { getRemainingSubaccountActions, Subaccount } from "domain/synthetics/subaccount";
+import { useChainId } from "lib/chains";
+import { parseError } from "lib/errors";
+import { helperToast } from "lib/helperToast";
+import { OrderMetricId, sendOrderSimulatedMetric, sendTxnErrorMetric, sendTxnSentMetric } from "lib/metrics";
+import { getByKey } from "lib/objects";
+import { TxnEvent, TxnEventName } from "lib/transactions";
+import { OrderInfo, OrdersInfoData } from "sdk/types/orders";
+import { isIncreaseOrderType } from "sdk/utils/orders";
+import {
+  BatchOrderTxnParams,
+  CancelOrderTxnParams,
+  CreateOrderTxnParams,
+  DecreasePositionOrderParams,
+  getTotalExecutionFeeForOrders,
+  IncreasePositionOrderParams,
+  SwapOrderParams,
+  UpdateOrderTxnParams,
+} from "sdk/utils/orderTransactions";
+
+import { getTxnErrorToast } from "components/Errors/errorToasts";
+
+
+import { BatchOrderTxnCtx } from "./sendBatchOrderTxn";
+import { ExpressParams } from "../express/types";
+
+export type CallbackUiCtx = {
+  metricId?: OrderMetricId;
+  slippageInputId?: string;
+  additionalErrorContent?: React.ReactNode;
+  isFundingFeeSettlement?: boolean;
+  onInternalSwapFallback?: () => void;
+};
+
+export function useOrderTxnCallbacks() {
+  const { setPendingTxns } = usePendingTxns();
+  const {
+    setPendingOrder,
+    setPendingPosition,
+    setPendingOrderUpdate,
+    setPendingExpressTxn,
+    setPendingFundingFeeSettlement,
+  } = useSyntheticsEvents();
+  const { chainId } = useChainId();
+  const { showDebugValues, setIsSettingsVisible } = useSettings();
+  const ordersInfoData = useSelector(selectOrdersInfoData);
+
+  const batchTxnCallback = useCallback(
+    (ctx: CallbackUiCtx, e: TxnEvent<BatchOrderTxnCtx>) => {
+      if (showDebugValues) {
+        // eslint-disable-next-line no-console
+        console.log("TXN EVENT", e, ctx);
+      }
+
+      const { expressParams, batchParams } = e.data;
+
+      const actionsCount =
+        batchParams.createOrderParams.length +
+        batchParams.updateOrderParams.length +
+        batchParams.cancelOrderParams.length;
+
+      const isSubaccount = Boolean(expressParams?.subaccount?.signedApproval);
+
+      const pendingOrders = getBatchPendingOrders(e.data.batchParams, ordersInfoData);
+      const pendingPositions: PendingPositionUpdate[] = [];
+      let pendingOrderUpdate: PendingOrderData | undefined = undefined;
+
+      let mainActionType: "create" | "update" | "cancel";
+      if (batchParams.createOrderParams.length > 0) {
+        mainActionType = "create";
+      } else if (batchParams.updateOrderParams.length > 0) {
+        const updateOrderParams = batchParams.updateOrderParams[0];
+        const order = getByKey(ordersInfoData, updateOrderParams.params.orderKey);
+        pendingOrderUpdate = order ? getPendingUpdateOrder(updateOrderParams, order) : undefined;
+        mainActionType = "update";
+      } else if (batchParams.cancelOrderParams.length > 0) {
+        mainActionType = "cancel";
+      } else {
+        return;
+      }
+
+      switch (e.event) {
+        case TxnEventName.Prepared: {
+          if (isSubaccount) {
+            if (mainActionType === "create") {
+              if (pendingOrders.length > 0) {
+                setPendingOrder(pendingOrders);
+              }
+            } else {
+              const operationMessage = getOperationMessage(
+                mainActionType,
+                "submitted",
+                actionsCount,
+                expressParams?.subaccount,
+                setIsSettingsVisible
+              );
+
+              helperToast.success(operationMessage);
+            }
+          }
+
+          if (pendingOrderUpdate) {
+            setPendingOrderUpdate(pendingOrderUpdate);
+          }
+
+          return;
+        }
+
+        case TxnEventName.Simulated: {
+          if (ctx.metricId) {
+            sendOrderSimulatedMetric(ctx.metricId);
+          }
+          return;
+        }
+
+        case TxnEventName.Sent: {
+          if (ctx.metricId) {
+            sendTxnSentMetric(ctx.metricId);
+          }
+
+          if (!isSubaccount) {
+            if (mainActionType === "create") {
+              if (pendingOrders.length > 0) {
+                setPendingOrder(pendingOrders);
+              }
+
+              pendingPositions.push(
+                ...e.data.batchParams.createOrderParams.map((cp) =>
+                  getPendingPositionFromParams({
+                    createOrderParams: cp,
+                    blockNumber: e.data.blockNumber,
+                    timestamp: e.data.createdAt,
+                  })
+                )
+              );
+
+              if (pendingPositions.length > 0) {
+                setPendingPosition(pendingPositions[0]);
+              }
+
+              if (ctx.isFundingFeeSettlement) {
+                setPendingFundingFeeSettlement({
+                  orders: pendingOrders,
+                  positions: pendingPositions,
+                });
+              }
+            }
+
+            if (expressParams) {
+              setPendingExpressTxn({
+                subaccountApproval: expressParams.subaccount?.signedApproval,
+                isSponsoredCall: expressParams.isSponsoredCall,
+                tokenPermits: expressParams.relayParamsPayload.tokenPermits,
+                pendingOrdersKeys: pendingOrders.map(getPendingOrderKey),
+                pendingPositionsKeys: pendingPositions.map((p) => p.positionKey),
+                taskId: e.data.txnHash,
+                metricId: ctx.metricId,
+              });
+            } else {
+              const { totalExecutionFeeAmount, totalExecutionGasLimit } = getTotalExecutionFeeForOrders(
+                e.data.batchParams
+              );
+
+              const operationMessage = getOperationMessage(
+                mainActionType,
+                "success",
+                actionsCount,
+                undefined,
+                setIsSettingsVisible
+              );
+
+              const pendingTxn: PendingTransaction = {
+                hash: e.data.txnHash,
+                message: operationMessage,
+                metricId: ctx.metricId,
+                data: {
+                  estimatedExecutionFee: totalExecutionFeeAmount,
+                  estimatedExecutionGasLimit: totalExecutionGasLimit,
+                },
+              };
+
+              setPendingTxns((txns) => [...txns, pendingTxn]);
+            }
+          }
+
+          return;
+        }
+
+        case TxnEventName.Error: {
+          const { error } = e.data;
+          const { metricId } = ctx;
+          const errorData = parseError(error);
+
+          if (metricId) {
+            sendTxnErrorMetric(metricId, error, errorData?.errorContext ?? "unknown");
+          }
+
+          const operationMessage = getOperationMessage(
+            mainActionType,
+            "failed",
+            actionsCount,
+            expressParams?.subaccount,
+            setIsSettingsVisible
+          );
+
+          const fallbackToInternalSwap =
+            hasExternalSwap(expressParams, batchParams) && getIsPossibleExternalSwapError(error)
+              ? ctx.onInternalSwapFallback
+              : undefined;
+
+          const toastParams = getTxnErrorToast(chainId, errorData, {
+            defaultMessage: operationMessage,
+            slippageInputId: ctx.slippageInputId,
+            additionalContent: ctx.additionalErrorContent,
+            isInternalSwapFallback: Boolean(fallbackToInternalSwap),
+          });
+
+          helperToast.error(toastParams.errorContent, {
+            autoClose: toastParams.autoCloseToast,
+          });
+
+          if (fallbackToInternalSwap) {
+            fallbackToInternalSwap();
+          }
+
+          if (pendingOrderUpdate) {
+            setPendingOrderUpdate(pendingOrderUpdate, "remove");
+          }
+
+          return;
+        }
+      }
+    },
+    [
+      chainId,
+      ordersInfoData,
+      setIsSettingsVisible,
+      setPendingExpressTxn,
+      setPendingFundingFeeSettlement,
+      setPendingOrder,
+      setPendingOrderUpdate,
+      setPendingPosition,
+      setPendingTxns,
+      showDebugValues,
+    ]
+  );
+
+  return useMemo(
+    () => ({
+      orderTxnCallback: batchTxnCallback,
+      makeOrderTxnCallback: (ctx: CallbackUiCtx) => (e: TxnEvent<BatchOrderTxnCtx>) => batchTxnCallback(ctx, e),
+    }),
+    [batchTxnCallback]
+  );
+}
+
+export function getBatchPendingOrders(
+  txnParams: BatchOrderTxnParams,
+  ordersInfoData: OrdersInfoData | undefined
+): PendingOrderData[] {
+  const createPendingOrders = txnParams.createOrderParams.map(getPendingCreateOrder);
+
+  const updatePendingOrders = txnParams.updateOrderParams
+    .map((updateOrderParams) => {
+      const order = getByKey(ordersInfoData, updateOrderParams.params.orderKey);
+      if (!order) {
+        return undefined;
+      }
+
+      return getPendingUpdateOrder(updateOrderParams, order);
+    })
+    .filter((o) => o !== undefined);
+
+  const cancelPendingOrders = txnParams.cancelOrderParams
+    .map((cancelOrderParams) => {
+      const order = getByKey(ordersInfoData, cancelOrderParams.orderKey);
+      if (!order) {
+        return undefined;
+      }
+
+      return getPendingCancelOrder(cancelOrderParams, order);
+    })
+    .filter((o) => o !== undefined);
+
+  return [...createPendingOrders, ...updatePendingOrders, ...cancelPendingOrders] as PendingOrderData[];
+}
+export function getPendingCancelOrder(params: CancelOrderTxnParams, order: OrderInfo): PendingOrderData {
+  return {
+    txnType: "cancel",
+    account: order.account,
+    marketAddress: order.marketAddress,
+    initialCollateralTokenAddress: order.initialCollateralTokenAddress,
+    initialCollateralDeltaAmount: order.initialCollateralDeltaAmount,
+    swapPath: order.swapPath,
+    triggerPrice: "triggerPrice" in order ? order.triggerPrice : 0n,
+    acceptablePrice: "acceptablePrice" in order ? order.acceptablePrice : 0n,
+    autoCancel: "autoCancel" in order ? order.autoCancel : false,
+    sizeDeltaUsd: order.sizeDeltaUsd,
+    isLong: order.isLong,
+    orderType: order.orderType,
+    shouldUnwrapNativeToken: false,
+    externalSwapQuote: undefined,
+    orderKey: params.orderKey,
+    minOutputAmount: 0n,
+  };
+}
+
+export function getPendingPositionFromParams({
+  createOrderParams: createOrderPayload,
+  blockNumber,
+  timestamp,
+}: {
+  createOrderParams: CreateOrderTxnParams<IncreasePositionOrderParams | DecreasePositionOrderParams>;
+  blockNumber: bigint;
+  timestamp: number;
+}): PendingPositionUpdate {
+  const collateralAddress = createOrderPayload.params.collateralTokenAddress;
+
+  const collateralDeltaAmount = createOrderPayload.params.collateralDeltaAmount;
+  const sizeDeltaUsd = createOrderPayload.params.sizeDeltaUsd;
+  const sizeDeltaInTokens = createOrderPayload.params.sizeDeltaInTokens;
+
+  const positionKey = getPositionKey(
+    createOrderPayload.orderPayload.addresses.receiver,
+    createOrderPayload.orderPayload.addresses.market,
+    collateralAddress,
+    createOrderPayload.orderPayload.isLong
+  );
+
+  return {
+    isIncrease: isIncreaseOrderType(createOrderPayload.orderPayload.orderType),
+    positionKey,
+    collateralDeltaAmount,
+    sizeDeltaUsd,
+    sizeDeltaInTokens,
+    updatedAtBlock: blockNumber,
+    updatedAt: timestamp,
+  };
+}
+
+export function getPendingUpdateOrder(updateOrderParams: UpdateOrderTxnParams, order: OrderInfo): PendingOrderData {
+  return {
+    txnType: "update",
+    account: order.account,
+    marketAddress: order.marketAddress,
+    initialCollateralTokenAddress: order.initialCollateralTokenAddress,
+    initialCollateralDeltaAmount: order.initialCollateralDeltaAmount,
+    swapPath: order.swapPath,
+    triggerPrice: "triggerPrice" in order ? order.triggerPrice : 0n,
+    acceptablePrice: "acceptablePrice" in order ? order.acceptablePrice : 0n,
+    autoCancel: "autoCancel" in order ? order.autoCancel : false,
+    sizeDeltaUsd: order.sizeDeltaUsd,
+    minOutputAmount: order.minOutputAmount,
+    isLong: order.isLong,
+    orderType: order.orderType,
+    shouldUnwrapNativeToken: false,
+    externalSwapQuote: undefined,
+    orderKey: updateOrderParams.params.orderKey,
+  };
+}
+
+export function getPendingCreateOrder(
+  createOrderPayload: CreateOrderTxnParams<IncreasePositionOrderParams | DecreasePositionOrderParams | SwapOrderParams>
+): PendingOrderData {
+  return {
+    account: createOrderPayload.orderPayload.addresses.receiver,
+    marketAddress: createOrderPayload.orderPayload.addresses.market,
+    initialCollateralTokenAddress: createOrderPayload.orderPayload.addresses.initialCollateralToken,
+    initialCollateralDeltaAmount: createOrderPayload.orderPayload.numbers.initialCollateralDeltaAmount,
+    swapPath: createOrderPayload.orderPayload.addresses.swapPath,
+    sizeDeltaUsd: createOrderPayload.orderPayload.numbers.sizeDeltaUsd,
+    minOutputAmount: createOrderPayload.orderPayload.numbers.minOutputAmount,
+    triggerPrice: createOrderPayload.orderPayload.numbers.triggerPrice,
+    acceptablePrice: createOrderPayload.orderPayload.numbers.acceptablePrice,
+    autoCancel: createOrderPayload.orderPayload.autoCancel,
+    isLong: createOrderPayload.orderPayload.isLong,
+    orderType: createOrderPayload.orderPayload.orderType,
+    shouldUnwrapNativeToken: createOrderPayload.orderPayload.shouldUnwrapNativeToken,
+    externalSwapQuote: createOrderPayload.params.externalSwapQuote,
+    txnType: "create",
+  };
+}
+
+function getOperationMessage(
+  mainActionType: "create" | "update" | "cancel",
+  state: "submitted" | "success" | "failed",
+  actionsCount: number,
+  subaccount: Subaccount | undefined,
+  setIsSettingsVisible: (isVisible: boolean) => void
+) {
+  const isLastAction = subaccount && getRemainingSubaccountActions(subaccount) === BigInt(actionsCount);
+
+  const lastActionsMsg = isLastAction ? (
+    <Trans>
+      Max Action Count Reached.{" "}
+      <span onClick={() => setIsSettingsVisible(true)} className="link-underline">
+        Click here
+      </span>{" "}
+      to update.
+    </Trans>
+  ) : undefined;
+
+  const orderText = plural(actionsCount, {
+    one: "Order",
+    other: "# Orders",
+  });
+
+  if (mainActionType === "create") {
+    switch (state) {
+      case "submitted": {
+        return t`Order submitted.`;
+      }
+
+      case "success": {
+        return t`Order created.`;
+      }
+
+      case "failed": {
+        return t`Order error.`;
+      }
+
+      default: {
+        return "";
+      }
+    }
+  } else if (mainActionType === "update") {
+    switch (state) {
+      case "submitted": {
+        return (
+          <div>
+            {t`Updating ${orderText}.`}
+            {lastActionsMsg && <br />}
+            {lastActionsMsg}
+          </div>
+        );
+      }
+
+      case "success": {
+        return t`${orderText} updated.`;
+      }
+
+      case "failed": {
+        return t`${orderText} update failed.`;
+      }
+
+      default: {
+        return "";
+      }
+    }
+  } else if (mainActionType === "cancel") {
+    switch (state) {
+      case "submitted": {
+        return (
+          <div>
+            {t`Cancelling ${orderText}.`}
+            {lastActionsMsg && <br />}
+            {lastActionsMsg}
+          </div>
+        );
+      }
+
+      case "success": {
+        return t`${orderText} cancelled.`;
+      }
+
+      case "failed": {
+        return t`${orderText} cancel failed.`;
+      }
+
+      default: {
+        return "";
+      }
+    }
+  }
+}
+
+function hasExternalSwap(expressParams: ExpressParams | undefined, batchParams: BatchOrderTxnParams) {
+  return (
+    expressParams?.relayParamsPayload.externalCalls.externalCallDataList.length ||
+    batchParams.createOrderParams.some((cp) => cp.tokenTransfersParams?.externalCalls?.externalCallDataList.length)
+  );
+}

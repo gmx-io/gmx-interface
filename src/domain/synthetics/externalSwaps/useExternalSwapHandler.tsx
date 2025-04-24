@@ -5,13 +5,13 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   selectBaseExternalSwapOutput,
-  selectExternalSwapInputs,
   selectExternalSwapQuote,
   selectSetBaseExternalSwapOutput,
   selectSetShouldFallbackToInternalSwap,
   selectShouldFallbackToInternalSwap,
   selectShouldRequestExternalSwapQuote,
-} from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectExternalSwapInputs } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectGasPrice, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {

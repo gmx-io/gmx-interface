@@ -46,7 +46,7 @@ import Vester from "./Vester.json";
 import WETH from "./WETH.json";
 import YieldFarm from "./YieldFarm.json";
 import YieldToken from "./YieldToken.json";
-
+import ArbitrumNodeInterface from "./ArbitrumNodeInterface.json";
 export type AbiId =
   | "CustomErrors"
   | "DataStore"
@@ -92,8 +92,9 @@ export type AbiId =
   | "YieldFarm"
   | "YieldToken"
   | "SubaccountGelatoRelayRouter"
-  | "ERC20Permit"
-  | "GelatoRelayRouter";
+  | "ERC20PermitInterface"
+  | "GelatoRelayRouter"
+  | "ArbitrumNodeInterface";
 
 export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   CustomErrors: CustomErrors.abi,
@@ -142,4 +143,5 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   YieldToken: YieldToken.abi,
   SubaccountGelatoRelayRouter: SubaccountGelatoRelayRouter.abi,
   GelatoRelayRouter: GelatoRelayRouter.abi,
+  ArbitrumNodeInterface: ArbitrumNodeInterface.abi,
 } as any;

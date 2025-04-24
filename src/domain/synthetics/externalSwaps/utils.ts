@@ -9,7 +9,7 @@ import { convertTokenAddress, getNativeToken } from "sdk/configs/tokens";
 import { MarketInfo } from "sdk/types/markets";
 import { PositionInfo } from "sdk/types/positions";
 import { TokenData } from "sdk/types/tokens";
-import { ExternalSwapInputs } from "sdk/types/trade";
+import { ExternalSwapInputs, ExternalSwapOutput, SwapAmounts } from "sdk/types/trade";
 import { getFeeItem, getPositionFee } from "sdk/utils/fees";
 import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
 
@@ -187,4 +187,27 @@ export function getIsPossibleExternalSwapError(error: ErrorLike) {
   const isPayloadRelatedError = parsedError?.errorMessage?.includes("execution reverted");
 
   return isExternalCallError || isPayloadRelatedError;
+}
+
+export function getIsInternalSwapBetter({
+  internalSwapAmounts,
+  externalSwapQuote,
+  forceExternalSwaps,
+}: {
+  internalSwapAmounts: SwapAmounts | undefined;
+  externalSwapQuote: ExternalSwapOutput | undefined;
+  forceExternalSwaps: boolean | undefined;
+}) {
+  if (externalSwapQuote?.usdOut == undefined) {
+    return true;
+  }
+
+  if (forceExternalSwaps) {
+    return false;
+  }
+
+  return (
+    internalSwapAmounts?.swapPathStats?.usdOut !== undefined &&
+    internalSwapAmounts!.swapPathStats!.usdOut! > (externalSwapQuote?.usdOut ?? 0n)
+  );
 }

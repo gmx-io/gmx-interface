@@ -6,8 +6,8 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 import { useExecutionFeeBufferBps } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { RelayerFeeParams } from "domain/synthetics/express";
 import { getExecutionFeeWarning, type ExecutionFee } from "domain/synthetics/fees";
-import { RelayFeeSwapParams } from "domain/synthetics/gassless/txns/expressOrderUtils";
 import { convertToUsd } from "domain/synthetics/tokens/utils";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -23,7 +23,7 @@ import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
 type Props = {
   executionFee?: ExecutionFee;
-  relayerFeeParams?: RelayFeeSwapParams;
+  relayerFeeParams?: RelayerFeeParams;
   isAdditionOrdersMsg?: boolean;
   rowPadding?: boolean;
 };

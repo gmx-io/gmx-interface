@@ -7,7 +7,6 @@ import { useMedia } from "react-use";
 import { getSyntheticsListSectionKey } from "config/localStorage";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/useSubaccountCancelOrdersDetailsMessage";
 import { useClosingPositionKeyState, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderHooks";
@@ -32,14 +31,14 @@ import {
 import { selectRelayFeeTokens } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
-import { sendUniversalBatchTxn } from "domain/synthetics/gassless/txns/universalTxn";
-import { useOrderTxnCallbacks } from "domain/synthetics/gassless/txns/useOrderTxnCallbacks";
 import {
   getExpressCancelOrdersParams,
   useGasPaymentTokenAllowanceData,
-} from "domain/synthetics/gassless/useRelayerFeeHandler";
+} from "domain/synthetics/express/useRelayerFeeHandler";
+import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
+import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import type { OrderType } from "domain/synthetics/orders/types";
+import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
 import { TradeMode } from "domain/synthetics/trade";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
@@ -401,11 +400,11 @@ function useOrdersControl() {
   const signer = useEthersSigner();
   const [cancellingOrdersKeys, setCanellingOrdersKeys] = useCancellingOrdersKeysState();
   const [selectedOrderKeys, setSelectedOrderKeys] = useState<string[]>(EMPTY_ARRAY);
-  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(selectedOrderKeys.length);
+
   const subaccount = useSelector(makeSelectSubaccountForActions(1));
   const relayFeeTokens = useSelector(selectRelayFeeTokens);
   const marketsInfoData = useSelector(selectMarketsInfoData);
-  const { makeCancelOrderTxnCallback } = useOrderTxnCallbacks();
+  const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const sponsoredCallMultiplierFactor = useSelector(selectSponsoredCallMultiplierFactor);
   const gasPrice = useSelector(selectGasPrice);
   const tokensData = useSelector(selectTokensData);
@@ -436,7 +435,7 @@ function useOrdersControl() {
         gasPrice,
       });
 
-      sendUniversalBatchTxn({
+      sendBatchOrderTxn({
         chainId,
         signer,
         expressParams,
@@ -446,17 +445,11 @@ function useOrdersControl() {
           cancelOrderParams: keys.map((key) => ({ orderKey: key })),
         },
         simulationParams: undefined,
-        callback: makeCancelOrderTxnCallback({
-          metricId: undefined,
-          slippageInputId: undefined,
-          showPreliminaryMsg: Boolean(expressParams?.subaccount),
-          detailsMsg: cancelOrdersDetailsMessage,
-        }),
+        callback: makeOrderTxnCallback({}),
       })
         .then(async (tx) => {
-          // TODO:.
           const receipt = await tx?.wait();
-          if (receipt.status === 1) {
+          if (receipt?.status === 1) {
             setSelectedOrderKeys(EMPTY_ARRAY);
           }
         })
@@ -465,11 +458,10 @@ function useOrdersControl() {
         });
     },
     [
-      cancelOrdersDetailsMessage,
       chainId,
       gasPaymentAllowanceData,
       gasPrice,
-      makeCancelOrderTxnCallback,
+      makeOrderTxnCallback,
       marketsInfoData,
       relayFeeTokens.findSwapPath,
       relayFeeTokens.gasPaymentToken?.address,
@@ -501,7 +493,7 @@ function useOrdersControl() {
         gasPaymentAllowanceData,
       });
 
-      sendUniversalBatchTxn({
+      sendBatchOrderTxn({
         chainId,
         signer,
         expressParams,
@@ -511,23 +503,17 @@ function useOrdersControl() {
           cancelOrderParams: [{ orderKey: key }],
         },
         simulationParams: undefined,
-        callback: makeCancelOrderTxnCallback({
-          metricId: undefined,
-          slippageInputId: undefined,
-          showPreliminaryMsg: Boolean(expressParams?.subaccount),
-          detailsMsg: cancelOrdersDetailsMessage,
-        }),
+        callback: makeOrderTxnCallback({}),
       }).finally(() => {
         setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key));
         setSelectedOrderKeys((prev) => prev.filter((k) => k !== key));
       });
     },
     [
-      cancelOrdersDetailsMessage,
       chainId,
       gasPaymentAllowanceData,
       gasPrice,
-      makeCancelOrderTxnCallback,
+      makeOrderTxnCallback,
       marketsInfoData,
       relayFeeTokens.findSwapPath,
       relayFeeTokens.gasPaymentToken?.address,

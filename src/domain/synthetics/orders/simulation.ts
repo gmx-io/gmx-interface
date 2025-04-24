@@ -15,7 +15,14 @@ import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { CustomErrorName, ErrorData, extractTxnError, isContractError, parseError } from "sdk/utils/errors";
+import {
+  CustomErrorName,
+  ErrorData,
+  extendError,
+  extractTxnError,
+  isContractError,
+  parseError,
+} from "sdk/utils/errors";
 import { CreateOrderTxnParams } from "sdk/utils/orderTransactions";
 
 export type SimulateExecuteParams = {
@@ -148,7 +155,9 @@ export async function simulateExecution(chainId: number, p: SimulateExecuteParam
     if (errorData && isSimulationPassed(errorData)) {
       return;
     } else {
-      throw txnError;
+      throw extendError(txnError, {
+        errorContext: "simulation",
+      });
     }
   }
 }

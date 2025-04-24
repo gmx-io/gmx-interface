@@ -12,6 +12,11 @@ import { ExternalSwapOutput } from "types/trade";
 import { convertToContractPrice } from "./tokens";
 import { applySlippageToMinOut, applySlippageToPrice } from "./trade";
 
+type ExchangeRouterCall = {
+  method: string;
+  params: any[];
+};
+
 export type BatchOrderTxnParams = {
   createOrderParams: CreateOrderTxnParams<any>[];
   updateOrderParams: UpdateOrderTxnParams[];
@@ -184,7 +189,7 @@ export type DecreasePositionOrderParams = CommonOrderParams &
   };
 
 export function buildSwapOrderPayload(p: SwapOrderParams): CreateOrderTxnParams<SwapOrderParams> {
-  const tokenTransfersParams = buildTokenTransfersForIncreaseOrSwap(p);
+  const tokenTransfersParams = buildTokenTransfersParamsForIncreaseOrSwap(p);
 
   const orderPayload: CreateOrderPayload = {
     addresses: {
@@ -225,7 +230,7 @@ export function buildSwapOrderPayload(p: SwapOrderParams): CreateOrderTxnParams<
 export function buildIncreaseOrderPayload(
   p: IncreasePositionOrderParams
 ): CreateOrderTxnParams<IncreasePositionOrderParams> {
-  const tokenTransfersParams = buildTokenTransfersForIncreaseOrSwap({
+  const tokenTransfersParams = buildTokenTransfersParamsForIncreaseOrSwap({
     ...p,
     minOutputAmount: 0n,
     receiveTokenAddress: undefined,
@@ -275,7 +280,7 @@ export function buildDecreaseOrderPayload(
 ): CreateOrderTxnParams<DecreasePositionOrderParams> {
   const indexToken = getToken(p.chainId, p.indexTokenAddress);
 
-  const tokenTransfersParams = buildTokenTransfersForDecrease(p);
+  const tokenTransfersParams = buildTokenTransfersParamsForDecrease(p);
 
   const orderPayload: CreateOrderPayload = {
     addresses: {
@@ -355,7 +360,7 @@ export function getTotalExecutionFeeForOrders({
   return { totalExecutionFeeAmount, totalExecutionGasLimit };
 }
 
-export function buildTokenTransfersForDecrease({
+export function buildTokenTransfersParamsForDecrease({
   chainId,
   executionFeeAmount,
   collateralTokenAddress,
@@ -395,7 +400,7 @@ export function buildTokenTransfersForDecrease({
   };
 }
 
-export function buildTokenTransfersForIncreaseOrSwap({
+export function buildTokenTransfersParamsForIncreaseOrSwap({
   chainId,
   receiver,
   payTokenAddress,
@@ -555,7 +560,7 @@ function combineTransfers(tokenTransfers: TokenTransfer[]) {
   return { tokenTransfers: Object.values(transfersMap), value };
 }
 
-export function getBatchOrderMulticallPayload({ chainId, params }: { chainId: number; params: BatchOrderTxnParams }) {
+export function getBatchOrderMulticallPayload({ params }: { params: BatchOrderTxnParams }) {
   const { createOrderParams, updateOrderParams, cancelOrderParams } = params;
 
   const multicall: ExchangeRouterCall[] = [];
@@ -568,7 +573,7 @@ export function getBatchOrderMulticallPayload({ chainId, params }: { chainId: nu
   }
 
   for (const update of updateOrderParams) {
-    const { multicall: updateMulticall, value: updateValue } = buildUpdateOrderMulticall({ chainId, params: update });
+    const { multicall: updateMulticall, value: updateValue } = buildUpdateOrderMulticall(update);
     multicall.push(...updateMulticall);
     value += updateValue;
   }
@@ -579,13 +584,10 @@ export function getBatchOrderMulticallPayload({ chainId, params }: { chainId: nu
     value += cancelValue;
   }
 
-  return { multicall, value, callData: encodeExchangeRouterMulticall(multicall) };
-}
+  const { encodedMulticall, callData } = encodeExchangeRouterMulticall(multicall);
 
-type ExchangeRouterCall = {
-  method: string;
-  params: any[];
-};
+  return { multicall, value, encodedMulticall, callData };
+}
 
 export function buildCreateOrderMulticall(params: CreateOrderTxnParams<any>) {
   const { tokenTransfersParams, orderPayload } = params;
@@ -597,7 +599,7 @@ export function buildCreateOrderMulticall(params: CreateOrderTxnParams<any>) {
     if (transfer.tokenAddress === NATIVE_TOKEN_ADDRESS) {
       multicall.push({ method: "sendWnt", params: [transfer.destination, transfer.amount] });
     } else {
-      multicall.push({ method: "sendToken", params: [transfer.tokenAddress, transfer.destination, transfer.amount] });
+      multicall.push({ method: "sendTokens", params: [transfer.tokenAddress, transfer.destination, transfer.amount] });
     }
   }
 
@@ -624,8 +626,9 @@ export function buildCreateOrderMulticall(params: CreateOrderTxnParams<any>) {
   };
 }
 
-export function buildUpdateOrderMulticall({ chainId, params }: { chainId: number; params: UpdateOrderTxnParams }) {
-  const { updatePayload, params: updateParams } = params;
+export function buildUpdateOrderMulticall(updateTxn: UpdateOrderTxnParams) {
+  const { updatePayload, params: updateParams } = updateTxn;
+  const { chainId } = updateParams;
   const orderVaultAddress = getContract(chainId, "OrderVault");
 
   const multicall: ExchangeRouterCall[] = [];
@@ -672,11 +675,22 @@ export function buildCancelOrderMulticall({ params }: { params: CancelOrderTxnPa
 }
 
 export function encodeExchangeRouterMulticall(multicall: ExchangeRouterCall[]) {
-  return multicall.map((call) =>
+  const encodedMulticall = multicall.map((call) =>
     encodeFunctionData({
       abi: ExchangeRouterAbi.abi,
       functionName: call.method,
       args: call.params,
     })
   );
+
+  const callData = encodeFunctionData({
+    abi: ExchangeRouterAbi.abi,
+    functionName: "multicall",
+    args: [encodedMulticall],
+  });
+
+  return {
+    encodedMulticall,
+    callData,
+  };
 }

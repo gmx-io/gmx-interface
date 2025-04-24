@@ -47,10 +47,8 @@ import {
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
-import { sendUniversalBatchTxn } from "domain/synthetics/gassless/txns/universalTxn";
-import { useOrderTxnCallbacks } from "domain/synthetics/gassless/txns/useOrderTxnCallbacks";
-import { useExpressOrdersParams } from "domain/synthetics/gassless/useRelayerFeeHandler";
 import {
   EditingOrderSource,
   OrderInfo,
@@ -63,6 +61,8 @@ import {
   isSwapOrderType,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
+import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
+import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import {
   formatAcceptablePrice,
   formatLeverage,
@@ -118,7 +118,7 @@ export function OrderEditor(p: Props) {
   const { signer } = useWallet();
   const tokensData = useSelector(selectTokensData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
-  const { makeUpdateOrderTxnCallback } = useOrderTxnCallbacks();
+  const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const [isSubmitting, setIsSubmitting] = useOrderEditorIsSubmittingState();
 
   const [sizeInputValue, setSizeInputValue] = useOrderEditorSizeInputValueState();
@@ -415,17 +415,13 @@ export function OrderEditor(p: Props) {
 
     setIsSubmitting(true);
 
-    const txnPromise = sendUniversalBatchTxn({
+    const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
       batchParams,
       expressParams,
       simulationParams: undefined,
-      callback: makeUpdateOrderTxnCallback({
-        metricId: undefined,
-        slippageInputId: undefined,
-        showPreliminaryMsg: Boolean(expressParams?.subaccount),
-      }),
+      callback: makeOrderTxnCallback({}),
     });
 
     if (subaccount) {

@@ -40,9 +40,9 @@ export function getAdditionalValidationType(error: Error) {
   return undefined;
 }
 
-export function getEstimateGasError(contract: BaseContract, method: string, params: any[], txnOpts: Overrides) {
-  return contract[method]
-    .estimateGas(...params, txnOpts)
+export function getEstimateGasError(provider: Provider, txnData: TransactionRequest) {
+  return provider
+    .estimateGas(txnData)
     .then(() => {
       return undefined;
     })
@@ -93,6 +93,64 @@ export async function getCallStaticError(
   }
 }
 
+export async function additionalTxnErrorValidation(
+  error: Error,
+  chainId: number,
+  provider: Provider,
+  txnData: TransactionRequest
+) {
+  const additionalValidationType = getAdditionalValidationType(error);
+
+  if (!additionalValidationType) {
+    return;
+  }
+
+  let errorToLog: ErrorLike = error;
+
+  switch (additionalValidationType) {
+    case "tryCallStatic": {
+      const { error: callStaticError } = await getCallStaticError(chainId, provider, txnData);
+
+      if (callStaticError) {
+        callStaticError.parentError = errorToLog;
+        errorToLog = callStaticError;
+      } else {
+        errorToLog.isAdditionalValidationPassed = true;
+      }
+
+      errorToLog.additionalValidationType = "tryCallStatic";
+
+      break;
+    }
+
+    case "tryEstimateGas": {
+      const { error: estimateGasError } = await getEstimateGasError(provider, txnData);
+
+      if (estimateGasError) {
+        estimateGasError.parentError = errorToLog;
+        errorToLog = estimateGasError;
+      } else {
+        errorToLog.isAdditionalValidationPassed = true;
+      }
+
+      errorToLog.additionalValidationType = "tryEstimateGas";
+
+      break;
+    }
+
+    default:
+      mustNeverExist(additionalValidationType);
+  }
+
+  const errorData = parseError(errorToLog);
+
+  emitMetricEvent<ErrorEvent>({
+    event: "error",
+    isError: true,
+    data: errorData || {},
+  });
+}
+
 export function makeTransactionErrorHandler(
   chainId: number,
   contract: BaseContract,
@@ -102,65 +160,17 @@ export function makeTransactionErrorHandler(
   from: string
 ) {
   return async (error) => {
-    async function additionalValidation() {
-      const additionalValidationType = getAdditionalValidationType(error);
+    const data = contract.interface.encodeFunctionData(method, params);
+    const to = await contract.getAddress();
+    const provider = contract.runner!.provider!;
+    const txnData = {
+      data,
+      to,
+      from,
+      ...txnOpts,
+    };
 
-      if (!additionalValidationType) {
-        return;
-      }
-
-      let errorToLog: ErrorLike = error;
-
-      switch (additionalValidationType) {
-        case "tryCallStatic": {
-          const { error: callStaticError } = await getCallStaticError(chainId, contract.runner!.provider!, {
-            data: contract.interface.encodeFunctionData(method, params),
-            to: await contract.getAddress(),
-            from,
-            ...txnOpts,
-          });
-
-          if (callStaticError) {
-            callStaticError.parentError = errorToLog;
-            errorToLog = callStaticError;
-          } else {
-            errorToLog.isAdditionalValidationPassed = true;
-          }
-
-          errorToLog.additionalValidationType = "tryCallStatic";
-
-          break;
-        }
-
-        case "tryEstimateGas": {
-          const { error: estimateGasError } = await getEstimateGasError(contract, method, params, txnOpts);
-
-          if (estimateGasError) {
-            estimateGasError.parentError = errorToLog;
-            errorToLog = estimateGasError;
-          } else {
-            errorToLog.isAdditionalValidationPassed = true;
-          }
-
-          errorToLog.additionalValidationType = "tryEstimateGas";
-
-          break;
-        }
-
-        default:
-          mustNeverExist(additionalValidationType);
-      }
-
-      const errorData = parseError(errorToLog);
-
-      emitMetricEvent<ErrorEvent>({
-        event: "error",
-        isError: true,
-        data: errorData || {},
-      });
-    }
-
-    additionalValidation();
+    additionalTxnErrorValidation(error, chainId, provider, txnData);
 
     throw error;
   };

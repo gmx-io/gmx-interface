@@ -1,11 +1,22 @@
-import { ethers } from "ethers";
+import { ethers, Signer } from "ethers";
 
-export async function signTypedData(
-  signer: ethers.Signer,
-  domain: Record<string, any>,
-  types: Record<string, any>,
-  typedData: Record<string, any>
-) {
+export type SignatureDomain = {
+  name: string;
+  version: string;
+  chainId: number;
+  verifyingContract: string;
+};
+
+export type SignatureTypes = Record<string, { name: string; type: string }[]>;
+
+export type SignTypedDataParams = {
+  signer: Signer;
+  types: SignatureTypes;
+  typedData: Record<string, any>;
+  domain: SignatureDomain;
+};
+
+export async function signTypedData({ signer, domain, types, typedData }: SignTypedDataParams) {
   // filter inputs
   for (const [key, value] of Object.entries(domain)) {
     if (value === undefined) {
@@ -49,14 +60,7 @@ export async function signTypedData(
     message: typedData,
   };
 
-  // eslint-disable-next-line no-console
-  console.log("Sending EIP-712 data:", JSON.stringify(eip712, null, 2));
-
-  // Use the standard JSON-RPC method for EIP-712 signing
   const signature = await (provider as any).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]);
-
-  // eslint-disable-next-line no-console
-  console.log("Signature received:", signature);
 
   return signature;
 }
@@ -67,5 +71,6 @@ export function splitSignature(signature: string): { r: string; s: string; v: nu
   const s = "0x" + sig.substring(64, 128);
   const v = parseInt(sig.substring(128, 130), 16);
 
+  // ECDSA signature components
   return { r, s, v };
 }

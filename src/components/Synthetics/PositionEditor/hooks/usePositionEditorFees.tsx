@@ -5,6 +5,7 @@ import { usePositionEditorPosition } from "context/SyntheticsStateContext/hooks/
 import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectPositionEditorCollateralInputAmountAndUsd } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { RelayerFeeParams } from "domain/synthetics/express";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
@@ -12,7 +13,6 @@ import {
   getTotalFeeItem,
 } from "domain/synthetics/fees";
 import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
-import { RelayFeeSwapParams } from "domain/synthetics/gassless/txns/expressOrderUtils";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import { TradeFees } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
@@ -22,7 +22,7 @@ import { Operation } from "../types";
 
 export type Options = {
   operation: Operation;
-  relayerFeeParams?: RelayFeeSwapParams;
+  relayerFeeParams?: RelayerFeeParams;
 };
 
 // todo make it a selector

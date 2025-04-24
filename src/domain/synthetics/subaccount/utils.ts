@@ -2,8 +2,9 @@ import cryptoJs from "crypto-js";
 import { ethers, Signer } from "ethers";
 import { encodeAbiParameters, keccak256, maxUint256, zeroHash } from "viem";
 
-import { SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
+import { Subaccount, SubaccountApproval, SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
 import { SubaccountOnchainData } from "domain/synthetics/subaccount/useSubaccountFromContractsRequest";
+import { signTypedData } from "lib/wallets/signing";
 import { SUBACCOUNT_ORDER_ACTION } from "sdk/configs/dataStore";
 import {
   DEFAULT_SUBACCOUNT_DEADLINE_DURATION,
@@ -13,29 +14,6 @@ import {
 import { bigMath } from "sdk/utils/bigmath";
 import { ZERO_DATA } from "sdk/utils/hash";
 import { nowInSeconds } from "sdk/utils/time";
-
-import { getGelatoRelayRouterDomain } from "./relayParams";
-import { signTypedData } from "./signing";
-
-export type Subaccount = {
-  address: string;
-  signedApproval: SignedSubbacountApproval | undefined;
-  onchainData: SubaccountOnchainData;
-  signer: ethers.Wallet;
-  optimisticActive: boolean;
-  optimisticMaxAllowedCount: bigint;
-  optimisticExpiresAt: bigint;
-};
-
-export type SubaccountApproval = {
-  subaccount: string;
-  nonce: bigint;
-  shouldAdd: boolean;
-  expiresAt: bigint;
-  maxAllowedCount: bigint;
-  actionType: string;
-  deadline: bigint;
-};
 
 export function getIsSubaccountActive(subaccount: {
   onchainData: SubaccountOnchainData;
@@ -222,7 +200,6 @@ export async function createAndSignSubaccountApproval(
     ],
   };
 
-  // Create domain separator
   const domain = getGelatoRelayRouterDomain(chainId, true);
 
   const typedData = {
@@ -235,7 +212,7 @@ export async function createAndSignSubaccountApproval(
     deadline: params.deadline,
   };
 
-  const signature = await signTypedData(mainAccountSigner, domain, types, typedData);
+  const signature = await signTypedData({ signer: mainAccountSigner, domain, types, typedData });
 
   return {
     ...typedData,

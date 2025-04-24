@@ -1,10 +1,10 @@
 import { useEffect, useMemo } from "react";
 
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
-import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectChartLines } from "context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines";
+import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectSetIsCandlesLoaded } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS } from "lib/legacy";

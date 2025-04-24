@@ -3,6 +3,7 @@ import {
   ESTIMATED_GAS_FEE_BASE_AMOUNT_V2_1,
   ESTIMATED_GAS_FEE_MULTIPLIER_FACTOR,
   ESTIMATED_GAS_FEE_PER_ORACLE_PRICE,
+  GELATO_RELAY_FEE_MULTIPLIER_FACTOR_KEY,
   GLV_DEPOSIT_GAS_LIMIT,
   GLV_PER_MARKET_GAS_LIMIT,
   GLV_WITHDRAWAL_GAS_LIMIT,
@@ -16,7 +17,21 @@ import {
 } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+import { ARBITRUM, AVALANCHE } from "sdk/configs/chains";
 import type { GasLimitsConfig } from "sdk/types/fees";
+
+const GAS_LIMITS_STATIC_CONFIG = {
+  [ARBITRUM]: {
+    createOrderGasLimit: 1_107_000n,
+    updateOrderGasLimit: 1_107_000n,
+    cancelOrderGasLimit: 1_107_000n,
+  },
+  [AVALANCHE]: {
+    createOrderGasLimit: 800_000n,
+    updateOrderGasLimit: 600_000n,
+    cancelOrderGasLimit: 700_000n,
+  },
+};
 
 export function useGasLimits(chainId: number): GasLimitsConfig | undefined {
   const { data } = useMulticall(chainId, "useGasLimitsConfig", {
@@ -81,6 +96,10 @@ export function useGasLimits(chainId: number): GasLimitsConfig | undefined {
             methodName: "getUint",
             params: [GLV_PER_MARKET_GAS_LIMIT],
           },
+          gelatoRelayFeeMultiplierFactor: {
+            methodName: "getUint",
+            params: [GELATO_RELAY_FEE_MULTIPLIER_FACTOR_KEY],
+          },
         },
       },
     }),
@@ -90,6 +109,8 @@ export function useGasLimits(chainId: number): GasLimitsConfig | undefined {
       function getBigInt(key: keyof typeof results) {
         return BigInt(results[key].returnValues[0]);
       }
+
+      const staticConfig = GAS_LIMITS_STATIC_CONFIG[chainId] ?? {};
 
       return {
         depositToken: getBigInt("depositToken"),
@@ -102,9 +123,11 @@ export function useGasLimits(chainId: number): GasLimitsConfig | undefined {
         estimatedGasFeeBaseAmount: getBigInt("estimatedGasFeeBaseAmount"),
         estimatedGasFeePerOraclePrice: getBigInt("estimatedGasFeePerOraclePrice"),
         estimatedFeeMultiplierFactor: getBigInt("estimatedFeeMultiplierFactor"),
+        gelatoRelayFeeMultiplierFactor: getBigInt("gelatoRelayFeeMultiplierFactor"),
         glvDepositGasLimit: getBigInt("glvDepositGasLimit"),
         glvWithdrawalGasLimit: getBigInt("glvWithdrawalGasLimit"),
         glvPerMarketGasLimit: getBigInt("glvPerMarketGasLimit"),
+        ...staticConfig,
       };
     },
   });

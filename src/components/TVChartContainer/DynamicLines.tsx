@@ -1,7 +1,6 @@
 import { useCallback } from "react";
 
 import { USD_DECIMALS } from "config/factors";
-import { useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/useSubaccountCancelOrdersDetailsMessage";
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
 import {
   useCancellingOrdersKeysState,
@@ -25,13 +24,13 @@ import {
 import { selectRelayFeeTokens } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { sendUniversalBatchTxn } from "domain/synthetics/gassless/txns/universalTxn";
-import { useOrderTxnCallbacks } from "domain/synthetics/gassless/txns/useOrderTxnCallbacks";
 import {
   getExpressCancelOrdersParams,
   useGasPaymentTokenAllowanceData,
-} from "domain/synthetics/gassless/useRelayerFeeHandler";
+} from "domain/synthetics/express/useRelayerFeeHandler";
 import { useMarkets } from "domain/synthetics/markets";
+import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
+import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { calculateDisplayDecimals, formatAmount, numberToBigint } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
@@ -52,8 +51,7 @@ export function DynamicLines({
   const { signer } = useWallet();
   const chainId = useSelector(selectChainId);
   const [, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
-  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(1);
-  const { makeCancelOrderTxnCallback } = useOrderTxnCallbacks();
+  const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const [isSubmitting] = useOrderEditorIsSubmittingState();
   const [editingOrderState, setEditingOrderState] = useEditingOrderState();
   const setTriggerPriceInputValue = useSelector(selectOrderEditorSetTriggerPriceInputValue);
@@ -87,7 +85,7 @@ export function DynamicLines({
         gasPaymentAllowanceData,
       });
 
-      sendUniversalBatchTxn({
+      sendBatchOrderTxn({
         chainId,
         signer,
         batchParams: {
@@ -97,22 +95,16 @@ export function DynamicLines({
         },
         expressParams,
         simulationParams: undefined,
-        callback: makeCancelOrderTxnCallback({
-          metricId: undefined,
-          slippageInputId: undefined,
-          showPreliminaryMsg: Boolean(expressParams?.subaccount),
-          detailsMsg: cancelOrdersDetailsMessage,
-        }),
+        callback: makeOrderTxnCallback({}),
       }).finally(() => {
         setCancellingOrdersKeys((prev) => prev.filter((k) => k !== key));
       });
     },
     [
-      cancelOrdersDetailsMessage,
       chainId,
       gasPaymentAllowanceData,
       gasPrice,
-      makeCancelOrderTxnCallback,
+      makeOrderTxnCallback,
       marketsInfoData,
       relayFeeTokens.findSwapPath,
       relayFeeTokens.gasPaymentToken?.address,

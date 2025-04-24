@@ -61,7 +61,9 @@ export function ExpressTradingWarningCard() {
 
   let onClick: undefined | (() => void) = undefined;
 
-  if (shouldShowWrapOrUnwrapWarning) {
+  if (!isVisible) {
+    return null;
+  } else if (shouldShowWrapOrUnwrapWarning) {
     onCloseClick = handleCloseWrapOrUnwrapWarningClick;
     const nativeToken = getNativeToken(chainId);
     icon = <IconBolt />;
@@ -113,10 +115,6 @@ export function ExpressTradingWarningCard() {
     content = <Trans>One-Click Approval nonce expired. Please sign a new approval.</Trans>;
     buttonText = <Trans>Re-sign</Trans>;
   } else {
-    return null;
-  }
-
-  if (!isVisible) {
     return null;
   }
 

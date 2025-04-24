@@ -137,6 +137,8 @@ export const CONTRACTS = {
     ChainlinkPriceFeedProvider: "0x527FB0bCfF63C47761039bB386cFE181A92a4701",
 
     Multicall: "0x842ec2c7d803033edf55e478f461fc547bc54eb2",
+    ArbitrumNodeInterface: "0x00000000000000000000000000000000000000C8",
+    FiatToken2v2: "0x86E721b43d4ECFa71119Dd38c0f938A75Fdb57B3",
   },
   [AVALANCHE]: {
     // avalanche
@@ -208,6 +210,7 @@ export const CONTRACTS = {
     ChainlinkPriceFeedProvider: "0x713c6a2479f6C079055A6AD3690D95dEDCEf9e1e",
 
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
+    ArbitrumNodeInterface: zeroAddress,
   },
 
   [AVALANCHE_FUJI]: {
@@ -274,6 +277,7 @@ export const CONTRACTS = {
     ExternalHandler: "0x0d9F90c66C392c4d0e70EE0d399c43729B942512",
 
     Multicall: "0x0f53e512b49202a37c81c6085417C9a9005F2196",
+    ArbitrumNodeInterface: zeroAddress,
   },
 };
 

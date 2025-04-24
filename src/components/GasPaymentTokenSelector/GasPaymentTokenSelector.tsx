@@ -1,3 +1,5 @@
+import { useCallback } from "react";
+
 import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
 import { useChainId } from "lib/chains";
 import { getGasPaymentTokens } from "sdk/configs/express";
@@ -14,6 +16,13 @@ export function GasPaymentTokenSelector({ curentTokenAddress, onSelectToken }: P
   const { tokensData } = useTokensDataRequest(chainId);
   const gasPaymentTokens = getGasPaymentTokens(chainId);
 
+  const onSelectFactory = useCallback(
+    (tokenAddress: string) => () => {
+      onSelectToken(tokenAddress);
+    },
+    [onSelectToken]
+  );
+
   return (
     <div>
       <div className="flex gap-8">
@@ -23,7 +32,7 @@ export function GasPaymentTokenSelector({ curentTokenAddress, onSelectToken }: P
             key={tokenAddress}
             tokenAddress={tokenAddress}
             isSelected={curentTokenAddress === tokenAddress}
-            onSelect={() => onSelectToken(tokenAddress)}
+            onSelect={onSelectFactory(tokenAddress)}
           />
         ))}
       </div>

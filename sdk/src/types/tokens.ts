@@ -121,15 +121,7 @@ export type TokenData = Token & {
   prices: TokenPrices;
   balance?: bigint;
   totalSupply?: bigint;
-  priceFeedAddress?: string;
-  permitConfig?: PermitConfig;
-};
-
-export type PermitConfig = {
-  domainSeparator: string;
-  nonce: bigint;
-  name: string;
-  version: string;
+  hasPriceFeedProvider?: boolean;
 };
 
 export type TokensRatio = {

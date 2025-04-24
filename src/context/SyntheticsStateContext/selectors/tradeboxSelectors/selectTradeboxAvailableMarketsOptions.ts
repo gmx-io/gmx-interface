@@ -4,12 +4,14 @@ import values from "lodash/values";
 
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import {
+  makeSelectIsExpressTransactionAvailable,
   selectMarketsInfoData,
   selectOrdersInfoData,
   selectPositionsInfoData,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
+  selectExternalSwapQuote,
   selectTradeboxCollateralTokenAddress,
   selectTradeboxExistingOrder,
   selectTradeboxFocusedInput,
@@ -48,9 +50,10 @@ import { expandDecimals, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { createTradeFlags } from "sdk/utils/trade";
 
-import { selectIsLeverageSliderEnabled } from "../settingsSelectors";
-import { makeSelectIncreasePositionAmounts } from "../tradeSelectors";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { selectTradeboxAvailableMarkets } from "./selectTradeboxAvailableMarkets";
+import { makeSelectIncreasePositionAmounts } from "../tradeSelectors";
+import { selectIsLeverageSliderEnabled } from "../settingsSelectors";
 
 export type AvailableMarketsOptions = {
   allMarkets?: MarketInfo[];
@@ -260,6 +263,8 @@ export function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsStat
   const toTokenAmount = q(selectTradeboxToTokenAmount);
   const leverage = BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
   const positionKey = q(selectTradeboxSelectedPositionKey);
+  const isExpressTxn = q(makeSelectIsExpressTransactionAvailable(fromTokenAddress === NATIVE_TOKEN_ADDRESS));
+  const externalSwapQuote = q(selectExternalSwapQuote);
 
   const selector = makeSelectIncreasePositionAmounts({
     collateralTokenAddress,
@@ -280,6 +285,8 @@ export function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsStat
     tradeType,
     triggerPrice,
     tokenTypeForSwapRoute: tradeFlags.isPosition ? "collateralToken" : "indexToken",
+    isExpressTxn,
+    externalSwapQuote,
   });
 
   return q(selector);

@@ -10,6 +10,14 @@ export const ETH_MAINNET = 1;
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 export const SUPPORTED_CHAIN_IDS_DEV = [...SUPPORTED_CHAIN_IDS, AVALANCHE_FUJI];
 
+export const CHAIN_NAMES_MAP = {
+  [BSС_MAINNET]: "BSC",
+  [BSС_TESTNET]: "BSC Testnet",
+  [ARBITRUM]: "Arbitrum",
+  [AVALANCHE]: "Avalanche",
+  [AVALANCHE_FUJI]: "Avalanche Fuji",
+};
+
 export const HIGH_EXECUTION_FEES_MAP = {
   [ARBITRUM]: 5, // 5 USD
   [AVALANCHE]: 5, // 5 USD
@@ -72,6 +80,10 @@ const VIEM_CHAIN_BY_CHAIN_ID = {
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
 };
+
+export function getChainName(chainId: number) {
+  return CHAIN_NAMES_MAP[chainId];
+}
 
 export const getViemChain = (chainId: number): Chain => {
   return VIEM_CHAIN_BY_CHAIN_ID[chainId];

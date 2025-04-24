@@ -1,4 +1,5 @@
 import { t } from "@lingui/macro";
+import { RelayFeeSwapParams } from "domain/synthetics/gassless/txns/expressOrderUtils";
 import { ReactNode, useCallback, useMemo } from "react";
 
 import {
@@ -28,7 +29,6 @@ import {
 import { selectTradeboxCollateralSpreadInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxCollateralSpreadInfo";
 import { selectTradeboxLiquidityInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxLiquidityInfo";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { RelayFeeSwapParams } from "domain/synthetics/gassless/txns/expressOrderUtils";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { formatUsd } from "lib/numbers";

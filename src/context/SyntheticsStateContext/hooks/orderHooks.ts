@@ -1,13 +1,12 @@
 import uniq from "lodash/uniq";
 import { useCallback, useMemo } from "react";
 
-import { useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/useSubaccountCancelOrdersDetailsMessage";
-import { sendUniversalBatchTxn } from "domain/synthetics/gassless/txns/universalTxn";
-import { useOrderTxnCallbacks } from "domain/synthetics/gassless/txns/useOrderTxnCallbacks";
 import {
   getExpressCancelOrdersParams,
   useGasPaymentTokenAllowanceData,
-} from "domain/synthetics/gassless/useRelayerFeeHandler";
+} from "domain/synthetics/express/useRelayerFeeHandler";
+import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
+import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 
 import {
@@ -24,7 +23,7 @@ import {
   selectOrderErrorsByOrderKeyMap,
   selectOrderErrorsCount,
 } from "../selectors/orderSelectors";
-import { selectRelayFeeTokens } from "../selectors/tradeSelectors";
+import { selectRelayFeeToken } from "../selectors/tokenPermitsSelectors";
 import { useSelector } from "../utils";
 import { useCancellingOrdersKeysState } from "./orderEditorHooks";
 
@@ -46,13 +45,12 @@ export function useCancelOrder(orderKey: string) {
   const chainId = useSelector(selectChainId);
   const signer = useEthersSigner();
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
-  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(1);
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tokensData = useSelector(selectTokensData);
   const sponsoredCallMultiplierFactor = useSelector(selectSponsoredCallMultiplierFactor);
   const gasPrice = useSelector(selectGasPrice);
   const relayFeeTokens = useSelector(selectRelayFeeTokens);
-  const { makeCancelOrderTxnCallback } = useOrderTxnCallbacks();
+  const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const subaccount = useSelector(makeSelectSubaccountForActions(1));
   const gasPaymentAllowanceData = useGasPaymentTokenAllowanceData(chainId, relayFeeTokens.gasPaymentToken?.address);
 
@@ -78,7 +76,7 @@ export function useCancelOrder(orderKey: string) {
         gasPaymentAllowanceData,
       });
 
-      sendUniversalBatchTxn({
+      sendBatchOrderTxn({
         chainId,
         signer,
         batchParams: {
@@ -88,22 +86,16 @@ export function useCancelOrder(orderKey: string) {
         },
         expressParams,
         simulationParams: undefined,
-        callback: makeCancelOrderTxnCallback({
-          metricId: undefined,
-          slippageInputId: undefined,
-          showPreliminaryMsg: Boolean(expressParams?.subaccount),
-          detailsMsg: cancelOrdersDetailsMessage,
-        }),
+        callback: makeOrderTxnCallback({}),
       }).finally(() => {
         setCancellingOrdersKeys((prev) => prev.filter((k) => k !== orderKey));
       });
     },
     [
-      cancelOrdersDetailsMessage,
       chainId,
       gasPaymentAllowanceData,
       gasPrice,
-      makeCancelOrderTxnCallback,
+      makeOrderTxnCallback,
       marketsInfoData,
       orderKey,
       relayFeeTokens.findSwapPath,

@@ -1,7 +1,6 @@
 import { t } from "@lingui/macro";
 
 import { USD_DECIMALS } from "config/factors";
-import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import {
   selectChainId,
   selectPositionsInfoData,
@@ -15,6 +14,7 @@ import { convertTokenAddress, getPriceDecimals } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
 
 import { StaticChartLine } from "components/TVChartContainer/types";
+import { selectChartToken } from ".";
 
 export const selectChartLines = createSelector<StaticChartLine[]>((q) => {
   const chainId = q(selectChainId);

@@ -61,6 +61,9 @@ export function isSimulationPassed(errorData: ErrorData) {
   return isContractError(errorData, CustomErrorName.EndOfOracleSimulation);
 }
 
+/**
+ * @deprecated use simulateExecution instead
+ */
 export async function simulateExecuteTxn(chainId: number, p: SimulateExecuteParams) {
   const provider = getProvider(undefined, chainId);
 

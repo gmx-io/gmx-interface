@@ -10,11 +10,7 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import {
-  getIsNonceExpired,
-  getIsSubaccountExpired,
-  getRemainingSubaccountActions,
-} from "domain/synthetics/gassless/txns/subaccountUtils";
+import { getIsNonceExpired, getIsSubaccountExpired, getRemainingSubaccountActions } from "domain/synthetics/subaccount";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import { useRequiredActions } from "./useRequiredActions";

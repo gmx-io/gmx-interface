@@ -8,32 +8,8 @@ import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
 
 import { SyntheticsState } from "./SyntheticsStateContextProvider";
 
-export { useSyntheticsStateSelector as useSelector } from "./SyntheticsStateContextProvider";
-
-/**
- * @deprecated use createSelector instead
- */
-export const createSelectorDeprecated = createSelectorCommon.withTypes<SyntheticsState>();
 const context = createSelectionContext<SyntheticsState>();
-
 export const createSelector = context.makeSelector;
-
-type Arg =
-  | boolean
-  | string
-  | undefined
-  | null
-  | number
-  | TradeMode
-  | TradeType
-  | OrderOption
-  | bigint
-  | ExternalSwapQuote
-  | BatchOrderTxnParams;
-
-type SupportedArg = Arg | Record<string, Arg>;
-
-type CachedSelector<T> = EnhancedSelector<SyntheticsState, T> | Selector<SyntheticsState, T>;
 
 export function createSelectorFactory<SelectionResult, Args extends SupportedArg[]>(
   factory: (...args: Args) => CachedSelector<SelectionResult>
@@ -56,7 +32,7 @@ export function createSelectorFactory<SelectionResult, Args extends SupportedArg
   };
 }
 
-function getKeyForArgs(...args: SupportedArg[]) {
+export function getKeyForArgs(...args: SupportedArg[]) {
   return args
     .map((arg) =>
       typeof arg === "object" && arg
@@ -67,3 +43,27 @@ function getKeyForArgs(...args: SupportedArg[]) {
     )
     .join(",");
 }
+
+export { useSyntheticsStateSelector as useSelector } from "./SyntheticsStateContextProvider";
+
+/**
+ * @deprecated use createSelector instead
+ */
+export const createSelectorDeprecated = createSelectorCommon.withTypes<SyntheticsState>();
+
+type Arg =
+  | boolean
+  | string
+  | undefined
+  | null
+  | number
+  | TradeMode
+  | TradeType
+  | OrderOption
+  | bigint
+  | ExternalSwapQuote
+  | BatchOrderTxnParams;
+
+export type SupportedArg = Arg | Record<string, Arg>;
+
+export type CachedSelector<T> = EnhancedSelector<SyntheticsState, T> | Selector<SyntheticsState, T>;

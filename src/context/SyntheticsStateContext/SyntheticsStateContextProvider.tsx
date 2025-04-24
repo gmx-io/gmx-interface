@@ -5,7 +5,8 @@ import { Context, createContext, useContext, useContextSelector } from "use-cont
 
 import { getKeepLeverageKey } from "config/localStorage";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { SubaccountState, useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { TokenPermitsState, useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
 import { useIsLargeAccountTracker } from "domain/stats/isLargeAccount";
 import {
@@ -14,16 +15,13 @@ import {
   useAccountStats,
   usePeriodAccountStats,
 } from "domain/synthetics/accountStats";
+import { SponsoredCallParams, useSponsoredCallParamsRequest } from "domain/synthetics/express";
 import { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
 import { DisabledFeatures, useDisabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
-import { SponsoredCallParams } from "domain/synthetics/gassless/txns/useGelatoRelayFeeMultiplierRequest";
-import { useSponsoredCallParamsRequest } from "domain/synthetics/gassless/txns/useGelatoRelayFeeMultiplierRequest";
-import { SubaccountState } from "domain/synthetics/gassless/useInitSubaccountState";
-import { TokenPermitsState, useInitTokenPermitsState } from "domain/synthetics/gassless/useInitTokenPermitsState";
 import {
   MarketsInfoResult,
   MarketsResult,
@@ -277,8 +275,10 @@ export function SyntheticsStateContextProvider({
   });
 
   const externalSwapState = useInitExternalSwapState();
-  const tokenPermitsState = useInitTokenPermitsState();
-  const sponsoredCallParams = useSponsoredCallParamsRequest(chainId);
+  const tokenPermitsState = useTokenPermitsContext();
+  const sponsoredCallParams = useSponsoredCallParamsRequest(chainId, {
+    tokensData: marketsInfo.tokensData,
+  });
 
   const state = useMemo(() => {
     const s: SyntheticsState = {

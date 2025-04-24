@@ -3,18 +3,22 @@ import useSWR from "swr";
 
 import { getIsFlagEnabled } from "config/ab";
 import { GELATO_RELAY_FEE_MULTIPLIER_FACTOR_KEY } from "config/dataStore";
+import { convertToUsd, TokensData } from "domain/tokens";
 import { useMulticall } from "lib/multicall";
+import { getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { getContract } from "sdk/configs/contracts";
-
-import { getIsSponsoredCallAllowed } from "./expressOrderUtils";
+import { MIN_GELATO_BALANCE_FOR_SPONSORED_CALL } from "sdk/configs/express";
 
 export type SponsoredCallParams = {
   gelatoRelayFeeMultiplierFactor: bigint;
   isSponsoredCallAllowed: boolean;
 };
 
-export function useSponsoredCallParamsRequest(chainId: number): SponsoredCallParams | undefined {
+export function useSponsoredCallParamsRequest(
+  chainId: number,
+  { tokensData }: { tokensData: TokensData | undefined }
+): SponsoredCallParams | undefined {
   const { data: factors } = useMulticall(chainId, "useGelatoRelayFeeMultiplierRequest", {
     key: [],
     refreshInterval: CONFIG_UPDATE_INTERVAL,
@@ -38,10 +42,33 @@ export function useSponsoredCallParamsRequest(chainId: number): SponsoredCallPar
     },
   });
 
-  const { data: isSponsoredCallAllowed } = useSWR<boolean>(["isSponsoredCallAllowed"], {
+  const { data: isSponsoredCallAllowed } = useSWR<boolean>(tokensData ? ["isSponsoredCallAllowed"] : null, {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
-    fetcher: () => {
-      return getIsSponsoredCallAllowed();
+    fetcher: async () => {
+      if (!getIsFlagEnabled("testSponsoredCall")) {
+        return false;
+      }
+
+      const gelatoBalance = await fetch(
+        "https://api.gelato.digital/1balance/networks/mainnets/sponsors/0x88FcCAC36031949001Df4bB0b68CBbd07f033161"
+      );
+
+      const gelatoBalanceData = await gelatoBalance.json();
+
+      const mainBalance = gelatoBalanceData.sponsor.mainBalance;
+      const mainBalanceToken = mainBalance.token;
+      const remainingBalance = BigInt(mainBalance.remainingBalance);
+
+      const mainBalanceTokenData = getByKey(tokensData, mainBalanceToken.address);
+      const usdBalance = convertToUsd(
+        remainingBalance,
+        mainBalanceToken.decimals,
+        mainBalanceTokenData?.prices.minPrice
+      );
+
+      console.log("usdBalance", usdBalance);
+
+      return usdBalance !== undefined && usdBalance > MIN_GELATO_BALANCE_FOR_SPONSORED_CALL;
     },
   });
 
@@ -52,7 +79,7 @@ export function useSponsoredCallParamsRequest(chainId: number): SponsoredCallPar
 
     return {
       gelatoRelayFeeMultiplierFactor: factors.gelatoRelayFeeMultiplierFactor,
-      isSponsoredCallAllowed: getIsFlagEnabled("testSponsoredCall") ? Boolean(isSponsoredCallAllowed) : false,
+      isSponsoredCallAllowed: Boolean(isSponsoredCallAllowed),
     };
   }, [factors, isSponsoredCallAllowed]);
 }

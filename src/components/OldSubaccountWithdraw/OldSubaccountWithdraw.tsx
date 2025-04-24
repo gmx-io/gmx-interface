@@ -1,5 +1,5 @@
 import { t, Trans } from "@lingui/macro";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
@@ -45,7 +45,7 @@ export function OldSubaccountWithdraw() {
     }
   );
 
-  const withdrawWeth = async () => {
+  const withdrawWeth = useCallback(async () => {
     if (!account || !subaccount || gasPrice === undefined) {
       return;
     }
@@ -76,9 +76,6 @@ export function OldSubaccountWithdraw() {
 
       setIsVisible(false);
     } catch (error) {
-      // TEMP DEBUG
-      // eslint-disable-next-line no-console
-      console.error("Error withdrawing from subaccount", parseError(error));
       metrics.pushError(error, "subaccount.withdrawOldBalance");
       helperToast.error(
         <StatusNotification title={t`Withdrawing from Subaccount`}>
@@ -88,7 +85,7 @@ export function OldSubaccountWithdraw() {
     } finally {
       setIsWithdrawing(false);
     }
-  };
+  }, [account, subaccount, gasPrice, balanceFormatted]);
 
   if (
     !isVisible ||

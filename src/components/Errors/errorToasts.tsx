@@ -17,13 +17,19 @@ import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 export type AdditionalErrorParams = {
   additionalContent?: ReactNode;
   slippageInputId?: string;
-  defaultMessage?: string;
+  defaultMessage?: ReactNode;
+  isInternalSwapFallback?: boolean;
 };
 
 export function getTxnErrorToast(
   chainId: number,
   errorData: ErrorData | undefined,
-  { additionalContent, slippageInputId, defaultMessage = getDefaultErrorMessage(errorData) }: AdditionalErrorParams
+  {
+    additionalContent,
+    slippageInputId,
+    defaultMessage = getDefaultErrorMessage(errorData),
+    isInternalSwapFallback,
+  }: AdditionalErrorParams
 ) {
   const nativeToken = getNativeToken(chainId);
 
@@ -59,6 +65,23 @@ export function getTxnErrorToast(
         <div>Please reload the page and try again.</div>
       </Trans>
     );
+
+    return toastParams;
+  }
+
+  if (isInternalSwapFallback) {
+    toastParams.errorContent = (
+      <div>
+        {defaultMessage}
+        <br />
+        <br />
+        <Trans>External swap is temporarily disabled. Please try again.</Trans>
+        <br />
+        <br />
+        {debugErrorMessage && <ToastifyDebug error={debugErrorMessage} />}
+      </div>
+    );
+
     return toastParams;
   }
 
@@ -245,8 +268,11 @@ export function getInvalidNetworkToastContent(chainId: number) {
   );
 }
 
-const signerAddressError = "Signer address does not match account address";
+export const signerAddressError = "Signer address does not match account address";
 
+/**
+ * @deprecated
+ */
 export async function validateSignerAddress(signer: Signer, receiverAddress: string, skipToast?: boolean) {
   const signerAddress = await signer.getAddress();
 

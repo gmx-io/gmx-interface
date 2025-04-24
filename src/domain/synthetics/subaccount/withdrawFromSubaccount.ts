@@ -2,7 +2,7 @@ import useSWR from "swr";
 
 import { bigMath } from "sdk/utils/bigmath";
 
-import { Subaccount } from "../gassless/txns/subaccountUtils";
+import { Subaccount } from "./types";
 
 export function useSubaccountWithdrawalAmount(
   chainId: number,

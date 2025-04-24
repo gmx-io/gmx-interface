@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo } from "react";
 
 import { USD_DECIMALS } from "config/factors";
-import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import {
   makeSelectTradeboxSidecarOrdersEntriesIsUntouched,
   makeSelectTradeboxSidecarOrdersState,
@@ -32,6 +32,7 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
   const isUntouched = useSelector(makeSelectTradeboxSidecarOrdersEntriesIsUntouched(prefix));
   const setIsUntouched = useSelector(selectTradeboxSidecarEntriesSetIsUntouched);
   const totalPositionSizeUsd = useSelector(selectTradeboxSidecarOrdersTotalSizeUsd);
+
   const visualMultiplier = useSelector(selectSelectedMarketVisualMultiplier);
 
   const getPercentageBySizeUsd = useCallback(

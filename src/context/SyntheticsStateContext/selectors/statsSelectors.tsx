@@ -6,11 +6,10 @@ import {
 import { marketsInfoData2IndexTokenStatsMap } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { calculateDisplayDecimals } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { getTokenBySymbolSafe } from "sdk/configs/tokens";
 
 import { createSelector, createSelectorFactory } from "../utils";
-import { selectChartToken } from "./chartSelectors";
 import { selectTradeboxTradeFlags } from "./tradeboxSelectors";
+import { selectChartToken, selectSelectedMarketVisualMultiplier } from "./shared/marketSelectors";
 
 export const selectIndexTokenStats = createSelector((q) => {
   const marketsInfoData = q(selectMarketsInfoData);
@@ -65,28 +64,4 @@ export const makeSelectMarketPriceDecimals = createSelectorFactory((tokenAddress
   })
 );
 
-/**
- * Returns 1 if swap or no visual multiplier
- */
-export const selectSelectedMarketVisualMultiplier = createSelector((q) => {
-  const { symbol } = q(selectChartToken);
-
-  if (!symbol) {
-    return 1;
-  }
-
-  const chainId = q(selectChainId);
-  const token = getTokenBySymbolSafe(chainId, symbol);
-
-  if (!token) {
-    return 1;
-  }
-
-  const { isSwap } = q(selectTradeboxTradeFlags);
-
-  if (!token.visualMultiplier || isSwap) {
-    return 1;
-  }
-
-  return token.visualMultiplier;
-});
+export { selectSelectedMarketVisualMultiplier };
