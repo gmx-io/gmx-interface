@@ -7,12 +7,13 @@ import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
 import { isSettlementChain, isSourceChain } from "context/GmxAccountContext/config";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
+import type { UiContractsChain, UiSettlementChain } from "sdk/configs/chains";
 
 /**
  * This returns default chainId if chainId is not supported or not found
  */
 export function useChainId(): {
-  chainId: number;
+  chainId: UiContractsChain;
   isConnectedToChainId?: boolean;
 } {
   let { chainId: unsanitizedChainId } = useAccount();
@@ -116,7 +117,7 @@ export function useChainId(): {
 
   if (mustChangeChainId) {
     if (localStorageChainIdIsSettlement || localStorageChainIdIsSupported) {
-      return { chainId: chainIdFromLocalStorage };
+      return { chainId: chainIdFromLocalStorage as UiSettlementChain };
     }
 
     if (localStorageChainIdIsSource) {
@@ -127,11 +128,14 @@ export function useChainId(): {
   }
 
   if (currentChainIdIsSettlement || currentChainIdIsSupported) {
-    return { chainId: displayedChainId, isConnectedToChainId: displayedChainId === unsanitizedChainId };
+    return {
+      chainId: displayedChainId as UiContractsChain,
+      isConnectedToChainId: displayedChainId === unsanitizedChainId,
+    };
   }
 
   if (currentChainIdIsSource) {
-    return { chainId: gmxAccountSettlementChainId, isConnectedToChainId: true };
+    return { chainId: gmxAccountSettlementChainId as UiSettlementChain, isConnectedToChainId: true };
   }
 
   return { chainId: DEFAULT_CHAIN_ID, isConnectedToChainId: false };

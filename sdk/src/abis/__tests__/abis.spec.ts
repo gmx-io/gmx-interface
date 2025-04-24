@@ -41,8 +41,6 @@ describe("ABI files validation", () => {
 
     const foundFields = unnecessaryFields.filter((field) => !isEmptyValue(fileContent[field]));
 
-    if (foundFields.length > 0) {
-      throw new Error(`${fileName} contains unnecessary fields: ${foundFields.join(", ")}`);
-    }
+    expect(foundFields).toHaveLength(0);
   });
 });

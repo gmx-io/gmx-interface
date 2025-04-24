@@ -1,8 +1,7 @@
-import { zeroAddress } from "viem";
-
 import { isDevelopment } from "config/env";
 import { OrderType } from "domain/synthetics/orders";
 import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
+import { marketsInfoData2IndexTokenStatsMap } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import {
   TradeMode,
   TradeType,
@@ -13,6 +12,7 @@ import {
   getNextPositionValuesForIncreaseTrade,
   getTriggerDecreaseOrderType,
 } from "domain/synthetics/trade";
+import { calculateDisplayDecimals } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { MARKETS } from "sdk/configs/markets";
 import { ExternalSwapQuote } from "sdk/types/trade";
@@ -21,13 +21,12 @@ import { createFindSwapPath, getWrappedAddress } from "sdk/utils/swap/swapPath";
 import {
   createMarketEdgeLiquidityGetter,
   getMarketAdjacencyGraph,
+  getMaxLiquidityMarketSwapPathFromTokenSwapPaths,
   getTokenSwapPathsForTokenPairPrebuilt,
 } from "sdk/utils/swap/swapRouting";
-import { getMaxLiquidityMarketSwapPathFromTokenSwapPaths } from "sdk/utils/swap/swapRouting";
 import { createTradeFlags } from "sdk/utils/trade";
 
 import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
-import { selectExternalSwapQuote } from "./externalSwapSelectors";
 import {
   selectChainId,
   selectGasLimits,
@@ -42,8 +41,63 @@ import {
   selectUserReferralInfo,
 } from "./globalSelectors";
 import { selectDebugSwapMarketsConfig, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
+import { selectTradeboxTradeFlags } from "./shared/baseSelectors";
+import { selectChartToken } from "./shared/marketSelectors";
 
 export type TokenTypeForSwapRoute = "collateralToken" | "indexToken";
+
+export const selectIndexTokenStats = createSelector((q) => {
+  const marketsInfoData = q(selectMarketsInfoData);
+
+  if (!marketsInfoData) {
+    return EMPTY_ARRAY;
+  }
+
+  const stats = q(selectIndexTokenStatsMap);
+
+  return stats.sortedByTotalPoolValue.map((address) => stats.indexMap[address]!);
+});
+
+const FALLBACK: ReturnType<typeof marketsInfoData2IndexTokenStatsMap> = {
+  indexMap: {},
+  sortedByTotalPoolValue: [],
+};
+
+export const selectIndexTokenStatsMap = createSelector((q) => {
+  const marketsInfoData = q(selectMarketsInfoData);
+
+  if (!marketsInfoData) {
+    return FALLBACK;
+  }
+
+  return marketsInfoData2IndexTokenStatsMap(marketsInfoData);
+});
+
+export const selectSelectedMarketPriceDecimals = createSelector((q) => {
+  const { chartToken } = q(selectChartToken);
+
+  if (!chartToken) {
+    return 2;
+  }
+
+  return calculateDisplayDecimals(chartToken.prices.minPrice);
+});
+
+export const makeSelectMarketPriceDecimals = createSelectorFactory((tokenAddress?: string) =>
+  createSelector(function selectSelectedMarketPriceDecimals(q) {
+    const tokensData = q(selectTokensData);
+    const token = getByKey(tokensData, tokenAddress);
+    const { isSwap } = q(selectTradeboxTradeFlags);
+
+    if (!token) {
+      return;
+    }
+
+    const visualMultiplier = isSwap ? 1 : token.visualMultiplier;
+
+    return calculateDisplayDecimals(token.prices.minPrice, undefined, visualMultiplier);
+  })
+);
 
 export const selectMarketEdgeLiquidityGetter = createSelector((q) => {
   const marketsInfoData = q(selectMarketsInfoData);
@@ -170,29 +224,15 @@ export const makeSelectFindSwapPath = createSelectorFactory(
       const gasEstimationParams = q(selectGasEstimationParams);
 
       const _debugSwapMarketsConfig = ENABLE_DEBUG_SWAP_MARKETS_CONFIG ? q(selectDebugSwapMarketsConfig) : undefined;
-      const diabledMarkets: string[] = [];
-
-      if (isExpressOrders) {
-        const marketsWithoutPriceFeeds = Object.values(marketsInfoData ?? {}).filter((market) =>
-          [market.indexToken, market.longToken, market.shortToken].some(
-            (token) => !token.priceFeedAddress || token.priceFeedAddress === zeroAddress
-          )
-        );
-
-        if (marketsWithoutPriceFeeds.length > 0) {
-          diabledMarkets.push(...marketsWithoutPriceFeeds.map((market) => market.marketTokenAddress));
-        }
-      }
 
       const findSwapPath = createFindSwapPath({
         chainId,
         fromTokenAddress,
         toTokenAddress,
         marketsInfoData,
-        debugSwapMarketsConfig: {
-          ..._debugSwapMarketsConfig,
-          disabledSwapMarkets: [...(_debugSwapMarketsConfig?.disabledSwapMarkets ?? []), ...diabledMarkets],
-        },
+        isExpressTxn: Boolean(isExpressOrders),
+        disabledMarkets: _debugSwapMarketsConfig?.disabledSwapMarkets,
+        manualPath: _debugSwapMarketsConfig?.manualPath,
         gasEstimationParams,
       });
       return findSwapPath;
@@ -216,6 +256,8 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
     tradeType,
     triggerPrice,
     tokenTypeForSwapRoute,
+    externalSwapQuote,
+    isExpressTxn,
   }: {
     initialCollateralTokenAddress: string | undefined;
     indexTokenAddress: string | undefined;
@@ -231,10 +273,13 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
     fixedAcceptablePriceImpactBps: bigint | undefined;
     strategy: "leverageByCollateral" | "leverageBySize" | "independent";
     tokenTypeForSwapRoute: TokenTypeForSwapRoute;
+    isExpressTxn: boolean;
+    externalSwapQuote: ExternalSwapQuote | undefined;
   }) => {
     const selectFindSwapPath = makeSelectFindSwapPath(
       initialCollateralTokenAddress,
-      tokenTypeForSwapRoute === "indexToken" ? indexTokenAddress : collateralTokenAddress
+      tokenTypeForSwapRoute === "indexToken" ? indexTokenAddress : collateralTokenAddress,
+      isExpressTxn
     );
 
     return createSelector((q) => {
@@ -243,7 +288,6 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
       const collateralToken = q((state) => getByKey(selectTokensData(state), collateralTokenAddress));
       const marketInfo = q((state) => getByKey(selectMarketsInfoData(state), marketAddress));
       const position = q((state) => getByKey(selectPositionsInfoData(state), positionKey));
-      const externalSwapQuote = q(selectExternalSwapQuote);
 
       const acceptablePriceImpactBuffer = q(selectSavedAcceptablePriceImpactBuffer);
       const findSwapPath = q(selectFindSwapPath);
@@ -416,6 +460,8 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
     triggerPrice,
     tokenTypeForSwapRoute,
     isPnlInLeverage,
+    isExpressTxn,
+    externalSwapQuote,
   }: {
     initialCollateralTokenAddress: string | undefined;
     indexTokenAddress: string | undefined;
@@ -432,6 +478,7 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
     increaseStrategy: "leverageByCollateral" | "leverageBySize" | "independent";
     tokenTypeForSwapRoute: TokenTypeForSwapRoute;
     isPnlInLeverage: boolean;
+    isExpressTxn: boolean;
     externalSwapQuote: ExternalSwapQuote | undefined;
   }) =>
     createSelectorDeprecated(
@@ -454,6 +501,8 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
           tradeType,
           triggerPrice,
           tokenTypeForSwapRoute,
+          isExpressTxn,
+          externalSwapQuote,
         }),
         selectPositionsInfoData,
         selectUserReferralInfo,

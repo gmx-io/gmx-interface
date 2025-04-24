@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { getExplorerUrl } from "config/chains";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -403,19 +403,15 @@ export function OrdersStatusNotificiation({
     }, [] as string[]);
   }, [matchedOrderStatuses, pendingOrders]);
 
-  // const subaccount = useSelector(makeSelectSubaccountForActions(newlyCreatedTriggerOrderKeys.length));
-  // const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(newlyCreatedTriggerOrderKeys.length);
-
-  async function onCancelOrdersClick() {
+  const onCancelOrdersClick = useCallback(async () => {
     if (!signer || !newlyCreatedTriggerOrderKeys.length || !setPendingTxns) return;
 
     setIsCancelOrderProcessing(true);
     cancelOrdersTxn(chainId, signer, {
       orderKeys: newlyCreatedTriggerOrderKeys,
       setPendingTxns,
-      // detailsMsg: cancelOrdersDetailsMessage,
     }).finally(() => setIsCancelOrderProcessing(false));
-  }
+  }, [chainId, newlyCreatedTriggerOrderKeys, setPendingTxns, signer]);
 
   const createdTxnHashList = useMemo(() => {
     const uniqueHashSet = pendingOrders.reduce((acc, order) => {

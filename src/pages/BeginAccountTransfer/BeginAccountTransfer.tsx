@@ -245,6 +245,7 @@ export default function BeginAccountTransfer() {
         tokenAddress: gmxAddress,
         spender: stakedGmxTrackerAddress,
         chainId,
+        permitParams: undefined,
       });
       return;
     }

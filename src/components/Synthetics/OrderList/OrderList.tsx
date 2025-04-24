@@ -2,7 +2,6 @@ import { Plural, Trans, t } from "@lingui/macro";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef } from "react";
 import { useMeasure, useMedia } from "react-use";
 
-import { useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/useSubaccountCancelOrdersDetailsMessage";
 import {
   useIsOrdersLoading,
   useMarketsInfoData,
@@ -22,12 +21,10 @@ import {
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectRelayFeeTokens } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { sendUniversalBatchTxn } from "domain/synthetics/gassless/txns/universalTxn";
-import { useOrderTxnCallbacks } from "domain/synthetics/gassless/txns/useOrderTxnCallbacks";
 import {
   getExpressCancelOrdersParams,
   useGasPaymentTokenAllowanceData,
-} from "domain/synthetics/gassless/useRelayerFeeHandler";
+} from "domain/synthetics/express/useRelayerFeeHandler";
 import {
   OrderType,
   PositionOrderInfo,
@@ -38,7 +35,9 @@ import {
   sortPositionOrders,
   sortSwapOrders,
 } from "domain/synthetics/orders";
+import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
+import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { EMPTY_ARRAY } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 
@@ -86,7 +85,7 @@ export function OrderList({
   const chainId = useSelector(selectChainId);
   const { signer } = useWallet();
 
-  const { makeCancelOrderTxnCallback } = useOrderTxnCallbacks();
+  const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const subaccount = useSelector(makeSelectSubaccountForActions(1));
   const account = useSelector(selectAccount);
   const tokensData = useSelector(selectTokensData);
@@ -111,8 +110,6 @@ export function OrderList({
     const allSelected = orders.length > 0 && orders.every((o) => selectedOrdersKeys?.includes(o.key));
     return [onlySomeSelected, allSelected];
   }, [selectedOrdersKeys, orders]);
-
-  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(1);
 
   const orderRefs = useRef<{ [key: string]: HTMLElement | null }>({});
 
@@ -174,7 +171,7 @@ export function OrderList({
       gasPaymentAllowanceData,
     });
 
-    sendUniversalBatchTxn({
+    sendBatchOrderTxn({
       chainId,
       signer,
       batchParams: {
@@ -184,12 +181,7 @@ export function OrderList({
       },
       expressParams,
       simulationParams: undefined,
-      callback: makeCancelOrderTxnCallback({
-        metricId: undefined,
-        slippageInputId: undefined,
-        showPreliminaryMsg: Boolean(expressParams?.subaccount),
-        detailsMsg: cancelOrdersDetailsMessage,
-      }),
+      callback: makeOrderTxnCallback({}),
     }).finally(() => {
       setCancellingOrdersKeys((prev) => prev.filter((k) => k !== key));
       setSelectedOrderKeys?.(EMPTY_ARRAY);

@@ -28,7 +28,7 @@ import {
 import { selectTradeboxCollateralSpreadInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxCollateralSpreadInfo";
 import { selectTradeboxLiquidityInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxLiquidityInfo";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { RelayFeeSwapParams } from "domain/synthetics/gassless/txns/expressOrderUtils";
+import { RelayerFeeParams } from "domain/synthetics/express";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { formatUsd } from "lib/numbers";
@@ -192,7 +192,7 @@ export function TradeBoxAdvancedGroups({
   relayerFeeParams,
 }: {
   slippageInputId: string;
-  relayerFeeParams?: RelayFeeSwapParams;
+  relayerFeeParams?: RelayerFeeParams;
 }) {
   const options = useSelector(selectTradeboxAdvancedOptions);
   const setOptions = useSelector(selectTradeboxSetAdvancedOptions);

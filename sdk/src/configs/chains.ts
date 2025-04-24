@@ -31,6 +31,14 @@ export type UiSupportedChain =
 export type UiSettlementChain = typeof ARBITRUM_SEPOLIA;
 export type UiSourceChain = typeof OPTIMISM_SEPOLIA | typeof SEPOLIA;
 
+export const CHAIN_NAMES_MAP = {
+  [BSС_MAINNET]: "BSC",
+  [BSС_TESTNET]: "BSC Testnet",
+  [ARBITRUM]: "Arbitrum",
+  [AVALANCHE]: "Avalanche",
+  [AVALANCHE_FUJI]: "Avalanche Fuji",
+};
+
 export const HIGH_EXECUTION_FEES_MAP = {
   [ARBITRUM]: 5, // 5 USD
   [AVALANCHE]: 5, // 5 USD
@@ -97,6 +105,10 @@ const VIEM_CHAIN_BY_CHAIN_ID: Record<UiContractsChain, Chain> = {
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
 };
 
+export function getChainName(chainId: number) {
+  return CHAIN_NAMES_MAP[chainId];
+}
+
 export const getViemChain = (chainId: number): Chain => {
   return VIEM_CHAIN_BY_CHAIN_ID[chainId];
 };
@@ -134,5 +146,18 @@ export const EXECUTION_FEE_CONFIG_V2: {
   [ARBITRUM_SEPOLIA]: {
     shouldUseMaxPriorityFeePerGas: true,
     defaultBufferBps: 1000, // 10%
+  },
+};
+
+export const GAS_LIMITS_STATIC_CONFIG = {
+  [ARBITRUM]: {
+    createOrderGasLimit: 800_000n,
+    updateOrderGasLimit: 600_000n,
+    cancelOrderGasLimit: 700_000n,
+  },
+  [AVALANCHE]: {
+    createOrderGasLimit: 800_000n,
+    updateOrderGasLimit: 600_000n,
+    cancelOrderGasLimit: 700_000n,
   },
 };

@@ -111,11 +111,20 @@ export const selectTradeboxIncreaseOrderParams = createSelector((q) => {
     !collateralTokenAddress ||
     !increaseAmounts
   ) {
+    console.log("selectTradeboxIncreaseOrderParams is undefined", {
+      commonParams: !!commonParams,
+      fromTokenAddress: !!fromTokenAddress,
+      marketAddress: !!marketAddress,
+      indexTokenAddress: !!indexTokenAddress,
+      collateralTokenAddress: !!collateralTokenAddress,
+      increaseAmounts: !!increaseAmounts,
+    });
     return undefined;
   }
 
   const orderType = increaseAmounts.limitOrderType ?? OrderType.MarketIncrease;
   // TODO: External swap handling here!!!!!!!
+  //
 
   return buildIncreaseOrderPayload({
     ...commonParams,
@@ -159,7 +168,7 @@ export const selectTradeboxDecreaseOrderParams = createSelector((q) => {
     orderType: decreaseAmounts.triggerOrderType,
     marketAddress: marketInfo.marketTokenAddress,
     indexTokenAddress: marketInfo.indexToken.address,
-    initialCollateralTokenAddress: collateralTokenAddress,
+    collateralTokenAddress: collateralTokenAddress,
     collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
     receiveTokenAddress: collateralTokenAddress,
     swapPath: [],

@@ -1,6 +1,7 @@
 import { t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
 
+import { ARBITRUM_SEPOLIA } from "config/chains";
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { SetPendingDeposit } from "context/SyntheticsEvents";
@@ -9,6 +10,7 @@ import { OrderMetricId } from "lib/metrics/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
+import { DepositUtils } from "typechain-types-arbitrum-sepolia/ExchangeRouter";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
@@ -39,7 +41,11 @@ export type CreateDepositParams = {
 };
 
 export async function createDepositTxn(chainId: number, signer: Signer, p: CreateDepositParams) {
-  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
+  const contract = new ethers.Contract(
+    getContract(chainId, "ExchangeRouter"),
+    chainId === ARBITRUM_SEPOLIA ? abis.ExchangeRouterArbitrumSepolia : abis.ExchangeRouter,
+    signer
+  );
   const depositVaultAddress = getContract(chainId, "DepositVault");
 
   await validateSignerAddress(signer, p.account);
@@ -86,19 +92,24 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Creat
       // TODO update to conform to arbitrum sepolia abi
       params: [
         {
-          receiver: p.account,
-          callbackContract: ethers.ZeroAddress,
-          market: p.marketTokenAddress,
-          initialLongToken: initialLongTokenAddress,
-          initialShortToken: initialShortTokenAddress,
-          longTokenSwapPath: p.longTokenSwapPath,
-          shortTokenSwapPath: p.shortTokenSwapPath,
+          // callbackGasLimit: 0n,
+
+          addresses: {
+            receiver: p.account,
+            callbackContract: ethers.ZeroAddress,
+            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
+            market: p.marketTokenAddress,
+            initialLongToken: initialLongTokenAddress,
+            initialShortToken: initialShortTokenAddress,
+            longTokenSwapPath: p.longTokenSwapPath,
+            shortTokenSwapPath: p.shortTokenSwapPath,
+          },
           minMarketTokens: minMarketTokens,
           shouldUnwrapNativeToken: shouldUnwrapNativeToken,
           executionFee: p.executionFee,
-          callbackGasLimit: 0n,
-          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
-        },
+          callbackGasLimit: 0,
+          dataList: [],
+        } satisfies DepositUtils.CreateDepositParamsStruct,
         // satisfies DepositUtils.CreateDepositParamsStruct,
       ],
     },

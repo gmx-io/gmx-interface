@@ -9,7 +9,7 @@ export type TokenData = Token & {
   prices: TokenPrices;
   balance?: bigint;
   totalSupply?: bigint;
-  priceFeedAddress?: string;
+  hasPriceFeedProvider?: boolean;
 };
 
 export type TokensRatio = {

@@ -22,6 +22,10 @@ type SimulateExecuteParams = {
   swapPricingType?: SwapPricingType;
 };
 
+/**
+ *
+ * @deprecated use simulateExecution instead
+ */
 export async function simulateExecuteOrder(sdk: GmxSdk, p: SimulateExecuteParams) {
   const chainId = sdk.chainId;
   const client = sdk.publicClient;

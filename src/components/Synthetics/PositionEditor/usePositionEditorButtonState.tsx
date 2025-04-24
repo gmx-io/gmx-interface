@@ -18,7 +18,6 @@ import {
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 import { useSavedAllowedSlippage } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import {
-  makeSelectSubaccountForActions,
   selectBlockTimestampData,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -30,11 +29,12 @@ import {
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { selectAddTokenPermit } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { RelayFeeSwapParams } from "domain/synthetics/gassless/txns/expressOrderUtils";
-import { sendUniversalBatchTxn } from "domain/synthetics/gassless/txns/universalTxn";
-import { useOrderTxnCallbacks } from "domain/synthetics/gassless/txns/useOrderTxnCallbacks";
-import { useExpressOrdersParams } from "domain/synthetics/gassless/useRelayerFeeHandler";
+import { getGelatoRelayRouterDomain } from "domain/synthetics/express";
+import { RelayerFeeParams } from "domain/synthetics/express/types";
+import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
+import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import {
   getIsPositionInfoLoaded,
   substractMaxLeverageSlippage,
@@ -80,7 +80,7 @@ export function usePositionEditorButtonState(operation: Operation): {
   tooltipContent: ReactNode | null;
   disabled: boolean;
   onSubmit: () => void;
-  relayerFeeParams?: RelayFeeSwapParams;
+  relayerFeeParams?: RelayerFeeParams;
 } {
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const allowedSlippage = useSavedAllowedSlippage();
@@ -264,7 +264,6 @@ export function usePositionEditorButtonState(operation: Operation): {
     );
   }, [detectAndSetMaxSize, tooltipName]);
 
-  const subaccount = useSelector(makeSelectSubaccountForActions(1));
   const addTokenPermit = useSelector(selectAddTokenPermit);
 
   const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
@@ -322,7 +321,7 @@ export function usePositionEditorButtonState(operation: Operation): {
         referralCode: userReferralInfo?.referralCodeForTxn,
         swapPath: [],
         externalSwapQuote: undefined,
-        initialCollateralTokenAddress: selectedCollateralAddress,
+        collateralTokenAddress: selectedCollateralAddress,
         collateralDeltaAmount: collateralDeltaAmount,
         receiveTokenAddress: selectedCollateralAddress,
         minOutputUsd: receiveUsd,
@@ -398,7 +397,13 @@ export function usePositionEditorButtonState(operation: Operation): {
         setPendingTxns: () => null,
         infoTokens: {},
         chainId,
-        addTokenPermit,
+        permitParams: expressParams
+          ? {
+              addTokenPermit,
+              verifyingContract: getGelatoRelayRouterDomain(chainId, Boolean(expressParams?.subaccount))
+                .verifyingContract,
+            }
+          : undefined,
         onApproveFail: () => {
           userAnalytics.pushEvent<TokenApproveResultEvent>({
             event: "TokenApproveAction",
@@ -420,7 +425,7 @@ export function usePositionEditorButtonState(operation: Operation): {
       selectedCollateralAddress,
       marketInfo: position?.marketInfo,
       collateralDeltaAmount,
-      subaccount,
+      subaccount: expressParams?.subaccount,
       orderType,
       isLong: position?.isLong,
     });
@@ -433,7 +438,7 @@ export function usePositionEditorButtonState(operation: Operation): {
       return;
     }
 
-    const txnPromise = sendUniversalBatchTxn({
+    const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
       batchParams,
@@ -450,7 +455,7 @@ export function usePositionEditorButtonState(operation: Operation): {
       }),
     });
 
-    if (subaccount) {
+    if (expressParams?.subaccount) {
       onClose();
       setIsSubmitting(false);
       return;

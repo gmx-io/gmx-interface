@@ -24,6 +24,7 @@ import {
   OrderTxnType,
 } from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
+import { getIsEmptySubaccountApproval } from "domain/synthetics/subaccount";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
@@ -1046,17 +1047,24 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         switch (taskStatus.taskState) {
           case TaskState.ExecSuccess:
             {
-              if (pendingExpressParams?.shouldResetSubaccountApproval) {
+              if (
+                pendingExpressParams?.subaccountApproval &&
+                !getIsEmptySubaccountApproval(pendingExpressParams.subaccountApproval)
+              ) {
                 resetSubaccountApproval();
               }
 
-              if (pendingExpressParams?.shouldResetTokenPermits) {
+              if (pendingExpressParams?.tokenPermits?.length) {
                 resetTokenPermits();
               }
 
               setByKey(pendingExpressTxnParams, taskStatus.taskId, undefined);
 
               refreshSubaccountData();
+
+              if (pendingExpressParams?.successMessage) {
+                helperToast.success(pendingExpressParams.successMessage);
+              }
             }
             break;
           case TaskState.ExecReverted:
@@ -1079,6 +1087,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                   });
                 }
               });
+
+              if (pendingExpressParams?.errorMessage) {
+                helperToast.error(pendingExpressParams.errorMessage);
+              }
             });
 
             pendingExpressParams?.pendingPositionsKeys?.forEach((key) => {
@@ -1101,7 +1113,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         );
 
         const debugData = await debugRes.json();
-        // TEMP DEBUG
+        // FIXME gasless: TEMP DEBUG
         // eslint-disable-next-line no-console
         console.log("gelatoDebugData", taskStatus.taskState, pendingExpressParams, debugData);
       }

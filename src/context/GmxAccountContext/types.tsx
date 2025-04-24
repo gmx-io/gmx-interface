@@ -37,6 +37,7 @@ export type MultichainFundingHistoryItem = {
   sentTimestamp: number;
   receivedTxn: string | undefined;
   receivedTimestamp: number | undefined;
+  isExecutionError: boolean | null | undefined;
   executedTxn: string | undefined;
   executedTimestamp: number | undefined;
 };

@@ -43,10 +43,10 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { sendUniversalBatchTxn } from "domain/synthetics/gassless/txns/universalTxn";
-import { useOrderTxnCallbacks } from "domain/synthetics/gassless/txns/useOrderTxnCallbacks";
-import { useExpressOrdersParams } from "domain/synthetics/gassless/useRelayerFeeHandler";
+import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
+import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage, formatLiquidationPrice, getNameByOrderType } from "domain/synthetics/positions";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
@@ -320,7 +320,7 @@ export function PositionSeller() {
           orderType,
           marketAddress: position.marketAddress,
           indexTokenAddress: position.indexToken.address,
-          initialCollateralTokenAddress: position.collateralTokenAddress,
+          collateralTokenAddress: position.collateralTokenAddress,
           collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
           receiveTokenAddress: receiveToken.address,
           swapPath,
@@ -415,7 +415,7 @@ export function PositionSeller() {
 
     setIsSubmitting(true);
 
-    const txnPromise = sendUniversalBatchTxn({
+    const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
       batchParams,

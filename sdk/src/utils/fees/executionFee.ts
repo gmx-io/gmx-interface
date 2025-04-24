@@ -44,6 +44,47 @@ export function getExecutionFee(
   };
 }
 
+export function estimateExpressBatchOrderGasLimit({
+  gasLimits,
+  feeSwapsCount,
+  createOrdersCount,
+  updateOrdersCount,
+  cancelOrdersCount,
+  oraclePriceCount,
+  externalSwapGasLimit,
+  isSubaccount,
+}: {
+  gasLimits: GasLimitsConfig;
+  createOrdersCount: number;
+  updateOrdersCount: number;
+  cancelOrdersCount: number;
+  feeSwapsCount: number;
+  externalSwapGasLimit: bigint;
+  oraclePriceCount: number;
+  isSubaccount: boolean;
+}) {
+  const swapsGasLimit = gasLimits.singleSwap * BigInt(feeSwapsCount);
+
+  const createOrdersGasLimit = gasLimits.createOrderGasLimit * BigInt(createOrdersCount);
+  const updateOrdersGasLimit = gasLimits.updateOrderGasLimit * BigInt(updateOrdersCount);
+  const cancelOrdersGasLimit = gasLimits.cancelOrderGasLimit * BigInt(cancelOrdersCount);
+
+  const subaccountGasLimit = isSubaccount ? 0n : 0n;
+
+  const oraclePricesGasLimit = gasLimits.estimatedGasFeePerOraclePrice * BigInt(oraclePriceCount);
+
+  const totalGasLimit =
+    createOrdersGasLimit +
+    updateOrdersGasLimit +
+    cancelOrdersGasLimit +
+    swapsGasLimit +
+    oraclePricesGasLimit +
+    externalSwapGasLimit +
+    subaccountGasLimit;
+
+  return totalGasLimit;
+}
+
 /**
  * Copy from contract: `estimateExecuteIncreaseOrderGasLimit`
  */

@@ -2,9 +2,8 @@ import { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { createContext } from "use-context-selector";
 import { useAccount } from "wagmi";
 
-import { ARBITRUM } from "sdk/configs/chains";
+import { ARBITRUM_SEPOLIA, UiSettlementChain, UiSourceChain } from "sdk/configs/chains";
 
-import "./config";
 import { DEFAULT_SETTLEMENT_CHAIN_ID_MAP, MULTI_CHAIN_SUPPORTED_TOKEN_MAP, isSourceChain } from "./config";
 
 export type GmxAccountModalView =
@@ -19,13 +18,13 @@ export type GmxAccountContext = {
   modalOpen: boolean | GmxAccountModalView;
   setModalOpen: (v: boolean | GmxAccountModalView) => void;
 
-  settlementChainId: number;
-  setSettlementChainId: (chainId: number) => void;
+  settlementChainId: UiSettlementChain;
+  setSettlementChainId: (chainId: UiSettlementChain) => void;
 
   // deposit view
 
-  depositViewChain: number | undefined;
-  setDepositViewChain: (chain: number) => void;
+  depositViewChain: UiSourceChain | undefined;
+  setDepositViewChain: (chain: UiSourceChain) => void;
 
   depositViewTokenAddress: string | undefined;
   setDepositViewTokenAddress: (address: string) => void;
@@ -35,8 +34,8 @@ export type GmxAccountContext = {
 
   // withdraw view
 
-  withdrawViewChain: number | undefined;
-  setWithdrawViewChain: (chain: number) => void;
+  withdrawViewChain: UiSourceChain | undefined;
+  setWithdrawViewChain: (chain: UiSourceChain) => void;
 
   withdrawViewTokenAddress: string | undefined;
   setWithdrawViewTokenAddress: (address: string) => void;
@@ -57,7 +56,7 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
 
   const [modalOpen, setModalOpen] = useState<GmxAccountContext["modalOpen"]>("main");
 
-  const [settlementChainId, setSettlementChainId] = useState<GmxAccountContext["settlementChainId"]>(ARBITRUM);
+  const [settlementChainId, setSettlementChainId] = useState<GmxAccountContext["settlementChainId"]>(ARBITRUM_SEPOLIA);
 
   const [depositViewChain, setDepositViewChain] = useState<GmxAccountContext["depositViewChain"]>(undefined);
   const [depositViewTokenAddress, setDepositViewTokenAddress] =
@@ -83,7 +82,7 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
       Object.keys(MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChainId]?.[walletChainId] || {}).length > 0;
 
     if ((settlementChainId === undefined || !areChainsConnected) && isSourceChain(walletChainId)) {
-      setSettlementChainId(DEFAULT_SETTLEMENT_CHAIN_ID_MAP[walletChainId] ?? ARBITRUM);
+      setSettlementChainId(DEFAULT_SETTLEMENT_CHAIN_ID_MAP[walletChainId] ?? ARBITRUM_SEPOLIA);
     }
   }, [settlementChainId, walletChainId]);
 

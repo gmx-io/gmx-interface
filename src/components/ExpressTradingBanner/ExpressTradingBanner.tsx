@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import { useCallback } from "react";
 import { useLocalStorage } from "react-use";
 
 import { getExpressTradingBannerDismissedKey } from "config/localStorage";
@@ -18,21 +19,24 @@ export function ExpressTradingBanner() {
     false
   );
 
+  const onClose = useCallback(() => {
+    setIsExpressTradingBannerDismissed(true);
+  }, [setIsExpressTradingBannerDismissed]);
+
+  const onEnable = useCallback(() => {
+    settings.setExpressOrdersEnabled(true);
+    setIsExpressTradingBannerDismissed(true);
+  }, [settings, setIsExpressTradingBannerDismissed]);
+
   if (isExpressTradingBannerDismissed || settings.expressOrdersEnabled) {
     return null;
   }
 
   return (
-    <ColorfulBanner color="blue" icon={<IconBolt />} onClose={() => setIsExpressTradingBannerDismissed(true)}>
+    <ColorfulBanner color="blue" icon={<IconBolt />} onClose={onClose}>
       <TooltipWithPortal
         handle={
-          <div
-            className="clickable -ml-4 mr-8"
-            onClick={() => {
-              settings.setExpressOrdersEnabled(true);
-              setIsExpressTradingBannerDismissed(true);
-            }}
-          >
+          <div className="clickable -ml-4 mr-8" onClick={onEnable}>
             <Trans>Enable Express Trading</Trans>
           </div>
         }

@@ -474,7 +474,7 @@ msgstr "GMX V2 Data Analytics within Telegram"
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Subaccount deactivated"
 msgstr "Subaccount deactivated"
 
@@ -520,6 +520,10 @@ msgstr "More"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price."
 msgstr "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price."
+
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
+msgid "{actionsCount, plural, one {Order} other {# Orders}}"
+msgstr "{actionsCount, plural, one {Order} other {# Orders}}"
 
 #: src/config/bridging.tsx
 msgid "Buy APE on Arbitrum with <0>Camelot</0>."
@@ -1058,8 +1062,8 @@ msgid "GMX Swaps"
 msgstr "GMX Swaps"
 
 #: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
-msgid "Cancel {ordersText} failed."
-msgstr "Cancel {ordersText} failed."
+#~ msgid "Cancel {ordersText} failed."
+#~ msgstr "Cancel {ordersText} failed."
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Protocol"
@@ -1349,6 +1353,10 @@ msgstr "Leverage disabled, pending {0} upgrade"
 msgid "NFT Address"
 msgstr "NFT Address"
 
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
+msgid "{orderText} cancelled."
+msgstr "{orderText} cancelled."
+
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 msgstr "{avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
@@ -1396,9 +1404,9 @@ msgstr "Telegram bot for GMX position updates"
 msgid "account"
 msgstr "account"
 
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Generating subaccount..."
 msgstr "Generating subaccount..."
 
@@ -2164,6 +2172,10 @@ msgstr "Liquidity data not loaded"
 msgid "Total Trading Volume"
 msgstr "Total Trading Volume"
 
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
+msgid "Order created."
+msgstr "Order created."
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSpreadRow.tsx
 msgid "Collateral Spread"
@@ -2571,9 +2583,9 @@ msgstr "Confirm Long"
 msgid "Traders Referred on Arbitrum"
 msgstr "Traders Referred on Arbitrum"
 
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Updating subaccount settings"
 msgstr "Updating subaccount settings"
 
@@ -2619,8 +2631,8 @@ msgstr "Settling Position Fees"
 msgid "Minimum received"
 msgstr "Minimum received"
 
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing subaccount approval"
 msgstr "Signing subaccount approval"
 
@@ -2953,6 +2965,10 @@ msgstr "Can’t find the coin you need? Let us know"
 msgid "Delegated to"
 msgstr "Delegated to"
 
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
+msgid "{orderText} update failed."
+msgstr "{orderText} update failed."
+
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
@@ -3163,9 +3179,9 @@ msgstr "Enter a new ratio or allowed slippage"
 msgid "Swap UI Fee"
 msgstr "Swap UI Fee"
 
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivating subaccount"
 msgstr "Deactivating subaccount"
 
@@ -4530,7 +4546,7 @@ msgstr "Execute Take Profit"
 msgid "Stryke"
 msgstr "Stryke"
 
-#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "External swap is temporarily disabled. Please try again."
 msgstr "External swap is temporarily disabled. Please try again."
 
@@ -4601,6 +4617,10 @@ msgstr "No trades match the selected filters"
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Decreased"
 msgstr "Decreased"
+
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
+msgid "Updating {orderText}."
+msgstr "Updating {orderText}."
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/ConfirmationBox.jsx
@@ -4892,7 +4912,7 @@ msgstr "Yield Farming"
 msgid "Transaction completed!"
 msgstr "Transaction completed!"
 
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Subaccount approval signed"
 msgstr "Subaccount approval signed"
 
@@ -4985,8 +5005,8 @@ msgstr "Swap Order submitted!"
 
 #: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
 #: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
-msgid "Cancelling {ordersText}."
-msgstr "Cancelling {ordersText}."
+#~ msgid "Cancelling {ordersText}."
+#~ msgstr "Cancelling {ordersText}."
 
 #: src/App/MainRoutes.tsx
 #: src/components/Exchange/PositionsList.jsx
@@ -5009,7 +5029,7 @@ msgstr "Cancelling {ordersText}."
 msgid "Loading..."
 msgstr "Loading..."
 
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Generating subaccount approval"
 msgstr "Generating subaccount approval"
 
@@ -5045,6 +5065,10 @@ msgstr "Search Action"
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Show Leverage Slider"
 msgstr "Show Leverage Slider"
+
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
+msgid "Cancelling {orderText}."
+msgstr "Cancelling {orderText}."
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "CONCLUDED"
@@ -5209,7 +5233,7 @@ msgstr "Target Weight"
 msgid "Winners:"
 msgstr "Winners:"
 
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to deactivate subaccount"
 msgstr "Failed to deactivate subaccount"
 
@@ -5321,7 +5345,7 @@ msgstr "Asset"
 msgid "Stop Loss Decrease"
 msgstr "Stop Loss Decrease"
 
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Updating subaccount settings..."
 msgstr "Updating subaccount settings..."
 
@@ -5515,6 +5539,10 @@ msgstr "Governance"
 msgid "Cancel"
 msgstr "Cancel"
 
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
+msgid "{orderText} updated."
+msgstr "{orderText} updated."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Tradao"
 msgstr "Tradao"
@@ -5580,7 +5608,7 @@ msgstr "Order created!"
 msgid "Liquidation"
 msgstr "Liquidation"
 
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Subaccount settings updated"
 msgstr "Subaccount settings updated"
 
@@ -5734,7 +5762,7 @@ msgstr "Volume traded by your referred traders."
 msgid "Stablecoin Percentage"
 msgstr "Stablecoin Percentage"
 
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to sign default subaccount approval"
 msgstr "Failed to sign default subaccount approval"
 
@@ -5959,7 +5987,7 @@ msgstr "Asset Balance"
 msgid "The order's acceptable price includes the set acceptable price impact. The execution price must meet this condition for the order to be executed."
 msgstr "The order's acceptable price includes the set acceptable price impact. The execution price must meet this condition for the order to be executed."
 
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivating subaccount..."
 msgstr "Deactivating subaccount..."
 
@@ -6418,6 +6446,10 @@ msgstr "Start Unrealized Fees"
 msgid "view"
 msgstr "view"
 
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
+msgid "{orderText} cancel failed."
+msgstr "{orderText} cancel failed."
+
 #: src/components/Exchange/OrdersToa.jsx
 msgid "Accept terms to enable orders"
 msgstr "Accept terms to enable orders"
@@ -6679,7 +6711,7 @@ msgstr "Realized Fees"
 msgid "Top Positions"
 msgstr "Top Positions"
 
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Subaccount generated"
 msgstr "Subaccount generated"
 
@@ -6799,7 +6831,7 @@ msgstr "Select a collateral"
 msgid "Insufficient {0} balance"
 msgstr "Insufficient {0} balance"
 
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to generate subaccount"
 msgstr "Failed to generate subaccount"
 
@@ -6878,11 +6910,7 @@ msgstr "Date"
 msgid "Buy GMX using FIAT gateways:"
 msgstr "Buy GMX using FIAT gateways:"
 
-#: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
-#: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
-#: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
-#: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
-#: src/domain/synthetics/orders/createSwapOrderTxn.ts
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Order error."
 msgstr "Order error."
 
@@ -7022,6 +7050,10 @@ msgstr "This token automatically accrues fees from swaps for the {0}/{1} market.
 msgid "Page outdated, please refresh"
 msgstr "Page outdated, please refresh"
 
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
+msgid "Order submitted."
+msgstr "Order submitted."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals"
 msgstr "GMX Proposals"
@@ -7090,7 +7122,7 @@ msgstr "Claim completed!"
 msgid "Stop Market"
 msgstr "Stop Market"
 
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to update subaccount settings"
 msgstr "Failed to update subaccount settings"
 
@@ -7344,7 +7376,7 @@ msgstr "No liquidity is available for increasing shorts for<0/>this size. Max sh
 msgid "Avalanche LP incentives"
 msgstr "Avalanche LP incentives"
 
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing subaccount approval..."
 msgstr "Signing subaccount approval..."
 
@@ -8080,7 +8112,7 @@ msgstr "High Swap Price Impact"
 msgid "Swap"
 msgstr "Swap"
 
-#: src/domain/synthetics/gassless/useInitSubaccountState.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing default subaccount approval"
 msgstr "Signing default subaccount approval"
 
@@ -8161,7 +8193,7 @@ msgstr "Unknown order"
 msgid "No open positions at GMX currently"
 msgstr "No open positions at GMX currently"
 
-#: src/context/SubaccountContext/useSubaccountCancelOrdersDetailsMessage.tsx
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Max Action Count Reached. <0>Click here</0> to update."
 msgstr "Max Action Count Reached. <0>Click here</0> to update."
 
@@ -8354,7 +8386,6 @@ msgstr "Very likely"
 msgid "I am aware of the trigger orders"
 msgstr "I am aware of the trigger orders"
 
-#: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {Order} other {# Orders}}"
@@ -8472,8 +8503,8 @@ msgstr "Acceptable price does not apply to stop loss orders, as they will be exe
 
 #: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
 #: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
-msgid "Updating order."
-msgstr "Updating order."
+#~ msgid "Updating order."
+#~ msgstr "Updating order."
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We'll then schedule a chat or interview with you. As a thank you, you'll receive <0>100 <1/></0> for providing your feedback."

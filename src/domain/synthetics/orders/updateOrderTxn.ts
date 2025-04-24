@@ -23,59 +23,6 @@ export type UpdateOrderCallbacks = {
   setPendingOrderUpdate: SetPendingOrderUpdate;
 };
 
-// export async function updateOrderTxn(
-//   chainId: number,
-//   signer: Signer,
-//   subaccount: Subaccount | undefined,
-//   p: UpdateOrderParams,
-//   callbacks: UpdateOrderCallbacks
-// ): Promise<void> {
-//   const {
-//     orderKey,
-//     sizeDeltaUsd,
-//     triggerPrice,
-//     acceptablePrice,
-//     minOutputAmount,
-//     executionFee,
-//     indexToken,
-//     autoCancel,
-//   } = p;
-
-//   const router = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
-
-//   const encodedPayload = createUpdateEncodedPayload({
-//     chainId,
-//     router,
-//     orderKey,
-//     sizeDeltaUsd,
-//     executionFee,
-//     indexToken,
-//     acceptablePrice,
-//     triggerPrice,
-//     minOutputAmount,
-//     autoCancel,
-//   });
-
-//   callbacks.setPendingOrderUpdate({
-//     ...p,
-//     txnType: "update",
-//   });
-
-//   try {
-//     return await callContract(chainId, router, "multicall", [encodedPayload], {
-//       value: executionFee != undefined && executionFee > 0 ? executionFee : undefined,
-//       sentMsg: t`Updating order`,
-//       successMsg: t`Update order executed`,
-//       failMsg: t`Failed to update order`,
-//       setPendingTxns: callbacks.setPendingTxns,
-//       showPreliminaryMsg: Boolean(subaccount),
-//     });
-//   } catch (e) {
-//     callbacks.setPendingOrderUpdate(p, "remove");
-//     throw e;
-//   }
-// }
-
 export function createUpdateEncodedPayload({
   chainId,
   router,

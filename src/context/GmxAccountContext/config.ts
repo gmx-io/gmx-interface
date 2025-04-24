@@ -78,7 +78,7 @@ type MultichainTokenId = {
   chainId: number;
   address: string;
   decimals: number;
-  stargate: string;
+  stargate: Address;
   symbol: string;
 };
 
@@ -160,21 +160,21 @@ if (isDevelopment()) {
       address: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773",
       decimals: 6,
       chainId: ARBITRUM_SEPOLIA,
-      stargate: usdcSgPoolArbitrumSepolia,
+      stargate: usdcSgPoolArbitrumSepolia as Address,
       symbol: "USDC.SG",
     },
     [OPTIMISM_SEPOLIA]: {
       address: "0x488327236B65C61A6c083e8d811a4E0D3d1D4268",
       decimals: 6,
       chainId: OPTIMISM_SEPOLIA,
-      stargate: usdcSgPoolOptimismSepolia,
+      stargate: usdcSgPoolOptimismSepolia as Address,
       symbol: "USDC.SG",
     },
     [SEPOLIA]: {
       address: "0x2F6F07CDcf3588944Bf4C42aC74ff24bF56e7590",
       decimals: 6,
       chainId: SEPOLIA,
-      stargate: usdcSgPoolSepolia,
+      stargate: usdcSgPoolSepolia as Address,
       symbol: "USDC.SG",
     },
   };
@@ -184,21 +184,21 @@ if (isDevelopment()) {
       address: zeroAddress,
       decimals: 18,
       chainId: ARBITRUM_SEPOLIA,
-      stargate: ethPoolArbitrumSepolia,
+      stargate: ethPoolArbitrumSepolia as Address,
       symbol: "ETH",
     },
     [OPTIMISM_SEPOLIA]: {
       address: zeroAddress,
       decimals: 18,
       chainId: OPTIMISM_SEPOLIA,
-      stargate: ethPoolOptimismSepolia,
+      stargate: ethPoolOptimismSepolia as Address,
       symbol: "ETH",
     },
     [SEPOLIA]: {
       address: zeroAddress,
       decimals: 18,
       chainId: SEPOLIA,
-      stargate: ethPoolSepolia,
+      stargate: ethPoolSepolia as Address,
       symbol: "ETH",
     },
   };
@@ -208,7 +208,7 @@ if (isDevelopment()) {
       address: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
       decimals: 18,
       chainId: ARBITRUM_SEPOLIA,
-      stargate: ethPoolArbitrumSepolia,
+      stargate: ethPoolArbitrumSepolia as Address,
       symbol: "WETH",
     },
   };
@@ -346,7 +346,7 @@ for (const tokenSymbol in TOKEN_GROUPS) {
   }
 }
 
-export const DEFAULT_SETTLEMENT_CHAIN_ID_MAP: Record<UiSupportedChain, UiSupportedChain> = {
+export const DEFAULT_SETTLEMENT_CHAIN_ID_MAP: Record<UiSupportedChain, UiSettlementChain> = {
   [BASE_MAINNET]: ARBITRUM,
   [SONIC_MAINNET]: ARBITRUM,
 
@@ -364,7 +364,7 @@ export function getMultichainTokenId(chainId: number, tokenAddress: string): Mul
   return CHAIN_ID_TO_TOKEN_ID_MAP[chainId]?.[tokenAddress];
 }
 
-export function getStargatePoolAddress(chainId: number, tokenAddress: string): string | undefined {
+export function getStargatePoolAddress(chainId: number, tokenAddress: string): Address | undefined {
   const tokenId = getMultichainTokenId(chainId, tokenAddress);
 
   if (!tokenId) return undefined;

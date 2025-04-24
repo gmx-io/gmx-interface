@@ -1,21 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { t, Trans } from "@lingui/macro";
+import { t } from "@lingui/macro";
 import { useCallback, useId, useMemo } from "react";
+import { usePublicClient } from "wagmi";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import { selectSetShouldFallbackToInternalSwap } from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
 import {
-  makeSelectSubaccountForActions,
   selectBlockTimestampData,
   selectIsFirstOrder,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
-import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import {
+  selectSetShouldFallbackToInternalSwap,
   selectTradeboxAllowedSlippage,
   selectTradeboxCollateralToken,
   selectTradeboxDecreasePositionAmounts,
@@ -34,14 +33,11 @@ import {
 import { selectTradeBoxCreateOrderParams } from "context/SyntheticsStateContext/selectors/transactionsSelectors/tradeBoxOrdersSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUserReferralCode } from "domain/referrals";
-import { getIsPossibleExternalSwapError } from "domain/synthetics/externalSwaps/utils";
-import { sendUniversalBatchTxn } from "domain/synthetics/gassless/txns/universalTxn";
-import { OrderTxnCallbackCtx, useOrderTxnCallbacks } from "domain/synthetics/gassless/txns/useOrderTxnCallbacks";
-import { BatchOrderTxnEventParams, TxnEvent, TxnEventName } from "domain/synthetics/gassless/txns/walletTxnBuilder";
-import { useExpressOrdersParams } from "domain/synthetics/gassless/useRelayerFeeHandler";
+import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
+import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
+import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage } from "domain/synthetics/positions/utils";
-import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import {
@@ -51,39 +47,28 @@ import {
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
-import { formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import {
-  getTradeInteractionKey,
-  sendUserAnalyticsOrderConfirmClickEvent,
-  sendUserAnalyticsOrderResultEvent,
-  userAnalytics,
-} from "lib/userAnalytics";
+import { getTradeInteractionKey, sendUserAnalyticsOrderConfirmClickEvent, userAnalytics } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { OrderType } from "sdk/types/orders";
 import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
 
-import { useRequiredActions, useSecondaryOrderPayloads } from "./useRequiredActions";
-import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
+import { useSidecarOrderPayloads } from "./useSidecarOrderPayloads";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
 }
 
-const EMPTY_TRIGGER_RATIO = {
-  ratio: 0n,
-  largestToken: undefined,
-  smallestToken: undefined,
-};
-
 export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactionsProps) {
   const { chainId } = useChainId();
-  const { signer, account } = useWallet();
+  const { signer, account, chainId: walletChainId } = useWallet();
+  const isMultiChain = chainId !== walletChainId;
+  const settlementChainClient = usePublicClient({ chainId });
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const tokensData = useTokensData();
   const { shouldDisableValidationForTesting } = useSettings();
-  const { getExecutionFeeAmountForEntry } = useTPSLSummaryExecutionFee();
-  const { orderTxnCallback } = useOrderTxnCallbacks();
+
+  const { makeOrderTxnCallback } = useOrderTxnCallbacks();
 
   const isFirstOrder = useSelector(selectIsFirstOrder);
   const blockTimestampData = useSelector(selectBlockTimestampData);
@@ -111,20 +96,9 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
   const fromToken = getByKey(tokensData, fromTokenAddress);
   const toToken = getByKey(tokensData, toTokenAddress);
-  const { requiredActions, createSltpEntries, cancelSltpEntries, updateSltpEntries } = useRequiredActions();
 
-  const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: selectedPosition?.key });
-
-  const subaccount = useSelector(makeSelectSubaccountForActions(requiredActions));
   const initialCollateralAllowance = useSelector(selectTradeboxPayTokenAllowance);
-
-  const secondaryOrderPayloads = useSecondaryOrderPayloads({
-    cancelSltpEntries,
-    createSltpEntries,
-    updateSltpEntries,
-    autoCancelOrdersLimit,
-    getExecutionFeeAmountForEntry,
-  });
+  const sidecarOrderPayloads = useSidecarOrderPayloads();
 
   const primaryCreateOrderParams = useSelector(selectTradeBoxCreateOrderParams);
   const slippageInputId = useId();
@@ -139,22 +113,28 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     }
 
     return {
-      createOrderParams: [primaryCreateOrderParams, ...(secondaryOrderPayloads?.createPayloads ?? [])],
-      updateOrderParams: secondaryOrderPayloads?.updatePayloads ?? [],
-      cancelOrderParams: secondaryOrderPayloads?.cancelPayloads ?? [],
+      createOrderParams: [primaryCreateOrderParams, ...(sidecarOrderPayloads?.createPayloads ?? [])],
+      updateOrderParams: sidecarOrderPayloads?.updatePayloads ?? [],
+      cancelOrderParams: sidecarOrderPayloads?.cancelPayloads ?? [],
     };
-  }, [primaryCreateOrderParams, secondaryOrderPayloads]);
+  }, [primaryCreateOrderParams, sidecarOrderPayloads]);
 
-  const { expressParams, needGasPaymentTokenApproval } = useExpressOrdersParams({ orderParams: batchParams });
+  const { expressParams, needGasPaymentTokenApproval } = useExpressOrdersParams({
+    orderParams: batchParams,
+    isInTradebox: true,
+    isMultiChain,
+  });
+  // useEffect(() => {
+  //   console.log("batchParams", batchParams);
+  // }, [batchParams]);
 
   if (expressParams || needGasPaymentTokenApproval) {
     // TEMP DEBUG
-    // eslint-disable-next-line no-console
-    console.log("expressParams", expressParams, {
-      needGasPaymentTokenApproval,
-      gasPaymentFee: formatTokenAmount(expressParams?.relayFeeParams.feeParams.feeAmount, 6, "USDC"),
-      relayerFee: formatTokenAmount(expressParams?.relayFeeParams.relayerTokenAmount, 18, "WETH"),
-    });
+    // console.log("expressParams", expressParams, {
+    //   needGasPaymentTokenApproval,
+    //   gasPaymentFee: formatTokenAmount(expressParams?.relayFeeParams.feeParams.feeAmount, 6, "USDC"),
+    //   relayerFee: formatTokenAmount(expressParams?.relayFeeParams.relayerTokenAmount, 18, "WETH"),
+    // });
   }
 
   const initOrderMetricData = useCallback(() => {
@@ -167,7 +147,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         executionFee,
         allowedSlippage,
         orderType: primaryCreateOrderParams?.orderPayload.orderType,
-        subaccount,
+        subaccount: expressParams?.subaccount,
         isFirstOrder,
         initialCollateralAllowance,
       });
@@ -184,7 +164,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         executionFee,
         orderType: primaryCreateOrderParams?.orderPayload.orderType ?? OrderType.MarketIncrease,
         hasReferralCode: Boolean(referralCodeForTxn),
-        subaccount,
+        subaccount: expressParams?.subaccount,
         triggerPrice,
         allowedSlippage,
         marketInfo,
@@ -192,12 +172,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         isFirstOrder,
         isLeverageEnabled: isLeverageSliderEnabled,
         initialCollateralAllowance,
-        isTPSLCreated: createSltpEntries.length > 0,
-        slCount: createSltpEntries.filter(
-          (entry) => entry.decreaseAmounts.triggerOrderType === OrderType.StopLossDecrease
+        isTPSLCreated: Boolean(sidecarOrderPayloads?.createPayloads?.length),
+        slCount: sidecarOrderPayloads?.createPayloads.filter(
+          (entry) => entry.orderPayload.orderType === OrderType.StopLossDecrease
         ).length,
-        tpCount: createSltpEntries.filter((entry) => entry.decreaseAmounts.triggerOrderType === OrderType.LimitDecrease)
-          .length,
+        tpCount: sidecarOrderPayloads?.createPayloads.filter(
+          (entry) => entry.orderPayload.orderType === OrderType.LimitDecrease
+        ).length,
         priceImpactDeltaUsd: increaseAmounts?.positionPriceImpactDeltaUsd,
         priceImpactPercentage: fees?.positionPriceImpact?.precisePercentage,
         netRate1h: isLong ? chartHeaderInfo?.fundingRateLong : chartHeaderInfo?.fundingRateShort,
@@ -215,7 +196,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       swapPath: [],
       orderType: decreaseAmounts?.triggerOrderType,
       hasReferralCode: Boolean(referralCodeForTxn),
-      subaccount,
+      subaccount: expressParams?.subaccount,
       triggerPrice,
       marketInfo,
       allowedSlippage,
@@ -232,9 +213,9 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     chartHeaderInfo?.fundingRateLong,
     chartHeaderInfo?.fundingRateShort,
     collateralToken,
-    createSltpEntries,
     decreaseAmounts,
     executionFee,
+    expressParams?.subaccount,
     fees?.positionPriceImpact?.precisePercentage,
     fromToken,
     increaseAmounts,
@@ -245,10 +226,10 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     isLong,
     isSwap,
     marketInfo,
-    primaryCreateOrderParams,
+    primaryCreateOrderParams?.orderPayload.orderType,
     referralCodeForTxn,
     selectedPosition,
-    subaccount,
+    sidecarOrderPayloads?.createPayloads,
     swapAmounts,
     toToken,
     triggerPrice,
@@ -267,9 +248,10 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
     sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
-    return sendUniversalBatchTxn({
+    return sendBatchOrderTxn({
       chainId,
       signer,
+      settlementChainClient,
       batchParams,
       expressParams,
       simulationParams: shouldDisableValidationForTesting
@@ -278,29 +260,14 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
             tokensData,
             blockTimestampData,
           },
-      callback: (e: TxnEvent<BatchOrderTxnEventParams>) => {
-        const ctx: OrderTxnCallbackCtx = {
-          metricId: metricData.metricId,
-          slippageInputId,
-        };
-
-        if (e.event === TxnEventName.TxnError) {
-          sendUserAnalyticsOrderResultEvent(chainId, metricData.metricId, false, e.data.error);
-
-          if (getIsPossibleExternalSwapError(e.data.error) && primaryCreateOrderParams) {
-            setShouldFallbackToInternalSwap(true);
-            ctx.additionalErrorContent = (
-              <>
-                <br />
-                <br />
-                <Trans>External swap is temporarily disabled. Please try again.</Trans>
-              </>
-            );
-          }
-        }
-
-        orderTxnCallback(ctx, e);
-      },
+      callback: makeOrderTxnCallback({
+        metricId: metricData.metricId,
+        slippageInputId,
+        additionalErrorContent: undefined,
+        onInternalSwapFallback: () => {
+          setShouldFallbackToInternalSwap(true);
+        },
+      }),
     });
   }, [
     initOrderMetricData,
@@ -310,12 +277,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     account,
     marketsInfoData,
     chainId,
+    settlementChainClient,
     batchParams,
     expressParams,
     shouldDisableValidationForTesting,
     blockTimestampData,
+    makeOrderTxnCallback,
     slippageInputId,
-    orderTxnCallback,
     setShouldFallbackToInternalSwap,
   ]);
 

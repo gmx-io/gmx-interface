@@ -14,6 +14,7 @@ query ($account: String, $guid: String) {
     step
     account
     amount
+    isExecutionError
     executedTimestamp
     executedTxn
     operation

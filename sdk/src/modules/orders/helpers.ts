@@ -154,6 +154,7 @@ export async function increaseOrderHelper(
       gasPrice,
       tokensData,
     },
+    isExpressTxn: false,
   });
 
   const payOrSizeAmount = "payAmount" in params ? params.payAmount : params.sizeAmount;
@@ -272,6 +273,7 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
       gasPrice,
       tokensData,
     },
+    isExpressTxn: false,
   });
 
   const isWrapOrUnwrap = Boolean(

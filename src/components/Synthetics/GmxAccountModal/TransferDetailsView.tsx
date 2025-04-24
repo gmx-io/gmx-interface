@@ -18,33 +18,33 @@ export const TransferDetailsView = () => {
   const [settlementChainId] = useGmxAccountSettlementChainId();
   const [selectedTransferGuid] = useGmxAccountSelectedTransferGuid();
 
-  const selectedTransaction = useGmxAccountFundingHistoryItem(selectedTransferGuid);
+  const selectedTransfer = useGmxAccountFundingHistoryItem(selectedTransferGuid);
 
-  if (!selectedTransaction) {
+  if (!selectedTransfer) {
     return null;
   }
 
-  const token = getToken(settlementChainId, selectedTransaction.token);
+  const token = getToken(settlementChainId, selectedTransfer.token);
 
   return (
     <div className="text-body-medium flex grow flex-col gap-8 overflow-y-hidden">
       <div className="flex flex-col gap-8 px-16 pt-16">
-        <SyntheticsInfoRow label="Sent at" value={formatTradeActionTimestamp(selectedTransaction.sentTimestamp)} />
-        {selectedTransaction.receivedTimestamp ? (
+        <SyntheticsInfoRow label="Sent at" value={formatTradeActionTimestamp(selectedTransfer.sentTimestamp)} />
+        {selectedTransfer.receivedTimestamp ? (
           <SyntheticsInfoRow
             label="Received at"
-            value={formatTradeActionTimestamp(selectedTransaction.receivedTimestamp)}
+            value={formatTradeActionTimestamp(selectedTransfer.receivedTimestamp)}
           />
         ) : null}
-        {selectedTransaction.executedTimestamp ? (
+        {selectedTransfer.executedTimestamp ? (
           <SyntheticsInfoRow
             label="Executed at"
-            value={formatTradeActionTimestamp(selectedTransaction.executedTimestamp)}
+            value={formatTradeActionTimestamp(selectedTransfer.executedTimestamp)}
           />
         ) : null}
         <SyntheticsInfoRow
           label="Amount"
-          value={formatBalanceAmount(selectedTransaction.amount, token.decimals, token.symbol)}
+          value={formatBalanceAmount(selectedTransfer.amount, token.decimals, token.symbol)}
         />
         {/* <SyntheticsInfoRow label="Fee" value={""} /> */}
         <SyntheticsInfoRow
@@ -54,57 +54,80 @@ export const TransferDetailsView = () => {
           value={
             <div className="flex items-center gap-8">
               <img
-                src={CHAIN_ID_TO_NETWORK_ICON[selectedTransaction.sourceChainId]}
+                src={CHAIN_ID_TO_NETWORK_ICON[selectedTransfer.sourceChainId]}
                 width={20}
                 height={20}
                 className="size-20 rounded-full"
               />
-              {getChainName(selectedTransaction.sourceChainId)}
+              {getChainName(selectedTransfer.sourceChainId)}
             </div>
           }
         />
-        <SyntheticsInfoRow label="Wallet" value={shortenAddressOrEns(selectedTransaction.account, 13)} />
+        <SyntheticsInfoRow label="Wallet" value={shortenAddressOrEns(selectedTransfer.account, 13)} />
         <SyntheticsInfoRow
-          label={CHAIN_ID_TO_EXPLORER_NAME[selectedTransaction.sourceChainId]}
+          label={
+            CHAIN_ID_TO_EXPLORER_NAME[
+              selectedTransfer.operation === "deposit"
+                ? selectedTransfer.sourceChainId
+                : selectedTransfer.settlementChainId
+            ]
+          }
           value={
             <ExternalLink
-              href={CHAIN_ID_TO_TX_URL_BUILDER[selectedTransaction.sourceChainId](selectedTransaction.sentTxn)}
+              href={
+                selectedTransfer.operation === "deposit"
+                  ? CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.sourceChainId](selectedTransfer.sentTxn)
+                  : CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.settlementChainId](selectedTransfer.sentTxn)
+              }
             >
               <div className="flex items-center gap-4">
-                {shortenAddressOrEns(selectedTransaction.sentTxn, 13)}
+                {shortenAddressOrEns(selectedTransfer.sentTxn, 13)}
                 <img src={externalLink} alt="External Link" className="size-20" />
               </div>
             </ExternalLink>
           }
         />
-        {selectedTransaction.receivedTxn && (
+        {selectedTransfer.receivedTxn && (
           <SyntheticsInfoRow
-            label={CHAIN_ID_TO_EXPLORER_NAME[selectedTransaction.settlementChainId]}
+            label={
+              selectedTransfer.operation === "deposit"
+                ? CHAIN_ID_TO_EXPLORER_NAME[selectedTransfer.settlementChainId]
+                : CHAIN_ID_TO_EXPLORER_NAME[selectedTransfer.sourceChainId]
+            }
             value={
               <ExternalLink
-                href={CHAIN_ID_TO_TX_URL_BUILDER[selectedTransaction.settlementChainId](
-                  selectedTransaction.receivedTxn
-                )}
+                href={
+                  selectedTransfer.operation === "deposit"
+                    ? CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.settlementChainId](selectedTransfer.receivedTxn)
+                    : CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.sourceChainId](selectedTransfer.receivedTxn)
+                }
               >
                 <div className="flex items-center gap-4">
-                  {shortenAddressOrEns(selectedTransaction.receivedTxn, 13)}
+                  {shortenAddressOrEns(selectedTransfer.receivedTxn, 13)}
                   <img src={externalLink} alt="External Link" className="size-20" />
                 </div>
               </ExternalLink>
             }
           />
         )}
-        {selectedTransaction.executedTxn && (
+        {selectedTransfer.executedTxn && (
           <SyntheticsInfoRow
-            label={CHAIN_ID_TO_EXPLORER_NAME[selectedTransaction.settlementChainId]}
+            label={
+              selectedTransfer.isExecutionError ? (
+                <>
+                  {CHAIN_ID_TO_EXPLORER_NAME[selectedTransfer.settlementChainId]}{" "}
+                  <span className="text-red-500">Txn Failed</span>
+                </>
+              ) : (
+                CHAIN_ID_TO_EXPLORER_NAME[selectedTransfer.settlementChainId]
+              )
+            }
             value={
               <ExternalLink
-                href={CHAIN_ID_TO_TX_URL_BUILDER[selectedTransaction.settlementChainId](
-                  selectedTransaction.executedTxn
-                )}
+                href={CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.settlementChainId](selectedTransfer.executedTxn)}
               >
                 <div className="flex items-center gap-4">
-                  {shortenAddressOrEns(selectedTransaction.executedTxn, 13)}
+                  {shortenAddressOrEns(selectedTransfer.executedTxn, 13)}
                   <img src={externalLink} alt="External Link" className="size-20" />
                 </div>
               </ExternalLink>

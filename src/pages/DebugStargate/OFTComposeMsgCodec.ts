@@ -1,8 +1,8 @@
 import { addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
-import { AbiCoder, BigNumberish, BytesLike, getBytes, hexlify, solidityPacked, toBigInt, assert } from "ethers";
+import { AbiCoder, BigNumberish, BytesLike, getBytes, hexlify, solidityPacked, toBigInt } from "ethers";
+import { Address, Hex, concatHex } from "viem";
 
-import { mustNeverExist } from "lib/types";
-import { ARBITRUM_SEPOLIA, UiContractsChain, UiSettlementChain, UiSupportedChain } from "sdk/configs/chains";
+import { ARBITRUM_SEPOLIA, UiSettlementChain } from "sdk/configs/chains";
 
 export class OFTComposeMsgCodec {
   // Offset constants for decoding composed messages
@@ -24,9 +24,9 @@ export class OFTComposeMsgCodec {
     _srcEid: BigNumberish,
     _amountLD: BigNumberish,
     _composeMsg: BytesLike
-  ): string {
+  ): Hex {
     // _msg = abi.encodePacked(_nonce, _srcEid, _amountLD, _composeMsg);
-    return solidityPacked(["uint64", "uint32", "uint256", "bytes"], [_nonce, _srcEid, _amountLD, _composeMsg]);
+    return solidityPacked(["uint64", "uint32", "uint256", "bytes"], [_nonce, _srcEid, _amountLD, _composeMsg]) as Hex;
   }
 
   /**
@@ -83,7 +83,7 @@ export class OFTComposeMsgCodec {
   }
 }
 
-const LZ_ENDPOINT_MAP: Record<UiSettlementChain, string> = {
+const LZ_ENDPOINT_MAP: Record<UiSettlementChain, Address> = {
   [ARBITRUM_SEPOLIA]: "0x6EDCE65403992e310A62460808c4b910D972f10f",
 };
 
@@ -99,7 +99,7 @@ export class CodecUiHelper {
 
     const composeFrom = hexlify(addressToBytes32(composeFromAddress));
 
-    const composeFromWithMsg = composeFrom + msg.slice("0x".length);
+    const composeFromWithMsg = concatHex([composeFrom as Hex, msg as Hex]);
 
     return composeFromWithMsg;
   }
@@ -114,7 +114,10 @@ export class CodecUiHelper {
     return CodecUiHelper.encodeComposeMsg(CodecUiHelper.getLzEndpoint(dstChainId), msg);
   }
 
-  public static getLzEndpoint(chainId: number) {
+  public static getLzEndpoint(chainId: number): Address {
+    if (!LZ_ENDPOINT_MAP[chainId]) {
+      throw new Error(`LZ endpoint not found for chainId: ${chainId}`);
+    }
     return LZ_ENDPOINT_MAP[chainId];
   }
 }

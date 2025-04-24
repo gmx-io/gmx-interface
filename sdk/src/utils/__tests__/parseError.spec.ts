@@ -215,16 +215,11 @@ describe("parseError", () => {
         expect.objectContaining({
           errorMessage: JSON.stringify({
             error: {
-              code: -"XXX",
+              code: -32000,
               message: "Invalid input parameters",
             },
           }),
-          errorGroup: JSON.stringify({
-            error: {
-              code: "-XXX",
-              message: "Invalid input parameters",
-            },
-          }).slice(0, 50),
+          errorGroup: '{"error":{"code":-XXX,"message":"Invalid input par',
           errorStackGroup: "Unknown stack group",
           errorDepth: 0,
           isUserError: false,
@@ -326,7 +321,7 @@ describe("parseError", () => {
       const error: ErrorLike = {
         message: "Transaction failed",
         errorSource: "getCallStaticError",
-        isAdditinalValidationPassed: false,
+        isAdditionalValidationPassed: false,
         additionalValidationType: "tryCallStatic",
       };
 
@@ -336,7 +331,7 @@ describe("parseError", () => {
         expect.objectContaining({
           errorMessage: "Transaction failed",
           errorSource: "getCallStaticError",
-          isAdditinalValidationPassed: false,
+          isAdditionalValidationPassed: false,
           additionalValidationType: "tryCallStatic",
         })
       );

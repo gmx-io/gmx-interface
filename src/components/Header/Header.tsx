@@ -110,6 +110,11 @@ export function ExpressTradingBanner() {
     false
   );
 
+  const onEnable = useCallback(() => {
+    settings.setExpressOrdersEnabled(true);
+    setIsExpressTradingBannerDismissed(true);
+  }, [settings, setIsExpressTradingBannerDismissed]);
+
   if (isExpressTradingBannerDismissed || settings.expressOrdersEnabled) {
     return null;
   }
@@ -118,13 +123,7 @@ export function ExpressTradingBanner() {
     <ColorfulBanner color="blue" icon={<IconBolt />} onClose={() => setIsExpressTradingBannerDismissed(true)}>
       <TooltipWithPortal
         handle={
-          <div
-            className="clickable -ml-4 mr-8"
-            onClick={() => {
-              settings.setExpressOrdersEnabled(true);
-              setIsExpressTradingBannerDismissed(true);
-            }}
-          >
+          <div className="clickable -ml-4 mr-8" onClick={onEnable}>
             <Trans>Enable Express Trading</Trans>
           </div>
         }

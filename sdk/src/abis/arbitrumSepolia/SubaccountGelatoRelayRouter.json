@@ -123,22 +123,6 @@
     {
       "inputs": [
         {
-          "internalType": "address",
-          "name": "cancellationReceiver",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "expectedCancellationReceiver",
-          "type": "address"
-        }
-      ],
-      "name": "InvalidCancellationReceiverForSubaccountOrder",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
           "internalType": "uint256",
           "name": "desChainId",
           "type": "uint256"
@@ -182,55 +166,12 @@
     {
       "inputs": [
         {
-          "internalType": "address",
-          "name": "receiver",
-          "type": "address"
-        }
-      ],
-      "name": "InvalidReceiver",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "signatureType",
-          "type": "string"
-        }
-      ],
-      "name": "InvalidSignature",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
           "internalType": "uint256",
           "name": "srcChainId",
           "type": "uint256"
         }
       ],
       "name": "InvalidSrcChainId",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "storedNonce",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "nonce",
-          "type": "uint256"
-        }
-      ],
-      "name": "InvalidSubaccountApprovalNonce",
-      "type": "error"
-    },
-    {
-      "inputs": [],
-      "name": "InvalidSubaccountApprovalSubaccount",
       "type": "error"
     },
     {
@@ -287,19 +228,8 @@
       "type": "error"
     },
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "currentTimestamp",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "deadline",
-          "type": "uint256"
-        }
-      ],
-      "name": "SubaccountApprovalDeadlinePassed",
+      "inputs": [],
+      "name": "TokenPermitsNotAllowedForMultichain",
       "type": "error"
     },
     {

@@ -74,48 +74,40 @@ const TokenIcons = ({ tokens }: { tokens: string[] }) => {
 };
 
 const FUNDING_OP_LABELS: Partial<
-  Record<`${"deposit" | "withdrawal"}-${"sent" | "received" | "executed"}`, MessageDescriptor>
+  Record<`${"deposit" | "withdrawal"}-${"sent" | "received" | "executed"}${"" | "-failed"}`, MessageDescriptor>
 > = {
   "deposit-sent": msg`Deposit Sent`,
   "deposit-received": msg`Deposit Received`,
   "deposit-executed": msg`Deposit Executed`,
   "withdrawal-sent": msg`Withdrawal Sent`,
   "withdrawal-received": msg`Withdrawal Received`,
+  "deposit-executed-failed": msg`Failed to deposit`,
 };
 
-export function FundingHistoryItemLabel({ step, operation }: Pick<MultichainFundingHistoryItem, "step" | "operation">) {
+export function FundingHistoryItemLabel({
+  step,
+  operation,
+  isExecutionError,
+}: Pick<MultichainFundingHistoryItem, "step" | "operation" | "isExecutionError">) {
   const labels = useLocalizedMap(FUNDING_OP_LABELS);
 
-  if (step === "sent") {
+  const isLoading = (step === "sent" || (operation === "deposit" && step === "received")) && !isExecutionError;
+
+  const key = `${operation}-${step}${isExecutionError ? "-failed" : ""}`;
+  let text = labels[key] || `${operation} ${step}${isExecutionError ? " failed" : ""}`;
+
+  if (isLoading) {
     return (
       <div className="text-body-small flex items-center gap-4 text-slate-100">
         <TbLoader2 className="size-16 animate-spin" />
-        {labels[`${operation}-sent`]}
+        {text}
       </div>
     );
+  } else if (isExecutionError) {
+    return <div className="text-body-small text-red-500">{text}</div>;
   }
 
-  if (operation === "deposit" && step === "received") {
-    return (
-      <div className="text-body-small flex items-center gap-4 text-slate-100">
-        <TbLoader2 className="size-16 animate-spin" />
-        {labels[`${operation}-received`]}
-      </div>
-    );
-  }
-
-  if (step === "executed" && operation === "deposit") {
-    return <div className="text-body-small text-slate-100">{labels[`deposit-executed`]}</div>;
-  }
-  if (operation === "withdrawal" && step === "received") {
-    return <div className="text-body-small text-slate-100">{labels[`withdrawal-received`]}</div>;
-  }
-
-  return (
-    <div className="text-body-small text-slate-100">
-      {operation} {step}
-    </div>
-  );
+  return <div className="text-body-small text-slate-100">{text}</div>;
 }
 
 const Toolbar = ({ account }: { account: string }) => {
@@ -368,7 +360,11 @@ const FundingHistorySection = () => {
               <TokenIcon symbol={transfer.token.symbol} displaySize={40} importSize={40} />
               <div>
                 <div>{transfer.token.symbol}</div>
-                <FundingHistoryItemLabel step={transfer.step} operation={transfer.operation} />
+                <FundingHistoryItemLabel
+                  step={transfer.step}
+                  operation={transfer.operation}
+                  isExecutionError={transfer.isExecutionError}
+                />
               </div>
             </div>
             <div className="text-right">

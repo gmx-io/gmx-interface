@@ -1,5 +1,9 @@
+import { ReactNode } from "react";
+
 import { OrderTxnType, OrderType } from "domain/synthetics/orders";
+import { SignedSubbacountApproval } from "domain/synthetics/subaccount";
 import { OrderMetricId } from "lib/metrics/types";
+import { SignedTokenPermit } from "sdk/types/tokens";
 import { ExternalSwapOutput } from "sdk/types/trade";
 
 export type MultiTransactionStatus<TEventData> = {
@@ -67,6 +71,18 @@ export type PendingPositionUpdate = {
   collateralDeltaAmount: bigint;
   updatedAt: number;
   updatedAtBlock: bigint;
+};
+
+export type PendingExpressTxnParams = {
+  taskId: string;
+  isSponsoredCall: boolean;
+  subaccountApproval?: SignedSubbacountApproval;
+  tokenPermits?: SignedTokenPermit[];
+  pendingOrdersKeys?: string[];
+  pendingPositionsKeys?: string[];
+  metricId?: OrderMetricId;
+  successMessage?: ReactNode;
+  errorMessage?: ReactNode;
 };
 
 export type PendingPositionsUpdates = {
@@ -308,14 +324,4 @@ export type ApprovalStatuses = {
   [tokenAddress: string]: {
     [spender: string]: { value: bigint; createdAt: number };
   };
-};
-
-export type PendingExpressTxnParams = {
-  taskId: string;
-  isSponsoredCall: boolean;
-  shouldResetSubaccountApproval: boolean;
-  shouldResetTokenPermits: boolean;
-  pendingOrdersKeys?: string[];
-  pendingPositionsKeys?: string[];
-  metricId?: OrderMetricId;
 };

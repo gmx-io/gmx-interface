@@ -23,38 +23,21 @@ import type {
 
 export interface ERC20PermitInterfaceInterface extends Interface {
   getFunction(
-    nameOrSignature:
-      | "DOMAIN_SEPARATOR"
-      | "nonces"
-      | "permit"
-      | "version"
-      | "name"
+    nameOrSignature: "PERMIT_TYPEHASH" | "DOMAIN_SEPARATOR" | "nonces" | "permit" | "version" | "name"
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: "DOMAIN_SEPARATOR",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "PERMIT_TYPEHASH", values?: undefined): string;
+  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR", values?: undefined): string;
   encodeFunctionData(functionFragment: "nonces", values: [AddressLike]): string;
   encodeFunctionData(
     functionFragment: "permit",
-    values: [
-      AddressLike,
-      AddressLike,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BytesLike,
-      BytesLike
-    ]
+    values: [AddressLike, AddressLike, BigNumberish, BigNumberish, BigNumberish, BytesLike, BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "version", values?: undefined): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
 
-  decodeFunctionResult(
-    functionFragment: "DOMAIN_SEPARATOR",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "PERMIT_TYPEHASH", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "permit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
@@ -78,31 +61,23 @@ export interface ERC20PermitInterface extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(
-    event: TCEvent
-  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(
-    event?: TCEvent
-  ): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+
+  PERMIT_TYPEHASH: TypedContractMethod<[], [string], "view">;
 
   DOMAIN_SEPARATOR: TypedContractMethod<[], [string], "view">;
 
@@ -116,7 +91,7 @@ export interface ERC20PermitInterface extends BaseContract {
       deadline: BigNumberish,
       v: BigNumberish,
       r: BytesLike,
-      s: BytesLike
+      s: BytesLike,
     ],
     [void],
     "nonpayable"
@@ -126,16 +101,11 @@ export interface ERC20PermitInterface extends BaseContract {
 
   name: TypedContractMethod<[], [string], "view">;
 
-  getFunction<T extends ContractMethod = ContractMethod>(
-    key: string | FunctionFragment
-  ): T;
+  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
-  getFunction(
-    nameOrSignature: "DOMAIN_SEPARATOR"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "nonces"
-  ): TypedContractMethod<[owner: AddressLike], [bigint], "view">;
+  getFunction(nameOrSignature: "PERMIT_TYPEHASH"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "DOMAIN_SEPARATOR"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "nonces"): TypedContractMethod<[owner: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "permit"
   ): TypedContractMethod<
@@ -146,17 +116,13 @@ export interface ERC20PermitInterface extends BaseContract {
       deadline: BigNumberish,
       v: BigNumberish,
       r: BytesLike,
-      s: BytesLike
+      s: BytesLike,
     ],
     [void],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "version"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "name"
-  ): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "version"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "name"): TypedContractMethod<[], [string], "view">;
 
   filters: {};
 }

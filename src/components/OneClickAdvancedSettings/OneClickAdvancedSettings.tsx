@@ -1,12 +1,9 @@
 import { Trans } from "@lingui/macro";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useBigNumberInput } from "domain/synthetics/common/useBigNumberInput";
-import {
-  getRemainingSubaccountActions,
-  getRemainingSubaccountSeconds,
-} from "domain/synthetics/gassless/txns/subaccountUtils";
+import { getRemainingSubaccountActions, getRemainingSubaccountSeconds } from "domain/synthetics/subaccount";
 import { periodToSeconds, secondsToPeriod } from "sdk/utils/time";
 
 import Button from "components/Button/Button";
@@ -26,7 +23,7 @@ export function OneClickAdvancedSettings() {
 
   const { displayValue: daysLimitString, setDisplayValue: setDaysLimitString } = useBigNumberInput(0n, 0, 0);
 
-  function handleSave() {
+  const handleSave = useCallback(() => {
     if (!subaccount) {
       return;
     }
@@ -38,7 +35,7 @@ export function OneClickAdvancedSettings() {
       nextRemainigActions,
       nextRemainingSeconds,
     });
-  }
+  }, [subaccount, remainingActionsString, daysLimitString, updateSubaccountSettings]);
 
   useEffect(
     function initSettings() {

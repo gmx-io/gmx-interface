@@ -13,7 +13,6 @@ import {
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectExternalSwapQuote } from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
 import {
   makeSelectSubaccountForActions,
   selectChainId,
@@ -21,6 +20,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectAddTokenPermit } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
+import { selectExternalSwapQuote } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
   selectNeedTradeboxPayTokenApproval,
   selectTradeboxDecreasePositionAmounts,
@@ -40,7 +40,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { RelayFeeSwapParams } from "domain/synthetics/gassless/txns/expressOrderUtils";
+import { RelayerFeeParams } from "domain/synthetics/express";
 import { getNameByOrderType, substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
@@ -82,7 +82,7 @@ type TradeboxButtonState = {
   disabled: boolean;
   onSubmit: () => Promise<void>;
   slippageInputId: string;
-  relayerFeeParams?: RelayFeeSwapParams;
+  relayerFeeParams?: RelayerFeeParams;
 };
 
 export function useTradeboxButtonState({
@@ -257,7 +257,10 @@ export function useTradeboxButtonState({
         setPendingTxns: () => null,
         infoTokens: {},
         chainId,
-        addTokenPermit,
+        permitParams: {
+          addTokenPermit,
+          verifyingContract: getContract(chainId, "SyntheticsRouter"),
+        },
         onApproveFail: () => {
           userAnalytics.pushEvent<TokenApproveResultEvent>({
             event: "TokenApproveAction",

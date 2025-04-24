@@ -1,6 +1,7 @@
 import type { JsonFragment } from "ethers";
 import { Abi, erc20Abi } from "viem";
 
+import ArbitrumNodeInterface from "./ArbitrumNodeInterface.json";
 import CustomErrorsArbitrumSepolia from "./arbitrumSepolia/CustomErrors.json";
 import DataStoreArbitrumSepolia from "./arbitrumSepolia/DataStore.json";
 import ExchangeRouterArbitrumSepolia from "./arbitrumSepolia/ExchangeRouter.json";
@@ -13,6 +14,7 @@ import MultichainGlvRouterArbitrumSepolia from "./arbitrumSepolia/MultichainGlvR
 import MultichainGmRouterArbitrumSepolia from "./arbitrumSepolia/MultichainGmRouter.json";
 import MultichainOrderRouterArbitrumSepolia from "./arbitrumSepolia/MultichainOrderRouter.json";
 import MultichainOrderRouterUtilsArbitrumSepolia from "./arbitrumSepolia/MultichainOrderRouterUtils.json";
+import MultichainSubaccountRouterArbitrumSepolia from "./arbitrumSepolia/MultichainSubaccountRouter.json";
 import MultichainTransferRouterArbitrumSepolia from "./arbitrumSepolia/MultichainTransferRouter.json";
 import MultichainUtilsArbitrumSepolia from "./arbitrumSepolia/MultichainUtils.json";
 import MultichainVaultArbitrumSepolia from "./arbitrumSepolia/MultichainVault.json";
@@ -67,7 +69,6 @@ import Vester from "./Vester.json";
 import WETH from "./WETH.json";
 import YieldFarm from "./YieldFarm.json";
 import YieldToken from "./YieldToken.json";
-
 export type AbiId =
   | "CustomErrors"
   | "DataStore"
@@ -129,13 +130,15 @@ export type AbiId =
   | "MultichainTransferRouterArbitrumSepolia"
   | "MultichainUtilsArbitrumSepolia"
   | "MultichainVaultArbitrumSepolia"
+  | "MultichainSubaccountRouterArbitrumSepolia"
   | "ReferralStorageArbitrumSepolia"
   | "SubaccountGelatoRelayRouterArbitrumSepolia"
   | "SubaccountRouterArbitrumSepolia"
   | "SyntheticsReaderArbitrumSepolia"
   | "TimelockArbitrumSepolia"
   | "LayerZeroProviderArbitrumSepolia"
-  | "RelayParamsArbitrumSepolia";
+  | "RelayParamsArbitrumSepolia"
+  | "ArbitrumNodeInterface";
 
 export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   CustomErrors: CustomErrors.abi,
@@ -198,6 +201,7 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   MultichainTransferRouterArbitrumSepolia: MultichainTransferRouterArbitrumSepolia.abi,
   MultichainUtilsArbitrumSepolia: MultichainUtilsArbitrumSepolia.abi,
   MultichainVaultArbitrumSepolia: MultichainVaultArbitrumSepolia.abi,
+  MultichainSubaccountRouterArbitrumSepolia: MultichainSubaccountRouterArbitrumSepolia.abi,
   SyntheticsReaderArbitrumSepolia: SyntheticsReaderArbitrumSepolia.abi,
   ReferralStorageArbitrumSepolia: ReferralStorageArbitrumSepolia.abi,
   SubaccountGelatoRelayRouterArbitrumSepolia: SubaccountGelatoRelayRouterArbitrumSepolia.abi,
@@ -205,4 +209,5 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   TimelockArbitrumSepolia: TimelockArbitrumSepolia.abi,
   LayerZeroProviderArbitrumSepolia: LayerZeroProviderArbitrumSepolia.abi,
   RelayParamsArbitrumSepolia: RelayParamsArbitrumSepolia.abi,
+  ArbitrumNodeInterface: ArbitrumNodeInterface.abi,
 } satisfies Record<AbiId, any> as any;

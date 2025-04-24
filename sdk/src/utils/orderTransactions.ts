@@ -4,14 +4,18 @@ import { encodeFunctionData, zeroAddress, zeroHash } from "viem";
 import ExchangeRouterAbi from "abis/ExchangeRouter.json";
 import ERC20ABI from "abis/Token.json";
 import { getContract } from "configs/contracts";
-import { getToken } from "configs/tokens";
-import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { convertTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { DecreasePositionSwapType, OrderType } from "types/orders";
-import { ContractPrice, WrappedTokenAddress } from "types/tokens";
+import { ContractPrice, ERC20Address } from "types/tokens";
 import { ExternalSwapOutput } from "types/trade";
 
 import { convertToContractPrice } from "./tokens";
 import { applySlippageToMinOut, applySlippageToPrice } from "./trade";
+
+type ExchangeRouterCall = {
+  method: string;
+  params: any[];
+};
 
 export type BatchOrderTxnParams = {
   createOrderParams: CreateOrderTxnParams<any>[];
@@ -23,7 +27,7 @@ export type CreateOrderTxnParams<
   TParams extends SwapOrderParams | IncreasePositionOrderParams | DecreasePositionOrderParams,
 > = {
   params: TParams;
-  orderPayload: CreateOrderPayload<TParams["orderType"]>;
+  orderPayload: CreateOrderPayload;
   tokenTransfersParams: TokenTransfersParams | undefined;
 };
 
@@ -36,32 +40,37 @@ export type CancelOrderTxnParams = {
   orderKey: string;
 };
 
-export type CreateOrderPayload<OT extends OrderType = OrderType> = {
+export type CreateOrderPayload = {
   addresses: {
     receiver: string;
     cancellationReceiver: string;
     callbackContract: string;
     uiFeeReceiver: string;
     market: string;
-    initialCollateralToken: WrappedTokenAddress;
+    initialCollateralToken: ERC20Address;
     swapPath: string[];
   };
   numbers: {
     sizeDeltaUsd: bigint;
+    /**
+     * For express orders initialCollateralDeltaAmount will be transfered from user wallet to order vault in relay router logic,
+     * for default orders - this field will be ignored in contracts and settled by actual value reveived in order vault
+     * */
     initialCollateralDeltaAmount: bigint;
-    triggerPrice: OT extends OrderType.LimitSwap | OrderType.MarketSwap ? bigint : ContractPrice | 0n;
+    triggerPrice: ContractPrice | 0n;
     acceptablePrice: ContractPrice | 0n;
     executionFee: bigint;
     callbackGasLimit: bigint;
     minOutputAmount: bigint;
     validFromTime: bigint;
   };
-  orderType: OT;
-  decreasePositionSwapType: number;
+  orderType: OrderType;
+  decreasePositionSwapType: DecreasePositionSwapType;
   isLong: boolean;
   shouldUnwrapNativeToken: boolean;
   autoCancel: boolean;
   referralCode: string;
+  dataList?: string[];
 };
 
 export type UpdateOrderParams = {
@@ -91,10 +100,13 @@ export type UpdateOrderPayload = {
 };
 
 export type TokenTransfersParams = {
+  // Whether the payment token is the chain's native token (e.g. ETH for Ethereum)
   isNativePayment: boolean;
+  // Whether the receive token is the chain's native token (e.g. ETH for Ethereum)
+  isNativeReceive: boolean;
   tokenTransfers: TokenTransfer[];
   value: bigint;
-  initialCollateralTokenAddress: WrappedTokenAddress;
+  initialCollateralTokenAddress: ERC20Address;
   initialCollateralDeltaAmount: bigint;
   minOutputAmount: bigint;
   swapPath: string[];
@@ -108,7 +120,7 @@ export type TokenTransfer = {
 };
 
 export type ExternalCallsPayload = {
-  sendTokens: WrappedTokenAddress[];
+  sendTokens: ERC20Address[];
   sendAmounts: bigint[];
   externalCallTargets: string[];
   externalCallDataList: string[];
@@ -116,7 +128,7 @@ export type ExternalCallsPayload = {
   refundReceivers: string[];
 };
 
-export type CommonOrderParams<OT extends OrderType> = {
+export type CommonOrderParams = {
   chainId: number;
   receiver: string;
   executionFeeAmount: bigint;
@@ -124,13 +136,7 @@ export type CommonOrderParams<OT extends OrderType> = {
   referralCode: string | undefined;
   uiFeeReceiver: string | undefined;
   allowedSlippage: number;
-  orderType: OT;
   autoCancel: boolean;
-};
-
-export type CollateralParams = {
-  swapPath: string[];
-  externalSwapQuote: ExternalSwapOutput | undefined;
 };
 
 export type PositionOrderParams = {
@@ -143,40 +149,50 @@ export type PositionOrderParams = {
   triggerPrice: bigint | undefined;
 };
 
-export type SwapOrderParams = CommonOrderParams<OrderType.MarketSwap | OrderType.LimitSwap> &
-  CollateralParams & {
-    payTokenAddress: string;
-    payTokenAmount: bigint;
-    receiveTokenAddress: string;
-    minOutputAmount: bigint;
-    triggerRatio: bigint | undefined;
-  };
+export type SwapOrderParams = CommonOrderParams & {
+  // Token that the user pays with
+  payTokenAddress: string;
+  payTokenAmount: bigint;
+  // Token that the user receives
+  receiveTokenAddress: string;
+  swapPath: string[];
+  externalSwapQuote: ExternalSwapOutput | undefined;
+  minOutputAmount: bigint;
+  orderType: OrderType.MarketSwap | OrderType.LimitSwap;
+  triggerRatio: bigint | undefined;
+};
 
-export type IncreasePositionOrderParams = CollateralParams &
-  PositionOrderParams &
-  CommonOrderParams<OrderType.MarketIncrease | OrderType.LimitIncrease | OrderType.StopIncrease> & {
-    payTokenAddress: string;
-    payTokenAmount: bigint;
-    collateralDeltaAmount: bigint;
-    collateralTokenAddress: string;
-  };
-
-export type DecreasePositionOrderParams = CommonOrderParams<
-  OrderType.MarketDecrease | OrderType.LimitDecrease | OrderType.StopLossDecrease
-> &
-  CollateralParams &
+export type IncreasePositionOrderParams = CommonOrderParams &
   PositionOrderParams & {
-    initialCollateralTokenAddress: string;
+    // Token that the user pays with
+    payTokenAddress: string;
+    payTokenAmount: bigint;
+    swapPath: string[];
     collateralDeltaAmount: bigint;
+    // Target collateral for the position
+    collateralTokenAddress: string;
+    externalSwapQuote: ExternalSwapOutput | undefined;
+    orderType: OrderType.MarketIncrease | OrderType.LimitIncrease | OrderType.StopIncrease;
+  };
+
+export type DecreasePositionOrderParams = CommonOrderParams &
+  PositionOrderParams & {
+    // Collateral of the position
+    collateralTokenAddress: string;
+    collateralDeltaAmount: bigint;
+    swapPath: string[];
+    externalSwapQuote: undefined;
+    // Token that the user receives
     receiveTokenAddress: string;
     minOutputUsd: bigint;
     decreasePositionSwapType: DecreasePositionSwapType;
+    orderType: OrderType.MarketDecrease | OrderType.LimitDecrease | OrderType.StopLossDecrease;
   };
 
 export function buildSwapOrderPayload(p: SwapOrderParams): CreateOrderTxnParams<SwapOrderParams> {
-  const tokenTransfersParams = buildSendTokensTransfers(p);
+  const tokenTransfersParams = buildTokenTransfersParamsForIncreaseOrSwap(p);
 
-  const orderPayload: CreateOrderPayload<SwapOrderParams["orderType"]> = {
+  const orderPayload: CreateOrderPayload = {
     addresses: {
       receiver: p.receiver,
       cancellationReceiver: zeroAddress,
@@ -189,7 +205,8 @@ export function buildSwapOrderPayload(p: SwapOrderParams): CreateOrderTxnParams<
     numbers: {
       sizeDeltaUsd: 0n,
       initialCollateralDeltaAmount: tokenTransfersParams.initialCollateralDeltaAmount,
-      triggerPrice: p.triggerRatio ?? 0n,
+      // triggerRatio of limit swaps is used in trade history
+      triggerPrice: (p.triggerRatio as ContractPrice) ?? 0n,
       acceptablePrice: 0n,
       executionFee: p.executionFeeAmount,
       callbackGasLimit: 0n,
@@ -199,8 +216,7 @@ export function buildSwapOrderPayload(p: SwapOrderParams): CreateOrderTxnParams<
     orderType: p.orderType,
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
     isLong: false,
-    shouldUnwrapNativeToken:
-      p.payTokenAddress === NATIVE_TOKEN_ADDRESS || p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS,
+    shouldUnwrapNativeToken: tokenTransfersParams.isNativePayment || tokenTransfersParams.isNativeReceive,
     autoCancel: p.autoCancel,
     referralCode: p.referralCode ?? zeroHash,
   };
@@ -208,17 +224,21 @@ export function buildSwapOrderPayload(p: SwapOrderParams): CreateOrderTxnParams<
   return {
     params: p,
     orderPayload,
-    tokenTransfersParams: tokenTransfersParams,
+    tokenTransfersParams,
   };
 }
 
 export function buildIncreaseOrderPayload(
   p: IncreasePositionOrderParams
 ): CreateOrderTxnParams<IncreasePositionOrderParams> {
-  const tokenTransfersParams = buildSendTokensTransfers({ ...p, minOutputAmount: 0n });
+  const tokenTransfersParams = buildTokenTransfersParamsForIncreaseOrSwap({
+    ...p,
+    minOutputAmount: 0n,
+    receiveTokenAddress: undefined,
+  });
   const indexToken = getToken(p.chainId, p.indexTokenAddress);
 
-  const orderPayload: CreateOrderPayload<typeof p.orderType> = {
+  const orderPayload: CreateOrderPayload = {
     addresses: {
       receiver: p.receiver,
       cancellationReceiver: zeroAddress,
@@ -238,15 +258,16 @@ export function buildIncreaseOrderPayload(
       ),
       executionFee: p.executionFeeAmount,
       callbackGasLimit: 0n,
-      minOutputAmount: 0n,
+      minOutputAmount: applySlippageToMinOut(p.allowedSlippage, tokenTransfersParams.minOutputAmount),
       validFromTime: 0n,
     },
     orderType: p.orderType,
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
     isLong: p.isLong,
-    shouldUnwrapNativeToken: p.payTokenAddress === NATIVE_TOKEN_ADDRESS,
+    shouldUnwrapNativeToken: tokenTransfersParams.isNativePayment,
     autoCancel: p.autoCancel,
     referralCode: p.referralCode ?? zeroHash,
+    dataList: [],
   };
 
   return {
@@ -261,28 +282,21 @@ export function buildDecreaseOrderPayload(
 ): CreateOrderTxnParams<DecreasePositionOrderParams> {
   const indexToken = getToken(p.chainId, p.indexTokenAddress);
 
-  const tokenTransfersParams = buildTokenTransfersForDecrease({
-    chainId: p.chainId,
-    executionFeeAmount: p.executionFeeAmount,
-    collateralTokenAddress: p.initialCollateralTokenAddress,
-    collateralTokenAmount: p.collateralDeltaAmount,
-    swapPath: p.swapPath,
-    minOutputAmount: p.minOutputUsd,
-  });
+  const tokenTransfersParams = buildTokenTransfersParamsForDecrease(p);
 
-  const orderPayload: CreateOrderPayload<typeof p.orderType> = {
+  const orderPayload: CreateOrderPayload = {
     addresses: {
       receiver: p.receiver,
       cancellationReceiver: zeroAddress,
       callbackContract: zeroAddress,
       uiFeeReceiver: p.uiFeeReceiver ?? zeroAddress,
       market: p.marketAddress,
-      initialCollateralToken: convertTokenAddress(p.chainId, p.initialCollateralTokenAddress, "wrapped"),
-      swapPath: p.swapPath,
+      initialCollateralToken: tokenTransfersParams.initialCollateralTokenAddress,
+      swapPath: tokenTransfersParams.swapPath,
     },
     numbers: {
       sizeDeltaUsd: p.sizeDeltaUsd,
-      initialCollateralDeltaAmount: p.collateralDeltaAmount,
+      initialCollateralDeltaAmount: tokenTransfersParams.initialCollateralDeltaAmount,
       triggerPrice: convertToContractPrice(p.triggerPrice ?? 0n, indexToken.decimals),
       acceptablePrice: convertToContractPrice(
         applySlippageToPrice(p.allowedSlippage, p.acceptablePrice, false, p.isLong),
@@ -290,7 +304,7 @@ export function buildDecreaseOrderPayload(
       ),
       executionFee: p.executionFeeAmount,
       callbackGasLimit: 0n,
-      minOutputAmount: applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd),
+      minOutputAmount: applySlippageToMinOut(p.allowedSlippage, tokenTransfersParams.minOutputAmount),
       validFromTime: 0n,
     },
     orderType: p.orderType,
@@ -348,48 +362,52 @@ export function getTotalExecutionFeeForOrders({
   return { totalExecutionFeeAmount, totalExecutionGasLimit };
 }
 
-export function buildTokenTransfersForDecrease({
+export function buildTokenTransfersParamsForDecrease({
   chainId,
   executionFeeAmount,
   collateralTokenAddress,
-  collateralTokenAmount,
+  collateralDeltaAmount,
   swapPath,
-  minOutputAmount,
+  minOutputUsd,
+  receiveTokenAddress,
 }: {
   chainId: number;
   executionFeeAmount: bigint;
   collateralTokenAddress: string;
-  collateralTokenAmount: bigint;
+  collateralDeltaAmount: bigint;
+  receiveTokenAddress: string;
   swapPath: string[];
-  minOutputAmount: bigint;
+  minOutputUsd: bigint;
 }): TokenTransfersParams {
   const orderVaultAddress = getContract(chainId, "OrderVault");
 
-  const tokenTransfers: TokenTransfer[] = [
+  const { tokenTransfers, value } = combineTransfers([
     {
       tokenAddress: NATIVE_TOKEN_ADDRESS,
       destination: orderVaultAddress,
       amount: executionFeeAmount,
     },
-  ];
+  ]);
 
   return {
     isNativePayment: false,
+    isNativeReceive: receiveTokenAddress === NATIVE_TOKEN_ADDRESS,
     initialCollateralTokenAddress: convertTokenAddress(chainId, collateralTokenAddress, "wrapped"),
-    initialCollateralDeltaAmount: collateralTokenAmount,
+    initialCollateralDeltaAmount: collateralDeltaAmount,
     tokenTransfers,
-    minOutputAmount,
+    minOutputAmount: minOutputUsd,
     swapPath,
-    value: executionFeeAmount,
+    value,
     externalCalls: undefined,
   };
 }
 
-export function buildSendTokensTransfers({
+export function buildTokenTransfersParamsForIncreaseOrSwap({
   chainId,
   receiver,
   payTokenAddress,
   payTokenAmount,
+  receiveTokenAddress,
   executionFeeAmount,
   externalSwapQuote,
   minOutputAmount,
@@ -399,16 +417,19 @@ export function buildSendTokensTransfers({
   receiver: string;
   payTokenAddress: string;
   payTokenAmount: bigint;
+  receiveTokenAddress: string | undefined;
   executionFeeAmount: bigint;
   externalSwapQuote: ExternalSwapOutput | undefined;
   minOutputAmount: bigint;
   swapPath: string[];
+  orderType: OrderType;
 }): TokenTransfersParams {
   const isNativePayment = payTokenAddress === NATIVE_TOKEN_ADDRESS;
+  const isNativeReceive = receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
   const orderVaultAddress = getContract(chainId, "OrderVault");
   const externalHandlerAddress = getContract(chainId, "ExternalHandler");
 
-  const combinedTransfers = combineTransfers([
+  const { tokenTransfers, value } = combineTransfers([
     {
       tokenAddress: NATIVE_TOKEN_ADDRESS,
       destination: orderVaultAddress,
@@ -426,7 +447,10 @@ export function buildSendTokensTransfers({
   let externalCalls: ExternalCallsPayload | undefined;
 
   if (externalSwapQuote) {
-    // TODO: Coment this.
+    /**
+     * External swap will be executed before order creation logic,
+     * so the final order has no swap parameters and must treat the outToken address as an initial collateral
+     * */
     initialCollateralTokenAddress = convertTokenAddress(chainId, externalSwapQuote.outTokenAddress, "wrapped");
     initialCollateralDeltaAmount = 0n;
     minOutputAmount = externalSwapQuote.amountOut;
@@ -440,12 +464,13 @@ export function buildSendTokensTransfers({
 
   return {
     isNativePayment,
+    isNativeReceive,
     initialCollateralTokenAddress,
     initialCollateralDeltaAmount,
-    tokenTransfers: combinedTransfers.tokenTransfers,
+    tokenTransfers,
     minOutputAmount,
     swapPath,
-    value: combinedTransfers.value,
+    value,
     externalCalls,
   };
 }
@@ -470,7 +495,7 @@ export function combineExternalCalls(externalCalls: ExternalCallsPayload[]): Ext
   }
 
   return {
-    sendTokens: Object.keys(sendTokensMap) as WrappedTokenAddress[],
+    sendTokens: Object.keys(sendTokensMap) as ERC20Address[],
     sendAmounts: Object.values(sendTokensMap),
     externalCallTargets,
     externalCallDataList,
@@ -537,7 +562,7 @@ function combineTransfers(tokenTransfers: TokenTransfer[]) {
   return { tokenTransfers: Object.values(transfersMap), value };
 }
 
-export function getBatchOrderMulticallPayload({ chainId, params }: { chainId: number; params: BatchOrderTxnParams }) {
+export function getBatchOrderMulticallPayload({ params }: { params: BatchOrderTxnParams }) {
   const { createOrderParams, updateOrderParams, cancelOrderParams } = params;
 
   const multicall: ExchangeRouterCall[] = [];
@@ -550,7 +575,7 @@ export function getBatchOrderMulticallPayload({ chainId, params }: { chainId: nu
   }
 
   for (const update of updateOrderParams) {
-    const { multicall: updateMulticall, value: updateValue } = buildUpdateOrderMulticall({ chainId, params: update });
+    const { multicall: updateMulticall, value: updateValue } = buildUpdateOrderMulticall(update);
     multicall.push(...updateMulticall);
     value += updateValue;
   }
@@ -561,15 +586,11 @@ export function getBatchOrderMulticallPayload({ chainId, params }: { chainId: nu
     value += cancelValue;
   }
 
-  return { multicall, value, callData: encodeExchangeRouterMulticall(multicall) };
+  const { encodedMulticall, callData } = encodeExchangeRouterMulticall(multicall);
+
+  return { multicall, value, encodedMulticall, callData };
 }
 
-type ExchangeRouterCall = {
-  method: string;
-  params: any[];
-};
-
-// Encode
 export function buildCreateOrderMulticall(params: CreateOrderTxnParams<any>) {
   const { tokenTransfersParams, orderPayload } = params;
   const { tokenTransfers = [], value = 0n, externalCalls = undefined } = tokenTransfersParams ?? {};
@@ -578,15 +599,9 @@ export function buildCreateOrderMulticall(params: CreateOrderTxnParams<any>) {
 
   for (const transfer of tokenTransfers) {
     if (transfer.tokenAddress === NATIVE_TOKEN_ADDRESS) {
-      multicall.push({
-        method: "sendWnt",
-        params: [transfer.destination, transfer.amount],
-      });
+      multicall.push({ method: "sendWnt", params: [transfer.destination, transfer.amount] });
     } else {
-      multicall.push({
-        method: "sendTokens",
-        params: [transfer.tokenAddress, transfer.destination, transfer.amount],
-      });
+      multicall.push({ method: "sendTokens", params: [transfer.tokenAddress, transfer.destination, transfer.amount] });
     }
   }
 
@@ -613,8 +628,9 @@ export function buildCreateOrderMulticall(params: CreateOrderTxnParams<any>) {
   };
 }
 
-export function buildUpdateOrderMulticall({ chainId, params }: { chainId: number; params: UpdateOrderTxnParams }) {
-  const { updatePayload, params: updateParams } = params;
+export function buildUpdateOrderMulticall(updateTxn: UpdateOrderTxnParams) {
+  const { updatePayload, params: updateParams } = updateTxn;
+  const { chainId } = updateParams;
   const orderVaultAddress = getContract(chainId, "OrderVault");
 
   const multicall: ExchangeRouterCall[] = [];
@@ -661,62 +677,22 @@ export function buildCancelOrderMulticall({ params }: { params: CancelOrderTxnPa
 }
 
 export function encodeExchangeRouterMulticall(multicall: ExchangeRouterCall[]) {
-  return multicall.map((call) =>
+  const encodedMulticall = multicall.map((call) =>
     encodeFunctionData({
       abi: ExchangeRouterAbi.abi,
       functionName: call.method,
       args: call.params,
     })
   );
+
+  const callData = encodeFunctionData({
+    abi: ExchangeRouterAbi.abi,
+    functionName: "multicall",
+    args: [encodedMulticall],
+  });
+
+  return {
+    encodedMulticall,
+    callData,
+  };
 }
-
-// TODO:
-// function optimizeExchangeRouterMulticall(multicall: ExchangeRouterCall[]) {
-//   const optimizedMulticall: ExchangeRouterCall[] = [];
-
-//   const sendWntCallsMap: { [key: string]: ExchangeRouterCall } = {};
-//   const sendTokensCallsMap: { [key: string]: ExchangeRouterCall } = {};
-//   const makeExternalCallsCallsMap: { [key: string]: ExchangeRouterCall } = {};
-
-//   for (const call of multicall) {
-//     if (call.method === "sendWnt") {
-//       sendWntCallsMap[call.params[0]] = call;
-//     } else if (call.method === "sendTokens") {
-//       sendTokensCallsMap[call.params[0]] = call;
-//     } else if (call.method === "makeExternalCalls") {
-//       makeExternalCallsCallsMap[call.params[0]] = call;
-//     } else if (call.method === "createOrder") {
-//       optimizedMulticall.push(call);
-//     }
-//   }
-// }
-
-// export function combineExternalCalls(externalCalls: ExternalCallsPayload[]): ExternalCallsPayload {
-//     const sendTokensMap: { [tokenAddress: string]: bigint } = {};
-//     const refundTokensMap: { [tokenAddress: string]: string } = {};
-
-//     const externalCallTargets: string[] = [];
-//     const externalCallDataList: string[] = [];
-
-//     for (const call of externalCalls) {
-//       for (const tokenAddress of call.sendTokens) {
-//         sendTokensMap[tokenAddress] = (sendTokensMap[tokenAddress] ?? 0n) + call.sendAmounts[tokenAddress];
-//       }
-
-//       for (const tokenAddress of call.refundTokens) {
-//         refundTokensMap[tokenAddress] = call.refundReceivers[tokenAddress];
-//       }
-
-//       externalCallTargets.push(...call.externalCallTargets);
-//       externalCallDataList.push(...call.externalCallDataList);
-//     }
-
-//     return {
-//       sendTokens: Object.keys(sendTokensMap) as WrappedTokenAddress[],
-//       sendAmounts: Object.values(sendTokensMap),
-//       externalCallTargets,
-//       externalCallDataList,
-//       refundTokens: Object.keys(refundTokensMap),
-//       refundReceivers: Object.values(refundTokensMap),
-//     };
-//   }

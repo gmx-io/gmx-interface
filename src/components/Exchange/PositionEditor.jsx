@@ -498,6 +498,7 @@ export default function PositionEditor(props) {
         getTokenInfo,
         pendingTxns,
         setPendingTxns,
+        permitParams: undefined,
       });
       return;
     }

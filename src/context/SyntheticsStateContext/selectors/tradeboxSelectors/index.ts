@@ -1,6 +1,11 @@
+import { getSwapDebugSettings, getSwapPriceImpactForExternalSwapThresholdBps } from "config/externalSwaps";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector, createSelectorDeprecated } from "context/SyntheticsStateContext/utils";
+import {
+  getExternalSwapInputsByFromValue,
+  getExternalSwapInputsByLeverageSize,
+} from "domain/synthetics/externalSwaps/utils";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
@@ -13,16 +18,20 @@ import {
   getMaxLeverageByMinCollateralFactor,
   getTradeboxLeverageSliderMarks,
 } from "domain/synthetics/markets";
+import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
+import { chooseSuitableMarket } from "domain/synthetics/markets/chooseSuitableMarket";
 import { DecreasePositionSwapType, isLimitOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import {
   TokenData,
   TokensRatio,
+  convertToTokenAmount,
   convertToUsd,
   getIsEquivalentTokens,
   getNeedTokenApprove,
   getTokensRatioByPrice,
 } from "domain/synthetics/tokens";
 import {
+  ExternalSwapQuote,
   SwapAmounts,
   SwapOptimizationOrderArray,
   TradeFeesType,
@@ -37,13 +46,13 @@ import { getPositionKey } from "lib/legacy";
 import { PRECISION, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
-import { convertTokenAddress } from "sdk/configs/tokens";
+import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { createTradeFlags } from "sdk/utils/trade";
 
-import { selectExternalSwapQuote } from "../externalSwapSelectors";
 import {
+  makeSelectIsExpressTransactionAvailable,
   selectAccount,
   selectChainId,
   selectGasLimits,
@@ -52,9 +61,10 @@ import {
   selectPositionsInfoData,
   selectTokensData,
   selectUiFeeFactor,
+  selectUserReferralInfo,
 } from "../globalSelectors";
 import { selectIsLeverageSliderEnabled, selectIsPnlInLeverage } from "../settingsSelectors";
-import { selectSelectedMarketVisualMultiplier } from "../statsSelectors";
+import { selectSelectedMarketVisualMultiplier } from "../shared/marketSelectors";
 import {
   makeSelectDecreasePositionAmounts,
   makeSelectFindSwapPath,
@@ -63,11 +73,200 @@ import {
   makeSelectNextPositionValuesForDecrease,
   makeSelectNextPositionValuesForIncrease,
 } from "../tradeSelectors";
+import { selectTradeboxGetMaxLongShortLiquidityPool } from "./selectTradeboxGetMaxLongShortLiquidityPool";
 
 export * from "./selectTradeboxAvailableAndDisabledTokensForCollateral";
 export * from "./selectTradeboxAvailableMarketsOptions";
-export * from "./selectTradeboxChooseSuitableMarket";
 export * from "./selectTradeboxGetMaxLongShortLiquidityPool";
+
+export const selectExternalSwapInputs = createSelector((q) => {
+  const tradeMode = q(selectTradeboxTradeMode);
+  const tradeType = q(selectTradeboxTradeType);
+  const tradeFlags = createTradeFlags(tradeType, tradeMode);
+  const isNeedSwap = q(selectTradeboxIsNeedSwap);
+  const strategy = q(selectTradeboxLeverageStrategy);
+
+  if (!isNeedSwap) {
+    return undefined;
+  }
+
+  if (!tradeFlags.isIncrease) {
+    return undefined;
+  }
+
+  switch (strategy) {
+    case "leverageByCollateral":
+    case "independent": {
+      return q(selectExternalSwapInputsByFromValue);
+    }
+
+    case "leverageBySize": {
+      return q(selectExternalSwapInputsByLeverageSize);
+    }
+
+    default: {
+      mustNeverExist(strategy);
+    }
+  }
+});
+
+export const selectBaseExternalSwapOutput = (s: SyntheticsState) => s.externalSwap.baseOutput;
+export const selectSetBaseExternalSwapOutput = (s: SyntheticsState) => s.externalSwap.setBaseOutput;
+
+export const selectShouldFallbackToInternalSwap = (s: SyntheticsState) => s.externalSwap.shouldFallbackToInternalSwap;
+export const selectSetShouldFallbackToInternalSwap = (s: SyntheticsState) =>
+  s.externalSwap.setShouldFallbackToInternalSwap;
+
+export const selectExternalSwapQuote = createSelector((q) => {
+  const inputs = q(selectExternalSwapInputs);
+  const baseOutput = q(selectBaseExternalSwapOutput);
+
+  const debugForceExternalSwaps = q(selectDebugForceExternalSwaps);
+  const shouldFallbackToInternalSwap = q(selectShouldFallbackToInternalSwap);
+
+  const tokenIn = q(selectTradeboxFromToken);
+  const tokenOut = q(selectTradeboxSelectSwapToToken);
+
+  if (
+    !inputs ||
+    !baseOutput ||
+    !tokenIn ||
+    !tokenOut ||
+    tokenIn.address !== baseOutput.inTokenAddress ||
+    tokenOut.address !== baseOutput.outTokenAddress ||
+    shouldFallbackToInternalSwap
+  ) {
+    return undefined;
+  }
+
+  let amountIn = baseOutput.amountIn;
+  let priceIn = baseOutput.priceIn ?? tokenIn.prices.minPrice;
+  let usdIn = baseOutput.usdIn ?? convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
+
+  const amountOut = baseOutput.amountOut;
+  const priceOut = baseOutput.priceOut ?? tokenOut.prices.maxPrice;
+  const usdOut = baseOutput.usdOut ?? convertToUsd(amountOut, tokenOut.decimals, priceOut)!;
+
+  if (inputs?.strategy === "leverageBySize") {
+    usdIn = bigMath.mulDiv(usdIn, inputs.usdOut, usdOut);
+    amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, baseOutput.priceIn)!;
+  }
+
+  const feesUsd = usdIn - usdOut;
+
+  const quote: ExternalSwapQuote = {
+    ...baseOutput,
+    amountIn,
+    usdIn,
+    priceIn,
+    amountOut,
+    usdOut,
+    priceOut,
+    feesUsd,
+  };
+
+  const isInternalSwapBetter =
+    inputs.internalSwapAmounts.amountOut > 0n &&
+    inputs?.internalSwapTotalFeesDeltaUsd !== undefined &&
+    inputs.internalSwapTotalFeesDeltaUsd > -quote.feesUsd;
+
+  if (isInternalSwapBetter && !debugForceExternalSwaps) {
+    return undefined;
+  }
+
+  return quote;
+});
+
+export const selectExternalSwapsEnabled = (s: SyntheticsState) =>
+  s.settings.externalSwapsEnabled && !s.externalSwap.shouldFallbackToInternalSwap;
+
+export const selectDebugForceExternalSwaps = createSelector((q) => {
+  const isNeedSwap = q(selectTradeboxIsNeedSwap);
+  const swapDebugSettings = getSwapDebugSettings();
+
+  return isNeedSwap && (swapDebugSettings?.forceExternalSwaps || false);
+});
+
+export const selectShouldRequestExternalSwapQuote = createSelector((q) => {
+  const isExternalSwapsEnabled = q(selectExternalSwapsEnabled);
+  const externalSwapInputs = q(selectExternalSwapInputs);
+
+  const internalSwapTotalFeeItem = externalSwapInputs?.internalSwapTotalFeeItem;
+  const swapPriceImpactForExternalSwapThresholdBps = getSwapPriceImpactForExternalSwapThresholdBps();
+
+  const thereIsNoInternalSwap =
+    !internalSwapTotalFeeItem ||
+    (externalSwapInputs && externalSwapInputs.amountIn > 0n && externalSwapInputs.internalSwapAmounts.amountOut === 0n);
+
+  const internalSwapFeesConditionMet =
+    internalSwapTotalFeeItem && internalSwapTotalFeeItem.bps < swapPriceImpactForExternalSwapThresholdBps;
+
+  const isExternalSwapConditionMet = thereIsNoInternalSwap || internalSwapFeesConditionMet;
+
+  const debugForceExternalSwaps = q(selectDebugForceExternalSwaps);
+
+  return debugForceExternalSwaps || (isExternalSwapsEnabled && isExternalSwapConditionMet);
+});
+
+export const selectExternalSwapInputsByFromValue = createSelector((q) => {
+  const fromToken = q(selectTradeboxFromToken);
+  const fromTokenAmount = q(selectTradeboxFromTokenAmount);
+  const uiFeeFactor = q(selectUiFeeFactor);
+  const swapToToken = q(selectTradeboxSelectSwapToToken);
+
+  const findSwapPath = q(selectTradeboxFindSwapPath);
+
+  if (!fromToken || !swapToToken) {
+    return undefined;
+  }
+
+  return getExternalSwapInputsByFromValue({
+    tokenIn: fromToken,
+    tokenOut: swapToToken,
+    amountIn: fromTokenAmount,
+    findSwapPath,
+    uiFeeFactor,
+  });
+});
+
+export const selectExternalSwapInputsByLeverageSize = createSelector((q) => {
+  const tokenIn = q(selectTradeboxFromToken);
+
+  const tradeMode = q(selectTradeboxTradeMode);
+  const tradeType = q(selectTradeboxTradeType);
+  const tradeFlags = createTradeFlags(tradeType, tradeMode);
+  const userReferralInfo = q(selectUserReferralInfo);
+  const triggerPrice = q(selectTradeboxTriggerPrice);
+  const collateralToken = q(selectTradeboxCollateralToken);
+
+  const toTokenAmount = q(selectTradeboxToTokenAmount);
+  const marketInfo = q(selectTradeboxMarketInfo);
+  const leverage = q(selectTradeBoxLeverage);
+  const uiFeeFactor = q(selectUiFeeFactor);
+
+  const existingPosition = q(selectTradeboxExistingPosition);
+
+  const findSwapPath = q(selectTradeboxFindSwapPath);
+
+  if (!tokenIn || !collateralToken || !marketInfo) {
+    return undefined;
+  }
+
+  return getExternalSwapInputsByLeverageSize({
+    marketInfo,
+    tokenIn,
+    collateralToken,
+    indexTokenAmount: toTokenAmount,
+    findSwapPath,
+    uiFeeFactor,
+    triggerPrice,
+    existingPosition,
+    leverage,
+    isLong: tradeFlags.isLong,
+    userReferralInfo,
+  });
+});
+
 export * from "./selectTradeboxRelatedMarketsStats";
 
 const selectOnlyOnTradeboxPage = <T>(s: SyntheticsState, selection: T) =>
@@ -142,8 +341,9 @@ export const selectTradeboxTotalSwapImpactBps = createSelector((q) => {
 export const selectTradeboxFindSwapPath = createSelector((q) => {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const swapToTokenAddress = q(selectTradeboxSwapToTokenAddress);
+  const isExpressTxn = q(makeSelectIsExpressTransactionAvailable(fromTokenAddress === NATIVE_TOKEN_ADDRESS));
 
-  return q(makeSelectFindSwapPath(fromTokenAddress, swapToTokenAddress));
+  return q(makeSelectFindSwapPath(fromTokenAddress, swapToTokenAddress, isExpressTxn));
 });
 
 export const selectTradeboxMaxLiquidityPath = createSelector((q) => {
@@ -217,13 +417,14 @@ export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
   const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
   const selectedTriggerAcceptablePriceImpactBps = q(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
   const triggerPrice = q(selectTradeboxTriggerPrice);
-
+  const externalSwapQuote = q(selectExternalSwapQuote);
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
   const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
 
   const positionKey = q(selectTradeboxSelectedPositionKey);
   const strategy = q(selectTradeboxLeverageStrategy);
+  const isExpressTxn = q(makeSelectIsExpressTransactionAvailable(fromTokenAddress === NATIVE_TOKEN_ADDRESS));
 
   const selector = makeSelectIncreasePositionAmounts({
     collateralTokenAddress,
@@ -240,6 +441,8 @@ export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
     tradeType,
     triggerPrice,
     tokenTypeForSwapRoute: tradeFlags.isPosition ? "collateralToken" : "indexToken",
+    isExpressTxn,
+    externalSwapQuote,
   });
 
   return q(selector);
@@ -316,8 +519,9 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
     return swapAmounts;
   }
 
+  const isExpressTxn = q(makeSelectIsExpressTransactionAvailable(fromTokenAddress === NATIVE_TOKEN_ADDRESS));
   const toSwapToken = q(selectTradeboxSwapToTokenAddress);
-  const findSwapPath = q(makeSelectFindSwapPath(fromTokenAddress, toSwapToken));
+  const findSwapPath = q(makeSelectFindSwapPath(fromTokenAddress, toSwapToken, isExpressTxn));
   const swapOptimizationOrder: SwapOptimizationOrderArray | undefined = tradeFlags.isLimit
     ? ["length", "liquidity"]
     : undefined;
@@ -596,6 +800,7 @@ const selectNextValuesForIncrease = createSelector(
     const isPnlInLeverage = q(selectIsPnlInLeverage);
 
     const externalSwapQuote = q(selectExternalSwapQuote);
+    const isExpressTxn = q(makeSelectIsExpressTransactionAvailable(fromTokenAddress === NATIVE_TOKEN_ADDRESS));
 
     return {
       collateralTokenAddress,
@@ -618,6 +823,7 @@ const selectNextValuesForIncrease = createSelector(
       tokenTypeForSwapRoute: tradeFlags.isPosition ? "collateralToken" : "indexToken",
       isPnlInLeverage,
       externalSwapQuote,
+      isExpressTxn,
     };
   }
 );
@@ -1071,4 +1277,49 @@ export const selectNeedTradeboxPayTokenApproval = createSelector((q) => {
   const tokensAllowance = q(selectTradeboxTokensAllowance);
 
   return getNeedTokenApprove(tokensAllowance.tokensAllowanceData, fromTokenAddress, payAmount);
+});
+
+export const selectTradeboxChooseSuitableMarket = createSelector((q) => {
+  const getMaxLongShortLiquidityPool = q(selectTradeboxGetMaxLongShortLiquidityPool);
+  const tradeType = q(selectTradeboxTradeType);
+  const positionsInfo = q(selectPositionsInfoData);
+  const ordersInfo = q(selectOrdersInfoData);
+  const tokensData = q(selectTokensData);
+  const setTradeConfig = q(selectTradeboxSetTradeConfig);
+
+  const chooseSuitableMarketWrapped = (
+    tokenAddress: string,
+    preferredTradeType?: PreferredTradeTypePickStrategy,
+    currentTradeType?: TradeType
+  ) => {
+    const token = getByKey(tokensData, tokenAddress);
+
+    if (!token) return;
+
+    const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
+
+    const suitableParams = chooseSuitableMarket({
+      indexTokenAddress: tokenAddress,
+      maxLongLiquidityPool,
+      maxShortLiquidityPool,
+      isSwap: tradeType === TradeType.Swap,
+      positionsInfo,
+      ordersInfo,
+      preferredTradeType: preferredTradeType ?? tradeType,
+      currentTradeType,
+    });
+
+    if (!suitableParams) return;
+
+    setTradeConfig({
+      collateralAddress: suitableParams.collateralTokenAddress,
+      toTokenAddress: suitableParams.indexTokenAddress,
+      marketAddress: suitableParams.marketTokenAddress,
+      tradeType: suitableParams.tradeType,
+    });
+
+    return suitableParams;
+  };
+
+  return chooseSuitableMarketWrapped;
 });

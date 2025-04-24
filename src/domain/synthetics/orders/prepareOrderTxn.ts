@@ -1,8 +1,9 @@
 import { t } from "@lingui/macro";
 import { ethers } from "ethers";
 
-import { getGasLimit, getGasPrice } from "lib/contracts";
+import { getGasLimit } from "lib/contracts";
 import { OrderErrorContext } from "lib/errors";
+import { getGasPrice } from "lib/gas/gasPrice";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
 

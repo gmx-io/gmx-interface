@@ -331,17 +331,6 @@
     {
       "inputs": [
         {
-          "internalType": "string",
-          "name": "signatureType",
-          "type": "string"
-        }
-      ],
-      "name": "InvalidSignature",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
           "internalType": "uint256",
           "name": "srcChainId",
           "type": "uint256"
@@ -396,6 +385,11 @@
         }
       ],
       "name": "RelayCalldataTooLong",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "TokenPermitsNotAllowedForMultichain",
       "type": "error"
     },
     {

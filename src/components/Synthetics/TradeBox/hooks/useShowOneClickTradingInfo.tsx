@@ -2,19 +2,15 @@ import {
   EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY,
   EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY,
 } from "config/localStorage";
+import { selectRawSubaccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectExpressOrdersEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
-import { selectRawSubaccount } from "context/SyntheticsStateContext/selectors/subaccountSelectors";
 import {
   selectTradeboxFromToken,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import {
-  getIsNonceExpired,
-  getIsSubaccountExpired,
-  getRemainingSubaccountActions,
-} from "domain/synthetics/gassless/txns/subaccountUtils";
+import { getIsNonceExpired, getIsSubaccountExpired, getRemainingSubaccountActions } from "domain/synthetics/subaccount";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import { useRequiredActions } from "./useRequiredActions";

@@ -450,9 +450,9 @@ export const formatAmount = (
   if (displayDecimals === undefined) {
     displayDecimals = 4;
   }
-  const amountBigInt = roundBigNumberWithDecimals(BigInt(amount) * BigInt(visualMultiplier ?? 1), {
+  const amountBigInt = roundWithDecimals(BigInt(amount) * BigInt(visualMultiplier ?? 1), {
     displayDecimals,
-    tokenDecimals,
+    decimals: tokenDecimals,
   });
   let amountStr = formatUnits(amountBigInt, tokenDecimals);
   amountStr = limitDecimals(amountStr, displayDecimals);
@@ -574,11 +574,8 @@ export function getPlusOrMinusSymbol(value?: bigint, opts: { showPlusForZero?: b
   return value === 0n ? (showPlusForZero ? "+" : "") : value < 0n ? "-" : "+";
 }
 
-export function roundBigNumberWithDecimals(
-  value: BigNumberish,
-  opts: { displayDecimals: number; tokenDecimals: number }
-): bigint {
-  if (opts.displayDecimals === opts.tokenDecimals) {
+export function roundWithDecimals(value: BigNumberish, opts: { displayDecimals: number; decimals: number }): bigint {
+  if (opts.displayDecimals === opts.decimals) {
     return BigInt(value);
   }
 
@@ -590,12 +587,12 @@ export function roundBigNumberWithDecimals(
     isNegative = true;
   }
 
-  if (valueString.length < opts.tokenDecimals) {
-    valueString = valueString.padStart(opts.tokenDecimals, "0");
+  if (valueString.length < opts.decimals) {
+    valueString = valueString.padStart(opts.decimals, "0");
   }
 
-  const mainPart = valueString.slice(0, valueString.length - opts.tokenDecimals + opts.displayDecimals);
-  const partToRound = valueString.slice(valueString.length - opts.tokenDecimals + opts.displayDecimals);
+  const mainPart = valueString.slice(0, valueString.length - opts.decimals + opts.displayDecimals);
+  const partToRound = valueString.slice(valueString.length - opts.decimals + opts.displayDecimals);
 
   let mainPartBigInt = BigInt(mainPart);
 
