@@ -450,14 +450,6 @@ export function getDecreaseError(p: {
     return [t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
   }
 
-  if (
-    minPositionSizeUsd !== undefined &&
-    nextPositionValues?.nextSizeUsd !== undefined &&
-    nextPositionValues.nextSizeUsd < minPositionSizeUsd
-  ) {
-    return [t`Min position size: ${formatUsd(minPositionSizeUsd)}`];
-  }
-
   if (existingPosition) {
     if (!isTrigger && (inputSizeUsd === undefined ? undefined : inputSizeUsd > existingPosition.sizeInUsd)) {
       return [t`Max close amount exceeded`];
