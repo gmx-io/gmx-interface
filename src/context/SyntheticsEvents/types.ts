@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 import { OrderTxnType, OrderType } from "domain/synthetics/orders";
 import { SignedSubbacountApproval } from "domain/synthetics/subaccount";
 import { OrderMetricId } from "lib/metrics/types";
@@ -79,6 +81,8 @@ export type PendingExpressTxnParams = {
   pendingOrdersKeys?: string[];
   pendingPositionsKeys?: string[];
   metricId?: OrderMetricId;
+  successMessage?: ReactNode;
+  errorMessage?: ReactNode;
 };
 
 export type PendingPositionsUpdates = {

@@ -141,6 +141,7 @@ export function StakeModal(props: {
         tokenAddress: stakingTokenAddress,
         spender: farmAddress,
         chainId,
+        permitParams: undefined,
       });
       return;
     }

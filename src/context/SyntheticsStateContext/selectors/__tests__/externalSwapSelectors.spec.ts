@@ -11,9 +11,11 @@ import { ExternalSwapQuote, SwapPathStats, TradeMode, TradeType } from "sdk/type
 import { bigMath } from "sdk/utils/bigmath";
 
 import { SyntheticsState } from "../../SyntheticsStateContextProvider";
-import { selectExternalSwapQuote, selectShouldRequestExternalSwapQuote } from "../tradeboxSelectors";
-import { selectExternalSwapInputs } from "../tradeboxSelectors";
-import * as globalSelectors from "../globalSelectors";
+import {
+  selectExternalSwapInputs,
+  selectExternalSwapQuote,
+  selectShouldRequestExternalSwapQuote,
+} from "../tradeboxSelectors";
 import * as tradeSelectors from "../tradeSelectors";
 
 const marketKey = "ETH-ETH-USDC";
@@ -233,7 +235,8 @@ describe("externalSwapSelectors", () => {
       expect(result?.strategy).toBe("byFromValue");
       expect(result?.internalSwapTotalFeesDeltaUsd).toBe(mockSwapPathStats.totalFeesDeltaUsd);
       expect(findSwapPathFn).toHaveBeenCalled();
-      expect(vi.mocked(globalSelectors.makeSelectFindSwapPath)).toHaveBeenCalledWith(
+
+      expect(vi.mocked(tradeSelectors.makeSelectFindSwapPath)).toHaveBeenCalledWith(
         tokensData.ETH.address,
         tokensData.USDC.address
       );

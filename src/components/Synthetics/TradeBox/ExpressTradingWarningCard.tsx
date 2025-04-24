@@ -5,7 +5,7 @@ import {
   EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY,
   EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY,
 } from "config/localStorage";
-import { selectUpdateSubaccountSettings } from "context/SyntheticsStateContext/selectors/subaccountSelectors";
+import { selectUpdateSubaccountSettings } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";

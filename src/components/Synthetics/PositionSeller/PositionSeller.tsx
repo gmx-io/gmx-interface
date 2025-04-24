@@ -45,6 +45,8 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
+import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage, formatLiquidationPrice, getNameByOrderType } from "domain/synthetics/positions";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
@@ -88,8 +90,6 @@ import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 
 import "./PositionSeller.scss";
-import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
-import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 
 const ORDER_OPTION_LABELS = {
   [OrderOption.Market]: msg`Market`,

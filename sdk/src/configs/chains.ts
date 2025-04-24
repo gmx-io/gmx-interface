@@ -120,3 +120,16 @@ export const EXECUTION_FEE_CONFIG_V2: {
     defaultBufferBps: 3000, // 30%
   },
 };
+
+export const GAS_LIMITS_STATIC_CONFIG = {
+  [ARBITRUM]: {
+    createOrderGasLimit: 800_000n,
+    updateOrderGasLimit: 600_000n,
+    cancelOrderGasLimit: 700_000n,
+  },
+  [AVALANCHE]: {
+    createOrderGasLimit: 800_000n,
+    updateOrderGasLimit: 600_000n,
+    cancelOrderGasLimit: 700_000n,
+  },
+};

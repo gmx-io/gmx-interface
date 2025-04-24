@@ -1,12 +1,13 @@
-import { createSelector } from "context/SyntheticsStateContext/utils";
 import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getTokenData } from "domain/synthetics/tokens";
+import { TradeMode, TradeType } from "domain/synthetics/trade";
 import { getToken, getTokenBySymbolSafe } from "sdk/configs/tokens";
 import { createTradeFlags } from "sdk/utils/trade";
-import { TradeMode, TradeType } from "domain/synthetics/trade";
+
 import { selectTradeboxFromTokenAddress, selectTradeboxToTokenAddress } from "./baseSelectors";
 
-export const selectChartToken = createSelector(function selectChartToken(q) {
+export const selectChartToken = createSelector((q) => {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const toTokenAddress = q(selectTradeboxToTokenAddress);
 

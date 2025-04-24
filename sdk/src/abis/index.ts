@@ -1,6 +1,7 @@
 import type { JsonFragment } from "ethers";
 import { Abi, erc20Abi } from "viem";
 
+import ArbitrumNodeInterface from "./ArbitrumNodeInterface.json";
 import CustomErrors from "./CustomErrors.json";
 import DataStore from "./DataStore.json";
 import ERC20PermitInterface from "./ERC20PermitInterface.json";
@@ -46,7 +47,6 @@ import Vester from "./Vester.json";
 import WETH from "./WETH.json";
 import YieldFarm from "./YieldFarm.json";
 import YieldToken from "./YieldToken.json";
-import ArbitrumNodeInterface from "./ArbitrumNodeInterface.json";
 export type AbiId =
   | "CustomErrors"
   | "DataStore"

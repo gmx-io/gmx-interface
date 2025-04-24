@@ -159,7 +159,7 @@ export const selectTradeboxDecreaseOrderParams = createSelector((q) => {
     orderType: decreaseAmounts.triggerOrderType,
     marketAddress: marketInfo.marketTokenAddress,
     indexTokenAddress: marketInfo.indexToken.address,
-    initialCollateralTokenAddress: collateralTokenAddress,
+    collateralTokenAddress: collateralTokenAddress,
     collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
     receiveTokenAddress: collateralTokenAddress,
     swapPath: [],

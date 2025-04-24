@@ -1,7 +1,7 @@
+import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import MarketNetFee from "components/Synthetics/MarketNetFee/MarketNetFee";
-import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 
 export function NetRate1hTooltip() {
   const info = useSelector(selectChartHeaderInfo);

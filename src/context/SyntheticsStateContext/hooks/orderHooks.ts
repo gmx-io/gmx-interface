@@ -13,8 +13,8 @@ import {
   makeSelectSubaccountForActions,
   selectChainId,
   selectGasPrice,
-  selectSponsoredCallMultiplierFactor,
   selectMarketsInfoData,
+  selectSponsoredCallMultiplierFactor,
   selectTokensData,
 } from "../selectors/globalSelectors";
 import {
@@ -23,7 +23,7 @@ import {
   selectOrderErrorsByOrderKeyMap,
   selectOrderErrorsCount,
 } from "../selectors/orderSelectors";
-import { selectRelayFeeToken } from "../selectors/tokenPermitsSelectors";
+import { selectRelayFeeTokens } from "../selectors/tradeSelectors";
 import { useSelector } from "../utils";
 import { useCancellingOrdersKeysState } from "./orderEditorHooks";
 

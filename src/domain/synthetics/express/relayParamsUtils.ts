@@ -1,7 +1,6 @@
 import { Contract, ethers, Provider, Signer } from "ethers";
 import { encodeAbiParameters, keccak256 } from "viem";
 
-
 import { getIsInternalSwapBetter } from "domain/synthetics/externalSwaps/utils";
 import { getNeedTokenApprove, TokensAllowanceData, TokensData } from "domain/synthetics/tokens";
 import { abis } from "sdk/abis";
@@ -77,6 +76,7 @@ export function getRelayerFeeParams({
   let feeParams: RelayFeePayload;
   let externalCalls: ExternalCallsPayload;
   let gasPaymentTokenAmount: bigint;
+  let externalSwapGasLimit = 0n;
 
   if (gasPaymentTokenAddress === relayerFeeTokenAddress) {
     externalCalls = {
@@ -124,6 +124,7 @@ export function getRelayerFeeParams({
       feeAmount: 0n, // fee already sent in external calls
       feeSwapPath: [],
     };
+    externalSwapGasLimit = externalSwapQuote.txnData.estimatedGas;
     gasPaymentTokenAmount = externalSwapQuote.amountIn;
     totalNetworkFeeAmount = externalSwapQuote.amountOut;
   } else {
@@ -150,6 +151,7 @@ export function getRelayerFeeParams({
     isOutGasTokenBalance,
     needGasPaymentTokenApproval,
     gasPaymentTokenAddress,
+    externalSwapGasLimit,
   };
 }
 

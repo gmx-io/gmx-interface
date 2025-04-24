@@ -1,9 +1,9 @@
 import { Token } from "types/tokens";
+import { USD_DECIMALS } from "utils/numbers";
 import { periodToSeconds } from "utils/time";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 import { getTokenBySymbol, getWrappedToken } from "./tokens";
-import { expandDecimals, USD_DECIMALS } from "utils/numbers";
 
 export const SUBACCOUNT_MESSAGE = "Generate a GMX subaccount. Only sign this message on a trusted website.";
 export const SUBACCOUNT_DOCS_URL = "https://docs.gmx.io/docs/trading/v2/#one-click-trading";

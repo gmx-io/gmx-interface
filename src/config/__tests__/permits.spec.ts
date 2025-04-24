@@ -1,15 +1,14 @@
-import { getTokenPermitParamsCalls } from "domain/synthetics/gassless/txns/tokenPermitUtils";
 import { Contract } from "ethers";
 import { zeroAddress } from "viem";
 import { describe, it } from "vitest";
 
 import { getChainName, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { getContract } from "config/contracts";
+import { getTokenPermitParamsCalls } from "domain/tokens/permitUtils";
 import { getProvider } from "lib/rpc";
 import { abis } from "sdk/abis";
 import { getV2Tokens } from "sdk/configs/tokens";
 import { ZERO_DATA } from "sdk/utils/hash";
-
 
 describe("UI token permit configs", () => {
   SUPPORTED_CHAIN_IDS.forEach(async (chainId) => {

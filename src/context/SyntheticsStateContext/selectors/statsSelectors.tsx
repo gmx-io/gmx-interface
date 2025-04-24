@@ -1,15 +1,11 @@
-import {
-  selectChainId,
-  selectMarketsInfoData,
-  selectTokensData,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { marketsInfoData2IndexTokenStatsMap } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { calculateDisplayDecimals } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 
 import { createSelector, createSelectorFactory } from "../utils";
-import { selectTradeboxTradeFlags } from "./tradeboxSelectors";
 import { selectChartToken, selectSelectedMarketVisualMultiplier } from "./shared/marketSelectors";
+import { selectTradeboxTradeFlags } from "./tradeboxSelectors";
 
 export const selectIndexTokenStats = createSelector((q) => {
   const marketsInfoData = q(selectMarketsInfoData);

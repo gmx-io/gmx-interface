@@ -20,6 +20,7 @@ export type RelayerFeeParams = {
   gasPaymentTokenAddress: string;
   isOutGasTokenBalance: boolean;
   needGasPaymentTokenApproval: boolean;
+  externalSwapGasLimit: bigint;
 };
 
 export type RelayParamsPayload = {

@@ -364,7 +364,7 @@
 //           tokenPermits: [],
 //           tokensData: p.tokensData,
 //           marketsInfoData: p.marketsInfoData,
-//           relayFeeSwapParams: relayFeeParams,
+//           RelayFeeParams: relayFeeParams,
 //           emptySignature: true,
 //         });
 
@@ -491,7 +491,7 @@
 //           return undefined;
 //         }
 
-//         const finalRelayFeeSwapParams = getRelayerFeeParams({
+//         const finalRelayFeeParams = getRelayerFeeParams({
 //           chainId,
 //           account: initialParams.account,
 //           relayerFeeTokenAmount: initialParams.totalNetworkFeeAmount,
@@ -505,13 +505,13 @@
 //           forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps,
 //         });
 
-//         if (!finalRelayFeeSwapParams || !initialParams.batchParams) {
+//         if (!finalRelayFeeParams || !initialParams.batchParams) {
 //           return undefined;
 //         }
 
 //         const feeOracleParams = getOraclePriceParamsForRelayFee({
 //           chainId,
-//           relayFeeParams: finalRelayFeeSwapParams,
+//           relayFeeParams: finalRelayFeeParams,
 //           tokensData: initialParams.tokensData,
 //           marketsInfoData: initialParams.marketsInfoData,
 //         });
@@ -528,8 +528,8 @@
 //         const relayParamsPayload: Omit<RelayParamsPayload, "deadline" | "userNonce"> = {
 //           oracleParams: oracleParamsPayload,
 //           tokenPermits: [],
-//           externalCalls: finalRelayFeeSwapParams.externalCalls,
-//           fee: finalRelayFeeSwapParams.feeParams,
+//           externalCalls: finalRelayFeeParams.externalCalls,
+//           fee: finalRelayFeeParams.feeParams,
 //         };
 
 //         return {
@@ -537,8 +537,8 @@
 //           expressParams: {
 //             subaccount: initialParams.subaccount,
 //             relayParamsPayload,
-//             relayFeeParams: finalRelayFeeSwapParams,
-//             needGasPaymentTokenApproval: finalRelayFeeSwapParams.needGasPaymentTokenApproval,
+//             relayFeeParams: finalRelayFeeParams,
+//             needGasPaymentTokenApproval: finalRelayFeeParams.needGasPaymentTokenApproval,
 //             isSponsoredCall: initialParams.sponsoredCallMultiplierFactor !== undefined,
 //           },
 //         };
@@ -606,7 +606,7 @@
 //       uiFeeFactor: 0n,
 //     });
 
-//     const baseRelayFeeSwapParams = getRelayerFeeSwapParams({
+//     const baseRelayFeeParams = getRelayerFeeSwapParams({
 //       chainId,
 //       account,
 //       relayerFeeTokenAmount: swapAmounts.amountOut,
@@ -619,7 +619,7 @@
 //       gasPaymentAllowanceData,
 //     });
 
-//     if (!baseRelayFeeSwapParams || baseRelayFeeSwapParams.needGasPaymentTokenApproval) {
+//     if (!baseRelayFeeParams || baseRelayFeeParams.needGasPaymentTokenApproval) {
 //       return undefined;
 //     }
 
@@ -635,7 +635,7 @@
 //       tokenPermits: [],
 //       tokensData,
 //       marketsInfoData,
-//       relayFeeSwapParams: baseRelayFeeSwapParams,
+//       RelayFeeParams: baseRelayFeeParams,
 //       emptySignature: true,
 //     });
 
@@ -660,7 +660,7 @@
 //       uiFeeFactor: 0n,
 //     });
 
-//     const finalRelayFeeSwapParams = getRelayerFeeSwapParams({
+//     const finalRelayFeeParams = getRelayerFeeSwapParams({
 //       chainId,
 //       account,
 //       relayerFeeTokenAmount: feeAmount,
@@ -673,13 +673,13 @@
 //       gasPaymentAllowanceData,
 //     });
 
-//     if (!finalRelayFeeSwapParams) {
+//     if (!finalRelayFeeParams) {
 //       return undefined;
 //     }
 
 //     const feeOracleParams = getOraclePriceParamsForRelayFee({
 //       chainId,
-//       relayFeeParams: finalRelayFeeSwapParams,
+//       relayFeeParams: finalRelayFeeParams,
 //       tokensData,
 //       marketsInfoData,
 //     });
@@ -689,16 +689,16 @@
 //     const relayParamsPayload: Omit<RelayParamsPayload, "deadline" | "userNonce"> = {
 //       oracleParams: oracleParamsPayload,
 //       tokenPermits: [],
-//       externalCalls: finalRelayFeeSwapParams.externalCalls,
-//       fee: finalRelayFeeSwapParams.feeParams,
+//       externalCalls: finalRelayFeeParams.externalCalls,
+//       fee: finalRelayFeeParams.feeParams,
 //     };
 
 //     return {
 //       subaccount,
 //       relayParamsPayload,
-//       relayFeeParams: finalRelayFeeSwapParams,
+//       relayFeeParams: finalRelayFeeParams,
 //       needGasPaymentTokenApproval:
-//         baseRelayFeeSwapParams.needGasPaymentTokenApproval || finalRelayFeeSwapParams.needGasPaymentTokenApproval,
+//         baseRelayFeeParams.needGasPaymentTokenApproval || finalRelayFeeParams.needGasPaymentTokenApproval,
 //       isSponsoredCall: sponsoredCallMultiplierFactor !== undefined,
 //     };
 //   } catch (error) {

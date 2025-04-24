@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { isDevelopment } from "config/env";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { selectGasPrice, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectBaseExternalSwapOutput,
   selectExternalSwapQuote,
@@ -12,8 +14,6 @@ import {
   selectShouldRequestExternalSwapQuote,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectExternalSwapInputs } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { selectGasPrice, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxFromTokenAddress,

@@ -128,8 +128,8 @@ export const CONTRACTS = {
     GlvRouter: "0x994c598e3b0661bb805d53c6fa6b4504b23b68dd",
     GlvVault: "0x393053B58f9678C9c28c2cE941fF6cac49C3F8f9",
 
-    GelatoRelayRouter: "0x63daFB2CA71767129AB8D0a0909383023C4AfF6E",
-    SubaccountGelatoRelayRouter: "0x8964c82e1878d35bEd66d377f97e4F518b7A024F",
+    GelatoRelayRouter: "0x9EB239eDf4c6f4c4fC9d30ea2017F8716d049C8D",
+    SubaccountGelatoRelayRouter: "0x5F345B765d5856bC0843cEE8bE234b575eC77DBC",
 
     ExternalHandler: "0x389CEf541397e872dC04421f166B5Bc2E0b374a5",
     OpenOceanRouter: "0x6352a56caadC4F1E25CD6c75970Fa768A3304e64",

@@ -1,6 +1,8 @@
 import { Signer } from "ethers";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
+import { getSwapDebugSettings } from "config/externalSwaps";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   makeSelectIsExpressTransactionAvailable,
@@ -19,6 +21,7 @@ import { makeSelectFindSwapPath } from "context/SyntheticsStateContext/selectors
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
+import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
@@ -26,12 +29,13 @@ import { getContract } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION, getGasPaymentTokens, getRelayerFeeToken } from "sdk/configs/express";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { MarketsInfoData } from "sdk/types/markets";
+import { estimateExpressBatchOrderGasLimit } from "sdk/utils/fees/executionFee";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { applyFactor, expandDecimals, roundBigIntToDecimals, USD_DECIMALS } from "sdk/utils/numbers";
 import { BatchOrderTxnParams, CancelOrderTxnParams, getTotalExecutionFeeForOrders } from "sdk/utils/orderTransactions";
+import { nowInSeconds } from "sdk/utils/time";
 
-import { estimateGasLimit } from "lib/gas/estimateGasLimit";
-import { estimateExpressBatchOrderGasLimit } from "sdk/utils/fees/executionFee";
+import { ExpressParams, getRelayerFeeParams, RelayParamsPayload } from ".";
 import { useExternalSwapOutputRequest } from "../externalSwaps/useExternalSwapOutputRequest";
 import { Subaccount } from "../subaccount";
 import {
@@ -48,11 +52,6 @@ import {
   getOraclePriceParamsForOrders,
   getOraclePriceParamsForRelayFee,
 } from "./oracleParamsUtils";
-
-import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
-import { getSwapDebugSettings } from "config/externalSwaps";
-import { nowInSeconds } from "sdk/utils/time";
-import { ExpressParams, getRelayerFeeParams, RelayParamsPayload } from ".";
 import { getExpressBatchOrderParams } from "../orders/expressOrderUtils";
 
 export type ExpressOrdersParamsResult = {
@@ -100,6 +99,7 @@ export function useExpressOrdersParams({
   const gasPrice = useSelector(selectGasPrice);
   const gasLimits = useSelector(selectGasLimits);
   const timer = useRef<number | undefined>(undefined);
+  const throttleTime = useRef(1000);
 
   const { signer, account } = useWallet();
   const subaccount = useSelector(makeSelectSubaccountForActions(requiredActions));
@@ -127,10 +127,10 @@ export function useExpressOrdersParams({
         return;
       }
 
-      const throttleTime = 1000;
-      if (timer.current !== undefined && Date.now() - timer.current < throttleTime) {
+      if (timer.current !== undefined && Date.now() - timer.current < throttleTime.current) {
         return;
       }
+
       timer.current = Date.now();
 
       if (baseFeeSwapParams?.isOutGasTokenBalance) {
@@ -185,7 +185,7 @@ export function useExpressOrdersParams({
             tokenPermits,
             tokensData,
             marketsInfoData,
-            relayFeeSwapParams: baseFeeSwapParams,
+            RelayFeeParams: baseFeeSwapParams,
             emptySignature: true,
           });
 
@@ -207,6 +207,8 @@ export function useExpressOrdersParams({
             isSubaccount: Boolean(subaccount),
           });
 
+          // FIXME gassless: TEMP DEBUG
+          // eslint-disable-next-line no-console
           console.log("compare gaslimits", {
             asyncGasLimit: gasLimit,
             gasLimit: _gasLimit,
@@ -232,11 +234,13 @@ export function useExpressOrdersParams({
           // eslint-disable-next-line no-console
           console.log("feeAmount", feeAmount);
           setRelayerFeeTokenAmount(feeAmount);
+          throttleTime.current = 5000;
         } catch (error) {
           const errorData = parseError(error);
           // TEMP DEBUP
           // eslint-disable-next-line no-console
           console.error("gasLimit error", errorData);
+          throttleTime.current = 1000;
           throw error;
         }
       }
@@ -263,7 +267,7 @@ export function useExpressOrdersParams({
     ]
   );
 
-  const finalRelayFeeSwapParams = useRelayerFeeSwapParams({
+  const finalRelayFeeParams = useRelayerFeeSwapParams({
     chainId,
     account,
     relayerFeeTokenAmount,
@@ -275,7 +279,7 @@ export function useExpressOrdersParams({
   });
 
   return useMemo(() => {
-    if (!orderParams || !baseFeeSwapParams || !tokensData || !marketsInfoData || !finalRelayFeeSwapParams) {
+    if (!orderParams || !baseFeeSwapParams || !tokensData || !marketsInfoData || !finalRelayFeeParams) {
       return {
         needGasPaymentTokenApproval: Boolean(baseFeeSwapParams?.needGasPaymentTokenApproval),
         expressParams: undefined,
@@ -284,7 +288,7 @@ export function useExpressOrdersParams({
 
     const feeOracleParams = getOraclePriceParamsForRelayFee({
       chainId,
-      relayFeeParams: finalRelayFeeSwapParams,
+      relayFeeParams: finalRelayFeeParams,
       tokensData,
       marketsInfoData,
     });
@@ -301,18 +305,18 @@ export function useExpressOrdersParams({
     const relayParamsPayload: RelayParamsPayload = {
       oracleParams: oracleParamsPayload,
       tokenPermits: tokenPermits ?? [],
-      externalCalls: finalRelayFeeSwapParams.externalCalls,
-      fee: finalRelayFeeSwapParams.feeParams,
+      externalCalls: finalRelayFeeParams.externalCalls,
+      fee: finalRelayFeeParams.feeParams,
       deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
       userNonce: 0n,
     };
 
     return {
-      needGasPaymentTokenApproval: finalRelayFeeSwapParams.needGasPaymentTokenApproval,
+      needGasPaymentTokenApproval: finalRelayFeeParams.needGasPaymentTokenApproval,
       expressParams: {
         subaccount,
         relayParamsPayload,
-        relayFeeParams: finalRelayFeeSwapParams,
+        relayFeeParams: finalRelayFeeParams,
         needGasPaymentTokenApproval: baseFeeSwapParams.needGasPaymentTokenApproval,
         isSponsoredCall: sponsoredCallMultiplierFactor !== undefined,
       },
@@ -322,7 +326,7 @@ export function useExpressOrdersParams({
     baseFeeSwapParams,
     tokensData,
     marketsInfoData,
-    finalRelayFeeSwapParams,
+    finalRelayFeeParams,
     chainId,
     tokenPermits,
     sponsoredCallMultiplierFactor,
@@ -522,7 +526,7 @@ export async function getExpressCancelOrdersParams({
       uiFeeFactor: 0n,
     });
 
-    const baseRelayFeeSwapParams = getRelayerFeeParams({
+    const baseRelayFeeParams = getRelayerFeeParams({
       chainId,
       account,
       relayerFeeTokenAmount: swapAmounts.amountOut,
@@ -536,7 +540,7 @@ export async function getExpressCancelOrdersParams({
       forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
     });
 
-    if (!baseRelayFeeSwapParams || baseRelayFeeSwapParams.needGasPaymentTokenApproval) {
+    if (!baseRelayFeeParams || baseRelayFeeParams.needGasPaymentTokenApproval) {
       return undefined;
     }
 
@@ -552,7 +556,7 @@ export async function getExpressCancelOrdersParams({
       tokenPermits: [],
       tokensData,
       marketsInfoData,
-      relayFeeSwapParams: baseRelayFeeSwapParams,
+      RelayFeeParams: baseRelayFeeParams,
       emptySignature: true,
     });
 
@@ -583,7 +587,7 @@ export async function getExpressCancelOrdersParams({
       uiFeeFactor: 0n,
     });
 
-    const finalRelayFeeSwapParams = getRelayerFeeParams({
+    const finalRelayFeeParams = getRelayerFeeParams({
       chainId,
       account,
       relayerFeeTokenAmount: feeAmount,
@@ -597,13 +601,13 @@ export async function getExpressCancelOrdersParams({
       forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
     });
 
-    if (!finalRelayFeeSwapParams) {
+    if (!finalRelayFeeParams) {
       return undefined;
     }
 
     const feeOracleParams = getOraclePriceParamsForRelayFee({
       chainId,
-      relayFeeParams: finalRelayFeeSwapParams,
+      relayFeeParams: finalRelayFeeParams,
       tokensData,
       marketsInfoData,
     });
@@ -613,8 +617,8 @@ export async function getExpressCancelOrdersParams({
     const relayParamsPayload: RelayParamsPayload = {
       oracleParams: oracleParamsPayload,
       tokenPermits: [],
-      externalCalls: finalRelayFeeSwapParams.externalCalls,
-      fee: finalRelayFeeSwapParams.feeParams,
+      externalCalls: finalRelayFeeParams.externalCalls,
+      fee: finalRelayFeeParams.feeParams,
       deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
       userNonce: 0n,
     };
@@ -622,7 +626,7 @@ export async function getExpressCancelOrdersParams({
     return {
       subaccount,
       relayParamsPayload,
-      relayFeeParams: finalRelayFeeSwapParams,
+      relayFeeParams: finalRelayFeeParams,
       isSponsoredCall: sponsoredCallMultiplierFactor !== undefined,
     };
   } catch (error) {

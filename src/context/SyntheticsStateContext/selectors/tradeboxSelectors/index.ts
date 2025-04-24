@@ -1,6 +1,11 @@
+import { getSwapDebugSettings, getSwapPriceImpactForExternalSwapThresholdBps } from "config/externalSwaps";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector, createSelectorDeprecated } from "context/SyntheticsStateContext/utils";
+import {
+  getExternalSwapInputsByFromValue,
+  getExternalSwapInputsByLeverageSize,
+} from "domain/synthetics/externalSwaps/utils";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
@@ -13,6 +18,8 @@ import {
   getMaxLeverageByMinCollateralFactor,
   getTradeboxLeverageSliderMarks,
 } from "domain/synthetics/markets";
+import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
+import { chooseSuitableMarket } from "domain/synthetics/markets/chooseSuitableMarket";
 import { DecreasePositionSwapType, isLimitOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import {
   TokenData,
@@ -66,15 +73,10 @@ import {
   makeSelectNextPositionValuesForDecrease,
   makeSelectNextPositionValuesForIncrease,
 } from "../tradeSelectors";
-import { getSwapDebugSettings, getSwapPriceImpactForExternalSwapThresholdBps } from "config/externalSwaps";
-import {
-  getExternalSwapInputsByFromValue,
-  getExternalSwapInputsByLeverageSize,
-} from "domain/synthetics/externalSwaps/utils";
+import { selectTradeboxGetMaxLongShortLiquidityPool } from "./selectTradeboxGetMaxLongShortLiquidityPool";
 
 export * from "./selectTradeboxAvailableAndDisabledTokensForCollateral";
 export * from "./selectTradeboxAvailableMarketsOptions";
-export * from "./selectTradeboxChooseSuitableMarket";
 export * from "./selectTradeboxGetMaxLongShortLiquidityPool";
 
 export const selectExternalSwapInputs = createSelector((q) => {
@@ -1275,4 +1277,49 @@ export const selectNeedTradeboxPayTokenApproval = createSelector((q) => {
   const tokensAllowance = q(selectTradeboxTokensAllowance);
 
   return getNeedTokenApprove(tokensAllowance.tokensAllowanceData, fromTokenAddress, payAmount);
+});
+
+export const selectTradeboxChooseSuitableMarket = createSelector((q) => {
+  const getMaxLongShortLiquidityPool = q(selectTradeboxGetMaxLongShortLiquidityPool);
+  const tradeType = q(selectTradeboxTradeType);
+  const positionsInfo = q(selectPositionsInfoData);
+  const ordersInfo = q(selectOrdersInfoData);
+  const tokensData = q(selectTokensData);
+  const setTradeConfig = q(selectTradeboxSetTradeConfig);
+
+  const chooseSuitableMarketWrapped = (
+    tokenAddress: string,
+    preferredTradeType?: PreferredTradeTypePickStrategy,
+    currentTradeType?: TradeType
+  ) => {
+    const token = getByKey(tokensData, tokenAddress);
+
+    if (!token) return;
+
+    const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
+
+    const suitableParams = chooseSuitableMarket({
+      indexTokenAddress: tokenAddress,
+      maxLongLiquidityPool,
+      maxShortLiquidityPool,
+      isSwap: tradeType === TradeType.Swap,
+      positionsInfo,
+      ordersInfo,
+      preferredTradeType: preferredTradeType ?? tradeType,
+      currentTradeType,
+    });
+
+    if (!suitableParams) return;
+
+    setTradeConfig({
+      collateralAddress: suitableParams.collateralTokenAddress,
+      toTokenAddress: suitableParams.indexTokenAddress,
+      marketAddress: suitableParams.marketTokenAddress,
+      tradeType: suitableParams.tradeType,
+    });
+
+    return suitableParams;
+  };
+
+  return chooseSuitableMarketWrapped;
 });

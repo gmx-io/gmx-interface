@@ -15,6 +15,8 @@ import { bigMath } from "sdk/utils/bigmath";
 import { ZERO_DATA } from "sdk/utils/hash";
 import { nowInSeconds } from "sdk/utils/time";
 
+import { getGelatoRelayRouterDomain } from "../express";
+
 export function getIsSubaccountActive(subaccount: {
   onchainData: SubaccountOnchainData;
   signedApproval: SignedSubbacountApproval | undefined;

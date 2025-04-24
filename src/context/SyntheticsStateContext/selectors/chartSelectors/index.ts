@@ -1,12 +1,3 @@
-import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
-import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
-import { getTokenData } from "domain/synthetics/tokens";
-import { CHART_PERIODS } from "lib/legacy";
-import { getToken } from "sdk/configs/tokens";
-import { bigMath } from "sdk/utils/bigmath";
-
-import { createSelector } from "context/SyntheticsStateContext/utils";
-import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxFromTokenAddress,
@@ -14,6 +5,11 @@ import {
   selectTradeboxToTokenAddress,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { createSelector } from "context/SyntheticsStateContext/utils";
+import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
+import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
+import { CHART_PERIODS } from "lib/legacy";
+import { bigMath } from "sdk/utils/bigmath";
 
 export { selectChartToken } from "../shared/marketSelectors";
 

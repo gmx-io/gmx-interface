@@ -14,7 +14,7 @@ import {
 } from ".";
 import { createSelector } from "../../utils";
 import { makeSelectOrdersByPositionKey } from "../orderSelectors";
-import { selectSelectedMarketVisualMultiplier } from "../tradeSelectors";
+import { selectSelectedMarketVisualMultiplier } from "../shared/marketSelectors";
 import {
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxSelectedPosition,

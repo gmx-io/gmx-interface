@@ -14,6 +14,7 @@ import { convertTokenAddress, getPriceDecimals } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
 
 import { StaticChartLine } from "components/TVChartContainer/types";
+
 import { selectChartToken } from ".";
 
 export const selectChartLines = createSelector<StaticChartLine[]>((q) => {

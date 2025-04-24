@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo } from "react";
 
 import { USD_DECIMALS } from "config/factors";
-import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/tradeSelectors";
+import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
   makeSelectTradeboxSidecarOrdersEntriesIsUntouched,
   makeSelectTradeboxSidecarOrdersState,

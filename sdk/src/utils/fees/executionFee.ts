@@ -3,7 +3,7 @@ import { USD_DECIMALS } from "configs/factors";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { ExecutionFee, GasLimitsConfig } from "types/fees";
 import { DecreasePositionSwapType } from "types/orders";
-import { TokenData, TokensData } from "types/tokens";
+import { TokensData } from "types/tokens";
 import { applyFactor, expandDecimals } from "utils/numbers";
 import { convertToUsd, getTokenData } from "utils/tokens";
 
@@ -42,19 +42,6 @@ export function getExecutionFee(
     isFeeHigh,
     isFeeVeryHigh,
   };
-}
-
-export function estimateRelayerFee({
-  estimatedGasLimit,
-  gasPrice,
-  feeToken,
-}: {
-  estimatedGasLimit: bigint;
-  gasPrice: bigint;
-  feeToken: TokenData;
-}) {
-  const feeTokenAmount = estimatedGasLimit * gasPrice;
-  const feeUsd = convertToUsd(feeTokenAmount, feeToken.decimals, feeToken.prices.minPrice)!;
 }
 
 export function estimateExpressBatchOrderGasLimit({

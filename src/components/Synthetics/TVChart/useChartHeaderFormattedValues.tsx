@@ -3,7 +3,10 @@ import { useMemo } from "react";
 import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
+import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
   selectTradeboxMarketInfo,
   selectTradeboxTradeFlags,
@@ -27,9 +30,6 @@ import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
 
 import { AvailableLiquidityTooltip } from "./components/AvailableLiquidityTooltip";
-import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 
 export function useChartHeaderFormattedValues() {
   const chainId = useSelector(selectChainId);

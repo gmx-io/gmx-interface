@@ -6,8 +6,6 @@ import {
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
   estimateExecuteDecreaseOrderGasLimit,
@@ -39,10 +37,9 @@ type Props = {
   allowedSlippage: number;
   isVisible: boolean;
   onClose: () => void;
-  setPendingTxns: (txns: any) => void;
 };
 
-export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClose, setPendingTxns }: Props) {
+export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClose }: Props) {
   const tokensData = useTokensData();
   const { account, signer } = useWallet();
   const { chainId } = useChainId();
@@ -51,7 +48,6 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
   const [isUntouched, setIsUntouched] = useState(true);
-  const blockTimestampData = useSelector(selectBlockTimestampData);
 
   const { executionFee, gasLimit, feeUsd } = useMemo(() => {
     if (!gasLimits || !tokensData || gasPrice === undefined) return {};

@@ -13,7 +13,6 @@ import {
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectExternalSwapQuote } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
   makeSelectSubaccountForActions,
   selectChainId,
@@ -21,6 +20,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectAddTokenPermit } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
+import { selectExternalSwapQuote } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
   selectNeedTradeboxPayTokenApproval,
   selectTradeboxDecreasePositionAmounts,

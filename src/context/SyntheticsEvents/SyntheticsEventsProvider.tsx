@@ -1060,6 +1060,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
               setByKey(pendingExpressTxnParams, taskStatus.taskId, undefined);
 
               refreshSubaccountData();
+
+              if (pendingExpressParams?.successMessage) {
+                helperToast.success(pendingExpressParams.successMessage);
+              }
             }
             break;
           case TaskState.ExecReverted:
@@ -1082,6 +1086,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                   });
                 }
               });
+
+              if (pendingExpressParams?.errorMessage) {
+                helperToast.error(pendingExpressParams.errorMessage);
+              }
             });
 
             pendingExpressParams?.pendingPositionsKeys?.forEach((key) => {

@@ -8,7 +8,6 @@ import {
   withdrawFromSubaccount,
 } from "domain/synthetics/subaccount/withdrawFromSubaccount";
 import { useChainId } from "lib/chains";
-import { parseError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { formatTokenAmount } from "lib/numbers";

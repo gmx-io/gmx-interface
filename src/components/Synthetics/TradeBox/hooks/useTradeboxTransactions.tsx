@@ -6,13 +6,13 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import { selectSetShouldFallbackToInternalSwap } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
   selectBlockTimestampData,
   selectIsFirstOrder,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import { selectSetShouldFallbackToInternalSwap } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxCollateralToken,

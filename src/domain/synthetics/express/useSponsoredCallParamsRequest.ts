@@ -9,6 +9,7 @@ import { getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { getContract } from "sdk/configs/contracts";
 import { MIN_GELATO_BALANCE_FOR_SPONSORED_CALL } from "sdk/configs/express";
+import { getTokenBySymbol } from "sdk/configs/tokens";
 
 export type SponsoredCallParams = {
   gelatoRelayFeeMultiplierFactor: bigint;
@@ -59,14 +60,13 @@ export function useSponsoredCallParamsRequest(
       const mainBalanceToken = mainBalance.token;
       const remainingBalance = BigInt(mainBalance.remainingBalance);
 
-      const mainBalanceTokenData = getByKey(tokensData, mainBalanceToken.address);
+      const mainBalanceTokenData = getByKey(tokensData, getTokenBySymbol(chainId, mainBalanceToken.symbol).address);
+
       const usdBalance = convertToUsd(
         remainingBalance,
         mainBalanceToken.decimals,
         mainBalanceTokenData?.prices.minPrice
       );
-
-      console.log("usdBalance", usdBalance);
 
       return usdBalance !== undefined && usdBalance > MIN_GELATO_BALANCE_FOR_SPONSORED_CALL;
     },

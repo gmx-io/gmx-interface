@@ -48,7 +48,6 @@ import { getByKey } from "sdk/utils/objects";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorFactory } from "../utils";
-import { selectExternalSwapQuote } from "./tradeboxSelectors";
 import {
   makeSelectIsExpressTransactionAvailable,
   selectChainId,
@@ -64,6 +63,7 @@ import {
   selectUserReferralInfo,
 } from "./globalSelectors";
 import { selectIsPnlInLeverage, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
+import { selectExternalSwapQuote } from "./tradeboxSelectors";
 import { selectTradeboxAvailableTokensOptions } from "./tradeboxSelectors";
 import { makeSelectFindSwapPath, makeSelectNextPositionValuesForIncrease } from "./tradeSelectors";
 

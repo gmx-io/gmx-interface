@@ -1,5 +1,6 @@
 import { Address, encodePacked } from "viem";
 
+import { ARBITRUM, AVALANCHE } from "config/chains";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 
 export type ExpressTxnData = {
@@ -22,13 +23,18 @@ export async function sendExpressTransaction(p: {
   let gelatoPromise: Promise<{ taskId: string }> | undefined;
 
   if (p.isSponsoredCall) {
+    const apiKeys = {
+      [ARBITRUM]: "6dE6kOa9pc1ap4dQQC2iaK9i6nBFp8eYxQlm00VreWc_",
+      [AVALANCHE]: "FalsQh9loL6V0rwPy4gWgnQPR6uTHfWjSVT2qlTzUq4_",
+    };
+
     gelatoPromise = gelatoRelay.sponsoredCall(
       {
         chainId: BigInt(p.chainId),
         target: p.txnData.to,
         data,
       },
-      "FalsQh9loL6V0rwPy4gWgnQPR6uTHfWjSVT2qlTzUq4_"
+      apiKeys[p.chainId]
     );
   } else {
     gelatoPromise = gelatoRelay.callWithSyncFee({

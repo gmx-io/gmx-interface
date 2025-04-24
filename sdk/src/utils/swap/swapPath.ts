@@ -5,6 +5,7 @@ import { MarketsInfoData } from "types/markets";
 import { TokensData } from "types/tokens";
 import { FindSwapPath, SwapPathStats } from "types/trade";
 import { LRUCache } from "utils/LruCache";
+import { getIsMarketAvailableForExpressSwaps } from "utils/markets";
 
 import { buildMarketsAdjacencyGraph, MarketsGraph } from "./buildMarketsAdjacencyGraph";
 import {
@@ -20,7 +21,6 @@ import {
   marketRouteToMarketEdges,
 } from "./swapRouting";
 import { getSwapPathStats } from "./swapStats";
-import { getIsMarketAvailableForExpressSwaps } from "utils/markets";
 
 export const getWrappedAddress = (chainId: number, address: string | undefined) => {
   return address ? convertTokenAddress(chainId, address, "wrapped") : undefined;

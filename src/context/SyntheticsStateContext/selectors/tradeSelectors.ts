@@ -1,6 +1,7 @@
 import { isDevelopment } from "config/env";
 import { OrderType } from "domain/synthetics/orders";
 import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
+import { marketsInfoData2IndexTokenStatsMap } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import {
   TradeMode,
   TradeType,
@@ -11,6 +12,7 @@ import {
   getNextPositionValuesForIncreaseTrade,
   getTriggerDecreaseOrderType,
 } from "domain/synthetics/trade";
+import { calculateDisplayDecimals } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { MARKETS } from "sdk/configs/markets";
 import { ExternalSwapQuote } from "sdk/types/trade";
@@ -24,7 +26,6 @@ import {
 } from "sdk/utils/swap/swapRouting";
 import { createTradeFlags } from "sdk/utils/trade";
 
-import { getTokenBySymbolSafe } from "sdk/configs/tokens";
 import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
 import {
   selectChainId,
@@ -40,29 +41,10 @@ import {
   selectUserReferralInfo,
 } from "./globalSelectors";
 import { selectDebugSwapMarketsConfig, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
+import { selectTradeboxTradeFlags } from "./shared/baseSelectors";
 import { selectChartToken } from "./shared/marketSelectors";
 
-import { marketsInfoData2IndexTokenStatsMap } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
-import { calculateDisplayDecimals } from "lib/numbers";
-import { getToken } from "sdk/configs/tokens";
-
-import {
-  selectTradeboxFromTokenAddress,
-  selectTradeboxToTokenAddress,
-  selectTradeboxTradeMode,
-  selectTradeboxTradeType,
-} from "./tradeboxSelectors";
-
-import { getTokenData } from "domain/synthetics/tokens";
-
 export type TokenTypeForSwapRoute = "collateralToken" | "indexToken";
-
-export const selectTradeboxTradeFlags = createSelector((q) => {
-  const tradeType = q(selectTradeboxTradeType);
-  const tradeMode = q(selectTradeboxTradeMode);
-  const tradeFlags = createTradeFlags(tradeType, tradeMode);
-  return tradeFlags;
-});
 
 export const selectIndexTokenStats = createSelector((q) => {
   const marketsInfoData = q(selectMarketsInfoData);
@@ -635,29 +617,3 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
       }
     })
 );
-
-/**
- * Returns 1 if swap or no visual multiplier
- */
-export const selectSelectedMarketVisualMultiplier = createSelector((q) => {
-  const { symbol } = q(selectChartToken);
-
-  if (!symbol) {
-    return 1;
-  }
-
-  const chainId = q(selectChainId);
-  const token = getTokenBySymbolSafe(chainId, symbol);
-
-  if (!token) {
-    return 1;
-  }
-
-  const { isSwap } = q(selectTradeboxTradeFlags);
-
-  if (!token.visualMultiplier || isSwap) {
-    return 1;
-  }
-
-  return token.visualMultiplier;
-});

@@ -48,12 +48,12 @@ import { TokenData } from "domain/synthetics/tokens";
 import { getAcceptablePriceByPriceImpact, getMarkPrice } from "domain/synthetics/trade/utils/prices";
 import { expandDecimals, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { createTradeFlags } from "sdk/utils/trade";
 
-import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { selectTradeboxAvailableMarkets } from "./selectTradeboxAvailableMarkets";
-import { makeSelectIncreasePositionAmounts } from "../tradeSelectors";
 import { selectIsLeverageSliderEnabled } from "../settingsSelectors";
+import { makeSelectIncreasePositionAmounts } from "../tradeSelectors";
 
 export type AvailableMarketsOptions = {
   allMarkets?: MarketInfo[];

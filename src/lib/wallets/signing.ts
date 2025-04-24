@@ -1,4 +1,4 @@
-import { ethers, Signer } from "ethers";
+import { Signer } from "ethers";
 
 export type SignatureDomain = {
   name: string;

@@ -17,21 +17,8 @@ import {
 } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-import { ARBITRUM, AVALANCHE } from "sdk/configs/chains";
+import { GAS_LIMITS_STATIC_CONFIG } from "sdk/configs/chains";
 import type { GasLimitsConfig } from "sdk/types/fees";
-
-const GAS_LIMITS_STATIC_CONFIG = {
-  [ARBITRUM]: {
-    createOrderGasLimit: 1_107_000n,
-    updateOrderGasLimit: 1_107_000n,
-    cancelOrderGasLimit: 1_107_000n,
-  },
-  [AVALANCHE]: {
-    createOrderGasLimit: 800_000n,
-    updateOrderGasLimit: 600_000n,
-    cancelOrderGasLimit: 700_000n,
-  },
-};
 
 export function useGasLimits(chainId: number): GasLimitsConfig | undefined {
   const { data } = useMulticall(chainId, "useGasLimitsConfig", {

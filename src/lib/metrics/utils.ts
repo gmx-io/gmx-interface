@@ -1,10 +1,9 @@
-import { Subaccount } from "domain/synthetics/gassless/txns/subaccountUtils";
-
 import { USD_DECIMALS } from "config/factors";
 import { EventLogData } from "context/SyntheticsEvents";
 import { ExecutionFee } from "domain/synthetics/fees";
 import { getMarketIndexName, getMarketPoolName, MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
+import { Subaccount } from "domain/synthetics/subaccount";
 import { TokenData } from "domain/synthetics/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "domain/synthetics/trade";
 import { ErrorLike, OrderErrorContext, parseError } from "lib/errors";

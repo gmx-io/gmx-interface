@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import { RelayFeeSwapParams } from "domain/synthetics/gassless/txns/expressOrderUtils";
 import React, { useMemo } from "react";
 
 import { usePositionSeller } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
@@ -12,6 +11,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import { selectTradeboxAdvancedOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { RelayerFeeParams } from "domain/synthetics/express";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
@@ -21,18 +21,18 @@ import { formatUsd } from "lib/numbers";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { ExecutionPriceRow } from "../ExecutionPriceRow";
 import { ExpandableRow } from "../ExpandableRow";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
+import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 
 export type Props = {
   triggerPriceInputValue: string;
   slippageInputId: string;
-  relayerFeeParams?: RelayFeeSwapParams;
+  relayerFeeParams?: RelayerFeeParams;
 };
 
 export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInputId, relayerFeeParams }: Props) {

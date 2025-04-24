@@ -1,4 +1,3 @@
-
 import { t } from "@lingui/macro";
 import React, { createContext, useContext, useEffect, useMemo } from "react";
 import { useCallback, useState } from "react";
@@ -29,7 +28,6 @@ import { metrics } from "lib/metrics";
 import useWallet from "lib/wallets/useWallet";
 import { DEFAULT_SUBACCOUNT_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
-
 
 import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
 import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";

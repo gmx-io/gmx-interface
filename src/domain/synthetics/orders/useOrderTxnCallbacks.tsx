@@ -35,7 +35,6 @@ import {
 
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 
-
 import { BatchOrderTxnCtx } from "./sendBatchOrderTxn";
 import { ExpressParams } from "../express/types";
 
@@ -176,7 +175,17 @@ export function useOrderTxnCallbacks() {
                 e.data.batchParams
               );
 
-              const operationMessage = getOperationMessage(
+              const submitMessage = getOperationMessage(
+                mainActionType,
+                "submitted",
+                actionsCount,
+                undefined,
+                setIsSettingsVisible
+              );
+
+              helperToast.success(submitMessage);
+
+              const successMessage = getOperationMessage(
                 mainActionType,
                 "success",
                 actionsCount,
@@ -186,7 +195,7 @@ export function useOrderTxnCallbacks() {
 
               const pendingTxn: PendingTransaction = {
                 hash: e.data.txnHash,
-                message: operationMessage,
+                message: successMessage,
                 metricId: ctx.metricId,
                 data: {
                   estimatedExecutionFee: totalExecutionFeeAmount,
