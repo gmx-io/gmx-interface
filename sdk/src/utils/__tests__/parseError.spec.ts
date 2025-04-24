@@ -219,12 +219,7 @@ describe("parseError", () => {
               message: "Invalid input parameters",
             },
           }),
-          errorGroup: JSON.stringify({
-            error: {
-              code: -"XXX",
-              message: "Invalid input parameters",
-            },
-          }).slice(0, 50),
+          errorGroup: '{"error":{"code":-XXX,"message":"Invalid input par',
           errorStackGroup: "Unknown stack group",
           errorDepth: 0,
           isUserError: false,
