@@ -1,42 +1,27 @@
-import { sub } from "date-fns";
-import mapValues from "lodash/mapValues";
 import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 
-import { getMarketListingDate } from "config/markets";
 import { getSubgraphUrl } from "config/subgraph";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLidoStakeApr } from "domain/stake/useLidoStakeApr";
-import { GlvInfoData, getPoolUsdWithoutPnl, isMarketInfo } from "domain/synthetics/markets";
-import { CHART_PERIODS, GM_DECIMALS } from "lib/legacy";
+import { getPoolUsdWithoutPnl, GlvInfoData } from "domain/synthetics/markets";
+import { GM_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
-import { BN_ZERO, PRECISION, bigintToNumber, expandDecimals, numberToBigint } from "lib/numbers";
+import { BN_ZERO, expandDecimals, numberToBigint, PRECISION } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { getTokenBySymbolSafe } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
-import graphqlFetcher from "sdk/utils/graphqlFetcher";
 
-import { useLiquidityProvidersIncentives } from "../common/useIncentiveStats";
-import { getBorrowingFactorPerPeriod } from "../fees";
-import { useTokensDataRequest } from "../tokens";
-import { getIsBaseApyReadyToBeShown } from "./getIsBaseApyReadyToBeShown";
 import { isGlvEnabled, isGlvInfo } from "./glv";
-import { GlvAndGmMarketsInfoData, MarketInfo, MarketTokensAPRData } from "./types";
-import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
+import { GlvAndGmMarketsInfoData, MarketTokensAPRData } from "./types";
 import { useGlvMarketsInfo } from "./useGlvMarkets";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
 import { useMarketTokensData } from "./useMarketTokensData";
+import { useLiquidityProvidersIncentives } from "../common/useIncentiveStats";
+import { useTokensDataRequest } from "../tokens";
 import { convertToUsd } from "../tokens/utils";
-
-type RawCollectedFee = {
-  cumulativeFeeUsdPerPoolValue: string;
-  cumulativeBorrowingFeeUsdPerPoolValue: string;
-};
-
-type RawPoolValue = {
-  poolValue: string;
-};
 
 type GmGlvTokensAPRResult = {
   glvApyInfoData: MarketTokensAPRData;
@@ -49,8 +34,9 @@ type GmGlvTokensAPRResult = {
 
 type SwrResult = {
   marketsTokensApyData: MarketTokensAPRData;
-  avgMarketsApy: bigint;
   marketsTokensLidoAprData: MarketTokensAPRData;
+  glvApyInfoData: MarketTokensAPRData;
+  avgMarketsApy: bigint;
 };
 
 function useMarketAddresses(marketsInfoData: GlvAndGmMarketsInfoData | undefined) {
@@ -248,39 +234,6 @@ function useIncentivesBonusApr(
   return marketAndGlvTokensAPRData;
 }
 
-function getMarketFeesQuery(marketAddress: string) {
-  return `
-  _${marketAddress}_lte_start_of_period_: collectedFeesInfos(
-    orderBy:timestampGroup_DESC
-    where: {
-      address_eq: "${marketAddress}"
-      period_eq: "1h"
-      timestampGroup_lte: $timestampGroup_lte
-    },
-    limit: 1
-  ) {
-    cumulativeFeeUsdPerPoolValue
-    cumulativeBorrowingFeeUsdPerPoolValue
-  }
-
-  _${marketAddress}_recent: collectedFeesInfos(
-    orderBy:timestampGroup_DESC
-    where: {
-      address_eq: "${marketAddress}"
-      period_eq: "1h"
-    },
-    limit: 1
-  ) {
-    cumulativeFeeUsdPerPoolValue
-    cumulativeBorrowingFeeUsdPerPoolValue
-  }
-
-  _${marketAddress}_poolValue: marketInfos(where: { id_eq: "${marketAddress}" }) {
-    poolValue
-  }
-  `;
-}
-
 export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false, withGlv: false });
   const { tokensData } = useTokensDataRequest(chainId);
@@ -307,71 +260,13 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
   const key =
     marketAddresses.length && marketTokensData && subsquidUrl ? marketAddresses.concat("apr-subsquid").join(",") : null;
 
-  const daysConsidered = useDaysConsideredInMarketsApr();
   const lidoApr = useLidoStakeApr();
 
-  const { data } = useSWR<SwrResult>(key, {
+  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+
+  const { data } = useSWR(key, {
     fetcher: async (): Promise<SwrResult> => {
-      let queryBody = marketAddresses.reduce((acc, marketAddress) => acc + getMarketFeesQuery(marketAddress), "");
-
-      queryBody = `query ($timestampGroup_lte: Int) {${queryBody}}`;
-
-      let responseOrNull: Record<string, [RawCollectedFee | RawPoolValue]> | undefined = undefined;
-      try {
-        responseOrNull = await graphqlFetcher<Record<string, [RawCollectedFee | RawPoolValue]>>(
-          subsquidUrl!,
-          queryBody,
-          {
-            timestampGroup_lte: Math.floor(sub(new Date(), { days: daysConsidered }).valueOf() / 1000),
-          }
-        );
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error(err);
-      }
-
-      if (!responseOrNull) {
-        return {
-          marketsTokensLidoAprData: {},
-          marketsTokensApyData: {},
-          avgMarketsApy: 0n,
-        };
-      }
-
-      const response = responseOrNull;
-
-      const marketsTokensAPRData: MarketTokensAPRData = marketAddresses.reduce((acc, marketAddress) => {
-        const lteStartOfPeriodFees = response[`_${marketAddress}_lte_start_of_period_`] as RawCollectedFee[];
-        const recentFees = response[`_${marketAddress}_recent`] as RawCollectedFee[];
-        const poolValue = BigInt(
-          (response[`_${marketAddress}_poolValue`][0] as RawPoolValue | undefined)?.poolValue ?? "0"
-        );
-
-        const marketInfo = getByKey(marketsInfoData, marketAddress);
-        if (!marketInfo || !isMarketInfo(marketInfo)) return acc;
-
-        const x1total = BigInt(lteStartOfPeriodFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
-        const x1borrowing = BigInt(lteStartOfPeriodFees[0]?.cumulativeBorrowingFeeUsdPerPoolValue ?? 0);
-        const x2total = BigInt(recentFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
-        const x2borrowing = BigInt(recentFees[0]?.cumulativeBorrowingFeeUsdPerPoolValue ?? 0);
-        const x1 = x1total - x1borrowing;
-        const x2 = x2total - x2borrowing;
-
-        if (x2 == 0n) {
-          acc[marketAddress] = 0n;
-          return acc;
-        }
-
-        const incomePercentageForPeriod = x2 - x1;
-        const yearMultiplier = BigInt(Math.floor(365 / daysConsidered));
-        const aprByFees = incomePercentageForPeriod * yearMultiplier;
-        const aprByBorrowingFee = calcAprByBorrowingFee(marketInfo, poolValue);
-
-        acc[marketAddress] = aprByFees + aprByBorrowingFee;
-
-        return acc;
-      }, {} as MarketTokensAPRData);
-
+      const apys = await oracleKeeperFetcher.fetchApys();
       const wstEthToken = getTokenBySymbolSafe(chainId, "wstETH");
 
       const marketsTokensLidoAprData = marketAddresses.reduce((acc, marketAddress) => {
@@ -411,88 +306,38 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
         return acc;
       }, {} as MarketTokensAPRData);
 
-      const marketsTokensApyData = mapValues(marketsTokensAPRData, (x) => calculateAPY(x));
+      const marketsTokensApyData = Object.entries(apys.markets).reduce((acc, [address, { baseApy }]) => {
+        acc[address] = numberToBigint(baseApy, 30);
+        return acc;
+      }, {} as MarketTokensAPRData);
 
       const avgMarketsApy =
         Object.values(marketsTokensApyData).reduce((acc, apr) => {
           return acc + apr;
         }, 0n) / BigInt(marketAddresses.length);
 
+      const glvApyInfoData = Object.entries(apys.glvs).reduce((acc, [address, { baseApy }]) => {
+        acc[address] = numberToBigint(baseApy, 30);
+        return acc;
+      }, {} as MarketTokensAPRData);
+
       return {
         marketsTokensLidoAprData,
         avgMarketsApy,
         marketsTokensApyData,
+        glvApyInfoData,
       };
     },
   });
 
   const marketsTokensIncentiveAprData = useIncentivesBonusApr(chainId, marketsInfoData, glvData);
 
-  const glvApyInfoData = useMemo(() => {
-    if (!glvData || !data?.marketsTokensApyData) {
-      return {};
-    }
-
-    return Object.values(glvData).reduce((acc, { markets, glvTokenAddress }) => {
-      const marketData = markets.map((market) => {
-        const isBaseApyEligible = getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, market.address));
-        const apy = isBaseApyEligible ? data.marketsTokensApyData[market.address] : 0n;
-        const marketBalance = market.gmBalance;
-        const price = marketTokensData?.[market.address].prices.minPrice ?? 0n;
-        const decimals = marketTokensData?.[market.address].decimals ?? 0;
-        const amountUsd = apy !== 0n ? convertToUsd(marketBalance, decimals, price) ?? 0n : 0n;
-
-        return {
-          apy,
-          amountUsd,
-        };
-      });
-
-      const total = marketData.reduce((acc, { amountUsd }) => acc + amountUsd, 0n);
-      const hasEmptyApy = marketData.some(({ apy }) => apy === undefined);
-      const sumApys = hasEmptyApy
-        ? undefined
-        : marketData.reduce((acc: bigint, { amountUsd, apy }) => acc + amountUsd * apy, 0n);
-
-      if (sumApys === undefined) {
-        acc[glvTokenAddress] = undefined;
-      } else {
-        acc[glvTokenAddress] = total === 0n ? 0n : sumApys / total;
-      }
-
-      return acc;
-    }, {});
-  }, [glvData, data?.marketsTokensApyData, marketTokensData, chainId]);
-
   return {
-    glvApyInfoData,
+    glvApyInfoData: data?.glvApyInfoData,
     marketsTokensLidoAprData: data?.marketsTokensLidoAprData,
     marketsTokensIncentiveAprData: marketsTokensIncentiveAprData.marketTokensAPRData,
     glvTokensIncentiveAprData: marketsTokensIncentiveAprData.glvTokensAPRData,
     avgMarketsApy: data?.avgMarketsApy,
     marketsTokensApyData: data?.marketsTokensApyData,
   };
-}
-
-function calcAprByBorrowingFee(marketInfo: MarketInfo, poolValue: bigint) {
-  const longOi = marketInfo.longInterestUsd;
-  const shortOi = marketInfo.shortInterestUsd;
-  const isLongPayingBorrowingFee = longOi > shortOi;
-  const borrowingFactorPerYear = getBorrowingFactorPerPeriod(marketInfo, isLongPayingBorrowingFee, CHART_PERIODS["1y"]);
-
-  const borrowingFeeUsdForPoolPerYear =
-    (borrowingFactorPerYear * (isLongPayingBorrowingFee ? longOi : shortOi) * 63n) / PRECISION / 100n;
-
-  const borrowingFeeUsdPerPoolValuePerYear = bigMath.mulDiv(borrowingFeeUsdForPoolPerYear, PRECISION, poolValue);
-
-  return borrowingFeeUsdPerPoolValuePerYear;
-}
-
-function calculateAPY(apr: bigint) {
-  const aprNumber = bigintToNumber(apr, 30);
-  const apyNumber = Math.exp(aprNumber) - 1;
-  if (apyNumber === Infinity) {
-    return 0n;
-  }
-  return numberToBigint(apyNumber, 30);
 }

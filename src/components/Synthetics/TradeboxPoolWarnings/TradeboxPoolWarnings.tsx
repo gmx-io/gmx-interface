@@ -337,14 +337,13 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
     warning.push(
       <AlertInfoCard key="showHasBetterOpenFeesWarning">
         <Trans>
-          You can save {formatPercentage(improvedOpenFeesDeltaBps)} in the {getMarketPoolName(minOpenFeesMarket)} market
-          pool.
+          Save {formatPercentage(improvedOpenFeesDeltaBps)} in price impact and fees by{" "}
           <WithActon>
             <span
               className="clickable muted underline"
               onClick={() => setMarketAddress(minOpenFeesMarket.marketTokenAddress)}
             >
-              Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
+              switching to the {getMarketPoolName(minOpenFeesMarket)} pool
             </span>
             .
           </WithActon>

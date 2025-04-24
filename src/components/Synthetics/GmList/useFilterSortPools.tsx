@@ -78,7 +78,6 @@ export function useFilterSortPools({
     }
 
     return sortGmTokensByField({
-      chainId,
       marketsInfo,
       marketTokensData,
       orderBy,
@@ -93,7 +92,6 @@ export function useFilterSortPools({
     searchText,
     orderBy,
     direction,
-    chainId,
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
     marketsTokensLidoAprData,
