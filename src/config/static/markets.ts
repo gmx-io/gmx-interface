@@ -342,6 +342,10 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
     "0x89EB78679921499632fF16B1be3ee48295cfCD91": {
       enabled: true,
     },
+    // DOLO/USD [WETH-USDC]
+    "0x4D3Eb91efd36C2b74181F34B111bc1E91a0d0cb4": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
