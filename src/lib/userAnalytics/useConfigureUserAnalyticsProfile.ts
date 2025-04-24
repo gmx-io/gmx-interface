@@ -19,6 +19,8 @@ import useRouteQuery from "lib/useRouteQuery";
 import useWallet from "lib/wallets/useWallet";
 
 import { SESSION_ID_KEY, userAnalytics } from "./UserAnalytics";
+import { useSubmitButtonState } from "components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 
 export function useConfigureUserAnalyticsProfile() {
   const history = useHistory();
@@ -30,7 +32,8 @@ export function useConfigureUserAnalyticsProfile() {
   const { chainId } = useChainId();
   const { account, active } = useWallet();
   const { data: bowser } = useBowser();
-  const { shouldShowPositionLines } = useSettings();
+  const { shouldShowPositionLines, expressOrdersEnabled } = useSettings();
+  const { subaccount } = useSubaccountContext();
 
   const timePeriods = useMemo(() => getTimePeriodsInSeconds(), []);
 
@@ -106,8 +109,19 @@ export function useConfigureUserAnalyticsProfile() {
       isChartPositionsEnabled: shouldShowPositionLines,
       ref: referralCode,
       utm: utmParams?.utmString,
+      ExpressEnabled: expressOrdersEnabled,
+      Express1CTEnabled: Boolean(subaccount),
     });
-  }, [currentLanguage, last30DVolume, totalVolume, referralCode, utmParams?.utmString, shouldShowPositionLines]);
+  }, [
+    currentLanguage,
+    last30DVolume,
+    totalVolume,
+    referralCode,
+    utmParams?.utmString,
+    shouldShowPositionLines,
+    expressOrdersEnabled,
+    subaccount,
+  ]);
 
   useEffect(() => {
     userAnalytics.setDebug(showDebugValues || false);
