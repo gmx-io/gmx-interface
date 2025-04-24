@@ -123,7 +123,6 @@ describe("buildFiltersBody", () => {
           foo: "bar",
         },
       ],
-      // @ts-expect-error
       baz: "qux",
     };
 
@@ -139,7 +138,6 @@ describe("buildFiltersBody", () => {
           foo: "bar",
         },
       ],
-      // @ts-expect-error
       baz: "qux",
     };
 
@@ -151,7 +149,6 @@ describe("buildFiltersBody", () => {
   it("should throw not error if empty or is mixed with other filters", () => {
     const input: GraphQlFilters = {
       or: [],
-      // @ts-expect-error
       baz: "qux",
     };
 
@@ -163,7 +160,6 @@ describe("buildFiltersBody", () => {
   it("should throw not error if empty and is mixed with other filters", () => {
     const input: GraphQlFilters = {
       and: [],
-      // @ts-expect-error
       baz: "qux",
     };
 
