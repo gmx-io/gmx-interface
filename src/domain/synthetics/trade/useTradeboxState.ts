@@ -145,7 +145,7 @@ export function useTradeboxState(
     [chainId]
   );
 
-  const { savedAllowedSlippage, savedTWAPNumberOfParts } = useSettings();
+  const { savedAllowedSlippage, savedTwapNumberOfParts } = useSettings();
   const [syncedChainId, setSyncedChainId] = useState<number | undefined>(undefined);
   const [allowedSlippage, setAllowedSlippage] = useState<number>(savedAllowedSlippage);
 
@@ -243,7 +243,7 @@ export function useTradeboxState(
   const [closeSizeInputValue, setCloseSizeInputValue] = useState("");
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState<string>("");
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
-  const [numberOfParts, setNumberOfParts] = useState<number>(savedTWAPNumberOfParts);
+  const [numberOfParts, setNumberOfParts] = useState<number>(savedTwapNumberOfParts);
   const [duration, setDuration] = useState<TwapDuration>({ hours: 10, minutes: 0 });
 
   const [advancedOptions, setAdvancedOptions] = useSafeState<TradeboxAdvancedOptions>(
@@ -269,14 +269,14 @@ export function useTradeboxState(
       [TradeType.Long]: [
         TradeMode.Market,
         TradeMode.Limit,
-        [TradeMode.Trigger, TradeMode.StopMarket, TradeMode.TWAP],
+        [TradeMode.Trigger, TradeMode.StopMarket, TradeMode.Twap],
       ] as const,
       [TradeType.Short]: [
         TradeMode.Market,
         TradeMode.Limit,
-        [TradeMode.Trigger, TradeMode.StopMarket, TradeMode.TWAP],
+        [TradeMode.Trigger, TradeMode.StopMarket, TradeMode.Twap],
       ] as const,
-      [TradeType.Swap]: [TradeMode.Market, TradeMode.Limit, TradeMode.TWAP] as const,
+      [TradeType.Swap]: [TradeMode.Market, TradeMode.Limit, TradeMode.Twap] as const,
     }[tradeType];
   }, [tradeType]);
 

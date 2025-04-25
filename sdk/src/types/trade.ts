@@ -12,7 +12,7 @@ export enum TradeMode {
   Limit = "Limit",
   StopMarket = "StopMarket",
   Trigger = "Trigger",
-  TWAP = "TWAP",
+  Twap = "TWAP",
 }
 
 export enum TriggerThresholdType {

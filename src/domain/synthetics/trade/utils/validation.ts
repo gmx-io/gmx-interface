@@ -29,6 +29,7 @@ import {
 import { bigMath } from "sdk/utils/bigmath";
 
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
+import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "../twap/utils";
 
 export type ValidationTooltipName = "maxLeverage";
 export type ValidationResult =
@@ -69,6 +70,8 @@ export function getSwapError(p: {
   externalSwapQuote: ExternalSwapQuote | undefined;
   isWrapOrUnwrap: boolean;
   swapLiquidity: bigint | undefined;
+  isTwap: boolean;
+  numberOfParts: number;
 }): ValidationResult {
   const {
     fromToken,
@@ -84,6 +87,8 @@ export function getSwapError(p: {
     swapLiquidity,
     swapPathStats,
     externalSwapQuote,
+    isTwap,
+    numberOfParts,
   } = p;
 
   if (!fromToken || !toToken) {
@@ -148,6 +153,14 @@ export function getSwapError(p: {
     ) {
       return [t`Limit price below mark price`];
     }
+  }
+
+  if (isTwap && numberOfParts < MIN_TWAP_NUMBER_OF_PARTS) {
+    return [t`Min number of parts: ${MIN_TWAP_NUMBER_OF_PARTS}`];
+  }
+
+  if (isTwap && numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
+    return [t`Max number of parts: ${MAX_TWAP_NUMBER_OF_PARTS}`];
   }
 
   return [undefined];
@@ -357,6 +370,14 @@ export function getIncreaseError(p: {
     }
   }
 
+  if (isTwap && numberOfParts < MIN_TWAP_NUMBER_OF_PARTS) {
+    return [t`Min number of parts: ${MIN_TWAP_NUMBER_OF_PARTS}`];
+  }
+
+  if (isTwap && numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
+    return [t`Max number of parts: ${MAX_TWAP_NUMBER_OF_PARTS}`];
+  }
+
   return [undefined];
 }
 
@@ -402,6 +423,8 @@ export function getDecreaseError(p: {
   isNotEnoughReceiveTokenLiquidity: boolean;
   triggerThresholdType: TriggerThresholdType | undefined;
   minPositionSizeUsd: bigint | undefined;
+  isTwap: boolean;
+  numberOfParts: number;
 }): ValidationResult {
   const {
     marketInfo,
@@ -418,6 +441,8 @@ export function getDecreaseError(p: {
     minCollateralUsd,
     isNotEnoughReceiveTokenLiquidity,
     triggerThresholdType,
+    isTwap,
+    numberOfParts,
   } = p;
 
   if (isContractAccount && isAddressZero(receiveToken?.address)) {
@@ -479,6 +504,14 @@ export function getDecreaseError(p: {
 
   if (isNotEnoughReceiveTokenLiquidity) {
     return [t`Insufficient receive token liquidity`];
+  }
+
+  if (isTwap && numberOfParts < MIN_TWAP_NUMBER_OF_PARTS) {
+    return [t`Min number of parts: ${MIN_TWAP_NUMBER_OF_PARTS}`];
+  }
+
+  if (isTwap && numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
+    return [t`Max number of parts: ${MAX_TWAP_NUMBER_OF_PARTS}`];
   }
 
   return [undefined];

@@ -267,6 +267,8 @@ export function PositionSeller(p: Props) {
       minCollateralUsd,
       isNotEnoughReceiveTokenLiquidity,
       minPositionSizeUsd,
+      isTwap,
+      numberOfParts,
     });
 
     if (commonError[0] || decreaseError[0]) {
@@ -292,6 +294,8 @@ export function PositionSeller(p: Props) {
     receiveToken,
     triggerPrice,
     minPositionSizeUsd,
+    isTwap,
+    numberOfParts,
   ]);
 
   const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: position?.key });

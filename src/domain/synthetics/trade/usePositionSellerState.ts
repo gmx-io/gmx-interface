@@ -18,7 +18,7 @@ export enum OrderOption {
 export const ORDER_OPTION_TO_TRADE_MODE: Record<OrderOption, TradeMode> = {
   [OrderOption.Market]: TradeMode.Market,
   [OrderOption.Trigger]: TradeMode.Trigger,
-  [OrderOption.Twap]: TradeMode.TWAP,
+  [OrderOption.Twap]: TradeMode.Twap,
 };
 
 export type PositionSellerState = ReturnType<typeof usePositionSellerState>;

@@ -120,8 +120,8 @@ export const selectTradeboxAdvancedOptions = (s: SyntheticsState) => s.tradebox.
 export const selectTradeboxSetAdvancedOptions = (s: SyntheticsState) => s.tradebox.setAdvancedOptions;
 export const selectTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradebox.allowedSlippage;
 export const selectSetTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradebox.setAllowedSlippage;
-export const selectTradeboxTWAPDuration = (s: SyntheticsState) => s.tradebox.duration;
-export const selectTradeboxTWAPNumberOfParts = (s: SyntheticsState) => s.tradebox.numberOfParts;
+export const selectTradeboxTwapDuration = (s: SyntheticsState) => s.tradebox.duration;
+export const selectTradeboxTwapNumberOfParts = (s: SyntheticsState) => s.tradebox.numberOfParts;
 
 export const selectTradeboxTotalSwapImpactBps = createSelector((q) => {
   const fees = q(selectTradeboxFees);
@@ -391,9 +391,9 @@ const selectTradeboxEstimatedGas = createSelector(function selectTradeboxEstimat
   if (gasLimit === null) return null;
 
   const tradeMode = q(selectTradeboxTradeMode);
-  const numberOfParts = q(selectTradeboxTWAPNumberOfParts);
+  const numberOfParts = q(selectTradeboxTwapNumberOfParts);
 
-  if (tradeMode === TradeMode.TWAP && numberOfParts) {
+  if (tradeMode === TradeMode.Twap && numberOfParts) {
     return gasLimit * BigInt(numberOfParts);
   }
 

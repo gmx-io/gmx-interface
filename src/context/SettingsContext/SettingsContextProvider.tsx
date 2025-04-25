@@ -75,7 +75,7 @@ export type SettingsContextType = {
     | undefined;
   setDebugSwapMarketsConfig: (val: { disabledSwapMarkets?: string[]; manualPath?: string[] }) => void;
 
-  savedTWAPNumberOfParts: number;
+  savedTwapNumberOfParts: number;
   setSavedTWAPNumberOfParts: (val: number) => void;
 };
 
@@ -171,7 +171,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     true
   );
 
-  const [savedTWAPNumberOfParts, setSavedTWAPNumberOfParts] = useLocalStorageSerializeKey(
+  const [savedTwapNumberOfParts, setSavedTWAPNumberOfParts] = useLocalStorageSerializeKey(
     [chainId, TWAP_NUMBER_OF_PARTS_KEY],
     DEFAULT_TWAP_NUMBER_OF_PARTS
   );
@@ -238,7 +238,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       debugSwapMarketsConfig: debugSwapMarketsConfig!,
       setDebugSwapMarketsConfig,
 
-      savedTWAPNumberOfParts: savedTWAPNumberOfParts!,
+      savedTwapNumberOfParts: savedTwapNumberOfParts!,
       setSavedTWAPNumberOfParts,
     };
   }, [
@@ -278,7 +278,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setExternalSwapsEnabled,
     debugSwapMarketsConfig,
     setDebugSwapMarketsConfig,
-    savedTWAPNumberOfParts,
+    savedTwapNumberOfParts,
     setSavedTWAPNumberOfParts,
   ]);
 

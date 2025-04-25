@@ -9,6 +9,7 @@ import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/Tab
 
 type Item = {
   data: OrderTypeFilterValue;
+  hidden?: boolean;
   text: MessageDescriptor;
 };
 
@@ -34,6 +35,16 @@ const GROUPS: Groups = [
       {
         data: "trigger-stop-loss",
         text: msg`Stop Loss`,
+      },
+    ],
+  },
+  {
+    groupName: msg`TWAP`,
+    items: [
+      {
+        data: "twap",
+        text: msg`TWAP`,
+        hidden: true,
       },
     ],
   },
@@ -68,6 +79,7 @@ export function OrderTypeFilter({ value, onChange, asButton }: Props) {
           return {
             data: item.data,
             text: i18n._(item.text),
+            hidden: item.hidden,
           };
         }),
       };

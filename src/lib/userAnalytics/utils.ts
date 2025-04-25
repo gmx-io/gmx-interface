@@ -133,8 +133,8 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
           priceImpactPercentage: metricData.priceImpactPercentage,
           netRate1h: metricData.netRate1h,
-          duration: metricData.tradeMode === TradeMode.TWAP ? getTwapDurationInSeconds(metricData.duration) : undefined,
-          partsCount: metricData.tradeMode === TradeMode.TWAP ? metricData.partsCount : undefined,
+          duration: metricData.tradeMode === TradeMode.Twap ? getTwapDurationInSeconds(metricData.duration) : undefined,
+          partsCount: metricData.tradeMode === TradeMode.Twap ? metricData.partsCount : undefined,
         },
       });
       break;
@@ -159,8 +159,8 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
           priceImpactPercentage: metricData.priceImpactPercentage,
           netRate1h: metricData.netRate1h,
-          duration: metricData.tradeMode === TradeMode.TWAP ? getTwapDurationInSeconds(metricData.duration) : undefined,
-          partsCount: metricData.tradeMode === TradeMode.TWAP ? metricData.partsCount : undefined,
+          duration: metricData.tradeMode === TradeMode.Twap ? getTwapDurationInSeconds(metricData.duration) : undefined,
+          partsCount: metricData.tradeMode === TradeMode.Twap ? metricData.partsCount : undefined,
         },
       });
       break;
@@ -183,8 +183,8 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           priceImpactDeltaUsd: undefined,
           priceImpactPercentage: undefined,
           netRate1h: undefined,
-          duration: metricData.tradeMode === TradeMode.TWAP ? getTwapDurationInSeconds(metricData.duration) : undefined,
-          partsCount: metricData.tradeMode === TradeMode.TWAP ? metricData.partsCount : undefined,
+          duration: metricData.tradeMode === TradeMode.Twap ? getTwapDurationInSeconds(metricData.duration) : undefined,
+          partsCount: metricData.tradeMode === TradeMode.Twap ? metricData.partsCount : undefined,
         },
       });
       break;
@@ -371,8 +371,8 @@ export const sendDepthChartInteractionEvent = (pair: string) => {
 
 const getAnalyticsTwapProps = (metricData: PositionOrderMetricParams | SwapMetricData) => {
   return {
-    duration: metricData.tradeMode === TradeMode.TWAP ? getTwapDurationInSeconds(metricData.duration) : undefined,
-    partsCount: metricData.tradeMode === TradeMode.TWAP ? metricData.partsCount : undefined,
+    duration: metricData.tradeMode === TradeMode.Twap ? getTwapDurationInSeconds(metricData.duration) : undefined,
+    partsCount: metricData.tradeMode === TradeMode.Twap ? metricData.partsCount : undefined,
   };
 };
 
@@ -383,7 +383,7 @@ export const getAnalyticsOrderTypeByTradeMode = (tradeMode: TradeMode | undefine
     [TradeMode.Market]: "Market",
     [TradeMode.Limit]: "Limit",
     [TradeMode.Trigger]: "TPSL",
-    [TradeMode.TWAP]: "TWAP",
+    [TradeMode.Twap]: "TWAP",
     [TradeMode.StopMarket]: "StopMarket",
   };
 

@@ -606,7 +606,6 @@ msgid "in liquidity"
 msgstr "en liquidité"
 
 #: src/components/SettingsModal/SettingsModal.tsx
-#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max Network Fee buffer below {0}% may result in failed orders."
 msgstr ""
 
@@ -2482,6 +2481,12 @@ msgstr ""
 msgid "Borrow Fee Rate"
 msgstr ""
 
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max number of parts: {MAX_TWAP_NUMBER_OF_PARTS}"
+msgstr ""
+
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.tsx
@@ -3442,6 +3447,8 @@ msgstr ""
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
 msgstr ""
 
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
@@ -7210,6 +7217,12 @@ msgstr "Réclamation complétée !"
 #: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
+msgstr ""
+
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min number of parts: {MIN_TWAP_NUMBER_OF_PARTS}"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx

@@ -498,6 +498,6 @@ export function getPendingOrderFromParams(
     shouldUnwrapNativeToken: isNativeReceive,
     orderKey,
     externalSwapQuote: undefined,
-    isTwapOrder: false,
+    isTwap: false,
   };
 }

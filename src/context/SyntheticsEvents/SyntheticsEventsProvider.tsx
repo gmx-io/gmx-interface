@@ -174,7 +174,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         isFrozen: eventData.boolItems.items.isFrozen,
         externalSwapQuote: undefined,
         key: eventData.bytes32Items.items.key,
-        isTwapOrder: twapParams !== undefined,
+        isTwap: twapParams !== undefined,
       };
 
       if (data.account !== currentAccount) {

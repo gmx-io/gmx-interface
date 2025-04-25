@@ -7,7 +7,7 @@ import { isDevelopment } from "config/env";
 import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT, DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
-  changeTWAPNumberOfPartsValue,
+  changeTwapNumberOfPartsValue,
   MAX_TWAP_NUMBER_OF_PARTS,
   MIN_TWAP_NUMBER_OF_PARTS,
 } from "domain/synthetics/trade/twap/utils";
@@ -63,7 +63,7 @@ export function SettingsModal({
     setShowDebugValues(settings.showDebugValues);
     setShouldDisableValidationForTesting(settings.shouldDisableValidationForTesting);
     setIsLeverageSliderEnabled(settings.isLeverageSliderEnabled);
-    setNumberOfParts(String(settings.savedTWAPNumberOfParts));
+    setNumberOfParts(String(settings.savedTwapNumberOfParts));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSettingsVisible]);
 
@@ -186,21 +186,9 @@ export function SettingsModal({
             value={numberOfParts}
             onValueChange={(e) => setNumberOfParts(e.target.value ?? "0")}
             placeholder={DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS.toString()}
-            onBlur={() => setNumberOfParts(changeTWAPNumberOfPartsValue(parseInt(numberOfParts)).toString())}
+            onBlur={() => setNumberOfParts(changeTwapNumberOfPartsValue(parseInt(numberOfParts)).toString())}
           />
         </div>
-        {parseFloat(executionFeeBufferBps) <
-          (EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps! / BASIS_POINTS_DIVISOR) * 100 && (
-          <div className="mb-15">
-            <AlertInfo type="warning">
-              <Trans>
-                Max Network Fee buffer below{" "}
-                {(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps! / BASIS_POINTS_DIVISOR) * 100}% may result in
-                failed orders.
-              </Trans>
-            </AlertInfo>
-          </div>
-        )}
       </div>
 
       {settings.shouldUseExecutionFeeBuffer && (

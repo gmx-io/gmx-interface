@@ -869,7 +869,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         <div className="flex flex-col gap-2">
           {(isSwap || isIncrease) && renderTokenInputs()}
           {isTrigger && renderDecreaseSizeInput()}
-          {}
           {isSwap && isLimit && renderTriggerRatioInput()}
           {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
         </div>

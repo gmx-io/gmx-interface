@@ -19,18 +19,19 @@ export default function TwapOrdersList({ order }: { order: TwapSwapOrderInfo | T
   );
 
   const executedOrders = useMemo(() => {
-    const latestOrder = sortedOrders[sortedOrders.length - 1];
-    const firstOrder = sortedOrders[0];
-    const timeDelta = (latestOrder.validFromTime - latestOrder.updatedAtTime) / BigInt(order.numberOfParts);
+    const lastToExecuteOrder = sortedOrders[sortedOrders.length - 1];
+    const firstToExecuteOrder = sortedOrders[0];
+    const timeDelta =
+      (lastToExecuteOrder.validFromTime - lastToExecuteOrder.updatedAtTime) / BigInt(order.numberOfParts);
     return new Array(order.numberOfParts - order.orders.length).fill(0).map((_, i) => {
-      const validFromTime = firstOrder.updatedAtTime - timeDelta * BigInt(i);
+      const validFromTime = firstToExecuteOrder.updatedAtTime - timeDelta * BigInt(i);
       return {
         key: `executed-order-${i}`,
-        orderType: latestOrder.orderType,
-        sizeDeltaUsd: latestOrder.sizeDeltaUsd,
-        initialCollateralDeltaAmount: latestOrder.initialCollateralDeltaAmount,
-        initialCollateralToken: latestOrder.initialCollateralToken,
-        targetCollateralToken: latestOrder.targetCollateralToken,
+        orderType: lastToExecuteOrder.orderType,
+        sizeDeltaUsd: lastToExecuteOrder.sizeDeltaUsd,
+        initialCollateralDeltaAmount: lastToExecuteOrder.initialCollateralDeltaAmount,
+        initialCollateralToken: lastToExecuteOrder.initialCollateralToken,
+        targetCollateralToken: lastToExecuteOrder.targetCollateralToken,
         validFromTime,
       };
     });

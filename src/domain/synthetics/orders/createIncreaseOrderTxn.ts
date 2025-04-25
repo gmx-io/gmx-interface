@@ -150,7 +150,7 @@ export async function createIncreaseOrderTxn({
     orderType: p.orderType,
     shouldUnwrapNativeToken: isNativePayment,
     txnType: "create",
-    isTwapOrder: false,
+    isTwap: false,
   };
 
   const encodedPayload = await createEncodedPayload({

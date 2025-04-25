@@ -159,12 +159,12 @@ export type OrderCreatedEventData = {
   shouldUnwrapNativeToken: boolean;
   externalSwapQuote: undefined;
   isFrozen: boolean;
-  isTwapOrder: boolean;
+  isTwap: boolean;
 };
 
 export type PendingOrderData = {
   orderKey?: string;
-  isTwapOrder: boolean;
+  isTwap: boolean;
   account: string;
   marketAddress: string;
   initialCollateralTokenAddress: string;

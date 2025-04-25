@@ -51,14 +51,14 @@ export async function createTwapIncreaseOrderTxn({
   signer,
   subaccount,
   metricId,
-  createTWAPIncreaseOrderParams: p,
+  createTwapIncreaseOrderParams: p,
   additionalErrorContent,
 }: {
   chainId: number;
   signer: Signer;
   subaccount: Subaccount;
   metricId?: OrderMetricId;
-  createTWAPIncreaseOrderParams: TwapIncreaseOrderParams;
+  createTwapIncreaseOrderParams: TwapIncreaseOrderParams;
   additionalErrorContent?: React.ReactNode;
 }) {
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
@@ -94,7 +94,7 @@ export async function createTwapIncreaseOrderTxn({
     orderType: OrderType.LimitIncrease,
     shouldUnwrapNativeToken: isNativePayment,
     txnType: "create",
-    isTwapOrder: true,
+    isTwap: true,
   };
 
   if (subaccount) {

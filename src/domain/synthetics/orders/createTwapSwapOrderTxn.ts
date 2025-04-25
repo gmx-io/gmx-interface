@@ -71,7 +71,7 @@ export async function createTwapSwapOrderTxn(
     shouldUnwrapNativeToken: isNativeReceive,
     referralCode: p.referralCode,
     txnType: "create",
-    isTwapOrder: true,
+    isTwap: true,
   };
 
   if (subaccount) {

@@ -222,7 +222,6 @@ export function TwapOrderProgress({
 }) {
   return (
     <span className={className}>
-      {" "}
       ({order.numberOfParts - order.orders.length}/{order.numberOfParts})
     </span>
   );
@@ -259,8 +258,7 @@ export function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?
           <span> to </span>
           {isTwapOrder(order) ? null : <span>{toTokenText} </span>}
           {toTokenIcon}
-        </Trans>
-
+        </Trans>{" "}
         {isTwapOrder(order) && <TwapOrderProgress order={order} className="text-slate-100" />}
       </div>
     );
@@ -277,8 +275,7 @@ export function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?
         "cursor-help border-b border-dashed border-b-gray-400": bordered,
       })}
     >
-      {sizeText}
-      {isTwapOrder(order) && <TwapOrderProgress order={order} className="text-slate-100" />}
+      {sizeText} {isTwapOrder(order) && <TwapOrderProgress order={order} className="text-slate-100" />}
     </span>
   );
 }

@@ -4,7 +4,7 @@ import { ChangeEvent, useEffect } from "react";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { TwapDuration } from "domain/synthetics/trade/twap/types";
-import { changeTWAPNumberOfPartsValue } from "domain/synthetics/trade/twap/utils";
+import { changeTwapNumberOfPartsValue } from "domain/synthetics/trade/twap/utils";
 import { formatUsd } from "lib/numbers";
 import { MarketInfo } from "sdk/types/markets";
 
@@ -57,14 +57,14 @@ const TwapRows = ({
   type,
   isLong,
 }: Props) => {
-  const { savedTWAPNumberOfParts } = useSettings();
+  const { savedTwapNumberOfParts } = useSettings();
   const tradeboxChanges = useTradeboxChanges();
 
   useEffect(() => {
     if (tradeboxChanges.direction || tradeboxChanges.toTokenAddress) {
-      setNumberOfParts(savedTWAPNumberOfParts);
+      setNumberOfParts(savedTwapNumberOfParts);
     }
-  }, [tradeboxChanges.direction, tradeboxChanges.toTokenAddress, savedTWAPNumberOfParts, setNumberOfParts]);
+  }, [tradeboxChanges.direction, tradeboxChanges.toTokenAddress, savedTwapNumberOfParts, setNumberOfParts]);
 
   return (
     <div className="flex flex-col">
@@ -76,7 +76,7 @@ const TwapRows = ({
           <ValueInput
             value={numberOfParts}
             onChange={(value) => setNumberOfParts(value)}
-            onBlur={() => setNumberOfParts(changeTWAPNumberOfPartsValue(numberOfParts))}
+            onBlur={() => setNumberOfParts(changeTwapNumberOfPartsValue(numberOfParts))}
           />
         </div>
       </SyntheticsInfoRow>

@@ -20,7 +20,7 @@ export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode): Trade
   const isLimit = tradeMode === TradeMode.Limit;
   const isTrigger = tradeMode === TradeMode.Trigger;
   const isIncrease = isPosition && (isMarket || isLimit);
-  const isTWAP = tradeMode === TradeMode.TWAP;
+  const isTwap = tradeMode === TradeMode.Twap;
 
   return {
     isLong,
@@ -31,7 +31,7 @@ export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode): Trade
     isTrigger,
     isMarket,
     isLimit,
-    isTwap: isTWAP,
+    isTwap,
   };
 }
 

@@ -67,7 +67,7 @@ export type Order = {
 
 export type SwapOrderInfo = Order & {
   __orderInfoType: "swap";
-  __groupType: "none";
+  isTwap: false;
   swapPathStats?: SwapPathStats;
   triggerRatio?: TokensRatio | TokensRatioAndSlippage;
   initialCollateralToken: TokenData;
@@ -76,7 +76,7 @@ export type SwapOrderInfo = Order & {
 
 export type PositionOrderInfo = Order & {
   __orderInfoType: "position";
-  __groupType: "none";
+  isTwap: false;
   marketInfo: MarketInfo;
   swapPathStats?: SwapPathStats;
   indexToken: TokenData;
@@ -87,15 +87,15 @@ export type PositionOrderInfo = Order & {
   triggerThresholdType: TriggerThresholdType;
 };
 
-export type TwapSwapOrderInfo = Omit<SwapOrderInfo, "__groupType"> & {
-  __groupType: "twap";
+export type TwapSwapOrderInfo = Omit<SwapOrderInfo, "isTwap"> & {
+  isTwap: true;
   orders: SwapOrderInfo[];
   twapId: string;
   numberOfParts: number;
 };
 
-export type TwapPositionOrderInfo = Omit<PositionOrderInfo, "__groupType"> & {
-  __groupType: "twap";
+export type TwapPositionOrderInfo = Omit<PositionOrderInfo, "isTwap"> & {
+  isTwap: true;
   orders: PositionOrderInfo[];
   twapId: string;
   numberOfParts: number;
@@ -115,13 +115,13 @@ export type OrderTxnType = "create" | "update" | "cancel";
 
 type SingleOrderParams = {
   key: string;
-  __groupType: "none";
+  isTwap: false;
   orderType: OrderType;
 };
 
 type TwapOrderParams = {
   key: string;
-  __groupType: "twap";
+  isTwap: true;
   orders: SingleOrderParams[];
   orderType: OrderType;
 };

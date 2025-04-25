@@ -102,7 +102,7 @@ export function OrderStatusNotification({
 
       let orderTypeText = isLimitSwapOrderType(orderData.orderType) ? t`Limit Swap` : t`Swap`;
 
-      if (orderData.isTwapOrder) {
+      if (orderData.isTwap) {
         orderTypeText = t`TWAP Swap`;
       }
 
@@ -156,7 +156,7 @@ export function OrderStatusNotification({
             update: t`Update`,
           }[txnType];
 
-          if (orderData.isTwapOrder) {
+          if (orderData.isTwap) {
             orderTypeText = t`${txnTypeText} TWAP order for`;
           } else {
             orderTypeText = t`${txnTypeText} ${getNameByOrderType(orderType, {
@@ -420,7 +420,7 @@ export function OrdersStatusNotificiation({
           order.orderKey
             ? {
                 key: order.orderKey,
-                __groupType: order.isTwapOrder ? ("twap" as const) : ("none" as const),
+                isTwap: order.isTwap,
                 orderType: order.orderType,
                 orders: [],
               }

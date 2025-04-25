@@ -17,7 +17,7 @@ const getTradeTypeLabel = (tradeMode: TradeMode, tradePlace: TradePlace) => {
     [TradeMode.Market]: tradePlace === "tradebox" ? increase : decrease,
     [TradeMode.Limit]: increase,
     [TradeMode.Trigger]: decrease,
-    [TradeMode.TWAP]: increase,
+    [TradeMode.Twap]: increase,
     [TradeMode.StopMarket]: increase,
   };
 
@@ -29,7 +29,7 @@ const getReadMoreLink = (mode: TradeMode) => {
     [TradeMode.Market]: "https://docs.gmx.io/docs/trading/v2/#market-orders",
     [TradeMode.Limit]: "https://docs.gmx.io/docs/trading/v2/#limit-orders",
     [TradeMode.Trigger]: "https://docs.gmx.io/docs/trading/v2/#take-profit-and-stop-loss-orders",
-    [TradeMode.TWAP]: "https://docs.gmx.io/docs/trading/v2/#twap-orders",
+    [TradeMode.Twap]: "https://docs.gmx.io/docs/trading/v2/#twap-orders",
     [TradeMode.StopMarket]: "https://docs.gmx.io/docs/trading/v2/#stop-market-orders",
   };
 
@@ -50,7 +50,7 @@ const makeTooltipText = ({
       [TradeMode.Market]: t`Swap tokens at the current market price.`,
       [TradeMode.Limit]: t`Swap tokens when the trigger price is reached.`,
       [TradeMode.Trigger]: t`Swap tokens when the trigger price is reached.`,
-      [TradeMode.TWAP]: t`Swap tokens in evenly distributed parts over a specified time.`,
+      [TradeMode.Twap]: t`Swap tokens in evenly distributed parts over a specified time.`,
       [TradeMode.StopMarket]: t`Swap tokens when the price is below the trigger price.`,
     };
 
@@ -64,7 +64,7 @@ const makeTooltipText = ({
     [TradeMode.Market]: t`${tradeTypeLabel} a ${positionLabel} position at the current price.`,
     [TradeMode.Limit]: t`${tradeTypeLabel} a ${positionLabel} position when the price is below the trigger price.`,
     [TradeMode.Trigger]: t`${tradeTypeLabel} a ${positionLabel} position when the trigger price is reached.`,
-    [TradeMode.TWAP]: t`${tradeTypeLabel} a ${positionLabel} position in evenly distributed parts over a specified time.`,
+    [TradeMode.Twap]: t`${tradeTypeLabel} a ${positionLabel} position in evenly distributed parts over a specified time.`,
     [TradeMode.StopMarket]: t`${tradeTypeLabel} a ${positionLabel} position when the price is below the trigger price.`,
   };
 

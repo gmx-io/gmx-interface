@@ -130,7 +130,7 @@ const createOrderInfo = ({
     if (!twapOrderInfo) {
       const twap: TwapSwapOrderInfo | TwapPositionOrderInfo = {
         ...orderInfo,
-        __groupType: "twap",
+        isTwap: true,
         key: twapOrderKey,
         orders: [],
         twapId: twapParams.twapId,

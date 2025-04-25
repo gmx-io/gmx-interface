@@ -17,7 +17,7 @@ import {
   selectTradeboxSelectedPosition,
   selectTradeboxStage,
   selectTradeboxSwapAmounts,
-  selectTradeboxTWAPNumberOfParts,
+  selectTradeboxTwapNumberOfParts,
   selectTradeboxToToken,
   selectTradeboxToTokenAmount,
   selectTradeboxTradeFlags,
@@ -39,10 +39,11 @@ export const selectTradeboxSwapTradeError = createSelector((q) => {
   const swapAmounts = q(selectTradeboxSwapAmounts);
   const toTokenAmount = q(selectTradeboxToTokenAmount);
   const { maxLiquidity: swapOutLiquidity } = q(selectTradeboxMaxLiquidityPath);
-  const { isLimit } = q(selectTradeboxTradeFlags);
+  const { isLimit, isTwap } = q(selectTradeboxTradeFlags);
   const isWrapOrUnwrap = q(selectTradeboxIsWrapOrUnwrap);
   const { triggerRatio, markRatio } = q(selectTradeboxTradeRatios);
   const fees = q(selectTradeboxFees);
+  const numberOfParts = q(selectTradeboxTwapNumberOfParts);
 
   return getSwapError({
     fromToken,
@@ -59,6 +60,8 @@ export const selectTradeboxSwapTradeError = createSelector((q) => {
     triggerRatio,
     markRatio,
     fees,
+    isTwap,
+    numberOfParts,
   });
 });
 
@@ -79,7 +82,7 @@ export const selectTradeboxIncreaseTradeError = createSelector((q) => {
   const triggerPrice = q(selectTradeboxTriggerPrice);
   const nextPositionValues = q(selectTradeboxNextPositionValues);
   const nextLeverageWithoutPnl = q(selectTradeboxNextLeverageWithoutPnl);
-  const numberOfParts = q(selectTradeboxTWAPNumberOfParts);
+  const numberOfParts = q(selectTradeboxTwapNumberOfParts);
 
   return getIncreaseError({
     marketInfo,
@@ -119,9 +122,10 @@ export const selectTradeboxDecreaseTradeError = createSelector((q) => {
   const triggerPrice = q(selectTradeboxTriggerPrice);
   const markPrice = q(selectTradeboxMarkPrice);
   const nextPositionValues = q(selectTradeboxNextPositionValues);
-  const { isLong } = q(selectTradeboxTradeFlags);
+  const { isLong, isTwap } = q(selectTradeboxTradeFlags);
   const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
   const stage = q(selectTradeboxStage);
+  const numberOfParts = q(selectTradeboxTwapNumberOfParts);
 
   return getDecreaseError({
     marketInfo,
@@ -139,6 +143,8 @@ export const selectTradeboxDecreaseTradeError = createSelector((q) => {
     isNotEnoughReceiveTokenLiquidity: false,
     triggerThresholdType: stage !== "trade" ? decreaseAmounts?.triggerThresholdType : undefined,
     minPositionSizeUsd,
+    isTwap,
+    numberOfParts,
   });
 });
 

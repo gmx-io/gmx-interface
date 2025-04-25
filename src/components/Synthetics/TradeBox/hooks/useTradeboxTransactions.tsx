@@ -26,8 +26,8 @@ import {
   selectTradeboxTradeMode,
   selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
-  selectTradeboxTWAPDuration,
-  selectTradeboxTWAPNumberOfParts,
+  selectTradeboxTwapDuration,
+  selectTradeboxTwapNumberOfParts,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUserReferralCode } from "domain/referrals";
@@ -83,7 +83,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const marketInfo = useSelector(selectTradeboxMarketInfo);
   const collateralToken = useSelector(selectTradeboxCollateralToken);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isLong, isLimit, isTwap: isTWAP } = tradeFlags;
+  const { isLong, isLimit, isTwap } = tradeFlags;
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
   const isLeverageSliderEnabled = useSelector(selectIsLeverageSliderEnabled);
   const isFirstOrder = useSelector(selectIsFirstOrder);
@@ -92,8 +92,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
-  const duration = useSelector(selectTradeboxTWAPDuration);
-  const numberOfParts = useSelector(selectTradeboxTWAPNumberOfParts);
+  const duration = useSelector(selectTradeboxTwapDuration);
+  const numberOfParts = useSelector(selectTradeboxTwapNumberOfParts);
 
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
@@ -173,7 +173,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
       let txnPromise: Promise<void>;
 
-      if (isTWAP) {
+      if (isTwap) {
         txnPromise = createTwapSwapOrderTxn(chainId, signer, subaccount, {
           account,
           fromTokenAddress: fromToken.address,
@@ -237,7 +237,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       tokensData,
       signer,
       chainId,
-      isTWAP,
+      isTwap,
       setPendingTxns,
       setPendingOrder,
       blockTimestampData,
@@ -332,14 +332,14 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
       let txnPromise: Promise<void>;
 
-      if (isTWAP) {
+      if (isTwap) {
         txnPromise = createTwapIncreaseOrderTxn({
           chainId,
           signer,
           subaccount,
           metricId: metricData.metricId,
           additionalErrorContent,
-          createTWAPIncreaseOrderParams: {
+          createTwapIncreaseOrderParams: {
             account,
             marketAddress: marketInfo.marketTokenAddress,
             initialCollateralAddress: fromToken?.address,
@@ -483,7 +483,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       tokensData,
       account,
       signer,
-      isTWAP,
+      isTwap,
       setPendingTxns,
       setPendingOrder,
       setPendingPosition,

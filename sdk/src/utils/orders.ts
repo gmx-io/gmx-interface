@@ -73,16 +73,16 @@ export function isStopIncreaseOrderType(orderType: OrderType) {
   return orderType === OrderType.StopIncrease;
 }
 
-export function isTwapOrder<T extends OrderParams>(orderInfo: T): orderInfo is Extract<T, { __groupType: "twap" }> {
-  return orderInfo.__groupType === "twap";
+export function isTwapOrder<T extends OrderParams>(orderInfo: T): orderInfo is Extract<T, { isTwap: true }> {
+  return orderInfo.isTwap;
 }
 
 export function isTwapSwapOrder(orderInfo: OrderInfo): orderInfo is TwapSwapOrderInfo {
-  return orderInfo.__groupType === "twap" && orderInfo.__orderInfoType === "swap";
+  return orderInfo.isTwap && orderInfo.__orderInfoType === "swap";
 }
 
 export function isTwapPositionOrder(orderInfo: OrderInfo): orderInfo is TwapPositionOrderInfo {
-  return orderInfo.__groupType === "twap" && orderInfo.__orderInfoType === "position";
+  return orderInfo.isTwap && orderInfo.__orderInfoType === "position";
 }
 
 export function isSwapOrder(orderInfo: OrderInfo): orderInfo is SwapOrderInfo {
@@ -184,7 +184,7 @@ export function getOrderInfo(p: {
       initialCollateralToken,
       targetCollateralToken,
       __orderInfoType: "swap",
-      __groupType: "none",
+      isTwap: false,
     };
 
     return orderInfo;
@@ -238,7 +238,7 @@ export function getOrderInfo(p: {
       triggerPrice,
       triggerThresholdType,
       __orderInfoType: "position",
-      __groupType: "none",
+      isTwap: false,
     };
 
     return orderInfo;

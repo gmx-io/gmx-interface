@@ -864,9 +864,7 @@ function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
       :{" "}
       <span>
         {isIncrease ? "+" : "-"}
-        {formatUsd(order.sizeDeltaUsd)}
-
-        {isTwapOrder(order) && <TwapOrderProgress order={order} />}
+        {formatUsd(order.sizeDeltaUsd)} {isTwapOrder(order) && <TwapOrderProgress order={order} />}
       </span>
     </div>
   );

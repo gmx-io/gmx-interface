@@ -12,7 +12,7 @@ export const DEFAULT_TWAP_DURATION = {
   hours: 10,
 };
 
-export function changeTWAPNumberOfPartsValue(value: number) {
+export function changeTwapNumberOfPartsValue(value: number) {
   if (value < MIN_TWAP_NUMBER_OF_PARTS) {
     return MIN_TWAP_NUMBER_OF_PARTS;
   }
