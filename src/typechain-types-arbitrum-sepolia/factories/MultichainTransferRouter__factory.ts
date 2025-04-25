@@ -111,6 +111,11 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [],
+    name: "EmptyRelayFeeAddress",
+    type: "error",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -125,11 +130,43 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "requiredRelayFee",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "availableFeeAmount",
+        type: "uint256",
+      },
+    ],
+    name: "InsufficientRelayFee",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "desChainId",
         type: "uint256",
       },
     ],
     name: "InvalidDestinationChainId",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "sendTokensLength",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "sendAmountsLength",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidExternalCalls",
     type: "error",
   },
   {
@@ -149,19 +186,14 @@ const _abi = [
     type: "error",
   },
   {
-    inputs: [],
-    name: "InvalidRelayParams",
-    type: "error",
-  },
-  {
     inputs: [
       {
-        internalType: "string",
-        name: "signatureType",
-        type: "string",
+        internalType: "uint256",
+        name: "srcChainId",
+        type: "uint256",
       },
     ],
-    name: "InvalidSignature",
+    name: "InvalidSrcChainId",
     type: "error",
   },
   {
@@ -181,8 +213,40 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "feeUsd",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "maxFeeUsd",
+        type: "uint256",
+      },
+    ],
+    name: "MaxRelayFeeSwapForSubaccountExceeded",
+    type: "error",
+  },
+  {
     inputs: [],
     name: "NonEmptyExternalCallsForSubaccountOrder",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "calldataLength",
+        type: "uint256",
+      },
+    ],
+    name: "RelayCalldataTooLong",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "TokenPermitsNotAllowedForMultichain",
     type: "error",
   },
   {
@@ -235,22 +299,6 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "UnexpectedRelayFeeTokenAfterSwap",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "feeToken",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "expectedFeeToken",
-        type: "address",
-      },
-    ],
     name: "UnsupportedRelayFeeToken",
     type: "error",
   },
@@ -272,45 +320,6 @@ const _abi = [
     ],
     name: "TokenTransferReverted",
     type: "event",
-  },
-  {
-    inputs: [],
-    name: "DOMAIN_SEPARATOR_NAME_HASH",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "DOMAIN_SEPARATOR_TYPEHASH",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "DOMAIN_SEPARATOR_VERSION_HASH",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
   },
   {
     inputs: [
@@ -365,6 +374,16 @@ const _abi = [
             components: [
               {
                 internalType: "address[]",
+                name: "sendTokens",
+                type: "address[]",
+              },
+              {
+                internalType: "uint256[]",
+                name: "sendAmounts",
+                type: "uint256[]",
+              },
+              {
+                internalType: "address[]",
                 name: "externalCallTargets",
                 type: "address[]",
               },
@@ -384,7 +403,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct RelayUtils.ExternalCalls",
+            internalType: "struct ExternalCalls",
             name: "externalCalls",
             type: "tuple",
           },
@@ -431,7 +450,7 @@ const _abi = [
                 type: "address",
               },
             ],
-            internalType: "struct RelayUtils.TokenPermit[]",
+            internalType: "struct TokenPermit[]",
             name: "tokenPermits",
             type: "tuple[]",
           },
@@ -453,7 +472,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct RelayUtils.FeeParams",
+            internalType: "struct FeeParams",
             name: "fee",
             type: "tuple",
           },
@@ -478,7 +497,7 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct RelayUtils.RelayParams",
+        internalType: "struct RelayParams",
         name: "relayParams",
         type: "tuple",
       },
@@ -515,7 +534,7 @@ const _abi = [
             type: "bytes",
           },
         ],
-        internalType: "struct RelayUtils.BridgeOutParams",
+        internalType: "struct BridgeOutParams",
         name: "params",
         type: "tuple",
       },
@@ -718,6 +737,41 @@ const _abi = [
     name: "sendWnt",
     outputs: [],
     stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "token",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "provider",
+            type: "address",
+          },
+          {
+            internalType: "bytes",
+            name: "data",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct BridgeOutParams",
+        name: "params",
+        type: "tuple",
+      },
+    ],
+    name: "transferOut",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {

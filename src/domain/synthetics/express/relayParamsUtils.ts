@@ -1,17 +1,19 @@
 import { Contract, ethers, Provider, Signer } from "ethers";
-import { encodeAbiParameters, keccak256 } from "viem";
+import { Address, Client, encodeAbiParameters, keccak256 } from "viem";
+import { readContract } from "viem/actions";
 
 import { getIsInternalSwapBetter } from "domain/synthetics/externalSwaps/utils";
 import { getNeedTokenApprove, TokensAllowanceData, TokensData } from "domain/synthetics/tokens";
-import { abis } from "sdk/abis";
+import { AbiId, abis } from "sdk/abis";
 import RelayParamsAbi from "sdk/abis/RelayParams.json";
+import { UiContractsChain, UiSettlementChain, UiSourceChain } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { getRelayerFeeToken } from "sdk/configs/express";
 import { ExternalSwapOutput, SwapAmounts } from "sdk/types/trade";
 import { getByKey } from "sdk/utils/objects";
 import { ExternalCallsPayload, getExternalCallsPayload } from "sdk/utils/orderTransactions";
 
-import { RelayerFeeParams, RelayFeePayload, RelayParamsPayload } from "./types";
+import { MultichainRelayParamsPayload, RelayerFeeParams, RelayFeePayload, RelayParamsPayload } from "./types";
 
 export function getExpressContractAddress(chainId: number, { isSubaccount }: { isSubaccount: boolean }) {
   return getContract(chainId, isSubaccount ? "SubaccountGelatoRelayRouter" : "GelatoRelayRouter");
@@ -27,12 +29,88 @@ export function getExpressContractInstance(chainId: number, provider: Provider, 
   return contract;
 }
 
-export function getGelatoRelayRouterDomain(chainId: number, isSubaccount: boolean) {
+// export function getGelatoRelayRouterDomain(chainId: number, isSubaccount: boolean) {
+//   return {
+//     name: "GmxBaseGelatoRelayRouter",
+//     version: "1",
+//     chainId: chainId,
+//     verifyingContract: getExpressContractAddress(chainId, { isSubaccount }),
+//   };
+// }
+
+// export function getGelatoRelayRouterDomain(
+//   chainId: number,
+//   isSubaccount: boolean,
+//   srcChainId?: number
+// ): {
+//   name: string;
+//   chainId: number;
+//   verifyingContract: string;
+//   version: string;
+// } {
+//   let name: string;
+//   if (srcChainId) {
+//     name = "GmxBaseGelatoRelayRouter";
+//   } else if (isSubaccount) {
+//     name = "GmxBaseSubaccountGelatoRelayRouter";
+//   } else {
+//     name = "GmxBaseGelatoRelayRouter";
+//   }
+
+//   let domainChainId: number;
+//   if (srcChainId) {
+//     domainChainId = srcChainId;
+//   } else {
+//     domainChainId = chainId;
+//   }
+
+//   let verifyingContract: string;
+//   if (srcChainId) {
+//     verifyingContract = getContract(chainId, "MultichainTransferRouter");
+//   } else if (isSubaccount) {
+//     verifyingContract = getContract(chainId, "SubaccountGelatoRelayRouter");
+//   } else {
+//     verifyingContract = getContract(chainId, "GelatoRelayRouter");
+//   }
+
+//   return {
+//     name,
+//     version: "1",
+//     chainId: domainChainId,
+//     verifyingContract,
+//   };
+// }
+
+export function getGelatoRelayRouterDomain(
+  chainId: UiContractsChain,
+  relayRouterAddress: Address,
+  isSubaccount: boolean,
+  srcChainId?: UiSourceChain
+): {
+  name: string;
+  chainId: number;
+  verifyingContract: Address;
+  version: string;
+} {
+  let name: string;
+  if (isSubaccount) {
+    name = "GmxBaseSubaccountGelatoRelayRouter";
+  } else {
+    name = "GmxBaseGelatoRelayRouter";
+  }
+
+  let domainChainId: number;
+  if (srcChainId) {
+    domainChainId = srcChainId;
+  } else {
+    domainChainId = chainId;
+  }
+
   return {
-    name: "GmxBaseGelatoRelayRouter",
+    name,
     version: "1",
-    chainId: chainId,
-    verifyingContract: getExpressContractAddress(chainId, { isSubaccount }),
+    chainId: domainChainId,
+    verifyingContract: relayRouterAddress,
   };
 }
 
@@ -50,6 +128,7 @@ export function getNeedGasPaymentTokenApproval(
 
 export function getRelayerFeeParams({
   chainId,
+  srcChainId,
   account,
   relayerFeeTokenAmount,
   relayerFeeTokenAddress,
@@ -61,7 +140,8 @@ export function getRelayerFeeParams({
   gasPaymentAllowanceData,
   forceExternalSwaps,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
+  srcChainId: UiSourceChain | undefined;
   account: string;
   relayerFeeTokenAmount: bigint;
   totalNetworkFeeAmount: bigint;
@@ -135,11 +215,9 @@ export function getRelayerFeeParams({
   const isOutGasTokenBalance =
     gasPaymentToken?.balance === undefined || gasPaymentTokenAmount > gasPaymentToken.balance;
 
-  const needGasPaymentTokenApproval = getNeedTokenApprove(
-    gasPaymentAllowanceData,
-    gasPaymentTokenAddress,
-    gasPaymentTokenAmount
-  );
+  const needGasPaymentTokenApproval = srcChainId
+    ? false
+    : getNeedTokenApprove(gasPaymentAllowanceData, gasPaymentTokenAddress, gasPaymentTokenAmount);
 
   return {
     feeParams,
@@ -177,9 +255,80 @@ export function hashRelayParams(relayParams: RelayParamsPayload) {
   return hash;
 }
 
+export function hashRelayParamsMultichain(relayParams: MultichainRelayParamsPayload) {
+  const encoded = encodeAbiParameters(abis.RelayParamsArbitrumSepolia, [
+    [relayParams.oracleParams.tokens, relayParams.oracleParams.providers, relayParams.oracleParams.data],
+    [
+      relayParams.externalCalls.sendTokens,
+      relayParams.externalCalls.sendAmounts,
+      relayParams.externalCalls.externalCallTargets,
+      relayParams.externalCalls.externalCallDataList,
+      relayParams.externalCalls.refundTokens,
+      relayParams.externalCalls.refundReceivers,
+    ],
+    relayParams.tokenPermits,
+    [relayParams.fee.feeToken, relayParams.fee.feeAmount, relayParams.fee.feeSwapPath],
+    relayParams.userNonce,
+    relayParams.deadline,
+    relayParams.desChainId,
+  ]);
+
+  const hash = keccak256(encoded);
+
+  return hash;
+}
+
 export async function getRelayRouterNonceForSigner(chainId: number, signer: Signer, isSubaccount: boolean) {
   const contractAddress = getExpressContractAddress(chainId, { isSubaccount });
   const contract = new ethers.Contract(contractAddress, abis.GelatoRelayRouter, signer);
 
   return contract.userNonces(await signer.getAddress());
+}
+
+type MultichainRelayRouterAbiId = Extract<
+  AbiId,
+  "MultichainOrderRouterArbitrumSepolia" | "MultichainSubaccountRouterArbitrumSepolia"
+>;
+
+const abiWithUserNonces = [
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    name: "userNonces",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+] as const;
+
+export async function getRelayRouterNonceForMultichain(
+  settlementChainClient: Client,
+  account: Address,
+  relayRouterAddress: Address
+) {
+  const contractAddress = relayRouterAddress;
+
+  if (!settlementChainClient) {
+    throw new Error("settlementChainClient is required");
+  }
+
+  const result: bigint = await readContract(settlementChainClient, {
+    address: contractAddress,
+    abi: abiWithUserNonces,
+    functionName: "userNonces",
+    args: [account],
+  });
+
+  return result;
 }

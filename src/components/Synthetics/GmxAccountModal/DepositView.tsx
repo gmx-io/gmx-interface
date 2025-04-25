@@ -54,7 +54,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { useGmxAccountTokensData, useMultichainTokens } from "./hooks";
+import { useGmxAccountTokensDataObject, useGmxAccountTokensDataRequest, useMultichainTokens } from "./hooks";
 import { useMultichainDepositNetworkComposeGas } from "./useMultichainDepositNetworkComposeGas";
 
 const SLIPPAGE_BPS = 50n;
@@ -140,7 +140,7 @@ export const DepositView = () => {
   //   }
   // }, [depositViewChain, setDepositViewChain, walletChainId]);
 
-  const gmxAccountTokensData = useGmxAccountTokensData();
+  const gmxAccountTokensData = useGmxAccountTokensDataObject();
   const gmxAccountToken = getByKey(gmxAccountTokensData, depositViewTokenAddress);
   const gmxAccountTokenBalance = gmxAccountToken?.balance;
   const gmxAccountTokenBalanceUsd = convertToUsd(

@@ -1,4 +1,16 @@
-import { arbitrum, avalanche, avalancheFuji, arbitrumSepolia, Chain } from "viem/chains";
+import {
+  arbitrum,
+  avalanche,
+  avalancheFuji,
+  arbitrumSepolia,
+  Chain,
+  sepolia,
+  optimismSepolia,
+  base,
+  sonic,
+} from "viem/chains";
+
+import { GasLimitsConfig } from "types/fees";
 
 export const AVALANCHE = 43114;
 export const AVALANCHE_FUJI = 43113;
@@ -31,12 +43,16 @@ export type UiSupportedChain =
 export type UiSettlementChain = typeof ARBITRUM_SEPOLIA;
 export type UiSourceChain = typeof OPTIMISM_SEPOLIA | typeof SEPOLIA;
 
-export const CHAIN_NAMES_MAP = {
-  [BSС_MAINNET]: "BSC",
-  [BSС_TESTNET]: "BSC Testnet",
+export const CHAIN_NAMES_MAP: Record<UiSupportedChain, string> = {
   [ARBITRUM]: "Arbitrum",
+  [BASE_MAINNET]: base.name,
+  [SONIC_MAINNET]: sonic.name,
+
   [AVALANCHE]: "Avalanche",
   [AVALANCHE_FUJI]: "Avalanche Fuji",
+  [ARBITRUM_SEPOLIA]: arbitrumSepolia.name,
+  [OPTIMISM_SEPOLIA]: optimismSepolia.name,
+  [SEPOLIA]: sepolia.name,
 };
 
 export const HIGH_EXECUTION_FEES_MAP = {
@@ -126,7 +142,7 @@ export function isSupportedChain(chainId: number, dev = false) {
 }
 
 export const EXECUTION_FEE_CONFIG_V2: {
-  [chainId: number]: {
+  [chainId in UiContractsChain]: {
     shouldUseMaxPriorityFeePerGas: boolean;
     defaultBufferBps?: number;
   };
@@ -149,15 +165,30 @@ export const EXECUTION_FEE_CONFIG_V2: {
   },
 };
 
-export const GAS_LIMITS_STATIC_CONFIG = {
+type StaticGasLimitsConfig = Pick<
+  GasLimitsConfig,
+  "createOrderGasLimit" | "updateOrderGasLimit" | "cancelOrderGasLimit"
+>;
+
+export const GAS_LIMITS_STATIC_CONFIG: Record<UiContractsChain, StaticGasLimitsConfig> = {
   [ARBITRUM]: {
-    createOrderGasLimit: 800_000n,
-    updateOrderGasLimit: 600_000n,
-    cancelOrderGasLimit: 700_000n,
+    createOrderGasLimit: 800000n,
+    updateOrderGasLimit: 600000n,
+    cancelOrderGasLimit: 700000n,
   },
   [AVALANCHE]: {
-    createOrderGasLimit: 800_000n,
-    updateOrderGasLimit: 600_000n,
-    cancelOrderGasLimit: 700_000n,
+    createOrderGasLimit: 800000n,
+    updateOrderGasLimit: 600000n,
+    cancelOrderGasLimit: 700000n,
+  },
+  [AVALANCHE_FUJI]: {
+    createOrderGasLimit: 800000n,
+    updateOrderGasLimit: 600000n,
+    cancelOrderGasLimit: 700000n,
+  },
+  [ARBITRUM_SEPOLIA]: {
+    createOrderGasLimit: 800000n,
+    updateOrderGasLimit: 600000n,
+    cancelOrderGasLimit: 700000n,
   },
 };

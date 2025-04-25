@@ -34,22 +34,6 @@ const _abi = [
         name: "token",
         type: "address",
       },
-    ],
-    name: "EmptyMultichainTransferOutAmount",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "token",
-        type: "address",
-      },
       {
         internalType: "uint256",
         name: "balance",

@@ -23,6 +23,186 @@ import type {
   TypedContractMethod,
 } from "./common";
 
+export type ExternalCallsStruct = {
+  sendTokens: AddressLike[];
+  sendAmounts: BigNumberish[];
+  externalCallTargets: AddressLike[];
+  externalCallDataList: BytesLike[];
+  refundTokens: AddressLike[];
+  refundReceivers: AddressLike[];
+};
+
+export type ExternalCallsStructOutput = [
+  sendTokens: string[],
+  sendAmounts: bigint[],
+  externalCallTargets: string[],
+  externalCallDataList: string[],
+  refundTokens: string[],
+  refundReceivers: string[],
+] & {
+  sendTokens: string[];
+  sendAmounts: bigint[];
+  externalCallTargets: string[];
+  externalCallDataList: string[];
+  refundTokens: string[];
+  refundReceivers: string[];
+};
+
+export type TokenPermitStruct = {
+  owner: AddressLike;
+  spender: AddressLike;
+  value: BigNumberish;
+  deadline: BigNumberish;
+  v: BigNumberish;
+  r: BytesLike;
+  s: BytesLike;
+  token: AddressLike;
+};
+
+export type TokenPermitStructOutput = [
+  owner: string,
+  spender: string,
+  value: bigint,
+  deadline: bigint,
+  v: bigint,
+  r: string,
+  s: string,
+  token: string,
+] & {
+  owner: string;
+  spender: string;
+  value: bigint;
+  deadline: bigint;
+  v: bigint;
+  r: string;
+  s: string;
+  token: string;
+};
+
+export type FeeParamsStruct = {
+  feeToken: AddressLike;
+  feeAmount: BigNumberish;
+  feeSwapPath: AddressLike[];
+};
+
+export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
+  feeToken: string;
+  feeAmount: bigint;
+  feeSwapPath: string[];
+};
+
+export type RelayParamsStruct = {
+  oracleParams: OracleUtils.SetPricesParamsStruct;
+  externalCalls: ExternalCallsStruct;
+  tokenPermits: TokenPermitStruct[];
+  fee: FeeParamsStruct;
+  userNonce: BigNumberish;
+  deadline: BigNumberish;
+  signature: BytesLike;
+  desChainId: BigNumberish;
+};
+
+export type RelayParamsStructOutput = [
+  oracleParams: OracleUtils.SetPricesParamsStructOutput,
+  externalCalls: ExternalCallsStructOutput,
+  tokenPermits: TokenPermitStructOutput[],
+  fee: FeeParamsStructOutput,
+  userNonce: bigint,
+  deadline: bigint,
+  signature: string,
+  desChainId: bigint,
+] & {
+  oracleParams: OracleUtils.SetPricesParamsStructOutput;
+  externalCalls: ExternalCallsStructOutput;
+  tokenPermits: TokenPermitStructOutput[];
+  fee: FeeParamsStructOutput;
+  userNonce: bigint;
+  deadline: bigint;
+  signature: string;
+  desChainId: bigint;
+};
+
+export type SubaccountApprovalStruct = {
+  subaccount: AddressLike;
+  shouldAdd: boolean;
+  expiresAt: BigNumberish;
+  maxAllowedCount: BigNumberish;
+  actionType: BytesLike;
+  nonce: BigNumberish;
+  deadline: BigNumberish;
+  integrationId: BytesLike;
+  signature: BytesLike;
+};
+
+export type SubaccountApprovalStructOutput = [
+  subaccount: string,
+  shouldAdd: boolean,
+  expiresAt: bigint,
+  maxAllowedCount: bigint,
+  actionType: string,
+  nonce: bigint,
+  deadline: bigint,
+  integrationId: string,
+  signature: string,
+] & {
+  subaccount: string;
+  shouldAdd: boolean;
+  expiresAt: bigint;
+  maxAllowedCount: bigint;
+  actionType: string;
+  nonce: bigint;
+  deadline: bigint;
+  integrationId: string;
+  signature: string;
+};
+
+export type UpdateOrderParamsStruct = {
+  key: BytesLike;
+  sizeDeltaUsd: BigNumberish;
+  acceptablePrice: BigNumberish;
+  triggerPrice: BigNumberish;
+  minOutputAmount: BigNumberish;
+  validFromTime: BigNumberish;
+  autoCancel: boolean;
+  executionFeeIncrease: BigNumberish;
+};
+
+export type UpdateOrderParamsStructOutput = [
+  key: string,
+  sizeDeltaUsd: bigint,
+  acceptablePrice: bigint,
+  triggerPrice: bigint,
+  minOutputAmount: bigint,
+  validFromTime: bigint,
+  autoCancel: boolean,
+  executionFeeIncrease: bigint,
+] & {
+  key: string;
+  sizeDeltaUsd: bigint;
+  acceptablePrice: bigint;
+  triggerPrice: bigint;
+  minOutputAmount: bigint;
+  validFromTime: bigint;
+  autoCancel: boolean;
+  executionFeeIncrease: bigint;
+};
+
+export type BatchParamsStruct = {
+  createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStruct[];
+  updateOrderParamsList: UpdateOrderParamsStruct[];
+  cancelOrderKeys: BytesLike[];
+};
+
+export type BatchParamsStructOutput = [
+  createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[],
+  updateOrderParamsList: UpdateOrderParamsStructOutput[],
+  cancelOrderKeys: string[],
+] & {
+  createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[];
+  updateOrderParamsList: UpdateOrderParamsStructOutput[];
+  cancelOrderKeys: string[];
+};
+
 export declare namespace OracleUtils {
   export type SetPricesParamsStruct = {
     tokens: AddressLike[];
@@ -34,159 +214,6 @@ export declare namespace OracleUtils {
     tokens: string[];
     providers: string[];
     data: string[];
-  };
-}
-
-export declare namespace RelayUtils {
-  export type ExternalCallsStruct = {
-    externalCallTargets: AddressLike[];
-    externalCallDataList: BytesLike[];
-    refundTokens: AddressLike[];
-    refundReceivers: AddressLike[];
-  };
-
-  export type ExternalCallsStructOutput = [
-    externalCallTargets: string[],
-    externalCallDataList: string[],
-    refundTokens: string[],
-    refundReceivers: string[],
-  ] & {
-    externalCallTargets: string[];
-    externalCallDataList: string[];
-    refundTokens: string[];
-    refundReceivers: string[];
-  };
-
-  export type TokenPermitStruct = {
-    owner: AddressLike;
-    spender: AddressLike;
-    value: BigNumberish;
-    deadline: BigNumberish;
-    v: BigNumberish;
-    r: BytesLike;
-    s: BytesLike;
-    token: AddressLike;
-  };
-
-  export type TokenPermitStructOutput = [
-    owner: string,
-    spender: string,
-    value: bigint,
-    deadline: bigint,
-    v: bigint,
-    r: string,
-    s: string,
-    token: string,
-  ] & {
-    owner: string;
-    spender: string;
-    value: bigint;
-    deadline: bigint;
-    v: bigint;
-    r: string;
-    s: string;
-    token: string;
-  };
-
-  export type FeeParamsStruct = {
-    feeToken: AddressLike;
-    feeAmount: BigNumberish;
-    feeSwapPath: AddressLike[];
-  };
-
-  export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
-    feeToken: string;
-    feeAmount: bigint;
-    feeSwapPath: string[];
-  };
-
-  export type RelayParamsStruct = {
-    oracleParams: OracleUtils.SetPricesParamsStruct;
-    externalCalls: RelayUtils.ExternalCallsStruct;
-    tokenPermits: RelayUtils.TokenPermitStruct[];
-    fee: RelayUtils.FeeParamsStruct;
-    userNonce: BigNumberish;
-    deadline: BigNumberish;
-    signature: BytesLike;
-    desChainId: BigNumberish;
-  };
-
-  export type RelayParamsStructOutput = [
-    oracleParams: OracleUtils.SetPricesParamsStructOutput,
-    externalCalls: RelayUtils.ExternalCallsStructOutput,
-    tokenPermits: RelayUtils.TokenPermitStructOutput[],
-    fee: RelayUtils.FeeParamsStructOutput,
-    userNonce: bigint,
-    deadline: bigint,
-    signature: string,
-    desChainId: bigint,
-  ] & {
-    oracleParams: OracleUtils.SetPricesParamsStructOutput;
-    externalCalls: RelayUtils.ExternalCallsStructOutput;
-    tokenPermits: RelayUtils.TokenPermitStructOutput[];
-    fee: RelayUtils.FeeParamsStructOutput;
-    userNonce: bigint;
-    deadline: bigint;
-    signature: string;
-    desChainId: bigint;
-  };
-
-  export type UpdateOrderParamsStruct = {
-    sizeDeltaUsd: BigNumberish;
-    acceptablePrice: BigNumberish;
-    triggerPrice: BigNumberish;
-    minOutputAmount: BigNumberish;
-    validFromTime: BigNumberish;
-    autoCancel: boolean;
-  };
-
-  export type UpdateOrderParamsStructOutput = [
-    sizeDeltaUsd: bigint,
-    acceptablePrice: bigint,
-    triggerPrice: bigint,
-    minOutputAmount: bigint,
-    validFromTime: bigint,
-    autoCancel: boolean,
-  ] & {
-    sizeDeltaUsd: bigint;
-    acceptablePrice: bigint;
-    triggerPrice: bigint;
-    minOutputAmount: bigint;
-    validFromTime: bigint;
-    autoCancel: boolean;
-  };
-}
-
-export declare namespace SubaccountRelayUtils {
-  export type SubaccountApprovalStruct = {
-    subaccount: AddressLike;
-    shouldAdd: boolean;
-    expiresAt: BigNumberish;
-    maxAllowedCount: BigNumberish;
-    actionType: BytesLike;
-    nonce: BigNumberish;
-    deadline: BigNumberish;
-    signature: BytesLike;
-  };
-
-  export type SubaccountApprovalStructOutput = [
-    subaccount: string,
-    shouldAdd: boolean,
-    expiresAt: bigint,
-    maxAllowedCount: bigint,
-    actionType: string,
-    nonce: bigint,
-    deadline: bigint,
-    signature: string,
-  ] & {
-    subaccount: string;
-    shouldAdd: boolean;
-    expiresAt: bigint;
-    maxAllowedCount: bigint;
-    actionType: string;
-    nonce: bigint;
-    deadline: bigint;
-    signature: string;
   };
 }
 
@@ -288,9 +315,7 @@ export declare namespace IBaseOrderUtils {
 export interface SubaccountGelatoRelayRouterInterface extends Interface {
   getFunction(
     nameOrSignature:
-      | "DOMAIN_SEPARATOR_NAME_HASH"
-      | "DOMAIN_SEPARATOR_TYPEHASH"
-      | "DOMAIN_SEPARATOR_VERSION_HASH"
+      | "batch"
       | "cancelOrder"
       | "createOrder"
       | "dataStore"
@@ -313,27 +338,21 @@ export interface SubaccountGelatoRelayRouterInterface extends Interface {
 
   getEvent(nameOrSignatureOrTopic: "TokenTransferReverted"): EventFragment;
 
-  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_NAME_HASH", values?: undefined): string;
-  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_TYPEHASH", values?: undefined): string;
-  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "batch",
+    values: [RelayParamsStruct, SubaccountApprovalStruct, AddressLike, AddressLike, BatchParamsStruct]
+  ): string;
   encodeFunctionData(
     functionFragment: "cancelOrder",
-    values: [
-      RelayUtils.RelayParamsStruct,
-      SubaccountRelayUtils.SubaccountApprovalStruct,
-      AddressLike,
-      AddressLike,
-      BytesLike,
-    ]
+    values: [RelayParamsStruct, SubaccountApprovalStruct, AddressLike, AddressLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "createOrder",
     values: [
-      RelayUtils.RelayParamsStruct,
-      SubaccountRelayUtils.SubaccountApprovalStruct,
+      RelayParamsStruct,
+      SubaccountApprovalStruct,
       AddressLike,
       AddressLike,
-      BigNumberish,
       IBaseOrderUtils.CreateOrderParamsStruct,
     ]
   ): string;
@@ -346,7 +365,7 @@ export interface SubaccountGelatoRelayRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "orderVault", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "removeSubaccount",
-    values: [RelayUtils.RelayParamsStruct, AddressLike, AddressLike]
+    values: [RelayParamsStruct, AddressLike, AddressLike]
   ): string;
   encodeFunctionData(functionFragment: "roleStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "router", values?: undefined): string;
@@ -356,21 +375,11 @@ export interface SubaccountGelatoRelayRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "subaccountApprovalNonces", values: [AddressLike]): string;
   encodeFunctionData(
     functionFragment: "updateOrder",
-    values: [
-      RelayUtils.RelayParamsStruct,
-      SubaccountRelayUtils.SubaccountApprovalStruct,
-      AddressLike,
-      AddressLike,
-      BytesLike,
-      RelayUtils.UpdateOrderParamsStruct,
-      boolean,
-    ]
+    values: [RelayParamsStruct, SubaccountApprovalStruct, AddressLike, AddressLike, UpdateOrderParamsStruct]
   ): string;
   encodeFunctionData(functionFragment: "userNonces", values: [AddressLike]): string;
 
-  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_NAME_HASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_TYPEHASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "batch", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "cancelOrder", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "createOrder", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
@@ -437,16 +446,22 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
   listeners(eventName?: string): Promise<Array<Listener>>;
   removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
-  DOMAIN_SEPARATOR_NAME_HASH: TypedContractMethod<[], [string], "view">;
-
-  DOMAIN_SEPARATOR_TYPEHASH: TypedContractMethod<[], [string], "view">;
-
-  DOMAIN_SEPARATOR_VERSION_HASH: TypedContractMethod<[], [string], "view">;
+  batch: TypedContractMethod<
+    [
+      relayParams: RelayParamsStruct,
+      subaccountApproval: SubaccountApprovalStruct,
+      account: AddressLike,
+      subaccount: AddressLike,
+      params: BatchParamsStruct,
+    ],
+    [string[]],
+    "nonpayable"
+  >;
 
   cancelOrder: TypedContractMethod<
     [
-      relayParams: RelayUtils.RelayParamsStruct,
-      subaccountApproval: SubaccountRelayUtils.SubaccountApprovalStruct,
+      relayParams: RelayParamsStruct,
+      subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       subaccount: AddressLike,
       key: BytesLike,
@@ -457,11 +472,10 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
 
   createOrder: TypedContractMethod<
     [
-      relayParams: RelayUtils.RelayParamsStruct,
-      subaccountApproval: SubaccountRelayUtils.SubaccountApprovalStruct,
+      relayParams: RelayParamsStruct,
+      subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       subaccount: AddressLike,
-      collateralDeltaAmount: BigNumberish,
       params: IBaseOrderUtils.CreateOrderParamsStruct,
     ],
     [string],
@@ -483,7 +497,7 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
   orderVault: TypedContractMethod<[], [string], "view">;
 
   removeSubaccount: TypedContractMethod<
-    [relayParams: RelayUtils.RelayParamsStruct, account: AddressLike, subaccount: AddressLike],
+    [relayParams: RelayParamsStruct, account: AddressLike, subaccount: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -502,13 +516,11 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
 
   updateOrder: TypedContractMethod<
     [
-      relayParams: RelayUtils.RelayParamsStruct,
-      subaccountApproval: SubaccountRelayUtils.SubaccountApprovalStruct,
+      relayParams: RelayParamsStruct,
+      subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       subaccount: AddressLike,
-      key: BytesLike,
-      params: RelayUtils.UpdateOrderParamsStruct,
-      increaseExecutionFee: boolean,
+      params: UpdateOrderParamsStruct,
     ],
     [void],
     "nonpayable"
@@ -518,15 +530,25 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
 
   getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
-  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_NAME_HASH"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_TYPEHASH"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_VERSION_HASH"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "batch"
+  ): TypedContractMethod<
+    [
+      relayParams: RelayParamsStruct,
+      subaccountApproval: SubaccountApprovalStruct,
+      account: AddressLike,
+      subaccount: AddressLike,
+      params: BatchParamsStruct,
+    ],
+    [string[]],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "cancelOrder"
   ): TypedContractMethod<
     [
-      relayParams: RelayUtils.RelayParamsStruct,
-      subaccountApproval: SubaccountRelayUtils.SubaccountApprovalStruct,
+      relayParams: RelayParamsStruct,
+      subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       subaccount: AddressLike,
       key: BytesLike,
@@ -538,11 +560,10 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
     nameOrSignature: "createOrder"
   ): TypedContractMethod<
     [
-      relayParams: RelayUtils.RelayParamsStruct,
-      subaccountApproval: SubaccountRelayUtils.SubaccountApprovalStruct,
+      relayParams: RelayParamsStruct,
+      subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       subaccount: AddressLike,
-      collateralDeltaAmount: BigNumberish,
       params: IBaseOrderUtils.CreateOrderParamsStruct,
     ],
     [string],
@@ -558,7 +579,7 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
   getFunction(
     nameOrSignature: "removeSubaccount"
   ): TypedContractMethod<
-    [relayParams: RelayUtils.RelayParamsStruct, account: AddressLike, subaccount: AddressLike],
+    [relayParams: RelayParamsStruct, account: AddressLike, subaccount: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -578,13 +599,11 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
     nameOrSignature: "updateOrder"
   ): TypedContractMethod<
     [
-      relayParams: RelayUtils.RelayParamsStruct,
-      subaccountApproval: SubaccountRelayUtils.SubaccountApprovalStruct,
+      relayParams: RelayParamsStruct,
+      subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       subaccount: AddressLike,
-      key: BytesLike,
-      params: RelayUtils.UpdateOrderParamsStruct,
-      increaseExecutionFee: boolean,
+      params: UpdateOrderParamsStruct,
     ],
     [void],
     "nonpayable"

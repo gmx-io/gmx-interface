@@ -122,6 +122,40 @@ export type RelayParamsStructOutput = [
   desChainId: bigint;
 };
 
+export type SubaccountApprovalStruct = {
+  subaccount: AddressLike;
+  shouldAdd: boolean;
+  expiresAt: BigNumberish;
+  maxAllowedCount: BigNumberish;
+  actionType: BytesLike;
+  nonce: BigNumberish;
+  deadline: BigNumberish;
+  integrationId: BytesLike;
+  signature: BytesLike;
+};
+
+export type SubaccountApprovalStructOutput = [
+  subaccount: string,
+  shouldAdd: boolean,
+  expiresAt: bigint,
+  maxAllowedCount: bigint,
+  actionType: string,
+  nonce: bigint,
+  deadline: bigint,
+  integrationId: string,
+  signature: string,
+] & {
+  subaccount: string;
+  shouldAdd: boolean;
+  expiresAt: bigint;
+  maxAllowedCount: bigint;
+  actionType: string;
+  nonce: bigint;
+  deadline: bigint;
+  integrationId: string;
+  signature: string;
+};
+
 export type UpdateOrderParamsStruct = {
   key: BytesLike;
   sizeDeltaUsd: BigNumberish;
@@ -168,6 +202,42 @@ export type BatchParamsStructOutput = [
   updateOrderParamsList: UpdateOrderParamsStructOutput[];
   cancelOrderKeys: string[];
 };
+
+export declare namespace MultichainRouter {
+  export type BaseConstructorParamsStruct = {
+    router: AddressLike;
+    roleStore: AddressLike;
+    dataStore: AddressLike;
+    eventEmitter: AddressLike;
+    oracle: AddressLike;
+    orderVault: AddressLike;
+    orderHandler: AddressLike;
+    externalHandler: AddressLike;
+    multichainVault: AddressLike;
+  };
+
+  export type BaseConstructorParamsStructOutput = [
+    router: string,
+    roleStore: string,
+    dataStore: string,
+    eventEmitter: string,
+    oracle: string,
+    orderVault: string,
+    orderHandler: string,
+    externalHandler: string,
+    multichainVault: string,
+  ] & {
+    router: string;
+    roleStore: string;
+    dataStore: string;
+    eventEmitter: string;
+    oracle: string;
+    orderVault: string;
+    orderHandler: string;
+    externalHandler: string;
+    multichainVault: string;
+  };
+}
 
 export declare namespace OracleUtils {
   export type SetPricesParamsStruct = {
@@ -278,7 +348,7 @@ export declare namespace IBaseOrderUtils {
   };
 }
 
-export interface GelatoRelayRouterInterface extends Interface {
+export interface MultichainSubaccountRouterInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "batch"
@@ -288,41 +358,70 @@ export interface GelatoRelayRouterInterface extends Interface {
       | "eventEmitter"
       | "externalHandler"
       | "multicall"
+      | "multichainVault"
       | "oracle"
       | "orderHandler"
       | "orderVault"
+      | "removeSubaccount"
       | "roleStore"
       | "router"
       | "sendNativeToken"
       | "sendTokens"
       | "sendWnt"
+      | "subaccountApprovalNonces"
       | "updateOrder"
       | "userNonces"
   ): FunctionFragment;
 
   getEvent(nameOrSignatureOrTopic: "TokenTransferReverted"): EventFragment;
 
-  encodeFunctionData(functionFragment: "batch", values: [RelayParamsStruct, AddressLike, BatchParamsStruct]): string;
-  encodeFunctionData(functionFragment: "cancelOrder", values: [RelayParamsStruct, AddressLike, BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "batch",
+    values: [RelayParamsStruct, SubaccountApprovalStruct, AddressLike, BigNumberish, AddressLike, BatchParamsStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "cancelOrder",
+    values: [RelayParamsStruct, SubaccountApprovalStruct, AddressLike, BigNumberish, AddressLike, BytesLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "createOrder",
-    values: [RelayParamsStruct, AddressLike, IBaseOrderUtils.CreateOrderParamsStruct]
+    values: [
+      RelayParamsStruct,
+      SubaccountApprovalStruct,
+      AddressLike,
+      BigNumberish,
+      AddressLike,
+      IBaseOrderUtils.CreateOrderParamsStruct,
+    ]
   ): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
   encodeFunctionData(functionFragment: "externalHandler", values?: undefined): string;
   encodeFunctionData(functionFragment: "multicall", values: [BytesLike[]]): string;
+  encodeFunctionData(functionFragment: "multichainVault", values?: undefined): string;
   encodeFunctionData(functionFragment: "oracle", values?: undefined): string;
   encodeFunctionData(functionFragment: "orderHandler", values?: undefined): string;
   encodeFunctionData(functionFragment: "orderVault", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "removeSubaccount",
+    values: [RelayParamsStruct, AddressLike, BigNumberish, AddressLike]
+  ): string;
   encodeFunctionData(functionFragment: "roleStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "router", values?: undefined): string;
   encodeFunctionData(functionFragment: "sendNativeToken", values: [AddressLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "sendTokens", values: [AddressLike, AddressLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "sendWnt", values: [AddressLike, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "subaccountApprovalNonces", values: [AddressLike]): string;
   encodeFunctionData(
     functionFragment: "updateOrder",
-    values: [RelayParamsStruct, AddressLike, UpdateOrderParamsStruct]
+    values: [
+      RelayParamsStruct,
+      SubaccountApprovalStruct,
+      AddressLike,
+      BigNumberish,
+      AddressLike,
+      UpdateOrderParamsStruct,
+    ]
   ): string;
   encodeFunctionData(functionFragment: "userNonces", values: [AddressLike]): string;
 
@@ -333,14 +432,17 @@ export interface GelatoRelayRouterInterface extends Interface {
   decodeFunctionResult(functionFragment: "eventEmitter", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "externalHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "multicall", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "multichainVault", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "oracle", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "orderHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "orderVault", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "removeSubaccount", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "roleStore", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "router", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendNativeToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendTokens", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendWnt", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "subaccountApprovalNonces", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "updateOrder", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "userNonces", data: BytesLike): Result;
 }
@@ -358,11 +460,11 @@ export namespace TokenTransferRevertedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface GelatoRelayRouter extends BaseContract {
-  connect(runner?: ContractRunner | null): GelatoRelayRouter;
+export interface MultichainSubaccountRouter extends BaseContract {
+  connect(runner?: ContractRunner | null): MultichainSubaccountRouter;
   waitForDeployment(): Promise<this>;
 
-  interface: GelatoRelayRouterInterface;
+  interface: MultichainSubaccountRouterInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -392,19 +494,40 @@ export interface GelatoRelayRouter extends BaseContract {
   removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
   batch: TypedContractMethod<
-    [relayParams: RelayParamsStruct, account: AddressLike, params: BatchParamsStruct],
+    [
+      relayParams: RelayParamsStruct,
+      subaccountApproval: SubaccountApprovalStruct,
+      account: AddressLike,
+      srcChainId: BigNumberish,
+      subaccount: AddressLike,
+      params: BatchParamsStruct,
+    ],
     [string[]],
     "nonpayable"
   >;
 
   cancelOrder: TypedContractMethod<
-    [relayParams: RelayParamsStruct, account: AddressLike, key: BytesLike],
+    [
+      relayParams: RelayParamsStruct,
+      subaccountApproval: SubaccountApprovalStruct,
+      account: AddressLike,
+      srcChainId: BigNumberish,
+      subaccount: AddressLike,
+      key: BytesLike,
+    ],
     [void],
     "nonpayable"
   >;
 
   createOrder: TypedContractMethod<
-    [relayParams: RelayParamsStruct, account: AddressLike, params: IBaseOrderUtils.CreateOrderParamsStruct],
+    [
+      relayParams: RelayParamsStruct,
+      subaccountApproval: SubaccountApprovalStruct,
+      account: AddressLike,
+      srcChainId: BigNumberish,
+      subaccount: AddressLike,
+      params: IBaseOrderUtils.CreateOrderParamsStruct,
+    ],
     [string],
     "nonpayable"
   >;
@@ -417,11 +540,19 @@ export interface GelatoRelayRouter extends BaseContract {
 
   multicall: TypedContractMethod<[data: BytesLike[]], [string[]], "payable">;
 
+  multichainVault: TypedContractMethod<[], [string], "view">;
+
   oracle: TypedContractMethod<[], [string], "view">;
 
   orderHandler: TypedContractMethod<[], [string], "view">;
 
   orderVault: TypedContractMethod<[], [string], "view">;
+
+  removeSubaccount: TypedContractMethod<
+    [relayParams: RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, subaccount: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   roleStore: TypedContractMethod<[], [string], "view">;
 
@@ -433,8 +564,17 @@ export interface GelatoRelayRouter extends BaseContract {
 
   sendWnt: TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
 
+  subaccountApprovalNonces: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+
   updateOrder: TypedContractMethod<
-    [relayParams: RelayParamsStruct, account: AddressLike, params: UpdateOrderParamsStruct],
+    [
+      relayParams: RelayParamsStruct,
+      subaccountApproval: SubaccountApprovalStruct,
+      account: AddressLike,
+      srcChainId: BigNumberish,
+      subaccount: AddressLike,
+      params: UpdateOrderParamsStruct,
+    ],
     [void],
     "nonpayable"
   >;
@@ -446,17 +586,42 @@ export interface GelatoRelayRouter extends BaseContract {
   getFunction(
     nameOrSignature: "batch"
   ): TypedContractMethod<
-    [relayParams: RelayParamsStruct, account: AddressLike, params: BatchParamsStruct],
+    [
+      relayParams: RelayParamsStruct,
+      subaccountApproval: SubaccountApprovalStruct,
+      account: AddressLike,
+      srcChainId: BigNumberish,
+      subaccount: AddressLike,
+      params: BatchParamsStruct,
+    ],
     [string[]],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "cancelOrder"
-  ): TypedContractMethod<[relayParams: RelayParamsStruct, account: AddressLike, key: BytesLike], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [
+      relayParams: RelayParamsStruct,
+      subaccountApproval: SubaccountApprovalStruct,
+      account: AddressLike,
+      srcChainId: BigNumberish,
+      subaccount: AddressLike,
+      key: BytesLike,
+    ],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "createOrder"
   ): TypedContractMethod<
-    [relayParams: RelayParamsStruct, account: AddressLike, params: IBaseOrderUtils.CreateOrderParamsStruct],
+    [
+      relayParams: RelayParamsStruct,
+      subaccountApproval: SubaccountApprovalStruct,
+      account: AddressLike,
+      srcChainId: BigNumberish,
+      subaccount: AddressLike,
+      params: IBaseOrderUtils.CreateOrderParamsStruct,
+    ],
     [string],
     "nonpayable"
   >;
@@ -464,9 +629,17 @@ export interface GelatoRelayRouter extends BaseContract {
   getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "externalHandler"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "multicall"): TypedContractMethod<[data: BytesLike[]], [string[]], "payable">;
+  getFunction(nameOrSignature: "multichainVault"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "oracle"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "orderHandler"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "orderVault"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "removeSubaccount"
+  ): TypedContractMethod<
+    [relayParams: RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, subaccount: AddressLike],
+    [void],
+    "nonpayable"
+  >;
   getFunction(nameOrSignature: "roleStore"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "router"): TypedContractMethod<[], [string], "view">;
   getFunction(
@@ -478,10 +651,18 @@ export interface GelatoRelayRouter extends BaseContract {
   getFunction(
     nameOrSignature: "sendWnt"
   ): TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
+  getFunction(nameOrSignature: "subaccountApprovalNonces"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "updateOrder"
   ): TypedContractMethod<
-    [relayParams: RelayParamsStruct, account: AddressLike, params: UpdateOrderParamsStruct],
+    [
+      relayParams: RelayParamsStruct,
+      subaccountApproval: SubaccountApprovalStruct,
+      account: AddressLike,
+      srcChainId: BigNumberish,
+      subaccount: AddressLike,
+      params: UpdateOrderParamsStruct,
+    ],
     [void],
     "nonpayable"
   >;

@@ -8,11 +8,6 @@ import type { MultichainOrderRouterUtils, MultichainOrderRouterUtilsInterface } 
 const _abi = [
   {
     inputs: [],
-    name: "RelayPriceOutdated",
-    type: "error",
-  },
-  {
-    inputs: [],
     name: "UnableToPayOrderFee",
     type: "error",
   },

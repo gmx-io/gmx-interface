@@ -7,7 +7,7 @@ import { useOnchainTokenConfigs } from "./useOnchainTokenConfigs";
 import { useTokenBalances } from "./useTokenBalances";
 import { useTokenRecentPricesRequest } from "./useTokenRecentPricesData";
 
-type TokensDataResult = {
+export type TokensDataResult = {
   tokensData?: TokensData;
   pricesUpdatedAt?: number;
   isBalancesLoaded?: boolean;

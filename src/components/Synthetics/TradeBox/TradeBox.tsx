@@ -91,18 +91,22 @@ import TradeBoxLongShortInfoIcon from "./components/TradeBoxLongShortInfoIcon";
 import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
-import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
 import { useExpressTradingWarnings } from "./hooks/useShowOneClickTradingInfo";
-import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
 import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
+import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
-import { useGmxAccountTokensData, useMultichainTokens } from "../GmxAccountModal/hooks";
+import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
+import {
+  useGmxAccountTokensDataObject,
+  useGmxAccountTokensDataRequest,
+  useMultichainTokens,
+} from "../GmxAccountModal/hooks";
 import "./TradeBox.scss";
 
 export function TradeBox({ isMobile }: { isMobile: boolean }) {
@@ -123,7 +127,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const { swapTokens, infoTokens, sortedLongAndShortTokens, sortedAllMarkets } = availableTokenOptions;
   const tokensData = useTokensData();
   const walletPayableTokensData = useSelector(selectWalletPayableTokensData);
-  const gmxAccountTokensData = useGmxAccountTokensData();
+  const gmxAccountTokensData = useGmxAccountTokensDataObject();
   const multichainTokens = useMultichainTokens();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);

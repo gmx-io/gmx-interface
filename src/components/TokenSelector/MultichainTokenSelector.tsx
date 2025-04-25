@@ -344,7 +344,7 @@ function AvailableToTradeTokenList({
       {sortedFilteredTokens.map((token) => {
         return (
           <div
-            key={token.address + "_" + token.isGmxAccount ? "gmx" : "settlement"}
+            key={token.address + "_" + (token.isGmxAccount ? "gmx" : "settlement")}
             // data-qa={`${qa}-token-${token.symbol}`}
             className={cx("TokenSelector-token-row")}
             onClick={() => onSelectTokenAddress(token.address, token.isGmxAccount)}

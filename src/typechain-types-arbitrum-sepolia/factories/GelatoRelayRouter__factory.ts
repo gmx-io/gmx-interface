@@ -95,6 +95,11 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [],
+    name: "EmptyRelayFeeAddress",
+    type: "error",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -103,6 +108,49 @@ const _abi = [
       },
     ],
     name: "EmptyTokenTranferGasLimit",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "requiredRelayFee",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "availableFeeAmount",
+        type: "uint256",
+      },
+    ],
+    name: "InsufficientRelayFee",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "desChainId",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidDestinationChainId",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "sendTokensLength",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "sendAmountsLength",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidExternalCalls",
     type: "error",
   },
   {
@@ -122,19 +170,14 @@ const _abi = [
     type: "error",
   },
   {
-    inputs: [],
-    name: "InvalidRelayParams",
-    type: "error",
-  },
-  {
     inputs: [
       {
-        internalType: "string",
-        name: "signatureType",
-        type: "string",
+        internalType: "uint256",
+        name: "srcChainId",
+        type: "uint256",
       },
     ],
-    name: "InvalidSignature",
+    name: "InvalidSrcChainId",
     type: "error",
   },
   {
@@ -154,8 +197,45 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "feeUsd",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "maxFeeUsd",
+        type: "uint256",
+      },
+    ],
+    name: "MaxRelayFeeSwapForSubaccountExceeded",
+    type: "error",
+  },
+  {
     inputs: [],
     name: "NonEmptyExternalCallsForSubaccountOrder",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "calldataLength",
+        type: "uint256",
+      },
+    ],
+    name: "RelayCalldataTooLong",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "RelayEmptyBatch",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "TokenPermitsNotAllowedForMultichain",
     type: "error",
   },
   {
@@ -224,22 +304,6 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "UnexpectedRelayFeeTokenAfterSwap",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "feeToken",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "expectedFeeToken",
-        type: "address",
-      },
-    ],
     name: "UnsupportedRelayFeeToken",
     type: "error",
   },
@@ -261,45 +325,6 @@ const _abi = [
     ],
     name: "TokenTransferReverted",
     type: "event",
-  },
-  {
-    inputs: [],
-    name: "DOMAIN_SEPARATOR_NAME_HASH",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "DOMAIN_SEPARATOR_TYPEHASH",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "DOMAIN_SEPARATOR_VERSION_HASH",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
   },
   {
     inputs: [
@@ -331,6 +356,16 @@ const _abi = [
             components: [
               {
                 internalType: "address[]",
+                name: "sendTokens",
+                type: "address[]",
+              },
+              {
+                internalType: "uint256[]",
+                name: "sendAmounts",
+                type: "uint256[]",
+              },
+              {
+                internalType: "address[]",
                 name: "externalCallTargets",
                 type: "address[]",
               },
@@ -350,7 +385,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct RelayUtils.ExternalCalls",
+            internalType: "struct ExternalCalls",
             name: "externalCalls",
             type: "tuple",
           },
@@ -397,7 +432,7 @@ const _abi = [
                 type: "address",
               },
             ],
-            internalType: "struct RelayUtils.TokenPermit[]",
+            internalType: "struct TokenPermit[]",
             name: "tokenPermits",
             type: "tuple[]",
           },
@@ -419,7 +454,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct RelayUtils.FeeParams",
+            internalType: "struct FeeParams",
             name: "fee",
             type: "tuple",
           },
@@ -444,7 +479,371 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct RelayUtils.RelayParams",
+        internalType: "struct RelayParams",
+        name: "relayParams",
+        type: "tuple",
+      },
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        components: [
+          {
+            components: [
+              {
+                components: [
+                  {
+                    internalType: "address",
+                    name: "receiver",
+                    type: "address",
+                  },
+                  {
+                    internalType: "address",
+                    name: "cancellationReceiver",
+                    type: "address",
+                  },
+                  {
+                    internalType: "address",
+                    name: "callbackContract",
+                    type: "address",
+                  },
+                  {
+                    internalType: "address",
+                    name: "uiFeeReceiver",
+                    type: "address",
+                  },
+                  {
+                    internalType: "address",
+                    name: "market",
+                    type: "address",
+                  },
+                  {
+                    internalType: "address",
+                    name: "initialCollateralToken",
+                    type: "address",
+                  },
+                  {
+                    internalType: "address[]",
+                    name: "swapPath",
+                    type: "address[]",
+                  },
+                ],
+                internalType: "struct IBaseOrderUtils.CreateOrderParamsAddresses",
+                name: "addresses",
+                type: "tuple",
+              },
+              {
+                components: [
+                  {
+                    internalType: "uint256",
+                    name: "sizeDeltaUsd",
+                    type: "uint256",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "initialCollateralDeltaAmount",
+                    type: "uint256",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "triggerPrice",
+                    type: "uint256",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "acceptablePrice",
+                    type: "uint256",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "executionFee",
+                    type: "uint256",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "callbackGasLimit",
+                    type: "uint256",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "minOutputAmount",
+                    type: "uint256",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "validFromTime",
+                    type: "uint256",
+                  },
+                ],
+                internalType: "struct IBaseOrderUtils.CreateOrderParamsNumbers",
+                name: "numbers",
+                type: "tuple",
+              },
+              {
+                internalType: "enum Order.OrderType",
+                name: "orderType",
+                type: "uint8",
+              },
+              {
+                internalType: "enum Order.DecreasePositionSwapType",
+                name: "decreasePositionSwapType",
+                type: "uint8",
+              },
+              {
+                internalType: "bool",
+                name: "isLong",
+                type: "bool",
+              },
+              {
+                internalType: "bool",
+                name: "shouldUnwrapNativeToken",
+                type: "bool",
+              },
+              {
+                internalType: "bool",
+                name: "autoCancel",
+                type: "bool",
+              },
+              {
+                internalType: "bytes32",
+                name: "referralCode",
+                type: "bytes32",
+              },
+              {
+                internalType: "bytes32[]",
+                name: "dataList",
+                type: "bytes32[]",
+              },
+            ],
+            internalType: "struct IBaseOrderUtils.CreateOrderParams[]",
+            name: "createOrderParamsList",
+            type: "tuple[]",
+          },
+          {
+            components: [
+              {
+                internalType: "bytes32",
+                name: "key",
+                type: "bytes32",
+              },
+              {
+                internalType: "uint256",
+                name: "sizeDeltaUsd",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "acceptablePrice",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "triggerPrice",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "minOutputAmount",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "validFromTime",
+                type: "uint256",
+              },
+              {
+                internalType: "bool",
+                name: "autoCancel",
+                type: "bool",
+              },
+              {
+                internalType: "uint256",
+                name: "executionFeeIncrease",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct UpdateOrderParams[]",
+            name: "updateOrderParamsList",
+            type: "tuple[]",
+          },
+          {
+            internalType: "bytes32[]",
+            name: "cancelOrderKeys",
+            type: "bytes32[]",
+          },
+        ],
+        internalType: "struct BatchParams",
+        name: "params",
+        type: "tuple",
+      },
+    ],
+    name: "batch",
+    outputs: [
+      {
+        internalType: "bytes32[]",
+        name: "",
+        type: "bytes32[]",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            components: [
+              {
+                internalType: "address[]",
+                name: "tokens",
+                type: "address[]",
+              },
+              {
+                internalType: "address[]",
+                name: "providers",
+                type: "address[]",
+              },
+              {
+                internalType: "bytes[]",
+                name: "data",
+                type: "bytes[]",
+              },
+            ],
+            internalType: "struct OracleUtils.SetPricesParams",
+            name: "oracleParams",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "address[]",
+                name: "sendTokens",
+                type: "address[]",
+              },
+              {
+                internalType: "uint256[]",
+                name: "sendAmounts",
+                type: "uint256[]",
+              },
+              {
+                internalType: "address[]",
+                name: "externalCallTargets",
+                type: "address[]",
+              },
+              {
+                internalType: "bytes[]",
+                name: "externalCallDataList",
+                type: "bytes[]",
+              },
+              {
+                internalType: "address[]",
+                name: "refundTokens",
+                type: "address[]",
+              },
+              {
+                internalType: "address[]",
+                name: "refundReceivers",
+                type: "address[]",
+              },
+            ],
+            internalType: "struct ExternalCalls",
+            name: "externalCalls",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "address",
+                name: "owner",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "spender",
+                type: "address",
+              },
+              {
+                internalType: "uint256",
+                name: "value",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "deadline",
+                type: "uint256",
+              },
+              {
+                internalType: "uint8",
+                name: "v",
+                type: "uint8",
+              },
+              {
+                internalType: "bytes32",
+                name: "r",
+                type: "bytes32",
+              },
+              {
+                internalType: "bytes32",
+                name: "s",
+                type: "bytes32",
+              },
+              {
+                internalType: "address",
+                name: "token",
+                type: "address",
+              },
+            ],
+            internalType: "struct TokenPermit[]",
+            name: "tokenPermits",
+            type: "tuple[]",
+          },
+          {
+            components: [
+              {
+                internalType: "address",
+                name: "feeToken",
+                type: "address",
+              },
+              {
+                internalType: "uint256",
+                name: "feeAmount",
+                type: "uint256",
+              },
+              {
+                internalType: "address[]",
+                name: "feeSwapPath",
+                type: "address[]",
+              },
+            ],
+            internalType: "struct FeeParams",
+            name: "fee",
+            type: "tuple",
+          },
+          {
+            internalType: "uint256",
+            name: "userNonce",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "deadline",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "signature",
+            type: "bytes",
+          },
+          {
+            internalType: "uint256",
+            name: "desChainId",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct RelayParams",
         name: "relayParams",
         type: "tuple",
       },
@@ -494,6 +893,16 @@ const _abi = [
             components: [
               {
                 internalType: "address[]",
+                name: "sendTokens",
+                type: "address[]",
+              },
+              {
+                internalType: "uint256[]",
+                name: "sendAmounts",
+                type: "uint256[]",
+              },
+              {
+                internalType: "address[]",
                 name: "externalCallTargets",
                 type: "address[]",
               },
@@ -513,7 +922,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct RelayUtils.ExternalCalls",
+            internalType: "struct ExternalCalls",
             name: "externalCalls",
             type: "tuple",
           },
@@ -560,7 +969,7 @@ const _abi = [
                 type: "address",
               },
             ],
-            internalType: "struct RelayUtils.TokenPermit[]",
+            internalType: "struct TokenPermit[]",
             name: "tokenPermits",
             type: "tuple[]",
           },
@@ -582,7 +991,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct RelayUtils.FeeParams",
+            internalType: "struct FeeParams",
             name: "fee",
             type: "tuple",
           },
@@ -607,7 +1016,7 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct RelayUtils.RelayParams",
+        internalType: "struct RelayParams",
         name: "relayParams",
         type: "tuple",
       },
@@ -615,11 +1024,6 @@ const _abi = [
         internalType: "address",
         name: "account",
         type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "collateralDeltaAmount",
-        type: "uint256",
       },
       {
         components: [
@@ -976,6 +1380,16 @@ const _abi = [
             components: [
               {
                 internalType: "address[]",
+                name: "sendTokens",
+                type: "address[]",
+              },
+              {
+                internalType: "uint256[]",
+                name: "sendAmounts",
+                type: "uint256[]",
+              },
+              {
+                internalType: "address[]",
                 name: "externalCallTargets",
                 type: "address[]",
               },
@@ -995,7 +1409,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct RelayUtils.ExternalCalls",
+            internalType: "struct ExternalCalls",
             name: "externalCalls",
             type: "tuple",
           },
@@ -1042,7 +1456,7 @@ const _abi = [
                 type: "address",
               },
             ],
-            internalType: "struct RelayUtils.TokenPermit[]",
+            internalType: "struct TokenPermit[]",
             name: "tokenPermits",
             type: "tuple[]",
           },
@@ -1064,7 +1478,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct RelayUtils.FeeParams",
+            internalType: "struct FeeParams",
             name: "fee",
             type: "tuple",
           },
@@ -1089,7 +1503,7 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct RelayUtils.RelayParams",
+        internalType: "struct RelayParams",
         name: "relayParams",
         type: "tuple",
       },
@@ -1099,12 +1513,12 @@ const _abi = [
         type: "address",
       },
       {
-        internalType: "bytes32",
-        name: "key",
-        type: "bytes32",
-      },
-      {
         components: [
+          {
+            internalType: "bytes32",
+            name: "key",
+            type: "bytes32",
+          },
           {
             internalType: "uint256",
             name: "sizeDeltaUsd",
@@ -1135,15 +1549,15 @@ const _abi = [
             name: "autoCancel",
             type: "bool",
           },
+          {
+            internalType: "uint256",
+            name: "executionFeeIncrease",
+            type: "uint256",
+          },
         ],
-        internalType: "struct RelayUtils.UpdateOrderParams",
+        internalType: "struct UpdateOrderParams",
         name: "params",
         type: "tuple",
-      },
-      {
-        internalType: "bool",
-        name: "increaseExecutionFee",
-        type: "bool",
       },
     ],
     name: "updateOrder",

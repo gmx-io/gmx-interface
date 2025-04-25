@@ -13,7 +13,6 @@ import { GetFeeDataBlockError } from "lib/metrics";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
 import { bigMath } from "sdk/utils/bigmath";
 
-
 export type GasPriceData =
   | {
       gasPrice: bigint;

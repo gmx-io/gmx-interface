@@ -135,6 +135,7 @@ export interface SubaccountRouterInterface extends Interface {
       | "sendNativeToken"
       | "sendTokens"
       | "sendWnt"
+      | "setIntegrationId"
       | "setMaxAllowedSubaccountActionCount"
       | "setSubaccountAutoTopUpAmount"
       | "setSubaccountExpiresAt"
@@ -160,6 +161,7 @@ export interface SubaccountRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "sendNativeToken", values: [AddressLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "sendTokens", values: [AddressLike, AddressLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "sendWnt", values: [AddressLike, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "setIntegrationId", values: [AddressLike, BytesLike]): string;
   encodeFunctionData(
     functionFragment: "setMaxAllowedSubaccountActionCount",
     values: [AddressLike, BytesLike, BigNumberish]
@@ -188,6 +190,7 @@ export interface SubaccountRouterInterface extends Interface {
   decodeFunctionResult(functionFragment: "sendNativeToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendTokens", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendWnt", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setIntegrationId", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setMaxAllowedSubaccountActionCount", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setSubaccountAutoTopUpAmount", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setSubaccountExpiresAt", data: BytesLike): Result;
@@ -272,6 +275,8 @@ export interface SubaccountRouter extends BaseContract {
 
   sendWnt: TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
 
+  setIntegrationId: TypedContractMethod<[subaccount: AddressLike, integrationId: BytesLike], [void], "payable">;
+
   setMaxAllowedSubaccountActionCount: TypedContractMethod<
     [subaccount: AddressLike, actionType: BytesLike, maxAllowedCount: BigNumberish],
     [void],
@@ -324,6 +329,9 @@ export interface SubaccountRouter extends BaseContract {
   getFunction(
     nameOrSignature: "sendWnt"
   ): TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
+  getFunction(
+    nameOrSignature: "setIntegrationId"
+  ): TypedContractMethod<[subaccount: AddressLike, integrationId: BytesLike], [void], "payable">;
   getFunction(
     nameOrSignature: "setMaxAllowedSubaccountActionCount"
   ): TypedContractMethod<

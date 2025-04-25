@@ -503,6 +503,11 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [],
+    name: "EmptyPositionImpactWithdrawalAmount",
+    type: "error",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -516,6 +521,11 @@ const _abi = [
   {
     inputs: [],
     name: "EmptyReceiver",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "EmptyRelayFeeAddress",
     type: "error",
   },
   {
@@ -1264,6 +1274,22 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "withdrawalAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "poolValue",
+        type: "uint256",
+      },
+    ],
+    name: "InsufficientImpactPoolValueForWithdrawal",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "balance",
         type: "uint256",
       },
@@ -1343,7 +1369,7 @@ const _abi = [
       },
       {
         internalType: "uint256",
-        name: "feeAmount",
+        name: "availableFeeAmount",
         type: "uint256",
       },
     ],
@@ -1738,6 +1764,75 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "bid",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "ask",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidEdgeDataStreamBidAsk",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "int256",
+        name: "expo",
+        type: "int256",
+      },
+    ],
+    name: "InvalidEdgeDataStreamExpo",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "bid",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "ask",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidEdgeDataStreamPrices",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "recoverError",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidEdgeSignature",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "InvalidEdgeSigner",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "executionFee",
         type: "uint256",
@@ -1797,6 +1892,22 @@ const _abi = [
       },
     ],
     name: "InvalidExternalCallTarget",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "sendTokensLength",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "sendAmountsLength",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidExternalCalls",
     type: "error",
   },
   {
@@ -2426,11 +2537,6 @@ const _abi = [
     type: "error",
   },
   {
-    inputs: [],
-    name: "InvalidRelayParams",
-    type: "error",
-  },
-  {
     inputs: [
       {
         internalType: "uint256",
@@ -2487,6 +2593,17 @@ const _abi = [
       },
     ],
     name: "InvalidSizeDeltaForAdl",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "srcChainId",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidSrcChainId",
     type: "error",
   },
   {
@@ -2599,6 +2716,11 @@ const _abi = [
   {
     inputs: [],
     name: "InvalidTransferRequestsLength",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "InvalidTrustedSignerAddress",
     type: "error",
   },
   {
@@ -2923,6 +3045,22 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "uint256",
+        name: "feeUsd",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "maxFeeUsd",
+        type: "uint256",
+      },
+    ],
+    name: "MaxRelayFeeSwapForSubaccountExceeded",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "account",
         type: "address",
@@ -3179,6 +3317,11 @@ const _abi = [
       },
     ],
     name: "OpenInterestCannotBeUpdatedForSwapOnlyMarket",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OraclePriceOutdated",
     type: "error",
   },
   {
@@ -3449,6 +3592,22 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "calldataLength",
+        type: "uint256",
+      },
+    ],
+    name: "RelayCalldataTooLong",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "RelayEmptyBatch",
+    type: "error",
+  },
+  {
     inputs: [],
     name: "RelayPriceOutdated",
     type: "error",
@@ -3595,6 +3754,17 @@ const _abi = [
       },
     ],
     name: "SubaccountApprovalExpired",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "integrationId",
+        type: "bytes32",
+      },
+    ],
+    name: "SubaccountIntegrationIdDisabled",
     type: "error",
   },
   {

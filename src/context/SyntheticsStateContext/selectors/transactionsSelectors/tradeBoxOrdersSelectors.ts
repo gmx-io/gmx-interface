@@ -111,14 +111,14 @@ export const selectTradeboxIncreaseOrderParams = createSelector((q) => {
     !collateralTokenAddress ||
     !increaseAmounts
   ) {
-    console.log("selectTradeboxIncreaseOrderParams is undefined", {
-      commonParams: !!commonParams,
-      fromTokenAddress: !!fromTokenAddress,
-      marketAddress: !!marketAddress,
-      indexTokenAddress: !!indexTokenAddress,
-      collateralTokenAddress: !!collateralTokenAddress,
-      increaseAmounts: !!increaseAmounts,
-    });
+    // console.log("selectTradeboxIncreaseOrderParams is undefined", {
+    //   commonParams: !!commonParams,
+    //   fromTokenAddress: !!fromTokenAddress,
+    //   marketAddress: !!marketAddress,
+    //   indexTokenAddress: !!indexTokenAddress,
+    //   collateralTokenAddress: !!collateralTokenAddress,
+    //   increaseAmounts: !!increaseAmounts,
+    // });
     return undefined;
   }
 

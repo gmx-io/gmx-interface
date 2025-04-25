@@ -16,27 +16,27 @@ import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks"
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { buildAndSignBridgeOutTxn, sendExpressTxn } from "domain/synthetics/gassless/txns/expressOrderUtils";
-import {
-  getOracleParamsPayload,
-  getOraclePriceParamsForRelayFee,
-} from "domain/synthetics/gassless/txns/oracleParamsUtils";
-import { useExpressOrdersParams } from "domain/synthetics/gassless/useRelayerFeeHandler";
+import { getOracleParamsPayload, getOraclePriceParamsForRelayFee } from "domain/synthetics/express/oracleParamsUtils";
+import { MultichainRelayParamsPayload } from "domain/synthetics/express/types";
+import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
+import { buildAndSignBridgeOutTxn } from "domain/synthetics/orders/expressOrderUtils";
 import { TokenData, convertToUsd } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import { formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { abis } from "sdk/abis";
 import { getTokenBySymbol } from "sdk/configs/tokens";
-import { MultichainRelayParamsPayload } from "sdk/types/expressTransactions";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
+import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { RelayUtils } from "typechain-types-arbitrum-sepolia/MultichainTransferRouter";
 
 import Button from "components/Button/Button";
 import NumberInput from "components/NumberInput/NumberInput";
 import {
-  useGmxAccountTokensData,
+  useGmxAccountTokensDataObject,
+  useGmxAccountTokensDataRequest,
   useGmxAccountWithdrawNetworks,
   useMultichainTokens,
 } from "components/Synthetics/GmxAccountModal/hooks";
@@ -70,7 +70,7 @@ export const WithdrawView = () => {
 
   const [selectedTokenAddress, setSelectedTokenAddress] = useState<string | undefined>(undefined);
 
-  const gmxAccountTokensData = useGmxAccountTokensData();
+  const gmxAccountTokensData = useGmxAccountTokensDataObject();
 
   const networks = useGmxAccountWithdrawNetworks();
 
@@ -215,16 +215,18 @@ export const WithdrawView = () => {
       args: [account],
     });
 
-    // oracleParams: expressOrdersParams.relayParamsPayload.oracleParams,
-    // oracleParams: getExpressOrderOracleParams({
-    //   chainId: settlementChainId,
-    //   createOrderParams: [],
-    //   marketsInfoData,
-    //   tokensData,
-    //   gasPaymentTokenAddress: getTokenBySymbol(settlementChainId, "WETH").address,
-    //   feeSwapPath: [],
-    //   feeTokenAddress: getTokenBySymbol(settlementChainId, "WETH").address,
-    // }),
+    const DEV_WETH = getTokenBySymbol(settlementChainId, "WETH").address;
+
+    const FEE_AMOUNT = (93372639126447n * 130n) / 100n;
+
+    const externalCalls: ExternalCallsPayload = {
+      sendTokens: [],
+      sendAmounts: [],
+      externalCallTargets: [],
+      externalCallDataList: [],
+      refundTokens: [],
+      refundReceivers: [],
+    };
 
     const relayParamsPayload: MultichainRelayParamsPayload = {
       oracleParams: getOracleParamsPayload(
@@ -233,37 +235,28 @@ export const WithdrawView = () => {
           marketsInfoData,
           tokensData,
           relayFeeParams: {
-            externalCalls: {
-              sendTokens: [],
-              sendAmounts: [],
-              externalCallTargets: [],
-              externalCallDataList: [],
-              refundTokens: [],
-              refundReceivers: [],
-            },
+            externalCalls,
             feeParams: {
-              feeToken: getTokenBySymbol(settlementChainId, "WETH").address,
-              feeAmount: (93372639126447n * 130n) / 100n,
+              feeToken: DEV_WETH,
+              feeAmount: FEE_AMOUNT,
               feeSwapPath: [],
             },
-            relayerTokenAddress: getTokenBySymbol(settlementChainId, "WETH").address,
-            relayerTokenAmount: (93372639126447n * 130n) / 100n,
-            totalNetworkFeeAmount: 2n,
+            relayerTokenAddress: DEV_WETH,
+            relayerTokenAmount: FEE_AMOUNT,
+            totalNetworkFeeAmount: FEE_AMOUNT,
+            gasPaymentTokenAmount: FEE_AMOUNT,
+            gasPaymentTokenAddress: DEV_WETH,
+            isOutGasTokenBalance: false,
+            needGasPaymentTokenApproval: false,
+            externalSwapGasLimit: 0n,
           },
         })
       ),
       tokenPermits: [],
-      externalCalls: {
-        sendTokens: [],
-        sendAmounts: [],
-        externalCallTargets: [],
-        externalCallDataList: [],
-        refundTokens: [],
-        refundReceivers: [],
-      },
+      externalCalls,
       fee: {
-        feeToken: getTokenBySymbol(settlementChainId, "WETH").address,
-        feeAmount: (93372639126447n * 130n) / 100n,
+        feeToken: DEV_WETH,
+        feeAmount: FEE_AMOUNT,
         feeSwapPath: [],
       },
       userNonce: userNonce,
@@ -271,18 +264,18 @@ export const WithdrawView = () => {
       desChainId: BigInt(settlementChainId),
     };
 
-    console.log({ relayParamsPayload });
-
-    const signedTxnData = await buildAndSignBridgeOutTxn({
+    const signedTxnData: ExpressTxnData = await buildAndSignBridgeOutTxn({
       chainId: settlementChainId,
       signer: signer,
       relayParamsPayload,
       params: bridgeOutParams,
     });
 
-    await sendExpressTxn({
+    await sendExpressTransaction({
       chainId: settlementChainId,
       txnData: signedTxnData,
+      // TODO
+      isSponsoredCall: false,
       // relayFeeToken: "0xeBDCbab722f9B4614b7ec1C261c9E52acF109CF8", // WETH.G
     });
 

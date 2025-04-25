@@ -1,9 +1,13 @@
 import { Signer } from "ethers";
-import { withRetry } from "viem";
+import { PublicClient, withRetry } from "viem";
 
+import { UiContractsChain, UiSettlementChain } from "config/chains";
 import { ExpressParams } from "domain/synthetics/express";
 import { isLimitSwapOrderType } from "domain/synthetics/orders";
-import { buildAndSignExpressBatchOrderTxn } from "domain/synthetics/orders/expressOrderUtils";
+import {
+  buildAndSignExpressBatchOrderTxn,
+  getMultichainInfoFromSigner,
+} from "domain/synthetics/orders/expressOrderUtils";
 import { TokensData } from "domain/tokens";
 import { extendError } from "lib/errors";
 import { sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
@@ -14,7 +18,6 @@ import { getContract } from "sdk/configs/contracts";
 import { BatchOrderTxnParams, getBatchOrderMulticallPayload } from "sdk/utils/orderTransactions";
 
 import { signerAddressError } from "components/Errors/errorToasts";
-
 
 import { getOrdersTriggerPriceOverrides, getSimulationPrices, simulateExecution } from "./simulation";
 
@@ -31,25 +34,29 @@ export type BatchOrderTxnCtx = {
 export async function sendBatchOrderTxn({
   chainId,
   signer,
+  settlementChainClient,
   batchParams,
   expressParams,
   simulationParams,
   callback,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   signer: Signer;
+  settlementChainClient?: PublicClient;
   batchParams: BatchOrderTxnParams;
   expressParams: ExpressParams | undefined;
   simulationParams: BatchSimulationParams | undefined;
   callback: TxnCallback<BatchOrderTxnCtx> | undefined;
 }) {
+  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
   const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({ expressParams, batchParams });
 
   try {
     const runSimulation = async () =>
-      simulationParams
+      false
         ? makeBatchOrderSimulation({
             chainId,
+            // TODO: implement simulation for multichain
             signer,
             params: batchParams,
             blockTimestampData: simulationParams.blockTimestampData,
@@ -57,11 +64,20 @@ export async function sendBatchOrderTxn({
           })
         : Promise.resolve(undefined);
 
+    if (srcChainId && !expressParams) {
+      throw new Error("Multichain orders are only supported with express params");
+    }
+
+    if (srcChainId && !settlementChainClient) {
+      throw new Error("settlementChainClient is required");
+    }
+
     if (expressParams) {
       const [txnData] = await Promise.all([
         buildAndSignExpressBatchOrderTxn({
-          chainId,
+          chainId: chainId as UiContractsChain,
           signer,
+          settlementChainClient,
           batchParams,
           relayParamsPayload: expressParams.relayParamsPayload,
           relayFeeParams: expressParams.relayFeeParams,
@@ -79,7 +95,7 @@ export async function sendBatchOrderTxn({
           sendExpressTransaction({
             chainId,
             txnData,
-            isSponsoredCall: expressParams.isSponsoredCall,
+            isSponsoredCall: srcChainId ? false : expressParams.isSponsoredCall,
           }),
         {
           retryCount: 3,
@@ -89,6 +105,7 @@ export async function sendBatchOrderTxn({
           callback?.(
             eventBuilder.Sent({
               txnHash: res.taskId,
+
               blockNumber: BigInt(await signer.provider!.getBlockNumber()),
               createdAt,
             })

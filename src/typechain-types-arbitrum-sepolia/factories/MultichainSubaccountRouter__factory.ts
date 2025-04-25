@@ -3,50 +3,66 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type { SubaccountGelatoRelayRouter, SubaccountGelatoRelayRouterInterface } from "../SubaccountGelatoRelayRouter";
+import type {
+  MultichainSubaccountRouter,
+  MultichainSubaccountRouterInterface,
+  MultichainRouter,
+} from "../MultichainSubaccountRouter";
 
 const _abi = [
   {
     inputs: [
       {
-        internalType: "contract Router",
-        name: "_router",
-        type: "address",
-      },
-      {
-        internalType: "contract RoleStore",
-        name: "_roleStore",
-        type: "address",
-      },
-      {
-        internalType: "contract DataStore",
-        name: "_dataStore",
-        type: "address",
-      },
-      {
-        internalType: "contract EventEmitter",
-        name: "_eventEmitter",
-        type: "address",
-      },
-      {
-        internalType: "contract Oracle",
-        name: "_oracle",
-        type: "address",
-      },
-      {
-        internalType: "contract IOrderHandler",
-        name: "_orderHandler",
-        type: "address",
-      },
-      {
-        internalType: "contract OrderVault",
-        name: "_orderVault",
-        type: "address",
-      },
-      {
-        internalType: "contract IExternalHandler",
-        name: "_externalHandler",
-        type: "address",
+        components: [
+          {
+            internalType: "contract Router",
+            name: "router",
+            type: "address",
+          },
+          {
+            internalType: "contract RoleStore",
+            name: "roleStore",
+            type: "address",
+          },
+          {
+            internalType: "contract DataStore",
+            name: "dataStore",
+            type: "address",
+          },
+          {
+            internalType: "contract EventEmitter",
+            name: "eventEmitter",
+            type: "address",
+          },
+          {
+            internalType: "contract Oracle",
+            name: "oracle",
+            type: "address",
+          },
+          {
+            internalType: "contract OrderVault",
+            name: "orderVault",
+            type: "address",
+          },
+          {
+            internalType: "contract IOrderHandler",
+            name: "orderHandler",
+            type: "address",
+          },
+          {
+            internalType: "contract IExternalHandler",
+            name: "externalHandler",
+            type: "address",
+          },
+          {
+            internalType: "contract MultichainVault",
+            name: "multichainVault",
+            type: "address",
+          },
+        ],
+        internalType: "struct MultichainRouter.BaseConstructorParams",
+        name: "params",
+        type: "tuple",
       },
     ],
     stateMutability: "nonpayable",
@@ -541,6 +557,11 @@ const _abi = [
         type: "address",
       },
       {
+        internalType: "uint256",
+        name: "srcChainId",
+        type: "uint256",
+      },
+      {
         internalType: "address",
         name: "subaccount",
         type: "address",
@@ -962,6 +983,11 @@ const _abi = [
         type: "address",
       },
       {
+        internalType: "uint256",
+        name: "srcChainId",
+        type: "uint256",
+      },
+      {
         internalType: "address",
         name: "subaccount",
         type: "address",
@@ -1192,6 +1218,11 @@ const _abi = [
         type: "address",
       },
       {
+        internalType: "uint256",
+        name: "srcChainId",
+        type: "uint256",
+      },
+      {
         internalType: "address",
         name: "subaccount",
         type: "address",
@@ -1399,6 +1430,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "multichainVault",
+    outputs: [
+      {
+        internalType: "contract MultichainVault",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "oracle",
     outputs: [
       {
@@ -1597,6 +1641,11 @@ const _abi = [
         internalType: "address",
         name: "account",
         type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "srcChainId",
+        type: "uint256",
       },
       {
         internalType: "address",
@@ -1928,6 +1977,11 @@ const _abi = [
         type: "address",
       },
       {
+        internalType: "uint256",
+        name: "srcChainId",
+        type: "uint256",
+      },
+      {
         internalType: "address",
         name: "subaccount",
         type: "address",
@@ -2006,12 +2060,12 @@ const _abi = [
   },
 ] as const;
 
-export class SubaccountGelatoRelayRouter__factory {
+export class MultichainSubaccountRouter__factory {
   static readonly abi = _abi;
-  static createInterface(): SubaccountGelatoRelayRouterInterface {
-    return new Interface(_abi) as SubaccountGelatoRelayRouterInterface;
+  static createInterface(): MultichainSubaccountRouterInterface {
+    return new Interface(_abi) as MultichainSubaccountRouterInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): SubaccountGelatoRelayRouter {
-    return new Contract(address, _abi, runner) as unknown as SubaccountGelatoRelayRouter;
+  static connect(address: string, runner?: ContractRunner | null): MultichainSubaccountRouter {
+    return new Contract(address, _abi, runner) as unknown as MultichainSubaccountRouter;
   }
 }

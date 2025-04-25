@@ -549,7 +549,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct DepositUtils.CreateDepositParamsAdresses",
+            internalType: "struct DepositUtils.CreateDepositParamsAddresses",
             name: "addresses",
             type: "tuple",
           },

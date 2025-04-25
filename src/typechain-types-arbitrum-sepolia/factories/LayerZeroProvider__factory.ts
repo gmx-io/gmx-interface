@@ -60,6 +60,17 @@ const _abi = [
         name: "token",
         type: "address",
       },
+    ],
+    name: "InvalidBridgeOutToken",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
       {
         internalType: "address",
         name: "receiver",
@@ -150,7 +161,13 @@ const _abi = [
       },
     ],
     name: "bridgeOut",
-    outputs: [],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },

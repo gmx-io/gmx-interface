@@ -125,6 +125,33 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "bytes32",
+        name: "integrationId",
+        type: "bytes32",
+      },
+    ],
+    name: "SubaccountIntegrationIdDisabled",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "subaccount",
+        type: "address",
+      },
+    ],
+    name: "SubaccountNotAuthorized",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "token",
         type: "address",
@@ -503,6 +530,24 @@ const _abi = [
       },
     ],
     name: "sendWnt",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "subaccount",
+        type: "address",
+      },
+      {
+        internalType: "bytes32",
+        name: "integrationId",
+        type: "bytes32",
+      },
+    ],
+    name: "setIntegrationId",
     outputs: [],
     stateMutability: "payable",
     type: "function",

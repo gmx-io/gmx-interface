@@ -49,7 +49,7 @@ export function usePositions(
     data: positionsData,
     error: positionsError,
     isLoading,
-  } = useMulticall(chainId, "usePositionsData", {
+  } = useMulticall(chainId, "usePositionsData-multichain", {
     key: account && keysAndPrices.marketsKeys.length ? [account, keysAndPrices.marketsKeys] : null,
 
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
@@ -74,7 +74,7 @@ export function usePositions(
                 // uiFeeReceiver
                 ethers.ZeroAddress,
                 0,
-                1,
+                1000,
               ] satisfies Parameters<SyntheticsReader["getAccountPositionInfoList"]>,
             },
           },

@@ -23,6 +23,117 @@ import type {
   TypedContractMethod,
 } from "./common";
 
+export type ExternalCallsStruct = {
+  sendTokens: AddressLike[];
+  sendAmounts: BigNumberish[];
+  externalCallTargets: AddressLike[];
+  externalCallDataList: BytesLike[];
+  refundTokens: AddressLike[];
+  refundReceivers: AddressLike[];
+};
+
+export type ExternalCallsStructOutput = [
+  sendTokens: string[],
+  sendAmounts: bigint[],
+  externalCallTargets: string[],
+  externalCallDataList: string[],
+  refundTokens: string[],
+  refundReceivers: string[],
+] & {
+  sendTokens: string[];
+  sendAmounts: bigint[];
+  externalCallTargets: string[];
+  externalCallDataList: string[];
+  refundTokens: string[];
+  refundReceivers: string[];
+};
+
+export type TokenPermitStruct = {
+  owner: AddressLike;
+  spender: AddressLike;
+  value: BigNumberish;
+  deadline: BigNumberish;
+  v: BigNumberish;
+  r: BytesLike;
+  s: BytesLike;
+  token: AddressLike;
+};
+
+export type TokenPermitStructOutput = [
+  owner: string,
+  spender: string,
+  value: bigint,
+  deadline: bigint,
+  v: bigint,
+  r: string,
+  s: string,
+  token: string,
+] & {
+  owner: string;
+  spender: string;
+  value: bigint;
+  deadline: bigint;
+  v: bigint;
+  r: string;
+  s: string;
+  token: string;
+};
+
+export type FeeParamsStruct = {
+  feeToken: AddressLike;
+  feeAmount: BigNumberish;
+  feeSwapPath: AddressLike[];
+};
+
+export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
+  feeToken: string;
+  feeAmount: bigint;
+  feeSwapPath: string[];
+};
+
+export type RelayParamsStruct = {
+  oracleParams: OracleUtils.SetPricesParamsStruct;
+  externalCalls: ExternalCallsStruct;
+  tokenPermits: TokenPermitStruct[];
+  fee: FeeParamsStruct;
+  userNonce: BigNumberish;
+  deadline: BigNumberish;
+  signature: BytesLike;
+  desChainId: BigNumberish;
+};
+
+export type RelayParamsStructOutput = [
+  oracleParams: OracleUtils.SetPricesParamsStructOutput,
+  externalCalls: ExternalCallsStructOutput,
+  tokenPermits: TokenPermitStructOutput[],
+  fee: FeeParamsStructOutput,
+  userNonce: bigint,
+  deadline: bigint,
+  signature: string,
+  desChainId: bigint,
+] & {
+  oracleParams: OracleUtils.SetPricesParamsStructOutput;
+  externalCalls: ExternalCallsStructOutput;
+  tokenPermits: TokenPermitStructOutput[];
+  fee: FeeParamsStructOutput;
+  userNonce: bigint;
+  deadline: bigint;
+  signature: string;
+  desChainId: bigint;
+};
+
+export type TransferRequestsStruct = {
+  tokens: AddressLike[];
+  receivers: AddressLike[];
+  amounts: BigNumberish[];
+};
+
+export type TransferRequestsStructOutput = [tokens: string[], receivers: string[], amounts: bigint[]] & {
+  tokens: string[];
+  receivers: string[];
+  amounts: bigint[];
+};
+
 export declare namespace MultichainRouter {
   export type BaseConstructorParamsStruct = {
     router: AddressLike;
@@ -73,115 +184,8 @@ export declare namespace OracleUtils {
   };
 }
 
-export declare namespace RelayUtils {
-  export type ExternalCallsStruct = {
-    externalCallTargets: AddressLike[];
-    externalCallDataList: BytesLike[];
-    refundTokens: AddressLike[];
-    refundReceivers: AddressLike[];
-  };
-
-  export type ExternalCallsStructOutput = [
-    externalCallTargets: string[],
-    externalCallDataList: string[],
-    refundTokens: string[],
-    refundReceivers: string[],
-  ] & {
-    externalCallTargets: string[];
-    externalCallDataList: string[];
-    refundTokens: string[];
-    refundReceivers: string[];
-  };
-
-  export type TokenPermitStruct = {
-    owner: AddressLike;
-    spender: AddressLike;
-    value: BigNumberish;
-    deadline: BigNumberish;
-    v: BigNumberish;
-    r: BytesLike;
-    s: BytesLike;
-    token: AddressLike;
-  };
-
-  export type TokenPermitStructOutput = [
-    owner: string,
-    spender: string,
-    value: bigint,
-    deadline: bigint,
-    v: bigint,
-    r: string,
-    s: string,
-    token: string,
-  ] & {
-    owner: string;
-    spender: string;
-    value: bigint;
-    deadline: bigint;
-    v: bigint;
-    r: string;
-    s: string;
-    token: string;
-  };
-
-  export type FeeParamsStruct = {
-    feeToken: AddressLike;
-    feeAmount: BigNumberish;
-    feeSwapPath: AddressLike[];
-  };
-
-  export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
-    feeToken: string;
-    feeAmount: bigint;
-    feeSwapPath: string[];
-  };
-
-  export type RelayParamsStruct = {
-    oracleParams: OracleUtils.SetPricesParamsStruct;
-    externalCalls: RelayUtils.ExternalCallsStruct;
-    tokenPermits: RelayUtils.TokenPermitStruct[];
-    fee: RelayUtils.FeeParamsStruct;
-    userNonce: BigNumberish;
-    deadline: BigNumberish;
-    signature: BytesLike;
-    desChainId: BigNumberish;
-  };
-
-  export type RelayParamsStructOutput = [
-    oracleParams: OracleUtils.SetPricesParamsStructOutput,
-    externalCalls: RelayUtils.ExternalCallsStructOutput,
-    tokenPermits: RelayUtils.TokenPermitStructOutput[],
-    fee: RelayUtils.FeeParamsStructOutput,
-    userNonce: bigint,
-    deadline: bigint,
-    signature: string,
-    desChainId: bigint,
-  ] & {
-    oracleParams: OracleUtils.SetPricesParamsStructOutput;
-    externalCalls: RelayUtils.ExternalCallsStructOutput;
-    tokenPermits: RelayUtils.TokenPermitStructOutput[];
-    fee: RelayUtils.FeeParamsStructOutput;
-    userNonce: bigint;
-    deadline: bigint;
-    signature: string;
-    desChainId: bigint;
-  };
-
-  export type TransferRequestsStruct = {
-    tokens: AddressLike[];
-    receivers: AddressLike[];
-    amounts: BigNumberish[];
-  };
-
-  export type TransferRequestsStructOutput = [tokens: string[], receivers: string[], amounts: bigint[]] & {
-    tokens: string[];
-    receivers: string[];
-    amounts: bigint[];
-  };
-}
-
 export declare namespace DepositUtils {
-  export type CreateDepositParamsAdressesStruct = {
+  export type CreateDepositParamsAddressesStruct = {
     receiver: AddressLike;
     callbackContract: AddressLike;
     uiFeeReceiver: AddressLike;
@@ -192,7 +196,7 @@ export declare namespace DepositUtils {
     shortTokenSwapPath: AddressLike[];
   };
 
-  export type CreateDepositParamsAdressesStructOutput = [
+  export type CreateDepositParamsAddressesStructOutput = [
     receiver: string,
     callbackContract: string,
     uiFeeReceiver: string,
@@ -213,7 +217,7 @@ export declare namespace DepositUtils {
   };
 
   export type CreateDepositParamsStruct = {
-    addresses: DepositUtils.CreateDepositParamsAdressesStruct;
+    addresses: DepositUtils.CreateDepositParamsAddressesStruct;
     minMarketTokens: BigNumberish;
     shouldUnwrapNativeToken: boolean;
     executionFee: BigNumberish;
@@ -222,14 +226,14 @@ export declare namespace DepositUtils {
   };
 
   export type CreateDepositParamsStructOutput = [
-    addresses: DepositUtils.CreateDepositParamsAdressesStructOutput,
+    addresses: DepositUtils.CreateDepositParamsAddressesStructOutput,
     minMarketTokens: bigint,
     shouldUnwrapNativeToken: boolean,
     executionFee: bigint,
     callbackGasLimit: bigint,
     dataList: string[],
   ] & {
-    addresses: DepositUtils.CreateDepositParamsAdressesStructOutput;
+    addresses: DepositUtils.CreateDepositParamsAddressesStructOutput;
     minMarketTokens: bigint;
     shouldUnwrapNativeToken: boolean;
     executionFee: bigint;
@@ -342,9 +346,6 @@ export declare namespace WithdrawalUtils {
 export interface MultichainGmRouterInterface extends Interface {
   getFunction(
     nameOrSignature:
-      | "DOMAIN_SEPARATOR_NAME_HASH"
-      | "DOMAIN_SEPARATOR_TYPEHASH"
-      | "DOMAIN_SEPARATOR_VERSION_HASH"
       | "createDeposit"
       | "createShift"
       | "createWithdrawal"
@@ -372,36 +373,27 @@ export interface MultichainGmRouterInterface extends Interface {
 
   getEvent(nameOrSignatureOrTopic: "TokenTransferReverted"): EventFragment;
 
-  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_NAME_HASH", values?: undefined): string;
-  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_TYPEHASH", values?: undefined): string;
-  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "createDeposit",
     values: [
-      RelayUtils.RelayParamsStruct,
+      RelayParamsStruct,
       AddressLike,
       BigNumberish,
-      RelayUtils.TransferRequestsStruct,
+      TransferRequestsStruct,
       DepositUtils.CreateDepositParamsStruct,
     ]
   ): string;
   encodeFunctionData(
     functionFragment: "createShift",
-    values: [
-      RelayUtils.RelayParamsStruct,
-      AddressLike,
-      BigNumberish,
-      RelayUtils.TransferRequestsStruct,
-      ShiftUtils.CreateShiftParamsStruct,
-    ]
+    values: [RelayParamsStruct, AddressLike, BigNumberish, TransferRequestsStruct, ShiftUtils.CreateShiftParamsStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "createWithdrawal",
     values: [
-      RelayUtils.RelayParamsStruct,
+      RelayParamsStruct,
       AddressLike,
       BigNumberish,
-      RelayUtils.TransferRequestsStruct,
+      TransferRequestsStruct,
       WithdrawalUtils.CreateWithdrawalParamsStruct,
     ]
   ): string;
@@ -426,9 +418,6 @@ export interface MultichainGmRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "withdrawalHandler", values?: undefined): string;
   encodeFunctionData(functionFragment: "withdrawalVault", values?: undefined): string;
 
-  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_NAME_HASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_TYPEHASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "createDeposit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "createShift", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "createWithdrawal", data: BytesLike): Result;
@@ -500,18 +489,12 @@ export interface MultichainGmRouter extends BaseContract {
   listeners(eventName?: string): Promise<Array<Listener>>;
   removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
-  DOMAIN_SEPARATOR_NAME_HASH: TypedContractMethod<[], [string], "view">;
-
-  DOMAIN_SEPARATOR_TYPEHASH: TypedContractMethod<[], [string], "view">;
-
-  DOMAIN_SEPARATOR_VERSION_HASH: TypedContractMethod<[], [string], "view">;
-
   createDeposit: TypedContractMethod<
     [
-      relayParams: RelayUtils.RelayParamsStruct,
+      relayParams: RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
-      transferRequests: RelayUtils.TransferRequestsStruct,
+      transferRequests: TransferRequestsStruct,
       params: DepositUtils.CreateDepositParamsStruct,
     ],
     [string],
@@ -520,10 +503,10 @@ export interface MultichainGmRouter extends BaseContract {
 
   createShift: TypedContractMethod<
     [
-      relayParams: RelayUtils.RelayParamsStruct,
+      relayParams: RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
-      transferRequests: RelayUtils.TransferRequestsStruct,
+      transferRequests: TransferRequestsStruct,
       params: ShiftUtils.CreateShiftParamsStruct,
     ],
     [string],
@@ -532,10 +515,10 @@ export interface MultichainGmRouter extends BaseContract {
 
   createWithdrawal: TypedContractMethod<
     [
-      relayParams: RelayUtils.RelayParamsStruct,
+      relayParams: RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
-      transferRequests: RelayUtils.TransferRequestsStruct,
+      transferRequests: TransferRequestsStruct,
       params: WithdrawalUtils.CreateWithdrawalParamsStruct,
     ],
     [string],
@@ -584,17 +567,14 @@ export interface MultichainGmRouter extends BaseContract {
 
   getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
-  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_NAME_HASH"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_TYPEHASH"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_VERSION_HASH"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "createDeposit"
   ): TypedContractMethod<
     [
-      relayParams: RelayUtils.RelayParamsStruct,
+      relayParams: RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
-      transferRequests: RelayUtils.TransferRequestsStruct,
+      transferRequests: TransferRequestsStruct,
       params: DepositUtils.CreateDepositParamsStruct,
     ],
     [string],
@@ -604,10 +584,10 @@ export interface MultichainGmRouter extends BaseContract {
     nameOrSignature: "createShift"
   ): TypedContractMethod<
     [
-      relayParams: RelayUtils.RelayParamsStruct,
+      relayParams: RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
-      transferRequests: RelayUtils.TransferRequestsStruct,
+      transferRequests: TransferRequestsStruct,
       params: ShiftUtils.CreateShiftParamsStruct,
     ],
     [string],
@@ -617,10 +597,10 @@ export interface MultichainGmRouter extends BaseContract {
     nameOrSignature: "createWithdrawal"
   ): TypedContractMethod<
     [
-      relayParams: RelayUtils.RelayParamsStruct,
+      relayParams: RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
-      transferRequests: RelayUtils.TransferRequestsStruct,
+      transferRequests: TransferRequestsStruct,
       params: WithdrawalUtils.CreateWithdrawalParamsStruct,
     ],
     [string],

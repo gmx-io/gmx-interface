@@ -1,9 +1,11 @@
 import { ethers } from "ethers";
-import { ReactNode, useCallback, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 
+import { UiContractsChain, UiSupportedChain } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
+import { isSourceChain } from "context/GmxAccountContext/config";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { SubaccountState, useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { TokenPermitsState, useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
@@ -53,6 +55,8 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { BlockTimestampData, useBlockTimestampRequest } from "lib/useBlockTimestampRequest";
 import useWallet from "lib/wallets/useWallet";
 
+import { useGmxAccountTokensDataRequest, useMultichainTokens } from "components/Synthetics/GmxAccountModal/hooks";
+
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
 
@@ -71,8 +75,8 @@ export type SyntheticsPageType =
 export type SyntheticsState = {
   pageType: SyntheticsPageType;
   globals: {
-    chainId: number;
-    walletChainId: number | undefined;
+    chainId: UiContractsChain;
+    walletChainId: UiSupportedChain | undefined;
     markets: MarketsResult;
     marketsInfo: MarketsInfoResult;
     positionsInfo: PositionsInfoResult;
@@ -158,7 +162,14 @@ export function SyntheticsStateContextProvider({
   const chainId = isLeaderboardPage ? leaderboard.chainId : overrideChainId ?? selectedChainId;
 
   const markets = useMarkets(chainId);
-  const { tokensData } = useTokensDataRequest(chainId);
+  const { tokensData: settlementChainTokensData } = useTokensDataRequest(chainId);
+  const { tokensData: gmxAccountTokensData } = useGmxAccountTokensDataRequest();
+
+  let tokensData = settlementChainTokensData;
+
+  if (walletChainId && isSourceChain(walletChainId)) {
+    tokensData = gmxAccountTokensData;
+  }
 
   const positionsResult = usePositions(chainId, {
     account,

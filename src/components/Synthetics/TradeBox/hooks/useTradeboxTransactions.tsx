@@ -121,7 +121,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
   const { expressParams, needGasPaymentTokenApproval } = useExpressOrdersParams({
     orderParams: batchParams,
-    isInTradebox: true,
     isMultiChain,
   });
   // useEffect(() => {

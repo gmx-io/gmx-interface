@@ -219,6 +219,8 @@ export function buildSwapOrderPayload(p: SwapOrderParams): CreateOrderTxnParams<
     shouldUnwrapNativeToken: tokenTransfersParams.isNativePayment || tokenTransfersParams.isNativeReceive,
     autoCancel: p.autoCancel,
     referralCode: p.referralCode ?? zeroHash,
+    // TODO add only in multichain
+    dataList: [],
   };
 
   return {
@@ -267,6 +269,7 @@ export function buildIncreaseOrderPayload(
     shouldUnwrapNativeToken: tokenTransfersParams.isNativePayment,
     autoCancel: p.autoCancel,
     referralCode: p.referralCode ?? zeroHash,
+    // TODO Add only in multichain
     dataList: [],
   };
 
@@ -313,6 +316,8 @@ export function buildDecreaseOrderPayload(
     shouldUnwrapNativeToken: p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS,
     autoCancel: p.autoCancel,
     referralCode: p.referralCode ?? zeroHash,
+    // TODO add only in multichain
+    dataList: [],
   };
 
   return {

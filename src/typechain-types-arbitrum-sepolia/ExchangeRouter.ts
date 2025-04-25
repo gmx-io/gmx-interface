@@ -24,7 +24,7 @@ import type {
 } from "./common";
 
 export declare namespace DepositUtils {
-  export type CreateDepositParamsAdressesStruct = {
+  export type CreateDepositParamsAddressesStruct = {
     receiver: AddressLike;
     callbackContract: AddressLike;
     uiFeeReceiver: AddressLike;
@@ -35,7 +35,7 @@ export declare namespace DepositUtils {
     shortTokenSwapPath: AddressLike[];
   };
 
-  export type CreateDepositParamsAdressesStructOutput = [
+  export type CreateDepositParamsAddressesStructOutput = [
     receiver: string,
     callbackContract: string,
     uiFeeReceiver: string,
@@ -56,7 +56,7 @@ export declare namespace DepositUtils {
   };
 
   export type CreateDepositParamsStruct = {
-    addresses: DepositUtils.CreateDepositParamsAdressesStruct;
+    addresses: DepositUtils.CreateDepositParamsAddressesStruct;
     minMarketTokens: BigNumberish;
     shouldUnwrapNativeToken: boolean;
     executionFee: BigNumberish;
@@ -65,14 +65,14 @@ export declare namespace DepositUtils {
   };
 
   export type CreateDepositParamsStructOutput = [
-    addresses: DepositUtils.CreateDepositParamsAdressesStructOutput,
+    addresses: DepositUtils.CreateDepositParamsAddressesStructOutput,
     minMarketTokens: bigint,
     shouldUnwrapNativeToken: boolean,
     executionFee: bigint,
     callbackGasLimit: bigint,
     dataList: string[],
   ] & {
-    addresses: DepositUtils.CreateDepositParamsAdressesStructOutput;
+    addresses: DepositUtils.CreateDepositParamsAddressesStructOutput;
     minMarketTokens: bigint;
     shouldUnwrapNativeToken: boolean;
     executionFee: bigint;

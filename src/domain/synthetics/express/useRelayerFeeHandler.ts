@@ -17,6 +17,7 @@ import {
   selectSponsoredCallMultiplierFactor,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectSourceChainId } from "context/SyntheticsStateContext/selectors/multichainSelectors";
 import { selectSavedAllowedSlippage } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import { makeSelectFindSwapPath } from "context/SyntheticsStateContext/selectors/tradeSelectors";
@@ -43,9 +44,9 @@ import { applyFactor, expandDecimals, roundBigIntToDecimals, USD_DECIMALS } from
 import { BatchOrderTxnParams, CancelOrderTxnParams, getTotalExecutionFeeForOrders } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 
-import { ExpressParams, getRelayerFeeParams, RelayParamsPayload } from ".";
+import { ExpressParams, getRelayerFeeParams, RelayerFeeParams, RelayParamsPayload } from ".";
 import { useExternalSwapOutputRequest } from "../externalSwaps/useExternalSwapOutputRequest";
-import { getExpressBatchOrderParams } from "../orders/expressOrderUtils";
+import { getExpressBatchOrderParams, getMultichainInfoFromSigner } from "../orders/expressOrderUtils";
 import { Subaccount } from "../subaccount";
 import {
   convertToTokenAmount,
@@ -69,12 +70,8 @@ export type ExpressOrdersParamsResult = {
 
 export function useExpressOrdersParams({
   orderParams,
-  isInTradebox = false,
-  isMultiChain = false,
 }: {
   orderParams: BatchOrderTxnParams | undefined;
-  isInTradebox?: boolean;
-  isMultiChain?: boolean;
 }): ExpressOrdersParamsResult {
   const { chainId } = useChainId();
   const [relayerFeeTokenAmount, setRelayerFeeTokenAmount] = useState<bigint | undefined>(1n);
@@ -116,6 +113,7 @@ export function useExpressOrdersParams({
   const gasLimits = useSelector(selectGasLimits);
   const timer = useRef<number | undefined>(undefined);
   const throttleTime = useRef(1000);
+  const srcChainId = useSelector(selectSourceChainId);
 
   const { signer, account } = useWallet();
   const settlementChainClient = usePublicClient({ chainId: chainId });
@@ -163,7 +161,7 @@ export function useExpressOrdersParams({
 
       timer.current = Date.now();
 
-      if (!isMultiChain) {
+      if (!srcChainId) {
         if (baseFeeSwapParams?.isOutGasTokenBalance) {
           const anotherGasToken = getGasPaymentTokens(chainId).find((token) => {
             const tokenData = getByKey(tokensData, token);
@@ -262,7 +260,7 @@ export function useExpressOrdersParams({
           //   value: 0n,
           // }).then((gasLimit) => handleGasLimit({ gasLimit, gasPrice, relayerFeeToken, isAsync: true }));
           let gasLimit: bigint;
-          if (isMultiChain) {
+          if (srcChainId) {
             gasLimit = await estimateGasLimitMultichain(settlementChainClient!, {
               from: GMX_SIMULATION_ORIGIN,
               to: txnData.to,
@@ -309,7 +307,6 @@ export function useExpressOrdersParams({
       enabled,
       gasLimits,
       gasPrice,
-      isMultiChain,
       marketsInfoData,
       orderParams,
       provider,
@@ -318,6 +315,7 @@ export function useExpressOrdersParams({
       settlementChainClient,
       signer,
       sponsoredCallMultiplierFactor,
+      srcChainId,
       subaccount,
       tokenPermits,
       tokensData,
@@ -411,7 +409,7 @@ function useRelayerFeeSwapParams({
   isSubaccount,
   enabled,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   account: string | undefined;
   relayerFeeTokenAmount: bigint | undefined;
   executionFeeAmount: bigint | undefined;
@@ -419,10 +417,11 @@ function useRelayerFeeSwapParams({
   gasPaymentToken: TokenData | undefined;
   isSubaccount: boolean;
   enabled: boolean;
-}): RelayFeeSwapParams | undefined {
+}): RelayerFeeParams | undefined {
   const tokensData = useSelector(selectTokensData);
   const slippage = useSelector(selectSavedAllowedSlippage);
   const gasPrice = useSelector(selectGasPrice);
+  const srcChainId = useSelector(selectSourceChainId);
 
   const findSwapPath = useSelector(makeSelectFindSwapPath(gasPaymentToken?.address, relayerFeeToken?.address, true));
 
@@ -512,6 +511,7 @@ function useRelayerFeeSwapParams({
 
     return getRelayerFeeParams({
       chainId,
+      srcChainId,
       account,
       relayerFeeTokenAmount,
       totalNetworkFeeAmount,
@@ -532,6 +532,7 @@ function useRelayerFeeSwapParams({
     totalNetworkFeeAmount,
     gasPaymentAllowanceData,
     chainId,
+    srcChainId,
     internalSwapAmounts,
     externalSwapOutput,
   ]);
@@ -577,7 +578,6 @@ export async function getExpressCancelOrdersParams({
     const account = await signer?.getAddress();
     const gasPaymentToken = getByKey(tokensData, gasPaymentTokenAddress);
     const relayerFeeToken = getByKey(tokensData, getRelayerFeeToken(chainId).address);
-    const isMultichain = settlementChainClient?.chain?.id !== chainId;
 
     if (
       !gasPaymentToken ||
@@ -592,6 +592,8 @@ export async function getExpressCancelOrdersParams({
     ) {
       return undefined;
     }
+
+    const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
 
     const baseRelayerFeeAmount = convertToTokenAmount(
       expandDecimals(1, USD_DECIMALS),
@@ -610,6 +612,7 @@ export async function getExpressCancelOrdersParams({
 
     const baseRelayFeeSwapParams = getRelayerFeeParams({
       chainId,
+      srcChainId,
       account,
       relayerFeeTokenAmount: swapAmounts.amountOut,
       totalNetworkFeeAmount: swapAmounts.amountOut,
@@ -651,7 +654,7 @@ export async function getExpressCancelOrdersParams({
     // });
 
     let gasLimit: bigint;
-    if (isMultichain) {
+    if (srcChainId) {
       gasLimit = await estimateGasLimitMultichain(settlementChainClient!, {
         to: txnData.to,
         data: txnData.callData,
@@ -685,6 +688,7 @@ export async function getExpressCancelOrdersParams({
 
     const finalRelayFeeSwapParams = getRelayerFeeParams({
       chainId,
+      srcChainId,
       account,
       relayerFeeTokenAmount: feeAmount,
       totalNetworkFeeAmount: feeAmount,

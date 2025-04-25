@@ -23,6 +23,105 @@ import type {
   TypedContractMethod,
 } from "./common";
 
+export type ExternalCallsStruct = {
+  sendTokens: AddressLike[];
+  sendAmounts: BigNumberish[];
+  externalCallTargets: AddressLike[];
+  externalCallDataList: BytesLike[];
+  refundTokens: AddressLike[];
+  refundReceivers: AddressLike[];
+};
+
+export type ExternalCallsStructOutput = [
+  sendTokens: string[],
+  sendAmounts: bigint[],
+  externalCallTargets: string[],
+  externalCallDataList: string[],
+  refundTokens: string[],
+  refundReceivers: string[],
+] & {
+  sendTokens: string[];
+  sendAmounts: bigint[];
+  externalCallTargets: string[];
+  externalCallDataList: string[];
+  refundTokens: string[];
+  refundReceivers: string[];
+};
+
+export type TokenPermitStruct = {
+  owner: AddressLike;
+  spender: AddressLike;
+  value: BigNumberish;
+  deadline: BigNumberish;
+  v: BigNumberish;
+  r: BytesLike;
+  s: BytesLike;
+  token: AddressLike;
+};
+
+export type TokenPermitStructOutput = [
+  owner: string,
+  spender: string,
+  value: bigint,
+  deadline: bigint,
+  v: bigint,
+  r: string,
+  s: string,
+  token: string,
+] & {
+  owner: string;
+  spender: string;
+  value: bigint;
+  deadline: bigint;
+  v: bigint;
+  r: string;
+  s: string;
+  token: string;
+};
+
+export type FeeParamsStruct = {
+  feeToken: AddressLike;
+  feeAmount: BigNumberish;
+  feeSwapPath: AddressLike[];
+};
+
+export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
+  feeToken: string;
+  feeAmount: bigint;
+  feeSwapPath: string[];
+};
+
+export type RelayParamsStruct = {
+  oracleParams: OracleUtils.SetPricesParamsStruct;
+  externalCalls: ExternalCallsStruct;
+  tokenPermits: TokenPermitStruct[];
+  fee: FeeParamsStruct;
+  userNonce: BigNumberish;
+  deadline: BigNumberish;
+  signature: BytesLike;
+  desChainId: BigNumberish;
+};
+
+export type RelayParamsStructOutput = [
+  oracleParams: OracleUtils.SetPricesParamsStructOutput,
+  externalCalls: ExternalCallsStructOutput,
+  tokenPermits: TokenPermitStructOutput[],
+  fee: FeeParamsStructOutput,
+  userNonce: bigint,
+  deadline: bigint,
+  signature: string,
+  desChainId: bigint,
+] & {
+  oracleParams: OracleUtils.SetPricesParamsStructOutput;
+  externalCalls: ExternalCallsStructOutput;
+  tokenPermits: TokenPermitStructOutput[];
+  fee: FeeParamsStructOutput;
+  userNonce: bigint;
+  deadline: bigint;
+  signature: string;
+  desChainId: bigint;
+};
+
 export declare namespace MultichainRouter {
   export type BaseConstructorParamsStruct = {
     router: AddressLike;
@@ -73,107 +172,9 @@ export declare namespace OracleUtils {
   };
 }
 
-export declare namespace RelayUtils {
-  export type ExternalCallsStruct = {
-    externalCallTargets: AddressLike[];
-    externalCallDataList: BytesLike[];
-    refundTokens: AddressLike[];
-    refundReceivers: AddressLike[];
-  };
-
-  export type ExternalCallsStructOutput = [
-    externalCallTargets: string[],
-    externalCallDataList: string[],
-    refundTokens: string[],
-    refundReceivers: string[],
-  ] & {
-    externalCallTargets: string[];
-    externalCallDataList: string[];
-    refundTokens: string[];
-    refundReceivers: string[];
-  };
-
-  export type TokenPermitStruct = {
-    owner: AddressLike;
-    spender: AddressLike;
-    value: BigNumberish;
-    deadline: BigNumberish;
-    v: BigNumberish;
-    r: BytesLike;
-    s: BytesLike;
-    token: AddressLike;
-  };
-
-  export type TokenPermitStructOutput = [
-    owner: string,
-    spender: string,
-    value: bigint,
-    deadline: bigint,
-    v: bigint,
-    r: string,
-    s: string,
-    token: string,
-  ] & {
-    owner: string;
-    spender: string;
-    value: bigint;
-    deadline: bigint;
-    v: bigint;
-    r: string;
-    s: string;
-    token: string;
-  };
-
-  export type FeeParamsStruct = {
-    feeToken: AddressLike;
-    feeAmount: BigNumberish;
-    feeSwapPath: AddressLike[];
-  };
-
-  export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
-    feeToken: string;
-    feeAmount: bigint;
-    feeSwapPath: string[];
-  };
-
-  export type RelayParamsStruct = {
-    oracleParams: OracleUtils.SetPricesParamsStruct;
-    externalCalls: RelayUtils.ExternalCallsStruct;
-    tokenPermits: RelayUtils.TokenPermitStruct[];
-    fee: RelayUtils.FeeParamsStruct;
-    userNonce: BigNumberish;
-    deadline: BigNumberish;
-    signature: BytesLike;
-    desChainId: BigNumberish;
-  };
-
-  export type RelayParamsStructOutput = [
-    oracleParams: OracleUtils.SetPricesParamsStructOutput,
-    externalCalls: RelayUtils.ExternalCallsStructOutput,
-    tokenPermits: RelayUtils.TokenPermitStructOutput[],
-    fee: RelayUtils.FeeParamsStructOutput,
-    userNonce: bigint,
-    deadline: bigint,
-    signature: string,
-    desChainId: bigint,
-  ] & {
-    oracleParams: OracleUtils.SetPricesParamsStructOutput;
-    externalCalls: RelayUtils.ExternalCallsStructOutput;
-    tokenPermits: RelayUtils.TokenPermitStructOutput[];
-    fee: RelayUtils.FeeParamsStructOutput;
-    userNonce: bigint;
-    deadline: bigint;
-    signature: string;
-    desChainId: bigint;
-  };
-}
-
 export interface MultichainClaimsRouterInterface extends Interface {
   getFunction(
     nameOrSignature:
-      | "DOMAIN_SEPARATOR_NAME_HASH"
-      | "DOMAIN_SEPARATOR_TYPEHASH"
-      | "DOMAIN_SEPARATOR_VERSION_HASH"
       | "claimAffiliateRewards"
       | "claimCollateral"
       | "claimFundingFees"
@@ -195,28 +196,17 @@ export interface MultichainClaimsRouterInterface extends Interface {
 
   getEvent(nameOrSignatureOrTopic: "TokenTransferReverted"): EventFragment;
 
-  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_NAME_HASH", values?: undefined): string;
-  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_TYPEHASH", values?: undefined): string;
-  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "claimAffiliateRewards",
-    values: [RelayUtils.RelayParamsStruct, AddressLike, BigNumberish, AddressLike[], AddressLike[], AddressLike]
+    values: [RelayParamsStruct, AddressLike, BigNumberish, AddressLike[], AddressLike[], AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "claimCollateral",
-    values: [
-      RelayUtils.RelayParamsStruct,
-      AddressLike,
-      BigNumberish,
-      AddressLike[],
-      AddressLike[],
-      BigNumberish[],
-      AddressLike,
-    ]
+    values: [RelayParamsStruct, AddressLike, BigNumberish, AddressLike[], AddressLike[], BigNumberish[], AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "claimFundingFees",
-    values: [RelayUtils.RelayParamsStruct, AddressLike, BigNumberish, AddressLike[], AddressLike[], AddressLike]
+    values: [RelayParamsStruct, AddressLike, BigNumberish, AddressLike[], AddressLike[], AddressLike]
   ): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
@@ -233,9 +223,6 @@ export interface MultichainClaimsRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "sendWnt", values: [AddressLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "userNonces", values: [AddressLike]): string;
 
-  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_NAME_HASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_TYPEHASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "claimAffiliateRewards", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "claimCollateral", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "claimFundingFees", data: BytesLike): Result;
@@ -301,15 +288,9 @@ export interface MultichainClaimsRouter extends BaseContract {
   listeners(eventName?: string): Promise<Array<Listener>>;
   removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
-  DOMAIN_SEPARATOR_NAME_HASH: TypedContractMethod<[], [string], "view">;
-
-  DOMAIN_SEPARATOR_TYPEHASH: TypedContractMethod<[], [string], "view">;
-
-  DOMAIN_SEPARATOR_VERSION_HASH: TypedContractMethod<[], [string], "view">;
-
   claimAffiliateRewards: TypedContractMethod<
     [
-      relayParams: RelayUtils.RelayParamsStruct,
+      relayParams: RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
       markets: AddressLike[],
@@ -322,7 +303,7 @@ export interface MultichainClaimsRouter extends BaseContract {
 
   claimCollateral: TypedContractMethod<
     [
-      relayParams: RelayUtils.RelayParamsStruct,
+      relayParams: RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
       markets: AddressLike[],
@@ -336,7 +317,7 @@ export interface MultichainClaimsRouter extends BaseContract {
 
   claimFundingFees: TypedContractMethod<
     [
-      relayParams: RelayUtils.RelayParamsStruct,
+      relayParams: RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
       markets: AddressLike[],
@@ -377,14 +358,11 @@ export interface MultichainClaimsRouter extends BaseContract {
 
   getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
-  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_NAME_HASH"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_TYPEHASH"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_VERSION_HASH"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "claimAffiliateRewards"
   ): TypedContractMethod<
     [
-      relayParams: RelayUtils.RelayParamsStruct,
+      relayParams: RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
       markets: AddressLike[],
@@ -398,7 +376,7 @@ export interface MultichainClaimsRouter extends BaseContract {
     nameOrSignature: "claimCollateral"
   ): TypedContractMethod<
     [
-      relayParams: RelayUtils.RelayParamsStruct,
+      relayParams: RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
       markets: AddressLike[],
@@ -413,7 +391,7 @@ export interface MultichainClaimsRouter extends BaseContract {
     nameOrSignature: "claimFundingFees"
   ): TypedContractMethod<
     [
-      relayParams: RelayUtils.RelayParamsStruct,
+      relayParams: RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
       markets: AddressLike[],

@@ -12,7 +12,10 @@ import useWallet from "lib/wallets/useWallet";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import Button from "components/Button/Button";
-import { useGmxAccountTokensData } from "components/Synthetics/GmxAccountModal/hooks";
+import {
+  useGmxAccountTokensDataObject,
+  useGmxAccountTokensDataRequest,
+} from "components/Synthetics/GmxAccountModal/hooks";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 type FilterType = "all" | "gmxBalance" | "wallet";
@@ -112,7 +115,7 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
 };
 
 const AssetListMultichain = () => {
-  const gmxAccountTokensData = useGmxAccountTokensData();
+  const gmxAccountTokensData = useGmxAccountTokensDataObject();
 
   const displayTokens = Object.values(gmxAccountTokensData).map(
     (token): DisplayToken => ({
@@ -131,7 +134,7 @@ const AssetListMultichain = () => {
 const AssetListSettlementChain = () => {
   const { chainId } = useWallet();
   const { tokensData } = useTokensDataRequest(chainId!);
-  const gmxAccountTokensData = useGmxAccountTokensData();
+  const gmxAccountTokensData = useGmxAccountTokensDataObject();
 
   const displayTokens = useMemo(() => {
     const gmxAccountDisplayTokens = Object.values(gmxAccountTokensData).map(

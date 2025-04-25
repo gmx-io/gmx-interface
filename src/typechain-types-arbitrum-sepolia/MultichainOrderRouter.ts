@@ -23,6 +23,152 @@ import type {
   TypedContractMethod,
 } from "./common";
 
+export type ExternalCallsStruct = {
+  sendTokens: AddressLike[];
+  sendAmounts: BigNumberish[];
+  externalCallTargets: AddressLike[];
+  externalCallDataList: BytesLike[];
+  refundTokens: AddressLike[];
+  refundReceivers: AddressLike[];
+};
+
+export type ExternalCallsStructOutput = [
+  sendTokens: string[],
+  sendAmounts: bigint[],
+  externalCallTargets: string[],
+  externalCallDataList: string[],
+  refundTokens: string[],
+  refundReceivers: string[],
+] & {
+  sendTokens: string[];
+  sendAmounts: bigint[];
+  externalCallTargets: string[];
+  externalCallDataList: string[];
+  refundTokens: string[];
+  refundReceivers: string[];
+};
+
+export type TokenPermitStruct = {
+  owner: AddressLike;
+  spender: AddressLike;
+  value: BigNumberish;
+  deadline: BigNumberish;
+  v: BigNumberish;
+  r: BytesLike;
+  s: BytesLike;
+  token: AddressLike;
+};
+
+export type TokenPermitStructOutput = [
+  owner: string,
+  spender: string,
+  value: bigint,
+  deadline: bigint,
+  v: bigint,
+  r: string,
+  s: string,
+  token: string,
+] & {
+  owner: string;
+  spender: string;
+  value: bigint;
+  deadline: bigint;
+  v: bigint;
+  r: string;
+  s: string;
+  token: string;
+};
+
+export type FeeParamsStruct = {
+  feeToken: AddressLike;
+  feeAmount: BigNumberish;
+  feeSwapPath: AddressLike[];
+};
+
+export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
+  feeToken: string;
+  feeAmount: bigint;
+  feeSwapPath: string[];
+};
+
+export type RelayParamsStruct = {
+  oracleParams: OracleUtils.SetPricesParamsStruct;
+  externalCalls: ExternalCallsStruct;
+  tokenPermits: TokenPermitStruct[];
+  fee: FeeParamsStruct;
+  userNonce: BigNumberish;
+  deadline: BigNumberish;
+  signature: BytesLike;
+  desChainId: BigNumberish;
+};
+
+export type RelayParamsStructOutput = [
+  oracleParams: OracleUtils.SetPricesParamsStructOutput,
+  externalCalls: ExternalCallsStructOutput,
+  tokenPermits: TokenPermitStructOutput[],
+  fee: FeeParamsStructOutput,
+  userNonce: bigint,
+  deadline: bigint,
+  signature: string,
+  desChainId: bigint,
+] & {
+  oracleParams: OracleUtils.SetPricesParamsStructOutput;
+  externalCalls: ExternalCallsStructOutput;
+  tokenPermits: TokenPermitStructOutput[];
+  fee: FeeParamsStructOutput;
+  userNonce: bigint;
+  deadline: bigint;
+  signature: string;
+  desChainId: bigint;
+};
+
+export type UpdateOrderParamsStruct = {
+  key: BytesLike;
+  sizeDeltaUsd: BigNumberish;
+  acceptablePrice: BigNumberish;
+  triggerPrice: BigNumberish;
+  minOutputAmount: BigNumberish;
+  validFromTime: BigNumberish;
+  autoCancel: boolean;
+  executionFeeIncrease: BigNumberish;
+};
+
+export type UpdateOrderParamsStructOutput = [
+  key: string,
+  sizeDeltaUsd: bigint,
+  acceptablePrice: bigint,
+  triggerPrice: bigint,
+  minOutputAmount: bigint,
+  validFromTime: bigint,
+  autoCancel: boolean,
+  executionFeeIncrease: bigint,
+] & {
+  key: string;
+  sizeDeltaUsd: bigint;
+  acceptablePrice: bigint;
+  triggerPrice: bigint;
+  minOutputAmount: bigint;
+  validFromTime: bigint;
+  autoCancel: boolean;
+  executionFeeIncrease: bigint;
+};
+
+export type BatchParamsStruct = {
+  createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStruct[];
+  updateOrderParamsList: UpdateOrderParamsStruct[];
+  cancelOrderKeys: BytesLike[];
+};
+
+export type BatchParamsStructOutput = [
+  createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[],
+  updateOrderParamsList: UpdateOrderParamsStructOutput[],
+  cancelOrderKeys: string[],
+] & {
+  createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[];
+  updateOrderParamsList: UpdateOrderParamsStructOutput[];
+  cancelOrderKeys: string[];
+};
+
 export declare namespace MultichainRouter {
   export type BaseConstructorParamsStruct = {
     router: AddressLike;
@@ -70,126 +216,6 @@ export declare namespace OracleUtils {
     tokens: string[];
     providers: string[];
     data: string[];
-  };
-}
-
-export declare namespace RelayUtils {
-  export type ExternalCallsStruct = {
-    externalCallTargets: AddressLike[];
-    externalCallDataList: BytesLike[];
-    refundTokens: AddressLike[];
-    refundReceivers: AddressLike[];
-  };
-
-  export type ExternalCallsStructOutput = [
-    externalCallTargets: string[],
-    externalCallDataList: string[],
-    refundTokens: string[],
-    refundReceivers: string[],
-  ] & {
-    externalCallTargets: string[];
-    externalCallDataList: string[];
-    refundTokens: string[];
-    refundReceivers: string[];
-  };
-
-  export type TokenPermitStruct = {
-    owner: AddressLike;
-    spender: AddressLike;
-    value: BigNumberish;
-    deadline: BigNumberish;
-    v: BigNumberish;
-    r: BytesLike;
-    s: BytesLike;
-    token: AddressLike;
-  };
-
-  export type TokenPermitStructOutput = [
-    owner: string,
-    spender: string,
-    value: bigint,
-    deadline: bigint,
-    v: bigint,
-    r: string,
-    s: string,
-    token: string,
-  ] & {
-    owner: string;
-    spender: string;
-    value: bigint;
-    deadline: bigint;
-    v: bigint;
-    r: string;
-    s: string;
-    token: string;
-  };
-
-  export type FeeParamsStruct = {
-    feeToken: AddressLike;
-    feeAmount: BigNumberish;
-    feeSwapPath: AddressLike[];
-  };
-
-  export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
-    feeToken: string;
-    feeAmount: bigint;
-    feeSwapPath: string[];
-  };
-
-  export type RelayParamsStruct = {
-    oracleParams: OracleUtils.SetPricesParamsStruct;
-    externalCalls: RelayUtils.ExternalCallsStruct;
-    tokenPermits: RelayUtils.TokenPermitStruct[];
-    fee: RelayUtils.FeeParamsStruct;
-    userNonce: BigNumberish;
-    deadline: BigNumberish;
-    signature: BytesLike;
-    desChainId: BigNumberish;
-  };
-
-  export type RelayParamsStructOutput = [
-    oracleParams: OracleUtils.SetPricesParamsStructOutput,
-    externalCalls: RelayUtils.ExternalCallsStructOutput,
-    tokenPermits: RelayUtils.TokenPermitStructOutput[],
-    fee: RelayUtils.FeeParamsStructOutput,
-    userNonce: bigint,
-    deadline: bigint,
-    signature: string,
-    desChainId: bigint,
-  ] & {
-    oracleParams: OracleUtils.SetPricesParamsStructOutput;
-    externalCalls: RelayUtils.ExternalCallsStructOutput;
-    tokenPermits: RelayUtils.TokenPermitStructOutput[];
-    fee: RelayUtils.FeeParamsStructOutput;
-    userNonce: bigint;
-    deadline: bigint;
-    signature: string;
-    desChainId: bigint;
-  };
-
-  export type UpdateOrderParamsStruct = {
-    sizeDeltaUsd: BigNumberish;
-    acceptablePrice: BigNumberish;
-    triggerPrice: BigNumberish;
-    minOutputAmount: BigNumberish;
-    validFromTime: BigNumberish;
-    autoCancel: boolean;
-  };
-
-  export type UpdateOrderParamsStructOutput = [
-    sizeDeltaUsd: bigint,
-    acceptablePrice: bigint,
-    triggerPrice: bigint,
-    minOutputAmount: bigint,
-    validFromTime: bigint,
-    autoCancel: boolean,
-  ] & {
-    sizeDeltaUsd: bigint;
-    acceptablePrice: bigint;
-    triggerPrice: bigint;
-    minOutputAmount: bigint;
-    validFromTime: bigint;
-    autoCancel: boolean;
   };
 }
 
@@ -291,9 +317,7 @@ export declare namespace IBaseOrderUtils {
 export interface MultichainOrderRouterInterface extends Interface {
   getFunction(
     nameOrSignature:
-      | "DOMAIN_SEPARATOR_NAME_HASH"
-      | "DOMAIN_SEPARATOR_TYPEHASH"
-      | "DOMAIN_SEPARATOR_VERSION_HASH"
+      | "batch"
       | "cancelOrder"
       | "createOrder"
       | "dataStore"
@@ -316,22 +340,17 @@ export interface MultichainOrderRouterInterface extends Interface {
 
   getEvent(nameOrSignatureOrTopic: "TokenTransferReverted"): EventFragment;
 
-  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_NAME_HASH", values?: undefined): string;
-  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_TYPEHASH", values?: undefined): string;
-  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "batch",
+    values: [RelayParamsStruct, AddressLike, BigNumberish, BatchParamsStruct]
+  ): string;
   encodeFunctionData(
     functionFragment: "cancelOrder",
-    values: [RelayUtils.RelayParamsStruct, AddressLike, BigNumberish, BytesLike]
+    values: [RelayParamsStruct, AddressLike, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "createOrder",
-    values: [
-      RelayUtils.RelayParamsStruct,
-      AddressLike,
-      BigNumberish,
-      BigNumberish,
-      IBaseOrderUtils.CreateOrderParamsStruct,
-    ]
+    values: [RelayParamsStruct, AddressLike, BigNumberish, IBaseOrderUtils.CreateOrderParamsStruct]
   ): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
@@ -349,20 +368,11 @@ export interface MultichainOrderRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "sendWnt", values: [AddressLike, BigNumberish]): string;
   encodeFunctionData(
     functionFragment: "updateOrder",
-    values: [
-      RelayUtils.RelayParamsStruct,
-      AddressLike,
-      BigNumberish,
-      BytesLike,
-      RelayUtils.UpdateOrderParamsStruct,
-      boolean,
-    ]
+    values: [RelayParamsStruct, AddressLike, BigNumberish, UpdateOrderParamsStruct]
   ): string;
   encodeFunctionData(functionFragment: "userNonces", values: [AddressLike]): string;
 
-  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_NAME_HASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_TYPEHASH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "batch", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "cancelOrder", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "createOrder", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
@@ -429,24 +439,23 @@ export interface MultichainOrderRouter extends BaseContract {
   listeners(eventName?: string): Promise<Array<Listener>>;
   removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
-  DOMAIN_SEPARATOR_NAME_HASH: TypedContractMethod<[], [string], "view">;
-
-  DOMAIN_SEPARATOR_TYPEHASH: TypedContractMethod<[], [string], "view">;
-
-  DOMAIN_SEPARATOR_VERSION_HASH: TypedContractMethod<[], [string], "view">;
+  batch: TypedContractMethod<
+    [relayParams: RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, params: BatchParamsStruct],
+    [string[]],
+    "nonpayable"
+  >;
 
   cancelOrder: TypedContractMethod<
-    [relayParams: RelayUtils.RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, key: BytesLike],
+    [relayParams: RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, key: BytesLike],
     [void],
     "nonpayable"
   >;
 
   createOrder: TypedContractMethod<
     [
-      relayParams: RelayUtils.RelayParamsStruct,
+      relayParams: RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
-      collateralDeltaAmount: BigNumberish,
       params: IBaseOrderUtils.CreateOrderParamsStruct,
     ],
     [string],
@@ -482,14 +491,7 @@ export interface MultichainOrderRouter extends BaseContract {
   sendWnt: TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
 
   updateOrder: TypedContractMethod<
-    [
-      relayParams: RelayUtils.RelayParamsStruct,
-      account: AddressLike,
-      srcChainId: BigNumberish,
-      key: BytesLike,
-      params: RelayUtils.UpdateOrderParamsStruct,
-      increaseExecutionFee: boolean,
-    ],
+    [relayParams: RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, params: UpdateOrderParamsStruct],
     [void],
     "nonpayable"
   >;
@@ -498,13 +500,17 @@ export interface MultichainOrderRouter extends BaseContract {
 
   getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
-  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_NAME_HASH"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_TYPEHASH"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_VERSION_HASH"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "batch"
+  ): TypedContractMethod<
+    [relayParams: RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, params: BatchParamsStruct],
+    [string[]],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "cancelOrder"
   ): TypedContractMethod<
-    [relayParams: RelayUtils.RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, key: BytesLike],
+    [relayParams: RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, key: BytesLike],
     [void],
     "nonpayable"
   >;
@@ -512,10 +518,9 @@ export interface MultichainOrderRouter extends BaseContract {
     nameOrSignature: "createOrder"
   ): TypedContractMethod<
     [
-      relayParams: RelayUtils.RelayParamsStruct,
+      relayParams: RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
-      collateralDeltaAmount: BigNumberish,
       params: IBaseOrderUtils.CreateOrderParamsStruct,
     ],
     [string],
@@ -544,14 +549,7 @@ export interface MultichainOrderRouter extends BaseContract {
   getFunction(
     nameOrSignature: "updateOrder"
   ): TypedContractMethod<
-    [
-      relayParams: RelayUtils.RelayParamsStruct,
-      account: AddressLike,
-      srcChainId: BigNumberish,
-      key: BytesLike,
-      params: RelayUtils.UpdateOrderParamsStruct,
-      increaseExecutionFee: boolean,
-    ],
+    [relayParams: RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, params: UpdateOrderParamsStruct],
     [void],
     "nonpayable"
   >;

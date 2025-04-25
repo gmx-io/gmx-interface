@@ -1,12 +1,16 @@
 import { useMemo } from "react";
+import { useAccount } from "wagmi";
 
 import { getContract } from "config/contracts";
+import { isSourceChain } from "context/GmxAccountContext/config";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL, FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { MarketConfig, MarketValues } from "sdk/modules/markets/types";
 import type { MarketInfo, MarketsData, MarketsInfoData } from "sdk/types/markets";
+
+import { useGmxAccountTokensDataRequest } from "components/Synthetics/GmxAccountModal/hooks";
 
 import { buildMarketsConfigsRequest } from "./buildMarketsConfigsRequest";
 import { buildMarketsValuesRequest } from "./buildMarketsValuesRequest";
@@ -26,8 +30,17 @@ export type MarketsInfoResult = {
 
 export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
   const { marketsData, marketsAddresses } = useMarkets(chainId);
+  const { chainId: walletChainId } = useAccount();
 
-  const { tokensData, pricesUpdatedAt, error: tokensDataError, isBalancesLoaded } = useTokensDataRequest(chainId);
+  const settlementChainTokensDataResult = useTokensDataRequest(chainId);
+  const gmxAccountTokensDataResult = useGmxAccountTokensDataRequest();
+
+  const {
+    tokensData,
+    pricesUpdatedAt,
+    error: tokensDataError,
+    isBalancesLoaded,
+  } = walletChainId && isSourceChain(walletChainId) ? gmxAccountTokensDataResult : settlementChainTokensDataResult;
 
   const { claimableFundingData } = useClaimableFundingDataRequest(chainId);
   const { fastMarketInfoData } = useFastMarketsInfoRequest(chainId);
@@ -75,6 +88,7 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
       const marketInfoFields = marketValues && marketConfig ? { ...marketValues, ...marketConfig } : fastMarketInfo;
 
       if (!marketInfoFields) {
+        // console.log("market info error 2", marketAddress, marketInfoFields);
         continue;
       }
 

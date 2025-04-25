@@ -14,12 +14,14 @@ import {
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { TokenChainData } from "context/GmxAccountContext/types";
 import {
+  TokensDataResult,
   convertToUsd,
   getMidPrice,
   useTokenBalances,
   useTokenRecentPricesRequest,
   useTokensDataRequest,
 } from "domain/synthetics/tokens";
+import { useOnchainTokenConfigs } from "domain/synthetics/tokens/useOnchainTokenConfigs";
 import { TokensData } from "domain/tokens";
 import { MulticallRequestConfig, executeMulticall } from "lib/multicall";
 import { EMPTY_OBJECT } from "lib/objects";
@@ -32,7 +34,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { fetchMultichainTokenBalances } from "./fetchMultichainTokenBalances";
 
 export function useAvailableToTradeAssetSymbolsSettlementChain(): string[] {
-  const gmxAccountTokensData = useGmxAccountTokensData();
+  const gmxAccountTokensData = useGmxAccountTokensDataObject();
   const { chainId, account } = useWallet();
 
   const currentChainTokenBalances = useTokenBalances(
@@ -64,7 +66,7 @@ export function useAvailableToTradeAssetSymbolsSettlementChain(): string[] {
 }
 
 export function useAvailableToTradeAssetSymbolsMultichain(): string[] {
-  const gmxAccountTokensData = useGmxAccountTokensData();
+  const gmxAccountTokensData = useGmxAccountTokensDataObject();
 
   const tokenSymbols = new Set<string>();
 
@@ -83,7 +85,7 @@ export function useAvailableToTradeAssetSettlementChain(): {
   walletUsd: bigint;
 } {
   const { chainId } = useWallet();
-  const gmxAccountTokensData = useGmxAccountTokensData();
+  const gmxAccountTokensData = useGmxAccountTokensDataObject();
   const { tokensData } = useTokensDataRequest(chainId!);
 
   let gmxAccountUsd = 0n;
@@ -114,7 +116,7 @@ export function useAvailableToTradeAssetSettlementChain(): {
 export function useAvailableToTradeAssetMultichain(): {
   gmxAccountUsd: bigint;
 } {
-  const gmxAccountTokensData = useGmxAccountTokensData();
+  const gmxAccountTokensData = useGmxAccountTokensDataObject();
 
   let gmxAccountUsd = 0n;
 
@@ -278,13 +280,13 @@ export async function fetchGmxAccountTokenBalancesData(
   );
 }
 
-export function useGmxAccountTokensData(): TokensData {
+export function useGmxAccountTokensDataRequest(): TokensDataResult {
   const [settlementChainId] = useGmxAccountSettlementChainId();
   const { address: account } = useAccount();
+  const { pricesData, error: pricesError, updatedAt: pricesUpdatedAt } = useTokenRecentPricesRequest(settlementChainId);
+  const { data: onchainConfigsData, error: onchainConfigsError } = useOnchainTokenConfigs(settlementChainId);
 
-  const { pricesData } = useTokenRecentPricesRequest(settlementChainId);
-
-  const { data: tokenBalances } = useSWR<Record<string, bigint>>(
+  const { data: tokenBalances, error: tokenBalancesError } = useSWR<Record<string, bigint>>(
     account ? ["gmx-account-tokens", settlementChainId, account] : null,
     async () => {
       return await fetchGmxAccountTokenBalancesData(settlementChainId, account!);
@@ -294,31 +296,47 @@ export function useGmxAccountTokensData(): TokensData {
     }
   );
 
+  const error = tokenBalancesError || pricesError || onchainConfigsError;
+
   const gmxAccountTokensData: TokensData = useMemo(() => {
     const gmxAccountTokensData: TokensData = {};
 
     for (const tokenAddress in tokenBalances) {
       const token = getToken(settlementChainId, tokenAddress);
+      const onchainConfig = onchainConfigsData?.[tokenAddress];
+
       // TODO: decide whether to block the token if prices are not available
       if (!pricesData || !(tokenAddress in pricesData)) {
         continue;
       }
 
-      if (tokenBalances[tokenAddress] <= 0n) {
-        continue;
-      }
+      // if (tokenBalances[tokenAddress] <= 0n) {
+      //   continue;
+      // }
 
       gmxAccountTokensData[tokenAddress] = {
         ...token,
+        ...onchainConfig,
         prices: pricesData[tokenAddress],
         balance: tokenBalances[tokenAddress],
       };
     }
 
     return gmxAccountTokensData;
-  }, [pricesData, settlementChainId, tokenBalances]);
+  }, [onchainConfigsData, pricesData, settlementChainId, tokenBalances]);
 
-  return gmxAccountTokensData;
+  return {
+    tokensData: gmxAccountTokensData,
+    error,
+    pricesUpdatedAt,
+    isBalancesLoaded: Boolean(tokenBalances),
+  };
+}
+
+export function useGmxAccountTokensDataObject(): TokensData {
+  const { tokensData = EMPTY_OBJECT as TokensData } = useGmxAccountTokensDataRequest();
+
+  return tokensData;
 }
 
 export function useGmxAccountWithdrawNetworks() {

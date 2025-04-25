@@ -41,6 +41,7 @@ import {
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { RelayerFeeParams } from "domain/synthetics/express";
+import { getMultichainInfoFromSigner } from "domain/synthetics/orders/expressOrderUtils";
 import { getNameByOrderType, substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
@@ -233,7 +234,13 @@ export function useTradeboxButtonState({
       return;
     }
 
-    if (isAllowanceLoaded && (needPayTokenApproval || needGasPaymentTokenApproval)) {
+    if (!signer) {
+      return;
+    }
+
+    const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
+
+    if (!srcChainId && isAllowanceLoaded && (needPayTokenApproval || needGasPaymentTokenApproval)) {
       const wrappedToken = getWrappedToken(chainId);
       const tokenToApprove = needPayTokenApproval ? fromToken : gasPaymentToken;
 

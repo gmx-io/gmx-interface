@@ -3,6 +3,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { useKey, useLatest } from "react-use";
+import { usePublicClient } from "wagmi";
 
 import { USD_DECIMALS } from "config/factors";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -107,6 +108,7 @@ export function PositionSeller() {
   const tokensData = useTokensData();
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
+  const settlementChainClient = usePublicClient({ chainId });
   const { openConnectModal } = useConnectModal();
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
@@ -420,6 +422,7 @@ export function PositionSeller() {
     const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
+      settlementChainClient,
       batchParams,
       expressParams,
       simulationParams: shouldDisableValidationForTesting

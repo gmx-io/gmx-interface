@@ -121,7 +121,7 @@ export interface LayerZeroProvider extends BaseContract {
   listeners(eventName?: string): Promise<Array<Listener>>;
   removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
-  bridgeOut: TypedContractMethod<[params: IMultichainProvider.BridgeOutParamsStruct], [void], "nonpayable">;
+  bridgeOut: TypedContractMethod<[params: IMultichainProvider.BridgeOutParamsStruct], [bigint], "nonpayable">;
 
   dataStore: TypedContractMethod<[], [string], "view">;
 
@@ -141,7 +141,7 @@ export interface LayerZeroProvider extends BaseContract {
 
   getFunction(
     nameOrSignature: "bridgeOut"
-  ): TypedContractMethod<[params: IMultichainProvider.BridgeOutParamsStruct], [void], "nonpayable">;
+  ): TypedContractMethod<[params: IMultichainProvider.BridgeOutParamsStruct], [bigint], "nonpayable">;
   getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
   getFunction(

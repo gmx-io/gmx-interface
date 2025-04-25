@@ -62,6 +62,7 @@ import {
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
+  selectWalletChainId,
 } from "../globalSelectors";
 import { selectIsLeverageSliderEnabled, selectIsPnlInLeverage } from "../settingsSelectors";
 import { selectSelectedMarketVisualMultiplier } from "../shared/marketSelectors";
@@ -74,6 +75,7 @@ import {
   makeSelectNextPositionValuesForIncrease,
 } from "../tradeSelectors";
 import { selectTradeboxGetMaxLongShortLiquidityPool } from "./selectTradeboxGetMaxLongShortLiquidityPool";
+import { selectSourceChainId } from "../multichainSelectors";
 
 export * from "./selectTradeboxAvailableAndDisabledTokensForCollateral";
 export * from "./selectTradeboxAvailableMarketsOptions";
@@ -1272,6 +1274,12 @@ export const selectTradeboxPayTokenAllowance = createSelector((q) => {
 });
 
 export const selectNeedTradeboxPayTokenApproval = createSelector((q) => {
+  const srcChainId = q(selectSourceChainId);
+
+  if (srcChainId) {
+    return false;
+  }
+
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const payAmount = q(selectTradeboxPayAmount);
   const tokensAllowance = q(selectTradeboxTokensAllowance);
