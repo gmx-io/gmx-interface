@@ -108,7 +108,7 @@ export function PositionSeller() {
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
   const { openConnectModal } = useConnectModal();
-  const { minCollateralUsd } = usePositionsConstants();
+  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
   const hasOutdatedUi = useHasOutdatedUi();
   const position = useSelector(selectPositionSellerPosition);
@@ -253,6 +253,7 @@ export function PositionSeller() {
       isContractAccount: false,
       minCollateralUsd,
       isNotEnoughReceiveTokenLiquidity,
+      minPositionSizeUsd,
     });
 
     if (commonError[0] || decreaseError[0]) {
@@ -277,6 +278,7 @@ export function PositionSeller() {
     position,
     receiveToken,
     triggerPrice,
+    minPositionSizeUsd,
   ]);
 
   const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: position?.key });

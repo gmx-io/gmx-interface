@@ -3,7 +3,8 @@ import mapValues from "lodash/mapValues";
 import { isDevelopment } from "config/env";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
-import { MARKETS, DEFAULT_LISTING } from "./static/markets";
+import { MARKETS } from "./static/markets";
+
 export * from "./static/markets";
 
 export const ENOUGH_DAYS_SINCE_LISTING_FOR_APY = 8;
@@ -16,19 +17,6 @@ export function isMarketEnabled(chainId: number, marketAddress: string) {
   if (isDevelopment()) return true;
 
   return MARKETS_INDEX[chainId]?.[marketAddress] ?? false;
-}
-
-/**
- * @returns Date when token was listed on the platform. If the date was not specified in config, returns 01 Jan 1970.
- */
-export function getMarketListingDate(chainId: number, marketAddress: string): Date {
-  const market = MARKETS[chainId]?.[marketAddress];
-
-  if (!market?.listingDate) {
-    return DEFAULT_LISTING;
-  }
-
-  return market.listingDate;
 }
 
 export const GLV_MARKETS: {
