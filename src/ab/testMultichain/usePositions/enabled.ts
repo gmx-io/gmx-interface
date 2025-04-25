@@ -45,11 +45,12 @@ export function usePositions(
     account,
   });
 
+  // TODO: debug sometimes issues with decoding from abi
   const {
     data: positionsData,
     error: positionsError,
     isLoading,
-  } = useMulticall(chainId, "usePositionsData-multichain", {
+  } = useMulticall(chainId, `usePositionsData-multichain-${chainId}`, {
     key: account && keysAndPrices.marketsKeys.length ? [account, keysAndPrices.marketsKeys] : null,
 
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,

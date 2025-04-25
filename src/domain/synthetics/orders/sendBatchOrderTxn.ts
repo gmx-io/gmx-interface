@@ -1,7 +1,7 @@
 import { Signer } from "ethers";
 import { PublicClient, withRetry } from "viem";
 
-import { UiContractsChain, UiSettlementChain } from "config/chains";
+import { UiContractsChain } from "config/chains";
 import { ExpressParams } from "domain/synthetics/express";
 import { isLimitSwapOrderType } from "domain/synthetics/orders";
 import {
@@ -20,6 +20,7 @@ import { BatchOrderTxnParams, getBatchOrderMulticallPayload } from "sdk/utils/or
 import { signerAddressError } from "components/Errors/errorToasts";
 
 import { getOrdersTriggerPriceOverrides, getSimulationPrices, simulateExecution } from "./simulation";
+import { callRelayTransaction } from "../gassless/txns/expressOrderDebug";
 
 export type BatchSimulationParams = {
   tokensData: TokensData;
@@ -30,6 +31,8 @@ export type BatchOrderTxnCtx = {
   expressParams: ExpressParams | undefined;
   batchParams: BatchOrderTxnParams;
 };
+
+const DEFAULT_RUN_SIMULATION = () => Promise.resolve(undefined);
 
 export async function sendBatchOrderTxn({
   chainId,
@@ -51,19 +54,46 @@ export async function sendBatchOrderTxn({
   const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
   const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({ expressParams, batchParams });
 
-  try {
-    const runSimulation = async () =>
-      false
-        ? makeBatchOrderSimulation({
-            chainId,
-            // TODO: implement simulation for multichain
-            signer,
-            params: batchParams,
-            blockTimestampData: simulationParams.blockTimestampData,
-            tokensData: simulationParams.tokensData,
-          })
-        : Promise.resolve(undefined);
+  let runSimulation: () => Promise<void> = DEFAULT_RUN_SIMULATION;
 
+  if (simulationParams && expressParams && srcChainId) {
+    runSimulation = async () => {
+      if (!settlementChainClient) {
+        throw new Error("settlementChainClient is required");
+      }
+
+      const { callData, feeAmount, feeToken, to } = await buildAndSignExpressBatchOrderTxn({
+        signer,
+        settlementChainClient,
+        chainId,
+        relayFeeParams: expressParams.relayFeeParams,
+        relayParamsPayload: expressParams.relayParamsPayload,
+        batchParams,
+        subaccount: expressParams.subaccount,
+        emptySignature: true,
+      });
+
+      await callRelayTransaction({
+        calldata: callData,
+        client: settlementChainClient!,
+        gelatoRelayFeeAmount: feeAmount,
+        gelatoRelayFeeToken: feeToken,
+        relayRouterAddress: to,
+      });
+    };
+  } else if (simulationParams) {
+    runSimulation = () =>
+      makeBatchOrderSimulation({
+        chainId,
+        // TODO: implement simulation for multichain
+        signer,
+        params: batchParams,
+        blockTimestampData: simulationParams.blockTimestampData,
+        tokensData: simulationParams.tokensData,
+      });
+  }
+
+  try {
     if (srcChainId && !expressParams) {
       throw new Error("Multichain orders are only supported with express params");
     }
@@ -149,13 +179,18 @@ export const makeBatchOrderSimulation = async ({
   blockTimestampData,
   tokensData,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   signer: Signer;
   params: BatchOrderTxnParams;
   blockTimestampData: BlockTimestampData | undefined;
   tokensData: TokensData;
 }) => {
   const account = await signer.getAddress();
+  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
+
+  if (srcChainId) {
+    throw new Error("Batch order simulation is not supported for multichain");
+  }
 
   const isInvalidReceiver = params.createOrderParams.some((co) => co.orderPayload.addresses.receiver !== account);
 
@@ -185,4 +220,5 @@ export const makeBatchOrderSimulation = async ({
     value,
     blockTimestampData,
   });
+  // }
 };

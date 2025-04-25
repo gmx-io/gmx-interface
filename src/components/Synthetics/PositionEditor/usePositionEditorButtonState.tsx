@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
+import { usePublicClient } from "wagmi";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -33,6 +34,7 @@ import { getGelatoRelayRouterDomain } from "domain/synthetics/express";
 import { RelayerFeeParams } from "domain/synthetics/express/types";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { getOrderRelayRouterAddress } from "domain/synthetics/orders/expressOrderUtils";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import {
@@ -88,6 +90,7 @@ export function usePositionEditorButtonState(operation: Operation): {
   const { shouldDisableValidationForTesting } = useSettings();
   const tokensData = useTokensData();
   const { account, signer } = useWallet();
+  const settlementChainClient = usePublicClient({ chainId });
   const { openConnectModal } = useConnectModal();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
   const { minCollateralUsd } = usePositionsConstants();
@@ -400,8 +403,16 @@ export function usePositionEditorButtonState(operation: Operation): {
         permitParams: expressParams
           ? {
               addTokenPermit,
-              verifyingContract: getGelatoRelayRouterDomain(chainId, Boolean(expressParams?.subaccount))
-                .verifyingContract,
+              verifyingContract: getGelatoRelayRouterDomain(
+                chainId,
+                getOrderRelayRouterAddress(
+                  chainId,
+                  Boolean(expressParams?.subaccount),
+                  // isMultichain
+                  false
+                ),
+                Boolean(expressParams?.subaccount)
+              ).verifyingContract,
             }
           : undefined,
         onApproveFail: () => {
@@ -441,6 +452,7 @@ export function usePositionEditorButtonState(operation: Operation): {
     const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
+      settlementChainClient,
       batchParams,
       expressParams,
       simulationParams: shouldDisableValidationForTesting

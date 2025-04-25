@@ -372,7 +372,11 @@ export async function getMultichainInfoFromSigner(
   return isMultichain ? (srcChainId as UiSourceChain) : undefined;
 }
 
-function getOrderRelayRouterAddress(chainId: UiContractsChain, isSubaccount: boolean, isMultichain: boolean): Address {
+export function getOrderRelayRouterAddress(
+  chainId: UiContractsChain,
+  isSubaccount: boolean,
+  isMultichain: boolean
+): Address {
   let contractName: string;
   if (isMultichain) {
     if (isSubaccount) {
