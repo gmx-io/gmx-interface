@@ -126,6 +126,10 @@ msgstr ""
 msgid "GMX is currently live on Arbitrum and Avalanche."
 msgstr "GMX는 현재 Arbitrum과 Avalanche에서 이용할 수 있습니다."
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Create TWAP Swap"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.jsx
 msgid "Max Pool Capacity"
 msgstr "풀 최대 수용량"
@@ -826,10 +830,6 @@ msgstr "주문에 대한 허용 가능한 가격"
 msgid "The order could not be updated"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#~ msgid "Short Stop Market: Increase a short position when the price is below the trigger price."
-#~ msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Cross-chain one-click deposits into GM"
 msgstr ""
@@ -1221,10 +1221,6 @@ msgstr "토큰"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Withdraw"
 msgstr "인출 요청"
-
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#~ msgid "Long Market: Increase a long position at the current price."
-#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "1inch"
@@ -1653,10 +1649,6 @@ msgstr "주문을 위한 시장 평균가"
 msgid "Net Value"
 msgstr "순이익"
 
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#~ msgid "Short TP/SL: Decrease a short position when the trigger price is reached."
-#~ msgstr ""
-
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
@@ -1726,10 +1718,6 @@ msgstr ""
 msgid "No swap path found"
 msgstr ""
 
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#~ msgid "You can save {0} in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Combined stop losses are at maximum (100%). Decrease existing values to add more orders."
 msgstr ""
@@ -1772,10 +1760,6 @@ msgstr "GLP의 베스팅 볼트에서 모든 토큰을 인출했습니다."
 #: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High Swap Profit Fee"
 msgstr ""
-
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#~ msgid "Long Stop Market: Increase a long position when the price is above the trigger price."
-#~ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
@@ -2038,10 +2022,6 @@ msgstr "코드 확인중..."
 msgid "GM Pools"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#~ msgid "Long Limit: Increase a long position when the price is below the trigger price."
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity."
 msgstr ""
@@ -2199,6 +2179,10 @@ msgstr ""
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 
+#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+msgid "TWAP Orders"
+msgstr ""
+
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Claim Funding Fees"
@@ -2352,10 +2336,6 @@ msgstr ""
 msgid "Trading Volume"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#~ msgid "Short Market: Increase a short position at the current price."
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing limit order in the {0} market pool but it lacks liquidity for this order."
 msgstr ""
@@ -2464,10 +2444,6 @@ msgstr "GLP 풀"
 #: src/pages/Exchange/Exchange.tsx
 msgid "Cancel submitted."
 msgstr "취소 제출 완료"
-
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#~ msgid "Increase a long position in evenly distributed parts over a specified time. Read more."
-#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Traderjoe:"
@@ -2760,6 +2736,10 @@ msgstr ""
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Failed TWAP part"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Returned Collateral"
 msgstr ""
@@ -2767,6 +2747,10 @@ msgstr ""
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
 msgstr "해당 트레이드를 시작하기위해 담보로 {swapTokenSymbol}을 \"지불\" 토큰으로서 선택할 필요가 있습니다."
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Failed TWAP Swap part"
+msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "There are issues in the TP/SL orders."
@@ -2974,6 +2958,10 @@ msgstr ""
 msgid "Stake"
 msgstr "스테이킹"
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Update TWAP part"
+msgstr ""
+
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Help us improve"
 msgstr ""
@@ -2999,6 +2987,10 @@ msgstr ""
 msgid "Update Order"
 msgstr "주문 업데이트"
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Cancel TWAP"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the liquidation."
 msgstr "청산을 위한 시장 평균가"
@@ -3006,10 +2998,6 @@ msgstr "청산을 위한 시장 평균가"
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr ""
-
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#~ msgid "Long TP/SL: Decrease a long position when the trigger price is reached."
-#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3825,6 +3813,10 @@ msgstr ""
 msgid "BUYABLE"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Create TWAP"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Enabling Leverage"
 msgstr ""
@@ -4117,6 +4109,10 @@ msgstr "숏"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "PnL ($)"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+msgid "TWAP Swaps"
 msgstr ""
 
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
@@ -4708,6 +4704,10 @@ msgstr "풀"
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Voting"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Update TWAP Swap part"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
@@ -5356,6 +5356,10 @@ msgstr "경고: 높은 수수료"
 msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
 msgstr "주문을 채울만한 충분한 스왑 유동성이 없습니다. 조건이 충족되고 충분한 스왑 유동성이 있을 때 주문이 채워집니다."
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Cancel TWAP Swap"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
@@ -5422,10 +5426,6 @@ msgstr "최대 {0} in"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop Loss Decrease"
 msgstr ""
-
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#~ msgid "Increase a short position in evenly distributed parts over a specified time. Read more."
-#~ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Diff"
@@ -5563,10 +5563,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 msgid "Available"
 msgstr "사용가능"
-
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#~ msgid "Short Limit: Increase a short position when the price is above the trigger price."
-#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Last 7 days"
@@ -5971,10 +5967,6 @@ msgstr ""
 msgid "Claiming failed"
 msgstr ""
 
-#: src/components/AprInfo/AprInfo.tsx
-#~ msgid "The base APY estimate will be available {0} to ensure accurate data display."
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Stop Loss"
 msgstr ""
@@ -5992,6 +5984,10 @@ msgstr "{0} 롱 최대치를 초과했습니다"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "N/A"
 msgstr ""
 
@@ -7616,6 +7612,10 @@ msgstr ""
 msgid "take profit"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Execute TWAP part"
+msgstr ""
+
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Force External Swaps"
 msgstr ""
@@ -8246,6 +8246,10 @@ msgstr ""
 msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {nonTakenNetworkNames}."
 msgstr "이 코드는 아직 {nonTakenNetworkNames}에 등록되지 않았습니다. 여기서는 소개 보수를 받을 수 없습니다.<0/><1/>이 코드를 {nonTakenNetworkNames}에 등록하려면 네트워크를 전환하세요."
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "{fromText} to {swapToTokenAmount}"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Deposit {0} USD into {1} {longOrShortText}"
 msgstr "{0} USD를 {1} {longOrShortText}으로 입금"
@@ -8424,10 +8428,6 @@ msgstr "24시간 거래량"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Stats"
 msgstr ""
-
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-#~ msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
-#~ msgstr ""
 
 #: src/components/Synthetics/TradeBox/components/TwapRows.tsx
 msgid "Frequency"
@@ -8647,6 +8647,10 @@ msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "limit"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Execute TWAP Swap part"
 msgstr ""
 
 #: src/components/Exchange/OrdersToa.jsx

@@ -41,7 +41,16 @@ export const formatPositionMessage = (
   relativeTimestamp = true
 ): RowDetails => {
   const collateralToken = tradeAction.initialCollateralToken;
-  const sizeDeltaUsd = tradeAction.sizeDeltaUsd;
+  let sizeDeltaUsd = tradeAction.sizeDeltaUsd;
+
+  if (
+    tradeAction.twapGroupId &&
+    tradeAction.numberOfParts &&
+    (tradeAction.eventName === TradeActionType.OrderCreated || tradeAction.eventName === TradeActionType.OrderCancelled)
+  ) {
+    sizeDeltaUsd = tradeAction.sizeDeltaUsd * BigInt(tradeAction.numberOfParts);
+  }
+
   const collateralDeltaAmount = tradeAction.initialCollateralDeltaAmount;
   const marketPriceDecimals = calculateDisplayDecimals(
     tradeAction.indexToken.prices.minPrice,
@@ -130,7 +139,7 @@ export const formatPositionMessage = (
     visualMultiplier: tradeAction.indexToken.visualMultiplier,
   })!;
 
-  const action = getActionTitle(tradeAction.orderType, tradeAction.eventName);
+  const action = getActionTitle(tradeAction.orderType, tradeAction.eventName, Boolean(tradeAction.twapGroupId));
   const timestamp = formatTradeActionTimestamp(tradeAction.timestamp, relativeTimestamp);
   const timestampISO = formatTradeActionTimestampISO(tradeAction.timestamp);
 
@@ -227,6 +236,13 @@ export const formatPositionMessage = (
     };
     //#endregion MarketIncrease
     //#region LimitIncrease and StopIncrease
+  } else if (tradeAction.twapGroupId) {
+    result = {
+      price: t`N/A`,
+      priceComment: undefined,
+      triggerPrice: t`N/A`,
+      acceptablePrice: t`N/A`,
+    };
   } else if (
     ((ot === OrderType.LimitIncrease || ot === OrderType.StopIncrease) && ev === TradeActionType.OrderCreated) ||
     ((ot === OrderType.LimitIncrease || ot === OrderType.StopIncrease) && ev === TradeActionType.OrderUpdated) ||

@@ -12,7 +12,8 @@ import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/Tab
 import { actionTextMap, getActionTitle } from "../keys";
 
 type Item = {
-  orderType: OrderType;
+  orderType: OrderType | OrderType[];
+  isTwap?: boolean;
   isDepositOrWithdraw?: boolean;
   text?: MessageDescriptor;
   eventName: TradeActionType;
@@ -114,6 +115,31 @@ const GROUPS: Groups = [
     ),
   },
   {
+    groupName: msg`TWAP Orders`,
+    items: [
+      {
+        eventName: TradeActionType.OrderCreated,
+        isTwap: true,
+        orderType: [OrderType.LimitIncrease, OrderType.LimitDecrease],
+      },
+      {
+        eventName: TradeActionType.OrderCancelled,
+        isTwap: true,
+        orderType: [OrderType.LimitIncrease, OrderType.LimitDecrease],
+      },
+      {
+        eventName: TradeActionType.OrderExecuted,
+        isTwap: true,
+        orderType: [OrderType.LimitIncrease, OrderType.LimitDecrease],
+      },
+      {
+        eventName: TradeActionType.OrderFrozen,
+        isTwap: true,
+        orderType: [OrderType.LimitIncrease, OrderType.LimitDecrease],
+      },
+    ],
+  },
+  {
     groupName: msg`Swaps`,
     items: [
       {
@@ -152,6 +178,31 @@ const GROUPS: Groups = [
     ],
   },
   {
+    groupName: msg`TWAP Swaps`,
+    items: [
+      {
+        eventName: TradeActionType.OrderCreated,
+        isTwap: true,
+        orderType: OrderType.LimitSwap,
+      },
+      {
+        eventName: TradeActionType.OrderCancelled,
+        isTwap: true,
+        orderType: OrderType.LimitSwap,
+      },
+      {
+        eventName: TradeActionType.OrderExecuted,
+        isTwap: true,
+        orderType: OrderType.LimitSwap,
+      },
+      {
+        eventName: TradeActionType.OrderFrozen,
+        isTwap: true,
+        orderType: OrderType.LimitSwap,
+      },
+    ],
+  },
+  {
     groupName: msg`Liquidation`,
     items: [
       {
@@ -164,11 +215,19 @@ const GROUPS: Groups = [
 
 type Props = {
   value: {
-    orderType: OrderType;
+    orderType: OrderType | OrderType[];
     eventName: TradeActionType;
     isDepositOrWithdraw: boolean;
+    isTwap: boolean;
   }[];
-  onChange: (value: { orderType: OrderType; eventName: TradeActionType; isDepositOrWithdraw: boolean }[]) => void;
+  onChange: (
+    value: {
+      orderType: OrderType | OrderType[];
+      eventName: TradeActionType;
+      isDepositOrWithdraw: boolean;
+      isTwap: boolean;
+    }[]
+  ) => void;
 };
 
 export function ActionFilter({ value, onChange }: Props) {
@@ -187,8 +246,15 @@ export function ActionFilter({ value, onChange }: Props) {
                 orderType: item.orderType,
                 eventName: item.eventName,
                 isDepositOrWithdraw: Boolean(item.isDepositOrWithdraw),
+                isTwap: Boolean(item.isTwap),
               },
-              text: item.text ? _(item.text) : getActionTitle(item.orderType, item.eventName),
+              text: item.text
+                ? _(item.text)
+                : getActionTitle(
+                    Array.isArray(item.orderType) ? item.orderType[0] : item.orderType,
+                    item.eventName,
+                    Boolean(item.isTwap)
+                  ),
             };
           }),
       };

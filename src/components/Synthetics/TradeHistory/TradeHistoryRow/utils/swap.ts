@@ -42,7 +42,15 @@ export const formatSwapMessage = (
   const tokenIn = tradeAction.initialCollateralToken;
 
   const tokenOut = tradeAction.targetCollateralToken!;
-  const amountIn = tradeAction.initialCollateralDeltaAmount!;
+  let amountIn = tradeAction.initialCollateralDeltaAmount!;
+
+  if (
+    tradeAction.twapGroupId &&
+    tradeAction.numberOfParts &&
+    (tradeAction.eventName === TradeActionType.OrderCreated || tradeAction.eventName === TradeActionType.OrderCancelled)
+  ) {
+    amountIn = amountIn * BigInt(tradeAction.numberOfParts);
+  }
 
   const fromText = formatBalanceAmount(amountIn, tokenIn.decimals, tokenIn.symbol);
   const fromAmountText = formatBalanceAmount(amountIn, tokenIn.decimals);
@@ -100,14 +108,27 @@ export const formatSwapMessage = (
     tradeAction.swapPath
   );
 
-  let actionText = getActionTitle(tradeAction.orderType, tradeAction.eventName);
+  let actionText = getActionTitle(tradeAction.orderType, tradeAction.eventName, Boolean(tradeAction.twapGroupId));
 
   let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "timestampISO">;
 
   const ot = tradeAction.orderType;
   const ev = tradeAction.eventName;
 
-  if (
+  if (tradeAction.twapGroupId) {
+    let swapToTokenAmount = "";
+
+    if (ev === TradeActionType.OrderExecuted) {
+      swapToTokenAmount = formatBalanceAmount(tradeAction.executionAmountOut!, tokenOut?.decimals);
+    }
+
+    result = {
+      price: t`N/A`,
+      priceComment: undefined,
+      size: t`${fromText} to ${swapToTokenAmount}`,
+      swapToTokenAmount: swapToTokenAmount,
+    };
+  } else if (
     (ot === OrderType.LimitSwap && ev === TradeActionType.OrderCreated) ||
     (ot === OrderType.LimitSwap && ev === TradeActionType.OrderUpdated) ||
     (ot === OrderType.LimitSwap && ev === TradeActionType.OrderCancelled)
