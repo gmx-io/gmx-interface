@@ -884,6 +884,17 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
     },
     {
+      name: "Dolomite",
+      symbol: "DOLO",
+      address: "0x97Ce1F309B949f7FBC4f58c5cb6aa417A5ff8964",
+      decimals: 18,
+      priceDecimals: 6,
+      categories: ["defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/54710/standard/DOLO-small.png?1745398535",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/dolomite",
+      isSynthetic: true,
+    },
+    {
       name: "GMX LP",
       symbol: "GLP",
       address: getContract(ARBITRUM, "GLP"),

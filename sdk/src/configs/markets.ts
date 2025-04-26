@@ -586,6 +586,13 @@ export const MARKETS: Record<number, Record<string, MarketConfig>> = {
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // DOLO/USD [WETH-USDC]
+    "0x4D3Eb91efd36C2b74181F34B111bc1E91a0d0cb4": {
+      marketTokenAddress: "0x4D3Eb91efd36C2b74181F34B111bc1E91a0d0cb4",
+      indexTokenAddress: "0x97Ce1F309B949f7FBC4f58c5cb6aa417A5ff8964",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
