@@ -80,8 +80,8 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
 
-import TradeInfoIcon from "./components/TradeInfoIcon";
-import TwapRows from "./components/TwapRows";
+import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
+import TwapRows from "../TwapRows/TwapRows";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
 import { useShowOneClickTradingInfo } from "./hooks/useShowOneClickTradingInfo";
 import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";

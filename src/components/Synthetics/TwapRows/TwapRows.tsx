@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
+import { formatDuration } from "date-fns";
 import { ChangeEvent, useEffect } from "react";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -12,7 +13,7 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import NumberInput from "components/NumberInput/NumberInput";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
-import { useTradeboxChanges } from "../hooks/useTradeboxChanges";
+import { useTradeboxChanges } from "../TradeBox/hooks/useTradeboxChanges";
 
 type Props = {
   duration: TwapDuration;
@@ -25,26 +26,24 @@ type Props = {
   isLong: boolean;
 };
 
-const HOURS_IN_A_DAY = 24;
-
-const getTwapDurationText = (duration: TwapDuration) => {
+export const getTwapDurationText = (duration: TwapDuration) => {
   const hours = Math.floor(duration.hours + duration.minutes / 60);
   const minutes = duration.minutes % 60;
-  if (hours > HOURS_IN_A_DAY * 2) {
-    const daysMessage = t`${Math.floor(hours / HOURS_IN_A_DAY)} days`;
 
-    return hours % HOURS_IN_A_DAY > 0 ? `${daysMessage} and ${hours % HOURS_IN_A_DAY} hours` : daysMessage;
+  if (hours * 60 + minutes < 1) {
+    return t`less than a minute`;
   }
 
-  if (hours > 0 && minutes > 0) {
-    return t`${hours} hours and ${minutes} minutes`;
-  }
-
-  if (hours > 0) {
-    return t`${hours} hours`;
-  }
-
-  return t`${minutes} minutes`;
+  return formatDuration(
+    {
+      hours,
+      minutes,
+    },
+    {
+      format: ["hours", "minutes"],
+      delimiter: " and ",
+    }
+  );
 };
 
 const TwapRows = ({
