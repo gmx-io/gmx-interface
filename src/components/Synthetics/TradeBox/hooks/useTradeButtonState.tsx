@@ -412,11 +412,11 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
           submitButtonText = `${localizedTradeTypeLabels[tradeType!]} ${prefix}${toToken?.symbol}`;
         }
       } else if (isLimit) {
-        submitButtonText = t`Create ${getNameByOrderType(increaseAmounts?.limitOrderType)} order`;
+        submitButtonText = t`Create ${getNameByOrderType(increaseAmounts?.limitOrderType, false)} order`;
       } else if (isTwap) {
         submitButtonText = t`Create TWAP ${isSwap ? "Swap" : "Increase"} order`;
       } else {
-        submitButtonText = t`Create ${getNameByOrderType(decreaseAmounts?.triggerOrderType)} Order`;
+        submitButtonText = t`Create ${getNameByOrderType(decreaseAmounts?.triggerOrderType, false)} Order`;
       }
     }
 

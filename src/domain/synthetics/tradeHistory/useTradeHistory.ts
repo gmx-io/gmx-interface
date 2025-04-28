@@ -44,7 +44,7 @@ export function useTradeHistory(
     marketsDirectionsFilter?: MarketFilterLongShortItemData[];
     orderEventCombinations?: {
       eventName?: TradeActionType;
-      orderType?: OrderType | OrderType[];
+      orderType?: OrderType[];
       isDepositOrWithdraw?: boolean;
       isTwap?: boolean;
     }[];
@@ -150,7 +150,7 @@ export async function fetchTradeActions({
   orderEventCombinations:
     | {
         eventName?: TradeActionType | undefined;
-        orderType?: OrderType | OrderType[] | undefined;
+        orderType?: OrderType[] | undefined;
         isDepositOrWithdraw?: boolean | undefined;
         isTwap?: boolean | undefined;
       }[]
@@ -190,9 +190,7 @@ export async function fetchTradeActions({
   const hasSwapRelevantDefinedMarkets = swapRelevantDefinedMarketsLowercased.length > 0;
 
   const mergedCombinations = orderEventCombinations?.flatMap((combination) =>
-    Array.isArray(combination.orderType)
-      ? combination.orderType.map((orderType) => ({ ...combination, orderType }))
-      : [{ ...combination, orderType: combination.orderType }]
+    (combination.orderType || []).map((orderType) => ({ ...combination, orderType }))
   );
 
   const filtersStr = buildFiltersBody({

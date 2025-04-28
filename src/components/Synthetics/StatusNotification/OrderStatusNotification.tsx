@@ -20,10 +20,10 @@ import { getNameByOrderType } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
+import { defined } from "lib/guards";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
-import { isNotNull } from "lib/utils";
 import useWallet from "lib/wallets/useWallet";
 import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 
@@ -156,14 +156,10 @@ export function OrderStatusNotification({
             update: t`Update`,
           }[txnType];
 
-          if (orderData.isTwap) {
-            orderTypeText = t`${txnTypeText} TWAP order for`;
-          } else {
-            orderTypeText = t`${txnTypeText} ${getNameByOrderType(orderType, {
-              abbr: true,
-              lower: true,
-            })} order for`;
-          }
+          orderTypeText = t`${txnTypeText} ${getNameByOrderType(orderType, orderData.isTwap, {
+            abbr: true,
+            lower: true,
+          })} order for`;
         }
 
         const sign = isIncreaseOrderType(orderType) ? "+" : "-";
@@ -417,7 +413,7 @@ export function OrdersStatusNotificiation({
     cancelOrdersTxn(chainId, signer, subaccount, {
       orders: newlyCreatedTriggerOrders
         .map((order) =>
-          order.orderKey
+          order.orderKey && !order.isTwap
             ? {
                 key: order.orderKey,
                 isTwap: order.isTwap,
@@ -426,7 +422,7 @@ export function OrdersStatusNotificiation({
               }
             : undefined
         )
-        .filter(isNotNull),
+        .filter(defined),
       setPendingTxns,
       detailsMsg: cancelOrdersDetailsMessage,
     }).finally(() => setIsCancelOrderProcessing(false));

@@ -119,7 +119,7 @@ export function getActionTitle(orderType: OrderType, eventName: TradeActionType,
     return i18n._(title);
   }
 
-  const fallbackOrderTypeName = isLimitOrderType(orderType) ? t`Limit` : getNameByOrderType(orderType);
+  const fallbackOrderTypeName = isLimitOrderType(orderType) ? t`Limit` : getNameByOrderType(orderType, isTwap);
 
   return `${getOrderActionText(eventName)} ${fallbackOrderTypeName}`;
 }

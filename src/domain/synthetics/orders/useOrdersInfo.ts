@@ -10,7 +10,7 @@ import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarket
 import { MarketsInfoData } from "../markets";
 import { TokensData } from "../tokens";
 import { OrderTypeFilterValue } from "./ordersFilters";
-import { Order, OrdersInfoData, TwapPositionOrderInfo, TwapSwapOrderInfo } from "./types";
+import { Order, OrdersInfoData, TwapOrderInfo } from "./types";
 import { useOrders } from "./useOrders";
 import { setOrderInfoTitle } from "./utils";
 import { decodeTwapUiFeeReceiver } from "../trade/twap/uiFeeReceiver";
@@ -128,7 +128,7 @@ const createOrderInfo = ({
     let twapOrderInfo = getByKey(acc, twapOrderKey);
 
     if (!twapOrderInfo) {
-      const twap: TwapSwapOrderInfo | TwapPositionOrderInfo = {
+      const twap: TwapOrderInfo = {
         ...orderInfo,
         isTwap: true,
         key: twapOrderKey,

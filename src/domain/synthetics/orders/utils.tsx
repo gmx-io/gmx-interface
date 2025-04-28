@@ -37,8 +37,7 @@ import {
   OrderType,
   PositionOrderInfo,
   SwapOrderInfo,
-  TwapPositionOrderInfo,
-  TwapSwapOrderInfo,
+  TwapOrderInfo,
 } from "./types";
 import { getIsMaxLeverageExceeded } from "../trade/utils/validation";
 
@@ -376,9 +375,9 @@ function getTokenIndex(token: Token, referenceArray: string[]): number {
 }
 
 export function sortPositionOrders(
-  orders: (PositionOrderInfo | TwapPositionOrderInfo)[],
+  orders: (PositionOrderInfo | TwapOrderInfo<PositionOrderInfo>)[],
   tokenSortOrder?: string[]
-): (PositionOrderInfo | TwapPositionOrderInfo)[] {
+): (PositionOrderInfo | TwapOrderInfo<PositionOrderInfo>)[] {
   return orders.sort((a, b) => {
     if (tokenSortOrder) {
       const indexA = getTokenIndex(a.marketInfo.indexToken, tokenSortOrder);
@@ -403,9 +402,9 @@ export function sortPositionOrders(
 }
 
 export function sortSwapOrders(
-  orders: (SwapOrderInfo | TwapSwapOrderInfo)[],
+  orders: (SwapOrderInfo | TwapOrderInfo<SwapOrderInfo>)[],
   tokenSortOrder?: string[]
-): (SwapOrderInfo | TwapSwapOrderInfo)[] {
+): (SwapOrderInfo | TwapOrderInfo<SwapOrderInfo>)[] {
   return orders.sort((a, b) => {
     if (tokenSortOrder) {
       const indexA = getTokenIndex(a.targetCollateralToken, tokenSortOrder);

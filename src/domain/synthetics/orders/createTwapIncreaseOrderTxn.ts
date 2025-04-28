@@ -185,7 +185,7 @@ async function createEncodedPayload({
   swapPath: string[];
   signer: Signer;
 }) {
-  const validFromTimeGetter = makeTwapValidFromTimeGetter(p.duration, p.numberOfParts);
+  const getValidFromTime = makeTwapValidFromTimeGetter(p.duration, p.numberOfParts);
 
   const uiFeeReceiver = createTwapUiFeeReceiver({ numberOfParts: p.numberOfParts });
 
@@ -208,7 +208,7 @@ async function createEncodedPayload({
       isNativePayment,
       uiFeeReceiver: uiFeeReceiver,
       sizeDeltaUsd: p.sizeDeltaUsd / BigInt(p.numberOfParts),
-      validFromTime: validFromTimeGetter(i),
+      validFromTime: getValidFromTime(i),
       triggerPrice,
       account: p.account,
       marketAddress: p.marketAddress,

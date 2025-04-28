@@ -17,8 +17,7 @@ import {
   OrderInfo,
   PositionOrderInfo,
   SwapOrderInfo,
-  TwapPositionOrderInfo,
-  TwapSwapOrderInfo,
+  TwapOrderInfo,
   isLimitOrderType,
   isPositionOrder,
   isSwapOrder,
@@ -327,8 +326,8 @@ function useFilteredOrders({
         return acc;
       },
       {
-        swapOrders: [] as (SwapOrderInfo | TwapSwapOrderInfo)[],
-        positionOrders: [] as (PositionOrderInfo | TwapPositionOrderInfo)[],
+        swapOrders: [] as (SwapOrderInfo | TwapOrderInfo<SwapOrderInfo>)[],
+        positionOrders: [] as (PositionOrderInfo | TwapOrderInfo<PositionOrderInfo>)[],
       }
     );
 

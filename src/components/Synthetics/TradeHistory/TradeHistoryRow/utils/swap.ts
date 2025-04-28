@@ -124,7 +124,7 @@ export const formatSwapMessage = (
 
     result = {
       price: t`N/A`,
-      priceComment: undefined,
+      priceComment: null,
       size: t`${fromText} to ${swapToTokenAmount}`,
       swapToTokenAmount: swapToTokenAmount,
     };

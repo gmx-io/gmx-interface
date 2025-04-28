@@ -36,12 +36,12 @@ import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsP
 import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
 import { getMidPrice } from "domain/tokens";
 import { useChainId } from "lib/chains";
+import { defined } from "lib/guards";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMeasureComponentMountTime } from "lib/metrics/useMeasureComponentMountTime";
 import { formatUsdPrice } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { isNotNull } from "lib/utils";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
@@ -63,6 +63,7 @@ import { TradeBoxOneClickTrading } from "components/Synthetics/TradeBox/TradeBox
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import { Chart } from "components/Synthetics/TVChart/Chart";
 import Tabs from "components/Tabs/Tabs";
+
 export type Props = {
   openSettings: () => void;
 };
@@ -414,7 +415,7 @@ function useOrdersControl() {
       if (!signer) return;
       const keys = selectedOrderKeys;
       setCanellingOrdersKeys((p) => uniq(p.concat(keys)));
-      const orders = keys.map((k) => ordersInfoData?.[k]).filter(isNotNull);
+      const orders = keys.map((k) => ordersInfoData?.[k]).filter(defined);
       cancelOrdersTxn(chainId, signer, subaccount, {
         orders,
         setPendingTxns: setPendingTxns,

@@ -7,8 +7,7 @@ import {
   OrderType,
   PositionOrderInfo,
   SwapOrderInfo,
-  TwapPositionOrderInfo,
-  TwapSwapOrderInfo,
+  TwapOrderInfo,
 } from "types/orders";
 import { Token, TokensData } from "types/tokens";
 import { getSwapPathOutputAddresses, getSwapPathStats } from "utils/swap/swapStats";
@@ -77,11 +76,11 @@ export function isTwapOrder<T extends OrderParams>(orderInfo: T): orderInfo is E
   return orderInfo.isTwap;
 }
 
-export function isTwapSwapOrder(orderInfo: OrderInfo): orderInfo is TwapSwapOrderInfo {
+export function isTwapSwapOrder(orderInfo: OrderInfo): orderInfo is TwapOrderInfo<SwapOrderInfo> {
   return orderInfo.isTwap && orderInfo.__orderInfoType === "swap";
 }
 
-export function isTwapPositionOrder(orderInfo: OrderInfo): orderInfo is TwapPositionOrderInfo {
+export function isTwapPositionOrder(orderInfo: OrderInfo): orderInfo is TwapOrderInfo<PositionOrderInfo> {
   return orderInfo.isTwap && orderInfo.__orderInfoType === "position";
 }
 

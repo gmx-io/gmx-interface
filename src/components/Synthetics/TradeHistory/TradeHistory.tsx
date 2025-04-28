@@ -48,7 +48,7 @@ export function TradeHistory(p: Props) {
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [actionFilter, setActionFilter] = useState<
     {
-      orderType: OrderType | OrderType[];
+      orderType: OrderType[];
       eventName: TradeActionType;
       isDepositOrWithdraw: boolean;
       isTwap: boolean;

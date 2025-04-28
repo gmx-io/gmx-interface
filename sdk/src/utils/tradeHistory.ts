@@ -143,8 +143,13 @@ export function createRawTradeActionTransformer(
         transaction: rawAction.transaction,
         timestamp: rawAction.timestamp,
         shouldUnwrapNativeToken: rawAction.shouldUnwrapNativeToken!,
-        twapGroupId: rawAction.twapGroupId,
-        numberOfParts: rawAction.numberOfParts,
+        twapParams:
+          rawAction.twapGroupId && rawAction.numberOfParts
+            ? {
+                twapGroupId: rawAction.twapGroupId,
+                numberOfParts: rawAction.numberOfParts,
+              }
+            : undefined,
       };
 
       return tradeAction;

@@ -153,7 +153,7 @@ export function createTwapDecreaseEncodedPayload({
   mainAccountAddress: string;
   chainId: number;
 }) {
-  const validFromTimeGetter = makeTwapValidFromTimeGetter(p.duration, p.numberOfParts);
+  const getValidFromTime = makeTwapValidFromTimeGetter(p.duration, p.numberOfParts);
   const uiFeeReceiver = createTwapUiFeeReceiver({ numberOfParts: p.numberOfParts });
 
   const acceptablePrice = !p.isLong ? ethers.MaxUint256 : 0n;
@@ -167,7 +167,7 @@ export function createTwapDecreaseEncodedPayload({
       uiFeeReceiver,
       referralCode: p.referralCode,
       initialCollateralDeltaAmount: p.initialCollateralDeltaAmount / BigInt(p.numberOfParts),
-      validFromTime: validFromTimeGetter(i),
+      validFromTime: getValidFromTime(i),
       subaccount,
       router,
       chainId,

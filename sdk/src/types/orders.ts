@@ -87,21 +87,14 @@ export type PositionOrderInfo = Order & {
   triggerThresholdType: TriggerThresholdType;
 };
 
-export type TwapSwapOrderInfo = Omit<SwapOrderInfo, "isTwap"> & {
-  isTwap: true;
-  orders: SwapOrderInfo[];
-  twapId: string;
-  numberOfParts: number;
-};
+export type TwapOrderInfo<T extends PositionOrderInfo | SwapOrderInfo = PositionOrderInfo | SwapOrderInfo> = Omit<
+  T,
+  "isTwap"
+> & {
+  __orderInfoType: T["__orderInfoType"];
+} & TwapOrderParams<T>;
 
-export type TwapPositionOrderInfo = Omit<PositionOrderInfo, "isTwap"> & {
-  isTwap: true;
-  orders: PositionOrderInfo[];
-  twapId: string;
-  numberOfParts: number;
-};
-
-export type OrderInfo = SwapOrderInfo | PositionOrderInfo | TwapSwapOrderInfo | TwapPositionOrderInfo;
+export type OrderInfo = SwapOrderInfo | PositionOrderInfo | TwapOrderInfo;
 
 export type OrdersData = {
   [orderKey: string]: Order;
@@ -119,11 +112,13 @@ type SingleOrderParams = {
   orderType: OrderType;
 };
 
-type TwapOrderParams = {
+type TwapOrderParams<T extends SingleOrderParams = SingleOrderParams> = {
   key: string;
   isTwap: true;
-  orders: SingleOrderParams[];
+  orders: T[];
   orderType: OrderType;
+  twapId: string;
+  numberOfParts: number;
 };
 
 export type OrderParams = SingleOrderParams | TwapOrderParams;

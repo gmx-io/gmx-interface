@@ -277,13 +277,14 @@ export function getIncreaseError(p: {
   // Hardcoded for Odyssey
   const _minCollateralUsd = expandDecimals(2, USD_DECIMALS);
 
+  const minTwapPartSize = _minCollateralUsd / 2n;
   if (
     !existingPosition &&
     isTwap &&
     numberOfParts > 0 &&
-    (collateralUsd === undefined ? undefined : collateralUsd / BigInt(numberOfParts) < _minCollateralUsd / 2n)
+    (collateralUsd === undefined ? undefined : collateralUsd / BigInt(numberOfParts) < minTwapPartSize)
   ) {
-    return [t`Min size per part: ${formatUsd(_minCollateralUsd / 2n)}`];
+    return [t`Min size per part: ${formatUsd(minTwapPartSize)}`];
   }
 
   if (!existingPosition && (collateralUsd === undefined ? undefined : collateralUsd < _minCollateralUsd)) {

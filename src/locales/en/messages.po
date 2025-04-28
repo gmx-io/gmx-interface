@@ -511,8 +511,8 @@ msgid "Realized PnL"
 msgstr "Realized PnL"
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-msgid "{txnTypeText} TWAP order for"
-msgstr "{txnTypeText} TWAP order for"
+#~ msgid "{txnTypeText} TWAP order for"
+#~ msgstr "{txnTypeText} TWAP order for"
 
 #: src/components/Synthetics/TradeBox/components/TwapRows.tsx
 #~ msgid "{hours} hours"

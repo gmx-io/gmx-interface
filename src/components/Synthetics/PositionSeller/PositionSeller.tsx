@@ -359,32 +359,36 @@ export function PositionSeller(p: Props) {
 
     let txnPromise;
 
+    const commonParams = {
+      account,
+      marketAddress: position.marketAddress,
+      initialCollateralAddress: position.collateralTokenAddress,
+      initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
+      receiveTokenAddress: receiveToken.address,
+      swapPath,
+      sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+      sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
+      isLong: position.isLong,
+      decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
+      referralCode: userReferralInfo?.referralCodeForTxn,
+      executionFee: executionFee.feeTokenAmount,
+      executionGasLimit: executionFee.gasLimit,
+      indexToken: position.indexToken,
+      minOutputUsd: 0n,
+      tokensData,
+    };
+
     if (orderOption === OrderOption.Twap) {
       txnPromise = createTwapDecreaseOrderTxn(
         chainId,
         signer,
         subaccount,
         {
-          account,
-          marketAddress: position.marketAddress,
-          initialCollateralAddress: position.collateralTokenAddress,
-          initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
-          receiveTokenAddress: receiveToken.address,
-          swapPath,
-          sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-          sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
-          isLong: position.isLong,
-          minOutputUsd: 0n,
-          decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
-          orderType,
-          referralCode: userReferralInfo?.referralCodeForTxn,
-          executionFee: executionFee.feeTokenAmount,
-          executionGasLimit: executionFee.gasLimit,
-          indexToken: position.indexToken,
-          tokensData,
+          ...commonParams,
           autoCancel: false,
           duration,
           numberOfParts,
+          orderType,
         },
         {
           setPendingOrder,
@@ -399,26 +403,11 @@ export function PositionSeller(p: Props) {
         signer,
         subaccount,
         {
-          account,
-          marketAddress: position.marketAddress,
-          initialCollateralAddress: position.collateralTokenAddress,
-          initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
-          receiveTokenAddress: receiveToken.address,
-          swapPath,
-          sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-          sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
-          isLong: position.isLong,
+          ...commonParams,
           acceptablePrice: decreaseAmounts.acceptablePrice,
           triggerPrice: isTrigger ? triggerPrice : undefined,
-          minOutputUsd: 0n,
-          decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
           orderType,
-          referralCode: userReferralInfo?.referralCodeForTxn,
-          executionFee: executionFee.feeTokenAmount,
-          executionGasLimit: executionFee.gasLimit,
           allowedSlippage,
-          indexToken: position.indexToken,
-          tokensData,
           skipSimulation: orderOption === OrderOption.Trigger || shouldDisableValidationForTesting,
           autoCancel: orderOption === OrderOption.Trigger ? autoCancelOrdersLimit > 0 : false,
           slippageInputId,
@@ -813,7 +802,7 @@ export function PositionSeller(p: Props) {
               >
                 {error ||
                   (isTrigger || isTwap
-                    ? t`Create ${isTwap ? "TWAP Decrease" : getNameByOrderType(decreaseAmounts?.triggerOrderType)} Order`
+                    ? t`Create ${isTwap ? "TWAP Decrease" : getNameByOrderType(decreaseAmounts?.triggerOrderType, isTwap)} Order`
                     : t`Close`)}
               </Button>
 

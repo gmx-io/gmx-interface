@@ -12,7 +12,7 @@ import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/Tab
 import { actionTextMap, getActionTitle } from "../keys";
 
 type Item = {
-  orderType: OrderType | OrderType[];
+  orderType: OrderType[];
   isTwap?: boolean;
   isDepositOrWithdraw?: boolean;
   text?: MessageDescriptor;
@@ -32,64 +32,64 @@ const GROUPS: Groups = [
     groupName: msg`Market Orders`,
     items: [
       {
-        orderType: OrderType.MarketIncrease,
+        orderType: [OrderType.MarketIncrease],
         eventName: TradeActionType.OrderExecuted,
       },
       {
-        orderType: OrderType.MarketDecrease,
+        orderType: [OrderType.MarketDecrease],
         eventName: TradeActionType.OrderExecuted,
       },
       {
-        orderType: OrderType.MarketIncrease,
+        orderType: [OrderType.MarketIncrease],
         eventName: TradeActionType.OrderExecuted,
         isDepositOrWithdraw: true,
         text: actionTextMap["Deposit-OrderExecuted"],
       },
       {
-        orderType: OrderType.MarketDecrease,
+        orderType: [OrderType.MarketDecrease],
         eventName: TradeActionType.OrderExecuted,
         isDepositOrWithdraw: true,
         text: actionTextMap["Withdraw-OrderExecuted"],
       },
       {
-        orderType: OrderType.MarketIncrease,
+        orderType: [OrderType.MarketIncrease],
         eventName: TradeActionType.OrderCancelled,
       },
       {
-        orderType: OrderType.MarketDecrease,
+        orderType: [OrderType.MarketDecrease],
         eventName: TradeActionType.OrderCancelled,
       },
       {
-        orderType: OrderType.MarketIncrease,
+        orderType: [OrderType.MarketIncrease],
         eventName: TradeActionType.OrderCancelled,
         isDepositOrWithdraw: true,
         text: actionTextMap["Deposit-OrderCancelled"],
       },
       {
-        orderType: OrderType.MarketDecrease,
+        orderType: [OrderType.MarketDecrease],
         eventName: TradeActionType.OrderCancelled,
         isDepositOrWithdraw: true,
         text: actionTextMap["Withdraw-OrderCancelled"],
       },
       {
-        orderType: OrderType.MarketIncrease,
+        orderType: [OrderType.MarketIncrease],
         eventName: TradeActionType.OrderCreated,
         debug: true,
       },
       {
-        orderType: OrderType.MarketDecrease,
+        orderType: [OrderType.MarketDecrease],
         eventName: TradeActionType.OrderCreated,
         debug: true,
       },
       {
-        orderType: OrderType.MarketIncrease,
+        orderType: [OrderType.MarketIncrease],
         eventName: TradeActionType.OrderCreated,
         isDepositOrWithdraw: true,
         text: actionTextMap["Deposit-OrderCreated"],
         debug: true,
       },
       {
-        orderType: OrderType.MarketDecrease,
+        orderType: [OrderType.MarketDecrease],
         eventName: TradeActionType.OrderCreated,
         isDepositOrWithdraw: true,
         text: actionTextMap["Withdraw-OrderCreated"],
@@ -108,7 +108,7 @@ const GROUPS: Groups = [
     ].flatMap((eventName) =>
       [OrderType.LimitIncrease, OrderType.StopIncrease, OrderType.LimitDecrease, OrderType.StopLossDecrease].map(
         (orderType) => ({
-          orderType,
+          orderType: [orderType],
           eventName,
         })
       )
@@ -143,35 +143,35 @@ const GROUPS: Groups = [
     groupName: msg`Swaps`,
     items: [
       {
-        orderType: OrderType.MarketSwap,
+        orderType: [OrderType.MarketSwap],
         eventName: TradeActionType.OrderExecuted,
       },
       {
-        orderType: OrderType.LimitSwap,
+        orderType: [OrderType.LimitSwap],
         eventName: TradeActionType.OrderExecuted,
       },
       {
-        orderType: OrderType.LimitSwap,
+        orderType: [OrderType.LimitSwap],
         eventName: TradeActionType.OrderCreated,
       },
       {
-        orderType: OrderType.LimitSwap,
+        orderType: [OrderType.LimitSwap],
         eventName: TradeActionType.OrderUpdated,
       },
       {
-        orderType: OrderType.LimitSwap,
+        orderType: [OrderType.LimitSwap],
         eventName: TradeActionType.OrderCancelled,
       },
       {
-        orderType: OrderType.MarketSwap,
+        orderType: [OrderType.MarketSwap],
         eventName: TradeActionType.OrderCancelled,
       },
       {
-        orderType: OrderType.LimitSwap,
+        orderType: [OrderType.LimitSwap],
         eventName: TradeActionType.OrderFrozen,
       },
       {
-        orderType: OrderType.MarketSwap,
+        orderType: [OrderType.MarketSwap],
         eventName: TradeActionType.OrderCreated,
         debug: true,
       },
@@ -183,22 +183,22 @@ const GROUPS: Groups = [
       {
         eventName: TradeActionType.OrderCreated,
         isTwap: true,
-        orderType: OrderType.LimitSwap,
+        orderType: [OrderType.LimitSwap],
       },
       {
         eventName: TradeActionType.OrderCancelled,
         isTwap: true,
-        orderType: OrderType.LimitSwap,
+        orderType: [OrderType.LimitSwap],
       },
       {
         eventName: TradeActionType.OrderExecuted,
         isTwap: true,
-        orderType: OrderType.LimitSwap,
+        orderType: [OrderType.LimitSwap],
       },
       {
         eventName: TradeActionType.OrderFrozen,
         isTwap: true,
-        orderType: OrderType.LimitSwap,
+        orderType: [OrderType.LimitSwap],
       },
     ],
   },
@@ -207,7 +207,7 @@ const GROUPS: Groups = [
     items: [
       {
         eventName: TradeActionType.OrderExecuted,
-        orderType: OrderType.Liquidation,
+        orderType: [OrderType.Liquidation],
       },
     ],
   },
@@ -215,14 +215,14 @@ const GROUPS: Groups = [
 
 type Props = {
   value: {
-    orderType: OrderType | OrderType[];
+    orderType: OrderType[];
     eventName: TradeActionType;
     isDepositOrWithdraw: boolean;
     isTwap: boolean;
   }[];
   onChange: (
     value: {
-      orderType: OrderType | OrderType[];
+      orderType: OrderType[];
       eventName: TradeActionType;
       isDepositOrWithdraw: boolean;
       isTwap: boolean;

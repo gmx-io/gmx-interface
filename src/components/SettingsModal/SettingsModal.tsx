@@ -4,7 +4,8 @@ import { useKey } from "react-use";
 
 import { EXECUTION_FEE_CONFIG_V2 } from "config/chains";
 import { isDevelopment } from "config/env";
-import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT, DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/factors";
+import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/twap";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   changeTwapNumberOfPartsValue,

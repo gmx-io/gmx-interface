@@ -22,11 +22,10 @@ import {
   formatUsdPrice,
 } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
-import { isTwapOrder } from "sdk/utils/orders";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceImpactForPosition } from "../fees";
-import { OrderParams, OrderType } from "../orders/types";
+import { OrderType } from "../orders/types";
 import { TokenData, convertToUsd } from "../tokens";
 import { PositionInfo, PositionInfoLoaded } from "./types";
 
@@ -317,22 +316,20 @@ export function formatEstimatedLiquidationTime(hours?: number | undefined) {
   return `${days} days`;
 }
 
-export function getNameByOrder(order: OrderParams, opts: { abbr?: boolean; lower?: boolean } = {}) {
-  const { lower } = opts;
+export function getNameByOrderType(
+  orderType: OrderType | undefined,
+  isTwap: boolean,
+  opts: { abbr?: boolean; lower?: boolean } = {}
+) {
+  const { abbr, lower } = opts;
 
-  if (isTwapOrder(order)) {
+  if (isTwap) {
     if (lower) {
       return t`twap`;
     }
 
     return t`TWAP`;
   }
-
-  return getNameByOrderType(order.orderType, opts);
-}
-
-export function getNameByOrderType(orderType: OrderType | undefined, opts: { abbr?: boolean; lower?: boolean } = {}) {
-  const { abbr, lower } = opts;
 
   if (orderType === OrderType.LimitDecrease) {
     if (abbr) {

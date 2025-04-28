@@ -15,8 +15,7 @@ import {
   OrderInfo,
   PositionOrderInfo,
   SwapOrderInfo,
-  TwapPositionOrderInfo,
-  TwapSwapOrderInfo,
+  TwapOrderInfo,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLimitOrderType,
@@ -25,7 +24,7 @@ import {
   isStopLossOrderType,
   isTwapOrder,
 } from "domain/synthetics/orders";
-import { PositionsInfoData, getNameByOrder } from "domain/synthetics/positions";
+import { PositionsInfoData, getNameByOrderType } from "domain/synthetics/positions";
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { TokensRatioAndSlippage } from "domain/tokens";
@@ -213,13 +212,7 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
   );
 }
 
-export function TwapOrderProgress({
-  order,
-  className,
-}: {
-  order: TwapSwapOrderInfo | TwapPositionOrderInfo;
-  className?: string;
-}) {
+export function TwapOrderProgress({ order, className }: { order: TwapOrderInfo; className?: string }) {
   return (
     <span className={className}>
       ({order.numberOfParts - order.orders.length}/{order.numberOfParts})
@@ -744,7 +737,7 @@ function getSwapRatioText(order: OrderInfo) {
 function OrderItemTypeLabel({ order }: { order: OrderInfo }) {
   const { errors, level } = useOrderErrors(order.key);
 
-  const handle = getNameByOrder(order);
+  const handle = getNameByOrderType(order.orderType, order.isTwap);
 
   if (errors.length === 0) {
     return <>{handle}</>;

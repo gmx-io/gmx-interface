@@ -94,8 +94,12 @@ export type PositionTradeAction = {
   reasonBytes?: string | Uint8Array;
   shouldUnwrapNativeToken: boolean;
   liquidationFeeAmount?: bigint;
-  twapGroupId: string | undefined;
-  numberOfParts: number | undefined;
+  twapParams:
+    | {
+        twapGroupId: string;
+        numberOfParts: number;
+      }
+    | undefined;
   timestamp: number;
   transaction: {
     hash: string;

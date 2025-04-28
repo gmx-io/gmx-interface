@@ -23,7 +23,7 @@ import {
   formatLeverage,
   formatLiquidationPrice,
   getEstimatedLiquidationTimeInHours,
-  getNameByOrder,
+  getNameByOrderType,
 } from "domain/synthetics/positions";
 import { TradeMode, getOrderThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
@@ -849,7 +849,7 @@ function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
 
   return (
     <div key={order.key} className="text-start">
-      {getNameByOrder(order, { abbr: true })}
+      {getNameByOrderType(order.orderType, order.isTwap, { abbr: true })}
       {!isTwap
         ? `: ${triggerThresholdType} ` +
           formatUsd(order.triggerPrice, {

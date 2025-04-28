@@ -45,7 +45,7 @@ export function useDownloadAsCsv({
   orderEventCombinations:
     | {
         eventName?: TradeActionType | undefined;
-        orderType?: OrderType | OrderType[] | undefined;
+        orderType?: OrderType[] | undefined;
         isDepositOrWithdraw?: boolean | undefined;
         isTwap?: boolean | undefined;
       }[]

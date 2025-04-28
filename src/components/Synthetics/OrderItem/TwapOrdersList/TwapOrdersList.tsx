@@ -3,16 +3,14 @@ import cx from "classnames";
 import { useMemo } from "react";
 
 import { isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
-import { TwapPositionOrderInfo } from "domain/synthetics/orders";
-import { TwapSwapOrderInfo } from "domain/synthetics/orders";
 import { Token } from "domain/tokens";
 import { formatDateTime } from "lib/dates";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
-import { OrderType } from "sdk/types/orders";
+import { OrderType, TwapOrderInfo } from "sdk/types/orders";
 
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
-export default function TwapOrdersList({ order }: { order: TwapSwapOrderInfo | TwapPositionOrderInfo }) {
+export default function TwapOrdersList({ order }: { order: TwapOrderInfo }) {
   const sortedOrders = useMemo(
     () => order.orders.sort((a, b) => Number(a.validFromTime) - Number(b.validFromTime)),
     [order.orders]
@@ -23,7 +21,7 @@ export default function TwapOrdersList({ order }: { order: TwapSwapOrderInfo | T
     const firstToExecuteOrder = sortedOrders[0];
     const timeDelta =
       (lastToExecuteOrder.validFromTime - lastToExecuteOrder.updatedAtTime) / BigInt(order.numberOfParts);
-    return new Array(order.numberOfParts - order.orders.length).fill(0).map((_, i) => {
+    return new Array(order.numberOfParts - sortedOrders.length).fill(0).map((_, i) => {
       const validFromTime = firstToExecuteOrder.updatedAtTime - timeDelta * BigInt(i);
       return {
         key: `executed-order-${i}`,
@@ -35,7 +33,7 @@ export default function TwapOrdersList({ order }: { order: TwapSwapOrderInfo | T
         validFromTime,
       };
     });
-  }, [order.numberOfParts, order.orders, sortedOrders]);
+  }, [order.numberOfParts, sortedOrders]);
 
   return (
     <div className="max-h-[216px] overflow-y-auto pl-8 pr-12">

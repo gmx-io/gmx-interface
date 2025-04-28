@@ -119,14 +119,14 @@ async function getParams(
   chainId: number,
   p: TwapSwapOrderParams
 ) {
-  const validFromTimeGetter = makeTwapValidFromTimeGetter(p.duration, p.numberOfParts);
+  const getValidFromTime = makeTwapValidFromTimeGetter(p.duration, p.numberOfParts);
   const uiFeeReceiver = createTwapUiFeeReceiver({ numberOfParts: p.numberOfParts });
   const signerAddress = await signer.getAddress();
 
   const initialCollateralDeltaAmount = subaccount ? p.fromTokenAmount : 0n;
 
   const payload = new Array(p.numberOfParts).fill(0).flatMap((_, i) => {
-    return createSingleSwapTwapOrderPayload({
+    return createSwapTwapOrderPayload({
       account: p.account,
       swapPath: p.swapPath,
       triggerRatio: 0n,
@@ -135,7 +135,7 @@ async function getParams(
       uiFeeReceiver,
       referralCode: p.referralCode,
       initialCollateralDeltaAmount: initialCollateralDeltaAmount / BigInt(p.numberOfParts),
-      validFromTime: validFromTimeGetter(i),
+      validFromTime: getValidFromTime(i),
       fromTokenAddress: p.fromTokenAddress,
       fromTokenAmount: p.fromTokenAmount / BigInt(p.numberOfParts),
       toTokenAddress: p.toTokenAddress,
@@ -149,7 +149,7 @@ async function getParams(
   return payload;
 }
 
-function createSingleSwapTwapOrderPayload(p: CreateSwapTwapOrderPayloadParams) {
+function createSwapTwapOrderPayload(p: CreateSwapTwapOrderPayloadParams) {
   const isNativePayment = p.fromTokenAddress === NATIVE_TOKEN_ADDRESS;
   const orderVaultAddress = getContract(p.chainId, "OrderVault");
   const wntSwapAmount = isNativePayment ? p.fromTokenAmount : 0n;
