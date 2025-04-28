@@ -90,8 +90,8 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import TradeInfoIcon from "../TradeBox/components/TradeInfoIcon";
-import TwapRows from "../TradeBox/components/TwapRows";
+import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
+import TwapRows from "../TwapRows/TwapRows";
 
 import "./PositionSeller.scss";
 

@@ -1,5 +1,7 @@
 import { Trans, t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import cx from "classnames";
+import { formatDuration, type Locale as DateLocale } from "date-fns";
 import { ChangeEvent, useEffect } from "react";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -12,7 +14,8 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import NumberInput from "components/NumberInput/NumberInput";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
-import { useTradeboxChanges } from "../hooks/useTradeboxChanges";
+import { LOCALE_DATE_LOCALE_MAP } from "../DateRangeSelect/DateRangeSelect";
+import { useTradeboxChanges } from "../TradeBox/hooks/useTradeboxChanges";
 
 type Props = {
   duration: TwapDuration;
@@ -25,26 +28,25 @@ type Props = {
   isLong: boolean;
 };
 
-const HOURS_IN_A_DAY = 24;
-
-const getTwapDurationText = (duration: TwapDuration) => {
+export const getTwapDurationText = (duration: TwapDuration, locale: DateLocale) => {
   const hours = Math.floor(duration.hours + duration.minutes / 60);
   const minutes = duration.minutes % 60;
-  if (hours > HOURS_IN_A_DAY * 2) {
-    const daysMessage = t`${Math.floor(hours / HOURS_IN_A_DAY)} days`;
 
-    return hours % HOURS_IN_A_DAY > 0 ? `${daysMessage} and ${hours % HOURS_IN_A_DAY} hours` : daysMessage;
+  if (hours * 60 + minutes < 1) {
+    return t`less than a minute`;
   }
 
-  if (hours > 0 && minutes > 0) {
-    return t`${hours} hours and ${minutes} minutes`;
-  }
-
-  if (hours > 0) {
-    return t`${hours} hours`;
-  }
-
-  return t`${minutes} minutes`;
+  return formatDuration(
+    {
+      hours,
+      minutes,
+    },
+    {
+      format: ["hours", "minutes"],
+      delimiter: " and ",
+      locale,
+    }
+  );
 };
 
 const TwapRows = ({
@@ -57,6 +59,10 @@ const TwapRows = ({
   type,
   isLong,
 }: Props) => {
+  const { _, i18n } = useLingui();
+  const localeStr = i18n.locale;
+  const locale: DateLocale = LOCALE_DATE_LOCALE_MAP[localeStr] ?? LOCALE_DATE_LOCALE_MAP.en;
+
   const { savedTwapNumberOfParts } = useSettings();
   const tradeboxChanges = useTradeboxChanges();
 
@@ -91,7 +97,8 @@ const TwapRows = ({
         <AlertInfoCard>
           <Trans>
             This TWAP order will execute {numberOfParts} {isLong ? "long" : "short"} {type} orders of{" "}
-            {formatUsd(sizeUsd)} each over the next {getTwapDurationText(duration)} for the {marketInfo.name} pool.
+            {formatUsd(sizeUsd)} each over the next {getTwapDurationText(duration, locale)} for the {marketInfo.name}{" "}
+            pool.
           </Trans>
         </AlertInfoCard>
       )}

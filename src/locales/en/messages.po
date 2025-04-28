@@ -515,8 +515,8 @@ msgid "{txnTypeText} TWAP order for"
 msgstr "{txnTypeText} TWAP order for"
 
 #: src/components/Synthetics/TradeBox/components/TwapRows.tsx
-msgid "{hours} hours"
-msgstr "{hours} hours"
+#~ msgid "{hours} hours"
+#~ msgstr "{hours} hours"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX V2 Data Analytics within Telegram"
@@ -547,7 +547,7 @@ msgstr "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 msgid "Stats"
 msgstr "Stats"
 
-#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap tokens at the current market price."
 msgstr "Swap tokens at the current market price."
 
@@ -2216,7 +2216,7 @@ msgstr "Address"
 msgid "Winner:"
 msgstr "Winner:"
 
-#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{tradeTypeLabel} a {positionLabel} position at the current price."
 msgstr "{tradeTypeLabel} a {positionLabel} position at the current price."
 
@@ -2407,7 +2407,7 @@ msgstr "Clear selection"
 msgid "The order will not be executed as its trigger price is beyond the position's liquidation price."
 msgstr "The order will not be executed as its trigger price is beyond the position's liquidation price."
 
-#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap tokens in evenly distributed parts over a specified time."
 msgstr "Swap tokens in evenly distributed parts over a specified time."
 
@@ -2581,7 +2581,7 @@ msgstr "Amount to claim"
 msgid "Job openings at GMX."
 msgstr "Job openings at GMX."
 
-#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap tokens when the price is below the trigger price."
 msgstr "Swap tokens when the price is below the trigger price."
 
@@ -3187,7 +3187,7 @@ msgstr "Read the rules"
 msgid "Lev."
 msgstr "Lev."
 
-#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{tradeTypeLabel} a {positionLabel} position when the trigger price is reached."
 msgstr "{tradeTypeLabel} a {positionLabel} position when the trigger price is reached."
 
@@ -3279,7 +3279,7 @@ msgstr "Decrease the size to match the max. allowed leverage:"
 msgid "Accrued Positive Funding Fee"
 msgstr "Accrued Positive Funding Fee"
 
-#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
 msgid "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} each over the next {2} for the {3} pool."
 msgstr "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} each over the next {2} for the {3} pool."
 
@@ -3640,7 +3640,7 @@ msgstr "GLV is the liquidity provider token for GMX V2 vaults. Consist of severa
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"<0>Top-up</0>\" field to increase the Subaccount Balance."
 msgstr "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"<0>Top-up</0>\" field to increase the Subaccount Balance."
 
-#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
 msgid "<0>every</0> {hours} hours{0}"
 msgstr "<0>every</0> {hours} hours{0}"
 
@@ -3959,7 +3959,7 @@ msgstr "Rebates earned by this account as a trader."
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
@@ -3969,8 +3969,8 @@ msgid "Read more"
 msgstr "Read more"
 
 #: src/components/Synthetics/TradeBox/components/TwapRows.tsx
-msgid "{0} days"
-msgstr "{0} days"
+#~ msgid "{0} days"
+#~ msgstr "{0} days"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "This Year"
@@ -4387,8 +4387,8 @@ msgid "Creating Order..."
 msgstr "Creating Order..."
 
 #: src/components/Synthetics/TradeBox/components/TwapRows.tsx
-msgid "{hours} hours and {minutes} minutes"
-msgstr "{hours} hours and {minutes} minutes"
+#~ msgid "{hours} hours and {minutes} minutes"
+#~ msgstr "{hours} hours and {minutes} minutes"
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Deposit disabled, pending {0} upgrade"
@@ -4445,7 +4445,7 @@ msgstr "Take Profit"
 msgid "Close submitted!"
 msgstr "Close submitted!"
 
-#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
 msgid "Hour(s)"
 msgstr "Hour(s)"
 
@@ -4742,7 +4742,7 @@ msgstr "Decreased"
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Exchange/TradeHistory.jsx
-#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Decrease"
@@ -5537,7 +5537,7 @@ msgstr "Search Pool"
 msgid "GMX Trading Chat"
 msgstr "GMX Trading Chat"
 
-#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{tradeTypeLabel} a {positionLabel} position in evenly distributed parts over a specified time."
 msgstr "{tradeTypeLabel} a {positionLabel} position in evenly distributed parts over a specified time."
 
@@ -5653,7 +5653,7 @@ msgstr "Telegram Bot"
 msgid "Order cancelled."
 msgstr "Order cancelled."
 
-#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
 msgid "<0>every</0> {seconds} seconds"
 msgstr "<0>every</0> {seconds} seconds"
 
@@ -5695,8 +5695,8 @@ msgstr "Current {0} long"
 msgid "{0} orders were not updated as max order limit reached"
 msgstr "{0} orders were not updated as max order limit reached"
 
-#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
-#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap tokens when the trigger price is reached."
 msgstr "Swap tokens when the trigger price is reached."
 
@@ -6226,6 +6226,10 @@ msgstr "Request withdrawal from {0} {longOrShortText}"
 msgid "Select an option"
 msgstr "Select an option"
 
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
+msgid "less than a minute"
+msgstr "less than a minute"
+
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Ecosystem"
 msgstr "Ecosystem"
@@ -6528,7 +6532,7 @@ msgstr "Partially Liquidated"
 msgid "Insufficient GLP balance"
 msgstr "Insufficient GLP balance"
 
-#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
 msgid "Minute(s)"
 msgstr "Minute(s)"
 
@@ -6863,7 +6867,7 @@ msgstr "Error submitting order"
 msgid "V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually."
 msgstr "V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually."
 
-#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
 msgid "Duration"
 msgstr "Duration"
 
@@ -6913,7 +6917,7 @@ msgstr "What areas can we improve to make your experience better?"
 msgid "Select a collateral"
 msgstr "Select a collateral"
 
-#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
 msgid "Size per part"
 msgstr "Size per part"
 
@@ -7570,7 +7574,7 @@ msgstr "Confirming..."
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Exchange/TradeHistory.jsx
-#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Increase"
@@ -7624,8 +7628,8 @@ msgid "{ordersText} cancelled"
 msgstr "{ordersText} cancelled"
 
 #: src/components/Synthetics/TradeBox/components/TwapRows.tsx
-msgid "{minutes} minutes"
-msgstr "{minutes} minutes"
+#~ msgid "{minutes} minutes"
+#~ msgstr "{minutes} minutes"
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "take profit"
@@ -7940,7 +7944,7 @@ msgstr "Enter a trigger price"
 msgid "Vested GLP not withdrawn"
 msgstr "Vested GLP not withdrawn"
 
-#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
 msgid "<0>every</0> {minutes} minutes{0}"
 msgstr "<0>every</0> {minutes} minutes{0}"
 
@@ -8251,7 +8255,7 @@ msgstr "Activate Subaccount"
 msgid "Swap"
 msgstr "Swap"
 
-#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "long"
 msgstr "long"
@@ -8277,8 +8281,8 @@ msgstr "Deposit {0} USD into {1} {longOrShortText}"
 msgid "Distribution"
 msgstr "Distribution"
 
-#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
-#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{tradeTypeLabel} a {positionLabel} position when the price is below the trigger price."
 msgstr "{tradeTypeLabel} a {positionLabel} position when the price is below the trigger price."
 
@@ -8448,7 +8452,7 @@ msgstr "24h Volume"
 msgid "Total Stats"
 msgstr "Total Stats"
 
-#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
 msgid "Frequency"
 msgstr "Frequency"
 
@@ -8523,7 +8527,7 @@ msgstr "Sell"
 msgid "Сonvert {0} to {1}"
 msgstr "Сonvert {0} to {1}"
 
-#: src/components/Synthetics/TradeBox/components/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
 msgstr "short"
@@ -8606,7 +8610,7 @@ msgstr "Request Deposit"
 msgid "Deposit not enough to cover fees"
 msgstr "Deposit not enough to cover fees"
 
-#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
 msgid "Number of Parts"
 msgstr "Number of Parts"
 
