@@ -8,6 +8,7 @@ import {
   MORPH_MAINNET,
   OPTIMISM_MAINNET,
   SEPOLIA_TESTNET,
+  BASE_MAINNET,
 } from "./chains";
 
 export const GMX_STATS_API_URL = process.env.REACT_APP_STATS_API_URL || "https://stats.gmx.io/api"; // TODO - launch stats api
@@ -25,6 +26,7 @@ const BACKEND_URLS = {
   [BLAST_SEPOLIA_TESTNET]: "https://t3-trade-history-blast-sepolia-9dfi.onrender.com",
   [MORPH_HOLESKY]: "https://t3-trade-history-blast-sepolia-9dfi.onrender.com",
   [MORPH_MAINNET]: "https://t3-trade-history-api-morph-mainnet.onrender.com",
+  [BASE_MAINNET]: "https://t3-trade-history-api-optimism-mainnet.onrender.com", // Note: this is correct, base is using repurposed optimism server
 };
 
 export function getServerBaseUrl(chainId: number) {

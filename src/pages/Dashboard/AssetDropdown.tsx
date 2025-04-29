@@ -10,7 +10,7 @@ import { ICONLINKS, PLATFORM_TOKENS } from "config/tokens";
 import { addTokenToMetamask } from "lib/wallets";
 import { useDynamicChainId } from "lib/chains";
 import { Token } from "domain/tokens";
-import { ARBITRUM, AVALANCHE, MORPH_MAINNET } from "config/chains";
+import { ARBITRUM, AVALANCHE, MORPH_MAINNET, BASE_MAINNET } from "config/chains";
 import { getIcon } from "config/icons";
 import { DynamicWalletContext } from "store/dynamicwalletprovider";
 import { useContext } from "react";
@@ -18,6 +18,7 @@ import { useContext } from "react";
 const avalancheIcon = getIcon(AVALANCHE, "network");
 const arbitrumIcon = getIcon(ARBITRUM, "network");
 const morphIcon = getIcon(MORPH_MAINNET, "network");
+const baseIcon = getIcon(BASE_MAINNET, "network");
 
 type Props = {
   assetSymbol: string;
@@ -31,7 +32,7 @@ function AssetDropdown({ assetSymbol, assetInfo }: Props) {
   // const { active } = useWeb3React();
   const { chainId } = useDynamicChainId();
   if (!chainId || !assetSymbol) return null;
-  let { coingecko, arbitrum, avalanche, reserves, morph } = ICONLINKS[chainId][assetSymbol] || {};
+  let { coingecko, arbitrum, avalanche, reserves, morph, base } = ICONLINKS[chainId][assetSymbol] || {};
   const unavailableTokenSymbols =
     {
       42161: ["ETH"],
@@ -89,6 +90,14 @@ function AssetDropdown({ assetSymbol, assetInfo }: Props) {
             {morph && (
               <ExternalLink href={morph} className="asset-item">
                 <img className="asset-item-icon" src={morphIcon} alt="Open in explorer" />
+                <p>
+                  <Trans>Open in Explorer</Trans>
+                </p>
+              </ExternalLink>
+            )}
+            {base && (
+              <ExternalLink href={base} className="asset-item">
+                <img className="asset-item-icon" src={baseIcon} alt="Open in explorer" />
                 <p>
                   <Trans>Open in Explorer</Trans>
                 </p>

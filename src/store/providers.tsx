@@ -1,5 +1,5 @@
 import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
-import { MORPH_HOLESKY, MORPH_MAINNET, OPTIMISM_MAINNET, SEPOLIA_TESTNET, getDynamicChain } from "config/chains";
+import { MORPH_HOLESKY, MORPH_MAINNET, OPTIMISM_MAINNET, SEPOLIA_TESTNET, BASE_MAINNET, getDynamicChain } from "config/chains";
 import * as React from "react";
 import { EthersExtension } from "@dynamic-labs/ethers-v5";
 
@@ -93,9 +93,9 @@ export function Providers({ children }: ProvidersProps) {
 
     `;
 
-  const enabledNetworks = [MORPH_HOLESKY, MORPH_MAINNET];
+  const enabledNetworks = [MORPH_MAINNET, BASE_MAINNET];
   if (process.env.NODE_ENV === "development" || process.env.DEPLOYED_ENV === "preview") {
-    enabledNetworks.push(SEPOLIA_TESTNET, OPTIMISM_MAINNET);
+    enabledNetworks.push(MORPH_HOLESKY, SEPOLIA_TESTNET, OPTIMISM_MAINNET);
   }
   const DynamicNetworks = getDynamicChain(enabledNetworks);
 

@@ -28,6 +28,7 @@ import {
   BLAST_SEPOLIA_TESTNET,
   MORPH_HOLESKY,
   MORPH_MAINNET,
+  BASE_MAINNET,
 } from "config/chains";
 import { DECREASE, getOrderKey, INCREASE, SWAP, USD_DECIMALS } from "lib/legacy";
 
@@ -402,12 +403,14 @@ export function useExecutionFee(library, active, chainId, infoTokens) {
     chainId === OPTIMISM_MAINNET ||
     chainId === BLAST_SEPOLIA_TESTNET ||
     chainId === MORPH_HOLESKY 
-  //  chainId === MORPH_MAINNET
   ) {
     multiplier = 2150000;
   }
   // setting new multiplier for the morph mainnet with lower gas fee 
   if (chainId === MORPH_MAINNET) {
+    multiplier = 700000;
+  }
+  if (chainId === BASE_MAINNET) {
     multiplier = 700000;
   }
   // multiplier for Avalanche is just the average gas usage
@@ -530,7 +533,7 @@ export function useTotalGmxSupply() {
 
 export function useTotalGmxStaked() {
   const stakedGmxTrackerAddressMorph = getContract(MORPH_MAINNET, "StakedGmxTracker");
-
+  const stakedGmxTrackerAddressBase = getContract(BASE_MAINNET, "StakedGmxTracker");
   const stakedGmxTrackerAddressOptimism = getContract(OPTIMISM_MAINNET, "StakedGmxTracker");
   let totalStakedGmx = useRef(bigNumberify(0));
   const { data: stakedGmxSupplyMorph, mutate: updateStakedGmxSupplyMorph } = useSWR<BigNumber>(
@@ -557,20 +560,34 @@ export function useTotalGmxStaked() {
       fetcher: dynamicContractFetcher(undefined, Token),
     }
   );
+  const { data: stakedGmxSupplyBase, mutate: updateStakedGmxSupplyBase } = useSWR<BigNumber>(
+    [
+      `StakeV2:stakedGmxSupply:${BASE_MAINNET}`,
+      BASE_MAINNET,
+      getContract(BASE_MAINNET, "GMX"),
+      "balanceOf",
+      stakedGmxTrackerAddressBase,
+    ],
+    {
+      fetcher: dynamicContractFetcher(undefined, Token),
+    }
+  );
 
   const mutate = useCallback(() => {
     updateStakedGmxSupplyMorph();
     updateStakedGmxSupplyOptimism();
-  }, [updateStakedGmxSupplyMorph, updateStakedGmxSupplyOptimism]);
+    updateStakedGmxSupplyBase();
+  }, [updateStakedGmxSupplyMorph, updateStakedGmxSupplyOptimism, updateStakedGmxSupplyBase]);
 
-  if (stakedGmxSupplyMorph && stakedGmxSupplyOptimism) {
-    let total = bigNumberify(stakedGmxSupplyMorph)!.add(stakedGmxSupplyOptimism);
+  if (stakedGmxSupplyMorph && stakedGmxSupplyOptimism && stakedGmxSupplyBase) {
+    let total = bigNumberify(stakedGmxSupplyMorph)!.add(stakedGmxSupplyOptimism).add(stakedGmxSupplyBase);
     totalStakedGmx.current = total;
   }
 
   return {
     avax: stakedGmxSupplyOptimism,
     arbitrum: stakedGmxSupplyMorph,
+    base: stakedGmxSupplyBase,
     total: totalStakedGmx.current,
     mutate,
   };
