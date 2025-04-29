@@ -21,7 +21,7 @@ import {
   getFundingFee,
   getLeverageStr,
 } from "lib/legacy";
-import { getConstant, getExplorerUrl } from "config/chains";
+import { getConstant, getExplorerUrl, MORPH_MAINNET } from "config/chains";
 import { useExecutionFee, cancelMultipleOrders, dynamicApprovePlugin } from "domain/legacy";
 
 import { getContract } from "config/contracts";
@@ -387,6 +387,7 @@ export const Exchange = forwardRef((props, ref) => {
   const active = walletContext.active;
   const account = walletContext.account;
   const web3Provider = walletContext.signer;
+  const morph = chainId === MORPH_MAINNET;
 
   //const [active, setActive] = useState(false);
   // const [account, setAccount] = useState(null);
@@ -958,13 +959,13 @@ export const Exchange = forwardRef((props, ref) => {
     <div className="Exchange page-layout">
       {showBanner && <ExchangeBanner hideBanner={hideBanner} />}
       <div className="Exchange-content">
-        <Banner id="bridge-notice">
+        {morph ? <Banner id="bridge-notice">
           <Trans>
             Need to bridge tokens to Morph? <ExternalLink href="https://meson.fi/">Meson Bridge</ExternalLink> for
             transfers from multiple chains, or{" "}
             <ExternalLink href="https://bridge.morphl2.io/">Morph Bridge</ExternalLink> for direct transfers.
           </Trans>
-        </Banner>
+        </Banner> : null}
       </div>
       <div className="Exchange-content">
         <div className="Exchange-left">

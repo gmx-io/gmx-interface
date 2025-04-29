@@ -273,6 +273,22 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
             >
               Now Live on{" "}
             </h2>
+            <a href="https://base.org" target="_blank" rel="noopener noreferrer">
+              <img
+                style={{ height: "4rem", width: "auto" }}
+                src="https://raw.githubusercontent.com/base-org/brand-kit/001c0e9b40a67799ebe0418671ac4e02a0c683ce/logo/wordmark/Base_Wordmark_Blue.svg"
+                alt="Base"
+              />
+            </a>
+            <span style={{
+                margin: 0,
+                fontSize: mobile ? "2rem" : "2rem",
+                fontWeight: 500,
+                color: "rgb(210, 210, 210)",
+                display: "flex",
+                alignItems: "center",
+                marginBottom: mobile ? "-10px" : "initial",
+              }}>and</span>
             <a href="https://morphl2.io" target="_blank" rel="noopener noreferrer">
               <img
                 style={{ height: "8rem", width: "auto" }}
