@@ -14,6 +14,7 @@ import {
   MORPH_HOLESKY,
   getChainName,
   MORPH_MAINNET,
+  BASE_MAINNET,
 } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useDynamicChainId } from "lib/chains";
@@ -72,6 +73,12 @@ if (isDevelopment()) {
     value: MORPH_MAINNET,
     icon: getIcon(MORPH_MAINNET, "network"),
     color: "#264f79",
+  });
+  NETWORK_OPTIONS.push({
+    label: getChainName(BASE_MAINNET),
+    value: BASE_MAINNET,
+    icon: getIcon(BASE_MAINNET, "network"),
+    color: "#2151f5",
   });
 }
 

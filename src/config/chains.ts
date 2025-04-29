@@ -11,6 +11,7 @@ import sepoliaTesnet from "img/ic_sepolia_testnet_24.svg";
 import optimismIcn from "img/icn_opt_24.svg";
 import blastIcn from "img/icn_blast.svg";
 import morphIcn from "img/morph_logo.svg";
+import baseIcn from "img/icn_base_24.svg";
 
 const { parseEther } = ethers.utils;
 
@@ -28,9 +29,10 @@ export const BLAST_SEPOLIA_TESTNET = 168587773;
 export const MORPH_HOLESKY = 2810;
 export const MORPH_MAINNET = 2818;
 export const OPBNB_TESTNET = 5611;
+export const BASE_MAINNET = 8453;
 
 // TODO take it from web3
-export const DEFAULT_CHAIN_ID = MORPH_MAINNET;
+export const DEFAULT_CHAIN_ID = BASE_MAINNET;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE, OPTIMISM_MAINNET];
@@ -44,7 +46,8 @@ if (isDevelopment()) {
     BLAST_SEPOLIA_TESTNET,
     MORPH_HOLESKY,
     MORPH_MAINNET,
-    OPBNB_TESTNET
+    OPBNB_TESTNET,
+    BASE_MAINNET,
   );
 }
 
@@ -57,6 +60,7 @@ export const IS_NETWORK_DISABLED = {
   [BLAST_SEPOLIA_TESTNET]: false,
   [MORPH_HOLESKY]: false,
   [MORPH_MAINNET]: false,
+  [BASE_MAINNET]: false,
   [OPBNB_TESTNET]: false,
 };
 
@@ -74,6 +78,7 @@ export const CHAIN_NAMES_MAP = {
   [MORPH_HOLESKY]: "Morph Holesky",
   [MORPH_MAINNET]: "MorphL2",
   [OPBNB_TESTNET]: "OP Bnb Testnet",
+  [BASE_MAINNET]: "Base",
 };
 
 export const GAS_PRICE_ADJUSTMENT_MAP = {
@@ -243,6 +248,19 @@ const constants = {
     // contract requires that execution fee be strictly greater than instead of gte
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.000300001"),
   },
+  [BASE_MAINNET]: {
+    nativeTokenSymbol: "ETH",
+    wrappedTokenSymbol: "WETH",
+    defaultCollateralSymbol: "USDC",
+    defaultFlagOrdersEnabled: false,
+    positionReaderPropsLength: 9,
+    v2: true,
+
+    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.0003"),
+    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0003"),
+    // contract requires that execution fee be strictly greater than instead of gte
+    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.000300001"),
+  },
   [OPBNB_TESTNET]: {
     nativeTokenSymbol: "ETH",
     wrappedTokenSymbol: "WETH",
@@ -288,6 +306,7 @@ export const RPC_PROVIDERS = {
   [BLAST_SEPOLIA_TESTNET]: ["https://sepolia.blast.io"],
   [MORPH_HOLESKY]: ["https://rpc-quicknode-holesky.morphl2.io"],
   [MORPH_MAINNET]: ["https://rpc-quicknode.morphl2.io"],
+  [BASE_MAINNET]: ["https://mainnet.base.org"],
   [OPBNB_TESTNET]: ["https://opbnb-testnet.publicnode.com"],
 };
 
@@ -478,6 +497,21 @@ export const DYNAMIC_NETWORK_METADATA: DynamicWalletNetworkMetadata[] = [
     privateCustomerRpcUrls: RPC_PROVIDERS[MORPH_MAINNET],
   },
   {
+    blockExplorerUrls: [getExplorerUrl(BASE_MAINNET)],
+    chainId: BASE_MAINNET,
+    iconUrls: [baseIcn],
+    name: "Base",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    networkId: BASE_MAINNET,
+    rpcUrls: RPC_PROVIDERS[BASE_MAINNET],
+    vanityName: "Base",
+    privateCustomerRpcUrls: RPC_PROVIDERS[BASE_MAINNET],
+  },
+  {
     blockExplorerUrls: [getExplorerUrl(OPBNB_TESTNET)],
     chainId: OPBNB_TESTNET,
     iconUrls: [morphIcn],
@@ -616,6 +650,17 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
     rpcUrls: RPC_PROVIDERS[MORPH_MAINNET],
     blockExplorerUrls: [getExplorerUrl(MORPH_MAINNET)],
   },
+  [BASE_MAINNET]: {
+    chainId: "0x" + BASE_MAINNET.toString(16),
+    chainName: "Base",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    rpcUrls: RPC_PROVIDERS[BASE_MAINNET],
+    blockExplorerUrls: [getExplorerUrl(BASE_MAINNET)],
+  },
   [MORPH_HOLESKY]: {
     chainId: "0x" + MORPH_HOLESKY.toString(16),
     chainName: "Morph Holesky",
@@ -711,6 +756,8 @@ export function getExplorerUrl(chainId) {
       return "https://explorer-holesky.morphl2.io/";
     case MORPH_MAINNET:
       return "https://explorer.morphl2.io/";
+    case BASE_MAINNET:
+      return "https://basescan.org/";
     case OPBNB_TESTNET:
       return "https://testnet.opbnbscan.com/";
     default:

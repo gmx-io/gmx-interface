@@ -10,6 +10,7 @@ import {
   OPTIMISM_GOERLI_TESTNET,
   OPTIMISM_MAINNET,
   SEPOLIA_TESTNET,
+  BASE_MAINNET,
 } from "config/chains";
 
 export const chainlinkClient = createClient(ETH_MAINNET, "chainLink");
@@ -39,6 +40,8 @@ export function getGmxGraphClient(chainId: number) {
   } else if (chainId === MORPH_HOLESKY) {
     return null;
   } else if (chainId === MORPH_MAINNET) {
+    return null;
+  } else if (chainId === BASE_MAINNET) {
     return null;
   }
 

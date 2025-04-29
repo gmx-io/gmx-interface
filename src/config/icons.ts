@@ -7,6 +7,7 @@ import {
   BLAST_SEPOLIA_TESTNET,
   MORPH_HOLESKY,
   MORPH_MAINNET,
+  BASE_MAINNET,
   OPTIMISM_GOERLI_TESTNET,
   OPTIMISM_MAINNET,
   SEPOLIA_TESTNET,
@@ -21,7 +22,7 @@ import optimismIcn from "img/icn_opt_24.svg";
 import tmxImg from "img/ic_tmx.svg";
 import tlpImg from "img/ic_tlp.svg";
 import blastIcn from "img/icn_blast.svg";
-
+import baseIcn from "img/icn_base_24.svg";
 const ICONS = {
   [ARBITRUM]: {
     network: arbitrum,
@@ -70,6 +71,11 @@ const ICONS = {
   },
   [MORPH_MAINNET]: {
     network: morphIcn,
+    gmx: tmxImg,
+    glp: tlpImg,
+  },
+  [BASE_MAINNET]: {
+    network: baseIcn,
     gmx: tmxImg,
     glp: tlpImg,
   },
