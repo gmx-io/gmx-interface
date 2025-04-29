@@ -506,7 +506,6 @@ msgid "Subaccount deactivated"
 msgstr "Subaccount deactivated"
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-#: src/pages/Stake/Stake.tsx
 msgid "Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets."
 msgstr "Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets."
 
@@ -1955,8 +1954,8 @@ msgid "Buy submitted."
 msgstr "Buy submitted."
 
 #: src/pages/Stake/Stake.tsx
-msgid "Incentives & Prizes"
-msgstr "Incentives & Prizes"
+#~ msgid "Incentives & Prizes"
+#~ msgstr "Incentives & Prizes"
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Fees may vary depending on which asset you sell GLP for. <0/>Enter the amount of GLP you want to redeem in the order form, then check here to compare fees."
@@ -2601,8 +2600,8 @@ msgid "Not enough Available Swap Liquidity to fill the Order."
 msgstr "Not enough Available Swap Liquidity to fill the Order."
 
 #: src/pages/Stake/Stake.tsx
-msgid "Earn prizes by participating in GMX Trading Competitions."
-msgstr "Earn prizes by participating in GMX Trading Competitions."
+#~ msgid "Earn prizes by participating in GMX Trading Competitions."
+#~ msgstr "Earn prizes by participating in GMX Trading Competitions."
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Confirm Long"
@@ -2890,6 +2889,8 @@ msgstr "SL"
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/Stake.tsx
+#: src/pages/Stake/Stake.tsx
 #: src/pages/Stake/StakeModal.tsx
 #: src/pages/Stake/StakeModal.tsx
 msgid "Stake"
@@ -3099,8 +3100,8 @@ msgid "Swap amount from {0} to {1} exceeds {2} acceptable amount. Can only recei
 msgstr "Swap amount from {0} to {1} exceeds {2} acceptable amount. Can only receive {3}."
 
 #: src/pages/Stake/Stake.tsx
-msgid "Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2."
-msgstr "Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2."
+#~ msgid "Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2."
+#~ msgstr "Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2."
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Withdraw disabled, pending {0} upgrade"
@@ -3591,7 +3592,6 @@ msgid "No claims yet"
 msgstr "No claims yet"
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-#: src/pages/Stake/Stake.tsx
 msgid "Select a GLV Vault"
 msgstr "Select a GLV Vault"
 
@@ -3808,8 +3808,8 @@ msgstr "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} 
 
 #: src/pages/Stake/Stake.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
-msgid "Earn"
-msgstr "Earn"
+#~ msgid "Earn"
+#~ msgstr "Earn"
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -3829,8 +3829,8 @@ msgid "Your opinions and experiences matter to us. Your feedback helps us unders
 msgstr "Your opinions and experiences matter to us. Your feedback helps us understand what we are doing well and where we can make enhancements."
 
 #: src/pages/Stake/Stake.tsx
-msgid "Stake <0>GMX</0> and buy <1>GM</1> or <2>GLP</2> to earn rewards."
-msgstr "Stake <0>GMX</0> and buy <1>GM</1> or <2>GLP</2> to earn rewards."
+#~ msgid "Stake <0>GMX</0> and buy <1>GM</1> or <2>GLP</2> to earn rewards."
+#~ msgstr "Stake <0>GMX</0> and buy <1>GM</1> or <2>GLP</2> to earn rewards."
 
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
@@ -4705,7 +4705,6 @@ msgid "DEPTH"
 msgstr "DEPTH"
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-#: src/pages/Stake/Stake.tsx
 msgid "Select a GM Pool"
 msgstr "Select a GM Pool"
 
@@ -6796,7 +6795,6 @@ msgid "Insufficient {nativeTokenSymbol} balance"
 msgstr "Insufficient {nativeTokenSymbol} balance"
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-#: src/pages/Stake/Stake.tsx
 msgid "Pools that enable trading for a single market, backed by the tokens listed in brackets."
 msgstr "Pools that enable trading for a single market, backed by the tokens listed in brackets."
 
@@ -8224,6 +8222,10 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{t
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Enable deposit sent."
 msgstr "Enable deposit sent."
+
+#: src/pages/Stake/Stake.tsx
+msgid "Deposit <0>GMX</0>, <1>esGMX</1> and <2>GLP</2> tokens to earn rewards."
+msgstr "Deposit <0>GMX</0>, <1>esGMX</1> and <2>GLP</2> tokens to earn rewards."
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Withdrawing {0} from {positionText}"
