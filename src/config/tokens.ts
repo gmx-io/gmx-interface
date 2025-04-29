@@ -829,7 +829,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "Wrapped Bitcoin (cbBTC)",
-      symbol: "WBTC (cbBTC)",
+      symbol: "WBTC",
       address: "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
       decimals: 8,
       isStable: false,
