@@ -66,7 +66,7 @@ export type Order = {
 };
 
 export type SwapOrderInfo = Order & {
-  __orderInfoType: "swap";
+  isSwap: true;
   isTwap: false;
   swapPathStats?: SwapPathStats;
   triggerRatio?: TokensRatio | TokensRatioAndSlippage;
@@ -75,7 +75,7 @@ export type SwapOrderInfo = Order & {
 };
 
 export type PositionOrderInfo = Order & {
-  __orderInfoType: "position";
+  isSwap: false;
   isTwap: false;
   marketInfo: MarketInfo;
   swapPathStats?: SwapPathStats;
@@ -91,7 +91,7 @@ export type TwapOrderInfo<T extends PositionOrderInfo | SwapOrderInfo = Position
   T,
   "isTwap"
 > & {
-  __orderInfoType: T["__orderInfoType"];
+  isSwap: T extends SwapOrderInfo ? true : false;
 } & TwapOrderParams<T>;
 
 export type OrderInfo = SwapOrderInfo | PositionOrderInfo | TwapOrderInfo;

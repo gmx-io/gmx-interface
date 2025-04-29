@@ -77,19 +77,19 @@ export function isTwapOrder<T extends OrderParams>(orderInfo: T): orderInfo is E
 }
 
 export function isTwapSwapOrder(orderInfo: OrderInfo): orderInfo is TwapOrderInfo<SwapOrderInfo> {
-  return orderInfo.isTwap && orderInfo.__orderInfoType === "swap";
+  return orderInfo.isTwap && orderInfo.isSwap;
 }
 
 export function isTwapPositionOrder(orderInfo: OrderInfo): orderInfo is TwapOrderInfo<PositionOrderInfo> {
-  return orderInfo.isTwap && orderInfo.__orderInfoType === "position";
+  return orderInfo.isTwap && !orderInfo.isSwap;
 }
 
 export function isSwapOrder(orderInfo: OrderInfo): orderInfo is SwapOrderInfo {
-  return orderInfo.__orderInfoType === "swap";
+  return orderInfo.isSwap;
 }
 
 export function isPositionOrder(orderInfo: OrderInfo): orderInfo is PositionOrderInfo {
-  return orderInfo.__orderInfoType === "position";
+  return !orderInfo.isTwap && !orderInfo.isSwap;
 }
 
 export function getOrderInfo(p: {
@@ -182,7 +182,7 @@ export function getOrderInfo(p: {
       triggerRatio,
       initialCollateralToken,
       targetCollateralToken,
-      __orderInfoType: "swap",
+      isSwap: true,
       isTwap: false,
     };
 
@@ -236,7 +236,7 @@ export function getOrderInfo(p: {
       acceptablePrice,
       triggerPrice,
       triggerThresholdType,
-      __orderInfoType: "position",
+      isSwap: false,
       isTwap: false,
     };
 
