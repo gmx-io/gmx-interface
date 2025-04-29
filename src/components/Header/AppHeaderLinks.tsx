@@ -12,6 +12,8 @@ import logoImgLight from "img/logo_t3-light.svg";
 import logoImgDark from "img/logo_t3-dark.svg";
 import { ThemeContext } from "store/theme-provider";
 import { useBreakpoints } from "hooks/useBreakpoints";
+import { useDynamicChainId } from "lib/chains";
+import { MORPH_MAINNET } from "config/chains";
 
 type Props = {
   small?: boolean;
@@ -30,6 +32,7 @@ export function AppHeaderLinks({
 }: Props) {
   const themeContext = React.useContext(ThemeContext);
   const { mobile } = useBreakpoints();
+  const { chainId } = useDynamicChainId();
 
   const linkVariants = {
     initial: { opacity: 0.8, scale: 1 },
@@ -172,24 +175,25 @@ export function AppHeaderLinks({
           <Trans>Docs</Trans> <FiExternalLink fontSize={14} style={{ marginLeft: "0.5rem", opacity: 0.25 }} />
         </ExternalLink>
       </motion.div>
-      <motion.div
-        className="App-header-link-container"
-        data-tour="step-2"
-        style={{ display: "flex", alignItems: "center" }}
-        variants={linkVariants}
-        initial="initial"
-        whileHover="hover"
-        whileTap="tap"
+      {chainId === MORPH_MAINNET ? (
+        <motion.div
+          className="App-header-link-container"
+          data-tour="step-2"
+          style={{ display: "flex", alignItems: "center" }}
+          variants={linkVariants}
+          initial="initial"
+          whileHover="hover"
+      whileTap="tap"
+    >
+      <HeaderLink
+        to="/v1"
+        redirectPopupTimestamp={redirectPopupTimestamp}
+        showRedirectModal={showRedirectModal}
+        style={{ width: "100%" }}
       >
-        <HeaderLink
-          to="/v1"
-          redirectPopupTimestamp={redirectPopupTimestamp}
-          showRedirectModal={showRedirectModal}
-          style={{ width: "100%" }}
-        >
-          <Trans>V1</Trans>
-        </HeaderLink>
-      </motion.div>
+        <Trans>V1</Trans>
+      </HeaderLink>
+    </motion.div>) : null}
       {small && !isHomeSite() && (
         <motion.div
           className="App-header-link-container"
