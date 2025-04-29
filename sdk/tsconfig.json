@@ -17,7 +17,7 @@
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",
     "declaration": true,
-    "declarationDir": "./build",
+    "declarationDir": "./build/types",
     "moduleResolution": "node",
     "composite": true,
     "resolveJsonModule": true,
