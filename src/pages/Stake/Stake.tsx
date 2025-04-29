@@ -36,9 +36,9 @@ import { UnstakeModal } from "./UnstakeModal";
 import { useProcessedData } from "./useProcessedData";
 import { Vesting } from "./Vesting";
 
-import "./EarnV2.css";
+import "./Stake.css";
 
-export default function EarnV2() {
+export default function Stake() {
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
   const incentiveStats = useIncentiveStats(chainId);

@@ -39,7 +39,7 @@ msgid "Decentralized Trading Protocol"
 msgstr "Decentralized Trading Protocol"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#: src/pages/Earn/ClaimModal.tsx
+#: src/pages/Stake/ClaimModal.tsx
 msgid "Claim submitted!"
 msgstr "Claim submitted!"
 
@@ -70,7 +70,7 @@ msgstr "receive"
 msgid "GMX Referrals Dashboard"
 msgstr "GMX Referrals Dashboard"
 
-#: src/pages/Earn/ClaimModal.tsx
+#: src/pages/Stake/ClaimModal.tsx
 msgid "Stake GMX Rewards"
 msgstr "Stake GMX Rewards"
 
@@ -140,9 +140,9 @@ msgstr "Yield Optimizer on Avalanche"
 msgid "Orders ({0})"
 msgstr "Orders ({0})"
 
-#: src/pages/Earn/Vesting.tsx
-#: src/pages/Earn/Vesting.tsx
-#: src/pages/Earn/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "You have not deposited any tokens for vesting."
 msgstr "You have not deposited any tokens for vesting."
 
@@ -192,7 +192,7 @@ msgstr "Failed Limit"
 msgid "Decentralized<0/>Perpetual Exchange"
 msgstr "Decentralized<0/>Perpetual Exchange"
 
-#: src/pages/Earn/VesterDepositModal.tsx
+#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Current Reserved"
 msgstr "Current Reserved"
 
@@ -233,7 +233,7 @@ msgstr "{0} can be used to buy GM for this market up to the specified buying cap
 msgid "Execute Market Swap"
 msgstr "Execute Market Swap"
 
-#: src/pages/Earn/VesterDepositModal.tsx
+#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Deposit submitted!"
 msgstr "Deposit submitted!"
 
@@ -300,8 +300,8 @@ msgid "Max pool capacity reached for {0}<0/><1/>Please mint GLP using another to
 msgstr "Max pool capacity reached for {0}<0/><1/>Please mint GLP using another token"
 
 #: src/pages/Earn/EarnV1.jsx
-msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
-msgstr "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
+#~ msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
+#~ msgstr "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Enter a value"
@@ -350,7 +350,7 @@ msgstr "{updateOrdersCount} TP/SL order(s) updated"
 msgid "Stop market price above mark price"
 msgstr "Stop market price above mark price"
 
-#: src/pages/Earn/StakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 msgid "Pending {stakingTokenSymbol} approval"
 msgstr "Pending {stakingTokenSymbol} approval"
 
@@ -358,8 +358,7 @@ msgstr "Pending {stakingTokenSymbol} approval"
 msgid "Open Positions"
 msgstr "Open Positions"
 
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/UnstakeModal.tsx
+#: src/pages/Stake/UnstakeModal.tsx
 msgid "Unstaking..."
 msgstr "Unstaking..."
 
@@ -483,7 +482,7 @@ msgstr "Insufficient liquidity in the {0} market pool. Select a different pool f
 msgid "Confirm Limit Order"
 msgstr "Confirm Limit Order"
 
-#: src/pages/Earn/AffiliateVesterWithdrawModal.tsx
+#: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
 msgid "Confirm Withdraw"
 msgstr "Confirm Withdraw"
 
@@ -506,8 +505,8 @@ msgstr "You can transfer ETH from other networks to Arbitrum using any of the be
 msgid "Subaccount deactivated"
 msgstr "Subaccount deactivated"
 
-#: src/pages/Earn/EarnV2.tsx
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+#: src/pages/Stake/Stake.tsx
 msgid "Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets."
 msgstr "Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets."
 
@@ -528,7 +527,7 @@ msgstr "Stats"
 msgid "Claim Price Impact Rebates"
 msgstr "Claim Price Impact Rebates"
 
-#: src/pages/Earn/VesterDepositModal.tsx
+#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Max Capacity"
 msgstr "Max Capacity"
 
@@ -608,7 +607,7 @@ msgstr "Acceptable Price Impact"
 msgid "Add to Metamask"
 msgstr "Add to Metamask"
 
-#: src/pages/Earn/VesterDepositModal.tsx
+#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Insufficient staked tokens"
 msgstr "Insufficient staked tokens"
 
@@ -664,7 +663,7 @@ msgstr "Enable leverage failed."
 msgid "Create or Import a Wallet"
 msgstr "Create or Import a Wallet"
 
-#: src/pages/Earn/ClaimModal.tsx
+#: src/pages/Stake/ClaimModal.tsx
 msgid "Stake esGMX Rewards"
 msgstr "Stake esGMX Rewards"
 
@@ -697,9 +696,9 @@ msgstr "Buy GMX using Decentralized Exchange Aggregators:"
 msgid "Min. Required Collateral"
 msgstr "Min. Required Collateral"
 
-#: src/pages/Earn/Vesting.tsx
-#: src/pages/Earn/Vesting.tsx
-#: src/pages/Earn/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
 msgstr "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
 
@@ -882,13 +881,8 @@ msgid "This value may be higher on other websites due to the collateral of posit
 msgstr "This value may be higher on other websites due to the collateral of positions being included in the calculation."
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/GlpCard.tsx
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/GlpCard.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Rewards"
 msgstr "Rewards"
 
@@ -929,7 +923,7 @@ msgstr "Stop Price"
 msgid "Positions ({positionsCount})"
 msgstr "Positions ({positionsCount})"
 
-#: src/pages/Earn/TotalRewardsCard.tsx
+#: src/pages/Stake/TotalRewardsCard.tsx
 msgid "<0>Trade GMX</0>"
 msgstr "<0>Trade GMX</0>"
 
@@ -937,7 +931,7 @@ msgstr "<0>Trade GMX</0>"
 msgid "As network fees have increased, an additional network fee is needed."
 msgstr "As network fees have increased, an additional network fee is needed."
 
-#: src/pages/Earn/VesterDepositModal.tsx
+#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Deposited"
 msgstr "Deposited"
 
@@ -1008,8 +1002,8 @@ msgstr "{positionName} Fees settled"
 msgid "Average leverage used."
 msgstr "Average leverage used."
 
-#: src/pages/Earn/EscrowedGmxCard.tsx
-#: src/pages/Earn/TotalRewardsCard.tsx
+#: src/pages/Stake/EscrowedGmxCard.tsx
+#: src/pages/Stake/TotalRewardsCard.tsx
 msgid "Escrowed GMX"
 msgstr "Escrowed GMX"
 
@@ -1045,8 +1039,8 @@ msgid "All Time"
 msgstr "All Time"
 
 #: src/pages/Earn/EarnV1.jsx
-msgid "Total Assets Staked"
-msgstr "Total Assets Staked"
+#~ msgid "Total Assets Staked"
+#~ msgstr "Total Assets Staked"
 
 #: src/components/Referrals/referralsHelper.js
 msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} characters."
@@ -1069,12 +1063,12 @@ msgstr "Referral Code"
 msgid "Charts by TradingView"
 msgstr "Charts by TradingView"
 
-#: src/pages/Earn/TotalRewardsCard.tsx
+#: src/pages/Stake/TotalRewardsCard.tsx
 msgid "GMX Staked Rewards"
 msgstr "GMX Staked Rewards"
 
-#: src/pages/Earn/Vesting.tsx
-#: src/pages/Earn/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "Staked Tokens"
 msgstr "Staked Tokens"
 
@@ -1082,7 +1076,7 @@ msgstr "Staked Tokens"
 msgid "Beefy"
 msgstr "Beefy"
 
-#: src/pages/Earn/UnstakeModal.tsx
+#: src/pages/Stake/UnstakeModal.tsx
 msgid "Unstake completed!"
 msgstr "Unstake completed!"
 
@@ -1160,13 +1154,13 @@ msgstr "WARNING: This position has a low amount of collateral after deducting bo
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
-#: src/pages/Earn/GlpCard.tsx
+#: src/pages/Stake/GlpCard.tsx
 msgid "Sell GLP"
 msgstr "Sell GLP"
 
 #: src/pages/Earn/EarnV1.jsx
-msgid "Stake submitted! <0>View status.</0>"
-msgstr "Stake submitted! <0>View status.</0>"
+#~ msgid "Stake submitted! <0>View status.</0>"
+#~ msgstr "Stake submitted! <0>View status.</0>"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
@@ -1243,7 +1237,7 @@ msgstr "The total realized and unrealized profit and loss for the period, consid
 msgid "Volume on V2"
 msgstr "Volume on V2"
 
-#: src/pages/Earn/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "Vest"
 msgstr "Vest"
 
@@ -1264,13 +1258,9 @@ msgid "WEIGHT"
 msgstr "WEIGHT"
 
 #: src/components/Glp/GlpSwap.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EscrowedGmxCard.tsx
-#: src/pages/Earn/GlpCard.tsx
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/EscrowedGmxCard.tsx
+#: src/pages/Stake/GlpCard.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "APR"
 msgstr "APR"
 
@@ -1284,8 +1274,8 @@ msgstr "Tranferring..."
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Earn/TotalRewardsCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+#: src/pages/Stake/TotalRewardsCard.tsx
 msgid "Total"
 msgstr "Total"
 
@@ -1301,8 +1291,8 @@ msgid "Realized Price Impact"
 msgstr "Realized Price Impact"
 
 #: src/pages/Earn/EarnV1.jsx
-msgid "Approve {stakingTokenSymbol}"
-msgstr "Approve {stakingTokenSymbol}"
+#~ msgid "Approve {stakingTokenSymbol}"
+#~ msgstr "Approve {stakingTokenSymbol}"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Limit Swap"
@@ -1338,8 +1328,8 @@ msgid "Wallet is not connected"
 msgstr "Wallet is not connected"
 
 #: src/pages/Earn/EarnV1.jsx
-msgid "No rewards to claim yet"
-msgstr "No rewards to claim yet"
+#~ msgid "No rewards to claim yet"
+#~ msgstr "No rewards to claim yet"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Withdrawing {0} to Main Account"
@@ -1482,7 +1472,7 @@ msgid "Discover GMX Alerts"
 msgstr "Discover GMX Alerts"
 
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Price on Avalanche"
 msgstr "Price on Avalanche"
 
@@ -1521,8 +1511,8 @@ msgid "GMX Announcements and Updates"
 msgstr "GMX Announcements and Updates"
 
 #: src/pages/Earn/EarnV1.jsx
-msgid "Claim failed"
-msgstr "Claim failed"
+#~ msgid "Claim failed"
+#~ msgstr "Claim failed"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Limit Swap"
@@ -1657,7 +1647,7 @@ msgstr "GMX (Chinese)"
 msgid "Price is below Mark Price"
 msgstr "Price is below Mark Price"
 
-#: src/pages/Earn/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "Withdraw from GMX Vault"
 msgstr "Withdraw from GMX Vault"
 
@@ -1768,8 +1758,8 @@ msgstr "Close Fee"
 msgid "V1 Airdrop"
 msgstr "V1 Airdrop"
 
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "GMX"
 msgstr "GMX"
 
@@ -1930,7 +1920,7 @@ msgstr "Cumulative PnL"
 msgid "Arbitrum Max. APY:"
 msgstr "Arbitrum Max. APY:"
 
-#: src/pages/Earn/VesterDepositModal.tsx
+#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Vault Capacity for your Account:"
 msgstr "Vault Capacity for your Account:"
 
@@ -1964,7 +1954,7 @@ msgstr "Borrow Fee"
 msgid "Buy submitted."
 msgstr "Buy submitted."
 
-#: src/pages/Earn/EarnV2.tsx
+#: src/pages/Stake/Stake.tsx
 msgid "Incentives & Prizes"
 msgstr "Incentives & Prizes"
 
@@ -1981,9 +1971,9 @@ msgstr "{txnTypeText} {0} order for"
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/pages/Earn/StakeModal.tsx
-#: src/pages/Earn/UnstakeModal.tsx
-#: src/pages/Earn/VesterDepositModal.tsx
+#: src/pages/Stake/StakeModal.tsx
+#: src/pages/Stake/UnstakeModal.tsx
+#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Max"
 msgstr "Max"
 
@@ -2013,7 +2003,7 @@ msgstr "Affiliates"
 msgid "Max allowed actions"
 msgstr "Max allowed actions"
 
-#: src/pages/Earn/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
 msgstr "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
 
@@ -2071,16 +2061,11 @@ msgstr "We value your experience and insights and invite you to participate in a
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EscrowedGmxCard.tsx
-#: src/pages/Earn/TotalRewardsCard.tsx
-#: src/pages/Earn/Vesting.tsx
-#: src/pages/Earn/Vesting.tsx
-#: src/pages/Earn/Vesting.tsx
+#: src/pages/Stake/EscrowedGmxCard.tsx
+#: src/pages/Stake/TotalRewardsCard.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "Connect Wallet"
 msgstr "Connect Wallet"
 
@@ -2175,7 +2160,7 @@ msgstr "Total:"
 msgid "{0} Approved!"
 msgstr "{0} Approved!"
 
-#: src/pages/Earn/TotalRewardsCard.tsx
+#: src/pages/Stake/TotalRewardsCard.tsx
 msgid "<0>Provide liquidity</0> and earn {gmxMarketApyDataText} APY"
 msgstr "<0>Provide liquidity</0> and earn {gmxMarketApyDataText} APY"
 
@@ -2315,8 +2300,8 @@ msgstr "Short Market: Increase a short position at the current price."
 msgid "You have an existing limit order in the {0} market pool but it lacks liquidity for this order."
 msgstr "You have an existing limit order in the {0} market pool but it lacks liquidity for this order."
 
-#: src/pages/Earn/Vesting.tsx
-#: src/pages/Earn/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "Reserved for Vesting"
 msgstr "Reserved for Vesting"
 
@@ -2362,7 +2347,7 @@ msgstr "The maximum number of authorized Actions has been reached. Re-authorize 
 msgid "Shift order executed"
 msgstr "Shift order executed"
 
-#: src/pages/Earn/VesterDepositModal.tsx
+#: src/pages/Stake/VesterDepositModal.tsx
 msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
 msgstr "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
 
@@ -2526,7 +2511,7 @@ msgid "You have an existing position with {0} as collateral."
 msgstr "You have an existing position with {0} as collateral."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Transfer Account"
 msgstr "Transfer Account"
 
@@ -2602,7 +2587,7 @@ msgstr "Trigger"
 msgid "Positions ({0})"
 msgstr "Positions ({0})"
 
-#: src/pages/Earn/UnstakeModal.tsx
+#: src/pages/Stake/UnstakeModal.tsx
 msgid "Unstake failed."
 msgstr "Unstake failed."
 
@@ -2615,7 +2600,7 @@ msgstr "Order cancelled"
 msgid "Not enough Available Swap Liquidity to fill the Order."
 msgstr "Not enough Available Swap Liquidity to fill the Order."
 
-#: src/pages/Earn/EarnV2.tsx
+#: src/pages/Stake/Stake.tsx
 msgid "Earn prizes by participating in GMX Trading Competitions."
 msgstr "Earn prizes by participating in GMX Trading Competitions."
 
@@ -2743,7 +2728,7 @@ msgstr "Only positions with over {0} in \"Capital Used\" are ranked."
 msgid "Accept minimum and {action}"
 msgstr "Accept minimum and {action}"
 
-#: src/pages/Earn/AffiliateVesterWithdrawModal.tsx
+#: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
 msgid "Withdraw from Affiliate Vault"
 msgstr "Withdraw from Affiliate Vault"
 
@@ -2902,13 +2887,11 @@ msgstr "V1 Arbitrum"
 msgid "SL"
 msgstr "SL"
 
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EscrowedGmxCard.tsx
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
-#: src/pages/Earn/StakeModal.tsx
-#: src/pages/Earn/StakeModal.tsx
+#: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Stake/EscrowedGmxCard.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/StakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 msgid "Stake"
 msgstr "Stake"
 
@@ -2993,7 +2976,7 @@ msgstr "Order creation failed."
 msgid "Can’t find the coin you need? Let us know"
 msgstr "Can’t find the coin you need? Let us know"
 
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Delegated to"
 msgstr "Delegated to"
 
@@ -3044,14 +3027,9 @@ msgstr "Enable orders failed."
 
 #: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EscrowedGmxCard.tsx
-#: src/pages/Earn/GlpCard.tsx
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/EscrowedGmxCard.tsx
+#: src/pages/Stake/GlpCard.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Total Staked"
 msgstr "Total Staked"
 
@@ -3120,7 +3098,7 @@ msgstr "Market"
 msgid "Swap amount from {0} to {1} exceeds {2} acceptable amount. Can only receive {3}."
 msgstr "Swap amount from {0} to {1} exceeds {2} acceptable amount. Can only receive {3}."
 
-#: src/pages/Earn/EarnV2.tsx
+#: src/pages/Stake/Stake.tsx
 msgid "Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2."
 msgstr "Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2."
 
@@ -3136,7 +3114,7 @@ msgstr "Read the rules"
 msgid "Lev."
 msgstr "Lev."
 
-#: src/pages/Earn/StakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 msgid "Stake failed."
 msgstr "Stake failed."
 
@@ -3181,8 +3159,8 @@ msgid "Trigger price below liq. price"
 msgstr "Trigger price below liq. price"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#: src/pages/Earn/AffiliateClaimModal.tsx
-#: src/pages/Earn/ClaimModal.tsx
+#: src/pages/Stake/AffiliateClaimModal.tsx
+#: src/pages/Stake/ClaimModal.tsx
 msgid "Claim failed."
 msgstr "Claim failed."
 
@@ -3296,7 +3274,7 @@ msgstr "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
 msgid "Initial Collateral"
 msgstr "Initial Collateral"
 
-#: src/pages/Earn/StakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power before staking."
 msgstr "<0>Delegate your undelegated {0} GMX DAO</0> voting power before staking."
 
@@ -3358,8 +3336,8 @@ msgstr "Order cannot be executed as the remaining position would be smaller than
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#: src/pages/Earn/AffiliateClaimModal.tsx
-#: src/pages/Earn/ClaimModal.tsx
+#: src/pages/Stake/AffiliateClaimModal.tsx
+#: src/pages/Stake/ClaimModal.tsx
 msgid "Claiming..."
 msgstr "Claiming..."
 
@@ -3397,7 +3375,7 @@ msgstr "Updating Order..."
 msgid "Close failed."
 msgstr "Close failed."
 
-#: src/pages/Earn/EarnV2.tsx
+#: src/pages/Stake/Stake.tsx
 msgid "You are earning rewards with {0} tokens.<0/>Tokens: {amountStr}."
 msgstr "You are earning rewards with {0} tokens.<0/>Tokens: {amountStr}."
 
@@ -3503,7 +3481,7 @@ msgstr "Subaccount activation failed"
 msgid "COMP."
 msgstr "COMP."
 
-#: src/pages/Earn/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "You have no GMX tokens to claim."
 msgstr "You have no GMX tokens to claim."
 
@@ -3548,15 +3526,10 @@ msgstr "Swap {0} on 1inch"
 msgid "{0} GLP bought with {1} {2}!"
 msgstr "{0} GLP bought with {1} {2}!"
 
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EscrowedGmxCard.tsx
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
-#: src/pages/Earn/UnstakeModal.tsx
-#: src/pages/Earn/UnstakeModal.tsx
+#: src/pages/Stake/EscrowedGmxCard.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/UnstakeModal.tsx
+#: src/pages/Stake/UnstakeModal.tsx
 msgid "Unstake"
 msgstr "Unstake"
 
@@ -3617,8 +3590,8 @@ msgstr "Include PnL in leverage display"
 msgid "No claims yet"
 msgstr "No claims yet"
 
-#: src/pages/Earn/EarnV2.tsx
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+#: src/pages/Stake/Stake.tsx
 msgid "Select a GLV Vault"
 msgstr "Select a GLV Vault"
 
@@ -3632,9 +3605,9 @@ msgstr "Cancel Order"
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 #: src/components/Synthetics/TradeHistory/keys.ts
-#: src/pages/Earn/Vesting.tsx
-#: src/pages/Earn/Vesting.tsx
-#: src/pages/Earn/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "Withdraw"
 msgstr "Withdraw"
 
@@ -3642,7 +3615,7 @@ msgstr "Withdraw"
 msgid "Update Stop Market"
 msgstr "Update Stop Market"
 
-#: src/pages/Earn/TotalRewardsCard.tsx
+#: src/pages/Stake/TotalRewardsCard.tsx
 msgid "Vested Claimable GMX"
 msgstr "Vested Claimable GMX"
 
@@ -3685,7 +3658,7 @@ msgstr "After you scan, a connection prompt will appear for you to connect your 
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
 msgstr "You can transfer AVAX from other networks to Avalanche using any of the below options:"
 
-#: src/pages/Earn/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "Unsupported network"
 msgstr "Unsupported network"
 
@@ -3833,9 +3806,8 @@ msgstr "Compass Labs GM Token Dashboard"
 msgid "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} {3} USD"
 msgstr "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} {3} USD"
 
-#: src/components/Header/AppHeaderLinks.tsx
-#: src/pages/Earn/EarnV2.tsx
-#: src/pages/Earn/VesterDepositModal.tsx
+#: src/pages/Stake/Stake.tsx
+#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Earn"
 msgstr "Earn"
 
@@ -3856,7 +3828,7 @@ msgstr "GM Markets"
 msgid "Your opinions and experiences matter to us. Your feedback helps us understand what we are doing well and where we can make enhancements."
 msgstr "Your opinions and experiences matter to us. Your feedback helps us understand what we are doing well and where we can make enhancements."
 
-#: src/pages/Earn/EarnV2.tsx
+#: src/pages/Stake/Stake.tsx
 msgid "Stake <0>GMX</0> and buy <1>GM</1> or <2>GLP</2> to earn rewards."
 msgstr "Stake <0>GMX</0> and buy <1>GM</1> or <2>GLP</2> to earn rewards."
 
@@ -3911,9 +3883,9 @@ msgstr ""
 "-{1} USD,\n"
 "{2} Price: {3} USD"
 
-#: src/pages/Earn/Vesting.tsx
-#: src/pages/Earn/Vesting.tsx
-#: src/pages/Earn/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "Vesting Status"
 msgstr "Vesting Status"
 
@@ -3929,7 +3901,7 @@ msgstr "Claiming Price Impact Rebate..."
 msgid "Negative funding fees are automatically settled against the collateral and impact the liquidation price. Positive funding fees can be claimed under the claims tab."
 msgstr "Negative funding fees are automatically settled against the collateral and impact the liquidation price. Positive funding fees can be claimed under the claims tab."
 
-#: src/pages/Earn/EarnV2.tsx
+#: src/pages/Stake/Stake.tsx
 msgid "Unstake esGMX"
 msgstr "Unstake esGMX"
 
@@ -3955,11 +3927,11 @@ msgstr "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgid "Net Rate / 1h"
 msgstr "Net Rate / 1h"
 
-#: src/pages/Earn/ClaimModal.tsx
+#: src/pages/Stake/ClaimModal.tsx
 msgid "Claim esGMX Rewards"
 msgstr "Claim esGMX Rewards"
 
-#: src/pages/Earn/EarnV2.tsx
+#: src/pages/Stake/Stake.tsx
 msgid "Trading incentives program is live on {avalancheLink}."
 msgstr "Trading incentives program is live on {avalancheLink}."
 
@@ -4058,8 +4030,8 @@ msgstr "Stop Market price is above mark price"
 msgid "Txn failed. <0>View</0>."
 msgstr "Txn failed. <0>View</0>."
 
-#: src/pages/Earn/Vesting.tsx
-#: src/pages/Earn/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "Affiliate Vault"
 msgstr "Affiliate Vault"
 
@@ -4116,7 +4088,7 @@ msgstr "No position"
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
-#: src/pages/Earn/GlpCard.tsx
+#: src/pages/Stake/GlpCard.tsx
 msgid "Buy GLP"
 msgstr "Buy GLP"
 
@@ -4280,9 +4252,9 @@ msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
 msgstr "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
 
 #: src/components/Synthetics/Claims/ClaimableCard.tsx
-#: src/pages/Earn/Vesting.tsx
-#: src/pages/Earn/Vesting.tsx
-#: src/pages/Earn/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "Claimable"
 msgstr "Claimable"
 
@@ -4384,8 +4356,8 @@ msgstr "Create Limit"
 msgid "Transfer already initiated"
 msgstr "Transfer already initiated"
 
-#: src/pages/Earn/AffiliateVesterWithdrawModal.tsx
-#: src/pages/Earn/VesterWithdrawModal.tsx
+#: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
+#: src/pages/Stake/VesterWithdrawModal.tsx
 msgid "Withdraw submitted."
 msgstr "Withdraw submitted."
 
@@ -4429,8 +4401,8 @@ msgid "collateral"
 msgstr "collateral"
 
 #: src/pages/Earn/EarnV1.jsx
-msgid "Stake failed"
-msgstr "Stake failed"
+#~ msgid "Stake failed"
+#~ msgstr "Stake failed"
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/GmList/GlvList.tsx
@@ -4487,7 +4459,7 @@ msgstr "SL - Long Dec."
 msgid "Airdrop"
 msgstr "Airdrop"
 
-#: src/pages/Earn/UnstakeModal.tsx
+#: src/pages/Stake/UnstakeModal.tsx
 msgid "Unstake submitted!"
 msgstr "Unstake submitted!"
 
@@ -4520,7 +4492,7 @@ msgstr "Purchase <0>GM Tokens</0> to earn fees from swaps and leverage trading."
 msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APY."
 msgstr "Expected 365d Fees are projected based on past {daysConsidered}d base APY."
 
-#: src/pages/Earn/TotalRewardsCard.tsx
+#: src/pages/Stake/TotalRewardsCard.tsx
 msgid "<0>Stake GMX</0> and earn {gmxAvgAprText} APR"
 msgstr "<0>Stake GMX</0> and earn {gmxAvgAprText} APR"
 
@@ -4536,12 +4508,12 @@ msgstr "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
 msgid "Accrued Funding Fee."
 msgstr "Accrued Funding Fee."
 
-#: src/pages/Earn/AffiliateVesterWithdrawModal.tsx
-#: src/pages/Earn/VesterWithdrawModal.tsx
+#: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
+#: src/pages/Stake/VesterWithdrawModal.tsx
 msgid "Withdraw failed."
 msgstr "Withdraw failed."
 
-#: src/pages/Earn/ClaimModal.tsx
+#: src/pages/Stake/ClaimModal.tsx
 msgid "Pending GMX approval"
 msgstr "Pending GMX approval"
 
@@ -4711,7 +4683,7 @@ msgid "Settle request for {0, plural, one {# position} other {# positions}} sent
 msgstr "Settle request for {0, plural, one {# position} other {# positions}} sent"
 
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Price on Arbitrum"
 msgstr "Price on Arbitrum"
 
@@ -4732,8 +4704,8 @@ msgstr "There may not be sufficient liquidity to execute your order when the Min
 msgid "DEPTH"
 msgstr "DEPTH"
 
-#: src/pages/Earn/EarnV2.tsx
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+#: src/pages/Stake/Stake.tsx
 msgid "Select a GM Pool"
 msgstr "Select a GM Pool"
 
@@ -4750,7 +4722,7 @@ msgstr "Enter your answer here"
 msgid "Firebird Finance"
 msgstr "Firebird Finance"
 
-#: src/pages/Earn/EarnV2.tsx
+#: src/pages/Stake/Stake.tsx
 msgid "Stake GMX"
 msgstr "Stake GMX"
 
@@ -4778,7 +4750,7 @@ msgstr "Max {0} short capacity"
 msgid "The Execution Price didn't meet the Acceptable Price condition."
 msgstr "The Execution Price didn't meet the Acceptable Price condition."
 
-#: src/pages/Earn/VesterDepositModal.tsx
+#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Reserve Amount"
 msgstr "Reserve Amount"
 
@@ -4835,7 +4807,7 @@ msgstr "{longShortText} {0} Reserve"
 msgid "Cancel newly created orders"
 msgstr "Cancel newly created orders"
 
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Delegate"
 msgstr "Delegate"
 
@@ -4904,7 +4876,7 @@ msgstr "V1 Avalanche"
 msgid "Collateral ({0})"
 msgstr "Collateral ({0})"
 
-#: src/pages/Earn/StakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 msgid "You will earn {0}% more rewards with this action."
 msgstr "You will earn {0}% more rewards with this action."
 
@@ -4978,8 +4950,8 @@ msgid "Confirm Short"
 msgstr "Confirm Short"
 
 #: src/pages/Earn/EarnV1.jsx
-msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
-msgstr "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
+#~ msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
+#~ msgstr "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
 
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Short Liquidity"
@@ -5149,10 +5121,10 @@ msgstr "Referral code updated failed."
 #: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Earn/EscrowedGmxCard.tsx
-#: src/pages/Earn/GlpCard.tsx
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
+#: src/pages/Stake/EscrowedGmxCard.tsx
+#: src/pages/Stake/GlpCard.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Price"
 msgstr "Price"
 
@@ -5165,7 +5137,6 @@ msgid "Sending shift request"
 msgstr "Sending shift request"
 
 #: src/components/Exchange/SwapBox.jsx
-#: src/pages/Earn/EarnV1.jsx
 msgid "Incorrect Network"
 msgstr "Incorrect Network"
 
@@ -5181,7 +5152,7 @@ msgstr "Incorrect Account"
 msgid "Min residual collateral: 10 USD"
 msgstr "Min residual collateral: 10 USD"
 
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "GMX & Voting Power"
 msgstr "GMX & Voting Power"
 
@@ -5199,8 +5170,8 @@ msgstr "GMX is the utility and governance token. Accrues 30% and 27% of V1 and V
 msgid "Transferring"
 msgstr "Transferring"
 
-#: src/pages/Earn/Vesting.tsx
-#: src/pages/Earn/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
 msgstr "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
 
@@ -5310,7 +5281,7 @@ msgstr "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Plea
 msgid "Close {longOrShortText} {0}"
 msgstr "Close {longOrShortText} {0}"
 
-#: src/pages/Earn/VesterDepositModal.tsx
+#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Deposited!"
 msgstr "Deposited!"
 
@@ -5384,7 +5355,7 @@ msgstr "You can buy AVAX directly on <0>Avalanche</0> using these options:"
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 
-#: src/pages/Earn/AffiliateClaimModal.tsx
+#: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
 msgstr "Claim Affiliate Vault Rewards"
 
@@ -5612,7 +5583,7 @@ msgstr "Enter new amount or price"
 msgid "Wins and losses for fully closed positions."
 msgstr "Wins and losses for fully closed positions."
 
-#: src/pages/Earn/AffiliateClaimModal.tsx
+#: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "<0>This will claim {formattedRewards} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
 msgstr "<0>This will claim {formattedRewards} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
 
@@ -5620,11 +5591,9 @@ msgstr "<0>This will claim {formattedRewards} GMX.<1/><2/>After claiming, you ca
 msgid "Open Binance app"
 msgstr "Open Binance app"
 
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/StakeModal.tsx
-#: src/pages/Earn/UnstakeModal.tsx
-#: src/pages/Earn/VesterDepositModal.tsx
+#: src/pages/Stake/StakeModal.tsx
+#: src/pages/Stake/UnstakeModal.tsx
+#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Max amount exceeded"
 msgstr "Max amount exceeded"
 
@@ -5825,7 +5794,7 @@ msgstr "Unrealized Fees"
 msgid "Traders Referred"
 msgstr "Traders Referred"
 
-#: src/pages/Earn/StakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 msgid "Stake submitted!"
 msgstr "Stake submitted!"
 
@@ -5841,8 +5810,8 @@ msgstr "Increase Size (Market)"
 msgid "Couldn't find a swap path with enough liquidity"
 msgstr "Couldn't find a swap path with enough liquidity"
 
-#: src/pages/Earn/AffiliateVesterWithdrawModal.tsx
-#: src/pages/Earn/VesterWithdrawModal.tsx
+#: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
+#: src/pages/Stake/VesterWithdrawModal.tsx
 msgid "Withdrawn!"
 msgstr "Withdrawn!"
 
@@ -5910,7 +5879,7 @@ msgstr "{formattedNetRate} / 1h"
 msgid "Balance"
 msgstr "Balance"
 
-#: src/pages/Earn/EarnV2.tsx
+#: src/pages/Stake/Stake.tsx
 msgid "Liquidity and trading incentives programs are live on {avalancheLink}."
 msgstr "Liquidity and trading incentives programs are live on {avalancheLink}."
 
@@ -5954,7 +5923,7 @@ msgstr "The order's acceptable price includes the set acceptable price impact. T
 msgid "Min order: 10 USD"
 msgstr "Min order: 10 USD"
 
-#: src/pages/Earn/AffiliateClaimModal.tsx
+#: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim submitted."
 msgstr "Claim submitted."
 
@@ -5995,7 +5964,7 @@ msgstr "Min position size: {0}"
 msgid "Trigger price below mark price"
 msgstr "Trigger price below mark price"
 
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "No delegate found"
 msgstr "No delegate found"
 
@@ -6004,8 +5973,8 @@ msgid "GMX Community with NFTs, Trading and Education initiatives"
 msgstr "GMX Community with NFTs, Trading and Education initiatives"
 
 #: src/pages/Earn/EarnV1.jsx
-msgid "Wallet not yet connected"
-msgstr "Wallet not yet connected"
+#~ msgid "Wallet not yet connected"
+#~ msgstr "Wallet not yet connected"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation Confirmations"
@@ -6127,9 +6096,6 @@ msgstr "Next"
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
 msgid "Create"
 msgstr "Create"
 
@@ -6182,15 +6148,10 @@ msgstr "trigger price"
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/Claims/ClaimableCard.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#: src/pages/Earn/AffiliateClaimModal.tsx
-#: src/pages/Earn/ClaimModal.tsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/TotalRewardsCard.tsx
-#: src/pages/Earn/Vesting.tsx
+#: src/pages/Stake/AffiliateClaimModal.tsx
+#: src/pages/Stake/ClaimModal.tsx
+#: src/pages/Stake/TotalRewardsCard.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "Claim"
 msgstr "Claim"
 
@@ -6238,11 +6199,9 @@ msgstr "Max Out"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/StakeModal.tsx
-#: src/pages/Earn/UnstakeModal.tsx
-#: src/pages/Earn/VesterDepositModal.tsx
+#: src/pages/Stake/StakeModal.tsx
+#: src/pages/Stake/UnstakeModal.tsx
+#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Enter an amount"
 msgstr "Enter an amount"
 
@@ -6381,8 +6340,8 @@ msgstr "Lending and Borrowing"
 msgid "Switch to {0} collateral."
 msgstr "Switch to {0} collateral."
 
-#: src/pages/Earn/Vesting.tsx
-#: src/pages/Earn/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "GMX Vault"
 msgstr "GMX Vault"
 
@@ -6498,8 +6457,8 @@ msgid "Volume traded by this account with an active referral code."
 msgstr "Volume traded by this account with an active referral code."
 
 #: src/pages/Earn/EarnV1.jsx
-msgid "Unstake failed"
-msgstr "Unstake failed"
+#~ msgid "Unstake failed"
+#~ msgstr "Unstake failed"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized fees"
@@ -6558,7 +6517,7 @@ msgstr "Limit Price"
 msgid "You"
 msgstr "You"
 
-#: src/pages/Earn/GlpCard.tsx
+#: src/pages/Stake/GlpCard.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
 msgstr "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
 
@@ -6571,11 +6530,11 @@ msgstr "Could not execute deposit into {0} {longOrShortText}"
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/TradeHistory/keys.ts
-#: src/pages/Earn/VesterDepositModal.tsx
-#: src/pages/Earn/VesterDepositModal.tsx
-#: src/pages/Earn/Vesting.tsx
-#: src/pages/Earn/Vesting.tsx
-#: src/pages/Earn/Vesting.tsx
+#: src/pages/Stake/VesterDepositModal.tsx
+#: src/pages/Stake/VesterDepositModal.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "Deposit"
 msgstr "Deposit"
 
@@ -6667,6 +6626,7 @@ msgstr "Realized Fees"
 msgid "Top Positions"
 msgstr "Top Positions"
 
+#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "Pools"
 msgstr "Pools"
@@ -6693,7 +6653,7 @@ msgstr "We Value Your Feedback"
 msgid "Stop Loss"
 msgstr "Stop Loss"
 
-#: src/pages/Earn/EarnV2.tsx
+#: src/pages/Stake/Stake.tsx
 msgid "Liquidity incentives program is live on {avalancheLink}."
 msgstr "Liquidity incentives program is live on {avalancheLink}."
 
@@ -6737,7 +6697,7 @@ msgstr "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies wi
 msgid "Max In"
 msgstr "Max In"
 
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Myself"
 msgstr "Myself"
 
@@ -6750,7 +6710,7 @@ msgstr "Search Address"
 msgid "Max GM buyable amount reached"
 msgstr "Max GM buyable amount reached"
 
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
 msgstr "Buy GMX"
 
@@ -6835,8 +6795,8 @@ msgstr "Sell failed."
 msgid "Insufficient {nativeTokenSymbol} balance"
 msgstr "Insufficient {nativeTokenSymbol} balance"
 
-#: src/pages/Earn/EarnV2.tsx
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+#: src/pages/Stake/Stake.tsx
 msgid "Pools that enable trading for a single market, backed by the tokens listed in brackets."
 msgstr "Pools that enable trading for a single market, backed by the tokens listed in brackets."
 
@@ -6913,7 +6873,7 @@ msgstr "COMPETITION Airdrop"
 msgid "Enter Receiver Address"
 msgstr "Enter Receiver Address"
 
-#: src/pages/Earn/VesterDepositModal.tsx
+#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Additional reserve required"
 msgstr "Additional reserve required"
 
@@ -6922,7 +6882,7 @@ msgstr "Additional reserve required"
 msgid "Terms and Conditions"
 msgstr "Terms and Conditions"
 
-#: src/pages/Earn/ClaimModal.tsx
+#: src/pages/Stake/ClaimModal.tsx
 msgid "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
 msgstr "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
 
@@ -6947,7 +6907,7 @@ msgstr "Swap {0} for {1}"
 msgid "Max auto top-up amount"
 msgstr "Max auto top-up amount"
 
-#: src/pages/Earn/VesterDepositModal.tsx
+#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Vault Capacity"
 msgstr "Vault Capacity"
 
@@ -6971,8 +6931,7 @@ msgstr "Keep leverage at {0}x"
 msgid "The amount left in the subaccount is not enough to cover network gas costs."
 msgstr "The amount left in the subaccount is not enough to cover network gas costs."
 
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/StakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 msgid "Staking..."
 msgstr "Staking..."
 
@@ -7065,16 +7024,16 @@ msgid "Freeze"
 msgstr "Freeze"
 
 #: src/pages/Earn/EarnV1.jsx
-msgid "Claim submitted! <0>View status.</0>"
-msgstr "Claim submitted! <0>View status.</0>"
+#~ msgid "Claim submitted! <0>View status.</0>"
+#~ msgstr "Claim submitted! <0>View status.</0>"
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 msgstr "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#: src/pages/Earn/AffiliateClaimModal.tsx
-#: src/pages/Earn/ClaimModal.tsx
+#: src/pages/Stake/AffiliateClaimModal.tsx
+#: src/pages/Stake/ClaimModal.tsx
 msgid "Claim completed!"
 msgstr "Claim completed!"
 
@@ -7093,8 +7052,8 @@ msgid "Request Settlement of Funding Fees"
 msgstr "Request Settlement of Funding Fees"
 
 #: src/pages/Earn/EarnV1.jsx
-msgid "Approving {stakingTokenSymbol}..."
-msgstr "Approving {stakingTokenSymbol}..."
+#~ msgid "Approving {stakingTokenSymbol}..."
+#~ msgstr "Approving {stakingTokenSymbol}..."
 
 #: src/pages/Dashboard/WeightText.tsx
 msgid "Current Weight"
@@ -7194,7 +7153,7 @@ msgstr "Sell GM"
 msgid "View on Arbitrum"
 msgstr "View on Arbitrum"
 
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power."
 msgstr "<0>Delegate your undelegated {0} GMX DAO</0> voting power."
 
@@ -7295,13 +7254,13 @@ msgstr "Position"
 msgid "Bonus Rebate"
 msgstr "Bonus Rebate"
 
-#: src/pages/Earn/GlpCard.tsx
+#: src/pages/Stake/GlpCard.tsx
 msgid "Purchase Insurance"
 msgstr "Purchase Insurance"
 
 #: src/pages/Earn/EarnV1.jsx
-msgid "Unstake submitted! <0>View status.</0>"
-msgstr "Unstake submitted! <0>View status.</0>"
+#~ msgid "Unstake submitted! <0>View status.</0>"
+#~ msgstr "Unstake submitted! <0>View status.</0>"
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."
@@ -7349,7 +7308,7 @@ msgstr "Telegram Group (Chinese)"
 msgid "Swap {0} {1} for {2} {3}"
 msgstr "Swap {0} {1} for {2} {3}"
 
-#: src/pages/Earn/AffiliateVesterWithdrawModal.tsx
+#: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
 msgid "<0>This will withdraw all esGMX tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button.<5/><6/></0>"
 msgstr "<0>This will withdraw all esGMX tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button.<5/><6/></0>"
 
@@ -7363,7 +7322,7 @@ msgstr "DeFi"
 msgid "Liquidation Price"
 msgstr "Liquidation Price"
 
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Voting Power"
 msgstr "Voting Power"
 
@@ -7409,11 +7368,11 @@ msgstr "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of t
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 msgstr "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 
-#: src/pages/Earn/UnstakeModal.tsx
+#: src/pages/Stake/UnstakeModal.tsx
 msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"
 msgstr "{0}<0>You will earn {1}% less rewards with this action.</0>"
 
-#: src/pages/Earn/AffiliateVesterWithdrawModal.tsx
+#: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
 msgid "Confirming..."
 msgstr "Confirming..."
 
@@ -7427,18 +7386,16 @@ msgstr "Confirming..."
 msgid "Increase"
 msgstr "Increase"
 
-#: src/pages/Earn/ClaimModal.tsx
+#: src/pages/Stake/ClaimModal.tsx
 msgid "Claim {wrappedTokenSymbol} Rewards"
 msgstr "Claim {wrappedTokenSymbol} Rewards"
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EscrowedGmxCard.tsx
-#: src/pages/Earn/GlpCard.tsx
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/EscrowedGmxCard.tsx
+#: src/pages/Stake/GlpCard.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Total Supply"
 msgstr "Total Supply"
 
@@ -7451,14 +7408,9 @@ msgid "Disable order validations"
 msgstr "Disable order validations"
 
 #: src/components/Glp/GlpSwap.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EscrowedGmxCard.tsx
-#: src/pages/Earn/GlpCard.tsx
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/EscrowedGmxCard.tsx
+#: src/pages/Stake/GlpCard.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Staked"
 msgstr "Staked"
 
@@ -7540,7 +7492,7 @@ msgstr "Buy"
 msgid "Incentives are live for <0>Arbitrum</0> and <1>Avalanche</1> GM pools and V2 trading."
 msgstr "Incentives are live for <0>Arbitrum</0> and <1>Avalanche</1> GM pools and V2 trading."
 
-#: src/pages/Earn/TotalRewardsCard.tsx
+#: src/pages/Stake/TotalRewardsCard.tsx
 msgid "Total Rewards"
 msgstr "Total Rewards"
 
@@ -7568,8 +7520,8 @@ msgstr "The pending borrow fee will be charged on this transaction."
 msgid "Fees will be shown once you have entered an amount in the order form."
 msgstr "Fees will be shown once you have entered an amount in the order form."
 
-#: src/pages/Earn/Vesting.tsx
-#: src/pages/Earn/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "GLP Vault"
 msgstr "GLP Vault"
 
@@ -7591,7 +7543,7 @@ msgstr "No markets matched."
 msgid "Shifting from GLV to another pool is not possible, as GLV can only be sold into the backing tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
 msgstr "Shifting from GLV to another pool is not possible, as GLV can only be sold into the backing tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
 
-#: src/pages/Earn/EarnV2.tsx
+#: src/pages/Stake/Stake.tsx
 msgid "Stake esGMX"
 msgstr "Stake esGMX"
 
@@ -7669,7 +7621,7 @@ msgstr "Subaccount:"
 msgid "Enter new Price"
 msgstr "Enter new Price"
 
-#: src/pages/Earn/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "Withdraw from GLP Vault"
 msgstr "Withdraw from GLP Vault"
 
@@ -7755,15 +7707,10 @@ msgstr "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EarnV1.jsx
-#: src/pages/Earn/EscrowedGmxCard.tsx
-#: src/pages/Earn/GlpCard.tsx
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
-#: src/pages/Earn/VesterDepositModal.tsx
+#: src/pages/Stake/EscrowedGmxCard.tsx
+#: src/pages/Stake/GlpCard.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Wallet"
 msgstr "Wallet"
 
@@ -7936,8 +7883,8 @@ msgstr "The esGMX tokens can be staked or vested at any time."
 
 #: src/pages/Earn/EarnV1.jsx
 #: src/pages/Earn/EarnV1.jsx
-msgid "Max: {0}"
-msgstr "Max: {0}"
+#~ msgid "Max: {0}"
+#~ msgstr "Max: {0}"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy ETH directly on Arbitrum or transfer it there."
@@ -7960,7 +7907,7 @@ msgid "Accrued price impact rebates. They will become claimable after approximat
 msgstr "Accrued price impact rebates. They will become claimable after approximately ten days.<0/><1/><2>Read more</2>."
 
 #: src/components/Exchange/PositionEditor.jsx
-#: src/pages/Earn/VesterDepositModal.tsx
+#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Depositing..."
 msgstr "Depositing..."
 
@@ -8009,7 +7956,7 @@ msgstr "Orders ({ordersCount})"
 msgid "Limit - Long Inc."
 msgstr "Limit - Long Inc."
 
-#: src/pages/Earn/ClaimModal.tsx
+#: src/pages/Stake/ClaimModal.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming."
 msgstr "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming."
 
@@ -8210,7 +8157,7 @@ msgstr "Rage Trade"
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"
 msgstr "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"
 
-#: src/pages/Earn/ClaimModal.tsx
+#: src/pages/Stake/ClaimModal.tsx
 msgid "Claim GMX Rewards"
 msgstr "Claim GMX Rewards"
 
@@ -8430,8 +8377,8 @@ msgstr "Deposit not enough to cover fees"
 #: src/pages/Earn/EarnV1.jsx
 #: src/pages/Earn/EarnV1.jsx
 #: src/pages/Earn/EarnV1.jsx
-msgid "Migrate"
-msgstr "Migrate"
+#~ msgid "Migrate"
+#~ msgstr "Migrate"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Cancelling {ordersText}"
@@ -8568,7 +8515,7 @@ msgstr "Decentralized Options Protocol"
 msgid "Complete Account Transfer"
 msgstr "Complete Account Transfer"
 
-#: src/pages/Earn/ClaimModal.tsx
+#: src/pages/Stake/ClaimModal.tsx
 msgid "Claim Rewards"
 msgstr "Claim Rewards"
 
@@ -8604,7 +8551,7 @@ msgstr "Proof of Reserves"
 msgid "General Performance Details"
 msgstr "General Performance Details"
 
-#: src/pages/Earn/VesterWithdrawModal.tsx
+#: src/pages/Stake/VesterWithdrawModal.tsx
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 
@@ -8616,10 +8563,10 @@ msgstr "Price conditions are met"
 msgid "DeBank"
 msgstr "DeBank"
 
-#: src/pages/Earn/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Unstake GMX"
 msgstr "Unstake GMX"
 
-#: src/pages/Earn/VesterDepositModal.tsx
+#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Deposit failed!"
 msgstr "Deposit failed!"

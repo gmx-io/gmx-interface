@@ -23,7 +23,6 @@ import BuyGMX from "pages/BuyGMX/BuyGMX";
 import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
-import Earn from "pages/Earn/Earn";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import { Exchange } from "pages/Exchange/Exchange";
 import Jobs from "pages/Jobs/Jobs";
@@ -37,6 +36,7 @@ import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import Referrals from "pages/Referrals/Referrals";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
+import Stake from "pages/Stake/Stake";
 import Stats from "pages/Stats/Stats";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
@@ -104,9 +104,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       <Route exact path="/stats">
         <SyntheticsStats />
       </Route>
-      <Route exact path="/earn">
-        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
-          <Earn />
+      <Route exact path="/stake">
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="stake">
+          <Stake />
         </SyntheticsStateContextProvider>
       </Route>
       <Route exact path="/buy">

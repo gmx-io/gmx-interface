@@ -30,6 +30,7 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
     (match, location) => Boolean(match) || location.pathname.startsWith("/competitions"),
     []
   );
+
   return (
     <div className="App-header-links">
       {small && (
@@ -51,8 +52,13 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink qa="earn" to="/earn" showRedirectModal={showRedirectModal}>
-          <Trans>Earn</Trans>
+        <HeaderLink qa="pools" to="/pools" showRedirectModal={showRedirectModal}>
+          <Trans>Pools</Trans>
+        </HeaderLink>
+      </div>
+      <div className="App-header-link-container">
+        <HeaderLink qa="stake" to="/stake" showRedirectModal={showRedirectModal}>
+          <Trans>Stake</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
