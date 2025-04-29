@@ -81,8 +81,8 @@ export default function MarketTokenSelector(props: Props) {
     ? getNormalizedTokenSymbol(currentMarketInfo.longToken.symbol) +
       getNormalizedTokenSymbol(currentMarketInfo.shortToken.symbol)
     : isGlv
-      ? currentMarketInfo?.glvToken.symbol
-      : currentMarketInfo?.indexToken.symbol;
+      ? currentMarketInfo.glvToken.symbol
+      : currentMarketInfo!.indexToken.symbol;
 
   return (
     <SelectorBase

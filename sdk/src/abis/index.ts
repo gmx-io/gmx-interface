@@ -1,5 +1,25 @@
-import type { JsonFragment } from "ethers";
 import { Abi, erc20Abi } from "viem";
+
+/** Copied from ethers to enable compatibility with GMX UI */
+interface JsonFragmentType {
+  readonly name?: string;
+  readonly indexed?: boolean;
+  readonly type?: string;
+  readonly internalType?: string;
+  readonly components?: ReadonlyArray<JsonFragmentType>;
+}
+
+interface JsonFragment {
+  readonly name?: string;
+  readonly type?: string;
+  readonly anonymous?: boolean;
+  readonly payable?: boolean;
+  readonly constant?: boolean;
+  readonly stateMutability?: string;
+  readonly inputs?: ReadonlyArray<JsonFragmentType>;
+  readonly outputs?: ReadonlyArray<JsonFragmentType>;
+  readonly gas?: string;
+}
 
 import CustomErrors from "./CustomErrors.json";
 import DataStore from "./DataStore.json";
