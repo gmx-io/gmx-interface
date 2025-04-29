@@ -642,7 +642,7 @@ function FullApp() {
                   }}
                 >
                   <span>
-                    t3 is now live on Morph! 🎉 <span style={{ fontWeight: "bold" }}>See our Rewards Program</span>.
+                    t3 is now live on Base and Morph! 🎉 <span style={{ fontWeight: "bold" }}>See our Rewards Program</span>.
                   </span>
                 </div>
               </Banner>

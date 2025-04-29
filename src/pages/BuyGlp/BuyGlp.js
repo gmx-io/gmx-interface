@@ -7,6 +7,7 @@ import "./BuyGlp.css";
 
 import { Trans } from "@lingui/macro";
 import { getNativeToken } from "config/tokens";
+import { MORPH_MAINNET } from "config/chains";
 import { useDynamicChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Banner from "../../components/Banner/Banner";
@@ -16,7 +17,7 @@ export default function BuyGlp(props) {
   const history = useHistory();
   const [isBuying, setIsBuying] = useState(true);
   const nativeTokenSymbol = getNativeToken(chainId).symbol;
-
+  const morph = chainId === MORPH_MAINNET;
   useEffect(() => {
     const hash = history.location.hash.replace("#", "");
     const buying = hash === "redeem" ? false : true;
@@ -38,13 +39,13 @@ export default function BuyGlp(props) {
           </div>
         </div>
       </div>
-      <Banner id="bridge-notice">
+      {morph ? <Banner id="bridge-notice">
         <Trans>
           Need to bridge tokens to Morph? <ExternalLink href="https://meson.fi/">Meson Bridge</ExternalLink> for
           transfers from multiple chains, or <ExternalLink href="https://bridge.morphl2.io/">Morph Bridge</ExternalLink>{" "}
           for direct transfers.
         </Trans>
-      </Banner>
+      </Banner> : null}
       <GlpSwap {...props} isBuying={isBuying} setIsBuying={setIsBuying} />
       <Footer />
     </div>
