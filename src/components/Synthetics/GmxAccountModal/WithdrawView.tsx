@@ -30,13 +30,12 @@ import { abis } from "sdk/abis";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
-import { RelayUtils } from "typechain-types-arbitrum-sepolia/MultichainTransferRouter";
+import { BridgeOutParamsStruct } from "typechain-types-arbitrum-sepolia/MultichainTransferRouter";
 
 import Button from "components/Button/Button";
 import NumberInput from "components/NumberInput/NumberInput";
 import {
   useGmxAccountTokensDataObject,
-  useGmxAccountTokensDataRequest,
   useGmxAccountWithdrawNetworks,
   useMultichainTokens,
 } from "components/Synthetics/GmxAccountModal/hooks";
@@ -190,7 +189,7 @@ export const WithdrawView = () => {
     // fee: relayFeeParams.feeParams,
     // userNonce: userNonce,
 
-    const bridgeOutParams: RelayUtils.BridgeOutParamsStruct = {
+    const bridgeOutParams: BridgeOutParamsStruct = {
       token: selectedTokenAddress,
       amount: amount,
       // data: encodePacked(["uint32"], [dstEid]),

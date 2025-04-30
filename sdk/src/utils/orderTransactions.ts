@@ -409,6 +409,7 @@ export function buildTokenTransfersParamsForDecrease({
 
 export function buildTokenTransfersParamsForIncreaseOrSwap({
   chainId,
+  srcChainId,
   receiver,
   payTokenAddress,
   payTokenAmount,
@@ -419,6 +420,7 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
   swapPath,
 }: {
   chainId: number;
+  srcChainId: number | undefined;
   receiver: string;
   payTokenAddress: string;
   payTokenAmount: bigint;
@@ -429,10 +431,15 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
   swapPath: string[];
   orderType: OrderType;
 }): TokenTransfersParams {
+  // const nativeOrWntTokenAddress = srcChainId
+  //   ? convertTokenAddress(srcChainId, NATIVE_TOKEN_ADDRESS, "wrapped")
+  //   : NATIVE_TOKEN_ADDRESS;
   const isNativePayment = payTokenAddress === NATIVE_TOKEN_ADDRESS;
   const isNativeReceive = receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
   const orderVaultAddress = getContract(chainId, "OrderVault");
   const externalHandlerAddress = getContract(chainId, "ExternalHandler");
+
+  // debugger;
 
   const { tokenTransfers, value } = combineTransfers([
     {

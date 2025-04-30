@@ -60,8 +60,10 @@ const ASYNC_THROTTLE_TIME = 5000;
 
 export function useExpressOrdersParams({
   orderParams,
+  scope,
 }: {
   orderParams: BatchOrderTxnParams | undefined;
+  scope?: string;
 }): ExpressOrdersParamsResult {
   const { chainId } = useChainId();
   const srcChainId = useSelector(selectSourceChainId);
@@ -132,12 +134,18 @@ export function useExpressOrdersParams({
         }
 
         if (!enabled || !orderParams) {
+          // console.log({
+          //   enabled,
+          //   orderParams,
+          // });
+
           return;
         }
 
         const nextApproximateParams = await getApproximateEstimatedExpressParams({
           batchParams: orderParams,
           signer,
+          settlementChainClient,
           chainId,
           tokensData,
           marketsInfoData,
@@ -215,7 +223,9 @@ export function useExpressOrdersParams({
       l1Reference,
       marketsInfoData,
       orderParams,
+      scope,
       setGasPaymentTokenAddress,
+      settlementChainClient,
       signer,
       sponsoredCallMultiplierFactor,
       srcChainId,
@@ -242,6 +252,21 @@ export function useExpressOrdersParams({
           !gasPaymentAllowanceData ||
           gasPrice === undefined
         ) {
+          if (scope === "tradebox") {
+            // console.log("estimateBasTxnData is undefined", {
+            //   approximateExpressParams: !!approximateExpressParams.params,
+            //   provider: !!provider,
+            //   signer: !!signer,
+            //   relayerFeeToken: !!relayerFeeToken,
+            //   gasPaymentToken: !!gasPaymentToken,
+            //   orderParams: !!orderParams,
+            //   tokensData: !!tokensData,
+            //   marketsInfoData: !!marketsInfoData,
+            //   tokenPermits: !!tokenPermits,
+            //   gasPaymentAllowanceData: !!gasPaymentAllowanceData,
+            //   gasPrice: gasPrice !== undefined,
+            // });
+          }
           return;
         }
 
@@ -321,6 +346,7 @@ export function useExpressOrdersParams({
           chainId,
           orderParams,
           signer,
+          settlementChainClient,
           subaccount,
           tokenPermits: tokenPermits ?? [],
           tokensData,
@@ -364,6 +390,7 @@ export function useExpressOrdersParams({
       orderParams,
       provider,
       relayerFeeToken,
+      scope,
       settlementChainClient,
       signer,
       sponsoredCallMultiplierFactor,
@@ -426,7 +453,7 @@ export async function getApproximateEstimatedExpressParams({
 }: {
   batchParams: BatchOrderTxnParams;
   signer: Signer | undefined;
-  settlementChainClient?: PublicClient;
+  settlementChainClient: PublicClient | undefined;
   chainId: UiContractsChain;
   tokensData: TokensData | undefined;
   marketsInfoData: MarketsInfoData | undefined;
@@ -576,6 +603,7 @@ export async function getApproximateEstimatedExpressParams({
 
     const { relayParamsPayload } = await getExpressBatchOrderParams({
       chainId,
+      settlementChainClient,
       orderParams: batchParams,
       signer,
       subaccount,

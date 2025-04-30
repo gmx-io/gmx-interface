@@ -150,9 +150,13 @@ export function getRelayerFeeParams({
   internalSwapAmounts: SwapAmounts | undefined;
   externalSwapQuote: ExternalSwapOutput | undefined;
   tokensData: TokensData;
-  gasPaymentAllowanceData: TokensAllowanceData;
+  gasPaymentAllowanceData: TokensAllowanceData | undefined;
   forceExternalSwaps: boolean | undefined;
 }): RelayerFeeParams | undefined {
+  if (!srcChainId && !gasPaymentAllowanceData) {
+    throw new Error("Allowance data is required for non-multichain");
+  }
+
   let feeParams: RelayFeePayload;
   let externalCalls: ExternalCallsPayload;
   let gasPaymentTokenAmount: bigint;
@@ -170,6 +174,7 @@ export function getRelayerFeeParams({
     feeParams = {
       feeToken: relayerFeeTokenAddress,
       feeAmount: totalNetworkFeeAmount,
+      // feeAmount: relayerFeeTokenAmount,
       feeSwapPath: [],
     };
     gasPaymentTokenAmount = totalNetworkFeeAmount;
@@ -208,6 +213,12 @@ export function getRelayerFeeParams({
     gasPaymentTokenAmount = externalSwapQuote.amountIn;
     totalNetworkFeeAmount = externalSwapQuote.amountOut;
   } else {
+    if (
+      getIsInternalSwapBetter({ internalSwapAmounts, externalSwapQuote, forceExternalSwaps }) &&
+      !internalSwapAmounts?.swapPathStats
+    ) {
+      console.warn("No swap stats for internal swap");
+    }
     return undefined;
   }
 
@@ -284,11 +295,6 @@ export async function getRelayRouterNonceForSigner(chainId: number, signer: Sign
 
   return contract.userNonces(await signer.getAddress());
 }
-
-type MultichainRelayRouterAbiId = Extract<
-  AbiId,
-  "MultichainOrderRouterArbitrumSepolia" | "MultichainSubaccountRouterArbitrumSepolia"
->;
 
 const abiWithUserNonces = [
   {

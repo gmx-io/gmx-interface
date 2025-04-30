@@ -45,7 +45,7 @@ export async function getExpressBatchOrderParams({
   relayFeeParams: RelayerFeeParams;
   orderParams: BatchOrderTxnParams;
   signer: Signer;
-  settlementChainClient?: PublicClient;
+  settlementChainClient: PublicClient | undefined;
   subaccount: Subaccount | undefined;
   tokenPermits: SignedTokenPermit[];
   tokensData: TokensData;
@@ -112,7 +112,7 @@ export async function buildAndSignExpressBatchOrderTxn({
   relayParamsPayload: RelayParamsPayload;
   subaccount: Subaccount | undefined;
   emptySignature?: boolean;
-  settlementChainClient?: PublicClient;
+  settlementChainClient: PublicClient | undefined;
 }) {
   const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
   const signerAddress = (await signer.getAddress()) as Address;
@@ -174,7 +174,7 @@ export async function buildAndSignExpressBatchOrderTxn({
       subaccountApproval: params.subaccountApproval,
       relayRouterAddress,
     });
-    console.log("signatureParams", batchParams, signatureParams);
+    // console.log("signatureParams", batchParams, signatureParams);
 
     signature = await signTypedData(signatureParams);
   }

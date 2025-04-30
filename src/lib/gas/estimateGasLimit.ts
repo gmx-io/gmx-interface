@@ -58,6 +58,7 @@ export async function estimateGasLimitMultichain(
       value: txnData.value,
     });
 
+    // TODO: REMOVE THE MULTIPLIER
     return applyGasLimitBuffer(gasLimit);
   } catch (error) {
     if ("walk" in error && typeof error.walk === "function") {
@@ -74,8 +75,8 @@ export async function estimateGasLimitMultichain(
         const customError = new Error();
 
         customError.name = decodedError.errorName;
-        customError.message = decodedError.errorName;
-        customError.cause = error;
+        customError.message = JSON.stringify(decodedError);
+        // customError.cause = error;
 
         throw extendError(customError, {
           errorContext: "gasLimit",
@@ -83,6 +84,8 @@ export async function estimateGasLimitMultichain(
       }
     }
 
-    throw error;
+    throw extendError(error, {
+      errorContext: "gasLimit",
+    });
   }
 }

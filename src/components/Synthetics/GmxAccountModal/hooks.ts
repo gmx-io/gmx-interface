@@ -269,6 +269,8 @@ export async function fetchGmxAccountTokenBalancesData(
     },
   };
 
+  console.log("request", request);
+
   // TODO: pass priority to from args
   const result = await executeMulticall(settlementChainId, request, "urgent", "fetchGmxAccountTokensData");
 

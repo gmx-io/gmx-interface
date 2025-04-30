@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { t } from "@lingui/macro";
-import { useCallback, useId, useMemo } from "react";
+import { useCallback, useEffect, useId, useMemo } from "react";
 import { usePublicClient } from "wagmi";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -104,6 +104,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const sidecarOrderPayloads = useSidecarOrderPayloads();
 
   const primaryCreateOrderParams = useSelector(selectTradeBoxCreateOrderParams);
+
   const slippageInputId = useId();
 
   const batchParams: BatchOrderTxnParams = useMemo(() => {
@@ -122,7 +123,10 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     };
   }, [primaryCreateOrderParams, sidecarOrderPayloads]);
 
-  const { expressParams, expressEstimateMethod } = useExpressOrdersParams({ orderParams: batchParams });
+  const { expressParams, expressEstimateMethod } = useExpressOrdersParams({
+    orderParams: batchParams,
+    scope: "tradebox",
+  });
 
   if (expressParams && showDebugValues) {
     throttleLog("TradeBox express params", {

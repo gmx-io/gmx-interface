@@ -160,7 +160,7 @@ export const EXECUTION_FEE_CONFIG_V2: {
     defaultBufferBps: 3000, // 30%
   },
   [ARBITRUM_SEPOLIA]: {
-    shouldUseMaxPriorityFeePerGas: true,
+    shouldUseMaxPriorityFeePerGas: false,
     defaultBufferBps: 1000, // 10%
   },
 };

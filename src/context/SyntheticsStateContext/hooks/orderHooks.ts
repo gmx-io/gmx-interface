@@ -1,5 +1,6 @@
 import uniq from "lodash/uniq";
 import { useCallback, useMemo } from "react";
+import { usePublicClient } from "wagmi";
 
 import {
   getApproximateEstimatedExpressParams,
@@ -9,6 +10,7 @@ import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 
+import { useCancellingOrdersKeysState } from "./orderEditorHooks";
 import {
   makeSelectIsExpressTransactionAvailable,
   makeSelectSubaccountForActions,
@@ -26,10 +28,9 @@ import {
   selectOrderErrorsByOrderKeyMap,
   selectOrderErrorsCount,
 } from "../selectors/orderSelectors";
+import { selectExecutionFeeBufferBps } from "../selectors/settingsSelectors";
 import { selectRelayFeeTokens } from "../selectors/tradeSelectors";
 import { useSelector } from "../utils";
-import { selectExecutionFeeBufferBps } from "../selectors/settingsSelectors";
-import { useCancellingOrdersKeysState } from "./orderEditorHooks";
 
 export const useOrderErrors = (orderKey: string) => {
   const selector = useMemo(() => makeSelectOrderErrorByOrderKey(orderKey), [orderKey]);
@@ -48,6 +49,7 @@ export const useOrderErrorsCount = () => useSelector(selectOrderErrorsCount);
 export function useCancelOrder(orderKey: string) {
   const chainId = useSelector(selectChainId);
   const signer = useEthersSigner();
+  const settlementChainClient = usePublicClient({ chainId });
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tokensData = useSelector(selectTokensData);
@@ -73,6 +75,7 @@ export function useCancelOrder(orderKey: string) {
       const fastExpressParams = isExpressEnabled
         ? await getApproximateEstimatedExpressParams({
             signer,
+            settlementChainClient,
             chainId,
             batchParams: {
               createOrderParams: [],

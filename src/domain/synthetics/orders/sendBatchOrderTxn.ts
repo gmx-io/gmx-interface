@@ -1,5 +1,5 @@
 import { Signer } from "ethers";
-import { PublicClient } from "viem";
+import { BaseError, Hex, PublicClient, decodeErrorResult } from "viem";
 
 import { UiContractsChain } from "config/chains";
 import { ExpressParams } from "domain/synthetics/express";
@@ -14,6 +14,7 @@ import { sendExpressTransaction } from "lib/transactions/sendExpressTransaction"
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import { TxnCallback, TxnEventBuilder } from "lib/transactions/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import { sleep } from "sdk/utils/common";
 import { BatchOrderTxnParams, getBatchOrderMulticallPayload } from "sdk/utils/orderTransactions";
@@ -74,13 +75,45 @@ export async function sendBatchOrderTxn({
         emptySignature: true,
       });
 
-      await callRelayTransaction({
-        calldata: callData,
-        client: settlementChainClient!,
-        gelatoRelayFeeAmount: feeAmount,
-        gelatoRelayFeeToken: feeToken,
-        relayRouterAddress: to,
-      });
+      try {
+        await callRelayTransaction({
+          calldata: callData,
+          client: settlementChainClient!,
+          gelatoRelayFeeAmount: feeAmount,
+          gelatoRelayFeeToken: feeToken,
+          relayRouterAddress: to,
+        });
+      } catch (error) {
+        if ("walk" in error && typeof error.walk === "function") {
+          const errorWithData = (error as BaseError).walk((e) => "data" in (e as any)) as
+            | (Error & { data: string })
+            | null;
+
+          if (errorWithData && errorWithData.data) {
+            const data = errorWithData.data;
+
+            const decodedError = decodeErrorResult({
+              abi: abis.CustomErrorsArbitrumSepolia,
+              data: data as Hex,
+            });
+
+            const customError = new Error();
+
+            customError.name = decodedError.errorName;
+            customError.message = JSON.stringify(decodedError, null, 2);
+            // customError.cause = error;
+
+            throw extendError(customError, {
+              errorContext: "simulation",
+            });
+            // debugger;
+          }
+        }
+
+        throw extendError(error, {
+          errorContext: "simulation",
+        });
+      }
     };
   } else if (simulationParams) {
     runSimulation = () =>

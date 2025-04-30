@@ -1,5 +1,6 @@
 import { Hex, decodeFunctionData, encodePacked, etherUnits, type Address, type PublicClient } from "viem";
 
+import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 import { multichainOrderRouterAbi } from "wagmi-generated";
 
 const GELATO_RELAY_ADDRESS = "0xcd565435e0d2109feFde337a66491541Df0D1420";
@@ -19,13 +20,19 @@ export async function callRelayTransaction({
 }) {
   try {
     return await client.call({
-      account: GELATO_RELAY_ADDRESS,
+      account: GMX_SIMULATION_ORIGIN as Address,
       to: relayRouterAddress,
       data: encodePacked(
         ["bytes", "address", "address", "uint256"],
         [calldata as Hex, GELATO_RELAY_ADDRESS, gelatoRelayFeeToken as Address, gelatoRelayFeeAmount]
       ),
     });
+
+    // return await client.call({
+    //   account: GMX_SIMULATION_ORIGIN as Address,
+    //   to: relayRouterAddress,
+    //   data: calldata as Hex,
+    // });
   } catch (ex) {
     if (ex.error) {
       // this gives much more readable error in the console with a stacktrace

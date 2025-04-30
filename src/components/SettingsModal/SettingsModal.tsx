@@ -1,7 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { ReactNode, useCallback, useEffect, useState } from "react";
-import { useKey } from "react-use";
+import { ReactNode, useCallback, useEffect } from "react";
 
 import { isDevelopment } from "config/env";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
@@ -13,7 +12,6 @@ import { helperToast } from "lib/helperToast";
 import { roundToTwoDecimals } from "lib/numbers";
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
-import Button from "components/Button/Button";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
 import { ExpressTradingEnabledBanner } from "components/ExpressTradingEnabledBanner/ExpressTradingEnabledBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -271,8 +269,8 @@ export function SettingsModal({
               </ToggleSwitch>
 
               <ToggleSwitch
-                isChecked={shouldDisableValidationForTesting}
-                setIsChecked={setShouldDisableValidationForTesting}
+                isChecked={settings.shouldDisableValidationForTesting}
+                setIsChecked={settings.setShouldDisableValidationForTesting}
               >
                 <Trans>Disable validation for testing</Trans>
               </ToggleSwitch>

@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { usePublicClient } from "wagmi";
 
 import { USD_DECIMALS } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
@@ -24,6 +25,7 @@ import {
   makeSelectOrderEditorPositionOrderError,
   selectOrderEditorSetTriggerPriceInputValue,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
+import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectRelayFeeTokens } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -42,8 +44,6 @@ import { PositionOrderInfo } from "sdk/types/orders";
 
 import { DynamicLine } from "./DynamicLine";
 import type { IChartingLibraryWidget } from "../../charting_library";
-import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/selectors/settingsSelectors";
-
 export function DynamicLines({
   tvWidgetRef,
   isMobile,
@@ -54,6 +54,7 @@ export function DynamicLines({
   const dynamicChartLines = useSelector(selectChartDynamicLines);
   const { signer } = useWallet();
   const chainId = useSelector(selectChainId);
+  const settlementChainClient = usePublicClient({ chainId });
   const [, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const [isSubmitting] = useOrderEditorIsSubmittingState();
@@ -82,6 +83,7 @@ export function DynamicLines({
       const expressParams = isExpressEnabled
         ? await getApproximateEstimatedExpressParams({
             signer,
+            settlementChainClient,
             chainId,
             batchParams: {
               createOrderParams: [],
@@ -124,12 +126,14 @@ export function DynamicLines({
       gasLimits,
       gasPaymentAllowanceData,
       gasPrice,
+      isExpressEnabled,
       l1Reference,
       makeOrderTxnCallback,
       marketsInfoData,
       relayFeeTokens.findSwapPath,
       relayFeeTokens.gasPaymentToken?.address,
       setCancellingOrdersKeys,
+      settlementChainClient,
       signer,
       sponsoredCallMultiplierFactor,
       subaccount,

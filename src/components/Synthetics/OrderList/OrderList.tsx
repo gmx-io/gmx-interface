@@ -1,6 +1,7 @@
 import { Plural, Trans, t } from "@lingui/macro";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef } from "react";
 import { useMeasure, useMedia } from "react-use";
+import { usePublicClient } from "wagmi";
 
 import {
   useIsOrdersLoading,
@@ -21,6 +22,7 @@ import {
   selectSponsoredCallMultiplierFactor,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectRelayFeeTokens } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -52,7 +54,6 @@ import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table
 import { OrderItem } from "../OrderItem/OrderItem";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
 import { OrderTypeFilter } from "./filters/OrderTypeFilter";
-import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 
 type Props = {
   hideActions?: boolean;
@@ -88,6 +89,7 @@ export function OrderList({
 
   const chainId = useSelector(selectChainId);
   const { signer } = useWallet();
+  const settlementChainClient = usePublicClient({ chainId });
 
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const subaccount = useSelector(makeSelectSubaccountForActions(1));
@@ -168,6 +170,7 @@ export function OrderList({
     const expressTxnParams = isExpressEnabled
       ? await getApproximateEstimatedExpressParams({
           signer,
+          settlementChainClient,
           chainId,
           batchParams: {
             createOrderParams: [],

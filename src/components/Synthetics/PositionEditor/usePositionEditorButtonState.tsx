@@ -51,12 +51,13 @@ import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { isAddressZero } from "lib/legacy";
+import { throttleLog } from "lib/logging";
 import {
   initEditCollateralMetricData,
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
-import { expandDecimals, formatAmountFree, formatTokenAmount } from "lib/numbers";
+import { expandDecimals, formatAmountFree } from "lib/numbers";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
@@ -76,7 +77,6 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 import { OPERATION_LABELS, Operation } from "./types";
-import { throttleLog } from "lib/logging";
 
 export function usePositionEditorButtonState(operation: Operation): {
   text: ReactNode;

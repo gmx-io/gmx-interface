@@ -1,19 +1,19 @@
 import { Options, addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { Trans, t } from "@lingui/macro";
+import { errors as StargateErrorsAbi } from "@stargatefinance/stg-evm-sdk-v2";
 import { abi as IStargateAbi } from "@stargatefinance/stg-evm-sdk-v2/artifacts/src/interfaces/IStargate.sol/IStargate.json";
-import { Contract, solidityPacked } from "ethers";
+import { Contract, Interface, solidityPacked } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
 import Skeleton from "react-loading-skeleton";
 import useSWR from "swr";
-import { Address, parseEther, toHex, zeroAddress } from "viem";
-import { estimateTotalGas } from "viem/op-stack";
+import { Address, Hex, decodeErrorResult, encodeFunctionData, toHex, zeroAddress } from "viem";
 import { useAccount, usePublicClient } from "wagmi";
 
 import { UiSettlementChain, UiSourceChain, getChainName } from "config/chains";
 import { getContract } from "config/contracts";
 import { getChainIcon } from "config/icons";
-import { getMappedTokenId, getStargateEndpointId, isSourceChain } from "context/GmxAccountContext/config";
+import { getMappedTokenId, getStargateEndpointId } from "context/GmxAccountContext/config";
 import {
   useGmxAccountDepositViewChain,
   useGmxAccountDepositViewTokenAddress,
@@ -25,7 +25,6 @@ import {
 import { selectGmxAccountDepositViewTokenInputAmount } from "context/GmxAccountContext/selectors";
 import { getNeedTokenApprove, useTokenRecentPricesRequest, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
-import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import {
   BASIS_POINTS_DIVISOR_BIGINT,
@@ -35,6 +34,7 @@ import {
   formatUsd,
 } from "lib/numbers";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
+import { TxnCallback, TxnEventName, WalletTxnCtx, sendWalletTransaction } from "lib/transactions";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { CodecUiHelper } from "pages/DebugStargate/OFTComposeMsgCodec";
 import { abis } from "sdk/abis";
@@ -49,12 +49,13 @@ import {
 } from "typechain-types-stargate/interfaces/IStargate";
 
 import Button from "components/Button/Button";
+import { getTxnErrorToast } from "components/Errors/errorToasts";
 import NumberInput from "components/NumberInput/NumberInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { useGmxAccountTokensDataObject, useGmxAccountTokensDataRequest, useMultichainTokens } from "./hooks";
+import { useGmxAccountTokensDataObject, useMultichainTokens } from "./hooks";
 import { useMultichainDepositNetworkComposeGas } from "./useMultichainDepositNetworkComposeGas";
 
 const SLIPPAGE_BPS = 50n;
@@ -251,6 +252,7 @@ export const DepositView = () => {
       signer: signer,
       spender: spenderAddress,
       setIsApproving,
+      permitParams: undefined,
     });
   }, [depositViewChain, depositViewTokenAddress, inputAmount, selectedTokenSourceChainTokenId, signer, spenderAddress]);
 
@@ -259,10 +261,6 @@ export const DepositView = () => {
   const { nativeFeeUsd, amountReceivedLD } = useMultichainQuoteFeeUsd(composeGas);
 
   const handleDeposit = useCallback(async () => {
-    console.log("handleDeposit", {
-      depositViewChain,
-      settlementChainId,
-    });
     if (depositViewChain === settlementChainId) {
       // #region DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT
       if (!account || !depositViewTokenAddress || inputAmount === undefined || !walletChainId || !depositViewChain) {
@@ -271,38 +269,49 @@ export const DepositView = () => {
 
       const multichainVaultAddress = getContract(settlementChainId, "MultichainVault");
 
-      let response: any;
       const contract = new Contract(
         getContract(walletChainId, "MultichainTransferRouter")!,
         abis.MultichainTransferRouterArbitrumSepolia,
         signer
       );
 
+      const callback: TxnCallback<WalletTxnCtx> = (txnEvent) => {
+        if (txnEvent.event === TxnEventName.Sent) {
+          helperToast.success("Deposit sent", { toastId: "same-chain-gmx-account-deposit" });
+          setIsVisibleOrView("main");
+        } else if (txnEvent.event === TxnEventName.Error) {
+          helperToast.error("Deposit failed", { toastId: "same-chain-gmx-account-deposit" });
+        }
+      };
+
       if (depositViewTokenAddress === zeroAddress) {
-        response = await callContract(
-          walletChainId,
-          contract,
-          "multicall",
-          [
+        if (!selectedToken?.wrappedAddress) {
+          throw new Error("Wrapped address is not set");
+        }
+
+        await sendWalletTransaction({
+          chainId: walletChainId,
+          signer: signer!,
+          to: await contract.getAddress(),
+          callData: contract.interface.encodeFunctionData("multicall", [
             [
               contract.interface.encodeFunctionData("sendWnt", [multichainVaultAddress, inputAmount]),
               contract.interface.encodeFunctionData("bridgeIn", [
                 account,
-                depositViewTokenAddress,
+                selectedToken.wrappedAddress!,
                 BigInt(depositViewChain),
               ]),
             ],
-          ],
-          {
-            value: inputAmount,
-          }
-        );
+          ]),
+          value: inputAmount,
+          callback,
+        });
       } else {
-        response = await callContract(
-          walletChainId,
-          contract,
-          "multicall",
-          [
+        await sendWalletTransaction({
+          chainId: walletChainId,
+          signer: signer!,
+          to: await contract.getAddress(),
+          callData: contract.interface.encodeFunctionData("multicall", [
             [
               contract.interface.encodeFunctionData("sendTokens", [
                 depositViewTokenAddress,
@@ -315,17 +324,11 @@ export const DepositView = () => {
                 BigInt(depositViewChain),
               ]),
             ],
-          ],
-          {}
-        );
+          ]),
+          callback,
+        });
       }
 
-      if (response.success) {
-        setIsVisibleOrView("main");
-        helperToast.success("Deposit successful");
-      } else {
-        helperToast.error("Deposit failed");
-      }
       // #endregion DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT
     } else {
       if (
@@ -407,17 +410,61 @@ export const DepositView = () => {
         args: [newSendParams, false],
       })) as any;
 
-      await callContract(
-        depositViewChain,
-        new Contract(sourceChainStargateAddress, IStargateAbi, signer),
-        "sendToken",
-        [newSendParams, { nativeFee: result.nativeFee, lzTokenFee: result.lzTokenFee }, account],
-        {
-          value: (result.nativeFee as bigint) + value,
-          sentMsg: "Deposit sent",
-          successMsg: "Deposit sent successfully",
-        }
-      );
+      // await callContract(
+      //   depositViewChain,
+      //   new Contract(sourceChainStargateAddress, IStargateAbi, signer),
+      //   "sendToken",
+      //   [newSendParams, { nativeFee: result.nativeFee, lzTokenFee: result.lzTokenFee }, account],
+      //   {
+      //     value: (result.nativeFee as bigint) + value,
+      //     sentMsg: "Deposit sent",
+      //     successMsg: "Deposit sent successfully",
+      //   }
+      // );
+
+      await sendWalletTransaction({
+        chainId: depositViewChain,
+        to: sourceChainStargateAddress,
+        signer: signer!,
+        callData: encodeFunctionData({
+          abi: IStargateAbi,
+          functionName: "sendToken",
+          args: [newSendParams, { nativeFee: result.nativeFee, lzTokenFee: result.lzTokenFee }, account],
+        }),
+        value: (result.nativeFee as bigint) + value,
+        callback: (txnEvent) => {
+          if (txnEvent.event === TxnEventName.Error) {
+            const data = txnEvent.data.error.data as Hex | undefined;
+
+            if (data) {
+              const error = decodeErrorResult({
+                abi: StargateErrorsAbi,
+                data,
+              });
+
+              const toastParams = getTxnErrorToast(
+                depositViewChain,
+                {
+                  errorMessage: JSON.stringify(error, null, 2),
+                },
+                { defaultMessage: t`Deposit failed` }
+              );
+
+              helperToast.error(toastParams.errorContent, {
+                autoClose: toastParams.autoCloseToast,
+              });
+            } else {
+              const toastParams = getTxnErrorToast(depositViewChain, txnEvent.data.error, {
+                defaultMessage: t`Deposit failed`,
+              });
+
+              helperToast.error(toastParams.errorContent, {
+                autoClose: toastParams.autoCloseToast,
+              });
+            }
+          }
+        },
+      });
     }
   }, [
     account,
@@ -425,6 +472,7 @@ export const DepositView = () => {
     depositViewChain,
     depositViewTokenAddress,
     inputAmount,
+    selectedToken?.wrappedAddress,
     setIsVisibleOrView,
     settlementChainId,
     signer,
@@ -497,9 +545,7 @@ export const DepositView = () => {
         </div>
       </div>
 
-      <div className="h-20" />
-
-      <div className="flex flex-col gap-4">
+      <div className="mb-32 mt-20 flex flex-col gap-4">
         <div className="text-body-small flex items-center justify-between gap-4 text-slate-100">
           <Trans>Deposit</Trans>
           {selectedTokenSourceChainBalance !== undefined && selectedToken !== undefined && (
@@ -532,9 +578,7 @@ export const DepositView = () => {
         <div className="text-body-small text-slate-100">{formatUsd(inputAmountUsd ?? 0n)}</div>
       </div>
 
-      <div className="h-32" />
-
-      <div className="flex flex-col gap-8">
+      <div className="mb-8 flex flex-col gap-8">
         {/* SLIPPAGE_BPS */}
         <SyntheticsInfoRow label="Allowed slippage" value={formatPercentage(SLIPPAGE_BPS, { bps: true })} />
         <SyntheticsInfoRow
