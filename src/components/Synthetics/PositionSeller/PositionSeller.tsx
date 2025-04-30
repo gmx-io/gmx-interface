@@ -64,6 +64,7 @@ import {
   formatAmountFree,
   formatDeltaUsd,
   formatPercentage,
+  formatTokenAmount,
   formatUsd,
   parseValue,
 } from "lib/numbers";
@@ -90,6 +91,8 @@ import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 
 import "./PositionSeller.scss";
+import { throttleLog } from "lib/logging";
+import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 
 const ORDER_OPTION_LABELS = {
   [OrderOption.Market]: msg`Market`,
@@ -119,6 +122,7 @@ export function PositionSeller() {
   const localizedOrderOptionLabels = useLocalizedMap(ORDER_OPTION_LABELS);
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
+  const showDebugValues = useShowDebugValues();
 
   const isVisible = Boolean(position);
 
@@ -363,9 +367,16 @@ export function PositionSeller() {
     userReferralInfo?.referralCodeForTxn,
   ]);
 
-  const { expressParams } = useExpressOrdersParams({
+  const { expressParams, expressEstimateMethod } = useExpressOrdersParams({
     orderParams: batchParams,
   });
+
+  if (expressParams && showDebugValues) {
+    throttleLog("PositionSeller express Params", {
+      expressParams,
+      expressEstimateMethod,
+    });
+  }
 
   function onSubmit() {
     if (!account) {
@@ -393,6 +404,7 @@ export function PositionSeller() {
       priceImpactDeltaUsd: undefined,
       priceImpactPercentage: undefined,
       netRate1h: undefined,
+      isExpress: Boolean(expressParams),
     });
 
     sendOrderSubmittedMetric(metricData.metricId);

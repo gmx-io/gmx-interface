@@ -137,8 +137,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       toast.dismiss();
 
       helperToast.success(
-        <StatusNotification title={t`Updating subaccount settings`}>
-          <TransactionStatus status="loading" text={t`Updating subaccount settings...`} />
+        <StatusNotification title={t`Update 1CT (One-Click Trading) settings`}>
+          <TransactionStatus status="loading" text={t`Updating settings...`} />
         </StatusNotification>
       );
 
@@ -155,8 +155,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         }
       ).catch((error) => {
         helperToast.error(
-          <StatusNotification title={t`Updating subaccount settings`}>
-            <TransactionStatus status="error" text={t`Failed to update subaccount settings`} />
+          <StatusNotification title={t`Update 1CT (One-Click Trading) settings`}>
+            <TransactionStatus status="error" text={t`Failed to update settings`} />
           </StatusNotification>
         );
         throw error;
@@ -164,8 +164,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
       if (signedSubaccountApproval) {
         helperToast.success(
-          <StatusNotification title={t`Updating subaccount settings`}>
-            <TransactionStatus status="success" text={t`Subaccount settings updated`} />
+          <StatusNotification title={t`Update 1CT (One-Click Trading) settings`}>
+            <TransactionStatus status="success" text={t`settings updated`} />
           </StatusNotification>
         );
         setSignedApproval(signedSubaccountApproval);
@@ -259,8 +259,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         toast.dismiss();
 
         helperToast.success(
-          <StatusNotification title={t`Generating subaccount...`}>
-            <TransactionStatus status="loading" text={t`Generating subaccount...`} />
+          <StatusNotification title={t`Generating 1CT (One-Click Trading) session`}>
+            <TransactionStatus status="loading" text={t`Generating session...`} />
           </StatusNotification>
         );
 
@@ -268,8 +268,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           .then((res) => {
             toast.dismiss();
             helperToast.success(
-              <StatusNotification title={t`Generating subaccount...`}>
-                <TransactionStatus status="success" text={t`Subaccount generated`} />
+              <StatusNotification title={t`Generate 1CT (One-Click Trading) session`}>
+                <TransactionStatus status="success" text={t`Session generated`} />
               </StatusNotification>
             );
             return res;
@@ -277,8 +277,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           .catch((error) => {
             toast.dismiss();
             helperToast.error(
-              <StatusNotification title={t`Generating subaccount approval`}>
-                <TransactionStatus status="error" text={t`Failed to generate subaccount`} />
+              <StatusNotification title={t`Generate 1CT (One-Click Trading) session`}>
+                <TransactionStatus status="error" text={t`Failed to generate session`} />
               </StatusNotification>
             );
             throw error;
@@ -306,24 +306,24 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     toast.dismiss();
 
     helperToast.success(
-      <StatusNotification title={t`Deactivating subaccount`}>
-        <TransactionStatus status="loading" text={t`Deactivating subaccount...`} />
+      <StatusNotification title={t`Deactivate 1CT (One-Click Trading)`}>
+        <TransactionStatus status="loading" text={t`Deactivating...`} />
       </StatusNotification>
     );
 
     await removeSubaccountTxn(chainId, signer, subaccount.address)
       .then(() => {
         helperToast.success(
-          <StatusNotification title={t`Deactivating subaccount`}>
-            <TransactionStatus status="success" text={t`Subaccount deactivated`} />
+          <StatusNotification title={t`Deactivate 1CT (One-Click Trading)`}>
+            <TransactionStatus status="success" text={t`Deactivated`} />
           </StatusNotification>
         );
       })
       .catch((error) => {
         metrics.pushError(error, "subaccount.tryDisableSubaccount");
         helperToast.error(
-          <StatusNotification title={t`Deactivating subaccount`}>
-            <TransactionStatus status="error" text={t`Failed to deactivate subaccount`} />
+          <StatusNotification title={t`Deactivate 1CT (One-Click Trading)`}>
+            <TransactionStatus status="error" text={t`Failed to deactivate`} />
           </StatusNotification>
         );
         throw error;

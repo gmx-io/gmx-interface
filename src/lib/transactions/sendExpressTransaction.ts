@@ -34,16 +34,24 @@ export async function sendExpressTransaction(p: {
         target: p.txnData.to,
         data,
       },
-      apiKeys[p.chainId]
+      apiKeys[p.chainId],
+      {
+        retries: 1,
+      }
     );
   } else {
-    gelatoPromise = gelatoRelay.callWithSyncFee({
-      chainId: BigInt(p.chainId),
-      target: p.txnData.to,
-      feeToken: p.txnData.feeToken,
-      isRelayContext: true,
-      data,
-    });
+    gelatoPromise = gelatoRelay.callWithSyncFee(
+      {
+        chainId: BigInt(p.chainId),
+        target: p.txnData.to,
+        feeToken: p.txnData.feeToken,
+        isRelayContext: true,
+        data,
+      },
+      {
+        retries: 1,
+      }
+    );
   }
 
   return gelatoPromise.then((res) => {

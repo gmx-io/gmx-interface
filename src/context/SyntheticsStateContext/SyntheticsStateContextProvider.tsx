@@ -55,6 +55,10 @@ import useWallet from "lib/wallets/useWallet";
 
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
+import {
+  L1ExpressOrderGasReference,
+  useL1ExpressOrderGasReference,
+} from "domain/synthetics/express/useL1ExpressGasReference";
 
 export type SyntheticsPageType =
   | "accounts"
@@ -119,6 +123,7 @@ export type SyntheticsState = {
   confirmationBox: ConfirmationBoxState;
   disabledFeatures: DisabledFeatures | undefined;
   sponsoredCallParams: SponsoredCallParams | undefined;
+  l1ExpressOrderGasReference: L1ExpressOrderGasReference | undefined;
 };
 
 const StateCtx = createContext<SyntheticsState | null>(null);
@@ -262,6 +267,7 @@ export function SyntheticsStateContextProvider({
 
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
+  const l1ExpressOrderGasReference = useL1ExpressOrderGasReference();
 
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
@@ -332,6 +338,7 @@ export function SyntheticsStateContextProvider({
       confirmationBox: confirmationBoxState,
       disabledFeatures,
       sponsoredCallParams,
+      l1ExpressOrderGasReference,
     };
 
     return s;
@@ -376,6 +383,7 @@ export function SyntheticsStateContextProvider({
     confirmationBoxState,
     disabledFeatures,
     sponsoredCallParams,
+    l1ExpressOrderGasReference,
   ]);
 
   latestState = state;

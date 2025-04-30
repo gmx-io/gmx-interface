@@ -15,8 +15,8 @@ import { BatchOrderTxnParams, getBatchOrderMulticallPayload } from "sdk/utils/or
 
 import { signerAddressError } from "components/Errors/errorToasts";
 
-
 import { getOrdersTriggerPriceOverrides, getSimulationPrices, simulateExecution } from "./simulation";
+import { sleep } from "sdk/utils/common";
 
 export type BatchSimulationParams = {
   tokensData: TokensData;
@@ -58,33 +58,31 @@ export async function sendBatchOrderTxn({
         : Promise.resolve(undefined);
 
     if (expressParams) {
-      const [txnData] = await Promise.all([
-        buildAndSignExpressBatchOrderTxn({
-          chainId,
-          signer,
-          batchParams,
-          relayParamsPayload: expressParams.relayParamsPayload,
-          relayFeeParams: expressParams.relayFeeParams,
-          subaccount: expressParams.subaccount,
-        }),
-        runSimulation().then(() => callback?.(eventBuilder.Simulated())),
-      ]);
+      await runSimulation().then(() => callback?.(eventBuilder.Simulated()));
+
+      const txnData = await buildAndSignExpressBatchOrderTxn({
+        chainId,
+        signer,
+        batchParams,
+        relayParamsPayload: expressParams.relayParamsPayload,
+        relayFeeParams: expressParams.relayFeeParams,
+        subaccount: expressParams.subaccount,
+      });
 
       callback?.(eventBuilder.Prepared());
 
       const createdAt = Date.now();
 
-      const res = await withRetry(
-        () =>
-          sendExpressTransaction({
-            chainId,
-            txnData,
-            isSponsoredCall: expressParams.isSponsoredCall,
-          }),
-        {
-          retryCount: 3,
-        }
-      )
+      const res = Promise.race([
+        sendExpressTransaction({
+          chainId,
+          txnData,
+          isSponsoredCall: expressParams.isSponsoredCall,
+        }),
+        sleep(3000).then(() => {
+          throw new Error("Gelato Task Timeout");
+        }),
+      ])
         .then(async (res) => {
           callback?.(
             eventBuilder.Sent({

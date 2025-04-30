@@ -180,6 +180,7 @@ export function PositionEditor() {
       {text}
     </Button>
   );
+
   const button = tooltipContent ? (
     <TooltipWithPortal
       className="w-full"
@@ -198,6 +199,7 @@ export function PositionEditor() {
     nativeToken,
     fromTokenAmount: collateralDeltaAmount ?? 0n,
     fromTokenInputValue: collateralInputValue,
+    relayerFeeParams,
   });
 
   const showMaxButton = isDeposit

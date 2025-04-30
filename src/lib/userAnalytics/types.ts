@@ -82,6 +82,8 @@ export type TradeBoxInteractionStartedEvent = {
     amountUsd?: number;
     priceImpactDeltaUsd: number;
     priceImpactPercentage: number;
+    IsExpress: boolean;
+    isExpress1CT: boolean;
     netRate1h: number;
     openInterestPercent: number;
     tradeType: TradeType;
@@ -117,7 +119,8 @@ export type TradeBoxConfirmClickEvent = {
     amountUsd?: number;
     leverage: string;
     isLeverageEnabled?: boolean;
-    is1CT: boolean;
+    IsExpress: boolean;
+    isExpress1CT: boolean;
     isTPSLCreated?: boolean;
     slCount?: number;
     tpCount?: number;
@@ -150,7 +153,8 @@ export type TradeBoxResultEvent = {
     sizeDeltaUsd?: number;
     amountUsd?: number;
     leverage: string;
-    is1CT: boolean;
+    IsExpress: boolean;
+    isExpress1CT: boolean;
     isTPSLCreated?: boolean;
     slCount?: number;
     tpCount?: number;
@@ -183,6 +187,8 @@ export type TradeBoxWarningShownEvent = {
     type: "Short" | "Long" | "Swap";
     orderType: AnalyticsOrderType;
     tradeType: "InitialTrade" | "IncreaseSize";
+    IsExpress: boolean;
+    isExpress1CT: boolean;
     sizeDeltaUsd: number;
     leverage: string;
     chain: "Arbitrum" | "Avalanche";

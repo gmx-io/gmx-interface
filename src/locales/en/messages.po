@@ -503,8 +503,8 @@ msgid "You can transfer ETH from other networks to Arbitrum using any of the bel
 msgstr "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Subaccount deactivated"
-msgstr "Subaccount deactivated"
+#~ msgid "Subaccount deactivated"
+#~ msgstr "Subaccount deactivated"
 
 #: src/pages/Earn/EarnV2.tsx
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
@@ -1104,9 +1104,9 @@ msgstr "Estimated Fee Refund"
 msgid "GMX Swaps"
 msgstr "GMX Swaps"
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "Deactivating..."
-#~ msgstr "Deactivating..."
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Deactivating..."
+msgstr "Deactivating..."
 
 #: src/domain/synthetics/gassless/txns/useOrderTxnCallbacks.tsx
 #~ msgid "Cancel {ordersText} failed."
@@ -1462,8 +1462,8 @@ msgstr "account"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Generating subaccount..."
-msgstr "Generating subaccount..."
+#~ msgid "Generating subaccount..."
+#~ msgstr "Generating subaccount..."
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Keep leverage at {0}"
@@ -2059,6 +2059,14 @@ msgstr "Affiliates"
 msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
 msgstr "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Generating 1CT (One-Click Trading) session"
+msgstr "Generating 1CT (One-Click Trading) session"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Failed to deactivate"
+msgstr "Failed to deactivate"
+
 #: src/lib/legacy.ts
 msgid "No open position, order cannot be executed unless a position is opened"
 msgstr "No open position, order cannot be executed unless a position is opened"
@@ -2248,8 +2256,8 @@ msgid "Total Trading Volume"
 msgstr "Total Trading Volume"
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
-msgid "Order created."
-msgstr "Order created."
+#~ msgid "Order created."
+#~ msgstr "Order created."
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSpreadRow.tsx
@@ -2575,6 +2583,10 @@ msgstr "Relayer request failed"
 msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"
 msgstr "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "settings updated"
+msgstr "settings updated"
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "You have an existing position with {0} as collateral."
 msgstr "You have an existing position with {0} as collateral."
@@ -2684,8 +2696,8 @@ msgstr "Traders Referred on Arbitrum"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Updating subaccount settings"
-msgstr "Updating subaccount settings"
+#~ msgid "Updating subaccount settings"
+#~ msgstr "Updating subaccount settings"
 
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -2812,6 +2824,11 @@ msgstr "Failed to Claim Price Impact Rebate"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Only positions with over {0} in \"Capital Used\" are ranked."
 msgstr "Only positions with over {0} in \"Capital Used\" are ranked."
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Generate 1CT (One-Click Trading) session"
+msgstr "Generate 1CT (One-Click Trading) session"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Accept minimum and {action}"
@@ -3112,6 +3129,10 @@ msgstr "Self-transfer not supported"
 msgid "{col2}"
 msgstr "{col2}"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Generating session..."
+msgstr "Generating session..."
+
 #: src/pages/Exchange/Exchange.tsx
 msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
@@ -3300,8 +3321,8 @@ msgstr "Swap UI Fee"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Deactivating subaccount"
-msgstr "Deactivating subaccount"
+#~ msgid "Deactivating subaccount"
+#~ msgstr "Deactivating subaccount"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
@@ -3672,6 +3693,7 @@ msgstr "GLV is the liquidity provider token for GMX V2 vaults. Consist of severa
 msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
 msgstr "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
 
+#: src/components/DebugExpressSettings/DebugSwapsSettings.tsx
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Fail External Swaps"
 msgstr "Fail External Swaps"
@@ -3821,6 +3843,10 @@ msgstr "Approval failed"
 #: src/pages/Home/Home.tsx
 msgid "Open Interest"
 msgstr "Open Interest"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Updating settings..."
+msgstr "Updating settings..."
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
@@ -4613,6 +4639,10 @@ msgstr "This competition is held on the {0} network. <0>Change your network</0> 
 msgid "Create Stop Loss"
 msgstr "Create Stop Loss"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Failed to generate session"
+msgstr "Failed to generate session"
+
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "This competition has ended."
 msgstr "This competition has ended."
@@ -5128,6 +5158,7 @@ msgstr "Affiliate Rewards Claimed"
 msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
 msgstr "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
 
+#: src/components/DebugExpressSettings/DebugSwapsSettings.tsx
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Swap Price Impact for External Swap Threshold"
 msgstr "Swap Price Impact for External Swap Threshold"
@@ -5181,8 +5212,8 @@ msgid "Loading..."
 msgstr "Loading..."
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Generating subaccount approval"
-msgstr "Generating subaccount approval"
+#~ msgid "Generating subaccount approval"
+#~ msgstr "Generating subaccount approval"
 
 #: src/components/Synthetics/TradeBox/OneClickTradingInfo.tsx
 #~ msgid "There are insufficient funds in your subaccount for One-Click Trading"
@@ -5393,8 +5424,8 @@ msgid "Winners:"
 msgstr "Winners:"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Failed to deactivate subaccount"
-msgstr "Failed to deactivate subaccount"
+#~ msgid "Failed to deactivate subaccount"
+#~ msgstr "Failed to deactivate subaccount"
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "When closing the position, you can select which token you would like to receive the profits in."
@@ -5493,8 +5524,8 @@ msgid "Stop Loss Decrease"
 msgstr "Stop Loss Decrease"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Updating subaccount settings..."
-msgstr "Updating subaccount settings..."
+#~ msgid "Updating subaccount settings..."
+#~ msgstr "Updating subaccount settings..."
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Diff"
@@ -5764,8 +5795,8 @@ msgid "Liquidation"
 msgstr "Liquidation"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Subaccount settings updated"
-msgstr "Subaccount settings updated"
+#~ msgid "Subaccount settings updated"
+#~ msgstr "Subaccount settings updated"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Risk Monitoring"
@@ -6143,8 +6174,8 @@ msgid "The order's acceptable price includes the set acceptable price impact. Th
 msgstr "The order's acceptable price includes the set acceptable price impact. The execution price must meet this condition for the order to be executed."
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Deactivating subaccount..."
-msgstr "Deactivating subaccount..."
+#~ msgid "Deactivating subaccount..."
+#~ msgstr "Deactivating subaccount..."
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Min order: 10 USD"
@@ -6733,6 +6764,12 @@ msgstr "Open Fee"
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 msgstr "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Update 1CT (One-Click Trading) settings"
+msgstr "Update 1CT (One-Click Trading) settings"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Kudai AI Agent"
 msgstr "Kudai AI Agent"
@@ -6761,6 +6798,12 @@ msgstr "You"
 #: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
 #~ msgid "Error with gasless transaction: {0}"
 #~ msgstr "Error with gasless transaction: {0}"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Deactivate 1CT (One-Click Trading)"
+msgstr "Deactivate 1CT (One-Click Trading)"
 
 #: src/pages/Earn/GlpCard.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
@@ -6881,8 +6924,8 @@ msgid "Top Positions"
 msgstr "Top Positions"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Subaccount generated"
-msgstr "Subaccount generated"
+#~ msgid "Subaccount generated"
+#~ msgstr "Subaccount generated"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "Pools"
@@ -6964,6 +7007,10 @@ msgstr "Search Address"
 msgid "Max GM buyable amount reached"
 msgstr "Max GM buyable amount reached"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Session generated"
+msgstr "Session generated"
+
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
 msgstr "Buy GMX"
@@ -7005,8 +7052,8 @@ msgid "Insufficient {0} balance"
 msgstr "Insufficient {0} balance"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Failed to generate subaccount"
-msgstr "Failed to generate subaccount"
+#~ msgid "Failed to generate subaccount"
+#~ msgstr "Failed to generate subaccount"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "limit price"
@@ -7088,8 +7135,8 @@ msgid "Buy GMX using FIAT gateways:"
 msgstr "Buy GMX using FIAT gateways:"
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
-msgid "Order error."
-msgstr "Order error."
+#~ msgid "Order error."
+#~ msgstr "Order error."
 
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Referral code created!"
@@ -7236,8 +7283,8 @@ msgid "Page outdated, please refresh"
 msgstr "Page outdated, please refresh"
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
-msgid "Order submitted."
-msgstr "Order submitted."
+#~ msgid "Order submitted."
+#~ msgstr "Order submitted."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals"
@@ -7308,8 +7355,8 @@ msgid "Stop Market"
 msgstr "Stop Market"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Failed to update subaccount settings"
-msgstr "Failed to update subaccount settings"
+#~ msgid "Failed to update subaccount settings"
+#~ msgstr "Failed to update subaccount settings"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
@@ -7710,6 +7757,7 @@ msgstr "{ordersText} cancelled"
 msgid "take profit"
 msgstr "take profit"
 
+#: src/components/DebugExpressSettings/DebugSwapsSettings.tsx
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Force External Swaps"
 msgstr "Force External Swaps"
@@ -8130,6 +8178,10 @@ msgstr "No data available"
 msgid "{prefix} <0>{text}</0>"
 msgstr "{prefix} <0>{text}</0>"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Failed to update settings"
+msgstr "Failed to update settings"
+
 #: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Positive Price Impact / Fees"
 msgstr "Positive Price Impact / Fees"
@@ -8155,8 +8207,8 @@ msgid "Add {0} to Metamask"
 msgstr "Add {0} to Metamask"
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "Save"
-msgstr "Save"
+#~ msgid "Save"
+#~ msgstr "Save"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
@@ -8681,6 +8733,10 @@ msgstr "Migrate"
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Cancelling {ordersText}"
 msgstr "Cancelling {ordersText}"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Deactivated"
+msgstr "Deactivated"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Ecosystem Projects"

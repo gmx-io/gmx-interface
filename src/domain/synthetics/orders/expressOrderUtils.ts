@@ -60,18 +60,20 @@ export async function getExpressBatchOrderParams({
 
   const oracleParamsPayload = getOracleParamsPayload([...feeOracleParams, ...ordersOracleParams]);
 
+  const relayParamsPayload: RelayParamsPayload = {
+    oracleParams: oracleParamsPayload,
+    tokenPermits: tokenPermits ?? [],
+    externalCalls: relayFeeParams.externalCalls,
+    fee: relayFeeParams.feeParams,
+    deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
+    userNonce: 0n,
+  };
+
   const txnData = await buildAndSignExpressBatchOrderTxn({
     signer,
     chainId,
     relayFeeParams,
-    relayParamsPayload: {
-      oracleParams: oracleParamsPayload,
-      tokenPermits: tokenPermits ?? [],
-      externalCalls: relayFeeParams.externalCalls,
-      fee: relayFeeParams.feeParams,
-      deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
-      userNonce: 0n,
-    },
+    relayParamsPayload,
     batchParams: orderParams,
     subaccount,
     emptySignature,
@@ -80,6 +82,7 @@ export async function getExpressBatchOrderParams({
   return {
     txnData,
     oracleParamsPayload,
+    relayParamsPayload,
   };
 }
 

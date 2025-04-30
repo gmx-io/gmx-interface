@@ -16,7 +16,7 @@ import {
   usePositionEditorPosition,
   usePositionEditorPositionState,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
-import { useSavedAllowedSlippage } from "context/SyntheticsStateContext/hooks/settingsHooks";
+import { useSavedAllowedSlippage, useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import {
   selectBlockTimestampData,
   selectMarketsInfoData,
@@ -54,7 +54,7 @@ import {
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
-import { expandDecimals, formatAmountFree } from "lib/numbers";
+import { expandDecimals, formatAmountFree, formatTokenAmount } from "lib/numbers";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
@@ -74,6 +74,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 import { OPERATION_LABELS, Operation } from "./types";
+import { throttleLog } from "lib/logging";
 
 export function usePositionEditorButtonState(operation: Operation): {
   text: ReactNode;
@@ -102,6 +103,7 @@ export function usePositionEditorButtonState(operation: Operation): {
   const { collateralDeltaAmount, collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const marketsInfoData = useSelector(selectMarketsInfoData);
+  const showDebugValues = useShowDebugValues();
 
   const {
     tokensAllowanceData,
@@ -367,6 +369,13 @@ export function usePositionEditorButtonState(operation: Operation): {
     orderParams: batchParams,
   });
 
+  if (expressParams && showDebugValues) {
+    throttleLog("PositionEditor express Params", {
+      expressParams,
+      expressEstimateMethod: expressParams,
+    });
+  }
+
   function onSubmit() {
     if (!account) {
       openConnectModal?.();
@@ -426,6 +435,7 @@ export function usePositionEditorButtonState(operation: Operation): {
       marketInfo: position?.marketInfo,
       collateralDeltaAmount,
       subaccount: expressParams?.subaccount,
+      isExpress: Boolean(expressParams),
       orderType,
       isLong: position?.isLong,
     });

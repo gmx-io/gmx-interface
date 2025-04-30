@@ -9,9 +9,12 @@ import {
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { selectChartDynamicLines } from "context/SyntheticsStateContext/selectors/chartSelectors/selectChartDynamicLines";
 import {
+  makeSelectIsExpressTransactionAvailable,
   makeSelectSubaccountForActions,
   selectChainId,
+  selectGasLimits,
   selectGasPrice,
+  selectL1ExpressOrderGasReference,
   selectMarketsInfoData,
   selectOrdersInfoData,
   selectSponsoredCallMultiplierFactor,
@@ -25,7 +28,7 @@ import { selectRelayFeeTokens } from "context/SyntheticsStateContext/selectors/t
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
-  getExpressCancelOrdersParams,
+  getApproximateEstimatedExpressParams,
   useGasPaymentTokenAllowanceData,
 } from "domain/synthetics/express/useRelayerFeeHandler";
 import { useMarkets } from "domain/synthetics/markets";
@@ -39,6 +42,7 @@ import { PositionOrderInfo } from "sdk/types/orders";
 
 import { DynamicLine } from "./DynamicLine";
 import type { IChartingLibraryWidget } from "../../charting_library";
+import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 
 export function DynamicLines({
   tvWidgetRef,
@@ -65,25 +69,39 @@ export function DynamicLines({
   const tokensData = useSelector(selectTokensData);
   const { pendingOrdersUpdates } = useSyntheticsEvents();
   const gasPaymentAllowanceData = useGasPaymentTokenAllowanceData(chainId, relayFeeTokens.gasPaymentToken?.address);
+  const gasLimits = useSelector(selectGasLimits);
+  const l1Reference = useSelector(selectL1ExpressOrderGasReference);
+  const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
+  const isExpressEnabled = useSelector(makeSelectIsExpressTransactionAvailable(false));
 
   const onCancelOrder = useCallback(
     async (key: string) => {
       if (!signer) return;
       setCancellingOrdersKeys((prev) => [...prev, key]);
 
-      const expressParams = await getExpressCancelOrdersParams({
-        signer,
-        chainId,
-        params: [{ orderKey: key }],
-        subaccount,
-        gasPaymentTokenAddress: relayFeeTokens.gasPaymentToken?.address,
-        tokensData,
-        marketsInfoData,
-        findSwapPath: relayFeeTokens.findSwapPath,
-        sponsoredCallMultiplierFactor,
-        gasPrice,
-        gasPaymentAllowanceData,
-      });
+      const expressParams = isExpressEnabled
+        ? await getApproximateEstimatedExpressParams({
+            signer,
+            chainId,
+            batchParams: {
+              createOrderParams: [],
+              updateOrderParams: [],
+              cancelOrderParams: [{ orderKey: key }],
+            },
+            subaccount,
+            gasPaymentTokenAddress: relayFeeTokens.gasPaymentToken?.address,
+            tokensData,
+            marketsInfoData,
+            findSwapPath: relayFeeTokens.findSwapPath,
+            sponsoredCallMultiplierFactor,
+            gasPrice,
+            tokenPermits: [],
+            gasPaymentAllowanceData,
+            gasLimits,
+            l1Reference,
+            bufferBps: executionFeeBufferBps,
+          })
+        : undefined;
 
       sendBatchOrderTxn({
         chainId,
@@ -93,7 +111,7 @@ export function DynamicLines({
           updateOrderParams: [],
           cancelOrderParams: [{ orderKey: key }],
         },
-        expressParams,
+        expressParams: expressParams?.expressParams,
         simulationParams: undefined,
         callback: makeOrderTxnCallback({}),
       }).finally(() => {
@@ -102,8 +120,11 @@ export function DynamicLines({
     },
     [
       chainId,
+      executionFeeBufferBps,
+      gasLimits,
       gasPaymentAllowanceData,
       gasPrice,
+      l1Reference,
       makeOrderTxnCallback,
       marketsInfoData,
       relayFeeTokens.findSwapPath,

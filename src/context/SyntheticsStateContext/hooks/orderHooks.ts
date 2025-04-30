@@ -2,7 +2,7 @@ import uniq from "lodash/uniq";
 import { useCallback, useMemo } from "react";
 
 import {
-  getExpressCancelOrdersParams,
+  getApproximateEstimatedExpressParams,
   useGasPaymentTokenAllowanceData,
 } from "domain/synthetics/express/useRelayerFeeHandler";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
@@ -10,9 +10,12 @@ import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallba
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 
 import {
+  makeSelectIsExpressTransactionAvailable,
   makeSelectSubaccountForActions,
   selectChainId,
+  selectGasLimits,
   selectGasPrice,
+  selectL1ExpressOrderGasReference,
   selectMarketsInfoData,
   selectSponsoredCallMultiplierFactor,
   selectTokensData,
@@ -25,6 +28,7 @@ import {
 } from "../selectors/orderSelectors";
 import { selectRelayFeeTokens } from "../selectors/tradeSelectors";
 import { useSelector } from "../utils";
+import { selectExecutionFeeBufferBps } from "../selectors/settingsSelectors";
 import { useCancellingOrdersKeysState } from "./orderEditorHooks";
 
 export const useOrderErrors = (orderKey: string) => {
@@ -53,6 +57,10 @@ export function useCancelOrder(orderKey: string) {
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const subaccount = useSelector(makeSelectSubaccountForActions(1));
   const gasPaymentAllowanceData = useGasPaymentTokenAllowanceData(chainId, relayFeeTokens.gasPaymentToken?.address);
+  const gasLimits = useSelector(selectGasLimits);
+  const l1Reference = useSelector(selectL1ExpressOrderGasReference);
+  const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
+  const isExpressEnabled = useSelector(makeSelectIsExpressTransactionAvailable(false));
 
   const isCancelOrderProcessing = cancellingOrdersKeys.includes(orderKey);
 
@@ -62,19 +70,29 @@ export function useCancelOrder(orderKey: string) {
 
       setCancellingOrdersKeys((p) => uniq(p.concat(orderKey)));
 
-      const expressParams = await getExpressCancelOrdersParams({
-        signer,
-        chainId,
-        params: [{ orderKey }],
-        subaccount,
-        gasPaymentTokenAddress: relayFeeTokens.gasPaymentToken?.address,
-        tokensData,
-        marketsInfoData,
-        findSwapPath: relayFeeTokens.findSwapPath,
-        sponsoredCallMultiplierFactor,
-        gasPrice,
-        gasPaymentAllowanceData,
-      });
+      const fastExpressParams = isExpressEnabled
+        ? await getApproximateEstimatedExpressParams({
+            signer,
+            chainId,
+            batchParams: {
+              createOrderParams: [],
+              updateOrderParams: [],
+              cancelOrderParams: [{ orderKey }],
+            },
+            subaccount,
+            gasPaymentTokenAddress: relayFeeTokens.gasPaymentToken?.address,
+            tokensData,
+            marketsInfoData,
+            tokenPermits: [],
+            findSwapPath: relayFeeTokens.findSwapPath,
+            sponsoredCallMultiplierFactor,
+            gasPrice,
+            gasPaymentAllowanceData,
+            gasLimits,
+            l1Reference,
+            bufferBps: executionFeeBufferBps,
+          })
+        : undefined;
 
       sendBatchOrderTxn({
         chainId,
@@ -84,7 +102,7 @@ export function useCancelOrder(orderKey: string) {
           updateOrderParams: [],
           cancelOrderParams: [{ orderKey }],
         },
-        expressParams,
+        expressParams: fastExpressParams?.expressParams,
         simulationParams: undefined,
         callback: makeOrderTxnCallback({}),
       }).finally(() => {
@@ -93,8 +111,11 @@ export function useCancelOrder(orderKey: string) {
     },
     [
       chainId,
+      executionFeeBufferBps,
+      gasLimits,
       gasPaymentAllowanceData,
       gasPrice,
+      l1Reference,
       makeOrderTxnCallback,
       marketsInfoData,
       orderKey,

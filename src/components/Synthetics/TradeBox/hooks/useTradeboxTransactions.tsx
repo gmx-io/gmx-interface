@@ -54,6 +54,8 @@ import { OrderType } from "sdk/types/orders";
 import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
 
 import { useSidecarOrderPayloads } from "./useSidecarOrderPayloads";
+import { throttleLog } from "lib/logging";
+import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
@@ -62,7 +64,6 @@ interface TradeboxTransactionsProps {
 export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactionsProps) {
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
-  const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const tokensData = useTokensData();
   const { shouldDisableValidationForTesting } = useSettings();
 
@@ -84,6 +85,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const fees = useSelector(selectTradeboxFees);
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
   const marketsInfoData = useSelector(selectMarketsInfoData);
+  const showDebugValues = useShowDebugValues();
 
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
 
@@ -117,15 +119,12 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     };
   }, [primaryCreateOrderParams, sidecarOrderPayloads]);
 
-  const { expressParams, needGasPaymentTokenApproval } = useExpressOrdersParams({ orderParams: batchParams });
+  const { expressParams, expressEstimateMethod } = useExpressOrdersParams({ orderParams: batchParams });
 
-  if (expressParams || needGasPaymentTokenApproval) {
-    // FIXME gasless: TEMP DEBUG
-    // eslint-disable-next-line no-console
-    console.log("expressParams", expressParams, {
-      needGasPaymentTokenApproval,
-      gasPaymentFee: formatTokenAmount(expressParams?.relayFeeParams.feeParams.feeAmount, 6, "USDC"),
-      relayerFee: formatTokenAmount(expressParams?.relayFeeParams.relayerTokenAmount, 18, "WETH"),
+  if (expressParams && showDebugValues) {
+    throttleLog("TradeBox express params", {
+      expressParams,
+      expressEstimateMethod,
     });
   }
 
@@ -136,6 +135,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         toToken,
         hasReferralCode: Boolean(referralCodeForTxn),
         swapAmounts,
+        isExpress: Boolean(expressParams),
         executionFee,
         allowedSlippage,
         orderType: primaryCreateOrderParams?.orderPayload.orderType,
@@ -162,6 +162,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         marketInfo,
         isLong,
         isFirstOrder,
+        isExpress: Boolean(expressParams),
         isLeverageEnabled: isLeverageSliderEnabled,
         initialCollateralAllowance,
         isTPSLCreated: Boolean(sidecarOrderPayloads?.createPayloads?.length),
@@ -194,6 +195,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       allowedSlippage,
       isLong,
       place: "tradeBox",
+      isExpress: Boolean(expressParams),
       interactionId: marketInfo?.name ? userAnalytics.getInteractionId(getTradeInteractionKey(marketInfo.name)) : "",
       priceImpactDeltaUsd: decreaseAmounts?.positionPriceImpactDeltaUsd,
       priceImpactPercentage: fees?.positionPriceImpact?.precisePercentage,
@@ -207,7 +209,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     collateralToken,
     decreaseAmounts,
     executionFee,
-    expressParams?.subaccount,
+    expressParams,
     fees?.positionPriceImpact?.precisePercentage,
     fromToken,
     increaseAmounts,
@@ -296,6 +298,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     onSubmitWrapOrUnwrap,
     slippageInputId,
     relayerFeeParams: expressParams?.relayFeeParams,
-    needGasPaymentTokenApproval,
+    needGasPaymentTokenApproval: expressParams?.relayFeeParams.needGasPaymentTokenApproval,
   };
 }

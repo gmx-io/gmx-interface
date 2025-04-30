@@ -7,8 +7,15 @@ import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectShowDebugValues } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import {
+  selectChainId,
+  selectMarketsInfoData,
+  selectSubaccountState,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectExpressOrdersEnabled,
+  selectShowDebugValues,
+} from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxAvailableTokensOptions,
@@ -161,13 +168,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const fromTokenPrice = fromToken?.prices.minPrice;
   const fromUsd = convertToUsd(fromTokenAmount, fromToken?.decimals, fromTokenPrice);
 
-  const { formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
-    fromToken,
-    nativeToken,
-    fromTokenAmount,
-    fromTokenInputValue,
-  });
-
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
 
   const markPrice = useSelector(selectTradeboxMarkPrice);
@@ -179,6 +179,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const leverage = useSelector(selectTradeboxLeverage);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
   const fees = useSelector(selectTradeboxFees);
+  const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
+  const { subaccount } = useSelector(selectSubaccountState);
 
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const { markRatio } = useSelector(selectTradeboxTradeRatios);
@@ -238,6 +240,21 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     account,
     setToTokenInputValue,
   });
+
+  const { formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
+    fromToken,
+    nativeToken,
+    fromTokenAmount,
+    fromTokenInputValue,
+    relayerFeeParams: submitButtonState.relayerFeeParams,
+  });
+
+  const onMaxClick = useCallback(() => {
+    if (formattedMaxAvailableAmount) {
+      setFocusedInput("from");
+      setFromTokenInputValue(formattedMaxAvailableAmount, true);
+    }
+  }, [formattedMaxAvailableAmount, setFocusedInput, setFromTokenInputValue]);
 
   useTradeboxAcceptablePriceImpactValues();
   useTradeboxTPSLReset(priceImpactWarningState.setIsDismissed);
@@ -367,6 +384,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           priceImpactDeltaUsd,
           priceImpactPercentage,
           fundingRate1h,
+          isExpress: expressOrdersEnabled,
+          isExpress1CT: Boolean(subaccount),
           openInterestPercent,
           tradeType,
           tradeMode,
@@ -378,6 +397,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       chainId,
       chartHeaderInfo,
       decreaseAmounts,
+      expressOrdersEnabled,
       fees,
       fromToken?.symbol,
       fromTokenInputValue,
@@ -387,6 +407,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       isSwap,
       isTrigger,
       marketInfo,
+      subaccount,
       swapAmounts,
       toToken?.symbol,
       tradeMode,
@@ -423,13 +444,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       });
     }
   }
-
-  const onMaxClick = useCallback(() => {
-    if (formattedMaxAvailableAmount) {
-      setFocusedInput("from");
-      setFromTokenInputValue(formattedMaxAvailableAmount, true);
-    }
-  }, [formattedMaxAvailableAmount, setFocusedInput, setFromTokenInputValue]);
 
   const handleFromInputTokenChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
