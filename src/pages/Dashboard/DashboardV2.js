@@ -398,7 +398,7 @@ export default function DashboardV2() {
   ];
 
   // const totalStatsStartDate = chainId === MORPH_HOLESKY ? t`15 May 2024` : t`01 Jan 2024`;
-  const totalStatsStartDate = t`27 Nov 2024`;
+  const totalStatsStartDate = chainId === MORPH_MAINNET ? t`27 Nov 2024` : t`01 May 2025`;
 
   let stableGlp = 0;
   let totalGlp = 0;

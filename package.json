@@ -75,6 +75,7 @@
     "react-error-overlay": "6.0.9"
   },
   "scripts": {
+    "dev": "yarn start",
     "start": "PORT=3010 && NODE_OPTIONS=--openssl-legacy-provider env-cmd -f .env craco start",
     "start-home": "yarn lingui:prepare && PORT=3010 env-cmd -e development-home craco start",
     "start-app": "yarn lingui:prepare && PORT=3011 env-cmd -e development-app craco start",
