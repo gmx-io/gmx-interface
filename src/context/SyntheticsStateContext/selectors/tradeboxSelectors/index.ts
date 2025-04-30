@@ -390,13 +390,6 @@ const selectTradeboxEstimatedGas = createSelector(function selectTradeboxEstimat
 
   if (gasLimit === null) return null;
 
-  const tradeMode = q(selectTradeboxTradeMode);
-  const numberOfParts = q(selectTradeboxTwapNumberOfParts);
-
-  if (tradeMode === TradeMode.Twap && numberOfParts) {
-    return gasLimit * BigInt(numberOfParts);
-  }
-
   return gasLimit;
 });
 
@@ -484,6 +477,22 @@ export const selectTradeboxExecutionFee = createSelector(function selectTradebox
   if (swapsCount === undefined) return undefined;
 
   const oraclePriceCount = estimateOrderOraclePriceCount(swapsCount);
+
+  const tradeMode = q(selectTradeboxTradeMode);
+  const numberOfParts = q(selectTradeboxTwapNumberOfParts);
+
+  // For twap orders, we need to multiply fee by the number of parts and most
+  // easy way to do it is to multiply gas price by the number of parts
+  if (tradeMode === TradeMode.Twap && numberOfParts) {
+    return getExecutionFee(
+      chainId,
+      gasLimits,
+      tokensData,
+      estimatedGas,
+      gasPrice * BigInt(numberOfParts),
+      oraclePriceCount
+    );
+  }
 
   return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
 });

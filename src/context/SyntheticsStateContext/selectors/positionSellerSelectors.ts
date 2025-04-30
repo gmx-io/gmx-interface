@@ -210,7 +210,7 @@ export const selectPositionSellerFees = createSelector((q) => {
   const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
   const gasLimits = q(selectGasLimits);
   const tokensData = q(selectTokensData);
-  const gasPrice = q(selectGasPrice);
+  let gasPrice = q(selectGasPrice);
   const chainId = q(selectChainId);
   const swapAmounts = q(selectPositionSellerSwapAmounts);
   const uiFeeFactor = q(selectUiFeeFactor);
@@ -223,13 +223,13 @@ export const selectPositionSellerFees = createSelector((q) => {
 
   const swapPathLength = swapAmounts?.swapPathStats?.swapPath?.length || 0;
 
-  let estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
+  const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
     swapsCount: swapPathLength,
     decreaseSwapType: decreaseAmounts.decreaseSwapType,
   });
 
-  if (orderOption === OrderOption.Twap) {
-    estimatedGas = estimatedGas * BigInt(numberOfParts);
+  if (orderOption === OrderOption.Twap && numberOfParts) {
+    gasPrice = gasPrice * BigInt(numberOfParts);
   }
 
   const sizeReductionBps = bigMath.mulDiv(
