@@ -89,7 +89,7 @@ export function isSwapOrder(orderInfo: OrderInfo): orderInfo is SwapOrderInfo {
 }
 
 export function isPositionOrder(orderInfo: OrderInfo): orderInfo is PositionOrderInfo {
-  return !orderInfo.isTwap && !orderInfo.isSwap;
+  return !orderInfo.isSwap;
 }
 
 export function getOrderInfo(p: {

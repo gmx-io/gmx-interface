@@ -1638,6 +1638,7 @@ msgstr "DEX Aggregator"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the order."
 msgstr "Mark price for the order."
 
@@ -2179,8 +2180,8 @@ msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
-msgid "TWAP Orders"
-msgstr "TWAP Orders"
+#~ msgid "TWAP Orders"
+#~ msgstr "TWAP Orders"
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -2841,6 +2842,10 @@ msgstr "Settle"
 msgid "There may not be sufficient liquidity to execute the swap when the min. receive conditions are met."
 msgstr "There may not be sufficient liquidity to execute the swap when the min. receive conditions are met."
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "{fromText} to"
+msgstr "{fromText} to"
+
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Select Market"
 msgstr "Select Market"
@@ -3280,8 +3285,8 @@ msgid "Accrued Positive Funding Fee"
 msgstr "Accrued Positive Funding Fee"
 
 #: src/components/Synthetics/TwapRows/TwapRows.tsx
-msgid "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} each over the next {2} for the {3} pool."
-msgstr "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} each over the next {2} for the {3} pool."
+#~ msgid "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} each over the next {2} for the {3} pool."
+#~ msgstr "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} each over the next {2} for the {3} pool."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from Affiliate Vesting Vault"
@@ -3322,6 +3327,8 @@ msgstr "GM can be sold for {0} and {1} for this market up to the specified selli
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -4122,8 +4129,8 @@ msgid "PnL ($)"
 msgstr "PnL ($)"
 
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
-msgid "TWAP Swaps"
-msgstr "TWAP Swaps"
+#~ msgid "TWAP Swaps"
+#~ msgstr "TWAP Swaps"
 
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "GMX Market Tokens"
@@ -4311,6 +4318,7 @@ msgstr "Users"
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -5194,6 +5202,7 @@ msgstr "Long Liquidity"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Execution price for the order."
 msgstr "Execution price for the order."
 
@@ -5826,6 +5835,7 @@ msgstr "From"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order Trigger Price"
 msgstr "Order Trigger Price"
 
@@ -5998,6 +6008,7 @@ msgstr "Max {0} long exceeded"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "N/A"
 msgstr "N/A"
 
@@ -6075,6 +6086,10 @@ msgstr "Buy order executed"
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "The order's acceptable price includes the set acceptable price impact. The execution price must meet this condition for the order to be executed."
 msgstr "The order's acceptable price includes the set acceptable price impact. The execution price must meet this condition for the order to be executed."
+
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
+msgid "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} each over the next {2} for the {3} market."
+msgstr "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} each over the next {2} for the {3} market."
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Min order: 10 USD"
@@ -6190,6 +6205,7 @@ msgstr "{0} Capacity Reached"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toExecutionText}"
 msgstr "{fromText} to {toExecutionText}"
 
@@ -6283,8 +6299,8 @@ msgid "Amount"
 msgstr "Amount"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "{0}{fromTokenIcon}<0> to </0>{1}{toTokenIcon}"
-msgstr "{0}{fromTokenIcon}<0> to </0>{1}{toTokenIcon}"
+#~ msgid "{0}{fromTokenIcon}<0> to </0>{1}{toTokenIcon}"
+#~ msgstr "{0}{fromTokenIcon}<0> to </0>{1}{toTokenIcon}"
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} Available Liquidity. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
@@ -6337,6 +6353,7 @@ msgstr "Price Impact / Fees"
 msgid "GMX {versionName} Account"
 msgstr "GMX {versionName} Account"
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8270,8 +8287,8 @@ msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not r
 msgstr "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {nonTakenNetworkNames}."
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
-msgid "{fromText} to {swapToTokenAmount}"
-msgstr "{fromText} to {swapToTokenAmount}"
+#~ msgid "{fromText} to {swapToTokenAmount}"
+#~ msgstr "{fromText} to {swapToTokenAmount}"
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Deposit {0} USD into {1} {longOrShortText}"
@@ -8580,6 +8597,7 @@ msgstr "This position could be liquidated, excluding any price movement, due to 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order Execution Price"
 msgstr "Order Execution Price"
 
@@ -8771,6 +8789,10 @@ msgstr "Copy Address"
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Pending Transfer Approval"
 msgstr "Pending Transfer Approval"
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
+msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
 
 #: src/components/DepthChart/DepthChart.tsx
 msgid "ORACLE PRICE"

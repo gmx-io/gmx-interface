@@ -105,39 +105,38 @@ const GROUPS: Groups = [
       TradeActionType.OrderUpdated,
       TradeActionType.OrderCancelled,
       TradeActionType.OrderFrozen,
-    ].flatMap((eventName) =>
-      [OrderType.LimitIncrease, OrderType.StopIncrease, OrderType.LimitDecrease, OrderType.StopLossDecrease].map(
-        (orderType) => ({
-          orderType: [orderType],
-          eventName,
-        })
+    ]
+      .flatMap((eventName) =>
+        [OrderType.LimitIncrease, OrderType.StopIncrease, OrderType.LimitDecrease, OrderType.StopLossDecrease].map(
+          (orderType) => ({
+            orderType: [orderType],
+            eventName,
+            isTwap: false,
+          })
+        )
       )
-    ),
-  },
-  {
-    groupName: msg`TWAP Orders`,
-    items: [
-      {
-        eventName: TradeActionType.OrderCreated,
-        isTwap: true,
-        orderType: [OrderType.LimitIncrease, OrderType.LimitDecrease],
-      },
-      {
-        eventName: TradeActionType.OrderCancelled,
-        isTwap: true,
-        orderType: [OrderType.LimitIncrease, OrderType.LimitDecrease],
-      },
-      {
-        eventName: TradeActionType.OrderExecuted,
-        isTwap: true,
-        orderType: [OrderType.LimitIncrease, OrderType.LimitDecrease],
-      },
-      {
-        eventName: TradeActionType.OrderFrozen,
-        isTwap: true,
-        orderType: [OrderType.LimitIncrease, OrderType.LimitDecrease],
-      },
-    ],
+      .concat([
+        {
+          eventName: TradeActionType.OrderCreated,
+          isTwap: true,
+          orderType: [OrderType.LimitIncrease, OrderType.LimitDecrease],
+        },
+        {
+          eventName: TradeActionType.OrderCancelled,
+          isTwap: true,
+          orderType: [OrderType.LimitIncrease, OrderType.LimitDecrease],
+        },
+        {
+          eventName: TradeActionType.OrderExecuted,
+          isTwap: true,
+          orderType: [OrderType.LimitIncrease, OrderType.LimitDecrease],
+        },
+        {
+          eventName: TradeActionType.OrderFrozen,
+          isTwap: true,
+          orderType: [OrderType.LimitIncrease, OrderType.LimitDecrease],
+        },
+      ]),
   },
   {
     groupName: msg`Swaps`,
@@ -175,11 +174,6 @@ const GROUPS: Groups = [
         eventName: TradeActionType.OrderCreated,
         debug: true,
       },
-    ],
-  },
-  {
-    groupName: msg`TWAP Swaps`,
-    items: [
       {
         eventName: TradeActionType.OrderCreated,
         isTwap: true,

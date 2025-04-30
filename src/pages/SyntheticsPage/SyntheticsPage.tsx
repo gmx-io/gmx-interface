@@ -339,7 +339,7 @@ export function SyntheticsPage(p: Props) {
           <div className="w-[40rem] min-[1501px]:w-[41.85rem]">
             <TradeBoxResponsiveContainer />
 
-            <div className="flex flex-col gap-12">
+            <div className="mt-12 flex flex-col gap-12">
               {isSwap && !isTwap && (
                 <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
               )}

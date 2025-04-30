@@ -116,18 +116,27 @@ export const formatSwapMessage = (
   const ev = tradeAction.eventName;
 
   if (tradeAction.twapGroupId) {
-    let swapToTokenAmount = "";
-
     if (ev === TradeActionType.OrderExecuted) {
-      swapToTokenAmount = formatBalanceAmount(tradeAction.executionAmountOut!, tokenOut?.decimals);
+      const toExecutionText = formatBalanceAmount(
+        tradeAction.executionAmountOut!,
+        tokenOut?.decimals,
+        tokenOut?.symbol
+      );
+      const toExecutionAmountText = formatBalanceAmount(tradeAction.executionAmountOut!, tokenOut?.decimals);
+      result = {
+        price: executionRate,
+        priceComment: lines(t`Execution price for the order.`, "", infoRow(t`Order Acceptable Price`, t`N/A`)),
+        size: t`${fromText} to ${toExecutionText}`,
+        swapToTokenAmount: toExecutionAmountText,
+      };
+    } else {
+      result = {
+        price: t`N/A`,
+        priceComment: null,
+        size: t`${fromText} to `,
+        swapToTokenAmount: "",
+      };
     }
-
-    result = {
-      price: t`N/A`,
-      priceComment: null,
-      size: t`${fromText} to ${swapToTokenAmount}`,
-      swapToTokenAmount: swapToTokenAmount,
-    };
   } else if (
     (ot === OrderType.LimitSwap && ev === TradeActionType.OrderCreated) ||
     (ot === OrderType.LimitSwap && ev === TradeActionType.OrderUpdated) ||

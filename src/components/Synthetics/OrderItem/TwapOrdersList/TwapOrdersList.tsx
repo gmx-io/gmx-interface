@@ -37,7 +37,7 @@ export default function TwapOrdersList({ order }: { order: TwapOrderInfo }) {
 
   return (
     <div className="max-h-[216px] overflow-y-auto pl-8 pr-12">
-      <div className="text-body-small">
+      <div className="text-body-medium">
         <table>
           {executedOrders.map((o) => (
             <TwapOrderItem key={o.key} order={o} isExecuted={true} />

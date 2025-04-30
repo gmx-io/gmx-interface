@@ -170,6 +170,7 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
       handle={<TitleWithIcon bordered order={order} />}
       position="bottom-start"
       tooltipClassName={isTwapOrder(order) ? "!p-0" : undefined}
+      maxAllowedWidth={400}
       content={
         isTwapOrder(order) ? (
           <TwapOrdersList order={order} />
@@ -213,11 +214,8 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
 }
 
 export function TwapOrderProgress({ order, className }: { order: TwapOrderInfo; className?: string }) {
-  return (
-    <span className={className}>
-      ({order.numberOfParts - order.orders.length}/{order.numberOfParts})
-    </span>
-  );
+  const content = ` (${order.numberOfParts - order.orders.length}/${order.numberOfParts})`;
+  return <span className={className}>{content}</span>;
 }
 
 export function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?: boolean }) {
@@ -230,29 +228,36 @@ export function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?
     const toTokenText = formatBalanceAmount(minOutputAmount, targetCollateralToken.decimals);
     const toTokenIcon = <TokenIcon symbol={targetCollateralToken.symbol} displaySize={18} importSize={24} />;
 
+    const handle = (
+      <span>
+        <Trans>
+          <span>{fromTokenText} </span>
+          {fromTokenIcon}
+          <span> to </span>
+          {isTwapOrder(order) ? null : <span>{toTokenText} </span>}
+          {toTokenIcon}
+          {isTwapOrder(order) && <TwapOrderProgress order={order} className="text-slate-100" />}
+        </Trans>
+      </span>
+    );
+
     return (
       <div
         className={cx("inline-flex flex-wrap gap-y-8 whitespace-pre-wrap", {
           "cursor-help *:border-b *:border-dashed *:border-b-gray-400": bordered,
         })}
       >
-        <Trans>
-          {isTwapOrder(order) ? (
-            <Tooltip
-              handle={<span>{fromTokenText} </span>}
-              position="bottom-start"
-              content={<TwapOrdersList order={order} />}
-              tooltipClassName="!p-0"
-            />
-          ) : (
-            <span>{fromTokenText} </span>
-          )}
-          {fromTokenIcon}
-          <span> to </span>
-          {isTwapOrder(order) ? null : <span>{toTokenText} </span>}
-          {toTokenIcon}
-        </Trans>{" "}
-        {isTwapOrder(order) && <TwapOrderProgress order={order} className="text-slate-100" />}
+        {isTwapOrder(order) ? (
+          <Tooltip
+            handle={handle}
+            position="bottom-start"
+            content={<TwapOrdersList order={order} />}
+            tooltipClassName="!p-0"
+            maxAllowedWidth={450}
+          />
+        ) : (
+          handle
+        )}
       </div>
     );
   }

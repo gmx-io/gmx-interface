@@ -150,7 +150,7 @@ export default function BuyInputSection(props: Props) {
           `flex cursor-text flex-col justify-between gap-8 rounded-4 bg-cold-blue-900
           px-14 pb-16 pt-12 text-12 leading-[16px] shadow-[inset_0_0_0_1px] shadow-[transparent]`,
           {
-            "bg-slate-800": isDisabled,
+            "border-2 border-cold-blue-900 bg-slate-800": isDisabled,
             "focus-within:shadow-cold-blue-500 hover:[&:not(:focus-within)]:shadow-[rgba(58,63,121,0.4)]": !isDisabled,
           }
         )}

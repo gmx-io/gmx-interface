@@ -236,12 +236,33 @@ export const formatPositionMessage = (
     //#endregion MarketIncrease
     //#region Twap
   } else if (tradeAction.twapParams) {
-    result = {
-      price: t`N/A`,
-      priceComment: null,
-      triggerPrice: t`N/A`,
-      acceptablePrice: t`N/A`,
-    };
+    if (ev === TradeActionType.OrderExecuted) {
+      const isAcceptablePriceUseful = tradeAction.acceptablePrice !== 0n && tradeAction.acceptablePrice < MaxInt256;
+
+      result = {
+        priceComment: lines(
+          t`Mark price for the order.`,
+          "",
+          infoRow(t`Order Trigger Price`, t`N/A`),
+          isAcceptablePriceUseful
+            ? infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
+            : undefined,
+          infoRow(t`Order Execution Price`, formattedExecutionPrice!),
+          infoRow(t`Price Impact`, {
+            text: formattedPriceImpact!,
+            state: numberToState(tradeAction.priceImpactUsd!),
+          }),
+          "",
+          t`Order execution price takes into account price impact.`
+        ),
+        acceptablePrice: t`N/A`,
+      };
+    } else {
+      result = {
+        price: t`N/A`, // ----
+        priceComment: null,
+      };
+    }
     //#endregion Twap
     //#region LimitIncrease and StopIncrease
   } else if (

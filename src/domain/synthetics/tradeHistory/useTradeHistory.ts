@@ -276,7 +276,7 @@ export async function fetchTradeActions({
             {
               eventName_eq: combination.eventName,
               orderType_eq: combination.orderType,
-              // twapGroupId_isNull: !combination.isTwap,
+              twapGroupId_isNull: !combination.isTwap,
             },
             sizeDeltaUsdCondition
           );
