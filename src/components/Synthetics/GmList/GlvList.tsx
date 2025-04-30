@@ -56,16 +56,13 @@ export function GlvList({
   }, [marketTokensData, isConnected]);
 
   return (
-    <div className="overflow-hidden rounded-4 bg-slate-800">
+    <div className="overflow-hidden rounded-4">
       <TableScrollFadeContainer>
         <table className="w-[max(100%,1100px)]">
           <thead>
             <TableTheadTr bordered>
-              <TableTh>
-                <Trans>POOL</Trans>
-              </TableTh>
-              <TableTh>
-                <Trans>PRICE</Trans>
+              <TableTh className="!pl-0">
+                <Trans>VAULT</Trans>
               </TableTh>
               <TableTh>
                 <Trans>TOTAL SUPPLY</Trans>
@@ -99,7 +96,7 @@ export function GlvList({
                 />
               </TableTh>
 
-              <TableTh />
+              <TableTh className="!pr-0" />
             </TableTheadTr>
           </thead>
           <tbody>

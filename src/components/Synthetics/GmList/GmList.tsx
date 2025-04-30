@@ -88,21 +88,15 @@ export function GmList({
 
   return (
     <div className="rounded-4 bg-slate-800">
-      <div className="flex flex-wrap items-center justify-between gap-8 px-16 py-8">
-        <div className="flex items-center ">
-          <span className="text-16">
-            <Trans>Pools</Trans>
-          </span>
-          <img src={currentIcons?.network} width="16" className="ml-5 mr-10" alt="Network Icon" />
-          <SearchInput
-            size="s"
-            className="*:!text-body-medium"
-            value={searchText}
-            setValue={setSearchText}
-            placeholder="Search Pool"
-            autoFocus={false}
-          />
-        </div>
+      <div className="flex flex-wrap items-center justify-between gap-8 py-8">
+        <SearchInput
+          size="s"
+          className="*:!text-body-medium"
+          value={searchText}
+          setValue={setSearchText}
+          placeholder="Search Pools"
+          autoFocus={false}
+        />
         <div className="max-w-full">
           <ButtonRowScrollFadeContainer>
             <FavoriteTabs favoritesKey="gm-list" />
@@ -113,13 +107,8 @@ export function GmList({
         <table className="w-[max(100%,1100px)]">
           <thead>
             <TableTheadTr bordered>
-              <TableTh>
+              <TableTh className="!pl-0">
                 <Trans>POOL</Trans>
-              </TableTh>
-              <TableTh>
-                <Sorter {...getSorterProps("price")}>
-                  <Trans>PRICE</Trans>
-                </Sorter>
               </TableTh>
               <TableTh>
                 <Sorter {...getSorterProps("totalSupply")}>
@@ -161,7 +150,7 @@ export function GmList({
                 </Sorter>
               </TableTh>
 
-              <TableTh />
+              <TableTh className="!pr-0" />
             </TableTheadTr>
           </thead>
           <tbody>

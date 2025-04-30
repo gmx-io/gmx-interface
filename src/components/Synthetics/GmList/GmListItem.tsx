@@ -147,6 +147,7 @@ export function GmListItem({
 
   const tokenIconBadge = getMarketBadge(chainId, marketOrGlv);
 
+
   const handleFavoriteClick = (event: React.MouseEvent) => {
     event.stopPropagation();
     if (!marketOrGlvTokenAddress) return;
@@ -155,9 +156,9 @@ export function GmListItem({
 
   return (
     <TableTr key={token.address} hoverable={false} bordered={false}>
-      <TableTd>
+      <TableTd className="!pl-0">
         <div className="flex items-start">
-          {onFavoriteClick && (
+        {onFavoriteClick && (
             <div
               className="-ml-8 mr-4 cursor-pointer self-center rounded-4 p-8 text-16 hover:bg-cold-blue-700 active:bg-cold-blue-500"
               onClick={handleFavoriteClick}
@@ -165,6 +166,7 @@ export function GmListItem({
               <FavoriteStar isFavorite={isFavorite} />
             </div>
           )}
+
           <div className="mr-12 flex shrink-0 items-center">
             <TokenIcon
               symbol={tokenIconName}
@@ -191,7 +193,6 @@ export function GmListItem({
         </div>
         {showDebugValues && <span style={tokenAddressStyle}>{marketOrGlvTokenAddress}</span>}
       </TableTd>
-      <TableTd>{formatUsdPrice(token.prices?.minPrice)}</TableTd>
       <TableTd>
         <AmountWithUsdHuman
           multiline
@@ -237,7 +238,7 @@ export function GmListItem({
         <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />
       </TableTd>
 
-      <TableTd className="w-[350px]">
+      <TableTd className="w-[350px] !pr-0">
         <div className="grid grid-cols-3 gap-10">
           <Button
             className="flex-grow"

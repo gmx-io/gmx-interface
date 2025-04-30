@@ -32,6 +32,7 @@ import NftWallet from "pages/NftWallet/NftWallet";
 import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import { ParseTransactionPage } from "pages/ParseTransaction/ParseTransaction";
+import Pools from "pages/Pools/Pools";
 import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import Referrals from "pages/Referrals/Referrals";
@@ -115,6 +116,11 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         </SyntheticsStateContextProvider>
       </Route>
       <Route exact path="/pools">
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
+          <Pools />
+        </SyntheticsStateContextProvider>
+      </Route>
+      <Route exact path="/pools/details">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
           <MarketPoolsPage />
         </SyntheticsStateContextProvider>
