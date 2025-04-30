@@ -210,7 +210,7 @@ export const selectPositionSellerFees = createSelector((q) => {
   const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
   const gasLimits = q(selectGasLimits);
   const tokensData = q(selectTokensData);
-  let gasPrice = q(selectGasPrice);
+  const gasPrice = q(selectGasPrice);
   const chainId = q(selectChainId);
   const swapAmounts = q(selectPositionSellerSwapAmounts);
   const uiFeeFactor = q(selectUiFeeFactor);
@@ -227,10 +227,6 @@ export const selectPositionSellerFees = createSelector((q) => {
     swapsCount: swapPathLength,
     decreaseSwapType: decreaseAmounts.decreaseSwapType,
   });
-
-  if (orderOption === OrderOption.Twap && numberOfParts) {
-    gasPrice = gasPrice * BigInt(numberOfParts);
-  }
 
   const sizeReductionBps = bigMath.mulDiv(
     decreaseAmounts.sizeDeltaUsd,
@@ -257,7 +253,15 @@ export const selectPositionSellerFees = createSelector((q) => {
       swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
       uiFeeFactor,
     }),
-    executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount),
+    executionFee: getExecutionFee(
+      chainId,
+      gasLimits,
+      tokensData,
+      estimatedGas,
+      gasPrice,
+      oraclePriceCount,
+      orderOption === OrderOption.Twap ? numberOfParts : undefined
+    ),
   };
 });
 

@@ -481,20 +481,15 @@ export const selectTradeboxExecutionFee = createSelector(function selectTradebox
   const tradeMode = q(selectTradeboxTradeMode);
   const numberOfParts = q(selectTradeboxTwapNumberOfParts);
 
-  // For twap orders, we need to multiply fee by the number of parts and most
-  // easy way to do it is to multiply gas price by the number of parts
-  if (tradeMode === TradeMode.Twap && numberOfParts) {
-    return getExecutionFee(
-      chainId,
-      gasLimits,
-      tokensData,
-      estimatedGas,
-      gasPrice * BigInt(numberOfParts),
-      oraclePriceCount
-    );
-  }
-
-  return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
+  return getExecutionFee(
+    chainId,
+    gasLimits,
+    tokensData,
+    estimatedGas,
+    gasPrice,
+    oraclePriceCount,
+    tradeMode === TradeMode.Twap ? numberOfParts : undefined
+  );
 });
 
 export const selectTradeboxTriggerRatioValue = createSelector(function selectTradeboxTriggerRatioValue(q) {
