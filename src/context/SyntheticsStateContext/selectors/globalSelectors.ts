@@ -31,6 +31,8 @@ export const selectUpdateSubaccountSettings = (s: SyntheticsState) => s.subaccou
 export const selectResetSubaccountApproval = (s: SyntheticsState) => s.subaccountState.resetSubaccountApproval;
 export const selectGenerateSubaccountIfNotExists = (s: SyntheticsState) => s.subaccountState.tryEnableSubaccount;
 
+export const selectL1ExpressOrderGasReference = (s: SyntheticsState) => s.l1ExpressOrderGasReference;
+
 export const selectSponsoredCallMultiplierFactor = (s: SyntheticsState) => {
   if (!s.sponsoredCallParams?.isSponsoredCallAllowed) {
     return undefined;
@@ -144,6 +146,7 @@ export const selectRelayerFeeToken = createSelector((q) => {
 export const makeSelectIsExpressTransactionAvailable = (isNativePayment: boolean) =>
   createSelector((q) => {
     const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
+
     const isFeatureDisabled = q(makeSelectDisableFeature("relayRouterDisabled"));
     const gasPaymentToken = q(selectGasPaymentToken);
     const isZeroGasBalance = gasPaymentToken?.balance === 0n || gasPaymentToken?.balance === undefined;

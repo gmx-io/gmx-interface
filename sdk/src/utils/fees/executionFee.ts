@@ -1,7 +1,7 @@
 import { getExcessiveExecutionFee, getHighExecutionFee } from "configs/chains";
 import { USD_DECIMALS } from "configs/factors";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-import { ExecutionFee, GasLimitsConfig } from "types/fees";
+import { ExecutionFee, GasLimitsConfig, L1ExpressOrderGasReference } from "types/fees";
 import { DecreasePositionSwapType } from "types/orders";
 import { TokensData } from "types/tokens";
 import { applyFactor, expandDecimals } from "utils/numbers";
@@ -53,6 +53,8 @@ export function estimateExpressBatchOrderGasLimit({
   oraclePriceCount,
   externalSwapGasLimit,
   isSubaccount,
+  l1Reference,
+  sizeOfData,
 }: {
   gasLimits: GasLimitsConfig;
   createOrdersCount: number;
@@ -62,6 +64,8 @@ export function estimateExpressBatchOrderGasLimit({
   externalSwapGasLimit: bigint;
   oraclePriceCount: number;
   isSubaccount: boolean;
+  sizeOfData: bigint;
+  l1Reference: L1ExpressOrderGasReference | undefined;
 }) {
   const swapsGasLimit = gasLimits.singleSwap * BigInt(feeSwapsCount);
 
@@ -82,7 +86,17 @@ export function estimateExpressBatchOrderGasLimit({
     externalSwapGasLimit +
     subaccountGasLimit;
 
-  return totalGasLimit;
+  let l1GasLimit = 0n;
+
+  if (l1Reference) {
+    l1GasLimit = BigInt(
+      Math.round(
+        (Number(l1Reference.gasLimit) * Math.log(Number(sizeOfData))) / Math.log(Number(l1Reference.sizeOfData))
+      )
+    );
+  }
+
+  return totalGasLimit + l1GasLimit;
 }
 
 /**

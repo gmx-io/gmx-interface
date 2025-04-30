@@ -34,7 +34,10 @@ export async function sendExpressTransaction(p: {
         target: p.txnData.to,
         data,
       },
-      apiKeys[p.chainId]
+      apiKeys[p.chainId],
+      {
+        retries: 1,
+      }
     );
   } else {
     gelatoPromise = gelatoRelay.callWithSyncFee(
@@ -45,8 +48,9 @@ export async function sendExpressTransaction(p: {
         isRelayContext: true,
         data,
       },
-      // TODO: remove retriesw
-      { retries: 0 }
+      {
+        retries: 1,
+      }
     );
   }
 

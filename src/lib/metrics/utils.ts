@@ -85,6 +85,7 @@ export function initSwapMetricData({
   subaccount,
   allowedSlippage,
   isFirstOrder,
+  isExpress,
 }: {
   fromToken: TokenData | undefined;
   toToken: TokenData | undefined;
@@ -95,6 +96,7 @@ export function initSwapMetricData({
   allowedSlippage: number | undefined;
   hasReferralCode: boolean | undefined;
   subaccount: Subaccount | undefined;
+  isExpress: boolean | undefined;
   isFirstOrder: boolean | undefined;
 }) {
   return metrics.setCachedMetricData<SwapMetricData>({
@@ -120,7 +122,8 @@ export function initSwapMetricData({
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
     allowedSlippage,
     orderType,
-    is1ct: Boolean(subaccount && fromToken?.address !== NATIVE_TOKEN_ADDRESS),
+    isExpress: isExpress ?? false,
+    isExpress1CT: Boolean(subaccount && fromToken?.address !== NATIVE_TOKEN_ADDRESS),
     requestId: getRequestId(),
     isFirstOrder,
   });
@@ -148,6 +151,7 @@ export function initIncreaseOrderMetricData({
   priceImpactPercentage,
   netRate1h,
   interactionId,
+  isExpress,
 }: {
   chainId: number;
   fromToken: TokenData | undefined;
@@ -172,6 +176,7 @@ export function initIncreaseOrderMetricData({
   priceImpactDeltaUsd: bigint | undefined;
   priceImpactPercentage: bigint | undefined;
   netRate1h: bigint | undefined;
+  isExpress: boolean;
   interactionId: string | undefined;
 }) {
   return metrics.setCachedMetricData<IncreaseOrderMetricData>({
@@ -185,7 +190,8 @@ export function initIncreaseOrderMetricData({
       initialCollateralDeltaAmount: increaseAmounts?.initialCollateralAmount,
     }),
     requestId: getRequestId(),
-    is1ct: Boolean(subaccount && fromToken?.address !== NATIVE_TOKEN_ADDRESS),
+    isExpress,
+    isExpress1CT: Boolean(subaccount && fromToken?.address !== NATIVE_TOKEN_ADDRESS),
     isTPSLCreated,
     slCount,
     tpCount,
@@ -247,6 +253,7 @@ export function initDecreaseOrderMetricData({
   priceImpactPercentage,
   netRate1h,
   interactionId,
+  isExpress,
 }: {
   collateralToken: TokenData | undefined;
   decreaseAmounts: DecreasePositionAmounts | undefined;
@@ -265,6 +272,7 @@ export function initDecreaseOrderMetricData({
   priceImpactPercentage: bigint | undefined;
   netRate1h: bigint | undefined;
   interactionId: string | undefined;
+  isExpress: boolean;
 }) {
   let metricType;
   if (orderType === OrderType.LimitDecrease) {
@@ -310,7 +318,8 @@ export function initDecreaseOrderMetricData({
     orderType,
     decreaseSwapType: decreaseAmounts?.decreaseSwapType,
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
-    is1ct: Boolean(subaccount),
+    isExpress,
+    isExpress1CT: Boolean(subaccount),
     requestId: getRequestId(),
     priceImpactDeltaUsd:
       priceImpactDeltaUsd !== undefined ? bigintToNumber(roundToOrder(priceImpactDeltaUsd, 2), USD_DECIMALS) : 0,
@@ -327,6 +336,7 @@ export function initEditCollateralMetricData({
   collateralDeltaAmount,
   selectedCollateralAddress,
   isLong,
+  isExpress,
   executionFee,
   subaccount,
 }: {
@@ -337,6 +347,7 @@ export function initEditCollateralMetricData({
   orderType: OrderType | undefined;
   marketInfo: MarketInfo | undefined;
   subaccount: Subaccount | undefined;
+  isExpress: boolean;
   isLong: boolean | undefined;
 }) {
   return metrics.setCachedMetricData<EditCollateralMetricData>({
@@ -360,7 +371,8 @@ export function initEditCollateralMetricData({
     isLong,
     orderType,
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
-    is1ct: Boolean(subaccount && selectedCollateralAddress !== NATIVE_TOKEN_ADDRESS),
+    isExpress,
+    isExpress1CT: Boolean(subaccount && selectedCollateralAddress !== NATIVE_TOKEN_ADDRESS),
     requestId: getRequestId(),
   });
 }

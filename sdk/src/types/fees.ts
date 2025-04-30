@@ -48,3 +48,8 @@ export type GasLimitsConfig = {
   updateOrderGasLimit: bigint;
   cancelOrderGasLimit: bigint;
 };
+
+export type L1ExpressOrderGasReference = {
+  gasLimit: bigint;
+  sizeOfData: bigint;
+};

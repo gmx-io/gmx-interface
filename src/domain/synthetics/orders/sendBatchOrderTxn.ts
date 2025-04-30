@@ -1,5 +1,5 @@
 import { Signer } from "ethers";
-import { PublicClient, withRetry } from "viem";
+import { PublicClient } from "viem";
 
 import { UiContractsChain } from "config/chains";
 import { ExpressParams } from "domain/synthetics/express";
@@ -15,6 +15,7 @@ import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import { TxnCallback, TxnEventBuilder } from "lib/transactions/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { getContract } from "sdk/configs/contracts";
+import { sleep } from "sdk/utils/common";
 import { BatchOrderTxnParams, getBatchOrderMulticallPayload } from "sdk/utils/orderTransactions";
 
 import { signerAddressError } from "components/Errors/errorToasts";
@@ -103,34 +104,32 @@ export async function sendBatchOrderTxn({
     }
 
     if (expressParams) {
-      const [txnData] = await Promise.all([
-        buildAndSignExpressBatchOrderTxn({
-          chainId: chainId as UiContractsChain,
-          signer,
-          settlementChainClient,
-          batchParams,
-          relayParamsPayload: expressParams.relayParamsPayload,
-          relayFeeParams: expressParams.relayFeeParams,
-          subaccount: expressParams.subaccount,
-        }),
-        runSimulation().then(() => callback?.(eventBuilder.Simulated())),
-      ]);
+      await runSimulation().then(() => callback?.(eventBuilder.Simulated()));
+
+      const txnData = await buildAndSignExpressBatchOrderTxn({
+        chainId: chainId as UiContractsChain,
+        signer,
+        settlementChainClient,
+        batchParams,
+        relayParamsPayload: expressParams.relayParamsPayload,
+        relayFeeParams: expressParams.relayFeeParams,
+        subaccount: expressParams.subaccount,
+      });
 
       callback?.(eventBuilder.Prepared());
 
       const createdAt = Date.now();
 
-      const res = await withRetry(
-        () =>
-          sendExpressTransaction({
-            chainId,
-            txnData,
-            isSponsoredCall: srcChainId ? false : expressParams.isSponsoredCall,
-          }),
-        {
-          retryCount: 3,
-        }
-      )
+      const res = Promise.race([
+        sendExpressTransaction({
+          chainId,
+          txnData,
+          isSponsoredCall: srcChainId ? false : expressParams.isSponsoredCall,
+        }),
+        sleep(3000).then(() => {
+          throw new Error("Gelato Task Timeout");
+        }),
+      ])
         .then(async (res) => {
           callback?.(
             eventBuilder.Sent({

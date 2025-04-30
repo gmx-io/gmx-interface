@@ -38,58 +38,41 @@ export function SettingsModal({
   const { disabledFeatures } = useDisabledFeaturesRequest(chainId);
   const subaccountState = useSubaccountContext();
 
-  const [slippageAmount, setSlippageAmount] = useState<string>("0");
-  const [executionFeeBufferBps, setExecutionFeeBufferBps] = useState<string>("0");
-  const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
-  const [isAutoCancelTPSL, setIsAutoCancelTPSL] = useState(true);
-  const [showPnlAfterFees, setShowPnlAfterFees] = useState(true);
-  const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
-  const [showDebugValues, setShowDebugValues] = useState(false);
-  const [isLeverageSliderEnabled, setIsLeverageSliderEnabled] = useState(false);
-
   useEffect(() => {
     if (!isSettingsVisible) return;
-
-    setSlippageAmount(String(settings.savedAllowedSlippage));
-
-    if (settings.executionFeeBufferBps !== undefined) {
-      setExecutionFeeBufferBps(String(settings.executionFeeBufferBps));
-    }
-
-    setIsPnlInLeverage(settings.isPnlInLeverage);
-    setIsAutoCancelTPSL(settings.isAutoCancelTPSL);
-    setShowPnlAfterFees(settings.showPnlAfterFees);
-    setShowDebugValues(settings.showDebugValues);
-    setShouldDisableValidationForTesting(settings.shouldDisableValidationForTesting);
-    setIsLeverageSliderEnabled(settings.isLeverageSliderEnabled);
 
     subaccountState.refreshSubaccountData();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSettingsVisible]);
 
-  const saveAndCloseSettings = useCallback(() => {
-    const slippage = parseFloat(String(slippageAmount));
-    if (isNaN(slippage)) {
-      helperToast.error(t`Invalid slippage value`);
-      return;
-    }
+  const onChangeSlippage = useCallback(
+    (value: number) => {
+      const slippage = parseFloat(String(value));
+      if (isNaN(slippage)) {
+        helperToast.error(t`Invalid slippage value`);
+        return;
+      }
 
-    if (slippage > 500) {
-      helperToast.error(t`Slippage should be less than -5%`);
-      return;
-    }
+      if (slippage > 500) {
+        helperToast.error(t`Slippage should be less than -5%`);
+        return;
+      }
 
-    const basisPoints = roundToTwoDecimals(slippage);
-    if (parseInt(String(basisPoints)) !== parseFloat(String(basisPoints))) {
-      helperToast.error(t`Max slippage precision is -0.01%`);
-      return;
-    }
+      const basisPoints = roundToTwoDecimals(slippage);
+      if (parseInt(String(basisPoints)) !== parseFloat(String(basisPoints))) {
+        helperToast.error(t`Max slippage precision is -0.01%`);
+        return;
+      }
 
-    settings.setSavedAllowedSlippage(basisPoints);
+      settings.setSavedAllowedSlippage(basisPoints);
+    },
+    [settings]
+  );
 
-    if (settings.shouldUseExecutionFeeBuffer) {
-      const executionFeeBuffer = parseFloat(String(executionFeeBufferBps));
+  const onChangeExecutionFeeBufferBps = useCallback(
+    (value: number) => {
+      const executionFeeBuffer = parseFloat(String(value));
 
       if (isNaN(executionFeeBuffer) || executionFeeBuffer < 0) {
         helperToast.error(t`Invalid network fee buffer value`);
@@ -103,38 +86,8 @@ export function SettingsModal({
       }
 
       settings.setExecutionFeeBufferBps(nextExecutionBufferFeeBps);
-    }
-
-    settings.setIsPnlInLeverage(isPnlInLeverage);
-    settings.setIsAutoCancelTPSL(isAutoCancelTPSL);
-    settings.setShowPnlAfterFees(showPnlAfterFees);
-    settings.setShouldDisableValidationForTesting(shouldDisableValidationForTesting);
-    settings.setShowDebugValues(showDebugValues);
-    settings.setIsLeverageSliderEnabled(isLeverageSliderEnabled);
-
-    setIsSettingsVisible(false);
-  }, [
-    slippageAmount,
-    settings,
-    isPnlInLeverage,
-    isAutoCancelTPSL,
-    showPnlAfterFees,
-    shouldDisableValidationForTesting,
-    showDebugValues,
-    isLeverageSliderEnabled,
-    setIsSettingsVisible,
-    executionFeeBufferBps,
-  ]);
-
-  useKey(
-    "Enter",
-    () => {
-      if (isSettingsVisible) {
-        saveAndCloseSettings();
-      }
     },
-    {},
-    [isSettingsVisible, saveAndCloseSettings]
+    [settings]
   );
 
   const handleExpressOrdersToggle = (enabled: boolean) => {
@@ -229,30 +182,34 @@ export function SettingsModal({
                 </Trans>
               }
               defaultValue={DEFAULT_SLIPPAGE_AMOUNT}
-              value={parseFloat(slippageAmount)}
-              onChange={(value) => setSlippageAmount(String(value))}
+              value={parseFloat(String(settings.savedAllowedSlippage))}
+              onChange={onChangeSlippage}
             />
 
-            <InputSetting
-              title={<Trans>Max Network Fee Buffer</Trans>}
-              description={
-                <div>
-                  <Trans>
-                    The Max Network Fee is set to a higher value to handle potential increases in gas price during order
-                    execution. Any excess network fee will be refunded to your account when the order is executed. Only
-                    applicable to GMX V2.
-                  </Trans>
-                  <br />
-                  <br />
-                  <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#network-fee-buffer">Read more</ExternalLink>
-                </div>
-              }
-              defaultValue={30}
-              value={parseFloat(executionFeeBufferBps)}
-              onChange={(value) => setExecutionFeeBufferBps(String(value))}
-            />
+            {settings.shouldUseExecutionFeeBuffer && (
+              <InputSetting
+                title={<Trans>Max Network Fee Buffer</Trans>}
+                description={
+                  <div>
+                    <Trans>
+                      The Max Network Fee is set to a higher value to handle potential increases in gas price during
+                      order execution. Any excess network fee will be refunded to your account when the order is
+                      executed. Only applicable to GMX V2.
+                    </Trans>
+                    <br />
+                    <br />
+                    <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#network-fee-buffer">
+                      Read more
+                    </ExternalLink>
+                  </div>
+                }
+                defaultValue={30}
+                value={parseFloat(String(settings.executionFeeBufferBps))}
+                onChange={onChangeExecutionFeeBufferBps}
+              />
+            )}
 
-            <ToggleSwitch isChecked={isAutoCancelTPSL} setIsChecked={setIsAutoCancelTPSL}>
+            <ToggleSwitch isChecked={settings.isAutoCancelTPSL} setIsChecked={settings.setIsAutoCancelTPSL}>
               <TooltipWithPortal
                 content={
                   <div onClick={(e) => e.stopPropagation()}>
@@ -283,15 +240,18 @@ export function SettingsModal({
           </h1>
 
           <SettingsSection className="mt-16 gap-16">
-            <ToggleSwitch isChecked={isLeverageSliderEnabled} setIsChecked={setIsLeverageSliderEnabled}>
+            <ToggleSwitch
+              isChecked={settings.isLeverageSliderEnabled}
+              setIsChecked={settings.setIsLeverageSliderEnabled}
+            >
               <Trans>Show Leverage Slider</Trans>
             </ToggleSwitch>
 
-            <ToggleSwitch isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
+            <ToggleSwitch isChecked={settings.showPnlAfterFees} setIsChecked={settings.setShowPnlAfterFees}>
               <Trans>Display PnL After Fees</Trans>
             </ToggleSwitch>
 
-            <ToggleSwitch isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
+            <ToggleSwitch isChecked={settings.isPnlInLeverage} setIsChecked={settings.setIsPnlInLeverage}>
               <Trans>Include PnL In Leverage Display</Trans>
             </ToggleSwitch>
           </SettingsSection>
@@ -306,7 +266,7 @@ export function SettingsModal({
             </h1>
 
             <SettingsSection className="mt-16">
-              <ToggleSwitch isChecked={showDebugValues} setIsChecked={setShowDebugValues}>
+              <ToggleSwitch isChecked={settings.showDebugValues} setIsChecked={settings.setShowDebugValues}>
                 <Trans>Show debug values</Trans>
               </ToggleSwitch>
 
@@ -325,11 +285,6 @@ export function SettingsModal({
             </SettingsSection>
           </>
         )}
-      </div>
-      <div className="mt-24">
-        <Button variant="primary-action" className="w-full" onClick={saveAndCloseSettings}>
-          <Trans>Save</Trans>
-        </Button>
       </div>
     </SlideModal>
   );

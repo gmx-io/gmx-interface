@@ -5,7 +5,8 @@ import { periodToSeconds } from "utils/time";
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 import { getTokenBySymbol, getWrappedToken } from "./tokens";
 
-export const SUBACCOUNT_MESSAGE = "Generate a GMX subaccount. Only sign this message on a trusted website.";
+export const SUBACCOUNT_MESSAGE =
+  "Generate a GMX 1CT (One-Click Trading) session. Only sign this message on a trusted website.";
 export const SUBACCOUNT_DOCS_URL = "https://docs.gmx.io/docs/trading/v2/#one-click-trading";
 
 export const DEFAULT_SUBACCOUNT_EXPIRY_DURATION = periodToSeconds(7, "1d");

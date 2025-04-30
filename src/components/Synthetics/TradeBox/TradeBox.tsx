@@ -12,9 +12,16 @@ import {
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectChainId,
+  selectMarketsInfoData,
+  selectSubaccountState,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectWalletPayableTokensData } from "context/SyntheticsStateContext/selectors/multichainSelectors";
-import { selectShowDebugValues } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import {
+  selectExpressOrdersEnabled,
+  selectShowDebugValues,
+} from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxAvailableTokensOptions,
@@ -87,27 +94,23 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
 
-import TradeBoxLongShortInfoIcon from "./components/TradeBoxLongShortInfoIcon";
 import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
-import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
+import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
+import { useGmxAccountTokensDataObject, useMultichainTokens } from "../GmxAccountModal/hooks";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
+import "./TradeBox.scss";
+import TradeBoxLongShortInfoIcon from "./components/TradeBoxLongShortInfoIcon";
+import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
 import { useExpressTradingWarnings } from "./hooks/useShowOneClickTradingInfo";
 import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
-import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
-import {
-  useGmxAccountTokensDataObject,
-  useGmxAccountTokensDataRequest,
-  useMultichainTokens,
-} from "../GmxAccountModal/hooks";
-import "./TradeBox.scss";
 
 export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
@@ -194,13 +197,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const fromTokenPrice = fromToken?.prices.minPrice;
   const fromUsd = convertToUsd(fromTokenAmount, fromToken?.decimals, fromTokenPrice);
 
-  const { formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
-    fromToken,
-    nativeToken,
-    fromTokenAmount,
-    fromTokenInputValue,
-  });
-
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
 
   const markPrice = useSelector(selectTradeboxMarkPrice);
@@ -212,6 +208,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const leverage = useSelector(selectTradeboxLeverage);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
   const fees = useSelector(selectTradeboxFees);
+  const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
+  const { subaccount } = useSelector(selectSubaccountState);
 
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const { markRatio } = useSelector(selectTradeboxTradeRatios);
@@ -271,6 +269,21 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     account,
     setToTokenInputValue,
   });
+
+  const { formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
+    fromToken,
+    nativeToken,
+    fromTokenAmount,
+    fromTokenInputValue,
+    relayerFeeParams: submitButtonState.relayerFeeParams,
+  });
+
+  const onMaxClick = useCallback(() => {
+    if (formattedMaxAvailableAmount) {
+      setFocusedInput("from");
+      setFromTokenInputValue(formattedMaxAvailableAmount, true);
+    }
+  }, [formattedMaxAvailableAmount, setFocusedInput, setFromTokenInputValue]);
 
   useTradeboxAcceptablePriceImpactValues();
   useTradeboxTPSLReset(priceImpactWarningState.setIsDismissed);
@@ -400,6 +413,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           priceImpactDeltaUsd,
           priceImpactPercentage,
           fundingRate1h,
+          isExpress: expressOrdersEnabled,
+          isExpress1CT: Boolean(subaccount),
           openInterestPercent,
           tradeType,
           tradeMode,
@@ -413,6 +428,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       chartHeaderInfo?.longOpenInterestPercentage,
       chartHeaderInfo?.shortOpenInterestPercentage,
       decreaseAmounts,
+      expressOrdersEnabled,
       fees?.positionPriceImpact?.precisePercentage,
       fees?.swapPriceImpact?.precisePercentage,
       fromToken?.symbol,
@@ -423,6 +439,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       isSwap,
       isTrigger,
       marketInfo,
+      subaccount,
       swapAmounts,
       toToken?.symbol,
       tradeMode,
@@ -459,13 +476,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       });
     }
   }
-
-  const onMaxClick = useCallback(() => {
-    if (formattedMaxAvailableAmount) {
-      setFocusedInput("from");
-      setFromTokenInputValue(formattedMaxAvailableAmount, true);
-    }
-  }, [formattedMaxAvailableAmount, setFocusedInput, setFromTokenInputValue]);
 
   const handleFromInputTokenChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {

@@ -251,7 +251,8 @@ export type SwapMetricData = {
   metricId: `swap:${string}`;
   metricType: "swap" | "limitSwap";
   requestId: string;
-  is1ct: boolean;
+  isExpress: boolean;
+  isExpress1CT: boolean;
   hasReferralCode: boolean | undefined;
   initialCollateralTokenAddress: string | undefined;
   initialCollateralSymbol: string | undefined;
@@ -316,7 +317,8 @@ export type PositionOrderMetricParams = {
   isLong: boolean | undefined;
   orderType: OrderType | undefined;
   executionFee: number | undefined;
-  is1ct: boolean;
+  isExpress: boolean;
+  isExpress1CT: boolean;
   requestId: string;
   priceImpactDeltaUsd: number | undefined;
   priceImpactPercentage: number | undefined;
@@ -327,7 +329,8 @@ export type PositionOrderMetricParams = {
 export type EditCollateralMetricData = {
   metricId: `position:${string}`;
   metricType: "depositCollateral" | "withdrawCollateral";
-  is1ct: boolean;
+  isExpress: boolean;
+  isExpress1CT: boolean;
   requestId: string;
   marketAddress: string | undefined;
   isStandalone: boolean | undefined;

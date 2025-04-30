@@ -21,7 +21,7 @@ import { OrderMetricId, sendOrderSimulatedMetric, sendTxnErrorMetric, sendTxnSen
 import { getByKey } from "lib/objects";
 import { TxnEvent, TxnEventName } from "lib/transactions";
 import { OrderInfo, OrdersInfoData } from "sdk/types/orders";
-import { isIncreaseOrderType } from "sdk/utils/orders";
+import { isIncreaseOrderType, isMarketOrderType } from "sdk/utils/orders";
 import {
   BatchOrderTxnParams,
   CancelOrderTxnParams,
@@ -75,8 +75,6 @@ export function useOrderTxnCallbacks() {
 
       const isSubaccount = Boolean(expressParams?.subaccount?.signedApproval);
 
-      const pendingOrders = getBatchPendingOrders(e.data.batchParams, ordersInfoData);
-      const pendingPositions: PendingPositionUpdate[] = [];
       let pendingOrderUpdate: PendingOrderData | undefined = undefined;
 
       let mainActionType: "create" | "update" | "cancel";
@@ -92,6 +90,8 @@ export function useOrderTxnCallbacks() {
       } else {
         return;
       }
+
+      const pendingOrders = getBatchPendingOrders(e.data.batchParams, ordersInfoData);
 
       switch (e.event) {
         case TxnEventName.Prepared: {
@@ -132,21 +132,25 @@ export function useOrderTxnCallbacks() {
             sendTxnSentMetric(ctx.metricId);
           }
 
+          const pendingPositions = e.data.batchParams.createOrderParams
+            .filter((cp) => isMarketOrderType(cp.orderPayload.orderType))
+            .map((cp) =>
+              getPendingPositionFromParams({
+                createOrderParams: cp,
+                blockNumber: e.data.blockNumber,
+                timestamp: e.data.createdAt,
+              })
+            );
+
           if (!isSubaccount) {
+            const { totalExecutionFeeAmount, totalExecutionGasLimit } = getTotalExecutionFeeForOrders(
+              e.data.batchParams
+            );
+
             if (mainActionType === "create") {
               if (pendingOrders.length > 0) {
                 setPendingOrder(pendingOrders);
               }
-
-              pendingPositions.push(
-                ...e.data.batchParams.createOrderParams.map((cp) =>
-                  getPendingPositionFromParams({
-                    createOrderParams: cp,
-                    blockNumber: e.data.blockNumber,
-                    timestamp: e.data.createdAt,
-                  })
-                )
-              );
 
               if (pendingPositions.length > 0) {
                 setPendingPosition(pendingPositions[0]);
@@ -160,6 +164,34 @@ export function useOrderTxnCallbacks() {
               }
             }
 
+            const submitMessage = getOperationMessage(
+              mainActionType,
+              "submitted",
+              actionsCount,
+              undefined,
+              setIsSettingsVisible
+            );
+
+            const successMessage = getOperationMessage(
+              mainActionType,
+              "success",
+              actionsCount,
+              undefined,
+              setIsSettingsVisible
+            );
+
+            const errorMessage = getOperationMessage(
+              mainActionType,
+              "failed",
+              actionsCount,
+              undefined,
+              setIsSettingsVisible
+            );
+
+            if (submitMessage) {
+              helperToast.success(submitMessage);
+            }
+
             if (expressParams) {
               setPendingExpressTxn({
                 subaccountApproval: expressParams.subaccount?.signedApproval,
@@ -169,30 +201,10 @@ export function useOrderTxnCallbacks() {
                 pendingPositionsKeys: pendingPositions.map((p) => p.positionKey),
                 taskId: e.data.txnHash,
                 metricId: ctx.metricId,
+                successMessage,
+                errorMessage,
               });
             } else {
-              const { totalExecutionFeeAmount, totalExecutionGasLimit } = getTotalExecutionFeeForOrders(
-                e.data.batchParams
-              );
-
-              const submitMessage = getOperationMessage(
-                mainActionType,
-                "submitted",
-                actionsCount,
-                undefined,
-                setIsSettingsVisible
-              );
-
-              helperToast.success(submitMessage);
-
-              const successMessage = getOperationMessage(
-                mainActionType,
-                "success",
-                actionsCount,
-                undefined,
-                setIsSettingsVisible
-              );
-
               const pendingTxn: PendingTransaction = {
                 hash: e.data.txnHash,
                 message: successMessage,
@@ -430,23 +442,7 @@ function getOperationMessage(
   });
 
   if (mainActionType === "create") {
-    switch (state) {
-      case "submitted": {
-        return t`Order submitted.`;
-      }
-
-      case "success": {
-        return t`Order created.`;
-      }
-
-      case "failed": {
-        return t`Order error.`;
-      }
-
-      default: {
-        return "";
-      }
-    }
+    return undefined;
   } else if (mainActionType === "update") {
     switch (state) {
       case "submitted": {

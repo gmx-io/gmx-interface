@@ -6,6 +6,7 @@ import { usePublicClient } from "wagmi";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import {
   selectBlockTimestampData,
@@ -40,6 +41,7 @@ import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallba
 import { formatLeverage } from "domain/synthetics/positions/utils";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
+import { throttleLog } from "lib/logging";
 import {
   initDecreaseOrderMetricData,
   initIncreaseOrderMetricData,
@@ -86,6 +88,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const fees = useSelector(selectTradeboxFees);
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
   const marketsInfoData = useSelector(selectMarketsInfoData);
+  const showDebugValues = useShowDebugValues();
 
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
 
@@ -119,21 +122,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     };
   }, [primaryCreateOrderParams, sidecarOrderPayloads]);
 
-  const { expressParams, needGasPaymentTokenApproval } = useExpressOrdersParams({
-    orderParams: batchParams,
-    isMultiChain,
-  });
-  // useEffect(() => {
-  //   console.log("batchParams", batchParams);
-  // }, [batchParams]);
+  const { expressParams, expressEstimateMethod } = useExpressOrdersParams({ orderParams: batchParams });
 
-  if (expressParams || needGasPaymentTokenApproval) {
-    // TEMP DEBUG
-    // console.log("expressParams", expressParams, {
-    //   needGasPaymentTokenApproval,
-    //   gasPaymentFee: formatTokenAmount(expressParams?.relayFeeParams.feeParams.feeAmount, 6, "USDC"),
-    //   relayerFee: formatTokenAmount(expressParams?.relayFeeParams.relayerTokenAmount, 18, "WETH"),
-    // });
+  if (expressParams && showDebugValues) {
+    throttleLog("TradeBox express params", {
+      expressParams,
+      expressEstimateMethod,
+    });
   }
 
   const initOrderMetricData = useCallback(() => {
@@ -143,6 +138,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         toToken,
         hasReferralCode: Boolean(referralCodeForTxn),
         swapAmounts,
+        isExpress: Boolean(expressParams),
         executionFee,
         allowedSlippage,
         orderType: primaryCreateOrderParams?.orderPayload.orderType,
@@ -169,6 +165,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         marketInfo,
         isLong,
         isFirstOrder,
+        isExpress: Boolean(expressParams),
         isLeverageEnabled: isLeverageSliderEnabled,
         initialCollateralAllowance,
         isTPSLCreated: Boolean(sidecarOrderPayloads?.createPayloads?.length),
@@ -201,6 +198,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       allowedSlippage,
       isLong,
       place: "tradeBox",
+      isExpress: Boolean(expressParams),
       interactionId: marketInfo?.name ? userAnalytics.getInteractionId(getTradeInteractionKey(marketInfo.name)) : "",
       priceImpactDeltaUsd: decreaseAmounts?.positionPriceImpactDeltaUsd,
       priceImpactPercentage: fees?.positionPriceImpact?.precisePercentage,
@@ -214,7 +212,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     collateralToken,
     decreaseAmounts,
     executionFee,
-    expressParams?.subaccount,
+    expressParams,
     fees?.positionPriceImpact?.precisePercentage,
     fromToken,
     increaseAmounts,
@@ -305,6 +303,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     onSubmitWrapOrUnwrap,
     slippageInputId,
     relayerFeeParams: expressParams?.relayFeeParams,
-    needGasPaymentTokenApproval,
+    needGasPaymentTokenApproval: expressParams?.relayFeeParams.needGasPaymentTokenApproval,
   };
 }

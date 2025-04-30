@@ -80,6 +80,8 @@ import {
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
+import { getTenderlyConfig } from "lib/tenderly";
+import { isDevelopment } from "config/env";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -1105,17 +1107,25 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             break;
         }
 
+        const config = getTenderlyConfig();
+
+        const accountParams = config
+          ? `&tenderlyUsername=${config.accountSlug}&tenderlyProjectName=${config.projectSlug}`
+          : "";
+
         const debugRes = await fetch(
-          `https://api.gelato.digital/tasks/status/${taskStatus.taskId}/debug?tenderlyUsername=divhead&tenderlyProjectName=project`,
+          `https://api.gelato.digital/tasks/status/${taskStatus.taskId}/debug${accountParams}`,
           {
             method: "GET",
           }
         );
 
         const debugData = await debugRes.json();
-        // FIXME gasless: TEMP DEBUG
-        // eslint-disable-next-line no-console
-        console.log("gelatoDebugData", taskStatus.taskState, pendingExpressParams, debugData);
+
+        if (isDevelopment()) {
+          // eslint-disable-next-line no-console
+          console.log("gelatoDebugData", taskStatus.taskState, pendingExpressParams, debugData);
+        }
       }
 
       gelatoRelay.onTaskStatusUpdate(handleTaskStatusUpdate);
