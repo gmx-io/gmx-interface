@@ -373,14 +373,16 @@ export function PositionSeller() {
 
   const { expressParams, expressEstimateMethod } = useExpressOrdersParams({
     orderParams: batchParams,
+    scope: "positionSeller",
   });
 
-  if (expressParams && showDebugValues) {
-    throttleLog("PositionSeller express Params", {
-      expressParams,
-      expressEstimateMethod,
-    });
-  }
+  // if (expressParams && showDebugValues) {
+
+  // throttleLog("PositionSeller express Params", {
+  //   batchParams,
+  //   expressParams,
+  //   expressEstimateMethod,
+  // });
 
   function onSubmit() {
     if (!account) {

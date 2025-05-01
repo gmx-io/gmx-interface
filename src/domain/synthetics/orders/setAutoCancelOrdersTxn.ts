@@ -6,6 +6,7 @@ import { getContract } from "config/contracts";
 import { Token } from "domain/tokens";
 import { callContract } from "lib/contracts";
 import { abis } from "sdk/abis";
+import { UiContractsChain } from "sdk/configs/chains";
 import {
   buildUpdateOrderMulticall,
   buildUpdateOrderPayload,
@@ -55,7 +56,7 @@ export function setAutoCancelOrdersTxn(
         })
       );
 
-      const { encodedMulticall } = encodeExchangeRouterMulticall(multicall);
+      const { encodedMulticall } = encodeExchangeRouterMulticall(chainId as UiContractsChain, multicall);
 
       return encodedMulticall;
     })

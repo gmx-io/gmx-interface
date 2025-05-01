@@ -1,7 +1,9 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useAccount } from "wagmi";
 
+import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -52,6 +54,7 @@ import type { GmSwapBoxProps } from "../GmSwapBox";
 import { Swap } from "../Swap";
 import { Mode, Operation } from "../types";
 import { InfoRows } from "./InfoRows";
+import { needSwitchToSettlementChain, SwitchToSettlementChainButtons } from "./SwitchToSettlementChainButtons";
 
 export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const {
@@ -66,6 +69,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   } = p;
   const { shouldDisableValidationForTesting } = useSettings();
   const { chainId } = useChainId();
+  const { chainId: walletChainId, isConnected } = useAccount();
   const [isMarketForGlvSelectedManually, setIsMarketForGlvSelectedManually] = useState(false);
 
   // #region Requests
@@ -864,7 +868,9 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           </div>
         )}
 
-        <div className="Exchange-swap-button-container">{submitButton}</div>
+        <div className="Exchange-swap-button-container">
+          {needSwitchToSettlementChain(walletChainId) ? <SwitchToSettlementChainButtons /> : submitButton}
+        </div>
       </form>
     </>
   );

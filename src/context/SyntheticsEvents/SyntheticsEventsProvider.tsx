@@ -157,7 +157,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   // use ref to avoid re-subscribing on state changes
   eventLogHandlers.current = {
     OrderCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
-      debugger;
       updateNativeTokenBalance();
 
       const data: OrderCreatedEventData = {

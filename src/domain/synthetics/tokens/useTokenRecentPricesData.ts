@@ -48,12 +48,12 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
           }
 
           // TODO: remove this once we have a proper price for USDC.SG
-          if (chainId === ARBITRUM_SEPOLIA && priceItem.tokenAddress === ARBITRUM_SEPOLIA_USDC.address) {
-            result[ARBITRUM_SEPOLIA_USDC_SG.address] = {
-              minPrice: parseContractPrice(BigInt(priceItem.minPrice), ARBITRUM_SEPOLIA_USDC_SG.decimals),
-              maxPrice: parseContractPrice(BigInt(priceItem.maxPrice), ARBITRUM_SEPOLIA_USDC_SG.decimals),
-            };
-          }
+          // if (chainId === ARBITRUM_SEPOLIA && priceItem.tokenAddress === ARBITRUM_SEPOLIA_USDC.address) {
+          //   result[ARBITRUM_SEPOLIA_USDC_SG.address] = {
+          //     minPrice: parseContractPrice(BigInt(priceItem.minPrice), ARBITRUM_SEPOLIA_USDC_SG.decimals),
+          //     maxPrice: parseContractPrice(BigInt(priceItem.maxPrice), ARBITRUM_SEPOLIA_USDC_SG.decimals),
+          //   };
+          // }
 
           result[tokenConfig.address] = {
             minPrice: parseContractPrice(BigInt(priceItem.minPrice), tokenConfig.decimals),

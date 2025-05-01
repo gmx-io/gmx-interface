@@ -1,5 +1,7 @@
 import { GelatoRelay } from "@gelatonetwork/relay-sdk";
 
+import { sleep } from "./common";
+
 export function isFirefox() {
   return window ? /Firefox/gi.test(window.navigator.userAgent) : false;
 }
@@ -21,22 +23,37 @@ const gelatoRelayProxy = new Proxy<ProxyGelatoRelay>({} as ProxyGelatoRelay, {
 
     if (!inited) {
       inited = true;
-      window.addEventListener(
-        "load",
-        () => {
-          resolve(new GelatoRelay());
-        },
-        {
-          once: true,
-          passive: true,
-        }
-      );
+
+      // check current window state
+      if (document.readyState === "complete") {
+        console.log("Gelato relay initialized. Resolved immediately.");
+        resolve(new GelatoRelay());
+      } else {
+        window.addEventListener(
+          "load",
+          () => {
+            console.log("Gelato relay initialized. Resolved on load event.");
+            resolve(new GelatoRelay());
+          },
+          {
+            once: true,
+            passive: true,
+          }
+        );
+      }
     }
 
     return async (...args: any[]) => {
-      return await promise.then(async (relay) => {
-        return await relay[p](...args);
-      });
+      return await Promise.race([
+        promise.then(async (relay) => {
+          return await relay[p](...args);
+        }),
+        sleep(5000).then(async () => {
+          await promise;
+
+          throw new Error("Gelato relay did not respond in 5 seconds");
+        }),
+      ]);
     };
   },
 });

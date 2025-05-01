@@ -79,6 +79,12 @@ export function useExpressOrdersParams({
 
   const enabled = useMemo(() => {
     if (requiredActions === 0 || !isExpressTxnAvailable) {
+      if (scope === "positionSeller") {
+        console.log("useExpressOrdersParams is not enabled", {
+          requiredActions,
+          isExpressTxnAvailable,
+        });
+      }
       return false;
     }
 
@@ -90,7 +96,7 @@ export function useExpressOrdersParams({
     }
 
     return true;
-  }, [isExpressTxnAvailable, orderParams?.createOrderParams, requiredActions]);
+  }, [isExpressTxnAvailable, orderParams?.createOrderParams, requiredActions, scope]);
 
   const { setGasPaymentTokenAddress } = useSettings();
   const tokenPermits = useSelector(selectTokenPermits);
@@ -130,16 +136,32 @@ export function useExpressOrdersParams({
     function getBaseTxnData() {
       async function getFastParams() {
         if (!isExpressEnabled || Date.now() - approximateExpressParams.lastEstimated < APPROXIMATE_THROTTLE_TIME) {
+          if (scope === "positionSeller") {
+            console.log("getFastParams is not enabled", {
+              isExpressEnabled,
+              lastEstimated: approximateExpressParams.lastEstimated,
+            });
+          }
           return;
         }
 
         if (!enabled || !orderParams) {
-          // console.log({
-          //   enabled,
-          //   orderParams,
-          // });
+          if (scope === "positionSeller") {
+            console.log("getFastParams is not enabled", {
+              enabled,
+              orderParams,
+            });
+          }
 
           return;
+        }
+
+        if (scope === "positionSeller") {
+          console.log("getFastParams is enabled", {
+            enabled,
+            orderParams,
+          });
+          // debugger;
         }
 
         const nextApproximateParams = await getApproximateEstimatedExpressParams({
@@ -194,6 +216,13 @@ export function useExpressOrdersParams({
               setGasPaymentTokenAddress(anotherGasToken);
             }
           }
+        }
+
+        if (scope === "positionSeller") {
+          // nextApproximateParams
+          console.log("getFastParams is enabled", {
+            nextApproximateParams,
+          });
         }
 
         if (
@@ -252,20 +281,20 @@ export function useExpressOrdersParams({
           !gasPaymentAllowanceData ||
           gasPrice === undefined
         ) {
-          if (scope === "tradebox") {
-            // console.log("estimateBasTxnData is undefined", {
-            //   approximateExpressParams: !!approximateExpressParams.params,
-            //   provider: !!provider,
-            //   signer: !!signer,
-            //   relayerFeeToken: !!relayerFeeToken,
-            //   gasPaymentToken: !!gasPaymentToken,
-            //   orderParams: !!orderParams,
-            //   tokensData: !!tokensData,
-            //   marketsInfoData: !!marketsInfoData,
-            //   tokenPermits: !!tokenPermits,
-            //   gasPaymentAllowanceData: !!gasPaymentAllowanceData,
-            //   gasPrice: gasPrice !== undefined,
-            // });
+          if (scope === "positionSeller") {
+            console.log("estimateBasTxnData is undefined", {
+              approximateExpressParams: !!approximateExpressParams.params,
+              provider: !!provider,
+              signer: !!signer,
+              relayerFeeToken: !!relayerFeeToken,
+              gasPaymentToken: !!gasPaymentToken,
+              orderParams: !!orderParams,
+              tokensData: !!tokensData,
+              marketsInfoData: !!marketsInfoData,
+              tokenPermits: !!tokenPermits,
+              gasPaymentAllowanceData: !!gasPaymentAllowanceData,
+              gasPrice: gasPrice !== undefined,
+            });
           }
           return;
         }

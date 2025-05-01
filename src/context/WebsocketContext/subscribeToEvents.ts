@@ -137,7 +137,6 @@ export function subscribeToV2Events(
   filters.forEach((filter) => {
     provider.on(filter, handleCommonLog);
   });
-  console.log("filters", filters);
 
   return () => {
     filters.forEach((filter) => {

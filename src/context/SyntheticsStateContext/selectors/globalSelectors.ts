@@ -143,17 +143,16 @@ export const selectRelayerFeeToken = createSelector((q) => {
   return getByKey(tokensData, relayerFeeTokenAddress);
 });
 
+const selectIsRelayRouterFeatureDisabled = makeSelectDisableFeature("relayRouterDisabled");
 export const makeSelectIsExpressTransactionAvailable = (isNativePayment: boolean) =>
   createSelector((q) => {
-    const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
-
-    const isFeatureDisabled = q(makeSelectDisableFeature("relayRouterDisabled"));
-    const gasPaymentToken = q(selectGasPaymentToken);
-    const isZeroGasBalance = gasPaymentToken?.balance === 0n || gasPaymentToken?.balance === undefined;
-
     if (isNativePayment) {
       return false;
     }
+    const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
+    const isFeatureDisabled = q(selectIsRelayRouterFeatureDisabled);
+    const gasPaymentToken = q(selectGasPaymentToken);
+    const isZeroGasBalance = gasPaymentToken?.balance === 0n || gasPaymentToken?.balance === undefined;
 
     return isExpressOrdersEnabledSetting && !isFeatureDisabled && !isZeroGasBalance;
   });

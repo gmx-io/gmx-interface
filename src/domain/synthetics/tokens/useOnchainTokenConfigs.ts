@@ -16,8 +16,6 @@ export function useOnchainTokenConfigs(chainId: number) {
 
     request: () =>
       tokens.reduce((acc, token) => {
-        console.log("datastore price feed key", token.symbol, priceFeedKey(token.address));
-
         acc[`${token.address}-priceFeed`] = {
           contractAddress: getContract(chainId, "DataStore"),
           abiId: "DataStore",

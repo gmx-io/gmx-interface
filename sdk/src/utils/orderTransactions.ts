@@ -2,7 +2,9 @@ import { MaxUint256 } from "ethers";
 import { encodeFunctionData, zeroAddress, zeroHash } from "viem";
 
 import ExchangeRouterAbi from "abis/ExchangeRouter.json";
+import { abis } from "abis/index";
 import ERC20ABI from "abis/Token.json";
+import { UiContractsChain, ARBITRUM_SEPOLIA } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { convertTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { DecreasePositionSwapType, OrderType } from "types/orders";
@@ -409,7 +411,7 @@ export function buildTokenTransfersParamsForDecrease({
 
 export function buildTokenTransfersParamsForIncreaseOrSwap({
   chainId,
-  srcChainId,
+  // srcChainId,
   receiver,
   payTokenAddress,
   payTokenAmount,
@@ -420,7 +422,7 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
   swapPath,
 }: {
   chainId: number;
-  srcChainId: number | undefined;
+  // srcChainId: number | undefined;
   receiver: string;
   payTokenAddress: string;
   payTokenAmount: bigint;
@@ -574,7 +576,13 @@ function combineTransfers(tokenTransfers: TokenTransfer[]) {
   return { tokenTransfers: Object.values(transfersMap), value };
 }
 
-export function getBatchOrderMulticallPayload({ params }: { params: BatchOrderTxnParams }) {
+export function getBatchOrderMulticallPayload({
+  params,
+  chainId,
+}: {
+  params: BatchOrderTxnParams;
+  chainId: UiContractsChain;
+}) {
   const { createOrderParams, updateOrderParams, cancelOrderParams } = params;
 
   const multicall: ExchangeRouterCall[] = [];
@@ -598,7 +606,7 @@ export function getBatchOrderMulticallPayload({ params }: { params: BatchOrderTx
     value += cancelValue;
   }
 
-  const { encodedMulticall, callData } = encodeExchangeRouterMulticall(multicall);
+  const { encodedMulticall, callData } = encodeExchangeRouterMulticall(chainId, multicall);
 
   return { multicall, value, encodedMulticall, callData };
 }
@@ -688,10 +696,10 @@ export function buildCancelOrderMulticall({ params }: { params: CancelOrderTxnPa
   };
 }
 
-export function encodeExchangeRouterMulticall(multicall: ExchangeRouterCall[]) {
+export function encodeExchangeRouterMulticall(chainId: UiContractsChain, multicall: ExchangeRouterCall[]) {
   const encodedMulticall = multicall.map((call) =>
     encodeFunctionData({
-      abi: ExchangeRouterAbi.abi,
+      abi: chainId === ARBITRUM_SEPOLIA ? abis.ExchangeRouterArbitrumSepolia : abis.ExchangeRouter,
       functionName: call.method,
       args: call.params,
     })

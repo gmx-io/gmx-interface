@@ -15,8 +15,8 @@ for (const chainId in MARKETS) {
     set.add(marketConfig.longTokenAddress);
     set.add(marketConfig.shortTokenAddress);
 
-    const longTokenWrappedAddress = convertTokenAddress(Number(chainId), marketConfig.longTokenAddress, "wrapped");
-    const shortTokenWrappedAddress = convertTokenAddress(Number(chainId), marketConfig.shortTokenAddress, "wrapped");
+    const longTokenWrappedAddress = convertTokenAddress(Number(chainId), marketConfig.longTokenAddress, "native");
+    const shortTokenWrappedAddress = convertTokenAddress(Number(chainId), marketConfig.shortTokenAddress, "native");
 
     set.add(longTokenWrappedAddress);
     set.add(shortTokenWrappedAddress);

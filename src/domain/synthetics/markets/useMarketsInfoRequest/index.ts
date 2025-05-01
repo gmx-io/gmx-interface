@@ -1,8 +1,8 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useAccount } from "wagmi";
 
 import { getContract } from "config/contracts";
-import { isSourceChain } from "context/GmxAccountContext/config";
+import { isSettlementChain, isSourceChain } from "context/GmxAccountContext/config";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL, FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
@@ -40,7 +40,9 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
     pricesUpdatedAt,
     error: tokensDataError,
     isBalancesLoaded,
-  } = walletChainId && isSourceChain(walletChainId) ? gmxAccountTokensDataResult : settlementChainTokensDataResult;
+  } = walletChainId && isSourceChain(walletChainId) && !isSettlementChain(walletChainId)
+    ? gmxAccountTokensDataResult
+    : settlementChainTokensDataResult;
 
   const { claimableFundingData } = useClaimableFundingDataRequest(chainId);
   const { fastMarketInfoData } = useFastMarketsInfoRequest(chainId);

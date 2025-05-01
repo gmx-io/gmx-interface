@@ -51,12 +51,16 @@ export type GmxAccountContext = {
 
 export const context = createContext<GmxAccountContext | null>(null);
 
+// TODO: make it ARBITRUM when isDevelopment is false
+const DEFAULT_SETTLEMENT_CHAIN_ID: UiSettlementChain = ARBITRUM_SEPOLIA;
+
 export function GmxAccountContextProvider({ children }: PropsWithChildren) {
   const { chainId: walletChainId } = useAccount();
 
   const [modalOpen, setModalOpen] = useState<GmxAccountContext["modalOpen"]>("main");
 
-  const [settlementChainId, setSettlementChainId] = useState<GmxAccountContext["settlementChainId"]>(ARBITRUM_SEPOLIA);
+  const [settlementChainId, setSettlementChainId] =
+    useState<GmxAccountContext["settlementChainId"]>(DEFAULT_SETTLEMENT_CHAIN_ID);
 
   const [depositViewChain, setDepositViewChain] = useState<GmxAccountContext["depositViewChain"]>(undefined);
   const [depositViewTokenAddress, setDepositViewTokenAddress] =

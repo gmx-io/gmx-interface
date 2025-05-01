@@ -696,7 +696,9 @@ export const DepositView = () => {
 
       {isOffLimit ? (
         <AlertInfoCard type="warning" className="my-4">
-          <Trans>The amount you are trying to deposit is off limit. Please try a smaller than {limitFormatted}.</Trans>
+          <Trans>
+            The amount you are trying to deposit exceeds the limit. Please try an amount smaller than {limitFormatted}.
+          </Trans>
         </AlertInfoCard>
       ) : (
         <div className="h-32 shrink-0" />

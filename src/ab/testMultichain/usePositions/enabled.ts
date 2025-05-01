@@ -28,6 +28,10 @@ type PositionsResult = {
   error?: Error;
 };
 
+// todo
+// sometimes there is an issue with decoding from abi
+// Multicall request failed: usePositionsData-multichain-421614 Error: Response error reader: positions: Bytes value "102,1,128,153,224,35,39,163,83,117,145" is not a valid boolean. The bytes array must contain a single byte of either a 0 or 1 value.;
+
 export function usePositions(
   chainId: number,
   p: {

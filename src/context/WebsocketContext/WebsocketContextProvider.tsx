@@ -7,7 +7,6 @@ import { useChainId } from "lib/chains";
 import { metrics, WsProviderConnected, WsProviderDisconnected, WsProviderHealthCheckFailed } from "lib/metrics";
 import { closeWsConnection, getWsProvider, isProviderInClosedState, isWebsocketProvider } from "lib/rpc";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
-import useWallet from "lib/wallets/useWallet";
 
 import { getTotalSubscribersEventsCount } from "./subscribeToEvents";
 
