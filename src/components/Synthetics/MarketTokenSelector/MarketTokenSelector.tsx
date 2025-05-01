@@ -82,7 +82,7 @@ export default function MarketTokenSelector(props: Props) {
       getNormalizedTokenSymbol(currentMarketInfo.shortToken.symbol)
     : isGlv
       ? currentMarketInfo.glvToken.symbol
-      : currentMarketInfo!.indexToken.symbol;
+      : currentMarketInfo?.indexToken.symbol;
 
   return (
     <SelectorBase
@@ -96,7 +96,7 @@ export default function MarketTokenSelector(props: Props) {
           {currentMarketInfo ? (
             <>
               <TokenIcon
-                symbol={iconName}
+                symbol={iconName!}
                 displaySize={30}
                 importSize={40}
                 badge={
