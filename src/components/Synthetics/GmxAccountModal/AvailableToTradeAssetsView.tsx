@@ -12,10 +12,7 @@ import useWallet from "lib/wallets/useWallet";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import Button from "components/Button/Button";
-import {
-  useGmxAccountTokensDataObject,
-  useGmxAccountTokensDataRequest,
-} from "components/Synthetics/GmxAccountModal/hooks";
+import { useGmxAccountTokensDataObject } from "components/Synthetics/GmxAccountModal/hooks";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 type FilterType = "all" | "gmxBalance" | "wallet";
@@ -42,17 +39,42 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const titles = useLocalizedMap(FILTER_TITLE_MAP);
 
-  const filteredTokens = tokens.filter((token) => {
-    const matchesSearch = token.symbol.toLowerCase().includes(searchQuery.toLowerCase());
+  const sortedTokens = useMemo(() => {
+    return tokens.sort((a, b) => {
+      if (a.balanceUsd !== undefined && b.balanceUsd === undefined) {
+        // a first
+        return -1;
+      }
 
-    const matchesChainFilter =
-      noChainFilter ||
-      activeFilter === "all" ||
-      (activeFilter === "gmxBalance" && token.isGmxAccountBalance) ||
-      (activeFilter === "wallet" && !token.isGmxAccountBalance);
+      if (a.balanceUsd === undefined && b.balanceUsd !== undefined) {
+        // b first
+        return 1;
+      }
 
-    return matchesSearch && matchesChainFilter;
-  });
+      if (a.balanceUsd !== undefined && b.balanceUsd !== undefined) {
+        // sort by balanceUsd
+        return b.balanceUsd - a.balanceUsd > 0n ? 1 : -1;
+      }
+
+      return 0;
+    });
+  }, [tokens]);
+
+  const sortedFilteredTokens = useMemo(() => {
+    const filteredTokens = sortedTokens.filter((token) => {
+      const matchesSearch = token.symbol.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const matchesChainFilter =
+        noChainFilter ||
+        activeFilter === "all" ||
+        (activeFilter === "gmxBalance" && token.isGmxAccountBalance) ||
+        (activeFilter === "wallet" && !token.isGmxAccountBalance);
+
+      return matchesSearch && matchesChainFilter;
+    });
+
+    return filteredTokens;
+  }, [sortedTokens, searchQuery, noChainFilter, activeFilter]);
 
   return (
     <div className="flex grow flex-col gap-8 overflow-y-hidden pt-16">
@@ -86,7 +108,7 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
       </div>
 
       <div className="grow overflow-y-auto">
-        {filteredTokens.map((displayToken) => (
+        {sortedFilteredTokens.map((displayToken) => (
           <div
             key={displayToken.symbol + "_" + displayToken.chainId}
             className="flex items-center justify-between px-16 py-8 gmx-hover:bg-slate-700"
