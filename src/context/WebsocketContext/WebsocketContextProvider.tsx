@@ -1,5 +1,6 @@
 import { JsonRpcProvider, WebSocketProvider } from "ethers";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useAccount } from "wagmi";
 
 import { isDevelopment } from "config/env";
 import { useChainId } from "lib/chains";
@@ -24,7 +25,8 @@ export function useWebsocketProvider() {
 }
 
 export function WebsocketContextProvider({ children }: { children: ReactNode }) {
-  const { active } = useWallet();
+  // const { active } = useWallet();
+  const { isConnected } = useAccount();
   const { chainId } = useChainId();
   const [wsProvider, setWsProvider] = useState<WebSocketProvider | JsonRpcProvider>();
   const { hasPageLostFocus, hasV1LostFocus, hasV2LostFocus } = useHasLostFocus();
@@ -37,7 +39,7 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
 
   useEffect(
     function updateProviderEffect() {
-      if (!active || hasPageLostFocus) {
+      if (!isConnected || hasPageLostFocus) {
         return;
       }
 
@@ -72,12 +74,12 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
         });
       };
     },
-    [active, chainId, hasPageLostFocus]
+    [isConnected, chainId, hasPageLostFocus]
   );
 
   useEffect(
     function healthCheckEff() {
-      if (!active || hasPageLostFocus || !isWebsocketProvider(wsProvider)) {
+      if (!isConnected || hasPageLostFocus || !isWebsocketProvider(wsProvider)) {
         return;
       }
 
@@ -134,7 +136,7 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
         clearTimeout(healthCheckTimerId.current);
       };
     },
-    [active, chainId, hasPageLostFocus, wsProvider]
+    [isConnected, chainId, hasPageLostFocus, wsProvider]
   );
 
   const state: WebsocketContextType = useMemo(() => {

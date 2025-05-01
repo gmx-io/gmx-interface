@@ -1,10 +1,11 @@
-import { Token, TokenPrices } from "domain/tokens";
+import type { Token, TokenPrices } from "domain/tokens";
 
 export type TokenChainData = Token & {
   sourceChainId: number;
   sourceChainDecimals: number;
   sourceChainPrices: TokenPrices | undefined;
   sourceChainBalance: bigint | undefined;
+  // settlementChainAddress: string;
 };
 
 // operation: "deposit" | "withdraw";

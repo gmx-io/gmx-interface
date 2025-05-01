@@ -2,8 +2,12 @@ import { Options, addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { Trans, t } from "@lingui/macro";
 import { errors as StargateErrorsAbi } from "@stargatefinance/stg-evm-sdk-v2";
 import { abi as IStargateAbi } from "@stargatefinance/stg-evm-sdk-v2/artifacts/src/interfaces/IStargate.sol/IStargate.json";
-import { Contract, Interface, solidityPacked } from "ethers";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Contract, solidityPacked } from "ethers";
+// eslint-disable-next-line no-restricted-imports
+import type { DebouncedFuncLeading } from "lodash";
+import debounce from "lodash/debounce";
+import identity from "lodash/identity";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
 import Skeleton from "react-loading-skeleton";
 import useSWR from "swr";
@@ -13,9 +17,13 @@ import { useAccount, usePublicClient } from "wagmi";
 import { UiSettlementChain, UiSourceChain, getChainName } from "config/chains";
 import { getContract } from "config/contracts";
 import { getChainIcon } from "config/icons";
-import { getMappedTokenId, getStargateEndpointId } from "context/GmxAccountContext/config";
 import {
-  useGmxAccountDepositViewChain,
+  MULTI_CHAIN_SUPPORTED_TOKEN_MAP,
+  getMappedTokenId,
+  getStargateEndpointId,
+} from "context/GmxAccountContext/config";
+import {
+  // useGmxAccountDepositViewChain,
   useGmxAccountDepositViewTokenAddress,
   useGmxAccountDepositViewTokenInputValue,
   useGmxAccountModalOpen,
@@ -34,6 +42,7 @@ import {
   formatUsd,
 } from "lib/numbers";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
+import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { TxnCallback, TxnEventName, WalletTxnCtx, sendWalletTransaction } from "lib/transactions";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { CodecUiHelper } from "pages/DebugStargate/OFTComposeMsgCodec";
@@ -48,6 +57,7 @@ import {
   SendParamStruct,
 } from "typechain-types-stargate/interfaces/IStargate";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 import NumberInput from "components/NumberInput/NumberInput";
@@ -60,20 +70,27 @@ import { useMultichainDepositNetworkComposeGas } from "./useMultichainDepositNet
 
 const SLIPPAGE_BPS = 50n;
 
+const leadingDebounce: DebouncedFuncLeading<(value: bigint | undefined) => bigint | undefined> = debounce(
+  identity,
+  100,
+  {
+    leading: true,
+    trailing: true,
+    maxWait: 1000,
+  }
+);
+
 export const DepositView = () => {
   const { address: account, chainId: walletChainId } = useAccount();
   const signer = useEthersSigner({ chainId: walletChainId });
-  // const { data: connectorClient } = useWalletClient();
-  // connectorClient?.sendTransaction()
 
   const [settlementChainId] = useGmxAccountSettlementChainId();
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
 
-  // const [depositViewChain, setDepositViewChain] = useGmxAccountDepositViewChain();
   const depositViewChain = walletChainId;
   const sourceChainPublicClient = usePublicClient({ chainId: depositViewChain });
 
-  const [depositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
+  const [depositViewTokenAddress, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
   const [inputValue, setInputValue] = useGmxAccountDepositViewTokenInputValue();
   const multichainTokens = useMultichainTokens();
 
@@ -117,8 +134,11 @@ export const DepositView = () => {
     };
   }, [selectedToken, selectedTokenChainData]);
 
-  const inputAmount = useGmxAccountSelector(selectGmxAccountDepositViewTokenInputAmount);
-
+  const realInputAmount = useGmxAccountSelector(selectGmxAccountDepositViewTokenInputAmount);
+  /**
+   * Debounced
+   */
+  const inputAmount = leadingDebounce(realInputAmount);
   const inputAmountUsd = selectedToken
     ? convertToUsd(inputAmount, selectedToken.decimals, selectedTokenChainData?.sourceChainPrices?.maxPrice)
     : undefined;
@@ -186,24 +206,6 @@ export const DepositView = () => {
     inputAmount
   );
 
-  useEffect(() => {
-    console.log({
-      depositViewChain,
-      tokensAllowanceData,
-      needTokenApprove,
-      spenderAddress,
-      selectedTokenSourceChainTokenId,
-      depositViewTokenAddress,
-    });
-  }, [
-    depositViewChain,
-    tokensAllowanceData,
-    needTokenApprove,
-    spenderAddress,
-    selectedTokenSourceChainTokenId,
-    depositViewTokenAddress,
-  ]);
-
   const handleApprove = useCallback(async () => {
     if (!depositViewChain || !depositViewTokenAddress || inputAmount === undefined || !spenderAddress) {
       helperToast.error("Approve failed");
@@ -216,30 +218,6 @@ export const DepositView = () => {
       helperToast.error("Native token cannot be approved");
       return;
     }
-
-    // if (isNative) {
-    //   console.log(`native balance: ${formatEther(await sourceChainProvider.getBalance(address))}`);
-    // } else {
-    //   // const tokenContract = (await hre.ethers.getContractAt("ERC20Token", tokenAddress)) as ERC20Token;
-    //   const tokenContract = new Contract(tokenAddress, abis.ERC20, sourceChainProvider);
-    //   decimals = await tokenContract.decimals();
-    //   const balance: bigint = await tokenContract.balanceOf(address);
-    //   console.log(
-    //     `token: ${tokenAddress} balance: ${formatUnits(balance, decimals)} eth: ${formatEther(
-    //       await sourceChainProvider.getBalance(address)
-    //     )}`
-    //   );
-    //   const allowance: bigint = await tokenContract.allowance(address, await connectedPool.getAddress());
-    //   console.log(`allowance of ${await connectedPool.getAddress()}: ${formatUnits(allowance, decimals)}`);
-    //   if (allowance < balance) {
-    //     await (
-    //       await tokenContract
-    //         .connect(signer)
-    //         // @ts-ignore
-    //         .approve(await connectedPool.getAddress(), MaxUint256)
-    //     ).wait();
-    //   }
-    // }
 
     if (!selectedTokenSourceChainTokenId) {
       helperToast.error("Approve failed");
@@ -258,7 +236,168 @@ export const DepositView = () => {
 
   const { composeGas } = useMultichainDepositNetworkComposeGas();
 
-  const { nativeFeeUsd, amountReceivedLD } = useMultichainQuoteFeeUsd(composeGas);
+  const sendParamsWithoutSlippage: SendParamStruct | undefined = useMemo(() => {
+    if (
+      !account ||
+      inputAmount === undefined ||
+      inputAmount <= 0n ||
+      depositViewChain === undefined ||
+      composeGas === undefined ||
+      sourceChainPublicClient === undefined
+    ) {
+      return;
+    }
+
+    const oftCmd: OftCmd = new OftCmd(SEND_MODE_TAXI, []);
+
+    const dstEid = getStargateEndpointId(settlementChainId);
+
+    if (dstEid === undefined) {
+      return;
+    }
+
+    const to = toHex(addressToBytes32(getContract(settlementChainId, "LayerZeroProvider")));
+
+    let composeMsg: string = CodecUiHelper.encodeDepositMessage(account, depositViewChain);
+
+    const builder = Options.newOptions();
+    const extraOptions = builder.addExecutorComposeOption(0, composeGas, 0).toHex();
+
+    const sendParams: SendParamStruct = {
+      dstEid,
+      to,
+      amountLD: inputAmount,
+      minAmountLD: 0n,
+      extraOptions: extraOptions,
+      composeMsg: composeMsg ?? "",
+      oftCmd: oftCmd.toBytes(),
+    };
+
+    return sendParams;
+  }, [account, composeGas, depositViewChain, inputAmount, settlementChainId, sourceChainPublicClient]);
+
+  const quoteOftCondition =
+    sendParamsWithoutSlippage !== undefined &&
+    sourceChainPublicClient !== undefined &&
+    depositViewTokenAddress !== undefined &&
+    selectedTokenSourceChainTokenId !== undefined;
+  const quoteOftQuery = useSWR<
+    | {
+        limit: OFTLimitStruct;
+        oftFeeDetails: OFTFeeDetailStruct[];
+        receipt: OFTReceiptStruct;
+      }
+    | undefined
+  >(
+    quoteOftCondition
+      ? [
+          "quoteOft",
+          sendParamsWithoutSlippage.dstEid,
+          sendParamsWithoutSlippage.to,
+          sendParamsWithoutSlippage.amountLD,
+          selectedTokenSourceChainTokenId?.stargate,
+        ]
+      : null,
+    {
+      fetcher: async () => {
+        if (!quoteOftCondition) {
+          return;
+        }
+
+        const sourceChainStargateAddress = selectedTokenSourceChainTokenId.stargate;
+
+        const [limit, oftFeeDetails, receipt]: [OFTLimitStruct, OFTFeeDetailStruct[], OFTReceiptStruct] =
+          (await sourceChainPublicClient.readContract({
+            address: sourceChainStargateAddress,
+            abi: IStargateAbi,
+            functionName: "quoteOFT",
+            args: [sendParamsWithoutSlippage],
+          })) as any;
+
+        return {
+          limit,
+          oftFeeDetails,
+          receipt,
+        };
+      },
+      refreshInterval: CONFIG_UPDATE_INTERVAL,
+    }
+  );
+  const quoteOft = quoteOftQuery.data;
+
+  const lastMaxAmountLD = useRef<bigint | undefined>(undefined);
+  if (quoteOft && quoteOft.limit.maxAmountLD) {
+    lastMaxAmountLD.current = quoteOft.limit.maxAmountLD as bigint;
+  }
+  const isOffLimit =
+    lastMaxAmountLD.current !== undefined && inputAmount !== undefined && inputAmount > 0n
+      ? inputAmount > lastMaxAmountLD.current
+      : false;
+  const limitFormatted =
+    isOffLimit && selectedTokenSourceChainTokenId && lastMaxAmountLD.current !== undefined
+      ? formatBalanceAmount(lastMaxAmountLD.current, selectedTokenSourceChainTokenId?.decimals)
+      : undefined;
+
+  const sendParamsWithSlippage: SendParamStruct | undefined = useMemo(() => {
+    if (!quoteOft || !sendParamsWithoutSlippage) {
+      return undefined;
+    }
+
+    const { receipt } = quoteOft;
+
+    const minAmountLD = applySlippageBps(receipt.amountReceivedLD as bigint, SLIPPAGE_BPS);
+
+    const newSendParams: SendParamStruct = {
+      ...sendParamsWithoutSlippage,
+      minAmountLD,
+    };
+
+    return newSendParams;
+  }, [sendParamsWithoutSlippage, quoteOft]);
+
+  const quoteSendCondition =
+    depositViewTokenAddress !== undefined &&
+    depositViewChain !== undefined &&
+    sourceChainPublicClient !== undefined &&
+    sendParamsWithSlippage !== undefined &&
+    selectedTokenSourceChainTokenId !== undefined;
+  const quoteSendQuery = useSWR<MessagingFeeStruct | undefined>(
+    quoteSendCondition
+      ? [
+          "quoteSend",
+          sendParamsWithSlippage.dstEid,
+          sendParamsWithSlippage.to,
+          sendParamsWithSlippage.amountLD,
+          selectedTokenSourceChainTokenId?.stargate,
+          composeGas,
+        ]
+      : null,
+    {
+      fetcher: async () => {
+        if (!quoteSendCondition) {
+          return;
+        }
+
+        const sourceChainStargateAddress = selectedTokenSourceChainTokenId.stargate;
+
+        const result: MessagingFeeStruct = (await sourceChainPublicClient.readContract({
+          address: sourceChainStargateAddress as Address,
+          abi: IStargateAbi,
+          functionName: "quoteSend",
+          args: [sendParamsWithSlippage, false],
+        })) as any;
+
+        return result;
+      },
+      refreshInterval: CONFIG_UPDATE_INTERVAL,
+    }
+  );
+  const quoteSend = quoteSendQuery.data;
+
+  const { networkFeeUsd, protocolFeeUsd, amountReceivedLD } = useMultichainQuoteFeeUsd({
+    quoteSend,
+    quoteOft,
+  });
 
   const handleDeposit = useCallback(async () => {
     if (depositViewChain === settlementChainId) {
@@ -337,90 +476,21 @@ export const DepositView = () => {
         inputAmount === undefined ||
         inputAmount <= 0n ||
         depositViewChain === undefined ||
-        composeGas === undefined ||
-        sourceChainPublicClient === undefined
+        quoteSend === undefined ||
+        sendParamsWithSlippage === undefined ||
+        selectedTokenSourceChainTokenId === undefined
       ) {
         helperToast.error("Deposit failed");
         return;
       }
 
-      const sourceChainTokenId = getMappedTokenId(
-        settlementChainId as UiSettlementChain,
-        depositViewTokenAddress,
-        depositViewChain as UiSourceChain
-      );
+      const sourceChainTokenAddress = selectedTokenSourceChainTokenId.address;
 
-      if (!sourceChainTokenId) {
-        return;
-      }
-
-      const sourceChainTokenAddress = sourceChainTokenId.address;
-
-      const sourceChainStargateAddress = sourceChainTokenId.stargate;
+      const sourceChainStargateAddress = selectedTokenSourceChainTokenId.stargate;
 
       const tokenAddress = sourceChainTokenAddress;
       const isNative = tokenAddress === zeroAddress;
-      let adjustedAmount = inputAmount;
       const value = isNative ? inputAmount : 0n;
-
-      const oftCmd: OftCmd = new OftCmd(SEND_MODE_TAXI, []);
-
-      const dstEid = getStargateEndpointId(settlementChainId);
-
-      if (dstEid === undefined) {
-        return;
-      }
-
-      const to = toHex(addressToBytes32(getContract(settlementChainId, "LayerZeroProvider")));
-
-      let composeMsg: string = CodecUiHelper.encodeDepositMessage(account, depositViewChain);
-
-      const builder = Options.newOptions();
-      const extraOptions = builder.addExecutorComposeOption(0, composeGas, 0).toHex();
-
-      const sendParams: SendParamStruct = {
-        dstEid,
-        to,
-        amountLD: adjustedAmount,
-        minAmountLD: 0n,
-        extraOptions: extraOptions,
-        composeMsg: composeMsg ?? "",
-        oftCmd: oftCmd.toBytes(),
-      };
-
-      const [limit, oftFeeDetails, receipt]: [OFTLimitStruct, OFTFeeDetailStruct[], OFTReceiptStruct] =
-        (await sourceChainPublicClient.readContract({
-          address: sourceChainStargateAddress as Address,
-          abi: IStargateAbi,
-          functionName: "quoteOFT",
-          args: [sendParams],
-        })) as any;
-
-      const minAmountLD = applySlippageBps(receipt.amountReceivedLD as bigint, SLIPPAGE_BPS);
-
-      const newSendParams: SendParamStruct = {
-        ...sendParams,
-        minAmountLD,
-      };
-
-      const result: MessagingFeeStruct = (await sourceChainPublicClient.readContract({
-        address: sourceChainStargateAddress as Address,
-        abi: IStargateAbi,
-        functionName: "quoteSend",
-        args: [newSendParams, false],
-      })) as any;
-
-      // await callContract(
-      //   depositViewChain,
-      //   new Contract(sourceChainStargateAddress, IStargateAbi, signer),
-      //   "sendToken",
-      //   [newSendParams, { nativeFee: result.nativeFee, lzTokenFee: result.lzTokenFee }, account],
-      //   {
-      //     value: (result.nativeFee as bigint) + value,
-      //     sentMsg: "Deposit sent",
-      //     successMsg: "Deposit sent successfully",
-      //   }
-      // );
 
       await sendWalletTransaction({
         chainId: depositViewChain,
@@ -429,9 +499,9 @@ export const DepositView = () => {
         callData: encodeFunctionData({
           abi: IStargateAbi,
           functionName: "sendToken",
-          args: [newSendParams, { nativeFee: result.nativeFee, lzTokenFee: result.lzTokenFee }, account],
+          args: [sendParamsWithSlippage, { nativeFee: quoteSend.nativeFee, lzTokenFee: quoteSend.lzTokenFee }, account],
         }),
-        value: (result.nativeFee as bigint) + value,
+        value: (quoteSend.nativeFee as bigint) + value,
         callback: (txnEvent) => {
           if (txnEvent.event === TxnEventName.Error) {
             const data = txnEvent.data.error.data as Hex | undefined;
@@ -468,16 +538,62 @@ export const DepositView = () => {
     }
   }, [
     account,
-    composeGas,
     depositViewChain,
     depositViewTokenAddress,
     inputAmount,
+    quoteSend,
     selectedToken?.wrappedAddress,
+    selectedTokenSourceChainTokenId,
+    sendParamsWithSlippage,
     setIsVisibleOrView,
     settlementChainId,
     signer,
-    sourceChainPublicClient,
     walletChainId,
+  ]);
+
+  useEffect(() => {
+    if (depositViewTokenAddress === undefined && depositViewChain !== undefined && multichainTokens.length > 0) {
+      // pick the token
+      const sourceChainTokenAddresses = MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChainId][depositViewChain];
+      if (!sourceChainTokenAddresses || sourceChainTokenAddresses.length === 0) {
+        return;
+      }
+
+      let maxBalanceTokenAddress = sourceChainTokenAddresses[0];
+      let maxBalance =
+        multichainTokens.find(
+          (sourceChainToken) =>
+            sourceChainToken.sourceChainId === depositViewChain && sourceChainToken.address === maxBalanceTokenAddress
+        )?.sourceChainBalance ?? 0n;
+
+      for (const sourceChainTokenAddress of sourceChainTokenAddresses) {
+        const balance =
+          multichainTokens.find(
+            (sourceChainToken) =>
+              sourceChainToken.sourceChainId === depositViewChain &&
+              sourceChainToken.address === sourceChainTokenAddress
+          )?.sourceChainBalance ?? 0n;
+        if (balance > maxBalance) {
+          maxBalance = balance;
+          maxBalanceTokenAddress = sourceChainTokenAddress;
+        }
+      }
+
+      const tokenId = getMappedTokenId(depositViewChain as UiSourceChain, maxBalanceTokenAddress, settlementChainId);
+
+      if (!tokenId) {
+        return;
+      }
+
+      setDepositViewTokenAddress(tokenId.address);
+    }
+  }, [
+    depositViewChain,
+    depositViewTokenAddress,
+    multichainTokens,
+    selectedToken?.address,
+    setDepositViewTokenAddress,
+    settlementChainId,
   ]);
 
   const buttonState: {
@@ -545,7 +661,7 @@ export const DepositView = () => {
         </div>
       </div>
 
-      <div className="mb-32 mt-20 flex flex-col gap-4">
+      <div className="mt-20 flex flex-col gap-4">
         <div className="text-body-small flex items-center justify-between gap-4 text-slate-100">
           <Trans>Deposit</Trans>
           {selectedTokenSourceChainBalance !== undefined && selectedToken !== undefined && (
@@ -578,6 +694,14 @@ export const DepositView = () => {
         <div className="text-body-small text-slate-100">{formatUsd(inputAmountUsd ?? 0n)}</div>
       </div>
 
+      {isOffLimit ? (
+        <AlertInfoCard type="warning" className="my-4">
+          <Trans>The amount you are trying to deposit is off limit. Please try a smaller than {limitFormatted}.</Trans>
+        </AlertInfoCard>
+      ) : (
+        <div className="h-32 shrink-0" />
+      )}
+
       <div className="mb-8 flex flex-col gap-8">
         {/* SLIPPAGE_BPS */}
         <SyntheticsInfoRow label="Allowed slippage" value={formatPercentage(SLIPPAGE_BPS, { bps: true })} />
@@ -590,8 +714,11 @@ export const DepositView = () => {
           }
         />
 
-        <SyntheticsInfoRow label="Network Fee" value={nativeFeeUsd !== undefined ? formatUsd(nativeFeeUsd) : "..."} />
-        {/* <SyntheticsInfoRow label="Deposit Fee" value="$0.22" /> */}
+        <SyntheticsInfoRow label="Network Fee" value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."} />
+        <SyntheticsInfoRow
+          label="Deposit Fee"
+          value={protocolFeeUsd !== undefined ? formatUsd(protocolFeeUsd) : "..."}
+        />
         <SyntheticsInfoRow
           label={t`GMX Balance`}
           value={
@@ -633,154 +760,94 @@ class OftCmd {
   }
 }
 
-function useMultichainQuoteFeeUsd(composeGas: bigint | undefined): {
-  nativeFee: bigint | undefined;
-  nativeFeeUsd: bigint | undefined;
+function useMultichainQuoteFeeUsd({
+  quoteSend,
+  quoteOft,
+}: {
+  quoteSend: MessagingFeeStruct | undefined;
+  quoteOft:
+    | {
+        limit: OFTLimitStruct;
+        oftFeeDetails: OFTFeeDetailStruct[];
+        receipt: OFTReceiptStruct;
+      }
+    | undefined;
+}): {
+  networkFee: bigint | undefined;
+  networkFeeUsd: bigint | undefined;
+  protocolFeeAmount: bigint | undefined;
+  protocolFeeUsd: bigint | undefined;
   amountReceivedLD: bigint | undefined;
 } {
-  const { address: account } = useAccount();
   const [settlementChainId] = useGmxAccountSettlementChainId();
-  const [depositViewChain] = useGmxAccountDepositViewChain();
+  // const [depositViewChain] = useGmxAccountDepositViewChain();
+  const { chainId: walletChainId } = useAccount();
   const [depositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
+  const { pricesData: settlementChainTokenPricesData } = useTokenRecentPricesRequest(settlementChainId);
 
-  const sourceChainPublicClient = usePublicClient({ chainId: depositViewChain });
+  if (!depositViewTokenAddress) {
+    return {
+      networkFee: undefined,
+      networkFeeUsd: undefined,
+      protocolFeeAmount: undefined,
+      protocolFeeUsd: undefined,
+      amountReceivedLD: undefined,
+    };
+  }
 
-  const amount = useGmxAccountSelector(selectGmxAccountDepositViewTokenInputAmount);
-
-  const queryCondition =
-    depositViewTokenAddress !== undefined &&
-    depositViewChain !== undefined &&
-    amount !== undefined &&
-    amount > 0n &&
-    account !== undefined &&
-    sourceChainPublicClient !== undefined &&
-    composeGas !== undefined &&
-    composeGas > 0n;
-
-  const quoteQuery = useSWR<{ nativeFee: bigint; amountReceivedLD: bigint } | undefined>(
-    queryCondition ? ["quoteFee", account, depositViewChain, depositViewTokenAddress, amount, composeGas] : null,
-    {
-      fetcher: async () => {
-        if (!queryCondition) {
-          return;
-        }
-
-        const sourceChainTokenId = getMappedTokenId(
-          settlementChainId as UiSettlementChain,
-          depositViewTokenAddress,
-          depositViewChain as UiSourceChain
-        );
-
-        if (!sourceChainTokenId) {
-          return;
-        }
-
-        const sourceChainTokenAddress = sourceChainTokenId.address;
-
-        const sourceChainStargateAddress = sourceChainTokenId.stargate;
-
-        const tokenAddress = sourceChainTokenAddress;
-        const isNative = tokenAddress === zeroAddress;
-        let adjustedAmount = amount;
-        const value = isNative ? amount : 0n;
-
-        const oftCmd: OftCmd = new OftCmd(SEND_MODE_TAXI, []);
-
-        const dstEid = getStargateEndpointId(settlementChainId);
-
-        if (dstEid === undefined) {
-          return;
-        }
-
-        const to = toHex(addressToBytes32(getContract(settlementChainId, "LayerZeroProvider")));
-
-        let composeMsg: string = CodecUiHelper.encodeDepositMessage(account, depositViewChain);
-
-        const builder = Options.newOptions();
-        const extraOptions = builder.addExecutorComposeOption(0, composeGas, 0).toHex();
-
-        const sendParams: SendParamStruct = {
-          dstEid,
-          to,
-          amountLD: adjustedAmount,
-          minAmountLD: 0n,
-          extraOptions: extraOptions,
-          composeMsg: composeMsg ?? "",
-          oftCmd: oftCmd.toBytes(),
-        };
-
-        const [limit, oftFeeDetails, receipt]: [OFTLimitStruct, OFTFeeDetailStruct[], OFTReceiptStruct] =
-          (await sourceChainPublicClient.readContract({
-            address: sourceChainStargateAddress as Address,
-            abi: IStargateAbi,
-            functionName: "quoteOFT",
-            args: [sendParams],
-          })) as any;
-
-        const minAmountLD = applySlippageBps(receipt.amountReceivedLD as bigint, SLIPPAGE_BPS);
-
-        const newSendParams: SendParamStruct = {
-          ...sendParams,
-          minAmountLD,
-        };
-
-        const result: MessagingFeeStruct = (await sourceChainPublicClient.readContract({
-          address: sourceChainStargateAddress as Address,
-          abi: IStargateAbi,
-          functionName: "quoteSend",
-          args: [newSendParams, false],
-        })) as any;
-
-        return {
-          nativeFee: result.nativeFee as bigint,
-          amountReceivedLD: minAmountLD,
-        };
-      },
-    }
+  const sourceChainTokenId = getMappedTokenId(
+    settlementChainId as UiSettlementChain,
+    depositViewTokenAddress,
+    walletChainId as UiSourceChain
   );
-  const nativeFee = quoteQuery.data?.nativeFee;
-  const amountReceivedLD = quoteQuery.data?.amountReceivedLD;
+
+  if (!sourceChainTokenId) {
+    return {
+      networkFee: undefined,
+      networkFeeUsd: undefined,
+      protocolFeeAmount: undefined,
+      protocolFeeUsd: undefined,
+      amountReceivedLD: undefined,
+    };
+  }
+
+  const nativeFee = quoteSend?.nativeFee as bigint;
+  const amountReceivedLD = quoteOft?.receipt.amountReceivedLD as bigint;
 
   // ETH is the same as the source chain
   // TODO: check if this is correct
-  const { pricesData: settlementChainTokenPricesData } = useTokenRecentPricesRequest(settlementChainId);
 
   const nativeTokenPrices = settlementChainTokenPricesData?.[zeroAddress];
+  const depositTokenPrices = settlementChainTokenPricesData?.[depositViewTokenAddress];
   const sourceChainNativeTokenDecimals = getToken(settlementChainId, zeroAddress)?.decimals ?? 18;
 
-  const nativeFeeUsd = convertToUsd(nativeFee, sourceChainNativeTokenDecimals, nativeTokenPrices?.maxPrice);
+  const sourceChainDepositTokenDecimals = sourceChainTokenId?.decimals;
+
+  const nativeFeeUsd =
+    nativeFee !== undefined
+      ? convertToUsd(nativeFee as bigint, sourceChainNativeTokenDecimals, nativeTokenPrices?.maxPrice)
+      : undefined;
+
+  let protocolFeeAmount: bigint | undefined = undefined;
+  let protocolFeeUsd: bigint | undefined = undefined;
+  if (quoteOft !== undefined) {
+    protocolFeeAmount = 0n;
+    for (const feeDetail of quoteOft.oftFeeDetails) {
+      if (feeDetail.feeAmountLD) {
+        protocolFeeAmount += feeDetail.feeAmountLD as bigint;
+      }
+    }
+    protocolFeeUsd = convertToUsd(protocolFeeAmount, sourceChainDepositTokenDecimals, depositTokenPrices?.maxPrice);
+  }
 
   return {
-    nativeFee,
-    nativeFeeUsd,
+    networkFee: nativeFee,
+    networkFeeUsd: nativeFeeUsd,
+    protocolFeeAmount,
+    protocolFeeUsd,
     amountReceivedLD,
   };
-
-  // return { nativeFee, lzTokenFee };
-
-  // const receipt = await(
-  //   await connectedPool.sendToken(sendParams, { nativeFee, lzTokenFee }, address, {
-  //     value: nativeFee + value,
-  //     // gasPrice,
-  //   })
-  // ).wait();
-
-  // if (!receipt) {
-  //   throw new Error("No receipt");
-  // }
 }
-
-// function useGmxAccountDepositViewMinReceiveAmount() {
-//   const inputAmount = useGmxAccountSelector(selectGmxAccountDepositViewTokenInputAmount);
-
-//   if (inputAmount === undefined) {
-//     return undefined;
-//   }
-
-//   const minAmount = applySlippage(inputAmount, SLIPPAGE_BPS);
-
-//   return minAmount;
-// }
 
 export function applySlippageBps(amount: bigint, slippageBps: bigint) {
   return (amount * (BASIS_POINTS_DIVISOR_BIGINT - slippageBps)) / BASIS_POINTS_DIVISOR_BIGINT;

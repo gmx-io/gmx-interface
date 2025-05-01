@@ -41,6 +41,8 @@ const gelatoRelayProxy = new Proxy<ProxyGelatoRelay>({} as ProxyGelatoRelay, {
   },
 });
 
-export let gelatoRelay: ProxyGelatoRelay = isFirefox()
-  ? gelatoRelayProxy
-  : (new GelatoRelay() as unknown as ProxyGelatoRelay);
+// export let gelatoRelay: ProxyGelatoRelay = isFirefox()
+//   ? gelatoRelayProxy
+//   : (new GelatoRelay() as unknown as ProxyGelatoRelay);
+
+export let gelatoRelay: ProxyGelatoRelay = gelatoRelayProxy;

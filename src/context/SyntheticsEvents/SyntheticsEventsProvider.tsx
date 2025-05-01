@@ -1,8 +1,8 @@
 import { TaskState } from "@gelatonetwork/relay-sdk";
 import { t } from "@lingui/macro";
-import { I } from "@lingui/react/dist/shared/react.80f80298";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
+import { isDevelopment } from "config/env";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { useTokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
@@ -43,6 +43,7 @@ import {
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { deleteByKey, getByKey, setByKey, updateByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
+import { getTenderlyConfig } from "lib/tenderly";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { sendUserAnalyticsOrderResultEvent, userAnalytics } from "lib/userAnalytics";
 import { TokenApproveResultEvent } from "lib/userAnalytics/types";
@@ -80,8 +81,6 @@ import {
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
-import { getTenderlyConfig } from "lib/tenderly";
-import { isDevelopment } from "config/env";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -158,6 +157,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   // use ref to avoid re-subscribing on state changes
   eventLogHandlers.current = {
     OrderCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      debugger;
       updateNativeTokenBalance();
 
       const data: OrderCreatedEventData = {

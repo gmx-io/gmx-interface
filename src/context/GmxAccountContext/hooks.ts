@@ -42,12 +42,12 @@ export function useGmxAccountSettlementChainId() {
 
 // deposit view
 
-export function useGmxAccountDepositViewChain() {
-  return [
-    useGmxAccountSelector(selectGmxAccountDepositViewChain),
-    useGmxAccountSelector(selectGmxAccountSetDepositViewChain),
-  ] as const;
-}
+// export function useGmxAccountDepositViewChain() {
+//   return [
+//     useGmxAccountSelector(selectGmxAccountDepositViewChain),
+//     useGmxAccountSelector(selectGmxAccountSetDepositViewChain),
+//   ] as const;
+// }
 
 export function useGmxAccountDepositViewTokenAddress() {
   return [

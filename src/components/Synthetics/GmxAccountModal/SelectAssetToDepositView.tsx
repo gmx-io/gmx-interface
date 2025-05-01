@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { getChainName } from "config/chains";
 import { MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "context/GmxAccountContext/config";
 import {
-  useGmxAccountDepositViewChain,
+  // useGmxAccountDepositViewChain,
   useGmxAccountDepositViewTokenAddress,
   useGmxAccountModalOpen,
   useGmxAccountSettlementChainId,
@@ -12,6 +12,7 @@ import {
 import { TokenChainData } from "context/GmxAccountContext/types";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
+import { switchNetwork } from "lib/wallets";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import Button from "components/Button/Button";
@@ -20,6 +21,7 @@ import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableSc
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import InfoIconComponent from "img/ic_info.svg?react";
+import { useAccount } from "wagmi";
 
 type TokenListItemProps = {
   tokenChainData: DisplayTokenChainData;
@@ -69,7 +71,8 @@ type DisplayTokenChainData = TokenChainData & {
 export const SelectAssetToDepositView = () => {
   const [settlementChainId] = useGmxAccountSettlementChainId();
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
-  const [, setDepositViewChain] = useGmxAccountDepositViewChain();
+  // const [, setDepositViewChain] = useGmxAccountDepositViewChain();
+  const { isConnected } = useAccount();
   const [, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
 
   const [selectedNetwork, setSelectedNetwork] = useState<number | "all">("all");
@@ -162,7 +165,8 @@ export const SelectAssetToDepositView = () => {
             key={tokenChainData.symbol + "_" + tokenChainData.sourceChainId}
             tokenChainData={tokenChainData}
             onClick={() => {
-              setDepositViewChain(tokenChainData.sourceChainId);
+              // setDepositViewChain(tokenChainData.sourceChainId);
+              switchNetwork(tokenChainData.sourceChainId, isConnected);
               setDepositViewTokenAddress(tokenChainData.address);
               setIsVisibleOrView("deposit");
             }}

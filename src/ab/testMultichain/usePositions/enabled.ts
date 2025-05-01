@@ -138,6 +138,10 @@ export function usePositions(
     isLoading,
   });
 
+  // useEffect(() => {
+  //   console.log("POSITTIONS values", { positionsData, optimisticPositionsData });
+  // }, [optimisticPositionsData, positionsData]);
+
   return {
     positionsData: optimisticPositionsData,
     error: positionsError,

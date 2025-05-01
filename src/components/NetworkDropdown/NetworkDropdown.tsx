@@ -199,6 +199,7 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
           <div className="network-dropdown-menu-item-img">
             <div
               className={cx("active-dot")}
+              // TODO" optimize
               style={{ backgroundColor: network.value === chainId ? network.color : undefined }}
             />
           </div>

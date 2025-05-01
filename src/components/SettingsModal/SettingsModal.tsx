@@ -1,9 +1,14 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useCallback, useEffect } from "react";
+import { useAccount } from "wagmi";
 
 import { isDevelopment } from "config/env";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
+import { getChainName } from "config/static/chains";
+import { isSourceChain, MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING } from "context/GmxAccountContext/config";
+import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useDisabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
@@ -20,6 +25,7 @@ import { SlideModal } from "components/Modal/SlideModal";
 import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubaccountWithdraw";
 import { OneClickAdvancedSettings } from "components/OneClickAdvancedSettings/OneClickAdvancedSettings";
 import PercentageInput from "components/PercentageInput/PercentageInput";
+import { Selector } from "components/Synthetics/GmxAccountModal/Selector";
 import TenderlySettings from "components/TenderlySettings/TenderlySettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -32,6 +38,8 @@ export function SettingsModal({
   setIsSettingsVisible: (value: boolean) => void;
 }) {
   const { chainId } = useChainId();
+  const { chainId: walletChainId } = useAccount();
+  const [settlementChainId, setSettlementChainId] = useGmxAccountSettlementChainId();
   const settings = useSettings();
   const { disabledFeatures } = useDisabledFeaturesRequest(chainId);
   const subaccountState = useSubaccountContext();
@@ -157,6 +165,42 @@ export function SettingsModal({
 
             {settings.oneClickTradingEnabled && <OneClickAdvancedSettings />}
           </SettingsSection>
+
+          {walletChainId && isSourceChain(walletChainId) && (
+            <SettingsSection className="mt-2">
+              <div className="flex items-center justify-between">
+                <TooltipWithPortal
+                  content={<Trans>Network for Cross-Chain Deposits and positions.</Trans>}
+                  handle={<Trans>Settlement Chain</Trans>}
+                />
+                <div>
+                  <Selector
+                    slim
+                    elevated
+                    value={settlementChainId}
+                    onChange={setSettlementChainId}
+                    options={MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[walletChainId]}
+                    item={({ option }) => (
+                      <div className="flex items-center gap-8">
+                        <img src={CHAIN_ID_TO_NETWORK_ICON[option]} alt={getChainName(option)} className="size-16" />
+                        <span>{getChainName(option)}</span>
+                      </div>
+                    )}
+                    button={
+                      <div className="flex items-center gap-4">
+                        <img
+                          src={CHAIN_ID_TO_NETWORK_ICON[settlementChainId]}
+                          alt={getChainName(settlementChainId)}
+                          className="size-16"
+                        />
+                        <span>{getChainName(settlementChainId)}</span>
+                      </div>
+                    }
+                  />
+                </div>
+              </div>
+            </SettingsSection>
+          )}
 
           {settings.expressOrdersEnabled && (
             <SettingsSection className="mt-2">

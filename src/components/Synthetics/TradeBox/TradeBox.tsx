@@ -5,7 +5,7 @@ import { useKey, useLatest, usePrevious } from "react-use";
 
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import {
-  useGmxAccountDepositViewChain,
+  // useGmxAccountDepositViewChain,
   useGmxAccountDepositViewTokenAddress,
   useGmxAccountModalOpen,
 } from "context/GmxAccountContext/hooks";
@@ -112,6 +112,8 @@ import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
 
+import { switchNetwork } from "lib/wallets";
+
 export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
@@ -137,21 +139,22 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
 
   const settlementChainId = useSelector(selectChainId);
-  const { account, chainId: walletChainId } = useWallet();
+  const { account, chainId: walletChainId, active } = useWallet();
   const { shouldDisableValidationForTesting: shouldDisableValidation } = useSettings();
 
-  const [, setDepositViewChain] = useGmxAccountDepositViewChain();
+  // const [, setDepositViewChain] = useGmxAccountDepositViewChain();
   const [, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
 
   const onDepositTokenAddress = useCallback(
     (tokenAddress: string, chainId: number) => {
-      setDepositViewChain(chainId);
+      // setDepositViewChain(chainId);
+      switchNetwork(chainId, active);
       setDepositViewTokenAddress(tokenAddress);
 
       setIsVisibleOrView("deposit");
     },
-    [setDepositViewChain, setDepositViewTokenAddress, setIsVisibleOrView]
+    [active, setDepositViewTokenAddress, setIsVisibleOrView]
   );
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);

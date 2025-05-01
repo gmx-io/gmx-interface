@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { t } from "@lingui/macro";
-import { useCallback, useEffect, useId, useMemo } from "react";
+import { useCallback, useId, useMemo } from "react";
 import { usePublicClient } from "wagmi";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
@@ -63,10 +61,8 @@ interface TradeboxTransactionsProps {
 
 export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactionsProps) {
   const { chainId } = useChainId();
-  const { signer, account, chainId: walletChainId } = useWallet();
-  const isMultiChain = chainId !== walletChainId;
+  const { signer, account } = useWallet();
   const settlementChainClient = usePublicClient({ chainId });
-  const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const tokensData = useTokensData();
   const { shouldDisableValidationForTesting } = useSettings();
 

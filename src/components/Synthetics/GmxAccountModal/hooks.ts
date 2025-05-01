@@ -180,6 +180,7 @@ export function useMultichainTokens(): TokenChainData[] {
           sourceChainDecimals: mapping.sourceChainTokenDecimals,
           sourceChainPrices: undefined,
           sourceChainBalance: balance,
+          settlementChainAddress: settlementChainTokenAddress,
         };
 
         if (pricesData && settlementChainTokenAddress in pricesData) {

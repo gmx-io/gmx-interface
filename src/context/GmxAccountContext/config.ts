@@ -74,6 +74,8 @@ type MultichainWithdrawSupportedTokens = Record<
   string[]
 >;
 
+type MultichainSourceToSettlementChainMapping = Record<UiSourceChain, UiSettlementChain[]>;
+
 type MultichainTokenId = {
   chainId: number;
   address: string;
@@ -254,6 +256,8 @@ export const CHAIN_ID_TO_TOKEN_ID_MAP: Record<
   Record<string, MultichainTokenId>
 > = {} as any;
 
+export const MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING: MultichainSourceToSettlementChainMapping = {} as any;
+
 for (const tokenSymbol in TOKEN_GROUPS) {
   for (const settlementChainIdString in TOKEN_GROUPS[tokenSymbol]) {
     const settlementChainId = parseInt(settlementChainIdString) as UiSettlementChain | UiSourceChain;
@@ -266,6 +270,13 @@ for (const tokenSymbol in TOKEN_GROUPS) {
 
       if (!isDevelopment() && (settlementChainId as number) === (sourceChainId as number)) continue;
       empty = false;
+
+      MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[sourceChainId] =
+        MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[sourceChainId] || [];
+      MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[sourceChainId].push(settlementChainId);
+      MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[sourceChainId] = uniq(
+        MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[sourceChainId]
+      );
 
       MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] = MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] || {};
       MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] =

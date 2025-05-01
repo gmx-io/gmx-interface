@@ -128,36 +128,36 @@ const BATCH_CONFIGS: Record<
   [ARBITRUM_SEPOLIA]: {
     http: {
       batchSize: 40,
-      wait: 0,
+      wait: 100,
     },
     client: {
       multicall: {
         batchSize: 1024 * 1024,
-        wait: 0,
+        wait: 100,
       },
     },
   },
   [OPTIMISM_SEPOLIA]: {
     http: {
       batchSize: 40,
-      wait: 0,
+      wait: 100,
     },
     client: {
       multicall: {
         batchSize: 1024 * 1024,
-        wait: 0,
+        wait: 100,
       },
     },
   },
   [SEPOLIA]: {
     http: {
       batchSize: 40,
-      wait: 0,
+      wait: 100,
     },
     client: {
       multicall: {
         batchSize: 1024 * 1024,
-        wait: 0,
+        wait: 100,
       },
     },
   },

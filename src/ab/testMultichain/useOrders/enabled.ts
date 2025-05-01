@@ -3,6 +3,9 @@ import { Address, isAddressEqual } from "viem";
 
 import { getContract } from "config/contracts";
 import { accountOrderListKey } from "config/dataStore";
+import type { MarketsInfoData } from "domain/synthetics/markets/types";
+import { DecreasePositionSwapType, OrderType, OrdersData } from "domain/synthetics/orders/types";
+import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { CacheKey, MulticallRequestConfig, MulticallResult, useMulticall } from "lib/multicall";
 import { EMPTY_ARRAY } from "lib/objects";
 import { getWrappedToken } from "sdk/configs/tokens";
@@ -18,10 +21,6 @@ import type {
   MarketFilterLongShortDirection,
   MarketFilterLongShortItemData,
 } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
-
-import type { MarketsInfoData } from "domain/synthetics/markets/types";
-import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
-import { DecreasePositionSwapType, OrderType, OrdersData } from "domain/synthetics/orders/types";
 
 type OrdersResult = {
   ordersData?: OrdersData;
