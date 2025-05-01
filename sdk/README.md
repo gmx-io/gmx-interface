@@ -18,7 +18,7 @@ const sdk = new GmxSdk({
   rpcUrl: "https://arb1.arbitrum.io/rpc",
   oracleUrl: "https://arbitrum-api.gmxinfra.io",
   walletClient: useWallet().walletClient,
-  subsquidUrl: "https://gmx.squids.live/gmx-synthetics-arbitrum:live/api/graphql",
+  subsquidUrl: "https://gmx.squids.live/gmx-synthetics-arbitrum:prod/api/graphql",
   subgraphUrl: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api",
 });
 
