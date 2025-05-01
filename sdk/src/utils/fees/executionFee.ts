@@ -28,7 +28,7 @@ export function getExecutionFee(
   const gasLimit = baseGasLimit + applyFactor(estimatedGasLimit, multiplierFactor);
   // #endregion
 
-  const feeTokenAmount = (gasLimit * gasPrice) / BigInt(numberOfParts ?? 1);
+  const feeTokenAmount = gasLimit * gasPrice * BigInt(numberOfParts ?? 1);
 
   const feeUsd = convertToUsd(feeTokenAmount, nativeToken.decimals, nativeToken.prices.minPrice)!;
 

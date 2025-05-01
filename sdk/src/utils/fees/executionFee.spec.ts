@@ -71,4 +71,40 @@ describe("getExecutionFee", () => {
       isFeeVeryHigh: true,
     });
   });
+
+  it("should correctly calculate fee for 1 part", () => {
+    const result = getExecutionFee(chainId, gasLimits, tokensData, 5000000n, 10000000n, 4n, 1);
+    expect(result).toEqual({
+      feeUsd: 132000000000000n,
+      feeTokenAmount: 66000000000000n,
+      gasLimit: 6600000n,
+      feeToken: tokensData[NATIVE_TOKEN_ADDRESS],
+      isFeeHigh: false,
+      isFeeVeryHigh: false,
+    });
+  });
+
+  it("should correctly calculate fee for 5 parts", () => {
+    const result = getExecutionFee(chainId, gasLimits, tokensData, 5000000n, 10000000n, 4n, 5);
+    expect(result).toEqual({
+      feeUsd: 660000000000000n,
+      feeTokenAmount: 330000000000000n,
+      gasLimit: 6600000n,
+      feeToken: tokensData[NATIVE_TOKEN_ADDRESS],
+      isFeeHigh: false,
+      isFeeVeryHigh: false,
+    });
+  });
+
+  it("should correctly calculate fee for 12 parts", () => {
+    const result = getExecutionFee(chainId, gasLimits, tokensData, 5000000n, 10000000n, 4n, 12);
+    expect(result).toEqual({
+      feeUsd: 1584000000000000n,
+      feeTokenAmount: 792000000000000n,
+      gasLimit: 6600000n,
+      feeToken: tokensData[NATIVE_TOKEN_ADDRESS],
+      isFeeHigh: false,
+      isFeeVeryHigh: false,
+    });
+  });
 });
