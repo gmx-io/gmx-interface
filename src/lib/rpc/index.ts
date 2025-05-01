@@ -58,11 +58,6 @@ export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvi
     return new ethers.WebSocketProvider("wss://arbitrum-sepolia-rpc.publicnode.com", network, {
       staticNetwork: network,
     });
-    // const provider = new ethers.JsonRpcProvider(arbitrumSepolia.rpcUrls.default.http[0], network, {
-    //   staticNetwork: network,
-    // });
-    // provider.pollingInterval = 2000;
-    // return provider;
   }
 }
 

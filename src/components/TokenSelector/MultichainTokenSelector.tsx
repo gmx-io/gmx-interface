@@ -50,7 +50,7 @@ export function MultichainTokenSelector({
   settlementChainId,
   // tokens,
   // infoTokens,
-  walletPayableTokensData: tokensData,
+  walletPayableTokensData,
   selectedTokenLabel,
   // showBalances = true,
   // showTokenImgInDropdown = false,
@@ -111,7 +111,7 @@ export function MultichainTokenSelector({
     return allEmpty;
   }, [gmxAccountTokensData]);
 
-  const [activeFilter, setActiveFilter] = useState<"pay" | "deposit">(isGmxAccountEmpty ? "deposit" : "pay");
+  const [activeFilter, setActiveFilter] = useState<"pay" | "deposit">("pay");
 
   useEffect(() => {
     if (isModalVisible) {
@@ -192,13 +192,13 @@ export function MultichainTokenSelector({
           />
         )} */}
 
-        {activeFilter === "pay" && tokensData && (
+        {activeFilter === "pay" && walletPayableTokensData && (
           <AvailableToTradeTokenList
             isModalVisible={isModalVisible}
             setSearchKeyword={setSearchKeyword}
             onSelectTokenAddress={onSelectTokenAddress}
             searchKeyword={searchKeyword}
-            tokensData={tokensData}
+            tokensData={walletPayableTokensData}
             extendedSortSequence={extendedSortSequence}
             gmxAccountTokensData={gmxAccountTokensData}
             walletChainId={walletChainId}
@@ -304,7 +304,9 @@ function AvailableToTradeTokenList({
     const tokensWithoutBalance: DisplayToken[] = [];
 
     for (const token of filteredTokens) {
-      const balance = tokensData?.[token.address]?.balance;
+      const balance = token.isGmxAccount
+        ? gmxAccountTokensData?.[token.address]?.balance
+        : tokensData?.[token.address]?.balance;
 
       if (balance !== undefined && balance > 0n) {
         const balanceUsd = convertToUsd(balance, token.decimals, token.prices.maxPrice) ?? 0n;

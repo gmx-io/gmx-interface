@@ -1,14 +1,15 @@
 import { useMemo } from "react";
 import useSWR from "swr";
-import { zeroAddress } from "viem";
+import { Address, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import { getChainName } from "config/chains";
+import { UiSettlementChain, getChainName } from "config/chains";
 import { multichainBalanceKey } from "config/dataStore";
 import { MARKETS } from "config/markets";
 import {
   MULTI_CHAIN_SUPPORTED_TOKEN_MAP,
   MULTI_CHAIN_TOKEN_MAPPING,
+  SETTLEMENT_CHAINS,
   isSettlementChain,
 } from "context/GmxAccountContext/config";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
@@ -180,7 +181,7 @@ export function useMultichainTokens(): TokenChainData[] {
           sourceChainDecimals: mapping.sourceChainTokenDecimals,
           sourceChainPrices: undefined,
           sourceChainBalance: balance,
-          settlementChainAddress: settlementChainTokenAddress,
+          // settlementChainAddress: settlementChainTokenAddress,
         };
 
         if (pricesData && settlementChainTokenAddress in pricesData) {
@@ -223,25 +224,29 @@ export function useMultichainTokens(): TokenChainData[] {
   return tokenChainDataArray;
 }
 
+const TRADABLE_ASSETS_MAP: Record<UiSettlementChain, Address[]> = {} as any;
+
+for (const chainId of SETTLEMENT_CHAINS) {
+  const tradableTokenAddressesSet = new Set<Address>();
+
+  // TODO: somehow do not show it in the balances list, but keep in tokensData
+  tradableTokenAddressesSet.add(zeroAddress);
+
+  for (const marketAddress in MARKETS[chainId]) {
+    const marketConfig = MARKETS[chainId][marketAddress];
+
+    tradableTokenAddressesSet.add(marketConfig.longTokenAddress as Address);
+    tradableTokenAddressesSet.add(marketConfig.shortTokenAddress as Address);
+  }
+
+  TRADABLE_ASSETS_MAP[chainId] = Array.from(tradableTokenAddressesSet);
+}
+
 export async function fetchGmxAccountTokenBalancesData(
   settlementChainId: number,
   account: string
 ): Promise<Record<string, bigint>> {
-  const tradableTokenAddressesSet = new Set<string>();
-
-  tradableTokenAddressesSet.add(zeroAddress);
-
-  for (const marketAddress in MARKETS[settlementChainId]) {
-    const marketConfig = MARKETS[settlementChainId][marketAddress];
-
-    tradableTokenAddressesSet.add(marketConfig.longTokenAddress);
-    tradableTokenAddressesSet.add(marketConfig.shortTokenAddress);
-
-    tradableTokenAddressesSet.add(convertTokenAddress(settlementChainId, marketConfig.longTokenAddress, "native"));
-    tradableTokenAddressesSet.add(convertTokenAddress(settlementChainId, marketConfig.shortTokenAddress, "native"));
-  }
-
-  const tradableTokenAddresses = Array.from(tradableTokenAddressesSet);
+  const tradableTokenAddresses: Address[] = TRADABLE_ASSETS_MAP[settlementChainId];
 
   const erc20Calls = Object.fromEntries(
     tradableTokenAddresses.map((tokenAddress) => [
@@ -264,13 +269,9 @@ export async function fetchGmxAccountTokenBalancesData(
     DataStore: {
       abiId: "DataStoreArbitrumSepolia",
       contractAddress: getContract(settlementChainId, "DataStore"),
-      calls: {
-        ...erc20Calls,
-      },
+      calls: erc20Calls,
     },
   };
-
-  console.log("request", request);
 
   // TODO: pass priority to from args
   const result = await executeMulticall(settlementChainId, request, "urgent", "fetchGmxAccountTokensData");
