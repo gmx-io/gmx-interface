@@ -1685,10 +1685,6 @@ msgstr "Yield Optimizations"
 msgid "No swap path found"
 msgstr "No swap path found"
 
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#~ msgid "You can save {0} in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
-#~ msgstr "You can save {0} in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
-
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Combined stop losses are at maximum (100%). Decrease existing values to add more orders."
 msgstr "Combined stop losses are at maximum (100%). Decrease existing values to add more orders."
@@ -1890,10 +1886,6 @@ msgstr "GMX Alerts"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
-
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-#~ msgid "Open {longOrShortText} {prefix}{tokenSymbol}"
-#~ msgstr "Open {longOrShortText} {prefix}{tokenSymbol}"
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Show details"
@@ -3029,10 +3021,6 @@ msgstr "{col2}"
 #: src/pages/Exchange/Exchange.tsx
 msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
-
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-#~ msgid "Liq. {longOrShortText} {prefix}{tokenSymbol}"
-#~ msgstr "Liq. {longOrShortText} {prefix}{tokenSymbol}"
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Leave at least {0} ETH for gas"
@@ -5855,10 +5843,6 @@ msgstr "3rd Place"
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming failed"
 msgstr "Claiming failed"
-
-#: src/components/AprInfo/AprInfo.tsx
-#~ msgid "The base APY estimate will be available {0} to ensure accurate data display."
-#~ msgstr "The base APY estimate will be available {0} to ensure accurate data display."
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Stop Loss"
