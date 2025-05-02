@@ -47,7 +47,7 @@ import { TxnCallback, TxnEventName, WalletTxnCtx, sendWalletTransaction } from "
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { CodecUiHelper } from "pages/DebugStargate/OFTComposeMsgCodec";
 import { abis } from "sdk/abis";
-import { getToken } from "sdk/configs/tokens";
+import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { convertToUsd } from "sdk/utils/tokens";
 import {
   MessagingFeeStruct,
@@ -162,7 +162,9 @@ export const DepositView = () => {
   // }, [depositViewChain, setDepositViewChain, walletChainId]);
 
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
-  const gmxAccountToken = getByKey(gmxAccountTokensData, depositViewTokenAddress);
+  const gmxAccountToken = depositViewTokenAddress
+    ? getByKey(gmxAccountTokensData, convertTokenAddress(settlementChainId, depositViewTokenAddress, "wrapped"))
+    : undefined;
   const gmxAccountTokenBalance = gmxAccountToken?.balance;
   const gmxAccountTokenBalanceUsd = convertToUsd(
     gmxAccountTokenBalance,
@@ -694,15 +696,14 @@ export const DepositView = () => {
         <div className="text-body-small text-slate-100">{formatUsd(inputAmountUsd ?? 0n)}</div>
       </div>
 
-      {isOffLimit ? (
+      {isOffLimit && (
         <AlertInfoCard type="warning" className="my-4">
           <Trans>
             The amount you are trying to deposit exceeds the limit. Please try an amount smaller than {limitFormatted}.
           </Trans>
         </AlertInfoCard>
-      ) : (
-        <div className="h-32 shrink-0" />
       )}
+      <div className="h-32 shrink-0" />
 
       <div className="mb-8 flex flex-col gap-8">
         {/* SLIPPAGE_BPS */}
