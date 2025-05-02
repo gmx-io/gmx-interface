@@ -664,10 +664,15 @@ export function useTradeboxState(
         return;
       }
 
-      const needFromUpdate = !swapTokens.find((t) => t.address === fromTokenAddress);
+      const needFromAddressUpdate = !swapTokens.find((t) => t.address === fromTokenAddress);
+      const needFromIsGmxAccountUpdate = (srcChainId !== undefined) !== isFromTokenGmxAccount;
 
-      if (needFromUpdate) {
+      if (needFromAddressUpdate) {
         setFromTokenAddress(swapTokens[0].address);
+      }
+
+      if (needFromIsGmxAccountUpdate) {
+        setIsFromTokenGmxAccount(srcChainId !== undefined);
       }
 
       const needToUpdate = !swapTokens.find((t) => t.address === toTokenAddress);
@@ -676,7 +681,18 @@ export function useTradeboxState(
         setToTokenAddress(swapTokens[0].address);
       }
     },
-    [enabled, fromTokenAddress, isSwap, setFromTokenAddress, setToTokenAddress, swapTokens, toTokenAddress]
+    [
+      enabled,
+      fromTokenAddress,
+      isFromTokenGmxAccount,
+      isSwap,
+      setFromTokenAddress,
+      setIsFromTokenGmxAccount,
+      setToTokenAddress,
+      srcChainId,
+      swapTokens,
+      toTokenAddress,
+    ]
   );
 
   useEffect(() => {
