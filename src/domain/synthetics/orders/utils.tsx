@@ -288,7 +288,7 @@ export function getOrderErrors(p: {
     }
   }
 
-  if (isDecreaseOrderType(order.orderType) && position) {
+  if (isDecreaseOrderType(order.orderType) && position && !isTwapOrder(order)) {
     const triggerPrice = (order as PositionOrderInfo).triggerPrice;
 
     const isInvalidTriggerPrice = position.isLong
@@ -497,6 +497,6 @@ export function getPendingOrderFromParams(
     shouldUnwrapNativeToken: isNativeReceive,
     orderKey,
     externalSwapQuote: undefined,
-    isTwap: false,
+    isTwap: Boolean(p.isTwap),
   };
 }

@@ -236,7 +236,7 @@ export function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?
           <span> to </span>
           {isTwapOrder(order) ? null : <span>{toTokenText} </span>}
           {toTokenIcon}
-          {isTwapOrder(order) && <TwapOrderProgress order={order} className="text-slate-100" />}
+          {isTwapOrder(order) ? <TwapOrderProgress order={order} className="text-slate-100" /> : null}
         </Trans>
       </span>
     );

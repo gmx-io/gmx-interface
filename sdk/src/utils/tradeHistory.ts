@@ -61,8 +61,13 @@ export function createRawTradeActionTransformer(
         transaction: rawAction.transaction,
         reason: rawAction.reason,
         reasonBytes: rawAction.reasonBytes,
-        twapGroupId: rawAction.twapGroupId,
-        numberOfParts: rawAction.numberOfParts,
+        twapParams:
+          rawAction.twapGroupId && rawAction.numberOfParts
+            ? {
+                twapGroupId: rawAction.twapGroupId,
+                numberOfParts: rawAction.numberOfParts,
+              }
+            : undefined,
       };
 
       return tradeAction;

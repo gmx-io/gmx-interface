@@ -387,6 +387,10 @@ msgstr "You can change the \"Collateral In\" token above to find lower fees"
 msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
 msgstr "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
 
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "Swap TWAP: Swap tokens in evenly distributed parts over a specified time."
+msgstr "Swap TWAP: Swap tokens in evenly distributed parts over a specified time."
+
 #: src/components/Exchange/SwapBox.jsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} short exceeded"
@@ -548,8 +552,8 @@ msgid "Stats"
 msgstr "Stats"
 
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "Swap tokens at the current market price."
-msgstr "Swap tokens at the current market price."
+#~ msgid "Swap tokens at the current market price."
+#~ msgstr "Swap tokens at the current market price."
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -675,6 +679,10 @@ msgstr "Please uncheck \"Keep Leverage\", or close a larger position amount."
 msgid "Edit Collateral"
 msgstr "Edit Collateral"
 
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Long Stop Market: {0} a short position when the price is below the trigger price."
+msgstr "{typeString} Long Stop Market: {0} a short position when the price is below the trigger price."
+
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/sidecarOrders/utils.ts
@@ -747,6 +755,10 @@ msgstr "Average position size."
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{0} <0/><1> to </1>{1} <2/>"
 msgstr "{0} <0/><1> to </1>{1} <2/>"
+
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Short Market: {0} a short position at the current price."
+msgstr "{typeString} Short Market: {0} a short position at the current price."
 
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Claim {totalUsd}"
@@ -968,6 +980,10 @@ msgstr "As network fees have increased, an additional network fee is needed."
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Deposited"
 msgstr "Deposited"
+
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "Swap Limit: Swap tokens when the trigger price is reached."
+msgstr "Swap Limit: Swap tokens when the trigger price is reached."
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "{0} GLP have been reserved for vesting."
@@ -2218,8 +2234,8 @@ msgid "Winner:"
 msgstr "Winner:"
 
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{tradeTypeLabel} a {positionLabel} position at the current price."
-msgstr "{tradeTypeLabel} a {positionLabel} position at the current price."
+#~ msgid "{tradeTypeLabel} a {positionLabel} position at the current price."
+#~ msgstr "{tradeTypeLabel} a {positionLabel} position at the current price."
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -2409,12 +2425,16 @@ msgid "The order will not be executed as its trigger price is beyond the positio
 msgstr "The order will not be executed as its trigger price is beyond the position's liquidation price."
 
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "Swap tokens in evenly distributed parts over a specified time."
-msgstr "Swap tokens in evenly distributed parts over a specified time."
+#~ msgid "Swap tokens in evenly distributed parts over a specified time."
+#~ msgstr "Swap tokens in evenly distributed parts over a specified time."
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Failed to cancel {ordersText}"
 msgstr "Failed to cancel {ordersText}"
+
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
+msgstr "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
 
 #: src/lib/contracts/transactionErrors.tsx
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
@@ -2583,8 +2603,8 @@ msgid "Job openings at GMX."
 msgstr "Job openings at GMX."
 
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "Swap tokens when the price is below the trigger price."
-msgstr "Swap tokens when the price is below the trigger price."
+#~ msgid "Swap tokens when the price is below the trigger price."
+#~ msgstr "Swap tokens when the price is below the trigger price."
 
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -2837,6 +2857,10 @@ msgstr "Liquidation Fee"
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Settle"
 msgstr "Settle"
+
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Short TWAP: {0} a short position in evenly distributed parts over a specified time."
+msgstr "{typeString} Short TWAP: {0} a short position in evenly distributed parts over a specified time."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the swap when the min. receive conditions are met."
@@ -3193,8 +3217,8 @@ msgid "Lev."
 msgstr "Lev."
 
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{tradeTypeLabel} a {positionLabel} position when the trigger price is reached."
-msgstr "{tradeTypeLabel} a {positionLabel} position when the trigger price is reached."
+#~ msgid "{tradeTypeLabel} a {positionLabel} position when the trigger price is reached."
+#~ msgstr "{tradeTypeLabel} a {positionLabel} position when the trigger price is reached."
 
 #: src/pages/Earn/StakeModal.tsx
 msgid "Stake failed."
@@ -3560,6 +3584,10 @@ msgstr "Waiting for Approval"
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee."
 msgstr "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee."
+
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Short TP/SL: {0} a short position when the trigger price is reached."
+msgstr "{typeString} Short TP/SL: {0} a short position when the trigger price is reached."
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Community-led Telegram groups."
@@ -3967,6 +3995,13 @@ msgstr "Rebates earned by this account as a trader."
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
@@ -4292,6 +4327,10 @@ msgstr "<0>Notifications are provided by Notifi and not affiliated with GMX. By
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 msgstr "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
+
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
+msgstr "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
 
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on 1inch.</4>"
@@ -4736,6 +4775,10 @@ msgstr "This position was liquidated as the max leverage of 100x was exceeded."
 msgid "<0>Switch to:</0>"
 msgstr "<0>Switch to:</0>"
 
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price."
+msgstr "{typeString} Short Limit: {0} a short position when the price is above the trigger price."
+
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "No trades match the selected filters"
 msgstr "No trades match the selected filters"
@@ -4857,6 +4900,10 @@ msgstr "Stake GMX"
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 msgstr "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
+
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Long TWAP: {0} a long position in evenly distributed parts over a specified time."
+msgstr "{typeString} Long TWAP: {0} a long position in evenly distributed parts over a specified time."
 
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code updated!"
@@ -5023,6 +5070,10 @@ msgstr "Order updated!"
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
 msgstr "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
+
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "Swap Market: Swap tokens at the current market price."
+msgstr "Swap Market: Swap tokens at the current market price."
 
 #: src/components/Synthetics/TradeBox/OneClickTradingInfo.tsx
 msgid "The previously authorized maximum number of actions has been reached for One-Click Trading."
@@ -5214,6 +5265,10 @@ msgstr "wstETH APR"
 msgid "Telegram Group"
 msgstr "Telegram Group"
 
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Long TP/SL: {0} a long position when the trigger price is reached."
+msgstr "{typeString} Long TP/SL: {0} a long position when the trigger price is reached."
+
 #: src/components/Synthetics/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{toTokenIcon}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{toTokenIcon}"
@@ -5291,8 +5346,8 @@ msgid "Min residual collateral: 10 USD"
 msgstr "Min residual collateral: 10 USD"
 
 #: src/domain/synthetics/positions/utils.ts
-msgid "twap"
-msgstr "twap"
+#~ msgid "twap"
+#~ msgstr "twap"
 
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "GMX & Voting Power"
@@ -5547,8 +5602,8 @@ msgid "GMX Trading Chat"
 msgstr "GMX Trading Chat"
 
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{tradeTypeLabel} a {positionLabel} position in evenly distributed parts over a specified time."
-msgstr "{tradeTypeLabel} a {positionLabel} position in evenly distributed parts over a specified time."
+#~ msgid "{tradeTypeLabel} a {positionLabel} position in evenly distributed parts over a specified time."
+#~ msgstr "{tradeTypeLabel} a {positionLabel} position in evenly distributed parts over a specified time."
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H%"
@@ -5706,8 +5761,8 @@ msgstr "{0} orders were not updated as max order limit reached"
 
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "Swap tokens when the trigger price is reached."
-msgstr "Swap tokens when the trigger price is reached."
+#~ msgid "Swap tokens when the trigger price is reached."
+#~ msgstr "Swap tokens when the trigger price is reached."
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order created!"
@@ -6929,6 +6984,10 @@ msgstr "Projects developed by the GMX community. <0/>Please exercise caution whe
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "What areas can we improve to make your experience better?"
 msgstr "What areas can we improve to make your experience better?"
+
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Long Market: {0} a long position at the current price."
+msgstr "{typeString} Long Market: {0} a long position at the current price."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a collateral"
@@ -8272,7 +8331,6 @@ msgstr "Activate Subaccount"
 msgid "Swap"
 msgstr "Swap"
 
-#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "long"
 msgstr "long"
@@ -8300,8 +8358,8 @@ msgstr "Distribution"
 
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{tradeTypeLabel} a {positionLabel} position when the price is below the trigger price."
-msgstr "{tradeTypeLabel} a {positionLabel} position when the price is below the trigger price."
+#~ msgid "{tradeTypeLabel} a {positionLabel} position when the price is below the trigger price."
+#~ msgstr "{tradeTypeLabel} a {positionLabel} position when the price is below the trigger price."
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Language"
@@ -8544,7 +8602,6 @@ msgstr "Sell"
 msgid "Сonvert {0} to {1}"
 msgstr "Сonvert {0} to {1}"
 
-#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
 msgstr "short"
@@ -8720,6 +8777,7 @@ msgstr "The order may not execute as the max. allowed leverage is exceeded. Co
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Close"
 msgstr "Close"
 

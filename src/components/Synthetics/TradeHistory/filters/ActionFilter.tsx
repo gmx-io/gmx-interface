@@ -5,6 +5,7 @@ import { useMemo } from "react";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { OrderType } from "domain/synthetics/orders/types";
+import { defined } from "lib/guards";
 import { TradeActionType } from "sdk/types/tradeHistory";
 
 import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/TableOptionsFilter";
@@ -107,36 +108,29 @@ const GROUPS: Groups = [
       TradeActionType.OrderFrozen,
     ]
       .flatMap((eventName) =>
-        [OrderType.LimitIncrease, OrderType.StopIncrease, OrderType.LimitDecrease, OrderType.StopLossDecrease].map(
-          (orderType) => ({
+        [
+          OrderType.LimitIncrease,
+          OrderType.StopIncrease,
+          "TWAP" as const,
+          OrderType.LimitDecrease,
+          OrderType.StopLossDecrease,
+        ].map((orderType) => {
+          if (orderType === "TWAP") {
+            if (eventName === TradeActionType.OrderUpdated) return null;
+            return {
+              orderType: [OrderType.LimitIncrease, OrderType.LimitDecrease],
+              eventName,
+              isTwap: true,
+            };
+          }
+          return {
             orderType: [orderType],
             eventName,
             isTwap: false,
-          })
-        )
+          };
+        })
       )
-      .concat([
-        {
-          eventName: TradeActionType.OrderCreated,
-          isTwap: true,
-          orderType: [OrderType.LimitIncrease, OrderType.LimitDecrease],
-        },
-        {
-          eventName: TradeActionType.OrderCancelled,
-          isTwap: true,
-          orderType: [OrderType.LimitIncrease, OrderType.LimitDecrease],
-        },
-        {
-          eventName: TradeActionType.OrderExecuted,
-          isTwap: true,
-          orderType: [OrderType.LimitIncrease, OrderType.LimitDecrease],
-        },
-        {
-          eventName: TradeActionType.OrderFrozen,
-          isTwap: true,
-          orderType: [OrderType.LimitIncrease, OrderType.LimitDecrease],
-        },
-      ]),
+      .filter(defined),
   },
   {
     groupName: msg`Swaps`,
@@ -150,8 +144,18 @@ const GROUPS: Groups = [
         eventName: TradeActionType.OrderExecuted,
       },
       {
+        eventName: TradeActionType.OrderExecuted,
+        isTwap: true,
+        orderType: [OrderType.LimitSwap],
+      },
+      {
         orderType: [OrderType.LimitSwap],
         eventName: TradeActionType.OrderCreated,
+      },
+      {
+        eventName: TradeActionType.OrderCreated,
+        isTwap: true,
+        orderType: [OrderType.LimitSwap],
       },
       {
         orderType: [OrderType.LimitSwap],
@@ -162,37 +166,27 @@ const GROUPS: Groups = [
         eventName: TradeActionType.OrderCancelled,
       },
       {
+        eventName: TradeActionType.OrderCancelled,
+        isTwap: true,
+        orderType: [OrderType.LimitSwap],
+      },
+      {
         orderType: [OrderType.MarketSwap],
         eventName: TradeActionType.OrderCancelled,
       },
       {
         orderType: [OrderType.LimitSwap],
         eventName: TradeActionType.OrderFrozen,
+      },
+      {
+        eventName: TradeActionType.OrderFrozen,
+        isTwap: true,
+        orderType: [OrderType.LimitSwap],
       },
       {
         orderType: [OrderType.MarketSwap],
         eventName: TradeActionType.OrderCreated,
         debug: true,
-      },
-      {
-        eventName: TradeActionType.OrderCreated,
-        isTwap: true,
-        orderType: [OrderType.LimitSwap],
-      },
-      {
-        eventName: TradeActionType.OrderCancelled,
-        isTwap: true,
-        orderType: [OrderType.LimitSwap],
-      },
-      {
-        eventName: TradeActionType.OrderExecuted,
-        isTwap: true,
-        orderType: [OrderType.LimitSwap],
-      },
-      {
-        eventName: TradeActionType.OrderFrozen,
-        isTwap: true,
-        orderType: [OrderType.LimitSwap],
       },
     ],
   },

@@ -37,7 +37,6 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
-import { TradeType } from "domain/synthetics/trade/types";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
@@ -856,9 +855,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           qa="trade-mode"
         />
         <div className="flex gap-4">
-          {[TradeType.Long, TradeType.Short].includes(tradeType) && (
-            <TradeInfoIcon isMobile={isMobile} tradeType={tradeType} tradeMode={tradeMode} tradePlace="tradebox" />
-          )}
+          <TradeInfoIcon isMobile={isMobile} tradeType={tradeType} tradePlace="tradebox" />
+
           <SettingsIcon24
             className="cursor-pointer text-slate-100 gmx-hover:text-white"
             onClick={() => setIsSettingsVisible(true)}
@@ -957,7 +955,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 numberOfParts={numberOfParts}
                 setNumberOfParts={setNumberOfParts}
                 setDuration={setDuration}
-                sizeUsd={payUsd}
+                sizeUsd={isSwap ? payUsd : increaseAmounts?.sizeDeltaUsd}
                 marketInfo={marketInfo}
                 type={isSwap ? "swap" : "increase"}
                 isLong={isLong}

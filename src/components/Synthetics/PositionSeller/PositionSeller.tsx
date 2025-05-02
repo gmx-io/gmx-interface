@@ -391,6 +391,7 @@ export function PositionSeller(p: Props) {
           duration,
           numberOfParts,
           orderType,
+          isTwap: true,
         },
         {
           setPendingOrder,
@@ -413,6 +414,7 @@ export function PositionSeller(p: Props) {
           skipSimulation: orderOption === OrderOption.Trigger || shouldDisableValidationForTesting,
           autoCancel: orderOption === OrderOption.Trigger ? autoCancelOrdersLimit > 0 : false,
           slippageInputId,
+          isTwap: false,
         },
         {
           setPendingOrder,
@@ -697,7 +699,6 @@ export function PositionSeller(p: Props) {
           <TradeInfoIcon
             isMobile={isMobile}
             tradeType={position?.isLong ? TradeType.Long : TradeType.Short}
-            tradeMode={ORDER_OPTION_TO_TRADE_MODE[orderOption]}
             tradePlace="position-seller"
           />
         </div>
@@ -766,7 +767,7 @@ export function PositionSeller(p: Props) {
                   setNumberOfParts={setNumberOfParts}
                   setDuration={setDuration}
                   isLong={position.isLong}
-                  sizeUsd={closeSizeUsd}
+                  sizeUsd={decreaseAmounts?.sizeDeltaUsd}
                   marketInfo={position.marketInfo}
                   type="decrease"
                 />

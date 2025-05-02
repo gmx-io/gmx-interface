@@ -45,11 +45,10 @@ export const formatSwapMessage = (
   let amountIn = tradeAction.initialCollateralDeltaAmount!;
 
   if (
-    tradeAction.twapGroupId &&
-    tradeAction.numberOfParts &&
+    tradeAction.twapParams &&
     (tradeAction.eventName === TradeActionType.OrderCreated || tradeAction.eventName === TradeActionType.OrderCancelled)
   ) {
-    amountIn = amountIn * BigInt(tradeAction.numberOfParts);
+    amountIn = amountIn * BigInt(tradeAction.twapParams.numberOfParts);
   }
 
   const fromText = formatBalanceAmount(amountIn, tokenIn.decimals, tokenIn.symbol);
@@ -108,14 +107,14 @@ export const formatSwapMessage = (
     tradeAction.swapPath
   );
 
-  let actionText = getActionTitle(tradeAction.orderType, tradeAction.eventName, Boolean(tradeAction.twapGroupId));
+  let actionText = getActionTitle(tradeAction.orderType, tradeAction.eventName, Boolean(tradeAction.twapParams));
 
   let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "timestampISO">;
 
   const ot = tradeAction.orderType;
   const ev = tradeAction.eventName;
 
-  if (tradeAction.twapGroupId) {
+  if (tradeAction.twapParams) {
     if (ev === TradeActionType.OrderExecuted) {
       const toExecutionText = formatBalanceAmount(
         tradeAction.executionAmountOut!,
@@ -130,11 +129,24 @@ export const formatSwapMessage = (
         swapToTokenAmount: toExecutionAmountText,
       };
     } else {
+      const error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
+      const errorComment = error
+        ? lines({
+            text: getErrorTooltipTitle(error.name, false),
+            state: "error",
+          })
+        : undefined;
+
+      const errorActionComment =
+        ev === TradeActionType.OrderFrozen || ev === TradeActionType.OrderCancelled ? errorComment : undefined;
+
       result = {
         price: t`N/A`,
         priceComment: null,
         size: t`${fromText} to `,
         swapToTokenAmount: "",
+        actionComment: errorActionComment,
+        isActionError: Boolean(errorActionComment),
       };
     }
   } else if (

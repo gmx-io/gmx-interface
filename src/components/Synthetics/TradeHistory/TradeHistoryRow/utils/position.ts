@@ -258,9 +258,21 @@ export const formatPositionMessage = (
         acceptablePrice: t`N/A`,
       };
     } else {
+      const error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
+      const errorComment = error
+        ? lines({
+            text: getErrorTooltipTitle(error.name, false),
+            state: "error",
+          })
+        : undefined;
+
+      const errorActionComment =
+        ev === TradeActionType.OrderFrozen || ev === TradeActionType.OrderCancelled ? errorComment : undefined;
       result = {
         price: t`N/A`, // ----
         priceComment: null,
+        actionComment: errorActionComment,
+        isActionError: Boolean(errorActionComment),
       };
     }
     //#endregion Twap

@@ -43,6 +43,7 @@ export type TwapDecreaseOrderParams = {
   duration: TwapDuration;
   numberOfParts: number;
   orderType: OrderType;
+  isTwap: true;
 };
 
 export type DecreaseOrderCallbacks = {

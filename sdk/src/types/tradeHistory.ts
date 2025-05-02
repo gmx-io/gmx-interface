@@ -120,10 +120,14 @@ export type SwapTradeAction = {
   executionAmountOut?: bigint;
   orderType: OrderType;
   orderKey: string;
-  twapGroupId: string | undefined;
-  numberOfParts: number | undefined;
   reason?: string;
   reasonBytes?: string | Uint8Array;
+  twapParams:
+    | {
+        twapGroupId: string;
+        numberOfParts: number;
+      }
+    | undefined;
 
   timestamp: number;
   transaction: {

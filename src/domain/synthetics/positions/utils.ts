@@ -324,10 +324,6 @@ export function getNameByOrderType(
   const { abbr, lower } = opts;
 
   if (isTwap) {
-    if (lower) {
-      return t`twap`;
-    }
-
     return t`TWAP`;
   }
 

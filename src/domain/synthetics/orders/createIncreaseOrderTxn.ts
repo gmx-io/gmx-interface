@@ -71,6 +71,7 @@ type SecondaryOrderCommonParams = {
   orderType: OrderType;
   sizeDeltaUsd: bigint;
   initialCollateralDeltaAmount: bigint;
+  isTwap?: false;
 };
 
 export type SecondaryDecreaseOrderParams = BaseDecreaseOrderParams & SecondaryOrderCommonParams;

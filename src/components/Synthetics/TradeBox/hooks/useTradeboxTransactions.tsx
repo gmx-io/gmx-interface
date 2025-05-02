@@ -398,6 +398,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
               skipSimulation: isLimit || shouldDisableValidationForTesting,
               autoCancel: i < autoCancelOrdersLimit,
               slippageInputId,
+              isTwap: false,
             };
           }),
           cancelOrderParams: cancelSltpEntries.map((entry) => ({
@@ -556,6 +557,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           tokensData,
           autoCancel: autoCancelOrdersLimit > 0,
           slippageInputId,
+          isTwap: false,
         },
         {
           setPendingTxns,

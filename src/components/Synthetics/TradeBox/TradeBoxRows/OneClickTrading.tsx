@@ -74,7 +74,7 @@ export function TradeBoxOneClickTrading() {
   }
 
   return (
-    <AlertInfoCard className="!text-body-medium pt-12">
+    <AlertInfoCard className="!text-body-medium pt-8">
       <div className="flex justify-between">
         <div>{content}</div>
         <div className="flex flex-row items-center gap-4 whitespace-nowrap">
