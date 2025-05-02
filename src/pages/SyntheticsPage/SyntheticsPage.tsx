@@ -22,6 +22,7 @@ import {
   selectIsExpressTransactionAvailableForNonNativePayment,
   selectL1ExpressOrderGasReference,
   selectMarketsInfoData,
+  selectPositionsInfoData,
   selectSponsoredCallMultiplierFactor,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";

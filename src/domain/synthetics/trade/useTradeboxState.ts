@@ -98,7 +98,12 @@ export function useTradeboxState(
 ) {
   const { marketsInfoData, marketsData, tokensData, positionsInfoData, ordersInfoData, srcChainId } = p;
 
-  const availableTokensOptions = useAvailableTokenOptions(chainId, { marketsInfoData, tokensData, marketsData });
+  const availableTokensOptions = useAvailableTokenOptions(chainId, {
+    marketsInfoData,
+    tokensData,
+    marketsData,
+    srcChainId,
+  });
 
   const availableSwapTokenAddresses = useMemo(
     () => availableTokensOptions.swapTokens.map((t) => t.address),
