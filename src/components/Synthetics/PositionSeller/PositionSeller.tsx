@@ -308,7 +308,9 @@ export function PositionSeller(p: Props) {
       return;
     }
 
-    const orderType = isTrigger ? decreaseAmounts?.triggerOrderType : OrderType.MarketDecrease;
+    let orderType: OrderType | undefined = OrderType.MarketDecrease;
+    orderType = isTrigger ? decreaseAmounts?.triggerOrderType : orderType;
+    orderType = isTwap ? OrderType.LimitDecrease : orderType;
     // TODO findSwapPath considering decreasePositionSwapType?
     const swapPath =
       decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken

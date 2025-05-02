@@ -134,7 +134,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
   const onSubmitSwap = useCallback(
     function onSubmitSwap() {
-      const orderType = isLimit ? OrderType.LimitSwap : OrderType.MarketSwap;
+      const orderType = isLimit || isTwap ? OrderType.LimitSwap : OrderType.MarketSwap;
 
       const metricData = initSwapMetricData({
         fromToken,
@@ -247,7 +247,9 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         return Promise.reject();
       }
 
-      const orderType = isLimit ? increaseAmounts.limitOrderType! : OrderType.MarketIncrease;
+      let orderType: OrderType | undefined = OrderType.MarketIncrease;
+      orderType = isLimit ? increaseAmounts.limitOrderType! : orderType;
+      orderType = isTwap ? OrderType.LimitIncrease : orderType;
 
       const metricData = initIncreaseOrderMetricData({
         chainId,

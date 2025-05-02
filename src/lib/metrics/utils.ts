@@ -106,6 +106,12 @@ export function initSwapMetricData({
   partsCount: number | undefined;
   tradeMode: TradeMode | undefined;
 }) {
+  let metricType: SwapMetricData["metricType"] = "swap";
+  if (tradeMode === TradeMode.Twap) {
+    metricType = "twapSwap";
+  } else if (orderType === OrderType.LimitSwap) {
+    metricType = "limitSwap";
+  }
   return metrics.setCachedMetricData<SwapMetricData>({
     metricId: getSwapOrderMetricId({
       initialCollateralTokenAddress: fromToken?.wrappedAddress || fromToken?.address,
@@ -114,7 +120,7 @@ export function initSwapMetricData({
       initialCollateralDeltaAmount: swapAmounts?.amountIn,
       executionFee: executionFee?.feeTokenAmount,
     }),
-    metricType: orderType === OrderType.LimitSwap ? "limitSwap" : "swap",
+    metricType,
     initialCollateralTokenAddress: fromToken?.address,
     initialCollateralAllowance: initialCollateralAllowance?.toString(),
     initialCollateralBalance: fromToken?.balance?.toString(),
@@ -202,6 +208,13 @@ export function initIncreaseOrderMetricData({
     externalSwapQuote: increaseAmounts?.externalSwapQuote,
   });
 
+  let metricType: IncreaseOrderMetricData["metricType"] = "increasePosition";
+  if (tradeMode === TradeMode.Twap) {
+    metricType = "twapIncreaseOrder";
+  } else if (orderType === OrderType.LimitIncrease) {
+    metricType = "limitOrder";
+  }
+
   return metrics.setCachedMetricData<IncreaseOrderMetricData>({
     metricId: getPositionOrderMetricId({
       marketAddress: marketInfo?.marketTokenAddress,
@@ -217,7 +230,7 @@ export function initIncreaseOrderMetricData({
     isTPSLCreated,
     slCount,
     tpCount,
-    metricType: orderType === OrderType.LimitIncrease ? "limitOrder" : "increasePosition",
+    metricType,
     hasReferralCode,
     hasExistingPosition,
     marketAddress: marketInfo?.marketTokenAddress,
@@ -303,13 +316,13 @@ export function initDecreaseOrderMetricData({
   partsCount: number | undefined;
   tradeMode: TradeMode | undefined;
 }) {
-  let metricType;
-  if (orderType === OrderType.LimitDecrease) {
+  let metricType: DecreaseOrderMetricData["metricType"] = "decreasePosition";
+  if (tradeMode === TradeMode.Twap) {
+    metricType = "twapDecreaseOrder";
+  } else if (orderType === OrderType.LimitDecrease) {
     metricType = "takeProfitOrder";
   } else if (orderType === OrderType.StopLossDecrease) {
     metricType = "stopLossOrder";
-  } else {
-    metricType = "decreasePosition";
   }
 
   return metrics.setCachedMetricData<DecreaseOrderMetricData>({
@@ -560,8 +573,6 @@ export function getSwapOrderMetricId(p: {
     p.initialCollateralTokenAddress || "initialColltateralTokenAddress",
     p.swapPath?.join("-") || "swapPath",
     p.orderType || "orderType",
-    p.initialCollateralDeltaAmount?.toString() || "initialCollateralDeltaAmount",
-    p.executionFee?.toString() || "executionFee",
   ].join(":")}`;
 }
 
@@ -580,7 +591,6 @@ export function getPositionOrderMetricId(p: {
     p.swapPath?.join("-") || "swapPath",
     p.isLong || "isLong",
     p.orderType || "orderType",
-    p.sizeDeltaUsd?.toString() || "sizeDeltaUsd",
   ].join(":")}`;
 }
 

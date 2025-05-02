@@ -389,7 +389,7 @@ export function OrdersStatusNotificiation({
 
   const newlyCreatedTriggerOrders = useMemo(() => {
     return pendingOrders.reduce((result, order) => {
-      if (isTriggerDecreaseOrderType(order.orderType) && order.txnType === "create") {
+      if (isTriggerDecreaseOrderType(order.orderType) && !order.isTwap && order.txnType === "create") {
         const orderStatus = findMatchedOrderStatus(matchedOrderStatuses, order);
 
         if (orderStatus?.createdTxnHash && orderStatus?.key) {

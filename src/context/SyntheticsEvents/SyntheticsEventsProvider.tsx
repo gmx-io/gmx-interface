@@ -185,7 +185,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       sendOrderCreatedMetric(metricId);
 
       if (!isMarketOrderType(data.orderType)) {
-        sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
+        sendUserAnalyticsOrderResultEvent(
+          chainId,
+          metricId,
+          true,
+          undefined,
+          twapParams ? `createOrder:${twapParams.twapId}` : undefined
+        );
       }
 
       setOrderStatuses((old) =>
@@ -239,7 +245,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           : getPositionOrderMetricId(order);
 
         sendOrderExecutedMetric(metricId);
-        sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
+        if (!order.isTwap) {
+          sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
+        }
       }
 
       setOrderStatuses((old) => {

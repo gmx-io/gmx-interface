@@ -261,7 +261,7 @@ export type ErrorEvent = {
 // Entities metric data
 export type SwapMetricData = {
   metricId: `swap:${string}`;
-  metricType: "swap" | "limitSwap";
+  metricType: "swap" | "limitSwap" | "twapSwap";
   requestId: string;
   is1ct: boolean;
   hasReferralCode: boolean | undefined;
@@ -286,7 +286,7 @@ export type SwapMetricData = {
 
 export type IncreaseOrderMetricData = PositionOrderMetricParams & {
   metricId: `position:${string}`;
-  metricType: "increasePosition" | "limitOrder";
+  metricType: "increasePosition" | "limitOrder" | "twapIncreaseOrder";
   leverage: string | undefined;
   isFirstOrder: boolean | undefined;
   isLeverageEnabled: boolean | undefined;
@@ -306,7 +306,7 @@ export type IncreaseOrderMetricData = PositionOrderMetricParams & {
 
 export type DecreaseOrderMetricData = PositionOrderMetricParams & {
   metricId: `position:${string}`;
-  metricType: "decreasePosition" | "takeProfitOrder" | "stopLossOrder";
+  metricType: "decreasePosition" | "takeProfitOrder" | "stopLossOrder" | "twapDecreaseOrder";
   place: "tradeBox" | "positionSeller";
   isFullClose: boolean | undefined;
   decreaseSwapType: DecreasePositionSwapType | undefined;
