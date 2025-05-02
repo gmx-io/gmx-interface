@@ -24,7 +24,11 @@ import { formatAmountForMetrics } from "lib/metrics";
 import { BN_ZERO, formatPercentage } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getAnalyticsOrderTypeByTradeMode, userAnalytics } from "lib/userAnalytics";
-import { TradeBoxWarningShownEvent } from "lib/userAnalytics/types";
+import {
+  TradeBoxPoolLowerFeeWarningShownEvent,
+  TradeBoxWarningShownEvent,
+  TradeBoxWarningSwitchPoolClickEvent,
+} from "lib/userAnalytics/types";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 
@@ -200,6 +204,27 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
     tradeMode,
   ]);
 
+  useEffect(() => {
+    if (showHasBetterOpenFeesWarning) {
+      userAnalytics.pushEvent<TradeBoxPoolLowerFeeWarningShownEvent>({
+        event: "TradeBoxAction",
+        data: {
+          action: "LowerFeeInDifferentPoolWarningShown",
+          sourcePool: marketPoolName,
+          sourcePair: marketName,
+          pool: minOpenFeesMarket?.marketTokenAddress,
+          pair: minOpenFeesMarket?.name,
+        },
+      });
+    }
+  }, [
+    showHasBetterOpenFeesWarning,
+    marketPoolName,
+    marketName,
+    minOpenFeesMarket?.name,
+    minOpenFeesMarket?.marketTokenAddress,
+  ]);
+
   const showHasExistingOrderButNoLiquidityWarning =
     !hasExistingOrder && marketWithOrder && !hasEnoughLiquidity(marketWithOrder);
 
@@ -338,15 +363,26 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
   }
 
   if (showHasBetterOpenFeesWarning) {
+    const onSwitchPoolClick = () => {
+      setMarketAddress(minOpenFeesMarket.marketTokenAddress);
+      userAnalytics.pushEvent<TradeBoxWarningSwitchPoolClickEvent>({
+        event: "TradeBoxAction",
+        data: {
+          action: "WarningSwitchPoolClick",
+          sourcePool: marketPoolName,
+          sourcePair: marketName,
+          pool: minOpenFeesMarket.marketTokenAddress,
+          pair: minOpenFeesMarket.name,
+        },
+      });
+    };
+
     warning.push(
       <AlertInfoCard key="showHasBetterOpenFeesWarning">
         <Trans>
           Save {formatPercentage(improvedOpenFeesDeltaBps)} in price impact and fees by{" "}
           <WithActon>
-            <span
-              className="clickable muted underline"
-              onClick={() => setMarketAddress(minOpenFeesMarket.marketTokenAddress)}
-            >
+            <span className="clickable muted underline" onClick={onSwitchPoolClick}>
               switching to the {getMarketPoolName(minOpenFeesMarket)} pool
             </span>
             .

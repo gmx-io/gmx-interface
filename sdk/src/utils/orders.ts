@@ -143,7 +143,7 @@ export function getOrderInfo(p: {
       targetCollateralToken.prices.minPrice
     );
 
-    let toAmount;
+    let toAmount = order.minOutputAmount;
     let triggerRatio;
 
     const isLimitSwapOrder = isLimitSwapOrderType(order.orderType);
