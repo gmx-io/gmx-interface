@@ -14,6 +14,7 @@ import {
   selectGasLimits,
   selectGasPaymentToken,
   selectGasPrice,
+  selectIsExpressTransactionAvailableForNonNativePayment,
   selectL1ExpressOrderGasReference,
   selectMarketsInfoData,
   selectRelayerFeeToken,
@@ -124,7 +125,7 @@ export function useExpressOrdersParams({
 
   const gasPaymentAllowanceData = useGasPaymentTokenAllowanceData(chainId, gasPaymentToken?.address);
   const l1Reference = useSelector(selectL1ExpressOrderGasReference);
-  const isExpressEnabled = useSelector(makeSelectIsExpressTransactionAvailable(false));
+  const isExpressEnabled = useSelector(selectIsExpressTransactionAvailableForNonNativePayment);
 
   useEffect(
     function getBaseTxnData() {

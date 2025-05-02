@@ -18,8 +18,7 @@ import {
   getMaxLeverageByMinCollateralFactor,
   getTradeboxLeverageSliderMarks,
 } from "domain/synthetics/markets";
-import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
-import { chooseSuitableMarket } from "domain/synthetics/markets/chooseSuitableMarket";
+import { PreferredTradeTypePickStrategy, chooseSuitableMarket } from "domain/synthetics/markets/chooseSuitableMarket";
 import { DecreasePositionSwapType, isLimitOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import {
   TokenData,
@@ -46,25 +45,26 @@ import { getPositionKey } from "lib/legacy";
 import { PRECISION, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
-import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { createTradeFlags } from "sdk/utils/trade";
 
 import {
-  makeSelectIsExpressTransactionAvailable,
   selectAccount,
   selectChainId,
   selectGasLimits,
+  selectGasPaymentToken,
   selectGasPrice,
+  selectIsRelayRouterFeatureDisabled,
   selectOrdersInfoData,
   selectPositionsInfoData,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
-  selectWalletChainId,
 } from "../globalSelectors";
-import { selectIsLeverageSliderEnabled, selectIsPnlInLeverage } from "../settingsSelectors";
+import { selectSourceChainId } from "../multichainSelectors";
+import { selectExpressOrdersEnabled, selectIsLeverageSliderEnabled, selectIsPnlInLeverage } from "../settingsSelectors";
 import { selectSelectedMarketVisualMultiplier } from "../shared/marketSelectors";
 import {
   makeSelectDecreasePositionAmounts,
@@ -75,11 +75,11 @@ import {
   makeSelectNextPositionValuesForIncrease,
 } from "../tradeSelectors";
 import { selectTradeboxGetMaxLongShortLiquidityPool } from "./selectTradeboxGetMaxLongShortLiquidityPool";
-import { selectSourceChainId } from "../multichainSelectors";
 
 export * from "./selectTradeboxAvailableAndDisabledTokensForCollateral";
 export * from "./selectTradeboxAvailableMarketsOptions";
 export * from "./selectTradeboxGetMaxLongShortLiquidityPool";
+export * from "./selectTradeboxRelatedMarketsStats";
 
 export const selectExternalSwapInputs = createSelector((q) => {
   const tradeMode = q(selectTradeboxTradeMode);
@@ -269,8 +269,6 @@ export const selectExternalSwapInputsByLeverageSize = createSelector((q) => {
   });
 });
 
-export * from "./selectTradeboxRelatedMarketsStats";
-
 const selectOnlyOnTradeboxPage = <T>(s: SyntheticsState, selection: T) =>
   s.pageType === "trade" ? selection : undefined;
 export const selectTradeboxState = (s: SyntheticsState) => s.tradebox;
@@ -343,7 +341,7 @@ export const selectTradeboxTotalSwapImpactBps = createSelector((q) => {
 export const selectTradeboxFindSwapPath = createSelector((q) => {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const swapToTokenAddress = q(selectTradeboxSwapToTokenAddress);
-  const isExpressTxn = q(makeSelectIsExpressTransactionAvailable(fromTokenAddress === NATIVE_TOKEN_ADDRESS));
+  const isExpressTxn = q(selectIsTradeboxExpressTransactionAvailable);
 
   return q(makeSelectFindSwapPath(fromTokenAddress, swapToTokenAddress, isExpressTxn));
 });
@@ -426,7 +424,7 @@ export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
 
   const positionKey = q(selectTradeboxSelectedPositionKey);
   const strategy = q(selectTradeboxLeverageStrategy);
-  const isExpressTxn = q(makeSelectIsExpressTransactionAvailable(fromTokenAddress === NATIVE_TOKEN_ADDRESS));
+  const isExpressTxn = q(selectIsTradeboxExpressTransactionAvailable);
 
   const selector = makeSelectIncreasePositionAmounts({
     collateralTokenAddress,
@@ -521,7 +519,7 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
     return swapAmounts;
   }
 
-  const isExpressTxn = q(makeSelectIsExpressTransactionAvailable(fromTokenAddress === NATIVE_TOKEN_ADDRESS));
+  const isExpressTxn = q(selectIsTradeboxExpressTransactionAvailable);
   const toSwapToken = q(selectTradeboxSwapToTokenAddress);
   const findSwapPath = q(makeSelectFindSwapPath(fromTokenAddress, toSwapToken, isExpressTxn));
   const swapOptimizationOrder: SwapOptimizationOrderArray | undefined = tradeFlags.isLimit
@@ -802,7 +800,7 @@ const selectNextValuesForIncrease = createSelector(
     const isPnlInLeverage = q(selectIsPnlInLeverage);
 
     const externalSwapQuote = q(selectExternalSwapQuote);
-    const isExpressTxn = q(makeSelectIsExpressTransactionAvailable(fromTokenAddress === NATIVE_TOKEN_ADDRESS));
+    const isExpressTxn = q(selectIsTradeboxExpressTransactionAvailable);
 
     return {
       collateralTokenAddress,
@@ -1330,4 +1328,18 @@ export const selectTradeboxChooseSuitableMarket = createSelector((q) => {
   };
 
   return chooseSuitableMarketWrapped;
+});
+
+export const selectIsTradeboxExpressTransactionAvailable = createSelector((q) => {
+  const fromTokenAddress = q(selectTradeboxFromTokenAddress);
+  const isNativePayment = fromTokenAddress === NATIVE_TOKEN_ADDRESS;
+  if (isNativePayment) {
+    return false;
+  }
+  const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
+  const isFeatureDisabled = q(selectIsRelayRouterFeatureDisabled);
+  const gasPaymentToken = q(selectGasPaymentToken);
+  const isZeroGasBalance = gasPaymentToken?.balance === 0n || gasPaymentToken?.balance === undefined;
+
+  return isExpressOrdersEnabledSetting && !isFeatureDisabled && !isZeroGasBalance;
 });

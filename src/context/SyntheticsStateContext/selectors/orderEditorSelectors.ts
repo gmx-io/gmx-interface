@@ -8,37 +8,37 @@ import {
 } from "domain/synthetics/fees";
 import { getMaxAllowedLeverageByMinCollateralFactor } from "domain/synthetics/markets";
 import {
-  OrderType,
-  PositionOrderInfo,
-  SwapOrderInfo,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLimitOrderType,
   isLimitSwapOrderType,
   isSwapOrderType,
   isTriggerDecreaseOrderType,
+  OrderType,
+  PositionOrderInfo,
   sortPositionOrders,
   sortSwapOrders,
+  SwapOrderInfo,
 } from "domain/synthetics/orders";
 import { getPositionOrderError } from "domain/synthetics/orders/getPositionOrderError";
 import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import {
-  TokensRatio,
   convertToTokenAmount,
   convertToUsd,
   getAmountByRatio,
   getTokenData,
   getTokensRatioByPrice,
+  TokensRatio,
 } from "domain/synthetics/tokens";
 import {
-  TradeMode,
-  TradeType,
   getAcceptablePriceInfo,
   getDecreasePositionAmounts,
   getIncreasePositionAmounts,
   getSwapPathOutputAddresses,
   getTradeFees,
   getTradeFlagsForOrder,
+  TradeMode,
+  TradeType,
 } from "domain/synthetics/trade";
 import { getPositionKey } from "lib/legacy";
 import { BN_ZERO, parseValue } from "lib/numbers";
@@ -49,10 +49,10 @@ import { getByKey } from "sdk/utils/objects";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorFactory } from "../utils";
 import {
-  makeSelectIsExpressTransactionAvailable,
   selectChainId,
   selectGasLimits,
   selectGasPrice,
+  selectIsExpressTransactionAvailableForNonNativePayment,
   selectKeepLeverage,
   selectMarketsInfoData,
   selectOrdersInfoData,
@@ -63,8 +63,7 @@ import {
   selectUserReferralInfo,
 } from "./globalSelectors";
 import { selectIsPnlInLeverage, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
-import { selectExternalSwapQuote } from "./tradeboxSelectors";
-import { selectTradeboxAvailableTokensOptions } from "./tradeboxSelectors";
+import { selectExternalSwapQuote, selectTradeboxAvailableTokensOptions } from "./tradeboxSelectors";
 import { makeSelectFindSwapPath, makeSelectNextPositionValuesForIncrease } from "./tradeSelectors";
 
 export const selectCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.cancellingOrdersKeys;
@@ -336,7 +335,7 @@ export const selectOrderEditorNextPositionValuesForIncrease = createSelector((q)
   const selector = makeSelectNextPositionValuesForIncrease({
     ...args,
     externalSwapQuote: q(selectExternalSwapQuote),
-    isExpressTxn: q(makeSelectIsExpressTransactionAvailable(false)),
+    isExpressTxn: q(selectIsExpressTransactionAvailableForNonNativePayment),
   });
 
   return q(selector);
@@ -351,7 +350,7 @@ export const makeSelectOrderEditorNextPositionValuesForIncrease = createSelector
 
       const selector = makeSelectNextPositionValuesForIncrease({
         ...args,
-        isExpressTxn: q(makeSelectIsExpressTransactionAvailable(false)),
+        isExpressTxn: q(selectIsExpressTransactionAvailableForNonNativePayment),
       });
 
       return q(selector);
@@ -367,7 +366,7 @@ export const selectOrderEditorNextPositionValuesWithoutPnlForIncrease = createSe
     ...args,
     externalSwapQuote: q(selectExternalSwapQuote),
     isPnlInLeverage: false,
-    isExpressTxn: q(makeSelectIsExpressTransactionAvailable(false)),
+    isExpressTxn: q(selectIsExpressTransactionAvailableForNonNativePayment),
   });
 
   return q(selector);

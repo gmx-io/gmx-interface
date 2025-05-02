@@ -10,11 +10,11 @@ import {
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { selectChartDynamicLines } from "context/SyntheticsStateContext/selectors/chartSelectors/selectChartDynamicLines";
 import {
-  makeSelectIsExpressTransactionAvailable,
   makeSelectSubaccountForActions,
   selectChainId,
   selectGasLimits,
   selectGasPrice,
+  selectIsExpressTransactionAvailableForNonNativePayment,
   selectL1ExpressOrderGasReference,
   selectMarketsInfoData,
   selectOrdersInfoData,
@@ -44,6 +44,7 @@ import { PositionOrderInfo } from "sdk/types/orders";
 
 import { DynamicLine } from "./DynamicLine";
 import type { IChartingLibraryWidget } from "../../charting_library";
+
 export function DynamicLines({
   tvWidgetRef,
   isMobile,
@@ -73,7 +74,7 @@ export function DynamicLines({
   const gasLimits = useSelector(selectGasLimits);
   const l1Reference = useSelector(selectL1ExpressOrderGasReference);
   const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
-  const isExpressEnabled = useSelector(makeSelectIsExpressTransactionAvailable(false));
+  const isExpressEnabled = useSelector(selectIsExpressTransactionAvailableForNonNativePayment);
 
   const onCancelOrder = useCallback(
     async (key: string) => {

@@ -7,12 +7,8 @@ import set from "lodash/set";
 import values from "lodash/values";
 import { SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 
-import {
-  getFromTokenIsGmxAccountKey,
-  getKeepLeverageKey,
-  getLeverageKey,
-  getSyntheticsTradeOptionsKey,
-} from "config/localStorage";
+import { UiSourceChain } from "config/chains";
+import { getKeepLeverageKey, getLeverageKey, getSyntheticsTradeOptionsKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { MarketInfo } from "domain/synthetics/markets";
@@ -72,6 +68,7 @@ type StoredTradeOptions = {
     };
   };
   advanced?: TradeboxAdvancedOptions;
+  isFromTokenGmxAccount: boolean;
 };
 
 const INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE: StoredTradeOptions = {
@@ -84,6 +81,7 @@ const INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE: StoredTradeOptions = {
     advancedDisplay: false,
     limitOrTPSL: false,
   },
+  isFromTokenGmxAccount: false,
 };
 
 export function useTradeboxState(
@@ -95,9 +93,10 @@ export function useTradeboxState(
     positionsInfoData?: PositionsInfoData;
     ordersInfoData?: OrdersInfoData;
     tokensData?: TokensData;
+    srcChainId: UiSourceChain | undefined;
   }
 ) {
-  const { marketsInfoData, marketsData, tokensData, positionsInfoData, ordersInfoData } = p;
+  const { marketsInfoData, marketsData, tokensData, positionsInfoData, ordersInfoData, srcChainId } = p;
 
   const availableTokensOptions = useAvailableTokenOptions(chainId, { marketsInfoData, tokensData, marketsData });
 
@@ -215,13 +214,14 @@ export function useTradeboxState(
         let newState = typeof args === "function" ? args(oldState) : args;
 
         if (newState && (newState.tradeType === TradeType.Long || newState.tradeType === TradeType.Short)) {
-          newState = fallbackPositionTokens(
+          newState = fallbackPositionTokens({
             chainId,
-            oldState,
-            newState,
-            availableSwapTokenAddresses,
-            availableTokensOptions.sortedAllMarkets
-          );
+            srcChainId,
+            prevState: oldState,
+            nextState: newState,
+            allowedPayTokens: availableSwapTokenAddresses,
+            allowedMarkets: availableTokensOptions.sortedAllMarkets,
+          });
           newState = fallbackCollateralTokens(newState, marketsInfoData);
         }
 
@@ -229,11 +229,12 @@ export function useTradeboxState(
       });
     },
     [
-      chainId,
-      availableSwapTokenAddresses,
       setStoredOptionsOnChain,
-      marketsInfoData,
+      chainId,
+      srcChainId,
+      availableSwapTokenAddresses,
       availableTokensOptions.sortedAllMarkets,
+      marketsInfoData,
     ]
   );
 
@@ -279,6 +280,7 @@ export function useTradeboxState(
   const { isSwap } = tradeFlags;
 
   const fromTokenAddress = storedOptions?.tokens.fromTokenAddress;
+  const isFromTokenGmxAccount = Boolean(storedOptions?.isFromTokenGmxAccount);
   const fromToken = getByKey(tokensData, fromTokenAddress);
 
   const toTokenAddress = tradeFlags.isSwap
@@ -377,6 +379,13 @@ export function useTradeboxState(
     [setStoredOptions]
   );
 
+  const setIsFromTokenGmxAccount = useCallback(
+    (isFromTokenGmxAccount: boolean) => {
+      setStoredOptions((oldState) => ({ ...oldState, isFromTokenGmxAccount }));
+    },
+    [setStoredOptions]
+  );
+
   const setToTokenAddress = useCallback(
     function setToTokenAddressCallback(tokenAddress: string, marketTokenAddress?: string, tradeType?: TradeType) {
       setStoredOptions(setToTokenAddressUpdaterBuilder(tradeType, tokenAddress, marketTokenAddress));
@@ -413,10 +422,11 @@ export function useTradeboxState(
     let swappedOptionsWithFallback;
 
     try {
-      swappedOptionsWithFallback = fallbackPositionTokens(
+      swappedOptionsWithFallback = fallbackPositionTokens({
         chainId,
-        storedOptions,
-        {
+        srcChainId,
+        prevState: storedOptions,
+        nextState: {
           ...storedOptions,
           tokens: {
             ...storedOptions.tokens,
@@ -424,9 +434,9 @@ export function useTradeboxState(
             indexTokenAddress: desirableToAddress,
           },
         },
-        availableSwapTokenAddresses,
-        availableTokensOptions.sortedAllMarkets
-      );
+        allowedPayTokens: availableSwapTokenAddresses,
+        allowedMarkets: availableTokensOptions.sortedAllMarkets,
+      });
     } catch (e) {
       /**
        * This fallback made in attempt to prevent crushes for those users who already have invalid stored options.
@@ -451,6 +461,7 @@ export function useTradeboxState(
     enabled,
     storedOptions,
     chainId,
+    srcChainId,
     availableSwapTokenAddresses,
     availableTokensOptions.sortedAllMarkets,
     setStoredOptionsOnChain,
@@ -606,11 +617,6 @@ export function useTradeboxState(
 
   const sidecarOrders = useSidecarOrdersState();
 
-  const [isFromTokenGmxAccount = false, setFromTokenIsGmxAccount] = useLocalStorageSerializeKey(
-    getFromTokenIsGmxAccountKey(chainId),
-    false
-  );
-
   useEffect(
     function fallbackStoredOptions() {
       if (!enabled) {
@@ -742,7 +748,7 @@ export function useTradeboxState(
     allowedSlippage,
     setAllowedSlippage,
     isFromTokenGmxAccount,
-    setFromTokenIsGmxAccount,
+    setIsFromTokenGmxAccount,
   };
 }
 
@@ -784,13 +790,21 @@ function setToTokenAddressUpdaterBuilder(
  * This function does not care about user's positions, fees, sizes, etc.
  * It must set any suitable token and market addresses combination in case it is not correct.
  */
-function fallbackPositionTokens(
-  chainId: number,
-  prevState: StoredTradeOptions,
-  nextState: StoredTradeOptions,
-  allowedPayTokens: string[],
-  allowedMarkets: MarketInfo[]
-) {
+function fallbackPositionTokens({
+  chainId,
+  srcChainId,
+  prevState,
+  nextState,
+  allowedPayTokens,
+  allowedMarkets,
+}: {
+  chainId: number;
+  srcChainId: UiSourceChain | undefined;
+  prevState: StoredTradeOptions;
+  nextState: StoredTradeOptions;
+  allowedPayTokens: string[];
+  allowedMarkets: MarketInfo[];
+}) {
   const longOrShort = nextState.tradeType === TradeType.Long ? "long" : "short";
 
   const allowedPayTokensSet = new Set(allowedPayTokens);
@@ -806,6 +820,7 @@ function fallbackPositionTokens(
   const isNextIndexTokenValid = nextIndexTokenAddress && allowedIndexTokens.has(nextIndexTokenAddress);
   const isNextMarketTokenValid =
     nextMarketTokenAdress && marketsMap[nextMarketTokenAdress]?.marketTokenAddress === nextMarketTokenAdress;
+  const isNextPayTokenSourceValid = (srcChainId !== undefined) === nextState.isFromTokenGmxAccount;
 
   const fallbackPayToken = (fallbackPayToken?: string) => {
     return produce(nextState, (draft) => {
@@ -834,7 +849,7 @@ function fallbackPositionTokens(
     return updater(nextState);
   };
 
-  if (isNextPayTokenValid && isNextIndexTokenValid && isNextMarketTokenValid) {
+  if (isNextPayTokenValid && isNextIndexTokenValid && isNextMarketTokenValid && isNextPayTokenSourceValid) {
     return nextState;
   }
 
@@ -884,6 +899,12 @@ function fallbackPositionTokens(
 
   if (!isNextMarketTokenValid) {
     nextState = fallbackIndexTokenAndMarket(nextState.tokens.indexTokenAddress);
+  }
+
+  if (!isNextPayTokenSourceValid) {
+    nextState = produce(nextState, (draft) => {
+      draft.isFromTokenGmxAccount = srcChainId !== undefined;
+    });
   }
 
   const isFallbackPayTokenValid =

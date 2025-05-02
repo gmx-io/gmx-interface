@@ -15,14 +15,13 @@ import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderH
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectClaimablesCount } from "context/SyntheticsStateContext/selectors/claimsSelectors";
 import {
-  makeSelectIsExpressTransactionAvailable,
   makeSelectSubaccountForActions,
   selectChainId,
   selectGasLimits,
   selectGasPrice,
+  selectIsExpressTransactionAvailableForNonNativePayment,
   selectL1ExpressOrderGasReference,
   selectMarketsInfoData,
-  selectPositionsInfoData,
   selectSponsoredCallMultiplierFactor,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -426,7 +425,7 @@ function useOrdersControl() {
 
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [orderTypesFilter, setOrderTypesFilter] = useState<OrderType[]>([]);
-  const isExpressEnabled = useSelector(makeSelectIsExpressTransactionAvailable(false));
+  const isExpressEnabled = useSelector(selectIsExpressTransactionAvailableForNonNativePayment);
 
   const onCancelSelectedOrders = useCallback(
     async function cancelSelectedOrders() {

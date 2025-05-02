@@ -12,11 +12,11 @@ import { useEthersSigner } from "lib/wallets/useEthersSigner";
 
 import { useCancellingOrdersKeysState } from "./orderEditorHooks";
 import {
-  makeSelectIsExpressTransactionAvailable,
   makeSelectSubaccountForActions,
   selectChainId,
   selectGasLimits,
   selectGasPrice,
+  selectIsExpressTransactionAvailableForNonNativePayment,
   selectL1ExpressOrderGasReference,
   selectMarketsInfoData,
   selectSponsoredCallMultiplierFactor,
@@ -62,7 +62,7 @@ export function useCancelOrder(orderKey: string) {
   const gasLimits = useSelector(selectGasLimits);
   const l1Reference = useSelector(selectL1ExpressOrderGasReference);
   const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
-  const isExpressEnabled = useSelector(makeSelectIsExpressTransactionAvailable(false));
+  const isExpressEnabled = useSelector(selectIsExpressTransactionAvailableForNonNativePayment);
 
   const isCancelOrderProcessing = cancellingOrdersKeys.includes(orderKey);
 
@@ -118,6 +118,7 @@ export function useCancelOrder(orderKey: string) {
       gasLimits,
       gasPaymentAllowanceData,
       gasPrice,
+      isExpressEnabled,
       l1Reference,
       makeOrderTxnCallback,
       marketsInfoData,
@@ -125,6 +126,7 @@ export function useCancelOrder(orderKey: string) {
       relayFeeTokens.findSwapPath,
       relayFeeTokens.gasPaymentToken?.address,
       setCancellingOrdersKeys,
+      settlementChainClient,
       signer,
       sponsoredCallMultiplierFactor,
       subaccount,

@@ -1,11 +1,11 @@
 import { ethers } from "ethers";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 
 import { UiContractsChain, UiSupportedChain } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
-import { isSourceChain } from "context/GmxAccountContext/config";
+import { isSettlementChain, isSourceChain } from "context/GmxAccountContext/config";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { SubaccountState, useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { TokenPermitsState, useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
@@ -18,10 +18,11 @@ import {
   usePeriodAccountStats,
 } from "domain/synthetics/accountStats";
 import { SponsoredCallParams, useSponsoredCallParamsRequest } from "domain/synthetics/express";
+import { useL1ExpressOrderGasReference } from "domain/synthetics/express/useL1ExpressGasReference";
 import { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
 import { DisabledFeatures, useDisabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
-import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
+import { L1ExpressOrderGasReference, useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
@@ -55,14 +56,10 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { BlockTimestampData, useBlockTimestampRequest } from "lib/useBlockTimestampRequest";
 import useWallet from "lib/wallets/useWallet";
 
-import { useGmxAccountTokensDataRequest, useMultichainTokens } from "components/Synthetics/GmxAccountModal/hooks";
+import { useGmxAccountTokensDataRequest } from "components/Synthetics/GmxAccountModal/hooks";
 
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
-import {
-  L1ExpressOrderGasReference,
-  useL1ExpressOrderGasReference,
-} from "domain/synthetics/express/useL1ExpressGasReference";
 
 export type SyntheticsPageType =
   | "accounts"
@@ -150,6 +147,8 @@ export function SyntheticsStateContextProvider({
   const { chainId: selectedChainId } = useChainId();
 
   const { account: walletAccount, signer, chainId: walletChainId } = useWallet();
+  const srcChainId =
+    walletChainId && isSourceChain(walletChainId) && !isSettlementChain(walletChainId) ? walletChainId : undefined;
   const { account: paramsAccount } = useParams<{ account?: string }>();
 
   let checkSummedAccount: string | undefined;
@@ -244,6 +243,7 @@ export function SyntheticsStateContextProvider({
     tokensData: marketsInfo.tokensData,
     positionsInfoData,
     ordersInfoData: ordersInfo.ordersInfoData,
+    srcChainId,
   });
 
   const orderEditor = useOrderEditorState(ordersInfo.ordersInfoData);

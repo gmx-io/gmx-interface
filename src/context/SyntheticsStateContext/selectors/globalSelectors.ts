@@ -4,7 +4,7 @@ import { getRelayerFeeToken } from "sdk/configs/express";
 import { getByKey } from "sdk/utils/objects";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { createSelector, createSelectorDeprecated } from "../utils";
+import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
 import { selectExpressOrdersEnabled, selectGasPaymentTokenAddress } from "./settingsSelectors";
 
 export const selectAccount = (s: SyntheticsState) => s.globals.account;
@@ -143,16 +143,19 @@ export const selectRelayerFeeToken = createSelector((q) => {
   return getByKey(tokensData, relayerFeeTokenAddress);
 });
 
-const selectIsRelayRouterFeatureDisabled = makeSelectDisableFeature("relayRouterDisabled");
-export const makeSelectIsExpressTransactionAvailable = (isNativePayment: boolean) =>
-  createSelector((q) => {
-    if (isNativePayment) {
-      return false;
-    }
-    const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
-    const isFeatureDisabled = q(selectIsRelayRouterFeatureDisabled);
-    const gasPaymentToken = q(selectGasPaymentToken);
-    const isZeroGasBalance = gasPaymentToken?.balance === 0n || gasPaymentToken?.balance === undefined;
+export const selectIsRelayRouterFeatureDisabled = makeSelectDisableFeature("relayRouterDisabled");
+export const selectIsExpressTransactionAvailableForNonNativePayment = createSelector((q) => {
+  const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
+  const isFeatureDisabled = q(selectIsRelayRouterFeatureDisabled);
+  const gasPaymentToken = q(selectGasPaymentToken);
+  const isZeroGasBalance = gasPaymentToken?.balance === 0n || gasPaymentToken?.balance === undefined;
 
-    return isExpressOrdersEnabledSetting && !isFeatureDisabled && !isZeroGasBalance;
-  });
+  return isExpressOrdersEnabledSetting && !isFeatureDisabled && !isZeroGasBalance;
+});
+
+export const makeSelectIsExpressTransactionAvailable = createSelectorFactory((isNativePayment: boolean) => {
+  if (isNativePayment) {
+    return () => false;
+  }
+  return selectIsExpressTransactionAvailableForNonNativePayment;
+});

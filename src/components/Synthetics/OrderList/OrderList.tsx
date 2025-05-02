@@ -11,12 +11,12 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import {
-  makeSelectIsExpressTransactionAvailable,
   makeSelectSubaccountForActions,
   selectAccount,
   selectChainId,
   selectGasLimits,
   selectGasPrice,
+  selectIsExpressTransactionAvailableForNonNativePayment,
   selectL1ExpressOrderGasReference,
   selectMarketsInfoData,
   selectSponsoredCallMultiplierFactor,
@@ -103,7 +103,7 @@ export function OrderList({
   const gasLimits = useSelector(selectGasLimits);
   const l1Reference = useSelector(selectL1ExpressOrderGasReference);
   const gasPaymentAllowanceData = useGasPaymentTokenAllowanceData(chainId, relayFeeTokens.gasPaymentToken?.address);
-  const isExpressEnabled = useSelector(makeSelectIsExpressTransactionAvailable(false));
+  const isExpressEnabled = useSelector(selectIsExpressTransactionAvailableForNonNativePayment);
 
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
 

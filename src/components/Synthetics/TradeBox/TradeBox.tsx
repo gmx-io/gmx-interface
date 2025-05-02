@@ -72,6 +72,7 @@ import {
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
+import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { TradeMode } from "sdk/types/trade";
@@ -98,7 +99,6 @@ import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import { useGmxAccountTokensDataObject, useMultichainTokens } from "../GmxAccountModal/hooks";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
-import "./TradeBox.scss";
 import TradeBoxLongShortInfoIcon from "./components/TradeBoxLongShortInfoIcon";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
 import { useExpressTradingWarnings } from "./hooks/useShowOneClickTradingInfo";
@@ -112,7 +112,7 @@ import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
 
-import { switchNetwork } from "lib/wallets";
+import "./TradeBox.scss";
 
 export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
@@ -167,7 +167,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     setCollateralAddress: onSelectCollateralAddress,
     setFromTokenAddress: onSelectFromTokenAddress,
     isFromTokenGmxAccount,
-    setFromTokenIsGmxAccount,
+    setIsFromTokenGmxAccount,
     setTradeMode: onSelectTradeMode,
     focusedInput,
     setFocusedInput,
@@ -501,9 +501,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const handleSelectFromTokenAddress = useCallback(
     (tokenAddress: string, isGmxAccount: boolean) => {
       onSelectFromTokenAddress(tokenAddress);
-      setFromTokenIsGmxAccount(isGmxAccount);
+      setIsFromTokenGmxAccount(isGmxAccount);
     },
-    [onSelectFromTokenAddress, setFromTokenIsGmxAccount]
+    [onSelectFromTokenAddress, setIsFromTokenGmxAccount]
   );
   const handleSelectToTokenAddress = useCallback(
     (token: Token) => onSelectToTokenAddress(token.address),
