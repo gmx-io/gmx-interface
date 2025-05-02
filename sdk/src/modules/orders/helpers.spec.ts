@@ -11,8 +11,8 @@ import * as tradeAmounts from "utils/trade/amounts";
 describe("increaseOrderHelper", () => {
   let marketsInfoData: MarketsInfoData;
   let tokensData: TokensData;
-  let mockParams;
-  let createIncreaseOrderSpy;
+  let mockParams: any;
+  let createIncreaseOrderSpy: any;
   let market: MarketInfo;
   let payToken: TokenData;
   let collateralToken: TokenData;

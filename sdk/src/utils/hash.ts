@@ -4,7 +4,7 @@ import { LRUCache } from "./LruCache";
 
 const dataCache = new LRUCache<string>(10_000);
 
-export function hashData(dataTypes, dataValues) {
+export function hashData(dataTypes: string[], dataValues: (string | number | bigint | boolean)[]) {
   const key = JSON.stringify({ dataTypes, dataValues }, (_, val) => (typeof val === "bigint" ? String(val) : val));
 
   if (dataCache.has(key)) {
@@ -41,7 +41,8 @@ export function hashDataMap<
 ): {
   [K in keyof R]: string;
 } {
-  const result = {};
+  const result: Record<string, string> = {};
+
   for (const key of Object.keys(map)) {
     if (!map[key]) {
       continue;

@@ -1685,10 +1685,6 @@ msgstr ""
 msgid "No swap path found"
 msgstr ""
 
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#~ msgid "You can save {0} in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Combined stop losses are at maximum (100%). Decrease existing values to add more orders."
 msgstr ""
@@ -1890,10 +1886,6 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr ""
-
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-#~ msgid "Open {longOrShortText} {prefix}{tokenSymbol}"
-#~ msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Show details"
@@ -3029,10 +3021,6 @@ msgstr ""
 #: src/pages/Exchange/Exchange.tsx
 msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "已减少{tokenSymbol} {longOrShortText}, -{0} USD"
-
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-#~ msgid "Liq. {longOrShortText} {prefix}{tokenSymbol}"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Leave at least {0} ETH for gas"
@@ -5852,10 +5840,6 @@ msgstr ""
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming failed"
 msgstr ""
-
-#: src/components/AprInfo/AprInfo.tsx
-#~ msgid "The base APY estimate will be available {0} to ensure accurate data display."
-#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Stop Loss"
