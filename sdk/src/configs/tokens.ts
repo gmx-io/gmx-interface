@@ -888,6 +888,17 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
     },
     {
+      name: "Dolomite",
+      symbol: "DOLO",
+      address: "0x97Ce1F309B949f7FBC4f58c5cb6aa417A5ff8964",
+      decimals: 18,
+      priceDecimals: 6,
+      categories: ["defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/54710/standard/DOLO-small.png?1745398535",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/dolomite",
+      isSynthetic: true,
+    },
+    {
       name: "GMX LP",
       symbol: "GLP",
       address: getContract(ARBITRUM, "GLP"),
@@ -1599,7 +1610,7 @@ export function convertTokenAddress<T extends keyof TokenAddressTypesMap, R exte
   return address as R;
 }
 
-export function getNormalizedTokenSymbol(tokenSymbol) {
+export function getNormalizedTokenSymbol(tokenSymbol: string) {
   if (["WBTC", "WETH", "WAVAX"].includes(tokenSymbol)) {
     return tokenSymbol.substr(1);
   } else if (tokenSymbol.includes(".")) {
@@ -1674,8 +1685,11 @@ export function getCategoryTokenAddresses(chainId: number, category: TokenCatego
 }
 
 export const createTokensMap = (tokens: Token[]) => {
-  return tokens.reduce((acc, token) => {
-    acc[token.address] = token;
-    return acc;
-  }, {});
+  return tokens.reduce(
+    (acc, token) => {
+      acc[token.address] = token;
+      return acc;
+    },
+    {} as Record<string, Token>
+  );
 };

@@ -1,19 +1,19 @@
 export type GraphQlFilters =
   | {
-      or: GraphQlFilters[];
+      OR: GraphQlFilters[];
     }
   | {
-      and: GraphQlFilters[];
+      AND: GraphQlFilters[];
     }
   | {
       /**
        * `or` must be a single key-value pair in the object.
        */
-      or?: never;
+      OR?: never;
       /**
        * `and` must be a single key-value pair in the object.
        */
-      and?: never;
+      AND?: never;
       /**
        * Key must not start with an `_`. If you want to use nested filtering add `_` to the parent key itself if possible.
        * Otherwise, if for some reason the field name itself starts with an `_`, change these types.
@@ -31,8 +31,8 @@ export type GraphQlFilters =
         | null;
     };
 
-export function buildFiltersBody(filters: GraphQlFilters): string {
-  const res = {};
+export function buildFiltersBody(filters: GraphQlFilters, options?: { enums?: Record<string, string> }): string {
+  const res: Record<string, string | null> = {};
 
   let hadOr = false;
   let hadAnd = false;
@@ -43,7 +43,11 @@ export function buildFiltersBody(filters: GraphQlFilters): string {
     }
 
     if (typeof value === "string") {
-      res[key] = `"${value}"`;
+      if (options?.enums?.[value]) {
+        res[key] = value;
+      } else {
+        res[key] = `"${value}"`;
+      }
     } else if (typeof value === "number") {
       res[key] = `${value}`;
     } else if (typeof value === "boolean") {
@@ -54,11 +58,15 @@ export function buildFiltersBody(filters: GraphQlFilters): string {
         value
           .map((el: string | number | GraphQlFilters) => {
             if (typeof el === "string") {
-              return `"${el}"`;
+              if (options?.enums?.[el]) {
+                return el;
+              } else {
+                return `"${el}"`;
+              }
             } else if (typeof el === "number") {
               return `${el}`;
             } else {
-              const elemStr = buildFiltersBody(el);
+              const elemStr = buildFiltersBody(el, options);
 
               if (elemStr === "{}") {
                 return "";
@@ -77,9 +85,9 @@ export function buildFiltersBody(filters: GraphQlFilters): string {
     } else if (value === null) {
       res[key] = null;
     } else {
-      const valueStr = buildFiltersBody(value);
+      const valueStr = buildFiltersBody(value, options);
       if (valueStr !== "{}") {
-        res[key + "_"] = buildFiltersBody(value);
+        res[key + "_"] = buildFiltersBody(value, options);
       }
     }
 

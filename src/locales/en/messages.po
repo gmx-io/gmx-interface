@@ -1719,10 +1719,6 @@ msgstr "Yield Optimizations"
 msgid "No swap path found"
 msgstr "No swap path found"
 
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You can save {0} in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
-msgstr "You can save {0} in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
-
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Combined stop losses are at maximum (100%). Decrease existing values to add more orders."
 msgstr "Combined stop losses are at maximum (100%). Decrease existing values to add more orders."
@@ -1928,10 +1924,6 @@ msgstr "GMX Alerts"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
-
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-#~ msgid "Open {longOrShortText} {prefix}{tokenSymbol}"
-#~ msgstr "Open {longOrShortText} {prefix}{tokenSymbol}"
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Show details"
@@ -3144,10 +3136,6 @@ msgstr "Generating session..."
 msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-#~ msgid "Liq. {longOrShortText} {prefix}{tokenSymbol}"
-#~ msgstr "Liq. {longOrShortText} {prefix}{tokenSymbol}"
-
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Leave at least {0} ETH for gas"
 msgstr "Leave at least {0} ETH for gas"
@@ -4108,8 +4096,6 @@ msgstr "Trading incentives program is live on {avalancheLink}."
 msgid "Sending sell request"
 msgstr "Sending sell request"
 
-#: src/components/AprInfo/AprInfo.tsx
-#: src/components/AprInfo/AprInfo.tsx
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -6091,10 +6077,6 @@ msgstr "3rd Place"
 msgid "Claiming failed"
 msgstr "Claiming failed"
 
-#: src/components/AprInfo/AprInfo.tsx
-msgid "The base APY estimate will be available {0} to ensure accurate data display."
-msgstr "The base APY estimate will be available {0} to ensure accurate data display."
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Stop Loss"
 msgstr "Update Stop Loss"
@@ -6226,6 +6208,10 @@ msgstr "Win / Loss"
 #: src/components/Referrals/TradersStats.tsx
 msgid "V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table."
 msgstr "V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table."
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min position size: {0}"
+msgstr "Min position size: {0}"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -6707,6 +6693,10 @@ msgstr "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win Rate"
 msgstr "Win Rate"
+
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Save {0} in price impact and fees by <0><1>switching to the {1} pool</1>.</0>"
+msgstr "Save {0} in price impact and fees by <0><1>switching to the {1} pool</1>.</0>"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"

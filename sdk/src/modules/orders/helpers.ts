@@ -257,6 +257,14 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
     throw new Error("From or to token is not available");
   }
 
+  if (toToken.isSynthetic) {
+    throw new Error(`Synthetic tokens are not supported: ${toToken.symbol}`);
+  }
+
+  if (fromToken.isSynthetic) {
+    throw new Error(`Synthetic tokens are not supported: ${fromToken.symbol}`);
+  }
+
   const isLimit = Boolean(params.triggerPrice);
 
   if (!fromToken || !toToken) {

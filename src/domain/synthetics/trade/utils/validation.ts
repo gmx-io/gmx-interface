@@ -205,6 +205,7 @@ export function getIncreaseError(p: {
   isLimit: boolean;
   nextLeverageWithoutPnl: bigint | undefined;
   thresholdType: TriggerThresholdType | undefined;
+  minPositionSizeUsd: bigint | undefined;
 }): ValidationResult {
   const {
     marketInfo,
@@ -229,6 +230,7 @@ export function getIncreaseError(p: {
     isLimit,
     nextPositionValues,
     nextLeverageWithoutPnl,
+    minPositionSizeUsd,
   } = p;
 
   if (!marketInfo || !indexToken) {
@@ -352,6 +354,14 @@ export function getIncreaseError(p: {
     }
   }
 
+  if (
+    minPositionSizeUsd !== undefined &&
+    nextPositionValues?.nextSizeUsd !== undefined &&
+    nextPositionValues.nextSizeUsd < minPositionSizeUsd
+  ) {
+    return [t`Min position size: ${formatUsd(minPositionSizeUsd)}`];
+  }
+
   if (nextPositionValues?.nextLiqPrice !== undefined && markPrice !== undefined) {
     if (isLong && nextPositionValues.nextLiqPrice > markPrice) {
       return [t`Invalid liq. price`, "liqPrice > markPrice"];
@@ -406,6 +416,7 @@ export function getDecreaseError(p: {
   minCollateralUsd: bigint | undefined;
   isNotEnoughReceiveTokenLiquidity: boolean;
   triggerThresholdType: TriggerThresholdType | undefined;
+  minPositionSizeUsd: bigint | undefined;
 }): ValidationResult {
   const {
     marketInfo,

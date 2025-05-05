@@ -196,6 +196,28 @@ export type TradeBoxWarningShownEvent = {
   };
 };
 
+export type TradeBoxPoolLowerFeeWarningShownEvent = {
+  event: "TradeBoxAction";
+  data: {
+    action: "LowerFeeInDifferentPoolWarningShown";
+    sourcePool: string;
+    sourcePair: string;
+    pool: string;
+    pair: string;
+  };
+};
+
+export type TradeBoxWarningSwitchPoolClickEvent = {
+  event: "TradeBoxAction";
+  data: {
+    action: "WarningSwitchPoolClick";
+    sourcePool: string;
+    sourcePair: string;
+    pool: string;
+    pair: string;
+  };
+};
+
 export type PoolsPageBuyConfirmEvent = {
   event: "PoolsPageAction";
   data: {

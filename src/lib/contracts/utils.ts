@@ -1,4 +1,74 @@
-import { BaseContract, Contract, Wallet } from "ethers";
+import { BaseContract, Contract, Provider, Wallet } from "ethers";
+import { withRetry } from "viem";
+
+import {
+  GAS_PRICE_BUFFER_MAP,
+  GAS_PRICE_PREMIUM_MAP,
+  MAX_FEE_PER_GAS_MAP,
+  MAX_PRIORITY_FEE_PER_GAS_MAP,
+} from "config/chains";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { GetFeeDataBlockError } from "lib/metrics";
+import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
+import { bigMath } from "sdk/utils/bigmath";
+
+export type GasPriceData = {
+  gasPrice?: bigint;
+  maxFeePerGas?: bigint;
+  maxPriorityFeePerGas?: bigint;
+};
+
+export async function getGasPrice(provider: Provider, chainId: number): Promise<GasPriceData> {
+  let maxFeePerGas = MAX_FEE_PER_GAS_MAP[chainId];
+  const premium: bigint = GAS_PRICE_PREMIUM_MAP[chainId] === undefined ? 0n : GAS_PRICE_PREMIUM_MAP[chainId];
+
+  const feeData = await withRetry(() => provider.getFeeData(), {
+    delay: 200,
+    retryCount: 2,
+    shouldRetry: ({ error }) => {
+      const isInvalidBlockError = error?.message?.includes("invalid value for value.hash");
+
+      if (isInvalidBlockError) {
+        emitMetricCounter<GetFeeDataBlockError>({ event: "error.getFeeData.value.hash" });
+      }
+
+      return isInvalidBlockError;
+    },
+  });
+
+  const gasPrice = feeData.gasPrice;
+
+  if (maxFeePerGas !== undefined && maxFeePerGas !== 0n) {
+    if (gasPrice !== undefined && gasPrice !== null) {
+      maxFeePerGas = bigMath.max(gasPrice, maxFeePerGas);
+    }
+
+    // the wallet provider might not return maxPriorityFeePerGas in feeData
+    // in which case we should fallback to the usual getGasPrice flow handled below
+    if (feeData && feeData.maxPriorityFeePerGas !== undefined && feeData.maxPriorityFeePerGas !== null) {
+      const maxPriorityFeePerGas = bigMath.max(
+        feeData.maxPriorityFeePerGas,
+        MAX_PRIORITY_FEE_PER_GAS_MAP[chainId] ?? 0n
+      );
+
+      return {
+        maxFeePerGas,
+        maxPriorityFeePerGas: maxPriorityFeePerGas + premium,
+      };
+    }
+  }
+
+  if (gasPrice === null) {
+    throw new Error("Can't fetch gas price");
+  }
+
+  const bufferBps: bigint = GAS_PRICE_BUFFER_MAP[chainId] === undefined ? 0n : GAS_PRICE_BUFFER_MAP[chainId];
+  const buffer = bigMath.mulDiv(gasPrice, bufferBps, BASIS_POINTS_DIVISOR_BIGINT);
+
+  return {
+    gasPrice: gasPrice + buffer + premium,
+  };
+}
 
 /**
  * @deprecated use estimateGasLimit instead
