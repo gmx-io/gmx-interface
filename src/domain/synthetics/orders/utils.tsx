@@ -9,6 +9,7 @@ import {
   isIncreaseOrderType,
   isMarketOrderType,
   isOrderForPosition,
+  isStopLossOrderType,
   isSwapOrder,
   isSwapOrderType,
   isTwapOrder,
@@ -289,22 +290,24 @@ export function getOrderErrors(p: {
   }
 
   if (isDecreaseOrderType(order.orderType) && position && !isTwapOrder(order)) {
-    const triggerPrice = (order as PositionOrderInfo).triggerPrice;
+    if (isStopLossOrderType(order.orderType)) {
+      const triggerPrice = (order as PositionOrderInfo).triggerPrice;
 
-    const isInvalidTriggerPrice = position.isLong
-      ? position.liquidationPrice === undefined
-        ? undefined
-        : position.liquidationPrice > triggerPrice
-      : position.liquidationPrice === undefined
-        ? undefined
-        : position.liquidationPrice < triggerPrice;
+      const isInvalidTriggerPrice = position.isLong
+        ? position.liquidationPrice === undefined
+          ? undefined
+          : position.liquidationPrice > triggerPrice
+        : position.liquidationPrice === undefined
+          ? undefined
+          : position.liquidationPrice < triggerPrice;
 
-    if (isInvalidTriggerPrice) {
-      errors.push({
-        msg: t`The order will not be executed as its trigger price is beyond the position's liquidation price.`,
-        level: "error",
-        key: "triggerPrice",
-      });
+      if (isInvalidTriggerPrice) {
+        errors.push({
+          msg: t`The order will not be executed as its trigger price is beyond the position's liquidation price.`,
+          level: "error",
+          key: "triggerPrice",
+        });
+      }
     }
 
     if (order.swapPath.length) {
