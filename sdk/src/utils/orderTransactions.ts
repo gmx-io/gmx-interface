@@ -1,4 +1,3 @@
-import { MaxUint256 } from "ethers";
 import { encodeFunctionData, zeroAddress, zeroHash } from "viem";
 
 import ExchangeRouterAbi from "abis/ExchangeRouter.json";
@@ -9,6 +8,7 @@ import { DecreasePositionSwapType, OrderType } from "types/orders";
 import { ContractPrice, ERC20Address } from "types/tokens";
 import { ExternalSwapOutput } from "types/trade";
 
+import { MaxUint256 } from "./numbers";
 import { isSwapOrderType } from "./orders";
 import { convertToContractPrice } from "./tokens";
 import { applySlippageToMinOut, applySlippageToPrice } from "./trade";

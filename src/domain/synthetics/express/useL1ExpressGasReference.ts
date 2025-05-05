@@ -37,10 +37,10 @@ export function useL1ExpressOrderGasReference() {
         abi: abis.ArbitrumNodeInterface,
         functionName: "gasEstimateL1Component",
         data: referenceResult as `0x${string}`,
-      });
+      }) as [bigint];
 
       return {
-        gasLimit: referenceDecoded[0] as bigint,
+        gasLimit: referenceDecoded[0],
         sizeOfData: BigInt(size(referenceData)),
       };
     },

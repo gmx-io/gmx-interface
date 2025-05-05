@@ -16,6 +16,7 @@ import { EMPTY_ARRAY } from "lib/objects";
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
 import { ExpressTradingEnabledBanner } from "components/ExpressTradingEnabledBanner/ExpressTradingEnabledBanner";
+import { ExpressTradingGasTokenSwitchedBanner } from "components/ExpressTradingGasTokenSwitchedBanner.ts/ExpressTradingGasTokenSwithedBanner";
 import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
@@ -169,6 +170,10 @@ export function SettingsModal({
             </ToggleSwitch>
 
             {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
+
+            {settings.expressTradingGasTokenSwitched && !isOutOfGasPaymentBalance && (
+              <ExpressTradingGasTokenSwitchedBanner onClose={onClose} />
+            )}
 
             <OldSubaccountWithdraw />
 

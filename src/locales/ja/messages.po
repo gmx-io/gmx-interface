@@ -4364,6 +4364,10 @@ msgstr "価格インパクト"
 msgid "Select a token"
 msgstr ""
 
+#: src/components/ExpressTradingGasTokenSwitchedBanner.ts/ExpressTradingGasTokenSwithedBanner.tsx
+msgid "Gas Payment Token changed due to insufficient balance."
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx

@@ -13,7 +13,6 @@ import { GetFeeDataBlockError } from "lib/metrics";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
 import { bigMath } from "sdk/utils/bigmath";
 
-
 export type GasPriceData =
   | {
       gasPrice: bigint;
@@ -27,7 +26,7 @@ export type GasPriceData =
 export async function getGasPrice(provider: Provider, chainId: number): Promise<GasPriceData> {
   try {
     let maxFeePerGas = MAX_FEE_PER_GAS_MAP[chainId];
-    const premium: bigint = GAS_PRICE_PREMIUM_MAP[chainId] || 0n;
+    const premium: bigint = GAS_PRICE_PREMIUM_MAP[chainId] ?? 0n;
 
     const feeData = await withRetry(() => provider.getFeeData(), {
       delay: 200,
@@ -45,7 +44,7 @@ export async function getGasPrice(provider: Provider, chainId: number): Promise<
 
     const gasPrice = feeData.gasPrice;
 
-    if (maxFeePerGas) {
+    if (maxFeePerGas !== undefined) {
       if (gasPrice !== undefined && gasPrice !== null) {
         maxFeePerGas = bigMath.max(gasPrice, maxFeePerGas);
       }
@@ -69,7 +68,7 @@ export async function getGasPrice(provider: Provider, chainId: number): Promise<
       throw new Error("Can't fetch gas price");
     }
 
-    const bufferBps: bigint = GAS_PRICE_BUFFER_MAP[chainId] || 0n;
+    const bufferBps: bigint = GAS_PRICE_BUFFER_MAP[chainId] ?? 0n;
     const buffer = bigMath.mulDiv(gasPrice, bufferBps, BASIS_POINTS_DIVISOR_BIGINT);
 
     return {

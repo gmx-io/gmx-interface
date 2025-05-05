@@ -62,6 +62,7 @@ export const LP_INTERVIEW_INVITATION_SHOWN_TIME_KEY = "lp-interview-invitation-s
  */
 export const TOKEN_FAVORITE_PREFERENCE_SETTINGS_KEY = "token-favorite-preference";
 export const SETTINGS_WARNING_DOT_VISIBLE_KEY = "settings-warning-dot-visible";
+export const EXPRESS_TRADING_GAS_TOKEN_SWITCHED = "express-trading-gas-token-switched";
 
 export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
 export const METRICS_TIMERS_KEY = "metrics-timers-key";

@@ -7,6 +7,7 @@ import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from 
 import {
   DEBUG_SWAP_MARKETS_CONFIG_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
+  EXPRESS_TRADING_GAS_TOKEN_SWITCHED,
   EXTERNAL_SWAPS_ENABLED_KEY,
   IS_AUTO_CANCEL_TPSL_KEY,
   IS_PNL_IN_LEVERAGE_KEY,
@@ -80,6 +81,9 @@ export type SettingsContextType = {
   settingsWarningDotVisible: boolean;
   setSettingsWarningDotVisible: (val: boolean) => void;
 
+  expressTradingGasTokenSwitched: boolean;
+  setExpressTradingGasTokenSwitched: (val: boolean) => void;
+
   debugSwapMarketsConfig:
     | {
         disabledSwapMarkets?: string[];
@@ -132,6 +136,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       },
       {} as { [chainId: number]: number }
     )
+  );
+
+  const [expressTradingGasTokenSwitched, setExpressTradingGasTokenSwitched] = useLocalStorageSerializeKey(
+    EXPRESS_TRADING_GAS_TOKEN_SWITCHED,
+    false
   );
 
   const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(
@@ -272,6 +281,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       settingsWarningDotVisible: settingsWarningDotVisible!,
       setSettingsWarningDotVisible,
+
+      expressTradingGasTokenSwitched: expressTradingGasTokenSwitched!,
+      setExpressTradingGasTokenSwitched,
     };
   }, [
     showDebugValues,
@@ -318,6 +330,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setDebugSwapMarketsConfig,
     settingsWarningDotVisible,
     setSettingsWarningDotVisible,
+    expressTradingGasTokenSwitched,
+    setExpressTradingGasTokenSwitched,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

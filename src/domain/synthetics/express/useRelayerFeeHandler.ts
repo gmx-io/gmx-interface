@@ -21,6 +21,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectExecutionFeeBufferBps,
+  selectSetExpressTradingGasTokenSwitched,
   selectSetSettingsWarningDotVisible,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
@@ -101,6 +102,7 @@ export function useExpressOrdersParams({
   const gasPrice = useSelector(selectGasPrice);
   const gasLimits = useSelector(selectGasLimits);
   const setSettingsWarningDotVisible = useSelector(selectSetSettingsWarningDotVisible);
+  const setExpressTradingGasTokenSwitched = useSelector(selectSetExpressTradingGasTokenSwitched);
 
   const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
 
@@ -202,12 +204,14 @@ export function useExpressOrdersParams({
         if (anotherGasToken) {
           setSettingsWarningDotVisible(true);
           setGasPaymentTokenAddress(anotherGasToken);
+          setExpressTradingGasTokenSwitched(true);
         }
       }
     },
     [
       approximateExpressParams?.expressParams,
       chainId,
+      setExpressTradingGasTokenSwitched,
       setGasPaymentTokenAddress,
       setSettingsWarningDotVisible,
       tokensData,
