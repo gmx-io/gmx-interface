@@ -15,6 +15,7 @@ import {
 import { MarketsInfoData } from "domain/synthetics/markets/types";
 import { hashSubaccountApproval, SignedSubbacountApproval, Subaccount } from "domain/synthetics/subaccount";
 import { SignedTokenPermit, TokensData } from "domain/tokens";
+import { getIsPermitExpired } from "domain/tokens/permitUtils";
 import { ExpressTxnData } from "lib/transactions/sendExpressTransaction";
 import { signTypedData, SignTypedDataParams } from "lib/wallets/signing";
 import GelatoRelayRouterAbi from "sdk/abis/GelatoRelayRouter.json";
@@ -113,6 +114,7 @@ export async function buildAndSignExpressBatchOrderTxn({
     chainId,
     relayPayload: {
       ...relayParamsPayload,
+      tokenPermits: relayParamsPayload.tokenPermits.filter((permit) => !getIsPermitExpired(permit)),
       userNonce: await getRelayRouterNonceForSigner(chainId, messageSigner, subaccountApproval !== undefined),
     },
     paramsLists: getBatchParamsLists(batchParams),

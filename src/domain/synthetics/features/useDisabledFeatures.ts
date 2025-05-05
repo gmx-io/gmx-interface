@@ -5,17 +5,17 @@ import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { gaslessFeatureDisabledKey } from "sdk/configs/dataStore";
 
-export type DisabledFeatures = {
-  relayRouterDisabled: boolean;
-  subaccountRelayRouterDisabled: boolean;
+export type FeaturesSettings = {
+  relayRouterEnabled: boolean;
+  subaccountRelayRouterEnabled: boolean;
 };
 
-export type DisabledFeaturesResult = {
-  disabledFeatures: DisabledFeatures | undefined;
+export type EnabledFeaturesResult = {
+  features: FeaturesSettings | undefined;
 };
 
-export function useDisabledFeaturesRequest(chainId: number): DisabledFeaturesResult {
-  const { data } = useMulticall(chainId, "useDisabledFeatures", {
+export function useEnabledFeaturesRequest(chainId: number): EnabledFeaturesResult {
+  const { data } = useMulticall(chainId, "useEnabledFeatures", {
     key: [],
     refreshInterval: CONFIG_UPDATE_INTERVAL,
     request: {
@@ -36,8 +36,8 @@ export function useDisabledFeaturesRequest(chainId: number): DisabledFeaturesRes
     },
     parseResponse: (result) => {
       return {
-        relayRouterDisabled: result.data.features.relayRouterDisabled.returnValues[0] as boolean,
-        subaccountRelayRouterDisabled: result.data.features.subaccountRelayRouterDisabled.returnValues[0] as boolean,
+        relayRouterEnabled: !result.data.features.relayRouterDisabled.returnValues[0] as boolean,
+        subaccountRelayRouterEnabled: !result.data.features.subaccountRelayRouterDisabled.returnValues[0] as boolean,
       };
     },
   });
@@ -45,15 +45,15 @@ export function useDisabledFeaturesRequest(chainId: number): DisabledFeaturesRes
   return useMemo(() => {
     if (!data) {
       return {
-        disabledFeatures: {
-          relayRouterDisabled: true,
-          subaccountRelayRouterDisabled: true,
+        features: {
+          relayRouterEnabled: false,
+          subaccountRelayRouterEnabled: false,
         },
       };
     }
 
     return {
-      disabledFeatures: data,
+      features: data,
     };
   }, [data]);
 }

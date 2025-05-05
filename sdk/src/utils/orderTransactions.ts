@@ -9,6 +9,7 @@ import { DecreasePositionSwapType, OrderType } from "types/orders";
 import { ContractPrice, ERC20Address } from "types/tokens";
 import { ExternalSwapOutput } from "types/trade";
 
+import { isSwapOrderType } from "./orders";
 import { convertToContractPrice } from "./tokens";
 import { applySlippageToMinOut, applySlippageToPrice } from "./trade";
 
@@ -76,6 +77,7 @@ export type UpdateOrderParams = {
   chainId: number;
   indexTokenAddress: string;
   orderKey: string;
+  orderType: OrderType;
   sizeDeltaUsd: bigint;
   triggerPrice: bigint;
   acceptablePrice: bigint;
@@ -328,7 +330,9 @@ export function buildUpdateOrderPayload(p: UpdateOrderParams): UpdateOrderTxnPar
     updatePayload: {
       orderKey: p.orderKey,
       sizeDeltaUsd: p.sizeDeltaUsd,
-      triggerPrice: convertToContractPrice(p.triggerPrice, indexToken.decimals),
+      triggerPrice: isSwapOrderType(p.orderType)
+        ? (p.triggerPrice as ContractPrice)
+        : convertToContractPrice(p.triggerPrice, indexToken.decimals),
       acceptablePrice: convertToContractPrice(p.acceptablePrice, indexToken.decimals),
       minOutputAmount: p.minOutputAmount,
       autoCancel: p.autoCancel,

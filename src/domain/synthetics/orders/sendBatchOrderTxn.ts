@@ -1,5 +1,4 @@
 import { Signer } from "ethers";
-import { withRetry } from "viem";
 
 import { ExpressParams } from "domain/synthetics/express";
 import { isLimitSwapOrderType } from "domain/synthetics/orders";
@@ -11,12 +10,12 @@ import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import { TxnCallback, TxnEventBuilder } from "lib/transactions/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { getContract } from "sdk/configs/contracts";
+import { sleep } from "sdk/utils/common";
 import { BatchOrderTxnParams, getBatchOrderMulticallPayload } from "sdk/utils/orderTransactions";
 
 import { signerAddressError } from "components/Errors/errorToasts";
 
 import { getOrdersTriggerPriceOverrides, getSimulationPrices, simulateExecution } from "./simulation";
-import { sleep } from "sdk/utils/common";
 
 export type BatchSimulationParams = {
   tokensData: TokensData;
@@ -47,7 +46,8 @@ export async function sendBatchOrderTxn({
 
   try {
     const runSimulation = async () =>
-      simulationParams
+      // TODO: check how to simulate in case of token permits
+      simulationParams && expressParams?.relayParamsPayload.tokenPermits.length === 0
         ? makeBatchOrderSimulation({
             chainId,
             signer,
@@ -57,7 +57,7 @@ export async function sendBatchOrderTxn({
           })
         : Promise.resolve(undefined);
 
-    if (expressParams) {
+    if (expressParams && !expressParams.relayFeeParams.isOutGasTokenBalance) {
       await runSimulation().then(() => callback?.(eventBuilder.Simulated()));
 
       const txnData = await buildAndSignExpressBatchOrderTxn({

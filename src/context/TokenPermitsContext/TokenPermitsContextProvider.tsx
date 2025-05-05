@@ -11,14 +11,11 @@ import { nowInSeconds } from "sdk/utils/time";
 
 export type TokenPermitsState = {
   tokenPermits: SignedTokenPermit[] | undefined;
-  addTokenPermit: (
-    tokenAddress: string,
-    spenderAddress: string,
-    value: bigint,
-    verifyingContract: string
-  ) => Promise<void>;
+  addTokenPermit: AddTokenPermitFn;
   resetTokenPermits: () => void;
 };
+
+export type AddTokenPermitFn = (tokenAddress: string, spenderAddress: string, value: bigint) => Promise<void>;
 
 const TokenPermitsContext = createContext<TokenPermitsState | undefined>(undefined);
 
@@ -36,16 +33,37 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
 
   const [tokenPermits, setTokenPermits] = useLocalStorageSerializeKey<SignedTokenPermit[]>(
     getTokenPermitsKey(chainId),
-    []
+    [],
+    {
+      raw: false,
+      serializer: (val) => {
+        if (!val) {
+          return "";
+        }
+
+        return JSON.stringify(val);
+      },
+      deserializer: (stored) => {
+        if (!stored) {
+          return undefined;
+        }
+
+        try {
+          const parsed = JSON.parse(stored);
+          return parsed.map((permit: any) => ({
+            ...permit,
+            value: BigInt(permit.value),
+            deadline: BigInt(permit.deadline),
+          }));
+        } catch (e) {
+          return undefined;
+        }
+      },
+    }
   );
 
   const state = useMemo(() => {
-    async function addTokenPermit(
-      tokenAddress: string,
-      spenderAddress: string,
-      value: bigint,
-      verifyingContract: string
-    ) {
+    async function addTokenPermit(tokenAddress: string, spenderAddress: string, value: bigint) {
       if (!signer) {
         return;
       }
@@ -58,7 +76,7 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
         nonce: permitParams.nonce,
         domainSeparator: permitParams.domainSeparator,
         deadline: BigInt(nowInSeconds() + DEFAULT_PERMIT_DEADLINE_DURATION),
-        verifyingContract,
+        verifyingContract: tokenAddress,
       });
 
       setTokenPermits((old) => [...(old ?? []), tokenPermit]);

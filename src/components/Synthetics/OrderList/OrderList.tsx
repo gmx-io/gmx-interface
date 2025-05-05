@@ -15,19 +15,18 @@ import {
   selectAccount,
   selectChainId,
   selectGasLimits,
+  selectGasPaymentTokenAllowance,
   selectGasPrice,
+  selectIsSponsoredCallAvailable,
   selectL1ExpressOrderGasReference,
   selectMarketsInfoData,
-  selectSponsoredCallMultiplierFactor,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectRelayFeeTokens } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import {
-  getApproximateEstimatedExpressParams,
-  useGasPaymentTokenAllowanceData,
-} from "domain/synthetics/express/useRelayerFeeHandler";
+import { getApproximateEstimatedExpressParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
   OrderType,
   PositionOrderInfo,
@@ -52,7 +51,6 @@ import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table
 import { OrderItem } from "../OrderItem/OrderItem";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
 import { OrderTypeFilter } from "./filters/OrderTypeFilter";
-import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 
 type Props = {
   hideActions?: boolean;
@@ -95,13 +93,13 @@ export function OrderList({
   const tokensData = useSelector(selectTokensData);
   const relayFeeTokens = useSelector(selectRelayFeeTokens);
   const marketsInfoData = useSelector(selectMarketsInfoData);
-  const sponsoredCallMultiplierFactor = useSelector(selectSponsoredCallMultiplierFactor);
   const gasPrice = useSelector(selectGasPrice);
   const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
   const gasLimits = useSelector(selectGasLimits);
   const l1Reference = useSelector(selectL1ExpressOrderGasReference);
-  const gasPaymentAllowanceData = useGasPaymentTokenAllowanceData(chainId, relayFeeTokens.gasPaymentToken?.address);
+  const gasPaymentAllowance = useSelector(selectGasPaymentTokenAllowance);
   const isExpressEnabled = useSelector(makeSelectIsExpressTransactionAvailable(false));
+  const isSponsoredCallAvailable = useSelector(selectIsSponsoredCallAvailable);
 
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
 
@@ -165,7 +163,7 @@ export function OrderList({
     if (!signer) return;
     setCancellingOrdersKeys((prev) => [...prev, key]);
 
-    const expressTxnParams = isExpressEnabled
+    let approximateExpressParams = isExpressEnabled
       ? await getApproximateEstimatedExpressParams({
           signer,
           chainId,
@@ -180,14 +178,19 @@ export function OrderList({
           marketsInfoData,
           tokenPermits: [],
           findSwapPath: relayFeeTokens.findSwapPath,
-          sponsoredCallMultiplierFactor,
           gasPrice,
-          gasPaymentAllowanceData,
+          gasPaymentAllowanceData: gasPaymentAllowance?.tokensAllowanceData,
           gasLimits,
           l1Reference,
           bufferBps: executionFeeBufferBps,
+          isSponsoredCall: isSponsoredCallAvailable,
         })
       : undefined;
+
+    // There is no UI to request an approval
+    if (approximateExpressParams?.expressParams?.relayFeeParams.needGasPaymentTokenApproval) {
+      approximateExpressParams = undefined;
+    }
 
     sendBatchOrderTxn({
       chainId,
@@ -197,7 +200,7 @@ export function OrderList({
         updateOrderParams: [],
         cancelOrderParams: [{ orderKey: key }],
       },
-      expressParams: expressTxnParams?.expressParams,
+      expressParams: approximateExpressParams?.expressParams,
       simulationParams: undefined,
       callback: makeOrderTxnCallback({}),
     }).finally(() => {

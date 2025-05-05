@@ -1,12 +1,12 @@
 import { Contract, Signer, ethers } from "ethers";
+import { decodeFunctionResult } from "viem";
 
-import { getChainName } from "config/chains";
 import { signTypedData, splitSignature } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
 import ERC20PermitInterfaceAbi from "sdk/abis/ERC20PermitInterface.json";
 import { getContract } from "sdk/configs/contracts";
 import { SignedTokenPermit } from "sdk/types/tokens";
-import { ZERO_DATA } from "sdk/utils/hash";
+import { nowInSeconds } from "sdk/utils/time";
 
 export async function createAndSignTokenPermit(
   chainId: number,
@@ -62,12 +62,16 @@ export async function createAndSignTokenPermit(
     token: tokenAddress,
     owner,
     spender,
-    value,
+    value: value,
     deadline: permitData.deadline,
     v,
     r,
     s,
   };
+}
+
+export function getIsPermitExpired(permit: SignedTokenPermit) {
+  return Number(permit.deadline) < nowInSeconds();
 }
 
 /**
@@ -92,15 +96,16 @@ export async function getTokenPermitParams(
 
   const results = await multicall.tryAggregate.staticCall(true, Object.values(checks));
 
-  const params = Object.fromEntries(Object.entries(checks).map(([key], index) => [key, results[index][1]]));
-
-  const isValid = [params.typeHash, params.domainSeparator, params.name, params.version, params.nonce].every(
-    (value) => typeof value === "string" && value !== ZERO_DATA
-  );
-
-  if (!isValid) {
-    throw new Error(`Invalid token permit params for ${getChainName(chainId)} token: ${token}`);
-  }
+  const params = Object.fromEntries(
+    Object.entries(checks).map(([key], index) => [
+      key,
+      decodeFunctionResult({
+        abi: ERC20PermitInterfaceAbi.abi,
+        data: results[index][1],
+        functionName: checks[key].methodName,
+      }),
+    ])
+  ) as any;
 
   return {
     typeHash: params.typeHash,
@@ -115,24 +120,19 @@ export function getTokenPermitParamsCalls(tokenAddress: string, owner: string) {
   const tokenContract = new Contract(tokenAddress, ERC20PermitInterfaceAbi.abi);
 
   return {
-    typeHash: {
-      target: tokenAddress,
-      callData: tokenContract.interface.encodeFunctionData("PERMIT_TYPEHASH", []),
-    },
-    domainSeparator: {
-      target: tokenAddress,
-      callData: tokenContract.interface.encodeFunctionData("DOMAIN_SEPARATOR", []),
-    },
     nonce: {
       target: tokenAddress,
+      methodName: "nonces",
       callData: tokenContract.interface.encodeFunctionData("nonces", [owner]),
     },
     name: {
       target: tokenAddress,
+      methodName: "name",
       callData: tokenContract.interface.encodeFunctionData("name", []),
     },
     version: {
       target: tokenAddress,
+      methodName: "version",
       callData: tokenContract.interface.encodeFunctionData("version", []),
     },
   };

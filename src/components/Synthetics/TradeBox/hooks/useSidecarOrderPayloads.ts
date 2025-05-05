@@ -72,6 +72,7 @@ export function useSidecarOrderPayloads() {
         chainId,
         indexTokenAddress: marketInfo.indexTokenAddress,
         orderKey: order.key,
+        orderType: order.orderType,
         sizeDeltaUsd: amounts.sizeDeltaUsd ?? 0n,
         triggerPrice: amounts.triggerPrice ?? 0n,
         acceptablePrice: amounts.acceptablePrice ?? 0n,

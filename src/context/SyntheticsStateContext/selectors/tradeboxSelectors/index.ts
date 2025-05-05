@@ -1276,7 +1276,7 @@ export const selectNeedTradeboxPayTokenApproval = createSelector((q) => {
   const payAmount = q(selectTradeboxPayAmount);
   const tokensAllowance = q(selectTradeboxTokensAllowance);
 
-  return getNeedTokenApprove(tokensAllowance.tokensAllowanceData, fromTokenAddress, payAmount);
+  return getNeedTokenApprove(tokensAllowance.tokensAllowanceData, fromTokenAddress, payAmount, []);
 });
 
 export const selectTradeboxChooseSuitableMarket = createSelector((q) => {

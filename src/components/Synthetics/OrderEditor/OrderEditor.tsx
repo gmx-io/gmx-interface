@@ -1,6 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useKey } from "react-use";
+import { zeroAddress } from "viem";
 
 import { BASIS_POINTS_DIVISOR, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS, USD_DECIMALS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -72,7 +73,7 @@ import {
 } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { getIncreasePositionAmounts, getNextPositionValuesForIncreaseTrade } from "domain/synthetics/trade";
-import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
+import { getExpressError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
 import { TokensRatioAndSlippage } from "domain/tokens";
 import { numericBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
@@ -200,34 +201,6 @@ export function OrderEditor(p: Props) {
 
   const priceImpactFeeBps = useSelector(selectOrderEditorPriceImpactFeeBps);
 
-  function getError() {
-    if (isSubmitting) {
-      return t`Updating Order...`;
-    }
-
-    if (isSwapOrderType(p.order.orderType)) {
-      if (triggerRatio?.ratio === undefined || triggerRatio?.ratio < 0 || minOutputAmount <= 0) {
-        return t`Enter a ratio`;
-      }
-
-      if (minOutputAmount === p.order.minOutputAmount) {
-        return t`Enter a new ratio or allowed slippage`;
-      }
-
-      if (triggerRatio && !isRatioInverted && markRatio && markRatio.ratio < triggerRatio.ratio) {
-        return t`Limit price above mark price`;
-      }
-
-      if (triggerRatio && isRatioInverted && markRatio && markRatio.ratio > triggerRatio.ratio) {
-        return t`Limit price below mark price`;
-      }
-
-      return;
-    }
-
-    return calcSelector(selectOrderEditorPositionOrderError);
-  }
-
   function getIsMaxLeverageError() {
     if (isLimitIncreaseOrderType(p.order.orderType) && sizeDeltaUsd !== undefined) {
       if (nextPositionValuesWithoutPnlForIncrease?.nextLeverage === undefined) {
@@ -323,6 +296,92 @@ export function OrderEditor(p: Props) {
     }
   }
 
+  const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
+    if (!signer || !tokensData || !marketsInfoData) {
+      return undefined;
+    }
+
+    const positionOrder = p.order as PositionOrderInfo;
+
+    const orderTriggerPrice = isSwapOrderType(p.order.orderType)
+      ? triggerRatio?.ratio ?? triggerPrice ?? positionOrder.triggerPrice
+      : triggerPrice ?? positionOrder.triggerPrice;
+
+    const updateOrderParams = buildUpdateOrderPayload({
+      chainId,
+      indexTokenAddress: isSwapOrderType(p.order.orderType) ? zeroAddress : positionOrder.indexToken.address,
+      orderKey: p.order.key,
+      orderType: p.order.orderType,
+      sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
+      triggerPrice: orderTriggerPrice,
+      acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
+      minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
+      autoCancel: positionOrder.autoCancel,
+      validFromTime: 0n,
+      executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
+    });
+
+    return {
+      createOrderParams: [],
+      updateOrderParams: [updateOrderParams],
+      cancelOrderParams: [],
+    };
+  }, [
+    signer,
+    tokensData,
+    marketsInfoData,
+    p.order,
+    triggerRatio?.ratio,
+    triggerPrice,
+    chainId,
+    sizeDeltaUsd,
+    acceptablePrice,
+    minOutputAmount,
+    additionalExecutionFee?.feeTokenAmount,
+  ]);
+
+  const { expressParams } = useExpressOrdersParams({
+    orderParams: batchParams,
+  });
+
+  function getError() {
+    if (isSubmitting) {
+      return t`Updating Order...`;
+    }
+
+    if (isSwapOrderType(p.order.orderType)) {
+      if (triggerRatio?.ratio === undefined || triggerRatio?.ratio < 0 || minOutputAmount <= 0) {
+        return t`Enter a ratio`;
+      }
+
+      if (minOutputAmount === p.order.minOutputAmount) {
+        return t`Enter a new ratio or allowed slippage`;
+      }
+
+      if (triggerRatio && !isRatioInverted && markRatio && markRatio.ratio < triggerRatio.ratio) {
+        return t`Limit price above mark price`;
+      }
+
+      if (triggerRatio && isRatioInverted && markRatio && markRatio.ratio > triggerRatio.ratio) {
+        return t`Limit price below mark price`;
+      }
+
+      const expressError = getExpressError({
+        chainId,
+        expressParams,
+        tokensData,
+      });
+
+      if (expressError[0]) {
+        return expressError[0];
+      }
+
+      return;
+    }
+
+    return calcSelector(selectOrderEditorPositionOrderError);
+  }
+
   function getSubmitButtonState(): { text: ReactNode; disabled?: boolean; tooltip?: ReactNode; onClick?: () => void } {
     const error = getError();
     const isMaxLeverageError = getIsMaxLeverageError();
@@ -360,53 +419,6 @@ export function OrderEditor(p: Props) {
       onClick: onSubmit,
     };
   }
-
-  const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
-    if (!signer || !tokensData || !marketsInfoData) {
-      return undefined;
-    }
-
-    const positionOrder = p.order as PositionOrderInfo;
-
-    const orderTriggerPrice = isSwapOrderType(p.order.orderType)
-      ? triggerRatio?.ratio ?? triggerPrice ?? positionOrder.triggerPrice
-      : triggerPrice ?? positionOrder.triggerPrice;
-
-    const updateOrderParams = buildUpdateOrderPayload({
-      chainId,
-      indexTokenAddress: positionOrder.indexToken.address,
-      orderKey: p.order.key,
-      sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
-      triggerPrice: orderTriggerPrice,
-      acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
-      minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
-      autoCancel: positionOrder.autoCancel,
-      validFromTime: 0n,
-      executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
-    });
-
-    return {
-      createOrderParams: [],
-      updateOrderParams: [updateOrderParams],
-      cancelOrderParams: [],
-    };
-  }, [
-    signer,
-    tokensData,
-    marketsInfoData,
-    p.order,
-    triggerRatio?.ratio,
-    triggerPrice,
-    chainId,
-    sizeDeltaUsd,
-    acceptablePrice,
-    minOutputAmount,
-    additionalExecutionFee?.feeTokenAmount,
-  ]);
-
-  const { expressParams } = useExpressOrdersParams({
-    orderParams: batchParams,
-  });
 
   function onSubmit() {
     if (!batchParams || !signer || !tokensData || !marketsInfoData) {

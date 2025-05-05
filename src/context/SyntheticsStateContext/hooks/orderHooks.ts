@@ -1,10 +1,7 @@
 import uniq from "lodash/uniq";
 import { useCallback, useMemo } from "react";
 
-import {
-  getApproximateEstimatedExpressParams,
-  useGasPaymentTokenAllowanceData,
-} from "domain/synthetics/express/useRelayerFeeHandler";
+import { getApproximateEstimatedExpressParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
@@ -14,10 +11,11 @@ import {
   makeSelectSubaccountForActions,
   selectChainId,
   selectGasLimits,
+  selectGasPaymentTokenAllowance,
   selectGasPrice,
+  selectIsSponsoredCallAvailable,
   selectL1ExpressOrderGasReference,
   selectMarketsInfoData,
-  selectSponsoredCallMultiplierFactor,
   selectTokensData,
 } from "../selectors/globalSelectors";
 import {
@@ -26,9 +24,9 @@ import {
   selectOrderErrorsByOrderKeyMap,
   selectOrderErrorsCount,
 } from "../selectors/orderSelectors";
+import { selectExecutionFeeBufferBps } from "../selectors/settingsSelectors";
 import { selectRelayFeeTokens } from "../selectors/tradeSelectors";
 import { useSelector } from "../utils";
-import { selectExecutionFeeBufferBps } from "../selectors/settingsSelectors";
 import { useCancellingOrdersKeysState } from "./orderEditorHooks";
 
 export const useOrderErrors = (orderKey: string) => {
@@ -51,16 +49,16 @@ export function useCancelOrder(orderKey: string) {
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tokensData = useSelector(selectTokensData);
-  const sponsoredCallMultiplierFactor = useSelector(selectSponsoredCallMultiplierFactor);
   const gasPrice = useSelector(selectGasPrice);
   const relayFeeTokens = useSelector(selectRelayFeeTokens);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const subaccount = useSelector(makeSelectSubaccountForActions(1));
-  const gasPaymentAllowanceData = useGasPaymentTokenAllowanceData(chainId, relayFeeTokens.gasPaymentToken?.address);
+  const gasPaymentAllowance = useSelector(selectGasPaymentTokenAllowance);
   const gasLimits = useSelector(selectGasLimits);
   const l1Reference = useSelector(selectL1ExpressOrderGasReference);
   const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
   const isExpressEnabled = useSelector(makeSelectIsExpressTransactionAvailable(false));
+  const isSponsoredCallAvailable = useSelector(selectIsSponsoredCallAvailable);
 
   const isCancelOrderProcessing = cancellingOrdersKeys.includes(orderKey);
 
@@ -70,7 +68,7 @@ export function useCancelOrder(orderKey: string) {
 
       setCancellingOrdersKeys((p) => uniq(p.concat(orderKey)));
 
-      const fastExpressParams = isExpressEnabled
+      let approximateExpressParams = isExpressEnabled
         ? await getApproximateEstimatedExpressParams({
             signer,
             chainId,
@@ -85,14 +83,19 @@ export function useCancelOrder(orderKey: string) {
             marketsInfoData,
             tokenPermits: [],
             findSwapPath: relayFeeTokens.findSwapPath,
-            sponsoredCallMultiplierFactor,
             gasPrice,
-            gasPaymentAllowanceData,
+            gasPaymentAllowanceData: gasPaymentAllowance?.tokensAllowanceData,
             gasLimits,
             l1Reference,
             bufferBps: executionFeeBufferBps,
+            isSponsoredCall: isSponsoredCallAvailable,
           })
         : undefined;
+
+      // There is no UI to request an approval
+      if (approximateExpressParams?.expressParams?.relayFeeParams.needGasPaymentTokenApproval) {
+        approximateExpressParams = undefined;
+      }
 
       sendBatchOrderTxn({
         chainId,
@@ -102,7 +105,7 @@ export function useCancelOrder(orderKey: string) {
           updateOrderParams: [],
           cancelOrderParams: [{ orderKey }],
         },
-        expressParams: fastExpressParams?.expressParams,
+        expressParams: approximateExpressParams?.expressParams,
         simulationParams: undefined,
         callback: makeOrderTxnCallback({}),
       }).finally(() => {
@@ -113,8 +116,10 @@ export function useCancelOrder(orderKey: string) {
       chainId,
       executionFeeBufferBps,
       gasLimits,
-      gasPaymentAllowanceData,
+      gasPaymentAllowance?.tokensAllowanceData,
       gasPrice,
+      isExpressEnabled,
+      isSponsoredCallAvailable,
       l1Reference,
       makeOrderTxnCallback,
       marketsInfoData,
@@ -123,7 +128,6 @@ export function useCancelOrder(orderKey: string) {
       relayFeeTokens.gasPaymentToken?.address,
       setCancellingOrdersKeys,
       signer,
-      sponsoredCallMultiplierFactor,
       subaccount,
       tokensData,
     ]

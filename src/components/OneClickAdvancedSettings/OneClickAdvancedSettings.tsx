@@ -13,7 +13,7 @@ import { ExpandableRow } from "components/Synthetics/ExpandableRow";
 export function OneClickAdvancedSettings() {
   const { subaccount, updateSubaccountSettings } = useSubaccountContext();
 
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const { displayValue: remainingActionsString, setDisplayValue: setRemainingActionsString } = useBigNumberInput(
     0n,
@@ -22,6 +22,28 @@ export function OneClickAdvancedSettings() {
   );
 
   const { displayValue: daysLimitString, setDisplayValue: setDaysLimitString } = useBigNumberInput(0n, 0, 0);
+
+  const onChangeRemainingActions = useCallback(
+    (value: string) => {
+      if (value === "") {
+        setRemainingActionsString("0");
+      } else {
+        setRemainingActionsString(String(parseInt(value)));
+      }
+    },
+    [setRemainingActionsString]
+  );
+
+  const onChangeDaysLimit = useCallback(
+    (value: string) => {
+      if (value === "") {
+        setDaysLimitString("0");
+      } else {
+        setDaysLimitString(String(parseInt(value)));
+      }
+    },
+    [setDaysLimitString]
+  );
 
   const handleSave = useCallback(() => {
     if (!subaccount) {
@@ -68,9 +90,7 @@ export function OneClickAdvancedSettings() {
         <div className="mt-12">
           <InputRow
             value={remainingActionsString}
-            setValue={(value) => {
-              setRemainingActionsString(value);
-            }}
+            setValue={onChangeRemainingActions}
             label="Remained Allowed Actions"
             symbol="Actions"
             placeholder="0"
@@ -79,9 +99,7 @@ export function OneClickAdvancedSettings() {
 
           <InputRow
             value={daysLimitString}
-            setValue={(value) => {
-              setDaysLimitString(value);
-            }}
+            setValue={onChangeDaysLimit}
             label="Time Limit"
             symbol="Days"
             placeholder="0"
@@ -93,7 +111,7 @@ export function OneClickAdvancedSettings() {
             variant="primary-action"
             className="mt-6 h-36 w-full bg-blue-600 py-3 text-white"
           >
-            <Trans>Save limit settings</Trans>
+            <Trans>Save settings</Trans>
           </Button>
         </div>
       </ExpandableRow>

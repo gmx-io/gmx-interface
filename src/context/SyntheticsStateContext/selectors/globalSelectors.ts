@@ -1,4 +1,4 @@
-import { DisabledFeatures } from "domain/synthetics/features/useDisabledFeatures";
+import { FeaturesSettings } from "domain/synthetics/features/useDisabledFeatures";
 import { getIsSubaccountActionsExceeded, getIsSubaccountExpired } from "domain/synthetics/subaccount";
 import { getRelayerFeeToken } from "sdk/configs/express";
 import { getByKey } from "sdk/utils/objects";
@@ -21,10 +21,12 @@ export const selectUserReferralInfo = (s: SyntheticsState) => s.globals.userRefe
 export const selectChainId = (s: SyntheticsState) => s.globals.chainId;
 export const selectDepositMarketTokensData = (s: SyntheticsState) => s.globals.depositMarketTokensData;
 export const selectIsFirstOrder = (s: SyntheticsState) => s.globals.isFirstOrder;
-export const selectDisabledFeatures = (s: SyntheticsState) => s.disabledFeatures;
-export const selectSponsoredCallParams = (s: SyntheticsState) => s.sponsoredCallParams;
+export const selectFeatures = (s: SyntheticsState) => s.features;
+export const selectIsSponsoredCallAvailable = (s: SyntheticsState) =>
+  s.sponsoredCallBalanceData?.isSponsoredCallAllowed ?? false;
 export const selectSubaccountState = (s: SyntheticsState) => s.subaccountState;
 export const selectRawSubaccount = (s: SyntheticsState) => s.subaccountState.subaccount;
+export const selectGasPaymentTokenAllowance = (s: SyntheticsState) => s.gasPaymentTokenAllowance;
 
 export const selectUpdateSubaccountSettings = (s: SyntheticsState) => s.subaccountState.updateSubaccountSettings;
 export const selectResetSubaccountApproval = (s: SyntheticsState) => s.subaccountState.resetSubaccountApproval;
@@ -32,18 +34,10 @@ export const selectGenerateSubaccountIfNotExists = (s: SyntheticsState) => s.sub
 
 export const selectL1ExpressOrderGasReference = (s: SyntheticsState) => s.l1ExpressOrderGasReference;
 
-export const selectSponsoredCallMultiplierFactor = (s: SyntheticsState) => {
-  if (!s.sponsoredCallParams?.isSponsoredCallAllowed) {
-    return undefined;
-  }
-
-  return s.sponsoredCallParams.gelatoRelayFeeMultiplierFactor;
-};
-
-export const makeSelectDisableFeature = (feature: keyof DisabledFeatures) => {
+export const makeSelectEnabledFeature = (feature: keyof FeaturesSettings) => {
   return createSelector((q) => {
-    const disabledFeatures = q(selectDisabledFeatures);
-    return disabledFeatures?.[feature] ?? false;
+    const features = q(selectFeatures);
+    return features?.[feature] ?? false;
   });
 };
 
@@ -114,10 +108,10 @@ export const selectPositiveFeePositionsSortedByUsd = createSelector((q) => {
 export const makeSelectSubaccountForActions = (requiredActions: number) => {
   return createSelector((q) => {
     const subaccount = q(selectRawSubaccount);
-    const isDisabled = q(makeSelectDisableFeature("subaccountRelayRouterDisabled"));
+    const isEnabled = q(makeSelectEnabledFeature("subaccountRelayRouterEnabled"));
 
     if (
-      isDisabled ||
+      !isEnabled ||
       !subaccount ||
       getIsSubaccountActionsExceeded(subaccount, requiredActions) ||
       getIsSubaccountExpired(subaccount)
@@ -146,7 +140,7 @@ export const makeSelectIsExpressTransactionAvailable = (isNativePayment: boolean
   createSelector((q) => {
     const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
 
-    const isFeatureDisabled = q(makeSelectDisableFeature("relayRouterDisabled"));
+    const isFeatureEnabled = q(makeSelectEnabledFeature("relayRouterEnabled"));
     const gasPaymentToken = q(selectGasPaymentToken);
     const isZeroGasBalance = gasPaymentToken?.balance === 0n || gasPaymentToken?.balance === undefined;
 
@@ -154,5 +148,5 @@ export const makeSelectIsExpressTransactionAvailable = (isNativePayment: boolean
       return false;
     }
 
-    return isExpressOrdersEnabledSetting && !isFeatureDisabled && !isZeroGasBalance;
+    return isExpressOrdersEnabledSetting && isFeatureEnabled && !isZeroGasBalance;
   });

@@ -44,7 +44,8 @@ export function getNeedGasPaymentTokenApproval(
   return getNeedTokenApprove(
     expressContractAllowance,
     relayFeeParams.gasPaymentTokenAddress,
-    relayFeeParams.gasPaymentTokenAmount
+    relayFeeParams.gasPaymentTokenAmount,
+    []
   );
 }
 
@@ -138,7 +139,8 @@ export function getRelayerFeeParams({
   const needGasPaymentTokenApproval = getNeedTokenApprove(
     gasPaymentAllowanceData,
     gasPaymentTokenAddress,
-    gasPaymentTokenAmount
+    gasPaymentTokenAmount,
+    []
   );
 
   return {

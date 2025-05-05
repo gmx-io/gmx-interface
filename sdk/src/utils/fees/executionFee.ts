@@ -3,9 +3,9 @@ import { USD_DECIMALS } from "configs/factors";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { ExecutionFee, GasLimitsConfig, L1ExpressOrderGasReference } from "types/fees";
 import { DecreasePositionSwapType } from "types/orders";
-import { TokensData } from "types/tokens";
+import { TokenData, TokensData } from "types/tokens";
 import { applyFactor, expandDecimals } from "utils/numbers";
-import { convertToUsd, getTokenData } from "utils/tokens";
+import { convertToTokenAmount, convertToUsd, getTokenData } from "utils/tokens";
 
 export function getExecutionFee(
   chainId: number,
@@ -89,14 +89,51 @@ export function estimateExpressBatchOrderGasLimit({
   let l1GasLimit = 0n;
 
   if (l1Reference) {
-    l1GasLimit = BigInt(
-      Math.round(
-        (Number(l1Reference.gasLimit) * Math.log(Number(sizeOfData))) / Math.log(Number(l1Reference.sizeOfData))
-      )
+    const evaluated = Math.round(
+      (Number(l1Reference.gasLimit) * Math.log(Number(sizeOfData))) / Math.log(Number(l1Reference.sizeOfData))
     );
+    l1GasLimit = Math.abs(evaluated) < Infinity ? BigInt(evaluated) : 0n;
   }
 
   return totalGasLimit + l1GasLimit;
+}
+
+export function estimateMinGasPaymentTokenBalance({
+  gasPaymentToken,
+  relayFeeToken,
+  gasPrice,
+  gasLimits,
+  l1Reference,
+}: {
+  gasLimits: GasLimitsConfig;
+  gasPaymentToken: TokenData;
+  relayFeeToken: TokenData;
+  gasPrice: bigint;
+  l1Reference: L1ExpressOrderGasReference | undefined;
+}) {
+  const minGasLimit = estimateExpressBatchOrderGasLimit({
+    gasLimits,
+    createOrdersCount: 1,
+    updateOrdersCount: 0,
+    cancelOrdersCount: 0,
+    feeSwapsCount: 1,
+    externalSwapGasLimit: 0n,
+    oraclePriceCount: 2,
+    isSubaccount: false,
+    sizeOfData: 0n,
+    l1Reference,
+  });
+
+  const minFee = minGasLimit * gasPrice;
+
+  const minFeeUsd = convertToUsd(minFee, relayFeeToken.decimals, relayFeeToken.prices.minPrice)!;
+  const minGasPaymentTokenBalance = convertToTokenAmount(
+    minFeeUsd,
+    gasPaymentToken.decimals,
+    gasPaymentToken.prices.minPrice
+  )!;
+
+  return minGasPaymentTokenBalance;
 }
 
 /**

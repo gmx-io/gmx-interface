@@ -11,6 +11,7 @@ import {
   IS_AUTO_CANCEL_TPSL_KEY,
   IS_PNL_IN_LEVERAGE_KEY,
   ORACLE_KEEPER_INSTANCES_CONFIG_KEY,
+  SETTINGS_WARNING_DOT_VISIBLE_KEY,
   SHOULD_SHOW_POSITION_LINES_KEY,
   SHOW_DEBUG_VALUES_KEY,
   SHOW_PNL_AFTER_FEES_KEY,
@@ -76,6 +77,9 @@ export type SettingsContextType = {
   externalSwapsEnabled: boolean;
   setExternalSwapsEnabled: (val: boolean) => void;
 
+  settingsWarningDotVisible: boolean;
+  setSettingsWarningDotVisible: (val: boolean) => void;
+
   debugSwapMarketsConfig:
     | {
         disabledSwapMarkets?: string[];
@@ -107,6 +111,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   const [hasOverriddenDefaultArb30ExecutionFeeBufferBpsKey, setHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey] =
     useLocalStorageSerializeKey(getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey(chainId), false);
+
+  const [settingsWarningDotVisible, setSettingsWarningDotVisible] = useLocalStorageSerializeKey(
+    SETTINGS_WARNING_DOT_VISIBLE_KEY,
+    false
+  );
 
   let [executionFeeBufferBps, setExecutionFeeBufferBps] = useLocalStorageSerializeKey(
     getExecutionFeeBufferBpsKey(chainId),
@@ -260,6 +269,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       debugSwapMarketsConfig: debugSwapMarketsConfig!,
       setDebugSwapMarketsConfig,
+
+      settingsWarningDotVisible: settingsWarningDotVisible!,
+      setSettingsWarningDotVisible,
     };
   }, [
     showDebugValues,
@@ -304,6 +316,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setExternalSwapsEnabled,
     debugSwapMarketsConfig,
     setDebugSwapMarketsConfig,
+    settingsWarningDotVisible,
+    setSettingsWarningDotVisible,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

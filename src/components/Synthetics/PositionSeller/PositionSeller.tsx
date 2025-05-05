@@ -1,7 +1,8 @@
-import { Trans, msg, t } from "@lingui/macro";
+import { msg, t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { ImSpinner2 } from "react-icons/im";
 import { useKey, useLatest } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
@@ -18,9 +19,11 @@ import {
   usePositionSellerKeepLeverage,
   usePositionSellerLeverageDisabledByCollateral,
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
+import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import {
   makeSelectSubaccountForActions,
   selectBlockTimestampData,
+  selectGasPaymentTokenAllowance,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
@@ -39,6 +42,10 @@ import {
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
+  selectAddTokenPermit,
+  selectTokenPermits,
+} from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
+import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -48,15 +55,17 @@ import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage, formatLiquidationPrice, getNameByOrderType } from "domain/synthetics/positions";
+import { getApprovalRequirements } from "domain/synthetics/tokens";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
-import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/validation";
-import { Token } from "domain/tokens";
+import { getCommonError, getDecreaseError, getExpressError } from "domain/synthetics/trade/utils/validation";
+import { approveTokens, Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
+import { throttleLog } from "lib/logging";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
 import {
   calculateDisplayDecimals,
@@ -64,14 +73,16 @@ import {
   formatAmountFree,
   formatDeltaUsd,
   formatPercentage,
-  formatTokenAmount,
   formatUsd,
   parseValue,
 } from "lib/numbers";
 import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { userAnalytics } from "lib/userAnalytics";
+import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
-import { convertTokenAddress, getTokenVisualMultiplier } from "sdk/configs/tokens";
+import { getContract } from "sdk/configs/contracts";
+import { convertTokenAddress, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { BatchOrderTxnParams, buildDecreaseOrderPayload } from "sdk/utils/orderTransactions";
 
@@ -91,8 +102,6 @@ import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 
 import "./PositionSeller.scss";
-import { throttleLog } from "lib/logging";
-import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 
 const ORDER_OPTION_LABELS = {
   [OrderOption.Market]: msg`Market`,
@@ -101,6 +110,7 @@ const ORDER_OPTION_LABELS = {
 
 export function PositionSeller() {
   const [, setClosingPositionKey] = useClosingPositionKeyState();
+  const [isApproving, setIsApproving] = useState(false);
 
   const onClose = useCallback(() => {
     setClosingPositionKey(undefined);
@@ -123,6 +133,9 @@ export function PositionSeller() {
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const showDebugValues = useShowDebugValues();
+  const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
+  const tokenPermits = useSelector(selectTokenPermits);
+  const addTokenPermit = useSelector(selectAddTokenPermit);
 
   const isVisible = Boolean(position);
 
@@ -231,58 +244,6 @@ export function PositionSeller() {
     }
   }, [setIsDismissedLatestRef, isVisible, orderOption]);
 
-  const error = useMemo(() => {
-    if (!position) {
-      return undefined;
-    }
-
-    const commonError = getCommonError({
-      chainId,
-      isConnected: Boolean(account),
-      hasOutdatedUi,
-    });
-
-    const decreaseError = getDecreaseError({
-      marketInfo: position.marketInfo,
-      inputSizeUsd: closeSizeUsd,
-      sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
-      receiveToken,
-      isTrigger,
-      triggerPrice,
-      triggerThresholdType: undefined,
-      existingPosition: position,
-      markPrice,
-      nextPositionValues,
-      isLong: position.isLong,
-      isContractAccount: false,
-      minCollateralUsd,
-      isNotEnoughReceiveTokenLiquidity,
-    });
-
-    if (commonError[0] || decreaseError[0]) {
-      return commonError[0] || decreaseError[0];
-    }
-
-    if (isSubmitting) {
-      return t`Creating Order...`;
-    }
-  }, [
-    account,
-    chainId,
-    closeSizeUsd,
-    decreaseAmounts?.sizeDeltaUsd,
-    hasOutdatedUi,
-    isNotEnoughReceiveTokenLiquidity,
-    isSubmitting,
-    isTrigger,
-    markPrice,
-    minCollateralUsd,
-    nextPositionValues,
-    position,
-    receiveToken,
-    triggerPrice,
-  ]);
-
   const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: position?.key });
 
   const subaccount = useSelector(makeSelectSubaccountForActions(1));
@@ -367,7 +328,11 @@ export function PositionSeller() {
     userReferralInfo?.referralCodeForTxn,
   ]);
 
-  const { expressParams, expressEstimateMethod } = useExpressOrdersParams({
+  const {
+    expressParams,
+    expressEstimateMethod,
+    isLoading: isExpressLoading,
+  } = useExpressOrdersParams({
     orderParams: batchParams,
   });
 
@@ -378,9 +343,136 @@ export function PositionSeller() {
     });
   }
 
+  const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
+    if (!batchParams) {
+      return { tokensToApprove: [], isAllowanceLoaded: false };
+    }
+
+    const approvalRequirements = getApprovalRequirements({
+      chainId,
+      payTokenParamsList: [],
+      gasPaymentTokenParams: expressParams?.relayFeeParams
+        ? {
+            tokenAddress: expressParams.relayFeeParams.gasPaymentTokenAddress,
+            amount: expressParams.relayFeeParams.gasPaymentTokenAmount,
+            allowanceData: gasPaymentTokenAllowance?.tokensAllowanceData,
+            isAllowanceLoaded: gasPaymentTokenAllowance?.isLoaded,
+          }
+        : undefined,
+      permits: expressParams && tokenPermits ? tokenPermits : [],
+    });
+
+    return approvalRequirements;
+  }, [
+    batchParams,
+    chainId,
+    expressParams,
+    gasPaymentTokenAllowance?.isLoaded,
+    gasPaymentTokenAllowance?.tokensAllowanceData,
+    tokenPermits,
+  ]);
+
+  const error = useMemo(() => {
+    if (!position) {
+      return undefined;
+    }
+
+    const commonError = getCommonError({
+      chainId,
+      isConnected: Boolean(account),
+      hasOutdatedUi,
+    });
+
+    const expressError = getExpressError({
+      chainId,
+      expressParams,
+      tokensData,
+    });
+
+    const decreaseError = getDecreaseError({
+      marketInfo: position.marketInfo,
+      inputSizeUsd: closeSizeUsd,
+      sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
+      receiveToken,
+      isTrigger,
+      triggerPrice,
+      triggerThresholdType: undefined,
+      existingPosition: position,
+      markPrice,
+      nextPositionValues,
+      isLong: position.isLong,
+      isContractAccount: false,
+      minCollateralUsd,
+      isNotEnoughReceiveTokenLiquidity,
+    });
+
+    if (commonError[0] || decreaseError[0] || expressError[0]) {
+      return commonError[0] || decreaseError[0] || expressError[0];
+    }
+
+    if (isSubmitting) {
+      return t`Creating Order...`;
+    }
+  }, [
+    account,
+    chainId,
+    closeSizeUsd,
+    decreaseAmounts?.sizeDeltaUsd,
+    expressParams,
+    hasOutdatedUi,
+    isNotEnoughReceiveTokenLiquidity,
+    isSubmitting,
+    isTrigger,
+    markPrice,
+    minCollateralUsd,
+    nextPositionValues,
+    position,
+    receiveToken,
+    tokensData,
+    triggerPrice,
+  ]);
+
   function onSubmit() {
     if (!account) {
       openConnectModal?.();
+      return;
+    }
+
+    if (isAllowanceLoaded && tokensToApprove.length) {
+      if (!chainId || isApproving) return;
+
+      userAnalytics.pushEvent<TokenApproveClickEvent>({
+        event: "TokenApproveAction",
+        data: {
+          action: "ApproveClick",
+        },
+      });
+
+      approveTokens({
+        setIsApproving,
+        signer,
+        tokenAddress: tokensToApprove[0].tokenAddress,
+        spender: getContract(chainId, "SyntheticsRouter"),
+        pendingTxns: [],
+        setPendingTxns: () => null,
+        infoTokens: {},
+        chainId,
+        permitParams: expressParams
+          ? {
+              addTokenPermit,
+            }
+          : undefined,
+        approveAmount: undefined,
+        onApproveFail: () => {
+          userAnalytics.pushEvent<TokenApproveResultEvent>({
+            event: "TokenApproveAction",
+            data: {
+              action: "ApproveFail",
+            },
+          });
+        },
+      });
+
       return;
     }
 
@@ -482,6 +574,12 @@ export function PositionSeller() {
       latestOnSubmit,
     ]
   );
+
+  useEffect(() => {
+    if (!tokensToApprove.length && isApproving) {
+      setIsApproving(false);
+    }
+  }, [isApproving, tokensToApprove.length]);
 
   useEffect(() => {
     if (
@@ -684,6 +782,63 @@ export function PositionSeller() {
     }));
   }, [localizedOrderOptionLabels]);
 
+  const buttonState = useMemo(() => {
+    if (!isAllowanceLoaded) {
+      return {
+        text: t`Loading...`,
+        disabled: true,
+      };
+    }
+
+    if (isExpressLoading) {
+      return {
+        text: (
+          <>
+            {t`Express params loading...`}
+            <ImSpinner2 className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
+    if (isApproving) {
+      const tokenToApprove = tokensToApprove[0];
+      return {
+        text: (
+          <>
+            {t`Allow ${getToken(chainId, tokenToApprove.tokenAddress).symbol} to be spent`}{" "}
+            <ImSpinner2 className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
+    if (isAllowanceLoaded && tokensToApprove.length) {
+      const tokenToApprove = tokensToApprove[0];
+      return {
+        text: t`Allow ${getToken(chainId, tokenToApprove.tokenAddress).symbol} to be spent`,
+        disabled: false,
+      };
+    }
+
+    return {
+      text: error || (isTrigger ? t`Create ${getNameByOrderType(decreaseAmounts?.triggerOrderType)} Order` : t`Close`),
+      disabled: Boolean(error) && !shouldDisableValidationForTesting,
+    };
+  }, [
+    chainId,
+    decreaseAmounts?.triggerOrderType,
+    error,
+    isAllowanceLoaded,
+    isApproving,
+    isExpressLoading,
+    isTrigger,
+    shouldDisableValidationForTesting,
+    tokensToApprove,
+  ]);
+
   return (
     <div className="text-body-medium">
       <Modal
@@ -786,13 +941,12 @@ export function PositionSeller() {
               <Button
                 className="w-full"
                 variant="primary-action"
-                disabled={Boolean(error) && !shouldDisableValidationForTesting}
+                disabled={buttonState.disabled}
                 onClick={onSubmit}
                 buttonRef={submitButtonRef}
                 qa="confirm-button"
               >
-                {error ||
-                  (isTrigger ? t`Create ${getNameByOrderType(decreaseAmounts?.triggerOrderType)} Order` : t`Close`)}
+                {buttonState.text}
               </Button>
 
               <div className="h-1 bg-stroke-primary" />

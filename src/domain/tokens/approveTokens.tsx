@@ -3,7 +3,7 @@ import { Signer, ethers } from "ethers";
 import { Link } from "react-router-dom";
 
 import { getChainName, getExplorerUrl } from "config/chains";
-import { TokenPermitsState } from "context/TokenPermitsContext/TokenPermitsContextProvider";
+import { AddTokenPermitFn } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { helperToast } from "lib/helperToast";
 import Token from "sdk/abis/Token.json";
 import { getNativeToken, getToken } from "sdk/configs/tokens";
@@ -20,8 +20,7 @@ type Params = {
   chainId: number;
   permitParams:
     | {
-        addTokenPermit: TokenPermitsState["addTokenPermit"];
-        verifyingContract: string;
+        addTokenPermit: AddTokenPermitFn;
       }
     | undefined;
   onApproveSubmitted?: () => void;
@@ -31,7 +30,7 @@ type Params = {
   pendingTxns?: any[];
   setPendingTxns?: (txns: any[]) => void;
   includeMessage?: boolean;
-  approveAmount?: bigint;
+  approveAmount: bigint | undefined;
 };
 
 export async function approveTokens({
@@ -52,13 +51,13 @@ export async function approveTokens({
 }: Params) {
   setIsApproving(true);
 
-  if (
-    permitParams?.addTokenPermit &&
-    getToken(chainId, tokenAddress).isPermitSupported &&
-    permitParams.verifyingContract
-  ) {
+  if (approveAmount === undefined) {
+    approveAmount = ethers.MaxUint256;
+  }
+
+  if (permitParams?.addTokenPermit && getToken(chainId, tokenAddress).isPermitSupported) {
     return await permitParams
-      .addTokenPermit(tokenAddress, spender, approveAmount ?? ethers.MaxUint256, permitParams.verifyingContract)
+      .addTokenPermit(tokenAddress, spender, approveAmount)
       .then(() => {
         helperToast.success(
           <div>

@@ -14,6 +14,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectExpressOrdersEnabled,
+  selectSettingsWarningDotVisible,
   selectShowDebugValues,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
@@ -246,7 +247,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     nativeToken,
     fromTokenAmount,
     fromTokenInputValue,
-    relayerFeeParams: submitButtonState.relayerFeeParams,
+    relayerFeeParams: submitButtonState.expressParams?.relayFeeParams,
   });
 
   const onMaxClick = useCallback(() => {
@@ -816,10 +817,13 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const keepLeverage = useSelector(selectTradeboxKeepLeverage);
   const keepLeverageChecked = decreaseAmounts?.isFullClose ? false : keepLeverage ?? false;
   const setKeepLeverage = useSelector(selectTradeboxSetKeepLeverage);
+  const settingsWarningDotVisible = useSelector(selectSettingsWarningDotVisible);
 
   const { setIsSettingsVisible, isLeverageSliderEnabled } = useSettings();
 
-  const { shouldShowWarning: shouldShowOneClickTradingWarning } = useExpressTradingWarnings();
+  const { shouldShowWarning: shouldShowOneClickTradingWarning } = useExpressTradingWarnings({
+    expressParams: submitButtonState.expressParams,
+  });
 
   const showSectionBetweenInputsAndButton =
     isPosition ||
@@ -856,14 +860,17 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           onChange={onSelectTradeMode}
           qa="trade-mode"
         />
-        <div className="flex gap-4">
+        <div className=" flex gap-4">
           {[TradeType.Long, TradeType.Short].includes(tradeType) && (
             <TradeBoxLongShortInfoIcon isMobile={isMobile} isLong={isLong} />
           )}
-          <SettingsIcon24
-            className="cursor-pointer text-slate-100 gmx-hover:text-white"
-            onClick={() => setIsSettingsVisible(true)}
-          />
+          <div className="relative">
+            <SettingsIcon24
+              className="cursor-pointer text-slate-100 gmx-hover:text-white"
+              onClick={() => setIsSettingsVisible(true)}
+            />
+            {settingsWarningDotVisible && <div className="absolute bottom-6 right-3 h-6 w-6 rounded-full bg-red-400" />}
+          </div>
         </div>
       </div>
       <form onSubmit={handleFormSubmit} ref={formRef} className="text-body-medium flex grow flex-col">
@@ -967,7 +974,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         )}
         <div className="flex flex-col gap-14 pt-14">
           <div>{button}</div>
-          <ExpressTradingWarningCard />
+          <ExpressTradingWarningCard expressParams={submitButtonState.expressParams} />
           <div className="h-1 bg-stroke-primary" />
           {isSwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
           {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
@@ -1025,7 +1032,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           <PriceImpactFeesRow />
           <TradeBoxAdvancedGroups
             slippageInputId={submitButtonState.slippageInputId}
-            relayerFeeParams={submitButtonState.relayerFeeParams}
+            relayerFeeParams={submitButtonState.expressParams?.relayFeeParams}
           />
         </div>
       </form>

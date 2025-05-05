@@ -17,14 +17,16 @@ import {
   makeSelectSubaccountForActions,
   selectChainId,
   selectGasLimits,
+  selectGasPaymentTokenAllowance,
   selectGasPrice,
+  selectIsSponsoredCallAvailable,
   selectL1ExpressOrderGasReference,
   selectMarketsInfoData,
   selectPositionsInfoData,
-  selectSponsoredCallMultiplierFactor,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
+import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxMaxLiquidityPath,
   selectTradeboxSetActivePosition,
@@ -34,10 +36,7 @@ import {
 import { selectRelayFeeTokens } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import {
-  getApproximateEstimatedExpressParams,
-  useGasPaymentTokenAllowanceData,
-} from "domain/synthetics/express/useRelayerFeeHandler";
+import { getApproximateEstimatedExpressParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import type { OrderType } from "domain/synthetics/orders/types";
@@ -73,7 +72,6 @@ import { TradeBoxResponsiveContainer } from "components/Synthetics/TradeBox/Trad
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import { Chart } from "components/Synthetics/TVChart/Chart";
 import Tabs from "components/Tabs/Tabs";
-import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 
 export type Props = {
   openSettings: () => void;
@@ -409,13 +407,13 @@ function useOrdersControl() {
   const relayFeeTokens = useSelector(selectRelayFeeTokens);
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
-  const sponsoredCallMultiplierFactor = useSelector(selectSponsoredCallMultiplierFactor);
   const gasPrice = useSelector(selectGasPrice);
   const tokensData = useSelector(selectTokensData);
-  const gasPaymentAllowanceData = useGasPaymentTokenAllowanceData(chainId, relayFeeTokens.gasPaymentToken?.address);
+  const gasPaymentAllowance = useSelector(selectGasPaymentTokenAllowance);
   const gasLimits = useSelector(selectGasLimits);
   const l1Reference = useSelector(selectL1ExpressOrderGasReference);
   const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
+  const isSponsoredCallAvailable = useSelector(selectIsSponsoredCallAvailable);
 
   const isCancelOrdersProcessing = cancellingOrdersKeys.length > 0;
 
@@ -429,7 +427,7 @@ function useOrdersControl() {
       const keys = selectedOrderKeys;
       setCanellingOrdersKeys((p) => uniq(p.concat(keys)));
 
-      const expressParams = isExpressEnabled
+      let approximateExpressParams = isExpressEnabled
         ? await getApproximateEstimatedExpressParams({
             signer,
             chainId,
@@ -443,20 +441,25 @@ function useOrdersControl() {
             tokensData,
             marketsInfoData,
             findSwapPath: relayFeeTokens.findSwapPath,
-            sponsoredCallMultiplierFactor,
-            gasPaymentAllowanceData,
             gasPrice,
             gasLimits,
             l1Reference,
             tokenPermits: [],
             bufferBps: executionFeeBufferBps,
+            gasPaymentAllowanceData: gasPaymentAllowance?.tokensAllowanceData,
+            isSponsoredCall: isSponsoredCallAvailable,
           })
         : undefined;
+
+      // There is no UI to request an approval
+      if (approximateExpressParams?.expressParams?.relayFeeParams.needGasPaymentTokenApproval) {
+        approximateExpressParams = undefined;
+      }
 
       sendBatchOrderTxn({
         chainId,
         signer,
-        expressParams: expressParams?.expressParams,
+        expressParams: approximateExpressParams?.expressParams,
         batchParams: {
           createOrderParams: [],
           updateOrderParams: [],
@@ -479,9 +482,10 @@ function useOrdersControl() {
       chainId,
       executionFeeBufferBps,
       gasLimits,
-      gasPaymentAllowanceData,
+      gasPaymentAllowance?.tokensAllowanceData,
       gasPrice,
       isExpressEnabled,
+      isSponsoredCallAvailable,
       l1Reference,
       makeOrderTxnCallback,
       marketsInfoData,
@@ -490,7 +494,6 @@ function useOrdersControl() {
       selectedOrderKeys,
       setCanellingOrdersKeys,
       signer,
-      sponsoredCallMultiplierFactor,
       subaccount,
       tokensData,
     ]
@@ -514,13 +517,13 @@ function useOrdersControl() {
         tokensData,
         marketsInfoData,
         findSwapPath: relayFeeTokens.findSwapPath,
-        sponsoredCallMultiplierFactor,
         gasPrice,
-        gasPaymentAllowanceData,
         gasLimits,
         l1Reference,
         bufferBps: executionFeeBufferBps,
         tokenPermits: [],
+        gasPaymentAllowanceData: gasPaymentAllowance?.tokensAllowanceData,
+        isSponsoredCall: isSponsoredCallAvailable,
       });
 
       sendBatchOrderTxn({
@@ -543,8 +546,9 @@ function useOrdersControl() {
       chainId,
       executionFeeBufferBps,
       gasLimits,
-      gasPaymentAllowanceData,
+      gasPaymentAllowance?.tokensAllowanceData,
       gasPrice,
+      isSponsoredCallAvailable,
       l1Reference,
       makeOrderTxnCallback,
       marketsInfoData,
@@ -552,7 +556,6 @@ function useOrdersControl() {
       relayFeeTokens.gasPaymentToken?.address,
       setCanellingOrdersKeys,
       signer,
-      sponsoredCallMultiplierFactor,
       subaccount,
       tokensData,
     ]

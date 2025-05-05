@@ -3,7 +3,6 @@ import { describe, it } from "vitest";
 
 import { getChainName, getViemChain, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { getTokenPermitParamsCalls } from "domain/tokens/permitUtils";
-
 import { getV2Tokens } from "sdk/configs/tokens";
 
 describe("UI token permit configs", () => {

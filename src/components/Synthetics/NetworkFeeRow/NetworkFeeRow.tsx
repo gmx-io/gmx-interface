@@ -59,7 +59,7 @@ export function NetworkFeeRow({ executionFee, relayerFeeParams, isAdditionOrders
     [isAdditionOrdersMsg]
   );
 
-  const estimatedRefund = useMemo(() => {
+  const { estimatedRefundText, estimatedRefundUsd } = useMemo(() => {
     let estimatedRefundTokenAmount: bigint | undefined;
     let feeToken = executionFee?.feeToken.address
       ? getByKey(tokenData, convertTokenAddress(chainId, executionFee.feeToken.address, "wrapped"))
@@ -102,7 +102,10 @@ export function NetworkFeeRow({ executionFee, relayerFeeParams, isAdditionOrders
       }
     );
 
-    return estimatedRefundText;
+    return {
+      estimatedRefundText,
+      estimatedRefundUsd,
+    };
   }, [chainId, displayDecimals, executionFee, executionFeeBufferBps, tokenData]);
 
   const value: ReactNode = useMemo(() => {
@@ -124,6 +127,8 @@ export function NetworkFeeRow({ executionFee, relayerFeeParams, isAdditionOrders
       return "-";
     }
 
+    feeUsd -= estimatedRefundUsd ?? 0n;
+
     const networkFeeText = formatTokenAmountWithUsd(
       feeAmount === undefined ? undefined : -feeAmount,
       feeUsd,
@@ -135,7 +140,6 @@ export function NetworkFeeRow({ executionFee, relayerFeeParams, isAdditionOrders
     );
 
     const warning = executionFee ? getExecutionFeeWarning(chainId, executionFee) : undefined;
-    const estimatedRefundText = estimatedRefund?.toString();
 
     return (
       <TooltipWithPortal
@@ -170,7 +174,16 @@ export function NetworkFeeRow({ executionFee, relayerFeeParams, isAdditionOrders
         {formatUsd(-feeUsd)}
       </TooltipWithPortal>
     );
-  }, [executionFee, gasPaymentToken, relayerFeeParams, displayDecimals, chainId, estimatedRefund, additionalOrdersMsg]);
+  }, [
+    executionFee,
+    gasPaymentToken,
+    relayerFeeParams?.gasPaymentTokenAmount,
+    estimatedRefundUsd,
+    displayDecimals,
+    chainId,
+    estimatedRefundText,
+    additionalOrdersMsg,
+  ]);
 
   if (rowPadding) {
     return (

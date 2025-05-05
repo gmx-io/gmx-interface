@@ -129,7 +129,8 @@ export function useExternalSwapOutputRequest({
     const needSpenderApproval = getNeedTokenApprove(
       tokensAllowanceData,
       convertTokenAddress(chainId, tokenInAddress, "wrapped"),
-      amountIn
+      amountIn,
+      []
     );
 
     const externalSwapOutput: ExternalSwapOutput = {

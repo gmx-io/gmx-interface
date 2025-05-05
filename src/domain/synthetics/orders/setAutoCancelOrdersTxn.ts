@@ -6,6 +6,7 @@ import { getContract } from "config/contracts";
 import { Token } from "domain/tokens";
 import { callContract } from "lib/contracts";
 import { abis } from "sdk/abis";
+import { OrderType } from "sdk/types/orders";
 import {
   buildUpdateOrderMulticall,
   buildUpdateOrderPayload,
@@ -19,6 +20,7 @@ export type SetAutoCancelOrdersParams = {
   triggerPrice: bigint;
   acceptablePrice: bigint;
   minOutputAmount: bigint;
+  orderType: OrderType;
   executionFee?: bigint;
 };
 
@@ -38,7 +40,16 @@ export function setAutoCancelOrdersTxn(
 
   const encodedPayload = ps
     .map((p) => {
-      const { orderKey, sizeDeltaUsd, triggerPrice, acceptablePrice, minOutputAmount, executionFee, indexToken } = p;
+      const {
+        orderKey,
+        sizeDeltaUsd,
+        triggerPrice,
+        acceptablePrice,
+        minOutputAmount,
+        executionFee,
+        indexToken,
+        orderType,
+      } = p;
 
       const { multicall } = buildUpdateOrderMulticall(
         buildUpdateOrderPayload({
@@ -48,6 +59,7 @@ export function setAutoCancelOrdersTxn(
           acceptablePrice,
           triggerPrice,
           minOutputAmount,
+          orderType,
           indexTokenAddress: indexToken?.address ?? zeroAddress,
           validFromTime: 0n,
           executionFeeTopUp: executionFee ?? 0n,

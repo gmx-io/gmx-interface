@@ -5,6 +5,7 @@ import { useCallback, useId, useMemo } from "react";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import {
   selectBlockTimestampData,
@@ -39,6 +40,7 @@ import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallba
 import { formatLeverage } from "domain/synthetics/positions/utils";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
+import { throttleLog } from "lib/logging";
 import {
   initDecreaseOrderMetricData,
   initIncreaseOrderMetricData,
@@ -54,8 +56,6 @@ import { OrderType } from "sdk/types/orders";
 import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
 
 import { useSidecarOrderPayloads } from "./useSidecarOrderPayloads";
-import { throttleLog } from "lib/logging";
-import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
@@ -119,7 +119,11 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     };
   }, [primaryCreateOrderParams, sidecarOrderPayloads]);
 
-  const { expressParams, expressEstimateMethod } = useExpressOrdersParams({ orderParams: batchParams });
+  const {
+    expressParams,
+    expressEstimateMethod,
+    isLoading: isExpressLoading,
+  } = useExpressOrdersParams({ orderParams: batchParams });
 
   if (expressParams && showDebugValues) {
     throttleLog("TradeBox express params", {
@@ -297,7 +301,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     onSubmitDecreaseOrder: onSubmitOrder,
     onSubmitWrapOrUnwrap,
     slippageInputId,
-    relayerFeeParams: expressParams?.relayFeeParams,
-    needGasPaymentTokenApproval: expressParams?.relayFeeParams.needGasPaymentTokenApproval,
+    expressParams,
+    isExpressLoading,
   };
 }

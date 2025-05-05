@@ -1,21 +1,22 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { ReactNode, useCallback, useEffect, useState } from "react";
-import { useKey } from "react-use";
+import { ReactNode, useCallback, useEffect } from "react";
 
 import { isDevelopment } from "config/env";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
-import { useDisabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
+import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
+import { useEnabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { roundToTwoDecimals } from "lib/numbers";
+import { EMPTY_ARRAY } from "lib/objects";
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
-import Button from "components/Button/Button";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
 import { ExpressTradingEnabledBanner } from "components/ExpressTradingEnabledBanner/ExpressTradingEnabledBanner";
+import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
 import { SlideModal } from "components/Modal/SlideModal";
@@ -35,13 +36,19 @@ export function SettingsModal({
 }) {
   const { chainId } = useChainId();
   const settings = useSettings();
-  const { disabledFeatures } = useDisabledFeaturesRequest(chainId);
+  const { features } = useEnabledFeaturesRequest(chainId);
   const subaccountState = useSubaccountContext();
+
+  const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
 
   useEffect(() => {
     if (!isSettingsVisible) return;
 
     subaccountState.refreshSubaccountData();
+
+    if (settings.settingsWarningDotVisible) {
+      settings.setSettingsWarningDotVisible(false);
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSettingsVisible]);
@@ -90,6 +97,10 @@ export function SettingsModal({
     [settings]
   );
 
+  const onClose = useCallback(() => {
+    setIsSettingsVisible(false);
+  }, [setIsSettingsVisible]);
+
   const handleExpressOrdersToggle = (enabled: boolean) => {
     settings.setExpressOrdersEnabled(enabled);
     if (!enabled && subaccountState.subaccount) {
@@ -123,7 +134,7 @@ export function SettingsModal({
         <div className="mt-16">
           <SettingsSection>
             <ToggleSwitch
-              disabled={disabledFeatures?.relayRouterDisabled}
+              disabled={!features?.relayRouterEnabled || (isOutOfGasPaymentBalance && !settings.expressOrdersEnabled)}
               isChecked={settings.expressOrdersEnabled}
               setIsChecked={handleExpressOrdersToggle}
             >
@@ -147,13 +158,17 @@ export function SettingsModal({
             <ToggleSwitch
               isChecked={Boolean(subaccountState.subaccount?.optimisticActive)}
               setIsChecked={handleOneClickTradingToggle}
-              disabled={disabledFeatures?.subaccountRelayRouterDisabled}
+              disabled={
+                !features?.subaccountRelayRouterEnabled || (isOutOfGasPaymentBalance && !subaccountState.subaccount)
+              }
             >
               <TooltipWithPortal
                 content={<Trans>One-Click Trading requires Express Trading to function.</Trans>}
                 handle={<Trans>One-Click Trading</Trans>}
               />
             </ToggleSwitch>
+
+            {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
 
             <OldSubaccountWithdraw />
 
@@ -184,6 +199,7 @@ export function SettingsModal({
               defaultValue={DEFAULT_SLIPPAGE_AMOUNT}
               value={parseFloat(String(settings.savedAllowedSlippage))}
               onChange={onChangeSlippage}
+              suggestions={EMPTY_ARRAY}
             />
 
             {settings.shouldUseExecutionFeeBuffer && (
@@ -206,6 +222,7 @@ export function SettingsModal({
                 defaultValue={30}
                 value={parseFloat(String(settings.executionFeeBufferBps))}
                 onChange={onChangeExecutionFeeBufferBps}
+                suggestions={EMPTY_ARRAY}
               />
             )}
 
@@ -294,6 +311,7 @@ function InputSetting({
   value,
   onChange,
   className,
+  suggestions,
 }: {
   title: ReactNode;
   description?: ReactNode;
@@ -301,6 +319,7 @@ function InputSetting({
   value?: number;
   onChange: (value: number) => void;
   className?: string;
+  suggestions?: number[];
 }) {
   const titleComponent = <span className="text-14 font-medium">{title}</span>;
 
@@ -315,7 +334,13 @@ function InputSetting({
   return (
     <div className={cx("flex items-center justify-between", className)}>
       <div className="mr-8">{titleWithDescription}</div>
-      <PercentageInput defaultValue={defaultValue} value={value} onChange={onChange} tooltipPosition="bottom" />
+      <PercentageInput
+        defaultValue={defaultValue}
+        value={value}
+        onChange={onChange}
+        tooltipPosition="bottom"
+        suggestions={suggestions}
+      />
     </div>
   );
 }

@@ -10,12 +10,13 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { ExpressParams } from "domain/synthetics/express";
 import { getIsNonceExpired, getIsSubaccountExpired, getRemainingSubaccountActions } from "domain/synthetics/subaccount";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import { useRequiredActions } from "./useRequiredActions";
 
-export function useExpressTradingWarnings() {
+export function useExpressTradingWarnings({ expressParams }: { expressParams: ExpressParams | undefined }) {
   const fromToken = useSelector(selectTradeboxFromToken);
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
@@ -46,6 +47,7 @@ export function useExpressTradingWarnings() {
     shouldShowNonceExpiredWarning: isSubaccountActive && getIsNonceExpired(subaccount),
     shouldShowAllowedActionsWarning:
       isSubaccountActive && (remaining === 0n || remaining < requiredActions) && !isNativeToken,
+    shouldShowOutOfGasPaymentBalanceWarning: expressParams?.relayFeeParams.isOutGasTokenBalance,
   };
 
   const shouldShowWarning = Object.values(conditions).some(Boolean);

@@ -7,6 +7,7 @@ import { isDevelopment } from "config/env";
 import { USD_DECIMALS } from "config/factors";
 import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useReferralCodeFromUrl } from "domain/referrals";
 import { useAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats";
 import { useUtmParams } from "domain/utm";
@@ -18,7 +19,6 @@ import { useBowser } from "lib/useBowser";
 import useRouteQuery from "lib/useRouteQuery";
 import useWallet from "lib/wallets/useWallet";
 
-import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { SESSION_ID_KEY, userAnalytics } from "./UserAnalytics";
 
 export function useConfigureUserAnalyticsProfile() {

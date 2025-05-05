@@ -13,24 +13,23 @@ import {
   makeSelectSubaccountForActions,
   selectChainId,
   selectGasLimits,
+  selectGasPaymentTokenAllowance,
   selectGasPrice,
+  selectIsSponsoredCallAvailable,
   selectL1ExpressOrderGasReference,
   selectMarketsInfoData,
   selectOrdersInfoData,
-  selectSponsoredCallMultiplierFactor,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   makeSelectOrderEditorPositionOrderError,
   selectOrderEditorSetTriggerPriceInputValue,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
+import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectRelayFeeTokens } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import {
-  getApproximateEstimatedExpressParams,
-  useGasPaymentTokenAllowanceData,
-} from "domain/synthetics/express/useRelayerFeeHandler";
+import { getApproximateEstimatedExpressParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import { useMarkets } from "domain/synthetics/markets";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
@@ -42,7 +41,6 @@ import { PositionOrderInfo } from "sdk/types/orders";
 
 import { DynamicLine } from "./DynamicLine";
 import type { IChartingLibraryWidget } from "../../charting_library";
-import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 
 export function DynamicLines({
   tvWidgetRef,
@@ -64,22 +62,22 @@ export function DynamicLines({
   const relayFeeTokens = useSelector(selectRelayFeeTokens);
   const { marketsData } = useMarkets(chainId);
   const marketsInfoData = useSelector(selectMarketsInfoData);
-  const sponsoredCallMultiplierFactor = useSelector(selectSponsoredCallMultiplierFactor);
   const gasPrice = useSelector(selectGasPrice);
   const tokensData = useSelector(selectTokensData);
   const { pendingOrdersUpdates } = useSyntheticsEvents();
-  const gasPaymentAllowanceData = useGasPaymentTokenAllowanceData(chainId, relayFeeTokens.gasPaymentToken?.address);
+  const gasPaymentAllowance = useSelector(selectGasPaymentTokenAllowance);
   const gasLimits = useSelector(selectGasLimits);
   const l1Reference = useSelector(selectL1ExpressOrderGasReference);
   const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
   const isExpressEnabled = useSelector(makeSelectIsExpressTransactionAvailable(false));
+  const isSponsoredCallAvailable = useSelector(selectIsSponsoredCallAvailable);
 
   const onCancelOrder = useCallback(
     async (key: string) => {
       if (!signer) return;
       setCancellingOrdersKeys((prev) => [...prev, key]);
 
-      const expressParams = isExpressEnabled
+      let approximateExpressParams = isExpressEnabled
         ? await getApproximateEstimatedExpressParams({
             signer,
             chainId,
@@ -93,15 +91,20 @@ export function DynamicLines({
             tokensData,
             marketsInfoData,
             findSwapPath: relayFeeTokens.findSwapPath,
-            sponsoredCallMultiplierFactor,
             gasPrice,
             tokenPermits: [],
-            gasPaymentAllowanceData,
+            gasPaymentAllowanceData: gasPaymentAllowance?.tokensAllowanceData,
             gasLimits,
             l1Reference,
             bufferBps: executionFeeBufferBps,
+            isSponsoredCall: isSponsoredCallAvailable,
           })
         : undefined;
+
+      // There is no UI to request an approval
+      if (approximateExpressParams?.expressParams?.relayFeeParams.needGasPaymentTokenApproval) {
+        approximateExpressParams = undefined;
+      }
 
       sendBatchOrderTxn({
         chainId,
@@ -111,7 +114,7 @@ export function DynamicLines({
           updateOrderParams: [],
           cancelOrderParams: [{ orderKey: key }],
         },
-        expressParams: expressParams?.expressParams,
+        expressParams: approximateExpressParams?.expressParams,
         simulationParams: undefined,
         callback: makeOrderTxnCallback({}),
       }).finally(() => {
@@ -122,8 +125,10 @@ export function DynamicLines({
       chainId,
       executionFeeBufferBps,
       gasLimits,
-      gasPaymentAllowanceData,
+      gasPaymentAllowance?.tokensAllowanceData,
       gasPrice,
+      isExpressEnabled,
+      isSponsoredCallAvailable,
       l1Reference,
       makeOrderTxnCallback,
       marketsInfoData,
@@ -131,7 +136,6 @@ export function DynamicLines({
       relayFeeTokens.gasPaymentToken?.address,
       setCancellingOrdersKeys,
       signer,
-      sponsoredCallMultiplierFactor,
       subaccount,
       tokensData,
     ]

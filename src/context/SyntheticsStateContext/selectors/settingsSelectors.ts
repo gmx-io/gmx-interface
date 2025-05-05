@@ -25,3 +25,5 @@ export const selectSetExpressOrdersEnabled = (s: SyntheticsState) => s.settings.
 export const selectGasPaymentTokenAddress = (s: SyntheticsState) => s.settings.gasPaymentTokenAddress;
 export const selectDebugSwapMarketsConfig = (s: SyntheticsState) => s.settings.debugSwapMarketsConfig;
 export const selectSetDebugSwapMarketsConfig = (s: SyntheticsState) => s.settings.setDebugSwapMarketsConfig;
+export const selectSettingsWarningDotVisible = (s: SyntheticsState) => s.settings.settingsWarningDotVisible;
+export const selectSetSettingsWarningDotVisible = (s: SyntheticsState) => s.settings.setSettingsWarningDotVisible;

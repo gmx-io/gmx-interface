@@ -499,6 +499,7 @@ export default function PositionEditor(props) {
         pendingTxns,
         setPendingTxns,
         permitParams: undefined,
+        approveAmount: undefined,
       });
       return;
     }
