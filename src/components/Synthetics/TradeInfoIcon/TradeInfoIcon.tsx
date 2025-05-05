@@ -82,7 +82,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
         ) : null}
         <li className={LI_CLASS_NAME}>
           <Trans>
-            {typeString} Long TWAP: {getTradeTypeLabel(TradeMode.StopMarket, tradePlace)} a long position in evenly
+            {typeString} Long TWAP: {getTradeTypeLabel(TradeMode.Twap, tradePlace)} a long position in evenly
             distributed parts over a specified time.
           </Trans>{" "}
           <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#twap-orders">

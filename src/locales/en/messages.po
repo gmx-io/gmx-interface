@@ -2590,6 +2590,10 @@ msgstr "Transfer Account"
 msgid "GMX V1 Actions"
 msgstr "GMX V1 Actions"
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Execute TWAP Part"
+msgstr "Execute TWAP Part"
+
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap Profit Fee"
 msgstr "Swap Profit Fee"
@@ -2763,8 +2767,8 @@ msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 
 #: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Failed TWAP part"
-msgstr "Failed TWAP part"
+#~ msgid "Failed TWAP part"
+#~ msgstr "Failed TWAP part"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Returned Collateral"
@@ -2775,8 +2779,8 @@ msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for c
 msgstr "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
 
 #: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Failed TWAP Swap part"
-msgstr "Failed TWAP Swap part"
+#~ msgid "Failed TWAP Swap part"
+#~ msgstr "Failed TWAP Swap part"
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "There are issues in the TP/SL orders."
@@ -2993,8 +2997,8 @@ msgid "Stake"
 msgstr "Stake"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Update TWAP part"
-msgstr "Update TWAP part"
+#~ msgid "Update TWAP part"
+#~ msgstr "Update TWAP part"
 
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Help us improve"
@@ -3927,6 +3931,10 @@ msgstr "After claiming, the esGMX tokens will be airdropped to your account on t
 msgid "Buy GLV"
 msgstr "Buy GLV"
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Failed TWAP Part"
+msgstr "Failed TWAP Part"
+
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Impact+Fees"
@@ -4764,8 +4772,8 @@ msgid "Voting"
 msgstr "Voting"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Update TWAP Swap part"
-msgstr "Update TWAP Swap part"
+#~ msgid "Update TWAP Swap part"
+#~ msgstr "Update TWAP Swap part"
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
@@ -5716,6 +5724,10 @@ msgstr "Telegram Bot"
 #: src/domain/legacy.ts
 msgid "Order cancelled."
 msgstr "Order cancelled."
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Execute TWAP Swap Part"
+msgstr "Execute TWAP Swap Part"
 
 #: src/components/Synthetics/TwapRows/TwapRows.tsx
 msgid "<0>every</0> {seconds} seconds"
@@ -7712,8 +7724,8 @@ msgid "take profit"
 msgstr "take profit"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Execute TWAP part"
-msgstr "Execute TWAP part"
+#~ msgid "Execute TWAP part"
+#~ msgstr "Execute TWAP part"
 
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Force External Swaps"
@@ -7922,6 +7934,10 @@ msgstr "Price Impact Rebates"
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Take Profit and Stop Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
 msgstr "Take Profit and Stop Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Failed TWAP Swap Part"
+msgstr "Failed TWAP Swap Part"
 
 #: src/domain/synthetics/orders/updateOrderTxn.ts
 msgid "Failed to update order"
@@ -8748,8 +8764,8 @@ msgid "limit"
 msgstr "limit"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Execute TWAP Swap part"
-msgstr "Execute TWAP Swap part"
+#~ msgid "Execute TWAP Swap part"
+#~ msgstr "Execute TWAP Swap part"
 
 #: src/components/Exchange/OrdersToa.jsx
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
@@ -8830,6 +8846,14 @@ msgstr "{0} is required for collateral."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Options Protocol"
 msgstr "Decentralized Options Protocol"
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Update TWAP Swap Part"
+msgstr "Update TWAP Swap Part"
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Update TWAP Part"
+msgstr "Update TWAP Part"
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx

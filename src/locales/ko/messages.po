@@ -2590,6 +2590,10 @@ msgstr "계정 이전"
 msgid "GMX V1 Actions"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Execute TWAP Part"
+msgstr ""
+
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap Profit Fee"
 msgstr ""
@@ -2763,8 +2767,8 @@ msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Failed TWAP part"
-msgstr ""
+#~ msgid "Failed TWAP part"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Returned Collateral"
@@ -2775,8 +2779,8 @@ msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for c
 msgstr "해당 트레이드를 시작하기위해 담보로 {swapTokenSymbol}을 \"지불\" 토큰으로서 선택할 필요가 있습니다."
 
 #: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Failed TWAP Swap part"
-msgstr ""
+#~ msgid "Failed TWAP Swap part"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "There are issues in the TP/SL orders."
@@ -2993,8 +2997,8 @@ msgid "Stake"
 msgstr "스테이킹"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Update TWAP part"
-msgstr ""
+#~ msgid "Update TWAP part"
+#~ msgstr ""
 
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Help us improve"
@@ -3927,6 +3931,10 @@ msgstr "수령 후, esGMX 토큰은 7일 이내에 선택한 네트워크의 계
 msgid "Buy GLV"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Failed TWAP Part"
+msgstr ""
+
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Impact+Fees"
@@ -4761,8 +4769,8 @@ msgid "Voting"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Update TWAP Swap part"
-msgstr ""
+#~ msgid "Update TWAP Swap part"
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
@@ -5713,6 +5721,10 @@ msgstr ""
 #: src/domain/legacy.ts
 msgid "Order cancelled."
 msgstr "주문이 취소되었습니다."
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Execute TWAP Swap Part"
+msgstr ""
 
 #: src/components/Synthetics/TwapRows/TwapRows.tsx
 msgid "<0>every</0> {seconds} seconds"
@@ -7706,8 +7718,8 @@ msgid "take profit"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Execute TWAP part"
-msgstr ""
+#~ msgid "Execute TWAP part"
+#~ msgstr ""
 
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Force External Swaps"
@@ -7915,6 +7927,10 @@ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Take Profit and Stop Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Failed TWAP Swap Part"
 msgstr ""
 
 #: src/domain/synthetics/orders/updateOrderTxn.ts
@@ -8742,8 +8758,8 @@ msgid "limit"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Execute TWAP Swap part"
-msgstr ""
+#~ msgid "Execute TWAP Swap part"
+#~ msgstr ""
 
 #: src/components/Exchange/OrdersToa.jsx
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
@@ -8824,6 +8840,14 @@ msgstr "담보를 위해 {0}이 필요합니다."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Options Protocol"
 msgstr "탈중앙화 옵션 프로토콜"
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Update TWAP Swap Part"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Update TWAP Part"
+msgstr ""
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx

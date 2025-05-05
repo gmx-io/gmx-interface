@@ -238,6 +238,7 @@ export const formatPositionMessage = (
   } else if (tradeAction.twapParams) {
     if (ev === TradeActionType.OrderExecuted) {
       const isAcceptablePriceUseful = tradeAction.acceptablePrice !== 0n && tradeAction.acceptablePrice < MaxInt256;
+      const formattedPnl = sizeDeltaUsd > 0n ? formatUsd(tradeAction.pnlUsd) : undefined;
 
       result = {
         priceComment: lines(
@@ -256,6 +257,8 @@ export const formatPositionMessage = (
           t`Order execution price takes into account price impact.`
         ),
         acceptablePrice: t`N/A`,
+        pnl: formattedPnl,
+        pnlState: numberToState(tradeAction.pnlUsd),
       };
     } else {
       const error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;

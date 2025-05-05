@@ -24,16 +24,16 @@ export const actionTextMapBase: Partial<
   "LimitSwap-OrderFrozen": msg`Failed Limit Swap`,
 
   "Twap-OrderCreated": msg`Create TWAP`,
-  "Twap-OrderExecuted": msg`Execute TWAP part`,
+  "Twap-OrderExecuted": msg`Execute TWAP Part`,
   "Twap-OrderCancelled": msg`Cancel TWAP`,
-  "Twap-OrderUpdated": msg`Update TWAP part`,
-  "Twap-OrderFrozen": msg`Failed TWAP part`,
+  "Twap-OrderUpdated": msg`Update TWAP Part`,
+  "Twap-OrderFrozen": msg`Failed TWAP Part`,
 
   "TwapSwap-OrderCreated": msg`Create TWAP Swap`,
-  "TwapSwap-OrderExecuted": msg`Execute TWAP Swap part`,
+  "TwapSwap-OrderExecuted": msg`Execute TWAP Swap Part`,
   "TwapSwap-OrderCancelled": msg`Cancel TWAP Swap`,
-  "TwapSwap-OrderUpdated": msg`Update TWAP Swap part`,
-  "TwapSwap-OrderFrozen": msg`Failed TWAP Swap part`,
+  "TwapSwap-OrderUpdated": msg`Update TWAP Swap Part`,
+  "TwapSwap-OrderFrozen": msg`Failed TWAP Swap Part`,
 
   "MarketIncrease-OrderCreated": msg`Request Market Increase`,
   "MarketIncrease-OrderExecuted": msg`Market Increase`,
