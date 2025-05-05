@@ -43,10 +43,25 @@ export const TransferDetailsView = () => {
           />
         ) : null}
         <SyntheticsInfoRow
-          label="Amount"
-          value={formatBalanceAmount(selectedTransfer.amount, token.decimals, token.symbol)}
+          label="Sent Amount"
+          value={formatBalanceAmount(selectedTransfer.sentAmount, token.decimals, token.symbol)}
         />
-        {/* <SyntheticsInfoRow label="Fee" value={""} /> */}
+        {selectedTransfer.receivedAmount !== undefined && (
+          <>
+            <SyntheticsInfoRow
+              label="Received Amount"
+              value={formatBalanceAmount(selectedTransfer.receivedAmount, token.decimals, token.symbol)}
+            />
+            <SyntheticsInfoRow
+              label="Fee"
+              value={formatBalanceAmount(
+                selectedTransfer.sentAmount - selectedTransfer.receivedAmount,
+                token.decimals,
+                token.symbol
+              )}
+            />
+          </>
+        )}
         <SyntheticsInfoRow
           label="Network"
           className="!items-center"

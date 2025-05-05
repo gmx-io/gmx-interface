@@ -1109,7 +1109,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         const config = getTenderlyConfig();
 
         const accountParams = config
-          ? `&tenderlyUsername=${config.accountSlug}&tenderlyProjectName=${config.projectSlug}`
+          ? `?tenderlyUsername=${config.accountSlug}&tenderlyProjectName=${config.projectSlug}`
           : "";
 
         const debugRes = await fetch(

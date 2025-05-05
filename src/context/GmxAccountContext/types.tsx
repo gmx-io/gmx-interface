@@ -32,7 +32,8 @@ export type MultichainFundingHistoryItem = {
   sourceChainId: number;
   account: string;
   token: string;
-  amount: bigint;
+  sentAmount: bigint;
+  receivedAmount: bigint | undefined;
 
   sentTxn: string;
   sentTimestamp: number;

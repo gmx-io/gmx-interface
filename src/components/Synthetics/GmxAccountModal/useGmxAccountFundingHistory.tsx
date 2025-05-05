@@ -13,7 +13,8 @@ query ($account: String, $guid: String) {
     id
     step
     account
-    amount
+    sentAmount
+    receivedAmount
     isExecutionError
     executedTimestamp
     executedTxn
@@ -49,7 +50,8 @@ async function fetchGmxAccountFundingHistory(
   return response.multichainFunding.map(
     (item): MultichainFundingHistoryItem => ({
       ...item,
-      amount: BigInt(item.amount),
+      sentAmount: BigInt(item.sentAmount),
+      receivedAmount: item.receivedAmount ? BigInt(item.receivedAmount) : undefined,
       sentTimestamp: item.sentTimestamp,
       receivedTimestamp: item.receivedTimestamp ? item.receivedTimestamp : undefined,
       executedTimestamp: item.executedTimestamp ? item.executedTimestamp : undefined,

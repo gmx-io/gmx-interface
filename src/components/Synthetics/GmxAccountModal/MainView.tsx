@@ -368,7 +368,7 @@ const FundingHistorySection = () => {
               </div>
             </div>
             <div className="text-right">
-              <div>{formatBalanceAmount(transfer.amount, transfer.token.decimals, transfer.token.symbol)}</div>
+              <div>{formatBalanceAmount(transfer.sentAmount, transfer.token.decimals, transfer.token.symbol)}</div>
               {/* <div className="text-body-small text-slate-100">{formatTradeActionTimestamp(transfer.timestamp)}</div> */}
             </div>
           </div>

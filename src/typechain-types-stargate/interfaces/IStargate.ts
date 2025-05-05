@@ -281,9 +281,7 @@ export interface IStargate extends BaseContract {
   getFunction(
     nameOrSignature: "oftVersion"
   ): TypedContractMethod<[], [[string, bigint] & { interfaceId: string; version: bigint }], "view">;
-  getFunction(
-    nameOrSignature: "quoteOFT"
-  ): TypedContractMethod<
+  getFunction(nameOrSignature: "quoteOFT"): TypedContractMethod<
     [_sendParam: SendParamStruct],
     [
       [OFTLimitStructOutput, OFTFeeDetailStructOutput[], OFTReceiptStructOutput] & {
