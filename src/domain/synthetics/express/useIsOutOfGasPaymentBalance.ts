@@ -8,6 +8,7 @@ import { estimateMinGasPaymentTokenBalance } from "sdk/utils/fees/executionFee";
 import { useGasLimits, useGasPrice } from "../fees";
 import { useTokensDataRequest } from "../tokens";
 import { useL1ExpressOrderGasReference } from "./useL1ExpressGasReference";
+import { formatTokenAmount } from "sdk/utils/numbers";
 
 export function useIsOutOfGasPaymentBalance() {
   const { chainId } = useChainId();
@@ -20,7 +21,7 @@ export function useIsOutOfGasPaymentBalance() {
   const relayFeeToken = getByKey(tokensData, getRelayerFeeToken(chainId).address);
 
   return useMemo(() => {
-    if (!gasPaymentTokens || !relayFeeToken || gasPrice === undefined || !gasLimits) {
+    if (!gasPaymentTokens || !relayFeeToken || gasPrice === undefined || !gasLimits || !tokensData) {
       return false;
     }
 
@@ -35,11 +36,13 @@ export function useIsOutOfGasPaymentBalance() {
         relayFeeToken,
         gasPrice,
         l1Reference,
+        tokensData,
+        chainId,
       });
 
       return token.balance === undefined || token.balance < minBalance;
     });
 
     return conditions.every((condition) => condition);
-  }, [gasLimits, gasPaymentTokens, gasPrice, l1Reference, relayFeeToken]);
+  }, [chainId, gasLimits, gasPaymentTokens, gasPrice, l1Reference, relayFeeToken, tokensData]);
 }

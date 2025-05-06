@@ -99,34 +99,49 @@ export function estimateExpressBatchOrderGasLimit({
 }
 
 export function estimateMinGasPaymentTokenBalance({
+  chainId,
   gasPaymentToken,
   relayFeeToken,
   gasPrice,
   gasLimits,
   l1Reference,
+  tokensData,
 }: {
+  chainId: number;
   gasLimits: GasLimitsConfig;
   gasPaymentToken: TokenData;
   relayFeeToken: TokenData;
+  tokensData: TokensData;
   gasPrice: bigint;
   l1Reference: L1ExpressOrderGasReference | undefined;
 }) {
-  const minGasLimit = estimateExpressBatchOrderGasLimit({
+  const createOrderGasLimit = estimateExpressBatchOrderGasLimit({
     gasLimits,
     createOrdersCount: 1,
     updateOrdersCount: 0,
     cancelOrdersCount: 0,
     feeSwapsCount: 1,
     externalSwapGasLimit: 0n,
-    oraclePriceCount: 2,
+    oraclePriceCount: 4,
     isSubaccount: false,
     sizeOfData: 0n,
     l1Reference,
   });
 
-  const minFee = minGasLimit * gasPrice;
+  const createOrderFee = createOrderGasLimit * gasPrice;
 
-  const minFeeUsd = convertToUsd(minFee, relayFeeToken.decimals, relayFeeToken.prices.minPrice)!;
+  const executionGasLimit = estimateExecuteIncreaseOrderGasLimit(gasLimits, {
+    swapsCount: 2,
+    callbackGasLimit: 0n,
+  });
+
+  const executionFee = getExecutionFee(chainId, gasLimits, tokensData, executionGasLimit, gasPrice, 4n);
+
+  let totalFee = createOrderFee + (executionFee?.feeTokenAmount ?? 0n);
+  const buffer = (totalFee * 13n) / 10n; // 30% buffer
+  totalFee += buffer;
+
+  const minFeeUsd = convertToUsd(totalFee, relayFeeToken.decimals, relayFeeToken.prices.minPrice)!;
   const minGasPaymentTokenBalance = convertToTokenAmount(
     minFeeUsd,
     gasPaymentToken.decimals,
