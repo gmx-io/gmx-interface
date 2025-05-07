@@ -2,11 +2,14 @@ import { useState } from "react";
 
 import { toSeconds } from "lib/dates";
 
-import { GlvAprPeriod } from "./aprByPeriod/useGlvAprByPeriod";
-
-export const POOLS_TIME_RANGE_OPTIONS = ["total" as const, "7d" as const, "30d" as const, "90d" as const];
+export const POOLS_TIME_RANGE_OPTIONS = ["total" as const, "90d" as const, "30d" as const, "7d" as const];
 
 export type PoolsTimeRange = (typeof POOLS_TIME_RANGE_OPTIONS)[number];
+
+export type Period = {
+  periodStart: number;
+  periodEnd: number;
+};
 
 export function usePoolsTimeRange() {
   const [timeRange, setTimeRange] = useState<PoolsTimeRange>("90d");
@@ -14,7 +17,7 @@ export function usePoolsTimeRange() {
   return { timeRange, setTimeRange };
 }
 
-export function convertPoolsTimeRangeToPeriod(timeRange: PoolsTimeRange): GlvAprPeriod {
+export function convertPoolsTimeRangeToPeriod(timeRange: PoolsTimeRange): Period {
   const today = new Date(new Date().setHours(0, 0, 0, 0));
 
   const getPeriodStart = (days: number) => {

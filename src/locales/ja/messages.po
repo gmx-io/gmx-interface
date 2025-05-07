@@ -973,6 +973,11 @@ msgstr "1inchでスワップする"
 msgid "Open {0} in Coingecko"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GlvList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Graph showing performance vs benchmark for the selected period."
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 msgid "Buy {operationTokenSymbol}"
 msgstr ""
@@ -1647,6 +1652,11 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
+msgstr ""
+
+#: src/components/Synthetics/GmList/GlvList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "PERFORMANCE"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
@@ -3538,6 +3548,11 @@ msgstr "損益"
 msgid "Market Increase"
 msgstr "市場増加"
 
+#: src/components/Synthetics/GmList/GlvList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Pools returns in comparison to the benchmark, which is based on UNI V2-style rebalancing of the long-short token in the corresponding GM or GLV.\""
+msgstr ""
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Include PnL in leverage display"
 msgstr "レバレッジ表示に損益を含める"
@@ -3617,10 +3632,6 @@ msgstr ""
 msgid "Unsupported network"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmListItem.tsx
-msgid "Shift"
-msgstr ""
-
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3670,8 +3681,6 @@ msgstr ""
 msgid "Enable"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GlvList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "BUYABLE"
 msgstr ""
@@ -3700,6 +3709,11 @@ msgstr ""
 
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "We value your experience as GMX Liquidity Provider and invite you to participate in an anonymous one-on-one chat."
+msgstr ""
+
+#: src/components/Synthetics/GmList/GlvList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "TVL (SUPPLY)"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
@@ -4110,6 +4124,10 @@ msgstr ""
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or change the \"Collateral In\" token.</1>"
 msgstr ""
 
+#: src/components/Synthetics/GmList/ApyTooltipContent.tsx
+msgid "<0>The APY is an estimate based on fees collected during the selected period. It excludes:</0><1><2>price changes of the underlying token(s)</2><3>traders' PnL, which is expected to be neutral in the long term</3><4>funding fees, which are exchanged between traders</4></1><5><6>Read more about GM token pricing</6>.</5><7>For detailed stats and comparisons, check the GMX V2 LP Dashboard. <8>GMX Dune Dashboard</8>.</7>"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
 msgstr ""
@@ -4309,6 +4327,10 @@ msgstr ""
 msgid "Enter a code"
 msgstr "コードを入力"
 
+#: src/components/Synthetics/GmList/GmListItem.tsx
+msgid "Details"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount is updated"
 msgstr ""
@@ -4371,11 +4393,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 msgid "Reserved"
 msgstr "リザーブ済"
-
-#: src/components/Synthetics/GmList/GlvList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
-msgid "Available amount to deposit into the specific GM pool."
-msgstr ""
 
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
@@ -5661,6 +5678,11 @@ msgstr ""
 msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr ""
 
+#: src/components/Synthetics/GmList/GlvList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "FEE APY"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "SNTL esGMX Market"
 msgstr ""
@@ -6399,11 +6421,6 @@ msgstr "べスティングされたGMXで引き出されていないもの"
 #: src/components/Glp/GlpSwap.jsx
 msgid "FEES"
 msgstr "手数料"
-
-#: src/components/Synthetics/GmList/GlvList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
-msgid "TOTAL SUPPLY"
-msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
@@ -7237,6 +7254,11 @@ msgstr ""
 msgid "DeFi"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GlvList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "SNAPSHOT"
+msgstr ""
+
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -7405,7 +7427,6 @@ msgid "Order size is bigger than position, will only be executable if position i
 msgstr "注文サイズがポジションより大きいため、ポジションが拡大した場合にだけ執行可能です"
 
 #: src/components/Header/AppHeaderLinks.tsx
-#: src/components/Synthetics/GmList/GmListItem.tsx
 msgid "Buy"
 msgstr "購入"
 
@@ -7460,10 +7481,6 @@ msgstr ""
 msgid "No markets matched."
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmListItem.tsx
-msgid "Shifting from GLV to another pool is not possible, as GLV can only be sold into the backing tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
-msgstr ""
-
 #: src/pages/Stake/Stake.tsx
 msgid "Stake esGMX"
 msgstr ""
@@ -7505,8 +7522,6 @@ msgstr ""
 msgid "Referral code submitted!"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GlvList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "APY"
@@ -7842,20 +7857,12 @@ msgstr "ネットレート"
 msgid "2nd Place"
 msgstr ""
 
-#: src/components/Synthetics/GmList/ApyTooltipContent.tsx
-msgid "<0>The APY is an estimate based on the fees collected for the past seven days, extrapolating the current borrowing fee. It excludes:</0><1><2>price changes of the underlying token(s)</2><3>traders' PnL, which is expected to be neutral in the long term</3><4>funding fees, which are exchanged between traders</4></1><5><6>Read more about GM token pricing</6>.</5><7>Check GM pools' performance against other LP Positions in the <8>GMX Dune Dashboard</8>.</7>"
-msgstr ""
-
 #: src/components/Synthetics/TradeBox/OneClickTradingInfo.tsx
 msgid "Top-Up"
 msgstr ""
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LAST PRICE"
-msgstr ""
-
-#: src/components/Synthetics/GmList/GmListItem.tsx
-msgid "Shift is only applicable to GM pools when there are other pools with the same backing tokens, allowing liquidity to be moved without incurring buy or sell fees."
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
@@ -8207,10 +8214,6 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Edit {longOrShortText} {0}"
-msgstr ""
-
-#: src/components/Synthetics/GmList/GmListItem.tsx
-msgid "Sell"
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx

@@ -30,6 +30,11 @@ export function GlvList({
   marketsTokensLidoAprData,
   shouldScrollToTop,
   isDeposit,
+  glvPerformance,
+  gmPerformance,
+  glvPerformanceSnapshots,
+  gmPerformanceSnapshots,
+  period,
 }: Props) {
   const chainId = useSelector(selectChainId);
   const marketsInfo = useSelector(selectGlvInfo);
@@ -65,19 +70,7 @@ export function GlvList({
                 <Trans>VAULT</Trans>
               </TableTh>
               <TableTh>
-                <Trans>TOTAL SUPPLY</Trans>
-              </TableTh>
-              <TableTh>
-                <TooltipWithPortal
-                  handle={<Trans>BUYABLE</Trans>}
-                  className="normal-case"
-                  position="bottom-end"
-                  content={
-                    <p className="text-white">
-                      <Trans>Available amount to deposit into the specific GM pool.</Trans>
-                    </p>
-                  }
-                />
+                <Trans>TVL (SUPPLY)</Trans>
               </TableTh>
               <TableTh>
                 <GmTokensTotalBalanceInfo
@@ -89,10 +82,33 @@ export function GlvList({
               </TableTh>
               <TableTh>
                 <TooltipWithPortal
-                  handle={t`APY`}
+                  handle={t`FEE APY`}
                   className="normal-case"
                   position="bottom-end"
                   content={<ApyTooltipContent />}
+                />
+              </TableTh>
+
+              <TableTh>
+                <TooltipWithPortal
+                  handle={t`PERFORMANCE`}
+                  className="normal-case"
+                  position="bottom-end"
+                  renderContent={() => (
+                    <Trans>
+                      Pools returns in comparison to the benchmark, which is based on UNI V2-style rebalancing of the
+                      long-short token in the corresponding GM or GLV."
+                    </Trans>
+                  )}
+                />
+              </TableTh>
+
+              <TableTh>
+                <TooltipWithPortal
+                  handle={t`SNAPSHOT`}
+                  className="normal-case"
+                  position="bottom-end"
+                  renderContent={() => <Trans>Graph showing performance vs benchmark for the selected period.</Trans>}
                 />
               </TableTh>
 
@@ -115,6 +131,11 @@ export function GlvList({
                   isShiftAvailable={false}
                   isFavorite={undefined}
                   onFavoriteClick={undefined}
+                  glvPerformance={glvPerformance}
+                  gmPerformance={gmPerformance}
+                  glvPerformanceSnapshots={glvPerformanceSnapshots}
+                  gmPerformanceSnapshots={gmPerformanceSnapshots}
+                  period={period}
                 />
               ))}
 

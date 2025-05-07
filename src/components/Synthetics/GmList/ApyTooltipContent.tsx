@@ -7,8 +7,7 @@ export function ApyTooltipContent() {
     <p className="text-white">
       <Trans>
         <p className="mb-12">
-          The APY is an estimate based on the fees collected for the past seven days, extrapolating the current
-          borrowing fee. It excludes:
+          The APY is an estimate based on fees collected during the selected period. It excludes:
         </p>
         <ul className="mb-8 list-disc">
           <li className="p-2">price changes of the underlying token(s)</li>
@@ -22,8 +21,8 @@ export function ApyTooltipContent() {
           .
         </p>
         <p>
-          Check GM pools' performance against other LP Positions in the{" "}
-          <ExternalLink href="https://dune.com/gmx-io/gmx-analytics#v2-gm-prices">GMX Dune Dashboard</ExternalLink>.
+          For detailed stats and comparisons, check the GMX V2 LP Dashboard.{" "}
+          <ExternalLink href="https://dune.com/gmx-io/v2-lp-dashboard">GMX Dune Dashboard</ExternalLink>.
         </p>
       </Trans>
     </p>

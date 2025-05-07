@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
 
-import { POOLS_TIME_RANGE_OPTIONS, PoolsTimeRange } from "domain/synthetics/markets/poolsTimeRange";
+import { POOLS_TIME_RANGE_OPTIONS, PoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
 
 const LABEL_BY_POOLS_TIME_RANGE: Record<PoolsTimeRange, string> = {
   total: t`Total`,

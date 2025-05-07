@@ -1,11 +1,17 @@
 import { t } from "@lingui/macro";
 import { ReactNode, useMemo } from "react";
 
-import { usePoolsTimeRange } from "domain/synthetics/markets/poolsTimeRange";
-import { convertPoolsTimeRangeToPeriod } from "domain/synthetics/markets/poolsTimeRange";
+import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { isGlvEnabled } from "domain/synthetics/markets/glv";
+import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
+import { useGmGlvPerformance } from "domain/synthetics/markets/useGmGlvPerformance";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
-import { usePools } from "domain/synthetics/markets/usePools";
+import { useMarketsInfoRequest } from "domain/synthetics/markets/useMarketsInfoRequest";
+import { usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
+import { convertPoolsTimeRangeToPeriod } from "domain/synthetics/markets/usePoolsTimeRange";
 import { usePoolsTvl } from "domain/synthetics/markets/usePoolsTvl";
+import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
 
@@ -14,7 +20,6 @@ import { GlvList } from "components/Synthetics/GmList/GlvList";
 import { GmList } from "components/Synthetics/GmList/GmList";
 
 import PoolsTimeRangeFilter from "./PoolsTimeRangeFilter";
-
 
 export default function Pools() {
   const { timeRange, setTimeRange } = usePoolsTimeRange();
@@ -30,6 +35,25 @@ export default function Pools() {
     marketsTokensLidoAprData,
     glvApyInfoData,
   } = useGmMarketsApy(chainId);
+
+  const { tokensData } = useTokensDataRequest(chainId);
+  const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId);
+  const enabledGlv = isGlvEnabled(chainId);
+  const account = useSelector(selectAccount);
+
+  const { glvData } = useGlvMarketsInfo(enabledGlv, {
+    marketsInfoData: onlyGmMarketsInfoData,
+    tokensData,
+    chainId,
+    account,
+  });
+
+  const { glvPerformance, gmPerformance, glvPerformanceSnapshots, gmPerformanceSnapshots } = useGmGlvPerformance({
+    chainId,
+    period,
+    gmData: onlyGmMarketsInfoData,
+    glvData,
+  });
 
   return (
     <div className="default-container page-layout">
@@ -52,6 +76,11 @@ export default function Pools() {
             glvTokensIncentiveAprData={glvTokensIncentiveAprData}
             marketsTokensLidoAprData={marketsTokensLidoAprData}
             glvTokensApyData={glvApyInfoData}
+            glvPerformance={glvPerformance}
+            gmPerformance={gmPerformance}
+            glvPerformanceSnapshots={glvPerformanceSnapshots}
+            gmPerformanceSnapshots={gmPerformanceSnapshots}
+            period={period}
             shouldScrollToTop
             isDeposit
           />
@@ -67,6 +96,11 @@ export default function Pools() {
             marketsTokensApyData={marketsTokensApyData}
             marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
             marketsTokensLidoAprData={marketsTokensLidoAprData}
+            glvPerformance={glvPerformance}
+            gmPerformance={gmPerformance}
+            glvPerformanceSnapshots={glvPerformanceSnapshots}
+            gmPerformanceSnapshots={gmPerformanceSnapshots}
+            period={period}
             shouldScrollToTop
             isDeposit
           />

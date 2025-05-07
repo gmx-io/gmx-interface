@@ -1,5 +1,6 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import React, { useMemo } from "react";
+import { Line, LineChart, XAxis, YAxis } from "recharts";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -12,10 +13,13 @@ import {
   getMarketBadge,
   getMarketIndexName,
   getMarketPoolName,
-  getMintableMarketTokens,
 } from "domain/synthetics/markets";
 import { getMintableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
+import { PerformanceSnapshot } from "domain/synthetics/markets/performance";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
+import { PerformanceSnapshotsData } from "domain/synthetics/markets/useGmGlvPerformance";
+import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformance";
+import { Period } from "domain/synthetics/markets/usePoolsTimeRange";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { TokenData, TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { formatUsdPrice } from "lib/numbers";
@@ -48,6 +52,11 @@ export function GmListItem({
   marketTokensData,
   isFavorite,
   onFavoriteClick,
+  glvPerformance,
+  gmPerformance,
+  glvPerformanceSnapshots,
+  gmPerformanceSnapshots,
+  period,
 }: {
   token: TokenData;
   marketsTokensApyData: MarketTokensAPRData | undefined;
@@ -60,6 +69,11 @@ export function GmListItem({
   marketTokensData: TokensData | undefined;
   isFavorite: boolean | undefined;
   onFavoriteClick: ((address: string) => void) | undefined;
+  glvPerformance: PerformanceData | undefined;
+  gmPerformance: PerformanceData | undefined;
+  glvPerformanceSnapshots: PerformanceSnapshotsData | undefined;
+  gmPerformanceSnapshots: PerformanceSnapshotsData | undefined;
+  period: Period;
 }) {
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
@@ -77,54 +91,6 @@ export function GmListItem({
   const shortToken = getTokenData(tokensData, marketOrGlv?.shortTokenAddress);
 
   const marketOrGlvTokenAddress = marketOrGlv && getGlvOrMarketAddress(marketOrGlv);
-
-  const mintableInfo = useMemo(() => {
-    if (!marketOrGlv || !token || isGlv) {
-      return undefined;
-    }
-
-    return getMintableMarketTokens(marketOrGlv, token);
-  }, [marketOrGlv, token, isGlv]);
-
-  const shiftButton = useMemo(() => {
-    const btn = (
-      <Button
-        className="w-full"
-        variant="secondary"
-        disabled={!isShiftAvailable}
-        to={`/pools/?market=${marketOrGlvTokenAddress}&operation=shift&scroll=${shouldScrollToTop ? "1" : "0"}`}
-      >
-        <Trans>Shift</Trans>
-      </Button>
-    );
-
-    if (isGlv) {
-      return (
-        <TooltipWithPortal
-          content={
-            <Trans>
-              Shifting from GLV to another pool is not possible, as GLV can only be sold into the backing tokens.
-              However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens.
-            </Trans>
-          }
-          handle={btn}
-          disableHandleStyle
-        />
-      );
-    }
-
-    return (
-      <TooltipWithPortal
-        disabled={isShiftAvailable}
-        content={t`Shift is only applicable to GM pools when there are other pools with the same backing tokens, allowing liquidity to be moved without incurring buy or sell fees.`}
-        disableHandleStyle
-        handleClassName="block"
-        position="bottom-end"
-      >
-        {btn}
-      </TooltipWithPortal>
-    );
-  }, [isShiftAvailable, marketOrGlvTokenAddress, shouldScrollToTop, isGlv]);
 
   const apy = isGlv
     ? getByKey(glvTokensApyData, marketOrGlvTokenAddress)
@@ -147,51 +113,57 @@ export function GmListItem({
 
   const tokenIconBadge = getMarketBadge(chainId, marketOrGlv);
 
-
   const handleFavoriteClick = (event: React.MouseEvent) => {
     event.stopPropagation();
     if (!marketOrGlvTokenAddress) return;
     onFavoriteClick?.(marketOrGlvTokenAddress);
   };
 
+  const performance = isGlv ? glvPerformance?.[token.address] : gmPerformance?.[token.address];
+  const performanceSnapshots = isGlv
+    ? glvPerformanceSnapshots?.[token.address]
+    : gmPerformanceSnapshots?.[token.address];
+
   return (
     <TableTr key={token.address} hoverable={false} bordered={false}>
       <TableTd className="!pl-0">
-        <div className="flex items-start">
-        {onFavoriteClick && (
-            <div
-              className="-ml-8 mr-4 cursor-pointer self-center rounded-4 p-8 text-16 hover:bg-cold-blue-700 active:bg-cold-blue-500"
-              onClick={handleFavoriteClick}
-            >
-              <FavoriteStar isFavorite={isFavorite} />
+        <div className="w-[220px]">
+          <div className="flex items-start">
+            {onFavoriteClick && (
+              <div
+                className="-ml-8 mr-4 cursor-pointer self-center rounded-4 p-8 text-16 hover:bg-cold-blue-700 active:bg-cold-blue-500"
+                onClick={handleFavoriteClick}
+              >
+                <FavoriteStar isFavorite={isFavorite} />
+              </div>
+            )}
+
+            <div className="mr-12 flex shrink-0 items-center">
+              <TokenIcon
+                symbol={tokenIconName}
+                displaySize={40}
+                importSize={40}
+                badge={tokenIconBadge}
+                className="min-h-40 min-w-40"
+              />
             </div>
-          )}
+            <div>
+              <div className="flex text-16">
+                {isGlv
+                  ? getGlvDisplayName(marketOrGlv)
+                  : getMarketIndexName({ indexToken, isSpotOnly: Boolean(marketOrGlv?.isSpotOnly) })}
 
-          <div className="mr-12 flex shrink-0 items-center">
-            <TokenIcon
-              symbol={tokenIconName}
-              displaySize={40}
-              importSize={40}
-              badge={tokenIconBadge}
-              className="min-h-40 min-w-40"
-            />
-          </div>
-          <div>
-            <div className="flex text-16">
-              {isGlv
-                ? getGlvDisplayName(marketOrGlv)
-                : getMarketIndexName({ indexToken, isSpotOnly: Boolean(marketOrGlv?.isSpotOnly) })}
-
-              <div className="inline-block">
-                <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
+                <div className="inline-block">
+                  <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
+                </div>
+              </div>
+              <div className="text-12 tracking-normal text-slate-100">
+                [{getMarketPoolName({ longToken, shortToken })}]
               </div>
             </div>
-            <div className="text-12 tracking-normal text-slate-100">
-              [{getMarketPoolName({ longToken, shortToken })}]
-            </div>
           </div>
+          {showDebugValues && <span style={tokenAddressStyle}>{marketOrGlvTokenAddress}</span>}
         </div>
-        {showDebugValues && <span style={tokenAddressStyle}>{marketOrGlvTokenAddress}</span>}
       </TableTd>
       <TableTd>
         <AmountWithUsdHuman
@@ -202,28 +174,6 @@ export function GmListItem({
           symbol={token.symbol}
         />
       </TableTd>
-      <TableTd>
-        {isGlv ? (
-          <MintableAmount
-            multiline
-            mintableInfo={getMintableInfoGlv(marketOrGlv, marketTokensData)}
-            market={marketOrGlv}
-            token={token}
-          />
-        ) : (
-          marketOrGlv && (
-            <MintableAmount
-              multiline
-              mintableInfo={mintableInfo}
-              market={marketOrGlv}
-              token={token}
-              longToken={longToken}
-              shortToken={shortToken}
-            />
-          )
-        )}
-      </TableTd>
-
       <TableTd>
         <GmTokensBalanceInfo
           token={token}
@@ -238,25 +188,51 @@ export function GmListItem({
         <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />
       </TableTd>
 
-      <TableTd className="w-[350px] !pr-0">
-        <div className="grid grid-cols-3 gap-10">
-          <Button
-            className="flex-grow"
-            variant="secondary"
-            to={`/pools/?market=${marketOrGlvTokenAddress}&operation=buy&scroll=${shouldScrollToTop ? "1" : "0"}`}
-          >
-            <Trans>Buy</Trans>
-          </Button>
-          <Button
-            className="flex-grow"
-            variant="secondary"
-            to={`/pools/?market=${marketOrGlvTokenAddress}&operation=sell&scroll=${shouldScrollToTop ? "1" : "0"}`}
-          >
-            <Trans>Sell</Trans>
-          </Button>
-          <div className="flex-grow">{shiftButton}</div>
-        </div>
+      <TableTd>{performance ? <div>{`${Math.round(performance * 10000) / 100}%`}</div> : null}</TableTd>
+
+      <TableTd>
+        {performanceSnapshots && performance ? (
+          <SnapshotGraph performanceSnapshots={performanceSnapshots} performance={performance} period={period} />
+        ) : null}
+      </TableTd>
+
+      <TableTd className="!pr-0">
+        <Button
+          className="flex-grow !px-30 !py-12"
+          variant="secondary"
+          to={`/pools/details?market=${marketOrGlvTokenAddress}`}
+        >
+          <Trans>Details</Trans>
+        </Button>
       </TableTd>
     </TableTr>
   );
 }
+
+const SnapshotGraph = ({
+  performanceSnapshots,
+  performance,
+  period,
+}: {
+  performanceSnapshots: PerformanceSnapshot[];
+  performance: number;
+  period: Period;
+}) => {
+  const domain = useMemo(() => [
+    period.periodStart,
+    period.periodEnd,
+  ], [period])
+  const isNegative = performance < 0;
+
+  return (
+    <div>
+      <LineChart width={160} height={30} data={performanceSnapshots}>
+        <Line
+          dataKey="performance"
+          stroke={isNegative ? "var(--color-red-500)" : "var(--color-green-500)"}
+          dot={false}
+        />
+      </LineChart>
+    </div>
+  );
+};

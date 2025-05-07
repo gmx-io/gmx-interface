@@ -8,6 +8,9 @@ import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/sele
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { MarketTokensAPRData, getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
+import { PerformanceSnapshotsData } from "domain/synthetics/markets/useGmGlvPerformance";
+import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformance";
+import { Period } from "domain/synthetics/markets/usePoolsTimeRange";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
@@ -31,11 +34,16 @@ export type Props = {
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   glvTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
+  glvPerformance: PerformanceData | undefined;
+  gmPerformance: PerformanceData | undefined;
+  glvPerformanceSnapshots: PerformanceSnapshotsData | undefined;
+  gmPerformanceSnapshots: PerformanceSnapshotsData | undefined;
+  period: Period;
   shouldScrollToTop?: boolean;
   isDeposit: boolean;
 };
 
-export type SortField = "price" | "totalSupply" | "buyable" | "wallet" | "apy" | "unspecified";
+export type SortField = "price" | "totalSupply" | "buyable" | "wallet" | "apy" | "unspecified" | "performance";
 
 export function GmList({
   marketsTokensApyData,
@@ -43,13 +51,17 @@ export function GmList({
   marketsTokensLidoAprData,
   shouldScrollToTop,
   isDeposit,
+  glvPerformance,
+  gmPerformance,
+  glvPerformanceSnapshots,
+  gmPerformanceSnapshots,
+  period,
 }: Props) {
   const chainId = useSelector(selectChainId);
   const marketsInfo = useSelector(selectMarketsInfoData);
 
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit, withGlv: false });
   const { isConnected: active } = useAccount();
-  const currentIcons = getIcons(chainId)!;
   const userEarnings = useUserEarnings(chainId);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("gm-list");
   const [searchText, setSearchText] = useState("");
@@ -87,7 +99,7 @@ export function GmList({
   }, [marketTokensData, active]);
 
   return (
-    <div className="rounded-4 bg-slate-800">
+    <div>
       <div className="flex flex-wrap items-center justify-between gap-8 py-8">
         <SearchInput
           size="s"
@@ -112,21 +124,7 @@ export function GmList({
               </TableTh>
               <TableTh>
                 <Sorter {...getSorterProps("totalSupply")}>
-                  <Trans>TOTAL SUPPLY</Trans>
-                </Sorter>
-              </TableTh>
-              <TableTh>
-                <Sorter {...getSorterProps("buyable")}>
-                  <TooltipWithPortal
-                    handle={<Trans>BUYABLE</Trans>}
-                    className="normal-case"
-                    position="bottom-end"
-                    renderContent={() => (
-                      <p className="text-white">
-                        <Trans>Available amount to deposit into the specific GM pool.</Trans>
-                      </p>
-                    )}
-                  />
+                  <Trans>TVL (SUPPLY)</Trans>
                 </Sorter>
               </TableTh>
               <TableTh>
@@ -142,12 +140,34 @@ export function GmList({
               <TableTh>
                 <Sorter {...getSorterProps("apy")}>
                   <TooltipWithPortal
-                    handle={t`APY`}
+                    handle={t`FEE APY`}
                     className="normal-case"
                     position="bottom-end"
                     renderContent={ApyTooltipContent}
                   />
                 </Sorter>
+              </TableTh>
+              <TableTh>
+                <Sorter {...getSorterProps("performance")}>
+                  <TooltipWithPortal
+                    handle={t`PERFORMANCE`}
+                    className="normal-case"
+                    position="bottom-end"
+                    renderContent={() => <Trans>
+                      Pools returns in comparison to the benchmark, which is based on UNI V2-style rebalancing of the
+                      long-short token in the corresponding GM or GLV."
+                    </Trans>}
+                  />
+                </Sorter>
+              </TableTh>
+
+              <TableTh>
+                <TooltipWithPortal
+                  handle={t`SNAPSHOT`}
+                  className="normal-case"
+                  position="bottom-end"
+                  renderContent={() => <Trans>Graph showing performance vs benchmark for the selected period.</Trans>}
+                />
               </TableTh>
 
               <TableTh className="!pr-0" />
@@ -165,10 +185,15 @@ export function GmList({
                   marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
                   marketsTokensLidoAprData={marketsTokensLidoAprData}
                   glvTokensApyData={undefined}
+                  glvPerformance={glvPerformance}
+                  gmPerformance={gmPerformance}
+                  glvPerformanceSnapshots={glvPerformanceSnapshots}
+                  gmPerformanceSnapshots={gmPerformanceSnapshots}
                   shouldScrollToTop={shouldScrollToTop}
                   isShiftAvailable={shiftAvailableMarketAddressSet.has(token.address)}
                   isFavorite={favoriteTokens.includes(token.address)}
                   onFavoriteClick={toggleFavoriteToken}
+                  period={period}
                 />
               ))}
             {!currentData.length && !isLoading && (
