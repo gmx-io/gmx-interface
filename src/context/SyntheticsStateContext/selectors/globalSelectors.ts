@@ -1,5 +1,11 @@
+import { DisabledFeatures } from "domain/synthetics/features/useDisabledFeatures";
+import { getIsSubaccountActionsExceeded, getIsSubaccountExpired } from "domain/synthetics/subaccount";
+import { getRelayerFeeToken } from "sdk/configs/express";
+import { getByKey } from "sdk/utils/objects";
+
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { createSelector, createSelectorDeprecated } from "../utils";
+import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
+import { selectExpressOrdersEnabled, selectGasPaymentTokenAddress } from "./settingsSelectors";
 
 export const selectAccount = (s: SyntheticsState) => s.globals.account;
 export const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.ordersInfoData;
@@ -13,14 +19,41 @@ export const selectGmMarkets = (s: SyntheticsState) => s.globals.markets.markets
 export const selectUiFeeFactor = (s: SyntheticsState) => s.globals.uiFeeFactor;
 export const selectUserReferralInfo = (s: SyntheticsState) => s.globals.userReferralInfo;
 export const selectChainId = (s: SyntheticsState) => s.globals.chainId;
+export const selectWalletChainId = (s: SyntheticsState) => s.globals.walletChainId;
 export const selectDepositMarketTokensData = (s: SyntheticsState) => s.globals.depositMarketTokensData;
 export const selectIsFirstOrder = (s: SyntheticsState) => s.globals.isFirstOrder;
+export const selectDisabledFeatures = (s: SyntheticsState) => s.disabledFeatures;
+export const selectSponsoredCallParams = (s: SyntheticsState) => s.sponsoredCallParams;
+export const selectSubaccountState = (s: SyntheticsState) => s.subaccountState;
+export const selectRawSubaccount = (s: SyntheticsState) => s.subaccountState.subaccount;
+
+export const selectUpdateSubaccountSettings = (s: SyntheticsState) => s.subaccountState.updateSubaccountSettings;
+export const selectResetSubaccountApproval = (s: SyntheticsState) => s.subaccountState.resetSubaccountApproval;
+export const selectGenerateSubaccountIfNotExists = (s: SyntheticsState) => s.subaccountState.tryEnableSubaccount;
+
+export const selectL1ExpressOrderGasReference = (s: SyntheticsState) => s.l1ExpressOrderGasReference;
+
+export const selectSponsoredCallMultiplierFactor = (s: SyntheticsState) => {
+  if (!s.sponsoredCallParams?.isSponsoredCallAllowed) {
+    return undefined;
+  }
+
+  return s.sponsoredCallParams.gelatoRelayFeeMultiplierFactor;
+};
+
+export const makeSelectDisableFeature = (feature: keyof DisabledFeatures) => {
+  return createSelector((q) => {
+    const disabledFeatures = q(selectDisabledFeatures);
+    return disabledFeatures?.[feature] ?? false;
+  });
+};
 
 export const selectBlockTimestampData = (s: SyntheticsState) => s.globals.blockTimestampData;
 
 export const selectGlvInfo = (s: SyntheticsState) => s.globals.glvInfo.glvData;
 export const selectGlvs = (s: SyntheticsState) => s.globals.glvInfo.glvs;
 export const selectGlvInfoLoading = (s: SyntheticsState) => s.globals.glvInfo.isLoading;
+
 export const selectGlvAndMarketsInfoData = createSelector((q) => {
   const glvsInfoData = q(selectGlvInfo);
   const marketsInfoData = q(selectMarketsInfoData);
@@ -77,4 +110,50 @@ export const selectPositiveFeePositionsSortedByUsd = createSelector((q) => {
   return positiveFeePositions.sort((a, b) =>
     a.pendingClaimableFundingFeesUsd > b.pendingClaimableFundingFeesUsd ? -1 : 1
   );
+});
+
+export const makeSelectSubaccountForActions = (requiredActions: number) => {
+  return createSelector((q) => {
+    const subaccount = q(selectRawSubaccount);
+    const isDisabled = q(makeSelectDisableFeature("subaccountRelayRouterDisabled"));
+
+    if (
+      isDisabled ||
+      !subaccount ||
+      getIsSubaccountActionsExceeded(subaccount, requiredActions) ||
+      getIsSubaccountExpired(subaccount)
+    ) {
+      return undefined;
+    }
+
+    return subaccount;
+  });
+};
+
+export const selectGasPaymentToken = createSelector((q) => {
+  const gasPaymentTokenAddress = q(selectGasPaymentTokenAddress);
+  return q((state) => getByKey(selectTokensData(state), gasPaymentTokenAddress));
+});
+
+export const selectRelayerFeeToken = createSelector((q) => {
+  const chainId = q(selectChainId);
+  const relayerFeeTokenAddress = getRelayerFeeToken(chainId).address;
+  return q((state) => getByKey(selectTokensData(state), relayerFeeTokenAddress));
+});
+
+export const selectIsRelayRouterFeatureDisabled = makeSelectDisableFeature("relayRouterDisabled");
+export const selectIsExpressTransactionAvailableForNonNativePayment = createSelector((q) => {
+  const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
+  const isFeatureDisabled = q(selectIsRelayRouterFeatureDisabled);
+  const gasPaymentToken = q(selectGasPaymentToken);
+  const isZeroGasBalance = gasPaymentToken?.balance === 0n || gasPaymentToken?.balance === undefined;
+
+  return isExpressOrdersEnabledSetting && !isFeatureDisabled && !isZeroGasBalance;
+});
+
+export const makeSelectIsExpressTransactionAvailable = createSelectorFactory((isNativePayment: boolean) => {
+  if (isNativePayment) {
+    return () => false;
+  }
+  return selectIsExpressTransactionAvailableForNonNativePayment;
 });

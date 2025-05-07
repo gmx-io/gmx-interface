@@ -9,12 +9,10 @@ import { arbitrumSdk } from "utils/testUtil";
 import * as tradeAmounts from "utils/trade/amounts";
 
 describe("increaseOrderHelper", () => {
-  let mockParams;
-  let createIncreaseOrderSpy;
-
   let marketsInfoData: MarketsInfoData;
   let tokensData: TokensData;
-
+  let mockParams;
+  let createIncreaseOrderSpy;
   let market: MarketInfo;
   let payToken: TokenData;
   let collateralToken: TokenData;
@@ -28,12 +26,6 @@ describe("increaseOrderHelper", () => {
 
     marketsInfoData = result.marketsInfoData;
     tokensData = result.tokensData;
-  });
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-
-    createIncreaseOrderSpy = vi.spyOn(arbitrumSdk.orders, "createIncreaseOrder").mockResolvedValue();
 
     market = getByKey(marketsInfoData, "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336")!;
 
@@ -56,67 +48,85 @@ describe("increaseOrderHelper", () => {
     };
   });
 
-  it("should call createIncreaseOrder with correct parameters for a market order with payAmount", async () => {
-    const findSwapPathSpy = vi.spyOn(swapPath, "createFindSwapPath");
-    const getIncreasePositionAmountsSpy = vi.spyOn(tradeAmounts, "getIncreasePositionAmounts");
+  describe("validation", () => {
+    it("should throw an error if wrong collateral token selected", async () => {
+      const e = await arbitrumSdk.orders
+        .long({
+          ...mockParams,
+          collateralTokenAddress: "0x47904963fc8b2340414262125aF798B9655E58Cd",
+        })
+        .catch((error) => {
+          return error.message;
+        });
 
-    await arbitrumSdk.orders.long(mockParams);
+      await expect(e).toBe("Invalid collateral token. Only long WETH and short USDC tokens are available.");
+    });
+  });
 
-    expect(findSwapPathSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        chainId: ARBITRUM,
-        fromTokenAddress: payToken.address,
-        toTokenAddress: collateralToken.address,
-        marketsInfoData: expect.any(Object),
-        gasEstimationParams: expect.objectContaining({
-          gasPrice: expect.any(BigInt),
-          gasLimits: expect.any(Object),
-          tokensData: expect.any(Object),
-        }),
-      } satisfies Parameters<typeof swapPath.createFindSwapPath>[0])
-    );
+  describe("parameters", () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
 
-    expect(getIncreasePositionAmountsSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        isLong: true,
-        initialCollateralAmount: 1000n,
-        leverage: 50000n,
-        strategy: "leverageByCollateral",
-        marketInfo: market,
-      })
-    );
+      createIncreaseOrderSpy = vi.spyOn(arbitrumSdk.orders, "createIncreaseOrder").mockResolvedValue();
+    });
 
-    expect(createIncreaseOrderSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        marketsInfoData: expect.any(Object),
-        tokensData: expect.any(Object),
-        marketInfo: market,
-        indexToken: market.indexToken,
-        isLimit: false,
-        marketAddress: market.marketTokenAddress,
-        allowedSlippage: 125,
-        collateralTokenAddress: collateralToken.address,
-        collateralToken,
-        isLong: true,
-        receiveTokenAddress: collateralToken.address,
-        increaseAmounts: expect.objectContaining({
+    it("should call createIncreaseOrder with correct parameters for a market order with payAmount", async () => {
+      const findSwapPathSpy = vi.spyOn(swapPath, "createFindSwapPath");
+      const getIncreasePositionAmountsSpy = vi.spyOn(tradeAmounts, "getIncreasePositionAmounts");
+
+      await arbitrumSdk.orders.long(mockParams);
+
+      expect(findSwapPathSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          chainId: ARBITRUM,
+          fromTokenAddress: payToken.address,
+          toTokenAddress: collateralToken.address,
+          marketsInfoData: expect.any(Object),
+        })
+      );
+
+      expect(getIncreasePositionAmountsSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          isLong: true,
           initialCollateralAmount: 1000n,
-          estimatedLeverage: 50000n,
-          triggerPrice: undefined,
-          acceptablePrice: 0n,
-          acceptablePriceDeltaBps: 0n,
-          positionFeeUsd: 0n,
-          uiFeeUsd: 0n,
-          swapUiFeeUsd: 0n,
-          feeDiscountUsd: 0n,
-          borrowingFeeUsd: 0n,
-          fundingFeeUsd: 0n,
-          positionPriceImpactDeltaUsd: 0n,
-          limitOrderType: undefined,
-          triggerThresholdType: undefined,
-          externalSwapQuote: undefined,
-        }),
-      })
-    );
+          leverage: 50000n,
+          strategy: "leverageByCollateral",
+          marketInfo: market,
+        })
+      );
+
+      expect(createIncreaseOrderSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          marketsInfoData: expect.any(Object),
+          tokensData: expect.any(Object),
+          marketInfo: market,
+          indexToken: market.indexToken,
+          isLimit: false,
+          marketAddress: market.marketTokenAddress,
+          allowedSlippage: 125,
+          collateralTokenAddress: collateralToken.address,
+          collateralToken,
+          isLong: true,
+          receiveTokenAddress: collateralToken.address,
+          increaseAmounts: expect.objectContaining({
+            initialCollateralAmount: 1000n,
+            estimatedLeverage: 50000n,
+            triggerPrice: undefined,
+            acceptablePrice: 0n,
+            acceptablePriceDeltaBps: 0n,
+            positionFeeUsd: 0n,
+            uiFeeUsd: 0n,
+            swapUiFeeUsd: 0n,
+            feeDiscountUsd: 0n,
+            borrowingFeeUsd: 0n,
+            fundingFeeUsd: 0n,
+            positionPriceImpactDeltaUsd: 0n,
+            limitOrderType: undefined,
+            triggerThresholdType: undefined,
+            externalSwapQuote: undefined,
+          }),
+        })
+      );
+    });
   });
 });

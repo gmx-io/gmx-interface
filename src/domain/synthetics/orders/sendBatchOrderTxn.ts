@@ -1,0 +1,257 @@
+import { Signer } from "ethers";
+import { BaseError, Hex, PublicClient, decodeErrorResult } from "viem";
+
+import { UiContractsChain } from "config/chains";
+import { ExpressParams } from "domain/synthetics/express";
+import { isLimitSwapOrderType } from "domain/synthetics/orders";
+import {
+  buildAndSignExpressBatchOrderTxn,
+  getMultichainInfoFromSigner,
+} from "domain/synthetics/orders/expressOrderUtils";
+import { TokensData } from "domain/tokens";
+import { extendError } from "lib/errors";
+import { sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
+import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
+import { TxnCallback, TxnEventBuilder } from "lib/transactions/types";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import { abis } from "sdk/abis";
+import { getContract } from "sdk/configs/contracts";
+import { sleep } from "sdk/utils/common";
+import { BatchOrderTxnParams, getBatchOrderMulticallPayload } from "sdk/utils/orderTransactions";
+
+import { signerAddressError } from "components/Errors/errorToasts";
+
+import { getOrdersTriggerPriceOverrides, getSimulationPrices, simulateExecution } from "./simulation";
+import { callRelayTransaction } from "../gassless/txns/expressOrderDebug";
+
+export type BatchSimulationParams = {
+  tokensData: TokensData;
+  blockTimestampData: BlockTimestampData | undefined;
+};
+
+export type BatchOrderTxnCtx = {
+  expressParams: ExpressParams | undefined;
+  batchParams: BatchOrderTxnParams;
+};
+
+const DEFAULT_RUN_SIMULATION = () => Promise.resolve(undefined);
+
+export async function sendBatchOrderTxn({
+  chainId,
+  signer,
+  settlementChainClient,
+  batchParams,
+  expressParams,
+  simulationParams,
+  callback,
+}: {
+  chainId: UiContractsChain;
+  signer: Signer;
+  settlementChainClient?: PublicClient;
+  batchParams: BatchOrderTxnParams;
+  expressParams: ExpressParams | undefined;
+  simulationParams: BatchSimulationParams | undefined;
+  callback: TxnCallback<BatchOrderTxnCtx> | undefined;
+}) {
+  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
+  const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({ expressParams, batchParams });
+
+  let runSimulation: () => Promise<void> = DEFAULT_RUN_SIMULATION;
+
+  if (simulationParams && expressParams && srcChainId) {
+    runSimulation = async () => {
+      if (!settlementChainClient) {
+        throw new Error("settlementChainClient is required");
+      }
+
+      const { callData, feeAmount, feeToken, to } = await buildAndSignExpressBatchOrderTxn({
+        signer,
+        settlementChainClient,
+        chainId,
+        relayFeeParams: expressParams.relayFeeParams,
+        relayParamsPayload: expressParams.relayParamsPayload,
+        batchParams,
+        subaccount: expressParams.subaccount,
+        emptySignature: true,
+      });
+
+      try {
+        await callRelayTransaction({
+          calldata: callData,
+          client: settlementChainClient!,
+          gelatoRelayFeeAmount: feeAmount,
+          gelatoRelayFeeToken: feeToken,
+          relayRouterAddress: to,
+        });
+      } catch (error) {
+        if ("walk" in error && typeof error.walk === "function") {
+          const errorWithData = (error as BaseError).walk((e) => "data" in (e as any)) as
+            | (Error & { data: string })
+            | null;
+
+          if (errorWithData && errorWithData.data) {
+            const data = errorWithData.data;
+
+            const decodedError = decodeErrorResult({
+              abi: abis.CustomErrorsArbitrumSepolia,
+              data: data as Hex,
+            });
+
+            const customError = new Error();
+
+            customError.name = decodedError.errorName;
+            customError.message = JSON.stringify(decodedError, null, 2);
+            // customError.cause = error;
+
+            throw extendError(customError, {
+              errorContext: "simulation",
+            });
+            // debugger;
+          }
+        }
+
+        throw extendError(error, {
+          errorContext: "simulation",
+        });
+      }
+    };
+  } else if (simulationParams) {
+    runSimulation = () =>
+      makeBatchOrderSimulation({
+        chainId,
+        // TODO: implement simulation for multichain
+        signer,
+        params: batchParams,
+        blockTimestampData: simulationParams.blockTimestampData,
+        tokensData: simulationParams.tokensData,
+      });
+  }
+
+  try {
+    if (srcChainId && !expressParams) {
+      throw new Error("Multichain orders are only supported with express params");
+    }
+
+    if (srcChainId && !settlementChainClient) {
+      throw new Error("settlementChainClient is required");
+    }
+
+    if (expressParams) {
+      await runSimulation().then(() => callback?.(eventBuilder.Simulated()));
+
+      const txnData = await buildAndSignExpressBatchOrderTxn({
+        chainId: chainId as UiContractsChain,
+        signer,
+        settlementChainClient,
+        batchParams,
+        relayParamsPayload: expressParams.relayParamsPayload,
+        relayFeeParams: expressParams.relayFeeParams,
+        subaccount: expressParams.subaccount,
+      });
+
+      callback?.(eventBuilder.Prepared());
+
+      const createdAt = Date.now();
+
+      const res = Promise.race([
+        sendExpressTransaction({
+          chainId,
+          txnData,
+          isSponsoredCall: srcChainId ? false : expressParams.isSponsoredCall,
+        }),
+        sleep(3000).then(() => {
+          throw new Error("Gelato Task Timeout");
+        }),
+      ])
+        .then(async (res) => {
+          callback?.(
+            eventBuilder.Sent({
+              txnHash: res.taskId,
+
+              blockNumber: BigInt(await signer.provider!.getBlockNumber()),
+              createdAt,
+            })
+          );
+
+          return res;
+        })
+        .catch((error) => {
+          throw extendError(error, {
+            errorContext: "sending",
+          });
+        });
+
+      return res;
+    }
+
+    const { callData, value } = getBatchOrderMulticallPayload({ params: batchParams, chainId });
+
+    return sendWalletTransaction({
+      chainId,
+      signer,
+      to: getContract(chainId, "ExchangeRouter"),
+      callData,
+      value,
+      runSimulation,
+      callback: (event) => {
+        callback?.(eventBuilder.extend(event));
+      },
+    });
+  } catch (error) {
+    callback?.(eventBuilder.Error(error));
+
+    throw error;
+  }
+}
+
+export const makeBatchOrderSimulation = async ({
+  chainId,
+  signer,
+  params,
+  blockTimestampData,
+  tokensData,
+}: {
+  chainId: UiContractsChain;
+  signer: Signer;
+  params: BatchOrderTxnParams;
+  blockTimestampData: BlockTimestampData | undefined;
+  tokensData: TokensData;
+}) => {
+  const account = await signer.getAddress();
+  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
+
+  if (srcChainId) {
+    throw new Error("Batch order simulation is not supported for multichain");
+  }
+
+  const isInvalidReceiver = params.createOrderParams.some((co) => co.orderPayload.addresses.receiver !== account);
+
+  if (isInvalidReceiver) {
+    throw extendError(new Error(signerAddressError), {
+      errorContext: "simulation",
+    });
+  }
+
+  const isSimulationAllowed = params.createOrderParams.every((co) => !isLimitSwapOrderType(co.orderPayload.orderType));
+
+  if (params.createOrderParams.length === 0 || !isSimulationAllowed) {
+    return Promise.resolve();
+  }
+
+  const { encodedMulticall, value } = getBatchOrderMulticallPayload({
+    params: {
+      ...params,
+      createOrderParams: [params.createOrderParams[0]],
+    },
+    chainId,
+  });
+
+  return simulateExecution(chainId, {
+    account,
+    prices: getSimulationPrices(chainId, tokensData, getOrdersTriggerPriceOverrides([params.createOrderParams[0]])),
+    createMulticallPayload: encodedMulticall,
+    value,
+    blockTimestampData,
+  });
+  // }
+};

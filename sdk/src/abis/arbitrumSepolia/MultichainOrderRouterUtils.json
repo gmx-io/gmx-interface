@@ -1,0 +1,14 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "name": "UnableToPayOrderFee",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "UnableToPayOrderFeeFromCollateral",
+      "type": "error"
+    }
+  ]
+}

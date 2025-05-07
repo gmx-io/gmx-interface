@@ -3,15 +3,8 @@ import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useKey } from "react-use";
 
 import { BASIS_POINTS_DIVISOR, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS, USD_DECIMALS } from "config/factors";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import {
-  usePositionsConstants,
-  useTokensData,
-  useUserReferralInfo,
-} from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 import {
   useOrderEditorIsSubmittingState,
@@ -19,6 +12,11 @@ import {
   useOrderEditorTriggerPriceInputValueState,
   useOrderEditorTriggerRatioInputValueState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
+import {
+  makeSelectSubaccountForActions,
+  selectMarketsInfoData,
+  selectTokensData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectOrderEditorAcceptablePrice,
   selectOrderEditorAcceptablePriceImpactBps,
@@ -49,6 +47,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   EditingOrderSource,
@@ -62,7 +61,8 @@ import {
   isSwapOrderType,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
-import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
+import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
+import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import {
   formatAcceptablePrice,
   formatLeverage,
@@ -84,11 +84,14 @@ import {
   formatBalanceAmount,
   formatDeltaUsd,
   formatTokenAmountWithUsd,
+  formatUsd,
   formatUsdPrice,
+  parseValue,
 } from "lib/numbers";
 import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
+import { BatchOrderTxnParams, buildUpdateOrderPayload } from "sdk/utils/orderTransactions";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -113,16 +116,15 @@ type Props = {
 export function OrderEditor(p: Props) {
   const { chainId } = useChainId();
   const { signer } = useWallet();
-  const tokensData = useTokensData();
-  const { setPendingTxns } = usePendingTxns();
-  const { setPendingOrderUpdate } = useSyntheticsEvents();
-
-  const [isInited, setIsInited] = useState(false);
+  const tokensData = useSelector(selectTokensData);
+  const marketsInfoData = useSelector(selectMarketsInfoData);
+  const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const [isSubmitting, setIsSubmitting] = useOrderEditorIsSubmittingState();
 
   const [sizeInputValue, setSizeInputValue] = useOrderEditorSizeInputValueState();
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useOrderEditorTriggerPriceInputValueState();
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useOrderEditorTriggerRatioInputValueState();
+  const [isInited, setIsInited] = useState(false);
 
   const calcSelector = useCalcSelector();
 
@@ -156,7 +158,7 @@ export function OrderEditor(p: Props) {
     };
   }, [executionFee, tokensData, p.order.executionFee]);
 
-  const subaccount = useSubaccount(additionalExecutionFee?.feeTokenAmount ?? null);
+  const subaccount = useSelector(makeSelectSubaccountForActions(1));
 
   const positionOrder = p.order as PositionOrderInfo | undefined;
   const positionIndexToken = positionOrder?.indexToken;
@@ -359,35 +361,68 @@ export function OrderEditor(p: Props) {
     };
   }
 
-  function onSubmit() {
-    if (!signer) return;
-    const positionOrder = p.order as PositionOrderInfo;
+  const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
+    if (!signer || !tokensData || !marketsInfoData) {
+      return undefined;
+    }
 
-    setIsSubmitting(true);
+    const positionOrder = p.order as PositionOrderInfo;
 
     const orderTriggerPrice = isSwapOrderType(p.order.orderType)
       ? triggerRatio?.ratio ?? triggerPrice ?? positionOrder.triggerPrice
       : triggerPrice ?? positionOrder.triggerPrice;
 
-    const txnPromise = updateOrderTxn(
+    const updateOrderParams = buildUpdateOrderPayload({
+      chainId,
+      indexTokenAddress: positionOrder.indexToken.address,
+      orderKey: p.order.key,
+      sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
+      triggerPrice: orderTriggerPrice,
+      acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
+      minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
+      autoCancel: positionOrder.autoCancel,
+      validFromTime: 0n,
+      executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
+    });
+
+    return {
+      createOrderParams: [],
+      updateOrderParams: [updateOrderParams],
+      cancelOrderParams: [],
+    };
+  }, [
+    signer,
+    tokensData,
+    marketsInfoData,
+    p.order,
+    triggerRatio?.ratio,
+    triggerPrice,
+    chainId,
+    sizeDeltaUsd,
+    acceptablePrice,
+    minOutputAmount,
+    additionalExecutionFee?.feeTokenAmount,
+  ]);
+
+  const { expressParams } = useExpressOrdersParams({
+    orderParams: batchParams,
+  });
+
+  function onSubmit() {
+    if (!batchParams || !signer || !tokensData || !marketsInfoData) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
-      subaccount,
-      {
-        orderKey: p.order.key,
-        sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
-        triggerPrice: orderTriggerPrice,
-        acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
-        minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
-        executionFee: additionalExecutionFee?.feeTokenAmount,
-        indexToken: indexToken,
-        autoCancel: positionOrder.autoCancel,
-      },
-      {
-        setPendingTxns,
-        setPendingOrderUpdate,
-      }
-    );
+      batchParams,
+      expressParams,
+      simulationParams: undefined,
+      callback: makeOrderTxnCallback({}),
+    });
 
     if (subaccount) {
       p.onClose();
@@ -501,6 +536,10 @@ export function OrderEditor(p: Props) {
       ? t`Stop Price`
       : t`Limit Price`;
 
+  const positionSize = existingPosition?.sizeInUsd;
+
+  const sizeUsd = parseValue(sizeInputValue || "0", USD_DECIMALS)!;
+
   return (
     <div className="PositionEditor">
       <Modal
@@ -516,6 +555,20 @@ export function OrderEditor(p: Props) {
                 topLeftLabel={isTriggerDecreaseOrderType(p.order.orderType) ? t`Close` : t`Size`}
                 inputValue={sizeInputValue}
                 onInputValueChange={(e) => setSizeInputValue(e.target.value)}
+                bottomLeftValue={isTriggerDecreaseOrderType(p.order.orderType) ? formatUsd(sizeUsd) : undefined}
+                isBottomLeftValueMuted={sizeUsd === 0n}
+                bottomRightLabel={isTriggerDecreaseOrderType(p.order.orderType) ? t`Max` : undefined}
+                bottomRightValue={
+                  isTriggerDecreaseOrderType(p.order.orderType) ? formatUsdPrice(positionSize) : undefined
+                }
+                onClickMax={
+                  isTriggerDecreaseOrderType(p.order.orderType) &&
+                  positionSize !== undefined &&
+                  positionSize > 0 &&
+                  sizeUsd !== positionSize
+                    ? () => setSizeInputValue(formatAmountFree(positionSize, USD_DECIMALS))
+                    : undefined
+                }
               >
                 USD
               </BuyInputSection>

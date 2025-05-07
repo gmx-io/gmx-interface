@@ -889,7 +889,6 @@ export interface SyntheticsReaderInterface extends Interface {
       | "getAccountOrders"
       | "getAccountPositionInfoList"
       | "getAccountPositions"
-      | "getAdlState"
       | "getDeposit"
       | "getDepositAmountOut"
       | "getExecutionPrice"
@@ -936,10 +935,6 @@ export interface SyntheticsReaderInterface extends Interface {
   encodeFunctionData(
     functionFragment: "getAccountPositions",
     values: [AddressLike, AddressLike, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getAdlState",
-    values: [AddressLike, AddressLike, boolean, MarketUtils.MarketPricesStruct]
   ): string;
   encodeFunctionData(functionFragment: "getDeposit", values: [AddressLike, BytesLike]): string;
   encodeFunctionData(
@@ -1034,7 +1029,6 @@ export interface SyntheticsReaderInterface extends Interface {
   decodeFunctionResult(functionFragment: "getAccountOrders", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getAccountPositionInfoList", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getAccountPositions", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getAdlState", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getDeposit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getDepositAmountOut", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getExecutionPrice", data: BytesLike): Result;
@@ -1118,12 +1112,6 @@ export interface SyntheticsReader extends BaseContract {
   getAccountPositions: TypedContractMethod<
     [dataStore: AddressLike, account: AddressLike, start: BigNumberish, end: BigNumberish],
     [Position.PropsStructOutput[]],
-    "view"
-  >;
-
-  getAdlState: TypedContractMethod<
-    [dataStore: AddressLike, market: AddressLike, isLong: boolean, prices: MarketUtils.MarketPricesStruct],
-    [[bigint, boolean, bigint, bigint]],
     "view"
   >;
 
@@ -1374,13 +1362,6 @@ export interface SyntheticsReader extends BaseContract {
   ): TypedContractMethod<
     [dataStore: AddressLike, account: AddressLike, start: BigNumberish, end: BigNumberish],
     [Position.PropsStructOutput[]],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "getAdlState"
-  ): TypedContractMethod<
-    [dataStore: AddressLike, market: AddressLike, isLong: boolean, prices: MarketUtils.MarketPricesStruct],
-    [[bigint, boolean, bigint, bigint]],
     "view"
   >;
   getFunction(

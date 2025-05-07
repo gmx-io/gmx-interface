@@ -4,11 +4,24 @@ import { IoArrowDown } from "react-icons/io5";
 import { useKey, useLatest, usePrevious } from "react-use";
 
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
+import {
+  // useGmxAccountDepositViewChain,
+  useGmxAccountDepositViewTokenAddress,
+  useGmxAccountModalOpen,
+} from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectShowDebugValues } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import {
+  selectChainId,
+  selectMarketsInfoData,
+  selectSubaccountState,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectWalletPayableTokensData } from "context/SyntheticsStateContext/selectors/multichainSelectors";
+import {
+  selectExpressOrdersEnabled,
+  selectShowDebugValues,
+} from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxAvailableTokensOptions,
@@ -59,6 +72,7 @@ import {
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
+import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { TradeMode } from "sdk/types/trade";
@@ -74,27 +88,30 @@ import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
+import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
 
+import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
+import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
+import { useGmxAccountTokensDataObject, useMultichainTokens } from "../GmxAccountModal/hooks";
+import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import TradeBoxLongShortInfoIcon from "./components/TradeBoxLongShortInfoIcon";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
-import { useShowOneClickTradingInfo } from "./hooks/useShowOneClickTradingInfo";
+import { useExpressTradingWarnings } from "./hooks/useShowOneClickTradingInfo";
 import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
-import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
-import { OneClickTradingInfo } from "./OneClickTradingInfo";
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
-import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
+
 import "./TradeBox.scss";
 
 export function TradeBox({ isMobile }: { isMobile: boolean }) {
@@ -114,13 +131,31 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const { swapTokens, infoTokens, sortedLongAndShortTokens, sortedAllMarkets } = availableTokenOptions;
   const tokensData = useTokensData();
+  const walletPayableTokensData = useSelector(selectWalletPayableTokensData);
+  const gmxAccountTokensData = useGmxAccountTokensDataObject();
+  const multichainTokens = useMultichainTokens();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
 
-  const chainId = useSelector(selectChainId);
-  const { account } = useWallet();
+  const settlementChainId = useSelector(selectChainId);
+  const { account, chainId: walletChainId, active } = useWallet();
   const { shouldDisableValidationForTesting: shouldDisableValidation } = useSettings();
+
+  // const [, setDepositViewChain] = useGmxAccountDepositViewChain();
+  const [, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
+  const [, setIsVisibleOrView] = useGmxAccountModalOpen();
+
+  const onDepositTokenAddress = useCallback(
+    (tokenAddress: string, chainId: number) => {
+      // setDepositViewChain(chainId);
+      switchNetwork(chainId, active);
+      setDepositViewTokenAddress(tokenAddress);
+
+      setIsVisibleOrView("deposit");
+    },
+    [active, setDepositViewTokenAddress, setIsVisibleOrView]
+  );
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
 
@@ -131,6 +166,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     setToTokenInputValue: setToTokenInputValueRaw,
     setCollateralAddress: onSelectCollateralAddress,
     setFromTokenAddress: onSelectFromTokenAddress,
+    isFromTokenGmxAccount,
+    setIsFromTokenGmxAccount,
     setTradeMode: onSelectTradeMode,
     focusedInput,
     setFocusedInput,
@@ -155,18 +192,13 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     availableTradeModes,
   } = useSelector(selectTradeboxState);
 
-  const fromToken = getByKey(tokensData, fromTokenAddress);
+  const fromToken = isFromTokenGmxAccount
+    ? getByKey(gmxAccountTokensData, fromTokenAddress)
+    : getByKey(tokensData, fromTokenAddress);
   const toToken = getByKey(tokensData, toTokenAddress);
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
   const fromTokenPrice = fromToken?.prices.minPrice;
   const fromUsd = convertToUsd(fromTokenAmount, fromToken?.decimals, fromTokenPrice);
-
-  const { formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
-    fromToken,
-    nativeToken,
-    fromTokenAmount,
-    fromTokenInputValue,
-  });
 
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
 
@@ -179,6 +211,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const leverage = useSelector(selectTradeboxLeverage);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
   const fees = useSelector(selectTradeboxFees);
+  const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
+  const { subaccount } = useSelector(selectSubaccountState);
 
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const { markRatio } = useSelector(selectTradeboxTradeRatios);
@@ -238,6 +272,21 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     account,
     setToTokenInputValue,
   });
+
+  const { formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
+    fromToken,
+    nativeToken,
+    fromTokenAmount,
+    fromTokenInputValue,
+    relayerFeeParams: submitButtonState.relayerFeeParams,
+  });
+
+  const onMaxClick = useCallback(() => {
+    if (formattedMaxAvailableAmount) {
+      setFocusedInput("from");
+      setFromTokenInputValue(formattedMaxAvailableAmount, true);
+    }
+  }, [formattedMaxAvailableAmount, setFocusedInput, setFromTokenInputValue]);
 
   useTradeboxAcceptablePriceImpactValues();
   useTradeboxTPSLReset(priceImpactWarningState.setIsDismissed);
@@ -367,6 +416,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           priceImpactDeltaUsd,
           priceImpactPercentage,
           fundingRate1h,
+          isExpress: expressOrdersEnabled,
+          isExpress1CT: Boolean(subaccount),
           openInterestPercent,
           tradeType,
           tradeMode,
@@ -375,18 +426,23 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       }
     },
     [
-      chainId,
-      chartHeaderInfo,
+      chartHeaderInfo?.fundingRateLong,
+      chartHeaderInfo?.fundingRateShort,
+      chartHeaderInfo?.longOpenInterestPercentage,
+      chartHeaderInfo?.shortOpenInterestPercentage,
       decreaseAmounts,
-      fees,
+      expressOrdersEnabled,
+      fees?.positionPriceImpact?.precisePercentage,
+      fees?.swapPriceImpact?.precisePercentage,
       fromToken?.symbol,
-      fromTokenInputValue,
+      fromTokenInputValue.length,
       increaseAmounts,
       isIncrease,
       isLong,
       isSwap,
       isTrigger,
       marketInfo,
+      subaccount,
       swapAmounts,
       toToken?.symbol,
       tradeMode,
@@ -424,13 +480,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     }
   }
 
-  const onMaxClick = useCallback(() => {
-    if (formattedMaxAvailableAmount) {
-      setFocusedInput("from");
-      setFromTokenInputValue(formattedMaxAvailableAmount, true);
-    }
-  }, [formattedMaxAvailableAmount, setFocusedInput, setFromTokenInputValue]);
-
   const handleFromInputTokenChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       setFocusedInput("from");
@@ -445,9 +494,16 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     },
     [setFocusedInput, setToTokenInputValue]
   );
+  // const handleSelectFromToken = useCallback(
+  //   (token: Token) => onSelectFromTokenAddress(token.address),
+  //   [onSelectFromTokenAddress]
+  // );
   const handleSelectFromTokenAddress = useCallback(
-    (token: Token) => onSelectFromTokenAddress(token.address),
-    [onSelectFromTokenAddress]
+    (tokenAddress: string, isGmxAccount: boolean) => {
+      onSelectFromTokenAddress(tokenAddress);
+      setIsFromTokenGmxAccount(isGmxAccount);
+    },
+    [onSelectFromTokenAddress, setIsFromTokenGmxAccount]
   );
   const handleSelectToTokenAddress = useCallback(
     (token: Token) => onSelectToTokenAddress(token.address),
@@ -564,20 +620,28 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           onClickMax={showClickMax ? onMaxClick : undefined}
           qa="pay"
         >
-          {fromTokenAddress && (
-            <TokenSelector
+          {fromTokenAddress && walletChainId !== undefined && (
+            <MultichainTokenSelector
+              walletChainId={walletChainId}
+              settlementChainId={settlementChainId}
               label={t`Pay`}
-              chainId={chainId}
+              // chainId={settlementChainId}
               tokenAddress={fromTokenAddress}
-              onSelectToken={handleSelectFromTokenAddress}
-              tokens={swapTokens}
-              infoTokens={infoTokens}
+              isGmxAccount={isFromTokenGmxAccount}
+              // onSelectTokenAddress={handleSelectFromTokenAddress}
+              onSelectTokenAddress={handleSelectFromTokenAddress}
+              // tokens={swapTokens}
+              // infoTokens={infoTokens}
               size="l"
-              showSymbolImage={true}
-              showTokenImgInDropdown={true}
-              missedCoinsPlace={MissedCoinsPlace.payToken}
+              // showSymbolImage={true}
+              // showTokenImgInDropdown={true}
+              // missedCoinsPlace={MissedCoinsPlace.payToken}
               extendedSortSequence={sortedLongAndShortTokens}
               qa="collateral-selector"
+              walletPayableTokensData={walletPayableTokensData}
+              gmxAccountTokensData={gmxAccountTokensData}
+              multichainTokens={multichainTokens}
+              onDepositTokenAddress={onDepositTokenAddress}
             />
           )}
         </BuyInputSection>
@@ -611,7 +675,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 {toTokenAddress && (
                   <TokenSelector
                     label={t`Receive`}
-                    chainId={chainId}
+                    chainId={settlementChainId}
                     tokenAddress={toTokenAddress}
                     onSelectToken={handleSelectToTokenAddress}
                     tokens={swapTokens}
@@ -647,7 +711,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           >
             {toTokenAddress && (
               <MarketSelector
-                chainId={chainId}
+                chainId={settlementChainId}
                 label={localizedTradeTypeLabels[tradeType!]}
                 selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
                 selectedMarketLabel={
@@ -805,7 +869,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const { setIsSettingsVisible, isLeverageSliderEnabled } = useSettings();
 
-  const { shouldShowWarning: shouldShowOneClickTradingWarning } = useShowOneClickTradingInfo();
+  const { shouldShowWarning: shouldShowOneClickTradingWarning } = useExpressTradingWarnings();
 
   const showSectionBetweenInputsAndButton =
     isPosition ||
@@ -863,7 +927,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
         {showSectionBetweenInputsAndButton && (
           <div className="flex flex-col gap-14 pt-12">
-            <OneClickTradingInfo />
             {maxAutoCancelOrdersWarning}
             {isSwap && isLimit && (
               <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
@@ -902,7 +965,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                     label={t`Market`}
                     value={
                       <MarketSelector
-                        chainId={chainId}
+                        chainId={settlementChainId}
                         label={t`Market`}
                         className="-mr-4"
                         selectedIndexName={
@@ -954,6 +1017,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         )}
         <div className="flex flex-col gap-14 pt-14">
           <div>{button}</div>
+          <ExpressTradingWarningCard />
           <div className="h-1 bg-stroke-primary" />
           {isSwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
           {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
@@ -1009,7 +1073,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             />
           )}
           <PriceImpactFeesRow />
-          <TradeBoxAdvancedGroups />
+          <TradeBoxAdvancedGroups
+            slippageInputId={submitButtonState.slippageInputId}
+            relayerFeeParams={submitButtonState.relayerFeeParams}
+          />
         </div>
       </form>
     </>

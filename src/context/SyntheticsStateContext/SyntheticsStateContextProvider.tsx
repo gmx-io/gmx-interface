@@ -3,8 +3,12 @@ import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 
+import { UiContractsChain, UiSupportedChain } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
+import { isSettlementChain, isSourceChain } from "context/GmxAccountContext/config";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { SubaccountState, useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { TokenPermitsState, useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
 import { useIsLargeAccountTracker } from "domain/stats/isLargeAccount";
 import {
@@ -13,9 +17,12 @@ import {
   useAccountStats,
   usePeriodAccountStats,
 } from "domain/synthetics/accountStats";
+import { SponsoredCallParams, useSponsoredCallParamsRequest } from "domain/synthetics/express";
+import { useL1ExpressOrderGasReference } from "domain/synthetics/express/useL1ExpressGasReference";
 import { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
-import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
+import { DisabledFeatures, useDisabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
+import { L1ExpressOrderGasReference, useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
@@ -49,6 +56,8 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { BlockTimestampData, useBlockTimestampRequest } from "lib/useBlockTimestampRequest";
 import useWallet from "lib/wallets/useWallet";
 
+import { useGmxAccountTokensDataRequest } from "components/Synthetics/GmxAccountModal/hooks";
+
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
 
@@ -61,12 +70,14 @@ export type SyntheticsPageType =
   | "dashboard"
   | "earn"
   | "buy"
-  | "home";
+  | "home"
+  | "gmxAccount";
 
 export type SyntheticsState = {
   pageType: SyntheticsPageType;
   globals: {
-    chainId: number;
+    chainId: UiContractsChain;
+    walletChainId: UiSupportedChain | undefined;
     markets: MarketsResult;
     marketsInfo: MarketsInfoResult;
     positionsInfo: PositionsInfoResult;
@@ -105,12 +116,17 @@ export type SyntheticsState = {
   };
   leaderboard: LeaderboardState;
   settings: SettingsContextType;
+  subaccountState: SubaccountState;
   tradebox: TradeboxState;
   externalSwap: ExternalSwapState;
+  tokenPermitsState: TokenPermitsState;
   orderEditor: OrderEditorState;
   positionSeller: PositionSellerState;
   positionEditor: PositionEditorState;
   confirmationBox: ConfirmationBoxState;
+  disabledFeatures: DisabledFeatures | undefined;
+  sponsoredCallParams: SponsoredCallParams | undefined;
+  l1ExpressOrderGasReference: L1ExpressOrderGasReference | undefined;
 };
 
 const StateCtx = createContext<SyntheticsState | null>(null);
@@ -130,7 +146,9 @@ export function SyntheticsStateContextProvider({
 }) {
   const { chainId: selectedChainId } = useChainId();
 
-  const { account: walletAccount, signer } = useWallet();
+  const { account: walletAccount, signer, chainId: walletChainId } = useWallet();
+  const srcChainId =
+    walletChainId && isSourceChain(walletChainId) && !isSettlementChain(walletChainId) ? walletChainId : undefined;
   const { account: paramsAccount } = useParams<{ account?: string }>();
 
   let checkSummedAccount: string | undefined;
@@ -148,7 +166,14 @@ export function SyntheticsStateContextProvider({
   const chainId = isLeaderboardPage ? leaderboard.chainId : overrideChainId ?? selectedChainId;
 
   const markets = useMarkets(chainId);
-  const { tokensData } = useTokensDataRequest(chainId);
+  const { tokensData: settlementChainTokensData } = useTokensDataRequest(chainId);
+  const { tokensData: gmxAccountTokensData } = useGmxAccountTokensDataRequest();
+
+  let tokensData = settlementChainTokensData;
+
+  if (walletChainId && isSourceChain(walletChainId)) {
+    tokensData = gmxAccountTokensData;
+  }
 
   const positionsResult = usePositions(chainId, {
     account,
@@ -188,6 +213,8 @@ export function SyntheticsStateContextProvider({
   const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace>();
 
   const settings = useSettings();
+  const subaccountState = useSubaccountContext();
+  const { disabledFeatures } = useDisabledFeaturesRequest(chainId);
 
   const {
     isLoading,
@@ -216,6 +243,7 @@ export function SyntheticsStateContextProvider({
     tokensData: marketsInfo.tokensData,
     positionsInfoData,
     ordersInfoData: ordersInfo.ordersInfoData,
+    srcChainId,
   });
 
   const orderEditor = useOrderEditorState(ordersInfo.ordersInfoData);
@@ -252,6 +280,7 @@ export function SyntheticsStateContextProvider({
 
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
+  const l1ExpressOrderGasReference = useL1ExpressOrderGasReference();
 
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
@@ -265,12 +294,17 @@ export function SyntheticsStateContextProvider({
   });
 
   const externalSwapState = useInitExternalSwapState();
+  const tokenPermitsState = useTokenPermitsContext();
+  const sponsoredCallParams = useSponsoredCallParamsRequest(chainId, {
+    tokensData: marketsInfo.tokensData,
+  });
 
   const state = useMemo(() => {
     const s: SyntheticsState = {
       pageType,
       globals: {
         chainId,
+        walletChainId,
         account,
         markets,
         marketsInfo,
@@ -308,18 +342,24 @@ export function SyntheticsStateContextProvider({
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
       settings,
+      subaccountState,
       tradebox: tradeboxState,
       externalSwap: externalSwapState,
+      tokenPermitsState,
       orderEditor,
       positionSeller: positionSellerState,
       positionEditor: positionEditorState,
       confirmationBox: confirmationBoxState,
+      disabledFeatures,
+      sponsoredCallParams,
+      l1ExpressOrderGasReference,
     };
 
     return s;
   }, [
     pageType,
     chainId,
+    walletChainId,
     account,
     markets,
     marketsInfo,
@@ -348,12 +388,17 @@ export function SyntheticsStateContextProvider({
     claimablePositionPriceImpactFees,
     leaderboard,
     settings,
+    subaccountState,
     tradeboxState,
     externalSwapState,
+    tokenPermitsState,
     orderEditor,
     positionSellerState,
     positionEditorState,
     confirmationBoxState,
+    disabledFeatures,
+    sponsoredCallParams,
+    l1ExpressOrderGasReference,
   ]);
 
   latestState = state;

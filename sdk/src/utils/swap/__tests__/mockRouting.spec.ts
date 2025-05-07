@@ -51,6 +51,10 @@ const baseGasLimits: GasLimitsConfig = {
   singleSwap: 1000000n,
   swapOrder: 3000000n,
   withdrawalMultiToken: 1500000n,
+  createOrderGasLimit: 1000000n,
+  updateOrderGasLimit: 1000000n,
+  cancelOrderGasLimit: 1000000n,
+  gelatoRelayFeeMultiplierFactor: 1000000000000000000000000000000n,
 };
 
 const baseGasPrice = 1650000002n;

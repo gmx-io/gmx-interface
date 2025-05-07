@@ -18,6 +18,7 @@ import { useBowser } from "lib/useBowser";
 import useRouteQuery from "lib/useRouteQuery";
 import useWallet from "lib/wallets/useWallet";
 
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { SESSION_ID_KEY, userAnalytics } from "./UserAnalytics";
 
 export function useConfigureUserAnalyticsProfile() {
@@ -30,7 +31,16 @@ export function useConfigureUserAnalyticsProfile() {
   const { chainId } = useChainId();
   const { account, active } = useWallet();
   const { data: bowser } = useBowser();
-  const { shouldShowPositionLines } = useSettings();
+  const { subaccount } = useSubaccountContext();
+  const {
+    shouldShowPositionLines,
+    expressOrdersEnabled,
+    isLeverageSliderEnabled,
+    showPnlAfterFees,
+    isPnlInLeverage,
+    isAutoCancelTPSL,
+    externalSwapsEnabled,
+  } = useSettings();
 
   const timePeriods = useMemo(() => getTimePeriodsInSeconds(), []);
 
@@ -106,8 +116,29 @@ export function useConfigureUserAnalyticsProfile() {
       isChartPositionsEnabled: shouldShowPositionLines,
       ref: referralCode,
       utm: utmParams?.utmString,
+      ExpressEnabled: expressOrdersEnabled,
+      Express1CTEnabled: Boolean(subaccount),
+      showLeverageSlider: isLeverageSliderEnabled,
+      displayPnLAfterFees: showPnlAfterFees,
+      includePnlInLeverageDisplay: isPnlInLeverage,
+      autoCancelTPSL: isAutoCancelTPSL,
+      enableExternalSwaps: externalSwapsEnabled,
     });
-  }, [currentLanguage, last30DVolume, totalVolume, referralCode, utmParams?.utmString, shouldShowPositionLines]);
+  }, [
+    currentLanguage,
+    last30DVolume,
+    totalVolume,
+    referralCode,
+    utmParams?.utmString,
+    shouldShowPositionLines,
+    expressOrdersEnabled,
+    subaccount,
+    isLeverageSliderEnabled,
+    showPnlAfterFees,
+    isPnlInLeverage,
+    isAutoCancelTPSL,
+    externalSwapsEnabled,
+  ]);
 
   useEffect(() => {
     userAnalytics.setDebug(showDebugValues || false);

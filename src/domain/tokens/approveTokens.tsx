@@ -3,9 +3,10 @@ import { Signer, ethers } from "ethers";
 import { Link } from "react-router-dom";
 
 import { getChainName, getExplorerUrl } from "config/chains";
+import { TokenPermitsState } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { helperToast } from "lib/helperToast";
-import { abis } from "sdk/abis";
-import { getNativeToken } from "sdk/configs/tokens";
+import Token from "sdk/abis/Token.json";
+import { getNativeToken, getToken } from "sdk/configs/tokens";
 import { InfoTokens, TokenInfo } from "sdk/types/tokens";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -17,6 +18,12 @@ type Params = {
   tokenAddress: string;
   spender: string;
   chainId: number;
+  permitParams:
+    | {
+        addTokenPermit: TokenPermitsState["addTokenPermit"];
+        verifyingContract: string;
+      }
+    | undefined;
   onApproveSubmitted?: () => void;
   onApproveFail?: (error: Error) => void;
   getTokenInfo?: (infoTokens: InfoTokens, tokenAddress: string) => TokenInfo;
@@ -27,7 +34,7 @@ type Params = {
   approveAmount?: bigint;
 };
 
-export function approveTokens({
+export async function approveTokens({
   setIsApproving,
   signer,
   tokenAddress,
@@ -41,9 +48,40 @@ export function approveTokens({
   setPendingTxns,
   includeMessage,
   approveAmount,
+  permitParams,
 }: Params) {
   setIsApproving(true);
-  const contract = new ethers.Contract(tokenAddress, abis.Token, signer);
+
+  if (
+    permitParams?.addTokenPermit &&
+    getToken(chainId, tokenAddress).isPermitSupported &&
+    permitParams.verifyingContract
+  ) {
+    return await permitParams
+      .addTokenPermit(tokenAddress, spender, approveAmount ?? ethers.MaxUint256, permitParams.verifyingContract)
+      .then(() => {
+        helperToast.success(
+          <div>
+            <Trans>Permit signed!</Trans>
+            <br />
+          </div>
+        );
+
+        onApproveSubmitted?.();
+        setIsApproving(false);
+      })
+      .catch((e) => {
+        helperToast.error(
+          <div>
+            <Trans>Permit signing failed</Trans>
+            <br />
+            <ToastifyDebug error={String(e)} />
+          </div>
+        );
+      });
+  }
+
+  const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
   const nativeToken = getNativeToken(chainId);
   const networkName = getChainName(chainId);
   contract

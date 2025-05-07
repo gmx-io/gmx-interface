@@ -123,6 +123,7 @@ export function ClaimModal(props: {
         tokenAddress: gmxAddress,
         spender: stakedGmxTrackerAddress,
         chainId,
+        permitParams: undefined,
       });
       return;
     }

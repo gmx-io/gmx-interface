@@ -6,9 +6,12 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 import { useExecutionFeeBufferBps } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { RelayerFeeParams } from "domain/synthetics/express";
 import { getExecutionFeeWarning, type ExecutionFee } from "domain/synthetics/fees";
 import { convertToUsd } from "domain/synthetics/tokens/utils";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { getByKey } from "lib/objects";
+import { convertTokenAddress } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
@@ -20,6 +23,7 @@ import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
 type Props = {
   executionFee?: ExecutionFee;
+  relayerFeeParams?: RelayerFeeParams;
   isAdditionOrdersMsg?: boolean;
   rowPadding?: boolean;
 };
@@ -30,10 +34,11 @@ type Props = {
  */
 const ESTIMATED_REFUND_BPS = 10 * 100;
 
-export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = false }: Props) {
+export function NetworkFeeRow({ executionFee, relayerFeeParams, isAdditionOrdersMsg, rowPadding = false }: Props) {
   const executionFeeBufferBps = useExecutionFeeBufferBps();
   const tokenData = useTokensData();
   const chainId = useSelector(selectChainId);
+  const gasPaymentToken = getByKey(tokenData, relayerFeeParams?.gasPaymentTokenAddress);
 
   let displayDecimals = executionFee?.feeToken.priceDecimals;
   if (displayDecimals !== undefined) {
@@ -41,16 +46,6 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
   } else {
     displayDecimals = 5;
   }
-
-  const executionFeeText = formatTokenAmountWithUsd(
-    executionFee?.feeTokenAmount === undefined ? undefined : -executionFee.feeTokenAmount,
-    executionFee?.feeUsd === undefined ? undefined : -executionFee.feeUsd,
-    executionFee?.feeToken.symbol,
-    executionFee?.feeToken.decimals,
-    {
-      displayDecimals,
-    }
-  );
 
   const additionalOrdersMsg = useMemo(
     () =>
@@ -66,6 +61,10 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
 
   const estimatedRefund = useMemo(() => {
     let estimatedRefundTokenAmount: bigint | undefined;
+    let feeToken = executionFee?.feeToken.address
+      ? getByKey(tokenData, convertTokenAddress(chainId, executionFee.feeToken.address, "wrapped"))
+      : undefined;
+
     if (!executionFee || executionFeeBufferBps === undefined) {
       estimatedRefundTokenAmount = undefined;
     } else {
@@ -92,19 +91,11 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
       );
     }
 
-    return {
-      estimatedRefundTokenAmount,
-      estimatedRefundUsd,
-    };
-  }, [executionFee, executionFeeBufferBps, tokenData]);
-
-  const estimatedRefundText = useMemo(() => {
-    const { estimatedRefundTokenAmount, estimatedRefundUsd } = estimatedRefund;
     const estimatedRefundText = formatTokenAmountWithUsd(
       estimatedRefundTokenAmount,
       estimatedRefundUsd,
-      executionFee?.feeToken.symbol,
-      executionFee?.feeToken.decimals,
+      feeToken?.symbol,
+      feeToken?.decimals,
       {
         displayPlus: true,
         displayDecimals,
@@ -112,24 +103,39 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
     );
 
     return estimatedRefundText;
-  }, [displayDecimals, executionFee, estimatedRefund]);
-
-  const executionFeeAfterUsd = useMemo(() => {
-    if (!executionFee || estimatedRefund.estimatedRefundUsd === undefined) {
-      return undefined;
-    }
-
-    const feeWithRefundUsd = executionFee.feeUsd - estimatedRefund.estimatedRefundUsd;
-
-    return feeWithRefundUsd;
-  }, [executionFee, estimatedRefund.estimatedRefundUsd]);
+  }, [chainId, displayDecimals, executionFee, executionFeeBufferBps, tokenData]);
 
   const value: ReactNode = useMemo(() => {
-    if (executionFee?.feeUsd === undefined) {
+    let feeUsd = executionFee?.feeUsd;
+    let feeAmount = executionFee?.feeTokenAmount;
+    let feeToken = executionFee?.feeToken;
+
+    if (gasPaymentToken && relayerFeeParams?.gasPaymentTokenAmount !== undefined) {
+      feeToken = gasPaymentToken;
+      feeAmount = relayerFeeParams.gasPaymentTokenAmount;
+      feeUsd = convertToUsd(
+        relayerFeeParams.gasPaymentTokenAmount,
+        gasPaymentToken.decimals,
+        gasPaymentToken.prices.minPrice
+      );
+    }
+
+    if (feeUsd === undefined || feeToken === undefined) {
       return "-";
     }
 
-    const warning = getExecutionFeeWarning(chainId, executionFee);
+    const networkFeeText = formatTokenAmountWithUsd(
+      feeAmount === undefined ? undefined : -feeAmount,
+      feeUsd,
+      feeToken.symbol,
+      feeToken.decimals,
+      {
+        displayDecimals,
+      }
+    );
+
+    const warning = executionFee ? getExecutionFeeWarning(chainId, executionFee) : undefined;
+    const estimatedRefundText = estimatedRefund?.toString();
 
     return (
       <TooltipWithPortal
@@ -137,7 +143,7 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
         position="left-start"
         content={
           <>
-            <StatsTooltipRow label={t`Max Network Fee`} showDollar={false} value={executionFeeText} />
+            <StatsTooltipRow label={t`Max Network Fee`} showDollar={false} value={networkFeeText} />
             <div className="h-8" />
             <p>
               <Trans>
@@ -161,10 +167,10 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
           </>
         }
       >
-        {formatUsd(executionFeeAfterUsd !== undefined ? executionFeeAfterUsd * -1n : undefined)}
+        {formatUsd(-feeUsd)}
       </TooltipWithPortal>
     );
-  }, [executionFee, chainId, executionFeeText, estimatedRefundText, additionalOrdersMsg, executionFeeAfterUsd]);
+  }, [executionFee, gasPaymentToken, relayerFeeParams, displayDecimals, chainId, estimatedRefund, additionalOrdersMsg]);
 
   if (rowPadding) {
     return (

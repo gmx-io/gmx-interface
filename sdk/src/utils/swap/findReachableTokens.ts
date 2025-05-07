@@ -43,8 +43,6 @@ export function findReachableTokens(graph: MarketsGraph): Record<string, string[
       }
     }
 
-    visitedTokens.delete(startToken);
-
     reachableTokens[startToken] = Array.from(visitedTokens);
   }
 

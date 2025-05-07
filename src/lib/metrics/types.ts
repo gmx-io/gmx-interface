@@ -1,6 +1,6 @@
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { ErrorData } from "lib/parseError";
+import { ErrorData } from "lib/errors";
 
 export type GlobalMetricData = {
   isMobileMetamask: boolean;
@@ -52,16 +52,6 @@ export type OrderMetricType =
   | SwapGmMetricData["metricType"]
   | SwapGLVMetricData["metricType"]
   | ShiftGmMetricData["metricType"];
-
-export type OrderErrorContext =
-  | "simulation"
-  | "gasLimit"
-  | "gasPrice"
-  | "bestNonce"
-  | "sending"
-  | "pending"
-  | "minting"
-  | "execution";
 
 export type OrderEventName = `${OrderMetricType}.${OrderStage}`;
 export type MeasureEventName = `${MeasureMetricType}.${LoadingStage}`;
@@ -261,7 +251,8 @@ export type SwapMetricData = {
   metricId: `swap:${string}`;
   metricType: "swap" | "limitSwap";
   requestId: string;
-  is1ct: boolean;
+  isExpress: boolean;
+  isExpress1CT: boolean;
   hasReferralCode: boolean | undefined;
   initialCollateralTokenAddress: string | undefined;
   initialCollateralSymbol: string | undefined;
@@ -326,7 +317,8 @@ export type PositionOrderMetricParams = {
   isLong: boolean | undefined;
   orderType: OrderType | undefined;
   executionFee: number | undefined;
-  is1ct: boolean;
+  isExpress: boolean;
+  isExpress1CT: boolean;
   requestId: string;
   priceImpactDeltaUsd: number | undefined;
   priceImpactPercentage: number | undefined;
@@ -337,7 +329,8 @@ export type PositionOrderMetricParams = {
 export type EditCollateralMetricData = {
   metricId: `position:${string}`;
   metricType: "depositCollateral" | "withdrawCollateral";
-  is1ct: boolean;
+  isExpress: boolean;
+  isExpress1CT: boolean;
   requestId: string;
   marketAddress: string | undefined;
   isStandalone: boolean | undefined;

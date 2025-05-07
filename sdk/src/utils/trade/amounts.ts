@@ -277,7 +277,6 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         basePriceImpactDeltaUsd > 0,
         userReferralInfo
       );
-
       values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
       values.feeDiscountUsd = positionFeeInfo.discountUsd;
       values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
@@ -305,7 +304,11 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
 
       values.swapPathStats = swapAmounts.swapPathStats;
       const swapAmountIn = values.externalSwapQuote?.amountIn ?? swapAmounts.amountIn;
-      const baseCollateralUsd = convertToUsd(swapAmountIn, collateralToken.decimals, values.collateralPrice)!;
+      const baseCollateralUsd = convertToUsd(
+        swapAmountIn,
+        initialCollateralToken.decimals,
+        values.initialCollateralPrice
+      )!;
 
       values.collateralDeltaUsd =
         baseCollateralUsd -

@@ -1,80 +1,14 @@
-import { BaseContract, Contract, Provider, Wallet } from "ethers";
-import { withRetry } from "viem";
+import { BaseContract, Contract, Wallet } from "ethers";
 
-import {
-  GAS_PRICE_BUFFER_MAP,
-  GAS_PRICE_PREMIUM_MAP,
-  MAX_FEE_PER_GAS_MAP,
-  MAX_PRIORITY_FEE_PER_GAS_MAP,
-} from "config/chains";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { GetFeeDataBlockError } from "lib/metrics";
-import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
-import { bigMath } from "sdk/utils/bigmath";
-
-export type GasPriceData = {
-  gasPrice?: bigint;
-  maxFeePerGas?: bigint;
-  maxPriorityFeePerGas?: bigint;
-};
-
-export async function getGasPrice(provider: Provider, chainId: number): Promise<GasPriceData> {
-  let maxFeePerGas = MAX_FEE_PER_GAS_MAP[chainId];
-  const premium: bigint = GAS_PRICE_PREMIUM_MAP[chainId] || 0n;
-
-  const feeData = await withRetry(() => provider.getFeeData(), {
-    delay: 200,
-    retryCount: 2,
-    shouldRetry: ({ error }) => {
-      const isInvalidBlockError = error?.message?.includes("invalid value for value.hash");
-
-      if (isInvalidBlockError) {
-        emitMetricCounter<GetFeeDataBlockError>({ event: "error.getFeeData.value.hash" });
-      }
-
-      return isInvalidBlockError;
-    },
-  });
-
-  const gasPrice = feeData.gasPrice;
-
-  if (maxFeePerGas) {
-    if (gasPrice !== undefined && gasPrice !== null) {
-      maxFeePerGas = bigMath.max(gasPrice, maxFeePerGas);
-    }
-
-    // the wallet provider might not return maxPriorityFeePerGas in feeData
-    // in which case we should fallback to the usual getGasPrice flow handled below
-    if (feeData && feeData.maxPriorityFeePerGas !== undefined && feeData.maxPriorityFeePerGas !== null) {
-      const maxPriorityFeePerGas = bigMath.max(
-        feeData.maxPriorityFeePerGas,
-        MAX_PRIORITY_FEE_PER_GAS_MAP[chainId] ?? 0n
-      );
-
-      return {
-        maxFeePerGas,
-        maxPriorityFeePerGas: maxPriorityFeePerGas + premium,
-      };
-    }
-  }
-
-  if (gasPrice === null) {
-    throw new Error("Can't fetch gas price");
-  }
-
-  const bufferBps: bigint = GAS_PRICE_BUFFER_MAP[chainId] || 0n;
-  const buffer = bigMath.mulDiv(gasPrice, bufferBps, BASIS_POINTS_DIVISOR_BIGINT);
-
-  return {
-    gasPrice: gasPrice + buffer + premium,
-  };
-}
-
+/**
+ * @deprecated use estimateGasLimit instead
+ */
 export async function getGasLimit(
   contract: Contract | BaseContract,
   method,
   params: any[] = [],
-  value?: bigint | number
+  value?: bigint | number,
+  from?: string
 ) {
   const defaultValue = 0n;
 
@@ -84,22 +18,25 @@ export async function getGasLimit(
 
   let gasLimit = 0n;
   try {
-    gasLimit = await contract[method].estimateGas(...params, { value });
+    gasLimit = await contract[method].estimateGas(...params, { value, from });
   } catch (error) {
     // this call should throw another error instead of the `error`
-    await contract[method].staticCall(...params, { value });
+    await contract[method].staticCall(...params, { value, from });
 
     // if not we throw estimateGas error
     throw error;
   }
 
   if (gasLimit < 22000) {
-    gasLimit = 22000n;
+    gasLimit = 220000n;
   }
 
   return (gasLimit * 11n) / 10n; // add a 10% buffer
 }
 
+/**
+ * @deprecated
+ */
 export function getBestNonce(providers: Wallet[]): Promise<number> {
   const MAX_NONCE_NEEDED = 3;
   const MAX_WAIT = 5000;

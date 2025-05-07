@@ -32,7 +32,9 @@ export function isDecreaseOrderType(orderType: OrderType) {
   return [OrderType.MarketDecrease, OrderType.LimitDecrease, OrderType.StopLossDecrease].includes(orderType);
 }
 
-export function isIncreaseOrderType(orderType: OrderType) {
+export function isIncreaseOrderType(
+  orderType: OrderType
+): orderType is OrderType.MarketIncrease | OrderType.LimitIncrease | OrderType.StopIncrease {
   return [OrderType.MarketIncrease, OrderType.LimitIncrease, OrderType.StopIncrease].includes(orderType);
 }
 

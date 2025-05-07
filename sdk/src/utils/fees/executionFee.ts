@@ -1,7 +1,7 @@
 import { getExcessiveExecutionFee, getHighExecutionFee } from "configs/chains";
 import { USD_DECIMALS } from "configs/factors";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-import { ExecutionFee, GasLimitsConfig } from "types/fees";
+import { ExecutionFee, GasLimitsConfig, L1ExpressOrderGasReference } from "types/fees";
 import { DecreasePositionSwapType } from "types/orders";
 import { TokensData } from "types/tokens";
 import { applyFactor, expandDecimals } from "utils/numbers";
@@ -42,6 +42,61 @@ export function getExecutionFee(
     isFeeHigh,
     isFeeVeryHigh,
   };
+}
+
+export function estimateExpressBatchOrderGasLimit({
+  gasLimits,
+  feeSwapsCount,
+  createOrdersCount,
+  updateOrdersCount,
+  cancelOrdersCount,
+  oraclePriceCount,
+  externalSwapGasLimit,
+  isSubaccount,
+  l1Reference,
+  sizeOfData,
+}: {
+  gasLimits: GasLimitsConfig;
+  createOrdersCount: number;
+  updateOrdersCount: number;
+  cancelOrdersCount: number;
+  feeSwapsCount: number;
+  externalSwapGasLimit: bigint;
+  oraclePriceCount: number;
+  isSubaccount: boolean;
+  sizeOfData: bigint;
+  l1Reference: L1ExpressOrderGasReference | undefined;
+}) {
+  const swapsGasLimit = gasLimits.singleSwap * BigInt(feeSwapsCount);
+
+  const createOrdersGasLimit = gasLimits.createOrderGasLimit * BigInt(createOrdersCount);
+  const updateOrdersGasLimit = gasLimits.updateOrderGasLimit * BigInt(updateOrdersCount);
+  const cancelOrdersGasLimit = gasLimits.cancelOrderGasLimit * BigInt(cancelOrdersCount);
+
+  const subaccountGasLimit = isSubaccount ? 0n : 0n;
+
+  const oraclePricesGasLimit = gasLimits.estimatedGasFeePerOraclePrice * BigInt(oraclePriceCount);
+
+  const totalGasLimit =
+    createOrdersGasLimit +
+    updateOrdersGasLimit +
+    cancelOrdersGasLimit +
+    swapsGasLimit +
+    oraclePricesGasLimit +
+    externalSwapGasLimit +
+    subaccountGasLimit;
+
+  let l1GasLimit = 0n;
+
+  if (l1Reference) {
+    l1GasLimit = BigInt(
+      Math.round(
+        (Number(l1Reference.gasLimit) * Math.log(Number(sizeOfData))) / Math.log(Number(l1Reference.sizeOfData))
+      )
+    );
+  }
+
+  return totalGasLimit + l1GasLimit;
 }
 
 /**

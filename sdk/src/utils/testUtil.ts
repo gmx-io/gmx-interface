@@ -1,11 +1,11 @@
 import { createTestClient, http, publicActions, walletActions } from "viem";
 
-import { ARBITRUM, getChain } from "configs/chains";
+import { ARBITRUM, getViemChain } from "configs/chains";
 
 import { GmxSdk } from "../index";
 
 const client = createTestClient({
-  chain: getChain(ARBITRUM),
+  chain: getViemChain(ARBITRUM),
   mode: "hardhat",
   transport: http(),
 })
@@ -18,8 +18,7 @@ export const arbitrumSdkConfig = {
   oracleUrl: "https://arbitrum-api.gmxinfra.io",
   rpcUrl: "https://arb1.arbitrum.io/rpc",
   walletClient: client,
-  subsquidUrl: "https://gmx.squids.live/gmx-synthetics-arbitrum:live/api/graphql",
-  subgraphUrl: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api",
+  subsquidUrl: "https://gmx.squids.live/gmx-synthetics-arbitrum@e27d93/api/graphql",
 };
 
 export const arbitrumSdk = new GmxSdk(arbitrumSdkConfig);

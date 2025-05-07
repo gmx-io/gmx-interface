@@ -233,7 +233,6 @@ export function LeaderboardContainer() {
               selectedValue={activeCompetitionIndex}
               onChange={handleCompetitionTabChange}
               options={competitionsTabsOptions}
-              type="inline"
             />
             {!isMobile && <CompetitionCountdown className="default-container" size="desktop" />}
           </div>

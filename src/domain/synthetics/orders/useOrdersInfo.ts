@@ -9,7 +9,7 @@ import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarket
 import { MarketsInfoData } from "../markets";
 import { TokensData } from "../tokens";
 import { OrderType, OrdersInfoData } from "./types";
-import { useOrders } from "./useOrders";
+import { useOrders } from "../../../ab/testMultichain/useOrders";
 import { setOrderInfoTitle } from "./utils";
 
 export type AggregatedOrdersDataResult = {

@@ -52,6 +52,15 @@ export function findSwapPathsBetweenTokens(graph: MarketsGraph): SwapPaths {
           }
         }
 
+        if (tokenPath.length >= 2) {
+          const lastToken = tokenPath[tokenPath.length - 1];
+          const secondLastToken = tokenPath[tokenPath.length - 2];
+
+          if (lastToken === secondLastToken) {
+            continue;
+          }
+        }
+
         if (currentToken === tokenBAddress) {
           const intermediateTokenPath = tokenPath.slice(1, -1);
           const pathKey = intermediateTokenPath.join(",");

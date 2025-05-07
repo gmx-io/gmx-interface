@@ -16,13 +16,17 @@ import {
   SHOW_PNL_AFTER_FEES_KEY,
   getAllowedSlippageKey,
   getExecutionFeeBufferBpsKey,
+  getExpressOrdersEnabledKey,
+  getGasPaymentTokenAddressKey,
   getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
   getLeverageEnabledKey as getLeverageSliderEnabledKey,
+  getOneClickTradingEnabledKey,
   getSyntheticsAcceptablePriceImpactBufferKey,
 } from "config/localStorage";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { tenderlyLsKeys } from "lib/tenderly";
+import { getDefaultGasPaymentToken } from "sdk/configs/express";
 import { getOracleKeeperRandomIndex } from "sdk/configs/oracleKeeper";
 
 export type SettingsContextType = {
@@ -61,6 +65,13 @@ export type SettingsContextType = {
 
   isSettingsVisible: boolean;
   setIsSettingsVisible: (val: boolean) => void;
+
+  expressOrdersEnabled: boolean;
+  setExpressOrdersEnabled: (val: boolean) => void;
+  oneClickTradingEnabled: boolean;
+  setOneClickTradingEnabled: (val: boolean) => void;
+  gasPaymentTokenAddress: string;
+  setGasPaymentTokenAddress: (val: string) => void;
 
   externalSwapsEnabled: boolean;
   setExternalSwapsEnabled: (val: boolean) => void;
@@ -147,6 +158,21 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     undefined | { disabledSwapMarkets?: string[]; manualPath?: string[] }
   >([chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY], undefined);
 
+  const [expressOrdersEnabled, setExpressOrdersEnabled] = useLocalStorageSerializeKey(
+    getExpressOrdersEnabledKey(chainId),
+    false
+  );
+
+  const [oneClickTradingEnabled, setOneClickTradingEnabled] = useLocalStorageSerializeKey(
+    getOneClickTradingEnabledKey(chainId),
+    false
+  );
+
+  const [gasPaymentTokenAddress, setGasPaymentTokenAddress] = useLocalStorageSerializeKey(
+    getGasPaymentTokenAddressKey(chainId),
+    getDefaultGasPaymentToken(chainId)
+  );
+
   let savedShouldDisableValidationForTesting: boolean | undefined;
   let setSavedShouldDisableValidationForTesting: (val: boolean) => void;
   if (isDevelopment()) {
@@ -163,7 +189,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   const [savedShouldShowPositionLines, setSavedShouldShowPositionLines] = useLocalStorageSerializeKey(
     [chainId, SHOULD_SHOW_POSITION_LINES_KEY],
-    false
+    true
   );
 
   useEffect(() => {
@@ -222,6 +248,13 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       isSettingsVisible,
       setIsSettingsVisible,
 
+      expressOrdersEnabled: expressOrdersEnabled!,
+      setExpressOrdersEnabled,
+      oneClickTradingEnabled: oneClickTradingEnabled!,
+      setOneClickTradingEnabled,
+      gasPaymentTokenAddress: gasPaymentTokenAddress!,
+      setGasPaymentTokenAddress,
+
       externalSwapsEnabled: externalSwapsEnabled!,
       setExternalSwapsEnabled,
 
@@ -261,6 +294,12 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     tenderlyProjectSlug,
     tenderlySimulationEnabled,
     isSettingsVisible,
+    expressOrdersEnabled,
+    setExpressOrdersEnabled,
+    oneClickTradingEnabled,
+    setOneClickTradingEnabled,
+    gasPaymentTokenAddress,
+    setGasPaymentTokenAddress,
     externalSwapsEnabled,
     setExternalSwapsEnabled,
     debugSwapMarketsConfig,

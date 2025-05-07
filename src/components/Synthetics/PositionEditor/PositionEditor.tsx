@@ -129,7 +129,7 @@ export function PositionEditor() {
     operation,
   });
 
-  const { text, tooltipContent, onSubmit, disabled } = usePositionEditorButtonState(operation);
+  const { text, tooltipContent, onSubmit, disabled, relayerFeeParams } = usePositionEditorButtonState(operation);
 
   useKey(
     "Enter",
@@ -180,6 +180,7 @@ export function PositionEditor() {
       {text}
     </Button>
   );
+
   const button = tooltipContent ? (
     <TooltipWithPortal
       className="w-full"
@@ -198,6 +199,7 @@ export function PositionEditor() {
     nativeToken,
     fromTokenAmount: collateralDeltaAmount ?? 0n,
     fromTokenInputValue: collateralInputValue,
+    relayerFeeParams,
   });
 
   const showMaxButton = isDeposit
@@ -346,7 +348,7 @@ export function PositionEditor() {
                 }
               />
 
-              <PositionEditorAdvancedRows operation={operation} />
+              <PositionEditorAdvancedRows operation={operation} relayerFeeParams={relayerFeeParams} />
             </div>
           </>
         )}

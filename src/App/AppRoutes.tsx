@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { ToastContainer, cssTransition } from "react-toastify";
+import { cssTransition, ToastContainer } from "react-toastify";
 import { Hash } from "viem";
 import { useDisconnect } from "wagmi";
 
@@ -13,7 +13,7 @@ import {
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
-import { REFERRAL_CODE_QUERY_PARAM, getAppBaseUrl, isHomeSite } from "lib/legacy";
+import { getAppBaseUrl, isHomeSite, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
 import { LandingPageAgreementConfirmationEvent } from "lib/userAnalytics/types";
@@ -29,7 +29,7 @@ import { Header } from "components/Header/Header";
 import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
-import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
+import { GmxAccountModal } from "components/Synthetics/GmxAccountModal/GmxAccountModal";
 
 import { HomeRoutes } from "./HomeRoutes";
 import { MainRoutes } from "./MainRoutes";
@@ -154,7 +154,7 @@ export function AppRoutes() {
         shouldHideRedirectModal={shouldHideRedirectModal}
       />
       <SettingsModal isSettingsVisible={isSettingsVisible} setIsSettingsVisible={setIsSettingsVisible} />
-      <SubaccountModal />
+      <GmxAccountModal />
       <NotifyModal />
     </>
   );

@@ -10,13 +10,13 @@ import {
   getPoolUsdWithoutPnl,
   getReservedUsd,
   getTokenPoolType,
+  getCappedPoolPnl,
 } from "sdk/utils/markets";
 
 import { getCappedPositionImpactUsd } from "../fees";
 import { PositionInfo } from "../positions";
 import { isGlvInfo } from "./glv";
 import { GlvInfo, GlvOrMarketInfo, MarketInfo } from "./types";
-import { getCappedPoolPnl } from "./utils";
 import { TokenData, TokensData } from "../tokens/types";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens/utils";
 

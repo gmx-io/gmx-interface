@@ -70,10 +70,10 @@ export function Chart() {
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
   return (
-    <div className="ExchangeChart tv">
+    <div className="ExchangeChart tv flex h-[60rem] flex-col [@media(min-width:2560px)]:min-h-[780px] [@media(min-width:3840px)]:min-h-[1140px]">
       <ChartHeader isMobile={isMobile} />
 
-      <div className="flex h-[49.6rem] flex-col overflow-hidden rounded-4 bg-slate-800">
+      <div className="flex grow flex-col overflow-hidden rounded-4 bg-slate-800 [@media(max-width:1920px)]:h-[53.6rem]">
         {isSwap ? (
           tab === "MARKET_GRAPH" ? (
             TAB_CONTENTS.MARKET_GRAPH

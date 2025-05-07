@@ -105,6 +105,8 @@ export function subscribeToV2Events(
       blockNumber: e.blockNumber,
     };
 
+    console.log("handleCommonLog", e);
+
     try {
       const parsed = eventEmitter.interface.parseLog(e);
 

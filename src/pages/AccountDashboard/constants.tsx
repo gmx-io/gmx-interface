@@ -1,6 +1,6 @@
 import invert from "lodash/invert";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
 
 export const NETWORK_QUERY_PARAM = "network";
 export const VERSION_QUERY_PARAM = "v";
@@ -9,6 +9,7 @@ export const NETWORK_SLUGS_ID_MAP = {
   arbitrum: ARBITRUM,
   avalanche: AVALANCHE,
   avalanche_fuji: AVALANCHE_FUJI,
+  arbitrum_sepolia: ARBITRUM_SEPOLIA,
 };
 
 export const NETWORK_ID_SLUGS_MAP = invert(NETWORK_SLUGS_ID_MAP);

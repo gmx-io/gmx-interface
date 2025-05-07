@@ -8,16 +8,21 @@ import {
   PendingTransactionData,
   SetPendingTransactions,
 } from "context/PendingTxnsContext/PendingTxnsContext";
+import { makeTransactionErrorHandler } from "lib/errors/additionalValidation";
+import { GasPriceData, getGasPrice } from "lib/gas/gasPrice";
 import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 
+import { getErrorMessage } from "components/Errors/errorToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import { helperToast } from "../helperToast";
-import { getErrorMessage, makeTransactionErrorHandler } from "./transactionErrors";
-import { GasPriceData, getBestNonce, getGasLimit, getGasPrice } from "./utils";
+import { getBestNonce, getGasLimit } from "./utils";
 
+/**
+ * @deprecated use sendWalletTransaction instead
+ */
 export async function callContract(
   chainId: number,
   contract: Contract,
@@ -104,7 +109,8 @@ export async function callContract(
       async function retrieveGasLimit() {
         return customGasLimits[i] !== undefined
           ? (customGasLimits[i] as bigint | number)
-          : await getGasLimit(cntrct, method, params, opts.value);
+          : // here
+            await getGasLimit(cntrct, method, params, opts.value);
       }
 
       async function retrieveGasPrice() {
