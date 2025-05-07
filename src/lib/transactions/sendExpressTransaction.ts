@@ -21,20 +21,21 @@ export async function sendExpressTransaction(p: {
   );
 
   let gelatoPromise: Promise<{ taskId: string }> | undefined;
+  const apiKeys = {
+    [ARBITRUM]: "6dE6kOa9pc1ap4dQQC2iaK9i6nBFp8eYxQlm00VreWc_",
+    [AVALANCHE]: "FalsQh9loL6V0rwPy4gWgnQPR6uTHfWjSVT2qlTzUq4_",
+  };
+
+  const apiKey = apiKeys[p.chainId];
 
   if (p.isSponsoredCall) {
-    const apiKeys = {
-      [ARBITRUM]: "6dE6kOa9pc1ap4dQQC2iaK9i6nBFp8eYxQlm00VreWc_",
-      [AVALANCHE]: "FalsQh9loL6V0rwPy4gWgnQPR6uTHfWjSVT2qlTzUq4_",
-    };
-
     gelatoPromise = gelatoRelay.sponsoredCall(
       {
         chainId: BigInt(p.chainId),
         target: p.txnData.to,
         data,
       },
-      apiKeys[p.chainId],
+      apiKey,
       {
         retries: 1,
       }
@@ -50,7 +51,8 @@ export async function sendExpressTransaction(p: {
       },
       {
         retries: 1,
-      }
+      },
+      apiKey
     );
   }
 
