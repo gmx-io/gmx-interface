@@ -57,7 +57,6 @@ export default defineConfig(({ mode }) => {
             web3: ["ethers", "viem", "date-fns", "@rainbow-me/rainbowkit", "lodash", "@gelatonetwork/relay-sdk"],
             charts: ["recharts"],
             ui: ["@headlessui/react", "framer-motion", "react-select", "react-icons"],
-            react: ["react", "react-dom", "react-router-dom", "@tanstack/react-query"],
           },
         },
       },
