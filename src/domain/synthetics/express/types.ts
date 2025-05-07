@@ -5,7 +5,7 @@ import { Subaccount } from "../subaccount";
 
 export type ExpressParams = {
   subaccount: Subaccount | undefined;
-  relayParamsPayload: RelayParamsPayload;
+  relayParamsPayload: RelayParamsPayload | MultichainRelayParamsPayload;
   relayFeeParams: RelayerFeeParams;
   isSponsoredCall: boolean;
 };

@@ -1,8 +1,7 @@
 import { Options, addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { Trans, t } from "@lingui/macro";
 import { errors as StargateErrorsAbi } from "@stargatefinance/stg-evm-sdk-v2";
-import { abi as IStargateAbi } from "@stargatefinance/stg-evm-sdk-v2/artifacts/src/interfaces/IStargate.sol/IStargate.json";
-import { Contract, solidityPacked } from "ethers";
+import { Contract } from "ethers";
 // eslint-disable-next-line no-restricted-imports
 import type { DebouncedFuncLeading } from "lodash";
 import debounce from "lodash/debounce";
@@ -31,6 +30,7 @@ import {
   useGmxAccountSettlementChainId,
 } from "context/GmxAccountContext/hooks";
 import { selectGmxAccountDepositViewTokenInputAmount } from "context/GmxAccountContext/selectors";
+import { IStargateAbi } from "context/GmxAccountContext/stargatePools";
 import { getNeedTokenApprove, useTokenRecentPricesRequest, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
@@ -45,7 +45,6 @@ import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { TxnCallback, TxnEventName, WalletTxnCtx, sendWalletTransaction } from "lib/transactions";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
-import { CodecUiHelper } from "pages/DebugStargate/OFTComposeMsgCodec";
 import { abis } from "sdk/abis";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { convertToUsd } from "sdk/utils/tokens";
@@ -61,11 +60,13 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 import NumberInput from "components/NumberInput/NumberInput";
+import { CodecUiHelper } from "components/Synthetics/GmxAccountModal/OFTComposeMsgCodec";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { useGmxAccountTokensDataObject, useMultichainTokens } from "./hooks";
+import { OftCmd, SEND_MODE_TAXI } from "./OftCmd";
 import { useMultichainDepositNetworkComposeGas } from "./useMultichainDepositNetworkComposeGas";
 
 const SLIPPAGE_BPS = 50n;
@@ -149,17 +150,6 @@ export const DepositView = () => {
     }
     setInputValue(formatAmountFree(selectedTokenSourceChainBalance, selectedToken.decimals));
   }, [selectedToken, selectedTokenSourceChainBalance, setInputValue]);
-
-  // useEffect(() => {
-  //   console.log("useEffect", {
-  //     depositViewChain,
-  //     walletChainId,
-  //     isSourceChain: walletChainId ? isSourceChain(walletChainId) : undefined,
-  //   });
-  //   if (depositViewChain === undefined && walletChainId !== undefined && isSourceChain(walletChainId)) {
-  //     setDepositViewChain(walletChainId);
-  //   }
-  // }, [depositViewChain, setDepositViewChain, walletChainId]);
 
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
   const gmxAccountToken = depositViewTokenAddress
@@ -327,16 +317,26 @@ export const DepositView = () => {
   );
   const quoteOft = quoteOftQuery.data;
 
+  const lastMinAmountLD = useRef<bigint | undefined>(undefined);
   const lastMaxAmountLD = useRef<bigint | undefined>(undefined);
-  if (quoteOft && quoteOft.limit.maxAmountLD) {
+  if (quoteOft && quoteOft.limit.maxAmountLD && quoteOft.limit.minAmountLD) {
     lastMaxAmountLD.current = quoteOft.limit.maxAmountLD as bigint;
+    lastMinAmountLD.current = quoteOft.limit.minAmountLD as bigint;
   }
-  const isOffLimit =
+  const isBelowLimit =
+    lastMinAmountLD.current !== undefined && inputAmount !== undefined && inputAmount > 0n
+      ? inputAmount < lastMinAmountLD.current
+      : false;
+  const lowerLimitFormatted =
+    isBelowLimit && selectedTokenSourceChainTokenId && lastMinAmountLD.current !== undefined
+      ? formatBalanceAmount(lastMinAmountLD.current, selectedTokenSourceChainTokenId?.decimals)
+      : undefined;
+  const isAboveLimit =
     lastMaxAmountLD.current !== undefined && inputAmount !== undefined && inputAmount > 0n
       ? inputAmount > lastMaxAmountLD.current
       : false;
-  const limitFormatted =
-    isOffLimit && selectedTokenSourceChainTokenId && lastMaxAmountLD.current !== undefined
+  const upperLimitFormatted =
+    isAboveLimit && selectedTokenSourceChainTokenId && lastMaxAmountLD.current !== undefined
       ? formatBalanceAmount(lastMaxAmountLD.current, selectedTokenSourceChainTokenId?.decimals)
       : undefined;
 
@@ -524,6 +524,7 @@ export const DepositView = () => {
 
               helperToast.error(toastParams.errorContent, {
                 autoClose: toastParams.autoCloseToast,
+                toastId: "gmx-account-deposit",
               });
             } else {
               const toastParams = getTxnErrorToast(depositViewChain, txnEvent.data.error, {
@@ -532,8 +533,12 @@ export const DepositView = () => {
 
               helperToast.error(toastParams.errorContent, {
                 autoClose: toastParams.autoCloseToast,
+                toastId: "gmx-account-deposit",
               });
             }
+          } else if (txnEvent.event === TxnEventName.Sent) {
+            helperToast.success("Deposit sent", { toastId: "gmx-account-deposit" });
+            setIsVisibleOrView("main");
           }
         },
       });
@@ -696,17 +701,25 @@ export const DepositView = () => {
         <div className="text-body-small text-slate-100">{formatUsd(inputAmountUsd ?? 0n)}</div>
       </div>
 
-      {isOffLimit && (
+      {isAboveLimit && (
         <AlertInfoCard type="warning" className="my-4">
           <Trans>
-            The amount you are trying to deposit exceeds the limit. Please try an amount smaller than {limitFormatted}.
+            The amount you are trying to deposit exceeds the limit. Please try an amount smaller than{" "}
+            {upperLimitFormatted}.
+          </Trans>
+        </AlertInfoCard>
+      )}
+      {isBelowLimit && (
+        <AlertInfoCard type="warning" className="my-4">
+          <Trans>
+            The amount you are trying to deposit is below the limit. Please try an amount larger than{" "}
+            {lowerLimitFormatted}.
           </Trans>
         </AlertInfoCard>
       )}
       <div className="h-32 shrink-0" />
 
       <div className="mb-8 flex flex-col gap-8">
-        {/* SLIPPAGE_BPS */}
         <SyntheticsInfoRow label="Allowed slippage" value={formatPercentage(SLIPPAGE_BPS, { bps: true })} />
         <SyntheticsInfoRow
           label="Min receive"
@@ -746,23 +759,6 @@ export const DepositView = () => {
   );
 };
 
-const SEND_MODE_TAXI = 0;
-
-class OftCmd {
-  constructor(
-    public sendMode: number,
-    public passengers: string[]
-  ) {}
-
-  toBytes(): string {
-    if (this.sendMode === SEND_MODE_TAXI) {
-      return "0x";
-    } else {
-      return solidityPacked(["uint8"], [this.sendMode]);
-    }
-  }
-}
-
 function useMultichainQuoteFeeUsd({
   quoteSend,
   quoteOft,
@@ -783,7 +779,6 @@ function useMultichainQuoteFeeUsd({
   amountReceivedLD: bigint | undefined;
 } {
   const [settlementChainId] = useGmxAccountSettlementChainId();
-  // const [depositViewChain] = useGmxAccountDepositViewChain();
   const { chainId: walletChainId } = useAccount();
   const [depositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
   const { pricesData: settlementChainTokenPricesData } = useTokenRecentPricesRequest(settlementChainId);
@@ -837,7 +832,7 @@ function useMultichainQuoteFeeUsd({
     protocolFeeAmount = 0n;
     for (const feeDetail of quoteOft.oftFeeDetails) {
       if (feeDetail.feeAmountLD) {
-        protocolFeeAmount += feeDetail.feeAmountLD as bigint;
+        protocolFeeAmount -= feeDetail.feeAmountLD as bigint;
       }
     }
     protocolFeeUsd = convertToUsd(protocolFeeAmount, sourceChainDepositTokenDecimals, depositTokenPrices?.maxPrice);

@@ -25,7 +25,6 @@ export class OFTComposeMsgCodec {
     _amountLD: BigNumberish,
     _composeMsg: BytesLike
   ): Hex {
-    // _msg = abi.encodePacked(_nonce, _srcEid, _amountLD, _composeMsg);
     return solidityPacked(["uint64", "uint32", "uint256", "bytes"], [_nonce, _srcEid, _amountLD, _composeMsg]) as Hex;
   }
 
@@ -45,7 +44,6 @@ export class OFTComposeMsgCodec {
    * @return The source endpoint ID.
    */
   public static srcEid(_msg: BytesLike): bigint {
-    // return uint32(bytes4(_msg[NONCE_OFFSET:SRC_EID_OFFSET]));
     const bytes = getBytes(_msg);
     return toBigInt(bytes.slice(OFTComposeMsgCodec.NONCE_OFFSET, OFTComposeMsgCodec.SRC_EID_OFFSET));
   }
@@ -56,7 +54,6 @@ export class OFTComposeMsgCodec {
    * @return The amount in local decimals.
    */
   public static amountLD(_msg: BytesLike): bigint {
-    // return uint256(bytes32(_msg[SRC_EID_OFFSET:AMOUNT_LD_OFFSET]));
     const bytes = getBytes(_msg);
     return toBigInt(bytes.slice(OFTComposeMsgCodec.SRC_EID_OFFSET, OFTComposeMsgCodec.AMOUNT_LD_OFFSET));
   }
@@ -67,7 +64,6 @@ export class OFTComposeMsgCodec {
    * @return The composeFrom value.
    */
   public static composeFrom(_msg: BytesLike): BytesLike {
-    // return bytes32(_msg[AMOUNT_LD_OFFSET:COMPOSE_FROM_OFFSET]);
     const bytes = getBytes(_msg);
     return bytes.slice(OFTComposeMsgCodec.AMOUNT_LD_OFFSET, OFTComposeMsgCodec.COMPOSE_FROM_OFFSET);
   }

@@ -1,4 +1,5 @@
 import { Chain, EndpointId, EndpointVersion, Stage, chainAndStageToEndpointId } from "@layerzerolabs/lz-definitions";
+import { abi as IStargateAbi } from "@stargatefinance/stg-evm-sdk-v2/artifacts/src/interfaces/IStargate.sol/IStargate.json";
 import { address as ethPoolArbitrumSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbsep-testnet/StargatePoolNative.json";
 import { address as usdcSgPoolArbitrumSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbsep-testnet/StargatePoolUSDC.json";
 import { address as ethPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolNative.json";
@@ -7,6 +8,7 @@ import { address as ethPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deplo
 import { address as usdcSgPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolUSDC.json";
 
 export {
+  IStargateAbi,
   usdcSgPoolArbitrumSepolia,
   usdcSgPoolOptimismSepolia,
   ethPoolArbitrumSepolia,

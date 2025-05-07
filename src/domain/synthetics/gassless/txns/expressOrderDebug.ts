@@ -1,9 +1,8 @@
-import { Hex, decodeFunctionData, encodePacked, etherUnits, type Address, type PublicClient } from "viem";
+import { Hex, encodePacked, type Address, type PublicClient } from "viem";
 
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
-import { multichainOrderRouterAbi } from "wagmi-generated";
 
-const GELATO_RELAY_ADDRESS = "0xcd565435e0d2109feFde337a66491541Df0D1420";
+export const GELATO_RELAY_ADDRESS = "0xcd565435e0d2109feFde337a66491541Df0D1420";
 
 export async function callRelayTransaction({
   calldata,

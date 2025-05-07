@@ -121,7 +121,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
   const { expressParams, expressEstimateMethod } = useExpressOrdersParams({
     orderParams: batchParams,
-    scope: "tradebox",
   });
 
   if (expressParams && showDebugValues) {

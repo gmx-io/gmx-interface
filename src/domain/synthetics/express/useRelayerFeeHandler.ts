@@ -61,10 +61,8 @@ const ASYNC_THROTTLE_TIME = 5000;
 
 export function useExpressOrdersParams({
   orderParams,
-  scope,
 }: {
   orderParams: BatchOrderTxnParams | undefined;
-  scope?: string;
 }): ExpressOrdersParamsResult {
   const { chainId } = useChainId();
   const srcChainId = useSelector(selectSourceChainId);
@@ -219,7 +217,6 @@ export function useExpressOrdersParams({
       l1Reference,
       marketsInfoData,
       orderParams,
-      scope,
       setGasPaymentTokenAddress,
       settlementChainClient,
       signer,
@@ -365,7 +362,6 @@ export function useExpressOrdersParams({
       orderParams,
       provider,
       relayerFeeToken,
-      scope,
       settlementChainClient,
       signer,
       sponsoredCallMultiplierFactor,

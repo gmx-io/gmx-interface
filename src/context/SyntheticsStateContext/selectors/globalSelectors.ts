@@ -132,15 +132,13 @@ export const makeSelectSubaccountForActions = (requiredActions: number) => {
 
 export const selectGasPaymentToken = createSelector((q) => {
   const gasPaymentTokenAddress = q(selectGasPaymentTokenAddress);
-  const tokensData = q(selectTokensData);
-  return getByKey(tokensData, gasPaymentTokenAddress);
+  return q((state) => getByKey(selectTokensData(state), gasPaymentTokenAddress));
 });
 
 export const selectRelayerFeeToken = createSelector((q) => {
   const chainId = q(selectChainId);
   const relayerFeeTokenAddress = getRelayerFeeToken(chainId).address;
-  const tokensData = q(selectTokensData);
-  return getByKey(tokensData, relayerFeeTokenAddress);
+  return q((state) => getByKey(selectTokensData(state), relayerFeeTokenAddress));
 });
 
 export const selectIsRelayRouterFeatureDisabled = makeSelectDisableFeature("relayRouterDisabled");

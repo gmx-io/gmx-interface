@@ -1,38 +1,89 @@
+import { addressToBytes32, Options } from "@layerzerolabs/lz-v2-utilities";
 import { Trans } from "@lingui/macro";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import type { Signer } from "ethers";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { encodeAbiParameters } from "viem";
+import useSWR from "swr";
+import {
+  Address,
+  BaseError,
+  decodeErrorResult,
+  encodeAbiParameters,
+  encodePacked,
+  Hex,
+  PublicClient,
+  StateOverride,
+  toHex,
+  zeroAddress,
+} from "viem";
 import { useAccount, usePublicClient } from "wagmi";
 
-import { getChainName } from "config/chains";
+import { getChainName, UiSettlementChain, UiSourceChain } from "config/chains";
 import { getContract } from "config/contracts";
+import { getSwapDebugSettings } from "config/externalSwaps";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import {
-  MULTI_CHAIN_SUPPORTED_TOKEN_MAP,
+  getMappedTokenId,
+  getMultichainTokenId,
   getStargateEndpointId,
   getStargatePoolAddress,
+  MULTI_CHAIN_TOKEN_MAPPING,
+  OVERRIDE_ERC20_BYTECODE,
 } from "context/GmxAccountContext/config";
-import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
+import { useGmxAccountSettlementChainId, useGmxAccountWithdrawViewTokenAddress } from "context/GmxAccountContext/hooks";
+import { IStargateAbi } from "context/GmxAccountContext/stargatePools";
+import { TokenChainData } from "context/GmxAccountContext/types";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectGasPaymentToken,
+  selectMarketsInfoData,
+  selectRelayerFeeToken,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectFindSwapPath } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getOracleParamsPayload, getOraclePriceParamsForRelayFee } from "domain/synthetics/express/oracleParamsUtils";
-import { MultichainRelayParamsPayload } from "domain/synthetics/express/types";
-import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
-import { buildAndSignBridgeOutTxn } from "domain/synthetics/orders/expressOrderUtils";
-import { TokenData, convertToUsd } from "domain/tokens";
+import { getRelayerFeeParams } from "domain/synthetics/express/relayParamsUtils";
+import { ExpressParams, MultichainRelayParamsPayload } from "domain/synthetics/express/types";
+import { callRelayTransaction, GELATO_RELAY_ADDRESS } from "domain/synthetics/gassless/txns/expressOrderDebug";
+import { buildAndSignBridgeOutTxn, buildAndSignExpressBatchOrderTxn } from "domain/synthetics/orders/expressOrderUtils";
+import { useTokenRecentPricesRequest } from "domain/synthetics/tokens";
+import { getSwapAmountsByToValue } from "domain/synthetics/trade/utils/swap";
+import { TokenData, convertToTokenAmount, convertToUsd } from "domain/tokens";
+import { estimateGasLimitMultichain } from "lib/gas/estimateGasLimit";
 import { helperToast } from "lib/helperToast";
-import { formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
+import {
+  bigintToNumber,
+  expandDecimals,
+  formatAmountFree,
+  formatBalanceAmount,
+  formatUsd,
+  parseValue,
+  USD_DECIMALS,
+} from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
+import { switchNetwork } from "lib/wallets";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { abis } from "sdk/abis";
-import { getTokenBySymbol } from "sdk/configs/tokens";
+import { GMX_SIMULATION_ORIGIN } from "sdk/configs/dataStore";
+import { convertTokenAddress, getToken, getTokenBySymbol } from "sdk/configs/tokens";
+import { extendError, OrderErrorContext } from "sdk/utils/errors";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
-import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
+import { BatchOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
+import { getMidPrice } from "sdk/utils/tokens";
 import { BridgeOutParamsStruct } from "typechain-types-arbitrum-sepolia/MultichainTransferRouter";
+import {
+  MessagingFeeStruct,
+  OFTFeeDetailStruct,
+  OFTLimitStruct,
+  OFTReceiptStruct,
+  SendParamStruct,
+} from "typechain-types-stargate/interfaces/IStargate";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import { getTxnErrorToast } from "components/Errors/errorToasts";
 import NumberInput from "components/NumberInput/NumberInput";
 import {
   useGmxAccountTokensDataObject,
@@ -43,49 +94,51 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { OftCmd, SEND_MODE_TAXI } from "./OftCmd";
 import { Selector } from "./Selector";
+
+// TODO: debound input value to make requests
 
 export const WithdrawView = () => {
   const [settlementChainId] = useGmxAccountSettlementChainId();
-  const { chainId: walletChainId, address: account } = useAccount();
+  const { chainId: walletChainId, address: account, isConnected } = useAccount();
   const [inputValue, setInputValue] = useState("");
-  const [selectedNetwork, setSelectedNetwork] = useState<number | undefined>(walletChainId);
-
-  useEffect(() => {
-    const sourceChains = Object.keys(MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChainId] || {}).map(Number);
-
-    if (sourceChains.length === 0) {
-      return;
-    }
-
-    if (selectedNetwork !== undefined && sourceChains.includes(selectedNetwork)) {
-      return;
-    }
-
-    console.log("resetting selected network", { sourceChains, selectedNetwork });
-
-    setSelectedNetwork(sourceChains[0]);
-  }, [settlementChainId, selectedNetwork]);
-
-  const [selectedTokenAddress, setSelectedTokenAddress] = useState<string | undefined>(undefined);
+  const [selectedTokenAddress, setSelectedTokenAddress] = useGmxAccountWithdrawViewTokenAddress();
 
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
-
   const networks = useGmxAccountWithdrawNetworks();
-
   const multichainTokens = useMultichainTokens();
+  const gasPaymentToken = useSelector(selectGasPaymentToken);
+  const relayerFeeToken = useSelector(selectRelayerFeeToken);
+
+  const signer = useEthersSigner();
+  const tokensData = useTokensData();
+  const marketsInfoData = useSelector(selectMarketsInfoData);
+  const settlementChainClient = usePublicClient({ chainId: settlementChainId });
 
   const selectedToken = useMemo(() => {
     return getByKey(gmxAccountTokensData, selectedTokenAddress);
   }, [selectedTokenAddress, gmxAccountTokensData]);
 
-  const amount = selectedToken ? parseValue(inputValue, selectedToken.decimals) : undefined;
-  const amountUsd = selectedToken
-    ? convertToUsd(amount, selectedToken.decimals, selectedToken.prices.maxPrice)
+  const selectedTokenSettlementChainTokenId =
+    selectedTokenAddress && settlementChainId !== undefined
+      ? getMultichainTokenId(settlementChainId, selectedTokenAddress)
+      : undefined;
+
+  const inputAmount = selectedToken ? parseValue(inputValue, selectedToken.decimals) : undefined;
+  const inputAmountUsd = selectedToken
+    ? convertToUsd(inputAmount, selectedToken.decimals, selectedToken.prices.maxPrice)
     : undefined;
 
   const options = useMemo(() => {
-    return Object.values(gmxAccountTokensData);
+    return Object.values(gmxAccountTokensData)
+      .filter((token) => token.address !== zeroAddress)
+      .sort((a, b) => {
+        const aFloat = bigintToNumber(a.balance ?? 0n, a.decimals);
+        const bFloat = bigintToNumber(b.balance ?? 0n, b.decimals);
+
+        return bFloat - aFloat;
+      });
   }, [gmxAccountTokensData]);
 
   const handleMaxButtonClick = useCallback(() => {
@@ -102,97 +155,191 @@ export const WithdrawView = () => {
     selectedToken?.prices.maxPrice
   );
 
-  const sourceChainSelectedToken = useMemo(() => {
+  const sourceChainSelectedUnwrappedToken = useMemo((): TokenChainData | undefined => {
+    if (walletChainId === undefined || selectedToken === undefined) {
+      return undefined;
+    }
+
+    const unwrappedSelectedTokenAddress = convertTokenAddress(settlementChainId, selectedToken?.address, "native");
     const sourceChainToken = multichainTokens.find(
-      (token) => token.address === selectedToken?.address && token.sourceChainId === selectedNetwork
+      (token) => token.address === unwrappedSelectedTokenAddress && token.sourceChainId === walletChainId
     );
 
     return sourceChainToken;
-  }, [multichainTokens, selectedNetwork, selectedToken?.address]);
+  }, [multichainTokens, selectedToken, settlementChainId, walletChainId]);
 
   const sourceChainTokenBalanceUsd = useMemo(() => {
-    if (sourceChainSelectedToken === undefined) {
+    if (sourceChainSelectedUnwrappedToken === undefined) {
       return 0n;
     }
 
     return convertToUsd(
-      sourceChainSelectedToken.sourceChainBalance,
-      sourceChainSelectedToken.sourceChainDecimals,
-      sourceChainSelectedToken.sourceChainPrices?.maxPrice
+      sourceChainSelectedUnwrappedToken.sourceChainBalance,
+      sourceChainSelectedUnwrappedToken.sourceChainDecimals,
+      sourceChainSelectedUnwrappedToken.sourceChainPrices?.maxPrice
     );
-  }, [sourceChainSelectedToken]);
+  }, [sourceChainSelectedUnwrappedToken]);
 
   const { nextGmxAccountBalanceUsd, nextSourceChainBalanceUsd } = useMemo(() => {
-    if (selectedToken === undefined || amount === undefined || amountUsd === undefined) {
+    if (selectedToken === undefined || inputAmount === undefined || inputAmountUsd === undefined) {
       return { nextGmxAccountBalanceUsd: undefined, nextSourceChainBalanceUsd: undefined };
     }
 
-    const nextGmxAccountBalanceUsd = (gmxAccountTokenBalanceUsd ?? 0n) - (amountUsd ?? 0n);
-    const nextSourceChainBalanceUsd = (sourceChainTokenBalanceUsd ?? 0n) + (amountUsd ?? 0n);
+    const nextGmxAccountBalanceUsd = (gmxAccountTokenBalanceUsd ?? 0n) - (inputAmountUsd ?? 0n);
+    const nextSourceChainBalanceUsd = (sourceChainTokenBalanceUsd ?? 0n) + (inputAmountUsd ?? 0n);
 
     return { nextGmxAccountBalanceUsd, nextSourceChainBalanceUsd };
-  }, [selectedToken, amount, amountUsd, gmxAccountTokenBalanceUsd, sourceChainTokenBalanceUsd]);
+  }, [selectedToken, inputAmount, inputAmountUsd, gmxAccountTokenBalanceUsd, sourceChainTokenBalanceUsd]);
 
-  // const relayFeeState = useRelayerFeeHandler();
-  // const relayerFeeSwapParams = useSelector(selectRelayerFeeSwapParams);
-  const expressOrdersParams = useExpressOrdersParams({
-    orderParams: {
-      cancelOrderParams: [],
-      createOrderParams: [],
-      updateOrderParams: [],
-    },
-  });
-  const signer = useEthersSigner();
-  const tokensData = useTokensData();
-  const marketsInfoData = useSelector(selectMarketsInfoData);
-  const settlementChainPublicClient = usePublicClient({ chainId: settlementChainId });
+  const selectFindSwapPath = useMemo(() => {
+    return makeSelectFindSwapPath(gasPaymentToken?.address, relayerFeeToken?.address, true);
+  }, [gasPaymentToken?.address, relayerFeeToken?.address]);
+  const findSwapPath = useSelector(selectFindSwapPath);
 
-  const handleWithdraw = useCallback(async () => {
-    // console.log({ relayFeeState, relayerFeeSwapParams });
-    const paymentTokens = await gelatoRelay.getPaymentTokens(BigInt(settlementChainId));
-
-    console.log({ paymentTokens });
-
-    if (selectedNetwork === undefined || selectedTokenAddress === undefined) {
+  const sendParamsWithoutSlippage: SendParamStruct | undefined = useMemo(() => {
+    if (!account || inputAmount === undefined || inputAmount <= 0n || walletChainId === undefined) {
       return;
     }
 
-    const dstEid = getStargateEndpointId(selectedNetwork);
+    const oftCmd: OftCmd = new OftCmd(SEND_MODE_TAXI, []);
+
+    const dstEid = getStargateEndpointId(walletChainId);
+
+    if (dstEid === undefined) {
+      return;
+    }
+
+    const to = toHex(addressToBytes32(account));
+    const builder = Options.newOptions();
+
+    const sendParams: SendParamStruct = {
+      dstEid,
+      to,
+      amountLD: inputAmount,
+      minAmountLD: 0n,
+      extraOptions: builder.toHex(),
+      composeMsg: "",
+      oftCmd: oftCmd.toBytes(),
+    };
+
+    return sendParams;
+  }, [account, inputAmount, walletChainId]);
+
+  const quoteOftCondition =
+    sendParamsWithoutSlippage !== undefined &&
+    selectedTokenSettlementChainTokenId !== undefined &&
+    settlementChainClient !== undefined &&
+    selectedTokenAddress !== undefined;
+  const quoteOftQuery = useSWR<
+    | {
+        limit: OFTLimitStruct;
+        oftFeeDetails: OFTFeeDetailStruct[];
+        receipt: OFTReceiptStruct;
+      }
+    | undefined
+  >(
+    quoteOftCondition
+      ? [
+          "quoteOft",
+          sendParamsWithoutSlippage.dstEid,
+          sendParamsWithoutSlippage.to,
+          sendParamsWithoutSlippage.amountLD,
+          selectedTokenSettlementChainTokenId?.stargate,
+        ]
+      : null,
+    {
+      fetcher: async () => {
+        if (!quoteOftCondition) {
+          return;
+        }
+
+        const settlementChainStargateAddress = selectedTokenSettlementChainTokenId!.stargate;
+
+        const [limit, oftFeeDetails, receipt]: [OFTLimitStruct, OFTFeeDetailStruct[], OFTReceiptStruct] =
+          (await settlementChainClient.readContract({
+            address: settlementChainStargateAddress,
+            abi: IStargateAbi,
+            functionName: "quoteOFT",
+            args: [sendParamsWithoutSlippage],
+          })) as any;
+
+        return {
+          limit,
+          oftFeeDetails,
+          receipt,
+        };
+      },
+      refreshInterval: CONFIG_UPDATE_INTERVAL,
+    }
+  );
+  const quoteOft = quoteOftQuery.data;
+
+  let protocolFeeAmount: bigint | undefined = undefined;
+  let protocolFeeUsd: bigint | undefined = undefined;
+  if (quoteOft !== undefined && selectedToken !== undefined) {
+    protocolFeeAmount = 0n;
+    for (const feeDetail of quoteOft.oftFeeDetails) {
+      if (feeDetail.feeAmountLD) {
+        protocolFeeAmount -= feeDetail.feeAmountLD as bigint;
+      }
+    }
+    protocolFeeUsd = convertToUsd(
+      protocolFeeAmount,
+      selectedTokenSettlementChainTokenId?.decimals,
+      getMidPrice(selectedToken.prices)
+    );
+  }
+
+  const lastMinAmountLD = useRef<bigint | undefined>(undefined);
+  const lastMaxAmountLD = useRef<bigint | undefined>(undefined);
+  if (quoteOft && quoteOft.limit.maxAmountLD && quoteOft.limit.minAmountLD) {
+    lastMaxAmountLD.current = quoteOft.limit.maxAmountLD as bigint;
+    lastMinAmountLD.current = quoteOft.limit.minAmountLD as bigint;
+  }
+  const isBelowLimit =
+    lastMinAmountLD.current !== undefined && inputAmount !== undefined && inputAmount > 0n
+      ? inputAmount < lastMinAmountLD.current
+      : false;
+  const lowerLimitFormatted =
+    isBelowLimit && selectedTokenSettlementChainTokenId && lastMinAmountLD.current !== undefined
+      ? formatBalanceAmount(lastMinAmountLD.current, selectedTokenSettlementChainTokenId?.decimals)
+      : undefined;
+  const isAboveLimit =
+    lastMaxAmountLD.current !== undefined && inputAmount !== undefined && inputAmount > 0n
+      ? inputAmount > lastMaxAmountLD.current
+      : false;
+  const upperLimitFormatted =
+    isAboveLimit && selectedTokenSettlementChainTokenId && lastMaxAmountLD.current !== undefined
+      ? formatBalanceAmount(lastMaxAmountLD.current, selectedTokenSettlementChainTokenId?.decimals)
+      : undefined;
+
+  const handleWithdraw = useCallback(async () => {
+    if (walletChainId === undefined || selectedTokenAddress === undefined) {
+      return;
+    }
+
+    const dstEid = getStargateEndpointId(walletChainId);
     const stargateAddress = getStargatePoolAddress(settlementChainId, selectedTokenAddress);
 
     if (
       selectedToken === undefined ||
-      amount === undefined ||
+      inputAmount === undefined ||
       dstEid === undefined ||
       stargateAddress === undefined ||
       signer === undefined ||
       marketsInfoData === undefined ||
       tokensData === undefined ||
-      // relayerFeeSwapParams === undefined ||
-      settlementChainPublicClient === undefined
+      settlementChainClient === undefined ||
+      relayerFeeToken === undefined ||
+      gasPaymentToken === undefined
     ) {
       helperToast.error("Missing required parameters");
       return;
     }
 
-    // oracleParams: getExpressOrderOracleParams({
-    //   chainId,
-    //   createOrderParams: [],
-    //   marketsInfoData,
-    //   tokensData,
-    //   gasPaymentTokenAddress: relayFeeParams.feeParams.feeToken,
-    //   feeSwapPath: relayFeeParams.feeParams.feeSwapPath,
-    //   feeTokenAddress: relayFeeParams.relayFeeToken,
-    // }),
-    // tokenPermits: tokenPermits ?? [],
-    // externalCalls: relayFeeParams.externalCalls,
-    // fee: relayFeeParams.feeParams,
-    // userNonce: userNonce,
-
     const bridgeOutParams: BridgeOutParamsStruct = {
       token: selectedTokenAddress,
-      amount: amount,
-      // data: encodePacked(["uint32"], [dstEid]),
+      amount: inputAmount,
       data: encodeAbiParameters(
         [
           {
@@ -202,21 +349,21 @@ export const WithdrawView = () => {
         ],
         [dstEid]
       ),
-      provider: stargateAddress, // "0x543BdA7c6cA4384FE90B1F5929bb851F52888983",
+      provider: stargateAddress,
     };
 
     const relayContractAddress = getContract(settlementChainId, "MultichainTransferRouter");
 
-    const userNonce = await settlementChainPublicClient.readContract({
+    const userNonce = await settlementChainClient.readContract({
       address: relayContractAddress,
       abi: abis.GelatoRelayRouterArbitrumSepolia,
       functionName: "userNonces",
       args: [account],
     });
-
-    const DEV_WETH = getTokenBySymbol(settlementChainId, "WETH").address;
-
-    const FEE_AMOUNT = (93372639126447n * 130n) / 100n;
+    console.log({
+      gasPaymentToken,
+      relayerFeeToken,
+    });
 
     const externalCalls: ExternalCallsPayload = {
       sendTokens: [],
@@ -227,35 +374,73 @@ export const WithdrawView = () => {
       refundReceivers: [],
     };
 
+    const baseRelayerFeeAmount = convertToTokenAmount(
+      expandDecimals(1, USD_DECIMALS - 2),
+      relayerFeeToken.decimals,
+      relayerFeeToken.prices.maxPrice
+    )!;
+
+    const swapAmounts = getSwapAmountsByToValue({
+      tokenIn: gasPaymentToken,
+      tokenOut: relayerFeeToken,
+      amountOut: baseRelayerFeeAmount,
+      isLimit: false,
+      findSwapPath,
+      uiFeeFactor: 0n,
+    });
+
+    const baseRelayFeeSwapParams = getRelayerFeeParams({
+      chainId: settlementChainId,
+      srcChainId: walletChainId as UiSourceChain,
+      account: account as Address,
+      relayerFeeTokenAmount: baseRelayerFeeAmount,
+      totalNetworkFeeAmount: baseRelayerFeeAmount,
+      relayerFeeTokenAddress: relayerFeeToken.address,
+      gasPaymentTokenAddress: gasPaymentToken.address,
+      internalSwapAmounts: swapAmounts,
+      externalSwapQuote: undefined,
+      tokensData,
+      gasPaymentAllowanceData: undefined,
+      forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
+    });
+
+    console.log("baseRelayFeeSwapParams", baseRelayFeeSwapParams);
+
+    if (!baseRelayFeeSwapParams) {
+      helperToast.error("Failed to get relayer fee params");
+      return;
+    }
+
     const relayParamsPayload: MultichainRelayParamsPayload = {
       oracleParams: getOracleParamsPayload(
         getOraclePriceParamsForRelayFee({
           chainId: settlementChainId,
           marketsInfoData,
           tokensData,
-          relayFeeParams: {
-            externalCalls,
-            feeParams: {
-              feeToken: DEV_WETH,
-              feeAmount: FEE_AMOUNT,
-              feeSwapPath: [],
-            },
-            relayerTokenAddress: DEV_WETH,
-            relayerTokenAmount: FEE_AMOUNT,
-            totalNetworkFeeAmount: FEE_AMOUNT,
-            gasPaymentTokenAmount: FEE_AMOUNT,
-            gasPaymentTokenAddress: DEV_WETH,
-            isOutGasTokenBalance: false,
-            needGasPaymentTokenApproval: false,
-            externalSwapGasLimit: 0n,
-          },
+          // relayFeeParams: {
+          //   externalCalls,
+          //   feeParams: {
+          //     feeToken: DEV_WETH,
+          //     feeAmount: FEE_AMOUNT,
+          //     feeSwapPath: [],
+          //   },
+          //   relayerTokenAddress: DEV_WETH,
+          //   relayerTokenAmount: FEE_AMOUNT,
+          //   totalNetworkFeeAmount: FEE_AMOUNT,
+          //   gasPaymentTokenAmount: FEE_AMOUNT,
+          //   gasPaymentTokenAddress: DEV_WETH,
+          //   isOutGasTokenBalance: false,
+          //   needGasPaymentTokenApproval: false,
+          //   externalSwapGasLimit: 0n,
+          // },
+          relayFeeParams: baseRelayFeeSwapParams,
         })
       ),
       tokenPermits: [],
       externalCalls,
       fee: {
-        feeToken: DEV_WETH,
-        feeAmount: FEE_AMOUNT,
+        feeToken: baseRelayFeeSwapParams.gasPaymentTokenAddress,
+        feeAmount: baseRelayFeeSwapParams.totalNetworkFeeAmount,
         feeSwapPath: [],
       },
       userNonce: userNonce,
@@ -263,39 +448,187 @@ export const WithdrawView = () => {
       desChainId: BigInt(settlementChainId),
     };
 
-    const signedTxnData: ExpressTxnData = await buildAndSignBridgeOutTxn({
+    console.log({
+      relayParamsPayload,
+    });
+
+    // return await client.call({
+    //   account: GMX_SIMULATION_ORIGIN as Address,
+    //   to: relayRouterAddress,
+    //   data: encodePacked(
+    //     ["bytes", "address", "address", "uint256"],
+    //     [calldata as Hex, GELATO_RELAY_ADDRESS, gelatoRelayFeeToken as Address, gelatoRelayFeeAmount]
+    //   ),
+    // });
+
+    const { callData, feeAmount, feeToken, to }: ExpressTxnData = await buildAndSignBridgeOutTxn({
       chainId: settlementChainId,
       signer: signer,
       relayParamsPayload,
       params: bridgeOutParams,
+      emptySignature: true,
     });
 
-    await sendExpressTransaction({
-      chainId: settlementChainId,
-      txnData: signedTxnData,
-      // TODO
-      isSponsoredCall: false,
-      // relayFeeToken: "0xeBDCbab722f9B4614b7ec1C261c9E52acF109CF8", // WETH.G
-    });
+    try {
+      const estimateResult = await fallbackCustomError(async () => {
+        const stateOverride: StateOverride = [];
 
-    // MultichainVault -> MultichainTransferRouter 666wei
-    // MultichainTransferRouter -> EIP173 1wei
-    // MultichainTransferRouter -> MultichainVault 666wei (but the balance is 665wei)
+        if (!selectedToken.isWrapped) {
+          const stateOverrideForErc20: StateOverride[number] = {
+            address: selectedTokenAddress as Address,
+            code: OVERRIDE_ERC20_BYTECODE,
+          };
+          stateOverride.push(stateOverrideForErc20);
+        } else {
+          throw new Error("Not implemented");
+          // const stateOverrideForNative: StateOverride[number] = {
+          //   address: account as Address,
+          //   balance: fakeInputAmount * 10n,
+          // };
+          // stateOverride.push(stateOverrideForNative);
+        }
+
+        const data = encodePacked(
+          ["bytes", "address", "address", "uint256"],
+          [callData as Hex, GELATO_RELAY_ADDRESS, feeToken as Address, feeAmount]
+        );
+
+        console.log({
+          from: GMX_SIMULATION_ORIGIN as Address,
+          to: to as Address,
+          data,
+          stateOverride,
+          selectedTokenAddress,
+        });
+
+        return await settlementChainClient.estimateGas({
+          account: GMX_SIMULATION_ORIGIN as Address,
+          to: to as Address,
+          data,
+          // stateOverride,
+        });
+      }, "gasLimit");
+
+      const fee = await gelatoRelay.getEstimatedFee(
+        BigInt(settlementChainId),
+        baseRelayFeeSwapParams.relayerTokenAddress,
+        estimateResult,
+        false
+      );
+
+      console.log({
+        fee,
+      });
+    } catch (error) {
+      debugger;
+      console.log({
+        error,
+      });
+    }
+
+    // await gelatoRelay.getEstimatedFee(BigInt(settlementChainId), baseRelayFeeSwapParams.relayerTokenAddress, 0n, false);
+    // try {
+    //   await simulateWithdraw({
+    //     chainId: settlementChainId,
+    //     expressParams: {
+    //       isSponsoredCall: false,
+    //       relayParamsPayload,
+    //       relayFeeParams: baseRelayFeeSwapParams,
+    //       subaccount: undefined,
+    //     },
+    //     params: bridgeOutParams,
+    //     signer,
+    //     settlementChainClient: settlementChainClient,
+    //   });
+    // } catch (error) {
+    //   const toastContext = getTxnErrorToast(
+    //     settlementChainId,
+    //     {
+    //       errorMessage: error.message,
+    //     },
+    //     {
+    //       defaultMessage: error.name,
+    //     }
+    //   );
+    //   helperToast.error(toastContext.errorContent, {
+    //     autoClose: toastContext.autoCloseToast,
+    //   });
+    // }
+
+    // const signedTxnData: ExpressTxnData = await buildAndSignBridgeOutTxn({
+    //   chainId: settlementChainId,
+    //   signer: signer,
+    //   relayParamsPayload,
+    //   params: bridgeOutParams,
+    // });
+
+    // await sendExpressTransaction({
+    //   chainId: settlementChainId,
+    //   txnData: signedTxnData,
+    //   // TODO
+    //   isSponsoredCall: false,
+    // });
   }, [
     account,
-    amount,
+    inputAmount,
+    findSwapPath,
+    gasPaymentToken,
     marketsInfoData,
-    selectedNetwork,
+    relayerFeeToken,
     selectedToken,
     selectedTokenAddress,
     settlementChainId,
-    settlementChainPublicClient,
+    settlementChainClient,
     signer,
     tokensData,
+    walletChainId,
   ]);
 
+  const hasSelectedToken = selectedTokenAddress !== undefined;
+  useEffect(
+    function fallbackWithdrawTokens() {
+      if (hasSelectedToken || !walletChainId) {
+        return;
+      }
+
+      const tokenIdMap = MULTI_CHAIN_TOKEN_MAPPING[settlementChainId]?.[walletChainId];
+      if (!tokenIdMap) {
+        return;
+      }
+
+      let maxGmxAccountBalanceUsd = 0n;
+      let maxBalanceSettlementChainTokenAddress: string | undefined = undefined;
+
+      for (const sourceChainTokenAddress in tokenIdMap) {
+        const tokenId = tokenIdMap[sourceChainTokenAddress];
+        const tokenData = gmxAccountTokensData[tokenId.settlementChainTokenAddress];
+        if (tokenData === undefined) {
+          continue;
+        }
+
+        const prices = tokenData.prices;
+        const balance = tokenData.balance;
+        if (prices === undefined || balance === undefined) {
+          continue;
+        }
+
+        const price = getMidPrice(prices);
+        const balanceUsd = convertToUsd(balance, tokenData.decimals, price)!;
+        if (balanceUsd > maxGmxAccountBalanceUsd) {
+          maxGmxAccountBalanceUsd = balanceUsd;
+          maxBalanceSettlementChainTokenAddress = tokenId.settlementChainTokenAddress;
+        }
+      }
+
+      if (maxBalanceSettlementChainTokenAddress) {
+        setSelectedTokenAddress(maxBalanceSettlementChainTokenAddress);
+      }
+    },
+    [gmxAccountTokensData, hasSelectedToken, setSelectedTokenAddress, settlementChainId, walletChainId]
+  );
+
   return (
-    <div className=" grow  overflow-y-auto p-16">
+    <div className="grow overflow-y-auto p-16">
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-4">
           <div className="text-body-small text-slate-100">Asset</div>
@@ -319,21 +652,25 @@ export const WithdrawView = () => {
 
         {/* Network selector */}
         <div className="flex flex-col gap-4">
-          <div className="text-body-small text-slate-100">To Network</div>
+          <div className="text-body-small text-slate-100">
+            <Trans>To Network</Trans>
+          </div>
           <Selector
-            value={selectedNetwork}
-            onChange={(value) => setSelectedNetwork(Number(value))}
+            value={walletChainId}
+            onChange={(value) => {
+              switchNetwork(Number(value), isConnected);
+            }}
             placeholder="Select network"
             button={
               <div className="flex items-center gap-8">
-                {selectedNetwork !== undefined ? (
+                {walletChainId !== undefined ? (
                   <>
                     <img
-                      src={CHAIN_ID_TO_NETWORK_ICON[selectedNetwork]}
-                      alt={getChainName(selectedNetwork)}
+                      src={CHAIN_ID_TO_NETWORK_ICON[walletChainId]}
+                      alt={getChainName(walletChainId)}
                       className="size-20"
                     />
-                    <span className="text-body-large">{getChainName(selectedNetwork)}</span>
+                    <span className="text-body-large">{getChainName(walletChainId)}</span>
                   </>
                 ) : (
                   <>
@@ -385,17 +722,37 @@ export const WithdrawView = () => {
             className="text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-4 bg-cold-blue-500 px-8 py-2 hover:bg-[#484e92] active:bg-[#505699]"
             onClick={handleMaxButtonClick}
           >
-            MAX
+            <Trans>MAX</Trans>
           </button>
         </div>
-        <div className="text-body-small text-slate-100">{formatUsd(amountUsd ?? 0n)}</div>
+        <div className="text-body-small text-slate-100">{formatUsd(inputAmountUsd ?? 0n)}</div>
       </div>
+
+      {isAboveLimit && (
+        <AlertInfoCard type="warning" className="my-4">
+          <Trans>
+            The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than{" "}
+            {upperLimitFormatted}.
+          </Trans>
+        </AlertInfoCard>
+      )}
+      {isBelowLimit && (
+        <AlertInfoCard type="warning" className="my-4">
+          <Trans>
+            The amount you are trying to withdraw is below the limit. Please try an amount larger than{" "}
+            {lowerLimitFormatted}.
+          </Trans>
+        </AlertInfoCard>
+      )}
 
       <div className="h-32" />
 
       <div className="flex flex-col gap-8">
         <SyntheticsInfoRow label="Network Fee" value="$0.37" />
-        <SyntheticsInfoRow label="Withdraw Fee" value="$0.22" />
+        <SyntheticsInfoRow
+          label="Withdraw Fee"
+          value={protocolFeeUsd !== undefined ? formatUsd(protocolFeeUsd) : "..."}
+        />
         <SyntheticsInfoRow
           label="GMX Balance"
           value={
@@ -412,16 +769,15 @@ export const WithdrawView = () => {
 
       <div className="h-16" />
 
-      {/* Withdraw button */}
       <Button variant="primary" className="w-full" onClick={handleWithdraw}>
-        Withdraw
+        <Trans>Withdraw</Trans>
       </Button>
     </div>
   );
 };
 
 function networkItemKey(option: { id: number; name: string; fee: string }) {
-  return option.id.toString();
+  return option.id;
 }
 
 function NetworkItem({ option }: { option: { id: number; name: string; fee: string } }) {
@@ -431,22 +787,187 @@ function NetworkItem({ option }: { option: { id: number; name: string; fee: stri
         <img src={CHAIN_ID_TO_NETWORK_ICON[option.id]} alt={option.name} className="size-20" />
         <span className="text-body-large">{option.name}</span>
       </div>
-      <span className="text-body-medium text-slate-100">{option.fee}</span>
+      {/* <span className="text-body-medium text-slate-100">{option.fee}</span> */}
     </div>
   );
 }
 
 function WithdrawAssetItem({ option }: { option: TokenData }) {
   return (
-    <div className="flex items-center gap-8">
-      <TokenIcon symbol={option.symbol} displaySize={20} importSize={40} />
-      <span>
-        {option.symbol} <span className="text-slate-100">{option.name}</span>
-      </span>
+    <div className="flex items-center justify-between gap-8">
+      <div className="flex gap-8">
+        <TokenIcon symbol={option.symbol} displaySize={20} importSize={40} />
+        <span>
+          {option.symbol} <span className="text-slate-100">{option.name}</span>
+        </span>
+      </div>
+      <div className="text-slate-100">
+        {option.balance !== undefined ? formatBalanceAmount(option.balance, option.decimals) : "-"}
+      </div>
     </div>
   );
 }
 
 function withdrawAssetItemKey(option: TokenData) {
   return option.address;
+}
+
+async function simulateWithdraw({
+  settlementChainClient,
+  signer,
+  chainId,
+  expressParams,
+  params,
+}: {
+  settlementChainClient: PublicClient;
+  signer: Signer;
+  chainId: UiSettlementChain;
+  expressParams: ExpressParams;
+  params: BridgeOutParamsStruct;
+}): Promise<void> {
+  if (!settlementChainClient) {
+    throw new Error("settlementChainClient is required");
+  }
+
+  const { callData, feeAmount, feeToken, to } = await buildAndSignBridgeOutTxn({
+    signer,
+    chainId,
+    relayParamsPayload: expressParams.relayParamsPayload as MultichainRelayParamsPayload,
+    params,
+    emptySignature: true,
+  });
+
+  await fallbackCustomError(async () => {
+    await callRelayTransaction({
+      calldata: callData,
+      client: settlementChainClient!,
+      gelatoRelayFeeAmount: feeAmount,
+      gelatoRelayFeeToken: feeToken,
+      relayRouterAddress: to as Address,
+    });
+  }, "simulation");
+}
+
+async function fallbackCustomError<T = void>(f: () => Promise<T>, errorContext: OrderErrorContext) {
+  try {
+    return await f();
+  } catch (error) {
+    if ("walk" in error && typeof error.walk === "function") {
+      const errorWithData = (error as BaseError).walk((e) => "data" in (e as any)) as (Error & { data: string }) | null;
+
+      if (errorWithData && errorWithData.data) {
+        const data = errorWithData.data;
+
+        const decodedError = decodeErrorResult({
+          abi: abis.CustomErrorsArbitrumSepolia,
+          data: data as Hex,
+        });
+
+        const customError = new Error();
+
+        customError.name = decodedError.errorName;
+        customError.message = JSON.stringify(decodedError, null, 2);
+        // customError.cause = error;
+
+        throw extendError(customError, {
+          errorContext,
+        });
+      }
+    }
+
+    throw extendError(error, {
+      errorContext,
+    });
+  }
+}
+
+function useMultichainQuoteFeeUsd({
+  quoteSend,
+  quoteOft,
+}: {
+  quoteSend: MessagingFeeStruct | undefined;
+  quoteOft:
+    | {
+        limit: OFTLimitStruct;
+        oftFeeDetails: OFTFeeDetailStruct[];
+        receipt: OFTReceiptStruct;
+      }
+    | undefined;
+}): {
+  networkFee: bigint | undefined;
+  networkFeeUsd: bigint | undefined;
+  protocolFeeAmount: bigint | undefined;
+  protocolFeeUsd: bigint | undefined;
+  amountReceivedLD: bigint | undefined;
+} {
+  const [settlementChainId] = useGmxAccountSettlementChainId();
+  const { chainId: walletChainId } = useAccount();
+  const { pricesData: settlementChainTokenPricesData } = useTokenRecentPricesRequest(settlementChainId);
+  const [withdrawViewTokenAddress] = useGmxAccountWithdrawViewTokenAddress();
+
+  if (!withdrawViewTokenAddress) {
+    return {
+      networkFee: undefined,
+      networkFeeUsd: undefined,
+      protocolFeeAmount: undefined,
+      protocolFeeUsd: undefined,
+      amountReceivedLD: undefined,
+    };
+  }
+
+  // const sourceChainTokenId = getMappedTokenId(
+  //   settlementChainId as UiSettlementChain,
+  //   withdrawViewTokenAddress,
+  //   walletChainId as UiSourceChain
+  // );
+
+  const settlementChainTokenId = getMultichainTokenId(settlementChainId, withdrawViewTokenAddress);
+
+  if (!settlementChainTokenId) {
+    return {
+      networkFee: undefined,
+      networkFeeUsd: undefined,
+      protocolFeeAmount: undefined,
+      protocolFeeUsd: undefined,
+      amountReceivedLD: undefined,
+    };
+  }
+
+  const nativeFee = quoteSend?.nativeFee as bigint;
+  const amountReceivedLD = quoteOft?.receipt.amountReceivedLD as bigint;
+
+  const nativeTokenPrices = settlementChainTokenPricesData?.[zeroAddress];
+  const nativeTokenPrice = nativeTokenPrices ? getMidPrice(nativeTokenPrices) : undefined;
+  const withdrawTokenPrices = settlementChainTokenPricesData?.[withdrawViewTokenAddress];
+  const withdrawTokenPrice = withdrawTokenPrices ? getMidPrice(withdrawTokenPrices) : undefined;
+  // ETH is the same as the source chain
+  // TODO: check if this is correct
+  const settlementChainNativeTokenDecimals = getToken(settlementChainId, zeroAddress)?.decimals ?? 18;
+
+  // const sourceChainDepositTokenDecimals = sourceChainTokenId?.decimals;
+
+  const nativeFeeUsd =
+    nativeFee !== undefined
+      ? convertToUsd(nativeFee as bigint, settlementChainNativeTokenDecimals, nativeTokenPrice)
+      : undefined;
+
+  let protocolFeeAmount: bigint | undefined = undefined;
+  let protocolFeeUsd: bigint | undefined = undefined;
+  if (quoteOft !== undefined) {
+    protocolFeeAmount = 0n;
+    for (const feeDetail of quoteOft.oftFeeDetails) {
+      if (feeDetail.feeAmountLD) {
+        protocolFeeAmount -= feeDetail.feeAmountLD as bigint;
+      }
+    }
+    protocolFeeUsd = convertToUsd(protocolFeeAmount, settlementChainTokenId?.decimals, withdrawTokenPrice);
+  }
+
+  return {
+    networkFee: nativeFee,
+    networkFeeUsd: nativeFeeUsd,
+    protocolFeeAmount,
+    protocolFeeUsd,
+    amountReceivedLD,
+  };
 }
