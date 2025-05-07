@@ -10562,6 +10562,7 @@ __metadata:
     use-context-selector: 1.4.1
     viem: 2.7.20
     vite: 5.4.0
+    vite-bundle-analyzer: 0.20.1
     vite-plugin-svgr: 4.2.0
     vite-tsconfig-paths: 5.0.1
     vitest: 2.0.5
@@ -17159,6 +17160,15 @@ __metadata:
     typescript:
       optional: true
   checksum: ec49a1744aad4326f28d22a9fbb7049694b30b8e95217c78dc16ab04ebc1d459e3ef76fe1d1b11ce80e7989baa02942709f9a91d495a8ec70ab923453617029e
+  languageName: node
+  linkType: hard
+
+"vite-bundle-analyzer@npm:0.20.1":
+  version: 0.20.1
+  resolution: "vite-bundle-analyzer@npm:0.20.1"
+  bin:
+    analyze: dist/bin.js
+  checksum: 51e51d8e259cdd484648033d11d78e935152322a2a1e98bfd484d912fc8694a6d4cabc36be3e5abbf345227234fead2ef59e98bf97c5cd04cd43b55a1eb4cfae
   languageName: node
   linkType: hard
 
