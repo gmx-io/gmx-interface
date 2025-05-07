@@ -7,6 +7,7 @@ import type { Address } from "viem";
 import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
+import { PoolsDetailsContextProvider } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { subscribeToV1Events } from "context/WebsocketContext/subscribeToEvents";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
@@ -27,12 +28,12 @@ import Ecosystem from "pages/Ecosystem/Ecosystem";
 import { Exchange } from "pages/Exchange/Exchange";
 import Jobs from "pages/Jobs/Jobs";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
-import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import NftWallet from "pages/NftWallet/NftWallet";
 import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import { ParseTransactionPage } from "pages/ParseTransaction/ParseTransaction";
 import Pools from "pages/Pools/Pools";
+import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
 import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import Referrals from "pages/Referrals/Referrals";
@@ -122,7 +123,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       </Route>
       <Route exact path="/pools/details">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
-          <MarketPoolsPage />
+          <PoolsDetailsContextProvider>
+            <PoolsDetails />
+          </PoolsDetailsContextProvider>
         </SyntheticsStateContextProvider>
       </Route>
 

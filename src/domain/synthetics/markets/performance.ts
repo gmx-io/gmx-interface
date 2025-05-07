@@ -136,6 +136,10 @@ const findStartTimestamp = ({ timestamps, longTokenPrices, shortTokenPrices, poo
   Benchmark_S = Benchmark Investment Starting Price
   Benchmark_E = Benchmark Investment Ending Price
   Benchmark_E = Benchmark_S * SQRT( (TokenA_E * TokenB_E)/(TokenA_S * TokenB_S) )
+
+  Pool Performance = (P_E - P_S)/P_S * 100
+  Benchmark Performance = (B_E - B_S)/B_S * 100
+  Performance = (Pool Performance - Benchmark Performance)
 */
 export const calculatePerformance = ({
   poolStartPrice,
@@ -156,7 +160,10 @@ export const calculatePerformance = ({
   const benchmarkEndPrice =
     benchmarkStartPrice * Math.sqrt((tokenAEndPrice * tokenBEndPrice) / (tokenAStartPrice * tokenBStartPrice));
 
-  return roundPerformance((poolEndPrice  / benchmarkEndPrice) / 100);
+  const poolPerformance = (poolEndPrice - poolStartPrice) / poolStartPrice;
+  const benchmarkPerformance = (benchmarkEndPrice - benchmarkStartPrice) / benchmarkStartPrice;
+
+  return roundPerformance(poolPerformance - benchmarkPerformance);
 };
 
 const ROUND_PRECISION = 1000000;

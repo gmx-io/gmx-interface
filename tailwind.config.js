@@ -171,6 +171,9 @@ function fontComponentsPlugin({ addComponents, addBase }) {
       fontSize: "1rem",
       lineHeight: "1.4rem",
     },
+    ".text-font-number": {
+      fontFamily: "RelativeNumber, Relative",
+    },
   });
 }
 
