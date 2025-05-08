@@ -36,14 +36,12 @@ import {
   selectPositionSellerTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
-import {
-  selectTradeboxAvailableTokensOptions,
-  selectTradeboxTradeFlags,
-} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import { createTwapDecreaseOrderTxn } from "domain/synthetics/orders/createTwapDecreaseOrderTxn";
 import { formatLeverage, formatLiquidationPrice, getNameByOrderType } from "domain/synthetics/positions";
+import { getPositionSellerTradeFlags } from "domain/synthetics/trade";
 import { TradeType } from "domain/synthetics/trade/types";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
@@ -123,7 +121,6 @@ export function PositionSeller(p: Props) {
   const hasOutdatedUi = useHasOutdatedUi();
   const position = useSelector(selectPositionSellerPosition);
   const toToken = position?.indexToken;
-  const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const { shouldDisableValidationForTesting } = useSettings();
   const localizedOrderOptionLabels = useLocalizedMap(ORDER_OPTION_LABELS);
@@ -225,7 +222,7 @@ export function PositionSeller(p: Props) {
     swapPriceImpact: fees?.swapPriceImpact,
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
-    tradeFlags,
+    tradeFlags: getPositionSellerTradeFlags(position?.isLong, orderOption),
     payUsd: closeSizeUsd,
   });
 
@@ -759,8 +756,8 @@ export function PositionSeller(p: Props) {
               )}
             </div>
 
-            <div className="pt-14">
-              {isTwap && (
+            {isTwap && (
+              <div className="pt-14">
                 <TwapRows
                   duration={duration}
                   numberOfParts={numberOfParts}
@@ -771,8 +768,8 @@ export function PositionSeller(p: Props) {
                   marketInfo={position.marketInfo}
                   type="decrease"
                 />
-              )}
-            </div>
+              </div>
+            )}
 
             <div className="flex flex-col gap-14 pt-14">
               {isTrigger && maxAutoCancelOrdersWarning}

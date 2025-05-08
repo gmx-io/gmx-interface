@@ -65,7 +65,9 @@ export function usePriceImpactWarningState({
   const prevFlags = usePrevious(tradeFlags);
 
   const isHighTwapNetworkFee =
-    executionFeeUsd !== undefined && payUsd !== undefined && tradeFlags.isTwap ? executionFeeUsd > payUsd / 20n : false;
+    executionFeeUsd !== undefined && payUsd !== undefined && tradeFlags.isTwap && payUsd > 0n
+      ? executionFeeUsd > payUsd / 20n
+      : false;
   const prevIsHighTwapNetworkFee = usePrevious(isHighTwapNetworkFee);
 
   useEffect(() => {
