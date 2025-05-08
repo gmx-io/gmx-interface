@@ -11,6 +11,8 @@ import { ExternalSwapQuote } from "sdk/types/trade";
 import { SwapStats, TradeFees, TradeFlags, TradeMode, TradeType } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 
+import { OrderOption } from "../usePositionSellerState";
+
 export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode): TradeFlags {
   const isLong = tradeType === TradeType.Long;
   const isShort = tradeType === TradeType.Short;
@@ -69,6 +71,20 @@ export function getTradeFlagsForCollateralEdit(isLong: boolean | undefined, isIn
     isPosition: true,
     isTrigger: false,
     isTwap: false,
+  };
+}
+
+export function getPositionSellerTradeFlags(isLong: boolean | undefined, orderOption: OrderOption): TradeFlags {
+  return {
+    isMarket: orderOption === OrderOption.Market,
+    isIncrease: false,
+    isLimit: false,
+    isLong: Boolean(isLong),
+    isShort: !isLong,
+    isSwap: false,
+    isPosition: true,
+    isTrigger: orderOption === OrderOption.Trigger,
+    isTwap: orderOption === OrderOption.Twap,
   };
 }
 
