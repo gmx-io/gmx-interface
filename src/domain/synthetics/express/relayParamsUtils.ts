@@ -9,7 +9,7 @@ import { getContract } from "sdk/configs/contracts";
 import { getRelayerFeeToken } from "sdk/configs/express";
 import { ExternalSwapOutput, SwapAmounts } from "sdk/types/trade";
 import { getByKey } from "sdk/utils/objects";
-import { ExternalCallsPayload, getExternalCallsPayload } from "sdk/utils/orderTransactions";
+import { combineExternalCalls, ExternalCallsPayload, getExternalCallsPayload } from "sdk/utils/orderTransactions";
 
 import { RelayerFeeParams, RelayFeePayload, RelayParamsPayload } from "./types";
 
@@ -57,7 +57,8 @@ export function getRelayerFeeParams({
   gasPaymentTokenAddress,
   totalNetworkFeeAmount,
   internalSwapAmounts,
-  externalSwapQuote,
+  batchExternalCalls,
+  feeExternalSwapQuote,
   tokensData,
   gasPaymentAllowanceData,
   forceExternalSwaps,
@@ -69,7 +70,8 @@ export function getRelayerFeeParams({
   relayerFeeTokenAddress: string;
   gasPaymentTokenAddress: string;
   internalSwapAmounts: SwapAmounts | undefined;
-  externalSwapQuote: ExternalSwapOutput | undefined;
+  batchExternalCalls: ExternalCallsPayload;
+  feeExternalSwapQuote: ExternalSwapOutput | undefined;
   tokensData: TokensData;
   gasPaymentAllowanceData: TokensAllowanceData;
   forceExternalSwaps: boolean | undefined;
@@ -80,14 +82,7 @@ export function getRelayerFeeParams({
   let externalSwapGasLimit = 0n;
 
   if (gasPaymentTokenAddress === relayerFeeTokenAddress) {
-    externalCalls = {
-      externalCallTargets: [],
-      externalCallDataList: [],
-      refundReceivers: [],
-      refundTokens: [],
-      sendTokens: [],
-      sendAmounts: [],
-    } as ExternalCallsPayload;
+    externalCalls = batchExternalCalls;
     feeParams = {
       feeToken: relayerFeeTokenAddress,
       feeAmount: totalNetworkFeeAmount,
@@ -95,7 +90,7 @@ export function getRelayerFeeParams({
     };
     gasPaymentTokenAmount = totalNetworkFeeAmount;
   } else if (
-    getIsInternalSwapBetter({ internalSwapAmounts, externalSwapQuote, forceExternalSwaps }) &&
+    getIsInternalSwapBetter({ internalSwapAmounts, externalSwapQuote: feeExternalSwapQuote, forceExternalSwaps }) &&
     internalSwapAmounts?.swapPathStats
   ) {
     feeParams = {
@@ -103,31 +98,25 @@ export function getRelayerFeeParams({
       feeAmount: internalSwapAmounts.amountIn,
       feeSwapPath: internalSwapAmounts.swapPathStats.swapPath,
     };
-    externalCalls = {
-      externalCallTargets: [],
-      externalCallDataList: [],
-      refundReceivers: [],
-      refundTokens: [],
-      sendTokens: [],
-      sendAmounts: [],
-    } as ExternalCallsPayload;
+    externalCalls = batchExternalCalls;
     totalNetworkFeeAmount = internalSwapAmounts.amountOut;
     gasPaymentTokenAmount = internalSwapAmounts.amountIn;
     gasPaymentTokenAddress = internalSwapAmounts.swapPathStats.tokenInAddress;
-  } else if (externalSwapQuote) {
-    externalCalls = getExternalCallsPayload({
+  } else if (feeExternalSwapQuote) {
+    const feeExternalCalls = getExternalCallsPayload({
       chainId,
       account,
-      quote: externalSwapQuote,
+      quote: feeExternalSwapQuote,
     });
+    externalCalls = combineExternalCalls([batchExternalCalls, feeExternalCalls]);
     feeParams = {
-      feeToken: externalSwapQuote.outTokenAddress, // final token
+      feeToken: feeExternalSwapQuote.outTokenAddress, // final token
       feeAmount: 0n, // fee already sent in external calls
       feeSwapPath: [],
     };
-    externalSwapGasLimit = externalSwapQuote.txnData.estimatedGas;
-    gasPaymentTokenAmount = externalSwapQuote.amountIn;
-    totalNetworkFeeAmount = externalSwapQuote.amountOut;
+    externalSwapGasLimit = feeExternalSwapQuote.txnData.estimatedGas;
+    gasPaymentTokenAmount = feeExternalSwapQuote.amountIn;
+    totalNetworkFeeAmount = feeExternalSwapQuote.amountOut;
   } else {
     return undefined;
   }

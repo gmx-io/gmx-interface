@@ -273,6 +273,7 @@ export type ExternalSwapOutput = {
     data: string;
     value: bigint;
     estimatedGas: bigint;
+    estimatedExecutionFee: bigint;
   };
 };
 
@@ -293,6 +294,7 @@ export type ExternalSwapQuote = {
     data: string;
     value: bigint;
     estimatedGas: bigint;
+    estimatedExecutionFee: bigint;
   };
 };
 

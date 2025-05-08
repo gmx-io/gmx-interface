@@ -100,6 +100,7 @@ export function useExternalSwapOutputRequest({
             data: result.data,
             value: result.value,
             estimatedGas: result.estimatedGas,
+            estimatedExecutionFee: result.estimatedGas * gasPrice,
           },
         };
 

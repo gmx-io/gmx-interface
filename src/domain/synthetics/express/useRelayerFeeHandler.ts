@@ -41,7 +41,7 @@ import { MarketsInfoData } from "sdk/types/markets";
 import { bigMath } from "sdk/utils/bigmath";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { applyFactor, BASIS_POINTS_DIVISOR_BIGINT, expandDecimals, USD_DECIMALS } from "sdk/utils/numbers";
-import { BatchOrderTxnParams, getTotalExecutionFeeForBatch } from "sdk/utils/orderTransactions";
+import { BatchOrderTxnParams, getBatchExternalCalls, getTotalExecutionFeeForBatch } from "sdk/utils/orderTransactions";
 
 import { ExpressParams, getRelayerFeeParams, OracleParamsPayload, RelayerFeeParams } from ".";
 import { estimateExpressBatchOrderGasLimit, L1ExpressOrderGasReference, useGasLimits } from "../fees";
@@ -285,7 +285,8 @@ export function useExpressOrdersParams({
         relayerFeeTokenAddress: p.relayerFeeToken.address,
         gasPaymentTokenAddress: p.gasPaymentToken.address,
         internalSwapAmounts: finalSwapAmounts,
-        externalSwapQuote: undefined,
+        batchExternalCalls: getBatchExternalCalls(p.orderParams),
+        feeExternalSwapQuote: undefined,
         tokensData: p.tokensData,
         gasPaymentAllowanceData: p.gasPaymentAllowance?.tokensAllowanceData,
         forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
@@ -464,7 +465,8 @@ export async function getApproximateEstimatedExpressParams({
       relayerFeeTokenAddress: relayerFeeToken.address,
       gasPaymentTokenAddress: gasPaymentToken.address,
       internalSwapAmounts: swapAmounts,
-      externalSwapQuote: undefined,
+      batchExternalCalls: getBatchExternalCalls(batchParams),
+      feeExternalSwapQuote: undefined,
       tokensData,
       gasPaymentAllowanceData,
       forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
@@ -534,7 +536,8 @@ export async function getApproximateEstimatedExpressParams({
       relayerFeeTokenAddress: relayerFeeToken.address,
       gasPaymentTokenAddress: gasPaymentToken.address,
       internalSwapAmounts: finalSwapAmounts,
-      externalSwapQuote: undefined,
+      batchExternalCalls: getBatchExternalCalls(batchParams),
+      feeExternalSwapQuote: undefined,
       tokensData,
       gasPaymentAllowanceData,
       forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,

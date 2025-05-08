@@ -422,6 +422,13 @@ export function getTotalExecutionFeeForBatch({
   for (const co of createOrderParams) {
     feeTokenAmount += co.orderPayload.numbers.executionFee;
     gasLimit += co.params.executionGasLimit;
+
+    const externalSwapQuote = (co.params as IncreasePositionOrderParams | SwapOrderParams).externalSwapQuote;
+
+    if (externalSwapQuote) {
+      feeTokenAmount += externalSwapQuote.txnData.estimatedExecutionFee;
+      gasLimit += externalSwapQuote.txnData.estimatedGas;
+    }
   }
 
   for (const uo of updateOrderParams) {
@@ -555,6 +562,18 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
   };
 }
 
+export function getBatchExternalCalls(batchParams: BatchOrderTxnParams): ExternalCallsPayload {
+  const externalCalls: ExternalCallsPayload[] = [];
+
+  for (const createOrderParams of batchParams.createOrderParams) {
+    if (createOrderParams.tokenTransfersParams?.externalCalls) {
+      externalCalls.push(createOrderParams.tokenTransfersParams.externalCalls);
+    }
+  }
+
+  return combineExternalCalls(externalCalls);
+}
+
 export function combineExternalCalls(externalCalls: ExternalCallsPayload[]): ExternalCallsPayload {
   const sendTokensMap: { [tokenAddress: string]: bigint } = {};
   const refundTokensMap: { [tokenAddress: string]: string } = {};
@@ -562,12 +581,12 @@ export function combineExternalCalls(externalCalls: ExternalCallsPayload[]): Ext
   const externalCallDataList: string[] = [];
 
   for (const call of externalCalls) {
-    for (const tokenAddress of call.sendTokens) {
-      sendTokensMap[tokenAddress] = (sendTokensMap[tokenAddress] ?? 0n) + call.sendAmounts[tokenAddress];
+    for (const [index, tokenAddress] of call.sendTokens.entries()) {
+      sendTokensMap[tokenAddress] = (sendTokensMap[tokenAddress] ?? 0n) + call.sendAmounts[index];
     }
 
-    for (const tokenAddress of call.refundTokens) {
-      refundTokensMap[tokenAddress] = call.refundReceivers[tokenAddress];
+    for (const [index, tokenAddress] of call.refundTokens.entries()) {
+      refundTokensMap[tokenAddress] = call.refundReceivers[index];
     }
 
     externalCallTargets.push(...call.externalCallTargets);
