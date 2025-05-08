@@ -15,12 +15,14 @@ import {
   OrderInfo,
   PositionOrderInfo,
   SwapOrderInfo,
+  TwapOrderInfo,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLimitOrderType,
   isLimitSwapOrderType,
   isStopIncreaseOrderType,
   isStopLossOrderType,
+  isTwapOrder,
 } from "domain/synthetics/orders";
 import { PositionsInfoData, getNameByOrderType } from "domain/synthetics/positions";
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
@@ -39,6 +41,7 @@ import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 
+import TwapOrdersList from "./TwapOrdersList/TwapOrdersList";
 import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
 
 import "./OrderItem.scss";
@@ -166,40 +169,53 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
       disableHandleStyle
       handle={<TitleWithIcon bordered order={order} />}
       position="bottom-start"
+      tooltipClassName={isTwapOrder(order) ? "!p-0" : undefined}
+      maxAllowedWidth={400}
       content={
-        <>
-          <StatsTooltipRow label={getCollateralLabel()} value={getCollateralText()} showDollar={false} />
+        isTwapOrder(order) ? (
+          <TwapOrdersList order={order} />
+        ) : (
+          <>
+            <StatsTooltipRow label={getCollateralLabel()} value={getCollateralText()} showDollar={false} />
 
-          {isCollateralSwap && (
-            <div className="OrderItem-tooltip-row">
-              <Trans>
-                {formatBalanceAmount(
-                  positionOrder.initialCollateralDeltaAmount,
-                  positionOrder.initialCollateralToken.decimals,
-                  positionOrder.initialCollateralToken[positionOrder.shouldUnwrapNativeToken ? "baseSymbol" : "symbol"]
-                )}{" "}
-                will be swapped to{" "}
-                {positionOrder.targetCollateralToken.isNative
-                  ? wrappedToken.symbol
-                  : positionOrder.targetCollateralToken.symbol}{" "}
-                on order execution.
-              </Trans>
-            </div>
-          )}
+            {isCollateralSwap && (
+              <div className="OrderItem-tooltip-row">
+                <Trans>
+                  {formatBalanceAmount(
+                    positionOrder.initialCollateralDeltaAmount,
+                    positionOrder.initialCollateralToken.decimals,
+                    positionOrder.initialCollateralToken[
+                      positionOrder.shouldUnwrapNativeToken ? "baseSymbol" : "symbol"
+                    ]
+                  )}{" "}
+                  will be swapped to{" "}
+                  {positionOrder.targetCollateralToken.isNative
+                    ? wrappedToken.symbol
+                    : positionOrder.targetCollateralToken.symbol}{" "}
+                  on order execution.
+                </Trans>
+              </div>
+            )}
 
-          {showDebugValues && (
-            <div className="OrderItem-tooltip-row">
-              <StatsTooltipRow
-                label={"Key"}
-                value={<div className="debug-key muted">{positionOrder.key}</div>}
-                showDollar={false}
-              />
-            </div>
-          )}
-        </>
+            {showDebugValues && (
+              <div className="OrderItem-tooltip-row">
+                <StatsTooltipRow
+                  label={"Key"}
+                  value={<div className="debug-key muted">{positionOrder.key}</div>}
+                  showDollar={false}
+                />
+              </div>
+            )}
+          </>
+        )
       }
     />
   );
+}
+
+export function TwapOrderProgress({ order, className }: { order: TwapOrderInfo; className?: string }) {
+  const content = ` (${order.numberOfParts - order.orders.length}/${order.numberOfParts})`;
+  return <span className={className}>{content}</span>;
 }
 
 export function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?: boolean }) {
@@ -212,19 +228,36 @@ export function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?
     const toTokenText = formatBalanceAmount(minOutputAmount, targetCollateralToken.decimals);
     const toTokenIcon = <TokenIcon symbol={targetCollateralToken.symbol} displaySize={18} importSize={24} />;
 
+    const handle = (
+      <span>
+        <Trans>
+          <span>{fromTokenText} </span>
+          {fromTokenIcon}
+          <span> to </span>
+          {isTwapOrder(order) ? null : <span>{toTokenText} </span>}
+          {toTokenIcon}
+          {isTwapOrder(order) ? <TwapOrderProgress order={order} className="text-slate-100" /> : null}
+        </Trans>
+      </span>
+    );
+
     return (
       <div
         className={cx("inline-flex flex-wrap gap-y-8 whitespace-pre-wrap", {
           "cursor-help *:border-b *:border-dashed *:border-b-gray-400": bordered,
         })}
       >
-        <Trans>
-          <span>{fromTokenText} </span>
-          {fromTokenIcon}
-          <span> to </span>
-          <span>{toTokenText} </span>
-          {toTokenIcon}
-        </Trans>
+        {isTwapOrder(order) ? (
+          <Tooltip
+            handle={handle}
+            position="bottom-start"
+            content={<TwapOrdersList order={order} />}
+            tooltipClassName="!p-0"
+            maxAllowedWidth={450}
+          />
+        ) : (
+          handle
+        )}
       </div>
     );
   }
@@ -240,7 +273,7 @@ export function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?
         "cursor-help border-b border-dashed border-b-gray-400": bordered,
       })}
     >
-      {sizeText}
+      {sizeText} {isTwapOrder(order) && <TwapOrderProgress order={order} className="text-slate-100" />}
     </span>
   );
 }
@@ -273,6 +306,23 @@ function MarkPrice({ order }: { order: OrderInfo }) {
       visualMultiplier: positionOrder.indexToken?.visualMultiplier,
     });
   }, [markPrice, priceDecimals, positionOrder.indexToken?.visualMultiplier]);
+
+  if (isTwapOrder(order)) {
+    const { markSwapRatioText } = getSwapRatioText(order);
+
+    return (
+      <Tooltip
+        handle={isLimitSwapOrderType(order.orderType) ? markSwapRatioText : markPriceFormatted}
+        position="bottom-end"
+        content={
+          <Trans>
+            Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and
+            no oracle reports are produced or if there is not enough available liquidity.
+          </Trans>
+        }
+      />
+    );
+  }
 
   if (isLimitSwapOrderType(order.orderType)) {
     const { markSwapRatioText } = getSwapRatioText(order);
@@ -310,6 +360,10 @@ function MarkPrice({ order }: { order: OrderInfo }) {
 }
 
 function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: boolean | undefined }) {
+  if (isTwapOrder(order)) {
+    return <Trans>N/A</Trans>;
+  }
+
   if (isLimitSwapOrderType(order.orderType)) {
     const swapOrder = order as SwapOrderInfo;
     const toAmount = swapOrder.minOutputAmount;
@@ -496,9 +550,11 @@ function OrderItemLarge({
       {!hideActions && (
         <TableTd>
           <div className="inline-flex items-center">
-            <button className="cursor-pointer p-6 text-slate-100 hover:text-white" onClick={setEditingOrderKey}>
-              <AiOutlineEdit title={t`Edit order`} fontSize={16} />
-            </button>
+            {!isTwapOrder(order) && (
+              <button className="cursor-pointer p-6 text-slate-100 hover:text-white" onClick={setEditingOrderKey}>
+                <AiOutlineEdit title={t`Edit order`} fontSize={16} />
+              </button>
+            )}
             {onCancelOrder && (
               <button
                 className="cursor-pointer p-6 text-slate-100 hover:text-white disabled:cursor-wait"
@@ -631,9 +687,11 @@ function OrderItemSmall({
         <div className="App-card-actions">
           <div className="App-card-divider"></div>
           <div className="remove-top-margin">
-            <Button variant="secondary" className="mr-15 mt-15" onClick={setEditingOrderKey}>
-              <Trans>Edit</Trans>
-            </Button>
+            {!isTwapOrder(order) && (
+              <Button variant="secondary" className="mr-15 mt-15" onClick={setEditingOrderKey}>
+                <Trans>Edit</Trans>
+              </Button>
+            )}
 
             {onCancelOrder && (
               <Button variant="secondary" className="mt-15" onClick={onCancelOrder}>
@@ -684,7 +742,7 @@ function getSwapRatioText(order: OrderInfo) {
 function OrderItemTypeLabel({ order }: { order: OrderInfo }) {
   const { errors, level } = useOrderErrors(order.key);
 
-  const handle = getNameByOrderType(order.orderType);
+  const handle = getNameByOrderType(order.orderType, order.isTwap);
 
   if (errors.length === 0) {
     return <>{handle}</>;

@@ -5,6 +5,7 @@ import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import { OrderInfo } from "sdk/types/orders";
 
 import { selectChainId } from "../selectors/globalSelectors";
 import {
@@ -30,7 +31,7 @@ export const useOrderErrorsByOrderKeyMap = () => useSelector(selectOrderErrorsBy
 
 export const useOrderErrorsCount = () => useSelector(selectOrderErrorsCount);
 
-export function useCancelOrder(orderKey: string) {
+export function useCancelOrder(order: OrderInfo) {
   const chainId = useSelector(selectChainId);
   const signer = useEthersSigner();
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
@@ -38,23 +39,23 @@ export function useCancelOrder(orderKey: string) {
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, 1);
   const subaccount = useSubaccount(null, 1);
 
-  const isCancelOrderProcessing = cancellingOrdersKeys.includes(orderKey);
+  const isCancelOrderProcessing = cancellingOrdersKeys.includes(order.key);
 
   const onCancelOrder = useCallback(
     function cancelOrder() {
       if (!signer) return;
 
-      setCancellingOrdersKeys((p) => uniq(p.concat(orderKey)));
+      setCancellingOrdersKeys((p) => uniq(p.concat(order.key)));
 
       cancelOrdersTxn(chainId, signer, subaccount, {
-        orderKeys: [orderKey],
+        orders: [order],
         setPendingTxns: setPendingTxns,
         detailsMsg: cancelOrdersDetailsMessage,
       }).finally(() => {
-        setCancellingOrdersKeys((prev) => prev.filter((k) => k !== orderKey));
+        setCancellingOrdersKeys((prev) => prev.filter((k) => k !== order.key));
       });
     },
-    [cancelOrdersDetailsMessage, chainId, orderKey, setCancellingOrdersKeys, setPendingTxns, signer, subaccount]
+    [cancelOrdersDetailsMessage, chainId, order, setCancellingOrdersKeys, setPendingTxns, signer, subaccount]
   );
 
   return [isCancelOrderProcessing, onCancelOrder] as const;

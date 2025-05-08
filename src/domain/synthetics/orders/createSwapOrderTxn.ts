@@ -78,6 +78,7 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     shouldUnwrapNativeToken: isNativeReceive,
     referralCode: p.referralCode,
     txnType: "create",
+    isTwap: false,
   };
 
   if (subaccount) {

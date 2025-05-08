@@ -42,7 +42,14 @@ export const formatSwapMessage = (
   const tokenIn = tradeAction.initialCollateralToken;
 
   const tokenOut = tradeAction.targetCollateralToken!;
-  const amountIn = tradeAction.initialCollateralDeltaAmount!;
+  let amountIn = tradeAction.initialCollateralDeltaAmount!;
+
+  if (
+    tradeAction.twapParams &&
+    (tradeAction.eventName === TradeActionType.OrderCreated || tradeAction.eventName === TradeActionType.OrderCancelled)
+  ) {
+    amountIn = amountIn * BigInt(tradeAction.twapParams.numberOfParts);
+  }
 
   const fromText = formatBalanceAmount(amountIn, tokenIn.decimals, tokenIn.symbol);
   const fromAmountText = formatBalanceAmount(amountIn, tokenIn.decimals);
@@ -100,14 +107,49 @@ export const formatSwapMessage = (
     tradeAction.swapPath
   );
 
-  let actionText = getActionTitle(tradeAction.orderType, tradeAction.eventName);
+  let actionText = getActionTitle(tradeAction.orderType, tradeAction.eventName, Boolean(tradeAction.twapParams));
 
   let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "timestampISO">;
 
   const ot = tradeAction.orderType;
   const ev = tradeAction.eventName;
 
-  if (
+  if (tradeAction.twapParams) {
+    if (ev === TradeActionType.OrderExecuted) {
+      const toExecutionText = formatBalanceAmount(
+        tradeAction.executionAmountOut!,
+        tokenOut?.decimals,
+        tokenOut?.symbol
+      );
+      const toExecutionAmountText = formatBalanceAmount(tradeAction.executionAmountOut!, tokenOut?.decimals);
+      result = {
+        price: executionRate,
+        priceComment: lines(t`Execution price for the order.`, "", infoRow(t`Order Acceptable Price`, t`N/A`)),
+        size: t`${fromText} to ${toExecutionText}`,
+        swapToTokenAmount: toExecutionAmountText,
+      };
+    } else {
+      const error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
+      const errorComment = error
+        ? lines({
+            text: getErrorTooltipTitle(error.name, false),
+            state: "error",
+          })
+        : undefined;
+
+      const errorActionComment =
+        ev === TradeActionType.OrderFrozen || ev === TradeActionType.OrderCancelled ? errorComment : undefined;
+
+      result = {
+        price: t`N/A`,
+        priceComment: null,
+        size: t`${fromText} to `,
+        swapToTokenAmount: "",
+        actionComment: errorActionComment,
+        isActionError: Boolean(errorActionComment),
+      };
+    }
+  } else if (
     (ot === OrderType.LimitSwap && ev === TradeActionType.OrderCreated) ||
     (ot === OrderType.LimitSwap && ev === TradeActionType.OrderUpdated) ||
     (ot === OrderType.LimitSwap && ev === TradeActionType.OrderCancelled)

@@ -316,8 +316,16 @@ export function formatEstimatedLiquidationTime(hours?: number | undefined) {
   return `${days} days`;
 }
 
-export function getNameByOrderType(orderType: OrderType | undefined, opts: { abbr?: boolean; lower?: boolean } = {}) {
+export function getNameByOrderType(
+  orderType: OrderType | undefined,
+  isTwap: boolean,
+  opts: { abbr?: boolean; lower?: boolean } = {}
+) {
   const { abbr, lower } = opts;
+
+  if (isTwap) {
+    return t`TWAP`;
+  }
 
   if (orderType === OrderType.LimitDecrease) {
     if (abbr) {

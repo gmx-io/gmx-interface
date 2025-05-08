@@ -1,7 +1,7 @@
 import { i18n, type MessageDescriptor } from "@lingui/core";
 import { msg, t } from "@lingui/macro";
 
-import { isLimitOrderType, OrderType } from "domain/synthetics/orders";
+import { isLimitOrderType, isSwapOrderType, OrderType } from "domain/synthetics/orders";
 import { getNameByOrderType } from "domain/synthetics/positions";
 import type { TradeActionType } from "domain/synthetics/tradeHistory";
 import { mustNeverExist } from "lib/types";
@@ -11,7 +11,7 @@ import { getOrderActionText } from "./TradeHistoryRow/utils/shared";
 type OrderTypes = keyof typeof OrderType;
 
 export const actionTextMapBase: Partial<
-  Record<`${OrderTypes | "Deposit" | "Withdraw"}-${TradeActionType}`, MessageDescriptor>
+  Record<`${OrderTypes | "Deposit" | "Withdraw" | "Twap" | "TwapSwap"}-${TradeActionType}`, MessageDescriptor>
 > = {
   "MarketSwap-OrderCreated": msg`Request Market Swap`,
   "MarketSwap-OrderExecuted": msg`Execute Market Swap`,
@@ -22,6 +22,18 @@ export const actionTextMapBase: Partial<
   "LimitSwap-OrderCancelled": msg`Cancel Limit Swap`,
   "LimitSwap-OrderUpdated": msg`Update Limit Swap`,
   "LimitSwap-OrderFrozen": msg`Failed Limit Swap`,
+
+  "Twap-OrderCreated": msg`Create TWAP`,
+  "Twap-OrderExecuted": msg`Execute TWAP Part`,
+  "Twap-OrderCancelled": msg`Cancel TWAP`,
+  "Twap-OrderUpdated": msg`Update TWAP Part`,
+  "Twap-OrderFrozen": msg`Failed TWAP Part`,
+
+  "TwapSwap-OrderCreated": msg`Create TWAP Swap`,
+  "TwapSwap-OrderExecuted": msg`Execute TWAP Swap Part`,
+  "TwapSwap-OrderCancelled": msg`Cancel TWAP Swap`,
+  "TwapSwap-OrderUpdated": msg`Update TWAP Swap Part`,
+  "TwapSwap-OrderFrozen": msg`Failed TWAP Swap Part`,
 
   "MarketIncrease-OrderCreated": msg`Request Market Increase`,
   "MarketIncrease-OrderExecuted": msg`Market Increase`,
@@ -59,7 +71,7 @@ export const actionTextMapBase: Partial<
 };
 
 export const actionTextMap: Partial<
-  Record<`${OrderTypes | "Deposit" | "Withdraw"}-${TradeActionType}`, MessageDescriptor>
+  Record<`${OrderTypes | "Deposit" | "Withdraw" | "Twap" | "TwapSwap"}-${TradeActionType}`, MessageDescriptor>
 > = {
   ...actionTextMapBase,
 
@@ -97,14 +109,17 @@ export function orderTypeToKey(orderType: OrderType): keyof typeof OrderType {
   }
 }
 
-export function getActionTitle(orderType: OrderType, eventName: TradeActionType) {
-  const title = actionTextMap[`${orderTypeToKey(orderType)}-${eventName}`];
+export function getActionTitle(orderType: OrderType, eventName: TradeActionType, isTwap: boolean) {
+  const key = isTwap
+    ? `Twap${isSwapOrderType(orderType) ? "Swap" : ""}-${eventName}`
+    : `${orderTypeToKey(orderType)}-${eventName}`;
+  const title = actionTextMap[key];
 
   if (title) {
     return i18n._(title);
   }
 
-  const fallbackOrderTypeName = isLimitOrderType(orderType) ? t`Limit` : getNameByOrderType(orderType);
+  const fallbackOrderTypeName = isLimitOrderType(orderType) ? t`Limit` : getNameByOrderType(orderType, isTwap);
 
   return `${getOrderActionText(eventName)} ${fallbackOrderTypeName}`;
 }

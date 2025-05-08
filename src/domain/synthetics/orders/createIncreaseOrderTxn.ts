@@ -71,6 +71,7 @@ type SecondaryOrderCommonParams = {
   orderType: OrderType;
   sizeDeltaUsd: bigint;
   initialCollateralDeltaAmount: bigint;
+  isTwap?: false;
 };
 
 export type SecondaryDecreaseOrderParams = BaseDecreaseOrderParams & SecondaryOrderCommonParams;
@@ -150,6 +151,7 @@ export async function createIncreaseOrderTxn({
     orderType: p.orderType,
     shouldUnwrapNativeToken: isNativePayment,
     txnType: "create",
+    isTwap: false,
   };
 
   const encodedPayload = await createEncodedPayload({

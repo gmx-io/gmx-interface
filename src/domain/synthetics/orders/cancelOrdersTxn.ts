@@ -6,11 +6,13 @@ import { getContract } from "config/contracts";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { callContract } from "lib/contracts";
 import { abis } from "sdk/abis";
+import { isTwapOrder } from "sdk/utils/orders";
 
+import { OrderParams } from "./types";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 
 export type CancelOrderParams = {
-  orderKeys: string[];
+  orders: OrderParams[];
   setPendingTxns: (txns: any) => void;
   detailsMsg?: ReactNode;
 };
@@ -20,9 +22,11 @@ export async function cancelOrdersTxn(chainId: number, signer: Signer, subaccoun
     ? getSubaccountRouterContract(chainId, subaccount.signer)
     : new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
 
-  const multicall = createCancelEncodedPayload({ router, orderKeys: p.orderKeys });
+  const orderKeys = p.orders.flatMap((o) => (isTwapOrder(o) ? o.orders.map((o) => o.key as string) : o.key));
 
-  const count = p.orderKeys.length;
+  const multicall = createCancelEncodedPayload({ router, orderKeys });
+
+  const count = p.orders.length;
 
   const ordersText = plural(count, {
     one: "Order",

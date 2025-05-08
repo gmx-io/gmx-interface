@@ -126,6 +126,10 @@ msgstr ""
 msgid "GMX is currently live on Arbitrum and Avalanche."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Create TWAP Swap"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.jsx
 msgid "Max Pool Capacity"
 msgstr ""
@@ -216,6 +220,10 @@ msgstr ""
 msgid "Total size"
 msgstr ""
 
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if there is not enough available liquidity."
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/SwapBox.jsx
 msgid "Enable leverage sent."
@@ -227,6 +235,10 @@ msgstr ""
 
 #: src/components/MintableAmount/MintableAmount.tsx
 msgid "{0} can be used to buy GM for this market up to the specified buying caps."
+msgstr ""
+
+#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High TWAP Network Fee"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
@@ -285,6 +297,10 @@ msgstr ""
 
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "TWAP Number of Parts"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -369,6 +385,10 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
+msgstr ""
+
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "Swap TWAP: Swap tokens in evenly distributed parts over a specified time."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
@@ -494,6 +514,14 @@ msgstr ""
 msgid "Realized PnL"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+#~ msgid "{txnTypeText} TWAP order for"
+#~ msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+#~ msgid "{hours} hours"
+#~ msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX V2 Data Analytics within Telegram"
 msgstr ""
@@ -522,6 +550,10 @@ msgstr ""
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Stats"
 msgstr ""
+
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#~ msgid "Swap tokens at the current market price."
+#~ msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -647,6 +679,10 @@ msgstr ""
 msgid "Edit Collateral"
 msgstr ""
 
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Long Stop Market: {0} a short position when the price is below the trigger price."
+msgstr ""
+
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/sidecarOrders/utils.ts
@@ -718,6 +754,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{0} <0/><1> to </1>{1} <2/>"
+msgstr ""
+
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Short Market: {0} a short position at the current price."
 msgstr ""
 
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -801,10 +841,6 @@ msgstr ""
 msgid "The order could not be updated"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-msgid "Short Stop Market: Increase a short position when the price is below the trigger price."
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Cross-chain one-click deposits into GM"
 msgstr ""
@@ -863,6 +899,10 @@ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Slippage should be less than -5%"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
+msgid "Acceptable Swap Impact"
 msgstr ""
 
 #: src/components/NpsModal/NpsModal.tsx
@@ -939,6 +979,10 @@ msgstr ""
 
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Deposited"
+msgstr ""
+
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "Swap Limit: Swap tokens when the trigger price is reached."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
@@ -1193,10 +1237,6 @@ msgstr ""
 msgid "Request Withdraw"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-msgid "Long Market: Increase a long position at the current price."
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "1inch"
 msgstr ""
@@ -1343,6 +1383,10 @@ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Withdrawing {0} to Main Account"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "TWAP Swap"
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
@@ -1610,6 +1654,7 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the order."
 msgstr ""
 
@@ -1618,10 +1663,6 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "Net Value"
-msgstr ""
-
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-msgid "Short TP/SL: Decrease a short position when the trigger price is reached."
 msgstr ""
 
 #: src/components/MarketSelector/MarketSelector.tsx
@@ -1647,6 +1688,10 @@ msgstr ""
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
 msgid "Borrow Fee / Day"
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP_NUMBER_OF_PARTS}"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -1679,6 +1724,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Optimizations"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Receive (Approximate)"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -1726,10 +1775,6 @@ msgstr ""
 
 #: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High Swap Profit Fee"
-msgstr ""
-
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-msgid "Long Stop Market: Increase a long position when the price is above the trigger price."
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -1780,6 +1825,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Global Leaderboard"
+msgstr ""
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min size per part: {0}"
 msgstr ""
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -1989,10 +2038,6 @@ msgstr ""
 msgid "GM Pools"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-msgid "Long Limit: Increase a long position when the price is below the trigger price."
-msgstr ""
-
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity."
 msgstr ""
@@ -2150,6 +2195,10 @@ msgstr ""
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+#~ msgid "TWAP Orders"
+#~ msgstr ""
+
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Claim Funding Fees"
@@ -2183,6 +2232,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "Winner:"
 msgstr ""
+
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#~ msgid "{tradeTypeLabel} a {positionLabel} position at the current price."
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -2299,10 +2352,6 @@ msgstr ""
 msgid "Trading Volume"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-msgid "Short Market: Increase a short position at the current price."
-msgstr ""
-
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing limit order in the {0} market pool but it lacks liquidity for this order."
 msgstr ""
@@ -2375,8 +2424,16 @@ msgstr ""
 msgid "The order will not be executed as its trigger price is beyond the position's liquidation price."
 msgstr ""
 
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#~ msgid "Swap tokens in evenly distributed parts over a specified time."
+#~ msgstr ""
+
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Failed to cancel {ordersText}"
+msgstr ""
+
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
 msgstr ""
 
 #: src/lib/contracts/transactionErrors.tsx
@@ -2443,6 +2500,12 @@ msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Borrow Fee Rate"
+msgstr ""
+
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max number of parts: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgstr ""
 
 #: src/components/Header/AppHeaderUser.tsx
@@ -2527,6 +2590,10 @@ msgstr ""
 msgid "GMX V1 Actions"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Execute TWAP Part"
+msgstr ""
+
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap Profit Fee"
 msgstr ""
@@ -2538,6 +2605,10 @@ msgstr ""
 #: src/pages/Jobs/Jobs.jsx
 msgid "Job openings at GMX."
 msgstr ""
+
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#~ msgid "Swap tokens when the price is below the trigger price."
+#~ msgstr ""
 
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -2695,6 +2766,10 @@ msgstr ""
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+#~ msgid "Failed TWAP part"
+#~ msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Returned Collateral"
 msgstr ""
@@ -2702,6 +2777,10 @@ msgstr ""
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
 msgstr ""
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+#~ msgid "Failed TWAP Swap part"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "There are issues in the TP/SL orders."
@@ -2783,8 +2862,16 @@ msgstr ""
 msgid "Settle"
 msgstr ""
 
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Short TWAP: {0} a short position in evenly distributed parts over a specified time."
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the swap when the min. receive conditions are met."
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "{fromText} to"
 msgstr ""
 
 #: src/components/Exchange/PositionDropdown.tsx
@@ -2841,6 +2928,11 @@ msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "This swap is routed through several GM pools for the lowest possible fees and price impact."
+msgstr ""
+
+#: src/components/Synthetics/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+#: src/components/Synthetics/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+msgid "{0}"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
@@ -2904,6 +2996,10 @@ msgstr ""
 msgid "Stake"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+#~ msgid "Update TWAP part"
+#~ msgstr ""
+
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Help us improve"
 msgstr ""
@@ -2929,16 +3025,16 @@ msgstr ""
 msgid "Update Order"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Cancel TWAP"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the liquidation."
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
-msgstr ""
-
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-msgid "Long TP/SL: Decrease a long position when the trigger price is reached."
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
@@ -3124,6 +3220,10 @@ msgstr ""
 msgid "Lev."
 msgstr ""
 
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#~ msgid "{tradeTypeLabel} a {positionLabel} position when the trigger price is reached."
+#~ msgstr ""
+
 #: src/pages/Earn/StakeModal.tsx
 msgid "Stake failed."
 msgstr ""
@@ -3212,6 +3312,10 @@ msgstr ""
 msgid "Accrued Positive Funding Fee"
 msgstr ""
 
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
+#~ msgid "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} each over the next {2} for the {3} pool."
+#~ msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from Affiliate Vesting Vault"
 msgstr ""
@@ -3251,6 +3355,8 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -3376,6 +3482,15 @@ msgstr ""
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
 msgstr ""
 
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
+#: src/domain/synthetics/positions/utils.ts
+msgid "TWAP"
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Updating Order..."
@@ -3474,6 +3589,10 @@ msgstr ""
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee."
 msgstr ""
 
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Short TP/SL: {0} a short position when the trigger price is reached."
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Community-led Telegram groups."
 msgstr ""
@@ -3558,6 +3677,10 @@ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"<0>Top-up</0>\" field to increase the Subaccount Balance."
+msgstr ""
+
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
+msgid "<0>every</0> {hours} hours{0}"
 msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
@@ -3736,6 +3859,10 @@ msgstr ""
 msgid "BUYABLE"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Create TWAP"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Enabling Leverage"
 msgstr ""
@@ -3802,6 +3929,10 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Buy GLV"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Failed TWAP Part"
 msgstr ""
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
@@ -3871,12 +4002,14 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
@@ -3884,6 +4017,10 @@ msgstr ""
 #: src/pages/Dashboard/WeightText.tsx
 msgid "Read more"
 msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+#~ msgid "{0} days"
+#~ msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "This Year"
@@ -4030,6 +4167,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "PnL ($)"
 msgstr ""
+
+#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+#~ msgid "TWAP Swaps"
+#~ msgstr ""
 
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "GMX Market Tokens"
@@ -4192,6 +4333,10 @@ msgstr ""
 msgid "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 msgstr ""
 
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on 1inch.</4>"
 msgstr ""
@@ -4217,6 +4362,7 @@ msgstr ""
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4292,6 +4438,10 @@ msgstr ""
 msgid "Creating Order..."
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+#~ msgid "{hours} hours and {minutes} minutes"
+#~ msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Deposit disabled, pending {0} upgrade"
 msgstr ""
@@ -4345,6 +4495,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Close submitted!"
+msgstr ""
+
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
+msgid "Hour(s)"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4614,12 +4768,20 @@ msgstr ""
 msgid "Voting"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+#~ msgid "Update TWAP Swap part"
+#~ msgstr ""
+
 #: src/components/Exchange/TradeHistory.jsx
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr ""
 
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
 msgid "<0>Switch to:</0>"
+msgstr ""
+
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price."
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
@@ -4636,6 +4798,7 @@ msgstr ""
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Exchange/TradeHistory.jsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Decrease"
@@ -4743,6 +4906,10 @@ msgstr ""
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 msgstr ""
 
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Long TWAP: {0} a long position in evenly distributed parts over a specified time."
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code updated!"
 msgstr ""
@@ -4802,6 +4969,10 @@ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Select your vesting option below then click \"Claim\"."
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
 msgstr ""
 
 #: src/pages/Home/Home.tsx
@@ -4903,6 +5074,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
+msgstr ""
+
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "Swap Market: Swap tokens at the current market price."
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/OneClickTradingInfo.tsx
@@ -5083,6 +5258,7 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Execution price for the order."
 msgstr ""
 
@@ -5092,6 +5268,14 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram Group"
+msgstr ""
+
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Long TP/SL: {0} a long position when the trigger price is reached."
+msgstr ""
+
+#: src/components/Synthetics/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{toTokenIcon}"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
@@ -5165,6 +5349,10 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Min residual collateral: 10 USD"
 msgstr ""
+
+#: src/domain/synthetics/positions/utils.ts
+#~ msgid "twap"
+#~ msgstr ""
 
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "GMX & Voting Power"
@@ -5245,6 +5433,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Cancel TWAP Swap"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -5414,6 +5606,10 @@ msgstr ""
 msgid "GMX Trading Chat"
 msgstr ""
 
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#~ msgid "{tradeTypeLabel} a {positionLabel} position in evenly distributed parts over a specified time."
+#~ msgstr ""
+
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H%"
 msgstr ""
@@ -5445,10 +5641,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 msgid "Available"
-msgstr ""
-
-#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
-msgid "Short Limit: Increase a short position when the price is above the trigger price."
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
@@ -5530,6 +5722,14 @@ msgstr ""
 msgid "Order cancelled."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Execute TWAP Swap Part"
+msgstr ""
+
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
+msgid "<0>every</0> {seconds} seconds"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer AVAX to Avalanche"
 msgstr ""
@@ -5567,6 +5767,11 @@ msgstr ""
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
 msgstr ""
+
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#~ msgid "Swap tokens when the trigger price is reached."
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order created!"
@@ -5694,6 +5899,7 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order Trigger Price"
 msgstr ""
 
@@ -5729,6 +5935,10 @@ msgstr ""
 
 #: src/pages/Dashboard/GlpCard.tsx
 msgid "Stablecoin Percentage"
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Parts of this order will be executed once there is sufficient liquidity."
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
@@ -5856,6 +6066,16 @@ msgstr ""
 msgid "Max {0} long exceeded"
 msgstr ""
 
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "N/A"
+msgstr ""
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Stop Market price is below mark price"
 msgstr ""
@@ -5929,6 +6149,10 @@ msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "The order's acceptable price includes the set acceptable price impact. The execution price must meet this condition for the order to be executed."
+msgstr ""
+
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
+msgid "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} each over the next {2} for the {3} market."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
@@ -6045,6 +6269,7 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toExecutionText}"
 msgstr ""
 
@@ -6079,6 +6304,10 @@ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Select an option"
+msgstr ""
+
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
+msgid "less than a minute"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
@@ -6133,6 +6362,10 @@ msgstr ""
 msgid "Amount"
 msgstr ""
 
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#~ msgid "{0}{fromTokenIcon}<0> to </0>{1}{toTokenIcon}"
+#~ msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} Available Liquidity. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
 msgstr ""
@@ -6184,6 +6417,7 @@ msgstr ""
 msgid "GMX {versionName} Account"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6377,6 +6611,10 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Insufficient GLP balance"
+msgstr ""
+
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
+msgid "Minute(s)"
 msgstr ""
 
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -6707,6 +6945,10 @@ msgstr ""
 msgid "V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually."
 msgstr ""
 
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
+msgid "Duration"
+msgstr ""
+
 #: src/components/Common/SEO.tsx
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet on Arbitrum and Avalanche."
 msgstr ""
@@ -6749,8 +6991,16 @@ msgstr ""
 msgid "What areas can we improve to make your experience better?"
 msgstr ""
 
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Long Market: {0} a long position at the current price."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a collateral"
+msgstr ""
+
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
+msgid "Size per part"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
@@ -7059,6 +7309,12 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
+msgstr ""
+
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min number of parts: {MIN_TWAP_NUMBER_OF_PARTS}"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
@@ -7400,6 +7656,7 @@ msgstr ""
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Exchange/TradeHistory.jsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Increase"
@@ -7452,9 +7709,17 @@ msgstr ""
 msgid "{ordersText} cancelled"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/components/TwapRows.tsx
+#~ msgid "{minutes} minutes"
+#~ msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "take profit"
 msgstr ""
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+#~ msgid "Execute TWAP part"
+#~ msgstr ""
 
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Force External Swaps"
@@ -7664,6 +7929,10 @@ msgstr ""
 msgid "Take Profit and Stop Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Failed TWAP Swap Part"
+msgstr ""
+
 #: src/domain/synthetics/orders/updateOrderTxn.ts
 msgid "Failed to update order"
 msgstr ""
@@ -7761,6 +8030,10 @@ msgstr ""
 msgid "Vested GLP not withdrawn"
 msgstr ""
 
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
+msgid "<0>every</0> {minutes} minutes{0}"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
@@ -7845,6 +8118,10 @@ msgstr ""
 #: src/components/Exchange/UsefulLinks.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Leaderboard"
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "There may not be enough liquidity to execute parts of this order when the time conditions are met."
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -8057,7 +8334,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
-#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
@@ -8078,6 +8354,10 @@ msgstr ""
 msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {nonTakenNetworkNames}."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#~ msgid "{fromText} to {swapToTokenAmount}"
+#~ msgstr ""
+
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Deposit {0} USD into {1} {longOrShortText}"
 msgstr ""
@@ -8085,6 +8365,11 @@ msgstr ""
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Distribution"
 msgstr ""
+
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
+#~ msgid "{tradeTypeLabel} a {positionLabel} position when the price is below the trigger price."
+#~ msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Language"
@@ -8172,6 +8457,10 @@ msgstr ""
 msgid "Dashboards"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Create TWAP {0} order"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover collateral below {0} USD"
 msgstr ""
@@ -8248,8 +8537,8 @@ msgstr ""
 msgid "Total Stats"
 msgstr ""
 
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
+msgid "Frequency"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
@@ -8375,6 +8664,7 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order Execution Price"
 msgstr ""
 
@@ -8403,6 +8693,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Deposit not enough to cover fees"
+msgstr ""
+
+#: src/components/Synthetics/TwapRows/TwapRows.tsx
+msgid "Number of Parts"
 msgstr ""
 
 #: src/pages/Earn/EarnV1.jsx
@@ -8435,6 +8729,7 @@ msgstr ""
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/components/Synthetics/TradeHistory/keys.ts
@@ -8462,6 +8757,10 @@ msgstr ""
 msgid "limit"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+#~ msgid "Execute TWAP Swap part"
+#~ msgstr ""
+
 #: src/components/Exchange/OrdersToa.jsx
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
 msgstr ""
@@ -8488,6 +8787,7 @@ msgstr ""
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Close"
 msgstr ""
 
@@ -8541,6 +8841,14 @@ msgstr ""
 msgid "Decentralized Options Protocol"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Update TWAP Swap Part"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Update TWAP Part"
+msgstr ""
+
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 msgid "Complete Account Transfer"
@@ -8556,6 +8864,10 @@ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Pending Transfer Approval"
+msgstr ""
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
 msgstr ""
 
 #: src/components/DepthChart/DepthChart.tsx

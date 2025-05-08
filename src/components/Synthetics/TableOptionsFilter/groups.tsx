@@ -83,15 +83,17 @@ function GroupComponent<T>({
       ) : (
         <div className="TableOptionsFilter-group-name">{group.groupName}</div>
       )}
-      {group.items.map((pair) => (
-        <ItemComponentWrapperMemo
-          key={pair.text}
-          item={pair}
-          onTogglePair={onTogglePair}
-          getIsSelected={getIsSelected}
-          ItemComponent={ItemComponent}
-        />
-      ))}
+      {group.items
+        .filter((item) => !item.hidden)
+        .map((pair) => (
+          <ItemComponentWrapperMemo
+            key={pair.text}
+            item={pair}
+            onTogglePair={onTogglePair}
+            getIsSelected={getIsSelected}
+            ItemComponent={ItemComponent}
+          />
+        ))}
     </div>
   );
 }

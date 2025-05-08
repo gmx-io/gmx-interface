@@ -147,6 +147,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
           skipSimulation: true,
           autoCancel: false,
           slippageInputId: undefined,
+          isTwap: false,
         };
       }),
       {

@@ -123,6 +123,7 @@ export function PositionEditor() {
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
     tradeFlags: getTradeFlagsForCollateralEdit(position?.isLong, isDeposit),
+    payUsd: collateralDeltaUsd,
   });
 
   const { nextLiqPrice, receiveUsd, receiveAmount } = usePositionEditorData({
