@@ -7,7 +7,6 @@ import {
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxDefaultAllowedSwapSlippageBps,
   selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
-  selectTradeboxExecutionFee,
   selectTradeboxExecutionPrice,
   selectTradeboxFees,
   selectTradeboxIncreasePositionAmounts,
@@ -32,6 +31,7 @@ import { RelayerFeeParams } from "domain/synthetics/express";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { formatUsd } from "lib/numbers";
+import { ExecutionFee } from "sdk/types/fees";
 import { isStopIncreaseOrderType } from "sdk/utils/orders";
 import { applySlippageToPrice } from "sdk/utils/trade";
 
@@ -190,9 +190,11 @@ function DecreaseOrderRow() {
 export function TradeBoxAdvancedGroups({
   slippageInputId,
   relayerFeeParams,
+  totalExecutionFee,
 }: {
   slippageInputId: string;
   relayerFeeParams?: RelayerFeeParams;
+  totalExecutionFee?: ExecutionFee;
 }) {
   const options = useSelector(selectTradeboxAdvancedOptions);
   const setOptions = useSelector(selectTradeboxSetAdvancedOptions);
@@ -203,7 +205,6 @@ export function TradeBoxAdvancedGroups({
 
   const fees = useSelector(selectTradeboxFees);
   const feesType = useSelector(selectTradeboxTradeFeesType);
-  const executionFee = useSelector(selectTradeboxExecutionFee);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const limitPrice = useSelector(selectTradeboxTriggerPrice);
@@ -290,7 +291,7 @@ export function TradeBoxAdvancedGroups({
       {isIncrease && !isTwap && <IncreaseOrderRow />}
       {isTrigger && <DecreaseOrderRow />}
       <TradeFeesRow {...fees} feesType={feesType} />
-      <NetworkFeeRow executionFee={executionFee} relayerFeeParams={relayerFeeParams} />
+      <NetworkFeeRow executionFee={totalExecutionFee} relayerFeeParams={relayerFeeParams} />
 
       {isTwap && isSwap ? (
         <SyntheticsInfoRow label={<Trans>Acceptable Swap Impact</Trans>} value={<Trans>N/A</Trans>} />

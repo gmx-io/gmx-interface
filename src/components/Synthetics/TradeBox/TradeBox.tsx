@@ -1056,6 +1056,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           <TradeBoxAdvancedGroups
             slippageInputId={submitButtonState.slippageInputId}
             relayerFeeParams={submitButtonState.expressParams?.relayFeeParams}
+            totalExecutionFee={submitButtonState.totalExecutionFee}
           />
         </div>
       </form>

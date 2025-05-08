@@ -9,7 +9,7 @@ import {
   PendingPositionUpdate,
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
-import { selectOrdersInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectOrdersInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsPossibleExternalSwapError } from "domain/synthetics/externalSwaps/utils";
 import { getPositionKey } from "domain/synthetics/positions/utils";
@@ -59,6 +59,7 @@ export function useOrderTxnCallbacks() {
   const { chainId } = useChainId();
   const { showDebugValues, setIsSettingsVisible } = useSettings();
   const ordersInfoData = useSelector(selectOrdersInfoData);
+  const tokensData = useSelector(selectTokensData);
 
   const batchTxnCallback = useCallback(
     (ctx: CallbackUiCtx, e: TxnEvent<BatchOrderTxnCtx>) => {
@@ -144,9 +145,13 @@ export function useOrderTxnCallbacks() {
             );
 
           if (!isSubaccount) {
-            const { totalExecutionFeeAmount, totalExecutionGasLimit } = getTotalExecutionFeeForBatch(
-              e.data.batchParams
-            );
+            const totalExecutionFee = tokensData
+              ? getTotalExecutionFeeForBatch({
+                  batchParams: e.data.batchParams,
+                  chainId,
+                  tokensData,
+                })
+              : undefined;
 
             if (mainActionType === "create") {
               if (pendingOrders.length > 0) {
@@ -210,10 +215,12 @@ export function useOrderTxnCallbacks() {
                 hash: e.data.txnHash,
                 message: successMessage,
                 metricId: ctx.metricId,
-                data: {
-                  estimatedExecutionFee: totalExecutionFeeAmount,
-                  estimatedExecutionGasLimit: totalExecutionGasLimit,
-                },
+                data: totalExecutionFee
+                  ? {
+                      estimatedExecutionFee: totalExecutionFee.feeTokenAmount,
+                      estimatedExecutionGasLimit: totalExecutionFee.gasLimit,
+                    }
+                  : undefined,
               };
 
               setPendingTxns((txns) => [...txns, pendingTxn]);
@@ -279,6 +286,7 @@ export function useOrderTxnCallbacks() {
       setPendingPosition,
       setPendingTxns,
       showDebugValues,
+      tokensData,
     ]
   );
 

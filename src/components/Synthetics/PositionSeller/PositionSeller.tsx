@@ -356,6 +356,7 @@ export function PositionSeller() {
     isLoading: isExpressLoading,
   } = useExpressOrdersParams({
     orderParams: batchParams,
+    totalExecutionFee: isTwap ? executionFee?.feeTokenAmount : undefined,
   });
 
   if (expressParams && showDebugValues) {

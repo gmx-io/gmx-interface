@@ -2,16 +2,19 @@ import { encodeFunctionData, zeroAddress, zeroHash } from "viem";
 
 import ExchangeRouterAbi from "abis/ExchangeRouter.json";
 import ERC20ABI from "abis/Token.json";
+import { getExcessiveExecutionFee, getHighExecutionFee } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { convertTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { ExecutionFee } from "types/fees";
 import { DecreasePositionSwapType, OrderType } from "types/orders";
-import { ContractPrice, ERC20Address } from "types/tokens";
+import { ContractPrice, ERC20Address, TokensData } from "types/tokens";
 import { ExternalSwapOutput } from "types/trade";
 import { TwapOrderParams } from "types/twap";
 
-import { MaxUint256 } from "./numbers";
+import { expandDecimals, MaxUint256, USD_DECIMALS } from "./numbers";
+import { getByKey } from "./objects";
 import { isIncreaseOrderType, isSwapOrderType } from "./orders";
-import { convertToContractPrice } from "./tokens";
+import { convertToContractPrice, convertToUsd } from "./tokens";
 import { applySlippageToMinOut, applySlippageToPrice } from "./trade";
 import { getTwapValidFromTime } from "./twap";
 import { createTwapUiFeeReceiver } from "./twap/uiFeeReceiver";
@@ -399,25 +402,44 @@ export function buildUpdateOrderPayload(p: UpdateOrderParams): UpdateOrderTxnPar
 }
 
 export function getTotalExecutionFeeForBatch({
-  createOrderParams,
-  updateOrderParams,
+  batchParams: { createOrderParams, updateOrderParams },
+  tokensData,
+  chainId,
 }: {
-  createOrderParams: CreateOrderTxnParams<any>[];
-  updateOrderParams: UpdateOrderTxnParams[];
-}) {
-  let totalExecutionFeeAmount = 0n;
-  let totalExecutionGasLimit = 0n;
+  batchParams: BatchOrderTxnParams;
+  tokensData: TokensData;
+  chainId: number;
+}): ExecutionFee | undefined {
+  let feeTokenAmount = 0n;
+  let gasLimit = 0n;
+
+  const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
+
+  if (!nativeToken) {
+    return undefined;
+  }
 
   for (const co of createOrderParams) {
-    totalExecutionFeeAmount += co.orderPayload.numbers.executionFee;
-    totalExecutionGasLimit += co.params.executionGasLimit;
+    feeTokenAmount += co.orderPayload.numbers.executionFee;
+    gasLimit += co.params.executionGasLimit;
   }
 
   for (const uo of updateOrderParams) {
-    totalExecutionFeeAmount += uo.params.executionFeeTopUp;
+    feeTokenAmount += uo.params.executionFeeTopUp;
   }
 
-  return { totalExecutionFeeAmount, totalExecutionGasLimit };
+  const feeUsd = convertToUsd(feeTokenAmount, nativeToken.decimals, nativeToken.prices.minPrice)!;
+  const isFeeHigh = feeUsd > expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS);
+  const isFeeVeryHigh = feeUsd > expandDecimals(getExcessiveExecutionFee(chainId), USD_DECIMALS);
+
+  return {
+    feeTokenAmount,
+    gasLimit,
+    feeUsd,
+    feeToken: nativeToken,
+    isFeeHigh,
+    isFeeVeryHigh,
+  };
 }
 
 export function buildTokenTransfersParamsForDecrease({

@@ -41,7 +41,6 @@ import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwr
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage } from "domain/synthetics/positions/utils";
-import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { throttleLog } from "lib/logging";
@@ -55,7 +54,7 @@ import {
 import { getByKey } from "lib/objects";
 import { getTradeInteractionKey, sendUserAnalyticsOrderConfirmClickEvent, userAnalytics } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
-import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
+import { BatchOrderTxnParams, getTotalExecutionFeeForBatch } from "sdk/utils/orderTransactions";
 
 import { useSidecarOrderPayloads } from "./useSidecarOrderPayloads";
 
@@ -95,7 +94,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
 
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
-  const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: selectedPosition?.key });
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
   const { referralCodeForTxn } = useUserReferralCode(signer, chainId, account);
@@ -124,6 +122,10 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       cancelOrderParams: sidecarOrderPayloads?.cancelPayloads ?? [],
     };
   }, [primaryCreateOrderParams, sidecarOrderPayloads]);
+
+  const totalExecutionFee = useMemo(() => {
+    return tokensData ? getTotalExecutionFeeForBatch({ batchParams, chainId, tokensData }) : undefined;
+  }, [batchParams, chainId, tokensData]);
 
   const {
     expressParams,
@@ -322,5 +324,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     slippageInputId,
     expressParams,
     isExpressLoading,
+    totalExecutionFee,
   };
 }

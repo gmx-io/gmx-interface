@@ -68,6 +68,7 @@ import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalyti
 import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
+import { ExecutionFee } from "sdk/types/fees";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";
@@ -88,6 +89,7 @@ type TradeboxButtonState = {
   onSubmit: () => Promise<void>;
   slippageInputId: string;
   expressParams?: ExpressParams;
+  totalExecutionFee?: ExecutionFee;
 };
 
 export function useTradeboxButtonState({
@@ -133,6 +135,7 @@ export function useTradeboxButtonState({
     slippageInputId,
     expressParams,
     isExpressLoading,
+    totalExecutionFee,
   } = useTradeboxTransactions({
     setPendingTxns,
   });
@@ -395,6 +398,7 @@ export function useTradeboxButtonState({
       onSubmit,
       slippageInputId,
       expressParams,
+      totalExecutionFee,
     };
 
     if (!account && buttonErrorText) {
@@ -513,20 +517,22 @@ export function useTradeboxButtonState({
     onSubmit,
     slippageInputId,
     expressParams,
+    totalExecutionFee,
     account,
     buttonErrorText,
     stopLoss.error?.percentage,
     takeProfit.error?.percentage,
     isExpressLoading,
     isApproving,
-    isAllowanceLoaded,
     tokensToApprove,
+    isAllowanceLoaded,
     stage,
     isIncrease,
     sidecarEntries,
     chainId,
     isMarket,
     isLimit,
+    isTwap,
     isSwap,
     fromToken?.symbol,
     toToken,
@@ -534,7 +540,6 @@ export function useTradeboxButtonState({
     tradeType,
     increaseAmounts?.limitOrderType,
     decreaseAmounts?.triggerOrderType,
-    isTwap,
   ]);
 }
 

@@ -432,8 +432,11 @@ export async function getApproximateEstimatedExpressParams({
     }
 
     if (totalExecutionFee === undefined) {
-      const { totalExecutionFeeAmount } = getTotalExecutionFeeForBatch(batchParams);
-      totalExecutionFee = totalExecutionFeeAmount;
+      totalExecutionFee = getTotalExecutionFeeForBatch({ batchParams, chainId, tokensData })?.feeTokenAmount;
+    }
+
+    if (totalExecutionFee === undefined) {
+      return undefined;
     }
 
     const baseRelayerFeeAmount = convertToTokenAmount(
