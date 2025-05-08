@@ -41,8 +41,12 @@ export const appEventsData: EventData[] = [
     endDate: "15 May 2025, 12:00",
     bodyText: (
       <>
-        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="ZRO" />
-        /USD, or <Link to="/pools">provide liquidity</Link> by purchasing{" "}
+        <Link to="/trade/long/?mode=market&to=ZRO">Trade</Link> <TokenSymbolWithIcon symbol="ZRO" />
+        /USD, or{" "}
+        <Link to="/pools/?market=0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9&operation=buy&scroll=1">
+          provide liquidity
+        </Link>{" "}
+        by purchasing{" "}
         <span className="whitespace-nowrap">
           <TokenSymbolWithIcon symbol="GLV" />
         </span>{" "}
