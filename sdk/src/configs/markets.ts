@@ -593,6 +593,13 @@ export const MARKETS: Record<number, Record<string, MarketConfig>> = {
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // ZRO/USD [WETH-USDC]
+    "0x9e79146b3A022Af44E0708c6794F03Ef798381A5": {
+      marketTokenAddress: "0x9e79146b3A022Af44E0708c6794F03Ef798381A5",
+      indexTokenAddress: "0xa8193C55C34Ed22e1Dbe73FD5Adc668E51578a67",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
