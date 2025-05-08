@@ -215,8 +215,8 @@ Helpers are a set of functions that help you create orders without manually calc
 sdk.orders.long({
   payAmount: 100031302n,
   marketAddress: "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336",
-  payTokenAddress: market.indexToken.address,
-  collateralTokenAddress: market.shortToken.address,
+  payTokenAddress: market.indexTokenAddress,
+  collateralTokenAddress: market.shortTokenAddress,
   allowedSlippageBps: 125,
   leverage: 50000n,
 });
@@ -228,3 +228,5 @@ sdk.orders.swap({
   allowedSlippageBps: 125,
 });
 ```
+
+Pay attention to the `payTokenAddress` and `collateralTokenAddress` fields. They are the addresses of the tokens that you are paying for and receiving, respectively, some markets may have synthetic tokens in these fields, so you need to pass the correct address. For instance BTC/USD [WETH-USDC] market has synthetic BTC token in `indexTokenAddress` so you need to pass WBTC address instead of BTC.

@@ -53,7 +53,34 @@ describe("increaseOrderHelper", () => {
       const e = await arbitrumSdk.orders
         .long({
           ...mockParams,
-          collateralTokenAddress: "0x47904963fc8b2340414262125aF798B9655E58Cd",
+          marketAddress: "0x47c031236e19d024b42f8AE6780E44A573170703",
+          collateralTokenAddress: "0xC4da4c24fd591125c3F47b340b6f4f76111883d8",
+        })
+        .catch((error) => {
+          return error.message;
+        });
+
+      await expect(e).toBe("collateralTokenAddress: synthetic tokens are not supported");
+    });
+
+    it("should throw an error if wrong collateral token selected", async () => {
+      const e = await arbitrumSdk.orders
+        .long({
+          ...mockParams,
+          collateralTokenAddress: "0xFEa7a6a0B346362BF88A9e4A88416B77a57D6c2A",
+        })
+        .catch((error) => {
+          return error.message;
+        });
+
+      await expect(e).toBe("collateralTokenAddress: token is not available");
+    });
+
+    it("should throw an error if wrong collateral token selected", async () => {
+      const e = await arbitrumSdk.orders
+        .long({
+          ...mockParams,
+          collateralTokenAddress: "0x912CE59144191C1204E64559FE8253a0e49E6548",
         })
         .catch((error) => {
           return error.message;
