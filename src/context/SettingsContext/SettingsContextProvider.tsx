@@ -16,6 +16,7 @@ import {
   SHOULD_SHOW_POSITION_LINES_KEY,
   SHOW_DEBUG_VALUES_KEY,
   SHOW_PNL_AFTER_FEES_KEY,
+  TWAP_NUMBER_OF_PARTS_KEY,
   getAllowedSlippageKey,
   getExecutionFeeBufferBpsKey,
   getExpressOrdersEnabledKey,
@@ -30,6 +31,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { tenderlyLsKeys } from "lib/tenderly";
 import { getDefaultGasPaymentToken } from "sdk/configs/express";
 import { getOracleKeeperRandomIndex } from "sdk/configs/oracleKeeper";
+import { DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 
 export type SettingsContextType = {
   showDebugValues: boolean;
@@ -91,6 +93,9 @@ export type SettingsContextType = {
       }
     | undefined;
   setDebugSwapMarketsConfig: (val: { disabledSwapMarkets?: string[]; manualPath?: string[] }) => void;
+
+  savedTwapNumberOfParts: number;
+  setSavedTWAPNumberOfParts: (val: number) => void;
 };
 
 export const SettingsContext = createContext({});
@@ -210,6 +215,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     true
   );
 
+  const [savedTwapNumberOfParts, setSavedTWAPNumberOfParts] = useLocalStorageSerializeKey(
+    [chainId, TWAP_NUMBER_OF_PARTS_KEY],
+    DEFAULT_TWAP_NUMBER_OF_PARTS
+  );
+
   useEffect(() => {
     if (shouldUseExecutionFeeBuffer && executionFeeBufferBps === undefined) {
       setExecutionFeeBufferBps(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps);
@@ -284,6 +294,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       expressTradingGasTokenSwitched: expressTradingGasTokenSwitched!,
       setExpressTradingGasTokenSwitched,
+
+      savedTwapNumberOfParts: savedTwapNumberOfParts!,
+      setSavedTWAPNumberOfParts,
     };
   }, [
     showDebugValues,
@@ -332,6 +345,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSettingsWarningDotVisible,
     expressTradingGasTokenSwitched,
     setExpressTradingGasTokenSwitched,
+    savedTwapNumberOfParts,
+    setSavedTWAPNumberOfParts,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

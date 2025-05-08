@@ -3,7 +3,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
-import { useKey, useLatest } from "react-use";
+import { useKey, useLatest, useMedia } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -56,9 +56,10 @@ import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage, formatLiquidationPrice, getNameByOrderType } from "domain/synthetics/positions";
 import { getApprovalRequirements } from "domain/synthetics/tokens";
+import { TradeType } from "domain/synthetics/trade/types";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
-import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
+import { ORDER_OPTION_TO_TRADE_MODE, OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getCommonError, getDecreaseError, getExpressError } from "domain/synthetics/trade/utils/validation";
 import { approveTokens, Token } from "domain/tokens";
@@ -84,7 +85,12 @@ import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
-import { BatchOrderTxnParams, buildDecreaseOrderPayload } from "sdk/utils/orderTransactions";
+import {
+  BatchOrderTxnParams,
+  buildDecreaseOrderPayload,
+  buildTwapOrdersPayloads,
+  DecreasePositionOrderParams,
+} from "sdk/utils/orderTransactions";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
@@ -100,12 +106,14 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
-
+import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
+import TwapRows from "../TwapRows/TwapRows";
 import "./PositionSeller.scss";
 
 const ORDER_OPTION_LABELS = {
   [OrderOption.Market]: msg`Market`,
   [OrderOption.Trigger]: msg`TP/SL`,
+  [OrderOption.Twap]: msg`TWAP`,
 };
 
 export function PositionSeller() {
@@ -162,6 +170,10 @@ export function PositionSeller() {
     resetPositionSeller,
     setIsReceiveTokenChanged,
     setKeepLeverage,
+    duration,
+    numberOfParts,
+    setDuration,
+    setNumberOfParts,
   } = usePositionSeller();
 
   const [closeUsdInputValue, setCloseUsdInputValue] = useDebouncedInputValue(
@@ -178,7 +190,8 @@ export function PositionSeller() {
   const triggerPrice = useSelector(selectPositionSellerTriggerPrice);
 
   const isTrigger = orderOption === OrderOption.Trigger;
-
+  const isTwap = orderOption === OrderOption.Twap;
+  const isMarket = orderOption === OrderOption.Market;
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
   const maxCloseSize = position?.sizeInUsd || 0n;
 
@@ -231,6 +244,7 @@ export function PositionSeller() {
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
     tradeFlags,
+    payUsd: closeSizeUsd,
   });
 
   const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity < (receiveUsd ?? 0n) : false;
@@ -249,7 +263,9 @@ export function PositionSeller() {
   const subaccount = useSelector(makeSelectSubaccountForActions(1));
 
   const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
-    const orderType = isTrigger ? decreaseAmounts?.triggerOrderType : OrderType.MarketDecrease;
+    let orderType = isTrigger ? decreaseAmounts?.triggerOrderType : OrderType.MarketDecrease;
+    orderType = isTwap ? OrderType.LimitDecrease : orderType;
+
     // TODO findSwapPath considering decreasePositionSwapType?
     const swapPath =
       decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken
@@ -271,34 +287,37 @@ export function PositionSeller() {
       return undefined;
     }
 
+    const decreaseOrderParams: DecreasePositionOrderParams = {
+      receiver: account,
+      chainId,
+      executionFeeAmount: executionFee.feeTokenAmount,
+      executionGasLimit: executionFee.gasLimit,
+      referralCode: userReferralInfo?.referralCodeForTxn,
+      allowedSlippage: isMarket ? allowedSlippage : 0,
+      autoCancel: isTrigger ? autoCancelOrdersLimit > 0 : false,
+      uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT,
+      orderType,
+      marketAddress: position.marketAddress,
+      indexTokenAddress: position.indexToken.address,
+      collateralTokenAddress: position.collateralTokenAddress,
+      collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
+      receiveTokenAddress: receiveToken.address,
+      swapPath,
+      sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+      sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
+      triggerPrice: isTrigger ? triggerPrice : undefined,
+      acceptablePrice: decreaseAmounts.acceptablePrice,
+      decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
+      externalSwapQuote: undefined,
+      isLong: position.isLong,
+      minOutputUsd: 0n,
+      validFromTime: 0n,
+    };
+
     return {
-      createOrderParams: [
-        buildDecreaseOrderPayload({
-          receiver: account,
-          chainId,
-          executionFeeAmount: executionFee.feeTokenAmount,
-          executionGasLimit: executionFee.gasLimit,
-          referralCode: userReferralInfo?.referralCodeForTxn,
-          allowedSlippage: !isTrigger ? allowedSlippage : 0,
-          autoCancel: orderOption === OrderOption.Trigger ? autoCancelOrdersLimit > 0 : false,
-          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT,
-          orderType,
-          marketAddress: position.marketAddress,
-          indexTokenAddress: position.indexToken.address,
-          collateralTokenAddress: position.collateralTokenAddress,
-          collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
-          receiveTokenAddress: receiveToken.address,
-          swapPath,
-          sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-          sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
-          triggerPrice: isTrigger ? triggerPrice : undefined,
-          acceptablePrice: decreaseAmounts.acceptablePrice,
-          decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
-          externalSwapQuote: undefined,
-          isLong: position.isLong,
-          minOutputUsd: 0n,
-        }),
-      ],
+      createOrderParams: isTwap
+        ? buildTwapOrdersPayloads(decreaseOrderParams, { duration, numberOfParts })
+        : [buildDecreaseOrderPayload(decreaseOrderParams)],
       updateOrderParams: [],
       cancelOrderParams: [],
     };
@@ -313,11 +332,14 @@ export function PositionSeller() {
     decreaseAmounts?.sizeDeltaInTokens,
     decreaseAmounts?.sizeDeltaUsd,
     decreaseAmounts?.triggerOrderType,
+    duration,
     executionFee?.feeTokenAmount,
     executionFee?.gasLimit,
+    isMarket,
     isTrigger,
+    isTwap,
     marketsInfoData,
-    orderOption,
+    numberOfParts,
     position,
     receiveToken?.address,
     receiveUsd,
@@ -340,6 +362,7 @@ export function PositionSeller() {
     throttleLog("PositionSeller express Params", {
       expressParams,
       expressEstimateMethod,
+      batchParams,
     });
   }
 
@@ -405,6 +428,8 @@ export function PositionSeller() {
       minCollateralUsd,
       isNotEnoughReceiveTokenLiquidity,
       minPositionSizeUsd,
+      isTwap,
+      numberOfParts,
     });
 
     if (commonError[0] || decreaseError[0] || expressError[0]) {
@@ -432,6 +457,8 @@ export function PositionSeller() {
     tokensData,
     triggerPrice,
     minPositionSizeUsd,
+    isTwap,
+    numberOfParts,
   ]);
 
   function onSubmit() {
@@ -499,6 +526,9 @@ export function PositionSeller() {
       priceImpactPercentage: undefined,
       netRate1h: undefined,
       isExpress: Boolean(expressParams),
+      duration,
+      partsCount: numberOfParts,
+      tradeMode: ORDER_OPTION_TO_TRADE_MODE[orderOption],
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
@@ -826,7 +856,11 @@ export function PositionSeller() {
     }
 
     return {
-      text: error || (isTrigger ? t`Create ${getNameByOrderType(decreaseAmounts?.triggerOrderType)} Order` : t`Close`),
+      text:
+        error ||
+        (isTrigger || isTwap
+          ? t`Create ${isTwap ? "TWAP Decrease" : getNameByOrderType(decreaseAmounts?.triggerOrderType, isTwap)} Order`
+          : t`Close`),
       disabled: Boolean(error) && !shouldDisableValidationForTesting,
     };
   }, [
@@ -837,9 +871,12 @@ export function PositionSeller() {
     isApproving,
     isExpressLoading,
     isTrigger,
+    isTwap,
     shouldDisableValidationForTesting,
     tokensToApprove,
   ]);
+
+  const isMobile = useMedia("(max-width: 1100px)");
 
   return (
     <div className="text-body-medium">
@@ -856,14 +893,21 @@ export function PositionSeller() {
         qa="position-close-modal"
         contentClassName="w-[380px]"
       >
-        <Tabs
-          className="mb-[10.5px]"
-          options={tabsOptions}
-          selectedValue={orderOption}
-          type="inline"
-          onChange={handleSetOrderOption}
-          qa="operation-tabs"
-        />
+        <div className="mb-[10.5px] flex items-center justify-between">
+          <Tabs
+            options={tabsOptions}
+            selectedValue={orderOption}
+            type="inline"
+            onChange={handleSetOrderOption}
+            qa="operation-tabs"
+          />
+
+          <TradeInfoIcon
+            isMobile={isMobile}
+            tradeType={position?.isLong ? TradeType.Long : TradeType.Short}
+            tradePlace="position-seller"
+          />
+        </div>
 
         {position && (
           <>
@@ -921,6 +965,21 @@ export function PositionSeller() {
               )}
             </div>
 
+            <div className="pt-14">
+              {isTwap && (
+                <TwapRows
+                  duration={duration}
+                  numberOfParts={numberOfParts}
+                  setNumberOfParts={setNumberOfParts}
+                  setDuration={setDuration}
+                  isLong={position.isLong}
+                  sizeUsd={decreaseAmounts?.sizeDeltaUsd}
+                  marketInfo={position.marketInfo}
+                  type="decrease"
+                />
+              )}
+            </div>
+
             <div className="flex flex-col gap-14 pt-14">
               {isTrigger && maxAutoCancelOrdersWarning}
               <HighPriceImpactOrFeesWarningCard
@@ -931,14 +990,16 @@ export function PositionSeller() {
                 swapProfitFee={fees?.swapProfitFee}
                 executionFeeUsd={executionFee?.feeUsd}
               />
-              <ToggleSwitch
-                textClassName="text-slate-100"
-                isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
-                setIsChecked={setKeepLeverage}
-                disabled={leverageCheckboxDisabledByCollateral || decreaseAmounts?.isFullClose}
-              >
-                {keepLeverageTextElem}
-              </ToggleSwitch>
+              {!isTwap && (
+                <ToggleSwitch
+                  textClassName="text-slate-100"
+                  isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
+                  setIsChecked={setKeepLeverage}
+                  disabled={leverageCheckboxDisabledByCollateral || decreaseAmounts?.isFullClose}
+                >
+                  {keepLeverageTextElem}
+                </ToggleSwitch>
+              )}
 
               <Button
                 className="w-full"
@@ -952,9 +1013,13 @@ export function PositionSeller() {
               </Button>
 
               <div className="h-1 bg-stroke-primary" />
-              {receiveTokenRow}
-              {liqPriceRow}
-              {pnlRow}
+              {!isTwap && (
+                <>
+                  {receiveTokenRow}
+                  {liqPriceRow}
+                  {pnlRow}
+                </>
+              )}
 
               <PositionSellerAdvancedRows
                 triggerPriceInputValue={triggerPriceInputValue}

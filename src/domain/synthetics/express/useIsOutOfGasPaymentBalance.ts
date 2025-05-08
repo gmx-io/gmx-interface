@@ -8,7 +8,6 @@ import { estimateMinGasPaymentTokenBalance } from "sdk/utils/fees/executionFee";
 import { useGasLimits, useGasPrice } from "../fees";
 import { useTokensDataRequest } from "../tokens";
 import { useL1ExpressOrderGasReference } from "./useL1ExpressGasReference";
-import { formatTokenAmount } from "sdk/utils/numbers";
 
 export function useIsOutOfGasPaymentBalance() {
   const { chainId } = useChainId();

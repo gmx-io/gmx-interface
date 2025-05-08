@@ -1,6 +1,8 @@
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { ErrorData } from "lib/errors";
+import { TradeMode } from "sdk/types/trade";
+import { TwapDuration } from "sdk/types/twap";
 
 export type GlobalMetricData = {
   isMobileMetamask: boolean;
@@ -249,7 +251,7 @@ export type ErrorEvent = {
 // Entities metric data
 export type SwapMetricData = {
   metricId: `swap:${string}`;
-  metricType: "swap" | "limitSwap";
+  metricType: "swap" | "limitSwap" | "twapSwap";
   requestId: string;
   isExpress: boolean;
   isExpress1CT: boolean;
@@ -268,11 +270,14 @@ export type SwapMetricData = {
   orderType: OrderType | undefined;
   isFirstOrder: boolean | undefined;
   amountUsd: number | undefined;
+  duration: TwapDuration | undefined;
+  partsCount: number | undefined;
+  tradeMode: TradeMode | undefined;
 };
 
 export type IncreaseOrderMetricData = PositionOrderMetricParams & {
   metricId: `position:${string}`;
-  metricType: "increasePosition" | "limitOrder";
+  metricType: "increasePosition" | "limitOrder" | "twapIncreaseOrder";
   leverage: string | undefined;
   isFirstOrder: boolean | undefined;
   isLeverageEnabled: boolean | undefined;
@@ -292,7 +297,7 @@ export type IncreaseOrderMetricData = PositionOrderMetricParams & {
 
 export type DecreaseOrderMetricData = PositionOrderMetricParams & {
   metricId: `position:${string}`;
-  metricType: "decreasePosition" | "takeProfitOrder" | "stopLossOrder";
+  metricType: "decreasePosition" | "takeProfitOrder" | "stopLossOrder" | "twapDecreaseOrder";
   place: "tradeBox" | "positionSeller";
   isFullClose: boolean | undefined;
   decreaseSwapType: DecreasePositionSwapType | undefined;
@@ -324,6 +329,9 @@ export type PositionOrderMetricParams = {
   priceImpactPercentage: number | undefined;
   netRate1h: number | undefined;
   interactionId: string | undefined;
+  duration: TwapDuration | undefined;
+  partsCount: number | undefined;
+  tradeMode: TradeMode | undefined;
 };
 
 export type EditCollateralMetricData = {

@@ -44,8 +44,9 @@ export function useTradeHistory(
     marketsDirectionsFilter?: MarketFilterLongShortItemData[];
     orderEventCombinations?: {
       eventName?: TradeActionType;
-      orderType?: OrderType;
+      orderType?: OrderType[];
       isDepositOrWithdraw?: boolean;
+      isTwap?: boolean;
     }[];
   }
 ): TradeHistoryResult {
@@ -149,8 +150,9 @@ export async function fetchTradeActions({
   orderEventCombinations:
     | {
         eventName?: TradeActionType | undefined;
-        orderType?: OrderType | undefined;
+        orderType?: OrderType[] | undefined;
         isDepositOrWithdraw?: boolean | undefined;
+        isTwap?: boolean | undefined;
       }[]
     | undefined;
   marketsInfoData: MarketsInfoData | undefined;
@@ -186,6 +188,10 @@ export async function fetchTradeActions({
     .map((filter) => filter.marketAddress.toLowerCase() as Address | "any");
 
   const hasSwapRelevantDefinedMarkets = swapRelevantDefinedMarketsLowercased.length > 0;
+
+  const mergedCombinations = orderEventCombinations?.flatMap((combination) =>
+    (combination.orderType || []).map((orderType) => ({ ...combination, orderType }))
+  );
 
   const filtersStr = buildFiltersBody({
     AND: [
@@ -252,7 +258,7 @@ export async function fetchTradeActions({
         ],
       },
       {
-        OR: orderEventCombinations?.map((combination) => {
+        OR: mergedCombinations?.map((combination) => {
           let sizeDeltaUsdCondition = {};
 
           if (
@@ -270,6 +276,7 @@ export async function fetchTradeActions({
             {
               eventName_eq: combination.eventName,
               orderType_eq: combination.orderType,
+              twapGroupId_isNull: !combination.isTwap,
             },
             sizeDeltaUsdCondition
           );
@@ -341,6 +348,8 @@ export async function fetchTradeActions({
             orderKey
             isLong
             shouldUnwrapNativeToken
+            twapGroupId
+            numberOfParts
 
             reason
             reasonBytes

@@ -14,7 +14,8 @@ export function getExecutionFee(
   tokensData: TokensData,
   estimatedGasLimit: bigint,
   gasPrice: bigint,
-  oraclePriceCount: bigint
+  oraclePriceCount: bigint,
+  numberOfParts?: number
 ): ExecutionFee | undefined {
   const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
 
@@ -27,7 +28,7 @@ export function getExecutionFee(
   const gasLimit = baseGasLimit + applyFactor(estimatedGasLimit, multiplierFactor);
   // #endregion
 
-  const feeTokenAmount = gasLimit * gasPrice;
+  const feeTokenAmount = gasLimit * gasPrice * BigInt(numberOfParts ?? 1);
 
   const feeUsd = convertToUsd(feeTokenAmount, nativeToken.decimals, nativeToken.prices.minPrice)!;
 
@@ -138,8 +139,7 @@ export function estimateMinGasPaymentTokenBalance({
   const executionFee = getExecutionFee(chainId, gasLimits, tokensData, executionGasLimit, gasPrice, 4n);
 
   let totalFee = createOrderFee + (executionFee?.feeTokenAmount ?? 0n);
-  const buffer = (totalFee * 13n) / 10n; // 30% buffer
-  totalFee += buffer;
+  totalFee = (totalFee * 13n) / 10n; // 30% buffer
 
   const minFeeUsd = convertToUsd(totalFee, relayFeeToken.decimals, relayFeeToken.prices.minPrice)!;
   const minGasPaymentTokenBalance = convertToTokenAmount(

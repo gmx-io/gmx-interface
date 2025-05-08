@@ -43,13 +43,14 @@ import {
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { deleteByKey, getByKey, setByKey, updateByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
-import { getTenderlyConfig } from "lib/tenderly";
+import { tenderlyLsKeys } from "lib/tenderly";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { sendUserAnalyticsOrderResultEvent, userAnalytics } from "lib/userAnalytics";
 import { TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
+import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
 
 import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
 import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
@@ -159,6 +160,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     OrderCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       updateNativeTokenBalance();
 
+      const uiFeeReceiver = eventData.addressItems.items.uiFeeReceiver;
+      const twapParams = decodeTwapUiFeeReceiver(uiFeeReceiver);
+
       const data: OrderCreatedEventData = {
         account: eventData.addressItems.items.account,
         receiver: eventData.addressItems.items.receiver,
@@ -180,6 +184,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         isFrozen: eventData.boolItems.items.isFrozen,
         externalSwapQuote: undefined,
         key: eventData.bytes32Items.items.key,
+        isTwap: twapParams !== undefined,
       };
 
       if (data.account !== currentAccount) {
@@ -190,7 +195,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       sendOrderCreatedMetric(metricId);
 
       if (!isMarketOrderType(data.orderType)) {
-        sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
+        sendUserAnalyticsOrderResultEvent(
+          chainId,
+          metricId,
+          true,
+          undefined,
+          twapParams ? `createOrder:${twapParams.twapId}` : undefined
+        );
       }
 
       setOrderStatuses((old) =>
@@ -244,7 +255,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           : getPositionOrderMetricId(order);
 
         sendOrderExecutedMetric(metricId);
-        sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
+        if (!order.isTwap) {
+          sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
+        }
       }
 
       setOrderStatuses((old) => {
@@ -1106,11 +1119,11 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             break;
         }
 
-        const config = getTenderlyConfig();
+        const accountSlug = JSON.parse(localStorage.getItem(JSON.stringify(tenderlyLsKeys.accountSlug)) ?? '""');
+        const projectSlug = JSON.parse(localStorage.getItem(JSON.stringify(tenderlyLsKeys.projectSlug)) ?? '""');
 
-        const accountParams = config
-          ? `&tenderlyUsername=${config.accountSlug}&tenderlyProjectName=${config.projectSlug}`
-          : "";
+        const accountParams =
+          accountSlug && projectSlug ? `?tenderlyUsername=${accountSlug}&tenderlyProjectName=${projectSlug}` : "";
 
         const debugRes = await fetch(
           `https://api.gelato.digital/tasks/status/${taskStatus.taskId}/debug${accountParams}`,

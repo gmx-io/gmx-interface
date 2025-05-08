@@ -47,6 +47,8 @@ export type RawTradeAction = {
   orderKey: string;
   isLong?: boolean;
   shouldUnwrapNativeToken?: boolean;
+  twapGroupId?: string;
+  numberOfParts?: number;
 
   reason?: string;
   reasonBytes?: BytesLike;
@@ -92,6 +94,12 @@ export type PositionTradeAction = {
   reasonBytes?: string | Uint8Array;
   shouldUnwrapNativeToken: boolean;
   liquidationFeeAmount?: bigint;
+  twapParams:
+    | {
+        twapGroupId: string;
+        numberOfParts: number;
+      }
+    | undefined;
   timestamp: number;
   transaction: {
     hash: string;
@@ -112,9 +120,14 @@ export type SwapTradeAction = {
   executionAmountOut?: bigint;
   orderType: OrderType;
   orderKey: string;
-
   reason?: string;
   reasonBytes?: string | Uint8Array;
+  twapParams:
+    | {
+        twapGroupId: string;
+        numberOfParts: number;
+      }
+    | undefined;
 
   timestamp: number;
   transaction: {

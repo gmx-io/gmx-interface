@@ -3,7 +3,6 @@ import { t } from "@lingui/macro";
 import { useCallback, useId, useMemo } from "react";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
@@ -13,8 +12,8 @@ import {
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
-import { selectSetShouldFallbackToInternalSwap } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
+  selectSetShouldFallbackToInternalSwap,
   selectTradeboxAllowedSlippage,
   selectTradeboxCollateralToken,
   selectTradeboxDecreasePositionAmounts,
@@ -28,16 +27,21 @@ import {
   selectTradeboxSwapAmounts,
   selectTradeboxToTokenAddress,
   selectTradeboxTradeFlags,
+  selectTradeboxTradeMode,
   selectTradeboxTriggerPrice,
+  selectTradeboxTwapDuration,
+  selectTradeboxTwapNumberOfParts,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeBoxCreateOrderParams } from "context/SyntheticsStateContext/selectors/transactionsSelectors/tradeBoxOrdersSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUserReferralCode } from "domain/referrals";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
+import { OrderType } from "domain/synthetics/orders";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage } from "domain/synthetics/positions/utils";
+import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { throttleLog } from "lib/logging";
@@ -48,11 +52,9 @@ import {
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
-import { formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getTradeInteractionKey, sendUserAnalyticsOrderConfirmClickEvent, userAnalytics } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
-import { OrderType } from "sdk/types/orders";
 import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
 
 import { useSidecarOrderPayloads } from "./useSidecarOrderPayloads";
@@ -80,16 +82,20 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const marketInfo = useSelector(selectTradeboxMarketInfo);
   const collateralToken = useSelector(selectTradeboxCollateralToken);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isLong, isIncrease, isSwap } = tradeFlags;
+  const tradeMode = useSelector(selectTradeboxTradeMode);
+  const { isLong, isSwap, isIncrease } = tradeFlags;
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
   const fees = useSelector(selectTradeboxFees);
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const showDebugValues = useShowDebugValues();
+  const duration = useSelector(selectTradeboxTwapDuration);
+  const numberOfParts = useSelector(selectTradeboxTwapNumberOfParts);
 
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
 
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
+  const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: selectedPosition?.key });
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
   const { referralCodeForTxn } = useUserReferralCode(signer, chainId, account);
@@ -113,7 +119,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     }
 
     return {
-      createOrderParams: [primaryCreateOrderParams, ...(sidecarOrderPayloads?.createPayloads ?? [])],
+      createOrderParams: [...primaryCreateOrderParams, ...(sidecarOrderPayloads?.createPayloads ?? [])],
       updateOrderParams: sidecarOrderPayloads?.updatePayloads ?? [],
       cancelOrderParams: sidecarOrderPayloads?.cancelPayloads ?? [],
     };
@@ -129,10 +135,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     throttleLog("TradeBox express params", {
       expressParams,
       expressEstimateMethod,
+      batchParams,
     });
   }
 
   const initOrderMetricData = useCallback(() => {
+    const primaryOrder = primaryCreateOrderParams?.[0];
+
     if (isSwap) {
       return initSwapMetricData({
         fromToken,
@@ -142,23 +151,25 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         isExpress: Boolean(expressParams),
         executionFee,
         allowedSlippage,
-        orderType: primaryCreateOrderParams?.orderPayload.orderType,
+        orderType: primaryOrder?.orderPayload.orderType,
         subaccount: expressParams?.subaccount,
         isFirstOrder,
         initialCollateralAllowance,
+        duration,
+        partsCount: numberOfParts,
+        tradeMode,
       });
     }
 
     if (isIncrease) {
       return initIncreaseOrderMetricData({
-        chainId,
         fromToken,
         increaseAmounts,
-        collateralToken,
+        orderPayload: primaryOrder?.orderPayload,
         hasExistingPosition: Boolean(selectedPosition),
         leverage: formatLeverage(increaseAmounts?.estimatedLeverage) ?? "",
         executionFee,
-        orderType: primaryCreateOrderParams?.orderPayload.orderType ?? OrderType.MarketIncrease,
+        orderType: primaryOrder?.orderPayload.orderType ?? OrderType.MarketIncrease,
         hasReferralCode: Boolean(referralCodeForTxn),
         subaccount: expressParams?.subaccount,
         triggerPrice,
@@ -182,6 +193,9 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         interactionId: marketInfo?.name
           ? userAnalytics.getInteractionId(getTradeInteractionKey(marketInfo.name))
           : undefined,
+        duration,
+        partsCount: numberOfParts,
+        tradeMode: tradeMode,
       });
     }
 
@@ -191,7 +205,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       hasExistingPosition: Boolean(selectedPosition),
       executionFee,
       swapPath: [],
-      orderType: decreaseAmounts?.triggerOrderType,
+      orderType: primaryOrder?.orderPayload.orderType,
       hasReferralCode: Boolean(referralCodeForTxn),
       subaccount: expressParams?.subaccount,
       triggerPrice,
@@ -204,14 +218,17 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       priceImpactDeltaUsd: decreaseAmounts?.positionPriceImpactDeltaUsd,
       priceImpactPercentage: fees?.positionPriceImpact?.precisePercentage,
       netRate1h: isLong ? chartHeaderInfo?.fundingRateLong : chartHeaderInfo?.fundingRateShort,
+      tradeMode,
+      duration,
+      partsCount: numberOfParts,
     });
   }, [
     allowedSlippage,
-    chainId,
     chartHeaderInfo?.fundingRateLong,
     chartHeaderInfo?.fundingRateShort,
     collateralToken,
     decreaseAmounts,
+    duration,
     executionFee,
     expressParams,
     fees?.positionPriceImpact?.precisePercentage,
@@ -224,12 +241,14 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     isLong,
     isSwap,
     marketInfo,
-    primaryCreateOrderParams?.orderPayload.orderType,
+    numberOfParts,
+    primaryCreateOrderParams,
     referralCodeForTxn,
     selectedPosition,
     sidecarOrderPayloads?.createPayloads,
     swapAmounts,
     toToken,
+    tradeMode,
     triggerPrice,
   ]);
 

@@ -41,7 +41,7 @@ import { MarketsInfoData } from "sdk/types/markets";
 import { bigMath } from "sdk/utils/bigmath";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { applyFactor, BASIS_POINTS_DIVISOR_BIGINT, expandDecimals, USD_DECIMALS } from "sdk/utils/numbers";
-import { BatchOrderTxnParams, getTotalExecutionFeeForOrders } from "sdk/utils/orderTransactions";
+import { BatchOrderTxnParams, getTotalExecutionFeeForBatch } from "sdk/utils/orderTransactions";
 
 import { ExpressParams, getRelayerFeeParams, OracleParamsPayload, RelayerFeeParams } from ".";
 import { estimateExpressBatchOrderGasLimit, L1ExpressOrderGasReference, useGasLimits } from "../fees";
@@ -84,8 +84,10 @@ function getIsEmptyBatch(orderParams: BatchOrderTxnParams | undefined) {
 
 export function useExpressOrdersParams({
   orderParams,
+  totalExecutionFee,
 }: {
   orderParams: BatchOrderTxnParams | undefined;
+  totalExecutionFee?: bigint;
 }): ExpressOrdersParamsResult {
   const { chainId } = useChainId();
 
@@ -135,13 +137,14 @@ export function useExpressOrdersParams({
         subaccount: p.subaccount,
         tokenPermits: p.tokenPermits,
         gasPaymentTokenAddress: p.gasPaymentToken?.address,
-        findSwapPath: p.findSwapPath,
         gasPaymentAllowanceData: p.gasPaymentAllowance?.tokensAllowanceData,
         gasPrice: p.gasPrice,
         gasLimits: p.gasLimits,
         l1Reference: p.l1Reference,
         bufferBps: p.executionFeeBufferBps,
         isSponsoredCall: p.isSponsoredCallAvailable,
+        totalExecutionFee: p.totalExecutionFee,
+        findSwapPath: p.findSwapPath,
       });
 
       if (!nextApproximateParams) {
@@ -165,6 +168,7 @@ export function useExpressOrdersParams({
         l1Reference,
         executionFeeBufferBps,
         isSponsoredCallAvailable,
+        totalExecutionFee,
         findSwapPath,
         tokenPermits,
         marketsInfoData,
@@ -388,6 +392,7 @@ export async function getApproximateEstimatedExpressParams({
   l1Reference,
   bufferBps,
   isSponsoredCall,
+  totalExecutionFee,
 }: {
   batchParams: BatchOrderTxnParams;
   signer: Signer | undefined;
@@ -404,6 +409,7 @@ export async function getApproximateEstimatedExpressParams({
   l1Reference: L1ExpressOrderGasReference | undefined;
   bufferBps: number | undefined;
   isSponsoredCall: boolean;
+  totalExecutionFee?: bigint;
 }): Promise<ApproximateExpressTxnParams | undefined> {
   try {
     const account = await signer?.getAddress();
@@ -425,7 +431,10 @@ export async function getApproximateEstimatedExpressParams({
       return undefined;
     }
 
-    const totalExecutionFee = getTotalExecutionFeeForOrders(batchParams);
+    if (totalExecutionFee === undefined) {
+      const { totalExecutionFeeAmount } = getTotalExecutionFeeForBatch(batchParams);
+      totalExecutionFee = totalExecutionFeeAmount;
+    }
 
     const baseRelayerFeeAmount = convertToTokenAmount(
       expandDecimals(1, USD_DECIMALS),
@@ -433,7 +442,7 @@ export async function getApproximateEstimatedExpressParams({
       relayerFeeToken.prices.maxPrice
     )!;
 
-    let totalNetworkFeeAmount = baseRelayerFeeAmount + totalExecutionFee.totalExecutionFeeAmount;
+    let totalNetworkFeeAmount = baseRelayerFeeAmount + totalExecutionFee;
 
     const swapAmounts = getSwapAmountsByToValue({
       tokenIn: gasPaymentToken,
@@ -503,7 +512,7 @@ export async function getApproximateEstimatedExpressParams({
       feeAmount = await gelatoRelay.getEstimatedFee(BigInt(chainId), relayerFeeToken.address, finalGasLimit, false);
     }
 
-    totalNetworkFeeAmount = feeAmount + totalExecutionFee.totalExecutionFeeAmount;
+    totalNetworkFeeAmount = feeAmount + totalExecutionFee;
 
     const finalSwapAmounts = getSwapAmountsByToValue({
       tokenIn: gasPaymentToken,
@@ -555,7 +564,7 @@ export async function getApproximateEstimatedExpressParams({
         relayFeeParams: baseRelayFeeSwapParams,
         txnData,
         oracleParamsPayload,
-        totalExecutionFeeAmount: totalExecutionFee.totalExecutionFeeAmount,
+        totalExecutionFeeAmount: totalExecutionFee,
       },
     };
   } catch (error) {

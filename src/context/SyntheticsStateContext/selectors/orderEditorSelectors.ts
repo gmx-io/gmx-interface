@@ -8,6 +8,7 @@ import {
 } from "domain/synthetics/fees";
 import { getMaxAllowedLeverageByMinCollateralFactor } from "domain/synthetics/markets";
 import {
+  OrderInfo,
   OrderType,
   PositionOrderInfo,
   SwapOrderInfo,
@@ -15,6 +16,8 @@ import {
   isIncreaseOrderType,
   isLimitOrderType,
   isLimitSwapOrderType,
+  isPositionOrder,
+  isSwapOrder,
   isSwapOrderType,
   isTriggerDecreaseOrderType,
   sortPositionOrders,
@@ -107,7 +110,7 @@ export const selectOrderEditorSwapFees = createSelector((q) => {
 
   if (!order) return undefined;
 
-  if (!isSwapOrderType(order.orderType)) {
+  if (!isSwapOrder(order)) {
     return undefined;
   }
 
@@ -180,10 +183,10 @@ export const selectOrdersList = createSelector((q) => {
   const { swapOrders, positionOrders } = Object.values(ordersData || {}).reduce(
     (acc, order) => {
       if (isLimitOrderType(order.orderType) || isTriggerDecreaseOrderType(order.orderType)) {
-        if (isSwapOrderType(order.orderType)) {
+        if (isSwapOrder(order)) {
           acc.swapOrders.push(order);
-        } else {
-          acc.positionOrders.push(order as PositionOrderInfo);
+        } else if (isPositionOrder(order)) {
+          acc.positionOrders.push(order);
         }
       }
       return acc;
@@ -197,7 +200,7 @@ export const selectOrdersList = createSelector((q) => {
   ];
 });
 
-export const selectOrderEditorOrder = createSelector((q): PositionOrderInfo | SwapOrderInfo | undefined => {
+export const selectOrderEditorOrder = createSelector((q): OrderInfo | undefined => {
   const editingOrderState = q(selectEditingOrderState);
   const order = q((state) => getByKey(selectOrdersInfoData(state), editingOrderState?.orderKey));
 
@@ -534,7 +537,7 @@ export const selectOrderEditorMinOutputAmount = createSelector((q) => {
     return minOutputAmount;
   }
 
-  if (triggerRatio) {
+  if (triggerRatio && isSwapOrder(order)) {
     minOutputAmount = getAmountByRatio({
       fromToken,
       toToken,

@@ -10,7 +10,7 @@ import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderH
 import { selectPositionsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import type { OrderType } from "domain/synthetics/orders/types";
+import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { useAccountOrders } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
@@ -132,7 +132,7 @@ export function HistoricalLists({ chainId, account }: Props) {
   const tabLabels = useTabLabels();
 
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
-  const [orderTypesFilter, setOrderTypesFilter] = useState<OrderType[]>([]);
+  const [orderTypesFilter, setOrderTypesFilter] = useState<OrderTypeFilterValue[]>([]);
 
   const handleOrdersClick = useCallback(() => {
     setTabKey(TabKey.Orders);

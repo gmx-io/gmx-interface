@@ -98,7 +98,7 @@ export function useTradeboxButtonState({
   const { signer } = useWallet();
 
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isSwap, isIncrease, isLimit, isMarket } = tradeFlags;
+  const { isSwap, isIncrease, isLimit, isMarket, isTwap } = tradeFlags;
   const { stopLoss, takeProfit } = useSidecarOrders();
   const sidecarEntries = useSidecarEntries();
   const hasOutdatedUi = useHasOutdatedUi();
@@ -434,7 +434,7 @@ export function useTradeboxButtonState({
       };
     }
 
-    if (isApproving) {
+    if (isApproving && tokensToApprove.length) {
       return {
         ...commonState,
         text: (
@@ -481,9 +481,11 @@ export function useTradeboxButtonState({
           submitButtonText = `${localizedTradeTypeLabels[tradeType!]} ${prefix}${toToken?.symbol}`;
         }
       } else if (isLimit) {
-        submitButtonText = t`Create ${getNameByOrderType(increaseAmounts?.limitOrderType)} order`;
+        submitButtonText = t`Create ${getNameByOrderType(increaseAmounts?.limitOrderType, false)} order`;
+      } else if (isTwap) {
+        submitButtonText = t`Create TWAP ${isSwap ? "Swap" : "Increase"} order`;
       } else {
-        submitButtonText = t`Create ${getNameByOrderType(decreaseAmounts?.triggerOrderType)} Order`;
+        submitButtonText = t`Create ${getNameByOrderType(decreaseAmounts?.triggerOrderType, false)} Order`;
       }
     }
 
@@ -532,6 +534,7 @@ export function useTradeboxButtonState({
     tradeType,
     increaseAmounts?.limitOrderType,
     decreaseAmounts?.triggerOrderType,
+    isTwap,
   ]);
 }
 

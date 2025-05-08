@@ -27,8 +27,9 @@ import {
   CancelOrderTxnParams,
   CreateOrderTxnParams,
   DecreasePositionOrderParams,
-  getTotalExecutionFeeForOrders,
+  getTotalExecutionFeeForBatch,
   IncreasePositionOrderParams,
+  isTwapOrderPayload,
   SwapOrderParams,
   UpdateOrderTxnParams,
 } from "sdk/utils/orderTransactions";
@@ -143,7 +144,7 @@ export function useOrderTxnCallbacks() {
             );
 
           if (!isSubaccount) {
-            const { totalExecutionFeeAmount, totalExecutionGasLimit } = getTotalExecutionFeeForOrders(
+            const { totalExecutionFeeAmount, totalExecutionGasLimit } = getTotalExecutionFeeForBatch(
               e.data.batchParams
             );
 
@@ -338,6 +339,7 @@ export function getPendingCancelOrder(params: CancelOrderTxnParams, order: Order
     externalSwapQuote: undefined,
     orderKey: params.orderKey,
     minOutputAmount: 0n,
+    isTwap: order.isTwap,
   };
 }
 
@@ -392,6 +394,7 @@ export function getPendingUpdateOrder(updateOrderParams: UpdateOrderTxnParams, o
     shouldUnwrapNativeToken: false,
     externalSwapQuote: undefined,
     orderKey: updateOrderParams.params.orderKey,
+    isTwap: order.isTwap,
   };
 }
 
@@ -414,6 +417,7 @@ export function getPendingCreateOrder(
     shouldUnwrapNativeToken: createOrderPayload.orderPayload.shouldUnwrapNativeToken,
     externalSwapQuote: createOrderPayload.params.externalSwapQuote,
     txnType: "create",
+    isTwap: isTwapOrderPayload(createOrderPayload.orderPayload),
   };
 }
 

@@ -22,6 +22,7 @@ import {
   selectIsSponsoredCallAvailable,
   selectL1ExpressOrderGasReference,
   selectMarketsInfoData,
+  selectOrdersInfoData,
   selectPositionsInfoData,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -38,8 +39,9 @@ import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateC
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getApproximateEstimatedExpressParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
+import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
-import type { OrderType } from "domain/synthetics/orders/types";
+import type { OrderInfo } from "domain/synthetics/orders/types";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
 import { TradeMode } from "domain/synthetics/trade";
@@ -47,6 +49,7 @@ import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsP
 import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
 import { getMidPrice } from "domain/tokens";
 import { useChainId } from "lib/chains";
+import { defined } from "lib/guards";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMeasureComponentMountTime } from "lib/metrics/useMeasureComponentMountTime";
@@ -55,6 +58,7 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
+import { getOrderKeys } from "sdk/utils/orders";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
@@ -159,7 +163,7 @@ export function SyntheticsPage(p: Props) {
     [setListSection, setMarketsDirectionsFilter, setOrderTypesFilter, setSelectedOrderKeys]
   );
 
-  const { isSwap } = useSelector(selectTradeboxTradeFlags);
+  const { isSwap, isTwap } = useSelector(selectTradeboxTradeFlags);
 
   useEffect(() => {
     if (!chartToken) return;
@@ -338,14 +342,18 @@ export function SyntheticsPage(p: Props) {
             <div className="absolute">
               <TradeBoxResponsiveContainer />
             </div>
-            {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
+            {isSwap && !isTwap && (
+              <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
+            )}
           </>
         ) : (
           <div className="w-[40rem] min-[1501px]:w-[41.85rem]">
             <TradeBoxResponsiveContainer />
 
-            <div className="flex flex-col gap-12">
-              {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
+            <div className="mt-12 flex flex-col gap-12">
+              {isSwap && !isTwap && (
+                <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
+              )}
             </div>
           </div>
         )}
@@ -418,24 +426,28 @@ function useOrdersControl() {
   const isCancelOrdersProcessing = cancellingOrdersKeys.length > 0;
 
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
-  const [orderTypesFilter, setOrderTypesFilter] = useState<OrderType[]>([]);
+  const [orderTypesFilter, setOrderTypesFilter] = useState<OrderTypeFilterValue[]>([]);
+  const ordersInfoData = useSelector(selectOrdersInfoData);
   const isExpressEnabled = useSelector(makeSelectIsExpressTransactionAvailable(false));
 
   const onCancelSelectedOrders = useCallback(
     async function cancelSelectedOrders() {
       if (!signer) return;
-      const keys = selectedOrderKeys;
-      setCanellingOrdersKeys((p) => uniq(p.concat(keys)));
+      const orders = selectedOrderKeys.map((key) => getByKey(ordersInfoData, key)).filter(defined) as OrderInfo[];
+      const orderKeys = orders.flatMap(getOrderKeys);
+      setCanellingOrdersKeys((p) => uniq(p.concat(orderKeys)));
+
+      const batchParams = {
+        createOrderParams: [],
+        updateOrderParams: [],
+        cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
+      };
 
       let approximateExpressParams = isExpressEnabled
         ? await getApproximateEstimatedExpressParams({
             signer,
             chainId,
-            batchParams: {
-              createOrderParams: [],
-              updateOrderParams: [],
-              cancelOrderParams: keys.map((key) => ({ orderKey: key })),
-            },
+            batchParams,
             subaccount,
             gasPaymentTokenAddress: relayFeeTokens.gasPaymentToken?.address,
             tokensData,
@@ -460,11 +472,7 @@ function useOrdersControl() {
         chainId,
         signer,
         expressParams: approximateExpressParams?.expressParams,
-        batchParams: {
-          createOrderParams: [],
-          updateOrderParams: [],
-          cancelOrderParams: keys.map((key) => ({ orderKey: key })),
-        },
+        batchParams,
         simulationParams: undefined,
         callback: makeOrderTxnCallback({}),
       })
@@ -475,7 +483,7 @@ function useOrdersControl() {
           }
         })
         .finally(() => {
-          setCanellingOrdersKeys((p) => p.filter((e) => !keys.includes(e)));
+          setCanellingOrdersKeys((p) => p.filter((e) => !orderKeys.includes(e)));
         });
     },
     [
@@ -489,6 +497,7 @@ function useOrdersControl() {
       l1Reference,
       makeOrderTxnCallback,
       marketsInfoData,
+      ordersInfoData,
       relayFeeTokens.findSwapPath,
       relayFeeTokens.gasPaymentToken?.address,
       selectedOrderKeys,
@@ -502,16 +511,23 @@ function useOrdersControl() {
   const onCancelOrder = useCallback(
     async function cancelOrder(key: string) {
       if (!signer) return;
+      const order = getByKey(ordersInfoData, key);
+      if (!order) return;
 
-      setCanellingOrdersKeys((p) => uniq(p.concat(key)));
+      const orderKeys = getOrderKeys(order);
+
+      setCanellingOrdersKeys((p) => uniq(p.concat(orderKeys)));
+
+      const batchParams = {
+        createOrderParams: [],
+        updateOrderParams: [],
+        cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
+      };
+
       const expressParams = await getApproximateEstimatedExpressParams({
         signer,
         chainId,
-        batchParams: {
-          createOrderParams: [],
-          updateOrderParams: [],
-          cancelOrderParams: [{ orderKey: key }],
-        },
+        batchParams,
         subaccount,
         gasPaymentTokenAddress: relayFeeTokens.gasPaymentToken?.address,
         tokensData,
@@ -530,11 +546,7 @@ function useOrdersControl() {
         chainId,
         signer,
         expressParams: expressParams?.expressParams,
-        batchParams: {
-          createOrderParams: [],
-          updateOrderParams: [],
-          cancelOrderParams: [{ orderKey: key }],
-        },
+        batchParams,
         simulationParams: undefined,
         callback: makeOrderTxnCallback({}),
       }).finally(() => {
@@ -552,6 +564,7 @@ function useOrdersControl() {
       l1Reference,
       makeOrderTxnCallback,
       marketsInfoData,
+      ordersInfoData,
       relayFeeTokens.findSwapPath,
       relayFeeTokens.gasPaymentToken?.address,
       setCanellingOrdersKeys,

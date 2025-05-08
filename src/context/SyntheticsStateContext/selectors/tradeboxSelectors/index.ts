@@ -18,8 +18,7 @@ import {
   getMaxLeverageByMinCollateralFactor,
   getTradeboxLeverageSliderMarks,
 } from "domain/synthetics/markets";
-import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
-import { chooseSuitableMarket } from "domain/synthetics/markets/chooseSuitableMarket";
+import { PreferredTradeTypePickStrategy, chooseSuitableMarket } from "domain/synthetics/markets/chooseSuitableMarket";
 import { DecreasePositionSwapType, isLimitOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import {
   TokenData,
@@ -35,6 +34,7 @@ import {
   SwapAmounts,
   SwapOptimizationOrderArray,
   TradeFeesType,
+  TradeMode,
   TradeType,
   getMarkPrice,
   getNextPositionExecutionPrice,
@@ -46,7 +46,7 @@ import { getPositionKey } from "lib/legacy";
 import { PRECISION, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
-import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { createTradeFlags } from "sdk/utils/trade";
@@ -321,6 +321,8 @@ export const selectTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradebox.
 export const selectSetTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradebox.setAllowedSlippage;
 export const selectTradeboxTokensAllowance = (s: SyntheticsState) => s.tradebox.tokensAllowance;
 export const selectTradeBoxTokensAllowanceLoaded = (s: SyntheticsState) => s.tradebox.tokensAllowance.isLoaded;
+export const selectTradeboxTwapDuration = (s: SyntheticsState) => s.tradebox.duration;
+export const selectTradeboxTwapNumberOfParts = (s: SyntheticsState) => s.tradebox.numberOfParts;
 
 export const selectTradeboxTotalSwapImpactBps = createSelector((q) => {
   const fees = q(selectTradeboxFees);
@@ -590,6 +592,14 @@ export const selectTradeboxTradeFeesType = createSelector(
 );
 
 const selectTradeboxEstimatedGas = createSelector(function selectTradeboxEstimatedGas(q) {
+  const gasLimit = q(selectTradeboxOrderGasLimit);
+
+  if (gasLimit === null) return null;
+
+  return gasLimit;
+});
+
+const selectTradeboxOrderGasLimit = createSelector(function selectTradeboxOrderGasLimit(q) {
   const tradeFeesType = q(selectTradeboxTradeFeesType);
 
   if (!tradeFeesType) return null;
@@ -674,7 +684,18 @@ export const selectTradeboxExecutionFee = createSelector(function selectTradebox
 
   const oraclePriceCount = estimateOrderOraclePriceCount(swapsCount);
 
-  return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
+  const tradeMode = q(selectTradeboxTradeMode);
+  const numberOfParts = q(selectTradeboxTwapNumberOfParts);
+
+  return getExecutionFee(
+    chainId,
+    gasLimits,
+    tokensData,
+    estimatedGas,
+    gasPrice,
+    oraclePriceCount,
+    tradeMode === TradeMode.Twap ? numberOfParts : undefined
+  );
 });
 
 export const selectTradeboxTriggerRatioValue = createSelector(function selectTradeboxTriggerRatioValue(q) {

@@ -5,6 +5,8 @@ import { getApproximateEstimatedExpressParams } from "domain/synthetics/express/
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import { OrderInfo } from "sdk/types/orders";
+import { getOrderKeys } from "sdk/utils/orders";
 
 import {
   makeSelectIsExpressTransactionAvailable,
@@ -43,7 +45,7 @@ export const useOrderErrorsByOrderKeyMap = () => useSelector(selectOrderErrorsBy
 
 export const useOrderErrorsCount = () => useSelector(selectOrderErrorsCount);
 
-export function useCancelOrder(orderKey: string) {
+export function useCancelOrder(order: OrderInfo) {
   const chainId = useSelector(selectChainId);
   const signer = useEthersSigner();
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
@@ -60,23 +62,27 @@ export function useCancelOrder(orderKey: string) {
   const isExpressEnabled = useSelector(makeSelectIsExpressTransactionAvailable(false));
   const isSponsoredCallAvailable = useSelector(selectIsSponsoredCallAvailable);
 
-  const isCancelOrderProcessing = cancellingOrdersKeys.includes(orderKey);
+  const isCancelOrderProcessing = cancellingOrdersKeys.includes(order.key);
 
   const onCancelOrder = useCallback(
     async function cancelOrder() {
       if (!signer) return;
 
-      setCancellingOrdersKeys((p) => uniq(p.concat(orderKey)));
+      setCancellingOrdersKeys((p) => uniq(p.concat(order.key)));
+
+      const orderKeys = getOrderKeys(order);
+
+      const batchParams = {
+        createOrderParams: [],
+        updateOrderParams: [],
+        cancelOrderParams: orderKeys.map((k) => ({ orderKey: k })),
+      };
 
       let approximateExpressParams = isExpressEnabled
         ? await getApproximateEstimatedExpressParams({
             signer,
             chainId,
-            batchParams: {
-              createOrderParams: [],
-              updateOrderParams: [],
-              cancelOrderParams: [{ orderKey }],
-            },
+            batchParams,
             subaccount,
             gasPaymentTokenAddress: relayFeeTokens.gasPaymentToken?.address,
             tokensData,
@@ -100,16 +106,12 @@ export function useCancelOrder(orderKey: string) {
       sendBatchOrderTxn({
         chainId,
         signer,
-        batchParams: {
-          createOrderParams: [],
-          updateOrderParams: [],
-          cancelOrderParams: [{ orderKey }],
-        },
+        batchParams,
         expressParams: approximateExpressParams?.expressParams,
         simulationParams: undefined,
         callback: makeOrderTxnCallback({}),
       }).finally(() => {
-        setCancellingOrdersKeys((prev) => prev.filter((k) => k !== orderKey));
+        setCancellingOrdersKeys((prev) => prev.filter((k) => k !== order.key));
       });
     },
     [
@@ -123,7 +125,7 @@ export function useCancelOrder(orderKey: string) {
       l1Reference,
       makeOrderTxnCallback,
       marketsInfoData,
-      orderKey,
+      order,
       relayFeeTokens.findSwapPath,
       relayFeeTokens.gasPaymentToken?.address,
       setCancellingOrdersKeys,

@@ -5,9 +5,14 @@ import {
   buildDecreaseOrderPayload,
   buildIncreaseOrderPayload,
   buildSwapOrderPayload,
+  buildTwapOrdersPayloads,
+  DecreasePositionOrderParams,
+  IncreasePositionOrderParams,
+  SwapOrderParams,
 } from "sdk/utils/orderTransactions";
 
-import { selectAccount, selectChainId, selectUserReferralInfo } from "../globalSelectors";
+import { selectAccount, selectChainId, selectMaxAutoCancelOrders, selectUserReferralInfo } from "../globalSelectors";
+import { makeSelectOrdersByPositionKey } from "../orderSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxCollateralTokenAddress,
@@ -17,11 +22,14 @@ import {
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxMarketAddress,
   selectTradeboxMarketInfo,
+  selectTradeboxSelectedPositionKey,
   selectTradeboxSwapAmounts,
   selectTradeboxToTokenAddress,
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
+  selectTradeboxTwapDuration,
+  selectTradeboxTwapNumberOfParts,
 } from "../tradeboxSelectors";
 
 export const selectTradeBoxCreateOrderParams = createSelector((q) => {
@@ -69,16 +77,18 @@ export const selectTradeboxSwapOrderPayload = createSelector((q) => {
   const toTokenAddress = q(selectTradeboxToTokenAddress);
   const swapAmounts = q(selectTradeboxSwapAmounts);
   const { triggerRatio } = q(selectTradeboxTradeRatios);
-  const { isLimit, isMarket } = q(selectTradeboxTradeFlags);
+  const { isLimit, isMarket, isTwap } = q(selectTradeboxTradeFlags);
   const allowedSlippage = q(selectTradeboxAllowedSlippage);
+  const duration = q(selectTradeboxTwapDuration);
+  const numberOfParts = q(selectTradeboxTwapNumberOfParts);
 
   if (!commonParams || !fromTokenAddress || !toTokenAddress || !swapAmounts) {
     return undefined;
   }
 
-  const orderType = isLimit ? OrderType.LimitSwap : OrderType.MarketSwap;
+  const orderType = isLimit || isTwap ? OrderType.LimitSwap : OrderType.MarketSwap;
 
-  return buildSwapOrderPayload({
+  const swapOrderParams: SwapOrderParams = {
     ...commonParams,
     payTokenAddress: fromTokenAddress,
     payTokenAmount: swapAmounts.amountIn,
@@ -89,7 +99,18 @@ export const selectTradeboxSwapOrderPayload = createSelector((q) => {
     externalSwapQuote: undefined,
     allowedSlippage: isMarket ? allowedSlippage : 0,
     orderType,
-  });
+    validFromTime: 0n,
+    uiFeeReceiver: commonParams.uiFeeReceiver,
+  };
+
+  if (isTwap) {
+    return buildTwapOrdersPayloads(swapOrderParams, {
+      duration,
+      numberOfParts,
+    });
+  }
+
+  return [buildSwapOrderPayload(swapOrderParams)];
 });
 
 export const selectTradeboxIncreaseOrderParams = createSelector((q) => {
@@ -99,9 +120,11 @@ export const selectTradeboxIncreaseOrderParams = createSelector((q) => {
   const marketAddress = q(selectTradeboxMarketAddress);
   const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
   const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
-  const { isLimit, isLong, isMarket } = q(selectTradeboxTradeFlags);
+  const { isLimit, isLong, isMarket, isTwap } = q(selectTradeboxTradeFlags);
   const allowedSlippage = q(selectTradeboxAllowedSlippage);
   const triggerPrice = q(selectTradeboxTriggerPrice);
+  const duration = q(selectTradeboxTwapDuration);
+  const numberOfParts = q(selectTradeboxTwapNumberOfParts);
 
   if (
     !commonParams ||
@@ -114,10 +137,9 @@ export const selectTradeboxIncreaseOrderParams = createSelector((q) => {
     return undefined;
   }
 
-  const orderType = increaseAmounts.limitOrderType ?? OrderType.MarketIncrease;
-  // TODO: External swap handling here!!!!!!!
+  const orderType = increaseAmounts.limitOrderType ?? (isTwap ? OrderType.LimitIncrease : OrderType.MarketIncrease);
 
-  return buildIncreaseOrderPayload({
+  const increaseOrderParams: IncreasePositionOrderParams = {
     ...commonParams,
     payTokenAddress: fromTokenAddress,
     payTokenAmount: increaseAmounts.initialCollateralAmount,
@@ -134,7 +156,18 @@ export const selectTradeboxIncreaseOrderParams = createSelector((q) => {
     marketAddress,
     indexTokenAddress,
     allowedSlippage: isMarket ? allowedSlippage : 0,
-  });
+    validFromTime: 0n,
+    uiFeeReceiver: commonParams.uiFeeReceiver,
+  };
+
+  if (isTwap) {
+    return buildTwapOrdersPayloads(increaseOrderParams, {
+      duration,
+      numberOfParts,
+    });
+  }
+
+  return [buildIncreaseOrderPayload(increaseOrderParams)];
 });
 
 export const selectTradeboxDecreaseOrderParams = createSelector((q) => {
@@ -142,7 +175,12 @@ export const selectTradeboxDecreaseOrderParams = createSelector((q) => {
   const marketInfo = q(selectTradeboxMarketInfo);
   const collateralTokenAddress: string | undefined = q(selectTradeboxCollateralTokenAddress);
   const decreaseAmounts = q(selectTradeboxDecreasePositionAmounts);
-  const { isLong } = q(selectTradeboxTradeFlags);
+  const selectedPositionKey = q(selectTradeboxSelectedPositionKey);
+  const maxAutoCancelOrders = q(selectMaxAutoCancelOrders);
+  const positionOrders = q(makeSelectOrdersByPositionKey(selectedPositionKey));
+  const { isLong, isTwap } = q(selectTradeboxTradeFlags);
+  const duration = q(selectTradeboxTwapDuration);
+  const numberOfParts = q(selectTradeboxTwapNumberOfParts);
 
   if (
     !commonParams ||
@@ -154,7 +192,11 @@ export const selectTradeboxDecreaseOrderParams = createSelector((q) => {
     return undefined;
   }
 
-  return buildDecreaseOrderPayload({
+  const existingAutoCancelOrders = positionOrders.filter((order) => order.autoCancel);
+  const allowedAutoCancelOrdersNumber = Number(maxAutoCancelOrders);
+  const autoCancelOrdersLimit = allowedAutoCancelOrdersNumber - existingAutoCancelOrders.length;
+
+  const decreaseOrderParams: DecreasePositionOrderParams = {
     ...commonParams,
     orderType: decreaseAmounts.triggerOrderType,
     marketAddress: marketInfo.marketTokenAddress,
@@ -172,5 +214,17 @@ export const selectTradeboxDecreaseOrderParams = createSelector((q) => {
     allowedSlippage: 0,
     minOutputUsd: 0n,
     isLong,
-  });
+    validFromTime: 0n,
+    uiFeeReceiver: commonParams.uiFeeReceiver,
+    autoCancel: !isTwap && autoCancelOrdersLimit > 0,
+  };
+
+  if (isTwap) {
+    return buildTwapOrdersPayloads(decreaseOrderParams, {
+      duration,
+      numberOfParts,
+    });
+  }
+
+  return [buildDecreaseOrderPayload(decreaseOrderParams)];
 });

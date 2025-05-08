@@ -61,6 +61,7 @@ export function useSidecarOrderPayloads() {
         decreasePositionSwapType: amounts.decreaseSwapType,
         executionFeeAmount: getExecutionFeeAmountForEntry(entry) ?? 0n,
         executionGasLimit: 0n, // Don't need for tp/sl entries
+        validFromTime: 0n,
       });
     });
 

@@ -13,6 +13,7 @@ import {
   isTriggerDecreaseOrderType,
   isVisibleOrder,
 } from "sdk/utils/orders";
+import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
 
 import type {
   MarketFilterLongShortDirection,
@@ -21,6 +22,7 @@ import type {
 
 import type { MarketsInfoData } from "../markets/types";
 import { getSwapPathOutputAddresses } from "../trade";
+import { OrderTypeFilterValue, convertOrderTypeFilterValues } from "./ordersFilters";
 import { DecreasePositionSwapType, OrderType, OrdersData } from "./types";
 
 type OrdersResult = {
@@ -40,7 +42,7 @@ export function useOrders(
   }: {
     account?: string | null;
     marketsDirectionsFilter?: MarketFilterLongShortItemData[];
-    orderTypesFilter?: OrderType[];
+    orderTypesFilter?: OrderTypeFilterValue[];
     marketsInfoData?: MarketsInfoData;
   }
 ): OrdersResult {
@@ -115,7 +117,11 @@ export function useOrders(
       let matchByOrderType = true;
 
       if (orderTypesFilter.length > 0) {
-        matchByOrderType = orderTypesFilter.includes(order.orderType);
+        const { type, groupType } = convertOrderTypeFilterValues(orderTypesFilter);
+
+        const twapParams = decodeTwapUiFeeReceiver(order.uiFeeReceiver);
+        const orderGroupType = twapParams ? "twap" : "none";
+        matchByOrderType = type.includes(order.orderType) && groupType.includes(orderGroupType);
       }
 
       return matchByMarketResult && matchByOrderType;
@@ -208,6 +214,8 @@ function parseResponse(res: MulticallResult<ReturnType<typeof buildUseOrdersMult
         orderType: order.numbers.orderType as OrderType,
         decreasePositionSwapType: order.numbers.decreasePositionSwapType as DecreasePositionSwapType,
         autoCancel: order.flags.autoCancel as boolean,
+        uiFeeReceiver: order.addresses.uiFeeReceiver as Address,
+        validFromTime: BigInt(order.numbers.validFromTime),
         data,
       };
     }),

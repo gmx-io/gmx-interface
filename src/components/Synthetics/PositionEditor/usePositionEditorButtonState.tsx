@@ -179,6 +179,7 @@ export function usePositionEditorButtonState(operation: Operation): {
         uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT,
         allowedSlippage,
         autoCancel: false,
+        validFromTime: 0n,
       });
     } else {
       if (receiveUsd === undefined) {
@@ -208,6 +209,7 @@ export function usePositionEditorButtonState(operation: Operation): {
         acceptablePrice: markPrice,
         triggerPrice: undefined,
         autoCancel: false,
+        validFromTime: 0n,
       });
     }
 

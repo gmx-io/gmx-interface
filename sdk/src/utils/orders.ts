@@ -1,6 +1,14 @@
 import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS } from "configs/factors";
 import { MarketsInfoData } from "types/markets";
-import { Order, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo } from "types/orders";
+import {
+  Order,
+  OrderInfo,
+  OrderParams,
+  OrderType,
+  PositionOrderInfo,
+  SwapOrderInfo,
+  TwapOrderInfo,
+} from "types/orders";
 import { Token, TokensData } from "types/tokens";
 import { getSwapPathOutputAddresses, getSwapPathStats } from "utils/swap/swapStats";
 
@@ -64,6 +72,30 @@ export function isLimitIncreaseOrderType(orderType: OrderType) {
 
 export function isStopIncreaseOrderType(orderType: OrderType) {
   return orderType === OrderType.StopIncrease;
+}
+
+export function isTwapOrder<T extends OrderParams>(orderInfo: T): orderInfo is Extract<T, { isTwap: true }> {
+  return orderInfo.isTwap;
+}
+
+export function isTwapSwapOrder(orderInfo: OrderInfo): orderInfo is TwapOrderInfo<SwapOrderInfo> {
+  return orderInfo.isTwap && orderInfo.isSwap;
+}
+
+export function isTwapPositionOrder(orderInfo: OrderInfo): orderInfo is TwapOrderInfo<PositionOrderInfo> {
+  return orderInfo.isTwap && !orderInfo.isSwap;
+}
+
+export function isSwapOrder(orderInfo: OrderInfo): orderInfo is SwapOrderInfo {
+  return orderInfo.isSwap;
+}
+
+export function isPositionOrder(orderInfo: OrderInfo): orderInfo is PositionOrderInfo {
+  return !orderInfo.isSwap;
+}
+
+export function getOrderKeys(order: OrderInfo) {
+  return isTwapOrder(order) ? order.orders.map((o) => o.key) : [order.key];
 }
 
 export function getOrderInfo(p: {
@@ -156,6 +188,8 @@ export function getOrderInfo(p: {
       triggerRatio,
       initialCollateralToken,
       targetCollateralToken,
+      isSwap: true,
+      isTwap: false,
     };
 
     return orderInfo;
@@ -208,6 +242,8 @@ export function getOrderInfo(p: {
       acceptablePrice,
       triggerPrice,
       triggerThresholdType,
+      isSwap: false,
+      isTwap: false,
     };
 
     return orderInfo;

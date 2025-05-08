@@ -11,7 +11,7 @@ import { TxnCallback, TxnEventBuilder } from "lib/transactions/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { getContract } from "sdk/configs/contracts";
 import { sleep } from "sdk/utils/common";
-import { BatchOrderTxnParams, getBatchOrderMulticallPayload } from "sdk/utils/orderTransactions";
+import { BatchOrderTxnParams, getBatchOrderMulticallPayload, isTwapOrderPayload } from "sdk/utils/orderTransactions";
 
 import { signerAddressError } from "components/Errors/errorToasts";
 
@@ -146,7 +146,9 @@ export const makeBatchOrderSimulation = async ({
     });
   }
 
-  const isSimulationAllowed = params.createOrderParams.every((co) => !isLimitSwapOrderType(co.orderPayload.orderType));
+  const isSimulationAllowed = params.createOrderParams.every(
+    (co) => !isLimitSwapOrderType(co.orderPayload.orderType) && !isTwapOrderPayload(co.orderPayload)
+  );
 
   if (params.createOrderParams.length === 0 || !isSimulationAllowed) {
     return Promise.resolve();

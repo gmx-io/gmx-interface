@@ -4,6 +4,7 @@ export type Item<T> = {
    */
   text: string;
   data: T;
+  hidden?: boolean;
 };
 
 export type Group<T> = {

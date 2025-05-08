@@ -50,7 +50,6 @@ export function SettingsModal({
     if (settings.settingsWarningDotVisible) {
       settings.setSettingsWarningDotVisible(false);
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSettingsVisible]);
 
@@ -94,6 +93,20 @@ export function SettingsModal({
       }
 
       settings.setExecutionFeeBufferBps(nextExecutionBufferFeeBps);
+    },
+    [settings]
+  );
+
+  const onChangeTwapNumberOfParts = useCallback(
+    (value: number) => {
+      const numberOfParts = parseInt(String(value));
+
+      if (isNaN(numberOfParts) || numberOfParts < 0) {
+        helperToast.error(t`Invalid TWAP number of parts value`);
+        return;
+      }
+
+      settings.setSavedTWAPNumberOfParts(numberOfParts);
     },
     [settings]
   );
@@ -204,6 +217,19 @@ export function SettingsModal({
               defaultValue={DEFAULT_SLIPPAGE_AMOUNT}
               value={parseFloat(String(settings.savedAllowedSlippage))}
               onChange={onChangeSlippage}
+              suggestions={EMPTY_ARRAY}
+            />
+
+            <InputSetting
+              title={<Trans>TWAP Number of Parts</Trans>}
+              description={
+                <div>
+                  <Trans>TWAP Number of Parts</Trans>
+                </div>
+              }
+              defaultValue={30}
+              value={parseFloat(String(settings.savedTwapNumberOfParts))}
+              onChange={onChangeTwapNumberOfParts}
               suggestions={EMPTY_ARRAY}
             />
 

@@ -118,6 +118,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
           swapPath: [],
           externalSwapQuote: undefined,
           minOutputUsd: 0n,
+          validFromTime: 0n,
         })
       ),
       updateOrderParams: [],

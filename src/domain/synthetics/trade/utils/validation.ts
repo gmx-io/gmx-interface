@@ -21,6 +21,8 @@ import { DUST_USD, isAddressZero } from "lib/legacy";
 import { PRECISION, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { MAX_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
+import { MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import {
   ExternalSwapQuote,
   GmSwapFees,
@@ -97,6 +99,8 @@ export function getSwapError(p: {
   externalSwapQuote: ExternalSwapQuote | undefined;
   isWrapOrUnwrap: boolean;
   swapLiquidity: bigint | undefined;
+  isTwap: boolean;
+  numberOfParts: number;
 }): ValidationResult {
   const {
     fromToken,
@@ -112,6 +116,8 @@ export function getSwapError(p: {
     swapLiquidity,
     swapPathStats,
     externalSwapQuote,
+    isTwap,
+    numberOfParts,
   } = p;
 
   if (!fromToken || !toToken) {
@@ -178,6 +184,14 @@ export function getSwapError(p: {
     }
   }
 
+  if (isTwap && numberOfParts < MIN_TWAP_NUMBER_OF_PARTS) {
+    return [t`Min number of parts: ${MIN_TWAP_NUMBER_OF_PARTS}`];
+  }
+
+  if (isTwap && numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
+    return [t`Max number of parts: ${MAX_TWAP_NUMBER_OF_PARTS}`];
+  }
+
   return [undefined];
 }
 
@@ -203,8 +217,10 @@ export function getIncreaseError(p: {
   minCollateralUsd: bigint | undefined;
   isLong: boolean;
   isLimit: boolean;
+  isTwap: boolean;
   nextLeverageWithoutPnl: bigint | undefined;
   thresholdType: TriggerThresholdType | undefined;
+  numberOfParts: number;
   minPositionSizeUsd: bigint | undefined;
 }): ValidationResult {
   const {
@@ -230,6 +246,8 @@ export function getIncreaseError(p: {
     isLimit,
     nextPositionValues,
     nextLeverageWithoutPnl,
+    isTwap,
+    numberOfParts,
     minPositionSizeUsd,
   } = p;
 
@@ -287,6 +305,16 @@ export function getIncreaseError(p: {
 
   // Hardcoded for Odyssey
   const _minCollateralUsd = expandDecimals(2, USD_DECIMALS);
+
+  const minTwapPartSize = _minCollateralUsd / 2n;
+  if (
+    !existingPosition &&
+    isTwap &&
+    numberOfParts > 0 &&
+    (collateralUsd === undefined ? undefined : collateralUsd / BigInt(numberOfParts) < minTwapPartSize)
+  ) {
+    return [t`Min size per part: ${formatUsd(minTwapPartSize)}`];
+  }
 
   if (!existingPosition && (collateralUsd === undefined ? undefined : collateralUsd < _minCollateralUsd)) {
     return [t`Min order: ${formatUsd(_minCollateralUsd)}`];
@@ -372,6 +400,14 @@ export function getIncreaseError(p: {
     }
   }
 
+  if (isTwap && numberOfParts < MIN_TWAP_NUMBER_OF_PARTS) {
+    return [t`Min number of parts: ${MIN_TWAP_NUMBER_OF_PARTS}`];
+  }
+
+  if (isTwap && numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
+    return [t`Max number of parts: ${MAX_TWAP_NUMBER_OF_PARTS}`];
+  }
+
   return [undefined];
 }
 
@@ -417,6 +453,8 @@ export function getDecreaseError(p: {
   isNotEnoughReceiveTokenLiquidity: boolean;
   triggerThresholdType: TriggerThresholdType | undefined;
   minPositionSizeUsd: bigint | undefined;
+  isTwap: boolean;
+  numberOfParts: number;
 }): ValidationResult {
   const {
     marketInfo,
@@ -433,6 +471,8 @@ export function getDecreaseError(p: {
     minCollateralUsd,
     isNotEnoughReceiveTokenLiquidity,
     triggerThresholdType,
+    isTwap,
+    numberOfParts,
   } = p;
 
   if (isContractAccount && isAddressZero(receiveToken?.address)) {
@@ -494,6 +534,14 @@ export function getDecreaseError(p: {
 
   if (isNotEnoughReceiveTokenLiquidity) {
     return [t`Insufficient receive token liquidity`];
+  }
+
+  if (isTwap && numberOfParts < MIN_TWAP_NUMBER_OF_PARTS) {
+    return [t`Min number of parts: ${MIN_TWAP_NUMBER_OF_PARTS}`];
+  }
+
+  if (isTwap && numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
+    return [t`Max number of parts: ${MAX_TWAP_NUMBER_OF_PARTS}`];
   }
 
   return [undefined];

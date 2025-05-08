@@ -411,7 +411,7 @@ export function OrderEditor(p: Props) {
       };
     }
 
-    const orderTypeName = getNameByOrderType(p.order.orderType);
+    const orderTypeName = getNameByOrderType(p.order.orderType, p.order.isTwap);
 
     return {
       text: `Update ${orderTypeName} Order`,

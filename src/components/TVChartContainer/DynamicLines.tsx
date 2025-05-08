@@ -38,6 +38,7 @@ import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 import { PositionOrderInfo } from "sdk/types/orders";
+import { getOrderKeys } from "sdk/utils/orders";
 
 import { DynamicLine } from "./DynamicLine";
 import type { IChartingLibraryWidget } from "../../charting_library";
@@ -75,17 +76,24 @@ export function DynamicLines({
   const onCancelOrder = useCallback(
     async (key: string) => {
       if (!signer) return;
-      setCancellingOrdersKeys((prev) => [...prev, key]);
+      const order = getByKey(ordersInfoData, key);
+
+      if (!order) return;
+
+      const orderKeys = getOrderKeys(order);
+      setCancellingOrdersKeys((prev) => [...prev, ...orderKeys]);
+
+      const batchParams = {
+        createOrderParams: [],
+        updateOrderParams: [],
+        cancelOrderParams: orderKeys.map((k) => ({ orderKey: k })),
+      };
 
       let approximateExpressParams = isExpressEnabled
         ? await getApproximateEstimatedExpressParams({
             signer,
             chainId,
-            batchParams: {
-              createOrderParams: [],
-              updateOrderParams: [],
-              cancelOrderParams: [{ orderKey: key }],
-            },
+            batchParams,
             subaccount,
             gasPaymentTokenAddress: relayFeeTokens.gasPaymentToken?.address,
             tokensData,
@@ -109,11 +117,7 @@ export function DynamicLines({
       sendBatchOrderTxn({
         chainId,
         signer,
-        batchParams: {
-          createOrderParams: [],
-          updateOrderParams: [],
-          cancelOrderParams: [{ orderKey: key }],
-        },
+        batchParams,
         expressParams: approximateExpressParams?.expressParams,
         simulationParams: undefined,
         callback: makeOrderTxnCallback({}),
@@ -132,6 +136,7 @@ export function DynamicLines({
       l1Reference,
       makeOrderTxnCallback,
       marketsInfoData,
+      ordersInfoData,
       relayFeeTokens.findSwapPath,
       relayFeeTokens.gasPaymentToken?.address,
       setCancellingOrdersKeys,

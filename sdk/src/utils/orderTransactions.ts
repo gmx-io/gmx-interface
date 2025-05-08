@@ -7,11 +7,14 @@ import { convertTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "configs/tok
 import { DecreasePositionSwapType, OrderType } from "types/orders";
 import { ContractPrice, ERC20Address } from "types/tokens";
 import { ExternalSwapOutput } from "types/trade";
+import { TwapOrderParams } from "types/twap";
 
 import { MaxUint256 } from "./numbers";
-import { isSwapOrderType } from "./orders";
+import { isIncreaseOrderType, isSwapOrderType } from "./orders";
 import { convertToContractPrice } from "./tokens";
 import { applySlippageToMinOut, applySlippageToPrice } from "./trade";
+import { getTwapValidFromTime } from "./twap";
+import { createTwapUiFeeReceiver } from "./twap/uiFeeReceiver";
 
 type ExchangeRouterCall = {
   method: string;
@@ -138,6 +141,7 @@ export type CommonOrderParams = {
   uiFeeReceiver: string | undefined;
   allowedSlippage: number;
   autoCancel: boolean;
+  validFromTime: bigint | undefined;
 };
 
 export type PositionOrderParams = {
@@ -198,7 +202,7 @@ export function buildSwapOrderPayload(p: SwapOrderParams): CreateOrderTxnParams<
       receiver: p.receiver,
       cancellationReceiver: zeroAddress,
       callbackContract: zeroAddress,
-      uiFeeReceiver: p.uiFeeReceiver ?? zeroAddress,
+      uiFeeReceiver: p.uiFeeReceiver ?? zeroHash,
       market: zeroAddress,
       initialCollateralToken: tokenTransfersParams.initialCollateralTokenAddress,
       swapPath: tokenTransfersParams.swapPath,
@@ -212,7 +216,7 @@ export function buildSwapOrderPayload(p: SwapOrderParams): CreateOrderTxnParams<
       executionFee: p.executionFeeAmount,
       callbackGasLimit: 0n,
       minOutputAmount: applySlippageToMinOut(p.allowedSlippage, tokenTransfersParams.minOutputAmount),
-      validFromTime: 0n,
+      validFromTime: p.validFromTime ?? 0n,
     },
     orderType: p.orderType,
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
@@ -244,7 +248,7 @@ export function buildIncreaseOrderPayload(
       receiver: p.receiver,
       cancellationReceiver: zeroAddress,
       callbackContract: zeroAddress,
-      uiFeeReceiver: p.uiFeeReceiver ?? zeroAddress,
+      uiFeeReceiver: p.uiFeeReceiver ?? zeroHash,
       market: p.marketAddress,
       initialCollateralToken: tokenTransfersParams.initialCollateralTokenAddress,
       swapPath: tokenTransfersParams.swapPath,
@@ -260,7 +264,7 @@ export function buildIncreaseOrderPayload(
       executionFee: p.executionFeeAmount,
       callbackGasLimit: 0n,
       minOutputAmount: applySlippageToMinOut(p.allowedSlippage, tokenTransfersParams.minOutputAmount),
-      validFromTime: 0n,
+      validFromTime: p.validFromTime ?? 0n,
     },
     orderType: p.orderType,
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
@@ -281,7 +285,6 @@ export function buildDecreaseOrderPayload(
   p: DecreasePositionOrderParams
 ): CreateOrderTxnParams<DecreasePositionOrderParams> {
   const indexToken = getToken(p.chainId, p.indexTokenAddress);
-
   const tokenTransfersParams = buildTokenTransfersParamsForDecrease(p);
 
   const orderPayload: CreateOrderPayload = {
@@ -289,7 +292,7 @@ export function buildDecreaseOrderPayload(
       receiver: p.receiver,
       cancellationReceiver: zeroAddress,
       callbackContract: zeroAddress,
-      uiFeeReceiver: p.uiFeeReceiver ?? zeroAddress,
+      uiFeeReceiver: p.uiFeeReceiver ?? zeroHash,
       market: p.marketAddress,
       initialCollateralToken: tokenTransfersParams.initialCollateralTokenAddress,
       swapPath: tokenTransfersParams.swapPath,
@@ -305,7 +308,7 @@ export function buildDecreaseOrderPayload(
       executionFee: p.executionFeeAmount,
       callbackGasLimit: 0n,
       minOutputAmount: applySlippageToMinOut(p.allowedSlippage, tokenTransfersParams.minOutputAmount),
-      validFromTime: 0n,
+      validFromTime: p.validFromTime ?? 0n,
     },
     orderType: p.orderType,
     decreasePositionSwapType: p.decreasePositionSwapType,
@@ -320,6 +323,59 @@ export function buildDecreaseOrderPayload(
     orderPayload,
     tokenTransfersParams,
   };
+}
+
+export function buildTwapOrdersPayloads<
+  T extends SwapOrderParams | IncreasePositionOrderParams | DecreasePositionOrderParams,
+>(p: T, twapParams: TwapOrderParams) {
+  if (isSwapOrderType(p.orderType)) {
+    return Array.from({ length: twapParams.numberOfParts }, (_, i) => {
+      const params = p as SwapOrderParams;
+      const uiFeeReceiver = createTwapUiFeeReceiver(twapParams);
+
+      return buildSwapOrderPayload({
+        ...params,
+        payTokenAmount: params.payTokenAmount / BigInt(twapParams.numberOfParts),
+        executionFeeAmount: params.executionFeeAmount / BigInt(twapParams.numberOfParts),
+        validFromTime: getTwapValidFromTime(twapParams.duration, twapParams.numberOfParts, i),
+        uiFeeReceiver,
+      });
+    });
+  }
+
+  if (isIncreaseOrderType(p.orderType)) {
+    return Array.from({ length: twapParams.numberOfParts }, (_, i) => {
+      const params = p as IncreasePositionOrderParams;
+      const uiFeeReceiver = createTwapUiFeeReceiver(twapParams);
+
+      return buildIncreaseOrderPayload({
+        ...params,
+        sizeDeltaUsd: params.sizeDeltaUsd / BigInt(twapParams.numberOfParts),
+        payTokenAmount: params.payTokenAmount / BigInt(twapParams.numberOfParts),
+        executionFeeAmount: params.executionFeeAmount / BigInt(twapParams.numberOfParts),
+        validFromTime: getTwapValidFromTime(twapParams.duration, twapParams.numberOfParts, i),
+        uiFeeReceiver,
+      });
+    });
+  }
+
+  return Array.from({ length: twapParams.numberOfParts }, (_, i) => {
+    const params = p as DecreasePositionOrderParams;
+    const uiFeeReceiver = createTwapUiFeeReceiver(twapParams);
+
+    return buildDecreaseOrderPayload({
+      ...params,
+      collateralDeltaAmount: params.collateralDeltaAmount / BigInt(twapParams.numberOfParts),
+      sizeDeltaUsd: params.sizeDeltaUsd / BigInt(twapParams.numberOfParts),
+      executionFeeAmount: params.executionFeeAmount / BigInt(twapParams.numberOfParts),
+      validFromTime: getTwapValidFromTime(twapParams.duration, twapParams.numberOfParts, i),
+      uiFeeReceiver,
+    });
+  });
+}
+
+export function isTwapOrderPayload(p: CreateOrderPayload) {
+  return p.numbers.validFromTime !== 0n;
 }
 
 export function buildUpdateOrderPayload(p: UpdateOrderParams): UpdateOrderTxnParams {
@@ -342,7 +398,7 @@ export function buildUpdateOrderPayload(p: UpdateOrderParams): UpdateOrderTxnPar
   };
 }
 
-export function getTotalExecutionFeeForOrders({
+export function getTotalExecutionFeeForBatch({
   createOrderParams,
   updateOrderParams,
 }: {
@@ -353,7 +409,7 @@ export function getTotalExecutionFeeForOrders({
   let totalExecutionGasLimit = 0n;
 
   for (const co of createOrderParams) {
-    totalExecutionFeeAmount += co.params.executionFeeAmount;
+    totalExecutionFeeAmount += co.orderPayload.numbers.executionFee;
     totalExecutionGasLimit += co.params.executionGasLimit;
   }
 
