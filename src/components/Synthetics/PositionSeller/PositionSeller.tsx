@@ -1,3 +1,4 @@
+import { MessageDescriptor } from "@lingui/core";
 import { msg, t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
@@ -45,10 +46,7 @@ import {
   selectAddTokenPermit,
   selectTokenPermits,
 } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
-import {
-  selectTradeboxAvailableTokensOptions,
-  selectTradeboxTradeFlags,
-} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
@@ -56,6 +54,7 @@ import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage, formatLiquidationPrice, getNameByOrderType } from "domain/synthetics/positions";
 import { getApprovalRequirements } from "domain/synthetics/tokens";
+import { getPositionSellerTradeFlags } from "domain/synthetics/trade";
 import { TradeType } from "domain/synthetics/trade/types";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
@@ -110,7 +109,11 @@ import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
 import "./PositionSeller.scss";
 
-const ORDER_OPTION_LABELS = {
+export type Props = {
+  setPendingTxns: (txns: any) => void;
+};
+
+const ORDER_OPTION_LABELS: Record<OrderOption, MessageDescriptor> = {
   [OrderOption.Market]: msg`Market`,
   [OrderOption.Trigger]: msg`TP/SL`,
   [OrderOption.Twap]: msg`TWAP`,
@@ -134,7 +137,6 @@ export function PositionSeller() {
   const hasOutdatedUi = useHasOutdatedUi();
   const position = useSelector(selectPositionSellerPosition);
   const toToken = position?.indexToken;
-  const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const { shouldDisableValidationForTesting } = useSettings();
   const localizedOrderOptionLabels = useLocalizedMap(ORDER_OPTION_LABELS);
@@ -243,7 +245,7 @@ export function PositionSeller() {
     swapPriceImpact: fees?.swapPriceImpact,
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
-    tradeFlags,
+    tradeFlags: getPositionSellerTradeFlags(position?.isLong, orderOption),
     payUsd: closeSizeUsd,
   });
 
@@ -962,8 +964,8 @@ export function PositionSeller() {
               )}
             </div>
 
-            <div className="pt-14">
-              {isTwap && (
+            {isTwap && (
+              <div className="pt-14">
                 <TwapRows
                   duration={duration}
                   numberOfParts={numberOfParts}
@@ -974,8 +976,8 @@ export function PositionSeller() {
                   marketInfo={position.marketInfo}
                   type="decrease"
                 />
-              )}
-            </div>
+              </div>
+            )}
 
             <div className="flex flex-col gap-14 pt-14">
               {isTrigger && maxAutoCancelOrdersWarning}

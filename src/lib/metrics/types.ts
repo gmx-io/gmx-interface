@@ -1,8 +1,8 @@
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { TwapDuration } from "domain/synthetics/trade/twap/types";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { ErrorData } from "lib/errors";
 import { TradeMode } from "sdk/types/trade";
-import { TwapDuration } from "sdk/types/twap";
 
 export type GlobalMetricData = {
   isMobileMetamask: boolean;

@@ -4,11 +4,14 @@ import { ReactNode, useCallback, useEffect } from "react";
 
 import { isDevelopment } from "config/env";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/twap";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
 import { useEnabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
 import { getIsSubaccountActive } from "domain/synthetics/subaccount";
+import { MAX_TWAP_NUMBER_OF_PARTS } from "domain/synthetics/trade/twap/utils";
+import { MIN_TWAP_NUMBER_OF_PARTS } from "domain/synthetics/trade/twap/utils";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { roundToTwoDecimals } from "lib/numbers";
@@ -104,6 +107,13 @@ export function SettingsModal({
 
       if (isNaN(numberOfParts) || numberOfParts < 0) {
         helperToast.error(t`Invalid TWAP number of parts value`);
+        return;
+      }
+
+      if (numberOfParts < MIN_TWAP_NUMBER_OF_PARTS || numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
+        helperToast.error(
+          t`Number of parts must be between ${MIN_TWAP_NUMBER_OF_PARTS} and ${MAX_TWAP_NUMBER_OF_PARTS}`
+        );
         return;
       }
 
@@ -230,7 +240,7 @@ export function SettingsModal({
                   <Trans>TWAP Number of Parts</Trans>
                 </div>
               }
-              defaultValue={30}
+              defaultValue={DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS}
               value={parseFloat(String(settings.savedTwapNumberOfParts))}
               onChange={onChangeTwapNumberOfParts}
               suggestions={EMPTY_ARRAY}

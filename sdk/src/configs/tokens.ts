@@ -899,6 +899,17 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
     },
     {
+      name: "LayerZero",
+      symbol: "ZRO",
+      address: "0xa8193C55C34Ed22e1Dbe73FD5Adc668E51578a67",
+      decimals: 18,
+      priceDecimals: 4,
+      categories: ["defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/28206/standard/ftxG9_TJ_400x400.jpeg?1696527208",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/layerzero",
+      isSynthetic: true,
+    },
+    {
       name: "GMX LP",
       symbol: "GLP",
       address: getContract(ARBITRUM, "GLP"),

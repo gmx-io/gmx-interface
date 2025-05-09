@@ -51,6 +51,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { createTradeFlags } from "sdk/utils/trade";
 
+import { selectIsExpressTransactionAvailable } from "../expressSelectors";
 import {
   selectAccount,
   selectChainId,
@@ -73,7 +74,6 @@ import {
   makeSelectNextPositionValuesForIncrease,
 } from "../tradeSelectors";
 import { selectTradeboxGetMaxLongShortLiquidityPool } from "./selectTradeboxGetMaxLongShortLiquidityPool";
-import { selectIsExpressTransactionAvailable } from "../expressSelectors";
 
 export * from "./selectTradeboxAvailableAndDisabledTokensForCollateral";
 export * from "./selectTradeboxAvailableMarketsOptions";

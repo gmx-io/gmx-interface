@@ -6,7 +6,6 @@ import { MarketInfo } from "domain/synthetics/markets";
 import {
   EditingOrderSource,
   OrderInfo,
-  OrderType,
   isLimitOrderType,
   isMarketOrderType,
   isStopIncreaseOrderType,
@@ -15,9 +14,15 @@ import {
   isTwapOrder,
 } from "domain/synthetics/orders";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
-import { ErrorLike, parseError } from "lib/errors";
-import { formatAmountForMetrics, formatPercentageForMetrics, metrics } from "lib/metrics";
-import { PositionOrderMetricParams, SwapMetricData } from "lib/metrics";
+import { getTwapDurationInSeconds } from "domain/synthetics/trade/twap/utils";
+import { parseError } from "lib/errors";
+import {
+  PositionOrderMetricParams,
+  SwapMetricData,
+  formatAmountForMetrics,
+  formatPercentageForMetrics,
+  metrics,
+} from "lib/metrics";
 import { OrderMetricData, OrderMetricId } from "lib/metrics/types";
 import { bigintToNumber, formatRatePercentage, roundToOrder } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
@@ -32,7 +37,6 @@ import {
   TradeBoxResultEvent,
   TradePageEditOrderEvent,
 } from "lib/userAnalytics/types";
-import { getTwapDurationInSeconds } from "sdk/utils/twap";
 
 export function getTradeInteractionKey(pair: string) {
   return `trade-${pair}`;
@@ -136,12 +140,8 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
           priceImpactPercentage: metricData.priceImpactPercentage,
           netRate1h: metricData.netRate1h,
-          duration:
-            metricData.tradeMode === TradeMode.Twap && metricData.duration
-              ? getTwapDurationInSeconds(metricData.duration)
-              : undefined,
-          partsCount:
-            metricData.tradeMode === TradeMode.Twap && metricData.partsCount ? metricData.partsCount : undefined,
+          duration: metricData.tradeMode === TradeMode.Twap ? getTwapDurationInSeconds(metricData.duration) : undefined,
+          partsCount: metricData.tradeMode === TradeMode.Twap ? metricData.partsCount : undefined,
         },
       });
       break;
@@ -167,12 +167,8 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
           priceImpactPercentage: metricData.priceImpactPercentage,
           netRate1h: metricData.netRate1h,
-          duration:
-            metricData.tradeMode === TradeMode.Twap && metricData.duration
-              ? getTwapDurationInSeconds(metricData.duration)
-              : undefined,
-          partsCount:
-            metricData.tradeMode === TradeMode.Twap && metricData.partsCount ? metricData.partsCount : undefined,
+          duration: metricData.tradeMode === TradeMode.Twap ? getTwapDurationInSeconds(metricData.duration) : undefined,
+          partsCount: metricData.tradeMode === TradeMode.Twap ? metricData.partsCount : undefined,
         },
       });
       break;
@@ -196,12 +192,8 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           priceImpactDeltaUsd: undefined,
           priceImpactPercentage: undefined,
           netRate1h: undefined,
-          duration:
-            metricData.tradeMode === TradeMode.Twap && metricData.duration
-              ? getTwapDurationInSeconds(metricData.duration)
-              : undefined,
-          partsCount:
-            metricData.tradeMode === TradeMode.Twap && metricData.partsCount ? metricData.partsCount : undefined,
+          duration: metricData.tradeMode === TradeMode.Twap ? getTwapDurationInSeconds(metricData.duration) : undefined,
+          partsCount: metricData.tradeMode === TradeMode.Twap ? metricData.partsCount : undefined,
         },
       });
       break;
@@ -240,7 +232,7 @@ export function sendUserAnalyticsOrderResultEvent(
   chainId: number,
   metricId: OrderMetricId,
   isSuccess: boolean,
-  error?: ErrorLike,
+  error?: Error,
   dedupKey?: string
 ) {
   let metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
@@ -263,7 +255,7 @@ export function sendUserAnalyticsOrderResultEvent(
             pair: metricData.marketName || "",
             pool: metricData.marketPoolName || "",
             type: metricData.isLong ? "Long" : "Short",
-            orderType: metricData.orderType === OrderType.MarketIncrease ? "Market" : "Limit",
+            orderType: getAnalyticsOrderTypeByTradeMode(metricData.tradeMode),
             tradeType: metricData.hasExistingPosition ? "IncreaseSize" : "InitialTrade",
             sizeDeltaUsd: metricData.sizeDeltaUsd || 0,
             leverage: metricData.leverage || "",
@@ -298,7 +290,7 @@ export function sendUserAnalyticsOrderResultEvent(
             pair: metricData.marketName || "",
             pool: metricData.marketPoolName || "",
             type: metricData.isLong ? "Long" : "Short",
-            orderType: metricData.orderType === OrderType.MarketDecrease ? "Market" : "TPSL",
+            orderType: getAnalyticsOrderTypeByTradeMode(metricData.tradeMode),
             tradeType: metricData.isFullClose ? "ClosePosition" : "DecreaseSize",
             sizeDeltaUsd: metricData.sizeDeltaUsd || 0,
             leverage: "",
@@ -318,6 +310,7 @@ export function sendUserAnalyticsOrderResultEvent(
       );
       break;
     case "swap":
+    case "twapSwap":
       userAnalytics.pushEvent<TradeBoxResultEvent>(
         {
           event: "TradeBoxAction",
@@ -326,7 +319,7 @@ export function sendUserAnalyticsOrderResultEvent(
             pair: `${metricData.initialCollateralSymbol}/${metricData.toTokenSymbol}`,
             pool: "",
             type: "Swap",
-            orderType: metricData.orderType === OrderType.MarketSwap ? "Market" : "Limit",
+            orderType: getAnalyticsOrderTypeByTradeMode(metricData.tradeMode),
             tradeType: "InitialTrade",
             amountUsd: metricData.amountUsd,
             leverage: "",
@@ -406,11 +399,8 @@ export const sendDepthChartInteractionEvent = (pair: string) => {
 
 const getAnalyticsTwapProps = (metricData: PositionOrderMetricParams | SwapMetricData) => {
   return {
-    duration:
-      metricData.tradeMode === TradeMode.Twap && metricData.duration
-        ? getTwapDurationInSeconds(metricData.duration)
-        : undefined,
-    partsCount: metricData.tradeMode === TradeMode.Twap && metricData.partsCount ? metricData.partsCount : undefined,
+    duration: metricData.tradeMode === TradeMode.Twap ? getTwapDurationInSeconds(metricData.duration) : undefined,
+    partsCount: metricData.tradeMode === TradeMode.Twap ? metricData.partsCount : undefined,
   };
 };
 

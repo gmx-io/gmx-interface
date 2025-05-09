@@ -1,4 +1,5 @@
 import { Wallet } from "ethers";
+
 import { SubaccountOnchainData } from "./useSubaccountOnchainData";
 
 export type SubaccountSerializedConfig = {

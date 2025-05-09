@@ -3,12 +3,14 @@ import { useLingui } from "@lingui/react";
 import cx from "classnames";
 import { formatDuration, type Locale as DateLocale } from "date-fns";
 import { ChangeEvent, useEffect } from "react";
+import { useLocalStorage } from "react-use";
 
+import { TWAP_INFO_CARD_CLOSED_KEY } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { TwapDuration } from "domain/synthetics/trade/twap/types";
+import { changeTwapNumberOfPartsValue } from "domain/synthetics/trade/twap/utils";
 import { formatUsd } from "lib/numbers";
 import { MarketInfo } from "sdk/types/markets";
-import { TwapDuration } from "sdk/types/twap";
-import { changeTwapNumberOfPartsValue } from "sdk/utils/twap/index";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import NumberInput from "components/NumberInput/NumberInput";
@@ -66,6 +68,12 @@ const TwapRows = ({
   const { savedTwapNumberOfParts } = useSettings();
   const tradeboxChanges = useTradeboxChanges();
 
+  const [isTwapInfoCardClosed, setIsTwapInfoCardClosed] = useLocalStorage(TWAP_INFO_CARD_CLOSED_KEY, false);
+
+  const handleCloseTwapInfoCard = () => {
+    setIsTwapInfoCardClosed(true);
+  };
+
   useEffect(() => {
     if (tradeboxChanges.direction || tradeboxChanges.toTokenAddress) {
       setNumberOfParts(savedTwapNumberOfParts);
@@ -93,8 +101,8 @@ const TwapRows = ({
         {formatUsd(typeof sizeUsd === "bigint" && numberOfParts ? sizeUsd / BigInt(numberOfParts) : 0n)}
       </SyntheticsInfoRow>
 
-      {marketInfo && typeof sizeUsd === "bigint" && sizeUsd > 0n && (
-        <AlertInfoCard>
+      {!isTwapInfoCardClosed && marketInfo && typeof sizeUsd === "bigint" && sizeUsd > 0n && (
+        <AlertInfoCard onClose={handleCloseTwapInfoCard}>
           <Trans>
             This TWAP order will execute {numberOfParts} {isLong ? "long" : "short"} {type} orders of{" "}
             {formatUsd(numberOfParts ? sizeUsd / BigInt(numberOfParts) : 0n)} each over the next{" "}

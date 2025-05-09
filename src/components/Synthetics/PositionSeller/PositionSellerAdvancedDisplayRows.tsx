@@ -144,6 +144,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
 
       <TradeFeesRow {...fees} feesType="decrease" />
       <NetworkFeeRow executionFee={executionFee} relayerFeeParams={relayerFeeParams} />
+
       {isTrigger || isTwap ? (
         acceptablePriceImpactInputRow
       ) : (

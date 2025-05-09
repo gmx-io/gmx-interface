@@ -798,7 +798,7 @@ function PositionItemOrder({
       <div className="flex items-start justify-between gap-6">
         <Button
           variant="secondary"
-          className="!block w-full !bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
+          className="!block w-full !bg-slate-100 !bg-opacity-15 !p-5 hover:!bg-opacity-20 active:!bg-opacity-25"
           onClick={handleOrdersClick}
         >
           <div className="flex items-center justify-between">
@@ -806,13 +806,15 @@ function PositionItemOrder({
             <FaAngleRight fontSize={16} className="ml-5" />
           </div>
         </Button>
-        <Button
-          variant="secondary"
-          className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
-          onClick={handleEditClick}
-        >
-          <AiOutlineEdit fontSize={16} />
-        </Button>
+        {!isTwapOrder(order) && (
+          <Button
+            variant="secondary"
+            className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
+            onClick={handleEditClick}
+          >
+            <AiOutlineEdit fontSize={16} />
+          </Button>
+        )}
         <Button
           variant="secondary"
           className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"

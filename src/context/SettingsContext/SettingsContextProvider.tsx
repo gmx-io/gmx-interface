@@ -25,12 +25,12 @@ import {
   getLeverageEnabledKey as getLeverageSliderEnabledKey,
   getSyntheticsAcceptablePriceImpactBufferKey,
 } from "config/localStorage";
+import { DEFAULT_TWAP_NUMBER_OF_PARTS } from "domain/synthetics/trade/twap/utils";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { tenderlyLsKeys } from "lib/tenderly";
 import { getDefaultGasPaymentToken } from "sdk/configs/express";
 import { getOracleKeeperRandomIndex } from "sdk/configs/oracleKeeper";
-import { DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 
 export type SettingsContextType = {
   showDebugValues: boolean;
