@@ -52,7 +52,6 @@ import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { createTradeFlags } from "sdk/utils/trade";
 
 import {
-  makeSelectIsExpressTransactionAvailable,
   selectAccount,
   selectChainId,
   selectGasLimits,
@@ -74,6 +73,7 @@ import {
   makeSelectNextPositionValuesForIncrease,
 } from "../tradeSelectors";
 import { selectTradeboxGetMaxLongShortLiquidityPool } from "./selectTradeboxGetMaxLongShortLiquidityPool";
+import { selectIsExpressTransactionAvailable } from "../expressSelectors";
 
 export * from "./selectTradeboxAvailableAndDisabledTokensForCollateral";
 export * from "./selectTradeboxAvailableMarketsOptions";
@@ -343,7 +343,7 @@ export const selectTradeboxTotalSwapImpactBps = createSelector((q) => {
 export const selectTradeboxFindSwapPath = createSelector((q) => {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const swapToTokenAddress = q(selectTradeboxSwapToTokenAddress);
-  const isExpressTxn = q(makeSelectIsExpressTransactionAvailable(fromTokenAddress === NATIVE_TOKEN_ADDRESS));
+  const isExpressTxn = fromTokenAddress !== NATIVE_TOKEN_ADDRESS && q(selectIsExpressTransactionAvailable);
 
   return q(makeSelectFindSwapPath(fromTokenAddress, swapToTokenAddress, isExpressTxn));
 });
@@ -426,7 +426,7 @@ export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
 
   const positionKey = q(selectTradeboxSelectedPositionKey);
   const strategy = q(selectTradeboxLeverageStrategy);
-  const isExpressTxn = q(makeSelectIsExpressTransactionAvailable(fromTokenAddress === NATIVE_TOKEN_ADDRESS));
+  const isExpressTxn = fromTokenAddress !== NATIVE_TOKEN_ADDRESS && q(selectIsExpressTransactionAvailable);
 
   const selector = makeSelectIncreasePositionAmounts({
     collateralTokenAddress,
@@ -521,7 +521,7 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
     return swapAmounts;
   }
 
-  const isExpressTxn = q(makeSelectIsExpressTransactionAvailable(fromTokenAddress === NATIVE_TOKEN_ADDRESS));
+  const isExpressTxn = fromTokenAddress !== NATIVE_TOKEN_ADDRESS && q(selectIsExpressTransactionAvailable);
   const toSwapToken = q(selectTradeboxSwapToTokenAddress);
   const findSwapPath = q(makeSelectFindSwapPath(fromTokenAddress, toSwapToken, isExpressTxn));
   const swapOptimizationOrder: SwapOptimizationOrderArray | undefined = tradeFlags.isLimit
@@ -821,7 +821,7 @@ const selectNextValuesForIncrease = createSelector(
     const isPnlInLeverage = q(selectIsPnlInLeverage);
 
     const externalSwapQuote = q(selectExternalSwapQuote);
-    const isExpressTxn = q(makeSelectIsExpressTransactionAvailable(fromTokenAddress === NATIVE_TOKEN_ADDRESS));
+    const isExpressTxn = fromTokenAddress !== NATIVE_TOKEN_ADDRESS && q(selectIsExpressTransactionAvailable);
 
     return {
       collateralTokenAddress,

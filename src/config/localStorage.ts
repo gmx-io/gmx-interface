@@ -192,10 +192,6 @@ export function getExpressOrdersEnabledKey(chainId: number) {
   return [chainId, EXPRESS_ORDERS_ENABLED_KEY];
 }
 
-export function getOneClickTradingEnabledKey(chainId: number) {
-  return [chainId, ONE_CLICK_TRADING_ENABLED_KEY];
-}
-
 export function getGasPaymentTokenAddressKey(chainId: number) {
   return [chainId, GAS_PAYMENT_TOKEN_ADDRESS_KEY];
 }

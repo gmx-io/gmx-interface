@@ -1,6 +1,4 @@
-import { Signer } from "ethers";
-
-import { ExpressParams } from "domain/synthetics/express";
+import { ExpressTxnParams } from "domain/synthetics/express";
 import { isLimitSwapOrderType } from "domain/synthetics/orders";
 import { buildAndSignExpressBatchOrderTxn } from "domain/synthetics/orders/expressOrderUtils";
 import { TokensData } from "domain/tokens";
@@ -9,12 +7,25 @@ import { sendExpressTransaction } from "lib/transactions/sendExpressTransaction"
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import { TxnCallback, TxnEventBuilder } from "lib/transactions/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import { WalletSigner } from "lib/wallets";
 import { getContract } from "sdk/configs/contracts";
 import { sleep } from "sdk/utils/common";
-import { BatchOrderTxnParams, getBatchOrderMulticallPayload, isTwapOrderPayload } from "sdk/utils/orderTransactions";
+import {
+  BatchOrderTxnParams,
+  getBatchOrderMulticallPayload,
+  getBatchRequiredActions,
+  getIsInvalidBatchReceiver,
+  isTwapOrderPayload,
+} from "sdk/utils/orderTransactions";
 
 import { signerAddressError } from "components/Errors/errorToasts";
 
+import {
+  getIsInvalidSubaccount,
+  getIsNonceExpired,
+  getIsSubaccountActionsExceeded,
+  getIsSubaccountExpired,
+} from "../subaccount";
 import { getOrdersTriggerPriceOverrides, getSimulationPrices, simulateExecution } from "./simulation";
 
 export type BatchSimulationParams = {
@@ -23,7 +34,7 @@ export type BatchSimulationParams = {
 };
 
 export type BatchOrderTxnCtx = {
-  expressParams: ExpressParams | undefined;
+  expressParams: ExpressTxnParams | undefined;
   batchParams: BatchOrderTxnParams;
 };
 
@@ -36,9 +47,9 @@ export async function sendBatchOrderTxn({
   callback,
 }: {
   chainId: number;
-  signer: Signer;
+  signer: WalletSigner;
   batchParams: BatchOrderTxnParams;
-  expressParams: ExpressParams | undefined;
+  expressParams: ExpressTxnParams | undefined;
   simulationParams: BatchSimulationParams | undefined;
   callback: TxnCallback<BatchOrderTxnCtx> | undefined;
 }) {
@@ -51,9 +62,10 @@ export async function sendBatchOrderTxn({
         ? makeBatchOrderSimulation({
             chainId,
             signer,
-            params: batchParams,
+            batchParams,
             blockTimestampData: simulationParams.blockTimestampData,
             tokensData: simulationParams.tokensData,
+            expressParams,
           })
         : Promise.resolve(undefined);
 
@@ -67,6 +79,7 @@ export async function sendBatchOrderTxn({
         relayParamsPayload: expressParams.relayParamsPayload,
         relayFeeParams: expressParams.relayFeeParams,
         subaccount: expressParams.subaccount,
+        noncesData: undefined,
       });
 
       callback?.(eventBuilder.Prepared());
@@ -79,8 +92,8 @@ export async function sendBatchOrderTxn({
           txnData,
           isSponsoredCall: expressParams.isSponsoredCall,
         }),
-        sleep(3000).then(() => {
-          throw new Error("Gelato Task Timeout");
+        sleep(10000).then(() => {
+          throw new Error("Gelato SDK Timeout");
         }),
       ])
         .then(async (res) => {
@@ -126,46 +139,91 @@ export async function sendBatchOrderTxn({
 export const makeBatchOrderSimulation = async ({
   chainId,
   signer,
-  params,
+  batchParams,
   blockTimestampData,
   tokensData,
+  expressParams,
 }: {
   chainId: number;
-  signer: Signer;
-  params: BatchOrderTxnParams;
+  signer: WalletSigner;
+  batchParams: BatchOrderTxnParams;
   blockTimestampData: BlockTimestampData | undefined;
   tokensData: TokensData;
+  expressParams: ExpressTxnParams | undefined;
 }) => {
-  const account = await signer.getAddress();
+  try {
+    if (getIsInvalidBatchReceiver(batchParams, signer.address)) {
+      throw extendError(new Error(signerAddressError), {
+        errorContext: "simulation",
+      });
+    }
 
-  const isInvalidReceiver = params.createOrderParams.some((co) => co.orderPayload.addresses.receiver !== account);
+    const requiredActions = getBatchRequiredActions(batchParams);
 
-  if (isInvalidReceiver) {
-    throw extendError(new Error(signerAddressError), {
+    if (expressParams?.subaccount && getIsInvalidSubaccount(expressParams.subaccount, requiredActions)) {
+      const { onchainData, signedApproval } = expressParams.subaccount;
+
+      throw extendError(new Error("Invalid subaccount"), {
+        data: {
+          isExpired: getIsSubaccountExpired(expressParams.subaccount),
+          isActionsExceeded: getIsSubaccountActionsExceeded(expressParams.subaccount, requiredActions),
+          isNonceExceeded: getIsNonceExpired(expressParams.subaccount),
+          onchainData: {
+            maxAllowedCount: onchainData.maxAllowedCount,
+            currentCount: onchainData.currentActionsCount,
+            expiresAt: onchainData.expiresAt,
+            isActive: onchainData.active,
+            nonce: onchainData.approvalNonce,
+          },
+          signedData: {
+            maxAllowedCount: signedApproval.maxAllowedCount,
+            expiresAt: signedApproval.expiresAt,
+            shouldAdd: signedApproval.shouldAdd,
+            nonce: signedApproval.nonce,
+          },
+        },
+      });
+    }
+
+    if (expressParams && expressParams.relayFeeParams.isOutGasTokenBalance) {
+      throw extendError(new Error("Out of gas token balance"), {
+        data: {
+          gasPaymentTokenAmount: expressParams.relayFeeParams.gasPaymentTokenAmount,
+          gasPaymentTokenAddress: expressParams.relayFeeParams.gasPaymentTokenAddress,
+        },
+      });
+    }
+
+    const isSimulationAllowed = batchParams.createOrderParams.every(
+      (co) => !isLimitSwapOrderType(co.orderPayload.orderType) && !isTwapOrderPayload(co.orderPayload)
+    );
+
+    // Simulate execution makes sense only for create orders transactions
+    if (batchParams.createOrderParams.length === 0 || !isSimulationAllowed) {
+      return Promise.resolve();
+    }
+
+    const { encodedMulticall, value } = getBatchOrderMulticallPayload({
+      params: {
+        ...batchParams,
+        createOrderParams: [batchParams.createOrderParams[0]],
+      },
+    });
+
+    return simulateExecution(chainId, {
+      account: signer.address,
+      prices: getSimulationPrices(
+        chainId,
+        tokensData,
+        getOrdersTriggerPriceOverrides([batchParams.createOrderParams[0]])
+      ),
+      createMulticallPayload: encodedMulticall,
+      value,
+      blockTimestampData,
+    });
+  } catch (error) {
+    throw extendError(error, {
       errorContext: "simulation",
     });
   }
-
-  const isSimulationAllowed = params.createOrderParams.every(
-    (co) => !isLimitSwapOrderType(co.orderPayload.orderType) && !isTwapOrderPayload(co.orderPayload)
-  );
-
-  if (params.createOrderParams.length === 0 || !isSimulationAllowed) {
-    return Promise.resolve();
-  }
-
-  const { encodedMulticall, value } = getBatchOrderMulticallPayload({
-    params: {
-      ...params,
-      createOrderParams: [params.createOrderParams[0]],
-    },
-  });
-
-  return simulateExecution(chainId, {
-    account,
-    prices: getSimulationPrices(chainId, tokensData, getOrdersTriggerPriceOverrides([params.createOrderParams[0]])),
-    createMulticallPayload: encodedMulticall,
-    value,
-    blockTimestampData,
-  });
 };

@@ -37,7 +37,7 @@ import {
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 
 import { BatchOrderTxnCtx } from "./sendBatchOrderTxn";
-import { ExpressParams } from "../express/types";
+import { ExpressTxnParams } from "../express/types";
 
 export type CallbackUiCtx = {
   metricId?: OrderMetricId;
@@ -506,7 +506,7 @@ function getOperationMessage(
   }
 }
 
-function hasExternalSwap(expressParams: ExpressParams | undefined, batchParams: BatchOrderTxnParams) {
+function hasExternalSwap(expressParams: ExpressTxnParams | undefined, batchParams: BatchOrderTxnParams) {
   return (
     expressParams?.relayParamsPayload.externalCalls.externalCallDataList.length ||
     batchParams.createOrderParams.some((cp) => cp.tokenTransfersParams?.externalCalls?.externalCallDataList.length)

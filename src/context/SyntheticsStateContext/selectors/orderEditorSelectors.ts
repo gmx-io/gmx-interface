@@ -51,8 +51,8 @@ import { getByKey } from "sdk/utils/objects";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorFactory } from "../utils";
+import { selectIsExpressTransactionAvailable } from "./expressSelectors";
 import {
-  makeSelectIsExpressTransactionAvailable,
   selectChainId,
   selectGasLimits,
   selectGasPrice,
@@ -339,7 +339,7 @@ export const selectOrderEditorNextPositionValuesForIncrease = createSelector((q)
   const selector = makeSelectNextPositionValuesForIncrease({
     ...args,
     externalSwapQuote: q(selectExternalSwapQuote),
-    isExpressTxn: q(makeSelectIsExpressTransactionAvailable(false)),
+    isExpressTxn: q(selectIsExpressTransactionAvailable),
   });
 
   return q(selector);
@@ -354,7 +354,7 @@ export const makeSelectOrderEditorNextPositionValuesForIncrease = createSelector
 
       const selector = makeSelectNextPositionValuesForIncrease({
         ...args,
-        isExpressTxn: q(makeSelectIsExpressTransactionAvailable(false)),
+        isExpressTxn: q(selectIsExpressTransactionAvailable),
       });
 
       return q(selector);
@@ -370,7 +370,7 @@ export const selectOrderEditorNextPositionValuesWithoutPnlForIncrease = createSe
     ...args,
     externalSwapQuote: q(selectExternalSwapQuote),
     isPnlInLeverage: false,
-    isExpressTxn: q(makeSelectIsExpressTransactionAvailable(false)),
+    isExpressTxn: q(selectIsExpressTransactionAvailable),
   });
 
   return q(selector);

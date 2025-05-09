@@ -1,8 +1,9 @@
 import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
+import { useExpressNonces } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { useMulticall } from "lib/multicall";
-import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import {
   maxAllowedSubaccountActionCountKey,
   SUBACCOUNT_ORDER_ACTION,
@@ -19,12 +20,12 @@ export type SubaccountOnchainData = {
   approvalNonce: bigint;
 };
 
-export type SubaccountFromContractsRequest = {
+export type SubaccountOnchainDataResult = {
   subaccountData: SubaccountOnchainData | undefined;
   refreshSubaccountData: () => void;
 };
 
-export function useSubaccountFromContractsRequest(
+export function useSubaccountOnchainData(
   chainId: number,
   {
     account,
@@ -33,10 +34,12 @@ export function useSubaccountFromContractsRequest(
     account: string | undefined;
     subaccountAddress: string | undefined;
   }
-): SubaccountFromContractsRequest {
+): SubaccountOnchainDataResult {
+  const { noncesData } = useExpressNonces();
+
   const { data, mutate } = useMulticall(chainId, "useSubaccountsFromContracts", {
     key: account && subaccountAddress ? [account, subaccountAddress] : null,
-    refreshInterval: CONFIG_UPDATE_INTERVAL,
+    refreshInterval: FREQUENT_UPDATE_INTERVAL,
 
     request: () => {
       if (!account || !subaccountAddress) {
@@ -44,16 +47,6 @@ export function useSubaccountFromContractsRequest(
       }
 
       return {
-        subaccountRelay: {
-          contractAddress: getContract(chainId, "SubaccountGelatoRelayRouter"),
-          abiId: "SubaccountGelatoRelayRouter",
-          calls: {
-            nonce: {
-              methodName: "subaccountApprovalNonces",
-              params: [account],
-            },
-          },
-        },
         dataStore: {
           contractAddress: getContract(chainId, "DataStore"),
           abiId: "DataStore",
@@ -83,16 +76,24 @@ export function useSubaccountFromContractsRequest(
       const maxAllowedCount = BigInt(res.data.dataStore.maxAllowedActionsCount.returnValues[0]);
       const currentActionsCount = BigInt(res.data.dataStore.currentActionsCount.returnValues[0]);
       const expiresAt = BigInt(res.data.dataStore.expiresAt.returnValues[0]);
-      const nonce = BigInt(res.data.subaccountRelay.nonce.returnValues[0]);
 
-      return { active: isSubaccountActive, maxAllowedCount, currentActionsCount, expiresAt, approvalNonce: nonce };
+      return { active: isSubaccountActive, maxAllowedCount, currentActionsCount, expiresAt };
     },
   });
 
   return useMemo(() => {
+    let subaccountData: SubaccountOnchainData | undefined;
+
+    if (data && noncesData) {
+      subaccountData = {
+        ...data,
+        approvalNonce: noncesData.subaccountApproval.nonce,
+      };
+    }
+
     return {
-      subaccountData: data,
+      subaccountData,
       refreshSubaccountData: mutate,
     };
-  }, [data, mutate]);
+  }, [data, mutate, noncesData]);
 }

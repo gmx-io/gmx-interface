@@ -11,7 +11,7 @@ import {
   SwapOrderParams,
 } from "sdk/utils/orderTransactions";
 
-import { selectAccount, selectChainId, selectMaxAutoCancelOrders, selectUserReferralInfo } from "../globalSelectors";
+import { selectChainId, selectMaxAutoCancelOrders, selectSigner, selectUserReferralInfo } from "../globalSelectors";
 import { makeSelectOrdersByPositionKey } from "../orderSelectors";
 import {
   selectTradeboxAllowedSlippage,
@@ -47,19 +47,19 @@ export const selectTradeBoxCreateOrderParams = createSelector((q) => {
 });
 
 export const selectCommonOrderParams = createSelector((q) => {
-  const account = q(selectAccount);
+  const signer = q(selectSigner);
   const chainId = q(selectChainId);
   const allowedSlippage = q(selectTradeboxAllowedSlippage);
   const { isMarket } = q(selectTradeboxTradeFlags);
   const executionFee = q(selectTradeboxExecutionFee);
   const referralInfo = q(selectUserReferralInfo);
 
-  if (!account || !executionFee) {
+  if (!signer || !executionFee) {
     return undefined;
   }
 
   return {
-    receiver: account,
+    receiver: signer.address,
     chainId,
     executionFeeAmount: executionFee.feeTokenAmount,
     executionGasLimit: executionFee.gasLimit,

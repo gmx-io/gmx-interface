@@ -114,6 +114,10 @@ msgstr "동의하기"
 msgid "BonsaiDAO"
 msgstr ""
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Approval signed"
+msgstr ""
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
 msgstr ""
@@ -2806,8 +2810,8 @@ msgstr "최소량 수치 완료"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Signing subaccount approval"
-msgstr ""
+#~ msgid "Signing subaccount approval"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
@@ -2834,6 +2838,10 @@ msgstr "유효하지 않은 가격, 경고문을 보세요"
 
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} only from your short position."
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Signing approval..."
 msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
@@ -2888,6 +2896,7 @@ msgstr ""
 msgid "Only positions with over {0} in \"Capital Used\" are ranked."
 msgstr ""
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Generate 1CT (One-Click Trading) session"
@@ -4745,6 +4754,7 @@ msgid "Create Stop Loss"
 msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to generate session"
 msgstr ""
 
@@ -5212,8 +5222,8 @@ msgid "Transaction completed!"
 msgstr "트랜잭션 완료!"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Subaccount approval signed"
-msgstr ""
+#~ msgid "Subaccount approval signed"
+#~ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
@@ -6095,8 +6105,8 @@ msgid "Stablecoin Percentage"
 msgstr "스테이블코인 비율"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Failed to sign default subaccount approval"
-msgstr ""
+#~ msgid "Failed to sign default subaccount approval"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order will be executed once there is sufficient liquidity."
@@ -6673,6 +6683,10 @@ msgstr ""
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized:"
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Failed to sign approval"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
@@ -7810,8 +7824,8 @@ msgid "Avalanche LP incentives"
 msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Signing subaccount approval..."
-msgstr ""
+#~ msgid "Signing subaccount approval..."
+#~ msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
@@ -8590,8 +8604,8 @@ msgid "Swap"
 msgstr "스왑"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Signing default subaccount approval"
-msgstr ""
+#~ msgid "Signing default subaccount approval"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "long"
@@ -8881,6 +8895,12 @@ msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche trading incentives"
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Signing 1CT (One-Click Trading) approval"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts

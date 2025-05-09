@@ -127,9 +127,7 @@ export function NetworkFeeRow({ executionFee, relayerFeeParams, isAdditionOrders
       return "-";
     }
 
-    feeUsd -= estimatedRefundUsd ?? 0n;
-
-    const networkFeeText = formatTokenAmountWithUsd(
+    const maxNetworkFeeText = formatTokenAmountWithUsd(
       feeAmount === undefined ? undefined : -feeAmount,
       feeUsd,
       feeToken.symbol,
@@ -139,6 +137,8 @@ export function NetworkFeeRow({ executionFee, relayerFeeParams, isAdditionOrders
       }
     );
 
+    const feeUsdAfterRefund = feeUsd - (estimatedRefundUsd ?? 0n);
+
     const warning = executionFee ? getExecutionFeeWarning(chainId, executionFee) : undefined;
 
     return (
@@ -147,7 +147,7 @@ export function NetworkFeeRow({ executionFee, relayerFeeParams, isAdditionOrders
         position="left-start"
         content={
           <>
-            <StatsTooltipRow label={t`Max Network Fee`} showDollar={false} value={networkFeeText} />
+            <StatsTooltipRow label={t`Max Network Fee`} showDollar={false} value={maxNetworkFeeText} />
             <div className="h-8" />
             <p>
               <Trans>
@@ -171,7 +171,7 @@ export function NetworkFeeRow({ executionFee, relayerFeeParams, isAdditionOrders
           </>
         }
       >
-        {formatUsd(-feeUsd)}
+        {formatUsd(-feeUsdAfterRefund)}
       </TooltipWithPortal>
     );
   }, [

@@ -23,7 +23,6 @@ import {
   getGasPaymentTokenAddressKey,
   getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
   getLeverageEnabledKey as getLeverageSliderEnabledKey,
-  getOneClickTradingEnabledKey,
   getSyntheticsAcceptablePriceImpactBufferKey,
 } from "config/localStorage";
 import { useChainId } from "lib/chains";
@@ -72,8 +71,7 @@ export type SettingsContextType = {
 
   expressOrdersEnabled: boolean;
   setExpressOrdersEnabled: (val: boolean) => void;
-  oneClickTradingEnabled: boolean;
-  setOneClickTradingEnabled: (val: boolean) => void;
+
   gasPaymentTokenAddress: string;
   setGasPaymentTokenAddress: (val: string) => void;
 
@@ -186,11 +184,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     false
   );
 
-  const [oneClickTradingEnabled, setOneClickTradingEnabled] = useLocalStorageSerializeKey(
-    getOneClickTradingEnabledKey(chainId),
-    false
-  );
-
   const [gasPaymentTokenAddress, setGasPaymentTokenAddress] = useLocalStorageSerializeKey(
     getGasPaymentTokenAddressKey(chainId),
     getDefaultGasPaymentToken(chainId)
@@ -278,8 +271,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       expressOrdersEnabled: expressOrdersEnabled!,
       setExpressOrdersEnabled,
-      oneClickTradingEnabled: oneClickTradingEnabled!,
-      setOneClickTradingEnabled,
       gasPaymentTokenAddress: gasPaymentTokenAddress!,
       setGasPaymentTokenAddress,
 
@@ -333,8 +324,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     isSettingsVisible,
     expressOrdersEnabled,
     setExpressOrdersEnabled,
-    oneClickTradingEnabled,
-    setOneClickTradingEnabled,
     gasPaymentTokenAddress,
     setGasPaymentTokenAddress,
     externalSwapsEnabled,

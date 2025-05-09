@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useBigNumberInput } from "domain/synthetics/common/useBigNumberInput";
@@ -12,7 +12,6 @@ import { ExpandableRow } from "components/Synthetics/ExpandableRow";
 
 export function OneClickAdvancedSettings() {
   const { subaccount, updateSubaccountSettings } = useSubaccountContext();
-
   const [isExpanded, setIsExpanded] = useState(false);
 
   const { displayValue: remainingActionsString, setDisplayValue: setRemainingActionsString } = useBigNumberInput(
@@ -45,6 +44,23 @@ export function OneClickAdvancedSettings() {
     [setDaysLimitString]
   );
 
+  const disabled = useMemo(() => {
+    if (!subaccount) {
+      return true;
+    }
+
+    const remainingActions = getRemainingSubaccountActions(subaccount);
+    const remainingSeconds = getRemainingSubaccountSeconds(subaccount);
+
+    const nextRemainigActions = BigInt(remainingActionsString);
+    const nextRemainingSeconds = BigInt(periodToSeconds(Number(daysLimitString), "1d"));
+
+    const notChanged = remainingActions === nextRemainigActions && remainingSeconds === nextRemainingSeconds;
+    const isInvalid = nextRemainigActions < 0n || nextRemainingSeconds < 0n;
+
+    return notChanged || isInvalid;
+  }, [subaccount, remainingActionsString, daysLimitString]);
+
   const handleSave = useCallback(() => {
     if (!subaccount) {
       return;
@@ -74,10 +90,6 @@ export function OneClickAdvancedSettings() {
     },
     [setRemainingActionsString, setDaysLimitString, subaccount]
   );
-
-  if (!subaccount) {
-    return null;
-  }
 
   return (
     <div>
@@ -110,6 +122,7 @@ export function OneClickAdvancedSettings() {
             onClick={handleSave}
             variant="primary-action"
             className="mt-6 h-36 w-full bg-blue-600 py-3 text-white"
+            disabled={disabled}
           >
             <Trans>Save settings</Trans>
           </Button>

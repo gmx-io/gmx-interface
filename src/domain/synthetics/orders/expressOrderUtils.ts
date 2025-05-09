@@ -1,13 +1,22 @@
-import { Signer } from "ethers";
-import { encodeFunctionData, zeroAddress, zeroHash } from "viem";
+import { Provider, Wallet } from "ethers";
+import { encodeFunctionData, size, zeroAddress, zeroHash } from "viem";
 
+import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
+import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
+import { getSwapDebugSettings } from "config/externalSwaps";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import {
+  ExpressParamsEstimationMethod,
+  ExpressTxnParams,
   getGelatoRelayRouterDomain,
   getOracleParamsPayload,
   getOraclePriceParamsForOrders,
   getOraclePriceParamsForRelayFee,
+  getRelayerFeeParams,
   getRelayRouterNonceForSigner,
+  GlobalExpressParams,
   hashRelayParams,
   RelayerFeeParams,
   RelayParamsPayload,
@@ -15,55 +24,291 @@ import {
 import { MarketsInfoData } from "domain/synthetics/markets/types";
 import { hashSubaccountApproval, SignedSubbacountApproval, Subaccount } from "domain/synthetics/subaccount";
 import { SignedTokenPermit, TokensData } from "domain/tokens";
-import { getIsPermitExpired } from "domain/tokens/permitUtils";
+import { extendError } from "lib/errors";
+import { estimateGasLimit } from "lib/gas/estimateGasLimit";
+import { metrics } from "lib/metrics";
+import { applyFactor } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { ExpressTxnData } from "lib/transactions/sendExpressTransaction";
+import { WalletSigner } from "lib/wallets";
 import { signTypedData, SignTypedDataParams } from "lib/wallets/signing";
 import GelatoRelayRouterAbi from "sdk/abis/GelatoRelayRouter.json";
 import SubaccountGelatoRelayRouterAbi from "sdk/abis/SubaccountGelatoRelayRouter.json";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
-import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
+import { bigMath } from "sdk/utils/bigmath";
+import { gelatoRelay } from "sdk/utils/gelatoRelay";
+import {
+  BatchOrderTxnParams,
+  getBatchExternalCalls,
+  getBatchExternalSwapGasLimit,
+  getBatchIsNativePayment,
+  getIsEmptyBatch,
+  getTotalExecutionFeeForBatch,
+} from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 
-export async function getExpressBatchOrderParams({
+import { approximateExpressBatchOrderGasLimit, estimateMinGasPaymentTokenBalance } from "../fees";
+import { getSwapAmountsByToValue } from "../trade";
+
+export async function estimateExpressParams({
+  signer,
+  provider,
+  chainId,
+  batchParams,
+  totalExecutionFee,
+  globalExpressParams,
+  requireGasPaymentTokenApproval,
+  estimationMethod = "approximate",
+}: {
+  chainId: number;
+  batchParams: BatchOrderTxnParams;
+  // TODO try to avoid this
+  totalExecutionFee?: bigint;
+  signer: WalletSigner;
+  provider: Provider | undefined;
+  globalExpressParams: GlobalExpressParams;
+  requireGasPaymentTokenApproval: boolean;
+  estimationMethod: ExpressParamsEstimationMethod;
+}): Promise<ExpressTxnParams | undefined> {
+  try {
+    const {
+      tokensData,
+      marketsInfoData,
+      subaccount,
+      tokenPermits,
+      gasPaymentTokenAddress,
+      relayerFeeTokenAddress,
+      findSwapPath,
+      gasPaymentAllowanceData,
+      gasPrice,
+      gasLimits,
+      l1Reference,
+      bufferBps,
+      isSponsoredCall,
+      noncesData,
+    } = globalExpressParams;
+
+    const account = signer.address;
+    const isNativePayment = getBatchIsNativePayment(batchParams);
+    const isEmptyBatch = getIsEmptyBatch(batchParams);
+
+    const gasPaymentToken = getByKey(tokensData, gasPaymentTokenAddress);
+    const relayerFeeToken = getByKey(tokensData, relayerFeeTokenAddress);
+    const batchExternalCalls = getBatchExternalCalls(batchParams);
+    const totalBatchExternalSwapGasLimit = getBatchExternalSwapGasLimit(batchParams);
+
+    if (!gasPaymentToken || !relayerFeeToken || isNativePayment || isEmptyBatch) {
+      return undefined;
+    }
+
+    if (totalExecutionFee === undefined) {
+      totalExecutionFee = getTotalExecutionFeeForBatch({ batchParams, chainId, tokensData })?.feeTokenAmount;
+    }
+
+    if (totalExecutionFee === undefined) {
+      return undefined;
+    }
+
+    const baseRelayerFeeAmount = estimateMinGasPaymentTokenBalance({
+      chainId,
+      gasPaymentToken: relayerFeeToken,
+      relayFeeToken: relayerFeeToken,
+      gasPrice,
+      gasLimits,
+      l1Reference,
+      tokensData,
+    });
+
+    let totalNetworkFeeAmount = baseRelayerFeeAmount + totalExecutionFee;
+
+    const swapAmounts = getSwapAmountsByToValue({
+      tokenIn: gasPaymentToken,
+      tokenOut: relayerFeeToken,
+      amountOut: totalNetworkFeeAmount,
+      isLimit: false,
+      findSwapPath,
+      uiFeeFactor: 0n,
+    });
+
+    const baseRelayFeeParams = getRelayerFeeParams({
+      chainId,
+      account,
+      relayerFeeTokenAmount: baseRelayerFeeAmount,
+      totalNetworkFeeAmount: totalNetworkFeeAmount,
+      relayerFeeTokenAddress: relayerFeeToken.address,
+      gasPaymentTokenAddress: gasPaymentToken.address,
+      internalSwapAmounts: swapAmounts,
+      batchExternalCalls,
+      feeExternalSwapQuote: undefined,
+      tokensData,
+      gasPaymentAllowanceData,
+      forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
+    });
+
+    if (!baseRelayFeeParams) {
+      return undefined;
+    }
+
+    const baseExpressParams = await getBatchOrderExpressParams({
+      chainId,
+      batchParams,
+      signer,
+      subaccount,
+      tokenPermits,
+      tokensData,
+      marketsInfoData,
+      relayFeeParams: baseRelayFeeParams,
+      emptySignature: true,
+      noncesData,
+    });
+
+    const hasL1Gas = chainId === ARBITRUM;
+
+    if (!baseRelayFeeParams || (hasL1Gas && !l1Reference)) {
+      return undefined;
+    }
+
+    let gasLimit: bigint;
+    if (estimationMethod === "estimateGas" && provider) {
+      gasLimit = await estimateGasLimit(provider, {
+        from: GMX_SIMULATION_ORIGIN,
+        to: baseExpressParams.txnData.to,
+        data: baseExpressParams.txnData.callData,
+        value: 0n,
+      });
+    } else {
+      gasLimit = approximateExpressBatchOrderGasLimit({
+        gasLimits,
+        createOrdersCount: batchParams.createOrderParams.length,
+        updateOrdersCount: batchParams.updateOrderParams.length,
+        cancelOrdersCount: batchParams.cancelOrderParams.length,
+        feeSwapsCount: baseRelayFeeParams.feeParams.feeSwapPath.length,
+        externalSwapGasLimit: totalBatchExternalSwapGasLimit,
+        oraclePriceCount: baseExpressParams.oracleParamsPayload.tokens.length,
+        isSubaccount: Boolean(subaccount),
+        sizeOfData: BigInt(size(baseExpressParams.txnData.callData as `0x${string}`)),
+        l1Reference,
+      });
+    }
+
+    let feeAmount: bigint;
+    if (isSponsoredCall) {
+      feeAmount = applyFactor(gasLimit * gasPrice, gasLimits.gelatoRelayFeeMultiplierFactor);
+    } else {
+      feeAmount = await gelatoRelay.getEstimatedFee(BigInt(chainId), relayerFeeToken.address, gasLimit, false);
+    }
+
+    const buffer = bigMath.mulDiv(feeAmount, BigInt(bufferBps), BASIS_POINTS_DIVISOR_BIGINT);
+    feeAmount += buffer;
+
+    totalNetworkFeeAmount = feeAmount + totalExecutionFee;
+
+    const finalSwapAmounts = getSwapAmountsByToValue({
+      tokenIn: gasPaymentToken,
+      tokenOut: relayerFeeToken,
+      amountOut: totalNetworkFeeAmount,
+      isLimit: false,
+      findSwapPath,
+      uiFeeFactor: 0n,
+    });
+
+    const finalRelayFeeParams = getRelayerFeeParams({
+      chainId,
+      account,
+      relayerFeeTokenAmount: feeAmount,
+      totalNetworkFeeAmount: totalNetworkFeeAmount,
+      relayerFeeTokenAddress: relayerFeeToken.address,
+      gasPaymentTokenAddress: gasPaymentToken.address,
+      internalSwapAmounts: finalSwapAmounts,
+      batchExternalCalls: getBatchExternalCalls(batchParams),
+      feeExternalSwapQuote: undefined,
+      tokensData,
+      gasPaymentAllowanceData,
+      forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
+    });
+
+    if (!finalRelayFeeParams) {
+      return undefined;
+    }
+
+    const { relayParamsPayload } = await getBatchOrderExpressParams({
+      chainId,
+      batchParams,
+      signer,
+      subaccount,
+      tokenPermits,
+      tokensData,
+      marketsInfoData,
+      relayFeeParams: finalRelayFeeParams,
+      noncesData,
+      emptySignature: true,
+    });
+
+    if (requireGasPaymentTokenApproval && finalRelayFeeParams.needGasPaymentTokenApproval) {
+      return undefined;
+    }
+
+    return {
+      subaccount,
+      relayParamsPayload,
+      relayFeeParams: finalRelayFeeParams,
+      isSponsoredCall,
+      estimationMethod,
+    };
+  } catch (error) {
+    const extendedError = extendError(error, {
+      data: {
+        estimationMethod,
+      },
+    });
+    // eslint-disable-next-line no-console
+    console.error(extendedError);
+    metrics.pushError(extendedError, "expressOrders.estimateExpressParams");
+    return undefined;
+  }
+}
+
+export async function getBatchOrderExpressParams({
   chainId,
   relayFeeParams,
-  orderParams,
+  batchParams,
   signer,
   subaccount,
   tokenPermits,
   tokensData,
   marketsInfoData,
+  noncesData,
   emptySignature = false,
 }: {
   chainId: number;
+  signer: WalletSigner;
   relayFeeParams: RelayerFeeParams;
-  orderParams: BatchOrderTxnParams;
-  signer: Signer;
+  batchParams: BatchOrderTxnParams;
+  noncesData: NoncesData | undefined;
   subaccount: Subaccount | undefined;
   tokenPermits: SignedTokenPermit[];
   tokensData: TokensData;
   marketsInfoData: MarketsInfoData;
   emptySignature?: boolean;
 }) {
-  const feeOracleParams = getOraclePriceParamsForRelayFee({
-    chainId,
-    relayFeeParams,
-    tokensData,
-    marketsInfoData,
-  });
-
-  const ordersOracleParams = getOraclePriceParamsForOrders({
-    chainId,
-    createOrderParams: orderParams.createOrderParams,
-    marketsInfoData,
-    tokensData,
-  });
-
-  const oracleParamsPayload = getOracleParamsPayload([...feeOracleParams, ...ordersOracleParams]);
+  const oracleParamsPayload = getOracleParamsPayload([
+    ...getOraclePriceParamsForRelayFee({
+      chainId,
+      relayFeeParams,
+      tokensData,
+      marketsInfoData,
+    }),
+    ...getOraclePriceParamsForOrders({
+      chainId,
+      createOrderParams: batchParams.createOrderParams,
+      marketsInfoData,
+      tokensData,
+    }),
+  ]);
 
   const relayParamsPayload: RelayParamsPayload = {
     oracleParams: oracleParamsPayload,
-    tokenPermits: tokenPermits ?? [],
+    tokenPermits,
     externalCalls: relayFeeParams.externalCalls,
     fee: relayFeeParams.feeParams,
     deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
@@ -75,9 +320,10 @@ export async function getExpressBatchOrderParams({
     chainId,
     relayFeeParams,
     relayParamsPayload,
-    batchParams: orderParams,
+    batchParams: batchParams,
     subaccount,
     emptySignature,
+    noncesData,
   });
 
   return {
@@ -94,31 +340,38 @@ export async function buildAndSignExpressBatchOrderTxn({
   batchParams,
   subaccount,
   signer,
+  noncesData,
   emptySignature = false,
 }: {
-  signer: Signer;
+  signer: WalletSigner;
   chainId: number;
   batchParams: BatchOrderTxnParams;
   relayFeeParams: RelayerFeeParams;
   relayParamsPayload: RelayParamsPayload;
+  noncesData: NoncesData | undefined;
   subaccount: Subaccount | undefined;
   emptySignature?: boolean;
 }): Promise<ExpressTxnData> {
-  const mainAccountSigner = signer;
-  const subaccountApproval = subaccount?.signedApproval;
-  const messageSigner = subaccountApproval ? subaccount!.signer : mainAccountSigner;
+  const messageSigner = subaccount?.signedApproval ? subaccount!.signer : signer;
+
+  let userNonce: bigint;
+
+  if (noncesData) {
+    userNonce = subaccount?.signedApproval ? noncesData.subaccountRelayRouter.nonce : noncesData.relayRouter.nonce;
+  } else {
+    userNonce = await getRelayRouterNonceForSigner(chainId, messageSigner, subaccount?.signedApproval !== undefined);
+  }
 
   const params = {
-    account: await mainAccountSigner.getAddress(),
+    account: signer.address,
     messageSigner,
     chainId,
     relayPayload: {
       ...relayParamsPayload,
-      tokenPermits: relayParamsPayload.tokenPermits.filter((permit) => !getIsPermitExpired(permit)),
-      userNonce: await getRelayRouterNonceForSigner(chainId, messageSigner, subaccountApproval !== undefined),
+      userNonce,
     },
     paramsLists: getBatchParamsLists(batchParams),
-    subaccountApproval,
+    subaccountApproval: subaccount?.signedApproval,
   };
 
   const signature = emptySignature
@@ -176,7 +429,7 @@ export function getBatchSignatureParams({
 }: {
   account: string;
   subaccountApproval: SignedSubbacountApproval | undefined;
-  signer: Signer;
+  signer: WalletSigner | Wallet;
   relayParams: RelayParamsPayload;
   batchParams: BatchOrderTxnParams;
   chainId: number;

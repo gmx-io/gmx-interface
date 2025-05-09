@@ -54,6 +54,7 @@ export type ErrorData = {
   isUserError?: boolean;
   isUserRejectedError?: boolean;
   reason?: string;
+  data?: any;
   txErrorType?: TxErrorType;
   txErrorData?: unknown;
   errorSource?: string;
@@ -69,15 +70,20 @@ const URL_REGEXP =
 const MAX_ERRORS_DEPTH = 1;
 
 export function extendError(
-  error: Error,
+  error: ErrorLike,
   params: {
     errorContext?: OrderErrorContext;
     errorSource?: string;
     isAdditionalValidationPassed?: boolean;
     additionalValidationType?: string;
+    data?: any;
   }
 ): ErrorLike {
-  Object.assign(error, params);
+  error.errorContext = params.errorContext;
+  error.errorSource = params.errorSource;
+  error.isAdditionalValidationPassed = params.isAdditionalValidationPassed;
+  error.additionalValidationType = params.additionalValidationType;
+  error.data = params.data;
 
   return error;
 }
@@ -93,6 +99,7 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
   const errorContext: OrderErrorContext | undefined = typeof error === "string" ? undefined : error?.errorContext;
   const isAdditionalValidationPassed = typeof error === "string" ? undefined : error?.isAdditionalValidationPassed;
   const additionalValidationType = typeof error === "string" ? undefined : error?.additionalValidationType;
+  const data = typeof error === "string" ? undefined : error?.data;
 
   let errorMessage = "Unknown error";
   let errorStack: string | undefined = undefined;
@@ -193,6 +200,7 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
     contractErrorArgs,
     errorContext,
     isUserError,
+    data,
     isUserRejectedError,
     txErrorType,
     txErrorData,

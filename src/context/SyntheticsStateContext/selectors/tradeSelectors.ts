@@ -30,12 +30,10 @@ import { createSelector, createSelectorDeprecated, createSelectorFactory } from 
 import {
   selectChainId,
   selectGasLimits,
-  selectGasPaymentToken,
   selectGasPrice,
   selectMarketsInfoData,
   selectPositionConstants,
   selectPositionsInfoData,
-  selectRelayerFeeToken,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -207,17 +205,9 @@ export const makeSelectMaxLiquidityPath = createSelectorFactory(
   }
 );
 
-export const selectRelayFeeTokens = createSelector((q) => {
-  const relayerFeeToken = q(selectRelayerFeeToken);
-  const gasPaymentToken = q(selectGasPaymentToken);
-  const findSwapPath = q(makeSelectFindSwapPath(gasPaymentToken?.address, relayerFeeToken?.address, true));
-
-  return { relayerFeeToken, gasPaymentToken, findSwapPath };
-});
-
 const ENABLE_DEBUG_SWAP_MARKETS_CONFIG = isDevelopment();
 export const makeSelectFindSwapPath = createSelectorFactory(
-  (fromTokenAddress: string | undefined, toTokenAddress: string | undefined, isExpressOrders = false) => {
+  (fromTokenAddress: string | undefined, toTokenAddress: string | undefined, isExpressTxn = false) => {
     return createSelector((q) => {
       const chainId = q(selectChainId);
       const marketsInfoData = q(selectMarketsInfoData);
@@ -230,11 +220,12 @@ export const makeSelectFindSwapPath = createSelectorFactory(
         fromTokenAddress,
         toTokenAddress,
         marketsInfoData,
-        isExpressTxn: Boolean(isExpressOrders),
+        isExpressTxn: Boolean(isExpressTxn),
         disabledMarkets: _debugSwapMarketsConfig?.disabledSwapMarkets,
         manualPath: _debugSwapMarketsConfig?.manualPath,
         gasEstimationParams,
       });
+
       return findSwapPath;
     });
   }

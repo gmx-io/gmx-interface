@@ -1,13 +1,37 @@
-import { SignedTokenPermit } from "domain/tokens";
+import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
+import { SignedTokenPermit, TokensAllowanceData, TokensData } from "domain/tokens";
 import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
+import { GasLimitsConfig, L1ExpressOrderGasReference } from "../fees";
+import { MarketsInfoData } from "../markets";
 import { Subaccount } from "../subaccount";
+import { FindSwapPath } from "../trade";
 
-export type ExpressParams = {
+export type GlobalExpressParams = {
+  tokensData: TokensData;
+  marketsInfoData: MarketsInfoData;
+  subaccount: Subaccount | undefined;
+  tokenPermits: SignedTokenPermit[];
+  gasPaymentTokenAddress: string;
+  relayerFeeTokenAddress: string;
+  findSwapPath: FindSwapPath;
+  gasPrice: bigint;
+  gasPaymentAllowanceData: TokensAllowanceData;
+  gasLimits: GasLimitsConfig;
+  l1Reference: L1ExpressOrderGasReference | undefined;
+  bufferBps: number;
+  isSponsoredCall: boolean;
+  noncesData: NoncesData | undefined;
+};
+
+export type ExpressParamsEstimationMethod = "approximate" | "estimateGas";
+
+export type ExpressTxnParams = {
   subaccount: Subaccount | undefined;
   relayParamsPayload: RelayParamsPayload;
   relayFeeParams: RelayerFeeParams;
   isSponsoredCall: boolean;
+  estimationMethod: ExpressParamsEstimationMethod;
 };
 
 export type RelayerFeeParams = {

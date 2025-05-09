@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 
 import { getKeepLeverageKey } from "config/localStorage";
+import { NoncesData, useExpressNonces } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { SubaccountState, useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { TokenPermitsState, useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
@@ -57,6 +58,7 @@ import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { BlockTimestampData, useBlockTimestampRequest } from "lib/useBlockTimestampRequest";
+import { WalletSigner } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
@@ -83,6 +85,7 @@ export type SyntheticsState = {
     marketsInfo: MarketsInfoResult;
     positionsInfo: PositionsInfoResult;
     account: string | undefined;
+    signer: WalletSigner | undefined;
     ordersInfo: AggregatedOrdersDataResult;
     positionsConstants: PositionsConstantsResult["positionsConstants"];
     uiFeeFactor: bigint;
@@ -129,6 +132,7 @@ export type SyntheticsState = {
   gasPaymentTokenAllowance: TokenAllowanceResult | undefined;
   sponsoredCallBalanceData: SponsoredCallBalanceData | undefined;
   l1ExpressOrderGasReference: L1ExpressOrderGasReference | undefined;
+  expressNoncesData: NoncesData | undefined;
 };
 
 const StateCtx = createContext<SyntheticsState | null>(null);
@@ -295,12 +299,15 @@ export function SyntheticsStateContextProvider({
     tokenAddresses: [convertTokenAddress(chainId, settings.gasPaymentTokenAddress, "wrapped")],
   });
 
+  const { noncesData: expressNoncesData } = useExpressNonces();
+
   const state = useMemo(() => {
     const s: SyntheticsState = {
       pageType,
       globals: {
         chainId,
         account,
+        signer,
         markets,
         marketsInfo,
         ordersInfo,
@@ -349,6 +356,7 @@ export function SyntheticsStateContextProvider({
       sponsoredCallBalanceData,
       gasPaymentTokenAllowance,
       l1ExpressOrderGasReference,
+      expressNoncesData,
     };
 
     return s;
@@ -356,6 +364,7 @@ export function SyntheticsStateContextProvider({
     pageType,
     chainId,
     account,
+    signer,
     markets,
     marketsInfo,
     ordersInfo,
@@ -395,6 +404,7 @@ export function SyntheticsStateContextProvider({
     sponsoredCallBalanceData,
     gasPaymentTokenAllowance,
     l1ExpressOrderGasReference,
+    expressNoncesData,
   ]);
 
   latestState = state;

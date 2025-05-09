@@ -3,6 +3,7 @@ import { t } from "@lingui/macro";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import { isDevelopment } from "config/env";
+import { useExpressNonces } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { useTokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
@@ -138,6 +139,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [pendingExpressTxnParams, setPendingExpressTxnParams] = useState<{ [taskId: string]: PendingExpressTxnParams }>(
     {}
   );
+  const { refreshNonces, updateActionsCount } = useExpressNonces();
 
   const eventLogHandlers = useRef({});
 
@@ -1061,6 +1063,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         switch (taskStatus.taskState) {
           case TaskState.ExecSuccess:
             {
+              const isSubaccount = Boolean(pendingExpressParams?.subaccountApproval);
+
+              refreshSubaccountData();
+              refreshNonces();
+              updateActionsCount(isSubaccount ? "subaccountRelayRouter" : "relayRouter");
+
               if (
                 pendingExpressParams?.subaccountApproval &&
                 !getIsEmptySubaccountApproval(pendingExpressParams.subaccountApproval)
@@ -1073,8 +1081,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
               }
 
               setByKey(pendingExpressTxnParams, taskStatus.taskId, undefined);
-
-              refreshSubaccountData();
 
               if (pendingExpressParams?.successMessage) {
                 helperToast.success(pendingExpressParams.successMessage);
@@ -1149,9 +1155,11 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     [
       pendingExpressTxnParams,
       pendingPositionsUpdates,
+      refreshNonces,
       refreshSubaccountData,
       resetSubaccountApproval,
       resetTokenPermits,
+      updateActionsCount,
     ]
   );
 

@@ -51,6 +51,7 @@ import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { Token } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useLocalizedMap } from "lib/i18n";
+import { throttleLog } from "lib/logging";
 import {
   calculateDisplayDecimals,
   formatAmount,
@@ -442,7 +443,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
     if (swapPathStats) {
       // eslint-disable-next-line no-console
-      console.log("Swap Path", {
+      throttleLog("Swap Path", {
         steps: swapPathStats.swapSteps,
         path: swapPathStats.swapPath.map((marketAddress) => marketsInfoData?.[marketAddress]?.name).join(" -> "),
         priceImpact: swapPathStats.swapSteps.map((step) => formatDeltaUsd(step.priceImpactDeltaUsd)).join(" -> "),

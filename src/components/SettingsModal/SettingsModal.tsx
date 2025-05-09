@@ -8,6 +8,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
 import { useEnabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
+import { getIsSubaccountActive } from "domain/synthetics/subaccount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { roundToTwoDecimals } from "lib/numbers";
@@ -170,7 +171,7 @@ export function SettingsModal({
             {settings.expressOrdersEnabled && <ExpressTradingEnabledBanner />}
 
             <ToggleSwitch
-              isChecked={Boolean(subaccountState.subaccount?.optimisticActive)}
+              isChecked={Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount))}
               setIsChecked={handleOneClickTradingToggle}
               disabled={
                 !features?.subaccountRelayRouterEnabled || (isOutOfGasPaymentBalance && !subaccountState.subaccount)
@@ -185,12 +186,14 @@ export function SettingsModal({
             {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
 
             {settings.expressTradingGasTokenSwitched && !isOutOfGasPaymentBalance && (
-              <ExpressTradingGasTokenSwitchedBanner onClose={onClose} />
+              <ExpressTradingGasTokenSwitchedBanner onClose={() => settings.setExpressTradingGasTokenSwitched(false)} />
             )}
 
             <OldSubaccountWithdraw />
 
-            {settings.oneClickTradingEnabled && <OneClickAdvancedSettings />}
+            {Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount)) && (
+              <OneClickAdvancedSettings />
+            )}
           </SettingsSection>
 
           {settings.expressOrdersEnabled && (

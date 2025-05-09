@@ -89,7 +89,7 @@ export const createFindSwapPath = (params: {
   const wrappedToAddress = getWrappedAddress(chainId, toTokenAddress);
   const wrappedToken = getWrappedToken(chainId);
 
-  const tokenSwapPaths =
+  let tokenSwapPaths =
     wrappedFromAddress && wrappedToAddress
       ? getTokenSwapPathsForTokenPairPrebuilt(chainId, wrappedFromAddress, wrappedToAddress)
       : [];
@@ -102,6 +102,8 @@ export const createFindSwapPath = (params: {
       .map((market) => market.marketTokenAddress);
 
     finalDisabledMarkets.push(...expressSwapUnavailableMarkets);
+    // That means we use only direct paths with 1 market
+    tokenSwapPaths = [[]];
   }
 
   const marketAdjacencyGraph = buildMarketAdjacencyGraph(chainId, finalDisabledMarkets);

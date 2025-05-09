@@ -114,6 +114,10 @@ msgstr "Agree"
 msgid "BonsaiDAO"
 msgstr "BonsaiDAO"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Approval signed"
+msgstr "Approval signed"
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
 msgstr "Daily Loss"
@@ -2810,8 +2814,8 @@ msgstr "Minimum received"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Signing subaccount approval"
-msgstr "Signing subaccount approval"
+#~ msgid "Signing subaccount approval"
+#~ msgstr "Signing subaccount approval"
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
@@ -2839,6 +2843,10 @@ msgstr "Invalid price, see warning"
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} only from your short position."
 msgstr "You will be short {indexSymbol} only from your short position."
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Signing approval..."
+msgstr "Signing approval..."
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "The current price impact is {0}. Consider using -0.30% acceptable price impact so the order is more likely to be processed."
@@ -2892,6 +2900,7 @@ msgstr "Failed to Claim Price Impact Rebate"
 msgid "Only positions with over {0} in \"Capital Used\" are ranked."
 msgstr "Only positions with over {0} in \"Capital Used\" are ranked."
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Generate 1CT (One-Click Trading) session"
@@ -4764,6 +4773,7 @@ msgid "Create Stop Loss"
 msgstr "Create Stop Loss"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to generate session"
 msgstr "Failed to generate session"
 
@@ -5231,8 +5241,8 @@ msgid "Transaction completed!"
 msgstr "Transaction completed!"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Subaccount approval signed"
-msgstr "Subaccount approval signed"
+#~ msgid "Subaccount approval signed"
+#~ msgstr "Subaccount approval signed"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
@@ -6118,8 +6128,8 @@ msgid "Stablecoin Percentage"
 msgstr "Stablecoin Percentage"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Failed to sign default subaccount approval"
-msgstr "Failed to sign default subaccount approval"
+#~ msgid "Failed to sign default subaccount approval"
+#~ msgstr "Failed to sign default subaccount approval"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order will be executed once there is sufficient liquidity."
@@ -6697,6 +6707,10 @@ msgstr "D2.Finance"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized:"
 msgstr "Annualized:"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Failed to sign approval"
+msgstr "Failed to sign approval"
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "Starts in"
@@ -7840,8 +7854,8 @@ msgid "Avalanche LP incentives"
 msgstr "Avalanche LP incentives"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Signing subaccount approval..."
-msgstr "Signing subaccount approval..."
+#~ msgid "Signing subaccount approval..."
+#~ msgstr "Signing subaccount approval..."
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
@@ -8620,8 +8634,8 @@ msgid "Swap"
 msgstr "Swap"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Signing default subaccount approval"
-msgstr "Signing default subaccount approval"
+#~ msgid "Signing default subaccount approval"
+#~ msgstr "Signing default subaccount approval"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "long"
@@ -8912,6 +8926,12 @@ msgstr "Volume on V1"
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche trading incentives"
 msgstr "Avalanche trading incentives"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Signing 1CT (One-Click Trading) approval"
+msgstr "Signing 1CT (One-Click Trading) approval"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Decrease"

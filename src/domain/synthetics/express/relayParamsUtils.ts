@@ -1,8 +1,9 @@
-import { Contract, ethers, Provider, Signer } from "ethers";
+import { Contract, ethers, Provider, Wallet } from "ethers";
 import { encodeAbiParameters, keccak256 } from "viem";
 
 import { getIsInternalSwapBetter } from "domain/synthetics/externalSwaps/utils";
 import { getNeedTokenApprove, TokensAllowanceData, TokensData } from "domain/synthetics/tokens";
+import { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
 import RelayParamsAbi from "sdk/abis/RelayParams.json";
 import { getContract } from "sdk/configs/contracts";
@@ -168,9 +169,13 @@ export function hashRelayParams(relayParams: RelayParamsPayload) {
   return hash;
 }
 
-export async function getRelayRouterNonceForSigner(chainId: number, signer: Signer, isSubaccount: boolean) {
+export async function getRelayRouterNonceForSigner(
+  chainId: number,
+  signer: WalletSigner | Wallet,
+  isSubaccount: boolean
+) {
   const contractAddress = getExpressContractAddress(chainId, { isSubaccount });
   const contract = new ethers.Contract(contractAddress, abis.GelatoRelayRouter, signer);
 
-  return contract.userNonces(await signer.getAddress());
+  return contract.userNonces(signer.address);
 }

@@ -14,6 +14,7 @@ import "styles/recharts.css";
 import "./App.scss";
 
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
+import { ExpressNoncesContextProvider } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
 import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTxnsContext";
 import { SettingsContextProvider } from "context/SettingsContext/SettingsContextProvider";
@@ -53,6 +54,7 @@ function App() {
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
   app = <TokenPermitsContextProvider>{app}</TokenPermitsContextProvider>;
+  app = <ExpressNoncesContextProvider>{app}</ExpressNoncesContextProvider>;
   app = <TokensBalancesContextProvider>{app}</TokensBalancesContextProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
   app = <SEO>{app}</SEO>;

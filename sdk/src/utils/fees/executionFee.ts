@@ -45,7 +45,7 @@ export function getExecutionFee(
   };
 }
 
-export function estimateExpressBatchOrderGasLimit({
+export function approximateExpressBatchOrderGasLimit({
   gasLimits,
   feeSwapsCount,
   createOrdersCount,
@@ -116,7 +116,7 @@ export function estimateMinGasPaymentTokenBalance({
   gasPrice: bigint;
   l1Reference: L1ExpressOrderGasReference | undefined;
 }) {
-  const createOrderGasLimit = estimateExpressBatchOrderGasLimit({
+  const createOrderGasLimit = approximateExpressBatchOrderGasLimit({
     gasLimits,
     createOrdersCount: 1,
     updateOrdersCount: 0,

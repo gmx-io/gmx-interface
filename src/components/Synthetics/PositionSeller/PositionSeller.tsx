@@ -350,20 +350,16 @@ export function PositionSeller() {
     userReferralInfo?.referralCodeForTxn,
   ]);
 
-  const {
-    expressParams,
-    expressEstimateMethod,
-    isLoading: isExpressLoading,
-  } = useExpressOrdersParams({
+  const { expressParams, isLoading: isExpressLoading } = useExpressOrdersParams({
     orderParams: batchParams,
     totalExecutionFee: isTwap ? executionFee?.feeTokenAmount : undefined,
   });
 
   if (expressParams && showDebugValues) {
     throttleLog("PositionSeller express Params", {
-      expressParams,
-      expressEstimateMethod,
       batchParams,
+      expressParams,
+      expressEstimateMethod: expressParams?.estimationMethod,
     });
   }
 

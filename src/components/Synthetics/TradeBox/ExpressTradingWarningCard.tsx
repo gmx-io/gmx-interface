@@ -8,7 +8,7 @@ import {
 } from "config/localStorage";
 import { selectUpdateSubaccountSettings } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { ExpressParams } from "domain/synthetics/express";
+import { ExpressTxnParams } from "domain/synthetics/express";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
@@ -22,7 +22,7 @@ import IconBolt from "img/icon-bolt.svg?react";
 
 import { useExpressTradingWarnings } from "./hooks/useShowOneClickTradingInfo";
 
-export function ExpressTradingWarningCard({ expressParams }: { expressParams: ExpressParams | undefined }) {
+export function ExpressTradingWarningCard({ expressParams }: { expressParams: ExpressTxnParams | undefined }) {
   const [isVisible, setIsVisible] = useState(true);
   const updateSubaccountSettings = useSelector(selectUpdateSubaccountSettings);
   const history = useHistory();
@@ -96,17 +96,6 @@ export function ExpressTradingWarningCard({ expressParams }: { expressParams: Ex
     icon = <OneClickIcon className="-mt-4 ml-4" />;
     content = <Trans>One-Click Trading is disabled. Action limit exceeded.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
-  } else if (shouldShowExpiredSubaccountWarning) {
-    onClick = () => {
-      updateSubaccountSettings({
-        nextRemainingSeconds: BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION),
-      }).then(() => {
-        setIsVisible(false);
-      });
-    };
-    icon = <OneClickIcon className="-mt-4 ml-4" />;
-    content = <Trans>One-Click Trading is disabled. Time limit expired.</Trans>;
-    buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowNonceExpiredWarning) {
     onClick = () => {
       updateSubaccountSettings({
@@ -118,6 +107,17 @@ export function ExpressTradingWarningCard({ expressParams }: { expressParams: Ex
     icon = <OneClickIcon className="ml- -mt-4" />;
     content = <Trans>One-Click Approval nonce expired. Please sign a new approval.</Trans>;
     buttonText = <Trans>Re-sign</Trans>;
+  } else if (shouldShowExpiredSubaccountWarning) {
+    onClick = () => {
+      updateSubaccountSettings({
+        nextRemainingSeconds: BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION),
+      }).then(() => {
+        setIsVisible(false);
+      });
+    };
+    icon = <OneClickIcon className="-mt-4 ml-4" />;
+    content = <Trans>One-Click Trading is disabled. Time limit expired.</Trans>;
+    buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowOutOfGasPaymentBalanceWarning) {
     icon = <IconBolt />;
     content = <Trans>One-click and Express Trading are not available due to insufficient balance.</Trans>;

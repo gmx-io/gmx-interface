@@ -1,10 +1,11 @@
-import { Signer, TransactionRequest } from "ethers";
+import { TransactionRequest } from "ethers";
 
 import { extendError } from "lib/errors";
 import { additionalTxnErrorValidation } from "lib/errors/additionalValidation";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { GasPriceData, getGasPrice } from "lib/gas/gasPrice";
 import { getTenderlyConfig, simulateCallDataWithTenderly } from "lib/tenderly";
+import { WalletSigner } from "lib/wallets";
 
 import { TxnCallback, TxnEventBuilder } from "./types";
 
@@ -24,7 +25,7 @@ export async function sendWalletTransaction({
   callback,
 }: {
   chainId: number;
-  signer: Signer;
+  signer: WalletSigner;
   to: string;
   callData: string;
   value?: bigint | number;
@@ -35,7 +36,7 @@ export async function sendWalletTransaction({
   runSimulation?: () => Promise<void>;
   callback?: TxnCallback<WalletTxnCtx>;
 }) {
-  const from = await signer.getAddress();
+  const from = signer.address;
   const eventBuilder = new TxnEventBuilder<WalletTxnCtx>({});
 
   try {
@@ -62,8 +63,8 @@ export async function sendWalletTransaction({
       ? Promise.resolve(gasLimit)
       : estimateGasLimit(signer.provider!, {
           to,
+          from,
           data: callData,
-          from: await signer.getAddress(),
           value,
         }).catch(() => undefined);
 
@@ -90,6 +91,7 @@ export async function sendWalletTransaction({
     };
 
     const createdAt = Date.now();
+
     const res = await signer.sendTransaction(txnData).catch((error) => {
       additionalTxnErrorValidation(error, chainId, signer.provider!, txnData);
 
@@ -112,12 +114,4 @@ export async function sendWalletTransaction({
 
     throw error;
   }
-}
-
-export function promisify<T>(promise: Promise<T> | T) {
-  if (typeof promise === "object" && promise !== null && "then" in promise && typeof promise.then === "function") {
-    return promise;
-  }
-
-  return Promise.resolve(promise);
 }

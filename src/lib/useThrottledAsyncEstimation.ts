@@ -1,36 +1,56 @@
 import throttle from "lodash/throttle";
 import { useState, useRef, useEffect } from "react";
 
-type SkipFn = (nextThrottleMs?: number) => void;
-type EstimatorParams<D extends any[]> = {
+type AsyncFnParams<D extends any[]> = {
   params: D;
-  skip: SkipFn;
 };
-type Estimator<T, D extends any[]> = (args: EstimatorParams<D>) => Promise<T | void>;
-type AsyncEstimationResult<T> = {
+
+type AsyncFn<T, D extends any[]> = (args: AsyncFnParams<D>) => Promise<T | RetryResult<T>>;
+
+type AsyncResult<T> = {
   data: T | undefined;
   isLoading: boolean;
   error: Error | undefined;
   lastEstimated: number;
 };
 
-export function useThrottledAsyncEstimation<T, D extends any[]>(
-  estimator: Estimator<T, D>,
+const RETRY_SYMBOL = Symbol("retry");
+
+type RetryResult<T> = {
+  retry: typeof RETRY_SYMBOL;
+  delay?: number;
+  data: T;
+};
+
+export function retry<T>(data: T, delay?: number): RetryResult<T> {
+  return {
+    retry: RETRY_SYMBOL,
+    data,
+    delay,
+  };
+}
+
+export function useThrottledAsync<T, D extends any[]>(
+  estimator: AsyncFn<T, D>,
   deps: D,
   options: {
     throttleMs?: number;
     enabled?: boolean;
-    enableLoading?: boolean;
+    withLoading?: boolean;
+    leading?: boolean;
+    trailing?: boolean;
   } = {}
 ) {
-  const [state, setState] = useState<AsyncEstimationResult<T>>({
+  const { throttleMs = 5000, enabled = true, withLoading = false, leading, trailing } = options;
+
+  const [state, setState] = useState<AsyncResult<T>>({
     data: undefined,
     isLoading: false,
     error: undefined,
     lastEstimated: 0,
   });
 
-  const [dynamicThrottleMs, setDynamicThrottleMs] = useState(options.throttleMs ?? 5000);
+  const [dynamicThrottleMs, setDynamicThrottleMs] = useState(throttleMs);
   const latestEstimator = useRef(estimator);
 
   useEffect(() => {
@@ -39,39 +59,38 @@ export function useThrottledAsyncEstimation<T, D extends any[]>(
 
   // Recreate throttled function if throttleMs changes
   const throttledFnRef = useRef<ReturnType<typeof throttle>>();
+
   useEffect(() => {
     throttledFnRef.current = throttle(
       async (...args: D) => {
-        if (options.enabled === false) return;
+        if (enabled === false) {
+          return;
+        }
 
-        let skipCalled = false;
-        const skip: SkipFn = (nextThrottleMs) => {
-          skipCalled = true;
-
-          if (nextThrottleMs !== undefined) {
-            setDynamicThrottleMs(nextThrottleMs);
-          }
-        };
-
-        if (options.enableLoading) {
+        if (withLoading) {
           setState((prev) => ({ ...prev, isLoading: true }));
         }
 
         try {
-          const result = await latestEstimator.current({ params: args as D, skip });
+          const result = await latestEstimator.current({ params: args as D });
 
-          if (!skipCalled) {
+          const retryResult = result as RetryResult<T>;
+
+          if (retryResult.retry === RETRY_SYMBOL) {
+            setDynamicThrottleMs(retryResult.delay ?? 0);
+            setState((prev) => ({
+              ...prev,
+              data: retryResult.data,
+              isLoading: false,
+            }));
+            return;
+          } else {
             setState({
               data: result as T,
               isLoading: false,
               error: undefined,
               lastEstimated: Date.now(),
             });
-          } else if (options.enableLoading) {
-            setState((prev) => ({
-              ...prev,
-              isLoading: false,
-            }));
           }
         } catch (error) {
           setState((prev) => ({
@@ -83,10 +102,10 @@ export function useThrottledAsyncEstimation<T, D extends any[]>(
         }
       },
       dynamicThrottleMs,
-      { leading: true, trailing: true }
+      { leading, trailing }
     );
     return () => throttledFnRef.current?.cancel();
-  }, [dynamicThrottleMs, options.enableLoading, options.enabled]);
+  }, [dynamicThrottleMs, withLoading, enabled, leading, trailing]);
 
   useEffect(() => {
     if (options.enabled === false) {
@@ -94,7 +113,7 @@ export function useThrottledAsyncEstimation<T, D extends any[]>(
     }
     throttledFnRef.current?.(...deps);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [...deps, options.enabled, dynamicThrottleMs]);
+  }, [...deps, enabled, dynamicThrottleMs]);
 
   return state;
 }

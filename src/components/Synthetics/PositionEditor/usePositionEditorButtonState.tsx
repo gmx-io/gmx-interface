@@ -242,8 +242,9 @@ export function usePositionEditorButtonState(operation: Operation): {
 
   if (expressParams && showDebugValues) {
     throttleLog("PositionEditor express Params", {
+      batchParams,
       expressParams,
-      expressEstimateMethod: expressParams,
+      expressEstimateMethod: expressParams?.estimationMethod,
     });
   }
 

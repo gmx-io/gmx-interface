@@ -422,13 +422,6 @@ export function getTotalExecutionFeeForBatch({
   for (const co of createOrderParams) {
     feeTokenAmount += co.orderPayload.numbers.executionFee;
     gasLimit += co.params.executionGasLimit;
-
-    const externalSwapQuote = (co.params as IncreasePositionOrderParams | SwapOrderParams).externalSwapQuote;
-
-    if (externalSwapQuote) {
-      feeTokenAmount += externalSwapQuote.txnData.estimatedExecutionFee;
-      gasLimit += externalSwapQuote.txnData.estimatedGas;
-    }
   }
 
   for (const uo of updateOrderParams) {
@@ -447,6 +440,18 @@ export function getTotalExecutionFeeForBatch({
     isFeeHigh,
     isFeeVeryHigh,
   };
+}
+
+export function getBatchExternalSwapGasLimit(batchParams: BatchOrderTxnParams) {
+  return batchParams.createOrderParams.reduce((acc, co) => {
+    const externalSwapQuote = (co.params as IncreasePositionOrderParams | SwapOrderParams).externalSwapQuote;
+
+    if (externalSwapQuote) {
+      return acc + externalSwapQuote.txnData.estimatedGas;
+    }
+
+    return acc;
+  }, 0n);
 }
 
 export function buildTokenTransfersParamsForDecrease({
@@ -794,4 +799,38 @@ export function encodeExchangeRouterMulticall(multicall: ExchangeRouterCall[]) {
     encodedMulticall,
     callData,
   };
+}
+
+export function getBatchRequiredActions(orderParams: BatchOrderTxnParams | undefined) {
+  if (!orderParams) {
+    return 0;
+  }
+
+  return (
+    orderParams.createOrderParams.length + orderParams.updateOrderParams.length + orderParams.cancelOrderParams.length
+  );
+}
+
+export function getIsEmptyBatch(orderParams: BatchOrderTxnParams | undefined) {
+  if (!orderParams) {
+    return true;
+  }
+
+  if (getBatchRequiredActions(orderParams) === 0) {
+    return true;
+  }
+
+  const hasEmptyOrder = orderParams.createOrderParams.some(
+    (o) => o.orderPayload.numbers.sizeDeltaUsd === 0n && o.orderPayload.numbers.initialCollateralDeltaAmount === 0n
+  );
+
+  return hasEmptyOrder;
+}
+
+export function getBatchIsNativePayment(orderParams: BatchOrderTxnParams) {
+  return orderParams.createOrderParams.some((o) => o.tokenTransfersParams?.isNativePayment);
+}
+
+export function getIsInvalidBatchReceiver(batchParams: BatchOrderTxnParams, signerAddress: string) {
+  return batchParams.createOrderParams.some((co) => co.orderPayload.addresses.receiver !== signerAddress);
 }

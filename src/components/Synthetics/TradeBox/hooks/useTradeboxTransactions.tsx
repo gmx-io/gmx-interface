@@ -127,17 +127,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     return tokensData ? getTotalExecutionFeeForBatch({ batchParams, chainId, tokensData }) : undefined;
   }, [batchParams, chainId, tokensData]);
 
-  const {
-    expressParams,
-    expressEstimateMethod,
-    isLoading: isExpressLoading,
-  } = useExpressOrdersParams({ orderParams: batchParams });
+  const { expressParams, isLoading: isExpressLoading } = useExpressOrdersParams({ orderParams: batchParams });
 
   if (expressParams && showDebugValues) {
     throttleLog("TradeBox express params", {
       expressParams,
-      expressEstimateMethod,
       batchParams,
+      estimationMethod: expressParams?.estimationMethod,
     });
   }
 

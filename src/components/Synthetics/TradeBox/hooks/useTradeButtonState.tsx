@@ -13,10 +13,10 @@ import {
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   makeSelectSubaccountForActions,
   selectChainId,
-  selectGasPaymentToken,
   selectGasPaymentTokenAllowance,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -45,7 +45,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { ExpressParams } from "domain/synthetics/express";
+import { ExpressTxnParams } from "domain/synthetics/express";
 import { getNameByOrderType, substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
@@ -88,7 +88,7 @@ type TradeboxButtonState = {
   disabled: boolean;
   onSubmit: () => Promise<void>;
   slippageInputId: string;
-  expressParams?: ExpressParams;
+  expressParams?: ExpressTxnParams;
   totalExecutionFee?: ExecutionFee;
 };
 

@@ -1,33 +1,23 @@
 import { t } from "@lingui/macro";
-import React, { createContext, useContext, useEffect, useMemo } from "react";
-import { useCallback, useState } from "react";
+import React, { createContext, useCallback, useContext, useMemo } from "react";
 import { toast } from "react-toastify";
 
 import { getSubaccountApprovalKey, getSubaccountConfigKey } from "config/localStorage";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { generateSubaccount } from "domain/synthetics/subaccount/generateSubaccount";
 import { removeSubaccountTxn } from "domain/synthetics/subaccount/removeSubaccount";
-import { Subaccount, SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
-import { useSubaccountFromContractsRequest } from "domain/synthetics/subaccount/useSubaccountFromContractsRequest";
+import { SignedSubbacountApproval, Subaccount, SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
+import { useSubaccountOnchainData } from "domain/synthetics/subaccount/useSubaccountOnchainData";
 import {
-  createAndSignSubaccountApproval,
   getActualApproval,
-  getInitialSubaccountApprovalParams,
-  getIsSubaccountActive,
-  getMaxSubaccountActions,
-  getRemainingSubaccountActions,
-  getRemainingSubaccountSeconds,
-  getSubaccountExpiresAt,
+  getInitialSubaccountApproval,
   getSubaccountSigner,
-  SignedSubbacountApproval,
+  signUpdatedSubaccountSettings,
 } from "domain/synthetics/subaccount/utils";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { metrics } from "lib/metrics";
 import useWallet from "lib/wallets/useWallet";
-import { DEFAULT_SUBACCOUNT_DEADLINE_DURATION } from "sdk/configs/express";
-import { nowInSeconds } from "sdk/utils/time";
 
 import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
 import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
@@ -36,7 +26,7 @@ export type SubaccountState = {
   subaccount: Subaccount | undefined;
   updateSubaccountSettings: (params: { nextRemainigActions?: bigint; nextRemainingSeconds?: bigint }) => Promise<void>;
   resetSubaccountApproval: () => void;
-  tryEnableSubaccount: () => Promise<SubaccountSerializedConfig | undefined>;
+  tryEnableSubaccount: () => Promise<true | undefined>;
   tryDisableSubaccount: () => Promise<void>;
   refreshSubaccountData: () => void;
 };
@@ -54,10 +44,6 @@ export function useSubaccountContext() {
 export function SubaccountContextProvider({ children }: { children: React.ReactNode }) {
   const { chainId } = useChainId();
   const { account, signer } = useWallet();
-  const settings = useSettings();
-
-  const [isTryingToEnableSubaccount, setIsTryingToEnableSubaccount] = useState(false);
-  const [isTryingToSignDefaultSubaccountApproval, setIsTryingToSignDefaultSubaccountApproval] = useState(false);
 
   const {
     subaccountConfig,
@@ -68,40 +54,28 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     resetStoredConfig,
   } = useStoredSubaccountData(chainId, account);
 
-  const { subaccountData, refreshSubaccountData } = useSubaccountFromContractsRequest(chainId, {
+  const { subaccountData, refreshSubaccountData } = useSubaccountOnchainData(chainId, {
     account,
     subaccountAddress: subaccountConfig?.address,
   });
 
   const subaccount: Subaccount | undefined = useMemo(() => {
-    if (!subaccountConfig || !account || !subaccountData) {
+    if (!subaccountConfig || !account || !subaccountData || !signer?.provider) {
       return undefined;
     }
 
     const subaccountSigner = getSubaccountSigner(subaccountConfig, account, signer?.provider);
 
-    const result = {
+    return {
       address: subaccountConfig.address,
       signer: subaccountSigner,
-      signedApproval,
       onchainData: subaccountData,
-      optimisticActive: getIsSubaccountActive({
+      signedApproval: getActualApproval({
+        address: subaccountConfig.address,
         onchainData: subaccountData,
         signedApproval,
-      }),
-      optimisticMaxAllowedCount: getMaxSubaccountActions({
-        signedApproval,
-        onchainData: subaccountData,
-      }),
-      optimisticExpiresAt: getSubaccountExpiresAt({
-        signedApproval,
-        onchainData: subaccountData,
       }),
     };
-
-    result.signedApproval = getActualApproval(result);
-
-    return result;
   }, [account, signedApproval, signer?.provider, subaccountConfig, subaccountData]);
 
   const updateSubaccountSettings = useCallback(
@@ -116,59 +90,37 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         return;
       }
 
-      const oldMaxAllowedCount = subaccount.optimisticMaxAllowedCount;
-      const oldRemainingActions = getRemainingSubaccountActions(subaccount);
-
-      let nextMaxAllowedCount = oldMaxAllowedCount;
-
-      if (nextRemainigActions !== undefined) {
-        nextMaxAllowedCount = oldMaxAllowedCount + nextRemainigActions - oldRemainingActions;
-      }
-
-      const oldExpiresAt = subaccount.optimisticExpiresAt;
-      const oldRemainingSeconds = getRemainingSubaccountSeconds(subaccount);
-
-      let nextExpiresAt = oldExpiresAt;
-
-      if (nextRemainingSeconds !== undefined) {
-        nextExpiresAt = oldExpiresAt + nextRemainingSeconds - oldRemainingSeconds;
-      }
-
-      toast.dismiss();
-
       helperToast.success(
         <StatusNotification title={t`Update 1CT (One-Click Trading) settings`}>
           <TransactionStatus status="loading" text={t`Updating settings...`} />
         </StatusNotification>
       );
 
-      const signedSubaccountApproval = await createAndSignSubaccountApproval(
-        chainId,
-        signer,
-        subaccount.address,
-        subaccount.onchainData.approvalNonce,
-        {
-          deadline: BigInt(nowInSeconds() + DEFAULT_SUBACCOUNT_DEADLINE_DURATION),
-          expiresAt: nextExpiresAt,
-          maxAllowedCount: nextMaxAllowedCount,
-          shouldAdd: !subaccount.onchainData.active,
-        }
-      ).catch((error) => {
-        helperToast.error(
-          <StatusNotification title={t`Update 1CT (One-Click Trading) settings`}>
-            <TransactionStatus status="error" text={t`Failed to update settings`} />
-          </StatusNotification>
-        );
-        throw error;
-      });
+      try {
+        const signedSubaccountApproval = await signUpdatedSubaccountSettings({
+          chainId,
+          signer,
+          subaccount,
+          nextRemainigActions,
+          nextRemainingSeconds,
+        });
 
-      if (signedSubaccountApproval) {
         helperToast.success(
           <StatusNotification title={t`Update 1CT (One-Click Trading) settings`}>
             <TransactionStatus status="success" text={t`settings updated`} />
           </StatusNotification>
         );
         setSignedApproval(signedSubaccountApproval);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+        metrics.pushError(error, "subaccount.updateSubaccountSettings");
+        toast.dismiss();
+        helperToast.error(
+          <StatusNotification title={t`Update 1CT (One-Click Trading) settings`}>
+            <TransactionStatus status="error" text={t`Failed to update settings`} />
+          </StatusNotification>
+        );
       }
     },
     [signer, subaccount, chainId, setSignedApproval]
@@ -179,83 +131,15 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     refreshSubaccountData();
   }, [refreshSubaccountData, setSignedApproval]);
 
-  const trySignDefaultSubaccountApproval = useCallback(async () => {
-    if (!signer || !subaccountConfig?.address || !subaccountData) {
-      return;
-    }
-
-    setIsTryingToSignDefaultSubaccountApproval(true);
-
-    toast.dismiss();
-
-    helperToast.success(
-      <StatusNotification title={t`Signing subaccount approval`}>
-        <TransactionStatus status="loading" text={t`Signing subaccount approval...`} />
-      </StatusNotification>
-    );
-
-    try {
-      const initialParams = getInitialSubaccountApprovalParams({ onchainData: subaccountData });
-
-      const defaultSubaccountApproval = await createAndSignSubaccountApproval(
-        chainId,
-        signer,
-        subaccountConfig.address,
-        subaccountData.approvalNonce,
-        {
-          shouldAdd: !subaccountData.active,
-          expiresAt: initialParams.expiresAt,
-          maxAllowedCount: initialParams.maxAllowedCount,
-          deadline: initialParams.deadline,
-        }
-      );
-
-      toast.dismiss();
-      helperToast.success(
-        <StatusNotification title={t`Signing subaccount approval`}>
-          <TransactionStatus status="success" text={t`Subaccount approval signed`} />
-        </StatusNotification>
-      );
-
-      if (!settings.expressOrdersEnabled) {
-        settings.setExpressOrdersEnabled(true);
-      }
-
-      setSignedApproval(defaultSubaccountApproval);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
-      metrics.pushError(error, "subaccount.signDefaultSubaccountApproval");
-      resetStoredConfig();
-      toast.dismiss();
-      helperToast.error(
-        <StatusNotification title={t`Signing default subaccount approval`}>
-          <TransactionStatus status="error" text={t`Failed to sign default subaccount approval`} />
-        </StatusNotification>
-      );
-    } finally {
-      setIsTryingToSignDefaultSubaccountApproval(false);
-      setIsTryingToEnableSubaccount(false);
-    }
-  }, [signer, subaccountConfig?.address, subaccountData, chainId, settings, setSignedApproval, resetStoredConfig]);
-
   const tryEnableSubaccount = useCallback(async () => {
-    if (!signer) {
+    if (!signer?.provider) {
       return;
     }
 
-    if (subaccountConfig?.address && !signedApproval) {
-      setIsTryingToEnableSubaccount(true);
-      refreshSubaccountData();
-      return;
-    }
+    let config = subaccountConfig;
 
-    settings.setOneClickTradingEnabled(true);
-
-    try {
-      let config = subaccountConfig;
-
-      if (!config?.address) {
+    if (!config?.address) {
+      try {
         toast.dismiss();
 
         helperToast.success(
@@ -264,39 +148,87 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           </StatusNotification>
         );
 
-        config = await generateSubaccount(signer)
-          .then((res) => {
-            toast.dismiss();
-            helperToast.success(
-              <StatusNotification title={t`Generate 1CT (One-Click Trading) session`}>
-                <TransactionStatus status="success" text={t`Session generated`} />
-              </StatusNotification>
-            );
-            return res;
-          })
-          .catch((error) => {
-            toast.dismiss();
-            helperToast.error(
-              <StatusNotification title={t`Generate 1CT (One-Click Trading) session`}>
-                <TransactionStatus status="error" text={t`Failed to generate session`} />
-              </StatusNotification>
-            );
-            throw error;
-          });
+        config = await generateSubaccount(signer);
 
-        await refreshSubaccountData();
+        toast.dismiss();
+
+        helperToast.success(
+          <StatusNotification title={t`Generate 1CT (One-Click Trading) session`}>
+            <TransactionStatus status="success" text={t`Session generated`} />
+          </StatusNotification>
+        );
+
         setSubaccountConfig(config);
-        setIsTryingToEnableSubaccount(true);
-        return config;
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+        toast.dismiss();
+        helperToast.error(
+          <StatusNotification title={t`Generate 1CT (One-Click Trading) session`}>
+            <TransactionStatus status="error" text={t`Failed to generate session`} />
+          </StatusNotification>
+        );
+        metrics.pushError(error, "subaccount.generateSubaccount");
+        return;
       }
+    }
+
+    if (!config.address) {
+      const error = "Missed subaccount config";
+      // eslint-disable-next-line no-console
+      console.error(error);
+      toast.dismiss();
+      helperToast.error(
+        <StatusNotification title={t`Generate 1CT (One-Click Trading) session`}>
+          <TransactionStatus status="error" text={t`Failed to generate session`} />
+        </StatusNotification>
+      );
+
+      metrics.pushError(error, "subaccount.missedSubaccountConfigAfterGeneration");
+      resetStoredConfig();
+      return;
+    }
+
+    try {
+      toast.dismiss();
+
+      helperToast.success(
+        <StatusNotification title={t`Signing 1CT (One-Click Trading) approval`}>
+          <TransactionStatus status="loading" text={t`Signing approval...`} />
+        </StatusNotification>
+      );
+
+      const defaultSubaccountApproval = await getInitialSubaccountApproval({
+        chainId,
+        signer,
+        provider: signer?.provider,
+        subaccountAddress: config!.address,
+      });
+
+      toast.dismiss();
+
+      helperToast.success(
+        <StatusNotification title={t`Signing 1CT (One-Click Trading) approval`}>
+          <TransactionStatus status="success" text={t`Approval signed`} />
+        </StatusNotification>
+      );
+
+      setSignedApproval(defaultSubaccountApproval);
+
+      return true;
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
-      metrics.pushError(error, "subaccount.tryEnableSubaccount");
-      settings.setOneClickTradingEnabled(false);
-      return undefined;
+      toast.dismiss();
+      metrics.pushError(error, "subaccount.signDefaultApproval");
+      helperToast.error(
+        <StatusNotification title={t`Signing 1CT (One-Click Trading) approval`}>
+          <TransactionStatus status="error" text={t`Failed to sign approval`} />
+        </StatusNotification>
+      );
+      return;
     }
-  }, [signer, subaccountConfig, signedApproval, settings, refreshSubaccountData, setSubaccountConfig]);
+  }, [signer, subaccountConfig, setSubaccountConfig, resetStoredConfig, chainId, setSignedApproval]);
 
   const tryDisableSubaccount = useCallback(async () => {
     if (!signer || !subaccount?.address) {
@@ -311,35 +243,32 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       </StatusNotification>
     );
 
-    await removeSubaccountTxn(chainId, signer, subaccount.address)
-      .then(() => {
-        helperToast.success(
-          <StatusNotification title={t`Deactivate 1CT (One-Click Trading)`}>
-            <TransactionStatus status="success" text={t`Deactivated`} />
-          </StatusNotification>
-        );
-      })
-      .catch((error) => {
-        metrics.pushError(error, "subaccount.tryDisableSubaccount");
-        helperToast.error(
-          <StatusNotification title={t`Deactivate 1CT (One-Click Trading)`}>
-            <TransactionStatus status="error" text={t`Failed to deactivate`} />
-          </StatusNotification>
-        );
-        throw error;
-      });
+    try {
+      await removeSubaccountTxn(chainId, signer, subaccount.address);
 
-    resetStoredApproval();
-    resetStoredConfig();
-    refreshSubaccountData();
-    settings.setOneClickTradingEnabled(false);
-  }, [signer, subaccount, chainId, resetStoredApproval, resetStoredConfig, refreshSubaccountData, settings]);
+      toast.dismiss();
 
-  useEffect(() => {
-    if (isTryingToEnableSubaccount && !isTryingToSignDefaultSubaccountApproval) {
-      trySignDefaultSubaccountApproval();
+      helperToast.success(
+        <StatusNotification title={t`Deactivate 1CT (One-Click Trading)`}>
+          <TransactionStatus status="success" text={t`Deactivated`} />
+        </StatusNotification>
+      );
+
+      resetStoredApproval();
+      resetStoredConfig();
+      refreshSubaccountData();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+      toast.dismiss();
+      metrics.pushError(error, "subaccount.tryDisableSubaccount");
+      helperToast.error(
+        <StatusNotification title={t`Deactivate 1CT (One-Click Trading)`}>
+          <TransactionStatus status="error" text={t`Failed to deactivate`} />
+        </StatusNotification>
+      );
     }
-  }, [isTryingToEnableSubaccount, isTryingToSignDefaultSubaccountApproval, trySignDefaultSubaccountApproval]);
+  }, [signer, subaccount, chainId, resetStoredApproval, resetStoredConfig, refreshSubaccountData]);
 
   const state: SubaccountState = useMemo(() => {
     return {

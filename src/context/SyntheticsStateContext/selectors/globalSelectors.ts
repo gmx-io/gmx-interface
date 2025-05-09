@@ -1,13 +1,11 @@
 import { FeaturesSettings } from "domain/synthetics/features/useDisabledFeatures";
-import { getIsSubaccountActionsExceeded, getIsSubaccountExpired } from "domain/synthetics/subaccount";
-import { getRelayerFeeToken } from "sdk/configs/express";
-import { getByKey } from "sdk/utils/objects";
+import { getIsInvalidSubaccount } from "domain/synthetics/subaccount";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorDeprecated } from "../utils";
-import { selectExpressOrdersEnabled, selectGasPaymentTokenAddress } from "./settingsSelectors";
 
 export const selectAccount = (s: SyntheticsState) => s.globals.account;
+export const selectSigner = (s: SyntheticsState) => s.globals.signer;
 export const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.ordersInfoData;
 export const selectIsOrdersLoading = (s: SyntheticsState) => s.globals.ordersInfo.isLoading;
 export const selectPositionsInfoData = (s: SyntheticsState) => s.globals.positionsInfo.positionsInfoData;
@@ -27,11 +25,9 @@ export const selectIsSponsoredCallAvailable = (s: SyntheticsState) =>
 export const selectSubaccountState = (s: SyntheticsState) => s.subaccountState;
 export const selectRawSubaccount = (s: SyntheticsState) => s.subaccountState.subaccount;
 export const selectGasPaymentTokenAllowance = (s: SyntheticsState) => s.gasPaymentTokenAllowance;
+export const selectExpressNoncesData = (s: SyntheticsState) => s.expressNoncesData;
 
 export const selectUpdateSubaccountSettings = (s: SyntheticsState) => s.subaccountState.updateSubaccountSettings;
-export const selectResetSubaccountApproval = (s: SyntheticsState) => s.subaccountState.resetSubaccountApproval;
-export const selectGenerateSubaccountIfNotExists = (s: SyntheticsState) => s.subaccountState.tryEnableSubaccount;
-
 export const selectL1ExpressOrderGasReference = (s: SyntheticsState) => s.l1ExpressOrderGasReference;
 
 export const makeSelectEnabledFeature = (feature: keyof FeaturesSettings) => {
@@ -40,6 +36,9 @@ export const makeSelectEnabledFeature = (feature: keyof FeaturesSettings) => {
     return features?.[feature] ?? false;
   });
 };
+
+export const selectIsRelayRouterEnabled = makeSelectEnabledFeature("relayRouterEnabled");
+export const selectIsSubaccountRelayRouterEnabled = makeSelectEnabledFeature("subaccountRelayRouterEnabled");
 
 export const selectBlockTimestampData = (s: SyntheticsState) => s.globals.blockTimestampData;
 
@@ -108,45 +107,12 @@ export const selectPositiveFeePositionsSortedByUsd = createSelector((q) => {
 export const makeSelectSubaccountForActions = (requiredActions: number) => {
   return createSelector((q) => {
     const subaccount = q(selectRawSubaccount);
-    const isEnabled = q(makeSelectEnabledFeature("subaccountRelayRouterEnabled"));
+    const isEnabled = q(selectIsSubaccountRelayRouterEnabled);
 
-    if (
-      !isEnabled ||
-      !subaccount ||
-      getIsSubaccountActionsExceeded(subaccount, requiredActions) ||
-      getIsSubaccountExpired(subaccount)
-    ) {
+    if (!isEnabled || !subaccount || getIsInvalidSubaccount(subaccount, requiredActions)) {
       return undefined;
     }
 
     return subaccount;
   });
 };
-
-export const selectGasPaymentToken = createSelector((q) => {
-  const gasPaymentTokenAddress = q(selectGasPaymentTokenAddress);
-  const tokensData = q(selectTokensData);
-  return getByKey(tokensData, gasPaymentTokenAddress);
-});
-
-export const selectRelayerFeeToken = createSelector((q) => {
-  const chainId = q(selectChainId);
-  const relayerFeeTokenAddress = getRelayerFeeToken(chainId).address;
-  const tokensData = q(selectTokensData);
-  return getByKey(tokensData, relayerFeeTokenAddress);
-});
-
-export const makeSelectIsExpressTransactionAvailable = (isNativePayment: boolean) =>
-  createSelector((q) => {
-    const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
-
-    const isFeatureEnabled = q(makeSelectEnabledFeature("relayRouterEnabled"));
-    const gasPaymentToken = q(selectGasPaymentToken);
-    const isZeroGasBalance = gasPaymentToken?.balance === 0n || gasPaymentToken?.balance === undefined;
-
-    if (isNativePayment) {
-      return false;
-    }
-
-    return isExpressOrdersEnabledSetting && isFeatureEnabled && !isZeroGasBalance;
-  });

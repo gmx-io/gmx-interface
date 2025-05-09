@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useMemo } from "react";
 
 import { getTokenPermitsKey } from "config/localStorage";
-import { createAndSignTokenPermit, getTokenPermitParams } from "domain/tokens/permitUtils";
+import { createAndSignTokenPermit, getIsPermitExpired, getTokenPermitParams } from "domain/tokens/permitUtils";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useWallet from "lib/wallets/useWallet";
@@ -10,7 +10,7 @@ import { SignedTokenPermit } from "sdk/types/tokens";
 import { nowInSeconds } from "sdk/utils/time";
 
 export type TokenPermitsState = {
-  tokenPermits: SignedTokenPermit[] | undefined;
+  tokenPermits: SignedTokenPermit[];
   addTokenPermit: AddTokenPermitFn;
   resetTokenPermits: () => void;
 };
@@ -64,7 +64,7 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
 
   const state = useMemo(() => {
     async function addTokenPermit(tokenAddress: string, spenderAddress: string, value: bigint) {
-      if (!signer) {
+      if (!signer?.provider) {
         return;
       }
 
@@ -87,7 +87,7 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
     }
 
     return {
-      tokenPermits,
+      tokenPermits: tokenPermits?.filter((permit) => !getIsPermitExpired(permit)) ?? [],
       addTokenPermit,
       resetTokenPermits,
     };

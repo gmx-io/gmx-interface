@@ -9,9 +9,9 @@ export const SUBACCOUNT_MESSAGE =
   "Generate a GMX 1CT (One-Click Trading) session. Only sign this message on a trusted website.";
 export const SUBACCOUNT_DOCS_URL = "https://docs.gmx.io/docs/trading/v2/#one-click-trading";
 
-export const DEFAULT_SUBACCOUNT_EXPIRY_DURATION = periodToSeconds(7, "1d");
+export const DEFAULT_SUBACCOUNT_EXPIRY_DURATION = periodToSeconds(7, "1d"); // 1 week
 export const DEFAULT_SUBACCOUNT_DEADLINE_DURATION = periodToSeconds(1, "1h");
-export const DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT = 10;
+export const DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT = 90;
 
 export const DEFAULT_PERMIT_DEADLINE_DURATION = periodToSeconds(1, "1h");
 export const DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION = periodToSeconds(1, "1h");

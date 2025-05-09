@@ -1,28 +1,16 @@
-import { ethers } from "ethers";
-
-import { SubaccountOnchainData } from "./useSubaccountFromContractsRequest";
-import { SignedSubbacountApproval } from "./utils";
+import { Wallet } from "ethers";
+import { SubaccountOnchainData } from "./useSubaccountOnchainData";
 
 export type SubaccountSerializedConfig = {
   privateKey: string;
   address: string;
 };
 
-export type SubaccountParams = {
-  topUp: bigint | null;
-  maxAutoTopUpAmount: bigint | null;
-  wntForAutoTopUps: bigint | null;
-  maxAllowedActions: bigint | null;
-};
-
 export type Subaccount = {
   address: string;
-  signedApproval: SignedSubbacountApproval | undefined;
+  signer: Wallet;
+  signedApproval: SignedSubbacountApproval;
   onchainData: SubaccountOnchainData;
-  signer: ethers.Wallet;
-  optimisticActive: boolean;
-  optimisticMaxAllowedCount: bigint;
-  optimisticExpiresAt: bigint;
 };
 
 export type SubaccountApproval = {
@@ -33,4 +21,9 @@ export type SubaccountApproval = {
   maxAllowedCount: bigint;
   actionType: string;
   deadline: bigint;
+};
+
+export type SignedSubbacountApproval = SubaccountApproval & {
+  signature: string;
+  signedAt: number;
 };

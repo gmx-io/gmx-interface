@@ -9,24 +9,10 @@ import {
   useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import {
-  makeSelectIsExpressTransactionAvailable,
-  makeSelectSubaccountForActions,
-  selectAccount,
-  selectChainId,
-  selectGasLimits,
-  selectGasPaymentTokenAllowance,
-  selectGasPrice,
-  selectIsSponsoredCallAvailable,
-  selectL1ExpressOrderGasReference,
-  selectMarketsInfoData,
-  selectTokensData,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import { makeSelectExpressGlobalParamsForActions } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { selectRelayFeeTokens } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getApproximateEstimatedExpressParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
   OrderInfo,
   PositionOrderInfo,
@@ -40,6 +26,7 @@ import {
   sortPositionOrders,
   sortSwapOrders,
 } from "domain/synthetics/orders";
+import { estimateExpressParams } from "domain/synthetics/orders/expressOrderUtils";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
@@ -90,20 +77,10 @@ export function OrderList({
 
   const chainId = useSelector(selectChainId);
   const { signer } = useWallet();
-
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
-  const subaccount = useSelector(makeSelectSubaccountForActions(1));
+
   const account = useSelector(selectAccount);
-  const tokensData = useSelector(selectTokensData);
-  const relayFeeTokens = useSelector(selectRelayFeeTokens);
-  const marketsInfoData = useSelector(selectMarketsInfoData);
-  const gasPrice = useSelector(selectGasPrice);
-  const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
-  const gasLimits = useSelector(selectGasLimits);
-  const l1Reference = useSelector(selectL1ExpressOrderGasReference);
-  const gasPaymentAllowance = useSelector(selectGasPaymentTokenAllowance);
-  const isExpressEnabled = useSelector(makeSelectIsExpressTransactionAvailable(false));
-  const isSponsoredCallAvailable = useSelector(selectIsSponsoredCallAvailable);
+  const globalExpressParams = useSelector(makeSelectExpressGlobalParamsForActions(1));
 
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
 
@@ -175,36 +152,23 @@ export function OrderList({
       cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
     };
 
-    let approximateExpressParams = isExpressEnabled
-      ? await getApproximateEstimatedExpressParams({
+    const expressParams = globalExpressParams
+      ? await estimateExpressParams({
           signer,
           chainId,
           batchParams,
-          subaccount,
-          gasPaymentTokenAddress: relayFeeTokens.gasPaymentToken?.address,
-          tokensData,
-          marketsInfoData,
-          tokenPermits: [],
-          findSwapPath: relayFeeTokens.findSwapPath,
-          gasPrice,
-          gasPaymentAllowanceData: gasPaymentAllowance?.tokensAllowanceData,
-          gasLimits,
-          l1Reference,
-          bufferBps: executionFeeBufferBps,
-          isSponsoredCall: isSponsoredCallAvailable,
+          requireGasPaymentTokenApproval: true,
+          globalExpressParams,
+          estimationMethod: "approximate",
+          provider: undefined,
         })
       : undefined;
-
-    // There is no UI to request an approval
-    if (approximateExpressParams?.expressParams?.relayFeeParams.needGasPaymentTokenApproval) {
-      approximateExpressParams = undefined;
-    }
 
     sendBatchOrderTxn({
       chainId,
       signer,
       batchParams,
-      expressParams: approximateExpressParams?.expressParams,
+      expressParams,
       simulationParams: undefined,
       callback: makeOrderTxnCallback({}),
     }).finally(() => {
