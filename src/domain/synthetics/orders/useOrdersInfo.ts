@@ -4,6 +4,8 @@ import { Token } from "domain/tokens";
 import { getByKey } from "lib/objects";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { getOrderInfo, isPositionOrder, isSwapOrder, isTwapPositionOrder, isTwapSwapOrder } from "sdk/utils/orders";
+import { getTwapOrderKey } from "sdk/utils/twap/index";
+import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
 
 import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 
@@ -13,8 +15,6 @@ import { OrderTypeFilterValue } from "./ordersFilters";
 import { Order, OrdersInfoData, TwapOrderInfo } from "./types";
 import { useOrders } from "./useOrders";
 import { setOrderInfoTitle } from "./utils";
-import { decodeTwapUiFeeReceiver } from "../trade/twap/uiFeeReceiver";
-import { getTwapOrderKey } from "../trade/twap/utils";
 
 export type AggregatedOrdersDataResult = {
   ordersInfoData?: OrdersInfoData;

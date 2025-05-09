@@ -11,6 +11,7 @@ import { isDevelopment } from "./env";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET, ETH_MAINNET } from "./static/chains";
 
 export * from "./static/chains";
+export { getChainName, CHAIN_NAMES_MAP } from "../../sdk/src/configs/chains";
 
 export const SUPPORTED_CHAIN_IDS = isDevelopment() ? SDK_SUPPORTED_CHAIN_IDS_DEV : SDK_SUPPORTED_CHAIN_IDS;
 
@@ -27,14 +28,6 @@ export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: false,
   [AVALANCHE]: false,
   [BSС_MAINNET]: false,
-};
-
-export const CHAIN_NAMES_MAP = {
-  [BSС_MAINNET]: "BSC",
-  [BSС_TESTNET]: "BSC Testnet",
-  [ARBITRUM]: "Arbitrum",
-  [AVALANCHE]: "Avalanche",
-  [AVALANCHE_FUJI]: "Avalanche Fuji",
 };
 
 export const NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR = {
@@ -128,7 +121,7 @@ export const RPC_PROVIDERS = {
     "https://arbitrum-one-rpc.publicnode.com",
     "https://1rpc.io/arb",
     "https://arbitrum-one.public.blastapi.io",
-    // "https://arbitrum.drpc.org",
+    "https://arbitrum.drpc.org",
     "https://rpc.ankr.com/arbitrum",
   ],
   [AVALANCHE]: [
@@ -223,10 +216,6 @@ export const getConstant = (chainId: number, key: string) => {
 
   return constants[chainId][key];
 };
-
-export function getChainName(chainId: number) {
-  return CHAIN_NAMES_MAP[chainId];
-}
 
 export function getFallbackRpcUrl(chainId: number): string {
   return sample(FALLBACK_PROVIDERS[chainId]);

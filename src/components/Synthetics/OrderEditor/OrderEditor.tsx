@@ -1,17 +1,11 @@
 import { Trans, t } from "@lingui/macro";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useKey } from "react-use";
+import { zeroAddress } from "viem";
 
 import { BASIS_POINTS_DIVISOR, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS, USD_DECIMALS } from "config/factors";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import {
-  usePositionsConstants,
-  useTokensData,
-  useUserReferralInfo,
-} from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 import {
   useOrderEditorIsSubmittingState,
@@ -19,6 +13,11 @@ import {
   useOrderEditorTriggerPriceInputValueState,
   useOrderEditorTriggerRatioInputValueState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
+import {
+  makeSelectSubaccountForActions,
+  selectMarketsInfoData,
+  selectTokensData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectOrderEditorAcceptablePrice,
   selectOrderEditorAcceptablePriceImpactBps,
@@ -49,6 +48,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   EditingOrderSource,
@@ -62,7 +62,8 @@ import {
   isSwapOrderType,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
-import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
+import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
+import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import {
   formatAcceptablePrice,
   formatLeverage,
@@ -72,7 +73,7 @@ import {
 } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { getIncreasePositionAmounts, getNextPositionValuesForIncreaseTrade } from "domain/synthetics/trade";
-import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
+import { getExpressError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
 import { TokensRatioAndSlippage } from "domain/tokens";
 import { numericBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
@@ -91,6 +92,7 @@ import {
 import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
+import { BatchOrderTxnParams, buildUpdateOrderPayload } from "sdk/utils/orderTransactions";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -115,16 +117,15 @@ type Props = {
 export function OrderEditor(p: Props) {
   const { chainId } = useChainId();
   const { signer } = useWallet();
-  const tokensData = useTokensData();
-  const { setPendingTxns } = usePendingTxns();
-  const { setPendingOrderUpdate } = useSyntheticsEvents();
-
-  const [isInited, setIsInited] = useState(false);
+  const tokensData = useSelector(selectTokensData);
+  const marketsInfoData = useSelector(selectMarketsInfoData);
+  const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const [isSubmitting, setIsSubmitting] = useOrderEditorIsSubmittingState();
 
   const [sizeInputValue, setSizeInputValue] = useOrderEditorSizeInputValueState();
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useOrderEditorTriggerPriceInputValueState();
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useOrderEditorTriggerRatioInputValueState();
+  const [isInited, setIsInited] = useState(false);
 
   const calcSelector = useCalcSelector();
 
@@ -158,7 +159,7 @@ export function OrderEditor(p: Props) {
     };
   }, [executionFee, tokensData, p.order.executionFee]);
 
-  const subaccount = useSubaccount(additionalExecutionFee?.feeTokenAmount ?? null);
+  const subaccount = useSelector(makeSelectSubaccountForActions(1));
 
   const positionOrder = p.order as PositionOrderInfo | undefined;
   const positionIndexToken = positionOrder?.indexToken;
@@ -199,34 +200,6 @@ export function OrderEditor(p: Props) {
         : undefined;
 
   const priceImpactFeeBps = useSelector(selectOrderEditorPriceImpactFeeBps);
-
-  function getError() {
-    if (isSubmitting) {
-      return t`Updating Order...`;
-    }
-
-    if (isSwapOrderType(p.order.orderType)) {
-      if (triggerRatio?.ratio === undefined || triggerRatio?.ratio < 0 || minOutputAmount <= 0) {
-        return t`Enter a ratio`;
-      }
-
-      if (minOutputAmount === p.order.minOutputAmount) {
-        return t`Enter a new ratio or allowed slippage`;
-      }
-
-      if (triggerRatio && !isRatioInverted && markRatio && markRatio.ratio < triggerRatio.ratio) {
-        return t`Limit price above mark price`;
-      }
-
-      if (triggerRatio && isRatioInverted && markRatio && markRatio.ratio > triggerRatio.ratio) {
-        return t`Limit price below mark price`;
-      }
-
-      return;
-    }
-
-    return calcSelector(selectOrderEditorPositionOrderError);
-  }
 
   function getIsMaxLeverageError() {
     if (isLimitIncreaseOrderType(p.order.orderType) && sizeDeltaUsd !== undefined) {
@@ -323,6 +296,92 @@ export function OrderEditor(p: Props) {
     }
   }
 
+  const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
+    if (!signer || !tokensData || !marketsInfoData) {
+      return undefined;
+    }
+
+    const positionOrder = p.order as PositionOrderInfo;
+
+    const orderTriggerPrice = isSwapOrderType(p.order.orderType)
+      ? triggerRatio?.ratio ?? triggerPrice ?? positionOrder.triggerPrice
+      : triggerPrice ?? positionOrder.triggerPrice;
+
+    const updateOrderParams = buildUpdateOrderPayload({
+      chainId,
+      indexTokenAddress: isSwapOrderType(p.order.orderType) ? zeroAddress : positionOrder.indexToken.address,
+      orderKey: p.order.key,
+      orderType: p.order.orderType,
+      sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
+      triggerPrice: orderTriggerPrice,
+      acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
+      minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
+      autoCancel: positionOrder.autoCancel,
+      validFromTime: 0n,
+      executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
+    });
+
+    return {
+      createOrderParams: [],
+      updateOrderParams: [updateOrderParams],
+      cancelOrderParams: [],
+    };
+  }, [
+    signer,
+    tokensData,
+    marketsInfoData,
+    p.order,
+    triggerRatio?.ratio,
+    triggerPrice,
+    chainId,
+    sizeDeltaUsd,
+    acceptablePrice,
+    minOutputAmount,
+    additionalExecutionFee?.feeTokenAmount,
+  ]);
+
+  const { expressParams } = useExpressOrdersParams({
+    orderParams: batchParams,
+  });
+
+  function getError() {
+    if (isSubmitting) {
+      return t`Updating Order...`;
+    }
+
+    if (isSwapOrderType(p.order.orderType)) {
+      if (triggerRatio?.ratio === undefined || triggerRatio?.ratio < 0 || minOutputAmount <= 0) {
+        return t`Enter a ratio`;
+      }
+
+      if (minOutputAmount === p.order.minOutputAmount) {
+        return t`Enter a new ratio or allowed slippage`;
+      }
+
+      if (triggerRatio && !isRatioInverted && markRatio && markRatio.ratio < triggerRatio.ratio) {
+        return t`Limit price above mark price`;
+      }
+
+      if (triggerRatio && isRatioInverted && markRatio && markRatio.ratio > triggerRatio.ratio) {
+        return t`Limit price below mark price`;
+      }
+
+      const expressError = getExpressError({
+        chainId,
+        expressParams,
+        tokensData,
+      });
+
+      if (expressError[0]) {
+        return expressError[0];
+      }
+
+      return;
+    }
+
+    return calcSelector(selectOrderEditorPositionOrderError);
+  }
+
   function getSubmitButtonState(): { text: ReactNode; disabled?: boolean; tooltip?: ReactNode; onClick?: () => void } {
     const error = getError();
     const isMaxLeverageError = getIsMaxLeverageError();
@@ -362,34 +421,20 @@ export function OrderEditor(p: Props) {
   }
 
   function onSubmit() {
-    if (!signer) return;
-    const positionOrder = p.order as PositionOrderInfo;
+    if (!batchParams || !signer || !tokensData || !marketsInfoData) {
+      return;
+    }
 
     setIsSubmitting(true);
 
-    const orderTriggerPrice = isSwapOrderType(p.order.orderType)
-      ? triggerRatio?.ratio ?? triggerPrice ?? positionOrder.triggerPrice
-      : triggerPrice ?? positionOrder.triggerPrice;
-
-    const txnPromise = updateOrderTxn(
+    const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
-      subaccount,
-      {
-        orderKey: p.order.key,
-        sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
-        triggerPrice: orderTriggerPrice,
-        acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
-        minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
-        executionFee: additionalExecutionFee?.feeTokenAmount,
-        indexToken: indexToken,
-        autoCancel: positionOrder.autoCancel,
-      },
-      {
-        setPendingTxns,
-        setPendingOrderUpdate,
-      }
-    );
+      batchParams,
+      expressParams,
+      simulationParams: undefined,
+      callback: makeOrderTxnCallback({}),
+    });
 
     if (subaccount) {
       p.onClose();

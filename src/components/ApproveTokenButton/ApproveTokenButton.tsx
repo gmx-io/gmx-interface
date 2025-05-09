@@ -49,6 +49,7 @@ export function ApproveTokenButton(p: Props) {
       infoTokens: {},
       chainId,
       approveAmount: p.approveAmount,
+      permitParams: undefined,
       onApproveSubmitted: () => {
         setIsApproveSubmitted(true);
         p.onApproveSubmitted?.();

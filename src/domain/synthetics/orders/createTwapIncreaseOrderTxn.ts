@@ -1,11 +1,11 @@
+import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { Signer, ethers } from "ethers";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
 
 import { getContract } from "config/contracts";
-import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { PendingOrderData, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
 import { TokenData, TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { callContract } from "lib/contracts";
-import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { OrderMetricId } from "lib/metrics/types";
 import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";

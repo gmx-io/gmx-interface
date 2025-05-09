@@ -1,5 +1,4 @@
 import { ClientConfig, createPublicClient, http } from "viem";
-import type { BatchOptions } from "viem/_types/clients/transports/http";
 import { arbitrum, avalanche, avalancheFuji } from "viem/chains";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
@@ -11,8 +10,7 @@ import {
   MulticallRequestTiming,
   MulticallTimeoutEvent,
 } from "lib/metrics";
-import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
-import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
+import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 import { sleep } from "lib/sleep";
 import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
@@ -37,7 +35,10 @@ export type MulticallProviderUrls = {
 const BATCH_CONFIGS: Record<
   number,
   {
-    http: BatchOptions;
+    http: {
+      batchSize: number;
+      wait: number;
+    };
     client: ClientConfig["batch"];
   }
 > = {

@@ -1,5 +1,4 @@
 import { USD_DECIMALS } from "config/factors";
-import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import {
   selectChainId,
   selectOrdersInfoData,
@@ -14,6 +13,8 @@ import { convertTokenAddress, getPriceDecimals } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
 
 import { DynamicChartLine } from "components/TVChartContainer/types";
+
+import { selectChartToken } from ".";
 
 export const selectChartDynamicLines = createSelector<DynamicChartLine[]>((q) => {
   const chainId = q(selectChainId);

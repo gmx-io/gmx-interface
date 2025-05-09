@@ -14,12 +14,14 @@ import "styles/recharts.css";
 import "./App.scss";
 
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
+import { ExpressNoncesContextProvider } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
 import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTxnsContext";
 import { SettingsContextProvider } from "context/SettingsContext/SettingsContextProvider";
 import { SorterContextProvider } from "context/SorterContext/SorterContextProvider";
-import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
+import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContextProvider";
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
+import { TokenPermitsContextProvider } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { WebsocketContextProvider } from "context/WebsocketContext/WebsocketContextProvider";
@@ -51,6 +53,8 @@ function App() {
   app = <TokensFavoritesContextProvider>{app}</TokensFavoritesContextProvider>;
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
+  app = <TokenPermitsContextProvider>{app}</TokenPermitsContextProvider>;
+  app = <ExpressNoncesContextProvider>{app}</ExpressNoncesContextProvider>;
   app = <TokensBalancesContextProvider>{app}</TokensBalancesContextProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
   app = <SEO>{app}</SEO>;

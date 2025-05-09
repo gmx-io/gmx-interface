@@ -2,8 +2,12 @@ import { useEffect } from "react";
 
 import { isDevelopment } from "config/env";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import {
+  makeSelectSubaccountForActions,
+  selectGasPrice,
+  selectTokensData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectBaseExternalSwapOutput,
   selectExternalSwapInputs,
@@ -12,9 +16,6 @@ import {
   selectSetShouldFallbackToInternalSwap,
   selectShouldFallbackToInternalSwap,
   selectShouldRequestExternalSwapQuote,
-} from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
-import { selectGasPrice, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import {
   selectTradeboxAllowedSlippage,
   selectTradeboxFromTokenAddress,
   selectTradeboxSelectSwapToToken,
@@ -23,7 +24,9 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { throttleLog } from "lib/logging";
+import { getContract } from "sdk/configs/contracts";
 
+import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/shared/baseSelectors";
 import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
 
 export function useExternalSwapHandler() {
@@ -48,7 +51,7 @@ export function useExternalSwapHandler() {
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
   const { isTwap } = useSelector(selectTradeboxTradeFlags);
 
-  const subaccount = useSubaccount(null);
+  const subaccount = useSelector(makeSelectSubaccountForActions(1));
 
   const { externalSwapOutput } = useExternalSwapOutputRequest({
     chainId,
@@ -56,6 +59,7 @@ export function useExternalSwapHandler() {
     tokenInAddress: fromTokenAddress,
     tokenOutAddress: swapToToken?.address,
     amountIn: externalSwapInputs?.amountIn,
+    receiverAddress: getContract(chainId, "OrderVault"),
     slippage,
     gasPrice,
     enabled: !isTwap && !subaccount && shouldRequestExternalSwapQuote,

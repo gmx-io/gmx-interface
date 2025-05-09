@@ -5,12 +5,13 @@ import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { SetPendingWithdrawal } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
-import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { isAddressZero } from "lib/legacy";
 import { OrderMetricId } from "lib/metrics/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import { convertTokenAddress } from "sdk/configs/tokens";
+
+import { validateSignerAddress } from "components/Errors/errorToasts";
 
 import { SwapPricingType } from "../orders";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
@@ -106,7 +107,6 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Cr
     "multicall",
     [encodedPayload],
     wntAmount,
-    undefined,
     simulationPromise,
     p.metricId
   );

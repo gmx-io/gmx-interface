@@ -2,7 +2,7 @@ import { type Address, zeroAddress } from "viem";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET } from "./chains";
 
-export const CONTRACTS: Record<number, Record<string, Address>> = {
+export const CONTRACTS = {
   [BSС_MAINNET]: {
     // bsc mainnet
     Treasury: "0xa44E7252a0C137748F523F112644042E5987FfC7",
@@ -116,7 +116,7 @@ export const CONTRACTS: Record<number, Record<string, Address>> = {
     DataStore: "0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8",
     EventEmitter: "0xC8ee91A54287DB53897056e12D9819156D3822Fb",
     SubaccountRouter: "0xa329221a77BE08485f59310b873b14815c82E10D",
-    ExchangeRouter: "0x5ac4e27341e4cccb3e5fd62f9e62db2adf43dd57",
+    ExchangeRouter: "0x602b805EedddBbD9ddff44A7dcBD46cb07849685",
     DepositVault: "0xF89e77e8Dc11691C9e8757e84aaFbCD8A67d7A55",
     WithdrawalVault: "0x0628D46b5D145f183AdB6Ef1f2c97eD1C4701C55",
     OrderVault: "0x31eF83a530Fde1B38EE9A18093A333D8Bbbc40D5",
@@ -128,11 +128,16 @@ export const CONTRACTS: Record<number, Record<string, Address>> = {
     GlvRouter: "0x994c598e3b0661bb805d53c6fa6b4504b23b68dd",
     GlvVault: "0x393053B58f9678C9c28c2cE941fF6cac49C3F8f9",
 
-    ExternalHandler: "0x389CEf541397e872dC04421f166B5Bc2E0b374a5",
+    GelatoRelayRouter: "0x9EB239eDf4c6f4c4fC9d30ea2017F8716d049C8D",
+    SubaccountGelatoRelayRouter: "0x5F345B765d5856bC0843cEE8bE234b575eC77DBC",
 
+    ExternalHandler: "0x389CEf541397e872dC04421f166B5Bc2E0b374a5",
     OpenOceanRouter: "0x6352a56caadC4F1E25CD6c75970Fa768A3304e64",
 
+    ChainlinkPriceFeedProvider: "0x527FB0bCfF63C47761039bB386cFE181A92a4701",
+
     Multicall: "0x842ec2c7d803033edf55e478f461fc547bc54eb2",
+    ArbitrumNodeInterface: "0x00000000000000000000000000000000000000C8",
   },
   [AVALANCHE]: {
     // avalanche
@@ -183,7 +188,7 @@ export const CONTRACTS: Record<number, Record<string, Address>> = {
     DataStore: "0x2F0b22339414ADeD7D5F06f9D604c7fF5b2fe3f6",
     EventEmitter: "0xDb17B211c34240B014ab6d61d4A31FA0C0e20c26",
     SubaccountRouter: "0x5aEb6AD978f59e220aA9099e09574e1c5E03AafD",
-    ExchangeRouter: "0xe37d052e1deb99901de205e7186e31a36e4ef70c",
+    ExchangeRouter: "0xFa843af557824Be5127eaCB3c4B5D86EADEB73A1",
     DepositVault: "0x90c670825d0C62ede1c5ee9571d6d9a17A722DFF",
     WithdrawalVault: "0xf5F30B10141E1F63FC11eD772931A8294a591996",
     OrderVault: "0xD3D60D22d415aD43b7e64b510D86A30f19B1B12C",
@@ -195,11 +200,16 @@ export const CONTRACTS: Record<number, Record<string, Address>> = {
     GlvRouter: "0x16500c1d8ffe2f695d8dcadf753f664993287ae4",
     GlvVault: "0x527FB0bCfF63C47761039bB386cFE181A92a4701",
 
-    OpenOceanRouter: "0x6352a56caadC4F1E25CD6c75970Fa768A3304e64",
+    GelatoRelayRouter: "0x035A9A047d20a486e14A613B04d5a95d7A617c5D",
+    SubaccountGelatoRelayRouter: "0x3B753c0D0aE55530f24532B8Bb9d0bAcD5B675C0",
 
     ExternalHandler: "0xD149573a098223a9185433290a5A5CDbFa54a8A9",
+    OpenOceanRouter: "0x6352a56caadC4F1E25CD6c75970Fa768A3304e64",
+
+    ChainlinkPriceFeedProvider: "0x713c6a2479f6C079055A6AD3690D95dEDCEf9e1e",
 
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
+    ArbitrumNodeInterface: zeroAddress,
   },
 
   [AVALANCHE_FUJI]: {
@@ -261,11 +271,17 @@ export const CONTRACTS: Record<number, Record<string, Address>> = {
     GlvRouter: "0x377d979AB35Cd848497707ffa6Ee91783f925b80",
     GlvVault: "0x76f93b5240DF811a3fc32bEDd58daA5784e46C96",
 
+    GelatoRelayRouter: zeroAddress,
+    SubaccountGelatoRelayRouter: zeroAddress,
+
     OpenOceanRouter: zeroAddress,
 
     ExternalHandler: "0x0d9F90c66C392c4d0e70EE0d399c43729B942512",
 
+    ChainlinkPriceFeedProvider: zeroAddress,
+
     Multicall: "0x0f53e512b49202a37c81c6085417C9a9005F2196",
+    ArbitrumNodeInterface: zeroAddress,
   },
 };
 

@@ -70,11 +70,15 @@ export async function getGasPrice(provider: Provider, chainId: number): Promise<
   };
 }
 
+/**
+ * @deprecated use estimateGasLimit instead
+ */
 export async function getGasLimit(
   contract: Contract | BaseContract,
   method,
   params: any[] = [],
-  value?: bigint | number
+  value?: bigint | number,
+  from?: string
 ) {
   const defaultValue = 0n;
 
@@ -84,10 +88,10 @@ export async function getGasLimit(
 
   let gasLimit = 0n;
   try {
-    gasLimit = await contract[method].estimateGas(...params, { value });
+    gasLimit = await contract[method].estimateGas(...params, { value, from });
   } catch (error) {
     // this call should throw another error instead of the `error`
-    await contract[method].staticCall(...params, { value });
+    await contract[method].staticCall(...params, { value, from });
 
     // if not we throw estimateGas error
     throw error;
@@ -100,6 +104,9 @@ export async function getGasLimit(
   return (gasLimit * 11n) / 10n; // add a 10% buffer
 }
 
+/**
+ * @deprecated
+ */
 export function getBestNonce(providers: Wallet[]): Promise<number> {
   const MAX_NONCE_NEEDED = 3;
   const MAX_WAIT = 5000;

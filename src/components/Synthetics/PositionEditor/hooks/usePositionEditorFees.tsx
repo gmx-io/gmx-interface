@@ -5,6 +5,7 @@ import { usePositionEditorPosition } from "context/SyntheticsStateContext/hooks/
 import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectPositionEditorCollateralInputAmountAndUsd } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { RelayerFeeParams } from "domain/synthetics/express";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
@@ -21,10 +22,11 @@ import { Operation } from "../types";
 
 export type Options = {
   operation: Operation;
+  relayerFeeParams?: RelayerFeeParams;
 };
 
 // todo make it a selector
-export function usePositionEditorFees({ operation }: Options) {
+export function usePositionEditorFees({ operation, relayerFeeParams }: Options) {
   const { chainId } = useChainId();
   const tokensData = useTokensData();
 
@@ -69,6 +71,7 @@ export function usePositionEditorFees({ operation }: Options) {
     return {
       fees,
       executionFee,
+      relayerFeeParams,
     };
-  }, [chainId, collateralDeltaUsd, gasLimits, gasPrice, isDeposit, position, tokensData]);
+  }, [chainId, collateralDeltaUsd, gasLimits, gasPrice, isDeposit, position, tokensData, relayerFeeParams]);
 }

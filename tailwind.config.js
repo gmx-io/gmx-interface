@@ -56,13 +56,15 @@ const colors = {
   red: {
     400: "#ff637a",
     500: "#FF506A",
-    700: "#B33055"
+    700: "#B33055",
   },
   green: {
     300: "#56dba8",
     400: "#8CF3CB",
     500: "#0FDE8D",
-    700: "#178969"
+    600: "#1F3445",
+    700: "#0FDE8D",
+    800: "#178969",
   },
   white: "#ffffff",
   black: "#000000",
@@ -121,7 +123,8 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
 
   addUtilities({
     ".text-input-bg": {
-      background: "linear-gradient(90deg, var(--color-cold-blue-900) 0%, color-mix(in srgb, var(--color-slate-500) 40%, transparent) 100%)",
+      background:
+        "linear-gradient(90deg, var(--color-cold-blue-900) 0%, color-mix(in srgb, var(--color-slate-500) 40%, transparent) 100%)",
     },
   });
 }

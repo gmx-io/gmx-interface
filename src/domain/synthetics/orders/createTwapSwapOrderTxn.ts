@@ -1,10 +1,10 @@
+import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { Signer, ethers } from "ethers";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
 
 import { getContract } from "config/contracts";
-import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { PendingOrderData, SetPendingOrder } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
-import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { OrderMetricId } from "lib/metrics/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";

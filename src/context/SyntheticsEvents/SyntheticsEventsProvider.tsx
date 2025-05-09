@@ -1,7 +1,11 @@
+import { TaskState } from "@gelatonetwork/relay-sdk";
 import { t } from "@lingui/macro";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { isDevelopment } from "config/env";
+import { useExpressNonces } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { useTokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import {
   subscribeToApprovalEvents,
@@ -19,12 +23,11 @@ import {
   isMarketOrderType,
   isSwapOrderType,
   OrderTxnType,
-  UpdateOrderParams,
 } from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
+import { getIsEmptySubaccountApproval } from "domain/synthetics/subaccount";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
-import { decodeTwapUiFeeReceiver } from "domain/synthetics/trade/twap/uiFeeReceiver";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
@@ -41,11 +44,14 @@ import {
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { deleteByKey, getByKey, setByKey, updateByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
+import { tenderlyLsKeys } from "lib/tenderly";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { sendUserAnalyticsOrderResultEvent, userAnalytics } from "lib/userAnalytics";
 import { TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { gelatoRelay } from "sdk/utils/gelatoRelay";
+import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
 
 import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
 import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
@@ -61,6 +67,7 @@ import {
   OrderCreatedEventData,
   OrderStatuses,
   PendingDepositData,
+  PendingExpressTxnParams,
   PendingFundingFeeSettlementData,
   PendingOrderData,
   PendingOrdersUpdates,
@@ -90,6 +97,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { wsProvider } = useWebsocketProvider();
   const { hasV2LostFocus, hasPageLostFocus } = useHasLostFocus();
 
+  const { resetTokenPermits } = useTokenPermitsContext();
+  const { refreshSubaccountData, resetSubaccountApproval } = useSubaccountContext();
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
@@ -127,9 +136,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [positionIncreaseEvents, setPositionIncreaseEvents] = useState<PositionIncreaseEvent[]>([]);
   const [positionDecreaseEvents, setPositionDecreaseEvents] = useState<PositionDecreaseEvent[]>([]);
 
-  const eventLogHandlers = useRef({});
+  const [pendingExpressTxnParams, setPendingExpressTxnParams] = useState<{ [taskId: string]: PendingExpressTxnParams }>(
+    {}
+  );
+  const { refreshNonces, updateActionsCount } = useExpressNonces();
 
-  const { setPendingTxns } = usePendingTxns();
+  const eventLogHandlers = useRef({});
 
   const updateNativeTokenBalance = useCallback(() => {
     if (!currentAccount) {
@@ -905,6 +917,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       pendingPositionsUpdates,
       positionIncreaseEvents,
       positionDecreaseEvents,
+      pendingExpressTxns: pendingExpressTxnParams,
+      setPendingExpressTxn: (params: PendingExpressTxnParams) => {
+        setPendingExpressTxnParams((old) => setByKey(old, params.taskId!, params));
+      },
       setPendingOrder: (data: PendingOrderData | PendingOrderData[]) => {
         const toastId = Date.now();
 
@@ -914,7 +930,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}
             toastTimestamp={toastId}
-            setPendingTxns={setPendingTxns}
           />,
           {
             autoClose: false,
@@ -931,10 +946,14 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
         setPendingOrdersUpdates((old) => ({ ...old, ...objData }));
       },
-      setPendingOrderUpdate: (data: UpdateOrderParams, remove?: "remove") => {
-        setPendingOrdersUpdates((old) =>
-          remove ? deleteByKey(old, data.orderKey) : setByKey(old, data.orderKey, "update")
-        );
+      setPendingOrderUpdate: (data: PendingOrderData, remove?: "remove") => {
+        setPendingOrdersUpdates((old) => {
+          if (!data.orderKey) {
+            return old;
+          }
+
+          return remove ? deleteByKey(old, data.orderKey) : setByKey(old, data.orderKey, "update");
+        });
       },
       setPendingFundingFeeSettlement: (data: PendingFundingFeeSettlementData) => {
         const toastId = Date.now();
@@ -1030,11 +1049,119 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     pendingPositionsUpdates,
     positionIncreaseEvents,
     positionDecreaseEvents,
+    pendingExpressTxnParams,
     marketsInfoData,
     tokensData,
-    setPendingTxns,
     glvAndGmMarketsData,
   ]);
+
+  useEffect(
+    function subscribeGelatoRelayEvents() {
+      async function handleTaskStatusUpdate(taskStatus) {
+        const pendingExpressParams = getByKey(pendingExpressTxnParams, taskStatus.taskId);
+
+        switch (taskStatus.taskState) {
+          case TaskState.ExecSuccess:
+            {
+              const isSubaccount = Boolean(pendingExpressParams?.subaccountApproval);
+
+              refreshSubaccountData();
+              refreshNonces();
+              updateActionsCount(isSubaccount ? "subaccountRelayRouter" : "relayRouter");
+
+              if (
+                pendingExpressParams?.subaccountApproval &&
+                !getIsEmptySubaccountApproval(pendingExpressParams.subaccountApproval)
+              ) {
+                resetSubaccountApproval();
+              }
+
+              if (pendingExpressParams?.tokenPermits?.length) {
+                resetTokenPermits();
+              }
+
+              setByKey(pendingExpressTxnParams, taskStatus.taskId, undefined);
+
+              if (pendingExpressParams?.successMessage) {
+                helperToast.success(pendingExpressParams.successMessage);
+              }
+            }
+            break;
+          case TaskState.ExecReverted:
+          case TaskState.Cancelled: {
+            pendingExpressParams?.pendingOrdersKeys?.forEach((key) => {
+              setOrderStatuses((old) => {
+                if (old[key]) {
+                  return updateByKey(old, key, {
+                    gelatoTaskId: taskStatus.taskId,
+                    isGelatoTaskFailed: true,
+                    isViewed: false,
+                  });
+                } else {
+                  return setByKey(old, key, {
+                    key,
+                    createdAt: Date.now(),
+                    gelatoTaskId: taskStatus.taskId,
+                    isGelatoTaskFailed: true,
+                    isViewed: false,
+                  });
+                }
+              });
+
+              if (pendingExpressParams?.errorMessage) {
+                helperToast.error(pendingExpressParams.errorMessage);
+              }
+            });
+
+            pendingExpressParams?.pendingPositionsKeys?.forEach((key) => {
+              setByKey(pendingPositionsUpdates, key, undefined);
+            });
+
+            setByKey(pendingExpressTxnParams, taskStatus.taskId, undefined);
+
+            break;
+          }
+          default:
+            break;
+        }
+
+        const accountSlug = JSON.parse(localStorage.getItem(JSON.stringify(tenderlyLsKeys.accountSlug)) ?? '""');
+        const projectSlug = JSON.parse(localStorage.getItem(JSON.stringify(tenderlyLsKeys.projectSlug)) ?? '""');
+
+        const accountParams =
+          accountSlug && projectSlug ? `?tenderlyUsername=${accountSlug}&tenderlyProjectName=${projectSlug}` : "";
+
+        const debugRes = await fetch(
+          `https://api.gelato.digital/tasks/status/${taskStatus.taskId}/debug${accountParams}`,
+          {
+            method: "GET",
+          }
+        );
+
+        const debugData = await debugRes.json();
+
+        if (isDevelopment()) {
+          // eslint-disable-next-line no-console
+          console.log("gelatoDebugData", taskStatus.taskState, pendingExpressParams, debugData);
+        }
+      }
+
+      gelatoRelay.onTaskStatusUpdate(handleTaskStatusUpdate);
+
+      return () => {
+        gelatoRelay.offTaskStatusUpdate(handleTaskStatusUpdate);
+      };
+    },
+    [
+      pendingExpressTxnParams,
+      pendingPositionsUpdates,
+      refreshNonces,
+      refreshSubaccountData,
+      resetSubaccountApproval,
+      resetTokenPermits,
+      updateActionsCount,
+    ]
+  );
 
   return <SyntheticsEventsContext.Provider value={contextState}>{children}</SyntheticsEventsContext.Provider>;
 }

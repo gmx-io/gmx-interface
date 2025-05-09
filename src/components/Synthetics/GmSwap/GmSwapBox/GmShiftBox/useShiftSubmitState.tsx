@@ -76,7 +76,10 @@ export function useShiftSubmitState({
     function getTokensToApprove() {
       const addresses: string[] = [];
 
-      if (selectedToken && getNeedTokenApprove(tokensAllowanceData, selectedToken.address, amounts?.fromTokenAmount)) {
+      if (
+        selectedToken &&
+        getNeedTokenApprove(tokensAllowanceData, selectedToken.address, amounts?.fromTokenAmount, [])
+      ) {
         addresses.push(selectedToken.address);
       }
 

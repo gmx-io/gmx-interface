@@ -1,6 +1,6 @@
 import { zeroAddress } from "viem";
 
-import type { Token, TokenCategory } from "types/tokens";
+import type { Token, TokenAddressTypesMap, TokenCategory } from "types/tokens";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 import { getContract } from "./contracts";
@@ -120,6 +120,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
       coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
       explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      isPermitSupported: true,
     },
     {
       name: "Tether",
@@ -142,6 +143,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/dai",
       explorerUrl: "https://arbiscan.io/token/0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
       isV1Available: true,
+      isPermitSupported: true,
     },
     {
       name: "Frax",
@@ -163,6 +165,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isTempHidden: true,
       imageUrl: "https://assets.coingecko.com/coins/images/16786/small/mimlogopng.png",
       isV1Available: true,
+      isPermitSupported: true,
     },
     {
       name: "Bitcoin",
@@ -173,6 +176,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1547033579",
       coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
+      isPermitSupported: true,
     },
     {
       name: "Dogecoin",
@@ -1009,6 +1013,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
       explorerUrl: "https://snowtrace.io/address/0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
       isV1Available: true,
+      isPermitSupported: true,
     },
     {
       name: "Bridged USDC (USDC.e)",
@@ -1062,6 +1067,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/magic-internet-money",
       explorerUrl: "https://snowtrace.io/address/0x130966628846BFd36ff31a822705796e8cb8C18D",
       isV1Available: true,
+      isPermitSupported: true,
     },
     {
       name: "Chainlink",
@@ -1597,18 +1603,22 @@ export function getTokenBySymbol(
   return token;
 }
 
-export function convertTokenAddress(chainId: number, address: string, convertTo?: "wrapped" | "native") {
+export function convertTokenAddress<T extends keyof TokenAddressTypesMap, R extends TokenAddressTypesMap[T]>(
+  chainId: number,
+  address: string,
+  convertTo?: T
+): R {
   const wrappedToken = getWrappedToken(chainId);
 
   if (convertTo === "wrapped" && address === NATIVE_TOKEN_ADDRESS) {
-    return wrappedToken.address;
+    return wrappedToken.address as R;
   }
 
   if (convertTo === "native" && address === wrappedToken.address) {
-    return NATIVE_TOKEN_ADDRESS;
+    return NATIVE_TOKEN_ADDRESS as R;
   }
 
-  return address;
+  return address as R;
 }
 
 export function getNormalizedTokenSymbol(tokenSymbol: string) {
