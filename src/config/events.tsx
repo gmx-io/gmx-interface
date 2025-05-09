@@ -34,6 +34,27 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "zro-listing",
+    title: "LayerZero market added on Arbitrum",
+    isActive: true,
+    startDate: "09 May 2025, 16:00",
+    endDate: "16 May 2025, 16:00",
+    bodyText: (
+      <>
+        <Link to="/trade/long/?mode=market&to=ZRO">Trade</Link> <TokenSymbolWithIcon symbol="ZRO" />
+        /USD, or{" "}
+        <Link to="/pools/?market=0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9&operation=buy&scroll=1">
+          provide liquidity
+        </Link>{" "}
+        by purchasing{" "}
+        <span className="whitespace-nowrap">
+          <TokenSymbolWithIcon symbol="GLV" />
+        </span>{" "}
+        or using <TokenSymbolWithIcon symbol="WETH" /> or <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
+  {
     id: "dolo-listing",
     title: "DOLO market added on Arbitrum",
     isActive: true,
