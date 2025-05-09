@@ -170,10 +170,7 @@ function fontComponentsPlugin({ addComponents, addBase }) {
     ".text-caption": {
       fontSize: "1rem",
       lineHeight: "1.4rem",
-    },
-    ".text-font-number": {
-      fontFamily: "RelativeNumber, Relative",
-    },
+    }
   });
 }
 

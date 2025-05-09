@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
-import React, { useMemo } from "react";
-import { Line, LineChart, XAxis, YAxis } from "recharts";
+import React from "react";
+import { Line, LineChart } from "recharts";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -14,15 +14,13 @@ import {
   getMarketIndexName,
   getMarketPoolName,
 } from "domain/synthetics/markets";
-import { getMintableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { PerformanceSnapshot } from "domain/synthetics/markets/performance";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { PerformanceSnapshotsData } from "domain/synthetics/markets/useGmGlvPerformance";
 import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformance";
-import { Period } from "domain/synthetics/markets/usePoolsTimeRange";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
-import { TokenData, TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
-import { formatUsdPrice } from "lib/numbers";
+import { TokenData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { getByKey } from "lib/objects";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
@@ -30,10 +28,8 @@ import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import Button from "components/Button/Button";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
-import { MintableAmount } from "components/MintableAmount/MintableAmount";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { GmTokensBalanceInfo } from "./GmTokensTotalBalanceInfo";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
@@ -47,16 +43,12 @@ export function GmListItem({
   glvTokensIncentiveAprData,
   marketsTokensLidoAprData,
   glvTokensApyData,
-  shouldScrollToTop,
-  isShiftAvailable,
-  marketTokensData,
   isFavorite,
   onFavoriteClick,
   glvPerformance,
   gmPerformance,
   glvPerformanceSnapshots,
   gmPerformanceSnapshots,
-  period,
 }: {
   token: TokenData;
   marketsTokensApyData: MarketTokensAPRData | undefined;
@@ -64,16 +56,12 @@ export function GmListItem({
   glvTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
   glvTokensApyData: MarketTokensAPRData | undefined;
-  shouldScrollToTop: boolean | undefined;
-  isShiftAvailable: boolean;
-  marketTokensData: TokensData | undefined;
   isFavorite: boolean | undefined;
   onFavoriteClick: ((address: string) => void) | undefined;
   glvPerformance: PerformanceData | undefined;
   gmPerformance: PerformanceData | undefined;
   glvPerformanceSnapshots: PerformanceSnapshotsData | undefined;
   gmPerformanceSnapshots: PerformanceSnapshotsData | undefined;
-  period: Period;
 }) {
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
@@ -192,7 +180,7 @@ export function GmListItem({
 
       <TableTd>
         {performanceSnapshots && performance ? (
-          <SnapshotGraph performanceSnapshots={performanceSnapshots} performance={performance} period={period} />
+          <SnapshotGraph performanceSnapshots={performanceSnapshots} performance={performance} />
         ) : null}
       </TableTd>
 
@@ -212,16 +200,10 @@ export function GmListItem({
 const SnapshotGraph = ({
   performanceSnapshots,
   performance,
-  period,
 }: {
   performanceSnapshots: PerformanceSnapshot[];
   performance: number;
-  period: Period;
 }) => {
-  const domain = useMemo(() => [
-    period.periodStart,
-    period.periodEnd,
-  ], [period])
   const isNegative = performance < 0;
 
   return (

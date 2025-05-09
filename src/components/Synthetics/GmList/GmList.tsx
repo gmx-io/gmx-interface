@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
-import { getIcons } from "config/icons";
 import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -38,8 +37,6 @@ export type Props = {
   gmPerformance: PerformanceData | undefined;
   glvPerformanceSnapshots: PerformanceSnapshotsData | undefined;
   gmPerformanceSnapshots: PerformanceSnapshotsData | undefined;
-  period: Period;
-  shouldScrollToTop?: boolean;
   isDeposit: boolean;
 };
 
@@ -49,13 +46,11 @@ export function GmList({
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
-  shouldScrollToTop,
   isDeposit,
   glvPerformance,
   gmPerformance,
   glvPerformanceSnapshots,
   gmPerformanceSnapshots,
-  period,
 }: Props) {
   const chainId = useSelector(selectChainId);
   const marketsInfo = useSelector(selectMarketsInfoData);
@@ -153,10 +148,12 @@ export function GmList({
                     handle={t`PERFORMANCE`}
                     className="normal-case"
                     position="bottom-end"
-                    renderContent={() => <Trans>
-                      Pools returns in comparison to the benchmark, which is based on UNI V2-style rebalancing of the
-                      long-short token in the corresponding GM or GLV."
-                    </Trans>}
+                    renderContent={() => (
+                      <Trans>
+                        Pools returns in comparison to the benchmark, which is based on UNI V2-style rebalancing of the
+                        long-short token in the corresponding GM or GLV."
+                      </Trans>
+                    )}
                   />
                 </Sorter>
               </TableTh>
@@ -179,7 +176,6 @@ export function GmList({
                 <GmListItem
                   key={token.address}
                   token={token}
-                  marketTokensData={marketTokensData}
                   marketsTokensApyData={marketsTokensApyData}
                   glvTokensIncentiveAprData={undefined}
                   marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
@@ -189,11 +185,8 @@ export function GmList({
                   gmPerformance={gmPerformance}
                   glvPerformanceSnapshots={glvPerformanceSnapshots}
                   gmPerformanceSnapshots={gmPerformanceSnapshots}
-                  shouldScrollToTop={shouldScrollToTop}
-                  isShiftAvailable={shiftAvailableMarketAddressSet.has(token.address)}
                   isFavorite={favoriteTokens.includes(token.address)}
                   onFavoriteClick={toggleFavoriteToken}
-                  period={period}
                 />
               ))}
             {!currentData.length && !isLoading && (

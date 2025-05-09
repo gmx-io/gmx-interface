@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/macro";
 import { useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 
@@ -7,10 +8,7 @@ import {
   selectGlvAndMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useMarketTokensData } from "domain/synthetics/markets";
-import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { getTokenData } from "domain/synthetics/tokens";
-import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { getByKey } from "lib/objects";
 
@@ -18,31 +16,19 @@ import ButtonLink from "components/Button/ButtonLink";
 import SEO from "components/Common/SEO";
 import Footer from "components/Footer/Footer";
 import { GmSwapBox } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
-import { Operation } from "components/Synthetics/GmSwap/GmSwapBox/types";
+import { useCompositionData } from "components/Synthetics/MarketStats/hooks/useCompositionData";
 import { MarketComposition } from "components/Synthetics/MarketStats/MarketComposition";
 
+import { PoolsDetailsAbout } from "./PoolsDetailsAbout";
+import { PoolsDetailsCard } from "./PoolsDetailsCard";
 import { PoolsDetailsHeader } from "./PoolsDetailsHeader";
 
 import "./PoolsDetails.scss";
-import { PoolsDetailsAbout } from "./PoolsDetailsAbout";
-import { PoolsDetailsCard } from "./PoolsDetailsCard";
-
-import { Trans } from "@lingui/macro";
 
 export function PoolsDetails() {
-  const { chainId } = useChainId();
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
 
   const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
-  const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
-
-  const {
-    marketsTokensApyData,
-    marketsTokensIncentiveAprData,
-    glvTokensIncentiveAprData,
-    marketsTokensLidoAprData,
-    glvApyInfoData,
-  } = useGmMarketsApy(chainId);
 
   const { operation, mode, market, setOperation, setMode, setMarket } = usePoolsDetailsContext();
 
@@ -50,10 +36,13 @@ export function PoolsDetails() {
 
   const marketInfo = getByKey(marketsInfoData, market);
 
-  const marketToken = getTokenData(
-    operation === Operation.Deposit ? depositMarketTokensData : withdrawalMarketTokensData,
-    market
-  );
+  const marketToken = getTokenData(depositMarketTokensData, market);
+
+  const { backing: backingComposition, market: marketComposition } = useCompositionData({
+    marketInfo,
+    marketsInfoData,
+    marketTokensData: depositMarketTokensData,
+  });
 
   return (
     <SEO title={getPageTitle("V2 Pools")}>
@@ -66,12 +55,21 @@ export function PoolsDetails() {
 
         <div className="PoolsDetails-content mb-15 gap-12">
           <div className="grow">
-            <PoolsDetailsCard title={<Trans>Composition</Trans>}>
-              <MarketComposition
-                marketTokensData={depositMarketTokensData}
-                marketsInfoData={marketsInfoData}
-                marketInfo={marketInfo}
-              />
+            <PoolsDetailsCard title={<Trans>Composition</Trans>} childrenContainerClassName="!p-0">
+              <div className="grid grid-cols-2">
+                <MarketComposition
+                  type="backing"
+                  label={<Trans>Backing Composition</Trans>}
+                  title={<Trans>Direct exposure to tokens</Trans>}
+                  composition={backingComposition}
+                />
+                <MarketComposition
+                  type="market"
+                  label={<Trans>Market Composition</Trans>}
+                  title={<Trans>Market exposure to Trader PnL</Trans>}
+                  composition={marketComposition}
+                />
+              </div>
             </PoolsDetailsCard>
           </div>
 

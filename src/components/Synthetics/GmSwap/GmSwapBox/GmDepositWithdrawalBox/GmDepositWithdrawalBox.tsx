@@ -41,7 +41,7 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { useGmWarningState } from "../useGmWarningState";
-import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
+// import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
 import { useGmDepositWithdrawalBoxState } from "./useGmDepositWithdrawalBoxState";
@@ -627,16 +627,16 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     [marketAddress, onGlvOrMarketChange, sortedMarketsInfoByIndexToken]
   );
 
-  useUpdateByQueryParams({
-    operation,
-    setOperation: onSetOperation,
-    setMode: onSetMode,
-    onSelectMarket,
-    onSelectedMarketForGlv,
-    selectedMarketForGlv,
-    setFirstTokenAddress,
-    setIsMarketForGlvSelectedManually,
-  });
+  // useUpdateByQueryParams({
+  //   operation,
+  //   setOperation: onSetOperation,
+  //   setMode: onSetMode,
+  //   onSelectMarket,
+  //   onSelectedMarketForGlv,
+  //   selectedMarketForGlv,
+  //   setFirstTokenAddress,
+  //   setIsMarketForGlvSelectedManually,
+  // });
 
   useUpdateTokens({
     tokenOptions,

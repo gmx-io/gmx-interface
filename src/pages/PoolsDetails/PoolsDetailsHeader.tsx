@@ -1,5 +1,4 @@
 import { Trans } from "@lingui/macro";
-import { ReactNode } from "react";
 
 import { USD_DECIMALS } from "config/factors";
 import {
@@ -14,11 +13,10 @@ import { GlvInfo } from "domain/synthetics/markets/types";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { formatAmountHuman, formatBalanceAmount, formatBalanceAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatAmountHuman, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
-import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import { PoolsDetailsMarketAmount } from "./PoolsDetailsMarketAmount";

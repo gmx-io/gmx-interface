@@ -31,7 +31,7 @@ import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow
 import { Mode, Operation } from "../types";
 import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
 import { useGmWarningState } from "../useGmWarningState";
-import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
+// import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
 import { useShiftAmounts } from "./useShiftAmounts";
 import { useShiftAvailableRelatedMarkets } from "./useShiftAvailableRelatedMarkets";
 import { useShiftFees } from "./useShiftFees";
@@ -171,12 +171,12 @@ export function GmShiftBox({
   const [glvForShiftAddress, setGlvForShiftAddress] = useState<string | undefined>(undefined);
   const [, setFirstTokenAddressForDeposit] = useDepositWithdrawalSetFirstTokenAddress(true, glvForShiftAddress);
 
-  useUpdateByQueryParams({
-    operation: Operation.Shift,
-    onSelectMarket,
-    setMode: onSetMode,
-    setOperation: onSetOperation,
-  });
+  // useUpdateByQueryParams({
+  //   operation: Operation.Shift,
+  //   onSelectMarket,
+  //   setMode: onSetMode,
+  //   setOperation: onSetOperation,
+  // });
 
   const handleFormSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {

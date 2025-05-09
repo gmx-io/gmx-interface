@@ -6,7 +6,7 @@ import { GlvAndGmMarketsInfoData, GlvInfo } from "domain/synthetics/markets/type
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { formatDateTime } from "lib/dates";
 import { bigintToNumber, formatAmountHuman } from "lib/numbers";
-import { MarketInfo, MarketsInfoData } from "sdk/types/markets";
+import { MarketInfo } from "sdk/types/markets";
 
 import { useMarketMintableTokens } from "components/Synthetics/MarketStats/hooks/useMarketMintableTokens";
 import { useMarketSellableToken } from "components/Synthetics/MarketStats/hooks/useMarketSellableToken";

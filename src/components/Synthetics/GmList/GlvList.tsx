@@ -28,13 +28,11 @@ export function GlvList({
   marketsTokensIncentiveAprData,
   glvTokensIncentiveAprData,
   marketsTokensLidoAprData,
-  shouldScrollToTop,
   isDeposit,
   glvPerformance,
   gmPerformance,
   glvPerformanceSnapshots,
   gmPerformanceSnapshots,
-  period,
 }: Props) {
   const chainId = useSelector(selectChainId);
   const marketsInfo = useSelector(selectGlvInfo);
@@ -121,21 +119,17 @@ export function GlvList({
                 <GmListItem
                   key={token.address}
                   token={token}
-                  marketTokensData={marketTokensData}
                   marketsTokensApyData={marketsTokensApyData}
                   glvTokensIncentiveAprData={glvTokensIncentiveAprData}
                   marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
                   marketsTokensLidoAprData={marketsTokensLidoAprData}
                   glvTokensApyData={glvTokensApyData}
-                  shouldScrollToTop={shouldScrollToTop}
-                  isShiftAvailable={false}
                   isFavorite={undefined}
                   onFavoriteClick={undefined}
                   glvPerformance={glvPerformance}
                   gmPerformance={gmPerformance}
                   glvPerformanceSnapshots={glvPerformanceSnapshots}
                   gmPerformanceSnapshots={gmPerformanceSnapshots}
-                  period={period}
                 />
               ))}
 
