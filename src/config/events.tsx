@@ -37,8 +37,8 @@ export const appEventsData: EventData[] = [
     id: "zro-listing",
     title: "LayerZero market added on Arbitrum",
     isActive: true,
-    startDate: "08 May 2025, 12:00",
-    endDate: "15 May 2025, 12:00",
+    startDate: "09 May 2025, 16:00",
+    endDate: "16 May 2025, 16:00",
     bodyText: (
       <>
         <Link to="/trade/long/?mode=market&to=ZRO">Trade</Link> <TokenSymbolWithIcon symbol="ZRO" />
