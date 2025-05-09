@@ -330,50 +330,102 @@ export function buildDecreaseOrderPayload(
 
 export function buildTwapOrdersPayloads<
   T extends SwapOrderParams | IncreasePositionOrderParams | DecreasePositionOrderParams,
->(p: T, twapParams: TwapOrderParams) {
+>(p: T, twapParams: TwapOrderParams): CreateOrderTxnParams<T>[] {
+  const uiFeeReceiver = createTwapUiFeeReceiver({ numberOfParts: twapParams.numberOfParts });
+
   if (isSwapOrderType(p.orderType)) {
     return Array.from({ length: twapParams.numberOfParts }, (_, i) => {
       const params = p as SwapOrderParams;
-      const uiFeeReceiver = createTwapUiFeeReceiver(twapParams);
 
       return buildSwapOrderPayload({
-        ...params,
+        chainId: params.chainId,
+        receiver: params.receiver,
+        executionGasLimit: params.executionGasLimit,
+        payTokenAddress: params.payTokenAddress,
+        receiveTokenAddress: params.receiveTokenAddress,
+        swapPath: params.swapPath,
+        externalSwapQuote: undefined,
+        minOutputAmount: params.minOutputAmount,
+        triggerRatio: params.triggerRatio,
+        referralCode: params.referralCode,
+        autoCancel: params.autoCancel,
+        allowedSlippage: 0,
         payTokenAmount: params.payTokenAmount / BigInt(twapParams.numberOfParts),
         executionFeeAmount: params.executionFeeAmount / BigInt(twapParams.numberOfParts),
         validFromTime: getTwapValidFromTime(twapParams.duration, twapParams.numberOfParts, i),
+        orderType: OrderType.LimitSwap,
         uiFeeReceiver,
-      });
+      }) as CreateOrderTxnParams<T>;
     });
   }
 
   if (isIncreaseOrderType(p.orderType)) {
     return Array.from({ length: twapParams.numberOfParts }, (_, i) => {
       const params = p as IncreasePositionOrderParams;
-      const uiFeeReceiver = createTwapUiFeeReceiver(twapParams);
+
+      const acceptablePrice = params.isLong ? MaxUint256 : 0n;
+      const triggerPrice = acceptablePrice;
 
       return buildIncreaseOrderPayload({
-        ...params,
+        chainId: params.chainId,
+        receiver: params.receiver,
+        executionGasLimit: params.executionGasLimit,
+        referralCode: params.referralCode,
+        autoCancel: params.autoCancel,
+        swapPath: params.swapPath,
+        externalSwapQuote: undefined,
+        marketAddress: params.marketAddress,
+        indexTokenAddress: params.indexTokenAddress,
+        isLong: params.isLong,
         sizeDeltaUsd: params.sizeDeltaUsd / BigInt(twapParams.numberOfParts),
+        sizeDeltaInTokens: params.sizeDeltaInTokens / BigInt(twapParams.numberOfParts),
+        payTokenAddress: params.payTokenAddress,
+        allowedSlippage: 0,
         payTokenAmount: params.payTokenAmount / BigInt(twapParams.numberOfParts),
+        collateralTokenAddress: params.collateralTokenAddress,
+        collateralDeltaAmount: params.collateralDeltaAmount / BigInt(twapParams.numberOfParts),
         executionFeeAmount: params.executionFeeAmount / BigInt(twapParams.numberOfParts),
         validFromTime: getTwapValidFromTime(twapParams.duration, twapParams.numberOfParts, i),
+        orderType: OrderType.LimitIncrease,
+        acceptablePrice,
+        triggerPrice,
         uiFeeReceiver,
-      });
+      }) as CreateOrderTxnParams<T>;
     });
   }
 
   return Array.from({ length: twapParams.numberOfParts }, (_, i) => {
     const params = p as DecreasePositionOrderParams;
-    const uiFeeReceiver = createTwapUiFeeReceiver(twapParams);
+
+    const acceptablePrice = !params.isLong ? MaxUint256 : 0n;
+    const triggerPrice = acceptablePrice;
 
     return buildDecreaseOrderPayload({
-      ...params,
+      chainId: params.chainId,
+      receiver: params.receiver,
+      executionGasLimit: params.executionGasLimit,
+      referralCode: params.referralCode,
+      autoCancel: params.autoCancel,
+      swapPath: params.swapPath,
+      externalSwapQuote: undefined,
+      marketAddress: params.marketAddress,
+      indexTokenAddress: params.indexTokenAddress,
+      isLong: params.isLong,
+      collateralTokenAddress: params.collateralTokenAddress,
       collateralDeltaAmount: params.collateralDeltaAmount / BigInt(twapParams.numberOfParts),
       sizeDeltaUsd: params.sizeDeltaUsd / BigInt(twapParams.numberOfParts),
+      sizeDeltaInTokens: params.sizeDeltaInTokens / BigInt(twapParams.numberOfParts),
       executionFeeAmount: params.executionFeeAmount / BigInt(twapParams.numberOfParts),
       validFromTime: getTwapValidFromTime(twapParams.duration, twapParams.numberOfParts, i),
+      orderType: OrderType.LimitDecrease,
+      acceptablePrice,
+      triggerPrice,
+      allowedSlippage: 0,
       uiFeeReceiver,
-    });
+      minOutputUsd: params.minOutputUsd / BigInt(twapParams.numberOfParts),
+      receiveTokenAddress: params.receiveTokenAddress,
+      decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
+    }) as CreateOrderTxnParams<T>;
   });
 }
 

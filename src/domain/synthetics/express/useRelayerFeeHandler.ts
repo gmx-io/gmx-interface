@@ -59,7 +59,7 @@ export function useExpressOrdersParams({
       });
 
       if (!nextApproximateParams) {
-        return retry(undefined, 500);
+        return retry(undefined, 100);
       }
 
       return nextApproximateParams;
@@ -73,13 +73,13 @@ export function useExpressOrdersParams({
         globalExpressParams,
       },
     ],
-    { throttleMs: 2000, enabled: isEnabled }
+    { throttleMs: 1000, enabled: isEnabled }
   );
 
   const { data: asyncExpressParams } = useThrottledAsync(
     async ({ params: [p] }) => {
       if (!p.orderParams || !p.globalExpressParams || !p.signer || !p.provider) {
-        return retry(undefined, 500);
+        return retry(undefined, 100);
       }
 
       const expressParams = await estimateExpressParams({

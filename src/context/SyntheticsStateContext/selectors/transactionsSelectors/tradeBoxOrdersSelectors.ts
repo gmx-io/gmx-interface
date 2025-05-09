@@ -11,6 +11,7 @@ import {
   SwapOrderParams,
 } from "sdk/utils/orderTransactions";
 
+import { getIsValidTwapParams } from "sdk/utils/twap";
 import { selectChainId, selectMaxAutoCancelOrders, selectSigner, selectUserReferralInfo } from "../globalSelectors";
 import { makeSelectOrdersByPositionKey } from "../orderSelectors";
 import {
@@ -86,7 +87,7 @@ export const selectTradeboxSwapOrderPayload = createSelector((q) => {
     return undefined;
   }
 
-  const orderType = isLimit || isTwap ? OrderType.LimitSwap : OrderType.MarketSwap;
+  const orderType = isLimit ? OrderType.LimitSwap : OrderType.MarketSwap;
 
   const swapOrderParams: SwapOrderParams = {
     ...commonParams,
@@ -104,6 +105,10 @@ export const selectTradeboxSwapOrderPayload = createSelector((q) => {
   };
 
   if (isTwap) {
+    if (!getIsValidTwapParams(duration, numberOfParts)) {
+      return undefined;
+    }
+
     return buildTwapOrdersPayloads(swapOrderParams, {
       duration,
       numberOfParts,
@@ -137,7 +142,7 @@ export const selectTradeboxIncreaseOrderParams = createSelector((q) => {
     return undefined;
   }
 
-  const orderType = increaseAmounts.limitOrderType ?? (isTwap ? OrderType.LimitIncrease : OrderType.MarketIncrease);
+  const orderType = increaseAmounts.limitOrderType ?? OrderType.MarketIncrease;
 
   const increaseOrderParams: IncreasePositionOrderParams = {
     ...commonParams,
@@ -161,6 +166,10 @@ export const selectTradeboxIncreaseOrderParams = createSelector((q) => {
   };
 
   if (isTwap) {
+    if (!getIsValidTwapParams(duration, numberOfParts)) {
+      return undefined;
+    }
+
     return buildTwapOrdersPayloads(increaseOrderParams, {
       duration,
       numberOfParts,
@@ -179,8 +188,6 @@ export const selectTradeboxDecreaseOrderParams = createSelector((q) => {
   const maxAutoCancelOrders = q(selectMaxAutoCancelOrders);
   const positionOrders = q(makeSelectOrdersByPositionKey(selectedPositionKey));
   const { isLong, isTwap } = q(selectTradeboxTradeFlags);
-  const duration = q(selectTradeboxTwapDuration);
-  const numberOfParts = q(selectTradeboxTwapNumberOfParts);
 
   if (
     !commonParams ||
@@ -218,13 +225,6 @@ export const selectTradeboxDecreaseOrderParams = createSelector((q) => {
     uiFeeReceiver: commonParams.uiFeeReceiver,
     autoCancel: !isTwap && autoCancelOrdersLimit > 0,
   };
-
-  if (isTwap) {
-    return buildTwapOrdersPayloads(decreaseOrderParams, {
-      duration,
-      numberOfParts,
-    });
-  }
 
   return [buildDecreaseOrderPayload(decreaseOrderParams)];
 });

@@ -88,8 +88,10 @@ import {
   BatchOrderTxnParams,
   buildDecreaseOrderPayload,
   buildTwapOrdersPayloads,
+  CreateOrderTxnParams,
   DecreasePositionOrderParams,
 } from "sdk/utils/orderTransactions";
+import { getIsValidTwapParams } from "sdk/utils/twap";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
@@ -316,10 +318,16 @@ export function PositionSeller() {
       validFromTime: 0n,
     };
 
+    let createOrderParams: CreateOrderTxnParams<DecreasePositionOrderParams>[] = [];
+
+    if (isTwap && getIsValidTwapParams(duration, numberOfParts)) {
+      createOrderParams = buildTwapOrdersPayloads(decreaseOrderParams, { duration, numberOfParts });
+    } else {
+      createOrderParams = [buildDecreaseOrderPayload(decreaseOrderParams)];
+    }
+
     return {
-      createOrderParams: isTwap
-        ? buildTwapOrdersPayloads(decreaseOrderParams, { duration, numberOfParts })
-        : [buildDecreaseOrderPayload(decreaseOrderParams)],
+      createOrderParams,
       updateOrderParams: [],
       cancelOrderParams: [],
     };

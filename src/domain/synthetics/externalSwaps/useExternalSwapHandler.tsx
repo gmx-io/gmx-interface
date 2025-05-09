@@ -3,18 +3,19 @@ import { useEffect } from "react";
 import { isDevelopment } from "config/env";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { selectGasPrice, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { makeSelectSubaccountForActions } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  makeSelectSubaccountForActions,
+  selectGasPrice,
+  selectTokensData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectBaseExternalSwapOutput,
+  selectExternalSwapInputs,
   selectExternalSwapQuote,
   selectSetBaseExternalSwapOutput,
   selectSetShouldFallbackToInternalSwap,
   selectShouldFallbackToInternalSwap,
   selectShouldRequestExternalSwapQuote,
-} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { selectExternalSwapInputs } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import {
   selectTradeboxAllowedSlippage,
   selectTradeboxFromTokenAddress,
   selectTradeboxSelectSwapToToken,
@@ -24,6 +25,7 @@ import { useChainId } from "lib/chains";
 import { throttleLog } from "lib/logging";
 import { getContract } from "sdk/configs/contracts";
 
+import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/shared/baseSelectors";
 import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
 
 export function useExternalSwapHandler() {
@@ -46,6 +48,7 @@ export function useExternalSwapHandler() {
   const externalSwapQuote = useSelector(selectExternalSwapQuote);
   const shouldFallbackToInternalSwap = useSelector(selectShouldFallbackToInternalSwap);
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
+  const { isTwap } = useSelector(selectTradeboxTradeFlags);
 
   const subaccount = useSelector(makeSelectSubaccountForActions(1));
 
@@ -58,7 +61,7 @@ export function useExternalSwapHandler() {
     receiverAddress: getContract(chainId, "OrderVault"),
     slippage,
     gasPrice,
-    enabled: !subaccount && shouldRequestExternalSwapQuote,
+    enabled: !isTwap && !subaccount && shouldRequestExternalSwapQuote,
   });
 
   if (isDevelopment() && settings.showDebugValues) {

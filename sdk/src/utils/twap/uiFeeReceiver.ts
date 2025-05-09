@@ -15,6 +15,7 @@ export function createTwapUiFeeReceiver({ numberOfParts }: { numberOfParts: numb
 
 export function decodeTwapUiFeeReceiver(address: string): { twapId: string; numberOfParts: number } | void {
   const twapId = address.slice(36, 40);
+
   if (!isValidTwapUiFeeReceiver(address) || twapId === "0000") {
     return;
   }

@@ -3,6 +3,15 @@ import { OrderType } from "types/orders";
 import { TwapDuration } from "types/twap";
 import { isSwapOrderType } from "utils/orders";
 
+export function getIsValidTwapParams(duration: TwapDuration, numberOfParts: number) {
+  return (
+    duration.hours >= 0 &&
+    duration.minutes >= 0 &&
+    numberOfParts >= MIN_TWAP_NUMBER_OF_PARTS &&
+    numberOfParts <= MAX_TWAP_NUMBER_OF_PARTS
+  );
+}
+
 export function getTwapDurationInSeconds(duration: TwapDuration) {
   return duration.hours * 60 * 60 + duration.minutes * 60;
 }

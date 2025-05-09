@@ -303,7 +303,11 @@ export function getBatchPendingOrders(
   txnParams: BatchOrderTxnParams,
   ordersInfoData: OrdersInfoData | undefined
 ): PendingOrderData[] {
-  const createPendingOrders = txnParams.createOrderParams.map(getPendingCreateOrder);
+  const createPendingOrders = txnParams.createOrderParams
+    .filter((cp) => !isTwapOrderPayload(cp.orderPayload))
+    .map((cp) => getPendingCreateOrder(cp));
+
+  const twapPendingOrders = getPendingCreateTwapOrders(txnParams.createOrderParams);
 
   const updatePendingOrders = txnParams.updateOrderParams
     .map((updateOrderParams) => {
@@ -327,7 +331,12 @@ export function getBatchPendingOrders(
     })
     .filter((o) => o !== undefined);
 
-  return [...createPendingOrders, ...updatePendingOrders, ...cancelPendingOrders] as PendingOrderData[];
+  return [
+    ...twapPendingOrders,
+    ...createPendingOrders,
+    ...updatePendingOrders,
+    ...cancelPendingOrders,
+  ] as PendingOrderData[];
 }
 export function getPendingCancelOrder(params: CancelOrderTxnParams, order: OrderInfo): PendingOrderData {
   return {
@@ -407,7 +416,8 @@ export function getPendingUpdateOrder(updateOrderParams: UpdateOrderTxnParams, o
 }
 
 export function getPendingCreateOrder(
-  createOrderPayload: CreateOrderTxnParams<IncreasePositionOrderParams | DecreasePositionOrderParams | SwapOrderParams>
+  createOrderPayload: CreateOrderTxnParams<IncreasePositionOrderParams | DecreasePositionOrderParams | SwapOrderParams>,
+  isTwap = false
 ): PendingOrderData {
   return {
     account: createOrderPayload.orderPayload.addresses.receiver,
@@ -425,8 +435,38 @@ export function getPendingCreateOrder(
     shouldUnwrapNativeToken: createOrderPayload.orderPayload.shouldUnwrapNativeToken,
     externalSwapQuote: createOrderPayload.params.externalSwapQuote,
     txnType: "create",
-    isTwap: isTwapOrderPayload(createOrderPayload.orderPayload),
+    isTwap,
   };
+}
+
+export function getPendingCreateTwapOrders(
+  createOrderPayloads: CreateOrderTxnParams<
+    IncreasePositionOrderParams | DecreasePositionOrderParams | SwapOrderParams
+  >[]
+): PendingOrderData[] {
+  const ordersByUiFeeReceiver: Record<string, PendingOrderData> = {};
+
+  createOrderPayloads.forEach((cp) => {
+    if (!isTwapOrderPayload(cp.orderPayload)) {
+      return;
+    }
+
+    const uiFeeReceiver = cp.orderPayload.addresses.uiFeeReceiver;
+
+    const pendingOrder = getPendingCreateOrder(cp, true);
+
+    if (!ordersByUiFeeReceiver[uiFeeReceiver]) {
+      ordersByUiFeeReceiver[uiFeeReceiver] = pendingOrder;
+    } else {
+      const acc = ordersByUiFeeReceiver[uiFeeReceiver];
+
+      acc.sizeDeltaUsd += pendingOrder.sizeDeltaUsd;
+      acc.minOutputAmount += pendingOrder.minOutputAmount;
+      acc.initialCollateralDeltaAmount += pendingOrder.initialCollateralDeltaAmount;
+    }
+  });
+
+  return Object.values(ordersByUiFeeReceiver);
 }
 
 function getOperationMessage(
