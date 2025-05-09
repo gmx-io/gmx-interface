@@ -216,6 +216,8 @@ export function parseGetOrdersResponse(res: MulticallResult<ReturnType<typeof bu
         orderType: order.numbers.orderType as OrderType,
         decreasePositionSwapType: order.numbers.decreasePositionSwapType as DecreasePositionSwapType,
         autoCancel: order.flags.autoCancel as boolean,
+        uiFeeReceiver: order.addresses.uiFeeReceiver as Address,
+        validFromTime: BigInt(order.numbers.validFromTime),
         data,
       };
 

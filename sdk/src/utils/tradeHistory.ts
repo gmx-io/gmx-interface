@@ -61,6 +61,13 @@ export function createRawTradeActionTransformer(
         transaction: rawAction.transaction,
         reason: rawAction.reason,
         reasonBytes: rawAction.reasonBytes,
+        twapParams:
+          rawAction.twapGroupId && rawAction.numberOfParts
+            ? {
+                twapGroupId: rawAction.twapGroupId,
+                numberOfParts: rawAction.numberOfParts,
+              }
+            : undefined,
       };
 
       return tradeAction;
@@ -141,6 +148,13 @@ export function createRawTradeActionTransformer(
         transaction: rawAction.transaction,
         timestamp: rawAction.timestamp,
         shouldUnwrapNativeToken: rawAction.shouldUnwrapNativeToken!,
+        twapParams:
+          rawAction.twapGroupId && rawAction.numberOfParts
+            ? {
+                twapGroupId: rawAction.twapGroupId,
+                numberOfParts: rawAction.numberOfParts,
+              }
+            : undefined,
       };
 
       return tradeAction;

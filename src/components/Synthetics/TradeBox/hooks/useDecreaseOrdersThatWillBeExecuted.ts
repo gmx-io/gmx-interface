@@ -7,7 +7,7 @@ import {
   selectTradeboxSelectedPositionKey,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { isTriggerDecreaseOrderType } from "domain/synthetics/orders";
+import { isTriggerDecreaseOrderType, isTwapOrder } from "domain/synthetics/orders";
 import { TriggerThresholdType } from "domain/synthetics/trade";
 import { EMPTY_ARRAY } from "lib/objects";
 
@@ -18,7 +18,7 @@ export function useDecreaseOrdersThatWillBeExecuted() {
   const positionOrders = useSelector(makeSelectOrdersByPositionKey(positionKey));
 
   const existingTriggerOrders = useMemo(
-    () => positionOrders.filter((order) => isTriggerDecreaseOrderType(order.orderType)),
+    () => positionOrders.filter((order) => isTriggerDecreaseOrderType(order.orderType) && !isTwapOrder(order)),
     [positionOrders]
   );
 

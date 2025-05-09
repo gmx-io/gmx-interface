@@ -56,6 +56,7 @@ const selectPositionSellerReceiveTokenAddress = (state: SyntheticsState) => stat
 export const selectPositionSellerAllowedSlippage = (state: SyntheticsState) => state.positionSeller.allowedSlippage;
 export const selectPositionSellerReceiveTokenAddressChanged = (state: SyntheticsState) =>
   state.positionSeller.isReceiveTokenChanged;
+export const selectPositionSellerNumberOfParts = (state: SyntheticsState) => state.positionSeller.numberOfParts;
 export const selectPositionSellerPosition = createSelector((q) => {
   const positionKey = q(selectClosingPositionKey);
   return q((s) => (positionKey ? selectPositionsInfoData(s)?.[positionKey] : undefined));
@@ -189,6 +190,8 @@ export const selectPositionSellerAcceptablePrice = createSelector((q) => {
     return applySlippageToPrice(allowedSlippage, decreaseAmounts.acceptablePrice, false, position.isLong);
   } else if (orderOption === OrderOption.Trigger) {
     return decreaseAmounts.acceptablePrice;
+  } else if (orderOption === OrderOption.Twap) {
+    return decreaseAmounts.acceptablePrice;
   } else {
     mustNeverExist(orderOption);
   }
@@ -211,6 +214,8 @@ export const selectPositionSellerFees = createSelector((q) => {
   const chainId = q(selectChainId);
   const swapAmounts = q(selectPositionSellerSwapAmounts);
   const uiFeeFactor = q(selectUiFeeFactor);
+  const orderOption = q(selectPositionSellerOrderOption);
+  const numberOfParts = q(selectPositionSellerNumberOfParts);
 
   if (!position || !decreaseAmounts || !gasLimits || !tokensData || gasPrice === undefined) {
     return {};
@@ -248,7 +253,15 @@ export const selectPositionSellerFees = createSelector((q) => {
       swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
       uiFeeFactor,
     }),
-    executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount),
+    executionFee: getExecutionFee(
+      chainId,
+      gasLimits,
+      tokensData,
+      estimatedGas,
+      gasPrice,
+      oraclePriceCount,
+      orderOption === OrderOption.Twap ? numberOfParts : undefined
+    ),
   };
 });
 

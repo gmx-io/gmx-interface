@@ -48,7 +48,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
   } = usePositionSeller();
 
   const isTrigger = orderOption === OrderOption.Trigger;
-
+  const isTwap = orderOption === OrderOption.Twap;
   const decreaseAmounts = useSelector(selectPositionSellerDecreaseAmounts);
 
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
@@ -107,6 +107,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
       isSwap: false,
       isPosition: true,
       isTrigger: orderOption === OrderOption.Trigger,
+      isTwap: false,
     }),
     [position?.isLong, orderOption]
   );
@@ -128,45 +129,52 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
       onToggle={setOpen}
       contentClassName="flex flex-col gap-14 pt-14"
     >
-      <ExecutionPriceRow
-        tradeFlags={executionPriceFlags}
-        fees={fees}
-        executionPrice={executionPrice ?? undefined}
-        acceptablePrice={acceptablePrice}
-        triggerOrderType={decreaseAmounts?.triggerOrderType}
-        visualMultiplier={toToken?.visualMultiplier}
-      />
+      {!isTwap && (
+        <ExecutionPriceRow
+          tradeFlags={executionPriceFlags}
+          fees={fees}
+          executionPrice={executionPrice ?? undefined}
+          acceptablePrice={acceptablePrice}
+          triggerOrderType={decreaseAmounts?.triggerOrderType}
+          visualMultiplier={toToken?.visualMultiplier}
+        />
+      )}
 
       <TradeFeesRow {...fees} feesType="decrease" />
       <NetworkFeeRow executionFee={executionFee} />
-      {isTrigger && acceptablePriceImpactInputRow}
-      {!isTrigger && (
+      {isTrigger || isTwap ? (
+        acceptablePriceImpactInputRow
+      ) : (
         <AllowedSlippageRow
           allowedSlippage={allowedSlippage}
           setAllowedSlippage={setAllowedSlippage}
           slippageInputId={slippageInputId}
         />
       )}
-      <div className="h-1 bg-stroke-primary" />
-      <SyntheticsInfoRow label={t`Leverage`} value={leverageValue} />
 
-      {sizeRow}
+      {!isTwap && (
+        <>
+          <div className="h-1 bg-stroke-primary" />
 
-      <SyntheticsInfoRow
-        label={
-          <Tooltip
-            handle={<Trans>Collateral ({position?.collateralToken?.symbol})</Trans>}
-            position="top-start"
-            content={<Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>}
+          <SyntheticsInfoRow label={t`Leverage`} value={leverageValue} />
+          {sizeRow}
+          <SyntheticsInfoRow
+            label={
+              <Tooltip
+                handle={<Trans>Collateral ({position?.collateralToken?.symbol})</Trans>}
+                position="top-start"
+                content={<Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>}
+              />
+            }
+            value={
+              <ValueTransition
+                from={formatUsd(position?.collateralUsd)!}
+                to={formatUsd(nextPositionValues?.nextCollateralUsd)}
+              />
+            }
           />
-        }
-        value={
-          <ValueTransition
-            from={formatUsd(position?.collateralUsd)!}
-            to={formatUsd(nextPositionValues?.nextCollateralUsd)}
-          />
-        }
-      />
+        </>
+      )}
     </ExpandableRow>
   );
 }

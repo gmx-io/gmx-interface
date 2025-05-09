@@ -111,7 +111,7 @@ export type TradeBoxConfirmClickEvent = {
     pair: string;
     pool: string;
     type: "Short" | "Long" | "Swap";
-    orderType: AnalyticsOrderType;
+    orderType: AnalyticsOrderType | undefined;
     tradeType: "InitialTrade" | "IncreaseSize" | "DecreaseSize" | "ClosePosition";
     sizeDeltaUsd?: number;
     amountUsd?: number;
@@ -127,10 +127,12 @@ export type TradeBoxConfirmClickEvent = {
     priceImpactPercentage: number | undefined;
     netRate1h: number | undefined;
     interactionId: string | undefined;
+    duration: number | undefined;
+    partsCount: number | undefined;
   };
 };
 
-export type AnalyticsOrderType = "Limit" | "Market" | "TPSL";
+export type AnalyticsOrderType = "Limit" | "Market" | "TPSL" | "TWAP" | "StopMarket";
 
 export type TradeBoxResultEvent = {
   event: "TradeBoxAction";
@@ -145,7 +147,7 @@ export type TradeBoxResultEvent = {
     pair: string;
     pool: string;
     type: "Short" | "Long" | "Swap";
-    orderType: AnalyticsOrderType;
+    orderType: AnalyticsOrderType | undefined;
     tradeType: "InitialTrade" | "IncreaseSize" | "DecreaseSize" | "ClosePosition";
     sizeDeltaUsd?: number;
     amountUsd?: number;
@@ -162,6 +164,8 @@ export type TradeBoxResultEvent = {
     priceImpactPercentage: number | undefined;
     netRate1h: number | undefined;
     interactionId: string | undefined;
+    duration: number | undefined;
+    partsCount: number | undefined;
   };
 };
 
@@ -181,7 +185,7 @@ export type TradeBoxWarningShownEvent = {
     pair: string;
     pool: string;
     type: "Short" | "Long" | "Swap";
-    orderType: AnalyticsOrderType;
+    orderType: AnalyticsOrderType | undefined;
     tradeType: "InitialTrade" | "IncreaseSize";
     sizeDeltaUsd: number;
     leverage: string;
@@ -291,7 +295,7 @@ export type TradePageEditOrderEvent = {
   event: "TradePageAction";
   data: {
     action: "EditOrder";
-    orderType: AnalyticsOrderType;
+    orderType: AnalyticsOrderType | undefined;
     pair: string;
     source: EditingOrderSource;
   };
