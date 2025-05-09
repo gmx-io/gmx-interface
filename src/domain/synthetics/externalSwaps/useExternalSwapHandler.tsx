@@ -18,6 +18,7 @@ import {
   selectTradeboxAllowedSlippage,
   selectTradeboxFromTokenAddress,
   selectTradeboxSelectSwapToToken,
+  selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
@@ -45,6 +46,7 @@ export function useExternalSwapHandler() {
   const externalSwapQuote = useSelector(selectExternalSwapQuote);
   const shouldFallbackToInternalSwap = useSelector(selectShouldFallbackToInternalSwap);
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
+  const { isTwap } = useSelector(selectTradeboxTradeFlags);
 
   const subaccount = useSubaccount(null);
 
@@ -56,7 +58,7 @@ export function useExternalSwapHandler() {
     amountIn: externalSwapInputs?.amountIn,
     slippage,
     gasPrice,
-    enabled: !subaccount && shouldRequestExternalSwapQuote,
+    enabled: !isTwap && !subaccount && shouldRequestExternalSwapQuote,
   });
 
   if (isDevelopment() && settings.showDebugValues) {
