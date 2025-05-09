@@ -10,8 +10,11 @@ import { GlvInfoData, MarketsInfoData } from "./types";
 import { Period } from "./usePoolsTimeRange";
 
 const PRICES_QUERY = gql`
-  query Prices($fromTimestamp: Int) {
-    prices(where: { isSnapshot_eq: true, snapshotTimestamp_gt: $fromTimestamp }, orderBy: snapshotTimestamp_ASC) {
+  query Prices($fromTimestamp: Int, $tokenAddresses: [String!]) {
+    prices(
+      where: { isSnapshot_eq: true, snapshotTimestamp_gt: $fromTimestamp, token_in: $tokenAddresses }
+      orderBy: snapshotTimestamp_ASC
+    ) {
       id
       minPrice
       maxPrice
@@ -39,46 +42,51 @@ export function useGmGlvPerformance({
   period,
   gmData,
   glvData,
+  tokenAddresses,
 }: {
   chainId: number;
   period: Period;
   gmData: MarketsInfoData | undefined;
   glvData: GlvInfoData | undefined;
+  tokenAddresses?: string[];
 }) {
-  const { data } = useSWR<PriceData | undefined>(["usePrices"], {
-    fetcher: async () => {
-      const client = getSubsquidGraphClient(chainId);
-      const res = await client?.query<PriceQuery>({
-        query: PRICES_QUERY,
-        variables: { fromTimestamp: period.periodStart },
-        fetchPolicy: "no-cache",
-      });
+  const { data } = useSWR<PriceData | undefined>(
+    ["usePrices", period.periodStart, period.periodEnd, tokenAddresses?.join(",")],
+    {
+      fetcher: async () => {
+        const client = getSubsquidGraphClient(chainId);
+        const res = await client?.query<PriceQuery>({
+          query: PRICES_QUERY,
+          variables: { fromTimestamp: period.periodStart, tokenAddresses },
+          fetchPolicy: "no-cache",
+        });
 
-      const pricesByToken = res?.data?.prices.reduce(
-        (acc, price) => {
-          acc[price.token] = (acc[price.token] || []).concat(price);
-          return acc;
-        },
-        {} as Record<string, PriceSnapshot[]>
-      );
+        const pricesByToken = res?.data?.prices.reduce(
+          (acc, price) => {
+            acc[price.token] = (acc[price.token] || []).concat(price);
+            return acc;
+          },
+          {} as Record<string, PriceSnapshot[]>
+        );
 
-      const priceData = Object.entries(pricesByToken || {}).reduce(
-        (acc, [token, prices]) => {
-          acc[token] = prices.reduce(
-            (acc, price) => {
-              acc[price.snapshotTimestamp] = price;
-              return acc;
-            },
-            {} as Record<number, PriceSnapshot>
-          );
-          return acc;
-        },
-        {} as Record<string, Record<number, PriceSnapshot>>
-      );
+        const priceData = Object.entries(pricesByToken || {}).reduce(
+          (acc, [token, prices]) => {
+            acc[token] = prices.reduce(
+              (acc, price) => {
+                acc[price.snapshotTimestamp] = price;
+                return acc;
+              },
+              {} as Record<number, PriceSnapshot>
+            );
+            return acc;
+          },
+          {} as Record<string, Record<number, PriceSnapshot>>
+        );
 
-      return priceData;
-    },
-  });
+        return priceData;
+      },
+    }
+  );
 
   const glvPerformanceSnapshots = useMemo(() => getPoolsPerformanceSnapshots(glvData, data), [data, glvData]);
   const gmPerformanceSnapshots = useMemo(() => getPoolsPerformanceSnapshots(gmData, data), [data, gmData]);
@@ -96,6 +104,7 @@ export function useGmGlvPerformance({
     gmPerformanceSnapshots,
     glvPerformance,
     gmPerformance,
+    prices: data,
   };
 }
 

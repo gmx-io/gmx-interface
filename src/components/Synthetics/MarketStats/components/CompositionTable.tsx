@@ -46,7 +46,7 @@ export function CompositionTable<T extends CompositionType>({ composition, compo
       <tbody>
         {composition.map((item) => (
           <CompositionTableRow
-            key={item.type === "market" ? item.market.longTokenAddress : item.token.address}
+            key={item.type === "market" ? item.market.marketTokenAddress : item.token.address}
             item={item}
             sum={sum}
           />
@@ -58,7 +58,7 @@ export function CompositionTable<T extends CompositionType>({ composition, compo
 
 const CompositionTableRow = ({ item, sum }: { item: CompositionItem; sum: bigint }) => {
   return (
-    <TableTr key={item.type === "market" ? item.market.longTokenAddress : item.token.address} className="!border-0">
+    <TableTr className="!border-0">
       <TableTd>
         <div className="flex flex-row items-center gap-8">
           <span

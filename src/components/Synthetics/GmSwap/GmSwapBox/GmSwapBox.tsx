@@ -128,7 +128,7 @@ export function GmSwapBox(p: GmSwapBoxProps) {
   );
 
   return (
-    <div className="App-box GmSwapBox h-full">
+    <div className="App-box GmSwapBox">
       <Tabs
         options={availableOperationsTabsOptions}
         selectedValue={operation}

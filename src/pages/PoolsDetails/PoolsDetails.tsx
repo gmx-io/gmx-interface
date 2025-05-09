@@ -18,6 +18,7 @@ import Footer from "components/Footer/Footer";
 import { GmSwapBox } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
 import { useCompositionData } from "components/Synthetics/MarketStats/hooks/useCompositionData";
 import { MarketComposition } from "components/Synthetics/MarketStats/MarketComposition";
+import { MarketGraphs } from "components/Synthetics/MarketStats/MarketGraphs";
 
 import { PoolsDetailsAbout } from "./PoolsDetailsAbout";
 import { PoolsDetailsCard } from "./PoolsDetailsCard";
@@ -54,7 +55,8 @@ export function PoolsDetails() {
         <PoolsDetailsHeader marketInfo={marketInfo} marketToken={marketToken} />
 
         <div className="PoolsDetails-content mb-15 gap-12">
-          <div className="grow">
+          <div className="grow flex flex-col gap-16">
+            {marketInfo && <MarketGraphs marketInfo={marketInfo} />}
             <PoolsDetailsCard title={<Trans>Composition</Trans>} childrenContainerClassName="!p-0">
               <div className="grid grid-cols-2">
                 <MarketComposition
@@ -71,6 +73,15 @@ export function PoolsDetails() {
                 />
               </div>
             </PoolsDetailsCard>
+
+            <PoolsDetailsCard title={<Trans>About</Trans>}>
+              <PoolsDetailsAbout
+                marketInfo={marketInfo}
+                marketToken={marketToken}
+                marketsInfoData={marketsInfoData}
+                marketTokensData={depositMarketTokensData}
+              />
+            </PoolsDetailsCard>
           </div>
 
           <div className="PoolsDetails-swap-box">
@@ -86,15 +97,6 @@ export function PoolsDetails() {
             />
           </div>
         </div>
-
-        <PoolsDetailsCard title={<Trans>About</Trans>}>
-          <PoolsDetailsAbout
-            marketInfo={marketInfo}
-            marketToken={marketToken}
-            marketsInfoData={marketsInfoData}
-            marketTokensData={depositMarketTokensData}
-          />
-        </PoolsDetailsCard>
       </div>
       <Footer />
     </SEO>

@@ -186,6 +186,10 @@ msgstr ""
 msgid "Failed Limit"
 msgstr ""
 
+#: src/components/Synthetics/MarketStats/MarketGraphs.tsx
+msgid "Performance"
+msgstr ""
+
 #: src/pages/Home/Home.tsx
 msgid "Decentralized<0/>Perpetual Exchange"
 msgstr "Décentralisé <0/>Bourse perpétuelle"
@@ -1270,6 +1274,7 @@ msgstr "Transfert en cours..."
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Referrals/TradersStats.tsx
+#: src/components/Synthetics/MarketStats/MarketGraphs.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
@@ -5090,6 +5095,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
+#: src/components/Synthetics/MarketStats/MarketGraphs.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/pages/Dashboard/GlpCard.tsx
@@ -7502,6 +7508,10 @@ msgstr "Termes de parrainage"
 msgid "Enter unique coins"
 msgstr ""
 
+#: src/components/Synthetics/MarketStats/MarketGraphs.tsx
+msgid "Fee APY"
+msgstr ""
+
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched."
@@ -7884,6 +7894,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeBox/OneClickTradingInfo.tsx
 msgid "Top-Up"
+msgstr ""
+
+#: src/components/Synthetics/MarketStats/MarketGraphs.tsx
+msgid "Annualized performance"
 msgstr ""
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx

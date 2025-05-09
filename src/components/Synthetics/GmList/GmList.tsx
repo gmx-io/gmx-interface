@@ -3,13 +3,11 @@ import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { MarketTokensAPRData, getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { PerformanceSnapshotsData } from "domain/synthetics/markets/useGmGlvPerformance";
 import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformance";
-import { Period } from "domain/synthetics/markets/usePoolsTimeRange";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
@@ -60,11 +58,6 @@ export function GmList({
   const userEarnings = useUserEarnings(chainId);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("gm-list");
   const [searchText, setSearchText] = useState("");
-  const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
-  const shiftAvailableMarketAddressSet = useMemo(
-    () => new Set(shiftAvailableMarkets.map((m) => m.marketTokenAddress)),
-    [shiftAvailableMarkets]
-  );
   const { tab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("gm-list");
 
   const isLoading = !marketsInfo || !marketTokensData;

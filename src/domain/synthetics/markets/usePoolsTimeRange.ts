@@ -1,6 +1,5 @@
-import { useState } from "react";
-
 import { toSeconds } from "lib/dates";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 export const POOLS_TIME_RANGE_OPTIONS = ["total" as const, "90d" as const, "30d" as const, "7d" as const];
 
@@ -12,9 +11,9 @@ export type Period = {
 };
 
 export function usePoolsTimeRange() {
-  const [timeRange, setTimeRange] = useState<PoolsTimeRange>("90d");
+  const [timeRange, setTimeRange] = useLocalStorageSerializeKey<PoolsTimeRange>("pools-time-range", "90d");
 
-  return { timeRange, setTimeRange };
+  return { timeRange: timeRange ?? "90d", setTimeRange };
 }
 
 export function convertPoolsTimeRangeToPeriod(timeRange: PoolsTimeRange): Period {

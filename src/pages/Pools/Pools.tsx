@@ -80,8 +80,6 @@ export default function Pools() {
             gmPerformance={gmPerformance}
             glvPerformanceSnapshots={glvPerformanceSnapshots}
             gmPerformanceSnapshots={gmPerformanceSnapshots}
-            period={period}
-            shouldScrollToTop
             isDeposit
           />
         </PoolsCard>
@@ -100,8 +98,6 @@ export default function Pools() {
             gmPerformance={gmPerformance}
             glvPerformanceSnapshots={glvPerformanceSnapshots}
             gmPerformanceSnapshots={gmPerformanceSnapshots}
-            period={period}
-            shouldScrollToTop
             isDeposit
           />
         </PoolsCard>
