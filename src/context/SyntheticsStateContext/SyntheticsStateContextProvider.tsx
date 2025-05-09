@@ -3,7 +3,7 @@ import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 
-import { UiContractsChain, UiSupportedChain } from "config/chains";
+import { UiContractsChain, UiSourceChain, UiSupportedChain } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
 import { isSettlementChain, isSourceChain } from "context/GmxAccountContext/config";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -77,7 +77,7 @@ export type SyntheticsState = {
   pageType: SyntheticsPageType;
   globals: {
     chainId: UiContractsChain;
-    walletChainId: UiSupportedChain | undefined;
+    srcChainId: UiSourceChain | undefined;
     markets: MarketsResult;
     marketsInfo: MarketsInfoResult;
     positionsInfo: PositionsInfoResult;
@@ -144,11 +144,10 @@ export function SyntheticsStateContextProvider({
   pageType: SyntheticsState["pageType"];
   overrideChainId?: number;
 }) {
-  const { chainId: selectedChainId } = useChainId();
+  const { chainId: selectedChainId, srcChainId } = useChainId();
 
-  const { account: walletAccount, signer, chainId: walletChainId } = useWallet();
-  const srcChainId =
-    walletChainId && isSourceChain(walletChainId) && !isSettlementChain(walletChainId) ? walletChainId : undefined;
+  const { account: walletAccount, signer } = useWallet();
+
   const { account: paramsAccount } = useParams<{ account?: string }>();
 
   let checkSummedAccount: string | undefined;
@@ -171,7 +170,7 @@ export function SyntheticsStateContextProvider({
 
   let tokensData = settlementChainTokensData;
 
-  if (walletChainId && isSourceChain(walletChainId)) {
+  if (srcChainId) {
     tokensData = gmxAccountTokensData;
   }
 
@@ -304,7 +303,7 @@ export function SyntheticsStateContextProvider({
       pageType,
       globals: {
         chainId,
-        walletChainId,
+        srcChainId,
         account,
         markets,
         marketsInfo,
@@ -359,7 +358,7 @@ export function SyntheticsStateContextProvider({
   }, [
     pageType,
     chainId,
-    walletChainId,
+    srcChainId,
     account,
     markets,
     marketsInfo,

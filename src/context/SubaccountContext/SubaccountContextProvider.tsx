@@ -4,9 +4,11 @@ import { useCallback, useState } from "react";
 import { toast } from "react-toastify";
 
 import { getSubaccountApprovalKey, getSubaccountConfigKey } from "config/localStorage";
+import { isSettlementChain } from "context/GmxAccountContext/config";
+import { isSourceChain } from "context/GmxAccountContext/config";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { generateSubaccount } from "domain/synthetics/subaccount/generateSubaccount";
-import { removeSubaccountTxn } from "domain/synthetics/subaccount/removeSubaccount";
+import { removeSubaccountWalletTxn } from "domain/synthetics/subaccount/removeSubaccount";
 import { Subaccount, SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
 import { useSubaccountFromContractsRequest } from "domain/synthetics/subaccount/useSubaccountFromContractsRequest";
 import {
@@ -52,8 +54,9 @@ export function useSubaccountContext() {
 }
 
 export function SubaccountContextProvider({ children }: { children: React.ReactNode }) {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { account, signer } = useWallet();
+
   const settings = useSettings();
 
   const [isTryingToEnableSubaccount, setIsTryingToEnableSubaccount] = useState(false);
@@ -66,11 +69,12 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     setSignedApproval,
     resetStoredApproval,
     resetStoredConfig,
-  } = useStoredSubaccountData(chainId, account);
+  } = useStoredSubaccountData(chainId, account, srcChainId);
 
   const { subaccountData, refreshSubaccountData } = useSubaccountFromContractsRequest(chainId, {
     account,
     subaccountAddress: subaccountConfig?.address,
+    srcChainId,
   });
 
   const subaccount: Subaccount | undefined = useMemo(() => {
@@ -311,7 +315,17 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       </StatusNotification>
     );
 
-    await removeSubaccountTxn(chainId, signer, subaccount.address)
+    let removeSubaccount: () => Promise<void>;
+
+    if (srcChainId) {
+      removeSubaccount = () => {
+        throw new Error("Not implemented");
+      };
+    } else {
+      removeSubaccount = () => removeSubaccountWalletTxn(chainId, signer, subaccount.address);
+    }
+
+    await removeSubaccount()
       .then(() => {
         helperToast.success(
           <StatusNotification title={t`Deactivate 1CT (One-Click Trading)`}>
@@ -362,9 +376,9 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
   return <SubaccountContext.Provider value={state}>{children}</SubaccountContext.Provider>;
 }
 
-function useStoredSubaccountData(chainId: number, account: string | undefined) {
+function useStoredSubaccountData(chainId: number, account: string | undefined, srcChainId: number | undefined) {
   const [subaccountConfig, setSubaccountConfig] = useLocalStorageSerializeKey<SubaccountSerializedConfig | undefined>(
-    getSubaccountConfigKey(chainId, account),
+    getSubaccountConfigKey(chainId, account, srcChainId),
     undefined,
     {
       raw: false,
@@ -391,7 +405,7 @@ function useStoredSubaccountData(chainId: number, account: string | undefined) {
   );
 
   const [signedApproval, setSignedApproval] = useLocalStorageSerializeKey<SignedSubbacountApproval | undefined>(
-    getSubaccountApprovalKey(chainId),
+    getSubaccountApprovalKey(chainId, srcChainId),
     undefined,
     {
       raw: false,

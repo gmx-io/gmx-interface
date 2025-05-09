@@ -37,8 +37,8 @@ export function SettingsModal({
   isSettingsVisible: boolean;
   setIsSettingsVisible: (value: boolean) => void;
 }) {
-  const { chainId } = useChainId();
-  const { chainId: walletChainId } = useAccount();
+  const { chainId, srcChainId } = useChainId();
+
   const [settlementChainId, setSettlementChainId] = useGmxAccountSettlementChainId();
   const settings = useSettings();
   const { disabledFeatures } = useDisabledFeaturesRequest(chainId);
@@ -97,6 +97,10 @@ export function SettingsModal({
   );
 
   const handleExpressOrdersToggle = (enabled: boolean) => {
+    if (srcChainId) {
+      console.error("Express trading can not be disabled for multichain");
+      return;
+    }
     settings.setExpressOrdersEnabled(enabled);
     if (!enabled && subaccountState.subaccount) {
       subaccountState.tryDisableSubaccount().catch(() => {
@@ -128,27 +132,31 @@ export function SettingsModal({
         </h1>
         <div className="mt-16">
           <SettingsSection>
-            <ToggleSwitch
-              disabled={disabledFeatures?.relayRouterDisabled}
-              isChecked={settings.expressOrdersEnabled}
-              setIsChecked={handleExpressOrdersToggle}
-            >
-              <TooltipWithPortal
-                content={
-                  <Trans>
-                    Express Trading simplifies your trades on GMX. Instead of sending transactions directly and paying
-                    gas fees in ETH/AVAX, you sign secure off-chain messages.
-                    <br />
-                    <br />
-                    These messages are then processed on-chain for you, which helps reduce issues with network
-                    congestion and RPC errors.
-                  </Trans>
-                }
-                handle={<Trans>Express Trading</Trans>}
-              />
-            </ToggleSwitch>
+            {!srcChainId && (
+              <>
+                <ToggleSwitch
+                  disabled={disabledFeatures?.relayRouterDisabled}
+                  isChecked={settings.expressOrdersEnabled}
+                  setIsChecked={handleExpressOrdersToggle}
+                >
+                  <TooltipWithPortal
+                    content={
+                      <Trans>
+                        Express Trading simplifies your trades on GMX. Instead of sending transactions directly and
+                        paying gas fees in ETH/AVAX, you sign secure off-chain messages.
+                        <br />
+                        <br />
+                        These messages are then processed on-chain for you, which helps reduce issues with network
+                        congestion and RPC errors.
+                      </Trans>
+                    }
+                    handle={<Trans>Express Trading</Trans>}
+                  />
+                </ToggleSwitch>
 
-            {settings.expressOrdersEnabled && <ExpressTradingEnabledBanner />}
+                {settings.expressOrdersEnabled && <ExpressTradingEnabledBanner />}
+              </>
+            )}
 
             <ToggleSwitch
               isChecked={Boolean(subaccountState.subaccount?.optimisticActive)}
@@ -166,7 +174,7 @@ export function SettingsModal({
             {settings.oneClickTradingEnabled && <OneClickAdvancedSettings />}
           </SettingsSection>
 
-          {walletChainId && isSourceChain(walletChainId) && (
+          {srcChainId && (
             <SettingsSection className="mt-2">
               <div className="flex items-center justify-between">
                 <TooltipWithPortal
@@ -179,7 +187,7 @@ export function SettingsModal({
                     elevated
                     value={settlementChainId}
                     onChange={setSettlementChainId}
-                    options={MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[walletChainId]}
+                    options={MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[srcChainId]}
                     item={({ option }) => (
                       <div className="flex items-center gap-8">
                         <img src={CHAIN_ID_TO_NETWORK_ICON[option]} alt={getChainName(option)} className="size-16" />

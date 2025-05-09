@@ -55,9 +55,20 @@ export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvi
   // wss://arbitrum-sepolia.drpc.org
 
   if (chainId === ARBITRUM_SEPOLIA) {
-    return new ethers.WebSocketProvider("wss://arbitrum-sepolia-rpc.publicnode.com", network, {
-      staticNetwork: network,
-    });
+    // return new ethers.WebSocketProvider("wss://arbitrum-sepolia-rpc.publicnode.com", network, {
+    //   staticNetwork: network,
+    // });
+    const provider = new ethers.JsonRpcProvider(
+      "https://rpc.subsquid.io/arbitrum-sepolia/sqd_rpc_HGCe2P1S-yCYtYKAUupyyuoCAqHnwOkNktsBcgAUlL-GaO5f",
+      network,
+      {
+        // staticNetwork: network,
+        polling: true,
+        // pollingInterval: 5000,
+        // batchStallTime: 1000,
+      }
+    );
+    return provider;
   }
 }
 

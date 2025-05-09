@@ -10,6 +10,7 @@ import {
   subaccountExpiresAtKey,
   subaccountListKey,
 } from "sdk/configs/dataStore";
+import { MulticallRequestConfig } from "sdk/utils/multicall";
 
 export type SubaccountOnchainData = {
   active: boolean;
@@ -24,23 +25,66 @@ export type SubaccountFromContractsRequest = {
   refreshSubaccountData: () => void;
 };
 
+// TODO: make it work with multichain
 export function useSubaccountFromContractsRequest(
   chainId: number,
   {
     account,
     subaccountAddress,
+    srcChainId,
   }: {
     account: string | undefined;
     subaccountAddress: string | undefined;
+    srcChainId: number | undefined;
   }
 ): SubaccountFromContractsRequest {
+  const queryCondition = account && subaccountAddress;
   const { data, mutate } = useMulticall(chainId, "useSubaccountsFromContracts", {
-    key: account && subaccountAddress ? [account, subaccountAddress] : null,
+    key: queryCondition ? [account, subaccountAddress, srcChainId] : null,
     refreshInterval: CONFIG_UPDATE_INTERVAL,
 
     request: () => {
-      if (!account || !subaccountAddress) {
+      if (!queryCondition) {
         return {} as any;
+      }
+
+      if (srcChainId) {
+        console.log("requesting multichain info from multichain subaccount router");
+
+        return {
+          subaccountRelay: {
+            contractAddress: getContract(chainId, "MultichainSubaccountRouter"),
+            abiId: "MultichainSubaccountRouterArbitrumSepolia",
+            calls: {
+              nonce: {
+                methodName: "subaccountApprovalNonces",
+                params: [account],
+              },
+            },
+          },
+          dataStore: {
+            contractAddress: getContract(chainId, "DataStore"),
+            abiId: "DataStore",
+            calls: {
+              isSubaccountActive: {
+                methodName: "containsAddress",
+                params: [subaccountListKey(account!), subaccountAddress],
+              },
+              maxAllowedActionsCount: {
+                methodName: "getUint",
+                params: [maxAllowedSubaccountActionCountKey(account!, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
+              },
+              currentActionsCount: {
+                methodName: "getUint",
+                params: [subaccountActionCountKey(account!, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
+              },
+              expiresAt: {
+                methodName: "getUint",
+                params: [subaccountExpiresAtKey(account!, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
+              },
+            },
+          },
+        } satisfies MulticallRequestConfig<any>;
       }
 
       return {

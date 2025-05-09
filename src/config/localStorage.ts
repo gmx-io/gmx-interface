@@ -87,8 +87,12 @@ export const TOKEN_PERMITS_KEY = "token-permits";
 
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
-export function getSubaccountApprovalKey(chainId: number) {
-  return [chainId, SUBACCOUNT_APPROVAL_KEY];
+export function getSubaccountApprovalKey(chainId: number, srcChainId: number | undefined) {
+  const key = [chainId, SUBACCOUNT_APPROVAL_KEY];
+  if (srcChainId) {
+    key.push(srcChainId);
+  }
+  return key;
 }
 
 export function getTokenPermitsKey(chainId: number) {
@@ -159,9 +163,17 @@ export function getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey(chainId: nu
   return [chainId, HAS_OVERRIDDEN_DEFAULT_ARB_30_EXECUTION_FEE_BUFFER_BPS_KEY];
 }
 
-export function getSubaccountConfigKey(chainId: number | undefined, account: string | undefined) {
+export function getSubaccountConfigKey(
+  chainId: number | undefined,
+  account: string | undefined,
+  srcChainId: number | undefined
+) {
   if (!chainId || !account) return null;
-  return [chainId, account, "one-click-trading-config"];
+  const key = [chainId, account, "one-click-trading-config"];
+  if (srcChainId) {
+    key.push(srcChainId);
+  }
+  return key;
 }
 
 export function getSyntheticsReceiveMoneyTokenKey(

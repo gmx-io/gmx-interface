@@ -1,5 +1,6 @@
 import cx from "classnames";
 import { useMemo, useState } from "react";
+import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
 import { MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "context/GmxAccountContext/config";
@@ -16,12 +17,11 @@ import { switchNetwork } from "lib/wallets";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import Button from "components/Button/Button";
-import { useMultichainTokens } from "components/Synthetics/GmxAccountModal/hooks";
+import { useMultichainTokensRequest } from "components/Synthetics/GmxAccountModal/hooks";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import InfoIconComponent from "img/ic_info.svg?react";
-import { useAccount } from "wagmi";
 
 type TokenListItemProps = {
   tokenChainData: DisplayTokenChainData;
@@ -78,7 +78,7 @@ export const SelectAssetToDepositView = () => {
   const [selectedNetwork, setSelectedNetwork] = useState<number | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const balances = useMultichainTokens();
+  const tokensChainData = useMultichainTokensRequest();
 
   const NETWORKS_FILTER = useMemo(() => {
     const wildCard = { id: "all", name: "All Networks" };
@@ -94,26 +94,26 @@ export const SelectAssetToDepositView = () => {
   }, [settlementChainId]);
 
   const filteredBalances: DisplayTokenChainData[] = useMemo(() => {
-    return balances
-      .filter((balance) => {
-        const matchesSearch = balance.symbol.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesNetwork = selectedNetwork === "all" || balance.sourceChainId === selectedNetwork;
+    return tokensChainData
+      .filter((tokenChainData) => {
+        const matchesSearch = tokenChainData.symbol.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesNetwork = selectedNetwork === "all" || tokenChainData.sourceChainId === selectedNetwork;
         return matchesSearch && matchesNetwork;
       })
-      .map((balance) => {
+      .map((tokenChainData) => {
         let balanceUsd = 0n;
 
-        if (balance.sourceChainPrices) {
+        if (tokenChainData.sourceChainPrices) {
           balanceUsd =
             convertToUsd(
-              balance.sourceChainBalance,
-              balance.sourceChainDecimals,
-              getMidPrice(balance.sourceChainPrices)
+              tokenChainData.sourceChainBalance,
+              tokenChainData.sourceChainDecimals,
+              getMidPrice(tokenChainData.sourceChainPrices)
             ) ?? 0n;
         }
 
         return {
-          ...balance,
+          ...tokenChainData,
           sourceChainBalanceUsd: balanceUsd,
         };
       })
@@ -124,7 +124,7 @@ export const SelectAssetToDepositView = () => {
 
         return a.sourceChainBalanceUsd > b.sourceChainBalanceUsd ? -1 : 1;
       });
-  }, [balances, searchQuery, selectedNetwork]);
+  }, [tokensChainData, searchQuery, selectedNetwork]);
 
   return (
     <div className="flex grow flex-col gap-8 overflow-y-hidden">
