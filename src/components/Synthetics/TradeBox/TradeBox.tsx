@@ -37,7 +37,6 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
-import { TradeType } from "domain/synthetics/trade/types";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
@@ -80,7 +79,8 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
 
-import TradeBoxLongShortInfoIcon from "./components/TradeBoxLongShortInfoIcon";
+import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
+import TwapRows from "../TwapRows/TwapRows";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
 import { useShowOneClickTradingInfo } from "./hooks/useShowOneClickTradingInfo";
 import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
@@ -116,7 +116,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const tokensData = useTokensData();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
+  const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket, isTwap } = tradeFlags;
 
   const chainId = useSelector(selectChainId);
   const { account } = useWallet();
@@ -153,6 +153,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     marketInfo,
     toTokenAddress,
     availableTradeModes,
+    duration,
+    numberOfParts,
+    setNumberOfParts,
+    setDuration,
   } = useSelector(selectTradeboxState);
 
   const fromToken = getByKey(tokensData, fromTokenAddress);
@@ -199,6 +203,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     willDecreaseOrdersBeExecuted: decreaseOrdersThatWillBeExecuted.length > 0,
     externalSwapFeeItem: fees?.externalSwapFee,
     tradeFlags,
+    payUsd: fromUsd,
   });
 
   const setIsDismissedRef = useLatest(priceImpactWarningState.setIsDismissed);
@@ -546,8 +551,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     [leverageOption, leverageSliderMarks, setLeverageOption]
   );
 
+  const payUsd = isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd;
+
   function renderTokenInputs() {
-    const payUsd = isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd;
     return (
       <>
         <BuyInputSection
@@ -585,21 +591,25 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         {isSwap && (
           <>
             <div className="relative">
-              <button
-                type="button"
-                disabled={!isSwitchTokensAllowed}
-                className="absolute -top-19 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full bg-cold-blue-500 active:bg-[#505699]
+              {!isTwap && (
+                <button
+                  type="button"
+                  disabled={!isSwitchTokensAllowed}
+                  className="absolute -top-19 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full bg-cold-blue-500 active:bg-[#505699]
                            desktop-hover:bg-[#484e92]"
-                onClick={onSwitchTokens}
-                data-qa="swap-ball"
-              >
-                <IoArrowDown size={24} className="block" />
-              </button>
+                  onClick={onSwitchTokens}
+                  data-qa="swap-ball"
+                >
+                  <IoArrowDown size={24} className="block" />
+                </button>
+              )}
               <BuyInputSection
-                topLeftLabel={t`Receive`}
-                bottomLeftValue={swapAmounts?.usdOut !== undefined ? formatUsd(swapAmounts?.usdOut) : undefined}
+                topLeftLabel={isTwap ? t`Receive (Approximate)` : t`Receive`}
+                bottomLeftValue={
+                  !isTwap && swapAmounts?.usdOut !== undefined ? formatUsd(swapAmounts?.usdOut) : undefined
+                }
                 bottomRightValue={
-                  toToken && toToken.balance !== undefined && toToken.balance > 0n
+                  !isTwap && toToken && toToken.balance !== undefined && toToken.balance > 0n
                     ? formatBalanceAmount(toToken.balance, toToken.decimals, toToken.symbol)
                     : undefined
                 }
@@ -607,6 +617,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 inputValue={toTokenInputValue}
                 onInputValueChange={handleToInputTokenChange}
                 qa="swap-receive"
+                isDisabled={isTwap}
               >
                 {toTokenAddress && (
                   <TokenSelector
@@ -812,6 +823,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     priceImpactWarningState.shouldShowWarning ||
     (!isTrigger && !isSwap) ||
     (isSwap && isLimit) ||
+    (isSwap && isTwap) ||
     maxAutoCancelOrdersWarning ||
     shouldShowOneClickTradingWarning;
 
@@ -843,9 +855,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           qa="trade-mode"
         />
         <div className="flex gap-4">
-          {[TradeType.Long, TradeType.Short].includes(tradeType) && (
-            <TradeBoxLongShortInfoIcon isMobile={isMobile} isLong={isLong} />
-          )}
+          <TradeInfoIcon isMobile={isMobile} tradeType={tradeType} tradePlace="tradebox" />
+
           <SettingsIcon24
             className="cursor-pointer text-slate-100 gmx-hover:text-white"
             onClick={() => setIsSettingsVisible(true)}
@@ -856,7 +867,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         <div className="flex flex-col gap-2">
           {(isSwap || isIncrease) && renderTokenInputs()}
           {isTrigger && renderDecreaseSizeInput()}
-
           {isSwap && isLimit && renderTriggerRatioInput()}
           {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
         </div>
@@ -865,7 +875,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           <div className="flex flex-col gap-14 pt-12">
             <OneClickTradingInfo />
             {maxAutoCancelOrdersWarning}
-            {isSwap && isLimit && (
+            {isSwap && isLimit && !isTwap && (
               <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
                 <Trans>
                   The actual trigger price at which order gets filled will depend on fees and price impact at the time
@@ -938,7 +948,21 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 )}
               </>
             )}
-            {!isTrigger && !isSwap && <LimitAndTPSLGroup />}
+
+            {isTwap && (
+              <TwapRows
+                duration={duration}
+                numberOfParts={numberOfParts}
+                setNumberOfParts={setNumberOfParts}
+                setDuration={setDuration}
+                sizeUsd={isSwap ? payUsd : increaseAmounts?.sizeDeltaUsd}
+                marketInfo={marketInfo}
+                type={isSwap ? "swap" : "increase"}
+                isLong={isLong}
+              />
+            )}
+
+            {!isTrigger && !isSwap && !isTwap && <LimitAndTPSLGroup />}
             {priceImpactWarningState.shouldShowWarning && (
               <HighPriceImpactOrFeesWarningCard
                 priceImpactWarningState={priceImpactWarningState}
@@ -955,7 +979,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         <div className="flex flex-col gap-14 pt-14">
           <div>{button}</div>
           <div className="h-1 bg-stroke-primary" />
-          {isSwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
+          {isSwap && !isTwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
           {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
             <SyntheticsInfoRow
               label={t`Receive`}
@@ -991,7 +1015,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               }
             />
           )}
-          {!(isTrigger && !selectedPosition) && !isSwap && (
+          {!(isTrigger && !selectedPosition) && !isSwap && !isTwap && (
             <SyntheticsInfoRow
               label={t`Liquidation Price`}
               value={
@@ -1008,7 +1032,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               }
             />
           )}
-          <PriceImpactFeesRow />
+          {!isTwap && <PriceImpactFeesRow />}
           <TradeBoxAdvancedGroups slippageInputId={submitButtonState.slippageInputId} />
         </div>
       </form>

@@ -13,7 +13,11 @@ import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hoo
 import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectClaimablesCount } from "context/SyntheticsStateContext/selectors/claimsSelectors";
-import { selectChainId, selectPositionsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectChainId,
+  selectOrdersInfoData,
+  selectPositionsInfoData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import {
   selectTradeboxMaxLiquidityPath,
@@ -25,13 +29,14 @@ import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateC
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import type { OrderType } from "domain/synthetics/orders/types";
+import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
 import { TradeMode } from "domain/synthetics/trade";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
 import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
 import { getMidPrice } from "domain/tokens";
 import { useChainId } from "lib/chains";
+import { defined } from "lib/guards";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMeasureComponentMountTime } from "lib/metrics/useMeasureComponentMountTime";
@@ -145,7 +150,7 @@ export function SyntheticsPage(p: Props) {
     [setListSection, setMarketsDirectionsFilter, setOrderTypesFilter, setSelectedOrderKeys]
   );
 
-  const { isSwap } = useSelector(selectTradeboxTradeFlags);
+  const { isSwap, isTwap } = useSelector(selectTradeboxTradeFlags);
 
   useEffect(() => {
     if (!chartToken) return;
@@ -326,14 +331,18 @@ export function SyntheticsPage(p: Props) {
             <div className="absolute">
               <TradeBoxResponsiveContainer />
             </div>
-            {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
+            {isSwap && !isTwap && (
+              <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
+            )}
           </>
         ) : (
           <div className="w-[40rem] min-[1501px]:w-[41.85rem]">
             <TradeBoxResponsiveContainer />
 
-            <div className="flex flex-col gap-12">
-              {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
+            <div className="mt-12 flex flex-col gap-12">
+              {isSwap && !isTwap && (
+                <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
+              )}
               <TradeBoxOneClickTrading />
             </div>
           </div>
@@ -398,15 +407,17 @@ function useOrdersControl() {
   const isCancelOrdersProcessing = cancellingOrdersKeys.length > 0;
 
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
-  const [orderTypesFilter, setOrderTypesFilter] = useState<OrderType[]>([]);
+  const [orderTypesFilter, setOrderTypesFilter] = useState<OrderTypeFilterValue[]>([]);
+  const ordersInfoData = useSelector(selectOrdersInfoData);
 
   const onCancelSelectedOrders = useCallback(
     function cancelSelectedOrders() {
       if (!signer) return;
       const keys = selectedOrderKeys;
       setCanellingOrdersKeys((p) => uniq(p.concat(keys)));
+      const orders = keys.map((k) => ordersInfoData?.[k]).filter(defined);
       cancelOrdersTxn(chainId, signer, subaccount, {
-        orderKeys: keys,
+        orders,
         setPendingTxns: setPendingTxns,
         detailsMsg: cancelOrdersDetailsMessage,
       })
@@ -420,7 +431,16 @@ function useOrdersControl() {
           setCanellingOrdersKeys((p) => p.filter((e) => !keys.includes(e)));
         });
     },
-    [cancelOrdersDetailsMessage, chainId, selectedOrderKeys, setCanellingOrdersKeys, setPendingTxns, signer, subaccount]
+    [
+      cancelOrdersDetailsMessage,
+      chainId,
+      selectedOrderKeys,
+      setCanellingOrdersKeys,
+      setPendingTxns,
+      signer,
+      subaccount,
+      ordersInfoData,
+    ]
   );
 
   const onCancelOrder = useCallback(
@@ -428,8 +448,10 @@ function useOrdersControl() {
       if (!signer) return;
 
       setCanellingOrdersKeys((p) => uniq(p.concat(key)));
+      const order = ordersInfoData?.[key];
+      if (!order) return;
       cancelOrdersTxn(chainId, signer, subaccount, {
-        orderKeys: [key],
+        orders: [order],
         setPendingTxns: setPendingTxns,
         detailsMsg: cancelOrdersDetailsMessage,
       }).finally(() => {
@@ -437,7 +459,7 @@ function useOrdersControl() {
         setSelectedOrderKeys((prev) => prev.filter((k) => k !== key));
       });
     },
-    [cancelOrdersDetailsMessage, chainId, setCanellingOrdersKeys, setPendingTxns, signer, subaccount]
+    [cancelOrdersDetailsMessage, chainId, setCanellingOrdersKeys, setPendingTxns, signer, subaccount, ordersInfoData]
   );
 
   return {

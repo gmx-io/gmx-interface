@@ -20,6 +20,7 @@ import { getNameByOrderType } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
+import { defined } from "lib/guards";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
@@ -99,7 +100,11 @@ export function OrderStatusNotification({
       const { initialCollateralToken, targetCollateralToken, initialCollateralDeltaAmount, minOutputAmount } =
         orderData;
 
-      const orderTypeText = isLimitSwapOrderType(orderData.orderType) ? t`Limit Swap` : t`Swap`;
+      let orderTypeText = isLimitSwapOrderType(orderData.orderType) ? t`Limit Swap` : t`Swap`;
+
+      if (orderData.isTwap) {
+        orderTypeText = t`TWAP Swap`;
+      }
 
       return t`${orderTypeText} ${formatTokenAmount(
         initialCollateralDeltaAmount,
@@ -151,7 +156,7 @@ export function OrderStatusNotification({
             update: t`Update`,
           }[txnType];
 
-          orderTypeText = t`${txnTypeText} ${getNameByOrderType(orderType, {
+          orderTypeText = t`${txnTypeText} ${getNameByOrderType(orderType, orderData.isTwap, {
             abbr: true,
             lower: true,
           })} order for`;
@@ -382,31 +387,42 @@ export function OrdersStatusNotificiation({
     });
   }, [matchedOrderStatuses, pendingOrders]);
 
-  const newlyCreatedTriggerOrderKeys = useMemo(() => {
+  const newlyCreatedTriggerOrders = useMemo(() => {
     return pendingOrders.reduce((result, order) => {
-      if (isTriggerDecreaseOrderType(order.orderType) && order.txnType === "create") {
+      if (isTriggerDecreaseOrderType(order.orderType) && !order.isTwap && order.txnType === "create") {
         const orderStatus = findMatchedOrderStatus(matchedOrderStatuses, order);
 
         if (orderStatus?.createdTxnHash && orderStatus?.key) {
-          result.push(orderStatus.key);
+          result.push(order);
         }
       }
       return result;
-    }, [] as string[]);
+    }, [] as PendingOrderData[]);
   }, [matchedOrderStatuses, pendingOrders]);
 
-  const subaccount = useSubaccount(null, newlyCreatedTriggerOrderKeys.length);
+  const subaccount = useSubaccount(null, newlyCreatedTriggerOrders.length);
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(
     undefined,
-    newlyCreatedTriggerOrderKeys.length
+    newlyCreatedTriggerOrders.length
   );
 
   function onCancelOrdersClick() {
-    if (!signer || !newlyCreatedTriggerOrderKeys.length || !setPendingTxns) return;
+    if (!signer || !newlyCreatedTriggerOrders.length || !setPendingTxns) return;
 
     setIsCancelOrderProcessing(true);
     cancelOrdersTxn(chainId, signer, subaccount, {
-      orderKeys: newlyCreatedTriggerOrderKeys,
+      orders: newlyCreatedTriggerOrders
+        .map((order) =>
+          order.orderKey && !order.isTwap
+            ? {
+                key: order.orderKey,
+                isTwap: order.isTwap,
+                orderType: order.orderType,
+                orders: [],
+              }
+            : undefined
+        )
+        .filter(defined),
       setPendingTxns,
       detailsMsg: cancelOrdersDetailsMessage,
     }).finally(() => setIsCancelOrderProcessing(false));
@@ -450,7 +466,7 @@ export function OrdersStatusNotificiation({
       {pendingOrders.length > 1 && (
         <div className="StatusNotification-actions">
           <div>
-            {isMainOrderFailed && newlyCreatedTriggerOrderKeys.length > 0 && (
+            {isMainOrderFailed && newlyCreatedTriggerOrders.length > 0 && (
               <button
                 disabled={isCancelOrderProcessing}
                 onClick={onCancelOrdersClick}

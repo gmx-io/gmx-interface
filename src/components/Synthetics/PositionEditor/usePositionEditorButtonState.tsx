@@ -403,6 +403,7 @@ export function usePositionEditorButtonState(operation: Operation): {
           skipSimulation: shouldDisableValidationForTesting,
           autoCancel: false,
           slippageInputId: undefined,
+          isTwap: false,
         },
         {
           setPendingTxns,

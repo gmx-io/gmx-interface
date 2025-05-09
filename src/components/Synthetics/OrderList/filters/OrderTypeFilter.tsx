@@ -3,12 +3,13 @@ import { msg, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { useMemo } from "react";
 
-import { OrderType } from "domain/synthetics/orders/types";
+import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 
 import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/TableOptionsFilter";
 
 type Item = {
-  data: number;
+  data: OrderTypeFilterValue;
+  hidden?: boolean;
   text: MessageDescriptor;
 };
 
@@ -24,16 +25,26 @@ const GROUPS: Groups = [
     groupName: msg`Trigger Orders`,
     items: [
       {
-        data: OrderType.LimitIncrease,
+        data: "trigger-limit",
         text: msg`Limit`,
       },
       {
-        data: OrderType.LimitDecrease,
+        data: "trigger-take-profit",
         text: msg`Take Profit`,
       },
       {
-        data: OrderType.StopLossDecrease,
+        data: "trigger-stop-loss",
         text: msg`Stop Loss`,
+      },
+    ],
+  },
+  {
+    groupName: msg`TWAP`,
+    items: [
+      {
+        data: "twap",
+        text: msg`TWAP`,
+        hidden: true,
       },
     ],
   },
@@ -41,16 +52,20 @@ const GROUPS: Groups = [
     groupName: msg`Swaps`,
     items: [
       {
-        data: OrderType.LimitSwap,
-        text: msg`Swap`,
+        data: "swaps-limit",
+        text: msg`Limit`,
+      },
+      {
+        data: "swaps-twap",
+        text: msg`TWAP`,
       },
     ],
   },
 ];
 
 type Props = {
-  value: OrderType[];
-  onChange: (value: OrderType[]) => void;
+  value: OrderTypeFilterValue[];
+  onChange: (value: OrderTypeFilterValue[]) => void;
   asButton?: boolean;
 };
 
@@ -64,6 +79,7 @@ export function OrderTypeFilter({ value, onChange, asButton }: Props) {
           return {
             data: item.data,
             text: i18n._(item.text),
+            hidden: item.hidden,
           };
         }),
       };
@@ -71,7 +87,7 @@ export function OrderTypeFilter({ value, onChange, asButton }: Props) {
   }, [i18n]);
 
   return (
-    <TableOptionsFilter<OrderType>
+    <TableOptionsFilter<OrderTypeFilterValue>
       multiple
       label={t`Type`}
       placeholder={t`Search Type`}

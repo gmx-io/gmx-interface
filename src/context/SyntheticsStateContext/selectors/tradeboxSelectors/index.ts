@@ -25,6 +25,7 @@ import {
   SwapAmounts,
   SwapOptimizationOrderArray,
   TradeFeesType,
+  TradeMode,
   TradeType,
   getMarkPrice,
   getNextPositionExecutionPrice,
@@ -119,6 +120,8 @@ export const selectTradeboxAdvancedOptions = (s: SyntheticsState) => s.tradebox.
 export const selectTradeboxSetAdvancedOptions = (s: SyntheticsState) => s.tradebox.setAdvancedOptions;
 export const selectTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradebox.allowedSlippage;
 export const selectSetTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradebox.setAllowedSlippage;
+export const selectTradeboxTwapDuration = (s: SyntheticsState) => s.tradebox.duration;
+export const selectTradeboxTwapNumberOfParts = (s: SyntheticsState) => s.tradebox.numberOfParts;
 
 export const selectTradeboxTotalSwapImpactBps = createSelector((q) => {
   const fees = q(selectTradeboxFees);
@@ -383,6 +386,14 @@ export const selectTradeboxTradeFeesType = createSelector(
 );
 
 const selectTradeboxEstimatedGas = createSelector(function selectTradeboxEstimatedGas(q) {
+  const gasLimit = q(selectTradeboxOrderGasLimit);
+
+  if (gasLimit === null) return null;
+
+  return gasLimit;
+});
+
+const selectTradeboxOrderGasLimit = createSelector(function selectTradeboxOrderGasLimit(q) {
   const tradeFeesType = q(selectTradeboxTradeFeesType);
 
   if (!tradeFeesType) return null;
@@ -467,7 +478,18 @@ export const selectTradeboxExecutionFee = createSelector(function selectTradebox
 
   const oraclePriceCount = estimateOrderOraclePriceCount(swapsCount);
 
-  return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
+  const tradeMode = q(selectTradeboxTradeMode);
+  const numberOfParts = q(selectTradeboxTwapNumberOfParts);
+
+  return getExecutionFee(
+    chainId,
+    gasLimits,
+    tokensData,
+    estimatedGas,
+    gasPrice,
+    oraclePriceCount,
+    tradeMode === TradeMode.Twap ? numberOfParts : undefined
+  );
 });
 
 export const selectTradeboxTriggerRatioValue = createSelector(function selectTradeboxTriggerRatioValue(q) {

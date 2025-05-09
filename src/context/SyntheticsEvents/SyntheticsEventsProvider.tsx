@@ -24,6 +24,7 @@ import {
 import { getPositionKey } from "domain/synthetics/positions";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
+import { decodeTwapUiFeeReceiver } from "domain/synthetics/trade/twap/uiFeeReceiver";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
@@ -149,6 +150,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     OrderCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       updateNativeTokenBalance();
 
+      const uiFeeReceiver = eventData.addressItems.items.uiFeeReceiver;
+      const twapParams = decodeTwapUiFeeReceiver(uiFeeReceiver);
+
       const data: OrderCreatedEventData = {
         account: eventData.addressItems.items.account,
         receiver: eventData.addressItems.items.receiver,
@@ -170,6 +174,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         isFrozen: eventData.boolItems.items.isFrozen,
         externalSwapQuote: undefined,
         key: eventData.bytes32Items.items.key,
+        isTwap: twapParams !== undefined,
       };
 
       if (data.account !== currentAccount) {
@@ -180,7 +185,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       sendOrderCreatedMetric(metricId);
 
       if (!isMarketOrderType(data.orderType)) {
-        sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
+        sendUserAnalyticsOrderResultEvent(
+          chainId,
+          metricId,
+          true,
+          undefined,
+          twapParams ? `createOrder:${twapParams.twapId}` : undefined
+        );
       }
 
       setOrderStatuses((old) =>
@@ -234,7 +245,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           : getPositionOrderMetricId(order);
 
         sendOrderExecutedMetric(metricId);
-        sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
+        if (!order.isTwap) {
+          sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
+        }
       }
 
       setOrderStatuses((old) => {

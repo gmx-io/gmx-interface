@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { ReactNode, useCallback, useMemo } from "react";
 
 import {
@@ -190,7 +190,7 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
   const options = useSelector(selectTradeboxAdvancedOptions);
   const setOptions = useSelector(selectTradeboxSetAdvancedOptions);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isSwap, isIncrease, isMarket, isLimit, isTrigger } = tradeFlags;
+  const { isSwap, isIncrease, isMarket, isLimit, isTrigger, isTwap } = tradeFlags;
 
   const { isLiquidityRisk } = useSelector(selectTradeboxLiquidityInfo);
 
@@ -263,7 +263,7 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
       contentClassName="flex flex-col gap-14"
       scrollIntoViewOnMobile
     >
-      {(isLimit || isTrigger) && !isSwap && (
+      {(isLimit || isTrigger || isTwap) && !isSwap && (
         <>
           <AcceptablePriceImpactInputRow
             notAvailable={
@@ -276,16 +276,22 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
             priceImpactFeeBps={fees?.positionPriceImpact?.bps}
             setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
           />
-          <div className="h-1 shrink-0 bg-stroke-primary" />
+          {!isTwap && <div className="h-1 shrink-0 bg-stroke-primary" />}
         </>
       )}
 
-      {isIncrease && <IncreaseOrderRow />}
+      {isIncrease && !isTwap && <IncreaseOrderRow />}
       {isTrigger && <DecreaseOrderRow />}
       <TradeFeesRow {...fees} feesType={feesType} />
       <NetworkFeeRow executionFee={executionFee} />
 
-      {(isSwap || isLimit || (isMarket && !isSwap) || isMarket) && <div className="h-1 shrink-0 bg-stroke-primary" />}
+      {isTwap && isSwap ? (
+        <SyntheticsInfoRow label={<Trans>Acceptable Swap Impact</Trans>} value={<Trans>N/A</Trans>} />
+      ) : null}
+
+      {((isSwap && !isTwap) || isLimit || (isMarket && !isSwap) || isMarket) && (
+        <div className="h-1 shrink-0 bg-stroke-primary" />
+      )}
 
       {/* only when isSwap */}
       {isSwap && <SwapSpreadRow />}
@@ -303,18 +309,22 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
           setAllowedSwapSlippageBps={setSelectedAllowedSwapSlippageBps}
         />
       )}
-      {isLimit && <AvailableLiquidityRow />}
+      {(isLimit || isTwap) && <AvailableLiquidityRow />}
       {/* only when isMarket and not a swap */}
-      {isMarket && !isSwap && <CollateralSpreadRow />}
-      {isMarket && <AllowedSlippageRow slippageInputId={slippageInputId} />}
+      {!isTwap && (
+        <>
+          {isMarket && !isSwap && <CollateralSpreadRow />}
+          {isMarket && <AllowedSlippageRow slippageInputId={slippageInputId} />}
 
-      {((isIncrease && selectedPosition) || (isTrigger && selectedPosition)) && (
-        <div className="h-1 shrink-0 bg-stroke-primary" />
+          {((isIncrease && selectedPosition) || (isTrigger && selectedPosition)) && (
+            <div className="h-1 shrink-0 bg-stroke-primary" />
+          )}
+
+          <LeverageInfoRows />
+          <EntryPriceRow />
+          <ExistingPositionInfoRows />
+        </>
       )}
-
-      <LeverageInfoRows />
-      <EntryPriceRow />
-      <ExistingPositionInfoRows />
     </ExpandableRow>
   );
 }
