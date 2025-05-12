@@ -73,7 +73,6 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";
 
 import { tradeTypeLabels } from "../tradeboxConstants";
-import { useRequiredActions } from "./useRequiredActions";
 import { useTradeboxTransactions } from "./useTradeboxTransactions";
 
 interface TradeboxButtonStateOptions {
