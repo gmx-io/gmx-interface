@@ -115,7 +115,7 @@ describe("buildPerformanceSnapshots", () => {
         snapshotTimestamp: 1,
       },
       {
-        performance: 0.5,
+        performance: 1,
         snapshotTimestamp: 2,
       },
     ]);
@@ -143,7 +143,7 @@ describe("buildPerformanceSnapshots", () => {
         snapshotTimestamp: 1,
       },
       {
-        performance: -0.5,
+        performance: -1,
         snapshotTimestamp: 2,
       },
     ]);

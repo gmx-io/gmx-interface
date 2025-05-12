@@ -8,6 +8,7 @@ import { getSubsquidGraphClient } from "lib/subgraph";
 import { PerformanceSnapshot, PriceSnapshot, buildPerformanceSnapshots, calculatePoolPerformance } from "./performance";
 import { GlvInfoData, MarketsInfoData } from "./types";
 import { Period } from "./usePoolsTimeRange";
+import { TokensData } from "../tokens";
 
 const PRICES_QUERY = gql`
   query Prices($fromTimestamp: Int, $tokenAddresses: [String!]) {
@@ -31,10 +32,12 @@ type PriceQuery = {
   prices: PriceSnapshot[];
 };
 
-type PriceData = {
-  [tokenAddress: string]: {
-    [snapshotTimestamp: number]: PriceSnapshot;
-  };
+export type PriceData = {
+  [tokenAddress: string]: PriceSnapshot[];
+};
+
+export type PriceDataMapped = {
+  [tokenAddress: string]: Record<number, PriceSnapshot>;
 };
 
 export function useGmGlvPerformance({
@@ -69,35 +72,37 @@ export function useGmGlvPerformance({
           {} as Record<string, PriceSnapshot[]>
         );
 
-        const priceData = Object.entries(pricesByToken || {}).reduce(
-          (acc, [token, prices]) => {
-            acc[token] = prices.reduce(
-              (acc, price) => {
-                acc[price.snapshotTimestamp] = price;
-                return acc;
-              },
-              {} as Record<number, PriceSnapshot>
-            );
-            return acc;
-          },
-          {} as Record<string, Record<number, PriceSnapshot>>
-        );
-
-        return priceData;
+        return pricesByToken;
       },
     }
   );
 
-  const glvPerformanceSnapshots = useMemo(() => getPoolsPerformanceSnapshots(glvData, data), [data, glvData]);
-  const gmPerformanceSnapshots = useMemo(() => getPoolsPerformanceSnapshots(gmData, data), [data, gmData]);
+  const priceData = useMemo(() => {
+    return Object.entries(data || {}).reduce(
+      (acc, [token, prices]) => {
+        acc[token] = prices.reduce(
+          (acc, price) => {
+            acc[price.snapshotTimestamp] = price;
+            return acc;
+          },
+          {} as Record<number, PriceSnapshot>
+        );
+        return acc;
+      },
+      {} as Record<string, Record<number, PriceSnapshot>>
+    );
+  }, [data]);
+
+  const glvPerformanceSnapshots = useMemo(() => getPoolsPerformanceSnapshots(glvData, priceData), [priceData, glvData]);
+  const gmPerformanceSnapshots = useMemo(() => getPoolsPerformanceSnapshots(gmData, priceData), [priceData, gmData]);
 
   const glvPerformance = useMemo(() => {
-    return getPoolsPerformance(glvData, data);
-  }, [glvData, data]);
+    return getPoolsPerformance(glvData, priceData);
+  }, [priceData, glvData]);
 
   const gmPerformance = useMemo(() => {
-    return getPoolsPerformance(gmData, data);
-  }, [gmData, data]);
+    return getPoolsPerformance(gmData, priceData);
+  }, [priceData, gmData]);
 
   return {
     glvPerformanceSnapshots,
@@ -122,7 +127,7 @@ const getPoolsPerformanceSnapshots = (
         }
       >
     | undefined,
-  priceData: PriceData | undefined
+  priceData: PriceDataMapped | undefined
 ): PerformanceSnapshotsData => {
   if (!poolsData || !priceData) {
     return {};
@@ -164,7 +169,7 @@ const getPoolsPerformance = (
         }
       >
     | undefined,
-  priceData: PriceData | undefined
+  priceData: PriceDataMapped | undefined
 ): PerformanceData => {
   if (!poolsData || !priceData) {
     return {};
