@@ -8,7 +8,7 @@ import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { OrderInfo } from "sdk/types/orders";
 import { getOrderKeys } from "sdk/utils/orders";
 
-import { makeSelectExpressGlobalParamsForActions } from "../selectors/expressSelectors";
+import { selectExpressGlobalParams } from "../selectors/expressSelectors";
 import { selectChainId } from "../selectors/globalSelectors";
 import {
   makeSelectOrderErrorByOrderKey,
@@ -38,7 +38,7 @@ export function useCancelOrder(order: OrderInfo) {
   const signer = useEthersSigner();
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
-  const globalExpressParams = useSelector(makeSelectExpressGlobalParamsForActions(1));
+  const globalExpressParams = useSelector(selectExpressGlobalParams);
 
   const isCancelOrderProcessing = cancellingOrdersKeys.includes(order.key);
 

@@ -35,11 +35,13 @@ export function getIsSubaccountActive(subaccount: {
   onchainData: SubaccountOnchainData;
   signedApproval: SignedSubbacountApproval | undefined;
 }): boolean {
-  if (!subaccount.signedApproval || getIsEmptySubaccountApproval(subaccount.signedApproval)) {
-    return subaccount.onchainData.active;
+  let active = subaccount.onchainData.active;
+
+  if (!active && subaccount.signedApproval && !getIsEmptySubaccountApproval(subaccount.signedApproval)) {
+    active = subaccount.signedApproval.shouldAdd;
   }
 
-  return subaccount.signedApproval.shouldAdd;
+  return active;
 }
 
 export function getSubaccountSigner(config: SubaccountSerializedConfig, account: string, provider?: ethers.Provider) {
@@ -246,7 +248,7 @@ export function getIsSubaccountApprovalSynced(subaccount: {
   return (
     onchainData.maxAllowedCount === signedApproval.maxAllowedCount &&
     onchainData.expiresAt === signedApproval.expiresAt &&
-    onchainData.active === signedApproval.shouldAdd
+    onchainData.active === true
   );
 }
 
@@ -425,7 +427,7 @@ export async function getSubaccountOnchainData({
     },
   };
 
-  const data = encodeFunctionData({
+  const callData = encodeFunctionData({
     abi: abis.Multicall,
     functionName: "aggregate",
     args: [
@@ -437,7 +439,7 @@ export async function getSubaccountOnchainData({
   });
 
   const result = await provider.call({
-    data,
+    data: callData,
     to: getContract(chainId, "Multicall"),
   });
 

@@ -76,11 +76,12 @@ export function getRelayerFeeParams({
   tokensData: TokensData;
   gasPaymentAllowanceData: TokensAllowanceData;
   forceExternalSwaps: boolean | undefined;
-}): RelayerFeeParams | undefined {
+}): RelayerFeeParams {
   let feeParams: RelayFeePayload;
   let externalCalls: ExternalCallsPayload;
   let gasPaymentTokenAmount: bigint;
   let externalSwapGasLimit = 0n;
+  let noFeeSwap = false;
 
   if (gasPaymentTokenAddress === relayerFeeTokenAddress) {
     externalCalls = batchExternalCalls;
@@ -119,7 +120,14 @@ export function getRelayerFeeParams({
     gasPaymentTokenAmount = feeExternalSwapQuote.amountIn;
     totalNetworkFeeAmount = feeExternalSwapQuote.amountOut;
   } else {
-    return undefined;
+    externalCalls = batchExternalCalls;
+    feeParams = {
+      feeToken: relayerFeeTokenAddress,
+      feeAmount: 0n,
+      feeSwapPath: [],
+    };
+    gasPaymentTokenAmount = relayerFeeTokenAmount;
+    noFeeSwap = true;
   }
 
   const gasPaymentToken = getByKey(tokensData, gasPaymentTokenAddress);
@@ -144,6 +152,7 @@ export function getRelayerFeeParams({
     needGasPaymentTokenApproval,
     gasPaymentTokenAddress,
     externalSwapGasLimit,
+    noFeeSwap,
   };
 }
 
@@ -173,7 +182,7 @@ export async function getRelayRouterNonceForSigner(
   chainId: number,
   signer: WalletSigner | Wallet,
   isSubaccount: boolean
-) {
+): Promise<bigint> {
   const contractAddress = getExpressContractAddress(chainId, { isSubaccount });
   const contract = new ethers.Contract(contractAddress, abis.GelatoRelayRouter, signer);
 

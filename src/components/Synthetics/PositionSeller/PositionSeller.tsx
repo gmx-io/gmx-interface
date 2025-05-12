@@ -22,7 +22,6 @@ import {
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import {
-  makeSelectSubaccountForActions,
   selectBlockTimestampData,
   selectGasPaymentTokenAllowance,
   selectMarketsInfoData,
@@ -263,8 +262,6 @@ export function PositionSeller() {
   }, [setIsDismissedLatestRef, isVisible, orderOption]);
 
   const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: position?.key });
-
-  const subaccount = useSelector(makeSelectSubaccountForActions(1));
 
   const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
     let orderType = isTrigger ? decreaseAmounts?.triggerOrderType : OrderType.MarketDecrease;
@@ -522,7 +519,7 @@ export function PositionSeller() {
       executionFee,
       orderType: params?.orderPayload.orderType,
       hasReferralCode: Boolean(userReferralInfo?.referralCodeForTxn),
-      subaccount,
+      subaccount: expressParams?.subaccount,
       triggerPrice,
       marketInfo: position?.marketInfo,
       allowedSlippage,
@@ -575,7 +572,7 @@ export function PositionSeller() {
       }),
     });
 
-    if (subaccount) {
+    if (expressParams?.subaccount) {
       onClose();
       setIsSubmitting(false);
       setDefaultReceiveToken(receiveToken.address);

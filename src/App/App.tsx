@@ -52,9 +52,9 @@ function App() {
   app = <SorterContextProvider>{app}</SorterContextProvider>;
   app = <TokensFavoritesContextProvider>{app}</TokensFavoritesContextProvider>;
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
+  app = <ExpressNoncesContextProvider>{app}</ExpressNoncesContextProvider>;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
   app = <TokenPermitsContextProvider>{app}</TokenPermitsContextProvider>;
-  app = <ExpressNoncesContextProvider>{app}</ExpressNoncesContextProvider>;
   app = <TokensBalancesContextProvider>{app}</TokensBalancesContextProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
   app = <SEO>{app}</SEO>;

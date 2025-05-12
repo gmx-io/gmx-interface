@@ -1,5 +1,6 @@
 import { createContext, useContext, useMemo } from "react";
 
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { getExpressContractAddress } from "domain/synthetics/express";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -12,11 +13,7 @@ export type NoncesData = {
     nonce: bigint;
     lastEstimated: number;
   };
-  subaccountRelayRouter: {
-    nonce: bigint;
-    lastEstimated: number;
-  };
-  subaccountApproval: {
+  subaccountRelayRouter?: {
     nonce: bigint;
     lastEstimated: number;
   };
@@ -39,15 +36,12 @@ const defaultLocalActionsPerformed = {
     count: 0,
     lastPerformed: 0,
   },
-  subaccountApproval: {
-    count: 0,
-    lastPerformed: 0,
-  },
 };
 
 export function ExpressNoncesContextProvider({ children }: { children: React.ReactNode }) {
   const { chainId } = useChainId();
   const { account } = useWallet();
+  const { subaccount } = useSubaccountContext();
 
   const [localActionsPerformed, setLocalActionsPerformed] = useLocalStorageSerializeKey(
     ["expressNonces", account, chainId],
@@ -56,7 +50,7 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
 
   const { data: onChainData, mutate } = useMulticall(chainId, "expressNonces", {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
-    key: [account],
+    key: [account, subaccount?.address],
     request: {
       relayRouter: {
         contractAddress: getExpressContractAddress(chainId, { isSubaccount: false }),
@@ -72,22 +66,19 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
         contractAddress: getExpressContractAddress(chainId, { isSubaccount: true }),
         abiId: "SubaccountGelatoRelayRouter",
         calls: {
-          nonce: {
-            methodName: "userNonces",
-            params: [account],
-          },
-          subaccountApprovalNonce: {
-            methodName: "subaccountApprovalNonces",
-            params: [account],
-          },
+          nonce: subaccount?.address
+            ? {
+                methodName: "userNonces",
+                params: [subaccount?.address],
+              }
+            : undefined,
         },
       },
     },
 
     parseResponse: (result) => {
       const relayRouterNonce = result.data.relayRouter.nonce.returnValues[0];
-      const subaccountRelayRouterNonce = result.data.subaccountRelayRouter.nonce.returnValues[0];
-      const subaccountApprovalNonce = result.data.subaccountRelayRouter.subaccountApprovalNonce.returnValues[0];
+      const subaccountRelayRouterNonce = result.data.subaccountRelayRouter?.nonce?.returnValues[0];
 
       const now = Date.now();
 
@@ -101,10 +92,6 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
             count: 0,
             lastPerformed: now,
           },
-          subaccountApproval: {
-            count: 0,
-            lastPerformed: now,
-          },
         };
       });
 
@@ -113,14 +100,12 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
           nonce: relayRouterNonce,
           lastEstimated: now,
         },
-        subaccountRelayRouter: {
-          nonce: subaccountRelayRouterNonce,
-          lastEstimated: now,
-        },
-        subaccountApproval: {
-          nonce: subaccountApprovalNonce,
-          lastEstimated: now,
-        },
+        subaccountRelayRouter: subaccountRelayRouterNonce
+          ? {
+              nonce: subaccountRelayRouterNonce,
+              lastEstimated: now,
+            }
+          : undefined,
       };
     },
   });
@@ -151,22 +136,16 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
     }
     const result: NoncesData = onChainData;
 
-    if (localActionsPerformed.relayRouter.lastPerformed > onChainData.relayRouter.lastEstimated) {
-      result.relayRouter.nonce = onChainData.relayRouter.nonce + BigInt(localActionsPerformed.relayRouter.count);
-      result.relayRouter.lastEstimated = localActionsPerformed.relayRouter.lastPerformed;
-    }
+    // if (localActionsPerformed.relayRouter.lastPerformed > onChainData.relayRouter.lastEstimated) {
+    //   result.relayRouter.nonce = onChainData.relayRouter.nonce + BigInt(localActionsPerformed.relayRouter.count);
+    //   result.relayRouter.lastEstimated = localActionsPerformed.relayRouter.lastPerformed;
+    // }
 
-    if (localActionsPerformed?.subaccountRelayRouter.lastPerformed > onChainData.subaccountRelayRouter.lastEstimated) {
-      result.subaccountRelayRouter.nonce =
-        onChainData.subaccountRelayRouter.nonce + BigInt(localActionsPerformed.subaccountRelayRouter.count);
-      result.subaccountRelayRouter.lastEstimated = localActionsPerformed.subaccountRelayRouter.lastPerformed;
-    }
-
-    if (localActionsPerformed?.subaccountApproval.lastPerformed > onChainData.subaccountApproval.lastEstimated) {
-      result.subaccountApproval.nonce =
-        onChainData.subaccountApproval.nonce + BigInt(localActionsPerformed.subaccountApproval.count);
-      result.subaccountApproval.lastEstimated = localActionsPerformed.subaccountApproval.lastPerformed;
-    }
+    // if (localActionsPerformed?.subaccountRelayRouter.lastPerformed > onChainData.subaccountRelayRouter.lastEstimated) {
+    //   result.subaccountRelayRouter.nonce =
+    //     onChainData.subaccountRelayRouter.nonce + BigInt(localActionsPerformed.subaccountRelayRouter.count);
+    //   result.subaccountRelayRouter.lastEstimated = localActionsPerformed.subaccountRelayRouter.lastPerformed;
+    // }
 
     return {
       noncesData: result,

@@ -59,24 +59,32 @@ export async function approveTokens({
     return await permitParams
       .addTokenPermit(tokenAddress, spender, approveAmount)
       .then(() => {
+        onApproveSubmitted?.();
         helperToast.success(
           <div>
             <Trans>Permit signed!</Trans>
             <br />
           </div>
         );
-
-        onApproveSubmitted?.();
-        setIsApproving(false);
       })
       .catch((e) => {
-        helperToast.error(
-          <div>
-            <Trans>Permit signing failed</Trans>
-            <br />
-            <ToastifyDebug error={String(e)} />
-          </div>
-        );
+        onApproveFail?.(e);
+        let failMsg;
+        if (e.message.includes("user rejected")) {
+          failMsg = t`Permit signing was cancelled`;
+        } else {
+          failMsg = (
+            <>
+              <Trans>Permit signing failed</Trans>
+              <br />
+              <ToastifyDebug error={String(e)} />
+            </>
+          );
+        }
+        helperToast.error(failMsg);
+      })
+      .finally(() => {
+        setIsApproving(false);
       });
   }
 

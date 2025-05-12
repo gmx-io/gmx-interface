@@ -3,6 +3,7 @@ import { decodeFunctionResult, encodeFunctionData, size } from "viem";
 
 import { ARBITRUM } from "config/chains";
 import { useChainId } from "lib/chains";
+import { metrics } from "lib/metrics";
 import { useJsonRpcProvider } from "lib/rpc";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { abis } from "sdk/abis";
@@ -17,32 +18,37 @@ export function useL1ExpressOrderGasReference() {
 
   const hasL1Gas = chainId === ARBITRUM;
 
-  const { data } = useSWR(hasL1Gas ? [chainId, "l1ExpressOrderGasReference"] : null, {
+  const { data } = useSWR(hasL1Gas && provider ? [chainId, provider, "l1ExpressOrderGasReference"] : null, {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
 
-    fetcher: async () => {
-      const referenceData = `0x${referenceDataPart}`;
+    fetcher: async ([chainId, provider]) => {
+      try {
+        const referenceData = `0x${referenceDataPart}`;
 
-      const referenceResult = await provider?.call({
-        to: getContract(chainId, "ArbitrumNodeInterface"),
-        data: encodeFunctionData({
+        const referenceResult = await provider.call({
+          to: getContract(chainId, "ArbitrumNodeInterface"),
+          data: encodeFunctionData({
+            abi: abis.ArbitrumNodeInterface,
+            functionName: "gasEstimateL1Component",
+            args: [getContract(chainId, "GelatoRelayRouter"), false, referenceData],
+          }),
+          value: 0n,
+        });
+
+        const referenceDecoded = decodeFunctionResult({
           abi: abis.ArbitrumNodeInterface,
           functionName: "gasEstimateL1Component",
-          args: [getContract(chainId, "GelatoRelayRouter"), false, referenceData],
-        }),
-        value: 0n,
-      });
+          data: referenceResult as `0x${string}`,
+        }) as [bigint];
 
-      const referenceDecoded = decodeFunctionResult({
-        abi: abis.ArbitrumNodeInterface,
-        functionName: "gasEstimateL1Component",
-        data: referenceResult as `0x${string}`,
-      }) as [bigint];
-
-      return {
-        gasLimit: referenceDecoded[0],
-        sizeOfData: BigInt(size(referenceData)),
-      };
+        return {
+          gasLimit: referenceDecoded[0],
+          sizeOfData: BigInt(size(referenceData)),
+        };
+      } catch (error) {
+        metrics.pushError(error, "l1ExpressOrderGasReference");
+        return undefined;
+      }
     },
   });
 

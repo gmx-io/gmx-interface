@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
-import { useExpressNonces } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { useMulticall } from "lib/multicall";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import {
@@ -35,9 +34,7 @@ export function useSubaccountOnchainData(
     subaccountAddress: string | undefined;
   }
 ): SubaccountOnchainDataResult {
-  const { noncesData } = useExpressNonces();
-
-  const { data, mutate } = useMulticall(chainId, "useSubaccountsFromContracts", {
+  const { data, mutate } = useMulticall(chainId, "useSubaccountOnchainData", {
     key: account && subaccountAddress ? [account, subaccountAddress] : null,
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
 
@@ -47,6 +44,16 @@ export function useSubaccountOnchainData(
       }
 
       return {
+        subaccountRelayRouter: {
+          contractAddress: getContract(chainId, "SubaccountGelatoRelayRouter"),
+          abiId: "SubaccountGelatoRelayRouter",
+          calls: {
+            subaccountApproval: {
+              methodName: "subaccountApprovalNonces",
+              params: [account],
+            },
+          },
+        },
         dataStore: {
           contractAddress: getContract(chainId, "DataStore"),
           abiId: "DataStore",
@@ -76,24 +83,15 @@ export function useSubaccountOnchainData(
       const maxAllowedCount = BigInt(res.data.dataStore.maxAllowedActionsCount.returnValues[0]);
       const currentActionsCount = BigInt(res.data.dataStore.currentActionsCount.returnValues[0]);
       const expiresAt = BigInt(res.data.dataStore.expiresAt.returnValues[0]);
-
-      return { active: isSubaccountActive, maxAllowedCount, currentActionsCount, expiresAt };
+      const approvalNonce = BigInt(res.data.subaccountRelayRouter.subaccountApproval.returnValues[0]);
+      return { active: isSubaccountActive, maxAllowedCount, currentActionsCount, expiresAt, approvalNonce };
     },
   });
 
   return useMemo(() => {
-    let subaccountData: SubaccountOnchainData | undefined;
-
-    if (data && noncesData) {
-      subaccountData = {
-        ...data,
-        approvalNonce: noncesData.subaccountApproval.nonce,
-      };
-    }
-
     return {
-      subaccountData,
+      subaccountData: data,
       refreshSubaccountData: mutate,
     };
-  }, [data, mutate, noncesData]);
+  }, [data, mutate]);
 }

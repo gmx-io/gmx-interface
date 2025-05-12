@@ -15,7 +15,6 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
-  makeSelectSubaccountForActions,
   selectChainId,
   selectGasPaymentTokenAllowance,
   selectTokensData,
@@ -122,9 +121,7 @@ export function useTradeboxButtonState({
 
   const { setPendingTxns } = usePendingTxns();
   const { openConnectModal } = useConnectModal();
-  const { requiredActions } = useRequiredActions();
 
-  const subaccount = useSelector(makeSelectSubaccountForActions(requiredActions));
   const addTokenPermit = useSelector(selectAddTokenPermit);
 
   const {
@@ -350,7 +347,7 @@ export function useTradeboxButtonState({
       txnPromise = onSubmitDecreaseOrder();
     }
 
-    if (subaccount) {
+    if (expressParams?.subaccount) {
       /**
        * Wait 2 seconds to prevent double click on button
        * waiting for txnPromise may not be enough because it's sometimes resolves very fast
@@ -372,7 +369,6 @@ export function useTradeboxButtonState({
     isWrapOrUnwrap,
     isSwap,
     isIncrease,
-    subaccount,
     openConnectModal,
     chainId,
     isApproving,

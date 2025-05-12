@@ -22,9 +22,14 @@ import {
   RelayParamsPayload,
 } from "domain/synthetics/express";
 import { MarketsInfoData } from "domain/synthetics/markets/types";
-import { hashSubaccountApproval, SignedSubbacountApproval, Subaccount } from "domain/synthetics/subaccount";
+import {
+  getIsInvalidSubaccount,
+  hashSubaccountApproval,
+  SignedSubbacountApproval,
+  Subaccount,
+} from "domain/synthetics/subaccount";
 import { SignedTokenPermit, TokensData } from "domain/tokens";
-import { extendError } from "lib/errors";
+import { extendError, parseError } from "lib/errors";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
 import { applyFactor } from "lib/numbers";
@@ -42,6 +47,7 @@ import {
   getBatchExternalCalls,
   getBatchExternalSwapGasLimit,
   getBatchIsNativePayment,
+  getBatchRequiredActions,
   getIsEmptyBatch,
   getTotalExecutionFeeForBatch,
 } from "sdk/utils/orderTransactions";
@@ -74,7 +80,7 @@ export async function estimateExpressParams({
     const {
       tokensData,
       marketsInfoData,
-      subaccount,
+      subaccount: rawSubaccount,
       tokenPermits,
       gasPaymentTokenAddress,
       relayerFeeTokenAddress,
@@ -91,11 +97,15 @@ export async function estimateExpressParams({
     const account = signer.address;
     const isNativePayment = getBatchIsNativePayment(batchParams);
     const isEmptyBatch = getIsEmptyBatch(batchParams);
-
     const gasPaymentToken = getByKey(tokensData, gasPaymentTokenAddress);
     const relayerFeeToken = getByKey(tokensData, relayerFeeTokenAddress);
     const batchExternalCalls = getBatchExternalCalls(batchParams);
     const totalBatchExternalSwapGasLimit = getBatchExternalSwapGasLimit(batchParams);
+
+    const requiredActions = getBatchRequiredActions(batchParams);
+
+    const subaccount =
+      rawSubaccount && !getIsInvalidSubaccount(rawSubaccount, requiredActions) ? rawSubaccount : undefined;
 
     if (!gasPaymentToken || !relayerFeeToken || isNativePayment || isEmptyBatch) {
       return undefined;
@@ -185,7 +195,6 @@ export async function estimateExpressParams({
         feeSwapsCount: baseRelayFeeParams.feeParams.feeSwapPath.length,
         externalSwapGasLimit: totalBatchExternalSwapGasLimit,
         oraclePriceCount: baseExpressParams.oracleParamsPayload.tokens.length,
-        isSubaccount: Boolean(subaccount),
         sizeOfData: BigInt(size(baseExpressParams.txnData.callData as `0x${string}`)),
         l1Reference,
       });
@@ -256,14 +265,23 @@ export async function estimateExpressParams({
       estimationMethod,
     };
   } catch (error) {
-    const extendedError = extendError(error, {
-      data: {
-        estimationMethod,
-      },
-    });
-    // eslint-disable-next-line no-console
-    console.error(extendedError);
-    metrics.pushError(extendedError, "expressOrders.estimateExpressParams");
+    const errorData = parseError(error);
+
+    const isMissingPermitError =
+      errorData?.errorMessage?.includes("ERC20: transfer amount exceeds allowance") &&
+      !globalExpressParams.tokenPermits.length;
+
+    if (!isMissingPermitError) {
+      metrics.pushError(error, "expressOrders.asyncExpressParams");
+      const extendedError = extendError(error, {
+        data: {
+          estimationMethod,
+        },
+      });
+      // eslint-disable-next-line no-console
+      console.error(extendedError);
+      metrics.pushError(extendedError, "expressOrders.estimateExpressParams");
+    }
     return undefined;
   }
 }
@@ -352,14 +370,15 @@ export async function buildAndSignExpressBatchOrderTxn({
   subaccount: Subaccount | undefined;
   emptySignature?: boolean;
 }): Promise<ExpressTxnData> {
-  const messageSigner = subaccount?.signedApproval ? subaccount!.signer : signer;
+  const messageSigner = subaccount ? subaccount!.signer : signer;
+
+  const cachedNonce = subaccount ? noncesData?.subaccountRelayRouter?.nonce : noncesData?.relayRouter?.nonce;
 
   let userNonce: bigint;
-
-  if (noncesData) {
-    userNonce = subaccount?.signedApproval ? noncesData.subaccountRelayRouter.nonce : noncesData.relayRouter.nonce;
-  } else {
+  if (cachedNonce === undefined) {
     userNonce = await getRelayRouterNonceForSigner(chainId, messageSigner, subaccount?.signedApproval !== undefined);
+  } else {
+    userNonce = cachedNonce;
   }
 
   const params = {

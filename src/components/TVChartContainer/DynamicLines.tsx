@@ -8,7 +8,7 @@ import {
   useOrderEditorIsSubmittingState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { selectChartDynamicLines } from "context/SyntheticsStateContext/selectors/chartSelectors/selectChartDynamicLines";
-import { makeSelectExpressGlobalParamsForActions } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
   selectMarketsInfoData,
@@ -52,7 +52,7 @@ export function DynamicLines({
   const ordersInfoData = useSelector(selectOrdersInfoData);
   const { marketsData } = useMarkets(chainId);
   const { pendingOrdersUpdates } = useSyntheticsEvents();
-  const globalExpressParams = useSelector(makeSelectExpressGlobalParamsForActions(1));
+  const globalExpressParams = useSelector(selectExpressGlobalParams);
 
   const onCancelOrder = useCallback(
     async (key: string) => {

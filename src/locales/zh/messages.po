@@ -2889,7 +2889,6 @@ msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Generate 1CT (One-Click Trading) session"
 msgstr ""
 
@@ -5476,6 +5475,10 @@ msgstr "推荐代码更新失败"
 msgid "Price"
 msgstr "价钱"
 
+#: src/domain/tokens/approveTokens.tsx
+msgid "Permit signing was cancelled"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Realized PnL insufficient for Fees"
 msgstr ""
@@ -7186,8 +7189,8 @@ msgid "Max GM buyable amount reached"
 msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Session generated"
-msgstr ""
+#~ msgid "Session generated"
+#~ msgstr ""
 
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"

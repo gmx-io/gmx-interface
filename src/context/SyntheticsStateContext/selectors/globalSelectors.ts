@@ -104,15 +104,13 @@ export const selectPositiveFeePositionsSortedByUsd = createSelector((q) => {
   );
 });
 
-export const makeSelectSubaccountForActions = (requiredActions: number) => {
-  return createSelector((q) => {
-    const subaccount = q(selectRawSubaccount);
-    const isEnabled = q(selectIsSubaccountRelayRouterEnabled);
+export const selectSubaccountForAction = createSelector((q) => {
+  const rawSubaccount = q(selectRawSubaccount);
+  const isEnabled = q(selectIsSubaccountRelayRouterEnabled);
 
-    if (!isEnabled || !subaccount || getIsInvalidSubaccount(subaccount, requiredActions)) {
-      return undefined;
-    }
+  if (!isEnabled || !rawSubaccount || getIsInvalidSubaccount(rawSubaccount, 1)) {
+    return undefined;
+  }
 
-    return subaccount;
-  });
-};
+  return rawSubaccount;
+});

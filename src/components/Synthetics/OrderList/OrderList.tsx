@@ -9,7 +9,7 @@ import {
   useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import { makeSelectExpressGlobalParamsForActions } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -80,7 +80,7 @@ export function OrderList({
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
 
   const account = useSelector(selectAccount);
-  const globalExpressParams = useSelector(makeSelectExpressGlobalParamsForActions(1));
+  const globalExpressParams = useSelector(selectExpressGlobalParams);
 
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
 

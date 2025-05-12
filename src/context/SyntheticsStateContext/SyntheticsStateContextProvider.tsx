@@ -294,6 +294,7 @@ export function SyntheticsStateContextProvider({
   const sponsoredCallBalanceData = useIsSponsoredCallBalanceAvailable(chainId, {
     tokensData: marketsInfo.tokensData,
   });
+
   const gasPaymentTokenAllowance = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokenAddresses: [convertTokenAddress(chainId, settings.gasPaymentTokenAddress, "wrapped")],

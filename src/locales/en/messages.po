@@ -2889,7 +2889,6 @@ msgstr "Only positions with over {0} in \"Capital Used\" are ranked."
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Generate 1CT (One-Click Trading) session"
 msgstr "Generate 1CT (One-Click Trading) session"
 
@@ -5479,6 +5478,10 @@ msgstr "Referral code updated failed."
 msgid "Price"
 msgstr "Price"
 
+#: src/domain/tokens/approveTokens.tsx
+msgid "Permit signing was cancelled"
+msgstr "Permit signing was cancelled"
+
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Realized PnL insufficient for Fees"
 msgstr "Realized PnL insufficient for Fees"
@@ -7192,8 +7195,8 @@ msgid "Max GM buyable amount reached"
 msgstr "Max GM buyable amount reached"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Session generated"
-msgstr "Session generated"
+#~ msgid "Session generated"
+#~ msgstr "Session generated"
 
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"

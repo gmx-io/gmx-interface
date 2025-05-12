@@ -12,7 +12,7 @@ import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hoo
 import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectClaimablesCount } from "context/SyntheticsStateContext/selectors/claimsSelectors";
-import { makeSelectExpressGlobalParamsForActions } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
   selectOrdersInfoData,
@@ -408,7 +408,7 @@ function useOrdersControl() {
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [orderTypesFilter, setOrderTypesFilter] = useState<OrderTypeFilterValue[]>([]);
   const ordersInfoData = useSelector(selectOrdersInfoData);
-  const globalExpressParams = useSelector(makeSelectExpressGlobalParamsForActions(1));
+  const globalExpressParams = useSelector(selectExpressGlobalParams);
 
   const onCancelSelectedOrders = useCallback(
     async function cancelSelectedOrders() {

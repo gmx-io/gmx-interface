@@ -1,11 +1,11 @@
 import throttle from "lodash/throttle";
 import { useState, useRef, useEffect } from "react";
 
-type AsyncFnParams<D extends any[]> = {
+type AsyncFnParams<D extends object> = {
   params: D;
 };
 
-type AsyncFn<T, D extends any[]> = (args: AsyncFnParams<D>) => Promise<T | RetryResult<T>>;
+type AsyncFn<T, D extends object> = (args: AsyncFnParams<D>) => Promise<T | RetryResult<T>>;
 
 type AsyncResult<T> = {
   data: T | undefined;
@@ -30,19 +30,22 @@ export function retry<T>(data: T, delay?: number): RetryResult<T> {
   };
 }
 
-export function useThrottledAsync<T, D extends any[]>(
+export function useThrottledAsync<T, D extends object>(
   estimator: AsyncFn<T, D>,
-  deps: D,
-  options: {
+  {
+    params,
+    throttleMs = 5000,
+    withLoading = false,
+    leading = true,
+    trailing = false,
+  }: {
+    params: D | undefined;
     throttleMs?: number;
-    enabled?: boolean;
     withLoading?: boolean;
     leading?: boolean;
     trailing?: boolean;
-  } = {}
+  }
 ) {
-  const { throttleMs = 5000, enabled = true, withLoading = false, leading, trailing } = options;
-
   const [state, setState] = useState<AsyncResult<T>>({
     data: undefined,
     isLoading: false,
@@ -51,10 +54,11 @@ export function useThrottledAsync<T, D extends any[]>(
   });
 
   const [dynamicThrottleMs, setDynamicThrottleMs] = useState(throttleMs);
-  const latestEstimator = useRef(estimator);
+  const latestEstimatorRef = useRef(estimator);
+  const isRetryRef = useRef(false);
 
   useEffect(() => {
-    latestEstimator.current = estimator;
+    latestEstimatorRef.current = estimator;
   }, [estimator]);
 
   // Recreate throttled function if throttleMs changes
@@ -62,9 +66,10 @@ export function useThrottledAsync<T, D extends any[]>(
 
   useEffect(() => {
     throttledFnRef.current = throttle(
-      async (...args: D) => {
-        if (enabled === false) {
-          return;
+      async (args: D) => {
+        if (isRetryRef.current) {
+          setDynamicThrottleMs(throttleMs);
+          isRetryRef.current = false;
         }
 
         if (withLoading) {
@@ -72,12 +77,13 @@ export function useThrottledAsync<T, D extends any[]>(
         }
 
         try {
-          const result = await latestEstimator.current({ params: args as D });
+          const result = await latestEstimatorRef.current({ params: args as D });
 
           const retryResult = result as RetryResult<T>;
 
           if (retryResult.retry === RETRY_SYMBOL) {
             setDynamicThrottleMs(retryResult.delay ?? 0);
+            isRetryRef.current = true;
             setState((prev) => ({
               ...prev,
               data: retryResult.data,
@@ -105,15 +111,16 @@ export function useThrottledAsync<T, D extends any[]>(
       { leading, trailing }
     );
     return () => throttledFnRef.current?.cancel();
-  }, [dynamicThrottleMs, withLoading, enabled, leading, trailing]);
+  }, [dynamicThrottleMs, withLoading, leading, trailing, throttleMs]);
 
   useEffect(() => {
-    if (options.enabled === false) {
+    if (!params) {
       return;
     }
-    throttledFnRef.current?.(...deps);
+
+    throttledFnRef.current?.(params);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [...deps, enabled, dynamicThrottleMs]);
+  }, [params, dynamicThrottleMs]);
 
   return state;
 }

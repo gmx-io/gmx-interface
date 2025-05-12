@@ -53,7 +53,6 @@ export function approximateExpressBatchOrderGasLimit({
   cancelOrdersCount,
   oraclePriceCount,
   externalSwapGasLimit,
-  isSubaccount,
   l1Reference,
   sizeOfData,
 }: {
@@ -64,7 +63,6 @@ export function approximateExpressBatchOrderGasLimit({
   feeSwapsCount: number;
   externalSwapGasLimit: bigint;
   oraclePriceCount: number;
-  isSubaccount: boolean;
   sizeOfData: bigint;
   l1Reference: L1ExpressOrderGasReference | undefined;
 }) {
@@ -74,8 +72,6 @@ export function approximateExpressBatchOrderGasLimit({
   const updateOrdersGasLimit = gasLimits.updateOrderGasLimit * BigInt(updateOrdersCount);
   const cancelOrdersGasLimit = gasLimits.cancelOrderGasLimit * BigInt(cancelOrdersCount);
 
-  const subaccountGasLimit = isSubaccount ? 0n : 0n;
-
   const oraclePricesGasLimit = gasLimits.estimatedGasFeePerOraclePrice * BigInt(oraclePriceCount);
 
   const totalGasLimit =
@@ -84,8 +80,7 @@ export function approximateExpressBatchOrderGasLimit({
     cancelOrdersGasLimit +
     swapsGasLimit +
     oraclePricesGasLimit +
-    externalSwapGasLimit +
-    subaccountGasLimit;
+    externalSwapGasLimit;
 
   let l1GasLimit = 0n;
 
@@ -124,7 +119,6 @@ export function estimateMinGasPaymentTokenBalance({
     feeSwapsCount: 1,
     externalSwapGasLimit: 0n,
     oraclePriceCount: 4,
-    isSubaccount: false,
     sizeOfData: 0n,
     l1Reference,
   });

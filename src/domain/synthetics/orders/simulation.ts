@@ -1,5 +1,5 @@
 import { BaseContract } from "ethers";
-import { withRetry } from "viem";
+import { encodeFunctionData, withRetry } from "viem";
 
 import {
   getContract,
@@ -23,13 +23,16 @@ import {
   isContractError,
   parseError,
 } from "sdk/utils/errors";
-import { CreateOrderTxnParams } from "sdk/utils/orderTransactions";
+import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
+import { abis } from "sdk/abis";
+import { SignedTokenPermit } from "domain/tokens";
 
 export type SimulateExecuteParams = {
   account: string;
   createMulticallPayload: string[];
   prices: SimulationPrices;
   value: bigint;
+  tokenPermits: SignedTokenPermit[];
   method?:
     | "simulateExecuteLatestDeposit"
     | "simulateExecuteLatestWithdrawal"
@@ -84,7 +87,40 @@ export async function simulateExecution(chainId: number, p: SimulateExecuteParam
     maxTimestamp: priceTimestamp,
   };
 
-  let simulationPayloadData = [...p.createMulticallPayload];
+  let simulationPayloadData: string[] = [];
+
+  if (p.tokenPermits.length > 0) {
+    const externalCalls: ExternalCallsPayload = {
+      sendTokens: [],
+      sendAmounts: [],
+      externalCallTargets: [],
+      externalCallDataList: [],
+      refundTokens: [],
+      refundReceivers: [],
+    };
+
+    for (const permit of p.tokenPermits) {
+      externalCalls.externalCallTargets.push(permit.token);
+      externalCalls.externalCallDataList.push(
+        encodeFunctionData({
+          abi: abis.ERC20PermitInterface,
+          functionName: "permit",
+          args: [permit.owner, permit.spender, permit.value, permit.deadline, permit.v, permit.r, permit.s],
+        })
+      );
+    }
+
+    simulationPayloadData.push(
+      exchangeRouter.interface.encodeFunctionData("makeExternalCalls", [
+        externalCalls.externalCallTargets,
+        externalCalls.externalCallDataList,
+        externalCalls.refundTokens,
+        externalCalls.refundReceivers,
+      ])
+    );
+  }
+
+  simulationPayloadData.push(...p.createMulticallPayload);
 
   if (method === "simulateExecuteLatestWithdrawal") {
     if (p.swapPricingType === undefined) {

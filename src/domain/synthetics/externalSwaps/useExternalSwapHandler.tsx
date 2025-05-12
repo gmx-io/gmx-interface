@@ -4,8 +4,8 @@ import { isDevelopment } from "config/env";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
-  makeSelectSubaccountForActions,
   selectGasPrice,
+  selectSubaccountForAction,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
@@ -50,7 +50,7 @@ export function useExternalSwapHandler() {
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
   const { isTwap } = useSelector(selectTradeboxTradeFlags);
 
-  const subaccount = useSelector(makeSelectSubaccountForActions(1));
+  const subaccount = useSelector(selectSubaccountForAction);
 
   const { externalSwapOutput } = useExternalSwapOutputRequest({
     chainId,

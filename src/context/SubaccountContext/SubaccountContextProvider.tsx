@@ -21,6 +21,7 @@ import useWallet from "lib/wallets/useWallet";
 
 import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
 import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
+import { sleep } from "lib/sleep";
 
 export type SubaccountState = {
   subaccount: Subaccount | undefined;
@@ -91,7 +92,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       }
 
       helperToast.success(
-        <StatusNotification title={t`Update 1CT (One-Click Trading) settings`}>
+        <StatusNotification key="updateSubaccountSettings" title={t`Update 1CT (One-Click Trading) settings`}>
           <TransactionStatus status="loading" text={t`Updating settings...`} />
         </StatusNotification>
       );
@@ -106,7 +107,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         });
 
         helperToast.success(
-          <StatusNotification title={t`Update 1CT (One-Click Trading) settings`}>
+          <StatusNotification key="updateSubaccountSettingsSuccess" title={t`Update 1CT (One-Click Trading) settings`}>
             <TransactionStatus status="success" text={t`settings updated`} />
           </StatusNotification>
         );
@@ -117,7 +118,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         metrics.pushError(error, "subaccount.updateSubaccountSettings");
         toast.dismiss();
         helperToast.error(
-          <StatusNotification title={t`Update 1CT (One-Click Trading) settings`}>
+          <StatusNotification key="updateSubaccountSettingsError" title={t`Update 1CT (One-Click Trading) settings`}>
             <TransactionStatus status="error" text={t`Failed to update settings`} />
           </StatusNotification>
         );
@@ -140,31 +141,21 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
     if (!config?.address) {
       try {
-        toast.dismiss();
-
         helperToast.success(
-          <StatusNotification title={t`Generating 1CT (One-Click Trading) session`}>
+          <StatusNotification key="generateSubaccount" title={t`Generating 1CT (One-Click Trading) session`}>
             <TransactionStatus status="loading" text={t`Generating session...`} />
           </StatusNotification>
         );
 
         config = await generateSubaccount(signer);
 
-        toast.dismiss();
-
-        helperToast.success(
-          <StatusNotification title={t`Generate 1CT (One-Click Trading) session`}>
-            <TransactionStatus status="success" text={t`Session generated`} />
-          </StatusNotification>
-        );
-
         setSubaccountConfig(config);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
-        toast.dismiss();
+
         helperToast.error(
-          <StatusNotification title={t`Generate 1CT (One-Click Trading) session`}>
+          <StatusNotification key="generateSubaccountError" title={t`Generate 1CT (One-Click Trading) session`}>
             <TransactionStatus status="error" text={t`Failed to generate session`} />
           </StatusNotification>
         );
@@ -177,11 +168,12 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       const error = "Missed subaccount config";
       // eslint-disable-next-line no-console
       console.error(error);
-      toast.dismiss();
-      helperToast.error(
-        <StatusNotification title={t`Generate 1CT (One-Click Trading) session`}>
-          <TransactionStatus status="error" text={t`Failed to generate session`} />
-        </StatusNotification>
+      await sleep(1).then(() =>
+        helperToast.error(
+          <StatusNotification key="generateSubaccountError" title={t`Generate 1CT (One-Click Trading) session`}>
+            <TransactionStatus status="error" text={t`Failed to generate session`} />
+          </StatusNotification>
+        )
       );
 
       metrics.pushError(error, "subaccount.missedSubaccountConfigAfterGeneration");
@@ -190,10 +182,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     }
 
     try {
-      toast.dismiss();
-
       helperToast.success(
-        <StatusNotification title={t`Signing 1CT (One-Click Trading) approval`}>
+        <StatusNotification key="signDefaultApproval" title={t`Signing 1CT (One-Click Trading) approval`}>
           <TransactionStatus status="loading" text={t`Signing approval...`} />
         </StatusNotification>
       );
@@ -205,10 +195,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         subaccountAddress: config!.address,
       });
 
-      toast.dismiss();
-
       helperToast.success(
-        <StatusNotification title={t`Signing 1CT (One-Click Trading) approval`}>
+        <StatusNotification key="signDefaultApprovalSuccess" title={t`Signing 1CT (One-Click Trading) approval`}>
           <TransactionStatus status="success" text={t`Approval signed`} />
         </StatusNotification>
       );
@@ -219,10 +207,10 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
-      toast.dismiss();
+      // toast.dismiss(toastId);
       metrics.pushError(error, "subaccount.signDefaultApproval");
       helperToast.error(
-        <StatusNotification title={t`Signing 1CT (One-Click Trading) approval`}>
+        <StatusNotification key="signDefaultApprovalError" title={t`Signing 1CT (One-Click Trading) approval`}>
           <TransactionStatus status="error" text={t`Failed to sign approval`} />
         </StatusNotification>
       );
@@ -235,8 +223,6 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       return;
     }
 
-    toast.dismiss();
-
     helperToast.success(
       <StatusNotification title={t`Deactivate 1CT (One-Click Trading)`}>
         <TransactionStatus status="loading" text={t`Deactivating...`} />
@@ -245,8 +231,6 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
     try {
       await removeSubaccountTxn(chainId, signer, subaccount.address);
-
-      toast.dismiss();
 
       helperToast.success(
         <StatusNotification title={t`Deactivate 1CT (One-Click Trading)`}>
@@ -260,7 +244,6 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
-      toast.dismiss();
       metrics.pushError(error, "subaccount.tryDisableSubaccount");
       helperToast.error(
         <StatusNotification title={t`Deactivate 1CT (One-Click Trading)`}>

@@ -1,13 +1,12 @@
-import React, { createContext, useContext, useMemo } from "react";
+import React, { createContext, useCallback, useContext, useMemo } from "react";
 
 import { getTokenPermitsKey } from "config/localStorage";
-import { createAndSignTokenPermit, getIsPermitExpired, getTokenPermitParams } from "domain/tokens/permitUtils";
+import { createAndSignTokenPermit, getIsPermitExpired } from "domain/tokens/permitUtils";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { metrics } from "lib/metrics";
 import useWallet from "lib/wallets/useWallet";
-import { DEFAULT_PERMIT_DEADLINE_DURATION } from "sdk/configs/express";
 import { SignedTokenPermit } from "sdk/types/tokens";
-import { nowInSeconds } from "sdk/utils/time";
 
 export type TokenPermitsState = {
   tokenPermits: SignedTokenPermit[];
@@ -62,36 +61,35 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
     }
   );
 
-  const state = useMemo(() => {
-    async function addTokenPermit(tokenAddress: string, spenderAddress: string, value: bigint) {
+  const addTokenPermit = useCallback(
+    async (tokenAddress: string, spenderAddress: string, value: bigint) => {
       if (!signer?.provider) {
         return;
       }
 
-      const permitParams = await getTokenPermitParams(chainId, signer.address, tokenAddress, signer.provider);
+      try {
+        const tokenPermit = await createAndSignTokenPermit(chainId, signer, tokenAddress, spenderAddress, value);
 
-      const tokenPermit = await createAndSignTokenPermit(chainId, signer, tokenAddress, spenderAddress, value, {
-        name: permitParams.name,
-        version: permitParams.version,
-        nonce: permitParams.nonce,
-        domainSeparator: permitParams.domainSeparator,
-        deadline: BigInt(nowInSeconds() + DEFAULT_PERMIT_DEADLINE_DURATION),
-        verifyingContract: tokenAddress,
-      });
+        setTokenPermits(tokenPermits?.concat(tokenPermit) ?? [tokenPermit]);
+      } catch (e) {
+        metrics.pushError(e, "tokenPermits.addTokenPermit");
+        throw e;
+      }
+    },
+    [chainId, setTokenPermits, tokenPermits, signer]
+  );
 
-      setTokenPermits((old) => [...(old ?? []), tokenPermit]);
-    }
+  const resetTokenPermits = useCallback(() => {
+    setTokenPermits([]);
+  }, [setTokenPermits]);
 
-    function resetTokenPermits() {
-      setTokenPermits([]);
-    }
-
+  const state = useMemo(() => {
     return {
       tokenPermits: tokenPermits?.filter((permit) => !getIsPermitExpired(permit)) ?? [],
       addTokenPermit,
       resetTokenPermits,
     };
-  }, [tokenPermits, signer, chainId, setTokenPermits]);
+  }, [tokenPermits, addTokenPermit, resetTokenPermits]);
 
   return <TokenPermitsContext.Provider value={state}>{children}</TokenPermitsContext.Provider>;
 }

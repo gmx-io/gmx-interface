@@ -31,6 +31,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
       coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
       isV1Available: true,
+      isPermitSupported: true,
+      contractVersion: "1",
     },
     {
       name: "Wrapped Bitcoin",
@@ -45,6 +47,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
       explorerUrl: "https://arbiscan.io/address/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
       isV1Available: true,
+      isPermitSupported: true,
+      contractVersion: "1",
     },
     {
       name: "Arbitrum",
@@ -56,6 +60,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/16547/small/photo_2023-03-29_21.47.00.jpeg?1680097630",
       coingeckoUrl: "https://www.coingecko.com/en/coins/arbitrum",
       explorerUrl: "https://arbiscan.io/token/0x912ce59144191c1204e64559fe8253a0e49e6548",
+      isPermitSupported: true,
+      contractVersion: "1",
     },
     {
       name: "Wrapped SOL (Wormhole)",
@@ -70,6 +76,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoSymbol: "SOL",
       explorerUrl: "https://arbiscan.io/token/0x2bCc6D6CdBbDC0a4071e48bb3B969b06B3330c07",
       explorerSymbol: "SOL",
+      isPermitSupported: true,
+      contractVersion: "1",
     },
     {
       name: "Chainlink",
@@ -84,6 +92,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/chainlink",
       explorerUrl: "https://arbiscan.io/token/0xf97f4df75117a78c1a5a0dbb814af92458539fb4",
       isV1Available: true,
+      isPermitSupported: true,
+      contractVersion: "1",
     },
     {
       name: "Uniswap",
@@ -98,6 +108,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/uniswap",
       explorerUrl: "https://arbiscan.io/token/0xfa7f8980b0f1e64a2062791cc3b0871572f1f7f0",
       isV1Available: true,
+      isPermitSupported: true,
+      contractVersion: "1",
     },
     {
       name: "Bridged USDC (USDC.e)",
@@ -109,6 +121,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/bridged-usdc-arbitrum",
       explorerUrl: "https://arbiscan.io/token/0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
       isV1Available: true,
+      isPermitSupported: true,
+      contractVersion: "1",
     },
     {
       name: "USD Coin",
@@ -132,6 +146,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       explorerUrl: "https://arbiscan.io/address/0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
       coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
       isV1Available: true,
+      isPermitSupported: true,
+      contractVersion: "1",
     },
     {
       name: "Dai",
@@ -155,6 +171,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/frax",
       explorerUrl: "https://arbiscan.io/token/0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F",
       isV1Available: true,
+      isPermitSupported: true,
+      contractVersion: "1",
     },
     {
       name: "Magic Internet Money",
@@ -281,6 +299,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/12645/standard/AAVE.png?1696512452",
       coingeckoUrl: "https://www.coingecko.com/en/coins/aave",
       coingeckoSymbol: "AAVE",
+      isPermitSupported: true,
+      contractVersion: "1",
     },
     {
       name: "Wrapped AVAX (Wormhole)",
@@ -294,6 +314,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/avalanche",
       coingeckoSymbol: "AVAX",
       explorerSymbol: "WAVAX",
+      isPermitSupported: true,
+      contractVersion: "1",
     },
     {
       name: "Optimism",
@@ -325,6 +347,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/33566/standard/dogwifhat.jpg?1702499428",
       coingeckoUrl: "https://www.coingecko.com/en/coins/dogwifhat",
+      isPermitSupported: true,
+      contractVersion: "1",
     },
     {
       name: "ORDI",
@@ -385,6 +409,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl:
         "https://assets.coingecko.com/coins/images/11224/standard/0x18084fba666a33d37592fa2633fd49a74dd93a88.png?1696511155",
       coingeckoUrl: "https://www.coingecko.com/en/coins/tbtc",
+      isPermitSupported: true,
+      contractVersion: "1",
     },
     {
       name: "Eigen",
@@ -394,6 +420,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       categories: ["layer2"],
       imageUrl: "https://assets.coingecko.com/coins/images/37441/standard/eigen.jpg?1728023974",
       coingeckoUrl: "https://www.coingecko.com/en/coins/eigenlayer",
+      isPermitSupported: true,
+      contractVersion: "1",
     },
     {
       name: "Sats",
@@ -581,6 +609,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/15069/standard/Pendle_Logo_Normal-03.png?1696514728",
       coingeckoUrl: "https://www.coingecko.com/en/coins/pendle",
+      isPermitSupported: true,
+      contractVersion: "1",
     },
     {
       name: "ADA",
@@ -1035,6 +1065,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
       coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
       explorerUrl: "https://snowtrace.io/address/0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
+      isPermitSupported: true,
+      contractVersion: "1",
     },
     {
       name: "Tether",
@@ -1116,6 +1148,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/solana",
       coingeckoSymbol: "SOL",
       explorerUrl: "https://snowtrace.io/address/0xFE6B19286885a4F7F55AdAD09C3Cd1f906D2478F",
+      isPermitSupported: true,
+      contractVersion: "1",
     },
     {
       name: "XRP",
@@ -1220,6 +1254,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
       coingeckoUrl: "https://www.coingecko.com/en/coins/avalanche",
       explorerUrl: "https://testnet.snowtrace.io/address/0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
+      isPermitSupported: true,
     },
     {
       name: "Ethereum (WETH.e)",

@@ -27,6 +27,7 @@ import {
   CancelOrderTxnParams,
   CreateOrderTxnParams,
   DecreasePositionOrderParams,
+  getBatchRequiredActions,
   getTotalExecutionFeeForBatch,
   IncreasePositionOrderParams,
   isTwapOrderPayload,
@@ -70,11 +71,7 @@ export function useOrderTxnCallbacks() {
 
       const { expressParams, batchParams } = e.data;
 
-      const actionsCount =
-        batchParams.createOrderParams.length +
-        batchParams.updateOrderParams.length +
-        batchParams.cancelOrderParams.length;
-
+      const actionsCount = getBatchRequiredActions(batchParams);
       const isSubaccount = Boolean(expressParams?.subaccount?.signedApproval);
 
       let pendingOrderUpdate: PendingOrderData | undefined = undefined;

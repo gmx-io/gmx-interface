@@ -123,13 +123,15 @@ export const EXECUTION_FEE_CONFIG_V2: {
 
 export const GAS_LIMITS_STATIC_CONFIG = {
   [ARBITRUM]: {
-    createOrderGasLimit: 800_000n,
+    createOrderGasLimit: 850_000n,
     updateOrderGasLimit: 600_000n,
     cancelOrderGasLimit: 700_000n,
+    tokenPermitGasLimit: 70_000n,
   },
   [AVALANCHE]: {
     createOrderGasLimit: 800_000n,
     updateOrderGasLimit: 600_000n,
     cancelOrderGasLimit: 700_000n,
+    tokenPermitGasLimit: 60_000n,
   },
 };

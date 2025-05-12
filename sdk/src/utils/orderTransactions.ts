@@ -4,7 +4,7 @@ import ExchangeRouterAbi from "abis/ExchangeRouter.json";
 import ERC20ABI from "abis/Token.json";
 import { getExcessiveExecutionFee, getHighExecutionFee } from "configs/chains";
 import { getContract } from "configs/contracts";
-import { convertTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { convertTokenAddress, getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { ExecutionFee } from "types/fees";
 import { DecreasePositionSwapType, OrderType } from "types/orders";
 import { ContractPrice, ERC20Address, TokensData } from "types/tokens";
@@ -670,14 +670,16 @@ export function getExternalCallsPayload({
   quote: ExternalSwapOutput;
 }): ExternalCallsPayload {
   const inTokenAddress = convertTokenAddress(chainId, quote.inTokenAddress, "wrapped");
+  const outTokenAddress = convertTokenAddress(chainId, quote.outTokenAddress, "wrapped");
+  const wntAddress = getWrappedToken(chainId).address;
 
   const payload: ExternalCallsPayload = {
     sendTokens: [inTokenAddress],
     sendAmounts: [quote.amountIn],
     externalCallTargets: [],
     externalCallDataList: [],
-    refundTokens: [inTokenAddress],
-    refundReceivers: [account],
+    refundTokens: [inTokenAddress, outTokenAddress, wntAddress],
+    refundReceivers: [account, account, account],
   };
 
   if (quote.needSpenderApproval) {

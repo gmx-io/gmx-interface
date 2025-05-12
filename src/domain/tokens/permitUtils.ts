@@ -1,28 +1,25 @@
-import { Contract, Signer, ethers } from "ethers";
-import { decodeFunctionResult } from "viem";
+import { Contract, ethers } from "ethers";
+import { decodeFunctionResult, encodeFunctionData } from "viem";
 
+import { WalletSigner } from "lib/wallets";
 import { signTypedData, splitSignature } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
 import ERC20PermitInterfaceAbi from "sdk/abis/ERC20PermitInterface.json";
 import { getContract } from "sdk/configs/contracts";
+import { getToken } from "sdk/configs/tokens";
 import { SignedTokenPermit } from "sdk/types/tokens";
 import { nowInSeconds } from "sdk/utils/time";
+import { DEFAULT_PERMIT_DEADLINE_DURATION } from "sdk/configs/express";
 
 export async function createAndSignTokenPermit(
   chainId: number,
-  signer: Signer,
+  signer: WalletSigner,
   tokenAddress: string,
   spender: string,
-  value: bigint,
-  permitParams: {
-    name: string;
-    version: string;
-    nonce: bigint;
-    domainSeparator: string;
-    deadline: bigint;
-    verifyingContract: string;
-  }
+  value: bigint
 ): Promise<SignedTokenPermit> {
+  const onchainParams = await getTokenPermitParams(chainId, signer.address, tokenAddress, signer.provider);
+
   const owner = await signer.getAddress();
 
   if (!signer.provider) {
@@ -30,10 +27,10 @@ export async function createAndSignTokenPermit(
   }
 
   const domain = {
-    name: permitParams.name,
-    version: permitParams.version,
+    name: onchainParams.name,
+    version: onchainParams.version,
     chainId,
-    verifyingContract: permitParams.verifyingContract,
+    verifyingContract: tokenAddress,
   };
 
   const types = {
@@ -50,8 +47,8 @@ export async function createAndSignTokenPermit(
     owner,
     spender,
     value,
-    nonce: permitParams.nonce,
-    deadline: permitParams.deadline,
+    nonce: onchainParams.nonce,
+    deadline: BigInt(nowInSeconds() + DEFAULT_PERMIT_DEADLINE_DURATION),
   };
 
   const signature = await signTypedData({ signer, domain, types, typedData: permitData });
@@ -74,45 +71,87 @@ export function getIsPermitExpired(permit: SignedTokenPermit) {
   return Number(permit.deadline) < nowInSeconds();
 }
 
-/**
- * Have to use ethers.js because it supports reading proxy contracts,
- * that have the required methods implemented
- */
 export async function getTokenPermitParams(
   chainId: number,
   owner: string,
-  token: string,
+  tokenAddress: string,
   provider: ethers.Provider
 ): Promise<{
-  typeHash: string;
-  domainSeparator: string;
-  nonce: bigint;
   name: string;
   version: string;
+  nonce: bigint;
 }> {
-  const multicall = new Contract(getContract(chainId, "Multicall"), abis.Multicall, provider);
+  const token = getToken(chainId, tokenAddress);
 
-  const checks = getTokenPermitParamsCalls(token, owner);
+  const calls = [
+    {
+      contractAddress: tokenAddress,
+      abi: abis.ERC20PermitInterface,
+      functionName: "name",
+      args: [],
+    },
+    {
+      contractAddress: tokenAddress,
+      abi: abis.ERC20PermitInterface,
+      functionName: "nonces",
+      args: [owner],
+    },
+    !token.contractVersion
+      ? {
+          contractAddress: tokenAddress,
+          abi: abis.ERC20PermitInterface,
+          functionName: "version",
+          args: [],
+        }
+      : undefined,
+  ].filter(Boolean);
 
-  const results = await multicall.tryAggregate.staticCall(true, Object.values(checks));
+  const callData = encodeFunctionData({
+    abi: abis.Multicall,
+    functionName: "aggregate",
+    args: [
+      calls.map((call) => ({
+        target: call!.contractAddress,
+        callData: encodeFunctionData(call!),
+      })),
+    ],
+  });
 
-  const params = Object.fromEntries(
-    Object.entries(checks).map(([key], index) => [
-      key,
-      decodeFunctionResult({
-        abi: ERC20PermitInterfaceAbi.abi,
-        data: results[index][1],
-        functionName: checks[key].methodName,
-      }),
-    ])
-  ) as any;
+  const result = await provider.call({
+    data: callData,
+    to: getContract(chainId, "Multicall"),
+  });
+
+  const [_, decodedMulticallResults] = decodeFunctionResult({
+    abi: abis.Multicall,
+    data: result as `0x${string}`,
+    functionName: "aggregate",
+  }) as [bigint, string[]];
+
+  const name = decodeFunctionResult({
+    abi: ERC20PermitInterfaceAbi.abi,
+    functionName: "name",
+    data: decodedMulticallResults[0] as `0x${string}`,
+  }) as string;
+
+  const nonce = decodeFunctionResult({
+    abi: ERC20PermitInterfaceAbi.abi,
+    functionName: "nonces",
+    data: decodedMulticallResults[1] as `0x${string}`,
+  }) as bigint;
+
+  const version =
+    token.contractVersion ??
+    (decodeFunctionResult({
+      abi: ERC20PermitInterfaceAbi.abi,
+      functionName: "version",
+      data: decodedMulticallResults[2] as `0x${string}`,
+    }) as string);
 
   return {
-    typeHash: params.typeHash,
-    domainSeparator: params.domainSeparator,
-    nonce: BigInt(params.nonce),
-    name: params.name,
-    version: params.version,
+    nonce,
+    name,
+    version,
   };
 }
 

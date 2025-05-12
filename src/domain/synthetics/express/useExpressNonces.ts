@@ -1,5 +1,6 @@
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMulticall } from "lib/multicall";
+import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { useMemo } from "react";
 import { getExpressContractAddress } from "./relayParamsUtils";
 
@@ -28,6 +29,7 @@ export function useExpressNonces(
 
   const { data: onChainData, mutate } = useMulticall(chainId, "expressNonces", {
     key: [],
+    refreshInterval: FREQUENT_UPDATE_INTERVAL,
     request: {
       relayRouter: {
         contractAddress: getExpressContractAddress(chainId, { isSubaccount: false }),
@@ -129,24 +131,24 @@ export function useExpressNonces(
       return undefined;
     }
 
-    if (localActionsPerformed.relayRouter.lastPerformed > onChainData.relayRouter.lastEstimated) {
-      result.relayRouterNonce.nonce = onChainData.relayRouter.nonce + BigInt(localActionsPerformed.relayRouter.count);
-      result.relayRouterNonce.lastEstimated = localActionsPerformed.relayRouter.lastPerformed;
-    }
+    // if (localActionsPerformed.relayRouter.lastPerformed > onChainData.relayRouter.lastEstimated) {
+    //   result.relayRouterNonce.nonce = onChainData.relayRouter.nonce + BigInt(localActionsPerformed.relayRouter.count);
+    //   result.relayRouterNonce.lastEstimated = localActionsPerformed.relayRouter.lastPerformed;
+    // }
 
-    if (localActionsPerformed?.subaccountRelayRouter.lastPerformed > onChainData.subaccountRelayRouter.lastEstimated) {
-      result.subaccountRelayRouterNonce.nonce =
-        onChainData.subaccountRelayRouter.nonce + BigInt(localActionsPerformed.subaccountRelayRouter.count);
-      result.subaccountRelayRouterNonce.lastEstimated = localActionsPerformed.subaccountRelayRouter.lastPerformed;
-    }
+    // if (localActionsPerformed?.subaccountRelayRouter.lastPerformed > onChainData.subaccountRelayRouter.lastEstimated) {
+    //   result.subaccountRelayRouterNonce.nonce =
+    //     onChainData.subaccountRelayRouter.nonce + BigInt(localActionsPerformed.subaccountRelayRouter.count);
+    //   result.subaccountRelayRouterNonce.lastEstimated = localActionsPerformed.subaccountRelayRouter.lastPerformed;
+    // }
 
-    if (
-      localActionsPerformed?.subaccountApprovalNonce.lastPerformed > onChainData.subaccountApprovalNonce.lastEstimated
-    ) {
-      result.subaccountApprovalNonce.nonce =
-        onChainData.subaccountApprovalNonce.nonce + BigInt(localActionsPerformed.subaccountApprovalNonce.count);
-      result.subaccountApprovalNonce.lastEstimated = localActionsPerformed.subaccountApprovalNonce.lastPerformed;
-    }
+    // if (
+    //   localActionsPerformed?.subaccountApprovalNonce.lastPerformed > onChainData.subaccountApprovalNonce.lastEstimated
+    // ) {
+    //   result.subaccountApprovalNonce.nonce =
+    //     onChainData.subaccountApprovalNonce.nonce + BigInt(localActionsPerformed.subaccountApprovalNonce.count);
+    //   result.subaccountApprovalNonce.lastEstimated = localActionsPerformed.subaccountApprovalNonce.lastPerformed;
+    // }
 
     return {
       noncesData: result,

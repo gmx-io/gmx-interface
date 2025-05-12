@@ -1,21 +1,16 @@
 import { useMemo } from "react";
 
-import { makeSelectExpressGlobalParamsForActions } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { useJsonRpcProvider } from "lib/rpc";
 import { retry, useThrottledAsync } from "lib/useThrottledAsyncEstimation";
 import useWallet from "lib/wallets/useWallet";
-import {
-  BatchOrderTxnParams,
-  getBatchIsNativePayment,
-  getBatchRequiredActions,
-  getIsEmptyBatch,
-} from "sdk/utils/orderTransactions";
+import { BatchOrderTxnParams, getBatchIsNativePayment, getIsEmptyBatch } from "sdk/utils/orderTransactions";
 
 import { ExpressTxnParams } from ".";
-import { useSwitchGasPaymentTokenIfRequired } from "./useSwitchGasPaymentTokenIfRequired";
 import { estimateExpressParams } from "../orders/expressOrderUtils";
+import { useSwitchGasPaymentTokenIfRequired } from "./useSwitchGasPaymentTokenIfRequired";
 
 export type ExpressOrdersParamsResult = {
   expressParams: ExpressTxnParams | undefined;
@@ -31,9 +26,7 @@ export function useExpressOrdersParams({
 }): ExpressOrdersParamsResult {
   const { chainId } = useChainId();
 
-  const globalExpressParams = useSelector(
-    makeSelectExpressGlobalParamsForActions(getBatchRequiredActions(orderParams))
-  );
+  const globalExpressParams = useSelector(selectExpressGlobalParams);
 
   const isEnabled =
     globalExpressParams && orderParams && !getIsEmptyBatch(orderParams) && !getBatchIsNativePayment(orderParams);
@@ -42,11 +35,7 @@ export function useExpressOrdersParams({
   const { provider } = useJsonRpcProvider(chainId);
 
   const { data: fastExpressParams } = useThrottledAsync(
-    async ({ params: [p] }) => {
-      if (!p.orderParams || !p.globalExpressParams || !p.signer) {
-        return retry(undefined, 100);
-      }
-
+    async ({ params: p }) => {
       const nextApproximateParams = await estimateExpressParams({
         chainId: p.chainId,
         batchParams: p.orderParams,
@@ -64,24 +53,25 @@ export function useExpressOrdersParams({
 
       return nextApproximateParams;
     },
-    [
-      {
-        chainId,
-        signer,
-        provider,
-        orderParams,
-        globalExpressParams,
-      },
-    ],
-    { throttleMs: 1000, enabled: isEnabled }
+    {
+      params:
+        isEnabled && globalExpressParams && signer && !getIsEmptyBatch(orderParams)
+          ? {
+              chainId,
+              signer,
+              provider,
+              orderParams,
+              globalExpressParams,
+            }
+          : undefined,
+      throttleMs: 1000,
+      leading: true,
+      trailing: false,
+    }
   );
 
   const { data: asyncExpressParams } = useThrottledAsync(
-    async ({ params: [p] }) => {
-      if (!p.orderParams || !p.globalExpressParams || !p.signer || !p.provider) {
-        return retry(undefined, 100);
-      }
-
+    async ({ params: p }) => {
       const expressParams = await estimateExpressParams({
         chainId: p.chainId,
         batchParams: p.orderParams,
@@ -95,16 +85,21 @@ export function useExpressOrdersParams({
 
       return expressParams;
     },
-    [
-      {
-        chainId,
-        signer,
-        provider,
-        orderParams,
-        globalExpressParams,
-      },
-    ],
-    { throttleMs: 2000, enabled: isEnabled && Boolean(fastExpressParams) }
+    {
+      params:
+        isEnabled && fastExpressParams && provider && signer && !getIsEmptyBatch(orderParams)
+          ? {
+              chainId,
+              signer,
+              provider,
+              orderParams,
+              globalExpressParams,
+            }
+          : undefined,
+      throttleMs: 2000,
+      leading: true,
+      trailing: false,
+    }
   );
 
   const result = useMemo(() => {

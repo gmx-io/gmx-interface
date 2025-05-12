@@ -7,7 +7,6 @@ import { sendExpressTransaction } from "lib/transactions/sendExpressTransaction"
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import { TxnCallback, TxnEventBuilder } from "lib/transactions/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
-import { WalletSigner } from "lib/wallets";
 import { getContract } from "sdk/configs/contracts";
 import { sleep } from "sdk/utils/common";
 import {
@@ -20,6 +19,7 @@ import {
 
 import { signerAddressError } from "components/Errors/errorToasts";
 
+import { WalletSigner } from "lib/wallets";
 import {
   getIsInvalidSubaccount,
   getIsNonceExpired,
@@ -57,8 +57,7 @@ export async function sendBatchOrderTxn({
 
   try {
     const runSimulation = async () =>
-      // TODO: check how to simulate in case of token permits
-      simulationParams && expressParams?.relayParamsPayload.tokenPermits.length === 0
+      simulationParams
         ? makeBatchOrderSimulation({
             chainId,
             signer,
@@ -198,7 +197,7 @@ export const makeBatchOrderSimulation = async ({
       (co) => !isLimitSwapOrderType(co.orderPayload.orderType) && !isTwapOrderPayload(co.orderPayload)
     );
 
-    // Simulate execution makes sense only for create orders transactions
+    // Simulate execution makes sense only for order creation transactions
     if (batchParams.createOrderParams.length === 0 || !isSimulationAllowed) {
       return Promise.resolve();
     }
@@ -217,6 +216,7 @@ export const makeBatchOrderSimulation = async ({
         tokensData,
         getOrdersTriggerPriceOverrides([batchParams.createOrderParams[0]])
       ),
+      tokenPermits: expressParams?.relayParamsPayload.tokenPermits ?? [],
       createMulticallPayload: encodedMulticall,
       value,
       blockTimestampData,

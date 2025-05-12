@@ -13,11 +13,7 @@ import {
   useOrderEditorTriggerPriceInputValueState,
   useOrderEditorTriggerRatioInputValueState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import {
-  makeSelectSubaccountForActions,
-  selectMarketsInfoData,
-  selectTokensData,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectOrderEditorAcceptablePrice,
   selectOrderEditorAcceptablePriceImpactBps,
@@ -158,8 +154,6 @@ export function OrderEditor(p: Props) {
       feeToken: executionFee.feeToken,
     };
   }, [executionFee, tokensData, p.order.executionFee]);
-
-  const subaccount = useSelector(makeSelectSubaccountForActions(1));
 
   const positionOrder = p.order as PositionOrderInfo | undefined;
   const positionIndexToken = positionOrder?.indexToken;
@@ -436,7 +430,7 @@ export function OrderEditor(p: Props) {
       callback: makeOrderTxnCallback({}),
     });
 
-    if (subaccount) {
+    if (expressParams?.subaccount) {
       p.onClose();
       setIsSubmitting(false);
       if (market) {
