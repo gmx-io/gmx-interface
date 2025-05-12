@@ -337,6 +337,13 @@ export function SettingsModal({
                 <Trans>Show debug values</Trans>
               </ToggleSwitch>
 
+              <ToggleSwitch
+                isChecked={settings.shouldDisableValidationForTesting}
+                setIsChecked={settings.setShouldDisableValidationForTesting}
+              >
+                <Trans>Disable validation for testing</Trans>
+              </ToggleSwitch>
+
               <AbFlagSettings />
 
               <DebugSwapsSettings />
