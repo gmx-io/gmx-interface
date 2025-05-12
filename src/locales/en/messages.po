@@ -5657,6 +5657,10 @@ msgstr "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Plea
 msgid "Close {longOrShortText} {0}"
 msgstr "Close {longOrShortText} {0}"
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Disable validation for testing"
+msgstr "Disable validation for testing"
+
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Deposited!"
 msgstr "Deposited!"

@@ -1,6 +1,7 @@
-import { Contract, ethers } from "ethers";
+import { ethers } from "ethers";
 import { decodeFunctionResult, encodeFunctionData } from "viem";
 
+import { defined } from "lib/guards";
 import { WalletSigner } from "lib/wallets";
 import { signTypedData, splitSignature } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
@@ -21,10 +22,6 @@ export async function createAndSignTokenPermit(
   const onchainParams = await getTokenPermitParams(chainId, signer.address, tokenAddress, signer.provider);
 
   const owner = await signer.getAddress();
-
-  if (!signer.provider) {
-    throw new Error("Signer must be connected to a provider");
-  }
 
   const domain = {
     name: onchainParams.name,
@@ -104,15 +101,15 @@ export async function getTokenPermitParams(
           args: [],
         }
       : undefined,
-  ].filter(Boolean);
+  ].filter(defined);
 
   const callData = encodeFunctionData({
     abi: abis.Multicall,
     functionName: "aggregate",
     args: [
       calls.map((call) => ({
-        target: call!.contractAddress,
-        callData: encodeFunctionData(call!),
+        target: call.contractAddress,
+        callData: encodeFunctionData(call),
       })),
     ],
   });
@@ -152,27 +149,5 @@ export async function getTokenPermitParams(
     nonce,
     name,
     version,
-  };
-}
-
-export function getTokenPermitParamsCalls(tokenAddress: string, owner: string) {
-  const tokenContract = new Contract(tokenAddress, ERC20PermitInterfaceAbi.abi);
-
-  return {
-    nonce: {
-      target: tokenAddress,
-      methodName: "nonces",
-      callData: tokenContract.interface.encodeFunctionData("nonces", [owner]),
-    },
-    name: {
-      target: tokenAddress,
-      methodName: "name",
-      callData: tokenContract.interface.encodeFunctionData("name", []),
-    },
-    version: {
-      target: tokenAddress,
-      methodName: "version",
-      callData: tokenContract.interface.encodeFunctionData("version", []),
-    },
   };
 }

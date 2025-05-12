@@ -5654,6 +5654,10 @@ msgstr ""
 msgid "Close {longOrShortText} {0}"
 msgstr ""
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Disable validation for testing"
+msgstr ""
+
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Deposited!"
 msgstr ""
