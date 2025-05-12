@@ -8,6 +8,7 @@ import {
   selectSubaccountForAction,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/shared/baseSelectors";
 import {
   selectBaseExternalSwapOutput,
   selectExternalSwapInputs,
@@ -25,7 +26,6 @@ import { useChainId } from "lib/chains";
 import { throttleLog } from "lib/logging";
 import { getContract } from "sdk/configs/contracts";
 
-import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/shared/baseSelectors";
 import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
 
 export function useExternalSwapHandler() {

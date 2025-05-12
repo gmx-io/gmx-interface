@@ -17,11 +17,11 @@ import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { metrics } from "lib/metrics";
+import { sleep } from "lib/sleep";
 import useWallet from "lib/wallets/useWallet";
 
 import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
 import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
-import { sleep } from "lib/sleep";
 
 export type SubaccountState = {
   subaccount: Subaccount | undefined;

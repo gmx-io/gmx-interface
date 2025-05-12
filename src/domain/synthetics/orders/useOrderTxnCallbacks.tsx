@@ -37,7 +37,7 @@ import {
 
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 
-import { BatchOrderTxnCtx } from "./sendBatchOrderTxn";
+import { BatchOrderTxnCtx, GELATO_SDK_TIMEOUT_ERROR } from "./sendBatchOrderTxn";
 import { ExpressTxnParams } from "../express/types";
 
 export type CallbackUiCtx = {
@@ -55,6 +55,7 @@ export function useOrderTxnCallbacks() {
     setPendingPosition,
     setPendingOrderUpdate,
     setPendingExpressTxn,
+    updatePendingExpressTxn,
     setPendingFundingFeeSettlement,
   } = useSyntheticsEvents();
   const { chainId } = useChainId();
@@ -72,17 +73,11 @@ export function useOrderTxnCallbacks() {
       const { expressParams, batchParams } = e.data;
 
       const actionsCount = getBatchRequiredActions(batchParams);
-      const isSubaccount = Boolean(expressParams?.subaccount?.signedApproval);
-
-      let pendingOrderUpdate: PendingOrderData | undefined = undefined;
 
       let mainActionType: "create" | "update" | "cancel";
       if (batchParams.createOrderParams.length > 0) {
         mainActionType = "create";
       } else if (batchParams.updateOrderParams.length > 0) {
-        const updateOrderParams = batchParams.updateOrderParams[0];
-        const order = getByKey(ordersInfoData, updateOrderParams.params.orderKey);
-        pendingOrderUpdate = order ? getPendingUpdateOrder(updateOrderParams, order) : undefined;
         mainActionType = "update";
       } else if (batchParams.cancelOrderParams.length > 0) {
         mainActionType = "cancel";
@@ -90,32 +85,98 @@ export function useOrderTxnCallbacks() {
         return;
       }
 
-      const pendingOrders = getBatchPendingOrders(e.data.batchParams, ordersInfoData);
+      let pendingOrderUpdate: PendingOrderData | undefined = undefined;
 
-      switch (e.event) {
-        case TxnEventName.Prepared: {
-          if (isSubaccount) {
-            if (mainActionType === "create") {
-              if (pendingOrders.length > 0) {
-                setPendingOrder(pendingOrders);
-              }
-            } else {
-              const operationMessage = getOperationMessage(
-                mainActionType,
-                "submitted",
-                actionsCount,
-                expressParams?.subaccount,
-                setIsSettingsVisible
-              );
+      const handleTxnSubmitted = async () => {
+        const createdAt = Date.now();
+        const blockNumber = BigInt(await e.data.signer.provider.getBlockNumber());
 
-              helperToast.success(operationMessage);
-            }
+        const pendingOrders = getBatchPendingOrders(e.data.batchParams, ordersInfoData);
+
+        if (mainActionType === "update" && batchParams.updateOrderParams[0]) {
+          const updateOrderParams = batchParams.updateOrderParams[0];
+          const order = getByKey(ordersInfoData, updateOrderParams.params.orderKey);
+          pendingOrderUpdate = order ? getPendingUpdateOrder(updateOrderParams, order) : undefined;
+        }
+
+        const pendingPositions = e.data.batchParams.createOrderParams
+          .filter((cp) => isMarketOrderType(cp.orderPayload.orderType))
+          .map((cp) =>
+            getPendingPositionFromParams({
+              createOrderParams: cp,
+              blockNumber,
+              timestamp: createdAt,
+            })
+          );
+
+        if (mainActionType === "create") {
+          if (pendingOrders.length > 0) {
+            setPendingOrder(pendingOrders);
           }
 
+          if (pendingPositions.length > 0) {
+            setPendingPosition(pendingPositions[0]);
+          }
+
+          if (ctx.isFundingFeeSettlement) {
+            setPendingFundingFeeSettlement({
+              orders: pendingOrders,
+              positions: pendingPositions,
+            });
+          }
+        } else {
           if (pendingOrderUpdate) {
             setPendingOrderUpdate(pendingOrderUpdate);
           }
 
+          const operationMessage = getOperationMessage(
+            mainActionType,
+            "submitted",
+            actionsCount,
+            expressParams?.subaccount,
+            setIsSettingsVisible
+          );
+
+          helperToast.success(operationMessage);
+        }
+
+        const successMessage = getOperationMessage(
+          mainActionType,
+          "success",
+          actionsCount,
+          undefined,
+          setIsSettingsVisible
+        );
+
+        const errorMessage = getOperationMessage(
+          mainActionType,
+          "failed",
+          actionsCount,
+          undefined,
+          setIsSettingsVisible
+        );
+
+        if (expressParams) {
+          setPendingExpressTxn({
+            subaccountApproval: expressParams.subaccount?.signedApproval,
+            isSponsoredCall: expressParams.isSponsoredCall,
+            tokenPermits: expressParams.relayParamsPayload.tokenPermits,
+            pendingOrdersKeys: pendingOrders.map(getPendingOrderKey),
+            pendingPositionsKeys: pendingPositions.map((p) => p.positionKey),
+            taskId: undefined,
+            metricId: ctx.metricId,
+            successMessage,
+            errorMessage,
+            key: getExpressParamsKey(expressParams),
+          });
+        }
+      };
+
+      switch (e.event) {
+        case TxnEventName.Prepared: {
+          if (expressParams) {
+            handleTxnSubmitted();
+          }
           return;
         }
 
@@ -131,17 +192,16 @@ export function useOrderTxnCallbacks() {
             sendTxnSentMetric(ctx.metricId);
           }
 
-          const pendingPositions = e.data.batchParams.createOrderParams
-            .filter((cp) => isMarketOrderType(cp.orderPayload.orderType))
-            .map((cp) =>
-              getPendingPositionFromParams({
-                createOrderParams: cp,
-                blockNumber: e.data.blockNumber,
-                timestamp: e.data.createdAt,
-              })
-            );
+          if (!expressParams) {
+            handleTxnSubmitted();
+          }
 
-          if (!isSubaccount) {
+          if (expressParams) {
+            updatePendingExpressTxn({
+              key: getExpressParamsKey(expressParams),
+              taskId: e.data.txnHash,
+            });
+          } else {
             const totalExecutionFee = tokensData
               ? getTotalExecutionFeeForBatch({
                   batchParams: e.data.batchParams,
@@ -150,78 +210,19 @@ export function useOrderTxnCallbacks() {
                 })
               : undefined;
 
-            if (mainActionType === "create") {
-              if (pendingOrders.length > 0) {
-                setPendingOrder(pendingOrders);
-              }
+            const pendingTxn: PendingTransaction = {
+              hash: e.data.txnHash,
+              message: getOperationMessage(mainActionType, "success", actionsCount, undefined, setIsSettingsVisible),
+              metricId: ctx.metricId,
+              data: totalExecutionFee
+                ? {
+                    estimatedExecutionFee: totalExecutionFee.feeTokenAmount,
+                    estimatedExecutionGasLimit: totalExecutionFee.gasLimit,
+                  }
+                : undefined,
+            };
 
-              if (pendingPositions.length > 0) {
-                setPendingPosition(pendingPositions[0]);
-              }
-
-              if (ctx.isFundingFeeSettlement) {
-                setPendingFundingFeeSettlement({
-                  orders: pendingOrders,
-                  positions: pendingPositions,
-                });
-              }
-            }
-
-            const submitMessage = getOperationMessage(
-              mainActionType,
-              "submitted",
-              actionsCount,
-              undefined,
-              setIsSettingsVisible
-            );
-
-            const successMessage = getOperationMessage(
-              mainActionType,
-              "success",
-              actionsCount,
-              undefined,
-              setIsSettingsVisible
-            );
-
-            const errorMessage = getOperationMessage(
-              mainActionType,
-              "failed",
-              actionsCount,
-              undefined,
-              setIsSettingsVisible
-            );
-
-            if (submitMessage) {
-              helperToast.success(submitMessage);
-            }
-
-            if (expressParams) {
-              setPendingExpressTxn({
-                subaccountApproval: expressParams.subaccount?.signedApproval,
-                isSponsoredCall: expressParams.isSponsoredCall,
-                tokenPermits: expressParams.relayParamsPayload.tokenPermits,
-                pendingOrdersKeys: pendingOrders.map(getPendingOrderKey),
-                pendingPositionsKeys: pendingPositions.map((p) => p.positionKey),
-                taskId: e.data.txnHash,
-                metricId: ctx.metricId,
-                successMessage,
-                errorMessage,
-              });
-            } else {
-              const pendingTxn: PendingTransaction = {
-                hash: e.data.txnHash,
-                message: successMessage,
-                metricId: ctx.metricId,
-                data: totalExecutionFee
-                  ? {
-                      estimatedExecutionFee: totalExecutionFee.feeTokenAmount,
-                      estimatedExecutionGasLimit: totalExecutionFee.gasLimit,
-                    }
-                  : undefined,
-              };
-
-              setPendingTxns((txns) => [...txns, pendingTxn]);
-            }
+            setPendingTxns((txns) => [...txns, pendingTxn]);
           }
 
           return;
@@ -231,6 +232,13 @@ export function useOrderTxnCallbacks() {
           const { error } = e.data;
           const { metricId } = ctx;
           const errorData = parseError(error);
+
+          if (expressParams && error.message === GELATO_SDK_TIMEOUT_ERROR) {
+            updatePendingExpressTxn({
+              key: getExpressParamsKey(expressParams),
+              isTimeout: true,
+            });
+          }
 
           if (metricId) {
             sendTxnErrorMetric(metricId, error, errorData?.errorContext ?? "unknown");
@@ -284,6 +292,7 @@ export function useOrderTxnCallbacks() {
       setPendingTxns,
       showDebugValues,
       tokensData,
+      updatePendingExpressTxn,
     ]
   );
 
@@ -548,4 +557,8 @@ function hasExternalSwap(expressParams: ExpressTxnParams | undefined, batchParam
     expressParams?.relayParamsPayload.externalCalls.externalCallDataList.length ||
     batchParams.createOrderParams.some((cp) => cp.tokenTransfersParams?.externalCalls?.externalCallDataList.length)
   );
+}
+
+function getExpressParamsKey(expressParams: ExpressTxnParams) {
+  return `${expressParams?.relayParamsPayload.deadline}:${expressParams?.relayParamsPayload.userNonce}`;
 }

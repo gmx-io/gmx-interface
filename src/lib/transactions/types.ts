@@ -4,7 +4,6 @@ export enum TxnEventName {
   Simulated = "Simulated",
   Prepared = "Prepared",
   Sent = "Sent",
-  Minted = "Minted",
   Error = "Error",
 }
 
@@ -48,9 +47,5 @@ export class TxnEventBuilder<TParams> {
 
   Sent({ txnHash, blockNumber, createdAt }: { txnHash: string; blockNumber: bigint; createdAt: number }) {
     return this._build(TxnEventName.Sent, { txnHash, blockNumber, createdAt });
-  }
-
-  Minted() {
-    return this._build(TxnEventName.Minted, {});
   }
 }

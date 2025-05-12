@@ -169,7 +169,7 @@ const DurationField = ({
   );
 };
 
-const ValueInput = ({
+export const ValueInput = ({
   value,
   onChange,
   label,

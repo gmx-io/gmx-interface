@@ -136,7 +136,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [positionIncreaseEvents, setPositionIncreaseEvents] = useState<PositionIncreaseEvent[]>([]);
   const [positionDecreaseEvents, setPositionDecreaseEvents] = useState<PositionDecreaseEvent[]>([]);
 
-  const [pendingExpressTxnParams, setPendingExpressTxnParams] = useState<{ [taskId: string]: PendingExpressTxnParams }>(
+  const [pendingExpressTxnParams, setPendingExpressTxnParams] = useState<{ [key: string]: PendingExpressTxnParams }>(
     {}
   );
   const { refreshNonces, updateActionsCount } = useExpressNonces();
@@ -919,7 +919,40 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       positionDecreaseEvents,
       pendingExpressTxns: pendingExpressTxnParams,
       setPendingExpressTxn: (params: PendingExpressTxnParams) => {
-        setPendingExpressTxnParams((old) => setByKey(old, params.taskId!, params));
+        setPendingExpressTxnParams((old) => setByKey(old, params.key, params));
+      },
+      updatePendingExpressTxn: (params: Partial<PendingExpressTxnParams>) => {
+        setPendingExpressTxnParams((old) => {
+          if (!params.key || !getByKey(old, params.key)) {
+            return old;
+          }
+
+          if (params.isTimeout) {
+            const pendingTxnParams = getByKey(old, params.key);
+
+            pendingTxnParams?.pendingOrdersKeys?.forEach((key) => {
+              setOrderStatuses((old) => {
+                if (old[key]) {
+                  return updateByKey(old, key, {
+                    isGelatoTaskTimeout: true,
+                  });
+                } else {
+                  return setByKey(old, key, {
+                    key,
+                    createdAt: Date.now(),
+                    isGelatoTaskTimeout: true,
+                  });
+                }
+              });
+            });
+
+            pendingTxnParams?.pendingPositionsKeys?.forEach((key) => {
+              deleteByKey(pendingPositionsUpdates, key);
+            });
+          }
+
+          return updateByKey(old, params.key, params);
+        });
       },
       setPendingOrder: (data: PendingOrderData | PendingOrderData[]) => {
         const toastId = Date.now();
@@ -1058,7 +1091,33 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   useEffect(
     function subscribeGelatoRelayEvents() {
       async function handleTaskStatusUpdate(taskStatus) {
-        const pendingExpressParams = getByKey(pendingExpressTxnParams, taskStatus.taskId);
+        const pendingExpressParams = Object.values(pendingExpressTxnParams).find((p) => p.taskId === taskStatus.taskId);
+
+        const accountSlug = JSON.parse(localStorage.getItem(JSON.stringify(tenderlyLsKeys.accountSlug)) ?? '""');
+        const projectSlug = JSON.parse(localStorage.getItem(JSON.stringify(tenderlyLsKeys.projectSlug)) ?? '""');
+
+        const accountParams =
+          accountSlug && projectSlug ? `?tenderlyUsername=${accountSlug}&tenderlyProjectName=${projectSlug}` : "";
+
+        const debugRes = await fetch(
+          `https://api.gelato.digital/tasks/status/${taskStatus.taskId}/debug${accountParams}`,
+          {
+            method: "GET",
+          }
+        );
+
+        const debugData = await debugRes.json();
+
+        if (isDevelopment()) {
+          // eslint-disable-next-line no-console
+          console.log("gelatoDebugData", taskStatus.taskState, pendingExpressParams, debugData);
+        }
+
+        if (!pendingExpressParams) {
+          return;
+        }
+
+        const key = pendingExpressParams.key;
 
         switch (taskStatus.taskState) {
           case TaskState.ExecSuccess:
@@ -1080,11 +1139,11 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                 resetTokenPermits();
               }
 
-              setByKey(pendingExpressTxnParams, taskStatus.taskId, undefined);
-
               if (pendingExpressParams?.successMessage) {
                 helperToast.success(pendingExpressParams.successMessage);
               }
+
+              deleteByKey(pendingExpressTxnParams, key);
             }
             break;
           case TaskState.ExecReverted:
@@ -1095,7 +1154,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                   return updateByKey(old, key, {
                     gelatoTaskId: taskStatus.taskId,
                     isGelatoTaskFailed: true,
-                    isViewed: false,
                   });
                 } else {
                   return setByKey(old, key, {
@@ -1103,7 +1161,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                     createdAt: Date.now(),
                     gelatoTaskId: taskStatus.taskId,
                     isGelatoTaskFailed: true,
-                    isViewed: false,
                   });
                 }
               });
@@ -1114,35 +1171,15 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             });
 
             pendingExpressParams?.pendingPositionsKeys?.forEach((key) => {
-              setByKey(pendingPositionsUpdates, key, undefined);
+              deleteByKey(pendingPositionsUpdates, key);
             });
 
-            setByKey(pendingExpressTxnParams, taskStatus.taskId, undefined);
+            deleteByKey(pendingExpressTxnParams, key);
 
             break;
           }
           default:
             break;
-        }
-
-        const accountSlug = JSON.parse(localStorage.getItem(JSON.stringify(tenderlyLsKeys.accountSlug)) ?? '""');
-        const projectSlug = JSON.parse(localStorage.getItem(JSON.stringify(tenderlyLsKeys.projectSlug)) ?? '""');
-
-        const accountParams =
-          accountSlug && projectSlug ? `?tenderlyUsername=${accountSlug}&tenderlyProjectName=${projectSlug}` : "";
-
-        const debugRes = await fetch(
-          `https://api.gelato.digital/tasks/status/${taskStatus.taskId}/debug${accountParams}`,
-          {
-            method: "GET",
-          }
-        );
-
-        const debugData = await debugRes.json();
-
-        if (isDevelopment()) {
-          // eslint-disable-next-line no-console
-          console.log("gelatoDebugData", taskStatus.taskState, pendingExpressParams, debugData);
         }
       }
 

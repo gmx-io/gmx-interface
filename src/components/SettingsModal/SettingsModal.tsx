@@ -1,6 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { ReactNode, useCallback, useEffect } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 
 import { isDevelopment } from "config/env";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
@@ -10,8 +10,7 @@ import { useSubaccountContext } from "context/SubaccountContext/SubaccountContex
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
 import { useEnabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
 import { getIsSubaccountActive } from "domain/synthetics/subaccount";
-import { MAX_TWAP_NUMBER_OF_PARTS } from "domain/synthetics/trade/twap/utils";
-import { MIN_TWAP_NUMBER_OF_PARTS } from "domain/synthetics/trade/twap/utils";
+import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "domain/synthetics/trade/twap/utils";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { roundToTwoDecimals } from "lib/numbers";
@@ -25,6 +24,7 @@ import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasB
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
 import { SlideModal } from "components/Modal/SlideModal";
+import NumberInput from "components/NumberInput/NumberInput";
 import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubaccountWithdraw";
 import { OneClickAdvancedSettings } from "components/OneClickAdvancedSettings/OneClickAdvancedSettings";
 import PercentageInput from "components/PercentageInput/PercentageInput";
@@ -44,6 +44,8 @@ export function SettingsModal({
   const { features } = useEnabledFeaturesRequest(chainId);
   const subaccountState = useSubaccountContext();
 
+  const [numberOfParts, setNumberOfParts] = useState<number>();
+
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
 
   useEffect(() => {
@@ -54,6 +56,8 @@ export function SettingsModal({
     if (settings.settingsWarningDotVisible) {
       settings.setSettingsWarningDotVisible(false);
     }
+
+    setNumberOfParts(settings.savedTwapNumberOfParts);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSettingsVisible]);
 
@@ -101,26 +105,27 @@ export function SettingsModal({
     [settings]
   );
 
-  const onChangeTwapNumberOfParts = useCallback(
-    (value: number) => {
-      const numberOfParts = parseInt(String(value));
+  const onChangeTwapNumberOfParts = useCallback((value: number) => {
+    const parsedValue = parseInt(String(value));
 
-      if (isNaN(numberOfParts) || numberOfParts < 0) {
-        helperToast.error(t`Invalid TWAP number of parts value`);
-        return;
-      }
+    setNumberOfParts(parsedValue);
+  }, []);
 
-      if (numberOfParts < MIN_TWAP_NUMBER_OF_PARTS || numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
-        helperToast.error(
-          t`Number of parts must be between ${MIN_TWAP_NUMBER_OF_PARTS} and ${MAX_TWAP_NUMBER_OF_PARTS}`
-        );
-        return;
-      }
+  const onBlurTwapNumberOfParts = useCallback(() => {
+    if (!numberOfParts || isNaN(numberOfParts) || numberOfParts < 0) {
+      helperToast.error(t`Invalid TWAP number of parts value`);
+      setNumberOfParts(settings.savedTwapNumberOfParts);
+      return;
+    }
 
-      settings.setSavedTWAPNumberOfParts(numberOfParts);
-    },
-    [settings]
-  );
+    if (numberOfParts < MIN_TWAP_NUMBER_OF_PARTS || numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
+      helperToast.error(t`Number of parts must be between ${MIN_TWAP_NUMBER_OF_PARTS} and ${MAX_TWAP_NUMBER_OF_PARTS}`);
+      setNumberOfParts(settings.savedTwapNumberOfParts);
+      return;
+    }
+
+    settings.setSavedTWAPNumberOfParts(numberOfParts);
+  }, [numberOfParts, settings]);
 
   const onClose = useCallback(() => {
     setIsSettingsVisible(false);
@@ -241,9 +246,10 @@ export function SettingsModal({
                 </div>
               }
               defaultValue={DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS}
-              value={parseFloat(String(settings.savedTwapNumberOfParts))}
+              value={numberOfParts}
               onChange={onChangeTwapNumberOfParts}
-              suggestions={EMPTY_ARRAY}
+              onBlur={onBlurTwapNumberOfParts}
+              type="number"
             />
 
             {settings.shouldUseExecutionFeeBuffer && (
@@ -354,16 +360,20 @@ function InputSetting({
   defaultValue,
   value,
   onChange,
+  onBlur,
   className,
   suggestions,
+  type = "percentage",
 }: {
   title: ReactNode;
   description?: ReactNode;
   defaultValue: number;
   value?: number;
   onChange: (value: number) => void;
+  onBlur?: () => void;
   className?: string;
   suggestions?: number[];
+  type?: "percentage" | "number";
 }) {
   const titleComponent = <span className="text-14 font-medium">{title}</span>;
 
@@ -375,9 +385,8 @@ function InputSetting({
     titleComponent
   );
 
-  return (
-    <div className={cx("flex items-center justify-between", className)}>
-      <div className="mr-8">{titleWithDescription}</div>
+  const Input =
+    type === "percentage" ? (
       <PercentageInput
         defaultValue={defaultValue}
         value={value}
@@ -385,6 +394,19 @@ function InputSetting({
         tooltipPosition="bottom"
         suggestions={suggestions}
       />
+    ) : (
+      <NumberInput
+        className="w-60 rounded-4 border border-solid border-slate-700 bg-slate-700 px-4 py-2 text-right hover:border-cold-blue-700"
+        value={value}
+        onValueChange={(e) => onChange(Number(e.target.value))}
+        onBlur={onBlur}
+      />
+    );
+
+  return (
+    <div className={cx("flex items-center justify-between", className)}>
+      <div className="mr-8">{titleWithDescription}</div>
+      {Input}
     </div>
   );
 }

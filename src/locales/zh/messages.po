@@ -5371,6 +5371,10 @@ msgstr "执行"
 msgid "Trades"
 msgstr "交易"
 
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "Relayer request timed out"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Telegram Groups"
 msgstr "电报群"

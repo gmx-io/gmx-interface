@@ -7,6 +7,7 @@ import { sendExpressTransaction } from "lib/transactions/sendExpressTransaction"
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import { TxnCallback, TxnEventBuilder } from "lib/transactions/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import { WalletSigner } from "lib/wallets";
 import { getContract } from "sdk/configs/contracts";
 import { sleep } from "sdk/utils/common";
 import {
@@ -19,7 +20,6 @@ import {
 
 import { signerAddressError } from "components/Errors/errorToasts";
 
-import { WalletSigner } from "lib/wallets";
 import {
   getIsInvalidSubaccount,
   getIsNonceExpired,
@@ -36,13 +36,14 @@ export type BatchSimulationParams = {
 export type BatchOrderTxnCtx = {
   expressParams: ExpressTxnParams | undefined;
   batchParams: BatchOrderTxnParams;
+  signer: WalletSigner;
 };
 
 export async function sendBatchOrderTxn({
   chainId,
   signer,
   batchParams,
-  expressParams,
+  expressParams: rawExpressParams,
   simulationParams,
   callback,
 }: {
@@ -53,7 +54,9 @@ export async function sendBatchOrderTxn({
   simulationParams: BatchSimulationParams | undefined;
   callback: TxnCallback<BatchOrderTxnCtx> | undefined;
 }) {
-  const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({ expressParams, batchParams });
+  const expressParams = rawExpressParams?.relayFeeParams.isOutGasTokenBalance ? undefined : rawExpressParams;
+
+  const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({ expressParams, batchParams, signer });
 
   try {
     const runSimulation = async () =>
@@ -92,7 +95,7 @@ export async function sendBatchOrderTxn({
           isSponsoredCall: expressParams.isSponsoredCall,
         }),
         sleep(10000).then(() => {
-          throw new Error("Gelato SDK Timeout");
+          throw new Error(GELATO_SDK_TIMEOUT_ERROR);
         }),
       ])
         .then(async (res) => {
@@ -134,6 +137,8 @@ export async function sendBatchOrderTxn({
     throw error;
   }
 }
+
+export const GELATO_SDK_TIMEOUT_ERROR = "Gelato SDK Timeout";
 
 export const makeBatchOrderSimulation = async ({
   chainId,

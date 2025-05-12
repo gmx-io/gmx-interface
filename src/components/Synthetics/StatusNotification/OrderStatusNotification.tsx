@@ -63,6 +63,7 @@ export function OrderStatusNotification({
 
   const hasError =
     orderStatus?.isGelatoTaskFailed ||
+    orderStatus?.isGelatoTaskTimeout ||
     (Boolean(orderStatus?.cancelledTxnHash) && pendingOrderData.txnType !== "cancel");
 
   const orderData = useMemo(() => {
@@ -220,7 +221,12 @@ export function OrderStatusNotification({
         tenderlyAccountSlug && tenderlyProjectSlug
           ? `tenderlyUsername=${tenderlyAccountSlug}&tenderlyProjectName=${tenderlyProjectSlug}`
           : "";
-      txnLink = `https://api.gelato.digital/tasks/status/${orderStatus?.gelatoTaskId}/debug?${tenderlySlugs}`;
+      txnLink = orderStatus.gelatoTaskId
+        ? `https://api.gelato.digital/tasks/status/${orderStatus?.gelatoTaskId}/debug?${tenderlySlugs}`
+        : undefined;
+    } else if (orderStatus?.isGelatoTaskTimeout) {
+      status = "error";
+      text = t`Relayer request timed out`;
     } else if (isCompleted) {
       status = "success";
       text = t`Order request sent`;

@@ -13,6 +13,7 @@ export type MultiTransactionStatus<TEventData> = {
   cancelledTxnHash?: string;
   gelatoTaskId?: string;
   isGelatoTaskFailed?: boolean;
+  isGelatoTaskTimeout?: boolean;
   updatedTxnHash?: string;
   executedTxnHash?: string;
   createdAt: number;
@@ -74,7 +75,9 @@ export type PendingPositionUpdate = {
 };
 
 export type PendingExpressTxnParams = {
-  taskId: string;
+  key: string;
+  taskId: string | undefined;
+  isTimeout?: boolean;
   isSponsoredCall: boolean;
   subaccountApproval?: SignedSubbacountApproval;
   tokenPermits?: SignedTokenPermit[];
@@ -137,6 +140,7 @@ export type SyntheticsEventsContextType = {
   positionDecreaseEvents: PositionDecreaseEvent[] | undefined;
   pendingExpressTxns: PendingExpressTxns;
   setPendingExpressTxn: (params: PendingExpressTxnParams) => void;
+  updatePendingExpressTxn: (params: Partial<PendingExpressTxnParams>) => void;
   setPendingOrder: SetPendingOrder;
   setPendingOrderUpdate: SetPendingOrderUpdate;
   setPendingFundingFeeSettlement: SetPendingFundingFeeSettlement;

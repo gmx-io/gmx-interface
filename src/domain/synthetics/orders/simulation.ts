@@ -11,9 +11,11 @@ import {
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
+import { SignedTokenPermit } from "domain/tokens";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
+import { abis } from "sdk/abis";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import {
   CustomErrorName,
@@ -24,8 +26,6 @@ import {
   parseError,
 } from "sdk/utils/errors";
 import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
-import { abis } from "sdk/abis";
-import { SignedTokenPermit } from "domain/tokens";
 
 export type SimulateExecuteParams = {
   account: string;

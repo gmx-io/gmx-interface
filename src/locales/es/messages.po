@@ -5371,6 +5371,10 @@ msgstr "Ejecutar"
 msgid "Trades"
 msgstr "Operaciones"
 
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "Relayer request timed out"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Telegram Groups"
 msgstr "Grupos de Telegram"

@@ -1,7 +1,7 @@
 import { createPublicClient, http, zeroAddress } from "viem";
 import { describe, it } from "vitest";
-import { abis } from "abis";
 
+import { abis } from "abis";
 import { getChainName, getViemChain, SUPPORTED_CHAIN_IDS } from "configs/chains";
 import { getV2Tokens } from "configs/tokens";
 

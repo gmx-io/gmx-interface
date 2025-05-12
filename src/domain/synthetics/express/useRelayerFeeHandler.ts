@@ -9,8 +9,8 @@ import useWallet from "lib/wallets/useWallet";
 import { BatchOrderTxnParams, getBatchIsNativePayment, getIsEmptyBatch } from "sdk/utils/orderTransactions";
 
 import { ExpressTxnParams } from ".";
-import { estimateExpressParams } from "../orders/expressOrderUtils";
 import { useSwitchGasPaymentTokenIfRequired } from "./useSwitchGasPaymentTokenIfRequired";
+import { estimateExpressParams } from "../orders/expressOrderUtils";
 
 export type ExpressOrdersParamsResult = {
   expressParams: ExpressTxnParams | undefined;

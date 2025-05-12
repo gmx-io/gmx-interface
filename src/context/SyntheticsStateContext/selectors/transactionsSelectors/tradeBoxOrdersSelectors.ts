@@ -10,8 +10,8 @@ import {
   IncreasePositionOrderParams,
   SwapOrderParams,
 } from "sdk/utils/orderTransactions";
-
 import { getIsValidTwapParams } from "sdk/utils/twap";
+
 import { selectChainId, selectMaxAutoCancelOrders, selectSigner, selectUserReferralInfo } from "../globalSelectors";
 import { makeSelectOrdersByPositionKey } from "../orderSelectors";
 import {

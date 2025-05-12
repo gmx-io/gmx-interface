@@ -1,7 +1,9 @@
+import { useMemo } from "react";
+
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMulticall } from "lib/multicall";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-import { useMemo } from "react";
+
 import { getExpressContractAddress } from "./relayParamsUtils";
 
 export function useExpressNonces(
