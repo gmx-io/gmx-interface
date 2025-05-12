@@ -3951,6 +3951,10 @@ msgstr "ポジションは最大スリッページ {1}%で{0} USDでオープン
 msgid "Active Referral Code"
 msgstr "有効な紹介コード"
 
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Save One-Click Trading settings"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Please switch your network to Arbitrum."
 msgstr "ネットワークをArbitrumに切り替えてください。"
@@ -5054,8 +5058,8 @@ msgid "Acknowledge high {0}"
 msgstr ""
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
-msgid "Save One-Click Trading settings."
-msgstr ""
+#~ msgid "Save One-Click Trading settings."
+#~ msgstr ""
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Favorites"

@@ -3951,6 +3951,10 @@ msgstr "La posición se abrirá a {0} USD con un deslizamiento máximo de {1}%.<
 msgid "Active Referral Code"
 msgstr "Código de Referido Activo"
 
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Save One-Click Trading settings"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Please switch your network to Arbitrum."
 msgstr "Por favor, cambie su red a Arbitrum."
@@ -5054,8 +5058,8 @@ msgid "Acknowledge high {0}"
 msgstr ""
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
-msgid "Save One-Click Trading settings."
-msgstr ""
+#~ msgid "Save One-Click Trading settings."
+#~ msgstr ""
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Favorites"

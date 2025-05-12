@@ -3951,6 +3951,10 @@ msgstr "该仓位将在 {0} USD 开仓,最大滑点为{1}%.<0/><1/>滑点金额�
 msgid "Active Referral Code"
 msgstr "有效推荐代码"
 
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Save One-Click Trading settings"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Please switch your network to Arbitrum."
 msgstr "请将您的网络切换到Arbitrum"
@@ -5054,8 +5058,8 @@ msgid "Acknowledge high {0}"
 msgstr ""
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
-msgid "Save One-Click Trading settings."
-msgstr ""
+#~ msgid "Save One-Click Trading settings."
+#~ msgstr ""
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Favorites"

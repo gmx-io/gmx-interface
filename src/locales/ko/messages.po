@@ -3951,6 +3951,10 @@ msgstr "해당 포지션은 최대 슬리피지 {1}%의 {0} USD에서 열리게 
 msgid "Active Referral Code"
 msgstr "활성화된 추천 코드"
 
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Save One-Click Trading settings"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Please switch your network to Arbitrum."
 msgstr "네트워크를 Arbitrum으로 변경해주세요."
@@ -5054,8 +5058,8 @@ msgid "Acknowledge high {0}"
 msgstr ""
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
-msgid "Save One-Click Trading settings."
-msgstr ""
+#~ msgid "Save One-Click Trading settings."
+#~ msgstr ""
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Favorites"
