@@ -194,6 +194,7 @@ export async function estimateExpressParams({
         cancelOrdersCount: batchParams.cancelOrderParams.length,
         feeSwapsCount: baseRelayFeeParams.feeParams.feeSwapPath.length,
         externalSwapGasLimit: totalBatchExternalSwapGasLimit,
+        tokenPermitsCount: tokenPermits.length,
         oraclePriceCount: baseExpressParams.oracleParamsPayload.tokens.length,
         sizeOfData: BigInt(size(baseExpressParams.txnData.callData as `0x${string}`)),
         l1Reference,
