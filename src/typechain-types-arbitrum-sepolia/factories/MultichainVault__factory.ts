@@ -58,22 +58,6 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "token",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-    ],
-    name: "InvalidTransferInAmount",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
         name: "receiver",
         type: "address",
       },
@@ -156,30 +140,6 @@ const _abi = [
         internalType: "address",
         name: "token",
         type: "address",
-      },
-    ],
-    name: "recordTransferIn",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "token",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
       },
     ],
     name: "recordTransferIn",

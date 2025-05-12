@@ -12,7 +12,6 @@ export { MultichainClaimsRouter__factory } from "./MultichainClaimsRouter__facto
 export { MultichainGlvRouter__factory } from "./MultichainGlvRouter__factory";
 export { MultichainGmRouter__factory } from "./MultichainGmRouter__factory";
 export { MultichainOrderRouter__factory } from "./MultichainOrderRouter__factory";
-export { MultichainOrderRouterUtils__factory } from "./MultichainOrderRouterUtils__factory";
 export { MultichainSubaccountRouter__factory } from "./MultichainSubaccountRouter__factory";
 export { MultichainTransferRouter__factory } from "./MultichainTransferRouter__factory";
 export { MultichainUtils__factory } from "./MultichainUtils__factory";

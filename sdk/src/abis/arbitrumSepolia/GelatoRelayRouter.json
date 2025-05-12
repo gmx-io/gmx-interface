@@ -23,7 +23,7 @@
           "type": "address"
         },
         {
-          "internalType": "contract Oracle",
+          "internalType": "contract IOracle",
           "name": "_oracle",
           "type": "address"
         },
@@ -35,6 +35,11 @@
         {
           "internalType": "contract OrderVault",
           "name": "_orderVault",
+          "type": "address"
+        },
+        {
+          "internalType": "contract ISwapHandler",
+          "name": "_swapHandler",
           "type": "address"
         },
         {
@@ -379,7 +384,7 @@
                   "type": "address[]"
                 }
               ],
-              "internalType": "struct ExternalCalls",
+              "internalType": "struct IRelayUtils.ExternalCalls",
               "name": "externalCalls",
               "type": "tuple"
             },
@@ -426,7 +431,7 @@
                   "type": "address"
                 }
               ],
-              "internalType": "struct TokenPermit[]",
+              "internalType": "struct IRelayUtils.TokenPermit[]",
               "name": "tokenPermits",
               "type": "tuple[]"
             },
@@ -448,7 +453,7 @@
                   "type": "address[]"
                 }
               ],
-              "internalType": "struct FeeParams",
+              "internalType": "struct IRelayUtils.FeeParams",
               "name": "fee",
               "type": "tuple"
             },
@@ -473,7 +478,7 @@
               "type": "uint256"
             }
           ],
-          "internalType": "struct RelayParams",
+          "internalType": "struct IRelayUtils.RelayParams",
           "name": "relayParams",
           "type": "tuple"
         },
@@ -743,7 +748,7 @@
                   "type": "address[]"
                 }
               ],
-              "internalType": "struct ExternalCalls",
+              "internalType": "struct IRelayUtils.ExternalCalls",
               "name": "externalCalls",
               "type": "tuple"
             },
@@ -790,7 +795,7 @@
                   "type": "address"
                 }
               ],
-              "internalType": "struct TokenPermit[]",
+              "internalType": "struct IRelayUtils.TokenPermit[]",
               "name": "tokenPermits",
               "type": "tuple[]"
             },
@@ -812,7 +817,7 @@
                   "type": "address[]"
                 }
               ],
-              "internalType": "struct FeeParams",
+              "internalType": "struct IRelayUtils.FeeParams",
               "name": "fee",
               "type": "tuple"
             },
@@ -837,7 +842,7 @@
               "type": "uint256"
             }
           ],
-          "internalType": "struct RelayParams",
+          "internalType": "struct IRelayUtils.RelayParams",
           "name": "relayParams",
           "type": "tuple"
         },
@@ -916,7 +921,7 @@
                   "type": "address[]"
                 }
               ],
-              "internalType": "struct ExternalCalls",
+              "internalType": "struct IRelayUtils.ExternalCalls",
               "name": "externalCalls",
               "type": "tuple"
             },
@@ -963,7 +968,7 @@
                   "type": "address"
                 }
               ],
-              "internalType": "struct TokenPermit[]",
+              "internalType": "struct IRelayUtils.TokenPermit[]",
               "name": "tokenPermits",
               "type": "tuple[]"
             },
@@ -985,7 +990,7 @@
                   "type": "address[]"
                 }
               ],
-              "internalType": "struct FeeParams",
+              "internalType": "struct IRelayUtils.FeeParams",
               "name": "fee",
               "type": "tuple"
             },
@@ -1010,7 +1015,7 @@
               "type": "uint256"
             }
           ],
-          "internalType": "struct RelayParams",
+          "internalType": "struct IRelayUtils.RelayParams",
           "name": "relayParams",
           "type": "tuple"
         },
@@ -1225,7 +1230,7 @@
       "name": "oracle",
       "outputs": [
         {
-          "internalType": "contract Oracle",
+          "internalType": "contract IOracle",
           "name": "",
           "type": "address"
         }
@@ -1345,6 +1350,19 @@
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "swapHandler",
+      "outputs": [
+        {
+          "internalType": "contract ISwapHandler",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "components": [
@@ -1403,7 +1421,7 @@
                   "type": "address[]"
                 }
               ],
-              "internalType": "struct ExternalCalls",
+              "internalType": "struct IRelayUtils.ExternalCalls",
               "name": "externalCalls",
               "type": "tuple"
             },
@@ -1450,7 +1468,7 @@
                   "type": "address"
                 }
               ],
-              "internalType": "struct TokenPermit[]",
+              "internalType": "struct IRelayUtils.TokenPermit[]",
               "name": "tokenPermits",
               "type": "tuple[]"
             },
@@ -1472,7 +1490,7 @@
                   "type": "address[]"
                 }
               ],
-              "internalType": "struct FeeParams",
+              "internalType": "struct IRelayUtils.FeeParams",
               "name": "fee",
               "type": "tuple"
             },
@@ -1497,7 +1515,7 @@
               "type": "uint256"
             }
           ],
-          "internalType": "struct RelayParams",
+          "internalType": "struct IRelayUtils.RelayParams",
           "name": "relayParams",
           "type": "tuple"
         },

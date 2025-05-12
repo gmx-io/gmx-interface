@@ -23,105 +23,6 @@ import type {
   TypedContractMethod,
 } from "./common";
 
-export type ExternalCallsStruct = {
-  sendTokens: AddressLike[];
-  sendAmounts: BigNumberish[];
-  externalCallTargets: AddressLike[];
-  externalCallDataList: BytesLike[];
-  refundTokens: AddressLike[];
-  refundReceivers: AddressLike[];
-};
-
-export type ExternalCallsStructOutput = [
-  sendTokens: string[],
-  sendAmounts: bigint[],
-  externalCallTargets: string[],
-  externalCallDataList: string[],
-  refundTokens: string[],
-  refundReceivers: string[],
-] & {
-  sendTokens: string[];
-  sendAmounts: bigint[];
-  externalCallTargets: string[];
-  externalCallDataList: string[];
-  refundTokens: string[];
-  refundReceivers: string[];
-};
-
-export type TokenPermitStruct = {
-  owner: AddressLike;
-  spender: AddressLike;
-  value: BigNumberish;
-  deadline: BigNumberish;
-  v: BigNumberish;
-  r: BytesLike;
-  s: BytesLike;
-  token: AddressLike;
-};
-
-export type TokenPermitStructOutput = [
-  owner: string,
-  spender: string,
-  value: bigint,
-  deadline: bigint,
-  v: bigint,
-  r: string,
-  s: string,
-  token: string,
-] & {
-  owner: string;
-  spender: string;
-  value: bigint;
-  deadline: bigint;
-  v: bigint;
-  r: string;
-  s: string;
-  token: string;
-};
-
-export type FeeParamsStruct = {
-  feeToken: AddressLike;
-  feeAmount: BigNumberish;
-  feeSwapPath: AddressLike[];
-};
-
-export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
-  feeToken: string;
-  feeAmount: bigint;
-  feeSwapPath: string[];
-};
-
-export type RelayParamsStruct = {
-  oracleParams: OracleUtils.SetPricesParamsStruct;
-  externalCalls: ExternalCallsStruct;
-  tokenPermits: TokenPermitStruct[];
-  fee: FeeParamsStruct;
-  userNonce: BigNumberish;
-  deadline: BigNumberish;
-  signature: BytesLike;
-  desChainId: BigNumberish;
-};
-
-export type RelayParamsStructOutput = [
-  oracleParams: OracleUtils.SetPricesParamsStructOutput,
-  externalCalls: ExternalCallsStructOutput,
-  tokenPermits: TokenPermitStructOutput[],
-  fee: FeeParamsStructOutput,
-  userNonce: bigint,
-  deadline: bigint,
-  signature: string,
-  desChainId: bigint,
-] & {
-  oracleParams: OracleUtils.SetPricesParamsStructOutput;
-  externalCalls: ExternalCallsStructOutput;
-  tokenPermits: TokenPermitStructOutput[];
-  fee: FeeParamsStructOutput;
-  userNonce: bigint;
-  deadline: bigint;
-  signature: string;
-  desChainId: bigint;
-};
-
 export type SubaccountApprovalStruct = {
   subaccount: AddressLike;
   shouldAdd: boolean;
@@ -212,6 +113,7 @@ export declare namespace MultichainRouter {
     oracle: AddressLike;
     orderVault: AddressLike;
     orderHandler: AddressLike;
+    swapHandler: AddressLike;
     externalHandler: AddressLike;
     multichainVault: AddressLike;
   };
@@ -224,6 +126,7 @@ export declare namespace MultichainRouter {
     oracle: string,
     orderVault: string,
     orderHandler: string,
+    swapHandler: string,
     externalHandler: string,
     multichainVault: string,
   ] & {
@@ -234,6 +137,7 @@ export declare namespace MultichainRouter {
     oracle: string;
     orderVault: string;
     orderHandler: string;
+    swapHandler: string;
     externalHandler: string;
     multichainVault: string;
   };
@@ -250,6 +154,107 @@ export declare namespace OracleUtils {
     tokens: string[];
     providers: string[];
     data: string[];
+  };
+}
+
+export declare namespace IRelayUtils {
+  export type ExternalCallsStruct = {
+    sendTokens: AddressLike[];
+    sendAmounts: BigNumberish[];
+    externalCallTargets: AddressLike[];
+    externalCallDataList: BytesLike[];
+    refundTokens: AddressLike[];
+    refundReceivers: AddressLike[];
+  };
+
+  export type ExternalCallsStructOutput = [
+    sendTokens: string[],
+    sendAmounts: bigint[],
+    externalCallTargets: string[],
+    externalCallDataList: string[],
+    refundTokens: string[],
+    refundReceivers: string[],
+  ] & {
+    sendTokens: string[];
+    sendAmounts: bigint[];
+    externalCallTargets: string[];
+    externalCallDataList: string[];
+    refundTokens: string[];
+    refundReceivers: string[];
+  };
+
+  export type TokenPermitStruct = {
+    owner: AddressLike;
+    spender: AddressLike;
+    value: BigNumberish;
+    deadline: BigNumberish;
+    v: BigNumberish;
+    r: BytesLike;
+    s: BytesLike;
+    token: AddressLike;
+  };
+
+  export type TokenPermitStructOutput = [
+    owner: string,
+    spender: string,
+    value: bigint,
+    deadline: bigint,
+    v: bigint,
+    r: string,
+    s: string,
+    token: string,
+  ] & {
+    owner: string;
+    spender: string;
+    value: bigint;
+    deadline: bigint;
+    v: bigint;
+    r: string;
+    s: string;
+    token: string;
+  };
+
+  export type FeeParamsStruct = {
+    feeToken: AddressLike;
+    feeAmount: BigNumberish;
+    feeSwapPath: AddressLike[];
+  };
+
+  export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
+    feeToken: string;
+    feeAmount: bigint;
+    feeSwapPath: string[];
+  };
+
+  export type RelayParamsStruct = {
+    oracleParams: OracleUtils.SetPricesParamsStruct;
+    externalCalls: IRelayUtils.ExternalCallsStruct;
+    tokenPermits: IRelayUtils.TokenPermitStruct[];
+    fee: IRelayUtils.FeeParamsStruct;
+    userNonce: BigNumberish;
+    deadline: BigNumberish;
+    signature: BytesLike;
+    desChainId: BigNumberish;
+  };
+
+  export type RelayParamsStructOutput = [
+    oracleParams: OracleUtils.SetPricesParamsStructOutput,
+    externalCalls: IRelayUtils.ExternalCallsStructOutput,
+    tokenPermits: IRelayUtils.TokenPermitStructOutput[],
+    fee: IRelayUtils.FeeParamsStructOutput,
+    userNonce: bigint,
+    deadline: bigint,
+    signature: string,
+    desChainId: bigint,
+  ] & {
+    oracleParams: OracleUtils.SetPricesParamsStructOutput;
+    externalCalls: IRelayUtils.ExternalCallsStructOutput;
+    tokenPermits: IRelayUtils.TokenPermitStructOutput[];
+    fee: IRelayUtils.FeeParamsStructOutput;
+    userNonce: bigint;
+    deadline: bigint;
+    signature: string;
+    desChainId: bigint;
   };
 }
 
@@ -369,6 +374,7 @@ export interface MultichainSubaccountRouterInterface extends Interface {
       | "sendTokens"
       | "sendWnt"
       | "subaccountApprovalNonces"
+      | "swapHandler"
       | "updateOrder"
       | "userNonces"
   ): FunctionFragment;
@@ -377,16 +383,23 @@ export interface MultichainSubaccountRouterInterface extends Interface {
 
   encodeFunctionData(
     functionFragment: "batch",
-    values: [RelayParamsStruct, SubaccountApprovalStruct, AddressLike, BigNumberish, AddressLike, BatchParamsStruct]
+    values: [
+      IRelayUtils.RelayParamsStruct,
+      SubaccountApprovalStruct,
+      AddressLike,
+      BigNumberish,
+      AddressLike,
+      BatchParamsStruct,
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "cancelOrder",
-    values: [RelayParamsStruct, SubaccountApprovalStruct, AddressLike, BigNumberish, AddressLike, BytesLike]
+    values: [IRelayUtils.RelayParamsStruct, SubaccountApprovalStruct, AddressLike, BigNumberish, AddressLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "createOrder",
     values: [
-      RelayParamsStruct,
+      IRelayUtils.RelayParamsStruct,
       SubaccountApprovalStruct,
       AddressLike,
       BigNumberish,
@@ -404,7 +417,7 @@ export interface MultichainSubaccountRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "orderVault", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "removeSubaccount",
-    values: [RelayParamsStruct, AddressLike, BigNumberish, AddressLike]
+    values: [IRelayUtils.RelayParamsStruct, AddressLike, BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(functionFragment: "roleStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "router", values?: undefined): string;
@@ -412,10 +425,11 @@ export interface MultichainSubaccountRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "sendTokens", values: [AddressLike, AddressLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "sendWnt", values: [AddressLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "subaccountApprovalNonces", values: [AddressLike]): string;
+  encodeFunctionData(functionFragment: "swapHandler", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "updateOrder",
     values: [
-      RelayParamsStruct,
+      IRelayUtils.RelayParamsStruct,
       SubaccountApprovalStruct,
       AddressLike,
       BigNumberish,
@@ -443,6 +457,7 @@ export interface MultichainSubaccountRouterInterface extends Interface {
   decodeFunctionResult(functionFragment: "sendTokens", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendWnt", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "subaccountApprovalNonces", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "swapHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "updateOrder", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "userNonces", data: BytesLike): Result;
 }
@@ -495,7 +510,7 @@ export interface MultichainSubaccountRouter extends BaseContract {
 
   batch: TypedContractMethod<
     [
-      relayParams: RelayParamsStruct,
+      relayParams: IRelayUtils.RelayParamsStruct,
       subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
@@ -508,7 +523,7 @@ export interface MultichainSubaccountRouter extends BaseContract {
 
   cancelOrder: TypedContractMethod<
     [
-      relayParams: RelayParamsStruct,
+      relayParams: IRelayUtils.RelayParamsStruct,
       subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
@@ -521,7 +536,7 @@ export interface MultichainSubaccountRouter extends BaseContract {
 
   createOrder: TypedContractMethod<
     [
-      relayParams: RelayParamsStruct,
+      relayParams: IRelayUtils.RelayParamsStruct,
       subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
@@ -549,7 +564,12 @@ export interface MultichainSubaccountRouter extends BaseContract {
   orderVault: TypedContractMethod<[], [string], "view">;
 
   removeSubaccount: TypedContractMethod<
-    [relayParams: RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, subaccount: AddressLike],
+    [
+      relayParams: IRelayUtils.RelayParamsStruct,
+      account: AddressLike,
+      srcChainId: BigNumberish,
+      subaccount: AddressLike,
+    ],
     [void],
     "nonpayable"
   >;
@@ -566,9 +586,11 @@ export interface MultichainSubaccountRouter extends BaseContract {
 
   subaccountApprovalNonces: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
+  swapHandler: TypedContractMethod<[], [string], "view">;
+
   updateOrder: TypedContractMethod<
     [
-      relayParams: RelayParamsStruct,
+      relayParams: IRelayUtils.RelayParamsStruct,
       subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
@@ -587,7 +609,7 @@ export interface MultichainSubaccountRouter extends BaseContract {
     nameOrSignature: "batch"
   ): TypedContractMethod<
     [
-      relayParams: RelayParamsStruct,
+      relayParams: IRelayUtils.RelayParamsStruct,
       subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
@@ -601,7 +623,7 @@ export interface MultichainSubaccountRouter extends BaseContract {
     nameOrSignature: "cancelOrder"
   ): TypedContractMethod<
     [
-      relayParams: RelayParamsStruct,
+      relayParams: IRelayUtils.RelayParamsStruct,
       subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
@@ -615,7 +637,7 @@ export interface MultichainSubaccountRouter extends BaseContract {
     nameOrSignature: "createOrder"
   ): TypedContractMethod<
     [
-      relayParams: RelayParamsStruct,
+      relayParams: IRelayUtils.RelayParamsStruct,
       subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
@@ -636,7 +658,12 @@ export interface MultichainSubaccountRouter extends BaseContract {
   getFunction(
     nameOrSignature: "removeSubaccount"
   ): TypedContractMethod<
-    [relayParams: RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, subaccount: AddressLike],
+    [
+      relayParams: IRelayUtils.RelayParamsStruct,
+      account: AddressLike,
+      srcChainId: BigNumberish,
+      subaccount: AddressLike,
+    ],
     [void],
     "nonpayable"
   >;
@@ -652,11 +679,12 @@ export interface MultichainSubaccountRouter extends BaseContract {
     nameOrSignature: "sendWnt"
   ): TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
   getFunction(nameOrSignature: "subaccountApprovalNonces"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(nameOrSignature: "swapHandler"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "updateOrder"
   ): TypedContractMethod<
     [
-      relayParams: RelayParamsStruct,
+      relayParams: IRelayUtils.RelayParamsStruct,
       subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       srcChainId: BigNumberish,

@@ -13,7 +13,6 @@ import MultichainClaimsRouterArbitrumSepolia from "./arbitrumSepolia/MultichainC
 import MultichainGlvRouterArbitrumSepolia from "./arbitrumSepolia/MultichainGlvRouter.json";
 import MultichainGmRouterArbitrumSepolia from "./arbitrumSepolia/MultichainGmRouter.json";
 import MultichainOrderRouterArbitrumSepolia from "./arbitrumSepolia/MultichainOrderRouter.json";
-import MultichainOrderRouterUtilsArbitrumSepolia from "./arbitrumSepolia/MultichainOrderRouterUtils.json";
 import MultichainSubaccountRouterArbitrumSepolia from "./arbitrumSepolia/MultichainSubaccountRouter.json";
 import MultichainTransferRouterArbitrumSepolia from "./arbitrumSepolia/MultichainTransferRouter.json";
 import MultichainUtilsArbitrumSepolia from "./arbitrumSepolia/MultichainUtils.json";
@@ -126,7 +125,6 @@ export type AbiId =
   | "MultichainGlvRouterArbitrumSepolia"
   | "MultichainGmRouterArbitrumSepolia"
   | "MultichainOrderRouterArbitrumSepolia"
-  | "MultichainOrderRouterUtilsArbitrumSepolia"
   | "MultichainTransferRouterArbitrumSepolia"
   | "MultichainUtilsArbitrumSepolia"
   | "MultichainVaultArbitrumSepolia"
@@ -197,7 +195,6 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   MultichainGlvRouterArbitrumSepolia: MultichainGlvRouterArbitrumSepolia.abi,
   MultichainGmRouterArbitrumSepolia: MultichainGmRouterArbitrumSepolia.abi,
   MultichainOrderRouterArbitrumSepolia: MultichainOrderRouterArbitrumSepolia.abi,
-  MultichainOrderRouterUtilsArbitrumSepolia: MultichainOrderRouterUtilsArbitrumSepolia.abi,
   MultichainTransferRouterArbitrumSepolia: MultichainTransferRouterArbitrumSepolia.abi,
   MultichainUtilsArbitrumSepolia: MultichainUtilsArbitrumSepolia.abi,
   MultichainVaultArbitrumSepolia: MultichainVaultArbitrumSepolia.abi,

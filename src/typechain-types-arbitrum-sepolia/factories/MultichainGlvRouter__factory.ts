@@ -31,7 +31,7 @@ const _abi = [
             type: "address",
           },
           {
-            internalType: "contract Oracle",
+            internalType: "contract IOracle",
             name: "oracle",
             type: "address",
           },
@@ -43,6 +43,11 @@ const _abi = [
           {
             internalType: "contract IOrderHandler",
             name: "orderHandler",
+            type: "address",
+          },
+          {
+            internalType: "contract ISwapHandler",
+            name: "swapHandler",
             type: "address",
           },
           {
@@ -61,8 +66,13 @@ const _abi = [
         type: "tuple",
       },
       {
-        internalType: "contract GlvHandler",
-        name: "_glvHandler",
+        internalType: "contract IGlvDepositHandler",
+        name: "_glvDepositHandler",
+        type: "address",
+      },
+      {
+        internalType: "contract IGlvWithdrawalHandler",
+        name: "_glvWithdrawalHandler",
         type: "address",
       },
       {
@@ -386,7 +396,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct ExternalCalls",
+            internalType: "struct IRelayUtils.ExternalCalls",
             name: "externalCalls",
             type: "tuple",
           },
@@ -433,7 +443,7 @@ const _abi = [
                 type: "address",
               },
             ],
-            internalType: "struct TokenPermit[]",
+            internalType: "struct IRelayUtils.TokenPermit[]",
             name: "tokenPermits",
             type: "tuple[]",
           },
@@ -455,7 +465,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct FeeParams",
+            internalType: "struct IRelayUtils.FeeParams",
             name: "fee",
             type: "tuple",
           },
@@ -480,7 +490,7 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct RelayParams",
+        internalType: "struct IRelayUtils.RelayParams",
         name: "relayParams",
         type: "tuple",
       },
@@ -512,7 +522,7 @@ const _abi = [
             type: "uint256[]",
           },
         ],
-        internalType: "struct TransferRequests",
+        internalType: "struct IRelayUtils.TransferRequests",
         name: "transferRequests",
         type: "tuple",
       },
@@ -566,7 +576,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct GlvDepositUtils.CreateGlvDepositParamsAddresses",
+            internalType: "struct IGlvDepositUtils.CreateGlvDepositParamsAddresses",
             name: "addresses",
             type: "tuple",
           },
@@ -601,7 +611,7 @@ const _abi = [
             type: "bytes32[]",
           },
         ],
-        internalType: "struct GlvDepositUtils.CreateGlvDepositParams",
+        internalType: "struct IGlvDepositUtils.CreateGlvDepositParams",
         name: "params",
         type: "tuple",
       },
@@ -676,7 +686,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct ExternalCalls",
+            internalType: "struct IRelayUtils.ExternalCalls",
             name: "externalCalls",
             type: "tuple",
           },
@@ -723,7 +733,7 @@ const _abi = [
                 type: "address",
               },
             ],
-            internalType: "struct TokenPermit[]",
+            internalType: "struct IRelayUtils.TokenPermit[]",
             name: "tokenPermits",
             type: "tuple[]",
           },
@@ -745,7 +755,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct FeeParams",
+            internalType: "struct IRelayUtils.FeeParams",
             name: "fee",
             type: "tuple",
           },
@@ -770,7 +780,7 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct RelayParams",
+        internalType: "struct IRelayUtils.RelayParams",
         name: "relayParams",
         type: "tuple",
       },
@@ -802,7 +812,297 @@ const _abi = [
             type: "uint256[]",
           },
         ],
-        internalType: "struct TransferRequests",
+        internalType: "struct IRelayUtils.TransferRequests",
+        name: "transferRequests",
+        type: "tuple",
+      },
+      {
+        components: [
+          {
+            components: [
+              {
+                internalType: "address",
+                name: "glv",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "market",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "receiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "callbackContract",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "uiFeeReceiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "initialLongToken",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "initialShortToken",
+                type: "address",
+              },
+              {
+                internalType: "address[]",
+                name: "longTokenSwapPath",
+                type: "address[]",
+              },
+              {
+                internalType: "address[]",
+                name: "shortTokenSwapPath",
+                type: "address[]",
+              },
+            ],
+            internalType: "struct IGlvDepositUtils.CreateGlvDepositParamsAddresses",
+            name: "addresses",
+            type: "tuple",
+          },
+          {
+            internalType: "uint256",
+            name: "minGlvTokens",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "executionFee",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "callbackGasLimit",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "shouldUnwrapNativeToken",
+            type: "bool",
+          },
+          {
+            internalType: "bool",
+            name: "isMarketTokenDeposit",
+            type: "bool",
+          },
+          {
+            internalType: "bytes32[]",
+            name: "dataList",
+            type: "bytes32[]",
+          },
+        ],
+        internalType: "struct IGlvDepositUtils.CreateGlvDepositParams",
+        name: "params",
+        type: "tuple",
+      },
+    ],
+    name: "createGlvDepositFromBridge",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            components: [
+              {
+                internalType: "address[]",
+                name: "tokens",
+                type: "address[]",
+              },
+              {
+                internalType: "address[]",
+                name: "providers",
+                type: "address[]",
+              },
+              {
+                internalType: "bytes[]",
+                name: "data",
+                type: "bytes[]",
+              },
+            ],
+            internalType: "struct OracleUtils.SetPricesParams",
+            name: "oracleParams",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "address[]",
+                name: "sendTokens",
+                type: "address[]",
+              },
+              {
+                internalType: "uint256[]",
+                name: "sendAmounts",
+                type: "uint256[]",
+              },
+              {
+                internalType: "address[]",
+                name: "externalCallTargets",
+                type: "address[]",
+              },
+              {
+                internalType: "bytes[]",
+                name: "externalCallDataList",
+                type: "bytes[]",
+              },
+              {
+                internalType: "address[]",
+                name: "refundTokens",
+                type: "address[]",
+              },
+              {
+                internalType: "address[]",
+                name: "refundReceivers",
+                type: "address[]",
+              },
+            ],
+            internalType: "struct IRelayUtils.ExternalCalls",
+            name: "externalCalls",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "address",
+                name: "owner",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "spender",
+                type: "address",
+              },
+              {
+                internalType: "uint256",
+                name: "value",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "deadline",
+                type: "uint256",
+              },
+              {
+                internalType: "uint8",
+                name: "v",
+                type: "uint8",
+              },
+              {
+                internalType: "bytes32",
+                name: "r",
+                type: "bytes32",
+              },
+              {
+                internalType: "bytes32",
+                name: "s",
+                type: "bytes32",
+              },
+              {
+                internalType: "address",
+                name: "token",
+                type: "address",
+              },
+            ],
+            internalType: "struct IRelayUtils.TokenPermit[]",
+            name: "tokenPermits",
+            type: "tuple[]",
+          },
+          {
+            components: [
+              {
+                internalType: "address",
+                name: "feeToken",
+                type: "address",
+              },
+              {
+                internalType: "uint256",
+                name: "feeAmount",
+                type: "uint256",
+              },
+              {
+                internalType: "address[]",
+                name: "feeSwapPath",
+                type: "address[]",
+              },
+            ],
+            internalType: "struct IRelayUtils.FeeParams",
+            name: "fee",
+            type: "tuple",
+          },
+          {
+            internalType: "uint256",
+            name: "userNonce",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "deadline",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "signature",
+            type: "bytes",
+          },
+          {
+            internalType: "uint256",
+            name: "desChainId",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IRelayUtils.RelayParams",
+        name: "relayParams",
+        type: "tuple",
+      },
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "srcChainId",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            internalType: "address[]",
+            name: "tokens",
+            type: "address[]",
+          },
+          {
+            internalType: "address[]",
+            name: "receivers",
+            type: "address[]",
+          },
+          {
+            internalType: "uint256[]",
+            name: "amounts",
+            type: "uint256[]",
+          },
+        ],
+        internalType: "struct IRelayUtils.TransferRequests",
         name: "transferRequests",
         type: "tuple",
       },
@@ -846,7 +1146,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct GlvWithdrawalUtils.CreateGlvWithdrawalParamsAddresses",
+            internalType: "struct IGlvWithdrawalUtils.CreateGlvWithdrawalParamsAddresses",
             name: "addresses",
             type: "tuple",
           },
@@ -881,7 +1181,7 @@ const _abi = [
             type: "bytes32[]",
           },
         ],
-        internalType: "struct GlvWithdrawalUtils.CreateGlvWithdrawalParams",
+        internalType: "struct IGlvWithdrawalUtils.CreateGlvWithdrawalParams",
         name: "params",
         type: "tuple",
       },
@@ -938,10 +1238,10 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "glvHandler",
+    name: "glvDepositHandler",
     outputs: [
       {
-        internalType: "contract GlvHandler",
+        internalType: "contract IGlvDepositHandler",
         name: "",
         type: "address",
       },
@@ -955,6 +1255,19 @@ const _abi = [
     outputs: [
       {
         internalType: "contract GlvVault",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "glvWithdrawalHandler",
+    outputs: [
+      {
+        internalType: "contract IGlvWithdrawalHandler",
         name: "",
         type: "address",
       },
@@ -999,7 +1312,7 @@ const _abi = [
     name: "oracle",
     outputs: [
       {
-        internalType: "contract Oracle",
+        internalType: "contract IOracle",
         name: "",
         type: "address",
       },
@@ -1116,6 +1429,19 @@ const _abi = [
     name: "sendWnt",
     outputs: [],
     stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "swapHandler",
+    outputs: [
+      {
+        internalType: "contract ISwapHandler",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {

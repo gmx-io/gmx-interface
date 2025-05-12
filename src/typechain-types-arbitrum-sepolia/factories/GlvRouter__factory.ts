@@ -29,8 +29,13 @@ const _abi = [
         type: "address",
       },
       {
-        internalType: "contract IGlvHandler",
-        name: "_glvHandler",
+        internalType: "contract IGlvDepositHandler",
+        name: "_glvDepositHandler",
+        type: "address",
+      },
+      {
+        internalType: "contract IGlvWithdrawalHandler",
+        name: "_glvWithdrawalHandler",
         type: "address",
       },
       {
@@ -218,7 +223,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct GlvDepositUtils.CreateGlvDepositParamsAddresses",
+            internalType: "struct IGlvDepositUtils.CreateGlvDepositParamsAddresses",
             name: "addresses",
             type: "tuple",
           },
@@ -253,7 +258,7 @@ const _abi = [
             type: "bytes32[]",
           },
         ],
-        internalType: "struct GlvDepositUtils.CreateGlvDepositParams",
+        internalType: "struct IGlvDepositUtils.CreateGlvDepositParams",
         name: "params",
         type: "tuple",
       },
@@ -311,7 +316,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct GlvWithdrawalUtils.CreateGlvWithdrawalParamsAddresses",
+            internalType: "struct IGlvWithdrawalUtils.CreateGlvWithdrawalParamsAddresses",
             name: "addresses",
             type: "tuple",
           },
@@ -346,7 +351,7 @@ const _abi = [
             type: "bytes32[]",
           },
         ],
-        internalType: "struct GlvWithdrawalUtils.CreateGlvWithdrawalParams",
+        internalType: "struct IGlvWithdrawalUtils.CreateGlvWithdrawalParams",
         name: "params",
         type: "tuple",
       },
@@ -403,10 +408,23 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "glvHandler",
+    name: "glvDepositHandler",
     outputs: [
       {
-        internalType: "contract IGlvHandler",
+        internalType: "contract IGlvDepositHandler",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "glvWithdrawalHandler",
+    outputs: [
+      {
+        internalType: "contract IGlvWithdrawalHandler",
         name: "",
         type: "address",
       },

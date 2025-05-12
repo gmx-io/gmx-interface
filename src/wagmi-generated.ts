@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x886156a4420D724faF838A97fEB4680AD75BC481)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x7f092E45Eed1d69DD56Fe1a0B8B69B97cd020604)
  */
 export const layerZeroProviderAbi = [
   {
@@ -29,6 +29,16 @@ export const layerZeroProviderAbi = [
         internalType: "contract MultichainVault",
         type: "address",
       },
+      {
+        name: "_multichainGmRouter",
+        internalType: "contract IMultichainGmRouter",
+        type: "address",
+      },
+      {
+        name: "_multichainGlvRouter",
+        internalType: "contract IMultichainGlvRouter",
+        type: "address",
+      },
     ],
     stateMutability: "nonpayable",
   },
@@ -39,6 +49,7 @@ export const layerZeroProviderAbi = [
     inputs: [{ name: "token", internalType: "address", type: "address" }],
     name: "EmptyTokenTranferGasLimit",
   },
+  { type: "error", inputs: [], name: "EmptyWithdrawalAmount" },
   {
     type: "error",
     inputs: [{ name: "token", internalType: "address", type: "address" }],
@@ -92,7 +103,6 @@ export const layerZeroProviderAbi = [
           { name: "account", internalType: "address", type: "address" },
           { name: "token", internalType: "address", type: "address" },
           { name: "amount", internalType: "uint256", type: "uint256" },
-          { name: "srcChainId", internalType: "uint256", type: "uint256" },
           { name: "data", internalType: "bytes", type: "bytes" },
         ],
       },
@@ -131,6 +141,32 @@ export const layerZeroProviderAbi = [
   {
     type: "function",
     inputs: [],
+    name: "multichainGlvRouter",
+    outputs: [
+      {
+        name: "",
+        internalType: "contract IMultichainGlvRouter",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    inputs: [],
+    name: "multichainGmRouter",
+    outputs: [
+      {
+        name: "",
+        internalType: "contract IMultichainGmRouter",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    inputs: [],
     name: "multichainVault",
     outputs: [{ name: "", internalType: "contract MultichainVault", type: "address" }],
     stateMutability: "view",
@@ -142,18 +178,29 @@ export const layerZeroProviderAbi = [
     outputs: [{ name: "", internalType: "contract RoleStore", type: "address" }],
     stateMutability: "view",
   },
+  {
+    type: "function",
+    inputs: [
+      { name: "token", internalType: "address", type: "address" },
+      { name: "receiver", internalType: "address", type: "address" },
+      { name: "amount", internalType: "uint256", type: "uint256" },
+    ],
+    name: "withdrawTokens",
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
   { type: "receive", stateMutability: "payable" },
 ] as const;
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x886156a4420D724faF838A97fEB4680AD75BC481)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x7f092E45Eed1d69DD56Fe1a0B8B69B97cd020604)
  */
 export const layerZeroProviderAddress = {
-  421614: "0x886156a4420D724faF838A97fEB4680AD75BC481",
+  421614: "0x7f092E45Eed1d69DD56Fe1a0B8B69B97cd020604",
 } as const;
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x886156a4420D724faF838A97fEB4680AD75BC481)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x7f092E45Eed1d69DD56Fe1a0B8B69B97cd020604)
  */
 export const layerZeroProviderConfig = {
   address: layerZeroProviderAddress,
@@ -165,7 +212,7 @@ export const layerZeroProviderConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0xcFaD75ea6Cd2200fc39F557f8530ac27E47b1DAf)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0xe7Cf2fA8cA07b8d6Ea359F779CCF6BF8A968880F)
  */
 export const multichainOrderRouterAbi = [
   {
@@ -192,7 +239,7 @@ export const multichainOrderRouterAbi = [
             internalType: "contract EventEmitter",
             type: "address",
           },
-          { name: "oracle", internalType: "contract Oracle", type: "address" },
+          { name: "oracle", internalType: "contract IOracle", type: "address" },
           {
             name: "orderVault",
             internalType: "contract OrderVault",
@@ -201,6 +248,11 @@ export const multichainOrderRouterAbi = [
           {
             name: "orderHandler",
             internalType: "contract IOrderHandler",
+            type: "address",
+          },
+          {
+            name: "swapHandler",
+            internalType: "contract ISwapHandler",
             type: "address",
           },
           {
@@ -364,7 +416,7 @@ export const multichainOrderRouterAbi = [
     inputs: [
       {
         name: "relayParams",
-        internalType: "struct RelayParams",
+        internalType: "struct IRelayUtils.RelayParams",
         type: "tuple",
         components: [
           {
@@ -383,7 +435,7 @@ export const multichainOrderRouterAbi = [
           },
           {
             name: "externalCalls",
-            internalType: "struct ExternalCalls",
+            internalType: "struct IRelayUtils.ExternalCalls",
             type: "tuple",
             components: [
               {
@@ -420,7 +472,7 @@ export const multichainOrderRouterAbi = [
           },
           {
             name: "tokenPermits",
-            internalType: "struct TokenPermit[]",
+            internalType: "struct IRelayUtils.TokenPermit[]",
             type: "tuple[]",
             components: [
               { name: "owner", internalType: "address", type: "address" },
@@ -435,7 +487,7 @@ export const multichainOrderRouterAbi = [
           },
           {
             name: "fee",
-            internalType: "struct FeeParams",
+            internalType: "struct IRelayUtils.FeeParams",
             type: "tuple",
             components: [
               { name: "feeToken", internalType: "address", type: "address" },
@@ -635,7 +687,7 @@ export const multichainOrderRouterAbi = [
     inputs: [
       {
         name: "relayParams",
-        internalType: "struct RelayParams",
+        internalType: "struct IRelayUtils.RelayParams",
         type: "tuple",
         components: [
           {
@@ -654,7 +706,7 @@ export const multichainOrderRouterAbi = [
           },
           {
             name: "externalCalls",
-            internalType: "struct ExternalCalls",
+            internalType: "struct IRelayUtils.ExternalCalls",
             type: "tuple",
             components: [
               {
@@ -691,7 +743,7 @@ export const multichainOrderRouterAbi = [
           },
           {
             name: "tokenPermits",
-            internalType: "struct TokenPermit[]",
+            internalType: "struct IRelayUtils.TokenPermit[]",
             type: "tuple[]",
             components: [
               { name: "owner", internalType: "address", type: "address" },
@@ -706,7 +758,7 @@ export const multichainOrderRouterAbi = [
           },
           {
             name: "fee",
-            internalType: "struct FeeParams",
+            internalType: "struct IRelayUtils.FeeParams",
             type: "tuple",
             components: [
               { name: "feeToken", internalType: "address", type: "address" },
@@ -737,7 +789,7 @@ export const multichainOrderRouterAbi = [
     inputs: [
       {
         name: "relayParams",
-        internalType: "struct RelayParams",
+        internalType: "struct IRelayUtils.RelayParams",
         type: "tuple",
         components: [
           {
@@ -756,7 +808,7 @@ export const multichainOrderRouterAbi = [
           },
           {
             name: "externalCalls",
-            internalType: "struct ExternalCalls",
+            internalType: "struct IRelayUtils.ExternalCalls",
             type: "tuple",
             components: [
               {
@@ -793,7 +845,7 @@ export const multichainOrderRouterAbi = [
           },
           {
             name: "tokenPermits",
-            internalType: "struct TokenPermit[]",
+            internalType: "struct IRelayUtils.TokenPermit[]",
             type: "tuple[]",
             components: [
               { name: "owner", internalType: "address", type: "address" },
@@ -808,7 +860,7 @@ export const multichainOrderRouterAbi = [
           },
           {
             name: "fee",
-            internalType: "struct FeeParams",
+            internalType: "struct IRelayUtils.FeeParams",
             type: "tuple",
             components: [
               { name: "feeToken", internalType: "address", type: "address" },
@@ -979,7 +1031,7 @@ export const multichainOrderRouterAbi = [
     type: "function",
     inputs: [],
     name: "oracle",
-    outputs: [{ name: "", internalType: "contract Oracle", type: "address" }],
+    outputs: [{ name: "", internalType: "contract IOracle", type: "address" }],
     stateMutability: "view",
   },
   {
@@ -1050,10 +1102,17 @@ export const multichainOrderRouterAbi = [
   },
   {
     type: "function",
+    inputs: [],
+    name: "swapHandler",
+    outputs: [{ name: "", internalType: "contract ISwapHandler", type: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
     inputs: [
       {
         name: "relayParams",
-        internalType: "struct RelayParams",
+        internalType: "struct IRelayUtils.RelayParams",
         type: "tuple",
         components: [
           {
@@ -1072,7 +1131,7 @@ export const multichainOrderRouterAbi = [
           },
           {
             name: "externalCalls",
-            internalType: "struct ExternalCalls",
+            internalType: "struct IRelayUtils.ExternalCalls",
             type: "tuple",
             components: [
               {
@@ -1109,7 +1168,7 @@ export const multichainOrderRouterAbi = [
           },
           {
             name: "tokenPermits",
-            internalType: "struct TokenPermit[]",
+            internalType: "struct IRelayUtils.TokenPermit[]",
             type: "tuple[]",
             components: [
               { name: "owner", internalType: "address", type: "address" },
@@ -1124,7 +1183,7 @@ export const multichainOrderRouterAbi = [
           },
           {
             name: "fee",
-            internalType: "struct FeeParams",
+            internalType: "struct IRelayUtils.FeeParams",
             type: "tuple",
             components: [
               { name: "feeToken", internalType: "address", type: "address" },
@@ -1178,14 +1237,14 @@ export const multichainOrderRouterAbi = [
 ] as const;
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0xcFaD75ea6Cd2200fc39F557f8530ac27E47b1DAf)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0xe7Cf2fA8cA07b8d6Ea359F779CCF6BF8A968880F)
  */
 export const multichainOrderRouterAddress = {
-  421614: "0xcFaD75ea6Cd2200fc39F557f8530ac27E47b1DAf",
+  421614: "0xe7Cf2fA8cA07b8d6Ea359F779CCF6BF8A968880F",
 } as const;
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0xcFaD75ea6Cd2200fc39F557f8530ac27E47b1DAf)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0xe7Cf2fA8cA07b8d6Ea359F779CCF6BF8A968880F)
  */
 export const multichainOrderRouterConfig = {
   address: multichainOrderRouterAddress,
@@ -1197,7 +1256,7 @@ export const multichainOrderRouterConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0xA989Cd6927e67B71078065045388b4C14e9f358c)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x445fc630369ACb21D2Cf0BccB61a0916357C54E7)
  */
 export const multichainSubaccountRouterAbi = [
   {
@@ -1224,7 +1283,7 @@ export const multichainSubaccountRouterAbi = [
             internalType: "contract EventEmitter",
             type: "address",
           },
-          { name: "oracle", internalType: "contract Oracle", type: "address" },
+          { name: "oracle", internalType: "contract IOracle", type: "address" },
           {
             name: "orderVault",
             internalType: "contract OrderVault",
@@ -1233,6 +1292,11 @@ export const multichainSubaccountRouterAbi = [
           {
             name: "orderHandler",
             internalType: "contract IOrderHandler",
+            type: "address",
+          },
+          {
+            name: "swapHandler",
+            internalType: "contract ISwapHandler",
             type: "address",
           },
           {
@@ -1391,7 +1455,7 @@ export const multichainSubaccountRouterAbi = [
     inputs: [
       {
         name: "relayParams",
-        internalType: "struct RelayParams",
+        internalType: "struct IRelayUtils.RelayParams",
         type: "tuple",
         components: [
           {
@@ -1410,7 +1474,7 @@ export const multichainSubaccountRouterAbi = [
           },
           {
             name: "externalCalls",
-            internalType: "struct ExternalCalls",
+            internalType: "struct IRelayUtils.ExternalCalls",
             type: "tuple",
             components: [
               {
@@ -1447,7 +1511,7 @@ export const multichainSubaccountRouterAbi = [
           },
           {
             name: "tokenPermits",
-            internalType: "struct TokenPermit[]",
+            internalType: "struct IRelayUtils.TokenPermit[]",
             type: "tuple[]",
             components: [
               { name: "owner", internalType: "address", type: "address" },
@@ -1462,7 +1526,7 @@ export const multichainSubaccountRouterAbi = [
           },
           {
             name: "fee",
-            internalType: "struct FeeParams",
+            internalType: "struct IRelayUtils.FeeParams",
             type: "tuple",
             components: [
               { name: "feeToken", internalType: "address", type: "address" },
@@ -1679,7 +1743,7 @@ export const multichainSubaccountRouterAbi = [
     inputs: [
       {
         name: "relayParams",
-        internalType: "struct RelayParams",
+        internalType: "struct IRelayUtils.RelayParams",
         type: "tuple",
         components: [
           {
@@ -1698,7 +1762,7 @@ export const multichainSubaccountRouterAbi = [
           },
           {
             name: "externalCalls",
-            internalType: "struct ExternalCalls",
+            internalType: "struct IRelayUtils.ExternalCalls",
             type: "tuple",
             components: [
               {
@@ -1735,7 +1799,7 @@ export const multichainSubaccountRouterAbi = [
           },
           {
             name: "tokenPermits",
-            internalType: "struct TokenPermit[]",
+            internalType: "struct IRelayUtils.TokenPermit[]",
             type: "tuple[]",
             components: [
               { name: "owner", internalType: "address", type: "address" },
@@ -1750,7 +1814,7 @@ export const multichainSubaccountRouterAbi = [
           },
           {
             name: "fee",
-            internalType: "struct FeeParams",
+            internalType: "struct IRelayUtils.FeeParams",
             type: "tuple",
             components: [
               { name: "feeToken", internalType: "address", type: "address" },
@@ -1798,7 +1862,7 @@ export const multichainSubaccountRouterAbi = [
     inputs: [
       {
         name: "relayParams",
-        internalType: "struct RelayParams",
+        internalType: "struct IRelayUtils.RelayParams",
         type: "tuple",
         components: [
           {
@@ -1817,7 +1881,7 @@ export const multichainSubaccountRouterAbi = [
           },
           {
             name: "externalCalls",
-            internalType: "struct ExternalCalls",
+            internalType: "struct IRelayUtils.ExternalCalls",
             type: "tuple",
             components: [
               {
@@ -1854,7 +1918,7 @@ export const multichainSubaccountRouterAbi = [
           },
           {
             name: "tokenPermits",
-            internalType: "struct TokenPermit[]",
+            internalType: "struct IRelayUtils.TokenPermit[]",
             type: "tuple[]",
             components: [
               { name: "owner", internalType: "address", type: "address" },
@@ -1869,7 +1933,7 @@ export const multichainSubaccountRouterAbi = [
           },
           {
             name: "fee",
-            internalType: "struct FeeParams",
+            internalType: "struct IRelayUtils.FeeParams",
             type: "tuple",
             components: [
               { name: "feeToken", internalType: "address", type: "address" },
@@ -2057,7 +2121,7 @@ export const multichainSubaccountRouterAbi = [
     type: "function",
     inputs: [],
     name: "oracle",
-    outputs: [{ name: "", internalType: "contract Oracle", type: "address" }],
+    outputs: [{ name: "", internalType: "contract IOracle", type: "address" }],
     stateMutability: "view",
   },
   {
@@ -2079,7 +2143,7 @@ export const multichainSubaccountRouterAbi = [
     inputs: [
       {
         name: "relayParams",
-        internalType: "struct RelayParams",
+        internalType: "struct IRelayUtils.RelayParams",
         type: "tuple",
         components: [
           {
@@ -2098,7 +2162,7 @@ export const multichainSubaccountRouterAbi = [
           },
           {
             name: "externalCalls",
-            internalType: "struct ExternalCalls",
+            internalType: "struct IRelayUtils.ExternalCalls",
             type: "tuple",
             components: [
               {
@@ -2135,7 +2199,7 @@ export const multichainSubaccountRouterAbi = [
           },
           {
             name: "tokenPermits",
-            internalType: "struct TokenPermit[]",
+            internalType: "struct IRelayUtils.TokenPermit[]",
             type: "tuple[]",
             components: [
               { name: "owner", internalType: "address", type: "address" },
@@ -2150,7 +2214,7 @@ export const multichainSubaccountRouterAbi = [
           },
           {
             name: "fee",
-            internalType: "struct FeeParams",
+            internalType: "struct IRelayUtils.FeeParams",
             type: "tuple",
             components: [
               { name: "feeToken", internalType: "address", type: "address" },
@@ -2230,10 +2294,17 @@ export const multichainSubaccountRouterAbi = [
   },
   {
     type: "function",
+    inputs: [],
+    name: "swapHandler",
+    outputs: [{ name: "", internalType: "contract ISwapHandler", type: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
     inputs: [
       {
         name: "relayParams",
-        internalType: "struct RelayParams",
+        internalType: "struct IRelayUtils.RelayParams",
         type: "tuple",
         components: [
           {
@@ -2252,7 +2323,7 @@ export const multichainSubaccountRouterAbi = [
           },
           {
             name: "externalCalls",
-            internalType: "struct ExternalCalls",
+            internalType: "struct IRelayUtils.ExternalCalls",
             type: "tuple",
             components: [
               {
@@ -2289,7 +2360,7 @@ export const multichainSubaccountRouterAbi = [
           },
           {
             name: "tokenPermits",
-            internalType: "struct TokenPermit[]",
+            internalType: "struct IRelayUtils.TokenPermit[]",
             type: "tuple[]",
             components: [
               { name: "owner", internalType: "address", type: "address" },
@@ -2304,7 +2375,7 @@ export const multichainSubaccountRouterAbi = [
           },
           {
             name: "fee",
-            internalType: "struct FeeParams",
+            internalType: "struct IRelayUtils.FeeParams",
             type: "tuple",
             components: [
               { name: "feeToken", internalType: "address", type: "address" },
@@ -2375,14 +2446,14 @@ export const multichainSubaccountRouterAbi = [
 ] as const;
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0xA989Cd6927e67B71078065045388b4C14e9f358c)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x445fc630369ACb21D2Cf0BccB61a0916357C54E7)
  */
 export const multichainSubaccountRouterAddress = {
-  421614: "0xA989Cd6927e67B71078065045388b4C14e9f358c",
+  421614: "0x445fc630369ACb21D2Cf0BccB61a0916357C54E7",
 } as const;
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0xA989Cd6927e67B71078065045388b4C14e9f358c)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x445fc630369ACb21D2Cf0BccB61a0916357C54E7)
  */
 export const multichainSubaccountRouterConfig = {
   address: multichainSubaccountRouterAddress,
@@ -2394,7 +2465,7 @@ export const multichainSubaccountRouterConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x802b7242b9Bca5cD7503094AC4Dad6Ae1ebBd3bE)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0xDc96559b010EBf4C2b546e475d6549124Ec3Cf5c)
  */
 export const multichainTransferRouterAbi = [
   {
@@ -2421,7 +2492,7 @@ export const multichainTransferRouterAbi = [
             internalType: "contract EventEmitter",
             type: "address",
           },
-          { name: "oracle", internalType: "contract Oracle", type: "address" },
+          { name: "oracle", internalType: "contract IOracle", type: "address" },
           {
             name: "orderVault",
             internalType: "contract OrderVault",
@@ -2430,6 +2501,11 @@ export const multichainTransferRouterAbi = [
           {
             name: "orderHandler",
             internalType: "contract IOrderHandler",
+            type: "address",
+          },
+          {
+            name: "swapHandler",
+            internalType: "contract ISwapHandler",
             type: "address",
           },
           {
@@ -2443,11 +2519,6 @@ export const multichainTransferRouterAbi = [
             type: "address",
           },
         ],
-      },
-      {
-        name: "_multichainProvider",
-        internalType: "contract IMultichainProvider",
-        type: "address",
       },
     ],
     stateMutability: "nonpayable",
@@ -2493,6 +2564,11 @@ export const multichainTransferRouterAbi = [
       { name: "sendAmountsLength", internalType: "uint256", type: "uint256" },
     ],
     name: "InvalidExternalCalls",
+  },
+  {
+    type: "error",
+    inputs: [{ name: "provider", internalType: "address", type: "address" }],
+    name: "InvalidMultichainProvider",
   },
   {
     type: "error",
@@ -2546,6 +2622,14 @@ export const multichainTransferRouterAbi = [
   {
     type: "error",
     inputs: [
+      { name: "msgSender", internalType: "address", type: "address" },
+      { name: "role", internalType: "string", type: "string" },
+    ],
+    name: "Unauthorized",
+  },
+  {
+    type: "error",
+    inputs: [
       { name: "feeToken", internalType: "address", type: "address" },
       { name: "expectedFeeToken", internalType: "address", type: "address" },
     ],
@@ -2558,6 +2642,12 @@ export const multichainTransferRouterAbi = [
       { name: "expectedFeeToken", internalType: "address", type: "address" },
     ],
     name: "UnsupportedRelayFeeToken",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [{ name: "version", internalType: "uint8", type: "uint8", indexed: false }],
+    name: "Initialized",
   },
   {
     type: "event",
@@ -2583,7 +2673,6 @@ export const multichainTransferRouterAbi = [
     inputs: [
       { name: "account", internalType: "address", type: "address" },
       { name: "token", internalType: "address", type: "address" },
-      { name: "srcChainId", internalType: "uint256", type: "uint256" },
     ],
     name: "bridgeIn",
     outputs: [],
@@ -2594,7 +2683,7 @@ export const multichainTransferRouterAbi = [
     inputs: [
       {
         name: "relayParams",
-        internalType: "struct RelayParams",
+        internalType: "struct IRelayUtils.RelayParams",
         type: "tuple",
         components: [
           {
@@ -2613,7 +2702,7 @@ export const multichainTransferRouterAbi = [
           },
           {
             name: "externalCalls",
-            internalType: "struct ExternalCalls",
+            internalType: "struct IRelayUtils.ExternalCalls",
             type: "tuple",
             components: [
               {
@@ -2650,7 +2739,7 @@ export const multichainTransferRouterAbi = [
           },
           {
             name: "tokenPermits",
-            internalType: "struct TokenPermit[]",
+            internalType: "struct IRelayUtils.TokenPermit[]",
             type: "tuple[]",
             components: [
               { name: "owner", internalType: "address", type: "address" },
@@ -2665,7 +2754,7 @@ export const multichainTransferRouterAbi = [
           },
           {
             name: "fee",
-            internalType: "struct FeeParams",
+            internalType: "struct IRelayUtils.FeeParams",
             type: "tuple",
             components: [
               { name: "feeToken", internalType: "address", type: "address" },
@@ -2687,7 +2776,7 @@ export const multichainTransferRouterAbi = [
       { name: "srcChainId", internalType: "uint256", type: "uint256" },
       {
         name: "params",
-        internalType: "struct BridgeOutParams",
+        internalType: "struct IRelayUtils.BridgeOutParams",
         type: "tuple",
         components: [
           { name: "token", internalType: "address", type: "address" },
@@ -2698,6 +2787,118 @@ export const multichainTransferRouterAbi = [
       },
     ],
     name: "bridgeOut",
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    inputs: [
+      {
+        name: "relayParams",
+        internalType: "struct IRelayUtils.RelayParams",
+        type: "tuple",
+        components: [
+          {
+            name: "oracleParams",
+            internalType: "struct OracleUtils.SetPricesParams",
+            type: "tuple",
+            components: [
+              { name: "tokens", internalType: "address[]", type: "address[]" },
+              {
+                name: "providers",
+                internalType: "address[]",
+                type: "address[]",
+              },
+              { name: "data", internalType: "bytes[]", type: "bytes[]" },
+            ],
+          },
+          {
+            name: "externalCalls",
+            internalType: "struct IRelayUtils.ExternalCalls",
+            type: "tuple",
+            components: [
+              {
+                name: "sendTokens",
+                internalType: "address[]",
+                type: "address[]",
+              },
+              {
+                name: "sendAmounts",
+                internalType: "uint256[]",
+                type: "uint256[]",
+              },
+              {
+                name: "externalCallTargets",
+                internalType: "address[]",
+                type: "address[]",
+              },
+              {
+                name: "externalCallDataList",
+                internalType: "bytes[]",
+                type: "bytes[]",
+              },
+              {
+                name: "refundTokens",
+                internalType: "address[]",
+                type: "address[]",
+              },
+              {
+                name: "refundReceivers",
+                internalType: "address[]",
+                type: "address[]",
+              },
+            ],
+          },
+          {
+            name: "tokenPermits",
+            internalType: "struct IRelayUtils.TokenPermit[]",
+            type: "tuple[]",
+            components: [
+              { name: "owner", internalType: "address", type: "address" },
+              { name: "spender", internalType: "address", type: "address" },
+              { name: "value", internalType: "uint256", type: "uint256" },
+              { name: "deadline", internalType: "uint256", type: "uint256" },
+              { name: "v", internalType: "uint8", type: "uint8" },
+              { name: "r", internalType: "bytes32", type: "bytes32" },
+              { name: "s", internalType: "bytes32", type: "bytes32" },
+              { name: "token", internalType: "address", type: "address" },
+            ],
+          },
+          {
+            name: "fee",
+            internalType: "struct IRelayUtils.FeeParams",
+            type: "tuple",
+            components: [
+              { name: "feeToken", internalType: "address", type: "address" },
+              { name: "feeAmount", internalType: "uint256", type: "uint256" },
+              {
+                name: "feeSwapPath",
+                internalType: "address[]",
+                type: "address[]",
+              },
+            ],
+          },
+          { name: "userNonce", internalType: "uint256", type: "uint256" },
+          { name: "deadline", internalType: "uint256", type: "uint256" },
+          { name: "signature", internalType: "bytes", type: "bytes" },
+          { name: "desChainId", internalType: "uint256", type: "uint256" },
+        ],
+      },
+      { name: "account", internalType: "address", type: "address" },
+      { name: "srcChainId", internalType: "uint256", type: "uint256" },
+      {
+        name: "params",
+        internalType: "struct IRelayUtils.BridgeOutParams",
+        type: "tuple",
+        components: [
+          { name: "token", internalType: "address", type: "address" },
+          { name: "amount", internalType: "uint256", type: "uint256" },
+          { name: "provider", internalType: "address", type: "address" },
+          { name: "data", internalType: "bytes", type: "bytes" },
+        ],
+      },
+    ],
+    name: "bridgeOutFromController",
     outputs: [],
     stateMutability: "nonpayable",
   },
@@ -2724,10 +2925,30 @@ export const multichainTransferRouterAbi = [
   },
   {
     type: "function",
+    inputs: [{ name: "_multichainProvider", internalType: "address", type: "address" }],
+    name: "initialize",
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
     inputs: [{ name: "data", internalType: "bytes[]", type: "bytes[]" }],
     name: "multicall",
     outputs: [{ name: "results", internalType: "bytes[]", type: "bytes[]" }],
     stateMutability: "payable",
+  },
+  {
+    type: "function",
+    inputs: [],
+    name: "multichainProvider",
+    outputs: [
+      {
+        name: "",
+        internalType: "contract IMultichainProvider",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
   },
   {
     type: "function",
@@ -2740,7 +2961,7 @@ export const multichainTransferRouterAbi = [
     type: "function",
     inputs: [],
     name: "oracle",
-    outputs: [{ name: "", internalType: "contract Oracle", type: "address" }],
+    outputs: [{ name: "", internalType: "contract IOracle", type: "address" }],
     stateMutability: "view",
   },
   {
@@ -2804,10 +3025,17 @@ export const multichainTransferRouterAbi = [
   },
   {
     type: "function",
+    inputs: [],
+    name: "swapHandler",
+    outputs: [{ name: "", internalType: "contract ISwapHandler", type: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
     inputs: [
       {
         name: "params",
-        internalType: "struct BridgeOutParams",
+        internalType: "struct IRelayUtils.BridgeOutParams",
         type: "tuple",
         components: [
           { name: "token", internalType: "address", type: "address" },
@@ -2831,14 +3059,14 @@ export const multichainTransferRouterAbi = [
 ] as const;
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x802b7242b9Bca5cD7503094AC4Dad6Ae1ebBd3bE)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0xDc96559b010EBf4C2b546e475d6549124Ec3Cf5c)
  */
 export const multichainTransferRouterAddress = {
-  421614: "0x802b7242b9Bca5cD7503094AC4Dad6Ae1ebBd3bE",
+  421614: "0xDc96559b010EBf4C2b546e475d6549124Ec3Cf5c",
 } as const;
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x802b7242b9Bca5cD7503094AC4Dad6Ae1ebBd3bE)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0xDc96559b010EBf4C2b546e475d6549124Ec3Cf5c)
  */
 export const multichainTransferRouterConfig = {
   address: multichainTransferRouterAddress,
@@ -3110,11 +3338,6 @@ export const syntheticsReaderAbi = [
                   },
                   {
                     name: "pendingImpactAmount",
-                    internalType: "int256",
-                    type: "int256",
-                  },
-                  {
-                    name: "pendingImpactUsd",
                     internalType: "int256",
                     type: "int256",
                   },
@@ -3501,11 +3724,6 @@ export const syntheticsReaderAbi = [
               },
               {
                 name: "pendingImpactAmount",
-                internalType: "int256",
-                type: "int256",
-              },
-              {
-                name: "pendingImpactUsd",
                 internalType: "int256",
                 type: "int256",
               },
@@ -4792,6 +5010,23 @@ export const syntheticsReaderAbi = [
         internalType: "contract DataStore",
         type: "address",
       },
+      { name: "market", internalType: "address", type: "address" },
+    ],
+    name: "getPendingPositionImpactPoolDistributionAmount",
+    outputs: [
+      { name: "", internalType: "uint256", type: "uint256" },
+      { name: "", internalType: "uint256", type: "uint256" },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    inputs: [
+      {
+        name: "dataStore",
+        internalType: "contract DataStore",
+        type: "address",
+      },
       {
         name: "market",
         internalType: "struct Market.Props",
@@ -4918,11 +5153,6 @@ export const syntheticsReaderAbi = [
               },
               {
                 name: "pendingImpactAmount",
-                internalType: "int256",
-                type: "int256",
-              },
-              {
-                name: "pendingImpactUsd",
                 internalType: "int256",
                 type: "int256",
               },
@@ -5074,11 +5304,6 @@ export const syntheticsReaderAbi = [
                   },
                   {
                     name: "pendingImpactAmount",
-                    internalType: "int256",
-                    type: "int256",
-                  },
-                  {
-                    name: "pendingImpactUsd",
                     internalType: "int256",
                     type: "int256",
                   },
@@ -5513,11 +5738,6 @@ export const syntheticsReaderAbi = [
                   },
                   {
                     name: "pendingImpactAmount",
-                    internalType: "int256",
-                    type: "int256",
-                  },
-                  {
-                    name: "pendingImpactUsd",
                     internalType: "int256",
                     type: "int256",
                   },
@@ -6386,7 +6606,7 @@ export const syntheticsReaderAbi = [
   },
 ] as const;
 
-export const syntheticsReaderAddress = "0xB709005065D8AAAf05e4Be9e57b2A3B74E1d6076" as const;
+export const syntheticsReaderAddress = "0x24C70A9005A8C7Ab1FC578d27ffa0F77B94e8062" as const;
 
 export const syntheticsReaderConfig = {
   address: syntheticsReaderAddress,

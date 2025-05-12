@@ -1,7 +1,7 @@
 import { Contract, ContractRunner, ethers, InterfaceAbi } from "ethers";
 import type { Address } from "viem";
 
-import { getContract, CONTRACTS } from "sdk/configs/contracts";
+import { getContract } from "sdk/configs/contracts";
 import { GlvRouter__factory } from "typechain-types";
 import { DataStore__factory } from "typechain-types/factories/DataStore__factory";
 import { ExchangeRouter__factory } from "typechain-types/factories/ExchangeRouter__factory";

@@ -23,119 +23,6 @@ import type {
   TypedContractMethod,
 } from "./common";
 
-export type ExternalCallsStruct = {
-  sendTokens: AddressLike[];
-  sendAmounts: BigNumberish[];
-  externalCallTargets: AddressLike[];
-  externalCallDataList: BytesLike[];
-  refundTokens: AddressLike[];
-  refundReceivers: AddressLike[];
-};
-
-export type ExternalCallsStructOutput = [
-  sendTokens: string[],
-  sendAmounts: bigint[],
-  externalCallTargets: string[],
-  externalCallDataList: string[],
-  refundTokens: string[],
-  refundReceivers: string[],
-] & {
-  sendTokens: string[];
-  sendAmounts: bigint[];
-  externalCallTargets: string[];
-  externalCallDataList: string[];
-  refundTokens: string[];
-  refundReceivers: string[];
-};
-
-export type TokenPermitStruct = {
-  owner: AddressLike;
-  spender: AddressLike;
-  value: BigNumberish;
-  deadline: BigNumberish;
-  v: BigNumberish;
-  r: BytesLike;
-  s: BytesLike;
-  token: AddressLike;
-};
-
-export type TokenPermitStructOutput = [
-  owner: string,
-  spender: string,
-  value: bigint,
-  deadline: bigint,
-  v: bigint,
-  r: string,
-  s: string,
-  token: string,
-] & {
-  owner: string;
-  spender: string;
-  value: bigint;
-  deadline: bigint;
-  v: bigint;
-  r: string;
-  s: string;
-  token: string;
-};
-
-export type FeeParamsStruct = {
-  feeToken: AddressLike;
-  feeAmount: BigNumberish;
-  feeSwapPath: AddressLike[];
-};
-
-export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
-  feeToken: string;
-  feeAmount: bigint;
-  feeSwapPath: string[];
-};
-
-export type RelayParamsStruct = {
-  oracleParams: OracleUtils.SetPricesParamsStruct;
-  externalCalls: ExternalCallsStruct;
-  tokenPermits: TokenPermitStruct[];
-  fee: FeeParamsStruct;
-  userNonce: BigNumberish;
-  deadline: BigNumberish;
-  signature: BytesLike;
-  desChainId: BigNumberish;
-};
-
-export type RelayParamsStructOutput = [
-  oracleParams: OracleUtils.SetPricesParamsStructOutput,
-  externalCalls: ExternalCallsStructOutput,
-  tokenPermits: TokenPermitStructOutput[],
-  fee: FeeParamsStructOutput,
-  userNonce: bigint,
-  deadline: bigint,
-  signature: string,
-  desChainId: bigint,
-] & {
-  oracleParams: OracleUtils.SetPricesParamsStructOutput;
-  externalCalls: ExternalCallsStructOutput;
-  tokenPermits: TokenPermitStructOutput[];
-  fee: FeeParamsStructOutput;
-  userNonce: bigint;
-  deadline: bigint;
-  signature: string;
-  desChainId: bigint;
-};
-
-export type BridgeOutParamsStruct = {
-  token: AddressLike;
-  amount: BigNumberish;
-  provider: AddressLike;
-  data: BytesLike;
-};
-
-export type BridgeOutParamsStructOutput = [token: string, amount: bigint, provider: string, data: string] & {
-  token: string;
-  amount: bigint;
-  provider: string;
-  data: string;
-};
-
 export declare namespace MultichainRouter {
   export type BaseConstructorParamsStruct = {
     router: AddressLike;
@@ -145,6 +32,7 @@ export declare namespace MultichainRouter {
     oracle: AddressLike;
     orderVault: AddressLike;
     orderHandler: AddressLike;
+    swapHandler: AddressLike;
     externalHandler: AddressLike;
     multichainVault: AddressLike;
   };
@@ -157,6 +45,7 @@ export declare namespace MultichainRouter {
     oracle: string,
     orderVault: string,
     orderHandler: string,
+    swapHandler: string,
     externalHandler: string,
     multichainVault: string,
   ] & {
@@ -167,6 +56,7 @@ export declare namespace MultichainRouter {
     oracle: string;
     orderVault: string;
     orderHandler: string;
+    swapHandler: string;
     externalHandler: string;
     multichainVault: string;
   };
@@ -186,15 +76,133 @@ export declare namespace OracleUtils {
   };
 }
 
+export declare namespace IRelayUtils {
+  export type ExternalCallsStruct = {
+    sendTokens: AddressLike[];
+    sendAmounts: BigNumberish[];
+    externalCallTargets: AddressLike[];
+    externalCallDataList: BytesLike[];
+    refundTokens: AddressLike[];
+    refundReceivers: AddressLike[];
+  };
+
+  export type ExternalCallsStructOutput = [
+    sendTokens: string[],
+    sendAmounts: bigint[],
+    externalCallTargets: string[],
+    externalCallDataList: string[],
+    refundTokens: string[],
+    refundReceivers: string[],
+  ] & {
+    sendTokens: string[];
+    sendAmounts: bigint[];
+    externalCallTargets: string[];
+    externalCallDataList: string[];
+    refundTokens: string[];
+    refundReceivers: string[];
+  };
+
+  export type TokenPermitStruct = {
+    owner: AddressLike;
+    spender: AddressLike;
+    value: BigNumberish;
+    deadline: BigNumberish;
+    v: BigNumberish;
+    r: BytesLike;
+    s: BytesLike;
+    token: AddressLike;
+  };
+
+  export type TokenPermitStructOutput = [
+    owner: string,
+    spender: string,
+    value: bigint,
+    deadline: bigint,
+    v: bigint,
+    r: string,
+    s: string,
+    token: string,
+  ] & {
+    owner: string;
+    spender: string;
+    value: bigint;
+    deadline: bigint;
+    v: bigint;
+    r: string;
+    s: string;
+    token: string;
+  };
+
+  export type FeeParamsStruct = {
+    feeToken: AddressLike;
+    feeAmount: BigNumberish;
+    feeSwapPath: AddressLike[];
+  };
+
+  export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
+    feeToken: string;
+    feeAmount: bigint;
+    feeSwapPath: string[];
+  };
+
+  export type RelayParamsStruct = {
+    oracleParams: OracleUtils.SetPricesParamsStruct;
+    externalCalls: IRelayUtils.ExternalCallsStruct;
+    tokenPermits: IRelayUtils.TokenPermitStruct[];
+    fee: IRelayUtils.FeeParamsStruct;
+    userNonce: BigNumberish;
+    deadline: BigNumberish;
+    signature: BytesLike;
+    desChainId: BigNumberish;
+  };
+
+  export type RelayParamsStructOutput = [
+    oracleParams: OracleUtils.SetPricesParamsStructOutput,
+    externalCalls: IRelayUtils.ExternalCallsStructOutput,
+    tokenPermits: IRelayUtils.TokenPermitStructOutput[],
+    fee: IRelayUtils.FeeParamsStructOutput,
+    userNonce: bigint,
+    deadline: bigint,
+    signature: string,
+    desChainId: bigint,
+  ] & {
+    oracleParams: OracleUtils.SetPricesParamsStructOutput;
+    externalCalls: IRelayUtils.ExternalCallsStructOutput;
+    tokenPermits: IRelayUtils.TokenPermitStructOutput[];
+    fee: IRelayUtils.FeeParamsStructOutput;
+    userNonce: bigint;
+    deadline: bigint;
+    signature: string;
+    desChainId: bigint;
+  };
+
+  export type BridgeOutParamsStruct = {
+    token: AddressLike;
+    amount: BigNumberish;
+    provider: AddressLike;
+    data: BytesLike;
+  };
+
+  export type BridgeOutParamsStructOutput = [token: string, amount: bigint, provider: string, data: string] & {
+    token: string;
+    amount: bigint;
+    provider: string;
+    data: string;
+  };
+}
+
 export interface MultichainTransferRouterInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "bridgeIn"
       | "bridgeOut"
+      | "bridgeOutFromController"
       | "dataStore"
       | "eventEmitter"
       | "externalHandler"
+      | "initialize"
       | "multicall"
+      | "multichainProvider"
       | "multichainVault"
       | "oracle"
       | "orderHandler"
@@ -204,21 +212,28 @@ export interface MultichainTransferRouterInterface extends Interface {
       | "sendNativeToken"
       | "sendTokens"
       | "sendWnt"
+      | "swapHandler"
       | "transferOut"
       | "userNonces"
   ): FunctionFragment;
 
-  getEvent(nameOrSignatureOrTopic: "TokenTransferReverted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized" | "TokenTransferReverted"): EventFragment;
 
-  encodeFunctionData(functionFragment: "bridgeIn", values: [AddressLike, AddressLike, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "bridgeIn", values: [AddressLike, AddressLike]): string;
   encodeFunctionData(
     functionFragment: "bridgeOut",
-    values: [RelayParamsStruct, AddressLike, BigNumberish, BridgeOutParamsStruct]
+    values: [IRelayUtils.RelayParamsStruct, AddressLike, BigNumberish, IRelayUtils.BridgeOutParamsStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "bridgeOutFromController",
+    values: [IRelayUtils.RelayParamsStruct, AddressLike, BigNumberish, IRelayUtils.BridgeOutParamsStruct]
   ): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
   encodeFunctionData(functionFragment: "externalHandler", values?: undefined): string;
+  encodeFunctionData(functionFragment: "initialize", values: [AddressLike]): string;
   encodeFunctionData(functionFragment: "multicall", values: [BytesLike[]]): string;
+  encodeFunctionData(functionFragment: "multichainProvider", values?: undefined): string;
   encodeFunctionData(functionFragment: "multichainVault", values?: undefined): string;
   encodeFunctionData(functionFragment: "oracle", values?: undefined): string;
   encodeFunctionData(functionFragment: "orderHandler", values?: undefined): string;
@@ -228,15 +243,19 @@ export interface MultichainTransferRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "sendNativeToken", values: [AddressLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "sendTokens", values: [AddressLike, AddressLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "sendWnt", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "transferOut", values: [BridgeOutParamsStruct]): string;
+  encodeFunctionData(functionFragment: "swapHandler", values?: undefined): string;
+  encodeFunctionData(functionFragment: "transferOut", values: [IRelayUtils.BridgeOutParamsStruct]): string;
   encodeFunctionData(functionFragment: "userNonces", values: [AddressLike]): string;
 
   decodeFunctionResult(functionFragment: "bridgeIn", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "bridgeOut", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "bridgeOutFromController", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "eventEmitter", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "externalHandler", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "multicall", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "multichainProvider", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "multichainVault", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "oracle", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "orderHandler", data: BytesLike): Result;
@@ -246,8 +265,21 @@ export interface MultichainTransferRouterInterface extends Interface {
   decodeFunctionResult(functionFragment: "sendNativeToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendTokens", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendWnt", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "swapHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "transferOut", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "userNonces", data: BytesLike): Result;
+}
+
+export namespace InitializedEvent {
+  export type InputTuple = [version: BigNumberish];
+  export type OutputTuple = [version: bigint];
+  export interface OutputObject {
+    version: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
 
 export namespace TokenTransferRevertedEvent {
@@ -296,14 +328,26 @@ export interface MultichainTransferRouter extends BaseContract {
   listeners(eventName?: string): Promise<Array<Listener>>;
   removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
-  bridgeIn: TypedContractMethod<
-    [account: AddressLike, token: AddressLike, srcChainId: BigNumberish],
-    [void],
-    "payable"
-  >;
+  bridgeIn: TypedContractMethod<[account: AddressLike, token: AddressLike], [void], "payable">;
 
   bridgeOut: TypedContractMethod<
-    [relayParams: RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, params: BridgeOutParamsStruct],
+    [
+      relayParams: IRelayUtils.RelayParamsStruct,
+      account: AddressLike,
+      srcChainId: BigNumberish,
+      params: IRelayUtils.BridgeOutParamsStruct,
+    ],
+    [void],
+    "nonpayable"
+  >;
+
+  bridgeOutFromController: TypedContractMethod<
+    [
+      relayParams: IRelayUtils.RelayParamsStruct,
+      account: AddressLike,
+      srcChainId: BigNumberish,
+      params: IRelayUtils.BridgeOutParamsStruct,
+    ],
     [void],
     "nonpayable"
   >;
@@ -314,7 +358,11 @@ export interface MultichainTransferRouter extends BaseContract {
 
   externalHandler: TypedContractMethod<[], [string], "view">;
 
+  initialize: TypedContractMethod<[_multichainProvider: AddressLike], [void], "nonpayable">;
+
   multicall: TypedContractMethod<[data: BytesLike[]], [string[]], "payable">;
+
+  multichainProvider: TypedContractMethod<[], [string], "view">;
 
   multichainVault: TypedContractMethod<[], [string], "view">;
 
@@ -334,7 +382,9 @@ export interface MultichainTransferRouter extends BaseContract {
 
   sendWnt: TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
 
-  transferOut: TypedContractMethod<[params: BridgeOutParamsStruct], [void], "nonpayable">;
+  swapHandler: TypedContractMethod<[], [string], "view">;
+
+  transferOut: TypedContractMethod<[params: IRelayUtils.BridgeOutParamsStruct], [void], "nonpayable">;
 
   userNonces: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
@@ -342,18 +392,39 @@ export interface MultichainTransferRouter extends BaseContract {
 
   getFunction(
     nameOrSignature: "bridgeIn"
-  ): TypedContractMethod<[account: AddressLike, token: AddressLike, srcChainId: BigNumberish], [void], "payable">;
+  ): TypedContractMethod<[account: AddressLike, token: AddressLike], [void], "payable">;
   getFunction(
     nameOrSignature: "bridgeOut"
   ): TypedContractMethod<
-    [relayParams: RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, params: BridgeOutParamsStruct],
+    [
+      relayParams: IRelayUtils.RelayParamsStruct,
+      account: AddressLike,
+      srcChainId: BigNumberish,
+      params: IRelayUtils.BridgeOutParamsStruct,
+    ],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "bridgeOutFromController"
+  ): TypedContractMethod<
+    [
+      relayParams: IRelayUtils.RelayParamsStruct,
+      account: AddressLike,
+      srcChainId: BigNumberish,
+      params: IRelayUtils.BridgeOutParamsStruct,
+    ],
     [void],
     "nonpayable"
   >;
   getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "externalHandler"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "initialize"
+  ): TypedContractMethod<[_multichainProvider: AddressLike], [void], "nonpayable">;
   getFunction(nameOrSignature: "multicall"): TypedContractMethod<[data: BytesLike[]], [string[]], "payable">;
+  getFunction(nameOrSignature: "multichainProvider"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "multichainVault"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "oracle"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "orderHandler"): TypedContractMethod<[], [string], "view">;
@@ -369,11 +440,15 @@ export interface MultichainTransferRouter extends BaseContract {
   getFunction(
     nameOrSignature: "sendWnt"
   ): TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
+  getFunction(nameOrSignature: "swapHandler"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "transferOut"
-  ): TypedContractMethod<[params: BridgeOutParamsStruct], [void], "nonpayable">;
+  ): TypedContractMethod<[params: IRelayUtils.BridgeOutParamsStruct], [void], "nonpayable">;
   getFunction(nameOrSignature: "userNonces"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
+  getEvent(
+    key: "Initialized"
+  ): TypedContractEvent<InitializedEvent.InputTuple, InitializedEvent.OutputTuple, InitializedEvent.OutputObject>;
   getEvent(
     key: "TokenTransferReverted"
   ): TypedContractEvent<
@@ -383,6 +458,17 @@ export interface MultichainTransferRouter extends BaseContract {
   >;
 
   filters: {
+    "Initialized(uint8)": TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
+    Initialized: TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
+
     "TokenTransferReverted(string,bytes)": TypedContractEvent<
       TokenTransferRevertedEvent.InputTuple,
       TokenTransferRevertedEvent.OutputTuple,

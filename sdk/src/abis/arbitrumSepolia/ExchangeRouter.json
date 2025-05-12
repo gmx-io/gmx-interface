@@ -543,7 +543,7 @@
                   "type": "address[]"
                 }
               ],
-              "internalType": "struct DepositUtils.CreateDepositParamsAddresses",
+              "internalType": "struct IDepositUtils.CreateDepositParamsAddresses",
               "name": "addresses",
               "type": "tuple"
             },
@@ -573,7 +573,7 @@
               "type": "bytes32[]"
             }
           ],
-          "internalType": "struct DepositUtils.CreateDepositParams",
+          "internalType": "struct IDepositUtils.CreateDepositParams",
           "name": "params",
           "type": "tuple"
         }
@@ -766,7 +766,7 @@
                   "type": "address"
                 }
               ],
-              "internalType": "struct ShiftUtils.CreateShiftParamsAddresses",
+              "internalType": "struct IShiftUtils.CreateShiftParamsAddresses",
               "name": "addresses",
               "type": "tuple"
             },
@@ -791,7 +791,7 @@
               "type": "bytes32[]"
             }
           ],
-          "internalType": "struct ShiftUtils.CreateShiftParams",
+          "internalType": "struct IShiftUtils.CreateShiftParams",
           "name": "params",
           "type": "tuple"
         }
@@ -844,7 +844,7 @@
                   "type": "address[]"
                 }
               ],
-              "internalType": "struct WithdrawalUtils.CreateWithdrawalParamsAddresses",
+              "internalType": "struct IWithdrawalUtils.CreateWithdrawalParamsAddresses",
               "name": "addresses",
               "type": "tuple"
             },
@@ -879,7 +879,7 @@
               "type": "bytes32[]"
             }
           ],
-          "internalType": "struct WithdrawalUtils.CreateWithdrawalParams",
+          "internalType": "struct IWithdrawalUtils.CreateWithdrawalParams",
           "name": "params",
           "type": "tuple"
         }
@@ -971,7 +971,7 @@
                   "type": "address[]"
                 }
               ],
-              "internalType": "struct WithdrawalUtils.CreateWithdrawalParamsAddresses",
+              "internalType": "struct IWithdrawalUtils.CreateWithdrawalParamsAddresses",
               "name": "addresses",
               "type": "tuple"
             },
@@ -1006,7 +1006,7 @@
               "type": "bytes32[]"
             }
           ],
-          "internalType": "struct WithdrawalUtils.CreateWithdrawalParams",
+          "internalType": "struct IWithdrawalUtils.CreateWithdrawalParams",
           "name": "params",
           "type": "tuple"
         },

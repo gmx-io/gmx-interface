@@ -35,7 +35,7 @@ const _abi = [
             type: "address",
           },
           {
-            internalType: "contract Oracle",
+            internalType: "contract IOracle",
             name: "oracle",
             type: "address",
           },
@@ -47,6 +47,11 @@ const _abi = [
           {
             internalType: "contract IOrderHandler",
             name: "orderHandler",
+            type: "address",
+          },
+          {
+            internalType: "contract ISwapHandler",
+            name: "swapHandler",
             type: "address",
           },
           {
@@ -63,11 +68,6 @@ const _abi = [
         internalType: "struct MultichainRouter.BaseConstructorParams",
         name: "params",
         type: "tuple",
-      },
-      {
-        internalType: "contract IMultichainProvider",
-        name: "_multichainProvider",
-        type: "address",
       },
     ],
     stateMutability: "nonpayable",
@@ -167,6 +167,17 @@ const _abi = [
       },
     ],
     name: "InvalidExternalCalls",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "provider",
+        type: "address",
+      },
+    ],
+    name: "InvalidMultichainProvider",
     type: "error",
   },
   {
@@ -274,6 +285,22 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
+        name: "msgSender",
+        type: "address",
+      },
+      {
+        internalType: "string",
+        name: "role",
+        type: "string",
+      },
+    ],
+    name: "Unauthorized",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "feeToken",
         type: "address",
       },
@@ -307,6 +334,19 @@ const _abi = [
     inputs: [
       {
         indexed: false,
+        internalType: "uint8",
+        name: "version",
+        type: "uint8",
+      },
+    ],
+    name: "Initialized",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
         internalType: "string",
         name: "reason",
         type: "string",
@@ -332,11 +372,6 @@ const _abi = [
         internalType: "address",
         name: "token",
         type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "srcChainId",
-        type: "uint256",
       },
     ],
     name: "bridgeIn",
@@ -403,7 +438,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct ExternalCalls",
+            internalType: "struct IRelayUtils.ExternalCalls",
             name: "externalCalls",
             type: "tuple",
           },
@@ -450,7 +485,7 @@ const _abi = [
                 type: "address",
               },
             ],
-            internalType: "struct TokenPermit[]",
+            internalType: "struct IRelayUtils.TokenPermit[]",
             name: "tokenPermits",
             type: "tuple[]",
           },
@@ -472,7 +507,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct FeeParams",
+            internalType: "struct IRelayUtils.FeeParams",
             name: "fee",
             type: "tuple",
           },
@@ -497,7 +532,7 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct RelayParams",
+        internalType: "struct IRelayUtils.RelayParams",
         name: "relayParams",
         type: "tuple",
       },
@@ -534,12 +569,212 @@ const _abi = [
             type: "bytes",
           },
         ],
-        internalType: "struct BridgeOutParams",
+        internalType: "struct IRelayUtils.BridgeOutParams",
         name: "params",
         type: "tuple",
       },
     ],
     name: "bridgeOut",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            components: [
+              {
+                internalType: "address[]",
+                name: "tokens",
+                type: "address[]",
+              },
+              {
+                internalType: "address[]",
+                name: "providers",
+                type: "address[]",
+              },
+              {
+                internalType: "bytes[]",
+                name: "data",
+                type: "bytes[]",
+              },
+            ],
+            internalType: "struct OracleUtils.SetPricesParams",
+            name: "oracleParams",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "address[]",
+                name: "sendTokens",
+                type: "address[]",
+              },
+              {
+                internalType: "uint256[]",
+                name: "sendAmounts",
+                type: "uint256[]",
+              },
+              {
+                internalType: "address[]",
+                name: "externalCallTargets",
+                type: "address[]",
+              },
+              {
+                internalType: "bytes[]",
+                name: "externalCallDataList",
+                type: "bytes[]",
+              },
+              {
+                internalType: "address[]",
+                name: "refundTokens",
+                type: "address[]",
+              },
+              {
+                internalType: "address[]",
+                name: "refundReceivers",
+                type: "address[]",
+              },
+            ],
+            internalType: "struct IRelayUtils.ExternalCalls",
+            name: "externalCalls",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "address",
+                name: "owner",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "spender",
+                type: "address",
+              },
+              {
+                internalType: "uint256",
+                name: "value",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "deadline",
+                type: "uint256",
+              },
+              {
+                internalType: "uint8",
+                name: "v",
+                type: "uint8",
+              },
+              {
+                internalType: "bytes32",
+                name: "r",
+                type: "bytes32",
+              },
+              {
+                internalType: "bytes32",
+                name: "s",
+                type: "bytes32",
+              },
+              {
+                internalType: "address",
+                name: "token",
+                type: "address",
+              },
+            ],
+            internalType: "struct IRelayUtils.TokenPermit[]",
+            name: "tokenPermits",
+            type: "tuple[]",
+          },
+          {
+            components: [
+              {
+                internalType: "address",
+                name: "feeToken",
+                type: "address",
+              },
+              {
+                internalType: "uint256",
+                name: "feeAmount",
+                type: "uint256",
+              },
+              {
+                internalType: "address[]",
+                name: "feeSwapPath",
+                type: "address[]",
+              },
+            ],
+            internalType: "struct IRelayUtils.FeeParams",
+            name: "fee",
+            type: "tuple",
+          },
+          {
+            internalType: "uint256",
+            name: "userNonce",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "deadline",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "signature",
+            type: "bytes",
+          },
+          {
+            internalType: "uint256",
+            name: "desChainId",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IRelayUtils.RelayParams",
+        name: "relayParams",
+        type: "tuple",
+      },
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "srcChainId",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "token",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "provider",
+            type: "address",
+          },
+          {
+            internalType: "bytes",
+            name: "data",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct IRelayUtils.BridgeOutParams",
+        name: "params",
+        type: "tuple",
+      },
+    ],
+    name: "bridgeOutFromController",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -586,6 +821,19 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "_multichainProvider",
+        type: "address",
+      },
+    ],
+    name: "initialize",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "bytes[]",
         name: "data",
         type: "bytes[]",
@@ -600,6 +848,19 @@ const _abi = [
       },
     ],
     stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "multichainProvider",
+    outputs: [
+      {
+        internalType: "contract IMultichainProvider",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -620,7 +881,7 @@ const _abi = [
     name: "oracle",
     outputs: [
       {
-        internalType: "contract Oracle",
+        internalType: "contract IOracle",
         name: "",
         type: "address",
       },
@@ -740,6 +1001,19 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "swapHandler",
+    outputs: [
+      {
+        internalType: "contract ISwapHandler",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         components: [
@@ -764,7 +1038,7 @@ const _abi = [
             type: "bytes",
           },
         ],
-        internalType: "struct BridgeOutParams",
+        internalType: "struct IRelayUtils.BridgeOutParams",
         name: "params",
         type: "tuple",
       },

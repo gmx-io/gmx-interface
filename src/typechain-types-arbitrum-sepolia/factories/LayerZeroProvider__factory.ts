@@ -28,6 +28,16 @@ const _abi = [
         name: "_multichainVault",
         type: "address",
       },
+      {
+        internalType: "contract IMultichainGmRouter",
+        name: "_multichainGmRouter",
+        type: "address",
+      },
+      {
+        internalType: "contract IMultichainGlvRouter",
+        name: "_multichainGlvRouter",
+        type: "address",
+      },
     ],
     stateMutability: "nonpayable",
     type: "constructor",
@@ -51,6 +61,11 @@ const _abi = [
       },
     ],
     name: "EmptyTokenTranferGasLimit",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "EmptyWithdrawalAmount",
     type: "error",
   },
   {
@@ -145,11 +160,6 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "uint256",
-            name: "srcChainId",
-            type: "uint256",
-          },
-          {
             internalType: "bytes",
             name: "data",
             type: "bytes",
@@ -232,6 +242,32 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "multichainGlvRouter",
+    outputs: [
+      {
+        internalType: "contract IMultichainGlvRouter",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "multichainGmRouter",
+    outputs: [
+      {
+        internalType: "contract IMultichainGmRouter",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "multichainVault",
     outputs: [
       {
@@ -254,6 +290,29 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "receiver",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "withdrawTokens",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {

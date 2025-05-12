@@ -496,16 +496,20 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
     },
   },
   [ARBITRUM_SEPOLIA]: {
+    // ETH/USD [ETH-USDC]
     "0x482Df3D320C964808579b585a8AC7Dd5D144eFaF": {
       enabled: true,
     },
+    // BTC/USD [BTC-USDC]
     "0xBb532Ab4923C23c2bfA455151B14fec177a34C0D": {
       enabled: true,
     },
-    "0xEaf29e5dD8d40A969c2a4d5D77Bc7a02D314C703": {
+    // ETH/USD [ETH-USDC.SG]
+    "0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc": {
       enabled: true,
     },
-    "0xa28E22281d66aa813661A9e92214e76802328949": {
+    // BTC/USD [BTC-USDC.SG]
+    "0x3A83246bDDD60c4e71c91c10D9A66Fd64399bBCf": {
       enabled: true,
     },
   },

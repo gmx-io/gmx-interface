@@ -23,105 +23,6 @@ import type {
   TypedContractMethod,
 } from "./common";
 
-export type ExternalCallsStruct = {
-  sendTokens: AddressLike[];
-  sendAmounts: BigNumberish[];
-  externalCallTargets: AddressLike[];
-  externalCallDataList: BytesLike[];
-  refundTokens: AddressLike[];
-  refundReceivers: AddressLike[];
-};
-
-export type ExternalCallsStructOutput = [
-  sendTokens: string[],
-  sendAmounts: bigint[],
-  externalCallTargets: string[],
-  externalCallDataList: string[],
-  refundTokens: string[],
-  refundReceivers: string[],
-] & {
-  sendTokens: string[];
-  sendAmounts: bigint[];
-  externalCallTargets: string[];
-  externalCallDataList: string[];
-  refundTokens: string[];
-  refundReceivers: string[];
-};
-
-export type TokenPermitStruct = {
-  owner: AddressLike;
-  spender: AddressLike;
-  value: BigNumberish;
-  deadline: BigNumberish;
-  v: BigNumberish;
-  r: BytesLike;
-  s: BytesLike;
-  token: AddressLike;
-};
-
-export type TokenPermitStructOutput = [
-  owner: string,
-  spender: string,
-  value: bigint,
-  deadline: bigint,
-  v: bigint,
-  r: string,
-  s: string,
-  token: string,
-] & {
-  owner: string;
-  spender: string;
-  value: bigint;
-  deadline: bigint;
-  v: bigint;
-  r: string;
-  s: string;
-  token: string;
-};
-
-export type FeeParamsStruct = {
-  feeToken: AddressLike;
-  feeAmount: BigNumberish;
-  feeSwapPath: AddressLike[];
-};
-
-export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
-  feeToken: string;
-  feeAmount: bigint;
-  feeSwapPath: string[];
-};
-
-export type RelayParamsStruct = {
-  oracleParams: OracleUtils.SetPricesParamsStruct;
-  externalCalls: ExternalCallsStruct;
-  tokenPermits: TokenPermitStruct[];
-  fee: FeeParamsStruct;
-  userNonce: BigNumberish;
-  deadline: BigNumberish;
-  signature: BytesLike;
-  desChainId: BigNumberish;
-};
-
-export type RelayParamsStructOutput = [
-  oracleParams: OracleUtils.SetPricesParamsStructOutput,
-  externalCalls: ExternalCallsStructOutput,
-  tokenPermits: TokenPermitStructOutput[],
-  fee: FeeParamsStructOutput,
-  userNonce: bigint,
-  deadline: bigint,
-  signature: string,
-  desChainId: bigint,
-] & {
-  oracleParams: OracleUtils.SetPricesParamsStructOutput;
-  externalCalls: ExternalCallsStructOutput;
-  tokenPermits: TokenPermitStructOutput[];
-  fee: FeeParamsStructOutput;
-  userNonce: bigint;
-  deadline: bigint;
-  signature: string;
-  desChainId: bigint;
-};
-
 export declare namespace MultichainRouter {
   export type BaseConstructorParamsStruct = {
     router: AddressLike;
@@ -131,6 +32,7 @@ export declare namespace MultichainRouter {
     oracle: AddressLike;
     orderVault: AddressLike;
     orderHandler: AddressLike;
+    swapHandler: AddressLike;
     externalHandler: AddressLike;
     multichainVault: AddressLike;
   };
@@ -143,6 +45,7 @@ export declare namespace MultichainRouter {
     oracle: string,
     orderVault: string,
     orderHandler: string,
+    swapHandler: string,
     externalHandler: string,
     multichainVault: string,
   ] & {
@@ -153,6 +56,7 @@ export declare namespace MultichainRouter {
     oracle: string;
     orderVault: string;
     orderHandler: string;
+    swapHandler: string;
     externalHandler: string;
     multichainVault: string;
   };
@@ -169,6 +73,107 @@ export declare namespace OracleUtils {
     tokens: string[];
     providers: string[];
     data: string[];
+  };
+}
+
+export declare namespace IRelayUtils {
+  export type ExternalCallsStruct = {
+    sendTokens: AddressLike[];
+    sendAmounts: BigNumberish[];
+    externalCallTargets: AddressLike[];
+    externalCallDataList: BytesLike[];
+    refundTokens: AddressLike[];
+    refundReceivers: AddressLike[];
+  };
+
+  export type ExternalCallsStructOutput = [
+    sendTokens: string[],
+    sendAmounts: bigint[],
+    externalCallTargets: string[],
+    externalCallDataList: string[],
+    refundTokens: string[],
+    refundReceivers: string[],
+  ] & {
+    sendTokens: string[];
+    sendAmounts: bigint[];
+    externalCallTargets: string[];
+    externalCallDataList: string[];
+    refundTokens: string[];
+    refundReceivers: string[];
+  };
+
+  export type TokenPermitStruct = {
+    owner: AddressLike;
+    spender: AddressLike;
+    value: BigNumberish;
+    deadline: BigNumberish;
+    v: BigNumberish;
+    r: BytesLike;
+    s: BytesLike;
+    token: AddressLike;
+  };
+
+  export type TokenPermitStructOutput = [
+    owner: string,
+    spender: string,
+    value: bigint,
+    deadline: bigint,
+    v: bigint,
+    r: string,
+    s: string,
+    token: string,
+  ] & {
+    owner: string;
+    spender: string;
+    value: bigint;
+    deadline: bigint;
+    v: bigint;
+    r: string;
+    s: string;
+    token: string;
+  };
+
+  export type FeeParamsStruct = {
+    feeToken: AddressLike;
+    feeAmount: BigNumberish;
+    feeSwapPath: AddressLike[];
+  };
+
+  export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
+    feeToken: string;
+    feeAmount: bigint;
+    feeSwapPath: string[];
+  };
+
+  export type RelayParamsStruct = {
+    oracleParams: OracleUtils.SetPricesParamsStruct;
+    externalCalls: IRelayUtils.ExternalCallsStruct;
+    tokenPermits: IRelayUtils.TokenPermitStruct[];
+    fee: IRelayUtils.FeeParamsStruct;
+    userNonce: BigNumberish;
+    deadline: BigNumberish;
+    signature: BytesLike;
+    desChainId: BigNumberish;
+  };
+
+  export type RelayParamsStructOutput = [
+    oracleParams: OracleUtils.SetPricesParamsStructOutput,
+    externalCalls: IRelayUtils.ExternalCallsStructOutput,
+    tokenPermits: IRelayUtils.TokenPermitStructOutput[],
+    fee: IRelayUtils.FeeParamsStructOutput,
+    userNonce: bigint,
+    deadline: bigint,
+    signature: string,
+    desChainId: bigint,
+  ] & {
+    oracleParams: OracleUtils.SetPricesParamsStructOutput;
+    externalCalls: IRelayUtils.ExternalCallsStructOutput;
+    tokenPermits: IRelayUtils.TokenPermitStructOutput[];
+    fee: IRelayUtils.FeeParamsStructOutput;
+    userNonce: bigint;
+    deadline: bigint;
+    signature: string;
+    desChainId: bigint;
   };
 }
 
@@ -191,6 +196,7 @@ export interface MultichainClaimsRouterInterface extends Interface {
       | "sendNativeToken"
       | "sendTokens"
       | "sendWnt"
+      | "swapHandler"
       | "userNonces"
   ): FunctionFragment;
 
@@ -198,15 +204,23 @@ export interface MultichainClaimsRouterInterface extends Interface {
 
   encodeFunctionData(
     functionFragment: "claimAffiliateRewards",
-    values: [RelayParamsStruct, AddressLike, BigNumberish, AddressLike[], AddressLike[], AddressLike]
+    values: [IRelayUtils.RelayParamsStruct, AddressLike, BigNumberish, AddressLike[], AddressLike[], AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "claimCollateral",
-    values: [RelayParamsStruct, AddressLike, BigNumberish, AddressLike[], AddressLike[], BigNumberish[], AddressLike]
+    values: [
+      IRelayUtils.RelayParamsStruct,
+      AddressLike,
+      BigNumberish,
+      AddressLike[],
+      AddressLike[],
+      BigNumberish[],
+      AddressLike,
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "claimFundingFees",
-    values: [RelayParamsStruct, AddressLike, BigNumberish, AddressLike[], AddressLike[], AddressLike]
+    values: [IRelayUtils.RelayParamsStruct, AddressLike, BigNumberish, AddressLike[], AddressLike[], AddressLike]
   ): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
@@ -221,6 +235,7 @@ export interface MultichainClaimsRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "sendNativeToken", values: [AddressLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "sendTokens", values: [AddressLike, AddressLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "sendWnt", values: [AddressLike, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "swapHandler", values?: undefined): string;
   encodeFunctionData(functionFragment: "userNonces", values: [AddressLike]): string;
 
   decodeFunctionResult(functionFragment: "claimAffiliateRewards", data: BytesLike): Result;
@@ -239,6 +254,7 @@ export interface MultichainClaimsRouterInterface extends Interface {
   decodeFunctionResult(functionFragment: "sendNativeToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendTokens", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendWnt", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "swapHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "userNonces", data: BytesLike): Result;
 }
 
@@ -290,7 +306,7 @@ export interface MultichainClaimsRouter extends BaseContract {
 
   claimAffiliateRewards: TypedContractMethod<
     [
-      relayParams: RelayParamsStruct,
+      relayParams: IRelayUtils.RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
       markets: AddressLike[],
@@ -303,7 +319,7 @@ export interface MultichainClaimsRouter extends BaseContract {
 
   claimCollateral: TypedContractMethod<
     [
-      relayParams: RelayParamsStruct,
+      relayParams: IRelayUtils.RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
       markets: AddressLike[],
@@ -317,7 +333,7 @@ export interface MultichainClaimsRouter extends BaseContract {
 
   claimFundingFees: TypedContractMethod<
     [
-      relayParams: RelayParamsStruct,
+      relayParams: IRelayUtils.RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
       markets: AddressLike[],
@@ -354,6 +370,8 @@ export interface MultichainClaimsRouter extends BaseContract {
 
   sendWnt: TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
 
+  swapHandler: TypedContractMethod<[], [string], "view">;
+
   userNonces: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
   getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
@@ -362,7 +380,7 @@ export interface MultichainClaimsRouter extends BaseContract {
     nameOrSignature: "claimAffiliateRewards"
   ): TypedContractMethod<
     [
-      relayParams: RelayParamsStruct,
+      relayParams: IRelayUtils.RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
       markets: AddressLike[],
@@ -376,7 +394,7 @@ export interface MultichainClaimsRouter extends BaseContract {
     nameOrSignature: "claimCollateral"
   ): TypedContractMethod<
     [
-      relayParams: RelayParamsStruct,
+      relayParams: IRelayUtils.RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
       markets: AddressLike[],
@@ -391,7 +409,7 @@ export interface MultichainClaimsRouter extends BaseContract {
     nameOrSignature: "claimFundingFees"
   ): TypedContractMethod<
     [
-      relayParams: RelayParamsStruct,
+      relayParams: IRelayUtils.RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
       markets: AddressLike[],
@@ -420,6 +438,7 @@ export interface MultichainClaimsRouter extends BaseContract {
   getFunction(
     nameOrSignature: "sendWnt"
   ): TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
+  getFunction(nameOrSignature: "swapHandler"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "userNonces"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
   getEvent(

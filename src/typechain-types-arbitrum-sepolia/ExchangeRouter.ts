@@ -23,7 +23,7 @@ import type {
   TypedContractMethod,
 } from "./common";
 
-export declare namespace DepositUtils {
+export declare namespace IDepositUtils {
   export type CreateDepositParamsAddressesStruct = {
     receiver: AddressLike;
     callbackContract: AddressLike;
@@ -56,7 +56,7 @@ export declare namespace DepositUtils {
   };
 
   export type CreateDepositParamsStruct = {
-    addresses: DepositUtils.CreateDepositParamsAddressesStruct;
+    addresses: IDepositUtils.CreateDepositParamsAddressesStruct;
     minMarketTokens: BigNumberish;
     shouldUnwrapNativeToken: boolean;
     executionFee: BigNumberish;
@@ -65,14 +65,14 @@ export declare namespace DepositUtils {
   };
 
   export type CreateDepositParamsStructOutput = [
-    addresses: DepositUtils.CreateDepositParamsAddressesStructOutput,
+    addresses: IDepositUtils.CreateDepositParamsAddressesStructOutput,
     minMarketTokens: bigint,
     shouldUnwrapNativeToken: boolean,
     executionFee: bigint,
     callbackGasLimit: bigint,
     dataList: string[],
   ] & {
-    addresses: DepositUtils.CreateDepositParamsAddressesStructOutput;
+    addresses: IDepositUtils.CreateDepositParamsAddressesStructOutput;
     minMarketTokens: bigint;
     shouldUnwrapNativeToken: boolean;
     executionFee: bigint;
@@ -176,7 +176,7 @@ export declare namespace IBaseOrderUtils {
   };
 }
 
-export declare namespace ShiftUtils {
+export declare namespace IShiftUtils {
   export type CreateShiftParamsAddressesStruct = {
     receiver: AddressLike;
     callbackContract: AddressLike;
@@ -200,7 +200,7 @@ export declare namespace ShiftUtils {
   };
 
   export type CreateShiftParamsStruct = {
-    addresses: ShiftUtils.CreateShiftParamsAddressesStruct;
+    addresses: IShiftUtils.CreateShiftParamsAddressesStruct;
     minMarketTokens: BigNumberish;
     executionFee: BigNumberish;
     callbackGasLimit: BigNumberish;
@@ -208,13 +208,13 @@ export declare namespace ShiftUtils {
   };
 
   export type CreateShiftParamsStructOutput = [
-    addresses: ShiftUtils.CreateShiftParamsAddressesStructOutput,
+    addresses: IShiftUtils.CreateShiftParamsAddressesStructOutput,
     minMarketTokens: bigint,
     executionFee: bigint,
     callbackGasLimit: bigint,
     dataList: string[],
   ] & {
-    addresses: ShiftUtils.CreateShiftParamsAddressesStructOutput;
+    addresses: IShiftUtils.CreateShiftParamsAddressesStructOutput;
     minMarketTokens: bigint;
     executionFee: bigint;
     callbackGasLimit: bigint;
@@ -222,7 +222,7 @@ export declare namespace ShiftUtils {
   };
 }
 
-export declare namespace WithdrawalUtils {
+export declare namespace IWithdrawalUtils {
   export type CreateWithdrawalParamsAddressesStruct = {
     receiver: AddressLike;
     callbackContract: AddressLike;
@@ -249,7 +249,7 @@ export declare namespace WithdrawalUtils {
   };
 
   export type CreateWithdrawalParamsStruct = {
-    addresses: WithdrawalUtils.CreateWithdrawalParamsAddressesStruct;
+    addresses: IWithdrawalUtils.CreateWithdrawalParamsAddressesStruct;
     minLongTokenAmount: BigNumberish;
     minShortTokenAmount: BigNumberish;
     shouldUnwrapNativeToken: boolean;
@@ -259,7 +259,7 @@ export declare namespace WithdrawalUtils {
   };
 
   export type CreateWithdrawalParamsStructOutput = [
-    addresses: WithdrawalUtils.CreateWithdrawalParamsAddressesStructOutput,
+    addresses: IWithdrawalUtils.CreateWithdrawalParamsAddressesStructOutput,
     minLongTokenAmount: bigint,
     minShortTokenAmount: bigint,
     shouldUnwrapNativeToken: boolean,
@@ -267,7 +267,7 @@ export declare namespace WithdrawalUtils {
     callbackGasLimit: bigint,
     dataList: string[],
   ] & {
-    addresses: WithdrawalUtils.CreateWithdrawalParamsAddressesStructOutput;
+    addresses: IWithdrawalUtils.CreateWithdrawalParamsAddressesStructOutput;
     minLongTokenAmount: bigint;
     minShortTokenAmount: bigint;
     shouldUnwrapNativeToken: boolean;
@@ -378,19 +378,19 @@ export interface ExchangeRouterInterface extends Interface {
   ): string;
   encodeFunctionData(functionFragment: "claimFundingFees", values: [AddressLike[], AddressLike[], AddressLike]): string;
   encodeFunctionData(functionFragment: "claimUiFees", values: [AddressLike[], AddressLike[], AddressLike]): string;
-  encodeFunctionData(functionFragment: "createDeposit", values: [DepositUtils.CreateDepositParamsStruct]): string;
+  encodeFunctionData(functionFragment: "createDeposit", values: [IDepositUtils.CreateDepositParamsStruct]): string;
   encodeFunctionData(functionFragment: "createOrder", values: [IBaseOrderUtils.CreateOrderParamsStruct]): string;
-  encodeFunctionData(functionFragment: "createShift", values: [ShiftUtils.CreateShiftParamsStruct]): string;
+  encodeFunctionData(functionFragment: "createShift", values: [IShiftUtils.CreateShiftParamsStruct]): string;
   encodeFunctionData(
     functionFragment: "createWithdrawal",
-    values: [WithdrawalUtils.CreateWithdrawalParamsStruct]
+    values: [IWithdrawalUtils.CreateWithdrawalParamsStruct]
   ): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "depositHandler", values?: undefined): string;
   encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "executeAtomicWithdrawal",
-    values: [WithdrawalUtils.CreateWithdrawalParamsStruct, OracleUtils.SetPricesParamsStruct]
+    values: [IWithdrawalUtils.CreateWithdrawalParamsStruct, OracleUtils.SetPricesParamsStruct]
   ): string;
   encodeFunctionData(functionFragment: "externalHandler", values?: undefined): string;
   encodeFunctionData(
@@ -563,13 +563,13 @@ export interface ExchangeRouter extends BaseContract {
     "payable"
   >;
 
-  createDeposit: TypedContractMethod<[params: DepositUtils.CreateDepositParamsStruct], [string], "payable">;
+  createDeposit: TypedContractMethod<[params: IDepositUtils.CreateDepositParamsStruct], [string], "payable">;
 
   createOrder: TypedContractMethod<[params: IBaseOrderUtils.CreateOrderParamsStruct], [string], "payable">;
 
-  createShift: TypedContractMethod<[params: ShiftUtils.CreateShiftParamsStruct], [string], "payable">;
+  createShift: TypedContractMethod<[params: IShiftUtils.CreateShiftParamsStruct], [string], "payable">;
 
-  createWithdrawal: TypedContractMethod<[params: WithdrawalUtils.CreateWithdrawalParamsStruct], [string], "payable">;
+  createWithdrawal: TypedContractMethod<[params: IWithdrawalUtils.CreateWithdrawalParamsStruct], [string], "payable">;
 
   dataStore: TypedContractMethod<[], [string], "view">;
 
@@ -578,7 +578,7 @@ export interface ExchangeRouter extends BaseContract {
   eventEmitter: TypedContractMethod<[], [string], "view">;
 
   executeAtomicWithdrawal: TypedContractMethod<
-    [params: WithdrawalUtils.CreateWithdrawalParamsStruct, oracleParams: OracleUtils.SetPricesParamsStruct],
+    [params: IWithdrawalUtils.CreateWithdrawalParamsStruct, oracleParams: OracleUtils.SetPricesParamsStruct],
     [void],
     "payable"
   >;
@@ -708,23 +708,23 @@ export interface ExchangeRouter extends BaseContract {
   ): TypedContractMethod<[markets: AddressLike[], tokens: AddressLike[], receiver: AddressLike], [bigint[]], "payable">;
   getFunction(
     nameOrSignature: "createDeposit"
-  ): TypedContractMethod<[params: DepositUtils.CreateDepositParamsStruct], [string], "payable">;
+  ): TypedContractMethod<[params: IDepositUtils.CreateDepositParamsStruct], [string], "payable">;
   getFunction(
     nameOrSignature: "createOrder"
   ): TypedContractMethod<[params: IBaseOrderUtils.CreateOrderParamsStruct], [string], "payable">;
   getFunction(
     nameOrSignature: "createShift"
-  ): TypedContractMethod<[params: ShiftUtils.CreateShiftParamsStruct], [string], "payable">;
+  ): TypedContractMethod<[params: IShiftUtils.CreateShiftParamsStruct], [string], "payable">;
   getFunction(
     nameOrSignature: "createWithdrawal"
-  ): TypedContractMethod<[params: WithdrawalUtils.CreateWithdrawalParamsStruct], [string], "payable">;
+  ): TypedContractMethod<[params: IWithdrawalUtils.CreateWithdrawalParamsStruct], [string], "payable">;
   getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "depositHandler"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "executeAtomicWithdrawal"
   ): TypedContractMethod<
-    [params: WithdrawalUtils.CreateWithdrawalParamsStruct, oracleParams: OracleUtils.SetPricesParamsStruct],
+    [params: IWithdrawalUtils.CreateWithdrawalParamsStruct, oracleParams: OracleUtils.SetPricesParamsStruct],
     [void],
     "payable"
   >;

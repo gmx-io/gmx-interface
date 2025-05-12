@@ -12,7 +12,6 @@ export type { MultichainClaimsRouter } from "./MultichainClaimsRouter";
 export type { MultichainGlvRouter } from "./MultichainGlvRouter";
 export type { MultichainGmRouter } from "./MultichainGmRouter";
 export type { MultichainOrderRouter } from "./MultichainOrderRouter";
-export type { MultichainOrderRouterUtils } from "./MultichainOrderRouterUtils";
 export type { MultichainSubaccountRouter } from "./MultichainSubaccountRouter";
 export type { MultichainTransferRouter } from "./MultichainTransferRouter";
 export type { MultichainUtils } from "./MultichainUtils";
@@ -35,7 +34,6 @@ export { MultichainClaimsRouter__factory } from "./factories/MultichainClaimsRou
 export { MultichainGlvRouter__factory } from "./factories/MultichainGlvRouter__factory";
 export { MultichainGmRouter__factory } from "./factories/MultichainGmRouter__factory";
 export { MultichainOrderRouter__factory } from "./factories/MultichainOrderRouter__factory";
-export { MultichainOrderRouterUtils__factory } from "./factories/MultichainOrderRouterUtils__factory";
 export { MultichainSubaccountRouter__factory } from "./factories/MultichainSubaccountRouter__factory";
 export { MultichainTransferRouter__factory } from "./factories/MultichainTransferRouter__factory";
 export { MultichainUtils__factory } from "./factories/MultichainUtils__factory";

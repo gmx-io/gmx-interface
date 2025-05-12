@@ -27,8 +27,7 @@ export interface MultichainVaultInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "dataStore"
-      | "recordTransferIn(address)"
-      | "recordTransferIn(address,uint256)"
+      | "recordTransferIn"
       | "roleStore"
       | "syncTokenBalance"
       | "tokenBalances"
@@ -40,11 +39,7 @@ export interface MultichainVaultInterface extends Interface {
   getEvent(nameOrSignatureOrTopic: "TokenTransferReverted"): EventFragment;
 
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
-  encodeFunctionData(functionFragment: "recordTransferIn(address)", values: [AddressLike]): string;
-  encodeFunctionData(
-    functionFragment: "recordTransferIn(address,uint256)",
-    values: [AddressLike, BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "recordTransferIn", values: [AddressLike]): string;
   encodeFunctionData(functionFragment: "roleStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "syncTokenBalance", values: [AddressLike]): string;
   encodeFunctionData(functionFragment: "tokenBalances", values: [AddressLike]): string;
@@ -59,8 +54,7 @@ export interface MultichainVaultInterface extends Interface {
   encodeFunctionData(functionFragment: "transferOutNativeToken", values: [AddressLike, BigNumberish]): string;
 
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "recordTransferIn(address)", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "recordTransferIn(address,uint256)", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "recordTransferIn", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "roleStore", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "syncTokenBalance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "tokenBalances", data: BytesLike): Result;
@@ -117,13 +111,7 @@ export interface MultichainVault extends BaseContract {
 
   dataStore: TypedContractMethod<[], [string], "view">;
 
-  "recordTransferIn(address)": TypedContractMethod<[token: AddressLike], [bigint], "nonpayable">;
-
-  "recordTransferIn(address,uint256)": TypedContractMethod<
-    [token: AddressLike, amount: BigNumberish],
-    [bigint],
-    "nonpayable"
-  >;
+  recordTransferIn: TypedContractMethod<[token: AddressLike], [bigint], "nonpayable">;
 
   roleStore: TypedContractMethod<[], [string], "view">;
 
@@ -148,12 +136,7 @@ export interface MultichainVault extends BaseContract {
   getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
   getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "recordTransferIn(address)"
-  ): TypedContractMethod<[token: AddressLike], [bigint], "nonpayable">;
-  getFunction(
-    nameOrSignature: "recordTransferIn(address,uint256)"
-  ): TypedContractMethod<[token: AddressLike, amount: BigNumberish], [bigint], "nonpayable">;
+  getFunction(nameOrSignature: "recordTransferIn"): TypedContractMethod<[token: AddressLike], [bigint], "nonpayable">;
   getFunction(nameOrSignature: "roleStore"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "syncTokenBalance"): TypedContractMethod<[token: AddressLike], [bigint], "nonpayable">;
   getFunction(nameOrSignature: "tokenBalances"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;

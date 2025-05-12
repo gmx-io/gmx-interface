@@ -23,105 +23,6 @@ import type {
   TypedContractMethod,
 } from "./common";
 
-export type ExternalCallsStruct = {
-  sendTokens: AddressLike[];
-  sendAmounts: BigNumberish[];
-  externalCallTargets: AddressLike[];
-  externalCallDataList: BytesLike[];
-  refundTokens: AddressLike[];
-  refundReceivers: AddressLike[];
-};
-
-export type ExternalCallsStructOutput = [
-  sendTokens: string[],
-  sendAmounts: bigint[],
-  externalCallTargets: string[],
-  externalCallDataList: string[],
-  refundTokens: string[],
-  refundReceivers: string[],
-] & {
-  sendTokens: string[];
-  sendAmounts: bigint[];
-  externalCallTargets: string[];
-  externalCallDataList: string[];
-  refundTokens: string[];
-  refundReceivers: string[];
-};
-
-export type TokenPermitStruct = {
-  owner: AddressLike;
-  spender: AddressLike;
-  value: BigNumberish;
-  deadline: BigNumberish;
-  v: BigNumberish;
-  r: BytesLike;
-  s: BytesLike;
-  token: AddressLike;
-};
-
-export type TokenPermitStructOutput = [
-  owner: string,
-  spender: string,
-  value: bigint,
-  deadline: bigint,
-  v: bigint,
-  r: string,
-  s: string,
-  token: string,
-] & {
-  owner: string;
-  spender: string;
-  value: bigint;
-  deadline: bigint;
-  v: bigint;
-  r: string;
-  s: string;
-  token: string;
-};
-
-export type FeeParamsStruct = {
-  feeToken: AddressLike;
-  feeAmount: BigNumberish;
-  feeSwapPath: AddressLike[];
-};
-
-export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
-  feeToken: string;
-  feeAmount: bigint;
-  feeSwapPath: string[];
-};
-
-export type RelayParamsStruct = {
-  oracleParams: OracleUtils.SetPricesParamsStruct;
-  externalCalls: ExternalCallsStruct;
-  tokenPermits: TokenPermitStruct[];
-  fee: FeeParamsStruct;
-  userNonce: BigNumberish;
-  deadline: BigNumberish;
-  signature: BytesLike;
-  desChainId: BigNumberish;
-};
-
-export type RelayParamsStructOutput = [
-  oracleParams: OracleUtils.SetPricesParamsStructOutput,
-  externalCalls: ExternalCallsStructOutput,
-  tokenPermits: TokenPermitStructOutput[],
-  fee: FeeParamsStructOutput,
-  userNonce: bigint,
-  deadline: bigint,
-  signature: string,
-  desChainId: bigint,
-] & {
-  oracleParams: OracleUtils.SetPricesParamsStructOutput;
-  externalCalls: ExternalCallsStructOutput;
-  tokenPermits: TokenPermitStructOutput[];
-  fee: FeeParamsStructOutput;
-  userNonce: bigint;
-  deadline: bigint;
-  signature: string;
-  desChainId: bigint;
-};
-
 export type UpdateOrderParamsStruct = {
   key: BytesLike;
   sizeDeltaUsd: BigNumberish;
@@ -178,6 +79,7 @@ export declare namespace MultichainRouter {
     oracle: AddressLike;
     orderVault: AddressLike;
     orderHandler: AddressLike;
+    swapHandler: AddressLike;
     externalHandler: AddressLike;
     multichainVault: AddressLike;
   };
@@ -190,6 +92,7 @@ export declare namespace MultichainRouter {
     oracle: string,
     orderVault: string,
     orderHandler: string,
+    swapHandler: string,
     externalHandler: string,
     multichainVault: string,
   ] & {
@@ -200,6 +103,7 @@ export declare namespace MultichainRouter {
     oracle: string;
     orderVault: string;
     orderHandler: string;
+    swapHandler: string;
     externalHandler: string;
     multichainVault: string;
   };
@@ -216,6 +120,107 @@ export declare namespace OracleUtils {
     tokens: string[];
     providers: string[];
     data: string[];
+  };
+}
+
+export declare namespace IRelayUtils {
+  export type ExternalCallsStruct = {
+    sendTokens: AddressLike[];
+    sendAmounts: BigNumberish[];
+    externalCallTargets: AddressLike[];
+    externalCallDataList: BytesLike[];
+    refundTokens: AddressLike[];
+    refundReceivers: AddressLike[];
+  };
+
+  export type ExternalCallsStructOutput = [
+    sendTokens: string[],
+    sendAmounts: bigint[],
+    externalCallTargets: string[],
+    externalCallDataList: string[],
+    refundTokens: string[],
+    refundReceivers: string[],
+  ] & {
+    sendTokens: string[];
+    sendAmounts: bigint[];
+    externalCallTargets: string[];
+    externalCallDataList: string[];
+    refundTokens: string[];
+    refundReceivers: string[];
+  };
+
+  export type TokenPermitStruct = {
+    owner: AddressLike;
+    spender: AddressLike;
+    value: BigNumberish;
+    deadline: BigNumberish;
+    v: BigNumberish;
+    r: BytesLike;
+    s: BytesLike;
+    token: AddressLike;
+  };
+
+  export type TokenPermitStructOutput = [
+    owner: string,
+    spender: string,
+    value: bigint,
+    deadline: bigint,
+    v: bigint,
+    r: string,
+    s: string,
+    token: string,
+  ] & {
+    owner: string;
+    spender: string;
+    value: bigint;
+    deadline: bigint;
+    v: bigint;
+    r: string;
+    s: string;
+    token: string;
+  };
+
+  export type FeeParamsStruct = {
+    feeToken: AddressLike;
+    feeAmount: BigNumberish;
+    feeSwapPath: AddressLike[];
+  };
+
+  export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
+    feeToken: string;
+    feeAmount: bigint;
+    feeSwapPath: string[];
+  };
+
+  export type RelayParamsStruct = {
+    oracleParams: OracleUtils.SetPricesParamsStruct;
+    externalCalls: IRelayUtils.ExternalCallsStruct;
+    tokenPermits: IRelayUtils.TokenPermitStruct[];
+    fee: IRelayUtils.FeeParamsStruct;
+    userNonce: BigNumberish;
+    deadline: BigNumberish;
+    signature: BytesLike;
+    desChainId: BigNumberish;
+  };
+
+  export type RelayParamsStructOutput = [
+    oracleParams: OracleUtils.SetPricesParamsStructOutput,
+    externalCalls: IRelayUtils.ExternalCallsStructOutput,
+    tokenPermits: IRelayUtils.TokenPermitStructOutput[],
+    fee: IRelayUtils.FeeParamsStructOutput,
+    userNonce: bigint,
+    deadline: bigint,
+    signature: string,
+    desChainId: bigint,
+  ] & {
+    oracleParams: OracleUtils.SetPricesParamsStructOutput;
+    externalCalls: IRelayUtils.ExternalCallsStructOutput;
+    tokenPermits: IRelayUtils.TokenPermitStructOutput[];
+    fee: IRelayUtils.FeeParamsStructOutput;
+    userNonce: bigint;
+    deadline: bigint;
+    signature: string;
+    desChainId: bigint;
   };
 }
 
@@ -334,6 +339,7 @@ export interface MultichainOrderRouterInterface extends Interface {
       | "sendNativeToken"
       | "sendTokens"
       | "sendWnt"
+      | "swapHandler"
       | "updateOrder"
       | "userNonces"
   ): FunctionFragment;
@@ -342,15 +348,15 @@ export interface MultichainOrderRouterInterface extends Interface {
 
   encodeFunctionData(
     functionFragment: "batch",
-    values: [RelayParamsStruct, AddressLike, BigNumberish, BatchParamsStruct]
+    values: [IRelayUtils.RelayParamsStruct, AddressLike, BigNumberish, BatchParamsStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "cancelOrder",
-    values: [RelayParamsStruct, AddressLike, BigNumberish, BytesLike]
+    values: [IRelayUtils.RelayParamsStruct, AddressLike, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "createOrder",
-    values: [RelayParamsStruct, AddressLike, BigNumberish, IBaseOrderUtils.CreateOrderParamsStruct]
+    values: [IRelayUtils.RelayParamsStruct, AddressLike, BigNumberish, IBaseOrderUtils.CreateOrderParamsStruct]
   ): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
@@ -366,9 +372,10 @@ export interface MultichainOrderRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "sendNativeToken", values: [AddressLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "sendTokens", values: [AddressLike, AddressLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "sendWnt", values: [AddressLike, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "swapHandler", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "updateOrder",
-    values: [RelayParamsStruct, AddressLike, BigNumberish, UpdateOrderParamsStruct]
+    values: [IRelayUtils.RelayParamsStruct, AddressLike, BigNumberish, UpdateOrderParamsStruct]
   ): string;
   encodeFunctionData(functionFragment: "userNonces", values: [AddressLike]): string;
 
@@ -389,6 +396,7 @@ export interface MultichainOrderRouterInterface extends Interface {
   decodeFunctionResult(functionFragment: "sendNativeToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendTokens", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendWnt", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "swapHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "updateOrder", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "userNonces", data: BytesLike): Result;
 }
@@ -440,20 +448,25 @@ export interface MultichainOrderRouter extends BaseContract {
   removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
   batch: TypedContractMethod<
-    [relayParams: RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, params: BatchParamsStruct],
+    [
+      relayParams: IRelayUtils.RelayParamsStruct,
+      account: AddressLike,
+      srcChainId: BigNumberish,
+      params: BatchParamsStruct,
+    ],
     [string[]],
     "nonpayable"
   >;
 
   cancelOrder: TypedContractMethod<
-    [relayParams: RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, key: BytesLike],
+    [relayParams: IRelayUtils.RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, key: BytesLike],
     [void],
     "nonpayable"
   >;
 
   createOrder: TypedContractMethod<
     [
-      relayParams: RelayParamsStruct,
+      relayParams: IRelayUtils.RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
       params: IBaseOrderUtils.CreateOrderParamsStruct,
@@ -490,8 +503,15 @@ export interface MultichainOrderRouter extends BaseContract {
 
   sendWnt: TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
 
+  swapHandler: TypedContractMethod<[], [string], "view">;
+
   updateOrder: TypedContractMethod<
-    [relayParams: RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, params: UpdateOrderParamsStruct],
+    [
+      relayParams: IRelayUtils.RelayParamsStruct,
+      account: AddressLike,
+      srcChainId: BigNumberish,
+      params: UpdateOrderParamsStruct,
+    ],
     [void],
     "nonpayable"
   >;
@@ -503,14 +523,19 @@ export interface MultichainOrderRouter extends BaseContract {
   getFunction(
     nameOrSignature: "batch"
   ): TypedContractMethod<
-    [relayParams: RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, params: BatchParamsStruct],
+    [
+      relayParams: IRelayUtils.RelayParamsStruct,
+      account: AddressLike,
+      srcChainId: BigNumberish,
+      params: BatchParamsStruct,
+    ],
     [string[]],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "cancelOrder"
   ): TypedContractMethod<
-    [relayParams: RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, key: BytesLike],
+    [relayParams: IRelayUtils.RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, key: BytesLike],
     [void],
     "nonpayable"
   >;
@@ -518,7 +543,7 @@ export interface MultichainOrderRouter extends BaseContract {
     nameOrSignature: "createOrder"
   ): TypedContractMethod<
     [
-      relayParams: RelayParamsStruct,
+      relayParams: IRelayUtils.RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
       params: IBaseOrderUtils.CreateOrderParamsStruct,
@@ -546,10 +571,16 @@ export interface MultichainOrderRouter extends BaseContract {
   getFunction(
     nameOrSignature: "sendWnt"
   ): TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
+  getFunction(nameOrSignature: "swapHandler"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "updateOrder"
   ): TypedContractMethod<
-    [relayParams: RelayParamsStruct, account: AddressLike, srcChainId: BigNumberish, params: UpdateOrderParamsStruct],
+    [
+      relayParams: IRelayUtils.RelayParamsStruct,
+      account: AddressLike,
+      srcChainId: BigNumberish,
+      params: UpdateOrderParamsStruct,
+    ],
     [void],
     "nonpayable"
   >;

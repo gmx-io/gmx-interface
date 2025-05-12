@@ -352,11 +352,6 @@ const _abi = [
                     type: "int256",
                   },
                   {
-                    internalType: "int256",
-                    name: "pendingImpactUsd",
-                    type: "int256",
-                  },
-                  {
                     internalType: "uint256",
                     name: "borrowingFactor",
                     type: "uint256",
@@ -789,11 +784,6 @@ const _abi = [
               {
                 internalType: "int256",
                 name: "pendingImpactAmount",
-                type: "int256",
-              },
-              {
-                internalType: "int256",
-                name: "pendingImpactUsd",
                 type: "int256",
               },
               {
@@ -2618,6 +2608,35 @@ const _abi = [
         type: "address",
       },
       {
+        internalType: "address",
+        name: "market",
+        type: "address",
+      },
+    ],
+    name: "getPendingPositionImpactPoolDistributionAmount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract DataStore",
+        name: "dataStore",
+        type: "address",
+      },
+      {
         components: [
           {
             internalType: "address",
@@ -2837,11 +2856,6 @@ const _abi = [
                 type: "int256",
               },
               {
-                internalType: "int256",
-                name: "pendingImpactUsd",
-                type: "int256",
-              },
-              {
                 internalType: "uint256",
                 name: "borrowingFactor",
                 type: "uint256",
@@ -3041,11 +3055,6 @@ const _abi = [
                   {
                     internalType: "int256",
                     name: "pendingImpactAmount",
-                    type: "int256",
-                  },
-                  {
-                    internalType: "int256",
-                    name: "pendingImpactUsd",
                     type: "int256",
                   },
                   {
@@ -3546,11 +3555,6 @@ const _abi = [
                   {
                     internalType: "int256",
                     name: "pendingImpactAmount",
-                    type: "int256",
-                  },
-                  {
-                    internalType: "int256",
-                    name: "pendingImpactUsd",
                     type: "int256",
                   },
                   {

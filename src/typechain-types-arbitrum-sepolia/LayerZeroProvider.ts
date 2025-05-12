@@ -29,7 +29,6 @@ export declare namespace IMultichainProvider {
     account: AddressLike;
     token: AddressLike;
     amount: BigNumberish;
-    srcChainId: BigNumberish;
     data: BytesLike;
   };
 
@@ -38,21 +37,28 @@ export declare namespace IMultichainProvider {
     account: string,
     token: string,
     amount: bigint,
-    srcChainId: bigint,
     data: string,
   ] & {
     provider: string;
     account: string;
     token: string;
     amount: bigint;
-    srcChainId: bigint;
     data: string;
   };
 }
 
 export interface LayerZeroProviderInterface extends Interface {
   getFunction(
-    nameOrSignature: "bridgeOut" | "dataStore" | "eventEmitter" | "lzCompose" | "multichainVault" | "roleStore"
+    nameOrSignature:
+      | "bridgeOut"
+      | "dataStore"
+      | "eventEmitter"
+      | "lzCompose"
+      | "multichainGlvRouter"
+      | "multichainGmRouter"
+      | "multichainVault"
+      | "roleStore"
+      | "withdrawTokens"
   ): FunctionFragment;
 
   getEvent(nameOrSignatureOrTopic: "TokenTransferReverted"): EventFragment;
@@ -64,15 +70,21 @@ export interface LayerZeroProviderInterface extends Interface {
     functionFragment: "lzCompose",
     values: [AddressLike, BytesLike, BytesLike, AddressLike, BytesLike]
   ): string;
+  encodeFunctionData(functionFragment: "multichainGlvRouter", values?: undefined): string;
+  encodeFunctionData(functionFragment: "multichainGmRouter", values?: undefined): string;
   encodeFunctionData(functionFragment: "multichainVault", values?: undefined): string;
   encodeFunctionData(functionFragment: "roleStore", values?: undefined): string;
+  encodeFunctionData(functionFragment: "withdrawTokens", values: [AddressLike, AddressLike, BigNumberish]): string;
 
   decodeFunctionResult(functionFragment: "bridgeOut", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "eventEmitter", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "lzCompose", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "multichainGlvRouter", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "multichainGmRouter", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "multichainVault", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "roleStore", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "withdrawTokens", data: BytesLike): Result;
 }
 
 export namespace TokenTransferRevertedEvent {
@@ -133,9 +145,19 @@ export interface LayerZeroProvider extends BaseContract {
     "payable"
   >;
 
+  multichainGlvRouter: TypedContractMethod<[], [string], "view">;
+
+  multichainGmRouter: TypedContractMethod<[], [string], "view">;
+
   multichainVault: TypedContractMethod<[], [string], "view">;
 
   roleStore: TypedContractMethod<[], [string], "view">;
+
+  withdrawTokens: TypedContractMethod<
+    [token: AddressLike, receiver: AddressLike, amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
@@ -151,8 +173,13 @@ export interface LayerZeroProvider extends BaseContract {
     [void],
     "payable"
   >;
+  getFunction(nameOrSignature: "multichainGlvRouter"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "multichainGmRouter"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "multichainVault"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "roleStore"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "withdrawTokens"
+  ): TypedContractMethod<[token: AddressLike, receiver: AddressLike, amount: BigNumberish], [void], "nonpayable">;
 
   getEvent(
     key: "TokenTransferReverted"
