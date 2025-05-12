@@ -124,7 +124,7 @@ export function OneClickAdvancedSettings() {
             className="mt-6 h-36 w-full bg-blue-600 py-3 text-white"
             disabled={disabled}
           >
-            <Trans>Save One-Click Trading settings.</Trans>
+            <Trans>Save One-Click Trading settings</Trans>
           </Button>
         </div>
       </ExpandableRow>
