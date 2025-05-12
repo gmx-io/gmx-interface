@@ -27,7 +27,7 @@ import {
 } from "sdk/configs/express";
 import { bigMath } from "sdk/utils/bigmath";
 import { ZERO_DATA } from "sdk/utils/hash";
-import { nowInSeconds } from "sdk/utils/time";
+import { nowInSeconds, secondsToPeriod } from "sdk/utils/time";
 
 import { getExpressContractAddress, getGelatoRelayRouterDomain } from "../express";
 
@@ -100,6 +100,12 @@ export function getRemainingSubaccountSeconds(subaccount: Subaccount): bigint {
   const now = BigInt(nowInSeconds());
 
   return bigMath.max(0n, expiresAt - now);
+}
+
+export function getRemainingSubaccountDays(subaccount: Subaccount): bigint {
+  const seconds = getRemainingSubaccountSeconds(subaccount);
+
+  return BigInt(secondsToPeriod(Number(seconds), "1d"));
 }
 
 export function getIsApprovalExpired(subaccount: Subaccount): boolean {

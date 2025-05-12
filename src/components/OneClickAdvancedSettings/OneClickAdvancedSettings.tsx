@@ -96,26 +96,26 @@ export function OneClickAdvancedSettings() {
       <ExpandableRow
         open={isExpanded}
         onToggle={setIsExpanded}
-        title={<Trans>Advanced Settings</Trans>}
+        title={<Trans>One-Click Trading Settings</Trans>}
         className="mb-4"
       >
         <div className="mt-12">
           <InputRow
             value={remainingActionsString}
             setValue={onChangeRemainingActions}
-            label="Remained Allowed Actions"
-            symbol="Actions"
+            label=" Remaining Allowed Actions"
+            symbol="Action(s)"
             placeholder="0"
-            description="Maximum number of actions allowed before requiring reauthorization"
+            description="Maximum number of actions allowed before reauthorization is required."
           />
 
           <InputRow
             value={daysLimitString}
             setValue={onChangeDaysLimit}
             label="Time Limit"
-            symbol="Days"
+            symbol="Day(s)"
             placeholder="0"
-            description="Maximum number of days before requiring reauthorization"
+            description="Maximum number of days before reauthorization is required."
           />
 
           <Button
@@ -124,7 +124,7 @@ export function OneClickAdvancedSettings() {
             className="mt-6 h-36 w-full bg-blue-600 py-3 text-white"
             disabled={disabled}
           >
-            <Trans>Save settings</Trans>
+            <Trans>Save One-Click Trading settings.</Trans>
           </Button>
         </div>
       </ExpandableRow>

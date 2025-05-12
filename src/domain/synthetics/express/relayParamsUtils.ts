@@ -3,6 +3,7 @@ import { encodeAbiParameters, keccak256 } from "viem";
 
 import { getIsInternalSwapBetter } from "domain/synthetics/externalSwaps/utils";
 import { getNeedTokenApprove, TokensAllowanceData, TokensData } from "domain/synthetics/tokens";
+import { SignedTokenPermit } from "domain/tokens";
 import { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
 import RelayParamsAbi from "sdk/abis/RelayParams.json";
@@ -63,6 +64,7 @@ export function getRelayerFeeParams({
   tokensData,
   gasPaymentAllowanceData,
   forceExternalSwaps,
+  tokenPermits,
 }: {
   chainId: number;
   account: string;
@@ -76,6 +78,7 @@ export function getRelayerFeeParams({
   tokensData: TokensData;
   gasPaymentAllowanceData: TokensAllowanceData;
   forceExternalSwaps: boolean | undefined;
+  tokenPermits: SignedTokenPermit[];
 }): RelayerFeeParams {
   let feeParams: RelayFeePayload;
   let externalCalls: ExternalCallsPayload;
@@ -138,7 +141,7 @@ export function getRelayerFeeParams({
     gasPaymentAllowanceData,
     gasPaymentTokenAddress,
     gasPaymentTokenAmount,
-    []
+    tokenPermits
   );
 
   return {

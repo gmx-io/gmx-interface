@@ -29,7 +29,7 @@ import {
   Subaccount,
 } from "domain/synthetics/subaccount";
 import { SignedTokenPermit, TokensData } from "domain/tokens";
-import { extendError, parseError } from "lib/errors";
+import { extendError } from "lib/errors";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
 import { applyFactor } from "lib/numbers";
@@ -49,7 +49,7 @@ import {
   getBatchIsNativePayment,
   getBatchRequiredActions,
   getIsEmptyBatch,
-  getTotalExecutionFeeForBatch,
+  getBatchTotalExecutionFee,
 } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 
@@ -112,7 +112,7 @@ export async function estimateExpressParams({
     }
 
     if (totalExecutionFee === undefined) {
-      totalExecutionFee = getTotalExecutionFeeForBatch({ batchParams, chainId, tokensData })?.feeTokenAmount;
+      totalExecutionFee = getBatchTotalExecutionFee({ batchParams, chainId, tokensData })?.feeTokenAmount;
     }
 
     if (totalExecutionFee === undefined) {
@@ -153,6 +153,7 @@ export async function estimateExpressParams({
       tokensData,
       gasPaymentAllowanceData,
       forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
+      tokenPermits,
     });
 
     if (!baseRelayFeeParams) {
@@ -180,6 +181,11 @@ export async function estimateExpressParams({
 
     let gasLimit: bigint;
     if (estimationMethod === "estimateGas" && provider) {
+      // In this cases simulation will fail
+      if (baseRelayFeeParams.isOutGasTokenBalance || baseRelayFeeParams.needGasPaymentTokenApproval) {
+        return undefined;
+      }
+
       gasLimit = await estimateGasLimit(provider, {
         from: GMX_SIMULATION_ORIGIN,
         to: baseExpressParams.txnData.to,
@@ -235,6 +241,7 @@ export async function estimateExpressParams({
       tokensData,
       gasPaymentAllowanceData,
       forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
+      tokenPermits,
     });
 
     if (!finalRelayFeeParams) {
@@ -266,26 +273,31 @@ export async function estimateExpressParams({
       estimationMethod,
     };
   } catch (error) {
-    const errorData = parseError(error);
+    const extendedError = extendError(error, {
+      data: {
+        estimationMethod,
+      },
+    });
 
-    const isMissingPermitError =
-      errorData?.errorMessage?.includes("ERC20: transfer amount exceeds allowance") &&
-      !globalExpressParams.tokenPermits.length;
+    metrics.pushError(extendedError, "expressOrders.estimateExpressParams");
+    // eslint-disable-next-line no-console
+    console.error(extendedError);
 
-    if (!isMissingPermitError) {
-      metrics.pushError(error, "expressOrders.asyncExpressParams");
-      const extendedError = extendError(error, {
-        data: {
-          estimationMethod,
-        },
-      });
-      // eslint-disable-next-line no-console
-      console.error(extendedError);
-      metrics.pushError(extendedError, "expressOrders.estimateExpressParams");
-    }
     return undefined;
   }
 }
+
+// export async function validateExpressBatchOrderParams({
+//   relayFeeParams,
+//   batchParams,
+//   tokenPermits,
+// }: {
+//   relayFeeParams: RelayerFeeParams;
+//   batchParams: BatchOrderTxnParams;
+//   tokenPermits: SignedTokenPermit[];
+// }) {
+
+// }
 
 export async function getBatchOrderExpressParams({
   chainId,

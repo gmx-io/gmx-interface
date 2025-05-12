@@ -9,12 +9,18 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
 import { useEnabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
-import { getIsSubaccountActive } from "domain/synthetics/subaccount";
+import {
+  getIsSubaccountActive,
+  getRemainingSubaccountActions,
+  getRemainingSubaccountDays,
+} from "domain/synthetics/subaccount";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "domain/synthetics/trade/twap/utils";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { roundToTwoDecimals } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
+import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
+import { secondsToPeriod } from "sdk/utils/time";
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
@@ -148,6 +154,18 @@ export function SettingsModal({
     }
   };
 
+  const remainingSubaccountActions = Number(
+    subaccountState.subaccount
+      ? getRemainingSubaccountActions(subaccountState.subaccount)
+      : DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT
+  );
+
+  const remainingSubaccountDays = Number(
+    subaccountState.subaccount
+      ? getRemainingSubaccountDays(subaccountState.subaccount)
+      : secondsToPeriod(DEFAULT_SUBACCOUNT_EXPIRY_DURATION, "1d")
+  );
+
   return (
     <SlideModal
       isVisible={isSettingsVisible}
@@ -171,12 +189,11 @@ export function SettingsModal({
               <TooltipWithPortal
                 content={
                   <Trans>
-                    Express Trading simplifies your trades on GMX. Instead of sending transactions directly and paying
-                    gas fees in ETH/AVAX, you sign secure off-chain messages.
+                    Express Trading streamlines your trades on GMX by replacing on-chain transactions with secure
+                    off-chain message signing, helping reduce issues from network congestion and RPC errors.
                     <br />
                     <br />
-                    These messages are then processed on-chain for you, which helps reduce issues with network
-                    congestion and RPC errors.
+                    These signed messages are processed on-chain for you, so a gas payment token is still required.
                   </Trans>
                 }
                 handle={<Trans>Express Trading</Trans>}
@@ -193,7 +210,16 @@ export function SettingsModal({
               }
             >
               <TooltipWithPortal
-                content={<Trans>One-Click Trading requires Express Trading to function.</Trans>}
+                content={
+                  <Trans>
+                    One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be
+                    enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or{" "}
+                    {remainingSubaccountDays} days, whichever comes first. days, whichever comes first.
+                    <br />
+                    <br />
+                    You can adjust these settings anytime under "One-Click Trading Settings
+                  </Trans>
+                }
                 handle={<Trans>One-Click Trading</Trans>}
               />
             </ToggleSwitch>

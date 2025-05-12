@@ -453,7 +453,7 @@ export function buildUpdateOrderPayload(p: UpdateOrderParams): UpdateOrderTxnPar
   };
 }
 
-export function getTotalExecutionFeeForBatch({
+export function getBatchTotalExecutionFee({
   batchParams: { createOrderParams, updateOrderParams },
   tokensData,
   chainId,

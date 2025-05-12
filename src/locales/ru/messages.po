@@ -837,6 +837,10 @@ msgstr "Вы можете проверить историю своих обра�
 msgid "Claimable positive funding fees.<0/><1/>They become available after modifying the position by increasing or decreasing it, depositing or withdrawing collateral, or settling the fees using the \"Settle\" button."
 msgstr ""
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first. days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2778,7 +2782,6 @@ msgstr "Создание..."
 #: src/components/Header/Header.tsx
 #: src/components/Header/Header.tsx
 #: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Express Trading simplifies your trades on GMX. Instead of sending transactions directly and paying gas fees in ETH/AVAX, you sign secure off-chain messages.<0/><1/>These messages are then processed on-chain for you, which helps reduce issues with network congestion and RPC errors."
 msgstr ""
 
@@ -3112,8 +3115,8 @@ msgid "Cancel TWAP"
 msgstr ""
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
-msgid "Advanced Settings"
-msgstr ""
+#~ msgid "Advanced Settings"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the liquidation."
@@ -4107,8 +4110,8 @@ msgid "Rebates earned by this account as a trader."
 msgstr "Рибейты, заработанные этим аккаунтом в качестве трейдера."
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "One-Click Trading requires Express Trading to function."
-msgstr ""
+#~ msgid "One-Click Trading requires Express Trading to function."
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
@@ -5048,6 +5051,10 @@ msgstr "Реферальный код обновлен!"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "Acknowledge high {0}"
+msgstr ""
+
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Save One-Click Trading settings."
 msgstr ""
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
@@ -6544,8 +6551,8 @@ msgid "Limit order submitted!"
 msgstr "Лимитный ордер представлен!"
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
-msgid "Save settings"
-msgstr ""
+#~ msgid "Save settings"
+#~ msgstr ""
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -7883,6 +7890,10 @@ msgstr ""
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 msgstr ""
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Express Trading streamlines your trades on GMX by replacing on-chain transactions with secure off-chain message signing, helping reduce issues from network congestion and RPC errors.<0/><1/>These signed messages are processed on-chain for you, so a gas payment token is still required."
+msgstr ""
+
 #: src/pages/Earn/UnstakeModal.tsx
 msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"
 msgstr ""
@@ -9024,6 +9035,10 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/keys.ts
 #~ msgid "Execute TWAP Swap part"
 #~ msgstr ""
+
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "One-Click Trading Settings"
+msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Trading Settings"

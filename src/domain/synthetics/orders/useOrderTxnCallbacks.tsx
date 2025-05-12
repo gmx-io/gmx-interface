@@ -28,7 +28,7 @@ import {
   CreateOrderTxnParams,
   DecreasePositionOrderParams,
   getBatchRequiredActions,
-  getTotalExecutionFeeForBatch,
+  getBatchTotalExecutionFee,
   IncreasePositionOrderParams,
   isTwapOrderPayload,
   SwapOrderParams,
@@ -203,7 +203,7 @@ export function useOrderTxnCallbacks() {
             });
           } else {
             const totalExecutionFee = tokensData
-              ? getTotalExecutionFeeForBatch({
+              ? getBatchTotalExecutionFee({
                   batchParams: e.data.batchParams,
                   chainId,
                   tokensData,

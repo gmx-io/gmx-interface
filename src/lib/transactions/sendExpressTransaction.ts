@@ -64,7 +64,6 @@ export async function sendExpressTransaction(p: {
   });
 }
 
-// TODO: Tests
 function makeExpressTxnResultWaiter(res: { taskId: string }) {
   return async () => {
     const pollInterval = 500;

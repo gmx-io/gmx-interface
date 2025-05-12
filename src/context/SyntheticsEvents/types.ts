@@ -88,6 +88,11 @@ export type PendingExpressTxnParams = {
   errorMessage?: ReactNode;
 };
 
+export type ExpressHandlers = {
+  onSuccess: (params: { expressParamsKey?: string; pendingOrderKey?: string; taskId?: string }) => void;
+  onFailure: (params: { expressParamsKey?: string; pendingOrderKey?: string; taskId?: string }) => void;
+};
+
 export type PendingPositionsUpdates = {
   [key: string]: PendingPositionUpdate | undefined;
 };

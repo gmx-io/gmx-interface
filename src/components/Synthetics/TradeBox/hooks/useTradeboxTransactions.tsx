@@ -54,7 +54,7 @@ import {
 import { getByKey } from "lib/objects";
 import { getTradeInteractionKey, sendUserAnalyticsOrderConfirmClickEvent, userAnalytics } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
-import { BatchOrderTxnParams, getTotalExecutionFeeForBatch } from "sdk/utils/orderTransactions";
+import { BatchOrderTxnParams, getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
 
 import { useSidecarOrderPayloads } from "./useSidecarOrderPayloads";
 
@@ -124,7 +124,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   }, [primaryCreateOrderParams, sidecarOrderPayloads]);
 
   const totalExecutionFee = useMemo(() => {
-    return tokensData ? getTotalExecutionFeeForBatch({ batchParams, chainId, tokensData }) : undefined;
+    return tokensData ? getBatchTotalExecutionFee({ batchParams, chainId, tokensData }) : undefined;
   }, [batchParams, chainId, tokensData]);
 
   const { expressParams, isLoading: isExpressLoading } = useExpressOrdersParams({
