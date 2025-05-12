@@ -542,7 +542,8 @@ export const formatPositionMessage = (
     //#endregion StopLossDecrease
     //#region Liquidation
   } else if (ot === OrderType.Liquidation && ev === TradeActionType.OrderExecuted) {
-    const maxLeverage = PRECISION / tradeAction.marketInfo.minCollateralFactor;
+    const maxLeverage =
+      tradeAction.marketInfo.minCollateralFactor === 0n ? 0n : PRECISION / tradeAction.marketInfo.minCollateralFactor;
     const formattedMaxLeverage = Number(maxLeverage).toFixed(1) + "x";
 
     const initialCollateralUsd = convertToUsd(

@@ -2,6 +2,7 @@ import cryptoJs from "crypto-js";
 import { ethers, Signer } from "ethers";
 import { encodeAbiParameters, keccak256, maxUint256, zeroHash } from "viem";
 
+import { UiContractsChain } from "config/static/chains";
 import { Subaccount, SubaccountApproval, SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
 import { SubaccountOnchainData } from "domain/synthetics/subaccount/useSubaccountFromContractsRequest";
 import { signTypedData } from "lib/wallets/signing";
@@ -16,6 +17,7 @@ import { ZERO_DATA } from "sdk/utils/hash";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { getGelatoRelayRouterDomain } from "../express";
+import { getMultichainInfoFromSigner, getOrderRelayRouterAddress } from "../orders/expressOrderUtils";
 
 export function getIsSubaccountActive(subaccount: {
   onchainData: SubaccountOnchainData;
@@ -179,7 +181,7 @@ export function getIsNonceExpired(subaccount: Subaccount): boolean {
 }
 
 export async function createAndSignSubaccountApproval(
-  chainId: number,
+  chainId: UiContractsChain,
   mainAccountSigner: Signer,
   subaccountAddress: string,
   nonce: bigint,
@@ -190,6 +192,10 @@ export async function createAndSignSubaccountApproval(
     deadline: bigint;
   }
 ): Promise<SignedSubbacountApproval> {
+  const srcChainId = await getMultichainInfoFromSigner(mainAccountSigner, chainId);
+
+  const relayRouterAddress = getOrderRelayRouterAddress(chainId, true, srcChainId !== undefined);
+
   const types = {
     SubaccountApproval: [
       { name: "subaccount", type: "address" },
@@ -202,7 +208,7 @@ export async function createAndSignSubaccountApproval(
     ],
   };
 
-  const domain = getGelatoRelayRouterDomain(chainId, true);
+  const domain = getGelatoRelayRouterDomain(chainId, relayRouterAddress, true, srcChainId);
 
   const typedData = {
     subaccount: subaccountAddress,

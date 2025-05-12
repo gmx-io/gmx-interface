@@ -64,8 +64,7 @@ export function useExpressOrdersParams({
 }: {
   orderParams: BatchOrderTxnParams | undefined;
 }): ExpressOrdersParamsResult {
-  const { chainId } = useChainId();
-  const srcChainId = useSelector(selectSourceChainId);
+  const { chainId, srcChainId } = useChainId();
 
   const requiredActions = orderParams
     ? orderParams?.createOrderParams.length +

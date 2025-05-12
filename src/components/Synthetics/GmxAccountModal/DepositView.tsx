@@ -34,6 +34,7 @@ import { IStargateAbi } from "context/GmxAccountContext/stargatePools";
 import { getNeedTokenApprove, useTokenRecentPricesRequest, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
+import { initMultichainDepositMetricData, sendTxnErrorMetric, sendTxnSentMetric } from "lib/metrics";
 import {
   BASIS_POINTS_DIVISOR_BIGINT,
   formatAmountFree,
@@ -55,6 +56,7 @@ import {
   OFTReceiptStruct,
   SendParamStruct,
 } from "typechain-types-stargate/interfaces/IStargate";
+import { multichainTransferRouterAbi } from "wagmi-generated";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
@@ -65,7 +67,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { useGmxAccountTokensDataObject, useMultichainTokens } from "./hooks";
+import { useGmxAccountTokensDataObject, useMultichainTokensRequest } from "./hooks";
 import { OftCmd, SEND_MODE_TAXI } from "./OftCmd";
 import { useMultichainDepositNetworkComposeGas } from "./useMultichainDepositNetworkComposeGas";
 
@@ -93,7 +95,7 @@ export const DepositView = () => {
 
   const [depositViewTokenAddress, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
   const [inputValue, setInputValue] = useGmxAccountDepositViewTokenInputValue();
-  const multichainTokens = useMultichainTokens();
+  const multichainTokens = useMultichainTokensRequest();
 
   const selectedToken =
     depositViewTokenAddress !== undefined ? getToken(settlementChainId, depositViewTokenAddress) : undefined;
@@ -272,7 +274,8 @@ export const DepositView = () => {
     sendParamsWithoutSlippage !== undefined &&
     sourceChainPublicClient !== undefined &&
     depositViewTokenAddress !== undefined &&
-    selectedTokenSourceChainTokenId !== undefined;
+    selectedTokenSourceChainTokenId !== undefined &&
+    walletChainId !== settlementChainId;
   const quoteOftQuery = useSWR<
     | {
         limit: OFTLimitStruct;
@@ -362,7 +365,9 @@ export const DepositView = () => {
     depositViewChain !== undefined &&
     sourceChainPublicClient !== undefined &&
     sendParamsWithSlippage !== undefined &&
-    selectedTokenSourceChainTokenId !== undefined;
+    selectedTokenSourceChainTokenId !== undefined &&
+    walletChainId !== settlementChainId;
+
   const quoteSendQuery = useSWR<MessagingFeeStruct | undefined>(
     quoteSendCondition
       ? [
@@ -436,12 +441,16 @@ export const DepositView = () => {
           to: await contract.getAddress(),
           callData: contract.interface.encodeFunctionData("multicall", [
             [
-              contract.interface.encodeFunctionData("sendWnt", [multichainVaultAddress, inputAmount]),
-              contract.interface.encodeFunctionData("bridgeIn", [
-                account,
-                selectedToken.wrappedAddress!,
-                BigInt(depositViewChain),
-              ]),
+              encodeFunctionData({
+                abi: multichainTransferRouterAbi,
+                functionName: "sendWnt",
+                args: [multichainVaultAddress, inputAmount],
+              }),
+              encodeFunctionData({
+                abi: multichainTransferRouterAbi,
+                functionName: "bridgeIn",
+                args: [account, selectedToken.wrappedAddress as Address],
+              }),
             ],
           ]),
           value: inputAmount,
@@ -454,16 +463,17 @@ export const DepositView = () => {
           to: await contract.getAddress(),
           callData: contract.interface.encodeFunctionData("multicall", [
             [
-              contract.interface.encodeFunctionData("sendTokens", [
-                depositViewTokenAddress,
-                multichainVaultAddress,
-                inputAmount,
-              ]),
-              contract.interface.encodeFunctionData("bridgeIn", [
-                account,
-                depositViewTokenAddress,
-                BigInt(depositViewChain),
-              ]),
+              encodeFunctionData({
+                abi: multichainTransferRouterAbi,
+                functionName: "sendTokens",
+                args: [depositViewTokenAddress as Address, multichainVaultAddress, inputAmount],
+              }),
+
+              encodeFunctionData({
+                abi: multichainTransferRouterAbi,
+                functionName: "bridgeIn",
+                args: [account, depositViewTokenAddress as Address],
+              }),
             ],
           ]),
           callback,
@@ -486,6 +496,15 @@ export const DepositView = () => {
         return;
       }
 
+      const metricData = initMultichainDepositMetricData({
+        assetAddress: depositViewTokenAddress,
+        assetSymbol: selectedToken!.symbol,
+        sizeInUsd: inputAmountUsd!,
+        isFirstDeposit: false,
+        settlementChain: settlementChainId,
+        sourceChain: depositViewChain,
+      });
+
       const sourceChainTokenAddress = selectedTokenSourceChainTokenId.address;
 
       const sourceChainStargateAddress = selectedTokenSourceChainTokenId.stargate;
@@ -506,6 +525,7 @@ export const DepositView = () => {
         value: (quoteSend.nativeFee as bigint) + value,
         callback: (txnEvent) => {
           if (txnEvent.event === TxnEventName.Error) {
+            sendTxnErrorMetric(metricData.metricId, txnEvent.data.error, "sending");
             const data = txnEvent.data.error.data as Hex | undefined;
 
             if (data) {
@@ -537,6 +557,7 @@ export const DepositView = () => {
               });
             }
           } else if (txnEvent.event === TxnEventName.Sent) {
+            sendTxnSentMetric(metricData.metricId);
             helperToast.success("Deposit sent", { toastId: "gmx-account-deposit" });
             setIsVisibleOrView("main");
           }
@@ -548,8 +569,9 @@ export const DepositView = () => {
     depositViewChain,
     depositViewTokenAddress,
     inputAmount,
+    inputAmountUsd,
     quoteSend,
-    selectedToken?.wrappedAddress,
+    selectedToken,
     selectedTokenSourceChainTokenId,
     sendParamsWithSlippage,
     setIsVisibleOrView,

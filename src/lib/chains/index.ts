@@ -7,7 +7,7 @@ import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
 import { isSettlementChain, isSourceChain } from "context/GmxAccountContext/config";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
-import type { UiContractsChain, UiSettlementChain } from "sdk/configs/chains";
+import type { UiContractsChain, UiSettlementChain, UiSourceChain } from "sdk/configs/chains";
 
 /**
  * This returns default chainId if chainId is not supported or not found
@@ -15,8 +15,14 @@ import type { UiContractsChain, UiSettlementChain } from "sdk/configs/chains";
 export function useChainId(): {
   chainId: UiContractsChain;
   isConnectedToChainId?: boolean;
+  srcChainId?: UiSourceChain;
 } {
   let { chainId: unsanitizedChainId } = useAccount();
+  const srcChainId =
+    unsanitizedChainId && isSourceChain(unsanitizedChainId) && !isSettlementChain(unsanitizedChainId)
+      ? unsanitizedChainId
+      : undefined;
+
   const [gmxAccountSettlementChainId] = useGmxAccountSettlementChainId();
 
   const [displayedChainId, setDisplayedChainId] = useState(unsanitizedChainId ?? DEFAULT_CHAIN_ID);
@@ -117,26 +123,27 @@ export function useChainId(): {
 
   if (mustChangeChainId) {
     if (localStorageChainIdIsSettlement || localStorageChainIdIsSupported) {
-      return { chainId: chainIdFromLocalStorage as UiSettlementChain };
+      return { chainId: chainIdFromLocalStorage as UiSettlementChain, srcChainId };
     }
 
     if (localStorageChainIdIsSource) {
-      return { chainId: gmxAccountSettlementChainId };
+      return { chainId: gmxAccountSettlementChainId, srcChainId };
     }
 
-    return { chainId: DEFAULT_CHAIN_ID };
+    return { chainId: DEFAULT_CHAIN_ID, srcChainId };
   }
 
   if (currentChainIdIsSettlement || currentChainIdIsSupported) {
     return {
       chainId: displayedChainId as UiContractsChain,
       isConnectedToChainId: displayedChainId === unsanitizedChainId,
+      srcChainId,
     };
   }
 
   if (currentChainIdIsSource) {
-    return { chainId: gmxAccountSettlementChainId as UiSettlementChain, isConnectedToChainId: true };
+    return { chainId: gmxAccountSettlementChainId as UiSettlementChain, isConnectedToChainId: true, srcChainId };
   }
 
-  return { chainId: DEFAULT_CHAIN_ID, isConnectedToChainId: false };
+  return { chainId: DEFAULT_CHAIN_ID, isConnectedToChainId: false, srcChainId };
 }

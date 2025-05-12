@@ -23,11 +23,11 @@ import { getContract } from "config/contracts";
 import { getSwapDebugSettings } from "config/externalSwaps";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import {
-  getMappedTokenId,
   getMultichainTokenId,
   getStargateEndpointId,
   getStargatePoolAddress,
   MULTI_CHAIN_TOKEN_MAPPING,
+  MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS,
   OVERRIDE_ERC20_BYTECODE,
 } from "context/GmxAccountContext/config";
 import { useGmxAccountSettlementChainId, useGmxAccountWithdrawViewTokenAddress } from "context/GmxAccountContext/hooks";
@@ -45,11 +45,10 @@ import { getOracleParamsPayload, getOraclePriceParamsForRelayFee } from "domain/
 import { getRelayerFeeParams } from "domain/synthetics/express/relayParamsUtils";
 import { ExpressParams, MultichainRelayParamsPayload } from "domain/synthetics/express/types";
 import { callRelayTransaction, GELATO_RELAY_ADDRESS } from "domain/synthetics/gassless/txns/expressOrderDebug";
-import { buildAndSignBridgeOutTxn, buildAndSignExpressBatchOrderTxn } from "domain/synthetics/orders/expressOrderUtils";
+import { buildAndSignBridgeOutTxn } from "domain/synthetics/orders/expressOrderUtils";
 import { useTokenRecentPricesRequest } from "domain/synthetics/tokens";
 import { getSwapAmountsByToValue } from "domain/synthetics/trade/utils/swap";
-import { TokenData, convertToTokenAmount, convertToUsd } from "domain/tokens";
-import { estimateGasLimitMultichain } from "lib/gas/estimateGasLimit";
+import { convertToTokenAmount, convertToUsd, TokenData } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import {
   bigintToNumber,
@@ -62,15 +61,15 @@ import {
 } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
+import { ExpressTxnData } from "lib/transactions/sendExpressTransaction";
 import { switchNetwork } from "lib/wallets";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { abis } from "sdk/abis";
 import { GMX_SIMULATION_ORIGIN } from "sdk/configs/dataStore";
-import { convertTokenAddress, getToken, getTokenBySymbol } from "sdk/configs/tokens";
+import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { extendError, OrderErrorContext } from "sdk/utils/errors";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
-import { BatchOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
+import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { getMidPrice } from "sdk/utils/tokens";
 import { BridgeOutParamsStruct } from "typechain-types-arbitrum-sepolia/MultichainTransferRouter";
 import {
@@ -83,12 +82,11 @@ import {
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
-import { getTxnErrorToast } from "components/Errors/errorToasts";
 import NumberInput from "components/NumberInput/NumberInput";
 import {
   useGmxAccountTokensDataObject,
   useGmxAccountWithdrawNetworks,
-  useMultichainTokens,
+  useMultichainTokensRequest,
 } from "components/Synthetics/GmxAccountModal/hooks";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
@@ -107,7 +105,7 @@ export const WithdrawView = () => {
 
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
   const networks = useGmxAccountWithdrawNetworks();
-  const multichainTokens = useMultichainTokens();
+  const multichainTokens = useMultichainTokensRequest();
   const gasPaymentToken = useSelector(selectGasPaymentToken);
   const relayerFeeToken = useSelector(selectRelayerFeeToken);
 
@@ -131,7 +129,8 @@ export const WithdrawView = () => {
     : undefined;
 
   const options = useMemo(() => {
-    return Object.values(gmxAccountTokensData)
+    return MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS[settlementChainId]
+      .map((tokenAddress) => gmxAccountTokensData[tokenAddress])
       .filter((token) => token.address !== zeroAddress)
       .sort((a, b) => {
         const aFloat = bigintToNumber(a.balance ?? 0n, a.decimals);
@@ -139,7 +138,7 @@ export const WithdrawView = () => {
 
         return bFloat - aFloat;
       });
-  }, [gmxAccountTokensData]);
+  }, [gmxAccountTokensData, settlementChainId]);
 
   const handleMaxButtonClick = useCallback(() => {
     if (selectedToken === undefined || selectedToken.balance === undefined || selectedToken.balance === 0n) {

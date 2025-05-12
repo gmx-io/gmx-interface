@@ -51,7 +51,9 @@ export type OrderMetricType =
   | EditCollateralMetricData["metricType"]
   | SwapGmMetricData["metricType"]
   | SwapGLVMetricData["metricType"]
-  | ShiftGmMetricData["metricType"];
+  | ShiftGmMetricData["metricType"]
+  | MultichainDepositMetricData["metricType"]
+  | MultichainWithdrawalMetricData["metricType"];
 
 export type OrderEventName = `${OrderMetricType}.${OrderStage}`;
 export type MeasureEventName = `${MeasureMetricType}.${LoadingStage}`;
@@ -65,7 +67,9 @@ export type OrderMetricData =
   | EditCollateralMetricData
   | SwapGmMetricData
   | SwapGLVMetricData
-  | ShiftGmMetricData;
+  | ShiftGmMetricData
+  | MultichainDepositMetricData
+  | MultichainWithdrawalMetricData;
 
 // General metrics
 export type OpenAppEvent = {
@@ -470,4 +474,43 @@ export type GetFeeDataBlockError = {
 
 export type SetAutoCloseOrdersAction = {
   event: "announcement.autoCloseOrders.updateExistingOrders";
+};
+
+// 1. To measure share of succesfull Deposits and Deposit time: Add new events in Datadog: multichainDeposit, multichainWithdrawal. Events should follow the same scheme as “increasePosition” events (executed, submitted and etc).
+//  Additionally, It should have fields for:
+//     1. SourceChain / TargetChain (chain that asset is deposited or, withdrawn to)
+//     2. Asset (BTC, ETH, USDC, etc)
+//     3. Size In usd
+//     4. Is First Deposit
+
+type MultichainFundingParams = {
+  sourceChain: number;
+  settlementChain: number;
+  assetSymbol: string;
+  assetAddress: string;
+  sizeInUsd: number;
+};
+
+export type MultichainDepositMetricData = MultichainFundingParams & {
+  metricId: `multichainDeposit:${string}`;
+  metricType: "multichainDeposit";
+  isFirstDeposit: boolean;
+};
+
+export type MultichainWithdrawalMetricData = MultichainFundingParams & {
+  metricId: `multichainWithdrawal:${string}`;
+  metricType: "multichainWithdrawal";
+  isFirstWithdrawal: boolean;
+};
+
+export type MultichainDepositEvent = {
+  event: "multichainDeposit";
+  isError: false;
+  data: MultichainDepositMetricData;
+};
+
+export type MultichainWithdrawalEvent = {
+  event: "multichainWithdrawal";
+  isError: false;
+  data: MultichainWithdrawalMetricData;
 };

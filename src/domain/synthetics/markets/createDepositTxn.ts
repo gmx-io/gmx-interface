@@ -42,7 +42,6 @@ export type CreateDepositParams = {
 };
 
 export async function createDepositTxn(chainId: number, signer: Signer, p: CreateDepositParams) {
-  // const srcChainId = await getMultichainInfoFromSigner
   const contract = new ethers.Contract(
     getContract(chainId, "ExchangeRouter"),
     chainId === ARBITRUM_SEPOLIA ? abis.ExchangeRouterArbitrumSepolia : abis.ExchangeRouter,

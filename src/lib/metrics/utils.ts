@@ -16,6 +16,8 @@ import {
   DecreaseOrderMetricData,
   EditCollateralMetricData,
   IncreaseOrderMetricData,
+  MultichainDepositMetricData,
+  MultichainWithdrawalMetricData,
   OrderCancelledEvent,
   OrderCreatedEvent,
   OrderExecutedEvent,
@@ -499,6 +501,74 @@ export function initShiftGmMetricData({
   });
 }
 
+export function initMultichainDepositMetricData({
+  sourceChain,
+  settlementChain,
+  assetSymbol,
+  assetAddress,
+  sizeInUsd,
+  isFirstDeposit,
+}: {
+  sourceChain: number;
+  settlementChain: number;
+  assetSymbol: string;
+  assetAddress: string;
+  sizeInUsd: bigint;
+  isFirstDeposit: boolean;
+}) {
+  return metrics.setCachedMetricData<MultichainDepositMetricData>({
+    metricId: getMultichainDepositMetricId({
+      sourceChain,
+      settlementChain,
+      assetSymbol,
+      assetAddress,
+      sizeInUsd,
+      isFirstDeposit,
+    }),
+    metricType: "multichainDeposit",
+    sourceChain,
+    settlementChain,
+    assetSymbol,
+    assetAddress,
+    sizeInUsd: formatAmountForMetrics(sizeInUsd)!,
+    isFirstDeposit,
+  });
+}
+
+export function initMultichainWithdrawalMetricData({
+  sourceChain,
+  settlementChain,
+  assetSymbol,
+  assetAddress,
+  sizeInUsd,
+  isFirstWithdrawal,
+}: {
+  sourceChain: number;
+  settlementChain: number;
+  assetSymbol: string;
+  assetAddress: string;
+  sizeInUsd: bigint;
+  isFirstWithdrawal: boolean;
+}) {
+  return metrics.setCachedMetricData<MultichainWithdrawalMetricData>({
+    metricId: getMultichainWithdrawalMetricId({
+      sourceChain,
+      settlementChain,
+      assetSymbol,
+      assetAddress,
+      sizeInUsd,
+      isFirstWithdrawal,
+    }),
+    metricType: "multichainWithdrawal",
+    sourceChain,
+    settlementChain,
+    assetSymbol,
+    assetAddress,
+    sizeInUsd: formatAmountForMetrics(sizeInUsd)!,
+    isFirstWithdrawal,
+  });
+}
+
 export function getGMSwapMetricId(p: {
   marketAddress: string | undefined;
   executionFee: bigint | undefined;
@@ -553,6 +623,42 @@ export function getPositionOrderMetricId(p: {
     p.isLong || "isLong",
     p.orderType || "orderType",
     p.sizeDeltaUsd?.toString() || "sizeDeltaUsd",
+  ].join(":")}`;
+}
+
+export function getMultichainDepositMetricId(p: {
+  sourceChain: number;
+  settlementChain: number;
+  assetSymbol: string;
+  assetAddress: string;
+  sizeInUsd: bigint;
+  isFirstDeposit: boolean;
+}): MultichainDepositMetricData["metricId"] {
+  return `multichainDeposit:${[
+    p.sourceChain,
+    p.settlementChain,
+    p.assetSymbol,
+    p.assetAddress,
+    formatAmountForMetrics(p.sizeInUsd),
+    p.isFirstDeposit,
+  ].join(":")}`;
+}
+
+export function getMultichainWithdrawalMetricId(p: {
+  sourceChain: number;
+  settlementChain: number;
+  assetSymbol: string;
+  assetAddress: string;
+  sizeInUsd: bigint;
+  isFirstWithdrawal: boolean;
+}): MultichainWithdrawalMetricData["metricId"] {
+  return `multichainWithdrawal:${[
+    p.sourceChain,
+    p.settlementChain,
+    p.assetSymbol,
+    p.assetAddress,
+    formatAmountForMetrics(p.sizeInUsd),
+    p.isFirstWithdrawal,
   ].join(":")}`;
 }
 

@@ -139,16 +139,20 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
 const AssetListMultichain = () => {
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
 
-  const displayTokens = Object.values(gmxAccountTokensData).map(
-    (token): DisplayToken => ({
-      chainId: 0,
-      symbol: token.symbol,
-      isGmxAccountBalance: true,
-      balance: token.balance,
-      balanceUsd: convertToUsd(token.balance, token.decimals, getMidPrice(token.prices)),
-      decimals: token.decimals,
-    })
-  );
+  const displayTokens = useMemo(() => {
+    return Object.values(gmxAccountTokensData)
+      .filter((token) => !token.isNative)
+      .map(
+        (token): DisplayToken => ({
+          chainId: 0,
+          symbol: token.symbol,
+          isGmxAccountBalance: true,
+          balance: token.balance,
+          balanceUsd: convertToUsd(token.balance, token.decimals, getMidPrice(token.prices)),
+          decimals: token.decimals,
+        })
+      );
+  }, [gmxAccountTokensData]);
 
   return <AssetsList noChainFilter tokens={displayTokens} />;
 };

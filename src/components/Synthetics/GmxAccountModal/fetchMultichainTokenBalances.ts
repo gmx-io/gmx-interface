@@ -8,7 +8,8 @@ import { EMPTY_OBJECT } from "lib/objects";
 
 export async function fetchMultichainTokenBalances(
   currentSettlementChainId: number,
-  account: string
+  account: string,
+  progressCallback: (chainId: number, tokensChainData: Record<string, bigint>) => void
 ): Promise<Record<number, Record<string, bigint>>> {
   const requests: Promise<{
     chainId: number;
@@ -16,6 +17,8 @@ export async function fetchMultichainTokenBalances(
   }>[] = [];
 
   const sourceChainMap = MULTI_CHAIN_SUPPORTED_TOKEN_MAP[currentSettlementChainId];
+
+  const result: Record<number, Record<string, bigint>> = {};
 
   for (const sourceChainIdString in sourceChainMap) {
     const sourceChainId = parseInt(sourceChainIdString);
@@ -64,43 +67,49 @@ export async function fetchMultichainTokenBalances(
       // TODO pass priority from args
       "urgent",
       `fetchMultichainTokens-${getChainName(sourceChainId)}`
-    ).then(
-      (res) => {
-        const tokensChainData: Record<string, bigint> = {};
-        for (const tokenAddress of tokenAddresses) {
-          if (tokenAddress === zeroAddress) {
+    )
+      .then(
+        (res) => {
+          const tokensChainData: Record<string, bigint> = {};
+          for (const tokenAddress of tokenAddresses) {
+            if (tokenAddress === zeroAddress) {
+              const balance = res.data[tokenAddress].balanceOf.returnValues[0] ?? 0n;
+              tokensChainData[tokenAddress] = balance;
+              continue;
+            }
+
             const balance = res.data[tokenAddress].balanceOf.returnValues[0] ?? 0n;
             tokensChainData[tokenAddress] = balance;
-            continue;
           }
 
-          const balance = res.data[tokenAddress].balanceOf.returnValues[0] ?? 0n;
-          tokensChainData[tokenAddress] = balance;
+          return {
+            chainId: sourceChainId,
+            tokensChainData,
+          };
+        },
+        () => {
+          return {
+            chainId: sourceChainId,
+            tokensChainData: EMPTY_OBJECT,
+          };
         }
-
-        return {
-          chainId: sourceChainId,
-          tokensChainData,
-        };
-      },
-      () => {
-        return {
-          chainId: sourceChainId,
-          tokensChainData: EMPTY_OBJECT,
-        };
-      }
-    );
+      )
+      .then((res) => {
+        result[res.chainId] = res.tokensChainData;
+        progressCallback(res.chainId, res.tokensChainData);
+        return res;
+      });
 
     requests.push(request);
   }
 
-  const result: Record<number, Record<string, bigint>> = {};
+  // for (const request of requests) {
+  //   const { chainId, tokensChainData } = await request;
 
-  for (const request of requests) {
-    const { chainId, tokensChainData } = await request;
+  //   result[chainId] = tokensChainData;
+  // }
 
-    result[chainId] = tokensChainData;
-  }
+  await Promise.all(requests);
 
   return result;
 }

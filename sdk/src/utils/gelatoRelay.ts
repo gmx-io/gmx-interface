@@ -1,4 +1,5 @@
 import { GelatoRelay } from "@gelatonetwork/relay-sdk";
+import noop from "lodash/noop";
 
 import { sleep } from "./common";
 
@@ -27,13 +28,18 @@ const gelatoRelayProxy = new Proxy<ProxyGelatoRelay>({} as ProxyGelatoRelay, {
       // check current window state
       if (document.readyState === "complete") {
         console.log("Gelato relay initialized. Resolved immediately.");
-        resolve(new GelatoRelay());
+        const relay = new GelatoRelay();
+        relay.onError(noop);
+        resolve(relay);
       } else {
         window.addEventListener(
           "load",
-          () => {
+          async () => {
+            await sleep(3000);
             console.log("Gelato relay initialized. Resolved on load event.");
-            resolve(new GelatoRelay());
+            const relay = new GelatoRelay();
+            relay.onError(noop);
+            resolve(relay);
           },
           {
             once: true,

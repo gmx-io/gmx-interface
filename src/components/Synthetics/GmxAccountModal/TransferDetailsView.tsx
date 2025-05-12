@@ -1,3 +1,5 @@
+import { Trans } from "@lingui/macro";
+
 import { getChainName } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import { useGmxAccountSelectedTransferGuid, useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
@@ -5,6 +7,7 @@ import { formatBalanceAmount } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import { getToken } from "sdk/configs/tokens";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import externalLink from "img/ic_new_link_20.svg";
@@ -24,11 +27,18 @@ export const TransferDetailsView = () => {
     return null;
   }
 
+  const sourceChainName = getChainName(selectedTransfer.sourceChainId);
+
   const token = getToken(settlementChainId, selectedTransfer.token);
 
   return (
     <div className="text-body-medium flex grow flex-col gap-8 overflow-y-hidden">
       <div className="flex flex-col gap-8 px-16 pt-16">
+        {selectedTransfer.isExecutionError ? (
+          <AlertInfoCard type="error">
+            <Trans>Your deposit of from {sourceChainName} was not executed due to an error</Trans>
+          </AlertInfoCard>
+        ) : null}
         <SyntheticsInfoRow label="Sent at" value={formatTradeActionTimestamp(selectedTransfer.sentTimestamp)} />
         {selectedTransfer.receivedTimestamp ? (
           <SyntheticsInfoRow

@@ -97,7 +97,7 @@ import SettingsIcon24 from "img/ic_settings_24.svg?react";
 
 import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
-import { useGmxAccountTokensDataObject, useMultichainTokens } from "../GmxAccountModal/hooks";
+import { useGmxAccountTokensDataObject, useMultichainTokensRequest } from "../GmxAccountModal/hooks";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import TradeBoxLongShortInfoIcon from "./components/TradeBoxLongShortInfoIcon";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
@@ -133,7 +133,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const tokensData = useTokensData();
   const walletPayableTokensData = useSelector(selectWalletPayableTokensData);
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
-  const multichainTokens = useMultichainTokens();
+  const multichainTokens = useMultichainTokensRequest();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;

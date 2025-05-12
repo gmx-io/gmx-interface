@@ -4,9 +4,9 @@ import { readContract } from "viem/actions";
 
 import { getIsInternalSwapBetter } from "domain/synthetics/externalSwaps/utils";
 import { getNeedTokenApprove, TokensAllowanceData, TokensData } from "domain/synthetics/tokens";
-import { AbiId, abis } from "sdk/abis";
+import { abis } from "sdk/abis";
 import RelayParamsAbi from "sdk/abis/RelayParams.json";
-import { UiContractsChain, UiSettlementChain, UiSourceChain } from "sdk/configs/chains";
+import { UiContractsChain, UiSourceChain } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { getRelayerFeeToken } from "sdk/configs/express";
 import { ExternalSwapOutput, SwapAmounts } from "sdk/types/trade";
@@ -28,58 +28,6 @@ export function getExpressContractInstance(chainId: number, provider: Provider, 
 
   return contract;
 }
-
-// export function getGelatoRelayRouterDomain(chainId: number, isSubaccount: boolean) {
-//   return {
-//     name: "GmxBaseGelatoRelayRouter",
-//     version: "1",
-//     chainId: chainId,
-//     verifyingContract: getExpressContractAddress(chainId, { isSubaccount }),
-//   };
-// }
-
-// export function getGelatoRelayRouterDomain(
-//   chainId: number,
-//   isSubaccount: boolean,
-//   srcChainId?: number
-// ): {
-//   name: string;
-//   chainId: number;
-//   verifyingContract: string;
-//   version: string;
-// } {
-//   let name: string;
-//   if (srcChainId) {
-//     name = "GmxBaseGelatoRelayRouter";
-//   } else if (isSubaccount) {
-//     name = "GmxBaseSubaccountGelatoRelayRouter";
-//   } else {
-//     name = "GmxBaseGelatoRelayRouter";
-//   }
-
-//   let domainChainId: number;
-//   if (srcChainId) {
-//     domainChainId = srcChainId;
-//   } else {
-//     domainChainId = chainId;
-//   }
-
-//   let verifyingContract: string;
-//   if (srcChainId) {
-//     verifyingContract = getContract(chainId, "MultichainTransferRouter");
-//   } else if (isSubaccount) {
-//     verifyingContract = getContract(chainId, "SubaccountGelatoRelayRouter");
-//   } else {
-//     verifyingContract = getContract(chainId, "GelatoRelayRouter");
-//   }
-
-//   return {
-//     name,
-//     version: "1",
-//     chainId: domainChainId,
-//     verifyingContract,
-//   };
-// }
 
 export function getGelatoRelayRouterDomain(
   chainId: UiContractsChain,
@@ -323,14 +271,14 @@ export async function getRelayRouterNonceForMultichain(
   account: Address,
   relayRouterAddress: Address
 ) {
-  const contractAddress = relayRouterAddress;
+  // const contractAddress = relayRouterAddress;
 
   if (!settlementChainClient) {
     throw new Error("settlementChainClient is required");
   }
 
   const result: bigint = await readContract(settlementChainClient, {
-    address: contractAddress,
+    address: relayRouterAddress,
     abi: abiWithUserNonces,
     functionName: "userNonces",
     args: [account],

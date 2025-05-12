@@ -92,7 +92,8 @@ export function useSettings() {
 }
 
 export function SettingsContextProvider({ children }: { children: ReactNode }) {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
+
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [showDebugValues, setShowDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const [savedAllowedSlippage, setSavedAllowedSlippage] = useLocalStorageSerializeKey(
@@ -209,6 +210,15 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setExecutionFeeBufferBps,
     setHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
   ]);
+
+  useEffect(
+    function fallbackMultichain() {
+      if (srcChainId && !expressOrdersEnabled) {
+        setExpressOrdersEnabled(true);
+      }
+    },
+    [expressOrdersEnabled, setExpressOrdersEnabled, srcChainId]
+  );
 
   const contextState: SettingsContextType = useMemo(() => {
     return {

@@ -42,7 +42,8 @@ export function useMultichainDepositNetworkComposeGas(): {
     walletChainId &&
     depositViewTokenAddress &&
     getStargatePoolAddress(settlementChainId, depositViewTokenAddress) !== undefined &&
-    tryGetContract(settlementChainId, "LayerZeroProvider") !== undefined;
+    tryGetContract(settlementChainId, "LayerZeroProvider") !== undefined &&
+    walletChainId !== settlementChainId;
   const composeGasQuery = useSWR<bigint | undefined>(
     composeGasQueryCondition
       ? ["composeGas", account, settlementChainId, walletChainId, depositViewTokenAddress]
