@@ -16,7 +16,7 @@ import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/se
 import { selectTradeboxSelectedPositionKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
-import { OrderErrors, PositionOrderInfo, isIncreaseOrderType } from "domain/synthetics/orders";
+import { OrderErrors, PositionOrderInfo, isIncreaseOrderType, isTwapOrder } from "domain/synthetics/orders";
 import {
   PositionInfo,
   formatEstimatedLiquidationTime,
@@ -40,6 +40,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 
 import "./PositionItem.scss";
+import { TwapOrderProgress } from "../OrderItem/OrderItem";
 
 export type Props = {
   position: PositionInfo;
@@ -781,7 +782,7 @@ function PositionItemOrder({
   onOrdersClick?: (key?: string) => void;
 }) {
   const [, setEditingOrderState] = useEditingOrderState();
-  const [isCancelling, cancel] = useCancelOrder(order.key);
+  const [isCancelling, cancel] = useCancelOrder(order);
   const handleOrdersClick = useCallback(() => {
     onOrdersClick?.(order.key);
   }, [onOrdersClick, order.key]);
@@ -797,7 +798,7 @@ function PositionItemOrder({
       <div className="flex items-start justify-between gap-6">
         <Button
           variant="secondary"
-          className="!block w-full !bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
+          className="!block w-full !bg-slate-100 !bg-opacity-15 !p-5 hover:!bg-opacity-20 active:!bg-opacity-25"
           onClick={handleOrdersClick}
         >
           <div className="flex items-center justify-between">
@@ -805,13 +806,15 @@ function PositionItemOrder({
             <FaAngleRight fontSize={16} className="ml-5" />
           </div>
         </Button>
-        <Button
-          variant="secondary"
-          className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
-          onClick={handleEditClick}
-        >
-          <AiOutlineEdit fontSize={16} />
-        </Button>
+        {!isTwapOrder(order) && (
+          <Button
+            variant="secondary"
+            className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
+            onClick={handleEditClick}
+          >
+            <AiOutlineEdit fontSize={16} />
+          </Button>
+        )}
         <Button
           variant="secondary"
           className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
@@ -844,18 +847,26 @@ function PositionItemOrder({
 function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
   const triggerThresholdType = getOrderThresholdType(order.orderType, order.isLong);
   const isIncrease = isIncreaseOrderType(order.orderType);
+  const isTwap = isTwapOrder(order);
 
   return (
     <div key={order.key} className="text-start">
-      {getNameByOrderType(order.orderType, { abbr: true })}: {triggerThresholdType}{" "}
-      {formatUsd(order.triggerPrice, {
-        displayDecimals: calculateDisplayDecimals(order.triggerPrice, undefined, order.indexToken?.visualMultiplier),
-        visualMultiplier: order.indexToken?.visualMultiplier,
-      })}
+      {getNameByOrderType(order.orderType, order.isTwap, { abbr: true })}
+      {!isTwap
+        ? `: ${triggerThresholdType} ` +
+          formatUsd(order.triggerPrice, {
+            displayDecimals: calculateDisplayDecimals(
+              order.triggerPrice,
+              undefined,
+              order.indexToken?.visualMultiplier
+            ),
+            visualMultiplier: order.indexToken?.visualMultiplier,
+          })
+        : null}
       :{" "}
       <span>
         {isIncrease ? "+" : "-"}
-        {formatUsd(order.sizeDeltaUsd)}
+        {formatUsd(order.sizeDeltaUsd)} {isTwapOrder(order) && <TwapOrderProgress order={order} />}
       </span>
     </div>
   );

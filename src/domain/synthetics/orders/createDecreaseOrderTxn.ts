@@ -49,6 +49,7 @@ export type DecreaseOrderParams = {
   tokensData: TokensData;
   autoCancel: boolean;
   slippageInputId?: string;
+  isTwap: false;
 };
 
 export type DecreaseOrderCallbacks = {

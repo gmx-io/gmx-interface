@@ -18,8 +18,7 @@ const sdk = new GmxSdk({
   rpcUrl: "https://arb1.arbitrum.io/rpc",
   oracleUrl: "https://arbitrum-api.gmxinfra.io",
   walletClient: useWallet().walletClient,
-  subsquidUrl: "https://gmx.squids.live/gmx-synthetics-arbitrum:live/api/graphql",
-  subgraphUrl: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api",
+  subsquidUrl: "https://gmx.squids.live/gmx-synthetics-arbitrum:prod/api/graphql",
 });
 
 const { marketsInfoData, tokensData } = await sdk.markets.getMarketsInfo();
@@ -67,6 +66,14 @@ sdk.positions
 ### Write methods
 
 ### Orders
+
+#### Quick methods:
+
+- `long(p: Parameters)` - creates long positions (see [examples](#helpers))
+- `short(p: Parameters)` - creates short positions (see [examples](#helpers))
+- `swap(p: Parameters)` - creates a swap order (see [examples](#helpers))
+
+#### Full methods:
 
 - `cancelOrders(orderKeys: string[])` - cancels orders by order keys
 - `createIncreaseOrder(p: Parameters)` - creates an increase order (see [examples](#examples))
@@ -197,5 +204,27 @@ sdk.orders.createIncreaseOrder({
     fundingFeeUsd: 0n,
     positionPriceImpactDeltaUsd: 41444328240807630917223064n,
   },
+});
+```
+
+### Helpers
+
+Helpers are a set of functions that help you create orders without manually calculating the amounts, swap paths, etc. By default helpers will fetch the latest data from the API, but you can pass both `marketsInfoData` and `tokensData` to the helpers to avoid extra calls to the API.
+
+```typescript
+sdk.orders.long({
+  payAmount: 100031302n,
+  marketAddress: "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336",
+  payTokenAddress: market.indexToken.address,
+  collateralTokenAddress: market.shortToken.address,
+  allowedSlippageBps: 125,
+  leverage: 50000n,
+});
+
+sdk.orders.swap({
+  fromAmount: 1000n,
+  fromTokenAddress: "0x912CE59144191C1204E64559FE8253a0e49E6548",
+  toTokenAddress: "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
+  allowedSlippageBps: 125,
 });
 ```

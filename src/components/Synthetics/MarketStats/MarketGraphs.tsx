@@ -10,11 +10,10 @@ import { GlvInfo, MarketInfo, useMarketsInfoRequest } from "domain/synthetics/ma
 import { isGlvEnabled, isGlvInfo } from "domain/synthetics/markets/glv";
 import { PerformanceSnapshot, PriceSnapshot } from "domain/synthetics/markets/performance";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
-import { AprSnapshot, useGmGlvApr } from "domain/synthetics/markets/useGmGlvApr";
+import { ApySnapshot, useGmGlvApySnapshots } from "domain/synthetics/markets/useGmGlvApySnapshots";
 import { useGmGlvPerformance } from "domain/synthetics/markets/useGmGlvPerformance";
 import { POOLS_TIME_RANGE_OPTIONS, convertPoolsTimeRangeToPeriod } from "domain/synthetics/markets/usePoolsTimeRange";
 import { PoolsTimeRange, usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
-import { TokensData, getTokenData } from "domain/synthetics/tokens";
 import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
 import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
@@ -56,29 +55,26 @@ const getGraphValue = ({
   glvPerformance,
   gmPerformance,
   priceSnapshots,
-  aprSnapshots,
+  apySnapshots,
 }: {
   marketGraphType: MarketGraphType;
   marketInfo: GlvInfo | MarketInfo;
   glvPerformance: Record<string, number>;
   gmPerformance: Record<string, number>;
   priceSnapshots: PriceSnapshot[];
-  aprSnapshots: AprSnapshot[];
+  apySnapshots: ApySnapshot[];
 }) => {
   const isGlv = isGlvInfo(marketInfo);
   const address = isGlv ? marketInfo.glvTokenAddress : marketInfo.marketTokenAddress;
-  const lastAprSnapshot = aprSnapshots[aprSnapshots.length - 1];
+  const lastApySnapshot = apySnapshots[apySnapshots.length - 1];
   const lastPriceSnapshot = priceSnapshots[priceSnapshots.length - 1];
   const valuesMap: Record<MarketGraphType, ReactNode> = {
     performance: `${Math.round((isGlv ? glvPerformance[address] : gmPerformance[address]) * 10000) / 100}%`,
     price: lastPriceSnapshot
-      ? formatUsdPrice(BigInt(lastPriceSnapshot.maxPrice) + BigInt(lastPriceSnapshot.minPrice) / 2n)
+      ? formatUsdPrice((BigInt(lastPriceSnapshot.maxPrice) + BigInt(lastPriceSnapshot.minPrice)) / 2n)
       : "...",
-    feeApy: lastAprSnapshot
-      ? formatPercentage(
-          (BigInt(lastAprSnapshot.aprByFee) + BigInt(lastAprSnapshot.aprByBorrowingFee)) / 1000n,
-          { bps: false }
-        )
+    feeApy: lastApySnapshot
+      ? formatPercentage(lastApySnapshot.apy, { bps: false })
       : "...",
   };
 
@@ -117,7 +113,7 @@ export function MarketGraphs({ marketInfo }: { marketInfo: GlvInfo | MarketInfo 
       tokenAddresses,
     });
 
-  const { aprSnapshots } = useGmGlvApr({
+  const { apySnapshots } = useGmGlvApySnapshots({
     chainId,
     period: convertPoolsTimeRangeToPeriod(timeRange),
     tokenAddresses: [address],
@@ -125,7 +121,7 @@ export function MarketGraphs({ marketInfo }: { marketInfo: GlvInfo | MarketInfo 
 
   const isGlv = isGlvInfo(marketInfo);
 
-  const aprSnapshotsByAddress = aprSnapshots?.[address] ?? EMPTY_ARRAY;
+  const apySnapshotsByAddress = apySnapshots?.[address] ?? EMPTY_ARRAY;
   const priceSnapshotsByAddress = prices?.[address] ?? EMPTY_ARRAY;
 
   return (
@@ -147,7 +143,7 @@ export function MarketGraphs({ marketInfo }: { marketInfo: GlvInfo | MarketInfo 
                 marketInfo,
                 glvPerformance,
                 gmPerformance,
-                aprSnapshots: aprSnapshotsByAddress,
+                apySnapshots: apySnapshotsByAddress,
                 priceSnapshots: priceSnapshotsByAddress,
               })}
               label={GRAPH_VALUE_LABEL_BY_TYPE[marketGraphType]}
@@ -164,7 +160,7 @@ export function MarketGraphs({ marketInfo }: { marketInfo: GlvInfo | MarketInfo 
             }
             priceSnapshots={priceSnapshotsByAddress}
             marketGraphType={marketGraphType}
-            aprSnapshots={aprSnapshotsByAddress}
+            apySnapshots={apySnapshotsByAddress}
           />
         </div>
       </div>
@@ -181,7 +177,7 @@ const DOT_PROPS = {
   r: 0,
 };
 
-const GRAPH_MARGIN = { top: 5, right: 5, bottom: 0, left: 0 };
+const GRAPH_MARGIN = { top: 5, right: 20, bottom: 0, left: 0 };
 
 type GraphData = {
   value: number;
@@ -216,16 +212,20 @@ const axisValueFormatter = (marketGraphType: MarketGraphType) => (value: number)
   return valueMap[marketGraphType];
 };
 
+const AXIS_TICK = {
+  fill: "var(--color-slate-100)",
+};
+
 const GraphChart = ({
   performanceSnapshots,
   priceSnapshots,
   marketGraphType,
-  aprSnapshots,
+  apySnapshots,
 }: {
   performanceSnapshots: PerformanceSnapshot[];
   priceSnapshots: PriceSnapshot[];
   marketGraphType: MarketGraphType;
-  aprSnapshots: AprSnapshot[];
+  apySnapshots: ApySnapshot[];
 }) => {
   const performanceData = performanceSnapshots.map((snapshot) => ({
     snapshotTimestamp: new Date(snapshot.snapshotTimestamp * 1000),
@@ -237,18 +237,18 @@ const GraphChart = ({
     value: bigintToNumber((BigInt(snapshot.maxPrice) + BigInt(snapshot.minPrice)) / 2n, USD_DECIMALS),
   }));
 
-  const aprData = aprSnapshots.map((snapshot) => ({
+  const apyData = apySnapshots.map((snapshot) => ({
     snapshotTimestamp: new Date(snapshot.snapshotTimestamp * 1000),
-    value: bigintToNumber(BigInt(snapshot.aprByFee) + BigInt(snapshot.aprByBorrowingFee), USD_DECIMALS),
+    value: bigintToNumber(snapshot.apy, 28),
   }));
 
   const data = useMemo(
     (): Record<MarketGraphType, GraphData[]> => ({
       performance: performanceData,
       price: priceData,
-      feeApy: aprData,
+      feeApy: apyData,
     }),
-    [performanceData, priceData, aprData]
+    [performanceData, priceData, apyData]
   );
 
   const formatValue = useMemo(() => valueFormatter(marketGraphType), [marketGraphType]);
@@ -271,16 +271,10 @@ const GraphChart = ({
             tickFormatter={(value) => format(value, "dd/MM")}
             tickLine={false}
             axisLine={false}
-            tick={{ fill: "var(--color-slate-100)" }}
-            minTickGap={25}
+            tick={AXIS_TICK}
+            minTickGap={32}
           />
-          <YAxis
-            dataKey="value"
-            tickFormatter={formatAxisValue}
-            tickLine={false}
-            axisLine={false}
-            tick={{ fill: "var(--color-slate-100)" }}
-          />
+          <YAxis dataKey="value" tickFormatter={formatAxisValue} tickLine={false} axisLine={false} tick={AXIS_TICK} />
         </LineChart>
       </ResponsiveContainer>
     </div>

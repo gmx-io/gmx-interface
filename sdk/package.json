@@ -1,27 +1,59 @@
 {
   "name": "@gmx-io/sdk",
-  "version": "0.2.0",
+  "version": "1.0.1",
   "type": "module",
-  "main": "build/src/index.js",
+  "main": "./build/cjs/src/index.js",
+  "module": "./build/esm/src/index.js",
+  "types": "./build/types/src/index.d.ts",
   "exports": {
     ".": {
-      "import": "./build/src/index.js",
-      "require": "./build/src/index.js"
+      "import": "./build/esm/src/index.js",
+      "require": "./build/cjs/src/index.js",
+      "types": "./build/types/src/index.d.ts",
+      "default": "./build/cjs/src/index.js"
     },
-    "./abis/*": "./build/abis/*",
-    "./prebuilt/*": "./build/prebuilt/*",
-    "./utils/*": "./build/src/utils/*",
-    "./types/*": "./build/src/types/*",
-    "./configs/*": "./build/src/configs/*"
+    "./configs/*": {
+      "import": "./build/esm/src/configs/*.js",
+      "require": "./build/cjs/src/configs/*.js",
+      "types": "./build/types/src/configs/*.d.ts",
+      "default": "./build/cjs/src/configs/*.js"
+    },
+    "./abis/*": {
+      "import": "./build/esm/src/abis/*.js",
+      "require": "./build/cjs/src/abis/*.js",
+      "types": "./build/types/src/abis/*.d.ts",
+      "default": "./build/cjs/src/abis/*.js"
+    },
+    "./prebuilt/*": {
+      "import": "./build/esm/src/prebuilt/*.js",
+      "require": "./build/cjs/src/prebuilt/*.js",
+      "types": "./build/types/src/prebuilt/*.d.ts",
+      "default": "./build/cjs/src/prebuilt/*.js"
+    },
+    "./utils/*": {
+      "import": "./build/esm/src/utils/*.js",
+      "require": "./build/cjs/src/utils/*.js",
+      "types": "./build/types/src/utils/*.d.ts",
+      "default": "./build/cjs/src/utils/*.js"
+    },
+    "./types/*": {
+      "import": "./build/esm/src/types/*.js",
+      "require": "./build/cjs/src/types/*.js",
+      "types": "./build/types/src/types/*.d.ts",
+      "default": "./build/cjs/src/types/*.js"
+    }
   },
   "scripts": {
     "prebuild": "yarn tsx scripts/prebuild",
     "prepare": "ts-patch install -s",
-    "copy:jsons": "cp -r src/abis build/src && cp -r src/prebuilt build/src",
     "test": "vitest",
     "test:ci": "vitest run",
+    "build:cjs": "tsc -p tsconfig.cjs.json && echo '{\"type\": \"commonjs\"}' > build/cjs/src/package.json",
+    "build:esm": "tsc -p tsconfig.esm.json && echo '{\"type\": \"module\"}' > build/esm/src/package.json",
+    "build:types": "tsc -p tsconfig.json --emitDeclarationOnly",
     "tscheck": "tsc -p tsconfig.json --noEmit",
-    "build": "rm -rf build && tsc -p tsconfig.json && yarn copy:jsons"
+    "clean": "rm -rf build/**/*.tsbuildinfo",
+    "build": "rm -rf build && yarn build:types && yarn build:cjs && yarn build:esm && yarn clean"
   },
   "publishConfig": {
     "access": "public"

@@ -60,10 +60,14 @@ export type Order = {
   shouldUnwrapNativeToken: boolean;
   autoCancel: boolean;
   data: string;
+  uiFeeReceiver: string;
+  validFromTime: bigint;
   title?: string;
 };
 
 export type SwapOrderInfo = Order & {
+  isSwap: true;
+  isTwap: false;
   swapPathStats?: SwapPathStats;
   triggerRatio?: TokensRatio | TokensRatioAndSlippage;
   initialCollateralToken: TokenData;
@@ -71,6 +75,8 @@ export type SwapOrderInfo = Order & {
 };
 
 export type PositionOrderInfo = Order & {
+  isSwap: false;
+  isTwap: false;
   marketInfo: MarketInfo;
   swapPathStats?: SwapPathStats;
   indexToken: TokenData;
@@ -81,7 +87,14 @@ export type PositionOrderInfo = Order & {
   triggerThresholdType: TriggerThresholdType;
 };
 
-export type OrderInfo = SwapOrderInfo | PositionOrderInfo;
+export type TwapOrderInfo<T extends PositionOrderInfo | SwapOrderInfo = PositionOrderInfo | SwapOrderInfo> = Omit<
+  T,
+  "isTwap"
+> & {
+  isSwap: T extends SwapOrderInfo ? true : false;
+} & TwapOrderParams<T>;
+
+export type OrderInfo = SwapOrderInfo | PositionOrderInfo | TwapOrderInfo;
 
 export type OrdersData = {
   [orderKey: string]: Order;
@@ -92,3 +105,20 @@ export type OrdersInfoData = {
 };
 
 export type OrderTxnType = "create" | "update" | "cancel";
+
+type SingleOrderParams = {
+  key: string;
+  isTwap: false;
+  orderType: OrderType;
+};
+
+type TwapOrderParams<T extends SingleOrderParams = SingleOrderParams> = {
+  key: string;
+  isTwap: true;
+  orders: T[];
+  orderType: OrderType;
+  twapId: string;
+  numberOfParts: number;
+};
+
+export type OrderParams = SingleOrderParams | TwapOrderParams;

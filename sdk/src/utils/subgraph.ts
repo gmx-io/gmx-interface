@@ -32,7 +32,7 @@ export type GraphQlFilters =
     };
 
 export function buildFiltersBody(filters: GraphQlFilters, options?: { enums?: Record<string, string> }): string {
-  const res = {};
+  const res: Record<string, string | null> = {};
 
   let hadOr = false;
   let hadAnd = false;

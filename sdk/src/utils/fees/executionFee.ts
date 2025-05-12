@@ -14,7 +14,8 @@ export function getExecutionFee(
   tokensData: TokensData,
   estimatedGasLimit: bigint,
   gasPrice: bigint,
-  oraclePriceCount: bigint
+  oraclePriceCount: bigint,
+  numberOfParts?: number
 ): ExecutionFee | undefined {
   const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
 
@@ -27,7 +28,7 @@ export function getExecutionFee(
   const gasLimit = baseGasLimit + applyFactor(estimatedGasLimit, multiplierFactor);
   // #endregion
 
-  const feeTokenAmount = gasLimit * gasPrice;
+  const feeTokenAmount = gasLimit * gasPrice * BigInt(numberOfParts ?? 1);
 
   const feeUsd = convertToUsd(feeTokenAmount, nativeToken.decimals, nativeToken.prices.minPrice)!;
 
@@ -112,7 +113,7 @@ export function estimateExecuteGlvDepositGasLimit(
     marketsCount,
     isMarketTokenDeposit,
   }: {
-    isMarketTokenDeposit;
+    isMarketTokenDeposit: boolean;
     marketsCount: bigint;
     initialLongTokenAmount: bigint;
     initialShortTokenAmount: bigint;

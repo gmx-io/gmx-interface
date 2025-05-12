@@ -20,13 +20,13 @@ export const selectTradeboxLiquidityInfo = createSelector((q) => {
   const toToken = q(selectTradeboxToToken);
   const { longLiquidity, shortLiquidity } = q(selectTradeboxLiquidity);
   const { maxLiquidity: swapLiquidityUsd } = q(selectTradeboxMaxLiquidityPath);
-  const { isLong, isLimit, isSwap, isIncrease } = tradeFlags;
+  const { isLong, isLimit, isSwap, isIncrease, isTwap } = tradeFlags;
 
   let isLiquidityRisk = false;
   let availableLiquidityAmount: bigint | undefined = undefined;
   let availableLiquidityUsd: bigint | undefined = undefined;
 
-  if (isLimit) {
+  if (isLimit || isTwap) {
     if (isSwap && swapAmounts) {
       availableLiquidityUsd = swapLiquidityUsd;
 

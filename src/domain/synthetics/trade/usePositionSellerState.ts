@@ -3,13 +3,23 @@ import { useCallback, useMemo, useState } from "react";
 import { getKeepLeverageKey, getSyntheticsReceiveMoneyTokenKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { TradeMode } from "sdk/types/trade";
 
 import { PositionInfo } from "../positions";
+import { TwapDuration } from "./twap/types";
+import { DEFAULT_TWAP_DURATION, DEFAULT_TWAP_NUMBER_OF_PARTS } from "./twap/utils";
 
 export enum OrderOption {
   Market = "Market",
   Trigger = "Trigger",
+  Twap = "TWAP",
 }
+
+export const ORDER_OPTION_TO_TRADE_MODE: Record<OrderOption, TradeMode> = {
+  [OrderOption.Market]: TradeMode.Market,
+  [OrderOption.Trigger]: TradeMode.Trigger,
+  [OrderOption.Twap]: TradeMode.Twap,
+};
 
 export type PositionSellerState = ReturnType<typeof usePositionSellerState>;
 
@@ -25,6 +35,8 @@ export function usePositionSellerState(chainId: number, closingPosition: Positio
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isReceiveTokenChanged, setIsReceiveTokenChanged] = useState(false);
+  const [duration, setDuration] = useState<TwapDuration>(DEFAULT_TWAP_DURATION);
+  const [numberOfParts, setNumberOfParts] = useState<number>(DEFAULT_TWAP_NUMBER_OF_PARTS);
 
   const resetPositionSeller = useCallback(() => {
     setOrderOption(OrderOption.Market);
@@ -81,5 +93,9 @@ export function usePositionSellerState(chainId: number, closingPosition: Positio
     setIsReceiveTokenChanged,
     defaultReceiveToken,
     setDefaultReceiveToken,
+    duration,
+    setDuration,
+    numberOfParts,
+    setNumberOfParts,
   };
 }

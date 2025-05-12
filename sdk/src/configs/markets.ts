@@ -17,7 +17,7 @@ export type MarketConfig = {
   ATTENTION
   When adding new markets, please add them also to the end of the list in ./src/configs/static/sortedMarkets.ts
 */
-export const MARKETS: Record<string, Record<string, MarketConfig>> = {
+export const MARKETS: Record<number, Record<string, MarketConfig>> = {
   [ARBITRUM]: {
     // BTC/USD [WBTC.e-USDC]
     "0x47c031236e19d024b42f8AE6780E44A573170703": {
@@ -590,6 +590,13 @@ export const MARKETS: Record<string, Record<string, MarketConfig>> = {
     "0x4D3Eb91efd36C2b74181F34B111bc1E91a0d0cb4": {
       marketTokenAddress: "0x4D3Eb91efd36C2b74181F34B111bc1E91a0d0cb4",
       indexTokenAddress: "0x97Ce1F309B949f7FBC4f58c5cb6aa417A5ff8964",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // ZRO/USD [WETH-USDC]
+    "0x9e79146b3A022Af44E0708c6794F03Ef798381A5": {
+      marketTokenAddress: "0x9e79146b3A022Af44E0708c6794F03Ef798381A5",
+      indexTokenAddress: "0xa8193C55C34Ed22e1Dbe73FD5Adc668E51578a67",
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },

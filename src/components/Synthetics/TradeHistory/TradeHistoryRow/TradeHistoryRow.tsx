@@ -10,6 +10,7 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { PositionTradeAction, SwapTradeAction, TradeAction } from "domain/synthetics/tradeHistory";
+import { EMPTY_ARRAY } from "lib/objects";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { NETWORKS_BY_CHAIN_IDS } from "pages/ParseTransaction/ParseTransaction";
 
@@ -153,7 +154,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
   }, [msg.fullMarketNames, msg.indexName, msg.poolName]);
 
   const renderPriceContent = useCallback(
-    () => <TooltipContentComponent content={msg.priceComment} />,
+    () => <TooltipContentComponent content={msg.priceComment ?? EMPTY_ARRAY} />,
     [msg.priceComment]
   );
 
@@ -258,13 +259,17 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           )}
         </TableTd>
         <TableTd>
-          <TooltipWithPortal
-            tooltipClassName="TradeHistoryRow-price-tooltip-portal"
-            handle={msg.price}
-            position="bottom-end"
-            renderContent={renderPriceContent}
-            maxAllowedWidth={PRICE_TOOLTIP_WIDTH}
-          />
+          {msg.priceComment ? (
+            <TooltipWithPortal
+              tooltipClassName="TradeHistoryRow-price-tooltip-portal"
+              handle={msg.price}
+              position="bottom-end"
+              renderContent={renderPriceContent}
+              maxAllowedWidth={PRICE_TOOLTIP_WIDTH}
+            />
+          ) : (
+            <>{msg.price}</>
+          )}
         </TableTd>
         <TableTd className="TradeHistoryRow-pnl-fees">
           {!msg.pnl ? (
