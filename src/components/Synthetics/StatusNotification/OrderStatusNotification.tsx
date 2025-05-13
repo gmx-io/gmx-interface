@@ -194,6 +194,8 @@ export function OrderStatusNotification({
 
     if (orderStatus?.createdTxnHash) {
       status = "success";
+    } else if (orderStatus?.isGelatoTaskFailed) {
+      status = "error";
     }
 
     return <TransactionStatus status={status} txnHash={undefined} text={text} />;
@@ -224,9 +226,6 @@ export function OrderStatusNotification({
       txnLink = orderStatus.gelatoTaskId
         ? `https://api.gelato.digital/tasks/status/${orderStatus?.gelatoTaskId}/debug?${tenderlySlugs}`
         : undefined;
-    } else if (orderStatus?.isGelatoTaskTimeout) {
-      status = "error";
-      text = t`Relayer request timed out`;
     } else if (isCompleted) {
       status = "success";
       text = t`Order request sent`;

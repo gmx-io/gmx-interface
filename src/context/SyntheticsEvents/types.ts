@@ -89,8 +89,8 @@ export type PendingExpressTxnParams = {
 };
 
 export type ExpressHandlers = {
-  onSuccess: (params: { expressParamsKey?: string; pendingOrderKey?: string; taskId?: string }) => void;
-  onFailure: (params: { expressParamsKey?: string; pendingOrderKey?: string; taskId?: string }) => void;
+  onSuccess: (params: { pendingExpressTxn: PendingExpressTxnParams }) => void;
+  onFailure: (params: { pendingExpressTxn: PendingExpressTxnParams }) => void;
 };
 
 export type PendingPositionsUpdates = {

@@ -150,106 +150,59 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const eventLogHandlers = useRef({});
 
   expressHandlers.current = {
-    onSuccess: ({
-      expressParamsKey,
-      pendingOrderKey,
-      taskId,
-    }: {
-      expressParamsKey?: string;
-      pendingOrderKey?: string;
-      taskId?: string;
-    }) => {
-      let pendingExpressParams: PendingExpressTxnParams | undefined;
+    onSuccess: ({ pendingExpressTxn }: { pendingExpressTxn: PendingExpressTxnParams }) => {
+      const isSubaccount = Boolean(pendingExpressTxn.subaccountApproval);
 
-      if (expressParamsKey) {
-        pendingExpressParams = getByKey(pendingExpressTxnParams, expressParamsKey);
-      } else if (pendingOrderKey) {
-        pendingExpressParams = Object.values(pendingExpressTxnParams).find((p) =>
-          p.pendingOrdersKeys?.includes(pendingOrderKey)
-        );
-      } else if (taskId) {
-        pendingExpressParams = Object.values(pendingExpressTxnParams).find((p) => p.taskId === taskId);
-      }
-
-      if (!pendingExpressParams) {
-        return;
-      }
-
-      const isSubaccount = Boolean(pendingExpressParams.subaccountApproval);
-      const key = pendingExpressParams.key;
+      const key = pendingExpressTxn.key;
 
       refreshSubaccountData();
       refreshNonces();
       updateActionsCount(isSubaccount ? "subaccountRelayRouter" : "relayRouter");
 
       if (
-        pendingExpressParams?.subaccountApproval &&
-        !getIsEmptySubaccountApproval(pendingExpressParams.subaccountApproval)
+        pendingExpressTxn?.subaccountApproval &&
+        !getIsEmptySubaccountApproval(pendingExpressTxn.subaccountApproval)
       ) {
         resetSubaccountApproval();
       }
 
-      if (pendingExpressParams?.tokenPermits?.length) {
+      if (pendingExpressTxn?.tokenPermits?.length) {
         resetTokenPermits();
       }
 
-      if (pendingExpressParams?.successMessage) {
-        helperToast.success(pendingExpressParams.successMessage);
+      if (pendingExpressTxn?.successMessage) {
+        helperToast.success(pendingExpressTxn.successMessage);
       }
 
       deleteByKey(pendingExpressTxnParams, key);
     },
 
-    onFailure: ({
-      expressParamsKey,
-      pendingOrderKey,
-      taskId,
-    }: {
-      expressParamsKey?: string;
-      pendingOrderKey?: string;
-      taskId?: string;
-    }) => {
-      let pendingExpressParams: PendingExpressTxnParams | undefined;
+    onFailure: ({ pendingExpressTxn }: { pendingExpressTxn: PendingExpressTxnParams }) => {
+      const key = pendingExpressTxn.key;
 
-      if (expressParamsKey) {
-        pendingExpressParams = getByKey(pendingExpressTxnParams, expressParamsKey);
-      } else if (pendingOrderKey) {
-        pendingExpressParams = Object.values(pendingExpressTxnParams).find((p) =>
-          p.pendingOrdersKeys?.includes(pendingOrderKey)
-        );
-      } else if (taskId) {
-        pendingExpressParams = Object.values(pendingExpressTxnParams).find((p) => p.taskId === taskId);
-      }
-
-      if (!pendingExpressParams) {
-        return;
-      }
-
-      const key = pendingExpressParams.key;
-
-      pendingExpressParams?.pendingOrdersKeys?.forEach((key) => {
+      pendingExpressTxn.pendingOrdersKeys?.forEach((key) => {
         setOrderStatuses((old) => {
           if (old[key]) {
             return updateByKey(old, key, {
-              gelatoTaskId: taskId,
+              gelatoTaskId: pendingExpressTxn.taskId,
               isGelatoTaskFailed: true,
             });
           } else {
             return setByKey(old, key, {
               key,
               createdAt: Date.now(),
-              gelatoTaskId: taskId,
+              gelatoTaskId: pendingExpressTxn.taskId,
               isGelatoTaskFailed: true,
             });
           }
         });
 
-        if (pendingExpressParams?.errorMessage) {
-          helperToast.error(pendingExpressParams.errorMessage);
+        if (pendingExpressTxn.errorMessage) {
+          helperToast.error(pendingExpressTxn.errorMessage);
         }
       });
 
-      pendingExpressParams?.pendingPositionsKeys?.forEach((key) => {
+      pendingExpressTxn.pendingPositionsKeys?.forEach((key) => {
         deleteByKey(pendingPositionsUpdates, key);
       });
 
@@ -330,8 +283,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       );
 
       const pendingOrderKey = getPendingOrderKey(data);
+      const pendingExpressTxn = Object.values(pendingExpressTxnParams).find((p) =>
+        p.pendingOrdersKeys?.includes(pendingOrderKey)
+      );
 
-      expressHandlers.current.onSuccess({ pendingOrderKey });
+      if (pendingExpressTxn) {
+        expressHandlers.current.onSuccess({ pendingExpressTxn });
+      }
 
       setPendingOrdersUpdates((old) => deleteByKey(old, data.key));
     },
@@ -1210,9 +1168,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     Object.entries(pendingExpressTxnParams).forEach(([key, pendingExpressTxn]) => {
       if (pendingExpressTxn.taskId && !expressSubscriptions.current[pendingExpressTxn.taskId]) {
         expressSubscriptions.current[pendingExpressTxn.taskId] = true;
+
         pollGelatoTask(pendingExpressTxn.taskId, async (taskStatus, error) => {
           if (error || !taskStatus) {
-            expressHandlers.current.onFailure({ taskId: pendingExpressTxn.taskId });
+            expressHandlers.current.onFailure({ pendingExpressTxn });
             delete expressSubscriptions[pendingExpressTxn.taskId!];
             return;
           }
@@ -1228,13 +1187,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           switch (taskStatus.taskState) {
             case TaskState.ExecSuccess:
               {
-                expressHandlers.current.onSuccess({ taskId: taskStatus.taskId });
+                expressHandlers.current.onSuccess({ pendingExpressTxn });
                 delete expressSubscriptions.current[taskStatus.taskId];
               }
               break;
             case TaskState.ExecReverted:
             case TaskState.Cancelled: {
-              expressHandlers.current.onFailure({ taskId: taskStatus.taskId });
+              expressHandlers.current.onFailure({ pendingExpressTxn });
               delete expressSubscriptions.current[taskStatus.taskId];
               break;
             }
