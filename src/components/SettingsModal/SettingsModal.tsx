@@ -1,6 +1,6 @@
-import { t, Trans } from "@lingui/macro";
+import { plural, t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 
 import { isDevelopment } from "config/env";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
@@ -12,7 +12,7 @@ import { useEnabledFeaturesRequest } from "domain/synthetics/features/useDisable
 import {
   getIsSubaccountActive,
   getRemainingSubaccountActions,
-  getRemainingSubaccountDays,
+  getRemainingSubaccountSeconds,
 } from "domain/synthetics/subaccount";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "domain/synthetics/trade/twap/utils";
 import { useChainId } from "lib/chains";
@@ -160,11 +160,38 @@ export function SettingsModal({
       : DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT
   );
 
-  const remainingSubaccountDays = Number(
-    subaccountState.subaccount
-      ? getRemainingSubaccountDays(subaccountState.subaccount)
-      : secondsToPeriod(DEFAULT_SUBACCOUNT_EXPIRY_DURATION, "1d")
-  );
+  const remainingSubaccountDays = useMemo(() => {
+    if (!subaccountState.subaccount) {
+      return secondsToPeriod(DEFAULT_SUBACCOUNT_EXPIRY_DURATION, "1d");
+    }
+
+    const seconds = Number(getRemainingSubaccountSeconds(subaccountState.subaccount));
+
+    const days = secondsToPeriod(seconds, "1d");
+
+    if (days > 0) {
+      return plural(Number(days), {
+        one: "1 day",
+        other: `${days} days`,
+      });
+    }
+
+    const hours = secondsToPeriod(seconds, "1h");
+
+    if (hours > 0) {
+      return plural(Number(hours), {
+        one: "1 hour",
+        other: `${hours} hours`,
+      });
+    }
+
+    const minutes = secondsToPeriod(seconds, "1m");
+
+    return plural(Number(minutes), {
+      one: "1 minute",
+      other: `${minutes} minutes`,
+    });
+  }, [subaccountState.subaccount]);
 
   return (
     <SlideModal
@@ -214,7 +241,7 @@ export function SettingsModal({
                   <Trans>
                     One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be
                     enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or{" "}
-                    {remainingSubaccountDays} days, whichever comes first. days, whichever comes first.
+                    {remainingSubaccountDays} days, whichever comes first.
                     <br />
                     <br />
                     You can adjust these settings anytime under "One-Click Trading Settings

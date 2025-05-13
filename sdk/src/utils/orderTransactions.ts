@@ -448,7 +448,7 @@ export function buildUpdateOrderPayload(p: UpdateOrderParams): UpdateOrderTxnPar
       minOutputAmount: p.minOutputAmount,
       autoCancel: p.autoCancel,
       validFromTime: 0n,
-      executionFeeTopUp: 0n,
+      executionFeeTopUp: p.executionFeeTopUp,
     },
   };
 }
@@ -477,10 +477,10 @@ export function getBatchTotalExecutionFee({
   }
 
   for (const uo of updateOrderParams) {
-    feeTokenAmount += uo.params.executionFeeTopUp;
+    feeTokenAmount += uo.updatePayload.executionFeeTopUp;
   }
 
-  const feeUsd = convertToUsd(feeTokenAmount, nativeToken.decimals, nativeToken.prices.minPrice)!;
+  const feeUsd = convertToUsd(feeTokenAmount, nativeToken.decimals, nativeToken.prices.maxPrice)!;
   const isFeeHigh = feeUsd > expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS);
   const isFeeVeryHigh = feeUsd > expandDecimals(getExcessiveExecutionFee(chainId), USD_DECIMALS);
 

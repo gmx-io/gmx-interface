@@ -1,8 +1,10 @@
 import { useMemo } from "react";
 
+import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
+import { throttleLog } from "lib/logging";
 import { useJsonRpcProvider } from "lib/rpc";
 import { retry, useThrottledAsync } from "lib/useThrottledAsyncEstimation";
 import useWallet from "lib/wallets/useWallet";
@@ -20,12 +22,15 @@ export type ExpressOrdersParamsResult = {
 export function useExpressOrdersParams({
   orderParams,
   totalExecutionFee,
+  label,
 }: {
   orderParams: BatchOrderTxnParams | undefined;
   totalExecutionFee?: bigint;
+  label?: string;
 }): ExpressOrdersParamsResult {
   const { chainId } = useChainId();
 
+  const showDebugValues = useShowDebugValues();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
 
   const isEnabled =
@@ -125,6 +130,13 @@ export function useExpressOrdersParams({
   }, [isEnabled, asyncExpressParams, fastExpressParams]);
 
   useSwitchGasPaymentTokenIfRequired({ expressParams: result.expressParams });
+
+  if (showDebugValues && label && result.expressParams) {
+    throttleLog(`${label} express params`, {
+      expressParams: result.expressParams,
+      batchParams: orderParams,
+    });
+  }
 
   return result;
 }

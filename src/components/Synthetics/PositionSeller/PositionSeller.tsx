@@ -20,7 +20,6 @@ import {
   usePositionSellerKeepLeverage,
   usePositionSellerLeverageDisabledByCollateral,
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
-import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import {
   selectBlockTimestampData,
   selectGasPaymentTokenAllowance,
@@ -64,7 +63,6 @@ import { approveTokens, Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
-import { throttleLog } from "lib/logging";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
 import {
   calculateDisplayDecimals,
@@ -143,7 +141,6 @@ export function PositionSeller() {
   const localizedOrderOptionLabels = useLocalizedMap(ORDER_OPTION_LABELS);
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
-  const showDebugValues = useShowDebugValues();
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const tokenPermits = useSelector(selectTokenPermits);
   const addTokenPermit = useSelector(selectAddTokenPermit);
@@ -361,14 +358,6 @@ export function PositionSeller() {
     orderParams: batchParams,
     totalExecutionFee: isTwap ? executionFee?.feeTokenAmount : undefined,
   });
-
-  if (expressParams && showDebugValues) {
-    throttleLog("PositionSeller express Params", {
-      batchParams,
-      expressParams,
-      expressEstimateMethod: expressParams?.estimationMethod,
-    });
-  }
 
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
     if (!batchParams) {

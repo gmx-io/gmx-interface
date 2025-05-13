@@ -838,8 +838,8 @@ msgid "Claimable positive funding fees.<0/><1/>They become available after modif
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first. days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings"
-msgstr ""
+#~ msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first. days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -1256,6 +1256,10 @@ msgstr "出金リクエスト"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "1inch"
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings"
 msgstr ""
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
@@ -2690,6 +2694,10 @@ msgstr "APR(実質年利)は毎週水曜日に更新され、その前一週間�
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees (Incl. Swap)"
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "{0, plural, one {1 hour} other {{hours} hours}}"
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
@@ -4505,6 +4513,10 @@ msgstr ""
 
 #: src/components/ExpressTradingGasTokenSwitchedBanner.ts/ExpressTradingGasTokenSwithedBanner.tsx
 msgid "Gas Payment Token changed due to insufficient balance."
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "{0, plural, one {1 minute} other {{minutes} minutes}}"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
@@ -6640,6 +6652,10 @@ msgstr "注文執行価格は価格インパクトを考慮しています。"
 
 #: src/pages/Buy/Buy.tsx
 msgid "Buy GLP or GMX"
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "{0, plural, one {1 day} other {{days} days}}"
 msgstr ""
 
 #: src/components/Exchange/ChartTokenSelector.tsx

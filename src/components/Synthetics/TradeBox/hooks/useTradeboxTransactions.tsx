@@ -130,15 +130,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const { expressParams, isLoading: isExpressLoading } = useExpressOrdersParams({
     orderParams: batchParams,
     totalExecutionFee: executionFee?.feeTokenAmount,
+    label: "TradeBox",
   });
-
-  if (expressParams && showDebugValues) {
-    throttleLog("TradeBox express params", {
-      expressParams,
-      batchParams,
-      estimationMethod: expressParams?.estimationMethod,
-    });
-  }
 
   const initOrderMetricData = useCallback(() => {
     const primaryOrder = primaryCreateOrderParams?.[0];

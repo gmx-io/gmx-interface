@@ -156,7 +156,7 @@ export async function estimateExpressParams({
       tokenPermits,
     });
 
-    if (!baseRelayFeeParams) {
+    if (baseRelayFeeParams.noFeeSwap) {
       return undefined;
     }
 
@@ -169,8 +169,8 @@ export async function estimateExpressParams({
       tokensData,
       marketsInfoData,
       relayFeeParams: baseRelayFeeParams,
-      emptySignature: true,
       noncesData,
+      emptySignature: true,
     });
 
     const hasL1Gas = chainId === ARBITRUM;

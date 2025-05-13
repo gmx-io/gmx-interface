@@ -85,6 +85,7 @@ import {
   formatUsdPrice,
   parseValue,
 } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
@@ -336,7 +337,32 @@ export function OrderEditor(p: Props) {
 
   const { expressParams } = useExpressOrdersParams({
     orderParams: batchParams,
+    label: "Order Editor",
   });
+
+  const networkFee = useMemo(() => {
+    if (!additionalExecutionFee) {
+      return undefined;
+    }
+
+    let feeToken = additionalExecutionFee?.feeToken;
+    let feeTokenAmount = additionalExecutionFee?.feeTokenAmount;
+    let feeUsd = additionalExecutionFee?.feeUsd;
+
+    const gasPaymentToken = getByKey(tokensData, expressParams?.relayFeeParams.gasPaymentTokenAddress);
+
+    if (gasPaymentToken && expressParams?.relayFeeParams.gasPaymentTokenAmount !== undefined) {
+      feeToken = gasPaymentToken;
+      feeTokenAmount = expressParams?.relayFeeParams.gasPaymentTokenAmount;
+      feeUsd = convertToUsd(feeTokenAmount, feeToken.decimals, gasPaymentToken.prices.minPrice);
+    }
+
+    return {
+      feeToken,
+      feeTokenAmount,
+      feeUsd,
+    };
+  }, [additionalExecutionFee, expressParams, tokensData]);
 
   function getError() {
     if (isSubmitting) {
@@ -673,25 +699,23 @@ export function OrderEditor(p: Props) {
             </>
           )}
 
-          {additionalExecutionFee && (
+          {networkFee && (
             <SyntheticsInfoRow
               label={t`Fees`}
               value={
                 <TooltipWithPortal
                   position="top-end"
                   tooltipClassName="PositionEditor-fees-tooltip"
-                  handle={formatDeltaUsd(
-                    additionalExecutionFee.feeUsd === undefined ? undefined : additionalExecutionFee.feeUsd * -1n
-                  )}
+                  handle={formatDeltaUsd(networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n)}
                   renderContent={() => (
                     <>
                       <StatsTooltipRow
                         label={<div className="text-white">{t`Network Fee`}:</div>}
                         value={formatTokenAmountWithUsd(
-                          additionalExecutionFee.feeTokenAmount * -1n,
-                          additionalExecutionFee.feeUsd === undefined ? undefined : additionalExecutionFee.feeUsd * -1n,
-                          additionalExecutionFee.feeToken.symbol,
-                          additionalExecutionFee.feeToken.decimals,
+                          networkFee.feeTokenAmount * -1n,
+                          networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n,
+                          networkFee.feeToken.symbol,
+                          networkFee.feeToken.decimals,
                           {
                             displayDecimals: 5,
                           }

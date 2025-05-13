@@ -16,7 +16,7 @@ import {
   usePositionEditorPosition,
   usePositionEditorPositionState,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
-import { useSavedAllowedSlippage, useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
+import { useSavedAllowedSlippage } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import {
   selectBlockTimestampData,
   selectGasPaymentTokenAllowance,
@@ -51,7 +51,6 @@ import { bigNumberBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
-import { throttleLog } from "lib/logging";
 import {
   initEditCollateralMetricData,
   sendOrderSubmittedMetric,
@@ -105,7 +104,6 @@ export function usePositionEditorButtonState(operation: Operation): {
   const { collateralDeltaAmount, collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const marketsInfoData = useSelector(selectMarketsInfoData);
-  const showDebugValues = useShowDebugValues();
 
   const collateralTokenAllowance = useTokensAllowanceData(chainId, {
     spenderAddress: routerAddress,
@@ -239,14 +237,6 @@ export function usePositionEditorButtonState(operation: Operation): {
   const { expressParams, isLoading: isExpressLoading } = useExpressOrdersParams({
     orderParams: batchParams,
   });
-
-  if (expressParams && showDebugValues) {
-    throttleLog("PositionEditor express Params", {
-      batchParams,
-      expressParams,
-      expressEstimateMethod: expressParams?.estimationMethod,
-    });
-  }
 
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
     if (!selectedCollateralAddress || collateralDeltaAmount === undefined) {

@@ -838,8 +838,8 @@ msgid "Claimable positive funding fees.<0/><1/>They become available after modif
 msgstr "Claimable positive funding fees.<0/><1/>They become available after modifying the position by increasing or decreasing it, depositing or withdrawing collateral, or settling the fees using the \"Settle\" button."
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first. days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings"
-msgstr "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first. days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings"
+#~ msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first. days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings"
+#~ msgstr "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first. days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -1257,6 +1257,10 @@ msgstr "Request Withdraw"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "1inch"
 msgstr "1inch"
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings"
+msgstr "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings"
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copied"
@@ -2691,6 +2695,10 @@ msgstr "APRs are updated weekly on Wednesday and will depend on the fees collect
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees (Incl. Swap)"
 msgstr "Fees (Incl. Swap)"
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "{0, plural, one {1 hour} other {{hours} hours}}"
+msgstr "{0, plural, one {1 hour} other {{hours} hours}}"
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
 #~ msgid "Generate & Activate Subaccount"
@@ -4509,6 +4517,10 @@ msgstr "Select a token"
 #: src/components/ExpressTradingGasTokenSwitchedBanner.ts/ExpressTradingGasTokenSwithedBanner.tsx
 msgid "Gas Payment Token changed due to insufficient balance."
 msgstr "Gas Payment Token changed due to insufficient balance."
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "{0, plural, one {1 minute} other {{minutes} minutes}}"
+msgstr "{0, plural, one {1 minute} other {{minutes} minutes}}"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -6644,6 +6656,10 @@ msgstr "Order execution price takes into account price impact."
 #: src/pages/Buy/Buy.tsx
 msgid "Buy GLP or GMX"
 msgstr "Buy GLP or GMX"
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "{0, plural, one {1 day} other {{days} days}}"
+msgstr "{0, plural, one {1 day} other {{days} days}}"
 
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Max Out"
