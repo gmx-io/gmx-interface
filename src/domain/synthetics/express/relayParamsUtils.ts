@@ -104,9 +104,9 @@ export function getRelayerFeeParams({
       feeSwapPath: internalSwapAmounts.swapPathStats.swapPath,
     };
     externalCalls = batchExternalCalls;
+    gasPaymentTokenAddress = internalSwapAmounts.swapPathStats.tokenInAddress;
     gasPaymentTokenAmount = internalSwapAmounts.amountIn;
     totalNetworkFeeAmount = internalSwapAmounts.amountOut;
-    gasPaymentTokenAddress = internalSwapAmounts.swapPathStats.tokenInAddress;
   } else if (feeExternalSwapQuote) {
     const feeExternalCalls = getExternalCallsPayload({
       chainId,
@@ -129,7 +129,7 @@ export function getRelayerFeeParams({
       feeAmount: 0n,
       feeSwapPath: [],
     };
-    gasPaymentTokenAmount = totalNetworkFeeAmount;
+    gasPaymentTokenAmount = 0n;
     noFeeSwap = true;
   }
 

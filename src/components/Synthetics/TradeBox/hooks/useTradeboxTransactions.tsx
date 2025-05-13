@@ -43,7 +43,6 @@ import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallba
 import { formatLeverage } from "domain/synthetics/positions/utils";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { throttleLog } from "lib/logging";
 import {
   initDecreaseOrderMetricData,
   initIncreaseOrderMetricData,
@@ -129,7 +128,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
   const { expressParams, isLoading: isExpressLoading } = useExpressOrdersParams({
     orderParams: batchParams,
-    totalExecutionFee: executionFee?.feeTokenAmount,
     label: "TradeBox",
   });
 

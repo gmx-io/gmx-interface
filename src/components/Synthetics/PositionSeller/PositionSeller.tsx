@@ -356,7 +356,6 @@ export function PositionSeller() {
 
   const { expressParams, isLoading: isExpressLoading } = useExpressOrdersParams({
     orderParams: batchParams,
-    totalExecutionFee: isTwap ? executionFee?.feeTokenAmount : undefined,
   });
 
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {

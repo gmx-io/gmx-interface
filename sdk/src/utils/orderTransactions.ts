@@ -465,9 +465,9 @@ export function getBatchTotalExecutionFee({
   let feeTokenAmount = 0n;
   let gasLimit = 0n;
 
-  const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
+  const wnt = getByKey(tokensData, getWrappedToken(chainId).address);
 
-  if (!nativeToken) {
+  if (!wnt) {
     return undefined;
   }
 
@@ -480,7 +480,7 @@ export function getBatchTotalExecutionFee({
     feeTokenAmount += uo.updatePayload.executionFeeTopUp;
   }
 
-  const feeUsd = convertToUsd(feeTokenAmount, nativeToken.decimals, nativeToken.prices.maxPrice)!;
+  const feeUsd = convertToUsd(feeTokenAmount, wnt.decimals, wnt.prices.maxPrice)!;
   const isFeeHigh = feeUsd > expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS);
   const isFeeVeryHigh = feeUsd > expandDecimals(getExcessiveExecutionFee(chainId), USD_DECIMALS);
 
@@ -488,7 +488,7 @@ export function getBatchTotalExecutionFee({
     feeTokenAmount,
     gasLimit,
     feeUsd,
-    feeToken: nativeToken,
+    feeToken: wnt,
     isFeeHigh,
     isFeeVeryHigh,
   };
