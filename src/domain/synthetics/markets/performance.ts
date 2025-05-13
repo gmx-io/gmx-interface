@@ -28,11 +28,12 @@ export function buildPerformanceSnapshots({
   poolPrices: Record<number, PriceSnapshot>;
 }): PerformanceSnapshot[] {
   const timestamps = Object.keys(poolPrices).map(Number).sort((a, b) => a - b);
-  const startTimestamp = findStartTimestamp({
+  const startTimestamp = findPerformanceTimestamp({
     timestamps,
     longTokenPrices,
     shortTokenPrices,
     poolPrices,
+    type: "start",
   });
 
   if (!startTimestamp) {
@@ -43,19 +44,19 @@ export function buildPerformanceSnapshots({
   const tokenBStartPrice = getTokenPrice(shortTokenPrices, startTimestamp);
   const poolStartPrice = getTokenPrice(poolPrices, startTimestamp);
 
+  if (!tokenAStartPrice || !tokenBStartPrice || !poolStartPrice) {
+    return [];
+  }
+
   const performanceSnapshots: PerformanceSnapshot[] = timestamps.slice(timestamps.indexOf(startTimestamp))
     .map((timestamp) => {
-      const longTokenPrice = longTokenPrices[timestamp];
-      const shortTokenPrice = shortTokenPrices[timestamp];
-      const poolPrice = poolPrices[timestamp];
-
-      if (!longTokenPrice || !shortTokenPrice || !poolPrice) {
-        return null;
-      }
-
       const tokenAEndPrice = getTokenPrice(longTokenPrices, timestamp);
       const tokenBEndPrice = getTokenPrice(shortTokenPrices, timestamp);
       const poolEndPrice = getTokenPrice(poolPrices, timestamp);
+
+      if (!tokenAEndPrice || !tokenBEndPrice || !poolEndPrice) {
+        return null;
+      }
 
       const performance = calculatePerformance({
         poolStartPrice,
@@ -86,13 +87,20 @@ export function calculatePoolPerformance({
   poolPrices: Record<number, PriceSnapshot>;
 }): number | undefined {
   const timestamps = Object.keys(poolPrices).map(Number).sort((a, b) => a - b);
-  const startTimestamp = findStartTimestamp({
+  const startTimestamp = findPerformanceTimestamp({
     timestamps,
     longTokenPrices,
     shortTokenPrices,
     poolPrices,
+    type: "start",
   });
-  const endTimestamp = timestamps[timestamps.length - 1];
+  const endTimestamp = findPerformanceTimestamp({
+    timestamps,
+    longTokenPrices,
+    shortTokenPrices,
+    poolPrices,
+    type: "end",
+  });
 
   if (!startTimestamp || !endTimestamp) {
     return undefined;
@@ -106,6 +114,10 @@ export function calculatePoolPerformance({
   const tokenBEndPrice = getTokenPrice(shortTokenPrices, endTimestamp);
   const poolEndPrice = getTokenPrice(poolPrices, endTimestamp);
 
+  if (!tokenAStartPrice || !tokenBStartPrice || !poolStartPrice || !tokenAEndPrice || !tokenBEndPrice || !poolEndPrice) {
+    return 0;
+  }
+
   return calculatePerformance({
     poolStartPrice,
     poolEndPrice,
@@ -117,15 +129,24 @@ export function calculatePoolPerformance({
 }
 
 const getTokenPrice = (prices: Record<number, PriceSnapshot>, timestamp: number) => {
+  if (!prices[timestamp]) {
+    return undefined;
+  }
+
   return bigintToNumber((BigInt(prices[timestamp].minPrice) + BigInt(prices[timestamp].maxPrice)) / 2n, USD_DECIMALS);
 }
 
-const findStartTimestamp = ({ timestamps, longTokenPrices, shortTokenPrices, poolPrices }: { timestamps: number[], 
+const findPerformanceTimestamp = ({ timestamps, longTokenPrices, shortTokenPrices, poolPrices, type }: { timestamps: number[], 
   longTokenPrices: Record<number, PriceSnapshot>;
   shortTokenPrices: Record<number, PriceSnapshot>;
   poolPrices: Record<number, PriceSnapshot>;
+  type: "start" | "end"
 }) => {
-  return timestamps.find((timestamp) => longTokenPrices[timestamp] && shortTokenPrices[timestamp] && poolPrices[timestamp]);
+  if (type === "start") {
+    return timestamps.find((timestamp) => longTokenPrices[timestamp] && shortTokenPrices[timestamp] && poolPrices[timestamp]);
+  }
+
+  return timestamps.findLast((timestamp) => longTokenPrices[timestamp] && shortTokenPrices[timestamp] && poolPrices[timestamp]);
 }
 
 /*

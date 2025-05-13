@@ -6,19 +6,21 @@ import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "rec
 import { USD_DECIMALS } from "config/factors";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { GlvInfo, MarketInfo, useMarketsInfoRequest } from "domain/synthetics/markets";
+import { GlvInfo, MarketInfo, MarketTokensAPRData, useMarketTokensData, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { isGlvEnabled, isGlvInfo } from "domain/synthetics/markets/glv";
 import { PerformanceSnapshot, PriceSnapshot } from "domain/synthetics/markets/performance";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { ApySnapshot, useGmGlvApySnapshots } from "domain/synthetics/markets/useGmGlvApySnapshots";
 import { useGmGlvPerformance } from "domain/synthetics/markets/useGmGlvPerformance";
+import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { POOLS_TIME_RANGE_OPTIONS, convertPoolsTimeRangeToPeriod } from "domain/synthetics/markets/usePoolsTimeRange";
 import { PoolsTimeRange, usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
+import { TokensData } from "domain/synthetics/tokens";
 import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
 import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
 import { bigintToNumber, formatPercentage, formatUsdPrice, parseValue } from "lib/numbers";
-import { EMPTY_ARRAY } from "lib/objects";
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { PoolsDetailsCard } from "pages/PoolsDetails/PoolsDetailsCard";
 
 import { PoolsTabs } from "../PoolsTabs/PoolsTabs";
@@ -54,27 +56,29 @@ const getGraphValue = ({
   marketInfo,
   glvPerformance,
   gmPerformance,
-  priceSnapshots,
-  apySnapshots,
+  marketsTokensApyData,
+  glvApyInfoData,
+  marketTokensData,
 }: {
   marketGraphType: MarketGraphType;
   marketInfo: GlvInfo | MarketInfo;
   glvPerformance: Record<string, number>;
   gmPerformance: Record<string, number>;
-  priceSnapshots: PriceSnapshot[];
-  apySnapshots: ApySnapshot[];
+  marketsTokensApyData: MarketTokensAPRData | undefined;
+  glvApyInfoData: MarketTokensAPRData | undefined;
+  marketTokensData: TokensData | undefined;
 }) => {
   const isGlv = isGlvInfo(marketInfo);
   const address = isGlv ? marketInfo.glvTokenAddress : marketInfo.marketTokenAddress;
-  const lastApySnapshot = apySnapshots[apySnapshots.length - 1];
-  const lastPriceSnapshot = priceSnapshots[priceSnapshots.length - 1];
+  const apy = isGlv
+  ? getByKey(glvApyInfoData, marketInfo.glvTokenAddress)
+  : getByKey(marketsTokensApyData, marketInfo.marketTokenAddress);
+  const tokenPrice = marketTokensData?.[address]?.prices.minPrice;
   const valuesMap: Record<MarketGraphType, ReactNode> = {
     performance: `${Math.round((isGlv ? glvPerformance[address] : gmPerformance[address]) * 10000) / 100}%`,
-    price: lastPriceSnapshot
-      ? formatUsdPrice((BigInt(lastPriceSnapshot.maxPrice) + BigInt(lastPriceSnapshot.minPrice)) / 2n)
-      : "...",
-    feeApy: lastApySnapshot
-      ? formatPercentage(lastApySnapshot.apy, { bps: false })
+    price: tokenPrice ? formatUsdPrice(tokenPrice) : "...",
+    feeApy: apy
+      ? formatPercentage(apy, { bps: false })
       : "...",
   };
 
@@ -93,12 +97,16 @@ export function MarketGraphs({ marketInfo }: { marketInfo: GlvInfo | MarketInfo 
   const enabledGlv = isGlvEnabled(chainId);
   const account = useSelector(selectAccount);
 
+  const { marketsTokensApyData, glvApyInfoData } = useGmMarketsApy(chainId, { period: timeRange });
+
   const { glvData } = useGlvMarketsInfo(enabledGlv, {
     marketsInfoData: onlyGmMarketsInfoData,
     tokensData,
     chainId,
     account,
   });
+
+  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true, withGlv: true });
 
   const tokenAddresses = useMemo(() => {
     return [marketInfo.longTokenAddress, marketInfo.shortTokenAddress, address];
@@ -143,8 +151,9 @@ export function MarketGraphs({ marketInfo }: { marketInfo: GlvInfo | MarketInfo 
                 marketInfo,
                 glvPerformance,
                 gmPerformance,
-                apySnapshots: apySnapshotsByAddress,
-                priceSnapshots: priceSnapshotsByAddress,
+                glvApyInfoData,
+                marketsTokensApyData,
+                marketTokensData,
               })}
               label={GRAPH_VALUE_LABEL_BY_TYPE[marketGraphType]}
             />

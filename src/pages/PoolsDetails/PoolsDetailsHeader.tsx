@@ -50,16 +50,18 @@ export function PoolsDetailsHeader({ marketInfo, marketToken }: Props) {
       {marketInfo ? (
         <>
           <div className="flex items-center gap-20">
-            <TokenIcon
-              symbol={iconName}
-              displaySize={40}
-              importSize={40}
-              badge={
+            {iconName ? (
+              <TokenIcon
+                symbol={iconName}
+                displaySize={40}
+                importSize={40}
+                badge={
                 isGlv
                   ? getGlvMarketShortening(chainId, getGlvOrMarketAddress(marketInfo))
                   : ([marketInfo.longToken.symbol, marketInfo.shortToken.symbol] as const)
-              }
-            />
+                }
+              />
+            ) : null}
             <div className="flex flex-col gap-4 border-r border-r-stroke-primary pr-20">
               <div className="text-[20px]">{getMarketIndexName(marketInfo)}</div>
               <div className="text-body-large text-slate-100">{`[${getMarketPoolName(marketInfo)}]`}</div>

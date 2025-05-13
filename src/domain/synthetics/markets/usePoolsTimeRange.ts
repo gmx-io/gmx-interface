@@ -1,5 +1,7 @@
 import { toSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { ApyPeriod } from "lib/oracleKeeperFetcher";
+import { mustNeverExist } from "lib/types";
 
 export const POOLS_TIME_RANGE_OPTIONS = ["total" as const, "90d" as const, "30d" as const, "7d" as const];
 
@@ -47,3 +49,18 @@ export function convertPoolsTimeRangeToPeriod(timeRange: PoolsTimeRange): Period
       };
   }
 }
+
+export const convertPoolsTimeRangeToApyPeriod = (timeRange: PoolsTimeRange): ApyPeriod => {
+  switch (timeRange) {
+    case "total":
+      return "total";
+    case "7d":
+      return "7d";
+    case "30d":
+      return "30d";
+    case "90d":
+      return "90d";
+    default:
+      return mustNeverExist(timeRange);
+  }
+};

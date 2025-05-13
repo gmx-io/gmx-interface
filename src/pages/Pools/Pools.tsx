@@ -8,7 +8,7 @@ import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { useGmGlvPerformance } from "domain/synthetics/markets/useGmGlvPerformance";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { useMarketsInfoRequest } from "domain/synthetics/markets/useMarketsInfoRequest";
-import { usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
+import { convertPoolsTimeRangeToApyPeriod, usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
 import { convertPoolsTimeRangeToPeriod } from "domain/synthetics/markets/usePoolsTimeRange";
 import { usePoolsTvl } from "domain/synthetics/markets/usePoolsTvl";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
@@ -28,13 +28,15 @@ export default function Pools() {
 
   const period = useMemo(() => convertPoolsTimeRangeToPeriod(timeRange), [timeRange]);
 
+  const apyPeriod = useMemo(() => convertPoolsTimeRangeToApyPeriod(timeRange), [timeRange]);
+
   const {
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
     glvTokensIncentiveAprData,
     marketsTokensLidoAprData,
     glvApyInfoData,
-  } = useGmMarketsApy(chainId);
+  } = useGmMarketsApy(chainId, { period: apyPeriod });
 
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId);

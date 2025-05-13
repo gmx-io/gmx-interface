@@ -8,7 +8,6 @@ import { getSubsquidGraphClient } from "lib/subgraph";
 import { PerformanceSnapshot, PriceSnapshot, buildPerformanceSnapshots, calculatePoolPerformance } from "./performance";
 import { GlvInfoData, MarketsInfoData } from "./types";
 import { Period } from "./usePoolsTimeRange";
-import { TokensData } from "../tokens";
 
 const PRICES_QUERY = gql`
   query Prices($fromTimestamp: Int, $tokenAddresses: [String!]) {
@@ -54,13 +53,16 @@ export function useGmGlvPerformance({
   tokenAddresses?: string[];
 }) {
   const { data } = useSWR<PriceData | undefined>(
-    ["usePrices", period.periodStart, period.periodEnd, tokenAddresses?.join(",")],
+    ["useGmGlvPerformance", period.periodStart, period.periodEnd, tokenAddresses?.join(",")],
     {
       fetcher: async () => {
         const client = getSubsquidGraphClient(chainId);
         const res = await client?.query<PriceQuery>({
           query: PRICES_QUERY,
-          variables: { fromTimestamp: period.periodStart, tokenAddresses },
+          variables: {
+            fromTimestamp: period.periodStart,
+            tokenAddresses,
+          },
           fetchPolicy: "no-cache",
         });
 
@@ -82,7 +84,14 @@ export function useGmGlvPerformance({
       (acc, [token, prices]) => {
         acc[token] = prices.reduce(
           (acc, price) => {
+            // if snapshot price is already in the acc and new price is onchainFeed, skip
+            if (price.type === "onchainFeed" && acc[price.snapshotTimestamp]) {
+              return acc;
+            }
+
             acc[price.snapshotTimestamp] = price;
+
+
             return acc;
           },
           {} as Record<number, PriceSnapshot>
@@ -92,6 +101,10 @@ export function useGmGlvPerformance({
       {} as Record<string, Record<number, PriceSnapshot>>
     );
   }, [data]);
+
+  console.log({
+    priceData,
+  });
 
   const glvPerformanceSnapshots = useMemo(() => getPoolsPerformanceSnapshots(glvData, priceData), [priceData, glvData]);
   const gmPerformanceSnapshots = useMemo(() => getPoolsPerformanceSnapshots(gmData, priceData), [priceData, gmData]);
