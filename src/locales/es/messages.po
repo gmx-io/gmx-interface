@@ -1259,8 +1259,8 @@ msgid "1inch"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings"
-msgstr ""
+#~ msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings"
+#~ msgstr ""
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copied"
@@ -4994,6 +4994,10 @@ msgstr ""
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "Total activo: {openTotal}, ejecutado: {executedTotal}, cancelado: {cancelledTotal}"
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings\""
+msgstr ""
 
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
