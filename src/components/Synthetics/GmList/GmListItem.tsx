@@ -21,7 +21,7 @@ import { PerformanceSnapshotsData } from "domain/synthetics/markets/useGmGlvPerf
 import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformance";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { TokenData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
-import { getByKey } from "lib/objects";
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
@@ -176,12 +176,10 @@ export function GmListItem({
         <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />
       </TableTd>
 
-      <TableTd>{performance ? <div>{`${Math.round(performance * 10000) / 100}%`}</div> : null}</TableTd>
+      <TableTd>{performance ? <div>{`${Math.round(performance * 10000) / 100}%`}</div> : "..."}</TableTd>
 
       <TableTd>
-        {performanceSnapshots && performance ? (
-          <SnapshotGraph performanceSnapshots={performanceSnapshots} performance={performance} />
-        ) : null}
+        <SnapshotGraph performanceSnapshots={performanceSnapshots ?? EMPTY_ARRAY} performance={performance ?? 0} />
       </TableTd>
 
       <TableTd className="!pr-0">
@@ -207,7 +205,7 @@ const SnapshotGraph = ({
   const isNegative = performance < 0;
 
   return (
-    <div>
+    <div className="h-[30px] w-[160px]">
       <LineChart width={160} height={30} data={performanceSnapshots}>
         <Line
           dataKey="performance"

@@ -32,7 +32,7 @@ export function GlvList({
   glvPerformance,
   gmPerformance,
   glvPerformanceSnapshots,
-  gmPerformanceSnapshots,
+  gmPerformanceSnapshots
 }: Props) {
   const chainId = useSelector(selectChainId);
   const marketsInfo = useSelector(selectGlvInfo);

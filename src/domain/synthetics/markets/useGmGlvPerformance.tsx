@@ -102,10 +102,6 @@ export function useGmGlvPerformance({
     );
   }, [data]);
 
-  console.log({
-    priceData,
-  });
-
   const glvPerformanceSnapshots = useMemo(() => getPoolsPerformanceSnapshots(glvData, priceData), [priceData, glvData]);
   const gmPerformanceSnapshots = useMemo(() => getPoolsPerformanceSnapshots(gmData, priceData), [priceData, gmData]);
 

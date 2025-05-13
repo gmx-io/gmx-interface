@@ -1,5 +1,7 @@
 import { t } from "@lingui/macro";
+import cx from "classnames";
 import { ReactNode, useMemo } from "react";
+import { useMedia } from "react-use";
 
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -57,12 +59,24 @@ export default function Pools() {
     glvData,
   });
 
+  const isMobile = useMedia("(max-width: 768px)");
+
   return (
     <div className="default-container page-layout">
-      <div className="mb-24 grid grid-cols-2">
+      <div
+        className={cx("mb-24 grid", {
+          "grid-cols-1": isMobile,
+          "grid-cols-2": !isMobile,
+        })}
+      >
         <PoolsTvl />
 
-        <div className="ml-auto mt-auto">
+        <div
+          className={cx("", {
+            "ml-0 mt-28": isMobile,
+            "ml-auto mt-auto": !isMobile,
+          })}
+        >
           <PoolsTimeRangeFilter timeRange={timeRange} setTimeRange={setTimeRange} />
         </div>
       </div>

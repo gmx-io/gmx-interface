@@ -4,7 +4,6 @@ import { POOLS_TIME_RANGE_OPTIONS, PoolsTimeRange } from "domain/synthetics/mark
 
 import { PoolsTabs } from "components/Synthetics/PoolsTabs/PoolsTabs";
 
-
 const LABEL_BY_POOLS_TIME_RANGE: Record<PoolsTimeRange, string> = {
   total: t`Total`,
   "7d": t`Last 7 days`,
