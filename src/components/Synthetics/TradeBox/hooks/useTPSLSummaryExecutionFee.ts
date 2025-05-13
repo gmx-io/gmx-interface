@@ -3,12 +3,7 @@ import { useCallback, useMemo } from "react";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectTradeboxExecutionFee } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import {
-  estimateExecuteDecreaseOrderGasLimit,
-  getExecutionFeeWarning,
-  useGasLimits,
-  useGasPrice,
-} from "domain/synthetics/fees";
+import { ExecutionFee, estimateExecuteDecreaseOrderGasLimit, useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import { SidecarLimitOrderEntry, SidecarSlTpOrderEntry } from "domain/synthetics/sidecarOrders/types";
@@ -16,7 +11,10 @@ import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEnt
 import { convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
+import { getExcessiveExecutionFee, getHighExecutionFee } from "sdk/configs/chains";
+import { USD_DECIMALS } from "sdk/configs/factors";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
+import { expandDecimals } from "sdk/utils/numbers";
 
 export const useTPSLSummaryExecutionFee = () => {
   const executionFee = useSelector(selectTradeboxExecutionFee);
@@ -60,12 +58,10 @@ export const useTPSLSummaryExecutionFee = () => {
     [getOrderExecutionFee]
   );
 
-  const summaryExecutionFee = useMemo(() => {
+  const summaryExecutionFee = useMemo((): ExecutionFee | undefined => {
     if (!executionFee) return undefined;
 
     const { feeUsd, feeTokenAmount, feeToken } = executionFee;
-
-    const warning = getExecutionFeeWarning(chainId, executionFee);
 
     const feeTokenData = getByKey(tokensData, feeToken?.address);
 
@@ -80,11 +76,16 @@ export const useTPSLSummaryExecutionFee = () => {
         summaryFeeUsd + (convertToUsd(entryFee, feeToken?.decimals, feeTokenData?.prices?.minPrice) ?? 0n);
     });
 
+    const isFeeHigh = summaryFeeUsd > expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS);
+    const isFeeVeryHigh = summaryFeeUsd > expandDecimals(getExcessiveExecutionFee(chainId), USD_DECIMALS);
+
     return {
       feeUsd: summaryFeeUsd,
       feeTokenAmount: summaryFeeTokenAmount,
       feeToken,
-      warning,
+      isFeeHigh,
+      isFeeVeryHigh,
+      gasLimit: executionFee?.gasLimit,
     };
   }, [chainId, executionFee, sidecarEntries, getExecutionFeeAmountForEntry, tokensData]);
 

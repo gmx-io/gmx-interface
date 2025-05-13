@@ -7,7 +7,6 @@ import {
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxDefaultAllowedSwapSlippageBps,
   selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
-  selectTradeboxExecutionFee,
   selectTradeboxExecutionPrice,
   selectTradeboxFees,
   selectTradeboxIncreasePositionAmounts,
@@ -48,6 +47,7 @@ import { AvailableLiquidityRow } from "./AvailableLiquidityRow";
 import { CollateralSpreadRow } from "./CollateralSpreadRow";
 import { EntryPriceRow } from "./EntryPriceRow";
 import { SwapSpreadRow } from "./SwapSpreadRow";
+import { useTPSLSummaryExecutionFee } from "../hooks/useTPSLSummaryExecutionFee";
 import { useTradeboxAllowedSwapSlippageValues } from "../hooks/useTradeboxAllowedSwapSlippageValues";
 
 function LeverageInfoRows() {
@@ -196,7 +196,6 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
 
   const fees = useSelector(selectTradeboxFees);
   const feesType = useSelector(selectTradeboxTradeFeesType);
-  const executionFee = useSelector(selectTradeboxExecutionFee);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const limitPrice = useSelector(selectTradeboxTriggerPrice);
@@ -252,6 +251,8 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
 
   const isVisible = options.advancedDisplay;
 
+  const { summaryExecutionFee } = useTPSLSummaryExecutionFee();
+
   return (
     <ExpandableRow
       open={isVisible}
@@ -283,7 +284,7 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
       {isIncrease && !isTwap && <IncreaseOrderRow />}
       {isTrigger && <DecreaseOrderRow />}
       <TradeFeesRow {...fees} feesType={feesType} />
-      <NetworkFeeRow executionFee={executionFee} />
+      <NetworkFeeRow executionFee={summaryExecutionFee} />
 
       {isTwap && isSwap ? (
         <SyntheticsInfoRow label={<Trans>Acceptable Swap Impact</Trans>} value={<Trans>N/A</Trans>} />
