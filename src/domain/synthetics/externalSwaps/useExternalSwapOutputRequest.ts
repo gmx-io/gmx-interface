@@ -100,6 +100,7 @@ export function useExternalSwapOutputRequest({
             data: result.data,
             value: result.value,
             estimatedGas: result.estimatedGas,
+            estimatedExecutionFee: result.estimatedGas * gasPrice,
           },
         };
 
@@ -129,7 +130,8 @@ export function useExternalSwapOutputRequest({
     const needSpenderApproval = getNeedTokenApprove(
       tokensAllowanceData,
       convertTokenAddress(chainId, tokenInAddress, "wrapped"),
-      amountIn
+      amountIn,
+      []
     );
 
     const externalSwapOutput: ExternalSwapOutput = {

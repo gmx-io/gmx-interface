@@ -2,47 +2,20 @@ import { useMemo } from "react";
 import useSWR from "swr";
 
 import { getIsFlagEnabled } from "config/ab";
-import { GELATO_RELAY_FEE_MULTIPLIER_FACTOR_KEY } from "config/dataStore";
 import { convertToUsd, TokensData } from "domain/tokens";
-import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
-import { CONFIG_UPDATE_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-import { getContract } from "sdk/configs/contracts";
+import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { MIN_GELATO_USD_BALANCE_FOR_SPONSORED_CALL } from "sdk/configs/express";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
-export type SponsoredCallParams = {
-  gelatoRelayFeeMultiplierFactor: bigint;
+export type SponsoredCallBalanceData = {
   isSponsoredCallAllowed: boolean;
 };
 
-export function useSponsoredCallParamsRequest(
+export function useIsSponsoredCallBalanceAvailable(
   chainId: number,
   { tokensData }: { tokensData: TokensData | undefined }
-): SponsoredCallParams | undefined {
-  const { data: factors } = useMulticall(chainId, "useGelatoRelayFeeMultiplierRequest", {
-    key: [],
-    refreshInterval: CONFIG_UPDATE_INTERVAL,
-    request: {
-      features: {
-        contractAddress: getContract(chainId, "DataStore"),
-        abiId: "DataStore",
-        calls: {
-          gelatoRelayFeeMultiplierFactor: {
-            methodName: "getUint",
-            params: [GELATO_RELAY_FEE_MULTIPLIER_FACTOR_KEY],
-          },
-        },
-      },
-    },
-
-    parseResponse: (result) => {
-      return {
-        gelatoRelayFeeMultiplierFactor: result.data.features.gelatoRelayFeeMultiplierFactor.returnValues[0] as bigint,
-      };
-    },
-  });
-
+): SponsoredCallBalanceData {
   const { data: isSponsoredCallAllowed } = useSWR<boolean>(tokensData ? ["isSponsoredCallAllowed"] : null, {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
     fetcher: async () => {
@@ -73,13 +46,8 @@ export function useSponsoredCallParamsRequest(
   });
 
   return useMemo(() => {
-    if (!factors) {
-      return undefined;
-    }
-
     return {
-      gelatoRelayFeeMultiplierFactor: factors.gelatoRelayFeeMultiplierFactor,
       isSponsoredCallAllowed: Boolean(isSponsoredCallAllowed),
     };
-  }, [factors, isSponsoredCallAllowed]);
+  }, [isSponsoredCallAllowed]);
 }

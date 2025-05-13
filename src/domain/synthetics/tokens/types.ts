@@ -18,6 +18,13 @@ export type TokensRatio = {
   smallestToken: Token;
 };
 
+export type TokenToSpendParams = {
+  tokenAddress: string;
+  amount: bigint;
+  allowanceData: TokensAllowanceData | undefined;
+  isAllowanceLoaded: boolean | undefined;
+};
+
 export type TokenBalancesData = {
   [tokenAddress: string]: bigint;
 };

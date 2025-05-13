@@ -9,6 +9,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { RelayerFeeParams } from "domain/synthetics/express";
 import { getExecutionFeeWarning, type ExecutionFee } from "domain/synthetics/fees";
 import { convertToUsd } from "domain/synthetics/tokens/utils";
+import { Token } from "domain/tokens";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { convertTokenAddress } from "sdk/configs/tokens";
@@ -59,24 +60,51 @@ export function NetworkFeeRow({ executionFee, relayerFeeParams, isAdditionOrders
     [isAdditionOrdersMsg]
   );
 
-  const estimatedRefund = useMemo(() => {
+  const networkFee = useMemo(() => {
+    let feeUsd: bigint;
+    let feeAmount: bigint;
+    let feeToken: Token;
+
+    if (gasPaymentToken && relayerFeeParams?.gasPaymentTokenAmount !== undefined) {
+      feeToken = gasPaymentToken;
+      feeAmount = relayerFeeParams.gasPaymentTokenAmount;
+      feeUsd = convertToUsd(
+        relayerFeeParams.gasPaymentTokenAmount,
+        gasPaymentToken.decimals,
+        gasPaymentToken.prices.minPrice
+      )!;
+    } else if (executionFee) {
+      feeUsd = executionFee.feeUsd;
+      feeAmount = executionFee.feeTokenAmount;
+      feeToken = executionFee.feeToken;
+    } else {
+      return undefined;
+    }
+
+    return {
+      feeUsd,
+      feeAmount,
+      feeToken,
+    };
+  }, [executionFee, gasPaymentToken, relayerFeeParams]);
+
+  const { estimatedRefundText, estimatedRefundUsd } = useMemo(() => {
     let estimatedRefundTokenAmount: bigint | undefined;
     let feeToken = executionFee?.feeToken.address
       ? getByKey(tokenData, convertTokenAddress(chainId, executionFee.feeToken.address, "wrapped"))
       : undefined;
 
-    if (!executionFee || executionFeeBufferBps === undefined) {
+    if (!networkFee || executionFeeBufferBps === undefined) {
       estimatedRefundTokenAmount = undefined;
     } else {
-      const fee = executionFee.feeTokenAmount;
       const feeBeforeBuffer = bigMath.mulDiv(
-        fee,
+        networkFee.feeAmount,
         BASIS_POINTS_DIVISOR_BIGINT,
         BigInt(BASIS_POINTS_DIVISOR + executionFeeBufferBps)
       );
       estimatedRefundTokenAmount =
         bigMath.mulDiv(feeBeforeBuffer, BigInt(ESTIMATED_REFUND_BPS), BASIS_POINTS_DIVISOR_BIGINT) +
-        (fee - feeBeforeBuffer);
+        (networkFee.feeAmount - feeBeforeBuffer);
     }
 
     let estimatedRefundUsd: bigint | undefined;
@@ -102,40 +130,30 @@ export function NetworkFeeRow({ executionFee, relayerFeeParams, isAdditionOrders
       }
     );
 
-    return estimatedRefundText;
-  }, [chainId, displayDecimals, executionFee, executionFeeBufferBps, tokenData]);
+    return {
+      estimatedRefundText,
+      estimatedRefundUsd,
+    };
+  }, [chainId, displayDecimals, executionFee, executionFeeBufferBps, networkFee, tokenData]);
 
   const value: ReactNode = useMemo(() => {
-    let feeUsd = executionFee?.feeUsd;
-    let feeAmount = executionFee?.feeTokenAmount;
-    let feeToken = executionFee?.feeToken;
-
-    if (gasPaymentToken && relayerFeeParams?.gasPaymentTokenAmount !== undefined) {
-      feeToken = gasPaymentToken;
-      feeAmount = relayerFeeParams.gasPaymentTokenAmount;
-      feeUsd = convertToUsd(
-        relayerFeeParams.gasPaymentTokenAmount,
-        gasPaymentToken.decimals,
-        gasPaymentToken.prices.minPrice
-      );
-    }
-
-    if (feeUsd === undefined || feeToken === undefined) {
+    if (networkFee === undefined) {
       return "-";
     }
 
-    const networkFeeText = formatTokenAmountWithUsd(
-      feeAmount === undefined ? undefined : -feeAmount,
-      feeUsd,
-      feeToken.symbol,
-      feeToken.decimals,
+    const maxNetworkFeeText = formatTokenAmountWithUsd(
+      -networkFee.feeAmount,
+      networkFee.feeUsd,
+      networkFee.feeToken.symbol,
+      networkFee.feeToken.decimals,
       {
         displayDecimals,
       }
     );
 
+    const feeUsdAfterRefund = networkFee.feeUsd - (estimatedRefundUsd ?? 0n);
+
     const warning = executionFee ? getExecutionFeeWarning(chainId, executionFee) : undefined;
-    const estimatedRefundText = estimatedRefund?.toString();
 
     return (
       <TooltipWithPortal
@@ -143,7 +161,7 @@ export function NetworkFeeRow({ executionFee, relayerFeeParams, isAdditionOrders
         position="left-start"
         content={
           <>
-            <StatsTooltipRow label={t`Max Network Fee`} showDollar={false} value={networkFeeText} />
+            <StatsTooltipRow label={t`Max Network Fee`} showDollar={false} value={maxNetworkFeeText} />
             <div className="h-8" />
             <p>
               <Trans>
@@ -167,10 +185,18 @@ export function NetworkFeeRow({ executionFee, relayerFeeParams, isAdditionOrders
           </>
         }
       >
-        {formatUsd(-feeUsd)}
+        {formatUsd(-feeUsdAfterRefund)}
       </TooltipWithPortal>
     );
-  }, [executionFee, gasPaymentToken, relayerFeeParams, displayDecimals, chainId, estimatedRefund, additionalOrdersMsg]);
+  }, [
+    networkFee,
+    displayDecimals,
+    estimatedRefundUsd,
+    executionFee,
+    chainId,
+    estimatedRefundText,
+    additionalOrdersMsg,
+  ]);
 
   if (rowPadding) {
     return (

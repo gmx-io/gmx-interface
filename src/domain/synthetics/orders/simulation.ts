@@ -1,5 +1,5 @@
 import { BaseContract } from "ethers";
-import { withRetry } from "viem";
+import { encodeFunctionData, withRetry } from "viem";
 
 import { CustomErrorName, ErrorData, extractTxnError, isContractError, parseError } from "ab/testMultichain/parseError";
 import {
@@ -10,20 +10,23 @@ import {
   getZeroAddressContract,
 } from "config/contracts";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
-import { SwapPricingType, isLimitSwapOrderType } from "domain/synthetics/orders";
+import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
+import { SignedTokenPermit } from "domain/tokens";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
+import { abis } from "sdk/abis";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { extendError } from "sdk/utils/errors";
-import { CreateOrderTxnParams } from "sdk/utils/orderTransactions";
+import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
 export type SimulateExecuteParams = {
   account: string;
   createMulticallPayload: string[];
   prices: SimulationPrices;
   value: bigint;
+  tokenPermits: SignedTokenPermit[];
   method?:
     | "simulateExecuteLatestDeposit"
     | "simulateExecuteLatestWithdrawal"
@@ -78,7 +81,40 @@ export async function simulateExecution(chainId: number, p: SimulateExecuteParam
     maxTimestamp: priceTimestamp,
   };
 
-  let simulationPayloadData = [...p.createMulticallPayload];
+  let simulationPayloadData: string[] = [];
+
+  if (p.tokenPermits.length > 0) {
+    const externalCalls: ExternalCallsPayload = {
+      sendTokens: [],
+      sendAmounts: [],
+      externalCallTargets: [],
+      externalCallDataList: [],
+      refundTokens: [],
+      refundReceivers: [],
+    };
+
+    for (const permit of p.tokenPermits) {
+      externalCalls.externalCallTargets.push(permit.token);
+      externalCalls.externalCallDataList.push(
+        encodeFunctionData({
+          abi: abis.ERC20PermitInterface,
+          functionName: "permit",
+          args: [permit.owner, permit.spender, permit.value, permit.deadline, permit.v, permit.r, permit.s],
+        })
+      );
+    }
+
+    simulationPayloadData.push(
+      exchangeRouter.interface.encodeFunctionData("makeExternalCalls", [
+        externalCalls.externalCallTargets,
+        externalCalls.externalCallDataList,
+        externalCalls.refundTokens,
+        externalCalls.refundReceivers,
+      ])
+    );
+  }
+
+  simulationPayloadData.push(...p.createMulticallPayload);
 
   if (method === "simulateExecuteLatestWithdrawal") {
     if (p.swapPricingType === undefined) {
@@ -160,11 +196,7 @@ export function getOrdersTriggerPriceOverrides(createOrderPayloads: CreateOrderT
   const overrides: PriceOverride[] = [];
 
   for (const co of createOrderPayloads) {
-    if (
-      !isLimitSwapOrderType(co.orderPayload.orderType) &&
-      co.orderPayload.numbers.triggerPrice !== 0n &&
-      "indexTokenAddress" in co.params
-    ) {
+    if (co.orderPayload.numbers.triggerPrice !== 0n && "indexTokenAddress" in co.params) {
       overrides.push({
         tokenAddress: co.params.indexTokenAddress,
         contractPrices: {

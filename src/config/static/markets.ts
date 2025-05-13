@@ -346,6 +346,10 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
     "0x4D3Eb91efd36C2b74181F34B111bc1E91a0d0cb4": {
       enabled: true,
     },
+    // ZRO/USD [WETH-USDC]
+    "0x9e79146b3A022Af44E0708c6794F03Ef798381A5": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

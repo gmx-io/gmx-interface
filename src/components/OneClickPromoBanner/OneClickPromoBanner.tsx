@@ -37,8 +37,8 @@ export function OneClickPromoBanner() {
           <div
             className="clickable mr-8"
             onClick={() =>
-              subaccountState.tryEnableSubaccount().then((res) => {
-                if (res) {
+              subaccountState.tryEnableSubaccount().then((success) => {
+                if (success) {
                   setIsOneClickPromoHidden(true);
                 }
               })

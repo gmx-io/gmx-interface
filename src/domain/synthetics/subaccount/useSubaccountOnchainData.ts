@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
-import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import {
   maxAllowedSubaccountActionCountKey,
   SUBACCOUNT_ORDER_ACTION,
@@ -20,13 +20,12 @@ export type SubaccountOnchainData = {
   approvalNonce: bigint;
 };
 
-export type SubaccountFromContractsRequest = {
+export type SubaccountOnchainDataResult = {
   subaccountData: SubaccountOnchainData | undefined;
   refreshSubaccountData: () => void;
 };
 
-// TODO: make it work with multichain
-export function useSubaccountFromContractsRequest(
+export function useSubaccountOnchainData(
   chainId: number,
   {
     account,
@@ -37,20 +36,18 @@ export function useSubaccountFromContractsRequest(
     subaccountAddress: string | undefined;
     srcChainId: number | undefined;
   }
-): SubaccountFromContractsRequest {
-  const queryCondition = account && subaccountAddress;
-  const { data, mutate } = useMulticall(chainId, "useSubaccountsFromContracts", {
-    key: queryCondition ? [account, subaccountAddress, srcChainId] : null,
-    refreshInterval: CONFIG_UPDATE_INTERVAL,
+): SubaccountOnchainDataResult {
+  const queryCondition = account && subaccountAddress && srcChainId;
 
+  const { data, mutate } = useMulticall(chainId, "useSubaccountOnchainData", {
+    key: queryCondition ? [account, subaccountAddress, srcChainId] : null,
+    refreshInterval: FREQUENT_UPDATE_INTERVAL,
     request: () => {
       if (!queryCondition) {
         return {} as any;
       }
 
       if (srcChainId) {
-        console.log("requesting multichain info from multichain subaccount router");
-
         return {
           subaccountRelay: {
             contractAddress: getContract(chainId, "MultichainSubaccountRouter"),
@@ -88,11 +85,11 @@ export function useSubaccountFromContractsRequest(
       }
 
       return {
-        subaccountRelay: {
+        subaccountRelayRouter: {
           contractAddress: getContract(chainId, "SubaccountGelatoRelayRouter"),
           abiId: "SubaccountGelatoRelayRouter",
           calls: {
-            nonce: {
+            subaccountApproval: {
               methodName: "subaccountApprovalNonces",
               params: [account],
             },
@@ -127,9 +124,8 @@ export function useSubaccountFromContractsRequest(
       const maxAllowedCount = BigInt(res.data.dataStore.maxAllowedActionsCount.returnValues[0]);
       const currentActionsCount = BigInt(res.data.dataStore.currentActionsCount.returnValues[0]);
       const expiresAt = BigInt(res.data.dataStore.expiresAt.returnValues[0]);
-      const nonce = BigInt(res.data.subaccountRelay.nonce.returnValues[0]);
-
-      return { active: isSubaccountActive, maxAllowedCount, currentActionsCount, expiresAt, approvalNonce: nonce };
+      const approvalNonce = BigInt(res.data.subaccountRelayRouter.subaccountApproval.returnValues[0]);
+      return { active: isSubaccountActive, maxAllowedCount, currentActionsCount, expiresAt, approvalNonce };
     },
   });
 

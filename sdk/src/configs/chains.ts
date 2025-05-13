@@ -55,7 +55,7 @@ export const CHAIN_NAMES_MAP: Record<UiSupportedChain, string> = {
   [SEPOLIA]: sepolia.name,
 };
 
-export const HIGH_EXECUTION_FEES_MAP = {
+export const HIGH_EXECUTION_FEES_MAP: Record<number, number> = {
   [ARBITRUM]: 5, // 5 USD
   [AVALANCHE]: 5, // 5 USD
   [AVALANCHE_FUJI]: 5, // 5 USD
@@ -65,14 +65,14 @@ export const HIGH_EXECUTION_FEES_MAP = {
 // added to maxPriorityFeePerGas
 // applied to EIP-1559 transactions only
 // is not applied to execution fee calculation
-export const MAX_FEE_PER_GAS_MAP = {
+export const MAX_FEE_PER_GAS_MAP: Record<number, bigint> = {
   [AVALANCHE]: 200000000000n, // 200 gwei
 };
 
 // added to maxPriorityFeePerGas
 // applied to EIP-1559 transactions only
 // is also applied to the execution fee calculation
-export const GAS_PRICE_PREMIUM_MAP = {
+export const GAS_PRICE_PREMIUM_MAP: Record<number, bigint> = {
   [ARBITRUM]: 0n,
   [AVALANCHE]: 6000000000n, // 6 gwei
 };
@@ -87,7 +87,7 @@ export const MAX_PRIORITY_FEE_PER_GAS_MAP: Record<number, bigint | undefined> = 
   [ARBITRUM_SEPOLIA]: 1500000000n,
 };
 
-export const EXCESSIVE_EXECUTION_FEES_MAP = {
+export const EXCESSIVE_EXECUTION_FEES_MAP: Record<number, number> = {
   [ARBITRUM]: 10, // 10 USD
   [AVALANCHE]: 10, // 10 USD
   [AVALANCHE_FUJI]: 10, // 10 USD
@@ -110,7 +110,7 @@ export const EXCESSIVE_EXECUTION_FEES_MAP = {
 //
 // this buffer could also cause issues on a blockchain that uses passed gas price
 // especially if execution fee buffer and lower than gas price buffer defined bellow
-export const GAS_PRICE_BUFFER_MAP = {
+export const GAS_PRICE_BUFFER_MAP: Record<number, bigint> = {
   [ARBITRUM]: 2000n, // 20%
 };
 
@@ -129,11 +129,11 @@ export const getViemChain = (chainId: number): Chain => {
   return VIEM_CHAIN_BY_CHAIN_ID[chainId];
 };
 
-export function getHighExecutionFee(chainId) {
+export function getHighExecutionFee(chainId: number) {
   return HIGH_EXECUTION_FEES_MAP[chainId] ?? 5;
 }
 
-export function getExcessiveExecutionFee(chainId) {
+export function getExcessiveExecutionFee(chainId: number) {
   return EXCESSIVE_EXECUTION_FEES_MAP[chainId] ?? 10;
 }
 
@@ -167,28 +167,32 @@ export const EXECUTION_FEE_CONFIG_V2: {
 
 type StaticGasLimitsConfig = Pick<
   GasLimitsConfig,
-  "createOrderGasLimit" | "updateOrderGasLimit" | "cancelOrderGasLimit"
+  "createOrderGasLimit" | "updateOrderGasLimit" | "cancelOrderGasLimit" | "tokenPermitGasLimit"
 >;
 
 export const GAS_LIMITS_STATIC_CONFIG: Record<UiContractsChain, StaticGasLimitsConfig> = {
   [ARBITRUM]: {
-    createOrderGasLimit: 800000n,
-    updateOrderGasLimit: 600000n,
-    cancelOrderGasLimit: 700000n,
+    createOrderGasLimit: 850_000n,
+    updateOrderGasLimit: 600_000n,
+    cancelOrderGasLimit: 700_000n,
+    tokenPermitGasLimit: 70_000n,
   },
   [AVALANCHE]: {
-    createOrderGasLimit: 800000n,
-    updateOrderGasLimit: 600000n,
-    cancelOrderGasLimit: 700000n,
+    createOrderGasLimit: 800_000n,
+    updateOrderGasLimit: 600_000n,
+    cancelOrderGasLimit: 700_000n,
+    tokenPermitGasLimit: 60_000n,
   },
   [AVALANCHE_FUJI]: {
-    createOrderGasLimit: 800000n,
-    updateOrderGasLimit: 600000n,
-    cancelOrderGasLimit: 700000n,
+    createOrderGasLimit: 800_000n,
+    updateOrderGasLimit: 600_000n,
+    cancelOrderGasLimit: 700_000n,
+    tokenPermitGasLimit: 60_000n,
   },
   [ARBITRUM_SEPOLIA]: {
-    createOrderGasLimit: 800000n,
-    updateOrderGasLimit: 600000n,
-    cancelOrderGasLimit: 700000n,
+    createOrderGasLimit: 800_000n,
+    updateOrderGasLimit: 600_000n,
+    cancelOrderGasLimit: 700_000n,
+    tokenPermitGasLimit: 60_000n,
   },
 };

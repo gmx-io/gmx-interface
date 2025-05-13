@@ -11,7 +11,6 @@ export function getPendingOrderKey(
     data.shouldUnwrapNativeToken,
     data.isLong,
     data.orderType,
-    data.sizeDeltaUsd.toString(),
   ].join(":");
 }
 

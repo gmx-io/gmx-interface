@@ -10,36 +10,25 @@ import {
   useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import {
-  makeSelectSubaccountForActions,
-  selectAccount,
-  selectChainId,
-  selectGasLimits,
-  selectGasPrice,
-  selectIsExpressTransactionAvailableForNonNativePayment,
-  selectL1ExpressOrderGasReference,
-  selectMarketsInfoData,
-  selectSponsoredCallMultiplierFactor,
-  selectTokensData,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { selectRelayFeeTokens } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
-  getApproximateEstimatedExpressParams,
-  useGasPaymentTokenAllowanceData,
-} from "domain/synthetics/express/useRelayerFeeHandler";
-import {
-  OrderType,
+  OrderInfo,
   PositionOrderInfo,
   SwapOrderInfo,
+  TwapOrderInfo,
   isLimitOrderType,
-  isSwapOrderType,
+  isPositionOrder,
+  isSwapOrder,
   isTriggerDecreaseOrderType,
+  isTwapOrder,
   sortPositionOrders,
   sortSwapOrders,
 } from "domain/synthetics/orders";
+import { estimateExpressParams } from "domain/synthetics/orders/expressOrderUtils";
+import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
@@ -63,8 +52,8 @@ type Props = {
   setSelectedPositionOrderKey?: Dispatch<SetStateAction<string | undefined>>;
   marketsDirectionsFilter: MarketFilterLongShortItemData[];
   setMarketsDirectionsFilter: Dispatch<SetStateAction<MarketFilterLongShortItemData[]>>;
-  orderTypesFilter: OrderType[];
-  setOrderTypesFilter: Dispatch<SetStateAction<OrderType[]>>;
+  orderTypesFilter: OrderTypeFilterValue[];
+  setOrderTypesFilter: Dispatch<SetStateAction<OrderTypeFilterValue[]>>;
   onCancelSelectedOrders?: () => void;
 };
 
@@ -92,18 +81,9 @@ export function OrderList({
   const settlementChainClient = usePublicClient({ chainId });
 
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
-  const subaccount = useSelector(makeSelectSubaccountForActions(1));
+
   const account = useSelector(selectAccount);
-  const tokensData = useSelector(selectTokensData);
-  const relayFeeTokens = useSelector(selectRelayFeeTokens);
-  const marketsInfoData = useSelector(selectMarketsInfoData);
-  const sponsoredCallMultiplierFactor = useSelector(selectSponsoredCallMultiplierFactor);
-  const gasPrice = useSelector(selectGasPrice);
-  const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
-  const gasLimits = useSelector(selectGasLimits);
-  const l1Reference = useSelector(selectL1ExpressOrderGasReference);
-  const gasPaymentAllowanceData = useGasPaymentTokenAllowanceData(chainId, relayFeeTokens.gasPaymentToken?.address);
-  const isExpressEnabled = useSelector(selectIsExpressTransactionAvailableForNonNativePayment);
+  const globalExpressParams = useSelector(selectExpressGlobalParams);
 
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
 
@@ -163,48 +143,40 @@ export function OrderList({
     setSelectedOrderKeys?.(allSelectedOrders);
   }
 
-  async function onCancelOrder(key: string) {
+  async function onCancelOrder(order: OrderInfo) {
     if (!signer) return;
-    setCancellingOrdersKeys((prev) => [...prev, key]);
 
-    const expressTxnParams = isExpressEnabled
-      ? await getApproximateEstimatedExpressParams({
+    const orderKeys = isTwapOrder(order) ? order.orders.map((o) => o.key) : [order.key];
+    setCancellingOrdersKeys((prev) => [...prev, ...orderKeys]);
+
+    const batchParams = {
+      createOrderParams: [],
+      updateOrderParams: [],
+      cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
+    };
+
+    const expressParams = globalExpressParams
+      ? await estimateExpressParams({
           signer,
           settlementChainClient,
           chainId,
-          batchParams: {
-            createOrderParams: [],
-            updateOrderParams: [],
-            cancelOrderParams: [{ orderKey: key }],
-          },
-          subaccount,
-          gasPaymentTokenAddress: relayFeeTokens.gasPaymentToken?.address,
-          tokensData,
-          marketsInfoData,
-          tokenPermits: [],
-          findSwapPath: relayFeeTokens.findSwapPath,
-          sponsoredCallMultiplierFactor,
-          gasPrice,
-          gasPaymentAllowanceData,
-          gasLimits,
-          l1Reference,
-          bufferBps: executionFeeBufferBps,
+          batchParams,
+          requireGasPaymentTokenApproval: true,
+          globalExpressParams,
+          estimationMethod: "approximate",
+          provider: undefined,
         })
       : undefined;
 
     sendBatchOrderTxn({
       chainId,
       signer,
-      batchParams: {
-        createOrderParams: [],
-        updateOrderParams: [],
-        cancelOrderParams: [{ orderKey: key }],
-      },
-      expressParams: expressTxnParams?.expressParams,
+      batchParams,
+      expressParams,
       simulationParams: undefined,
       callback: makeOrderTxnCallback({}),
     }).finally(() => {
-      setCancellingOrdersKeys((prev) => prev.filter((k) => k !== key));
+      setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));
       setSelectedOrderKeys?.(EMPTY_ARRAY);
     });
   }
@@ -219,13 +191,7 @@ export function OrderList({
 
   return (
     <div ref={ref}>
-      {isContainerSmall && orders.length === 0 && (
-        <div className="rounded-4 bg-slate-800 p-14 text-slate-100">
-          {isLoading ? t`Loading...` : t`No open orders`}
-        </div>
-      )}
-
-      {(isContainerSmall || isScreenSmall) && !isLoading && orders.length !== 0 && (
+      {(isContainerSmall || isScreenSmall) && !isLoading && (
         <div className="flex flex-col gap-8">
           <div className="flex flex-wrap items-center justify-between gap-8 bg-slate-950">
             {isContainerSmall ? (
@@ -264,7 +230,7 @@ export function OrderList({
                   isSelected={selectedOrdersKeys?.includes(order.key)}
                   onToggleOrder={() => onToggleOrder(order.key)}
                   isCanceling={cancellingOrdersKeys.includes(order.key)}
-                  onCancelOrder={() => onCancelOrder(order.key)}
+                  onCancelOrder={() => onCancelOrder(order)}
                   positionsInfoData={positionsData}
                   hideActions={hideActions}
                   setRef={handleSetRef}
@@ -273,6 +239,12 @@ export function OrderList({
             </div>
           )}
           {!isContainerSmall && <div />}
+        </div>
+      )}
+
+      {isContainerSmall && orders.length === 0 && (
+        <div className="rounded-4 bg-slate-800 p-14 text-slate-100">
+          {isLoading ? t`Loading...` : t`No open orders`}
         </div>
       )}
 
@@ -329,7 +301,7 @@ export function OrderList({
                   order={order}
                   onToggleOrder={() => onToggleOrder(order.key)}
                   isCanceling={cancellingOrdersKeys.includes(order.key)}
-                  onCancelOrder={() => onCancelOrder(order.key)}
+                  onCancelOrder={() => onCancelOrder(order)}
                   hideActions={hideActions}
                   positionsInfoData={positionsData}
                   setRef={(el) => (orderRefs.current[order.key] = el)}
@@ -353,7 +325,7 @@ function useFilteredOrders({
   chainId: number;
   account: string | undefined;
   marketsDirectionsFilter: MarketFilterLongShortItemData[];
-  orderTypesFilter: OrderType[];
+  orderTypesFilter: OrderTypeFilterValue[];
 }) {
   const ordersResponse = useOrdersInfoRequest(chainId, {
     account: account,
@@ -370,15 +342,18 @@ function useFilteredOrders({
     const { swapOrders, positionOrders } = Object.values(ordersResponse.ordersInfoData || {}).reduce(
       (acc, order) => {
         if (isLimitOrderType(order.orderType) || isTriggerDecreaseOrderType(order.orderType)) {
-          if (isSwapOrderType(order.orderType)) {
+          if (isSwapOrder(order)) {
             acc.swapOrders.push(order);
-          } else {
-            acc.positionOrders.push(order as PositionOrderInfo);
+          } else if (isPositionOrder(order)) {
+            acc.positionOrders.push(order);
           }
         }
         return acc;
       },
-      { swapOrders: [] as SwapOrderInfo[], positionOrders: [] as PositionOrderInfo[] }
+      {
+        swapOrders: [] as (SwapOrderInfo | TwapOrderInfo<SwapOrderInfo>)[],
+        positionOrders: [] as (PositionOrderInfo | TwapOrderInfo<PositionOrderInfo>)[],
+      }
     );
 
     return [

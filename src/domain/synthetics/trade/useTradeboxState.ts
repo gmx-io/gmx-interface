@@ -19,6 +19,7 @@ import { useSafeState } from "lib/useSafeState";
 import { getContract } from "sdk/configs/contracts";
 import { getToken, isSimilarToken } from "sdk/configs/tokens";
 import { TradeMode, TradeType } from "sdk/types/trade";
+import { TwapDuration } from "sdk/types/twap";
 import { createTradeFlags } from "sdk/utils/trade";
 
 import { MarketsData, MarketsInfoData } from "../markets";
@@ -154,7 +155,7 @@ export function useTradeboxState(
     [chainId]
   );
 
-  const { savedAllowedSlippage } = useSettings();
+  const { savedAllowedSlippage, savedTwapNumberOfParts } = useSettings();
   const [syncedChainId, setSyncedChainId] = useState<number | undefined>(undefined);
   const [allowedSlippage, setAllowedSlippage] = useState<number>(savedAllowedSlippage);
 
@@ -254,6 +255,8 @@ export function useTradeboxState(
   const [closeSizeInputValue, setCloseSizeInputValue] = useState("");
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState<string>("");
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
+  const [numberOfParts, setNumberOfParts] = useState<number>(savedTwapNumberOfParts);
+  const [duration, setDuration] = useState<TwapDuration>({ hours: 10, minutes: 0 });
 
   const [advancedOptions, setAdvancedOptions] = useSafeState<TradeboxAdvancedOptions>(
     storedOptions.advanced ?? INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE.advanced
@@ -275,9 +278,17 @@ export function useTradeboxState(
     }
 
     return {
-      [TradeType.Long]: [TradeMode.Market, TradeMode.Limit, [TradeMode.Trigger, TradeMode.StopMarket]] as const,
-      [TradeType.Short]: [TradeMode.Market, TradeMode.Limit, [TradeMode.Trigger, TradeMode.StopMarket]] as const,
-      [TradeType.Swap]: [TradeMode.Market, TradeMode.Limit] as const,
+      [TradeType.Long]: [
+        TradeMode.Market,
+        TradeMode.Limit,
+        [TradeMode.Trigger, TradeMode.StopMarket, TradeMode.Twap],
+      ] as const,
+      [TradeType.Short]: [
+        TradeMode.Market,
+        TradeMode.Limit,
+        [TradeMode.Trigger, TradeMode.StopMarket, TradeMode.Twap],
+      ] as const,
+      [TradeType.Swap]: [TradeMode.Market, TradeMode.Limit, TradeMode.Twap] as const,
     }[tradeType];
   }, [tradeType]);
 
@@ -770,6 +781,10 @@ export function useTradeboxState(
     setAllowedSlippage,
     isFromTokenGmxAccount,
     setIsFromTokenGmxAccount,
+    numberOfParts,
+    setNumberOfParts,
+    duration,
+    setDuration,
   };
 }
 

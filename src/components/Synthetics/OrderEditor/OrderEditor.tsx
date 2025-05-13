@@ -1,6 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useKey } from "react-use";
+import { zeroAddress } from "viem";
 
 import { BASIS_POINTS_DIVISOR, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS, USD_DECIMALS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -12,11 +13,7 @@ import {
   useOrderEditorTriggerPriceInputValueState,
   useOrderEditorTriggerRatioInputValueState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import {
-  makeSelectSubaccountForActions,
-  selectMarketsInfoData,
-  selectTokensData,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectOrderEditorAcceptablePrice,
   selectOrderEditorAcceptablePriceImpactBps,
@@ -72,7 +69,7 @@ import {
 } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { getIncreasePositionAmounts, getNextPositionValuesForIncreaseTrade } from "domain/synthetics/trade";
-import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
+import { getExpressError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
 import { TokensRatioAndSlippage } from "domain/tokens";
 import { numericBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
@@ -88,6 +85,7 @@ import {
   formatUsdPrice,
   parseValue,
 } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
@@ -158,8 +156,6 @@ export function OrderEditor(p: Props) {
     };
   }, [executionFee, tokensData, p.order.executionFee]);
 
-  const subaccount = useSelector(makeSelectSubaccountForActions(1));
-
   const positionOrder = p.order as PositionOrderInfo | undefined;
   const positionIndexToken = positionOrder?.indexToken;
   const indexTokenAmount = useMemo(
@@ -199,34 +195,6 @@ export function OrderEditor(p: Props) {
         : undefined;
 
   const priceImpactFeeBps = useSelector(selectOrderEditorPriceImpactFeeBps);
-
-  function getError() {
-    if (isSubmitting) {
-      return t`Updating Order...`;
-    }
-
-    if (isSwapOrderType(p.order.orderType)) {
-      if (triggerRatio?.ratio === undefined || triggerRatio?.ratio < 0 || minOutputAmount <= 0) {
-        return t`Enter a ratio`;
-      }
-
-      if (minOutputAmount === p.order.minOutputAmount) {
-        return t`Enter a new ratio or allowed slippage`;
-      }
-
-      if (triggerRatio && !isRatioInverted && markRatio && markRatio.ratio < triggerRatio.ratio) {
-        return t`Limit price above mark price`;
-      }
-
-      if (triggerRatio && isRatioInverted && markRatio && markRatio.ratio > triggerRatio.ratio) {
-        return t`Limit price below mark price`;
-      }
-
-      return;
-    }
-
-    return calcSelector(selectOrderEditorPositionOrderError);
-  }
 
   function getIsMaxLeverageError() {
     if (isLimitIncreaseOrderType(p.order.orderType) && sizeDeltaUsd !== undefined) {
@@ -323,44 +291,6 @@ export function OrderEditor(p: Props) {
     }
   }
 
-  function getSubmitButtonState(): { text: ReactNode; disabled?: boolean; tooltip?: ReactNode; onClick?: () => void } {
-    const error = getError();
-    const isMaxLeverageError = getIsMaxLeverageError();
-
-    if (isMaxLeverageError) {
-      return {
-        text: t`Max. Leverage Exceeded`,
-        tooltip: (
-          <>
-            <Trans>Decrease the size to match the max. allowed leverage:</Trans>{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
-            <br />
-            <br />
-            <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
-              <Trans>Set Max Leverage</Trans>
-            </span>
-          </>
-        ),
-        disabled: true,
-      };
-    }
-
-    if (error) {
-      return {
-        text: error,
-        disabled: true,
-      };
-    }
-
-    const orderTypeName = getNameByOrderType(p.order.orderType);
-
-    return {
-      text: `Update ${orderTypeName} Order`,
-      disabled: false,
-      onClick: onSubmit,
-    };
-  }
-
   const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
     if (!signer || !tokensData || !marketsInfoData) {
       return undefined;
@@ -374,8 +304,9 @@ export function OrderEditor(p: Props) {
 
     const updateOrderParams = buildUpdateOrderPayload({
       chainId,
-      indexTokenAddress: positionOrder.indexToken.address,
+      indexTokenAddress: isSwapOrderType(p.order.orderType) ? zeroAddress : positionOrder.indexToken.address,
       orderKey: p.order.key,
+      orderType: p.order.orderType,
       sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
       triggerPrice: orderTriggerPrice,
       acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
@@ -406,7 +337,108 @@ export function OrderEditor(p: Props) {
 
   const { expressParams } = useExpressOrdersParams({
     orderParams: batchParams,
+    label: "Order Editor",
   });
+
+  const networkFee = useMemo(() => {
+    if (!additionalExecutionFee) {
+      return undefined;
+    }
+
+    let feeToken = additionalExecutionFee?.feeToken;
+    let feeTokenAmount = additionalExecutionFee?.feeTokenAmount;
+    let feeUsd = additionalExecutionFee?.feeUsd;
+
+    const gasPaymentToken = getByKey(tokensData, expressParams?.relayFeeParams.gasPaymentTokenAddress);
+
+    if (gasPaymentToken && expressParams?.relayFeeParams.gasPaymentTokenAmount !== undefined) {
+      feeToken = gasPaymentToken;
+      feeTokenAmount = expressParams?.relayFeeParams.gasPaymentTokenAmount;
+      feeUsd = convertToUsd(feeTokenAmount, feeToken.decimals, gasPaymentToken.prices.minPrice);
+    }
+
+    return {
+      feeToken,
+      feeTokenAmount,
+      feeUsd,
+    };
+  }, [additionalExecutionFee, expressParams, tokensData]);
+
+  function getError() {
+    if (isSubmitting) {
+      return t`Updating Order...`;
+    }
+
+    if (isSwapOrderType(p.order.orderType)) {
+      if (triggerRatio?.ratio === undefined || triggerRatio?.ratio < 0 || minOutputAmount <= 0) {
+        return t`Enter a ratio`;
+      }
+
+      if (minOutputAmount === p.order.minOutputAmount) {
+        return t`Enter a new ratio or allowed slippage`;
+      }
+
+      if (triggerRatio && !isRatioInverted && markRatio && markRatio.ratio < triggerRatio.ratio) {
+        return t`Limit price above mark price`;
+      }
+
+      if (triggerRatio && isRatioInverted && markRatio && markRatio.ratio > triggerRatio.ratio) {
+        return t`Limit price below mark price`;
+      }
+
+      const expressError = getExpressError({
+        chainId,
+        expressParams,
+        tokensData,
+      });
+
+      if (expressError[0]) {
+        return expressError[0];
+      }
+
+      return;
+    }
+
+    return calcSelector(selectOrderEditorPositionOrderError);
+  }
+
+  function getSubmitButtonState(): { text: ReactNode; disabled?: boolean; tooltip?: ReactNode; onClick?: () => void } {
+    const error = getError();
+    const isMaxLeverageError = getIsMaxLeverageError();
+
+    if (isMaxLeverageError) {
+      return {
+        text: t`Max. Leverage Exceeded`,
+        tooltip: (
+          <>
+            <Trans>Decrease the size to match the max. allowed leverage:</Trans>{" "}
+            <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
+            <br />
+            <br />
+            <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
+              <Trans>Set Max Leverage</Trans>
+            </span>
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
+    if (error) {
+      return {
+        text: error,
+        disabled: true,
+      };
+    }
+
+    const orderTypeName = getNameByOrderType(p.order.orderType, p.order.isTwap);
+
+    return {
+      text: `Update ${orderTypeName} Order`,
+      disabled: false,
+      onClick: onSubmit,
+    };
+  }
 
   function onSubmit() {
     if (!batchParams || !signer || !tokensData || !marketsInfoData) {
@@ -424,7 +456,7 @@ export function OrderEditor(p: Props) {
       callback: makeOrderTxnCallback({}),
     });
 
-    if (subaccount) {
+    if (expressParams?.subaccount) {
       p.onClose();
       setIsSubmitting(false);
       if (market) {
@@ -667,25 +699,23 @@ export function OrderEditor(p: Props) {
             </>
           )}
 
-          {additionalExecutionFee && (
+          {networkFee && (
             <SyntheticsInfoRow
               label={t`Fees`}
               value={
                 <TooltipWithPortal
                   position="top-end"
                   tooltipClassName="PositionEditor-fees-tooltip"
-                  handle={formatDeltaUsd(
-                    additionalExecutionFee.feeUsd === undefined ? undefined : additionalExecutionFee.feeUsd * -1n
-                  )}
+                  handle={formatDeltaUsd(networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n)}
                   renderContent={() => (
                     <>
                       <StatsTooltipRow
                         label={<div className="text-white">{t`Network Fee`}:</div>}
                         value={formatTokenAmountWithUsd(
-                          additionalExecutionFee.feeTokenAmount * -1n,
-                          additionalExecutionFee.feeUsd === undefined ? undefined : additionalExecutionFee.feeUsd * -1n,
-                          additionalExecutionFee.feeToken.symbol,
-                          additionalExecutionFee.feeToken.decimals,
+                          networkFee.feeTokenAmount * -1n,
+                          networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n,
+                          networkFee.feeToken.symbol,
+                          networkFee.feeToken.decimals,
                           {
                             displayDecimals: 5,
                           }

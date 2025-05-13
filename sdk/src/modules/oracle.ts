@@ -14,12 +14,16 @@ export type TickersResponse = {
   updatedAt: number;
 }[];
 
-export type TokensResponse = {
+type RawTokenResponse = {
   symbol: string;
   address: string;
   decimals: number;
   synthetic: boolean;
-}[];
+};
+
+export type TokensResponse = (Omit<RawTokenResponse, "synthetic"> & {
+  isSynthetic: boolean;
+})[];
 
 export class Oracle {
   private url: string;
@@ -43,7 +47,7 @@ export class Oracle {
   getTokens(): Promise<TokensResponse> {
     return fetch(buildUrl(this.url!, "/tokens"))
       .then((res) => res.json())
-      .then((res) =>
+      .then((res: { tokens: RawTokenResponse[] }) =>
         res.tokens.map(({ synthetic, ...rest }) => {
           return {
             ...rest,

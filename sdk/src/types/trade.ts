@@ -12,6 +12,7 @@ export enum TradeMode {
   Limit = "Limit",
   StopMarket = "StopMarket",
   Trigger = "Trigger",
+  Twap = "TWAP",
 }
 
 export enum TriggerThresholdType {
@@ -33,6 +34,7 @@ export type TradeFlags = {
   isTrigger: boolean;
   isMarket: boolean;
   isLimit: boolean;
+  isTwap: boolean;
 };
 
 export type SwapAmounts = {
@@ -271,6 +273,7 @@ export type ExternalSwapOutput = {
     data: string;
     value: bigint;
     estimatedGas: bigint;
+    estimatedExecutionFee: bigint;
   };
 };
 
@@ -291,6 +294,7 @@ export type ExternalSwapQuote = {
     data: string;
     value: bigint;
     estimatedGas: bigint;
+    estimatedExecutionFee: bigint;
   };
 };
 

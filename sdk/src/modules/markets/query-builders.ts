@@ -26,41 +26,44 @@ export function buildClaimableFundingDataRequest({
     return {};
   }
 
-  return marketsAddresses.reduce((request, marketAddress) => {
-    const market = getByKey(marketsData, marketAddress);
+  return marketsAddresses.reduce(
+    (request, marketAddress) => {
+      const market = getByKey(marketsData, marketAddress);
 
-    if (!market) {
+      if (!market) {
+        return request;
+      }
+
+      const keys = hashDataMap({
+        claimableFundingAmountLong: [
+          ["bytes32", "address", "address", "address"],
+          [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.longTokenAddress, account],
+        ],
+        claimableFundingAmountShort: [
+          ["bytes32", "address", "address", "address"],
+          [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.shortTokenAddress, account],
+        ],
+      });
+
+      request[marketAddress] = {
+        contractAddress: getContract(chainId, "DataStore"),
+        abiId: "DataStore",
+        calls: {
+          claimableFundingAmountLong: {
+            methodName: "getUint",
+            params: [keys.claimableFundingAmountLong],
+          },
+          claimableFundingAmountShort: {
+            methodName: "getUint",
+            params: [keys.claimableFundingAmountShort],
+          },
+        },
+      } satisfies ContractCallsConfig<any>;
+
       return request;
-    }
-
-    const keys = hashDataMap({
-      claimableFundingAmountLong: [
-        ["bytes32", "address", "address", "address"],
-        [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.longTokenAddress, account],
-      ],
-      claimableFundingAmountShort: [
-        ["bytes32", "address", "address", "address"],
-        [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.shortTokenAddress, account],
-      ],
-    });
-
-    request[marketAddress] = {
-      contractAddress: getContract(chainId, "DataStore"),
-      abiId: "DataStore",
-      calls: {
-        claimableFundingAmountLong: {
-          methodName: "getUint",
-          params: [keys.claimableFundingAmountLong],
-        },
-        claimableFundingAmountShort: {
-          methodName: "getUint",
-          params: [keys.claimableFundingAmountShort],
-        },
-      },
-    } satisfies ContractCallsConfig<any>;
-
-    return request;
-  }, {});
+    },
+    {} as Record<string, ContractCallsConfig<any>>
+  );
 }
 
 export async function buildMarketsValuesRequest(

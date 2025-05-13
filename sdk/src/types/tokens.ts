@@ -30,6 +30,7 @@ export type Token = {
   imageUrl?: string;
   categories?: TokenCategory[];
   isPermitSupported?: boolean;
+  contractVersion?: string;
 
   isUsdg?: boolean;
   isNative?: boolean;

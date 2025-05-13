@@ -1,7 +1,12 @@
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelectorFactory } from "context/SyntheticsStateContext/utils";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { isLimitDecreaseOrderType, isLimitIncreaseOrderType, isStopLossOrderType } from "domain/synthetics/orders";
+import {
+  isLimitDecreaseOrderType,
+  isLimitIncreaseOrderType,
+  isStopLossOrderType,
+  isTwapOrder,
+} from "domain/synthetics/orders";
 import { getPendingMockPosition } from "domain/synthetics/positions";
 import { prepareInitialEntries } from "domain/synthetics/sidecarOrders/utils";
 
@@ -32,14 +37,14 @@ export const selectTradeboxExistingTpOrders = createSelector((q) => {
   const positionKey = q(selectTradeboxSelectedPositionKey);
   const positionOrders = q(makeSelectOrdersByPositionKey(positionKey));
 
-  return positionOrders?.filter((order) => isLimitDecreaseOrderType(order.orderType));
+  return positionOrders?.filter((order) => !isTwapOrder(order) && isLimitDecreaseOrderType(order.orderType));
 });
 
 export const selectTradeboxExistingLimitOrders = createSelector((q) => {
   const positionKey = q(selectTradeboxSelectedPositionKey);
   const positionOrders = q(makeSelectOrdersByPositionKey(positionKey));
 
-  return positionOrders?.filter((order) => isLimitIncreaseOrderType(order.orderType));
+  return positionOrders?.filter((order) => !isTwapOrder(order) && isLimitIncreaseOrderType(order.orderType));
 });
 
 export const selectTradeboxSidecarOrdersSlEntries = (state: SyntheticsState) => state.tradebox.sidecarOrders.slEntries;

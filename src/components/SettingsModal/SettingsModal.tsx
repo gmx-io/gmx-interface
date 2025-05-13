@@ -1,27 +1,40 @@
-import { t, Trans } from "@lingui/macro";
+import { plural, t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { ReactNode, useCallback, useEffect } from "react";
-import { useAccount } from "wagmi";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 
 import { isDevelopment } from "config/env";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import { getChainName } from "config/static/chains";
-import { isSourceChain, MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING } from "context/GmxAccountContext/config";
+import { DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/twap";
+import { MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING } from "context/GmxAccountContext/config";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
-import { useDisabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
+import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
+import { useEnabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
+import {
+  getIsSubaccountActive,
+  getRemainingSubaccountActions,
+  getRemainingSubaccountSeconds,
+} from "domain/synthetics/subaccount";
+import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "domain/synthetics/trade/twap/utils";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { roundToTwoDecimals } from "lib/numbers";
+import { EMPTY_ARRAY } from "lib/objects";
+import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
+import { secondsToPeriod } from "sdk/utils/time";
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
 import { ExpressTradingEnabledBanner } from "components/ExpressTradingEnabledBanner/ExpressTradingEnabledBanner";
+import { ExpressTradingGasTokenSwitchedBanner } from "components/ExpressTradingGasTokenSwitchedBanner.ts/ExpressTradingGasTokenSwithedBanner";
+import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
 import { SlideModal } from "components/Modal/SlideModal";
+import NumberInput from "components/NumberInput/NumberInput";
 import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubaccountWithdraw";
 import { OneClickAdvancedSettings } from "components/OneClickAdvancedSettings/OneClickAdvancedSettings";
 import PercentageInput from "components/PercentageInput/PercentageInput";
@@ -41,14 +54,23 @@ export function SettingsModal({
 
   const [settlementChainId, setSettlementChainId] = useGmxAccountSettlementChainId();
   const settings = useSettings();
-  const { disabledFeatures } = useDisabledFeaturesRequest(chainId);
+  const { features } = useEnabledFeaturesRequest(chainId);
   const subaccountState = useSubaccountContext();
+
+  const [numberOfParts, setNumberOfParts] = useState<number>();
+
+  const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
 
   useEffect(() => {
     if (!isSettingsVisible) return;
 
     subaccountState.refreshSubaccountData();
 
+    if (settings.settingsWarningDotVisible) {
+      settings.setSettingsWarningDotVisible(false);
+    }
+
+    setNumberOfParts(settings.savedTwapNumberOfParts);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSettingsVisible]);
 
@@ -96,6 +118,32 @@ export function SettingsModal({
     [settings]
   );
 
+  const onChangeTwapNumberOfParts = useCallback((value: number) => {
+    const parsedValue = parseInt(String(value));
+
+    setNumberOfParts(parsedValue);
+  }, []);
+
+  const onBlurTwapNumberOfParts = useCallback(() => {
+    if (!numberOfParts || isNaN(numberOfParts) || numberOfParts < 0) {
+      helperToast.error(t`Invalid TWAP number of parts value`);
+      setNumberOfParts(settings.savedTwapNumberOfParts);
+      return;
+    }
+
+    if (numberOfParts < MIN_TWAP_NUMBER_OF_PARTS || numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
+      helperToast.error(t`Number of parts must be between ${MIN_TWAP_NUMBER_OF_PARTS} and ${MAX_TWAP_NUMBER_OF_PARTS}`);
+      setNumberOfParts(settings.savedTwapNumberOfParts);
+      return;
+    }
+
+    settings.setSavedTWAPNumberOfParts(numberOfParts);
+  }, [numberOfParts, settings]);
+
+  const onClose = useCallback(() => {
+    setIsSettingsVisible(false);
+  }, [setIsSettingsVisible]);
+
   const handleExpressOrdersToggle = (enabled: boolean) => {
     if (srcChainId) {
       console.error("Express trading can not be disabled for multichain");
@@ -117,6 +165,45 @@ export function SettingsModal({
     }
   };
 
+  const remainingSubaccountActions = Number(
+    subaccountState.subaccount
+      ? getRemainingSubaccountActions(subaccountState.subaccount)
+      : DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT
+  );
+
+  const remainingSubaccountDays = useMemo(() => {
+    if (!subaccountState.subaccount) {
+      return secondsToPeriod(DEFAULT_SUBACCOUNT_EXPIRY_DURATION, "1d");
+    }
+
+    const seconds = Number(getRemainingSubaccountSeconds(subaccountState.subaccount));
+
+    const days = secondsToPeriod(seconds, "1d");
+
+    if (days > 0) {
+      return plural(Number(days), {
+        one: "1 day",
+        other: `${days} days`,
+      });
+    }
+
+    const hours = secondsToPeriod(seconds, "1h");
+
+    if (hours > 0) {
+      return plural(Number(hours), {
+        one: "1 hour",
+        other: `${hours} hours`,
+      });
+    }
+
+    const minutes = secondsToPeriod(seconds, "1m");
+
+    return plural(Number(minutes), {
+      one: "1 minute",
+      other: `${minutes} minutes`,
+    });
+  }, [subaccountState.subaccount]);
+
   return (
     <SlideModal
       isVisible={isSettingsVisible}
@@ -135,19 +222,20 @@ export function SettingsModal({
             {!srcChainId && (
               <>
                 <ToggleSwitch
-                  disabled={disabledFeatures?.relayRouterDisabled}
+                  disabled={
+                    !features?.relayRouterEnabled || (isOutOfGasPaymentBalance && !settings.expressOrdersEnabled)
+                  }
                   isChecked={settings.expressOrdersEnabled}
                   setIsChecked={handleExpressOrdersToggle}
                 >
                   <TooltipWithPortal
                     content={
                       <Trans>
-                        Express Trading simplifies your trades on GMX. Instead of sending transactions directly and
-                        paying gas fees in ETH/AVAX, you sign secure off-chain messages.
+                        Express Trading streamlines your trades on GMX by replacing on-chain transactions with secure
+                        off-chain message signing, helping reduce issues from network congestion and RPC errors.
                         <br />
                         <br />
-                        These messages are then processed on-chain for you, which helps reduce issues with network
-                        congestion and RPC errors.
+                        These signed messages are processed on-chain for you, so a gas payment token is still required.
                       </Trans>
                     }
                     handle={<Trans>Express Trading</Trans>}
@@ -159,19 +247,38 @@ export function SettingsModal({
             )}
 
             <ToggleSwitch
-              isChecked={Boolean(subaccountState.subaccount?.optimisticActive)}
+              isChecked={Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount))}
               setIsChecked={handleOneClickTradingToggle}
-              disabled={disabledFeatures?.subaccountRelayRouterDisabled}
+              disabled={
+                !features?.subaccountRelayRouterEnabled || (isOutOfGasPaymentBalance && !subaccountState.subaccount)
+              }
             >
               <TooltipWithPortal
-                content={<Trans>One-Click Trading requires Express Trading to function.</Trans>}
+                content={
+                  <Trans>
+                    One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be
+                    enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or{" "}
+                    {remainingSubaccountDays} days, whichever comes first.
+                    <br />
+                    <br />
+                    You can adjust these settings anytime under "One-Click Trading Settings
+                  </Trans>
+                }
                 handle={<Trans>One-Click Trading</Trans>}
               />
             </ToggleSwitch>
 
+            {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
+
+            {settings.expressTradingGasTokenSwitched && !isOutOfGasPaymentBalance && (
+              <ExpressTradingGasTokenSwitchedBanner onClose={() => settings.setExpressTradingGasTokenSwitched(false)} />
+            )}
+
             <OldSubaccountWithdraw />
 
-            {settings.oneClickTradingEnabled && <OneClickAdvancedSettings />}
+            {Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount)) && (
+              <OneClickAdvancedSettings />
+            )}
           </SettingsSection>
 
           {srcChainId && (
@@ -234,6 +341,21 @@ export function SettingsModal({
               defaultValue={DEFAULT_SLIPPAGE_AMOUNT}
               value={parseFloat(String(settings.savedAllowedSlippage))}
               onChange={onChangeSlippage}
+              suggestions={EMPTY_ARRAY}
+            />
+
+            <InputSetting
+              title={<Trans>TWAP Number of Parts</Trans>}
+              description={
+                <div>
+                  <Trans>TWAP Number of Parts</Trans>
+                </div>
+              }
+              defaultValue={DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS}
+              value={numberOfParts}
+              onChange={onChangeTwapNumberOfParts}
+              onBlur={onBlurTwapNumberOfParts}
+              type="number"
             />
 
             {settings.shouldUseExecutionFeeBuffer && (
@@ -256,6 +378,7 @@ export function SettingsModal({
                 defaultValue={30}
                 value={parseFloat(String(settings.executionFeeBufferBps))}
                 onChange={onChangeExecutionFeeBufferBps}
+                suggestions={EMPTY_ARRAY}
               />
             )}
 
@@ -350,14 +473,20 @@ function InputSetting({
   defaultValue,
   value,
   onChange,
+  onBlur,
   className,
+  suggestions,
+  type = "percentage",
 }: {
   title: ReactNode;
   description?: ReactNode;
   defaultValue: number;
   value?: number;
   onChange: (value: number) => void;
+  onBlur?: () => void;
   className?: string;
+  suggestions?: number[];
+  type?: "percentage" | "number";
 }) {
   const titleComponent = <span className="text-14 font-medium">{title}</span>;
 
@@ -369,10 +498,28 @@ function InputSetting({
     titleComponent
   );
 
+  const Input =
+    type === "percentage" ? (
+      <PercentageInput
+        defaultValue={defaultValue}
+        value={value}
+        onChange={onChange}
+        tooltipPosition="bottom"
+        suggestions={suggestions}
+      />
+    ) : (
+      <NumberInput
+        className="w-60 rounded-4 border border-solid border-slate-700 bg-slate-700 px-4 py-2 text-right hover:border-cold-blue-700"
+        value={value}
+        onValueChange={(e) => onChange(Number(e.target.value))}
+        onBlur={onBlur}
+      />
+    );
+
   return (
     <div className={cx("flex items-center justify-between", className)}>
       <div className="mr-8">{titleWithDescription}</div>
-      <PercentageInput defaultValue={defaultValue} value={value} onChange={onChange} tooltipPosition="bottom" />
+      {Input}
     </div>
   );
 }

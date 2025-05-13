@@ -18,10 +18,14 @@ export const selectSetOracleKeeperInstancesConfig = (s: SyntheticsState) => s.se
 export const selectIsPnlInLeverage = (s: SyntheticsState) => s.settings.isPnlInLeverage;
 export const selectShowPnlAfterFees = (s: SyntheticsState) => s.settings.showPnlAfterFees;
 export const selectIsLeverageSliderEnabled = (s: SyntheticsState) => s.settings.isLeverageSliderEnabled;
-export const selectOneClickTradingEnabled = (s: SyntheticsState) => s.settings.oneClickTradingEnabled;
-export const selectSetOneClickTradingEnabled = (s: SyntheticsState) => s.settings.setOneClickTradingEnabled;
 export const selectExpressOrdersEnabled = (s: SyntheticsState) => s.settings.expressOrdersEnabled;
 export const selectSetExpressOrdersEnabled = (s: SyntheticsState) => s.settings.setExpressOrdersEnabled;
 export const selectGasPaymentTokenAddress = (s: SyntheticsState) => s.settings.gasPaymentTokenAddress;
+export const selectSetGasPaymentTokenAddress = (s: SyntheticsState) => s.settings.setGasPaymentTokenAddress;
 export const selectDebugSwapMarketsConfig = (s: SyntheticsState) => s.settings.debugSwapMarketsConfig;
 export const selectSetDebugSwapMarketsConfig = (s: SyntheticsState) => s.settings.setDebugSwapMarketsConfig;
+export const selectSettingsWarningDotVisible = (s: SyntheticsState) => s.settings.settingsWarningDotVisible;
+export const selectSetSettingsWarningDotVisible = (s: SyntheticsState) => s.settings.setSettingsWarningDotVisible;
+export const selectExpressTradingGasTokenSwitched = (s: SyntheticsState) => s.settings.expressTradingGasTokenSwitched;
+export const selectSetExpressTradingGasTokenSwitched = (s: SyntheticsState) =>
+  s.settings.setExpressTradingGasTokenSwitched;

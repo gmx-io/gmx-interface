@@ -10,12 +10,18 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getIsNonceExpired, getIsSubaccountExpired, getRemainingSubaccountActions } from "domain/synthetics/subaccount";
+import { ExpressTxnParams } from "domain/synthetics/express";
+import {
+  getIsNonceExpired,
+  getIsSubaccountActive,
+  getIsSubaccountExpired,
+  getRemainingSubaccountActions,
+} from "domain/synthetics/subaccount";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import { useRequiredActions } from "./useRequiredActions";
 
-export function useExpressTradingWarnings() {
+export function useExpressTradingWarnings({ expressParams }: { expressParams: ExpressTxnParams | undefined }) {
   const fromToken = useSelector(selectTradeboxFromToken);
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
@@ -24,7 +30,7 @@ export function useExpressTradingWarnings() {
 
   const subaccount = useSelector(selectRawSubaccount);
 
-  const isSubaccountActive = subaccount?.optimisticActive;
+  const isSubaccountActive = subaccount && getIsSubaccountActive(subaccount);
 
   const [nativeTokenWarningHidden] = useLocalStorageSerializeKey(EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY, false);
 
@@ -46,6 +52,7 @@ export function useExpressTradingWarnings() {
     shouldShowNonceExpiredWarning: isSubaccountActive && getIsNonceExpired(subaccount),
     shouldShowAllowedActionsWarning:
       isSubaccountActive && (remaining === 0n || remaining < requiredActions) && !isNativeToken,
+    shouldShowOutOfGasPaymentBalanceWarning: expressParams?.relayFeeParams.isOutGasTokenBalance,
   };
 
   const shouldShowWarning = Object.values(conditions).some(Boolean);

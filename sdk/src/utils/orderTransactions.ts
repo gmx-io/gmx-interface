@@ -1,18 +1,24 @@
-import { MaxUint256 } from "ethers";
 import { encodeFunctionData, zeroAddress, zeroHash } from "viem";
 
 import ExchangeRouterAbi from "abis/ExchangeRouter.json";
 import { abis } from "abis/index";
 import ERC20ABI from "abis/Token.json";
-import { UiContractsChain, ARBITRUM_SEPOLIA } from "configs/chains";
+import { ARBITRUM_SEPOLIA, getExcessiveExecutionFee, getHighExecutionFee, UiContractsChain } from "configs/chains";
 import { getContract } from "configs/contracts";
-import { convertTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { convertTokenAddress, getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { ExecutionFee } from "types/fees";
 import { DecreasePositionSwapType, OrderType } from "types/orders";
-import { ContractPrice, ERC20Address } from "types/tokens";
+import { ContractPrice, ERC20Address, TokensData } from "types/tokens";
 import { ExternalSwapOutput } from "types/trade";
+import { TwapOrderParams } from "types/twap";
 
-import { convertToContractPrice } from "./tokens";
+import { expandDecimals, MaxUint256, USD_DECIMALS } from "./numbers";
+import { getByKey } from "./objects";
+import { isIncreaseOrderType, isSwapOrderType } from "./orders";
+import { convertToContractPrice, convertToUsd } from "./tokens";
 import { applySlippageToMinOut, applySlippageToPrice } from "./trade";
+import { getTwapValidFromTime } from "./twap";
+import { createTwapUiFeeReceiver } from "./twap/uiFeeReceiver";
 
 type ExchangeRouterCall = {
   method: string;
@@ -79,6 +85,7 @@ export type UpdateOrderParams = {
   chainId: number;
   indexTokenAddress: string;
   orderKey: string;
+  orderType: OrderType;
   sizeDeltaUsd: bigint;
   triggerPrice: bigint;
   acceptablePrice: bigint;
@@ -139,6 +146,7 @@ export type CommonOrderParams = {
   uiFeeReceiver: string | undefined;
   allowedSlippage: number;
   autoCancel: boolean;
+  validFromTime: bigint | undefined;
 };
 
 export type PositionOrderParams = {
@@ -199,7 +207,7 @@ export function buildSwapOrderPayload(p: SwapOrderParams): CreateOrderTxnParams<
       receiver: p.receiver,
       cancellationReceiver: zeroAddress,
       callbackContract: zeroAddress,
-      uiFeeReceiver: p.uiFeeReceiver ?? zeroAddress,
+      uiFeeReceiver: p.uiFeeReceiver ?? zeroHash,
       market: zeroAddress,
       initialCollateralToken: tokenTransfersParams.initialCollateralTokenAddress,
       swapPath: tokenTransfersParams.swapPath,
@@ -213,7 +221,7 @@ export function buildSwapOrderPayload(p: SwapOrderParams): CreateOrderTxnParams<
       executionFee: p.executionFeeAmount,
       callbackGasLimit: 0n,
       minOutputAmount: applySlippageToMinOut(p.allowedSlippage, tokenTransfersParams.minOutputAmount),
-      validFromTime: 0n,
+      validFromTime: p.validFromTime ?? 0n,
     },
     orderType: p.orderType,
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
@@ -247,7 +255,7 @@ export function buildIncreaseOrderPayload(
       receiver: p.receiver,
       cancellationReceiver: zeroAddress,
       callbackContract: zeroAddress,
-      uiFeeReceiver: p.uiFeeReceiver ?? zeroAddress,
+      uiFeeReceiver: p.uiFeeReceiver ?? zeroHash,
       market: p.marketAddress,
       initialCollateralToken: tokenTransfersParams.initialCollateralTokenAddress,
       swapPath: tokenTransfersParams.swapPath,
@@ -263,7 +271,7 @@ export function buildIncreaseOrderPayload(
       executionFee: p.executionFeeAmount,
       callbackGasLimit: 0n,
       minOutputAmount: applySlippageToMinOut(p.allowedSlippage, tokenTransfersParams.minOutputAmount),
-      validFromTime: 0n,
+      validFromTime: p.validFromTime ?? 0n,
     },
     orderType: p.orderType,
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
@@ -286,7 +294,6 @@ export function buildDecreaseOrderPayload(
   p: DecreasePositionOrderParams
 ): CreateOrderTxnParams<DecreasePositionOrderParams> {
   const indexToken = getToken(p.chainId, p.indexTokenAddress);
-
   const tokenTransfersParams = buildTokenTransfersParamsForDecrease(p);
 
   const orderPayload: CreateOrderPayload = {
@@ -294,7 +301,7 @@ export function buildDecreaseOrderPayload(
       receiver: p.receiver,
       cancellationReceiver: zeroAddress,
       callbackContract: zeroAddress,
-      uiFeeReceiver: p.uiFeeReceiver ?? zeroAddress,
+      uiFeeReceiver: p.uiFeeReceiver ?? zeroHash,
       market: p.marketAddress,
       initialCollateralToken: tokenTransfersParams.initialCollateralTokenAddress,
       swapPath: tokenTransfersParams.swapPath,
@@ -310,7 +317,7 @@ export function buildDecreaseOrderPayload(
       executionFee: p.executionFeeAmount,
       callbackGasLimit: 0n,
       minOutputAmount: applySlippageToMinOut(p.allowedSlippage, tokenTransfersParams.minOutputAmount),
-      validFromTime: 0n,
+      validFromTime: p.validFromTime ?? 0n,
     },
     orderType: p.orderType,
     decreasePositionSwapType: p.decreasePositionSwapType,
@@ -329,6 +336,111 @@ export function buildDecreaseOrderPayload(
   };
 }
 
+export function buildTwapOrdersPayloads<
+  T extends SwapOrderParams | IncreasePositionOrderParams | DecreasePositionOrderParams,
+>(p: T, twapParams: TwapOrderParams): CreateOrderTxnParams<T>[] {
+  const uiFeeReceiver = createTwapUiFeeReceiver({ numberOfParts: twapParams.numberOfParts });
+
+  if (isSwapOrderType(p.orderType)) {
+    return Array.from({ length: twapParams.numberOfParts }, (_, i) => {
+      const params = p as SwapOrderParams;
+
+      return buildSwapOrderPayload({
+        chainId: params.chainId,
+        receiver: params.receiver,
+        executionGasLimit: params.executionGasLimit,
+        payTokenAddress: params.payTokenAddress,
+        receiveTokenAddress: params.receiveTokenAddress,
+        swapPath: params.swapPath,
+        externalSwapQuote: undefined,
+        minOutputAmount: params.minOutputAmount,
+        triggerRatio: params.triggerRatio,
+        referralCode: params.referralCode,
+        autoCancel: params.autoCancel,
+        allowedSlippage: 0,
+        payTokenAmount: params.payTokenAmount / BigInt(twapParams.numberOfParts),
+        executionFeeAmount: params.executionFeeAmount / BigInt(twapParams.numberOfParts),
+        validFromTime: getTwapValidFromTime(twapParams.duration, twapParams.numberOfParts, i),
+        orderType: OrderType.LimitSwap,
+        uiFeeReceiver,
+      }) as CreateOrderTxnParams<T>;
+    });
+  }
+
+  if (isIncreaseOrderType(p.orderType)) {
+    return Array.from({ length: twapParams.numberOfParts }, (_, i) => {
+      const params = p as IncreasePositionOrderParams;
+
+      const acceptablePrice = params.isLong ? MaxUint256 : 0n;
+      const triggerPrice = acceptablePrice;
+
+      return buildIncreaseOrderPayload({
+        chainId: params.chainId,
+        receiver: params.receiver,
+        executionGasLimit: params.executionGasLimit,
+        referralCode: params.referralCode,
+        autoCancel: params.autoCancel,
+        swapPath: params.swapPath,
+        externalSwapQuote: undefined,
+        marketAddress: params.marketAddress,
+        indexTokenAddress: params.indexTokenAddress,
+        isLong: params.isLong,
+        sizeDeltaUsd: params.sizeDeltaUsd / BigInt(twapParams.numberOfParts),
+        sizeDeltaInTokens: params.sizeDeltaInTokens / BigInt(twapParams.numberOfParts),
+        payTokenAddress: params.payTokenAddress,
+        allowedSlippage: 0,
+        payTokenAmount: params.payTokenAmount / BigInt(twapParams.numberOfParts),
+        collateralTokenAddress: params.collateralTokenAddress,
+        collateralDeltaAmount: params.collateralDeltaAmount / BigInt(twapParams.numberOfParts),
+        executionFeeAmount: params.executionFeeAmount / BigInt(twapParams.numberOfParts),
+        validFromTime: getTwapValidFromTime(twapParams.duration, twapParams.numberOfParts, i),
+        orderType: OrderType.LimitIncrease,
+        acceptablePrice,
+        triggerPrice,
+        uiFeeReceiver,
+      }) as CreateOrderTxnParams<T>;
+    });
+  }
+
+  return Array.from({ length: twapParams.numberOfParts }, (_, i) => {
+    const params = p as DecreasePositionOrderParams;
+
+    const acceptablePrice = !params.isLong ? MaxUint256 : 0n;
+    const triggerPrice = acceptablePrice;
+
+    return buildDecreaseOrderPayload({
+      chainId: params.chainId,
+      receiver: params.receiver,
+      executionGasLimit: params.executionGasLimit,
+      referralCode: params.referralCode,
+      autoCancel: params.autoCancel,
+      swapPath: params.swapPath,
+      externalSwapQuote: undefined,
+      marketAddress: params.marketAddress,
+      indexTokenAddress: params.indexTokenAddress,
+      isLong: params.isLong,
+      collateralTokenAddress: params.collateralTokenAddress,
+      collateralDeltaAmount: params.collateralDeltaAmount / BigInt(twapParams.numberOfParts),
+      sizeDeltaUsd: params.sizeDeltaUsd / BigInt(twapParams.numberOfParts),
+      sizeDeltaInTokens: params.sizeDeltaInTokens / BigInt(twapParams.numberOfParts),
+      executionFeeAmount: params.executionFeeAmount / BigInt(twapParams.numberOfParts),
+      validFromTime: getTwapValidFromTime(twapParams.duration, twapParams.numberOfParts, i),
+      orderType: OrderType.LimitDecrease,
+      acceptablePrice,
+      triggerPrice,
+      allowedSlippage: 0,
+      uiFeeReceiver,
+      minOutputUsd: params.minOutputUsd / BigInt(twapParams.numberOfParts),
+      receiveTokenAddress: params.receiveTokenAddress,
+      decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
+    }) as CreateOrderTxnParams<T>;
+  });
+}
+
+export function isTwapOrderPayload(p: CreateOrderPayload) {
+  return p.numbers.validFromTime !== 0n;
+}
+
 export function buildUpdateOrderPayload(p: UpdateOrderParams): UpdateOrderTxnParams {
   const indexToken = getToken(p.chainId, p.indexTokenAddress);
 
@@ -337,36 +449,69 @@ export function buildUpdateOrderPayload(p: UpdateOrderParams): UpdateOrderTxnPar
     updatePayload: {
       orderKey: p.orderKey,
       sizeDeltaUsd: p.sizeDeltaUsd,
-      triggerPrice: convertToContractPrice(p.triggerPrice, indexToken.decimals),
+      triggerPrice: isSwapOrderType(p.orderType)
+        ? (p.triggerPrice as ContractPrice)
+        : convertToContractPrice(p.triggerPrice, indexToken.decimals),
       acceptablePrice: convertToContractPrice(p.acceptablePrice, indexToken.decimals),
       minOutputAmount: p.minOutputAmount,
       autoCancel: p.autoCancel,
       validFromTime: 0n,
-      executionFeeTopUp: 0n,
+      executionFeeTopUp: p.executionFeeTopUp,
     },
   };
 }
 
-export function getTotalExecutionFeeForOrders({
-  createOrderParams,
-  updateOrderParams,
+export function getBatchTotalExecutionFee({
+  batchParams: { createOrderParams, updateOrderParams },
+  tokensData,
+  chainId,
 }: {
-  createOrderParams: CreateOrderTxnParams<any>[];
-  updateOrderParams: UpdateOrderTxnParams[];
-}) {
-  let totalExecutionFeeAmount = 0n;
-  let totalExecutionGasLimit = 0n;
+  batchParams: BatchOrderTxnParams;
+  tokensData: TokensData;
+  chainId: number;
+}): ExecutionFee | undefined {
+  let feeTokenAmount = 0n;
+  let gasLimit = 0n;
+
+  const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
+
+  if (!nativeToken) {
+    return undefined;
+  }
 
   for (const co of createOrderParams) {
-    totalExecutionFeeAmount += co.params.executionFeeAmount;
-    totalExecutionGasLimit += co.params.executionGasLimit;
+    feeTokenAmount += co.orderPayload.numbers.executionFee;
+    gasLimit += co.params.executionGasLimit;
   }
 
   for (const uo of updateOrderParams) {
-    totalExecutionFeeAmount += uo.params.executionFeeTopUp;
+    feeTokenAmount += uo.updatePayload.executionFeeTopUp;
   }
 
-  return { totalExecutionFeeAmount, totalExecutionGasLimit };
+  const feeUsd = convertToUsd(feeTokenAmount, nativeToken.decimals, nativeToken.prices.maxPrice)!;
+  const isFeeHigh = feeUsd > expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS);
+  const isFeeVeryHigh = feeUsd > expandDecimals(getExcessiveExecutionFee(chainId), USD_DECIMALS);
+
+  return {
+    feeTokenAmount,
+    gasLimit,
+    feeUsd,
+    feeToken: nativeToken,
+    isFeeHigh,
+    isFeeVeryHigh,
+  };
+}
+
+export function getBatchExternalSwapGasLimit(batchParams: BatchOrderTxnParams) {
+  return batchParams.createOrderParams.reduce((acc, co) => {
+    const externalSwapQuote = (co.params as IncreasePositionOrderParams | SwapOrderParams).externalSwapQuote;
+
+    if (externalSwapQuote) {
+      return acc + externalSwapQuote.txnData.estimatedGas;
+    }
+
+    return acc;
+  }, 0n);
 }
 
 export function buildTokenTransfersParamsForDecrease({
@@ -489,6 +634,18 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
   };
 }
 
+export function getBatchExternalCalls(batchParams: BatchOrderTxnParams): ExternalCallsPayload {
+  const externalCalls: ExternalCallsPayload[] = [];
+
+  for (const createOrderParams of batchParams.createOrderParams) {
+    if (createOrderParams.tokenTransfersParams?.externalCalls) {
+      externalCalls.push(createOrderParams.tokenTransfersParams.externalCalls);
+    }
+  }
+
+  return combineExternalCalls(externalCalls);
+}
+
 export function combineExternalCalls(externalCalls: ExternalCallsPayload[]): ExternalCallsPayload {
   const sendTokensMap: { [tokenAddress: string]: bigint } = {};
   const refundTokensMap: { [tokenAddress: string]: string } = {};
@@ -496,12 +653,12 @@ export function combineExternalCalls(externalCalls: ExternalCallsPayload[]): Ext
   const externalCallDataList: string[] = [];
 
   for (const call of externalCalls) {
-    for (const tokenAddress of call.sendTokens) {
-      sendTokensMap[tokenAddress] = (sendTokensMap[tokenAddress] ?? 0n) + call.sendAmounts[tokenAddress];
+    for (const [index, tokenAddress] of call.sendTokens.entries()) {
+      sendTokensMap[tokenAddress] = (sendTokensMap[tokenAddress] ?? 0n) + call.sendAmounts[index];
     }
 
-    for (const tokenAddress of call.refundTokens) {
-      refundTokensMap[tokenAddress] = call.refundReceivers[tokenAddress];
+    for (const [index, tokenAddress] of call.refundTokens.entries()) {
+      refundTokensMap[tokenAddress] = call.refundReceivers[index];
     }
 
     externalCallTargets.push(...call.externalCallTargets);
@@ -528,14 +685,16 @@ export function getExternalCallsPayload({
   quote: ExternalSwapOutput;
 }): ExternalCallsPayload {
   const inTokenAddress = convertTokenAddress(chainId, quote.inTokenAddress, "wrapped");
+  const outTokenAddress = convertTokenAddress(chainId, quote.outTokenAddress, "wrapped");
+  const wntAddress = getWrappedToken(chainId).address;
 
   const payload: ExternalCallsPayload = {
     sendTokens: [inTokenAddress],
     sendAmounts: [quote.amountIn],
     externalCallTargets: [],
     externalCallDataList: [],
-    refundTokens: [inTokenAddress],
-    refundReceivers: [account],
+    refundTokens: [inTokenAddress, outTokenAddress, wntAddress],
+    refundReceivers: [account, account, account],
   };
 
   if (quote.needSpenderApproval) {
@@ -715,4 +874,38 @@ export function encodeExchangeRouterMulticall(chainId: UiContractsChain, multica
     encodedMulticall,
     callData,
   };
+}
+
+export function getBatchRequiredActions(orderParams: BatchOrderTxnParams | undefined) {
+  if (!orderParams) {
+    return 0;
+  }
+
+  return (
+    orderParams.createOrderParams.length + orderParams.updateOrderParams.length + orderParams.cancelOrderParams.length
+  );
+}
+
+export function getIsEmptyBatch(orderParams: BatchOrderTxnParams | undefined) {
+  if (!orderParams) {
+    return true;
+  }
+
+  if (getBatchRequiredActions(orderParams) === 0) {
+    return true;
+  }
+
+  const hasEmptyOrder = orderParams.createOrderParams.some(
+    (o) => o.orderPayload.numbers.sizeDeltaUsd === 0n && o.orderPayload.numbers.initialCollateralDeltaAmount === 0n
+  );
+
+  return hasEmptyOrder;
+}
+
+export function getBatchIsNativePayment(orderParams: BatchOrderTxnParams) {
+  return orderParams.createOrderParams.some((o) => o.tokenTransfersParams?.isNativePayment);
+}
+
+export function getIsInvalidBatchReceiver(batchParams: BatchOrderTxnParams, signerAddress: string) {
+  return batchParams.createOrderParams.some((co) => co.orderPayload.addresses.receiver !== signerAddress);
 }

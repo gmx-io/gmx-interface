@@ -124,6 +124,7 @@ export function ClaimModal(props: {
         spender: stakedGmxTrackerAddress,
         chainId,
         permitParams: undefined,
+        approveAmount: undefined,
       });
       return;
     }

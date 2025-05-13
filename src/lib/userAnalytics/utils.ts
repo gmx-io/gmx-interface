@@ -6,15 +6,23 @@ import { MarketInfo } from "domain/synthetics/markets";
 import {
   EditingOrderSource,
   OrderInfo,
-  OrderType,
   isLimitOrderType,
   isMarketOrderType,
+  isStopIncreaseOrderType,
   isSwapOrderType,
   isTriggerDecreaseOrderType,
+  isTwapOrder,
 } from "domain/synthetics/orders";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
-import { ErrorLike, parseError } from "lib/errors";
-import { formatAmountForMetrics, formatPercentageForMetrics, metrics } from "lib/metrics";
+import { getTwapDurationInSeconds } from "domain/synthetics/trade/twap/utils";
+import { parseError } from "lib/errors";
+import {
+  PositionOrderMetricParams,
+  SwapMetricData,
+  formatAmountForMetrics,
+  formatPercentageForMetrics,
+  metrics,
+} from "lib/metrics";
 import { OrderMetricData, OrderMetricId } from "lib/metrics/types";
 import { bigintToNumber, formatRatePercentage, roundToOrder } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
@@ -117,12 +125,12 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           pair: metricData.marketName || "",
           pool: metricData.marketPoolName || "",
           type: metricData.isLong ? "Long" : "Short",
-          orderType: metricData.orderType === OrderType.MarketIncrease ? "Market" : "Limit",
+          orderType: getAnalyticsOrderTypeByTradeMode(metricData.tradeMode),
           tradeType: metricData.hasExistingPosition ? "IncreaseSize" : "InitialTrade",
           sizeDeltaUsd: metricData.sizeDeltaUsd,
           leverage: metricData.leverage || "",
           IsExpress: metricData.isExpress,
-          isExpress1CT: metricData.is1ct,
+          isExpress1CT: metricData.isExpress1CT,
           slCount: metricData.slCount,
           tpCount: metricData.tpCount,
           isTPSLCreated: metricData.isTPSLCreated ?? false,
@@ -132,6 +140,8 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
           priceImpactPercentage: metricData.priceImpactPercentage,
           netRate1h: metricData.netRate1h,
+          duration: metricData.tradeMode === TradeMode.Twap ? getTwapDurationInSeconds(metricData.duration) : undefined,
+          partsCount: metricData.tradeMode === TradeMode.Twap ? metricData.partsCount : undefined,
         },
       });
       break;
@@ -145,18 +155,20 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           pair: metricData.marketName || "",
           pool: metricData.marketPoolName || "",
           type: metricData.isLong ? "Long" : "Short",
-          orderType: metricData.orderType === OrderType.MarketDecrease ? "Market" : "TPSL",
+          orderType: getAnalyticsOrderTypeByTradeMode(metricData.tradeMode),
           tradeType: metricData.isFullClose ? "ClosePosition" : "DecreaseSize",
           sizeDeltaUsd: metricData.sizeDeltaUsd,
           leverage: "",
           IsExpress: metricData.isExpress,
-          isExpress1CT: metricData.is1ct,
+          isExpress1CT: metricData.isExpress1CT,
           chain: getChainName(chainId),
           isFirstOrder: false,
           interactionId: metricData.interactionId,
           priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
           priceImpactPercentage: metricData.priceImpactPercentage,
           netRate1h: metricData.netRate1h,
+          duration: metricData.tradeMode === TradeMode.Twap ? getTwapDurationInSeconds(metricData.duration) : undefined,
+          partsCount: metricData.tradeMode === TradeMode.Twap ? metricData.partsCount : undefined,
         },
       });
       break;
@@ -168,18 +180,20 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           pair: `${metricData.initialCollateralSymbol}/${metricData.toTokenSymbol}`,
           pool: "",
           type: "Swap",
-          orderType: metricData.orderType === OrderType.MarketSwap ? "Market" : "Limit",
+          orderType: getAnalyticsOrderTypeByTradeMode(metricData.tradeMode),
           tradeType: "InitialTrade",
           amountUsd: metricData.amountUsd,
           leverage: "",
           IsExpress: metricData.isExpress,
-          isExpress1CT: metricData.is1ct,
+          isExpress1CT: metricData.isExpress1CT,
           chain: getChainName(chainId),
           isFirstOrder: metricData.isFirstOrder ?? false,
           interactionId: undefined,
           priceImpactDeltaUsd: undefined,
           priceImpactPercentage: undefined,
           netRate1h: undefined,
+          duration: metricData.tradeMode === TradeMode.Twap ? getTwapDurationInSeconds(metricData.duration) : undefined,
+          partsCount: metricData.tradeMode === TradeMode.Twap ? metricData.partsCount : undefined,
         },
       });
       break;
@@ -218,7 +232,8 @@ export function sendUserAnalyticsOrderResultEvent(
   chainId: number,
   metricId: OrderMetricId,
   isSuccess: boolean,
-  error?: ErrorLike
+  error?: Error,
+  dedupKey?: string
 ) {
   let metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
 
@@ -230,83 +245,98 @@ export function sendUserAnalyticsOrderResultEvent(
   const isUserError = Boolean(parseError(error)?.isUserError);
 
   switch (metricData.metricType) {
+    case "twapIncreaseOrder":
     case "increasePosition":
-      userAnalytics.pushEvent<TradeBoxResultEvent>({
-        event: "TradeBoxAction",
-        data: {
-          action: isSuccess ? "IncreasePositionSuccess" : "IncreasePositionFail",
-          pair: metricData.marketName || "",
-          pool: metricData.marketPoolName || "",
-          type: metricData.isLong ? "Long" : "Short",
-          orderType: metricData.orderType === OrderType.MarketIncrease ? "Market" : "Limit",
-          tradeType: metricData.hasExistingPosition ? "IncreaseSize" : "InitialTrade",
-          sizeDeltaUsd: metricData.sizeDeltaUsd || 0,
-          leverage: metricData.leverage || "",
-          IsExpress: metricData.isExpress,
-          isExpress1CT: metricData.is1ct,
-          isTPSLCreated: metricData.isTPSLCreated ?? false,
-          slCount: metricData.slCount,
-          tpCount: metricData.tpCount,
-          chain: getChainName(chainId),
-          isFirstOrder: metricData.isFirstOrder ?? false,
-          isLeverageEnabled: Boolean(metricData.isLeverageEnabled),
-          isUserError,
-          interactionId: metricData.interactionId,
-          priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
-          priceImpactPercentage: metricData.priceImpactPercentage,
-          netRate1h: metricData.netRate1h,
+      userAnalytics.pushEvent<TradeBoxResultEvent>(
+        {
+          event: "TradeBoxAction",
+          data: {
+            action: isSuccess ? "IncreasePositionSuccess" : "IncreasePositionFail",
+            pair: metricData.marketName || "",
+            pool: metricData.marketPoolName || "",
+            type: metricData.isLong ? "Long" : "Short",
+            orderType: getAnalyticsOrderTypeByTradeMode(metricData.tradeMode),
+            tradeType: metricData.hasExistingPosition ? "IncreaseSize" : "InitialTrade",
+            sizeDeltaUsd: metricData.sizeDeltaUsd || 0,
+            leverage: metricData.leverage || "",
+            IsExpress: metricData.isExpress,
+            isExpress1CT: metricData.isExpress1CT,
+            isTPSLCreated: metricData.isTPSLCreated ?? false,
+            slCount: metricData.slCount,
+            tpCount: metricData.tpCount,
+            chain: getChainName(chainId),
+            isFirstOrder: metricData.isFirstOrder ?? false,
+            isLeverageEnabled: Boolean(metricData.isLeverageEnabled),
+            isUserError,
+            interactionId: metricData.interactionId,
+            priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
+            priceImpactPercentage: metricData.priceImpactPercentage,
+            netRate1h: metricData.netRate1h,
+            ...getAnalyticsTwapProps(metricData),
+          },
         },
-      });
+        { dedupKey }
+      );
       break;
+    case "twapDecreaseOrder":
     case "decreasePosition":
     case "stopLossOrder":
     case "takeProfitOrder":
-      userAnalytics.pushEvent<TradeBoxResultEvent>({
-        event: "TradeBoxAction",
-        data: {
-          action: isSuccess ? "DecreasePositionSuccess" : "DecreasePositionFail",
-          pair: metricData.marketName || "",
-          pool: metricData.marketPoolName || "",
-          type: metricData.isLong ? "Long" : "Short",
-          orderType: metricData.orderType === OrderType.MarketDecrease ? "Market" : "TPSL",
-          tradeType: metricData.isFullClose ? "ClosePosition" : "DecreaseSize",
-          sizeDeltaUsd: metricData.sizeDeltaUsd || 0,
-          leverage: "",
-          IsExpress: metricData.isExpress,
-          isExpress1CT: metricData.is1ct,
-          chain: getChainName(chainId),
-          isFirstOrder: false,
-          isUserError,
-          interactionId: metricData.interactionId,
-          priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
-          priceImpactPercentage: metricData.priceImpactPercentage,
-          netRate1h: metricData.netRate1h,
+      userAnalytics.pushEvent<TradeBoxResultEvent>(
+        {
+          event: "TradeBoxAction",
+          data: {
+            action: isSuccess ? "DecreasePositionSuccess" : "DecreasePositionFail",
+            pair: metricData.marketName || "",
+            pool: metricData.marketPoolName || "",
+            type: metricData.isLong ? "Long" : "Short",
+            orderType: getAnalyticsOrderTypeByTradeMode(metricData.tradeMode),
+            tradeType: metricData.isFullClose ? "ClosePosition" : "DecreaseSize",
+            sizeDeltaUsd: metricData.sizeDeltaUsd || 0,
+            leverage: "",
+            IsExpress: metricData.isExpress,
+            isExpress1CT: metricData.isExpress1CT,
+            chain: getChainName(chainId),
+            isFirstOrder: false,
+            isUserError,
+            interactionId: metricData.interactionId,
+            priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
+            priceImpactPercentage: metricData.priceImpactPercentage,
+            netRate1h: metricData.netRate1h,
+            ...getAnalyticsTwapProps(metricData),
+          },
         },
-      });
+        { dedupKey }
+      );
       break;
     case "swap":
-      userAnalytics.pushEvent<TradeBoxResultEvent>({
-        event: "TradeBoxAction",
-        data: {
-          action: isSuccess ? "SwapSuccess" : "SwapFail",
-          pair: `${metricData.initialCollateralSymbol}/${metricData.toTokenSymbol}`,
-          pool: "",
-          type: "Swap",
-          orderType: metricData.orderType === OrderType.MarketSwap ? "Market" : "Limit",
-          tradeType: "InitialTrade",
-          amountUsd: metricData.amountUsd,
-          leverage: "",
-          IsExpress: metricData.isExpress,
-          isExpress1CT: metricData.is1ct,
-          chain: getChainName(chainId),
-          isFirstOrder: metricData.isFirstOrder ?? false,
-          isUserError,
-          interactionId: undefined,
-          priceImpactDeltaUsd: undefined,
-          priceImpactPercentage: undefined,
-          netRate1h: undefined,
+    case "twapSwap":
+      userAnalytics.pushEvent<TradeBoxResultEvent>(
+        {
+          event: "TradeBoxAction",
+          data: {
+            action: isSuccess ? "SwapSuccess" : "SwapFail",
+            pair: `${metricData.initialCollateralSymbol}/${metricData.toTokenSymbol}`,
+            pool: "",
+            type: "Swap",
+            orderType: getAnalyticsOrderTypeByTradeMode(metricData.tradeMode),
+            tradeType: "InitialTrade",
+            amountUsd: metricData.amountUsd,
+            leverage: "",
+            IsExpress: metricData.isExpress,
+            isExpress1CT: metricData.isExpress1CT,
+            chain: getChainName(chainId),
+            isFirstOrder: metricData.isFirstOrder ?? false,
+            isUserError,
+            interactionId: undefined,
+            priceImpactDeltaUsd: undefined,
+            priceImpactPercentage: undefined,
+            netRate1h: undefined,
+            ...getAnalyticsTwapProps(metricData),
+          },
         },
-      });
+        { dedupKey }
+      );
       break;
     case "buyGM":
     case "sellGM":
@@ -325,18 +355,21 @@ export function sendUserAnalyticsOrderResultEvent(
       break;
     case "buyGLV":
     case "sellGLV":
-      userAnalytics.pushEvent<PoolsPageBuyResultEvent>({
-        event: "PoolsPageAction",
-        data: {
-          action: isSuccess ? "BuySuccess" : "BuyFail",
-          type: "GLV",
-          poolName: metricData.marketName || "",
-          glvAddress: metricData.glvAddress || "",
-          amountUsd: metricData.glvTokenUsd || 0,
-          isFirstBuy: metricData.isFirstBuy ?? false,
-          isUserError,
+      userAnalytics.pushEvent<PoolsPageBuyResultEvent>(
+        {
+          event: "PoolsPageAction",
+          data: {
+            action: isSuccess ? "BuySuccess" : "BuyFail",
+            type: "GLV",
+            poolName: metricData.marketName || "",
+            glvAddress: metricData.glvAddress || "",
+            amountUsd: metricData.glvTokenUsd || 0,
+            isFirstBuy: metricData.isFirstBuy ?? false,
+            isUserError,
+          },
         },
-      });
+        { dedupKey }
+      );
       break;
 
     default:
@@ -364,10 +397,33 @@ export const sendDepthChartInteractionEvent = (pair: string) => {
   );
 };
 
-const getAnalyticsOrderType = (orderType: OrderType): AnalyticsOrderType | undefined => {
-  if (isMarketOrderType(orderType)) return "Market";
-  if (isLimitOrderType(orderType)) return "Limit";
-  if (isTriggerDecreaseOrderType(orderType)) return "TPSL";
+const getAnalyticsTwapProps = (metricData: PositionOrderMetricParams | SwapMetricData) => {
+  return {
+    duration: metricData.tradeMode === TradeMode.Twap ? getTwapDurationInSeconds(metricData.duration) : undefined,
+    partsCount: metricData.tradeMode === TradeMode.Twap ? metricData.partsCount : undefined,
+  };
+};
+
+export const getAnalyticsOrderTypeByTradeMode = (tradeMode: TradeMode | undefined): AnalyticsOrderType | undefined => {
+  if (!tradeMode) return undefined;
+
+  const analyticsOrderTypeByTradeMode: Record<TradeMode, AnalyticsOrderType> = {
+    [TradeMode.Market]: "Market",
+    [TradeMode.Limit]: "Limit",
+    [TradeMode.Trigger]: "TPSL",
+    [TradeMode.Twap]: "TWAP",
+    [TradeMode.StopMarket]: "StopMarket",
+  };
+
+  return analyticsOrderTypeByTradeMode[tradeMode];
+};
+
+const getAnalyticsOrderTypeByOrder = (order: OrderInfo): AnalyticsOrderType | undefined => {
+  if (isTwapOrder(order)) return "TWAP";
+  if (isMarketOrderType(order.orderType)) return "Market";
+  if (isLimitOrderType(order.orderType)) return "Limit";
+  if (isTriggerDecreaseOrderType(order.orderType)) return "TPSL";
+  if (isStopIncreaseOrderType(order.orderType)) return "StopMarket";
 
   return undefined;
 };
@@ -381,7 +437,7 @@ export const sendEditOrderEvent = ({
   source: EditingOrderSource;
   marketInfo: MarketInfo;
 }) => {
-  const orderType = getAnalyticsOrderType(order.orderType);
+  const orderType = getAnalyticsOrderTypeByOrder(order);
 
   if (!orderType) {
     return;

@@ -8,32 +8,10 @@ export enum TradeType {
   Swap = "Swap",
 }
 
-export enum TradeMode {
-  Market = "Market",
-  Limit = "Limit",
-  Trigger = "Trigger",
-}
-
 export enum TriggerThresholdType {
   Above = ">",
   Below = "<",
 }
-
-export type TradeFlags = {
-  isLong: boolean;
-  isShort: boolean;
-  isSwap: boolean;
-  /**
-   * ```ts
-   * isLong || isShort
-   * ```
-   */
-  isPosition: boolean;
-  isIncrease: boolean;
-  isTrigger: boolean;
-  isMarket: boolean;
-  isLimit: boolean;
-};
 
 export type SwapAmounts = {
   amountIn: bigint;

@@ -97,7 +97,7 @@ export type RowDetails = {
   }[];
   size: string;
   price: string;
-  priceComment: TooltipContent;
+  priceComment: TooltipContent | null;
   pnl?: string;
   pnlState?: TooltipState;
   isLong?: boolean;

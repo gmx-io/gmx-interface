@@ -17,6 +17,7 @@ type Props = {
   className?: string;
   placeholder?: string;
   qa?: string;
+  isDisabled?: boolean;
 };
 
 function NumberInput({
@@ -29,6 +30,7 @@ function NumberInput({
   className,
   placeholder,
   qa,
+  isDisabled = false,
 }: Props) {
   function onChange(e: ChangeEvent<HTMLInputElement>) {
     if (!onValueChange) return;
@@ -61,6 +63,7 @@ function NumberInput({
       onFocus={onFocus}
       onBlur={onBlur}
       onKeyDown={onKeyDown}
+      disabled={isDisabled}
     />
   );
 }

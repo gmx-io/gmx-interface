@@ -3,7 +3,8 @@ import { ReactNode, useCallback, useEffect } from "react";
 
 import { getChainName } from "config/chains";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectAccountStats } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectAccountStats, selectSubaccountState } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectExpressOrdersEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAvailableMarketsOptions,
   selectTradeboxFromToken,
@@ -12,6 +13,7 @@ import {
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxState,
   selectTradeboxTradeFlags,
+  selectTradeboxTradeMode,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getFeeItem } from "domain/synthetics/fees";
@@ -22,8 +24,12 @@ import { useChainId } from "lib/chains";
 import { formatAmountForMetrics } from "lib/metrics";
 import { BN_ZERO, formatPercentage } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { userAnalytics } from "lib/userAnalytics";
-import { TradeBoxWarningShownEvent } from "lib/userAnalytics/types";
+import { getAnalyticsOrderTypeByTradeMode, userAnalytics } from "lib/userAnalytics";
+import {
+  TradeBoxPoolLowerFeeWarningShownEvent,
+  TradeBoxWarningShownEvent,
+  TradeBoxWarningSwitchPoolClickEvent,
+} from "lib/userAnalytics/types";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 
@@ -43,6 +49,8 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
   const { isLong, isIncrease, isLimit } = useSelector(selectTradeboxTradeFlags);
   const hasExistingPosition = useSelector(selectTradeboxHasExistingPosition);
   const hasExistingOrder = useSelector(selectTradeboxHasExistingLimitOrder);
+  const isExpressEnabled = useSelector(selectExpressOrdersEnabled);
+  const { subaccount } = useSelector(selectSubaccountState);
 
   const isSelectedMarket = useCallback(
     (market: Market) => {
@@ -141,6 +149,8 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
   const marketName = marketInfo ? marketInfo.name : "";
   const marketPoolName = marketInfo ? getMarketPoolName(marketInfo) : "";
 
+  const tradeMode = useSelector(selectTradeboxTradeMode);
+
   useEffect(() => {
     if (
       !marketName ||
@@ -165,8 +175,10 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
             message: "InsufficientLiquidity",
             pair: marketName,
             pool: marketPoolName,
+            isExpress1CT: Boolean(subaccount),
+            IsExpress: isExpressEnabled,
             type: isLong ? "Long" : "Short",
-            orderType: isLimit ? "Limit" : "Market",
+            orderType: getAnalyticsOrderTypeByTradeMode(tradeMode),
             sizeDeltaUsd: formatAmountForMetrics(increaseAmounts?.sizeDeltaUsd) ?? 0,
             tradeType: hasExistingPosition ? "IncreaseSize" : "InitialTrade",
             leverage: formatLeverage(increaseAmounts?.estimatedLeverage) || "",
@@ -187,6 +199,7 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
     increaseAmounts?.estimatedLeverage,
     increaseAmounts?.initialCollateralAmount,
     increaseAmounts?.sizeDeltaUsd,
+    isExpressEnabled,
     isFirstOrder,
     isLimit,
     isLong,
@@ -194,6 +207,29 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
     marketPoolName,
     showHasInsufficientLiquidityAndPositionWarning,
     showHasNoSufficientLiquidityInAnyMarketWarning,
+    subaccount,
+    tradeMode,
+  ]);
+
+  useEffect(() => {
+    if (showHasBetterOpenFeesWarning) {
+      userAnalytics.pushEvent<TradeBoxPoolLowerFeeWarningShownEvent>({
+        event: "TradeBoxAction",
+        data: {
+          action: "LowerFeeInDifferentPoolWarningShown",
+          sourcePool: marketPoolName,
+          sourcePair: marketName,
+          pool: minOpenFeesMarket?.marketTokenAddress,
+          pair: minOpenFeesMarket?.name,
+        },
+      });
+    }
+  }, [
+    showHasBetterOpenFeesWarning,
+    marketPoolName,
+    marketName,
+    minOpenFeesMarket?.name,
+    minOpenFeesMarket?.marketTokenAddress,
   ]);
 
   const showHasExistingOrderButNoLiquidityWarning =
@@ -334,15 +370,26 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
   }
 
   if (showHasBetterOpenFeesWarning) {
+    const onSwitchPoolClick = () => {
+      setMarketAddress(minOpenFeesMarket.marketTokenAddress);
+      userAnalytics.pushEvent<TradeBoxWarningSwitchPoolClickEvent>({
+        event: "TradeBoxAction",
+        data: {
+          action: "WarningSwitchPoolClick",
+          sourcePool: marketPoolName,
+          sourcePair: marketName,
+          pool: minOpenFeesMarket.marketTokenAddress,
+          pair: minOpenFeesMarket.name,
+        },
+      });
+    };
+
     warning.push(
       <AlertInfoCard key="showHasBetterOpenFeesWarning">
         <Trans>
           Save {formatPercentage(improvedOpenFeesDeltaBps)} in price impact and fees by{" "}
           <WithActon>
-            <span
-              className="clickable muted underline"
-              onClick={() => setMarketAddress(minOpenFeesMarket.marketTokenAddress)}
-            >
+            <span className="clickable muted underline" onClick={onSwitchPoolClick}>
               switching to the {getMarketPoolName(minOpenFeesMarket)} pool
             </span>
             .

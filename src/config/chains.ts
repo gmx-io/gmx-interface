@@ -2,8 +2,6 @@ import { ethers } from "ethers";
 import sample from "lodash/sample";
 import { arbitrumSepolia, base, optimismSepolia, sepolia, sonic } from "viem/chains";
 
-import { isDevelopment } from "./env";
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET, ETH_MAINNET } from "./static/chains";
 import {
   ARBITRUM_SEPOLIA,
   BASE_MAINNET,
@@ -14,10 +12,13 @@ import {
   SONIC_MAINNET,
   UiContractsChain,
   UiSupportedChain,
-} from "../../sdk/src/configs/chains";
+} from "sdk/configs/chains";
 
+import { isDevelopment } from "./env";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET, ETH_MAINNET } from "./static/chains";
+
+export { CHAIN_NAMES_MAP, getChainName } from "../../sdk/src/configs/chains";
 export * from "./static/chains";
-export { getChainName, CHAIN_NAMES_MAP } from "../../sdk/src/configs/chains";
 
 export const SUPPORTED_CHAIN_IDS = isDevelopment() ? SDK_SUPPORTED_CHAIN_IDS_DEV : SDK_SUPPORTED_CHAIN_IDS;
 
@@ -142,7 +143,7 @@ export const RPC_PROVIDERS: Record<UiSupportedChain | typeof ETH_MAINNET, string
     "https://arbitrum-one-rpc.publicnode.com",
     "https://1rpc.io/arb",
     "https://arbitrum-one.public.blastapi.io",
-    // "https://arbitrum.drpc.org",
+    "https://arbitrum.drpc.org",
     "https://rpc.ankr.com/arbitrum",
   ],
   [AVALANCHE]: [

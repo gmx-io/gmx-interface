@@ -55,33 +55,108 @@ export interface MulticallInterface extends Interface {
       | "tryBlockAndAggregate"
   ): FunctionFragment;
 
-  encodeFunctionData(functionFragment: "aggregate", values: [Multicall2.CallStruct[]]): string;
-  encodeFunctionData(functionFragment: "blockAndAggregate", values: [Multicall2.CallStruct[]]): string;
-  encodeFunctionData(functionFragment: "getBlockHash", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "getBlockNumber", values?: undefined): string;
-  encodeFunctionData(functionFragment: "getCurrentBlockCoinbase", values?: undefined): string;
-  encodeFunctionData(functionFragment: "getCurrentBlockDifficulty", values?: undefined): string;
-  encodeFunctionData(functionFragment: "getCurrentBlockGasLimit", values?: undefined): string;
-  encodeFunctionData(functionFragment: "getCurrentBlockTimestamp", values?: undefined): string;
-  encodeFunctionData(functionFragment: "getEthBalance", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "getL1BlockNumber", values?: undefined): string;
-  encodeFunctionData(functionFragment: "getLastBlockHash", values?: undefined): string;
-  encodeFunctionData(functionFragment: "tryAggregate", values: [boolean, Multicall2.CallStruct[]]): string;
-  encodeFunctionData(functionFragment: "tryBlockAndAggregate", values: [boolean, Multicall2.CallStruct[]]): string;
+  encodeFunctionData(
+    functionFragment: "aggregate",
+    values: [Multicall2.CallStruct[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "blockAndAggregate",
+    values: [Multicall2.CallStruct[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBlockHash",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBlockNumber",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getCurrentBlockCoinbase",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getCurrentBlockDifficulty",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getCurrentBlockGasLimit",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getCurrentBlockTimestamp",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getEthBalance",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getL1BlockNumber",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getLastBlockHash",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tryAggregate",
+    values: [boolean, Multicall2.CallStruct[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tryBlockAndAggregate",
+    values: [boolean, Multicall2.CallStruct[]]
+  ): string;
 
   decodeFunctionResult(functionFragment: "aggregate", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "blockAndAggregate", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getBlockHash", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getBlockNumber", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getCurrentBlockCoinbase", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getCurrentBlockDifficulty", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getCurrentBlockGasLimit", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getCurrentBlockTimestamp", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getEthBalance", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getL1BlockNumber", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getLastBlockHash", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "tryAggregate", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "tryBlockAndAggregate", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "blockAndAggregate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBlockHash",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBlockNumber",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getCurrentBlockCoinbase",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getCurrentBlockDifficulty",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getCurrentBlockGasLimit",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getCurrentBlockTimestamp",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getEthBalance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getL1BlockNumber",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getLastBlockHash",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "tryAggregate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "tryBlockAndAggregate",
+    data: BytesLike
+  ): Result;
 }
 
 export interface Multicall extends BaseContract {
@@ -101,21 +176,31 @@ export interface Multicall extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
   aggregate: TypedContractMethod<
     [calls: Multicall2.CallStruct[]],
@@ -130,12 +215,16 @@ export interface Multicall extends BaseContract {
         blockNumber: bigint;
         blockHash: string;
         returnData: Multicall2.ResultStructOutput[];
-      },
+      }
     ],
     "nonpayable"
   >;
 
-  getBlockHash: TypedContractMethod<[blockNumber: BigNumberish], [string], "view">;
+  getBlockHash: TypedContractMethod<
+    [blockNumber: BigNumberish],
+    [string],
+    "view"
+  >;
 
   getBlockNumber: TypedContractMethod<[], [bigint], "view">;
 
@@ -166,12 +255,14 @@ export interface Multicall extends BaseContract {
         blockNumber: bigint;
         blockHash: string;
         returnData: Multicall2.ResultStructOutput[];
-      },
+      }
     ],
     "nonpayable"
   >;
 
-  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
   getFunction(
     nameOrSignature: "aggregate"
@@ -180,26 +271,46 @@ export interface Multicall extends BaseContract {
     [[bigint, string[]] & { blockNumber: bigint; returnData: string[] }],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "blockAndAggregate"): TypedContractMethod<
+  getFunction(
+    nameOrSignature: "blockAndAggregate"
+  ): TypedContractMethod<
     [calls: Multicall2.CallStruct[]],
     [
       [bigint, string, Multicall2.ResultStructOutput[]] & {
         blockNumber: bigint;
         blockHash: string;
         returnData: Multicall2.ResultStructOutput[];
-      },
+      }
     ],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "getBlockHash"): TypedContractMethod<[blockNumber: BigNumberish], [string], "view">;
-  getFunction(nameOrSignature: "getBlockNumber"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "getCurrentBlockCoinbase"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "getCurrentBlockDifficulty"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "getCurrentBlockGasLimit"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "getCurrentBlockTimestamp"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "getEthBalance"): TypedContractMethod<[addr: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "getL1BlockNumber"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "getLastBlockHash"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "getBlockHash"
+  ): TypedContractMethod<[blockNumber: BigNumberish], [string], "view">;
+  getFunction(
+    nameOrSignature: "getBlockNumber"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getCurrentBlockCoinbase"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "getCurrentBlockDifficulty"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getCurrentBlockGasLimit"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getCurrentBlockTimestamp"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getEthBalance"
+  ): TypedContractMethod<[addr: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getL1BlockNumber"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getLastBlockHash"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "tryAggregate"
   ): TypedContractMethod<
@@ -207,14 +318,16 @@ export interface Multicall extends BaseContract {
     [Multicall2.ResultStructOutput[]],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "tryBlockAndAggregate"): TypedContractMethod<
+  getFunction(
+    nameOrSignature: "tryBlockAndAggregate"
+  ): TypedContractMethod<
     [requireSuccess: boolean, calls: Multicall2.CallStruct[]],
     [
       [bigint, string, Multicall2.ResultStructOutput[]] & {
         blockNumber: bigint;
         blockHash: string;
         returnData: Multicall2.ResultStructOutput[];
-      },
+      }
     ],
     "nonpayable"
   >;

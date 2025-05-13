@@ -3,9 +3,9 @@ import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 
-import { UiContractsChain, UiSourceChain, UiSupportedChain } from "config/chains";
+import { UiContractsChain, UiSourceChain } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
-import { isSettlementChain, isSourceChain } from "context/GmxAccountContext/config";
+import { NoncesData, useExpressNonces } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { SubaccountState, useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { TokenPermitsState, useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
@@ -17,11 +17,11 @@ import {
   useAccountStats,
   usePeriodAccountStats,
 } from "domain/synthetics/accountStats";
-import { SponsoredCallParams, useSponsoredCallParamsRequest } from "domain/synthetics/express";
+import { SponsoredCallBalanceData, useIsSponsoredCallBalanceAvailable } from "domain/synthetics/express";
 import { useL1ExpressOrderGasReference } from "domain/synthetics/express/useL1ExpressGasReference";
 import { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
-import { DisabledFeatures, useDisabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
+import { FeaturesSettings, useEnabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
 import { L1ExpressOrderGasReference, useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
@@ -43,7 +43,12 @@ import {
   usePositionsConstantsRequest,
   usePositionsInfoRequest,
 } from "domain/synthetics/positions";
-import { TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
+import {
+  TokenAllowanceResult,
+  TokensData,
+  useTokensAllowanceData,
+  useTokensDataRequest,
+} from "domain/synthetics/tokens";
 import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
@@ -54,7 +59,10 @@ import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { BlockTimestampData, useBlockTimestampRequest } from "lib/useBlockTimestampRequest";
+import { WalletSigner } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
+import { getContract } from "sdk/configs/contracts";
+import { convertTokenAddress } from "sdk/configs/tokens";
 
 import { useGmxAccountTokensDataRequest } from "components/Synthetics/GmxAccountModal/hooks";
 
@@ -82,6 +90,7 @@ export type SyntheticsState = {
     marketsInfo: MarketsInfoResult;
     positionsInfo: PositionsInfoResult;
     account: string | undefined;
+    signer: WalletSigner | undefined;
     ordersInfo: AggregatedOrdersDataResult;
     positionsConstants: PositionsConstantsResult["positionsConstants"];
     uiFeeFactor: bigint;
@@ -124,9 +133,11 @@ export type SyntheticsState = {
   positionSeller: PositionSellerState;
   positionEditor: PositionEditorState;
   confirmationBox: ConfirmationBoxState;
-  disabledFeatures: DisabledFeatures | undefined;
-  sponsoredCallParams: SponsoredCallParams | undefined;
+  features: FeaturesSettings | undefined;
+  gasPaymentTokenAllowance: TokenAllowanceResult | undefined;
+  sponsoredCallBalanceData: SponsoredCallBalanceData | undefined;
   l1ExpressOrderGasReference: L1ExpressOrderGasReference | undefined;
+  expressNoncesData: NoncesData | undefined;
 };
 
 const StateCtx = createContext<SyntheticsState | null>(null);
@@ -213,7 +224,7 @@ export function SyntheticsStateContextProvider({
 
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
-  const { disabledFeatures } = useDisabledFeaturesRequest(chainId);
+  const { features } = useEnabledFeaturesRequest(chainId);
 
   const {
     isLoading,
@@ -294,9 +305,16 @@ export function SyntheticsStateContextProvider({
 
   const externalSwapState = useInitExternalSwapState();
   const tokenPermitsState = useTokenPermitsContext();
-  const sponsoredCallParams = useSponsoredCallParamsRequest(chainId, {
+  const sponsoredCallBalanceData = useIsSponsoredCallBalanceAvailable(chainId, {
     tokensData: marketsInfo.tokensData,
   });
+
+  const gasPaymentTokenAllowance = useTokensAllowanceData(chainId, {
+    spenderAddress: getContract(chainId, "SyntheticsRouter"),
+    tokenAddresses: [convertTokenAddress(chainId, settings.gasPaymentTokenAddress, "wrapped")],
+  });
+
+  const { noncesData: expressNoncesData } = useExpressNonces();
 
   const state = useMemo(() => {
     const s: SyntheticsState = {
@@ -305,6 +323,7 @@ export function SyntheticsStateContextProvider({
         chainId,
         srcChainId,
         account,
+        signer,
         markets,
         marketsInfo,
         ordersInfo,
@@ -349,9 +368,11 @@ export function SyntheticsStateContextProvider({
       positionSeller: positionSellerState,
       positionEditor: positionEditorState,
       confirmationBox: confirmationBoxState,
-      disabledFeatures,
-      sponsoredCallParams,
+      features,
+      sponsoredCallBalanceData,
+      gasPaymentTokenAllowance,
       l1ExpressOrderGasReference,
+      expressNoncesData,
     };
 
     return s;
@@ -360,6 +381,7 @@ export function SyntheticsStateContextProvider({
     chainId,
     srcChainId,
     account,
+    signer,
     markets,
     marketsInfo,
     ordersInfo,
@@ -395,9 +417,11 @@ export function SyntheticsStateContextProvider({
     positionSellerState,
     positionEditorState,
     confirmationBoxState,
-    disabledFeatures,
-    sponsoredCallParams,
+    features,
+    sponsoredCallBalanceData,
+    gasPaymentTokenAllowance,
     l1ExpressOrderGasReference,
+    expressNoncesData,
   ]);
 
   latestState = state;

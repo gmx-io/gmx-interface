@@ -61,6 +61,7 @@ export function useSidecarOrderPayloads() {
         decreasePositionSwapType: amounts.decreaseSwapType,
         executionFeeAmount: getExecutionFeeAmountForEntry(entry) ?? 0n,
         executionGasLimit: 0n, // Don't need for tp/sl entries
+        validFromTime: 0n,
       });
     });
 
@@ -72,6 +73,7 @@ export function useSidecarOrderPayloads() {
         chainId,
         indexTokenAddress: marketInfo.indexTokenAddress,
         orderKey: order.key,
+        orderType: order.orderType,
         sizeDeltaUsd: amounts.sizeDeltaUsd ?? 0n,
         triggerPrice: amounts.triggerPrice ?? 0n,
         acceptablePrice: amounts.acceptablePrice ?? 0n,

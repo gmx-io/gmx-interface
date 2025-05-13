@@ -121,7 +121,10 @@ export function mockExternalSwapQuote(overrides: Partial<ExternalSwapQuote> = {}
     priceOut: 900000n,
     feesUsd: 100000n,
     needSpenderApproval: false,
-    txnData: MOCK_TXN_DATA,
+    txnData: {
+      ...MOCK_TXN_DATA,
+      estimatedExecutionFee: 100000n,
+    },
     ...overrides,
   };
 }

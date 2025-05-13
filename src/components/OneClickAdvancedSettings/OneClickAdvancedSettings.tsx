@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useBigNumberInput } from "domain/synthetics/common/useBigNumberInput";
@@ -12,8 +12,7 @@ import { ExpandableRow } from "components/Synthetics/ExpandableRow";
 
 export function OneClickAdvancedSettings() {
   const { subaccount, updateSubaccountSettings } = useSubaccountContext();
-
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const { displayValue: remainingActionsString, setDisplayValue: setRemainingActionsString } = useBigNumberInput(
     0n,
@@ -22,6 +21,45 @@ export function OneClickAdvancedSettings() {
   );
 
   const { displayValue: daysLimitString, setDisplayValue: setDaysLimitString } = useBigNumberInput(0n, 0, 0);
+
+  const onChangeRemainingActions = useCallback(
+    (value: string) => {
+      if (value === "") {
+        setRemainingActionsString("0");
+      } else {
+        setRemainingActionsString(String(parseInt(value)));
+      }
+    },
+    [setRemainingActionsString]
+  );
+
+  const onChangeDaysLimit = useCallback(
+    (value: string) => {
+      if (value === "") {
+        setDaysLimitString("0");
+      } else {
+        setDaysLimitString(String(parseInt(value)));
+      }
+    },
+    [setDaysLimitString]
+  );
+
+  const disabled = useMemo(() => {
+    if (!subaccount) {
+      return true;
+    }
+
+    const remainingActions = getRemainingSubaccountActions(subaccount);
+    const remainingSeconds = getRemainingSubaccountSeconds(subaccount);
+
+    const nextRemainigActions = BigInt(remainingActionsString);
+    const nextRemainingSeconds = BigInt(periodToSeconds(Number(daysLimitString), "1d"));
+
+    const notChanged = remainingActions === nextRemainigActions && remainingSeconds === nextRemainingSeconds;
+    const isInvalid = nextRemainigActions < 0n || nextRemainingSeconds < 0n;
+
+    return notChanged || isInvalid;
+  }, [subaccount, remainingActionsString, daysLimitString]);
 
   const handleSave = useCallback(() => {
     if (!subaccount) {
@@ -53,47 +91,40 @@ export function OneClickAdvancedSettings() {
     [setRemainingActionsString, setDaysLimitString, subaccount]
   );
 
-  if (!subaccount) {
-    return null;
-  }
-
   return (
     <div>
       <ExpandableRow
         open={isExpanded}
         onToggle={setIsExpanded}
-        title={<Trans>Advanced Settings</Trans>}
+        title={<Trans>One-Click Trading Settings</Trans>}
         className="mb-4"
       >
         <div className="mt-12">
           <InputRow
             value={remainingActionsString}
-            setValue={(value) => {
-              setRemainingActionsString(value);
-            }}
-            label="Remained Allowed Actions"
-            symbol="Actions"
+            setValue={onChangeRemainingActions}
+            label=" Remaining Allowed Actions"
+            symbol="Action(s)"
             placeholder="0"
-            description="Maximum number of actions allowed before requiring reauthorization"
+            description="Maximum number of actions allowed before reauthorization is required."
           />
 
           <InputRow
             value={daysLimitString}
-            setValue={(value) => {
-              setDaysLimitString(value);
-            }}
+            setValue={onChangeDaysLimit}
             label="Time Limit"
-            symbol="Days"
+            symbol="Day(s)"
             placeholder="0"
-            description="Maximum number of days before requiring reauthorization"
+            description="Maximum number of days before reauthorization is required."
           />
 
           <Button
             onClick={handleSave}
             variant="primary-action"
             className="mt-6 h-36 w-full bg-blue-600 py-3 text-white"
+            disabled={disabled}
           >
-            <Trans>Save limit settings</Trans>
+            <Trans>Save One-Click Trading settings</Trans>
           </Button>
         </div>
       </ExpandableRow>

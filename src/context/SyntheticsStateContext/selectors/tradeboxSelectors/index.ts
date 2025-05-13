@@ -34,6 +34,7 @@ import {
   SwapAmounts,
   SwapOptimizationOrderArray,
   TradeFeesType,
+  TradeMode,
   TradeType,
   getMarkPrice,
   getNextPositionExecutionPrice,
@@ -50,13 +51,12 @@ import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { createTradeFlags } from "sdk/utils/trade";
 
+import { selectIsExpressTransactionAvailable } from "../expressSelectors";
 import {
   selectAccount,
   selectChainId,
   selectGasLimits,
-  selectGasPaymentToken,
   selectGasPrice,
-  selectIsRelayRouterFeatureDisabled,
   selectOrdersInfoData,
   selectPositionsInfoData,
   selectTokensData,
@@ -64,7 +64,7 @@ import {
   selectUserReferralInfo,
 } from "../globalSelectors";
 import { selectSourceChainId } from "../multichainSelectors";
-import { selectExpressOrdersEnabled, selectIsLeverageSliderEnabled, selectIsPnlInLeverage } from "../settingsSelectors";
+import { selectIsLeverageSliderEnabled, selectIsPnlInLeverage } from "../settingsSelectors";
 import { selectSelectedMarketVisualMultiplier } from "../shared/marketSelectors";
 import {
   makeSelectDecreasePositionAmounts,
@@ -321,6 +321,8 @@ export const selectTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradebox.
 export const selectSetTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradebox.setAllowedSlippage;
 export const selectTradeboxTokensAllowance = (s: SyntheticsState) => s.tradebox.tokensAllowance;
 export const selectTradeBoxTokensAllowanceLoaded = (s: SyntheticsState) => s.tradebox.tokensAllowance.isLoaded;
+export const selectTradeboxTwapDuration = (s: SyntheticsState) => s.tradebox.duration;
+export const selectTradeboxTwapNumberOfParts = (s: SyntheticsState) => s.tradebox.numberOfParts;
 
 export const selectTradeboxTotalSwapImpactBps = createSelector((q) => {
   const fees = q(selectTradeboxFees);
@@ -341,7 +343,7 @@ export const selectTradeboxTotalSwapImpactBps = createSelector((q) => {
 export const selectTradeboxFindSwapPath = createSelector((q) => {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const swapToTokenAddress = q(selectTradeboxSwapToTokenAddress);
-  const isExpressTxn = q(selectIsTradeboxExpressTransactionAvailable);
+  const isExpressTxn = fromTokenAddress !== NATIVE_TOKEN_ADDRESS && q(selectIsExpressTransactionAvailable);
 
   return q(makeSelectFindSwapPath(fromTokenAddress, swapToTokenAddress, isExpressTxn));
 });
@@ -424,7 +426,7 @@ export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
 
   const positionKey = q(selectTradeboxSelectedPositionKey);
   const strategy = q(selectTradeboxLeverageStrategy);
-  const isExpressTxn = q(selectIsTradeboxExpressTransactionAvailable);
+  const isExpressTxn = fromTokenAddress !== NATIVE_TOKEN_ADDRESS && q(selectIsExpressTransactionAvailable);
 
   const selector = makeSelectIncreasePositionAmounts({
     collateralTokenAddress,
@@ -519,7 +521,7 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
     return swapAmounts;
   }
 
-  const isExpressTxn = q(selectIsTradeboxExpressTransactionAvailable);
+  const isExpressTxn = fromTokenAddress !== NATIVE_TOKEN_ADDRESS && q(selectIsExpressTransactionAvailable);
   const toSwapToken = q(selectTradeboxSwapToTokenAddress);
   const findSwapPath = q(makeSelectFindSwapPath(fromTokenAddress, toSwapToken, isExpressTxn));
   const swapOptimizationOrder: SwapOptimizationOrderArray | undefined = tradeFlags.isLimit
@@ -590,6 +592,14 @@ export const selectTradeboxTradeFeesType = createSelector(
 );
 
 const selectTradeboxEstimatedGas = createSelector(function selectTradeboxEstimatedGas(q) {
+  const gasLimit = q(selectTradeboxOrderGasLimit);
+
+  if (gasLimit === null) return null;
+
+  return gasLimit;
+});
+
+const selectTradeboxOrderGasLimit = createSelector(function selectTradeboxOrderGasLimit(q) {
   const tradeFeesType = q(selectTradeboxTradeFeesType);
 
   if (!tradeFeesType) return null;
@@ -674,7 +684,18 @@ export const selectTradeboxExecutionFee = createSelector(function selectTradebox
 
   const oraclePriceCount = estimateOrderOraclePriceCount(swapsCount);
 
-  return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
+  const tradeMode = q(selectTradeboxTradeMode);
+  const numberOfParts = q(selectTradeboxTwapNumberOfParts);
+
+  return getExecutionFee(
+    chainId,
+    gasLimits,
+    tokensData,
+    estimatedGas,
+    gasPrice,
+    oraclePriceCount,
+    tradeMode === TradeMode.Twap ? numberOfParts : undefined
+  );
 });
 
 export const selectTradeboxTriggerRatioValue = createSelector(function selectTradeboxTriggerRatioValue(q) {
@@ -800,7 +821,7 @@ const selectNextValuesForIncrease = createSelector(
     const isPnlInLeverage = q(selectIsPnlInLeverage);
 
     const externalSwapQuote = q(selectExternalSwapQuote);
-    const isExpressTxn = q(selectIsTradeboxExpressTransactionAvailable);
+    const isExpressTxn = fromTokenAddress !== NATIVE_TOKEN_ADDRESS && q(selectIsExpressTransactionAvailable);
 
     return {
       collateralTokenAddress,
@@ -1282,7 +1303,7 @@ export const selectNeedTradeboxPayTokenApproval = createSelector((q) => {
   const payAmount = q(selectTradeboxPayAmount);
   const tokensAllowance = q(selectTradeboxTokensAllowance);
 
-  return getNeedTokenApprove(tokensAllowance.tokensAllowanceData, fromTokenAddress, payAmount);
+  return getNeedTokenApprove(tokensAllowance.tokensAllowanceData, fromTokenAddress, payAmount, []);
 });
 
 export const selectTradeboxChooseSuitableMarket = createSelector((q) => {
@@ -1328,18 +1349,4 @@ export const selectTradeboxChooseSuitableMarket = createSelector((q) => {
   };
 
   return chooseSuitableMarketWrapped;
-});
-
-export const selectIsTradeboxExpressTransactionAvailable = createSelector((q) => {
-  const fromTokenAddress = q(selectTradeboxFromTokenAddress);
-  const isNativePayment = fromTokenAddress === NATIVE_TOKEN_ADDRESS;
-  if (isNativePayment) {
-    return false;
-  }
-  const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
-  const isFeatureDisabled = q(selectIsRelayRouterFeatureDisabled);
-  const gasPaymentToken = q(selectGasPaymentToken);
-  const isZeroGasBalance = gasPaymentToken?.balance === 0n || gasPaymentToken?.balance === undefined;
-
-  return isExpressOrdersEnabledSetting && !isFeatureDisabled && !isZeroGasBalance;
 });

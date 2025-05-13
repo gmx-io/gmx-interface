@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { ReactNode, useCallback, useState } from "react";
+import { useHistory } from "react-router-dom";
 
 import {
   EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY,
@@ -7,6 +8,7 @@ import {
 } from "config/localStorage";
 import { selectUpdateSubaccountSettings } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { ExpressTxnParams } from "domain/synthetics/express";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
@@ -20,9 +22,10 @@ import IconBolt from "img/icon-bolt.svg?react";
 
 import { useExpressTradingWarnings } from "./hooks/useShowOneClickTradingInfo";
 
-export function ExpressTradingWarningCard() {
+export function ExpressTradingWarningCard({ expressParams }: { expressParams: ExpressTxnParams | undefined }) {
   const [isVisible, setIsVisible] = useState(true);
   const updateSubaccountSettings = useSelector(selectUpdateSubaccountSettings);
+  const history = useHistory();
 
   const { chainId } = useChainId();
 
@@ -52,7 +55,8 @@ export function ExpressTradingWarningCard() {
     shouldShowWrapOrUnwrapWarning,
     shouldShowExpiredSubaccountWarning,
     shouldShowNonceExpiredWarning,
-  } = useExpressTradingWarnings();
+    shouldShowOutOfGasPaymentBalanceWarning,
+  } = useExpressTradingWarnings({ expressParams });
 
   let content: ReactNode | undefined = undefined;
   let onCloseClick: undefined | (() => void) = undefined;
@@ -92,17 +96,6 @@ export function ExpressTradingWarningCard() {
     icon = <OneClickIcon className="-mt-4 ml-4" />;
     content = <Trans>One-Click Trading is disabled. Action limit exceeded.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
-  } else if (shouldShowExpiredSubaccountWarning) {
-    onClick = () => {
-      updateSubaccountSettings({
-        nextRemainingSeconds: BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION),
-      }).then(() => {
-        setIsVisible(false);
-      });
-    };
-    icon = <OneClickIcon className="-mt-4 ml-4" />;
-    content = <Trans>One-Click Trading is disabled. Time limit expired.</Trans>;
-    buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowNonceExpiredWarning) {
     onClick = () => {
       updateSubaccountSettings({
@@ -114,6 +107,24 @@ export function ExpressTradingWarningCard() {
     icon = <OneClickIcon className="ml- -mt-4" />;
     content = <Trans>One-Click Approval nonce expired. Please sign a new approval.</Trans>;
     buttonText = <Trans>Re-sign</Trans>;
+  } else if (shouldShowExpiredSubaccountWarning) {
+    onClick = () => {
+      updateSubaccountSettings({
+        nextRemainingSeconds: BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION),
+      }).then(() => {
+        setIsVisible(false);
+      });
+    };
+    icon = <OneClickIcon className="-mt-4 ml-4" />;
+    content = <Trans>One-Click Trading is disabled. Time limit expired.</Trans>;
+    buttonText = <Trans>Re-enable</Trans>;
+  } else if (shouldShowOutOfGasPaymentBalanceWarning) {
+    icon = <IconBolt />;
+    content = <Trans>One-click and Express Trading are not available due to insufficient balance.</Trans>;
+    buttonText = <Trans>Buy USDC or WETH</Trans>;
+    onClick = () => {
+      history.push(`/trade/swap?to=USDC`);
+    };
   } else {
     return null;
   }

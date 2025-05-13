@@ -71,6 +71,9 @@ const colors = {
   stroke: {
     primary: "#252A47",
   },
+  fill: {
+    tertiary: "#B4BBFF1A",
+  },
 };
 
 /**

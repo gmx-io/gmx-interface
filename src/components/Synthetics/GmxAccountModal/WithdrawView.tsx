@@ -35,15 +35,15 @@ import { IStargateAbi } from "context/GmxAccountContext/stargatePools";
 import { TokenChainData } from "context/GmxAccountContext/types";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
+  selectExpressGlobalParams,
   selectGasPaymentToken,
-  selectMarketsInfoData,
-  selectRelayerFeeToken,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectFindSwapPath } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getOracleParamsPayload, getOraclePriceParamsForRelayFee } from "domain/synthetics/express/oracleParamsUtils";
 import { getRelayerFeeParams } from "domain/synthetics/express/relayParamsUtils";
-import { ExpressParams, MultichainRelayParamsPayload } from "domain/synthetics/express/types";
+import { MultichainRelayParamsPayload } from "domain/synthetics/express/types";
 import { callRelayTransaction, GELATO_RELAY_ADDRESS } from "domain/synthetics/gassless/txns/expressOrderDebug";
 import { buildAndSignBridgeOutTxn } from "domain/synthetics/orders/expressOrderUtils";
 import { useTokenRecentPricesRequest } from "domain/synthetics/tokens";
@@ -107,7 +107,8 @@ export const WithdrawView = () => {
   const networks = useGmxAccountWithdrawNetworks();
   const multichainTokens = useMultichainTokensRequest();
   const gasPaymentToken = useSelector(selectGasPaymentToken);
-  const relayerFeeToken = useSelector(selectRelayerFeeToken);
+  const expressGlobalParams = useSelector(selectExpressGlobalParams);
+  const relayerFeeToken = getByKey(gmxAccountTokensData, expressGlobalParams?.relayerFeeTokenAddress);
 
   const signer = useEthersSigner();
   const tokensData = useTokensData();
@@ -397,7 +398,16 @@ export const WithdrawView = () => {
       relayerFeeTokenAddress: relayerFeeToken.address,
       gasPaymentTokenAddress: gasPaymentToken.address,
       internalSwapAmounts: swapAmounts,
-      externalSwapQuote: undefined,
+      feeExternalSwapQuote: undefined,
+      tokenPermits: [],
+      batchExternalCalls: {
+        sendTokens: [],
+        sendAmounts: [],
+        externalCallTargets: [],
+        externalCallDataList: [],
+        refundTokens: [],
+        refundReceivers: [],
+      },
       tokensData,
       gasPaymentAllowanceData: undefined,
       forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
@@ -519,7 +529,6 @@ export const WithdrawView = () => {
         fee,
       });
     } catch (error) {
-      debugger;
       console.log({
         error,
       });

@@ -41,7 +41,15 @@ export const formatPositionMessage = (
   relativeTimestamp = true
 ): RowDetails => {
   const collateralToken = tradeAction.initialCollateralToken;
-  const sizeDeltaUsd = tradeAction.sizeDeltaUsd;
+  let sizeDeltaUsd = tradeAction.sizeDeltaUsd;
+
+  if (
+    tradeAction.twapParams &&
+    (tradeAction.eventName === TradeActionType.OrderCreated || tradeAction.eventName === TradeActionType.OrderCancelled)
+  ) {
+    sizeDeltaUsd = tradeAction.sizeDeltaUsd * BigInt(tradeAction.twapParams.numberOfParts);
+  }
+
   const collateralDeltaAmount = tradeAction.initialCollateralDeltaAmount;
   const marketPriceDecimals = calculateDisplayDecimals(
     tradeAction.indexToken.prices.minPrice,
@@ -130,7 +138,7 @@ export const formatPositionMessage = (
     visualMultiplier: tradeAction.indexToken.visualMultiplier,
   })!;
 
-  const action = getActionTitle(tradeAction.orderType, tradeAction.eventName);
+  const action = getActionTitle(tradeAction.orderType, tradeAction.eventName, Boolean(tradeAction.twapParams));
   const timestamp = formatTradeActionTimestamp(tradeAction.timestamp, relativeTimestamp);
   const timestampISO = formatTradeActionTimestampISO(tradeAction.timestamp);
 
@@ -226,6 +234,51 @@ export const formatPositionMessage = (
       isActionError: true,
     };
     //#endregion MarketIncrease
+    //#region Twap
+  } else if (tradeAction.twapParams) {
+    if (ev === TradeActionType.OrderExecuted) {
+      const isAcceptablePriceUseful = tradeAction.acceptablePrice !== 0n && tradeAction.acceptablePrice < MaxInt256;
+      const formattedPnl = sizeDeltaUsd > 0n ? formatUsd(tradeAction.pnlUsd) : undefined;
+
+      result = {
+        priceComment: lines(
+          t`Mark price for the order.`,
+          "",
+          infoRow(t`Order Trigger Price`, t`N/A`),
+          isAcceptablePriceUseful
+            ? infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
+            : undefined,
+          infoRow(t`Order Execution Price`, formattedExecutionPrice!),
+          infoRow(t`Price Impact`, {
+            text: formattedPriceImpact!,
+            state: numberToState(tradeAction.priceImpactUsd!),
+          }),
+          "",
+          t`Order execution price takes into account price impact.`
+        ),
+        acceptablePrice: t`N/A`,
+        pnl: formattedPnl,
+        pnlState: numberToState(tradeAction.pnlUsd),
+      };
+    } else {
+      const error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
+      const errorComment = error
+        ? lines({
+            text: getErrorTooltipTitle(error.name, false),
+            state: "error",
+          })
+        : undefined;
+
+      const errorActionComment =
+        ev === TradeActionType.OrderFrozen || ev === TradeActionType.OrderCancelled ? errorComment : undefined;
+      result = {
+        price: t`N/A`, // ----
+        priceComment: null,
+        actionComment: errorActionComment,
+        isActionError: Boolean(errorActionComment),
+      };
+    }
+    //#endregion Twap
     //#region LimitIncrease and StopIncrease
   } else if (
     ((ot === OrderType.LimitIncrease || ot === OrderType.StopIncrease) && ev === TradeActionType.OrderCreated) ||

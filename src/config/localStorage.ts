@@ -27,6 +27,8 @@ export const TRADE_LINK_KEY = "trade-link";
 export const SHOW_DEBUG_VALUES_KEY = "show-debug-values";
 export const ORACLE_KEEPER_INSTANCES_CONFIG_KEY = "oracle-keeper-instances-config";
 export const SORTED_MARKETS_KEY = "sorted-markets-key";
+export const TWAP_NUMBER_OF_PARTS_KEY = "twap-number-of-parts";
+export const TWAP_INFO_CARD_CLOSED_KEY = "twap-info-card-closed";
 
 export const SYNTHETICS_TRADE_OPTIONS = "synthetics-trade-options";
 export const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY = "synthetics-acceptable-price-impact-buffer";
@@ -61,6 +63,8 @@ export const LP_INTERVIEW_INVITATION_SHOWN_TIME_KEY = "lp-interview-invitation-s
  * @deprecated
  */
 export const TOKEN_FAVORITE_PREFERENCE_SETTINGS_KEY = "token-favorite-preference";
+export const SETTINGS_WARNING_DOT_VISIBLE_KEY = "settings-warning-dot-visible";
+export const EXPRESS_TRADING_GAS_TOKEN_SWITCHED = "express-trading-gas-token-switched";
 
 export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
 export const METRICS_TIMERS_KEY = "metrics-timers-key";
@@ -199,10 +203,6 @@ export function getSortedMarketsAddressesKey(chainId: number) {
 
 export function getExpressOrdersEnabledKey(chainId: number) {
   return [chainId, EXPRESS_ORDERS_ENABLED_KEY];
-}
-
-export function getOneClickTradingEnabledKey(chainId: number) {
-  return [chainId, ONE_CLICK_TRADING_ENABLED_KEY];
 }
 
 export function getGasPaymentTokenAddressKey(chainId: number) {

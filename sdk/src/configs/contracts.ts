@@ -138,7 +138,6 @@ export const CONTRACTS = {
 
     Multicall: "0x842ec2c7d803033edf55e478f461fc547bc54eb2",
     ArbitrumNodeInterface: "0x00000000000000000000000000000000000000C8",
-    FiatToken2v2: "0x86E721b43d4ECFa71119Dd38c0f938A75Fdb57B3",
   },
   [AVALANCHE]: {
     // avalanche
@@ -272,11 +271,14 @@ export const CONTRACTS = {
     GlvRouter: "0x377d979AB35Cd848497707ffa6Ee91783f925b80",
     GlvVault: "0x76f93b5240DF811a3fc32bEDd58daA5784e46C96",
 
-    SubaccountGelatoRelayRouter: zeroAddress,
     GelatoRelayRouter: zeroAddress,
+    SubaccountGelatoRelayRouter: zeroAddress,
+
     OpenOceanRouter: zeroAddress,
 
     ExternalHandler: "0x0d9F90c66C392c4d0e70EE0d399c43729B942512",
+
+    ChainlinkPriceFeedProvider: zeroAddress,
 
     Multicall: "0x0f53e512b49202a37c81c6085417C9a9005F2196",
     ArbitrumNodeInterface: zeroAddress,
