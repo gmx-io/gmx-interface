@@ -5402,8 +5402,8 @@ msgid "Trades"
 msgstr "Trades"
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-msgid "Relayer request timed out"
-msgstr "Relayer request timed out"
+#~ msgid "Relayer request timed out"
+#~ msgstr "Relayer request timed out"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Telegram Groups"
