@@ -45,13 +45,13 @@ import {
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { deleteByKey, getByKey, setByKey, updateByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
-import { tenderlyLsKeys } from "lib/tenderly";
+import { getTenderlyAccountParams } from "lib/tenderly";
+import { getGelatoTaskDebugInfo, pollGelatoTask } from "lib/transactions/sendExpressTransaction";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { sendUserAnalyticsOrderResultEvent, userAnalytics } from "lib/userAnalytics";
 import { TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
-import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
 
 import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
@@ -143,114 +143,67 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     {}
   );
   const { refreshNonces, updateActionsCount } = useExpressNonces();
-
   const expressHandlers = useRef<ExpressHandlers>({
     onSuccess: () => null,
     onFailure: () => null,
   });
+  const expressSubscriptions = useRef<{ [taskId: string]: boolean }>({});
   const eventLogHandlers = useRef({});
 
   expressHandlers.current = {
-    onSuccess: ({
-      expressParamsKey,
-      pendingOrderKey,
-      taskId,
-    }: {
-      expressParamsKey?: string;
-      pendingOrderKey?: string;
-      taskId?: string;
-    }) => {
-      let pendingExpressParams: PendingExpressTxnParams | undefined;
+    onSuccess: ({ pendingExpressTxn }: { pendingExpressTxn: PendingExpressTxnParams }) => {
+      const isSubaccount = Boolean(pendingExpressTxn.subaccountApproval);
 
-      if (expressParamsKey) {
-        pendingExpressParams = getByKey(pendingExpressTxnParams, expressParamsKey);
-      } else if (pendingOrderKey) {
-        pendingExpressParams = Object.values(pendingExpressTxnParams).find((p) =>
-          p.pendingOrdersKeys?.includes(pendingOrderKey)
-        );
-      } else if (taskId) {
-        pendingExpressParams = Object.values(pendingExpressTxnParams).find((p) => p.taskId === taskId);
-      }
-
-      if (!pendingExpressParams) {
-        return;
-      }
-
-      const isSubaccount = Boolean(pendingExpressParams.subaccountApproval);
-      const key = pendingExpressParams.key;
+      const key = pendingExpressTxn.key;
 
       refreshSubaccountData();
       refreshNonces();
       updateActionsCount(isSubaccount ? "subaccountRelayRouter" : "relayRouter");
 
       if (
-        pendingExpressParams?.subaccountApproval &&
-        !getIsEmptySubaccountApproval(pendingExpressParams.subaccountApproval)
+        pendingExpressTxn?.subaccountApproval &&
+        !getIsEmptySubaccountApproval(pendingExpressTxn.subaccountApproval)
       ) {
         resetSubaccountApproval();
       }
 
-      if (pendingExpressParams?.tokenPermits?.length) {
+      if (pendingExpressTxn?.tokenPermits?.length) {
         resetTokenPermits();
       }
 
-      if (pendingExpressParams?.successMessage) {
-        helperToast.success(pendingExpressParams.successMessage);
+      if (pendingExpressTxn?.successMessage) {
+        helperToast.success(pendingExpressTxn.successMessage);
       }
 
       deleteByKey(pendingExpressTxnParams, key);
     },
 
-    onFailure: ({
-      expressParamsKey,
-      pendingOrderKey,
-      taskId,
-    }: {
-      expressParamsKey?: string;
-      pendingOrderKey?: string;
-      taskId?: string;
-    }) => {
-      let pendingExpressParams: PendingExpressTxnParams | undefined;
+    onFailure: ({ pendingExpressTxn }: { pendingExpressTxn: PendingExpressTxnParams }) => {
+      const key = pendingExpressTxn.key;
 
-      if (expressParamsKey) {
-        pendingExpressParams = getByKey(pendingExpressTxnParams, expressParamsKey);
-      } else if (pendingOrderKey) {
-        pendingExpressParams = Object.values(pendingExpressTxnParams).find((p) =>
-          p.pendingOrdersKeys?.includes(pendingOrderKey)
-        );
-      } else if (taskId) {
-        pendingExpressParams = Object.values(pendingExpressTxnParams).find((p) => p.taskId === taskId);
-      }
-
-      if (!pendingExpressParams) {
-        return;
-      }
-
-      const key = pendingExpressParams.key;
-
-      pendingExpressParams?.pendingOrdersKeys?.forEach((key) => {
+      pendingExpressTxn.pendingOrdersKeys?.forEach((key) => {
         setOrderStatuses((old) => {
           if (old[key]) {
             return updateByKey(old, key, {
-              gelatoTaskId: taskId,
+              gelatoTaskId: pendingExpressTxn.taskId,
               isGelatoTaskFailed: true,
             });
           } else {
             return setByKey(old, key, {
               key,
               createdAt: Date.now(),
-              gelatoTaskId: taskId,
+              gelatoTaskId: pendingExpressTxn.taskId,
               isGelatoTaskFailed: true,
             });
           }
         });
 
-        if (pendingExpressParams?.errorMessage) {
-          helperToast.error(pendingExpressParams.errorMessage);
+        if (pendingExpressTxn.errorMessage) {
+          helperToast.error(pendingExpressTxn.errorMessage);
         }
       });
 
-      pendingExpressParams?.pendingPositionsKeys?.forEach((key) => {
+      pendingExpressTxn.pendingPositionsKeys?.forEach((key) => {
         deleteByKey(pendingPositionsUpdates, key);
       });
 
@@ -331,8 +284,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       );
 
       const pendingOrderKey = getPendingOrderKey(data);
+      const pendingExpressTxn = Object.values(pendingExpressTxnParams).find((p) =>
+        p.pendingOrdersKeys?.includes(pendingOrderKey)
+      );
 
-      expressHandlers.current.onSuccess({ pendingOrderKey });
+      if (pendingExpressTxn) {
+        expressHandlers.current.onSuccess({ pendingExpressTxn });
+      }
 
       setPendingOrdersUpdates((old) => deleteByKey(old, data.key));
     },
@@ -1219,63 +1177,48 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     glvAndGmMarketsData,
   ]);
 
-  useEffect(
-    function subscribeGelatoRelayEvents() {
-      async function handleTaskStatusUpdate(taskStatus) {
-        const pendingExpressParams = Object.values(pendingExpressTxnParams).find((p) => p.taskId === taskStatus.taskId);
+  useEffect(() => {
+    Object.entries(pendingExpressTxnParams).forEach(([key, pendingExpressTxn]) => {
+      if (pendingExpressTxn.taskId && !expressSubscriptions.current[pendingExpressTxn.taskId]) {
+        expressSubscriptions.current[pendingExpressTxn.taskId] = true;
 
-        const accountSlug = JSON.parse(localStorage.getItem(JSON.stringify(tenderlyLsKeys.accountSlug)) ?? '""');
-        const projectSlug = JSON.parse(localStorage.getItem(JSON.stringify(tenderlyLsKeys.projectSlug)) ?? '""');
-
-        const accountParams =
-          accountSlug && projectSlug ? `?tenderlyUsername=${accountSlug}&tenderlyProjectName=${projectSlug}` : "";
-
-        const debugRes = await fetch(
-          `https://api.gelato.digital/tasks/status/${taskStatus.taskId}/debug${accountParams}`,
-          {
-            method: "GET",
+        pollGelatoTask(pendingExpressTxn.taskId, async (taskStatus, error) => {
+          if (error || !taskStatus) {
+            expressHandlers.current.onFailure({ pendingExpressTxn });
+            delete expressSubscriptions[pendingExpressTxn.taskId!];
+            return;
           }
-        );
 
-        const debugData = await debugRes.json();
+          if (isDevelopment() && pendingExpressTxn.taskId) {
+            const { accountSlug, projectSlug } = getTenderlyAccountParams();
+            getGelatoTaskDebugInfo(pendingExpressTxn.taskId, accountSlug, projectSlug).then((debugInfo) =>
+              // eslint-disable-next-line no-console
+              console.log("gelatoDebugData", taskStatus, pendingExpressTxn, debugInfo)
+            );
+          }
 
-        if (isDevelopment()) {
-          // eslint-disable-next-line no-console
-          console.log("gelatoDebugData", taskStatus.taskState, pendingExpressParams, debugData);
-        }
-
-        switch (taskStatus.taskState) {
-          case TaskState.ExecSuccess:
-            {
-              expressHandlers.current.onSuccess({ taskId: taskStatus.taskId });
+          switch (taskStatus.taskState) {
+            case TaskState.ExecSuccess:
+              {
+                expressHandlers.current.onSuccess({ pendingExpressTxn });
+                delete expressSubscriptions.current[taskStatus.taskId];
+              }
+              break;
+            case TaskState.ExecReverted:
+            case TaskState.Cancelled: {
+              expressHandlers.current.onFailure({ pendingExpressTxn });
+              delete expressSubscriptions.current[taskStatus.taskId];
+              break;
             }
-            break;
-          case TaskState.ExecReverted:
-          case TaskState.Cancelled: {
-            expressHandlers.current.onFailure({ taskId: taskStatus.taskId });
-            break;
+            default:
+              break;
           }
-          default:
-            break;
-        }
+        });
       }
 
-      gelatoRelay.onTaskStatusUpdate(handleTaskStatusUpdate);
-
-      return () => {
-        gelatoRelay.offTaskStatusUpdate(handleTaskStatusUpdate);
-      };
-    },
-    [
-      pendingExpressTxnParams,
-      pendingPositionsUpdates,
-      refreshNonces,
-      refreshSubaccountData,
-      resetSubaccountApproval,
-      resetTokenPermits,
-      updateActionsCount,
-    ]
-  );
+      expressSubscriptions.current[key] = true;
+    });
+  }, [pendingExpressTxnParams]);
 
   return <SyntheticsEventsContext.Provider value={contextState}>{children}</SyntheticsEventsContext.Provider>;
 }

@@ -130,7 +130,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
   const { expressParams, isLoading: isExpressLoading } = useExpressOrdersParams({
     orderParams: batchParams,
-    totalExecutionFee: executionFee?.feeTokenAmount,
     label: "TradeBox",
   });
 

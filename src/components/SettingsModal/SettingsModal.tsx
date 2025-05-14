@@ -261,7 +261,7 @@ export function SettingsModal({
                     {remainingSubaccountDays} days, whichever comes first.
                     <br />
                     <br />
-                    You can adjust these settings anytime under "One-Click Trading Settings
+                    You can adjust these settings anytime under "One-Click Trading Settings"
                   </Trans>
                 }
                 handle={<Trans>One-Click Trading</Trans>}

@@ -1201,8 +1201,8 @@ msgid "1inch"
 msgstr "1inch"
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings"
-msgstr "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings"
+#~ msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings"
+#~ msgstr "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings"
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copied"
@@ -4845,6 +4845,10 @@ msgstr "You will be long {indexSymbol} only from your long position."
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings\""
+msgstr "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings\""
+
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "24h Low"
@@ -5228,8 +5232,8 @@ msgid "Trades"
 msgstr "Trades"
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-msgid "Relayer request timed out"
-msgstr "Relayer request timed out"
+#~ msgid "Relayer request timed out"
+#~ msgstr "Relayer request timed out"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Telegram Groups"

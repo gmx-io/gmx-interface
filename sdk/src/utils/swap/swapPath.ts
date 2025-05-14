@@ -74,6 +74,7 @@ export const createFindSwapPath = (params: {
   isExpressTxn: boolean | undefined;
   disabledMarkets?: string[] | undefined;
   manualPath?: string[] | undefined;
+  maxSwapPathLength?: number | undefined;
 }): FindSwapPath => {
   const {
     chainId,
@@ -84,6 +85,7 @@ export const createFindSwapPath = (params: {
     manualPath,
     gasEstimationParams,
     isExpressTxn,
+    maxSwapPathLength,
   } = params;
   const wrappedFromAddress = getWrappedAddress(chainId, fromTokenAddress);
   const wrappedToAddress = getWrappedAddress(chainId, toTokenAddress);
@@ -94,6 +96,16 @@ export const createFindSwapPath = (params: {
       ? getTokenSwapPathsForTokenPairPrebuilt(chainId, wrappedFromAddress, wrappedToAddress)
       : [];
 
+  if (maxSwapPathLength) {
+    /**
+     * As tokenSwapPath contains what tokens can we between input and output token,
+     * restricting intermediate tokens to 0 would mean we filter out any non-direct market swaps,
+     * length of 1 would mean all 2-swap swaps
+     */
+    const nonDirectPathLength = maxSwapPathLength - 1;
+    tokenSwapPaths = tokenSwapPaths.filter((path) => path.length <= nonDirectPathLength);
+  }
+
   const finalDisabledMarkets = [...(disabledMarkets ?? [])];
 
   if (isExpressTxn) {
@@ -102,8 +114,6 @@ export const createFindSwapPath = (params: {
       .map((market) => market.marketTokenAddress);
 
     finalDisabledMarkets.push(...expressSwapUnavailableMarkets);
-    // That means we use only direct paths with 1 market
-    tokenSwapPaths = [[]];
   }
 
   const marketAdjacencyGraph = buildMarketAdjacencyGraph(chainId, finalDisabledMarkets);

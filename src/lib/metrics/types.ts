@@ -431,6 +431,13 @@ export type MulticallRequestTiming = {
   };
 };
 
+export type GelatoPollingTiming = {
+  event: "express.gelatoTaskFinalStatusReceived";
+  data: {
+    status: string;
+  };
+};
+
 // Counters
 export type MulticallBatchedCallCounter = {
   event: "multicall.batched.call";
