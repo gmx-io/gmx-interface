@@ -83,7 +83,7 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
 
   const _debugSwapMarketsConfig = isDevelopment() ? q(selectDebugSwapMarketsConfig) : undefined;
 
-  const findSwapPath = createFindSwapPath({
+  const findFeeSwapPath = createFindSwapPath({
     chainId,
     fromTokenAddress: gasPaymentTokenAddress,
     toTokenAddress: relayerFeeTokenAddress,
@@ -92,6 +92,7 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
     disabledMarkets: _debugSwapMarketsConfig?.disabledSwapMarkets,
     manualPath: _debugSwapMarketsConfig?.manualPath,
     gasEstimationParams,
+    maxSwapPathLength: 1,
   });
 
   return {
@@ -101,7 +102,7 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
     noncesData,
     isSponsoredCall: isSponsoredCallAvailable,
     subaccount,
-    findSwapPath,
+    findSwapPath: findFeeSwapPath,
     tokenPermits,
     gasPaymentAllowanceData: gasPaymentAllowance?.tokensAllowanceData,
     bufferBps,
