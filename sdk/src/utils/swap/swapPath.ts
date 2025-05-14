@@ -97,6 +97,11 @@ export const createFindSwapPath = (params: {
       : [];
 
   if (maxSwapPathLength) {
+    /**
+     * As tokenSwapPath contains what tokens can we between input and output token,
+     * restricting intermediate tokens to 0 would mean we filter out any non-direct market swaps,
+     * length of 1 would mean all 2-swap swaps
+     */
     const nonDirectPathLength = maxSwapPathLength - 1;
     tokenSwapPaths = tokenSwapPaths.filter((path) => path.length <= nonDirectPathLength);
   }
