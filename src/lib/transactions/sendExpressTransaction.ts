@@ -1,8 +1,8 @@
 import { Address, encodePacked } from "viem";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
+import { GelatoPollingTiming, metrics } from "lib/metrics";
 import { sleep } from "lib/sleep";
-import { GelatoPollingTiming, metrics, metrics } from "lib/metrics";
 
 export type ExpressTxnData = {
   callData: string;
