@@ -2,6 +2,7 @@ import { Address, encodePacked } from "viem";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { sleep } from "lib/sleep";
+import { GelatoPollingTiming, metrics, metrics } from "lib/metrics";
 
 export type ExpressTxnData = {
   callData: string;
@@ -200,6 +201,9 @@ export async function pollGelatoTask(
   let attempts = 0;
   let lastStatus: GelatoTaskStatus | undefined;
 
+  const timerId = `pollGelatoTask ${taskId}`;
+  metrics.startTimer(timerId);
+
   while (attempts < maxAttempts) {
     try {
       const res = await fetch(`${GELATO_API}/tasks/status/${taskId}`);
@@ -209,6 +213,13 @@ export async function pollGelatoTask(
       cb(status);
 
       if (finalStatuses.includes(status.taskState)) {
+        metrics.pushTiming<GelatoPollingTiming>(
+          "express.gelatoTaskFinalStatusReceived",
+          metrics.getTime(timerId) ?? 0,
+          {
+            status: status.taskState,
+          }
+        );
         return;
       }
     } catch (e) {
