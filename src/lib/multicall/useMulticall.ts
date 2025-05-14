@@ -6,6 +6,7 @@ import { KeyedMutator, stableHash } from "swr/_internal";
 import type { ErrorEvent } from "lib/metrics";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
 import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
+import { UiContractsChain } from "sdk/configs/chains";
 
 import { debugLog } from "./debug";
 import { executeMulticall } from "./executeMulticall";
@@ -24,8 +25,12 @@ const mutateFlagsRef: { current: Record<string, boolean> } = { current: {} };
  * @param params.request - contract calls config or callback which returns it
  * @param params.parseResponse - optional callback to pre-process and format the response
  */
-export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResult = MulticallResult<TConfig>>(
-  chainId: number | undefined,
+export function useMulticall<
+  TConfig extends MulticallRequestConfig<any>,
+  TResult = MulticallResult<TConfig>,
+  TChainId extends UiContractsChain = UiContractsChain,
+>(
+  chainId: TChainId | undefined,
   name: string,
   params: {
     key: CacheKey | SkipKey;
@@ -33,8 +38,8 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     disableBatching?: boolean;
     clearUnusedKeys?: boolean;
     keepPreviousData?: boolean;
-    request: TConfig | ((chainId: number, key: CacheKey) => TConfig | Promise<TConfig>);
-    parseResponse?: (result: MulticallResult<TConfig>, chainId: number, key: CacheKey) => TResult;
+    request: TConfig | ((chainId: TChainId, key: CacheKey) => TConfig | Promise<TConfig>);
+    parseResponse?: (result: MulticallResult<TConfig>, chainId: TChainId, key: CacheKey) => TResult;
   }
 ) {
   const defaultConfig = useSWRConfig();

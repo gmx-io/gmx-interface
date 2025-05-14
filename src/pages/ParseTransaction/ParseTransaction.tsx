@@ -10,18 +10,7 @@ import useSWR from "swr";
 import { Hash, PublicClient, isHash } from "viem";
 import { usePublicClient } from "wagmi";
 
-import {
-  ARBITRUM,
-  ARBITRUM_SEPOLIA,
-  AVALANCHE,
-  AVALANCHE_FUJI,
-  BASE_MAINNET,
-  OPTIMISM_SEPOLIA,
-  SONIC_MAINNET,
-  SEPOLIA,
-  UiSupportedChain,
-  getExplorerUrl,
-} from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, UiContractsChain, getExplorerUrl } from "config/chains";
 import { getIcon } from "config/icons";
 import {
   getGlvDisplayName,
@@ -67,18 +56,18 @@ import {
 } from "./formatting";
 import { LogEntryComponentProps } from "./types";
 
-export const NETWORKS_BY_CHAIN_IDS: Record<UiSupportedChain, string> = {
+export const NETWORKS_BY_CHAIN_IDS: Record<UiContractsChain, string> = {
   [ARBITRUM]: "arbitrum",
   [AVALANCHE]: "avalanche",
   [AVALANCHE_FUJI]: "fuji",
-  [BASE_MAINNET]: "base",
-  [SONIC_MAINNET]: "sonic",
+  // [BASE_MAINNET]: "base",
+  // [SONIC_MAINNET]: "sonic",
   [ARBITRUM_SEPOLIA]: "arbitrum-sepolia",
-  [OPTIMISM_SEPOLIA]: "optimism-sepolia",
-  [SEPOLIA]: "sepolia",
+  // [OPTIMISM_SEPOLIA]: "optimism-sepolia",
+  // [SEPOLIA]: "sepolia",
 };
 
-const NETWORKS = mapValues(invert(NETWORKS_BY_CHAIN_IDS), Number);
+const NETWORKS = mapValues(invert(NETWORKS_BY_CHAIN_IDS), Number) as Record<string, UiContractsChain>;
 
 export function ParseTransactionPage() {
   const { tx, network } = useParams<{ tx: string; network: string }>();

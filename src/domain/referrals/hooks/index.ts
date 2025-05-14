@@ -14,6 +14,7 @@ import { getProvider } from "lib/rpc";
 import { getReferralsGraphClient } from "lib/subgraph";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { abis } from "sdk/abis";
+import { UiContractsChain } from "sdk/configs/chains";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 
 import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
@@ -26,7 +27,7 @@ export * from "./useReferralCodeFromUrl";
 
 export function useUserReferralInfoRequest(
   signer: Signer | undefined,
-  chainId: number,
+  chainId: UiContractsChain,
   account?: string | null,
   skipLocalReferralCode = false
 ): UserReferralInfo | undefined {
@@ -108,7 +109,7 @@ export function useAffiliateTier(signer, chainId, account) {
   };
 }
 
-export function useTiers(signer: Signer | undefined, chainId: number, tierLevel?: BigNumberish) {
+export function useTiers(signer: Signer | undefined, chainId: UiContractsChain, tierLevel?: BigNumberish) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
 
   const { data: [totalRebate, discountShare] = [], error } = useSWR<bigint[]>(
@@ -128,7 +129,7 @@ export function useTiers(signer: Signer | undefined, chainId: number, tierLevel?
   };
 }
 
-export async function setAffiliateTier(chainId: number, affiliate: string, tierId: number, signer, opts) {
+export async function setAffiliateTier(chainId: UiContractsChain, affiliate: string, tierId: number, signer, opts) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const timelockAddress = getContract(chainId, "Timelock");
   const contract = new ethers.Contract(timelockAddress, abis.Timelock, signer);

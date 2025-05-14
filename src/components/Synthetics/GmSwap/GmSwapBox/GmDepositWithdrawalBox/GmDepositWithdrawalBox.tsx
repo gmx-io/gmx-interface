@@ -1,9 +1,7 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useAccount } from "wagmi";
 
-import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -23,7 +21,7 @@ import {
   getMarketIndexName,
   getTokenPoolType,
 } from "domain/synthetics/markets/utils";
-import { TokenData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
+import { convertToUsd, getTokenData, TokenData } from "domain/synthetics/tokens";
 import { useAvailableTokenOptions } from "domain/synthetics/trade";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { Token } from "domain/tokens";
@@ -42,19 +40,19 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import type { GmSwapBoxProps } from "../GmSwapBox";
+import { Swap } from "../Swap";
+import { Mode, Operation } from "../types";
 import { useGmWarningState } from "../useGmWarningState";
 import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
+import { InfoRows } from "./InfoRows";
+import { needSwitchToSettlementChain, SwitchToSettlementChainButtons } from "./SwitchToSettlementChainButtons";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
 import { useGmDepositWithdrawalBoxState } from "./useGmDepositWithdrawalBoxState";
 import { useSubmitButtonState } from "./useSubmitButtonState";
 import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
 import { useUpdateTokens } from "./useUpdateTokens";
-import type { GmSwapBoxProps } from "../GmSwapBox";
-import { Swap } from "../Swap";
-import { Mode, Operation } from "../types";
-import { InfoRows } from "./InfoRows";
-import { needSwitchToSettlementChain, SwitchToSettlementChainButtons } from "./SwitchToSettlementChainButtons";
 
 export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const {
@@ -68,8 +66,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     onSelectedMarketForGlv,
   } = p;
   const { shouldDisableValidationForTesting } = useSettings();
-  const { chainId } = useChainId();
-  const { chainId: walletChainId, isConnected } = useAccount();
+  const { chainId, srcChainId } = useChainId();
   const [isMarketForGlvSelectedManually, setIsMarketForGlvSelectedManually] = useState(false);
 
   // #region Requests
@@ -94,6 +91,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     marketsInfoData: glvAndMarketsInfoData,
     tokensData,
     marketTokens: isDeposit ? depositMarketTokensData : withdrawalMarketTokensData,
+    srcChainId,
   });
 
   // #region State
@@ -872,7 +870,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
         )}
 
         <div className="Exchange-swap-button-container">
-          {needSwitchToSettlementChain(walletChainId) ? <SwitchToSettlementChainButtons /> : submitButton}
+          {needSwitchToSettlementChain(srcChainId) ? <SwitchToSettlementChainButtons /> : submitButton}
         </div>
       </form>
     </>

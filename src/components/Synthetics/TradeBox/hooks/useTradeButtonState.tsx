@@ -17,6 +17,7 @@ import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/
 import {
   selectChainId,
   selectGasPaymentTokenAllowance,
+  selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -44,9 +45,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { RelayerFeeParams } from "domain/synthetics/express";
 import { ExpressTxnParams } from "domain/synthetics/express";
-import { getMultichainInfoFromSigner } from "domain/synthetics/orders/expressOrderUtils";
 import { getNameByOrderType, substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
@@ -66,7 +65,7 @@ import { mustNeverExist } from "lib/types";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
-import useWallet from "lib/wallets/useWallet";
+import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { getContract } from "sdk/configs/contracts";
 import { getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/types/fees";
@@ -97,7 +96,8 @@ export function useTradeboxButtonState({
   setToTokenInputValue,
 }: TradeboxButtonStateOptions): TradeboxButtonState {
   const chainId = useSelector(selectChainId);
-  const { signer } = useWallet();
+  const srcChainId = useSelector(selectSrcChainId);
+  const signer = useEthersSigner();
 
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isSwap, isIncrease, isLimit, isMarket, isTwap } = tradeFlags;
@@ -144,7 +144,8 @@ export function useTradeboxButtonState({
       payAmount === undefined ||
       !payTokenAllowance.tokensAllowanceData ||
       !payTokenAllowance.spenderAddress ||
-      !gasPaymentToken
+      !gasPaymentToken ||
+      srcChainId !== undefined
     ) {
       return { tokensToApprove: [], isAllowanceLoaded: false };
     }
@@ -182,6 +183,7 @@ export function useTradeboxButtonState({
     payTokenAllowance.isLoaded,
     payTokenAllowance.spenderAddress,
     payTokenAllowance.tokensAllowanceData,
+    srcChainId,
     tokenPermits,
   ]);
 
@@ -298,8 +300,6 @@ export function useTradeboxButtonState({
       return;
     }
 
-    const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
-
     if (!srcChainId && isAllowanceLoaded && tokensToApprove.length) {
       const tokenToApprove = tokensToApprove[0];
 
@@ -370,18 +370,19 @@ export function useTradeboxButtonState({
     });
   }, [
     account,
+    signer,
+    srcChainId,
     isAllowanceLoaded,
     tokensToApprove,
     setStage,
     isWrapOrUnwrap,
     isSwap,
     isIncrease,
+    expressParams,
     openConnectModal,
     chainId,
     isApproving,
-    signer,
     setPendingTxns,
-    expressParams,
     addTokenPermit,
     onSubmitWrapOrUnwrap,
     onSubmitSwap,

@@ -33,10 +33,10 @@ import {
 
 type MultichainTokenMapping = Record<
   // settlement chain id
-  number,
+  UiSettlementChain,
   Record<
     // source chain id
-    number,
+    UiSourceChain,
     Record<
       // source chain token address
       string,
@@ -52,16 +52,16 @@ type MultichainTokenMapping = Record<
 
 type MultichainDepositSupportedTokens = Record<
   // settlement chain id
-  number,
+  UiSettlementChain,
   MultichainTokenId[]
 >;
 
 type MultichainSupportedTokenMap = Record<
   // settlement chain id
-  number,
+  UiSettlementChain,
   Record<
     // source chain id
-    number,
+    UiSourceChain,
     // source chain token address
     string[]
   >
@@ -69,7 +69,7 @@ type MultichainSupportedTokenMap = Record<
 
 type MultichainWithdrawSupportedTokens = Record<
   // settlement chain id
-  number,
+  UiSettlementChain,
   // settlement chain token address
   string[]
 >;
@@ -77,7 +77,7 @@ type MultichainWithdrawSupportedTokens = Record<
 type MultichainSourceToSettlementChainMapping = Record<UiSourceChain, UiSettlementChain[]>;
 
 type MultichainTokenId = {
-  chainId: number;
+  chainId: UiSettlementChain | UiSourceChain;
   address: string;
   decimals: number;
   stargate: Address;
@@ -244,12 +244,12 @@ export function isSourceChain(chainId: number): chainId is UiSourceChain {
   return SOURCE_CHAINS.includes(chainId as UiSourceChain);
 }
 
-export const MULTI_CHAIN_TOKEN_MAPPING: MultichainTokenMapping = {};
+export const MULTI_CHAIN_TOKEN_MAPPING = {} as MultichainTokenMapping;
 
-export const MULTI_CHAIN_DEPOSIT_SUPPORTED_TOKENS: MultichainDepositSupportedTokens = {};
-export const MULTI_CHAIN_SUPPORTED_TOKEN_MAP: MultichainSupportedTokenMap = {};
+export const MULTI_CHAIN_DEPOSIT_SUPPORTED_TOKENS = {} as MultichainDepositSupportedTokens;
+export const MULTI_CHAIN_SUPPORTED_TOKEN_MAP = {} as MultichainSupportedTokenMap;
 
-export const MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS: MultichainWithdrawSupportedTokens = {};
+export const MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS = {} as MultichainWithdrawSupportedTokens;
 
 export const CHAIN_ID_TO_TOKEN_ID_MAP: Record<
   UiSettlementChain | UiSourceChain,
@@ -358,17 +358,19 @@ for (const tokenSymbol in TOKEN_GROUPS) {
 }
 
 export const DEFAULT_SETTLEMENT_CHAIN_ID_MAP: Record<UiSupportedChain, UiSettlementChain> = {
-  [BASE_MAINNET]: ARBITRUM,
-  [SONIC_MAINNET]: ARBITRUM,
+  // TODO: fix
+  [BASE_MAINNET]: ARBITRUM_SEPOLIA, // ARBITRUM,
+  [SONIC_MAINNET]: ARBITRUM_SEPOLIA, // ARBITRUM,
 
   [ARBITRUM_SEPOLIA]: ARBITRUM_SEPOLIA,
   [OPTIMISM_SEPOLIA]: ARBITRUM_SEPOLIA,
   [SEPOLIA]: ARBITRUM_SEPOLIA,
 
   // Stubs
-  [ARBITRUM]: ARBITRUM,
-  [AVALANCHE]: AVALANCHE,
-  [AVALANCHE_FUJI]: AVALANCHE_FUJI,
+  // TODO: fix
+  [ARBITRUM]: ARBITRUM_SEPOLIA, // ARBITRUM,
+  [AVALANCHE]: ARBITRUM_SEPOLIA, // AVALANCHE,
+  [AVALANCHE_FUJI]: ARBITRUM_SEPOLIA, // AVALANCHE_FUJI,
 };
 
 export function getMultichainTokenId(chainId: number, tokenAddress: string): MultichainTokenId | undefined {

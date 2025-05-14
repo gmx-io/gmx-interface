@@ -4,6 +4,7 @@ import { MutableRefObject } from "react";
 import { getContract, tryGetContract } from "config/contracts";
 import type { EventLogData, EventTxnParams } from "context/SyntheticsEvents/types";
 import { abis } from "sdk/abis";
+import { UiContractsChain } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, getTokens } from "sdk/configs/tokens";
 
 const coder = AbiCoder.defaultAbiCoder();
@@ -77,8 +78,10 @@ const GLV_WITHDRAWAL_CANCELLED_HASH = ethers.id("GlvWithdrawalCancelled");
 const APPROVED_HASH = ethers.id("Approval(address,address,uint256)");
 const TRANSFER_HASH = ethers.id("Transfer(address,address,uint256)");
 
+const MULTICHAIN_BRIDGE_IN_HASH = ethers.id("MultichainBridgeIn");
+
 export function subscribeToV2Events(
-  chainId: number,
+  chainId: UiContractsChain,
   provider: Provider,
   account: string,
   eventLogHandlers: MutableRefObject<
@@ -104,8 +107,6 @@ export function subscribeToV2Events(
       transactionHash: e.transactionHash,
       blockNumber: e.blockNumber,
     };
-
-    console.log("handleCommonLog", e);
 
     try {
       const parsed = eventEmitter.interface.parseLog(e);
@@ -146,7 +147,7 @@ export function subscribeToV2Events(
 }
 
 export function subscribeToTransferEvents(
-  chainId: number,
+  chainId: UiContractsChain,
   provider: Provider,
   account: string,
   marketTokensAddresses: string[],
@@ -218,7 +219,7 @@ export function subscribeToTransferEvents(
 }
 
 export function subscribeToApprovalEvents(
-  chainId: number,
+  chainId: UiContractsChain,
   provider: Provider,
   account: string,
   onApprove: (tokenAddress: string, spender: string, value: bigint) => void
@@ -282,7 +283,7 @@ function parseEventLogData(eventData): EventLogData {
   return ret as EventLogData;
 }
 
-function createV2EventFilters(chainId: number, account: string, wsProvider: Provider): ProviderEvent[] {
+function createV2EventFilters(chainId: UiContractsChain, account: string, wsProvider: Provider): ProviderEvent[] {
   const addressHash = AbiCoder.defaultAbiCoder().encode(["address"], [account]);
   const eventEmitter = new ethers.Contract(getContract(chainId, "EventEmitter"), abis.EventEmitter, wsProvider);
   const EVENT_LOG_TOPIC = eventEmitter.interface.getEvent("EventLog")?.topicHash ?? null;
@@ -367,11 +368,16 @@ function createV2EventFilters(chainId: number, account: string, wsProvider: Prov
       address: getContract(chainId, "EventEmitter"),
       topics: [EVENT_LOG2_TOPIC, GLV_TOPICS_FILTER, null, addressHash],
     },
+    // Multichain
+    {
+      address: getContract(chainId, "EventEmitter"),
+      topics: [EVENT_LOG1_TOPIC, [MULTICHAIN_BRIDGE_IN_HASH], addressHash],
+    },
   ];
 }
 
 export function getTotalSubscribersEventsCount(
-  chainId: number,
+  chainId: UiContractsChain,
   provider: Provider,
   { v1, v2 }: { v1: boolean; v2: boolean }
 ) {

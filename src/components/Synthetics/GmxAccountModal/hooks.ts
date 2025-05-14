@@ -1,4 +1,4 @@
-import { useDeferredValue, useEffect, useMemo, useState, useTransition } from "react";
+import { useMemo } from "react";
 import useSWR from "swr";
 import useSWRSubscription, { SWRSubscription } from "swr/subscription";
 import { Address, zeroAddress } from "viem";
@@ -25,22 +25,23 @@ import {
 } from "domain/synthetics/tokens";
 import { useOnchainTokenConfigs } from "domain/synthetics/tokens/useOnchainTokenConfigs";
 import { TokensData } from "domain/tokens";
+import { useChainId } from "lib/chains";
 import { MulticallRequestConfig, executeMulticall } from "lib/multicall";
 import { EMPTY_OBJECT } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
-import { convertTokenAddress, getToken } from "sdk/configs/tokens";
+import { getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { fetchMultichainTokenBalances } from "./fetchMultichainTokenBalances";
 
 export function useAvailableToTradeAssetSymbolsSettlementChain(): string[] {
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
-  const { chainId, account } = useWallet();
+  const { chainId } = useChainId();
+  const { address: account } = useAccount();
 
   const currentChainTokenBalances = useTokenBalances(
-    chainId!,
+    chainId,
     account,
     undefined,
     undefined,
@@ -86,9 +87,9 @@ export function useAvailableToTradeAssetSettlementChain(): {
   gmxAccountUsd: bigint;
   walletUsd: bigint;
 } {
-  const { chainId } = useWallet();
+  const { chainId } = useChainId();
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
-  const { tokensData } = useTokensDataRequest(chainId!);
+  const { tokensData } = useTokensDataRequest(chainId);
 
   let gmxAccountUsd = 0n;
 
@@ -269,7 +270,7 @@ for (const chainId of SETTLEMENT_CHAINS) {
 }
 
 export async function fetchGmxAccountTokenBalancesData(
-  settlementChainId: number,
+  settlementChainId: UiSettlementChain,
   account: string
 ): Promise<Record<string, bigint>> {
   const tradableTokenAddresses: Address[] = TRADABLE_ASSETS_MAP[settlementChainId];

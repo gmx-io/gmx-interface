@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { UiContractsChain, UiSourceChain } from "config/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMulticall } from "lib/multicall";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
@@ -7,11 +8,13 @@ import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { getExpressContractAddress } from "./relayParamsUtils";
 
 export function useExpressNonces(
-  chainId: number,
+  chainId: UiContractsChain,
   {
     account,
+    srcChainId,
   }: {
     account: string;
+    srcChainId: UiSourceChain | undefined;
   }
 ) {
   const [localActionsPerformed, setLocalActionsPerformed] = useLocalStorageSerializeKey("expressNonces", {
@@ -34,8 +37,13 @@ export function useExpressNonces(
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
     request: {
       relayRouter: {
-        contractAddress: getExpressContractAddress(chainId, { isSubaccount: false }),
-        abiId: "GelatoRelayRouter",
+        contractAddress: getExpressContractAddress(chainId, {
+          isSubaccount: false,
+          isMultichain: srcChainId !== undefined,
+          // todo call for each scope
+          scope: "order",
+        }),
+        abiId: "AbstractUserNonceable",
         calls: {
           nonce: {
             methodName: "userNonces",
@@ -44,8 +52,13 @@ export function useExpressNonces(
         },
       },
       subaccountRelayRouter: {
-        contractAddress: getExpressContractAddress(chainId, { isSubaccount: true }),
-        abiId: "SubaccountGelatoRelayRouter",
+        contractAddress: getExpressContractAddress(chainId, {
+          isSubaccount: true,
+          isMultichain: srcChainId !== undefined,
+          // todo call for each scope
+          scope: "subaccount",
+        }),
+        abiId: "AbstractUserNonceable",
         calls: {
           nonce: {
             methodName: "userNonces",

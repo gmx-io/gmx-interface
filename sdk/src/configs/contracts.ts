@@ -1,6 +1,14 @@
 import { type Address, zeroAddress } from "viem";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET } from "./chains";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  BSС_MAINNET,
+  BSС_TESTNET,
+  UiContractsChain,
+} from "./chains";
 
 export const CONTRACTS = {
   [BSС_MAINNET]: {
@@ -444,7 +452,13 @@ export const CONTRACTS = {
   },
 };
 
-export function getContract(chainId: number, name: string): Address {
+type ExtractContractNames<T extends object> = {
+  [K in keyof T]: keyof T[K];
+}[keyof T];
+
+export type ContractName = ExtractContractNames<typeof CONTRACTS>;
+
+export function getContract(chainId: UiContractsChain, name: ContractName): Address {
   if (!CONTRACTS[chainId]) {
     throw new Error(`Unknown chainId ${chainId}`);
   }

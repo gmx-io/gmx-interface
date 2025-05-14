@@ -1,6 +1,6 @@
-import { Wallet } from "ethers";
+import type { Wallet } from "ethers";
 
-import { SubaccountOnchainData } from "./useSubaccountOnchainData";
+import type { SubaccountOnchainData } from "./useSubaccountOnchainData";
 
 export type SubaccountSerializedConfig = {
   privateKey: string;

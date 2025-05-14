@@ -8,6 +8,7 @@ import { callContract } from "lib/contracts";
 import { OrderMetricId } from "lib/metrics/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
+import type { UiContractsChain } from "sdk/configs/chains";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
@@ -33,7 +34,7 @@ type Params = {
   setPendingShift: SetPendingShift;
 };
 
-export async function createShiftTxn(chainId: number, signer: Signer, p: Params) {
+export async function createShiftTxn(chainId: UiContractsChain, signer: Signer, p: Params) {
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const shiftVaultAddress = getContract(chainId, "ShiftVault");
 

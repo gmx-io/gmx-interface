@@ -5,8 +5,8 @@ import { gelatoRelay } from "sdk/utils/gelatoRelay";
 
 export type ExpressTxnData = {
   callData: string;
-  to: Address;
-  feeToken: Address;
+  to: string;
+  feeToken: string;
   feeAmount: bigint;
 };
 

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Address, isAddressEqual } from "viem";
 
-import { ARBITRUM_SEPOLIA } from "config/chains";
+import { ARBITRUM_SEPOLIA, UiContractsChain } from "config/chains";
 import { getContract } from "config/contracts";
 import { accountOrderListKey } from "config/dataStore";
 import type { MarketsInfoData } from "domain/synthetics/markets/types";
@@ -33,7 +33,7 @@ type OrdersResult = {
 const DEFAULT_COUNT = 1000;
 
 export function useOrders(
-  chainId: number,
+  chainId: UiContractsChain,
   {
     account,
     marketsDirectionsFilter = EMPTY_ARRAY,
@@ -150,7 +150,7 @@ export function useOrders(
   };
 }
 
-function buildUseOrdersMulticall(chainId: number, key: CacheKey) {
+function buildUseOrdersMulticall(chainId: UiContractsChain, key: CacheKey) {
   const account = key![0] as string;
 
   return {

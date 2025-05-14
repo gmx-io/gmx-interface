@@ -39,7 +39,7 @@ const defaultLocalActionsPerformed = {
 };
 
 export function ExpressNoncesContextProvider({ children }: { children: React.ReactNode }) {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { account } = useWallet();
   const { subaccount } = useSubaccountContext();
 
@@ -53,7 +53,12 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
     key: [account, subaccount?.address],
     request: {
       relayRouter: {
-        contractAddress: getExpressContractAddress(chainId, { isSubaccount: false }),
+        contractAddress: getExpressContractAddress(chainId, {
+          isSubaccount: false,
+          isMultichain: srcChainId !== undefined,
+          // todo call for each scope
+          scope: "order",
+        }),
         abiId: "GelatoRelayRouter",
         calls: {
           nonce: {
@@ -63,7 +68,11 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
         },
       },
       subaccountRelayRouter: {
-        contractAddress: getExpressContractAddress(chainId, { isSubaccount: true }),
+        contractAddress: getExpressContractAddress(chainId, {
+          isSubaccount: true,
+          isMultichain: srcChainId !== undefined,
+          scope: "subaccount",
+        }),
         abiId: "SubaccountGelatoRelayRouter",
         calls: {
           nonce: subaccount?.address

@@ -2,6 +2,7 @@ import { useMemo } from "react";
 
 import { Token } from "domain/tokens";
 import { getByKey } from "lib/objects";
+import type { UiContractsChain } from "sdk/configs/chains";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { getOrderInfo, isPositionOrder, isSwapOrder, isTwapPositionOrder, isTwapSwapOrder } from "sdk/utils/orders";
 import { getTwapOrderKey } from "sdk/utils/twap/index";
@@ -23,7 +24,7 @@ export type AggregatedOrdersDataResult = {
 };
 
 export function useOrdersInfoRequest(
-  chainId: number,
+  chainId: UiContractsChain,
   p: {
     marketsInfoData?: MarketsInfoData;
     marketsDirectionsFilter?: MarketFilterLongShortItemData[];

@@ -153,7 +153,7 @@ export function SyntheticsStateContextProvider({
   children: ReactNode;
   skipLocalReferralCode: boolean;
   pageType: SyntheticsState["pageType"];
-  overrideChainId?: number;
+  overrideChainId?: UiContractsChain;
 }) {
   const { chainId: selectedChainId, srcChainId } = useChainId();
 

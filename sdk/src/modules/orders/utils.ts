@@ -1,5 +1,6 @@
 import { Address, isAddressEqual } from "viem";
 
+import { UiContractsChain } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { accountOrderListKey } from "configs/dataStore";
 import { getWrappedToken } from "configs/tokens";
@@ -154,7 +155,7 @@ export function matchByMarket({
 
 export const DEFAULT_COUNT = 1000;
 
-export function buildGetOrdersMulticall(chainId: number, account: string) {
+export function buildGetOrdersMulticall(chainId: UiContractsChain, account: string) {
   return {
     dataStore: {
       contractAddress: getContract(chainId, "DataStore"),

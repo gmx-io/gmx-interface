@@ -31,7 +31,7 @@ type SetAutoCancelOrdersMeta = {
 };
 
 export function setAutoCancelOrdersTxn(
-  chainId: number,
+  chainId: UiContractsChain,
   signer: Signer,
   setPendingTxns: (txns: any) => void,
   ps: SetAutoCancelOrdersParams[],

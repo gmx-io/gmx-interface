@@ -4,6 +4,7 @@ import { encodeAbiParameters, toHex } from "viem";
 
 import { getContract } from "config/contracts";
 import { MarketsInfoData } from "domain/synthetics/markets/types";
+import type { UiContractsChain } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { TokenData, TokensData } from "sdk/types/tokens";
 import { getOppositeCollateral } from "sdk/utils/markets";
@@ -34,7 +35,7 @@ export function getOraclePriceParamsForRelayFee({
   tokensData,
   marketsInfoData,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   relayFeeParams: RelayerFeeParams;
   tokensData: TokensData;
   marketsInfoData: MarketsInfoData;
@@ -95,7 +96,7 @@ export function getOraclePriceParamsForOrders({
   marketsInfoData,
   tokensData,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   createOrderParams: CreateOrderTxnParams<any>[];
   marketsInfoData: MarketsInfoData;
   tokensData: TokensData;

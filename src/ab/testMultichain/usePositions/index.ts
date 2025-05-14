@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
 import { hashedPositionKey } from "config/dataStore";
-import { ARBITRUM_SEPOLIA } from "config/static/chains";
+import { ARBITRUM_SEPOLIA, UiContractsChain } from "config/static/chains";
 import {
   PendingPositionUpdate,
   PositionDecreaseEvent,
@@ -38,7 +38,7 @@ type PositionsResult = {
 // Multicall request failed: usePositionsData-multichain-421614 Error: Response error reader: positions: Bytes value "102,1,128,153,224,35,39,163,83,117,145" is not a valid boolean. The bytes array must contain a single byte of either a 0 or 1 value.;
 
 export function usePositions(
-  chainId: number,
+  chainId: UiContractsChain,
   p: {
     marketsData?: MarketsData;
     tokensData?: TokensData;

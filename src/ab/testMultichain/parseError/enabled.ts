@@ -25,7 +25,7 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
   const errorInfo = typeof error === "string" ? undefined : error?.info?.error;
   const errorSource = typeof error === "string" ? undefined : error?.errorSource;
   const errorContext: OrderErrorContext | undefined = typeof error === "string" ? undefined : error?.errorContext;
-  const isAdditinalValidationPassed = typeof error === "string" ? undefined : error?.isAdditinalValidationPassed;
+  const isAdditionalValidationPassed = typeof error === "string" ? undefined : error?.isAdditionalValidationPassed;
   const additionalValidationType = typeof error === "string" ? undefined : error?.additionalValidationType;
 
   let errorMessage = "Unknown error";
@@ -132,7 +132,7 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
     txErrorData,
     errorSource,
     parentError,
-    isAdditinalValidationPassed,
+    isAdditionalValidationPassed,
     additionalValidationType,
     errorDepth,
   };

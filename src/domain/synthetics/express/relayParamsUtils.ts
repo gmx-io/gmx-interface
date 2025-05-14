@@ -1,4 +1,4 @@
-import { Contract, ethers, Provider, Wallet } from "ethers";
+import { ethers, Wallet } from "ethers";
 import { Address, Client, encodeAbiParameters, keccak256 } from "viem";
 import { readContract } from "viem/actions";
 
@@ -9,7 +9,7 @@ import { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
 import RelayParamsAbi from "sdk/abis/RelayParams.json";
 import { UiContractsChain, UiSourceChain } from "sdk/configs/chains";
-import { getContract } from "sdk/configs/contracts";
+import { ContractName, getContract } from "sdk/configs/contracts";
 import { getRelayerFeeToken } from "sdk/configs/express";
 import { ExternalSwapOutput, SwapAmounts } from "sdk/types/trade";
 import { getByKey } from "sdk/utils/objects";
@@ -17,18 +17,51 @@ import { combineExternalCalls, ExternalCallsPayload, getExternalCallsPayload } f
 
 import { MultichainRelayParamsPayload, RelayerFeeParams, RelayFeePayload, RelayParamsPayload } from "./types";
 
-export function getExpressContractAddress(chainId: number, { isSubaccount }: { isSubaccount: boolean }) {
-  return getContract(chainId, isSubaccount ? "SubaccountGelatoRelayRouter" : "GelatoRelayRouter");
-}
+export function getExpressContractAddress(
+  chainId: UiContractsChain,
+  {
+    isSubaccount,
+    isMultichain,
+    scope,
+  }: {
+    isSubaccount: boolean;
+    isMultichain: boolean;
+    scope: "glv" | "gm" | "transfer" | "claims" | "order" | "subaccount";
+  }
+) {
+  let contractName: ContractName;
+  if (isMultichain) {
+    switch (scope) {
+      case "claims":
+        contractName = "MultichainClaimsRouter";
+        break;
+      case "order":
+        contractName = "MultichainOrderRouter";
+        break;
+      case "subaccount":
+        contractName = "MultichainSubaccountRouter";
+        break;
+      case "glv":
+        contractName = "MultichainGlvRouter";
+        break;
+      case "gm":
+        contractName = "MultichainGmRouter";
+        break;
+      case "transfer":
+        contractName = "MultichainTransferRouter";
+        break;
+      default:
+        throw new Error(`Invalid scope: ${scope}`);
+    }
+  } else {
+    if (isSubaccount) {
+      contractName = "SubaccountGelatoRelayRouter";
+    } else {
+      contractName = "GelatoRelayRouter";
+    }
+  }
 
-export function getExpressContractInstance(chainId: number, provider: Provider, isSubaccount: boolean) {
-  const contractAddress = getExpressContractAddress(chainId, { isSubaccount });
-
-  const abi = isSubaccount ? abis.SubaccountGelatoRelayRouter : abis.GelatoRelayRouter;
-
-  const contract = new Contract(contractAddress, abi, provider);
-
-  return contract;
+  return getContract(chainId, contractName);
 }
 
 export function getGelatoRelayRouterDomain(
@@ -234,38 +267,24 @@ export function hashRelayParamsMultichain(relayParams: MultichainRelayParamsPayl
   return hash;
 }
 
-export async function getRelayRouterNonceForSigner(
-  chainId: number,
-  signer: WalletSigner | Wallet,
-  isSubaccount: boolean
-): Promise<bigint> {
-  const contractAddress = getExpressContractAddress(chainId, { isSubaccount });
-  const contract = new ethers.Contract(contractAddress, abis.GelatoRelayRouter, signer);
+export async function getRelayRouterNonceForSigner({
+  chainId,
+  signer,
+  isSubaccount,
+  isMultichain,
+  scope,
+}: {
+  chainId: UiContractsChain;
+  signer: WalletSigner | Wallet;
+  isSubaccount: boolean;
+  isMultichain: boolean;
+  scope: "glv" | "gm" | "transfer" | "claims" | "order" | "subaccount";
+}): Promise<bigint> {
+  const contractAddress = getExpressContractAddress(chainId, { isSubaccount, isMultichain, scope });
+  const contract = new ethers.Contract(contractAddress, abis.AbstractUserNonceable, signer);
 
   return contract.userNonces(signer.address);
 }
-
-const abiWithUserNonces = [
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    name: "userNonces",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-] as const;
 
 export async function getRelayRouterNonceForMultichain(
   settlementChainClient: Client,
@@ -280,7 +299,7 @@ export async function getRelayRouterNonceForMultichain(
 
   const result: bigint = await readContract(settlementChainClient, {
     address: relayRouterAddress,
-    abi: abiWithUserNonces,
+    abi: abis.AbstractUserNonceable,
     functionName: "userNonces",
     args: [account],
   });

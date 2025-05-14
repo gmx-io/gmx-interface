@@ -13,7 +13,7 @@ import useSWR from "swr";
 import { Address, Hex, decodeErrorResult, encodeFunctionData, toHex, zeroAddress } from "viem";
 import { useAccount, usePublicClient } from "wagmi";
 
-import { UiSettlementChain, UiSourceChain, getChainName } from "config/chains";
+import { UiSettlementChain, UiSourceChain, UiSupportedChain, getChainName } from "config/chains";
 import { getContract } from "config/contracts";
 import { getChainIcon } from "config/icons";
 import {
@@ -33,8 +33,8 @@ import { selectGmxAccountDepositViewTokenInputAmount } from "context/GmxAccountC
 import { IStargateAbi } from "context/GmxAccountContext/stargatePools";
 import { getNeedTokenApprove, useTokenRecentPricesRequest, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
+import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { initMultichainDepositMetricData, sendTxnErrorMetric, sendTxnSentMetric } from "lib/metrics";
 import {
   BASIS_POINTS_DIVISOR_BIGINT,
   formatAmountFree,
@@ -42,7 +42,7 @@ import {
   formatPercentage,
   formatUsd,
 } from "lib/numbers";
-import { EMPTY_OBJECT, getByKey } from "lib/objects";
+import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { TxnCallback, TxnEventName, WalletTxnCtx, sendWalletTransaction } from "lib/transactions";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
@@ -84,14 +84,14 @@ const leadingDebounce: DebouncedFuncLeading<(value: bigint | undefined) => bigin
 );
 
 export const DepositView = () => {
-  const { address: account, chainId: walletChainId } = useAccount();
-  const signer = useEthersSigner({ chainId: walletChainId });
+  const { srcChainId } = useChainId();
+  const { address: account } = useAccount();
+  const signer = useEthersSigner({ chainId: srcChainId });
 
   const [settlementChainId] = useGmxAccountSettlementChainId();
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
 
-  const depositViewChain = walletChainId;
-  const sourceChainPublicClient = usePublicClient({ chainId: depositViewChain });
+  const sourceChainPublicClient = usePublicClient({ chainId: srcChainId });
 
   const [depositViewTokenAddress, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
   const [inputValue, setInputValue] = useGmxAccountDepositViewTokenInputValue();
@@ -102,19 +102,15 @@ export const DepositView = () => {
 
   const selectedTokenSourceChainTokenId =
     depositViewTokenAddress !== undefined
-      ? getMappedTokenId(
-          settlementChainId as UiSettlementChain,
-          depositViewTokenAddress,
-          depositViewChain as UiSourceChain
-        )
+      ? getMappedTokenId(settlementChainId as UiSettlementChain, depositViewTokenAddress, srcChainId as UiSourceChain)
       : undefined;
 
   const selectedTokenChainData = useMemo(() => {
     if (selectedToken === undefined) return undefined;
     return multichainTokens.find(
-      (token) => token.address === selectedToken.address && token.sourceChainId === depositViewChain
+      (token) => token.address === selectedToken.address && token.sourceChainId === srcChainId
     );
-  }, [selectedToken, multichainTokens, depositViewChain]);
+  }, [selectedToken, multichainTokens, srcChainId]);
 
   const { selectedTokenSourceChainBalance, selectedTokenSourceChainBalanceUsd } = useMemo((): {
     selectedTokenSourceChainBalance?: bigint;
@@ -184,24 +180,25 @@ export const DepositView = () => {
 
   const spenderAddress =
     // Only when DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT
-    depositViewChain === settlementChainId
+    (srcChainId as UiSupportedChain) === settlementChainId
       ? getContract(settlementChainId, "SyntheticsRouter")
       : selectedTokenSourceChainTokenId?.stargate;
 
-  const tokensAllowanceResult = useTokensAllowanceData(depositViewChain, {
+  const tokensAllowanceResult = useTokensAllowanceData(srcChainId !== undefined ? settlementChainId : undefined, {
     spenderAddress,
     tokenAddresses: selectedTokenSourceChainTokenId ? [selectedTokenSourceChainTokenId.address] : [],
   });
-  const tokensAllowanceData = depositViewChain !== undefined ? tokensAllowanceResult.tokensAllowanceData : undefined;
+  const tokensAllowanceData = srcChainId !== undefined ? tokensAllowanceResult.tokensAllowanceData : undefined;
 
   const needTokenApprove = getNeedTokenApprove(
     tokensAllowanceData,
     selectedTokenSourceChainTokenId?.address,
-    inputAmount
+    inputAmount,
+    EMPTY_ARRAY
   );
 
   const handleApprove = useCallback(async () => {
-    if (!depositViewChain || !depositViewTokenAddress || inputAmount === undefined || !spenderAddress) {
+    if (!srcChainId || !depositViewTokenAddress || inputAmount === undefined || !spenderAddress) {
       helperToast.error("Approve failed");
       return;
     }
@@ -219,14 +216,15 @@ export const DepositView = () => {
     }
 
     await approveTokens({
-      chainId: depositViewChain,
+      chainId: srcChainId,
       tokenAddress: selectedTokenSourceChainTokenId.address,
       signer: signer,
       spender: spenderAddress,
       setIsApproving,
       permitParams: undefined,
+      approveAmount: undefined,
     });
-  }, [depositViewChain, depositViewTokenAddress, inputAmount, selectedTokenSourceChainTokenId, signer, spenderAddress]);
+  }, [srcChainId, depositViewTokenAddress, inputAmount, selectedTokenSourceChainTokenId, signer, spenderAddress]);
 
   const { composeGas } = useMultichainDepositNetworkComposeGas();
 
@@ -235,7 +233,7 @@ export const DepositView = () => {
       !account ||
       inputAmount === undefined ||
       inputAmount <= 0n ||
-      depositViewChain === undefined ||
+      srcChainId === undefined ||
       composeGas === undefined ||
       sourceChainPublicClient === undefined
     ) {
@@ -252,7 +250,7 @@ export const DepositView = () => {
 
     const to = toHex(addressToBytes32(getContract(settlementChainId, "LayerZeroProvider")));
 
-    let composeMsg: string = CodecUiHelper.encodeDepositMessage(account, depositViewChain);
+    let composeMsg: string = CodecUiHelper.encodeDepositMessage(account, srcChainId);
 
     const builder = Options.newOptions();
     const extraOptions = builder.addExecutorComposeOption(0, composeGas, 0).toHex();
@@ -268,14 +266,14 @@ export const DepositView = () => {
     };
 
     return sendParams;
-  }, [account, composeGas, depositViewChain, inputAmount, settlementChainId, sourceChainPublicClient]);
+  }, [account, composeGas, srcChainId, inputAmount, settlementChainId, sourceChainPublicClient]);
 
   const quoteOftCondition =
     sendParamsWithoutSlippage !== undefined &&
     sourceChainPublicClient !== undefined &&
     depositViewTokenAddress !== undefined &&
     selectedTokenSourceChainTokenId !== undefined &&
-    walletChainId !== settlementChainId;
+    (srcChainId as UiSettlementChain) !== settlementChainId;
   const quoteOftQuery = useSWR<
     | {
         limit: OFTLimitStruct;
@@ -362,11 +360,11 @@ export const DepositView = () => {
 
   const quoteSendCondition =
     depositViewTokenAddress !== undefined &&
-    depositViewChain !== undefined &&
+    srcChainId !== undefined &&
     sourceChainPublicClient !== undefined &&
     sendParamsWithSlippage !== undefined &&
     selectedTokenSourceChainTokenId !== undefined &&
-    walletChainId !== settlementChainId;
+    (srcChainId as UiSettlementChain) !== settlementChainId;
 
   const quoteSendQuery = useSWR<MessagingFeeStruct | undefined>(
     quoteSendCondition
@@ -407,16 +405,16 @@ export const DepositView = () => {
   });
 
   const handleDeposit = useCallback(async () => {
-    if (depositViewChain === settlementChainId) {
+    if ((srcChainId as UiSettlementChain) === settlementChainId) {
       // #region DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT
-      if (!account || !depositViewTokenAddress || inputAmount === undefined || !walletChainId || !depositViewChain) {
+      if (!account || !depositViewTokenAddress || inputAmount === undefined || !srcChainId || !srcChainId) {
         return;
       }
 
       const multichainVaultAddress = getContract(settlementChainId, "MultichainVault");
 
       const contract = new Contract(
-        getContract(walletChainId, "MultichainTransferRouter")!,
+        getContract(settlementChainId, "MultichainTransferRouter")!,
         abis.MultichainTransferRouterArbitrumSepolia,
         signer
       );
@@ -436,7 +434,7 @@ export const DepositView = () => {
         }
 
         await sendWalletTransaction({
-          chainId: walletChainId,
+          chainId: srcChainId,
           signer: signer!,
           to: await contract.getAddress(),
           callData: contract.interface.encodeFunctionData("multicall", [
@@ -458,7 +456,7 @@ export const DepositView = () => {
         });
       } else {
         await sendWalletTransaction({
-          chainId: walletChainId,
+          chainId: srcChainId,
           signer: signer!,
           to: await contract.getAddress(),
           callData: contract.interface.encodeFunctionData("multicall", [
@@ -487,7 +485,7 @@ export const DepositView = () => {
         !account ||
         inputAmount === undefined ||
         inputAmount <= 0n ||
-        depositViewChain === undefined ||
+        srcChainId === undefined ||
         quoteSend === undefined ||
         sendParamsWithSlippage === undefined ||
         selectedTokenSourceChainTokenId === undefined
@@ -496,14 +494,14 @@ export const DepositView = () => {
         return;
       }
 
-      const metricData = initMultichainDepositMetricData({
-        assetAddress: depositViewTokenAddress,
-        assetSymbol: selectedToken!.symbol,
-        sizeInUsd: inputAmountUsd!,
-        isFirstDeposit: false,
-        settlementChain: settlementChainId,
-        sourceChain: depositViewChain,
-      });
+      // const metricData = initMultichainDepositMetricData({
+      //   assetAddress: depositViewTokenAddress,
+      //   assetSymbol: selectedToken!.symbol,
+      //   sizeInUsd: inputAmountUsd!,
+      //   isFirstDeposit: false,
+      //   settlementChain: settlementChainId,
+      //   sourceChain: depositViewChain,
+      // });
 
       const sourceChainTokenAddress = selectedTokenSourceChainTokenId.address;
 
@@ -514,7 +512,7 @@ export const DepositView = () => {
       const value = isNative ? inputAmount : 0n;
 
       await sendWalletTransaction({
-        chainId: depositViewChain,
+        chainId: srcChainId,
         to: sourceChainStargateAddress,
         signer: signer!,
         callData: encodeFunctionData({
@@ -525,7 +523,7 @@ export const DepositView = () => {
         value: (quoteSend.nativeFee as bigint) + value,
         callback: (txnEvent) => {
           if (txnEvent.event === TxnEventName.Error) {
-            sendTxnErrorMetric(metricData.metricId, txnEvent.data.error, "sending");
+            // sendTxnErrorMetric(metricData.metricId, txnEvent.data.error, "sending");
             const data = txnEvent.data.error.data as Hex | undefined;
 
             if (data) {
@@ -535,7 +533,7 @@ export const DepositView = () => {
               });
 
               const toastParams = getTxnErrorToast(
-                depositViewChain,
+                srcChainId,
                 {
                   errorMessage: JSON.stringify(error, null, 2),
                 },
@@ -547,7 +545,7 @@ export const DepositView = () => {
                 toastId: "gmx-account-deposit",
               });
             } else {
-              const toastParams = getTxnErrorToast(depositViewChain, txnEvent.data.error, {
+              const toastParams = getTxnErrorToast(srcChainId, txnEvent.data.error, {
                 defaultMessage: t`Deposit failed`,
               });
 
@@ -557,7 +555,7 @@ export const DepositView = () => {
               });
             }
           } else if (txnEvent.event === TxnEventName.Sent) {
-            sendTxnSentMetric(metricData.metricId);
+            // sendTxnSentMetric(metricData.metricId);
             helperToast.success("Deposit sent", { toastId: "gmx-account-deposit" });
             setIsVisibleOrView("main");
           }
@@ -566,10 +564,9 @@ export const DepositView = () => {
     }
   }, [
     account,
-    depositViewChain,
+    srcChainId,
     depositViewTokenAddress,
     inputAmount,
-    inputAmountUsd,
     quoteSend,
     selectedToken,
     selectedTokenSourceChainTokenId,
@@ -577,13 +574,12 @@ export const DepositView = () => {
     setIsVisibleOrView,
     settlementChainId,
     signer,
-    walletChainId,
   ]);
 
   useEffect(() => {
-    if (depositViewTokenAddress === undefined && depositViewChain !== undefined && multichainTokens.length > 0) {
+    if (depositViewTokenAddress === undefined && srcChainId !== undefined && multichainTokens.length > 0) {
       // pick the token
-      const sourceChainTokenAddresses = MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChainId][depositViewChain];
+      const sourceChainTokenAddresses = MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChainId][srcChainId];
       if (!sourceChainTokenAddresses || sourceChainTokenAddresses.length === 0) {
         return;
       }
@@ -592,15 +588,14 @@ export const DepositView = () => {
       let maxBalance =
         multichainTokens.find(
           (sourceChainToken) =>
-            sourceChainToken.sourceChainId === depositViewChain && sourceChainToken.address === maxBalanceTokenAddress
+            sourceChainToken.sourceChainId === srcChainId && sourceChainToken.address === maxBalanceTokenAddress
         )?.sourceChainBalance ?? 0n;
 
       for (const sourceChainTokenAddress of sourceChainTokenAddresses) {
         const balance =
           multichainTokens.find(
             (sourceChainToken) =>
-              sourceChainToken.sourceChainId === depositViewChain &&
-              sourceChainToken.address === sourceChainTokenAddress
+              sourceChainToken.sourceChainId === srcChainId && sourceChainToken.address === sourceChainTokenAddress
           )?.sourceChainBalance ?? 0n;
         if (balance > maxBalance) {
           maxBalance = balance;
@@ -608,7 +603,7 @@ export const DepositView = () => {
         }
       }
 
-      const tokenId = getMappedTokenId(depositViewChain as UiSourceChain, maxBalanceTokenAddress, settlementChainId);
+      const tokenId = getMappedTokenId(srcChainId as UiSourceChain, maxBalanceTokenAddress, settlementChainId);
 
       if (!tokenId) {
         return;
@@ -617,7 +612,7 @@ export const DepositView = () => {
       setDepositViewTokenAddress(tokenId.address);
     }
   }, [
-    depositViewChain,
+    srcChainId,
     depositViewTokenAddress,
     multichainTokens,
     selectedToken?.address,
@@ -676,10 +671,10 @@ export const DepositView = () => {
           </div>
         </div>
         <div className="flex items-center gap-8 rounded-4 border border-cold-blue-900 px-14 py-12">
-          {depositViewChain !== undefined ? (
+          {srcChainId !== undefined ? (
             <>
-              <img src={getChainIcon(depositViewChain)} alt={getChainName(depositViewChain)} className="size-20" />
-              <span className="text-body-large text-slate-100">{getChainName(depositViewChain)}</span>
+              <img src={getChainIcon(srcChainId)} alt={getChainName(srcChainId)} className="size-20" />
+              <span className="text-body-large text-slate-100">{getChainName(srcChainId)}</span>
             </>
           ) : (
             <>

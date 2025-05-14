@@ -34,6 +34,7 @@ import { helperToast } from "lib/helperToast";
 import {
   getGLVSwapMetricId,
   getGMSwapMetricId,
+  getMultichainDepositMetricId,
   getPositionOrderMetricId,
   getShiftGMMetricId,
   getSwapOrderMetricId,
@@ -941,6 +942,18 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           pushSuccessNotification(chainId, text, { transactionHash: txnParams.transactionHash });
         }
       }
+    },
+
+    MultichainBridgeIn: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const assetAddress = eventData.addressItems.items.token;
+      sendOrderExecutedMetric(
+        getMultichainDepositMetricId({
+          sourceChain: Number(eventData.uintItems.items.srcChainId),
+          assetAddress,
+          settlementChain: chainId,
+          amount: eventData.uintItems.items.amount,
+        })
+      );
     },
   };
 

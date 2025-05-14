@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import { getChainName } from "config/chains";
 import { isSettlementChain } from "context/GmxAccountContext/config";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
+import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
@@ -158,8 +159,8 @@ const AssetListMultichain = () => {
 };
 
 const AssetListSettlementChain = () => {
-  const { chainId } = useWallet();
-  const { tokensData } = useTokensDataRequest(chainId!);
+  const { chainId } = useChainId();
+  const { tokensData } = useTokensDataRequest(chainId);
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
 
   const displayTokens = useMemo(() => {

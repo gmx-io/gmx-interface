@@ -188,7 +188,7 @@ export async function getInitialSubaccountApproval({
   provider,
   subaccountAddress,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   signer: WalletSigner;
   provider: Provider;
   subaccountAddress: string;
@@ -267,7 +267,7 @@ export async function signUpdatedSubaccountSettings({
   nextRemainigActions,
   nextRemainingSeconds,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   signer: WalletSigner;
   subaccount: Subaccount;
   nextRemainigActions: bigint | undefined;
@@ -379,9 +379,14 @@ export function hashSubaccountApproval(subaccountApproval: SignedSubbacountAppro
   return keccak256(encodedData);
 }
 
-export async function getSubaccountApprovalNonceForSigner(chainId: number, signer: WalletSigner) {
-  const contractAddress = getExpressContractAddress(chainId, { isSubaccount: true });
-  const contract = new ethers.Contract(contractAddress, abis.SubaccountGelatoRelayRouter, signer);
+export async function getSubaccountApprovalNonceForSigner(chainId: UiContractsChain, signer: WalletSigner) {
+  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
+  const contractAddress = getExpressContractAddress(chainId, {
+    isSubaccount: true,
+    isMultichain: srcChainId !== undefined,
+    scope: "subaccount",
+  });
+  const contract = new ethers.Contract(contractAddress, abis.AbstractSubaccountApprovalNonceable, signer);
 
   return contract.subaccountApprovalNonces(signer.address);
 }
@@ -392,11 +397,12 @@ export async function getSubaccountOnchainData({
   provider,
   subaccountAddress,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   signer: WalletSigner;
   provider: Provider;
   subaccountAddress: string;
 }) {
+  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
   const account = signer.address;
 
   const calls: {
@@ -408,8 +414,12 @@ export async function getSubaccountOnchainData({
     };
   } = {
     approvalNonce: {
-      contractAddress: getExpressContractAddress(chainId, { isSubaccount: true }),
-      abi: abis.SubaccountGelatoRelayRouter,
+      contractAddress: getExpressContractAddress(chainId, {
+        isSubaccount: true,
+        isMultichain: srcChainId !== undefined,
+        scope: "subaccount",
+      }),
+      abi: abis.AbstractSubaccountApprovalNonceable,
       functionName: "subaccountApprovalNonces",
       args: [account],
     },

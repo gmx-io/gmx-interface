@@ -1,5 +1,5 @@
 import { Provider, Signer, Wallet } from "ethers";
-import { Address, encodeFunctionData, Hex, PublicClient, size, zeroAddress, zeroHash } from "viem";
+import { AbiItemArgs, Address, encodeFunctionData, Hex, PublicClient, size, zeroAddress, zeroHash } from "viem";
 
 import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
@@ -43,6 +43,7 @@ import { signTypedData, SignTypedDataParams } from "lib/wallets/signing";
 import GelatoRelayRouterAbi from "sdk/abis/GelatoRelayRouter.json";
 import SubaccountGelatoRelayRouterAbi from "sdk/abis/SubaccountGelatoRelayRouter.json";
 import { UiContractsChain, UiSettlementChain, UiSourceChain, UiSupportedChain } from "sdk/configs/chains";
+import { ContractName } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { bigMath } from "sdk/utils/bigmath";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
@@ -415,7 +416,13 @@ export async function buildAndSignExpressBatchOrderTxn({
     if (srcChainId) {
       userNonce = await getRelayRouterNonceForMultichain(settlementChainClient!, signerAddress, relayRouterAddress);
     } else {
-      userNonce = await getRelayRouterNonceForSigner(chainId, messageSigner, subaccount?.signedApproval !== undefined);
+      userNonce = await getRelayRouterNonceForSigner({
+        chainId,
+        signer: messageSigner,
+        isSubaccount: subaccount?.signedApproval !== undefined,
+        isMultichain: srcChainId !== undefined,
+        scope: "order",
+      });
     }
   } else {
     userNonce = cachedNonce;
@@ -429,7 +436,7 @@ export async function buildAndSignExpressBatchOrderTxn({
       ...relayParamsPayload,
       userNonce,
     },
-    paramsLists: getBatchParamsLists(batchParams, srcChainId !== undefined),
+    // paramsLists: getBatchParamsLists(batchParams, srcChainId !== undefined),
     subaccountApproval: subaccount?.signedApproval,
   };
 
@@ -452,6 +459,10 @@ export async function buildAndSignExpressBatchOrderTxn({
 
   let batchCalldata: Hex;
   if (srcChainId) {
+    const paramsLists = getBatchParamsLists(batchParams, true);
+
+    type MultichainBatchArgs = AbiItemArgs<typeof multichainSubaccountRouterAbi, "batch">;
+
     if (subaccount) {
       batchCalldata = encodeFunctionData({
         abi: multichainSubaccountRouterAbi,
@@ -463,13 +474,14 @@ export async function buildAndSignExpressBatchOrderTxn({
             signature,
           },
           { ...subaccount.signedApproval, integrationId: "0x" },
-          params.account as Address,
+          params.account,
           BigInt(srcChainId),
           subaccount.signedApproval?.subaccount,
-          params.paramsLists,
-        ],
+          paramsLists,
+        ] as MultichainBatchArgs,
       });
     } else {
+      type MultichainBatchArgs = AbiItemArgs<typeof multichainOrderRouterAbi, "batch">;
       batchCalldata = encodeFunctionData({
         abi: multichainOrderRouterAbi,
         functionName: "batch",
@@ -481,11 +493,12 @@ export async function buildAndSignExpressBatchOrderTxn({
           },
           params.account,
           BigInt(srcChainId),
-          params.paramsLists,
-        ],
+          paramsLists,
+        ] as MultichainBatchArgs,
       });
     }
   } else {
+    const paramsLists = getBatchParamsLists(batchParams, false);
     if (subaccount) {
       batchCalldata = encodeFunctionData({
         abi: SubaccountGelatoRelayRouterAbi.abi,
@@ -495,14 +508,14 @@ export async function buildAndSignExpressBatchOrderTxn({
           subaccount.signedApproval,
           params.account,
           subaccount.signedApproval?.subaccount,
-          params.paramsLists,
+          paramsLists,
         ],
       });
     } else {
       batchCalldata = encodeFunctionData({
         abi: GelatoRelayRouterAbi.abi,
         functionName: "batch",
-        args: [{ ...params.relayPayload, signature }, params.account, params.paramsLists],
+        args: [{ ...params.relayPayload, signature }, params.account, paramsLists],
       });
     }
   }
@@ -608,7 +621,7 @@ export async function getBatchSignatureParams({
   };
 }
 
-function getBatchParamsLists(batchParams: BatchOrderTxnParams, isMultichain: boolean) {
+function getBatchParamsLists<T extends boolean = false>(batchParams: BatchOrderTxnParams, isMultichain: T) {
   return {
     createOrderParamsList: batchParams.createOrderParams.map((p) => ({
       addresses: p.orderPayload.addresses,
@@ -620,7 +633,7 @@ function getBatchParamsLists(batchParams: BatchOrderTxnParams, isMultichain: boo
       autoCancel: p.orderPayload.autoCancel,
       referralCode: p.orderPayload.referralCode,
       // TODO add only in multichain
-      dataList: isMultichain ? p.orderPayload.dataList : undefined,
+      dataList: (isMultichain ? p.orderPayload.dataList : undefined) as T extends true ? Hex[] : undefined,
     })),
     updateOrderParamsList: batchParams.updateOrderParams.map((p) => ({
       key: p.updatePayload.orderKey,
@@ -635,6 +648,9 @@ function getBatchParamsLists(batchParams: BatchOrderTxnParams, isMultichain: boo
     cancelOrderKeys: batchParams.cancelOrderParams.map((p) => p.orderKey),
   };
 }
+
+export type BatchParamsListForSettlementChain = ReturnType<typeof getBatchParamsLists<false>>;
+export type BatchParamsListForMultichain = ReturnType<typeof getBatchParamsLists<true>>;
 
 export async function getMultichainInfoFromSigner(
   signer: Signer,
@@ -651,7 +667,7 @@ export function getOrderRelayRouterAddress(
   isSubaccount: boolean,
   isMultichain: boolean
 ): Address {
-  let contractName: string;
+  let contractName: ContractName;
   if (isMultichain) {
     if (isSubaccount) {
       contractName = "MultichainSubaccountRouter";
@@ -669,6 +685,8 @@ export function getOrderRelayRouterAddress(
   return getContract(chainId, contractName);
 }
 
+export type BridgeOutParams = AbiItemArgs<typeof multichainTransferRouterAbi, "bridgeOut">[3];
+
 export async function buildAndSignBridgeOutTxn({
   chainId,
   relayParamsPayload,
@@ -678,7 +696,7 @@ export async function buildAndSignBridgeOutTxn({
 }: {
   chainId: UiSettlementChain;
   relayParamsPayload: MultichainRelayParamsPayload;
-  params: IRelayUtils.BridgeOutParamsStruct;
+  params: BridgeOutParams;
   signer: Signer;
   emptySignature?: boolean;
 }): Promise<ExpressTxnData> {
@@ -701,6 +719,8 @@ export async function buildAndSignBridgeOutTxn({
     });
   }
 
+  type MultichainBridgeOutArgs = AbiItemArgs<typeof multichainTransferRouterAbi, "bridgeOut">;
+
   const bridgeOutCallData = encodeFunctionData({
     abi: multichainTransferRouterAbi,
     functionName: "bridgeOut",
@@ -709,17 +729,17 @@ export async function buildAndSignBridgeOutTxn({
         ...relayParamsPayload,
         signature,
         desChainId: BigInt(chainId),
-      } satisfies IRelayUtils.RelayParamsStruct,
+      },
       address as Address,
       BigInt(srcChainId),
       params,
-    ],
+    ] as MultichainBridgeOutArgs,
   });
 
   return {
     callData: bridgeOutCallData,
     to: getContract(chainId, "MultichainTransferRouter"),
-    feeToken: relayParamsPayload.fee.feeToken,
+    feeToken: relayParamsPayload.fee.feeToken as Address,
     feeAmount: relayParamsPayload.fee.feeAmount,
   };
 }

@@ -19,6 +19,7 @@ import { sendOrderSimulatedMetric, sendTxnErrorMetric } from "lib/metrics/utils"
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
+import type { UiContractsChain } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { ExternalSwapQuote } from "sdk/types/trade";
 import { CustomErrorName, ErrorData, extractDataFromError, extractTxnError, isContractError } from "sdk/utils/errors";
@@ -64,7 +65,7 @@ export function isSimulationPassed(errorData: ErrorData) {
 /**
  * @deprecated use simulateExecution instead
  */
-export async function simulateExecuteTxn(chainId: number, p: SimulateExecuteParams) {
+export async function simulateExecuteTxn(chainId: UiContractsChain, p: SimulateExecuteParams) {
   const provider = getProvider(undefined, chainId);
 
   const multicallAddress = getContract(chainId, "Multicall");

@@ -9,7 +9,7 @@ import { EMPTY_OBJECT } from "lib/objects";
 export async function fetchMultichainTokenBalances(
   currentSettlementChainId: number,
   account: string,
-  progressCallback: (chainId: number, tokensChainData: Record<string, bigint>) => void
+  progressCallback?: (chainId: number, tokensChainData: Record<string, bigint>) => void
 ): Promise<Record<number, Record<string, bigint>>> {
   const requests: Promise<{
     chainId: number;
@@ -96,7 +96,7 @@ export async function fetchMultichainTokenBalances(
       )
       .then((res) => {
         result[res.chainId] = res.tokensChainData;
-        progressCallback(res.chainId, res.tokensChainData);
+        progressCallback?.(res.chainId, res.tokensChainData);
         return res;
       });
 

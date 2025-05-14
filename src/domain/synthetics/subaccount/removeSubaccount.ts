@@ -13,7 +13,7 @@ import { getMultichainInfoFromSigner, getOrderRelayRouterAddress } from "../orde
 import { Subaccount } from "../subaccount";
 
 export async function removeSubaccountWalletTxn(
-  chainId: number,
+  chainId: UiContractsChain,
   signer: Signer,
   subaccountAddress: string
 ): Promise<void> {

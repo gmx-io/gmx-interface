@@ -6,11 +6,12 @@ import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import useWallet from "lib/wallets/useWallet";
+import { UiContractsChain } from "sdk/configs/chains";
 import { hashDataMap } from "sdk/utils/hash";
 
 import { ClaimableFundingData, getMarketDivisor, useMarkets } from ".";
 
-export function useClaimableFundingDataRequest(chainId: number) {
+export function useClaimableFundingDataRequest(chainId: UiContractsChain) {
   const { account } = useWallet();
   const { marketsAddresses, marketsData } = useMarkets(chainId);
 

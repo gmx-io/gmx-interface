@@ -8,6 +8,7 @@ import { contractFetcher } from "lib/contracts";
 import { DEFAULT_MAX_USDG_AMOUNT, MAX_PRICE_DEVIATION_BASIS_POINTS, USDG_ADDRESS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import { PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
+import type { UiContractsChain } from "sdk/configs/chains";
 import { getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { InfoTokens, Token, TokenInfo } from "sdk/types/tokens";
 import { bigMath } from "sdk/utils/bigmath";
@@ -16,7 +17,7 @@ import { getSpread } from "./utils";
 
 export function useInfoTokens(
   signer: Signer | undefined,
-  chainId: number,
+  chainId: UiContractsChain,
   active: boolean,
   tokenBalances?: bigint[],
   fundingRateInfo?: bigint[],

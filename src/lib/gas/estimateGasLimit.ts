@@ -26,6 +26,7 @@ export async function estimateGasLimit(
       // if not we throw estimateGas error
       throw error;
     } catch (error) {
+      // debugger;
       throw extendError(error, {
         errorContext: "gasLimit",
       });
@@ -41,50 +42,50 @@ export function applyGasLimitBuffer(gasLimit: bigint): bigint {
   return (gasLimit * 11n) / 10n; // add a 10% buffer
 }
 
-export async function estimateGasLimitMultichain(
-  client: PublicClient,
-  txnData: {
-    to: string;
-    data: string;
-    from: string;
-    value?: bigint;
-  }
-): Promise<bigint> {
-  try {
-    const gasLimit = await client.estimateGas({
-      to: txnData.to as Address,
-      data: txnData.data as Hex,
-      account: txnData.from as Address,
-      value: txnData.value,
-    });
+// export async function estimateGasLimitMultichain(
+//   client: PublicClient,
+//   txnData: {
+//     to: string;
+//     data: string;
+//     from: string;
+//     value?: bigint;
+//   }
+// ): Promise<bigint> {
+//   try {
+//     const gasLimit = await client.estimateGas({
+//       to: txnData.to as Address,
+//       data: txnData.data as Hex,
+//       account: txnData.from as Address,
+//       value: txnData.value,
+//     });
 
-    return applyGasLimitBuffer(gasLimit);
-  } catch (error) {
-    if ("walk" in error && typeof error.walk === "function") {
-      const errorWithData = (error as BaseError).walk((e) => "data" in (e as any)) as (Error & { data: string }) | null;
+//     return applyGasLimitBuffer(gasLimit);
+//   } catch (error) {
+//     if ("walk" in error && typeof error.walk === "function") {
+//       const errorWithData = (error as BaseError).walk((e) => "data" in (e as any)) as (Error & { data: string }) | null;
 
-      if (errorWithData && errorWithData.data) {
-        const data = errorWithData.data;
+//       if (errorWithData && errorWithData.data) {
+//         const data = errorWithData.data;
 
-        const decodedError = decodeErrorResult({
-          abi: abis.CustomErrorsArbitrumSepolia,
-          data: data as Hex,
-        });
+//         const decodedError = decodeErrorResult({
+//           abi: abis.CustomErrorsArbitrumSepolia,
+//           data: data as Hex,
+//         });
 
-        const customError = new Error();
+//         const customError = new Error();
 
-        customError.name = decodedError.errorName;
-        customError.message = JSON.stringify(decodedError);
-        // customError.cause = error;
+//         customError.name = decodedError.errorName;
+//         customError.message = JSON.stringify(decodedError);
+//         // customError.cause = error;
 
-        throw extendError(customError, {
-          errorContext: "gasLimit",
-        });
-      }
-    }
+//         throw extendError(customError, {
+//           errorContext: "gasLimit",
+//         });
+//       }
+//     }
 
-    throw extendError(error, {
-      errorContext: "gasLimit",
-    });
-  }
-}
+//     throw extendError(error, {
+//       errorContext: "gasLimit",
+//     });
+//   }
+// }

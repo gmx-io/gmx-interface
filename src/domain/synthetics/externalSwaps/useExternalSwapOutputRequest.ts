@@ -4,6 +4,7 @@ import useSWR from "swr";
 
 import { metrics, OpenOceanQuoteTiming } from "lib/metrics";
 import { useDebounce } from "lib/useDebounce";
+import { UiContractsChain } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { TokensData } from "sdk/types/tokens";
@@ -22,7 +23,7 @@ export function useExternalSwapOutputRequest({
   gasPrice,
   enabled = true,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   tokensData: TokensData | undefined;
   tokenInAddress: string | undefined;
   tokenOutAddress: string | undefined;

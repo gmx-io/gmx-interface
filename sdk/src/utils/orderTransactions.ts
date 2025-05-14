@@ -78,11 +78,12 @@ export type CreateOrderPayload = {
   shouldUnwrapNativeToken: boolean;
   autoCancel: boolean;
   referralCode: string;
+  // TODO: force it in multichain
   dataList?: string[];
 };
 
 export type UpdateOrderParams = {
-  chainId: number;
+  chainId: UiContractsChain;
   indexTokenAddress: string;
   orderKey: string;
   orderType: OrderType;
@@ -138,7 +139,7 @@ export type ExternalCallsPayload = {
 };
 
 export type CommonOrderParams = {
-  chainId: number;
+  chainId: UiContractsChain;
   receiver: string;
   executionFeeAmount: bigint;
   executionGasLimit: bigint;
@@ -523,7 +524,7 @@ export function buildTokenTransfersParamsForDecrease({
   minOutputUsd,
   receiveTokenAddress,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   executionFeeAmount: bigint;
   collateralTokenAddress: string;
   collateralDeltaAmount: bigint;
@@ -566,7 +567,7 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
   minOutputAmount,
   swapPath,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   // srcChainId: number | undefined;
   receiver: string;
   payTokenAddress: string;

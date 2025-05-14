@@ -7,7 +7,7 @@ import set from "lodash/set";
 import values from "lodash/values";
 import { SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 
-import { UiSourceChain } from "config/chains";
+import { UiContractsChain, UiSourceChain } from "config/chains";
 import { getKeepLeverageKey, getLeverageKey, getSyntheticsTradeOptionsKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -86,7 +86,7 @@ const INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE: StoredTradeOptions = {
 };
 
 export function useTradeboxState(
-  chainId: number,
+  chainId: UiContractsChain,
   enabled: boolean,
   p: {
     marketsData?: MarketsData;

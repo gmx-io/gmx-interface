@@ -1,6 +1,8 @@
 // current v2
 import { useMemo } from "react";
 
+import { UiContractsChain } from "sdk/configs/chains";
+
 import useV2FeesInfo from "./useV2FeesInfo";
 import { useMarketsInfoRequest } from "../markets";
 import useUsers from "../stats/useUsers";
@@ -19,7 +21,7 @@ type DashboardOverview = {
   totalUsers: bigint;
 };
 
-export default function useV2Stats(chainId: number): DashboardOverview {
+export default function useV2Stats(chainId: UiContractsChain): DashboardOverview {
   const volumeInfo = useVolumeInfo(chainId);
   const feesInfo = useV2FeesInfo(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId);

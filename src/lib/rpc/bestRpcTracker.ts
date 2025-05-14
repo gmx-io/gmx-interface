@@ -11,6 +11,7 @@ import {
   AVALANCHE_FUJI,
   FALLBACK_PROVIDERS,
   RPC_PROVIDERS,
+  UiContractsChain,
   getFallbackRpcUrl,
 } from "config/chains";
 import { getContract, getDataStoreContract, getMulticallContract } from "config/contracts";
@@ -59,8 +60,8 @@ type ProviderData = {
 };
 
 type RpcTrackerState = {
-  [chainId: number]: {
-    chainId: number;
+  [chainId in UiContractsChain]: {
+    chainId: UiContractsChain;
     lastUsage: Date | null;
     currentPrimaryUrl: string;
     currentSecondaryUrl: string;
@@ -116,7 +117,7 @@ function trackRpcProviders({ warmUp = false } = {}) {
   });
 }
 
-async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerState[number]) {
+async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerState[UiContractsChain]) {
   const providersList = Object.values(providers);
 
   const providersToProbe = getIsLargeAccount() ? providersList : providersList.filter(({ isPublic }) => isPublic);
@@ -244,7 +245,7 @@ function setCurrentProviders(chainId: number, { primaryUrl, secondaryUrl, bestBe
 }
 
 async function probeRpc(
-  chainId: number,
+  chainId: UiContractsChain,
   provider: Provider,
   providerUrl: string,
   isPublic: boolean
@@ -405,7 +406,7 @@ function initTrackerState() {
     };
 
     return acc;
-  }, {});
+  }, {} as RpcTrackerState);
 }
 
 export function getCurrentRpcUrls(chainId: number) {

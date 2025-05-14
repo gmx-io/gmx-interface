@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useAccount } from "wagmi";
 
 import { getContract } from "config/contracts";
@@ -6,19 +6,20 @@ import { isSettlementChain, isSourceChain } from "context/GmxAccountContext/conf
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL, FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
+import type { UiContractsChain } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { MarketConfig, MarketValues } from "sdk/modules/markets/types";
 import type { MarketInfo, MarketsData, MarketsInfoData } from "sdk/types/markets";
 
 import { useGmxAccountTokensDataRequest } from "components/Synthetics/GmxAccountModal/hooks";
 
-import { buildMarketsConfigsRequest } from "./buildMarketsConfigsRequest";
-import { buildMarketsValuesRequest } from "./buildMarketsValuesRequest";
 import { TokensData, useTokensDataRequest } from "../../tokens";
 import { useClaimableFundingDataRequest } from "../useClaimableFundingDataRequest";
 import { useMarkets } from "../useMarkets";
-import { useFastMarketsInfoRequest } from "./useFastMarketsInfoRequest";
 import { getMarketDivisor } from "../utils";
+import { buildMarketsConfigsRequest } from "./buildMarketsConfigsRequest";
+import { buildMarketsValuesRequest } from "./buildMarketsValuesRequest";
+import { useFastMarketsInfoRequest } from "./useFastMarketsInfoRequest";
 
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
@@ -28,7 +29,7 @@ export type MarketsInfoResult = {
   error?: Error;
 };
 
-export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
+export function useMarketsInfoRequest(chainId: UiContractsChain): MarketsInfoResult {
   const { marketsData, marketsAddresses } = useMarkets(chainId);
   const { chainId: walletChainId } = useAccount();
 
@@ -138,7 +139,7 @@ function useMarketsValuesRequest({
   marketsData,
   tokensData,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   isDependenciesLoading: boolean;
   marketsAddresses: string[] | undefined;
   marketsData: MarketsData | undefined;
@@ -266,7 +267,7 @@ function useMarketsConfigsRequest({
   isDependenciesLoading,
   marketsAddresses,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   isDependenciesLoading: boolean;
   marketsAddresses: string[] | undefined;
 }) {

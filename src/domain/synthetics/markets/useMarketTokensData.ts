@@ -23,13 +23,14 @@ import {
 import { useMemo } from "react";
 import { isGlvEnabled } from "./glv";
 import { GlvInfoData } from "./types";
+import type { UiContractsChain } from "sdk/configs/chains";
 
 type MarketTokensDataResult = {
   marketTokensData?: TokensData;
 };
 
 export function useMarketTokensDataRequest(
-  chainId: number,
+  chainId: UiContractsChain,
   p: {
     isDeposit: boolean;
     account?: string;
@@ -184,7 +185,7 @@ export function useMarketTokensDataRequest(
 }
 
 export function useMarketTokensData(
-  chainId: number,
+  chainId: UiContractsChain,
   p: { isDeposit: boolean; withGlv?: boolean; glvData?: GlvInfoData }
 ): MarketTokensDataResult {
   const { isDeposit } = p;

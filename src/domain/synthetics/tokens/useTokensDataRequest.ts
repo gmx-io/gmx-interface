@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { UiContractsChain } from "sdk/configs/chains";
 import { getTokensMap, getV2Tokens } from "sdk/configs/tokens";
 
 import { TokensData } from "./types";
@@ -14,7 +15,7 @@ export type TokensDataResult = {
   error?: Error;
 };
 
-export function useTokensDataRequest(chainId: number): TokensDataResult {
+export function useTokensDataRequest(chainId: UiContractsChain): TokensDataResult {
   const tokenConfigs = getTokensMap(chainId);
   const { balancesData, error: balancesError } = useTokenBalances(chainId);
   const { pricesData, updatedAt: pricesUpdatedAt, error: pricesError } = useTokenRecentPricesRequest(chainId);

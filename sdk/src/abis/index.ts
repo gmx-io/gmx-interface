@@ -135,7 +135,9 @@ export type AbiId =
   | "TimelockArbitrumSepolia"
   | "LayerZeroProviderArbitrumSepolia"
   | "RelayParamsArbitrumSepolia"
-  | "ArbitrumNodeInterface";
+  | "ArbitrumNodeInterface"
+  | "AbstractUserNonceable"
+  | "AbstractSubaccountApprovalNonceable";
 
 /** Copied from ethers to enable compatibility with GMX UI */
 interface JsonFragmentType {
@@ -227,4 +229,46 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   LayerZeroProviderArbitrumSepolia: LayerZeroProviderArbitrumSepolia.abi,
   RelayParamsArbitrumSepolia: RelayParamsArbitrumSepolia.abi,
   ArbitrumNodeInterface: ArbitrumNodeInterface.abi,
+  AbstractUserNonceable: [
+    {
+      inputs: [
+        {
+          internalType: "address",
+          name: "",
+          type: "address",
+        },
+      ],
+      name: "userNonces",
+      outputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+  ],
+  AbstractSubaccountApprovalNonceable: [
+    {
+      inputs: [
+        {
+          internalType: "address",
+          name: "",
+          type: "address",
+        },
+      ],
+      name: "subaccountApprovalNonces",
+      outputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+  ],
 } satisfies Record<AbiId, any> as any;

@@ -1,11 +1,13 @@
 import type { PublicClient, WalletClient } from "viem";
 
+import type { UiContractsChain } from "configs/chains";
+
 import type { MarketSdkConfig } from "./markets";
 import type { Token } from "./tokens";
 
 export interface GmxSdkConfig {
   /** Chain ID */
-  chainId: number;
+  chainId: UiContractsChain;
   /** Account's address */
   account?: string;
   /** GMX Oracle URL */

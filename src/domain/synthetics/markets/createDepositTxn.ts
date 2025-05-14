@@ -9,12 +9,12 @@ import { callContract } from "lib/contracts";
 import { OrderMetricId } from "lib/metrics/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
+import type { UiContractsChain } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
-import { DepositUtils } from "typechain-types-arbitrum-sepolia/ExchangeRouter";
+import { IDepositUtils } from "typechain-types-arbitrum-sepolia/ExchangeRouter";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
-import { getMultichainInfoFromSigner } from "../orders/expressOrderUtils";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { TokensData } from "../tokens";
@@ -41,7 +41,7 @@ export type CreateDepositParams = {
   setPendingDeposit: SetPendingDeposit;
 };
 
-export async function createDepositTxn(chainId: number, signer: Signer, p: CreateDepositParams) {
+export async function createDepositTxn(chainId: UiContractsChain, signer: Signer, p: CreateDepositParams) {
   const contract = new ethers.Contract(
     getContract(chainId, "ExchangeRouter"),
     chainId === ARBITRUM_SEPOLIA ? abis.ExchangeRouterArbitrumSepolia : abis.ExchangeRouter,
@@ -110,7 +110,7 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Creat
           executionFee: p.executionFee,
           callbackGasLimit: 0,
           dataList: [],
-        } satisfies DepositUtils.CreateDepositParamsStruct,
+        } satisfies IDepositUtils.CreateDepositParamsStruct,
         // satisfies DepositUtils.CreateDepositParamsStruct,
       ],
     },

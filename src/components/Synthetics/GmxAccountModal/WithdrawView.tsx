@@ -43,13 +43,18 @@ import { makeSelectFindSwapPath } from "context/SyntheticsStateContext/selectors
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getOracleParamsPayload, getOraclePriceParamsForRelayFee } from "domain/synthetics/express/oracleParamsUtils";
 import { getRelayerFeeParams } from "domain/synthetics/express/relayParamsUtils";
-import { MultichainRelayParamsPayload } from "domain/synthetics/express/types";
+import { ExpressTxnParams, MultichainRelayParamsPayload } from "domain/synthetics/express/types";
 import { callRelayTransaction, GELATO_RELAY_ADDRESS } from "domain/synthetics/gassless/txns/expressOrderDebug";
-import { buildAndSignBridgeOutTxn } from "domain/synthetics/orders/expressOrderUtils";
+import { BridgeOutParams, buildAndSignBridgeOutTxn } from "domain/synthetics/orders/expressOrderUtils";
 import { useTokenRecentPricesRequest } from "domain/synthetics/tokens";
 import { getSwapAmountsByToValue } from "domain/synthetics/trade/utils/swap";
 import { convertToTokenAmount, convertToUsd, TokenData } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
+import {
+  initMultichainWithdrawalMetricData,
+  sendOrderSubmittedMetric,
+  sendTxnValidationErrorMetric,
+} from "lib/metrics";
 import {
   bigintToNumber,
   expandDecimals,
@@ -61,7 +66,7 @@ import {
 } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-import { ExpressTxnData } from "lib/transactions/sendExpressTransaction";
+import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
 import { switchNetwork } from "lib/wallets";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { abis } from "sdk/abis";
@@ -71,7 +76,7 @@ import { extendError, OrderErrorContext } from "sdk/utils/errors";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { getMidPrice } from "sdk/utils/tokens";
-import { BridgeOutParamsStruct } from "typechain-types-arbitrum-sepolia/MultichainTransferRouter";
+import { IRelayUtils } from "typechain-types-arbitrum-sepolia/MultichainTransferRouter";
 import {
   MessagingFeeStruct,
   OFTFeeDetailStruct,
@@ -82,6 +87,7 @@ import {
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import { getTxnErrorToast } from "components/Errors/errorToasts";
 import NumberInput from "components/NumberInput/NumberInput";
 import {
   useGmxAccountTokensDataObject,
@@ -314,6 +320,18 @@ export const WithdrawView = () => {
       : undefined;
 
   const handleWithdraw = useCallback(async () => {
+    const metricsData = initMultichainWithdrawalMetricData({
+      settlementChain: settlementChainId,
+      sourceChain: walletChainId as UiSourceChain,
+      assetSymbol: selectedToken?.symbol ?? "N/A",
+      assetAddress: selectedTokenAddress ?? "N/A",
+      amount: inputAmount ?? 0n,
+      isFirstWithdrawal: false,
+      sizeInUsd: inputAmountUsd ?? 0n,
+    });
+
+    sendOrderSubmittedMetric(metricsData.metricId);
+
     if (walletChainId === undefined || selectedTokenAddress === undefined) {
       return;
     }
@@ -334,11 +352,12 @@ export const WithdrawView = () => {
       gasPaymentToken === undefined
     ) {
       helperToast.error("Missing required parameters");
+      sendTxnValidationErrorMetric(metricsData.metricId);
       return;
     }
 
-    const bridgeOutParams: BridgeOutParamsStruct = {
-      token: selectedTokenAddress,
+    const bridgeOutParams: BridgeOutParams = {
+      token: selectedTokenAddress as Address,
       amount: inputAmount,
       data: encodeAbiParameters(
         [
@@ -534,62 +553,64 @@ export const WithdrawView = () => {
       });
     }
 
-    // await gelatoRelay.getEstimatedFee(BigInt(settlementChainId), baseRelayFeeSwapParams.relayerTokenAddress, 0n, false);
-    // try {
-    //   await simulateWithdraw({
-    //     chainId: settlementChainId,
-    //     expressParams: {
-    //       isSponsoredCall: false,
-    //       relayParamsPayload,
-    //       relayFeeParams: baseRelayFeeSwapParams,
-    //       subaccount: undefined,
-    //     },
-    //     params: bridgeOutParams,
-    //     signer,
-    //     settlementChainClient: settlementChainClient,
-    //   });
-    // } catch (error) {
-    //   const toastContext = getTxnErrorToast(
-    //     settlementChainId,
-    //     {
-    //       errorMessage: error.message,
-    //     },
-    //     {
-    //       defaultMessage: error.name,
-    //     }
-    //   );
-    //   helperToast.error(toastContext.errorContent, {
-    //     autoClose: toastContext.autoCloseToast,
-    //   });
-    // }
+    await gelatoRelay.getEstimatedFee(BigInt(settlementChainId), baseRelayFeeSwapParams.relayerTokenAddress, 0n, false);
+    try {
+      await simulateWithdraw({
+        chainId: settlementChainId,
+        expressParams: {
+          isSponsoredCall: false,
+          relayParamsPayload,
+          relayFeeParams: baseRelayFeeSwapParams,
+          subaccount: undefined,
+          estimationMethod: "approximate",
+        },
+        params: bridgeOutParams,
+        signer,
+        settlementChainClient: settlementChainClient,
+      });
+    } catch (error) {
+      const toastContext = getTxnErrorToast(
+        settlementChainId,
+        {
+          errorMessage: error.message,
+        },
+        {
+          defaultMessage: error.name,
+        }
+      );
+      helperToast.error(toastContext.errorContent, {
+        autoClose: toastContext.autoCloseToast,
+      });
+    }
 
-    // const signedTxnData: ExpressTxnData = await buildAndSignBridgeOutTxn({
-    //   chainId: settlementChainId,
-    //   signer: signer,
-    //   relayParamsPayload,
-    //   params: bridgeOutParams,
-    // });
+    const signedTxnData: ExpressTxnData = await buildAndSignBridgeOutTxn({
+      chainId: settlementChainId,
+      signer: signer,
+      relayParamsPayload,
+      params: bridgeOutParams,
+    });
 
-    // await sendExpressTransaction({
-    //   chainId: settlementChainId,
-    //   txnData: signedTxnData,
-    //   // TODO
-    //   isSponsoredCall: false,
-    // });
+    await sendExpressTransaction({
+      chainId: settlementChainId,
+      txnData: signedTxnData,
+      // TODO
+      isSponsoredCall: false,
+    });
   }, [
-    account,
-    inputAmount,
-    findSwapPath,
-    gasPaymentToken,
-    marketsInfoData,
-    relayerFeeToken,
-    selectedToken,
+    walletChainId,
     selectedTokenAddress,
     settlementChainId,
-    settlementChainClient,
+    selectedToken,
+    inputAmount,
     signer,
+    marketsInfoData,
     tokensData,
-    walletChainId,
+    settlementChainClient,
+    relayerFeeToken,
+    gasPaymentToken,
+    inputAmountUsd,
+    account,
+    findSwapPath,
   ]);
 
   const hasSelectedToken = selectedTokenAddress !== undefined;
@@ -605,7 +626,7 @@ export const WithdrawView = () => {
       }
 
       let maxGmxAccountBalanceUsd = 0n;
-      let maxBalanceSettlementChainTokenAddress: string | undefined = undefined;
+      let maxBalanceSettlementChainTokenAddress: Address | undefined = undefined;
 
       for (const sourceChainTokenAddress in tokenIdMap) {
         const tokenId = tokenIdMap[sourceChainTokenAddress];
@@ -830,8 +851,8 @@ async function simulateWithdraw({
   settlementChainClient: PublicClient;
   signer: Signer;
   chainId: UiSettlementChain;
-  expressParams: ExpressParams;
-  params: BridgeOutParamsStruct;
+  expressParams: ExpressTxnParams;
+  params: BridgeOutParams;
 }): Promise<void> {
   if (!settlementChainClient) {
     throw new Error("settlementChainClient is required");

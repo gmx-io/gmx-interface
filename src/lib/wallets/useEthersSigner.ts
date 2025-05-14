@@ -22,7 +22,7 @@ export function clientToSigner(client: Client<Transport, Chain, Account>): Walle
     signer.address = account.address;
   }
 
-  return signer;
+  return signer as WalletSigner;
 }
 
 /** Hook to convert a Viem Client to an ethers.js Signer. */

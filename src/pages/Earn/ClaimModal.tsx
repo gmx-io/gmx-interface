@@ -3,7 +3,7 @@ import cx from "classnames";
 import { ethers } from "ethers";
 import React, { useCallback, useMemo, useState } from "react";
 
-import { ARBITRUM } from "config/chains";
+import { ARBITRUM, type UiContractsChain } from "config/chains";
 import { getContract } from "config/contracts";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
@@ -31,7 +31,7 @@ export function ClaimModal(props: {
   setIsVisible: (isVisible: boolean) => void;
   rewardRouterAddress: string;
   signer: UncheckedJsonRpcSigner | undefined;
-  chainId: number;
+  chainId: UiContractsChain;
   setPendingTxns: SetPendingTransactions;
   totalGmxRewards: bigint | undefined;
   nativeTokenSymbol: string;

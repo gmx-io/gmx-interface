@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
+import type { UiContractsChain } from "sdk/configs/chains";
 
 import { useMulticall } from "./multicall";
 import { FREQUENT_UPDATE_INTERVAL } from "./timeConstants";
@@ -14,7 +15,10 @@ export type BlockTimestampResult = {
   blockTimestampData?: BlockTimestampData;
 };
 
-export function useBlockTimestampRequest(chainId: number, { skip }: { skip?: boolean } = {}): BlockTimestampResult {
+export function useBlockTimestampRequest(
+  chainId: UiContractsChain,
+  { skip }: { skip?: boolean } = {}
+): BlockTimestampResult {
   const { data } = useMulticall(chainId, "useBlockTimestamp", {
     key: !skip ? [] : null,
 

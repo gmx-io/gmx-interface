@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
+import { UiContractsChain } from "sdk/configs/chains";
 import {
   maxAllowedSubaccountActionCountKey,
   SUBACCOUNT_ORDER_ACTION,
@@ -26,7 +27,7 @@ export type SubaccountOnchainDataResult = {
 };
 
 export function useSubaccountOnchainData(
-  chainId: number,
+  chainId: UiContractsChain,
   {
     account,
     subaccountAddress,
@@ -37,7 +38,7 @@ export function useSubaccountOnchainData(
     srcChainId: number | undefined;
   }
 ): SubaccountOnchainDataResult {
-  const queryCondition = account && subaccountAddress && srcChainId;
+  const queryCondition = account && subaccountAddress;
 
   const { data, mutate } = useMulticall(chainId, "useSubaccountOnchainData", {
     key: queryCondition ? [account, subaccountAddress, srcChainId] : null,
@@ -47,47 +48,12 @@ export function useSubaccountOnchainData(
         return {} as any;
       }
 
-      if (srcChainId) {
-        return {
-          subaccountRelay: {
-            contractAddress: getContract(chainId, "MultichainSubaccountRouter"),
-            abiId: "MultichainSubaccountRouterArbitrumSepolia",
-            calls: {
-              nonce: {
-                methodName: "subaccountApprovalNonces",
-                params: [account],
-              },
-            },
-          },
-          dataStore: {
-            contractAddress: getContract(chainId, "DataStore"),
-            abiId: "DataStore",
-            calls: {
-              isSubaccountActive: {
-                methodName: "containsAddress",
-                params: [subaccountListKey(account!), subaccountAddress],
-              },
-              maxAllowedActionsCount: {
-                methodName: "getUint",
-                params: [maxAllowedSubaccountActionCountKey(account!, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
-              },
-              currentActionsCount: {
-                methodName: "getUint",
-                params: [subaccountActionCountKey(account!, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
-              },
-              expiresAt: {
-                methodName: "getUint",
-                params: [subaccountExpiresAtKey(account!, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
-              },
-            },
-          },
-        } satisfies MulticallRequestConfig<any>;
-      }
-
       return {
         subaccountRelayRouter: {
-          contractAddress: getContract(chainId, "SubaccountGelatoRelayRouter"),
-          abiId: "SubaccountGelatoRelayRouter",
+          contractAddress: srcChainId
+            ? getContract(chainId, "MultichainSubaccountRouter")
+            : getContract(chainId, "SubaccountGelatoRelayRouter"),
+          abiId: srcChainId ? "MultichainSubaccountRouterArbitrumSepolia" : "SubaccountGelatoRelayRouter",
           calls: {
             subaccountApproval: {
               methodName: "subaccountApprovalNonces",
@@ -117,7 +83,7 @@ export function useSubaccountOnchainData(
             },
           },
         },
-      };
+      } satisfies MulticallRequestConfig<any>;
     },
     parseResponse: (res) => {
       const isSubaccountActive = Boolean(res.data.dataStore.isSubaccountActive.returnValues[0]);

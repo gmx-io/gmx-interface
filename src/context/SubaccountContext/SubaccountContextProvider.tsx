@@ -3,8 +3,8 @@ import React, { createContext, useCallback, useContext, useMemo } from "react";
 import { toast } from "react-toastify";
 
 import { getSubaccountApprovalKey, getSubaccountConfigKey } from "config/localStorage";
+import { removeSubaccountWalletTxn } from "domain/synthetics/subaccount";
 import { generateSubaccount } from "domain/synthetics/subaccount/generateSubaccount";
-import { removeSubaccountTxn } from "domain/synthetics/subaccount/removeSubaccount";
 import { SignedSubbacountApproval, Subaccount, SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
 import { useSubaccountOnchainData } from "domain/synthetics/subaccount/useSubaccountOnchainData";
 import {
@@ -77,7 +77,10 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         onchainData: subaccountData,
         signedApproval,
       }),
-    };
+      optimisticActive: subaccountData.active,
+      optimisticMaxAllowedCount: subaccountData.maxAllowedCount,
+      optimisticExpiresAt: subaccountData.expiresAt,
+    } satisfies Subaccount;
   }, [account, signedApproval, signer?.provider, subaccountConfig, subaccountData]);
 
   const updateSubaccountSettings = useCallback(
@@ -237,7 +240,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         throw new Error("Not implemented");
       };
     } else {
-      removeSubaccount = () => removeSubaccountTxn(chainId, signer, subaccount.address);
+      removeSubaccount = () => removeSubaccountWalletTxn(chainId, signer, subaccount.address);
     }
 
     try {
@@ -287,7 +290,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
 function useStoredSubaccountData(chainId: number, account: string | undefined, srcChainId: number | undefined) {
   const [subaccountConfig, setSubaccountConfig] = useLocalStorageSerializeKey<SubaccountSerializedConfig | undefined>(
-    getSubaccountConfigKey(chainId, account, srcChainId),
+    getSubaccountConfigKey(chainId, account),
     undefined,
     {
       raw: false,
@@ -314,7 +317,7 @@ function useStoredSubaccountData(chainId: number, account: string | undefined, s
   );
 
   const [signedApproval, setSignedApproval] = useLocalStorageSerializeKey<SignedSubbacountApproval | undefined>(
-    getSubaccountApprovalKey(chainId, srcChainId),
+    getSubaccountApprovalKey(chainId),
     undefined,
     {
       raw: false,
@@ -337,6 +340,7 @@ function useStoredSubaccountData(chainId: number, account: string | undefined, s
             maxAllowedCount: BigInt(parsed.maxAllowedCount),
             expiresAt: BigInt(parsed.expiresAt),
             deadline: BigInt(parsed.deadline),
+            // TODO: what nonce is this?
             nonce: BigInt(parsed.nonce),
           };
         } catch (e) {

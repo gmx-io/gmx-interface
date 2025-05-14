@@ -34,6 +34,7 @@ import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { EMPTY_ARRAY } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
+import { UiContractsChain } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
@@ -78,6 +79,7 @@ export function OrderList({
 
   const chainId = useSelector(selectChainId);
   const { signer } = useWallet();
+  // const settlementChainProvider = useJsonRpcProvider(chainId);
   const settlementChainClient = usePublicClient({ chainId });
 
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
@@ -322,7 +324,7 @@ function useFilteredOrders({
   marketsDirectionsFilter,
   orderTypesFilter,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   account: string | undefined;
   marketsDirectionsFilter: MarketFilterLongShortItemData[];
   orderTypesFilter: OrderTypeFilterValue[];
