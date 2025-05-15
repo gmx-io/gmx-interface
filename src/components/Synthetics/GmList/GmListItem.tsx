@@ -1,5 +1,7 @@
 import { Trans } from "@lingui/macro";
 import React from "react";
+import { FaChevronRight } from "react-icons/fa";
+import { useMedia } from "react-use";
 import { Line, LineChart } from "recharts";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -27,12 +29,14 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import Button from "components/Button/Button";
+import ButtonLink from "components/Button/ButtonLink";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import { GmTokensBalanceInfo } from "./GmTokensTotalBalanceInfo";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
+import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
 export const tokenAddressStyle = { fontSize: 5 };
 
@@ -89,6 +93,8 @@ export function GmListItem({
   const lidoApr = getByKey(marketsTokensLidoAprData, token?.address);
   const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
+  const isMobile = useMedia("(max-width: 768px)");
+
   if (!token || !indexToken || !longToken || !shortToken) {
     return null;
   }
@@ -111,6 +117,87 @@ export function GmListItem({
   const performanceSnapshots = isGlv
     ? glvPerformanceSnapshots?.[token.address]
     : gmPerformanceSnapshots?.[token.address];
+
+  if (isMobile) {
+    return (
+      <div className="flex flex-col gap-4 rounded-8 bg-cold-blue-900 p-12">
+        <div className="flex items-center pb-14 flex-wrap">
+          <div className="flex items-center">
+            <div className="mr-12 flex shrink-0 items-center">
+              <TokenIcon
+                symbol={tokenIconName}
+                displaySize={40}
+                importSize={40}
+                badge={tokenIconBadge}
+                className="min-h-40 min-w-40"
+              />
+            </div>
+            <div className="flex flex-col">
+              <div className="flex text-16">
+                {isGlv
+                  ? getGlvDisplayName(marketOrGlv)
+                  : getMarketIndexName({ indexToken, isSpotOnly: Boolean(marketOrGlv?.isSpotOnly) })}
+
+                <div className="inline-block">
+                  <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
+                </div>
+              </div>
+              <div className="text-12 tracking-normal text-slate-100">
+                [{getMarketPoolName({ longToken, shortToken })}]
+              </div>
+            </div>
+          </div>
+          <div className="ml-auto flex items-center">
+            <div className="py-12">
+              <SnapshotGraph
+                performanceSnapshots={performanceSnapshots ?? EMPTY_ARRAY}
+                performance={performance ?? 0}
+              />
+            </div>
+
+            <ButtonLink className="bg-button ml-16 p-16 pr-14" to={`/pools/details?market=${marketOrGlvTokenAddress}`}>
+              <FaChevronRight size={12} className="text-slate-100" />
+            </ButtonLink>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-10 border-t border-stroke-primary pt-8">
+          <SyntheticsInfoRow
+            label={<Trans>Performance</Trans>}
+            value={performance ? `${Math.round(performance * 10000) / 100}%` : "..."}
+          />
+          <SyntheticsInfoRow
+            label={<Trans>Fee APY</Trans>}
+            value={<AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />}
+          />
+          <SyntheticsInfoRow
+            label={<Trans>TVL (Supply)</Trans>}
+            value={
+              <AmountWithUsdHuman
+                amount={totalSupply}
+                decimals={token.decimals}
+                usd={totalSupplyUsd}
+                symbol={token.symbol}
+              />
+            }
+          />
+          <SyntheticsInfoRow
+            label={<Trans>Your deposit</Trans>}
+            value={
+              <GmTokensBalanceInfo
+                token={token}
+                daysConsidered={daysConsidered}
+                earnedRecently={marketEarnings?.recent}
+                earnedTotal={marketEarnings?.total}
+                isGlv={isGlv}
+                singleLine={true}
+              />
+            }
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <TableTr key={token.address} hoverable={false} bordered={false}>
@@ -195,6 +282,16 @@ export function GmListItem({
   );
 }
 
+const MOBILE_SNAPSHOT_GRAPH_SIZE = {
+  width: 88,
+  height: 22,
+};
+
+const DESKTOP_SNAPSHOT_GRAPH_SIZE = {
+  width: 160,
+  height: 30,
+};
+
 const SnapshotGraph = ({
   performanceSnapshots,
   performance,
@@ -204,9 +301,12 @@ const SnapshotGraph = ({
 }) => {
   const isNegative = performance < 0;
 
+  const isMobile = useMedia("(max-width: 768px)");
+  const size = isMobile ? MOBILE_SNAPSHOT_GRAPH_SIZE : DESKTOP_SNAPSHOT_GRAPH_SIZE;
+
   return (
-    <div className="h-[30px] w-[160px]">
-      <LineChart width={160} height={30} data={performanceSnapshots}>
+    <div className={`h-[${size.height}px] w-[${size.width}px]`}>
+      <LineChart width={size.width} height={size.height} data={performanceSnapshots}>
         <Line
           dataKey="performance"
           stroke={isNegative ? "var(--color-red-500)" : "var(--color-green-500)"}

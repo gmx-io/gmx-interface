@@ -21,7 +21,7 @@ export function PoolsTabs<T extends string | number>({
   const isMobile = useMedia("(max-width: 768px)");
 
   return (
-    <div className="flex gap-8">
+    <div className="flex gap-8 flex-wrap">
       {tabs.map((tab) => (
         <div
           key={tab.value as string}

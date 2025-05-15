@@ -72,6 +72,7 @@ const colors = {
   fill: {
     tertiary: "#B4BBFF1A",
   },
+  button: "#252B57"
 };
 
 /**

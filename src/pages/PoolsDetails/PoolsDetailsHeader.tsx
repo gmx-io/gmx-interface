@@ -1,4 +1,6 @@
 import { Trans } from "@lingui/macro";
+import cx from "classnames";
+import { useMedia } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
 import {
@@ -45,24 +47,38 @@ export function PoolsDetailsHeader({ marketInfo, marketToken }: Props) {
   const userEarnings = useUserEarnings(chainId);
   const marketEarnings = getByKey(userEarnings?.byMarketAddress, marketToken?.address);
 
+  const isMobile = useMedia("(max-width: 768px)");
+
   return (
-    <div className="flex items-center gap-28 rounded-4 bg-slate-800 px-16 py-20">
+    <div
+      className={cx("flex rounded-4 bg-slate-800 px-16 py-20", {
+        "flex-col gap-10": isMobile,
+        "items-center gap-28": !isMobile,
+      })}
+    >
       {marketInfo ? (
         <>
-          <div className="flex items-center gap-20">
+          <div
+            className={cx("flex items-center gap-20 border-stroke-primary", {
+              "border-r": !isMobile,
+              "border-b pb-14 mb-12": isMobile,
+            })}
+          >
             {iconName ? (
               <TokenIcon
                 symbol={iconName}
                 displaySize={40}
                 importSize={40}
                 badge={
-                isGlv
-                  ? getGlvMarketShortening(chainId, getGlvOrMarketAddress(marketInfo))
-                  : ([marketInfo.longToken.symbol, marketInfo.shortToken.symbol] as const)
+                  isGlv
+                    ? getGlvMarketShortening(chainId, getGlvOrMarketAddress(marketInfo))
+                    : ([marketInfo.longToken.symbol, marketInfo.shortToken.symbol] as const)
                 }
               />
             ) : null}
-            <div className="flex flex-col gap-4 border-r border-r-stroke-primary pr-20">
+            <div
+              className={cx("flex flex-col gap-4 pr-20")}
+            >
               <div className="text-[20px]">{getMarketIndexName(marketInfo)}</div>
               <div className="text-body-large text-slate-100">{`[${getMarketPoolName(marketInfo)}]`}</div>
             </div>

@@ -1,6 +1,5 @@
-import { t } from "@lingui/macro";
 import cx from "classnames";
-import { ReactNode, useMemo } from "react";
+import { useMemo } from "react";
 import { useMedia } from "react-use";
 
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -82,41 +81,31 @@ export default function Pools() {
       </div>
 
       <div className="flex flex-col gap-16">
-        <PoolsCard
-          title={t`GLV Vault`}
-          description={t`Yield-optimized vaults supporting trading across multiple GMX markets`}
-        >
-          <GlvList
-            marketsTokensApyData={marketsTokensApyData}
-            marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
-            glvTokensIncentiveAprData={glvTokensIncentiveAprData}
-            marketsTokensLidoAprData={marketsTokensLidoAprData}
-            glvTokensApyData={glvApyInfoData}
-            glvPerformance={glvPerformance}
-            gmPerformance={gmPerformance}
-            glvPerformanceSnapshots={glvPerformanceSnapshots}
-            gmPerformanceSnapshots={gmPerformanceSnapshots}
-            isDeposit
-          />
-        </PoolsCard>
+        <GlvList
+          marketsTokensApyData={marketsTokensApyData}
+          marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+          glvTokensIncentiveAprData={glvTokensIncentiveAprData}
+          marketsTokensLidoAprData={marketsTokensLidoAprData}
+          glvTokensApyData={glvApyInfoData}
+          glvPerformance={glvPerformance}
+          gmPerformance={gmPerformance}
+          glvPerformanceSnapshots={glvPerformanceSnapshots}
+          gmPerformanceSnapshots={gmPerformanceSnapshots}
+          isDeposit
+        />
 
-        <PoolsCard
-          title={t`GM Pool`}
-          description={t`Pools allowing provision of liquidity including single and native asset opportunities`}
-        >
-          <GmList
-            glvTokensApyData={glvApyInfoData}
-            glvTokensIncentiveAprData={glvTokensIncentiveAprData}
-            marketsTokensApyData={marketsTokensApyData}
-            marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
-            marketsTokensLidoAprData={marketsTokensLidoAprData}
-            glvPerformance={glvPerformance}
-            gmPerformance={gmPerformance}
-            glvPerformanceSnapshots={glvPerformanceSnapshots}
-            gmPerformanceSnapshots={gmPerformanceSnapshots}
-            isDeposit
-          />
-        </PoolsCard>
+        <GmList
+          glvTokensApyData={glvApyInfoData}
+          glvTokensIncentiveAprData={glvTokensIncentiveAprData}
+          marketsTokensApyData={marketsTokensApyData}
+          marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+          marketsTokensLidoAprData={marketsTokensLidoAprData}
+          glvPerformance={glvPerformance}
+          gmPerformance={gmPerformance}
+          glvPerformanceSnapshots={glvPerformanceSnapshots}
+          gmPerformanceSnapshots={gmPerformanceSnapshots}
+          isDeposit
+        />
       </div>
 
       <Footer />
@@ -132,24 +121,6 @@ function PoolsTvl() {
     <div className="flex flex-col">
       <span className="text-h1">{formatUsd(tvl, { displayDecimals: 0 })}</span>
       <span className="text-body-medium text-slate-100">TVL in Vaults and Pools</span>
-    </div>
-  );
-}
-
-function PoolsCard({
-  children,
-  title,
-  description,
-}: {
-  children: ReactNode;
-  title: ReactNode;
-  description: ReactNode;
-}) {
-  return (
-    <div className="flex flex-col rounded-6 bg-slate-900 p-16">
-      <span className="text-body-large mb-8">{title}</span>
-      <span className="text-body-medium mb-16 text-slate-100">{description}</span>
-      <div>{children}</div>
     </div>
   );
 }

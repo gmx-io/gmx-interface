@@ -190,6 +190,7 @@ msgstr "Withdrawal error."
 msgid "Failed Limit"
 msgstr "Failed Limit"
 
+#: src/components/Synthetics/GmList/GmListItem.tsx
 #: src/components/Synthetics/MarketStats/MarketGraphs.tsx
 msgid "Performance"
 msgstr "Performance"
@@ -1055,6 +1056,7 @@ msgstr "Insufficient Liquidity"
 msgid "The max network fee is overestimated, including by the buffer set under settings. Upon execution, any excess network fee is sent back to your account."
 msgstr "The max network fee is overestimated, including by the buffer set under settings. Upon execution, any excess network fee is sent back to your account."
 
+#: src/components/Synthetics/GmList/GmListItem.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (Supply)"
 msgstr "TVL (Supply)"
@@ -1258,6 +1260,10 @@ msgstr "The total realized and unrealized profit and loss for the period, consid
 msgid "Volume on V2"
 msgstr "Volume on V2"
 
+#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
+msgid "Show less"
+msgstr "Show less"
+
 #: src/pages/Stake/Vesting.tsx
 msgid "Vest"
 msgstr "Vest"
@@ -1460,8 +1466,8 @@ msgid "Transfer Submitted"
 msgstr "Transfer Submitted"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Shift GM"
 msgstr "Shift GM"
 
@@ -1868,7 +1874,7 @@ msgstr "Accrued Negative Funding Fee"
 msgid "Forfeit profit not checked"
 msgstr "Forfeit profit not checked"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Buy GM"
 msgstr "Buy GM"
 
@@ -2996,7 +3002,7 @@ msgstr "Staked on Arbitrum"
 msgid "Order creation failed."
 msgstr "Order creation failed."
 
-#: src/pages/Pools/Pools.tsx
+#: src/components/Synthetics/GmList/GlvList.tsx
 msgid "Yield-optimized vaults supporting trading across multiple GMX markets"
 msgstr "Yield-optimized vaults supporting trading across multiple GMX markets"
 
@@ -3810,7 +3816,7 @@ msgstr "There is no price impact. There is a single<0/>execution price for incre
 msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
 msgstr "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Buy GLV"
 msgstr "Buy GLV"
 
@@ -4208,6 +4214,10 @@ msgstr "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
 msgstr "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
+
+#: src/components/Synthetics/GmList/GmListItem.tsx
+msgid "Your deposit"
+msgstr "Your deposit"
 
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on 1inch.</4>"
@@ -5385,7 +5395,7 @@ msgstr "Size, $"
 msgid "Close {0} {1}{2}"
 msgstr "Close {0} {1}{2}"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GLV"
 msgstr "Sell GLV"
 
@@ -5846,6 +5856,10 @@ msgstr "Swapped {0} {1} for {2} {3}!"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "A size percentage is required"
 msgstr "A size percentage is required"
+
+#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
+msgid "Show more"
+msgstr "Show more"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -7020,7 +7034,7 @@ msgstr "The amount left in the subaccount is not enough to cover network gas cos
 msgid "Staking..."
 msgstr "Staking..."
 
-#: src/pages/Pools/Pools.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 msgid "GM Pool"
 msgstr "GM Pool"
 
@@ -7131,7 +7145,7 @@ msgstr "Claim completed!"
 msgid "Stop Market"
 msgstr "Stop Market"
 
-#: src/pages/Pools/Pools.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 msgid "Pools allowing provision of liquidity including single and native asset opportunities"
 msgstr "Pools allowing provision of liquidity including single and native asset opportunities"
 
@@ -7233,7 +7247,7 @@ msgstr "GMX community discussion"
 msgid "{arbitrumLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 msgstr "{arbitrumLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GM"
 msgstr "Sell GM"
 
@@ -7625,6 +7639,7 @@ msgstr "Referral Terms"
 msgid "Enter unique coins"
 msgstr "Enter unique coins"
 
+#: src/components/Synthetics/GmList/GmListItem.tsx
 #: src/components/Synthetics/MarketStats/MarketGraphs.tsx
 #: src/components/Synthetics/MarketStats/MarketGraphs.tsx
 msgid "Fee APY"
@@ -8079,7 +8094,7 @@ msgstr "Subaccount {0} Balance is used to pay for the Network Fees. Use the \"To
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 msgstr "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 
-#: src/pages/Pools/Pools.tsx
+#: src/components/Synthetics/GmList/GlvList.tsx
 msgid "GLV Vault"
 msgstr "GLV Vault"
 

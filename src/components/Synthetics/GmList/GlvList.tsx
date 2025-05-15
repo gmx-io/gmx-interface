@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { useMemo } from "react";
+import { useMedia } from "react-use";
 import { useAccount } from "wagmi";
 
 import {
@@ -10,6 +11,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
+import PoolsCard from "pages/Pools/PoolsCard";
 
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import { TableTh, TableTheadTr } from "components/Table/Table";
@@ -32,7 +34,7 @@ export function GlvList({
   glvPerformance,
   gmPerformance,
   glvPerformanceSnapshots,
-  gmPerformanceSnapshots
+  gmPerformanceSnapshots,
 }: Props) {
   const chainId = useSelector(selectChainId);
   const marketsInfo = useSelector(selectGlvInfo);
@@ -58,85 +60,101 @@ export function GlvList({
     return getTotalGmInfo(marketTokensData);
   }, [marketTokensData, isConnected]);
 
+  const rows =
+    sortedGlvTokens.length > 0 &&
+    sortedGlvTokens.map((token) => (
+      <GmListItem
+        key={token.address}
+        token={token}
+        marketsTokensApyData={marketsTokensApyData}
+        glvTokensIncentiveAprData={glvTokensIncentiveAprData}
+        marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+        marketsTokensLidoAprData={marketsTokensLidoAprData}
+        glvTokensApyData={glvTokensApyData}
+        isFavorite={undefined}
+        onFavoriteClick={undefined}
+        glvPerformance={glvPerformance}
+        gmPerformance={gmPerformance}
+        glvPerformanceSnapshots={glvPerformanceSnapshots}
+        gmPerformanceSnapshots={gmPerformanceSnapshots}
+      />
+    ));
+
+  const isMobile = useMedia("(max-width: 768px)");
+
   return (
-    <div className="overflow-hidden rounded-4">
-      <TableScrollFadeContainer>
-        <table className="w-[max(100%,1100px)]">
-          <thead>
-            <TableTheadTr bordered>
-              <TableTh className="!pl-0">
-                <Trans>VAULT</Trans>
-              </TableTh>
-              <TableTh>
-                <Trans>TVL (SUPPLY)</Trans>
-              </TableTh>
-              <TableTh>
-                <GmTokensTotalBalanceInfo
-                  balance={userTotalGmInfo?.balance}
-                  balanceUsd={userTotalGmInfo?.balanceUsd}
-                  userEarnings={userEarnings}
-                  label={t`WALLET`}
-                />
-              </TableTh>
-              <TableTh>
-                <TooltipWithPortal
-                  handle={t`FEE APY`}
-                  className="normal-case"
-                  position="bottom-end"
-                  content={<ApyTooltipContent />}
-                />
-              </TableTh>
+    <PoolsCard
+      title={t`GLV Vault`}
+      description={t`Yield-optimized vaults supporting trading across multiple GMX markets`}
+    >
+      {isMobile ? (
+        <div className="flex flex-col gap-4">{rows}</div>
+      ) : (
+        <div className="overflow-hidden rounded-4">
+          <TableScrollFadeContainer>
+            <table className="w-[max(100%,1100px)]">
+              <thead>
+                <TableTheadTr bordered>
+                  <TableTh className="!pl-0">
+                    <Trans>VAULT</Trans>
+                  </TableTh>
+                  <TableTh>
+                    <Trans>TVL (SUPPLY)</Trans>
+                  </TableTh>
+                  <TableTh>
+                    <GmTokensTotalBalanceInfo
+                      balance={userTotalGmInfo?.balance}
+                      balanceUsd={userTotalGmInfo?.balanceUsd}
+                      userEarnings={userEarnings}
+                      label={t`WALLET`}
+                    />
+                  </TableTh>
+                  <TableTh>
+                    <TooltipWithPortal
+                      handle={t`FEE APY`}
+                      className="normal-case"
+                      position="bottom-end"
+                      content={<ApyTooltipContent />}
+                    />
+                  </TableTh>
 
-              <TableTh>
-                <TooltipWithPortal
-                  handle={t`PERFORMANCE`}
-                  className="normal-case"
-                  position="bottom-end"
-                  renderContent={() => (
-                    <Trans>
-                      Pools returns in comparison to the benchmark, which is based on UNI V2-style rebalancing of the
-                      long-short token in the corresponding GM or GLV."
-                    </Trans>
-                  )}
-                />
-              </TableTh>
+                  <TableTh>
+                    <TooltipWithPortal
+                      handle={t`PERFORMANCE`}
+                      className="normal-case"
+                      position="bottom-end"
+                      renderContent={() => (
+                        <Trans>
+                          Pools returns in comparison to the benchmark, which is based on UNI V2-style rebalancing of
+                          the long-short token in the corresponding GM or GLV."
+                        </Trans>
+                      )}
+                    />
+                  </TableTh>
 
-              <TableTh>
-                <TooltipWithPortal
-                  handle={t`SNAPSHOT`}
-                  className="normal-case"
-                  position="bottom-end"
-                  renderContent={() => <Trans>Graph showing performance vs benchmark for the selected period.</Trans>}
-                />
-              </TableTh>
+                  <TableTh>
+                    <TooltipWithPortal
+                      handle={t`SNAPSHOT`}
+                      className="normal-case"
+                      position="bottom-end"
+                      renderContent={() => (
+                        <Trans>Graph showing performance vs benchmark for the selected period.</Trans>
+                      )}
+                    />
+                  </TableTh>
 
-              <TableTh className="!pr-0" />
-            </TableTheadTr>
-          </thead>
-          <tbody>
-            {sortedGlvTokens.length > 0 &&
-              sortedGlvTokens.map((token) => (
-                <GmListItem
-                  key={token.address}
-                  token={token}
-                  marketsTokensApyData={marketsTokensApyData}
-                  glvTokensIncentiveAprData={glvTokensIncentiveAprData}
-                  marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
-                  marketsTokensLidoAprData={marketsTokensLidoAprData}
-                  glvTokensApyData={glvTokensApyData}
-                  isFavorite={undefined}
-                  onFavoriteClick={undefined}
-                  glvPerformance={glvPerformance}
-                  gmPerformance={gmPerformance}
-                  glvPerformanceSnapshots={glvPerformanceSnapshots}
-                  gmPerformanceSnapshots={gmPerformanceSnapshots}
-                />
-              ))}
+                  <TableTh className="!pr-0" />
+                </TableTheadTr>
+              </thead>
+              <tbody>
+                {rows}
 
-            {isLoading && <GMListSkeleton count={2} withFavorite={false} />}
-          </tbody>
-        </table>
-      </TableScrollFadeContainer>
-    </div>
+                {isLoading && <GMListSkeleton count={2} withFavorite={false} />}
+              </tbody>
+            </table>
+          </TableScrollFadeContainer>
+        </div>
+      )}
+    </PoolsCard>
   );
 }

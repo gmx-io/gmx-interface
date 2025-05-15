@@ -190,6 +190,7 @@ msgstr ""
 msgid "Failed Limit"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmListItem.tsx
 #: src/components/Synthetics/MarketStats/MarketGraphs.tsx
 msgid "Performance"
 msgstr ""
@@ -1055,6 +1056,7 @@ msgstr ""
 msgid "The max network fee is overestimated, including by the buffer set under settings. Upon execution, any excess network fee is sent back to your account."
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmListItem.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (Supply)"
 msgstr ""
@@ -1256,6 +1258,10 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume on V2"
+msgstr ""
+
+#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
+msgid "Show less"
 msgstr ""
 
 #: src/pages/Stake/Vesting.tsx
@@ -1460,8 +1466,8 @@ msgid "Transfer Submitted"
 msgstr "Перевод Подтверждён"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Shift GM"
 msgstr ""
 
@@ -1868,7 +1874,7 @@ msgstr ""
 msgid "Forfeit profit not checked"
 msgstr "Неустойка за непроверенную прибыль"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Buy GM"
 msgstr "Купить GM"
 
@@ -2996,7 +3002,7 @@ msgstr ""
 msgid "Order creation failed."
 msgstr ""
 
-#: src/pages/Pools/Pools.tsx
+#: src/components/Synthetics/GmList/GlvList.tsx
 msgid "Yield-optimized vaults supporting trading across multiple GMX markets"
 msgstr ""
 
@@ -3810,7 +3816,7 @@ msgstr ""
 msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
 msgstr "После подачи заявки токены esGMX будут перечислены на ваш счет в выбранной сети в течение 7 дней."
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Buy GLV"
 msgstr ""
 
@@ -4204,6 +4210,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
+msgstr ""
+
+#: src/components/Synthetics/GmList/GmListItem.tsx
+msgid "Your deposit"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
@@ -5382,7 +5392,7 @@ msgstr ""
 msgid "Close {0} {1}{2}"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GLV"
 msgstr ""
 
@@ -5842,6 +5852,10 @@ msgstr "Обмененно {0} {1} на {2} {3}!"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "A size percentage is required"
+msgstr ""
+
+#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
+msgid "Show more"
 msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
@@ -7014,7 +7028,7 @@ msgstr ""
 msgid "Staking..."
 msgstr "Размещение стакинга..."
 
-#: src/pages/Pools/Pools.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 msgid "GM Pool"
 msgstr ""
 
@@ -7125,7 +7139,7 @@ msgstr "Запрос выполнен!"
 msgid "Stop Market"
 msgstr ""
 
-#: src/pages/Pools/Pools.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 msgid "Pools allowing provision of liquidity including single and native asset opportunities"
 msgstr ""
 
@@ -7227,7 +7241,7 @@ msgstr "Обсуждения в сообществе GMX"
 msgid "{arbitrumLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GM"
 msgstr "Продать GM"
 
@@ -7619,6 +7633,7 @@ msgstr "Реферальные Условия"
 msgid "Enter unique coins"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmListItem.tsx
 #: src/components/Synthetics/MarketStats/MarketGraphs.tsx
 #: src/components/Synthetics/MarketStats/MarketGraphs.tsx
 msgid "Fee APY"
@@ -8073,7 +8088,7 @@ msgstr ""
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 msgstr "Цена, по которой может быть исполнен ордер, может немного отличаться от цены на графике, поскольку рыночные ордера могут изменять цену, а лимитные/триггерные ордера - нет."
 
-#: src/pages/Pools/Pools.tsx
+#: src/components/Synthetics/GmList/GlvList.tsx
 msgid "GLV Vault"
 msgstr ""
 

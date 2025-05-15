@@ -1,4 +1,6 @@
 import { Trans } from "@lingui/macro";
+import cx from 'classnames'
+import { useMedia } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
 import { getMintableInfoGlv, getTotalSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
@@ -12,6 +14,7 @@ import { useMarketMintableTokens } from "components/Synthetics/MarketStats/hooks
 import { useMarketSellableToken } from "components/Synthetics/MarketStats/hooks/useMarketSellableToken";
 
 import { PoolsDetailsMarketAmount } from "./PoolsDetailsMarketAmount";
+
 
 export function PoolsDetailsAbout({
   marketInfo,
@@ -30,6 +33,8 @@ export function PoolsDetailsAbout({
   const sellable = isGlv ? getTotalSellableInfoGlv(marketInfo, marketsInfoData, marketTokensData) : sellableInfo;
   const mintable = isGlv ? getMintableInfoGlv(marketInfo, marketTokensData) : mintableInfo;
 
+  const isMobile = useMedia("(max-width: 768px)");
+
   return (
     <div className="flex flex-col gap-16">
       <div className="text-body-medium text-slate-100">
@@ -38,7 +43,7 @@ export function PoolsDetailsAbout({
           from the included markets. Backed by WETH and USDC.
         </Trans>
       </div>
-      <div className="grid grid-cols-3 pt-8">
+      <div className={cx("grid pt-8", { "grid-cols-1 gap-12": isMobile, "grid-cols-3": !isMobile })}>
         <PoolsDetailsMarketAmount
           label={<Trans>Buyable</Trans>}
           value={

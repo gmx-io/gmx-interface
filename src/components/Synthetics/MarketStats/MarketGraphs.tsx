@@ -1,12 +1,20 @@
 import { t } from "@lingui/macro";
+import cx from "classnames";
 import format from "date-fns/format";
 import { ReactNode, useMemo, useState } from "react";
+import { useMedia } from "react-use";
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { USD_DECIMALS } from "config/factors";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { GlvInfo, MarketInfo, MarketTokensAPRData, useMarketTokensData, useMarketsInfoRequest } from "domain/synthetics/markets";
+import {
+  GlvInfo,
+  MarketInfo,
+  MarketTokensAPRData,
+  useMarketTokensData,
+  useMarketsInfoRequest,
+} from "domain/synthetics/markets";
 import { isGlvEnabled, isGlvInfo } from "domain/synthetics/markets/glv";
 import { PerformanceSnapshot, PriceSnapshot } from "domain/synthetics/markets/performance";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
@@ -71,15 +79,13 @@ const getGraphValue = ({
   const isGlv = isGlvInfo(marketInfo);
   const address = isGlv ? marketInfo.glvTokenAddress : marketInfo.marketTokenAddress;
   const apy = isGlv
-  ? getByKey(glvApyInfoData, marketInfo.glvTokenAddress)
-  : getByKey(marketsTokensApyData, marketInfo.marketTokenAddress);
+    ? getByKey(glvApyInfoData, marketInfo.glvTokenAddress)
+    : getByKey(marketsTokensApyData, marketInfo.marketTokenAddress);
   const tokenPrice = marketTokensData?.[address]?.prices.minPrice;
   const valuesMap: Record<MarketGraphType, ReactNode> = {
     performance: `${Math.round((isGlv ? glvPerformance[address] : gmPerformance[address]) * 10000) / 100}%`,
     price: tokenPrice ? formatUsdPrice(tokenPrice) : "...",
-    feeApy: apy
-      ? formatPercentage(apy, { bps: false })
-      : "...",
+    feeApy: apy ? formatPercentage(apy, { bps: false }) : "...",
   };
 
   return valuesMap[marketGraphType];
@@ -132,6 +138,12 @@ export function MarketGraphs({ marketInfo }: { marketInfo: GlvInfo | MarketInfo 
   const apySnapshotsByAddress = apySnapshots?.[address] ?? EMPTY_ARRAY;
   const priceSnapshotsByAddress = prices?.[address] ?? EMPTY_ARRAY;
 
+  const isMobile = useMedia("(max-width: 768px)");
+
+  const poolsTabs = (
+    <PoolsTabs<PoolsTimeRange> tabs={TIME_RANGE_TABS} selected={timeRange} setSelected={setTimeRange} />
+  );
+
   return (
     <PoolsDetailsCard
       title={
@@ -144,7 +156,7 @@ export function MarketGraphs({ marketInfo }: { marketInfo: GlvInfo | MarketInfo 
     >
       <div className="flex">
         <div className="flex grow flex-col gap-16">
-          <div className="grid grid-cols-2">
+          <div className={cx("grid", { "grid-cols-1": isMobile, "grid-cols-2": !isMobile })}>
             <GraphValue
               value={getGraphValue({
                 marketGraphType,
@@ -157,9 +169,7 @@ export function MarketGraphs({ marketInfo }: { marketInfo: GlvInfo | MarketInfo 
               })}
               label={GRAPH_VALUE_LABEL_BY_TYPE[marketGraphType]}
             />
-            <div className="ml-auto">
-              <PoolsTabs<PoolsTimeRange> tabs={TIME_RANGE_TABS} selected={timeRange} setSelected={setTimeRange} />
-            </div>
+            {!isMobile ? <div className="ml-auto">{poolsTabs}</div> : null}
           </div>
           <GraphChart
             performanceSnapshots={
@@ -171,6 +181,9 @@ export function MarketGraphs({ marketInfo }: { marketInfo: GlvInfo | MarketInfo 
             marketGraphType={marketGraphType}
             apySnapshots={apySnapshotsByAddress}
           />
+          {isMobile ? (
+            <div className="flex justify-center">{poolsTabs}</div>
+          ) : null}
         </div>
       </div>
     </PoolsDetailsCard>
@@ -221,10 +234,6 @@ const axisValueFormatter = (marketGraphType: MarketGraphType) => (value: number)
   return valueMap[marketGraphType];
 };
 
-const AXIS_TICK = {
-  fill: "var(--color-slate-100)",
-};
-
 const GraphChart = ({
   performanceSnapshots,
   priceSnapshots,
@@ -262,6 +271,10 @@ const GraphChart = ({
 
   const formatValue = useMemo(() => valueFormatter(marketGraphType), [marketGraphType]);
   const formatAxisValue = useMemo(() => axisValueFormatter(marketGraphType), [marketGraphType]);
+
+  const isMobile = useMedia("(max-width: 768px)");
+
+  const axisTick = useMemo(() => ({ fill: "var(--color-slate-100)", fontSize: isMobile ? 12 : 14 }), [isMobile]);
   return (
     <div>
       <ResponsiveContainer height={300} width="100%">
@@ -280,10 +293,10 @@ const GraphChart = ({
             tickFormatter={(value) => format(value, "dd/MM")}
             tickLine={false}
             axisLine={false}
-            tick={AXIS_TICK}
+            tick={axisTick}
             minTickGap={32}
           />
-          <YAxis dataKey="value" tickFormatter={formatAxisValue} tickLine={false} axisLine={false} tick={AXIS_TICK} />
+          <YAxis dataKey="value" tickFormatter={formatAxisValue} tickLine={false} axisLine={false} tick={axisTick} />
         </LineChart>
       </ResponsiveContainer>
     </div>

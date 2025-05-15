@@ -21,12 +21,14 @@ export const GmTokensBalanceInfo = ({
   earnedRecently,
   daysConsidered,
   isGlv = false,
+  singleLine = false,
 }: {
   token: TokenData;
   earnedTotal?: bigint;
   earnedRecently?: bigint;
   daysConsidered: number;
   isGlv?: boolean;
+  singleLine?: boolean;
 }) => {
   const content = (
     <TokenValuesInfoCell
@@ -39,6 +41,7 @@ export const GmTokensBalanceInfo = ({
           : undefined
       }
       symbol={token.symbol}
+      singleLine={singleLine}
     />
   );
 

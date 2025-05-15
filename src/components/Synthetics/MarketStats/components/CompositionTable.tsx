@@ -1,5 +1,7 @@
 import { t, Trans } from "@lingui/macro";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { useMedia } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
 import { formatAmountHuman } from "lib/numbers";
@@ -16,7 +18,11 @@ interface Props<T extends CompositionType> {
   compositionType: T;
 }
 
+const CLOSED_COUNT = 5;
+
 export function CompositionTable<T extends CompositionType>({ composition, compositionType }: Props<T>) {
+  const [isOpen, setIsOpen] = useState(false);
+
   const columns = useMemo(() => {
     if (compositionType === "market") {
       return [t`MARKET`, t`TVL/CAP`, t`COMP.`];
@@ -32,27 +38,49 @@ export function CompositionTable<T extends CompositionType>({ composition, compo
     );
   }, [composition]);
 
+  const toggleOpen = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const isMobile = useMedia("(max-width: 768px)");
+
+  const filteredComposition = useMemo(() => {
+    if (isMobile && !isOpen) {
+      return composition.slice(0, CLOSED_COUNT);
+    }
+
+    return composition;
+  }, [composition, isMobile, isOpen]);
+
   return (
-    <table className="w-full">
-      <thead>
-        <TableTheadTr bordered>
-          {columns.map((column) => (
-            <TableTh key={column} className="sticky top-0 bg-slate-800">
-              <Trans>{column}</Trans>
-            </TableTh>
+    <div className="w-full">
+      <table className="w-full">
+        <thead>
+          <TableTheadTr bordered>
+            {columns.map((column) => (
+              <TableTh key={column} className="sticky top-0 bg-slate-800">
+                <Trans>{column}</Trans>
+              </TableTh>
+            ))}
+          </TableTheadTr>
+        </thead>
+        <tbody>
+          {filteredComposition.map((item) => (
+            <CompositionTableRow
+              key={item.type === "market" ? item.market.marketTokenAddress : item.token.address}
+              item={item}
+              sum={sum}
+            />
           ))}
-        </TableTheadTr>
-      </thead>
-      <tbody>
-        {composition.map((item) => (
-          <CompositionTableRow
-            key={item.type === "market" ? item.market.marketTokenAddress : item.token.address}
-            item={item}
-            sum={sum}
-          />
-        ))}
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+      {isMobile && composition.length > CLOSED_COUNT ? (
+        <div className="flex flex-row justify-between px-16 pb-20 items-center" onClick={toggleOpen}>
+          <span className="text-slate-100">{isOpen ? <Trans>Show less</Trans> : <Trans>Show more</Trans>}</span>
+          {isOpen ? <FaChevronUp size={8} /> : <FaChevronDown size={8} />}
+        </div>
+      ) : null}
+    </div>
   );
 }
 
@@ -74,7 +102,9 @@ const CompositionTableRow = ({ item, sum }: { item: CompositionItem; sum: bigint
             symbol={item.type === "market" ? item.market.indexToken.symbol : item.token.symbol}
             displaySize={24}
           />
-          <div>{item.type === "market" ? <>{getMarketIndexName(item.market)}</> : item.token.symbol}</div>
+          <span className="overflow-hidden text-ellipsis whitespace-nowrap">
+            {item.type === "market" ? <>{getMarketIndexName(item.market)}</> : item.token.symbol}
+          </span>
         </div>
       </TableTd>
       {item.type === "market" ? (
