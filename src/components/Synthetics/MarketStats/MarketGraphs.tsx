@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { msg, t } from "@lingui/macro";
 import cx from "classnames";
 import format from "date-fns/format";
 import { ReactNode, useMemo, useState } from "react";
@@ -27,6 +27,7 @@ import { TokensData } from "domain/synthetics/tokens";
 import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
 import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
+import { useLocalizedMap } from "lib/i18n";
 import { bigintToNumber, formatPercentage, formatUsdPrice, parseValue } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { PoolsDetailsCard } from "pages/PoolsDetails/PoolsDetailsCard";
@@ -38,25 +39,15 @@ const MARKET_GRAPHS_TYPES = ["performance" as const, "price" as const, "feeApy" 
 export type MarketGraphType = (typeof MARKET_GRAPHS_TYPES)[number];
 
 const MARKET_GRAPHS_TABS_LABELS = {
-  performance: t`Performance`,
-  price: t`Price`,
-  feeApy: t`Fee APY`,
+  performance: msg`Performance`,
+  price: msg`Price`,
+  feeApy: msg`Fee APY`,
 };
 
-const MARKET_GRAPHS_TABS = MARKET_GRAPHS_TYPES.map((type) => ({
-  label: MARKET_GRAPHS_TABS_LABELS[type],
-  value: type,
-}));
-
-const TIME_RANGE_TABS = POOLS_TIME_RANGE_OPTIONS.map((timeRange) => ({
-  label: timeRange === "total" ? t`Total` : timeRange.toUpperCase(),
-  value: timeRange,
-}));
-
-const GRAPH_VALUE_LABEL_BY_TYPE = {
-  performance: t`Annualized performance`,
-  price: t`Current Price`,
-  feeApy: t`Fee APY`,
+const MARKET_GRAPHS_TITLE_LABELS = {
+  performance: msg`Annualized performance`,
+  price: msg`Current Price`,
+  feeApy: msg`Fee APY`,
 };
 
 const getGraphValue = ({
@@ -82,8 +73,9 @@ const getGraphValue = ({
     ? getByKey(glvApyInfoData, marketInfo.glvTokenAddress)
     : getByKey(marketsTokensApyData, marketInfo.marketTokenAddress);
   const tokenPrice = marketTokensData?.[address]?.prices.minPrice;
+  const performance = isGlv ? glvPerformance[address] : gmPerformance[address];
   const valuesMap: Record<MarketGraphType, ReactNode> = {
-    performance: `${Math.round((isGlv ? glvPerformance[address] : gmPerformance[address]) * 10000) / 100}%`,
+    performance: performance ? `${Math.round(performance * 10000) / 100}%` : "...",
     price: tokenPrice ? formatUsdPrice(tokenPrice) : "...",
     feeApy: apy ? formatPercentage(apy, { bps: false }) : "...",
   };
@@ -140,15 +132,29 @@ export function MarketGraphs({ marketInfo }: { marketInfo: GlvInfo | MarketInfo 
 
   const isMobile = useMedia("(max-width: 768px)");
 
+  const timeRangeTabs = useMemo(() => POOLS_TIME_RANGE_OPTIONS.map((timeRange) => ({
+    label: timeRange === "total" ? t`Total` : timeRange.toUpperCase(),
+    value: timeRange,
+  })), []);
+
+  const graphTitleLabelMap = useLocalizedMap(MARKET_GRAPHS_TITLE_LABELS);
+
   const poolsTabs = (
-    <PoolsTabs<PoolsTimeRange> tabs={TIME_RANGE_TABS} selected={timeRange} setSelected={setTimeRange} />
+    <PoolsTabs<PoolsTimeRange> tabs={timeRangeTabs} selected={timeRange} setSelected={setTimeRange} />
   );
+
+  const marketGraphsTabsLabelMap = useLocalizedMap(MARKET_GRAPHS_TABS_LABELS);
+
+  const marketGraphsTabs = useMemo(() => MARKET_GRAPHS_TYPES.map((type) => ({
+    label: marketGraphsTabsLabelMap[type],
+    value: type,
+  })), [marketGraphsTabsLabelMap]);
 
   return (
     <PoolsDetailsCard
       title={
         <PoolsTabs<MarketGraphType>
-          tabs={MARKET_GRAPHS_TABS}
+          tabs={marketGraphsTabs}
           selected={marketGraphType}
           setSelected={setMarketGraphType}
         />
@@ -167,7 +173,7 @@ export function MarketGraphs({ marketInfo }: { marketInfo: GlvInfo | MarketInfo 
                 marketsTokensApyData,
                 marketTokensData,
               })}
-              label={GRAPH_VALUE_LABEL_BY_TYPE[marketGraphType]}
+              label={graphTitleLabelMap[marketGraphType]}
             />
             {!isMobile ? <div className="ml-auto">{poolsTabs}</div> : null}
           </div>
