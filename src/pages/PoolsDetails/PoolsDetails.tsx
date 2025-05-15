@@ -15,6 +15,7 @@ import { getPageTitle } from "lib/legacy";
 import { getByKey } from "lib/objects";
 
 import ButtonLink from "components/Button/ButtonLink";
+import Loader from "components/Common/Loader";
 import SEO from "components/Common/SEO";
 import Footer from "components/Footer/Footer";
 import { GmSwapBox, GmSwapBoxProps } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
@@ -58,53 +59,59 @@ export function PoolsDetails() {
           <FaArrowLeft size={16} />
           Back to Pools
         </ButtonLink>
-        <PoolsDetailsHeader marketInfo={marketInfo} marketToken={marketToken} />
+        {marketInfo ? (
+          <>
+            <PoolsDetailsHeader marketInfo={marketInfo} marketToken={marketToken} />
 
-        <div className="PoolsDetails-content mb-15 gap-12">
-          <div className="flex grow flex-col gap-16">
-            {marketInfo && <MarketGraphs marketInfo={marketInfo} />}
-            <PoolsDetailsCard title={<Trans>Composition</Trans>} childrenContainerClassName="!p-0">
-              <div className={cx("grid", { "grid-cols-1": isMobile, "grid-cols-2": !isMobile })}>
-                <div className={cx("border-stroke-primary", { "border-r": !isMobile, "border-b": isMobile })}>
-                  <MarketComposition
-                    type="backing"
-                    label={<Trans>Backing Composition</Trans>}
-                    title={<Trans>Direct exposure to tokens</Trans>}
-                    composition={backingComposition}
+            <div className="PoolsDetails-content mb-15 gap-12">
+              <div className="flex grow flex-col gap-16">
+                {marketInfo && <MarketGraphs marketInfo={marketInfo} />}
+                <PoolsDetailsCard title={<Trans>Composition</Trans>} childrenContainerClassName="!p-0">
+                  <div className={cx("grid", { "grid-cols-1": isMobile, "grid-cols-2": !isMobile })}>
+                    <div className={cx("border-stroke-primary", { "border-r": !isMobile, "border-b": isMobile })}>
+                      <MarketComposition
+                        type="backing"
+                        label={<Trans>Backing Composition</Trans>}
+                        title={<Trans>Direct exposure to tokens</Trans>}
+                        composition={backingComposition}
+                      />
+                    </div>
+                    <MarketComposition
+                      type="market"
+                      label={<Trans>Market Composition</Trans>}
+                      title={<Trans>Market exposure to Trader PnL</Trans>}
+                      composition={marketComposition}
+                    />
+                  </div>
+                </PoolsDetailsCard>
+
+                <PoolsDetailsCard title={<Trans>About</Trans>}>
+                  <PoolsDetailsAbout
+                    marketInfo={marketInfo}
+                    marketToken={marketToken}
+                    marketsInfoData={marketsInfoData}
+                    marketTokensData={depositMarketTokensData}
                   />
-                </div>
-                <MarketComposition
-                  type="market"
-                  label={<Trans>Market Composition</Trans>}
-                  title={<Trans>Market exposure to Trader PnL</Trans>}
-                  composition={marketComposition}
-                />
+                </PoolsDetailsCard>
               </div>
-            </PoolsDetailsCard>
 
-            <PoolsDetailsCard title={<Trans>About</Trans>}>
-              <PoolsDetailsAbout
-                marketInfo={marketInfo}
-                marketToken={marketToken}
-                marketsInfoData={marketsInfoData}
-                marketTokensData={depositMarketTokensData}
+              <PoolsDetailsGmSwapBox
+                selectedMarketAddress={market}
+                onSelectMarket={setMarket}
+                selectedMarketForGlv={selectedMarketForGlv}
+                onSelectedMarketForGlv={setSelectedMarketForGlv}
+                operation={operation}
+                mode={mode}
+                onSetMode={setMode}
+                onSetOperation={setOperation}
               />
-            </PoolsDetailsCard>
-          </div>
-
-          <PoolsDetailsGmSwapBox
-            selectedMarketAddress={market}
-            onSelectMarket={setMarket}
-            selectedMarketForGlv={selectedMarketForGlv}
-            onSelectedMarketForGlv={setSelectedMarketForGlv}
-            operation={operation}
-            mode={mode}
-            onSetMode={setMode}
-            onSetOperation={setOperation}
-          />
-        </div>
+            </div>
+          </>
+        ) : (
+          <Loader />
+        )}
+        <Footer />
       </div>
-      <Footer />
     </SEO>
   );
 }

@@ -40,6 +40,7 @@ import { useUpdateMarkets } from "./useUpdateMarkets";
 import { useUpdateTokens } from "./useUpdateTokens";
 import { GmFees } from "../../GmFees/GmFees";
 import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
+import { SelectedPool } from "../SelectedPool";
 import { Swap } from "../Swap";
 
 export function GmShiftBox({
@@ -280,19 +281,9 @@ export function GmShiftBox({
             onInputValueChange={handleSelectedTokenInputValueChange}
             onFocus={handleSelectedTokenFocus}
           >
-            <PoolSelector
-              chainId={chainId}
-              size="l"
+            <SelectedPool
               selectedMarketAddress={selectedMarketAddress}
-              markets={shiftAvailableMarkets}
-              onSelectMarket={handleSelectedTokenSelectMarket}
-              selectedIndexName={selectedIndexName}
-              showAllPools
-              isSideMenu
-              showIndexIcon
-              showBalances
-              marketTokensData={depositMarketTokensData}
-              favoriteKey="gm-token-selector"
+              glvAndMarketsInfoData={marketsInfoData}
             />
           </BuyInputSection>
           <div>

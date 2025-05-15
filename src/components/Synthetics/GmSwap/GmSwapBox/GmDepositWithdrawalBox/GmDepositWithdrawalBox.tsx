@@ -34,7 +34,6 @@ import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { useBestGmPoolAddressForGlv } from "components/Synthetics/MarketStats/hooks/useBestGmPoolForGlv";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
@@ -53,6 +52,7 @@ import { Swap } from "../Swap";
 import { Mode, Operation } from "../types";
 import { InfoRows } from "./InfoRows";
 import { GmSwapBoxPoolRow } from "../GmSwapBoxPoolRow";
+import { SelectedPool } from "../SelectedPool";
 
 export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const {
@@ -796,20 +796,9 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
               onClickTopRightLabel={marketTokenInputClickTopRightLabel}
               onClickMax={marketTokenInputShowMaxButton ? marketTokenInputClickMax : undefined}
             >
-              <PoolSelector
-                chainId={chainId}
-                size="l"
-                label={t`Pool`}
-                selectedIndexName={indexName}
+              <SelectedPool
+                glvAndMarketsInfoData={glvAndMarketsInfoData}
                 selectedMarketAddress={marketAddress}
-                markets={sortedMarketsInfoByIndexToken}
-                marketTokensData={marketTokensData}
-                isSideMenu
-                showAllPools
-                showBalances
-                showIndexIcon
-                onSelectMarket={marketTokenSelectMarket}
-                favoriteKey="gm-token-receive-pay-selector"
               />
             </BuyInputSection>
           </div>
@@ -854,7 +843,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           </div>
         )}
 
-        <div className="Exchange-swap-button-container pb-14 mb-14 border-b border-stroke-primary">{submitButton}</div>
+        <div className="Exchange-swap-button-container mb-14 border-b border-stroke-primary pb-14">{submitButton}</div>
 
         <InfoRows
           fees={fees}

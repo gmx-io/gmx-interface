@@ -1590,8 +1590,8 @@ msgid "GMX Proposals Voting page"
 msgstr "GMX Proposals Voting page"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-msgid "Fees and Price Impact"
-msgstr "Fees and Price Impact"
+#~ msgid "Fees and Price Impact"
+#~ msgstr "Fees and Price Impact"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can buy ETH directly on <0>Arbitrum</0> using these options:"
@@ -6245,6 +6245,7 @@ msgstr "trigger price"
 msgid "Claim"
 msgstr "Claim"
 
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price Impact / Fees"
 msgstr "Price Impact / Fees"
@@ -7317,9 +7318,9 @@ msgid "Long"
 msgstr "Long"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxPoolRow.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxPoolRow.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxPoolRow.tsx
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx

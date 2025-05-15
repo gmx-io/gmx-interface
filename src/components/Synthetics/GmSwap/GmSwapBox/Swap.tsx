@@ -1,14 +1,14 @@
-import { IoMdSwap } from "react-icons/io";
+import { IoArrowDown } from "react-icons/io5";
 
 export function Swap() {
   return (
     <div className="z-2 relative">
       <div
         className="absolute -top-19 left-1/2 flex size-36 -translate-x-1/2
-                   cursor-not-allowed select-none items-center justify-center rounded-31 bg-[#1b1e32]
-                  text-white"
+                   cursor-not-allowed select-none items-center justify-center rounded-full bg-cold-blue-500
+                   text-white active:bg-[#505699] desktop-hover:bg-[#484e92]"
       >
-        <IoMdSwap className="rotate-90 text-[20px]" />
+        <IoArrowDown size={24} />
       </div>
     </div>
   );
