@@ -71,7 +71,7 @@ export const createFindSwapPath = (params: {
         tokensData: TokensData;
       }
     | undefined;
-  isExpressTxn: boolean | undefined;
+  isExpressFeeSwap: boolean | undefined;
   disabledMarkets?: string[] | undefined;
   manualPath?: string[] | undefined;
   maxSwapPathLength?: number | undefined;
@@ -84,7 +84,7 @@ export const createFindSwapPath = (params: {
     disabledMarkets,
     manualPath,
     gasEstimationParams,
-    isExpressTxn,
+    isExpressFeeSwap,
     maxSwapPathLength,
   } = params;
   const wrappedFromAddress = getWrappedAddress(chainId, fromTokenAddress);
@@ -108,7 +108,7 @@ export const createFindSwapPath = (params: {
 
   const finalDisabledMarkets = [...(disabledMarkets ?? [])];
 
-  if (isExpressTxn) {
+  if (isExpressFeeSwap) {
     const expressSwapUnavailableMarkets = Object.values(marketsInfoData ?? {})
       .filter((market) => !getIsMarketAvailableForExpressSwaps(market))
       .map((market) => market.marketTokenAddress);

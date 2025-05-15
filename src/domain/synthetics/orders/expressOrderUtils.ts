@@ -12,7 +12,6 @@ import {
   ExpressTxnParams,
   getGelatoRelayRouterDomain,
   getOracleParamsPayload,
-  getOraclePriceParamsForOrders,
   getOraclePriceParamsForRelayFee,
   getRelayerFeeParams,
   getRelayRouterNonceForSigner,
@@ -48,8 +47,8 @@ import {
   getBatchExternalSwapGasLimit,
   getBatchIsNativePayment,
   getBatchRequiredActions,
-  getIsEmptyBatch,
   getBatchTotalExecutionFee,
+  getIsEmptyBatch,
 } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 
@@ -328,12 +327,6 @@ export async function getBatchOrderExpressParams({
       relayFeeParams,
       tokensData,
       marketsInfoData,
-    }),
-    ...getOraclePriceParamsForOrders({
-      chainId,
-      createOrderParams: batchParams.createOrderParams,
-      marketsInfoData,
-      tokensData,
     }),
   ]);
 

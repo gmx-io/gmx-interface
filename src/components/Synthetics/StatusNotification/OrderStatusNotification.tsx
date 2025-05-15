@@ -237,7 +237,7 @@ export function OrderStatusNotification({
           ? `tenderlyUsername=${tenderlyAccountSlug}&tenderlyProjectName=${tenderlyProjectSlug}`
           : "";
       txnLink = pendingExpressTxn?.taskId
-        ? `https://api.gelato.digital/tasks/status/${orderStatus?.gelatoTaskId}/debug?${tenderlySlugs}`
+        ? `https://api.gelato.digital/tasks/status/${pendingExpressTxn.taskId}/debug?${tenderlySlugs}`
         : undefined;
     } else if (isCompleted) {
       status = "success";
@@ -252,7 +252,6 @@ export function OrderStatusNotification({
     orderStatus?.createdTxnHash,
     orderStatus?.updatedTxnHash,
     orderStatus?.cancelledTxnHash,
-    orderStatus?.gelatoTaskId,
     tenderlyAccountSlug,
     tenderlyProjectSlug,
     pendingExpressTxn?.taskId,
