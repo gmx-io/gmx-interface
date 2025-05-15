@@ -52,6 +52,7 @@ import type { GmSwapBoxProps } from "../GmSwapBox";
 import { Swap } from "../Swap";
 import { Mode, Operation } from "../types";
 import { InfoRows } from "./InfoRows";
+import { GmSwapBoxPoolRow } from "../GmSwapBoxPoolRow";
 
 export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const {
@@ -814,22 +815,14 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           </div>
         </div>
 
-        <InfoRows
+        <GmSwapBoxPoolRow
           indexName={indexName}
           marketAddress={marketAddress}
           marketTokensData={marketTokensData}
           isDeposit={isDeposit}
-          fees={fees}
           glvInfo={glvInfo}
-          executionFee={executionFee}
-          setIsAccepted={setIsAccepted}
-          shouldShowWarning={shouldShowWarning}
-          shouldShowWarningForPosition={shouldShowWarningForPosition}
-          shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
-          isAccepted={isAccepted}
-          disablePoolSelector={fromMarketTokenInputState !== undefined}
           selectedMarketForGlv={selectedMarketForGlv}
-          isSingle={isSingle}
+          disablePoolSelector={fromMarketTokenInputState !== undefined}
           onMarketChange={glvInfo ? onMarketChange : onGlvOrMarketChange}
         />
 
@@ -861,7 +854,19 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           </div>
         )}
 
-        <div className="Exchange-swap-button-container">{submitButton}</div>
+        <div className="Exchange-swap-button-container pb-14 mb-14 border-b border-stroke-primary">{submitButton}</div>
+
+        <InfoRows
+          fees={fees}
+          executionFee={executionFee}
+          setIsAccepted={setIsAccepted}
+          shouldShowWarning={shouldShowWarning}
+          shouldShowWarningForPosition={shouldShowWarningForPosition}
+          shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
+          isAccepted={isAccepted}
+          isDeposit={isDeposit}
+          isSingle={isSingle}
+        />
       </form>
     </>
   );

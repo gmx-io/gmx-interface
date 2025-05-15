@@ -160,5 +160,5 @@ export function GmFees(p: Props) {
     totalFeesUsd,
   ]);
 
-  return <ExchangeInfoRow label={<Trans>Fees and Price Impact</Trans>} value={value} />;
+  return <ExchangeInfoRow label={<Trans>Price Impact / Fees</Trans>} value={value} />;
 }
