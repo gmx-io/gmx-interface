@@ -7,6 +7,7 @@ import type { Address } from "viem";
 import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
+import { PoolsDetailsContextProvider } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { subscribeToV1Events } from "context/WebsocketContext/subscribeToEvents";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
@@ -23,20 +24,21 @@ import BuyGMX from "pages/BuyGMX/BuyGMX";
 import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
-import Earn from "pages/Earn/Earn";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import { Exchange } from "pages/Exchange/Exchange";
 import Jobs from "pages/Jobs/Jobs";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
-import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import NftWallet from "pages/NftWallet/NftWallet";
 import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import { ParseTransactionPage } from "pages/ParseTransaction/ParseTransaction";
+import Pools from "pages/Pools/Pools";
+import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
 import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import Referrals from "pages/Referrals/Referrals";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
+import Stake from "pages/Stake/Stake";
 import Stats from "pages/Stats/Stats";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
@@ -104,9 +106,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       <Route exact path="/stats">
         <SyntheticsStats />
       </Route>
-      <Route exact path="/earn">
-        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
-          <Earn />
+      <Route exact path="/stake">
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="stake">
+          <Stake />
         </SyntheticsStateContextProvider>
       </Route>
       <Route exact path="/buy">
@@ -116,7 +118,14 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       </Route>
       <Route exact path="/pools">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
-          <MarketPoolsPage />
+          <Pools />
+        </SyntheticsStateContextProvider>
+      </Route>
+      <Route exact path="/pools/details">
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
+          <PoolsDetailsContextProvider>
+            <PoolsDetails />
+          </PoolsDetailsContextProvider>
         </SyntheticsStateContextProvider>
       </Route>
 

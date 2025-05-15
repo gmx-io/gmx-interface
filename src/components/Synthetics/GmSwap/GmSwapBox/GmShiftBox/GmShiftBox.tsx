@@ -31,7 +31,7 @@ import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow
 import { Mode, Operation } from "../types";
 import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
 import { useGmWarningState } from "../useGmWarningState";
-import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
+// import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
 import { useShiftAmounts } from "./useShiftAmounts";
 import { useShiftAvailableRelatedMarkets } from "./useShiftAvailableRelatedMarkets";
 import { useShiftFees } from "./useShiftFees";
@@ -171,12 +171,12 @@ export function GmShiftBox({
   const [glvForShiftAddress, setGlvForShiftAddress] = useState<string | undefined>(undefined);
   const [, setFirstTokenAddressForDeposit] = useDepositWithdrawalSetFirstTokenAddress(true, glvForShiftAddress);
 
-  useUpdateByQueryParams({
-    operation: Operation.Shift,
-    onSelectMarket,
-    setMode: onSetMode,
-    setOperation: onSetOperation,
-  });
+  // useUpdateByQueryParams({
+  //   operation: Operation.Shift,
+  //   onSelectMarket,
+  //   setMode: onSetMode,
+  //   setOperation: onSetOperation,
+  // });
 
   const handleFormSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
@@ -328,28 +328,6 @@ export function GmShiftBox({
             </BuyInputSection>
           </div>
         </div>
-        <ExchangeInfo className={shouldShowWarning ? undefined : "mb-10"} dividerClassName="App-card-divider">
-          <ExchangeInfo.Group>
-            <GmFees
-              operation={Operation.Shift}
-              totalFees={fees?.totalFees}
-              swapPriceImpact={fees?.swapPriceImpact}
-              uiFee={fees?.uiFee}
-              shiftFee={fees?.shiftFee}
-            />
-            <NetworkFeeRow rowPadding executionFee={executionFee} />
-          </ExchangeInfo.Group>
-
-          <GmSwapWarningsRow
-            isSingle={false}
-            isAccepted={isAccepted}
-            shouldShowWarning={shouldShowWarning}
-            shouldShowWarningForPosition={shouldShowWarningForPosition}
-            shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
-            setIsAccepted={setIsAccepted}
-          />
-        </ExchangeInfo>
-
         {submitState.isAllowanceLoaded && submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && (
           <div>
             {submitState.tokensToApprove.map((address) => {
@@ -370,9 +348,33 @@ export function GmShiftBox({
           </div>
         )}
 
-        <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
-          {submitState.text}
-        </Button>
+        <div className="w-full pb-14 border-b border-stroke-primary">
+          <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
+            {submitState.text}
+          </Button>
+        </div>
+
+        <ExchangeInfo className={shouldShowWarning ? undefined : "mt-14"} dividerClassName="App-card-divider">
+          <ExchangeInfo.Group>
+            <GmFees
+              operation={Operation.Shift}
+              totalFees={fees?.totalFees}
+              swapPriceImpact={fees?.swapPriceImpact}
+              uiFee={fees?.uiFee}
+              shiftFee={fees?.shiftFee}
+            />
+            <NetworkFeeRow rowPadding executionFee={executionFee} />
+          </ExchangeInfo.Group>
+
+          <GmSwapWarningsRow
+            isSingle={false}
+            isAccepted={isAccepted}
+            shouldShowWarning={shouldShowWarning}
+            shouldShowWarningForPosition={shouldShowWarningForPosition}
+            shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
+            setIsAccepted={setIsAccepted}
+          />
+        </ExchangeInfo>
       </form>
     </>
   );

@@ -40,6 +40,10 @@ export function useMarketTokensDataRequest(
     withGlv?: boolean;
   }
 ): MarketTokensDataResult {
+  if (!chainId) {
+    throw new Error("chainId is required");
+  }
+
   const { isDeposit, account, glvData = {}, withGlv = true } = p;
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);

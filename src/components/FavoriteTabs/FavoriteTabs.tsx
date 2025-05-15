@@ -22,8 +22,8 @@ export function FavoriteTabs({ favoritesKey }: { favoritesKey: TokenFavoriteKey 
           key={option}
           type="button"
           variant={"ghost"}
-          className={cx("!text-body-medium !py-7", {
-            "!bg-cold-blue-500": tab === option,
+          className={cx("!text-body-medium !text-slate-100 !py-7", {
+            "!bg-cold-blue-500 !text-white": tab === option,
           })}
           onClick={() => setTab(option)}
           data-selected={tab === option}

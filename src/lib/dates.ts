@@ -36,7 +36,7 @@ export function getTimestampByDaysAgo(daysAgo: number) {
   return Math.floor(Date.now() / 1000 / 86400) * 86400 - daysAgo * 24 * 60 * 60;
 }
 
-function toSeconds(date: Date) {
+export function toSeconds(date: Date) {
   return Math.round(date.getTime() / 1000);
 }
 
