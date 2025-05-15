@@ -3,6 +3,7 @@ import { Address, encodePacked } from "viem";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { GelatoPollingTiming, metrics } from "lib/metrics";
 import { sleep } from "lib/sleep";
+import { gelatoRelay } from "sdk/utils/gelatoRelay";
 
 export type ExpressTxnData = {
   callData: string;
@@ -142,7 +143,11 @@ export async function sendTxnToGelato({
     throw new Error(`Failed to call with sync fee: ${res.statusText}`);
   }
 
-  return res.json();
+  const result = await res.json();
+
+  gelatoRelay.subscribeTaskStatusUpdate(result.taskId);
+
+  return result;
 }
 
 type TransactionResult = {

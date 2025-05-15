@@ -37,8 +37,8 @@ import {
 
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 
-import { BatchOrderTxnCtx, GELATO_SDK_TIMEOUT_ERROR } from "./sendBatchOrderTxn";
 import { ExpressTxnParams } from "../express/types";
+import { BatchOrderTxnCtx } from "./sendBatchOrderTxn";
 
 export type CallbackUiCtx = {
   metricId?: OrderMetricId;
@@ -232,13 +232,6 @@ export function useOrderTxnCallbacks() {
           const { error } = e.data;
           const { metricId } = ctx;
           const errorData = parseError(error);
-
-          if (expressParams && error.message === GELATO_SDK_TIMEOUT_ERROR) {
-            updatePendingExpressTxn({
-              key: getExpressParamsKey(expressParams),
-              isTimeout: true,
-            });
-          }
 
           if (metricId) {
             sendTxnErrorMetric(metricId, error, errorData?.errorContext ?? "unknown");

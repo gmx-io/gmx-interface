@@ -30,6 +30,7 @@ import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 
+import { TaskState } from "lib/transactions/sendExpressTransaction";
 import "./StatusNotification.scss";
 import { useToastAutoClose } from "./useToastAutoClose";
 
@@ -52,7 +53,7 @@ export function OrderStatusNotification({
 }: Props) {
   const { chainId } = useChainId();
   const wrappedNativeToken = getWrappedToken(chainId);
-  const { orderStatuses, setOrderStatusViewed } = useSyntheticsEvents();
+  const { orderStatuses, setOrderStatusViewed, pendingExpressTxns, gelatoTaskStatuses } = useSyntheticsEvents();
   const { tenderlyAccountSlug, tenderlyProjectSlug } = useSettings();
 
   const [orderStatusKey, setOrderStatusKey] = useState<string>();
@@ -61,10 +62,22 @@ export function OrderStatusNotification({
   const pendingOrderKey = useMemo(() => getPendingOrderKey(pendingOrderData), [pendingOrderData]);
   const orderStatus = getByKey(orderStatuses, orderStatusKey);
 
+  const pendingExpressTxn = useMemo(() => {
+    return Object.values(pendingExpressTxns).find((pendingExpressTxn) => {
+      return pendingExpressTxn.pendingOrdersKeys?.includes(pendingOrderKey);
+    });
+  }, [pendingExpressTxns, pendingOrderKey]);
+
+  const gelatoTaskStatus = useMemo(() => {
+    return getByKey(gelatoTaskStatuses, pendingExpressTxn?.taskId);
+  }, [gelatoTaskStatuses, pendingExpressTxn]);
+
+  const isGelatoTaskFailed = useMemo(() => {
+    return gelatoTaskStatus === TaskState.ExecReverted || gelatoTaskStatus === TaskState.Cancelled;
+  }, [gelatoTaskStatus]);
+
   const hasError =
-    orderStatus?.isGelatoTaskFailed ||
-    orderStatus?.isGelatoTaskTimeout ||
-    (Boolean(orderStatus?.cancelledTxnHash) && pendingOrderData.txnType !== "cancel");
+    isGelatoTaskFailed || (Boolean(orderStatus?.cancelledTxnHash) && pendingOrderData.txnType !== "cancel");
 
   const orderData = useMemo(() => {
     if (!marketsInfoData || !orderStatuses || !tokensData || !wrappedNativeToken) {
@@ -194,12 +207,12 @@ export function OrderStatusNotification({
 
     if (orderStatus?.createdTxnHash) {
       status = "success";
-    } else if (orderStatus?.isGelatoTaskFailed) {
+    } else if (isGelatoTaskFailed) {
       status = "error";
     }
 
     return <TransactionStatus status={status} txnHash={undefined} text={text} />;
-  }, [orderData, orderStatus]);
+  }, [orderData, orderStatus?.createdTxnHash, isGelatoTaskFailed]);
 
   const sendingStatus = useMemo(() => {
     let text = t`Sending order request`;
@@ -216,14 +229,14 @@ export function OrderStatusNotification({
       isCompleted = Boolean(orderStatus?.cancelledTxnHash);
     }
 
-    if (orderStatus?.isGelatoTaskFailed) {
+    if (isGelatoTaskFailed) {
       status = "error";
       text = t`Relayer request failed`;
       const tenderlySlugs =
         tenderlyAccountSlug && tenderlyProjectSlug
           ? `tenderlyUsername=${tenderlyAccountSlug}&tenderlyProjectName=${tenderlyProjectSlug}`
           : "";
-      txnLink = orderStatus.gelatoTaskId
+      txnLink = pendingExpressTxn?.taskId
         ? `https://api.gelato.digital/tasks/status/${orderStatus?.gelatoTaskId}/debug?${tenderlySlugs}`
         : undefined;
     } else if (isCompleted) {
@@ -233,7 +246,18 @@ export function OrderStatusNotification({
     }
 
     return <TransactionStatus status={status} txnHash={txnHash} txnLink={txnLink} text={text} />;
-  }, [orderData?.txnType, orderStatus, tenderlyAccountSlug, tenderlyProjectSlug, hideTxLink]);
+  }, [
+    orderData?.txnType,
+    isGelatoTaskFailed,
+    orderStatus?.createdTxnHash,
+    orderStatus?.updatedTxnHash,
+    orderStatus?.cancelledTxnHash,
+    orderStatus?.gelatoTaskId,
+    tenderlyAccountSlug,
+    tenderlyProjectSlug,
+    pendingExpressTxn?.taskId,
+    hideTxLink,
+  ]);
 
   const executionStatus = useMemo(() => {
     if (!orderData || !isMarketOrderType(orderData?.orderType)) {
