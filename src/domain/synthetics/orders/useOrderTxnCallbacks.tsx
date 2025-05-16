@@ -37,8 +37,8 @@ import {
 
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 
-import { ExpressTxnParams } from "../express/types";
 import { BatchOrderTxnCtx } from "./sendBatchOrderTxn";
+import { ExpressTxnParams } from "../express/types";
 
 export type CallbackUiCtx = {
   metricId?: OrderMetricId;

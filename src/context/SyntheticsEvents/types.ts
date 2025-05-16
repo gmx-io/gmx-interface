@@ -3,9 +3,9 @@ import { ReactNode } from "react";
 import { OrderTxnType, OrderType } from "domain/synthetics/orders";
 import { SignedSubbacountApproval } from "domain/synthetics/subaccount";
 import { OrderMetricId } from "lib/metrics/types";
+import { TaskState } from "lib/transactions/sendExpressTransaction";
 import { SignedTokenPermit } from "sdk/types/tokens";
 import { ExternalSwapOutput } from "sdk/types/trade";
-import { TaskState } from "lib/transactions/sendExpressTransaction";
 
 export type MultiTransactionStatus<TEventData> = {
   key: string;

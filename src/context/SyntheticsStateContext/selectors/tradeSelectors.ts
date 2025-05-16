@@ -248,7 +248,6 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
     triggerPrice,
     tokenTypeForSwapRoute,
     externalSwapQuote,
-    isExpressTxn,
   }: {
     initialCollateralTokenAddress: string | undefined;
     indexTokenAddress: string | undefined;
@@ -269,8 +268,7 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
   }) => {
     const selectFindSwapPath = makeSelectFindSwapPath(
       initialCollateralTokenAddress,
-      tokenTypeForSwapRoute === "indexToken" ? indexTokenAddress : collateralTokenAddress,
-      isExpressTxn
+      tokenTypeForSwapRoute === "indexToken" ? indexTokenAddress : collateralTokenAddress
     );
 
     return createSelector((q) => {

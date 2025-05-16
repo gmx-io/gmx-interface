@@ -343,9 +343,8 @@ export const selectTradeboxTotalSwapImpactBps = createSelector((q) => {
 export const selectTradeboxFindSwapPath = createSelector((q) => {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const swapToTokenAddress = q(selectTradeboxSwapToTokenAddress);
-  const isExpressTxn = fromTokenAddress !== NATIVE_TOKEN_ADDRESS && q(selectIsExpressTransactionAvailable);
 
-  return q(makeSelectFindSwapPath(fromTokenAddress, swapToTokenAddress, isExpressTxn));
+  return q(makeSelectFindSwapPath(fromTokenAddress, swapToTokenAddress));
 });
 
 export const selectTradeboxMaxLiquidityPath = createSelector((q) => {
@@ -521,9 +520,8 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
     return swapAmounts;
   }
 
-  const isExpressTxn = fromTokenAddress !== NATIVE_TOKEN_ADDRESS && q(selectIsExpressTransactionAvailable);
   const toSwapToken = q(selectTradeboxSwapToTokenAddress);
-  const findSwapPath = q(makeSelectFindSwapPath(fromTokenAddress, toSwapToken, isExpressTxn));
+  const findSwapPath = q(makeSelectFindSwapPath(fromTokenAddress, toSwapToken));
   const swapOptimizationOrder: SwapOptimizationOrderArray | undefined = tradeFlags.isLimit
     ? ["length", "liquidity"]
     : undefined;

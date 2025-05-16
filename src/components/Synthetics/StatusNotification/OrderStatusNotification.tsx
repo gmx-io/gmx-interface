@@ -23,6 +23,7 @@ import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { TaskState } from "lib/transactions/sendExpressTransaction";
 import { mustNeverExist } from "lib/types";
 import useWallet from "lib/wallets/useWallet";
 import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
@@ -30,7 +31,6 @@ import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 
-import { TaskState } from "lib/transactions/sendExpressTransaction";
 import "./StatusNotification.scss";
 import { useToastAutoClose } from "./useToastAutoClose";
 

@@ -51,13 +51,13 @@ import { sendUserAnalyticsOrderResultEvent, userAnalytics } from "lib/userAnalyt
 import { TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
 
 import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
 import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
 import { OrdersStatusNotificiation } from "components/Synthetics/StatusNotification/OrderStatusNotification";
 
-import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import {
   ApprovalStatuses,
   DepositCreatedEventData,

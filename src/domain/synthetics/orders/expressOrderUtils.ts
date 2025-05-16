@@ -52,7 +52,7 @@ import {
 } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 
-import { approximateExpressBatchOrderGasLimit, estimateMinGasPaymentTokenBalance } from "../fees";
+import { approximateExpressBatchOrderRelayGasLimit, estimateMinGasPaymentTokenBalance } from "../fees";
 import { getSwapAmountsByToValue } from "../trade";
 
 export async function estimateExpressParams({
@@ -192,7 +192,7 @@ export async function estimateExpressParams({
         value: 0n,
       });
     } else {
-      gasLimit = approximateExpressBatchOrderGasLimit({
+      gasLimit = approximateExpressBatchOrderRelayGasLimit({
         gasLimits,
         createOrdersCount: batchParams.createOrderParams.length,
         updateOrdersCount: batchParams.updateOrderParams.length,
