@@ -126,7 +126,12 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     return tokensData ? getBatchTotalExecutionFee({ batchParams, chainId, tokensData }) : undefined;
   }, [batchParams, chainId, tokensData]);
 
-  const { expressParams, isLoading: isExpressLoading } = useExpressOrdersParams({
+  const {
+    expressParams,
+    fastExpressParams,
+    asyncExpressParams,
+    isLoading: isExpressLoading,
+  } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "TradeBox",
   });
@@ -150,6 +155,9 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         duration,
         partsCount: numberOfParts,
         tradeMode,
+        expressParams,
+        asyncExpressParams,
+        fastExpressParams,
       });
     }
 
@@ -188,6 +196,9 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         duration,
         partsCount: numberOfParts,
         tradeMode: tradeMode,
+        expressParams,
+        asyncExpressParams,
+        fastExpressParams,
       });
     }
 
@@ -213,9 +224,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       tradeMode,
       duration,
       partsCount: numberOfParts,
+      expressParams,
+      asyncExpressParams,
+      fastExpressParams,
     });
   }, [
     allowedSlippage,
+    asyncExpressParams,
     chartHeaderInfo?.fundingRateLong,
     chartHeaderInfo?.fundingRateShort,
     collateralToken,
@@ -223,6 +238,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     duration,
     executionFee,
     expressParams,
+    fastExpressParams,
     fees?.positionPriceImpact?.precisePercentage,
     fromToken,
     increaseAmounts,

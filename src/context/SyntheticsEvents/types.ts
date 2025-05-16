@@ -13,8 +13,7 @@ export type MultiTransactionStatus<TEventData> = {
   createdTxnHash?: string;
   cancelledTxnHash?: string;
   gelatoTaskId?: string;
-  isGelatoTaskFailed?: boolean;
-  isGelatoTaskTimeout?: boolean;
+
   updatedTxnHash?: string;
   executedTxnHash?: string;
   createdAt: number;
@@ -78,12 +77,12 @@ export type PendingPositionUpdate = {
 export type PendingExpressTxnParams = {
   key: string;
   taskId: string | undefined;
-  isFailed?: boolean;
   isSponsoredCall: boolean;
   subaccountApproval?: SignedSubbacountApproval;
   tokenPermits?: SignedTokenPermit[];
   pendingOrdersKeys?: string[];
   pendingPositionsKeys?: string[];
+  createdAt: number;
   metricId?: OrderMetricId;
   successMessage?: ReactNode;
   errorMessage?: ReactNode;

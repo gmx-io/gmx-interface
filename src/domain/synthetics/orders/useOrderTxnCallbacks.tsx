@@ -17,7 +17,13 @@ import { getRemainingSubaccountActions, Subaccount } from "domain/synthetics/sub
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
-import { OrderMetricId, sendOrderSimulatedMetric, sendTxnErrorMetric, sendTxnSentMetric } from "lib/metrics";
+import {
+  OrderMetricId,
+  sendOrderSimulatedMetric,
+  sendOrderTxnSubmittedMetric,
+  sendTxnErrorMetric,
+  sendTxnSentMetric,
+} from "lib/metrics";
 import { getByKey } from "lib/objects";
 import { TxnEvent, TxnEventName } from "lib/transactions";
 import { OrderInfo, OrdersInfoData } from "sdk/types/orders";
@@ -165,6 +171,7 @@ export function useOrderTxnCallbacks() {
             pendingPositionsKeys: pendingPositions.map((p) => p.positionKey),
             taskId: undefined,
             metricId: ctx.metricId,
+            createdAt: Date.now(),
             successMessage,
             errorMessage,
             key: getExpressParamsKey(expressParams),
@@ -173,7 +180,11 @@ export function useOrderTxnCallbacks() {
       };
 
       switch (e.event) {
-        case TxnEventName.Prepared: {
+        case TxnEventName.Sending: {
+          if (ctx.metricId) {
+            sendOrderTxnSubmittedMetric(ctx.metricId);
+          }
+
           if (expressParams) {
             handleTxnSubmitted();
           }
@@ -199,7 +210,7 @@ export function useOrderTxnCallbacks() {
           if (expressParams) {
             updatePendingExpressTxn({
               key: getExpressParamsKey(expressParams),
-              taskId: e.data.txnHash,
+              taskId: e.data.txnId,
             });
           } else {
             const totalExecutionFee = tokensData
@@ -211,7 +222,7 @@ export function useOrderTxnCallbacks() {
               : undefined;
 
             const pendingTxn: PendingTransaction = {
-              hash: e.data.txnHash,
+              hash: e.data.txnId,
               message: getOperationMessage(mainActionType, "success", actionsCount, undefined, setIsSettingsVisible),
               metricId: ctx.metricId,
               data: totalExecutionFee
@@ -230,11 +241,10 @@ export function useOrderTxnCallbacks() {
 
         case TxnEventName.Error: {
           const { error } = e.data;
-          const { metricId } = ctx;
           const errorData = parseError(error);
 
-          if (metricId) {
-            sendTxnErrorMetric(metricId, error, errorData?.errorContext ?? "unknown");
+          if (ctx.metricId) {
+            sendTxnErrorMetric(ctx.metricId, error, errorData?.errorContext ?? "unknown");
           }
 
           const operationMessage = getOperationMessage(

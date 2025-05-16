@@ -98,7 +98,7 @@ export function approximateExpressBatchOrderRelayGasLimit({
   let gasLimit = totalGasLimit + l1GasLimit;
   gasLimit = (gasLimit * 13n) / 10n; // 30% buffer
 
-  return gasLimit;
+  return { gasLimit, l1GasLimit };
 }
 
 export function estimateMinGasPaymentTokenBalance({
@@ -118,7 +118,7 @@ export function estimateMinGasPaymentTokenBalance({
   gasPrice: bigint;
   l1Reference: L1ExpressOrderGasReference | undefined;
 }) {
-  const createOrderGasLimit = approximateExpressBatchOrderRelayGasLimit({
+  const { gasLimit } = approximateExpressBatchOrderRelayGasLimit({
     gasLimits,
     createOrdersCount: 1,
     updateOrdersCount: 0,
@@ -131,7 +131,7 @@ export function estimateMinGasPaymentTokenBalance({
     l1Reference,
   });
 
-  const createOrderFee = createOrderGasLimit * gasPrice;
+  const createOrderFee = gasLimit * gasPrice;
 
   const executionGasLimit = estimateExecuteIncreaseOrderGasLimit(gasLimits, {
     swapsCount: 2,

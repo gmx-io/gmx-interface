@@ -40,6 +40,7 @@ import {
   sendOrderCancelledMetric,
   sendOrderCreatedMetric,
   sendOrderExecutedMetric,
+  sendTxnErrorMetric,
 } from "lib/metrics/utils";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { deleteByKey, getByKey, setByKey, updateByKey } from "lib/objects";
@@ -1106,31 +1107,41 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   const expressHandler = useRef<any>();
 
-  expressHandler.current = async (taskStatus) => {
-    if (isDevelopment()) {
-      const { accountSlug, projectSlug } = getTenderlyAccountParams();
-      getGelatoTaskDebugInfo(taskStatus.taskId, accountSlug, projectSlug).then((debugInfo) =>
-        // eslint-disable-next-line no-console
-        console.log("gelatoDebugData", taskStatus, debugInfo)
-      );
-    }
-
-    switch (taskStatus.taskState) {
-      case TaskState.ExecSuccess:
-      case TaskState.ExecReverted:
-      case TaskState.Cancelled: {
-        setGelatoTaskStatuses((old) => setByKey(old, taskStatus.taskId, taskStatus.taskState));
-        gelatoRelay.unsubscribeTaskStatusUpdate(taskStatus.taskId);
-        break;
+  expressHandler.current = useEffect(() => {
+    const handler = async (taskStatus) => {
+      if (isDevelopment()) {
+        const { accountSlug, projectSlug } = getTenderlyAccountParams();
+        getGelatoTaskDebugInfo(taskStatus.taskId, accountSlug, projectSlug).then((debugInfo) =>
+          // eslint-disable-next-line no-console
+          console.log("gelatoDebugData", taskStatus, debugInfo)
+        );
       }
-      default:
-        break;
-    }
-  };
 
-  useEffect(() => {
-    const handler = (taskStatus) => {
-      expressHandler.current(taskStatus);
+      switch (taskStatus.taskState) {
+        case TaskState.ExecSuccess:
+        case TaskState.ExecReverted:
+        case TaskState.Cancelled: {
+          gelatoRelay.unsubscribeTaskStatusUpdate(taskStatus.taskId);
+
+          if (taskStatus.taskState === TaskState.Cancelled) {
+            // Use setter to get most recent data
+            setPendingExpressTxnParams((old) => {
+              const metricId = Object.values(old).find(
+                (pendingExpressTxn) => pendingExpressTxn.taskId === taskStatus.taskId
+              )?.metricId;
+
+              sendTxnErrorMetric(metricId, new Error("Gelato task cancelled"), "relayer");
+
+              return old;
+            });
+          }
+
+          setGelatoTaskStatuses((old) => setByKey(old, taskStatus.taskId, taskStatus.taskState));
+          break;
+        }
+        default:
+          break;
+      }
     };
 
     gelatoRelay.onTaskStatusUpdate(handler);
@@ -1139,23 +1150,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       gelatoRelay.offTaskStatusUpdate(handler);
     };
   }, []);
-
-  useEffect(
-    function syncPendingExpressTxnParams() {
-      Object.values(pendingExpressTxnParams).forEach((pendingExpressTxn) => {
-        if (pendingExpressTxn.taskId && gelatoTaskStatuses[pendingExpressTxn.taskId]) {
-          const status = gelatoTaskStatuses[pendingExpressTxn.taskId];
-
-          if (status === TaskState.ExecReverted || status === TaskState.Cancelled) {
-            pendingExpressTxn.pendingPositionsKeys?.forEach((key) => {
-              setPendingPositionsUpdates((old) => deleteByKey(old, key));
-            });
-          }
-        }
-      });
-    },
-    [pendingExpressTxnParams, gelatoTaskStatuses, pendingOrdersUpdates, pendingPositionsUpdates]
-  );
 
   return <SyntheticsEventsContext.Provider value={contextState}>{children}</SyntheticsEventsContext.Provider>;
 }

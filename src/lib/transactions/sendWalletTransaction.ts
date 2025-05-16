@@ -78,7 +78,7 @@ export async function sendWalletTransaction({
       runSimulation?.().then(() => callback?.(eventBuilder.Simulated())),
     ]);
 
-    callback?.(eventBuilder.Prepared());
+    callback?.(eventBuilder.Sending());
 
     const txnData: TransactionRequest = {
       to,
@@ -90,8 +90,6 @@ export async function sendWalletTransaction({
       ...(gasPriceDataResult ?? {}),
     };
 
-    const createdAt = Date.now();
-
     const res = await signer.sendTransaction(txnData).catch((error) => {
       additionalTxnErrorValidation(error, chainId, signer.provider!, txnData);
 
@@ -102,9 +100,7 @@ export async function sendWalletTransaction({
 
     callback?.(
       eventBuilder.Sent({
-        txnHash: res.hash,
-        blockNumber: BigInt(await signer.provider!.getBlockNumber()),
-        createdAt,
+        txnId: res.hash,
       })
     );
 

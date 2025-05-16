@@ -149,6 +149,8 @@ export async function estimateExpressParams({
       internalSwapAmounts: swapAmounts,
       batchExternalCalls,
       feeExternalSwapQuote: undefined,
+      relayerGasLimit: 0n,
+      l1GasLimit: 0n,
       tokensData,
       gasPaymentAllowanceData,
       forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
@@ -179,6 +181,7 @@ export async function estimateExpressParams({
     }
 
     let gasLimit: bigint;
+    let l1GasLimit = 0n;
     if (estimationMethod === "estimateGas" && provider) {
       // In this cases simulation will fail
       if (baseRelayFeeParams.isOutGasTokenBalance || baseRelayFeeParams.needGasPaymentTokenApproval) {
@@ -192,7 +195,7 @@ export async function estimateExpressParams({
         value: 0n,
       });
     } else {
-      gasLimit = approximateExpressBatchOrderRelayGasLimit({
+      const approximationResult = approximateExpressBatchOrderRelayGasLimit({
         gasLimits,
         createOrdersCount: batchParams.createOrderParams.length,
         updateOrdersCount: batchParams.updateOrderParams.length,
@@ -204,6 +207,9 @@ export async function estimateExpressParams({
         sizeOfData: BigInt(size(baseExpressParams.txnData.callData as `0x${string}`)),
         l1Reference,
       });
+
+      gasLimit = approximationResult.gasLimit;
+      l1GasLimit = approximationResult.l1GasLimit;
     }
 
     let feeAmount: bigint;
@@ -231,6 +237,8 @@ export async function estimateExpressParams({
       chainId,
       account,
       relayerFeeTokenAmount: feeAmount,
+      relayerGasLimit: gasLimit,
+      l1GasLimit,
       totalNetworkFeeAmount: totalNetworkFeeAmount,
       relayerFeeTokenAddress: relayerFeeToken.address,
       gasPaymentTokenAddress: gasPaymentToken.address,

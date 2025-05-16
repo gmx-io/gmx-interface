@@ -234,7 +234,12 @@ export function usePositionEditorButtonState(operation: Operation): {
     userReferralInfo?.referralCodeForTxn,
   ]);
 
-  const { expressParams, isLoading: isExpressLoading } = useExpressOrdersParams({
+  const {
+    expressParams,
+    isLoading: isExpressLoading,
+    fastExpressParams,
+    asyncExpressParams,
+  } = useExpressOrdersParams({
     orderParams: batchParams,
   });
 
@@ -464,6 +469,9 @@ export function usePositionEditorButtonState(operation: Operation): {
       isExpress: Boolean(expressParams),
       orderType,
       isLong: position?.isLong,
+      expressParams,
+      asyncExpressParams,
+      fastExpressParams,
     });
 
     sendOrderSubmittedMetric(metricData.metricId);

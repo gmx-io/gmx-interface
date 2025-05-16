@@ -354,7 +354,12 @@ export function PositionSeller() {
     userReferralInfo?.referralCodeForTxn,
   ]);
 
-  const { expressParams, isLoading: isExpressLoading } = useExpressOrdersParams({
+  const {
+    expressParams,
+    isLoading: isExpressLoading,
+    fastExpressParams,
+    asyncExpressParams,
+  } = useExpressOrdersParams({
     orderParams: batchParams,
   });
 
@@ -521,6 +526,9 @@ export function PositionSeller() {
       duration,
       partsCount: numberOfParts,
       tradeMode: ORDER_OPTION_TO_TRADE_MODE[orderOption],
+      fastExpressParams,
+      asyncExpressParams,
+      expressParams,
     });
 
     sendOrderSubmittedMetric(metricData.metricId);

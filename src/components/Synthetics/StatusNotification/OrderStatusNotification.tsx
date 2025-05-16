@@ -63,9 +63,14 @@ export function OrderStatusNotification({
   const orderStatus = getByKey(orderStatuses, orderStatusKey);
 
   const pendingExpressTxn = useMemo(() => {
-    return Object.values(pendingExpressTxns).find((pendingExpressTxn) => {
-      return pendingExpressTxn.pendingOrdersKeys?.includes(pendingOrderKey);
-    });
+    // Pending order keys may have collisions so we take the last suitable pendingExpressTxn
+    return Object.values(pendingExpressTxns)
+      .filter((pendingExpressTxn) => {
+        return pendingExpressTxn.pendingOrdersKeys?.includes(pendingOrderKey);
+      })
+      .sort((a, b) => {
+        return b.createdAt - a.createdAt;
+      })[0];
   }, [pendingExpressTxns, pendingOrderKey]);
 
   const gelatoTaskStatus = useMemo(() => {

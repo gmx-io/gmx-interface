@@ -16,6 +16,8 @@ import { estimateExpressParams } from "../orders/expressOrderUtils";
 
 export type ExpressOrdersParamsResult = {
   expressParams: ExpressTxnParams | undefined;
+  fastExpressParams: ExpressTxnParams | undefined;
+  asyncExpressParams: ExpressTxnParams | undefined;
   isLoading: boolean;
 };
 
@@ -112,19 +114,19 @@ export function useExpressOrdersParams({
       return {
         expressParams: undefined,
         expressEstimateMethod: undefined,
+        fastExpressParams: undefined,
+        asyncExpressParams: undefined,
         isLoading: false,
       };
     }
 
-    if (asyncExpressParams) {
-      return {
-        expressParams: asyncExpressParams,
-        isLoading: false,
-      };
-    }
+    const expressParams = asyncExpressParams || fastExpressParams;
 
     return {
-      expressParams: fastExpressParams,
+      expressParams,
+      expressEstimateMethod: expressParams?.estimationMethod,
+      fastExpressParams,
+      asyncExpressParams,
       isLoading: !fastExpressParams,
     };
   }, [isEnabled, asyncExpressParams, fastExpressParams]);

@@ -2,7 +2,7 @@ import { ErrorLike } from "lib/errors";
 
 export enum TxnEventName {
   Simulated = "Simulated",
-  Prepared = "Prepared",
+  Sending = "Sending",
   Sent = "Sent",
   Error = "Error",
 }
@@ -41,11 +41,11 @@ export class TxnEventBuilder<TParams> {
     return this._build(TxnEventName.Simulated, {});
   }
 
-  Prepared() {
-    return this._build(TxnEventName.Prepared, {});
+  Sending() {
+    return this._build(TxnEventName.Sending, {});
   }
 
-  Sent({ txnHash, blockNumber, createdAt }: { txnHash: string; blockNumber: bigint; createdAt: number }) {
-    return this._build(TxnEventName.Sent, { txnHash, blockNumber, createdAt });
+  Sent({ txnId }: { txnId: string }) {
+    return this._build(TxnEventName.Sent, { txnId });
   }
 }

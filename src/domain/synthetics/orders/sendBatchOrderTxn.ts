@@ -43,7 +43,7 @@ export async function sendBatchOrderTxn({
   chainId,
   signer,
   batchParams,
-  expressParams: rawExpressParams,
+  expressParams,
   simulationParams,
   callback,
 }: {
@@ -54,8 +54,6 @@ export async function sendBatchOrderTxn({
   simulationParams: BatchSimulationParams | undefined;
   callback: TxnCallback<BatchOrderTxnCtx> | undefined;
 }) {
-  const expressParams = rawExpressParams?.relayFeeParams.isOutGasTokenBalance ? undefined : rawExpressParams;
-
   const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({ expressParams, batchParams, signer });
 
   try {
@@ -71,7 +69,7 @@ export async function sendBatchOrderTxn({
           })
         : Promise.resolve(undefined);
 
-    if (expressParams && !expressParams.relayFeeParams.isOutGasTokenBalance) {
+    if (expressParams) {
       await runSimulation().then(() => callback?.(eventBuilder.Simulated()));
 
       const txnData = await buildAndSignExpressBatchOrderTxn({
@@ -84,9 +82,7 @@ export async function sendBatchOrderTxn({
         noncesData: undefined,
       });
 
-      callback?.(eventBuilder.Prepared());
-
-      const createdAt = Date.now();
+      callback?.(eventBuilder.Sending());
 
       const res = Promise.race([
         sendExpressTransaction({
@@ -101,9 +97,7 @@ export async function sendBatchOrderTxn({
         .then(async (res) => {
           callback?.(
             eventBuilder.Sent({
-              txnHash: res.taskId,
-              blockNumber: BigInt(await signer.provider!.getBlockNumber()),
-              createdAt,
+              txnId: res.taskId,
             })
           );
 

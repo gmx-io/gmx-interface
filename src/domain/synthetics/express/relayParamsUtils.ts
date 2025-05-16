@@ -56,6 +56,8 @@ export function getRelayerFeeParams({
   account,
   relayerFeeTokenAmount,
   relayerFeeTokenAddress,
+  relayerGasLimit,
+  l1GasLimit,
   gasPaymentTokenAddress,
   totalNetworkFeeAmount,
   internalSwapAmounts,
@@ -71,6 +73,8 @@ export function getRelayerFeeParams({
   relayerFeeTokenAmount: bigint;
   totalNetworkFeeAmount: bigint;
   relayerFeeTokenAddress: string;
+  relayerGasLimit: bigint;
+  l1GasLimit: bigint;
   gasPaymentTokenAddress: string;
   internalSwapAmounts: SwapAmounts | undefined;
   batchExternalCalls: ExternalCallsPayload;
@@ -151,6 +155,8 @@ export function getRelayerFeeParams({
     relayerTokenAmount: relayerFeeTokenAmount,
     totalNetworkFeeAmount,
     gasPaymentTokenAmount,
+    relayerGasLimit,
+    l1GasLimit,
     isOutGasTokenBalance,
     needGasPaymentTokenApproval,
     gasPaymentTokenAddress,
