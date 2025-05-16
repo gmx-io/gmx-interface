@@ -1,13 +1,17 @@
 import { t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
-import flatten from "lodash/flatten";
+import { zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
 import { Token } from "domain/tokens";
 import { callContract } from "lib/contracts";
 import { abis } from "sdk/abis";
-
-import { createUpdateEncodedPayload } from "./updateOrderTxn";
+import { OrderType } from "sdk/types/orders";
+import {
+  buildUpdateOrderMulticall,
+  buildUpdateOrderPayload,
+  encodeExchangeRouterMulticall,
+} from "sdk/utils/orderTransactions";
 
 export type SetAutoCancelOrdersParams = {
   orderKey: string;
@@ -16,6 +20,7 @@ export type SetAutoCancelOrdersParams = {
   triggerPrice: bigint;
   acceptablePrice: bigint;
   minOutputAmount: bigint;
+  orderType: OrderType;
   executionFee?: bigint;
 };
 
@@ -33,24 +38,42 @@ export function setAutoCancelOrdersTxn(
 ): Promise<void> {
   const router = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
 
-  const encodedPayload = ps.map((p) => {
-    const { orderKey, sizeDeltaUsd, triggerPrice, acceptablePrice, minOutputAmount, executionFee, indexToken } = p;
+  const encodedPayload = ps
+    .map((p) => {
+      const {
+        orderKey,
+        sizeDeltaUsd,
+        triggerPrice,
+        acceptablePrice,
+        minOutputAmount,
+        executionFee,
+        indexToken,
+        orderType,
+      } = p;
 
-    return createUpdateEncodedPayload({
-      chainId,
-      router,
-      orderKey,
-      sizeDeltaUsd,
-      executionFee,
-      indexToken,
-      acceptablePrice,
-      triggerPrice,
-      minOutputAmount,
-      autoCancel: true,
-    });
-  });
+      const { multicall } = buildUpdateOrderMulticall(
+        buildUpdateOrderPayload({
+          chainId,
+          orderKey,
+          sizeDeltaUsd,
+          acceptablePrice,
+          triggerPrice,
+          minOutputAmount,
+          orderType,
+          indexTokenAddress: indexToken?.address ?? zeroAddress,
+          validFromTime: 0n,
+          executionFeeTopUp: executionFee ?? 0n,
+          autoCancel: true,
+        })
+      );
 
-  return callContract(chainId, router, "multicall", [flatten(encodedPayload)], {
+      const { encodedMulticall } = encodeExchangeRouterMulticall(multicall);
+
+      return encodedMulticall;
+    })
+    .flat();
+
+  return callContract(chainId, router, "multicall", [encodedPayload], {
     value: ps.reduce((acc, p) => acc + (p.executionFee ?? 0n), 0n),
     sentMsg: t`Updating ${updateOrdersCount} TP/SL order(s)`,
     successMsg:

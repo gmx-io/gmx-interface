@@ -32,6 +32,7 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
   const isUntouched = useSelector(makeSelectTradeboxSidecarOrdersEntriesIsUntouched(prefix));
   const setIsUntouched = useSelector(selectTradeboxSidecarEntriesSetIsUntouched);
   const totalPositionSizeUsd = useSelector(selectTradeboxSidecarOrdersTotalSizeUsd);
+
   const visualMultiplier = useSelector(selectSelectedMarketVisualMultiplier);
 
   const getPercentageBySizeUsd = useCallback(

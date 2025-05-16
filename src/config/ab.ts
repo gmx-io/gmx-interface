@@ -11,6 +11,8 @@ type AbStorage = {
 };
 
 const abFlagsConfig = {
+  testSponsoredCall: 0,
+  disableAsyncGasLimit: 0,
   testExampleAb: 0,
 };
 

@@ -1,11 +1,19 @@
-import { OrderTxnType, OrderType, UpdateOrderParams } from "domain/synthetics/orders";
-import { ExternalSwapQuote } from "sdk/types/trade";
+import { ReactNode } from "react";
+
+import { OrderTxnType, OrderType } from "domain/synthetics/orders";
+import { SignedSubbacountApproval } from "domain/synthetics/subaccount";
+import { OrderMetricId } from "lib/metrics/types";
+import { TaskState } from "lib/transactions/sendExpressTransaction";
+import { SignedTokenPermit } from "sdk/types/tokens";
+import { ExternalSwapOutput } from "sdk/types/trade";
 
 export type MultiTransactionStatus<TEventData> = {
   key: string;
   data?: TEventData;
   createdTxnHash?: string;
   cancelledTxnHash?: string;
+  gelatoTaskId?: string;
+
   updatedTxnHash?: string;
   executedTxnHash?: string;
   createdAt: number;
@@ -66,6 +74,25 @@ export type PendingPositionUpdate = {
   updatedAtBlock: bigint;
 };
 
+export type PendingExpressTxnParams = {
+  key: string;
+  taskId: string | undefined;
+  isSponsoredCall: boolean;
+  subaccountApproval?: SignedSubbacountApproval;
+  tokenPermits?: SignedTokenPermit[];
+  pendingOrdersKeys?: string[];
+  pendingPositionsKeys?: string[];
+  createdAt: number;
+  metricId?: OrderMetricId;
+  successMessage?: ReactNode;
+  errorMessage?: ReactNode;
+};
+
+export type ExpressHandlers = {
+  onSuccess: (params: { pendingExpressTxn: PendingExpressTxnParams }) => void;
+  onFailure: (params: { pendingExpressTxn: PendingExpressTxnParams }) => void;
+};
+
 export type PendingPositionsUpdates = {
   [key: string]: PendingPositionUpdate | undefined;
 };
@@ -80,6 +107,10 @@ export type EventLogItems<T> = {
 
 export type EventLogArrayItems<T> = {
   [key: string]: T[];
+};
+
+export type PendingExpressTxns = {
+  [taskId: string]: PendingExpressTxnParams;
 };
 
 export type EventLogSection<T> = {
@@ -112,6 +143,10 @@ export type SyntheticsEventsContextType = {
   pendingPositionsUpdates: PendingPositionsUpdates;
   positionIncreaseEvents: PositionIncreaseEvent[] | undefined;
   positionDecreaseEvents: PositionDecreaseEvent[] | undefined;
+  pendingExpressTxns: PendingExpressTxns;
+  gelatoTaskStatuses: { [taskId: string]: TaskState };
+  setPendingExpressTxn: (params: PendingExpressTxnParams) => void;
+  updatePendingExpressTxn: (params: Partial<PendingExpressTxnParams>) => void;
   setPendingOrder: SetPendingOrder;
   setPendingOrderUpdate: SetPendingOrderUpdate;
   setPendingFundingFeeSettlement: SetPendingFundingFeeSettlement;
@@ -126,7 +161,7 @@ export type SyntheticsEventsContextType = {
 };
 
 export type SetPendingOrder = (data: PendingOrderData | PendingOrderData[]) => void;
-export type SetPendingOrderUpdate = (data: UpdateOrderParams, remove?: "remove") => void;
+export type SetPendingOrderUpdate = (data: PendingOrderData, remove?: "remove") => void;
 export type SetPendingPosition = (update: PendingPositionUpdate) => void;
 export type SetPendingDeposit = (data: PendingDepositData) => void;
 export type SetPendingWithdrawal = (data: PendingWithdrawalData) => void;
@@ -169,8 +204,11 @@ export type PendingOrderData = {
   marketAddress: string;
   initialCollateralTokenAddress: string;
   swapPath: string[];
-  externalSwapQuote: ExternalSwapQuote | undefined;
+  externalSwapQuote: ExternalSwapOutput | undefined;
   initialCollateralDeltaAmount: bigint;
+  triggerPrice: bigint;
+  acceptablePrice: bigint;
+  autoCancel: boolean;
   minOutputAmount: bigint;
   sizeDeltaUsd: bigint;
   isLong: boolean;

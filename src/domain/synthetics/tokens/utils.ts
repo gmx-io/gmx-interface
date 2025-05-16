@@ -1,25 +1,84 @@
 import { USD_DECIMALS } from "config/factors";
-import { InfoTokens, Token, TokenInfo } from "domain/tokens";
+import { InfoTokens, SignedTokenPermit, Token, TokenInfo } from "domain/tokens";
 import { formatAmount } from "lib/numbers";
-import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { nowInSeconds } from "sdk/utils/time";
 import { getTokenData } from "sdk/utils/tokens";
 
-import { TokenData, TokensAllowanceData, TokensData, TokensRatio } from "./types";
+import { TokenData, TokensAllowanceData, TokensData, TokensRatio, TokenToSpendParams } from "./types";
 
 export * from "sdk/utils/tokens";
 
 export function getNeedTokenApprove(
   tokenAllowanceData: TokensAllowanceData | undefined,
   tokenAddress: string | undefined,
-  amountToSpend: bigint | undefined
+  amountToSpend: bigint | undefined,
+  permits: SignedTokenPermit[]
 ): boolean {
   if (tokenAddress === NATIVE_TOKEN_ADDRESS || amountToSpend === undefined || amountToSpend <= 0n) {
     return false;
   }
+
   if (!tokenAllowanceData || !tokenAddress || tokenAllowanceData?.[tokenAddress] === undefined) {
     return true;
   }
-  return amountToSpend > tokenAllowanceData[tokenAddress];
+
+  const shouldApprove = amountToSpend > tokenAllowanceData[tokenAddress];
+  const signedPermit = permits.find(
+    (permit) =>
+      permit.token === tokenAddress && BigInt(permit.value) >= amountToSpend && Number(permit.deadline) > nowInSeconds()
+  );
+
+  return shouldApprove && !signedPermit;
+}
+
+export function getApprovalRequirements({
+  chainId,
+  payTokenParamsList,
+  gasPaymentTokenParams,
+  permits,
+}: {
+  chainId: number;
+  payTokenParamsList: TokenToSpendParams[];
+  gasPaymentTokenParams: TokenToSpendParams | undefined;
+  permits: SignedTokenPermit[];
+}): {
+  tokensToApprove: TokenToSpendParams[];
+  isAllowanceLoaded: boolean;
+} {
+  const initialTokensToApprove = payTokenParamsList;
+
+  if (gasPaymentTokenParams) {
+    initialTokensToApprove.push(gasPaymentTokenParams);
+  }
+
+  const combinedTokensToSpendMap = initialTokensToApprove.reduce(
+    (acc, curr) => {
+      const tokenAddress = convertTokenAddress(chainId, curr.tokenAddress, "wrapped");
+
+      if (acc[tokenAddress] !== undefined) {
+        acc[tokenAddress].amount = acc[tokenAddress].amount + curr.amount;
+      } else {
+        acc[tokenAddress] = {
+          ...curr,
+        };
+      }
+
+      return acc;
+    },
+    {} as Record<string, TokenToSpendParams>
+  );
+
+  const tokensToApprove = Object.values(combinedTokensToSpendMap).filter((tokenToSpend) => {
+    return getNeedTokenApprove(tokenToSpend.allowanceData, tokenToSpend.tokenAddress, tokenToSpend.amount, permits);
+  });
+
+  const isAllowanceLoaded = tokensToApprove.every((tokenToSpend) => tokenToSpend.isAllowanceLoaded);
+
+  return {
+    tokensToApprove,
+    isAllowanceLoaded,
+  };
 }
 
 export function formatTokensRatio(fromToken?: Token, toToken?: Token, ratio?: TokensRatio) {

@@ -1,4 +1,4 @@
-import { hashData, hashString } from "utils/hash";
+import { hashData, hashString, keccakString } from "utils/hash";
 
 export const POSITION_IMPACT_FACTOR_KEY = hashString("POSITION_IMPACT_FACTOR");
 export const MAX_POSITION_IMPACT_FACTOR_KEY = hashString("MAX_POSITION_IMPACT_FACTOR");
@@ -93,6 +93,19 @@ export const MAX_AUTO_CANCEL_ORDERS_KEY = hashString("MAX_AUTO_CANCEL_ORDERS");
 export const OPTIMAL_USAGE_FACTOR = hashString("OPTIMAL_USAGE_FACTOR");
 export const BASE_BORROWING_FACTOR = hashString("BASE_BORROWING_FACTOR");
 export const ABOVE_OPTIMAL_USAGE_BORROWING_FACTOR = hashString("ABOVE_OPTIMAL_USAGE_BORROWING_FACTOR");
+export const SUBACCOUNT_EXPIRES_AT = hashString("SUBACCOUNT_EXPIRES_AT");
+export const PRICE_FEED_KEY = hashString("PRICE_FEED");
+export const GASLESS_FEATURE_DISABLED_KEY = hashString("GASLESS_FEATURE_DISABLED");
+export const GELATO_RELAY_FEE_MULTIPLIER_FACTOR_KEY = hashString("GELATO_RELAY_FEE_MULTIPLIER_FACTOR");
+
+export const GMX_SIMULATION_ORIGIN = "0x" + keccakString("GMX SIMULATION ORIGIN").slice(-40);
+
+export function subaccountExpiresAtKey(account: string, subaccount: string, actionType: string) {
+  return hashData(
+    ["bytes32", "address", "address", "bytes32"],
+    [SUBACCOUNT_EXPIRES_AT, account, subaccount, actionType]
+  );
+}
 
 export function glvShiftLastExecutedAtKey(glvAddress: string) {
   return hashData(["bytes32", "address"], [GLV_SHIFT_LAST_EXECUTED_AT, glvAddress]);
@@ -355,4 +368,12 @@ export function subaccountActionCountKey(account: string, subaccount: string, ac
 
 export function subaccountAutoTopUpAmountKey(account: string, subaccount: string) {
   return hashData(["bytes32", "address", "address"], [SUBACCOUNT_AUTO_TOP_UP_AMOUNT, account, subaccount]);
+}
+
+export function priceFeedKey(token: string) {
+  return hashData(["bytes32", "address"], [PRICE_FEED_KEY, token]);
+}
+
+export function gaslessFeatureDisabledKey(module: string) {
+  return hashData(["bytes32", "address"], [GASLESS_FEATURE_DISABLED_KEY, module]);
 }

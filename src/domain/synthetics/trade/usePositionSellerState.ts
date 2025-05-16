@@ -3,11 +3,11 @@ import { useCallback, useMemo, useState } from "react";
 import { getKeepLeverageKey, getSyntheticsReceiveMoneyTokenKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { DEFAULT_TWAP_DURATION, DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import { TradeMode } from "sdk/types/trade";
+import { TwapDuration } from "sdk/types/twap";
 
 import { PositionInfo } from "../positions";
-import { TwapDuration } from "./twap/types";
-import { DEFAULT_TWAP_DURATION, DEFAULT_TWAP_NUMBER_OF_PARTS } from "./twap/utils";
 
 export enum OrderOption {
   Market = "Market",

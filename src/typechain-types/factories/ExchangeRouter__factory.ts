@@ -3,7 +3,10 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type { ExchangeRouter, ExchangeRouterInterface } from "../ExchangeRouter";
+import type {
+  ExchangeRouter,
+  ExchangeRouterInterface,
+} from "../ExchangeRouter";
 
 const _abi = [
   {
@@ -1691,7 +1694,10 @@ export class ExchangeRouter__factory {
   static createInterface(): ExchangeRouterInterface {
     return new Interface(_abi) as ExchangeRouterInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): ExchangeRouter {
+  static connect(
+    address: string,
+    runner?: ContractRunner | null
+  ): ExchangeRouter {
     return new Contract(address, _abi, runner) as unknown as ExchangeRouter;
   }
 }

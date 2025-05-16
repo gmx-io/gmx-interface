@@ -18,7 +18,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { Options, usePositionEditorFees } from "./hooks/usePositionEditorFees";
 
-export function PositionEditorAdvancedRows({ operation }: Options) {
+export function PositionEditorAdvancedRows({ operation, relayerFeeParams }: Options) {
   const position = usePositionEditorPosition();
 
   const { collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
@@ -46,7 +46,7 @@ export function PositionEditorAdvancedRows({ operation }: Options) {
       contentClassName="flex flex-col gap-14 pt-14"
     >
       <TradeFeesRow {...fees} feesType="edit" shouldShowRebate={false} />
-      <NetworkFeeRow executionFee={executionFee} />
+      <NetworkFeeRow executionFee={executionFee} relayerFeeParams={relayerFeeParams} />
 
       <SyntheticsInfoRow
         label={t`Leverage`}

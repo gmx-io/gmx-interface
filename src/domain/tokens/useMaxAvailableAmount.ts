@@ -1,4 +1,5 @@
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { RelayerFeeParams } from "domain/synthetics/express";
 import { TokenData } from "domain/synthetics/tokens";
 import { getMinResidualAmount } from "domain/tokens";
 import { absDiffBps, formatAmountFree } from "lib/numbers";
@@ -9,11 +10,13 @@ export function useMaxAvailableAmount({
   nativeToken,
   fromTokenAmount,
   fromTokenInputValue,
+  relayerFeeParams,
 }: {
   fromToken: TokenData | undefined;
   nativeToken: TokenData | undefined;
   fromTokenAmount: bigint;
   fromTokenInputValue: string;
+  relayerFeeParams: RelayerFeeParams | undefined;
 }): {
   formattedMaxAvailableAmount: string;
   showClickMax: boolean;
@@ -25,8 +28,12 @@ export function useMaxAvailableAmount({
   }
 
   const minResidualAmount = getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices.maxPrice);
+  const gasPaymentAmount =
+    relayerFeeParams?.gasPaymentTokenAddress === fromToken.address ? relayerFeeParams.gasPaymentTokenAmount : 0n;
 
-  let maxAvailableAmount = fromToken.isNative ? fromToken.balance - BigInt(minResidualAmount ?? 0n) : fromToken.balance;
+  let maxAvailableAmount = fromToken.isNative
+    ? fromToken.balance - BigInt(minResidualAmount ?? 0n) - gasPaymentAmount
+    : fromToken.balance - gasPaymentAmount;
 
   if (maxAvailableAmount < 0) {
     maxAvailableAmount = 0n;

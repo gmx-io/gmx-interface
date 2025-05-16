@@ -2069,7 +2069,10 @@ export class EventEmitter__factory {
   static createInterface(): EventEmitterInterface {
     return new Interface(_abi) as EventEmitterInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): EventEmitter {
+  static connect(
+    address: string,
+    runner?: ContractRunner | null
+  ): EventEmitter {
     return new Contract(address, _abi, runner) as unknown as EventEmitter;
   }
 }

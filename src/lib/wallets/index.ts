@@ -2,6 +2,7 @@ import { switchChain } from "@wagmi/core";
 
 import { ChainId } from "config/chains";
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
+import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 
 import { getRainbowKitConfig } from "./rainbowKitConfig";
 
@@ -15,6 +16,10 @@ export type NetworkMetadata = {
   };
   rpcUrls: string[];
   blockExplorerUrls: string[];
+};
+
+export type WalletSigner = UncheckedJsonRpcSigner & {
+  address: string;
 };
 
 export async function switchNetwork(chainId: number, active: boolean): Promise<void> {

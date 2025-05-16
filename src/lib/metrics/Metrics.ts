@@ -11,13 +11,13 @@ import {
 import { sleep } from "lib/sleep";
 import { getAppVersion } from "lib/version";
 import { getWalletNames, WalletNames } from "lib/wallets/getWalletNames";
+import { parseError, ErrorLike } from "sdk/utils/errors";
 
 import {
   METRIC_COUNTER_DISPATCH_NAME,
   METRIC_EVENT_DISPATCH_NAME,
   METRIC_TIMING_DISPATCH_NAME,
 } from "./emitMetricEvent";
-import { ErrorLike, parseError } from "../parseError";
 import { getStorageItem, setStorageItem } from "./storage";
 import { ErrorEvent, GlobalMetricData, LongTaskTiming } from "./types";
 

@@ -51,7 +51,7 @@ import { getByKey } from "sdk/utils/objects";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorFactory } from "../utils";
-import { selectExternalSwapQuote } from "./externalSwapSelectors";
+import { selectIsExpressTransactionAvailable } from "./expressSelectors";
 import {
   selectChainId,
   selectGasLimits,
@@ -66,6 +66,7 @@ import {
   selectUserReferralInfo,
 } from "./globalSelectors";
 import { selectIsPnlInLeverage, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
+import { selectExternalSwapQuote } from "./tradeboxSelectors";
 import { selectTradeboxAvailableTokensOptions } from "./tradeboxSelectors";
 import { makeSelectFindSwapPath, makeSelectNextPositionValuesForIncrease } from "./tradeSelectors";
 
@@ -338,6 +339,7 @@ export const selectOrderEditorNextPositionValuesForIncrease = createSelector((q)
   const selector = makeSelectNextPositionValuesForIncrease({
     ...args,
     externalSwapQuote: q(selectExternalSwapQuote),
+    isExpressTxn: q(selectIsExpressTransactionAvailable),
   });
 
   return q(selector);
@@ -350,7 +352,10 @@ export const makeSelectOrderEditorNextPositionValuesForIncrease = createSelector
 
       if (!args) return undefined;
 
-      const selector = makeSelectNextPositionValuesForIncrease(args);
+      const selector = makeSelectNextPositionValuesForIncrease({
+        ...args,
+        isExpressTxn: q(selectIsExpressTransactionAvailable),
+      });
 
       return q(selector);
     })
@@ -365,6 +370,7 @@ export const selectOrderEditorNextPositionValuesWithoutPnlForIncrease = createSe
     ...args,
     externalSwapQuote: q(selectExternalSwapQuote),
     isPnlInLeverage: false,
+    isExpressTxn: q(selectIsExpressTransactionAvailable),
   });
 
   return q(selector);

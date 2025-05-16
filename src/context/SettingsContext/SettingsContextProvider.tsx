@@ -7,16 +7,20 @@ import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from 
 import {
   DEBUG_SWAP_MARKETS_CONFIG_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
+  EXPRESS_TRADING_GAS_TOKEN_SWITCHED,
   EXTERNAL_SWAPS_ENABLED_KEY,
   IS_AUTO_CANCEL_TPSL_KEY,
   IS_PNL_IN_LEVERAGE_KEY,
   ORACLE_KEEPER_INSTANCES_CONFIG_KEY,
+  SETTINGS_WARNING_DOT_VISIBLE_KEY,
   SHOULD_SHOW_POSITION_LINES_KEY,
   SHOW_DEBUG_VALUES_KEY,
   SHOW_PNL_AFTER_FEES_KEY,
   TWAP_NUMBER_OF_PARTS_KEY,
   getAllowedSlippageKey,
   getExecutionFeeBufferBpsKey,
+  getExpressOrdersEnabledKey,
+  getGasPaymentTokenAddressKey,
   getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
   getLeverageEnabledKey as getLeverageSliderEnabledKey,
   getSyntheticsAcceptablePriceImpactBufferKey,
@@ -25,6 +29,7 @@ import { DEFAULT_TWAP_NUMBER_OF_PARTS } from "domain/synthetics/trade/twap/utils
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { tenderlyLsKeys } from "lib/tenderly";
+import { getDefaultGasPaymentToken } from "sdk/configs/express";
 import { getOracleKeeperRandomIndex } from "sdk/configs/oracleKeeper";
 
 export type SettingsContextType = {
@@ -64,8 +69,20 @@ export type SettingsContextType = {
   isSettingsVisible: boolean;
   setIsSettingsVisible: (val: boolean) => void;
 
+  expressOrdersEnabled: boolean;
+  setExpressOrdersEnabled: (val: boolean) => void;
+
+  gasPaymentTokenAddress: string;
+  setGasPaymentTokenAddress: (val: string) => void;
+
   externalSwapsEnabled: boolean;
   setExternalSwapsEnabled: (val: boolean) => void;
+
+  settingsWarningDotVisible: boolean;
+  setSettingsWarningDotVisible: (val: boolean) => void;
+
+  expressTradingGasTokenSwitched: boolean;
+  setExpressTradingGasTokenSwitched: (val: boolean) => void;
 
   debugSwapMarketsConfig:
     | {
@@ -102,6 +119,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const [hasOverriddenDefaultArb30ExecutionFeeBufferBpsKey, setHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey] =
     useLocalStorageSerializeKey(getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey(chainId), false);
 
+  const [settingsWarningDotVisible, setSettingsWarningDotVisible] = useLocalStorageSerializeKey(
+    SETTINGS_WARNING_DOT_VISIBLE_KEY,
+    false
+  );
+
   let [executionFeeBufferBps, setExecutionFeeBufferBps] = useLocalStorageSerializeKey(
     getExecutionFeeBufferBpsKey(chainId),
     EXECUTION_FEE_CONFIG_V2[chainId]?.defaultBufferBps
@@ -117,6 +139,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       },
       {} as { [chainId: number]: number }
     )
+  );
+
+  const [expressTradingGasTokenSwitched, setExpressTradingGasTokenSwitched] = useLocalStorageSerializeKey(
+    EXPRESS_TRADING_GAS_TOKEN_SWITCHED,
+    false
   );
 
   const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(
@@ -151,6 +178,16 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const [debugSwapMarketsConfig, setDebugSwapMarketsConfig] = useLocalStorageSerializeKey<
     undefined | { disabledSwapMarkets?: string[]; manualPath?: string[] }
   >([chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY], undefined);
+
+  const [expressOrdersEnabled, setExpressOrdersEnabled] = useLocalStorageSerializeKey(
+    getExpressOrdersEnabledKey(chainId),
+    false
+  );
+
+  const [gasPaymentTokenAddress, setGasPaymentTokenAddress] = useLocalStorageSerializeKey(
+    getGasPaymentTokenAddressKey(chainId),
+    getDefaultGasPaymentToken(chainId)
+  );
 
   let savedShouldDisableValidationForTesting: boolean | undefined;
   let setSavedShouldDisableValidationForTesting: (val: boolean) => void;
@@ -232,11 +269,22 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       isSettingsVisible,
       setIsSettingsVisible,
 
+      expressOrdersEnabled: expressOrdersEnabled!,
+      setExpressOrdersEnabled,
+      gasPaymentTokenAddress: gasPaymentTokenAddress!,
+      setGasPaymentTokenAddress,
+
       externalSwapsEnabled: externalSwapsEnabled!,
       setExternalSwapsEnabled,
 
       debugSwapMarketsConfig: debugSwapMarketsConfig!,
       setDebugSwapMarketsConfig,
+
+      settingsWarningDotVisible: settingsWarningDotVisible!,
+      setSettingsWarningDotVisible,
+
+      expressTradingGasTokenSwitched: expressTradingGasTokenSwitched!,
+      setExpressTradingGasTokenSwitched,
 
       savedTwapNumberOfParts: savedTwapNumberOfParts!,
       setSavedTWAPNumberOfParts,
@@ -274,10 +322,18 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     tenderlyProjectSlug,
     tenderlySimulationEnabled,
     isSettingsVisible,
+    expressOrdersEnabled,
+    setExpressOrdersEnabled,
+    gasPaymentTokenAddress,
+    setGasPaymentTokenAddress,
     externalSwapsEnabled,
     setExternalSwapsEnabled,
     debugSwapMarketsConfig,
     setDebugSwapMarketsConfig,
+    settingsWarningDotVisible,
+    setSettingsWarningDotVisible,
+    expressTradingGasTokenSwitched,
+    setExpressTradingGasTokenSwitched,
     savedTwapNumberOfParts,
     setSavedTWAPNumberOfParts,
   ]);
