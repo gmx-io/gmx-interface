@@ -9,12 +9,20 @@ export type TokenData = Token & {
   prices: TokenPrices;
   balance?: bigint;
   totalSupply?: bigint;
+  hasPriceFeedProvider?: boolean;
 };
 
 export type TokensRatio = {
   ratio: bigint;
   largestToken: Token;
   smallestToken: Token;
+};
+
+export type TokenToSpendParams = {
+  tokenAddress: string;
+  amount: bigint;
+  allowanceData: TokensAllowanceData | undefined;
+  isAllowanceLoaded: boolean | undefined;
 };
 
 export type TokenBalancesData = {

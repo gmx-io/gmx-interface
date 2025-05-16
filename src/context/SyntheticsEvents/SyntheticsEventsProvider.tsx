@@ -1,7 +1,11 @@
+import { TaskState } from "@gelatonetwork/relay-sdk";
 import { t } from "@lingui/macro";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { isDevelopment } from "config/env";
+import { useExpressNonces } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { useTokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import {
   subscribeToApprovalEvents,
@@ -19,18 +23,18 @@ import {
   isMarketOrderType,
   isSwapOrderType,
   OrderTxnType,
-  UpdateOrderParams,
 } from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
+import { getIsEmptySubaccountApproval } from "domain/synthetics/subaccount";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
-import { decodeTwapUiFeeReceiver } from "domain/synthetics/trade/twap/uiFeeReceiver";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import {
   getGLVSwapMetricId,
   getGMSwapMetricId,
+  getMultichainDepositMetricId,
   getPositionOrderMetricId,
   getShiftGMMetricId,
   getSwapOrderMetricId,
@@ -41,11 +45,14 @@ import {
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { deleteByKey, getByKey, setByKey, updateByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
+import { getTenderlyAccountParams } from "lib/tenderly";
+import { getGelatoTaskDebugInfo, pollGelatoTask } from "lib/transactions/sendExpressTransaction";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { sendUserAnalyticsOrderResultEvent, userAnalytics } from "lib/userAnalytics";
 import { TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
 
 import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
 import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
@@ -57,10 +64,12 @@ import {
   DepositStatuses,
   EventLogData,
   EventTxnParams,
+  ExpressHandlers,
   GLVDepositCreatedEventData,
   OrderCreatedEventData,
   OrderStatuses,
   PendingDepositData,
+  PendingExpressTxnParams,
   PendingFundingFeeSettlementData,
   PendingOrderData,
   PendingOrdersUpdates,
@@ -76,6 +85,7 @@ import {
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
+import { getPendingOrderKey } from "./utils";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -90,6 +100,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { wsProvider } = useWebsocketProvider();
   const { hasV2LostFocus, hasPageLostFocus } = useHasLostFocus();
 
+  const { resetTokenPermits } = useTokenPermitsContext();
+  const { refreshSubaccountData, resetSubaccountApproval } = useSubaccountContext();
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
@@ -127,9 +139,77 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [positionIncreaseEvents, setPositionIncreaseEvents] = useState<PositionIncreaseEvent[]>([]);
   const [positionDecreaseEvents, setPositionDecreaseEvents] = useState<PositionDecreaseEvent[]>([]);
 
+  const [pendingExpressTxnParams, setPendingExpressTxnParams] = useState<{ [key: string]: PendingExpressTxnParams }>(
+    {}
+  );
+  const { refreshNonces, updateActionsCount } = useExpressNonces();
+  const expressHandlers = useRef<ExpressHandlers>({
+    onSuccess: () => null,
+    onFailure: () => null,
+  });
+  const expressSubscriptions = useRef<{ [taskId: string]: boolean }>({});
   const eventLogHandlers = useRef({});
 
-  const { setPendingTxns } = usePendingTxns();
+  expressHandlers.current = {
+    onSuccess: ({ pendingExpressTxn }: { pendingExpressTxn: PendingExpressTxnParams }) => {
+      const isSubaccount = Boolean(pendingExpressTxn.subaccountApproval);
+
+      const key = pendingExpressTxn.key;
+
+      refreshSubaccountData();
+      refreshNonces();
+      updateActionsCount(isSubaccount ? "subaccountRelayRouter" : "relayRouter");
+
+      if (
+        pendingExpressTxn?.subaccountApproval &&
+        !getIsEmptySubaccountApproval(pendingExpressTxn.subaccountApproval)
+      ) {
+        resetSubaccountApproval();
+      }
+
+      if (pendingExpressTxn?.tokenPermits?.length) {
+        resetTokenPermits();
+      }
+
+      if (pendingExpressTxn?.successMessage) {
+        helperToast.success(pendingExpressTxn.successMessage);
+      }
+
+      deleteByKey(pendingExpressTxnParams, key);
+    },
+
+    onFailure: ({ pendingExpressTxn }: { pendingExpressTxn: PendingExpressTxnParams }) => {
+      const key = pendingExpressTxn.key;
+
+      pendingExpressTxn.pendingOrdersKeys?.forEach((key) => {
+        setOrderStatuses((old) => {
+          if (old[key]) {
+            return updateByKey(old, key, {
+              gelatoTaskId: pendingExpressTxn.taskId,
+              isGelatoTaskFailed: true,
+            });
+          } else {
+            return setByKey(old, key, {
+              key,
+              createdAt: Date.now(),
+              gelatoTaskId: pendingExpressTxn.taskId,
+              isGelatoTaskFailed: true,
+            });
+          }
+        });
+
+        if (pendingExpressTxn.errorMessage) {
+          helperToast.error(pendingExpressTxn.errorMessage);
+        }
+      });
+
+      pendingExpressTxn.pendingPositionsKeys?.forEach((key) => {
+        deleteByKey(pendingPositionsUpdates, key);
+      });
+
+      deleteByKey(pendingExpressTxnParams, key);
+    },
+  };
 
   const updateNativeTokenBalance = useCallback(() => {
     if (!currentAccount) {
@@ -202,6 +282,15 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           createdAt: Date.now(),
         })
       );
+
+      const pendingOrderKey = getPendingOrderKey(data);
+      const pendingExpressTxn = Object.values(pendingExpressTxnParams).find((p) =>
+        p.pendingOrdersKeys?.includes(pendingOrderKey)
+      );
+
+      if (pendingExpressTxn) {
+        expressHandlers.current.onSuccess({ pendingExpressTxn });
+      }
 
       setPendingOrdersUpdates((old) => deleteByKey(old, data.key));
     },
@@ -812,6 +901,18 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         }
       }
     },
+
+    MultichainBridgeIn: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const assetAddress = eventData.addressItems.items.token;
+      sendOrderExecutedMetric(
+        getMultichainDepositMetricId({
+          sourceChain: Number(eventData.uintItems.items.srcChainId),
+          assetAddress,
+          settlementChain: chainId,
+          amount: eventData.uintItems.items.amount,
+        })
+      );
+    },
   };
 
   useEffect(
@@ -905,6 +1006,43 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       pendingPositionsUpdates,
       positionIncreaseEvents,
       positionDecreaseEvents,
+      pendingExpressTxns: pendingExpressTxnParams,
+      setPendingExpressTxn: (params: PendingExpressTxnParams) => {
+        setPendingExpressTxnParams((old) => setByKey(old, params.key, params));
+      },
+      updatePendingExpressTxn: (params: Partial<PendingExpressTxnParams>) => {
+        setPendingExpressTxnParams((old) => {
+          if (!params.key || !getByKey(old, params.key)) {
+            return old;
+          }
+
+          if (params.isTimeout) {
+            const pendingTxnParams = getByKey(old, params.key);
+
+            pendingTxnParams?.pendingOrdersKeys?.forEach((key) => {
+              setOrderStatuses((old) => {
+                if (old[key]) {
+                  return updateByKey(old, key, {
+                    isGelatoTaskTimeout: true,
+                  });
+                } else {
+                  return setByKey(old, key, {
+                    key,
+                    createdAt: Date.now(),
+                    isGelatoTaskTimeout: true,
+                  });
+                }
+              });
+            });
+
+            pendingTxnParams?.pendingPositionsKeys?.forEach((key) => {
+              deleteByKey(pendingPositionsUpdates, key);
+            });
+          }
+
+          return updateByKey(old, params.key, params);
+        });
+      },
       setPendingOrder: (data: PendingOrderData | PendingOrderData[]) => {
         const toastId = Date.now();
 
@@ -914,7 +1052,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}
             toastTimestamp={toastId}
-            setPendingTxns={setPendingTxns}
           />,
           {
             autoClose: false,
@@ -931,10 +1068,14 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
         setPendingOrdersUpdates((old) => ({ ...old, ...objData }));
       },
-      setPendingOrderUpdate: (data: UpdateOrderParams, remove?: "remove") => {
-        setPendingOrdersUpdates((old) =>
-          remove ? deleteByKey(old, data.orderKey) : setByKey(old, data.orderKey, "update")
-        );
+      setPendingOrderUpdate: (data: PendingOrderData, remove?: "remove") => {
+        setPendingOrdersUpdates((old) => {
+          if (!data.orderKey) {
+            return old;
+          }
+
+          return remove ? deleteByKey(old, data.orderKey) : setByKey(old, data.orderKey, "update");
+        });
       },
       setPendingFundingFeeSettlement: (data: PendingFundingFeeSettlementData) => {
         const toastId = Date.now();
@@ -1030,11 +1171,54 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     pendingPositionsUpdates,
     positionIncreaseEvents,
     positionDecreaseEvents,
+    pendingExpressTxnParams,
     marketsInfoData,
     tokensData,
-    setPendingTxns,
     glvAndGmMarketsData,
   ]);
+
+  useEffect(() => {
+    Object.entries(pendingExpressTxnParams).forEach(([key, pendingExpressTxn]) => {
+      if (pendingExpressTxn.taskId && !expressSubscriptions.current[pendingExpressTxn.taskId]) {
+        expressSubscriptions.current[pendingExpressTxn.taskId] = true;
+
+        pollGelatoTask(pendingExpressTxn.taskId, async (taskStatus, error) => {
+          if (error || !taskStatus) {
+            expressHandlers.current.onFailure({ pendingExpressTxn });
+            delete expressSubscriptions[pendingExpressTxn.taskId!];
+            return;
+          }
+
+          if (isDevelopment() && pendingExpressTxn.taskId) {
+            const { accountSlug, projectSlug } = getTenderlyAccountParams();
+            getGelatoTaskDebugInfo(pendingExpressTxn.taskId, accountSlug, projectSlug).then((debugInfo) =>
+              // eslint-disable-next-line no-console
+              console.log("gelatoDebugData", taskStatus, pendingExpressTxn, debugInfo)
+            );
+          }
+
+          switch (taskStatus.taskState) {
+            case TaskState.ExecSuccess:
+              {
+                expressHandlers.current.onSuccess({ pendingExpressTxn });
+                delete expressSubscriptions.current[taskStatus.taskId];
+              }
+              break;
+            case TaskState.ExecReverted:
+            case TaskState.Cancelled: {
+              expressHandlers.current.onFailure({ pendingExpressTxn });
+              delete expressSubscriptions.current[taskStatus.taskId];
+              break;
+            }
+            default:
+              break;
+          }
+        });
+      }
+
+      expressSubscriptions.current[key] = true;
+    });
+  }, [pendingExpressTxnParams]);
 
   return <SyntheticsEventsContext.Provider value={contextState}>{children}</SyntheticsEventsContext.Provider>;
 }

@@ -6,13 +6,14 @@ import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT, getVestingData } from "lib/legacy";
 import useWallet from "lib/wallets/useWallet";
+import type { ContractName } from "sdk/configs/contracts";
 
 export default function useVestingData(account?: string) {
   const { active } = useWallet();
   const { chainId } = useChainId();
 
   const readerAddress = getContract(chainId, "Reader");
-  const vesterAddresses = ["GmxVester", "GlpVester", "AffiliateVester"]
+  const vesterAddresses = (["GmxVester", "GlpVester", "AffiliateVester"] satisfies ContractName[])
     .map((contractName) => getContract(chainId, contractName))
     .filter(Boolean);
 

@@ -4,6 +4,7 @@ import useSWR from "swr";
 
 import { metrics, OpenOceanQuoteTiming } from "lib/metrics";
 import { useDebounce } from "lib/useDebounce";
+import { UiContractsChain } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { TokensData } from "sdk/types/tokens";
@@ -16,15 +17,17 @@ export function useExternalSwapOutputRequest({
   chainId,
   tokenInAddress,
   tokenOutAddress,
+  receiverAddress,
   amountIn,
   slippage,
   gasPrice,
   enabled = true,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   tokensData: TokensData | undefined;
   tokenInAddress: string | undefined;
   tokenOutAddress: string | undefined;
+  receiverAddress: string | undefined;
   amountIn: bigint | undefined;
   slippage: number | undefined;
   gasPrice: bigint | undefined;
@@ -34,12 +37,13 @@ export function useExternalSwapOutputRequest({
     enabled &&
     tokenInAddress &&
     tokenOutAddress &&
+    receiverAddress &&
     tokenOutAddress !== tokenInAddress &&
     amountIn !== undefined &&
     amountIn > 0n &&
     slippage !== undefined &&
     gasPrice !== undefined
-      ? `useExternalSwapsQuote:${chainId}:${tokenInAddress}:${tokenOutAddress}:${amountIn}:${slippage}:${gasPrice}`
+      ? `useExternalSwapsQuote:${chainId}:${tokenInAddress}:${tokenOutAddress}:${amountIn}:${slippage}:${gasPrice}:${receiverAddress}`
       : null;
 
   const debouncedKey = useDebounce(swapKey, 300);
@@ -47,13 +51,14 @@ export function useExternalSwapOutputRequest({
   const prevTokensKey = usePrevious(tokensKey);
   const prevAmountIn = usePrevious(amountIn);
 
-  const { data } = useSWR<{ quote: ExternalSwapOutput; requestKey: string }>(enabled ? debouncedKey : null, {
+  const { data } = useSWR<{ quote: ExternalSwapOutput; requestKey: string }>(debouncedKey, {
     keepPreviousData: enabled && prevTokensKey === tokensKey && prevAmountIn === amountIn,
     fetcher: async (requestKey: string) => {
       try {
         if (
           !tokenInAddress ||
           !tokenOutAddress ||
+          !receiverAddress ||
           amountIn === undefined ||
           slippage === undefined ||
           gasPrice === undefined
@@ -66,9 +71,9 @@ export function useExternalSwapOutputRequest({
         const result = await getOpenOceanTxnData({
           chainId,
           senderAddress: getContract(chainId, "ExternalHandler"),
-          receiverAddress: getContract(chainId, "OrderVault"),
-          tokenInAddress: convertTokenAddress(chainId, tokenInAddress, "wrapped"),
-          tokenOutAddress: convertTokenAddress(chainId, tokenOutAddress, "wrapped"),
+          receiverAddress: receiverAddress,
+          tokenInAddress,
+          tokenOutAddress,
           amountIn,
           gasPrice,
           slippage,
@@ -96,6 +101,7 @@ export function useExternalSwapOutputRequest({
             data: result.data,
             value: result.value,
             estimatedGas: result.estimatedGas,
+            estimatedExecutionFee: result.estimatedGas * gasPrice,
           },
         };
 
@@ -125,7 +131,8 @@ export function useExternalSwapOutputRequest({
     const needSpenderApproval = getNeedTokenApprove(
       tokensAllowanceData,
       convertTokenAddress(chainId, tokenInAddress, "wrapped"),
-      amountIn
+      amountIn,
+      []
     );
 
     const externalSwapOutput: ExternalSwapOutput = {

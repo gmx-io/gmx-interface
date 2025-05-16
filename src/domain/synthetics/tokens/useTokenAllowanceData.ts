@@ -5,14 +5,20 @@ import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { EMPTY_OBJECT } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import useWallet from "lib/wallets/useWallet";
+import { UiContractsChain } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import type { TokensAllowanceData } from "./types";
 
-type TokenAllowanceResult = { tokensAllowanceData?: TokensAllowanceData; isLoading: boolean; isLoaded: boolean };
+export type TokenAllowanceResult = {
+  tokensAllowanceData?: TokensAllowanceData;
+  spenderAddress?: string;
+  isLoading: boolean;
+  isLoaded: boolean;
+};
 
 export function useTokensAllowanceData(
-  chainId: number,
+  chainId: UiContractsChain | undefined,
   p: {
     spenderAddress?: string;
     tokenAddresses: string[];
@@ -92,6 +98,7 @@ export function useTokensAllowanceData(
 
   return {
     tokensAllowanceData: isLoaded ? mergedData : undefined,
+    spenderAddress,
     isLoaded,
     isLoading,
   };

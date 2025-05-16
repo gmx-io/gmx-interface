@@ -1,4 +1,5 @@
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { createSelectorFactory } from "context/SyntheticsStateContext/utils";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import {
   isLimitDecreaseOrderType,
@@ -16,9 +17,9 @@ import {
   selectTradeboxSelectedPositionKey,
   selectTradeboxTriggerPrice,
 } from ".";
-import { createSelector, createSelectorFactory } from "../../utils";
+import { createSelector } from "../../utils";
 import { makeSelectOrdersByPositionKey } from "../orderSelectors";
-import { selectSelectedMarketVisualMultiplier } from "../statsSelectors";
+import { selectSelectedMarketVisualMultiplier } from "../shared/marketSelectors";
 import {
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxSelectedPosition,

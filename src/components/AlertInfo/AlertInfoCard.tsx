@@ -9,7 +9,7 @@ type Props = {
   /**
    * @default "info"
    */
-  type?: "warning" | "info";
+  type?: "warning" | "info" | "error";
   children: ReactNode;
   className?: string;
   onClose?: () => void;
@@ -37,6 +37,7 @@ export function AlertInfoCard({ children, type = "info", onClose, className }: P
         {
           "border-blue-300 bg-cold-blue-900 text-white": type === "info",
           "border-yellow-500 bg-[#423727] text-yellow-500": type === "warning",
+          "border-red-500 bg-[#392A46]": type === "error",
         },
         className
       )}
@@ -44,7 +45,7 @@ export function AlertInfoCard({ children, type = "info", onClose, className }: P
       <div className="pr-5 pt-2">
         <Icon
           aria-label="Alert Icon"
-          className={cx("block size-12 ", { "text-blue-300": type === "info" })}
+          className={cx("block size-12 ", { "text-red-500": type === "error", "text-blue-300": type === "info" })}
           fontSize={12}
         />
       </div>

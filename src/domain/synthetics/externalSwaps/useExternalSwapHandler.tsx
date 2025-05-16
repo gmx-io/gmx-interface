@@ -1,9 +1,17 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
-import { isDevelopment } from "config/env";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
+import {
+  selectGasPaymentToken,
+  selectIsExpressTransactionAvailable,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectGasPrice,
+  selectSubaccountForAction,
+  selectTokensData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/shared/baseSelectors";
 import {
   selectBaseExternalSwapOutput,
   selectExternalSwapInputs,
@@ -12,23 +20,21 @@ import {
   selectSetShouldFallbackToInternalSwap,
   selectShouldFallbackToInternalSwap,
   selectShouldRequestExternalSwapQuote,
-} from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
-import { selectGasPrice, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import {
   selectTradeboxAllowedSlippage,
+  selectTradeboxCollateralToken,
   selectTradeboxFromTokenAddress,
   selectTradeboxSelectSwapToToken,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { throttleLog } from "lib/logging";
+import { getContract } from "sdk/configs/contracts";
 
 import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
 
 export function useExternalSwapHandler() {
   const { chainId } = useChainId();
   const { orderStatuses } = useSyntheticsEvents();
-  const settings = useSettings();
   const tokensData = useSelector(selectTokensData);
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const slippage = useSelector(selectTradeboxAllowedSlippage);
@@ -39,14 +45,27 @@ export function useExternalSwapHandler() {
   const swapToToken = useSelector(selectTradeboxSelectSwapToToken);
 
   const externalSwapInputs = useSelector(selectExternalSwapInputs);
+  const shouldDebugValues = useShowDebugValues();
 
   const shouldRequestExternalSwapQuote = useSelector(selectShouldRequestExternalSwapQuote);
 
   const externalSwapQuote = useSelector(selectExternalSwapQuote);
   const shouldFallbackToInternalSwap = useSelector(selectShouldFallbackToInternalSwap);
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
+  const { isTwap } = useSelector(selectTradeboxTradeFlags);
+  const isExpressTradingEnabled = useSelector(selectIsExpressTransactionAvailable);
+  const gasPaymentToken = useSelector(selectGasPaymentToken);
+  const collateralToken = useSelector(selectTradeboxCollateralToken);
 
-  const subaccount = useSubaccount(null);
+  const disabledByExpressSchema = useMemo(() => {
+    if (!isExpressTradingEnabled) {
+      return false;
+    }
+
+    return gasPaymentToken === collateralToken;
+  }, [collateralToken, gasPaymentToken, isExpressTradingEnabled]);
+
+  const subaccount = useSelector(selectSubaccountForAction);
 
   const { externalSwapOutput } = useExternalSwapOutputRequest({
     chainId,
@@ -54,12 +73,13 @@ export function useExternalSwapHandler() {
     tokenInAddress: fromTokenAddress,
     tokenOutAddress: swapToToken?.address,
     amountIn: externalSwapInputs?.amountIn,
+    receiverAddress: getContract(chainId, "OrderVault"),
     slippage,
     gasPrice,
-    enabled: !subaccount && shouldRequestExternalSwapQuote,
+    enabled: !disabledByExpressSchema && !isTwap && !subaccount && shouldRequestExternalSwapQuote,
   });
 
-  if (isDevelopment() && settings.showDebugValues) {
+  if (shouldDebugValues) {
     throttleLog("external swaps", {
       baseOutput: externalSwapOutput,
       externalSwapQuote,

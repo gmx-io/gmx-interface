@@ -4,9 +4,10 @@ import { getContract } from "config/contracts";
 import { MulticallRequestConfig } from "lib/multicall/types";
 import { useMulticall } from "lib/multicall/useMulticall";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
+import type { UiContractsChain } from "sdk/configs/chains";
 import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
 
-function buildDashboardRequest(chainId: number) {
+function buildDashboardRequest(chainId: UiContractsChain) {
   const gmxAddress = getContract(chainId, "GMX");
   const glpAddress = getContract(chainId, "GLP");
   const usdgAddress = getContract(chainId, "USDG");
@@ -78,7 +79,7 @@ function parseDashboardResponse(result) {
 
 export type ChainStats = ReturnType<typeof parseDashboardResponse>;
 
-export function useDashboardChainStatsMulticall(chainId: number) {
+export function useDashboardChainStatsMulticall(chainId: UiContractsChain) {
   const { data } = useMulticall(chainId, `useDashboardChainStatsMulticall`, {
     key: [chainId],
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,

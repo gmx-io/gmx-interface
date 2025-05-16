@@ -59,45 +59,129 @@ export interface ReferralStorageInterface extends Interface {
       | "SetTraderReferralCode"
   ): EventFragment;
 
-  encodeFunctionData(functionFragment: "BASIS_POINTS", values?: undefined): string;
-  encodeFunctionData(functionFragment: "codeOwners", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "getTraderReferralInfo", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "BASIS_POINTS",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "codeOwners",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTraderReferralInfo",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(functionFragment: "gov", values?: undefined): string;
-  encodeFunctionData(functionFragment: "govSetCodeOwner", values: [BytesLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "isHandler", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "referrerDiscountShares", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "referrerTiers", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "registerCode", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "setCodeOwner", values: [BytesLike, AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "govSetCodeOwner",
+    values: [BytesLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isHandler",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "referrerDiscountShares",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "referrerTiers",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "registerCode",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setCodeOwner",
+    values: [BytesLike, AddressLike]
+  ): string;
   encodeFunctionData(functionFragment: "setGov", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "setHandler", values: [AddressLike, boolean]): string;
-  encodeFunctionData(functionFragment: "setReferrerDiscountShare", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "setReferrerTier", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "setTier", values: [BigNumberish, BigNumberish, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "setTraderReferralCode", values: [AddressLike, BytesLike]): string;
-  encodeFunctionData(functionFragment: "setTraderReferralCodeByUser", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "setHandler",
+    values: [AddressLike, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setReferrerDiscountShare",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setReferrerTier",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setTier",
+    values: [BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setTraderReferralCode",
+    values: [AddressLike, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setTraderReferralCodeByUser",
+    values: [BytesLike]
+  ): string;
   encodeFunctionData(functionFragment: "tiers", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "traderReferralCodes", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "traderReferralCodes",
+    values: [AddressLike]
+  ): string;
 
-  decodeFunctionResult(functionFragment: "BASIS_POINTS", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "BASIS_POINTS",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "codeOwners", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getTraderReferralInfo", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getTraderReferralInfo",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "gov", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "govSetCodeOwner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "govSetCodeOwner",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "isHandler", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "referrerDiscountShares", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "referrerTiers", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "registerCode", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setCodeOwner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "referrerDiscountShares",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "referrerTiers",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "registerCode",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setCodeOwner",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setGov", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setHandler", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setReferrerDiscountShare", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setReferrerTier", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setReferrerDiscountShare",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setReferrerTier",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setTier", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setTraderReferralCode", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setTraderReferralCodeByUser", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setTraderReferralCode",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setTraderReferralCodeByUser",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "tiers", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "traderReferralCodes", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "traderReferralCodes",
+    data: BytesLike
+  ): Result;
 }
 
 export namespace GovSetCodeOwnerEvent {
@@ -127,7 +211,11 @@ export namespace RegisterCodeEvent {
 }
 
 export namespace SetCodeOwnerEvent {
-  export type InputTuple = [account: AddressLike, newAccount: AddressLike, code: BytesLike];
+  export type InputTuple = [
+    account: AddressLike,
+    newAccount: AddressLike,
+    code: BytesLike
+  ];
   export type OutputTuple = [account: string, newAccount: string, code: string];
   export interface OutputObject {
     account: string;
@@ -180,8 +268,16 @@ export namespace SetReferrerTierEvent {
 }
 
 export namespace SetTierEvent {
-  export type InputTuple = [tierId: BigNumberish, totalRebate: BigNumberish, discountShare: BigNumberish];
-  export type OutputTuple = [tierId: bigint, totalRebate: bigint, discountShare: bigint];
+  export type InputTuple = [
+    tierId: BigNumberish,
+    totalRebate: BigNumberish,
+    discountShare: BigNumberish
+  ];
+  export type OutputTuple = [
+    tierId: bigint,
+    totalRebate: bigint,
+    discountShare: bigint
+  ];
   export interface OutputObject {
     tierId: bigint;
     totalRebate: bigint;
@@ -223,59 +319,109 @@ export interface ReferralStorage extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
   BASIS_POINTS: TypedContractMethod<[], [bigint], "view">;
 
   codeOwners: TypedContractMethod<[arg0: BytesLike], [string], "view">;
 
-  getTraderReferralInfo: TypedContractMethod<[_account: AddressLike], [[string, string]], "view">;
+  getTraderReferralInfo: TypedContractMethod<
+    [_account: AddressLike],
+    [[string, string]],
+    "view"
+  >;
 
   gov: TypedContractMethod<[], [string], "view">;
 
-  govSetCodeOwner: TypedContractMethod<[_code: BytesLike, _newAccount: AddressLike], [void], "nonpayable">;
+  govSetCodeOwner: TypedContractMethod<
+    [_code: BytesLike, _newAccount: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   isHandler: TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
 
-  referrerDiscountShares: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  referrerDiscountShares: TypedContractMethod<
+    [arg0: AddressLike],
+    [bigint],
+    "view"
+  >;
 
   referrerTiers: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
   registerCode: TypedContractMethod<[_code: BytesLike], [void], "nonpayable">;
 
-  setCodeOwner: TypedContractMethod<[_code: BytesLike, _newAccount: AddressLike], [void], "nonpayable">;
-
-  setGov: TypedContractMethod<[_gov: AddressLike], [void], "nonpayable">;
-
-  setHandler: TypedContractMethod<[_handler: AddressLike, _isActive: boolean], [void], "nonpayable">;
-
-  setReferrerDiscountShare: TypedContractMethod<[_discountShare: BigNumberish], [void], "nonpayable">;
-
-  setReferrerTier: TypedContractMethod<[_referrer: AddressLike, _tierId: BigNumberish], [void], "nonpayable">;
-
-  setTier: TypedContractMethod<
-    [_tierId: BigNumberish, _totalRebate: BigNumberish, _discountShare: BigNumberish],
+  setCodeOwner: TypedContractMethod<
+    [_code: BytesLike, _newAccount: AddressLike],
     [void],
     "nonpayable"
   >;
 
-  setTraderReferralCode: TypedContractMethod<[_account: AddressLike, _code: BytesLike], [void], "nonpayable">;
+  setGov: TypedContractMethod<[_gov: AddressLike], [void], "nonpayable">;
 
-  setTraderReferralCodeByUser: TypedContractMethod<[_code: BytesLike], [void], "nonpayable">;
+  setHandler: TypedContractMethod<
+    [_handler: AddressLike, _isActive: boolean],
+    [void],
+    "nonpayable"
+  >;
+
+  setReferrerDiscountShare: TypedContractMethod<
+    [_discountShare: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  setReferrerTier: TypedContractMethod<
+    [_referrer: AddressLike, _tierId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  setTier: TypedContractMethod<
+    [
+      _tierId: BigNumberish,
+      _totalRebate: BigNumberish,
+      _discountShare: BigNumberish
+    ],
+    [void],
+    "nonpayable"
+  >;
+
+  setTraderReferralCode: TypedContractMethod<
+    [_account: AddressLike, _code: BytesLike],
+    [void],
+    "nonpayable"
+  >;
+
+  setTraderReferralCodeByUser: TypedContractMethod<
+    [_code: BytesLike],
+    [void],
+    "nonpayable"
+  >;
 
   tiers: TypedContractMethod<
     [arg0: BigNumberish],
@@ -283,46 +429,92 @@ export interface ReferralStorage extends BaseContract {
     "view"
   >;
 
-  traderReferralCodes: TypedContractMethod<[arg0: AddressLike], [string], "view">;
+  traderReferralCodes: TypedContractMethod<
+    [arg0: AddressLike],
+    [string],
+    "view"
+  >;
 
-  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  getFunction(nameOrSignature: "BASIS_POINTS"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "codeOwners"): TypedContractMethod<[arg0: BytesLike], [string], "view">;
+  getFunction(
+    nameOrSignature: "BASIS_POINTS"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "codeOwners"
+  ): TypedContractMethod<[arg0: BytesLike], [string], "view">;
   getFunction(
     nameOrSignature: "getTraderReferralInfo"
   ): TypedContractMethod<[_account: AddressLike], [[string, string]], "view">;
-  getFunction(nameOrSignature: "gov"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "gov"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "govSetCodeOwner"
-  ): TypedContractMethod<[_code: BytesLike, _newAccount: AddressLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "isHandler"): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
-  getFunction(nameOrSignature: "referrerDiscountShares"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "referrerTiers"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "registerCode"): TypedContractMethod<[_code: BytesLike], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_code: BytesLike, _newAccount: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "isHandler"
+  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "referrerDiscountShares"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "referrerTiers"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "registerCode"
+  ): TypedContractMethod<[_code: BytesLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setCodeOwner"
-  ): TypedContractMethod<[_code: BytesLike, _newAccount: AddressLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "setGov"): TypedContractMethod<[_gov: AddressLike], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_code: BytesLike, _newAccount: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "setGov"
+  ): TypedContractMethod<[_gov: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setHandler"
-  ): TypedContractMethod<[_handler: AddressLike, _isActive: boolean], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_handler: AddressLike, _isActive: boolean],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setReferrerDiscountShare"
   ): TypedContractMethod<[_discountShare: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setReferrerTier"
-  ): TypedContractMethod<[_referrer: AddressLike, _tierId: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_referrer: AddressLike, _tierId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setTier"
   ): TypedContractMethod<
-    [_tierId: BigNumberish, _totalRebate: BigNumberish, _discountShare: BigNumberish],
+    [
+      _tierId: BigNumberish,
+      _totalRebate: BigNumberish,
+      _discountShare: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "setTraderReferralCode"
-  ): TypedContractMethod<[_account: AddressLike, _code: BytesLike], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_account: AddressLike, _code: BytesLike],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setTraderReferralCodeByUser"
   ): TypedContractMethod<[_code: BytesLike], [void], "nonpayable">;
@@ -333,7 +525,9 @@ export interface ReferralStorage extends BaseContract {
     [[bigint, bigint] & { totalRebate: bigint; discountShare: bigint }],
     "view"
   >;
-  getFunction(nameOrSignature: "traderReferralCodes"): TypedContractMethod<[arg0: AddressLike], [string], "view">;
+  getFunction(
+    nameOrSignature: "traderReferralCodes"
+  ): TypedContractMethod<[arg0: AddressLike], [string], "view">;
 
   getEvent(
     key: "GovSetCodeOwner"
@@ -344,13 +538,25 @@ export interface ReferralStorage extends BaseContract {
   >;
   getEvent(
     key: "RegisterCode"
-  ): TypedContractEvent<RegisterCodeEvent.InputTuple, RegisterCodeEvent.OutputTuple, RegisterCodeEvent.OutputObject>;
+  ): TypedContractEvent<
+    RegisterCodeEvent.InputTuple,
+    RegisterCodeEvent.OutputTuple,
+    RegisterCodeEvent.OutputObject
+  >;
   getEvent(
     key: "SetCodeOwner"
-  ): TypedContractEvent<SetCodeOwnerEvent.InputTuple, SetCodeOwnerEvent.OutputTuple, SetCodeOwnerEvent.OutputObject>;
+  ): TypedContractEvent<
+    SetCodeOwnerEvent.InputTuple,
+    SetCodeOwnerEvent.OutputTuple,
+    SetCodeOwnerEvent.OutputObject
+  >;
   getEvent(
     key: "SetHandler"
-  ): TypedContractEvent<SetHandlerEvent.InputTuple, SetHandlerEvent.OutputTuple, SetHandlerEvent.OutputObject>;
+  ): TypedContractEvent<
+    SetHandlerEvent.InputTuple,
+    SetHandlerEvent.OutputTuple,
+    SetHandlerEvent.OutputObject
+  >;
   getEvent(
     key: "SetReferrerDiscountShare"
   ): TypedContractEvent<
@@ -367,7 +573,11 @@ export interface ReferralStorage extends BaseContract {
   >;
   getEvent(
     key: "SetTier"
-  ): TypedContractEvent<SetTierEvent.InputTuple, SetTierEvent.OutputTuple, SetTierEvent.OutputObject>;
+  ): TypedContractEvent<
+    SetTierEvent.InputTuple,
+    SetTierEvent.OutputTuple,
+    SetTierEvent.OutputObject
+  >;
   getEvent(
     key: "SetTraderReferralCode"
   ): TypedContractEvent<
@@ -448,7 +658,11 @@ export interface ReferralStorage extends BaseContract {
       SetTierEvent.OutputTuple,
       SetTierEvent.OutputObject
     >;
-    SetTier: TypedContractEvent<SetTierEvent.InputTuple, SetTierEvent.OutputTuple, SetTierEvent.OutputObject>;
+    SetTier: TypedContractEvent<
+      SetTierEvent.InputTuple,
+      SetTierEvent.OutputTuple,
+      SetTierEvent.OutputObject
+    >;
 
     "SetTraderReferralCode(address,bytes32)": TypedContractEvent<
       SetTraderReferralCodeEvent.InputTuple,

@@ -1,20 +1,25 @@
 import { useMemo } from "react";
+import { useAccount } from "wagmi";
 
 import { getContract } from "config/contracts";
+import { isSettlementChain, isSourceChain } from "context/GmxAccountContext/config";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL, FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
+import type { UiContractsChain } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { MarketConfig, MarketValues } from "sdk/modules/markets/types";
 import type { MarketInfo, MarketsData, MarketsInfoData } from "sdk/types/markets";
 
-import { buildMarketsConfigsRequest } from "./buildMarketsConfigsRequest";
-import { buildMarketsValuesRequest } from "./buildMarketsValuesRequest";
+import { useGmxAccountTokensDataRequest } from "components/Synthetics/GmxAccountModal/hooks";
+
 import { TokensData, useTokensDataRequest } from "../../tokens";
 import { useClaimableFundingDataRequest } from "../useClaimableFundingDataRequest";
 import { useMarkets } from "../useMarkets";
-import { useFastMarketsInfoRequest } from "./useFastMarketsInfoRequest";
 import { getMarketDivisor } from "../utils";
+import { buildMarketsConfigsRequest } from "./buildMarketsConfigsRequest";
+import { buildMarketsValuesRequest } from "./buildMarketsValuesRequest";
+import { useFastMarketsInfoRequest } from "./useFastMarketsInfoRequest";
 
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
@@ -24,9 +29,22 @@ export type MarketsInfoResult = {
   error?: Error;
 };
 
-export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
+export function useMarketsInfoRequest(chainId: UiContractsChain): MarketsInfoResult {
   const { marketsData, marketsAddresses } = useMarkets(chainId);
-  const { tokensData, pricesUpdatedAt, error: tokensDataError, isBalancesLoaded } = useTokensDataRequest(chainId);
+  const { chainId: walletChainId } = useAccount();
+
+  const settlementChainTokensDataResult = useTokensDataRequest(chainId);
+  const gmxAccountTokensDataResult = useGmxAccountTokensDataRequest();
+
+  const {
+    tokensData,
+    pricesUpdatedAt,
+    error: tokensDataError,
+    isBalancesLoaded,
+  } = walletChainId && isSourceChain(walletChainId) && !isSettlementChain(walletChainId)
+    ? gmxAccountTokensDataResult
+    : settlementChainTokensDataResult;
+
   const { claimableFundingData } = useClaimableFundingDataRequest(chainId);
   const { fastMarketInfoData } = useFastMarketsInfoRequest(chainId);
 
@@ -73,6 +91,7 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
       const marketInfoFields = marketValues && marketConfig ? { ...marketValues, ...marketConfig } : fastMarketInfo;
 
       if (!marketInfoFields) {
+        // console.log("market info error 2", marketAddress, marketInfoFields);
         continue;
       }
 
@@ -120,7 +139,7 @@ function useMarketsValuesRequest({
   marketsData,
   tokensData,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   isDependenciesLoading: boolean;
   marketsAddresses: string[] | undefined;
   marketsData: MarketsData | undefined;
@@ -129,7 +148,7 @@ function useMarketsValuesRequest({
   const dataStoreAddress = getContract(chainId, "DataStore");
   const syntheticsReaderAddress = getContract(chainId, "SyntheticsReader");
 
-  const marketsValuesQuery = useMulticall(chainId, "useMarketsValuesRequest", {
+  const marketsValuesQuery = useMulticall(chainId, `useMarketsValuesRequest-${chainId}`, {
     key:
       !isDependenciesLoading && marketsAddresses?.length && marketsAddresses.length > 0 ? [...marketsAddresses] : null,
 
@@ -248,7 +267,7 @@ function useMarketsConfigsRequest({
   isDependenciesLoading,
   marketsAddresses,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   isDependenciesLoading: boolean;
   marketsAddresses: string[] | undefined;
 }) {

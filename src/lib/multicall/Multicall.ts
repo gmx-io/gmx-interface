@@ -1,8 +1,27 @@
-import { ClientConfig, createPublicClient, http } from "viem";
-import type { BatchOptions } from "viem/_types/clients/transports/http";
-import { arbitrum, avalanche, avalancheFuji } from "viem/chains";
+import { Chain, ClientConfig, HttpTransportConfig, createPublicClient, http } from "viem";
+import {
+  arbitrum,
+  arbitrumSepolia,
+  avalanche,
+  avalancheFuji,
+  base,
+  optimismSepolia,
+  sepolia,
+  sonic,
+} from "viem/chains";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import { CustomErrorsAbi } from "ab/testMultichain/getCustomErrorsAbi/getCustomErrorsAbi";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  BASE_MAINNET,
+  OPTIMISM_SEPOLIA,
+  SEPOLIA,
+  SONIC_MAINNET,
+  UiSupportedChain,
+} from "config/chains";
 import { isWebWorker } from "config/env";
 import {
   MulticallErrorEvent,
@@ -11,22 +30,26 @@ import {
   MulticallRequestTiming,
   MulticallTimeoutEvent,
 } from "lib/metrics";
-import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
-import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
+import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metrics/emitMetricEvent";
+import type { MulticallRequestConfig, MulticallResult } from "lib/multicall/types";
+import { serializeMulticallErrors } from "lib/multicall/utils";
 import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 import { sleep } from "lib/sleep";
 import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
 import { abis as allAbis } from "sdk/abis";
 
-import type { MulticallRequestConfig, MulticallResult } from "./types";
-import { serializeMulticallErrors } from "./utils";
-
 export const MAX_TIMEOUT = 20000;
 
-const CHAIN_BY_CHAIN_ID = {
-  [AVALANCHE_FUJI]: avalancheFuji,
+const CHAIN_BY_CHAIN_ID: Record<UiSupportedChain, Chain> = {
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
+  [SONIC_MAINNET]: sonic,
+  [BASE_MAINNET]: base,
+
+  [AVALANCHE_FUJI]: avalancheFuji,
+  [ARBITRUM_SEPOLIA]: arbitrumSepolia,
+  [OPTIMISM_SEPOLIA]: optimismSepolia,
+  [SEPOLIA]: sepolia,
 };
 
 export type MulticallProviderUrls = {
@@ -35,9 +58,9 @@ export type MulticallProviderUrls = {
 };
 
 const BATCH_CONFIGS: Record<
-  number,
+  UiSupportedChain,
   {
-    http: BatchOptions;
+    http: HttpTransportConfig["batch"];
     client: ClientConfig["batch"];
   }
 > = {
@@ -65,6 +88,31 @@ const BATCH_CONFIGS: Record<
       },
     },
   },
+  [SONIC_MAINNET]: {
+    http: {
+      batchSize: 0,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
+  },
+  [BASE_MAINNET]: {
+    http: {
+      batchSize: 0,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
+  },
+
   [AVALANCHE_FUJI]: {
     http: {
       batchSize: 40,
@@ -74,6 +122,42 @@ const BATCH_CONFIGS: Record<
       multicall: {
         batchSize: 1024 * 1024,
         wait: 0,
+      },
+    },
+  },
+  [ARBITRUM_SEPOLIA]: {
+    http: {
+      batchSize: 40,
+      wait: 100,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 100,
+      },
+    },
+  },
+  [OPTIMISM_SEPOLIA]: {
+    http: {
+      batchSize: 40,
+      wait: 100,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 100,
+      },
+    },
+  },
+  [SEPOLIA]: {
+    http: {
+      batchSize: 40,
+      wait: 100,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 100,
       },
     },
   },
@@ -174,7 +258,7 @@ export class Multicall {
         // Add Errors ABI to each contract ABI to correctly parse errors
         abis[contractCallConfig.contractAddress] = abis[contractCallConfig.contractAddress] || [
           ...allAbis[contractCallConfig.abiId],
-          ...allAbis.CustomErrors,
+          ...CustomErrorsAbi,
         ];
 
         const abi = abis[contractCallConfig.contractAddress];

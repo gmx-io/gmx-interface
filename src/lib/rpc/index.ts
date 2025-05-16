@@ -1,9 +1,11 @@
 import { JsonRpcProvider, Network, WebSocketProvider } from "ethers";
 import { Signer, ethers } from "ethers";
 import { useEffect, useState } from "react";
+import { arbitrumSepolia } from "viem/chains";
 
 import {
   ARBITRUM,
+  ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
   FALLBACK_PROVIDERS,
@@ -47,6 +49,15 @@ export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvi
     });
     provider.pollingInterval = 2000;
     return provider;
+  }
+
+  // wss://arbitrum-sepolia-rpc.publicnode.com
+  // wss://arbitrum-sepolia.drpc.org
+
+  if (chainId === ARBITRUM_SEPOLIA) {
+    return new ethers.WebSocketProvider("wss://arbitrum-sepolia-rpc.publicnode.com", network, {
+      staticNetwork: network,
+    });
   }
 }
 

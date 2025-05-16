@@ -11,6 +11,7 @@ import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { BN_ZERO, expandDecimals, numberToBigint, PRECISION } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
+import type { UiContractsChain } from "sdk/configs/chains";
 import { getTokenBySymbolSafe } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -47,7 +48,7 @@ function useMarketAddresses(marketsInfoData: GlvAndGmMarketsInfoData | undefined
 }
 
 function useExcludedLiquidityMarketMap(
-  chainId: number,
+  chainId: UiContractsChain,
   marketsInfoData: GlvAndGmMarketsInfoData | undefined
 ): {
   [marketAddress: string]: bigint;
@@ -126,7 +127,7 @@ function useExcludedLiquidityMarketMap(
 }
 
 function useIncentivesBonusApr(
-  chainId: number,
+  chainId: UiContractsChain,
   marketsInfoData: GlvAndGmMarketsInfoData | undefined,
   glvData: GlvInfoData | undefined
 ) {
@@ -234,7 +235,7 @@ function useIncentivesBonusApr(
   return marketAndGlvTokensAPRData;
 }
 
-export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
+export function useGmMarketsApy(chainId: UiContractsChain): GmGlvTokensAPRResult {
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false, withGlv: false });
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId);

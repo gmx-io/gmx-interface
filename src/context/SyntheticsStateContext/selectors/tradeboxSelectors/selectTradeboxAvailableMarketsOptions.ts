@@ -10,6 +10,7 @@ import {
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
+  selectExternalSwapQuote,
   selectTradeboxCollateralTokenAddress,
   selectTradeboxExistingOrder,
   selectTradeboxFocusedInput,
@@ -31,13 +32,13 @@ import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateC
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getCappedPositionImpactUsd, getFeeItem } from "domain/synthetics/fees";
 import {
-  MarketInfo,
   getAvailableUsdLiquidityForPosition,
   getMinPriceImpactMarket,
   getMostLiquidMarketForPosition,
+  MarketInfo,
 } from "domain/synthetics/markets";
 import { getLargestRelatedExistingPositionOrOrder } from "domain/synthetics/markets/chooseSuitableMarket";
-import { PositionOrderInfo, isIncreaseOrderType } from "domain/synthetics/orders";
+import { isIncreaseOrderType, PositionOrderInfo } from "domain/synthetics/orders";
 import {
   IndexTokenStat,
   marketsInfoData2IndexTokenStatsMap,
@@ -46,8 +47,10 @@ import { TokenData } from "domain/synthetics/tokens";
 import { getAcceptablePriceByPriceImpact, getMarkPrice } from "domain/synthetics/trade/utils/prices";
 import { expandDecimals, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { createTradeFlags } from "sdk/utils/trade";
 
+import { selectIsExpressTransactionAvailable } from "../expressSelectors";
 import { selectIsLeverageSliderEnabled } from "../settingsSelectors";
 import { makeSelectIncreasePositionAmounts } from "../tradeSelectors";
 import { selectTradeboxAvailableMarkets } from "./selectTradeboxAvailableMarkets";
@@ -260,6 +263,8 @@ export function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsStat
   const toTokenAmount = q(selectTradeboxToTokenAmount);
   const leverage = BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
   const positionKey = q(selectTradeboxSelectedPositionKey);
+  const isExpressTxn = fromTokenAddress !== NATIVE_TOKEN_ADDRESS && q(selectIsExpressTransactionAvailable);
+  const externalSwapQuote = q(selectExternalSwapQuote);
 
   const selector = makeSelectIncreasePositionAmounts({
     collateralTokenAddress,
@@ -280,6 +285,8 @@ export function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsStat
     tradeType,
     triggerPrice,
     tokenTypeForSwapRoute: tradeFlags.isPosition ? "collateralToken" : "indexToken",
+    isExpressTxn,
+    externalSwapQuote,
   });
 
   return q(selector);

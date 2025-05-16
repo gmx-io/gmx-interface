@@ -1,11 +1,33 @@
+import type { Wallet } from "ethers";
+
+import type { SubaccountOnchainData } from "./useSubaccountOnchainData";
+
 export type SubaccountSerializedConfig = {
   privateKey: string;
   address: string;
-} | null;
+};
 
-export type SubaccountParams = {
-  topUp: bigint | null;
-  maxAutoTopUpAmount: bigint | null;
-  wntForAutoTopUps: bigint | null;
-  maxAllowedActions: bigint | null;
+export type Subaccount = {
+  address: string;
+  signer: Wallet;
+  signedApproval: SignedSubbacountApproval;
+  onchainData: SubaccountOnchainData;
+  optimisticActive: boolean;
+  optimisticMaxAllowedCount: bigint;
+  optimisticExpiresAt: bigint;
+};
+
+export type SubaccountApproval = {
+  subaccount: string;
+  nonce: bigint;
+  shouldAdd: boolean;
+  expiresAt: bigint;
+  maxAllowedCount: bigint;
+  actionType: string;
+  deadline: bigint;
+};
+
+export type SignedSubbacountApproval = SubaccountApproval & {
+  signature: string;
+  signedAt: number;
 };

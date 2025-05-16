@@ -4,6 +4,7 @@ import { useUserReferralInfoRequest } from "domain/referrals";
 import { getBasisPoints } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
+import { UiContractsChain } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { getEntryPrice, getPositionPnlUsd } from "sdk/utils/positions";
 
@@ -28,7 +29,7 @@ export type PositionsInfoResult = {
 };
 
 export function usePositionsInfoRequest(
-  chainId: number,
+  chainId: UiContractsChain,
   p: {
     account: string | null | undefined;
     marketsInfoData?: MarketsInfoData;

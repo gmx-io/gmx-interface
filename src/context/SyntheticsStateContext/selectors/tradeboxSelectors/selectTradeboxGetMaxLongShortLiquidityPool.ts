@@ -1,12 +1,13 @@
 import groupBy from "lodash/groupBy";
 import maxBy from "lodash/maxBy";
 
+import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { MarketInfo, getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
 import { Token } from "domain/tokens";
 import { BN_ZERO } from "lib/numbers";
 
-import { selectTradeboxAvailableTokensOptions } from ".";
+const selectTradeboxAvailableTokensOptions = (s: SyntheticsState) => s.tradebox.availableTokensOptions;
 
 export type TokenOption = {
   maxLongLiquidity: bigint;

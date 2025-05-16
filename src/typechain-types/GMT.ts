@@ -58,67 +58,182 @@ export interface GMTInterface extends Interface {
 
   getEvent(nameOrSignatureOrTopic: "Approval" | "Transfer"): EventFragment;
 
-  encodeFunctionData(functionFragment: "addAdmin", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "addBlockedRecipient", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "addMsgSender", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "addAdmin",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addBlockedRecipient",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addMsgSender",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(functionFragment: "admins", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "allowance", values: [AddressLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "allowances", values: [AddressLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "allowedMsgSenders", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "approve", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "balanceOf", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "balances", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "beginMigration", values?: undefined): string;
-  encodeFunctionData(functionFragment: "blockedRecipients", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "allowance",
+    values: [AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "allowances",
+    values: [AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "allowedMsgSenders",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "approve",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "balanceOf",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "balances",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "beginMigration",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "blockedRecipients",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
-  encodeFunctionData(functionFragment: "endMigration", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "endMigration",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "gov", values?: undefined): string;
-  encodeFunctionData(functionFragment: "hasActiveMigration", values?: undefined): string;
-  encodeFunctionData(functionFragment: "migrationTime", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "hasActiveMigration",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "migrationTime",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
-  encodeFunctionData(functionFragment: "removeAdmin", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "removeBlockedRecipient", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "removeMsgSender", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "removeAdmin",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeBlockedRecipient",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeMsgSender",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(functionFragment: "setGov", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "setNextMigrationTime", values: [BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "setNextMigrationTime",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
-  encodeFunctionData(functionFragment: "totalSupply", values?: undefined): string;
-  encodeFunctionData(functionFragment: "transfer", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "transferFrom", values: [AddressLike, AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "withdrawToken", values: [AddressLike, AddressLike, BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "totalSupply",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transfer",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transferFrom",
+    values: [AddressLike, AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawToken",
+    values: [AddressLike, AddressLike, BigNumberish]
+  ): string;
 
   decodeFunctionResult(functionFragment: "addAdmin", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "addBlockedRecipient", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "addMsgSender", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "addBlockedRecipient",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "addMsgSender",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "admins", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "allowances", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "allowedMsgSenders", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "allowedMsgSenders",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balances", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "beginMigration", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "blockedRecipients", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "beginMigration",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "blockedRecipients",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "endMigration", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "endMigration",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "gov", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "hasActiveMigration", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "migrationTime", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "hasActiveMigration",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "migrationTime",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeAdmin", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeBlockedRecipient", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeMsgSender", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "removeAdmin",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeBlockedRecipient",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeMsgSender",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setGov", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setNextMigrationTime", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setNextMigrationTime",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "totalSupply", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "totalSupply",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "transfer", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "transferFrom", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "withdrawToken", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "transferFrom",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawToken",
+    data: BytesLike
+  ): Result;
 }
 
 export namespace ApprovalEvent {
-  export type InputTuple = [owner: AddressLike, spender: AddressLike, value: BigNumberish];
+  export type InputTuple = [
+    owner: AddressLike,
+    spender: AddressLike,
+    value: BigNumberish
+  ];
   export type OutputTuple = [owner: string, spender: string, value: bigint];
   export interface OutputObject {
     owner: string;
@@ -132,7 +247,11 @@ export namespace ApprovalEvent {
 }
 
 export namespace TransferEvent {
-  export type InputTuple = [from: AddressLike, to: AddressLike, value: BigNumberish];
+  export type InputTuple = [
+    from: AddressLike,
+    to: AddressLike,
+    value: BigNumberish
+  ];
   export type OutputTuple = [from: string, to: string, value: bigint];
   export interface OutputObject {
     from: string;
@@ -162,37 +281,71 @@ export interface GMT extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
   addAdmin: TypedContractMethod<[_account: AddressLike], [void], "nonpayable">;
 
-  addBlockedRecipient: TypedContractMethod<[_recipient: AddressLike], [void], "nonpayable">;
+  addBlockedRecipient: TypedContractMethod<
+    [_recipient: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
-  addMsgSender: TypedContractMethod<[_msgSender: AddressLike], [void], "nonpayable">;
+  addMsgSender: TypedContractMethod<
+    [_msgSender: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   admins: TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
 
-  allowance: TypedContractMethod<[_owner: AddressLike, _spender: AddressLike], [bigint], "view">;
+  allowance: TypedContractMethod<
+    [_owner: AddressLike, _spender: AddressLike],
+    [bigint],
+    "view"
+  >;
 
-  allowances: TypedContractMethod<[arg0: AddressLike, arg1: AddressLike], [bigint], "view">;
+  allowances: TypedContractMethod<
+    [arg0: AddressLike, arg1: AddressLike],
+    [bigint],
+    "view"
+  >;
 
-  allowedMsgSenders: TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  allowedMsgSenders: TypedContractMethod<
+    [arg0: AddressLike],
+    [boolean],
+    "view"
+  >;
 
-  approve: TypedContractMethod<[_spender: AddressLike, _amount: BigNumberish], [boolean], "nonpayable">;
+  approve: TypedContractMethod<
+    [_spender: AddressLike, _amount: BigNumberish],
+    [boolean],
+    "nonpayable"
+  >;
 
   balanceOf: TypedContractMethod<[_account: AddressLike], [bigint], "view">;
 
@@ -200,7 +353,11 @@ export interface GMT extends BaseContract {
 
   beginMigration: TypedContractMethod<[], [void], "nonpayable">;
 
-  blockedRecipients: TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  blockedRecipients: TypedContractMethod<
+    [arg0: AddressLike],
+    [boolean],
+    "view"
+  >;
 
   decimals: TypedContractMethod<[], [bigint], "view">;
 
@@ -214,21 +371,41 @@ export interface GMT extends BaseContract {
 
   name: TypedContractMethod<[], [string], "view">;
 
-  removeAdmin: TypedContractMethod<[_account: AddressLike], [void], "nonpayable">;
+  removeAdmin: TypedContractMethod<
+    [_account: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
-  removeBlockedRecipient: TypedContractMethod<[_recipient: AddressLike], [void], "nonpayable">;
+  removeBlockedRecipient: TypedContractMethod<
+    [_recipient: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
-  removeMsgSender: TypedContractMethod<[_msgSender: AddressLike], [void], "nonpayable">;
+  removeMsgSender: TypedContractMethod<
+    [_msgSender: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   setGov: TypedContractMethod<[_gov: AddressLike], [void], "nonpayable">;
 
-  setNextMigrationTime: TypedContractMethod<[_migrationTime: BigNumberish], [void], "nonpayable">;
+  setNextMigrationTime: TypedContractMethod<
+    [_migrationTime: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   symbol: TypedContractMethod<[], [string], "view">;
 
   totalSupply: TypedContractMethod<[], [bigint], "view">;
 
-  transfer: TypedContractMethod<[_recipient: AddressLike, _amount: BigNumberish], [boolean], "nonpayable">;
+  transfer: TypedContractMethod<
+    [_recipient: AddressLike, _amount: BigNumberish],
+    [boolean],
+    "nonpayable"
+  >;
 
   transferFrom: TypedContractMethod<
     [_sender: AddressLike, _recipient: AddressLike, _amount: BigNumberish],
@@ -242,48 +419,104 @@ export interface GMT extends BaseContract {
     "nonpayable"
   >;
 
-  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  getFunction(nameOrSignature: "addAdmin"): TypedContractMethod<[_account: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "addAdmin"
+  ): TypedContractMethod<[_account: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "addBlockedRecipient"
   ): TypedContractMethod<[_recipient: AddressLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "addMsgSender"): TypedContractMethod<[_msgSender: AddressLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "admins"): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "addMsgSender"
+  ): TypedContractMethod<[_msgSender: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "admins"
+  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
   getFunction(
     nameOrSignature: "allowance"
-  ): TypedContractMethod<[_owner: AddressLike, _spender: AddressLike], [bigint], "view">;
+  ): TypedContractMethod<
+    [_owner: AddressLike, _spender: AddressLike],
+    [bigint],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "allowances"
-  ): TypedContractMethod<[arg0: AddressLike, arg1: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "allowedMsgSenders"): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  ): TypedContractMethod<
+    [arg0: AddressLike, arg1: AddressLike],
+    [bigint],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "allowedMsgSenders"
+  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
   getFunction(
     nameOrSignature: "approve"
-  ): TypedContractMethod<[_spender: AddressLike, _amount: BigNumberish], [boolean], "nonpayable">;
-  getFunction(nameOrSignature: "balanceOf"): TypedContractMethod<[_account: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "balances"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "beginMigration"): TypedContractMethod<[], [void], "nonpayable">;
-  getFunction(nameOrSignature: "blockedRecipients"): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
-  getFunction(nameOrSignature: "decimals"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "endMigration"): TypedContractMethod<[], [void], "nonpayable">;
-  getFunction(nameOrSignature: "gov"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "hasActiveMigration"): TypedContractMethod<[], [boolean], "view">;
-  getFunction(nameOrSignature: "migrationTime"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "name"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "removeAdmin"): TypedContractMethod<[_account: AddressLike], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_spender: AddressLike, _amount: BigNumberish],
+    [boolean],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "balanceOf"
+  ): TypedContractMethod<[_account: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "balances"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "beginMigration"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "blockedRecipients"
+  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "decimals"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "endMigration"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "gov"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "hasActiveMigration"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "migrationTime"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "name"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "removeAdmin"
+  ): TypedContractMethod<[_account: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "removeBlockedRecipient"
   ): TypedContractMethod<[_recipient: AddressLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "removeMsgSender"): TypedContractMethod<[_msgSender: AddressLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "setGov"): TypedContractMethod<[_gov: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "removeMsgSender"
+  ): TypedContractMethod<[_msgSender: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "setGov"
+  ): TypedContractMethod<[_gov: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setNextMigrationTime"
   ): TypedContractMethod<[_migrationTime: BigNumberish], [void], "nonpayable">;
-  getFunction(nameOrSignature: "symbol"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "totalSupply"): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "symbol"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "totalSupply"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "transfer"
-  ): TypedContractMethod<[_recipient: AddressLike, _amount: BigNumberish], [boolean], "nonpayable">;
+  ): TypedContractMethod<
+    [_recipient: AddressLike, _amount: BigNumberish],
+    [boolean],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "transferFrom"
   ): TypedContractMethod<
@@ -293,14 +526,26 @@ export interface GMT extends BaseContract {
   >;
   getFunction(
     nameOrSignature: "withdrawToken"
-  ): TypedContractMethod<[_token: AddressLike, _account: AddressLike, _amount: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _account: AddressLike, _amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   getEvent(
     key: "Approval"
-  ): TypedContractEvent<ApprovalEvent.InputTuple, ApprovalEvent.OutputTuple, ApprovalEvent.OutputObject>;
+  ): TypedContractEvent<
+    ApprovalEvent.InputTuple,
+    ApprovalEvent.OutputTuple,
+    ApprovalEvent.OutputObject
+  >;
   getEvent(
     key: "Transfer"
-  ): TypedContractEvent<TransferEvent.InputTuple, TransferEvent.OutputTuple, TransferEvent.OutputObject>;
+  ): TypedContractEvent<
+    TransferEvent.InputTuple,
+    TransferEvent.OutputTuple,
+    TransferEvent.OutputObject
+  >;
 
   filters: {
     "Approval(address,address,uint256)": TypedContractEvent<
@@ -308,13 +553,21 @@ export interface GMT extends BaseContract {
       ApprovalEvent.OutputTuple,
       ApprovalEvent.OutputObject
     >;
-    Approval: TypedContractEvent<ApprovalEvent.InputTuple, ApprovalEvent.OutputTuple, ApprovalEvent.OutputObject>;
+    Approval: TypedContractEvent<
+      ApprovalEvent.InputTuple,
+      ApprovalEvent.OutputTuple,
+      ApprovalEvent.OutputObject
+    >;
 
     "Transfer(address,address,uint256)": TypedContractEvent<
       TransferEvent.InputTuple,
       TransferEvent.OutputTuple,
       TransferEvent.OutputObject
     >;
-    Transfer: TypedContractEvent<TransferEvent.InputTuple, TransferEvent.OutputTuple, TransferEvent.OutputObject>;
+    Transfer: TypedContractEvent<
+      TransferEvent.InputTuple,
+      TransferEvent.OutputTuple,
+      TransferEvent.OutputObject
+    >;
   };
 }
