@@ -113,6 +113,8 @@ export type TokenTransfersParams = {
   isNativeReceive: boolean;
   tokenTransfers: TokenTransfer[];
   value: bigint;
+  payTokenAddress: string;
+  payTokenAmount: bigint;
   initialCollateralTokenAddress: ERC20Address;
   initialCollateralDeltaAmount: bigint;
   minOutputAmount: bigint;
@@ -205,7 +207,7 @@ export function buildSwapOrderPayload(p: SwapOrderParams): CreateOrderTxnParams<
       receiver: p.receiver,
       cancellationReceiver: zeroAddress,
       callbackContract: zeroAddress,
-      uiFeeReceiver: p.uiFeeReceiver ?? zeroHash,
+      uiFeeReceiver: p.uiFeeReceiver ?? zeroAddress,
       market: zeroAddress,
       initialCollateralToken: tokenTransfersParams.initialCollateralTokenAddress,
       swapPath: tokenTransfersParams.swapPath,
@@ -251,7 +253,7 @@ export function buildIncreaseOrderPayload(
       receiver: p.receiver,
       cancellationReceiver: zeroAddress,
       callbackContract: zeroAddress,
-      uiFeeReceiver: p.uiFeeReceiver ?? zeroHash,
+      uiFeeReceiver: p.uiFeeReceiver ?? zeroAddress,
       market: p.marketAddress,
       initialCollateralToken: tokenTransfersParams.initialCollateralTokenAddress,
       swapPath: tokenTransfersParams.swapPath,
@@ -295,7 +297,7 @@ export function buildDecreaseOrderPayload(
       receiver: p.receiver,
       cancellationReceiver: zeroAddress,
       callbackContract: zeroAddress,
-      uiFeeReceiver: p.uiFeeReceiver ?? zeroHash,
+      uiFeeReceiver: p.uiFeeReceiver ?? zeroAddress,
       market: p.marketAddress,
       initialCollateralToken: tokenTransfersParams.initialCollateralTokenAddress,
       swapPath: tokenTransfersParams.swapPath,
@@ -494,6 +496,21 @@ export function getBatchTotalExecutionFee({
   };
 }
 
+export function getBatchTotalPayAmounts(batchParams: BatchOrderTxnParams) {
+  const payAmounts: { [tokenAddress: string]: bigint } = {};
+
+  for (const co of batchParams.createOrderParams) {
+    const payTokenAddress = co.tokenTransfersParams?.payTokenAddress;
+    const payTokenAmount = co.tokenTransfersParams?.payTokenAmount;
+
+    if (payTokenAddress && payTokenAmount) {
+      payAmounts[payTokenAddress] = (payAmounts[payTokenAddress] ?? 0n) + payTokenAmount;
+    }
+  }
+
+  return payAmounts;
+}
+
 export function getBatchExternalSwapGasLimit(batchParams: BatchOrderTxnParams) {
   return batchParams.createOrderParams.reduce((acc, co) => {
     const externalSwapQuote = (co.params as IncreasePositionOrderParams | SwapOrderParams).externalSwapQuote;
@@ -539,6 +556,8 @@ export function buildTokenTransfersParamsForDecrease({
     initialCollateralTokenAddress: convertTokenAddress(chainId, collateralTokenAddress, "wrapped"),
     initialCollateralDeltaAmount: collateralDeltaAmount,
     tokenTransfers,
+    payTokenAddress: zeroAddress,
+    payTokenAmount: 0n,
     minOutputAmount: minOutputUsd,
     swapPath,
     value,
@@ -573,6 +592,9 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
   const orderVaultAddress = getContract(chainId, "OrderVault");
   const externalHandlerAddress = getContract(chainId, "ExternalHandler");
 
+  let finalPayTokenAddress = payTokenAddress;
+  let finalPayTokenAmount = payTokenAmount;
+
   const { tokenTransfers, value } = combineTransfers([
     {
       tokenAddress: NATIVE_TOKEN_ADDRESS,
@@ -604,6 +626,8 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
       account: receiver,
       quote: externalSwapQuote,
     });
+    finalPayTokenAddress = externalSwapQuote.inTokenAddress;
+    finalPayTokenAmount = externalSwapQuote.amountIn;
   }
 
   return {
@@ -612,6 +636,8 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
     initialCollateralTokenAddress,
     initialCollateralDeltaAmount,
     tokenTransfers,
+    payTokenAddress: finalPayTokenAddress,
+    payTokenAmount: finalPayTokenAmount,
     minOutputAmount,
     swapPath,
     value,
