@@ -7,7 +7,6 @@ import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from 
 import {
   DEBUG_SWAP_MARKETS_CONFIG_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
-  EXPRESS_TRADING_GAS_TOKEN_SWITCHED,
   EXTERNAL_SWAPS_ENABLED_KEY,
   IS_AUTO_CANCEL_TPSL_KEY,
   IS_PNL_IN_LEVERAGE_KEY,
@@ -20,6 +19,7 @@ import {
   getAllowedSlippageKey,
   getExecutionFeeBufferBpsKey,
   getExpressOrdersEnabledKey,
+  getExpressTradingGasTokenSwitchedKey,
   getGasPaymentTokenAddressKey,
   getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
   getLeverageEnabledKey as getLeverageSliderEnabledKey,
@@ -142,7 +142,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   );
 
   const [expressTradingGasTokenSwitched, setExpressTradingGasTokenSwitched] = useLocalStorageSerializeKey(
-    EXPRESS_TRADING_GAS_TOKEN_SWITCHED,
+    getExpressTradingGasTokenSwitchedKey(chainId),
     false
   );
 

@@ -35,6 +35,7 @@ import {
 import { selectTradeBoxCreateOrderParams } from "context/SyntheticsStateContext/selectors/transactionsSelectors/tradeBoxOrdersSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUserReferralCode } from "domain/referrals";
+import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import { OrderType } from "domain/synthetics/orders";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
@@ -277,7 +278,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       chainId,
       signer,
       batchParams,
-      expressParams,
+      expressParams: expressParams && getIsValidExpressParams(expressParams) ? expressParams : undefined,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
         : {
@@ -329,6 +330,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     onSubmitWrapOrUnwrap,
     slippageInputId,
     expressParams,
+    batchParams,
     isExpressLoading,
     totalExecutionFee,
   };

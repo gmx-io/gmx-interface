@@ -10,7 +10,6 @@ import RelayParamsAbi from "sdk/abis/RelayParams.json";
 import { getContract } from "sdk/configs/contracts";
 import { getRelayerFeeToken } from "sdk/configs/express";
 import { ExternalSwapOutput, SwapAmounts } from "sdk/types/trade";
-import { getByKey } from "sdk/utils/objects";
 import { combineExternalCalls, ExternalCallsPayload, getExternalCallsPayload } from "sdk/utils/orderTransactions";
 
 import { RelayerFeeParams, RelayFeePayload, RelayParamsPayload } from "./types";
@@ -63,10 +62,7 @@ export function getRelayerFeeParams({
   internalSwapAmounts,
   batchExternalCalls,
   feeExternalSwapQuote,
-  tokensData,
-  gasPaymentAllowanceData,
   forceExternalSwaps,
-  tokenPermits,
 }: {
   chainId: number;
   account: string;
@@ -83,7 +79,7 @@ export function getRelayerFeeParams({
   gasPaymentAllowanceData: TokensAllowanceData;
   forceExternalSwaps: boolean | undefined;
   tokenPermits: SignedTokenPermit[];
-}): RelayerFeeParams {
+}): RelayerFeeParams | undefined {
   let feeParams: RelayFeePayload;
   let externalCalls: ExternalCallsPayload;
   let gasPaymentTokenAmount: bigint;
@@ -102,22 +98,23 @@ export function getRelayerFeeParams({
     getIsInternalSwapBetter({ internalSwapAmounts, externalSwapQuote: feeExternalSwapQuote, forceExternalSwaps }) &&
     internalSwapAmounts?.swapPathStats
   ) {
+    externalCalls = batchExternalCalls;
     feeParams = {
       feeToken: internalSwapAmounts.swapPathStats.tokenInAddress,
       feeAmount: internalSwapAmounts.amountIn,
       feeSwapPath: internalSwapAmounts.swapPathStats.swapPath,
     };
-    externalCalls = batchExternalCalls;
-    gasPaymentTokenAddress = internalSwapAmounts.swapPathStats.tokenInAddress;
     gasPaymentTokenAmount = internalSwapAmounts.amountIn;
     totalNetworkFeeAmount = internalSwapAmounts.amountOut;
   } else if (feeExternalSwapQuote) {
-    const feeExternalCalls = getExternalCallsPayload({
-      chainId,
-      account,
-      quote: feeExternalSwapQuote,
-    });
-    externalCalls = combineExternalCalls([batchExternalCalls, feeExternalCalls]);
+    externalCalls = combineExternalCalls([
+      batchExternalCalls,
+      getExternalCallsPayload({
+        chainId,
+        account,
+        quote: feeExternalSwapQuote,
+      }),
+    ]);
     feeParams = {
       feeToken: feeExternalSwapQuote.outTokenAddress, // final token
       feeAmount: 0n, // fee already sent in external calls
@@ -127,26 +124,8 @@ export function getRelayerFeeParams({
     gasPaymentTokenAmount = feeExternalSwapQuote.amountIn;
     totalNetworkFeeAmount = feeExternalSwapQuote.amountOut;
   } else {
-    externalCalls = batchExternalCalls;
-    feeParams = {
-      feeToken: relayerFeeTokenAddress,
-      feeAmount: 0n,
-      feeSwapPath: [],
-    };
-    gasPaymentTokenAmount = 0n;
-    noFeeSwap = true;
+    return undefined;
   }
-
-  const gasPaymentToken = getByKey(tokensData, gasPaymentTokenAddress);
-  const isOutGasTokenBalance =
-    gasPaymentToken?.balance === undefined || gasPaymentTokenAmount > gasPaymentToken.balance;
-
-  const needGasPaymentTokenApproval = getNeedTokenApprove(
-    gasPaymentAllowanceData,
-    gasPaymentTokenAddress,
-    gasPaymentTokenAmount,
-    tokenPermits
-  );
 
   return {
     feeParams,
@@ -157,8 +136,6 @@ export function getRelayerFeeParams({
     gasPaymentTokenAmount,
     relayerGasLimit,
     l1GasLimit,
-    isOutGasTokenBalance,
-    needGasPaymentTokenApproval,
     gasPaymentTokenAddress,
     externalSwapGasLimit,
     noFeeSwap,

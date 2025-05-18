@@ -1,9 +1,9 @@
+import { TaskState } from "@gelatonetwork/relay-sdk";
 import { ReactNode } from "react";
 
 import { OrderTxnType, OrderType } from "domain/synthetics/orders";
 import { SignedSubbacountApproval } from "domain/synthetics/subaccount";
 import { OrderMetricId } from "lib/metrics/types";
-import { TaskState } from "lib/transactions/sendExpressTransaction";
 import { SignedTokenPermit } from "sdk/types/tokens";
 import { ExternalSwapOutput } from "sdk/types/trade";
 
@@ -13,7 +13,6 @@ export type MultiTransactionStatus<TEventData> = {
   createdTxnHash?: string;
   cancelledTxnHash?: string;
   gelatoTaskId?: string;
-
   updatedTxnHash?: string;
   executedTxnHash?: string;
   createdAt: number;

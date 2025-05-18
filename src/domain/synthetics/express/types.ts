@@ -4,7 +4,7 @@ import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
 import { GasLimitsConfig, L1ExpressOrderGasReference } from "../fees";
 import { MarketsInfoData } from "../markets";
-import { Subaccount } from "../subaccount";
+import { Subaccount, SubaccountValidations } from "../subaccount";
 import { FindSwapPath } from "../trade";
 
 export type GlobalExpressParams = {
@@ -30,8 +30,10 @@ export type ExpressTxnParams = {
   subaccount: Subaccount | undefined;
   relayParamsPayload: RelayParamsPayload;
   relayFeeParams: RelayerFeeParams;
-  isSponsoredCall: boolean;
   estimationMethod: ExpressParamsEstimationMethod;
+  isSponsoredCall: boolean;
+  gasPaymentValidations: GasPaymentValidations;
+  subaccountValidations: SubaccountValidations | undefined;
 };
 
 export type RelayerFeeParams = {
@@ -44,8 +46,6 @@ export type RelayerFeeParams = {
   l1GasLimit: bigint;
   gasPaymentTokenAmount: bigint;
   gasPaymentTokenAddress: string;
-  isOutGasTokenBalance: boolean;
-  needGasPaymentTokenApproval: boolean;
   externalSwapGasLimit: bigint;
   noFeeSwap: boolean;
 };
@@ -69,4 +69,10 @@ export type RelayFeePayload = {
   feeToken: string;
   feeAmount: bigint;
   feeSwapPath: string[];
+};
+
+export type GasPaymentValidations = {
+  isOutGasTokenBalance: boolean;
+  needGasPaymentTokenApproval: boolean;
+  isValid: boolean;
 };

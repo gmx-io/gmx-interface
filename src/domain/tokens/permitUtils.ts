@@ -24,9 +24,9 @@ export async function createAndSignTokenPermit(
   const owner = await signer.getAddress();
 
   const domain = {
+    chainId,
     name: onchainParams.name,
     version: onchainParams.version,
-    chainId,
     verifyingContract: tokenAddress,
   };
 

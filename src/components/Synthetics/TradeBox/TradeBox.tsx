@@ -25,6 +25,7 @@ import {
   selectTradeboxExecutionFee,
   selectTradeboxFees,
   selectTradeboxIncreasePositionAmounts,
+  selectTradeboxIsWrapOrUnwrap,
   selectTradeboxKeepLeverage,
   selectTradeboxLeverage,
   selectTradeboxLeverageSliderMarks,
@@ -126,6 +127,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket, isTwap } = tradeFlags;
+  const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
 
   const chainId = useSelector(selectChainId);
   const { account } = useWallet();
@@ -225,6 +227,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     },
     [setFromTokenInputValueRaw, setIsDismissedRef, setDefaultAllowedSwapSlippageBps, setSelectedAllowedSwapSlippageBps]
   );
+
   const setToTokenInputValue = useCallback(
     (value: string, shouldResetPriceImpactAndSwapSlippage: boolean) => {
       setToTokenInputValueRaw(value);
@@ -253,7 +256,11 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     nativeToken,
     fromTokenAmount,
     fromTokenInputValue,
-    relayerFeeParams: submitButtonState.expressParams?.relayFeeParams,
+    minResidualAmount:
+      submitButtonState.expressParams?.relayFeeParams.gasPaymentTokenAddress === fromTokenAddress
+        ? submitButtonState.expressParams?.relayFeeParams.gasPaymentTokenAmount
+        : undefined,
+    isLoading: submitButtonState.isExpressLoading,
   });
 
   const onMaxClick = useCallback(() => {
@@ -835,6 +842,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const { shouldShowWarning: shouldShowOneClickTradingWarning } = useExpressTradingWarnings({
     expressParams: submitButtonState.expressParams,
+    payTokenAddress: fromTokenAddress,
+    isWrapOrUnwrap,
   });
 
   const showSectionBetweenInputsAndButton =
@@ -998,7 +1007,11 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         )}
         <div className="flex flex-col gap-14 pt-14">
           <div>{button}</div>
-          <ExpressTradingWarningCard expressParams={submitButtonState.expressParams} />
+          <ExpressTradingWarningCard
+            expressParams={submitButtonState.expressParams}
+            payTokenAddress={!tradeFlags.isTrigger ? fromTokenAddress : undefined}
+            isWrapOrUnwrap={!tradeFlags.isTrigger && isWrapOrUnwrap}
+          />
           <div className="h-1 bg-stroke-primary" />
           {isSwap && !isTwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
           {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (

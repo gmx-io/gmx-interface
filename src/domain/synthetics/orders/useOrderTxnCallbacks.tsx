@@ -116,19 +116,19 @@ export function useOrderTxnCallbacks() {
           );
 
         if (mainActionType === "create") {
-          if (pendingOrders.length > 0) {
-            setPendingOrder(pendingOrders);
-          }
-
-          if (pendingPositions.length > 0) {
-            setPendingPosition(pendingPositions[0]);
-          }
-
           if (ctx.isFundingFeeSettlement) {
             setPendingFundingFeeSettlement({
               orders: pendingOrders,
               positions: pendingPositions,
             });
+          } else {
+            if (pendingOrders.length > 0) {
+              setPendingOrder(pendingOrders);
+            }
+
+            if (pendingPositions.length > 0) {
+              setPendingPosition(pendingPositions[0]);
+            }
           }
         } else {
           if (pendingOrderUpdate) {
@@ -180,6 +180,13 @@ export function useOrderTxnCallbacks() {
       };
 
       switch (e.event) {
+        case TxnEventName.Simulated: {
+          if (ctx.metricId) {
+            sendOrderSimulatedMetric(ctx.metricId);
+          }
+          return;
+        }
+
         case TxnEventName.Sending: {
           if (ctx.metricId) {
             sendOrderTxnSubmittedMetric(ctx.metricId);
@@ -187,13 +194,6 @@ export function useOrderTxnCallbacks() {
 
           if (expressParams) {
             handleTxnSubmitted();
-          }
-          return;
-        }
-
-        case TxnEventName.Simulated: {
-          if (ctx.metricId) {
-            sendOrderSimulatedMetric(ctx.metricId);
           }
           return;
         }
@@ -207,12 +207,12 @@ export function useOrderTxnCallbacks() {
             handleTxnSubmitted();
           }
 
-          if (expressParams) {
+          if (e.data.type === "relay") {
             updatePendingExpressTxn({
-              key: getExpressParamsKey(expressParams),
-              taskId: e.data.txnId,
+              key: expressParams ? getExpressParamsKey(expressParams) : undefined,
+              taskId: e.data.relayTaskId,
             });
-          } else {
+          } else if (e.data.type === "wallet") {
             const totalExecutionFee = tokensData
               ? getBatchTotalExecutionFee({
                   batchParams: e.data.batchParams,
@@ -222,7 +222,7 @@ export function useOrderTxnCallbacks() {
               : undefined;
 
             const pendingTxn: PendingTransaction = {
-              hash: e.data.txnId,
+              hash: e.data.transactionHash,
               message: getOperationMessage(mainActionType, "success", actionsCount, undefined, setIsSettingsVisible),
               metricId: ctx.metricId,
               data: totalExecutionFee

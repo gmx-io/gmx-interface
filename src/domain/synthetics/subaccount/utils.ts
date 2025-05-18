@@ -7,6 +7,7 @@ import {
   Subaccount,
   SubaccountApproval,
   SubaccountSerializedConfig,
+  SubaccountValidations,
 } from "domain/synthetics/subaccount/types";
 import { SubaccountOnchainData } from "domain/synthetics/subaccount/useSubaccountOnchainData";
 import { WalletSigner } from "lib/wallets";
@@ -30,6 +31,21 @@ import { ZERO_DATA } from "sdk/utils/hash";
 import { nowInSeconds, secondsToPeriod } from "sdk/utils/time";
 
 import { getExpressContractAddress, getGelatoRelayRouterDomain } from "../express";
+
+export function getSubaccountValidations({
+  requiredActions,
+  subaccount,
+}: {
+  requiredActions: number;
+  subaccount: Subaccount;
+}): SubaccountValidations {
+  return {
+    isExpired: getIsSubaccountExpired(subaccount),
+    isActionsExceeded: getIsSubaccountActionsExceeded(subaccount, requiredActions),
+    isNonceExpired: getIsNonceExpired(subaccount),
+    isValid: getIsInvalidSubaccount(subaccount, requiredActions),
+  };
+}
 
 export function getIsSubaccountActive(subaccount: {
   onchainData: SubaccountOnchainData;

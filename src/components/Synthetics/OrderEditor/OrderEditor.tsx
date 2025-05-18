@@ -44,6 +44,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
@@ -102,9 +103,9 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { AllowedSwapSlippageInputRow } from "../AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 
 import "./OrderEditor.scss";
-
 type Props = {
   order: OrderInfo;
   source: EditingOrderSource;
@@ -451,7 +452,7 @@ export function OrderEditor(p: Props) {
       chainId,
       signer,
       batchParams,
-      expressParams,
+      expressParams: expressParams && getIsValidExpressParams(expressParams) ? expressParams : undefined,
       simulationParams: undefined,
       callback: makeOrderTxnCallback({}),
     });
@@ -655,6 +656,8 @@ export function OrderEditor(p: Props) {
 
         <div className="flex flex-col gap-14">
           {button}
+
+          <ExpressTradingWarningCard expressParams={expressParams} payTokenAddress={undefined} isWrapOrUnwrap={false} />
 
           {(isLimitIncreaseOrderType(p.order.orderType) || isStopIncreaseOrderType(p.order.orderType)) && (
             <SyntheticsInfoRow

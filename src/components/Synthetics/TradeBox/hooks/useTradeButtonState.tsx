@@ -68,6 +68,7 @@ import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/types/fees";
+import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";
@@ -87,6 +88,8 @@ type TradeboxButtonState = {
   onSubmit: () => Promise<void>;
   slippageInputId: string;
   expressParams?: ExpressTxnParams;
+  isExpressLoading: boolean;
+  batchParams?: BatchOrderTxnParams;
   totalExecutionFee?: ExecutionFee;
 };
 
@@ -130,6 +133,7 @@ export function useTradeboxButtonState({
     onSubmitDecreaseOrder,
     slippageInputId,
     expressParams,
+    batchParams,
     isExpressLoading,
     totalExecutionFee,
   } = useTradeboxTransactions({
@@ -393,7 +397,9 @@ export function useTradeboxButtonState({
       onSubmit,
       slippageInputId,
       expressParams,
+      batchParams,
       totalExecutionFee,
+      isExpressLoading,
     };
 
     if (!account && buttonErrorText) {
@@ -512,6 +518,7 @@ export function useTradeboxButtonState({
     onSubmit,
     slippageInputId,
     expressParams,
+    batchParams,
     totalExecutionFee,
     account,
     buttonErrorText,

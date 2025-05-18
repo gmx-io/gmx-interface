@@ -23,7 +23,7 @@ export function useSwitchGasPaymentTokenIfRequired({ expressParams }: { expressP
 
   useEffect(
     function switchGasPaymentToken() {
-      if (expressParams?.relayFeeParams?.isOutGasTokenBalance) {
+      if (expressParams?.gasPaymentValidations.isOutGasTokenBalance) {
         const gasPaymentTokenData = getByKey(tokensData, expressParams!.relayFeeParams.gasPaymentTokenAddress);
 
         if (!gasPaymentTokenData) {

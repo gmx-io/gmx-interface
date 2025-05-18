@@ -449,7 +449,7 @@ export type MulticallRequestTiming = {
 };
 
 export type GelatoPollingTiming = {
-  event: "express.gelatoTaskFinalStatusReceived";
+  event: "express.pollGelatoTask.finalStatus";
   data: {
     status: string;
   };
