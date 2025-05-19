@@ -55,8 +55,13 @@ export async function approveTokens({
     approveAmount = ethers.MaxUint256;
   }
 
-  const token = getToken(chainId, tokenAddress);
-  const shouldUsePermit = token.isPermitSupported && !token.isPermitDisabled;
+  let shouldUsePermit = false;
+  try {
+    const token = getToken(chainId, tokenAddress);
+    shouldUsePermit = Boolean(token?.isPermitSupported && !token.isPermitDisabled);
+  } catch (e) {
+    // ...ignore in case of glv / gm approval
+  }
 
   if (permitParams?.addTokenPermit && shouldUsePermit) {
     return await permitParams
