@@ -40,6 +40,7 @@ import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
 import Stats from "pages/Stats/Stats";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
+import { TestPermits } from "pages/TestPermits/TestPernits";
 import { abis } from "sdk/abis";
 
 const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
@@ -206,6 +207,11 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       {isDevelopment() && (
         <Route exact path="/ui">
           <UiPage />
+        </Route>
+      )}
+      {isDevelopment() && (
+        <Route exact path="/permits">
+          <TestPermits />
         </Route>
       )}
       <Route path="/parsetx/:network/:tx">

@@ -55,7 +55,10 @@ export async function approveTokens({
     approveAmount = ethers.MaxUint256;
   }
 
-  if (permitParams?.addTokenPermit && getToken(chainId, tokenAddress).isPermitSupported) {
+  const token = getToken(chainId, tokenAddress);
+  const shouldUsePermit = token.isPermitSupported && !token.isPermitDisabled;
+
+  if (permitParams?.addTokenPermit && shouldUsePermit) {
     return await permitParams
       .addTokenPermit(tokenAddress, spender, approveAmount)
       .then(() => {

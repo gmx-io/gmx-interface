@@ -77,6 +77,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       explorerUrl: "https://arbiscan.io/token/0x2bCc6D6CdBbDC0a4071e48bb3B969b06B3330c07",
       explorerSymbol: "SOL",
       isPermitSupported: true,
+      isPermitDisabled: true,
       contractVersion: "1",
     },
     {
@@ -315,6 +316,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoSymbol: "AVAX",
       explorerSymbol: "WAVAX",
       isPermitSupported: true,
+      isPermitDisabled: true,
       contractVersion: "1",
     },
     {
@@ -348,6 +350,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/33566/standard/dogwifhat.jpg?1702499428",
       coingeckoUrl: "https://www.coingecko.com/en/coins/dogwifhat",
       isPermitSupported: true,
+      isPermitDisabled: true,
       contractVersion: "1",
     },
     {
@@ -610,6 +613,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/15069/standard/Pendle_Logo_Normal-03.png?1696514728",
       coingeckoUrl: "https://www.coingecko.com/en/coins/pendle",
       isPermitSupported: true,
+      isPermitDisabled: true,
       contractVersion: "1",
     },
     {
@@ -1149,6 +1153,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoSymbol: "SOL",
       explorerUrl: "https://snowtrace.io/address/0xFE6B19286885a4F7F55AdAD09C3Cd1f906D2478F",
       isPermitSupported: true,
+      isPermitDisabled: true,
       contractVersion: "1",
     },
     {
