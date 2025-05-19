@@ -830,8 +830,9 @@ export function buildUpdateOrderMulticall(updateTxn: UpdateOrderTxnParams) {
     params: [
       updatePayload.orderKey,
       updatePayload.sizeDeltaUsd,
-      convertToContractPrice(updatePayload.acceptablePrice, indexToken.decimals),
-      convertToContractPrice(updatePayload.triggerPrice, indexToken.decimals),
+      updatePayload.acceptablePrice,
+      indexToken.decimals,
+      updatePayload.triggerPrice,
       updatePayload.minOutputAmount,
       0n,
       updatePayload.autoCancel,

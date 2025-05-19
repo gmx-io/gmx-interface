@@ -43,7 +43,7 @@ export function getSubaccountValidations({
     isExpired: getIsSubaccountExpired(subaccount),
     isActionsExceeded: getIsSubaccountActionsExceeded(subaccount, requiredActions),
     isNonceExpired: getIsNonceExpired(subaccount),
-    isValid: getIsInvalidSubaccount(subaccount, requiredActions),
+    isValid: !getIsInvalidSubaccount(subaccount, requiredActions),
   };
 }
 
