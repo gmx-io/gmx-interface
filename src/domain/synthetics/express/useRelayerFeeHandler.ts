@@ -9,7 +9,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { throttleLog } from "lib/logging";
 import { useJsonRpcProvider } from "lib/rpc";
-import { retry, useThrottledAsync } from "lib/useThrottledAsyncEstimation";
+import { useThrottledAsync } from "lib/useThrottledAsyncEstimation";
 import useWallet from "lib/wallets/useWallet";
 import { BatchOrderTxnParams, getBatchIsNativePayment, getIsEmptyBatch } from "sdk/utils/orderTransactions";
 
@@ -55,10 +55,6 @@ export function useExpressOrdersParams({
         requireValidations: false,
         estimationMethod: "approximate",
       });
-
-      if (!nextApproximateParams) {
-        return retry(undefined, 100);
-      }
 
       return nextApproximateParams;
     },

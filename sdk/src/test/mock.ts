@@ -225,6 +225,8 @@ export function mockMarketsInfoData(
       swapFeeFactorForPositiveImpact: expandDecimals(2, 27),
       swapFeeFactorForNegativeImpact: expandDecimals(2, 27),
 
+      atomicSwapFeeFactor: expandDecimals(2, 27),
+
       swapImpactFactorPositive: expandDecimals(2, 23),
       swapImpactFactorNegative: expandDecimals(1, 23),
       swapImpactExponentFactor: expandDecimals(2, 30),

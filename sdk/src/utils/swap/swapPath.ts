@@ -116,6 +116,8 @@ export const createFindSwapPath = (params: {
     finalDisabledMarkets.push(...expressSwapUnavailableMarkets);
   }
 
+  const isAtomicSwap = Boolean(isExpressFeeSwap);
+
   const marketAdjacencyGraph = buildMarketAdjacencyGraph(chainId, finalDisabledMarkets);
 
   const cache: Record<string, SwapPathStats | undefined> = {};
@@ -125,7 +127,7 @@ export const createFindSwapPath = (params: {
   }
 
   const marketEdgeLiquidityGetter = createMarketEdgeLiquidityGetter(marketsInfoData);
-  const naiveEstimator = createNaiveSwapEstimator(marketsInfoData);
+  const naiveEstimator = createNaiveSwapEstimator(marketsInfoData, isAtomicSwap);
   const naiveNetworkEstimator = gasEstimationParams
     ? createNaiveNetworkEstimator({
         gasLimits: gasEstimationParams.gasLimits,
@@ -134,7 +136,7 @@ export const createFindSwapPath = (params: {
         chainId,
       })
     : undefined;
-  const estimator = createSwapEstimator(marketsInfoData);
+  const estimator = createSwapEstimator(marketsInfoData, isAtomicSwap);
 
   const findSwapPath: FindSwapPath = (usdIn: bigint, opts?: { order?: ("liquidity" | "length")[] }) => {
     if (tokenSwapPaths.length === 0 || !fromTokenAddress || !wrappedFromAddress || !wrappedToAddress) {
@@ -215,6 +217,7 @@ export const createFindSwapPath = (params: {
       shouldUnwrapNativeToken: toTokenAddress === NATIVE_TOKEN_ADDRESS,
       shouldApplyPriceImpact: true,
       usdIn,
+      isAtomicSwap,
     });
 
     cache[cacheKey] = result;

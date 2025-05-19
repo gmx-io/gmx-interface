@@ -44,6 +44,7 @@ export type RelayerFeeParams = {
   totalNetworkFeeAmount: bigint;
   relayerGasLimit: bigint;
   l1GasLimit: bigint;
+  gasPrice: bigint;
   gasPaymentTokenAmount: bigint;
   gasPaymentTokenAddress: string;
   externalSwapGasLimit: bigint;

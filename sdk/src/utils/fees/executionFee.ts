@@ -95,8 +95,7 @@ export function approximateExpressBatchOrderRelayGasLimit({
     l1GasLimit = Math.abs(evaluated) < Infinity ? BigInt(evaluated) : 0n;
   }
 
-  let gasLimit = totalGasLimit + l1GasLimit;
-  gasLimit = (gasLimit * 13n) / 10n; // 30% buffer
+  const gasLimit = totalGasLimit + l1GasLimit;
 
   return { gasLimit, l1GasLimit };
 }

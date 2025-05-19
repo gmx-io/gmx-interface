@@ -7,6 +7,7 @@ export const POSITION_FEE_FACTOR_KEY = hashString("POSITION_FEE_FACTOR");
 export const SWAP_IMPACT_FACTOR_KEY = hashString("SWAP_IMPACT_FACTOR");
 export const SWAP_IMPACT_EXPONENT_FACTOR_KEY = hashString("SWAP_IMPACT_EXPONENT_FACTOR");
 export const SWAP_FEE_FACTOR_KEY = hashString("SWAP_FEE_FACTOR");
+export const ATOMIC_SWAP_FEE_FACTOR_KEY = hashString("ATOMIC_SWAP_FEE_FACTOR");
 export const FEE_RECEIVER_DEPOSIT_FACTOR_KEY = hashString("FEE_RECEIVER_DEPOSIT_FACTOR");
 export const BORROWING_FEE_RECEIVER_FACTOR_KEY = hashString("BORROWING_FEE_RECEIVER_FACTOR");
 export const FEE_RECEIVER_WITHDRAWAL_FACTOR_KEY = hashString("FEE_RECEIVER_WITHDRAWAL_FACTOR");
@@ -153,6 +154,10 @@ export function swapImpactExponentFactorKey(market: string) {
 
 export function swapFeeFactorKey(market: string, forPositiveImpact: boolean) {
   return hashData(["bytes32", "address", "bool"], [SWAP_FEE_FACTOR_KEY, market, forPositiveImpact]);
+}
+
+export function atomicSwapFeeFactorKey(market: string) {
+  return hashData(["bytes32", "address"], [ATOMIC_SWAP_FEE_FACTOR_KEY, market]);
 }
 
 export function openInterestKey(market: string, collateralToken: string, isLong: boolean) {
