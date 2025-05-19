@@ -9,6 +9,7 @@ import {
   SUBACCOUNT_ORDER_ACTION,
   subaccountActionCountKey,
   subaccountExpiresAtKey,
+  subaccountIntegrationIdKey,
   subaccountListKey,
 } from "sdk/configs/dataStore";
 import { MulticallRequestConfig } from "sdk/utils/multicall";
@@ -19,6 +20,7 @@ export type SubaccountOnchainData = {
   currentActionsCount: bigint;
   expiresAt: bigint;
   approvalNonce: bigint;
+  integrationId: string | undefined;
 };
 
 export type SubaccountOnchainDataResult = {
@@ -81,6 +83,13 @@ export function useSubaccountOnchainData(
               methodName: "getUint",
               params: [subaccountExpiresAtKey(account!, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
             },
+            integrationId:
+              srcChainId !== undefined
+                ? {
+                    methodName: "getBytes32",
+                    params: [subaccountIntegrationIdKey(account!, subaccountAddress)],
+                  }
+                : null,
           },
         },
       } satisfies MulticallRequestConfig<any>;
@@ -91,7 +100,17 @@ export function useSubaccountOnchainData(
       const currentActionsCount = BigInt(res.data.dataStore.currentActionsCount.returnValues[0]);
       const expiresAt = BigInt(res.data.dataStore.expiresAt.returnValues[0]);
       const approvalNonce = BigInt(res.data.subaccountRelayRouter.subaccountApproval.returnValues[0]);
-      return { active: isSubaccountActive, maxAllowedCount, currentActionsCount, expiresAt, approvalNonce };
+
+      const integrationId = srcChainId !== undefined ? res.data.dataStore.integrationId.returnValues[0] : undefined;
+
+      return {
+        active: isSubaccountActive,
+        maxAllowedCount,
+        currentActionsCount,
+        expiresAt,
+        approvalNonce,
+        integrationId,
+      };
     },
   });
 

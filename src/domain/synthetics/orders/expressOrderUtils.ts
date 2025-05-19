@@ -1,5 +1,5 @@
 import { Provider, Signer, Wallet } from "ethers";
-import { AbiItemArgs, Address, encodeFunctionData, Hex, PublicClient, size, zeroAddress, zeroHash } from "viem";
+import { AbiItemArgs, Address, encodeFunctionData, Hex, size, zeroAddress, zeroHash } from "viem";
 
 import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
@@ -7,6 +7,7 @@ import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 import { getSwapDebugSettings } from "config/externalSwaps";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
+import { isSourceChain } from "context/GmxAccountContext/config";
 import {
   ExpressParamsEstimationMethod,
   ExpressTxnParams,
@@ -65,7 +66,6 @@ import { getSwapAmountsByToValue } from "../trade";
 
 export async function estimateExpressParams({
   signer,
-  settlementChainClient,
   provider,
   chainId,
   batchParams,
@@ -75,7 +75,6 @@ export async function estimateExpressParams({
   estimationMethod = "approximate",
 }: {
   chainId: UiContractsChain;
-  settlementChainClient: PublicClient | undefined;
   batchParams: BatchOrderTxnParams;
   // TODO try to avoid this
   totalExecutionFee?: bigint;
@@ -176,7 +175,7 @@ export async function estimateExpressParams({
       chainId,
       batchParams,
       signer,
-      settlementChainClient,
+      provider,
       subaccount,
       tokenPermits,
       tokensData,
@@ -266,7 +265,7 @@ export async function estimateExpressParams({
       chainId,
       batchParams,
       signer,
-      settlementChainClient,
+      provider,
       subaccount,
       tokenPermits,
       tokensData,
@@ -316,7 +315,7 @@ export async function estimateExpressParams({
 
 export async function getBatchOrderExpressParams({
   chainId,
-  settlementChainClient,
+  provider,
   relayFeeParams,
   batchParams,
   signer,
@@ -329,7 +328,7 @@ export async function getBatchOrderExpressParams({
 }: {
   chainId: UiContractsChain;
   signer: WalletSigner;
-  settlementChainClient: PublicClient | undefined;
+  provider: Provider | undefined;
   relayFeeParams: RelayerFeeParams;
   batchParams: BatchOrderTxnParams;
   noncesData: NoncesData | undefined;
@@ -365,7 +364,7 @@ export async function getBatchOrderExpressParams({
 
   const txnData = await buildAndSignExpressBatchOrderTxn({
     signer,
-    settlementChainClient,
+    provider,
     chainId,
     relayFeeParams,
     relayParamsPayload,
@@ -391,7 +390,7 @@ export async function buildAndSignExpressBatchOrderTxn({
   signer,
   noncesData,
   emptySignature = false,
-  settlementChainClient,
+  provider,
 }: {
   signer: WalletSigner;
   chainId: UiContractsChain;
@@ -401,10 +400,9 @@ export async function buildAndSignExpressBatchOrderTxn({
   noncesData: NoncesData | undefined;
   subaccount: Subaccount | undefined;
   emptySignature?: boolean;
-  settlementChainClient: PublicClient | undefined;
+  provider: Provider | undefined;
 }): Promise<ExpressTxnData> {
   const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
-  const signerAddress = (await signer.getAddress()) as Address;
   const messageSigner = subaccount ? subaccount!.signer : signer;
 
   const relayRouterAddress = getOrderRelayRouterAddress(chainId, subaccount !== undefined, srcChainId !== undefined);
@@ -414,7 +412,11 @@ export async function buildAndSignExpressBatchOrderTxn({
   let userNonce: bigint;
   if (cachedNonce === undefined) {
     if (srcChainId) {
-      userNonce = await getRelayRouterNonceForMultichain(settlementChainClient!, signerAddress, relayRouterAddress);
+      userNonce = await getRelayRouterNonceForMultichain(
+        provider!,
+        messageSigner.address as Address,
+        relayRouterAddress
+      );
     } else {
       userNonce = await getRelayRouterNonceForSigner({
         chainId,
@@ -435,8 +437,8 @@ export async function buildAndSignExpressBatchOrderTxn({
     relayPayload: {
       ...relayParamsPayload,
       userNonce,
-    },
-    // paramsLists: getBatchParamsLists(batchParams, srcChainId !== undefined),
+      desChainId: srcChainId ? BigInt(chainId) : undefined,
+    } as RelayParamsPayload | MultichainRelayParamsPayload,
     subaccountApproval: subaccount?.signedApproval,
   };
 
@@ -470,10 +472,9 @@ export async function buildAndSignExpressBatchOrderTxn({
         args: [
           {
             ...params.relayPayload,
-            desChainId: BigInt(chainId),
             signature,
           },
-          { ...subaccount.signedApproval, integrationId: "0x" },
+          subaccount.signedApproval,
           params.account,
           BigInt(srcChainId),
           subaccount.signedApproval?.subaccount,
@@ -488,7 +489,6 @@ export async function buildAndSignExpressBatchOrderTxn({
         args: [
           {
             ...params.relayPayload,
-            desChainId: BigInt(chainId),
             signature,
           },
           params.account,
@@ -540,7 +540,7 @@ export async function getBatchSignatureParams({
   account: string;
   subaccountApproval: SignedSubbacountApproval | undefined;
   signer: WalletSigner | Wallet;
-  relayParams: RelayParamsPayload;
+  relayParams: RelayParamsPayload | MultichainRelayParamsPayload;
   batchParams: BatchOrderTxnParams;
   chainId: UiContractsChain;
   relayRouterAddress: Address;
@@ -607,10 +607,13 @@ export async function getBatchSignatureParams({
     createOrderParamsList: paramsLists.createOrderParamsList,
     updateOrderParamsList: paramsLists.updateOrderParamsList,
     cancelOrderKeys: paramsLists.cancelOrderKeys,
-    relayParams: srcChainId
-      ? hashRelayParamsMultichain({ ...relayParams, desChainId: BigInt(chainId) })
-      : hashRelayParams(relayParams),
-    subaccountApproval: subaccountApproval ? hashSubaccountApproval(subaccountApproval) : zeroHash,
+    relayParams:
+      srcChainId !== undefined
+        ? hashRelayParamsMultichain({ ...relayParams, desChainId: BigInt(chainId) })
+        : hashRelayParams(relayParams),
+    subaccountApproval: subaccountApproval
+      ? hashSubaccountApproval(subaccountApproval, srcChainId !== undefined)
+      : zeroHash,
   };
 
   return {
@@ -657,9 +660,14 @@ export async function getMultichainInfoFromSigner(
   chainId: UiContractsChain
 ): Promise<UiSourceChain | undefined> {
   const srcChainId = await signer.provider!.getNetwork().then((n) => Number(n.chainId) as UiSupportedChain);
-  const isMultichain = srcChainId !== chainId;
 
-  return isMultichain ? (srcChainId as UiSourceChain) : undefined;
+  if (!isSourceChain(srcChainId)) {
+    return undefined;
+  }
+
+  const isMultichain = srcChainId !== (chainId as UiSourceChain);
+
+  return isMultichain ? srcChainId : undefined;
 }
 
 export function getOrderRelayRouterAddress(
@@ -697,13 +705,15 @@ export async function buildAndSignBridgeOutTxn({
   chainId: UiSettlementChain;
   relayParamsPayload: MultichainRelayParamsPayload;
   params: BridgeOutParams;
-  signer: Signer;
+  signer: WalletSigner;
   emptySignature?: boolean;
 }): Promise<ExpressTxnData> {
-  const [address, srcChainId] = await Promise.all([
-    signer.getAddress(),
-    signer.provider!.getNetwork().then((n) => Number(n.chainId) as UiSourceChain),
-  ]);
+  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
+  if (!srcChainId) {
+    throw new Error("No srcChainId");
+  }
+
+  const address = signer.address;
 
   let signature: Hex;
 
@@ -751,7 +761,7 @@ async function signBridgeOutPayload({
   chainId,
   srcChainId,
 }: {
-  signer: Signer;
+  signer: WalletSigner;
   relayParams: MultichainRelayParamsPayload;
   params: IRelayUtils.BridgeOutParamsStruct;
   chainId: UiSettlementChain;

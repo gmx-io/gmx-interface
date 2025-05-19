@@ -1,7 +1,6 @@
 import { Plural, Trans, t } from "@lingui/macro";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef } from "react";
 import { useMeasure, useMedia } from "react-use";
-import { usePublicClient } from "wagmi";
 
 import {
   useIsOrdersLoading,
@@ -33,6 +32,7 @@ import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { EMPTY_ARRAY } from "lib/objects";
+import { useJsonRpcProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
 import { UiContractsChain } from "sdk/configs/chains";
 
@@ -79,8 +79,7 @@ export function OrderList({
 
   const chainId = useSelector(selectChainId);
   const { signer } = useWallet();
-  // const settlementChainProvider = useJsonRpcProvider(chainId);
-  const settlementChainClient = usePublicClient({ chainId });
+  const { provider } = useJsonRpcProvider(chainId);
 
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
 
@@ -160,13 +159,12 @@ export function OrderList({
     const expressParams = globalExpressParams
       ? await estimateExpressParams({
           signer,
-          settlementChainClient,
           chainId,
           batchParams,
           requireGasPaymentTokenApproval: true,
           globalExpressParams,
           estimationMethod: "approximate",
-          provider: undefined,
+          provider,
         })
       : undefined;
 
@@ -177,6 +175,7 @@ export function OrderList({
       expressParams,
       simulationParams: undefined,
       callback: makeOrderTxnCallback({}),
+      provider,
     }).finally(() => {
       setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));
       setSelectedOrderKeys?.(EMPTY_ARRAY);

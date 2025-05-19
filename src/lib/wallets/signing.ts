@@ -1,5 +1,7 @@
-import type { Signer } from "ethers";
+import type { Wallet } from "ethers";
 import type { Hex } from "viem";
+
+import type { WalletSigner } from ".";
 
 export type SignatureDomain = {
   name: string;
@@ -11,7 +13,7 @@ export type SignatureDomain = {
 export type SignatureTypes = Record<string, { name: string; type: string }[]>;
 
 export type SignTypedDataParams = {
-  signer: Signer;
+  signer: WalletSigner | Wallet;
   types: SignatureTypes;
   typedData: Record<string, any>;
   domain: SignatureDomain;

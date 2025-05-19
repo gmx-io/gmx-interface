@@ -42,7 +42,7 @@ import {
   selectOrderEditorTriggerPrice,
   selectOrderEditorTriggerRatio,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
-import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { useCalcSelector } from "context/SyntheticsStateContext/utils";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
@@ -86,6 +86,7 @@ import {
   parseValue,
 } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { useJsonRpcProvider } from "lib/rpc";
 import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
@@ -114,6 +115,7 @@ type Props = {
 export function OrderEditor(p: Props) {
   const { chainId } = useChainId();
   const { signer } = useWallet();
+  const { provider } = useJsonRpcProvider(chainId);
   const tokensData = useSelector(selectTokensData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
@@ -454,6 +456,7 @@ export function OrderEditor(p: Props) {
       expressParams,
       simulationParams: undefined,
       callback: makeOrderTxnCallback({}),
+      provider,
     });
 
     if (expressParams?.subaccount) {

@@ -5,7 +5,6 @@ import cx from "classnames";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
 import { useKey, useLatest, useMedia } from "react-use";
-import { usePublicClient } from "wagmi";
 
 import { USD_DECIMALS } from "config/factors";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -74,6 +73,7 @@ import {
   formatUsd,
   parseValue,
 } from "lib/numbers";
+import { useJsonRpcProvider } from "lib/rpc";
 import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
@@ -104,10 +104,11 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
+
 import "./PositionSeller.scss";
-import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -129,9 +130,9 @@ export function PositionSeller() {
   const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const availableReceiveTokens = useSelector(selectPositionSellerAvailableReceiveTokens);
   const tokensData = useTokensData();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { signer, account } = useWallet();
-  const settlementChainClient = usePublicClient({ chainId });
+  const { provider } = useJsonRpcProvider(chainId);
   const { openConnectModal } = useConnectModal();
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
@@ -361,6 +362,10 @@ export function PositionSeller() {
   });
 
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
+    if (srcChainId) {
+      return { tokensToApprove: [], isAllowanceLoaded: true };
+    }
+
     if (!batchParams) {
       return { tokensToApprove: [], isAllowanceLoaded: false };
     }
@@ -386,6 +391,7 @@ export function PositionSeller() {
     expressParams,
     gasPaymentTokenAllowance?.isLoaded,
     gasPaymentTokenAllowance?.tokensAllowanceData,
+    srcChainId,
     tokenPermits,
   ]);
 
@@ -548,7 +554,7 @@ export function PositionSeller() {
     const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
-      settlementChainClient,
+      provider,
       batchParams,
       expressParams,
       simulationParams: shouldDisableValidationForTesting

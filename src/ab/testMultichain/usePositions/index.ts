@@ -70,17 +70,17 @@ export function usePositions(
       keepPreviousData: true,
       disableBatching,
 
-      request: () => {
+      request: (requestChainId) => {
         return {
           reader: {
-            contractAddress: getContract(chainId, "SyntheticsReader"),
-            abiId: chainId === ARBITRUM_SEPOLIA ? "SyntheticsReaderArbitrumSepolia" : "SyntheticsReader",
+            contractAddress: getContract(requestChainId, "SyntheticsReader"),
+            abiId: requestChainId === ARBITRUM_SEPOLIA ? "SyntheticsReaderArbitrumSepolia" : "SyntheticsReader",
             calls: {
               positions: {
                 methodName: "getAccountPositionInfoList",
                 params: [
-                  getContract(chainId, "DataStore"),
-                  getContract(chainId, "ReferralStorage"),
+                  getContract(requestChainId, "DataStore"),
+                  getContract(requestChainId, "ReferralStorage"),
                   account!,
                   keysAndPrices.marketsKeys,
                   keysAndPrices.marketsPrices,

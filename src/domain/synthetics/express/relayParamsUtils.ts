@@ -1,11 +1,11 @@
-import { ethers, Wallet } from "ethers";
-import { Address, Client, encodeAbiParameters, keccak256 } from "viem";
-import { readContract } from "viem/actions";
+import { Contract, ethers, Provider, Wallet } from "ethers";
+import { Address, encodeAbiParameters, keccak256 } from "viem";
 
 import { getIsInternalSwapBetter } from "domain/synthetics/externalSwaps/utils";
 import { getNeedTokenApprove, TokensAllowanceData, TokensData } from "domain/synthetics/tokens";
 import { SignedTokenPermit } from "domain/tokens";
 import { WalletSigner } from "lib/wallets";
+import type { SignatureDomain } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
 import RelayParamsAbi from "sdk/abis/RelayParams.json";
 import { UiContractsChain, UiSourceChain } from "sdk/configs/chains";
@@ -14,6 +14,14 @@ import { getRelayerFeeToken } from "sdk/configs/express";
 import { ExternalSwapOutput, SwapAmounts } from "sdk/types/trade";
 import { getByKey } from "sdk/utils/objects";
 import { combineExternalCalls, ExternalCallsPayload, getExternalCallsPayload } from "sdk/utils/orderTransactions";
+import type { GelatoRelayRouter, SubaccountGelatoRelayRouter } from "typechain-types";
+import type {
+  MultichainClaimsRouter,
+  MultichainGlvRouter,
+  MultichainGmRouter,
+  MultichainOrderRouter,
+  MultichainTransferRouter,
+} from "typechain-types-arbitrum-sepolia";
 
 import { MultichainRelayParamsPayload, RelayerFeeParams, RelayFeePayload, RelayParamsPayload } from "./types";
 
@@ -64,23 +72,14 @@ export function getExpressContractAddress(
   return getContract(chainId, contractName);
 }
 
+// TODO: deal with isSubaccount
 export function getGelatoRelayRouterDomain(
   chainId: UiContractsChain,
   relayRouterAddress: Address,
   isSubaccount: boolean,
   srcChainId?: UiSourceChain
-): {
-  name: string;
-  chainId: number;
-  verifyingContract: Address;
-  version: string;
-} {
-  let name: string;
-  if (isSubaccount) {
-    name = "GmxBaseSubaccountGelatoRelayRouter";
-  } else {
-    name = "GmxBaseGelatoRelayRouter";
-  }
+): SignatureDomain {
+  const name = "GmxBaseGelatoRelayRouter";
 
   let domainChainId: number;
   if (srcChainId) {
@@ -287,22 +286,22 @@ export async function getRelayRouterNonceForSigner({
 }
 
 export async function getRelayRouterNonceForMultichain(
-  settlementChainClient: Client,
+  provider: Provider,
   account: Address,
   relayRouterAddress: Address
 ) {
-  // const contractAddress = relayRouterAddress;
-
-  if (!settlementChainClient) {
-    throw new Error("settlementChainClient is required");
+  if (!provider) {
+    throw new Error("provider is required");
   }
 
-  const result: bigint = await readContract(settlementChainClient, {
-    address: relayRouterAddress,
-    abi: abis.AbstractUserNonceable,
-    functionName: "userNonces",
-    args: [account],
-  });
+  const abstractNonceable = new Contract(relayRouterAddress, abis.AbstractUserNonceable, provider) as unknown as
+    | GelatoRelayRouter
+    | SubaccountGelatoRelayRouter
+    | MultichainGmRouter
+    | MultichainGlvRouter
+    | MultichainOrderRouter
+    | MultichainClaimsRouter
+    | MultichainTransferRouter;
 
-  return result;
+  return await abstractNonceable.userNonces(account);
 }

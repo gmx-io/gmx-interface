@@ -8,7 +8,7 @@ import {
   selectTradeboxSelectedPosition,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { useSyntheticsStateSelector as useSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { useChainId } from "lib/chains";
 import { buildDecreaseOrderPayload, buildUpdateOrderPayload, CancelOrderTxnParams } from "sdk/utils/orderTransactions";

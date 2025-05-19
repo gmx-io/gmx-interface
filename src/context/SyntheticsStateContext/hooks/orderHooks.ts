@@ -1,10 +1,10 @@
 import uniq from "lodash/uniq";
 import { useCallback, useMemo } from "react";
-import { usePublicClient } from "wagmi";
 
 import { estimateExpressParams } from "domain/synthetics/orders/expressOrderUtils";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
+import { useJsonRpcProvider } from "lib/rpc";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { OrderInfo } from "sdk/types/orders";
 import { getOrderKeys } from "sdk/utils/orders";
@@ -37,7 +37,7 @@ export const useOrderErrorsCount = () => useSelector(selectOrderErrorsCount);
 export function useCancelOrder(order: OrderInfo) {
   const chainId = useSelector(selectChainId);
   const signer = useEthersSigner();
-  const settlementChainClient = usePublicClient({ chainId });
+  const { provider } = useJsonRpcProvider(chainId);
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
@@ -61,13 +61,12 @@ export function useCancelOrder(order: OrderInfo) {
       const expressParams = globalExpressParams
         ? await estimateExpressParams({
             signer,
-            settlementChainClient,
             chainId,
             batchParams,
             globalExpressParams,
             requireGasPaymentTokenApproval: true,
             estimationMethod: "approximate",
-            provider: undefined,
+            provider,
           })
         : undefined;
 
@@ -78,11 +77,12 @@ export function useCancelOrder(order: OrderInfo) {
         expressParams,
         simulationParams: undefined,
         callback: makeOrderTxnCallback({}),
+        provider,
       }).finally(() => {
         setCancellingOrdersKeys((prev) => prev.filter((k) => k !== order.key));
       });
     },
-    [chainId, globalExpressParams, makeOrderTxnCallback, order, setCancellingOrdersKeys, settlementChainClient, signer]
+    [chainId, globalExpressParams, makeOrderTxnCallback, order, provider, setCancellingOrdersKeys, signer]
   );
 
   return [isCancelOrderProcessing, onCancelOrder] as const;

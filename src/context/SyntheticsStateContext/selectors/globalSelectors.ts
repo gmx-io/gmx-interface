@@ -1,5 +1,5 @@
-import { FeaturesSettings } from "domain/synthetics/features/useDisabledFeatures";
-import { getIsInvalidSubaccount } from "domain/synthetics/subaccount";
+import type { FeaturesSettings } from "domain/synthetics/features/useDisabledFeatures";
+import { getIsInvalidSubaccount } from "domain/synthetics/subaccount/utils";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorDeprecated } from "../utils";
@@ -31,7 +31,7 @@ export const selectExpressNoncesData = (s: SyntheticsState) => s.expressNoncesDa
 export const selectUpdateSubaccountSettings = (s: SyntheticsState) => s.subaccountState.updateSubaccountSettings;
 export const selectL1ExpressOrderGasReference = (s: SyntheticsState) => s.l1ExpressOrderGasReference;
 
-export const makeSelectEnabledFeature = (feature: keyof FeaturesSettings) => {
+const makeSelectEnabledFeature = (feature: keyof FeaturesSettings) => {
   return createSelector((q) => {
     const features = q(selectFeatures);
     return features?.[feature] ?? false;

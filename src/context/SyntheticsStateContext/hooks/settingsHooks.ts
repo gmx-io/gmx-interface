@@ -13,7 +13,7 @@ import {
   selectShouldUseExecutionFeeBuffer,
   selectShowDebugValues,
 } from "../selectors/settingsSelectors";
-import { useSyntheticsStateSelector as useSelector } from "../SyntheticsStateContextProvider";
+import { useSelector } from "../utils";
 
 export const useShowDebugValues = () => useSelector(selectShowDebugValues);
 export const useSetShowDebugValues = () => useSelector(selectSetShowDebugValues);

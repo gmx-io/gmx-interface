@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
-import { usePublicClient } from "wagmi";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -58,6 +57,7 @@ import {
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
 import { expandDecimals, formatAmountFree } from "lib/numbers";
+import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
@@ -91,7 +91,7 @@ export function usePositionEditorButtonState(operation: Operation): {
   const { shouldDisableValidationForTesting } = useSettings();
   const tokensData = useTokensData();
   const { account, signer } = useWallet();
-  const settlementChainClient = usePublicClient({ chainId });
+  const { provider } = useJsonRpcProvider(chainId);
   const { openConnectModal } = useConnectModal();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
   const { minCollateralUsd } = usePositionsConstants();
@@ -479,7 +479,7 @@ export function usePositionEditorButtonState(operation: Operation): {
     const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
-      settlementChainClient,
+      provider,
       batchParams,
       expressParams,
       simulationParams: shouldDisableValidationForTesting

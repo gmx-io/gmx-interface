@@ -1,10 +1,8 @@
 import { t } from "@lingui/macro";
 import { useCallback, useId, useMemo } from "react";
-import { usePublicClient } from "wagmi";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import {
   selectBlockTimestampData,
@@ -51,6 +49,7 @@ import {
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
 import { getByKey } from "lib/objects";
+import { useJsonRpcProvider } from "lib/rpc";
 import { getTradeInteractionKey, sendUserAnalyticsOrderConfirmClickEvent, userAnalytics } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { BatchOrderTxnParams, getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
@@ -64,7 +63,7 @@ interface TradeboxTransactionsProps {
 export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactionsProps) {
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
-  const settlementChainClient = usePublicClient({ chainId });
+  const { provider } = useJsonRpcProvider(chainId);
   const tokensData = useTokensData();
   const { shouldDisableValidationForTesting } = useSettings();
 
@@ -87,7 +86,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const fees = useSelector(selectTradeboxFees);
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
   const marketsInfoData = useSelector(selectMarketsInfoData);
-  const showDebugValues = useShowDebugValues();
   const duration = useSelector(selectTradeboxTwapDuration);
   const numberOfParts = useSelector(selectTradeboxTwapNumberOfParts);
 
@@ -262,7 +260,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     return sendBatchOrderTxn({
       chainId,
       signer,
-      settlementChainClient,
+      provider,
       batchParams,
       expressParams,
       simulationParams: shouldDisableValidationForTesting
@@ -288,7 +286,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     account,
     marketsInfoData,
     chainId,
-    settlementChainClient,
+    provider,
     batchParams,
     expressParams,
     shouldDisableValidationForTesting,

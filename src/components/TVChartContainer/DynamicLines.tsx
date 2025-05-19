@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import { usePublicClient } from "wagmi";
 
 import { USD_DECIMALS } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
@@ -19,14 +18,14 @@ import {
   makeSelectOrderEditorPositionOrderError,
   selectOrderEditorSetTriggerPriceInputValue,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
-import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarkets } from "domain/synthetics/markets";
 import { estimateExpressParams } from "domain/synthetics/orders/expressOrderUtils";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { calculateDisplayDecimals, formatAmount, numberToBigint } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { useJsonRpcProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 import { PositionOrderInfo } from "sdk/types/orders";
@@ -45,7 +44,7 @@ export function DynamicLines({
   const dynamicChartLines = useSelector(selectChartDynamicLines);
   const { signer } = useWallet();
   const chainId = useSelector(selectChainId);
-  const settlementChainClient = usePublicClient({ chainId });
+  const { provider } = useJsonRpcProvider(chainId);
   const [, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const [isSubmitting] = useOrderEditorIsSubmittingState();
@@ -75,13 +74,12 @@ export function DynamicLines({
       const expressParams = globalExpressParams
         ? await estimateExpressParams({
             signer,
-            settlementChainClient,
             chainId,
             batchParams,
             globalExpressParams,
             requireGasPaymentTokenApproval: true,
             estimationMethod: "approximate",
-            provider: undefined,
+            provider,
           })
         : undefined;
 
@@ -92,19 +90,12 @@ export function DynamicLines({
         expressParams,
         simulationParams: undefined,
         callback: makeOrderTxnCallback({}),
+        provider,
       }).finally(() => {
         setCancellingOrdersKeys((prev) => prev.filter((k) => k !== key));
       });
     },
-    [
-      chainId,
-      globalExpressParams,
-      makeOrderTxnCallback,
-      ordersInfoData,
-      setCancellingOrdersKeys,
-      settlementChainClient,
-      signer,
-    ]
+    [chainId, globalExpressParams, makeOrderTxnCallback, ordersInfoData, provider, setCancellingOrdersKeys, signer]
   );
 
   const calcSelector = useCalcSelector();

@@ -3,12 +3,21 @@ import { encodeFunctionData } from "viem";
 
 import { UiContractsChain } from "config/static/chains";
 import { callContract } from "lib/contracts";
+import { ExpressTxnData } from "lib/transactions";
+import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
 import SubaccountRouter from "sdk/abis/SubaccountRouter.json";
 import { getContract } from "sdk/configs/contracts";
 
-import { getGelatoRelayRouterDomain, hashRelayParams, hashRelayParamsMultichain, RelayParamsPayload } from "../express";
+import {
+  getExpressContractAddress,
+  getGelatoRelayRouterDomain,
+  hashRelayParams,
+  hashRelayParamsMultichain,
+  MultichainRelayParamsPayload,
+  RelayParamsPayload,
+} from "../express";
 import { getMultichainInfoFromSigner, getOrderRelayRouterAddress } from "../orders/expressOrderUtils";
 import { Subaccount } from "../subaccount";
 
@@ -34,10 +43,18 @@ export async function buildAndSignRemoveSubaccountTxn({
   signer,
 }: {
   chainId: UiContractsChain;
-  relayParamsPayload: RelayParamsPayload;
+  relayParamsPayload: RelayParamsPayload | MultichainRelayParamsPayload;
   subaccount: Subaccount;
-  signer: Signer;
-}) {
+  signer: WalletSigner;
+}): Promise<ExpressTxnData> {
+  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
+
+  const relayRouterAddress = getExpressContractAddress(chainId, {
+    isSubaccount: true,
+    isMultichain: srcChainId !== undefined,
+    scope: "subaccount",
+  });
+
   const signature = await signRemoveSubaccountPayload({
     signer,
     relayParams: relayParamsPayload,
@@ -46,27 +63,30 @@ export async function buildAndSignRemoveSubaccountTxn({
   });
 
   const removeSubaccountCallData = encodeFunctionData({
-    abi: abis.SubaccountGelatoRelayRouter,
+    abi: srcChainId !== undefined ? abis.MultichainSubaccountRouterArbitrumSepolia : abis.SubaccountGelatoRelayRouter,
     functionName: "removeSubaccount",
-    args: [{ ...relayParamsPayload, signature }, await signer.getAddress(), subaccount.address],
+    args:
+      srcChainId !== undefined
+        ? [{ ...relayParamsPayload, signature }, signer.address, srcChainId, subaccount.address]
+        : [{ ...relayParamsPayload, signature }, subaccount.address],
   });
 
   return {
     callData: removeSubaccountCallData,
-    contractAddress: getContract(chainId, "SubaccountGelatoRelayRouter"),
+    to: relayRouterAddress,
     feeToken: relayParamsPayload.fee.feeToken,
     feeAmount: relayParamsPayload.fee.feeAmount,
   };
 }
 
-export async function signRemoveSubaccountPayload({
+async function signRemoveSubaccountPayload({
   signer,
   relayParams,
   subaccountAddress,
   chainId,
 }: {
-  signer: Signer;
-  relayParams: RelayParamsPayload;
+  signer: WalletSigner;
+  relayParams: RelayParamsPayload | MultichainRelayParamsPayload;
   subaccountAddress: string;
   chainId: UiContractsChain;
 }) {
@@ -84,9 +104,9 @@ export async function signRemoveSubaccountPayload({
   const domain = getGelatoRelayRouterDomain(chainId, relayRouterAddress, true, srcChainId);
 
   const typedData = {
-    subaccountAddress,
+    subaccount: subaccountAddress,
     relayParams: srcChainId
-      ? hashRelayParamsMultichain({ ...relayParams, desChainId: BigInt(chainId) })
+      ? hashRelayParamsMultichain({ desChainId: BigInt(chainId), ...relayParams })
       : hashRelayParams(relayParams),
   };
 

@@ -3,10 +3,8 @@ import cx from "classnames";
 import uniq from "lodash/uniq";
 import { startTransition, useCallback, useEffect, useMemo, useState } from "react";
 import { useMedia } from "react-use";
-import { usePublicClient } from "wagmi";
 
 import { getSyntheticsListSectionKey } from "config/localStorage";
-import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useClosingPositionKeyState, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -27,8 +25,7 @@ import {
   selectTradeboxState,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
 import { estimateExpressParams } from "domain/synthetics/orders/expressOrderUtils";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
@@ -47,6 +44,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMeasureComponentMountTime } from "lib/metrics/useMeasureComponentMountTime";
 import { formatUsdPrice } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { useJsonRpcProvider } from "lib/rpc";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 import { UiContractsChain } from "sdk/configs/chains";
@@ -401,8 +399,7 @@ export function SyntheticsPage(p: Props) {
 function useOrdersControl() {
   const chainId = useSelector(selectChainId) as UiContractsChain;
   const signer = useEthersSigner();
-  const [settlementChain] = useGmxAccountSettlementChainId();
-  const settlementChainClient = usePublicClient({ chainId: settlementChain });
+  const { provider } = useJsonRpcProvider(chainId);
   const [cancellingOrdersKeys, setCanellingOrdersKeys] = useCancellingOrdersKeysState();
   const [selectedOrderKeys, setSelectedOrderKeys] = useState<string[]>(EMPTY_ARRAY);
 
@@ -431,13 +428,12 @@ function useOrdersControl() {
       const expressParams = globalExpressParams
         ? await estimateExpressParams({
             signer,
-            settlementChainClient,
+            provider,
             chainId,
             batchParams,
             globalExpressParams,
             requireGasPaymentTokenApproval: true,
             estimationMethod: "approximate",
-            provider: undefined,
           })
         : undefined;
 
@@ -447,6 +443,7 @@ function useOrdersControl() {
         expressParams,
         batchParams,
         simulationParams: undefined,
+        provider,
         callback: makeOrderTxnCallback({}),
       })
         .then(async (tx) => {
@@ -464,9 +461,9 @@ function useOrdersControl() {
       globalExpressParams,
       makeOrderTxnCallback,
       ordersInfoData,
+      provider,
       selectedOrderKeys,
       setCanellingOrdersKeys,
-      settlementChainClient,
       signer,
     ]
   );
@@ -495,14 +492,14 @@ function useOrdersControl() {
             globalExpressParams,
             requireGasPaymentTokenApproval: true,
             estimationMethod: "approximate",
-            provider: undefined,
-            settlementChainClient,
+            provider,
           })
         : undefined;
 
       sendBatchOrderTxn({
         chainId,
         signer,
+        provider,
         expressParams,
         batchParams,
         simulationParams: undefined,
@@ -512,15 +509,7 @@ function useOrdersControl() {
         setSelectedOrderKeys((prev) => prev.filter((k) => k !== key));
       });
     },
-    [
-      chainId,
-      globalExpressParams,
-      makeOrderTxnCallback,
-      ordersInfoData,
-      setCanellingOrdersKeys,
-      settlementChainClient,
-      signer,
-    ]
+    [chainId, globalExpressParams, makeOrderTxnCallback, ordersInfoData, provider, setCanellingOrdersKeys, signer]
   );
 
   return {

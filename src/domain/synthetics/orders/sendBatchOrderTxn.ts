@@ -1,4 +1,5 @@
-import { BaseError, Hex, PublicClient, decodeErrorResult } from "viem";
+import { Provider } from "ethers";
+import { BaseError, decodeErrorResult, Hex } from "viem";
 
 import { UiContractsChain } from "config/chains";
 import { ExpressTxnParams } from "domain/synthetics/express";
@@ -52,7 +53,7 @@ const DEFAULT_RUN_SIMULATION = () => Promise.resolve(undefined);
 export async function sendBatchOrderTxn({
   chainId,
   signer,
-  settlementChainClient,
+  provider,
   batchParams,
   expressParams: rawExpressParams,
   simulationParams,
@@ -60,7 +61,7 @@ export async function sendBatchOrderTxn({
 }: {
   chainId: UiContractsChain;
   signer: WalletSigner;
-  settlementChainClient?: PublicClient;
+  provider: Provider | undefined;
   batchParams: BatchOrderTxnParams;
   expressParams: ExpressTxnParams | undefined;
   simulationParams: BatchSimulationParams | undefined;
@@ -76,20 +77,16 @@ export async function sendBatchOrderTxn({
       throw new Error("Multichain orders are only supported with express params");
     }
 
-    if (srcChainId && !settlementChainClient) {
-      throw new Error("settlementChainClient is required");
+    if (srcChainId && !provider) {
+      throw new Error("provider is required for multichain txns");
     }
     let runSimulation: () => Promise<void> = DEFAULT_RUN_SIMULATION;
 
     if (simulationParams && expressParams && srcChainId) {
       runSimulation = async () => {
-        if (!settlementChainClient) {
-          throw new Error("settlementChainClient is required");
-        }
-
         const { callData, feeAmount, feeToken, to } = await buildAndSignExpressBatchOrderTxn({
           signer,
-          settlementChainClient,
+          provider,
           chainId,
           relayFeeParams: expressParams.relayFeeParams,
           relayParamsPayload: expressParams.relayParamsPayload,
@@ -98,11 +95,10 @@ export async function sendBatchOrderTxn({
           emptySignature: true,
           noncesData: undefined,
         });
-
         try {
           await callRelayTransaction({
             calldata: callData,
-            client: settlementChainClient!,
+            provider: provider!,
             gelatoRelayFeeAmount: feeAmount,
             gelatoRelayFeeToken: feeToken,
             relayRouterAddress: to,
@@ -154,11 +150,10 @@ export async function sendBatchOrderTxn({
 
     if (expressParams && !expressParams.relayFeeParams.isOutGasTokenBalance) {
       await runSimulation().then(() => callback?.(eventBuilder.Simulated()));
-
       const txnData = await buildAndSignExpressBatchOrderTxn({
         chainId: chainId as UiContractsChain,
         signer,
-        settlementChainClient,
+        provider,
         batchParams,
         relayParamsPayload: expressParams.relayParamsPayload,
         relayFeeParams: expressParams.relayFeeParams,
@@ -185,7 +180,9 @@ export async function sendBatchOrderTxn({
             eventBuilder.Sent({
               txnHash: res.taskId,
 
-              blockNumber: BigInt(await signer.provider!.getBlockNumber()),
+              blockNumber: srcChainId
+                ? BigInt(await provider!.getBlockNumber())
+                : BigInt(await signer.provider!.getBlockNumber()),
               createdAt,
             })
           );
@@ -239,13 +236,6 @@ export const makeBatchOrderSimulation = async ({
   tokensData: TokensData;
   expressParams: ExpressTxnParams | undefined;
 }) => {
-  // const account = await signer.getAddress();
-  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
-
-  if (srcChainId) {
-    throw new Error("Batch order simulation is not supported for multichain");
-  }
-
   try {
     if (getIsInvalidBatchReceiver(batchParams, signer.address)) {
       throw extendError(new Error(signerAddressError), {
@@ -269,12 +259,14 @@ export const makeBatchOrderSimulation = async ({
             expiresAt: onchainData.expiresAt,
             isActive: onchainData.active,
             nonce: onchainData.approvalNonce,
+            integrationId: onchainData.integrationId,
           },
           signedData: {
             maxAllowedCount: signedApproval.maxAllowedCount,
             expiresAt: signedApproval.expiresAt,
             shouldAdd: signedApproval.shouldAdd,
             nonce: signedApproval.nonce,
+            integrationId: signedApproval.integrationId,
           },
         },
       });

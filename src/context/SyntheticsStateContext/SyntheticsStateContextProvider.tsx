@@ -1,9 +1,8 @@
 import { ethers } from "ethers";
-import { ReactNode, useCallback, useMemo, useState } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 
-import { UiContractsChain, UiSourceChain } from "config/chains";
+import type { UiContractsChain, UiSourceChain } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
 import { NoncesData, useExpressNonces } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -28,9 +27,9 @@ import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   MarketsInfoResult,
   MarketsResult,
-  useMarketTokensDataRequest,
   useMarkets,
   useMarketsInfoRequest,
+  useMarketTokensDataRequest,
 } from "domain/synthetics/markets";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
@@ -68,6 +67,7 @@ import { useGmxAccountTokensDataRequest } from "components/Synthetics/GmxAccount
 
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
+import { latestStateRef, StateCtx } from "./utils";
 
 export type SyntheticsPageType =
   | "accounts"
@@ -139,10 +139,6 @@ export type SyntheticsState = {
   l1ExpressOrderGasReference: L1ExpressOrderGasReference | undefined;
   expressNoncesData: NoncesData | undefined;
 };
-
-const StateCtx = createContext<SyntheticsState | null>(null);
-
-let latestState: SyntheticsState | null = null;
 
 export function SyntheticsStateContextProvider({
   children,
@@ -424,22 +420,7 @@ export function SyntheticsStateContextProvider({
     expressNoncesData,
   ]);
 
-  latestState = state;
+  latestStateRef.current = state;
 
   return <StateCtx.Provider value={state}>{children}</StateCtx.Provider>;
-}
-
-export function useSyntheticsStateSelector<Selected>(selector: (s: SyntheticsState) => Selected) {
-  const value = useContext(StateCtx);
-  if (!value) {
-    throw new Error("Used useSyntheticsStateSelector outside of SyntheticsStateContextProvider");
-  }
-  return useContextSelector(StateCtx as Context<SyntheticsState>, selector) as Selected;
-}
-
-export function useCalcSelector() {
-  return useCallback(function useCalcSelector<Selected>(selector: (state: SyntheticsState) => Selected) {
-    if (!latestState) throw new Error("Used calcSelector outside of SyntheticsStateContextProvider");
-    return selector(latestState);
-  }, []);
 }

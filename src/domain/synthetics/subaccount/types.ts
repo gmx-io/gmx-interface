@@ -25,6 +25,7 @@ export type SubaccountApproval = {
   maxAllowedCount: bigint;
   actionType: string;
   deadline: bigint;
+  integrationId: string | undefined;
 };
 
 export type SignedSubbacountApproval = SubaccountApproval & {

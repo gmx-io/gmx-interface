@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { usePublicClient } from "wagmi";
 
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
@@ -9,8 +8,7 @@ import { throttleLog } from "lib/logging";
 import { useJsonRpcProvider } from "lib/rpc";
 import { retry, useThrottledAsync } from "lib/useThrottledAsyncEstimation";
 import useWallet from "lib/wallets/useWallet";
-import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
-import { getBatchIsNativePayment, getIsEmptyBatch } from "sdk/utils/orderTransactions";
+import { BatchOrderTxnParams, getBatchIsNativePayment, getIsEmptyBatch } from "sdk/utils/orderTransactions";
 
 import { ExpressTxnParams } from ".";
 import { useSwitchGasPaymentTokenIfRequired } from "./useSwitchGasPaymentTokenIfRequired";
@@ -40,7 +38,6 @@ export function useExpressOrdersParams({
 
   const { signer } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
-  const settlementChainClient = usePublicClient({ chainId: chainId });
 
   const { data: fastExpressParams } = useThrottledAsync(
     async ({ params: p }) => {
@@ -48,12 +45,11 @@ export function useExpressOrdersParams({
         chainId: p.chainId,
         batchParams: p.orderParams,
         signer: p.signer,
-        provider: undefined,
+        provider: p.provider,
         globalExpressParams: p.globalExpressParams,
         requireGasPaymentTokenApproval: false,
         totalExecutionFee: totalExecutionFee,
         estimationMethod: "approximate",
-        settlementChainClient,
       });
 
       if (!nextApproximateParams) {
@@ -90,7 +86,6 @@ export function useExpressOrdersParams({
         requireGasPaymentTokenApproval: false,
         totalExecutionFee: totalExecutionFee,
         estimationMethod: "estimateGas",
-        settlementChainClient: p.settlementChainClient,
       });
 
       return expressParams;
@@ -104,7 +99,6 @@ export function useExpressOrdersParams({
               provider,
               orderParams,
               globalExpressParams,
-              settlementChainClient,
             }
           : undefined,
       throttleMs: 2000,

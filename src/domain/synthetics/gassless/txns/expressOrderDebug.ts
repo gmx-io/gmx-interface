@@ -1,4 +1,5 @@
-import { Hex, encodePacked, type Address, type PublicClient } from "viem";
+import type { Provider } from "ethers";
+import { Hex, encodePacked, type Address } from "viem";
 
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 
@@ -8,30 +9,24 @@ export async function callRelayTransaction({
   calldata,
   gelatoRelayFeeToken,
   gelatoRelayFeeAmount,
-  client,
+  provider,
   relayRouterAddress,
 }: {
   calldata: string;
   gelatoRelayFeeToken: string;
   gelatoRelayFeeAmount: bigint;
-  client: PublicClient;
-  relayRouterAddress: Address;
+  provider: Provider;
+  relayRouterAddress: string;
 }) {
   try {
-    return await client.call({
-      account: GMX_SIMULATION_ORIGIN as Address,
+    return await provider.call({
       to: relayRouterAddress,
+      from: GMX_SIMULATION_ORIGIN,
       data: encodePacked(
         ["bytes", "address", "address", "uint256"],
         [calldata as Hex, GELATO_RELAY_ADDRESS, gelatoRelayFeeToken as Address, gelatoRelayFeeAmount]
       ),
     });
-
-    // return await client.call({
-    //   account: GMX_SIMULATION_ORIGIN as Address,
-    //   to: relayRouterAddress,
-    //   data: calldata as Hex,
-    // });
   } catch (ex) {
     if (ex.error) {
       // this gives much more readable error in the console with a stacktrace

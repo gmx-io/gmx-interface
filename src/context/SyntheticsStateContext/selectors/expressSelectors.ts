@@ -33,6 +33,12 @@ export const selectGasPaymentToken = createSelector((q) => {
   return q((state) => getByKey(selectTokensData(state), gasPaymentTokenAddress));
 });
 
+export const selectRelayerFeeToken = createSelector((q) => {
+  const chainId = q(selectChainId);
+  const relayerFeeTokenAddress = getRelayerFeeToken(chainId).address;
+  return q((state) => getByKey(selectTokensData(state), relayerFeeTokenAddress));
+});
+
 export const selectIsExpressTransactionAvailable = createSelector((q) => {
   const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
   const isRelayRouterEnabled = q(selectIsRelayRouterEnabled);
