@@ -398,6 +398,7 @@ msgid "Insufficient GM balance"
 msgstr ""
 
 #: src/components/Synthetics/MarketStats/components/MarketDescription.tsx
+#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps from the included markets. Backed by {0} and {1}."
 msgstr ""
 
@@ -1003,8 +1004,8 @@ msgstr ""
 
 #: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "Graph showing performance vs benchmark for the selected period."
-msgstr ""
+#~ msgid "Graph showing performance vs benchmark for the selected period."
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 msgid "Buy {operationTokenSymbol}"
@@ -1050,6 +1051,11 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 msgid "Insufficient Liquidity"
+msgstr ""
+
+#: src/components/Synthetics/GmList/GlvList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Pool returns compared to the benchmark, based on UNI V2-style rebalancing of the long-short token in the corresponding GM or GLV."
 msgstr ""
 
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -1968,6 +1974,10 @@ msgstr "Tasa de Préstamo"
 msgid "Buy submitted."
 msgstr "Compra enviada."
 
+#: src/pages/Stake/Stake.tsx
+msgid "Incentives & Prizes"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.jsx
 msgid "Fees may vary depending on which asset you sell GLP for. <0/>Enter the amount of GLP you want to redeem in the order form, then check here to compare fees."
 msgstr "Las comisiones pueden variar dependiendo del activo por el que vendas GLP. <0/>Introduce la cantidad de GLP que quieres vender en el formulario y compara aquí las diferentes comisiones."
@@ -1992,6 +2002,7 @@ msgstr ""
 msgid "Checking code..."
 msgstr "Comprobando código..."
 
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "GM Pools"
@@ -2128,8 +2139,8 @@ msgid "Direct exposure to tokens"
 msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
-msgid "This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps from the included markets. Backed by WETH and USDC."
-msgstr ""
+#~ msgid "This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps from the included markets. Backed by WETH and USDC."
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Limit order creation failed."
@@ -2245,6 +2256,10 @@ msgstr ""
 #: src/pages/Dashboard/MarketsListV1.tsx
 msgid "TOKEN"
 msgstr "TOKEN"
+
+#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
+msgid "This token automatically accrues fees from leverage trading and swaps for the {marketName} market. It is also exposed to {0} and {1} as per the composition displayed."
+msgstr ""
 
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Transfer NFT"
@@ -2618,6 +2633,10 @@ msgstr "Orden cancelada"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Not enough Available Swap Liquidity to fill the Order."
 msgstr "No hay suficiente liquidez de intercambio disponible para llenar la orden."
+
+#: src/pages/Stake/Stake.tsx
+msgid "Earn prizes by participating in GMX Trading Competitions."
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Confirm Long"
@@ -3003,8 +3022,8 @@ msgid "Order creation failed."
 msgstr ""
 
 #: src/components/Synthetics/GmList/GlvList.tsx
-msgid "Yield-optimized vaults supporting trading across multiple GMX markets"
-msgstr ""
+#~ msgid "Yield-optimized vaults supporting trading across multiple GMX markets"
+#~ msgstr ""
 
 #: src/components/Synthetics/MissedCoinsHint/MissedCoinsHint.tsx
 msgid "Can’t find the coin you need? Let us know"
@@ -3123,6 +3142,10 @@ msgstr "Mercado"
 msgid "Swap amount from {0} to {1} exceeds {2} acceptable amount. Can only receive {3}."
 msgstr ""
 
+#: src/pages/Stake/Stake.tsx
+msgid "Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2."
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Withdraw disabled, pending {0} upgrade"
 msgstr ""
@@ -3148,6 +3171,10 @@ msgstr ""
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
 msgstr "Aplicación"
+
+#: src/components/Synthetics/GmList/GlvList.tsx
+msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets."
+msgstr ""
 
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Add {marketName} to Wallet"
@@ -3240,6 +3267,11 @@ msgstr "Seleccionar Idioma"
 
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Direction"
+msgstr ""
+
+#: src/components/Synthetics/GmList/GlvList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Graph showing performance vs benchmark over the selected period."
 msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
@@ -3352,6 +3384,10 @@ msgstr "La orden no se puede ejecutar pues la posición restante sería menor de
 msgid "Claiming..."
 msgstr "Reclamando..."
 
+#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
+msgid "Total Accrued Fees"
+msgstr ""
+
 #. Filter option for tokens favorites
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "All"
@@ -3450,8 +3486,8 @@ msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Pleas
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-msgid "Wallet {daysConsidered}d accrued Fees"
-msgstr ""
+#~ msgid "Wallet {daysConsidered}d accrued Fees"
+#~ msgstr ""
 
 #: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High External Swap Impact"
@@ -3612,8 +3648,8 @@ msgstr "Aumento del mercado"
 
 #: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "Pools returns in comparison to the benchmark, which is based on UNI V2-style rebalancing of the long-short token in the corresponding GM or GLV.\""
-msgstr ""
+#~ msgid "Pools returns in comparison to the benchmark, which is based on UNI V2-style rebalancing of the long-short token in the corresponding GM or GLV.\""
+#~ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Include PnL in leverage display"
@@ -4517,13 +4553,17 @@ msgstr ""
 msgid "Shorts Net Rate / 1h"
 msgstr "Tasa Neta de Cortos / 1h"
 
+#: src/components/Synthetics/GmList/GlvList.tsx
+msgid "GLV Vaults"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APY."
-msgstr ""
+#~ msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APY."
+#~ msgstr ""
 
 #: src/pages/Stake/TotalRewardsCard.tsx
 msgid "<0>Stake GMX</0> and earn {gmxAvgAprText} APR"
@@ -4689,6 +4729,10 @@ msgstr "Enlace copiado al portapapeles."
 msgid "Max slippage precision is -0.01%"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
+msgid "{daysConsidered}d Accrued Fees"
+msgstr ""
+
 #: src/components/Exchange/ExchangeTVChart.jsx
 msgid "Dec."
 msgstr "Dic."
@@ -4799,8 +4843,8 @@ msgid "Reason: {0}"
 msgstr "Razón: {0}"
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-msgid "Wallet total accrued Fees"
-msgstr ""
+#~ msgid "Wallet total accrued Fees"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -4860,8 +4904,8 @@ msgid "Invalid NFT Address"
 msgstr "Dirección NFT inválida"
 
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
-msgid "Last 90 days"
-msgstr ""
+#~ msgid "Last 90 days"
+#~ msgstr ""
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LIQ."
@@ -5437,6 +5481,7 @@ msgid "There are more shorts than longs, borrow fees for longing is currently ze
 msgstr "Hay más cortos que largos, la tasa de préstamo para entrar a largo es cero en estos momentos"
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+#: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 90d"
 msgstr ""
 
@@ -5491,7 +5536,6 @@ msgid "Available"
 msgstr "Disponible"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-#: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 7 days"
 msgstr ""
 
@@ -5521,8 +5565,8 @@ msgid "Market Decrease"
 msgstr "Disminución del mercado"
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-msgid "Wallet 365d expected Fees"
-msgstr ""
+#~ msgid "Wallet 365d expected Fees"
+#~ msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Governance Alerts"
@@ -6165,8 +6209,8 @@ msgid "High USDG Slippage, Long Anyway"
 msgstr "Alto Deslizamiento de USDG, ir Largo de todas formas"
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-msgid "Wallet total"
-msgstr ""
+#~ msgid "Wallet total"
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
@@ -6192,6 +6236,7 @@ msgstr "¡Orden limite enviada!"
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 7d"
 msgstr ""
 
@@ -6390,6 +6435,7 @@ msgstr "Renunciar a la ganancia"
 msgid "Sell Fee"
 msgstr ""
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
@@ -6602,6 +6648,10 @@ msgstr "Precio límite"
 msgid "You"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Pools providing liquidity to specific GMX markets, supporting single-asset and native asset options."
+msgstr ""
+
 #: src/pages/Stake/GlpCard.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
 msgstr ""
@@ -6622,6 +6672,10 @@ msgstr "No se pudo ejecutar el depósito en {0} {longOrShortText}"
 #: src/pages/Stake/Vesting.tsx
 msgid "Deposit"
 msgstr "Depositar"
+
+#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
+msgid "365d Est. Fees"
+msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Trigger price below highest limit price"
@@ -7030,8 +7084,8 @@ msgid "Staking..."
 msgstr "Stakeando..."
 
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "GM Pool"
-msgstr ""
+#~ msgid "GM Pool"
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Buy request sent"
@@ -7141,8 +7195,8 @@ msgid "Stop Market"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "Pools allowing provision of liquidity including single and native asset opportunities"
-msgstr ""
+#~ msgid "Pools allowing provision of liquidity including single and native asset opportunities"
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7311,7 +7365,6 @@ msgstr ""
 msgid "Long"
 msgstr "Largo"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxPoolRow.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxPoolRow.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxPoolRow.tsx
@@ -7781,6 +7834,10 @@ msgstr "Rastreador de la artera DeFi"
 msgid "Current Funding Fee / Day"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
+msgid "365d estimate based on past {daysConsidered}d APY."
+msgstr ""
+
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum APR:"
@@ -7809,6 +7866,7 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
+#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GlpCard.tsx
@@ -8071,7 +8129,6 @@ msgid "Sell order cancelled"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-#: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 30 days"
 msgstr ""
 
@@ -8090,8 +8147,8 @@ msgid "The price that the order can be executed at may differ slightly from the 
 msgstr "El precio al que se puede ejecutar la orden puede diferir ligeramente del precio del gráfico, ya que las órdenes de mercado pueden cambiar el precio mientras que las órdenes de límite/activación no."
 
 #: src/components/Synthetics/GmList/GlvList.tsx
-msgid "GLV Vault"
-msgstr ""
+#~ msgid "GLV Vault"
+#~ msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 msgid "Claims History"
@@ -8241,6 +8298,7 @@ msgstr ""
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 30d"
 msgstr ""
 

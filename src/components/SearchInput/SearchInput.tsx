@@ -99,7 +99,7 @@ export default function SearchInput({
           "border-gray-800": !isFocused,
           "py-10 pl-40 pr-34 text-16": size === "m",
           "py-[8.5px] pl-34 pr-30 text-14 ": size === "s",
-          "border-stroke-primary": variant === "default",
+          "border": variant === "default",
         })}
       />
       {value && (

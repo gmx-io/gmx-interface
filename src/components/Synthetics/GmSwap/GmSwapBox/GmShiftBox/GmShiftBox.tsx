@@ -265,7 +265,7 @@ export function GmShiftBox({
   return (
     <>
       <form className="flex flex-col" onSubmit={handleFormSubmit}>
-        <div className="mb-12 flex flex-col gap-4">
+        <div className="mb-12 flex flex-col gap-2">
           <BuyInputSection
             topLeftLabel={t`Pay`}
             bottomLeftValue={selectedTokenDollarAmount}

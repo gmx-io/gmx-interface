@@ -107,20 +107,20 @@ export const GmTokensTotalBalanceInfo = ({
     return (
       <>
         <StatsTooltipRow
-          label={t`Wallet total`}
+          label={t`Wallet`}
           value={<AmountWithUsdBalance multiline amount={balance} decimals={18} symbol="GM" usd={balanceUsd} />}
           showDollar={false}
         />
         {userEarnings && (
           <>
             <StatsTooltipRow
-              label={t`Wallet total accrued Fees`}
+              label={t`Total Accrued Fees`}
               textClassName={getPositiveOrNegativeClass(userEarnings.allMarkets.total)}
               value={formatDeltaUsd(userEarnings.allMarkets.total, undefined, { showPlusForZero: true })}
               showDollar={false}
             />
             <StatsTooltipRow
-              label={t`Wallet ${daysConsidered}d accrued Fees `}
+              label={t`${daysConsidered}d Accrued Fees`}
               textClassName={getPositiveOrNegativeClass(userEarnings.allMarkets.recent)}
               value={formatDeltaUsd(userEarnings.allMarkets.recent, undefined, { showPlusForZero: true })}
               showDollar={false}
@@ -128,14 +128,14 @@ export const GmTokensTotalBalanceInfo = ({
             {userEarnings.allMarkets.expected365d > 0 && (
               <>
                 <StatsTooltipRow
-                  label={t`Wallet 365d expected Fees`}
+                  label={t`365d Est. Fees`}
                   textClassName={getPositiveOrNegativeClass(userEarnings.allMarkets.expected365d)}
                   value={formatDeltaUsd(userEarnings.allMarkets.expected365d, undefined, { showPlusForZero: true })}
                   showDollar={false}
                 />
                 <br />
                 <div className="text-white">
-                  <Trans>Expected 365d Fees are projected based on past {daysConsidered}d base APY.</Trans>
+                  <Trans>365d estimate based on past {daysConsidered}d APY.</Trans>
                 </div>
                 {shouldShowIncentivesNote && (
                   <>

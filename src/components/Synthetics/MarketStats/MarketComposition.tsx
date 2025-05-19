@@ -18,7 +18,7 @@ export function MarketComposition({ title, label, composition, type }: Props) {
 
   return (
     <div className="flex size-full grow flex-col items-center border-stroke-primary pt-24">
-      <h5 className="text-body-large text-slate-100">{title}</h5>
+      <h5 className="text-body-medium text-slate-100">{title}</h5>
       <div className="px-16 py-20">
         <CompositionBar data={composition} label={label} />
       </div>

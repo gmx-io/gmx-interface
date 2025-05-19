@@ -133,7 +133,7 @@ export function MarketGraphs({ marketInfo }: { marketInfo: GlvInfo | MarketInfo 
   const isMobile = useMedia("(max-width: 768px)");
 
   const timeRangeTabs = useMemo(() => POOLS_TIME_RANGE_OPTIONS.map((timeRange) => ({
-    label: timeRange === "total" ? t`Total` : timeRange.toUpperCase(),
+    label: timeRange === "total" ? t`Total` : timeRange,
     value: timeRange,
   })), []);
 

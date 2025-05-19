@@ -725,10 +725,10 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   return (
     <>
       <form>
-        <div className={cx("mb-12 flex gap-4", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
+        <div className={cx("mb-12 flex gap-2", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
           <BuyInputSection
             topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
-            bottomLeftValue={formatUsd(firstTokenUsd)}
+            bottomLeftValue={formatUsd(firstTokenUsd ?? 0n)}
             isBottomLeftValueMuted={firstTokenUsd === undefined || firstTokenUsd === 0n}
             bottomRightLabel={t`Balance`}
             bottomRightValue={
@@ -764,7 +764,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           {isPair && secondTokenAddress && (
             <BuyInputSection
               topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
-              bottomLeftValue={formatUsd(secondTokenUsd)}
+              bottomLeftValue={formatUsd(secondTokenUsd ?? 0n)}
               isBottomLeftValueMuted={secondTokenUsd === undefined || secondTokenUsd === 0n}
               bottomRightLabel={t`Balance`}
               bottomRightValue={
@@ -788,7 +788,8 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
             <BuyInputSection
               topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}
-              bottomLeftValue={receiveTokenUsd ? formatUsd(receiveTokenUsd) : ""}
+              bottomLeftValue={formatUsd(receiveTokenUsd ?? 0n)}
+              isBottomLeftValueMuted={receiveTokenUsd === undefined || receiveTokenUsd === 0n}
               bottomRightLabel={t`Balance`}
               bottomRightValue={receiveTokenFormatted}
               inputValue={marketOrGlvTokenInputValue}

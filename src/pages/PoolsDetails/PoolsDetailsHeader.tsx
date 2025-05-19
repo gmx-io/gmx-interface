@@ -79,8 +79,8 @@ export function PoolsDetailsHeader({ marketInfo, marketToken }: Props) {
             <div
               className={cx("flex flex-col gap-4 pr-20")}
             >
-              <div className="text-[20px]">{getMarketIndexName(marketInfo)}</div>
-              <div className="text-body-large text-slate-100">{`[${getMarketPoolName(marketInfo)}]`}</div>
+              <div className="text-body-large">{getMarketIndexName(marketInfo)}</div>
+              <div className="text-body-small text-slate-100">{`[${getMarketPoolName(marketInfo)}]`}</div>
             </div>
           </div>
 

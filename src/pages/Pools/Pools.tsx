@@ -120,7 +120,7 @@ function PoolsTvl() {
   return (
     <div className="flex flex-col">
       <span className="text-h1">{formatUsd(tvl, { displayDecimals: 0 })}</span>
-      <span className="text-body-medium text-slate-100">TVL in Vaults and Pools</span>
+      <span className="text-body-medium text-slate-100">TVL in vaults and pools.</span>
     </div>
   );
 }

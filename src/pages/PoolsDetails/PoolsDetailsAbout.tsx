@@ -1,8 +1,9 @@
 import { Trans } from "@lingui/macro";
-import cx from 'classnames'
+import cx from "classnames";
 import { useMedia } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
+import { getMarketIndexName } from "domain/synthetics/markets";
 import { getMintableInfoGlv, getTotalSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import { GlvAndGmMarketsInfoData, GlvInfo } from "domain/synthetics/markets/types";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
@@ -14,7 +15,6 @@ import { useMarketMintableTokens } from "components/Synthetics/MarketStats/hooks
 import { useMarketSellableToken } from "components/Synthetics/MarketStats/hooks/useMarketSellableToken";
 
 import { PoolsDetailsMarketAmount } from "./PoolsDetailsMarketAmount";
-
 
 export function PoolsDetailsAbout({
   marketInfo,
@@ -35,13 +35,23 @@ export function PoolsDetailsAbout({
 
   const isMobile = useMedia("(max-width: 768px)");
 
+  const marketName = marketInfo ? getMarketIndexName(marketInfo) : "";
+
   return (
     <div className="flex flex-col gap-16">
       <div className="text-body-medium text-slate-100">
-        <Trans>
-          This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps
-          from the included markets. Backed by WETH and USDC.
-        </Trans>
+        {isGlv ? (
+          <Trans>
+            This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps
+            from the included markets. Backed by {marketInfo?.longToken?.symbol} and {marketInfo?.shortToken?.symbol}.
+          </Trans>
+        ) : (
+          <Trans>
+            This token automatically accrues fees from leverage trading and swaps for the {marketName} market. It is also
+            exposed to {marketInfo?.longToken?.symbol} and {marketInfo?.shortToken?.symbol} as per the composition
+            displayed.
+          </Trans>
+        )}
       </div>
       <div className={cx("grid pt-8", { "grid-cols-1 gap-12": isMobile, "grid-cols-3": !isMobile })}>
         <PoolsDetailsMarketAmount

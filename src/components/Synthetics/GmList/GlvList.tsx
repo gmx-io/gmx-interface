@@ -84,8 +84,8 @@ export function GlvList({
 
   return (
     <PoolsCard
-      title={t`GLV Vault`}
-      description={t`Yield-optimized vaults supporting trading across multiple GMX markets`}
+      title={t`GLV Vaults`}
+      description={t`Yield-optimized vaults supplying liquidity across multiple GMX markets.`}
     >
       {isMobile ? (
         <div className="flex flex-col gap-4">{rows}</div>
@@ -125,8 +125,7 @@ export function GlvList({
                       position="bottom-end"
                       renderContent={() => (
                         <Trans>
-                          Pools returns in comparison to the benchmark, which is based on UNI V2-style rebalancing of
-                          the long-short token in the corresponding GM or GLV."
+                          Pool returns compared to the benchmark, based on UNI V2-style rebalancing of the long-short token in the corresponding GM or GLV.
                         </Trans>
                       )}
                     />
@@ -138,7 +137,7 @@ export function GlvList({
                       className="normal-case"
                       position="bottom-end"
                       renderContent={() => (
-                        <Trans>Graph showing performance vs benchmark for the selected period.</Trans>
+                        <Trans>Graph showing performance vs benchmark over the selected period.</Trans>
                       )}
                     />
                   </TableTh>

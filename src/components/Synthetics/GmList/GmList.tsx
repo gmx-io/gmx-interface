@@ -113,8 +113,8 @@ export function GmList({
 
   return (
     <PoolsCard
-      title={t`GM Pool`}
-      description={t`Pools allowing provision of liquidity including single and native asset opportunities`}
+      title={t`GM Pools`}
+      description={t`Pools providing liquidity to specific GMX markets, supporting single-asset and native asset options.`}
       bottom={
         pageCount > 1 ? (
           <Pagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} topMargin={false} />
@@ -134,7 +134,11 @@ export function GmList({
           />
           <div className="max-w-full">
             <ButtonRowScrollFadeContainer>
-              <FavoriteTabs favoritesKey="gm-list" />
+              <FavoriteTabs
+                favoritesKey="gm-list"
+                className="!text-slate-100 hover:!text-white"
+                activeClassName="!text-white"
+              />
             </ButtonRowScrollFadeContainer>
           </div>
         </div>
@@ -181,8 +185,7 @@ export function GmList({
                         position="bottom-end"
                         renderContent={() => (
                           <Trans>
-                            Pools returns in comparison to the benchmark, which is based on UNI V2-style rebalancing of
-                            the long-short token in the corresponding GM or GLV."
+                           Pool returns compared to the benchmark, based on UNI V2-style rebalancing of the long-short token in the corresponding GM or GLV.
                           </Trans>
                         )}
                       />
@@ -195,7 +198,7 @@ export function GmList({
                       className="normal-case"
                       position="bottom-end"
                       renderContent={() => (
-                        <Trans>Graph showing performance vs benchmark for the selected period.</Trans>
+                        <Trans>Graph showing performance vs benchmark over the selected period.</Trans>
                       )}
                     />
                   </TableTh>

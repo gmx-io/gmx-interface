@@ -12,7 +12,7 @@ export default function PoolsCard({
   bottom?: ReactNode;
 }) {
   return (
-    <div className="rounded-6 bg-slate-900">
+    <div className="rounded-6 bg-slate-800">
       <div className="flex flex-col p-16">
         <span className="text-body-large mb-8">{title}</span>
         <span className="text-body-medium mb-16 text-slate-100">{description}</span>

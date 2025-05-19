@@ -42,7 +42,7 @@ export function InfoRows({
   };
 
   return (
-    <div className="flex">
+    <div className="flex flex-col gap-14">
       <div className="flex w-full flex-col gap-14">
         <GmFees
           operation={isDeposit ? Operation.Deposit : Operation.Withdrawal}
