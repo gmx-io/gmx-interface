@@ -257,7 +257,8 @@ export async function estimateExpressParams({
   const buffer = bigMath.mulDiv(feeAmount, BigInt(bufferBps), BASIS_POINTS_DIVISOR_BIGINT);
   feeAmount += buffer;
 
-  const totalNetworkFeeAmount = feeAmount + batchExecutionFeeAmount;
+  let totalNetworkFeeAmount = feeAmount + batchExecutionFeeAmount;
+  totalNetworkFeeAmount = (totalNetworkFeeAmount * 11n) / 10n; // 10% buffer
 
   const finalSwapAmounts = getSwapAmountsByToValue({
     tokenIn: gasPaymentToken,

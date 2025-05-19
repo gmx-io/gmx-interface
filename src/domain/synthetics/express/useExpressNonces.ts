@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 
-import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMulticall } from "lib/multicall";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 
@@ -14,21 +13,6 @@ export function useExpressNonces(
     account: string;
   }
 ) {
-  const [localActionsPerformed, setLocalActionsPerformed] = useLocalStorageSerializeKey("expressNonces", {
-    relayRouter: {
-      count: 0,
-      lastPerformed: 0,
-    },
-    subaccountRelayRouter: {
-      count: 0,
-      lastPerformed: 0,
-    },
-    subaccountApprovalNonce: {
-      count: 0,
-      lastPerformed: 0,
-    },
-  });
-
   const { data: onChainData, mutate } = useMulticall(chainId, "expressNonces", {
     key: [],
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
@@ -66,23 +50,6 @@ export function useExpressNonces(
 
       const now = Date.now();
 
-      setLocalActionsPerformed((_) => {
-        return {
-          relayRouter: {
-            count: 0,
-            lastPerformed: now,
-          },
-          subaccountRelayRouter: {
-            count: 0,
-            lastPerformed: now,
-          },
-          subaccountApprovalNonce: {
-            count: 0,
-            lastPerformed: now,
-          },
-        };
-      });
-
       return {
         relayRouter: {
           nonce: relayRouterNonce,
@@ -101,60 +68,9 @@ export function useExpressNonces(
   });
 
   return useMemo(() => {
-    const result: {
-      relayRouterNonce: {
-        nonce: bigint;
-        lastEstimated: number;
-      };
-      subaccountRelayRouterNonce: {
-        nonce: bigint;
-        lastEstimated: number;
-      };
-      subaccountApprovalNonce: {
-        nonce: bigint;
-        lastEstimated: number;
-      };
-    } = {
-      relayRouterNonce: {
-        nonce: 0n,
-        lastEstimated: 0,
-      },
-      subaccountRelayRouterNonce: {
-        nonce: 0n,
-        lastEstimated: 0,
-      },
-      subaccountApprovalNonce: {
-        nonce: 0n,
-        lastEstimated: 0,
-      },
-    };
-
-    if (!onChainData || !localActionsPerformed) {
-      return undefined;
-    }
-
-    // if (localActionsPerformed.relayRouter.lastPerformed > onChainData.relayRouter.lastEstimated) {
-    //   result.relayRouterNonce.nonce = onChainData.relayRouter.nonce + BigInt(localActionsPerformed.relayRouter.count);
-    //   result.relayRouterNonce.lastEstimated = localActionsPerformed.relayRouter.lastPerformed;
-    // }
-
-    // if (localActionsPerformed?.subaccountRelayRouter.lastPerformed > onChainData.subaccountRelayRouter.lastEstimated) {
-    //   result.subaccountRelayRouterNonce.nonce =
-    //     onChainData.subaccountRelayRouter.nonce + BigInt(localActionsPerformed.subaccountRelayRouter.count);
-    //   result.subaccountRelayRouterNonce.lastEstimated = localActionsPerformed.subaccountRelayRouter.lastPerformed;
-    // }
-
-    // if (
-    //   localActionsPerformed?.subaccountApprovalNonce.lastPerformed > onChainData.subaccountApprovalNonce.lastEstimated
-    // ) {
-    //   result.subaccountApprovalNonce.nonce =
-    //     onChainData.subaccountApprovalNonce.nonce + BigInt(localActionsPerformed.subaccountApprovalNonce.count);
-    //   result.subaccountApprovalNonce.lastEstimated = localActionsPerformed.subaccountApprovalNonce.lastPerformed;
-    // }
-
     return {
-      noncesData: result,
+      noncesData: onChainData,
       refreshNonces: mutate,
     };
-  }, [localActionsPerformed, mutate, onChainData]);
+  }, [mutate, onChainData]);
 }
