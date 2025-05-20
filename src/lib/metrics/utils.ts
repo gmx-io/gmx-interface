@@ -1,22 +1,24 @@
 import { ErrorLike } from "ab/testMultichain/parseError";
 import { USD_DECIMALS } from "config/factors";
 import { EventLogData } from "context/SyntheticsEvents";
+import { ExpressTxnParams } from "domain/synthetics/express";
 import { ExecutionFee } from "domain/synthetics/fees";
 import { getMarketIndexName, getMarketPoolName, MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
 import { Subaccount } from "domain/synthetics/subaccount";
 import { TokenData } from "domain/synthetics/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts, TradeMode } from "domain/synthetics/trade";
-import { TwapDuration } from "domain/synthetics/trade/twap/types";
-import { OrderErrorContext, parseError } from "lib/errors";
+import { extendError, OrderErrorContext, parseError } from "lib/errors";
 import { bigintToNumber, formatPercentage, formatRatePercentage, getBasisPoints, roundToOrder } from "lib/numbers";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { TwapDuration } from "sdk/types/twap";
 import { CreateOrderPayload } from "sdk/utils/orderTransactions";
 
 import { metrics, SubmittedOrderEvent } from ".";
 import {
   DecreaseOrderMetricData,
   EditCollateralMetricData,
+  ExpressOrderMetricData,
   IncreaseOrderMetricData,
   MultichainDepositMetricData,
   MultichainWithdrawalMetricData,
@@ -29,6 +31,7 @@ import {
   OrderSentEvent,
   OrderSimulatedEvent,
   OrderStage,
+  OrderStepTimings,
   OrderTxnFailedEvent,
   OrderTxnSubmittedEvent,
   ShiftGmMetricData,
@@ -93,6 +96,9 @@ export function initSwapMetricData({
   duration,
   partsCount,
   tradeMode,
+  expressParams,
+  asyncExpressParams,
+  fastExpressParams,
 }: {
   fromToken: TokenData | undefined;
   toToken: TokenData | undefined;
@@ -108,6 +114,9 @@ export function initSwapMetricData({
   duration: TwapDuration | undefined;
   partsCount: number | undefined;
   tradeMode: TradeMode | undefined;
+  expressParams: ExpressTxnParams | undefined;
+  asyncExpressParams: ExpressTxnParams | undefined;
+  fastExpressParams: ExpressTxnParams | undefined;
 }) {
   let metricType: SwapMetricData["metricType"] = "swap";
   if (tradeMode === TradeMode.Twap) {
@@ -115,6 +124,20 @@ export function initSwapMetricData({
   } else if (orderType === OrderType.LimitSwap) {
     metricType = "limitSwap";
   }
+
+  let expressData: ExpressOrderMetricData | undefined;
+
+  if (isExpress) {
+    expressData = {
+      asyncGas: asyncExpressParams ? Number(asyncExpressParams?.relayFeeParams.relayerGasLimit) : undefined,
+      currentGas: Number(expressParams?.relayFeeParams.relayerGasLimit),
+      approximateGas: Number(fastExpressParams?.relayFeeParams.relayerGasLimit),
+      approximateL1Gas: Number(fastExpressParams?.relayFeeParams.l1GasLimit),
+      isSponsoredCall: Boolean(expressParams?.isSponsoredCall),
+      currentEstimateMethod: expressParams?.estimationMethod,
+    };
+  }
+
   return metrics.setCachedMetricData<SwapMetricData>({
     metricId: getSwapOrderMetricId({
       initialCollateralTokenAddress: fromToken?.wrappedAddress || fromToken?.address,
@@ -145,6 +168,7 @@ export function initSwapMetricData({
     duration,
     partsCount,
     tradeMode,
+    expressData,
   });
 }
 
@@ -175,6 +199,9 @@ export function initIncreaseOrderMetricData({
   duration,
   partsCount,
   tradeMode,
+  expressParams,
+  asyncExpressParams,
+  fastExpressParams,
 }: {
   fromToken: TokenData | undefined;
   increaseAmounts: IncreasePositionAmounts | undefined;
@@ -203,6 +230,9 @@ export function initIncreaseOrderMetricData({
   duration: TwapDuration | undefined;
   partsCount: number | undefined;
   tradeMode: TradeMode | undefined;
+  expressParams: ExpressTxnParams | undefined;
+  asyncExpressParams: ExpressTxnParams | undefined;
+  fastExpressParams: ExpressTxnParams | undefined;
 }) {
   let metricType: IncreaseOrderMetricData["metricType"] = "increasePosition";
   if (tradeMode === TradeMode.Twap) {
@@ -268,6 +298,7 @@ export function initIncreaseOrderMetricData({
     duration,
     partsCount,
     tradeMode,
+    expressData: getExpressMetricData({ expressParams, asyncExpressParams, fastExpressParams }),
   });
 }
 
@@ -292,6 +323,9 @@ export function initDecreaseOrderMetricData({
   duration,
   partsCount,
   tradeMode,
+  expressParams,
+  asyncExpressParams,
+  fastExpressParams,
 }: {
   collateralToken: TokenData | undefined;
   decreaseAmounts: DecreasePositionAmounts | undefined;
@@ -314,6 +348,9 @@ export function initDecreaseOrderMetricData({
   duration: TwapDuration | undefined;
   partsCount: number | undefined;
   tradeMode: TradeMode | undefined;
+  expressParams: ExpressTxnParams | undefined;
+  asyncExpressParams: ExpressTxnParams | undefined;
+  fastExpressParams: ExpressTxnParams | undefined;
 }) {
   let metricType: DecreaseOrderMetricData["metricType"] = "decreasePosition";
   if (tradeMode === TradeMode.Twap) {
@@ -370,6 +407,7 @@ export function initDecreaseOrderMetricData({
     duration,
     partsCount,
     tradeMode,
+    expressData: getExpressMetricData({ expressParams, asyncExpressParams, fastExpressParams }),
   });
 }
 
@@ -383,6 +421,9 @@ export function initEditCollateralMetricData({
   isExpress,
   executionFee,
   subaccount,
+  expressParams,
+  asyncExpressParams,
+  fastExpressParams,
 }: {
   collateralToken: TokenData | undefined;
   executionFee: ExecutionFee | undefined;
@@ -393,6 +434,9 @@ export function initEditCollateralMetricData({
   subaccount: Subaccount | undefined;
   isExpress: boolean;
   isLong: boolean | undefined;
+  expressParams: ExpressTxnParams | undefined;
+  asyncExpressParams: ExpressTxnParams | undefined;
+  fastExpressParams: ExpressTxnParams | undefined;
 }) {
   return metrics.setCachedMetricData<EditCollateralMetricData>({
     metricId: getPositionOrderMetricId({
@@ -418,6 +462,7 @@ export function initEditCollateralMetricData({
     isExpress,
     isExpress1CT: Boolean(subaccount && selectedCollateralAddress !== NATIVE_TOKEN_ADDRESS),
     requestId: getRequestId(),
+    expressData: getExpressMetricData({ expressParams, asyncExpressParams, fastExpressParams }),
   });
 }
 
@@ -517,6 +562,26 @@ export function initGLVSwapMetricData({
   });
 }
 
+function getExpressMetricData({
+  expressParams,
+  asyncExpressParams,
+  fastExpressParams,
+}: {
+  expressParams: ExpressTxnParams | undefined;
+  asyncExpressParams: ExpressTxnParams | undefined;
+  fastExpressParams: ExpressTxnParams | undefined;
+}): ExpressOrderMetricData {
+  const expressData: ExpressOrderMetricData = {
+    asyncGas: asyncExpressParams ? Number(asyncExpressParams?.relayFeeParams.relayerGasLimit) : undefined,
+    currentGas: Number(expressParams?.relayFeeParams.relayerGasLimit),
+    approximateGas: Number(fastExpressParams?.relayFeeParams.relayerGasLimit),
+    approximateL1Gas: Number(fastExpressParams?.relayFeeParams.l1GasLimit),
+    isSponsoredCall: Boolean(expressParams?.isSponsoredCall),
+    currentEstimateMethod: expressParams?.estimationMethod,
+  };
+
+  return expressData;
+}
 export function initShiftGmMetricData({
   executionFee,
   fromMarketToken,
@@ -691,13 +756,13 @@ export function sendOrderSubmittedMetric(metricId: OrderMetricId) {
     return;
   }
 
+  getOrderStepTimings(metricId, OrderStage.Submitted);
+
   metrics.pushEvent<SubmittedOrderEvent>({
     event: `${metricData?.metricType}.submitted`,
     isError: false,
     data: metricData,
   });
-
-  metrics.startTimer(metricId);
 }
 
 export function sendOrderSimulatedMetric(metricId: OrderMetricId) {
@@ -708,11 +773,13 @@ export function sendOrderSimulatedMetric(metricId: OrderMetricId) {
     return;
   }
 
+  const timings = getOrderStepTimings(metricId, OrderStage.Simulated);
+
   metrics.pushEvent<OrderSimulatedEvent>({
     event: `${metricData.metricType}.simulated`,
     isError: false,
-    time: metrics.getTime(metricId)!,
-    data: metricData,
+    time: timings.timeFromSubmitted,
+    data: { ...metricData, ...timings },
   });
 }
 
@@ -724,11 +791,13 @@ export function sendOrderTxnSubmittedMetric(metricId: OrderMetricId) {
     return;
   }
 
+  const timings = getOrderStepTimings(metricId, OrderStage.TxnSubmitted);
+
   metrics.pushEvent<OrderTxnSubmittedEvent>({
     event: `${metricData.metricType}.txnSubmitted`,
     isError: false,
-    time: metrics.getTime(metricId)!,
-    data: metricData,
+    time: timings.timeFromSimulated,
+    data: { ...metricData, ...timings },
   });
 }
 
@@ -746,11 +815,13 @@ export function sendTxnSentMetric(metricId: OrderMetricId) {
     return;
   }
 
+  const timings = getOrderStepTimings(metricId, OrderStage.Sent);
+
   metrics.pushEvent<OrderSentEvent>({
     event: `${metricData.metricType}.sent`,
     isError: false,
-    time: metrics.getTime(metricId)!,
-    data: metricData,
+    time: timings.timeFromTxnSubmitted,
+    data: { ...metricData, ...timings },
   });
 
   return Promise.resolve();
@@ -776,26 +847,33 @@ export function sendTxnValidationErrorMetric(metricId: OrderMetricId) {
 }
 
 export function sendTxnErrorMetric(
-  metricId: OrderMetricId,
+  metricId: OrderMetricId | undefined,
   error: ErrorLike | undefined,
   errorContext: OrderErrorContext
 ) {
-  const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
+  const metricData = metricId ? metrics.getCachedMetricData<OrderMetricData>(metricId) : undefined;
 
   if (!metricData) {
-    metrics.pushError("Order metric data not found", "sendTxnErrorMetric");
+    const err = extendError(new Error("Order metric data not found"), {
+      data: {
+        originalError: parseError(error),
+      },
+    });
+    metrics.pushError(err, "sendTxnErrorMetric");
     return;
   }
 
   const errorData = parseError(error);
+  const timings = metricId ? getOrderStepTimings(metricId, OrderStage.Failed) : undefined;
 
   metrics.pushEvent<OrderTxnFailedEvent>({
     event: `${metricData.metricType}.${errorData?.isUserRejectedError ? OrderStage.Rejected : OrderStage.Failed}`,
     isError: true,
     data: {
-      errorContext,
+      ...(metricData || {}),
       ...(errorData || {}),
-      ...metricData,
+      ...(timings || {}),
+      errorContext,
     },
   });
 }
@@ -815,11 +893,13 @@ export function sendOrderCreatedMetric(metricId: OrderMetricId) {
     return;
   }
 
+  const timings = getOrderStepTimings(metricId, OrderStage.Created);
+
   metrics.pushEvent<OrderCreatedEvent>({
     event: `${metricData.metricType}.created`,
     isError: false,
-    time: metrics.getTime(metricId),
-    data: metricData,
+    time: timings.timeFromSubmitted,
+    data: { ...metricData, ...timings },
   });
 }
 
@@ -831,11 +911,13 @@ export function sendOrderExecutedMetric(metricId: OrderMetricId) {
     return;
   }
 
+  const timings = getOrderStepTimings(metricId, OrderStage.Executed);
+
   metrics.pushEvent<OrderExecutedEvent>({
     event: `${metricData.metricType}.executed`,
     isError: false,
-    time: metrics.getTime(metricId, true),
-    data: metricData,
+    time: timings.timeFromSent,
+    data: { ...metricData, ...timings },
   });
 }
 
@@ -891,6 +973,34 @@ export function formatPercentageForMetrics(percentage?: bigint, roundToDecimals 
   }
 
   return parseFloat(formatted);
+}
+
+function getOrderStepTimings(metricId: OrderMetricId, step: OrderStage) {
+  const timingIds = {
+    [OrderStage.Submitted]: metricId,
+    [OrderStage.Simulated]: `${metricId}.simulated`,
+    [OrderStage.TxnSubmitted]: `${metricId}.txnSubmitted`,
+    [OrderStage.Sent]: `${metricId}.sent`,
+    [OrderStage.Created]: `${metricId}.created`,
+  };
+
+  const clear = step === OrderStage.Created || step === OrderStage.Failed;
+
+  const currentTimings: OrderStepTimings = {
+    timeFromSubmitted: metrics.getTime(timingIds[OrderStage.Submitted], clear) ?? 0,
+    timeFromSimulated: metrics.getTime(timingIds[OrderStage.Simulated], clear) ?? 0,
+    timeFromTxnSubmitted: metrics.getTime(timingIds[OrderStage.TxnSubmitted], clear) ?? 0,
+    timeFromSent: metrics.getTime(timingIds[OrderStage.Sent], clear) ?? 0,
+    timeFromCreated: metrics.getTime(timingIds[OrderStage.Created], clear) ?? 0,
+  };
+
+  const timerToStart = timingIds[step];
+
+  if (timerToStart) {
+    metrics.startTimer(timerToStart);
+  }
+
+  return currentTimings;
 }
 
 export function getRequestId() {

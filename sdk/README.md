@@ -214,17 +214,19 @@ Helpers are a set of functions that help you create orders without manually calc
 ```typescript
 sdk.orders.long({
   payAmount: 100031302n,
-  marketAddress: "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336",
-  payTokenAddress: market.indexToken.address,
-  collateralTokenAddress: market.shortToken.address,
+  marketAddress: "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336", // ETH/USD [WETH-USDC]
+  payTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1", // WETH
+  collateralTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831", // USDC
   allowedSlippageBps: 125,
   leverage: 50000n,
 });
 
 sdk.orders.swap({
   fromAmount: 1000n,
-  fromTokenAddress: "0x912CE59144191C1204E64559FE8253a0e49E6548",
-  toTokenAddress: "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
+  fromTokenAddress: "0x912CE59144191C1204E64559FE8253a0e49E6548", // ARB
+  toTokenAddress: "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4", // LINK
   allowedSlippageBps: 125,
 });
 ```
+
+Pay attention to the `payTokenAddress` and `collateralTokenAddress` fields. They are the addresses of ERC20 tokens that you are paying for and receiving, respectively, some markets may have synthetic tokens in these fields, so you need to pass the correct address. For instance BTC/USD [WETH-USDC] market has synthetic BTC token in `indexTokenAddress` so you need to pass WBTC address instead of BTC.

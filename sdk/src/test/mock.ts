@@ -2,7 +2,8 @@ import { zeroAddress } from "viem";
 
 import { USD_DECIMALS } from "configs/factors";
 import { MarketInfo, MarketsData, MarketsInfoData } from "types/markets";
-import { TokenData, TokensData } from "types/tokens";
+import { Token, TokenData, TokensData } from "types/tokens";
+import { ExternalSwapAggregator, ExternalSwapQuote } from "types/trade";
 import { getMarketFullName } from "utils/markets";
 import { expandDecimals } from "utils/numbers";
 import { convertToTokenAmount, getTokenData } from "utils/tokens";
@@ -10,6 +11,8 @@ import { convertToTokenAmount, getTokenData } from "utils/tokens";
 export function usdToToken(usd: number, token: TokenData) {
   return convertToTokenAmount(expandDecimals(usd, USD_DECIMALS), token.decimals, token.prices?.minPrice)!;
 }
+
+export const MOCK_GAS_PRICE = 100000000n; // (0.1 gwei)
 
 export function mockMarketKeys() {
   return [
@@ -225,6 +228,8 @@ export function mockMarketsInfoData(
       swapFeeFactorForPositiveImpact: expandDecimals(2, 27),
       swapFeeFactorForNegativeImpact: expandDecimals(2, 27),
 
+      atomicSwapFeeFactor: expandDecimals(2, 27),
+
       swapImpactFactorPositive: expandDecimals(2, 23),
       swapImpactFactorNegative: expandDecimals(1, 23),
       swapImpactExponentFactor: expandDecimals(2, 30),
@@ -281,4 +286,49 @@ export function mockMarketsInfoData(
 
     return acc;
   }, {} as MarketsInfoData);
+}
+
+export function mockExternalSwap({
+  inToken,
+  outToken,
+  amountIn,
+  amountOut,
+  priceIn,
+  priceOut,
+  feesUsd = expandDecimals(5, USD_DECIMALS), // $5 default fee
+  data = "0x1",
+  to = "0x6352a56caadC4F1E25CD6c75970Fa768A3304e64",
+}: {
+  inToken: Token;
+  outToken: Token;
+  amountIn: bigint;
+  amountOut: bigint;
+  priceIn: bigint;
+  priceOut: bigint;
+  feesUsd?: bigint;
+  data?: string;
+  to?: string;
+}): ExternalSwapQuote {
+  const usdIn = (amountIn * priceIn) / expandDecimals(1, inToken.decimals);
+  const usdOut = (amountOut * priceOut) / expandDecimals(1, outToken.decimals);
+
+  return {
+    aggregator: ExternalSwapAggregator.OpenOcean,
+    inTokenAddress: inToken.address,
+    outTokenAddress: outToken.address,
+    usdIn,
+    usdOut,
+    amountIn,
+    amountOut,
+    priceIn,
+    priceOut,
+    feesUsd,
+    txnData: {
+      to,
+      data,
+      value: 0n,
+      estimatedGas: 100000n,
+      estimatedExecutionFee: 100000n,
+    },
+  };
 }

@@ -1,5 +1,4 @@
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import { RelayerFeeParams } from "domain/synthetics/express";
 import { TokenData } from "domain/synthetics/tokens";
 import { getMinResidualAmount } from "domain/tokens";
 import { absDiffBps, formatAmountFree } from "lib/numbers";
@@ -10,30 +9,29 @@ export function useMaxAvailableAmount({
   nativeToken,
   fromTokenAmount,
   fromTokenInputValue,
-  relayerFeeParams,
+  minResidualAmount,
+  isLoading,
 }: {
   fromToken: TokenData | undefined;
   nativeToken: TokenData | undefined;
   fromTokenAmount: bigint;
   fromTokenInputValue: string;
-  relayerFeeParams: RelayerFeeParams | undefined;
+  minResidualAmount?: bigint;
+  isLoading: boolean;
 }): {
   formattedMaxAvailableAmount: string;
   showClickMax: boolean;
 } {
   const isMetamaskMobile = useIsMetamaskMobile();
 
-  if (fromToken === undefined || fromToken.balance === undefined || fromToken.balance === 0n) {
+  if (fromToken === undefined || fromToken.balance === undefined || fromToken.balance === 0n || isLoading) {
     return { formattedMaxAvailableAmount: "", showClickMax: false };
   }
 
-  const minResidualAmount = getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices.maxPrice);
-  const gasPaymentAmount =
-    relayerFeeParams?.gasPaymentTokenAddress === fromToken.address ? relayerFeeParams.gasPaymentTokenAmount : 0n;
+  const minNativeTokenBalance = getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices.maxPrice) ?? 0n;
+  const minResidualBalance = (fromToken.isNative ? minNativeTokenBalance : 0n) + (minResidualAmount ?? 0n);
 
-  let maxAvailableAmount = fromToken.isNative
-    ? fromToken.balance - BigInt(minResidualAmount ?? 0n) - gasPaymentAmount
-    : fromToken.balance - gasPaymentAmount;
+  let maxAvailableAmount = fromToken.balance - minResidualBalance;
 
   if (maxAvailableAmount < 0) {
     maxAvailableAmount = 0n;

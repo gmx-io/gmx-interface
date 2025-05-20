@@ -50,8 +50,8 @@ export type SubaccountState = {
   subaccount: Subaccount | undefined;
   updateSubaccountSettings: (params: { nextRemainigActions?: bigint; nextRemainingSeconds?: bigint }) => Promise<void>;
   resetSubaccountApproval: () => void;
-  tryEnableSubaccount: () => Promise<true | undefined>;
-  tryDisableSubaccount: () => Promise<void>;
+  tryEnableSubaccount: () => Promise<boolean>;
+  tryDisableSubaccount: () => Promise<boolean>;
   refreshSubaccountData: () => void;
 };
 
@@ -78,20 +78,20 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     setSignedApproval,
     resetStoredApproval,
     resetStoredConfig,
-  } = useStoredSubaccountData(chainId, account);
+  } = useStoredSubaccountData(chainId, signer?.address);
 
   const { subaccountData, refreshSubaccountData } = useSubaccountOnchainData(chainId, {
-    account,
+    account: signer?.address,
     subaccountAddress: subaccountConfig?.address,
     srcChainId,
   });
 
   const subaccount: Subaccount | undefined = useMemo(() => {
-    if (!subaccountConfig || !account || !subaccountData || !signer?.provider) {
+    if (!subaccountConfig || !signer?.address || !subaccountData || !signer?.provider) {
       return undefined;
     }
 
-    const subaccountSigner = getSubaccountSigner(subaccountConfig, account, signer?.provider);
+    const subaccountSigner = getSubaccountSigner(subaccountConfig, signer?.address, signer?.provider);
 
     return {
       address: subaccountConfig.address,
@@ -103,11 +103,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         signedApproval,
         isMultichain: srcChainId !== undefined,
       }),
-      optimisticActive: subaccountData.active,
-      optimisticMaxAllowedCount: subaccountData.maxAllowedCount,
-      optimisticExpiresAt: subaccountData.expiresAt,
-    } satisfies Subaccount;
-  }, [account, signedApproval, signer?.provider, srcChainId, subaccountConfig, subaccountData]);
+    };
+  }, [signedApproval, signer?.address, signer?.provider, srcChainId, subaccountConfig, subaccountData]);
 
   const updateSubaccountSettings = useCallback(
     async function updateSubaccountSettings({
@@ -191,7 +188,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           </StatusNotification>
         );
         metrics.pushError(error, "subaccount.generateSubaccount");
-        return;
+        return false;
       }
     }
 
@@ -209,7 +206,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
       metrics.pushError(error, "subaccount.missedSubaccountConfigAfterGeneration");
       resetStoredConfig();
-      return;
+      return false;
     }
 
     try {
@@ -245,7 +242,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           <TransactionStatus status="error" text={t`Failed to sign approval`} />
         </StatusNotification>
       );
-      return;
+      return false;
     }
   }, [provider, signer, subaccountConfig, setSubaccountConfig, resetStoredConfig, chainId, setSignedApproval]);
 
@@ -253,7 +250,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
   const tryDisableSubaccount = useCallback(async () => {
     if (!signer || !subaccount?.address) {
-      return;
+      return false;
     }
 
     helperToast.success(
@@ -320,6 +317,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
         const baseRelayFeeSwapParams = getRelayerFeeParams({
           chainId: chainId,
+
           srcChainId: srcChainId,
           account: account,
           relayerFeeTokenAmount: baseRelayerFeeAmount,
@@ -393,6 +391,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       resetStoredApproval();
       resetStoredConfig();
       refreshSubaccountData();
+      return true;
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -402,6 +401,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           <TransactionStatus status="error" text={t`Failed to deactivate`} />
         </StatusNotification>
       );
+      return false;
     }
   }, [
     signer,
@@ -466,7 +466,7 @@ function useStoredSubaccountData(chainId: number, account: string | undefined) {
   );
 
   const [signedApproval, setSignedApproval] = useLocalStorageSerializeKey<SignedSubbacountApproval | undefined>(
-    getSubaccountApprovalKey(chainId),
+    getSubaccountApprovalKey(chainId, account),
     undefined,
     {
       raw: false,

@@ -351,6 +351,8 @@ function useMarketsConfigsRequest({
             swapFeeFactorForNegativeImpact: dataStoreValues.swapFeeFactorForNegativeImpact.returnValues[0],
             swapImpactFactorPositive: dataStoreValues.swapImpactFactorPositive.returnValues[0],
             swapImpactFactorNegative: dataStoreValues.swapImpactFactorNegative.returnValues[0],
+            atomicSwapFeeFactor: dataStoreValues.atomicSwapFeeFactor.returnValues[0],
+
             swapImpactExponentFactor: dataStoreValues.swapImpactExponentFactor.returnValues[0],
 
             virtualMarketId: dataStoreValues.virtualMarketId.returnValues[0],

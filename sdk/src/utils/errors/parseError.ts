@@ -19,6 +19,7 @@ export type OrderErrorContext =
   | "bestNonce"
   | "sending"
   | "pending"
+  | "relayer"
   | "minting"
   | "execution"
   | "unknown";

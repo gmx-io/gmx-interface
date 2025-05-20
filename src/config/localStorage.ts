@@ -91,12 +91,14 @@ export const TOKEN_PERMITS_KEY = "token-permits";
 
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
-export function getSubaccountApprovalKey(chainId: number) {
-  return [chainId, SUBACCOUNT_APPROVAL_KEY];
+export function getSubaccountApprovalKey(chainId: number, account: string | undefined) {
+  if (!chainId || !account) return null;
+  return [chainId, account, SUBACCOUNT_APPROVAL_KEY];
 }
 
-export function getTokenPermitsKey(chainId: number) {
-  return [chainId, TOKEN_PERMITS_KEY];
+export function getTokenPermitsKey(chainId: number, account: string | undefined) {
+  if (!chainId || !account) return null;
+  return [chainId, account, TOKEN_PERMITS_KEY];
 }
 
 export function getSyntheticsDepositIndexTokenKey(chainId: number) {
@@ -211,4 +213,8 @@ export function getExpressTradingPromoHiddenKey(chainId: number) {
 
 export function getFromTokenIsGmxAccountKey(chainId: number) {
   return [chainId, "from-token-is-gmx-account"];
+}
+
+export function getExpressTradingGasTokenSwitchedKey(chainId: number, account: string | undefined) {
+  return `${chainId}-${account}-${EXPRESS_TRADING_GAS_TOKEN_SWITCHED}`;
 }

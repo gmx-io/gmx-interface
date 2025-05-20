@@ -1,6 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import {
   usePositiveFeePositionsSortedByUsd,
   useTokensData,
@@ -90,7 +91,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const totalStr = formatDeltaUsd(total);
 
   const batchParams = useMemo(() => {
-    if (!account || !chainId || executionFee === undefined || gasLimit === undefined) {
+    if (!account || !chainId || executionFee === undefined || gasLimit === undefined || !signer) {
       return undefined;
     }
 
@@ -98,7 +99,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
       createOrderParams: selectedPositions.map((position) =>
         buildDecreaseOrderPayload({
           chainId,
-          receiver: account,
+          receiver: signer?.address,
           marketAddress: position.marketAddress,
           indexTokenAddress: position.indexToken.address,
           collateralTokenAddress: position.collateralTokenAddress,
@@ -114,7 +115,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
           executionGasLimit: gasLimit,
           referralCode: userReferralInfo?.referralCodeForTxn,
           isLong: position.isLong,
-          uiFeeReceiver: undefined,
+          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT,
           allowedSlippage,
           autoCancel: false,
           swapPath: [],
@@ -131,6 +132,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     chainId,
     executionFee,
     gasLimit,
+    signer,
     selectedPositions,
     userReferralInfo?.referralCodeForTxn,
     allowedSlippage,
@@ -138,6 +140,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
   const { expressParams } = useExpressOrdersParams({
     orderParams: batchParams,
+    label: "Settle Funding Fee",
   });
 
   const handleOnClose = useCallback(() => {
@@ -169,7 +172,9 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   );
 
   const onSubmit = useCallback(() => {
-    if (!account || !signer || !chainId || !batchParams) return;
+    if (!account || !signer?.provider || !chainId || !batchParams) {
+      return;
+    }
 
     setIsSubmitting(true);
 

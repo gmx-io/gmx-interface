@@ -33,7 +33,8 @@ import {
   selectTokenPermits,
 } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { RelayerFeeParams } from "domain/synthetics/express/types";
+import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import { ExpressTxnParams } from "domain/synthetics/express/types";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
@@ -83,7 +84,8 @@ export function usePositionEditorButtonState(operation: Operation): {
   tooltipContent: ReactNode | null;
   disabled: boolean;
   onSubmit: () => void;
-  relayerFeeParams?: RelayerFeeParams;
+  expressParams: ExpressTxnParams | undefined;
+  isExpressLoading: boolean;
 } {
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const allowedSlippage = useSavedAllowedSlippage();
@@ -236,7 +238,12 @@ export function usePositionEditorButtonState(operation: Operation): {
     userReferralInfo?.referralCodeForTxn,
   ]);
 
-  const { expressParams, isLoading: isExpressLoading } = useExpressOrdersParams({
+  const {
+    expressParams,
+    isLoading: isExpressLoading,
+    fastExpressParams,
+    asyncExpressParams,
+  } = useExpressOrdersParams({
     orderParams: batchParams,
   });
 
@@ -466,6 +473,9 @@ export function usePositionEditorButtonState(operation: Operation): {
       isExpress: Boolean(expressParams),
       orderType,
       isLong: position?.isLong,
+      expressParams,
+      asyncExpressParams,
+      fastExpressParams,
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
@@ -481,7 +491,7 @@ export function usePositionEditorButtonState(operation: Operation): {
       signer,
       provider,
       batchParams,
-      expressParams,
+      expressParams: expressParams && getIsValidExpressParams(expressParams) ? expressParams : undefined,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
         : {
@@ -505,6 +515,12 @@ export function usePositionEditorButtonState(operation: Operation): {
     });
   }
 
+  const commonParams = {
+    expressParams,
+    isExpressLoading,
+    onSubmit,
+  };
+
   if (isApproving) {
     const tokenToApprove = tokensToApprove[0];
     return {
@@ -516,8 +532,7 @@ export function usePositionEditorButtonState(operation: Operation): {
       ),
       tooltipContent: errorTooltipContent,
       disabled: true,
-      relayerFeeParams: expressParams?.relayFeeParams,
-      onSubmit,
+      ...commonParams,
     };
   }
 
@@ -531,8 +546,7 @@ export function usePositionEditorButtonState(operation: Operation): {
       ),
       tooltipContent: errorTooltipContent,
       disabled: true,
-      relayerFeeParams: expressParams?.relayFeeParams,
-      onSubmit,
+      ...commonParams,
     };
   }
 
@@ -546,8 +560,7 @@ export function usePositionEditorButtonState(operation: Operation): {
       ),
       tooltipContent: errorTooltipContent,
       disabled: true,
-      relayerFeeParams: expressParams?.relayFeeParams,
-      onSubmit,
+      ...commonParams,
     };
   }
 
@@ -557,8 +570,7 @@ export function usePositionEditorButtonState(operation: Operation): {
       text: t`Allow ${getToken(chainId, tokenToApprove.tokenAddress).symbol} to be spent`,
       tooltipContent: errorTooltipContent,
       disabled: false,
-      relayerFeeParams: expressParams?.relayFeeParams,
-      onSubmit,
+      ...commonParams,
     };
   }
 
@@ -566,7 +578,6 @@ export function usePositionEditorButtonState(operation: Operation): {
     text: error || localizedOperationLabels[operation],
     tooltipContent: errorTooltipContent,
     disabled: Boolean(error) && !shouldDisableValidationForTesting,
-    relayerFeeParams: expressParams?.relayFeeParams,
-    onSubmit,
+    ...commonParams,
   };
 }

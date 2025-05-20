@@ -13,6 +13,7 @@ import { selectExpressGlobalParams } from "context/SyntheticsStateContext/select
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { estimateExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import {
   OrderInfo,
   PositionOrderInfo,
@@ -26,7 +27,6 @@ import {
   sortPositionOrders,
   sortSwapOrders,
 } from "domain/synthetics/orders";
-import { estimateExpressParams } from "domain/synthetics/orders/expressOrderUtils";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
@@ -156,17 +156,15 @@ export function OrderList({
       cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
     };
 
-    const expressParams = globalExpressParams
-      ? await estimateExpressParams({
-          signer,
-          chainId,
-          batchParams,
-          requireGasPaymentTokenApproval: true,
-          globalExpressParams,
-          estimationMethod: "approximate",
-          provider,
-        })
-      : undefined;
+    const expressParams = await estimateExpressParams({
+      signer,
+      chainId,
+      batchParams,
+      requireValidations: true,
+      globalExpressParams,
+      estimationMethod: "approximate",
+      provider,
+    });
 
     sendBatchOrderTxn({
       chainId,

@@ -14,7 +14,6 @@ const abFlagsConfig = {
   // testExampleAb: 0.5,
   testMultichain: 1,
   testSponsoredCall: 0,
-  disableAsyncGasLimit: 0,
   testExampleAb: 0,
 };
 

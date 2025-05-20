@@ -1,4 +1,3 @@
-import uniq from "lodash/uniq";
 import uniqBy from "lodash/uniqBy";
 import { encodeAbiParameters, toHex } from "viem";
 
@@ -9,7 +8,6 @@ import { convertTokenAddress } from "sdk/configs/tokens";
 import { TokenData, TokensData } from "sdk/types/tokens";
 import { getOppositeCollateral } from "sdk/utils/markets";
 import { getByKey } from "sdk/utils/objects";
-import { CreateOrderTxnParams } from "sdk/utils/orderTransactions";
 
 import { OracleParamsPayload, RelayerFeeParams } from "./types";
 
@@ -69,74 +67,6 @@ export function getOraclePriceParamsForRelayFee({
   }
 
   return swapTokens.map((t) => ({
-    tokenAddress: convertTokenAddress(chainId, t.address, "wrapped"),
-    priceProvider: getContract(chainId, "ChainlinkPriceFeedProvider"),
-    data: encodeAbiParameters(
-      [
-        {
-          name: "something",
-          type: "bytes32[]",
-        },
-        {
-          name: "report",
-          type: "bytes",
-        },
-      ],
-      [
-        [toHex(0, { size: 32 }), toHex(0, { size: 32 }), toHex(0, { size: 32 })],
-        "0x0001000000000000000000000000000000000000000000000000000000000000",
-      ]
-    ),
-  }));
-}
-
-export function getOraclePriceParamsForOrders({
-  chainId,
-  createOrderParams,
-  marketsInfoData,
-  tokensData,
-}: {
-  chainId: UiContractsChain;
-  createOrderParams: CreateOrderTxnParams<any>[];
-  marketsInfoData: MarketsInfoData;
-  tokensData: TokensData;
-}): OraclePriceParam[] {
-  const collateralSwapTokens = createOrderParams
-    .map((co) => {
-      const swapTokens: TokenData[] = [];
-
-      if (co.tokenTransfersParams?.externalCalls) {
-        const externalSwapTokenAddresses = co.tokenTransfersParams.externalCalls.sendTokens;
-        const orderCollateralAddress = co.tokenTransfersParams.initialCollateralTokenAddress;
-
-        const allTokenAddresses = uniq([...externalSwapTokenAddresses, orderCollateralAddress]);
-
-        for (const tokenAddress of allTokenAddresses) {
-          const token = getByKey(tokensData, tokenAddress);
-
-          if (!token) {
-            throw new Error(`Token not found for oracle params: ${tokenAddress}`);
-          }
-
-          swapTokens.push(token);
-        }
-      } else {
-        const swapOracleTokens =
-          getSwapPathOracleTokens({
-            tokensData,
-            marketsInfoData,
-            initialCollateralAddress: co.orderPayload.addresses.initialCollateralToken,
-            swapPath: co.orderPayload.addresses.swapPath,
-          }) ?? [];
-
-        swapTokens.push(...swapOracleTokens);
-      }
-
-      return swapTokens;
-    })
-    .flat();
-
-  return uniqBy(collateralSwapTokens, "address").map((t) => ({
     tokenAddress: convertTokenAddress(chainId, t.address, "wrapped"),
     priceProvider: getContract(chainId, "ChainlinkPriceFeedProvider"),
     data: encodeAbiParameters(

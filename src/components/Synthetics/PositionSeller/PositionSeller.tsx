@@ -46,6 +46,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
@@ -102,9 +103,10 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
+import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
+import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
 
@@ -357,7 +359,12 @@ export function PositionSeller() {
     userReferralInfo?.referralCodeForTxn,
   ]);
 
-  const { expressParams, isLoading: isExpressLoading } = useExpressOrdersParams({
+  const {
+    expressParams,
+    isLoading: isExpressLoading,
+    fastExpressParams,
+    asyncExpressParams,
+  } = useExpressOrdersParams({
     orderParams: batchParams,
   });
 
@@ -529,6 +536,9 @@ export function PositionSeller() {
       duration,
       partsCount: numberOfParts,
       tradeMode: ORDER_OPTION_TO_TRADE_MODE[orderOption],
+      fastExpressParams,
+      asyncExpressParams,
+      expressParams,
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
@@ -556,7 +566,7 @@ export function PositionSeller() {
       signer,
       provider,
       batchParams,
-      expressParams,
+      expressParams: expressParams && getIsValidExpressParams(expressParams) ? expressParams : undefined,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
         : {
@@ -1013,7 +1023,14 @@ export function PositionSeller() {
                 {buttonState.text}
               </Button>
 
+              <ExpressTradingWarningCard
+                expressParams={expressParams}
+                payTokenAddress={undefined}
+                isWrapOrUnwrap={false}
+              />
+
               <div className="h-1 bg-stroke-primary" />
+
               {!isTwap && (
                 <>
                   {receiveTokenRow}

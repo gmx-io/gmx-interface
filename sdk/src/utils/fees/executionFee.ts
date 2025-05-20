@@ -45,7 +45,7 @@ export function getExecutionFee(
   };
 }
 
-export function approximateExpressBatchOrderGasLimit({
+export function approximateExpressBatchOrderRelayGasLimit({
   gasLimits,
   feeSwapsCount,
   createOrdersCount,
@@ -95,10 +95,12 @@ export function approximateExpressBatchOrderGasLimit({
     l1GasLimit = Math.abs(evaluated) < Infinity ? BigInt(evaluated) : 0n;
   }
 
-  return totalGasLimit + l1GasLimit;
+  const gasLimit = totalGasLimit + l1GasLimit;
+
+  return { gasLimit, l1GasLimit };
 }
 
-export function estimateMinGasPaymentTokenBalance({
+export function estimateBatchMinGasPaymentTokenAmount({
   chainId,
   gasPaymentToken,
   relayFeeToken,
@@ -106,6 +108,10 @@ export function estimateMinGasPaymentTokenBalance({
   gasLimits,
   l1Reference,
   tokensData,
+  createOrdersCount = 1,
+  updateOrdersCount = 0,
+  cancelOrdersCount = 0,
+  executionFeeAmount,
 }: {
   chainId: number;
   gasLimits: GasLimitsConfig;
@@ -114,31 +120,36 @@ export function estimateMinGasPaymentTokenBalance({
   tokensData: TokensData;
   gasPrice: bigint;
   l1Reference: L1ExpressOrderGasReference | undefined;
+  createOrdersCount: number;
+  updateOrdersCount: number;
+  cancelOrdersCount: number;
+  executionFeeAmount: bigint | undefined;
 }) {
-  const createOrderGasLimit = approximateExpressBatchOrderGasLimit({
+  const { gasLimit } = approximateExpressBatchOrderRelayGasLimit({
     gasLimits,
-    createOrdersCount: 1,
-    updateOrdersCount: 0,
-    cancelOrdersCount: 0,
-    feeSwapsCount: 1,
+    createOrdersCount,
+    updateOrdersCount,
+    cancelOrdersCount,
+    feeSwapsCount: relayFeeToken.address === gasPaymentToken.address ? 0 : 1,
     externalSwapGasLimit: 0n,
-    oraclePriceCount: 4,
+    oraclePriceCount: 2,
     tokenPermitsCount: 0,
-    sizeOfData: 0n,
+    sizeOfData: 2500n, // approximate size of single order creation
     l1Reference,
   });
 
-  const createOrderFee = createOrderGasLimit * gasPrice;
+  const feeAmount = gasLimit * gasPrice;
 
   const executionGasLimit = estimateExecuteIncreaseOrderGasLimit(gasLimits, {
     swapsCount: 2,
     callbackGasLimit: 0n,
   });
 
-  const executionFee = getExecutionFee(chainId, gasLimits, tokensData, executionGasLimit, gasPrice, 4n);
+  const executionFee =
+    executionFeeAmount ??
+    getExecutionFee(chainId, gasLimits, tokensData, executionGasLimit, gasPrice, 4n)?.feeTokenAmount;
 
-  let totalFee = createOrderFee + (executionFee?.feeTokenAmount ?? 0n);
-  totalFee = (totalFee * 13n) / 10n; // 30% buffer
+  let totalFee = feeAmount + (executionFee ?? 0n);
 
   const minFeeUsd = convertToUsd(totalFee, relayFeeToken.decimals, relayFeeToken.prices.minPrice)!;
   const minGasPaymentTokenBalance = convertToTokenAmount(

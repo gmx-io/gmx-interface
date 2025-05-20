@@ -11,9 +11,9 @@ import { isSourceChain } from "context/GmxAccountContext/config";
 import {
   ExpressParamsEstimationMethod,
   ExpressTxnParams,
+  GasPaymentValidations,
   getGelatoRelayRouterDomain,
   getOracleParamsPayload,
-  getOraclePriceParamsForOrders,
   getOraclePriceParamsForRelayFee,
   getRelayerFeeParams,
   getRelayRouterNonceForMultichain,
@@ -27,12 +27,13 @@ import {
 } from "domain/synthetics/express";
 import { MarketsInfoData } from "domain/synthetics/markets/types";
 import {
-  getIsInvalidSubaccount,
+  getSubaccountValidations,
   hashSubaccountApproval,
   SignedSubbacountApproval,
   Subaccount,
+  SubaccountValidations,
 } from "domain/synthetics/subaccount";
-import { SignedTokenPermit, TokensData } from "domain/tokens";
+import { SignedTokenPermit, TokensAllowanceData, TokensData } from "domain/tokens";
 import { extendError } from "lib/errors";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
@@ -52,16 +53,17 @@ import {
   BatchOrderTxnParams,
   getBatchExternalCalls,
   getBatchExternalSwapGasLimit,
-  getBatchIsNativePayment,
   getBatchRequiredActions,
   getBatchTotalExecutionFee,
+  getBatchTotalPayCollateralAmount,
   getIsEmptyBatch,
 } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 import { IRelayUtils } from "typechain-types-arbitrum-sepolia/MultichainTransferRouter";
 import { multichainOrderRouterAbi, multichainSubaccountRouterAbi, multichainTransferRouterAbi } from "wagmi-generated";
 
-import { approximateExpressBatchOrderGasLimit, estimateMinGasPaymentTokenBalance } from "../fees";
+import { approximateExpressBatchOrderRelayGasLimit, estimateBatchMinGasPaymentTokenAmount } from "../fees";
+import { getNeedTokenApprove } from "../tokens";
 import { getSwapAmountsByToValue } from "../trade";
 
 export async function estimateExpressParams({
@@ -69,249 +71,323 @@ export async function estimateExpressParams({
   provider,
   chainId,
   batchParams,
-  totalExecutionFee,
   globalExpressParams,
-  requireGasPaymentTokenApproval,
+  requireValidations,
   estimationMethod = "approximate",
 }: {
   chainId: UiContractsChain;
   batchParams: BatchOrderTxnParams;
-  // TODO try to avoid this
-  totalExecutionFee?: bigint;
   signer: WalletSigner;
   provider: Provider | undefined;
-  globalExpressParams: GlobalExpressParams;
-  requireGasPaymentTokenApproval: boolean;
+  globalExpressParams: GlobalExpressParams | undefined;
+  requireValidations: boolean;
   estimationMethod: ExpressParamsEstimationMethod;
 }): Promise<ExpressTxnParams | undefined> {
-  try {
-    const {
-      tokensData,
-      marketsInfoData,
-      subaccount: rawSubaccount,
-      tokenPermits,
-      gasPaymentTokenAddress,
-      relayerFeeTokenAddress,
-      findSwapPath,
-      gasPaymentAllowanceData,
-      gasPrice,
-      gasLimits,
-      l1Reference,
-      bufferBps,
-      isSponsoredCall,
-      noncesData,
-    } = globalExpressParams;
+  if (!globalExpressParams) {
+    return undefined;
+  }
 
-    const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
+  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
 
-    const account = signer.address;
-    const isNativePayment = getBatchIsNativePayment(batchParams);
-    const isEmptyBatch = getIsEmptyBatch(batchParams);
-    const gasPaymentToken = getByKey(tokensData, gasPaymentTokenAddress);
-    const relayerFeeToken = getByKey(tokensData, relayerFeeTokenAddress);
-    const batchExternalCalls = getBatchExternalCalls(batchParams);
-    const totalBatchExternalSwapGasLimit = getBatchExternalSwapGasLimit(batchParams);
+  const {
+    tokensData,
+    marketsInfoData,
+    subaccount: rawSubaccount,
+    tokenPermits,
+    gasPaymentTokenAddress,
+    relayerFeeTokenAddress,
+    findSwapPath,
+    gasPaymentAllowanceData,
+    gasPrice,
+    gasLimits,
+    l1Reference,
+    bufferBps,
+    isSponsoredCall,
+    noncesData,
+  } = globalExpressParams;
 
-    const requiredActions = getBatchRequiredActions(batchParams);
+  const account = signer.address;
+  const gasPaymentToken = getByKey(tokensData, gasPaymentTokenAddress);
+  const relayerFeeToken = getByKey(tokensData, relayerFeeTokenAddress);
+  const batchExternalCalls = getBatchExternalCalls(batchParams);
+  const totalBatchExternalSwapGasLimit = getBatchExternalSwapGasLimit(batchParams);
 
-    const subaccount =
-      rawSubaccount && !getIsInvalidSubaccount(rawSubaccount, requiredActions) ? rawSubaccount : undefined;
+  const requiredActions = getBatchRequiredActions(batchParams);
 
-    if (!gasPaymentToken || !relayerFeeToken || isNativePayment || isEmptyBatch) {
-      return undefined;
-    }
+  const subaccountValidations = rawSubaccount
+    ? getSubaccountValidations({
+        requiredActions,
+        subaccount: rawSubaccount,
+      })
+    : undefined;
 
-    if (totalExecutionFee === undefined) {
-      totalExecutionFee = getBatchTotalExecutionFee({ batchParams, chainId, tokensData })?.feeTokenAmount;
-    }
+  const subaccount = subaccountValidations?.isValid ? rawSubaccount : undefined;
 
-    if (totalExecutionFee === undefined) {
-      return undefined;
-    }
+  if (!gasPaymentToken || !relayerFeeToken) {
+    return undefined;
+  }
 
-    const baseRelayerFeeAmount = estimateMinGasPaymentTokenBalance({
-      chainId,
-      gasPaymentToken: relayerFeeToken,
-      relayFeeToken: relayerFeeToken,
-      gasPrice,
-      gasLimits,
-      l1Reference,
-      tokensData,
-    });
+  const batchExecutionFee = getBatchTotalExecutionFee({ batchParams, chainId, tokensData });
+  const batchExecutionFeeAmount = batchExecutionFee?.feeTokenAmount ?? 0n;
 
-    let totalNetworkFeeAmount = baseRelayerFeeAmount + totalExecutionFee;
+  const baseRelayerFeeAmount = estimateBatchMinGasPaymentTokenAmount({
+    chainId,
+    gasPaymentToken: relayerFeeToken,
+    relayFeeToken: relayerFeeToken,
+    gasPrice,
+    gasLimits,
+    l1Reference,
+    tokensData,
+    executionFeeAmount: batchExecutionFeeAmount,
+    createOrdersCount: batchParams.createOrderParams.length,
+    updateOrdersCount: batchParams.updateOrderParams.length,
+    cancelOrdersCount: batchParams.cancelOrderParams.length,
+  });
 
-    const swapAmounts = getSwapAmountsByToValue({
-      tokenIn: gasPaymentToken,
-      tokenOut: relayerFeeToken,
-      amountOut: totalNetworkFeeAmount,
-      isLimit: false,
-      findSwapPath,
-      uiFeeFactor: 0n,
-    });
+  const baseNetworkFee = baseRelayerFeeAmount + batchExecutionFeeAmount;
 
-    const baseRelayFeeParams = getRelayerFeeParams({
-      chainId,
-      account,
-      relayerFeeTokenAmount: baseRelayerFeeAmount,
-      totalNetworkFeeAmount: totalNetworkFeeAmount,
-      relayerFeeTokenAddress: relayerFeeToken.address,
-      gasPaymentTokenAddress: gasPaymentToken.address,
-      internalSwapAmounts: swapAmounts,
-      batchExternalCalls,
-      feeExternalSwapQuote: undefined,
-      tokensData,
-      gasPaymentAllowanceData,
-      forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
-      tokenPermits,
-      srcChainId,
-    });
+  const swapAmounts = getSwapAmountsByToValue({
+    tokenIn: gasPaymentToken,
+    tokenOut: relayerFeeToken,
+    amountOut: baseNetworkFee,
+    isLimit: false,
+    findSwapPath,
+    uiFeeFactor: 0n,
+  });
 
-    if (baseRelayFeeParams.noFeeSwap) {
-      return undefined;
-    }
+  const baseRelayFeeParams = getRelayerFeeParams({
+    chainId,
+    account,
+    relayerFeeTokenAmount: baseRelayerFeeAmount,
+    totalNetworkFeeAmount: baseNetworkFee,
+    relayerFeeTokenAddress: relayerFeeToken.address,
+    gasPaymentTokenAddress: gasPaymentToken.address,
+    internalSwapAmounts: swapAmounts,
+    batchExternalCalls,
+    feeExternalSwapQuote: undefined,
+    relayerGasLimit: 0n,
+    l1GasLimit: 0n,
+    tokensData,
+    gasPrice,
+    gasPaymentAllowanceData,
+    forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
+    tokenPermits,
+    srcChainId,
+  });
 
-    const baseExpressParams = await getBatchOrderExpressParams({
-      chainId,
+  if (!baseRelayFeeParams) {
+    return undefined;
+  }
+
+  const baseExpressParams = await getBatchOrderExpressParams({
+    chainId,
+    batchParams,
+    signer,
+    subaccount,
+    tokenPermits,
+    tokensData,
+    marketsInfoData,
+    relayFeeParams: baseRelayFeeParams,
+    noncesData,
+    emptySignature: true,
+    provider,
+  });
+
+  const hasL1Gas = chainId === ARBITRUM;
+
+  if (!baseRelayFeeParams || (hasL1Gas && !l1Reference)) {
+    return undefined;
+  }
+
+  let gasLimit: bigint;
+  let l1GasLimit = 0n;
+
+  if (estimationMethod === "estimateGas" && provider) {
+    const baseGasPaymentValidations = getGasPaymentValidations({
       batchParams,
-      signer,
-      provider,
-      subaccount,
       tokenPermits,
       tokensData,
-      marketsInfoData,
       relayFeeParams: baseRelayFeeParams,
-      noncesData,
-      emptySignature: true,
+      gasPaymentAllowanceData,
     });
-
-    const hasL1Gas = chainId === ARBITRUM;
-
-    if (!baseRelayFeeParams || (hasL1Gas && !l1Reference)) {
+    // In this cases simulation will fail
+    if (
+      baseGasPaymentValidations.isOutGasTokenBalance ||
+      baseGasPaymentValidations.needGasPaymentTokenApproval ||
+      baseRelayFeeParams.noFeeSwap ||
+      getIsEmptyBatch(batchParams)
+    ) {
       return undefined;
     }
 
-    let gasLimit: bigint;
-    if (estimationMethod === "estimateGas" && provider) {
-      // In this cases simulation will fail
-      if (baseRelayFeeParams.isOutGasTokenBalance || baseRelayFeeParams.needGasPaymentTokenApproval) {
-        return undefined;
-      }
-
+    try {
       gasLimit = await estimateGasLimit(provider, {
         from: GMX_SIMULATION_ORIGIN,
         to: baseExpressParams.txnData.to,
         data: baseExpressParams.txnData.callData,
         value: 0n,
       });
-    } else {
-      gasLimit = approximateExpressBatchOrderGasLimit({
-        gasLimits,
-        createOrdersCount: batchParams.createOrderParams.length,
-        updateOrdersCount: batchParams.updateOrderParams.length,
-        cancelOrdersCount: batchParams.cancelOrderParams.length,
-        feeSwapsCount: baseRelayFeeParams.feeParams.feeSwapPath.length,
-        externalSwapGasLimit: totalBatchExternalSwapGasLimit,
-        tokenPermitsCount: tokenPermits.length,
-        oraclePriceCount: baseExpressParams.oracleParamsPayload.tokens.length,
-        sizeOfData: BigInt(size(baseExpressParams.txnData.callData as `0x${string}`)),
-        l1Reference,
+    } catch (error) {
+      const extendedError = extendError(error, {
+        data: {
+          estimationMethod,
+        },
       });
-    }
 
-    let feeAmount: bigint;
-    if (isSponsoredCall) {
-      feeAmount = applyFactor(gasLimit * gasPrice, gasLimits.gelatoRelayFeeMultiplierFactor);
-    } else {
-      feeAmount = await gelatoRelay.getEstimatedFee(BigInt(chainId), relayerFeeToken.address, gasLimit, false);
-    }
+      metrics.pushError(extendedError, "expressOrders.estimateGas");
 
-    const buffer = bigMath.mulDiv(feeAmount, BigInt(bufferBps), BASIS_POINTS_DIVISOR_BIGINT);
-    feeAmount += buffer;
+      // eslint-disable-next-line no-console
+      console.error(extendedError);
 
-    totalNetworkFeeAmount = feeAmount + totalExecutionFee;
-
-    const finalSwapAmounts = getSwapAmountsByToValue({
-      tokenIn: gasPaymentToken,
-      tokenOut: relayerFeeToken,
-      amountOut: totalNetworkFeeAmount,
-      isLimit: false,
-      findSwapPath,
-      uiFeeFactor: 0n,
-    });
-
-    const finalRelayFeeParams = getRelayerFeeParams({
-      chainId,
-      account,
-      relayerFeeTokenAmount: feeAmount,
-      totalNetworkFeeAmount: totalNetworkFeeAmount,
-      relayerFeeTokenAddress: relayerFeeToken.address,
-      gasPaymentTokenAddress: gasPaymentToken.address,
-      internalSwapAmounts: finalSwapAmounts,
-      batchExternalCalls: getBatchExternalCalls(batchParams),
-      feeExternalSwapQuote: undefined,
-      tokensData,
-      gasPaymentAllowanceData,
-      forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
-      tokenPermits,
-      srcChainId,
-    });
-
-    if (!finalRelayFeeParams) {
       return undefined;
     }
-
-    const { relayParamsPayload } = await getBatchOrderExpressParams({
-      chainId,
-      batchParams,
-      signer,
-      provider,
-      subaccount,
-      tokenPermits,
-      tokensData,
-      marketsInfoData,
-      relayFeeParams: finalRelayFeeParams,
-      noncesData,
-      emptySignature: true,
+  } else {
+    const approximationResult = approximateExpressBatchOrderRelayGasLimit({
+      gasLimits,
+      createOrdersCount: batchParams.createOrderParams.length,
+      updateOrdersCount: batchParams.updateOrderParams.length,
+      cancelOrdersCount: batchParams.cancelOrderParams.length,
+      feeSwapsCount: baseRelayFeeParams.feeParams.feeSwapPath.length,
+      externalSwapGasLimit: totalBatchExternalSwapGasLimit,
+      tokenPermitsCount: tokenPermits.length,
+      oraclePriceCount: baseExpressParams.oracleParamsPayload.tokens.length,
+      sizeOfData: BigInt(size(baseExpressParams.txnData.callData as `0x${string}`)),
+      l1Reference,
     });
 
-    if (requireGasPaymentTokenApproval && finalRelayFeeParams.needGasPaymentTokenApproval) {
-      return undefined;
-    }
+    gasLimit = approximationResult.gasLimit;
+    l1GasLimit = approximationResult.l1GasLimit;
+  }
 
-    return {
-      subaccount,
-      relayParamsPayload,
-      relayFeeParams: finalRelayFeeParams,
-      isSponsoredCall,
-      estimationMethod,
-    };
-  } catch (error) {
-    const extendedError = extendError(error, {
-      data: {
-        estimationMethod,
-      },
-    });
+  let feeAmount: bigint;
+  if (isSponsoredCall) {
+    feeAmount = applyFactor(gasLimit * gasPrice, gasLimits.gelatoRelayFeeMultiplierFactor);
+  } else {
+    feeAmount = await gelatoRelay.getEstimatedFee(BigInt(chainId), relayerFeeToken.address, gasLimit, false);
+  }
 
-    metrics.pushError(extendedError, "expressOrders.estimateExpressParams");
-    // eslint-disable-next-line no-console
-    console.error(extendedError);
+  const buffer = bigMath.mulDiv(feeAmount, BigInt(bufferBps), BASIS_POINTS_DIVISOR_BIGINT);
+  feeAmount += buffer;
 
+  const totalNetworkFeeAmount = feeAmount + batchExecutionFeeAmount;
+
+  const finalSwapAmounts = getSwapAmountsByToValue({
+    tokenIn: gasPaymentToken,
+    tokenOut: relayerFeeToken,
+    amountOut: totalNetworkFeeAmount,
+    isLimit: false,
+    findSwapPath,
+    uiFeeFactor: 0n,
+  });
+
+  const finalRelayFeeParams = getRelayerFeeParams({
+    chainId,
+    account,
+    relayerFeeTokenAmount: feeAmount,
+    relayerGasLimit: gasLimit,
+    l1GasLimit,
+    gasPrice,
+    totalNetworkFeeAmount: totalNetworkFeeAmount,
+    relayerFeeTokenAddress: relayerFeeToken.address,
+    gasPaymentTokenAddress: gasPaymentToken.address,
+    internalSwapAmounts: finalSwapAmounts,
+    batchExternalCalls: getBatchExternalCalls(batchParams),
+    feeExternalSwapQuote: undefined,
+    tokensData,
+    gasPaymentAllowanceData,
+    forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
+    tokenPermits,
+    srcChainId,
+  });
+
+  if (!finalRelayFeeParams) {
     return undefined;
   }
+
+  const { relayParamsPayload } = await getBatchOrderExpressParams({
+    chainId,
+    batchParams,
+    signer,
+    subaccount,
+    tokenPermits,
+    tokensData,
+    marketsInfoData,
+    relayFeeParams: finalRelayFeeParams,
+    noncesData,
+    emptySignature: true,
+    provider,
+  });
+
+  const gasPaymentValidations = getGasPaymentValidations({
+    batchParams,
+    relayFeeParams: finalRelayFeeParams,
+    tokenPermits,
+    gasPaymentAllowanceData,
+    tokensData,
+  });
+
+  if (requireValidations && !getIsValidExpressParams({ gasPaymentValidations, subaccountValidations })) {
+    return undefined;
+  }
+
+  return {
+    subaccount,
+    relayParamsPayload,
+    relayFeeParams: finalRelayFeeParams,
+    isSponsoredCall,
+    estimationMethod,
+    gasPaymentValidations,
+    subaccountValidations,
+  };
 }
 
-// export async function validateExpressBatchOrderParams({
-//   relayFeeParams,
-//   batchParams,
-//   tokenPermits,
-// }: {
-//   relayFeeParams: RelayerFeeParams;
-//   batchParams: BatchOrderTxnParams;
-//   tokenPermits: SignedTokenPermit[];
-// }) {
+export function getIsValidExpressParams({
+  gasPaymentValidations,
+  subaccountValidations,
+}: {
+  gasPaymentValidations: GasPaymentValidations;
+  subaccountValidations: SubaccountValidations | undefined;
+}): boolean {
+  return gasPaymentValidations.isValid && (!subaccountValidations || subaccountValidations.isValid);
+}
 
-// }
+export function getGasPaymentValidations({
+  tokensData,
+  batchParams,
+  gasPaymentAllowanceData,
+  relayFeeParams,
+  tokenPermits,
+}: {
+  tokensData: TokensData;
+  gasPaymentAllowanceData: TokensAllowanceData;
+  relayFeeParams: RelayerFeeParams;
+  batchParams: BatchOrderTxnParams;
+  tokenPermits: SignedTokenPermit[];
+}): GasPaymentValidations {
+  const gasPaymentToken = getByKey(tokensData, relayFeeParams.gasPaymentTokenAddress);
+  const gasPaymentTokenAmount = relayFeeParams.gasPaymentTokenAmount;
+
+  const totalPayAmounts = getBatchTotalPayCollateralAmount(batchParams);
+  const gasPaymentTokenCollateralAmount = getByKey(totalPayAmounts, gasPaymentToken?.address) ?? 0n;
+
+  const totalGasPaymentTokenAmount = gasPaymentTokenCollateralAmount + gasPaymentTokenAmount;
+
+  const isOutGasTokenBalance =
+    gasPaymentToken?.balance === undefined || totalGasPaymentTokenAmount > gasPaymentToken.balance;
+
+  const needGasPaymentTokenApproval = getNeedTokenApprove(
+    gasPaymentAllowanceData,
+    gasPaymentToken?.address,
+    totalGasPaymentTokenAmount,
+    tokenPermits
+  );
+
+  return {
+    isOutGasTokenBalance,
+    needGasPaymentTokenApproval,
+    isValid: !isOutGasTokenBalance && !needGasPaymentTokenApproval,
+  };
+}
 
 export async function getBatchOrderExpressParams({
   chainId,
@@ -344,12 +420,6 @@ export async function getBatchOrderExpressParams({
       relayFeeParams,
       tokensData,
       marketsInfoData,
-    }),
-    ...getOraclePriceParamsForOrders({
-      chainId,
-      createOrderParams: batchParams.createOrderParams,
-      marketsInfoData,
-      tokensData,
     }),
   ]);
 

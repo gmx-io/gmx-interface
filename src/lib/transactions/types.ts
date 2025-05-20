@@ -1,8 +1,36 @@
+import { TaskState } from "@gelatonetwork/relay-sdk";
+
 import { ErrorLike } from "lib/errors";
+
+export type TransactionWaiterResult = {
+  relayStatus:
+    | {
+        taskId: string;
+        taskState: TaskState;
+      }
+    | undefined;
+  transactionHash: string | undefined;
+  blockNumber: number | undefined;
+  status: "success" | "failed";
+};
+
+export type GelatoTaskStatus = {
+  chainId: number;
+  taskId: string;
+  taskState: TaskState;
+  creationDate: string;
+  lastCheckDate?: string;
+  lastCheckMessage?: string;
+  transactionHash?: string;
+  blockNumber?: number;
+  executionDate?: string;
+  gasUsed?: string;
+  effectiveGasPrice?: string;
+};
 
 export enum TxnEventName {
   Simulated = "Simulated",
-  Prepared = "Prepared",
+  Sending = "Sending",
   Sent = "Sent",
   Error = "Error",
 }
@@ -41,11 +69,11 @@ export class TxnEventBuilder<TParams> {
     return this._build(TxnEventName.Simulated, {});
   }
 
-  Prepared() {
-    return this._build(TxnEventName.Prepared, {});
+  Sending() {
+    return this._build(TxnEventName.Sending, {});
   }
 
-  Sent({ txnHash, blockNumber, createdAt }: { txnHash: string; blockNumber: bigint; createdAt: number }) {
-    return this._build(TxnEventName.Sent, { txnHash, blockNumber, createdAt });
+  Sent(params: { type: "wallet"; transactionHash: string } | { type: "relay"; relayTaskId: string }) {
+    return this._build(TxnEventName.Sent, params);
   }
 }

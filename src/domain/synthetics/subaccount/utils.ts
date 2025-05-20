@@ -8,6 +8,7 @@ import {
   Subaccount,
   SubaccountApproval,
   SubaccountSerializedConfig,
+  SubaccountValidations,
 } from "domain/synthetics/subaccount/types";
 import { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
@@ -35,6 +36,21 @@ import type { MultichainSubaccountRouter } from "typechain-types-arbitrum-sepoli
 import { getExpressContractAddress, getGelatoRelayRouterDomain } from "../express";
 import { SubaccountOnchainData } from "./useSubaccountOnchainData";
 import { getMultichainInfoFromSigner, getOrderRelayRouterAddress } from "../orders/expressOrderUtils";
+
+export function getSubaccountValidations({
+  requiredActions,
+  subaccount,
+}: {
+  requiredActions: number;
+  subaccount: Subaccount;
+}): SubaccountValidations {
+  return {
+    isExpired: getIsSubaccountExpired(subaccount),
+    isActionsExceeded: getIsSubaccountActionsExceeded(subaccount, requiredActions),
+    isNonceExpired: getIsNonceExpired(subaccount),
+    isValid: !getIsInvalidSubaccount(subaccount, requiredActions),
+  };
+}
 
 export function getIsSubaccountActive(subaccount: {
   onchainData: SubaccountOnchainData;

@@ -199,8 +199,8 @@ export class Orders extends Module {
     );
 
     if (
-      collateralToken.address !== marketInfo.longToken.address &&
-      collateralToken.address !== marketInfo.shortToken.address
+      collateralToken.address !== marketInfo.longTokenAddress &&
+      collateralToken.address !== marketInfo.shortTokenAddress
     ) {
       const availableTokens = marketInfo.isSameCollaterals
         ? `long ${marketInfo.longToken.symbol}`

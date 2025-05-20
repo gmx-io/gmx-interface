@@ -1,27 +1,32 @@
 import { useMemo } from "react";
 
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
-import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectExpressGlobalParams,
+  selectIsExpressTransactionAvailable,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { throttleLog } from "lib/logging";
 import { useJsonRpcProvider } from "lib/rpc";
-import { retry, useThrottledAsync } from "lib/useThrottledAsyncEstimation";
+import { useThrottledAsync } from "lib/useThrottledAsyncEstimation";
 import useWallet from "lib/wallets/useWallet";
 import { BatchOrderTxnParams, getBatchIsNativePayment, getIsEmptyBatch } from "sdk/utils/orderTransactions";
 
 import { ExpressTxnParams } from ".";
+import { estimateExpressParams } from "./expressOrderUtils";
 import { useSwitchGasPaymentTokenIfRequired } from "./useSwitchGasPaymentTokenIfRequired";
-import { estimateExpressParams } from "../orders/expressOrderUtils";
 
 export type ExpressOrdersParamsResult = {
   expressParams: ExpressTxnParams | undefined;
+  fastExpressParams: ExpressTxnParams | undefined;
+  asyncExpressParams: ExpressTxnParams | undefined;
   isLoading: boolean;
 };
 
 export function useExpressOrdersParams({
   orderParams,
-  totalExecutionFee,
+
   label,
 }: {
   orderParams: BatchOrderTxnParams | undefined;
@@ -32,9 +37,9 @@ export function useExpressOrdersParams({
 
   const showDebugValues = useShowDebugValues();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const isExpressAvailable = useSelector(selectIsExpressTransactionAvailable);
 
-  const isEnabled =
-    globalExpressParams && orderParams && !getIsEmptyBatch(orderParams) && !getBatchIsNativePayment(orderParams);
+  const isAvailable = isExpressAvailable && orderParams && !getBatchIsNativePayment(orderParams);
 
   const { signer } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
@@ -47,20 +52,15 @@ export function useExpressOrdersParams({
         signer: p.signer,
         provider: p.provider,
         globalExpressParams: p.globalExpressParams,
-        requireGasPaymentTokenApproval: false,
-        totalExecutionFee: totalExecutionFee,
+        requireValidations: false,
         estimationMethod: "approximate",
       });
-
-      if (!nextApproximateParams) {
-        return retry(undefined, 100);
-      }
 
       return nextApproximateParams;
     },
     {
       params:
-        isEnabled && globalExpressParams && signer && !getIsEmptyBatch(orderParams)
+        isAvailable && globalExpressParams && signer && orderParams
           ? {
               chainId,
               signer,
@@ -69,7 +69,7 @@ export function useExpressOrdersParams({
               globalExpressParams,
             }
           : undefined,
-      throttleMs: 1000,
+      throttleMs: 500,
       leading: true,
       trailing: false,
     }
@@ -83,8 +83,7 @@ export function useExpressOrdersParams({
         signer: p.signer,
         provider: p.provider,
         globalExpressParams: p.globalExpressParams,
-        requireGasPaymentTokenApproval: false,
-        totalExecutionFee: totalExecutionFee,
+        requireValidations: false,
         estimationMethod: "estimateGas",
       });
 
@@ -92,7 +91,7 @@ export function useExpressOrdersParams({
     },
     {
       params:
-        isEnabled && fastExpressParams && provider && signer && !getIsEmptyBatch(orderParams)
+        isAvailable && globalExpressParams && fastExpressParams && provider && signer && !getIsEmptyBatch(orderParams)
           ? {
               chainId,
               signer,
@@ -108,26 +107,26 @@ export function useExpressOrdersParams({
   );
 
   const result = useMemo(() => {
-    if (!isEnabled) {
+    if (!isAvailable) {
       return {
         expressParams: undefined,
         expressEstimateMethod: undefined,
+        fastExpressParams: undefined,
+        asyncExpressParams: undefined,
         isLoading: false,
       };
     }
 
-    if (asyncExpressParams) {
-      return {
-        expressParams: asyncExpressParams,
-        isLoading: false,
-      };
-    }
+    const expressParams = asyncExpressParams || fastExpressParams;
 
     return {
-      expressParams: fastExpressParams,
+      expressParams,
+      expressEstimateMethod: expressParams?.estimationMethod,
+      fastExpressParams,
+      asyncExpressParams,
       isLoading: !fastExpressParams,
     };
-  }, [isEnabled, asyncExpressParams, fastExpressParams]);
+  }, [isAvailable, asyncExpressParams, fastExpressParams]);
 
   useSwitchGasPaymentTokenIfRequired({ expressParams: result.expressParams });
 

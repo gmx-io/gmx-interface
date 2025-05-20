@@ -82,7 +82,7 @@ describe("mockRouting", () => {
     });
 
     const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "USDC", "DAI");
-    const estimator = createNaiveSwapEstimator(marketsInfoData);
+    const estimator = createNaiveSwapEstimator(marketsInfoData, false);
 
     const paths = getNaiveBestMarketSwapPathsFromTokenSwapPaths({
       graph: marketAdjacencyGraph,
@@ -124,7 +124,7 @@ describe("mockRouting", () => {
     });
 
     const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "USDC", "DAI");
-    const estimator = createNaiveSwapEstimator(marketsInfoData);
+    const estimator = createNaiveSwapEstimator(marketsInfoData, false);
 
     const paths = getNaiveBestMarketSwapPathsFromTokenSwapPaths({
       graph: marketAdjacencyGraph,
@@ -182,7 +182,7 @@ describe("mockRouting", () => {
     });
 
     const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "BTC", "DAI");
-    const estimator = createNaiveSwapEstimator(marketsInfoData);
+    const estimator = createNaiveSwapEstimator(marketsInfoData, false);
 
     const paths = getNaiveBestMarketSwapPathsFromTokenSwapPaths({
       graph: marketAdjacencyGraph,
@@ -236,7 +236,7 @@ describe("mockRouting", () => {
     });
 
     const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "USDC", "BTC");
-    const estimator = createNaiveSwapEstimator(marketsInfoData);
+    const estimator = createNaiveSwapEstimator(marketsInfoData, false);
 
     const paths = getNaiveBestMarketSwapPathsFromTokenSwapPaths({
       graph: marketAdjacencyGraph,
@@ -299,7 +299,7 @@ describe("mockRouting", () => {
     });
 
     const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "USDC", "BTC");
-    const estimator = createNaiveSwapEstimator(marketsInfoData);
+    const estimator = createNaiveSwapEstimator(marketsInfoData, false);
 
     const paths = getNaiveBestMarketSwapPathsFromTokenSwapPaths({
       graph: marketAdjacencyGraph,
@@ -357,7 +357,7 @@ describe("mockRouting", () => {
     });
 
     const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "BTC", "DAI");
-    const estimator = createNaiveSwapEstimator(marketsInfoData);
+    const estimator = createNaiveSwapEstimator(marketsInfoData, false);
 
     const fakeMultiplier = 100n;
 

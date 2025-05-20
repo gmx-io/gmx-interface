@@ -33,6 +33,7 @@ import {
 import { selectTradeBoxCreateOrderParams } from "context/SyntheticsStateContext/selectors/transactionsSelectors/tradeBoxOrdersSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUserReferralCode } from "domain/referrals";
+import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import { OrderType } from "domain/synthetics/orders";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
@@ -126,7 +127,12 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     return tokensData ? getBatchTotalExecutionFee({ batchParams, chainId, tokensData }) : undefined;
   }, [batchParams, chainId, tokensData]);
 
-  const { expressParams, isLoading: isExpressLoading } = useExpressOrdersParams({
+  const {
+    expressParams,
+    fastExpressParams,
+    asyncExpressParams,
+    isLoading: isExpressLoading,
+  } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "TradeBox",
   });
@@ -150,6 +156,9 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         duration,
         partsCount: numberOfParts,
         tradeMode,
+        expressParams,
+        asyncExpressParams,
+        fastExpressParams,
       });
     }
 
@@ -188,6 +197,9 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         duration,
         partsCount: numberOfParts,
         tradeMode: tradeMode,
+        expressParams,
+        asyncExpressParams,
+        fastExpressParams,
       });
     }
 
@@ -213,9 +225,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       tradeMode,
       duration,
       partsCount: numberOfParts,
+      expressParams,
+      asyncExpressParams,
+      fastExpressParams,
     });
   }, [
     allowedSlippage,
+    asyncExpressParams,
     chartHeaderInfo?.fundingRateLong,
     chartHeaderInfo?.fundingRateShort,
     collateralToken,
@@ -223,6 +239,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     duration,
     executionFee,
     expressParams,
+    fastExpressParams,
     fees?.positionPriceImpact?.precisePercentage,
     fromToken,
     increaseAmounts,
@@ -262,7 +279,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       signer,
       provider,
       batchParams,
-      expressParams,
+      expressParams: expressParams && getIsValidExpressParams(expressParams) ? expressParams : undefined,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
         : {
@@ -315,6 +332,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     onSubmitWrapOrUnwrap,
     slippageInputId,
     expressParams,
+    batchParams,
     isExpressLoading,
     totalExecutionFee,
   };

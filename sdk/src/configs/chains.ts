@@ -172,16 +172,22 @@ type StaticGasLimitsConfig = Pick<
 
 export const GAS_LIMITS_STATIC_CONFIG: Record<UiContractsChain, StaticGasLimitsConfig> = {
   [ARBITRUM]: {
-    createOrderGasLimit: 850_000n,
-    updateOrderGasLimit: 600_000n,
+    createOrderGasLimit: 1_000_000n,
+    updateOrderGasLimit: 800_000n,
     cancelOrderGasLimit: 700_000n,
-    tokenPermitGasLimit: 70_000n,
+    tokenPermitGasLimit: 90_000n,
   },
   [AVALANCHE]: {
-    createOrderGasLimit: 800_000n,
-    updateOrderGasLimit: 600_000n,
+    createOrderGasLimit: 1_000_000n,
+    updateOrderGasLimit: 800_000n,
     cancelOrderGasLimit: 700_000n,
-    tokenPermitGasLimit: 60_000n,
+    tokenPermitGasLimit: 90_000n,
+  },
+  [AVALANCHE_FUJI]: {
+    createOrderGasLimit: 1_000_000n,
+    updateOrderGasLimit: 800_000n,
+    cancelOrderGasLimit: 700_000n,
+    tokenPermitGasLimit: 90_000n,
   },
   [AVALANCHE_FUJI]: {
     createOrderGasLimit: 800_000n,

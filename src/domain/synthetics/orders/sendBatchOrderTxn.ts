@@ -1,13 +1,14 @@
 import { Provider } from "ethers";
 import { BaseError, decodeErrorResult, Hex } from "viem";
+import { withRetry } from "viem";
 
 import { UiContractsChain } from "config/chains";
 import { ExpressTxnParams } from "domain/synthetics/express";
-import { isLimitSwapOrderType } from "domain/synthetics/orders";
 import {
   buildAndSignExpressBatchOrderTxn,
   getMultichainInfoFromSigner,
-} from "domain/synthetics/orders/expressOrderUtils";
+} from "domain/synthetics/express/expressOrderUtils";
+import { isLimitSwapOrderType } from "domain/synthetics/orders";
 import { TokensData } from "domain/tokens";
 import { extendError } from "lib/errors";
 import { sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
@@ -17,25 +18,17 @@ import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
-import { sleep } from "sdk/utils/common";
 import {
   BatchOrderTxnParams,
   getBatchOrderMulticallPayload,
-  getBatchRequiredActions,
   getIsInvalidBatchReceiver,
-  isTwapOrderPayload,
+  getIsTwapOrderPayload,
 } from "sdk/utils/orderTransactions";
 
 import { signerAddressError } from "components/Errors/errorToasts";
 
-import { callRelayTransaction } from "../gassless/txns/expressOrderDebug";
-import {
-  getIsInvalidSubaccount,
-  getIsNonceExpired,
-  getIsSubaccountActionsExceeded,
-  getIsSubaccountExpired,
-} from "../subaccount";
 import { getOrdersTriggerPriceOverrides, getSimulationPrices, simulateExecution } from "./simulation";
+import { callRelayTransaction } from "../gassless/txns/expressOrderDebug";
 
 export type BatchSimulationParams = {
   tokensData: TokensData;
@@ -55,7 +48,7 @@ export async function sendBatchOrderTxn({
   signer,
   provider,
   batchParams,
-  expressParams: rawExpressParams,
+  expressParams,
   simulationParams,
   callback,
 }: {
@@ -68,7 +61,6 @@ export async function sendBatchOrderTxn({
   callback: TxnCallback<BatchOrderTxnCtx> | undefined;
 }) {
   const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
-  const expressParams = rawExpressParams?.relayFeeParams.isOutGasTokenBalance ? undefined : rawExpressParams;
 
   const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({ expressParams, batchParams, signer });
 
@@ -148,7 +140,7 @@ export async function sendBatchOrderTxn({
         });
     }
 
-    if (expressParams && !expressParams.relayFeeParams.isOutGasTokenBalance) {
+    if (expressParams) {
       await runSimulation().then(() => callback?.(eventBuilder.Simulated()));
       const txnData = await buildAndSignExpressBatchOrderTxn({
         chainId: chainId as UiContractsChain,
@@ -161,29 +153,25 @@ export async function sendBatchOrderTxn({
         noncesData: undefined,
       });
 
-      callback?.(eventBuilder.Prepared());
+      callback?.(eventBuilder.Sending());
 
-      const createdAt = Date.now();
-
-      const res = Promise.race([
-        sendExpressTransaction({
-          chainId,
-          txnData,
-          isSponsoredCall: srcChainId ? false : expressParams.isSponsoredCall,
-        }),
-        sleep(10000).then(() => {
-          throw new Error(GELATO_SDK_TIMEOUT_ERROR);
-        }),
-      ])
+      const res = withRetry(
+        () =>
+          sendExpressTransaction({
+            chainId,
+            txnData,
+            isSponsoredCall: expressParams.isSponsoredCall,
+          }),
+        {
+          retryCount: 3,
+          delay: 300,
+        }
+      )
         .then(async (res) => {
           callback?.(
             eventBuilder.Sent({
-              txnHash: res.taskId,
-
-              blockNumber: srcChainId
-                ? BigInt(await provider!.getBlockNumber())
-                : BigInt(await signer.provider!.getBlockNumber()),
-              createdAt,
+              type: "relay",
+              relayTaskId: res.taskId,
             })
           );
 
@@ -218,8 +206,6 @@ export async function sendBatchOrderTxn({
   }
 }
 
-export const GELATO_SDK_TIMEOUT_ERROR = "Gelato SDK Timeout";
-
 export const makeBatchOrderSimulation = async ({
   chainId,
   signer,
@@ -243,16 +229,18 @@ export const makeBatchOrderSimulation = async ({
       });
     }
 
-    const requiredActions = getBatchRequiredActions(batchParams);
-
-    if (expressParams?.subaccount && getIsInvalidSubaccount(expressParams.subaccount, requiredActions)) {
+    if (
+      expressParams?.subaccount &&
+      expressParams?.subaccountValidations &&
+      !expressParams.subaccountValidations.isValid
+    ) {
       const { onchainData, signedApproval } = expressParams.subaccount;
 
       throw extendError(new Error("Invalid subaccount"), {
         data: {
-          isExpired: getIsSubaccountExpired(expressParams.subaccount),
-          isActionsExceeded: getIsSubaccountActionsExceeded(expressParams.subaccount, requiredActions),
-          isNonceExceeded: getIsNonceExpired(expressParams.subaccount),
+          isExpired: expressParams.subaccountValidations.isExpired,
+          isActionsExceeded: expressParams.subaccountValidations.isActionsExceeded,
+          isNonceExceeded: expressParams.subaccountValidations.isNonceExpired,
           onchainData: {
             maxAllowedCount: onchainData.maxAllowedCount,
             currentCount: onchainData.currentActionsCount,
@@ -272,7 +260,7 @@ export const makeBatchOrderSimulation = async ({
       });
     }
 
-    if (expressParams && expressParams.relayFeeParams.isOutGasTokenBalance) {
+    if (expressParams && expressParams.gasPaymentValidations.isOutGasTokenBalance) {
       throw extendError(new Error("Out of gas token balance"), {
         data: {
           gasPaymentTokenAmount: expressParams.relayFeeParams.gasPaymentTokenAmount,
@@ -281,8 +269,17 @@ export const makeBatchOrderSimulation = async ({
       });
     }
 
+    if (expressParams && expressParams.gasPaymentValidations.needGasPaymentTokenApproval) {
+      throw extendError(new Error("Need gas payment token approval"), {
+        data: {
+          gasPaymentTokenAmount: expressParams.relayFeeParams.gasPaymentTokenAmount,
+          gasPaymentTokenAddress: expressParams.relayFeeParams.gasPaymentTokenAddress,
+        },
+      });
+    }
+
     const isSimulationAllowed = batchParams.createOrderParams.every(
-      (co) => !isLimitSwapOrderType(co.orderPayload.orderType) && !isTwapOrderPayload(co.orderPayload)
+      (co) => !isLimitSwapOrderType(co.orderPayload.orderType) && !getIsTwapOrderPayload(co.orderPayload)
     );
 
     // Simulate execution makes sense only for order creation transactions

@@ -12,7 +12,6 @@ import { UiContractsChain, UiSourceChain } from "sdk/configs/chains";
 import { ContractName, getContract } from "sdk/configs/contracts";
 import { getRelayerFeeToken } from "sdk/configs/express";
 import { ExternalSwapOutput, SwapAmounts } from "sdk/types/trade";
-import { getByKey } from "sdk/utils/objects";
 import { combineExternalCalls, ExternalCallsPayload, getExternalCallsPayload } from "sdk/utils/orderTransactions";
 import type { GelatoRelayRouter, SubaccountGelatoRelayRouter } from "typechain-types";
 import type {
@@ -111,39 +110,35 @@ export function getNeedGasPaymentTokenApproval(
 
 export function getRelayerFeeParams({
   chainId,
-  srcChainId,
   account,
   relayerFeeTokenAmount,
   relayerFeeTokenAddress,
+  relayerGasLimit,
+  l1GasLimit,
+  gasPrice,
   gasPaymentTokenAddress,
   totalNetworkFeeAmount,
   internalSwapAmounts,
   batchExternalCalls,
   feeExternalSwapQuote,
-  tokensData,
-  gasPaymentAllowanceData,
   forceExternalSwaps,
-  tokenPermits,
 }: {
   chainId: UiContractsChain;
-  srcChainId: UiSourceChain | undefined;
   account: string;
   relayerFeeTokenAmount: bigint;
   totalNetworkFeeAmount: bigint;
   relayerFeeTokenAddress: string;
+  relayerGasLimit: bigint;
+  l1GasLimit: bigint;
   gasPaymentTokenAddress: string;
+  gasPrice: bigint;
   internalSwapAmounts: SwapAmounts | undefined;
   batchExternalCalls: ExternalCallsPayload;
   feeExternalSwapQuote: ExternalSwapOutput | undefined;
   tokensData: TokensData;
-  gasPaymentAllowanceData: TokensAllowanceData | undefined;
   forceExternalSwaps: boolean | undefined;
   tokenPermits: SignedTokenPermit[];
-}): RelayerFeeParams {
-  if (!srcChainId && !gasPaymentAllowanceData) {
-    throw new Error("Allowance data is required for non-multichain");
-  }
-
+}): RelayerFeeParams | undefined {
   let feeParams: RelayFeePayload;
   let externalCalls: ExternalCallsPayload;
   let gasPaymentTokenAmount: bigint;
@@ -163,22 +158,23 @@ export function getRelayerFeeParams({
     getIsInternalSwapBetter({ internalSwapAmounts, externalSwapQuote: feeExternalSwapQuote, forceExternalSwaps }) &&
     internalSwapAmounts?.swapPathStats
   ) {
+    externalCalls = batchExternalCalls;
     feeParams = {
       feeToken: internalSwapAmounts.swapPathStats.tokenInAddress,
       feeAmount: internalSwapAmounts.amountIn,
       feeSwapPath: internalSwapAmounts.swapPathStats.swapPath,
     };
-    externalCalls = batchExternalCalls;
-    gasPaymentTokenAddress = internalSwapAmounts.swapPathStats.tokenInAddress;
     gasPaymentTokenAmount = internalSwapAmounts.amountIn;
     totalNetworkFeeAmount = internalSwapAmounts.amountOut;
   } else if (feeExternalSwapQuote) {
-    const feeExternalCalls = getExternalCallsPayload({
-      chainId,
-      account,
-      quote: feeExternalSwapQuote,
-    });
-    externalCalls = combineExternalCalls([batchExternalCalls, feeExternalCalls]);
+    externalCalls = combineExternalCalls([
+      batchExternalCalls,
+      getExternalCallsPayload({
+        chainId,
+        account,
+        quote: feeExternalSwapQuote,
+      }),
+    ]);
     feeParams = {
       feeToken: feeExternalSwapQuote.outTokenAddress, // final token
       feeAmount: 0n, // fee already sent in external calls
@@ -188,23 +184,8 @@ export function getRelayerFeeParams({
     gasPaymentTokenAmount = feeExternalSwapQuote.amountIn;
     totalNetworkFeeAmount = feeExternalSwapQuote.amountOut;
   } else {
-    externalCalls = batchExternalCalls;
-    feeParams = {
-      feeToken: relayerFeeTokenAddress,
-      feeAmount: 0n,
-      feeSwapPath: [],
-    };
-    gasPaymentTokenAmount = 0n;
-    noFeeSwap = true;
+    return undefined;
   }
-
-  const gasPaymentToken = getByKey(tokensData, gasPaymentTokenAddress);
-  const isOutGasTokenBalance =
-    gasPaymentToken?.balance === undefined || gasPaymentTokenAmount > gasPaymentToken.balance;
-
-  const needGasPaymentTokenApproval = srcChainId
-    ? false
-    : getNeedTokenApprove(gasPaymentAllowanceData, gasPaymentTokenAddress, gasPaymentTokenAmount, tokenPermits);
 
   return {
     feeParams,
@@ -213,8 +194,9 @@ export function getRelayerFeeParams({
     relayerTokenAmount: relayerFeeTokenAmount,
     totalNetworkFeeAmount,
     gasPaymentTokenAmount,
-    isOutGasTokenBalance,
-    needGasPaymentTokenApproval,
+    relayerGasLimit,
+    gasPrice,
+    l1GasLimit,
     gasPaymentTokenAddress,
     externalSwapGasLimit,
     noFeeSwap,

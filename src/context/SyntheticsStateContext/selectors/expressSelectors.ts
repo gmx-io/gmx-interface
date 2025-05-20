@@ -92,7 +92,7 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
     fromTokenAddress: gasPaymentTokenAddress,
     toTokenAddress: relayerFeeTokenAddress,
     marketsInfoData,
-    isExpressTxn: true,
+    isExpressFeeSwap: true,
     disabledMarkets: _debugSwapMarketsConfig?.disabledSwapMarkets,
     manualPath: _debugSwapMarketsConfig?.manualPath,
     gasEstimationParams,

@@ -71,7 +71,7 @@ export const createFindSwapPath = (params: {
         tokensData: TokensData;
       }
     | undefined;
-  isExpressTxn: boolean | undefined;
+  isExpressFeeSwap: boolean | undefined;
   disabledMarkets?: string[] | undefined;
   manualPath?: string[] | undefined;
   maxSwapPathLength?: number | undefined;
@@ -84,7 +84,7 @@ export const createFindSwapPath = (params: {
     disabledMarkets,
     manualPath,
     gasEstimationParams,
-    isExpressTxn,
+    isExpressFeeSwap,
     maxSwapPathLength,
   } = params;
   const wrappedFromAddress = getWrappedAddress(chainId, fromTokenAddress);
@@ -108,13 +108,15 @@ export const createFindSwapPath = (params: {
 
   const finalDisabledMarkets = [...(disabledMarkets ?? [])];
 
-  if (isExpressTxn) {
+  if (isExpressFeeSwap) {
     const expressSwapUnavailableMarkets = Object.values(marketsInfoData ?? {})
       .filter((market) => !getIsMarketAvailableForExpressSwaps(market))
       .map((market) => market.marketTokenAddress);
 
     finalDisabledMarkets.push(...expressSwapUnavailableMarkets);
   }
+
+  const isAtomicSwap = Boolean(isExpressFeeSwap);
 
   const marketAdjacencyGraph = buildMarketAdjacencyGraph(chainId, finalDisabledMarkets);
 
@@ -125,7 +127,7 @@ export const createFindSwapPath = (params: {
   }
 
   const marketEdgeLiquidityGetter = createMarketEdgeLiquidityGetter(marketsInfoData);
-  const naiveEstimator = createNaiveSwapEstimator(marketsInfoData);
+  const naiveEstimator = createNaiveSwapEstimator(marketsInfoData, isAtomicSwap);
   const naiveNetworkEstimator = gasEstimationParams
     ? createNaiveNetworkEstimator({
         gasLimits: gasEstimationParams.gasLimits,
@@ -134,7 +136,7 @@ export const createFindSwapPath = (params: {
         chainId,
       })
     : undefined;
-  const estimator = createSwapEstimator(marketsInfoData);
+  const estimator = createSwapEstimator(marketsInfoData, isAtomicSwap);
 
   const findSwapPath: FindSwapPath = (usdIn: bigint, opts?: { order?: ("liquidity" | "length")[] }) => {
     if (tokenSwapPaths.length === 0 || !fromTokenAddress || !wrappedFromAddress || !wrappedToAddress) {
@@ -215,6 +217,7 @@ export const createFindSwapPath = (params: {
       shouldUnwrapNativeToken: toTokenAddress === NATIVE_TOKEN_ADDRESS,
       shouldApplyPriceImpact: true,
       usdIn,
+      isAtomicSwap,
     });
 
     cache[cacheKey] = result;

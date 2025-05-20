@@ -4,6 +4,7 @@ import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 
 import { isDevelopment } from "config/env";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { getIsExpressSupported } from "config/features";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import { getChainName } from "config/static/chains";
 import { DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/twap";
@@ -18,12 +19,12 @@ import {
   getRemainingSubaccountActions,
   getRemainingSubaccountSeconds,
 } from "domain/synthetics/subaccount";
-import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "domain/synthetics/trade/twap/utils";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { roundToTwoDecimals } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
+import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import { secondsToPeriod } from "sdk/utils/time";
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
@@ -150,16 +151,27 @@ export function SettingsModal({
       return;
     }
     settings.setExpressOrdersEnabled(enabled);
+
     if (!enabled && subaccountState.subaccount) {
-      subaccountState.tryDisableSubaccount().catch(() => {
-        settings.setExpressOrdersEnabled(true);
+      subaccountState.tryDisableSubaccount().then((success) => {
+        if (success) {
+          settings.setExpressOrdersEnabled(false);
+        } else {
+          settings.setExpressOrdersEnabled(true);
+        }
       });
     }
   };
 
   const handleOneClickTradingToggle = (enabled: boolean) => {
     if (enabled) {
-      subaccountState.tryEnableSubaccount();
+      subaccountState.tryEnableSubaccount().then((success) => {
+        if (success) {
+          settings.setExpressOrdersEnabled(true);
+        } else {
+          settings.setExpressOrdersEnabled(false);
+        }
+      });
     } else {
       subaccountState.tryDisableSubaccount();
     }
@@ -218,115 +230,125 @@ export function SettingsModal({
           <Trans>Trading Settings</Trans>
         </h1>
         <div className="mt-16">
-          <SettingsSection>
-            {!srcChainId && (
-              <>
-                <ToggleSwitch
-                  disabled={
-                    !features?.relayRouterEnabled || (isOutOfGasPaymentBalance && !settings.expressOrdersEnabled)
-                  }
-                  isChecked={settings.expressOrdersEnabled}
-                  setIsChecked={handleExpressOrdersToggle}
-                >
-                  <TooltipWithPortal
-                    content={
-                      <Trans>
-                        Express Trading streamlines your trades on GMX by replacing on-chain transactions with secure
-                        off-chain message signing, helping reduce issues from network congestion and RPC errors.
-                        <br />
-                        <br />
-                        These signed messages are processed on-chain for you, so a gas payment token is still required.
-                      </Trans>
+          {getIsExpressSupported(chainId) && (
+            <>
+              {!srcChainId && (
+                <SettingsSection>
+                  <ToggleSwitch
+                    disabled={
+                      !features?.relayRouterEnabled || (isOutOfGasPaymentBalance && !settings.expressOrdersEnabled)
                     }
-                    handle={<Trans>Express Trading</Trans>}
-                  />
-                </ToggleSwitch>
+                    isChecked={settings.expressOrdersEnabled}
+                    setIsChecked={handleExpressOrdersToggle}
+                  >
+                    <TooltipWithPortal
+                      content={
+                        <Trans>
+                          Express Trading streamlines your trades on GMX by replacing on-chain transactions with secure
+                          off-chain message signing, helping reduce issues from network congestion and RPC errors.
+                          <br />
+                          <br />
+                          These signed messages are processed on-chain for you, so a gas payment token is still
+                          required.
+                        </Trans>
+                      }
+                      handle={<Trans>Express Trading</Trans>}
+                    />
+                  </ToggleSwitch>
 
-                {settings.expressOrdersEnabled && <ExpressTradingEnabledBanner />}
-              </>
-            )}
+                  {settings.expressOrdersEnabled && <ExpressTradingEnabledBanner />}
 
-            <ToggleSwitch
-              isChecked={Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount))}
-              setIsChecked={handleOneClickTradingToggle}
-              disabled={
-                !features?.subaccountRelayRouterEnabled || (isOutOfGasPaymentBalance && !subaccountState.subaccount)
-              }
-            >
-              <TooltipWithPortal
-                content={
-                  <Trans>
-                    One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be
-                    enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or{" "}
-                    {remainingSubaccountDays} days, whichever comes first.
-                    <br />
-                    <br />
-                    You can adjust these settings anytime under "One-Click Trading Settings"
-                  </Trans>
-                }
-                handle={<Trans>One-Click Trading</Trans>}
-              />
-            </ToggleSwitch>
-
-            {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
-
-            {settings.expressTradingGasTokenSwitched && !isOutOfGasPaymentBalance && (
-              <ExpressTradingGasTokenSwitchedBanner onClose={() => settings.setExpressTradingGasTokenSwitched(false)} />
-            )}
-
-            <OldSubaccountWithdraw />
-
-            {Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount)) && (
-              <OneClickAdvancedSettings />
-            )}
-          </SettingsSection>
-
-          {srcChainId && (
-            <SettingsSection className="mt-2">
-              <div className="flex items-center justify-between">
-                <TooltipWithPortal
-                  content={<Trans>Network for Cross-Chain Deposits and positions.</Trans>}
-                  handle={<Trans>Settlement Chain</Trans>}
-                />
-                <div>
-                  <Selector
-                    slim
-                    elevated
-                    value={settlementChainId}
-                    onChange={setSettlementChainId}
-                    options={MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[srcChainId]}
-                    item={({ option }) => (
-                      <div className="flex items-center gap-8">
-                        <img src={CHAIN_ID_TO_NETWORK_ICON[option]} alt={getChainName(option)} className="size-16" />
-                        <span>{getChainName(option)}</span>
-                      </div>
-                    )}
-                    button={
-                      <div className="flex items-center gap-4">
-                        <img
-                          src={CHAIN_ID_TO_NETWORK_ICON[settlementChainId]}
-                          alt={getChainName(settlementChainId)}
-                          className="size-16"
-                        />
-                        <span>{getChainName(settlementChainId)}</span>
-                      </div>
+                  <ToggleSwitch
+                    isChecked={Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount))}
+                    setIsChecked={handleOneClickTradingToggle}
+                    disabled={
+                      !features?.subaccountRelayRouterEnabled ||
+                      (isOutOfGasPaymentBalance && !subaccountState.subaccount)
                     }
-                  />
-                </div>
-              </div>
-            </SettingsSection>
-          )}
+                  >
+                    <TooltipWithPortal
+                      content={
+                        <Trans>
+                          One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to
+                          be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or{" "}
+                          {remainingSubaccountDays} days, whichever comes first.
+                          <br />
+                          <br />
+                          You can adjust these settings anytime under "One-Click Trading Settings"
+                        </Trans>
+                      }
+                      handle={<Trans>One-Click Trading</Trans>}
+                    />
+                  </ToggleSwitch>
 
-          {settings.expressOrdersEnabled && (
-            <SettingsSection className="mt-2">
-              <div>
-                <Trans>Gas Payment Token</Trans>
-              </div>
-              <GasPaymentTokenSelector
-                currentTokenAddress={settings.gasPaymentTokenAddress}
-                onSelectToken={settings.setGasPaymentTokenAddress}
-              />
-            </SettingsSection>
+                  {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
+
+                  {settings.expressTradingGasTokenSwitched && !isOutOfGasPaymentBalance && (
+                    <ExpressTradingGasTokenSwitchedBanner
+                      onClose={() => settings.setExpressTradingGasTokenSwitched(false)}
+                    />
+                  )}
+
+                  <OldSubaccountWithdraw />
+
+                  {Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount)) && (
+                    <OneClickAdvancedSettings />
+                  )}
+                </SettingsSection>
+              )}
+
+              {srcChainId && (
+                <SettingsSection className="mt-2">
+                  <div className="flex items-center justify-between">
+                    <TooltipWithPortal
+                      content={<Trans>Network for Cross-Chain Deposits and positions.</Trans>}
+                      handle={<Trans>Settlement Chain</Trans>}
+                    />
+                    <div>
+                      <Selector
+                        slim
+                        elevated
+                        value={settlementChainId}
+                        onChange={setSettlementChainId}
+                        options={MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[srcChainId]}
+                        item={({ option }) => (
+                          <div className="flex items-center gap-8">
+                            <img
+                              src={CHAIN_ID_TO_NETWORK_ICON[option]}
+                              alt={getChainName(option)}
+                              className="size-16"
+                            />
+                            <span>{getChainName(option)}</span>
+                          </div>
+                        )}
+                        button={
+                          <div className="flex items-center gap-4">
+                            <img
+                              src={CHAIN_ID_TO_NETWORK_ICON[settlementChainId]}
+                              alt={getChainName(settlementChainId)}
+                              className="size-16"
+                            />
+                            <span>{getChainName(settlementChainId)}</span>
+                          </div>
+                        }
+                      />
+                    </div>
+                  </div>
+                </SettingsSection>
+              )}
+
+              {settings.expressOrdersEnabled && (
+                <SettingsSection className="mt-2">
+                  <div>
+                    <Trans>Gas Payment Token</Trans>
+                  </div>
+                  <GasPaymentTokenSelector
+                    currentTokenAddress={settings.gasPaymentTokenAddress}
+                    onSelectToken={settings.setGasPaymentTokenAddress}
+                  />
+                </SettingsSection>
+              )}
+            </>
           )}
 
           <SettingsSection className="mt-2">

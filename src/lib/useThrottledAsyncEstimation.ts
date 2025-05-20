@@ -30,6 +30,10 @@ export function retry<T>(data: T, delay?: number): RetryResult<T> {
   };
 }
 
+function isRetryResult<T>(result: T | RetryResult<T> | undefined): result is RetryResult<T> {
+  return typeof result === "object" && result !== null && "retry" in result && result.retry === RETRY_SYMBOL;
+}
+
 export function useThrottledAsync<T, D extends object>(
   estimator: AsyncFn<T, D>,
   {
@@ -79,14 +83,12 @@ export function useThrottledAsync<T, D extends object>(
         try {
           const result = await latestEstimatorRef.current({ params: args as D });
 
-          const retryResult = result as RetryResult<T>;
-
-          if (retryResult.retry === RETRY_SYMBOL) {
-            setDynamicThrottleMs(retryResult.delay ?? 0);
+          if (isRetryResult(result)) {
+            setDynamicThrottleMs(result.delay ?? 0);
             isRetryRef.current = true;
             setState((prev) => ({
               ...prev,
-              data: retryResult.data,
+              data: result.data,
               isLoading: false,
             }));
             return;
@@ -101,6 +103,7 @@ export function useThrottledAsync<T, D extends object>(
         } catch (error) {
           setState((prev) => ({
             ...prev,
+            data: undefined,
             error: error as Error,
             isLoading: false,
             lastEstimated: Date.now(),

@@ -1,3 +1,4 @@
+import { TaskState } from "@gelatonetwork/relay-sdk";
 import { ReactNode } from "react";
 
 import { OrderTxnType, OrderType } from "domain/synthetics/orders";
@@ -12,8 +13,6 @@ export type MultiTransactionStatus<TEventData> = {
   createdTxnHash?: string;
   cancelledTxnHash?: string;
   gelatoTaskId?: string;
-  isGelatoTaskFailed?: boolean;
-  isGelatoTaskTimeout?: boolean;
   updatedTxnHash?: string;
   executedTxnHash?: string;
   createdAt: number;
@@ -77,15 +76,16 @@ export type PendingPositionUpdate = {
 export type PendingExpressTxnParams = {
   key: string;
   taskId: string | undefined;
-  isTimeout?: boolean;
   isSponsoredCall: boolean;
   subaccountApproval?: SignedSubbacountApproval;
   tokenPermits?: SignedTokenPermit[];
   pendingOrdersKeys?: string[];
   pendingPositionsKeys?: string[];
+  createdAt: number;
   metricId?: OrderMetricId;
   successMessage?: ReactNode;
   errorMessage?: ReactNode;
+  isViewed?: boolean;
 };
 
 export type ExpressHandlers = {
@@ -144,6 +144,7 @@ export type SyntheticsEventsContextType = {
   positionIncreaseEvents: PositionIncreaseEvent[] | undefined;
   positionDecreaseEvents: PositionDecreaseEvent[] | undefined;
   pendingExpressTxns: PendingExpressTxns;
+  gelatoTaskStatuses: { [taskId: string]: TaskState };
   setPendingExpressTxn: (params: PendingExpressTxnParams) => void;
   updatePendingExpressTxn: (params: Partial<PendingExpressTxnParams>) => void;
   setPendingOrder: SetPendingOrder;

@@ -33,6 +33,8 @@ import { TransactionStatus, TransactionStatusType } from "components/Transaction
 import "./StatusNotification.scss";
 import { useToastAutoClose } from "./useToastAutoClose";
 
+// eslint-disable-next-line import/order
+import { TaskState } from "@gelatonetwork/relay-sdk";
 import "./StatusNotification.scss";
 
 type Props = {
@@ -52,19 +54,27 @@ export function OrderStatusNotification({
 }: Props) {
   const { chainId } = useChainId();
   const wrappedNativeToken = getWrappedToken(chainId);
-  const { orderStatuses, setOrderStatusViewed } = useSyntheticsEvents();
+  const { orderStatuses, setOrderStatusViewed, pendingExpressTxns, gelatoTaskStatuses, updatePendingExpressTxn } =
+    useSyntheticsEvents();
   const { tenderlyAccountSlug, tenderlyProjectSlug } = useSettings();
 
   const [orderStatusKey, setOrderStatusKey] = useState<string>();
+  const [pendingExpressTxnKey, setPendingExpressTxnKey] = useState<string>();
 
   const contractOrderKey = pendingOrderData.orderKey;
   const pendingOrderKey = useMemo(() => getPendingOrderKey(pendingOrderData), [pendingOrderData]);
   const orderStatus = getByKey(orderStatuses, orderStatusKey);
 
+  const pendingExpressTxn = getByKey(pendingExpressTxns, pendingExpressTxnKey);
+
+  const isGelatoTaskFailed = useMemo(() => {
+    const status = getByKey(gelatoTaskStatuses, pendingExpressTxn?.taskId);
+
+    return status && [TaskState.Cancelled, TaskState.ExecReverted].includes(status);
+  }, [gelatoTaskStatuses, pendingExpressTxn]);
+
   const hasError =
-    orderStatus?.isGelatoTaskFailed ||
-    orderStatus?.isGelatoTaskTimeout ||
-    (Boolean(orderStatus?.cancelledTxnHash) && pendingOrderData.txnType !== "cancel");
+    isGelatoTaskFailed || (Boolean(orderStatus?.cancelledTxnHash) && pendingOrderData.txnType !== "cancel");
 
   const orderData = useMemo(() => {
     if (!marketsInfoData || !orderStatuses || !tokensData || !wrappedNativeToken) {
@@ -194,12 +204,12 @@ export function OrderStatusNotification({
 
     if (orderStatus?.createdTxnHash) {
       status = "success";
-    } else if (orderStatus?.isGelatoTaskFailed) {
+    } else if (isGelatoTaskFailed) {
       status = "error";
     }
 
     return <TransactionStatus status={status} txnHash={undefined} text={text} />;
-  }, [orderData, orderStatus]);
+  }, [orderData, orderStatus?.createdTxnHash, isGelatoTaskFailed]);
 
   const sendingStatus = useMemo(() => {
     let text = t`Sending order request`;
@@ -216,15 +226,15 @@ export function OrderStatusNotification({
       isCompleted = Boolean(orderStatus?.cancelledTxnHash);
     }
 
-    if (orderStatus?.isGelatoTaskFailed) {
+    if (isGelatoTaskFailed) {
       status = "error";
       text = t`Relayer request failed`;
       const tenderlySlugs =
         tenderlyAccountSlug && tenderlyProjectSlug
           ? `tenderlyUsername=${tenderlyAccountSlug}&tenderlyProjectName=${tenderlyProjectSlug}`
           : "";
-      txnLink = orderStatus.gelatoTaskId
-        ? `https://api.gelato.digital/tasks/status/${orderStatus?.gelatoTaskId}/debug?${tenderlySlugs}`
+      txnLink = pendingExpressTxn?.taskId
+        ? `https://api.gelato.digital/tasks/status/${pendingExpressTxn.taskId}/debug?${tenderlySlugs}`
         : undefined;
     } else if (isCompleted) {
       status = "success";
@@ -233,7 +243,17 @@ export function OrderStatusNotification({
     }
 
     return <TransactionStatus status={status} txnHash={txnHash} txnLink={txnLink} text={text} />;
-  }, [orderData?.txnType, orderStatus, tenderlyAccountSlug, tenderlyProjectSlug, hideTxLink]);
+  }, [
+    orderData?.txnType,
+    isGelatoTaskFailed,
+    orderStatus?.createdTxnHash,
+    orderStatus?.updatedTxnHash,
+    orderStatus?.cancelledTxnHash,
+    tenderlyAccountSlug,
+    tenderlyProjectSlug,
+    pendingExpressTxn?.taskId,
+    hideTxLink,
+  ]);
 
   const executionStatus = useMemo(() => {
     if (!orderData || !isMarketOrderType(orderData?.orderType)) {
@@ -293,6 +313,28 @@ export function OrderStatusNotification({
       setOrderStatusViewed,
       toastTimestamp,
     ]
+  );
+
+  useEffect(
+    function getPendingExpressTxnKey() {
+      if (pendingExpressTxnKey) {
+        return;
+      }
+
+      const matchedPendingExpressTxnKey = Object.values(pendingExpressTxns).find((pendingExpressTxn) => {
+        return (
+          pendingExpressTxn.pendingOrdersKeys?.includes(pendingOrderKey) &&
+          pendingExpressTxn.taskId &&
+          !pendingExpressTxn.isViewed
+        );
+      })?.key;
+
+      if (matchedPendingExpressTxnKey) {
+        setPendingExpressTxnKey(matchedPendingExpressTxnKey);
+        updatePendingExpressTxn({ key: matchedPendingExpressTxnKey, isViewed: true });
+      }
+    },
+    [pendingExpressTxns, pendingOrderKey, pendingExpressTxnKey, updatePendingExpressTxn]
   );
 
   return (

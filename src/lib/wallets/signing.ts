@@ -19,7 +19,12 @@ export type SignTypedDataParams = {
   domain: SignatureDomain;
 };
 
-export async function signTypedData({ signer, domain, types, typedData }: SignTypedDataParams): Promise<Hex> {
+export async function signTypedData({
+  signer,
+  domain,
+  types,
+  typedData,
+}: SignTypedDataParams): Promise<string | undefined> {
   // filter inputs
   for (const [key, value] of Object.entries(domain)) {
     if (value === undefined) {
@@ -42,7 +47,15 @@ export async function signTypedData({ signer, domain, types, typedData }: SignTy
   const primaryType = Object.keys(types).filter((t) => t !== "EIP712Domain")[0];
 
   if (signer.signTypedData) {
-    return (await signer.signTypedData(domain, types, typedData)) as Hex;
+    try {
+      return await signer.signTypedData(domain, types, typedData);
+    } catch (e) {
+      if (e.message.includes("requires a provider")) {
+        // ignore and try to send request directly to provider
+      } else {
+        return;
+      }
+    }
   }
 
   const provider = signer.provider;

@@ -19,8 +19,8 @@ import {
   selectOrderEditorSetTriggerPriceInputValue,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
+import { estimateExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useMarkets } from "domain/synthetics/markets";
-import { estimateExpressParams } from "domain/synthetics/orders/expressOrderUtils";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { calculateDisplayDecimals, formatAmount, numberToBigint } from "lib/numbers";
@@ -71,17 +71,15 @@ export function DynamicLines({
         cancelOrderParams: orderKeys.map((k) => ({ orderKey: k })),
       };
 
-      const expressParams = globalExpressParams
-        ? await estimateExpressParams({
-            signer,
-            chainId,
-            batchParams,
-            globalExpressParams,
-            requireGasPaymentTokenApproval: true,
-            estimationMethod: "approximate",
-            provider,
-          })
-        : undefined;
+      const expressParams = await estimateExpressParams({
+        signer,
+        chainId,
+        batchParams,
+        globalExpressParams,
+        requireValidations: true,
+        estimationMethod: "approximate",
+        provider,
+      });
 
       sendBatchOrderTxn({
         chainId,

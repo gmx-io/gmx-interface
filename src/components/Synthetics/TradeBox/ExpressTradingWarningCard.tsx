@@ -22,7 +22,15 @@ import IconBolt from "img/icon-bolt.svg?react";
 
 import { useExpressTradingWarnings } from "./hooks/useShowOneClickTradingInfo";
 
-export function ExpressTradingWarningCard({ expressParams }: { expressParams: ExpressTxnParams | undefined }) {
+export function ExpressTradingWarningCard({
+  expressParams,
+  payTokenAddress,
+  isWrapOrUnwrap,
+}: {
+  expressParams: ExpressTxnParams | undefined;
+  payTokenAddress: string | undefined;
+  isWrapOrUnwrap: boolean;
+}) {
   const [isVisible, setIsVisible] = useState(true);
   const updateSubaccountSettings = useSelector(selectUpdateSubaccountSettings);
   const history = useHistory();
@@ -56,7 +64,7 @@ export function ExpressTradingWarningCard({ expressParams }: { expressParams: Ex
     shouldShowExpiredSubaccountWarning,
     shouldShowNonceExpiredWarning,
     shouldShowOutOfGasPaymentBalanceWarning,
-  } = useExpressTradingWarnings({ expressParams });
+  } = useExpressTradingWarnings({ expressParams, payTokenAddress, isWrapOrUnwrap });
 
   let content: ReactNode | undefined = undefined;
   let onCloseClick: undefined | (() => void) = undefined;

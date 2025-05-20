@@ -128,11 +128,19 @@ export async function increaseOrderHelper(
   const collateralToken = tokensData[params.collateralTokenAddress];
 
   if (!fromToken) {
-    throw new Error("From token is not available");
+    throw new Error("payTokenAddress: token is not available");
   }
 
   if (!collateralToken) {
-    throw new Error("Collateral token is not available");
+    throw new Error("collateralTokenAddress: token is not available");
+  }
+
+  if (fromToken.isSynthetic) {
+    throw new Error("payTokenAddress: synthetic tokens are not supported");
+  }
+
+  if (collateralToken.isSynthetic) {
+    throw new Error("collateralTokenAddress: synthetic tokens are not supported");
   }
 
   const marketInfo = getByKey(marketsInfoData, params.marketAddress);
@@ -154,7 +162,7 @@ export async function increaseOrderHelper(
       gasPrice,
       tokensData,
     },
-    isExpressTxn: false,
+    isExpressFeeSwap: false,
   });
 
   const payOrSizeAmount = "payAmount" in params ? params.payAmount : params.sizeAmount;
@@ -281,7 +289,7 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
       gasPrice,
       tokensData,
     },
-    isExpressTxn: false,
+    isExpressFeeSwap: false,
   });
 
   const isWrapOrUnwrap = Boolean(

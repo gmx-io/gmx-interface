@@ -25,9 +25,11 @@ import {
   selectTradeboxState,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { estimateExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
-import { estimateExpressParams } from "domain/synthetics/orders/expressOrderUtils";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import type { OrderInfo } from "domain/synthetics/orders/types";
@@ -425,17 +427,15 @@ function useOrdersControl() {
         cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
       };
 
-      const expressParams = globalExpressParams
-        ? await estimateExpressParams({
-            signer,
-            provider,
-            chainId,
-            batchParams,
-            globalExpressParams,
-            requireGasPaymentTokenApproval: true,
-            estimationMethod: "approximate",
-          })
-        : undefined;
+      const expressParams = await estimateExpressParams({
+        signer,
+        chainId,
+        batchParams,
+        globalExpressParams,
+        requireValidations: true,
+        estimationMethod: "approximate",
+        provider,
+      });
 
       sendBatchOrderTxn({
         chainId,
@@ -447,8 +447,8 @@ function useOrdersControl() {
         callback: makeOrderTxnCallback({}),
       })
         .then(async (tx) => {
-          const receipt = await tx?.wait();
-          if (receipt?.status === 1) {
+          const txnResult = await tx.wait();
+          if (txnResult?.status === "success") {
             setSelectedOrderKeys(EMPTY_ARRAY);
           }
         })
@@ -484,17 +484,15 @@ function useOrdersControl() {
         cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
       };
 
-      const expressParams = globalExpressParams
-        ? await estimateExpressParams({
-            signer,
-            chainId,
-            batchParams,
-            globalExpressParams,
-            requireGasPaymentTokenApproval: true,
-            estimationMethod: "approximate",
-            provider,
-          })
-        : undefined;
+      const expressParams = await estimateExpressParams({
+        signer,
+        chainId,
+        batchParams,
+        globalExpressParams,
+        requireValidations: true,
+        estimationMethod: "approximate",
+        provider,
+      });
 
       sendBatchOrderTxn({
         chainId,

@@ -40,8 +40,8 @@ import { OPERATION_LABELS, Operation } from "./types";
 import { usePositionEditorButtonState } from "./usePositionEditorButtonState";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-
 import "./PositionEditor.scss";
+import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 
 export function PositionEditor() {
   const { chainId } = useChainId();
@@ -130,7 +130,8 @@ export function PositionEditor() {
     operation,
   });
 
-  const { text, tooltipContent, onSubmit, disabled, relayerFeeParams } = usePositionEditorButtonState(operation);
+  const { text, tooltipContent, onSubmit, disabled, expressParams, isExpressLoading } =
+    usePositionEditorButtonState(operation);
 
   useKey(
     "Enter",
@@ -200,7 +201,11 @@ export function PositionEditor() {
     nativeToken,
     fromTokenAmount: collateralDeltaAmount ?? 0n,
     fromTokenInputValue: collateralInputValue,
-    relayerFeeParams,
+    minResidualAmount:
+      expressParams?.relayFeeParams.gasPaymentTokenAddress === collateralToken?.address
+        ? expressParams?.relayFeeParams.gasPaymentTokenAmount
+        : undefined,
+    isLoading: isExpressLoading,
   });
 
   const showMaxButton = isDeposit
@@ -316,6 +321,12 @@ export function PositionEditor() {
 
               <div className="">{button}</div>
 
+              <ExpressTradingWarningCard
+                expressParams={expressParams}
+                payTokenAddress={undefined}
+                isWrapOrUnwrap={false}
+              />
+
               {!isDeposit && (
                 <SyntheticsInfoRow
                   label={t`Receive`}
@@ -349,7 +360,7 @@ export function PositionEditor() {
                 }
               />
 
-              <PositionEditorAdvancedRows operation={operation} relayerFeeParams={relayerFeeParams} />
+              <PositionEditorAdvancedRows operation={operation} relayerFeeParams={expressParams?.relayFeeParams} />
             </div>
           </>
         )}

@@ -103,6 +103,7 @@ export type MarketInfo = Market &
 
     swapFeeFactorForPositiveImpact: bigint;
     swapFeeFactorForNegativeImpact: bigint;
+    atomicSwapFeeFactor: bigint;
     swapImpactFactorPositive: bigint;
     swapImpactFactorNegative: bigint;
     swapImpactExponentFactor: bigint;

@@ -1,14 +1,23 @@
+import { TaskState } from "@gelatonetwork/relay-sdk";
 import { Address, encodePacked } from "viem";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { GelatoPollingTiming, metrics } from "lib/metrics";
 import { sleep } from "lib/sleep";
+import { gelatoRelay } from "sdk/utils/gelatoRelay";
+
+import { GelatoTaskStatus, TransactionWaiterResult } from "./types";
 
 export type ExpressTxnData = {
   callData: string;
   to: string;
   feeToken: string;
   feeAmount: bigint;
+};
+
+export type ExpressTxnResult = {
+  taskId: string;
+  wait: () => Promise<TransactionWaiterResult>;
 };
 
 export async function sendExpressTransaction(p: {
@@ -45,44 +54,26 @@ export async function sendExpressTransaction(p: {
 
 function makeExpressTxnResultWaiter(res: { taskId: string }) {
   return async () => {
-    return new Promise<TransactionResult>((resolve, reject) => {
+    return new Promise<TransactionWaiterResult>((resolve, reject) => {
       pollGelatoTask(res.taskId, async (status, error) => {
         if (error) {
           reject(error);
           return;
         }
 
-        if (!status) {
-          reject(new Error("Gelato task status not found"));
-          return;
-        }
-
-        const result: TransactionResult = {
-          status: {
-            taskId: res.taskId,
-            taskState: status?.taskState,
-            lastCheckMessage: status?.lastCheckMessage,
-            creationDate: status?.creationDate,
-            executionDate: status?.executionDate,
-            chainId: status?.chainId,
-          },
-          receipt: status?.transactionHash
-            ? {
-                transactionHash: status.transactionHash,
-                blockNumber: status.blockNumber!,
-                status: status.taskState === "ExecSuccess" ? 1 : 0,
-                gasUsed: status.gasUsed ? BigInt(status.gasUsed) : undefined,
-                effectiveGasPrice: status.effectiveGasPrice ? BigInt(status.effectiveGasPrice) : undefined,
-                chainId: status.chainId,
-                timestamp: status.executionDate ? new Date(status.executionDate).getTime() : undefined,
-              }
-            : undefined,
-        };
-
         switch (status?.taskState) {
           case "ExecSuccess":
           case "ExecReverted":
           case "Cancelled": {
+            const result: TransactionWaiterResult = {
+              transactionHash: status.transactionHash,
+              blockNumber: status?.blockNumber,
+              status: status.taskState === "ExecSuccess" ? "success" : "failed",
+              relayStatus: {
+                taskId: res.taskId,
+                taskState: status.taskState,
+              },
+            };
             resolve(result);
             break;
           }
@@ -142,52 +133,11 @@ export async function sendTxnToGelato({
     throw new Error(`Failed to call with sync fee: ${res.statusText}`);
   }
 
-  return res.json();
-}
+  const result = await res.json();
 
-type TransactionResult = {
-  status: {
-    taskId: string;
-    taskState: TaskState;
-    lastCheckMessage?: string;
-    creationDate: string;
-    executionDate?: string;
-    chainId: number;
-  };
-  receipt:
-    | {
-        transactionHash: string;
-        blockNumber: number;
-        status: number;
-        gasUsed: bigint | undefined;
-        effectiveGasPrice: bigint | undefined;
-        chainId: number;
-        timestamp: number | undefined;
-      }
-    | undefined;
-};
+  gelatoRelay.subscribeTaskStatusUpdate(result.taskId);
 
-export type GelatoTaskStatus = {
-  chainId: number;
-  taskId: string;
-  taskState: TaskState;
-  creationDate: string;
-  lastCheckDate?: string;
-  lastCheckMessage?: string;
-  transactionHash?: string;
-  blockNumber?: number;
-  executionDate?: string;
-  gasUsed?: string;
-  effectiveGasPrice?: string;
-};
-
-export enum TaskState {
-  CheckPending = "CheckPending",
-  ExecPending = "ExecPending",
-  WaitingForConfirmation = "WaitingForConfirmation",
-  ExecSuccess = "ExecSuccess",
-  ExecReverted = "ExecReverted",
-  Cancelled = "Cancelled",
+  return result;
 }
 
 const finalStatuses = [TaskState.ExecSuccess, TaskState.ExecReverted, TaskState.Cancelled];
@@ -198,6 +148,7 @@ export async function pollGelatoTask(
 ) {
   const pollInterval = 500;
   const maxAttempts = 60;
+
   let attempts = 0;
   let lastStatus: GelatoTaskStatus | undefined;
 
@@ -213,13 +164,9 @@ export async function pollGelatoTask(
       cb(status);
 
       if (finalStatuses.includes(status.taskState)) {
-        metrics.pushTiming<GelatoPollingTiming>(
-          "express.gelatoTaskFinalStatusReceived",
-          metrics.getTime(timerId) ?? 0,
-          {
-            status: status.taskState,
-          }
-        );
+        metrics.pushTiming<GelatoPollingTiming>("express.pollGelatoTask.finalStatus", metrics.getTime(timerId) ?? 0, {
+          status: status.taskState,
+        });
         return;
       }
     } catch (e) {

@@ -17,7 +17,13 @@ import { getRemainingSubaccountActions, Subaccount } from "domain/synthetics/sub
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
-import { OrderMetricId, sendOrderSimulatedMetric, sendTxnErrorMetric, sendTxnSentMetric } from "lib/metrics";
+import {
+  OrderMetricId,
+  sendOrderSimulatedMetric,
+  sendOrderTxnSubmittedMetric,
+  sendTxnErrorMetric,
+  sendTxnSentMetric,
+} from "lib/metrics";
 import { getByKey } from "lib/objects";
 import { TxnEvent, TxnEventName } from "lib/transactions";
 import { OrderInfo, OrdersInfoData } from "sdk/types/orders";
@@ -30,14 +36,14 @@ import {
   getBatchRequiredActions,
   getBatchTotalExecutionFee,
   IncreasePositionOrderParams,
-  isTwapOrderPayload,
+  getIsTwapOrderPayload,
   SwapOrderParams,
   UpdateOrderTxnParams,
 } from "sdk/utils/orderTransactions";
 
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 
-import { BatchOrderTxnCtx, GELATO_SDK_TIMEOUT_ERROR } from "./sendBatchOrderTxn";
+import { BatchOrderTxnCtx } from "./sendBatchOrderTxn";
 import { ExpressTxnParams } from "../express/types";
 
 export type CallbackUiCtx = {
@@ -110,19 +116,19 @@ export function useOrderTxnCallbacks() {
           );
 
         if (mainActionType === "create") {
-          if (pendingOrders.length > 0) {
-            setPendingOrder(pendingOrders);
-          }
-
-          if (pendingPositions.length > 0) {
-            setPendingPosition(pendingPositions[0]);
-          }
-
           if (ctx.isFundingFeeSettlement) {
             setPendingFundingFeeSettlement({
               orders: pendingOrders,
               positions: pendingPositions,
             });
+          } else {
+            if (pendingOrders.length > 0) {
+              setPendingOrder(pendingOrders);
+            }
+
+            if (pendingPositions.length > 0) {
+              setPendingPosition(pendingPositions[0]);
+            }
           }
         } else {
           if (pendingOrderUpdate) {
@@ -163,8 +169,9 @@ export function useOrderTxnCallbacks() {
             tokenPermits: expressParams.relayParamsPayload.tokenPermits,
             pendingOrdersKeys: pendingOrders.map(getPendingOrderKey),
             pendingPositionsKeys: pendingPositions.map((p) => p.positionKey),
-            taskId: undefined,
             metricId: ctx.metricId,
+            createdAt: Date.now(),
+            taskId: undefined,
             successMessage,
             errorMessage,
             key: getExpressParamsKey(expressParams),
@@ -173,16 +180,20 @@ export function useOrderTxnCallbacks() {
       };
 
       switch (e.event) {
-        case TxnEventName.Prepared: {
-          if (expressParams) {
-            handleTxnSubmitted();
+        case TxnEventName.Simulated: {
+          if (ctx.metricId) {
+            sendOrderSimulatedMetric(ctx.metricId);
           }
           return;
         }
 
-        case TxnEventName.Simulated: {
+        case TxnEventName.Sending: {
           if (ctx.metricId) {
-            sendOrderSimulatedMetric(ctx.metricId);
+            sendOrderTxnSubmittedMetric(ctx.metricId);
+          }
+
+          if (expressParams) {
+            handleTxnSubmitted();
           }
           return;
         }
@@ -196,12 +207,12 @@ export function useOrderTxnCallbacks() {
             handleTxnSubmitted();
           }
 
-          if (expressParams) {
+          if (e.data.type === "relay") {
             updatePendingExpressTxn({
-              key: getExpressParamsKey(expressParams),
-              taskId: e.data.txnHash,
+              key: expressParams ? getExpressParamsKey(expressParams) : undefined,
+              taskId: e.data.relayTaskId,
             });
-          } else {
+          } else if (e.data.type === "wallet") {
             const totalExecutionFee = tokensData
               ? getBatchTotalExecutionFee({
                   batchParams: e.data.batchParams,
@@ -211,7 +222,7 @@ export function useOrderTxnCallbacks() {
               : undefined;
 
             const pendingTxn: PendingTransaction = {
-              hash: e.data.txnHash,
+              hash: e.data.transactionHash,
               message: getOperationMessage(mainActionType, "success", actionsCount, undefined, setIsSettingsVisible),
               metricId: ctx.metricId,
               data: totalExecutionFee
@@ -230,18 +241,10 @@ export function useOrderTxnCallbacks() {
 
         case TxnEventName.Error: {
           const { error } = e.data;
-          const { metricId } = ctx;
           const errorData = parseError(error);
 
-          if (expressParams && error.message === GELATO_SDK_TIMEOUT_ERROR) {
-            updatePendingExpressTxn({
-              key: getExpressParamsKey(expressParams),
-              isTimeout: true,
-            });
-          }
-
-          if (metricId) {
-            sendTxnErrorMetric(metricId, error, errorData?.errorContext ?? "unknown");
+          if (ctx.metricId) {
+            sendTxnErrorMetric(ctx.metricId, error, errorData?.errorContext ?? "unknown");
           }
 
           const operationMessage = getOperationMessage(
@@ -310,7 +313,7 @@ export function getBatchPendingOrders(
   ordersInfoData: OrdersInfoData | undefined
 ): PendingOrderData[] {
   const createPendingOrders = txnParams.createOrderParams
-    .filter((cp) => !isTwapOrderPayload(cp.orderPayload))
+    .filter((cp) => !getIsTwapOrderPayload(cp.orderPayload))
     .map((cp) => getPendingCreateOrder(cp));
 
   const twapPendingOrders = getPendingCreateTwapOrders(txnParams.createOrderParams);
@@ -453,7 +456,7 @@ export function getPendingCreateTwapOrders(
   const ordersByUiFeeReceiver: Record<string, PendingOrderData> = {};
 
   createOrderPayloads.forEach((cp) => {
-    if (!isTwapOrderPayload(cp.orderPayload)) {
+    if (!getIsTwapOrderPayload(cp.orderPayload)) {
       return;
     }
 
@@ -560,5 +563,5 @@ function hasExternalSwap(expressParams: ExpressTxnParams | undefined, batchParam
 }
 
 function getExpressParamsKey(expressParams: ExpressTxnParams) {
-  return `${expressParams?.relayParamsPayload.deadline}:${expressParams?.relayParamsPayload.userNonce}`;
+  return `${expressParams?.relayParamsPayload.deadline}:${expressParams?.relayParamsPayload.userNonce}:${expressParams.relayFeeParams.totalNetworkFeeAmount}`;
 }

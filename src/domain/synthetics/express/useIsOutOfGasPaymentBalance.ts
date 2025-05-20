@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { getGasPaymentTokens, getRelayerFeeToken } from "sdk/configs/express";
-import { estimateMinGasPaymentTokenBalance } from "sdk/utils/fees/executionFee";
+import { estimateBatchMinGasPaymentTokenAmount } from "sdk/utils/fees/executionFee";
 
 import { useGasLimits, useGasPrice } from "../fees";
 import { useTokensDataRequest } from "../tokens";
@@ -29,7 +29,7 @@ export function useIsOutOfGasPaymentBalance() {
         return false;
       }
 
-      const minBalance = estimateMinGasPaymentTokenBalance({
+      const minBalance = estimateBatchMinGasPaymentTokenAmount({
         gasLimits,
         gasPaymentToken: token,
         relayFeeToken,
@@ -37,6 +37,10 @@ export function useIsOutOfGasPaymentBalance() {
         l1Reference,
         tokensData,
         chainId,
+        executionFeeAmount: undefined,
+        createOrdersCount: 1,
+        updateOrdersCount: 0,
+        cancelOrdersCount: 0,
       });
 
       return token.balance === undefined || token.balance < minBalance;

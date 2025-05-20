@@ -1,4 +1,4 @@
-import { TransactionRequest } from "ethers";
+import { TransactionRequest, TransactionResponse } from "ethers";
 
 import { extendError } from "lib/errors";
 import { additionalTxnErrorValidation } from "lib/errors/additionalValidation";
@@ -7,9 +7,14 @@ import { GasPriceData, getGasPrice } from "lib/gas/gasPrice";
 import { getTenderlyConfig, simulateCallDataWithTenderly } from "lib/tenderly";
 import { WalletSigner } from "lib/wallets";
 
-import { TxnCallback, TxnEventBuilder } from "./types";
+import { TransactionWaiterResult, TxnCallback, TxnEventBuilder } from "./types";
 
 export type WalletTxnCtx = {};
+
+export type WalletTxnResult = {
+  transactionHash: string;
+  wait: () => Promise<TransactionWaiterResult>;
+};
 
 export async function sendWalletTransaction({
   chainId,
@@ -56,7 +61,14 @@ export async function sendWalletTransaction({
         blockNumber: undefined,
         comment: msg,
       });
-      return;
+      return {
+        transactionHash: undefined,
+        wait: async () => ({
+          transactionHash: undefined,
+          blockNumber: undefined,
+          status: "success",
+        }),
+      };
     }
 
     const gasLimitPromise = gasLimit
@@ -78,7 +90,7 @@ export async function sendWalletTransaction({
       runSimulation?.().then(() => callback?.(eventBuilder.Simulated())),
     ]);
 
-    callback?.(eventBuilder.Prepared());
+    callback?.(eventBuilder.Sending());
 
     const txnData: TransactionRequest = {
       to,
@@ -90,8 +102,6 @@ export async function sendWalletTransaction({
       ...(gasPriceDataResult ?? {}),
     };
 
-    const createdAt = Date.now();
-
     const res = await signer.sendTransaction(txnData).catch((error) => {
       additionalTxnErrorValidation(error, chainId, signer.provider!, txnData);
 
@@ -102,16 +112,29 @@ export async function sendWalletTransaction({
 
     callback?.(
       eventBuilder.Sent({
-        txnHash: res.hash,
-        blockNumber: BigInt(await signer.provider!.getBlockNumber()),
-        createdAt,
+        type: "wallet",
+        transactionHash: res.hash,
       })
     );
 
-    return res;
+    return {
+      transactionHash: res.hash,
+      wait: makeWalletTxnResultWaiter(res.hash, res),
+    };
   } catch (error) {
     callback?.(eventBuilder.Error(error));
 
     throw error;
   }
+}
+
+function makeWalletTxnResultWaiter(hash: string, txn: TransactionResponse) {
+  return async () => {
+    const receipt = await txn.wait();
+    return {
+      transactionHash: hash,
+      blockNumber: receipt?.blockNumber,
+      status: receipt?.status === 1 ? "success" : "failed",
+    };
+  };
 }

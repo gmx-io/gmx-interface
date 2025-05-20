@@ -135,6 +135,7 @@ export function getOrderInfo(p: {
       )!,
       shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
       shouldApplyPriceImpact: true,
+      isAtomicSwap: false,
     });
 
     const priceImpactAmount = convertToTokenAmount(
@@ -228,6 +229,7 @@ export function getOrderInfo(p: {
       )!,
       shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
       shouldApplyPriceImpact: true,
+      isAtomicSwap: false,
     });
 
     const triggerThresholdType = getOrderThresholdType(order.orderType, order.isLong);

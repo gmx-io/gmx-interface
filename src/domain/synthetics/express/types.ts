@@ -2,10 +2,10 @@ import type { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesConte
 import type { SignedTokenPermit, TokensAllowanceData, TokensData } from "domain/tokens";
 import type { ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
-import type { GasLimitsConfig, L1ExpressOrderGasReference } from "../fees";
-import type { MarketsInfoData } from "../markets";
-import type { Subaccount } from "../subaccount";
-import type { FindSwapPath } from "../trade";
+import { GasLimitsConfig, L1ExpressOrderGasReference } from "../fees";
+import { MarketsInfoData } from "../markets";
+import { Subaccount, SubaccountValidations } from "../subaccount";
+import { FindSwapPath } from "../trade";
 
 export type GlobalExpressParams = {
   tokensData: TokensData;
@@ -30,8 +30,10 @@ export type ExpressTxnParams = {
   subaccount: Subaccount | undefined;
   relayParamsPayload: RelayParamsPayload | MultichainRelayParamsPayload;
   relayFeeParams: RelayerFeeParams;
-  isSponsoredCall: boolean;
   estimationMethod: ExpressParamsEstimationMethod;
+  isSponsoredCall: boolean;
+  gasPaymentValidations: GasPaymentValidations;
+  subaccountValidations: SubaccountValidations | undefined;
 };
 
 export type RelayerFeeParams = {
@@ -40,10 +42,11 @@ export type RelayerFeeParams = {
   relayerTokenAddress: string;
   relayerTokenAmount: bigint;
   totalNetworkFeeAmount: bigint;
+  relayerGasLimit: bigint;
+  l1GasLimit: bigint;
+  gasPrice: bigint;
   gasPaymentTokenAmount: bigint;
   gasPaymentTokenAddress: string;
-  isOutGasTokenBalance: boolean;
-  needGasPaymentTokenApproval: boolean;
   externalSwapGasLimit: bigint;
   noFeeSwap: boolean;
 };
@@ -77,4 +80,10 @@ export type RelayFeePayload = {
   feeToken: string;
   feeAmount: bigint;
   feeSwapPath: string[];
+};
+
+export type GasPaymentValidations = {
+  isOutGasTokenBalance: boolean;
+  needGasPaymentTokenApproval: boolean;
+  isValid: boolean;
 };

@@ -1,8 +1,8 @@
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
-import { TwapDuration } from "domain/synthetics/trade/twap/types";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { ErrorData } from "lib/errors";
 import { TradeMode } from "sdk/types/trade";
+import { TwapDuration } from "sdk/types/twap";
 
 export type GlobalMetricData = {
   isMobileMetamask: boolean;
@@ -21,6 +21,7 @@ export type GlobalMetricData = {
 export enum OrderStage {
   Submitted = "submitted",
   Simulated = "simulated",
+  Signed = "signed",
   TxnSubmitted = "txnSubmitted",
   Sent = "sent",
   Created = "created",
@@ -164,38 +165,46 @@ export type ValidationErrorEvent = {
   data: OrderMetricData & ErrorData;
 };
 
-export type OrderSentEvent = {
-  event: `${OrderMetricType}.${OrderStage.Sent}`;
-  isError: false;
-  time: number | undefined;
-  data: OrderMetricData;
+export type OrderStepTimings = {
+  timeFromSubmitted: number;
+  timeFromSimulated: number;
+  timeFromTxnSubmitted: number;
+  timeFromSent: number;
+  timeFromCreated: number;
 };
 
 export type OrderSimulatedEvent = {
   event: `${OrderMetricType}.${OrderStage.Simulated}`;
   isError: false;
   time: number;
-  data: OrderMetricData;
+  data: OrderMetricData & OrderStepTimings;
 };
 
 export type OrderTxnSubmittedEvent = {
   event: `${OrderMetricType}.${OrderStage.TxnSubmitted}`;
   isError: false;
   time: number;
-  data: OrderMetricData;
+  data: OrderMetricData & OrderStepTimings;
+};
+
+export type OrderSentEvent = {
+  event: `${OrderMetricType}.${OrderStage.Sent}`;
+  isError: false;
+  time: number | undefined;
+  data: OrderMetricData & OrderStepTimings;
 };
 
 export type OrderCreatedEvent = {
   event: `${OrderMetricType}.${OrderStage.Created}`;
   isError: false;
   time: number | undefined;
-  data: OrderMetricData;
+  data: OrderMetricData & OrderStepTimings;
 };
 
 export type OrderTxnFailedEvent = {
   event: `${OrderMetricType}.${OrderStage.Failed | OrderStage.Rejected}`;
   isError: true;
-  data: OrderMetricData & ErrorData;
+  data: Partial<OrderMetricData & ErrorData & OrderStepTimings>;
 };
 
 export type PendingTxnErrorEvent = {
@@ -252,6 +261,15 @@ export type ErrorEvent = {
   data: ErrorData;
 };
 
+export type ExpressOrderMetricData = {
+  isSponsoredCall: boolean;
+  approximateGas: number;
+  approximateL1Gas: number;
+  asyncGas: number | undefined;
+  currentGas: number;
+  currentEstimateMethod: string | undefined;
+};
+
 // Entities metric data
 export type SwapMetricData = {
   metricId: `swap:${string}`;
@@ -277,6 +295,7 @@ export type SwapMetricData = {
   duration: TwapDuration | undefined;
   partsCount: number | undefined;
   tradeMode: TradeMode | undefined;
+  expressData: ExpressOrderMetricData | undefined;
 };
 
 export type IncreaseOrderMetricData = PositionOrderMetricParams & {
@@ -336,6 +355,7 @@ export type PositionOrderMetricParams = {
   duration: TwapDuration | undefined;
   partsCount: number | undefined;
   tradeMode: TradeMode | undefined;
+  expressData: ExpressOrderMetricData | undefined;
 };
 
 export type EditCollateralMetricData = {
@@ -354,6 +374,7 @@ export type EditCollateralMetricData = {
   isLong: boolean | undefined;
   orderType: OrderType | undefined;
   executionFee: number | undefined;
+  expressData: ExpressOrderMetricData | undefined;
 };
 
 export type SwapGmMetricData = {
@@ -432,7 +453,7 @@ export type MulticallRequestTiming = {
 };
 
 export type GelatoPollingTiming = {
-  event: "express.gelatoTaskFinalStatusReceived";
+  event: "express.pollGelatoTask.finalStatus";
   data: {
     status: string;
   };

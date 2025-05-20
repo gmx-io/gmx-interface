@@ -32,3 +32,10 @@ export type SignedSubbacountApproval = SubaccountApproval & {
   signature: string;
   signedAt: number;
 };
+
+export type SubaccountValidations = {
+  isExpired: boolean;
+  isActionsExceeded: boolean;
+  isNonceExpired: boolean;
+  isValid: boolean;
+};

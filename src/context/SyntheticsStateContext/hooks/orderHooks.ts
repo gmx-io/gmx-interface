@@ -1,7 +1,7 @@
 import uniq from "lodash/uniq";
 import { useCallback, useMemo } from "react";
 
-import { estimateExpressParams } from "domain/synthetics/orders/expressOrderUtils";
+import { estimateExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useJsonRpcProvider } from "lib/rpc";
@@ -64,7 +64,7 @@ export function useCancelOrder(order: OrderInfo) {
             chainId,
             batchParams,
             globalExpressParams,
-            requireGasPaymentTokenApproval: true,
+            requireValidations: true,
             estimationMethod: "approximate",
             provider,
           })

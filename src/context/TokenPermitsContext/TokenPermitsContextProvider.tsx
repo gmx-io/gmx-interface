@@ -31,7 +31,7 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
   const { signer } = useWallet();
 
   const [tokenPermits, setTokenPermits] = useLocalStorageSerializeKey<SignedTokenPermit[]>(
-    getTokenPermitsKey(chainId),
+    getTokenPermitsKey(chainId, signer?.address),
     [],
     {
       raw: false,
