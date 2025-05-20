@@ -232,70 +232,72 @@ export function SettingsModal({
         <div className="mt-16">
           {getIsExpressSupported(chainId) && (
             <>
-              {!srcChainId && (
-                <SettingsSection>
-                  <ToggleSwitch
-                    disabled={
-                      !features?.relayRouterEnabled || (isOutOfGasPaymentBalance && !settings.expressOrdersEnabled)
-                    }
-                    isChecked={settings.expressOrdersEnabled}
-                    setIsChecked={handleExpressOrdersToggle}
-                  >
-                    <TooltipWithPortal
-                      content={
-                        <Trans>
-                          Express Trading streamlines your trades on GMX by replacing on-chain transactions with secure
-                          off-chain message signing, helping reduce issues from network congestion and RPC errors.
-                          <br />
-                          <br />
-                          These signed messages are processed on-chain for you, so a gas payment token is still
-                          required.
-                        </Trans>
+              <SettingsSection>
+                {!srcChainId && (
+                  <>
+                    <ToggleSwitch
+                      disabled={
+                        !features?.relayRouterEnabled || (isOutOfGasPaymentBalance && !settings.expressOrdersEnabled)
                       }
-                      handle={<Trans>Express Trading</Trans>}
-                    />
-                  </ToggleSwitch>
+                      isChecked={settings.expressOrdersEnabled}
+                      setIsChecked={handleExpressOrdersToggle}
+                    >
+                      <TooltipWithPortal
+                        content={
+                          <Trans>
+                            Express Trading streamlines your trades on GMX by replacing on-chain transactions with
+                            secure off-chain message signing, helping reduce issues from network congestion and RPC
+                            errors.
+                            <br />
+                            <br />
+                            These signed messages are processed on-chain for you, so a gas payment token is still
+                            required.
+                          </Trans>
+                        }
+                        handle={<Trans>Express Trading</Trans>}
+                      />
+                    </ToggleSwitch>
 
-                  {settings.expressOrdersEnabled && <ExpressTradingEnabledBanner />}
+                    {settings.expressOrdersEnabled && <ExpressTradingEnabledBanner />}
+                  </>
+                )}
 
-                  <ToggleSwitch
-                    isChecked={Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount))}
-                    setIsChecked={handleOneClickTradingToggle}
-                    disabled={
-                      !features?.subaccountRelayRouterEnabled ||
-                      (isOutOfGasPaymentBalance && !subaccountState.subaccount)
+                <ToggleSwitch
+                  isChecked={Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount))}
+                  setIsChecked={handleOneClickTradingToggle}
+                  disabled={
+                    !features?.subaccountRelayRouterEnabled || (isOutOfGasPaymentBalance && !subaccountState.subaccount)
+                  }
+                >
+                  <TooltipWithPortal
+                    content={
+                      <Trans>
+                        One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to
+                        be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or{" "}
+                        {remainingSubaccountDays} days, whichever comes first.
+                        <br />
+                        <br />
+                        You can adjust these settings anytime under "One-Click Trading Settings"
+                      </Trans>
                     }
-                  >
-                    <TooltipWithPortal
-                      content={
-                        <Trans>
-                          One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to
-                          be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or{" "}
-                          {remainingSubaccountDays} days, whichever comes first.
-                          <br />
-                          <br />
-                          You can adjust these settings anytime under "One-Click Trading Settings"
-                        </Trans>
-                      }
-                      handle={<Trans>One-Click Trading</Trans>}
-                    />
-                  </ToggleSwitch>
+                    handle={<Trans>One-Click Trading</Trans>}
+                  />
+                </ToggleSwitch>
 
-                  {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
+                {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
 
-                  {settings.expressTradingGasTokenSwitched && !isOutOfGasPaymentBalance && (
-                    <ExpressTradingGasTokenSwitchedBanner
-                      onClose={() => settings.setExpressTradingGasTokenSwitched(false)}
-                    />
-                  )}
+                {settings.expressTradingGasTokenSwitched && !isOutOfGasPaymentBalance && (
+                  <ExpressTradingGasTokenSwitchedBanner
+                    onClose={() => settings.setExpressTradingGasTokenSwitched(false)}
+                  />
+                )}
 
-                  <OldSubaccountWithdraw />
+                <OldSubaccountWithdraw />
 
-                  {Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount)) && (
-                    <OneClickAdvancedSettings />
-                  )}
-                </SettingsSection>
-              )}
+                {Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount)) && (
+                  <OneClickAdvancedSettings />
+                )}
+              </SettingsSection>
 
               {srcChainId && (
                 <SettingsSection className="mt-2">

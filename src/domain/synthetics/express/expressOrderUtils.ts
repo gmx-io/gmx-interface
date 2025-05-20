@@ -169,10 +169,8 @@ export async function estimateExpressParams({
     l1GasLimit: 0n,
     tokensData,
     gasPrice,
-    gasPaymentAllowanceData,
     forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
     tokenPermits,
-    srcChainId,
   });
 
   if (!baseRelayFeeParams) {
@@ -209,6 +207,7 @@ export async function estimateExpressParams({
       tokensData,
       relayFeeParams: baseRelayFeeParams,
       gasPaymentAllowanceData,
+      isMultichain: srcChainId !== undefined,
     });
     // In this cases simulation will fail
     if (
@@ -294,10 +293,8 @@ export async function estimateExpressParams({
     batchExternalCalls: getBatchExternalCalls(batchParams),
     feeExternalSwapQuote: undefined,
     tokensData,
-    gasPaymentAllowanceData,
     forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
     tokenPermits,
-    srcChainId,
   });
 
   if (!finalRelayFeeParams) {
@@ -324,6 +321,7 @@ export async function estimateExpressParams({
     tokenPermits,
     gasPaymentAllowanceData,
     tokensData,
+    isMultichain: srcChainId !== undefined,
   });
 
   if (requireValidations && !getIsValidExpressParams({ gasPaymentValidations, subaccountValidations })) {
@@ -357,12 +355,14 @@ export function getGasPaymentValidations({
   gasPaymentAllowanceData,
   relayFeeParams,
   tokenPermits,
+  isMultichain,
 }: {
   tokensData: TokensData;
   gasPaymentAllowanceData: TokensAllowanceData;
   relayFeeParams: RelayerFeeParams;
   batchParams: BatchOrderTxnParams;
   tokenPermits: SignedTokenPermit[];
+  isMultichain: boolean;
 }): GasPaymentValidations {
   const gasPaymentToken = getByKey(tokensData, relayFeeParams.gasPaymentTokenAddress);
   const gasPaymentTokenAmount = relayFeeParams.gasPaymentTokenAmount;
@@ -375,12 +375,9 @@ export function getGasPaymentValidations({
   const isOutGasTokenBalance =
     gasPaymentToken?.balance === undefined || totalGasPaymentTokenAmount > gasPaymentToken.balance;
 
-  const needGasPaymentTokenApproval = getNeedTokenApprove(
-    gasPaymentAllowanceData,
-    gasPaymentToken?.address,
-    totalGasPaymentTokenAmount,
-    tokenPermits
-  );
+  const needGasPaymentTokenApproval = isMultichain
+    ? false
+    : getNeedTokenApprove(gasPaymentAllowanceData, gasPaymentToken?.address, totalGasPaymentTokenAmount, tokenPermits);
 
   return {
     isOutGasTokenBalance,
@@ -512,7 +509,7 @@ export async function buildAndSignExpressBatchOrderTxn({
     subaccountApproval: subaccount?.signedApproval,
   };
 
-  let signature: Hex;
+  let signature: string;
   if (emptySignature) {
     signature = "0x";
   } else {
@@ -785,7 +782,7 @@ export async function buildAndSignBridgeOutTxn({
 
   const address = signer.address;
 
-  let signature: Hex;
+  let signature: string;
 
   if (emptySignature) {
     signature = "0x";
@@ -836,7 +833,7 @@ async function signBridgeOutPayload({
   params: IRelayUtils.BridgeOutParamsStruct;
   chainId: UiSettlementChain;
   srcChainId: UiSourceChain;
-}): Promise<Hex> {
+}): Promise<string> {
   if (relayParams.userNonce === undefined) {
     throw new Error("userNonce is required");
   }

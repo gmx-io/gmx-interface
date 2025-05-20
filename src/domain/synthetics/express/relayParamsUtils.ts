@@ -269,8 +269,8 @@ export async function getRelayRouterNonceForSigner({
 
 export async function getRelayRouterNonceForMultichain(
   provider: Provider,
-  account: Address,
-  relayRouterAddress: Address
+  account: string,
+  relayRouterAddress: string
 ) {
   if (!provider) {
     throw new Error("provider is required");

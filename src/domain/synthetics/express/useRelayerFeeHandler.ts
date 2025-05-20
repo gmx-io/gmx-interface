@@ -26,7 +26,6 @@ export type ExpressOrdersParamsResult = {
 
 export function useExpressOrdersParams({
   orderParams,
-
   label,
 }: {
   orderParams: BatchOrderTxnParams | undefined;

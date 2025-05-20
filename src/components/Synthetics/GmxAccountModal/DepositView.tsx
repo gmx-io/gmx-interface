@@ -511,7 +511,6 @@ export const DepositView = () => {
         value: (quoteSend.nativeFee as bigint) + value,
         callback: (txnEvent) => {
           if (txnEvent.event === TxnEventName.Error) {
-            // sendTxnErrorMetric(metricData.metricId, txnEvent.data.error, "sending");
             const data = txnEvent.data.error.info?.error?.data as Hex | undefined;
 
             if (data) {

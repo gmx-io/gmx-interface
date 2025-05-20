@@ -2,7 +2,7 @@ import cryptoJs from "crypto-js";
 import { ethers, Provider } from "ethers";
 import { decodeFunctionResult, encodeAbiParameters, encodeFunctionData, keccak256, maxUint256, zeroHash } from "viem";
 
-import { ARBITRUM_SEPOLIA, UiContractsChain, UiSourceChain } from "config/static/chains";
+import { UiContractsChain } from "config/static/chains";
 import {
   SignedSubbacountApproval,
   Subaccount,
@@ -341,15 +341,6 @@ export async function createAndSignSubaccountApproval(
 ): Promise<SignedSubbacountApproval> {
   let srcChainId = await getMultichainInfoFromSigner(mainAccountSigner, chainId);
 
-  if (chainId === ARBITRUM_SEPOLIA && srcChainId !== undefined) {
-    alert("Message from Midas: Currently subaccount can only be signed on Arbitrum Sepolia");
-    throw new Error("Subaccount can only be signed on Arbitrum Sepolia");
-  }
-
-  if (chainId === ARBITRUM_SEPOLIA) {
-    srcChainId = ARBITRUM_SEPOLIA as UiSourceChain;
-  }
-
   const relayRouterAddress = getOrderRelayRouterAddress(chainId, true, srcChainId !== undefined);
 
   const types = {
@@ -366,10 +357,6 @@ export async function createAndSignSubaccountApproval(
   };
 
   const domain = getGelatoRelayRouterDomain(chainId, relayRouterAddress, true, srcChainId);
-
-  if (srcChainId !== undefined) {
-    domain.chainId = chainId;
-  }
 
   const typedData = {
     subaccount: subaccountAddress,
