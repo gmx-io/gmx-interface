@@ -10,8 +10,10 @@ import { parseValue } from "utils/numbers";
 import {
   buildSwapOrderPayload,
   buildTwapOrdersPayloads,
+  CommonOrderParams,
   CreateOrderPayload,
   getIsTwapOrderPayload,
+  SwapOrderParams,
 } from "utils/orderTransactions";
 import { decodeTwapUiFeeReceiver } from "utils/twap/uiFeeReceiver";
 
@@ -45,7 +47,7 @@ describe("Swap Order Payloads", () => {
     autoCancel: false,
     externalSwapQuote: undefined,
     triggerRatio: undefined,
-  };
+  } satisfies Partial<SwapOrderParams>;
 
   const USDC = getTokenBySymbol(CHAIN_ID, "USDC");
   const WETH = getWrappedToken(CHAIN_ID);
@@ -53,7 +55,7 @@ describe("Swap Order Payloads", () => {
 
   describe("buildSwapOrderPayload", () => {
     it("Swap Native Token to ERC20", () => {
-      const params = {
+      const params: SwapOrderParams = {
         ...commonParams,
         payTokenAddress: NATIVE_TOKEN_ADDRESS,
         payTokenAmount: parseValue("1", WETH.decimals)!, // 1 ETH
@@ -118,7 +120,7 @@ describe("Swap Order Payloads", () => {
     });
 
     it("Swap ERC20 to Native Token", () => {
-      const params = {
+      const params: SwapOrderParams = {
         ...commonParams,
         payTokenAddress: USDC.address,
         payTokenAmount: parseValue("1000", USDC.decimals)!, // 1000 USDC

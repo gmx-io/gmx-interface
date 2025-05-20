@@ -36,11 +36,11 @@ import {
 import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { makeSelectFindSwapPath } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
+import { BridgeOutParams, buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
 import { getOracleParamsPayload, getOraclePriceParamsForRelayFee } from "domain/synthetics/express/oracleParamsUtils";
 import { getRelayerFeeParams, getRelayRouterNonceForMultichain } from "domain/synthetics/express/relayParamsUtils";
 import { ExpressTxnParams, MultichainRelayParamsPayload } from "domain/synthetics/express/types";
 import { callRelayTransaction, GELATO_RELAY_ADDRESS } from "domain/synthetics/gassless/txns/expressOrderDebug";
-import { BridgeOutParams, buildAndSignBridgeOutTxn } from "domain/synthetics/orders/expressOrderUtils";
 import { getSwapAmountsByToValue } from "domain/synthetics/trade/utils/swap";
 import { convertToTokenAmount, convertToUsd, TokenData } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -63,7 +63,7 @@ import {
 import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-import { ExpressTxnData, sendExpressTransaction, TaskState } from "lib/transactions/sendExpressTransaction";
+import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
 import { switchNetwork, WalletSigner } from "lib/wallets";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { abis } from "sdk/abis";
@@ -197,7 +197,7 @@ export const WithdrawView = () => {
   }, [selectedToken, inputAmount, inputAmountUsd, gmxAccountTokenBalanceUsd, sourceChainTokenBalanceUsd]);
 
   const selectFindSwapPath = useMemo(() => {
-    return makeSelectFindSwapPath(gasPaymentToken?.address, relayerFeeToken?.address, true);
+    return makeSelectFindSwapPath(gasPaymentToken?.address, relayerFeeToken?.address);
   }, [gasPaymentToken?.address, relayerFeeToken?.address]);
   const findSwapPath = useSelector(selectFindSwapPath);
 
@@ -524,7 +524,7 @@ export const WithdrawView = () => {
 
     const finalRelayFeeParams = getRelayerFeeParams({
       chainId: chainId,
-      srcChainId: srcChainId,
+      // srcChainId: srcChainId,
       account: account,
       relayerFeeTokenAmount: relayFeeAmount,
       totalNetworkFeeAmount: relayFeeAmount + networkFee,
@@ -542,9 +542,13 @@ export const WithdrawView = () => {
         refundReceivers: [],
       },
       tokensData,
-      gasPaymentAllowanceData: undefined,
       forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
     });
+
+    if (finalRelayFeeParams === undefined) {
+      helperToast.error("Failed to get relay fee params");
+      return;
+    }
 
     const finalRelayParamsPayload: MultichainRelayParamsPayload = {
       oracleParams: getOracleParamsPayload(
@@ -612,15 +616,12 @@ export const WithdrawView = () => {
     });
 
     receipt.wait().then((receipt) => {
-      if (receipt.status.taskState === TaskState.ExecSuccess) {
+      if (receipt.status === "success") {
         helperToast.success("Withdrawal successful");
-        console.log(receipt.status.taskId);
-      } else if (
-        receipt.status.taskState === TaskState.Cancelled ||
-        receipt.status.taskState === TaskState.ExecReverted
-      ) {
+        console.log(receipt.relayStatus?.taskId);
+      } else if (receipt.status === "failed") {
         helperToast.error("Withdrawal failed");
-        console.log(receipt.status.taskId);
+        console.log(receipt.relayStatus?.taskId);
       }
     });
   }, [
@@ -946,7 +947,7 @@ const selectRelayPaymentSwapPath = createSelector((q) => {
   const gasPaymentTokenAddress = q(selectGasPaymentTokenAddress);
   const relayerFeeTokenAddress = getRelayerFeeToken(chainId).address;
 
-  return q(makeSelectFindSwapPath(gasPaymentTokenAddress, relayerFeeTokenAddress, true));
+  return q(makeSelectFindSwapPath(gasPaymentTokenAddress, relayerFeeTokenAddress));
 });
 
 const selectBaseRelayParamsPayloadWithoutNonce = createSelector((q) => {
@@ -990,7 +991,6 @@ const selectBaseRelayParamsPayloadWithoutNonce = createSelector((q) => {
 
   const baseRelayFeeSwapParams = getRelayerFeeParams({
     chainId: chainId,
-    srcChainId: srcChainId,
     account: account,
     relayerFeeTokenAmount: baseRelayerFeeAmount,
     totalNetworkFeeAmount: baseRelayerFeeAmount,
@@ -1001,9 +1001,12 @@ const selectBaseRelayParamsPayloadWithoutNonce = createSelector((q) => {
     tokenPermits: [],
     batchExternalCalls: externalCalls,
     tokensData,
-    gasPaymentAllowanceData: undefined,
     forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
   });
+
+  if (baseRelayFeeSwapParams === undefined) {
+    return undefined;
+  }
 
   const baseRelayParamsPayloadWithoutNonce: Omit<MultichainRelayParamsPayload, "userNonce"> = {
     oracleParams: getOracleParamsPayload(

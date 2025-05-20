@@ -35,7 +35,7 @@ import type { MultichainSubaccountRouter } from "typechain-types-arbitrum-sepoli
 
 import { getExpressContractAddress, getGelatoRelayRouterDomain } from "../express";
 import { SubaccountOnchainData } from "./useSubaccountOnchainData";
-import { getMultichainInfoFromSigner, getOrderRelayRouterAddress } from "../orders/expressOrderUtils";
+import { getMultichainInfoFromSigner, getOrderRelayRouterAddress } from "../express/expressOrderUtils";
 
 export function getSubaccountValidations({
   requiredActions,

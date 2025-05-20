@@ -189,12 +189,6 @@ export const GAS_LIMITS_STATIC_CONFIG: Record<UiContractsChain, StaticGasLimitsC
     cancelOrderGasLimit: 700_000n,
     tokenPermitGasLimit: 90_000n,
   },
-  [AVALANCHE_FUJI]: {
-    createOrderGasLimit: 800_000n,
-    updateOrderGasLimit: 600_000n,
-    cancelOrderGasLimit: 700_000n,
-    tokenPermitGasLimit: 60_000n,
-  },
   [ARBITRUM_SEPOLIA]: {
     createOrderGasLimit: 800_000n,
     updateOrderGasLimit: 600_000n,

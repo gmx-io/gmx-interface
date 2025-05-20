@@ -12,6 +12,7 @@ import {
   buildTwapOrdersPayloads,
   CreateOrderPayload,
   getIsTwapOrderPayload,
+  IncreasePositionOrderParams,
 } from "utils/orderTransactions";
 import { decodeTwapUiFeeReceiver } from "utils/twap/uiFeeReceiver";
 
@@ -58,7 +59,7 @@ describe("Increase Order Payloads", () => {
     acceptablePrice: parseValue("1200", USD_DECIMALS)!, // $1200 base price
     triggerPrice: 0n,
     externalSwapQuote: undefined,
-  };
+  } satisfies Partial<IncreasePositionOrderParams>;
 
   describe("buildIncreaseOrderPayload", () => {
     it("Market Increase Long Pay with Native Token", () => {

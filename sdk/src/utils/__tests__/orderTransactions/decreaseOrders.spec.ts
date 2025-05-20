@@ -11,6 +11,7 @@ import {
   buildDecreaseOrderPayload,
   buildTwapOrdersPayloads,
   CreateOrderPayload,
+  DecreasePositionOrderParams,
   getIsTwapOrderPayload,
 } from "utils/orderTransactions";
 import { decodeTwapUiFeeReceiver } from "utils/twap/uiFeeReceiver";
@@ -58,7 +59,7 @@ describe("Decrease Order Payloads", () => {
     triggerPrice: 0n,
     externalSwapQuote: undefined,
     minOutputUsd: 0n,
-  };
+  } satisfies Partial<DecreasePositionOrderParams>;
 
   describe("buildDecreaseOrderPayload", () => {
     it("Market Decrease Long with Native Receive", () => {

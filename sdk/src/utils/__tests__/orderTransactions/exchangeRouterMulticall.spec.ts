@@ -10,6 +10,8 @@ import {
   buildIncreaseOrderPayload,
   buildUpdateOrderPayload,
   getBatchOrderMulticallPayload,
+  IncreasePositionOrderParams,
+  UpdateOrderParams,
 } from "utils/orderTransactions";
 
 import { MOCK_GAS_PRICE, mockExternalSwap } from "../../../test/mock";
@@ -55,7 +57,7 @@ describe("Exchange Router Multicall", () => {
     acceptablePrice: parseValue("1200", USD_DECIMALS)!, // $1200 base price
     triggerPrice: 0n,
     externalSwapQuote: undefined,
-  };
+  } satisfies Partial<IncreasePositionOrderParams>;
 
   describe("getBatchOrderMulticallPayload", () => {
     it("Token transfers with native only payment", () => {
@@ -72,7 +74,7 @@ describe("Exchange Router Multicall", () => {
         cancelOrderParams: [],
       };
 
-      const result = getBatchOrderMulticallPayload({ params: batchParams });
+      const result = getBatchOrderMulticallPayload({ chainId: commonParams.chainId, params: batchParams });
 
       expect(result.multicall).toEqual([
         {
@@ -109,7 +111,7 @@ describe("Exchange Router Multicall", () => {
         cancelOrderParams: [],
       };
 
-      const result = getBatchOrderMulticallPayload({ params: batchParams });
+      const result = getBatchOrderMulticallPayload({ chainId: commonParams.chainId, params: batchParams });
 
       expect(result.multicall).toEqual([
         {
@@ -152,7 +154,7 @@ describe("Exchange Router Multicall", () => {
         executionFeeTopUp: EXECUTION_FEE_AMOUNT,
         indexTokenAddress: WETH.address,
         validFromTime: 0n,
-      };
+      } satisfies Partial<UpdateOrderParams>;
 
       const updateOrderPayload = buildUpdateOrderPayload(updateParams);
       const batchParams = {
@@ -161,7 +163,7 @@ describe("Exchange Router Multicall", () => {
         cancelOrderParams: [],
       };
 
-      const result = getBatchOrderMulticallPayload({ params: batchParams });
+      const result = getBatchOrderMulticallPayload({ chainId: updateParams.chainId, params: batchParams });
 
       expect(result.multicall).toEqual([
         {
@@ -236,7 +238,7 @@ describe("Exchange Router Multicall", () => {
         executionFeeTopUp: EXECUTION_FEE_AMOUNT,
         indexTokenAddress: WETH.address,
         validFromTime: 0n,
-      };
+      } satisfies Partial<UpdateOrderParams>;
 
       const updateOrderPayload = buildUpdateOrderPayload(updateParams);
       const createOrderPayload1 = buildIncreaseOrderPayload(params1);
@@ -248,7 +250,7 @@ describe("Exchange Router Multicall", () => {
         cancelOrderParams: [{ orderKey: CANCEL_ORDER_KEY }],
       };
 
-      const result = getBatchOrderMulticallPayload({ params: batchParams });
+      const result = getBatchOrderMulticallPayload({ chainId: updateParams.chainId, params: batchParams });
 
       expect(result.multicall).toEqual([
         {

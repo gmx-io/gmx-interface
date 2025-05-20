@@ -19,12 +19,7 @@ export type SignTypedDataParams = {
   domain: SignatureDomain;
 };
 
-export async function signTypedData({
-  signer,
-  domain,
-  types,
-  typedData,
-}: SignTypedDataParams): Promise<string | undefined> {
+export async function signTypedData({ signer, domain, types, typedData }: SignTypedDataParams): Promise<string> {
   // filter inputs
   for (const [key, value] of Object.entries(domain)) {
     if (value === undefined) {
@@ -53,7 +48,7 @@ export async function signTypedData({
       if (e.message.includes("requires a provider")) {
         // ignore and try to send request directly to provider
       } else {
-        return;
+        throw e;
       }
     }
   }

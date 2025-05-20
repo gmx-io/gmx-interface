@@ -25,9 +25,7 @@ import {
   selectTradeboxState,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { estimateExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
