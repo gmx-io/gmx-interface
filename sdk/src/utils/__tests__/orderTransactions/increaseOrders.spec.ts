@@ -388,7 +388,7 @@ describe("Increase Order Payloads", () => {
           externalCalls: {
             externalCallDataList: ["0x1"],
             externalCallTargets: ["0x6352a56caadC4F1E25CD6c75970Fa768A3304e64"],
-            refundReceivers: [RECEIVER, RECEIVER, RECEIVER],
+            refundReceivers: [RECEIVER, RECEIVER],
             refundTokens: [WETH.address, USDC.address],
             sendAmounts: [parseValue("1", WETH.decimals)!],
             sendTokens: [WETH.address],
@@ -471,7 +471,7 @@ describe("Increase Order Payloads", () => {
           externalCalls: {
             externalCallDataList: ["0x1"],
             externalCallTargets: ["0x6352a56caadC4F1E25CD6c75970Fa768A3304e64"],
-            refundReceivers: [RECEIVER, RECEIVER, RECEIVER],
+            refundReceivers: [RECEIVER, RECEIVER],
             refundTokens: [USDC.address, WETH.address],
             sendAmounts: [parseValue("1000", USDC.decimals)!],
             sendTokens: [USDC.address],
