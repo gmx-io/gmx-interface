@@ -27,8 +27,8 @@ export type SubaccountState = {
   subaccount: Subaccount | undefined;
   updateSubaccountSettings: (params: { nextRemainigActions?: bigint; nextRemainingSeconds?: bigint }) => Promise<void>;
   resetSubaccountApproval: () => void;
-  tryEnableSubaccount: () => Promise<true | undefined>;
-  tryDisableSubaccount: () => Promise<void>;
+  tryEnableSubaccount: () => Promise<boolean>;
+  tryDisableSubaccount: () => Promise<boolean>;
   refreshSubaccountData: () => void;
 };
 
@@ -134,7 +134,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
   const tryEnableSubaccount = useCallback(async () => {
     if (!signer?.provider) {
-      return;
+      return false;
     }
 
     let config = subaccountConfig;
@@ -160,7 +160,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           </StatusNotification>
         );
         metrics.pushError(error, "subaccount.generateSubaccount");
-        return;
+        return false;
       }
     }
 
@@ -178,7 +178,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
       metrics.pushError(error, "subaccount.missedSubaccountConfigAfterGeneration");
       resetStoredConfig();
-      return;
+      return false;
     }
 
     try {
@@ -214,13 +214,13 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           <TransactionStatus status="error" text={t`Failed to sign approval`} />
         </StatusNotification>
       );
-      return;
+      return false;
     }
   }, [signer, subaccountConfig, setSubaccountConfig, resetStoredConfig, chainId, setSignedApproval]);
 
   const tryDisableSubaccount = useCallback(async () => {
     if (!signer || !subaccount?.address) {
-      return;
+      return false;
     }
 
     helperToast.success(
@@ -241,6 +241,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       resetStoredApproval();
       resetStoredConfig();
       refreshSubaccountData();
+      return true;
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -250,6 +251,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           <TransactionStatus status="error" text={t`Failed to deactivate`} />
         </StatusNotification>
       );
+      return false;
     }
   }, [signer, subaccount, chainId, resetStoredApproval, resetStoredConfig, refreshSubaccountData]);
 

@@ -140,16 +140,27 @@ export function SettingsModal({
 
   const handleExpressOrdersToggle = (enabled: boolean) => {
     settings.setExpressOrdersEnabled(enabled);
+
     if (!enabled && subaccountState.subaccount) {
-      subaccountState.tryDisableSubaccount().catch(() => {
-        settings.setExpressOrdersEnabled(true);
+      subaccountState.tryDisableSubaccount().then((success) => {
+        if (success) {
+          settings.setExpressOrdersEnabled(false);
+        } else {
+          settings.setExpressOrdersEnabled(true);
+        }
       });
     }
   };
 
   const handleOneClickTradingToggle = (enabled: boolean) => {
     if (enabled) {
-      subaccountState.tryEnableSubaccount();
+      subaccountState.tryEnableSubaccount().then((success) => {
+        if (success) {
+          settings.setExpressOrdersEnabled(true);
+        } else {
+          settings.setExpressOrdersEnabled(false);
+        }
+      });
     } else {
       subaccountState.tryDisableSubaccount();
     }

@@ -895,12 +895,14 @@ function getOrderStepTimings(metricId: OrderMetricId, step: OrderStage) {
     [OrderStage.Created]: `${metricId}.created`,
   };
 
+  const clear = step === OrderStage.Created || step === OrderStage.Failed;
+
   const currentTimings: OrderStepTimings = {
-    timeFromSubmitted: metrics.getTime(timingIds[OrderStage.Submitted]) ?? 0,
-    timeFromSimulated: metrics.getTime(timingIds[OrderStage.Simulated]) ?? 0,
-    timeFromTxnSubmitted: metrics.getTime(timingIds[OrderStage.TxnSubmitted]) ?? 0,
-    timeFromSent: metrics.getTime(timingIds[OrderStage.Sent]) ?? 0,
-    timeFromCreated: metrics.getTime(timingIds[OrderStage.Created]) ?? 0,
+    timeFromSubmitted: metrics.getTime(timingIds[OrderStage.Submitted], clear) ?? 0,
+    timeFromSimulated: metrics.getTime(timingIds[OrderStage.Simulated], clear) ?? 0,
+    timeFromTxnSubmitted: metrics.getTime(timingIds[OrderStage.TxnSubmitted], clear) ?? 0,
+    timeFromSent: metrics.getTime(timingIds[OrderStage.Sent], clear) ?? 0,
+    timeFromCreated: metrics.getTime(timingIds[OrderStage.Created], clear) ?? 0,
   };
 
   const timerToStart = timingIds[step];
