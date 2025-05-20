@@ -1005,11 +1005,6 @@ msgstr "Обмен на 1inch"
 msgid "Open {0} in Coingecko"
 msgstr "Открыть {0} в Coingecko"
 
-#: src/components/Synthetics/GmList/GlvList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "Graph showing performance vs benchmark for the selected period."
-#~ msgstr ""
-
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 msgid "Buy {operationTokenSymbol}"
 msgstr ""
@@ -1386,11 +1381,6 @@ msgstr ""
 msgid "Leftover position below 10 USD"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
-#~ msgid "Dashboard"
-#~ msgstr "Панель"
-
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>."
 msgstr ""
@@ -1597,10 +1587,6 @@ msgstr "NFT Кошелёк"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals Voting page"
 msgstr "Страница Голосования по предложениям GMX"
-
-#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#~ msgid "Fees and Price Impact"
-#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can buy ETH directly on <0>Arbitrum</0> using these options:"
@@ -2140,10 +2126,6 @@ msgstr "Вы получите не менее {0} {1}, если этот орд�
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Direct exposure to tokens"
 msgstr ""
-
-#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
-#~ msgid "This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps from the included markets. Backed by WETH and USDC."
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Limit order creation failed."
@@ -3020,10 +3002,6 @@ msgstr ""
 msgid "Order creation failed."
 msgstr ""
 
-#: src/components/Synthetics/GmList/GlvList.tsx
-#~ msgid "Yield-optimized vaults supporting trading across multiple GMX markets"
-#~ msgstr ""
-
 #: src/components/Synthetics/MissedCoinsHint/MissedCoinsHint.tsx
 msgid "Can’t find the coin you need? Let us know"
 msgstr ""
@@ -3484,10 +3462,6 @@ msgstr ""
 msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please choose a different pool or reduce the buy size."
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-#~ msgid "Wallet {daysConsidered}d accrued Fees"
-#~ msgstr ""
-
 #: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High External Swap Impact"
 msgstr ""
@@ -3644,11 +3618,6 @@ msgstr "PnL"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Increase"
 msgstr "Увеличение рынка"
-
-#: src/components/Synthetics/GmList/GlvList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "Pools returns in comparison to the benchmark, which is based on UNI V2-style rebalancing of the long-short token in the corresponding GM or GLV.\""
-#~ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Include PnL in leverage display"
@@ -4566,10 +4535,6 @@ msgstr ""
 msgid "GMX (Portuguese)"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-#~ msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APY."
-#~ msgstr ""
-
 #: src/pages/Earn/TotalRewardsCard.tsx
 msgid "<0>Stake GMX</0> and earn {gmxAvgAprText} APR"
 msgstr ""
@@ -4847,10 +4812,6 @@ msgstr ""
 msgid "Reason: {0}"
 msgstr "Причина: {0}"
 
-#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-#~ msgid "Wallet total accrued Fees"
-#~ msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -4907,10 +4868,6 @@ msgstr ""
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Invalid NFT Address"
 msgstr "Неверный адрес NFT"
-
-#: src/pages/Pools/PoolsTimeRangeFilter.tsx
-#~ msgid "Last 90 days"
-#~ msgstr ""
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LIQ."
@@ -5569,10 +5526,6 @@ msgstr ""
 msgid "Market Decrease"
 msgstr "Уменьшение рынка"
 
-#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-#~ msgid "Wallet 365d expected Fees"
-#~ msgstr ""
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Governance Alerts"
 msgstr ""
@@ -6212,10 +6165,6 @@ msgstr "Экосистема"
 #: src/components/Exchange/SwapBox.jsx
 msgid "High USDG Slippage, Long Anyway"
 msgstr "Высокое Скольжение USDG, Лонг в Любом случае"
-
-#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-#~ msgid "Wallet total"
-#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
@@ -7088,10 +7037,6 @@ msgstr ""
 msgid "Staking..."
 msgstr "Размещение стакинга..."
 
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "GM Pool"
-#~ msgstr ""
-
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Buy request sent"
 msgstr ""
@@ -7198,10 +7143,6 @@ msgstr "Запрос выполнен!"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
 msgstr ""
-
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "Pools allowing provision of liquidity including single and native asset opportunities"
-#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -8150,10 +8091,6 @@ msgstr ""
 #: src/components/Exchange/OrdersList.jsx
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 msgstr "Цена, по которой может быть исполнен ордер, может немного отличаться от цены на графике, поскольку рыночные ордера могут изменять цену, а лимитные/триггерные ордера - нет."
-
-#: src/components/Synthetics/GmList/GlvList.tsx
-#~ msgid "GLV Vault"
-#~ msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 msgid "Claims History"
