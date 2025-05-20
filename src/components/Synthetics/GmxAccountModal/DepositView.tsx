@@ -512,7 +512,7 @@ export const DepositView = () => {
         callback: (txnEvent) => {
           if (txnEvent.event === TxnEventName.Error) {
             // sendTxnErrorMetric(metricData.metricId, txnEvent.data.error, "sending");
-            const data = txnEvent.data.error.data as Hex | undefined;
+            const data = txnEvent.data.error.info?.error?.data as Hex | undefined;
 
             if (data) {
               const error = decodeErrorResult({
