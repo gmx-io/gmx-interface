@@ -85,6 +85,7 @@ export type PendingExpressTxnParams = {
   metricId?: OrderMetricId;
   successMessage?: ReactNode;
   errorMessage?: ReactNode;
+  isViewed?: boolean;
 };
 
 export type ExpressHandlers = {

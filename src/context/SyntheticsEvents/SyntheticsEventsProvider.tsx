@@ -1105,9 +1105,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     glvAndGmMarketsData,
   ]);
 
-  const expressHandler = useRef<any>();
-
-  expressHandler.current = useEffect(() => {
+  useEffect(() => {
     const handler = async (taskStatus) => {
       if (isDevelopment()) {
         const { accountSlug, projectSlug } = getTenderlyAccountParams();
@@ -1122,20 +1120,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         case TaskState.ExecReverted:
         case TaskState.Cancelled: {
           gelatoRelay.unsubscribeTaskStatusUpdate(taskStatus.taskId);
-
-          if (taskStatus.taskState === TaskState.Cancelled) {
-            // Use setter to get most recent data
-            setPendingExpressTxnParams((old) => {
-              const metricId = Object.values(old).find(
-                (pendingExpressTxn) => pendingExpressTxn.taskId === taskStatus.taskId
-              )?.metricId;
-
-              sendTxnErrorMetric(metricId, new Error("Gelato task cancelled"), "relayer");
-
-              return old;
-            });
-          }
-
           setGelatoTaskStatuses((old) => setByKey(old, taskStatus.taskId, taskStatus.taskState));
           break;
         }
@@ -1150,6 +1134,36 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       gelatoRelay.offTaskStatusUpdate(handler);
     };
   }, []);
+
+  useEffect(
+    function notifyPendingExpressTxn() {
+      Object.values(pendingExpressTxnParams).forEach((pendingExpressTxn) => {
+        if (
+          !pendingExpressTxn.isViewed &&
+          pendingExpressTxn.taskId &&
+          gelatoTaskStatuses[pendingExpressTxn.taskId] &&
+          pendingExpressTxn.successMessage
+        ) {
+          const status = gelatoTaskStatuses[pendingExpressTxn.taskId];
+
+          if (status === TaskState.ExecSuccess) {
+            helperToast.success(pendingExpressTxn.successMessage);
+          }
+
+          if (status === TaskState.ExecReverted || status === TaskState.Cancelled) {
+            const metricId = pendingExpressTxn?.metricId;
+
+            sendTxnErrorMetric(metricId, new Error("Gelato task cancelled"), "relayer");
+
+            helperToast.error(pendingExpressTxn.errorMessage);
+          }
+
+          setPendingExpressTxnParams((old) => updateByKey(old, pendingExpressTxn.key, { isViewed: true }));
+        }
+      });
+    },
+    [gelatoTaskStatuses, pendingExpressTxnParams]
+  );
 
   return <SyntheticsEventsContext.Provider value={contextState}>{children}</SyntheticsEventsContext.Provider>;
 }

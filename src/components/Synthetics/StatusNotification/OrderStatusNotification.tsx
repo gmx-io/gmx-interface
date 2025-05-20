@@ -54,25 +54,18 @@ export function OrderStatusNotification({
 }: Props) {
   const { chainId } = useChainId();
   const wrappedNativeToken = getWrappedToken(chainId);
-  const { orderStatuses, setOrderStatusViewed, pendingExpressTxns, gelatoTaskStatuses } = useSyntheticsEvents();
+  const { orderStatuses, setOrderStatusViewed, pendingExpressTxns, gelatoTaskStatuses, updatePendingExpressTxn } =
+    useSyntheticsEvents();
   const { tenderlyAccountSlug, tenderlyProjectSlug } = useSettings();
 
   const [orderStatusKey, setOrderStatusKey] = useState<string>();
+  const [pendingExpressTxnKey, setPendingExpressTxnKey] = useState<string>();
 
   const contractOrderKey = pendingOrderData.orderKey;
   const pendingOrderKey = useMemo(() => getPendingOrderKey(pendingOrderData), [pendingOrderData]);
   const orderStatus = getByKey(orderStatuses, orderStatusKey);
 
-  const pendingExpressTxn = useMemo(() => {
-    // Pending order keys may have collisions so we take the last suitable pendingExpressTxn
-    return Object.values(pendingExpressTxns)
-      .filter((pendingExpressTxn) => {
-        return pendingExpressTxn.pendingOrdersKeys?.includes(pendingOrderKey);
-      })
-      .sort((a, b) => {
-        return b.createdAt - a.createdAt;
-      })[0];
-  }, [pendingExpressTxns, pendingOrderKey]);
+  const pendingExpressTxn = getByKey(pendingExpressTxns, pendingExpressTxnKey);
 
   const isGelatoTaskFailed = useMemo(() => {
     const status = getByKey(gelatoTaskStatuses, pendingExpressTxn?.taskId);
@@ -320,6 +313,28 @@ export function OrderStatusNotification({
       setOrderStatusViewed,
       toastTimestamp,
     ]
+  );
+
+  useEffect(
+    function getPendingExpressTxnKey() {
+      if (pendingExpressTxnKey) {
+        return;
+      }
+
+      const matchedPendingExpressTxnKey = Object.values(pendingExpressTxns).find((pendingExpressTxn) => {
+        return (
+          pendingExpressTxn.pendingOrdersKeys?.includes(pendingOrderKey) &&
+          pendingExpressTxn.taskId &&
+          !pendingExpressTxn.isViewed
+        );
+      })?.key;
+
+      if (matchedPendingExpressTxnKey) {
+        setPendingExpressTxnKey(matchedPendingExpressTxnKey);
+        updatePendingExpressTxn({ key: matchedPendingExpressTxnKey, isViewed: true });
+      }
+    },
+    [pendingExpressTxns, pendingOrderKey, pendingExpressTxnKey, updatePendingExpressTxn]
   );
 
   return (

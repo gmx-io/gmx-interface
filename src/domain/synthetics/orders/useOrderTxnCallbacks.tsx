@@ -169,9 +169,9 @@ export function useOrderTxnCallbacks() {
             tokenPermits: expressParams.relayParamsPayload.tokenPermits,
             pendingOrdersKeys: pendingOrders.map(getPendingOrderKey),
             pendingPositionsKeys: pendingPositions.map((p) => p.positionKey),
-            taskId: undefined,
             metricId: ctx.metricId,
             createdAt: Date.now(),
+            taskId: undefined,
             successMessage,
             errorMessage,
             key: getExpressParamsKey(expressParams),
@@ -563,5 +563,5 @@ function hasExternalSwap(expressParams: ExpressTxnParams | undefined, batchParam
 }
 
 function getExpressParamsKey(expressParams: ExpressTxnParams) {
-  return `${expressParams?.relayParamsPayload.deadline}:${expressParams?.relayParamsPayload.userNonce}`;
+  return `${expressParams?.relayParamsPayload.deadline}:${expressParams?.relayParamsPayload.userNonce}:${expressParams.relayFeeParams.totalNetworkFeeAmount}`;
 }
