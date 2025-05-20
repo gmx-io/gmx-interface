@@ -1,15 +1,19 @@
 import useSWR from "swr";
-import { Address, StateOverride, toHex, zeroAddress } from "viem";
+import { AbiItemArgs, Address, StateOverride, toHex, zeroAddress } from "viem";
 import { useAccount, usePublicClient } from "wagmi";
 
+import type { UiSettlementChain, UiSourceChain } from "config/chains";
 import { tryGetContract } from "config/contracts";
 import {
   getStargateEndpointId,
   getStargatePoolAddress,
   OVERRIDE_ERC20_BYTECODE,
 } from "context/GmxAccountContext/config";
-import { useGmxAccountDepositViewTokenAddress, useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
+import { useGmxAccountDepositViewTokenAddress } from "context/GmxAccountContext/hooks";
+import { useChainId } from "lib/chains";
+import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { abis } from "sdk/abis";
+import { layerZeroProviderAbi } from "wagmi-generated";
 
 import { CodecUiHelper, OFTComposeMsgCodec } from "components/Synthetics/GmxAccountModal/OFTComposeMsgCodec";
 
@@ -24,106 +28,97 @@ import { CodecUiHelper, OFTComposeMsgCodec } from "components/Synthetics/GmxAcco
 // 139k       | failed (from estimated - 20%) |
 // 122k       | failed (from estimated - 30%) |
 
-const FALLBACK_COMPOSE_GAS = 200_000n;
-
 export function useMultichainDepositNetworkComposeGas(): {
   composeGas: bigint | undefined;
 } {
-  const [settlementChainId] = useGmxAccountSettlementChainId();
-  const { chainId: walletChainId } = useAccount();
+  const { chainId, srcChainId } = useChainId();
   const [depositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
   const { address: account } = useAccount();
-  const settlementChainPublicClient = usePublicClient({ chainId: settlementChainId });
+  const settlementChainPublicClient = usePublicClient({ chainId });
 
   const fakeInputAmount = 1n * 10n ** 18n;
   const composeGasQueryCondition =
     settlementChainPublicClient &&
     account &&
-    walletChainId &&
+    srcChainId &&
     depositViewTokenAddress &&
-    getStargatePoolAddress(settlementChainId, depositViewTokenAddress) !== undefined &&
-    tryGetContract(settlementChainId, "LayerZeroProvider") !== undefined &&
-    walletChainId !== settlementChainId;
+    getStargatePoolAddress(chainId, depositViewTokenAddress) !== undefined &&
+    tryGetContract(chainId, "LayerZeroProvider") !== undefined &&
+    srcChainId !== (chainId as UiSourceChain);
   const composeGasQuery = useSWR<bigint | undefined>(
-    composeGasQueryCondition
-      ? ["composeGas", account, settlementChainId, walletChainId, depositViewTokenAddress]
-      : null,
+    composeGasQueryCondition ? ["composeGas", account, chainId, srcChainId, depositViewTokenAddress] : null,
     {
       fetcher: async () => {
         if (!composeGasQueryCondition) {
           return undefined;
         }
 
-        const composeFromWithMsg = CodecUiHelper.composeMessage(settlementChainId, account, walletChainId);
+        const composeFromWithMsg = CodecUiHelper.composeMessage(chainId as UiSettlementChain, account, srcChainId);
 
-        try {
-          const settlementChainEndpointId = getStargateEndpointId(settlementChainId);
-          const sourceChainEndpointId = getStargateEndpointId(walletChainId);
+        const settlementChainEndpointId = getStargateEndpointId(chainId);
+        const sourceChainEndpointId = getStargateEndpointId(srcChainId);
 
-          if (!settlementChainEndpointId) {
-            throw new Error("Stargate endpoint ID not found");
-          }
-
-          if (!sourceChainEndpointId) {
-            throw new Error("Stargate endpoint ID not found");
-          }
-
-          const message = OFTComposeMsgCodec.encode(0, settlementChainEndpointId, fakeInputAmount, composeFromWithMsg);
-
-          const stargatePool = getStargatePoolAddress(settlementChainId, depositViewTokenAddress);
-
-          if (!stargatePool) {
-            throw new Error("Stargate pool not found");
-          }
-
-          const address = tryGetContract(settlementChainId, "LayerZeroProvider")!;
-
-          if (!address) {
-            throw new Error("LayerZero provider not found");
-          }
-
-          const stateOverride: StateOverride = [];
-
-          if (depositViewTokenAddress !== zeroAddress) {
-            const stateOverrideForErc20: StateOverride[number] = {
-              address: depositViewTokenAddress as Address,
-              code: OVERRIDE_ERC20_BYTECODE,
-            };
-            stateOverride.push(stateOverrideForErc20);
-          } else {
-            const stateOverrideForNative: StateOverride[number] = {
-              address,
-              balance: fakeInputAmount * 10n,
-            };
-            stateOverride.push(stateOverrideForNative);
-          }
-
-          const gas = await settlementChainPublicClient.estimateContractGas({
-            address,
-            abi: abis.LayerZeroProviderArbitrumSepolia,
-            functionName: "lzCompose",
-            args: [
-              // From
-              stargatePool,
-              // Guid
-              toHex(0, { size: 32 }),
-              // Message
-              message,
-              // Executor
-              zeroAddress,
-              // Extra Data
-              "0x",
-            ],
-            account: CodecUiHelper.getLzEndpoint(settlementChainId),
-            stateOverride,
-          });
-
-          return (gas * 11n) / 10n; // +10%
-        } catch (error) {
-          console.log("Error composing gas for deposit", error);
-
-          return FALLBACK_COMPOSE_GAS;
+        if (!settlementChainEndpointId) {
+          throw new Error("Stargate endpoint ID not found");
         }
+
+        if (!sourceChainEndpointId) {
+          throw new Error("Stargate endpoint ID not found");
+        }
+
+        const message = OFTComposeMsgCodec.encode(0, settlementChainEndpointId, fakeInputAmount, composeFromWithMsg);
+
+        const stargatePool = getStargatePoolAddress(chainId, depositViewTokenAddress);
+
+        if (!stargatePool) {
+          throw new Error("Stargate pool not found");
+        }
+
+        const address = tryGetContract(chainId, "LayerZeroProvider")!;
+
+        if (!address) {
+          throw new Error("LayerZero provider not found");
+        }
+
+        const stateOverride: StateOverride = [];
+
+        if (depositViewTokenAddress !== zeroAddress) {
+          const stateOverrideForErc20: StateOverride[number] = {
+            address: depositViewTokenAddress as Address,
+            code: OVERRIDE_ERC20_BYTECODE,
+          };
+          stateOverride.push(stateOverrideForErc20);
+        } else {
+          const stateOverrideForNative: StateOverride[number] = {
+            address,
+            balance: fakeInputAmount * 10n,
+          };
+          stateOverride.push(stateOverrideForNative);
+        }
+
+        const args: AbiItemArgs<typeof layerZeroProviderAbi, "lzCompose"> = [
+          // From
+          stargatePool,
+          // Guid
+          toHex(0, { size: 32 }),
+          // Message
+          message,
+          // Executor
+          zeroAddress,
+          // Extra Data
+          "0x",
+        ];
+
+        const gas = await settlementChainPublicClient.estimateContractGas({
+          address,
+          abi: abis.LayerZeroProviderArbitrumSepolia,
+          functionName: "lzCompose",
+          args,
+          account: CodecUiHelper.getLzEndpoint(chainId),
+          stateOverride,
+        });
+
+        return applyGasLimitBuffer(gas);
       },
       refreshInterval: 5000,
     }

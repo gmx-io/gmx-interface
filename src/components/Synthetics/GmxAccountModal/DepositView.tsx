@@ -21,6 +21,7 @@ import {
   getMappedTokenId,
   getStargateEndpointId,
   isSettlementChain,
+  isSourceChain,
 } from "context/GmxAccountContext/config";
 import {
   // useGmxAccountDepositViewChain,
@@ -190,13 +191,11 @@ export const DepositView = () => {
       ? getContract(settlementChainId, "SyntheticsRouter")
       : selectedTokenSourceChainTokenId?.stargate;
 
-  const tokensAllowanceResult = useTokensAllowanceData(
-    srcChainId !== undefined && depositViewTokenAddress !== zeroAddress ? settlementChainId : undefined,
-    {
-      spenderAddress,
-      tokenAddresses: selectedTokenSourceChainTokenId ? [selectedTokenSourceChainTokenId.address] : [],
-    }
-  );
+  const tokensAllowanceResult = useTokensAllowanceData(srcChainId, {
+    spenderAddress,
+    tokenAddresses: selectedTokenSourceChainTokenId ? [selectedTokenSourceChainTokenId.address] : [],
+    skip: srcChainId === undefined,
+  });
   const tokensAllowanceData = srcChainId !== undefined ? tokensAllowanceResult.tokensAllowanceData : undefined;
 
   const needTokenApprove = getNeedTokenApprove(
@@ -812,6 +811,9 @@ export function getSendParamsWithoutSlippage({
     if (srcChainId === undefined) {
       throw new Error("Source chain is not supported");
     }
+    if (!isSourceChain(srcChainId)) {
+      throw new Error("Source chain is not supported");
+    }
     composeMsg = CodecUiHelper.encodeDepositMessage(account, srcChainId);
     const builder = Options.newOptions();
     extraOptions = builder.addExecutorComposeOption(0, composeGas!, 0).toHex();
@@ -825,8 +827,8 @@ export function getSendParamsWithoutSlippage({
     to,
     amountLD: inputAmount,
     minAmountLD: 0n,
-    extraOptions: extraOptions,
-    composeMsg: composeMsg,
+    extraOptions,
+    composeMsg,
     oftCmd: oftCmd.toBytes(),
   };
 

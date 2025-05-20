@@ -367,6 +367,7 @@ export const CONTRACTS = {
     MultichainGlvRouter: "0x2940350e03f037a421db48A2DDC2b3B5Da7872eF",
     MultichainGmRouter: "0xebA43d53eC17919415da7CA3bbB2D092C3d21104",
     MultichainOrderRouter: "0xe7Cf2fA8cA07b8d6Ea359F779CCF6BF8A968880F",
+    MultichainReceiver: "0x5388cf220045a02A48C3B3F07612800e8016961b",
     MultichainSubaccountRouter: "0x445fc630369ACb21D2Cf0BccB61a0916357C54E7",
     MultichainTransferRouter: "0xDc96559b010EBf4C2b546e475d6549124Ec3Cf5c",
     MultichainUtils: "0x33D31DD9E76A9170db1500F8E6Ac8F4E55336F46",
@@ -422,6 +423,7 @@ export const CONTRACTS = {
 
     Multicall: "0xA115146782b7143fAdB3065D86eACB54c169d092",
     NATIVE_TOKEN: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
+    LayerZeroEndpoint: "0x6EDCE65403992e310A62460808c4b910D972f10f",
     GLP: zeroAddress,
     GMX: zeroAddress,
     ES_GMX: zeroAddress,
