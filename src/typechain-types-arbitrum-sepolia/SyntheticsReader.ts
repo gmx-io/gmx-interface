@@ -701,6 +701,7 @@ export declare namespace MarketPoolValueInfo {
     totalBorrowingFees: BigNumberish;
     borrowingFeePoolFactor: BigNumberish;
     impactPoolAmount: BigNumberish;
+    lentImpactPoolAmount: BigNumberish;
   };
 
   export type PropsStructOutput = [
@@ -715,6 +716,7 @@ export declare namespace MarketPoolValueInfo {
     totalBorrowingFees: bigint,
     borrowingFeePoolFactor: bigint,
     impactPoolAmount: bigint,
+    lentImpactPoolAmount: bigint,
   ] & {
     poolValue: bigint;
     longPnl: bigint;
@@ -727,6 +729,7 @@ export declare namespace MarketPoolValueInfo {
     totalBorrowingFees: bigint;
     borrowingFeePoolFactor: bigint;
     impactPoolAmount: bigint;
+    lentImpactPoolAmount: bigint;
   };
 }
 
@@ -1001,7 +1004,15 @@ export interface SyntheticsReaderInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getExecutionPrice",
-    values: [AddressLike, AddressLike, Price.PropsStruct, BigNumberish, BigNumberish, BigNumberish, boolean]
+    values: [
+      AddressLike,
+      AddressLike,
+      MarketUtils.MarketPricesStruct,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      boolean,
+    ]
   ): string;
   encodeFunctionData(functionFragment: "getMarket", values: [AddressLike, AddressLike]): string;
   encodeFunctionData(functionFragment: "getMarketBySalt", values: [AddressLike, BytesLike]): string;
@@ -1197,7 +1208,7 @@ export interface SyntheticsReader extends BaseContract {
     [
       dataStore: AddressLike,
       marketKey: AddressLike,
-      indexTokenPrice: Price.PropsStruct,
+      prices: MarketUtils.MarketPricesStruct,
       positionSizeInUsd: BigNumberish,
       positionSizeInTokens: BigNumberish,
       sizeDeltaUsd: BigNumberish,
@@ -1464,7 +1475,7 @@ export interface SyntheticsReader extends BaseContract {
     [
       dataStore: AddressLike,
       marketKey: AddressLike,
-      indexTokenPrice: Price.PropsStruct,
+      prices: MarketUtils.MarketPricesStruct,
       positionSizeInUsd: BigNumberish,
       positionSizeInTokens: BigNumberish,
       sizeDeltaUsd: BigNumberish,

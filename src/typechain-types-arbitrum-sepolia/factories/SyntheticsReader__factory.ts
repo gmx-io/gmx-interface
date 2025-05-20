@@ -1225,18 +1225,59 @@ const _abi = [
       {
         components: [
           {
-            internalType: "uint256",
-            name: "min",
-            type: "uint256",
+            components: [
+              {
+                internalType: "uint256",
+                name: "min",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "max",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct Price.Props",
+            name: "indexTokenPrice",
+            type: "tuple",
           },
           {
-            internalType: "uint256",
-            name: "max",
-            type: "uint256",
+            components: [
+              {
+                internalType: "uint256",
+                name: "min",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "max",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct Price.Props",
+            name: "longTokenPrice",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "uint256",
+                name: "min",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "max",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct Price.Props",
+            name: "shortTokenPrice",
+            type: "tuple",
           },
         ],
-        internalType: "struct Price.Props",
-        name: "indexTokenPrice",
+        internalType: "struct MarketUtils.MarketPrices",
+        name: "prices",
         type: "tuple",
       },
       {
@@ -2225,6 +2266,11 @@ const _abi = [
           {
             internalType: "uint256",
             name: "impactPoolAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "lentImpactPoolAmount",
             type: "uint256",
           },
         ],

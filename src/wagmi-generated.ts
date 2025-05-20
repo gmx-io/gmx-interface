@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x7f092E45Eed1d69DD56Fe1a0B8B69B97cd020604)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x9637CeC59357484DD58Edc722F9e757a3C32e8D9)
  */
 export const layerZeroProviderAbi = [
   {
@@ -193,14 +193,14 @@ export const layerZeroProviderAbi = [
 ] as const;
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x7f092E45Eed1d69DD56Fe1a0B8B69B97cd020604)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x9637CeC59357484DD58Edc722F9e757a3C32e8D9)
  */
 export const layerZeroProviderAddress = {
-  421614: "0x7f092E45Eed1d69DD56Fe1a0B8B69B97cd020604",
+  421614: "0x9637CeC59357484DD58Edc722F9e757a3C32e8D9",
 } as const;
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x7f092E45Eed1d69DD56Fe1a0B8B69B97cd020604)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x9637CeC59357484DD58Edc722F9e757a3C32e8D9)
  */
 export const layerZeroProviderConfig = {
   address: layerZeroProviderAddress,
@@ -212,7 +212,7 @@ export const layerZeroProviderConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0xe7Cf2fA8cA07b8d6Ea359F779CCF6BF8A968880F)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x5c80d035187D39Baa77625AA6BBc5b2B76AeE6Ba)
  */
 export const multichainOrderRouterAbi = [
   {
@@ -1237,14 +1237,14 @@ export const multichainOrderRouterAbi = [
 ] as const;
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0xe7Cf2fA8cA07b8d6Ea359F779CCF6BF8A968880F)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x5c80d035187D39Baa77625AA6BBc5b2B76AeE6Ba)
  */
 export const multichainOrderRouterAddress = {
-  421614: "0xe7Cf2fA8cA07b8d6Ea359F779CCF6BF8A968880F",
+  421614: "0x5c80d035187D39Baa77625AA6BBc5b2B76AeE6Ba",
 } as const;
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0xe7Cf2fA8cA07b8d6Ea359F779CCF6BF8A968880F)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x5c80d035187D39Baa77625AA6BBc5b2B76AeE6Ba)
  */
 export const multichainOrderRouterConfig = {
   address: multichainOrderRouterAddress,
@@ -1256,7 +1256,7 @@ export const multichainOrderRouterConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x445fc630369ACb21D2Cf0BccB61a0916357C54E7)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x2CAEB911C921Fc0f5B0dE3825F4EfdD737ef5f4c)
  */
 export const multichainSubaccountRouterAbi = [
   {
@@ -2446,14 +2446,14 @@ export const multichainSubaccountRouterAbi = [
 ] as const;
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x445fc630369ACb21D2Cf0BccB61a0916357C54E7)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x2CAEB911C921Fc0f5B0dE3825F4EfdD737ef5f4c)
  */
 export const multichainSubaccountRouterAddress = {
-  421614: "0x445fc630369ACb21D2Cf0BccB61a0916357C54E7",
+  421614: "0x2CAEB911C921Fc0f5B0dE3825F4EfdD737ef5f4c",
 } as const;
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x445fc630369ACb21D2Cf0BccB61a0916357C54E7)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x2CAEB911C921Fc0f5B0dE3825F4EfdD737ef5f4c)
  */
 export const multichainSubaccountRouterConfig = {
   address: multichainSubaccountRouterAddress,
@@ -2465,7 +2465,7 @@ export const multichainSubaccountRouterConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0xDc96559b010EBf4C2b546e475d6549124Ec3Cf5c)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x0C5Ac8CB91138a3551DF186BD0c467d05aD1ae07)
  */
 export const multichainTransferRouterAbi = [
   {
@@ -3059,14 +3059,14 @@ export const multichainTransferRouterAbi = [
 ] as const;
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0xDc96559b010EBf4C2b546e475d6549124Ec3Cf5c)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x0C5Ac8CB91138a3551DF186BD0c467d05aD1ae07)
  */
 export const multichainTransferRouterAddress = {
-  421614: "0xDc96559b010EBf4C2b546e475d6549124Ec3Cf5c",
+  421614: "0x0C5Ac8CB91138a3551DF186BD0c467d05aD1ae07",
 } as const;
 
 /**
- * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0xDc96559b010EBf4C2b546e475d6549124Ec3Cf5c)
+ * [__View Contract on Arbitrum Sepolia Arbiscan__](https://sepolia.arbiscan.io/address/0x0C5Ac8CB91138a3551DF186BD0c467d05aD1ae07)
  */
 export const multichainTransferRouterConfig = {
   address: multichainTransferRouterAddress,
@@ -4018,12 +4018,37 @@ export const syntheticsReaderAbi = [
       },
       { name: "marketKey", internalType: "address", type: "address" },
       {
-        name: "indexTokenPrice",
-        internalType: "struct Price.Props",
+        name: "prices",
+        internalType: "struct MarketUtils.MarketPrices",
         type: "tuple",
         components: [
-          { name: "min", internalType: "uint256", type: "uint256" },
-          { name: "max", internalType: "uint256", type: "uint256" },
+          {
+            name: "indexTokenPrice",
+            internalType: "struct Price.Props",
+            type: "tuple",
+            components: [
+              { name: "min", internalType: "uint256", type: "uint256" },
+              { name: "max", internalType: "uint256", type: "uint256" },
+            ],
+          },
+          {
+            name: "longTokenPrice",
+            internalType: "struct Price.Props",
+            type: "tuple",
+            components: [
+              { name: "min", internalType: "uint256", type: "uint256" },
+              { name: "max", internalType: "uint256", type: "uint256" },
+            ],
+          },
+          {
+            name: "shortTokenPrice",
+            internalType: "struct Price.Props",
+            type: "tuple",
+            components: [
+              { name: "min", internalType: "uint256", type: "uint256" },
+              { name: "max", internalType: "uint256", type: "uint256" },
+            ],
+          },
         ],
       },
       { name: "positionSizeInUsd", internalType: "uint256", type: "uint256" },
@@ -4762,6 +4787,11 @@ export const syntheticsReaderAbi = [
           },
           {
             name: "impactPoolAmount",
+            internalType: "uint256",
+            type: "uint256",
+          },
+          {
+            name: "lentImpactPoolAmount",
             internalType: "uint256",
             type: "uint256",
           },
@@ -6606,7 +6636,7 @@ export const syntheticsReaderAbi = [
   },
 ] as const;
 
-export const syntheticsReaderAddress = "0x24C70A9005A8C7Ab1FC578d27ffa0F77B94e8062" as const;
+export const syntheticsReaderAddress = "0x13E39B888504Ea4e53D0d6c43B1576D84D6311C9" as const;
 
 export const syntheticsReaderConfig = {
   address: syntheticsReaderAddress,

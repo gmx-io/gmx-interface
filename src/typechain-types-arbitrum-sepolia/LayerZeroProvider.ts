@@ -23,26 +23,18 @@ import type {
   TypedContractMethod,
 } from "./common";
 
-export declare namespace IMultichainProvider {
+export declare namespace IRelayUtils {
   export type BridgeOutParamsStruct = {
-    provider: AddressLike;
-    account: AddressLike;
     token: AddressLike;
     amount: BigNumberish;
+    provider: AddressLike;
     data: BytesLike;
   };
 
-  export type BridgeOutParamsStructOutput = [
-    provider: string,
-    account: string,
-    token: string,
-    amount: bigint,
-    data: string,
-  ] & {
-    provider: string;
-    account: string;
+  export type BridgeOutParamsStructOutput = [token: string, amount: bigint, provider: string, data: string] & {
     token: string;
     amount: bigint;
+    provider: string;
     data: string;
   };
 }
@@ -63,7 +55,7 @@ export interface LayerZeroProviderInterface extends Interface {
 
   getEvent(nameOrSignatureOrTopic: "TokenTransferReverted"): EventFragment;
 
-  encodeFunctionData(functionFragment: "bridgeOut", values: [IMultichainProvider.BridgeOutParamsStruct]): string;
+  encodeFunctionData(functionFragment: "bridgeOut", values: [AddressLike, IRelayUtils.BridgeOutParamsStruct]): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
   encodeFunctionData(
@@ -133,7 +125,11 @@ export interface LayerZeroProvider extends BaseContract {
   listeners(eventName?: string): Promise<Array<Listener>>;
   removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
-  bridgeOut: TypedContractMethod<[params: IMultichainProvider.BridgeOutParamsStruct], [bigint], "nonpayable">;
+  bridgeOut: TypedContractMethod<
+    [account: AddressLike, params: IRelayUtils.BridgeOutParamsStruct],
+    [bigint],
+    "nonpayable"
+  >;
 
   dataStore: TypedContractMethod<[], [string], "view">;
 
@@ -163,7 +159,7 @@ export interface LayerZeroProvider extends BaseContract {
 
   getFunction(
     nameOrSignature: "bridgeOut"
-  ): TypedContractMethod<[params: IMultichainProvider.BridgeOutParamsStruct], [bigint], "nonpayable">;
+  ): TypedContractMethod<[account: AddressLike, params: IRelayUtils.BridgeOutParamsStruct], [bigint], "nonpayable">;
   getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
   getFunction(

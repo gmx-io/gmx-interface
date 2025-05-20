@@ -138,17 +138,12 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
         components: [
-          {
-            internalType: "address",
-            name: "provider",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "account",
-            type: "address",
-          },
           {
             internalType: "address",
             name: "token",
@@ -160,12 +155,17 @@ const _abi = [
             type: "uint256",
           },
           {
+            internalType: "address",
+            name: "provider",
+            type: "address",
+          },
+          {
             internalType: "bytes",
             name: "data",
             type: "bytes",
           },
         ],
-        internalType: "struct IMultichainProvider.BridgeOutParams",
+        internalType: "struct IRelayUtils.BridgeOutParams",
         name: "params",
         type: "tuple",
       },

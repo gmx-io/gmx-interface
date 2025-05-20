@@ -545,6 +545,11 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "EmptyTarget",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "EmptyToken",
     type: "error",
   },
@@ -1194,6 +1199,22 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "feeProvided",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "feeRequired",
+        type: "uint256",
+      },
+    ],
+    name: "InsufficientFee",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "remainingCostUsd",
         type: "uint256",
       },
@@ -1281,6 +1302,11 @@ const _abi = [
         internalType: "uint256",
         name: "poolValue",
         type: "uint256",
+      },
+      {
+        internalType: "int256",
+        name: "totalPendingImpactAmount",
+        type: "int256",
       },
     ],
     name: "InsufficientImpactPoolValueForWithdrawal",
@@ -1497,6 +1523,17 @@ const _abi = [
       },
     ],
     name: "InvalidBlockRangeSet",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "InvalidBridgeOutToken",
     type: "error",
   },
   {
@@ -2236,6 +2273,11 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [],
+    name: "InvalidMultichainAction",
+    type: "error",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -2695,22 +2737,6 @@ const _abi = [
       },
     ],
     name: "InvalidTokenIn",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "token",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-    ],
-    name: "InvalidTransferInAmount",
     type: "error",
   },
   {
@@ -3608,11 +3634,6 @@ const _abi = [
     type: "error",
   },
   {
-    inputs: [],
-    name: "RelayPriceOutdated",
-    type: "error",
-  },
-  {
     inputs: [
       {
         internalType: "uint256",
@@ -3893,6 +3914,11 @@ const _abi = [
   {
     inputs: [],
     name: "ThereMustBeAtLeastOneTimelockMultiSig",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "TokenPermitsNotAllowedForMultichain",
     type: "error",
   },
   {
