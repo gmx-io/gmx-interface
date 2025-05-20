@@ -15,7 +15,7 @@ import {
   BatchOrderTxnParams,
   getBatchOrderMulticallPayload,
   getIsInvalidBatchReceiver,
-  isTwapOrderPayload,
+  getIsTwapOrderPayload,
 } from "sdk/utils/orderTransactions";
 
 import { signerAddressError } from "components/Errors/errorToasts";
@@ -199,7 +199,7 @@ export const makeBatchOrderSimulation = async ({
     }
 
     const isSimulationAllowed = batchParams.createOrderParams.every(
-      (co) => !isLimitSwapOrderType(co.orderPayload.orderType) && !isTwapOrderPayload(co.orderPayload)
+      (co) => !isLimitSwapOrderType(co.orderPayload.orderType) && !getIsTwapOrderPayload(co.orderPayload)
     );
 
     // Simulate execution makes sense only for order creation transactions

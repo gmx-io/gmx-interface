@@ -14,12 +14,12 @@ import {
   getRemainingSubaccountActions,
   getRemainingSubaccountSeconds,
 } from "domain/synthetics/subaccount";
-import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "domain/synthetics/trade/twap/utils";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { roundToTwoDecimals } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
+import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import { secondsToPeriod } from "sdk/utils/time";
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";

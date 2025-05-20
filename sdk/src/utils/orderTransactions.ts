@@ -1,3 +1,4 @@
+import uniq from "lodash/uniq";
 import { encodeFunctionData, zeroAddress, zeroHash } from "viem";
 
 import ExchangeRouterAbi from "abis/ExchangeRouter.json";
@@ -246,7 +247,25 @@ export function buildIncreaseOrderPayload(
     minOutputAmount: 0n,
     receiveTokenAddress: undefined,
   });
+
   const indexToken = getToken(p.chainId, p.indexTokenAddress);
+
+  let acceptablePrice: ContractPrice;
+  if (p.acceptablePrice === MaxUint256) {
+    acceptablePrice = MaxUint256 as ContractPrice;
+  } else {
+    acceptablePrice = convertToContractPrice(
+      applySlippageToPrice(p.allowedSlippage, p.acceptablePrice, true, p.isLong),
+      indexToken.decimals
+    );
+  }
+
+  let triggerPrice: ContractPrice;
+  if (p.triggerPrice === MaxUint256) {
+    triggerPrice = MaxUint256 as ContractPrice;
+  } else {
+    triggerPrice = convertToContractPrice(p.triggerPrice ?? 0n, indexToken.decimals);
+  }
 
   const orderPayload: CreateOrderPayload = {
     addresses: {
@@ -261,11 +280,8 @@ export function buildIncreaseOrderPayload(
     numbers: {
       sizeDeltaUsd: p.sizeDeltaUsd,
       initialCollateralDeltaAmount: tokenTransfersParams.initialCollateralDeltaAmount,
-      triggerPrice: convertToContractPrice(p.triggerPrice ?? 0n, indexToken.decimals),
-      acceptablePrice: convertToContractPrice(
-        applySlippageToPrice(p.allowedSlippage, p.acceptablePrice, true, p.isLong),
-        indexToken.decimals
-      ),
+      triggerPrice,
+      acceptablePrice,
       executionFee: p.executionFeeAmount,
       callbackGasLimit: 0n,
       minOutputAmount: applySlippageToMinOut(p.allowedSlippage, tokenTransfersParams.minOutputAmount),
@@ -292,6 +308,23 @@ export function buildDecreaseOrderPayload(
   const indexToken = getToken(p.chainId, p.indexTokenAddress);
   const tokenTransfersParams = buildTokenTransfersParamsForDecrease(p);
 
+  let acceptablePrice: ContractPrice;
+  if (p.acceptablePrice === MaxUint256) {
+    acceptablePrice = MaxUint256 as ContractPrice;
+  } else {
+    acceptablePrice = convertToContractPrice(
+      applySlippageToPrice(p.allowedSlippage, p.acceptablePrice, false, p.isLong),
+      indexToken.decimals
+    );
+  }
+
+  let triggerPrice: ContractPrice;
+  if (p.triggerPrice === MaxUint256) {
+    triggerPrice = MaxUint256 as ContractPrice;
+  } else {
+    triggerPrice = convertToContractPrice(p.triggerPrice ?? 0n, indexToken.decimals);
+  }
+
   const orderPayload: CreateOrderPayload = {
     addresses: {
       receiver: p.receiver,
@@ -305,11 +338,8 @@ export function buildDecreaseOrderPayload(
     numbers: {
       sizeDeltaUsd: p.sizeDeltaUsd,
       initialCollateralDeltaAmount: tokenTransfersParams.initialCollateralDeltaAmount,
-      triggerPrice: convertToContractPrice(p.triggerPrice ?? 0n, indexToken.decimals),
-      acceptablePrice: convertToContractPrice(
-        applySlippageToPrice(p.allowedSlippage, p.acceptablePrice, false, p.isLong),
-        indexToken.decimals
-      ),
+      triggerPrice,
+      acceptablePrice,
       executionFee: p.executionFeeAmount,
       callbackGasLimit: 0n,
       minOutputAmount: applySlippageToMinOut(p.allowedSlippage, tokenTransfersParams.minOutputAmount),
@@ -426,12 +456,12 @@ export function buildTwapOrdersPayloads<
       uiFeeReceiver,
       minOutputUsd: params.minOutputUsd / BigInt(twapParams.numberOfParts),
       receiveTokenAddress: params.receiveTokenAddress,
-      decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
+      decreasePositionSwapType: params.decreasePositionSwapType,
     }) as CreateOrderTxnParams<T>;
   });
 }
 
-export function isTwapOrderPayload(p: CreateOrderPayload) {
+export function getIsTwapOrderPayload(p: CreateOrderPayload) {
   return p.numbers.validFromTime !== 0n;
 }
 
@@ -496,7 +526,7 @@ export function getBatchTotalExecutionFee({
   };
 }
 
-export function getBatchTotalPayAmounts(batchParams: BatchOrderTxnParams) {
+export function getBatchTotalPayCollateralAmount(batchParams: BatchOrderTxnParams) {
   const payAmounts: { [tokenAddress: string]: bigint } = {};
 
   for (const co of batchParams.createOrderParams) {
@@ -592,7 +622,6 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
   const orderVaultAddress = getContract(chainId, "OrderVault");
   const externalHandlerAddress = getContract(chainId, "ExternalHandler");
 
-  let finalPayTokenAddress = payTokenAddress;
   let finalPayTokenAmount = payTokenAmount;
 
   const { tokenTransfers, value } = combineTransfers([
@@ -619,14 +648,12 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
      * */
     initialCollateralTokenAddress = convertTokenAddress(chainId, externalSwapQuote.outTokenAddress, "wrapped");
     initialCollateralDeltaAmount = 0n;
-    minOutputAmount = externalSwapQuote.amountOut;
     swapPath = [];
     externalCalls = getExternalCallsPayload({
       chainId,
       account: receiver,
       quote: externalSwapQuote,
     });
-    finalPayTokenAddress = externalSwapQuote.inTokenAddress;
     finalPayTokenAmount = externalSwapQuote.amountIn;
   }
 
@@ -636,7 +663,7 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
     initialCollateralTokenAddress,
     initialCollateralDeltaAmount,
     tokenTransfers,
-    payTokenAddress: finalPayTokenAddress,
+    payTokenAddress,
     payTokenAmount: finalPayTokenAmount,
     minOutputAmount,
     swapPath,
@@ -699,13 +726,15 @@ export function getExternalCallsPayload({
   const outTokenAddress = convertTokenAddress(chainId, quote.outTokenAddress, "wrapped");
   const wntAddress = getWrappedToken(chainId).address;
 
+  const refundTokens = uniq([inTokenAddress, outTokenAddress, wntAddress]);
+
   const payload: ExternalCallsPayload = {
     sendTokens: [inTokenAddress],
     sendAmounts: [quote.amountIn],
     externalCallTargets: [],
     externalCallDataList: [],
-    refundTokens: [inTokenAddress, outTokenAddress, wntAddress],
-    refundReceivers: [account, account, account],
+    refundTokens,
+    refundReceivers: Array.from({ length: refundTokens.length }, () => account),
   };
 
   if (quote.needSpenderApproval) {
@@ -823,15 +852,12 @@ export function buildUpdateOrderMulticall(updateTxn: UpdateOrderTxnParams) {
     multicall.push({ method: "sendWnt", params: [orderVaultAddress, updatePayload.executionFeeTopUp] });
   }
 
-  const indexToken = getToken(chainId, updateParams.indexTokenAddress);
-
   multicall.push({
     method: "updateOrder",
     params: [
       updatePayload.orderKey,
       updatePayload.sizeDeltaUsd,
       updatePayload.acceptablePrice,
-      indexToken.decimals,
       updatePayload.triggerPrice,
       updatePayload.minOutputAmount,
       0n,

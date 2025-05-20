@@ -3,10 +3,14 @@ import { isAddress } from "viem";
 const VERSION = "01";
 const PREFIX = "0xff";
 
-export function createTwapUiFeeReceiver({ numberOfParts }: { numberOfParts: number }) {
-  const twapId = Math.floor(Math.random() * 256 * 256)
+export function generateTwapId() {
+  return Math.floor(Math.random() * 256 * 256)
     .toString(16)
     .padStart(4, "0");
+}
+
+export function createTwapUiFeeReceiver({ numberOfParts }: { numberOfParts: number }) {
+  const twapId = generateTwapId();
 
   const numberOfPartsInHex = numberOfParts.toString(16).padStart(2, "0");
 

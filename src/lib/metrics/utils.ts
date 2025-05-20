@@ -7,10 +7,10 @@ import { OrderType } from "domain/synthetics/orders";
 import { Subaccount } from "domain/synthetics/subaccount";
 import { TokenData } from "domain/synthetics/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts, TradeMode } from "domain/synthetics/trade";
-import { TwapDuration } from "domain/synthetics/trade/twap/types";
 import { ErrorLike, extendError, OrderErrorContext, parseError } from "lib/errors";
 import { bigintToNumber, formatPercentage, formatRatePercentage, getBasisPoints, roundToOrder } from "lib/numbers";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { TwapDuration } from "sdk/types/twap";
 import { CreateOrderPayload } from "sdk/utils/orderTransactions";
 
 import { metrics, SubmittedOrderEvent } from ".";

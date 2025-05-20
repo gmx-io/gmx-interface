@@ -49,7 +49,7 @@ import {
   getBatchExternalSwapGasLimit,
   getBatchRequiredActions,
   getBatchTotalExecutionFee,
-  getBatchTotalPayAmounts,
+  getBatchTotalPayCollateralAmount,
   getIsEmptyBatch,
 } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
@@ -354,7 +354,7 @@ export function getGasPaymentValidations({
   const gasPaymentToken = getByKey(tokensData, relayFeeParams.gasPaymentTokenAddress);
   const gasPaymentTokenAmount = relayFeeParams.gasPaymentTokenAmount;
 
-  const totalPayAmounts = getBatchTotalPayAmounts(batchParams);
+  const totalPayAmounts = getBatchTotalPayCollateralAmount(batchParams);
   const gasPaymentTokenCollateralAmount = getByKey(totalPayAmounts, gasPaymentToken?.address) ?? 0n;
 
   const totalGasPaymentTokenAmount = gasPaymentTokenCollateralAmount + gasPaymentTokenAmount;

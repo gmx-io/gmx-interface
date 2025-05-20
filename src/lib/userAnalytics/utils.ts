@@ -14,7 +14,6 @@ import {
   isTwapOrder,
 } from "domain/synthetics/orders";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
-import { getTwapDurationInSeconds } from "domain/synthetics/trade/twap/utils";
 import { parseError } from "lib/errors";
 import {
   PositionOrderMetricParams,
@@ -37,6 +36,7 @@ import {
   TradeBoxResultEvent,
   TradePageEditOrderEvent,
 } from "lib/userAnalytics/types";
+import { getTwapDurationInSeconds } from "sdk/utils/twap";
 
 export function getTradeInteractionKey(pair: string) {
   return `trade-${pair}`;
@@ -140,7 +140,10 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
           priceImpactPercentage: metricData.priceImpactPercentage,
           netRate1h: metricData.netRate1h,
-          duration: metricData.tradeMode === TradeMode.Twap ? getTwapDurationInSeconds(metricData.duration) : undefined,
+          duration:
+            metricData.tradeMode === TradeMode.Twap && metricData.duration
+              ? getTwapDurationInSeconds(metricData.duration)
+              : undefined,
           partsCount: metricData.tradeMode === TradeMode.Twap ? metricData.partsCount : undefined,
         },
       });
@@ -167,7 +170,10 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
           priceImpactPercentage: metricData.priceImpactPercentage,
           netRate1h: metricData.netRate1h,
-          duration: metricData.tradeMode === TradeMode.Twap ? getTwapDurationInSeconds(metricData.duration) : undefined,
+          duration:
+            metricData.tradeMode === TradeMode.Twap && metricData.duration
+              ? getTwapDurationInSeconds(metricData.duration)
+              : undefined,
           partsCount: metricData.tradeMode === TradeMode.Twap ? metricData.partsCount : undefined,
         },
       });
@@ -192,7 +198,10 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           priceImpactDeltaUsd: undefined,
           priceImpactPercentage: undefined,
           netRate1h: undefined,
-          duration: metricData.tradeMode === TradeMode.Twap ? getTwapDurationInSeconds(metricData.duration) : undefined,
+          duration:
+            metricData.tradeMode === TradeMode.Twap && metricData.duration
+              ? getTwapDurationInSeconds(metricData.duration)
+              : undefined,
           partsCount: metricData.tradeMode === TradeMode.Twap ? metricData.partsCount : undefined,
         },
       });
@@ -399,7 +408,10 @@ export const sendDepthChartInteractionEvent = (pair: string) => {
 
 const getAnalyticsTwapProps = (metricData: PositionOrderMetricParams | SwapMetricData) => {
   return {
-    duration: metricData.tradeMode === TradeMode.Twap ? getTwapDurationInSeconds(metricData.duration) : undefined,
+    duration:
+      metricData.tradeMode === TradeMode.Twap && metricData.duration
+        ? getTwapDurationInSeconds(metricData.duration)
+        : undefined,
     partsCount: metricData.tradeMode === TradeMode.Twap ? metricData.partsCount : undefined,
   };
 };

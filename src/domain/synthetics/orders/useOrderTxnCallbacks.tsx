@@ -36,7 +36,7 @@ import {
   getBatchRequiredActions,
   getBatchTotalExecutionFee,
   IncreasePositionOrderParams,
-  isTwapOrderPayload,
+  getIsTwapOrderPayload,
   SwapOrderParams,
   UpdateOrderTxnParams,
 } from "sdk/utils/orderTransactions";
@@ -313,7 +313,7 @@ export function getBatchPendingOrders(
   ordersInfoData: OrdersInfoData | undefined
 ): PendingOrderData[] {
   const createPendingOrders = txnParams.createOrderParams
-    .filter((cp) => !isTwapOrderPayload(cp.orderPayload))
+    .filter((cp) => !getIsTwapOrderPayload(cp.orderPayload))
     .map((cp) => getPendingCreateOrder(cp));
 
   const twapPendingOrders = getPendingCreateTwapOrders(txnParams.createOrderParams);
@@ -456,7 +456,7 @@ export function getPendingCreateTwapOrders(
   const ordersByUiFeeReceiver: Record<string, PendingOrderData> = {};
 
   createOrderPayloads.forEach((cp) => {
-    if (!isTwapOrderPayload(cp.orderPayload)) {
+    if (!getIsTwapOrderPayload(cp.orderPayload)) {
       return;
     }
 
