@@ -44,7 +44,7 @@ export function useSubaccountContext() {
 
 export function SubaccountContextProvider({ children }: { children: React.ReactNode }) {
   const { chainId } = useChainId();
-  const { account, signer } = useWallet();
+  const { signer } = useWallet();
 
   const {
     subaccountConfig,
@@ -53,19 +53,19 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     setSignedApproval,
     resetStoredApproval,
     resetStoredConfig,
-  } = useStoredSubaccountData(chainId, account);
+  } = useStoredSubaccountData(chainId, signer?.address);
 
   const { subaccountData, refreshSubaccountData } = useSubaccountOnchainData(chainId, {
-    account,
+    account: signer?.address,
     subaccountAddress: subaccountConfig?.address,
   });
 
   const subaccount: Subaccount | undefined = useMemo(() => {
-    if (!subaccountConfig || !account || !subaccountData || !signer?.provider) {
+    if (!subaccountConfig || !signer?.address || !subaccountData || !signer?.provider) {
       return undefined;
     }
 
-    const subaccountSigner = getSubaccountSigner(subaccountConfig, account, signer?.provider);
+    const subaccountSigner = getSubaccountSigner(subaccountConfig, signer?.address, signer?.provider);
 
     return {
       address: subaccountConfig.address,
@@ -77,7 +77,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         signedApproval,
       }),
     };
-  }, [account, signedApproval, signer?.provider, subaccountConfig, subaccountData]);
+  }, [signedApproval, signer?.address, signer?.provider, subaccountConfig, subaccountData]);
 
   const updateSubaccountSettings = useCallback(
     async function updateSubaccountSettings({
@@ -303,7 +303,7 @@ function useStoredSubaccountData(chainId: number, account: string | undefined) {
   );
 
   const [signedApproval, setSignedApproval] = useLocalStorageSerializeKey<SignedSubbacountApproval | undefined>(
-    getSubaccountApprovalKey(chainId),
+    getSubaccountApprovalKey(chainId, account),
     undefined,
     {
       raw: false,
