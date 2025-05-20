@@ -1,3 +1,5 @@
+import cx from "classnames";
+
 import { USD_DECIMALS } from "config/factors";
 import { formatAmountHuman, formatBalanceAmount, formatUsd } from "lib/numbers";
 
@@ -7,12 +9,14 @@ export function AmountWithUsdHuman({
   usd,
   symbol,
   multiline = false,
+  reversed = false,
 }: {
   amount: bigint | undefined;
   decimals: number | undefined;
   usd: bigint | undefined;
   symbol?: string;
   multiline?: boolean;
+  reversed?: boolean;
 }) {
   if (amount === undefined || usd === undefined || decimals === undefined) {
     return "...";
@@ -25,11 +29,14 @@ export function AmountWithUsdHuman({
 
   const formattedUsd = formatAmountHuman(usd, USD_DECIMALS, true, 2);
 
+  const topValue = reversed ? formattedUsd : formattedAmount;
+  const bottomValue = reversed ? formattedAmount : formattedUsd;
+
   return (
     <span>
-      <span>{formattedAmount} </span>
+      <span>{topValue}</span>
       {multiline && <br />}
-      <span className="text-12 text-slate-100 group-hover/hoverable:text-[inherit]">({formattedUsd})</span>
+      <span className={cx("text-12 text-slate-100 group-hover/hoverable:text-[inherit]", { "ml-2": multiline })}>({bottomValue})</span>
     </span>
   );
 }

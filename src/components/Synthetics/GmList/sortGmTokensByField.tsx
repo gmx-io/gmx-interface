@@ -38,21 +38,10 @@ export function sortGmTokensByField({
 
   if (orderBy === "totalSupply") {
     return gmTokens.sort((a, b) => {
-      return (a.totalSupply ?? 0n) > (b.totalSupply ?? 0n) ? directionMultiplier : -directionMultiplier;
-    });
-  }
+      const totalSupplyUsdA = convertToUsd(a.totalSupply, a.decimals, a.prices.minPrice) ?? 0n;
+      const totalSupplyUsdB = convertToUsd(b.totalSupply, b.decimals, b.prices.minPrice) ?? 0n;
 
-  if (orderBy === "buyable") {
-    return gmTokens.sort((a, b) => {
-      const marketA = marketsInfo[a.address];
-      const marketB = marketsInfo[b.address];
-
-      const mintableA = getMintableMarketTokens(marketA, a);
-      const mintableB = getMintableMarketTokens(marketB, b);
-
-      return (mintableA?.mintableUsd ?? 0n) > (mintableB?.mintableUsd ?? 0n)
-        ? directionMultiplier
-        : -directionMultiplier;
+      return totalSupplyUsdA > totalSupplyUsdB ? directionMultiplier : -directionMultiplier;
     });
   }
 

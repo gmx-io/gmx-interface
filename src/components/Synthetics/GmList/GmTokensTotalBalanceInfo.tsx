@@ -30,9 +30,9 @@ export const GmTokensBalanceInfo = ({
   isGlv?: boolean;
   singleLine?: boolean;
 }) => {
-  const content = (
+  const content = token.balance !== undefined && token.balance !== 0n ? (
     <TokenValuesInfoCell
-      value={formatBalanceAmount(token.balance ?? 0n, token.decimals)}
+      value={formatBalanceAmount(token.balance, token.decimals)}
       usd={
         token.balance !== undefined && token.balance !== 0n
           ? formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
@@ -43,6 +43,8 @@ export const GmTokensBalanceInfo = ({
       symbol={token.symbol}
       singleLine={singleLine}
     />
+  ) : (
+    <span>-</span>
   );
 
   const tooltipContent = useMemo(() => {

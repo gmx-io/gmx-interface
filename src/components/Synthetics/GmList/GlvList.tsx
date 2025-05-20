@@ -13,6 +13,7 @@ import { getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import PoolsCard from "pages/Pools/PoolsCard";
 
+import Loader from "components/Common/Loader";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import { TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
@@ -88,7 +89,11 @@ export function GlvList({
       description={t`Yield-optimized vaults supplying liquidity across multiple GMX markets.`}
     >
       {isMobile ? (
-        <div className="flex flex-col gap-4">{rows}</div>
+        <div className="flex flex-col gap-4">
+          {rows}
+
+          {isLoading && <Loader />}
+        </div>
       ) : (
         <div className="overflow-hidden rounded-4">
           <TableScrollFadeContainer>
@@ -125,7 +130,8 @@ export function GlvList({
                       position="bottom-end"
                       renderContent={() => (
                         <Trans>
-                          Pool returns compared to the benchmark, based on UNI V2-style rebalancing of the long-short token in the corresponding GM or GLV.
+                          Pool returns compared to the benchmark, based on UNI V2-style rebalancing of the long-short
+                          token in the corresponding GM or GLV.
                         </Trans>
                       )}
                     />

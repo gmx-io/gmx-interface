@@ -178,6 +178,7 @@ export function GmListItem({
                 decimals={token.decimals}
                 usd={totalSupplyUsd}
                 symbol={token.symbol}
+                reversed
               />
             }
           />
@@ -247,6 +248,7 @@ export function GmListItem({
           decimals={token.decimals}
           usd={totalSupplyUsd}
           symbol={token.symbol}
+          reversed
         />
       </TableTd>
       <TableTd>

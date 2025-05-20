@@ -2,9 +2,14 @@ import { Trans } from "@lingui/macro";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
+
+
 export function ApyTooltipContent() {
+  function onClick(e: React.MouseEvent<HTMLParagraphElement>) {
+    e.stopPropagation();
+  }
   return (
-    <p className="text-white">
+    <p className="text-white" onClickCapture={onClick}>
       <Trans>
         <p className="mb-12">
           The APY is an estimate based on fees collected during the selected period. It excludes:

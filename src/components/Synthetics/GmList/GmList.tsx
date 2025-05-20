@@ -12,6 +12,7 @@ import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformance";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import PoolsCard from "pages/Pools/PoolsCard";
 
+import Loader from "components/Common/Loader";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import Pagination from "components/Pagination/Pagination";
 import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
@@ -40,7 +41,7 @@ export type Props = {
   isDeposit: boolean;
 };
 
-export type SortField = "price" | "totalSupply" | "buyable" | "wallet" | "apy" | "unspecified" | "performance";
+export type SortField = "price" | "totalSupply" | "wallet" | "apy" | "unspecified" | "performance";
 
 export function GmList({
   marketsTokensApyData,
@@ -143,7 +144,16 @@ export function GmList({
           </div>
         </div>
         {isMobile ? (
-          <div className="flex flex-col gap-4">{rows}</div>
+          <div className="flex flex-col gap-4">
+            {rows}
+            {!currentData.length && !isLoading && (
+              <div className="text-body-medium text-slate-100">
+                <Trans>No pools matched.</Trans>
+              </div>
+            )}
+
+            {isLoading && <Loader />}
+          </div>
         ) : (
           <TableScrollFadeContainer>
             <table className="w-[max(100%,1100px)]">
@@ -185,7 +195,8 @@ export function GmList({
                         position="bottom-end"
                         renderContent={() => (
                           <Trans>
-                           Pool returns compared to the benchmark, based on UNI V2-style rebalancing of the long-short token in the corresponding GM or GLV.
+                            Pool returns compared to the benchmark, based on UNI V2-style rebalancing of the long-short
+                            token in the corresponding GM or GLV.
                           </Trans>
                         )}
                       />
@@ -208,7 +219,7 @@ export function GmList({
               </thead>
               <tbody>
                 {rows}
-                
+
                 {!currentData.length && !isLoading && (
                   <TableTr hoverable={false} bordered={false} className="h-[64.5px]">
                     <TableTd colSpan={7} className="align-top">
