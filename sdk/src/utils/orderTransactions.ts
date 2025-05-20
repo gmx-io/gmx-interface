@@ -377,7 +377,7 @@ export function buildTwapOrdersPayloads<
         receiveTokenAddress: params.receiveTokenAddress,
         swapPath: params.swapPath,
         externalSwapQuote: undefined,
-        minOutputAmount: params.minOutputAmount,
+        minOutputAmount: 0n,
         triggerRatio: params.triggerRatio,
         referralCode: params.referralCode,
         autoCancel: params.autoCancel,

@@ -386,7 +386,7 @@ describe("Swap Order Payloads", () => {
               acceptablePrice: 0n,
               executionFee: EXECUTION_FEE_AMOUNT / 4n,
               callbackGasLimit: 0n,
-              minOutputAmount: parseValue("1000", USDC.decimals)!,
+              minOutputAmount: 0n,
               validFromTime,
             },
             orderType: OrderType.LimitSwap,
@@ -400,6 +400,7 @@ describe("Swap Order Payloads", () => {
             ...params,
             payTokenAmount: params.payTokenAmount / 4n,
             executionFeeAmount: EXECUTION_FEE_AMOUNT / 4n,
+            minOutputAmount: 0n,
             orderType: OrderType.LimitSwap,
             allowedSlippage: 0,
             uiFeeReceiver,
@@ -419,108 +420,7 @@ describe("Swap Order Payloads", () => {
             ],
             payTokenAddress: NATIVE_TOKEN_ADDRESS,
             payTokenAmount: params.payTokenAmount / 4n,
-            minOutputAmount: parseValue("1000", USDC.decimals)!,
-            swapPath: [ETH_MARKET.marketTokenAddress],
-            value: EXECUTION_FEE_AMOUNT / 4n + params.payTokenAmount / 4n,
-            externalCalls: undefined,
-          },
-        };
-      });
-
-      expect(result).toEqual(expectedOrders);
-      expect(expectedOrders.every((co) => getIsTwapOrderPayload(co.orderPayload as CreateOrderPayload))).toBe(true);
-    });
-
-    it("TWAP Swap Long Pay with Native Token", () => {
-      const params = {
-        ...commonParams,
-        payTokenAddress: NATIVE_TOKEN_ADDRESS,
-        payTokenAmount: parseValue("1", WETH.decimals)!, // 1 ETH
-        orderType: OrderType.MarketSwap as const,
-        receiveTokenAddress: USDC.address,
-        swapPath: [ETH_MARKET.marketTokenAddress],
-        triggerRatio: parseValue("1", 30)!,
-        minOutputAmount: parseValue("1000", USDC.decimals)!, // 1000 USDC
-        allowedSlippage: SLIPPAGE,
-      };
-
-      const twapParams = {
-        duration: {
-          hours: 1,
-          minutes: 0,
-        },
-        numberOfParts: 4,
-      };
-
-      const result = buildTwapOrdersPayloads(params, twapParams);
-
-      // Calculate time intervals for each part
-      const totalDurationInSeconds = twapParams.duration.hours * 3600 + twapParams.duration.minutes * 60;
-      const startTime = Math.ceil(Date.now() / 1000);
-      const intervalInSeconds = totalDurationInSeconds / (twapParams.numberOfParts - 1);
-
-      const expectedOrders = Array.from({ length: twapParams.numberOfParts }, (_, i) => {
-        const validFromTime = BigInt(Math.floor(startTime + intervalInSeconds * i));
-        const uiFeeReceiver = `0xff00000000000000000000000000000004800001`;
-
-        const decoded = decodeTwapUiFeeReceiver(uiFeeReceiver);
-        expect(decoded).toEqual({
-          twapId: "8000",
-          numberOfParts: twapParams.numberOfParts,
-        });
-
-        return {
-          orderPayload: {
-            addresses: {
-              receiver: RECEIVER,
-              cancellationReceiver: zeroAddress,
-              callbackContract: zeroAddress,
-              uiFeeReceiver,
-              market: zeroAddress,
-              initialCollateralToken: WETH.address,
-              swapPath: [ETH_MARKET.marketTokenAddress],
-            },
-            numbers: {
-              sizeDeltaUsd: 0n,
-              initialCollateralDeltaAmount: params.payTokenAmount / 4n,
-              triggerPrice: parseValue("1", 30)!,
-              acceptablePrice: 0n,
-              executionFee: EXECUTION_FEE_AMOUNT / 4n,
-              callbackGasLimit: 0n,
-              minOutputAmount: parseValue("1000", USDC.decimals)!,
-              validFromTime,
-            },
-            orderType: OrderType.LimitSwap,
-            decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
-            isLong: false,
-            shouldUnwrapNativeToken: true,
-            autoCancel: false,
-            referralCode: REFERRAL_CODE,
-          },
-          params: {
-            ...params,
-            payTokenAmount: params.payTokenAmount / 4n,
-            executionFeeAmount: EXECUTION_FEE_AMOUNT / 4n,
-            orderType: OrderType.LimitSwap,
-            allowedSlippage: 0,
-            uiFeeReceiver,
-            validFromTime,
-          },
-          tokenTransfersParams: {
-            isNativePayment: true,
-            isNativeReceive: false,
-            initialCollateralTokenAddress: WETH.address,
-            initialCollateralDeltaAmount: params.payTokenAmount / 4n,
-            tokenTransfers: [
-              {
-                amount: EXECUTION_FEE_AMOUNT / 4n + params.payTokenAmount / 4n,
-                destination: ORDER_VAULT_ADDRESS,
-                tokenAddress: NATIVE_TOKEN_ADDRESS,
-              },
-            ],
-            payTokenAddress: NATIVE_TOKEN_ADDRESS,
-            payTokenAmount: params.payTokenAmount / 4n,
-            minOutputAmount: parseValue("1000", USDC.decimals)!,
+            minOutputAmount: 0n,
             swapPath: [ETH_MARKET.marketTokenAddress],
             value: EXECUTION_FEE_AMOUNT / 4n + params.payTokenAmount / 4n,
             externalCalls: undefined,
