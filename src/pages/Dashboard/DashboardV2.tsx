@@ -122,7 +122,7 @@ export default function DashboardV2() {
               {(chainId === ARBITRUM || chainId === AVALANCHE) && " | "}
               <ExternalLink href="https://dune.com/gmx-io/gmx-analytics">V2 Analytics</ExternalLink>
               {" | "}
-              <ExternalLink href="https://app.gmx.io/#/stats">V2 Pools Stats</ExternalLink>.
+              <ExternalLink href="https://app.gmx.io/#/monitor">V2 Pools Stats</ExternalLink>.
             </div>
           }
         />

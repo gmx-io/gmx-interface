@@ -88,7 +88,6 @@ export function GmSwapBox(p: GmSwapBoxProps) {
           selectedMarketAddress={selectedMarketAddress}
           onSelectedMarketForGlv={onSelectedMarketForGlv}
           onSelectMarket={onSelectMarket}
-          onSetMode={onSetMode}
           onSetOperation={onSetOperation}
         />
       )}

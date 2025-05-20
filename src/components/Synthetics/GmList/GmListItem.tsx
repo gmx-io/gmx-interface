@@ -121,7 +121,7 @@ export function GmListItem({
   if (isMobile) {
     return (
       <div className="flex flex-col gap-4 rounded-8 bg-cold-blue-900 p-12">
-        <div className="flex items-center pb-14 flex-wrap">
+        <div className="flex flex-wrap items-center pb-14">
           <div className="flex items-center">
             <div className="mr-12 flex shrink-0 items-center">
               <TokenIcon
@@ -155,7 +155,7 @@ export function GmListItem({
               />
             </div>
 
-            <ButtonLink className="bg-button ml-16 p-16 pr-14" to={`/pools/details?market=${marketOrGlvTokenAddress}`}>
+            <ButtonLink className="ml-16 bg-button p-16 pr-14" to={`/pools/details?market=${marketOrGlvTokenAddress}`}>
               <FaChevronRight size={12} className="text-slate-100" />
             </ButtonLink>
           </div>
@@ -207,7 +207,7 @@ export function GmListItem({
           <div className="flex items-start">
             {onFavoriteClick && (
               <div
-                className="-ml-8 mr-4 cursor-pointer self-center rounded-4 p-8 text-16 hover:bg-cold-blue-700 active:bg-cold-blue-500"
+                className="mr-4 cursor-pointer self-center rounded-4 p-8 text-16 hover:bg-cold-blue-700 active:bg-cold-blue-500"
                 onClick={handleFavoriteClick}
               >
                 <FavoriteStar isFavorite={isFavorite} />

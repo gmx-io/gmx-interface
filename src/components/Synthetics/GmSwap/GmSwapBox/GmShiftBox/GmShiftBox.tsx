@@ -12,7 +12,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { GlvOrMarketInfo, getGlvOrMarketAddress, getMarketIndexName, isMarketInfo } from "domain/synthetics/markets";
+import { GlvOrMarketInfo, getGlvOrMarketAddress, getMarketIndexName } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { getTokenData } from "domain/synthetics/tokens";
@@ -28,10 +28,9 @@ import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { MarketState } from "components/MarketSelector/types";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 
-import { Mode, Operation } from "../types";
+import { Operation } from "../types";
 import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
 import { useGmWarningState } from "../useGmWarningState";
-// import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
 import { useShiftAmounts } from "./useShiftAmounts";
 import { useShiftAvailableRelatedMarkets } from "./useShiftAvailableRelatedMarkets";
 import { useShiftFees } from "./useShiftFees";
@@ -47,12 +46,10 @@ export function GmShiftBox({
   selectedMarketAddress,
   onSelectMarket,
   onSelectedMarketForGlv,
-  onSetMode,
   onSetOperation,
 }: {
   selectedMarketAddress: string | undefined;
   onSelectMarket: (marketAddress: string) => void;
-  onSetMode: (mode: Mode) => void;
   onSetOperation: (operation: Operation) => void;
   onSelectedMarketForGlv?: (marketAddress: string) => void;
 }) {
@@ -89,7 +86,6 @@ export function GmShiftBox({
 
     return market;
   }, [selectedMarketAddress, marketsInfoData]);
-  const selectedIndexName = selectedMarketInfo ? getMarketIndexName(selectedMarketInfo) : "...";
   const selectedToken = getByKey(depositMarketTokensData, selectedMarketAddress);
   const toMarketInfo = useMemo(() => {
     const market = getByKey(marketsInfoData, toMarketAddress);
@@ -172,13 +168,6 @@ export function GmShiftBox({
   const [glvForShiftAddress, setGlvForShiftAddress] = useState<string | undefined>(undefined);
   const [, setFirstTokenAddressForDeposit] = useDepositWithdrawalSetFirstTokenAddress(true, glvForShiftAddress);
 
-  // useUpdateByQueryParams({
-  //   operation: Operation.Shift,
-  //   onSelectMarket,
-  //   setMode: onSetMode,
-  //   setOperation: onSetOperation,
-  // });
-
   const handleFormSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
@@ -202,15 +191,6 @@ export function GmShiftBox({
     []
   );
   const handleSelectedTokenFocus = useCallback(() => setFocusedInput("selectedMarket"), []);
-  const handleSelectedTokenSelectMarket = useCallback(
-    (marketInfo: GlvOrMarketInfo): void => {
-      if (isMarketInfo(marketInfo)) {
-        onSelectMarket(marketInfo.marketTokenAddress);
-      }
-      handleClearValues();
-    },
-    [handleClearValues, onSelectMarket]
-  );
 
   const handleToTokenInputValueChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => setToMarketText(event.target.value),
@@ -281,10 +261,7 @@ export function GmShiftBox({
             onInputValueChange={handleSelectedTokenInputValueChange}
             onFocus={handleSelectedTokenFocus}
           >
-            <SelectedPool
-              selectedMarketAddress={selectedMarketAddress}
-              glvAndMarketsInfoData={marketsInfoData}
-            />
+            <SelectedPool selectedMarketAddress={selectedMarketAddress} glvAndMarketsInfoData={marketsInfoData} />
           </BuyInputSection>
           <div>
             <Swap />
@@ -339,7 +316,7 @@ export function GmShiftBox({
           </div>
         )}
 
-        <div className="w-full pb-14 border-b border-stroke-primary">
+        <div className="w-full border-b border-stroke-primary pb-14">
           <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
             {submitState.text}
           </Button>

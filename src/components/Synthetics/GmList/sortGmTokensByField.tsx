@@ -1,7 +1,7 @@
 import values from "lodash/values";
 
 import type { SortDirection } from "context/SorterContext/types";
-import { MarketTokensAPRData, MarketsInfoData, getMintableMarketTokens } from "domain/synthetics/markets";
+import { MarketTokensAPRData, MarketsInfoData } from "domain/synthetics/markets";
 import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformance";
 import { convertToUsd, type TokensData } from "domain/synthetics/tokens";
 

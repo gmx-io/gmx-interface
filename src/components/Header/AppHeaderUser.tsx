@@ -1,8 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import cx from "classnames";
 import { useCallback } from "react";
-import { useRouteMatch } from "react-router-dom";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -73,9 +71,6 @@ export function AppHeaderUser({
   const [redirectPopupTimestamp] = useRedirectPopupTimestamp();
 
   const tradeLink = tradePageVersion === 2 ? "/trade" : "/v1";
-  const isOnTradePageV1 = useRouteMatch("/v1");
-  const isOnTradePageV2 = useRouteMatch("/trade");
-  const shouldHideTradeButton = isOnTradePageV1 || isOnTradePageV2;
 
   const selectorLabel = getChainName(chainId);
 

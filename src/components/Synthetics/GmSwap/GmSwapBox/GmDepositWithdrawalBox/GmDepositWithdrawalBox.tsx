@@ -14,7 +14,6 @@ import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { useMarketTokensData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import type { GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import {
   getAvailableUsdLiquidityForCollateral,
   getGlvOrMarketAddress,
@@ -40,7 +39,6 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { useGmWarningState } from "../useGmWarningState";
-// import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
 import { useGmDepositWithdrawalBoxState } from "./useGmDepositWithdrawalBoxState";
@@ -59,8 +57,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     selectedMarketAddress: marketAddress,
     operation,
     mode,
-    onSetMode,
-    onSetOperation,
     onSelectMarket,
     selectedMarketForGlv,
     onSelectedMarketForGlv,
@@ -589,14 +585,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     },
     [setFirstTokenAddress, glvInfo, onSelectedMarketForGlv]
   );
-
-  const marketTokenSelectMarket = useCallback(
-    (marketInfo: GlvOrMarketInfo): void => {
-      onGlvOrMarketChange(getGlvOrMarketAddress(marketInfo));
-      onSelectedMarketForGlv?.(undefined);
-    },
-    [onGlvOrMarketChange, onSelectedMarketForGlv]
-  );
   // #endregion
 
   // #region Effects
@@ -627,17 +615,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     },
     [marketAddress, onGlvOrMarketChange, sortedMarketsInfoByIndexToken]
   );
-
-  // useUpdateByQueryParams({
-  //   operation,
-  //   setOperation: onSetOperation,
-  //   setMode: onSetMode,
-  //   onSelectMarket,
-  //   onSelectedMarketForGlv,
-  //   selectedMarketForGlv,
-  //   setFirstTokenAddress,
-  //   setIsMarketForGlvSelectedManually,
-  // });
 
   useUpdateTokens({
     tokenOptions,
@@ -797,10 +774,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
               onClickTopRightLabel={marketTokenInputClickTopRightLabel}
               onClickMax={marketTokenInputShowMaxButton ? marketTokenInputClickMax : undefined}
             >
-              <SelectedPool
-                glvAndMarketsInfoData={glvAndMarketsInfoData}
-                selectedMarketAddress={marketAddress}
-              />
+              <SelectedPool glvAndMarketsInfoData={glvAndMarketsInfoData} selectedMarketAddress={marketAddress} />
             </BuyInputSection>
           </div>
         </div>
