@@ -58,8 +58,8 @@ export type SyntheticsPageType =
   | "pools"
   | "leaderboard"
   | "competitions"
-  | "dashboard"
-  | "stake"
+  | "stats"
+  | "earn"
   | "buy"
   | "home";
 

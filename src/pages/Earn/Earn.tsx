@@ -34,9 +34,9 @@ import { UnstakeModal } from "./UnstakeModal";
 import { useProcessedData } from "./useProcessedData";
 import { Vesting } from "./Vesting";
 
-import "./Stake.css";
+import "./Earn.css";
 
-export default function Stake() {
+export default function Earn() {
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
   const incentiveStats = useIncentiveStats(chainId);
@@ -186,7 +186,7 @@ export default function Stake() {
 
   return (
     <div className="default-container page-layout">
-      <SEO title={getPageTitle(t`Stake`)} />
+      <SEO title={getPageTitle(t`Earn`)} />
 
       <StakeModal
         isVisible={isStakeGmxModalVisible}
@@ -243,7 +243,7 @@ export default function Stake() {
 
       <PageTitle
         isTop
-        title={t`Stake`}
+        title={t`Earn`}
         qa="earn-page"
         subtitle={
           <div>

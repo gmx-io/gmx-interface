@@ -24,6 +24,7 @@ import BuyGMX from "pages/BuyGMX/BuyGMX";
 import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
+import Earn from "pages/Earn/Earn";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import { Exchange } from "pages/Exchange/Exchange";
 import Jobs from "pages/Jobs/Jobs";
@@ -38,7 +39,6 @@ import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import Referrals from "pages/Referrals/Referrals";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
-import Stake from "pages/Stake/Stake";
 import Stats from "pages/Stats/Stats";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
@@ -94,21 +94,21 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       <Route exact path="/v1/:tradeType?">
         <Exchange ref={exchangeRef} openSettings={openSettings} />
       </Route>
-      <Route exact path="/dashboard">
-        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="dashboard">
+      <Route exact path="/stats">
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="stats">
           <DashboardV2 />
         </SyntheticsStateContextProvider>
       </Route>
-      <Route exact path="/stats/v1">
+      <Route exact path="/monitor/v1">
         <Stats />
       </Route>
-      <Redirect exact from="/stats/v2" to="/stats" />
-      <Route exact path="/stats">
+      <Redirect exact from="/monitor/v2" to="/monitor" />
+      <Route exact path="/monitor">
         <SyntheticsStats />
       </Route>
-      <Route exact path="/stake">
-        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="stake">
-          <Stake />
+      <Route exact path="/earn">
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
+          <Earn />
         </SyntheticsStateContextProvider>
       </Route>
       <Route exact path="/buy">
@@ -197,7 +197,7 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       <Route exact path="/referrals-tier">
         <ReferralsTier />
       </Route>
-      <Route exact path="/stats">
+      <Route exact path="/monitor">
         <Stats />
       </Route>
       <Route exact path="/orders_overview">

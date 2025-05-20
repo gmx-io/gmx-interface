@@ -107,7 +107,7 @@ export default function DashboardV2() {
   }
 
   return (
-    <SEO title={getPageTitle(t`Dashboard`)}>
+    <SEO title={getPageTitle(t`Stats`)}>
       <div className="default-container DashboardV2 page-layout">
         <PageTitle
           title={t`Total Stats`}

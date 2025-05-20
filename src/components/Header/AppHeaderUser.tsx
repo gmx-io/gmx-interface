@@ -96,21 +96,18 @@ export function AppHeaderUser({
   if (!active || !account) {
     return (
       <div className="App-header-user">
-        {shouldHideTradeButton ? null : (
-          <div
-            data-qa="trade"
-            className={cx("App-header-trade-link text-body-medium", { "homepage-header": isHomeSite() })}
-          >
+        {isHomeSite() ? (
+          <div data-qa="trade" className="App-header-trade-link homepage-header text-body-medium">
             <HeaderLink
               className="default-btn"
               onClick={trackLaunchApp}
-              to={`${tradeLink}?${isHomeSite() ? userAnalytics.getSessionIdUrlParams() : ""}`}
+              to={`${tradeLink}?${userAnalytics.getSessionIdUrlParams()}`}
               showRedirectModal={showRedirectModal}
             >
-              {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
+              <Trans>Launch App</Trans>
             </HeaderLink>
           </div>
-        )}
+        ) : null}
 
         {showConnectionOptions && openConnectModal ? (
           <>
@@ -143,18 +140,18 @@ export function AppHeaderUser({
 
   return (
     <div className="App-header-user">
-      <div data-qa="trade" className="App-header-trade-link text-body-medium">
-        {shouldHideTradeButton ? null : (
+      {isHomeSite() ? (
+        <div data-qa="trade" className="App-header-trade-link text-body-medium">
           <HeaderLink
             className="default-btn"
             onClick={trackLaunchApp}
-            to={`${tradeLink}?${isHomeSite() ? userAnalytics.getSessionIdUrlParams() : ""}`}
+            to={`${tradeLink}?${userAnalytics.getSessionIdUrlParams()}`}
             showRedirectModal={showRedirectModal}
           >
-            {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
+            <Trans>Launch App</Trans>
           </HeaderLink>
-        )}
-      </div>
+        </div>
+      ) : null}
 
       {showConnectionOptions ? (
         <>

@@ -46,9 +46,9 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
           </div>
         </div>
       )}
-      <div className="App-header-link-container">
-        <HeaderLink qa="dashboard" to="/dashboard" showRedirectModal={showRedirectModal}>
-          <Trans>Dashboard</Trans>
+       <div className="App-header-link-container">
+        <HeaderLink qa="trade" to="/trade" showRedirectModal={showRedirectModal}>
+          <Trans>Trade</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
@@ -57,8 +57,13 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink qa="stake" to="/stake" showRedirectModal={showRedirectModal}>
-          <Trans>Stake</Trans>
+        <HeaderLink qa="earn" to="/earn" showRedirectModal={showRedirectModal}>
+          <Trans>Earn</Trans>
+        </HeaderLink>
+      </div>
+      <div className="App-header-link-container">
+        <HeaderLink qa="stats" to="/stats" showRedirectModal={showRedirectModal}>
+          <Trans>Stats</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
