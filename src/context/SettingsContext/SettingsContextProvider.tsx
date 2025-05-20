@@ -28,6 +28,7 @@ import {
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { tenderlyLsKeys } from "lib/tenderly";
+import useWallet from "lib/wallets/useWallet";
 import { getDefaultGasPaymentToken } from "sdk/configs/express";
 import { getOracleKeeperRandomIndex } from "sdk/configs/oracleKeeper";
 import { DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
@@ -103,6 +104,7 @@ export function useSettings() {
 }
 
 export function SettingsContextProvider({ children }: { children: ReactNode }) {
+  const { account } = useWallet();
   const { chainId } = useChainId();
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [showDebugValues, setShowDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
@@ -142,7 +144,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   );
 
   const [expressTradingGasTokenSwitched, setExpressTradingGasTokenSwitched] = useLocalStorageSerializeKey(
-    getExpressTradingGasTokenSwitchedKey(chainId),
+    getExpressTradingGasTokenSwitchedKey(chainId, account),
     false
   );
 

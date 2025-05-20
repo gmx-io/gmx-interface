@@ -209,6 +209,6 @@ export function getExpressTradingPromoHiddenKey(chainId: number) {
   return `${chainId}-${EXPRESS_TRADING_PROMO_HIDDEN_KEY}`;
 }
 
-export function getExpressTradingGasTokenSwitchedKey(chainId: number) {
-  return `${chainId}-${EXPRESS_TRADING_GAS_TOKEN_SWITCHED}`;
+export function getExpressTradingGasTokenSwitchedKey(chainId: number, account: string | undefined) {
+  return `${chainId}-${account}-${EXPRESS_TRADING_GAS_TOKEN_SWITCHED}`;
 }

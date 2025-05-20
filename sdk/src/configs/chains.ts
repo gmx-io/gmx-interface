@@ -134,4 +134,10 @@ export const GAS_LIMITS_STATIC_CONFIG = {
     cancelOrderGasLimit: 700_000n,
     tokenPermitGasLimit: 90_000n,
   },
+  [AVALANCHE_FUJI]: {
+    createOrderGasLimit: 1_000_000n,
+    updateOrderGasLimit: 800_000n,
+    cancelOrderGasLimit: 700_000n,
+    tokenPermitGasLimit: 90_000n,
+  },
 };
