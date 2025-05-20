@@ -118,7 +118,7 @@ export function calculatePoolPerformance({
     return 0;
   }
 
-  return calculatePerformance({
+  const performance = calculatePerformance({
     poolStartPrice,
     poolEndPrice,
     tokenAStartPrice,
@@ -126,6 +126,8 @@ export function calculatePoolPerformance({
     tokenAEndPrice,
     tokenBEndPrice,
   });
+
+  return calculateAnnualizedPerformance(performance, { startTimestamp, endTimestamp });
 }
 
 const getTokenPrice = (prices: Record<number, PriceSnapshot>, timestamp: number) => {
@@ -185,6 +187,11 @@ export const calculatePerformance = ({
   const benchmarkPerformance = (benchmarkEndPrice - benchmarkStartPrice) / benchmarkStartPrice;
 
   return roundPerformance(poolPerformance - benchmarkPerformance);
+};
+
+const calculateAnnualizedPerformance = (performance: number, { startTimestamp, endTimestamp }: { startTimestamp: number, endTimestamp: number }) => {
+  const days = Math.floor((endTimestamp - startTimestamp) / (60 * 60 * 24));
+  return (performance / days) * 365;
 };
 
 const ROUND_PRECISION = 1000000;
