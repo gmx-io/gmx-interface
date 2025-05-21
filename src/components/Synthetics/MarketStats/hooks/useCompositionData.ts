@@ -5,6 +5,7 @@ import {
   GlvInfo,
   GlvOrMarketInfo,
   getPoolUsdWithoutPnl,
+  getStrictestMaxPoolUsdForDeposit,
   isMarketInfo,
 } from "domain/synthetics/markets";
 import { getMaxUsdCapUsdInGmGlvMarket, isGlvInfo } from "domain/synthetics/markets/glv";
@@ -147,12 +148,14 @@ const getMarketInfoCompositionData = ({
 } => {
   const token = getTokenData(marketTokensData, marketInfo.marketTokenAddress);
   const balanceUsd = convertToUsd(token?.totalSupply, token?.decimals, token?.prices.maxPrice) ?? 0n;
+  const maxPoolUsd =
+    getStrictestMaxPoolUsdForDeposit(marketInfo, true) + getStrictestMaxPoolUsdForDeposit(marketInfo, false);
 
   const market = token
     ? {
         type: "market" as const,
         market: marketInfo,
-        tvl: [balanceUsd, marketInfo.poolValueMax] as const,
+        tvl: [balanceUsd, maxPoolUsd] as const,
         gmBalanceUsd: balanceUsd,
       }
     : null;

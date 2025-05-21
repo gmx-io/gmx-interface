@@ -86,7 +86,7 @@ export function CompositionTable<T extends CompositionType>({ composition, compo
 
 const CompositionTableRow = ({ item, sum }: { item: CompositionItem; sum: bigint }) => {
   return (
-    <TableTr className="!border-0">
+    <TableTr className="pointer-events-none !border-0">
       <TableTd>
         <div className="flex flex-row items-center gap-8">
           <span
