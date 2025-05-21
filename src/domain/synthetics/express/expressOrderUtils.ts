@@ -509,9 +509,10 @@ export async function buildAndSignExpressBatchOrderTxn({
     relayPayload: {
       ...relayParamsPayload,
       userNonce,
-      desChainId: srcChainId ? BigInt(chainId) : undefined,
+      desChainId: srcChainId || chainId === ARBITRUM_SEPOLIA ? BigInt(chainId) : undefined,
     } as RelayParamsPayload | MultichainRelayParamsPayload,
     subaccountApproval: subaccount?.signedApproval,
+    paramsLists: getBatchParamsLists(batchParams),
   };
 
   let signature: string;
@@ -533,8 +534,6 @@ export async function buildAndSignExpressBatchOrderTxn({
 
   let batchCalldata: Hex;
   if (srcChainId) {
-    const paramsLists = getBatchParamsLists(batchParams, true);
-
     type MultichainBatchArgs = AbiItemArgs<typeof multichainSubaccountRouterAbi, "batch">;
 
     if (subaccount) {
@@ -550,7 +549,7 @@ export async function buildAndSignExpressBatchOrderTxn({
           params.account,
           BigInt(srcChainId),
           subaccount.signedApproval?.subaccount,
-          paramsLists,
+          params.paramsLists,
         ] as MultichainBatchArgs,
       });
     } else {
@@ -565,12 +564,11 @@ export async function buildAndSignExpressBatchOrderTxn({
           },
           params.account,
           BigInt(srcChainId),
-          paramsLists,
+          params.paramsLists,
         ] as MultichainBatchArgs,
       });
     }
   } else {
-    const paramsLists = getBatchParamsLists(batchParams, false);
     if (subaccount) {
       batchCalldata = encodeFunctionData({
         abi:
@@ -583,14 +581,14 @@ export async function buildAndSignExpressBatchOrderTxn({
           subaccount.signedApproval,
           params.account,
           subaccount.signedApproval?.subaccount,
-          paramsLists,
+          params.paramsLists,
         ],
       });
     } else {
       batchCalldata = encodeFunctionData({
         abi: chainId === ARBITRUM_SEPOLIA ? abis.GelatoRelayRouterArbitrumSepolia : abis.GelatoRelayRouter,
         functionName: "batch",
-        args: [{ ...params.relayPayload, signature }, params.account, paramsLists],
+        args: [{ ...params.relayPayload, signature }, params.account, params.paramsLists],
       });
     }
   }
@@ -640,7 +638,7 @@ export async function getBatchSignatureParams({
       { name: "shouldUnwrapNativeToken", type: "bool" },
       { name: "autoCancel", type: "bool" },
       { name: "referralCode", type: "bytes32" },
-      srcChainId ? { name: "dataList", type: "bytes32[]" } : undefined,
+      chainId === ARBITRUM_SEPOLIA ? { name: "dataList", type: "bytes32[]" } : undefined,
     ].filter<{ name: string; type: string }>(Boolean as any),
     CreateOrderAddresses: [
       { name: "receiver", type: "address" },
@@ -675,7 +673,7 @@ export async function getBatchSignatureParams({
 
   const domain = getGelatoRelayRouterDomain(chainId, relayRouterAddress, subaccountApproval !== undefined, srcChainId);
 
-  const paramsLists = getBatchParamsLists(batchParams, srcChainId !== undefined);
+  const paramsLists = getBatchParamsLists(batchParams);
 
   const typedData = {
     account: subaccountApproval ? account : zeroAddress,
@@ -683,11 +681,11 @@ export async function getBatchSignatureParams({
     updateOrderParamsList: paramsLists.updateOrderParamsList,
     cancelOrderKeys: paramsLists.cancelOrderKeys,
     relayParams:
-      srcChainId !== undefined
+      chainId === ARBITRUM_SEPOLIA
         ? hashRelayParamsMultichain({ ...relayParams, desChainId: BigInt(chainId) })
         : hashRelayParams(relayParams),
     subaccountApproval: subaccountApproval
-      ? hashSubaccountApproval(subaccountApproval, srcChainId !== undefined)
+      ? hashSubaccountApproval(subaccountApproval, chainId === ARBITRUM_SEPOLIA)
       : zeroHash,
   };
 
@@ -699,7 +697,7 @@ export async function getBatchSignatureParams({
   };
 }
 
-function getBatchParamsLists<T extends boolean = false>(batchParams: BatchOrderTxnParams, isMultichain: T) {
+function getBatchParamsLists(batchParams: BatchOrderTxnParams) {
   return {
     createOrderParamsList: batchParams.createOrderParams.map((p) => ({
       addresses: p.orderPayload.addresses,
@@ -710,8 +708,7 @@ function getBatchParamsLists<T extends boolean = false>(batchParams: BatchOrderT
       shouldUnwrapNativeToken: p.orderPayload.shouldUnwrapNativeToken,
       autoCancel: p.orderPayload.autoCancel,
       referralCode: p.orderPayload.referralCode,
-      // TODO add only in multichain
-      dataList: (isMultichain ? p.orderPayload.dataList : undefined) as T extends true ? Hex[] : undefined,
+      dataList: p.orderPayload.dataList,
     })),
     updateOrderParamsList: batchParams.updateOrderParams.map((p) => ({
       key: p.updatePayload.orderKey,
@@ -726,9 +723,6 @@ function getBatchParamsLists<T extends boolean = false>(batchParams: BatchOrderT
     cancelOrderKeys: batchParams.cancelOrderParams.map((p) => p.orderKey),
   };
 }
-
-export type BatchParamsListForSettlementChain = ReturnType<typeof getBatchParamsLists<false>>;
-export type BatchParamsListForMultichain = ReturnType<typeof getBatchParamsLists<true>>;
 
 export async function getMultichainInfoFromSigner(
   signer: Signer,

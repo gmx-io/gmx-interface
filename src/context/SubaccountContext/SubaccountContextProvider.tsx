@@ -162,7 +162,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
   const tryEnableSubaccount = useCallback(async () => {
     if (!provider || !signer) {
-      return;
+      return false;
     }
 
     let config = subaccountConfig;
@@ -317,8 +317,6 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
         const baseRelayFeeSwapParams = getRelayerFeeParams({
           chainId: chainId,
-
-          srcChainId: srcChainId,
           account: account,
           relayerFeeTokenAmount: baseRelayerFeeAmount,
           totalNetworkFeeAmount: baseRelayerFeeAmount,
@@ -336,9 +334,16 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
             refundReceivers: [],
           },
           tokensData,
-          gasPaymentAllowanceData: undefined,
           forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
+          // TODO: fix
+          gasPrice: 0n,
+          l1GasLimit: 0n,
+          relayerGasLimit: 0n,
         });
+
+        if (baseRelayFeeSwapParams === undefined) {
+          throw new Error("No base relay fee swap params");
+        }
 
         // const relayParamsPayload: RelayParamsPayload = {};
         const relayParamsPayload: MultichainRelayParamsPayload = {

@@ -640,7 +640,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         >
           {fromTokenAddress && (
             <MultichainTokenSelector
-              srcChainId={srcChainId}
               chainId={chainId}
               label={t`Pay`}
               tokenAddress={fromTokenAddress}

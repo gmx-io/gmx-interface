@@ -1,25 +1,21 @@
-import { useContextSelector, Context } from "use-context-selector";
+import { Context, useContextSelector } from "use-context-selector";
 
 import { GmxAccountContext, context } from "./GmxAccountContext";
 import {
-  selectGmxAccountModalOpen,
-  selectGmxAccountSetModalOpen,
-  selectGmxAccountDepositViewChain,
-  selectGmxAccountSetDepositViewChain,
   selectGmxAccountDepositViewTokenAddress,
-  selectGmxAccountSetDepositViewTokenAddress,
   selectGmxAccountDepositViewTokenInputValue,
-  selectGmxAccountSetDepositViewTokenInputValue,
-  selectGmxAccountWithdrawViewChain,
-  selectGmxAccountSetWithdrawViewChain,
-  selectGmxAccountWithdrawViewTokenAddress,
-  selectGmxAccountSetWithdrawViewTokenAddress,
-  selectGmxAccountWithdrawViewTokenInputValue,
-  selectGmxAccountSetWithdrawViewTokenInputValue,
+  selectGmxAccountModalOpen,
   selectGmxAccountSelectedTransferGuid,
+  selectGmxAccountSetDepositViewTokenAddress,
+  selectGmxAccountSetDepositViewTokenInputValue,
+  selectGmxAccountSetModalOpen,
   selectGmxAccountSetSelectedTransferGuid,
-  selectGmxAccountSettlementChainId,
   selectGmxAccountSetSettlementChainId,
+  selectGmxAccountSetWithdrawViewTokenAddress,
+  selectGmxAccountSetWithdrawViewTokenInputValue,
+  selectGmxAccountSettlementChainId,
+  selectGmxAccountWithdrawViewTokenAddress,
+  selectGmxAccountWithdrawViewTokenInputValue,
 } from "./selectors/pure";
 
 export function useGmxAccountSelector<Selected>(selector: (s: GmxAccountContext) => Selected) {
@@ -33,6 +29,9 @@ export function useGmxAccountModalOpen() {
   ] as const;
 }
 
+/**
+ * If you just need the settlement chain id and not updating it, use `useChainId` instead
+ */
 export function useGmxAccountSettlementChainId() {
   return [
     useGmxAccountSelector(selectGmxAccountSettlementChainId),
@@ -41,13 +40,6 @@ export function useGmxAccountSettlementChainId() {
 }
 
 // deposit view
-
-// export function useGmxAccountDepositViewChain() {
-//   return [
-//     useGmxAccountSelector(selectGmxAccountDepositViewChain),
-//     useGmxAccountSelector(selectGmxAccountSetDepositViewChain),
-//   ] as const;
-// }
 
 export function useGmxAccountDepositViewTokenAddress() {
   return [
@@ -63,13 +55,6 @@ export function useGmxAccountDepositViewTokenInputValue() {
   ] as const;
 }
 // withdraw view
-
-export function useGmxAccountWithdrawViewChain() {
-  return [
-    useGmxAccountSelector(selectGmxAccountWithdrawViewChain),
-    useGmxAccountSelector(selectGmxAccountSetWithdrawViewChain),
-  ] as const;
-}
 
 export function useGmxAccountWithdrawViewTokenAddress() {
   return [

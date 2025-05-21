@@ -24,12 +24,10 @@ import {
   isSourceChain,
 } from "context/GmxAccountContext/config";
 import {
-  // useGmxAccountDepositViewChain,
   useGmxAccountDepositViewTokenAddress,
   useGmxAccountDepositViewTokenInputValue,
   useGmxAccountModalOpen,
   useGmxAccountSelector,
-  useGmxAccountSettlementChainId,
 } from "context/GmxAccountContext/hooks";
 import { selectGmxAccountDepositViewTokenInputAmount } from "context/GmxAccountContext/selectors";
 import { IStargateAbi } from "context/GmxAccountContext/stargatePools";
@@ -88,11 +86,10 @@ const leadingDebounce: DebouncedFuncLeading<(value: bigint | undefined) => bigin
 );
 
 export const DepositView = () => {
-  const { srcChainId } = useChainId();
+  const { chainId: settlementChainId, srcChainId } = useChainId();
   const { address: account, chainId: walletChainId } = useAccount();
   const signer = useEthersSigner({ chainId: srcChainId });
 
-  const [settlementChainId] = useGmxAccountSettlementChainId();
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
 
   const [depositViewTokenAddress, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();

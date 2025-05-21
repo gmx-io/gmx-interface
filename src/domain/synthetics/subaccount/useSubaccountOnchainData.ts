@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-import { UiContractsChain } from "sdk/configs/chains";
+import { ARBITRUM_SEPOLIA, UiContractsChain } from "sdk/configs/chains";
 import {
   maxAllowedSubaccountActionCountKey,
   SUBACCOUNT_ORDER_ACTION,
@@ -84,7 +84,7 @@ export function useSubaccountOnchainData(
               params: [subaccountExpiresAtKey(account!, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
             },
             integrationId:
-              srcChainId !== undefined
+              chainId === ARBITRUM_SEPOLIA
                 ? {
                     methodName: "getBytes32",
                     params: [subaccountIntegrationIdKey(account!, subaccountAddress)],
@@ -101,7 +101,7 @@ export function useSubaccountOnchainData(
       const expiresAt = BigInt(res.data.dataStore.expiresAt.returnValues[0]);
       const approvalNonce = BigInt(res.data.subaccountRelayRouter.subaccountApproval.returnValues[0]);
 
-      const integrationId = srcChainId !== undefined ? res.data.dataStore.integrationId.returnValues[0] : undefined;
+      const integrationId = chainId === ARBITRUM_SEPOLIA ? res.data.dataStore.integrationId.returnValues[0] : undefined;
 
       return {
         active: isSubaccountActive,

@@ -2,8 +2,8 @@ import useSWR from "swr";
 import { useAccount } from "wagmi";
 
 import { getSubgraphUrl } from "config/subgraph";
-import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { MultichainFundingHistoryItem } from "context/GmxAccountContext/types";
+import { useChainId } from "lib/chains";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import graphqlFetcher from "sdk/utils/graphqlFetcher";
 
@@ -63,11 +63,11 @@ async function fetchGmxAccountFundingHistory(
 }
 
 export function useGmxAccountFundingHistory(): MultichainFundingHistoryItem[] | undefined {
-  const [settlementChainId] = useGmxAccountSettlementChainId();
+  const { chainId } = useChainId();
   const { address: account } = useAccount();
 
   const { data } = useSWR(account ? ["gmx-account-funding-history", account] : null, {
-    fetcher: () => fetchGmxAccountFundingHistory(settlementChainId, { account }),
+    fetcher: () => fetchGmxAccountFundingHistory(chainId, { account }),
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
   });
 
@@ -75,10 +75,10 @@ export function useGmxAccountFundingHistory(): MultichainFundingHistoryItem[] | 
 }
 
 export function useGmxAccountFundingHistoryItem(guid: string | undefined): MultichainFundingHistoryItem | undefined {
-  const [settlementChainId] = useGmxAccountSettlementChainId();
+  const { chainId } = useChainId();
 
   const { data } = useSWR(guid ? ["gmx-account-funding-history-item", guid] : null, () =>
-    fetchGmxAccountFundingHistory(settlementChainId, { guid })
+    fetchGmxAccountFundingHistory(chainId, { guid })
   );
 
   return data?.[0];

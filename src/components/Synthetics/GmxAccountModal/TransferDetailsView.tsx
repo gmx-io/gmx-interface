@@ -2,7 +2,8 @@ import { Trans } from "@lingui/macro";
 
 import { getChainName } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
-import { useGmxAccountSelectedTransferGuid, useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
+import { useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
+import { useChainId } from "lib/chains";
 import { formatBalanceAmount } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import { getToken } from "sdk/configs/tokens";
@@ -18,7 +19,7 @@ import { useGmxAccountFundingHistoryItem } from "./useGmxAccountFundingHistory";
 import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
 
 export const TransferDetailsView = () => {
-  const [settlementChainId] = useGmxAccountSettlementChainId();
+  const { chainId } = useChainId();
   const [selectedTransferGuid] = useGmxAccountSelectedTransferGuid();
 
   const selectedTransfer = useGmxAccountFundingHistoryItem(selectedTransferGuid);
@@ -29,7 +30,7 @@ export const TransferDetailsView = () => {
 
   const sourceChainName = getChainName(selectedTransfer.sourceChainId);
 
-  const token = getToken(settlementChainId, selectedTransfer.token);
+  const token = getToken(chainId, selectedTransfer.token);
 
   return (
     <div className="text-body-medium flex grow flex-col gap-8 overflow-y-hidden">

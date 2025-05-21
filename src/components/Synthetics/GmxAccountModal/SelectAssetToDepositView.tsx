@@ -4,13 +4,9 @@ import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
 import { MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "context/GmxAccountContext/config";
-import {
-  // useGmxAccountDepositViewChain,
-  useGmxAccountDepositViewTokenAddress,
-  useGmxAccountModalOpen,
-  useGmxAccountSettlementChainId,
-} from "context/GmxAccountContext/hooks";
+import { useGmxAccountDepositViewTokenAddress, useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { TokenChainData } from "context/GmxAccountContext/types";
+import { useChainId } from "lib/chains";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
 import { switchNetwork } from "lib/wallets";
@@ -22,7 +18,6 @@ import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableSc
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import InfoIconComponent from "img/ic_info.svg?react";
-
 type TokenListItemProps = {
   tokenChainData: DisplayTokenChainData;
   onClick?: () => void;
@@ -69,7 +64,7 @@ type DisplayTokenChainData = TokenChainData & {
 };
 
 export const SelectAssetToDepositView = () => {
-  const [settlementChainId] = useGmxAccountSettlementChainId();
+  const { chainId } = useChainId();
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   // const [, setDepositViewChain] = useGmxAccountDepositViewChain();
   const { isConnected } = useAccount();
@@ -83,15 +78,13 @@ export const SelectAssetToDepositView = () => {
   const NETWORKS_FILTER = useMemo(() => {
     const wildCard = { id: "all", name: "All Networks" };
 
-    const chainFilters = Object.keys(MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChainId] ?? EMPTY_OBJECT).map(
-      (sourceChainId) => ({
-        id: parseInt(sourceChainId),
-        name: getChainName(parseInt(sourceChainId)),
-      })
-    );
+    const chainFilters = Object.keys(MULTI_CHAIN_SUPPORTED_TOKEN_MAP[chainId] ?? EMPTY_OBJECT).map((sourceChainId) => ({
+      id: parseInt(sourceChainId),
+      name: getChainName(parseInt(sourceChainId)),
+    }));
 
     return [wildCard, ...chainFilters];
-  }, [settlementChainId]);
+  }, [chainId]);
 
   const filteredBalances: DisplayTokenChainData[] = useMemo(() => {
     return tokensChainData

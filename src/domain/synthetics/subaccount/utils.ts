@@ -2,7 +2,7 @@ import cryptoJs from "crypto-js";
 import { ethers, Provider } from "ethers";
 import { decodeFunctionResult, encodeAbiParameters, encodeFunctionData, keccak256, maxUint256, zeroHash } from "viem";
 
-import { UiContractsChain } from "config/static/chains";
+import { ARBITRUM_SEPOLIA, UiContractsChain } from "config/static/chains";
 import {
   SignedSubbacountApproval,
   Subaccount,
@@ -352,7 +352,7 @@ export async function createAndSignSubaccountApproval(
       { name: "actionType", type: "bytes32" },
       { name: "nonce", type: "uint256" },
       { name: "deadline", type: "uint256" },
-      srcChainId !== undefined ? { name: "integrationId", type: "bytes32" } : undefined,
+      chainId === ARBITRUM_SEPOLIA ? { name: "integrationId", type: "bytes32" } : undefined,
     ].filter((type) => type !== undefined),
   };
 
@@ -365,7 +365,7 @@ export async function createAndSignSubaccountApproval(
     maxAllowedCount: params.maxAllowedCount,
     actionType: SUBACCOUNT_ORDER_ACTION,
     nonce,
-    integrationId: srcChainId !== undefined ? zeroHash : undefined,
+    integrationId: chainId === ARBITRUM_SEPOLIA ? zeroHash : undefined,
     deadline: params.deadline,
   };
 
@@ -378,7 +378,7 @@ export async function createAndSignSubaccountApproval(
   };
 }
 
-export function hashSubaccountApproval(subaccountApproval: SignedSubbacountApproval, isMultichain: boolean) {
+export function hashSubaccountApproval(subaccountApproval: SignedSubbacountApproval, isNewContracts: boolean) {
   if (!subaccountApproval) {
     return zeroHash;
   }
@@ -395,7 +395,7 @@ export function hashSubaccountApproval(subaccountApproval: SignedSubbacountAppro
           { name: "actionType", type: "bytes32" },
           { name: "nonce", type: "uint256" },
           { name: "deadline", type: "uint256" },
-          isMultichain ? { name: "integrationId", type: "bytes32" } : undefined,
+          isNewContracts ? { name: "integrationId", type: "bytes32" } : undefined,
           { name: "signature", type: "bytes" },
         ].filter((type) => type !== undefined),
       },
@@ -491,7 +491,7 @@ export async function getSubaccountOnchainData({
       args: [subaccountExpiresAtKey(account, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
     },
     integrationId:
-      srcChainId !== undefined
+      chainId === ARBITRUM_SEPOLIA
         ? {
             contractAddress: getContract(chainId, "DataStore"),
             abi: abis.DataStore,

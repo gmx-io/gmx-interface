@@ -14,6 +14,7 @@ import "styles/recharts.css";
 import "./App.scss";
 
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
+import { ChainContextProvider } from "context/ChainContext/ChainContext";
 import { ExpressNoncesContextProvider } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
 import { GmxAccountContextProvider } from "context/GmxAccountContext/GmxAccountContext";
@@ -72,6 +73,7 @@ function App() {
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
   app = <KeydSwrConfig>{app}</KeydSwrConfig>;
   app = <GlobalStateProvider>{app}</GlobalStateProvider>;
+  app = <ChainContextProvider>{app}</ChainContextProvider>;
   app = <GmxAccountContextProvider>{app}</GmxAccountContextProvider>;
   app = <Router>{app}</Router>;
 

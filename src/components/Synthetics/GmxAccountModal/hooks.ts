@@ -12,7 +12,6 @@ import {
   SETTLEMENT_CHAINS,
   isSettlementChain,
 } from "context/GmxAccountContext/config";
-import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { TokenChainData } from "context/GmxAccountContext/types";
 import {
   TokensDataResult,
@@ -162,13 +161,13 @@ const subscribeMultichainTokenBalances: SWRSubscription<
 };
 
 export function useMultichainTokensRequest(): TokenChainData[] {
-  const [settlementChainId] = useGmxAccountSettlementChainId();
+  const { chainId } = useChainId();
   const { address: account } = useAccount();
 
-  const { pricesData } = useTokenRecentPricesRequest(settlementChainId);
+  const { pricesData } = useTokenRecentPricesRequest(chainId);
 
   const { data } = useSWRSubscription(
-    account ? ["multichain-tokens", settlementChainId, account] : null,
+    account ? ["multichain-tokens", chainId, account] : null,
     subscribeMultichainTokenBalances
   );
   const tokenBalances = data?.tokenBalances;
@@ -185,7 +184,7 @@ export function useMultichainTokensRequest(): TokenChainData[] {
       const tokensChainBalanceData = tokenBalances[sourceChainId];
 
       for (const sourceChainTokenAddress in tokensChainBalanceData) {
-        const mapping = MULTI_CHAIN_TOKEN_MAPPING[settlementChainId]?.[sourceChainId]?.[sourceChainTokenAddress];
+        const mapping = MULTI_CHAIN_TOKEN_MAPPING[chainId]?.[sourceChainId]?.[sourceChainTokenAddress];
 
         if (!mapping) {
           continue;
@@ -199,7 +198,7 @@ export function useMultichainTokensRequest(): TokenChainData[] {
 
         const settlementChainTokenAddress = mapping.settlementChainTokenAddress;
 
-        const token = getToken(settlementChainId, settlementChainTokenAddress);
+        const token = getToken(chainId, settlementChainTokenAddress);
 
         const tokenChainData: TokenChainData = {
           ...token,
@@ -245,7 +244,7 @@ export function useMultichainTokensRequest(): TokenChainData[] {
     }
 
     return tokenChainDataArray;
-  }, [tokenBalances, settlementChainId, pricesData]);
+  }, [tokenBalances, chainId, pricesData]);
 
   return tokenChainDataArray;
 }
@@ -380,9 +379,9 @@ export function useGmxAccountTokensDataObject(): TokensData {
 }
 
 export function useGmxAccountWithdrawNetworks() {
-  const [settlementChainId] = useGmxAccountSettlementChainId();
+  const { chainId } = useChainId();
 
-  const sourceChains = Object.keys(MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChainId] || {}).map(Number);
+  const sourceChains = Object.keys(MULTI_CHAIN_SUPPORTED_TOKEN_MAP[chainId] || {}).map(Number);
 
   const networks = useMemo(() => {
     return sourceChains.map((sourceChainId) => {

@@ -1,7 +1,7 @@
 import { ethers, Signer } from "ethers";
 import { encodeFunctionData } from "viem";
 
-import { UiContractsChain } from "config/static/chains";
+import { ARBITRUM_SEPOLIA, UiContractsChain } from "config/static/chains";
 import { callContract } from "lib/contracts";
 import { ExpressTxnData } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
@@ -105,9 +105,10 @@ async function signRemoveSubaccountPayload({
 
   const typedData = {
     subaccount: subaccountAddress,
-    relayParams: srcChainId
-      ? hashRelayParamsMultichain({ desChainId: BigInt(chainId), ...relayParams })
-      : hashRelayParams(relayParams),
+    relayParams:
+      chainId === ARBITRUM_SEPOLIA
+        ? hashRelayParamsMultichain({ desChainId: BigInt(chainId), ...relayParams })
+        : hashRelayParams(relayParams),
   };
 
   return signTypedData({

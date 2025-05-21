@@ -1,14 +1,4 @@
-import {
-  arbitrum,
-  avalanche,
-  avalancheFuji,
-  arbitrumSepolia,
-  Chain,
-  sepolia,
-  optimismSepolia,
-  base,
-  sonic,
-} from "viem/chains";
+import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, Chain, optimismSepolia, sepolia } from "viem/chains";
 
 import { GasLimitsConfig } from "types/fees";
 
@@ -30,23 +20,23 @@ export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 export const SUPPORTED_CHAIN_IDS_DEV = [...SUPPORTED_CHAIN_IDS, AVALANCHE_FUJI, ARBITRUM_SEPOLIA];
 
 export type UiContractsChain = typeof ARBITRUM | typeof AVALANCHE | typeof AVALANCHE_FUJI | typeof ARBITRUM_SEPOLIA;
-export type UiSupportedChain =
-  | typeof ARBITRUM
-  | typeof AVALANCHE
-  | typeof AVALANCHE_FUJI
-  | typeof ARBITRUM_SEPOLIA
-  | typeof BASE_MAINNET
-  | typeof SONIC_MAINNET
-  | typeof OPTIMISM_SEPOLIA
-  | typeof SEPOLIA;
 
 export type UiSettlementChain = typeof ARBITRUM_SEPOLIA;
 export type UiSourceChain = typeof OPTIMISM_SEPOLIA | typeof SEPOLIA;
+export type UiSupportedChain = UiContractsChain | UiSettlementChain | UiSourceChain;
+// | typeof ARBITRUM
+// | typeof AVALANCHE
+// | typeof AVALANCHE_FUJI
+// | typeof ARBITRUM_SEPOLIA
+// | typeof BASE_MAINNET
+// | typeof SONIC_MAINNET
+// | typeof OPTIMISM_SEPOLIA
+// | typeof SEPOLIA;
 
 export const CHAIN_NAMES_MAP: Record<UiSupportedChain, string> = {
   [ARBITRUM]: "Arbitrum",
-  [BASE_MAINNET]: base.name,
-  [SONIC_MAINNET]: sonic.name,
+  // [BASE_MAINNET]: base.name,
+  // [SONIC_MAINNET]: sonic.name,
 
   [AVALANCHE]: "Avalanche",
   [AVALANCHE_FUJI]: "Avalanche Fuji",

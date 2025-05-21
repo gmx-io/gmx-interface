@@ -7,10 +7,9 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
-  BASE_MAINNET,
   OPTIMISM_SEPOLIA,
   SEPOLIA,
-  SONIC_MAINNET,
+  UiContractsChain,
   UiSettlementChain,
   UiSourceChain,
   UiSupportedChain,
@@ -218,22 +217,29 @@ if (isDevelopment()) {
 
 export const DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT = true;
 
-export const SETTLEMENT_CHAINS: UiSettlementChain[] = !isDevelopment()
-  ? []
-  : (Object.keys({
-      [ARBITRUM_SEPOLIA]: true,
-    } satisfies Record<UiSettlementChain, true>).map(Number) as UiSettlementChain[]);
+export const CONTRACTS_CHAINS: UiContractsChain[] = Object.keys({
+  [ARBITRUM_SEPOLIA]: true,
+  [ARBITRUM]: true,
+  [AVALANCHE]: true,
+  [AVALANCHE_FUJI]: true,
+} satisfies Record<UiContractsChain, true>).map(Number) as UiContractsChain[];
+
+export const SETTLEMENT_CHAINS: UiSettlementChain[] = Object.keys({
+  [ARBITRUM_SEPOLIA]: true,
+} satisfies Record<UiSettlementChain, true>).map(Number) as UiSettlementChain[];
 
 // To test bridge in from the same network add ARBITRUM_SEPOLIA to source chains
-export const SOURCE_CHAINS: UiSourceChain[] = !isDevelopment()
-  ? []
-  : (Object.keys({
-      [OPTIMISM_SEPOLIA]: true,
-      [SEPOLIA]: true,
-    } satisfies Record<UiSourceChain, true>).map(Number) as UiSourceChain[]);
+export const SOURCE_CHAINS: UiSourceChain[] = Object.keys({
+  [OPTIMISM_SEPOLIA]: true,
+  [SEPOLIA]: true,
+} satisfies Record<UiSourceChain, true>).map(Number) as UiSourceChain[];
 
 if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
   SOURCE_CHAINS.push(ARBITRUM_SEPOLIA as UiSourceChain);
+}
+
+export function isContractsChain(chainId: number): chainId is UiContractsChain {
+  return CONTRACTS_CHAINS.includes(chainId as UiContractsChain);
 }
 
 export function isSettlementChain(chainId: number): chainId is UiSettlementChain {
@@ -359,8 +365,8 @@ for (const tokenSymbol in TOKEN_GROUPS) {
 
 export const DEFAULT_SETTLEMENT_CHAIN_ID_MAP: Record<UiSupportedChain, UiSettlementChain> = {
   // TODO: fix
-  [BASE_MAINNET]: ARBITRUM_SEPOLIA, // ARBITRUM,
-  [SONIC_MAINNET]: ARBITRUM_SEPOLIA, // ARBITRUM,
+  // [BASE_MAINNET]: ARBITRUM_SEPOLIA, // ARBITRUM,
+  // [SONIC_MAINNET]: ARBITRUM_SEPOLIA, // ARBITRUM,
 
   [ARBITRUM_SEPOLIA]: ARBITRUM_SEPOLIA,
   [OPTIMISM_SEPOLIA]: ARBITRUM_SEPOLIA,

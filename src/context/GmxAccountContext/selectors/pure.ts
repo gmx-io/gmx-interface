@@ -17,8 +17,6 @@ export const selectGmxAccountSetDepositViewTokenInputValue = (s: GmxAccountConte
 
 //#region Withdraw view
 
-export const selectGmxAccountWithdrawViewChain = (s: GmxAccountContext) => s.withdrawViewChain;
-export const selectGmxAccountSetWithdrawViewChain = (s: GmxAccountContext) => s.setWithdrawViewChain;
 export const selectGmxAccountWithdrawViewTokenAddress = (s: GmxAccountContext) => s.withdrawViewTokenAddress;
 export const selectGmxAccountSetWithdrawViewTokenAddress = (s: GmxAccountContext) => s.setWithdrawViewTokenAddress;
 export const selectGmxAccountWithdrawViewTokenInputValue = (s: GmxAccountContext) => s.withdrawViewTokenInputValue;
