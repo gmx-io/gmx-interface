@@ -57,6 +57,15 @@ export function ExpressTradingWarningCard({
     setIsVisible(false);
   }, [setWrapOrUnwrapWarningHidden]);
 
+  const handleUpdateSubaccountSettings = useCallback(() => {
+    updateSubaccountSettings({
+      nextRemainigActions: BigInt(DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT),
+      nextRemainingSeconds: BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION),
+    }).then(() => {
+      setIsVisible(false);
+    });
+  }, [updateSubaccountSettings]);
+
   const {
     shouldShowAllowedActionsWarning,
     shouldShowNativeTokenWarning,
@@ -94,35 +103,17 @@ export function ExpressTradingWarningCard({
       </Trans>
     );
   } else if (shouldShowAllowedActionsWarning) {
-    onClick = () => {
-      updateSubaccountSettings({
-        nextRemainigActions: BigInt(DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT),
-      }).then(() => {
-        setIsVisible(false);
-      });
-    };
+    onClick = handleUpdateSubaccountSettings;
     icon = <OneClickIcon className="-mt-4 ml-4" />;
     content = <Trans>One-Click Trading is disabled. Action limit exceeded.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowNonceExpiredWarning) {
-    onClick = () => {
-      updateSubaccountSettings({
-        nextRemainingSeconds: BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION),
-      }).then(() => {
-        setIsVisible(false);
-      });
-    };
+    onClick = handleUpdateSubaccountSettings;
     icon = <OneClickIcon className="ml- -mt-4" />;
     content = <Trans>One-Click Approval nonce expired. Please sign a new approval.</Trans>;
     buttonText = <Trans>Re-sign</Trans>;
   } else if (shouldShowExpiredSubaccountWarning) {
-    onClick = () => {
-      updateSubaccountSettings({
-        nextRemainingSeconds: BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION),
-      }).then(() => {
-        setIsVisible(false);
-      });
-    };
+    onClick = handleUpdateSubaccountSettings;
     icon = <OneClickIcon className="-mt-4 ml-4" />;
     content = <Trans>One-Click Trading is disabled. Time limit expired.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
