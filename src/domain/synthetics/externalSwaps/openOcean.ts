@@ -38,6 +38,20 @@ type OpenOceanTxnResponse = {
   };
 };
 
+export type OpenOceanQuote = {
+  to: string;
+  data: string;
+  value: bigint;
+  estimatedGas: bigint;
+  usdIn: bigint;
+  usdOut: bigint;
+  priceIn: bigint;
+  priceOut: bigint;
+  gasPrice: bigint;
+  amountIn: bigint;
+  outputAmount: bigint;
+};
+
 export async function getOpenOceanTxnData({
   chainId,
   tokenInAddress,
@@ -56,7 +70,7 @@ export async function getOpenOceanTxnData({
   amountIn: bigint;
   gasPrice: bigint;
   slippage: number;
-}) {
+}): Promise<OpenOceanQuote | undefined> {
   const disabledDexIds = DISABLED_OPEN_OCEAN_DEXES[chainId] ?? [];
   const tokenIn = getToken(chainId, tokenInAddress);
 
@@ -101,6 +115,7 @@ export async function getOpenOceanTxnData({
       priceIn: numberToBigint(parseFloat(parsed.data.inToken.usd), USD_DECIMALS),
       priceOut: numberToBigint(parseFloat(parsed.data.outToken.usd), USD_DECIMALS),
       gasPrice: BigInt(parsed.data.gasPrice),
+      amountIn,
       outputAmount: BigInt(parsed.data.minOutAmount),
     };
   } catch (e) {

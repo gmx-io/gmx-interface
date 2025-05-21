@@ -27,7 +27,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { estimateExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
@@ -423,7 +423,7 @@ function useOrdersControl() {
         cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
       };
 
-      const expressParams = await estimateExpressParams({
+      const expressParams = await estimateBatchExpressParams({
         signer,
         chainId,
         batchParams,
@@ -478,7 +478,7 @@ function useOrdersControl() {
         cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
       };
 
-      const expressParams = await estimateExpressParams({
+      const expressParams = await estimateBatchExpressParams({
         signer,
         chainId,
         batchParams,

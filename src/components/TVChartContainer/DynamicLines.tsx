@@ -20,7 +20,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { estimateExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useMarkets } from "domain/synthetics/markets";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
@@ -70,7 +70,7 @@ export function DynamicLines({
         cancelOrderParams: orderKeys.map((k) => ({ orderKey: k })),
       };
 
-      const expressParams = await estimateExpressParams({
+      const expressParams = await estimateBatchExpressParams({
         signer,
         chainId,
         batchParams,

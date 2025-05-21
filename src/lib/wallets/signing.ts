@@ -45,7 +45,7 @@ export async function signTypedData({ signer, domain, types, typedData }: SignTy
       if (e.message.includes("requires a provider")) {
         // ignore and try to send request directly to provider
       } else {
-        return;
+        throw e;
       }
     }
   }

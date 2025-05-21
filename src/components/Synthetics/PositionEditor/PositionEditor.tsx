@@ -202,8 +202,8 @@ export function PositionEditor() {
     fromTokenAmount: collateralDeltaAmount ?? 0n,
     fromTokenInputValue: collateralInputValue,
     minResidualAmount:
-      expressParams?.relayFeeParams.gasPaymentTokenAddress === collateralToken?.address
-        ? expressParams?.relayFeeParams.gasPaymentTokenAmount
+      expressParams?.gasPaymentParams.gasPaymentTokenAddress === collateralToken?.address
+        ? expressParams?.gasPaymentParams.gasPaymentTokenAmount
         : undefined,
     isLoading: isExpressLoading,
   });
@@ -360,7 +360,7 @@ export function PositionEditor() {
                 }
               />
 
-              <PositionEditorAdvancedRows operation={operation} relayerFeeParams={expressParams?.relayFeeParams} />
+              <PositionEditorAdvancedRows operation={operation} gasPaymentParams={expressParams?.gasPaymentParams} />
             </div>
           </>
         )}

@@ -5,7 +5,7 @@ import { OrderTxnType, OrderType } from "domain/synthetics/orders";
 import { SignedSubbacountApproval } from "domain/synthetics/subaccount";
 import { OrderMetricId } from "lib/metrics/types";
 import { SignedTokenPermit } from "sdk/types/tokens";
-import { ExternalSwapOutput } from "sdk/types/trade";
+import { ExternalSwapQuote } from "sdk/types/trade";
 
 export type MultiTransactionStatus<TEventData> = {
   key: string;
@@ -204,7 +204,7 @@ export type PendingOrderData = {
   marketAddress: string;
   initialCollateralTokenAddress: string;
   swapPath: string[];
-  externalSwapQuote: ExternalSwapOutput | undefined;
+  externalSwapQuote: ExternalSwapQuote | undefined;
   initialCollateralDeltaAmount: bigint;
   triggerPrice: bigint;
   acceptablePrice: bigint;

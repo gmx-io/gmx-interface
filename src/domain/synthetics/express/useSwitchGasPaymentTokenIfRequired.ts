@@ -24,7 +24,7 @@ export function useSwitchGasPaymentTokenIfRequired({ expressParams }: { expressP
   useEffect(
     function switchGasPaymentToken() {
       if (expressParams?.gasPaymentValidations.isOutGasTokenBalance) {
-        const gasPaymentTokenData = getByKey(tokensData, expressParams!.relayFeeParams.gasPaymentTokenAddress);
+        const gasPaymentTokenData = getByKey(tokensData, expressParams!.gasPaymentParams.gasPaymentTokenAddress);
 
         if (!gasPaymentTokenData) {
           return;
@@ -34,7 +34,7 @@ export function useSwitchGasPaymentTokenIfRequired({ expressParams }: { expressP
           const tokenData = getByKey(tokensData, token);
 
           const usdValue = convertToUsd(
-            expressParams!.relayFeeParams.gasPaymentTokenAmount,
+            expressParams!.gasPaymentParams.gasPaymentTokenAmount,
             gasPaymentTokenData?.decimals,
             gasPaymentTokenData?.prices.minPrice
           );

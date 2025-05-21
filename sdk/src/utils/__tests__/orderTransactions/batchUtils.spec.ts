@@ -5,7 +5,7 @@ import { ARBITRUM } from "configs/chains";
 import { getTokenBySymbol, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { OrderType } from "types/orders";
 import { ERC20Address } from "types/tokens";
-import { ExternalSwapOutput } from "types/trade";
+import { ExternalSwapQuote } from "types/trade";
 import { expandDecimals, parseValue, USD_DECIMALS } from "utils/numbers";
 import {
   buildIncreaseOrderPayload,
@@ -22,7 +22,7 @@ import { mockExternalSwap } from "../../../test/mock";
 
 // Common tokens and addresses
 const CHAIN_ID = ARBITRUM;
-const ACCOUNT = "0x1234567890123456789012345678901234567890" as `0x${string}`;
+const ACCOUNT = "0x1234567890123456789012345678901234567890";
 const WETH = getWrappedToken(CHAIN_ID);
 const USDC = getTokenBySymbol(CHAIN_ID, "USDC");
 const USDT = getTokenBySymbol(CHAIN_ID, "USDT");
@@ -34,7 +34,7 @@ const commonMarketIncreaseParams = {
   executionGasLimit: 0n,
   payTokenAddress: WETH.address,
   payTokenAmount: parseValue("1", WETH.decimals)!,
-  marketAddress: "0x1111111111111111111111111111111111111111" as `0x${string}`,
+  marketAddress: "0x1111111111111111111111111111111111111111",
   indexTokenAddress: WETH.address,
   isLong: true,
   sizeDeltaUsd: parseValue("1000", USD_DECIMALS)!,
@@ -43,7 +43,7 @@ const commonMarketIncreaseParams = {
   collateralTokenAddress: WETH.address,
   collateralDeltaAmount: parseValue("1", WETH.decimals)!,
   swapPath: [WETH.address],
-  externalSwapQuote: undefined as ExternalSwapOutput | undefined,
+  externalSwapQuote: undefined as ExternalSwapQuote | undefined,
   minOutputAmount: 0n,
   triggerPrice: undefined,
   referralCode: zeroHash,
@@ -51,7 +51,7 @@ const commonMarketIncreaseParams = {
   allowedSlippage: 100,
   executionFeeAmount: parseValue("0.1", WETH.decimals)!,
   validFromTime: 0n,
-  orderType: OrderType.MarketIncrease as OrderType.MarketIncrease,
+  orderType: OrderType.MarketIncrease as const,
   uiFeeReceiver: zeroAddress,
 };
 
@@ -115,7 +115,7 @@ describe("Batch Utils", () => {
       const params1 = { ...commonMarketIncreaseParams, receiver: ACCOUNT };
       const params2 = {
         ...commonMarketIncreaseParams,
-        receiver: "0x9999999999999999999999999999999999999999" as `0x${string}`,
+        receiver: "0x9999999999999999999999999999999999999999",
       };
 
       const batch = buildMultiIncreaseBatch([params1, params2]);
@@ -269,7 +269,7 @@ describe("Batch Utils", () => {
       const params7 = {
         ...commonMarketIncreaseParams,
         externalSwapQuote: quote2,
-        payTokenAddress: USDC.address as ERC20Address,
+        payTokenAddress: USDC.address,
       };
       const batch = buildMultiIncreaseBatch([params6, params7]);
       const result = getBatchExternalSwapGasLimit(batch);

@@ -373,10 +373,10 @@ export function PositionSeller() {
     const approvalRequirements = getApprovalRequirements({
       chainId,
       payTokenParamsList: [],
-      gasPaymentTokenParams: expressParams?.relayFeeParams
+      gasPaymentTokenParams: expressParams?.gasPaymentParams
         ? {
-            tokenAddress: expressParams.relayFeeParams.gasPaymentTokenAddress,
-            amount: expressParams.relayFeeParams.gasPaymentTokenAmount,
+            tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
+            amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
             allowanceData: gasPaymentTokenAllowance?.tokensAllowanceData,
             isAllowanceLoaded: gasPaymentTokenAllowance?.isLoaded,
           }
@@ -1033,7 +1033,7 @@ export function PositionSeller() {
               <PositionSellerAdvancedRows
                 triggerPriceInputValue={triggerPriceInputValue}
                 slippageInputId={slippageInputId}
-                relayerFeeParams={expressParams?.relayFeeParams}
+                gasPaymentParams={expressParams?.gasPaymentParams}
               />
             </div>
           </>
