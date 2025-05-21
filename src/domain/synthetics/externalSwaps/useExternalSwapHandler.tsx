@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from "react";
 
+import { ARBITRUM_SEPOLIA } from "config/chains";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import {
@@ -76,7 +77,12 @@ export function useExternalSwapHandler() {
     receiverAddress: getContract(chainId, "OrderVault"),
     slippage,
     gasPrice,
-    enabled: !disabledByExpressSchema && !isTwap && !subaccount && shouldRequestExternalSwapQuote,
+    enabled:
+      !disabledByExpressSchema &&
+      !isTwap &&
+      !subaccount &&
+      shouldRequestExternalSwapQuote &&
+      chainId !== ARBITRUM_SEPOLIA,
   });
 
   if (shouldDebugValues) {

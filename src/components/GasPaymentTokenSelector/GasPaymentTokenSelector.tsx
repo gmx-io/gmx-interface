@@ -1,7 +1,5 @@
 import { useCallback } from "react";
-import { useAccount } from "wagmi";
 
-import { isSourceChain } from "context/GmxAccountContext/config";
 import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
 import { useChainId } from "lib/chains";
 import { getGasPaymentTokens } from "sdk/configs/express";
@@ -16,14 +14,14 @@ type Props = {
 };
 
 export function GasPaymentTokenSelector({ currentTokenAddress, onSelectToken }: Props) {
-  const { chainId } = useChainId();
-  const { chainId: walletChainId } = useAccount();
+  const { chainId, srcChainId } = useChainId();
+  // TODO: pick from synthetic state
   const { tokensData: settlementChainTokensData } = useTokensDataRequest(chainId);
-  const { tokensData: gmxAccountTokensData } = useGmxAccountTokensDataRequest();
+  const { tokensData: gmxAccountTokensData } = useGmxAccountTokensDataRequest(chainId);
 
   let tokensData = settlementChainTokensData;
 
-  if (walletChainId && isSourceChain(walletChainId)) {
+  if (srcChainId) {
     tokensData = gmxAccountTokensData;
   }
 

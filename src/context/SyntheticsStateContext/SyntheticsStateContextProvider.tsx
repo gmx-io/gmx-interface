@@ -173,7 +173,7 @@ export function SyntheticsStateContextProvider({
 
   const markets = useMarkets(chainId);
   const { tokensData: settlementChainTokensData } = useTokensDataRequest(chainId);
-  const { tokensData: gmxAccountTokensData } = useGmxAccountTokensDataRequest();
+  const { tokensData: gmxAccountTokensData } = useGmxAccountTokensDataRequest(chainId);
 
   let tokensData = settlementChainTokensData;
 
@@ -187,7 +187,7 @@ export function SyntheticsStateContextProvider({
     tokensData,
   });
 
-  const marketsInfo = useMarketsInfoRequest(chainId);
+  const marketsInfo = useMarketsInfoRequest(chainId, srcChainId);
 
   const { isFirstOrder } = useIsFirstOrder(chainId, { account });
 

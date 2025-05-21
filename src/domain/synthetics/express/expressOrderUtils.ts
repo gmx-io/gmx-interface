@@ -42,9 +42,14 @@ import { getByKey } from "lib/objects";
 import { ExpressTxnData } from "lib/transactions/sendExpressTransaction";
 import { WalletSigner } from "lib/wallets";
 import { signTypedData, SignTypedDataParams } from "lib/wallets/signing";
-import GelatoRelayRouterAbi from "sdk/abis/GelatoRelayRouter.json";
-import SubaccountGelatoRelayRouterAbi from "sdk/abis/SubaccountGelatoRelayRouter.json";
-import { UiContractsChain, UiSettlementChain, UiSourceChain, UiSupportedChain } from "sdk/configs/chains";
+import { abis } from "sdk/abis";
+import {
+  ARBITRUM_SEPOLIA,
+  UiContractsChain,
+  UiSettlementChain,
+  UiSourceChain,
+  UiSupportedChain,
+} from "sdk/configs/chains";
 import { ContractName } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { bigMath } from "sdk/utils/bigmath";
@@ -568,7 +573,10 @@ export async function buildAndSignExpressBatchOrderTxn({
     const paramsLists = getBatchParamsLists(batchParams, false);
     if (subaccount) {
       batchCalldata = encodeFunctionData({
-        abi: SubaccountGelatoRelayRouterAbi.abi,
+        abi:
+          chainId === ARBITRUM_SEPOLIA
+            ? abis.SubaccountGelatoRelayRouterArbitrumSepolia
+            : abis.SubaccountGelatoRelayRouter,
         functionName: "batch",
         args: [
           { ...params.relayPayload, signature },
@@ -580,7 +588,7 @@ export async function buildAndSignExpressBatchOrderTxn({
       });
     } else {
       batchCalldata = encodeFunctionData({
-        abi: GelatoRelayRouterAbi.abi,
+        abi: chainId === ARBITRUM_SEPOLIA ? abis.GelatoRelayRouterArbitrumSepolia : abis.GelatoRelayRouter,
         functionName: "batch",
         args: [{ ...params.relayPayload, signature }, params.account, paramsLists],
       });

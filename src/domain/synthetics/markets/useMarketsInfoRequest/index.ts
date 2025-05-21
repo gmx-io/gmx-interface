@@ -1,19 +1,17 @@
 import { useMemo } from "react";
-import { useAccount } from "wagmi";
 
 import { getContract } from "config/contracts";
-import { isSettlementChain, isSourceChain } from "context/GmxAccountContext/config";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL, FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { UiContractsChain, UiSourceChain } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { MarketConfig, MarketValues } from "sdk/modules/markets/types";
 import type { MarketInfo, MarketsData, MarketsInfoData } from "sdk/types/markets";
 
 import { useGmxAccountTokensDataRequest } from "components/Synthetics/GmxAccountModal/hooks";
 
-import { TokensData, useTokensDataRequest } from "../../tokens";
+import { TokensData, TokensDataResult, useTokensDataRequest } from "../../tokens";
 import { useClaimableFundingDataRequest } from "../useClaimableFundingDataRequest";
 import { useMarkets } from "../useMarkets";
 import { getMarketDivisor } from "../utils";
@@ -24,26 +22,28 @@ import { useFastMarketsInfoRequest } from "./useFastMarketsInfoRequest";
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
+  walletTokensData?: TokensData;
   pricesUpdatedAt?: number;
   isBalancesLoaded?: boolean;
   error?: Error;
 };
 
-export function useMarketsInfoRequest(chainId: UiContractsChain): MarketsInfoResult {
+export function useMarketsInfoRequest(chainId: UiContractsChain, srcChainId?: UiSourceChain): MarketsInfoResult {
   const { marketsData, marketsAddresses } = useMarkets(chainId);
-  const { chainId: walletChainId } = useAccount();
 
   const settlementChainTokensDataResult = useTokensDataRequest(chainId);
-  const gmxAccountTokensDataResult = useGmxAccountTokensDataRequest();
+  const gmxAccountTokensDataResult = useGmxAccountTokensDataRequest(chainId);
+
+  const walletTokensDataResult: TokensDataResult | undefined =
+    srcChainId === undefined ? settlementChainTokensDataResult : undefined;
+  const walletTokensData = walletTokensDataResult?.tokensData;
 
   const {
     tokensData,
     pricesUpdatedAt,
     error: tokensDataError,
     isBalancesLoaded,
-  } = walletChainId && isSourceChain(walletChainId) && !isSettlementChain(walletChainId)
-    ? gmxAccountTokensDataResult
-    : settlementChainTokensDataResult;
+  } = srcChainId ? gmxAccountTokensDataResult : settlementChainTokensDataResult;
 
   const { claimableFundingData } = useClaimableFundingDataRequest(chainId);
   const { fastMarketInfoData } = useFastMarketsInfoRequest(chainId);
@@ -126,6 +126,7 @@ export function useMarketsInfoRequest(chainId: UiContractsChain): MarketsInfoRes
   return {
     marketsInfoData: isDependenciesLoading ? undefined : mergedData,
     tokensData,
+    walletTokensData,
     pricesUpdatedAt,
     error,
     isBalancesLoaded,

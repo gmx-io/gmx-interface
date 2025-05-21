@@ -3,6 +3,7 @@ import cx from "classnames";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
+import { UiContractsChain } from "config/chains";
 import { TokenChainData } from "context/GmxAccountContext/types";
 import { convertToUsd } from "domain/synthetics/tokens";
 import type { Token, TokenData, TokensData } from "domain/tokens";
@@ -21,8 +22,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import "./TokenSelector.scss";
 
 type Props = {
-  walletChainId: number;
-  settlementChainId: number;
+  chainId: UiContractsChain;
 
   label?: string;
   size?: "m" | "l";
@@ -31,7 +31,7 @@ type Props = {
   tokenAddress: string;
   isGmxAccount: boolean;
 
-  walletPayableTokensData: TokensData | undefined;
+  walletTokensData: TokensData | undefined;
   selectedTokenLabel?: ReactNode | string;
 
   onSelectTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
@@ -46,22 +46,14 @@ type Props = {
 };
 
 export function MultichainTokenSelector({
-  walletChainId,
-  settlementChainId,
-  // tokens,
-  // infoTokens,
-  walletPayableTokensData,
+  chainId,
+  walletTokensData,
+  gmxAccountTokensData,
   selectedTokenLabel,
-  // showBalances = true,
-  // showTokenImgInDropdown = false,
   extendedSortSequence,
   footerContent,
-  // missedCoinsPlace,
-
-  // chainId,
   size = "m",
   qa,
-  gmxAccountTokensData = EMPTY_OBJECT,
   onSelectTokenAddress: propsOnSelectTokenAddress,
   tokenAddress,
   isGmxAccount,
@@ -72,7 +64,7 @@ export function MultichainTokenSelector({
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
-  let token: Token | undefined = getToken(settlementChainId, tokenAddress);
+  let token: Token | undefined = getToken(chainId, tokenAddress);
 
   const onSelectTokenAddress = (tokenAddress: string, isGmxAccount: boolean) => {
     setIsModalVisible(false);
@@ -183,26 +175,16 @@ export function MultichainTokenSelector({
           </>
         }
       >
-        {/* {missedCoinsPlace && (
-          <WithMissedCoinsSearch
-            searchKeyword={searchKeyword}
-            place={missedCoinsPlace}
-            isEmpty={!filteredTokens.length}
-            isLoaded={Boolean(visibleTokens.length)}
-          />
-        )} */}
-
-        {activeFilter === "pay" && walletPayableTokensData && (
+        {activeFilter === "pay" && (
           <AvailableToTradeTokenList
             isModalVisible={isModalVisible}
             setSearchKeyword={setSearchKeyword}
             onSelectTokenAddress={onSelectTokenAddress}
             searchKeyword={searchKeyword}
-            tokensData={walletPayableTokensData}
-            extendedSortSequence={extendedSortSequence}
+            walletTokensData={walletTokensData}
             gmxAccountTokensData={gmxAccountTokensData}
-            walletChainId={walletChainId}
-            settlementChainId={settlementChainId}
+            extendedSortSequence={extendedSortSequence}
+            chainId={chainId}
           />
         )}
         {activeFilter === "deposit" && multichainTokens && (
@@ -215,11 +197,6 @@ export function MultichainTokenSelector({
             onDepositTokenAddress={onDepositTokenAddress}
           />
         )}
-        {/* {sortedFilteredTokens.length === 0 && (
-          <div className="text-16 text-slate-100">
-            <Trans>No tokens matched.</Trans>
-          </div>
-        )} */}
       </SlideModal>
       <div
         data-qa={qa}
@@ -245,23 +222,21 @@ export function MultichainTokenSelector({
 }
 
 function AvailableToTradeTokenList({
-  walletChainId,
-  settlementChainId,
+  chainId,
   isModalVisible,
   setSearchKeyword,
   searchKeyword,
-  tokensData,
+  walletTokensData,
   gmxAccountTokensData,
   extendedSortSequence,
   onSelectTokenAddress,
 }: {
-  walletChainId: number;
-  settlementChainId: number;
+  chainId: UiContractsChain;
   isModalVisible: boolean;
   setSearchKeyword: (searchKeyword: string) => void;
   searchKeyword: string;
-  tokensData: TokensData;
-  gmxAccountTokensData: TokensData;
+  walletTokensData: TokensData | undefined;
+  gmxAccountTokensData: TokensData | undefined;
   extendedSortSequence?: string[];
   onSelectTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
 }) {
@@ -275,10 +250,10 @@ function AvailableToTradeTokenList({
     type DisplayToken = TokenData & { balance: bigint; balanceUsd: bigint; isGmxAccount: boolean };
 
     const concatenatedTokens: DisplayToken[] = [];
-    for (const token of Object.values(tokensData)) {
+    for (const token of Object.values(walletTokensData ?? (EMPTY_OBJECT as TokensData))) {
       concatenatedTokens.push({ ...token, isGmxAccount: false, balance: token.balance ?? 0n, balanceUsd: 0n });
     }
-    for (const token of Object.values(gmxAccountTokensData)) {
+    for (const token of Object.values(gmxAccountTokensData ?? (EMPTY_OBJECT as TokensData))) {
       concatenatedTokens.push({ ...token, isGmxAccount: true, balance: token.balance ?? 0n, balanceUsd: 0n });
     }
 
@@ -306,7 +281,7 @@ function AvailableToTradeTokenList({
     for (const token of filteredTokens) {
       const balance = token.isGmxAccount
         ? gmxAccountTokensData?.[token.address]?.balance
-        : tokensData?.[token.address]?.balance;
+        : walletTokensData?.[token.address]?.balance;
 
       if (balance !== undefined && balance > 0n) {
         const balanceUsd = convertToUsd(balance, token.decimals, token.prices.maxPrice) ?? 0n;
@@ -339,7 +314,7 @@ function AvailableToTradeTokenList({
     });
 
     return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
-  }, [tokensData, gmxAccountTokensData, searchKeyword, extendedSortSequence]);
+  }, [walletTokensData, gmxAccountTokensData, searchKeyword, extendedSortSequence]);
 
   return (
     <div>
@@ -357,7 +332,7 @@ function AvailableToTradeTokenList({
                 className="token-logo"
                 displaySize={40}
                 importSize={40}
-                chainIdBadge={settlementChainId !== walletChainId ? 0 : token.isGmxAccount ? 0 : walletChainId}
+                chainIdBadge={token.isGmxAccount ? 0 : chainId}
               />
 
               <div className="Token-symbol">

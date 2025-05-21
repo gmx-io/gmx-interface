@@ -15,9 +15,10 @@ import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/
 import {
   selectChainId,
   selectMarketsInfoData,
+  selectSrcChainId,
   selectSubaccountState,
+  selectWalletTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectWalletPayableTokensData } from "context/SyntheticsStateContext/selectors/multichainSelectors";
 import {
   selectExpressOrdersEnabled,
   selectSettingsWarningDotVisible,
@@ -134,7 +135,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const { swapTokens, infoTokens, sortedLongAndShortTokens, sortedAllMarkets } = availableTokenOptions;
   const tokensData = useTokensData();
-  const walletPayableTokensData = useSelector(selectWalletPayableTokensData);
+  const walletTokensData = useSelector(selectWalletTokensData);
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
   const multichainTokens = useMultichainTokensRequest();
   const marketsInfoData = useSelector(selectMarketsInfoData);
@@ -142,8 +143,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket, isTwap } = tradeFlags;
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
 
-  const settlementChainId = useSelector(selectChainId);
-  const { account, chainId: walletChainId, active } = useWallet();
+  const chainId = useSelector(selectChainId);
+  const srcChainId = useSelector(selectSrcChainId);
+  const { account, active } = useWallet();
+
   const { shouldDisableValidationForTesting: shouldDisableValidation } = useSettings();
 
   // const [, setDepositViewChain] = useGmxAccountDepositViewChain();
@@ -635,25 +638,18 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           onClickMax={showClickMax ? onMaxClick : undefined}
           qa="pay"
         >
-          {fromTokenAddress && walletChainId !== undefined && (
+          {fromTokenAddress && (
             <MultichainTokenSelector
-              walletChainId={walletChainId}
-              settlementChainId={settlementChainId}
+              srcChainId={srcChainId}
+              chainId={chainId}
               label={t`Pay`}
-              // chainId={settlementChainId}
               tokenAddress={fromTokenAddress}
               isGmxAccount={isFromTokenGmxAccount}
-              // onSelectTokenAddress={handleSelectFromTokenAddress}
               onSelectTokenAddress={handleSelectFromTokenAddress}
-              // tokens={swapTokens}
-              // infoTokens={infoTokens}
               size="l"
-              // showSymbolImage={true}
-              // showTokenImgInDropdown={true}
-              // missedCoinsPlace={MissedCoinsPlace.payToken}
               extendedSortSequence={sortedLongAndShortTokens}
               qa="collateral-selector"
-              walletPayableTokensData={walletPayableTokensData}
+              walletTokensData={walletTokensData}
               gmxAccountTokensData={gmxAccountTokensData}
               multichainTokens={multichainTokens}
               onDepositTokenAddress={onDepositTokenAddress}
@@ -695,7 +691,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 {toTokenAddress && (
                   <TokenSelector
                     label={t`Receive`}
-                    chainId={settlementChainId}
+                    chainId={chainId}
                     tokenAddress={toTokenAddress}
                     onSelectToken={handleSelectToTokenAddress}
                     tokens={swapTokens}
@@ -731,7 +727,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           >
             {toTokenAddress && (
               <MarketSelector
-                chainId={settlementChainId}
+                chainId={chainId}
                 label={localizedTradeTypeLabels[tradeType!]}
                 selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
                 selectedMarketLabel={
@@ -991,7 +987,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                     label={t`Market`}
                     value={
                       <MarketSelector
-                        chainId={settlementChainId}
+                        chainId={chainId}
                         label={t`Market`}
                         className="-mr-4"
                         selectedIndexName={

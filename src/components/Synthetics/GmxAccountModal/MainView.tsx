@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { IoArrowDown } from "react-icons/io5";
 import { TbLoader2 } from "react-icons/tb";
 import { useCopyToClipboard } from "react-use";
-import { useAccount, useDisconnect } from "wagmi";
+import { useDisconnect } from "wagmi";
 
 import { getExplorerUrl } from "config/chains";
 import { CURRENT_PROVIDER_LOCALSTORAGE_KEY, SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY } from "config/localStorage";
@@ -13,6 +13,7 @@ import { isSettlementChain } from "context/GmxAccountContext/config";
 import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
 import { MultichainFundingHistoryItem } from "context/GmxAccountContext/types";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useENS } from "lib/legacy";
@@ -113,8 +114,10 @@ export function FundingHistoryItemLabel({
 const Toolbar = ({ account }: { account: string }) => {
   const { disconnect } = useDisconnect();
   const [, setIsVisible] = useGmxAccountModalOpen();
-  // const { chainId } = useWallet();
-  const { chainId } = useAccount();
+  const { chainId: settlementChainId, srcChainId } = useChainId();
+
+  const chainId = srcChainId ?? settlementChainId;
+
   const { openNotifyModal } = useNotifyModalState();
   const { setIsSettingsVisible } = useSettings();
   const { ensName } = useENS(account);
@@ -146,10 +149,12 @@ const Toolbar = ({ account }: { account: string }) => {
   };
 
   const handleNotificationsClick = () => {
+    setIsVisible(false);
     openNotifyModal();
   };
 
   const handleSettingsClick = () => {
+    setIsVisible(false);
     setIsSettingsVisible(true);
   };
 

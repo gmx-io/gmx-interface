@@ -12,6 +12,7 @@ export const selectPositionsInfoData = (s: SyntheticsState) => s.globals.positio
 export const selectIsPositionsLoading = (s: SyntheticsState) => s.globals.positionsInfo.isLoading;
 export const selectMarketsInfoData = (s: SyntheticsState) => s.globals.marketsInfo.marketsInfoData;
 export const selectTokensData = (s: SyntheticsState) => s.globals.marketsInfo.tokensData;
+export const selectWalletTokensData = (s: SyntheticsState) => s.globals.marketsInfo.walletTokensData;
 export const selectPricesUpdatedAt = (s: SyntheticsState) => s.globals.marketsInfo.pricesUpdatedAt;
 export const selectGmMarkets = (s: SyntheticsState) => s.globals.markets.marketsData;
 export const selectUiFeeFactor = (s: SyntheticsState) => s.globals.uiFeeFactor;
