@@ -9,7 +9,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { throttleLog } from "lib/logging";
 import { useJsonRpcProvider } from "lib/rpc";
-import { useThrottledAsync } from "lib/useThrottledAsyncEstimation";
+import { useThrottledAsync } from "lib/useThrottledAsync";
 import useWallet from "lib/wallets/useWallet";
 import { BatchOrderTxnParams, getBatchIsNativePayment, getIsEmptyBatch } from "sdk/utils/orderTransactions";
 
