@@ -299,6 +299,18 @@ export function SettingsModal({
                 )}
               </SettingsSection>
 
+              {settings.expressOrdersEnabled && (
+                <SettingsSection className="mt-2">
+                  <div>
+                    <Trans>Gas Payment Token</Trans>
+                  </div>
+                  <GasPaymentTokenSelector
+                    currentTokenAddress={settings.gasPaymentTokenAddress}
+                    onSelectToken={settings.setGasPaymentTokenAddress}
+                  />
+                </SettingsSection>
+              )}
+
               {srcChainId && (
                 <SettingsSection className="mt-2">
                   <div className="flex items-center justify-between">
@@ -336,18 +348,6 @@ export function SettingsModal({
                       />
                     </div>
                   </div>
-                </SettingsSection>
-              )}
-
-              {settings.expressOrdersEnabled && (
-                <SettingsSection className="mt-2">
-                  <div>
-                    <Trans>Gas Payment Token</Trans>
-                  </div>
-                  <GasPaymentTokenSelector
-                    currentTokenAddress={settings.gasPaymentTokenAddress}
-                    onSelectToken={settings.setGasPaymentTokenAddress}
-                  />
                 </SettingsSection>
               )}
             </>

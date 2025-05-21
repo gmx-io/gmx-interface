@@ -42,7 +42,7 @@ import {
   formatPercentage,
   formatUsd,
 } from "lib/numbers";
-import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
+import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { TxnCallback, TxnEventName, WalletTxnCtx, sendWalletTransaction } from "lib/transactions";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
@@ -68,7 +68,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { useGmxAccountTokensDataObject, useMultichainTokensRequest } from "./hooks";
+import { useAvailableToTradeAssetMultichain, useMultichainTokensRequest } from "./hooks";
 import { OftCmd, SEND_MODE_TAXI } from "./OftCmd";
 import { useMultichainDepositNetworkComposeGas } from "./useMultichainDepositNetworkComposeGas";
 import { useMultichainQuoteFeeUsd } from "./useMultichainQuoteFeeUsd";
@@ -153,16 +153,7 @@ export const DepositView = () => {
     setInputValue(formatAmountFree(selectedTokenSourceChainBalance, selectedToken.decimals));
   }, [selectedToken, selectedTokenSourceChainBalance, setInputValue]);
 
-  const gmxAccountTokensData = useGmxAccountTokensDataObject();
-  const gmxAccountToken = depositViewTokenAddress
-    ? getByKey(gmxAccountTokensData, convertTokenAddress(settlementChainId, depositViewTokenAddress, "wrapped"))
-    : undefined;
-  const gmxAccountTokenBalance = gmxAccountToken?.balance;
-  const gmxAccountTokenBalanceUsd = convertToUsd(
-    gmxAccountTokenBalance,
-    gmxAccountToken?.decimals,
-    gmxAccountToken?.prices?.maxPrice
-  );
+  const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
 
   const { nextGmxAccountBalanceUsd, nextSourceChainBalanceUsd } = useMemo((): {
     nextGmxAccountBalanceUsd?: bigint;
@@ -172,13 +163,13 @@ export const DepositView = () => {
       return EMPTY_OBJECT;
 
     const nextSourceChainBalanceUsd = selectedTokenSourceChainBalanceUsd - inputAmountUsd;
-    const nextGmxAccountBalanceUsd = (gmxAccountTokenBalanceUsd ?? 0n) + inputAmountUsd;
+    const nextGmxAccountBalanceUsd = (gmxAccountUsd ?? 0n) + inputAmountUsd;
 
     return {
       nextSourceChainBalanceUsd,
       nextGmxAccountBalanceUsd,
     };
-  }, [gmxAccountTokenBalanceUsd, inputAmountUsd, selectedToken, selectedTokenSourceChainBalanceUsd]);
+  }, [gmxAccountUsd, inputAmountUsd, selectedToken, selectedTokenSourceChainBalanceUsd]);
 
   const [isApproving, setIsApproving] = useState(false);
 
@@ -561,49 +552,56 @@ export const DepositView = () => {
     selectedTokenSourceChainTokenId,
   ]);
 
-  useEffect(() => {
-    if (depositViewTokenAddress === undefined && srcChainId !== undefined && multichainTokens.length > 0) {
-      // pick the token
-      const sourceChainTokenAddresses = MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChainId][srcChainId];
-      if (!sourceChainTokenAddresses || sourceChainTokenAddresses.length === 0) {
-        return;
-      }
+  useEffect(
+    function fallbackTokenOnSourceChain() {
+      if (depositViewTokenAddress === undefined && srcChainId !== undefined && multichainTokens.length > 0) {
+        // pick the token
+        const sourceChainTokenAddresses = MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChainId][srcChainId];
+        if (!sourceChainTokenAddresses || sourceChainTokenAddresses.length === 0) {
+          return;
+        }
 
-      let maxBalanceTokenAddress = sourceChainTokenAddresses[0];
-      let maxBalance =
-        multichainTokens.find(
-          (sourceChainToken) =>
-            sourceChainToken.sourceChainId === srcChainId && sourceChainToken.address === maxBalanceTokenAddress
-        )?.sourceChainBalance ?? 0n;
-
-      for (const sourceChainTokenAddress of sourceChainTokenAddresses) {
-        const balance =
+        let maxBalanceTokenAddress = sourceChainTokenAddresses[0];
+        let maxBalance =
           multichainTokens.find(
             (sourceChainToken) =>
-              sourceChainToken.sourceChainId === srcChainId && sourceChainToken.address === sourceChainTokenAddress
+              sourceChainToken.sourceChainId === srcChainId && sourceChainToken.address === maxBalanceTokenAddress
           )?.sourceChainBalance ?? 0n;
-        if (balance > maxBalance) {
-          maxBalance = balance;
-          maxBalanceTokenAddress = sourceChainTokenAddress;
+
+        for (const sourceChainTokenAddress of sourceChainTokenAddresses) {
+          const balance =
+            multichainTokens.find(
+              (sourceChainToken) =>
+                sourceChainToken.sourceChainId === srcChainId && sourceChainToken.address === sourceChainTokenAddress
+            )?.sourceChainBalance ?? 0n;
+          if (balance > maxBalance) {
+            maxBalance = balance;
+            maxBalanceTokenAddress = sourceChainTokenAddress;
+          }
         }
+
+        const tokenId = getMappedTokenId(
+          srcChainId as UiSourceChain,
+          maxBalanceTokenAddress,
+          settlementChainId as UiSettlementChain
+        );
+
+        if (!tokenId) {
+          return;
+        }
+
+        setDepositViewTokenAddress(tokenId.address);
       }
-
-      const tokenId = getMappedTokenId(srcChainId as UiSourceChain, maxBalanceTokenAddress, settlementChainId);
-
-      if (!tokenId) {
-        return;
-      }
-
-      setDepositViewTokenAddress(tokenId.address);
-    }
-  }, [
-    srcChainId,
-    depositViewTokenAddress,
-    multichainTokens,
-    selectedToken?.address,
-    setDepositViewTokenAddress,
-    settlementChainId,
-  ]);
+    },
+    [
+      srcChainId,
+      depositViewTokenAddress,
+      multichainTokens,
+      selectedToken?.address,
+      setDepositViewTokenAddress,
+      settlementChainId,
+    ]
+  );
 
   const buttonState: {
     text: string;
@@ -616,6 +614,7 @@ export const DepositView = () => {
     if (needTokenApprove) {
       return { text: t`Allow ${selectedToken?.symbol} to be spent`, onClick: handleApprove };
     }
+
     return { text: t`Deposit`, onClick: handleDeposit };
   }, [isApproving, needTokenApprove, handleDeposit, selectedToken?.symbol, handleApprove]);
 
@@ -739,9 +738,7 @@ export const DepositView = () => {
         />
         <SyntheticsInfoRow
           label={t`GMX Balance`}
-          value={
-            <ValueTransition from={formatUsd(gmxAccountTokenBalanceUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />
-          }
+          value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
         />
         <SyntheticsInfoRow
           label={t`Asset Balance`}

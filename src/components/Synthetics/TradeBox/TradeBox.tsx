@@ -15,7 +15,6 @@ import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/
 import {
   selectChainId,
   selectMarketsInfoData,
-  selectSrcChainId,
   selectSubaccountState,
   selectWalletTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -144,7 +143,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
 
   const chainId = useSelector(selectChainId);
-  const srcChainId = useSelector(selectSrcChainId);
   const { account, active } = useWallet();
 
   const { shouldDisableValidationForTesting: shouldDisableValidation } = useSettings();

@@ -202,7 +202,6 @@ export function AppHeaderChainAndSettings({ small, menuToggle, openSettings, sho
           <div data-qa="user-address" className="App-header-user-address">
             <AddressDropdown account={account} />
           </div>
-          {!small && <NotifyButton />}
           <NetworkDropdown
             chainId={visualChainId}
             small={small}
