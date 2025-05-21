@@ -67,10 +67,15 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
   const tokenPermits = q(selectTokenPermits);
   const isSponsoredCallAvailable = q(selectIsSponsoredCallAvailable);
 
+  const gasPaymentToken = getByKey(tokensData, gasPaymentTokenAddress);
+  const relayerFeeToken = getByKey(tokensData, relayerFeeTokenAddress);
+
   const hasL1Gas = chainId === ARBITRUM;
 
   if (
     (hasL1Gas && !l1Reference) ||
+    !gasPaymentToken ||
+    !relayerFeeToken ||
     !gasPaymentAllowance?.tokensAllowanceData ||
     !tokensData ||
     !marketsInfoData ||
@@ -102,7 +107,7 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
     noncesData,
     isSponsoredCall: isSponsoredCallAvailable,
     subaccount,
-    findSwapPath: findFeeSwapPath,
+    findFeeSwapPath,
     tokenPermits,
     gasPaymentAllowanceData: gasPaymentAllowance?.tokensAllowanceData,
     bufferBps,
@@ -110,5 +115,7 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
     gasLimits,
     gasPaymentTokenAddress,
     relayerFeeTokenAddress,
+    gasPaymentToken,
+    relayerFeeToken,
   };
 });

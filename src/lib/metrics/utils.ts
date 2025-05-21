@@ -125,14 +125,7 @@ export function initSwapMetricData({
   let expressData: ExpressOrderMetricData | undefined;
 
   if (isExpress) {
-    expressData = {
-      asyncGas: asyncExpressParams ? Number(asyncExpressParams?.relayFeeParams.relayerGasLimit) : undefined,
-      currentGas: Number(expressParams?.relayFeeParams.relayerGasLimit),
-      approximateGas: Number(fastExpressParams?.relayFeeParams.relayerGasLimit),
-      approximateL1Gas: Number(fastExpressParams?.relayFeeParams.l1GasLimit),
-      isSponsoredCall: Boolean(expressParams?.isSponsoredCall),
-      currentEstimateMethod: expressParams?.estimationMethod,
-    };
+    expressData = getExpressMetricData({ expressParams, asyncExpressParams, fastExpressParams });
   }
 
   return metrics.setCachedMetricData<SwapMetricData>({
@@ -569,10 +562,10 @@ function getExpressMetricData({
   fastExpressParams: ExpressTxnParams | undefined;
 }): ExpressOrderMetricData {
   const expressData: ExpressOrderMetricData = {
-    asyncGas: asyncExpressParams ? Number(asyncExpressParams?.relayFeeParams.relayerGasLimit) : undefined,
-    currentGas: Number(expressParams?.relayFeeParams.relayerGasLimit),
-    approximateGas: Number(fastExpressParams?.relayFeeParams.relayerGasLimit),
-    approximateL1Gas: Number(fastExpressParams?.relayFeeParams.l1GasLimit),
+    asyncGas: asyncExpressParams ? Number(asyncExpressParams?.gasLimit) : undefined,
+    currentGas: Number(expressParams?.gasLimit),
+    approximateGas: Number(fastExpressParams?.gasLimit),
+    approximateL1Gas: Number(fastExpressParams?.l1GasLimit),
     isSponsoredCall: Boolean(expressParams?.isSponsoredCall),
     currentEstimateMethod: expressParams?.estimationMethod,
   };

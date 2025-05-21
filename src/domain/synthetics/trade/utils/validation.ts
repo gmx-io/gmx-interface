@@ -72,11 +72,11 @@ export function getExpressError(p: {
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
 
   const isInsufficientNativeTokenBalance =
-    nativeToken?.balance === undefined || nativeToken.balance < expressParams?.relayFeeParams.relayerTokenAmount;
+    nativeToken?.balance === undefined || nativeToken.balance < expressParams?.gasPaymentParams.gasPaymentTokenAmount;
 
   if (expressParams.gasPaymentValidations.isOutGasTokenBalance && isInsufficientNativeTokenBalance) {
     return [
-      t`Insufficient ${getToken(chainId, expressParams?.relayFeeParams.gasPaymentTokenAddress)?.symbol} balance to pay for gas`,
+      t`Insufficient ${getToken(chainId, expressParams?.gasPaymentParams.gasPaymentTokenAddress)?.symbol} balance to pay for gas`,
     ];
   }
 

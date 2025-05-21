@@ -257,8 +257,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     fromTokenAmount,
     fromTokenInputValue,
     minResidualAmount:
-      submitButtonState.expressParams?.relayFeeParams.gasPaymentTokenAddress === fromTokenAddress
-        ? submitButtonState.expressParams?.relayFeeParams.gasPaymentTokenAmount
+      submitButtonState.expressParams?.gasPaymentParams.gasPaymentTokenAddress === fromTokenAddress
+        ? submitButtonState.expressParams?.gasPaymentParams.gasPaymentTokenAmount
         : undefined,
     isLoading: submitButtonState.isExpressLoading,
   });
@@ -1069,7 +1069,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           {!isTwap && <PriceImpactFeesRow />}
           <TradeBoxAdvancedGroups
             slippageInputId={submitButtonState.slippageInputId}
-            relayerFeeParams={submitButtonState.expressParams?.relayFeeParams}
+            gasPaymentParams={submitButtonState.expressParams?.gasPaymentParams}
             totalExecutionFee={submitButtonState.totalExecutionFee}
           />
         </div>

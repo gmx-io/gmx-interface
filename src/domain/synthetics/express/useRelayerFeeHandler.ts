@@ -14,7 +14,7 @@ import useWallet from "lib/wallets/useWallet";
 import { BatchOrderTxnParams, getBatchIsNativePayment, getIsEmptyBatch } from "sdk/utils/orderTransactions";
 
 import { ExpressTxnParams } from ".";
-import { estimateExpressParams } from "./expressOrderUtils";
+import { estimateBatchExpressParams } from "./expressOrderUtils";
 import { useSwitchGasPaymentTokenIfRequired } from "./useSwitchGasPaymentTokenIfRequired";
 
 export type ExpressOrdersParamsResult = {
@@ -46,7 +46,7 @@ export function useExpressOrdersParams({
 
   const { data: fastExpressParams } = useThrottledAsync(
     async ({ params: p }) => {
-      const nextApproximateParams = await estimateExpressParams({
+      const nextApproximateParams = await estimateBatchExpressParams({
         chainId: p.chainId,
         batchParams: p.orderParams,
         signer: p.signer,
@@ -77,7 +77,7 @@ export function useExpressOrdersParams({
 
   const { data: asyncExpressParams } = useThrottledAsync(
     async ({ params: p }) => {
-      const expressParams = await estimateExpressParams({
+      const expressParams = await estimateBatchExpressParams({
         chainId: p.chainId,
         batchParams: p.orderParams,
         signer: p.signer,

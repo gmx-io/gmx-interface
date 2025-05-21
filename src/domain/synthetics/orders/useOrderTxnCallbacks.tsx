@@ -560,5 +560,5 @@ function hasExternalSwap(expressParams: ExpressTxnParams | undefined, batchParam
 }
 
 function getExpressParamsKey(expressParams: ExpressTxnParams) {
-  return `${expressParams?.relayParamsPayload.deadline}:${expressParams?.relayParamsPayload.userNonce}:${expressParams.relayFeeParams.totalNetworkFeeAmount}`;
+  return `${expressParams.gasPaymentParams.totalRelayerFeeTokenAmount}`;
 }

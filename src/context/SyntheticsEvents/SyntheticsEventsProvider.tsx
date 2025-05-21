@@ -1155,7 +1155,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           pendingExpressTxn.taskId &&
           pendingExpressTxn.key &&
           gelatoTaskStatuses[pendingExpressTxn.taskId] &&
-          pendingExpressTxn.successMessage
+          (pendingExpressTxn.successMessage || pendingExpressTxn.errorMessage)
         ) {
           const status = gelatoTaskStatuses[pendingExpressTxn.taskId];
 

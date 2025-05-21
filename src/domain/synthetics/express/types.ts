@@ -1,5 +1,6 @@
 import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
-import { SignedTokenPermit, TokensAllowanceData, TokensData } from "domain/tokens";
+import { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
+import { ExpressTxnData } from "lib/transactions";
 import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
 import { GasLimitsConfig, L1ExpressOrderGasReference } from "../fees";
@@ -14,7 +15,9 @@ export type GlobalExpressParams = {
   tokenPermits: SignedTokenPermit[];
   gasPaymentTokenAddress: string;
   relayerFeeTokenAddress: string;
-  findSwapPath: FindSwapPath;
+  gasPaymentToken: TokenData;
+  relayerFeeToken: TokenData;
+  findFeeSwapPath: FindSwapPath;
   gasPrice: bigint;
   gasPaymentAllowanceData: TokensAllowanceData;
   gasLimits: GasLimitsConfig;
@@ -28,27 +31,46 @@ export type ExpressParamsEstimationMethod = "approximate" | "estimateGas";
 
 export type ExpressTxnParams = {
   subaccount: Subaccount | undefined;
-  relayParamsPayload: RelayParamsPayload;
-  relayFeeParams: RelayerFeeParams;
-  estimationMethod: ExpressParamsEstimationMethod;
-  isSponsoredCall: boolean;
-  gasPaymentValidations: GasPaymentValidations;
-  subaccountValidations: SubaccountValidations | undefined;
-};
-
-export type RelayerFeeParams = {
-  feeParams: RelayFeePayload;
-  externalCalls: ExternalCallsPayload;
-  relayerTokenAddress: string;
-  relayerTokenAmount: bigint;
-  totalNetworkFeeAmount: bigint;
-  relayerGasLimit: bigint;
+  relayParamsPayload: RawRelayParamsPayload;
+  gasPaymentParams: GasPaymentParams;
+  gasLimit: bigint;
   l1GasLimit: bigint;
   gasPrice: bigint;
-  gasPaymentTokenAmount: bigint;
+  estimationMethod: ExpressParamsEstimationMethod;
+  gasPaymentValidations: GasPaymentValidations;
+  subaccountValidations: SubaccountValidations | undefined;
+  isSponsoredCall: boolean;
+};
+
+export type ExpressTransactionBuilder = ({
+  relayParams,
+  gasPaymentParams,
+  subaccount,
+  noncesData,
+}: {
+  relayParams: RawRelayParamsPayload;
+  gasPaymentParams: GasPaymentParams;
+  subaccount: Subaccount | undefined;
+  noncesData: NoncesData | undefined;
+}) => Promise<{ txnData: ExpressTxnData }>;
+
+export type EstimatedExpressTransactionParams = {
+  expressTransactionBuilder: ExpressTransactionBuilder;
+  account: string;
+  gasPaymentTokenAsCollateralAmount: bigint;
+  executionFeeAmount: bigint;
+  transactionPayloadGasLimit: bigint;
+  transactionExternalCalls: ExternalCallsPayload | undefined;
+  subaccountActions: number;
+  isValid: boolean;
+};
+
+export type GasPaymentParams = {
   gasPaymentTokenAddress: string;
-  externalSwapGasLimit: bigint;
-  noFeeSwap: boolean;
+  relayerFeeTokenAddress: string;
+  relayerFeeAmount: bigint;
+  gasPaymentTokenAmount: bigint;
+  totalRelayerFeeTokenAmount: bigint;
 };
 
 export type RelayParamsPayload = {
@@ -56,9 +78,11 @@ export type RelayParamsPayload = {
   tokenPermits: SignedTokenPermit[];
   externalCalls: ExternalCallsPayload;
   fee: RelayFeePayload;
-  userNonce: bigint;
   deadline: bigint;
+  userNonce: bigint;
 };
+
+export type RawRelayParamsPayload = Omit<RelayParamsPayload, "userNonce" | "deadline">;
 
 export type OracleParamsPayload = {
   tokens: string[];

@@ -1,112 +1,87 @@
-import uniqBy from "lodash/uniqBy";
+import uniq from "lodash/uniq";
 
 import { getContract } from "config/contracts";
 import { MarketsInfoData } from "domain/synthetics/markets/types";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { TokenData, TokensData } from "sdk/types/tokens";
 import { getOppositeCollateral } from "sdk/utils/markets";
 import { getByKey } from "sdk/utils/objects";
+import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
-import { OracleParamsPayload, RelayerFeeParams } from "./types";
-
-export type OraclePriceParam = {
-  tokenAddress: string;
-  priceProvider: string;
-  data: string;
-};
-
-export function getOracleParamsPayload(priceParams: OraclePriceParam[]): OracleParamsPayload {
-  const uniqueTokens = uniqBy(priceParams, "tokenAddress");
+export function getOracleParams({ chainId, tokenAddresses }: { chainId: number; tokenAddresses: string[] }) {
+  const uniqTokenAddresses = uniq(
+    tokenAddresses.map((tokenAddress) => convertTokenAddress(chainId, tokenAddress, "wrapped"))
+  );
+  const chainLinkPriceFeedProvider = getContract(chainId, "ChainlinkPriceFeedProvider");
 
   return {
-    tokens: uniqueTokens.map((t) => t.tokenAddress),
-    providers: uniqueTokens.map((t) => t.priceProvider),
-    data: uniqueTokens.map((t) => t.data),
+    tokens: uniqTokenAddresses,
+    providers: Array(uniqTokenAddresses.length).fill(chainLinkPriceFeedProvider),
+    data: Array(uniqTokenAddresses.length).fill("0x"),
   };
 }
 
-export function getOraclePriceParamsForRelayFee({
+export function getOracleParamsForRelayParams({
   chainId,
-  relayFeeParams,
-  tokensData,
+  gasPaymentTokenAddress,
+  relayerFeeTokenAddress,
+  feeSwapPath,
+  externalCalls,
   marketsInfoData,
 }: {
   chainId: number;
-  relayFeeParams: RelayerFeeParams;
-  tokensData: TokensData;
+  gasPaymentTokenAddress: string;
+  relayerFeeTokenAddress: string;
+  feeSwapPath: string[];
+  externalCalls: ExternalCallsPayload | undefined;
   marketsInfoData: MarketsInfoData;
-}): OraclePriceParam[] {
-  const swapTokens: TokenData[] = [];
+}) {
+  const tokenAddresses = [gasPaymentTokenAddress, relayerFeeTokenAddress];
 
-  if (relayFeeParams?.externalCalls.sendTokens.length) {
-    const tokenAddresses = [...relayFeeParams.externalCalls.sendTokens, relayFeeParams.feeParams.feeToken];
-
-    for (const tokenAddress of tokenAddresses) {
-      const token = getByKey(tokensData, tokenAddress);
-
-      if (!token) {
-        throw new Error(`Token not found for oracle params: ${tokenAddress}`);
-      }
-
-      swapTokens.push(token);
-    }
+  if (externalCalls) {
+    tokenAddresses.push(...externalCalls.sendTokens);
   }
 
-  if (relayFeeParams?.feeParams.feeSwapPath.length) {
-    const swapPathTokens =
-      getSwapPathOracleTokens({
-        tokensData,
+  if (feeSwapPath.length) {
+    tokenAddresses.push(
+      ...getSwapPathOracleTokens({
         marketsInfoData,
-        initialCollateralAddress: relayFeeParams.feeParams.feeToken,
-        swapPath: relayFeeParams.feeParams.feeSwapPath,
-      }) ?? [];
-
-    swapTokens.push(...swapPathTokens);
+        initialCollateralAddress: gasPaymentTokenAddress,
+        swapPath: feeSwapPath,
+      })
+    );
   }
 
-  return swapTokens.map((t) => ({
-    tokenAddress: convertTokenAddress(chainId, t.address, "wrapped"),
-    priceProvider: getContract(chainId, "ChainlinkPriceFeedProvider"),
-    data: "0x",
-  }));
+  return getOracleParams({ chainId, tokenAddresses });
 }
 
 export function getSwapPathOracleTokens({
   marketsInfoData,
-  tokensData,
   initialCollateralAddress,
   swapPath,
 }: {
   marketsInfoData: MarketsInfoData;
-  tokensData: TokensData;
   initialCollateralAddress: string;
   swapPath: string[];
-}): TokenData[] | undefined {
-  let currentToken = getByKey(tokensData, initialCollateralAddress);
-
-  if (!currentToken) {
-    throw new Error(`Token not found for oracle params: ${initialCollateralAddress}`);
-  }
-
-  const tokens: TokenData[] = [currentToken];
+}): string[] {
+  let currentToken = initialCollateralAddress;
+  const tokenAddresses: string[] = [initialCollateralAddress];
 
   for (const marketAddress of swapPath) {
     const marketInfo = getByKey(marketsInfoData, marketAddress);
 
     if (!marketInfo) {
-      return undefined;
+      throw new Error(`Market not found for oracle params: ${marketAddress}`);
     }
 
-    const tokenOut = getOppositeCollateral(marketInfo, currentToken?.address);
+    const tokenOut = getOppositeCollateral(marketInfo, currentToken);
 
-    currentToken = tokenOut;
-
-    if (!currentToken) {
+    if (!tokenOut?.address) {
       throw new Error(`Token not found for oracle params: ${initialCollateralAddress}`);
     }
 
-    tokens.push(currentToken, marketInfo.indexToken);
+    currentToken = tokenOut.address;
+    tokenAddresses.push(currentToken, marketInfo.indexToken.address);
   }
 
-  return tokens;
+  return tokenAddresses;
 }
