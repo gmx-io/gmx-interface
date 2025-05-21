@@ -270,7 +270,6 @@ export async function estimateExpressParams({
     ? approximateL1GasBuffer({
         l1Reference,
         sizeOfData: BigInt(size(baseTxn.txnData.callData as `0x${string}`)),
-        gasPrice,
       })
     : 0n;
 
@@ -333,7 +332,7 @@ export async function estimateExpressParams({
   const buffer = bigMath.mulDiv(relayerFeeAmount, BigInt(bufferBps), BASIS_POINTS_DIVISOR_BIGINT);
   relayerFeeAmount += buffer;
 
-  const totalRelayerFeeTokenAmount = relayerFeeAmount + executionFeeAmount;
+  const totalRelayerFeeTokenAmount = 0n + executionFeeAmount;
 
   const finalRelayFeeParams = getRelayerFeeParams({
     chainId,

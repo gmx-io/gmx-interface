@@ -74,11 +74,9 @@ export function estimateRelayerGasLimit({
 export function approximateL1GasBuffer({
   l1Reference,
   sizeOfData,
-  gasPrice,
 }: {
   l1Reference: L1ExpressOrderGasReference;
   sizeOfData: bigint;
-  gasPrice: bigint;
 }) {
   const evaluated = Math.round(
     (Number(l1Reference.gasLimit) * Math.log(Number(sizeOfData))) / Math.log(Number(l1Reference.sizeOfData))
@@ -86,7 +84,7 @@ export function approximateL1GasBuffer({
 
   const l1GasLimit = Math.abs(evaluated) < Infinity ? BigInt(evaluated) : l1Reference.gasLimit;
 
-  return l1GasLimit / gasPrice;
+  return l1GasLimit;
 }
 
 export function estimateBatchGasLimit({
