@@ -27,7 +27,9 @@ export function buildPerformanceSnapshots({
   shortTokenPrices: Record<number, PriceSnapshot>;
   poolPrices: Record<number, PriceSnapshot>;
 }): PerformanceSnapshot[] {
-  const timestamps = Object.keys(poolPrices).map(Number).sort((a, b) => a - b);
+  const timestamps = Object.keys(poolPrices)
+    .map(Number)
+    .sort((a, b) => a - b);
   const startTimestamp = findPerformanceTimestamp({
     timestamps,
     longTokenPrices,
@@ -48,7 +50,8 @@ export function buildPerformanceSnapshots({
     return [];
   }
 
-  const performanceSnapshots: PerformanceSnapshot[] = timestamps.slice(timestamps.indexOf(startTimestamp))
+  const performanceSnapshots: PerformanceSnapshot[] = timestamps
+    .slice(timestamps.indexOf(startTimestamp))
     .map((timestamp) => {
       const tokenAEndPrice = getTokenPrice(longTokenPrices, timestamp);
       const tokenBEndPrice = getTokenPrice(shortTokenPrices, timestamp);
@@ -86,7 +89,9 @@ export function calculatePoolPerformance({
   shortTokenPrices: Record<number, PriceSnapshot>;
   poolPrices: Record<number, PriceSnapshot>;
 }): number | undefined {
-  const timestamps = Object.keys(poolPrices).map(Number).sort((a, b) => a - b);
+  const timestamps = Object.keys(poolPrices)
+    .map(Number)
+    .sort((a, b) => a - b);
   const startTimestamp = findPerformanceTimestamp({
     timestamps,
     longTokenPrices,
@@ -114,7 +119,14 @@ export function calculatePoolPerformance({
   const tokenBEndPrice = getTokenPrice(shortTokenPrices, endTimestamp);
   const poolEndPrice = getTokenPrice(poolPrices, endTimestamp);
 
-  if (!tokenAStartPrice || !tokenBStartPrice || !poolStartPrice || !tokenAEndPrice || !tokenBEndPrice || !poolEndPrice) {
+  if (
+    !tokenAStartPrice ||
+    !tokenBStartPrice ||
+    !poolStartPrice ||
+    !tokenAEndPrice ||
+    !tokenBEndPrice ||
+    !poolEndPrice
+  ) {
     return 0;
   }
 
@@ -136,20 +148,31 @@ const getTokenPrice = (prices: Record<number, PriceSnapshot>, timestamp: number)
   }
 
   return bigintToNumber((BigInt(prices[timestamp].minPrice) + BigInt(prices[timestamp].maxPrice)) / 2n, USD_DECIMALS);
-}
+};
 
-const findPerformanceTimestamp = ({ timestamps, longTokenPrices, shortTokenPrices, poolPrices, type }: { timestamps: number[], 
+const findPerformanceTimestamp = ({
+  timestamps,
+  longTokenPrices,
+  shortTokenPrices,
+  poolPrices,
+  type,
+}: {
+  timestamps: number[];
   longTokenPrices: Record<number, PriceSnapshot>;
   shortTokenPrices: Record<number, PriceSnapshot>;
   poolPrices: Record<number, PriceSnapshot>;
-  type: "start" | "end"
+  type: "start" | "end";
 }) => {
   if (type === "start") {
-    return timestamps.find((timestamp) => longTokenPrices[timestamp] && shortTokenPrices[timestamp] && poolPrices[timestamp]);
+    return timestamps.find(
+      (timestamp) => longTokenPrices[timestamp] && shortTokenPrices[timestamp] && poolPrices[timestamp]
+    );
   }
 
-  return timestamps.findLast((timestamp) => longTokenPrices[timestamp] && shortTokenPrices[timestamp] && poolPrices[timestamp]);
-}
+  return timestamps.findLast(
+    (timestamp) => longTokenPrices[timestamp] && shortTokenPrices[timestamp] && poolPrices[timestamp]
+  );
+};
 
 /*
   TokenA_S = Token A Starting Price
@@ -160,8 +183,8 @@ const findPerformanceTimestamp = ({ timestamps, longTokenPrices, shortTokenPrice
   Benchmark_E = Benchmark Investment Ending Price
   Benchmark_E = Benchmark_S * SQRT( (TokenA_E * TokenB_E)/(TokenA_S * TokenB_S) )
 
-  Pool Performance = (P_E - P_S)/P_S * 100
-  Benchmark Performance = (B_E - B_S)/B_S * 100
+  Pool Performance = (P_E - P_S)/P_S
+  Benchmark Performance = (B_E - B_S)/B_S
   Performance = (Pool Performance - Benchmark Performance)
 */
 export const calculatePerformance = ({
@@ -189,7 +212,10 @@ export const calculatePerformance = ({
   return roundPerformance(poolPerformance - benchmarkPerformance);
 };
 
-const calculateAnnualizedPerformance = (performance: number, { startTimestamp, endTimestamp }: { startTimestamp: number, endTimestamp: number }) => {
+const calculateAnnualizedPerformance = (
+  performance: number,
+  { startTimestamp, endTimestamp }: { startTimestamp: number; endTimestamp: number }
+) => {
   const days = Math.floor((endTimestamp - startTimestamp) / (60 * 60 * 24));
   return (performance / days) * 365;
 };

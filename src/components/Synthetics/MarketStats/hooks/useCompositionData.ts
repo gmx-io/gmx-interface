@@ -23,6 +23,7 @@ type BackingCompositionItem = {
   type: "backing";
   token: TokenData;
   amount: bigint;
+  side: "long" | "short";
 };
 
 export type CompositionItem = MarketCompositionItem | BackingCompositionItem;
@@ -109,6 +110,7 @@ const getGlvInfoCompositionData = ({
             type: curr.type,
             amount: 0n,
             token: curr.token,
+            side: curr.side,
           };
         }
 
@@ -123,6 +125,7 @@ const getGlvInfoCompositionData = ({
       amount: d.amount,
       type: d.type,
       token: d.token,
+      side: d.side,
     };
   });
 
@@ -149,7 +152,7 @@ const getMarketInfoCompositionData = ({
     ? {
         type: "market" as const,
         market: marketInfo,
-        tvl: [token.totalSupply ?? 0n, token?.balance ?? 0n] as const,
+        tvl: [balanceUsd, marketInfo.poolValueMax] as const,
         gmBalanceUsd: balanceUsd,
       }
     : null;
@@ -172,11 +175,13 @@ const getMarketBackingCompositionData = (marketInfo: MarketInfo): BackingComposi
       type: "backing",
       token: longToken,
       amount: longPoolAmountUsd ?? 0n,
+      side: "long",
     },
     {
       type: "backing",
       token: shortToken,
       amount: shortPoolAmountUsd ?? 0n,
+      side: "short",
     },
   ];
 };

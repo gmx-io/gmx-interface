@@ -13,6 +13,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getTokenData } from "domain/synthetics/tokens";
 import { getPageTitle } from "lib/legacy";
 import { getByKey } from "lib/objects";
+import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
 import ButtonLink from "components/Button/ButtonLink";
 import Loader from "components/Common/Loader";
@@ -28,8 +29,6 @@ import { Curtain } from "components/Synthetics/TradeBox/Curtain";
 import { PoolsDetailsAbout } from "./PoolsDetailsAbout";
 import { PoolsDetailsCard } from "./PoolsDetailsCard";
 import { PoolsDetailsHeader } from "./PoolsDetailsHeader";
-
-import "./PoolsDetails.scss";
 
 export function PoolsDetails() {
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
@@ -50,7 +49,9 @@ export function PoolsDetails() {
     marketTokensData: depositMarketTokensData,
   });
 
-  const isMobile = useMedia("(max-width: 768px)");
+  const isMobile = usePoolsIsMobilePage();
+
+  const isInCurtain = useMedia("(max-width: 1180px)");
 
   return (
     <SEO title={getPageTitle("V2 Pools")}>
@@ -63,7 +64,7 @@ export function PoolsDetails() {
           <>
             <PoolsDetailsHeader marketInfo={marketInfo} marketToken={marketToken} />
 
-            <div className="PoolsDetails-content mb-15 gap-12">
+            <div className={cx("mb-15 flex justify-between gap-12", { "flex-wrap": isInCurtain })}>
               <div className="flex grow flex-col gap-16">
                 {marketInfo && <MarketGraphs marketInfo={marketInfo} />}
                 <PoolsDetailsCard title={<Trans>Composition</Trans>} childrenContainerClassName="!p-0">
@@ -104,9 +105,12 @@ export function PoolsDetails() {
                 mode={mode}
                 onSetMode={setMode}
                 onSetOperation={setOperation}
+                isInCurtain={isInCurtain}
               />
             </div>
           </>
+        ) : marketsInfoData ? (
+          <div className="text-body-large w-full text-center text-slate-100">Market not found</div>
         ) : (
           <Loader />
         )}
@@ -116,12 +120,17 @@ export function PoolsDetails() {
   );
 }
 
-const PoolsDetailsGmSwapBox = (props: GmSwapBoxProps) => {
-  const isInCurtain = useMedia("(max-width: 1180px)");
+const PoolsDetailsGmSwapBox = (props: GmSwapBoxProps & { isInCurtain: boolean }) => {
+  const { isInCurtain } = props;
 
   if (!isInCurtain) {
     return (
-      <div className="PoolsDetails-swap-box">
+      <div
+        className={cx({
+          "w-full max-w-[44rem]": !isInCurtain,
+          "w-full max-w-none": isInCurtain,
+        })}
+      >
         <GmSwapBoxHeader {...props} />
         <GmSwapBox {...props} />
       </div>
@@ -129,7 +138,7 @@ const PoolsDetailsGmSwapBox = (props: GmSwapBoxProps) => {
   }
 
   return (
-    <Curtain header={<GmSwapBoxHeader {...props} isInCurtain />} dataQa="tradebox">
+    <Curtain header={<GmSwapBoxHeader {...props} isInCurtain />}>
       <GmSwapBox {...props} />
     </Curtain>
   );

@@ -1,6 +1,5 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useMedia } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
 import {
@@ -17,6 +16,7 @@ import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatAmountHuman, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -47,7 +47,7 @@ export function PoolsDetailsHeader({ marketInfo, marketToken }: Props) {
   const userEarnings = useUserEarnings(chainId);
   const marketEarnings = getByKey(userEarnings?.byMarketAddress, marketToken?.address);
 
-  const isMobile = useMedia("(max-width: 768px)");
+  const isMobile = usePoolsIsMobilePage();
 
   return (
     <div
@@ -61,7 +61,7 @@ export function PoolsDetailsHeader({ marketInfo, marketToken }: Props) {
           <div
             className={cx("flex items-center gap-20 border-stroke-primary", {
               "border-r": !isMobile,
-              "border-b pb-14 mb-12": isMobile,
+              "mb-12 border-b pb-14": isMobile,
             })}
           >
             {iconName ? (
@@ -76,9 +76,7 @@ export function PoolsDetailsHeader({ marketInfo, marketToken }: Props) {
                 }
               />
             ) : null}
-            <div
-              className={cx("flex flex-col gap-4 pr-20")}
-            >
+            <div className={cx("flex flex-col gap-4 pr-20")}>
               <div className="text-body-large">{getMarketIndexName(marketInfo)}</div>
               <div className="text-body-small text-slate-100">{`[${getMarketPoolName(marketInfo)}]`}</div>
             </div>

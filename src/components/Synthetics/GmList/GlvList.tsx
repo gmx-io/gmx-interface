@@ -1,6 +1,5 @@
 import { Trans, t } from "@lingui/macro";
 import { useMemo } from "react";
-import { useMedia } from "react-use";
 import { useAccount } from "wagmi";
 
 import {
@@ -12,6 +11,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import PoolsCard from "pages/Pools/PoolsCard";
+import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
 import Loader from "components/Common/Loader";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
@@ -81,7 +81,7 @@ export function GlvList({
       />
     ));
 
-  const isMobile = useMedia("(max-width: 768px)");
+  const isMobile = usePoolsIsMobilePage();
 
   return (
     <PoolsCard

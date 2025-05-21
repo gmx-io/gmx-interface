@@ -1,6 +1,7 @@
 import cx from "classnames";
 import { ReactNode } from "react";
-import { useMedia } from "react-use";
+
+import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
@@ -13,7 +14,7 @@ export function PoolsDetailsMarketAmount({
   secondaryValue?: string;
   label?: ReactNode;
 }) {
-  const isMobile = useMedia("(max-width: 768px)");
+  const isMobile = usePoolsIsMobilePage();
 
   const valueContent = (
     <span className={cx("flex items-center", { "gap-8": !isMobile, "gap-4": isMobile })}>

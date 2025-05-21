@@ -1,6 +1,5 @@
 import { Trans, t } from "@lingui/macro";
 import { useMemo, useState } from "react";
-import { useMedia } from "react-use";
 import { useAccount } from "wagmi";
 
 import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -11,6 +10,7 @@ import { PerformanceSnapshotsData } from "domain/synthetics/markets/useGmGlvPerf
 import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformance";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import PoolsCard from "pages/Pools/PoolsCard";
+import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
 import Loader from "components/Common/Loader";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
@@ -110,7 +110,7 @@ export function GmList({
       />
     ));
 
-  const isMobile = useMedia("(max-width: 768px)");
+  const isMobile = usePoolsIsMobilePage();
 
   return (
     <PoolsCard

@@ -35,6 +35,7 @@ export function CompositionBar({ data, label }: CompositionBarProps) {
           ? TOKEN_COLOR_MAP[item.market.indexToken.symbol]
           : TOKEN_COLOR_MAP[item.token.symbol]) ?? TOKEN_COLOR_MAP.default;
       return {
+        key: item.type === "market" ? item.market.marketTokenAddress : `${item.token.address}-${item.side}`,
         color,
         value,
         tooltipContent: (
@@ -88,6 +89,7 @@ interface CompositionChartProps {
 }
 
 type CompositionChartItem = {
+  key: string;
   tooltipContent: ReactNode;
   value: number;
   color: string;
@@ -123,8 +125,8 @@ export function CompositionChart({ items, label }: CompositionChartProps) {
           endAngle={-90}
           strokeWidth={items.length <= 1 ? 0 : 1.5}
         >
-          {items.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={entry.color} style={CELL_STYLE} />
+          {items.map((entry) => (
+            <Cell key={entry.key} fill={entry.color} style={CELL_STYLE} />
           ))}
         </Pie>
 

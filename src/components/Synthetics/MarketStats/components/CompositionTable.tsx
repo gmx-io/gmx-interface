@@ -1,10 +1,10 @@
 import { t, Trans } from "@lingui/macro";
 import { useMemo, useState } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { useMedia } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
 import { formatAmountHuman } from "lib/numbers";
+import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
 
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
@@ -42,7 +42,7 @@ export function CompositionTable<T extends CompositionType>({ composition, compo
     setIsOpen(!isOpen);
   };
 
-  const isMobile = useMedia("(max-width: 768px)");
+  const isMobile = usePoolsIsMobilePage();
 
   const filteredComposition = useMemo(() => {
     if (isMobile && !isOpen) {
@@ -67,7 +67,7 @@ export function CompositionTable<T extends CompositionType>({ composition, compo
         <tbody>
           {filteredComposition.map((item) => (
             <CompositionTableRow
-              key={item.type === "market" ? item.market.marketTokenAddress : item.token.address}
+              key={item.type === "market" ? item.market.marketTokenAddress : `${item.token.address}-${item.side}`}
               item={item}
               sum={sum}
             />
@@ -75,7 +75,7 @@ export function CompositionTable<T extends CompositionType>({ composition, compo
         </tbody>
       </table>
       {isMobile && composition.length > CLOSED_COUNT ? (
-        <div className="flex flex-row justify-between px-16 pb-20 items-center" onClick={toggleOpen}>
+        <div className="flex flex-row items-center justify-between px-16 pb-20" onClick={toggleOpen}>
           <span className="text-slate-100">{isOpen ? <Trans>Show less</Trans> : <Trans>Show more</Trans>}</span>
           {isOpen ? <FaChevronUp size={8} /> : <FaChevronDown size={8} />}
         </div>

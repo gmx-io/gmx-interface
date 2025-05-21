@@ -10,7 +10,6 @@ import useRouteQuery from "lib/useRouteQuery";
 import { getGmSwapBoxAvailableModes } from "components/Synthetics/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
 import { Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/types";
 
-
 export type PoolsDetailsQueryParams = {
   market: string;
 };
@@ -71,7 +70,15 @@ export function PoolsDetailsContextProvider({ children }: { children: React.Reac
   const marketInfo = market ? getByKey(marketsInfoData, market) : undefined;
 
   const value = useMemo(
-    () => ({ market, operation, mode, marketInfo, setOperation, setMode, setMarket }),
+    () => ({
+      market,
+      operation,
+      mode,
+      marketInfo,
+      setOperation,
+      setMode,
+      setMarket,
+    }),
     [market, operation, mode, marketInfo]
   );
 

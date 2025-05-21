@@ -2,7 +2,6 @@ import { msg, t } from "@lingui/macro";
 import cx from "classnames";
 import format from "date-fns/format";
 import { ReactNode, useMemo, useState } from "react";
-import { useMedia } from "react-use";
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { USD_DECIMALS } from "config/factors";
@@ -30,6 +29,7 @@ import { formatDate } from "lib/dates";
 import { useLocalizedMap } from "lib/i18n";
 import { bigintToNumber, formatPercentage, formatUsdPrice, parseValue } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import { PoolsDetailsCard } from "pages/PoolsDetails/PoolsDetailsCard";
 
 import { PoolsTabs } from "../PoolsTabs/PoolsTabs";
@@ -130,25 +130,31 @@ export function MarketGraphs({ marketInfo }: { marketInfo: GlvInfo | MarketInfo 
   const apySnapshotsByAddress = apySnapshots?.[address] ?? EMPTY_ARRAY;
   const priceSnapshotsByAddress = prices?.[address] ?? EMPTY_ARRAY;
 
-  const isMobile = useMedia("(max-width: 768px)");
+  const isMobile = usePoolsIsMobilePage();
 
-  const timeRangeTabs = useMemo(() => POOLS_TIME_RANGE_OPTIONS.map((timeRange) => ({
-    label: timeRange === "total" ? t`Total` : timeRange,
-    value: timeRange,
-  })), []);
+  const timeRangeTabs = useMemo(
+    () =>
+      POOLS_TIME_RANGE_OPTIONS.map((timeRange) => ({
+        label: timeRange === "total" ? t`Total` : timeRange,
+        value: timeRange,
+      })),
+    []
+  );
 
   const graphTitleLabelMap = useLocalizedMap(MARKET_GRAPHS_TITLE_LABELS);
 
-  const poolsTabs = (
-    <PoolsTabs<PoolsTimeRange> tabs={timeRangeTabs} selected={timeRange} setSelected={setTimeRange} />
-  );
+  const poolsTabs = <PoolsTabs<PoolsTimeRange> tabs={timeRangeTabs} selected={timeRange} setSelected={setTimeRange} />;
 
   const marketGraphsTabsLabelMap = useLocalizedMap(MARKET_GRAPHS_TABS_LABELS);
 
-  const marketGraphsTabs = useMemo(() => MARKET_GRAPHS_TYPES.map((type) => ({
-    label: marketGraphsTabsLabelMap[type],
-    value: type,
-  })), [marketGraphsTabsLabelMap]);
+  const marketGraphsTabs = useMemo(
+    () =>
+      MARKET_GRAPHS_TYPES.map((type) => ({
+        label: marketGraphsTabsLabelMap[type],
+        value: type,
+      })),
+    [marketGraphsTabsLabelMap]
+  );
 
   return (
     <PoolsDetailsCard
@@ -187,9 +193,7 @@ export function MarketGraphs({ marketInfo }: { marketInfo: GlvInfo | MarketInfo 
             marketGraphType={marketGraphType}
             apySnapshots={apySnapshotsByAddress}
           />
-          {isMobile ? (
-            <div className="flex justify-center">{poolsTabs}</div>
-          ) : null}
+          {isMobile ? <div className="flex justify-center">{poolsTabs}</div> : null}
         </div>
       </div>
     </PoolsDetailsCard>
@@ -278,7 +282,7 @@ const GraphChart = ({
   const formatValue = useMemo(() => valueFormatter(marketGraphType), [marketGraphType]);
   const formatAxisValue = useMemo(() => axisValueFormatter(marketGraphType), [marketGraphType]);
 
-  const isMobile = useMedia("(max-width: 768px)");
+  const isMobile = usePoolsIsMobilePage();
 
   const axisTick = useMemo(() => ({ fill: "var(--color-slate-100)", fontSize: isMobile ? 12 : 14 }), [isMobile]);
   return (

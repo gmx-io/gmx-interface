@@ -1,6 +1,5 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useMedia } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
 import { getMarketIndexName } from "domain/synthetics/markets";
@@ -9,6 +8,7 @@ import { GlvAndGmMarketsInfoData, GlvInfo } from "domain/synthetics/markets/type
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { formatDateTime } from "lib/dates";
 import { bigintToNumber, formatAmountHuman } from "lib/numbers";
+import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import { MarketInfo } from "sdk/types/markets";
 
 import { useMarketMintableTokens } from "components/Synthetics/MarketStats/hooks/useMarketMintableTokens";
@@ -33,7 +33,7 @@ export function PoolsDetailsAbout({
   const sellable = isGlv ? getTotalSellableInfoGlv(marketInfo, marketsInfoData, marketTokensData) : sellableInfo;
   const mintable = isGlv ? getMintableInfoGlv(marketInfo, marketTokensData) : mintableInfo;
 
-  const isMobile = useMedia("(max-width: 768px)");
+  const isMobile = usePoolsIsMobilePage();
 
   const marketName = marketInfo ? getMarketIndexName(marketInfo) : "";
 
@@ -47,8 +47,8 @@ export function PoolsDetailsAbout({
           </Trans>
         ) : (
           <Trans>
-            This token automatically accrues fees from leverage trading and swaps for the {marketName} market. It is also
-            exposed to {marketInfo?.longToken?.symbol} and {marketInfo?.shortToken?.symbol} as per the composition
+            This token automatically accrues fees from leverage trading and swaps for the {marketName} market. It is
+            also exposed to {marketInfo?.longToken?.symbol} and {marketInfo?.shortToken?.symbol} as per the composition
             displayed.
           </Trans>
         )}

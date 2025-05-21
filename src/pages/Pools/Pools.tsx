@@ -1,6 +1,5 @@
 import cx from "classnames";
 import { useMemo } from "react";
-import { useMedia } from "react-use";
 
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -21,6 +20,7 @@ import { GlvList } from "components/Synthetics/GmList/GlvList";
 import { GmList } from "components/Synthetics/GmList/GmList";
 
 import PoolsTimeRangeFilter from "./PoolsTimeRangeFilter";
+import { usePoolsIsMobilePage } from "./usePoolsIsMobilePage";
 
 export default function Pools() {
   const { timeRange, setTimeRange } = usePoolsTimeRange();
@@ -58,7 +58,7 @@ export default function Pools() {
     glvData,
   });
 
-  const isMobile = useMedia("(max-width: 768px)");
+  const isMobile = usePoolsIsMobilePage();
 
   return (
     <div className="default-container page-layout">

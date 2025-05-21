@@ -1,7 +1,6 @@
 import { Trans } from "@lingui/macro";
 import React from "react";
 import { FaChevronRight } from "react-icons/fa";
-import { useMedia } from "react-use";
 import { Line, LineChart } from "recharts";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -24,6 +23,7 @@ import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformance";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { TokenData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
@@ -93,7 +93,7 @@ export function GmListItem({
   const lidoApr = getByKey(marketsTokensLidoAprData, token?.address);
   const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
-  const isMobile = useMedia("(max-width: 768px)");
+  const isMobile = usePoolsIsMobilePage();
 
   if (!token || !indexToken || !longToken || !shortToken) {
     return null;
@@ -303,7 +303,7 @@ const SnapshotGraph = ({
 }) => {
   const isNegative = performance < 0;
 
-  const isMobile = useMedia("(max-width: 768px)");
+  const isMobile = usePoolsIsMobilePage();
   const size = isMobile ? MOBILE_SNAPSHOT_GRAPH_SIZE : DESKTOP_SNAPSHOT_GRAPH_SIZE;
 
   return (
