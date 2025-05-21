@@ -3,7 +3,6 @@ import { encodeFunctionData, size, zeroAddress, zeroHash } from "viem";
 
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
-import { isDevelopment } from "config/env";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import {
@@ -308,11 +307,6 @@ export async function approximateRelayerFee({
       });
 
       metrics.pushError(extendedError, "expressOrders.estimateGas");
-
-      if (isDevelopment()) {
-        // eslint-disable-next-line no-console
-        console.error(extendedError);
-      }
 
       return undefined;
     }
