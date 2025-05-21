@@ -9,10 +9,8 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
-  BASE_MAINNET,
   OPTIMISM_SEPOLIA,
   SEPOLIA,
-  SONIC_MAINNET,
   getChainName,
 } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -64,18 +62,18 @@ const NETWORK_OPTIONS: NetworkOption[] = [
     icon: getChainIcon(AVALANCHE),
     color: "#E841424D",
   },
-  {
-    label: getChainName(BASE_MAINNET),
-    value: BASE_MAINNET,
-    icon: getChainIcon(BASE_MAINNET),
-    color: "#0052ff",
-  },
-  {
-    label: getChainName(SONIC_MAINNET),
-    value: SONIC_MAINNET,
-    icon: getChainIcon(SONIC_MAINNET),
-    color: "#ffffff",
-  },
+  // {
+  //   label: getChainName(BASE_MAINNET),
+  //   value: BASE_MAINNET,
+  //   icon: getChainIcon(BASE_MAINNET),
+  //   color: "#0052ff",
+  // },
+  // {
+  //   label: getChainName(SONIC_MAINNET),
+  //   value: SONIC_MAINNET,
+  //   icon: getChainIcon(SONIC_MAINNET),
+  //   color: "#ffffff",
+  // },
 ];
 
 if (isDevelopment()) {

@@ -328,13 +328,11 @@ export function useGmxAccountTokensDataRequest(chainId: UiContractsChain): Token
   const { pricesData, error: pricesError, updatedAt: pricesUpdatedAt } = useTokenRecentPricesRequest(chainId);
   const { data: onchainConfigsData, error: onchainConfigsError } = useOnchainTokenConfigs(chainId);
 
-  const isValidSettlementChain = isSettlementChain(chainId);
-
-  const queryCondition = account && isValidSettlementChain;
+  const queryCondition = account && isSettlementChain(chainId);
 
   const { data: tokenBalances, error: tokenBalancesError } = useMulticall(chainId, "gmx-account-tokens", {
     key: queryCondition ? ["gmx-account-tokens", chainId, account] : null,
-    request: buildGmxAccountTokenBalancesRequest(chainId as UiSettlementChain, account!),
+    request: queryCondition ? buildGmxAccountTokenBalancesRequest(chainId, account!) : {},
     parseResponse: parseGmxAccountTokenBalancesData,
   });
 
