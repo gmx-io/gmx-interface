@@ -112,7 +112,7 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
     },
     // ETH/USD [wstETH-USDe]
     "0x0Cf1fb4d1FF67A3D8Ca92c9d6643F8F9be8e03E5": {
-      enabled: false,
+      enabled: true,
     },
     // SWAP-ONLY [wstETH-WETH]
     "0xb56E5E2eB50cf5383342914b0C85Fe62DbD861C8": {
