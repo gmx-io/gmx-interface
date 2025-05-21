@@ -71,12 +71,14 @@ export function estimateRelayerGasLimit({
   return relayParamsGasLimit + transactionPayloadGasLimit + l1GasLimit;
 }
 
-export function approximateL1Gas({
+export function approximateL1GasBuffer({
   l1Reference,
   sizeOfData,
+  gasPrice,
 }: {
   l1Reference: L1ExpressOrderGasReference;
   sizeOfData: bigint;
+  gasPrice: bigint;
 }) {
   const evaluated = Math.round(
     (Number(l1Reference.gasLimit) * Math.log(Number(sizeOfData))) / Math.log(Number(l1Reference.sizeOfData))
@@ -84,7 +86,7 @@ export function approximateL1Gas({
 
   const l1GasLimit = Math.abs(evaluated) < Infinity ? BigInt(evaluated) : l1Reference.gasLimit;
 
-  return l1GasLimit;
+  return l1GasLimit / gasPrice;
 }
 
 export function estimateBatchGasLimit({
@@ -105,61 +107,6 @@ export function estimateBatchGasLimit({
   const cancelOrdersGasLimit = gasLimits.cancelOrderGasLimit * BigInt(cancelOrdersCount);
 
   return createOrdersGasLimit + updateOrdersGasLimit + cancelOrdersGasLimit + externalCallsGasLimit;
-}
-
-export function approximateExpressBatchOrderRelayGasLimit({
-  gasLimits,
-  feeSwapsCount,
-  createOrdersCount,
-  updateOrdersCount,
-  cancelOrdersCount,
-  tokenPermitsCount,
-  oraclePriceCount,
-  externalSwapGasLimit,
-  l1Reference,
-  sizeOfData,
-}: {
-  gasLimits: GasLimitsConfig;
-  createOrdersCount: number;
-  updateOrdersCount: number;
-  cancelOrdersCount: number;
-  tokenPermitsCount: number;
-  feeSwapsCount: number;
-  externalSwapGasLimit: bigint;
-  oraclePriceCount: number;
-  sizeOfData: bigint;
-  l1Reference: L1ExpressOrderGasReference | undefined;
-}) {
-  const swapsGasLimit = gasLimits.singleSwap * BigInt(feeSwapsCount);
-
-  const createOrdersGasLimit = gasLimits.createOrderGasLimit * BigInt(createOrdersCount);
-  const updateOrdersGasLimit = gasLimits.updateOrderGasLimit * BigInt(updateOrdersCount);
-  const cancelOrdersGasLimit = gasLimits.cancelOrderGasLimit * BigInt(cancelOrdersCount);
-  const tokenPermitsGasLimit = gasLimits.tokenPermitGasLimit * BigInt(tokenPermitsCount);
-
-  const oraclePricesGasLimit = gasLimits.estimatedGasFeePerOraclePrice * BigInt(oraclePriceCount);
-
-  const totalGasLimit =
-    createOrdersGasLimit +
-    updateOrdersGasLimit +
-    cancelOrdersGasLimit +
-    swapsGasLimit +
-    oraclePricesGasLimit +
-    tokenPermitsGasLimit +
-    externalSwapGasLimit;
-
-  let l1GasLimit = 0n;
-
-  if (l1Reference) {
-    const evaluated = Math.round(
-      (Number(l1Reference.gasLimit) * Math.log(Number(sizeOfData))) / Math.log(Number(l1Reference.sizeOfData))
-    );
-    l1GasLimit = Math.abs(evaluated) < Infinity ? BigInt(evaluated) : 0n;
-  }
-
-  const gasLimit = totalGasLimit + l1GasLimit;
-
-  return { gasLimit, l1GasLimit };
 }
 
 export function estimateBatchMinGasPaymentTokenAmount({
@@ -187,18 +134,25 @@ export function estimateBatchMinGasPaymentTokenAmount({
   cancelOrdersCount: number;
   executionFeeAmount: bigint | undefined;
 }) {
-  const { gasLimit } = approximateExpressBatchOrderRelayGasLimit({
+  const batchGasLimit = estimateBatchGasLimit({
     gasLimits,
     createOrdersCount,
     updateOrdersCount,
     cancelOrdersCount,
-    feeSwapsCount: relayFeeToken.address === gasPaymentToken.address ? 0 : 1,
-    externalSwapGasLimit: 0n,
-    oraclePriceCount: 2,
-    tokenPermitsCount: 0,
-    sizeOfData: 2500n, // approximate size of single order creation
-    l1Reference,
+    externalCallsGasLimit: 0n,
   });
+
+  const relayerGasLimit = estimateRelayerGasLimit({
+    gasLimits,
+    tokenPermitsCount: 0,
+    feeSwapsCount: relayFeeToken.address === gasPaymentToken.address ? 0 : 1,
+    feeExternalCallsGasLimit: 0n,
+    oraclePriceCount: 2,
+    transactionPayloadGasLimit: batchGasLimit,
+    l1GasLimit: l1Reference?.gasLimit ?? 0n,
+  });
+
+  const gasLimit = relayerGasLimit + batchGasLimit;
 
   const feeAmount = gasLimit * gasPrice;
 

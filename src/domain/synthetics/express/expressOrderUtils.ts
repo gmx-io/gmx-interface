@@ -52,7 +52,7 @@ import {
 } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 
-import { approximateL1Gas, estimateBatchGasLimit, estimateRelayerGasLimit, GasLimitsConfig } from "../fees";
+import { approximateL1GasBuffer, estimateBatchGasLimit, estimateRelayerGasLimit, GasLimitsConfig } from "../fees";
 import { getNeedTokenApprove } from "../tokens";
 
 export async function estimateBatchExpressParams({
@@ -267,9 +267,10 @@ export async function approximateRelayerFee({
   });
 
   const l1GasLimit = l1Reference
-    ? approximateL1Gas({
+    ? approximateL1GasBuffer({
         l1Reference,
         sizeOfData: BigInt(size(baseTxn.txnData.callData as `0x${string}`)),
+        gasPrice,
       })
     : 0n;
 
