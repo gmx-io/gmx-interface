@@ -66,6 +66,8 @@ export type ExpressTransactionEstimatorParams = {
 };
 
 export type GasPaymentParams = {
+  gasPaymentToken: TokenData;
+  relayFeeToken: TokenData;
   gasPaymentTokenAddress: string;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;

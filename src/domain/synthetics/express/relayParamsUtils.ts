@@ -69,6 +69,8 @@ export function getRelayerFeeParams({
   transactionExternalCalls: ExternalCallsPayload | undefined;
 }) {
   const gasPaymentParams: GasPaymentParams = {
+    gasPaymentToken: gasPaymentToken,
+    relayFeeToken: relayerFeeToken,
     gasPaymentTokenAddress: gasPaymentToken.address,
     relayerFeeTokenAddress: relayerFeeToken.address,
     relayerFeeAmount,

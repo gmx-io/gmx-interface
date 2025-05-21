@@ -43,6 +43,7 @@ import {
   selectTradeboxTradeRatios,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getMinResidualGasPaymentTokenAmount } from "domain/synthetics/express/expressOrderUtils";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
@@ -256,10 +257,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     nativeToken,
     fromTokenAmount,
     fromTokenInputValue,
-    minResidualAmount:
-      submitButtonState.expressParams?.gasPaymentParams.gasPaymentTokenAddress === fromTokenAddress
-        ? submitButtonState.expressParams?.gasPaymentParams.gasPaymentTokenAmount
-        : undefined,
+    minResidualAmount: getMinResidualGasPaymentTokenAmount({
+      expressParams: submitButtonState.expressParams,
+      payTokenAddress: fromTokenAddress,
+    }),
     isLoading: submitButtonState.isExpressLoading,
   });
 

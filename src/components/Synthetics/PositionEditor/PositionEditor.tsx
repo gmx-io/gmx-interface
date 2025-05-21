@@ -13,6 +13,7 @@ import {
 import { selectPositionEditorCollateralInputAmountAndUsd } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getMinResidualGasPaymentTokenAmount } from "domain/synthetics/express/expressOrderUtils";
 import { formatLiquidationPrice, getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { adaptToV1InfoTokens, convertToTokenAmount } from "domain/synthetics/tokens";
 import { getMinCollateralUsdForLeverage, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
@@ -201,10 +202,10 @@ export function PositionEditor() {
     nativeToken,
     fromTokenAmount: collateralDeltaAmount ?? 0n,
     fromTokenInputValue: collateralInputValue,
-    minResidualAmount:
-      expressParams?.gasPaymentParams.gasPaymentTokenAddress === collateralToken?.address
-        ? expressParams?.gasPaymentParams.gasPaymentTokenAmount
-        : undefined,
+    minResidualAmount: getMinResidualGasPaymentTokenAmount({
+      expressParams,
+      payTokenAddress: collateralToken?.address,
+    }),
     isLoading: isExpressLoading,
   });
 
