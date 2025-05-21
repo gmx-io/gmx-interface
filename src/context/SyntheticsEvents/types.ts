@@ -110,7 +110,7 @@ export type EventLogArrayItems<T> = {
 };
 
 export type PendingExpressTxns = {
-  [taskId: string]: PendingExpressTxnParams;
+  [key: string]: Partial<PendingExpressTxnParams>;
 };
 
 export type EventLogSection<T> = {

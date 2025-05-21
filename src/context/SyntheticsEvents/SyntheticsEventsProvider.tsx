@@ -139,17 +139,21 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [positionIncreaseEvents, setPositionIncreaseEvents] = useState<PositionIncreaseEvent[]>([]);
   const [positionDecreaseEvents, setPositionDecreaseEvents] = useState<PositionDecreaseEvent[]>([]);
   const [gelatoTaskStatuses, setGelatoTaskStatuses] = useState<{ [taskId: string]: TaskState }>({});
-  const [pendingExpressTxnParams, setPendingExpressTxnParams] = useState<{ [key: string]: PendingExpressTxnParams }>(
-    {}
-  );
+  const [pendingExpressTxnParams, setPendingExpressTxnParams] = useState<{
+    [key: string]: Partial<PendingExpressTxnParams>;
+  }>({});
   const { refreshNonces, updateActionsCount } = useExpressNonces();
   const eventLogHandlers = useRef({});
 
   const handleExpressTxnSuccess = useCallback(
-    (pendingExpressTxn: PendingExpressTxnParams) => {
+    (pendingExpressTxn: Partial<PendingExpressTxnParams>) => {
       const isSubaccount = Boolean(pendingExpressTxn.subaccountApproval);
 
       const key = pendingExpressTxn.key;
+
+      if (!key) {
+        return;
+      }
 
       refreshSubaccountData();
       refreshNonces();
@@ -964,11 +968,19 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         setPendingExpressTxnParams((old) => setByKey(old, params.key, params));
       },
       updatePendingExpressTxn: (params: Partial<PendingExpressTxnParams>) => {
-        if (!params.key) {
-          return;
-        }
+        setPendingExpressTxnParams((old) => {
+          if (!params.key) {
+            return old;
+          }
 
-        setPendingExpressTxnParams((old) => updateByKey(old, params.key!, { ...params }));
+          const key = params.key;
+
+          if (old[key]) {
+            return updateByKey(old, key, { ...params });
+          }
+
+          return setByKey(old, key, params);
+        });
       },
       setPendingOrder: (data: PendingOrderData | PendingOrderData[]) => {
         const toastId = Date.now();
@@ -1141,6 +1153,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         if (
           !pendingExpressTxn.isViewed &&
           pendingExpressTxn.taskId &&
+          pendingExpressTxn.key &&
           gelatoTaskStatuses[pendingExpressTxn.taskId] &&
           pendingExpressTxn.successMessage
         ) {
@@ -1158,7 +1171,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             helperToast.error(pendingExpressTxn.errorMessage);
           }
 
-          setPendingExpressTxnParams((old) => updateByKey(old, pendingExpressTxn.key, { isViewed: true }));
+          setPendingExpressTxnParams((old) => updateByKey(old, pendingExpressTxn.key!, { isViewed: true }));
         }
       });
     },

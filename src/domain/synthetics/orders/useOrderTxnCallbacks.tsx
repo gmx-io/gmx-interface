@@ -35,8 +35,8 @@ import {
   DecreasePositionOrderParams,
   getBatchRequiredActions,
   getBatchTotalExecutionFee,
-  IncreasePositionOrderParams,
   getIsTwapOrderPayload,
+  IncreasePositionOrderParams,
   SwapOrderParams,
   UpdateOrderTxnParams,
 } from "sdk/utils/orderTransactions";
@@ -60,7 +60,6 @@ export function useOrderTxnCallbacks() {
     setPendingOrder,
     setPendingPosition,
     setPendingOrderUpdate,
-    setPendingExpressTxn,
     updatePendingExpressTxn,
     setPendingFundingFeeSettlement,
   } = useSyntheticsEvents();
@@ -163,7 +162,8 @@ export function useOrderTxnCallbacks() {
         );
 
         if (expressParams) {
-          setPendingExpressTxn({
+          updatePendingExpressTxn({
+            key: getExpressParamsKey(expressParams),
             subaccountApproval: expressParams.subaccount?.signedApproval,
             isSponsoredCall: expressParams.isSponsoredCall,
             tokenPermits: expressParams.relayParamsPayload.tokenPermits,
@@ -171,10 +171,8 @@ export function useOrderTxnCallbacks() {
             pendingPositionsKeys: pendingPositions.map((p) => p.positionKey),
             metricId: ctx.metricId,
             createdAt: Date.now(),
-            taskId: undefined,
             successMessage,
             errorMessage,
-            key: getExpressParamsKey(expressParams),
           });
         }
       };
@@ -287,7 +285,6 @@ export function useOrderTxnCallbacks() {
       chainId,
       ordersInfoData,
       setIsSettingsVisible,
-      setPendingExpressTxn,
       setPendingFundingFeeSettlement,
       setPendingOrder,
       setPendingOrderUpdate,
