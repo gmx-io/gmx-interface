@@ -258,14 +258,16 @@ function MultichainBalance() {
 
   return (
     <div className="flex flex-col gap-8 rounded-4 bg-cold-blue-900 p-12">
-      <div className="text-body-small text-slate-100">GMX Balance</div>
+      <div className="text-body-small text-slate-100">
+        <Trans>GMX Balance</Trans>
+      </div>
       <div className="flex items-center justify-between gap-8">
         <div className="text-24">{formatUsd(gmxAccountUsd)}</div>
         <button
           className="flex items-center gap-4 rounded-4 bg-cold-blue-700 py-4 pl-8 pr-4 gmx-hover:bg-cold-blue-500"
           onClick={handleAvailableToTradeClick}
         >
-          <div>All assets</div>
+          <Trans>All assets</Trans>
           <TokenIcons tokens={availableToTradeAssetSymbols} />
           <IoArrowDown className="block size-16 -rotate-90 text-slate-100" />
         </button>

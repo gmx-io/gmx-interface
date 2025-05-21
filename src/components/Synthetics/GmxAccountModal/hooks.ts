@@ -115,18 +115,26 @@ export function useAvailableToTradeAssetSettlementChain(): {
 }
 
 export function useAvailableToTradeAssetMultichain(): {
-  gmxAccountUsd: bigint;
+  gmxAccountUsd: bigint | undefined;
 } {
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
 
   let gmxAccountUsd = 0n;
+
+  let empty = true;
 
   for (const token of Object.values(gmxAccountTokensData)) {
     if (token.balance === undefined || token.balance === 0n) {
       continue;
     }
 
+    empty = false;
+
     gmxAccountUsd += convertToUsd(token.balance, token.decimals, getMidPrice(token.prices))!;
+  }
+
+  if (empty) {
+    return { gmxAccountUsd: undefined };
   }
 
   return { gmxAccountUsd };
@@ -324,7 +332,7 @@ export function useGmxAccountTokensDataRequest(chainId: UiContractsChain): Token
 
   const queryCondition = account && isValidSettlementChain;
 
-  const { data: tokenBalances, error: tokenBalancesError } = useMulticall(chainId, "gmx-account-balances", {
+  const { data: tokenBalances, error: tokenBalancesError } = useMulticall(chainId, "gmx-account-tokens", {
     key: queryCondition ? ["gmx-account-tokens", chainId, account] : null,
     request: buildGmxAccountTokenBalancesRequest(chainId as UiSettlementChain, account!),
     parseResponse: parseGmxAccountTokenBalancesData,
