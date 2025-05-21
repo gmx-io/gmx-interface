@@ -6,7 +6,7 @@ import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import {
-  EstimatedExpressTransactionParams,
+  ExpressTransactionEstimatorParams,
   ExpressParamsEstimationMethod,
   ExpressTransactionBuilder,
   ExpressTxnParams,
@@ -76,7 +76,7 @@ export async function estimateBatchExpressParams({
     return undefined;
   }
 
-  const transactionParams = getBatchExpressEstimatedParams({
+  const transactionParams = getBatchExpressEstimatorParams({
     signer,
     batchParams,
     gasLimits: globalExpressParams.gasLimits,
@@ -89,7 +89,7 @@ export async function estimateBatchExpressParams({
     return undefined;
   }
 
-  const expressParams = await approximateRelayerFee({
+  const expressParams = await estimateExpressParams({
     chainId,
     provider,
     transactionParams,
@@ -101,7 +101,7 @@ export async function estimateBatchExpressParams({
   return expressParams;
 }
 
-export function getBatchExpressEstimatedParams({
+export function getBatchExpressEstimatorParams({
   signer,
   batchParams,
   gasLimits,
@@ -115,7 +115,7 @@ export function getBatchExpressEstimatedParams({
   gasPaymentToken: TokenData;
   chainId: number;
   tokensData: TokensData;
-}): EstimatedExpressTransactionParams | undefined {
+}): ExpressTransactionEstimatorParams | undefined {
   const payAmounts = getBatchTotalPayCollateralAmount(batchParams);
   const gasPaymentTokenAsCollateralAmount = getByKey(payAmounts, gasPaymentToken.address) ?? 0n;
   const executionFeeAmount = getBatchTotalExecutionFee({ batchParams, chainId, tokensData });
@@ -166,7 +166,7 @@ export function getBatchExpressEstimatedParams({
   };
 }
 
-export async function approximateRelayerFee({
+export async function estimateExpressParams({
   chainId,
   provider,
   transactionParams,
@@ -177,7 +177,7 @@ export async function approximateRelayerFee({
   chainId: number;
   provider: Provider | undefined;
   globalExpressParams: GlobalExpressParams;
-  transactionParams: EstimatedExpressTransactionParams;
+  transactionParams: ExpressTransactionEstimatorParams;
   estimationMethod: "approximate" | "estimateGas";
   requireValidations: boolean;
 }): Promise<ExpressTxnParams | undefined> {
