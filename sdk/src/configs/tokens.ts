@@ -351,14 +351,14 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/ethena-usde",
       isStable: true,
     },
-    // {
-    //   name: "Wrapped stETH",
-    //   symbol: "WSTETH",
-    //   address: "0x5979D7b546E38E414F7E9822514be443A4800529",
-    //   decimals: 18,
-    //   imageUrl: "https://assets.coingecko.com/coins/images/18834/standard/wstETH.png?1696518295",
-    //   coingeckoUrl: "https://www.coingecko.com/en/coins/wrapped-steth",
-    // },
+    {
+      name: "Wrapped stETH",
+      symbol: "WSTETH",
+      address: "0x5979D7b546E38E414F7E9822514be443A4800529",
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/18834/standard/wstETH.png?1696518295",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/wrapped-steth",
+    },
     {
       name: "Shiba Inu",
       symbol: "SHIB",
