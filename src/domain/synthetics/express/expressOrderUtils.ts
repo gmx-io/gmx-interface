@@ -332,7 +332,7 @@ export async function estimateExpressParams({
   const buffer = bigMath.mulDiv(relayerFeeAmount, BigInt(bufferBps), BASIS_POINTS_DIVISOR_BIGINT);
   relayerFeeAmount += buffer;
 
-  const totalRelayerFeeTokenAmount = 0n + executionFeeAmount;
+  const totalRelayerFeeTokenAmount = relayerFeeAmount + executionFeeAmount;
 
   const finalRelayFeeParams = getRelayerFeeParams({
     chainId,

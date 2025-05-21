@@ -1,8 +1,8 @@
 import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
+import { ExpressTxnData } from "lib/transactions";
 import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
-import { ExpressTxnData } from "lib/transactions";
 import { GasLimitsConfig, L1ExpressOrderGasReference } from "../fees";
 import { MarketsInfoData } from "../markets";
 import { Subaccount, SubaccountValidations } from "../subaccount";
