@@ -129,7 +129,7 @@ export function MultichainTokenSelector({
     >
       <SlideModal
         qa={qa + "-modal"}
-        className="TokenSelector-modal text-white"
+        className="TokenSelector-modal text-body-medium text-white"
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={label}
@@ -174,6 +174,8 @@ export function MultichainTokenSelector({
             )}
           </>
         }
+        contentPadding={false}
+        noDivider
       >
         {activeFilter === "pay" && (
           <AvailableToTradeTokenList
@@ -323,25 +325,25 @@ function AvailableToTradeTokenList({
           <div
             key={token.address + "_" + (token.isGmxAccount ? "gmx" : "settlement")}
             // data-qa={`${qa}-token-${token.symbol}`}
-            className={cx("TokenSelector-token-row")}
+            className="flex cursor-pointer justify-between bg-gradient-to-r px-16 py-8 hover:from-[#23263B] hover:to-[#16182E]"
             onClick={() => onSelectTokenAddress(token.address, token.isGmxAccount)}
           >
-            <div className="Token-info">
+            <div className="flex items-center gap-8">
               <TokenIcon
                 symbol={token.symbol}
-                className="token-logo"
+                className="size-40"
                 displaySize={40}
                 importSize={40}
                 chainIdBadge={token.isGmxAccount ? 0 : chainId}
               />
 
-              <div className="Token-symbol">
-                <div className="Token-text">{token.symbol}</div>
-                <span className="text-accent">{token.name}</span>
+              <div className="">
+                <div className="text-body-large">{token.symbol}</div>
+                <span className="text-body-small text-slate-100">{token.name}</span>
               </div>
             </div>
-            <div className="Token-balance">
-              <div className="Token-text">
+            <div className="">
+              <div className="text-body-large">
                 {token.balance > 0n && formatBalanceAmount(token.balance, token.decimals)}
                 {token.balance == 0n && "-"}
               </div>
