@@ -17,8 +17,8 @@ import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import Button from "components/Button/Button";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 
+import ExpressIcon from "img/ic_express.svg?react";
 import OneClickIcon from "img/ic_one_click.svg?react";
-import IconBolt from "img/icon-bolt.svg?react";
 
 import { useExpressTradingWarnings } from "./hooks/useShowOneClickTradingInfo";
 
@@ -87,7 +87,7 @@ export function ExpressTradingWarningCard({
   } else if (shouldShowWrapOrUnwrapWarning) {
     onCloseClick = handleCloseWrapOrUnwrapWarningClick;
     const nativeToken = getNativeToken(chainId);
-    icon = <IconBolt />;
+    icon = <ExpressIcon className="-mt-6 ml-2" />;
     content = (
       <Trans>Express Trading is not available for wrapping or unwrapping native token {nativeToken.symbol}.</Trans>
     );
@@ -95,7 +95,7 @@ export function ExpressTradingWarningCard({
     const wrappedToken = getWrappedToken(chainId);
     const nativeToken = getNativeToken(chainId);
     onCloseClick = handleCloseNativeTokenWarningClick;
-    icon = <IconBolt />;
+    icon = <ExpressIcon className="-mt-6 ml-2" />;
     content = (
       <Trans>
         Express Trading is not available using network's native token {nativeToken.symbol}. Consider using{" "}
@@ -118,7 +118,7 @@ export function ExpressTradingWarningCard({
     content = <Trans>One-Click Trading is disabled. Time limit expired.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowOutOfGasPaymentBalanceWarning) {
-    icon = <IconBolt />;
+    icon = <ExpressIcon className="-mt-6 ml-2" />;
     content = <Trans>One-click and Express Trading are not available due to insufficient balance.</Trans>;
     buttonText = <Trans>Buy USDC or WETH</Trans>;
     onClick = () => {
@@ -130,7 +130,7 @@ export function ExpressTradingWarningCard({
 
   return (
     <ColorfulBanner color="blue" icon={icon} onClose={onCloseClick}>
-      <div className="text-12">
+      <div className="ml-10 text-12">
         {content}
         {onClick && (
           <>

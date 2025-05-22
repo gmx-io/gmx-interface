@@ -22,7 +22,7 @@ import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
-import { NotifyButton } from "../NotifyButton/NotifyButton";
+import { OneClickButton } from "../OneClickButton/OneClickButton";
 
 import "./Header.scss";
 
@@ -123,7 +123,7 @@ export function AppHeaderUser({
             >
               {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
             </ConnectWalletButton>
-            {!small && <NotifyButton />}
+            {!small && <OneClickButton openSettings={openSettings} />}
             <NetworkDropdown
               small={small}
               networkOptions={NETWORK_OPTIONS}
@@ -165,7 +165,7 @@ export function AppHeaderUser({
               disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
             />
           </div>
-          {!small && <NotifyButton />}
+          {!small && <OneClickButton openSettings={openSettings} />}
           <NetworkDropdown
             small={small}
             networkOptions={NETWORK_OPTIONS}

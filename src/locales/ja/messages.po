@@ -1375,8 +1375,8 @@ msgstr "指値スワップ失敗"
 
 #: src/components/ExpressTradingBanner/ExpressTradingBanner.tsx
 #: src/components/Header/Header.tsx
-msgid "Enable Express Trading"
-msgstr ""
+#~ msgid "Enable Express Trading"
+#~ msgstr ""
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
@@ -1862,6 +1862,10 @@ msgstr ""
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Close to execution price"
 msgstr "執行価格に近すぎます"
+
+#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
+msgid "Try Express 1CT"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
@@ -2790,8 +2794,8 @@ msgstr "作成中..."
 #: src/components/Header/Header.tsx
 #: src/components/Header/Header.tsx
 #: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-msgid "Express Trading simplifies your trades on GMX. Instead of sending transactions directly and paying gas fees in ETH/AVAX, you sign secure off-chain messages.<0/><1/>These messages are then processed on-chain for you, which helps reduce issues with network congestion and RPC errors."
-msgstr ""
+#~ msgid "Express Trading simplifies your trades on GMX. Instead of sending transactions directly and paying gas fees in ETH/AVAX, you sign secure off-chain messages.<0/><1/>These messages are then processed on-chain for you, which helps reduce issues with network congestion and RPC errors."
+#~ msgstr ""
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
@@ -6873,6 +6877,10 @@ msgstr "注文を有効にするため規約に同意する"
 msgid "Protocol analytics"
 msgstr "プロトコルの分析"
 
+#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
+msgid "Try Express One-Click Trading"
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 #: src/pages/NftWallet/NftWallet.jsx
@@ -7079,8 +7087,8 @@ msgstr ""
 
 #: src/components/Header/Header.tsx
 #: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-msgid "Enable One-Click Trading"
-msgstr ""
+#~ msgid "Enable One-Click Trading"
+#~ msgstr ""
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawn {balanceFormatted} to Main Account"
@@ -8235,6 +8243,7 @@ msgstr ""
 msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr "無効なトークン indexToken: \"{0}\" collateralToken: \"{1}\""
 
+#: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Alerts"
 msgstr ""

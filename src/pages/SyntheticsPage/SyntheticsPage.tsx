@@ -54,6 +54,7 @@ import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
 import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import { NpsModal } from "components/NpsModal/NpsModal";
+import { OneClickPromoBanner } from "components/OneClickPromoBanner/OneClickPromoBanner";
 import { Claims } from "components/Synthetics/Claims/Claims";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
@@ -263,6 +264,7 @@ export function SyntheticsPage(p: Props) {
       })}
     >
       <div className="-mt-15 grid grow grid-cols-[1fr_auto] gap-12 px-32 pt-0 max-[1100px]:grid-cols-1 max-[800px]:p-10">
+        {isMobile && <OneClickPromoBanner openSettings={openSettings} />}
         <div className="Exchange-left flex flex-col">
           <Chart />
           {!isMobile && (

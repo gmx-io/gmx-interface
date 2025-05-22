@@ -24,6 +24,7 @@ import { StatusNotification } from "components/Synthetics/StatusNotification/Sta
 import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
 
 export type SubaccountState = {
+  subaccountConfig: SubaccountSerializedConfig | undefined;
   subaccount: Subaccount | undefined;
   updateSubaccountSettings: (params: { nextRemainigActions?: bigint; nextRemainingSeconds?: bigint }) => Promise<void>;
   resetSubaccountApproval: () => void;
@@ -61,7 +62,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
   });
 
   const subaccount: Subaccount | undefined = useMemo(() => {
-    if (!subaccountConfig || !signer?.address || !subaccountData || !signer?.provider) {
+    if (!subaccountConfig?.isNew || !signer?.address || !subaccountData || !signer?.provider) {
       return undefined;
     }
 
@@ -139,7 +140,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
     let config = subaccountConfig;
 
-    if (!config?.address) {
+    if (!config?.address || !config.isNew) {
       try {
         helperToast.success(
           <StatusNotification key="generateSubaccount" title={t`Generating 1CT (One-Click Trading) session`}>
@@ -257,6 +258,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
   const state: SubaccountState = useMemo(() => {
     return {
+      subaccountConfig,
       subaccount,
       updateSubaccountSettings,
       resetSubaccountApproval,
@@ -266,6 +268,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     };
   }, [
     subaccount,
+    subaccountConfig,
     updateSubaccountSettings,
     resetSubaccountApproval,
     tryEnableSubaccount,
@@ -296,6 +299,11 @@ function useStoredSubaccountData(chainId: number, account: string | undefined) {
 
         try {
           const parsed = JSON.parse(stored);
+
+          if (!parsed.address || !parsed.privateKey) {
+            return undefined;
+          }
+
           return parsed;
         } catch (e) {
           return undefined;

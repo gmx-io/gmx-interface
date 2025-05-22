@@ -1375,8 +1375,8 @@ msgstr "Failed Limit Swap"
 
 #: src/components/ExpressTradingBanner/ExpressTradingBanner.tsx
 #: src/components/Header/Header.tsx
-msgid "Enable Express Trading"
-msgstr "Enable Express Trading"
+#~ msgid "Enable Express Trading"
+#~ msgstr "Enable Express Trading"
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
@@ -1862,6 +1862,10 @@ msgstr "Buy GMX from Uniswap or directly on GMX (make sure to select Arbitrum):"
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Close to execution price"
 msgstr "Close to execution price"
+
+#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
+msgid "Try Express 1CT"
+msgstr "Try Express 1CT"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
@@ -2790,8 +2794,8 @@ msgstr "Creating..."
 #: src/components/Header/Header.tsx
 #: src/components/Header/Header.tsx
 #: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-msgid "Express Trading simplifies your trades on GMX. Instead of sending transactions directly and paying gas fees in ETH/AVAX, you sign secure off-chain messages.<0/><1/>These messages are then processed on-chain for you, which helps reduce issues with network congestion and RPC errors."
-msgstr "Express Trading simplifies your trades on GMX. Instead of sending transactions directly and paying gas fees in ETH/AVAX, you sign secure off-chain messages.<0/><1/>These messages are then processed on-chain for you, which helps reduce issues with network congestion and RPC errors."
+#~ msgid "Express Trading simplifies your trades on GMX. Instead of sending transactions directly and paying gas fees in ETH/AVAX, you sign secure off-chain messages.<0/><1/>These messages are then processed on-chain for you, which helps reduce issues with network congestion and RPC errors."
+#~ msgstr "Express Trading simplifies your trades on GMX. Instead of sending transactions directly and paying gas fees in ETH/AVAX, you sign secure off-chain messages.<0/><1/>These messages are then processed on-chain for you, which helps reduce issues with network congestion and RPC errors."
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
@@ -6876,6 +6880,10 @@ msgstr "Accept terms to enable orders"
 msgid "Protocol analytics"
 msgstr "Protocol analytics"
 
+#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
+msgid "Try Express One-Click Trading"
+msgstr "Try Express One-Click Trading"
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 #: src/pages/NftWallet/NftWallet.jsx
@@ -7085,8 +7093,8 @@ msgstr "There may not be sufficient liquidity to execute the swap to the receive
 
 #: src/components/Header/Header.tsx
 #: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-msgid "Enable One-Click Trading"
-msgstr "Enable One-Click Trading"
+#~ msgid "Enable One-Click Trading"
+#~ msgstr "Enable One-Click Trading"
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawn {balanceFormatted} to Main Account"
@@ -8241,6 +8249,7 @@ msgstr "Rebates on V1"
 msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 
+#: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Alerts"
 msgstr "Alerts"
