@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
+import { getChainIcon } from "config/icons";
 import { MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "context/GmxAccountContext/config";
 import { useGmxAccountDepositViewTokenAddress, useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { TokenChainData } from "context/GmxAccountContext/types";
@@ -76,7 +77,7 @@ export const SelectAssetToDepositView = () => {
   const tokensChainData = useMultichainTokensRequest();
 
   const NETWORKS_FILTER = useMemo(() => {
-    const wildCard = { id: "all", name: "All Networks" };
+    const wildCard = { id: "all" as const, name: "All Networks" };
 
     const chainFilters = Object.keys(MULTI_CHAIN_SUPPORTED_TOKEN_MAP[chainId] ?? EMPTY_OBJECT).map((sourceChainId) => ({
       id: parseInt(sourceChainId),
@@ -128,12 +129,14 @@ export const SelectAssetToDepositView = () => {
               <Button
                 key={network.id}
                 type="button"
-                variant="ghost"
+                variant="secondary"
                 slim
                 className={cx("whitespace-nowrap", {
                   "!bg-cold-blue-500": selectedNetwork === network.id,
                 })}
                 onClick={() => setSelectedNetwork(network.id as number | "all")}
+                imgSrc={network.id !== "all" ? getChainIcon(network.id) : undefined}
+                imgClassName="size-16 !mr-4"
               >
                 {network.name}
               </Button>

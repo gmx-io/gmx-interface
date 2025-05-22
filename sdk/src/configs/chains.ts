@@ -111,7 +111,7 @@ const VIEM_CHAIN_BY_CHAIN_ID: Record<UiContractsChain, Chain> = {
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
 };
 
-export function getChainName(chainId: number) {
+export function getChainName(chainId: number): string {
   return CHAIN_NAMES_MAP[chainId];
 }
 
