@@ -929,6 +929,16 @@ export function getBatchRequiredActions(orderParams: BatchOrderTxnParams | undef
   );
 }
 
+export function getBatchSwapsCount(orderParams: BatchOrderTxnParams | undefined) {
+  if (!orderParams) {
+    return 0;
+  }
+
+  return orderParams.createOrderParams.reduce((acc, co) => {
+    return acc + co.orderPayload.addresses.swapPath.length;
+  }, 0);
+}
+
 export function getIsEmptyBatch(orderParams: BatchOrderTxnParams | undefined) {
   if (!orderParams) {
     return true;

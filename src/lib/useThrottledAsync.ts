@@ -1,6 +1,8 @@
 import throttle from "lodash/throttle";
 import { useState, useRef, useEffect } from "react";
 
+import { EMPTY_ARRAY } from "./objects";
+
 type AsyncFnParams<D extends object> = {
   params: D;
 };
@@ -39,12 +41,14 @@ export function useThrottledAsync<T, D extends object>(
   {
     params,
     throttleMs = 5000,
+    dataKey = EMPTY_ARRAY,
     withLoading = false,
     leading = true,
     trailing = false,
   }: {
     params: D | undefined;
     throttleMs?: number;
+    dataKey?: any[];
     withLoading?: boolean;
     leading?: boolean;
     trailing?: boolean;
@@ -124,6 +128,14 @@ export function useThrottledAsync<T, D extends object>(
     throttledFnRef.current?.(params);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params, dynamicThrottleMs]);
+
+  useEffect(() => {
+    setState((prev) => ({
+      ...prev,
+      data: undefined,
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, dataKey);
 
   return state;
 }
