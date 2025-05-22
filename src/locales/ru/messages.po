@@ -1480,6 +1480,10 @@ msgstr ""
 msgid "Shift GM"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "Pick a token and switch network"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Requested withdrawal of {0} USD from {1} {longOrShortText}."
 msgstr ""
@@ -6553,6 +6557,7 @@ msgid "Max leverage of 100x was exceeded, the remaining collateral after deducti
 msgstr "Максимальное кредитное плечо 100x было превышено, оставшийся залог после вычета убытков и комиссий был отправлен обратно на ваш счет:"
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "GMX Balance"
 msgstr ""
 
@@ -8122,6 +8127,10 @@ msgstr ""
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Enter a valid coin names"
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+msgid "All assets"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
