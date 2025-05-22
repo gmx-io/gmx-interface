@@ -42,7 +42,13 @@ jobs:
           echo "${{ secrets.GPG_KEY }}" | gpg --batch --import
           git config --global user.email "dev-bot@gmx.io"
           git config --global user.name "GMX Release Bot"
-          GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format=long | grep '^sec' | tail -1 | awk '{print $2}' | cut -d'/' -f2)
+          GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format=long | grep '^sec' | tail -1 | awk '{print $2}' | cut -d'/' -f2 || echo "")
+          if [ -z "$GPG_KEY_ID" ]; then
+            echo "Failed to extract GPG key ID. Make sure the secret contains a private key."
+            exit 1
+          fi
+          echo "Using GPG key: $GPG_KEY_ID"
+          gpg --list-secret-keys --keyid-format=long
           git config --global user.signingkey $GPG_KEY_ID
           git config --global gpg.program gpg
           git config --global commit.gpgsign true
