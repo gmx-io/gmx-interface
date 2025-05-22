@@ -17,6 +17,7 @@ import { UiContractsChain, UiSettlementChain, UiSourceChain, UiSupportedChain, g
 import { getContract } from "config/contracts";
 import { getChainIcon } from "config/icons";
 import {
+  DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT,
   MULTI_CHAIN_SUPPORTED_TOKEN_MAP,
   getMappedTokenId,
   getStargateEndpointId,
@@ -381,7 +382,7 @@ export const DepositView = () => {
   });
 
   const handleDeposit = useCallback(async () => {
-    if ((walletChainId as UiSettlementChain) === settlementChainId) {
+    if (DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT && (walletChainId as UiSettlementChain) === settlementChainId) {
       // #region DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT
       if (!account || !depositViewTokenAddress || inputAmount === undefined) {
         return;
@@ -644,11 +645,15 @@ export const DepositView = () => {
                   <TokenIcon symbol={selectedToken.symbol} displaySize={20} importSize={40} />
                   <span className="text-body-large">{selectedToken.symbol}</span>
                 </>
-              ) : (
+              ) : srcChainId !== undefined ? (
                 <>
                   <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={20} height={20} borderRadius={10} />
                   <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={40} height={16} />
                 </>
+              ) : (
+                <span className="text-slate-100">
+                  <Trans>Pick a token and switch network</Trans>
+                </span>
               )}
             </div>
             <BiChevronRight className="size-20 text-slate-100" />
@@ -660,6 +665,8 @@ export const DepositView = () => {
               <img src={getChainIcon(srcChainId)} alt={getChainName(srcChainId)} className="size-20" />
               <span className="text-body-large text-slate-100">{getChainName(srcChainId)}</span>
             </>
+          ) : DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT ? (
+            <span className="text-slate-100">DEV SAME CHAIN DEPOSIT</span>
           ) : (
             <>
               <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={20} height={20} borderRadius={10} />
