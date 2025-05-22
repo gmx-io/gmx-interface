@@ -309,7 +309,6 @@ export class Orders extends Module {
     allowedSlippage: number;
     decreaseAmounts: DecreasePositionAmounts;
     collateralToken: TokenData;
-    orderType?: OrderType;
     referralCode?: string;
     isTrigger?: boolean;
   }) {
