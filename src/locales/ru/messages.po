@@ -304,7 +304,6 @@ msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>P
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
-#: src/components/SettingsModal/SettingsModal.tsx
 msgid "TWAP Number of Parts"
 msgstr ""
 
@@ -1867,6 +1866,10 @@ msgstr "Близко к цене исполнения"
 msgid "Try Express 1CT"
 msgstr ""
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Global Leaderboard"
@@ -2611,7 +2614,6 @@ msgstr "Avalanche APR:"
 msgid "Dune Analytics for GMX"
 msgstr ""
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-click and Express Trading are not available due to insufficient balance."
 msgstr ""
@@ -3223,6 +3225,10 @@ msgstr ""
 msgid "Generating session..."
 msgstr ""
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "{actions, plural, one {1 action} other {{actions} actions}}"
+msgstr ""
+
 #: src/pages/Exchange/Exchange.tsx
 msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "Уменьшено {tokenSymbol} {longOrShortText}, -{0} USD."
@@ -3743,6 +3749,10 @@ msgstr "Депозит не удался"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "Запрос на рыночный обмен"
+
+#: src/components/ExpressTradingGasTokenSwitchedBanner.ts/ExpressTradingGasTokenSwithedBanner.tsx
+msgid "Gas payment token changed due to insufficient balance in the selected token."
+msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.{1}"
@@ -4516,8 +4526,8 @@ msgid "Select a token"
 msgstr ""
 
 #: src/components/ExpressTradingGasTokenSwitchedBanner.ts/ExpressTradingGasTokenSwithedBanner.tsx
-msgid "Gas Payment Token changed due to insufficient balance."
-msgstr ""
+#~ msgid "Gas Payment Token changed due to insufficient balance."
+#~ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "{0, plural, one {1 minute} other {{minutes} minutes}}"
@@ -5000,8 +5010,8 @@ msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancell
 msgstr "Всего активных: {openTotal}, выполненных: {executedTotal}, отмененных: {cancelledTotal}"
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings\""
-msgstr ""
+#~ msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings\""
+#~ msgstr ""
 
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
@@ -5139,8 +5149,8 @@ msgid "Select your vesting option below then click \"Claim\"."
 msgstr "Выберите свой вариант вестинга ниже и нажмите \"Утвердить\"."
 
 #: src/components/SettingsModal/SettingsModal.tsx
-#~ msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
-#~ msgstr ""
+msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
+msgstr ""
 
 #: src/pages/Home/Home.tsx
 msgid "Save on Costs"
@@ -9205,6 +9215,10 @@ msgstr ""
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of Reserves"
 msgstr "Доказательство резервов"
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} or {remainingSubaccountDays}, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings\""
+msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "General Performance Details"
