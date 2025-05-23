@@ -362,10 +362,7 @@ const FundingHistorySection = () => {
             role="button"
             tabIndex={0}
             key={transfer.id}
-            className={cx(
-              "flex w-full cursor-pointer items-center justify-between px-16 py-8 text-left -outline-offset-4 gmx-hover:bg-slate-700",
-              { "bg-red-500": transfer.isFromWs }
-            )}
+            className="flex w-full cursor-pointer items-center justify-between px-16 py-8 text-left -outline-offset-4 gmx-hover:bg-slate-700"
             onClick={() => handleTransferClick(transfer)}
           >
             <div className="flex items-center gap-8">

@@ -88,17 +88,15 @@ export function useGmxAccountFundingHistory(): MultichainFundingHistoryItem[] | 
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
   });
 
-  // console.log({ pendingMultichainFunding });
-
   const mergedData = useMemo(() => {
     let mergedData = data ? [...data] : [];
 
     for (const step of ["executed", "received", "sent"] as const) {
-      for (const sentGuid in pendingMultichainFunding.deposits[step]) {
-        const currentIndex = mergedData.findIndex((item) => item.id === sentGuid);
+      for (const pendingGuid in pendingMultichainFunding.deposits[step]) {
+        const currentIndex = mergedData.findIndex((item) => item.id === pendingGuid);
 
         if (currentIndex === -1) {
-          mergedData.unshift({ ...pendingMultichainFunding.deposits[step][sentGuid], isFromWs: true });
+          mergedData.unshift(pendingMultichainFunding.deposits[step][pendingGuid]);
           continue;
         }
 
@@ -108,16 +106,11 @@ export function useGmxAccountFundingHistory(): MultichainFundingHistoryItem[] | 
           continue;
         }
 
-        mergedData[currentIndex] = {
-          ...mergedData[currentIndex],
-          ...pendingMultichainFunding.deposits[step][sentGuid],
-          isFromWs: true,
-        };
+        mergedData[currentIndex] = pendingMultichainFunding.deposits[step][pendingGuid];
       }
     }
 
-    const submitted = pendingMultichainFunding.deposits.submitted.map((item) => ({ ...item, isFromWs: true }));
-    mergedData = [...submitted, ...mergedData];
+    mergedData = [...pendingMultichainFunding.deposits.submitted, ...mergedData];
 
     mergedData.sort((a, b) => b.sentTimestamp - a.sentTimestamp);
 
@@ -129,10 +122,43 @@ export function useGmxAccountFundingHistory(): MultichainFundingHistoryItem[] | 
 
 export function useGmxAccountFundingHistoryItem(guid: string | undefined): MultichainFundingHistoryItem | undefined {
   const { chainId } = useChainId();
+  const { pendingMultichainFunding } = useSyntheticsEvents();
 
   const { data } = useSWR(guid ? ["gmx-account-funding-history-item", guid] : null, () =>
     fetchGmxAccountFundingHistory(chainId, { guid })
   );
 
-  return data?.[0];
+  const currentItem = data?.[0];
+
+  const pendingItem = useMemo((): MultichainFundingHistoryItem | undefined => {
+    if (!guid) {
+      return undefined;
+    }
+    return (
+      pendingMultichainFunding.deposits.submitted.find((item) => item.id === guid) ??
+      pendingMultichainFunding.deposits.sent[guid] ??
+      pendingMultichainFunding.deposits.received[guid] ??
+      pendingMultichainFunding.deposits.executed[guid]
+    );
+  }, [
+    guid,
+    pendingMultichainFunding.deposits.executed,
+    pendingMultichainFunding.deposits.received,
+    pendingMultichainFunding.deposits.sent,
+    pendingMultichainFunding.deposits.submitted,
+  ]);
+
+  if (!currentItem && !pendingItem) {
+    return undefined;
+  }
+
+  if (!currentItem && pendingItem) {
+    return pendingItem;
+  }
+
+  if (currentItem && !pendingItem) {
+    return currentItem;
+  }
+
+  return isStepGreaterOrEqual(currentItem!.step, pendingItem!.step) ? currentItem : pendingItem;
 }

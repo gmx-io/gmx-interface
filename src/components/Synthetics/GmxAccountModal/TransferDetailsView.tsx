@@ -90,29 +90,31 @@ export const TransferDetailsView = () => {
           }
         />
         <SyntheticsInfoRow label="Wallet" value={shortenAddressOrEns(selectedTransfer.account, 13)} />
-        <SyntheticsInfoRow
-          label={
-            CHAIN_ID_TO_EXPLORER_NAME[
-              selectedTransfer.operation === "deposit"
-                ? selectedTransfer.sourceChainId
-                : selectedTransfer.settlementChainId
-            ]
-          }
-          value={
-            <ExternalLink
-              href={
+        {selectedTransfer.sentTxn && (
+          <SyntheticsInfoRow
+            label={
+              CHAIN_ID_TO_EXPLORER_NAME[
                 selectedTransfer.operation === "deposit"
-                  ? CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.sourceChainId](selectedTransfer.sentTxn)
-                  : CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.settlementChainId](selectedTransfer.sentTxn)
-              }
-            >
-              <div className="flex items-center gap-4">
-                {shortenAddressOrEns(selectedTransfer.sentTxn, 13)}
-                <img src={externalLink} alt="External Link" className="size-20" />
-              </div>
-            </ExternalLink>
-          }
-        />
+                  ? selectedTransfer.sourceChainId
+                  : selectedTransfer.settlementChainId
+              ]
+            }
+            value={
+              <ExternalLink
+                href={
+                  selectedTransfer.operation === "deposit"
+                    ? CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.sourceChainId](selectedTransfer.sentTxn)
+                    : CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.settlementChainId](selectedTransfer.sentTxn)
+                }
+              >
+                <div className="flex items-center gap-4">
+                  {shortenAddressOrEns(selectedTransfer.sentTxn, 13)}
+                  <img src={externalLink} alt="External Link" className="size-20" />
+                </div>
+              </ExternalLink>
+            }
+          />
+        )}
         {selectedTransfer.receivedTxn && (
           <SyntheticsInfoRow
             label={

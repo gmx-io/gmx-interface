@@ -43,7 +43,7 @@ export type GmxAccountContext = {
   // funding history
 
   selectedTransferGuid: string | undefined;
-  setSelectedTransferGuid: (guid: string) => void;
+  setSelectedTransferGuid: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 export const context = createContext<GmxAccountContext | null>(null);

@@ -8,6 +8,7 @@ import {
   isSettlementChain,
   MultichainTokenId,
 } from "context/GmxAccountContext/config";
+import { useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
 import { ENDPOINT_ID_TO_CHAIN_ID } from "context/GmxAccountContext/stargatePools";
 import {
   subscribeToComposeDeliveredEvents,
@@ -52,6 +53,8 @@ export function usePendingMultichainFunding({
   const { address: currentAccount } = useAccount();
 
   const { wsProvider, wsSourceChainProvider } = useWebsocketProvider();
+
+  const [, setSelectedTransferGuid] = useGmxAccountSelectedTransferGuid();
 
   const pendingReceiveDepositGuids = useMemo(() => {
     return Object.keys(pendingMultichainFunding.deposits.sent);
@@ -117,14 +120,24 @@ export function usePendingMultichainFunding({
                   deposit.token === tokenAddress)
             );
 
-            if (currentSubmittingDepositIndex !== -1) {
-              newPendingMultichainFunding.deposits.submitted.splice(currentSubmittingDepositIndex, 1);
-            } else {
+            if (currentSubmittingDepositIndex === -1) {
               // If there were no submitted order from UI we can not be sure if this sent event is related to GMX without parsing the whole transaction for events
               // If its really necessary we could fetch the tx to get PacketSent withing the same transaction event and parse the contents
               console.warn("Got OFTSent event but no deposits were submitted from UI");
               return prev;
             }
+
+            const currentSubmittingDeposit =
+              newPendingMultichainFunding.deposits.submitted[currentSubmittingDepositIndex];
+            newPendingMultichainFunding.deposits.submitted.splice(currentSubmittingDepositIndex, 1);
+
+            setSelectedTransferGuid((prev) => {
+              if (!prev || prev !== currentSubmittingDeposit.id) {
+                return prev;
+              }
+
+              return info.guid;
+            });
 
             newPendingMultichainFunding.deposits.sent[info.guid] = {
               account: currentAccount,
@@ -144,6 +157,8 @@ export function usePendingMultichainFunding({
               receivedAmount: undefined,
               receivedTimestamp: undefined,
               receivedTxn: undefined,
+
+              isFromWs: true,
             };
 
             return newPendingMultichainFunding;
@@ -274,6 +289,7 @@ export function usePendingMultichainFunding({
             isExecutionError: undefined,
             executedTxn: undefined,
             executedTimestamp: undefined,
+            isFromWs: true,
           });
           return newPendingMultichainFunding;
         });
