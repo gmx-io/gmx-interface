@@ -11,7 +11,7 @@ import { getContract } from "config/contracts";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import {
   getMultichainTokenId,
-  getStargateEndpointId,
+  getLayerZeroEndpointId,
   getStargatePoolAddress,
   MULTI_CHAIN_TOKEN_MAPPING,
   MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS,
@@ -325,7 +325,7 @@ export const WithdrawView = () => {
       return;
     }
 
-    const dstEid = getStargateEndpointId(srcChainId);
+    const dstEid = getLayerZeroEndpointId(srcChainId);
     const stargateAddress = getStargatePoolAddress(chainId, selectedTokenAddress);
 
     if (dstEid === undefined || stargateAddress === undefined) {

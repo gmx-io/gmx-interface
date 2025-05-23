@@ -102,7 +102,7 @@ export class CodecUiHelper {
     return { account: result[0], srcChainId: result[1], data: result[2] };
   }
 
-  public static composeMessage(dstChainId: UiSettlementChain, account: string, srcChainId: UiSourceChain) {
+  public static composeDepositMessage(dstChainId: UiSettlementChain, account: string, srcChainId: UiSourceChain) {
     const msg = CodecUiHelper.encodeDepositMessage(account, srcChainId);
     return CodecUiHelper.encodeComposeMsg(CodecUiHelper.getLzEndpoint(dstChainId), msg);
   }

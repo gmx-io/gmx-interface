@@ -367,7 +367,6 @@ export const CONTRACTS = {
     MultichainGlvRouter: "0x37c0Da4d2F39Da83eBC6db23d11b083Bb7483EF0",
     MultichainGmRouter: "0xe335F8ddE3Ad0a9B65486b54C3B31E21EB7E557b",
     MultichainOrderRouter: "0x5c80d035187D39Baa77625AA6BBc5b2B76AeE6Ba",
-    MultichainReceiver: "0x73253EfDa0BD8d54dAf343b5a85F6d9286B33312",
     MultichainSubaccountRouter: "0x2CAEB911C921Fc0f5B0dE3825F4EfdD737ef5f4c",
     MultichainTransferRouter: "0x0C5Ac8CB91138a3551DF186BD0c467d05aD1ae07",
     MultichainUtils: "0x02d190144C774a345F44B456D1D59d6e32C49dc9",

@@ -4,11 +4,13 @@ import cx from "classnames";
 import { useEffect, useRef, useState } from "react";
 
 import { ARBITRUM } from "config/chains";
+import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useDebounce } from "lib/useDebounce";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
 import { getCodeError, getReferralCodeTakenStatus, getSampleReferrarStat } from "./referralsHelper";
 
@@ -30,6 +32,9 @@ function AddAffiliateCode({ handleCreateReferralCode, active, setRecentlyAddedCo
             handleCreateReferralCode={handleCreateReferralCode}
             recentlyAddedCodes={recentlyAddedCodes}
             setRecentlyAddedCodes={setRecentlyAddedCodes}
+            callAfterSuccess={function (): void {
+              throw new Error("Function not implemented.");
+            }}
           />
         ) : (
           <Button variant="primary-action" className="w-full" onClick={openConnectModal}>
@@ -46,16 +51,23 @@ export function AffiliateCodeForm({
   recentlyAddedCodes,
   setRecentlyAddedCodes,
   callAfterSuccess,
+}: {
+  handleCreateReferralCode: (code: string) => Promise<unknown>;
+  recentlyAddedCodes: unknown[];
+  setRecentlyAddedCodes: (code: unknown) => void;
+  callAfterSuccess: () => void;
 }) {
   const [referralCode, setReferralCode] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState("");
-  const inputRef = useRef("");
+  const inputRef = useRef<HTMLInputElement>();
   const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState("ok");
   const debouncedReferralCode = useDebounce(referralCode, 300);
-  const { account, chainId } = useWallet();
+  const { chainId, srcChainId } = useChainId();
+  const { account } = useWallet();
+
   useEffect(() => {
-    inputRef.current.focus();
+    inputRef.current?.focus();
   }, []);
 
   useEffect(() => {
@@ -110,6 +122,7 @@ export function AffiliateCodeForm({
 
     return t`Create`;
   }
+
   function isPrimaryEnabled() {
     if (buttonError) {
       return false;
@@ -168,6 +181,7 @@ export function AffiliateCodeForm({
           setError(getCodeError(value));
         }}
       />
+      {srcChainId && <SyntheticsInfoRow label="Network Fee" value={"$0.34"} />}
       {error && <p className="AffiliateCode-error">{error}</p>}
       <Button variant="primary-action" className="w-full" type="submit" disabled={!isPrimaryEnabled()}>
         {getPrimaryText()}

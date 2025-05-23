@@ -1,5 +1,5 @@
 import { JsonRpcProvider, WebSocketProvider } from "ethers";
-import { ReactNode, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { isDevelopment } from "config/env";
@@ -14,7 +14,8 @@ const WS_HEALTH_CHECK_INTERVAL = 1000 * 30;
 const WS_RECONNECT_INTERVAL = 1000 * 5;
 
 export type WebsocketContextType = {
-  wsProvider?: WebSocketProvider | JsonRpcProvider;
+  wsProvider: WebSocketProvider | JsonRpcProvider | undefined;
+  wsSourceChainProvider: WebSocketProvider | JsonRpcProvider | undefined;
 };
 
 export const WsContext = createContext({} as WebsocketContextType);
@@ -24,10 +25,10 @@ export function useWebsocketProvider() {
 }
 
 export function WebsocketContextProvider({ children }: { children: ReactNode }) {
-  // const { active } = useWallet();
   const { isConnected } = useAccount();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const [wsProvider, setWsProvider] = useState<WebSocketProvider | JsonRpcProvider>();
+  const [wsSourceChainProvider, setWsSourceChainProvider] = useState<WebSocketProvider | JsonRpcProvider>();
   const { hasPageLostFocus, hasV1LostFocus, hasV2LostFocus } = useHasLostFocus();
   const initializedTime = useRef<number>();
   const healthCheckTimerId = useRef<any>();
@@ -73,7 +74,26 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
         });
       };
     },
-    [isConnected, chainId, hasPageLostFocus]
+    [isConnected, chainId, hasPageLostFocus, srcChainId]
+  );
+
+  useEffect(
+    function updateSourceChainProviderEffect() {
+      if (!isConnected || hasPageLostFocus || srcChainId === undefined) {
+        return;
+      }
+
+      let newSourceChainProvider = getWsProvider(srcChainId);
+
+      setWsSourceChainProvider(newSourceChainProvider);
+
+      return function cleanup() {
+        if (isWebsocketProvider(newSourceChainProvider)) {
+          closeWsConnection(newSourceChainProvider);
+        }
+      };
+    },
+    [isConnected, chainId, hasPageLostFocus, srcChainId]
   );
 
   useEffect(
@@ -141,8 +161,9 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
   const state: WebsocketContextType = useMemo(() => {
     return {
       wsProvider,
+      wsSourceChainProvider,
     };
-  }, [wsProvider]);
+  }, [wsProvider, wsSourceChainProvider]);
 
   return <WsContext.Provider value={state}>{children}</WsContext.Provider>;
 }

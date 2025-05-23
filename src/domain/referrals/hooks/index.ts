@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { BigNumberish, Signer, ethers, isAddress } from "ethers";
+import { BigNumberish, ethers, isAddress, Signer } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { Hash } from "viem";
@@ -21,9 +21,9 @@ import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
 
 import { UserReferralInfo } from "../types";
 
+export * from "./useReferralCodeFromUrl";
 export * from "./useReferralsData";
 export * from "./useUserCodesOnAllChain";
-export * from "./useReferralCodeFromUrl";
 
 export function useUserReferralInfoRequest(
   signer: Signer | undefined,

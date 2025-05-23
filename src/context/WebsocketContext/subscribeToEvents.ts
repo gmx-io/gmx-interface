@@ -1,11 +1,12 @@
-import { AbiCoder, Contract, LogParams, Provider, ProviderEvent, ZeroAddress, ethers, isAddress } from "ethers";
+import { AbiCoder, Contract, ethers, isAddress, LogParams, Provider, ProviderEvent, ZeroAddress } from "ethers";
 import { MutableRefObject } from "react";
+import { Abi, ContractEventArgsFromTopics, decodeEventLog, Hex } from "viem";
 
 import { getContract, tryGetContract } from "config/contracts";
 import type { EventLogData, EventTxnParams } from "context/SyntheticsEvents/types";
 import { abis } from "sdk/abis";
 import { UiContractsChain } from "sdk/configs/chains";
-import { NATIVE_TOKEN_ADDRESS, getTokens } from "sdk/configs/tokens";
+import { getTokens, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 const coder = AbiCoder.defaultAbiCoder();
 
@@ -79,6 +80,50 @@ const APPROVED_HASH = ethers.id("Approval(address,address,uint256)");
 const TRANSFER_HASH = ethers.id("Transfer(address,address,uint256)");
 
 const MULTICHAIN_BRIDGE_IN_HASH = ethers.id("MultichainBridgeIn");
+
+const OFT_SENT_HASH = ethers.id("OFTSent(bytes32,uint32,address,uint256,uint256)");
+const OFT_RECEIVED_HASH = ethers.id("OFTReceived(bytes32,uint32,address,uint256)");
+const COMPOSE_DELIVERED_HASH = ethers.id("ComposeDelivered(address,address,bytes32,uint16)");
+
+export const OFT_SENT_ABI = [
+  {
+    inputs: [
+      { indexed: true, internalType: "bytes32", name: "guid", type: "bytes32" },
+      { indexed: false, internalType: "uint32", name: "dstEid", type: "uint32" },
+      { indexed: true, internalType: "address", name: "fromAddress", type: "address" },
+      { indexed: false, internalType: "uint256", name: "amountSentLD", type: "uint256" },
+      { indexed: false, internalType: "uint256", name: "amountReceivedLD", type: "uint256" },
+    ],
+    name: "OFTSent",
+    type: "event",
+  },
+] as const satisfies Abi;
+
+export const OFT_RECEIVED_ABI = [
+  {
+    inputs: [
+      { indexed: true, internalType: "bytes32", name: "guid", type: "bytes32" },
+      { indexed: false, internalType: "uint32", name: "srcEid", type: "uint32" },
+      { indexed: true, internalType: "address", name: "toAddress", type: "address" },
+      { indexed: false, internalType: "uint256", name: "amountReceivedLD", type: "uint256" },
+    ],
+    name: "OFTReceived",
+    type: "event",
+  },
+] as const satisfies Abi;
+
+export const COMPOSE_DELIVERED_ABI = [
+  {
+    inputs: [
+      { indexed: false, internalType: "address", name: "from", type: "address" },
+      { indexed: false, internalType: "address", name: "to", type: "address" },
+      { indexed: false, internalType: "bytes32", name: "guid", type: "bytes32" },
+      { indexed: false, internalType: "uint16", name: "index", type: "uint16" },
+    ],
+    name: "ComposeDelivered",
+    type: "event",
+  },
+] as const satisfies Abi;
 
 export function subscribeToV2Events(
   chainId: UiContractsChain,
@@ -255,6 +300,132 @@ export function subscribeToApprovalEvents(
 
   return () => {
     provider.off(approvalsFilter, handleApprovalsLog);
+  };
+}
+
+export function subscribeToOftSentEvents(
+  provider: Provider,
+  account: string,
+  stargates: string[],
+  onOftSent: (
+    info: {
+      sender: string;
+      txnHash: string;
+    } & ContractEventArgsFromTopics<typeof OFT_SENT_ABI, "OFTSent">
+  ) => void
+): () => void {
+  const addressHash = AbiCoder.defaultAbiCoder().encode(["address"], [account]);
+
+  const providerFilter: ProviderEvent = {
+    address: stargates,
+    topics: [OFT_SENT_HASH, null, addressHash],
+  };
+
+  const handleOftSentLog = (log: LogParams) => {
+    const args = decodeEventLog({
+      abi: OFT_SENT_ABI,
+      eventName: "OFTSent",
+      topics: log.topics as any,
+      data: log.data as Hex,
+    }).args;
+
+    onOftSent({
+      sender: log.address,
+      txnHash: log.transactionHash,
+      ...args,
+    });
+  };
+
+  provider.on(providerFilter, handleOftSentLog);
+
+  return () => {
+    provider.off(providerFilter, handleOftSentLog);
+  };
+}
+
+export function subscribeToOftReceivedEvents(
+  provider: Provider,
+  stargates: string[],
+  guids: string[],
+  onOftReceive: (
+    info: { sender: string; txnHash: string } & ContractEventArgsFromTopics<typeof OFT_RECEIVED_ABI, "OFTReceived">
+  ) => void
+) {
+  if (guids.length === 0) {
+    return undefined;
+  }
+
+  const providerFilter: ProviderEvent = {
+    address: stargates,
+    topics: [OFT_RECEIVED_HASH, guids, null],
+  };
+
+  const handleOftReceivedLog = (log: LogParams) => {
+    const args = decodeEventLog({
+      abi: OFT_RECEIVED_ABI,
+      eventName: "OFTReceived",
+      topics: log.topics as any,
+      data: log.data as Hex,
+    }).args;
+
+    onOftReceive({
+      sender: log.address,
+      txnHash: log.transactionHash,
+      ...args,
+    });
+  };
+
+  provider.on(providerFilter, handleOftReceivedLog);
+
+  return () => {
+    provider.off(providerFilter, handleOftReceivedLog);
+  };
+}
+
+export function subscribeToComposeDeliveredEvents(
+  provider: Provider,
+  layerZeroEndpoint: string,
+  guids: string[],
+  onComposeDelivered: (
+    info: { sender: string; txnHash: string } & ContractEventArgsFromTopics<
+      typeof COMPOSE_DELIVERED_ABI,
+      "ComposeDelivered"
+    >
+  ) => void
+) {
+  if (guids.length === 0) {
+    return undefined;
+  }
+
+  const providerFilter: ProviderEvent = {
+    address: layerZeroEndpoint,
+    topics: [COMPOSE_DELIVERED_HASH],
+  };
+
+  const handleComposeDeliveredLog = (log: LogParams) => {
+    const args = decodeEventLog({
+      abi: COMPOSE_DELIVERED_ABI,
+      eventName: "ComposeDelivered",
+      topics: log.topics as any,
+      data: log.data as Hex,
+    }).args;
+
+    // Manual filtering because event params are not indexed
+    if (!guids.includes(args.guid)) {
+      return;
+    }
+
+    onComposeDelivered({
+      sender: log.address,
+      txnHash: log.transactionHash,
+      ...args,
+    });
+  };
+
+  provider.on(providerFilter, handleComposeDeliveredLog);
+
+  return () => {
+    provider.off(providerFilter, handleComposeDeliveredLog);
   };
 }
 

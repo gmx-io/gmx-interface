@@ -5,7 +5,7 @@ import { useAccount, usePublicClient } from "wagmi";
 import type { UiSettlementChain, UiSourceChain } from "config/chains";
 import { tryGetContract } from "config/contracts";
 import {
-  getStargateEndpointId,
+  getLayerZeroEndpointId,
   getStargatePoolAddress,
   OVERRIDE_ERC20_BYTECODE,
 } from "context/GmxAccountContext/config";
@@ -45,6 +45,7 @@ export function useMultichainDepositNetworkComposeGas(): {
     getStargatePoolAddress(chainId, depositViewTokenAddress) !== undefined &&
     tryGetContract(chainId, "LayerZeroProvider") !== undefined &&
     srcChainId !== (chainId as UiSourceChain);
+
   const composeGasQuery = useSWR<bigint | undefined>(
     composeGasQueryCondition ? ["composeGas", account, chainId, srcChainId, depositViewTokenAddress] : null,
     {
@@ -53,10 +54,14 @@ export function useMultichainDepositNetworkComposeGas(): {
           return undefined;
         }
 
-        const composeFromWithMsg = CodecUiHelper.composeMessage(chainId as UiSettlementChain, account, srcChainId);
+        const composeFromWithMsg = CodecUiHelper.composeDepositMessage(
+          chainId as UiSettlementChain,
+          account,
+          srcChainId
+        );
 
-        const settlementChainEndpointId = getStargateEndpointId(chainId);
-        const sourceChainEndpointId = getStargateEndpointId(srcChainId);
+        const settlementChainEndpointId = getLayerZeroEndpointId(chainId);
+        const sourceChainEndpointId = getLayerZeroEndpointId(srcChainId);
 
         if (!settlementChainEndpointId) {
           throw new Error("Stargate endpoint ID not found");

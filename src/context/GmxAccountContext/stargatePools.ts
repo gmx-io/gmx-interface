@@ -6,18 +6,20 @@ import { address as ethPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-
 import { address as usdcSgPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolUSDC.json";
 import { address as ethPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolNative.json";
 import { address as usdcSgPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolUSDC.json";
+import invert from "lodash/invert";
+import mapValues from "lodash/mapValues";
+
+import { ARBITRUM_SEPOLIA, OPTIMISM_SEPOLIA, SEPOLIA, UiSettlementChain, UiSourceChain } from "config/chains";
 
 export {
   IStargateAbi,
-  usdcSgPoolArbitrumSepolia,
-  usdcSgPoolOptimismSepolia,
   ethPoolArbitrumSepolia,
   ethPoolOptimismSepolia,
-  usdcSgPoolSepolia,
   ethPoolSepolia,
+  usdcSgPoolArbitrumSepolia,
+  usdcSgPoolOptimismSepolia,
+  usdcSgPoolSepolia,
 };
-
-import { ARBITRUM_SEPOLIA, OPTIMISM_SEPOLIA, SEPOLIA, UiSettlementChain, UiSourceChain } from "config/chains";
 
 export const ARBITRUM_SEPOLIA_STARGATE_ENDPOINT_ID = chainAndStageToEndpointId(
   Chain.ARBSEP,
@@ -36,3 +38,8 @@ export const CHAIN_ID_TO_ENDPOINT_ID: Record<UiSettlementChain | UiSourceChain, 
   [OPTIMISM_SEPOLIA]: OPTIMISM_SEPOLIA_STARGATE_ENDPOINT_ID,
   [SEPOLIA]: SEPOLIA_STARGATE_ENDPOINT_ID,
 };
+
+export const ENDPOINT_ID_TO_CHAIN_ID: Partial<Record<EndpointId, UiSettlementChain | UiSourceChain>> = mapValues(
+  invert(CHAIN_ID_TO_ENDPOINT_ID),
+  (value) => parseInt(value)
+);

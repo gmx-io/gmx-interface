@@ -75,8 +75,9 @@ const TokenIcons = ({ tokens }: { tokens: string[] }) => {
 };
 
 const FUNDING_OP_LABELS: Partial<
-  Record<`${"deposit" | "withdrawal"}-${"sent" | "received" | "executed"}${"" | "-failed"}`, MessageDescriptor>
+  Record<`${"deposit" | "withdrawal"}-${MultichainFundingHistoryItem["step"]}${"" | "-failed"}`, MessageDescriptor>
 > = {
+  "deposit-submitted": msg`Deposit Submitted`,
   "deposit-sent": msg`Deposit Sent`,
   "deposit-received": msg`Deposit Received`,
   "deposit-executed": msg`Deposit Executed`,
@@ -92,7 +93,8 @@ export function FundingHistoryItemLabel({
 }: Pick<MultichainFundingHistoryItem, "step" | "operation" | "isExecutionError">) {
   const labels = useLocalizedMap(FUNDING_OP_LABELS);
 
-  const isLoading = (step === "sent" || (operation === "deposit" && step === "received")) && !isExecutionError;
+  const isLoading =
+    (step === "submitted" || step === "sent" || (operation === "deposit" && step === "received")) && !isExecutionError;
 
   const key = `${operation}-${step}${isExecutionError ? "-failed" : ""}`;
   let text = labels[key] || `${operation} ${step}${isExecutionError ? " failed" : ""}`;
@@ -360,7 +362,10 @@ const FundingHistorySection = () => {
             role="button"
             tabIndex={0}
             key={transfer.id}
-            className="flex w-full cursor-pointer items-center justify-between px-16 py-8 text-left -outline-offset-4 gmx-hover:bg-slate-700"
+            className={cx(
+              "flex w-full cursor-pointer items-center justify-between px-16 py-8 text-left -outline-offset-4 gmx-hover:bg-slate-700",
+              { "bg-red-500": transfer.isFromWs }
+            )}
             onClick={() => handleTransferClick(transfer)}
           >
             <div className="flex items-center gap-8">

@@ -27,7 +27,7 @@ export type TokenChainData = Token & {
 export type MultichainFundingHistoryItem = {
   id: string;
   operation: "deposit" | "withdrawal";
-  step: "executed" | "received" | "sent";
+  step: "executed" | "received" | "sent" | "submitted";
   settlementChainId: number;
   sourceChainId: number;
   account: string;
@@ -35,11 +35,13 @@ export type MultichainFundingHistoryItem = {
   sentAmount: bigint;
   receivedAmount: bigint | undefined;
 
-  sentTxn: string;
+  sentTxn: string | undefined;
   sentTimestamp: number;
   receivedTxn: string | undefined;
   receivedTimestamp: number | undefined;
   isExecutionError: boolean | null | undefined;
   executedTxn: string | undefined;
   executedTimestamp: number | undefined;
+
+  isFromWs?: boolean;
 };

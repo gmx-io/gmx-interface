@@ -75,7 +75,7 @@ type MultichainWithdrawSupportedTokens = Record<
 
 type MultichainSourceToSettlementChainMapping = Record<UiSourceChain, UiSettlementChain[]>;
 
-type MultichainTokenId = {
+export type MultichainTokenId = {
   chainId: UiSettlementChain | UiSourceChain;
   address: string;
   decimals: number;
@@ -391,7 +391,7 @@ export function getStargatePoolAddress(chainId: number, tokenAddress: string): A
   return tokenId.stargate;
 }
 
-export function getStargateEndpointId(chainId: number): EndpointId | undefined {
+export function getLayerZeroEndpointId(chainId: number): EndpointId | undefined {
   return CHAIN_ID_TO_ENDPOINT_ID[chainId];
 }
 

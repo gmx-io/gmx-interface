@@ -1,11 +1,14 @@
 import { TaskState } from "@gelatonetwork/relay-sdk";
 import { ReactNode } from "react";
 
+import { MultichainFundingHistoryItem } from "context/GmxAccountContext/types";
 import { OrderTxnType, OrderType } from "domain/synthetics/orders";
 import { SignedSubbacountApproval } from "domain/synthetics/subaccount";
 import { OrderMetricId } from "lib/metrics/types";
 import { SignedTokenPermit } from "sdk/types/tokens";
 import { ExternalSwapOutput } from "sdk/types/trade";
+
+import { MultichainEventsState } from "./usePendingMultichainFunding";
 
 export type MultiTransactionStatus<TEventData> = {
   key: string;
@@ -101,6 +104,21 @@ export type PendingOrdersUpdates = {
   [key: string]: OrderTxnType;
 };
 
+export type SubmittedDeposit = {
+  amount: bigint;
+  settlementChainId: number;
+  sourceChainId: number;
+  tokenAddress: string;
+};
+export type PendingMultichainFunding = {
+  deposits: {
+    submitted: MultichainFundingHistoryItem[];
+    sent: Record<string, MultichainFundingHistoryItem>;
+    received: Record<string, MultichainFundingHistoryItem>;
+    executed: Record<string, MultichainFundingHistoryItem>;
+  };
+};
+
 export type EventLogItems<T> = {
   [key: string]: T;
 };
@@ -133,7 +151,7 @@ export type EventTxnParams = {
   blockNumber: number;
 };
 
-export type SyntheticsEventsContextType = {
+export type SyntheticsEventsContextType = MultichainEventsState & {
   orderStatuses: OrderStatuses;
   depositStatuses: DepositStatuses;
   withdrawalStatuses: WithdrawalStatuses;

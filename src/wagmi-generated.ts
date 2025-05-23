@@ -94,15 +94,15 @@ export const layerZeroProviderAbi = [
   {
     type: "function",
     inputs: [
+      { name: "account", internalType: "address", type: "address" },
       {
         name: "params",
-        internalType: "struct IMultichainProvider.BridgeOutParams",
+        internalType: "struct IRelayUtils.BridgeOutParams",
         type: "tuple",
         components: [
-          { name: "provider", internalType: "address", type: "address" },
-          { name: "account", internalType: "address", type: "address" },
           { name: "token", internalType: "address", type: "address" },
           { name: "amount", internalType: "uint256", type: "uint256" },
+          { name: "provider", internalType: "address", type: "address" },
           { name: "data", internalType: "bytes", type: "bytes" },
         ],
       },

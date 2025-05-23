@@ -20,7 +20,7 @@ import {
   DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT,
   MULTI_CHAIN_SUPPORTED_TOKEN_MAP,
   getMappedTokenId,
-  getStargateEndpointId,
+  getLayerZeroEndpointId,
   isSettlementChain,
   isSourceChain,
 } from "context/GmxAccountContext/config";
@@ -32,6 +32,7 @@ import {
 } from "context/GmxAccountContext/hooks";
 import { selectGmxAccountDepositViewTokenInputAmount } from "context/GmxAccountContext/selectors";
 import { IStargateAbi } from "context/GmxAccountContext/stargatePools";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -96,6 +97,12 @@ export const DepositView = () => {
   const [depositViewTokenAddress, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
   const [inputValue, setInputValue] = useGmxAccountDepositViewTokenInputValue();
   const multichainTokens = useMultichainTokensRequest();
+
+  const {
+    setMultichainSubmittedDeposit,
+    setMultichainSubmittedDepositSentTxn,
+    setMultichainSubmittedDepositSubmitError,
+  } = useSyntheticsEvents();
 
   const selectedToken =
     depositViewTokenAddress !== undefined ? getToken(settlementChainId, depositViewTokenAddress) : undefined;
@@ -484,9 +491,15 @@ export const DepositView = () => {
 
       const sourceChainStargateAddress = selectedTokenSourceChainTokenId.stargate;
 
-      const tokenAddress = sourceChainTokenAddress;
-      const isNative = tokenAddress === zeroAddress;
+      const isNative = sourceChainTokenAddress === zeroAddress;
       const value = isNative ? inputAmount : 0n;
+
+      const depositStubId = setMultichainSubmittedDeposit({
+        amount: sendParamsWithSlippage.amountLD as bigint,
+        settlementChainId,
+        sourceChainId: srcChainId,
+        tokenAddress: depositViewTokenAddress,
+      });
 
       await sendWalletTransaction({
         chainId: srcChainId,
@@ -500,6 +513,10 @@ export const DepositView = () => {
         value: (quoteSend.nativeFee as bigint) + value,
         callback: (txnEvent) => {
           if (txnEvent.event === TxnEventName.Error) {
+            if (depositStubId) {
+              setMultichainSubmittedDepositSubmitError(depositStubId);
+            }
+
             const data = txnEvent.data.error.info?.error?.data as Hex | undefined;
 
             if (data) {
@@ -531,9 +548,12 @@ export const DepositView = () => {
               });
             }
           } else if (txnEvent.event === TxnEventName.Sent) {
-            // sendTxnSentMetric(metricData.metricId);
             helperToast.success("Deposit sent", { toastId: "gmx-account-deposit" });
             setIsVisibleOrView("main");
+
+            if (depositStubId && txnEvent.data.type === "wallet") {
+              setMultichainSubmittedDepositSentTxn(depositStubId, txnEvent.data.transactionHash);
+            }
           }
         },
       });
@@ -551,6 +571,9 @@ export const DepositView = () => {
     quoteSend,
     sendParamsWithSlippage,
     selectedTokenSourceChainTokenId,
+    setMultichainSubmittedDeposit,
+    setMultichainSubmittedDepositSubmitError,
+    setMultichainSubmittedDepositSentTxn,
   ]);
 
   useEffect(
@@ -786,7 +809,7 @@ export function getSendParamsWithoutSlippage({
 }) {
   const oftCmd: OftCmd = new OftCmd(SEND_MODE_TAXI, []);
 
-  const dstEid = getStargateEndpointId(dstChainId);
+  const dstEid = getLayerZeroEndpointId(dstChainId);
 
   if (dstEid === undefined) {
     return;
