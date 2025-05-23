@@ -3,7 +3,6 @@ import { useCallback } from "react";
 import { useLocalStorage } from "react-use";
 
 import { getOneClickTradingPromoHiddenKey } from "config/localStorage";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useChainId } from "lib/chains";
 
@@ -14,7 +13,6 @@ import OneClickIcon from "img/ic_one_click.svg?react";
 export function OneClickPromoBanner({ openSettings, isShort }: { openSettings: () => void; isShort?: boolean }) {
   const { chainId } = useChainId();
   const subaccountState = useSubaccountContext();
-  const settings = useSettings();
   const [isOneClickPromoHidden, setIsOneClickPromoHidden] = useLocalStorage(
     getOneClickTradingPromoHiddenKey(chainId),
     false
@@ -25,14 +23,7 @@ export function OneClickPromoBanner({ openSettings, isShort }: { openSettings: (
 
   const onClickEnable = useCallback(() => {
     openSettings();
-    subaccountState.tryEnableSubaccount().then((success) => {
-      if (success) {
-        settings.setExpressOrdersEnabled(true);
-      } else {
-        settings.setExpressOrdersEnabled(false);
-      }
-    });
-  }, [openSettings, settings, subaccountState]);
+  }, [openSettings]);
 
   if (!shouldShow) {
     return null;

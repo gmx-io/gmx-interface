@@ -48,7 +48,7 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
   const isMobile = useMedia("(max-width: 1200px)");
 
   const shouldHide1CTBanner = useMedia("(max-width: 1100px)");
-  const shouldShorten1CTBanner = useMedia("(max-width: 1485px)");
+  const shouldShorten1CTBanner = useMedia("(max-width: 1590px)");
 
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isNativeSelectorModalVisible, setIsNativeSelectorModalVisible] = useState(false);
@@ -117,7 +117,10 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
               )}
             </div>
             <div className="App-header-container-right">
-              <OneClickPromoBanner isShort={shouldShorten1CTBanner} openSettings={openSettings} />
+              <div className="mr-22">
+                <OneClickPromoBanner isShort={shouldShorten1CTBanner} openSettings={openSettings} />
+              </div>
+
               <AppHeaderUser
                 disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
                 openSettings={openSettings}

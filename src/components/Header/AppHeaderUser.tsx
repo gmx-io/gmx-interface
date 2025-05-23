@@ -143,8 +143,8 @@ export function AppHeaderUser({
 
   return (
     <div className="App-header-user">
-      <div data-qa="trade" className="App-header-trade-link text-body-medium">
-        {shouldHideTradeButton ? null : (
+      {shouldHideTradeButton ? null : (
+        <div data-qa="trade" className="App-header-trade-link text-body-medium">
           <HeaderLink
             className="default-btn"
             onClick={trackLaunchApp}
@@ -153,8 +153,8 @@ export function AppHeaderUser({
           >
             {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
           </HeaderLink>
-        )}
-      </div>
+        </div>
+      )}
 
       {showConnectionOptions ? (
         <>

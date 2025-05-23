@@ -1,4 +1,5 @@
 import cx from "classnames";
+import { useCallback } from "react";
 import { IoMdClose } from "react-icons/io";
 
 const colorSchemas = {
@@ -37,6 +38,14 @@ export function ColorfulBanner({
   onClick?: () => void;
   className?: string;
 }) {
+  const handleClose = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      onClose?.();
+    },
+    [onClose]
+  );
+
   return (
     <div
       className={cx(
@@ -55,7 +64,7 @@ export function ColorfulBanner({
       <div className="pr-14">{children}</div>
       {onClose && (
         <div className="absolute right-8 top-1/2 -translate-y-7">
-          <button className=" text-gray-400 hover:text-white" onClick={onClose}>
+          <button className=" text-gray-400 hover:text-white" onClick={handleClose}>
             <IoMdClose size={16} />
           </button>
         </div>

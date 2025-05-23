@@ -25,7 +25,6 @@ import { secondsToPeriod } from "sdk/utils/time";
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
-import { ExpressTradingEnabledBanner } from "components/ExpressTradingEnabledBanner/ExpressTradingEnabledBanner";
 import { ExpressTradingGasTokenSwitchedBanner } from "components/ExpressTradingGasTokenSwitchedBanner.ts/ExpressTradingGasTokenSwithedBanner";
 import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -166,11 +165,18 @@ export function SettingsModal({
     }
   };
 
-  const remainingSubaccountActions = Number(
-    subaccountState.subaccount
-      ? getRemainingSubaccountActions(subaccountState.subaccount)
-      : DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT
-  );
+  const remainingSubaccountActions = useMemo(() => {
+    const actions = Number(
+      subaccountState.subaccount
+        ? getRemainingSubaccountActions(subaccountState.subaccount)
+        : DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT
+    );
+
+    return plural(actions, {
+      one: "1 action",
+      other: `${actions} actions`,
+    });
+  }, [subaccountState.subaccount]);
 
   const remainingSubaccountDays = useMemo(() => {
     if (!subaccountState.subaccount) {
@@ -243,8 +249,6 @@ export function SettingsModal({
                   />
                 </ToggleSwitch>
 
-                {settings.expressOrdersEnabled && <ExpressTradingEnabledBanner />}
-
                 <ToggleSwitch
                   isChecked={Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount))}
                   setIsChecked={handleOneClickTradingToggle}
@@ -256,8 +260,8 @@ export function SettingsModal({
                     content={
                       <Trans>
                         One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to
-                        be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or{" "}
-                        {remainingSubaccountDays} days, whichever comes first.
+                        be enabled. Your 1CT session is valid for {remainingSubaccountActions} or{" "}
+                        {remainingSubaccountDays}, whichever comes first.
                         <br />
                         <br />
                         You can adjust these settings anytime under "One-Click Trading Settings"
@@ -269,11 +273,13 @@ export function SettingsModal({
 
                 {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
 
-                {settings.expressTradingGasTokenSwitched && !isOutOfGasPaymentBalance && (
-                  <ExpressTradingGasTokenSwitchedBanner
-                    onClose={() => settings.setExpressTradingGasTokenSwitched(false)}
-                  />
-                )}
+                {settings.expressTradingGasTokenSwitched &&
+                  !isOutOfGasPaymentBalance &&
+                  settings.expressOrdersEnabled && (
+                    <ExpressTradingGasTokenSwitchedBanner
+                      onClose={() => settings.setExpressTradingGasTokenSwitched(false)}
+                    />
+                  )}
 
                 <OldSubaccountWithdraw />
 
@@ -315,7 +321,7 @@ export function SettingsModal({
               title={<Trans>TWAP Number of Parts</Trans>}
               description={
                 <div>
-                  <Trans>TWAP Number of Parts</Trans>
+                  <Trans>The default number of parts for Time-Weighted Average Price (TWAP) orders.</Trans>
                 </div>
               }
               defaultValue={DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS}

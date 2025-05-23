@@ -18,7 +18,7 @@ export function ExpressTradingOutOfGasBanner({ onClose }: { onClose: () => void 
   return (
     <ColorfulBanner color="slate" icon={<IconInfo />}>
       <div className="ml-2 text-12">
-        <Trans>One-click and Express Trading are not available due to insufficient balance.</Trans>
+        <Trans>Express and One-Click Trading are unavailable due to insufficient gas balance.</Trans>
         <br />
         <Button variant="link" className="mt-2 !text-12" onClick={onClick}>
           <Trans>Buy USDC or WETH</Trans>
