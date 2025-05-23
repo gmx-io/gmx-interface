@@ -6673,6 +6673,7 @@ msgid "Buy GLP or GMX"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "{0, plural, one {1 day} other {{days} days}}"
 msgstr ""
 

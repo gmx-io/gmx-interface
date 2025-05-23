@@ -180,7 +180,12 @@ export function SettingsModal({
 
   const remainingSubaccountDays = useMemo(() => {
     if (!subaccountState.subaccount) {
-      return secondsToPeriod(DEFAULT_SUBACCOUNT_EXPIRY_DURATION, "1d");
+      const days = secondsToPeriod(DEFAULT_SUBACCOUNT_EXPIRY_DURATION, "1d");
+
+      return plural(Number(days), {
+        one: "1 day",
+        other: `${days} days`,
+      });
     }
 
     const seconds = Number(getRemainingSubaccountSeconds(subaccountState.subaccount));
