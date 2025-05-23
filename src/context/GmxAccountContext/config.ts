@@ -204,15 +204,15 @@ if (isDevelopment()) {
     },
   };
 
-  TOKEN_GROUPS["WETH"] = {
-    [ARBITRUM_SEPOLIA]: {
-      address: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
-      decimals: 18,
-      chainId: ARBITRUM_SEPOLIA,
-      stargate: ethPoolArbitrumSepolia as Address,
-      symbol: "WETH",
-    },
-  };
+  // TOKEN_GROUPS["WETH"] = {
+  //   [ARBITRUM_SEPOLIA]: {
+  //     address: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
+  //     decimals: 18,
+  //     chainId: ARBITRUM_SEPOLIA,
+  //     stargate: ethPoolArbitrumSepolia as Address,
+  //     symbol: "WETH",
+  //   },
+  // };
 }
 
 export const DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT = true;

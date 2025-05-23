@@ -31,6 +31,7 @@ import { getOracleParamsForRelayParams } from "./oracleParamsUtils";
 import type {
   GasPaymentParams,
   MultichainRelayParamsPayload,
+  RawMultichainRelayParamsPayload,
   RawRelayParamsPayload,
   RelayFeePayload,
   RelayParamsPayload,
@@ -218,15 +219,17 @@ export function getRawRelayerParams({
   externalCalls,
   tokenPermits,
   marketsInfoData,
+  isMultichain,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   gasPaymentTokenAddress: string;
   relayerFeeTokenAddress: string;
   feeParams: RelayFeePayload;
   externalCalls: ExternalCallsPayload;
   tokenPermits: SignedTokenPermit[];
   marketsInfoData: MarketsInfoData;
-}) {
+  isMultichain: boolean;
+}): RawRelayParamsPayload | RawMultichainRelayParamsPayload {
   const oracleParams = getOracleParamsForRelayParams({
     chainId,
     externalCalls,
@@ -236,11 +239,12 @@ export function getRawRelayerParams({
     marketsInfoData,
   });
 
-  const relayParamsPayload: RawRelayParamsPayload = {
+  const relayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload = {
     oracleParams,
     tokenPermits,
     externalCalls,
     fee: feeParams,
+    desChainId: isMultichain ? BigInt(chainId) : undefined,
   };
 
   return relayParamsPayload;

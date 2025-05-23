@@ -371,16 +371,20 @@ export const WithdrawView = () => {
     [signer, bridgeOutParams, chainId]
   );
 
-  const { relayFeeAmount, relayFeeParams, fetchParamsPayload, gasPaymentValidations } =
-    useArbitraryRelayParamsAndPayload(
-      {
-        relayRouterAddress: getContract(chainId, "MultichainTransferRouter"),
-        additionalNetworkFee: bridgeNetworkFee,
-        getTxnData,
-        isSubaccountApplicable: false,
-      },
-      [chainId]
-    );
+  const {
+    relayFeeAmount,
+    relayFeeParams,
+    fetchLatestParamsPayload: fetchParamsPayload,
+    gasPaymentValidations,
+  } = useArbitraryRelayParamsAndPayload(
+    {
+      relayRouterAddress: getContract(chainId, "MultichainTransferRouter"),
+      additionalNetworkFee: bridgeNetworkFee,
+      getTxnData,
+      isSubaccountApplicable: false,
+    },
+    [chainId]
+  );
 
   const networkFeeUsd = useMemo(() => {
     if (relayFeeAmount === undefined || relayerFeeToken === undefined) {
@@ -426,7 +430,7 @@ export const WithdrawView = () => {
       return;
     }
 
-    const finalRelayParamsPayload: MultichainRelayParamsPayload = await fetchParamsPayload();
+    const finalRelayParamsPayload: MultichainRelayParamsPayload = await fetchParamsPayload(provider);
 
     try {
       await simulateWithdraw({

@@ -3,6 +3,7 @@ import { isDevelopment } from "config/env";
 import { GlobalExpressParams } from "domain/synthetics/express";
 import { getByKey } from "lib/objects";
 import { getRelayerFeeToken } from "sdk/configs/express";
+import { FindSwapPath } from "sdk/types/trade";
 import { createFindSwapPath } from "sdk/utils/swap/swapPath";
 
 import { createSelector } from "../utils";
@@ -90,19 +91,7 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
     return undefined;
   }
 
-  const _debugSwapMarketsConfig = isDevelopment() ? q(selectDebugSwapMarketsConfig) : undefined;
-
-  const findFeeSwapPath = createFindSwapPath({
-    chainId,
-    fromTokenAddress: gasPaymentTokenAddress,
-    toTokenAddress: relayerFeeTokenAddress,
-    marketsInfoData,
-    isExpressFeeSwap: true,
-    disabledMarkets: _debugSwapMarketsConfig?.disabledSwapMarkets,
-    manualPath: _debugSwapMarketsConfig?.manualPath,
-    gasEstimationParams,
-    maxSwapPathLength: 1,
-  });
+  const findFeeSwapPath = q(selectExpressFindSwapPath);
 
   return {
     l1Reference,
@@ -122,4 +111,28 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
     gasPaymentToken,
     relayerFeeToken,
   };
+});
+
+export const selectExpressFindSwapPath = createSelector(function selectExpressFindSwapPath(q): FindSwapPath {
+  const chainId = q(selectChainId);
+  const marketsInfoData = q(selectMarketsInfoData);
+  const gasEstimationParams = q(selectGasEstimationParams);
+  const relayerFeeTokenAddress = getRelayerFeeToken(chainId).address;
+  const gasPaymentTokenAddress = q(selectGasPaymentTokenAddress);
+
+  const _debugSwapMarketsConfig = isDevelopment() ? q(selectDebugSwapMarketsConfig) : undefined;
+
+  const findFeeSwapPath = createFindSwapPath({
+    chainId,
+    fromTokenAddress: gasPaymentTokenAddress,
+    toTokenAddress: relayerFeeTokenAddress,
+    marketsInfoData,
+    isExpressFeeSwap: true,
+    disabledMarkets: _debugSwapMarketsConfig?.disabledSwapMarkets,
+    manualPath: _debugSwapMarketsConfig?.manualPath,
+    gasEstimationParams,
+    maxSwapPathLength: 1,
+  });
+
+  return findFeeSwapPath;
 });

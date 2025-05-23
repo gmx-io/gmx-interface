@@ -23,6 +23,7 @@ import {
   RawRelayParamsPayload,
   RelayParamsPayload,
   MultichainRelayParamsPayload,
+  RawMultichainRelayParamsPayload,
 } from "domain/synthetics/express";
 import {
   getSubaccountValidations,
@@ -271,7 +272,6 @@ export async function estimateExpressParams({
     return undefined;
   }
 
-  // TODO: multichain
   const baseRelayParams = getRawRelayerParams({
     chainId,
     gasPaymentTokenAddress: gasPaymentToken.address,
@@ -280,6 +280,7 @@ export async function estimateExpressParams({
     externalCalls: baseRelayFeeParams.externalCalls,
     tokenPermits,
     marketsInfoData,
+    isMultichain: srcChainId !== undefined,
   });
 
   const baseTxn = await expressTransactionBuilder({
@@ -382,6 +383,7 @@ export async function estimateExpressParams({
     externalCalls: finalRelayFeeParams.externalCalls,
     tokenPermits,
     marketsInfoData,
+    isMultichain: srcChainId !== undefined,
   });
 
   const gasPaymentValidations = getGasPaymentValidations({
@@ -487,7 +489,6 @@ export function getMinResidualGasPaymentTokenAmount({
 export async function buildAndSignExpressBatchOrderTxn({
   chainId,
   batchParams,
-  // TODO: multichain
   relayParamsPayload,
   relayerFeeTokenAddress,
   relayerFeeAmount,
@@ -502,7 +503,7 @@ export async function buildAndSignExpressBatchOrderTxn({
   batchParams: BatchOrderTxnParams;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
-  relayParamsPayload: RawRelayParamsPayload;
+  relayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload;
   noncesData: NoncesData | undefined;
   subaccount: Subaccount | undefined;
   emptySignature?: boolean;
@@ -544,7 +545,7 @@ export async function buildAndSignExpressBatchOrderTxn({
       ...relayParamsPayload,
       userNonce,
       deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
-      desChainId: srcChainId || chainId === ARBITRUM_SEPOLIA ? BigInt(chainId) : undefined,
+      // desChainId: srcChainId || chainId === ARBITRUM_SEPOLIA ? BigInt(chainId) : undefined,
     } as RelayParamsPayload | MultichainRelayParamsPayload,
     subaccountApproval: subaccount?.signedApproval,
     paramsLists: getBatchParamsLists(batchParams),
@@ -842,7 +843,7 @@ export async function buildAndSignBridgeOutTxn({
       {
         ...relayParamsPayload,
         signature,
-        desChainId: BigInt(chainId),
+        // desChainId: BigInt(chainId),
       },
       address as Address,
       BigInt(srcChainId),

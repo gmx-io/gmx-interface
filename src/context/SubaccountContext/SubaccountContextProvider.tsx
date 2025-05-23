@@ -10,8 +10,8 @@ import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsState
 import { useCalcSelector } from "context/SyntheticsStateContext/utils";
 import {
   getExpressContractAddress,
-  getOracleParamsPayload,
-  getOraclePriceParamsForRelayFee,
+  // getOracleParamsPayload,
+  // getOraclePriceParamsForRelayFee,
   getRelayerFeeParams,
   MultichainRelayParamsPayload,
 } from "domain/synthetics/express";
@@ -312,34 +312,48 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           tokenOut: relayerFeeToken,
           amountOut: baseRelayerFeeAmount,
           isLimit: false,
-          findSwapPath: expressGlobalParams.findSwapPath,
+          findSwapPath: expressGlobalParams.findFeeSwapPath,
           uiFeeFactor: 0n,
         });
+
+        // const baseRelayFeeSwapParams = getRelayerFeeParams({
+        //   chainId: chainId,
+        //   account: account,
+        //   relayerFeeTokenAmount: baseRelayerFeeAmount,
+        //   totalNetworkFeeAmount: baseRelayerFeeAmount,
+        //   relayerFeeTokenAddress: relayerFeeToken.address,
+        //   gasPaymentTokenAddress: gasPaymentToken.address,
+        //   internalSwapAmounts: swapAmounts,
+        //   feeExternalSwapQuote: undefined,
+        //   tokenPermits: [],
+        //   batchExternalCalls: {
+        //     sendTokens: [],
+        //     sendAmounts: [],
+        //     externalCallTargets: [],
+        //     externalCallDataList: [],
+        //     refundTokens: [],
+        //     refundReceivers: [],
+        //   },
+        //   tokensData,
+        //   forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
+        //   // TODO: fix
+        //   gasPrice: 0n,
+        //   l1GasLimit: 0n,
+        //   relayerGasLimit: 0n,
+        // });
 
         const baseRelayFeeSwapParams = getRelayerFeeParams({
           chainId: chainId,
           account: account,
-          relayerFeeTokenAmount: baseRelayerFeeAmount,
-          totalNetworkFeeAmount: baseRelayerFeeAmount,
-          relayerFeeTokenAddress: relayerFeeToken.address,
-          gasPaymentTokenAddress: gasPaymentToken.address,
-          internalSwapAmounts: swapAmounts,
+
+          gasPaymentToken,
+          relayerFeeToken,
+          relayerFeeAmount: relayFeeAmount,
+          totalRelayerFeeTokenAmount: networkFee,
+          findFeeSwapPath: findSwapPath,
+
+          transactionExternalCalls: EMPTY_EXTERNAL_CALLS,
           feeExternalSwapQuote: undefined,
-          tokenPermits: [],
-          batchExternalCalls: {
-            sendTokens: [],
-            sendAmounts: [],
-            externalCallTargets: [],
-            externalCallDataList: [],
-            refundTokens: [],
-            refundReceivers: [],
-          },
-          tokensData,
-          forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
-          // TODO: fix
-          gasPrice: 0n,
-          l1GasLimit: 0n,
-          relayerGasLimit: 0n,
         });
 
         if (baseRelayFeeSwapParams === undefined) {
