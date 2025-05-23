@@ -24,6 +24,8 @@ import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import useWallet from "lib/wallets/useWallet";
 
+import { OneClickButton } from "components/OneClickButton/OneClickButton";
+
 import connectWalletImg from "img/ic_wallet_24.svg";
 
 import { HeaderLink } from "./HeaderLink";
@@ -31,7 +33,6 @@ import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
-import { NotifyButton } from "../NotifyButton/NotifyButton";
 
 import "./Header.scss";
 
@@ -164,7 +165,7 @@ export function AppHeaderChainAndSettings({ small, menuToggle, openSettings, sho
             >
               {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
             </ConnectWalletButton>
-            {!small && <NotifyButton />}
+            {!small && <OneClickButton openSettings={openSettings} />}
             <NetworkDropdown
               chainId={visualChainId}
               small={small}
@@ -182,8 +183,8 @@ export function AppHeaderChainAndSettings({ small, menuToggle, openSettings, sho
 
   return (
     <div className="App-header-user">
-      <div data-qa="trade" className="App-header-trade-link text-body-medium">
-        {shouldHideTradeButton ? null : (
+      {shouldHideTradeButton ? null : (
+        <div data-qa="trade" className="App-header-trade-link text-body-medium">
           <HeaderLink
             className="default-btn"
             onClick={trackLaunchApp}
@@ -192,14 +193,15 @@ export function AppHeaderChainAndSettings({ small, menuToggle, openSettings, sho
           >
             {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
           </HeaderLink>
-        )}
-      </div>
+        </div>
+      )}
 
       {showConnectionOptions ? (
         <>
           <div data-qa="user-address" className="App-header-user-address">
             <AddressDropdown account={account} />
           </div>
+          {!small && <OneClickButton openSettings={openSettings} />}
           <NetworkDropdown
             chainId={visualChainId}
             small={small}

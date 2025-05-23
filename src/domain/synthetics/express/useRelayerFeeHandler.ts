@@ -8,13 +8,23 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { throttleLog } from "lib/logging";
+import { roundBigIntToDecimals } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
-import { useThrottledAsync } from "lib/useThrottledAsyncEstimation";
+import { sleep } from "lib/sleep";
+import { useThrottledAsync } from "lib/useThrottledAsync";
 import useWallet from "lib/wallets/useWallet";
-import { BatchOrderTxnParams, getBatchIsNativePayment, getIsEmptyBatch } from "sdk/utils/orderTransactions";
+import {
+  BatchOrderTxnParams,
+  getBatchExternalSwapGasLimit,
+  getBatchIsNativePayment,
+  getBatchRequiredActions,
+  getBatchSwapsCount,
+  getBatchTotalExecutionFee,
+  getIsEmptyBatch,
+} from "sdk/utils/orderTransactions";
 
 import { ExpressTxnParams } from ".";
-import { estimateExpressParams } from "./expressOrderUtils";
+import { estimateBatchExpressParams } from "./expressOrderUtils";
 import { useSwitchGasPaymentTokenIfRequired } from "./useSwitchGasPaymentTokenIfRequired";
 
 export type ExpressOrdersParamsResult = {
@@ -43,9 +53,20 @@ export function useExpressOrdersParams({
   const { signer } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
 
-  const { data: fastExpressParams } = useThrottledAsync(
+  const executionFee =
+    orderParams && globalExpressParams
+      ? getBatchTotalExecutionFee({ batchParams: orderParams, chainId, tokensData: globalExpressParams.tokensData })
+      : undefined;
+  const executionFeeKey = executionFee
+    ? roundBigIntToDecimals(executionFee.feeTokenAmount, executionFee.feeToken.decimals, 2)
+    : undefined;
+  const externalSwapGasLimit = orderParams ? getBatchExternalSwapGasLimit(orderParams) : undefined;
+  const requiredActions = orderParams ? getBatchRequiredActions(orderParams) : undefined;
+  const swapsCount = orderParams ? getBatchSwapsCount(orderParams) : undefined;
+
+  const { data: fastExpressParams, isLoading: isFastExpressParamsLoading } = useThrottledAsync(
     async ({ params: p }) => {
-      const nextApproximateParams = await estimateExpressParams({
+      const nextApproximateParams = await estimateBatchExpressParams({
         chainId: p.chainId,
         batchParams: p.orderParams,
         signer: p.signer,
@@ -68,23 +89,26 @@ export function useExpressOrdersParams({
               globalExpressParams,
             }
           : undefined,
-      throttleMs: 500,
+      throttleMs: 200,
       leading: true,
       trailing: false,
     }
   );
 
-  const { data: asyncExpressParams } = useThrottledAsync(
+  const { data: asyncExpressParams, isLoading: isAsyncExpressParamsLoading } = useThrottledAsync(
     async ({ params: p }) => {
-      const expressParams = await estimateExpressParams({
-        chainId: p.chainId,
-        batchParams: p.orderParams,
-        signer: p.signer,
-        provider: p.provider,
-        globalExpressParams: p.globalExpressParams,
-        requireValidations: false,
-        estimationMethod: "estimateGas",
-      });
+      const expressParams = await Promise.race([
+        estimateBatchExpressParams({
+          chainId: p.chainId,
+          batchParams: p.orderParams,
+          signer: p.signer,
+          provider: p.provider,
+          globalExpressParams: p.globalExpressParams,
+          requireValidations: false,
+          estimationMethod: "estimateGas",
+        }),
+        sleep(1000).then(() => undefined),
+      ]);
 
       return expressParams;
     },
@@ -99,9 +123,17 @@ export function useExpressOrdersParams({
               globalExpressParams,
             }
           : undefined,
+      dataKey: [
+        executionFeeKey,
+        requiredActions,
+        swapsCount,
+        externalSwapGasLimit,
+        globalExpressParams?.gasPaymentTokenAddress,
+      ],
       throttleMs: 2000,
       leading: true,
       trailing: false,
+      withLoading: true,
     }
   );
 
@@ -116,7 +148,13 @@ export function useExpressOrdersParams({
       };
     }
 
-    const expressParams = asyncExpressParams || fastExpressParams;
+    let expressParams: ExpressTxnParams | undefined;
+
+    if (asyncExpressParams && !isAsyncExpressParamsLoading) {
+      expressParams = asyncExpressParams;
+    } else if (fastExpressParams && !isFastExpressParamsLoading) {
+      expressParams = fastExpressParams;
+    }
 
     return {
       expressParams,
@@ -125,7 +163,7 @@ export function useExpressOrdersParams({
       asyncExpressParams,
       isLoading: !fastExpressParams,
     };
-  }, [isAvailable, asyncExpressParams, fastExpressParams]);
+  }, [isAvailable, asyncExpressParams, isAsyncExpressParamsLoading, fastExpressParams, isFastExpressParamsLoading]);
 
   useSwitchGasPaymentTokenIfRequired({ expressParams: result.expressParams });
 

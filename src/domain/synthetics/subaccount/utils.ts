@@ -47,7 +47,7 @@ export function getSubaccountValidations({
   return {
     isExpired: getIsSubaccountExpired(subaccount),
     isActionsExceeded: getIsSubaccountActionsExceeded(subaccount, requiredActions),
-    isNonceExpired: getIsNonceExpired(subaccount),
+    isNonceExpired: getIsSubaccountNonceExpired(subaccount),
     isValid: !getIsInvalidSubaccount(subaccount, requiredActions),
   };
 }
@@ -144,7 +144,7 @@ export function getIsApprovalExpired(subaccount: Subaccount): boolean {
   return now >= expiresAt || now >= deadline;
 }
 
-export function getIsNonceExpired(subaccount: Subaccount): boolean {
+export function getIsSubaccountNonceExpired(subaccount: Subaccount): boolean {
   if (getIsEmptySubaccountApproval(subaccount.signedApproval)) {
     return false;
   }
@@ -171,7 +171,7 @@ export function getIsSubaccountExpired(subaccount: Subaccount): boolean {
 
 export function getIsInvalidSubaccount(subaccount: Subaccount, requiredActions: number): boolean {
   const isExpired = getIsSubaccountExpired(subaccount);
-  const isNonceExpired = getIsNonceExpired(subaccount);
+  const isNonceExpired = getIsSubaccountNonceExpired(subaccount);
   const actionsExceeded = getIsSubaccountActionsExceeded(subaccount, requiredActions);
 
   return isExpired || isNonceExpired || actionsExceeded;
@@ -227,16 +227,8 @@ export async function getInitialSubaccountApproval({
     expiresAt = defaultExpiresAt;
   }
 
-  let maxAllowedCount = getRemainingSubaccountActions({
-    onchainData,
-    signedApproval: undefined,
-  });
-
   const defaultMaxAllowedCount = BigInt(DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT);
-
-  if (maxAllowedCount < defaultMaxAllowedCount) {
-    maxAllowedCount = onchainData.maxAllowedCount + defaultMaxAllowedCount - maxAllowedCount;
-  }
+  const maxAllowedCount = onchainData.currentActionsCount + defaultMaxAllowedCount;
 
   const defaultSubaccountApproval = await createAndSignSubaccountApproval(
     chainId,

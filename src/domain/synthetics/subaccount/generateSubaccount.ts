@@ -16,5 +16,6 @@ export async function generateSubaccount(signer: Signer) {
   return {
     privateKey: encrypted.toString(),
     address: subaccount.address,
+    isNew: true,
   };
 }

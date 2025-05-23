@@ -7,6 +7,11 @@ import { selectRawSubaccount } from "context/SyntheticsStateContext/selectors/gl
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExpressTxnParams } from "domain/synthetics/express";
+import {
+  getIsSubaccountActionsExceeded,
+  getIsSubaccountExpired,
+  getIsSubaccountNonceExpired,
+} from "domain/synthetics/subaccount";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
@@ -22,7 +27,6 @@ export function useExpressTradingWarnings({
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const isExpressTransactionAvailable = useSelector(selectIsExpressTransactionAvailable);
   const rawSubaccount = useSelector(selectRawSubaccount);
-  const isSubaccountActive = Boolean(rawSubaccount) && isExpressTransactionAvailable;
 
   const isNativePayment = payTokenAddress === NATIVE_TOKEN_ADDRESS;
 
@@ -36,9 +40,12 @@ export function useExpressTradingWarnings({
     shouldShowWrapOrUnwrapWarning: isExpressTransactionAvailable && isWrapOrUnwrap && !wrapOrUnwrapWarningHidden,
     shouldShowNativeTokenWarning:
       !tradeFlags?.isTrigger && isExpressTransactionAvailable && isNativePayment && !nativeTokenWarningHidden,
-    shouldShowExpiredSubaccountWarning: isSubaccountActive && expressParams?.subaccountValidations?.isExpired,
-    shouldShowNonceExpiredWarning: isSubaccountActive && expressParams?.subaccountValidations?.isNonceExpired,
-    shouldShowAllowedActionsWarning: isSubaccountActive && expressParams?.subaccountValidations?.isActionsExceeded,
+    shouldShowExpiredSubaccountWarning:
+      isExpressTransactionAvailable && rawSubaccount && getIsSubaccountExpired(rawSubaccount),
+    shouldShowNonceExpiredWarning:
+      isExpressTransactionAvailable && rawSubaccount && getIsSubaccountNonceExpired(rawSubaccount),
+    shouldShowAllowedActionsWarning:
+      isExpressTransactionAvailable && rawSubaccount && getIsSubaccountActionsExceeded(rawSubaccount, 1),
     shouldShowOutOfGasPaymentBalanceWarning: expressParams?.gasPaymentValidations.isOutGasTokenBalance,
   };
 

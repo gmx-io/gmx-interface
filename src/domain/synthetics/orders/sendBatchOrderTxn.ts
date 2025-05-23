@@ -148,7 +148,8 @@ export async function sendBatchOrderTxn({
         provider,
         batchParams,
         relayParamsPayload: expressParams.relayParamsPayload,
-        relayFeeParams: expressParams.relayFeeParams,
+        relayerFeeTokenAddress: expressParams.gasPaymentParams.relayerFeeTokenAddress,
+        relayerFeeAmount: expressParams.gasPaymentParams.relayerFeeAmount,
         subaccount: expressParams.subaccount,
         noncesData: undefined,
       });
@@ -263,8 +264,8 @@ export const makeBatchOrderSimulation = async ({
     if (expressParams && expressParams.gasPaymentValidations.isOutGasTokenBalance) {
       throw extendError(new Error("Out of gas token balance"), {
         data: {
-          gasPaymentTokenAmount: expressParams.relayFeeParams.gasPaymentTokenAmount,
-          gasPaymentTokenAddress: expressParams.relayFeeParams.gasPaymentTokenAddress,
+          gasPaymentTokenAmount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
+          gasPaymentTokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
         },
       });
     }
@@ -272,8 +273,8 @@ export const makeBatchOrderSimulation = async ({
     if (expressParams && expressParams.gasPaymentValidations.needGasPaymentTokenApproval) {
       throw extendError(new Error("Need gas payment token approval"), {
         data: {
-          gasPaymentTokenAmount: expressParams.relayFeeParams.gasPaymentTokenAmount,
-          gasPaymentTokenAddress: expressParams.relayFeeParams.gasPaymentTokenAddress,
+          gasPaymentTokenAmount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
+          gasPaymentTokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
         },
       });
     }

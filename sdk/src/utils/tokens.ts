@@ -1,6 +1,14 @@
 import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS } from "configs/factors";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-import { ContractPrice, Token, TokenPrices, TokensData, TokensRatio, TokensRatioAndSlippage } from "types/tokens";
+import {
+  ContractPrice,
+  Token,
+  TokenData,
+  TokenPrices,
+  TokensData,
+  TokensRatio,
+  TokensRatioAndSlippage,
+} from "types/tokens";
 
 import { bigMath } from "./bigmath";
 import { adjustForDecimals, expandDecimals, PRECISION } from "./numbers";
@@ -42,6 +50,29 @@ export function convertToUsd(
   }
 
   return (tokenAmount * price) / expandDecimals(1, tokenDecimals);
+}
+
+export function convertBetweenTokens(
+  tokenAmount: bigint | undefined,
+  fromToken: TokenData | undefined,
+  toToken: TokenData | undefined,
+  maximize: boolean
+) {
+  if (tokenAmount === undefined || fromToken === undefined || toToken === undefined) {
+    return undefined;
+  }
+
+  if (getIsEquivalentTokens(fromToken, toToken)) {
+    return tokenAmount;
+  }
+
+  const fromPrice = maximize ? fromToken.prices.maxPrice : fromToken.prices.minPrice;
+  const toPrice = maximize ? toToken.prices.minPrice : toToken.prices.maxPrice;
+
+  const usd = convertToUsd(tokenAmount, fromToken.decimals, fromPrice)!;
+  const amount = convertToTokenAmount(usd, toToken.decimals, toPrice)!;
+
+  return amount;
 }
 
 export function getMidPrice(prices: TokenPrices) {

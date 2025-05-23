@@ -4,21 +4,13 @@ import { AnimatePresence as FramerAnimatePresence, motion } from "framer-motion"
 import React, { ReactNode, useCallback, useEffect, useState } from "react";
 import { RiMenuLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
-import { useLocalStorage, useMedia } from "react-use";
+import { useMedia } from "react-use";
 
-import { getExpressTradingBannerDismissedKey, getOneClickTradingPromoHiddenKey } from "config/localStorage";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
-import { useChainId } from "lib/chains";
 import { isHomeSite } from "lib/legacy";
-import useWallet from "lib/wallets/useWallet";
 
-import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { HeaderPromoBanner } from "components/HeaderPromoBanner/HeaderPromoBanner";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { OneClickPromoBanner } from "components/OneClickPromoBanner/OneClickPromoBanner";
 
-import OneClickIcon from "img/ic_one_click.svg?react";
-import IconBolt from "img/icon-bolt.svg?react";
 import logoImg from "img/logo_GMX.svg";
 import logoSmallImg from "img/logo_GMX_small.svg";
 
@@ -47,103 +39,15 @@ const SLIDE_VARIANTS = {
 const TRANSITION = { duration: 0.2 };
 
 type Props = {
-  disconnectAccountAndCloseSettings: () => void;
   openSettings: () => void;
   showRedirectModal: (to: string) => void;
 };
 
-export function OneClickPromoBanner() {
-  const { chainId } = useChainId();
-  const { account } = useWallet();
-  const subaccountState = useSubaccountContext();
-  const settings = useSettings();
-  const [isOneClickPromoHidden, setIsOneClickPromoHidden] = useLocalStorage(
-    getOneClickTradingPromoHiddenKey(chainId),
-    false
-  );
-
-  if (isOneClickPromoHidden || subaccountState.subaccount || !settings.expressOrdersEnabled || !account) {
-    return null;
-  }
-
-  return (
-    <ColorfulBanner
-      color="blue"
-      icon={<OneClickIcon className="-mr-6 -mt-4 ml-2" />}
-      onClose={() => setIsOneClickPromoHidden(true)}
-    >
-      <TooltipWithPortal
-        handle={
-          <div
-            className="clickable mr-8"
-            onClick={() =>
-              subaccountState.tryEnableSubaccount().then((res) => {
-                if (res) {
-                  setIsOneClickPromoHidden(true);
-                }
-              })
-            }
-          >
-            <Trans>Enable One-Click Trading</Trans>
-          </div>
-        }
-        content={
-          <Trans>
-            Express Trading simplifies your trades on GMX. Instead of sending transactions directly and paying gas fees
-            in ETH/AVAX, you sign secure off-chain messages.
-            <br />
-            <br />
-            These messages are then processed on-chain for you, which helps reduce issues with network congestion and
-            RPC errors. 
-          </Trans>
-        }
-      />
-    </ColorfulBanner>
-  );
-}
-
-export function ExpressTradingBanner() {
-  const { chainId } = useChainId();
-  const settings = useSettings();
-  const [isExpressTradingBannerDismissed, setIsExpressTradingBannerDismissed] = useLocalStorage(
-    getExpressTradingBannerDismissedKey(chainId),
-    false
-  );
-
-  const onEnable = useCallback(() => {
-    settings.setExpressOrdersEnabled(true);
-    setIsExpressTradingBannerDismissed(true);
-  }, [settings, setIsExpressTradingBannerDismissed]);
-
-  if (isExpressTradingBannerDismissed || settings.expressOrdersEnabled) {
-    return null;
-  }
-
-  return (
-    <ColorfulBanner color="blue" icon={<IconBolt />} onClose={() => setIsExpressTradingBannerDismissed(true)}>
-      <TooltipWithPortal
-        handle={
-          <div className="clickable -ml-4 mr-8" onClick={onEnable}>
-            <Trans>Enable Express Trading</Trans>
-          </div>
-        }
-        content={
-          <Trans>
-            Express Trading simplifies your trades on GMX. Instead of sending transactions directly and paying gas fees
-            in ETH/AVAX, you sign secure off-chain messages.
-            <br />
-            <br />
-            These messages are then processed on-chain for you, which helps reduce issues with network congestion and
-            RPC errors. 
-          </Trans>
-        }
-      />
-    </ColorfulBanner>
-  );
-}
-
-export function Header({ disconnectAccountAndCloseSettings, openSettings, showRedirectModal }: Props) {
+export function Header({ openSettings, showRedirectModal }: Props) {
   const isMobile = useMedia("(max-width: 1200px)");
+
+  const shouldHide1CTBanner = useMedia("(max-width: 1100px)");
+  const shouldShorten1CTBanner = useMedia("(max-width: 1590px)");
 
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isNativeSelectorModalVisible, setIsNativeSelectorModalVisible] = useState(false);
@@ -213,6 +117,9 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
             </div>
             <div className="App-header-container-right">
               <AppHeaderChainAndSettings openSettings={openSettings} showRedirectModal={showRedirectModal} />
+              <div className="mr-22">
+                <OneClickPromoBanner isShort={shouldShorten1CTBanner} openSettings={openSettings} />
+              </div>
             </div>
           </div>
         )}
@@ -230,8 +137,7 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
                 </div>
               </div>
               <div className="App-header-container-right">
-                <ExpressTradingBanner />
-                <OneClickPromoBanner />
+                {!shouldHide1CTBanner && <OneClickPromoBanner openSettings={openSettings} />}
                 <AppHeaderChainAndSettings
                   openSettings={openSettings}
                   small

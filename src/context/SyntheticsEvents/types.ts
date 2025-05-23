@@ -6,7 +6,7 @@ import { OrderTxnType, OrderType } from "domain/synthetics/orders";
 import { SignedSubbacountApproval } from "domain/synthetics/subaccount";
 import { OrderMetricId } from "lib/metrics/types";
 import { SignedTokenPermit } from "sdk/types/tokens";
-import { ExternalSwapOutput } from "sdk/types/trade";
+import { ExternalSwapQuote } from "sdk/types/trade";
 
 import { MultichainEventsState } from "./usePendingMultichainFunding";
 
@@ -128,7 +128,7 @@ export type EventLogArrayItems<T> = {
 };
 
 export type PendingExpressTxns = {
-  [taskId: string]: PendingExpressTxnParams;
+  [key: string]: Partial<PendingExpressTxnParams>;
 };
 
 export type EventLogSection<T> = {
@@ -222,7 +222,7 @@ export type PendingOrderData = {
   marketAddress: string;
   initialCollateralTokenAddress: string;
   swapPath: string[];
-  externalSwapQuote: ExternalSwapOutput | undefined;
+  externalSwapQuote: ExternalSwapQuote | undefined;
   initialCollateralDeltaAmount: bigint;
   triggerPrice: bigint;
   acceptablePrice: bigint;

@@ -296,7 +296,6 @@ msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>P
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
-#: src/components/SettingsModal/SettingsModal.tsx
 msgid "TWAP Number of Parts"
 msgstr ""
 
@@ -1311,11 +1310,6 @@ msgstr "{stakingTokenSymbol} 승인"
 msgid "Failed Limit Swap"
 msgstr "지정가 스왑 실패"
 
-#: src/components/ExpressTradingBanner/ExpressTradingBanner.tsx
-#: src/components/Header/Header.tsx
-msgid "Enable Express Trading"
-msgstr ""
-
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr ""
@@ -1804,6 +1798,14 @@ msgstr ""
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Close to execution price"
 msgstr "집행 가격에 종료"
+
+#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
+msgid "Try Express 1CT"
+msgstr ""
+
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
@@ -2514,7 +2516,6 @@ msgstr "Avalanche APR:"
 msgid "Dune Analytics for GMX"
 msgstr ""
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-click and Express Trading are not available due to insufficient balance."
 msgstr ""
@@ -2680,13 +2681,6 @@ msgstr ""
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Creating..."
 msgstr "생성중..."
-
-#: src/components/ExpressTradingBanner/ExpressTradingBanner.tsx
-#: src/components/Header/Header.tsx
-#: src/components/Header/Header.tsx
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-msgid "Express Trading simplifies your trades on GMX. Instead of sending transactions directly and paying gas fees in ETH/AVAX, you sign secure off-chain messages.<0/><1/>These messages are then processed on-chain for you, which helps reduce issues with network congestion and RPC errors."
-msgstr ""
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
@@ -3084,6 +3078,10 @@ msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Generating session..."
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "{actions, plural, one {1 action} other {{actions} actions}}"
 msgstr ""
 
 #: src/pages/Exchange/Exchange.tsx
@@ -3606,6 +3604,10 @@ msgstr "마켓 스왑 요청"
 
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Withdrawal Sent"
+msgstr ""
+
+#: src/components/ExpressTradingGasTokenSwitchedBanner.ts/ExpressTradingGasTokenSwithedBanner.tsx
+msgid "Gas payment token changed due to insufficient balance in the selected token."
 msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
@@ -4373,10 +4375,6 @@ msgstr "가격 영향"
 msgid "Select a token"
 msgstr ""
 
-#: src/components/ExpressTradingGasTokenSwitchedBanner.ts/ExpressTradingGasTokenSwithedBanner.tsx
-msgid "Gas Payment Token changed due to insufficient balance."
-msgstr ""
-
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "{0, plural, one {1 minute} other {{minutes} minutes}}"
 msgstr ""
@@ -4846,10 +4844,6 @@ msgstr ""
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "전체 액티브: {openTotal}, 실행 완료: {executedTotal}, 취소 완료: {cancelledTotal}"
 
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} actions or {remainingSubaccountDays} days, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings\""
-msgstr ""
-
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "24h Low"
@@ -4980,6 +4974,10 @@ msgstr "모든 시간"
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Select your vesting option below then click \"Claim\"."
 msgstr "베스팅 옵션을 선택한 후 \"수령하기\" 버튼을 클릭해주세요."
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
+msgstr ""
 
 #: src/pages/Home/Home.tsx
 msgid "Save on Costs"
@@ -6471,6 +6469,7 @@ msgid "Notifications"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "{0, plural, one {1 day} other {{days} days}}"
 msgstr ""
 
@@ -6686,6 +6685,10 @@ msgstr "주문을 활성화하기 위해 약관에 동의해주세요"
 msgid "Protocol analytics"
 msgstr "프로토콜 분석"
 
+#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
+msgid "Try Express One-Click Trading"
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 #: src/pages/NftWallet/NftWallet.jsx
@@ -6883,11 +6886,6 @@ msgstr "레버리지 유효화중"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the swap to the receive token when the price conditions are met."
-msgstr ""
-
-#: src/components/Header/Header.tsx
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-msgid "Enable One-Click Trading"
 msgstr ""
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
@@ -8935,6 +8933,10 @@ msgstr ""
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of Reserves"
 msgstr "예비구두 증명"
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} or {remainingSubaccountDays}, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings\""
+msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "General Performance Details"

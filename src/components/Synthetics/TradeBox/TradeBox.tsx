@@ -49,6 +49,7 @@ import {
   selectTradeboxTradeRatios,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getMinResidualGasPaymentTokenAmount } from "domain/synthetics/express/expressOrderUtils";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
@@ -289,10 +290,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     nativeToken,
     fromTokenAmount,
     fromTokenInputValue,
-    minResidualAmount:
-      submitButtonState.expressParams?.relayFeeParams.gasPaymentTokenAddress === fromTokenAddress
-        ? submitButtonState.expressParams?.relayFeeParams.gasPaymentTokenAmount
-        : undefined,
+    minResidualAmount: getMinResidualGasPaymentTokenAmount({
+      expressParams: submitButtonState.expressParams,
+      payTokenAddress: fromTokenAddress,
+    }),
     isLoading: submitButtonState.isExpressLoading,
   });
 
@@ -1112,7 +1113,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           {!isTwap && <PriceImpactFeesRow />}
           <TradeBoxAdvancedGroups
             slippageInputId={submitButtonState.slippageInputId}
-            relayerFeeParams={submitButtonState.expressParams?.relayFeeParams}
+            gasPaymentParams={submitButtonState.expressParams?.gasPaymentParams}
             totalExecutionFee={submitButtonState.totalExecutionFee}
           />
         </div>

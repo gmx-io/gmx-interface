@@ -164,10 +164,10 @@ export function useTradeboxButtonState({
           isAllowanceLoaded: payTokenAllowance.isLoaded,
         },
       ],
-      gasPaymentTokenParams: expressParams?.relayFeeParams
+      gasPaymentTokenParams: expressParams?.gasPaymentParams
         ? {
             tokenAddress: gasPaymentToken.address,
-            amount: expressParams.relayFeeParams.gasPaymentTokenAmount,
+            amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
             allowanceData: gasPaymentTokenAllowance?.tokensAllowanceData,
             isAllowanceLoaded: gasPaymentTokenAllowance?.isLoaded,
           }

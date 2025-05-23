@@ -262,10 +262,10 @@ export function usePositionEditorButtonState(operation: Operation): {
           isAllowanceLoaded: collateralTokenAllowance.isLoaded,
         },
       ],
-      gasPaymentTokenParams: expressParams?.relayFeeParams
+      gasPaymentTokenParams: expressParams?.gasPaymentParams
         ? {
-            tokenAddress: expressParams.relayFeeParams.gasPaymentTokenAddress,
-            amount: expressParams.relayFeeParams.gasPaymentTokenAmount,
+            tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
+            amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
             allowanceData: gasPaymentTokenAllowance?.tokensAllowanceData,
             isAllowanceLoaded: gasPaymentTokenAllowance?.isLoaded,
           }

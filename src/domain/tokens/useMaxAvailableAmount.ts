@@ -47,7 +47,7 @@ export function useMaxAvailableAmount({
 
   const showClickMax = fromToken.isNative
     ? !isFromTokenInputValueNearMax
-    : fromTokenInputValue !== formattedMaxAvailableAmount;
+    : fromTokenInputValue !== formattedMaxAvailableAmount && maxAvailableAmount > 0n;
 
   return { formattedMaxAvailableAmount, showClickMax };
 }

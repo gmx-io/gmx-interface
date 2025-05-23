@@ -298,6 +298,7 @@ export function mockExternalSwap({
   feesUsd = expandDecimals(5, USD_DECIMALS), // $5 default fee
   data = "0x1",
   to = "0x6352a56caadC4F1E25CD6c75970Fa768A3304e64",
+  receiver = "0x1234567890123456789012345678901234567890",
 }: {
   inToken: Token;
   outToken: Token;
@@ -308,6 +309,7 @@ export function mockExternalSwap({
   feesUsd?: bigint;
   data?: string;
   to?: string;
+  receiver?: string;
 }): ExternalSwapQuote {
   const usdIn = (amountIn * priceIn) / expandDecimals(1, inToken.decimals);
   const usdOut = (amountOut * priceOut) / expandDecimals(1, outToken.decimals);
@@ -316,6 +318,7 @@ export function mockExternalSwap({
     aggregator: ExternalSwapAggregator.OpenOcean,
     inTokenAddress: inToken.address,
     outTokenAddress: outToken.address,
+    receiver,
     usdIn,
     usdOut,
     amountIn,

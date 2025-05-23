@@ -8,7 +8,7 @@ export function ExpressTradingGasTokenSwitchedBanner({ onClose }: { onClose: () 
   return (
     <ColorfulBanner color="slate" icon={<IconInfo />} onClose={onClose}>
       <div className="ml-2 text-12">
-        <Trans>Gas Payment Token changed due to insufficient balance.</Trans>
+        <Trans>Gas payment token changed due to insufficient balance in the selected token.</Trans>
       </div>
     </ColorfulBanner>
   );

@@ -7,11 +7,7 @@ import {
   selectGasPaymentToken,
   selectIsExpressTransactionAvailable,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
-import {
-  selectGasPrice,
-  selectSubaccountForAction,
-  selectTokensData,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectGasPrice, selectSubaccountForAction } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/shared/baseSelectors";
 import {
   selectBaseExternalSwapOutput,
@@ -36,7 +32,6 @@ import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
 export function useExternalSwapHandler() {
   const { chainId } = useChainId();
   const { orderStatuses } = useSyntheticsEvents();
-  const tokensData = useSelector(selectTokensData);
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const slippage = useSelector(selectTradeboxAllowedSlippage);
   const setBaseExternalSwapOutput = useSelector(selectSetBaseExternalSwapOutput);
@@ -68,9 +63,8 @@ export function useExternalSwapHandler() {
 
   const subaccount = useSelector(selectSubaccountForAction);
 
-  const { externalSwapOutput } = useExternalSwapOutputRequest({
+  const { quote } = useExternalSwapOutputRequest({
     chainId,
-    tokensData,
     tokenInAddress: fromTokenAddress,
     tokenOutAddress: swapToToken?.address,
     amountIn: externalSwapInputs?.amountIn,
@@ -87,7 +81,7 @@ export function useExternalSwapHandler() {
 
   if (shouldDebugValues) {
     throttleLog("external swaps", {
-      baseOutput: externalSwapOutput,
+      baseOutput: quote,
       externalSwapQuote,
       inputs: externalSwapInputs,
     });
@@ -96,11 +90,11 @@ export function useExternalSwapHandler() {
   useEffect(
     function setBaseExternalSwapOutputEff() {
       // Update quote only if actual txn data has changed
-      if (storedBaseExternalSwapOutput?.txnData?.data !== externalSwapOutput?.txnData?.data) {
-        setBaseExternalSwapOutput(externalSwapOutput);
+      if (storedBaseExternalSwapOutput?.txnData?.data !== quote?.txnData.data) {
+        setBaseExternalSwapOutput(quote);
       }
     },
-    [externalSwapOutput, setBaseExternalSwapOutput, storedBaseExternalSwapOutput]
+    [quote, setBaseExternalSwapOutput, storedBaseExternalSwapOutput]
   );
 
   useEffect(

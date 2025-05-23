@@ -170,7 +170,7 @@ export function usePendingMultichainFunding({
         unsubscribeFromOftSentEvents();
       };
     },
-    [chainId, currentAccount, hasPageLostFocus, srcChainId, wsProvider, wsSourceChainProvider]
+    [chainId, currentAccount, hasPageLostFocus, setSelectedTransferGuid, srcChainId, wsSourceChainProvider]
   );
 
   useEffect(

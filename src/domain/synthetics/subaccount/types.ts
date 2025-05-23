@@ -5,6 +5,7 @@ import type { SubaccountOnchainData } from "./useSubaccountOnchainData";
 export type SubaccountSerializedConfig = {
   privateKey: string;
   address: string;
+  isNew?: boolean;
 };
 
 export type Subaccount = {

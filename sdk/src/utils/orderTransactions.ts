@@ -10,7 +10,7 @@ import { convertTokenAddress, getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } 
 import { ExecutionFee } from "types/fees";
 import { DecreasePositionSwapType, OrderType } from "types/orders";
 import { ContractPrice, ERC20Address, TokensData } from "types/tokens";
-import { ExternalSwapOutput } from "types/trade";
+import { ExternalSwapQuote } from "types/trade";
 import { TwapOrderParams } from "types/twap";
 
 import { expandDecimals, MaxUint256, USD_DECIMALS } from "./numbers";
@@ -170,7 +170,7 @@ export type SwapOrderParams = CommonOrderParams & {
   // Token that the user receives
   receiveTokenAddress: string;
   swapPath: string[];
-  externalSwapQuote: ExternalSwapOutput | undefined;
+  externalSwapQuote: ExternalSwapQuote | undefined;
   minOutputAmount: bigint;
   orderType: OrderType.MarketSwap | OrderType.LimitSwap;
   triggerRatio: bigint | undefined;
@@ -185,7 +185,7 @@ export type IncreasePositionOrderParams = CommonOrderParams &
     collateralDeltaAmount: bigint;
     // Target collateral for the position
     collateralTokenAddress: string;
-    externalSwapQuote: ExternalSwapOutput | undefined;
+    externalSwapQuote: ExternalSwapQuote | undefined;
     orderType: OrderType.MarketIncrease | OrderType.LimitIncrease | OrderType.StopIncrease;
   };
 
@@ -623,7 +623,7 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
   payTokenAmount: bigint;
   receiveTokenAddress: string | undefined;
   executionFeeAmount: bigint;
-  externalSwapQuote: ExternalSwapOutput | undefined;
+  externalSwapQuote: ExternalSwapQuote | undefined;
   minOutputAmount: bigint;
   swapPath: string[];
   orderType: OrderType;
@@ -727,6 +727,17 @@ export function combineExternalCalls(externalCalls: ExternalCallsPayload[]): Ext
   };
 }
 
+export function getEmptyExternalCallsPayload(): ExternalCallsPayload {
+  return {
+    sendTokens: [],
+    sendAmounts: [],
+    externalCallTargets: [],
+    externalCallDataList: [],
+    refundReceivers: [],
+    refundTokens: [],
+  };
+}
+
 export function getExternalCallsPayload({
   chainId,
   account,
@@ -734,7 +745,7 @@ export function getExternalCallsPayload({
 }: {
   chainId: number;
   account: string;
-  quote: ExternalSwapOutput;
+  quote: ExternalSwapQuote;
 }): ExternalCallsPayload {
   const inTokenAddress = convertTokenAddress(chainId, quote.inTokenAddress, "wrapped");
   const outTokenAddress = convertTokenAddress(chainId, quote.outTokenAddress, "wrapped");
@@ -936,6 +947,16 @@ export function getBatchRequiredActions(orderParams: BatchOrderTxnParams | undef
   return (
     orderParams.createOrderParams.length + orderParams.updateOrderParams.length + orderParams.cancelOrderParams.length
   );
+}
+
+export function getBatchSwapsCount(orderParams: BatchOrderTxnParams | undefined) {
+  if (!orderParams) {
+    return 0;
+  }
+
+  return orderParams.createOrderParams.reduce((acc, co) => {
+    return acc + co.orderPayload.addresses.swapPath.length;
+  }, 0);
 }
 
 export function getIsEmptyBatch(orderParams: BatchOrderTxnParams | undefined) {

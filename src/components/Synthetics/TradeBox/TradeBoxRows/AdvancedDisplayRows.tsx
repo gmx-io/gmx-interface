@@ -27,7 +27,7 @@ import {
 import { selectTradeboxCollateralSpreadInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxCollateralSpreadInfo";
 import { selectTradeboxLiquidityInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxLiquidityInfo";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { RelayerFeeParams } from "domain/synthetics/express";
+import { GasPaymentParams } from "domain/synthetics/express";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { formatUsd } from "lib/numbers";
@@ -189,11 +189,11 @@ function DecreaseOrderRow() {
 
 export function TradeBoxAdvancedGroups({
   slippageInputId,
-  relayerFeeParams,
+  gasPaymentParams,
   totalExecutionFee,
 }: {
   slippageInputId: string;
-  relayerFeeParams?: RelayerFeeParams;
+  gasPaymentParams?: GasPaymentParams;
   totalExecutionFee?: ExecutionFee;
 }) {
   const options = useSelector(selectTradeboxAdvancedOptions);
@@ -291,7 +291,7 @@ export function TradeBoxAdvancedGroups({
       {isIncrease && !isTwap && <IncreaseOrderRow />}
       {isTrigger && <DecreaseOrderRow />}
       <TradeFeesRow {...fees} feesType={feesType} />
-      <NetworkFeeRow executionFee={totalExecutionFee} relayerFeeParams={relayerFeeParams} />
+      <NetworkFeeRow executionFee={totalExecutionFee} gasPaymentParams={gasPaymentParams} />
 
       {isTwap && isSwap ? (
         <SyntheticsInfoRow label={<Trans>Acceptable Swap Impact</Trans>} value={<Trans>N/A</Trans>} />

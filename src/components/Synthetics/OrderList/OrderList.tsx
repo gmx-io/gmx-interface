@@ -13,7 +13,7 @@ import { selectExpressGlobalParams } from "context/SyntheticsStateContext/select
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { estimateExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import {
   OrderInfo,
   PositionOrderInfo,
@@ -156,7 +156,7 @@ export function OrderList({
       cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
     };
 
-    const expressParams = await estimateExpressParams({
+    const expressParams = await estimateBatchExpressParams({
       signer,
       chainId,
       batchParams,

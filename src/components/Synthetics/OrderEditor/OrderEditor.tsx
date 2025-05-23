@@ -352,11 +352,11 @@ export function OrderEditor(p: Props) {
     let feeTokenAmount = additionalExecutionFee?.feeTokenAmount;
     let feeUsd = additionalExecutionFee?.feeUsd;
 
-    const gasPaymentToken = getByKey(tokensData, expressParams?.relayFeeParams.gasPaymentTokenAddress);
+    const gasPaymentToken = getByKey(tokensData, expressParams?.gasPaymentParams.gasPaymentTokenAddress);
 
-    if (gasPaymentToken && expressParams?.relayFeeParams.gasPaymentTokenAmount !== undefined) {
+    if (gasPaymentToken && expressParams?.gasPaymentParams.gasPaymentTokenAmount !== undefined) {
       feeToken = gasPaymentToken;
-      feeTokenAmount = expressParams?.relayFeeParams.gasPaymentTokenAmount;
+      feeTokenAmount = expressParams?.gasPaymentParams.gasPaymentTokenAmount;
       feeUsd = convertToUsd(feeTokenAmount, feeToken.decimals, gasPaymentToken.prices.minPrice);
     }
 
