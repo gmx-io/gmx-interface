@@ -11,6 +11,7 @@ import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { formatTokenAmount } from "lib/numbers";
+import { useJsonRpcProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
 import { getNativeToken } from "sdk/configs/tokens";
 
@@ -21,7 +22,6 @@ import { TransactionStatus } from "components/TransactionStatus/TransactionStatu
 
 import IconInfo from "img/ic_info.svg?react";
 
-import { useJsonRpcProvider } from "lib/rpc";
 import "./OldSubaccountWithdraw.scss";
 
 export function OldSubaccountWithdraw() {

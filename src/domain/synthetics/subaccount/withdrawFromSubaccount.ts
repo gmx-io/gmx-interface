@@ -1,9 +1,9 @@
+import { Provider } from "ethers";
 import useSWR from "swr";
 
+import { useJsonRpcProvider } from "lib/rpc";
 import { bigMath } from "sdk/utils/bigmath";
 
-import { Provider } from "ethers";
-import { useJsonRpcProvider } from "lib/rpc";
 import { SubaccountSerializedConfig } from "./types";
 import { getSubaccountSigner } from "./utils";
 
