@@ -58,7 +58,6 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
 
   const chainId = q(selectChainId);
   const marketsInfoData = q(selectMarketsInfoData);
-  const gasEstimationParams = q(selectGasEstimationParams);
   const noncesData = q(selectExpressNoncesData);
   const relayerFeeTokenAddress = getRelayerFeeToken(chainId).address;
   const gasPaymentTokenAddress = q(selectGasPaymentTokenAddress);

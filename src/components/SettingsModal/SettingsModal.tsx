@@ -146,6 +146,7 @@ export function SettingsModal({
 
   const handleExpressOrdersToggle = (enabled: boolean) => {
     if (srcChainId) {
+      // eslint-disable-next-line no-console
       console.error("Express trading can not be disabled for multichain");
       return;
     }

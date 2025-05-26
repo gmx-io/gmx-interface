@@ -872,17 +872,17 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       }
     },
 
-    MultichainBridgeIn: (eventData: EventLogData, txnParams: EventTxnParams) => {
-      const assetAddress = eventData.addressItems.items.token;
-      sendOrderExecutedMetric(
-        getMultichainDepositMetricId({
-          sourceChain: Number(eventData.uintItems.items.srcChainId),
-          assetAddress,
-          settlementChain: chainId,
-          amount: eventData.uintItems.items.amount,
-        })
-      );
-    },
+    // MultichainBridgeIn: (eventData: EventLogData, txnParams: EventTxnParams) => {
+    //   const assetAddress = eventData.addressItems.items.token;
+    //   sendOrderExecutedMetric(
+    //     getMultichainDepositMetricId({
+    //       sourceChain: Number(eventData.uintItems.items.srcChainId),
+    //       assetAddress,
+    //       settlementChain: chainId,
+    //       amount: eventData.uintItems.items.amount,
+    //     })
+    //   );
+    // },
   };
 
   useEffect(

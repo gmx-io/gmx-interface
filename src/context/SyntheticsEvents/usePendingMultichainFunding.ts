@@ -39,17 +39,12 @@ const DEFAULT_MULTICHAIN_FUNDING_STATE: PendingMultichainFunding = {
   },
 };
 
-export function usePendingMultichainFunding({
-  hasV2LostFocus,
-  hasPageLostFocus,
-}: {
-  hasV2LostFocus: boolean;
-  hasPageLostFocus: boolean;
-}) {
+export function usePendingMultichainFunding({ hasPageLostFocus }: { hasPageLostFocus: boolean }) {
   const [pendingMultichainFunding, setPendingMultichainFunding] = useState<PendingMultichainFunding>(
     DEFAULT_MULTICHAIN_FUNDING_STATE
   );
   const { chainId, srcChainId } = useChainId();
+
   const { address: currentAccount } = useAccount();
 
   const { wsProvider, wsSourceChainProvider } = useWebsocketProvider();
@@ -58,17 +53,16 @@ export function usePendingMultichainFunding({
 
   const pendingReceiveDepositGuids = useMemo(() => {
     return Object.keys(pendingMultichainFunding.deposits.sent);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Object.keys(pendingMultichainFunding.deposits.sent).join(",")]);
 
+  const unstablePendingExecuteDepositGuids = Object.keys(pendingMultichainFunding.deposits.received).concat(
+    Object.keys(pendingMultichainFunding.deposits.sent)
+  );
   const pendingExecuteDepositGuids = useMemo(() => {
-    return Object.keys(pendingMultichainFunding.deposits.received).concat(
-      Object.keys(pendingMultichainFunding.deposits.sent)
-    );
-  }, [
-    Object.keys(pendingMultichainFunding.deposits.received)
-      .concat(Object.keys(pendingMultichainFunding.deposits.sent))
-      .join(","),
-  ]);
+    return unstablePendingExecuteDepositGuids;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [unstablePendingExecuteDepositGuids.join(",")]);
 
   useEffect(
     function subscribeOftSentEvents() {
@@ -85,7 +79,6 @@ export function usePendingMultichainFunding({
       const tokenIdMap = CHAIN_ID_TO_TOKEN_ID_MAP[srcChainId];
       const sourceChainStargates = Object.values(tokenIdMap).map((tokenId) => tokenId.stargate);
       const tokenIdByStargate = keyBy(Object.values(tokenIdMap), (tokenId: MultichainTokenId) => tokenId.stargate);
-      console.log("subscribe to multichain funding events on source chain ");
 
       const unsubscribeFromOftSentEvents = subscribeToOftSentEvents(
         wsSourceChainProvider,
@@ -123,6 +116,8 @@ export function usePendingMultichainFunding({
             if (currentSubmittingDepositIndex === -1) {
               // If there were no submitted order from UI we can not be sure if this sent event is related to GMX without parsing the whole transaction for events
               // If its really necessary we could fetch the tx to get PacketSent withing the same transaction event and parse the contents
+
+              // eslint-disable-next-line no-console
               console.warn("Got OFTSent event but no deposits were submitted from UI");
               return prev;
             }
@@ -193,6 +188,7 @@ export function usePendingMultichainFunding({
             const pendingSentDeposit = newPendingMultichainFunding.deposits.sent[info.guid];
 
             if (!pendingSentDeposit) {
+              // eslint-disable-next-line no-console
               console.warn("Got OFTReceive event but no pending deposits were sent from UI");
 
               return newPendingMultichainFunding;
@@ -237,6 +233,7 @@ export function usePendingMultichainFunding({
             const pendingExecuteDeposit = newPendingMultichainFunding.deposits.received[info.guid];
 
             if (!pendingExecuteDeposit) {
+              // eslint-disable-next-line no-console
               console.warn("Got ComposeDelivered event but no pending deposits were received from UI");
               return newPendingMultichainFunding;
             }

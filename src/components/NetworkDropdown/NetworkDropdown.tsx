@@ -3,14 +3,14 @@ import { Trans, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import cx from "classnames";
 import noop from "lodash/noop";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
+import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
 import { getChainIcon } from "config/icons";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import { switchNetwork } from "lib/wallets";
-import useWallet from "lib/wallets/useWallet";
 
 import type { NetworkOption } from "components/Header/AppHeaderChainAndSettings";
 import type { ModalProps } from "components/Modal/Modal";
@@ -181,32 +181,37 @@ function DesktopDropdown({
 }
 
 function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: NetworkOption[]; chainId: number }) {
-  const { active } = useWallet();
   return networkOptions.map((network) => {
-    return (
-      <Menu.Item key={network.value}>
-        <div
-          className="network-dropdown-menu-item menu-item"
-          data-qa={`networks-dropdown-${network.label}`}
-          onClick={() => switchNetwork(network.value, active)}
-        >
-          <div className="menu-item-group">
-            <div className="menu-item-icon">
-              <img className="network-dropdown-icon" src={network.icon} alt={network.label} />
-            </div>
-            <span className="network-dropdown-item-label">{network.label}</span>
-          </div>
-          <div className="network-dropdown-menu-item-img">
-            <div
-              className={cx("active-dot")}
-              // TODO" optimize
-              style={{ backgroundColor: network.value === chainId ? network.color : undefined }}
-            />
-          </div>
-        </div>
-      </Menu.Item>
-    );
+    return <NetworkMenuItem key={network.value} chainId={chainId} network={network} />;
   });
+}
+
+function NetworkMenuItem({ network, chainId }: { network: NetworkOption; chainId: number }) {
+  const { isConnected } = useAccount();
+
+  const dotStyle = useMemo(() => {
+    return { backgroundColor: network.value === chainId ? network.color : undefined };
+  }, [chainId, network.color, network.value]);
+
+  return (
+    <Menu.Item>
+      <div
+        className="network-dropdown-menu-item menu-item"
+        data-qa={`networks-dropdown-${network.label}`}
+        onClick={() => switchNetwork(network.value, isConnected)}
+      >
+        <div className="menu-item-group">
+          <div className="menu-item-icon">
+            <img className="network-dropdown-icon" src={network.icon} alt={network.label} />
+          </div>
+          <span className="network-dropdown-item-label">{network.label}</span>
+        </div>
+        <div className="network-dropdown-menu-item-img">
+          <div className="active-dot" style={dotStyle} />
+        </div>
+      </div>
+    </Menu.Item>
+  );
 }
 
 function NetworkModalContent({
@@ -220,7 +225,6 @@ function NetworkModalContent({
   setActiveModal: (modal: ModalKey | null) => void;
   openSettings: () => void;
 }) {
-  const { active } = useWallet();
   return (
     <div className="network-dropdown-items">
       <div className="network-dropdown-list">
@@ -229,19 +233,7 @@ function NetworkModalContent({
         </span>
 
         {networkOptions.map((network) => {
-          return (
-            <div className="network-option" onClick={() => switchNetwork(network.value, active)} key={network.value}>
-              <div className="menu-item-group">
-                <img src={network.icon} alt={network.label} />
-                <span>{network.label}</span>
-              </div>
-              {/* <div className={cx("active-dot", { [selectedLabel]: selectedLabel === network.label })} /> */}
-              <div
-                className={cx("active-dot")}
-                style={{ backgroundColor: network.value === chainId ? network.color : undefined }}
-              />
-            </div>
-          );
+          return <NetworkModalOption key={network.value} network={network} chainId={chainId} />;
         })}
         <span className="network-dropdown-label more-options">
           <Trans>More Options</Trans>
@@ -272,6 +264,24 @@ function NetworkModalContent({
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function NetworkModalOption({ network, chainId }: { network: NetworkOption; chainId: number }) {
+  const { isConnected } = useAccount();
+
+  const dotStyle = useMemo(() => {
+    return { backgroundColor: network.value === chainId ? network.color : undefined };
+  }, [chainId, network.color, network.value]);
+
+  return (
+    <div className="network-option" onClick={() => switchNetwork(network.value, isConnected)} key={network.value}>
+      <div className="menu-item-group">
+        <img src={network.icon} alt={network.label} />
+        <span>{network.label}</span>
+      </div>
+      <div className={cx("active-dot")} style={dotStyle} />
     </div>
   );
 }

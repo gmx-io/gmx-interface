@@ -1,5 +1,4 @@
 import { Provider } from "ethers";
-import { BaseError, decodeErrorResult, Hex } from "viem";
 import { withRetry } from "viem";
 
 import { UiContractsChain } from "config/chains";
@@ -16,7 +15,6 @@ import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import { TxnCallback, TxnEventBuilder } from "lib/transactions/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { WalletSigner } from "lib/wallets";
-import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import {
   BatchOrderTxnParams,
@@ -28,7 +26,6 @@ import {
 import { signerAddressError } from "components/Errors/errorToasts";
 
 import { getOrdersTriggerPriceOverrides, getSimulationPrices, simulateExecution } from "./simulation";
-import { callRelayTransaction } from "../gassless/txns/expressOrderDebug";
 
 export type BatchSimulationParams = {
   tokensData: TokensData;
@@ -74,60 +71,7 @@ export async function sendBatchOrderTxn({
     }
     let runSimulation: () => Promise<void> = DEFAULT_RUN_SIMULATION;
 
-    if (simulationParams && expressParams && srcChainId) {
-      runSimulation = async () => {
-        const { callData, feeAmount, feeToken, to } = await buildAndSignExpressBatchOrderTxn({
-          signer,
-          provider,
-          chainId,
-          relayFeeParams: expressParams.relayFeeParams,
-          relayParamsPayload: expressParams.relayParamsPayload,
-          batchParams,
-          subaccount: expressParams.subaccount,
-          emptySignature: true,
-          noncesData: undefined,
-        });
-        try {
-          await callRelayTransaction({
-            calldata: callData,
-            provider: provider!,
-            gelatoRelayFeeAmount: feeAmount,
-            gelatoRelayFeeToken: feeToken,
-            relayRouterAddress: to,
-          });
-        } catch (error) {
-          if ("walk" in error && typeof error.walk === "function") {
-            const errorWithData = (error as BaseError).walk((e) => "data" in (e as any)) as
-              | (Error & { data: string })
-              | null;
-
-            if (errorWithData && errorWithData.data) {
-              const data = errorWithData.data;
-
-              const decodedError = decodeErrorResult({
-                abi: abis.CustomErrorsArbitrumSepolia,
-                data: data as Hex,
-              });
-
-              const customError = new Error();
-
-              customError.name = decodedError.errorName;
-              customError.message = JSON.stringify(decodedError, null, 2);
-              // customError.cause = error;
-
-              throw extendError(customError, {
-                errorContext: "simulation",
-              });
-              // debugger;
-            }
-          }
-
-          throw extendError(error, {
-            errorContext: "simulation",
-          });
-        }
-      };
-    } else if (simulationParams) {
+    if (simulationParams) {
       runSimulation = () =>
         makeBatchOrderSimulation({
           chainId,
