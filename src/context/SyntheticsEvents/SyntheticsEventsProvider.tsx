@@ -34,7 +34,6 @@ import { helperToast } from "lib/helperToast";
 import {
   getGLVSwapMetricId,
   getGMSwapMetricId,
-  getMultichainDepositMetricId,
   getPositionOrderMetricId,
   getShiftGMMetricId,
   getSwapOrderMetricId,
@@ -966,7 +965,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   const multichainEventsState = usePendingMultichainFunding({
     hasPageLostFocus,
-    hasV2LostFocus,
   });
 
   const contextState: SyntheticsEventsContextType = useMemo(() => {

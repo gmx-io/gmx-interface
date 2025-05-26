@@ -550,7 +550,6 @@ export const DepositView = () => {
               });
             }
           } else if (txnEvent.event === TxnEventName.Sent) {
-            helperToast.success("Deposit sent", { toastId: "gmx-account-deposit" });
             setIsVisibleOrView("main");
 
             if (depositStubId && txnEvent.data.type === "wallet") {

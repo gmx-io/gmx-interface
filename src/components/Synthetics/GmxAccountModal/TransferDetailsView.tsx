@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import { useEffect, useState } from "react";
 
 import { getChainName } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
@@ -22,7 +23,27 @@ export const TransferDetailsView = () => {
   const { chainId } = useChainId();
   const [selectedTransferGuid] = useGmxAccountSelectedTransferGuid();
 
-  const selectedTransfer = useGmxAccountFundingHistoryItem(selectedTransferGuid);
+  const [isTransferPending, setIsTransferPending] = useState(false);
+
+  const selectedTransfer = useGmxAccountFundingHistoryItem(selectedTransferGuid, {
+    refetch: isTransferPending,
+  });
+
+  useEffect(() => {
+    if (!selectedTransfer) {
+      return;
+    }
+
+    if (selectedTransfer.operation === "deposit" && selectedTransfer.step !== "received") {
+      setIsTransferPending(true);
+      return;
+    }
+
+    if (selectedTransfer.operation === "withdrawal" && selectedTransfer.step !== "executed") {
+      setIsTransferPending(true);
+      return;
+    }
+  }, [selectedTransfer]);
 
   if (!selectedTransfer) {
     return null;

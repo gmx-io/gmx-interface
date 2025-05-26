@@ -5,24 +5,7 @@ export type TokenChainData = Token & {
   sourceChainDecimals: number;
   sourceChainPrices: TokenPrices | undefined;
   sourceChainBalance: bigint | undefined;
-  // settlementChainAddress: string;
 };
-
-// operation: "deposit" | "withdraw";
-// step: "sent" | "received" | "executed";
-// settlementChainId: number;
-// sourceChainId: number;
-// account: Address;
-// token: Address;
-// amount: bigint;
-// id: string;
-
-// sentTxn: string;
-// sentTimestamp: number;
-// receivedTxn: string | undefined;
-// receivedTimestamp: number | undefined;
-// executedTxn: string | undefined;
-// executedTimestamp: number | undefined;
 
 export type MultichainFundingHistoryItem = {
   id: string;

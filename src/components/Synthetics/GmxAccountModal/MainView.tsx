@@ -74,7 +74,7 @@ const TokenIcons = ({ tokens }: { tokens: string[] }) => {
   );
 };
 
-const FUNDING_OP_LABELS: Partial<
+export const FUNDING_OP_LABELS: Partial<
   Record<`${"deposit" | "withdrawal"}-${MultichainFundingHistoryItem["step"]}${"" | "-failed"}`, MessageDescriptor>
 > = {
   "deposit-submitted": msg`Deposit Submitted`,
@@ -86,6 +86,16 @@ const FUNDING_OP_LABELS: Partial<
   "deposit-executed-failed": msg`Failed to deposit`,
 };
 
+export function isMultichainFundingItemLoading({
+  step,
+  operation,
+  isExecutionError,
+}: Pick<MultichainFundingHistoryItem, "step" | "operation" | "isExecutionError">) {
+  return (
+    (step === "submitted" || step === "sent" || (operation === "deposit" && step === "received")) && !isExecutionError
+  );
+}
+
 export function FundingHistoryItemLabel({
   step,
   operation,
@@ -93,8 +103,7 @@ export function FundingHistoryItemLabel({
 }: Pick<MultichainFundingHistoryItem, "step" | "operation" | "isExecutionError">) {
   const labels = useLocalizedMap(FUNDING_OP_LABELS);
 
-  const isLoading =
-    (step === "submitted" || step === "sent" || (operation === "deposit" && step === "received")) && !isExecutionError;
+  const isLoading = isMultichainFundingItemLoading({ operation, step, isExecutionError });
 
   const key = `${operation}-${step}${isExecutionError ? "-failed" : ""}`;
   let text = labels[key] || `${operation} ${step}${isExecutionError ? " failed" : ""}`;

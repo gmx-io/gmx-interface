@@ -74,8 +74,6 @@ import { applySlippageBps, getSendParamsWithoutSlippage, SLIPPAGE_BPS } from "./
 import { Selector } from "./Selector";
 import { useMultichainQuoteFeeUsd } from "./useMultichainQuoteFeeUsd";
 
-// TODO: debound input value to make requests
-
 export const WithdrawView = () => {
   const { chainId, srcChainId } = useChainId();
   const { address: account, isConnected } = useAccount();

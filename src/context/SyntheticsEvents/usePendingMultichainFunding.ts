@@ -1,4 +1,5 @@
 import keyBy from "lodash/keyBy";
+import pickBy from "lodash/pickBy";
 import { useEffect, useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
@@ -17,6 +18,7 @@ import {
 } from "context/WebsocketContext/subscribeToEvents";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { useChainId } from "lib/chains";
+import { EMPTY_OBJECT } from "lib/objects";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { CodecUiHelper } from "components/Synthetics/GmxAccountModal/OFTComposeMsgCodec";
@@ -28,6 +30,12 @@ export type MultichainEventsState = {
   setMultichainSubmittedDeposit: (submittedDeposit: SubmittedDeposit) => string | undefined;
   setMultichainSubmittedDepositSentTxn: (stubId: string, sentTxn: string) => void;
   setMultichainSubmittedDepositSubmitError: (stubId: string) => void;
+  multichainFundingPendingIds: Record<
+    // Stub id for persistence
+    string,
+    // Stub id or real guid
+    string
+  >;
 };
 
 const DEFAULT_MULTICHAIN_FUNDING_STATE: PendingMultichainFunding = {
@@ -50,6 +58,7 @@ export function usePendingMultichainFunding({ hasPageLostFocus }: { hasPageLostF
   const { wsProvider, wsSourceChainProvider } = useWebsocketProvider();
 
   const [, setSelectedTransferGuid] = useGmxAccountSelectedTransferGuid();
+  const [multichainFundingPendingIds, setMultichainFundingPendingIds] = useState<Record<string, string>>(EMPTY_OBJECT);
 
   const pendingReceiveDepositGuids = useMemo(() => {
     return Object.keys(pendingMultichainFunding.deposits.sent);
@@ -132,6 +141,14 @@ export function usePendingMultichainFunding({ hasPageLostFocus }: { hasPageLostF
               }
 
               return info.guid;
+            });
+
+            setMultichainFundingPendingIds((prev) => {
+              if (currentSubmittingDeposit.id in prev) {
+                return { ...prev, [currentSubmittingDeposit.id]: info.guid };
+              }
+
+              return prev;
             });
 
             newPendingMultichainFunding.deposits.sent[info.guid] = {
@@ -227,6 +244,12 @@ export function usePendingMultichainFunding({ hasPageLostFocus }: { hasPageLostF
         lzEndpoint,
         pendingExecuteDepositGuids,
         (info) => {
+          setTimeout(() => {
+            setMultichainFundingPendingIds((prev) => {
+              return pickBy(prev, (value) => value !== info.guid);
+            });
+          }, 5000);
+
           setPendingMultichainFunding((prev) => {
             const newPendingMultichainFunding = structuredClone(prev);
 
@@ -261,6 +284,7 @@ export function usePendingMultichainFunding({ hasPageLostFocus }: { hasPageLostF
   const multichainEventsState = useMemo(
     (): MultichainEventsState => ({
       pendingMultichainFunding,
+      multichainFundingPendingIds,
       setMultichainSubmittedDeposit: (submittedEvent) => {
         if (!currentAccount || srcChainId === undefined) {
           return;
@@ -290,6 +314,8 @@ export function usePendingMultichainFunding({ hasPageLostFocus }: { hasPageLostF
           });
           return newPendingMultichainFunding;
         });
+
+        setMultichainFundingPendingIds((prev) => ({ ...prev, [stubId]: stubId }));
 
         return stubId;
       },
@@ -330,7 +356,7 @@ export function usePendingMultichainFunding({ hasPageLostFocus }: { hasPageLostF
         });
       },
     }),
-    [chainId, currentAccount, pendingMultichainFunding, srcChainId]
+    [chainId, currentAccount, pendingMultichainFunding, srcChainId, multichainFundingPendingIds]
   );
 
   return multichainEventsState;

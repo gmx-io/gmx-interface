@@ -78,25 +78,37 @@ function isStepGreaterOrEqual(
   return STEP_ORDER[step] - STEP_ORDER[than] >= 0;
 }
 
-export function useGmxAccountFundingHistory(): MultichainFundingHistoryItem[] | undefined {
+export function useGmxAccountFundingHistory(opts?: { enabled?: boolean }): MultichainFundingHistoryItem[] | undefined {
   const { chainId } = useChainId();
   const { address: account } = useAccount();
   const { pendingMultichainFunding } = useSyntheticsEvents();
 
-  const { data } = useSWR<MultichainFundingHistoryItem[]>(account ? ["gmx-account-funding-history", account] : null, {
-    fetcher: () => fetchGmxAccountFundingHistory(chainId, { account }),
-    refreshInterval: FREQUENT_UPDATE_INTERVAL,
-  });
+  const { data } = useSWR<MultichainFundingHistoryItem[]>(
+    account && opts?.enabled !== false ? ["gmx-account-funding-history", account] : null,
+    {
+      fetcher: () => fetchGmxAccountFundingHistory(chainId, { account }),
+      refreshInterval: FREQUENT_UPDATE_INTERVAL,
+      // TODO: if websockets break, put data in event state from here
+    }
+  );
 
   const mergedData = useMemo(() => {
     let mergedData = data ? [...data] : [];
+    const guidToIndex: Partial<Record<string, number>> = {};
+
+    for (let index = 0; index < mergedData.length; index++) {
+      const guid = mergedData[index].id;
+      guidToIndex[guid] = index;
+    }
+
+    const dataToUnshift: MultichainFundingHistoryItem[] = [];
 
     for (const step of ["executed", "received", "sent"] as const) {
       for (const pendingGuid in pendingMultichainFunding.deposits[step]) {
-        const currentIndex = mergedData.findIndex((item) => item.id === pendingGuid);
+        const currentIndex = guidToIndex[pendingGuid];
 
-        if (currentIndex === -1) {
-          mergedData.unshift(pendingMultichainFunding.deposits[step][pendingGuid]);
+        if (currentIndex === undefined) {
+          dataToUnshift.unshift(pendingMultichainFunding.deposits[step][pendingGuid]);
           continue;
         }
 
@@ -110,7 +122,15 @@ export function useGmxAccountFundingHistory(): MultichainFundingHistoryItem[] | 
       }
     }
 
-    mergedData = [...pendingMultichainFunding.deposits.submitted, ...mergedData];
+    mergedData = dataToUnshift.concat(mergedData);
+
+    const alreadySentTxns = mergedData.filter((item) => item.sentTxn !== undefined).map((item) => item.sentTxn!);
+
+    const filteredSubmittedEvents = pendingMultichainFunding.deposits.submitted.filter(
+      (item) => !item.sentTxn || !alreadySentTxns.includes(item.sentTxn)
+    );
+
+    mergedData = [...filteredSubmittedEvents, ...mergedData];
 
     mergedData.sort((a, b) => b.sentTimestamp - a.sentTimestamp);
 
@@ -120,15 +140,10 @@ export function useGmxAccountFundingHistory(): MultichainFundingHistoryItem[] | 
   return mergedData;
 }
 
-export function useGmxAccountFundingHistoryItem(guid: string | undefined): MultichainFundingHistoryItem | undefined {
-  const { chainId } = useChainId();
+export function useGmxAccountPendingFundingHistoryItem(
+  guid: string | undefined
+): MultichainFundingHistoryItem | undefined {
   const { pendingMultichainFunding } = useSyntheticsEvents();
-
-  const { data } = useSWR(guid ? ["gmx-account-funding-history-item", guid] : null, () =>
-    fetchGmxAccountFundingHistory(chainId, { guid })
-  );
-
-  const currentItem = data?.[0];
 
   const pendingItem = useMemo((): MultichainFundingHistoryItem | undefined => {
     if (!guid) {
@@ -147,6 +162,24 @@ export function useGmxAccountFundingHistoryItem(guid: string | undefined): Multi
     pendingMultichainFunding.deposits.sent,
     pendingMultichainFunding.deposits.submitted,
   ]);
+
+  return pendingItem;
+}
+
+export function useGmxAccountFundingHistoryItem(
+  guid: string | undefined,
+  opts?: { refetch?: boolean }
+): MultichainFundingHistoryItem | undefined {
+  const { chainId } = useChainId();
+
+  const { data } = useSWR(guid ? ["gmx-account-funding-history-item", guid] : null, {
+    fetcher: () => fetchGmxAccountFundingHistory(chainId, { guid }),
+    refreshInterval: opts?.refetch ? FREQUENT_UPDATE_INTERVAL : 0,
+  });
+
+  const currentItem = data?.[0];
+
+  const pendingItem = useGmxAccountPendingFundingHistoryItem(guid);
 
   if (!currentItem && !pendingItem) {
     return undefined;
