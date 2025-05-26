@@ -109,8 +109,6 @@ export function PoolsDetails() {
               />
             </div>
           </>
-        ) : marketsInfoData ? (
-          <div className="text-body-large w-full text-center text-slate-100">Market not found</div>
         ) : (
           <Loader />
         )}

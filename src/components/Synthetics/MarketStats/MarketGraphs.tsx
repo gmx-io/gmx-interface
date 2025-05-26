@@ -74,10 +74,10 @@ const getGraphValue = ({
     : getByKey(marketsTokensApyData, marketInfo.marketTokenAddress);
   const tokenPrice = marketTokensData?.[address]?.prices.minPrice;
   const performance = isGlv ? glvPerformance[address] : gmPerformance[address];
-  const valuesMap: Record<MarketGraphType, ReactNode> = {
-    performance: performance ? `${Math.round(performance * 10000) / 100}%` : "...",
-    price: tokenPrice ? formatUsdPrice(tokenPrice) : "...",
-    feeApy: apy ? formatPercentage(apy, { bps: false }) : "...",
+  const valuesMap: Record<MarketGraphType, string | undefined> = {
+    performance: performance ? `${Math.round(performance * 10000) / 100}%` : undefined,
+    price: tokenPrice ? formatUsdPrice(tokenPrice) : undefined,
+    feeApy: apy ? formatPercentage(apy, { bps: false }) : undefined,
   };
 
   return valuesMap[marketGraphType];
@@ -255,20 +255,32 @@ const GraphChart = ({
   marketGraphType: MarketGraphType;
   apySnapshots: ApySnapshot[];
 }) => {
-  const performanceData = performanceSnapshots.map((snapshot) => ({
-    snapshotTimestamp: new Date(snapshot.snapshotTimestamp * 1000),
-    value: snapshot.performance,
-  }));
+  const performanceData = useMemo(
+    () =>
+      performanceSnapshots.map((snapshot) => ({
+        snapshotTimestamp: new Date(snapshot.snapshotTimestamp * 1000),
+        value: snapshot.performance,
+      })),
+    [performanceSnapshots]
+  );
 
-  const priceData = priceSnapshots.map((snapshot) => ({
-    snapshotTimestamp: new Date(snapshot.snapshotTimestamp * 1000),
-    value: bigintToNumber((BigInt(snapshot.maxPrice) + BigInt(snapshot.minPrice)) / 2n, USD_DECIMALS),
-  }));
+  const priceData = useMemo(
+    () =>
+      priceSnapshots.map((snapshot) => ({
+        snapshotTimestamp: new Date(snapshot.snapshotTimestamp * 1000),
+        value: bigintToNumber((BigInt(snapshot.maxPrice) + BigInt(snapshot.minPrice)) / 2n, USD_DECIMALS),
+      })),
+    [priceSnapshots]
+  );
 
-  const apyData = apySnapshots.map((snapshot) => ({
-    snapshotTimestamp: new Date(snapshot.snapshotTimestamp * 1000),
-    value: bigintToNumber(snapshot.apy, 28),
-  }));
+  const apyData = useMemo(
+    () =>
+      apySnapshots.map((snapshot) => ({
+        snapshotTimestamp: new Date(snapshot.snapshotTimestamp * 1000),
+        value: bigintToNumber(snapshot.apy, 28),
+      })),
+    [apySnapshots]
+  );
 
   const data = useMemo(
     (): Record<MarketGraphType, GraphData[]> => ({
@@ -327,10 +339,10 @@ const GraphTooltip = ({ active, payload, formatValue }: any) => {
   return null;
 };
 
-const GraphValue = ({ value, label }: { value: ReactNode; label: ReactNode }) => {
+const GraphValue = ({ value, label }: { value: string | undefined; label: ReactNode }) => {
   return (
     <div className="flex items-center gap-8">
-      <span className="text-[24px]">{value}</span>
+      <span className="text-[24px]">{value ?? "..."}</span>
       <span className="text-body-medium text-slate-100">{label}</span>
     </div>
   );
