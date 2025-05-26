@@ -14,6 +14,7 @@ import { switchNetwork } from "lib/wallets";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import Button from "components/Button/Button";
+import SearchInput from "components/SearchInput/SearchInput";
 import { useMultichainTokensRequest } from "components/Synthetics/GmxAccountModal/hooks";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -29,7 +30,7 @@ const TokenListItem = ({ tokenChainData, onClick, className }: TokenListItemProp
   return (
     <div
       key={tokenChainData.symbol + "_" + tokenChainData.sourceChainId}
-      className={cx("flex cursor-pointer items-center justify-between px-16 py-8 gmx-hover:bg-slate-700", className)}
+      className={cx("gmx-hover-gradient flex cursor-pointer items-center justify-between px-16 py-8", className)}
       onClick={onClick}
     >
       <div className="flex items-center gap-8">
@@ -123,6 +124,17 @@ export const SelectAssetToDepositView = () => {
   return (
     <div className="flex grow flex-col gap-8 overflow-y-hidden">
       <div className="px-16 pt-16">
+        <SearchInput
+          placeholder="Search tokens..."
+          value={searchQuery}
+          setValue={(value) => setSearchQuery(value)}
+          className="rounded-4 bg-slate-700"
+          size="s"
+          noBorder
+        />
+      </div>
+
+      <div className="px-16 ">
         <ButtonRowScrollFadeContainer>
           <div className="flex gap-4">
             {NETWORKS_FILTER.map((network) => (
@@ -133,6 +145,7 @@ export const SelectAssetToDepositView = () => {
                 slim
                 className={cx("whitespace-nowrap", {
                   "!bg-cold-blue-500": selectedNetwork === network.id,
+                  "!text-slate-100": selectedNetwork !== network.id,
                 })}
                 onClick={() => setSelectedNetwork(network.id as number | "all")}
                 imgSrc={network.id !== "all" ? getChainIcon(network.id) : undefined}
@@ -145,23 +158,12 @@ export const SelectAssetToDepositView = () => {
         </ButtonRowScrollFadeContainer>
       </div>
 
-      <div className="px-16">
-        <input
-          type="text"
-          placeholder="Search tokens..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full rounded-4 bg-slate-700 px-12 py-8 text-white placeholder:text-slate-100"
-        />
-      </div>
-
       <div className="grow overflow-y-auto">
         {filteredBalances.map((tokenChainData) => (
           <TokenListItem
             key={tokenChainData.symbol + "_" + tokenChainData.sourceChainId}
             tokenChainData={tokenChainData}
             onClick={() => {
-              // setDepositViewChain(tokenChainData.sourceChainId);
               switchNetwork(tokenChainData.sourceChainId, isConnected);
               setDepositViewTokenAddress(tokenChainData.address);
               setIsVisibleOrView("deposit");

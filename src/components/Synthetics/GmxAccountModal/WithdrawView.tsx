@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { Contract, type Provider } from "ethers";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import Skeleton from "react-loading-skeleton";
 import useSWR from "swr";
 import { Address, BaseError, decodeErrorResult, encodeAbiParameters, Hex, zeroAddress } from "viem";
@@ -10,13 +10,16 @@ import { getChainName, UiSettlementChain, UiSourceChain } from "config/chains";
 import { getContract } from "config/contracts";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import {
-  getMultichainTokenId,
   getLayerZeroEndpointId,
+  getMultichainTokenId,
   getStargatePoolAddress,
   MULTI_CHAIN_TOKEN_MAPPING,
   MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS,
 } from "context/GmxAccountContext/config";
-import { useGmxAccountWithdrawViewTokenAddress } from "context/GmxAccountContext/hooks";
+import {
+  useGmxAccountWithdrawViewTokenAddress,
+  useGmxAccountWithdrawViewTokenInputValue,
+} from "context/GmxAccountContext/hooks";
 import { IStargateAbi } from "context/GmxAccountContext/stargatePools";
 import { TokenChainData } from "context/GmxAccountContext/types";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
@@ -26,6 +29,7 @@ import { ExpressTxnParams, MultichainRelayParamsPayload } from "domain/synthetic
 import { callRelayTransaction } from "domain/synthetics/gassless/txns/expressOrderDebug";
 import { convertToUsd, TokenData } from "domain/tokens";
 import { useChainId } from "lib/chains";
+import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
 import { helperToast } from "lib/helperToast";
 import {
   initMultichainWithdrawalMetricData,
@@ -75,7 +79,7 @@ import { useMultichainQuoteFeeUsd } from "./useMultichainQuoteFeeUsd";
 export const WithdrawView = () => {
   const { chainId, srcChainId } = useChainId();
   const { address: account, isConnected } = useAccount();
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useGmxAccountWithdrawViewTokenInputValue();
   const [selectedTokenAddress, setSelectedTokenAddress] = useGmxAccountWithdrawViewTokenAddress();
 
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
@@ -94,7 +98,9 @@ export const WithdrawView = () => {
   const selectedTokenSettlementChainTokenId =
     selectedTokenAddress && chainId !== undefined ? getMultichainTokenId(chainId, selectedTokenAddress) : undefined;
 
-  const inputAmount = selectedToken ? parseValue(inputValue, selectedToken.decimals) : undefined;
+  const realInputAmount =
+    selectedToken && inputValue !== undefined ? parseValue(inputValue, selectedToken.decimals) : undefined;
+  const inputAmount = useLeadingDebounce(realInputAmount);
   const inputAmountUsd = selectedToken
     ? convertToUsd(inputAmount, selectedToken.decimals, selectedToken.prices.maxPrice)
     : undefined;
@@ -117,7 +123,7 @@ export const WithdrawView = () => {
     }
 
     setInputValue(formatAmountFree(selectedToken.balance, selectedToken.decimals));
-  }, [selectedToken]);
+  }, [selectedToken, setInputValue]);
 
   const gmxAccountTokenBalanceUsd = convertToUsd(
     selectedToken?.balance,
@@ -534,7 +540,7 @@ export const WithdrawView = () => {
 
   return (
     <div className="grow overflow-y-auto p-16">
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-20">
         <div className="flex flex-col gap-4">
           <div className="text-body-small text-slate-100">Asset</div>
           <Selector
@@ -555,7 +561,6 @@ export const WithdrawView = () => {
           />
         </div>
 
-        {/* Network selector */}
         <div className="flex flex-col gap-4">
           <div className="text-body-small text-slate-100">
             <Trans>To Network</Trans>
@@ -596,41 +601,39 @@ export const WithdrawView = () => {
             itemKey={networkItemKey}
           />
         </div>
-      </div>
 
-      <div className="h-20" />
-
-      <div className="flex flex-col gap-4">
-        <div className="text-body-small flex items-center justify-between text-slate-100">
-          <Trans>Withdraw</Trans>
-          {selectedToken !== undefined && selectedToken.balance !== undefined && selectedToken !== undefined && (
-            <div>
-              <Trans>Available:</Trans>{" "}
-              {formatBalanceAmount(selectedToken.balance, selectedToken.decimals, selectedToken.symbol)}
-            </div>
-          )}
+        <div className="flex flex-col gap-4">
+          <div className="text-body-small flex items-center justify-between text-slate-100">
+            <Trans>Withdraw</Trans>
+            {selectedToken !== undefined && selectedToken.balance !== undefined && selectedToken !== undefined && (
+              <div>
+                <Trans>Available:</Trans>{" "}
+                {formatBalanceAmount(selectedToken.balance, selectedToken.decimals, selectedToken.symbol)}
+              </div>
+            )}
+          </div>
+          <div className="text-body-large relative">
+            <NumberInput
+              value={inputValue}
+              onValueChange={(e) => setInputValue(e.target.value)}
+              className="text-body-large w-full rounded-4 bg-cold-blue-900 py-12 pl-14 pr-72"
+              placeholder={`0.0 ${selectedToken?.symbol || ""}`}
+            />
+            {inputValue !== "" && inputValue !== undefined && (
+              <div className="pointer-events-none absolute left-14 top-1/2 flex max-w-[calc(100%-72px)] -translate-y-1/2 overflow-hidden">
+                <div className="invisible whitespace-pre font-[RelativeNumber]">{inputValue} </div>
+                <div className="text-slate-100">{selectedToken?.symbol || ""}</div>
+              </div>
+            )}
+            <button
+              className="text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-4 bg-cold-blue-500 px-8 py-2 hover:bg-[#484e92] active:bg-[#505699]"
+              onClick={handleMaxButtonClick}
+            >
+              <Trans>MAX</Trans>
+            </button>
+          </div>
+          <div className="text-body-small text-slate-100">{formatUsd(inputAmountUsd ?? 0n)}</div>
         </div>
-        <div className="text-body-large relative">
-          <NumberInput
-            value={inputValue}
-            onValueChange={(e) => setInputValue(e.target.value)}
-            className="text-body-large w-full rounded-4 bg-cold-blue-900 py-12 pl-14 pr-72"
-            placeholder={`0.0 ${selectedToken?.symbol || ""}`}
-          />
-          {inputValue !== "" && (
-            <div className="pointer-events-none absolute left-14 top-1/2 flex max-w-[calc(100%-72px)] -translate-y-1/2 overflow-hidden">
-              <div className="invisible whitespace-pre font-[RelativeNumber]">{inputValue} </div>
-              <div className="text-slate-100">{selectedToken?.symbol || ""}</div>
-            </div>
-          )}
-          <button
-            className="text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-4 bg-cold-blue-500 px-8 py-2 hover:bg-[#484e92] active:bg-[#505699]"
-            onClick={handleMaxButtonClick}
-          >
-            <Trans>MAX</Trans>
-          </button>
-        </div>
-        <div className="text-body-small text-slate-100">{formatUsd(inputAmountUsd ?? 0n)}</div>
       </div>
 
       {isAboveLimit && (
@@ -652,7 +655,7 @@ export const WithdrawView = () => {
 
       <div className="h-32" />
 
-      <div className="flex flex-col gap-8">
+      <div className="mb-16 flex flex-col gap-8">
         <SyntheticsInfoRow label="Network Fee" value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."} />
         <SyntheticsInfoRow
           label="Withdraw Fee"
@@ -671,8 +674,6 @@ export const WithdrawView = () => {
           }
         />
       </div>
-
-      <div className="h-16" />
 
       <Button variant="primary" className="w-full" onClick={handleWithdraw}>
         <Trans>Withdraw</Trans>

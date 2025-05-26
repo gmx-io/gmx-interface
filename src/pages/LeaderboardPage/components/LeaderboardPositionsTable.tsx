@@ -17,9 +17,9 @@ import { LeaderboardPosition, RemoteData } from "domain/synthetics/leaderboard";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getLiquidationPrice } from "domain/synthetics/positions";
+import { useDebounce } from "lib/debounce/useDebounce";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatUsd } from "lib/numbers";
-import { useDebounce } from "lib/useDebounce";
 import { bigMath } from "sdk/utils/bigmath";
 
 import AddressView from "components/AddressView/AddressView";

@@ -325,7 +325,7 @@ function AvailableToTradeTokenList({
           <div
             key={token.address + "_" + (token.isGmxAccount ? "gmx" : "settlement")}
             // data-qa={`${qa}-token-${token.symbol}`}
-            className="flex cursor-pointer justify-between bg-gradient-to-r px-16 py-8 hover:from-[#23263B] hover:to-[#16182E]"
+            className="gmx-hover-gradient flex cursor-pointer justify-between px-16 py-8"
             onClick={() => onSelectTokenAddress(token.address, token.isGmxAccount)}
           >
             <div className="flex items-center gap-8">

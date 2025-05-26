@@ -2,10 +2,6 @@ import { Options, addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { Trans, t } from "@lingui/macro";
 import { errors as StargateErrorsAbi } from "@stargatefinance/stg-evm-sdk-v2";
 import { Contract } from "ethers";
-// eslint-disable-next-line no-restricted-imports
-import type { DebouncedFuncLeading } from "lodash";
-import debounce from "lodash/debounce";
-import identity from "lodash/identity";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
 import Skeleton from "react-loading-skeleton";
@@ -19,8 +15,8 @@ import { getChainIcon } from "config/icons";
 import {
   DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT,
   MULTI_CHAIN_SUPPORTED_TOKEN_MAP,
-  getMappedTokenId,
   getLayerZeroEndpointId,
+  getMappedTokenId,
   isSettlementChain,
   isSourceChain,
 } from "context/GmxAccountContext/config";
@@ -36,6 +32,7 @@ import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
+import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
 import { helperToast } from "lib/helperToast";
 import {
   BASIS_POINTS_DIVISOR_BIGINT,
@@ -76,16 +73,6 @@ import { useMultichainDepositNetworkComposeGas } from "./useMultichainDepositNet
 import { useMultichainQuoteFeeUsd } from "./useMultichainQuoteFeeUsd";
 
 export const SLIPPAGE_BPS = 50n;
-
-const leadingDebounce: DebouncedFuncLeading<(value: bigint | undefined) => bigint | undefined> = debounce(
-  identity,
-  100,
-  {
-    leading: true,
-    trailing: true,
-    maxWait: 1000,
-  }
-);
 
 export const DepositView = () => {
   const { chainId: settlementChainId, srcChainId } = useChainId();
@@ -146,10 +133,11 @@ export const DepositView = () => {
   }, [selectedToken, selectedTokenChainData]);
 
   const realInputAmount = useGmxAccountSelector(selectGmxAccountDepositViewTokenInputAmount);
+
   /**
    * Debounced
    */
-  const inputAmount = leadingDebounce(realInputAmount);
+  const inputAmount = useLeadingDebounce(realInputAmount);
   const inputAmountUsd = selectedToken
     ? convertToUsd(inputAmount, selectedToken.decimals, selectedTokenChainData?.sourceChainPrices?.maxPrice)
     : undefined;
@@ -163,21 +151,35 @@ export const DepositView = () => {
 
   const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
 
-  const { nextGmxAccountBalanceUsd, nextSourceChainBalanceUsd } = useMemo((): {
+  const { nextGmxAccountBalanceUsd, nextSourceChainBalance } = useMemo((): {
     nextGmxAccountBalanceUsd?: bigint;
-    nextSourceChainBalanceUsd?: bigint;
+    nextSourceChainBalance?: bigint;
   } => {
-    if (selectedToken === undefined || selectedTokenSourceChainBalanceUsd === undefined || inputAmountUsd === undefined)
+    if (
+      selectedToken === undefined ||
+      selectedTokenSourceChainBalance === undefined ||
+      selectedTokenSourceChainBalanceUsd === undefined ||
+      inputAmount === undefined ||
+      inputAmountUsd === undefined
+    ) {
       return EMPTY_OBJECT;
+    }
 
-    const nextSourceChainBalanceUsd = selectedTokenSourceChainBalanceUsd - inputAmountUsd;
+    const nextSourceChainBalance = selectedTokenSourceChainBalance - inputAmount;
     const nextGmxAccountBalanceUsd = (gmxAccountUsd ?? 0n) + inputAmountUsd;
 
     return {
-      nextSourceChainBalanceUsd,
       nextGmxAccountBalanceUsd,
+      nextSourceChainBalance,
     };
-  }, [gmxAccountUsd, inputAmountUsd, selectedToken, selectedTokenSourceChainBalanceUsd]);
+  }, [
+    gmxAccountUsd,
+    inputAmount,
+    inputAmountUsd,
+    selectedToken,
+    selectedTokenSourceChainBalance,
+    selectedTokenSourceChainBalanceUsd,
+  ]);
 
   const [isApproving, setIsApproving] = useState(false);
 
@@ -579,7 +581,6 @@ export const DepositView = () => {
   useEffect(
     function fallbackTokenOnSourceChain() {
       if (depositViewTokenAddress === undefined && srcChainId !== undefined && multichainTokens.length > 0) {
-        // pick the token
         const sourceChainTokenAddresses = MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChainId][srcChainId];
         if (!sourceChainTokenAddresses || sourceChainTokenAddresses.length === 0) {
           return;
@@ -651,7 +652,7 @@ export const DepositView = () => {
 
   return (
     <div className="flex grow flex-col overflow-y-auto p-16">
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-20">
         <div className="flex flex-col gap-4">
           <div className="text-body-small text-slate-100">
             <Trans>Asset</Trans>
@@ -682,58 +683,54 @@ export const DepositView = () => {
             <BiChevronRight className="size-20 text-slate-100" />
           </div>
         </div>
-        <div className="flex items-center gap-8 rounded-4 border border-cold-blue-900 px-14 py-12">
-          {srcChainId !== undefined ? (
-            <>
+        {srcChainId !== undefined && (
+          <div className="flex flex-col gap-4">
+            <div className="text-body-small text-slate-100">
+              <Trans>From Network</Trans>
+            </div>
+            <div className="flex items-center gap-8 rounded-4 border border-cold-blue-900 px-14 py-12">
               <img src={getChainIcon(srcChainId)} alt={getChainName(srcChainId)} className="size-20" />
               <span className="text-body-large text-slate-100">{getChainName(srcChainId)}</span>
-            </>
-          ) : DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT ? (
-            <span className="text-slate-100">DEV SAME CHAIN DEPOSIT</span>
-          ) : (
-            <>
-              <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={20} height={20} borderRadius={10} />
-              <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={40} height={16} />
-            </>
-          )}
-        </div>
-      </div>
-
-      <div className="mt-20 flex flex-col gap-4">
-        <div className="text-body-small flex items-center justify-between gap-4 text-slate-100">
-          <Trans>Deposit</Trans>
-          {selectedTokenSourceChainBalance !== undefined && selectedToken !== undefined && (
-            <div>
-              <Trans>Available:</Trans>{" "}
-              {formatBalanceAmount(selectedTokenSourceChainBalance, selectedToken.decimals, selectedToken.symbol)}
             </div>
-          )}
-        </div>
-        <div className="text-body-large relative">
-          <NumberInput
-            value={inputValue}
-            onValueChange={(e) => setInputValue(e.target.value)}
-            className="text-body-large w-full rounded-4 bg-cold-blue-900 py-12 pl-14 pr-72"
-          />
-          <div className="pointer-events-none absolute left-14 top-1/2 flex max-w-[calc(100%-72px)] -translate-y-1/2 overflow-hidden">
-            <div className="invisible whitespace-pre font-[RelativeNumber]">
-              {inputValue}
-              {inputValue === "" ? "" : " "}
-            </div>
-            <div className="font-[RelativeNumber] text-slate-100">{placeholder}</div>
           </div>
-          <button
-            className="text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-4 bg-cold-blue-500 px-8 py-2 hover:bg-[#484e92] active:bg-[#505699]"
-            onClick={handleMaxButtonClick}
-          >
-            <Trans>MAX</Trans>
-          </button>
+        )}
+
+        <div className="flex flex-col gap-4">
+          <div className="text-body-small flex items-center justify-between gap-4 text-slate-100">
+            <Trans>Deposit</Trans>
+            {selectedTokenSourceChainBalance !== undefined && selectedToken !== undefined && (
+              <div>
+                <Trans>Available:</Trans>{" "}
+                {formatBalanceAmount(selectedTokenSourceChainBalance, selectedToken.decimals, selectedToken.symbol)}
+              </div>
+            )}
+          </div>
+          <div className="text-body-large relative">
+            <NumberInput
+              value={inputValue}
+              onValueChange={(e) => setInputValue(e.target.value)}
+              className="text-body-large w-full rounded-4 bg-cold-blue-900 py-12 pl-14 pr-72"
+            />
+            <div className="pointer-events-none absolute left-14 top-1/2 flex max-w-[calc(100%-72px)] -translate-y-1/2 overflow-hidden">
+              <div className="invisible whitespace-pre font-[RelativeNumber]">
+                {inputValue}
+                {inputValue === "" ? "" : " "}
+              </div>
+              <div className="font-[RelativeNumber] text-slate-100">{placeholder}</div>
+            </div>
+            <button
+              className="text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-4 bg-cold-blue-500 px-8 py-2 hover:bg-[#484e92] active:bg-[#505699]"
+              onClick={handleMaxButtonClick}
+            >
+              <Trans>MAX</Trans>
+            </button>
+          </div>
+          <div className="text-body-small text-slate-100">{formatUsd(inputAmountUsd ?? 0n)}</div>
         </div>
-        <div className="text-body-small text-slate-100">{formatUsd(inputAmountUsd ?? 0n)}</div>
       </div>
 
       {isAboveLimit && (
-        <AlertInfoCard type="warning" className="my-4">
+        <AlertInfoCard type="warning" className="mt-8">
           <Trans>
             The amount you are trying to deposit exceeds the limit. Please try an amount smaller than{" "}
             {upperLimitFormatted}.
@@ -741,7 +738,7 @@ export const DepositView = () => {
         </AlertInfoCard>
       )}
       {isBelowLimit && (
-        <AlertInfoCard type="warning" className="my-4">
+        <AlertInfoCard type="warning" className="mt-8">
           <Trans>
             The amount you are trying to deposit is below the limit. Please try an amount larger than{" "}
             {lowerLimitFormatted}.
@@ -750,7 +747,7 @@ export const DepositView = () => {
       )}
       <div className="h-32 shrink-0" />
 
-      <div className="mb-8 flex flex-col gap-8">
+      <div className="mb-16 flex flex-col gap-8">
         <SyntheticsInfoRow label="Allowed slippage" value={formatPercentage(SLIPPAGE_BPS, { bps: true })} />
         <SyntheticsInfoRow
           label="Min receive"
@@ -774,14 +771,30 @@ export const DepositView = () => {
           label={t`Asset Balance`}
           value={
             <ValueTransition
-              from={formatUsd(selectedTokenSourceChainBalanceUsd)}
-              to={formatUsd(nextSourceChainBalanceUsd)}
+              from={
+                selectedTokenSourceChainBalance !== undefined && selectedTokenSourceChainTokenId !== undefined
+                  ? formatBalanceAmount(
+                      selectedTokenSourceChainBalance,
+                      selectedTokenSourceChainTokenId.decimals,
+                      selectedTokenSourceChainTokenId.symbol
+                    )
+                  : undefined
+              }
+              to={
+                nextSourceChainBalance !== undefined && selectedTokenSourceChainTokenId !== undefined
+                  ? formatBalanceAmount(
+                      nextSourceChainBalance,
+                      selectedTokenSourceChainTokenId.decimals,
+                      selectedTokenSourceChainTokenId.symbol
+                    )
+                  : undefined
+              }
             />
           }
         />
       </div>
 
-      <Button variant="primary" className="mt-auto w-full" onClick={buttonState.onClick}>
+      <Button variant="primary" className="w-full" onClick={buttonState.onClick}>
         {buttonState.text}
       </Button>
     </div>

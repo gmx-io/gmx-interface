@@ -5,8 +5,8 @@ import { useEffect, useRef, useState } from "react";
 
 import { ARBITRUM } from "config/chains";
 import { useChainId } from "lib/chains";
+import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
-import { useDebounce } from "lib/useDebounce";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";

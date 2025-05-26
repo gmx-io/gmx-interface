@@ -103,7 +103,7 @@ function injectColorsPlugin({ addBase, theme }) {
 /**
  * @type {import('tailwindcss/types/config').PluginCreator}
  */
-function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVariant, theme }) {
+function customUtilsAndComponentsPlugin({ addUtilities, addComponents, addVariant }) {
   addUtilities({
     ".scrollbar-hide": {
       "scrollbar-width": "none",
@@ -125,6 +125,12 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
     ".text-input-bg": {
       background:
         "linear-gradient(90deg, var(--color-cold-blue-900) 0%, color-mix(in srgb, var(--color-slate-500) 40%, transparent) 100%)",
+    },
+  });
+
+  addComponents({
+    ".gmx-hover-gradient": {
+      "@apply gmx-hover:bg-gradient-to-r gmx-hover:from-[#23263B] gmx-hover:to-[#16182E]": {},
     },
   });
 }
@@ -220,5 +226,5 @@ module.exports = {
       ),
     },
   },
-  plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin],
+  plugins: [injectColorsPlugin, customUtilsAndComponentsPlugin, fontComponentsPlugin],
 };

@@ -62,6 +62,7 @@ import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpa
 import { getCommonError, getDecreaseError, getExpressError } from "domain/synthetics/trade/utils/validation";
 import { approveTokens, Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
+import { useDebouncedInputValue } from "lib/debounce/useDebouncedInputValue";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
@@ -75,7 +76,6 @@ import {
   parseValue,
 } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
-import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
@@ -103,9 +103,9 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
