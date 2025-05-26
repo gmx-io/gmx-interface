@@ -13,6 +13,7 @@ type TokenPricesDataResult = {
   pricesData?: TokenPricesData;
   updatedAt?: number;
   error?: Error;
+  isPriceDataLoading: boolean;
 };
 
 export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataResult {
@@ -26,7 +27,7 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
       : PRICES_UPDATE_INTERVAL;
   }, [pathname]);
 
-  const { data, error } = useSequentialTimedSWR([chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"], {
+  const { data, error, isLoading } = useSequentialTimedSWR([chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"], {
     refreshInterval: refreshPricesInterval,
     fetcher: ([chainId]) =>
       oracleKeeperFetcher.fetchTickers().then((priceItems) => {
@@ -67,5 +68,6 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
     pricesData: data?.pricesData,
     updatedAt: data?.updatedAt,
     error,
+    isPriceDataLoading: isLoading,
   };
 }

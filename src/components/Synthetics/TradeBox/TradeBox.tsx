@@ -137,7 +137,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const tokensData = useTokensData();
   const walletTokensData = useSelector(selectWalletTokensData);
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
-  const multichainTokens = useMultichainTokensRequest();
+  const { tokenChainDataArray: multichainTokens } = useMultichainTokensRequest();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket, isTwap } = tradeFlags;

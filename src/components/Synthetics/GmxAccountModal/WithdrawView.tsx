@@ -84,7 +84,7 @@ export const WithdrawView = () => {
 
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
   const networks = useGmxAccountWithdrawNetworks();
-  const multichainTokens = useMultichainTokensRequest();
+  const { tokenChainDataArray: multichainTokens } = useMultichainTokensRequest();
   const expressGlobalParams = useSelector(selectExpressGlobalParams);
   const relayerFeeToken = getByKey(gmxAccountTokensData, expressGlobalParams?.relayerFeeTokenAddress);
 

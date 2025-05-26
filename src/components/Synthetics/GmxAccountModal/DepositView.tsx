@@ -13,8 +13,8 @@ import { UiContractsChain, UiSettlementChain, UiSourceChain, UiSupportedChain, g
 import { getContract } from "config/contracts";
 import { getChainIcon } from "config/icons";
 import {
+  CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
   DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT,
-  MULTI_CHAIN_SUPPORTED_TOKEN_MAP,
   getLayerZeroEndpointId,
   getMappedTokenId,
   isSettlementChain,
@@ -47,7 +47,7 @@ import { TxnCallback, TxnEventName, WalletTxnCtx, sendWalletTransaction } from "
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { abis } from "sdk/abis";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
-import { convertToUsd } from "sdk/utils/tokens";
+import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 import {
   IStargate,
   MessagingFeeStruct,
@@ -83,7 +83,7 @@ export const DepositView = () => {
 
   const [depositViewTokenAddress, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
   const [inputValue, setInputValue] = useGmxAccountDepositViewTokenInputValue();
-  const multichainTokens = useMultichainTokensRequest();
+  const { tokenChainDataArray: multichainTokens, isPriceDataLoading } = useMultichainTokensRequest();
 
   const {
     setMultichainSubmittedDeposit,
@@ -580,51 +580,65 @@ export const DepositView = () => {
 
   useEffect(
     function fallbackTokenOnSourceChain() {
-      if (depositViewTokenAddress === undefined && srcChainId !== undefined && multichainTokens.length > 0) {
-        const sourceChainTokenAddresses = MULTI_CHAIN_SUPPORTED_TOKEN_MAP[settlementChainId][srcChainId];
-        if (!sourceChainTokenAddresses || sourceChainTokenAddresses.length === 0) {
+      if (
+        depositViewTokenAddress === undefined &&
+        srcChainId !== undefined &&
+        multichainTokens.length > 0 &&
+        !isPriceDataLoading
+      ) {
+        const preferredToken = multichainTokens.find(
+          (sourceChainToken) =>
+            sourceChainToken.sourceChainId === srcChainId &&
+            sourceChainToken.address === CHAIN_ID_PREFERRED_DEPOSIT_TOKEN[settlementChainId]
+        );
+
+        if (
+          preferredToken &&
+          preferredToken.sourceChainBalance !== undefined &&
+          preferredToken.sourceChainBalance >= 0n
+        ) {
+          setDepositViewTokenAddress(preferredToken.address);
           return;
         }
 
-        let maxBalanceTokenAddress = sourceChainTokenAddresses[0];
-        let maxBalance =
-          multichainTokens.find(
-            (sourceChainToken) =>
-              sourceChainToken.sourceChainId === srcChainId && sourceChainToken.address === maxBalanceTokenAddress
-          )?.sourceChainBalance ?? 0n;
+        let maxBalanceTokenAddress: string | undefined = undefined;
+        let maxSourceChainBalanceUsd: bigint | undefined = undefined;
 
-        for (const sourceChainTokenAddress of sourceChainTokenAddresses) {
-          const balance =
-            multichainTokens.find(
-              (sourceChainToken) =>
-                sourceChainToken.sourceChainId === srcChainId && sourceChainToken.address === sourceChainTokenAddress
-            )?.sourceChainBalance ?? 0n;
-          if (balance > maxBalance) {
-            maxBalance = balance;
-            maxBalanceTokenAddress = sourceChainTokenAddress;
+        for (const token of multichainTokens) {
+          if (token.sourceChainId !== srcChainId) {
+            continue;
+          }
+
+          const balanceUsd = token.sourceChainPrices
+            ? convertToUsd(token.sourceChainBalance, token.sourceChainDecimals, getMidPrice(token.sourceChainPrices))
+            : 0n;
+          if (
+            maxBalanceTokenAddress === undefined ||
+            maxSourceChainBalanceUsd === undefined ||
+            (balanceUsd !== undefined && balanceUsd > maxSourceChainBalanceUsd)
+          ) {
+            maxBalanceTokenAddress = token.address;
+            maxSourceChainBalanceUsd = balanceUsd;
           }
         }
 
-        const tokenId = getMappedTokenId(
-          srcChainId as UiSourceChain,
-          maxBalanceTokenAddress,
-          settlementChainId as UiSettlementChain
-        );
-
-        if (!tokenId) {
+        if (maxBalanceTokenAddress !== undefined) {
+          setDepositViewTokenAddress(maxBalanceTokenAddress);
           return;
         }
 
-        setDepositViewTokenAddress(tokenId.address);
+        if (preferredToken) {
+          setDepositViewTokenAddress(preferredToken.address);
+        }
       }
     },
     [
-      srcChainId,
       depositViewTokenAddress,
+      isPriceDataLoading,
       multichainTokens,
-      selectedToken?.address,
       setDepositViewTokenAddress,
       settlementChainId,
+      srcChainId,
     ]
   );
 

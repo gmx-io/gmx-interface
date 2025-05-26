@@ -168,11 +168,11 @@ const subscribeMultichainTokenBalances: SWRSubscription<
   };
 };
 
-export function useMultichainTokensRequest(): TokenChainData[] {
+export function useMultichainTokensRequest(): { tokenChainDataArray: TokenChainData[]; isPriceDataLoading: boolean } {
   const { chainId } = useChainId();
   const { address: account } = useAccount();
 
-  const { pricesData } = useTokenRecentPricesRequest(chainId);
+  const { pricesData, isPriceDataLoading } = useTokenRecentPricesRequest(chainId);
 
   const { data } = useSWRSubscription(
     account ? ["multichain-tokens", chainId, account] : null,
@@ -214,7 +214,6 @@ export function useMultichainTokensRequest(): TokenChainData[] {
           sourceChainDecimals: mapping.sourceChainTokenDecimals,
           sourceChainPrices: undefined,
           sourceChainBalance: balance,
-          // settlementChainAddress: settlementChainTokenAddress,
         };
 
         if (pricesData && settlementChainTokenAddress in pricesData) {
@@ -254,7 +253,7 @@ export function useMultichainTokensRequest(): TokenChainData[] {
     return tokenChainDataArray;
   }, [tokenBalances, chainId, pricesData]);
 
-  return tokenChainDataArray;
+  return { tokenChainDataArray: tokenChainDataArray, isPriceDataLoading };
 }
 
 const TRADABLE_ASSETS_MAP: Record<UiSettlementChain, Address[]> = {} as any;

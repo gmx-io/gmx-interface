@@ -75,7 +75,7 @@ export const SelectAssetToDepositView = () => {
   const [selectedNetwork, setSelectedNetwork] = useState<number | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const tokensChainData = useMultichainTokensRequest();
+  const { tokenChainDataArray } = useMultichainTokensRequest();
 
   const NETWORKS_FILTER = useMemo(() => {
     const wildCard = { id: "all" as const, name: "All Networks" };
@@ -89,7 +89,7 @@ export const SelectAssetToDepositView = () => {
   }, [chainId]);
 
   const filteredBalances: DisplayTokenChainData[] = useMemo(() => {
-    return tokensChainData
+    return tokenChainDataArray
       .filter((tokenChainData) => {
         const matchesSearch = tokenChainData.symbol.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesNetwork = selectedNetwork === "all" || tokenChainData.sourceChainId === selectedNetwork;
@@ -119,7 +119,7 @@ export const SelectAssetToDepositView = () => {
 
         return a.sourceChainBalanceUsd > b.sourceChainBalanceUsd ? -1 : 1;
       });
-  }, [tokensChainData, searchQuery, selectedNetwork]);
+  }, [tokenChainDataArray, searchQuery, selectedNetwork]);
 
   return (
     <div className="flex grow flex-col gap-8 overflow-y-hidden">
