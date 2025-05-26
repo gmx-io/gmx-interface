@@ -336,7 +336,7 @@ export function OrderEditor(p: Props) {
     additionalExecutionFee?.feeTokenAmount,
   ]);
 
-  const { expressParams } = useExpressOrdersParams({
+  const { expressParams, expressParamsPromise } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Order Editor",
   });
@@ -441,18 +441,20 @@ export function OrderEditor(p: Props) {
     };
   }
 
-  function onSubmit() {
+  async function onSubmit() {
     if (!batchParams || !signer || !tokensData || !marketsInfoData) {
       return;
     }
 
     setIsSubmitting(true);
 
+    const finalExpressParams = await expressParamsPromise;
+
     const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
       batchParams,
-      expressParams: expressParams && getIsValidExpressParams(expressParams) ? expressParams : undefined,
+      expressParams: finalExpressParams && getIsValidExpressParams(finalExpressParams) ? finalExpressParams : undefined,
       simulationParams: undefined,
       callback: makeOrderTxnCallback({}),
     });

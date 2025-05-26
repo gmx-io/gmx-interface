@@ -131,6 +131,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     expressParams,
     fastExpressParams,
     asyncExpressParams,
+    expressParamsPromise,
     isLoading: isExpressLoading,
   } = useExpressOrdersParams({
     orderParams: batchParams,
@@ -262,6 +263,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   ]);
 
   const onSubmitOrder = useCallback(async () => {
+    const finalExpressParams = await expressParamsPromise;
+
     const metricData = initOrderMetricData();
 
     sendOrderSubmittedMetric(metricData.metricId);
@@ -278,7 +281,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       chainId,
       signer,
       batchParams,
-      expressParams: expressParams && getIsValidExpressParams(expressParams) ? expressParams : undefined,
+      expressParams: finalExpressParams && getIsValidExpressParams(finalExpressParams) ? finalExpressParams : undefined,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
         : {
@@ -302,8 +305,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     account,
     marketsInfoData,
     chainId,
+    expressParamsPromise,
     batchParams,
-    expressParams,
     shouldDisableValidationForTesting,
     blockTimestampData,
     makeOrderTxnCallback,

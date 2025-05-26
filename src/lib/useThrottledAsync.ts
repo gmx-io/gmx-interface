@@ -1,7 +1,5 @@
 import throttle from "lodash/throttle";
-import { useState, useRef, useEffect } from "react";
-
-import { EMPTY_ARRAY } from "./objects";
+import { useEffect, useRef, useState } from "react";
 
 type AsyncFnParams<D extends object> = {
   params: D;
@@ -14,6 +12,7 @@ type AsyncResult<T> = {
   isLoading: boolean;
   error: Error | undefined;
   lastEstimated: number;
+  promise: Promise<T> | undefined;
 };
 
 const RETRY_SYMBOL = Symbol("retry");
@@ -41,14 +40,14 @@ export function useThrottledAsync<T, D extends object>(
   {
     params,
     throttleMs = 5000,
-    dataKey = EMPTY_ARRAY,
+    forceRecalculate = false,
     withLoading = false,
     leading = true,
     trailing = false,
   }: {
     params: D | undefined;
     throttleMs?: number;
-    dataKey?: any[];
+    forceRecalculate?: boolean;
     withLoading?: boolean;
     leading?: boolean;
     trailing?: boolean;
@@ -58,67 +57,87 @@ export function useThrottledAsync<T, D extends object>(
     data: undefined,
     isLoading: false,
     error: undefined,
+    promise: undefined,
     lastEstimated: 0,
   });
 
   const [dynamicThrottleMs, setDynamicThrottleMs] = useState(throttleMs);
-  const latestEstimatorRef = useRef(estimator);
-  const isRetryRef = useRef(false);
 
-  useEffect(() => {
-    latestEstimatorRef.current = estimator;
-  }, [estimator]);
-
+  const latestFnRef = useRef(estimator);
+  const latestHandlerRef = useRef<(args: D) => Promise<void>>();
   // Recreate throttled function if throttleMs changes
   const throttledFnRef = useRef<ReturnType<typeof throttle>>();
 
+  const isRetryRef = useRef(false);
+
   useEffect(() => {
-    throttledFnRef.current = throttle(
-      async (args: D) => {
-        if (isRetryRef.current) {
-          setDynamicThrottleMs(throttleMs);
-          isRetryRef.current = false;
-        }
+    latestFnRef.current = estimator;
+  }, [estimator]);
+
+  useEffect(() => {
+    latestHandlerRef.current = async (args: D) => {
+      if (isRetryRef.current) {
+        setDynamicThrottleMs(throttleMs);
+        isRetryRef.current = false;
+      }
+
+      try {
+        const estimatorPromise = latestFnRef.current({ params: args as D });
 
         if (withLoading) {
-          setState((prev) => ({ ...prev, isLoading: true }));
+          const floatingPromise = estimatorPromise.then((result) => {
+            if (isRetryResult(result)) {
+              return result.data;
+            }
+
+            return result;
+          });
+          setState((prev) => ({ ...prev, isLoading: true, promise: floatingPromise }));
         }
 
-        try {
-          const result = await latestEstimatorRef.current({ params: args as D });
+        const result = await estimatorPromise;
 
-          if (isRetryResult(result)) {
-            setDynamicThrottleMs(result.delay ?? 0);
-            isRetryRef.current = true;
-            setState((prev) => ({
-              ...prev,
-              data: result.data,
-              isLoading: false,
-            }));
-            return;
-          } else {
-            setState({
-              data: result as T,
-              isLoading: false,
-              error: undefined,
-              lastEstimated: Date.now(),
-            });
-          }
-        } catch (error) {
+        if (isRetryResult(result)) {
+          setDynamicThrottleMs(result.delay ?? 0);
+          isRetryRef.current = true;
           setState((prev) => ({
             ...prev,
-            data: undefined,
-            error: error as Error,
+            data: result.data,
             isLoading: false,
-            lastEstimated: Date.now(),
           }));
+          return;
+        } else {
+          setState({
+            data: result as T,
+            isLoading: false,
+            error: undefined,
+            promise: Promise.resolve(result),
+            lastEstimated: Date.now(),
+          });
         }
-      },
-      dynamicThrottleMs,
-      { leading, trailing }
-    );
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          data: undefined,
+          error: error as Error,
+          isLoading: false,
+          promise: undefined,
+          lastEstimated: Date.now(),
+        }));
+      }
+    };
+  }, [throttleMs, withLoading]);
+
+  useEffect(() => {
+    throttledFnRef.current = throttle(latestHandlerRef.current!, dynamicThrottleMs, { leading, trailing });
     return () => throttledFnRef.current?.cancel();
-  }, [dynamicThrottleMs, withLoading, leading, trailing, throttleMs]);
+  }, [dynamicThrottleMs, leading, trailing]);
+
+  useEffect(() => {
+    if (forceRecalculate && params) {
+      latestHandlerRef.current?.(params);
+    }
+  }, [forceRecalculate, params]);
 
   useEffect(() => {
     if (!params) {
@@ -126,16 +145,7 @@ export function useThrottledAsync<T, D extends object>(
     }
 
     throttledFnRef.current?.(params);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params, dynamicThrottleMs]);
-
-  useEffect(() => {
-    setState((prev) => ({
-      ...prev,
-      data: undefined,
-    }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, dataKey);
+  }, [params]);
 
   return state;
 }

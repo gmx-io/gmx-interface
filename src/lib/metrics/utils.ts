@@ -9,7 +9,6 @@ import { TokenData } from "domain/synthetics/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts, TradeMode } from "domain/synthetics/trade";
 import { ErrorLike, extendError, OrderErrorContext, parseError } from "lib/errors";
 import { bigintToNumber, formatPercentage, formatRatePercentage, getBasisPoints, roundToOrder } from "lib/numbers";
-import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { TwapDuration } from "sdk/types/twap";
 import { CreateOrderPayload } from "sdk/utils/orderTransactions";
 
@@ -152,7 +151,7 @@ export function initSwapMetricData({
     allowedSlippage,
     orderType,
     isExpress: isExpress ?? false,
-    isExpress1CT: Boolean(subaccount && fromToken?.address !== NATIVE_TOKEN_ADDRESS),
+    isExpress1CT: Boolean(subaccount),
     requestId: getRequestId(),
     isFirstOrder,
     duration,
@@ -243,7 +242,7 @@ export function initIncreaseOrderMetricData({
     }),
     requestId: getRequestId(),
     isExpress,
-    isExpress1CT: Boolean(subaccount && fromToken?.address !== NATIVE_TOKEN_ADDRESS),
+    isExpress1CT: Boolean(subaccount),
     isTPSLCreated,
     slCount,
     tpCount,
@@ -450,7 +449,7 @@ export function initEditCollateralMetricData({
     orderType,
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
     isExpress,
-    isExpress1CT: Boolean(subaccount && selectedCollateralAddress !== NATIVE_TOKEN_ADDRESS),
+    isExpress1CT: Boolean(subaccount),
     requestId: getRequestId(),
     expressData: getExpressMetricData({ expressParams, asyncExpressParams, fastExpressParams }),
   });
@@ -560,14 +559,20 @@ function getExpressMetricData({
   expressParams: ExpressTxnParams | undefined;
   asyncExpressParams: ExpressTxnParams | undefined;
   fastExpressParams: ExpressTxnParams | undefined;
-}): ExpressOrderMetricData {
+}): ExpressOrderMetricData | undefined {
+  if (!expressParams) {
+    return undefined;
+  }
+
   const expressData: ExpressOrderMetricData = {
-    asyncGas: asyncExpressParams ? Number(asyncExpressParams?.gasLimit) : undefined,
-    currentGas: Number(expressParams?.gasLimit),
-    approximateGas: Number(fastExpressParams?.gasLimit),
-    approximateL1Gas: Number(fastExpressParams?.l1GasLimit),
     isSponsoredCall: Boolean(expressParams?.isSponsoredCall),
-    currentEstimateMethod: expressParams?.estimationMethod,
+    approximateGasLimit: fastExpressParams ? Number(fastExpressParams.gasLimit) : 0,
+    approximateL1GasLimit: fastExpressParams ? Number(fastExpressParams.l1GasLimit) : 0,
+    gasPrice: fastExpressParams ? Number(fastExpressParams.gasPrice) : 0,
+    currentGasLimit: Number(expressParams.gasLimit),
+    asyncGasLimit: asyncExpressParams ? Number(asyncExpressParams.gasLimit) : 0,
+    currentEstimationMethod: expressParams.estimationMethod,
+    gasPaymentToken: expressParams.gasPaymentParams?.gasPaymentToken.symbol,
   };
 
   return expressData;

@@ -241,6 +241,7 @@ export function usePositionEditorButtonState(operation: Operation): {
     isLoading: isExpressLoading,
     fastExpressParams,
     asyncExpressParams,
+    expressParamsPromise,
   } = useExpressOrdersParams({
     orderParams: batchParams,
   });
@@ -415,7 +416,7 @@ export function usePositionEditorButtonState(operation: Operation): {
 
   const addTokenPermit = useSelector(selectAddTokenPermit);
 
-  function onSubmit() {
+  async function onSubmit() {
     if (!account) {
       openConnectModal?.();
       return;
@@ -484,11 +485,13 @@ export function usePositionEditorButtonState(operation: Operation): {
       return;
     }
 
+    const finalExpressParams = await expressParamsPromise;
+
     const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
       batchParams,
-      expressParams: expressParams && getIsValidExpressParams(expressParams) ? expressParams : undefined,
+      expressParams: finalExpressParams && getIsValidExpressParams(finalExpressParams) ? finalExpressParams : undefined,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
         : {
