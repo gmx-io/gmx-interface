@@ -16,8 +16,8 @@ import { Mode, Operation } from "./types";
 import "./GmSwapBox.scss";
 
 export type GmSwapBoxProps = {
-  selectedMarketAddress?: string;
-  onSelectMarket: (marketAddress: string) => void;
+  selectedGlvOrMarketAddress?: string;
+  onSelectGlvOrMarket: (glvOrMarketAddress: string) => void;
   operation: Operation;
   mode: Mode;
   onSetMode: (mode: Mode) => void;
@@ -33,20 +33,18 @@ const MODE_LABELS = {
 
 export function GmSwapBox(p: GmSwapBoxProps) {
   const {
-    selectedMarketAddress,
+    selectedGlvOrMarketAddress,
     operation,
     mode,
     onSetMode,
     onSetOperation,
-    onSelectMarket,
+    onSelectGlvOrMarket: onSelectGlvOrMarket,
     selectedMarketForGlv,
     onSelectedMarketForGlv,
   } = p;
 
-  const marketAddress = selectedMarketAddress;
-
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
-  const marketInfo = getByKey(marketsInfoData, marketAddress);
+  const marketInfo = getByKey(marketsInfoData, selectedGlvOrMarketAddress);
 
   const availableModes = getGmSwapBoxAvailableModes(operation, marketInfo);
 
@@ -73,8 +71,8 @@ export function GmSwapBox(p: GmSwapBoxProps) {
 
       {operation === Operation.Deposit || operation === Operation.Withdrawal ? (
         <GmSwapBoxDepositWithdrawal
-          selectedMarketAddress={selectedMarketAddress}
-          onSelectMarket={onSelectMarket}
+          selectedGlvOrMarketAddress={selectedGlvOrMarketAddress}
+          onSelectGlvOrMarket={onSelectGlvOrMarket}
           selectedMarketForGlv={selectedMarketForGlv}
           onSelectedMarketForGlv={onSelectedMarketForGlv}
           operation={operation}
@@ -84,9 +82,9 @@ export function GmSwapBox(p: GmSwapBoxProps) {
         />
       ) : (
         <GmShiftBox
-          selectedMarketAddress={selectedMarketAddress}
+          selectedGlvOrMarketAddress={selectedGlvOrMarketAddress}
           onSelectedMarketForGlv={onSelectedMarketForGlv}
-          onSelectMarket={onSelectMarket}
+          onSelectGlvOrMarket={onSelectGlvOrMarket}
           onSetOperation={onSetOperation}
         />
       )}

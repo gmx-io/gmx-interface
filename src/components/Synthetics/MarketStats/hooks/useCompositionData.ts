@@ -33,48 +33,52 @@ export type CompositionItem = MarketCompositionItem | BackingCompositionItem;
 export type CompositionType = CompositionItem["type"];
 
 export function useCompositionData({
-  marketInfo,
-  marketsInfoData,
+  glvOrMarketInfo,
+  glvAndMarketsInfoData,
   marketTokensData,
 }: {
-  marketInfo: GlvOrMarketInfo | undefined;
-  marketsInfoData: GlvAndGmMarketsInfoData | undefined;
+  glvOrMarketInfo: GlvOrMarketInfo | undefined;
+  glvAndMarketsInfoData: GlvAndGmMarketsInfoData | undefined;
   marketTokensData: TokensData | undefined;
 }): {
   backing: BackingCompositionItem[];
   market: MarketCompositionItem[];
 } {
   return useMemo(() => {
-    if (!marketInfo || !marketsInfoData || !marketTokensData) {
+    if (!glvOrMarketInfo || !glvAndMarketsInfoData || !marketTokensData) {
       return {
         backing: [],
         market: [],
       };
     }
 
-    if (isGlvInfo(marketInfo)) {
-      return getGlvInfoCompositionData({ marketInfo, marketsInfoData, marketTokensData });
+    if (isGlvInfo(glvOrMarketInfo)) {
+      return getGlvInfoCompositionData({
+        glvInfo: glvOrMarketInfo,
+        glvAndMarketsInfoData: glvAndMarketsInfoData,
+        marketTokensData,
+      });
     }
 
-    return getMarketInfoCompositionData({ marketInfo, marketTokensData });
-  }, [marketInfo, marketTokensData, marketsInfoData]);
+    return getMarketInfoCompositionData({ marketInfo: glvOrMarketInfo, marketTokensData });
+  }, [glvOrMarketInfo, marketTokensData, glvAndMarketsInfoData]);
 }
 
 const getGlvInfoCompositionData = ({
-  marketInfo,
-  marketsInfoData,
+  glvInfo,
+  glvAndMarketsInfoData,
   marketTokensData,
 }: {
-  marketInfo: GlvInfo;
-  marketsInfoData: GlvAndGmMarketsInfoData;
+  glvInfo: GlvInfo;
+  glvAndMarketsInfoData: GlvAndGmMarketsInfoData;
   marketTokensData: TokensData;
 }): {
   backing: BackingCompositionItem[];
   market: MarketCompositionItem[];
 } => {
-  const market = marketInfo.markets
+  const market = glvInfo.markets
     .map((market): MarketCompositionItem | null => {
-      const marketInfo = marketsInfoData[market.address];
+      const marketInfo = glvAndMarketsInfoData[market.address];
 
       if (marketInfo && isMarketInfo(marketInfo)) {
         const token = getTokenData(marketTokensData, marketInfo.marketTokenAddress);
@@ -97,9 +101,9 @@ const getGlvInfoCompositionData = ({
     .filter(defined)
     .sort((a, b) => (b.gmBalanceUsd > a.gmBalanceUsd ? 1 : -1));
 
-  const compositionData = marketInfo.markets
+  const compositionData = glvInfo.markets
     .flatMap((market) => {
-      const marketInfo = marketsInfoData[market.address];
+      const marketInfo = glvAndMarketsInfoData[market.address];
       if (marketInfo && isMarketInfo(marketInfo)) {
         return getMarketBackingCompositionData(marketInfo);
       }

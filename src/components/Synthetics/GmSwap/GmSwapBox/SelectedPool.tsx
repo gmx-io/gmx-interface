@@ -8,43 +8,43 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 export function SelectedPool({
-  selectedMarketAddress,
+  selectedGlvOrMarketAddress,
   glvAndMarketsInfoData,
 }: {
-  selectedMarketAddress: string | undefined;
+  selectedGlvOrMarketAddress: string | undefined;
   glvAndMarketsInfoData: Record<string, GlvOrMarketInfo>;
 }) {
-  const marketInfo = getByKey(glvAndMarketsInfoData, selectedMarketAddress);
+  const glvOrMarketInfo = getByKey(glvAndMarketsInfoData, selectedGlvOrMarketAddress);
   return (
     <div className="flex items-center gap-2">
-      {marketInfo ? (
+      {glvOrMarketInfo ? (
         <TokenIcon
           className="mr-5"
           symbol={
-            marketInfo.isSpotOnly
-              ? getNormalizedTokenSymbol(marketInfo.longToken.symbol) +
-                getNormalizedTokenSymbol(marketInfo.shortToken.symbol)
-              : isGlvInfo(marketInfo)
-                ? marketInfo.glvToken.symbol
-                : marketInfo?.indexToken.symbol
+            glvOrMarketInfo.isSpotOnly
+              ? getNormalizedTokenSymbol(glvOrMarketInfo.longToken.symbol) +
+                getNormalizedTokenSymbol(glvOrMarketInfo.shortToken.symbol)
+              : isGlvInfo(glvOrMarketInfo)
+                ? glvOrMarketInfo.glvToken.symbol
+                : glvOrMarketInfo?.indexToken.symbol
           }
           importSize={40}
           displaySize={20}
         />
       ) : null}
-      <SelectedPoolLabel marketInfo={marketInfo} />
+      <SelectedPoolLabel glvOrMarketInfo={glvOrMarketInfo} />
     </div>
   );
 }
 
-function SelectedPoolLabel({ marketInfo }: { marketInfo: GlvOrMarketInfo | undefined }) {
-  if (!marketInfo) return "...";
+function SelectedPoolLabel({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarketInfo | undefined }) {
+  if (!glvOrMarketInfo) return "...";
   let name: string;
 
-  if (isGlvInfo(marketInfo)) {
-    name = getGlvDisplayName(marketInfo);
+  if (isGlvInfo(glvOrMarketInfo)) {
+    name = getGlvDisplayName(glvOrMarketInfo);
   } else {
-    name = getMarketIndexName(marketInfo);
+    name = getMarketIndexName(glvOrMarketInfo);
   }
 
   return <div>{name ? name : "..."}</div>;

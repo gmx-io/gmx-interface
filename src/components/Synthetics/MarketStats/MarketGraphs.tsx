@@ -8,8 +8,7 @@ import { USD_DECIMALS } from "config/factors";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
-  GlvInfo,
-  MarketInfo,
+  GlvOrMarketInfo,
   MarketTokensAPRData,
   useMarketTokensData,
   useMarketsInfoRequest,
@@ -52,7 +51,7 @@ const MARKET_GRAPHS_TITLE_LABELS = {
 
 const getGraphValue = ({
   marketGraphType,
-  marketInfo,
+  glvOrMarketInfo,
   glvPerformance,
   gmPerformance,
   marketsTokensApyData,
@@ -60,18 +59,18 @@ const getGraphValue = ({
   marketTokensData,
 }: {
   marketGraphType: MarketGraphType;
-  marketInfo: GlvInfo | MarketInfo;
+  glvOrMarketInfo: GlvOrMarketInfo;
   glvPerformance: Record<string, number>;
   gmPerformance: Record<string, number>;
   marketsTokensApyData: MarketTokensAPRData | undefined;
   glvApyInfoData: MarketTokensAPRData | undefined;
   marketTokensData: TokensData | undefined;
 }) => {
-  const isGlv = isGlvInfo(marketInfo);
-  const address = isGlv ? marketInfo.glvTokenAddress : marketInfo.marketTokenAddress;
+  const isGlv = isGlvInfo(glvOrMarketInfo);
+  const address = isGlv ? glvOrMarketInfo.glvTokenAddress : glvOrMarketInfo.marketTokenAddress;
   const apy = isGlv
-    ? getByKey(glvApyInfoData, marketInfo.glvTokenAddress)
-    : getByKey(marketsTokensApyData, marketInfo.marketTokenAddress);
+    ? getByKey(glvApyInfoData, glvOrMarketInfo.glvTokenAddress)
+    : getByKey(marketsTokensApyData, glvOrMarketInfo.marketTokenAddress);
   const tokenPrice = marketTokensData?.[address]?.prices.minPrice;
   const performance = isGlv ? glvPerformance[address] : gmPerformance[address];
   const valuesMap: Record<MarketGraphType, string | undefined> = {
@@ -83,11 +82,11 @@ const getGraphValue = ({
   return valuesMap[marketGraphType];
 };
 
-export function MarketGraphs({ marketInfo }: { marketInfo: GlvInfo | MarketInfo }) {
+export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarketInfo }) {
   const [marketGraphType, setMarketGraphType] = useState<MarketGraphType>(MARKET_GRAPHS_TYPES[0]);
   const { timeRange, setTimeRange } = usePoolsTimeRange();
 
-  const address = isGlvInfo(marketInfo) ? marketInfo.glvTokenAddress : marketInfo.marketTokenAddress;
+  const address = isGlvInfo(glvOrMarketInfo) ? glvOrMarketInfo.glvTokenAddress : glvOrMarketInfo.marketTokenAddress;
 
   const { chainId } = useChainId();
   const { tokensData } = useTokensDataRequest(chainId);
@@ -107,8 +106,8 @@ export function MarketGraphs({ marketInfo }: { marketInfo: GlvInfo | MarketInfo 
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true, withGlv: true });
 
   const tokenAddresses = useMemo(() => {
-    return [marketInfo.longTokenAddress, marketInfo.shortTokenAddress, address];
-  }, [marketInfo.longTokenAddress, marketInfo.shortTokenAddress, address]);
+    return [glvOrMarketInfo.longTokenAddress, glvOrMarketInfo.shortTokenAddress, address];
+  }, [glvOrMarketInfo.longTokenAddress, glvOrMarketInfo.shortTokenAddress, address]);
 
   const { glvPerformance, gmPerformance, glvPerformanceSnapshots, gmPerformanceSnapshots, prices } =
     useGmGlvPerformance({
@@ -125,7 +124,7 @@ export function MarketGraphs({ marketInfo }: { marketInfo: GlvInfo | MarketInfo 
     tokenAddresses: [address],
   });
 
-  const isGlv = isGlvInfo(marketInfo);
+  const isGlv = isGlvInfo(glvOrMarketInfo);
 
   const apySnapshotsByAddress = apySnapshots?.[address] ?? EMPTY_ARRAY;
   const priceSnapshotsByAddress = prices?.[address] ?? EMPTY_ARRAY;
@@ -172,7 +171,7 @@ export function MarketGraphs({ marketInfo }: { marketInfo: GlvInfo | MarketInfo 
             <GraphValue
               value={getGraphValue({
                 marketGraphType,
-                marketInfo,
+                glvOrMarketInfo,
                 glvPerformance,
                 gmPerformance,
                 glvApyInfoData,
@@ -186,8 +185,8 @@ export function MarketGraphs({ marketInfo }: { marketInfo: GlvInfo | MarketInfo 
           <GraphChart
             performanceSnapshots={
               (isGlv
-                ? glvPerformanceSnapshots[marketInfo.glvTokenAddress]
-                : gmPerformanceSnapshots[marketInfo.marketTokenAddress]) ?? EMPTY_ARRAY
+                ? glvPerformanceSnapshots[glvOrMarketInfo.glvTokenAddress]
+                : gmPerformanceSnapshots[glvOrMarketInfo.marketTokenAddress]) ?? EMPTY_ARRAY
             }
             priceSnapshots={priceSnapshotsByAddress}
             marketGraphType={marketGraphType}

@@ -44,20 +44,18 @@ const operationClassNames = {
 };
 
 type Props = {
-  selectedMarketAddress?: string;
+  selectedGlvOrMarketAddress?: string;
   operation: Operation;
   onSetOperation: (operation: Operation) => void;
   isInCurtain?: boolean;
 };
 
 export function GmSwapBoxHeader(p: Props) {
-  const { selectedMarketAddress, operation, onSetOperation, isInCurtain } = p;
-
-  const marketAddress = selectedMarketAddress;
+  const { selectedGlvOrMarketAddress, operation, onSetOperation, isInCurtain } = p;
 
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
-  const marketInfo = getByKey(marketsInfoData, marketAddress);
+  const marketInfo = getByKey(marketsInfoData, selectedGlvOrMarketAddress);
 
   const availableOperations = useMemo(() => {
     if (shiftAvailableMarkets.length === 0) {
@@ -65,7 +63,7 @@ export function GmSwapBoxHeader(p: Props) {
     }
 
     const isSelectedMarketShiftAvailable = Boolean(
-      shiftAvailableMarkets.find((market) => getGlvOrMarketAddress(market) === marketAddress)
+      shiftAvailableMarkets.find((market) => getGlvOrMarketAddress(market) === selectedGlvOrMarketAddress)
     );
 
     if (!isSelectedMarketShiftAvailable) {
@@ -73,7 +71,7 @@ export function GmSwapBoxHeader(p: Props) {
     }
 
     return OPERATIONS;
-  }, [marketAddress, shiftAvailableMarkets]);
+  }, [selectedGlvOrMarketAddress, shiftAvailableMarkets]);
 
   const localizedOperationLabelsGM = useLocalizedMap(OPERATION_LABELS_GM);
   const localizedOperationLabelsGLV = useLocalizedMap(OPERATION_LABELS_GLV);
@@ -94,7 +92,7 @@ export function GmSwapBoxHeader(p: Props) {
   );
 
   return (
-    <div className={cx({ "p-[1.5rem] pb-0 bg-slate-800": !isInCurtain })}>
+    <div className={cx({ "bg-slate-800 p-[1.5rem] pb-0": !isInCurtain })}>
       <Tabs
         options={availableOperationsTabsOptions}
         selectedValue={operation}

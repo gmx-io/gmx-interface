@@ -3,14 +3,13 @@ import cx from "classnames";
 
 import { USD_DECIMALS } from "config/factors";
 import {
-  MarketInfo,
   getGlvMarketShortening,
   getGlvOrMarketAddress,
   getMarketIndexName,
   getMarketPoolName,
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { GlvInfo } from "domain/synthetics/markets/types";
+import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
@@ -24,18 +23,19 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import { PoolsDetailsMarketAmount } from "./PoolsDetailsMarketAmount";
 
 type Props = {
-  marketInfo: MarketInfo | GlvInfo | undefined;
+  glvOrMarketInfo: GlvOrMarketInfo | undefined;
   marketToken: TokenData | undefined;
 };
 
-export function PoolsDetailsHeader({ marketInfo, marketToken }: Props) {
+export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
   const { chainId } = useChainId();
-  const isGlv = marketInfo && isGlvInfo(marketInfo);
-  const iconName = marketInfo?.isSpotOnly
-    ? getNormalizedTokenSymbol(marketInfo.longToken.symbol) + getNormalizedTokenSymbol(marketInfo.shortToken.symbol)
+  const isGlv = glvOrMarketInfo && isGlvInfo(glvOrMarketInfo);
+  const iconName = glvOrMarketInfo?.isSpotOnly
+    ? getNormalizedTokenSymbol(glvOrMarketInfo.longToken.symbol) +
+      getNormalizedTokenSymbol(glvOrMarketInfo.shortToken.symbol)
     : isGlv
-      ? marketInfo?.glvToken.symbol
-      : marketInfo?.indexToken.symbol;
+      ? glvOrMarketInfo?.glvToken.symbol
+      : glvOrMarketInfo?.indexToken.symbol;
 
   const marketPrice = marketToken?.prices?.maxPrice;
   const marketBalance = marketToken?.balance;
@@ -56,7 +56,7 @@ export function PoolsDetailsHeader({ marketInfo, marketToken }: Props) {
         "items-center gap-28": !isMobile,
       })}
     >
-      {marketInfo ? (
+      {glvOrMarketInfo ? (
         <>
           <div
             className={cx("flex items-center gap-20 border-stroke-primary", {
@@ -71,14 +71,14 @@ export function PoolsDetailsHeader({ marketInfo, marketToken }: Props) {
                 importSize={40}
                 badge={
                   isGlv
-                    ? getGlvMarketShortening(chainId, getGlvOrMarketAddress(marketInfo))
-                    : ([marketInfo.longToken.symbol, marketInfo.shortToken.symbol] as const)
+                    ? getGlvMarketShortening(chainId, getGlvOrMarketAddress(glvOrMarketInfo))
+                    : ([glvOrMarketInfo.longToken.symbol, glvOrMarketInfo.shortToken.symbol] as const)
                 }
               />
             ) : null}
             <div className={cx("flex flex-col gap-4 pr-20")}>
-              <div className="text-body-large">{getMarketIndexName(marketInfo)}</div>
-              <div className="text-body-small text-slate-100">{`[${getMarketPoolName(marketInfo)}]`}</div>
+              <div className="text-body-large">{getMarketIndexName(glvOrMarketInfo)}</div>
+              <div className="text-body-small text-slate-100">{`[${getMarketPoolName(glvOrMarketInfo)}]`}</div>
             </div>
           </div>
 

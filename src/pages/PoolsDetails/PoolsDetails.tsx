@@ -31,21 +31,22 @@ import { PoolsDetailsCard } from "./PoolsDetailsCard";
 import { PoolsDetailsHeader } from "./PoolsDetailsHeader";
 
 export function PoolsDetails() {
-  const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
+  const glvAndMarketsInfoData = useSelector(selectGlvAndMarketsInfoData);
 
   const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
 
-  const { operation, mode, market, setOperation, setMode, setMarket } = usePoolsDetailsContext();
+  const { operation, mode, glvOrMarketAddress, setOperation, setMode, setGlvOrMarketAddress } =
+    usePoolsDetailsContext();
 
   const [selectedMarketForGlv, setSelectedMarketForGlv] = useState<string | undefined>(undefined);
 
-  const marketInfo = getByKey(marketsInfoData, market);
+  const glvOrMarketInfo = getByKey(glvAndMarketsInfoData, glvOrMarketAddress);
 
-  const marketToken = getTokenData(depositMarketTokensData, market);
+  const marketToken = getTokenData(depositMarketTokensData, glvOrMarketAddress);
 
   const { backing: backingComposition, market: marketComposition } = useCompositionData({
-    marketInfo,
-    marketsInfoData,
+    glvOrMarketInfo: glvOrMarketInfo,
+    glvAndMarketsInfoData: glvAndMarketsInfoData,
     marketTokensData: depositMarketTokensData,
   });
 
@@ -60,13 +61,13 @@ export function PoolsDetails() {
           <FaArrowLeft size={16} />
           Back to Pools
         </ButtonLink>
-        {marketInfo ? (
+        {glvOrMarketInfo ? (
           <>
-            <PoolsDetailsHeader marketInfo={marketInfo} marketToken={marketToken} />
+            <PoolsDetailsHeader glvOrMarketInfo={glvOrMarketInfo} marketToken={marketToken} />
 
             <div className={cx("mb-15 flex justify-between gap-12", { "flex-wrap": isInCurtain })}>
               <div className="flex grow flex-col gap-16">
-                {marketInfo && <MarketGraphs marketInfo={marketInfo} />}
+                {glvOrMarketInfo && <MarketGraphs glvOrMarketInfo={glvOrMarketInfo} />}
                 <PoolsDetailsCard title={<Trans>Composition</Trans>} childrenContainerClassName="!p-0">
                   <div className={cx("grid", { "grid-cols-1": isMobile, "grid-cols-2": !isMobile })}>
                     <div className={cx("border-stroke-primary", { "border-r": !isMobile, "border-b": isMobile })}>
@@ -88,17 +89,17 @@ export function PoolsDetails() {
 
                 <PoolsDetailsCard title={<Trans>About</Trans>}>
                   <PoolsDetailsAbout
-                    marketInfo={marketInfo}
+                    glvOrMarketInfo={glvOrMarketInfo}
                     marketToken={marketToken}
-                    marketsInfoData={marketsInfoData}
+                    marketsInfoData={glvAndMarketsInfoData}
                     marketTokensData={depositMarketTokensData}
                   />
                 </PoolsDetailsCard>
               </div>
 
               <PoolsDetailsGmSwapBox
-                selectedMarketAddress={market}
-                onSelectMarket={setMarket}
+                selectedGlvOrMarketAddress={glvOrMarketAddress}
+                onSelectGlvOrMarket={setGlvOrMarketAddress}
                 selectedMarketForGlv={selectedMarketForGlv}
                 onSelectedMarketForGlv={setSelectedMarketForGlv}
                 operation={operation}

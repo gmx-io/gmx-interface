@@ -54,10 +54,10 @@ import { SelectedPool } from "../SelectedPool";
 
 export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const {
-    selectedMarketAddress: marketAddress,
+    selectedGlvOrMarketAddress,
     operation,
     mode,
-    onSelectMarket,
+    onSelectGlvOrMarket,
     selectedMarketForGlv,
     onSelectedMarketForGlv,
   } = p;
@@ -77,7 +77,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const glvAndMarketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
 
-  const { marketsInfo: sortedMarketsInfoByIndexToken } = useSortedPoolsWithIndexToken(
+  const { marketsInfo: sortedGlvOrMarketsInfoByIndexToken } = useSortedPoolsWithIndexToken(
     glvAndMarketsInfoData,
     depositMarketTokensData
   );
@@ -103,7 +103,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     setSecondTokenInputValue,
     marketOrGlvTokenInputValue,
     setMarketOrGlvTokenInputValue,
-  } = useGmDepositWithdrawalBoxState(operation, mode, marketAddress);
+  } = useGmDepositWithdrawalBoxState(operation, mode, selectedGlvOrMarketAddress);
   // #endregion
   // #region Derived state
 
@@ -112,21 +112,21 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
    * When buy/sell GLV - marketInfo is corresponding GM market, glvInfo is selected GLV
    */
   const { marketInfo, glvInfo } = useMemo(() => {
-    const initialMarketInfo = getByKey(glvAndMarketsInfoData, marketAddress);
-    const isGlv = initialMarketInfo && isGlvInfo(initialMarketInfo);
+    const initialGlvOrMarketInfo = getByKey(glvAndMarketsInfoData, selectedGlvOrMarketAddress);
+    const isGlv = initialGlvOrMarketInfo && isGlvInfo(initialGlvOrMarketInfo);
     const marketInfo = isGlv
       ? selectedMarketForGlv
         ? marketsInfoData?.[selectedMarketForGlv]
         : undefined
-      : initialMarketInfo;
+      : initialGlvOrMarketInfo;
 
-    const glvInfo = isGlv ? initialMarketInfo : undefined;
+    const glvInfo = isGlv ? initialGlvOrMarketInfo : undefined;
 
     return {
       marketInfo,
       glvInfo,
     };
-  }, [marketAddress, glvAndMarketsInfoData, marketsInfoData, selectedMarketForGlv]);
+  }, [selectedGlvOrMarketAddress, glvAndMarketsInfoData, marketsInfoData, selectedMarketForGlv]);
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
 
@@ -353,7 +353,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     gasPrice,
     isDeposit,
     tokensData,
-    glvInfo: glvInfo,
+    glvInfo,
     isMarketTokenDeposit,
   });
 
@@ -482,12 +482,12 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   }, [setFirstTokenInputValue, setMarketOrGlvTokenInputValue, setSecondTokenInputValue]);
 
   const onGlvOrMarketChange = useCallback(
-    (marketAddress: string) => {
+    (glvOrMarketAddress: string) => {
       resetInputs();
-      onSelectMarket(marketAddress);
+      onSelectGlvOrMarket(glvOrMarketAddress);
       setIsMarketForGlvSelectedManually(false);
     },
-    [onSelectMarket, resetInputs]
+    [onSelectGlvOrMarket, resetInputs]
   );
 
   const onMarketChange = useCallback(
@@ -609,11 +609,11 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
   useEffect(
     function updateMarket() {
-      if (!marketAddress && sortedMarketsInfoByIndexToken.length) {
-        onGlvOrMarketChange(getGlvOrMarketAddress(sortedMarketsInfoByIndexToken[0]));
+      if (!selectedGlvOrMarketAddress && sortedGlvOrMarketsInfoByIndexToken.length) {
+        onGlvOrMarketChange(getGlvOrMarketAddress(sortedGlvOrMarketsInfoByIndexToken[0]));
       }
     },
-    [marketAddress, onGlvOrMarketChange, sortedMarketsInfoByIndexToken]
+    [selectedGlvOrMarketAddress, onGlvOrMarketChange, sortedGlvOrMarketsInfoByIndexToken]
   );
 
   useUpdateTokens({
@@ -774,14 +774,17 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
               onClickTopRightLabel={marketTokenInputClickTopRightLabel}
               onClickMax={marketTokenInputShowMaxButton ? marketTokenInputClickMax : undefined}
             >
-              <SelectedPool glvAndMarketsInfoData={glvAndMarketsInfoData} selectedMarketAddress={marketAddress} />
+              <SelectedPool
+                glvAndMarketsInfoData={glvAndMarketsInfoData}
+                selectedGlvOrMarketAddress={selectedGlvOrMarketAddress}
+              />
             </BuyInputSection>
           </div>
         </div>
 
         <GmSwapBoxPoolRow
           indexName={indexName}
-          marketAddress={marketAddress}
+          marketAddress={selectedGlvOrMarketAddress}
           marketTokensData={marketTokensData}
           isDeposit={isDeposit}
           glvInfo={glvInfo}

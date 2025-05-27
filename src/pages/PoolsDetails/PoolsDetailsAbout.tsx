@@ -4,12 +4,11 @@ import cx from "classnames";
 import { USD_DECIMALS } from "config/factors";
 import { getMarketIndexName } from "domain/synthetics/markets";
 import { getMintableInfoGlv, getTotalSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
-import { GlvAndGmMarketsInfoData, GlvInfo } from "domain/synthetics/markets/types";
+import { GlvAndGmMarketsInfoData, GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { formatDateTime } from "lib/dates";
 import { bigintToNumber, formatAmountHuman } from "lib/numbers";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
-import { MarketInfo } from "sdk/types/markets";
 
 import { useMarketMintableTokens } from "components/Synthetics/MarketStats/hooks/useMarketMintableTokens";
 import { useMarketSellableToken } from "components/Synthetics/MarketStats/hooks/useMarketSellableToken";
@@ -17,25 +16,25 @@ import { useMarketSellableToken } from "components/Synthetics/MarketStats/hooks/
 import { PoolsDetailsMarketAmount } from "./PoolsDetailsMarketAmount";
 
 export function PoolsDetailsAbout({
-  marketInfo,
+  glvOrMarketInfo,
   marketToken,
   marketsInfoData,
   marketTokensData,
 }: {
-  marketInfo: MarketInfo | GlvInfo | undefined;
+  glvOrMarketInfo: GlvOrMarketInfo | undefined;
   marketToken: TokenData | undefined;
   marketsInfoData: GlvAndGmMarketsInfoData;
   marketTokensData: TokensData | undefined;
 }) {
-  const isGlv = isGlvInfo(marketInfo);
-  const sellableInfo = useMarketSellableToken(marketInfo, marketToken);
-  const mintableInfo = useMarketMintableTokens(marketInfo, marketToken);
-  const sellable = isGlv ? getTotalSellableInfoGlv(marketInfo, marketsInfoData, marketTokensData) : sellableInfo;
-  const mintable = isGlv ? getMintableInfoGlv(marketInfo, marketTokensData) : mintableInfo;
+  const isGlv = isGlvInfo(glvOrMarketInfo);
+  const sellableInfo = useMarketSellableToken(glvOrMarketInfo, marketToken);
+  const mintableInfo = useMarketMintableTokens(glvOrMarketInfo, marketToken);
+  const sellable = isGlv ? getTotalSellableInfoGlv(glvOrMarketInfo, marketsInfoData, marketTokensData) : sellableInfo;
+  const mintable = isGlv ? getMintableInfoGlv(glvOrMarketInfo, marketTokensData) : mintableInfo;
 
   const isMobile = usePoolsIsMobilePage();
 
-  const marketName = marketInfo ? getMarketIndexName(marketInfo) : "";
+  const marketName = glvOrMarketInfo ? getMarketIndexName(glvOrMarketInfo) : "";
 
   return (
     <div className="flex flex-col gap-16">
@@ -43,13 +42,14 @@ export function PoolsDetailsAbout({
         {isGlv ? (
           <Trans>
             This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps
-            from the included markets. Backed by {marketInfo?.longToken?.symbol} and {marketInfo?.shortToken?.symbol}.
+            from the included markets. Backed by {glvOrMarketInfo?.longToken?.symbol} and{" "}
+            {glvOrMarketInfo?.shortToken?.symbol}.
           </Trans>
         ) : (
           <Trans>
             This token automatically accrues fees from leverage trading and swaps for the {marketName} market. It is
-            also exposed to {marketInfo?.longToken?.symbol} and {marketInfo?.shortToken?.symbol} as per the composition
-            displayed.
+            also exposed to {glvOrMarketInfo?.longToken?.symbol} and {glvOrMarketInfo?.shortToken?.symbol} as per the
+            composition displayed.
           </Trans>
         )}
       </div>
@@ -77,10 +77,10 @@ export function PoolsDetailsAbout({
           <PoolsDetailsMarketAmount
             label={<Trans>Last Rebalance</Trans>}
             value={
-              marketInfo?.shiftLastExecutedAt
-                ? marketInfo?.shiftLastExecutedAt === 0n
+              glvOrMarketInfo?.shiftLastExecutedAt
+                ? glvOrMarketInfo?.shiftLastExecutedAt === 0n
                   ? "-"
-                  : formatDateTime(bigintToNumber(marketInfo.shiftLastExecutedAt, 0))
+                  : formatDateTime(bigintToNumber(glvOrMarketInfo.shiftLastExecutedAt, 0))
                 : "..."
             }
           />

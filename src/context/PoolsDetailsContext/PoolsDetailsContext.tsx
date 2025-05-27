@@ -3,7 +3,7 @@ import { Redirect } from "react-router-dom";
 
 import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { GlvInfo, MarketInfo } from "domain/synthetics/markets";
+import { GlvOrMarketInfo } from "domain/synthetics/markets";
 import { getByKey } from "lib/objects";
 import useRouteQuery from "lib/useRouteQuery";
 
@@ -15,13 +15,13 @@ export type PoolsDetailsQueryParams = {
 };
 
 export type PoolsDetailsContext = {
-  market: string;
+  glvOrMarketAddress: string;
   operation: Operation;
   mode: Mode;
-  marketInfo: MarketInfo | GlvInfo | undefined;
+  glvOrMarketInfo: GlvOrMarketInfo | undefined;
   setOperation: (operation: Operation) => void;
   setMode: (mode: Mode) => void;
-  setMarket: (market: string) => void;
+  setGlvOrMarketAddress: (glvOrMarketAddress: string) => void;
 };
 
 const PoolsDetailsContext = createContext<PoolsDetailsContext | undefined>(undefined);
@@ -43,7 +43,7 @@ export function PoolsDetailsContextProvider({ children }: { children: React.Reac
 
   const [operation, setOperation] = useState<Operation>(Operation.Deposit);
   const [mode, setMode] = useState<Mode>(Mode.Single);
-  const [market, setMarket] = useState(marketFromQueryParams);
+  const [glvOrMarketAddress, setGlvOrMarketAddress] = useState(marketFromQueryParams);
 
   useEffect(() => {
     const operationFromQueryParams = searchParams.get("operation");
@@ -58,33 +58,33 @@ export function PoolsDetailsContextProvider({ children }: { children: React.Reac
   }, [searchParams]);
 
   useEffect(() => {
-    if (!market) {
+    if (!glvOrMarketAddress) {
       return;
     }
 
-    const newAvailableModes = getGmSwapBoxAvailableModes(operation, getByKey(marketsInfoData, market));
+    const newAvailableModes = getGmSwapBoxAvailableModes(operation, getByKey(marketsInfoData, glvOrMarketAddress));
 
     if (!newAvailableModes.includes(mode)) {
       setMode(newAvailableModes[0]);
     }
-  }, [market, marketsInfoData, mode, operation]);
+  }, [glvOrMarketAddress, marketsInfoData, mode, operation]);
 
-  const marketInfo = market ? getByKey(marketsInfoData, market) : undefined;
+  const glvOrMarketInfo = glvOrMarketAddress ? getByKey(marketsInfoData, glvOrMarketAddress) : undefined;
 
   const value = useMemo(
     () => ({
-      market,
+      glvOrMarketAddress,
       operation,
       mode,
-      marketInfo,
+      glvOrMarketInfo,
       setOperation,
       setMode,
-      setMarket,
+      setGlvOrMarketAddress,
     }),
-    [market, operation, mode, marketInfo]
+    [glvOrMarketAddress, operation, mode, glvOrMarketInfo]
   );
 
-  if (!value.market) {
+  if (!value.glvOrMarketAddress) {
     return <Redirect to="/pools" />;
   }
 
