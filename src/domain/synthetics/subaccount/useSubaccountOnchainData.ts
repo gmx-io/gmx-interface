@@ -40,7 +40,7 @@ export function useSubaccountOnchainData(
     srcChainId: number | undefined;
   }
 ): SubaccountOnchainDataResult {
-  const queryCondition = account && subaccountAddress;
+  const queryCondition = account && subaccountAddress !== undefined;
 
   const { data, mutate } = useMulticall(chainId, "useSubaccountOnchainData", {
     key: queryCondition ? [account, subaccountAddress, srcChainId] : null,

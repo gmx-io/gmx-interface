@@ -1,12 +1,12 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { Contract, type Provider } from "ethers";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import useSWR from "swr";
 import { Address, BaseError, decodeErrorResult, encodeAbiParameters, Hex, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import { getChainName, UiSettlementChain, UiSourceChain } from "config/chains";
+import { getChainName, UiSettlementChain } from "config/chains";
 import { getContract } from "config/contracts";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import {
@@ -20,22 +20,17 @@ import {
   useGmxAccountWithdrawViewTokenAddress,
   useGmxAccountWithdrawViewTokenInputValue,
 } from "context/GmxAccountContext/hooks";
-import { IStargateAbi } from "context/GmxAccountContext/stargatePools";
+import { IStargateAbi, StargateErrorsAbi } from "context/GmxAccountContext/stargatePools";
 import { TokenChainData } from "context/GmxAccountContext/types";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { BridgeOutParams, buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
-import { ExpressTxnParams, MultichainRelayParamsPayload } from "domain/synthetics/express/types";
+import { MultichainRelayParamsPayload } from "domain/synthetics/express/types";
 import { callRelayTransaction } from "domain/synthetics/gassless/txns/expressOrderDebug";
 import { convertToUsd, TokenData } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
 import { helperToast } from "lib/helperToast";
-import {
-  initMultichainWithdrawalMetricData,
-  sendOrderSubmittedMetric,
-  sendTxnValidationErrorMetric,
-} from "lib/metrics";
 import { bigintToNumber, formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
@@ -61,6 +56,7 @@ import Button from "components/Button/Button";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 import NumberInput from "components/NumberInput/NumberInput";
 import {
+  useAvailableToTradeAssetMultichain,
   useGmxAccountTokensDataObject,
   useGmxAccountWithdrawNetworks,
   useMultichainTokensRequest,
@@ -69,7 +65,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { useArbitraryRelayParamsAndPayload } from "./arbitraryRelayParams";
+import { PreparedGetTxnData, useArbitraryRelayParamsAndPayload } from "./arbitraryRelayParams";
 import { applySlippageBps, getSendParamsWithoutSlippage, SLIPPAGE_BPS } from "./DepositView";
 import { Selector } from "./Selector";
 import { useMultichainQuoteFeeUsd } from "./useMultichainQuoteFeeUsd";
@@ -79,6 +75,7 @@ export const WithdrawView = () => {
   const { address: account, isConnected } = useAccount();
   const [inputValue, setInputValue] = useGmxAccountWithdrawViewTokenInputValue();
   const [selectedTokenAddress, setSelectedTokenAddress] = useGmxAccountWithdrawViewTokenAddress();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
   const networks = useGmxAccountWithdrawNetworks();
@@ -123,11 +120,13 @@ export const WithdrawView = () => {
     setInputValue(formatAmountFree(selectedToken.balance, selectedToken.decimals));
   }, [selectedToken, setInputValue]);
 
-  const gmxAccountTokenBalanceUsd = convertToUsd(
-    selectedToken?.balance,
-    selectedToken?.decimals,
-    selectedToken?.prices.maxPrice
-  );
+  // const gmxAccountTokenBalanceUsd = convertToUsd(
+  //   selectedToken?.balance,
+  //   selectedToken?.decimals,
+  //   selectedToken?.prices.maxPrice
+  // );
+
+  const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
 
   const unwrappedSelectedTokenAddress =
     selectedToken !== undefined ? convertTokenAddress(chainId, selectedToken.address, "native") : undefined;
@@ -161,11 +160,11 @@ export const WithdrawView = () => {
       return { nextGmxAccountBalanceUsd: undefined, nextSourceChainBalanceUsd: undefined };
     }
 
-    const nextGmxAccountBalanceUsd = (gmxAccountTokenBalanceUsd ?? 0n) - (inputAmountUsd ?? 0n);
-    const nextSourceChainBalanceUsd = (sourceChainTokenBalanceUsd ?? 0n) + (inputAmountUsd ?? 0n);
+    const nextGmxAccountBalanceUsd = (gmxAccountUsd ?? 0n) - inputAmountUsd;
+    const nextSourceChainBalanceUsd = (sourceChainTokenBalanceUsd ?? 0n) + inputAmountUsd;
 
     return { nextGmxAccountBalanceUsd, nextSourceChainBalanceUsd };
-  }, [selectedToken, inputAmount, inputAmountUsd, gmxAccountTokenBalanceUsd, sourceChainTokenBalanceUsd]);
+  }, [selectedToken, inputAmount, inputAmountUsd, gmxAccountUsd, sourceChainTokenBalanceUsd]);
 
   const sendParamsWithoutSlippage: SendParamStruct | undefined = useMemo(() => {
     if (!account || inputAmount === undefined || inputAmount <= 0n || srcChainId === undefined) {
@@ -352,14 +351,8 @@ export const WithdrawView = () => {
     };
   }, [srcChainId, selectedTokenAddress, chainId, inputAmount]);
 
-  const getTxnData = useCallback(
-    async ({
-      emptySignature,
-      relayParamsPayload,
-    }: {
-      emptySignature: boolean;
-      relayParamsPayload: MultichainRelayParamsPayload;
-    }) => {
+  const getTxnData = useCallback<PreparedGetTxnData>(
+    async ({ emptySignature, relayParamsPayload, relayerFeeTokenAddress, relayerFeeAmount: relayerFeeAmount }) => {
       if (signer === undefined || bridgeOutParams === undefined) {
         return;
       }
@@ -367,28 +360,27 @@ export const WithdrawView = () => {
       return await buildAndSignBridgeOutTxn({
         chainId: chainId as UiSettlementChain,
         signer: signer,
-        relayParamsPayload,
+        relayParamsPayload: relayParamsPayload as MultichainRelayParamsPayload,
         params: bridgeOutParams,
         emptySignature,
+        relayerFeeTokenAddress,
+        relayerFeeAmount,
       });
     },
     [signer, bridgeOutParams, chainId]
   );
 
-  const {
-    relayFeeAmount,
-    relayFeeParams,
-    fetchLatestParamsPayload: fetchParamsPayload,
-    gasPaymentValidations,
-  } = useArbitraryRelayParamsAndPayload(
-    {
-      relayRouterAddress: getContract(chainId, "MultichainTransferRouter"),
-      additionalNetworkFee: bridgeNetworkFee,
-      getTxnData,
-      isSubaccountApplicable: false,
-    },
-    [chainId]
-  );
+  const { relayFeeAmount, relayFeeParams, fetchLatestParamsPayload, gasPaymentValidations } =
+    useArbitraryRelayParamsAndPayload(
+      "withdraw",
+      {
+        relayRouterAddress: getContract(chainId, "MultichainTransferRouter"),
+        additionalNetworkFee: bridgeNetworkFee,
+        getTxnData,
+        isSubaccountApplicable: false,
+      },
+      [chainId, srcChainId, selectedTokenAddress, chainId]
+    );
 
   const networkFeeUsd = useMemo(() => {
     if (relayFeeAmount === undefined || relayerFeeToken === undefined) {
@@ -405,93 +397,115 @@ export const WithdrawView = () => {
   }, [bridgeNetworkFeeUsd, relayFeeAmount, relayerFeeToken]);
 
   const handleWithdraw = async () => {
-    const metricsData = initMultichainWithdrawalMetricData({
-      settlementChain: chainId,
-      sourceChain: srcChainId as UiSourceChain,
-      assetSymbol: selectedToken?.symbol ?? "N/A",
-      assetAddress: selectedTokenAddress ?? "N/A",
-      amount: inputAmount ?? 0n,
-      isFirstWithdrawal: false,
-      sizeInUsd: inputAmountUsd ?? 0n,
-    });
-
-    sendOrderSubmittedMetric(metricsData.metricId);
-
     if (srcChainId === undefined || selectedTokenAddress === undefined) {
       return;
     }
 
     if (
-      fetchParamsPayload === undefined ||
+      fetchLatestParamsPayload === undefined ||
       relayFeeParams === undefined ||
-      gasPaymentValidations === undefined ||
       bridgeOutParams === undefined ||
       signer === undefined ||
       provider === undefined
     ) {
       helperToast.error("Missing required parameters");
-      sendTxnValidationErrorMetric(metricsData.metricId);
+      // sendTxnValidationErrorMetric(metricsData.metricId);
       return;
     }
 
-    const finalRelayParamsPayload: MultichainRelayParamsPayload = await fetchParamsPayload(provider);
-
+    setIsSubmitting(true);
     try {
+      const finalRelayParamsPayload = (await fetchLatestParamsPayload(provider)) as MultichainRelayParamsPayload;
+
       await simulateWithdraw({
         chainId: chainId as UiSettlementChain,
-        expressParams: {
-          isSponsoredCall: false,
-          relayParamsPayload: finalRelayParamsPayload,
-          relayFeeParams: relayFeeParams,
-          subaccount: undefined,
-          estimationMethod: "estimateGas",
-          gasPaymentValidations,
-          subaccountValidations: undefined,
-        },
+        relayerFeeTokenAddress: relayFeeParams.gasPaymentParams.relayerFeeTokenAddress,
+        relayerFeeAmount: relayFeeParams.gasPaymentParams.relayerFeeAmount,
+        relayParamsPayload: finalRelayParamsPayload,
         params: bridgeOutParams,
         signer,
         provider,
       });
+
+      const signedTxnData: ExpressTxnData = await buildAndSignBridgeOutTxn({
+        chainId: chainId as UiSettlementChain,
+        signer: signer,
+        relayParamsPayload: finalRelayParamsPayload,
+        params: bridgeOutParams,
+        relayerFeeAmount: relayFeeParams.gasPaymentParams.relayerFeeAmount,
+        relayerFeeTokenAddress: relayFeeParams.gasPaymentParams.relayerFeeTokenAddress,
+      });
+
+      const receipt = await sendExpressTransaction({
+        chainId: chainId as UiSettlementChain,
+        txnData: signedTxnData,
+        // TODO
+        isSponsoredCall: false,
+      });
+
+      const txResult = await receipt.wait();
+
+      if (txResult.status === "success") {
+        helperToast.success("Withdrawal successful");
+      } else if (txResult.status === "failed") {
+        helperToast.error("Withdrawal failed");
+      }
     } catch (error) {
+      let prettyErrorName = error.name;
+      let prettyErrorMessage = error.message;
+
+      const data = error?.info?.error?.data;
+      if (data) {
+        try {
+          const parsedError = decodeErrorResult({
+            abi: abis.CustomErrorsArbitrumSepolia.concat(StargateErrorsAbi),
+            data,
+          });
+
+          prettyErrorName = parsedError.errorName;
+          prettyErrorMessage = JSON.stringify(parsedError, null, 2);
+        } catch (decodeError) {
+          // pass
+        }
+      }
+
       const toastContext = getTxnErrorToast(
         chainId,
         {
-          errorMessage: error.message,
+          errorMessage: prettyErrorMessage,
         },
         {
-          defaultMessage: error.name,
+          defaultMessage: prettyErrorName,
         }
       );
       helperToast.error(toastContext.errorContent, {
         autoClose: toastContext.autoCloseToast,
       });
-      return;
+    } finally {
+      setIsSubmitting(false);
     }
-
-    const signedTxnData: ExpressTxnData = await buildAndSignBridgeOutTxn({
-      chainId: chainId as UiSettlementChain,
-      signer: signer,
-      relayParamsPayload: finalRelayParamsPayload,
-      params: bridgeOutParams,
-    });
-
-    const receipt = await sendExpressTransaction({
-      chainId: chainId as UiSettlementChain,
-      txnData: signedTxnData,
-      // TODO
-      isSponsoredCall: false,
-    });
-
-    receipt.wait().then((receipt) => {
-      if (receipt.status === "success") {
-        helperToast.success("Withdrawal successful");
-        console.log(receipt.relayStatus?.taskId);
-      } else if (receipt.status === "failed") {
-        helperToast.error("Withdrawal failed");
-        console.log(receipt.relayStatus?.taskId);
-      }
-    });
   };
+
+  let buttonState: {
+    text: string;
+    disabled?: boolean;
+    onClick?: () => void;
+  } = {
+    text: t`Withdraw`,
+    onClick: handleWithdraw,
+  };
+
+  if (isSubmitting) {
+    buttonState = {
+      text: t`Withdrawing...`,
+      disabled: true,
+    };
+  } else if (gasPaymentValidations?.isOutGasTokenBalance) {
+    buttonState = {
+      text: t`Insufficient ${relayFeeParams?.gasPaymentParams.relayFeeToken.symbol} balance to pay for gas`,
+      disabled: true,
+    };
+  }
 
   const hasSelectedToken = selectedTokenAddress !== undefined;
   useEffect(
@@ -661,9 +675,7 @@ export const WithdrawView = () => {
         />
         <SyntheticsInfoRow
           label="GMX Balance"
-          value={
-            <ValueTransition from={formatUsd(gmxAccountTokenBalanceUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />
-          }
+          value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
         />
         <SyntheticsInfoRow
           label="Asset Balance"
@@ -673,8 +685,8 @@ export const WithdrawView = () => {
         />
       </div>
 
-      <Button variant="primary" className="w-full" onClick={handleWithdraw}>
-        <Trans>Withdraw</Trans>
+      <Button variant="primary" className="w-full" onClick={buttonState.onClick} disabled={buttonState.disabled}>
+        {buttonState.text}
       </Button>
     </div>
   );
@@ -720,13 +732,17 @@ async function simulateWithdraw({
   provider,
   signer,
   chainId,
-  expressParams,
+  relayParamsPayload,
+  relayerFeeTokenAddress,
+  relayerFeeAmount,
   params,
 }: {
   provider: Provider;
   signer: WalletSigner;
   chainId: UiSettlementChain;
-  expressParams: ExpressTxnParams;
+  relayerFeeTokenAddress: string;
+  relayerFeeAmount: bigint;
+  relayParamsPayload: MultichainRelayParamsPayload;
   params: BridgeOutParams;
 }): Promise<void> {
   if (!provider) {
@@ -736,9 +752,11 @@ async function simulateWithdraw({
   const { callData, feeAmount, feeToken, to } = await buildAndSignBridgeOutTxn({
     signer,
     chainId,
-    relayParamsPayload: expressParams.relayParamsPayload as MultichainRelayParamsPayload,
+    relayParamsPayload: relayParamsPayload,
     params,
     emptySignature: true,
+    relayerFeeTokenAddress,
+    relayerFeeAmount: relayerFeeAmount,
   });
 
   await fallbackCustomError(async () => {

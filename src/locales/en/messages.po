@@ -3140,6 +3140,7 @@ msgstr "Enable orders sent."
 
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 msgid "Withdrawing..."
 msgstr "Withdrawing..."
 
@@ -4240,6 +4241,7 @@ msgstr "Cancel failed"
 msgid "Fulfilling order request"
 msgstr "Fulfilling order request"
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance to pay for gas"
 msgstr "Insufficient {0} balance to pay for gas"

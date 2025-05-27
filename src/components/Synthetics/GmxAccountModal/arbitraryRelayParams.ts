@@ -50,13 +50,23 @@ import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 
-type PreparedGetTxnData = (opts: {
+export type PreparedGetTxnData = (opts: {
   emptySignature: boolean;
   relayParamsPayload: RelayParamsPayload | MultichainRelayParamsPayload;
+  relayerFeeTokenAddress: string;
+  relayerFeeAmount: bigint;
 }) => Promise<ExpressTxnData | undefined>;
 
-const selectBasePreparedRelayParamsPayload = createSelector<
-  RawRelayParamsPayload | RawMultichainRelayParamsPayload | undefined
+const selectRawBasePreparedRelayParamsPayload = createSelector<
+  Partial<{
+    rawBaseRelayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload | undefined;
+    baseRelayFeeSwapParams: {
+      feeParams: RelayFeePayload;
+      externalCalls: ExternalCallsPayload;
+      feeExternalSwapGasLimit: bigint;
+      gasPaymentParams: GasPaymentParams;
+    };
+  }>
 >((q) => {
   const chainId = q(selectChainId);
   const srcChainId = q(selectSrcChainId);
@@ -78,7 +88,7 @@ const selectBasePreparedRelayParamsPayload = createSelector<
     !marketsInfoData ||
     gasPrice === undefined
   ) {
-    return undefined;
+    return EMPTY_OBJECT;
   }
 
   const baseRelayerFeeAmount = convertToTokenAmount(
@@ -103,10 +113,10 @@ const selectBasePreparedRelayParamsPayload = createSelector<
   });
 
   if (baseRelayFeeSwapParams === undefined) {
-    return undefined;
+    return EMPTY_OBJECT;
   }
 
-  const preparedRelayParamsPayload = getRawRelayerParams({
+  const rawBaseRelayParamsPayload = getRawRelayerParams({
     chainId,
     gasPaymentTokenAddress: baseRelayFeeSwapParams.gasPaymentParams.gasPaymentTokenAddress,
     relayerFeeTokenAddress: baseRelayFeeSwapParams.gasPaymentParams.relayerFeeTokenAddress,
@@ -117,10 +127,11 @@ const selectBasePreparedRelayParamsPayload = createSelector<
     isMultichain: srcChainId !== undefined,
   });
 
-  return preparedRelayParamsPayload;
+  return { rawBaseRelayParamsPayload, baseRelayFeeSwapParams };
 });
 
 function useArbitraryRelayFee(
+  name: string,
   {
     relayRouterAddress,
     getTxnData,
@@ -137,26 +148,37 @@ function useArbitraryRelayFee(
   const account = useSelector(selectAccount);
   const { provider } = useJsonRpcProvider(chainId);
 
-  const preparedRelayParamsPayload = useSelector(selectBasePreparedRelayParamsPayload);
+  const { rawBaseRelayParamsPayload, baseRelayFeeSwapParams } = useSelector(selectRawBasePreparedRelayParamsPayload);
 
-  const queryCondition = account && provider && getTxnData !== undefined && preparedRelayParamsPayload;
-  const { data: relayFeeAmount } = useSWR<bigint | undefined>(queryCondition && [chainId, account, ...dependencies], {
-    fetcher: async (): Promise<bigint | undefined> => {
-      if (!queryCondition) {
-        return;
-      }
+  const queryCondition =
+    account &&
+    provider &&
+    getTxnData !== undefined &&
+    rawBaseRelayParamsPayload !== undefined &&
+    baseRelayFeeSwapParams !== undefined;
 
-      return estimateArbitraryRelayFee({
-        chainId,
-        relayRouterAddress,
-        provider,
-        account: account as Address,
-        rawRelayParamsPayload: preparedRelayParamsPayload,
-        getTxnData,
-      });
-    },
-    refreshInterval: FREQUENT_UPDATE_INTERVAL,
-  });
+  const { data: relayFeeAmount } = useSWR<bigint | undefined>(
+    queryCondition && [chainId, name, account, ...dependencies],
+    {
+      fetcher: async (): Promise<bigint | undefined> => {
+        if (!queryCondition) {
+          return;
+        }
+
+        return estimateArbitraryRelayFee({
+          chainId,
+          relayRouterAddress,
+          provider,
+          account: account as Address,
+          rawRelayParamsPayload: rawBaseRelayParamsPayload,
+          relayerFeeTokenAddress: baseRelayFeeSwapParams.gasPaymentParams.relayerFeeTokenAddress,
+          relayerFeeAmount: baseRelayFeeSwapParams.gasPaymentParams.totalRelayerFeeTokenAmount,
+          getTxnData,
+        });
+      },
+      refreshInterval: FREQUENT_UPDATE_INTERVAL,
+    }
+  );
 
   return {
     relayFeeAmount,
@@ -178,6 +200,8 @@ async function estimateArbitraryRelayFee({
   provider,
   account,
   rawRelayParamsPayload,
+  relayerFeeTokenAddress,
+  relayerFeeAmount,
   getTxnData,
 }: {
   chainId: UiContractsChain;
@@ -185,13 +209,9 @@ async function estimateArbitraryRelayFee({
   provider: Provider;
   account: string;
   rawRelayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload;
-  getTxnData: ({
-    emptySignature,
-    relayParamsPayload,
-  }: {
-    emptySignature: boolean;
-    relayParamsPayload: RelayParamsPayload | MultichainRelayParamsPayload;
-  }) => Promise<ExpressTxnData | undefined>;
+  relayerFeeTokenAddress: string;
+  relayerFeeAmount: bigint;
+  getTxnData: PreparedGetTxnData;
 }) {
   const userNonce = await getRelayRouterNonceForMultichain(provider, account, relayRouterAddress);
 
@@ -202,6 +222,8 @@ async function estimateArbitraryRelayFee({
       userNonce,
       deadline: BigInt(nowInSeconds() + DEFAULT_SUBACCOUNT_DEADLINE_DURATION),
     },
+    relayerFeeTokenAddress,
+    relayerFeeAmount,
   });
 
   if (baseTxnData === undefined) {
@@ -210,7 +232,7 @@ async function estimateArbitraryRelayFee({
 
   const baseData = encodePacked(
     ["bytes", "address", "address", "uint256"],
-    [baseTxnData.callData as Hex, GELATO_RELAY_ADDRESS, baseTxnData.feeToken as Address, baseTxnData.feeAmount]
+    [baseTxnData.callData as Hex, GELATO_RELAY_ADDRESS, relayerFeeTokenAddress as Address, baseTxnData.feeAmount]
   );
 
   const gasLimit = await estimateGasLimit(provider, {
@@ -220,7 +242,7 @@ async function estimateArbitraryRelayFee({
     value: 0n,
   });
 
-  const fee = await gelatoRelay.getEstimatedFee(BigInt(chainId), baseTxnData.feeToken as Address, gasLimit, false);
+  const fee = await gelatoRelay.getEstimatedFee(BigInt(chainId), relayerFeeTokenAddress, gasLimit, false);
 
   return fee;
 }
@@ -345,6 +367,7 @@ const selectArbitraryRelayParamsAndPayload = createSelector(function selectArbit
 });
 
 export function useArbitraryRelayParamsAndPayload(
+  name: string,
   {
     relayRouterAddress,
     getTxnData,
@@ -370,7 +393,7 @@ export function useArbitraryRelayParamsAndPayload(
   gasPaymentValidations: GasPaymentValidations;
   subaccountValidations: SubaccountValidations;
 }> {
-  const { relayFeeAmount } = useArbitraryRelayFee({ relayRouterAddress, getTxnData }, dependencies);
+  const { relayFeeAmount } = useArbitraryRelayFee(name, { relayRouterAddress, getTxnData }, dependencies);
 
   const getRelayParamsAndPayload = useSelector(selectArbitraryRelayParamsAndPayload);
 

@@ -806,12 +806,16 @@ export async function buildAndSignBridgeOutTxn({
   params,
   signer,
   emptySignature = false,
+  relayerFeeTokenAddress,
+  relayerFeeAmount,
 }: {
   chainId: UiSettlementChain;
   relayParamsPayload: MultichainRelayParamsPayload;
   params: BridgeOutParams;
   signer: WalletSigner;
   emptySignature?: boolean;
+  relayerFeeTokenAddress: string;
+  relayerFeeAmount: bigint;
 }): Promise<ExpressTxnData> {
   const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
   if (!srcChainId) {
@@ -854,8 +858,8 @@ export async function buildAndSignBridgeOutTxn({
   return {
     callData: bridgeOutCallData,
     to: getContract(chainId, "MultichainTransferRouter"),
-    feeToken: relayParamsPayload.fee.feeToken as Address,
-    feeAmount: relayParamsPayload.fee.feeAmount,
+    feeToken: relayerFeeTokenAddress,
+    feeAmount: relayerFeeAmount,
   };
 }
 

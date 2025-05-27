@@ -1,6 +1,5 @@
 import { Options, addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { Trans, t } from "@lingui/macro";
-import { errors as StargateErrorsAbi } from "@stargatefinance/stg-evm-sdk-v2";
 import { Contract } from "ethers";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
@@ -27,7 +26,7 @@ import {
   useGmxAccountSelector,
 } from "context/GmxAccountContext/hooks";
 import { selectGmxAccountDepositViewTokenInputAmount } from "context/GmxAccountContext/selectors";
-import { IStargateAbi } from "context/GmxAccountContext/stargatePools";
+import { IStargateAbi, StargateErrorsAbi } from "context/GmxAccountContext/stargatePools";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
