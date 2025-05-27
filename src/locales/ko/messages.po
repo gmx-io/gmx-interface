@@ -86,10 +86,6 @@ msgstr ""
 msgid "What would have made your rating a 9 or 10?"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
-msgid "Deposit Received"
-msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
@@ -1962,6 +1958,10 @@ msgstr ""
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/useMultichainDepositToast.tsx
+msgid "Transaction is pending."
+msgstr ""
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Display PnL After Fees"
 msgstr ""
@@ -3195,6 +3195,10 @@ msgstr ""
 msgid "Stake failed."
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+msgid "Withdrawal"
+msgstr ""
+
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
@@ -3363,10 +3367,6 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Avg. Size"
-msgstr ""
-
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
-msgid "Failed to deposit"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -3602,10 +3602,6 @@ msgstr "입금 실패"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "마켓 스왑 요청"
-
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
-msgid "Withdrawal Sent"
-msgstr ""
 
 #: src/components/ExpressTradingGasTokenSwitchedBanner.ts/ExpressTradingGasTokenSwithedBanner.tsx
 msgid "Gas payment token changed due to insufficient balance in the selected token."
@@ -4296,10 +4292,6 @@ msgstr ""
 msgid "PnL Analysis"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
-msgid "Deposit Sent"
-msgstr ""
-
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Longs"
@@ -4311,10 +4303,6 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or change the \"Collateral In\" token.</1>"
-msgstr ""
-
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
-msgid "Deposit Submitted"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
@@ -6471,6 +6459,7 @@ msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Deposit failed"
 msgstr ""
 
@@ -6857,6 +6846,7 @@ msgstr "{0} {longOrShortText}의 입글을 실행시키지 못했습니다"
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
@@ -7434,10 +7424,6 @@ msgstr "추천인 코드가 존재하지 않습니다"
 msgid "shift"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
-msgid "Withdrawal Received"
-msgstr ""
-
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM Airdrop"
 msgstr ""
@@ -7931,10 +7917,6 @@ msgstr ""
 msgid "Error occurred. Please try again"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
-msgid "Deposit Executed"
-msgstr ""
-
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "문자, 숫자 및 언더스코어만 가능합니다"
@@ -8000,6 +7982,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed TWAP Swap Part"
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/useMultichainDepositToast.tsx
+msgid "Transferring your funds to your GMX account."
 msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.jsx

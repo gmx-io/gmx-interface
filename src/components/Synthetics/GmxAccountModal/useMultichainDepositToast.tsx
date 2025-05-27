@@ -1,13 +1,17 @@
+import { Trans } from "@lingui/macro";
 import { useEffect, useMemo, useRef } from "react";
 import { ImSpinner2 } from "react-icons/im";
 import { toast, ToastContent } from "react-toastify";
 
 import { MultichainFundingHistoryItem } from "context/GmxAccountContext/types";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
+import { formatBalanceAmount } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
+import { getToken } from "sdk/configs/tokens";
 
-import { FUNDING_OP_LABELS, isMultichainFundingItemLoading } from "./MainView";
+import { FUNDING_OPERATIONS_LABELS, isMultichainFundingItemLoading } from "./MainView";
 import { useGmxAccountFundingHistory } from "./useGmxAccountFundingHistory";
 
 const TOAST_ID = "multichain-funding-toast";
@@ -36,13 +40,14 @@ function useGmxAccountPendingFundingHistoryItems(
 }
 
 export function useMultichainFundingDepositToast() {
+  const { chainId } = useChainId();
   const { multichainFundingPendingIds } = useSyntheticsEvents();
 
   const clearTimeout = useRef<number | undefined>();
   const dymanicIds = useMemo(() => Object.values(multichainFundingPendingIds), [multichainFundingPendingIds]);
   const pendingItems = useGmxAccountPendingFundingHistoryItems(dymanicIds);
 
-  const labels = useLocalizedMap(FUNDING_OP_LABELS);
+  const labels = useLocalizedMap(FUNDING_OPERATIONS_LABELS);
 
   useEffect(() => {
     if (!pendingItems || Object.keys(pendingItems).length === 0) {
@@ -57,20 +62,26 @@ export function useMultichainFundingDepositToast() {
 
     let content: ToastContent = (
       <div className="flex flex-col gap-8">
-        <div>Transferring your funds to your GMX account.</div>
-        {Object.keys(multichainFundingPendingIds).map((staticId) => {
+        <Trans>Transferring your funds to your GMX account.</Trans>
+        {Object.keys(multichainFundingPendingIds).map((staticId, index, array) => {
           const guid = multichainFundingPendingIds[staticId];
           const item = pendingItems[guid];
           if (!item) {
             return null;
           }
-          const key = `${item.operation}-${item.step}${item.isExecutionError ? "-failed" : ""}`;
+
+          const token = getToken(chainId, item.token);
+
+          const formattedAmount = formatBalanceAmount(item.sentAmount, token.decimals, token.symbol);
 
           const isLoading = isMultichainFundingItemLoading(item);
 
           return (
             <div key={staticId} className="flex items-center justify-between">
-              <div className="text-white/50">{labels[key]}</div>
+              <div className="text-white/50">
+                <Trans>Transaction is pending.</Trans>
+                {array.length > 1 && <> {formattedAmount}</>}
+              </div>
               {isLoading && <ImSpinner2 width={60} height={60} className="spin size-15 text-white" />}
             </div>
           );
