@@ -57,7 +57,10 @@ export function PoolsDetails() {
   return (
     <SEO title={getPageTitle("V2 Pools")}>
       <div className={cx("default-container page-layout flex flex-col", { "gap-12": isMobile, "gap-16": !isMobile })}>
-        <ButtonLink to="/pools" className="inline-flex w-fit gap-4 rounded-4 bg-slate-700 px-16 py-12">
+        <ButtonLink
+          to="/pools"
+          className="inline-flex w-fit gap-4 rounded-4 bg-slate-700 px-16 py-12 hover:bg-cold-blue-700"
+        >
           <FaArrowLeft size={16} />
           Back to Pools
         </ButtonLink>
@@ -74,14 +77,14 @@ export function PoolsDetails() {
                       <MarketComposition
                         type="backing"
                         label={<Trans>Backing Composition</Trans>}
-                        title={<Trans>Direct exposure to tokens</Trans>}
+                        title={<Trans>Exposure to Backing Tokens</Trans>}
                         composition={backingComposition}
                       />
                     </div>
                     <MarketComposition
                       type="market"
                       label={<Trans>Market Composition</Trans>}
-                      title={<Trans>Market exposure to Trader PnL</Trans>}
+                      title={<Trans>Exposure to Market Traders’ PnL</Trans>}
                       composition={marketComposition}
                     />
                   </div>

@@ -6,7 +6,7 @@ export function Swap() {
       <div
         className="absolute -top-19 left-1/2 flex size-36 -translate-x-1/2
                    cursor-not-allowed select-none items-center justify-center rounded-full bg-cold-blue-500
-                   text-white active:bg-[#505699] desktop-hover:bg-[#484e92]"
+                   text-white"
       >
         <IoArrowDown size={24} />
       </div>

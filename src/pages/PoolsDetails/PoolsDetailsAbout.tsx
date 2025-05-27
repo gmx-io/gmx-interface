@@ -6,10 +6,12 @@ import { getMarketIndexName } from "domain/synthetics/markets";
 import { getMintableInfoGlv, getTotalSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import { GlvAndGmMarketsInfoData, GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
+import { useChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";
 import { bigintToNumber, formatAmountHuman } from "lib/numbers";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
+import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";
 import { useMarketMintableTokens } from "components/Synthetics/MarketStats/hooks/useMarketMintableTokens";
 import { useMarketSellableToken } from "components/Synthetics/MarketStats/hooks/useMarketSellableToken";
 
@@ -26,6 +28,7 @@ export function PoolsDetailsAbout({
   marketsInfoData: GlvAndGmMarketsInfoData;
   marketTokensData: TokensData | undefined;
 }) {
+  const { chainId } = useChainId();
   const isGlv = isGlvInfo(glvOrMarketInfo);
   const sellableInfo = useMarketSellableToken(glvOrMarketInfo, marketToken);
   const mintableInfo = useMarketMintableTokens(glvOrMarketInfo, marketToken);
@@ -35,6 +38,10 @@ export function PoolsDetailsAbout({
   const isMobile = usePoolsIsMobilePage();
 
   const marketName = glvOrMarketInfo ? getMarketIndexName(glvOrMarketInfo) : "";
+
+  const exposedToLabel = glvOrMarketInfo?.isSameCollaterals
+    ? glvOrMarketInfo?.longToken?.symbol
+    : `${glvOrMarketInfo?.longToken?.symbol} and ${glvOrMarketInfo?.shortToken?.symbol}`;
 
   return (
     <div className="flex flex-col gap-16">
@@ -48,11 +55,16 @@ export function PoolsDetailsAbout({
         ) : (
           <Trans>
             This token automatically accrues fees from leverage trading and swaps for the {marketName} market. It is
-            also exposed to {glvOrMarketInfo?.longToken?.symbol} and {glvOrMarketInfo?.shortToken?.symbol} as per the
-            composition displayed.
+            also exposed to {exposedToLabel} as per the composition displayed.
           </Trans>
         )}
       </div>
+
+      <BridgingInfo chainId={chainId} tokenSymbol={glvOrMarketInfo?.longToken?.symbol} />
+      {!glvOrMarketInfo?.isSameCollaterals && (
+        <BridgingInfo chainId={chainId} tokenSymbol={glvOrMarketInfo?.shortToken?.symbol} />
+      )}
+
       <div className={cx("grid pt-8", { "grid-cols-1 gap-12": isMobile, "grid-cols-3": !isMobile })}>
         <PoolsDetailsMarketAmount
           label={<Trans>Buyable</Trans>}

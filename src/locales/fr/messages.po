@@ -1710,6 +1710,10 @@ msgstr ""
 msgid "MARKETS"
 msgstr "MARCHÉS"
 
+#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
+msgid "This token automatically accrues fees from leverage trading and swaps for the {marketName} market. It is also exposed to {exposedToLabel} as per the composition displayed."
+msgstr ""
+
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Withdrew {0} from {positionText}"
 msgstr ""
@@ -1975,6 +1979,10 @@ msgstr "Les frais peuvent varier selon quel actif vous vendez pour du GLP. <0/>I
 msgid "{txnTypeText} {0} order for"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
+msgid "The fees' USD value is calculated at the time they are earned and does not include incentives."
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -2124,8 +2132,8 @@ msgid "You will receive at least {0} {1} if this order is executed. The executio
 msgstr "Vous recevrez au moins {0} {1}, si cet ordre est exécuté. Le prix d'exécution peut varier en fonction des frais d'échange au moment de l'exécution de l'ordre."
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
-msgid "Direct exposure to tokens"
-msgstr ""
+#~ msgid "Direct exposure to tokens"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Limit order creation failed."
@@ -2243,8 +2251,8 @@ msgid "TOKEN"
 msgstr "TOKEN"
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
-msgid "This token automatically accrues fees from leverage trading and swaps for the {marketName} market. It is also exposed to {0} and {1} as per the composition displayed."
-msgstr ""
+#~ msgid "This token automatically accrues fees from leverage trading and swaps for the {marketName} market. It is also exposed to {0} and {1} as per the composition displayed."
+#~ msgstr ""
 
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Transfer NFT"
@@ -2645,6 +2653,10 @@ msgstr "Transaction envoyée."
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Enter up to 10 coins"
+msgstr ""
+
+#: src/pages/PoolsDetails/PoolsDetails.tsx
+msgid "Exposure to Backing Tokens"
 msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.jsx
@@ -3165,6 +3177,10 @@ msgstr ""
 msgid "High Slippage, Swap Anyway"
 msgstr "Glissement élevé, échanger quand-même"
 
+#: src/components/Synthetics/MarketStats/MarketGraphs.tsx
+msgid "Annualized Performance"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 msgstr ""
@@ -3366,8 +3382,8 @@ msgid "Claiming..."
 msgstr "Réclamation en cours..."
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-msgid "Total Accrued Fees"
-msgstr ""
+#~ msgid "Total Accrued Fees"
+#~ msgstr ""
 
 #. Filter option for tokens favorites
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
@@ -4135,6 +4151,11 @@ msgstr "Acheter GLP"
 msgid "Cancel failed"
 msgstr "Annulation échouée"
 
+#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
+#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
+msgid "{daysConsidered}d Earned Fees"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Fulfilling order request"
 msgstr ""
@@ -4227,8 +4248,8 @@ msgid "{typeString} Long Limit: {0} a long position when the price is below the 
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmListItem.tsx
-msgid "Your deposit"
-msgstr ""
+#~ msgid "Your deposit"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on 1inch.</4>"
@@ -4268,6 +4289,10 @@ msgstr "Impact sur le prix"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a token"
+msgstr ""
+
+#: src/pages/PoolsDetails/PoolsDetails.tsx
+msgid "Exposure to Market Traders’ PnL"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
@@ -4704,8 +4729,8 @@ msgid "Max slippage precision is -0.01%"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-msgid "{daysConsidered}d Accrued Fees"
-msgstr ""
+#~ msgid "{daysConsidered}d Accrued Fees"
+#~ msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.jsx
 msgid "Dec."
@@ -6140,8 +6165,8 @@ msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>.
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-msgid "{daysConsidered}d accrued Fees"
-msgstr ""
+#~ msgid "{daysConsidered}d accrued Fees"
+#~ msgstr ""
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 #: src/components/NpsModal/NpsModal.tsx
@@ -6710,8 +6735,8 @@ msgid "Receive"
 msgstr "Recevoir"
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
-msgid "All time Earned in Fees"
-msgstr ""
+#~ msgid "All time Earned in Fees"
+#~ msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.jsx
 msgid "time to liq"
@@ -7082,8 +7107,8 @@ msgid "Page outdated, please refresh"
 msgstr "Page périmée, veuillez rafraîchir"
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
-msgid "Market exposure to Trader PnL"
-msgstr ""
+#~ msgid "Market exposure to Trader PnL"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals"
@@ -7816,6 +7841,7 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
+#: src/components/Synthetics/GmList/GmListItem.tsx
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/pages/Earn/EscrowedGmxCard.tsx
 #: src/pages/Earn/GlpCard.tsx
@@ -8045,8 +8071,8 @@ msgid "Top-Up"
 msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketGraphs.tsx
-msgid "Annualized performance"
-msgstr ""
+#~ msgid "Annualized performance"
+#~ msgstr ""
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LAST PRICE"
@@ -8110,8 +8136,8 @@ msgid "About"
 msgstr "À propos"
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-msgid "Total accrued Fees"
-msgstr ""
+#~ msgid "Total accrued Fees"
+#~ msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Accrued positive funding fees in positions not yet claimable.<0/><1/>They become available after modifying the position by increasing or decreasing it, depositing or withdrawing collateral, or settling the fees using the \"Settle\" button."
@@ -8249,8 +8275,8 @@ msgid "Last 30d"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-msgid "The fees' USD value is calculated at the time they are accrued and does not include incentives."
-msgstr ""
+#~ msgid "The fees' USD value is calculated at the time they are accrued and does not include incentives."
+#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Dashboards"
@@ -8669,6 +8695,12 @@ msgstr ""
 
 #: src/pages/BuyGlp/BuyGlp.jsx
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverage trading."
+msgstr ""
+
+#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
+#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
+msgid "Total Earned Fees"
 msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx

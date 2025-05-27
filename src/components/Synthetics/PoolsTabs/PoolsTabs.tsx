@@ -27,7 +27,7 @@ export function PoolsTabs<T extends string | number>({
         <div
           key={tab.value as string}
           className={cx(
-            "text-body-medium cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap rounded-4 py-8",
+            "text-body-medium cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap rounded-4 py-8 hover:bg-cold-blue-700 hover:text-white",
             itemClassName,
             {
               "!bg-cold-blue-500 !text-white": selected === tab.value,

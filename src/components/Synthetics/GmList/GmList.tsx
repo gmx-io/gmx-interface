@@ -131,7 +131,6 @@ export function GmList({
             setValue={setSearchText}
             placeholder="Search Pools"
             autoFocus={false}
-            variant="secondary"
           />
           <div className="max-w-full">
             <ButtonRowScrollFadeContainer>

@@ -45,7 +45,7 @@ const MARKET_GRAPHS_TABS_LABELS: Record<MarketGraphType, MessageDescriptor> = {
 };
 
 const MARKET_GRAPHS_TITLE_LABELS: Record<MarketGraphType, MessageDescriptor> = {
-  performance: msg`Annualized performance`,
+  performance: msg`Annualized Performance`,
   price: msg`Current Price`,
   feeApr: msg`Fee APY`,
 };

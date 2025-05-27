@@ -20,7 +20,6 @@ type Props = {
    */
   autoFocus?: boolean;
   qa?: string;
-  variant?: "default" | "secondary";
 };
 
 export default function SearchInput({
@@ -32,7 +31,6 @@ export default function SearchInput({
   autoFocus,
   size = "m",
   qa = "token-search-input",
-  variant = "default",
 }: Props) {
   const isSmallerScreen = useMedia("(max-width: 700px)");
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -67,12 +65,7 @@ export default function SearchInput({
   }, [inputRef]);
 
   return (
-    <div
-      className={cx("relative flex cursor-pointer items-center p-0 ", className, {
-        "bg-slate-700": variant === "secondary",
-      })}
-      ref={containerRef}
-    >
+    <div className={cx("relative flex cursor-pointer items-center p-0 ", className)} ref={containerRef}>
       <div className="absolute top-0 flex h-full items-center px-12">
         <SearchIconComponent
           height={16}
@@ -94,12 +87,11 @@ export default function SearchInput({
         onKeyDown={onKeyDown}
         onFocus={handleFocus}
         autoFocus={autoFocus ?? !isSmallerScreen}
-        className={cx("block w-full rounded-4 placeholder-slate-100", {
+        className={cx("block w-full rounded-4 border  placeholder-slate-100", {
           "border-cold-blue-500": isFocused,
           "border-gray-800": !isFocused,
           "py-10 pl-40 pr-34 text-16": size === "m",
           "py-[8.5px] pl-34 pr-30 text-14 ": size === "s",
-          "border": variant === "default",
         })}
       />
       {value && (

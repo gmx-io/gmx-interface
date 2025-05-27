@@ -104,7 +104,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
 
           {marketEarnings ? (
             <PoolsDetailsMarketAmount
-              label={<Trans>All time Earned in Fees</Trans>}
+              label={<Trans>Total Earned Fees</Trans>}
               value={formatUsd(marketEarnings?.total)}
             />
           ) : null}

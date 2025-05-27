@@ -167,14 +167,6 @@ export function GmListItem({
 
         <div className="flex flex-col gap-10 border-t border-stroke-primary pt-8">
           <SyntheticsInfoRow
-            label={<Trans>Performance</Trans>}
-            value={performance ? formatPerformanceBps(performance) : "..."}
-          />
-          <SyntheticsInfoRow
-            label={<Trans>Fee APY</Trans>}
-            value={<AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />}
-          />
-          <SyntheticsInfoRow
             label={<Trans>TVL (Supply)</Trans>}
             value={
               <AmountWithUsdHuman
@@ -187,7 +179,7 @@ export function GmListItem({
             }
           />
           <SyntheticsInfoRow
-            label={<Trans>Your deposit</Trans>}
+            label={<Trans>Wallet</Trans>}
             value={
               <GmTokensBalanceInfo
                 token={token}
@@ -198,6 +190,14 @@ export function GmListItem({
                 singleLine={true}
               />
             }
+          />
+          <SyntheticsInfoRow
+            label={<Trans>Fee APY</Trans>}
+            value={<AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />}
+          />
+          <SyntheticsInfoRow
+            label={<Trans>Performance</Trans>}
+            value={performance ? formatPerformanceBps(performance) : "..."}
           />
         </div>
       </div>

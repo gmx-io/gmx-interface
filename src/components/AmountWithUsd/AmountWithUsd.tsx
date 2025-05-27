@@ -34,7 +34,7 @@ export function AmountWithUsdHuman({
 
   return (
     <span>
-      <span>{topValue}</span>
+      <span>{topValue} </span>
       {multiline && <br />}
       <span className={cx("text-12 text-slate-100 group-hover/hoverable:text-[inherit]", { "ml-2": multiline })}>
         ({bottomValue})
@@ -50,6 +50,7 @@ export function AmountWithUsdBalance({
   usd,
   symbol,
   multiline = false,
+  usdOnTop = false,
 }: {
   className?: string;
   amount: bigint | undefined;
@@ -57,6 +58,7 @@ export function AmountWithUsdBalance({
   usd: bigint | undefined;
   symbol?: string;
   multiline?: boolean;
+  usdOnTop?: boolean;
 }) {
   if (amount === undefined || usd === undefined) {
     return "...";
@@ -66,11 +68,16 @@ export function AmountWithUsdBalance({
 
   const formattedUsd = formatUsd(usd);
 
+  const topValue = usdOnTop ? formattedUsd : formattedAmount;
+  const bottomValue = usdOnTop ? formattedAmount : formattedUsd;
+
   return (
     <span className={className}>
-      {formattedAmount}
-      {multiline ? <br /> : " "}
-      <span className="text-12 text-slate-100 group-hover/hoverable:text-[inherit]">({formattedUsd})</span>
+      <span>{topValue} </span>
+      {multiline && <br />}
+      <span className={cx("text-12 text-slate-100 group-hover/hoverable:text-[inherit]", { "ml-2": multiline })}>
+        ({bottomValue})
+      </span>
     </span>
   );
 }
