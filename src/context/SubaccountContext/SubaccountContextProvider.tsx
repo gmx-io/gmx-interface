@@ -1,20 +1,10 @@
 import { t } from "@lingui/macro";
-import { Contract } from "ethers";
 import React, { createContext, useCallback, useContext, useMemo } from "react";
 import { toast } from "react-toastify";
 
-import { getSwapDebugSettings } from "config/externalSwaps";
 import { getSubaccountApprovalKey, getSubaccountConfigKey } from "config/localStorage";
-import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
-import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/utils";
-import {
-  getExpressContractAddress,
-  // getOracleParamsPayload,
-  // getOraclePriceParamsForRelayFee,
-  getRelayerFeeParams,
-  MultichainRelayParamsPayload,
-} from "domain/synthetics/express";
+import { getExpressContractAddress } from "domain/synthetics/express";
 import { buildAndSignRemoveSubaccountTxn, removeSubaccountWalletTxn } from "domain/synthetics/subaccount";
 import { generateSubaccount } from "domain/synthetics/subaccount/generateSubaccount";
 import { SignedSubbacountApproval, Subaccount, SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
@@ -29,20 +19,18 @@ import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { metrics } from "lib/metrics";
-import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sleep } from "lib/sleep";
 import { sendExpressTransaction } from "lib/transactions";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
-import { abis } from "sdk/abis";
-import { expandDecimals, USD_DECIMALS } from "sdk/utils/numbers";
-import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
-import { getSwapAmountsByToValue } from "sdk/utils/swap";
-import { convertToTokenAmount } from "sdk/utils/tokens";
-import { SubaccountGelatoRelayRouter } from "typechain-types";
-import { MultichainSubaccountRouter } from "typechain-types-arbitrum-sepolia";
 
+import {
+  estimateArbitraryRelayFee,
+  PreparedGetTxnData,
+  selectArbitraryRelayParamsAndPayload,
+  selectRawBasePreparedRelayParamsPayload,
+} from "components/Synthetics/GmxAccountModal/arbitraryRelayParams";
 import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
 import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
 
@@ -104,7 +92,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         signedApproval,
         isMultichain: srcChainId !== undefined,
       }),
-    };
+    } satisfies Subaccount;
   }, [signedApproval, signer?.address, signer?.provider, srcChainId, subaccountConfig, subaccountData]);
 
   const updateSubaccountSettings = useCallback(
@@ -264,19 +252,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
     if (srcChainId) {
       removeSubaccount = async () => {
-        const marketsInfoData = calcSelector(selectMarketsInfoData);
-        const tokensData = calcSelector(selectTokensData);
-        const expressGlobalParams = calcSelector(selectExpressGlobalParams);
-
-        if (!marketsInfoData || !tokensData || !account || !expressGlobalParams) {
-          throw new Error("No markets info data or tokens data");
-        }
-
-        const relayerFeeToken = getByKey(tokensData, expressGlobalParams.relayerFeeTokenAddress);
-        const gasPaymentToken = getByKey(tokensData, expressGlobalParams.gasPaymentTokenAddress);
-
-        if (!relayerFeeToken || !gasPaymentToken) {
-          throw new Error("No relayer fee token");
+        if (!provider || !account) {
+          throw new Error("No provider or account");
         }
 
         const relayRouterAddress = getExpressContractAddress(chainId, {
@@ -285,109 +262,69 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           scope: "subaccount",
         });
 
-        const relayRouterInstance = new Contract(
-          relayRouterAddress,
-          abis.AbstractUserNonceable,
-          provider
-        ) as unknown as SubaccountGelatoRelayRouter | MultichainSubaccountRouter;
+        const { rawBaseRelayParamsPayload, baseRelayFeeSwapParams } = calcSelector(
+          selectRawBasePreparedRelayParamsPayload
+        );
 
-        const userNonce = await relayRouterInstance.userNonces(account);
-        const externalCalls: ExternalCallsPayload = {
-          sendTokens: [],
-          sendAmounts: [],
-          externalCallTargets: [],
-          externalCallDataList: [],
-          refundTokens: [],
-          refundReceivers: [],
-        };
-
-        const baseRelayerFeeAmount = convertToTokenAmount(
-          expandDecimals(1, USD_DECIMALS - 2),
-          relayerFeeToken.decimals,
-          relayerFeeToken.prices.maxPrice
-        )!;
-
-        const swapAmounts = getSwapAmountsByToValue({
-          tokenIn: gasPaymentToken,
-          tokenOut: relayerFeeToken,
-          amountOut: baseRelayerFeeAmount,
-          isLimit: false,
-          findSwapPath: expressGlobalParams.findFeeSwapPath,
-          uiFeeFactor: 0n,
-        });
-
-        // const baseRelayFeeSwapParams = getRelayerFeeParams({
-        //   chainId: chainId,
-        //   account: account,
-        //   relayerFeeTokenAmount: baseRelayerFeeAmount,
-        //   totalNetworkFeeAmount: baseRelayerFeeAmount,
-        //   relayerFeeTokenAddress: relayerFeeToken.address,
-        //   gasPaymentTokenAddress: gasPaymentToken.address,
-        //   internalSwapAmounts: swapAmounts,
-        //   feeExternalSwapQuote: undefined,
-        //   tokenPermits: [],
-        //   batchExternalCalls: {
-        //     sendTokens: [],
-        //     sendAmounts: [],
-        //     externalCallTargets: [],
-        //     externalCallDataList: [],
-        //     refundTokens: [],
-        //     refundReceivers: [],
-        //   },
-        //   tokensData,
-        //   forceExternalSwaps: getSwapDebugSettings()?.forceExternalSwaps ?? false,
-        //   // TODO: fix
-        //   gasPrice: 0n,
-        //   l1GasLimit: 0n,
-        //   relayerGasLimit: 0n,
-        // });
-
-        const baseRelayFeeSwapParams = getRelayerFeeParams({
-          chainId: chainId,
-          account: account,
-
-          gasPaymentToken,
-          relayerFeeToken,
-          relayerFeeAmount: relayFeeAmount,
-          totalRelayerFeeTokenAmount: networkFee,
-          findFeeSwapPath: findSwapPath,
-
-          transactionExternalCalls: EMPTY_EXTERNAL_CALLS,
-          feeExternalSwapQuote: undefined,
-        });
-
-        if (baseRelayFeeSwapParams === undefined) {
-          throw new Error("No base relay fee swap params");
+        if (!rawBaseRelayParamsPayload || !baseRelayFeeSwapParams) {
+          throw new Error("No base express params");
         }
 
-        // const relayParamsPayload: RelayParamsPayload = {};
-        const relayParamsPayload: MultichainRelayParamsPayload = {
-          oracleParams: getOracleParamsPayload(
-            getOraclePriceParamsForRelayFee({
-              chainId: chainId,
-              marketsInfoData,
-              tokensData,
-
-              relayFeeParams: baseRelayFeeSwapParams,
-            })
-          ),
-          tokenPermits: [],
-          externalCalls,
-          fee: {
-            feeToken: baseRelayFeeSwapParams.gasPaymentTokenAddress,
-            feeAmount: baseRelayFeeSwapParams.totalNetworkFeeAmount,
-            feeSwapPath: [],
-          },
-          userNonce: userNonce,
-          deadline: 9999999999999n,
-          desChainId: BigInt(chainId),
-        };
-        const txnData = await buildAndSignRemoveSubaccountTxn({
-          chainId,
-          signer,
-          subaccount,
+        const getTxnData: PreparedGetTxnData = ({
+          emptySignature,
           relayParamsPayload,
+          relayerFeeAmount,
+          relayerFeeTokenAddress,
+        }) =>
+          buildAndSignRemoveSubaccountTxn({
+            chainId,
+            signer,
+            subaccount,
+            relayParamsPayload,
+            relayerFeeAmount,
+            relayerFeeTokenAddress,
+            emptySignature,
+          });
+
+        const relayerFeeAmount = await estimateArbitraryRelayFee({
+          chainId,
+          relayRouterAddress,
+          provider,
+          account,
+          rawRelayParamsPayload: rawBaseRelayParamsPayload,
+          relayerFeeTokenAddress: baseRelayFeeSwapParams.gasPaymentParams.relayerFeeTokenAddress,
+          relayerFeeAmount: baseRelayFeeSwapParams.gasPaymentParams.totalRelayerFeeTokenAmount,
+          getTxnData,
         });
+
+        if (relayerFeeAmount === undefined) {
+          throw new Error("No relay fee amount");
+        }
+
+        const getRelayParamsAndPayload = calcSelector(selectArbitraryRelayParamsAndPayload);
+
+        if (!getRelayParamsAndPayload) {
+          throw new Error("No get relay params and payload");
+        }
+
+        const { fetchRelayParamsPayload, relayFeeParams } = getRelayParamsAndPayload({
+          relayerFeeAmount,
+        });
+
+        if (!relayFeeParams || !fetchRelayParamsPayload) {
+          throw new Error("No get relayFeeParams or fetchRelayParamsPayload");
+        }
+
+        const txnData = await getTxnData({
+          emptySignature: false,
+          relayerFeeAmount: relayFeeParams.gasPaymentParams.relayerFeeAmount,
+          relayerFeeTokenAddress: relayFeeParams.gasPaymentParams.relayerFeeTokenAddress,
+          relayParamsPayload: await fetchRelayParamsPayload(provider, relayRouterAddress),
+        });
+
+        if (!txnData) {
+          throw new Error("No txnData");
+        }
 
         await sendExpressTransaction({
           chainId,

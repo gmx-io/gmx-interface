@@ -35,17 +35,22 @@ export async function removeSubaccountWalletTxn(
   });
 }
 
-// TODO: make it work with multichain
 export async function buildAndSignRemoveSubaccountTxn({
   chainId,
   relayParamsPayload,
   subaccount,
   signer,
+  relayerFeeTokenAddress,
+  relayerFeeAmount,
+  emptySignature,
 }: {
   chainId: UiContractsChain;
   relayParamsPayload: RelayParamsPayload | MultichainRelayParamsPayload;
   subaccount: Subaccount;
   signer: WalletSigner;
+  relayerFeeTokenAddress: string;
+  relayerFeeAmount: bigint;
+  emptySignature?: boolean;
 }): Promise<ExpressTxnData> {
   const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
 
@@ -55,12 +60,18 @@ export async function buildAndSignRemoveSubaccountTxn({
     scope: "subaccount",
   });
 
-  const signature = await signRemoveSubaccountPayload({
-    signer,
-    relayParams: relayParamsPayload,
-    subaccountAddress: subaccount.address,
-    chainId,
-  });
+  let signature: string;
+
+  if (emptySignature) {
+    signature = "0x";
+  } else {
+    signature = await signRemoveSubaccountPayload({
+      signer,
+      relayParams: relayParamsPayload,
+      subaccountAddress: subaccount.address,
+      chainId,
+    });
+  }
 
   const removeSubaccountCallData = encodeFunctionData({
     abi: srcChainId !== undefined ? abis.MultichainSubaccountRouterArbitrumSepolia : abis.SubaccountGelatoRelayRouter,
@@ -74,8 +85,8 @@ export async function buildAndSignRemoveSubaccountTxn({
   return {
     callData: removeSubaccountCallData,
     to: relayRouterAddress,
-    feeToken: relayParamsPayload.fee.feeToken,
-    feeAmount: relayParamsPayload.fee.feeAmount,
+    feeToken: relayerFeeTokenAddress,
+    feeAmount: relayerFeeAmount,
   };
 }
 

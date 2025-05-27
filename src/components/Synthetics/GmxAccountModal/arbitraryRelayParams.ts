@@ -57,7 +57,7 @@ export type PreparedGetTxnData = (opts: {
   relayerFeeAmount: bigint;
 }) => Promise<ExpressTxnData | undefined>;
 
-const selectRawBasePreparedRelayParamsPayload = createSelector<
+export const selectRawBasePreparedRelayParamsPayload = createSelector<
   Partial<{
     rawBaseRelayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload | undefined;
     baseRelayFeeSwapParams: {
@@ -194,7 +194,7 @@ const EMPTY_EXTERNAL_CALLS: ExternalCallsPayload = {
   refundReceivers: [],
 };
 
-async function estimateArbitraryRelayFee({
+export async function estimateArbitraryRelayFee({
   chainId,
   relayRouterAddress,
   provider,
@@ -247,8 +247,8 @@ async function estimateArbitraryRelayFee({
   return fee;
 }
 
-const selectArbitraryRelayParamsAndPayload = createSelector(function selectArbitraruRelayParamsAndPayload(q):
-  | ((dynamicFees: { relayFeeAmount: bigint; additionalNetworkFee?: bigint }) => Partial<{
+export const selectArbitraryRelayParamsAndPayload = createSelector(function selectArbitraruRelayParamsAndPayload(q):
+  | ((dynamicFees: { relayerFeeAmount: bigint; additionalNetworkFee?: bigint }) => Partial<{
       relayFeeParams: {
         feeParams: RelayFeePayload;
         externalCalls: ExternalCallsPayload;
@@ -279,8 +279,8 @@ const selectArbitraryRelayParamsAndPayload = createSelector(function selectArbit
     return undefined;
   }
 
-  return ({ relayFeeAmount, additionalNetworkFee }: { relayFeeAmount: bigint; additionalNetworkFee?: bigint }) => {
-    if (relayFeeAmount === undefined) {
+  return ({ relayerFeeAmount, additionalNetworkFee }: { relayerFeeAmount: bigint; additionalNetworkFee?: bigint }) => {
+    if (relayerFeeAmount === undefined) {
       return {
         relayFeeParams: undefined,
         relayParamsPayload: undefined,
@@ -290,7 +290,7 @@ const selectArbitraryRelayParamsAndPayload = createSelector(function selectArbit
       };
     }
 
-    const networkFee = relayFeeAmount + (additionalNetworkFee ?? 0n);
+    const networkFee = relayerFeeAmount + (additionalNetworkFee ?? 0n);
 
     const relayFeeParams = getRelayerFeeParams({
       chainId: chainId,
@@ -298,7 +298,7 @@ const selectArbitraryRelayParamsAndPayload = createSelector(function selectArbit
 
       gasPaymentToken,
       relayerFeeToken,
-      relayerFeeAmount: relayFeeAmount,
+      relayerFeeAmount: relayerFeeAmount,
       totalRelayerFeeTokenAmount: networkFee,
       findFeeSwapPath: findSwapPath,
 
@@ -401,7 +401,7 @@ export function useArbitraryRelayParamsAndPayload(
     if (relayFeeAmount === undefined || !getRelayParamsAndPayload) {
       return undefined;
     }
-    return getRelayParamsAndPayload({ relayFeeAmount, additionalNetworkFee });
+    return getRelayParamsAndPayload({ relayerFeeAmount: relayFeeAmount, additionalNetworkFee });
   }, [additionalNetworkFee, getRelayParamsAndPayload, relayFeeAmount]);
 
   const internalFetchRelayParamsPayload = relayParamsAndPayload?.fetchRelayParamsPayload;
