@@ -2914,6 +2914,10 @@ msgstr ""
 msgid "V1 Arbitrum"
 msgstr ""
 
+#: src/components/Synthetics/MarketStats/MarketGraphs.tsx
+msgid "Fee APR"
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
 msgstr ""
@@ -7635,7 +7639,6 @@ msgid "Enter unique coins"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmListItem.tsx
-#: src/components/Synthetics/MarketStats/MarketGraphs.tsx
 #: src/components/Synthetics/MarketStats/MarketGraphs.tsx
 msgid "Fee APY"
 msgstr ""

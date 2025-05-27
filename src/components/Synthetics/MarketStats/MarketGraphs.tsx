@@ -1,3 +1,4 @@
+import { MessageDescriptor } from "@lingui/core";
 import { msg, t } from "@lingui/macro";
 import cx from "classnames";
 import format from "date-fns/format";
@@ -16,7 +17,7 @@ import {
 import { isGlvEnabled, isGlvInfo } from "domain/synthetics/markets/glv";
 import { PerformanceSnapshot, PriceSnapshot, formatPerformanceBps } from "domain/synthetics/markets/performance";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
-import { ApySnapshot, useGmGlvApySnapshots } from "domain/synthetics/markets/useGmGlvApySnapshots";
+import { AprSnapshot, useGmGlvAprSnapshots } from "domain/synthetics/markets/useGmGlvAprSnapshots";
 import { useGmGlvPerformance } from "domain/synthetics/markets/useGmGlvPerformance";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { POOLS_TIME_RANGE_OPTIONS, convertPoolsTimeRangeToPeriod } from "domain/synthetics/markets/usePoolsTimeRange";
@@ -33,20 +34,20 @@ import { PoolsDetailsCard } from "pages/PoolsDetails/PoolsDetailsCard";
 
 import { PoolsTabs } from "../PoolsTabs/PoolsTabs";
 
-const MARKET_GRAPHS_TYPES = ["performance", "price", "feeApy"] as const;
+const MARKET_GRAPHS_TYPES = ["performance", "price", "feeApr"] as const;
 
 export type MarketGraphType = (typeof MARKET_GRAPHS_TYPES)[number];
 
-const MARKET_GRAPHS_TABS_LABELS = {
+const MARKET_GRAPHS_TABS_LABELS: Record<MarketGraphType, MessageDescriptor> = {
   performance: msg`Performance`,
   price: msg`Price`,
-  feeApy: msg`Fee APY`,
+  feeApr: msg`Fee APR`,
 };
 
-const MARKET_GRAPHS_TITLE_LABELS = {
+const MARKET_GRAPHS_TITLE_LABELS: Record<MarketGraphType, MessageDescriptor> = {
   performance: msg`Annualized performance`,
   price: msg`Current Price`,
-  feeApy: msg`Fee APY`,
+  feeApr: msg`Fee APY`,
 };
 
 const getGraphValue = ({
@@ -76,7 +77,7 @@ const getGraphValue = ({
   const valuesMap: Record<MarketGraphType, string | undefined> = {
     performance: performance ? formatPerformanceBps(performance) : undefined,
     price: tokenPrice ? formatUsdPrice(tokenPrice) : undefined,
-    feeApy: apy ? formatPercentage(apy, { bps: false }) : undefined,
+    feeApr: apy ? formatPercentage(apy, { bps: false }) : undefined,
   };
 
   return valuesMap[marketGraphType];
@@ -118,7 +119,7 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
       tokenAddresses,
     });
 
-  const { apySnapshots } = useGmGlvApySnapshots({
+  const { aprSnapshots } = useGmGlvAprSnapshots({
     chainId,
     period: convertPoolsTimeRangeToPeriod(timeRange),
     tokenAddresses: [address],
@@ -126,7 +127,7 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
 
   const isGlv = isGlvInfo(glvOrMarketInfo);
 
-  const apySnapshotsByAddress = apySnapshots?.[address] ?? EMPTY_ARRAY;
+  const aprSnapshotsByAddress = aprSnapshots?.[address] ?? EMPTY_ARRAY;
   const priceSnapshotsByAddress = prices?.[address] ?? EMPTY_ARRAY;
 
   const isMobile = usePoolsIsMobilePage();
@@ -190,7 +191,7 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
             }
             priceSnapshots={priceSnapshotsByAddress}
             marketGraphType={marketGraphType}
-            apySnapshots={apySnapshotsByAddress}
+            aprSnapshots={aprSnapshotsByAddress}
           />
           {isMobile ? <div className="flex justify-center">{poolsTabs}</div> : null}
         </div>
@@ -223,7 +224,7 @@ const valueFormatter = (marketGraphType: MarketGraphType) => (value: number) => 
   const valueMap: Record<MarketGraphType, string> = {
     performance: formatPerformanceBps(value),
     price: formatUsdPrice(parseValue(value.toString(), USD_DECIMALS) ?? 0n) || "",
-    feeApy: `${Number(value.toFixed(2))}%`,
+    feeApr: `${Number(value.toFixed(2))}%`,
   };
 
   return valueMap[marketGraphType];
@@ -237,7 +238,7 @@ const axisValueFormatter = (marketGraphType: MarketGraphType) => (value: number)
   const valueMap: Record<MarketGraphType, string> = {
     performance: formatPerformanceBps(value),
     price: value.toString(),
-    feeApy: `${Number(value.toFixed(2))}%`,
+    feeApr: `${Number(value.toFixed(2))}%`,
   };
 
   return valueMap[marketGraphType];
@@ -247,12 +248,12 @@ const GraphChart = ({
   performanceSnapshots,
   priceSnapshots,
   marketGraphType,
-  apySnapshots,
+  aprSnapshots,
 }: {
   performanceSnapshots: PerformanceSnapshot[];
   priceSnapshots: PriceSnapshot[];
   marketGraphType: MarketGraphType;
-  apySnapshots: ApySnapshot[];
+  aprSnapshots: AprSnapshot[];
 }) => {
   const performanceData = useMemo(
     () =>
@@ -280,18 +281,18 @@ const GraphChart = ({
 
   const apyData = useMemo(
     () =>
-      apySnapshots.map((snapshot) => ({
+      aprSnapshots.map((snapshot) => ({
         snapshotTimestamp: new Date(snapshot.snapshotTimestamp * 1000),
-        value: bigintToNumber(snapshot.apy, 28),
+        value: bigintToNumber(BigInt(snapshot.aprByFee) + BigInt(snapshot.aprByBorrowingFee), 28),
       })),
-    [apySnapshots]
+    [aprSnapshots]
   );
 
   const data = useMemo(
     (): Record<MarketGraphType, GraphData[]> => ({
       performance: performanceData,
       price: priceData,
-      feeApy: apyData,
+      feeApr: apyData,
     }),
     [performanceData, priceData, apyData]
   );

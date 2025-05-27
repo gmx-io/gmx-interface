@@ -2914,6 +2914,10 @@ msgstr "V2 doesn't currently support this network"
 msgid "V1 Arbitrum"
 msgstr "V1 Arbitrum"
 
+#: src/components/Synthetics/MarketStats/MarketGraphs.tsx
+msgid "Fee APR"
+msgstr "Fee APR"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
 msgstr "SL"
@@ -7641,7 +7645,6 @@ msgid "Enter unique coins"
 msgstr "Enter unique coins"
 
 #: src/components/Synthetics/GmList/GmListItem.tsx
-#: src/components/Synthetics/MarketStats/MarketGraphs.tsx
 #: src/components/Synthetics/MarketStats/MarketGraphs.tsx
 msgid "Fee APY"
 msgstr "Fee APY"
