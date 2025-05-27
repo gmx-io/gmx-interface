@@ -108,6 +108,7 @@ export function MultichainTokenSelector({
   useEffect(() => {
     if (isModalVisible) {
       setSearchKeyword("");
+      setActiveFilter("pay");
     }
   }, [isModalVisible, setSearchKeyword]);
 
@@ -147,7 +148,7 @@ export function MultichainTokenSelector({
                 <Trans>To begin trading on GMX deposit assets into GMX account</Trans>
               </div>
             ) : (
-              <div className="mt-8 flex gap-4">
+              <div className="mt-16 flex gap-4">
                 <Button
                   type="button"
                   variant="ghost"
@@ -324,8 +325,7 @@ function AvailableToTradeTokenList({
         return (
           <div
             key={token.address + "_" + (token.isGmxAccount ? "gmx" : "settlement")}
-            // data-qa={`${qa}-token-${token.symbol}`}
-            className="gmx-hover-gradient flex cursor-pointer justify-between px-16 py-8"
+            className="gmx-hover-gradient flex cursor-pointer items-center justify-between px-16 py-8"
             onClick={() => onSelectTokenAddress(token.address, token.isGmxAccount)}
           >
             <div className="flex items-center gap-8">
@@ -337,18 +337,18 @@ function AvailableToTradeTokenList({
                 chainIdBadge={token.isGmxAccount ? 0 : chainId}
               />
 
-              <div className="">
+              <div>
                 <div className="text-body-large">{token.symbol}</div>
                 <span className="text-body-small text-slate-100">{token.name}</span>
               </div>
             </div>
-            <div className="">
+            <div className="text-right">
               <div className="text-body-large">
                 {token.balance > 0n && formatBalanceAmount(token.balance, token.decimals)}
                 {token.balance == 0n && "-"}
               </div>
 
-              <span className="text-accent">
+              <span className="text-body-small text-slate-100">
                 {token.balanceUsd > 0n && <div>${formatAmount(token.balanceUsd, USD_DECIMALS, 2, true)}</div>}
               </span>
             </div>
@@ -444,38 +444,40 @@ function MultichainTokenList({
         return (
           <div
             key={token.address + "_" + token.sourceChainId}
-            // data-qa={`${qa}-token-${token.symbol}`}
-            className={cx("TokenSelector-token-row")}
+            className="gmx-hover-gradient-to-l group flex cursor-pointer items-center justify-between px-16 py-8"
             onClick={() => onDepositTokenAddress(token.address, token.sourceChainId)}
           >
-            <div className="Token-info">
+            <div className="flex items-center gap-8">
               <TokenIcon
                 symbol={token.symbol}
-                className="token-logo"
+                className="size-40"
                 displaySize={40}
                 importSize={40}
                 chainIdBadge={token.sourceChainId}
               />
 
-              <div className="Token-symbol">
-                <div className="Token-text">{token.symbol}</div>
-                <span className="text-accent">{token.name}</span>
+              <div>
+                <div className="text-body-large">{token.symbol}</div>
+                <span className="text-body-small text-slate-100">{token.name}</span>
               </div>
             </div>
-            <div className="Token-balance">
+            <div className="text-right group-gmx-hover:hidden">
               {(token.sourceChainBalance !== undefined && (
-                <div className="Token-text">
+                <div className="text-body-large">
                   {token.sourceChainBalance > 0 &&
                     formatBalanceAmount(token.sourceChainBalance, token.sourceChainDecimals)}
                   {token.sourceChainBalance == 0n && "-"}
                 </div>
               )) ||
                 null}
-              <span className="text-accent">
+              <span className="text-body-small text-slate-100">
                 {token.sourceChainBalanceUsd !== undefined && token.sourceChainBalanceUsd > 0 && (
                   <div>${formatAmount(token.sourceChainBalanceUsd, USD_DECIMALS, 2, true)}</div>
                 )}
               </span>
+            </div>
+            <div className="not-group-gmx-hover:hidden text-right">
+              <Trans>Deposit</Trans>
             </div>
           </div>
         );
