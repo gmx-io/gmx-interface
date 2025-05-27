@@ -84,12 +84,10 @@ export const DepositView = () => {
   const [depositViewTokenAddress, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
   const [inputValue, setInputValue] = useGmxAccountDepositViewTokenInputValue();
   const { tokenChainDataArray: multichainTokens, isPriceDataLoading } = useMultichainTokensRequest();
+  const [isApproving, setIsApproving] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const {
-    setMultichainSubmittedDeposit,
-    setMultichainSubmittedDepositSentTxn,
-    setMultichainSubmittedDepositSubmitError,
-  } = useSyntheticsEvents();
+  const { setMultichainSubmittedDeposit } = useSyntheticsEvents();
 
   const selectedToken =
     depositViewTokenAddress !== undefined ? getToken(settlementChainId, depositViewTokenAddress) : undefined;
@@ -181,8 +179,6 @@ export const DepositView = () => {
     selectedTokenSourceChainBalanceUsd,
   ]);
 
-  const [isApproving, setIsApproving] = useState(false);
-
   const spenderAddress =
     // Only when DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT
     (srcChainId as UiSupportedChain) === settlementChainId
@@ -231,6 +227,8 @@ export const DepositView = () => {
       approveAmount: undefined,
     });
   }, [srcChainId, depositViewTokenAddress, inputAmount, selectedTokenSourceChainTokenId, signer, spenderAddress]);
+
+  const isInputEmpty = inputAmount === undefined || inputAmount <= 0n;
 
   const { composeGas } = useMultichainDepositNetworkComposeGas();
 
@@ -480,6 +478,8 @@ export const DepositView = () => {
         return;
       }
 
+      setIsSubmitting(true);
+
       // const metricData = initMultichainDepositMetricData({
       //   assetAddress: depositViewTokenAddress,
       //   assetSymbol: selectedToken!.symbol,
@@ -496,13 +496,6 @@ export const DepositView = () => {
       const isNative = sourceChainTokenAddress === zeroAddress;
       const value = isNative ? inputAmount : 0n;
 
-      const depositStubId = setMultichainSubmittedDeposit({
-        amount: sendParamsWithSlippage.amountLD as bigint,
-        settlementChainId,
-        sourceChainId: srcChainId,
-        tokenAddress: depositViewTokenAddress,
-      });
-
       await sendWalletTransaction({
         chainId: srcChainId,
         to: sourceChainStargateAddress,
@@ -515,12 +508,8 @@ export const DepositView = () => {
         value: (quoteSend.nativeFee as bigint) + value,
         callback: (txnEvent) => {
           if (txnEvent.event === TxnEventName.Error) {
-            if (depositStubId) {
-              setMultichainSubmittedDepositSubmitError(depositStubId);
-            }
-
+            setIsSubmitting(false);
             const data = txnEvent.data.error.info?.error?.data as Hex | undefined;
-
             if (data) {
               const error = decodeErrorResult({
                 abi: StargateErrorsAbi,
@@ -551,9 +540,16 @@ export const DepositView = () => {
             }
           } else if (txnEvent.event === TxnEventName.Sent) {
             setIsVisibleOrView("main");
+            setIsSubmitting(false);
 
-            if (depositStubId && txnEvent.data.type === "wallet") {
-              setMultichainSubmittedDepositSentTxn(depositStubId, txnEvent.data.transactionHash);
+            if (txnEvent.data.type === "wallet") {
+              setMultichainSubmittedDeposit({
+                amount: sendParamsWithSlippage.amountLD as bigint,
+                settlementChainId,
+                sourceChainId: srcChainId,
+                tokenAddress: depositViewTokenAddress,
+                sentTxn: txnEvent.data.transactionHash,
+              });
             }
           }
         },
@@ -573,8 +569,6 @@ export const DepositView = () => {
     sendParamsWithSlippage,
     selectedTokenSourceChainTokenId,
     setMultichainSubmittedDeposit,
-    setMultichainSubmittedDepositSubmitError,
-    setMultichainSubmittedDepositSentTxn,
   ]);
 
   useEffect(
@@ -653,8 +647,16 @@ export const DepositView = () => {
       return { text: t`Allow ${selectedToken?.symbol} to be spent`, onClick: handleApprove };
     }
 
+    if (isInputEmpty) {
+      return { text: t`Enter deposit amount`, disabled: true };
+    }
+
+    if (isSubmitting) {
+      return { text: t`Depositing...`, disabled: true };
+    }
+
     return { text: t`Deposit`, onClick: handleDeposit };
-  }, [isApproving, needTokenApprove, handleDeposit, selectedToken?.symbol, handleApprove]);
+  }, [isApproving, needTokenApprove, isInputEmpty, isSubmitting, handleDeposit, selectedToken?.symbol, handleApprove]);
 
   let placeholder = "";
   if (inputValue === "" && selectedToken?.symbol) {
@@ -807,7 +809,7 @@ export const DepositView = () => {
         />
       </div>
 
-      <Button variant="primary" className="w-full" onClick={buttonState.onClick}>
+      <Button variant="primary" className="w-full" onClick={buttonState.onClick} disabled={buttonState.disabled}>
         {buttonState.text}
       </Button>
     </div>

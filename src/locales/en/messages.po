@@ -5887,6 +5887,10 @@ msgstr "{0} {1} not supported"
 msgid "Limit size is required"
 msgstr "Limit size is required"
 
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "From Network"
+msgstr "From Network"
+
 #: src/pages/Buy/Buy.tsx
 #: src/pages/Home/Home.tsx
 msgid "Protocol Tokens"
@@ -6073,6 +6077,10 @@ msgstr "Withdrawn!"
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "3rd Place"
 msgstr "3rd Place"
+
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "Enter deposit amount"
+msgstr "Enter deposit amount"
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
@@ -6855,6 +6863,7 @@ msgstr "Could not execute deposit into {0} {longOrShortText}"
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/TradeHistory/keys.ts
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/pages/Earn/VesterDepositModal.tsx
 #: src/pages/Earn/VesterDepositModal.tsx
 #: src/pages/Earn/Vesting.tsx
@@ -8279,6 +8288,7 @@ msgid "Accrued price impact rebates. They will become claimable after approximat
 msgstr "Accrued price impact rebates. They will become claimable after approximately ten days.<0/><1/><2>Read more</2>."
 
 #: src/components/Exchange/PositionEditor.jsx
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Depositing..."
 msgstr "Depositing..."

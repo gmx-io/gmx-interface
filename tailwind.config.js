@@ -120,6 +120,10 @@ function customUtilsAndComponentsPlugin({ addUtilities, addComponents, addVarian
     `@media (hover: hover) {:merge(.group):hover &}`,
     `@media (hover: none) {:merge(.group):active &}`,
   ]);
+  addVariant("not-group-gmx-hover", [
+    `@media (hover: hover) {:merge(.group):not(:hover) &}`,
+    `@media (hover: none) {:merge(.group):not(:active) &}`,
+  ]);
 
   addUtilities({
     ".text-input-bg": {
@@ -131,6 +135,9 @@ function customUtilsAndComponentsPlugin({ addUtilities, addComponents, addVarian
   addComponents({
     ".gmx-hover-gradient": {
       "@apply gmx-hover:bg-gradient-to-r gmx-hover:from-[#23263B] gmx-hover:to-[#16182E]": {},
+    },
+    ".gmx-hover-gradient-to-l": {
+      "@apply gmx-hover:bg-gradient-to-l gmx-hover:from-[#23263B] gmx-hover:to-[#16182E]": {},
     },
   });
 }

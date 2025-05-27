@@ -28,8 +28,6 @@ import type { PendingMultichainFunding, SubmittedDeposit } from "./types";
 export type MultichainEventsState = {
   pendingMultichainFunding: PendingMultichainFunding;
   setMultichainSubmittedDeposit: (submittedDeposit: SubmittedDeposit) => string | undefined;
-  setMultichainSubmittedDepositSentTxn: (stubId: string, sentTxn: string) => void;
-  setMultichainSubmittedDepositSubmitError: (stubId: string) => void;
   multichainFundingPendingIds: Record<
     // Stub id for persistence
     string,
@@ -114,12 +112,7 @@ export function usePendingMultichainFunding({ hasPageLostFocus }: { hasPageLostF
             const newPendingMultichainFunding: PendingMultichainFunding = structuredClone(prev);
 
             const currentSubmittingDepositIndex = newPendingMultichainFunding.deposits.submitted.findIndex(
-              (deposit) =>
-                deposit.sentTxn === info.txnHash ||
-                (deposit.sentAmount === info.amountSentLD &&
-                  deposit.sourceChainId === srcChainId &&
-                  deposit.settlementChainId === chainId &&
-                  deposit.token === tokenAddress)
+              (deposit) => deposit.sentTxn === info.txnHash
             );
 
             if (currentSubmittingDepositIndex === -1) {
@@ -318,42 +311,6 @@ export function usePendingMultichainFunding({ hasPageLostFocus }: { hasPageLostF
         setMultichainFundingPendingIds((prev) => ({ ...prev, [stubId]: stubId }));
 
         return stubId;
-      },
-      setMultichainSubmittedDepositSentTxn: (stubId, sentTxn) => {
-        setPendingMultichainFunding((prev) => {
-          const newPendingMultichainFunding = structuredClone(prev);
-
-          const submittedDeposit = newPendingMultichainFunding.deposits.submitted.find(
-            (deposit) => deposit.id === stubId
-          );
-
-          if (!submittedDeposit) {
-            return newPendingMultichainFunding;
-          }
-
-          submittedDeposit.sentTxn = sentTxn;
-          submittedDeposit.step = "sent";
-          submittedDeposit.sentTimestamp = nowInSeconds();
-
-          return newPendingMultichainFunding;
-        });
-      },
-      setMultichainSubmittedDepositSubmitError: (stubId) => {
-        setPendingMultichainFunding((prev) => {
-          const newPendingMultichainFunding = structuredClone(prev);
-
-          const submittedDepositIndex = newPendingMultichainFunding.deposits.submitted.findIndex(
-            (deposit) => deposit.id === stubId
-          );
-
-          if (submittedDepositIndex === -1) {
-            return newPendingMultichainFunding;
-          }
-
-          newPendingMultichainFunding.deposits.submitted.splice(submittedDepositIndex, 1);
-
-          return newPendingMultichainFunding;
-        });
       },
     }),
     [chainId, currentAccount, pendingMultichainFunding, srcChainId, multichainFundingPendingIds]

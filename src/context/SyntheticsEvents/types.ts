@@ -109,6 +109,7 @@ export type SubmittedDeposit = {
   settlementChainId: number;
   sourceChainId: number;
   tokenAddress: string;
+  sentTxn: string;
 };
 export type PendingMultichainFunding = {
   deposits: {

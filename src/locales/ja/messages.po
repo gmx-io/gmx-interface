@@ -5884,6 +5884,10 @@ msgstr ""
 msgid "Limit size is required"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "From Network"
+msgstr ""
+
 #: src/pages/Buy/Buy.tsx
 #: src/pages/Home/Home.tsx
 msgid "Protocol Tokens"
@@ -6069,6 +6073,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "3rd Place"
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "Enter deposit amount"
 msgstr ""
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
@@ -6849,6 +6857,7 @@ msgstr "{0} {longOrShortText}への入金を実行できませんでした"
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/TradeHistory/keys.ts
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/pages/Earn/VesterDepositModal.tsx
 #: src/pages/Earn/VesterDepositModal.tsx
 #: src/pages/Earn/Vesting.tsx
@@ -8273,6 +8282,7 @@ msgid "Accrued price impact rebates. They will become claimable after approximat
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Depositing..."
 msgstr "入金中..."
