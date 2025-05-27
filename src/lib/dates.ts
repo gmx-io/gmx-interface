@@ -36,7 +36,7 @@ export function getTimestampByDaysAgo(daysAgo: number) {
   return Math.floor(Date.now() / 1000 / 86400) * 86400 - daysAgo * 24 * 60 * 60;
 }
 
-function toSeconds(date: Date) {
+export function toSeconds(date: Date) {
   return Math.round(date.getTime() / 1000);
 }
 
@@ -60,7 +60,10 @@ const INCLUDING_CURRENT_DAY_DURATION = {
   milliseconds: 0,
 };
 
-function normalizeDateRange(start: Date | undefined, end: Date | undefined): [number | undefined, number | undefined] {
+export function normalizeDateRange(
+  start: Date | undefined,
+  end: Date | undefined
+): [number | undefined, number | undefined] {
   const fromTxTimestamp = start ? toSeconds(setTime(start, START_OF_DAY_DURATION)) : undefined;
   const toTxTimestamp = end ? toSeconds(setTime(end, INCLUDING_CURRENT_DAY_DURATION)) : undefined;
 

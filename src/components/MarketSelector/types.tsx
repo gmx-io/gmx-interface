@@ -34,7 +34,7 @@ export type MarketOption = {
   indexName: string;
   poolName: string;
   name: string;
-  marketInfo: GlvOrMarketInfo;
+  glvOrMarketInfo: GlvOrMarketInfo;
   balance: bigint;
   balanceUsd: bigint;
   state?: MarketState;
