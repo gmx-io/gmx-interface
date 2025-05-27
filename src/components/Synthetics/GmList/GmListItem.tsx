@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import cx from "classnames";
 import React from "react";
 import { FaChevronRight } from "react-icons/fa";
 import { Line, LineChart } from "recharts";
@@ -16,7 +17,7 @@ import {
   getMarketPoolName,
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { PerformanceSnapshot } from "domain/synthetics/markets/performance";
+import { PerformanceSnapshot, formatPerformanceBps } from "domain/synthetics/markets/performance";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { PerformanceSnapshotsData } from "domain/synthetics/markets/useGmGlvPerformance";
 import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformance";
@@ -95,7 +96,7 @@ export function GmListItem({
 
   const isMobile = usePoolsIsMobilePage();
 
-  if (!token || !indexToken || !longToken || !shortToken) {
+  if (!token || !indexToken || !longToken || !shortToken || !marketOrGlv) {
     return null;
   }
 
@@ -136,7 +137,7 @@ export function GmListItem({
               <div className="flex text-16">
                 {isGlv
                   ? getGlvDisplayName(marketOrGlv)
-                  : getMarketIndexName({ indexToken, isSpotOnly: Boolean(marketOrGlv?.isSpotOnly) })}
+                  : getMarketIndexName({ indexToken, isSpotOnly: marketOrGlv.isSpotOnly })}
 
                 <div className="inline-block">
                   <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
@@ -155,7 +156,10 @@ export function GmListItem({
               />
             </div>
 
-            <ButtonLink className="ml-16 bg-button p-16 pr-14" to={`/pools/details?market=${marketOrGlvTokenAddress}`}>
+            <ButtonLink
+              className="ml-16 bg-[#252B57] p-16 pr-14"
+              to={`/pools/details?market=${marketOrGlvTokenAddress}`}
+            >
               <FaChevronRight size={12} className="text-slate-100" />
             </ButtonLink>
           </div>
@@ -164,7 +168,7 @@ export function GmListItem({
         <div className="flex flex-col gap-10 border-t border-stroke-primary pt-8">
           <SyntheticsInfoRow
             label={<Trans>Performance</Trans>}
-            value={performance ? `${Math.round(performance * 10000) / 100}%` : "..."}
+            value={performance ? formatPerformanceBps(performance) : "..."}
           />
           <SyntheticsInfoRow
             label={<Trans>Fee APY</Trans>}
@@ -178,7 +182,7 @@ export function GmListItem({
                 decimals={token.decimals}
                 usd={totalSupplyUsd}
                 symbol={token.symbol}
-                reversed
+                usdOnTop
               />
             }
           />
@@ -248,7 +252,7 @@ export function GmListItem({
           decimals={token.decimals}
           usd={totalSupplyUsd}
           symbol={token.symbol}
-          reversed
+          usdOnTop
         />
       </TableTd>
       <TableTd>
@@ -265,7 +269,7 @@ export function GmListItem({
         <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />
       </TableTd>
 
-      <TableTd>{performance ? <div>{`${Math.round(performance * 10000) / 100}%`}</div> : "..."}</TableTd>
+      <TableTd>{performance ? <div>{formatPerformanceBps(performance)}</div> : "..."}</TableTd>
 
       <TableTd>
         <SnapshotGraph performanceSnapshots={performanceSnapshots ?? EMPTY_ARRAY} performance={performance ?? 0} />
@@ -294,6 +298,9 @@ const DESKTOP_SNAPSHOT_GRAPH_SIZE = {
   height: 30,
 };
 
+const MOBILE_GRAPH_SIZE_CLASSNAME = `h-[${MOBILE_SNAPSHOT_GRAPH_SIZE.height}px] w-[${MOBILE_SNAPSHOT_GRAPH_SIZE.width}px]`;
+const DESKTOP_GRAPH_SIZE_CLASSNAME = `h-[${DESKTOP_SNAPSHOT_GRAPH_SIZE.height}px] w-[${DESKTOP_SNAPSHOT_GRAPH_SIZE.width}px]`;
+
 const SnapshotGraph = ({
   performanceSnapshots,
   performance,
@@ -307,7 +314,12 @@ const SnapshotGraph = ({
   const size = isMobile ? MOBILE_SNAPSHOT_GRAPH_SIZE : DESKTOP_SNAPSHOT_GRAPH_SIZE;
 
   return (
-    <div className={`h-[${size.height}px] w-[${size.width}px]`}>
+    <div
+      className={cx({
+        [MOBILE_GRAPH_SIZE_CLASSNAME]: isMobile,
+        [DESKTOP_GRAPH_SIZE_CLASSNAME]: !isMobile,
+      })}
+    >
       <LineChart width={size.width} height={size.height} data={performanceSnapshots}>
         <Line
           dataKey="performance"

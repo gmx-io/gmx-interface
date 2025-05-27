@@ -99,6 +99,8 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
           <DashboardV2 />
         </SyntheticsStateContextProvider>
       </Route>
+      {/* redirect from previous dashboard url */}
+      <Redirect exact from="/dashboard" to="/stats" />
       <Route exact path="/monitor/v1">
         <Stats />
       </Route>

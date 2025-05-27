@@ -85,19 +85,21 @@ export function CompositionTable<T extends CompositionType>({ composition, compo
 }
 
 const CompositionTableRow = ({ item, sum }: { item: CompositionItem; sum: bigint }) => {
+  const tokenColor =
+    TOKEN_COLOR_MAP[item.type === "market" ? item.market.indexToken.symbol : item.token.symbol] ??
+    TOKEN_COLOR_MAP.default;
+
+  const tokenCircleStyles = useMemo(() => {
+    return {
+      backgroundColor: tokenColor,
+    };
+  }, [tokenColor]);
+
   return (
     <TableTr className="pointer-events-none !border-0">
       <TableTd>
         <div className="flex flex-row items-center gap-8">
-          <span
-            className="inline-block h-10 w-10 shrink-0 rounded-10"
-            // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-            style={{
-              backgroundColor:
-                TOKEN_COLOR_MAP[item.type === "market" ? item.market.indexToken.symbol : item.token.symbol] ??
-                TOKEN_COLOR_MAP.default,
-            }}
-          />
+          <span className="inline-block h-10 w-10 shrink-0 rounded-10" style={tokenCircleStyles} />
           <TokenIcon
             symbol={item.type === "market" ? item.market.indexToken.symbol : item.token.symbol}
             displaySize={24}

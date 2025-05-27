@@ -128,12 +128,12 @@ export function GlvList({
                       handle={t`PERFORMANCE`}
                       className="normal-case"
                       position="bottom-end"
-                      renderContent={() => (
+                      content={
                         <Trans>
                           Pool returns compared to the benchmark, based on UNI V2-style rebalancing of the long-short
                           token in the corresponding GM or GLV.
                         </Trans>
-                      )}
+                      }
                     />
                   </TableTh>
 
@@ -142,9 +142,7 @@ export function GlvList({
                       handle={t`SNAPSHOT`}
                       className="normal-case"
                       position="bottom-end"
-                      renderContent={() => (
-                        <Trans>Graph showing performance vs benchmark over the selected period.</Trans>
-                      )}
+                      content={<Trans>Graph showing performance vs benchmark over the selected period.</Trans>}
                     />
                   </TableTh>
 

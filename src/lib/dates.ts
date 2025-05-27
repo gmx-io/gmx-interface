@@ -60,7 +60,10 @@ const INCLUDING_CURRENT_DAY_DURATION = {
   milliseconds: 0,
 };
 
-function normalizeDateRange(start: Date | undefined, end: Date | undefined): [number | undefined, number | undefined] {
+export function normalizeDateRange(
+  start: Date | undefined,
+  end: Date | undefined
+): [number | undefined, number | undefined] {
   const fromTxTimestamp = start ? toSeconds(setTime(start, START_OF_DAY_DURATION)) : undefined;
   const toTxTimestamp = end ? toSeconds(setTime(end, INCLUDING_CURRENT_DAY_DURATION)) : undefined;
 

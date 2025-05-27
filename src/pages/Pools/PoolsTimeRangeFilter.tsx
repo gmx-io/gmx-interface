@@ -24,13 +24,14 @@ export default function PoolsTimeRangeFilter({
   const labelsMap = useLocalizedMap(LABEL_BY_POOLS_TIME_RANGE);
 
   const tabs = useMemo(
-    () => POOLS_TIME_RANGE_OPTIONS.map((item) => ({
-      label: labelsMap[item],
-      value: item,
-    })),
-    [labelsMap],
+    () =>
+      POOLS_TIME_RANGE_OPTIONS.map((item) => ({
+        label: labelsMap[item],
+        value: item,
+      })),
+    [labelsMap]
   );
-  
+
   return (
     <PoolsTabs<PoolsTimeRange>
       tabs={tabs}

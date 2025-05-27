@@ -1,4 +1,3 @@
-
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import { getMarketIndexName } from "domain/synthetics/markets/utils";

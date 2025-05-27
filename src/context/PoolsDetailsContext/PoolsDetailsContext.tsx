@@ -8,7 +8,7 @@ import { getByKey } from "lib/objects";
 import useRouteQuery from "lib/useRouteQuery";
 
 import { getGmSwapBoxAvailableModes } from "components/Synthetics/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
-import { Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/types";
+import { Mode, Operation, isMode, isOperation } from "components/Synthetics/GmSwap/GmSwapBox/types";
 
 export type PoolsDetailsQueryParams = {
   market: string;
@@ -46,12 +46,14 @@ export function PoolsDetailsContextProvider({ children }: { children: React.Reac
   const [market, setMarket] = useState(marketFromQueryParams);
 
   useEffect(() => {
-    if (searchParams.get("operation")) {
-      setOperation(searchParams.get("operation") as Operation);
+    const operationFromQueryParams = searchParams.get("operation");
+    if (operationFromQueryParams && isOperation(operationFromQueryParams)) {
+      setOperation(operationFromQueryParams);
     }
 
-    if (searchParams.get("mode")) {
-      setMode(searchParams.get("mode") as Mode);
+    const modeFromQueryParams = searchParams.get("mode");
+    if (modeFromQueryParams && isMode(modeFromQueryParams)) {
+      setMode(modeFromQueryParams);
     }
   }, [searchParams]);
 

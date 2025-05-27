@@ -13,11 +13,12 @@ import Button from "components/Button/Button";
 export function FavoriteTabs({
   favoritesKey,
   className,
-  activeClassName,
+  activeClassName = "",
 }: {
   favoritesKey: TokenFavoriteKey;
   className?: string;
-  activeClassName?: string; }) {
+  activeClassName?: string;
+}) {
   const { tab, setTab } = useTokensFavorites(favoritesKey);
 
   const localizedTabOptionLabels = useLocalizedMap(tokensFavoritesTabOptionLabels);
@@ -31,7 +32,7 @@ export function FavoriteTabs({
           variant={"ghost"}
           className={cx("!text-body-medium !py-7", className, {
             "!bg-cold-blue-500": tab === option,
-            [activeClassName ?? ""]: tab === option,
+            [activeClassName]: activeClassName && tab === option,
           })}
           onClick={() => setTab(option)}
           data-selected={tab === option}

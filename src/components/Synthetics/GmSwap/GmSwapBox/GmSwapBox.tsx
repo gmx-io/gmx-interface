@@ -1,5 +1,4 @@
 import { msg } from "@lingui/macro";
-import cx from "classnames";
 import { useMemo } from "react";
 
 import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -63,7 +62,7 @@ export function GmSwapBox(p: GmSwapBoxProps) {
   );
 
   return (
-    <div className={cx("App-box GmSwapBox")}>
+    <div className="App-box GmSwapBox">
       <Tabs
         options={availableModesTabsOptions}
         selectedValue={mode}

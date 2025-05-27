@@ -1,5 +1,7 @@
 import { t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { FaChevronDown } from "react-icons/fa";
+import { FaChevronUp } from "react-icons/fa";
 
 import { getContract } from "config/contracts";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -27,6 +29,7 @@ import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { MarketState } from "components/MarketSelector/types";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
 import { Operation } from "../types";
 import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
@@ -129,10 +132,12 @@ export function GmShiftBox({
   const hasBalance = selectedToken?.balance !== undefined && selectedToken.balance > 0n;
   const selectedTokenShowMaxButton = hasBalance && (noAmountSet || balanceNotEqualToAmount);
 
-  const selectedTokenDollarAmount =
-    amounts?.fromTokenUsd !== undefined && amounts.fromTokenUsd > 0n ? formatUsd(amounts.fromTokenUsd) : "";
-  const toTokenShowDollarAmount =
-    amounts?.toTokenUsd !== undefined && amounts.toTokenUsd > 0n ? formatUsd(amounts.toTokenUsd) : "";
+  const selectedTokenDollarAmount = formatUsd(
+    amounts?.fromTokenUsd !== undefined && amounts.fromTokenUsd > 0n ? amounts.fromTokenUsd : 0n
+  );
+  const toTokenShowDollarAmount = formatUsd(
+    amounts?.toTokenUsd !== undefined && amounts.toTokenUsd > 0n ? amounts.toTokenUsd : 0n
+  );
 
   const routerAddress = getContract(chainId, "SyntheticsRouter");
 
@@ -242,6 +247,12 @@ export function GmShiftBox({
     return {};
   }, []);
 
+  const [isExecutionDetailsOpen, setIsExecutionDetailsOpen] = useState(false);
+
+  const toggleExecutionDetails = () => {
+    setIsExecutionDetailsOpen(!isExecutionDetailsOpen);
+  };
+
   return (
     <>
       <form className="flex flex-col" onSubmit={handleFormSubmit}>
@@ -255,6 +266,7 @@ export function GmShiftBox({
                 ? formatBalanceAmount(selectedToken.balance, selectedToken.decimals)
                 : undefined
             }
+            isBottomLeftValueMuted={amounts?.fromTokenUsd === undefined || amounts.fromTokenUsd === 0n}
             onClickBottomRightLabel={handleSelectedTokenClickMax}
             onClickMax={selectedTokenShowMaxButton ? handleSelectedTokenClickMax : undefined}
             inputValue={selectedMarketText}
@@ -277,6 +289,7 @@ export function GmShiftBox({
               inputValue={toMarketText}
               onInputValueChange={handleToTokenInputValueChange}
               onFocus={handleToTokenFocus}
+              isBottomLeftValueMuted={amounts?.toTokenUsd === undefined || amounts.toTokenUsd === 0n}
             >
               <PoolSelector
                 chainId={chainId}
@@ -323,7 +336,7 @@ export function GmShiftBox({
         </div>
 
         <ExchangeInfo className={shouldShowWarning ? undefined : "mt-14"} dividerClassName="App-card-divider">
-          <ExchangeInfo.Group>
+          <div className="flex flex-col gap-14">
             <GmFees
               operation={Operation.Shift}
               totalFees={fees?.totalFees}
@@ -331,17 +344,20 @@ export function GmShiftBox({
               uiFee={fees?.uiFee}
               shiftFee={fees?.shiftFee}
             />
-            <NetworkFeeRow rowPadding executionFee={executionFee} />
-          </ExchangeInfo.Group>
+            <SyntheticsInfoRow label={t`Execution Details`} onClick={toggleExecutionDetails}>
+              {isExecutionDetailsOpen ? <FaChevronUp size={10} /> : <FaChevronDown size={10} />}
+            </SyntheticsInfoRow>
+            {isExecutionDetailsOpen && <NetworkFeeRow rowPadding executionFee={executionFee} />}
 
-          <GmSwapWarningsRow
-            isSingle={false}
-            isAccepted={isAccepted}
-            shouldShowWarning={shouldShowWarning}
-            shouldShowWarningForPosition={shouldShowWarningForPosition}
-            shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
-            setIsAccepted={setIsAccepted}
-          />
+            <GmSwapWarningsRow
+              isSingle={false}
+              isAccepted={isAccepted}
+              shouldShowWarning={shouldShowWarning}
+              shouldShowWarningForPosition={shouldShowWarningForPosition}
+              shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
+              setIsAccepted={setIsAccepted}
+            />
+          </div>
         </ExchangeInfo>
       </form>
     </>

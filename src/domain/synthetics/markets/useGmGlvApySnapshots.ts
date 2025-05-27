@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import useSWR from "swr";
 
-import { bigintToNumber, expandDecimals, numberToBigint } from "lib/numbers";
+import { bigintToNumber, numberToBigint } from "lib/numbers";
 import { getSubsquidGraphClient } from "lib/subgraph";
 
 import { Period } from "./usePoolsTimeRange";
@@ -12,7 +12,6 @@ const APR_SNAPSHOTS_QUERY = gql`
       where: { snapshotTimestamp_gt: $fromTimestamp, address_in: $tokenAddresses }
       orderBy: snapshotTimestamp_ASC
     ) {
-      id
       address
       aprByFee
       aprByBorrowingFee
@@ -26,7 +25,6 @@ type AprSnapshotsQuery = {
 };
 
 type AprSnapshot = {
-  id: string;
   address: string;
   aprByFee: string;
   aprByBorrowingFee: string;
@@ -34,7 +32,6 @@ type AprSnapshot = {
 };
 
 export type ApySnapshot = {
-  id: string;
   address: string;
   apy: bigint;
   snapshotTimestamp: number;
@@ -69,7 +66,6 @@ export function useGmGlvApySnapshots({
             const apy = calculateApy(aprSnapshot);
             if (typeof apy === "bigint") {
               acc[aprSnapshot.address] = (acc[aprSnapshot.address] || []).concat({
-                id: aprSnapshot.id,
                 address: aprSnapshot.address,
                 apy,
                 snapshotTimestamp: aprSnapshot.snapshotTimestamp,
@@ -90,7 +86,13 @@ export function useGmGlvApySnapshots({
   };
 }
 
-const calculateApy = ({ aprByFee, aprByBorrowingFee }: { aprByFee: string; aprByBorrowingFee: string }): bigint | undefined => {
+const calculateApy = ({
+  aprByFee,
+  aprByBorrowingFee,
+}: {
+  aprByFee: string;
+  aprByBorrowingFee: string;
+}): bigint | undefined => {
   const apr = bigintToNumber(BigInt(aprByFee) + BigInt(aprByBorrowingFee), 30);
 
   if (Math.exp(apr) === Infinity) {
@@ -98,11 +100,6 @@ const calculateApy = ({ aprByFee, aprByBorrowingFee }: { aprByFee: string; aprBy
   }
 
   const apy = numberToBigint(Math.exp(apr) - 1, 30);
-
-  // apy > 200% is too high, consider it as 0
-  if (apy > expandDecimals(2, 30)) {
-    return 0n;
-  }
 
   return apy;
 };

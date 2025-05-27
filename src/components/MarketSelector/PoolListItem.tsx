@@ -3,7 +3,13 @@ import { useCallback } from "react";
 
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getGlvDisplayName, getMarketBadge, getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
+import {
+  getGlvDisplayName,
+  getMarketBadge,
+  getGlvOrMarketAddress,
+  GlvOrMarketInfo,
+  getMarketPoolName,
+} from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData } from "domain/synthetics/tokens";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
@@ -122,7 +128,7 @@ export function PoolListItem(props: {
               ) : showAllPools ? (
                 <div className="flex items-center leading-1">
                   <span>{indexName && indexName}</span>
-                  <span className="subtext">{`[${marketInfo.longToken.symbol}/${marketInfo.shortToken?.symbol}]`}</span>
+                  <span className="subtext">[{getMarketPoolName(marketInfo, "/")}]</span>
                 </div>
               ) : (
                 <div className="Token-text">{poolName}</div>

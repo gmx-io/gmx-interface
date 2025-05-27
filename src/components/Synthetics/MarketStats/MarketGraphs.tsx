@@ -15,14 +15,14 @@ import {
   useMarketsInfoRequest,
 } from "domain/synthetics/markets";
 import { isGlvEnabled, isGlvInfo } from "domain/synthetics/markets/glv";
-import { PerformanceSnapshot, PriceSnapshot } from "domain/synthetics/markets/performance";
+import { PerformanceSnapshot, PriceSnapshot, formatPerformanceBps } from "domain/synthetics/markets/performance";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { ApySnapshot, useGmGlvApySnapshots } from "domain/synthetics/markets/useGmGlvApySnapshots";
 import { useGmGlvPerformance } from "domain/synthetics/markets/useGmGlvPerformance";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { POOLS_TIME_RANGE_OPTIONS, convertPoolsTimeRangeToPeriod } from "domain/synthetics/markets/usePoolsTimeRange";
 import { PoolsTimeRange, usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
-import { TokensData } from "domain/synthetics/tokens";
+import { TokensData, getMidPrice } from "domain/synthetics/tokens";
 import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
 import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
@@ -34,7 +34,7 @@ import { PoolsDetailsCard } from "pages/PoolsDetails/PoolsDetailsCard";
 
 import { PoolsTabs } from "../PoolsTabs/PoolsTabs";
 
-const MARKET_GRAPHS_TYPES = ["performance" as const, "price" as const, "feeApy" as const];
+const MARKET_GRAPHS_TYPES = ["performance", "price", "feeApy"] as const;
 
 export type MarketGraphType = (typeof MARKET_GRAPHS_TYPES)[number];
 
@@ -75,7 +75,7 @@ const getGraphValue = ({
   const tokenPrice = marketTokensData?.[address]?.prices.minPrice;
   const performance = isGlv ? glvPerformance[address] : gmPerformance[address];
   const valuesMap: Record<MarketGraphType, string | undefined> = {
-    performance: performance ? `${Math.round(performance * 10000) / 100}%` : undefined,
+    performance: performance ? formatPerformanceBps(performance) : undefined,
     price: tokenPrice ? formatUsdPrice(tokenPrice) : undefined,
     feeApy: apy ? formatPercentage(apy, { bps: false }) : undefined,
   };
@@ -222,9 +222,9 @@ const valueFormatter = (marketGraphType: MarketGraphType) => (value: number) => 
   }
 
   const valueMap: Record<MarketGraphType, string> = {
-    performance: `${Math.round(value * 10000) / 100}%`,
+    performance: formatPerformanceBps(value),
     price: formatUsdPrice(parseValue(value.toString(), USD_DECIMALS) ?? 0n) || "",
-    feeApy: `${Math.round(value * 100) / 100}%`,
+    feeApy: `${Number(value.toFixed(2))}%`,
   };
 
   return valueMap[marketGraphType];
@@ -236,9 +236,9 @@ const axisValueFormatter = (marketGraphType: MarketGraphType) => (value: number)
   }
 
   const valueMap: Record<MarketGraphType, string> = {
-    performance: `${Math.round(value * 10000) / 100}%`,
+    performance: formatPerformanceBps(value),
     price: value.toString(),
-    feeApy: `${Math.round(value * 100) / 100}%`,
+    feeApy: `${Number(value.toFixed(2))}%`,
   };
 
   return valueMap[marketGraphType];
@@ -268,7 +268,13 @@ const GraphChart = ({
     () =>
       priceSnapshots.map((snapshot) => ({
         snapshotTimestamp: new Date(snapshot.snapshotTimestamp * 1000),
-        value: bigintToNumber((BigInt(snapshot.maxPrice) + BigInt(snapshot.minPrice)) / 2n, USD_DECIMALS),
+        value: bigintToNumber(
+          getMidPrice({
+            minPrice: BigInt(snapshot.minPrice),
+            maxPrice: BigInt(snapshot.maxPrice),
+          }),
+          USD_DECIMALS
+        ),
       })),
     [priceSnapshots]
   );

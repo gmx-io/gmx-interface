@@ -9,14 +9,14 @@ export function AmountWithUsdHuman({
   usd,
   symbol,
   multiline = false,
-  reversed = false,
+  usdOnTop = false,
 }: {
   amount: bigint | undefined;
   decimals: number | undefined;
   usd: bigint | undefined;
   symbol?: string;
   multiline?: boolean;
-  reversed?: boolean;
+  usdOnTop?: boolean;
 }) {
   if (amount === undefined || usd === undefined || decimals === undefined) {
     return "...";
@@ -29,14 +29,16 @@ export function AmountWithUsdHuman({
 
   const formattedUsd = formatAmountHuman(usd, USD_DECIMALS, true, 2);
 
-  const topValue = reversed ? formattedUsd : formattedAmount;
-  const bottomValue = reversed ? formattedAmount : formattedUsd;
+  const topValue = usdOnTop ? formattedUsd : formattedAmount;
+  const bottomValue = usdOnTop ? formattedAmount : formattedUsd;
 
   return (
     <span>
       <span>{topValue}</span>
       {multiline && <br />}
-      <span className={cx("text-12 text-slate-100 group-hover/hoverable:text-[inherit]", { "ml-2": multiline })}>({bottomValue})</span>
+      <span className={cx("text-12 text-slate-100 group-hover/hoverable:text-[inherit]", { "ml-2": multiline })}>
+        ({bottomValue})
+      </span>
     </span>
   );
 }

@@ -1,9 +1,9 @@
-import { toSeconds } from "lib/dates";
+import { getTimestampByDaysAgo, normalizeDateRange } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { ApyPeriod } from "lib/oracleKeeperFetcher";
 import { mustNeverExist } from "lib/types";
 
-export const POOLS_TIME_RANGE_OPTIONS = ["total" as const, "90d" as const, "30d" as const, "7d" as const];
+export const POOLS_TIME_RANGE_OPTIONS = ["total", "90d", "30d", "7d"] as const;
 
 export type PoolsTimeRange = (typeof POOLS_TIME_RANGE_OPTIONS)[number];
 
@@ -19,34 +19,41 @@ export function usePoolsTimeRange() {
 }
 
 export function convertPoolsTimeRangeToPeriod(timeRange: PoolsTimeRange): Period {
-  const today = new Date(new Date().setHours(0, 0, 0, 0));
+  const today = new Date();
 
-  const getPeriodStart = (days: number) => {
-    const periodStart = new Date(today.getTime() - days * 24 * 60 * 60 * 1000);
-    return toSeconds(periodStart);
+  const getStartDate = (days: number) => {
+    return new Date(getTimestampByDaysAgo(days) * 1000);
   };
 
   switch (timeRange) {
-    case "total":
+    case "total": {
+      const [_, periodEnd] = normalizeDateRange(new Date(0), today);
       return {
         periodStart: 0,
-        periodEnd: toSeconds(today),
+        periodEnd: periodEnd ?? 0,
       };
-    case "7d":
+    }
+    case "7d": {
+      const [periodStart, periodEnd] = normalizeDateRange(getStartDate(7), today);
       return {
-        periodStart: getPeriodStart(7),
-        periodEnd: toSeconds(today),
+        periodStart: periodStart ?? 0,
+        periodEnd: periodEnd ?? 0,
       };
-    case "30d":
+    }
+    case "30d": {
+      const [periodStart, periodEnd] = normalizeDateRange(getStartDate(30), today);
       return {
-        periodStart: getPeriodStart(30),
-        periodEnd: toSeconds(today),
+        periodStart: periodStart ?? 0,
+        periodEnd: periodEnd ?? 0,
       };
-    case "90d":
+    }
+    case "90d": {
+      const [periodStart, periodEnd] = normalizeDateRange(getStartDate(90), today);
       return {
-        periodStart: getPeriodStart(90),
-        periodEnd: toSeconds(today),
+        periodStart: periodStart ?? 0,
+        periodEnd: periodEnd ?? 0,
       };
+    }
   }
 }
 

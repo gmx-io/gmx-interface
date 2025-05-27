@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { BASIS_POINTS_DECIMALS } from "config/factors";
 import {
   GlvAndGmMarketsInfoData,
   GlvInfo,
@@ -11,6 +12,7 @@ import {
 import { getMaxUsdCapUsdInGmGlvMarket, isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData, TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { defined } from "lib/guards";
+import { bigintToNumber, getBasisPoints } from "lib/numbers";
 import { MarketInfo } from "sdk/types/markets";
 
 type MarketCompositionItem = {
@@ -43,7 +45,7 @@ export function useCompositionData({
   market: MarketCompositionItem[];
 } {
   return useMemo(() => {
-    if (!marketInfo) {
+    if (!marketInfo || !marketsInfoData || !marketTokensData) {
       return {
         backing: [],
         market: [],
@@ -64,15 +66,15 @@ const getGlvInfoCompositionData = ({
   marketTokensData,
 }: {
   marketInfo: GlvInfo;
-  marketsInfoData: GlvAndGmMarketsInfoData | undefined;
-  marketTokensData: TokensData | undefined;
+  marketsInfoData: GlvAndGmMarketsInfoData;
+  marketTokensData: TokensData;
 }): {
   backing: BackingCompositionItem[];
   market: MarketCompositionItem[];
 } => {
   const market = marketInfo.markets
     .map((market): MarketCompositionItem | null => {
-      const marketInfo = marketsInfoData?.[market.address];
+      const marketInfo = marketsInfoData[market.address];
 
       if (marketInfo && isMarketInfo(marketInfo)) {
         const token = getTokenData(marketTokensData, marketInfo.marketTokenAddress);
@@ -97,7 +99,7 @@ const getGlvInfoCompositionData = ({
 
   const compositionData = marketInfo.markets
     .flatMap((market) => {
-      const marketInfo = marketsInfoData?.[market.address];
+      const marketInfo = marketsInfoData[market.address];
       if (marketInfo && isMarketInfo(marketInfo)) {
         return getMarketBackingCompositionData(marketInfo);
       }
@@ -121,7 +123,7 @@ const getGlvInfoCompositionData = ({
       {} as Record<string, BackingCompositionItem>
     );
 
-  const backing = Object.entries(compositionData).map(([_, d]) => {
+  const backing = Object.values(compositionData).map((d) => {
     return {
       amount: d.amount,
       type: d.type,
@@ -141,7 +143,7 @@ const getMarketInfoCompositionData = ({
   marketTokensData,
 }: {
   marketInfo: MarketInfo;
-  marketTokensData: TokensData | undefined;
+  marketTokensData: TokensData;
 }): {
   backing: BackingCompositionItem[];
   market: MarketCompositionItem[];
@@ -189,6 +191,12 @@ const getMarketBackingCompositionData = (marketInfo: MarketInfo): BackingComposi
   ];
 };
 
-export const getCompositionPercentage = (value: bigint | number, sum: bigint | number) => {
-  return Math.round((Number(value) / Number(sum)) * 10000) / 100;
+export const getCompositionPercentage = <T extends bigint | number>(value: T, sum: T) => {
+  let bps: number;
+  if (typeof value === "bigint") {
+    bps = bigintToNumber(getBasisPoints(value as bigint, sum as bigint), BASIS_POINTS_DECIMALS);
+  } else {
+    bps = value / sum;
+  }
+  return Number((bps * 100).toFixed(2));
 };

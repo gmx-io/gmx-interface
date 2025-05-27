@@ -9,12 +9,13 @@ import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import { CompositionItem, getCompositionPercentage } from "../hooks/useCompositionData";
-interface CompositionBarProps {
+
+interface Props {
   data: CompositionItem[];
   label: ReactNode;
 }
 
-export function CompositionBar({ data, label }: CompositionBarProps) {
+export function CompositionDiagram({ data, label }: Props) {
   const chartData = useMemo((): CompositionChartItem[] => {
     const sum = data.reduce((acc, item) => {
       return (

@@ -2,12 +2,11 @@ import { defined } from "lib/guards";
 import { bigintToNumber } from "lib/numbers";
 import { USD_DECIMALS } from "sdk/configs/factors";
 
+import { getMidPrice } from "../tokens";
+
 export type PriceSnapshot = {
-  id: string;
   minPrice: string;
   maxPrice: string;
-  timestamp: number;
-  isSnapshot: boolean;
   snapshotTimestamp: number;
   token: string;
   type: string;
@@ -22,14 +21,13 @@ export function buildPerformanceSnapshots({
   longTokenPrices,
   shortTokenPrices,
   poolPrices,
+  timestamps,
 }: {
   longTokenPrices: Record<number, PriceSnapshot>;
   shortTokenPrices: Record<number, PriceSnapshot>;
   poolPrices: Record<number, PriceSnapshot>;
+  timestamps: number[];
 }): PerformanceSnapshot[] {
-  const timestamps = Object.keys(poolPrices)
-    .map(Number)
-    .sort((a, b) => a - b);
   const startTimestamp = findPerformanceTimestamp({
     timestamps,
     longTokenPrices,
@@ -84,14 +82,13 @@ export function calculatePoolPerformance({
   longTokenPrices,
   shortTokenPrices,
   poolPrices,
+  timestamps,
 }: {
   longTokenPrices: Record<number, PriceSnapshot>;
   shortTokenPrices: Record<number, PriceSnapshot>;
   poolPrices: Record<number, PriceSnapshot>;
+  timestamps: number[];
 }): number | undefined {
-  const timestamps = Object.keys(poolPrices)
-    .map(Number)
-    .sort((a, b) => a - b);
   const startTimestamp = findPerformanceTimestamp({
     timestamps,
     longTokenPrices,
@@ -147,7 +144,12 @@ const getTokenPrice = (prices: Record<number, PriceSnapshot>, timestamp: number)
     return undefined;
   }
 
-  return bigintToNumber((BigInt(prices[timestamp].minPrice) + BigInt(prices[timestamp].maxPrice)) / 2n, USD_DECIMALS);
+  const midPrice = getMidPrice({
+    minPrice: BigInt(prices[timestamp].minPrice),
+    maxPrice: BigInt(prices[timestamp].maxPrice),
+  });
+
+  return bigintToNumber(midPrice, USD_DECIMALS);
 };
 
 const findPerformanceTimestamp = ({
@@ -223,4 +225,8 @@ const calculateAnnualizedPerformance = (
 const ROUND_PRECISION = 1000000;
 const roundPerformance = (performance: number) => {
   return Math.round(performance * ROUND_PRECISION) / ROUND_PRECISION;
+};
+
+export const formatPerformanceBps = (performance: number): string => {
+  return Number((performance * 100).toFixed(2)) + "%";
 };

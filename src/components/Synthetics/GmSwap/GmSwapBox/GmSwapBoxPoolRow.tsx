@@ -36,7 +36,7 @@ export function GmSwapBoxPoolRow({
 
   const onSelectMarket = useCallback(
     (marketInfo: MarketInfo) => {
-      onMarketChange?.(marketInfo.marketTokenAddress);
+      onMarketChange(marketInfo.marketTokenAddress);
     },
     [onMarketChange]
   );

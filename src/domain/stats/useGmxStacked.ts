@@ -8,7 +8,7 @@ export function useGmxStaked(chainId: number) {
   const { data: stakedGmxSupply } = useSWR<bigint>(
     [`StakeV2:stakedGmxSupply:${chainId}`, chainId, getContract(chainId, "GMX"), "balanceOf", stakedGmxTrackerAddress],
     {
-      fetcher: contractFetcher(undefined, "Token") as any,
+      fetcher: contractFetcher<bigint>(undefined, "Token"),
     }
   );
 

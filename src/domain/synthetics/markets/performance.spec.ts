@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 
 import { buildPerformanceSnapshots, calculatePerformance } from "./performance";
 
-const makePriceSnapshot = ({ timestamp, price, token }: { timestamp: number, price: string; token: string }) => ({
+const makePriceSnapshot = ({ timestamp, price, token }: { timestamp: number; price: string; token: string }) => ({
   id: `${timestamp}`,
   minPrice: price,
   maxPrice: price,
@@ -60,6 +60,7 @@ describe("buildPerformanceSnapshots", () => {
       longTokenPrices: {},
       shortTokenPrices: {},
       poolPrices: {},
+      timestamps: [],
     });
 
     expect(performanceSnapshots).toEqual([]);
@@ -79,6 +80,7 @@ describe("buildPerformanceSnapshots", () => {
         1: makePriceSnapshot({ timestamp: 1, price: "100", token: "P" }),
         2: makePriceSnapshot({ timestamp: 2, price: "200", token: "P" }),
       },
+      timestamps: [1, 2],
     });
 
     expect(performanceSnapshots).toEqual([
@@ -107,6 +109,7 @@ describe("buildPerformanceSnapshots", () => {
         1: makePriceSnapshot({ timestamp: 1, price: "100", token: "P" }),
         2: makePriceSnapshot({ timestamp: 2, price: "300", token: "P" }),
       },
+      timestamps: [1, 2],
     });
 
     expect(performanceSnapshots).toEqual([
@@ -135,6 +138,7 @@ describe("buildPerformanceSnapshots", () => {
         1: makePriceSnapshot({ timestamp: 1, price: "100", token: "P" }),
         2: makePriceSnapshot({ timestamp: 2, price: "100", token: "P" }),
       },
+      timestamps: [1, 2],
     });
 
     expect(performanceSnapshots).toEqual([
@@ -148,7 +152,7 @@ describe("buildPerformanceSnapshots", () => {
       },
     ]);
   });
-  
+
   it("should skip empty prices snapshots and build only non-empty snapshots", () => {
     const performanceSnapshots = buildPerformanceSnapshots({
       longTokenPrices: {
@@ -164,6 +168,7 @@ describe("buildPerformanceSnapshots", () => {
         2: makePriceSnapshot({ timestamp: 2, price: "200", token: "P" }),
         3: makePriceSnapshot({ timestamp: 3, price: "300", token: "P" }),
       },
+      timestamps: [1, 2, 3],
     });
 
     expect(performanceSnapshots).toEqual([
