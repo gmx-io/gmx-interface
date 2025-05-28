@@ -1,14 +1,13 @@
 import { Menu } from "@headlessui/react";
 import { Trans, t } from "@lingui/macro";
-import { useCallback } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { createBreakpoint, useCopyToClipboard } from "react-use";
 import type { Address } from "viem";
 
-import { useSubaccountModalOpen } from "context/SubaccountContext/SubaccountContext";
 import { helperToast } from "lib/helperToast";
 import { useENS } from "lib/legacy";
+import { useNotifyModalState } from "lib/useNotifyModalState";
 import { userAnalytics } from "lib/userAnalytics";
 import { DisconnectWalletEvent } from "lib/userAnalytics/types";
 import { shortenAddressOrEns } from "lib/wallets";
@@ -17,11 +16,11 @@ import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDas
 import { Avatar } from "components/Avatar/Avatar";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
+import BellIcon from "img/bell.svg?react";
 import copy from "img/ic_copy_20.svg";
 import externalLink from "img/ic_new_link_20.svg";
 import PnlAnalysisIcon from "img/ic_pnl_analysis_20.svg?react";
 import disconnect from "img/ic_sign_out_20.svg";
-import oneClickTradingIcon from "img/one_click_trading_20.svg";
 
 import "./AddressDropdown.scss";
 
@@ -36,12 +35,9 @@ const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
 function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSettings }: Props) {
   const breakpoint = useBreakpoint();
   const [, copyToClipboard] = useCopyToClipboard();
+  const { openNotifyModal } = useNotifyModalState();
   const { ensName } = useENS(account);
   const displayAddressLength = breakpoint === "S" ? 9 : 13;
-  const [, setOneClickModalOpen] = useSubaccountModalOpen();
-  const handleSubaccountClick = useCallback(() => {
-    setOneClickModalOpen(true);
-  }, [setOneClickModalOpen]);
 
   return (
     <Menu>
@@ -87,10 +83,10 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
             </ExternalLink>
           </Menu.Item>
           <Menu.Item>
-            <div className="menu-item" onClick={handleSubaccountClick}>
-              <img width={20} className="size-20" src={oneClickTradingIcon} alt="Open One-click Trading settings" />
+            <div className="menu-item" onClick={openNotifyModal}>
+              <BellIcon className="ml-2 size-20 pt-2" />
               <p>
-                <Trans>One-Click Trading</Trans>
+                <Trans>Alerts</Trans>
               </p>
             </div>
           </Menu.Item>

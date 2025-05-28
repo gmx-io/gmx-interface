@@ -14,7 +14,7 @@ import {
   isTwapOrder,
 } from "domain/synthetics/orders";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
-import { getTwapDurationInSeconds } from "domain/synthetics/trade/twap/utils";
+import { parseError } from "lib/errors";
 import {
   PositionOrderMetricParams,
   SwapMetricData,
@@ -24,7 +24,6 @@ import {
 } from "lib/metrics";
 import { OrderMetricData, OrderMetricId } from "lib/metrics/types";
 import { bigintToNumber, formatRatePercentage, roundToOrder } from "lib/numbers";
-import { parseError } from "lib/parseError";
 import { userAnalytics } from "lib/userAnalytics";
 import {
   AnalyticsOrderType,
@@ -37,6 +36,7 @@ import {
   TradeBoxResultEvent,
   TradePageEditOrderEvent,
 } from "lib/userAnalytics/types";
+import { getTwapDurationInSeconds } from "sdk/utils/twap";
 
 export function getTradeInteractionKey(pair: string) {
   return `trade-${pair}`;
@@ -61,6 +61,8 @@ export const sendTradeBoxInteractionStartedEvent = debounce(
     fundingRate1h?: bigint;
     openInterestPercent?: number;
     tradeType: TradeType;
+    isExpress: boolean;
+    isExpress1CT: boolean;
     tradeMode: TradeMode;
     amountUsd?: bigint;
   }) => {
@@ -72,6 +74,8 @@ export const sendTradeBoxInteractionStartedEvent = debounce(
       priceImpactPercentage,
       openInterestPercent,
       tradeType,
+      isExpress,
+      isExpress1CT,
       tradeMode,
       amountUsd,
     } = p;
@@ -86,6 +90,8 @@ export const sendTradeBoxInteractionStartedEvent = debounce(
           pair,
           sizeDeltaUsd: formatAmountForMetrics(sizeDeltaUsd),
           amountUsd: formatAmountForMetrics(amountUsd),
+          isExpress: isExpress,
+          isExpress1CT: isExpress1CT,
           priceImpactDeltaUsd:
             priceImpactDeltaUsd !== undefined ? bigintToNumber(roundToOrder(priceImpactDeltaUsd, 2), USD_DECIMALS) : 0,
           priceImpactPercentage: formatPercentageForMetrics(priceImpactPercentage) ?? 0,
@@ -123,7 +129,8 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           tradeType: metricData.hasExistingPosition ? "IncreaseSize" : "InitialTrade",
           sizeDeltaUsd: metricData.sizeDeltaUsd,
           leverage: metricData.leverage || "",
-          is1CT: metricData.is1ct,
+          isExpress: metricData.isExpress,
+          isExpress1CT: metricData.isExpress1CT,
           slCount: metricData.slCount,
           tpCount: metricData.tpCount,
           isTPSLCreated: metricData.isTPSLCreated ?? false,
@@ -133,7 +140,10 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
           priceImpactPercentage: metricData.priceImpactPercentage,
           netRate1h: metricData.netRate1h,
-          duration: metricData.tradeMode === TradeMode.Twap ? getTwapDurationInSeconds(metricData.duration) : undefined,
+          duration:
+            metricData.tradeMode === TradeMode.Twap && metricData.duration
+              ? getTwapDurationInSeconds(metricData.duration)
+              : undefined,
           partsCount: metricData.tradeMode === TradeMode.Twap ? metricData.partsCount : undefined,
         },
       });
@@ -152,14 +162,18 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           tradeType: metricData.isFullClose ? "ClosePosition" : "DecreaseSize",
           sizeDeltaUsd: metricData.sizeDeltaUsd,
           leverage: "",
-          is1CT: metricData.is1ct,
+          isExpress: metricData.isExpress,
+          isExpress1CT: metricData.isExpress1CT,
           chain: getChainName(chainId),
           isFirstOrder: false,
           interactionId: metricData.interactionId,
           priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
           priceImpactPercentage: metricData.priceImpactPercentage,
           netRate1h: metricData.netRate1h,
-          duration: metricData.tradeMode === TradeMode.Twap ? getTwapDurationInSeconds(metricData.duration) : undefined,
+          duration:
+            metricData.tradeMode === TradeMode.Twap && metricData.duration
+              ? getTwapDurationInSeconds(metricData.duration)
+              : undefined,
           partsCount: metricData.tradeMode === TradeMode.Twap ? metricData.partsCount : undefined,
         },
       });
@@ -176,14 +190,18 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           tradeType: "InitialTrade",
           amountUsd: metricData.amountUsd,
           leverage: "",
-          is1CT: metricData.is1ct,
+          isExpress: metricData.isExpress,
+          isExpress1CT: metricData.isExpress1CT,
           chain: getChainName(chainId),
           isFirstOrder: metricData.isFirstOrder ?? false,
           interactionId: undefined,
           priceImpactDeltaUsd: undefined,
           priceImpactPercentage: undefined,
           netRate1h: undefined,
-          duration: metricData.tradeMode === TradeMode.Twap ? getTwapDurationInSeconds(metricData.duration) : undefined,
+          duration:
+            metricData.tradeMode === TradeMode.Twap && metricData.duration
+              ? getTwapDurationInSeconds(metricData.duration)
+              : undefined,
           partsCount: metricData.tradeMode === TradeMode.Twap ? metricData.partsCount : undefined,
         },
       });
@@ -250,7 +268,8 @@ export function sendUserAnalyticsOrderResultEvent(
             tradeType: metricData.hasExistingPosition ? "IncreaseSize" : "InitialTrade",
             sizeDeltaUsd: metricData.sizeDeltaUsd || 0,
             leverage: metricData.leverage || "",
-            is1CT: metricData.is1ct,
+            isExpress: metricData.isExpress,
+            isExpress1CT: metricData.isExpress1CT,
             isTPSLCreated: metricData.isTPSLCreated ?? false,
             slCount: metricData.slCount,
             tpCount: metricData.tpCount,
@@ -284,7 +303,8 @@ export function sendUserAnalyticsOrderResultEvent(
             tradeType: metricData.isFullClose ? "ClosePosition" : "DecreaseSize",
             sizeDeltaUsd: metricData.sizeDeltaUsd || 0,
             leverage: "",
-            is1CT: metricData.is1ct,
+            isExpress: metricData.isExpress,
+            isExpress1CT: metricData.isExpress1CT,
             chain: getChainName(chainId),
             isFirstOrder: false,
             isUserError,
@@ -312,7 +332,8 @@ export function sendUserAnalyticsOrderResultEvent(
             tradeType: "InitialTrade",
             amountUsd: metricData.amountUsd,
             leverage: "",
-            is1CT: metricData.is1ct,
+            isExpress: metricData.isExpress,
+            isExpress1CT: metricData.isExpress1CT,
             chain: getChainName(chainId),
             isFirstOrder: metricData.isFirstOrder ?? false,
             isUserError,
@@ -387,7 +408,10 @@ export const sendDepthChartInteractionEvent = (pair: string) => {
 
 const getAnalyticsTwapProps = (metricData: PositionOrderMetricParams | SwapMetricData) => {
   return {
-    duration: metricData.tradeMode === TradeMode.Twap ? getTwapDurationInSeconds(metricData.duration) : undefined,
+    duration:
+      metricData.tradeMode === TradeMode.Twap && metricData.duration
+        ? getTwapDurationInSeconds(metricData.duration)
+        : undefined,
     partsCount: metricData.tradeMode === TradeMode.Twap ? metricData.partsCount : undefined,
   };
 };

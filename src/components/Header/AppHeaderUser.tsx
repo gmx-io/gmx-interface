@@ -15,6 +15,8 @@ import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import useWallet from "lib/wallets/useWallet";
 
+import { OneClickButton } from "components/OneClickButton/OneClickButton";
+
 import connectWalletImg from "img/ic_wallet_24.svg";
 
 import { HeaderLink } from "./HeaderLink";
@@ -22,7 +24,6 @@ import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
-import { NotifyButton } from "../NotifyButton/NotifyButton";
 
 import "./Header.scss";
 
@@ -123,7 +124,7 @@ export function AppHeaderUser({
             >
               {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
             </ConnectWalletButton>
-            {!small && <NotifyButton />}
+            {!small && <OneClickButton openSettings={openSettings} />}
             <NetworkDropdown
               small={small}
               networkOptions={NETWORK_OPTIONS}
@@ -143,8 +144,8 @@ export function AppHeaderUser({
 
   return (
     <div className="App-header-user">
-      <div data-qa="trade" className="App-header-trade-link text-body-medium">
-        {shouldHideTradeButton ? null : (
+      {shouldHideTradeButton ? null : (
+        <div data-qa="trade" className="App-header-trade-link text-body-medium">
           <HeaderLink
             className="default-btn"
             onClick={trackLaunchApp}
@@ -153,8 +154,8 @@ export function AppHeaderUser({
           >
             {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
           </HeaderLink>
-        )}
-      </div>
+        </div>
+      )}
 
       {showConnectionOptions ? (
         <>
@@ -165,7 +166,7 @@ export function AppHeaderUser({
               disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
             />
           </div>
-          {!small && <NotifyButton />}
+          {!small && <OneClickButton openSettings={openSettings} />}
           <NetworkDropdown
             small={small}
             networkOptions={NETWORK_OPTIONS}

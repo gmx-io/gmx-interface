@@ -260,6 +260,7 @@ export class Markets extends Module {
             swapFeeFactorForPositiveImpact: dataStoreValues.swapFeeFactorForPositiveImpact.returnValues[0],
             swapFeeFactorForNegativeImpact: dataStoreValues.swapFeeFactorForNegativeImpact.returnValues[0],
             swapImpactFactorPositive: dataStoreValues.swapImpactFactorPositive.returnValues[0],
+            atomicSwapFeeFactor: dataStoreValues.atomicSwapFeeFactor.returnValues[0],
             swapImpactFactorNegative: dataStoreValues.swapImpactFactorNegative.returnValues[0],
             swapImpactExponentFactor: dataStoreValues.swapImpactExponentFactor.returnValues[0],
 
