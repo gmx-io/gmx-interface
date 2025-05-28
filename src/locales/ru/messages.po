@@ -547,6 +547,7 @@ msgstr "Создан лимитный ордер на {0} {1}: {2} USD!"
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 msgstr "Неверный токен отТокен:: \"{0}\" кТокен: \"{toTokenAddress}\""
 
+#: src/components/SideNav/SideNav.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Stats"
 msgstr "Статистика"
@@ -2682,6 +2683,10 @@ msgstr "Недостаточно доступной ликвидности об�
 msgid "Earn prizes by participating in GMX Trading Competitions."
 msgstr "Зарабатывайте призы, участвуя в торговых соревнованиях GMX."
 
+#: src/components/SideNav/SideNav.tsx
+msgid "Collapse"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Confirm Long"
 msgstr "Подтвердить Лонг"
@@ -2960,6 +2965,7 @@ msgstr ""
 
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Trade"
 msgstr "Торговля"
 
@@ -3953,6 +3959,7 @@ msgid "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} {
 msgstr "Увеличение запроса {0} {longOrShortText}, +{1} USD, Приемлемая Цена: {2} {3} USD"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 #: src/pages/Earn/EarnV2.tsx
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Earn"
@@ -4423,6 +4430,7 @@ msgstr "Кроме того, триггерные ордера являются 
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "Документация"
 
@@ -5120,6 +5128,7 @@ msgid "GMX Announcements"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 #: src/pages/Referrals/Referrals.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
@@ -6311,6 +6320,7 @@ msgid "less than a minute"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Ecosystem"
 msgstr "Экосистема"
 
@@ -6883,6 +6893,7 @@ msgstr ""
 msgid "Top Positions"
 msgstr ""
 
+#: src/components/SideNav/SideNav.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "Pools"
 msgstr ""
@@ -8117,6 +8128,7 @@ msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Leaderboard"
 msgstr "Таблица лидеров"
 

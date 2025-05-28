@@ -547,6 +547,7 @@ msgstr ""
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 msgstr ""
 
+#: src/components/SideNav/SideNav.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Stats"
 msgstr ""
@@ -2682,6 +2683,10 @@ msgstr ""
 msgid "Earn prizes by participating in GMX Trading Competitions."
 msgstr ""
 
+#: src/components/SideNav/SideNav.tsx
+msgid "Collapse"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Confirm Long"
 msgstr ""
@@ -2960,6 +2965,7 @@ msgstr ""
 
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Trade"
 msgstr ""
 
@@ -3953,6 +3959,7 @@ msgid "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} {
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 #: src/pages/Earn/EarnV2.tsx
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Earn"
@@ -4423,6 +4430,7 @@ msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr ""
 
@@ -5120,6 +5128,7 @@ msgid "GMX Announcements"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 #: src/pages/Referrals/Referrals.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
@@ -6311,6 +6320,7 @@ msgid "less than a minute"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Ecosystem"
 msgstr ""
 
@@ -6883,6 +6893,7 @@ msgstr ""
 msgid "Top Positions"
 msgstr ""
 
+#: src/components/SideNav/SideNav.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "Pools"
 msgstr ""
@@ -8117,6 +8128,7 @@ msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Leaderboard"
 msgstr ""
 

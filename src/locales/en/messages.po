@@ -547,6 +547,7 @@ msgstr "Created limit order for {0} {1}: {2} USD!"
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 msgstr "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 
+#: src/components/SideNav/SideNav.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Stats"
 msgstr "Stats"
@@ -2682,6 +2683,10 @@ msgstr "Not enough Available Swap Liquidity to fill the Order."
 msgid "Earn prizes by participating in GMX Trading Competitions."
 msgstr "Earn prizes by participating in GMX Trading Competitions."
 
+#: src/components/SideNav/SideNav.tsx
+msgid "Collapse"
+msgstr "Collapse"
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Confirm Long"
 msgstr "Confirm Long"
@@ -2960,6 +2965,7 @@ msgstr "No liquidity is available for increasing shorts for<0/>this size. Max sh
 
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Trade"
 msgstr "Trade"
 
@@ -3953,6 +3959,7 @@ msgid "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} {
 msgstr "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} {3} USD"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 #: src/pages/Earn/EarnV2.tsx
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Earn"
@@ -4426,6 +4433,7 @@ msgstr "Additionally, trigger orders are market orders and are not guaranteed to
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "Docs"
 
@@ -5123,6 +5131,7 @@ msgid "GMX Announcements"
 msgstr "GMX Announcements"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 #: src/pages/Referrals/Referrals.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
@@ -6314,6 +6323,7 @@ msgid "less than a minute"
 msgstr "less than a minute"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Ecosystem"
 msgstr "Ecosystem"
 
@@ -6889,6 +6899,7 @@ msgstr "Realized Fees"
 msgid "Top Positions"
 msgstr "Top Positions"
 
+#: src/components/SideNav/SideNav.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "Pools"
 msgstr "Pools"
@@ -8123,6 +8134,7 @@ msgstr "Settling..."
 
 #: src/components/Exchange/UsefulLinks.tsx
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Leaderboard"
 msgstr "Leaderboard"
 

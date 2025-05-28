@@ -29,6 +29,7 @@ import { Header } from "components/Header/Header";
 import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
+import SideNav from "components/SideNav/SideNav";
 import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 
 import { HomeRoutes } from "./HomeRoutes";
@@ -123,13 +124,18 @@ export function AppRoutes() {
     <>
       <div className="App">
         <div className="App-content">
-          <Header
-            disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-            openSettings={openSettings}
-            showRedirectModal={showRedirectModal}
-          />
-          {isHome && <HomeRoutes showRedirectModal={showRedirectModal} />}
-          {!isHome && <MainRoutes openSettings={openSettings} />}
+          <div className="flex h-full">
+            {!isHome && <SideNav />}
+            <div className="flex h-full flex-col overflow-y-auto">
+              <Header
+                disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+                openSettings={openSettings}
+                showRedirectModal={showRedirectModal}
+              />
+              {isHome && <HomeRoutes showRedirectModal={showRedirectModal} />}
+              {!isHome && <MainRoutes openSettings={openSettings} />}
+            </div>
+          </div>
         </div>
       </div>
       <ToastContainer

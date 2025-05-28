@@ -72,6 +72,14 @@ const colors = {
   fill: {
     tertiary: "#B4BBFF1A",
   },
+  new: {
+    gray: {
+      200: "#1E2033"
+    },
+    slate: {
+      900: "#090A14"
+    }
+  }
 };
 
 /**

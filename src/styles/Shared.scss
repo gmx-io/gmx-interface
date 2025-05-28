@@ -6,6 +6,11 @@ body,
   color: var(--color-white);
   font-size: 10px;
   background-color: var(--main-bg-color);
+  height: 100%;
+}
+
+#root > div {
+  height: 100%;
 }
 
 /**
@@ -371,7 +376,7 @@ button.btn-link:hover .logout-icon {
 }
 
 .page-layout {
-  min-height: calc(100vh - 62px);
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   padding-bottom: calc(4.7rem + 8rem);

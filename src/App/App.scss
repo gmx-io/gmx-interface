@@ -4,6 +4,11 @@ $app-card-padding: 1.5rem;
   position: relative;
   min-height: 100%;
   font-size: var(--font-size-body-medium);
+  height: 100%;
+}
+
+.App-content {
+  height: 100%;
 }
 
 .App-content header {

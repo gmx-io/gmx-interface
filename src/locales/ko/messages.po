@@ -547,6 +547,7 @@ msgstr "{0} {1}: {2} USD의 지정가 주문을 생성하였습니다!"
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 msgstr "유요하지 않은 fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 
+#: src/components/SideNav/SideNav.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Stats"
 msgstr "통계"
@@ -2682,6 +2683,10 @@ msgstr "주문을 채울만한 충분한 스왑 유동성이 없습니다."
 msgid "Earn prizes by participating in GMX Trading Competitions."
 msgstr "GMX 거래 대회에 참여하여 상금을 획득하세요."
 
+#: src/components/SideNav/SideNav.tsx
+msgid "Collapse"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Confirm Long"
 msgstr "롱 포지션 확인"
@@ -2960,6 +2965,7 @@ msgstr ""
 
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Trade"
 msgstr "트레이드"
 
@@ -3953,6 +3959,7 @@ msgid "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} {
 msgstr "{0} {longOrShortText} 증가 요청, +{1} USD, 허용가능한 가격: {2} {3} USD"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 #: src/pages/Earn/EarnV2.tsx
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Earn"
@@ -4423,6 +4430,7 @@ msgstr "추가로, 트리거 주문은 시장가 주문이며 트리거 가격�
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr ""
 
@@ -5120,6 +5128,7 @@ msgid "GMX Announcements"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 #: src/pages/Referrals/Referrals.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
@@ -6311,6 +6320,7 @@ msgid "less than a minute"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Ecosystem"
 msgstr "이코시스템"
 
@@ -6883,6 +6893,7 @@ msgstr ""
 msgid "Top Positions"
 msgstr ""
 
+#: src/components/SideNav/SideNav.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "Pools"
 msgstr ""
@@ -8117,6 +8128,7 @@ msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Leaderboard"
 msgstr "리더보드"
 
