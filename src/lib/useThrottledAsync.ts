@@ -143,7 +143,7 @@ export function useThrottledAsync<T, D extends object>(
       return;
     }
 
-    latestHandlerRef.current?.(params);
+    throttledFnRef.current?.(params);
   }, [params]);
 
   return state;
