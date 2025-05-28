@@ -62,7 +62,7 @@ export function useMultichainFundingDepositToast() {
 
     let content: ToastContent = (
       <div className="flex flex-col gap-8">
-        <Trans>Transferring your funds to your GMX account.</Trans>
+        <Trans>Depositing Funds to GMX</Trans>
         {Object.keys(multichainFundingPendingIds).map((staticId, index, array) => {
           const guid = multichainFundingPendingIds[staticId];
           const item = pendingItems[guid];
@@ -79,7 +79,7 @@ export function useMultichainFundingDepositToast() {
           return (
             <div key={staticId} className="flex items-center justify-between">
               <div className="text-white/50">
-                <Trans>Transaction is pending.</Trans>
+                <Trans>Deposit</Trans>
                 {array.length > 1 && <> {formattedAmount}</>}
               </div>
               {isLoading && <ImSpinner2 width={60} height={60} className="spin size-15 text-white" />}
@@ -100,5 +100,5 @@ export function useMultichainFundingDepositToast() {
         autoClose: false,
       });
     }
-  }, [labels, multichainFundingPendingIds, pendingItems]);
+  }, [chainId, labels, multichainFundingPendingIds, pendingItems]);
 }

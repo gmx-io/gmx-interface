@@ -72,7 +72,7 @@ function TokenIcon({ className, symbol, displaySize, importSize = 24, badge, cha
         src={CHAIN_ID_TO_NETWORK_ICON[chainIdBadge]}
         width={size}
         height={size}
-        className={cx("absolute z-10 rounded-full border border-slate-800 bg-slate-800", offset)}
+        className={cx("absolute z-10 rounded-full border-2 border-slate-800 bg-slate-800", offset)}
       />
     );
   }

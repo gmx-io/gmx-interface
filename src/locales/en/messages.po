@@ -1046,7 +1046,7 @@ msgstr "All Time"
 msgid "Total Assets Staked"
 msgstr "Total Assets Staked"
 
-#: src/components/Referrals/referralsHelper.js
+#: src/components/Referrals/referralsHelper.ts
 msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} characters."
 msgstr "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} characters."
 
@@ -1957,10 +1957,6 @@ msgstr "Vault Capacity for your Account:"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
-
-#: src/components/Synthetics/GmxAccountModal/useMultichainDepositToast.tsx
-msgid "Transaction is pending."
-msgstr "Transaction is pending."
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Display PnL After Fees"
@@ -6853,6 +6849,7 @@ msgstr "Could not execute deposit into {0} {longOrShortText}"
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
+#: src/components/Synthetics/GmxAccountModal/useMultichainDepositToast.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
@@ -7343,6 +7340,10 @@ msgstr "Get fee discounts and earn rebates through the GMX referral program.<0/>
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Freeze"
 msgstr "Freeze"
+
+#: src/components/Synthetics/GmxAccountModal/useMultichainDepositToast.tsx
+msgid "Depositing Funds to GMX"
+msgstr "Depositing Funds to GMX"
 
 #: src/pages/Earn/EarnV1.jsx
 msgid "Claim submitted! <0>View status.</0>"
@@ -7923,7 +7924,7 @@ msgstr "HoudiniSwap"
 msgid "Error occurred. Please try again"
 msgstr "Error occurred. Please try again"
 
-#: src/components/Referrals/referralsHelper.js
+#: src/components/Referrals/referralsHelper.ts
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "Only letters, numbers and underscores are allowed."
 
@@ -7989,10 +7990,6 @@ msgstr "Take Profit and Stop Loss orders will be automatically cancelled when th
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed TWAP Swap Part"
 msgstr "Failed TWAP Swap Part"
-
-#: src/components/Synthetics/GmxAccountModal/useMultichainDepositToast.tsx
-msgid "Transferring your funds to your GMX account."
-msgstr "Transferring your funds to your GMX account."
 
 #: src/components/Exchange/ExchangeTVChart.jsx
 msgid "Open {0} {longOrShortText}"

@@ -42,7 +42,7 @@ export const Selector = <V extends string | number, T>({
           className={cx(
             "absolute left-0 right-0 top-full z-10 mt-4 overflow-auto rounded-4 px-0",
             slim ? "" : "py-8",
-            elevated ? "bg-cold-blue-700" : "bg-cold-blue-900"
+            elevated ? "bg-cold-blue-700" : "border border-slate-600 bg-slate-700"
           )}
         >
           {options.map((option) => (
@@ -53,7 +53,7 @@ export const Selector = <V extends string | number, T>({
                 cx(
                   "cursor-pointer",
                   slim ? "text-body-medium p-4" : "text-body-large px-14 py-8",
-                  (active || selected) && (elevated ? "bg-cold-blue-500" : "bg-cold-blue-700")
+                  (active || selected) && (elevated ? "bg-cold-blue-500" : "bg-slate-600")
                 )
               }
             >

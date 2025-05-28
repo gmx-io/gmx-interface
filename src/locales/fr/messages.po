@@ -1046,7 +1046,7 @@ msgstr ""
 msgid "Total Assets Staked"
 msgstr "Actifs totaux stakés"
 
-#: src/components/Referrals/referralsHelper.js
+#: src/components/Referrals/referralsHelper.ts
 msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} characters."
 msgstr "Le code de parrainage ne peut contenir plus de {MAX_REFERRAL_CODE_LENGTH} caractères."
 
@@ -1956,10 +1956,6 @@ msgstr ""
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
-msgstr ""
-
-#: src/components/Synthetics/GmxAccountModal/useMultichainDepositToast.tsx
-msgid "Transaction is pending."
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -6847,6 +6843,7 @@ msgstr "Impossible d'exécuter ce dépôt dans {0} {longOrShortText}"
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
+#: src/components/Synthetics/GmxAccountModal/useMultichainDepositToast.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
@@ -7336,6 +7333,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Freeze"
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/useMultichainDepositToast.tsx
+msgid "Depositing Funds to GMX"
 msgstr ""
 
 #: src/pages/Earn/EarnV1.jsx
@@ -7917,7 +7918,7 @@ msgstr ""
 msgid "Error occurred. Please try again"
 msgstr ""
 
-#: src/components/Referrals/referralsHelper.js
+#: src/components/Referrals/referralsHelper.ts
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "Les lettres, les chiffres et les caractères de soulignement sont autorisés."
 
@@ -7982,10 +7983,6 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed TWAP Swap Part"
-msgstr ""
-
-#: src/components/Synthetics/GmxAccountModal/useMultichainDepositToast.tsx
-msgid "Transferring your funds to your GMX account."
 msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.jsx
