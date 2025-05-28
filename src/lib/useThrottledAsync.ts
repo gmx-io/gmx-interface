@@ -1,6 +1,8 @@
 import throttle from "lodash/throttle";
 import { useEffect, useRef, useState } from "react";
 
+import { useLatestValueRef } from "./useLatestValueRef";
+
 type AsyncFnParams<D extends object> = {
   params: D;
 };
@@ -63,16 +65,13 @@ export function useThrottledAsync<T, D extends object>(
 
   const [dynamicThrottleMs, setDynamicThrottleMs] = useState(throttleMs);
 
-  const latestFnRef = useRef(estimator);
+  const latestFnRef = useLatestValueRef(estimator);
+
   const latestHandlerRef = useRef<(args: D) => Promise<void>>();
   // Recreate throttled function if throttleMs changes
   const throttledFnRef = useRef<ReturnType<typeof throttle>>();
 
   const isRetryRef = useRef(false);
-
-  useEffect(() => {
-    latestFnRef.current = estimator;
-  }, [estimator]);
 
   useEffect(() => {
     latestHandlerRef.current = async (args: D) => {
@@ -126,7 +125,7 @@ export function useThrottledAsync<T, D extends object>(
         }));
       }
     };
-  }, [throttleMs, withLoading]);
+  }, [latestFnRef, throttleMs, withLoading]);
 
   useEffect(() => {
     throttledFnRef.current = throttle(latestHandlerRef.current!, dynamicThrottleMs, { leading, trailing });
@@ -139,13 +138,7 @@ export function useThrottledAsync<T, D extends object>(
     }
   }, [forceRecalculate, params]);
 
-  useEffect(() => {
-    if (!params) {
-      return;
-    }
-
-    throttledFnRef.current?.(params);
-  }, [params]);
+  throttledFnRef.current?.(params);
 
   return state;
 }
