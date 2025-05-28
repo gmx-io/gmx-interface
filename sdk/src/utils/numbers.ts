@@ -609,6 +609,7 @@ export function roundWithDecimals(value: BigNumberish, opts: { displayDecimals: 
   return isNegative ? returnValue * -1n : returnValue;
 }
 
+// TODO: Remove this function
 export function toBigNumberWithDecimals(value: string, decimals: number): bigint {
   if (!value) return BN_ZERO;
 
