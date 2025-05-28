@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { IoArrowDown } from "react-icons/io5";
 import { TbLoader2 } from "react-icons/tb";
 import { useCopyToClipboard } from "react-use";
-import { useDisconnect } from "wagmi";
+import { useAccount, useDisconnect } from "wagmi";
 
 import { getExplorerUrl } from "config/chains";
 import { CURRENT_PROVIDER_LOCALSTORAGE_KEY, SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY } from "config/localStorage";
@@ -22,7 +22,6 @@ import { useNotifyModalState } from "lib/useNotifyModalState";
 import { userAnalytics } from "lib/userAnalytics";
 import { DisconnectWalletEvent } from "lib/userAnalytics/types";
 import { shortenAddressOrEns } from "lib/wallets";
-import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 import { Token } from "sdk/types/tokens";
 
@@ -282,7 +281,7 @@ function MultichainBalance() {
 }
 
 const BalanceSection = () => {
-  const { chainId } = useWallet();
+  const { chainId } = useAccount();
 
   return isSettlementChain(chainId!) ? <SettlementChainBalance /> : <MultichainBalance />;
 };

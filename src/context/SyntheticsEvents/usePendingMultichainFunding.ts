@@ -21,7 +21,7 @@ import { useChainId } from "lib/chains";
 import { EMPTY_OBJECT } from "lib/objects";
 import { nowInSeconds } from "sdk/utils/time";
 
-import { CodecUiHelper } from "components/Synthetics/GmxAccountModal/OFTComposeMsgCodec";
+import { CodecUiHelper } from "components/Synthetics/GmxAccountModal/codecs/CodecUiHelper";
 
 import type { PendingMultichainFunding, SubmittedDeposit } from "./types";
 

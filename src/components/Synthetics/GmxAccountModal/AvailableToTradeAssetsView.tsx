@@ -2,6 +2,7 @@ import { MessageDescriptor } from "@lingui/core";
 import { msg } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
+import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
 import { isSettlementChain } from "context/GmxAccountContext/config";
@@ -9,7 +10,6 @@ import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
-import useWallet from "lib/wallets/useWallet";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import Button from "components/Button/Button";
@@ -197,7 +197,7 @@ const AssetListSettlementChain = () => {
 };
 
 export const AvailableToTradeAssetsView = () => {
-  const { chainId } = useWallet();
+  const { chainId } = useAccount();
 
   return isSettlementChain(chainId!) ? <AssetListSettlementChain /> : <AssetListMultichain />;
 };

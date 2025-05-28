@@ -16,8 +16,8 @@ export const ARBITRUM_SEPOLIA = 421614;
 export const OPTIMISM_SEPOLIA = 11155420;
 export const SEPOLIA = 11155111;
 
-export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
-export const SUPPORTED_CHAIN_IDS_DEV = [...SUPPORTED_CHAIN_IDS, AVALANCHE_FUJI, ARBITRUM_SEPOLIA];
+export const SUPPORTED_CHAIN_IDS: UiContractsChain[] = [ARBITRUM, AVALANCHE];
+export const SUPPORTED_CHAIN_IDS_DEV: UiContractsChain[] = [...SUPPORTED_CHAIN_IDS, AVALANCHE_FUJI, ARBITRUM_SEPOLIA];
 
 export type UiContractsChain = typeof ARBITRUM | typeof AVALANCHE | typeof AVALANCHE_FUJI | typeof ARBITRUM_SEPOLIA;
 
@@ -128,7 +128,7 @@ export function getExcessiveExecutionFee(chainId: number) {
 }
 
 export function isSupportedChain(chainId: number, dev = false) {
-  return (dev ? SUPPORTED_CHAIN_IDS_DEV : SUPPORTED_CHAIN_IDS).includes(chainId);
+  return (dev ? SUPPORTED_CHAIN_IDS_DEV : SUPPORTED_CHAIN_IDS).includes(chainId as UiContractsChain);
 }
 
 export const EXECUTION_FEE_CONFIG_V2: {

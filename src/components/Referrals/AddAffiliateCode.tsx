@@ -1,16 +1,15 @@
 import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
+import type { TransactionResponse } from "ethers";
 import { useEffect, useRef, useState } from "react";
+import { useAccount } from "wagmi";
 
-import { ARBITRUM } from "config/chains";
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
-import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
-import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
 import { getCodeError, getReferralCodeTakenStatus, getSampleReferrarStat } from "./referralsHelper";
 
@@ -64,7 +63,7 @@ export function AffiliateCodeForm({
   const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState("ok");
   const debouncedReferralCode = useDebounce(referralCode, 300);
   const { chainId, srcChainId } = useChainId();
-  const { account } = useWallet();
+  const { address: account } = useAccount();
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -77,7 +76,7 @@ export function AffiliateCodeForm({
         setReferralCodeCheckStatus("ok");
         return;
       }
-      const { status: takenStatus } = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
+      const { takenStatus: takenStatus } = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
       // ignore the result if the referral code to check has changed
       if (cancelled) {
         return;
@@ -133,25 +132,29 @@ export function AffiliateCodeForm({
     return true;
   }
 
-  async function handleSubmit(event) {
+  async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     setIsProcessing(true);
+
     const trimmedCode = referralCode.trim();
-    const { status: takenStatus, info: takenInfo } = await getReferralCodeTakenStatus(account, trimmedCode, chainId);
+    const { takenStatus, info: takenInfo } = await getReferralCodeTakenStatus(account, trimmedCode, chainId);
     if (["all", "current", "other"].includes(takenStatus)) {
       setIsProcessing(false);
     }
 
     if (takenStatus === "none" || takenStatus === "other") {
-      const ownerOnOtherNetwork = takenInfo[chainId === ARBITRUM ? "ownerAvax" : "ownerArbitrum"];
+      const ownerOnOtherNetwork = takenInfo[chainId];
       try {
-        const tx = await handleCreateReferralCode(trimmedCode);
+        const tx = (await handleCreateReferralCode(trimmedCode)) as TransactionResponse;
+
         if (callAfterSuccess) {
           callAfterSuccess();
         }
+
         const receipt = await tx.wait();
-        if (receipt.status === 1) {
-          recentlyAddedCodes.push(getSampleReferrarStat(trimmedCode, ownerOnOtherNetwork, account));
+
+        if (receipt?.status === 1) {
+          recentlyAddedCodes.push(getSampleReferrarStat(trimmedCode, ownerOnOtherNetwork!.owner, account));
 
           helperToast.success(t`Referral code created!`);
           setRecentlyAddedCodes(recentlyAddedCodes);
@@ -181,7 +184,6 @@ export function AffiliateCodeForm({
           setError(getCodeError(value));
         }}
       />
-      {srcChainId && <SyntheticsInfoRow label="Network Fee" value={"$0.34"} />}
       {error && <p className="AffiliateCode-error">{error}</p>}
       <Button variant="primary-action" className="w-full" type="submit" disabled={!isPrimaryEnabled()}>
         {getPrimaryText()}

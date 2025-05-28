@@ -71,7 +71,7 @@ function Referrals() {
   const { pendingTxns } = usePendingTxns();
   const localizedTabOptionLabels = useLocalizedMap(TAB_OPTION_LABELS);
 
-  function handleCreateReferralCode(referralCode) {
+  function handleCreateReferralCode(referralCode: string) {
     return registerReferralCode(chainId, referralCode, signer, {
       sentMsg: t`Referral code submitted!`,
       failMsg: t`Referral code creation failed.`,

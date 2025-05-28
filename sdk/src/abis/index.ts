@@ -21,7 +21,6 @@ import RelayParamsArbitrumSepolia from "./arbitrumSepolia/RelayParams.json";
 import SubaccountGelatoRelayRouterArbitrumSepolia from "./arbitrumSepolia/SubaccountGelatoRelayRouter.json";
 import SubaccountRouterArbitrumSepolia from "./arbitrumSepolia/SubaccountRouter.json";
 import SyntheticsReaderArbitrumSepolia from "./arbitrumSepolia/SyntheticsReader.json";
-import TimelockArbitrumSepolia from "./arbitrumSepolia/Timelock.json";
 import CustomErrors from "./CustomErrors.json";
 import DataStore from "./DataStore.json";
 import ERC20PermitInterface from "./ERC20PermitInterface.json";
@@ -124,7 +123,6 @@ export type AbiId =
   | "SyntheticsReaderArbitrumSepolia"
   | "SyntheticsRouter"
   | "Timelock"
-  | "TimelockArbitrumSepolia"
   | "Token"
   | "Treasury"
   | "UniPool"
@@ -217,7 +215,6 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   SyntheticsReaderArbitrumSepolia: SyntheticsReaderArbitrumSepolia.abi,
   SyntheticsRouter: SyntheticsRouter.abi,
   Timelock: Timelock.abi,
-  TimelockArbitrumSepolia: TimelockArbitrumSepolia.abi,
   Token: Token.abi,
   Treasury: Treasury.abi,
   UniPool: UniPool.abi,

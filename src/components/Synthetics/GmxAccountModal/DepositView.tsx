@@ -1,11 +1,10 @@
-import { Options, addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { Trans, t } from "@lingui/macro";
 import { Contract } from "ethers";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
 import Skeleton from "react-loading-skeleton";
 import useSWR from "swr";
-import { Address, Hex, decodeErrorResult, encodeFunctionData, toHex, zeroAddress } from "viem";
+import { Address, Hex, decodeErrorResult, encodeFunctionData, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import { UiContractsChain, UiSettlementChain, UiSourceChain, UiSupportedChain, getChainName } from "config/chains";
@@ -14,10 +13,7 @@ import { getChainIcon } from "config/icons";
 import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
   DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT,
-  getLayerZeroEndpointId,
   getMappedTokenId,
-  isSettlementChain,
-  isSourceChain,
 } from "context/GmxAccountContext/config";
 import {
   useGmxAccountDepositViewTokenAddress,
@@ -33,13 +29,7 @@ import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
 import { helperToast } from "lib/helperToast";
-import {
-  BASIS_POINTS_DIVISOR_BIGINT,
-  formatAmountFree,
-  formatBalanceAmount,
-  formatPercentage,
-  formatUsd,
-} from "lib/numbers";
+import { formatAmountFree, formatBalanceAmount, formatPercentage, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { TxnCallback, TxnEventName, WalletTxnCtx, sendWalletTransaction } from "lib/transactions";
@@ -61,17 +51,15 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 import NumberInput from "components/NumberInput/NumberInput";
-import { CodecUiHelper } from "components/Synthetics/GmxAccountModal/OFTComposeMsgCodec";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { getSendParamsWithoutSlippage } from "./getSendParams";
 import { useAvailableToTradeAssetMultichain, useMultichainTokensRequest } from "./hooks";
-import { OftCmd, SEND_MODE_TAXI } from "./OftCmd";
+import { applySlippageBps, SLIPPAGE_BPS } from "./slippage";
 import { useMultichainDepositNetworkComposeGas } from "./useMultichainDepositNetworkComposeGas";
 import { useMultichainQuoteFeeUsd } from "./useMultichainQuoteFeeUsd";
-
-export const SLIPPAGE_BPS = 50n;
 
 export const DepositView = () => {
   const { chainId: settlementChainId, srcChainId } = useChainId();
@@ -814,73 +802,3 @@ export const DepositView = () => {
     </div>
   );
 };
-
-export function applySlippageBps(amount: bigint, slippageBps: bigint) {
-  return (amount * (BASIS_POINTS_DIVISOR_BIGINT - slippageBps)) / BASIS_POINTS_DIVISOR_BIGINT;
-}
-
-export function getSendParamsWithoutSlippage({
-  dstChainId,
-  account,
-  srcChainId,
-  inputAmount,
-  composeGas,
-  isDeposit,
-}: {
-  dstChainId: UiSupportedChain;
-  account: Address;
-  srcChainId?: UiSupportedChain;
-  inputAmount: bigint;
-  composeGas?: bigint;
-  isDeposit: boolean;
-}) {
-  const oftCmd: OftCmd = new OftCmd(SEND_MODE_TAXI, []);
-
-  const dstEid = getLayerZeroEndpointId(dstChainId);
-
-  if (dstEid === undefined) {
-    return;
-  }
-
-  if (isDeposit && (!isSettlementChain(dstChainId) || composeGas === undefined)) {
-    throw new Error("LayerZero provider is not supported on this chain");
-  }
-
-  let to: string;
-
-  if (isDeposit) {
-    to = toHex(addressToBytes32(getContract(dstChainId as UiContractsChain, "LayerZeroProvider")));
-  } else {
-    to = toHex(addressToBytes32(account));
-  }
-
-  let composeMsg = "0x";
-  let extraOptions = "0x";
-
-  if (isDeposit) {
-    if (srcChainId === undefined) {
-      throw new Error("Source chain is not supported");
-    }
-    if (!isSourceChain(srcChainId)) {
-      throw new Error("Source chain is not supported");
-    }
-    composeMsg = CodecUiHelper.encodeDepositMessage(account, srcChainId);
-    const builder = Options.newOptions();
-    extraOptions = builder.addExecutorComposeOption(0, composeGas!, 0).toHex();
-  } else {
-    const builder = Options.newOptions();
-    extraOptions = builder.toHex();
-  }
-
-  const sendParams: SendParamStruct = {
-    dstEid,
-    to,
-    amountLD: inputAmount,
-    minAmountLD: 0n,
-    extraOptions,
-    composeMsg,
-    oftCmd: oftCmd.toBytes(),
-  };
-
-  return sendParams;
-}

@@ -79,7 +79,8 @@ export type SyntheticsPageType =
   | "earn"
   | "buy"
   | "home"
-  | "gmxAccount";
+  | "gmxAccount"
+  | "referrals";
 
 export type SyntheticsState = {
   pageType: SyntheticsPageType;

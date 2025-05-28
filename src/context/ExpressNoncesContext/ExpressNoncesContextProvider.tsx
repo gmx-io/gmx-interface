@@ -17,6 +17,19 @@ export type NoncesData = {
     nonce: bigint;
     lastEstimated: number;
   };
+  // TODO: todo
+  multichainTransferRouter?: {
+    nonce: bigint;
+    lastEstimated: number;
+  };
+  multichainOrderRouter?: {
+    nonce: bigint;
+    lastEstimated: number;
+  };
+  multichainSubaccountRouter?: {
+    nonce: bigint;
+    lastEstimated: number;
+  };
 };
 
 type ExpressNoncesContextType = {

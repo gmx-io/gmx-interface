@@ -1,12 +1,11 @@
 import { Provider } from "ethers";
-import { DependencyList, useMemo } from "react";
-import useSWR from "swr";
 import { Address, encodePacked, Hex } from "viem";
 
-import { UiContractsChain } from "config/chains";
+import { UiContractsChain, UiSourceChain } from "config/chains";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 import {
   selectExpressFindSwapPath,
+  selectExpressGlobalParams,
   selectGasPaymentToken,
   selectRelayerFeeToken,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
@@ -14,37 +13,38 @@ import {
   selectAccount,
   selectChainId,
   selectGasPaymentTokenAllowance,
-  selectGasPrice,
   selectMarketsInfoData,
   selectSrcChainId,
   selectSubaccountForAction,
-  selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import {
+  ExpressTransactionBuilder,
+  ExpressTxnParams,
   GasPaymentParams,
   GasPaymentValidations,
   getRawRelayerParams,
   getRelayerFeeParams,
   getRelayRouterNonceForMultichain,
+  GlobalExpressParams,
   MultichainRelayParamsPayload,
   RawMultichainRelayParamsPayload,
   RawRelayParamsPayload,
   RelayFeePayload,
   RelayParamsPayload,
 } from "domain/synthetics/express";
-import { getGasPaymentValidations } from "domain/synthetics/express/expressOrderUtils";
+import { estimateExpressParams, getGasPaymentValidations } from "domain/synthetics/express/expressOrderUtils";
 import { GELATO_RELAY_ADDRESS } from "domain/synthetics/gassless/txns/expressOrderDebug";
 import { getSubaccountValidations } from "domain/synthetics/subaccount";
 import { SubaccountValidations } from "domain/synthetics/subaccount/types";
-import { convertToTokenAmount } from "domain/tokens";
+import { convertToTokenAmount, TokenData } from "domain/tokens";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
-import { expandDecimals, USD_DECIMALS } from "lib/numbers";
+import { expandDecimals, roundBigIntToDecimals, USD_DECIMALS } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
-import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { ExpressTxnData } from "lib/transactions";
+import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION, DEFAULT_SUBACCOUNT_DEADLINE_DURATION } from "sdk/configs/express";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
@@ -57,6 +57,9 @@ export type PreparedGetTxnData = (opts: {
   relayerFeeAmount: bigint;
 }) => Promise<ExpressTxnData | undefined>;
 
+/**
+ * Just a dummy relay params payload with hardcoded fee
+ */
 export const selectRawBasePreparedRelayParamsPayload = createSelector<
   Partial<{
     rawBaseRelayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload | undefined;
@@ -71,23 +74,43 @@ export const selectRawBasePreparedRelayParamsPayload = createSelector<
   const chainId = q(selectChainId);
   const srcChainId = q(selectSrcChainId);
   const account = q(selectAccount);
-  const gasPaymentToken = q(selectGasPaymentToken);
-  const relayerFeeToken = q(selectRelayerFeeToken);
-  const tokensData = q(selectTokensData);
-  const marketsInfoData = q(selectMarketsInfoData);
-  const gasPrice = q(selectGasPrice);
+  const expressGlobalParams = q(selectExpressGlobalParams);
 
-  const findSwapPath = q(selectExpressFindSwapPath);
+  if (!expressGlobalParams || !account) {
+    return EMPTY_OBJECT;
+  }
 
-  if (
-    !gasPaymentToken ||
-    !relayerFeeToken ||
-    !srcChainId ||
-    !account ||
-    !tokensData ||
-    !marketsInfoData ||
-    gasPrice === undefined
-  ) {
+  return getRawBaseRelayerParams({
+    chainId,
+    srcChainId,
+    account,
+    expressGlobalParams,
+  });
+});
+
+function getRawBaseRelayerParams({
+  chainId,
+  srcChainId,
+  account,
+  expressGlobalParams,
+}: {
+  chainId: UiContractsChain;
+  srcChainId: UiSourceChain | undefined;
+  account: string;
+  expressGlobalParams: GlobalExpressParams;
+}): Partial<{
+  rawBaseRelayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload;
+  baseRelayFeeSwapParams: {
+    feeParams: RelayFeePayload;
+    externalCalls: ExternalCallsPayload;
+    feeExternalSwapGasLimit: bigint;
+    gasPaymentParams: GasPaymentParams;
+  };
+}> {
+  const { gasPaymentToken, relayerFeeToken, tokensData, marketsInfoData, gasPrice, findFeeSwapPath } =
+    expressGlobalParams;
+
+  if (!gasPaymentToken || !relayerFeeToken || !account || !tokensData || !marketsInfoData || gasPrice === undefined) {
     return EMPTY_OBJECT;
   }
 
@@ -106,7 +129,7 @@ export const selectRawBasePreparedRelayParamsPayload = createSelector<
     relayerFeeToken,
     relayerFeeAmount: baseRelayerFeeAmount,
     totalRelayerFeeTokenAmount: baseRelayerFeeAmount,
-    findFeeSwapPath: findSwapPath,
+    findFeeSwapPath: findFeeSwapPath,
 
     transactionExternalCalls: EMPTY_EXTERNAL_CALLS,
     feeExternalSwapQuote: undefined,
@@ -128,64 +151,9 @@ export const selectRawBasePreparedRelayParamsPayload = createSelector<
   });
 
   return { rawBaseRelayParamsPayload, baseRelayFeeSwapParams };
-});
-
-function useArbitraryRelayFee(
-  name: string,
-  {
-    relayRouterAddress,
-    getTxnData,
-  }: {
-    relayRouterAddress: string;
-    getTxnData: PreparedGetTxnData | undefined;
-  },
-  dependencies: DependencyList
-): {
-  relayFeeAmount: bigint | undefined;
-} {
-  const chainId = useSelector(selectChainId);
-
-  const account = useSelector(selectAccount);
-  const { provider } = useJsonRpcProvider(chainId);
-
-  const { rawBaseRelayParamsPayload, baseRelayFeeSwapParams } = useSelector(selectRawBasePreparedRelayParamsPayload);
-
-  const queryCondition =
-    account &&
-    provider &&
-    getTxnData !== undefined &&
-    rawBaseRelayParamsPayload !== undefined &&
-    baseRelayFeeSwapParams !== undefined;
-
-  const { data: relayFeeAmount } = useSWR<bigint | undefined>(
-    queryCondition && [chainId, name, account, ...dependencies],
-    {
-      fetcher: async (): Promise<bigint | undefined> => {
-        if (!queryCondition) {
-          return;
-        }
-
-        return estimateArbitraryRelayFee({
-          chainId,
-          relayRouterAddress,
-          provider,
-          account: account as Address,
-          rawRelayParamsPayload: rawBaseRelayParamsPayload,
-          relayerFeeTokenAddress: baseRelayFeeSwapParams.gasPaymentParams.relayerFeeTokenAddress,
-          relayerFeeAmount: baseRelayFeeSwapParams.gasPaymentParams.totalRelayerFeeTokenAmount,
-          getTxnData,
-        });
-      },
-      refreshInterval: FREQUENT_UPDATE_INTERVAL,
-    }
-  );
-
-  return {
-    relayFeeAmount,
-  };
 }
 
-const EMPTY_EXTERNAL_CALLS: ExternalCallsPayload = {
+export const EMPTY_EXTERNAL_CALLS: ExternalCallsPayload = {
   sendTokens: [],
   sendAmounts: [],
   externalCallTargets: [],
@@ -193,6 +161,53 @@ const EMPTY_EXTERNAL_CALLS: ExternalCallsPayload = {
   refundTokens: [],
   refundReceivers: [],
 };
+
+async function estimateArbitraryGasLimit({
+  provider,
+  rawRelayParamsPayload,
+  relayerFeeToken,
+  relayerFeeAmount,
+  gasPaymentToken,
+  expressTransactionBuilder,
+}: {
+  provider: Provider;
+  rawRelayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload;
+  relayerFeeToken: TokenData;
+  gasPaymentToken: TokenData;
+  relayerFeeAmount: bigint;
+  expressTransactionBuilder: ExpressTransactionBuilder;
+}) {
+  const gasPaymentParams: GasPaymentParams = {
+    gasPaymentToken: gasPaymentToken,
+    relayFeeToken: relayerFeeToken,
+    gasPaymentTokenAddress: gasPaymentToken.address,
+    relayerFeeTokenAddress: relayerFeeToken.address,
+    relayerFeeAmount,
+    totalRelayerFeeTokenAmount: relayerFeeAmount,
+    gasPaymentTokenAmount: 0n,
+  };
+
+  const { txnData: baseTxnData } = await expressTransactionBuilder({
+    relayParams: rawRelayParamsPayload,
+    gasPaymentParams,
+    subaccount: undefined,
+    noncesData: undefined,
+  });
+
+  const baseData = encodePacked(
+    ["bytes", "address", "address", "uint256"],
+    [baseTxnData.callData as Hex, GELATO_RELAY_ADDRESS, relayerFeeToken.address as Address, baseTxnData.feeAmount]
+  );
+
+  const gasLimit = await estimateGasLimit(provider, {
+    from: GMX_SIMULATION_ORIGIN as Address,
+    to: baseTxnData.to as Address,
+    data: baseData,
+    value: 0n,
+  });
+
+  return gasLimit;
+}
 
 export async function estimateArbitraryRelayFee({
   chainId,
@@ -369,55 +384,88 @@ export const selectArbitraryRelayParamsAndPayload = createSelector(function sele
 export function useArbitraryRelayParamsAndPayload(
   name: string,
   {
-    relayRouterAddress,
-    getTxnData,
     additionalNetworkFee,
-    isSubaccountApplicable,
-  }: {
-    relayRouterAddress: string;
-    getTxnData: PreparedGetTxnData | undefined;
-    additionalNetworkFee?: bigint;
-    isSubaccountApplicable?: boolean;
-  },
-  dependencies: DependencyList
-): Partial<{
-  relayFeeAmount: bigint;
-  relayFeeParams: {
-    feeParams: RelayFeePayload;
-    externalCalls: ExternalCallsPayload;
-    feeExternalSwapGasLimit: bigint;
-    gasPaymentParams: GasPaymentParams;
-  };
-  relayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload;
-  fetchLatestParamsPayload: (provider: Provider) => Promise<RelayParamsPayload | MultichainRelayParamsPayload>;
-  gasPaymentValidations: GasPaymentValidations;
-  subaccountValidations: SubaccountValidations;
-}> {
-  const { relayFeeAmount } = useArbitraryRelayFee(name, { relayRouterAddress, getTxnData }, dependencies);
+    expressTransactionBuilder,
+  }: { expressTransactionBuilder: ExpressTransactionBuilder | undefined; additionalNetworkFee?: bigint }
+): AsyncResult<ExpressTxnParams | undefined> {
+  const account = useSelector(selectAccount);
+  const chainId = useSelector(selectChainId);
+  const srcChainId = useSelector(selectSrcChainId);
+  const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const { provider } = useJsonRpcProvider(chainId);
 
-  const getRelayParamsAndPayload = useSelector(selectArbitraryRelayParamsAndPayload);
+  const additionalNetworkFeeKey =
+    additionalNetworkFee !== undefined && globalExpressParams !== undefined
+      ? roundBigIntToDecimals(additionalNetworkFee, globalExpressParams.relayerFeeToken.decimals, 2)
+      : undefined;
 
-  const relayParamsAndPayload = useMemo(() => {
-    if (relayFeeAmount === undefined || !getRelayParamsAndPayload) {
-      return undefined;
+  const expressTxnParamsAsyncResult = useThrottledAsync(
+    async ({ params: p }) => {
+      const { baseRelayFeeSwapParams, rawBaseRelayParamsPayload } = getRawBaseRelayerParams({
+        chainId,
+        srcChainId,
+        account: p.account,
+        expressGlobalParams: p.globalExpressParams,
+      });
+
+      if (baseRelayFeeSwapParams === undefined || rawBaseRelayParamsPayload === undefined) {
+        throw new Error("Failed to get base relay params");
+      }
+
+      const gasLimit = await estimateArbitraryGasLimit({
+        provider: p.provider,
+        expressTransactionBuilder: p.expressTransactionBuilder,
+        gasPaymentToken: p.globalExpressParams.gasPaymentToken,
+        relayerFeeToken: p.globalExpressParams.relayerFeeToken,
+        rawRelayParamsPayload: rawBaseRelayParamsPayload,
+        relayerFeeAmount: baseRelayFeeSwapParams.gasPaymentParams.relayerFeeAmount + (additionalNetworkFee ?? 0n),
+      });
+
+      if (gasLimit === undefined) {
+        throw new Error("Failed to estimate gas limit");
+      }
+
+      const expressParams = await estimateExpressParams({
+        chainId,
+        srcChainId,
+        estimationMethod: "estimateGas",
+        globalExpressParams: p.globalExpressParams,
+        provider,
+        requireValidations: true,
+        transactionParams: {
+          account: p.account,
+          isValid: true,
+          transactionExternalCalls: EMPTY_EXTERNAL_CALLS,
+          executionFeeAmount: additionalNetworkFee ?? 0n,
+          gasPaymentTokenAsCollateralAmount: 0n,
+          subaccountActions: 0,
+          transactionPayloadGasLimit: gasLimit,
+          expressTransactionBuilder: p.expressTransactionBuilder,
+        },
+      });
+
+      return expressParams;
+    },
+    {
+      leading: false,
+      trailing: true,
+      throttleMs: 200,
+      params:
+        account !== undefined &&
+        provider !== undefined &&
+        globalExpressParams !== undefined &&
+        expressTransactionBuilder !== undefined
+          ? {
+              account,
+              chainId,
+              provider,
+              globalExpressParams,
+              expressTransactionBuilder,
+            }
+          : undefined,
+      dataKey: [name, additionalNetworkFeeKey, globalExpressParams?.gasPaymentTokenAddress],
     }
-    return getRelayParamsAndPayload({ relayerFeeAmount: relayFeeAmount, additionalNetworkFee });
-  }, [additionalNetworkFee, getRelayParamsAndPayload, relayFeeAmount]);
+  );
 
-  const internalFetchRelayParamsPayload = relayParamsAndPayload?.fetchRelayParamsPayload;
-
-  const fetchLatestParamsPayload = useMemo(() => {
-    if (!internalFetchRelayParamsPayload) {
-      return undefined;
-    }
-
-    return (provider: Provider) => internalFetchRelayParamsPayload?.(provider, relayRouterAddress);
-  }, [internalFetchRelayParamsPayload, relayRouterAddress]);
-
-  return {
-    relayFeeAmount,
-    ...relayParamsAndPayload,
-    fetchLatestParamsPayload,
-    subaccountValidations: isSubaccountApplicable ? relayParamsAndPayload?.subaccountValidations : undefined,
-  };
+  return expressTxnParamsAsyncResult;
 }

@@ -1,6 +1,8 @@
 import { t } from "@lingui/macro";
+import identity from "lodash/identity";
+import { zeroAddress } from "viem";
 
-import { ARBITRUM, AVALANCHE } from "config/chains";
+import { SUPPORTED_CHAIN_IDS, UiContractsChain } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getReferralCodeOwner } from "domain/referrals";
 import { MAX_REFERRAL_CODE_LENGTH, REFERRAL_CODE_QUERY_PARAM, getTwitterIntentURL, isAddressZero } from "lib/legacy";
@@ -19,36 +21,81 @@ export function isRecentReferralCodeNotExpired(referralCodeInfo) {
   }
 }
 
-export async function getReferralCodeTakenStatus(account, referralCode, chainId) {
+type TakenStatus = "all" | "current" | "other" | "none";
+type TakenInfo = Partial<
+  Record<
+    UiContractsChain,
+    {
+      taken: boolean;
+      owner: string;
+    }
+  >
+> & {
+  all: boolean;
+};
+// TODO: SUPPORTED_CHAIN_IDS make it work with many chains
+export async function getReferralCodeTakenStatus(
+  account: string | undefined,
+  referralCode: string,
+  chainId: UiContractsChain
+): Promise<{
+  takenStatus: TakenStatus;
+  info: TakenInfo;
+}> {
   const referralCodeBytes32 = encodeReferralCode(referralCode);
-  const [ownerArbitrum, ownerAvax] = await Promise.all([
-    getReferralCodeOwner(ARBITRUM, referralCodeBytes32),
-    getReferralCodeOwner(AVALANCHE, referralCodeBytes32),
-  ]);
+  // const [ownerArbitrum, ownerAvax] = await Promise.all([
+  //   getReferralCodeOwner(ARBITRUM, referralCodeBytes32),
+  //   getReferralCodeOwner(AVALANCHE, referralCodeBytes32),
+  // ]);
 
-  const takenOnArb =
-    !isAddressZero(ownerArbitrum) && (ownerArbitrum !== account || (ownerArbitrum === account && chainId === ARBITRUM));
-  const takenOnAvax =
-    !isAddressZero(ownerAvax) && (ownerAvax !== account || (ownerAvax === account && chainId === AVALANCHE));
+  const ownerMap: Partial<Record<UiContractsChain, string>> = {};
 
-  const referralCodeTakenInfo = {
-    [ARBITRUM]: takenOnArb,
-    [AVALANCHE]: takenOnAvax,
-    both: takenOnArb && takenOnAvax,
-    ownerArbitrum,
-    ownerAvax,
+  await Promise.all(
+    SUPPORTED_CHAIN_IDS.map((otherChainId) => {
+      return getReferralCodeOwner(otherChainId, referralCodeBytes32).then((res) => {
+        ownerMap[otherChainId] = res;
+      });
+    })
+  );
+
+  const takenMap: Partial<Record<UiContractsChain, boolean>> = {};
+
+  for (const otherChainId of SUPPORTED_CHAIN_IDS) {
+    // const takenOnArb =
+    //   !isAddressZero(ownerArbitrum) && (ownerArbitrum !== account || (ownerArbitrum === account && chainId === ARBITRUM));
+    const owner = ownerMap[otherChainId];
+    const takenOnOtherChain =
+      !isAddressZero(owner) && (owner !== account || (owner === account && chainId === otherChainId));
+
+    takenMap[otherChainId] = takenOnOtherChain;
+  }
+
+  const allTaken = Object.values(takenMap).every(identity);
+  const someTaken = Object.values(takenMap).some(identity);
+
+  const referralCodeTakenInfo: TakenInfo = {
+    all: allTaken,
   };
 
-  if (referralCodeTakenInfo.both) {
-    return { status: "all", info: referralCodeTakenInfo };
+  for (const otherChainId of SUPPORTED_CHAIN_IDS) {
+    referralCodeTakenInfo[otherChainId] = {
+      taken: takenMap[otherChainId] ?? false,
+      owner: ownerMap[otherChainId] ?? zeroAddress,
+    };
   }
-  if (referralCodeTakenInfo[chainId]) {
-    return { status: "current", info: referralCodeTakenInfo };
+
+  if (referralCodeTakenInfo.all) {
+    return { takenStatus: "all", info: referralCodeTakenInfo };
   }
-  if (chainId === AVALANCHE ? referralCodeTakenInfo[ARBITRUM] : referralCodeTakenInfo[AVALANCHE]) {
-    return { status: "other", info: referralCodeTakenInfo };
+  if (referralCodeTakenInfo[chainId]?.taken) {
+    return { takenStatus: "current", info: referralCodeTakenInfo };
   }
-  return { status: "none", info: referralCodeTakenInfo };
+
+  if (!referralCodeTakenInfo[chainId]?.taken && someTaken) {
+    return { takenStatus: "other", info: referralCodeTakenInfo };
+  }
+
+  return { takenStatus: "none", info: referralCodeTakenInfo };
 }
 
 export function getTierIdDisplay(tierId) {

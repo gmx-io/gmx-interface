@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useRef, useState } from "react";
 import { BiEditAlt } from "react-icons/bi";
 import { IoWarningOutline } from "react-icons/io5";
@@ -19,7 +19,7 @@ import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table"
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
 import EmptyMessage from "./EmptyMessage";
-import { ReferralCodeForm } from "./JoinReferralCode";
+import { ReferralCodeEditFormContainer } from "./JoinReferralCode";
 import ReferralInfoCard from "./ReferralInfoCard";
 import { getSharePercentage, getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
 import usePagination, { DEFAULT_PAGE_SIZE } from "./usePagination";
@@ -189,7 +189,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           onAfterOpen={() => editModalRef.current?.focus()}
         >
           <div className="edit-referral-modal">
-            <ReferralCodeForm
+            <ReferralCodeEditFormContainer
               userReferralCodeString={userReferralCodeString}
               type="edit"
               callAfterSuccess={() => setIsEditModalOpen(false)}

@@ -7,11 +7,12 @@ import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { isSourceChain } from "context/GmxAccountContext/config";
 import {
-  ExpressTransactionEstimatorParams,
   ExpressParamsEstimationMethod,
   ExpressTransactionBuilder,
+  ExpressTransactionEstimatorParams,
   ExpressTxnParams,
   GasPaymentValidations,
+  getExpressContractAddress,
   getGelatoRelayRouterDomain,
   getRawRelayerParams,
   getRelayerFeeParams,
@@ -20,10 +21,10 @@ import {
   GlobalExpressParams,
   hashRelayParams,
   hashRelayParamsMultichain,
-  RawRelayParamsPayload,
-  RelayParamsPayload,
   MultichainRelayParamsPayload,
   RawMultichainRelayParamsPayload,
+  RawRelayParamsPayload,
+  RelayParamsPayload,
 } from "domain/synthetics/express";
 import {
   getSubaccountValidations,
@@ -805,32 +806,59 @@ export async function buildAndSignBridgeOutTxn({
   relayParamsPayload,
   params,
   signer,
+  provider,
   emptySignature = false,
   relayerFeeTokenAddress,
   relayerFeeAmount,
+  noncesData,
 }: {
   chainId: UiSettlementChain;
-  relayParamsPayload: MultichainRelayParamsPayload;
+  relayParamsPayload: RawMultichainRelayParamsPayload;
   params: BridgeOutParams;
   signer: WalletSigner;
+  provider: Provider;
   emptySignature?: boolean;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
+  noncesData: NoncesData | undefined;
 }): Promise<ExpressTxnData> {
   const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
   if (!srcChainId) {
     throw new Error("No srcChainId");
   }
 
+  const cachedNonce = noncesData?.multichainTransferRouter?.nonce;
+
+  let userNonce: bigint;
+  if (cachedNonce === undefined) {
+    userNonce = await getRelayRouterNonceForMultichain(
+      provider,
+      signer.address,
+      getExpressContractAddress(chainId, {
+        isMultichain: true,
+        isSubaccount: false,
+        scope: "transfer",
+      })
+    );
+  } else {
+    userNonce = cachedNonce;
+  }
+
   const address = signer.address;
 
   let signature: string;
+
+  const relayParams: MultichainRelayParamsPayload = {
+    ...relayParamsPayload,
+    userNonce,
+    deadline: BigInt(Date.now() + 1000 * 60 * 60 * 24),
+  };
 
   if (emptySignature) {
     signature = "0x";
   } else {
     signature = await signBridgeOutPayload({
-      relayParams: relayParamsPayload,
+      relayParams,
       params,
       signer,
       chainId,
@@ -845,9 +873,8 @@ export async function buildAndSignBridgeOutTxn({
     functionName: "bridgeOut",
     args: [
       {
-        ...relayParamsPayload,
+        ...relayParams,
         signature,
-        // desChainId: BigInt(chainId),
       },
       address as Address,
       BigInt(srcChainId),
@@ -904,6 +931,97 @@ async function signBridgeOutPayload({
     false,
     srcChainId
   );
+
+  return signTypedData({ signer, domain, types, typedData });
+}
+
+export async function buildAndSignSetTraderReferralCodeTxn({
+  chainId,
+  relayParamsPayload,
+  params,
+  signer,
+  emptySignature = false,
+  relayerFeeTokenAddress,
+  relayerFeeAmount,
+}: {
+  chainId: UiSettlementChain;
+  relayParamsPayload: MultichainRelayParamsPayload;
+  params: BridgeOutParams;
+  signer: WalletSigner;
+  emptySignature?: boolean;
+  relayerFeeTokenAddress: string;
+  relayerFeeAmount: bigint;
+}): Promise<ExpressTxnData> {
+  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
+  if (!srcChainId) {
+    throw new Error("No srcChainId");
+  }
+
+  const address = signer.address;
+
+  let signature: string;
+
+  if (emptySignature) {
+    signature = "0x";
+  } else {
+    signature = await signBridgeOutPayload({
+      relayParams: relayParamsPayload,
+      params,
+      signer,
+      chainId,
+      srcChainId,
+    });
+  }
+
+  type MultichainBridgeOutArgs = AbiItemArgs<typeof multichainTransferRouterAbi, "bridgeOut">;
+
+  const bridgeOutCallData = encodeFunctionData({
+    abi: multichainTransferRouterAbi,
+    functionName: "bridgeOut",
+    args: [
+      {
+        ...relayParamsPayload,
+        signature,
+      },
+      address as Address,
+      BigInt(srcChainId),
+      params,
+    ] as MultichainBridgeOutArgs,
+  });
+
+  return {
+    callData: bridgeOutCallData,
+    to: getContract(chainId, "MultichainTransferRouter"),
+    feeToken: relayerFeeTokenAddress,
+    feeAmount: relayerFeeAmount,
+  };
+}
+
+export async function signSetTraderReferralCode({
+  signer,
+  relayParams,
+  referralCode,
+  chainId,
+  srcChainId,
+}: {
+  signer: WalletSigner;
+  relayParams: MultichainRelayParamsPayload;
+  referralCode: string;
+  chainId: UiContractsChain;
+  srcChainId: UiSourceChain;
+}) {
+  const types = {
+    SetTraderReferralCode: [
+      { name: "referralCode", type: "bytes32" },
+      { name: "relayParams", type: "bytes32" },
+    ],
+  };
+
+  const domain = getGelatoRelayRouterDomain(chainId, getContract(chainId, "MultichainOrderRouter"), false, srcChainId);
+  const typedData = {
+    referralCode: referralCode,
+    relayParams: hashRelayParamsMultichain(relayParams),
+  };
 
   return signTypedData({ signer, domain, types, typedData });
 }

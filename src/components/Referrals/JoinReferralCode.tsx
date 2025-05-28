@@ -1,13 +1,36 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { Contract } from "ethers";
 import { useEffect, useRef, useState } from "react";
+import { encodeFunctionData, zeroAddress } from "viem";
+import { usePublicClient } from "wagmi";
 
+import { getMultichainTokenId } from "context/GmxAccountContext/config";
+import { IStargateAbi } from "context/GmxAccountContext/stargatePools";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/referrals/hooks";
+import { getExpressContractAddress, MultichainRelayParamsPayload } from "domain/synthetics/express";
+import { signSetTraderReferralCode } from "domain/synthetics/express/expressOrderUtils";
+import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
+import { helperToast } from "lib/helperToast";
+import { numberToBigint } from "lib/numbers";
+import { useJsonRpcProvider } from "lib/rpc";
+import { sendWalletTransaction } from "lib/transactions";
 import useWallet from "lib/wallets/useWallet";
+import { encodeReferralCode } from "sdk/utils/referrals";
+import type { IStargate } from "typechain-types-stargate";
+import { SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
 
 import Button from "components/Button/Button";
+import { selectArbitraryRelayParamsAndPayload } from "components/Synthetics/GmxAccountModal/arbitraryRelayParams";
+import { MultichainAction, MultichainActionType } from "components/Synthetics/GmxAccountModal/codecs/CodecUiHelper";
+import { getSendParamsWithoutSlippage } from "components/Synthetics/GmxAccountModal/getSendParams";
+import { estimateMultichainDepositNetworkComposeGas } from "components/Synthetics/GmxAccountModal/useMultichainDepositNetworkComposeGas";
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
 import { REFERRAL_CODE_REGEX } from "./referralsHelper";
 
@@ -23,7 +46,7 @@ function JoinReferralCode({ active }: { active: boolean }) {
       </p>
       <div className="card-action">
         {active ? (
-          <ReferralCodeForm />
+          <ReferralCodeEditFormContainer />
         ) : (
           <Button variant="primary-action" className="w-full" type="submit" onClick={openConnectModal}>
             <Trans>Connect Wallet</Trans>
@@ -34,7 +57,7 @@ function JoinReferralCode({ active }: { active: boolean }) {
   );
 }
 
-export function ReferralCodeForm({
+function ReferralCodeForm({
   callAfterSuccess = undefined,
   userReferralCodeString = "",
   type = "join",
@@ -43,7 +66,9 @@ export function ReferralCodeForm({
   userReferralCodeString?: string;
   type?: string;
 }) {
-  const { account, signer, chainId } = useWallet();
+  const { chainId, srcChainId } = useChainId();
+  const { account, signer } = useWallet();
+  const { provider } = useJsonRpcProvider(chainId);
   const [referralCode, setReferralCode] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const [isValidating, setIsValidating] = useState(false);
@@ -51,6 +76,7 @@ export function ReferralCodeForm({
   const [referralCodeExists, setReferralCodeExists] = useState(true);
   const { pendingTxns, setPendingTxns } = usePendingTxns();
   const debouncedReferralCode = useDebounce(referralCode, 300);
+  const settlementChainPublicClient = usePublicClient({ chainId });
 
   function getPrimaryText() {
     const isEdit = type === "edit";
@@ -89,29 +115,174 @@ export function ReferralCodeForm({
     return true;
   }
 
+  // const { composeGas } = useMultichainDepositNetworkComposeGas({
+  //   enabled: srcChainId !== undefined,
+  // });
+  const globalExpressParams = useSelector(selectExpressGlobalParams);
+
+  const calcSelector = useCalcSelector();
+
   async function handleSubmit(event) {
-    const isEdit = type === "edit";
     event.preventDefault();
+
+    if (!account) {
+      return;
+    }
+
+    const isEdit = type === "edit";
     setIsSubmitting(true);
 
     try {
-      const tx = await setTraderReferralCodeByUser(chainId, referralCode, signer, {
-        account,
-        successMsg: isEdit ? t`Referral code updated!` : t`Referral code added!`,
-        failMsg: isEdit ? t`Referral code updated failed.` : t`Adding referral code failed.`,
-        setPendingTxns,
-        pendingTxns,
-      });
-      if (callAfterSuccess) {
-        callAfterSuccess();
-      }
-      const receipt = await tx.wait();
-      if (receipt.status === 1) {
-        setReferralCode("");
+      if (srcChainId) {
+        const sourceChainNativeTokenId = getMultichainTokenId(srcChainId, zeroAddress);
+        const getRelayParamsAndPayload = calcSelector(selectArbitraryRelayParamsAndPayload);
+
+        if (
+          !sourceChainNativeTokenId ||
+          provider === undefined ||
+          globalExpressParams === undefined ||
+          getRelayParamsAndPayload === undefined ||
+          signer === undefined ||
+          settlementChainPublicClient === undefined
+        ) {
+          console.log({
+            sourceChainNativeTokenId,
+            provider,
+            globalExpressParams,
+            getRelayParamsAndPayload,
+            signer,
+          });
+
+          throw new Error("Missing required parameters");
+        }
+
+        const { fetchRelayParamsPayload } = getRelayParamsAndPayload({ relayerFeeAmount: 0n });
+
+        if (fetchRelayParamsPayload === undefined) {
+          throw new Error("No fetchRelayParamsPayload");
+        }
+
+        const relayParamsPayload = await fetchRelayParamsPayload(
+          provider,
+          getExpressContractAddress(chainId, {
+            isMultichain: true,
+            isSubaccount: false,
+            scope: "order",
+          })
+        );
+
+        // const expressParams = await estimateExpressParams({
+        //   chainId,
+        //   provider,
+        //   transactionParams: {
+        //     account,
+        //     executionFeeAmount:
+        //   },
+        //   globalExpressParams,
+        //   estimationMethod: "estimateGas",
+        //   requireValidations: true,
+        //   srcChainId,
+        // });
+
+        // getRawRelayerParams({
+        //   chainId,
+        //   externalCalls: EMPTY_EXTERNAL_CALLS,
+        //   feeParams: {},
+        // });
+        const referralCodeHex = encodeReferralCode(referralCode);
+
+        const signature = await signSetTraderReferralCode({
+          chainId,
+          srcChainId,
+          signer,
+          relayParams: relayParamsPayload as MultichainRelayParamsPayload,
+          referralCode: referralCodeHex,
+        });
+
+        const action: MultichainAction = {
+          actionType: MultichainActionType.SetTraderReferralCode,
+          actionData: {
+            relayParams: relayParamsPayload as MultichainRelayParamsPayload,
+            signature,
+            referralCode: referralCodeHex,
+          },
+        };
+
+        const composeGas = await estimateMultichainDepositNetworkComposeGas({
+          action,
+          chainId,
+          account,
+          srcChainId,
+          depositViewTokenAddress: sourceChainNativeTokenId.address,
+          settlementChainPublicClient,
+        });
+
+        const sendParamsWithRoughAmount: SendParamStruct = getSendParamsWithoutSlippage({
+          dstChainId: chainId,
+          account,
+          srcChainId,
+          inputAmount: numberToBigint(0.02, sourceChainNativeTokenId.decimals),
+          composeGas,
+          isDeposit: true,
+          action,
+        });
+
+        const sourceChainStargateAddress = sourceChainNativeTokenId.stargate;
+        const iStargateInstance = new Contract(
+          sourceChainStargateAddress,
+          IStargateAbi,
+          signer
+        ) as unknown as IStargate;
+        const [limit, oftFeeDetails, receipt] = await iStargateInstance.quoteOFT(sendParamsWithRoughAmount);
+
+        const minAmount = limit[0];
+
+        const sendParamsWithMinimumAmount: SendParamStruct = {
+          ...sendParamsWithRoughAmount,
+          amountLD: minAmount,
+          minAmountLD: minAmount,
+        };
+
+        const quoteSend = await iStargateInstance.quoteSend(sendParamsWithMinimumAmount, false);
+
+        await sendWalletTransaction({
+          chainId: srcChainId,
+          to: sourceChainStargateAddress,
+          signer: signer!,
+          callData: encodeFunctionData({
+            abi: IStargateAbi,
+            functionName: "sendToken",
+            args: [
+              sendParamsWithMinimumAmount,
+              { nativeFee: quoteSend.nativeFee, lzTokenFee: quoteSend.lzTokenFee },
+              account,
+            ],
+          }),
+          value: (quoteSend.nativeFee as bigint) + minAmount,
+          msg: "Sent",
+        });
+      } else {
+        const tx = await setTraderReferralCodeByUser(chainId, referralCode, signer, {
+          account,
+          successMsg: isEdit ? t`Referral code updated!` : t`Referral code added!`,
+          failMsg: isEdit ? t`Referral code updated failed.` : t`Adding referral code failed.`,
+          setPendingTxns,
+          pendingTxns,
+        });
+        if (callAfterSuccess) {
+          callAfterSuccess();
+        }
+        const receipt = await tx.wait();
+        if (receipt.status === 1) {
+          setReferralCode("");
+        }
       }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
+      if (error.name) {
+        helperToast.error(error.message);
+      }
     } finally {
       setIsSubmitting(false);
       setIsValidating(false);
@@ -158,6 +329,8 @@ export function ReferralCodeForm({
           setReferralCode(value);
         }}
       />
+      {srcChainId && <SyntheticsInfoRow label="Network Fee" value={"$0.34"} />}
+
       <Button
         variant="primary-action"
         type="submit"
@@ -169,4 +342,25 @@ export function ReferralCodeForm({
     </form>
   );
 }
+
+export function ReferralCodeEditFormContainer({
+  callAfterSuccess = undefined,
+  userReferralCodeString = "",
+  type = "join",
+}: {
+  callAfterSuccess?: () => void;
+  userReferralCodeString?: string;
+  type?: string;
+}) {
+  return (
+    <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType={"referrals"}>
+      <ReferralCodeForm
+        callAfterSuccess={callAfterSuccess}
+        userReferralCodeString={userReferralCodeString}
+        type={type}
+      />
+    </SyntheticsStateContextProvider>
+  );
+}
+
 export default JoinReferralCode;

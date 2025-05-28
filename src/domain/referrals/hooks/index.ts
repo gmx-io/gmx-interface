@@ -157,7 +157,7 @@ export async function setTraderReferralCodeByUser(chainId, referralCode, signer,
   return callContract(chainId, contract, "setTraderReferralCodeByUser", [referralCodeHex], opts);
 }
 
-export async function getReferralCodeOwner(chainId, referralCode) {
+export async function getReferralCodeOwner(chainId: UiContractsChain, referralCode: string): Promise<string> {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const provider = getProvider(undefined, chainId);
   const contract = new ethers.Contract(referralStorageAddress, abis.ReferralStorage, provider);

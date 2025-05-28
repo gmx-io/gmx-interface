@@ -1,9 +1,5 @@
-import { addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
-import { AbiCoder, BigNumberish, BytesLike, getBytes, hexlify, solidityPacked, toBigInt } from "ethers";
-import { Address, Hex, concatHex } from "viem";
-
-import type { UiContractsChain, UiSettlementChain, UiSourceChain } from "sdk/configs/chains";
-import { getContract } from "sdk/configs/contracts";
+import { BigNumberish, BytesLike, getBytes, solidityPacked, toBigInt } from "ethers";
+import type { Hex } from "viem";
 
 export class OFTComposeMsgCodec {
   // Offset constants for decoding composed messages
@@ -77,39 +73,5 @@ export class OFTComposeMsgCodec {
   public static composeMsg(_msg: BytesLike): BytesLike {
     const bytes = getBytes(_msg);
     return bytes.slice(OFTComposeMsgCodec.COMPOSE_FROM_OFFSET);
-  }
-}
-
-export class CodecUiHelper {
-  public static encodeDepositMessage(account: string, srcChainId: UiSourceChain): string {
-    return AbiCoder.defaultAbiCoder().encode(["address", "uint256", "bytes"], [account, srcChainId, "0x"]);
-  }
-
-  public static encodeComposeMsg(composeFromAddress: string, msg: string) {
-    if (!msg.startsWith("0x")) {
-      throw new Error("msg must start with 0x");
-    }
-
-    const composeFrom = hexlify(addressToBytes32(composeFromAddress));
-
-    const composeFromWithMsg = concatHex([composeFrom as Hex, msg as Hex]);
-
-    return composeFromWithMsg;
-  }
-
-  public static decodeDepositMessage(message: BytesLike): { account: string; srcChainId: UiSourceChain; data: string } {
-    const result = AbiCoder.defaultAbiCoder().decode(["address", "uint256", "bytes"], message, false);
-    return { account: result[0], srcChainId: result[1], data: result[2] };
-  }
-
-  public static composeDepositMessage(dstChainId: UiSettlementChain, account: string, srcChainId: UiSourceChain) {
-    const msg = CodecUiHelper.encodeDepositMessage(account, srcChainId);
-    return CodecUiHelper.encodeComposeMsg(CodecUiHelper.getLzEndpoint(dstChainId), msg);
-  }
-
-  public static getLzEndpoint(chainId: UiContractsChain): Address {
-    const layerZeroEndpoint = getContract(chainId, "LayerZeroEndpoint");
-
-    return layerZeroEndpoint;
   }
 }
