@@ -448,13 +448,14 @@ export function OrderEditor(p: Props) {
 
     setIsSubmitting(true);
 
-    const finalExpressParams = await expressParamsPromise;
+    const fulfilledExpressParams = await expressParamsPromise;
 
     const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
       batchParams,
-      expressParams: finalExpressParams && getIsValidExpressParams(finalExpressParams) ? finalExpressParams : undefined,
+      expressParams:
+        fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
       simulationParams: undefined,
       callback: makeOrderTxnCallback({}),
     });
