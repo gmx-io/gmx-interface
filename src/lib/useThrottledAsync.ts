@@ -138,7 +138,13 @@ export function useThrottledAsync<T, D extends object>(
     }
   }, [forceRecalculate, params]);
 
-  throttledFnRef.current?.(params);
+  useEffect(() => {
+    if (!params) {
+      return;
+    }
+
+    latestHandlerRef.current?.(params);
+  }, [params]);
 
   return state;
 }
