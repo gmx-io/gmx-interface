@@ -315,7 +315,6 @@ export interface MultichainGlvRouterInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "createGlvDeposit"
-      | "createGlvDepositFromBridge"
       | "createGlvWithdrawal"
       | "dataStore"
       | "eventEmitter"
@@ -341,16 +340,6 @@ export interface MultichainGlvRouterInterface extends Interface {
 
   encodeFunctionData(
     functionFragment: "createGlvDeposit",
-    values: [
-      IRelayUtils.RelayParamsStruct,
-      AddressLike,
-      BigNumberish,
-      IRelayUtils.TransferRequestsStruct,
-      IGlvDepositUtils.CreateGlvDepositParamsStruct,
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "createGlvDepositFromBridge",
     values: [
       IRelayUtils.RelayParamsStruct,
       AddressLike,
@@ -389,7 +378,6 @@ export interface MultichainGlvRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "userNonces", values: [AddressLike]): string;
 
   decodeFunctionResult(functionFragment: "createGlvDeposit", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "createGlvDepositFromBridge", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "createGlvWithdrawal", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "eventEmitter", data: BytesLike): Result;
@@ -469,18 +457,6 @@ export interface MultichainGlvRouter extends BaseContract {
     "nonpayable"
   >;
 
-  createGlvDepositFromBridge: TypedContractMethod<
-    [
-      relayParams: IRelayUtils.RelayParamsStruct,
-      account: AddressLike,
-      srcChainId: BigNumberish,
-      transferRequests: IRelayUtils.TransferRequestsStruct,
-      params: IGlvDepositUtils.CreateGlvDepositParamsStruct,
-    ],
-    [string],
-    "nonpayable"
-  >;
-
   createGlvWithdrawal: TypedContractMethod<
     [
       relayParams: IRelayUtils.RelayParamsStruct,
@@ -533,19 +509,6 @@ export interface MultichainGlvRouter extends BaseContract {
 
   getFunction(
     nameOrSignature: "createGlvDeposit"
-  ): TypedContractMethod<
-    [
-      relayParams: IRelayUtils.RelayParamsStruct,
-      account: AddressLike,
-      srcChainId: BigNumberish,
-      transferRequests: IRelayUtils.TransferRequestsStruct,
-      params: IGlvDepositUtils.CreateGlvDepositParamsStruct,
-    ],
-    [string],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "createGlvDepositFromBridge"
   ): TypedContractMethod<
     [
       relayParams: IRelayUtils.RelayParamsStruct,

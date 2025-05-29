@@ -57,53 +57,6 @@ export type SubaccountApprovalStructOutput = [
   signature: string;
 };
 
-export type UpdateOrderParamsStruct = {
-  key: BytesLike;
-  sizeDeltaUsd: BigNumberish;
-  acceptablePrice: BigNumberish;
-  triggerPrice: BigNumberish;
-  minOutputAmount: BigNumberish;
-  validFromTime: BigNumberish;
-  autoCancel: boolean;
-  executionFeeIncrease: BigNumberish;
-};
-
-export type UpdateOrderParamsStructOutput = [
-  key: string,
-  sizeDeltaUsd: bigint,
-  acceptablePrice: bigint,
-  triggerPrice: bigint,
-  minOutputAmount: bigint,
-  validFromTime: bigint,
-  autoCancel: boolean,
-  executionFeeIncrease: bigint,
-] & {
-  key: string;
-  sizeDeltaUsd: bigint;
-  acceptablePrice: bigint;
-  triggerPrice: bigint;
-  minOutputAmount: bigint;
-  validFromTime: bigint;
-  autoCancel: boolean;
-  executionFeeIncrease: bigint;
-};
-
-export type BatchParamsStruct = {
-  createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStruct[];
-  updateOrderParamsList: UpdateOrderParamsStruct[];
-  cancelOrderKeys: BytesLike[];
-};
-
-export type BatchParamsStructOutput = [
-  createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[],
-  updateOrderParamsList: UpdateOrderParamsStructOutput[],
-  cancelOrderKeys: string[],
-] & {
-  createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[];
-  updateOrderParamsList: UpdateOrderParamsStructOutput[];
-  cancelOrderKeys: string[];
-};
-
 export declare namespace MultichainRouter {
   export type BaseConstructorParamsStruct = {
     router: AddressLike;
@@ -256,6 +209,53 @@ export declare namespace IRelayUtils {
     signature: string;
     desChainId: bigint;
   };
+
+  export type UpdateOrderParamsStruct = {
+    key: BytesLike;
+    sizeDeltaUsd: BigNumberish;
+    acceptablePrice: BigNumberish;
+    triggerPrice: BigNumberish;
+    minOutputAmount: BigNumberish;
+    validFromTime: BigNumberish;
+    autoCancel: boolean;
+    executionFeeIncrease: BigNumberish;
+  };
+
+  export type UpdateOrderParamsStructOutput = [
+    key: string,
+    sizeDeltaUsd: bigint,
+    acceptablePrice: bigint,
+    triggerPrice: bigint,
+    minOutputAmount: bigint,
+    validFromTime: bigint,
+    autoCancel: boolean,
+    executionFeeIncrease: bigint,
+  ] & {
+    key: string;
+    sizeDeltaUsd: bigint;
+    acceptablePrice: bigint;
+    triggerPrice: bigint;
+    minOutputAmount: bigint;
+    validFromTime: bigint;
+    autoCancel: boolean;
+    executionFeeIncrease: bigint;
+  };
+
+  export type BatchParamsStruct = {
+    createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStruct[];
+    updateOrderParamsList: IRelayUtils.UpdateOrderParamsStruct[];
+    cancelOrderKeys: BytesLike[];
+  };
+
+  export type BatchParamsStructOutput = [
+    createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[],
+    updateOrderParamsList: IRelayUtils.UpdateOrderParamsStructOutput[],
+    cancelOrderKeys: string[],
+  ] & {
+    createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[];
+    updateOrderParamsList: IRelayUtils.UpdateOrderParamsStructOutput[];
+    cancelOrderKeys: string[];
+  };
 }
 
 export declare namespace IBaseOrderUtils {
@@ -389,7 +389,7 @@ export interface MultichainSubaccountRouterInterface extends Interface {
       AddressLike,
       BigNumberish,
       AddressLike,
-      BatchParamsStruct,
+      IRelayUtils.BatchParamsStruct,
     ]
   ): string;
   encodeFunctionData(
@@ -434,7 +434,7 @@ export interface MultichainSubaccountRouterInterface extends Interface {
       AddressLike,
       BigNumberish,
       AddressLike,
-      UpdateOrderParamsStruct,
+      IRelayUtils.UpdateOrderParamsStruct,
     ]
   ): string;
   encodeFunctionData(functionFragment: "userNonces", values: [AddressLike]): string;
@@ -515,7 +515,7 @@ export interface MultichainSubaccountRouter extends BaseContract {
       account: AddressLike,
       srcChainId: BigNumberish,
       subaccount: AddressLike,
-      params: BatchParamsStruct,
+      params: IRelayUtils.BatchParamsStruct,
     ],
     [string[]],
     "nonpayable"
@@ -595,7 +595,7 @@ export interface MultichainSubaccountRouter extends BaseContract {
       account: AddressLike,
       srcChainId: BigNumberish,
       subaccount: AddressLike,
-      params: UpdateOrderParamsStruct,
+      params: IRelayUtils.UpdateOrderParamsStruct,
     ],
     [void],
     "nonpayable"
@@ -614,7 +614,7 @@ export interface MultichainSubaccountRouter extends BaseContract {
       account: AddressLike,
       srcChainId: BigNumberish,
       subaccount: AddressLike,
-      params: BatchParamsStruct,
+      params: IRelayUtils.BatchParamsStruct,
     ],
     [string[]],
     "nonpayable"
@@ -689,7 +689,7 @@ export interface MultichainSubaccountRouter extends BaseContract {
       account: AddressLike,
       srcChainId: BigNumberish,
       subaccount: AddressLike,
-      params: UpdateOrderParamsStruct,
+      params: IRelayUtils.UpdateOrderParamsStruct,
     ],
     [void],
     "nonpayable"

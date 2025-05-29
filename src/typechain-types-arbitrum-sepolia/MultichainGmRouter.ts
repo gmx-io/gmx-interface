@@ -352,7 +352,6 @@ export interface MultichainGmRouterInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "createDeposit"
-      | "createDepositFromBridge"
       | "createShift"
       | "createWithdrawal"
       | "dataStore"
@@ -382,16 +381,6 @@ export interface MultichainGmRouterInterface extends Interface {
 
   encodeFunctionData(
     functionFragment: "createDeposit",
-    values: [
-      IRelayUtils.RelayParamsStruct,
-      AddressLike,
-      BigNumberish,
-      IRelayUtils.TransferRequestsStruct,
-      IDepositUtils.CreateDepositParamsStruct,
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "createDepositFromBridge",
     values: [
       IRelayUtils.RelayParamsStruct,
       AddressLike,
@@ -443,7 +432,6 @@ export interface MultichainGmRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "withdrawalVault", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "createDeposit", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "createDepositFromBridge", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "createShift", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "createWithdrawal", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
@@ -527,18 +515,6 @@ export interface MultichainGmRouter extends BaseContract {
     "nonpayable"
   >;
 
-  createDepositFromBridge: TypedContractMethod<
-    [
-      relayParams: IRelayUtils.RelayParamsStruct,
-      account: AddressLike,
-      srcChainId: BigNumberish,
-      transferRequests: IRelayUtils.TransferRequestsStruct,
-      params: IDepositUtils.CreateDepositParamsStruct,
-    ],
-    [string],
-    "nonpayable"
-  >;
-
   createShift: TypedContractMethod<
     [
       relayParams: IRelayUtils.RelayParamsStruct,
@@ -609,19 +585,6 @@ export interface MultichainGmRouter extends BaseContract {
 
   getFunction(
     nameOrSignature: "createDeposit"
-  ): TypedContractMethod<
-    [
-      relayParams: IRelayUtils.RelayParamsStruct,
-      account: AddressLike,
-      srcChainId: BigNumberish,
-      transferRequests: IRelayUtils.TransferRequestsStruct,
-      params: IDepositUtils.CreateDepositParamsStruct,
-    ],
-    [string],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "createDepositFromBridge"
   ): TypedContractMethod<
     [
       relayParams: IRelayUtils.RelayParamsStruct,

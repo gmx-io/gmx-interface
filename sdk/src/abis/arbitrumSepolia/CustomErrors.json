@@ -2267,11 +2267,6 @@
       "type": "error"
     },
     {
-      "inputs": [],
-      "name": "InvalidMultichainAction",
-      "type": "error"
-    },
-    {
       "inputs": [
         {
           "internalType": "address",

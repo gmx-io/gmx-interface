@@ -23,53 +23,6 @@ import type {
   TypedContractMethod,
 } from "./common";
 
-export type UpdateOrderParamsStruct = {
-  key: BytesLike;
-  sizeDeltaUsd: BigNumberish;
-  acceptablePrice: BigNumberish;
-  triggerPrice: BigNumberish;
-  minOutputAmount: BigNumberish;
-  validFromTime: BigNumberish;
-  autoCancel: boolean;
-  executionFeeIncrease: BigNumberish;
-};
-
-export type UpdateOrderParamsStructOutput = [
-  key: string,
-  sizeDeltaUsd: bigint,
-  acceptablePrice: bigint,
-  triggerPrice: bigint,
-  minOutputAmount: bigint,
-  validFromTime: bigint,
-  autoCancel: boolean,
-  executionFeeIncrease: bigint,
-] & {
-  key: string;
-  sizeDeltaUsd: bigint;
-  acceptablePrice: bigint;
-  triggerPrice: bigint;
-  minOutputAmount: bigint;
-  validFromTime: bigint;
-  autoCancel: boolean;
-  executionFeeIncrease: bigint;
-};
-
-export type BatchParamsStruct = {
-  createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStruct[];
-  updateOrderParamsList: UpdateOrderParamsStruct[];
-  cancelOrderKeys: BytesLike[];
-};
-
-export type BatchParamsStructOutput = [
-  createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[],
-  updateOrderParamsList: UpdateOrderParamsStructOutput[],
-  cancelOrderKeys: string[],
-] & {
-  createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[];
-  updateOrderParamsList: UpdateOrderParamsStructOutput[];
-  cancelOrderKeys: string[];
-};
-
 export declare namespace MultichainRouter {
   export type BaseConstructorParamsStruct = {
     router: AddressLike;
@@ -222,6 +175,53 @@ export declare namespace IRelayUtils {
     signature: string;
     desChainId: bigint;
   };
+
+  export type UpdateOrderParamsStruct = {
+    key: BytesLike;
+    sizeDeltaUsd: BigNumberish;
+    acceptablePrice: BigNumberish;
+    triggerPrice: BigNumberish;
+    minOutputAmount: BigNumberish;
+    validFromTime: BigNumberish;
+    autoCancel: boolean;
+    executionFeeIncrease: BigNumberish;
+  };
+
+  export type UpdateOrderParamsStructOutput = [
+    key: string,
+    sizeDeltaUsd: bigint,
+    acceptablePrice: bigint,
+    triggerPrice: bigint,
+    minOutputAmount: bigint,
+    validFromTime: bigint,
+    autoCancel: boolean,
+    executionFeeIncrease: bigint,
+  ] & {
+    key: string;
+    sizeDeltaUsd: bigint;
+    acceptablePrice: bigint;
+    triggerPrice: bigint;
+    minOutputAmount: bigint;
+    validFromTime: bigint;
+    autoCancel: boolean;
+    executionFeeIncrease: bigint;
+  };
+
+  export type BatchParamsStruct = {
+    createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStruct[];
+    updateOrderParamsList: IRelayUtils.UpdateOrderParamsStruct[];
+    cancelOrderKeys: BytesLike[];
+  };
+
+  export type BatchParamsStructOutput = [
+    createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[],
+    updateOrderParamsList: IRelayUtils.UpdateOrderParamsStructOutput[],
+    cancelOrderKeys: string[],
+  ] & {
+    createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[];
+    updateOrderParamsList: IRelayUtils.UpdateOrderParamsStructOutput[];
+    cancelOrderKeys: string[];
+  };
 }
 
 export declare namespace IBaseOrderUtils {
@@ -339,6 +339,7 @@ export interface MultichainOrderRouterInterface extends Interface {
       | "sendNativeToken"
       | "sendTokens"
       | "sendWnt"
+      | "setTraderReferralCode"
       | "swapHandler"
       | "updateOrder"
       | "userNonces"
@@ -348,7 +349,7 @@ export interface MultichainOrderRouterInterface extends Interface {
 
   encodeFunctionData(
     functionFragment: "batch",
-    values: [IRelayUtils.RelayParamsStruct, AddressLike, BigNumberish, BatchParamsStruct]
+    values: [IRelayUtils.RelayParamsStruct, AddressLike, BigNumberish, IRelayUtils.BatchParamsStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "cancelOrder",
@@ -372,10 +373,14 @@ export interface MultichainOrderRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "sendNativeToken", values: [AddressLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "sendTokens", values: [AddressLike, AddressLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "sendWnt", values: [AddressLike, BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "setTraderReferralCode",
+    values: [IRelayUtils.RelayParamsStruct, AddressLike, BigNumberish, BytesLike]
+  ): string;
   encodeFunctionData(functionFragment: "swapHandler", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "updateOrder",
-    values: [IRelayUtils.RelayParamsStruct, AddressLike, BigNumberish, UpdateOrderParamsStruct]
+    values: [IRelayUtils.RelayParamsStruct, AddressLike, BigNumberish, IRelayUtils.UpdateOrderParamsStruct]
   ): string;
   encodeFunctionData(functionFragment: "userNonces", values: [AddressLike]): string;
 
@@ -396,6 +401,7 @@ export interface MultichainOrderRouterInterface extends Interface {
   decodeFunctionResult(functionFragment: "sendNativeToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendTokens", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendWnt", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setTraderReferralCode", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "swapHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "updateOrder", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "userNonces", data: BytesLike): Result;
@@ -452,7 +458,7 @@ export interface MultichainOrderRouter extends BaseContract {
       relayParams: IRelayUtils.RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
-      params: BatchParamsStruct,
+      params: IRelayUtils.BatchParamsStruct,
     ],
     [string[]],
     "nonpayable"
@@ -503,6 +509,17 @@ export interface MultichainOrderRouter extends BaseContract {
 
   sendWnt: TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
 
+  setTraderReferralCode: TypedContractMethod<
+    [
+      relayParams: IRelayUtils.RelayParamsStruct,
+      account: AddressLike,
+      srcChainId: BigNumberish,
+      referralCode: BytesLike,
+    ],
+    [void],
+    "nonpayable"
+  >;
+
   swapHandler: TypedContractMethod<[], [string], "view">;
 
   updateOrder: TypedContractMethod<
@@ -510,7 +527,7 @@ export interface MultichainOrderRouter extends BaseContract {
       relayParams: IRelayUtils.RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
-      params: UpdateOrderParamsStruct,
+      params: IRelayUtils.UpdateOrderParamsStruct,
     ],
     [void],
     "nonpayable"
@@ -527,7 +544,7 @@ export interface MultichainOrderRouter extends BaseContract {
       relayParams: IRelayUtils.RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
-      params: BatchParamsStruct,
+      params: IRelayUtils.BatchParamsStruct,
     ],
     [string[]],
     "nonpayable"
@@ -571,6 +588,18 @@ export interface MultichainOrderRouter extends BaseContract {
   getFunction(
     nameOrSignature: "sendWnt"
   ): TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
+  getFunction(
+    nameOrSignature: "setTraderReferralCode"
+  ): TypedContractMethod<
+    [
+      relayParams: IRelayUtils.RelayParamsStruct,
+      account: AddressLike,
+      srcChainId: BigNumberish,
+      referralCode: BytesLike,
+    ],
+    [void],
+    "nonpayable"
+  >;
   getFunction(nameOrSignature: "swapHandler"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "updateOrder"
@@ -579,7 +608,7 @@ export interface MultichainOrderRouter extends BaseContract {
       relayParams: IRelayUtils.RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
-      params: UpdateOrderParamsStruct,
+      params: IRelayUtils.UpdateOrderParamsStruct,
     ],
     [void],
     "nonpayable"

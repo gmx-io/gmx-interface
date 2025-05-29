@@ -48,6 +48,7 @@ export interface LayerZeroProviderInterface extends Interface {
       | "lzCompose"
       | "multichainGlvRouter"
       | "multichainGmRouter"
+      | "multichainOrderRouter"
       | "multichainVault"
       | "roleStore"
       | "withdrawTokens"
@@ -64,6 +65,7 @@ export interface LayerZeroProviderInterface extends Interface {
   ): string;
   encodeFunctionData(functionFragment: "multichainGlvRouter", values?: undefined): string;
   encodeFunctionData(functionFragment: "multichainGmRouter", values?: undefined): string;
+  encodeFunctionData(functionFragment: "multichainOrderRouter", values?: undefined): string;
   encodeFunctionData(functionFragment: "multichainVault", values?: undefined): string;
   encodeFunctionData(functionFragment: "roleStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "withdrawTokens", values: [AddressLike, AddressLike, BigNumberish]): string;
@@ -74,6 +76,7 @@ export interface LayerZeroProviderInterface extends Interface {
   decodeFunctionResult(functionFragment: "lzCompose", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "multichainGlvRouter", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "multichainGmRouter", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "multichainOrderRouter", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "multichainVault", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "roleStore", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdrawTokens", data: BytesLike): Result;
@@ -145,6 +148,8 @@ export interface LayerZeroProvider extends BaseContract {
 
   multichainGmRouter: TypedContractMethod<[], [string], "view">;
 
+  multichainOrderRouter: TypedContractMethod<[], [string], "view">;
+
   multichainVault: TypedContractMethod<[], [string], "view">;
 
   roleStore: TypedContractMethod<[], [string], "view">;
@@ -171,6 +176,7 @@ export interface LayerZeroProvider extends BaseContract {
   >;
   getFunction(nameOrSignature: "multichainGlvRouter"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "multichainGmRouter"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "multichainOrderRouter"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "multichainVault"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "roleStore"): TypedContractMethod<[], [string], "view">;
   getFunction(

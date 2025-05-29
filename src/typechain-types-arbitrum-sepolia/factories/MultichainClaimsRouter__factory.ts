@@ -159,11 +159,6 @@ const _abi = [
     type: "error",
   },
   {
-    inputs: [],
-    name: "EmptyRelayFeeAddress",
-    type: "error",
-  },
-  {
     inputs: [
       {
         internalType: "address",
@@ -389,17 +384,6 @@ const _abi = [
   {
     inputs: [],
     name: "NonEmptyExternalCallsForSubaccountOrder",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "calldataLength",
-        type: "uint256",
-      },
-    ],
-    name: "RelayCalldataTooLong",
     type: "error",
   },
   {

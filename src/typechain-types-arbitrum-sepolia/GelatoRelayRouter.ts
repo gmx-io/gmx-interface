@@ -23,53 +23,6 @@ import type {
   TypedContractMethod,
 } from "./common";
 
-export type UpdateOrderParamsStruct = {
-  key: BytesLike;
-  sizeDeltaUsd: BigNumberish;
-  acceptablePrice: BigNumberish;
-  triggerPrice: BigNumberish;
-  minOutputAmount: BigNumberish;
-  validFromTime: BigNumberish;
-  autoCancel: boolean;
-  executionFeeIncrease: BigNumberish;
-};
-
-export type UpdateOrderParamsStructOutput = [
-  key: string,
-  sizeDeltaUsd: bigint,
-  acceptablePrice: bigint,
-  triggerPrice: bigint,
-  minOutputAmount: bigint,
-  validFromTime: bigint,
-  autoCancel: boolean,
-  executionFeeIncrease: bigint,
-] & {
-  key: string;
-  sizeDeltaUsd: bigint;
-  acceptablePrice: bigint;
-  triggerPrice: bigint;
-  minOutputAmount: bigint;
-  validFromTime: bigint;
-  autoCancel: boolean;
-  executionFeeIncrease: bigint;
-};
-
-export type BatchParamsStruct = {
-  createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStruct[];
-  updateOrderParamsList: UpdateOrderParamsStruct[];
-  cancelOrderKeys: BytesLike[];
-};
-
-export type BatchParamsStructOutput = [
-  createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[],
-  updateOrderParamsList: UpdateOrderParamsStructOutput[],
-  cancelOrderKeys: string[],
-] & {
-  createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[];
-  updateOrderParamsList: UpdateOrderParamsStructOutput[];
-  cancelOrderKeys: string[];
-};
-
 export declare namespace OracleUtils {
   export type SetPricesParamsStruct = {
     tokens: AddressLike[];
@@ -182,6 +135,53 @@ export declare namespace IRelayUtils {
     deadline: bigint;
     signature: string;
     desChainId: bigint;
+  };
+
+  export type UpdateOrderParamsStruct = {
+    key: BytesLike;
+    sizeDeltaUsd: BigNumberish;
+    acceptablePrice: BigNumberish;
+    triggerPrice: BigNumberish;
+    minOutputAmount: BigNumberish;
+    validFromTime: BigNumberish;
+    autoCancel: boolean;
+    executionFeeIncrease: BigNumberish;
+  };
+
+  export type UpdateOrderParamsStructOutput = [
+    key: string,
+    sizeDeltaUsd: bigint,
+    acceptablePrice: bigint,
+    triggerPrice: bigint,
+    minOutputAmount: bigint,
+    validFromTime: bigint,
+    autoCancel: boolean,
+    executionFeeIncrease: bigint,
+  ] & {
+    key: string;
+    sizeDeltaUsd: bigint;
+    acceptablePrice: bigint;
+    triggerPrice: bigint;
+    minOutputAmount: bigint;
+    validFromTime: bigint;
+    autoCancel: boolean;
+    executionFeeIncrease: bigint;
+  };
+
+  export type BatchParamsStruct = {
+    createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStruct[];
+    updateOrderParamsList: IRelayUtils.UpdateOrderParamsStruct[];
+    cancelOrderKeys: BytesLike[];
+  };
+
+  export type BatchParamsStructOutput = [
+    createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[],
+    updateOrderParamsList: IRelayUtils.UpdateOrderParamsStructOutput[],
+    cancelOrderKeys: string[],
+  ] & {
+    createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[];
+    updateOrderParamsList: IRelayUtils.UpdateOrderParamsStructOutput[];
+    cancelOrderKeys: string[];
   };
 }
 
@@ -307,7 +307,7 @@ export interface GelatoRelayRouterInterface extends Interface {
 
   encodeFunctionData(
     functionFragment: "batch",
-    values: [IRelayUtils.RelayParamsStruct, AddressLike, BatchParamsStruct]
+    values: [IRelayUtils.RelayParamsStruct, AddressLike, IRelayUtils.BatchParamsStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "cancelOrder",
@@ -332,7 +332,7 @@ export interface GelatoRelayRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "swapHandler", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "updateOrder",
-    values: [IRelayUtils.RelayParamsStruct, AddressLike, UpdateOrderParamsStruct]
+    values: [IRelayUtils.RelayParamsStruct, AddressLike, IRelayUtils.UpdateOrderParamsStruct]
   ): string;
   encodeFunctionData(functionFragment: "userNonces", values: [AddressLike]): string;
 
@@ -403,7 +403,7 @@ export interface GelatoRelayRouter extends BaseContract {
   removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
   batch: TypedContractMethod<
-    [relayParams: IRelayUtils.RelayParamsStruct, account: AddressLike, params: BatchParamsStruct],
+    [relayParams: IRelayUtils.RelayParamsStruct, account: AddressLike, params: IRelayUtils.BatchParamsStruct],
     [string[]],
     "nonpayable"
   >;
@@ -447,7 +447,7 @@ export interface GelatoRelayRouter extends BaseContract {
   swapHandler: TypedContractMethod<[], [string], "view">;
 
   updateOrder: TypedContractMethod<
-    [relayParams: IRelayUtils.RelayParamsStruct, account: AddressLike, params: UpdateOrderParamsStruct],
+    [relayParams: IRelayUtils.RelayParamsStruct, account: AddressLike, params: IRelayUtils.UpdateOrderParamsStruct],
     [void],
     "nonpayable"
   >;
@@ -459,7 +459,7 @@ export interface GelatoRelayRouter extends BaseContract {
   getFunction(
     nameOrSignature: "batch"
   ): TypedContractMethod<
-    [relayParams: IRelayUtils.RelayParamsStruct, account: AddressLike, params: BatchParamsStruct],
+    [relayParams: IRelayUtils.RelayParamsStruct, account: AddressLike, params: IRelayUtils.BatchParamsStruct],
     [string[]],
     "nonpayable"
   >;
@@ -499,7 +499,7 @@ export interface GelatoRelayRouter extends BaseContract {
   getFunction(
     nameOrSignature: "updateOrder"
   ): TypedContractMethod<
-    [relayParams: IRelayUtils.RelayParamsStruct, account: AddressLike, params: UpdateOrderParamsStruct],
+    [relayParams: IRelayUtils.RelayParamsStruct, account: AddressLike, params: IRelayUtils.UpdateOrderParamsStruct],
     [void],
     "nonpayable"
   >;

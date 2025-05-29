@@ -100,11 +100,6 @@ const _abi = [
     type: "error",
   },
   {
-    inputs: [],
-    name: "EmptyRelayFeeAddress",
-    type: "error",
-  },
-  {
     inputs: [
       {
         internalType: "address",
@@ -220,17 +215,6 @@ const _abi = [
   {
     inputs: [],
     name: "NonEmptyExternalCallsForSubaccountOrder",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "calldataLength",
-        type: "uint256",
-      },
-    ],
-    name: "RelayCalldataTooLong",
     type: "error",
   },
   {
@@ -726,7 +710,7 @@ const _abi = [
                 type: "uint256",
               },
             ],
-            internalType: "struct UpdateOrderParams[]",
+            internalType: "struct IRelayUtils.UpdateOrderParams[]",
             name: "updateOrderParamsList",
             type: "tuple[]",
           },
@@ -736,7 +720,7 @@ const _abi = [
             type: "bytes32[]",
           },
         ],
-        internalType: "struct BatchParams",
+        internalType: "struct IRelayUtils.BatchParams",
         name: "params",
         type: "tuple",
       },
@@ -1993,7 +1977,7 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct UpdateOrderParams",
+        internalType: "struct IRelayUtils.UpdateOrderParams",
         name: "params",
         type: "tuple",
       },

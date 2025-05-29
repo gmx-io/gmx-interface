@@ -31,6 +31,11 @@
           "internalType": "contract IMultichainGlvRouter",
           "name": "_multichainGlvRouter",
           "type": "address"
+        },
+        {
+          "internalType": "contract IMultichainOrderRouter",
+          "name": "_multichainOrderRouter",
+          "type": "address"
         }
       ],
       "stateMutability": "nonpayable",
@@ -253,6 +258,19 @@
       "outputs": [
         {
           "internalType": "contract IMultichainGmRouter",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "multichainOrderRouter",
+      "outputs": [
+        {
+          "internalType": "contract IMultichainOrderRouter",
           "name": "",
           "type": "address"
         }

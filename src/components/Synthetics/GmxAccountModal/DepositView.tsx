@@ -57,7 +57,7 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { getSendParamsWithoutSlippage } from "./getSendParams";
 import { useAvailableToTradeAssetMultichain, useMultichainTokensRequest } from "./hooks";
-import { applySlippageBps, SLIPPAGE_BPS } from "./slippage";
+import { SLIPPAGE_BPS, applySlippageBps } from "./slippage";
 import { useMultichainDepositNetworkComposeGas } from "./useMultichainDepositNetworkComposeGas";
 import { useMultichainQuoteFeeUsd } from "./useMultichainQuoteFeeUsd";
 

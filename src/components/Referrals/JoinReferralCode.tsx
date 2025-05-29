@@ -2,10 +2,10 @@ import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { Contract } from "ethers";
 import { useEffect, useRef, useState } from "react";
-import { encodeFunctionData, zeroAddress } from "viem";
+import { encodeFunctionData } from "viem";
 import { usePublicClient } from "wagmi";
 
-import { getMultichainTokenId } from "context/GmxAccountContext/config";
+import { TOKEN_GROUPS } from "context/GmxAccountContext/config";
 import { IStargateAbi } from "context/GmxAccountContext/stargatePools";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
@@ -16,7 +16,6 @@ import { getExpressContractAddress, MultichainRelayParamsPayload } from "domain/
 import { signSetTraderReferralCode } from "domain/synthetics/express/expressOrderUtils";
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
-import { helperToast } from "lib/helperToast";
 import { numberToBigint } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendWalletTransaction } from "lib/transactions";
@@ -29,6 +28,7 @@ import Button from "components/Button/Button";
 import { selectArbitraryRelayParamsAndPayload } from "components/Synthetics/GmxAccountModal/arbitraryRelayParams";
 import { MultichainAction, MultichainActionType } from "components/Synthetics/GmxAccountModal/codecs/CodecUiHelper";
 import { getSendParamsWithoutSlippage } from "components/Synthetics/GmxAccountModal/getSendParams";
+import { toastCustomOrStargateError } from "components/Synthetics/GmxAccountModal/toastCustomOrStargateError";
 import { estimateMultichainDepositNetworkComposeGas } from "components/Synthetics/GmxAccountModal/useMultichainDepositNetworkComposeGas";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
@@ -134,29 +134,29 @@ function ReferralCodeForm({
 
     try {
       if (srcChainId) {
-        const sourceChainNativeTokenId = getMultichainTokenId(srcChainId, zeroAddress);
+        const sourceChainTokenId = TOKEN_GROUPS["USDC.SG"]?.[srcChainId]; //getMultichainTokenId(srcChainId, zeroAddress);
+        const settlementChainTokenId = TOKEN_GROUPS["USDC.SG"]?.[chainId];
         const getRelayParamsAndPayload = calcSelector(selectArbitraryRelayParamsAndPayload);
 
         if (
-          !sourceChainNativeTokenId ||
+          sourceChainTokenId === undefined ||
+          settlementChainTokenId === undefined ||
           provider === undefined ||
           globalExpressParams === undefined ||
           getRelayParamsAndPayload === undefined ||
           signer === undefined ||
           settlementChainPublicClient === undefined
         ) {
-          console.log({
-            sourceChainNativeTokenId,
-            provider,
-            globalExpressParams,
-            getRelayParamsAndPayload,
-            signer,
-          });
-
           throw new Error("Missing required parameters");
         }
 
-        const { fetchRelayParamsPayload } = getRelayParamsAndPayload({ relayerFeeAmount: 0n });
+        const tokenAmount = numberToBigint(0.02, sourceChainTokenId.decimals);
+        const nativeAmount = numberToBigint(0.02, 18);
+
+        const { fetchRelayParamsPayload } = getRelayParamsAndPayload({
+          relayerFeeAmount: 0n,
+          additionalNetworkFee: nativeAmount,
+        });
 
         if (fetchRelayParamsPayload === undefined) {
           throw new Error("No fetchRelayParamsPayload");
@@ -171,24 +171,6 @@ function ReferralCodeForm({
           })
         );
 
-        // const expressParams = await estimateExpressParams({
-        //   chainId,
-        //   provider,
-        //   transactionParams: {
-        //     account,
-        //     executionFeeAmount:
-        //   },
-        //   globalExpressParams,
-        //   estimationMethod: "estimateGas",
-        //   requireValidations: true,
-        //   srcChainId,
-        // });
-
-        // getRawRelayerParams({
-        //   chainId,
-        //   externalCalls: EMPTY_EXTERNAL_CALLS,
-        //   feeParams: {},
-        // });
         const referralCodeHex = encodeReferralCode(referralCode);
 
         const signature = await signSetTraderReferralCode({
@@ -213,7 +195,7 @@ function ReferralCodeForm({
           chainId,
           account,
           srcChainId,
-          depositViewTokenAddress: sourceChainNativeTokenId.address,
+          depositViewTokenAddress: settlementChainTokenId.address,
           settlementChainPublicClient,
         });
 
@@ -221,26 +203,33 @@ function ReferralCodeForm({
           dstChainId: chainId,
           account,
           srcChainId,
-          inputAmount: numberToBigint(0.02, sourceChainNativeTokenId.decimals),
+          inputAmount: tokenAmount,
           composeGas,
           isDeposit: true,
           action,
         });
 
-        const sourceChainStargateAddress = sourceChainNativeTokenId.stargate;
+        const sourceChainStargateAddress = sourceChainTokenId.stargate;
         const iStargateInstance = new Contract(
           sourceChainStargateAddress,
           IStargateAbi,
           signer
         ) as unknown as IStargate;
-        const [limit, oftFeeDetails, receipt] = await iStargateInstance.quoteOFT(sendParamsWithRoughAmount);
+        const [limit, oftFeeDetails] = await iStargateInstance.quoteOFT(sendParamsWithRoughAmount);
 
-        const minAmount = limit[0];
+        let fee = 0n;
+        for (const oftFeeDetail of oftFeeDetails) {
+          fee += oftFeeDetail[0];
+        }
+
+        const minAmount = limit.minAmountLD === 0n ? 1n : limit.minAmountLD;
+
+        const amount = minAmount * 1000n - fee;
 
         const sendParamsWithMinimumAmount: SendParamStruct = {
           ...sendParamsWithRoughAmount,
-          amountLD: minAmount,
-          minAmountLD: minAmount,
+          amountLD: amount,
+          minAmountLD: 0,
         };
 
         const quoteSend = await iStargateInstance.quoteSend(sendParamsWithMinimumAmount, false);
@@ -258,7 +247,7 @@ function ReferralCodeForm({
               account,
             ],
           }),
-          value: (quoteSend.nativeFee as bigint) + minAmount,
+          value: quoteSend.nativeFee as bigint,
           msg: "Sent",
         });
       } else {
@@ -278,11 +267,7 @@ function ReferralCodeForm({
         }
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
-      if (error.name) {
-        helperToast.error(error.message);
-      }
+      toastCustomOrStargateError(chainId, error);
     } finally {
       setIsSubmitting(false);
       setIsValidating(false);

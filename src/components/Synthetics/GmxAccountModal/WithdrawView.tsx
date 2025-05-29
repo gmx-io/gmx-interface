@@ -19,7 +19,7 @@ import {
   useGmxAccountWithdrawViewTokenAddress,
   useGmxAccountWithdrawViewTokenInputValue,
 } from "context/GmxAccountContext/hooks";
-import { IStargateAbi, StargateErrorsAbi } from "context/GmxAccountContext/stargatePools";
+import { IStargateAbi } from "context/GmxAccountContext/stargatePools";
 import { TokenChainData } from "context/GmxAccountContext/types";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -52,7 +52,6 @@ import {
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
-import { getTxnErrorToast } from "components/Errors/errorToasts";
 import NumberInput from "components/NumberInput/NumberInput";
 import {
   useAvailableToTradeAssetMultichain,
@@ -68,6 +67,7 @@ import { useArbitraryRelayParamsAndPayload } from "./arbitraryRelayParams";
 import { getSendParamsWithoutSlippage } from "./getSendParams";
 import { Selector } from "./Selector";
 import { applySlippageBps, SLIPPAGE_BPS } from "./slippage";
+import { toastCustomOrStargateError } from "./toastCustomOrStargateError";
 import { useMultichainQuoteFeeUsd } from "./useMultichainQuoteFeeUsd";
 
 export const WithdrawView = () => {
@@ -459,36 +459,7 @@ export const WithdrawView = () => {
         helperToast.error("Withdrawal failed");
       }
     } catch (error) {
-      let prettyErrorName = error.name;
-      let prettyErrorMessage = error.message;
-
-      const data = error?.info?.error?.data;
-      if (data) {
-        try {
-          const parsedError = decodeErrorResult({
-            abi: abis.CustomErrorsArbitrumSepolia.concat(StargateErrorsAbi),
-            data,
-          });
-
-          prettyErrorName = parsedError.errorName;
-          prettyErrorMessage = JSON.stringify(parsedError, null, 2);
-        } catch (decodeError) {
-          // pass
-        }
-      }
-
-      const toastContext = getTxnErrorToast(
-        chainId,
-        {
-          errorMessage: prettyErrorMessage,
-        },
-        {
-          defaultMessage: prettyErrorName,
-        }
-      );
-      helperToast.error(toastContext.errorContent, {
-        autoClose: toastContext.autoCloseToast,
-      });
+      toastCustomOrStargateError(chainId, error);
     } finally {
       setIsSubmitting(false);
     }

@@ -444,7 +444,7 @@ function MultichainTokenList({
         return (
           <div
             key={token.address + "_" + token.sourceChainId}
-            className="gmx-hover-gradient-to-l group flex cursor-pointer items-center justify-between px-16 py-8"
+            className="group gmx-hover-gradient-to-l flex cursor-pointer items-center justify-between px-16 py-8"
             onClick={() => onDepositTokenAddress(token.address, token.sourceChainId)}
           >
             <div className="flex items-center gap-8">
@@ -476,7 +476,7 @@ function MultichainTokenList({
                 )}
               </span>
             </div>
-            <div className="not-group-gmx-hover:hidden text-right">
+            <div className="text-right not-group-gmx-hover:hidden">
               <Trans>Deposit</Trans>
             </div>
           </div>

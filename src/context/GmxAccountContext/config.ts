@@ -83,7 +83,9 @@ export type MultichainTokenId = {
   symbol: string;
 };
 
-const TOKEN_GROUPS: Partial<Record<string, Partial<Record<UiSourceChain | UiSettlementChain, MultichainTokenId>>>> = {};
+export const TOKEN_GROUPS: Partial<
+  Record<string, Partial<Record<UiSourceChain | UiSettlementChain, MultichainTokenId>>>
+> = {};
 // USDC - prod
 // [
 //   {

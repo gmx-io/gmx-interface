@@ -38,6 +38,11 @@ const _abi = [
         name: "_multichainGlvRouter",
         type: "address",
       },
+      {
+        internalType: "contract IMultichainOrderRouter",
+        name: "_multichainOrderRouter",
+        type: "address",
+      },
     ],
     stateMutability: "nonpayable",
     type: "constructor",
@@ -259,6 +264,19 @@ const _abi = [
     outputs: [
       {
         internalType: "contract IMultichainGmRouter",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "multichainOrderRouter",
+    outputs: [
+      {
+        internalType: "contract IMultichainOrderRouter",
         name: "",
         type: "address",
       },

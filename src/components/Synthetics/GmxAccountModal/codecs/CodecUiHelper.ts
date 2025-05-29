@@ -1,9 +1,9 @@
 import { addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
-import { AbiCoder, BytesLike, hexlify, ParamType } from "ethers";
-import { Address, Hex, concatHex } from "viem";
+import { AbiCoder, hexlify, ParamType } from "ethers";
+import { Address, concatHex, Hex } from "viem";
 
 import { MultichainRelayParamsPayload } from "domain/synthetics/express";
-import type { UiContractsChain, UiSettlementChain, UiSourceChain } from "sdk/configs/chains";
+import type { UiContractsChain, UiSettlementChain } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 
 export enum MultichainActionType {
@@ -136,10 +136,10 @@ export class CodecUiHelper {
     return composeFromWithMsg;
   }
 
-  public static decodeDepositMessage(message: BytesLike): { account: string; srcChainId: UiSourceChain; data: string } {
-    const result = AbiCoder.defaultAbiCoder().decode(["address", "uint256", "bytes"], message, false);
-    return { account: result[0], srcChainId: result[1], data: result[2] };
-  }
+  // public static decodeDepositMessage(message: BytesLike): { account: string; data: string } {
+  //   const result = AbiCoder.defaultAbiCoder().decode(["address", "bytes"], message, false);
+  //   return { account: result[0], data: result[1] };
+  // }
 
   public static composeDepositMessage(dstChainId: UiSettlementChain, account: string, data?: string) {
     const msg = CodecUiHelper.encodeDepositMessage(account, data);
@@ -161,7 +161,6 @@ export class CodecUiHelper {
 
       const data = AbiCoder.defaultAbiCoder().encode(["uint8", "bytes"], [action.actionType, actionData]);
 
-      // return AbiCoder.defaultAbiCoder().encode(["address", "uint256", "bytes"], [account, srcChainId, "0x"]);
       return data;
     }
 

@@ -57,53 +57,6 @@ export type SubaccountApprovalStructOutput = [
   signature: string;
 };
 
-export type UpdateOrderParamsStruct = {
-  key: BytesLike;
-  sizeDeltaUsd: BigNumberish;
-  acceptablePrice: BigNumberish;
-  triggerPrice: BigNumberish;
-  minOutputAmount: BigNumberish;
-  validFromTime: BigNumberish;
-  autoCancel: boolean;
-  executionFeeIncrease: BigNumberish;
-};
-
-export type UpdateOrderParamsStructOutput = [
-  key: string,
-  sizeDeltaUsd: bigint,
-  acceptablePrice: bigint,
-  triggerPrice: bigint,
-  minOutputAmount: bigint,
-  validFromTime: bigint,
-  autoCancel: boolean,
-  executionFeeIncrease: bigint,
-] & {
-  key: string;
-  sizeDeltaUsd: bigint;
-  acceptablePrice: bigint;
-  triggerPrice: bigint;
-  minOutputAmount: bigint;
-  validFromTime: bigint;
-  autoCancel: boolean;
-  executionFeeIncrease: bigint;
-};
-
-export type BatchParamsStruct = {
-  createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStruct[];
-  updateOrderParamsList: UpdateOrderParamsStruct[];
-  cancelOrderKeys: BytesLike[];
-};
-
-export type BatchParamsStructOutput = [
-  createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[],
-  updateOrderParamsList: UpdateOrderParamsStructOutput[],
-  cancelOrderKeys: string[],
-] & {
-  createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[];
-  updateOrderParamsList: UpdateOrderParamsStructOutput[];
-  cancelOrderKeys: string[];
-};
-
 export declare namespace OracleUtils {
   export type SetPricesParamsStruct = {
     tokens: AddressLike[];
@@ -216,6 +169,53 @@ export declare namespace IRelayUtils {
     deadline: bigint;
     signature: string;
     desChainId: bigint;
+  };
+
+  export type UpdateOrderParamsStruct = {
+    key: BytesLike;
+    sizeDeltaUsd: BigNumberish;
+    acceptablePrice: BigNumberish;
+    triggerPrice: BigNumberish;
+    minOutputAmount: BigNumberish;
+    validFromTime: BigNumberish;
+    autoCancel: boolean;
+    executionFeeIncrease: BigNumberish;
+  };
+
+  export type UpdateOrderParamsStructOutput = [
+    key: string,
+    sizeDeltaUsd: bigint,
+    acceptablePrice: bigint,
+    triggerPrice: bigint,
+    minOutputAmount: bigint,
+    validFromTime: bigint,
+    autoCancel: boolean,
+    executionFeeIncrease: bigint,
+  ] & {
+    key: string;
+    sizeDeltaUsd: bigint;
+    acceptablePrice: bigint;
+    triggerPrice: bigint;
+    minOutputAmount: bigint;
+    validFromTime: bigint;
+    autoCancel: boolean;
+    executionFeeIncrease: bigint;
+  };
+
+  export type BatchParamsStruct = {
+    createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStruct[];
+    updateOrderParamsList: IRelayUtils.UpdateOrderParamsStruct[];
+    cancelOrderKeys: BytesLike[];
+  };
+
+  export type BatchParamsStructOutput = [
+    createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[],
+    updateOrderParamsList: IRelayUtils.UpdateOrderParamsStructOutput[],
+    cancelOrderKeys: string[],
+  ] & {
+    createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[];
+    updateOrderParamsList: IRelayUtils.UpdateOrderParamsStructOutput[];
+    cancelOrderKeys: string[];
   };
 }
 
@@ -343,7 +343,13 @@ export interface SubaccountGelatoRelayRouterInterface extends Interface {
 
   encodeFunctionData(
     functionFragment: "batch",
-    values: [IRelayUtils.RelayParamsStruct, SubaccountApprovalStruct, AddressLike, AddressLike, BatchParamsStruct]
+    values: [
+      IRelayUtils.RelayParamsStruct,
+      SubaccountApprovalStruct,
+      AddressLike,
+      AddressLike,
+      IRelayUtils.BatchParamsStruct,
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "cancelOrder",
@@ -379,7 +385,13 @@ export interface SubaccountGelatoRelayRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "swapHandler", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "updateOrder",
-    values: [IRelayUtils.RelayParamsStruct, SubaccountApprovalStruct, AddressLike, AddressLike, UpdateOrderParamsStruct]
+    values: [
+      IRelayUtils.RelayParamsStruct,
+      SubaccountApprovalStruct,
+      AddressLike,
+      AddressLike,
+      IRelayUtils.UpdateOrderParamsStruct,
+    ]
   ): string;
   encodeFunctionData(functionFragment: "userNonces", values: [AddressLike]): string;
 
@@ -457,7 +469,7 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
       subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       subaccount: AddressLike,
-      params: BatchParamsStruct,
+      params: IRelayUtils.BatchParamsStruct,
     ],
     [string[]],
     "nonpayable"
@@ -527,7 +539,7 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
       subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       subaccount: AddressLike,
-      params: UpdateOrderParamsStruct,
+      params: IRelayUtils.UpdateOrderParamsStruct,
     ],
     [void],
     "nonpayable"
@@ -545,7 +557,7 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
       subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       subaccount: AddressLike,
-      params: BatchParamsStruct,
+      params: IRelayUtils.BatchParamsStruct,
     ],
     [string[]],
     "nonpayable"
@@ -611,7 +623,7 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
       subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       subaccount: AddressLike,
-      params: UpdateOrderParamsStruct,
+      params: IRelayUtils.UpdateOrderParamsStruct,
     ],
     [void],
     "nonpayable"

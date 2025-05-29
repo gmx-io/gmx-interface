@@ -117,11 +117,6 @@ const _abi = [
     type: "error",
   },
   {
-    inputs: [],
-    name: "EmptyRelayFeeAddress",
-    type: "error",
-  },
-  {
     inputs: [
       {
         internalType: "address",
@@ -237,17 +232,6 @@ const _abi = [
   {
     inputs: [],
     name: "NonEmptyExternalCallsForSubaccountOrder",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "calldataLength",
-        type: "uint256",
-      },
-    ],
-    name: "RelayCalldataTooLong",
     type: "error",
   },
   {
@@ -691,7 +675,7 @@ const _abi = [
                 type: "uint256",
               },
             ],
-            internalType: "struct UpdateOrderParams[]",
+            internalType: "struct IRelayUtils.UpdateOrderParams[]",
             name: "updateOrderParamsList",
             type: "tuple[]",
           },
@@ -701,7 +685,7 @@ const _abi = [
             type: "bytes32[]",
           },
         ],
-        internalType: "struct BatchParams",
+        internalType: "struct IRelayUtils.BatchParams",
         name: "params",
         type: "tuple",
       },
@@ -1414,6 +1398,184 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        components: [
+          {
+            components: [
+              {
+                internalType: "address[]",
+                name: "tokens",
+                type: "address[]",
+              },
+              {
+                internalType: "address[]",
+                name: "providers",
+                type: "address[]",
+              },
+              {
+                internalType: "bytes[]",
+                name: "data",
+                type: "bytes[]",
+              },
+            ],
+            internalType: "struct OracleUtils.SetPricesParams",
+            name: "oracleParams",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "address[]",
+                name: "sendTokens",
+                type: "address[]",
+              },
+              {
+                internalType: "uint256[]",
+                name: "sendAmounts",
+                type: "uint256[]",
+              },
+              {
+                internalType: "address[]",
+                name: "externalCallTargets",
+                type: "address[]",
+              },
+              {
+                internalType: "bytes[]",
+                name: "externalCallDataList",
+                type: "bytes[]",
+              },
+              {
+                internalType: "address[]",
+                name: "refundTokens",
+                type: "address[]",
+              },
+              {
+                internalType: "address[]",
+                name: "refundReceivers",
+                type: "address[]",
+              },
+            ],
+            internalType: "struct IRelayUtils.ExternalCalls",
+            name: "externalCalls",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "address",
+                name: "owner",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "spender",
+                type: "address",
+              },
+              {
+                internalType: "uint256",
+                name: "value",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "deadline",
+                type: "uint256",
+              },
+              {
+                internalType: "uint8",
+                name: "v",
+                type: "uint8",
+              },
+              {
+                internalType: "bytes32",
+                name: "r",
+                type: "bytes32",
+              },
+              {
+                internalType: "bytes32",
+                name: "s",
+                type: "bytes32",
+              },
+              {
+                internalType: "address",
+                name: "token",
+                type: "address",
+              },
+            ],
+            internalType: "struct IRelayUtils.TokenPermit[]",
+            name: "tokenPermits",
+            type: "tuple[]",
+          },
+          {
+            components: [
+              {
+                internalType: "address",
+                name: "feeToken",
+                type: "address",
+              },
+              {
+                internalType: "uint256",
+                name: "feeAmount",
+                type: "uint256",
+              },
+              {
+                internalType: "address[]",
+                name: "feeSwapPath",
+                type: "address[]",
+              },
+            ],
+            internalType: "struct IRelayUtils.FeeParams",
+            name: "fee",
+            type: "tuple",
+          },
+          {
+            internalType: "uint256",
+            name: "userNonce",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "deadline",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "signature",
+            type: "bytes",
+          },
+          {
+            internalType: "uint256",
+            name: "desChainId",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IRelayUtils.RelayParams",
+        name: "relayParams",
+        type: "tuple",
+      },
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "srcChainId",
+        type: "uint256",
+      },
+      {
+        internalType: "bytes32",
+        name: "referralCode",
+        type: "bytes32",
+      },
+    ],
+    name: "setTraderReferralCode",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "swapHandler",
     outputs: [
@@ -1636,7 +1798,7 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct UpdateOrderParams",
+        internalType: "struct IRelayUtils.UpdateOrderParams",
         name: "params",
         type: "tuple",
       },

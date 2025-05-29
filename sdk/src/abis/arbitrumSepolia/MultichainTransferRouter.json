@@ -101,11 +101,6 @@
       "type": "error"
     },
     {
-      "inputs": [],
-      "name": "EmptyRelayFeeAddress",
-      "type": "error"
-    },
-    {
       "inputs": [
         {
           "internalType": "address",
@@ -232,17 +227,6 @@
     {
       "inputs": [],
       "name": "NonEmptyExternalCallsForSubaccountOrder",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "calldataLength",
-          "type": "uint256"
-        }
-      ],
-      "name": "RelayCalldataTooLong",
       "type": "error"
     },
     {

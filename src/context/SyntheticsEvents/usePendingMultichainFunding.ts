@@ -295,9 +295,10 @@ export function usePendingMultichainFunding({ hasPageLostFocus }: { hasPageLostF
             sourceChainId: srcChainId,
             token: submittedEvent.tokenAddress,
             sentAmount: submittedEvent.amount,
-            receivedAmount: undefined,
-            sentTxn: undefined,
+            sentTxn: submittedEvent.sentTxn,
             sentTimestamp: nowInSeconds(),
+
+            receivedAmount: undefined,
             receivedTxn: undefined,
             receivedTimestamp: undefined,
             isExecutionError: undefined,
