@@ -6,6 +6,7 @@ import { getToken, getTokenBySymbolSafe } from "sdk/configs/tokens";
 import { createTradeFlags } from "sdk/utils/trade";
 
 import { selectTradeboxFromTokenAddress, selectTradeboxToTokenAddress } from "./baseSelectors";
+import { selectTradeboxTradeFlags } from "../tradeboxSelectors";
 
 export const selectChartToken = createSelector((q) => {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
@@ -39,6 +40,7 @@ export const selectChartToken = createSelector((q) => {
  */
 export const selectSelectedMarketVisualMultiplier = createSelector((q) => {
   const { symbol } = q(selectChartToken);
+  const { isSwap } = q(selectTradeboxTradeFlags);
 
   if (!symbol) {
     return 1;
@@ -50,9 +52,6 @@ export const selectSelectedMarketVisualMultiplier = createSelector((q) => {
   if (!token) {
     return 1;
   }
-
-  const tradeFlags = createTradeFlags(TradeType.Swap, TradeMode.Market);
-  const { isSwap } = tradeFlags;
 
   if (!token.visualMultiplier || isSwap) {
     return 1;
