@@ -11,8 +11,10 @@ export default function useWallet() {
 
   const signer = useEthersSigner();
 
+  const account = signer?.address ?? address;
+
   return {
-    account: address,
+    account,
     active: isConnected,
     connector: connector!,
     chainId: chainId,
