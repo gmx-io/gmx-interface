@@ -40,12 +40,11 @@ code {
 *::before,
 *::after {
   box-sizing: border-box;
-  font-family: "Relative", sans-serif;
-  letter-spacing: 0.05rem;
+  font-family: "TTHoves", sans-serif;
 }
 
 input {
-  font-family: "RelativeNumber";
+  font-family: "TTHovesMono";
 }
 
 @supports (scrollbar-width: auto) {

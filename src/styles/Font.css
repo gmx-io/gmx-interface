@@ -52,3 +52,112 @@
     /* Super Modern Browsers */ url("fonts/relative/relative-book-pro.woff") format("woff"),
     /* Modern Browsers */ url("fonts/relative/relative-book-pro.ttf") format("truetype"); /* Safari, Android, iOS */
 }
+
+@font-face {
+  font-family: "TTHoves";
+  font-style: normal;
+  font-weight: 400;
+  src: url("fonts/tthoves/tt-hoves-pro-trial-regular.ttf");
+  src:
+    local(""),
+    url("fonts/tthoves/tt-hoves-pro-trial-regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "TTHoves";
+  font-style: normal;
+  font-weight: 400;
+  src: url("fonts/tthoves/tt-hoves-pro-mono-trial-regular.ttf");
+  src:
+    local(""),
+    url("fonts/tthoves/tt-hoves-pro-mono-trial-regular.ttf") format("truetype");
+  /* apply this font only for numbers */
+  unicode-range: U+30-39;
+}
+
+@font-face {
+  font-family: "TTHoves";
+  font-style: normal;
+  font-weight: 300;
+  src: url("fonts/tthoves/tt-hoves-pro-trial-light.ttf");
+  src:
+    local(""),
+    url("fonts/tthoves/tt-hoves-pro-trial-light.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "TTHoves";
+  font-style: normal;
+  font-weight: 300;
+  src: url("fonts/tthoves/tt-hoves-pro-mono-trial-light.ttf");
+  src:
+    local(""),
+    url("fonts/tthoves/tt-hoves-pro-mono-trial-light.ttf") format("truetype");
+  /* apply this font only for numbers */
+  unicode-range: U+30-39;
+}
+
+@font-face {
+  font-family: "TTHoves";
+  font-style: normal;
+  font-weight: 500;
+  src: url("fonts/tthoves/tt-hoves-pro-trial-medium.ttf");
+  src:
+    local(""),
+    url("fonts/tthoves/tt-hoves-pro-trial-medium.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "TTHoves";
+  font-style: normal;
+  font-weight: bold;
+  src: url("fonts/tthoves/tt-hoves-pro-trial-bold.ttf");
+  src:
+    local(""),
+    url("fonts/tthoves/tt-hoves-pro-trial-bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "TTHoves";
+  src: url("fonts/roboto/roboto-v30-latin-regular.eot"); /* IE9 Compat Modes */
+  src:
+    local(""),
+    url("fonts/roboto/roboto-v30-latin-regular.eot?#iefix") format("embedded-opentype"),
+    /* IE6-IE8 */ url("fonts/roboto/roboto-v30-latin-regular.woff2") format("woff2"),
+    /* Super Modern Browsers */ url("fonts/roboto/roboto-v30-latin-regular.woff") format("woff"),
+    /* Modern Browsers */ url("fonts/roboto/roboto-v30-latin-regular.ttf") format("truetype"); /* Safari, Android, iOS */
+
+  /* apply this font only for numbers */
+  unicode-range: U+30-39;
+}
+
+@font-face {
+  font-family: "TTHovesMono";
+  font-style: normal;
+  font-weight: 400;
+  src: url("fonts/tthoves/tt-hoves-pro-mono-trial-regular.ttf");
+  src:
+    local(""),
+    url("fonts/tthoves/tt-hoves-pro-mono-trial-regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "TTHovesMono";
+  font-style: normal;
+  font-weight: 300;
+  src: url("fonts/tthoves/tt-hoves-pro-mono-trial-light.ttf");
+  src:
+    local(""),
+    url("fonts/tthoves/tt-hoves-pro-mono-trial-light.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "TTHovesMono";
+  src: url("fonts/tthoves/tt-hoves-pro-trial-regular.ttf");
+  src:
+    local(""),
+    url("fonts/tthoves/tt-hoves-pro-trial-regular.ttf") format("truetype");
+
+  /* apply this font for commas and full-stops */
+  unicode-range: U+002C, U+002E;
+}
