@@ -51,10 +51,10 @@
     "build:cjs": "tsc -p tsconfig.cjs.json && echo '{\"type\": \"commonjs\"}' > build/cjs/src/package.json",
     "build:esm": "tsc -p tsconfig.esm.json && echo '{\"type\": \"module\"}' > build/esm/src/package.json",
     "build:types": "tsc -p tsconfig.json --emitDeclarationOnly",
-    "build:subsquid": "graphql-codegen",
+    "build:subsquid": "./node_modules/@graphql-codegen/cli/cjs/bin.js -c subsquid-codegen.ts",
     "tscheck": "tsc -p tsconfig.json --noEmit",
     "clean": "rm -rf build/**/*.tsbuildinfo",
-    "build": "rm -rf build && yarn build:types && yarn build:cjs && yarn build:esm && yarn clean"
+    "build": "rm -rf build && yarn build:subsquid && yarn build:types && yarn build:cjs && yarn build:esm && yarn clean"
   },
   "publishConfig": {
     "access": "public"
