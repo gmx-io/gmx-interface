@@ -181,6 +181,11 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
   const oraclePriceLabel = useMemo(() => {
     return getOraclePriceLabel();
   }, []);
+  const oraclePrice = useMemo(() => {
+    return Number(
+      withVisualMultiplier(getMidPrice(marketInfo.indexToken.prices), marketInfo.indexToken.visualMultiplier)
+    );
+  }, [marketInfo.indexToken.prices, marketInfo.indexToken.visualMultiplier]);
 
   const yAxisLabel = useMemo(() => {
     return getYAxisLabel();
@@ -462,13 +467,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
           tickMargin={7}
           tick={<Tick marketPriceIndex={marketPriceIndex} />}
         />
-        <ReferenceLine
-          x={bigintToNumber(getMidPrice(marketInfo.indexToken.prices), USD_DECIMALS)}
-          label={oraclePriceLabel}
-          stroke="#ffffff"
-          opacity={0.6}
-          strokeDasharray="2 2"
-        />
+        <ReferenceLine x={oraclePrice} label={oraclePriceLabel} stroke="#ffffff" opacity={0.6} strokeDasharray="2 2" />
       </ComposedChart>
     </ResponsiveContainer>
   );
@@ -1204,9 +1203,17 @@ function getDepthChartExecutionPrice(
 ) {
   const executionPrice = getNextPositionExecutionPrice(p);
 
-  if (typeof executionPrice === "bigint" && p.visualMultiplier !== undefined && p.visualMultiplier !== 1) {
-    return executionPrice * BigInt(p.visualMultiplier);
+  if (typeof executionPrice === "bigint") {
+    return withVisualMultiplier(executionPrice, p.visualMultiplier);
   }
 
   return executionPrice;
+}
+
+function withVisualMultiplier(price: bigint, visualMultiplier: number | undefined) {
+  if (visualMultiplier !== undefined && visualMultiplier !== 1) {
+    return price * BigInt(visualMultiplier);
+  }
+
+  return price;
 }
