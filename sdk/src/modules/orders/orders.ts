@@ -300,6 +300,7 @@ export class Orders extends Module {
     allowedSlippage,
     isLong,
     referralCode,
+    isTrigger,
   }: {
     marketInfo: MarketInfo;
     marketsInfoData: MarketsInfoData;
@@ -309,6 +310,7 @@ export class Orders extends Module {
     decreaseAmounts: DecreasePositionAmounts;
     collateralToken: TokenData;
     referralCode?: string;
+    isTrigger?: boolean;
   }) {
     const account = this.account;
     if (!account) {
@@ -323,7 +325,9 @@ export class Orders extends Module {
       throw new Error("Execution fee is not available");
     }
 
-    if (decreaseAmounts?.triggerOrderType === undefined) {
+    const orderType = isTrigger ? decreaseAmounts?.triggerOrderType : OrderType.MarketDecrease;
+
+    if (orderType === undefined) {
       throw new Error("Trigger order type is not defined");
     }
 
@@ -359,7 +363,7 @@ export class Orders extends Module {
       minOutputUsd: BigInt(0),
       isLong,
       decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
-      orderType: decreaseAmounts?.triggerOrderType,
+      orderType: orderType,
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage,
       referralCode,

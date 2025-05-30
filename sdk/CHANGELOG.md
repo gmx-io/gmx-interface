@@ -1,5 +1,10 @@
 # Changelog
 
+### 1.0.3
+
+- Added `isTrigger` in `orders.createDecreaseOrder`
+- Fixed `OrderType` passing bug in `orders.createDecreaseOrder`
+
 ## 1.0.0
 
 - Removed `subgraphUrl` from the config
