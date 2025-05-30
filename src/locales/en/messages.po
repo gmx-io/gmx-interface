@@ -168,8 +168,8 @@ msgid "Type"
 msgstr "Type"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "Close order"
-msgstr "Close order"
+#~ msgid "Close order"
+#~ msgstr "Close order"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order submitted!"
@@ -661,6 +661,10 @@ msgstr "Insufficient staked tokens"
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Telegram contact (optional)"
 msgstr "Telegram contact (optional)"
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "Market order will be cancellable in {minutesText}{seconds}s."
+msgstr "Market order will be cancellable in {minutesText}{seconds}s."
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Tap [Create Wallet] to start using your Web3 Wallet."
@@ -4774,6 +4778,10 @@ msgstr "Available amount to deposit into the specific GM pool."
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Price below Liq. Price"
 msgstr "Price below Liq. Price"
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#~ msgid "Market order will be cancellable in {minutes}m {seconds}s."
+#~ msgstr "Market order will be cancellable in {minutes}m {seconds}s."
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take Profit / Stop Loss"

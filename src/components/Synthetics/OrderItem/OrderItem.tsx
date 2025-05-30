@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { AiOutlineEdit } from "react-icons/ai";
 import { MdClose } from "react-icons/md";
 
@@ -10,6 +10,7 @@ import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/order
 import { useOrderErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { OracleSettingsData } from "domain/synthetics/common/useOracleSettingsData";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import {
   OrderInfo,
@@ -42,6 +43,7 @@ import { SwapMarketLabel } from "components/SwapMarketLabel/SwapMarketLabel";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import TwapOrdersList from "./TwapOrdersList/TwapOrdersList";
 import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
@@ -58,6 +60,7 @@ type Props = {
   isLarge: boolean;
   positionsInfoData?: PositionsInfoData;
   setRef?: (el: HTMLElement | null, orderKey: string) => void;
+  oracleSettings: OracleSettingsData | undefined;
 };
 
 export function OrderItem(p: Props) {
@@ -80,6 +83,7 @@ export function OrderItem(p: Props) {
       isCanceling={p.isCanceling}
       isSelected={p.isSelected}
       setRef={p.setRef}
+      oracleSettings={p.oracleSettings}
     />
   ) : (
     <OrderItemSmall
@@ -91,6 +95,7 @@ export function OrderItem(p: Props) {
       isSelected={p.isSelected}
       onToggleOrder={p.onToggleOrder}
       setRef={p.setRef}
+      oracleSettings={p.oracleSettings}
     />
   );
 }
@@ -438,6 +443,7 @@ function OrderItemLarge({
   onCancelOrder,
   isCanceling,
   isSelected,
+  oracleSettings,
 }: {
   order: OrderInfo;
   setRef?: (el: HTMLElement | null, orderKey: string) => void;
@@ -448,6 +454,7 @@ function OrderItemLarge({
   onCancelOrder: undefined | (() => void);
   isCanceling: boolean | undefined;
   isSelected: boolean | undefined;
+  oracleSettings: OracleSettingsData | undefined;
 }) {
   const marketInfoData = useSelector(selectMarketsInfoData);
   const isSwap = isLimitSwapOrderType(order.orderType);
@@ -478,6 +485,20 @@ function OrderItemLarge({
       if (setRef) setRef(el, order.key);
     },
     [order.key, setRef]
+  );
+
+  const disabledCancelMarketOrderMessage = useDisabledCancelMarketOrderMessage(order, oracleSettings);
+
+  const cancelButton = (
+    <button
+      className={cx("cursor-pointer p-6 text-slate-100 disabled:cursor-wait", {
+        "hover:text-white": !isCanceling && !disabledCancelMarketOrderMessage,
+      })}
+      disabled={isCanceling || Boolean(disabledCancelMarketOrderMessage)}
+      onClick={onCancelOrder}
+    >
+      <MdClose fontSize={16} />
+    </button>
   );
 
   return (
@@ -557,15 +578,13 @@ function OrderItemLarge({
                 <AiOutlineEdit title={t`Edit order`} fontSize={16} />
               </button>
             )}
-            {onCancelOrder && (
-              <button
-                className="cursor-pointer p-6 text-slate-100 hover:text-white disabled:cursor-wait"
-                disabled={isCanceling}
-                onClick={onCancelOrder}
-              >
-                <MdClose title={t`Close order`} fontSize={16} />
-              </button>
-            )}
+            {onCancelOrder ? (
+              disabledCancelMarketOrderMessage ? (
+                <TooltipWithPortal handle={cancelButton} content={disabledCancelMarketOrderMessage} />
+              ) : (
+                cancelButton
+              )
+            ) : null}
           </div>
         </TableTd>
       )}
@@ -582,6 +601,7 @@ function OrderItemSmall({
   isSelected,
   onToggleOrder,
   setRef,
+  oracleSettings,
 }: {
   showDebugValues: boolean;
   order: OrderInfo;
@@ -591,6 +611,7 @@ function OrderItemSmall({
   isSelected: boolean | undefined;
   onToggleOrder: undefined | (() => void);
   setRef?: (el: HTMLElement | null, orderKey: string) => void;
+  oracleSettings: OracleSettingsData | undefined;
 }) {
   const marketInfoData = useSelector(selectMarketsInfoData);
 
@@ -630,6 +651,18 @@ function OrderItemSmall({
       if (setRef) setRef(el, order.key);
     },
     [order.key, setRef]
+  );
+
+  const disabledCancelMarketOrderMessage = useDisabledCancelMarketOrderMessage(order, oracleSettings);
+  const cancelButton = (
+    <Button
+      variant="secondary"
+      className="mt-15 !text-white"
+      onClick={onCancelOrder}
+      disabled={Boolean(disabledCancelMarketOrderMessage)}
+    >
+      <Trans>Cancel</Trans>
+    </Button>
   );
 
   return (
@@ -695,17 +728,48 @@ function OrderItemSmall({
               </Button>
             )}
 
-            {onCancelOrder && (
-              <Button variant="secondary" className="mt-15" onClick={onCancelOrder}>
-                <Trans>Cancel</Trans>
-              </Button>
-            )}
+            {onCancelOrder ? (
+              disabledCancelMarketOrderMessage ? (
+                <TooltipWithPortal handle={cancelButton} content={disabledCancelMarketOrderMessage} />
+              ) : (
+                cancelButton
+              )
+            ) : null}
           </div>
         </div>
       )}
     </div>
   );
 }
+
+const useDisabledCancelMarketOrderMessage = (order: OrderInfo, oracleSettings: OracleSettingsData | undefined) => {
+  const [diff, setDiff] = useState(
+    Number(order.updatedAtTime) + Number(oracleSettings?.requestExpirationTime) - Date.now() / 1000
+  );
+
+  useEffect(() => {
+    if (!oracleSettings) return;
+    const interval = setInterval(() => {
+      if (diff > 0) {
+        const time = Date.now() / 1000;
+        setDiff(Number(order.updatedAtTime) + Number(oracleSettings.requestExpirationTime) - time);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [order.updatedAtTime, oracleSettings, diff]);
+
+  if (!oracleSettings || !isMarketOrderType(order.orderType)) return undefined;
+
+  if (diff > 0) {
+    const minutes = Math.floor(diff / 60);
+    const seconds = Math.floor(diff % 60);
+
+    const minutesText = minutes > 0 ? `${minutes}m ` : "";
+    return t`Market order will be cancellable in ${minutesText}${seconds}s.`;
+  }
+
+  return undefined;
+};
 
 function getSwapRatioText(order: OrderInfo) {
   if (!isLimitOrderType(order.orderType)) return {};

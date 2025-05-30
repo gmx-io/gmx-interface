@@ -48,7 +48,7 @@ const MOCK_ORDER = {
   executionFee: 8827500010700000n,
   callbackGasLimit: 0n,
   minOutputAmount: 0n,
-  updatedAtTime: 1748612868n,
+  updatedAtTime: 1748620704n,
   isLong: true,
   shouldUnwrapNativeToken: false,
   isFrozen: false,
