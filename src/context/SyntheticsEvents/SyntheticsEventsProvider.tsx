@@ -217,6 +217,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         isLong: eventData.boolItems.items.isLong,
         shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
         isFrozen: eventData.boolItems.items.isFrozen,
+        uiFeeReceiver: uiFeeReceiver,
         externalSwapQuote: undefined,
         key: eventData.bytes32Items.items.key,
         isTwap: twapParams !== undefined,
@@ -1147,28 +1148,34 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   useEffect(
     function notifyPendingExpressTxn() {
       Object.values(pendingExpressTxnParams).forEach((pendingExpressTxn) => {
-        if (
-          !pendingExpressTxn.isViewed &&
-          pendingExpressTxn.taskId &&
-          pendingExpressTxn.key &&
-          gelatoTaskStatuses[pendingExpressTxn.taskId] &&
-          (pendingExpressTxn.successMessage || pendingExpressTxn.errorMessage)
-        ) {
+        if (pendingExpressTxn.taskId && pendingExpressTxn.key && gelatoTaskStatuses[pendingExpressTxn.taskId]) {
           const status = gelatoTaskStatuses[pendingExpressTxn.taskId];
 
-          if (status === TaskState.ExecSuccess) {
+          if (status === TaskState.ExecSuccess && pendingExpressTxn.successMessage && !pendingExpressTxn.isViewed) {
             helperToast.success(pendingExpressTxn.successMessage);
+            setPendingExpressTxnParams((old) => updateByKey(old, pendingExpressTxn.key!, { isViewed: true }));
           }
 
           if (status === TaskState.ExecReverted || status === TaskState.Cancelled) {
-            const metricId = pendingExpressTxn?.metricId;
+            let isRelayerMetricSent = false;
+            let isViewed = false;
 
-            sendTxnErrorMetric(metricId, new Error("Gelato task cancelled"), "relayer");
+            if (pendingExpressTxn.metricId && !pendingExpressTxn.isRelayerMetricSent) {
+              sendTxnErrorMetric(pendingExpressTxn.metricId, new Error("Gelato task cancelled"), "relayer");
+              isRelayerMetricSent = true;
+            }
 
-            helperToast.error(pendingExpressTxn.errorMessage);
+            if (pendingExpressTxn.errorMessage && !pendingExpressTxn.isViewed) {
+              helperToast.error(pendingExpressTxn.errorMessage);
+              isViewed = true;
+            }
+
+            if (isViewed || isRelayerMetricSent) {
+              setPendingExpressTxnParams((old) =>
+                updateByKey(old, pendingExpressTxn.key!, { isViewed, isRelayerMetricSent })
+              );
+            }
           }
-
-          setPendingExpressTxnParams((old) => updateByKey(old, pendingExpressTxn.key!, { isViewed: true }));
         }
       });
     },
