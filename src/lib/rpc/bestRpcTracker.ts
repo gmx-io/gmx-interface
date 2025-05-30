@@ -6,17 +6,17 @@ import orderBy from "lodash/orderBy";
 import { useEffect, useState } from "react";
 
 import {
-  RPC_PROVIDERS,
-  FALLBACK_PROVIDERS,
-  SUPPORTED_CHAIN_IDS,
   ARBITRUM,
   AVALANCHE,
   AVALANCHE_FUJI,
+  FALLBACK_PROVIDERS,
+  RPC_PROVIDERS,
+  UiContractsChain,
   getFallbackRpcUrl,
 } from "config/chains";
-import { getMulticallContract, getDataStoreContract } from "config/contracts";
-import { getContract } from "config/contracts";
+import { getContract, getDataStoreContract, getMulticallContract } from "config/contracts";
 import { getRpcProviderKey } from "config/localStorage";
+import { SOURCE_CHAINS } from "context/GmxAccountContext/config";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { isDebugMode } from "lib/localStorage";
 import { RpcTrackerRankingCounter } from "lib/metrics";
@@ -60,8 +60,8 @@ type ProviderData = {
 };
 
 type RpcTrackerState = {
-  [chainId: number]: {
-    chainId: number;
+  [chainId in UiContractsChain]: {
+    chainId: UiContractsChain;
     lastUsage: Date | null;
     currentPrimaryUrl: string;
     currentSecondaryUrl: string;
@@ -117,7 +117,7 @@ function trackRpcProviders({ warmUp = false } = {}) {
   });
 }
 
-async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerState[number]) {
+async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerState[UiContractsChain]) {
   const providersList = Object.values(providers);
 
   const providersToProbe = getIsLargeAccount() ? providersList : providersList.filter(({ isPublic }) => isPublic);
@@ -245,7 +245,7 @@ function setCurrentProviders(chainId: number, { primaryUrl, secondaryUrl, bestBe
 }
 
 async function probeRpc(
-  chainId: number,
+  chainId: UiContractsChain,
   provider: Provider,
   providerUrl: string,
   isPublic: boolean
@@ -353,7 +353,8 @@ async function probeRpc(
 function initTrackerState() {
   const now = Date.now();
 
-  return SUPPORTED_CHAIN_IDS.reduce<RpcTrackerState>((acc, chainId) => {
+  // here
+  return SOURCE_CHAINS.reduce<RpcTrackerState>((acc, chainId) => {
     const prepareProviders = (urls: string[], { isPublic }: { isPublic: boolean }) => {
       return urls.reduce<Record<string, ProviderData>>((acc, rpcUrl) => {
         acc[rpcUrl] = {
@@ -405,7 +406,7 @@ function initTrackerState() {
     };
 
     return acc;
-  }, {});
+  }, {} as RpcTrackerState);
 }
 
 export function getCurrentRpcUrls(chainId: number) {

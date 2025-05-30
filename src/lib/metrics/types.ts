@@ -1,8 +1,8 @@
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
-import { TwapDuration } from "domain/synthetics/trade/twap/types";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { ErrorData } from "lib/parseError";
+import { ErrorData } from "lib/errors";
 import { TradeMode } from "sdk/types/trade";
+import { TwapDuration } from "sdk/types/twap";
 
 export type GlobalMetricData = {
   isMobileMetamask: boolean;
@@ -21,6 +21,7 @@ export type GlobalMetricData = {
 export enum OrderStage {
   Submitted = "submitted",
   Simulated = "simulated",
+  Signed = "signed",
   TxnSubmitted = "txnSubmitted",
   Sent = "sent",
   Created = "created",
@@ -53,17 +54,9 @@ export type OrderMetricType =
   | EditCollateralMetricData["metricType"]
   | SwapGmMetricData["metricType"]
   | SwapGLVMetricData["metricType"]
-  | ShiftGmMetricData["metricType"];
-
-export type OrderErrorContext =
-  | "simulation"
-  | "gasLimit"
-  | "gasPrice"
-  | "bestNonce"
-  | "sending"
-  | "pending"
-  | "minting"
-  | "execution";
+  | ShiftGmMetricData["metricType"]
+  | MultichainDepositMetricData["metricType"]
+  | MultichainWithdrawalMetricData["metricType"];
 
 export type OrderEventName = `${OrderMetricType}.${OrderStage}`;
 export type MeasureEventName = `${MeasureMetricType}.${LoadingStage}`;
@@ -77,7 +70,9 @@ export type OrderMetricData =
   | EditCollateralMetricData
   | SwapGmMetricData
   | SwapGLVMetricData
-  | ShiftGmMetricData;
+  | ShiftGmMetricData
+  | MultichainDepositMetricData
+  | MultichainWithdrawalMetricData;
 
 // General metrics
 export type OpenAppEvent = {
@@ -170,38 +165,46 @@ export type ValidationErrorEvent = {
   data: OrderMetricData & ErrorData;
 };
 
-export type OrderSentEvent = {
-  event: `${OrderMetricType}.${OrderStage.Sent}`;
-  isError: false;
-  time: number | undefined;
-  data: OrderMetricData;
+export type OrderStepTimings = {
+  timeFromSubmitted: number;
+  timeFromSimulated: number;
+  timeFromTxnSubmitted: number;
+  timeFromSent: number;
+  timeFromCreated: number;
 };
 
 export type OrderSimulatedEvent = {
   event: `${OrderMetricType}.${OrderStage.Simulated}`;
   isError: false;
   time: number;
-  data: OrderMetricData;
+  data: OrderMetricData & OrderStepTimings;
 };
 
 export type OrderTxnSubmittedEvent = {
   event: `${OrderMetricType}.${OrderStage.TxnSubmitted}`;
   isError: false;
   time: number;
-  data: OrderMetricData;
+  data: OrderMetricData & OrderStepTimings;
+};
+
+export type OrderSentEvent = {
+  event: `${OrderMetricType}.${OrderStage.Sent}`;
+  isError: false;
+  time: number | undefined;
+  data: OrderMetricData & OrderStepTimings;
 };
 
 export type OrderCreatedEvent = {
   event: `${OrderMetricType}.${OrderStage.Created}`;
   isError: false;
   time: number | undefined;
-  data: OrderMetricData;
+  data: OrderMetricData & OrderStepTimings;
 };
 
 export type OrderTxnFailedEvent = {
   event: `${OrderMetricType}.${OrderStage.Failed | OrderStage.Rejected}`;
   isError: true;
-  data: OrderMetricData & ErrorData;
+  data: Partial<OrderMetricData & ErrorData & OrderStepTimings>;
 };
 
 export type PendingTxnErrorEvent = {
@@ -258,12 +261,22 @@ export type ErrorEvent = {
   data: ErrorData;
 };
 
+export type ExpressOrderMetricData = {
+  isSponsoredCall: boolean;
+  approximateGas: number;
+  approximateL1Gas: number;
+  asyncGas: number | undefined;
+  currentGas: number;
+  currentEstimateMethod: string | undefined;
+};
+
 // Entities metric data
 export type SwapMetricData = {
   metricId: `swap:${string}`;
   metricType: "swap" | "limitSwap" | "twapSwap";
   requestId: string;
-  is1ct: boolean;
+  isExpress: boolean;
+  isExpress1CT: boolean;
   hasReferralCode: boolean | undefined;
   initialCollateralTokenAddress: string | undefined;
   initialCollateralSymbol: string | undefined;
@@ -282,6 +295,7 @@ export type SwapMetricData = {
   duration: TwapDuration | undefined;
   partsCount: number | undefined;
   tradeMode: TradeMode | undefined;
+  expressData: ExpressOrderMetricData | undefined;
 };
 
 export type IncreaseOrderMetricData = PositionOrderMetricParams & {
@@ -331,7 +345,8 @@ export type PositionOrderMetricParams = {
   isLong: boolean | undefined;
   orderType: OrderType | undefined;
   executionFee: number | undefined;
-  is1ct: boolean;
+  isExpress: boolean;
+  isExpress1CT: boolean;
   requestId: string;
   priceImpactDeltaUsd: number | undefined;
   priceImpactPercentage: number | undefined;
@@ -340,12 +355,14 @@ export type PositionOrderMetricParams = {
   duration: TwapDuration | undefined;
   partsCount: number | undefined;
   tradeMode: TradeMode | undefined;
+  expressData: ExpressOrderMetricData | undefined;
 };
 
 export type EditCollateralMetricData = {
   metricId: `position:${string}`;
   metricType: "depositCollateral" | "withdrawCollateral";
-  is1ct: boolean;
+  isExpress: boolean;
+  isExpress1CT: boolean;
   requestId: string;
   marketAddress: string | undefined;
   isStandalone: boolean | undefined;
@@ -357,6 +374,7 @@ export type EditCollateralMetricData = {
   isLong: boolean | undefined;
   orderType: OrderType | undefined;
   executionFee: number | undefined;
+  expressData: ExpressOrderMetricData | undefined;
 };
 
 export type SwapGmMetricData = {
@@ -434,6 +452,13 @@ export type MulticallRequestTiming = {
   };
 };
 
+export type GelatoPollingTiming = {
+  event: "express.pollGelatoTask.finalStatus";
+  data: {
+    status: string;
+  };
+};
+
 // Counters
 export type MulticallBatchedCallCounter = {
   event: "multicall.batched.call";
@@ -485,4 +510,43 @@ export type GetFeeDataBlockError = {
 
 export type SetAutoCloseOrdersAction = {
   event: "announcement.autoCloseOrders.updateExistingOrders";
+};
+
+// 1. To measure share of succesfull Deposits and Deposit time: Add new events in Datadog: multichainDeposit, multichainWithdrawal. Events should follow the same scheme as “increasePosition” events (executed, submitted and etc).
+//  Additionally, It should have fields for:
+//     1. SourceChain / TargetChain (chain that asset is deposited or, withdrawn to)
+//     2. Asset (BTC, ETH, USDC, etc)
+//     3. Size In usd
+//     4. Is First Deposit
+
+type MultichainFundingParams = {
+  sourceChain: number;
+  settlementChain: number;
+  assetSymbol: string;
+  assetAddress: string;
+  sizeInUsd: number;
+};
+
+export type MultichainDepositMetricData = MultichainFundingParams & {
+  metricId: `multichainDeposit:${string}`;
+  metricType: "multichainDeposit";
+  isFirstDeposit: boolean;
+};
+
+export type MultichainWithdrawalMetricData = MultichainFundingParams & {
+  metricId: `multichainWithdrawal:${string}`;
+  metricType: "multichainWithdrawal";
+  isFirstWithdrawal: boolean;
+};
+
+export type MultichainDepositEvent = {
+  event: "multichainDeposit";
+  isError: false;
+  data: MultichainDepositMetricData;
+};
+
+export type MultichainWithdrawalEvent = {
+  event: "multichainWithdrawal";
+  isError: false;
+  data: MultichainWithdrawalMetricData;
 };

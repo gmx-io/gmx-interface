@@ -11,6 +11,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import { selectTradeboxAdvancedOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { GasPaymentParams } from "domain/synthetics/express";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
@@ -20,20 +21,21 @@ import { formatUsd } from "lib/numbers";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { ExecutionPriceRow } from "../ExecutionPriceRow";
 import { ExpandableRow } from "../ExpandableRow";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
+import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 
 export type Props = {
   triggerPriceInputValue: string;
   slippageInputId: string;
+  gasPaymentParams?: GasPaymentParams;
 };
 
-export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInputId }: Props) {
+export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInputId, gasPaymentParams }: Props) {
   const tradeboxAdvancedOptions = useSelector(selectTradeboxAdvancedOptions);
   const [open, setOpen] = React.useState(tradeboxAdvancedOptions.advancedDisplay);
   const position = useSelector(selectPositionSellerPosition);
@@ -141,7 +143,8 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
       )}
 
       <TradeFeesRow {...fees} feesType="decrease" />
-      <NetworkFeeRow executionFee={executionFee} />
+      <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} />
+
       {isTrigger || isTwap ? (
         acceptablePriceImpactInputRow
       ) : (

@@ -212,3 +212,9 @@ export function getPriceForPnl(prices: TokenPrices, isLong: boolean, maximize: b
 
   return maximize ? prices.minPrice : prices.maxPrice;
 }
+
+export function getIsMarketAvailableForExpressSwaps(marketInfo: MarketInfo) {
+  return [marketInfo.indexToken, marketInfo.longToken, marketInfo.shortToken].every(
+    (token) => token.hasPriceFeedProvider
+  );
+}

@@ -1,0 +1,22 @@
+.OneClickButton {
+  position: relative;
+  border: 1px solid var(--color-stroke-primary);
+  border-radius: var(--border-radius-sm);
+  height: 3.6rem;
+  width: 3.6rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+
+  &:hover {
+    background: var(--dark-blue-hover);
+    cursor: pointer;
+  }
+  &:active {
+    background: var(--dark-blue-active);
+  }
+  &:active {
+    background: var(--dark-blue-active);
+  }
+}

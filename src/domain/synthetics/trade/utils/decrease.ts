@@ -280,6 +280,7 @@ export function getDecreasePositionAmounts(p: {
       tokenOutAddress: collateralToken.address,
       usdIn: profitUsd,
       shouldApplyPriceImpact: true,
+      isAtomicSwap: false,
     });
 
     values.swapProfitFeeUsd = swapProfitStats.swapFeeUsd - swapProfitStats.priceImpactDeltaUsd;

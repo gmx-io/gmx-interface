@@ -2,7 +2,6 @@ import { Plural, Trans, t } from "@lingui/macro";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef } from "react";
 import { useMeasure, useMedia } from "react-use";
 
-import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import {
   useIsOrdersLoading,
   useMarketsInfoData,
@@ -10,9 +9,11 @@ import {
   useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
+import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import {
   OrderInfo,
   PositionOrderInfo,
@@ -26,11 +27,14 @@ import {
   sortPositionOrders,
   sortSwapOrders,
 } from "domain/synthetics/orders";
-import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
+import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
+import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { EMPTY_ARRAY } from "lib/objects";
+import { useJsonRpcProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
+import { UiContractsChain } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
@@ -45,7 +49,6 @@ type Props = {
   hideActions?: boolean;
   setSelectedOrderKeys?: Dispatch<SetStateAction<string[]>>;
   selectedOrdersKeys?: string[];
-  setPendingTxns: (txns: any) => void;
   selectedPositionOrderKey?: string;
   setSelectedPositionOrderKey?: Dispatch<SetStateAction<string | undefined>>;
   marketsDirectionsFilter: MarketFilterLongShortItemData[];
@@ -64,7 +67,6 @@ export function OrderList({
   orderTypesFilter,
   setMarketsDirectionsFilter,
   setOrderTypesFilter,
-  setPendingTxns,
   hideActions,
   onCancelSelectedOrders,
 }: Props) {
@@ -77,9 +79,12 @@ export function OrderList({
 
   const chainId = useSelector(selectChainId);
   const { signer } = useWallet();
+  const { provider } = useJsonRpcProvider(chainId);
 
-  const subaccount = useSubaccount(null);
+  const { makeOrderTxnCallback } = useOrderTxnCallbacks();
+
   const account = useSelector(selectAccount);
+  const globalExpressParams = useSelector(selectExpressGlobalParams);
 
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
 
@@ -96,7 +101,6 @@ export function OrderList({
     const allSelected = orders.length > 0 && orders.every((o) => selectedOrdersKeys?.includes(o.key));
     return [onlySomeSelected, allSelected];
   }, [selectedOrdersKeys, orders]);
-  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, 1);
 
   const orderRefs = useRef<{ [key: string]: HTMLElement | null }>({});
 
@@ -140,16 +144,36 @@ export function OrderList({
     setSelectedOrderKeys?.(allSelectedOrders);
   }
 
-  function onCancelOrder(order: OrderInfo) {
+  async function onCancelOrder(order: OrderInfo) {
     if (!signer) return;
 
     const orderKeys = isTwapOrder(order) ? order.orders.map((o) => o.key) : [order.key];
-    setCancellingOrdersKeys((prev) => [...prev, order.key]);
+    setCancellingOrdersKeys((prev) => [...prev, ...orderKeys]);
 
-    cancelOrdersTxn(chainId, signer, subaccount, {
-      orders: [order],
-      setPendingTxns: setPendingTxns,
-      detailsMsg: cancelOrdersDetailsMessage,
+    const batchParams = {
+      createOrderParams: [],
+      updateOrderParams: [],
+      cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
+    };
+
+    const expressParams = await estimateBatchExpressParams({
+      signer,
+      chainId,
+      batchParams,
+      requireValidations: true,
+      globalExpressParams,
+      estimationMethod: "approximate",
+      provider,
+    });
+
+    sendBatchOrderTxn({
+      chainId,
+      signer,
+      batchParams,
+      expressParams,
+      simulationParams: undefined,
+      callback: makeOrderTxnCallback({}),
+      provider,
     }).finally(() => {
       setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));
       setSelectedOrderKeys?.(EMPTY_ARRAY);
@@ -297,7 +321,7 @@ function useFilteredOrders({
   marketsDirectionsFilter,
   orderTypesFilter,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   account: string | undefined;
   marketsDirectionsFilter: MarketFilterLongShortItemData[];
   orderTypesFilter: OrderTypeFilterValue[];

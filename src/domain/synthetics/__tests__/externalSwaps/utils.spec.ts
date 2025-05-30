@@ -1,98 +1,16 @@
-import { ethers } from "ethers";
 import { describe, expect, it, vi } from "vitest";
 
-import { AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { getPositionFee } from "domain/synthetics/fees";
-import {
-  expectEqualWithPrecision,
-  MOCK_TXN_DATA,
-  mockExternalSwapQuote,
-  mockPositionInfo,
-} from "domain/synthetics/testUtils/mocks";
+import { expectEqualWithPrecision, mockPositionInfo } from "domain/synthetics/testUtils/mocks";
 import { expandDecimals, getBasisPoints } from "lib/numbers";
-import Token from "sdk/abis/Token.json";
-import { getNativeToken } from "sdk/configs/tokens";
 import { mockMarketsInfoData, mockTokensData, usdToToken } from "sdk/test/mock";
 import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
 
-import {
-  getExternalCallsParams,
-  getExternalSwapInputsByFromValue,
-  getExternalSwapInputsByLeverageSize,
-} from "../../externalSwaps/utils";
+import { getExternalSwapInputsByFromValue, getExternalSwapInputsByLeverageSize } from "../../externalSwaps/utils";
 import { leverageBySizeValues, SwapPathStats } from "../../trade";
 
 const MOCK_ACCOUNT = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
-
-describe("getExternalCallsParams", () => {
-  const tokenContract = new ethers.Interface(Token.abi);
-
-  it("returns empty arrays when no txnData is provided", () => {
-    const quote = mockExternalSwapQuote({ txnData: undefined });
-
-    const result = getExternalCallsParams(AVALANCHE, MOCK_ACCOUNT, quote);
-    expect(result).toEqual([]);
-  });
-
-  it("returns transaction data without approval when needSpenderApproval is false", () => {
-    const quote = mockExternalSwapQuote({
-      needSpenderApproval: false,
-      txnData: MOCK_TXN_DATA,
-    });
-
-    const [addresses, callData, refundTokens, refundReceivers] = getExternalCallsParams(AVALANCHE, MOCK_ACCOUNT, quote);
-
-    expect(addresses).toEqual([MOCK_TXN_DATA.to]);
-    expect(callData).toEqual([MOCK_TXN_DATA.data]);
-    expect(refundTokens).toEqual([getNativeToken(AVALANCHE).wrappedAddress, quote.inTokenAddress]);
-    expect(refundReceivers).toEqual([MOCK_ACCOUNT, MOCK_ACCOUNT]);
-  });
-
-  it("includes approval transaction when needSpenderApproval is true", () => {
-    const quote = mockExternalSwapQuote({
-      needSpenderApproval: true,
-      txnData: MOCK_TXN_DATA,
-    });
-
-    const expectedApprovalData = tokenContract.encodeFunctionData("approve", [MOCK_TXN_DATA.to, ethers.MaxUint256]);
-
-    const [addresses, callData, refundTokens, refundReceivers] = getExternalCallsParams(AVALANCHE, MOCK_ACCOUNT, quote);
-
-    expect(addresses).toEqual([quote.inTokenAddress, MOCK_TXN_DATA.to]);
-    expect(callData).toEqual([expectedApprovalData, MOCK_TXN_DATA.data]);
-    expect(refundTokens).toEqual([
-      getNativeToken(AVALANCHE).wrappedAddress, // WAVAX on Avalanche
-      quote.inTokenAddress,
-    ]);
-    expect(refundReceivers).toEqual([MOCK_ACCOUNT, MOCK_ACCOUNT]);
-  });
-
-  it("handles native token address conversion", () => {
-    const quote = mockExternalSwapQuote({
-      inTokenAddress: getNativeToken(AVALANCHE).address, // Native token
-      needSpenderApproval: true,
-      txnData: MOCK_TXN_DATA,
-    });
-
-    const [addresses, callData, refundTokens, refundReceivers] = getExternalCallsParams(AVALANCHE, MOCK_ACCOUNT, quote);
-
-    const expectedApprovalData = tokenContract.encodeFunctionData("approve", [MOCK_TXN_DATA.to, ethers.MaxUint256]);
-
-    const WAVAX = getNativeToken(AVALANCHE).wrappedAddress;
-
-    expect(addresses).toEqual([
-      WAVAX, // WAVAX address
-      MOCK_TXN_DATA.to,
-    ]);
-    expect(callData).toEqual([expectedApprovalData, MOCK_TXN_DATA.data]);
-    expect(refundTokens).toEqual([
-      getNativeToken(AVALANCHE).wrappedAddress, // WAVAX on Avalanche
-      getNativeToken(AVALANCHE).wrappedAddress,
-    ]);
-    expect(refundReceivers).toEqual([MOCK_ACCOUNT, MOCK_ACCOUNT]);
-  });
-});
 
 describe("getExternalSwapInputsByFromValue", () => {
   const tokensData = mockTokensData();

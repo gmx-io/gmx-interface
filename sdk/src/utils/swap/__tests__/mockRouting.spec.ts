@@ -51,6 +51,11 @@ const baseGasLimits: GasLimitsConfig = {
   singleSwap: 1000000n,
   swapOrder: 3000000n,
   withdrawalMultiToken: 1500000n,
+  createOrderGasLimit: 1000000n,
+  updateOrderGasLimit: 1000000n,
+  cancelOrderGasLimit: 1000000n,
+  gelatoRelayFeeMultiplierFactor: 1000000000000000000000000000000n,
+  tokenPermitGasLimit: 1000000n,
 };
 
 const baseGasPrice = 1650000002n;
@@ -77,7 +82,7 @@ describe("mockRouting", () => {
     });
 
     const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "USDC", "DAI");
-    const estimator = createNaiveSwapEstimator(marketsInfoData);
+    const estimator = createNaiveSwapEstimator(marketsInfoData, false);
 
     const paths = getNaiveBestMarketSwapPathsFromTokenSwapPaths({
       graph: marketAdjacencyGraph,
@@ -119,7 +124,7 @@ describe("mockRouting", () => {
     });
 
     const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "USDC", "DAI");
-    const estimator = createNaiveSwapEstimator(marketsInfoData);
+    const estimator = createNaiveSwapEstimator(marketsInfoData, false);
 
     const paths = getNaiveBestMarketSwapPathsFromTokenSwapPaths({
       graph: marketAdjacencyGraph,
@@ -177,7 +182,7 @@ describe("mockRouting", () => {
     });
 
     const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "BTC", "DAI");
-    const estimator = createNaiveSwapEstimator(marketsInfoData);
+    const estimator = createNaiveSwapEstimator(marketsInfoData, false);
 
     const paths = getNaiveBestMarketSwapPathsFromTokenSwapPaths({
       graph: marketAdjacencyGraph,
@@ -231,7 +236,7 @@ describe("mockRouting", () => {
     });
 
     const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "USDC", "BTC");
-    const estimator = createNaiveSwapEstimator(marketsInfoData);
+    const estimator = createNaiveSwapEstimator(marketsInfoData, false);
 
     const paths = getNaiveBestMarketSwapPathsFromTokenSwapPaths({
       graph: marketAdjacencyGraph,
@@ -294,7 +299,7 @@ describe("mockRouting", () => {
     });
 
     const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "USDC", "BTC");
-    const estimator = createNaiveSwapEstimator(marketsInfoData);
+    const estimator = createNaiveSwapEstimator(marketsInfoData, false);
 
     const paths = getNaiveBestMarketSwapPathsFromTokenSwapPaths({
       graph: marketAdjacencyGraph,
@@ -352,7 +357,7 @@ describe("mockRouting", () => {
     });
 
     const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "BTC", "DAI");
-    const estimator = createNaiveSwapEstimator(marketsInfoData);
+    const estimator = createNaiveSwapEstimator(marketsInfoData, false);
 
     const fakeMultiplier = 100n;
 

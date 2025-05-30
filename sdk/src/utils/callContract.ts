@@ -3,7 +3,7 @@ import { Abi, Address, encodeFunctionData, PublicClient, withRetry } from "viem"
 import {
   GAS_PRICE_BUFFER_MAP,
   GAS_PRICE_PREMIUM_MAP,
-  getChain,
+  getViemChain,
   MAX_FEE_PER_GAS_MAP,
   MAX_PRIORITY_FEE_PER_GAS_MAP,
 } from "configs/chains";
@@ -20,7 +20,7 @@ export async function getGasPrice(client: PublicClient, chainId: number) {
     () =>
       client.estimateFeesPerGas({
         type: "legacy",
-        chain: getChain(chainId),
+        chain: getViemChain(chainId),
       }),
     {
       delay: 200,
@@ -137,7 +137,7 @@ export async function callContract(
 ) {
   const txnOpts: any = {};
 
-  const chain = getChain(sdk.chainId);
+  const chain = getViemChain(sdk.chainId);
 
   if (opts.value) {
     txnOpts.value = BigInt(opts.value);

@@ -313,6 +313,7 @@ export function SlideModal({
   className,
   noDivider = false,
   desktopContentClassName,
+  disableOverflowHandling = false,
 }: PropsWithChildren<{
   label?: React.ReactNode;
   headerContent?: React.ReactNode;
@@ -325,6 +326,7 @@ export function SlideModal({
   className?: string;
   noDivider?: boolean;
   desktopContentClassName?: string;
+  disableOverflowHandling?: boolean;
 }>) {
   const isMobile = useMedia("(max-width: 700px)", false);
 
@@ -360,6 +362,7 @@ export function SlideModal({
         footerContent={footerContent}
         className={className}
         contentClassName={desktopContentClassName}
+        disableOverflowHandling={disableOverflowHandling}
       >
         {children}
       </Modal>

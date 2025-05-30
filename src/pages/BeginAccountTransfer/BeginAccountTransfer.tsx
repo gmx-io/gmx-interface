@@ -245,6 +245,8 @@ export default function BeginAccountTransfer() {
         tokenAddress: gmxAddress,
         spender: stakedGmxTrackerAddress,
         chainId,
+        permitParams: undefined,
+        approveAmount: undefined,
       });
       return;
     }
@@ -284,7 +286,7 @@ export default function BeginAccountTransfer() {
           feeGmxTrackerBalance !== undefined &&
           parsedReceiver !== zeroAddress &&
           feeGmxAllowanceData &&
-          getNeedTokenApprove(feeGmxAllowanceData, feeGmxTrackerAddress, feeGmxTrackerBalance)
+          getNeedTokenApprove(feeGmxAllowanceData, feeGmxTrackerAddress, feeGmxTrackerBalance, [])
       ),
     [feeGmxTrackerAddress, feeGmxTrackerBalance, parsedReceiver, feeGmxAllowanceData]
   );

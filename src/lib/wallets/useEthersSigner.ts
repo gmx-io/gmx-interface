@@ -5,16 +5,24 @@ import { Config, useConnectorClient } from "wagmi";
 
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 
-export function clientToSigner(client: Client<Transport, Chain, Account>) {
+import { WalletSigner } from ".";
+
+export function clientToSigner(client: Client<Transport, Chain, Account>): WalletSigner {
   const { account, chain, transport } = client;
   const network = {
     chainId: chain.id,
     name: chain.name,
     ensAddress: chain.contracts?.ensRegistry?.address,
   };
+
   const provider = new ethers.BrowserProvider(transport, network);
   const signer = new UncheckedJsonRpcSigner(provider, account.address);
-  return signer;
+
+  if (!signer.address) {
+    signer.address = account.address;
+  }
+
+  return signer as WalletSigner;
 }
 
 /** Hook to convert a Viem Client to an ethers.js Signer. */

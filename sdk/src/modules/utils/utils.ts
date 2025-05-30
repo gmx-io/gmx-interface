@@ -1,6 +1,12 @@
 import { withRetry } from "viem";
 
-import { EXECUTION_FEE_CONFIG_V2, GAS_PRICE_PREMIUM_MAP, getChain, MAX_PRIORITY_FEE_PER_GAS_MAP } from "configs/chains";
+import {
+  EXECUTION_FEE_CONFIG_V2,
+  GAS_LIMITS_STATIC_CONFIG,
+  GAS_PRICE_PREMIUM_MAP,
+  getViemChain,
+  MAX_PRIORITY_FEE_PER_GAS_MAP,
+} from "configs/chains";
 import { getContract } from "configs/contracts";
 import {
   decreaseOrderGasLimitKey,
@@ -8,6 +14,7 @@ import {
   ESTIMATED_GAS_FEE_BASE_AMOUNT_V2_1,
   ESTIMATED_GAS_FEE_MULTIPLIER_FACTOR,
   ESTIMATED_GAS_FEE_PER_ORACLE_PRICE,
+  GELATO_RELAY_FEE_MULTIPLIER_FACTOR_KEY,
   GLV_DEPOSIT_GAS_LIMIT,
   GLV_PER_MARKET_GAS_LIMIT,
   GLV_WITHDRAWAL_GAS_LIMIT,
@@ -101,6 +108,10 @@ export class Utils extends Module {
               methodName: "getUint",
               params: [GLV_PER_MARKET_GAS_LIMIT],
             },
+            gelatoRelayFeeMultiplierFactor: {
+              methodName: "getUint",
+              params: [GELATO_RELAY_FEE_MULTIPLIER_FACTOR_KEY],
+            },
           },
         },
       })
@@ -110,6 +121,8 @@ export class Utils extends Module {
         function getBigInt(key: keyof typeof results) {
           return BigInt(results[key].returnValues[0]);
         }
+
+        const staticGasLimits = GAS_LIMITS_STATIC_CONFIG[this.chainId];
 
         return {
           depositToken: getBigInt("depositToken"),
@@ -125,10 +138,16 @@ export class Utils extends Module {
           glvDepositGasLimit: getBigInt("glvDepositGasLimit"),
           glvWithdrawalGasLimit: getBigInt("glvWithdrawalGasLimit"),
           glvPerMarketGasLimit: getBigInt("glvPerMarketGasLimit"),
+          createOrderGasLimit: staticGasLimits.createOrderGasLimit,
+          updateOrderGasLimit: staticGasLimits.updateOrderGasLimit,
+          cancelOrderGasLimit: staticGasLimits.cancelOrderGasLimit,
+          tokenPermitGasLimit: staticGasLimits.tokenPermitGasLimit,
+          gelatoRelayFeeMultiplierFactor: getBigInt("gelatoRelayFeeMultiplierFactor"),
         };
       });
 
     this._gasLimits = gasLimits;
+
     return gasLimits;
   }
 
@@ -223,7 +242,7 @@ export class Utils extends Module {
     const feeData = await withRetry(
       () =>
         this.sdk.publicClient.estimateFeesPerGas({
-          chain: getChain(this.chainId),
+          chain: getViemChain(this.chainId),
           type: "legacy",
         }),
       {

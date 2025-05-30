@@ -4,9 +4,11 @@ import { Signer, ethers } from "ethers";
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { callContract } from "lib/contracts";
-import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { isAddressZero } from "lib/legacy";
 import { abis } from "sdk/abis";
+import type { UiContractsChain } from "sdk/configs/chains";
+
+import { validateSignerAddress } from "components/Errors/errorToasts";
 
 import { SwapPricingType } from "../orders";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
@@ -21,7 +23,7 @@ interface GlvWithdrawalParams extends Omit<CreateWithdrawalParams, "marketTokenA
   glvTokenAddress: string;
 }
 
-export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p: GlvWithdrawalParams) {
+export async function createGlvWithdrawalTxn(chainId: UiContractsChain, signer: Signer, p: GlvWithdrawalParams) {
   const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), abis.GlvRouter, signer);
   const withdrawalVaultAddress = getContract(chainId, "GlvVault");
 
@@ -83,7 +85,6 @@ export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p:
     "multicall",
     [encodedPayload],
     wntAmount,
-    undefined,
     simulationPromise,
     p.metricId
   );

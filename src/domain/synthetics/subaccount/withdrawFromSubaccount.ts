@@ -1,45 +1,82 @@
-import { Subaccount } from "context/SubaccountContext/SubaccountContext";
+import useSWR from "swr";
+
 import { bigMath } from "sdk/utils/bigmath";
+
+import { Subaccount } from "./types";
+
+export function useSubaccountWithdrawalAmount(
+  chainId: number,
+  subaccount: Subaccount | undefined,
+  gasPrice: bigint | undefined
+) {
+  const { data: estimatedWithdrawalAmounts } = useSWR(
+    subaccount?.address && gasPrice !== undefined
+      ? ["useSubaccountWithdrawalAmount", chainId, subaccount?.address, gasPrice]
+      : null,
+    {
+      fetcher: () => getEstimatedWithdrawalAmount(subaccount!, gasPrice!),
+    }
+  );
+
+  return estimatedWithdrawalAmounts;
+}
+
+export async function getEstimatedWithdrawalAmount(subaccount: Subaccount, gasPrice: bigint) {
+  const subaccountAddress = subaccount.address;
+  let wallet = subaccount.signer;
+
+  if (!wallet.provider) {
+    return undefined;
+  }
+
+  const [value] = await Promise.all([wallet.provider!.getBalance(subaccountAddress)]);
+
+  const result = {
+    amountToSend: 0n,
+    gasPrice,
+    estimatedGas: 0n,
+  };
+
+  result.estimatedGas = bigMath.mulDiv(
+    (await wallet.estimateGas({
+      to: subaccount.address,
+      value,
+    })) as bigint,
+    13n,
+    10n
+  );
+
+  result.amountToSend = value - gasPrice * result.estimatedGas;
+
+  if (result.amountToSend < 0n) {
+    return undefined;
+  }
+
+  return result;
+}
 
 export async function withdrawFromSubaccount({
   subaccount,
   mainAccountAddress,
+  gasPrice,
 }: {
   subaccount: Subaccount;
   mainAccountAddress: string;
+  gasPrice: bigint;
 }) {
-  if (!subaccount) throw new Error("No subaccount available.");
-
-  const subaccountAddress = subaccount.address;
-  const wallet = subaccount.signer;
+  let wallet = subaccount.signer;
 
   if (!wallet.provider) throw new Error("No provider available.");
 
-  const [value, feeData] = await Promise.all([
-    wallet.provider.getBalance(subaccountAddress),
-    wallet.provider.getFeeData(),
-  ]);
-  const gasPrice = feeData.gasPrice ?? 0n;
-  const gasLimit = 21000n;
-  const approxAmountToSend = value - gasPrice * gasLimit;
+  const result = await getEstimatedWithdrawalAmount(subaccount, gasPrice);
 
-  if (approxAmountToSend < 0) {
+  if (!result) {
     throw new Error("Insufficient funds to cover gas cost.");
   }
 
-  const estimatedGas = bigMath.mulDiv(
-    (await wallet.estimateGas({
-      to: mainAccountAddress,
-      value,
-    })) as bigint,
-    100n,
-    95n
-  );
+  const { amountToSend, estimatedGas } = result;
 
-  const gasCost = estimatedGas * gasPrice;
-  const amountToSend = value - gasCost;
-
-  if (amountToSend < 0) {
+  if (amountToSend < 0n) {
     throw new Error("Insufficient funds to cover gas cost.");
   }
 

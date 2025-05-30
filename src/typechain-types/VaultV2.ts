@@ -167,32 +167,106 @@ export interface VaultV2Interface extends Interface {
       | "UpdatePosition"
   ): EventFragment;
 
-  encodeFunctionData(functionFragment: "BASIS_POINTS_DIVISOR", values?: undefined): string;
-  encodeFunctionData(functionFragment: "FUNDING_RATE_PRECISION", values?: undefined): string;
-  encodeFunctionData(functionFragment: "MAX_FEE_BASIS_POINTS", values?: undefined): string;
-  encodeFunctionData(functionFragment: "MAX_FUNDING_RATE_FACTOR", values?: undefined): string;
-  encodeFunctionData(functionFragment: "MAX_LIQUIDATION_FEE_USD", values?: undefined): string;
-  encodeFunctionData(functionFragment: "MIN_FUNDING_RATE_INTERVAL", values?: undefined): string;
-  encodeFunctionData(functionFragment: "MIN_LEVERAGE", values?: undefined): string;
-  encodeFunctionData(functionFragment: "PRICE_PRECISION", values?: undefined): string;
-  encodeFunctionData(functionFragment: "USDG_DECIMALS", values?: undefined): string;
-  encodeFunctionData(functionFragment: "addRouter", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "adjustForDecimals", values: [BigNumberish, AddressLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "allWhitelistedTokens", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "allWhitelistedTokensLength", values?: undefined): string;
-  encodeFunctionData(functionFragment: "approvedRouters", values: [AddressLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "bufferAmounts", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "buyUSDG", values: [AddressLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "clearTokenConfig", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "cumulativeFundingRates", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "BASIS_POINTS_DIVISOR",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "FUNDING_RATE_PRECISION",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "MAX_FEE_BASIS_POINTS",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "MAX_FUNDING_RATE_FACTOR",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "MAX_LIQUIDATION_FEE_USD",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "MIN_FUNDING_RATE_INTERVAL",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "MIN_LEVERAGE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "PRICE_PRECISION",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "USDG_DECIMALS",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addRouter",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "adjustForDecimals",
+    values: [BigNumberish, AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "allWhitelistedTokens",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "allWhitelistedTokensLength",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "approvedRouters",
+    values: [AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "bufferAmounts",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "buyUSDG",
+    values: [AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "clearTokenConfig",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "cumulativeFundingRates",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "decreasePosition",
-    values: [AddressLike, AddressLike, AddressLike, BigNumberish, BigNumberish, boolean, AddressLike]
+    values: [
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      boolean,
+      AddressLike
+    ]
   ): string;
-  encodeFunctionData(functionFragment: "directPoolDeposit", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "feeReserves", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "fundingInterval", values?: undefined): string;
-  encodeFunctionData(functionFragment: "fundingRateFactor", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "directPoolDeposit",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "feeReserves",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fundingInterval",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fundingRateFactor",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "getDelta",
     values: [AddressLike, BigNumberish, BigNumberish, boolean, BigNumberish]
@@ -201,25 +275,54 @@ export interface VaultV2Interface extends Interface {
     functionFragment: "getFeeBasisPoints",
     values: [AddressLike, BigNumberish, BigNumberish, BigNumberish, boolean]
   ): string;
-  encodeFunctionData(functionFragment: "getFundingFee", values: [AddressLike, BigNumberish, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "getGlobalShortDelta", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "getMaxPrice", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "getMinPrice", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "getFundingFee",
+    values: [AddressLike, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getGlobalShortDelta",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getMaxPrice",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getMinPrice",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "getNextAveragePrice",
-    values: [AddressLike, BigNumberish, BigNumberish, boolean, BigNumberish, BigNumberish, BigNumberish]
+    values: [
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      boolean,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
+    ]
   ): string;
-  encodeFunctionData(functionFragment: "getNextFundingRate", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "getNextFundingRate",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "getNextGlobalShortAveragePrice",
     values: [AddressLike, BigNumberish, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "getPosition", values: [AddressLike, AddressLike, AddressLike, boolean]): string;
+  encodeFunctionData(
+    functionFragment: "getPosition",
+    values: [AddressLike, AddressLike, AddressLike, boolean]
+  ): string;
   encodeFunctionData(
     functionFragment: "getPositionDelta",
     values: [AddressLike, AddressLike, AddressLike, boolean]
   ): string;
-  encodeFunctionData(functionFragment: "getPositionFee", values: [BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "getPositionFee",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "getPositionKey",
     values: [AddressLike, AddressLike, AddressLike, boolean]
@@ -228,53 +331,156 @@ export interface VaultV2Interface extends Interface {
     functionFragment: "getPositionLeverage",
     values: [AddressLike, AddressLike, AddressLike, boolean]
   ): string;
-  encodeFunctionData(functionFragment: "getRedemptionAmount", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "getRedemptionCollateral", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "getRedemptionCollateralUsd", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "getTargetUsdgAmount", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "getUtilisation", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "globalShortAveragePrices", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "globalShortSizes", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "getRedemptionAmount",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRedemptionCollateral",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRedemptionCollateralUsd",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTargetUsdgAmount",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getUtilisation",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "globalShortAveragePrices",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "globalShortSizes",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(functionFragment: "gov", values?: undefined): string;
-  encodeFunctionData(functionFragment: "guaranteedUsd", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "hasDynamicFees", values?: undefined): string;
-  encodeFunctionData(functionFragment: "inManagerMode", values?: undefined): string;
-  encodeFunctionData(functionFragment: "inPrivateLiquidationMode", values?: undefined): string;
-  encodeFunctionData(functionFragment: "includeAmmPrice", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "guaranteedUsd",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "hasDynamicFees",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "inManagerMode",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "inPrivateLiquidationMode",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "includeAmmPrice",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "increasePosition",
     values: [AddressLike, AddressLike, AddressLike, BigNumberish, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [AddressLike, AddressLike, AddressLike, BigNumberish, BigNumberish, BigNumberish]
+    values: [
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
+    ]
   ): string;
-  encodeFunctionData(functionFragment: "isInitialized", values?: undefined): string;
-  encodeFunctionData(functionFragment: "isLeverageEnabled", values?: undefined): string;
-  encodeFunctionData(functionFragment: "isLiquidator", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "isManager", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "isSwapEnabled", values?: undefined): string;
-  encodeFunctionData(functionFragment: "lastFundingTimes", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "isInitialized",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isLeverageEnabled",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isLiquidator",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isManager",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isSwapEnabled",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "lastFundingTimes",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "liquidatePosition",
     values: [AddressLike, AddressLike, AddressLike, boolean, AddressLike]
   ): string;
-  encodeFunctionData(functionFragment: "liquidationFeeUsd", values?: undefined): string;
-  encodeFunctionData(functionFragment: "marginFeeBasisPoints", values?: undefined): string;
-  encodeFunctionData(functionFragment: "maxGasPrice", values?: undefined): string;
-  encodeFunctionData(functionFragment: "maxLeverage", values?: undefined): string;
-  encodeFunctionData(functionFragment: "maxUsdgAmounts", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "minProfitBasisPoints", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "minProfitTime", values?: undefined): string;
-  encodeFunctionData(functionFragment: "mintBurnFeeBasisPoints", values?: undefined): string;
-  encodeFunctionData(functionFragment: "poolAmounts", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "positions", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "liquidationFeeUsd",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "marginFeeBasisPoints",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "maxGasPrice",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "maxLeverage",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "maxUsdgAmounts",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "minProfitBasisPoints",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "minProfitTime",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "mintBurnFeeBasisPoints",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "poolAmounts",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "positions",
+    values: [BytesLike]
+  ): string;
   encodeFunctionData(functionFragment: "priceFeed", values?: undefined): string;
-  encodeFunctionData(functionFragment: "removeRouter", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "reservedAmounts", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "removeRouter",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "reservedAmounts",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(functionFragment: "router", values?: undefined): string;
-  encodeFunctionData(functionFragment: "sellUSDG", values: [AddressLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "setBufferAmount", values: [AddressLike, BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "sellUSDG",
+    values: [AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setBufferAmount",
+    values: [AddressLike, BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "setFees",
     values: [
@@ -286,168 +492,572 @@ export interface VaultV2Interface extends Interface {
       BigNumberish,
       BigNumberish,
       BigNumberish,
-      boolean,
+      boolean
     ]
   ): string;
-  encodeFunctionData(functionFragment: "setFundingRate", values: [BigNumberish, BigNumberish, BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "setFundingRate",
+    values: [BigNumberish, BigNumberish, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "setGov", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "setInManagerMode", values: [boolean]): string;
-  encodeFunctionData(functionFragment: "setInPrivateLiquidationMode", values: [boolean]): string;
-  encodeFunctionData(functionFragment: "setIsLeverageEnabled", values: [boolean]): string;
-  encodeFunctionData(functionFragment: "setIsSwapEnabled", values: [boolean]): string;
-  encodeFunctionData(functionFragment: "setLiquidator", values: [AddressLike, boolean]): string;
-  encodeFunctionData(functionFragment: "setManager", values: [AddressLike, boolean]): string;
-  encodeFunctionData(functionFragment: "setMaxGasPrice", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "setMaxLeverage", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "setPriceFeed", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "setInManagerMode",
+    values: [boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setInPrivateLiquidationMode",
+    values: [boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setIsLeverageEnabled",
+    values: [boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setIsSwapEnabled",
+    values: [boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setLiquidator",
+    values: [AddressLike, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setManager",
+    values: [AddressLike, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setMaxGasPrice",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setMaxLeverage",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setPriceFeed",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "setTokenConfig",
-    values: [AddressLike, BigNumberish, BigNumberish, BigNumberish, BigNumberish, boolean, boolean]
+    values: [
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      boolean,
+      boolean
+    ]
   ): string;
-  encodeFunctionData(functionFragment: "setUsdgAmount", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "shortableTokens", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "stableFundingRateFactor", values?: undefined): string;
-  encodeFunctionData(functionFragment: "stableSwapFeeBasisPoints", values?: undefined): string;
-  encodeFunctionData(functionFragment: "stableTaxBasisPoints", values?: undefined): string;
-  encodeFunctionData(functionFragment: "stableTokens", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "swap", values: [AddressLike, AddressLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "swapFeeBasisPoints", values?: undefined): string;
-  encodeFunctionData(functionFragment: "taxBasisPoints", values?: undefined): string;
-  encodeFunctionData(functionFragment: "tokenBalances", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "tokenDecimals", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "tokenToUsdMin", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "tokenWeights", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "totalTokenWeights", values?: undefined): string;
-  encodeFunctionData(functionFragment: "updateCumulativeFundingRate", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "upgradeVault", values: [AddressLike, AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "usdToToken", values: [AddressLike, BigNumberish, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "usdToTokenMax", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "usdToTokenMin", values: [AddressLike, BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "setUsdgAmount",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "shortableTokens",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "stableFundingRateFactor",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "stableSwapFeeBasisPoints",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "stableTaxBasisPoints",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "stableTokens",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "swap",
+    values: [AddressLike, AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "swapFeeBasisPoints",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "taxBasisPoints",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tokenBalances",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tokenDecimals",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tokenToUsdMin",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tokenWeights",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "totalTokenWeights",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateCumulativeFundingRate",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "upgradeVault",
+    values: [AddressLike, AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "usdToToken",
+    values: [AddressLike, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "usdToTokenMax",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "usdToTokenMin",
+    values: [AddressLike, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "usdg", values?: undefined): string;
-  encodeFunctionData(functionFragment: "usdgAmounts", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "useSwapPricing", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "usdgAmounts",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "useSwapPricing",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "validateLiquidation",
     values: [AddressLike, AddressLike, AddressLike, boolean, boolean]
   ): string;
-  encodeFunctionData(functionFragment: "whitelistedTokenCount", values?: undefined): string;
-  encodeFunctionData(functionFragment: "whitelistedTokens", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "withdrawFees", values: [AddressLike, AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "whitelistedTokenCount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "whitelistedTokens",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawFees",
+    values: [AddressLike, AddressLike]
+  ): string;
 
-  decodeFunctionResult(functionFragment: "BASIS_POINTS_DIVISOR", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "FUNDING_RATE_PRECISION", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "MAX_FEE_BASIS_POINTS", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "MAX_FUNDING_RATE_FACTOR", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "MAX_LIQUIDATION_FEE_USD", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "MIN_FUNDING_RATE_INTERVAL", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "MIN_LEVERAGE", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "PRICE_PRECISION", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "USDG_DECIMALS", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "BASIS_POINTS_DIVISOR",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "FUNDING_RATE_PRECISION",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "MAX_FEE_BASIS_POINTS",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "MAX_FUNDING_RATE_FACTOR",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "MAX_LIQUIDATION_FEE_USD",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "MIN_FUNDING_RATE_INTERVAL",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "MIN_LEVERAGE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "PRICE_PRECISION",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "USDG_DECIMALS",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "addRouter", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "adjustForDecimals", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "allWhitelistedTokens", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "allWhitelistedTokensLength", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "approvedRouters", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "bufferAmounts", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "adjustForDecimals",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "allWhitelistedTokens",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "allWhitelistedTokensLength",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "approvedRouters",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "bufferAmounts",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "buyUSDG", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "clearTokenConfig", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "cumulativeFundingRates", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "decreasePosition", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "directPoolDeposit", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "feeReserves", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "fundingInterval", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "fundingRateFactor", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "clearTokenConfig",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "cumulativeFundingRates",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "decreasePosition",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "directPoolDeposit",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "feeReserves",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "fundingInterval",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "fundingRateFactor",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getDelta", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getFeeBasisPoints", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getFundingFee", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getGlobalShortDelta", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getMaxPrice", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getMinPrice", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getNextAveragePrice", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getNextFundingRate", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getNextGlobalShortAveragePrice", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getPosition", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getPositionDelta", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getPositionFee", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getPositionKey", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getPositionLeverage", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getRedemptionAmount", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getRedemptionCollateral", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getRedemptionCollateralUsd", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getTargetUsdgAmount", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getUtilisation", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "globalShortAveragePrices", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "globalShortSizes", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getFeeBasisPoints",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getFundingFee",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getGlobalShortDelta",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getMaxPrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getMinPrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getNextAveragePrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getNextFundingRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getNextGlobalShortAveragePrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPosition",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPositionDelta",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPositionFee",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPositionKey",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPositionLeverage",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRedemptionAmount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRedemptionCollateral",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRedemptionCollateralUsd",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTargetUsdgAmount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getUtilisation",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "globalShortAveragePrices",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "globalShortSizes",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "gov", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "guaranteedUsd", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "hasDynamicFees", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "inManagerMode", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "inPrivateLiquidationMode", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "includeAmmPrice", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "increasePosition", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "guaranteedUsd",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "hasDynamicFees",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "inManagerMode",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "inPrivateLiquidationMode",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "includeAmmPrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "increasePosition",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "isInitialized", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "isLeverageEnabled", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "isLiquidator", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "isInitialized",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isLeverageEnabled",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isLiquidator",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "isManager", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "isSwapEnabled", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "lastFundingTimes", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "liquidatePosition", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "liquidationFeeUsd", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "marginFeeBasisPoints", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "maxGasPrice", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "maxLeverage", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "maxUsdgAmounts", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "minProfitBasisPoints", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "minProfitTime", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "mintBurnFeeBasisPoints", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "poolAmounts", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "isSwapEnabled",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "lastFundingTimes",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "liquidatePosition",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "liquidationFeeUsd",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "marginFeeBasisPoints",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "maxGasPrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "maxLeverage",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "maxUsdgAmounts",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "minProfitBasisPoints",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "minProfitTime",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "mintBurnFeeBasisPoints",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "poolAmounts",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "positions", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "priceFeed", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeRouter", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "reservedAmounts", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "removeRouter",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "reservedAmounts",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "router", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sellUSDG", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setBufferAmount", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setBufferAmount",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setFees", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setFundingRate", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setFundingRate",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setGov", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setInManagerMode", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setInPrivateLiquidationMode", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setIsLeverageEnabled", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setIsSwapEnabled", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setLiquidator", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setInManagerMode",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setInPrivateLiquidationMode",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setIsLeverageEnabled",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setIsSwapEnabled",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setLiquidator",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setManager", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setMaxGasPrice", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setMaxLeverage", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setPriceFeed", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setTokenConfig", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setUsdgAmount", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "shortableTokens", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "stableFundingRateFactor", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "stableSwapFeeBasisPoints", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "stableTaxBasisPoints", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "stableTokens", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setMaxGasPrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setMaxLeverage",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setPriceFeed",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setTokenConfig",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setUsdgAmount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "shortableTokens",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "stableFundingRateFactor",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "stableSwapFeeBasisPoints",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "stableTaxBasisPoints",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "stableTokens",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "swap", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "swapFeeBasisPoints", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "taxBasisPoints", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "tokenBalances", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "tokenDecimals", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "tokenToUsdMin", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "tokenWeights", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "totalTokenWeights", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "updateCumulativeFundingRate", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "upgradeVault", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "swapFeeBasisPoints",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "taxBasisPoints",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "tokenBalances",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "tokenDecimals",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "tokenToUsdMin",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "tokenWeights",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "totalTokenWeights",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateCumulativeFundingRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "upgradeVault",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "usdToToken", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "usdToTokenMax", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "usdToTokenMin", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "usdToTokenMax",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "usdToTokenMin",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "usdg", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "usdgAmounts", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "useSwapPricing", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "validateLiquidation", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "whitelistedTokenCount", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "whitelistedTokens", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "withdrawFees", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "usdgAmounts",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "useSwapPricing",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "validateLiquidation",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "whitelistedTokenCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "whitelistedTokens",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawFees",
+    data: BytesLike
+  ): Result;
 }
 
 export namespace BuyUSDGEvent {
@@ -456,14 +1066,14 @@ export namespace BuyUSDGEvent {
     token: AddressLike,
     tokenAmount: BigNumberish,
     usdgAmount: BigNumberish,
-    feeBasisPoints: BigNumberish,
+    feeBasisPoints: BigNumberish
   ];
   export type OutputTuple = [
     account: string,
     token: string,
     tokenAmount: bigint,
     usdgAmount: bigint,
-    feeBasisPoints: bigint,
+    feeBasisPoints: bigint
   ];
   export interface OutputObject {
     account: string;
@@ -486,7 +1096,7 @@ export namespace ClosePositionEvent {
     averagePrice: BigNumberish,
     entryFundingRate: BigNumberish,
     reserveAmount: BigNumberish,
-    realisedPnl: BigNumberish,
+    realisedPnl: BigNumberish
   ];
   export type OutputTuple = [
     key: string,
@@ -495,7 +1105,7 @@ export namespace ClosePositionEvent {
     averagePrice: bigint,
     entryFundingRate: bigint,
     reserveAmount: bigint,
-    realisedPnl: bigint,
+    realisedPnl: bigint
   ];
   export interface OutputObject {
     key: string;
@@ -513,7 +1123,11 @@ export namespace ClosePositionEvent {
 }
 
 export namespace CollectMarginFeesEvent {
-  export type InputTuple = [token: AddressLike, feeUsd: BigNumberish, feeTokens: BigNumberish];
+  export type InputTuple = [
+    token: AddressLike,
+    feeUsd: BigNumberish,
+    feeTokens: BigNumberish
+  ];
   export type OutputTuple = [token: string, feeUsd: bigint, feeTokens: bigint];
   export interface OutputObject {
     token: string;
@@ -527,7 +1141,11 @@ export namespace CollectMarginFeesEvent {
 }
 
 export namespace CollectSwapFeesEvent {
-  export type InputTuple = [token: AddressLike, feeUsd: BigNumberish, feeTokens: BigNumberish];
+  export type InputTuple = [
+    token: AddressLike,
+    feeUsd: BigNumberish,
+    feeTokens: BigNumberish
+  ];
   export type OutputTuple = [token: string, feeUsd: bigint, feeTokens: bigint];
   export interface OutputObject {
     token: string;
@@ -576,7 +1194,7 @@ export namespace DecreasePositionEvent {
     sizeDelta: BigNumberish,
     isLong: boolean,
     price: BigNumberish,
-    fee: BigNumberish,
+    fee: BigNumberish
   ];
   export type OutputTuple = [
     key: string,
@@ -587,7 +1205,7 @@ export namespace DecreasePositionEvent {
     sizeDelta: bigint,
     isLong: boolean,
     price: bigint,
-    fee: bigint,
+    fee: bigint
   ];
   export interface OutputObject {
     key: string;
@@ -681,7 +1299,7 @@ export namespace IncreasePositionEvent {
     sizeDelta: BigNumberish,
     isLong: boolean,
     price: BigNumberish,
-    fee: BigNumberish,
+    fee: BigNumberish
   ];
   export type OutputTuple = [
     key: string,
@@ -692,7 +1310,7 @@ export namespace IncreasePositionEvent {
     sizeDelta: bigint,
     isLong: boolean,
     price: bigint,
-    fee: bigint,
+    fee: bigint
   ];
   export interface OutputObject {
     key: string;
@@ -748,7 +1366,7 @@ export namespace LiquidatePositionEvent {
     collateral: BigNumberish,
     reserveAmount: BigNumberish,
     realisedPnl: BigNumberish,
-    markPrice: BigNumberish,
+    markPrice: BigNumberish
   ];
   export type OutputTuple = [
     key: string,
@@ -760,7 +1378,7 @@ export namespace LiquidatePositionEvent {
     collateral: bigint,
     reserveAmount: bigint,
     realisedPnl: bigint,
-    markPrice: bigint,
+    markPrice: bigint
   ];
   export interface OutputObject {
     key: string;
@@ -786,14 +1404,14 @@ export namespace SellUSDGEvent {
     token: AddressLike,
     usdgAmount: BigNumberish,
     tokenAmount: BigNumberish,
-    feeBasisPoints: BigNumberish,
+    feeBasisPoints: BigNumberish
   ];
   export type OutputTuple = [
     account: string,
     token: string,
     usdgAmount: bigint,
     tokenAmount: bigint,
-    feeBasisPoints: bigint,
+    feeBasisPoints: bigint
   ];
   export interface OutputObject {
     account: string;
@@ -816,7 +1434,7 @@ export namespace SwapEvent {
     amountIn: BigNumberish,
     amountOut: BigNumberish,
     amountOutAfterFees: BigNumberish,
-    feeBasisPoints: BigNumberish,
+    feeBasisPoints: BigNumberish
   ];
   export type OutputTuple = [
     account: string,
@@ -825,7 +1443,7 @@ export namespace SwapEvent {
     amountIn: bigint,
     amountOut: bigint,
     amountOutAfterFees: bigint,
-    feeBasisPoints: bigint,
+    feeBasisPoints: bigint
   ];
   export interface OutputObject {
     account: string;
@@ -856,7 +1474,11 @@ export namespace UpdateFundingRateEvent {
 }
 
 export namespace UpdatePnlEvent {
-  export type InputTuple = [key: BytesLike, hasProfit: boolean, delta: BigNumberish];
+  export type InputTuple = [
+    key: BytesLike,
+    hasProfit: boolean,
+    delta: BigNumberish
+  ];
   export type OutputTuple = [key: string, hasProfit: boolean, delta: bigint];
   export interface OutputObject {
     key: string;
@@ -877,7 +1499,7 @@ export namespace UpdatePositionEvent {
     averagePrice: BigNumberish,
     entryFundingRate: BigNumberish,
     reserveAmount: BigNumberish,
-    realisedPnl: BigNumberish,
+    realisedPnl: BigNumberish
   ];
   export type OutputTuple = [
     key: string,
@@ -886,7 +1508,7 @@ export namespace UpdatePositionEvent {
     averagePrice: bigint,
     entryFundingRate: bigint,
     reserveAmount: bigint,
-    realisedPnl: bigint,
+    realisedPnl: bigint
   ];
   export interface OutputObject {
     key: string;
@@ -920,21 +1542,31 @@ export interface VaultV2 extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
   BASIS_POINTS_DIVISOR: TypedContractMethod<[], [bigint], "view">;
 
@@ -962,19 +1594,39 @@ export interface VaultV2 extends BaseContract {
     "view"
   >;
 
-  allWhitelistedTokens: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
+  allWhitelistedTokens: TypedContractMethod<
+    [arg0: BigNumberish],
+    [string],
+    "view"
+  >;
 
   allWhitelistedTokensLength: TypedContractMethod<[], [bigint], "view">;
 
-  approvedRouters: TypedContractMethod<[arg0: AddressLike, arg1: AddressLike], [boolean], "view">;
+  approvedRouters: TypedContractMethod<
+    [arg0: AddressLike, arg1: AddressLike],
+    [boolean],
+    "view"
+  >;
 
   bufferAmounts: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
-  buyUSDG: TypedContractMethod<[_token: AddressLike, _receiver: AddressLike], [bigint], "nonpayable">;
+  buyUSDG: TypedContractMethod<
+    [_token: AddressLike, _receiver: AddressLike],
+    [bigint],
+    "nonpayable"
+  >;
 
-  clearTokenConfig: TypedContractMethod<[_token: AddressLike], [void], "nonpayable">;
+  clearTokenConfig: TypedContractMethod<
+    [_token: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
-  cumulativeFundingRates: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  cumulativeFundingRates: TypedContractMethod<
+    [arg0: AddressLike],
+    [bigint],
+    "view"
+  >;
 
   decreasePosition: TypedContractMethod<
     [
@@ -984,13 +1636,17 @@ export interface VaultV2 extends BaseContract {
       _collateralDelta: BigNumberish,
       _sizeDelta: BigNumberish,
       _isLong: boolean,
-      _receiver: AddressLike,
+      _receiver: AddressLike
     ],
     [bigint],
     "nonpayable"
   >;
 
-  directPoolDeposit: TypedContractMethod<[_token: AddressLike], [void], "nonpayable">;
+  directPoolDeposit: TypedContractMethod<
+    [_token: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   feeReserves: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
@@ -1004,7 +1660,7 @@ export interface VaultV2 extends BaseContract {
       _size: BigNumberish,
       _averagePrice: BigNumberish,
       _isLong: boolean,
-      _lastIncreasedTime: BigNumberish,
+      _lastIncreasedTime: BigNumberish
     ],
     [[boolean, bigint]],
     "view"
@@ -1016,7 +1672,7 @@ export interface VaultV2 extends BaseContract {
       _usdgDelta: BigNumberish,
       _feeBasisPoints: BigNumberish,
       _taxBasisPoints: BigNumberish,
-      _increment: boolean,
+      _increment: boolean
     ],
     [bigint],
     "view"
@@ -1028,7 +1684,11 @@ export interface VaultV2 extends BaseContract {
     "view"
   >;
 
-  getGlobalShortDelta: TypedContractMethod<[_token: AddressLike], [[boolean, bigint]], "view">;
+  getGlobalShortDelta: TypedContractMethod<
+    [_token: AddressLike],
+    [[boolean, bigint]],
+    "view"
+  >;
 
   getMaxPrice: TypedContractMethod<[_token: AddressLike], [bigint], "view">;
 
@@ -1042,57 +1702,109 @@ export interface VaultV2 extends BaseContract {
       _isLong: boolean,
       _nextPrice: BigNumberish,
       _sizeDelta: BigNumberish,
-      _lastIncreasedTime: BigNumberish,
+      _lastIncreasedTime: BigNumberish
     ],
     [bigint],
     "view"
   >;
 
-  getNextFundingRate: TypedContractMethod<[_token: AddressLike], [bigint], "view">;
+  getNextFundingRate: TypedContractMethod<
+    [_token: AddressLike],
+    [bigint],
+    "view"
+  >;
 
   getNextGlobalShortAveragePrice: TypedContractMethod<
-    [_indexToken: AddressLike, _nextPrice: BigNumberish, _sizeDelta: BigNumberish],
+    [
+      _indexToken: AddressLike,
+      _nextPrice: BigNumberish,
+      _sizeDelta: BigNumberish
+    ],
     [bigint],
     "view"
   >;
 
   getPosition: TypedContractMethod<
-    [_account: AddressLike, _collateralToken: AddressLike, _indexToken: AddressLike, _isLong: boolean],
+    [
+      _account: AddressLike,
+      _collateralToken: AddressLike,
+      _indexToken: AddressLike,
+      _isLong: boolean
+    ],
     [[bigint, bigint, bigint, bigint, bigint, bigint, boolean, bigint]],
     "view"
   >;
 
   getPositionDelta: TypedContractMethod<
-    [_account: AddressLike, _collateralToken: AddressLike, _indexToken: AddressLike, _isLong: boolean],
+    [
+      _account: AddressLike,
+      _collateralToken: AddressLike,
+      _indexToken: AddressLike,
+      _isLong: boolean
+    ],
     [[boolean, bigint]],
     "view"
   >;
 
-  getPositionFee: TypedContractMethod<[_sizeDelta: BigNumberish], [bigint], "view">;
+  getPositionFee: TypedContractMethod<
+    [_sizeDelta: BigNumberish],
+    [bigint],
+    "view"
+  >;
 
   getPositionKey: TypedContractMethod<
-    [_account: AddressLike, _collateralToken: AddressLike, _indexToken: AddressLike, _isLong: boolean],
+    [
+      _account: AddressLike,
+      _collateralToken: AddressLike,
+      _indexToken: AddressLike,
+      _isLong: boolean
+    ],
     [string],
     "view"
   >;
 
   getPositionLeverage: TypedContractMethod<
-    [_account: AddressLike, _collateralToken: AddressLike, _indexToken: AddressLike, _isLong: boolean],
+    [
+      _account: AddressLike,
+      _collateralToken: AddressLike,
+      _indexToken: AddressLike,
+      _isLong: boolean
+    ],
     [bigint],
     "view"
   >;
 
-  getRedemptionAmount: TypedContractMethod<[_token: AddressLike, _usdgAmount: BigNumberish], [bigint], "view">;
+  getRedemptionAmount: TypedContractMethod<
+    [_token: AddressLike, _usdgAmount: BigNumberish],
+    [bigint],
+    "view"
+  >;
 
-  getRedemptionCollateral: TypedContractMethod<[_token: AddressLike], [bigint], "view">;
+  getRedemptionCollateral: TypedContractMethod<
+    [_token: AddressLike],
+    [bigint],
+    "view"
+  >;
 
-  getRedemptionCollateralUsd: TypedContractMethod<[_token: AddressLike], [bigint], "view">;
+  getRedemptionCollateralUsd: TypedContractMethod<
+    [_token: AddressLike],
+    [bigint],
+    "view"
+  >;
 
-  getTargetUsdgAmount: TypedContractMethod<[_token: AddressLike], [bigint], "view">;
+  getTargetUsdgAmount: TypedContractMethod<
+    [_token: AddressLike],
+    [bigint],
+    "view"
+  >;
 
   getUtilisation: TypedContractMethod<[_token: AddressLike], [bigint], "view">;
 
-  globalShortAveragePrices: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  globalShortAveragePrices: TypedContractMethod<
+    [arg0: AddressLike],
+    [bigint],
+    "view"
+  >;
 
   globalShortSizes: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
@@ -1114,7 +1826,7 @@ export interface VaultV2 extends BaseContract {
       _collateralToken: AddressLike,
       _indexToken: AddressLike,
       _sizeDelta: BigNumberish,
-      _isLong: boolean,
+      _isLong: boolean
     ],
     [void],
     "nonpayable"
@@ -1127,7 +1839,7 @@ export interface VaultV2 extends BaseContract {
       _priceFeed: AddressLike,
       _liquidationFeeUsd: BigNumberish,
       _fundingRateFactor: BigNumberish,
-      _stableFundingRateFactor: BigNumberish,
+      _stableFundingRateFactor: BigNumberish
     ],
     [void],
     "nonpayable"
@@ -1151,7 +1863,7 @@ export interface VaultV2 extends BaseContract {
       _collateralToken: AddressLike,
       _indexToken: AddressLike,
       _isLong: boolean,
-      _feeReceiver: AddressLike,
+      _feeReceiver: AddressLike
     ],
     [void],
     "nonpayable"
@@ -1167,7 +1879,11 @@ export interface VaultV2 extends BaseContract {
 
   maxUsdgAmounts: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
-  minProfitBasisPoints: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  minProfitBasisPoints: TypedContractMethod<
+    [arg0: AddressLike],
+    [bigint],
+    "view"
+  >;
 
   minProfitTime: TypedContractMethod<[], [bigint], "view">;
 
@@ -1186,22 +1902,34 @@ export interface VaultV2 extends BaseContract {
         reserveAmount: bigint;
         realisedPnl: bigint;
         lastIncreasedTime: bigint;
-      },
+      }
     ],
     "view"
   >;
 
   priceFeed: TypedContractMethod<[], [string], "view">;
 
-  removeRouter: TypedContractMethod<[_router: AddressLike], [void], "nonpayable">;
+  removeRouter: TypedContractMethod<
+    [_router: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   reservedAmounts: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
   router: TypedContractMethod<[], [string], "view">;
 
-  sellUSDG: TypedContractMethod<[_token: AddressLike, _receiver: AddressLike], [bigint], "nonpayable">;
+  sellUSDG: TypedContractMethod<
+    [_token: AddressLike, _receiver: AddressLike],
+    [bigint],
+    "nonpayable"
+  >;
 
-  setBufferAmount: TypedContractMethod<[_token: AddressLike, _amount: BigNumberish], [void], "nonpayable">;
+  setBufferAmount: TypedContractMethod<
+    [_token: AddressLike, _amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   setFees: TypedContractMethod<
     [
@@ -1213,37 +1941,77 @@ export interface VaultV2 extends BaseContract {
       _marginFeeBasisPoints: BigNumberish,
       _liquidationFeeUsd: BigNumberish,
       _minProfitTime: BigNumberish,
-      _hasDynamicFees: boolean,
+      _hasDynamicFees: boolean
     ],
     [void],
     "nonpayable"
   >;
 
   setFundingRate: TypedContractMethod<
-    [_fundingInterval: BigNumberish, _fundingRateFactor: BigNumberish, _stableFundingRateFactor: BigNumberish],
+    [
+      _fundingInterval: BigNumberish,
+      _fundingRateFactor: BigNumberish,
+      _stableFundingRateFactor: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
 
   setGov: TypedContractMethod<[_gov: AddressLike], [void], "nonpayable">;
 
-  setInManagerMode: TypedContractMethod<[_inManagerMode: boolean], [void], "nonpayable">;
+  setInManagerMode: TypedContractMethod<
+    [_inManagerMode: boolean],
+    [void],
+    "nonpayable"
+  >;
 
-  setInPrivateLiquidationMode: TypedContractMethod<[_inPrivateLiquidationMode: boolean], [void], "nonpayable">;
+  setInPrivateLiquidationMode: TypedContractMethod<
+    [_inPrivateLiquidationMode: boolean],
+    [void],
+    "nonpayable"
+  >;
 
-  setIsLeverageEnabled: TypedContractMethod<[_isLeverageEnabled: boolean], [void], "nonpayable">;
+  setIsLeverageEnabled: TypedContractMethod<
+    [_isLeverageEnabled: boolean],
+    [void],
+    "nonpayable"
+  >;
 
-  setIsSwapEnabled: TypedContractMethod<[_isSwapEnabled: boolean], [void], "nonpayable">;
+  setIsSwapEnabled: TypedContractMethod<
+    [_isSwapEnabled: boolean],
+    [void],
+    "nonpayable"
+  >;
 
-  setLiquidator: TypedContractMethod<[_liquidator: AddressLike, _isActive: boolean], [void], "nonpayable">;
+  setLiquidator: TypedContractMethod<
+    [_liquidator: AddressLike, _isActive: boolean],
+    [void],
+    "nonpayable"
+  >;
 
-  setManager: TypedContractMethod<[_manager: AddressLike, _isManager: boolean], [void], "nonpayable">;
+  setManager: TypedContractMethod<
+    [_manager: AddressLike, _isManager: boolean],
+    [void],
+    "nonpayable"
+  >;
 
-  setMaxGasPrice: TypedContractMethod<[_maxGasPrice: BigNumberish], [void], "nonpayable">;
+  setMaxGasPrice: TypedContractMethod<
+    [_maxGasPrice: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
-  setMaxLeverage: TypedContractMethod<[_maxLeverage: BigNumberish], [void], "nonpayable">;
+  setMaxLeverage: TypedContractMethod<
+    [_maxLeverage: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
-  setPriceFeed: TypedContractMethod<[_priceFeed: AddressLike], [void], "nonpayable">;
+  setPriceFeed: TypedContractMethod<
+    [_priceFeed: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   setTokenConfig: TypedContractMethod<
     [
@@ -1253,13 +2021,17 @@ export interface VaultV2 extends BaseContract {
       _minProfitBps: BigNumberish,
       _maxUsdgAmount: BigNumberish,
       _isStable: boolean,
-      _isShortable: boolean,
+      _isShortable: boolean
     ],
     [void],
     "nonpayable"
   >;
 
-  setUsdgAmount: TypedContractMethod<[_token: AddressLike, _amount: BigNumberish], [void], "nonpayable">;
+  setUsdgAmount: TypedContractMethod<
+    [_token: AddressLike, _amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   shortableTokens: TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
 
@@ -1285,13 +2057,21 @@ export interface VaultV2 extends BaseContract {
 
   tokenDecimals: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
-  tokenToUsdMin: TypedContractMethod<[_token: AddressLike, _tokenAmount: BigNumberish], [bigint], "view">;
+  tokenToUsdMin: TypedContractMethod<
+    [_token: AddressLike, _tokenAmount: BigNumberish],
+    [bigint],
+    "view"
+  >;
 
   tokenWeights: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
   totalTokenWeights: TypedContractMethod<[], [bigint], "view">;
 
-  updateCumulativeFundingRate: TypedContractMethod<[_token: AddressLike], [void], "nonpayable">;
+  updateCumulativeFundingRate: TypedContractMethod<
+    [_token: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   upgradeVault: TypedContractMethod<
     [_newVault: AddressLike, _token: AddressLike, _amount: BigNumberish],
@@ -1305,9 +2085,17 @@ export interface VaultV2 extends BaseContract {
     "view"
   >;
 
-  usdToTokenMax: TypedContractMethod<[_token: AddressLike, _usdAmount: BigNumberish], [bigint], "view">;
+  usdToTokenMax: TypedContractMethod<
+    [_token: AddressLike, _usdAmount: BigNumberish],
+    [bigint],
+    "view"
+  >;
 
-  usdToTokenMin: TypedContractMethod<[_token: AddressLike, _usdAmount: BigNumberish], [bigint], "view">;
+  usdToTokenMin: TypedContractMethod<
+    [_token: AddressLike, _usdAmount: BigNumberish],
+    [bigint],
+    "view"
+  >;
 
   usdg: TypedContractMethod<[], [string], "view">;
 
@@ -1316,43 +2104,101 @@ export interface VaultV2 extends BaseContract {
   useSwapPricing: TypedContractMethod<[], [boolean], "view">;
 
   validateLiquidation: TypedContractMethod<
-    [_account: AddressLike, _collateralToken: AddressLike, _indexToken: AddressLike, _isLong: boolean, _raise: boolean],
+    [
+      _account: AddressLike,
+      _collateralToken: AddressLike,
+      _indexToken: AddressLike,
+      _isLong: boolean,
+      _raise: boolean
+    ],
     [[bigint, bigint]],
     "view"
   >;
 
   whitelistedTokenCount: TypedContractMethod<[], [bigint], "view">;
 
-  whitelistedTokens: TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  whitelistedTokens: TypedContractMethod<
+    [arg0: AddressLike],
+    [boolean],
+    "view"
+  >;
 
-  withdrawFees: TypedContractMethod<[_token: AddressLike, _receiver: AddressLike], [bigint], "nonpayable">;
+  withdrawFees: TypedContractMethod<
+    [_token: AddressLike, _receiver: AddressLike],
+    [bigint],
+    "nonpayable"
+  >;
 
-  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  getFunction(nameOrSignature: "BASIS_POINTS_DIVISOR"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "FUNDING_RATE_PRECISION"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "MAX_FEE_BASIS_POINTS"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "MAX_FUNDING_RATE_FACTOR"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "MAX_LIQUIDATION_FEE_USD"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "MIN_FUNDING_RATE_INTERVAL"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "MIN_LEVERAGE"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "PRICE_PRECISION"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "USDG_DECIMALS"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "addRouter"): TypedContractMethod<[_router: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "BASIS_POINTS_DIVISOR"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "FUNDING_RATE_PRECISION"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "MAX_FEE_BASIS_POINTS"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "MAX_FUNDING_RATE_FACTOR"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "MAX_LIQUIDATION_FEE_USD"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "MIN_FUNDING_RATE_INTERVAL"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "MIN_LEVERAGE"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "PRICE_PRECISION"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "USDG_DECIMALS"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "addRouter"
+  ): TypedContractMethod<[_router: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "adjustForDecimals"
-  ): TypedContractMethod<[_amount: BigNumberish, _tokenDiv: AddressLike, _tokenMul: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "allWhitelistedTokens"): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
-  getFunction(nameOrSignature: "allWhitelistedTokensLength"): TypedContractMethod<[], [bigint], "view">;
+  ): TypedContractMethod<
+    [_amount: BigNumberish, _tokenDiv: AddressLike, _tokenMul: AddressLike],
+    [bigint],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "allWhitelistedTokens"
+  ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
+  getFunction(
+    nameOrSignature: "allWhitelistedTokensLength"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "approvedRouters"
-  ): TypedContractMethod<[arg0: AddressLike, arg1: AddressLike], [boolean], "view">;
-  getFunction(nameOrSignature: "bufferAmounts"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  ): TypedContractMethod<
+    [arg0: AddressLike, arg1: AddressLike],
+    [boolean],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "bufferAmounts"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "buyUSDG"
-  ): TypedContractMethod<[_token: AddressLike, _receiver: AddressLike], [bigint], "nonpayable">;
-  getFunction(nameOrSignature: "clearTokenConfig"): TypedContractMethod<[_token: AddressLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "cumulativeFundingRates"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _receiver: AddressLike],
+    [bigint],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "clearTokenConfig"
+  ): TypedContractMethod<[_token: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "cumulativeFundingRates"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "decreasePosition"
   ): TypedContractMethod<
@@ -1363,15 +2209,23 @@ export interface VaultV2 extends BaseContract {
       _collateralDelta: BigNumberish,
       _sizeDelta: BigNumberish,
       _isLong: boolean,
-      _receiver: AddressLike,
+      _receiver: AddressLike
     ],
     [bigint],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "directPoolDeposit"): TypedContractMethod<[_token: AddressLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "feeReserves"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "fundingInterval"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "fundingRateFactor"): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "directPoolDeposit"
+  ): TypedContractMethod<[_token: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "feeReserves"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "fundingInterval"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "fundingRateFactor"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "getDelta"
   ): TypedContractMethod<
@@ -1380,7 +2234,7 @@ export interface VaultV2 extends BaseContract {
       _size: BigNumberish,
       _averagePrice: BigNumberish,
       _isLong: boolean,
-      _lastIncreasedTime: BigNumberish,
+      _lastIncreasedTime: BigNumberish
     ],
     [[boolean, bigint]],
     "view"
@@ -1393,19 +2247,27 @@ export interface VaultV2 extends BaseContract {
       _usdgDelta: BigNumberish,
       _feeBasisPoints: BigNumberish,
       _taxBasisPoints: BigNumberish,
-      _increment: boolean,
+      _increment: boolean
     ],
     [bigint],
     "view"
   >;
   getFunction(
     nameOrSignature: "getFundingFee"
-  ): TypedContractMethod<[_token: AddressLike, _size: BigNumberish, _entryFundingRate: BigNumberish], [bigint], "view">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _size: BigNumberish, _entryFundingRate: BigNumberish],
+    [bigint],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "getGlobalShortDelta"
   ): TypedContractMethod<[_token: AddressLike], [[boolean, bigint]], "view">;
-  getFunction(nameOrSignature: "getMaxPrice"): TypedContractMethod<[_token: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "getMinPrice"): TypedContractMethod<[_token: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getMaxPrice"
+  ): TypedContractMethod<[_token: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getMinPrice"
+  ): TypedContractMethod<[_token: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "getNextAveragePrice"
   ): TypedContractMethod<
@@ -1416,65 +2278,119 @@ export interface VaultV2 extends BaseContract {
       _isLong: boolean,
       _nextPrice: BigNumberish,
       _sizeDelta: BigNumberish,
-      _lastIncreasedTime: BigNumberish,
+      _lastIncreasedTime: BigNumberish
     ],
     [bigint],
     "view"
   >;
-  getFunction(nameOrSignature: "getNextFundingRate"): TypedContractMethod<[_token: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getNextFundingRate"
+  ): TypedContractMethod<[_token: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "getNextGlobalShortAveragePrice"
   ): TypedContractMethod<
-    [_indexToken: AddressLike, _nextPrice: BigNumberish, _sizeDelta: BigNumberish],
+    [
+      _indexToken: AddressLike,
+      _nextPrice: BigNumberish,
+      _sizeDelta: BigNumberish
+    ],
     [bigint],
     "view"
   >;
   getFunction(
     nameOrSignature: "getPosition"
   ): TypedContractMethod<
-    [_account: AddressLike, _collateralToken: AddressLike, _indexToken: AddressLike, _isLong: boolean],
+    [
+      _account: AddressLike,
+      _collateralToken: AddressLike,
+      _indexToken: AddressLike,
+      _isLong: boolean
+    ],
     [[bigint, bigint, bigint, bigint, bigint, bigint, boolean, bigint]],
     "view"
   >;
   getFunction(
     nameOrSignature: "getPositionDelta"
   ): TypedContractMethod<
-    [_account: AddressLike, _collateralToken: AddressLike, _indexToken: AddressLike, _isLong: boolean],
+    [
+      _account: AddressLike,
+      _collateralToken: AddressLike,
+      _indexToken: AddressLike,
+      _isLong: boolean
+    ],
     [[boolean, bigint]],
     "view"
   >;
-  getFunction(nameOrSignature: "getPositionFee"): TypedContractMethod<[_sizeDelta: BigNumberish], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getPositionFee"
+  ): TypedContractMethod<[_sizeDelta: BigNumberish], [bigint], "view">;
   getFunction(
     nameOrSignature: "getPositionKey"
   ): TypedContractMethod<
-    [_account: AddressLike, _collateralToken: AddressLike, _indexToken: AddressLike, _isLong: boolean],
+    [
+      _account: AddressLike,
+      _collateralToken: AddressLike,
+      _indexToken: AddressLike,
+      _isLong: boolean
+    ],
     [string],
     "view"
   >;
   getFunction(
     nameOrSignature: "getPositionLeverage"
   ): TypedContractMethod<
-    [_account: AddressLike, _collateralToken: AddressLike, _indexToken: AddressLike, _isLong: boolean],
+    [
+      _account: AddressLike,
+      _collateralToken: AddressLike,
+      _indexToken: AddressLike,
+      _isLong: boolean
+    ],
     [bigint],
     "view"
   >;
   getFunction(
     nameOrSignature: "getRedemptionAmount"
-  ): TypedContractMethod<[_token: AddressLike, _usdgAmount: BigNumberish], [bigint], "view">;
-  getFunction(nameOrSignature: "getRedemptionCollateral"): TypedContractMethod<[_token: AddressLike], [bigint], "view">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _usdgAmount: BigNumberish],
+    [bigint],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getRedemptionCollateral"
+  ): TypedContractMethod<[_token: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "getRedemptionCollateralUsd"
   ): TypedContractMethod<[_token: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "getTargetUsdgAmount"): TypedContractMethod<[_token: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "getUtilisation"): TypedContractMethod<[_token: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "globalShortAveragePrices"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "globalShortSizes"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "gov"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "guaranteedUsd"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "hasDynamicFees"): TypedContractMethod<[], [boolean], "view">;
-  getFunction(nameOrSignature: "inManagerMode"): TypedContractMethod<[], [boolean], "view">;
-  getFunction(nameOrSignature: "inPrivateLiquidationMode"): TypedContractMethod<[], [boolean], "view">;
-  getFunction(nameOrSignature: "includeAmmPrice"): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "getTargetUsdgAmount"
+  ): TypedContractMethod<[_token: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getUtilisation"
+  ): TypedContractMethod<[_token: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "globalShortAveragePrices"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "globalShortSizes"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "gov"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "guaranteedUsd"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "hasDynamicFees"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "inManagerMode"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "inPrivateLiquidationMode"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "includeAmmPrice"
+  ): TypedContractMethod<[], [boolean], "view">;
   getFunction(
     nameOrSignature: "increasePosition"
   ): TypedContractMethod<
@@ -1483,7 +2399,7 @@ export interface VaultV2 extends BaseContract {
       _collateralToken: AddressLike,
       _indexToken: AddressLike,
       _sizeDelta: BigNumberish,
-      _isLong: boolean,
+      _isLong: boolean
     ],
     [void],
     "nonpayable"
@@ -1497,17 +2413,29 @@ export interface VaultV2 extends BaseContract {
       _priceFeed: AddressLike,
       _liquidationFeeUsd: BigNumberish,
       _fundingRateFactor: BigNumberish,
-      _stableFundingRateFactor: BigNumberish,
+      _stableFundingRateFactor: BigNumberish
     ],
     [void],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "isInitialized"): TypedContractMethod<[], [boolean], "view">;
-  getFunction(nameOrSignature: "isLeverageEnabled"): TypedContractMethod<[], [boolean], "view">;
-  getFunction(nameOrSignature: "isLiquidator"): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
-  getFunction(nameOrSignature: "isManager"): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
-  getFunction(nameOrSignature: "isSwapEnabled"): TypedContractMethod<[], [boolean], "view">;
-  getFunction(nameOrSignature: "lastFundingTimes"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "isInitialized"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "isLeverageEnabled"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "isLiquidator"
+  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "isManager"
+  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "isSwapEnabled"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "lastFundingTimes"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "liquidatePosition"
   ): TypedContractMethod<
@@ -1516,21 +2444,41 @@ export interface VaultV2 extends BaseContract {
       _collateralToken: AddressLike,
       _indexToken: AddressLike,
       _isLong: boolean,
-      _feeReceiver: AddressLike,
+      _feeReceiver: AddressLike
     ],
     [void],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "liquidationFeeUsd"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "marginFeeBasisPoints"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "maxGasPrice"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "maxLeverage"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "maxUsdgAmounts"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "minProfitBasisPoints"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "minProfitTime"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "mintBurnFeeBasisPoints"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "poolAmounts"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "positions"): TypedContractMethod<
+  getFunction(
+    nameOrSignature: "liquidationFeeUsd"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "marginFeeBasisPoints"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "maxGasPrice"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "maxLeverage"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "maxUsdgAmounts"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "minProfitBasisPoints"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "minProfitTime"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "mintBurnFeeBasisPoints"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "poolAmounts"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "positions"
+  ): TypedContractMethod<
     [arg0: BytesLike],
     [
       [bigint, bigint, bigint, bigint, bigint, bigint, bigint] & {
@@ -1541,20 +2489,36 @@ export interface VaultV2 extends BaseContract {
         reserveAmount: bigint;
         realisedPnl: bigint;
         lastIncreasedTime: bigint;
-      },
+      }
     ],
     "view"
   >;
-  getFunction(nameOrSignature: "priceFeed"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "removeRouter"): TypedContractMethod<[_router: AddressLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "reservedAmounts"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "router"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "priceFeed"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "removeRouter"
+  ): TypedContractMethod<[_router: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "reservedAmounts"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "router"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "sellUSDG"
-  ): TypedContractMethod<[_token: AddressLike, _receiver: AddressLike], [bigint], "nonpayable">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _receiver: AddressLike],
+    [bigint],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setBufferAmount"
-  ): TypedContractMethod<[_token: AddressLike, _amount: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setFees"
   ): TypedContractMethod<
@@ -1567,7 +2531,7 @@ export interface VaultV2 extends BaseContract {
       _marginFeeBasisPoints: BigNumberish,
       _liquidationFeeUsd: BigNumberish,
       _minProfitTime: BigNumberish,
-      _hasDynamicFees: boolean,
+      _hasDynamicFees: boolean
     ],
     [void],
     "nonpayable"
@@ -1575,17 +2539,27 @@ export interface VaultV2 extends BaseContract {
   getFunction(
     nameOrSignature: "setFundingRate"
   ): TypedContractMethod<
-    [_fundingInterval: BigNumberish, _fundingRateFactor: BigNumberish, _stableFundingRateFactor: BigNumberish],
+    [
+      _fundingInterval: BigNumberish,
+      _fundingRateFactor: BigNumberish,
+      _stableFundingRateFactor: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "setGov"): TypedContractMethod<[_gov: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "setGov"
+  ): TypedContractMethod<[_gov: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setInManagerMode"
   ): TypedContractMethod<[_inManagerMode: boolean], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setInPrivateLiquidationMode"
-  ): TypedContractMethod<[_inPrivateLiquidationMode: boolean], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_inPrivateLiquidationMode: boolean],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setIsLeverageEnabled"
   ): TypedContractMethod<[_isLeverageEnabled: boolean], [void], "nonpayable">;
@@ -1594,17 +2568,27 @@ export interface VaultV2 extends BaseContract {
   ): TypedContractMethod<[_isSwapEnabled: boolean], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setLiquidator"
-  ): TypedContractMethod<[_liquidator: AddressLike, _isActive: boolean], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_liquidator: AddressLike, _isActive: boolean],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setManager"
-  ): TypedContractMethod<[_manager: AddressLike, _isManager: boolean], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_manager: AddressLike, _isManager: boolean],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setMaxGasPrice"
   ): TypedContractMethod<[_maxGasPrice: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setMaxLeverage"
   ): TypedContractMethod<[_maxLeverage: BigNumberish], [void], "nonpayable">;
-  getFunction(nameOrSignature: "setPriceFeed"): TypedContractMethod<[_priceFeed: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "setPriceFeed"
+  ): TypedContractMethod<[_priceFeed: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setTokenConfig"
   ): TypedContractMethod<
@@ -1615,19 +2599,33 @@ export interface VaultV2 extends BaseContract {
       _minProfitBps: BigNumberish,
       _maxUsdgAmount: BigNumberish,
       _isStable: boolean,
-      _isShortable: boolean,
+      _isShortable: boolean
     ],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "setUsdgAmount"
-  ): TypedContractMethod<[_token: AddressLike, _amount: BigNumberish], [void], "nonpayable">;
-  getFunction(nameOrSignature: "shortableTokens"): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
-  getFunction(nameOrSignature: "stableFundingRateFactor"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "stableSwapFeeBasisPoints"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "stableTaxBasisPoints"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "stableTokens"): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "shortableTokens"
+  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "stableFundingRateFactor"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "stableSwapFeeBasisPoints"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "stableTaxBasisPoints"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "stableTokens"
+  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
   getFunction(
     nameOrSignature: "swap"
   ): TypedContractMethod<
@@ -1635,52 +2633,112 @@ export interface VaultV2 extends BaseContract {
     [bigint],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "swapFeeBasisPoints"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "taxBasisPoints"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "tokenBalances"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "tokenDecimals"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "swapFeeBasisPoints"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "taxBasisPoints"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "tokenBalances"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "tokenDecimals"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "tokenToUsdMin"
-  ): TypedContractMethod<[_token: AddressLike, _tokenAmount: BigNumberish], [bigint], "view">;
-  getFunction(nameOrSignature: "tokenWeights"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "totalTokenWeights"): TypedContractMethod<[], [bigint], "view">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _tokenAmount: BigNumberish],
+    [bigint],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "tokenWeights"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "totalTokenWeights"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "updateCumulativeFundingRate"
   ): TypedContractMethod<[_token: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "upgradeVault"
-  ): TypedContractMethod<[_newVault: AddressLike, _token: AddressLike, _amount: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_newVault: AddressLike, _token: AddressLike, _amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "usdToToken"
-  ): TypedContractMethod<[_token: AddressLike, _usdAmount: BigNumberish, _price: BigNumberish], [bigint], "view">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _usdAmount: BigNumberish, _price: BigNumberish],
+    [bigint],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "usdToTokenMax"
-  ): TypedContractMethod<[_token: AddressLike, _usdAmount: BigNumberish], [bigint], "view">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _usdAmount: BigNumberish],
+    [bigint],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "usdToTokenMin"
-  ): TypedContractMethod<[_token: AddressLike, _usdAmount: BigNumberish], [bigint], "view">;
-  getFunction(nameOrSignature: "usdg"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "usdgAmounts"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "useSwapPricing"): TypedContractMethod<[], [boolean], "view">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _usdAmount: BigNumberish],
+    [bigint],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "usdg"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "usdgAmounts"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "useSwapPricing"
+  ): TypedContractMethod<[], [boolean], "view">;
   getFunction(
     nameOrSignature: "validateLiquidation"
   ): TypedContractMethod<
-    [_account: AddressLike, _collateralToken: AddressLike, _indexToken: AddressLike, _isLong: boolean, _raise: boolean],
+    [
+      _account: AddressLike,
+      _collateralToken: AddressLike,
+      _indexToken: AddressLike,
+      _isLong: boolean,
+      _raise: boolean
+    ],
     [[bigint, bigint]],
     "view"
   >;
-  getFunction(nameOrSignature: "whitelistedTokenCount"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "whitelistedTokens"): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "whitelistedTokenCount"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "whitelistedTokens"
+  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
   getFunction(
     nameOrSignature: "withdrawFees"
-  ): TypedContractMethod<[_token: AddressLike, _receiver: AddressLike], [bigint], "nonpayable">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _receiver: AddressLike],
+    [bigint],
+    "nonpayable"
+  >;
 
   getEvent(
     key: "BuyUSDG"
-  ): TypedContractEvent<BuyUSDGEvent.InputTuple, BuyUSDGEvent.OutputTuple, BuyUSDGEvent.OutputObject>;
+  ): TypedContractEvent<
+    BuyUSDGEvent.InputTuple,
+    BuyUSDGEvent.OutputTuple,
+    BuyUSDGEvent.OutputObject
+  >;
   getEvent(
     key: "ClosePosition"
-  ): TypedContractEvent<ClosePositionEvent.InputTuple, ClosePositionEvent.OutputTuple, ClosePositionEvent.OutputObject>;
+  ): TypedContractEvent<
+    ClosePositionEvent.InputTuple,
+    ClosePositionEvent.OutputTuple,
+    ClosePositionEvent.OutputObject
+  >;
   getEvent(
     key: "CollectMarginFees"
   ): TypedContractEvent<
@@ -1781,8 +2839,18 @@ export interface VaultV2 extends BaseContract {
   >;
   getEvent(
     key: "SellUSDG"
-  ): TypedContractEvent<SellUSDGEvent.InputTuple, SellUSDGEvent.OutputTuple, SellUSDGEvent.OutputObject>;
-  getEvent(key: "Swap"): TypedContractEvent<SwapEvent.InputTuple, SwapEvent.OutputTuple, SwapEvent.OutputObject>;
+  ): TypedContractEvent<
+    SellUSDGEvent.InputTuple,
+    SellUSDGEvent.OutputTuple,
+    SellUSDGEvent.OutputObject
+  >;
+  getEvent(
+    key: "Swap"
+  ): TypedContractEvent<
+    SwapEvent.InputTuple,
+    SwapEvent.OutputTuple,
+    SwapEvent.OutputObject
+  >;
   getEvent(
     key: "UpdateFundingRate"
   ): TypedContractEvent<
@@ -1792,7 +2860,11 @@ export interface VaultV2 extends BaseContract {
   >;
   getEvent(
     key: "UpdatePnl"
-  ): TypedContractEvent<UpdatePnlEvent.InputTuple, UpdatePnlEvent.OutputTuple, UpdatePnlEvent.OutputObject>;
+  ): TypedContractEvent<
+    UpdatePnlEvent.InputTuple,
+    UpdatePnlEvent.OutputTuple,
+    UpdatePnlEvent.OutputObject
+  >;
   getEvent(
     key: "UpdatePosition"
   ): TypedContractEvent<
@@ -1807,7 +2879,11 @@ export interface VaultV2 extends BaseContract {
       BuyUSDGEvent.OutputTuple,
       BuyUSDGEvent.OutputObject
     >;
-    BuyUSDG: TypedContractEvent<BuyUSDGEvent.InputTuple, BuyUSDGEvent.OutputTuple, BuyUSDGEvent.OutputObject>;
+    BuyUSDG: TypedContractEvent<
+      BuyUSDGEvent.InputTuple,
+      BuyUSDGEvent.OutputTuple,
+      BuyUSDGEvent.OutputObject
+    >;
 
     "ClosePosition(bytes32,uint256,uint256,uint256,uint256,uint256,int256)": TypedContractEvent<
       ClosePositionEvent.InputTuple,
@@ -1979,14 +3055,22 @@ export interface VaultV2 extends BaseContract {
       SellUSDGEvent.OutputTuple,
       SellUSDGEvent.OutputObject
     >;
-    SellUSDG: TypedContractEvent<SellUSDGEvent.InputTuple, SellUSDGEvent.OutputTuple, SellUSDGEvent.OutputObject>;
+    SellUSDG: TypedContractEvent<
+      SellUSDGEvent.InputTuple,
+      SellUSDGEvent.OutputTuple,
+      SellUSDGEvent.OutputObject
+    >;
 
     "Swap(address,address,address,uint256,uint256,uint256,uint256)": TypedContractEvent<
       SwapEvent.InputTuple,
       SwapEvent.OutputTuple,
       SwapEvent.OutputObject
     >;
-    Swap: TypedContractEvent<SwapEvent.InputTuple, SwapEvent.OutputTuple, SwapEvent.OutputObject>;
+    Swap: TypedContractEvent<
+      SwapEvent.InputTuple,
+      SwapEvent.OutputTuple,
+      SwapEvent.OutputObject
+    >;
 
     "UpdateFundingRate(address,uint256)": TypedContractEvent<
       UpdateFundingRateEvent.InputTuple,
@@ -2004,7 +3088,11 @@ export interface VaultV2 extends BaseContract {
       UpdatePnlEvent.OutputTuple,
       UpdatePnlEvent.OutputObject
     >;
-    UpdatePnl: TypedContractEvent<UpdatePnlEvent.InputTuple, UpdatePnlEvent.OutputTuple, UpdatePnlEvent.OutputObject>;
+    UpdatePnl: TypedContractEvent<
+      UpdatePnlEvent.InputTuple,
+      UpdatePnlEvent.OutputTuple,
+      UpdatePnlEvent.OutputObject
+    >;
 
     "UpdatePosition(bytes32,uint256,uint256,uint256,uint256,uint256,int256)": TypedContractEvent<
       UpdatePositionEvent.InputTuple,

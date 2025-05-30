@@ -21,7 +21,7 @@ import {
   getMarketIndexName,
   getTokenPoolType,
 } from "domain/synthetics/markets/utils";
-import { TokenData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
+import { convertToUsd, getTokenData, TokenData } from "domain/synthetics/tokens";
 import { useAvailableTokenOptions } from "domain/synthetics/trade";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { Token } from "domain/tokens";
@@ -40,18 +40,19 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import type { GmSwapBoxProps } from "../GmSwapBox";
+import { Swap } from "../Swap";
+import { Mode, Operation } from "../types";
 import { useGmWarningState } from "../useGmWarningState";
 import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
+import { InfoRows } from "./InfoRows";
+import { needSwitchToSettlementChain, SwitchToSettlementChainButtons } from "./SwitchToSettlementChainButtons";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
 import { useGmDepositWithdrawalBoxState } from "./useGmDepositWithdrawalBoxState";
 import { useSubmitButtonState } from "./useSubmitButtonState";
 import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
 import { useUpdateTokens } from "./useUpdateTokens";
-import type { GmSwapBoxProps } from "../GmSwapBox";
-import { Swap } from "../Swap";
-import { Mode, Operation } from "../types";
-import { InfoRows } from "./InfoRows";
 
 export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const {
@@ -65,7 +66,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     onSelectedMarketForGlv,
   } = p;
   const { shouldDisableValidationForTesting } = useSettings();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const [isMarketForGlvSelectedManually, setIsMarketForGlvSelectedManually] = useState(false);
 
   // #region Requests
@@ -90,6 +91,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     marketsInfoData: glvAndMarketsInfoData,
     tokensData,
     marketTokens: isDeposit ? depositMarketTokensData : withdrawalMarketTokensData,
+    srcChainId,
   });
 
   // #region State
@@ -402,6 +404,8 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     fromTokenAmount: firstTokenAmount ?? 0n,
     fromTokenInputValue: firstTokenInputValue,
     nativeToken: nativeToken,
+    minResidualAmount: undefined,
+    isLoading: false,
   });
 
   const firstTokenShowMaxButton = isDeposit && firstTokenMaxDetails.showClickMax;
@@ -411,6 +415,8 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     fromTokenAmount: secondTokenAmount ?? 0n,
     fromTokenInputValue: secondTokenInputValue,
     nativeToken: nativeToken,
+    minResidualAmount: undefined,
+    isLoading: false,
   });
 
   const secondTokenShowMaxButton = isDeposit && secondTokenMaxDetails.showClickMax;
@@ -420,6 +426,8 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     fromTokenAmount: glvInfo ? glvTokenAmount : marketTokenAmount,
     fromTokenInputValue: marketOrGlvTokenInputValue,
     nativeToken: nativeToken,
+    minResidualAmount: undefined,
+    isLoading: false,
   });
 
   const marketTokenInputShowMaxButton = isWithdrawal && marketTokenMaxDetails.showClickMax;
@@ -596,6 +604,14 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     },
     [onGlvOrMarketChange, onSelectedMarketForGlv]
   );
+
+  const onSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      submitState.onSubmit?.();
+    },
+    [submitState]
+  );
   // #endregion
 
   // #region Effects
@@ -675,12 +691,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   // #region Render
   const submitButton = useMemo(() => {
     const btn = (
-      <Button
-        className="w-full"
-        variant="primary-action"
-        onClick={submitState.onSubmit}
-        disabled={submitState.disabled}
-      >
+      <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
         {submitState.text}
       </Button>
     );
@@ -723,7 +734,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
   return (
     <>
-      <form>
+      <form onSubmit={onSubmit}>
         <div className={cx("mb-12 flex gap-4", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
           <BuyInputSection
             topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
@@ -861,7 +872,9 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           </div>
         )}
 
-        <div className="Exchange-swap-button-container">{submitButton}</div>
+        <div className="Exchange-swap-button-container">
+          {needSwitchToSettlementChain(srcChainId) ? <SwitchToSettlementChainButtons /> : submitButton}
+        </div>
       </form>
     </>
   );

@@ -82,6 +82,27 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "feeToken",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "buybackToken",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "availableFeeAmount",
+        type: "uint256",
+      },
+    ],
+    name: "AvailableFeeAmountIsZero",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "minOracleBlockNumber",
         type: "uint256",
@@ -93,6 +114,22 @@ const _abi = [
       },
     ],
     name: "BlockNumbersNotSorted",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "feeToken",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "buybackToken",
+        type: "address",
+      },
+    ],
+    name: "BuybackAndFeeTokenAreEqual",
     type: "error",
   },
   {
@@ -183,6 +220,22 @@ const _abi = [
       },
     ],
     name: "DataStreamIdAlreadyExistsForToken",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "currentTimestamp",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "deadline",
+        type: "uint256",
+      },
+    ],
+    name: "DeadlinePassed",
     type: "error",
   },
   {
@@ -294,6 +347,11 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [],
+    name: "EmptyClaimFeesMarket",
+    type: "error",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -382,6 +440,17 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [
+      {
+        internalType: "address",
+        name: "market",
+        type: "address",
+      },
+    ],
+    name: "EmptyMarketPrice",
+    type: "error",
+  },
+  {
     inputs: [],
     name: "EmptyMarketTokenSupply",
     type: "error",
@@ -410,6 +479,11 @@ const _abi = [
   {
     inputs: [],
     name: "EmptyReceiver",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "EmptyRelayFeeAddress",
     type: "error",
   },
   {
@@ -955,6 +1029,32 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "feeToken",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "buybackToken",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "outputAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "minOutputAmount",
+        type: "uint256",
+      },
+    ],
+    name: "InsufficientBuybackOutputAmount",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "collateralAmount",
         type: "uint256",
@@ -1148,6 +1248,22 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "requiredRelayFee",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "availableFeeAmount",
+        type: "uint256",
+      },
+    ],
+    name: "InsufficientRelayFee",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "reservedUsd",
         type: "uint256",
       },
@@ -1286,6 +1402,33 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "buybackToken",
+        type: "address",
+      },
+    ],
+    name: "InvalidBuybackToken",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "cancellationReceiver",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "expectedCancellationReceiver",
+        type: "address",
+      },
+    ],
+    name: "InvalidCancellationReceiverForSubaccountOrder",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "marketsLength",
         type: "uint256",
@@ -1318,22 +1461,6 @@ const _abi = [
       },
     ],
     name: "InvalidClaimCollateralInput",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "marketsLength",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "tokensLength",
-        type: "uint256",
-      },
-    ],
-    name: "InvalidClaimFeesInput",
     type: "error",
   },
   {
@@ -1402,6 +1529,17 @@ const _abi = [
         name: "token",
         type: "address",
       },
+    ],
+    name: "InvalidContributorToken",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
       {
         internalType: "int192",
         name: "bid",
@@ -1461,6 +1599,22 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "spreadReductionFactor",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidDataStreamSpreadReductionFactor",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "sizeDeltaUsd",
         type: "uint256",
@@ -1483,6 +1637,27 @@ const _abi = [
       },
     ],
     name: "InvalidDecreasePositionSwapType",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "executionFee",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "minExecutionFee",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "maxExecutionFee",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidExecutionFee",
     type: "error",
   },
   {
@@ -1526,6 +1701,22 @@ const _abi = [
       },
     ],
     name: "InvalidExternalCallTarget",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "sendTokensLength",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "sendAmountsLength",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidExternalCalls",
     type: "error",
   },
   {
@@ -1968,6 +2159,22 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "spender",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "expectedSpender",
+        type: "address",
+      },
+    ],
+    name: "InvalidPermitSpender",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
         internalType: "int256",
         name: "poolValue",
         type: "int256",
@@ -2093,6 +2300,49 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "tokensLength",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "amountsLength",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidSetContributorPaymentInput",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokensLength",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "amountsLength",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidSetMaxTotalContributorTokenAmountInput",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "signatureType",
+        type: "string",
+      },
+    ],
+    name: "InvalidSignature",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "sizeDeltaUsd",
         type: "uint256",
       },
@@ -2103,6 +2353,27 @@ const _abi = [
       },
     ],
     name: "InvalidSizeDeltaForAdl",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "storedNonce",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "nonce",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidSubaccountApprovalNonce",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "InvalidSubaccountApprovalSubaccount",
     type: "error",
   },
   {
@@ -2189,6 +2460,33 @@ const _abi = [
       },
     ],
     name: "InvalidUiFeeFactor",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "storedUserNonce",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "userNonce",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidUserNonce",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "version",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidVersion",
     type: "error",
   },
   {
@@ -2290,6 +2588,27 @@ const _abi = [
       },
     ],
     name: "MaxAutoCancelOrdersExceeded",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "priceTimestamp",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "buybackMaxPriceAge",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "currentTimestamp",
+        type: "uint256",
+      },
+    ],
+    name: "MaxBuybackPriceAgeExceeded",
     type: "error",
   },
   {
@@ -2433,6 +2752,22 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "uint256",
+        name: "feeUsd",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "maxFeeUsd",
+        type: "uint256",
+      },
+    ],
+    name: "MaxRelayFeeSwapForSubaccountExceeded",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "account",
         type: "address",
@@ -2497,6 +2832,49 @@ const _abi = [
       },
     ],
     name: "MaxTotalCallbackGasLimitForAutoCancelOrdersExceeded",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "totalAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "maxTotalAmount",
+        type: "uint256",
+      },
+    ],
+    name: "MaxTotalContributorTokenAmountExceeded",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "interval",
+        type: "uint256",
+      },
+    ],
+    name: "MinContributorPaymentIntervalBelowAllowedRange",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "minPaymentInterval",
+        type: "uint256",
+      },
+    ],
+    name: "MinContributorPaymentIntervalNotYetPassed",
     type: "error",
   },
   {
@@ -2622,6 +3000,11 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [],
+    name: "NonEmptyExternalCallsForSubaccountOrder",
+    type: "error",
+  },
+  {
     inputs: [
       {
         internalType: "uint256",
@@ -2743,6 +3126,22 @@ const _abi = [
       },
     ],
     name: "OrderTypeCannotBeCreated",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "validFromTime",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "currentTimestamp",
+        type: "uint256",
+      },
+    ],
+    name: "OrderValidFromTimeNotReached",
     type: "error",
   },
   {
@@ -2882,6 +3281,22 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "calldataLength",
+        type: "uint256",
+      },
+    ],
+    name: "RelayCalldataTooLong",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "RelayEmptyBatch",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "requestAge",
         type: "uint256",
       },
@@ -2983,6 +3398,48 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "uint256",
+        name: "currentTimestamp",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "deadline",
+        type: "uint256",
+      },
+    ],
+    name: "SubaccountApprovalDeadlinePassed",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "subaccount",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "deadline",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "currentTimestamp",
+        type: "uint256",
+      },
+    ],
+    name: "SubaccountApprovalExpired",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "account",
         type: "address",
@@ -3029,6 +3486,76 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "marketsLength",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "parametersLength",
+        type: "uint256",
+      },
+    ],
+    name: "SyncConfigInvalidInputLengths",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "market",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "marketFromData",
+        type: "address",
+      },
+    ],
+    name: "SyncConfigInvalidMarketFromData",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "market",
+        type: "address",
+      },
+    ],
+    name: "SyncConfigUpdatesDisabledForMarket",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "market",
+        type: "address",
+      },
+      {
+        internalType: "string",
+        name: "parameter",
+        type: "string",
+      },
+    ],
+    name: "SyncConfigUpdatesDisabledForMarketParameter",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "parameter",
+        type: "string",
+      },
+    ],
+    name: "SyncConfigUpdatesDisabledForParameter",
+    type: "error",
+  },
+  {
     inputs: [],
     name: "ThereMustBeAtLeastOneRoleAdmin",
     type: "error",
@@ -3057,6 +3584,17 @@ const _abi = [
       },
     ],
     name: "TokenTransferError",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "length",
+        type: "uint256",
+      },
+    ],
+    name: "Uint256AsBytesLengthExceeds32Bytes",
     type: "error",
   },
   {
@@ -3169,6 +3707,38 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
+        name: "feeToken",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "expectedFeeToken",
+        type: "address",
+      },
+    ],
+    name: "UnexpectedRelayFeeToken",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "feeToken",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "expectedFeeToken",
+        type: "address",
+      },
+    ],
+    name: "UnexpectedRelayFeeTokenAfterSwap",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "token",
         type: "address",
       },
@@ -3189,7 +3759,34 @@ const _abi = [
         type: "uint256",
       },
     ],
+    name: "UnexpectedValidFromTime",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "orderType",
+        type: "uint256",
+      },
+    ],
     name: "UnsupportedOrderType",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "feeToken",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "expectedFeeToken",
+        type: "address",
+      },
+    ],
+    name: "UnsupportedRelayFeeToken",
     type: "error",
   },
   {
@@ -3258,7 +3855,10 @@ export class CustomErrors__factory {
   static createInterface(): CustomErrorsInterface {
     return new Interface(_abi) as CustomErrorsInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): CustomErrors {
+  static connect(
+    address: string,
+    runner?: ContractRunner | null
+  ): CustomErrors {
     return new Contract(address, _abi, runner) as unknown as CustomErrors;
   }
 }

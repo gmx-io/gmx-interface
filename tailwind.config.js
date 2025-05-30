@@ -56,13 +56,15 @@ const colors = {
   red: {
     400: "#ff637a",
     500: "#FF506A",
-    700: "#B33055"
+    700: "#B33055",
   },
   green: {
     300: "#56dba8",
     400: "#8CF3CB",
     500: "#0FDE8D",
-    700: "#178969"
+    600: "#1F3445",
+    700: "#0FDE8D",
+    800: "#178969",
   },
   white: "#ffffff",
   black: "#000000",
@@ -101,7 +103,7 @@ function injectColorsPlugin({ addBase, theme }) {
 /**
  * @type {import('tailwindcss/types/config').PluginCreator}
  */
-function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVariant, theme }) {
+function customUtilsAndComponentsPlugin({ addUtilities, addComponents, addVariant }) {
   addUtilities({
     ".scrollbar-hide": {
       "scrollbar-width": "none",
@@ -118,10 +120,24 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
     `@media (hover: hover) {:merge(.group):hover &}`,
     `@media (hover: none) {:merge(.group):active &}`,
   ]);
+  addVariant("not-group-gmx-hover", [
+    `@media (hover: hover) {:merge(.group):not(:hover) &}`,
+    `@media (hover: none) {:merge(.group):not(:active) &}`,
+  ]);
 
   addUtilities({
     ".text-input-bg": {
-      background: "linear-gradient(90deg, var(--color-cold-blue-900) 0%, color-mix(in srgb, var(--color-slate-500) 40%, transparent) 100%)",
+      background:
+        "linear-gradient(90deg, var(--color-cold-blue-900) 0%, color-mix(in srgb, var(--color-slate-500) 40%, transparent) 100%)",
+    },
+  });
+
+  addComponents({
+    ".gmx-hover-gradient": {
+      "@apply gmx-hover:bg-gradient-to-r gmx-hover:from-[#23263B] gmx-hover:to-[#16182E]": {},
+    },
+    ".gmx-hover-gradient-to-l": {
+      "@apply gmx-hover:bg-gradient-to-l gmx-hover:from-[#23263B] gmx-hover:to-[#16182E]": {},
     },
   });
 }
@@ -217,5 +233,5 @@ module.exports = {
       ),
     },
   },
-  plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin],
+  plugins: [injectColorsPlugin, customUtilsAndComponentsPlugin, fontComponentsPlugin],
 };

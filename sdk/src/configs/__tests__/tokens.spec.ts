@@ -1,7 +1,7 @@
 import { withRetry, zeroAddress } from "viem";
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 
-import { ARBITRUM, AVALANCHE, SUPPORTED_CHAIN_IDS } from "configs/chains";
+import { ARBITRUM, AVALANCHE, getChainName, SUPPORTED_CHAIN_IDS } from "configs/chains";
 import { getOracleKeeperUrl } from "configs/oracleKeeper";
 import { TOKENS } from "configs/tokens";
 
@@ -36,7 +36,7 @@ const getIgnoredTokensByChain = (chainId: number) => {
 
 describe("tokens config", () => {
   SUPPORTED_CHAIN_IDS.forEach(async (chainId) => {
-    it(`tokens should be consistent with keeper for ${chainId}`, async () => {
+    it(`tokens should be consistent with keeper for ${getChainName(chainId)}`, async () => {
       const keeperTokens = await withRetry(() => getKeeperTokens(chainId), {
         retryCount: 2,
       });

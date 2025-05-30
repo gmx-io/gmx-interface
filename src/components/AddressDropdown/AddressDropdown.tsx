@@ -1,122 +1,87 @@
-import { Menu } from "@headlessui/react";
-import { Trans, t } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
+import cx from "classnames";
 import { useCallback } from "react";
-import { FaChevronDown } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { createBreakpoint, useCopyToClipboard } from "react-use";
-import type { Address } from "viem";
+import Skeleton from "react-loading-skeleton";
+import { createBreakpoint } from "react-use";
 
-import { useSubaccountModalOpen } from "context/SubaccountContext/SubaccountContext";
-import { helperToast } from "lib/helperToast";
+import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
+import { useChainId } from "lib/chains";
 import { useENS } from "lib/legacy";
-import { userAnalytics } from "lib/userAnalytics";
-import { DisconnectWalletEvent } from "lib/userAnalytics/types";
+import { formatUsd } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
-import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
 import { Avatar } from "components/Avatar/Avatar";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-
-import copy from "img/ic_copy_20.svg";
-import externalLink from "img/ic_new_link_20.svg";
-import PnlAnalysisIcon from "img/ic_pnl_analysis_20.svg?react";
-import disconnect from "img/ic_sign_out_20.svg";
-import oneClickTradingIcon from "img/one_click_trading_20.svg";
-
-import "./AddressDropdown.scss";
+import { getTotalUsdFromTokensData, useGmxAccountTokensDataRequest } from "components/Synthetics/GmxAccountModal/hooks";
 
 type Props = {
   account: string;
-  accountUrl: string;
-  disconnectAccountAndCloseSettings: () => void;
 };
 
-const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
+const useBreakpoint = createBreakpoint({ L: 450, S: 0 }) as () => "L" | "S";
 
-function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSettings }: Props) {
-  const breakpoint = useBreakpoint();
-  const [, copyToClipboard] = useCopyToClipboard();
+function useGmxAccountUsd() {
+  const { chainId } = useChainId();
+  const { tokensData: tokensData, isBalancesLoaded } = useGmxAccountTokensDataRequest(chainId);
+
+  const gmxAccountUsd = tokensData ? getTotalUsdFromTokensData(tokensData) : undefined;
+
+  return { gmxAccountUsd, isLoading: !isBalancesLoaded };
+}
+
+function AddressDropdown({ account }: Props) {
   const { ensName } = useENS(account);
-  const displayAddressLength = breakpoint === "S" ? 9 : 13;
-  const [, setOneClickModalOpen] = useSubaccountModalOpen();
-  const handleSubaccountClick = useCallback(() => {
-    setOneClickModalOpen(true);
-  }, [setOneClickModalOpen]);
+  const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
+  const { gmxAccountUsd, isLoading } = useGmxAccountUsd();
+
+  const breakpoint = useBreakpoint();
+  const isSmallScreen = breakpoint === "S";
+
+  const displayAddressLength = isSmallScreen ? 9 : 13;
+
+  const handleOpenGmxAccountModal = useCallback(() => {
+    setGmxAccountModalOpen(true);
+  }, [setGmxAccountModalOpen]);
+
+  const handleOpenDeposit = useCallback(() => {
+    setGmxAccountModalOpen("deposit");
+  }, [setGmxAccountModalOpen]);
+
+  const showDepositButton = !isLoading && gmxAccountUsd === 0n;
 
   return (
-    <Menu>
-      <Menu.Button as="div">
-        <button className="App-cta small transparent address-btn">
-          <div className="user-avatar">
-            <Avatar size={20} ensName={ensName} address={account} />
-          </div>
-          <span className="user-address">{shortenAddressOrEns(ensName || account, displayAddressLength)}</span>
-          <FaChevronDown />
-        </button>
-      </Menu.Button>
-      <div>
-        <Menu.Items as="div" className="menu-items">
-          <Menu.Item>
-            <div
-              className="menu-item"
-              onClick={() => {
-                copyToClipboard(account);
-                helperToast.success(t`Address copied to your clipboard`);
-              }}
-            >
-              <img width={20} className="size-20" src={copy} alt="Copy user address" />
-              <p>
-                <Trans>Copy Address</Trans>
-              </p>
-            </div>
-          </Menu.Item>
-          <Menu.Item>
-            <Link className="menu-item" to={buildAccountDashboardUrl(account as Address, undefined, 2)}>
-              <PnlAnalysisIcon width={20} className="size-20" />
-              <p>
-                <Trans>PnL Analysis</Trans>
-              </p>
-            </Link>
-          </Menu.Item>
-          <Menu.Item>
-            <ExternalLink href={accountUrl} className="menu-item">
-              <img width={20} className="size-20" src={externalLink} alt="Open address in explorer" />
-              <p>
-                <Trans>View in Explorer</Trans>
-              </p>
-            </ExternalLink>
-          </Menu.Item>
-          <Menu.Item>
-            <div className="menu-item" onClick={handleSubaccountClick}>
-              <img width={20} className="size-20" src={oneClickTradingIcon} alt="Open One-click Trading settings" />
-              <p>
-                <Trans>One-Click Trading</Trans>
-              </p>
-            </div>
-          </Menu.Item>
-          <Menu.Item>
-            <div
-              className="menu-item"
-              onClick={() => {
-                userAnalytics.pushEvent<DisconnectWalletEvent>({
-                  event: "ConnectWalletAction",
-                  data: {
-                    action: "Disconnect",
-                  },
-                });
-
-                disconnectAccountAndCloseSettings();
-              }}
-            >
-              <img width={20} className="size-20" src={disconnect} alt="Disconnect the wallet" />
-              <p>
-                <Trans>Disconnect</Trans>
-              </p>
-            </div>
-          </Menu.Item>
-        </Menu.Items>
-      </div>
-    </Menu>
+    <div className="flex">
+      <button
+        data-qa="user-address"
+        className={cx("flex h-36 items-center gap-8 rounded-l-4 border border-stroke-primary px-12", {
+          hidden: isSmallScreen,
+        })}
+        onClick={handleOpenGmxAccountModal}
+      >
+        <div className="ml-1 mr-2">
+          <Avatar size={20} ensName={ensName} address={account} />
+        </div>
+        <span className="">{shortenAddressOrEns(ensName || account, displayAddressLength)}</span>
+      </button>
+      <button
+        className={cx(
+          "h-36 items-center border-stroke-primary px-12",
+          isSmallScreen ? "rounded-4" : "rounded-r-4 border-b border-r border-t",
+          showDepositButton && "bg-blue-600 active:bg-[--primary-btn-active] desktop-hover:bg-[--primary-btn-hover]",
+          isSmallScreen && !showDepositButton && "border"
+        )}
+        onClick={showDepositButton ? handleOpenDeposit : handleOpenGmxAccountModal}
+      >
+        <div className="relative -top-1">
+          {showDepositButton ? (
+            <Trans>Deposit</Trans>
+          ) : isLoading ? (
+            <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={55} height={16} />
+          ) : (
+            formatUsd(gmxAccountUsd)
+          )}
+        </div>
+      </button>
+    </div>
   );
 }
 

@@ -1,3 +1,13 @@
+export type ERC20Address = string & { __brand: "ERC20Address" };
+export type NativeTokenSupportedAddress = string & { __brand: "NativeTokenSupportedAddress" };
+
+export type TokenAddressTypesMap = {
+  wrapped: ERC20Address;
+  native: NativeTokenSupportedAddress;
+};
+
+export type ContractPrice = bigint & { __brand: "contractPrice" };
+
 export type TokenCategory = "meme" | "layer1" | "layer2" | "defi";
 
 export type Token = {
@@ -19,6 +29,9 @@ export type Token = {
   reservesUrl?: string;
   imageUrl?: string;
   categories?: TokenCategory[];
+  isPermitSupported?: boolean;
+  isPermitDisabled?: boolean;
+  contractVersion?: string;
 
   isUsdg?: boolean;
   isNative?: boolean;
@@ -80,6 +93,23 @@ export type TokenInfo = Token & {
   maxLongCapacity?: bigint;
 };
 
+export type SignedTokenPermit = {
+  // account address
+  owner: string;
+  // spender contract address
+  spender: string;
+  // amount
+  value: bigint;
+  // validity period of the permit
+  deadline: bigint;
+  // ECDSA signature components
+  v: number;
+  r: string;
+  s: string;
+  // token address
+  token: string;
+};
+
 export type InfoTokens = {
   [key: string]: TokenInfo;
 };
@@ -93,6 +123,7 @@ export type TokenData = Token & {
   prices: TokenPrices;
   balance?: bigint;
   totalSupply?: bigint;
+  hasPriceFeedProvider?: boolean;
 };
 
 export type TokensRatio = {

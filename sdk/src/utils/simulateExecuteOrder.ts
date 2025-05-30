@@ -7,7 +7,7 @@ import { SwapPricingType } from "types/orders";
 import { TokenPrices, TokensData } from "types/tokens";
 
 import type { GmxSdk } from "..";
-import { extractError } from "./contracts";
+import { extractTxnError } from "./errors";
 import { convertToContractPrice, getTokenData } from "./tokens";
 
 export type PriceOverrides = {
@@ -31,6 +31,10 @@ type SimulateExecuteParams = {
   swapPricingType?: SwapPricingType;
 };
 
+/**
+ *
+ * @deprecated use simulateExecution instead
+ */
 export async function simulateExecuteOrder(sdk: GmxSdk, p: SimulateExecuteParams) {
   const chainId = sdk.chainId;
   const client = sdk.publicClient;
@@ -94,7 +98,7 @@ export async function simulateExecuteOrder(sdk: GmxSdk, p: SimulateExecuteParams
         retryCount: 2,
         delay: 200,
         shouldRetry: (error) => {
-          const [message] = extractError(error);
+          const [message] = extractTxnError(error);
           return message?.toLocaleLowerCase()?.includes("unsupported block number") ?? false;
         },
       }

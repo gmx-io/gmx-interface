@@ -165,15 +165,15 @@ export async function fetchTradeActions({
   const offset = pageIndex * pageSize;
   const limit = pageSize;
 
-  const nonSwapRelevantDefinedFiltersLowercased: MarketFilterLongShortItemData[] = marketsDirectionsFilter
+  const nonSwapRelevantDefinedFilters: MarketFilterLongShortItemData[] = marketsDirectionsFilter
     .filter((filter) => filter.direction !== "swap" && filter.marketAddress !== "any")
     .map((filter) => ({
-      marketAddress: filter.marketAddress.toLowerCase() as Address,
+      marketAddress: filter.marketAddress as Address,
       direction: filter.direction,
-      collateralAddress: filter.collateralAddress?.toLowerCase() as Address,
+      collateralAddress: filter.collateralAddress as Address,
     }));
 
-  const hasNonSwapRelevantDefinedMarkets = nonSwapRelevantDefinedFiltersLowercased.length > 0;
+  const hasNonSwapRelevantDefinedMarkets = nonSwapRelevantDefinedFilters.length > 0;
 
   const pureDirectionFilters = marketsDirectionsFilter
     .filter((filter) => filter.direction !== "any" && filter.marketAddress === "any")
@@ -183,11 +183,11 @@ export async function fetchTradeActions({
     }));
   const hasPureDirectionFilters = pureDirectionFilters.length > 0;
 
-  const swapRelevantDefinedMarketsLowercased = marketsDirectionsFilter
+  const swapRelevantDefinedMarkets = marketsDirectionsFilter
     .filter((filter) => (filter.direction === "any" || filter.direction === "swap") && filter.marketAddress !== "any")
-    .map((filter) => filter.marketAddress.toLowerCase() as Address | "any");
+    .map((filter) => filter.marketAddress as Address | "any");
 
-  const hasSwapRelevantDefinedMarkets = swapRelevantDefinedMarketsLowercased.length > 0;
+  const hasSwapRelevantDefinedMarkets = swapRelevantDefinedMarkets.length > 0;
 
   const mergedCombinations = orderEventCombinations?.flatMap((combination) =>
     (combination.orderType || []).map((orderType) => ({ ...combination, orderType }))
@@ -225,7 +225,7 @@ export async function fetchTradeActions({
                     orderType_not_in: [OrderType.LimitSwap, OrderType.MarketSwap],
                   },
                   {
-                    OR: nonSwapRelevantDefinedFiltersLowercased.map((filter) => ({
+                    OR: nonSwapRelevantDefinedFilters.map((filter) => ({
                       marketAddress_eq: filter.marketAddress === "any" ? undefined : filter.marketAddress,
                       isLong_eq: filter.direction === "any" ? undefined : filter.direction === "long",
                       // Collateral filtering is done outside of graphql on the client
@@ -245,10 +245,10 @@ export async function fetchTradeActions({
                     OR: [
                       // Source token is not in swap path so we add it to the or filter
                       {
-                        marketAddress_in: swapRelevantDefinedMarketsLowercased,
+                        marketAddress_in: swapRelevantDefinedMarkets,
                       } as GraphQlFilters,
                     ].concat(
-                      swapRelevantDefinedMarketsLowercased.map((marketAddress) => ({
+                      swapRelevantDefinedMarkets.map((marketAddress) => ({
                         swapPath_containsAll: [marketAddress],
                       })) || []
                     ),
@@ -310,7 +310,7 @@ export async function fetchTradeActions({
         tradeActions(
             offset: ${offset},
             limit: ${limit},
-            orderBy: transaction_timestamp_DESC,
+            orderBy: timestamp_DESC,
             ${whereClause}
         ) {
             id

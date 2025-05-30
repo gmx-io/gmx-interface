@@ -14,12 +14,16 @@ import "styles/recharts.css";
 import "./App.scss";
 
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
+import { ChainContextProvider } from "context/ChainContext/ChainContext";
+import { ExpressNoncesContextProvider } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
+import { GmxAccountContextProvider } from "context/GmxAccountContext/GmxAccountContext";
 import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTxnsContext";
 import { SettingsContextProvider } from "context/SettingsContext/SettingsContextProvider";
 import { SorterContextProvider } from "context/SorterContext/SorterContextProvider";
-import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
+import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContextProvider";
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
+import { TokenPermitsContextProvider } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { WebsocketContextProvider } from "context/WebsocketContext/WebsocketContextProvider";
@@ -38,9 +42,16 @@ if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
 
-function App() {
+function KeydSwrConfig({ children }: { children: React.ReactNode }) {
   const { chainId } = useChainId();
+  return (
+    <SWRConfig key={chainId} value={SWRConfigProp}>
+      {children}
+    </SWRConfig>
+  );
+}
 
+function App() {
   useEffect(() => {
     const defaultLanguage = localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale;
     dynamicActivate(defaultLanguage);
@@ -50,7 +61,9 @@ function App() {
   app = <SorterContextProvider>{app}</SorterContextProvider>;
   app = <TokensFavoritesContextProvider>{app}</TokensFavoritesContextProvider>;
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
+  app = <ExpressNoncesContextProvider>{app}</ExpressNoncesContextProvider>;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
+  app = <TokenPermitsContextProvider>{app}</TokenPermitsContextProvider>;
   app = <TokensBalancesContextProvider>{app}</TokensBalancesContextProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
   app = <SEO>{app}</SEO>;
@@ -58,12 +71,10 @@ function App() {
   app = <I18nProvider i18n={i18n as any}>{app}</I18nProvider>;
   app = <PendingTxnsContextProvider>{app}</PendingTxnsContextProvider>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
-  app = (
-    <SWRConfig key={chainId} value={SWRConfigProp}>
-      {app}
-    </SWRConfig>
-  );
+  app = <KeydSwrConfig>{app}</KeydSwrConfig>;
   app = <GlobalStateProvider>{app}</GlobalStateProvider>;
+  app = <ChainContextProvider>{app}</ChainContextProvider>;
+  app = <GmxAccountContextProvider>{app}</GmxAccountContextProvider>;
   app = <Router>{app}</Router>;
 
   return app;

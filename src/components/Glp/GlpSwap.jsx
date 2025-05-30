@@ -750,6 +750,7 @@ export default function GlpSwap(props) {
       },
       infoTokens,
       getTokenInfo,
+      permitParams: undefined,
     });
   };
 

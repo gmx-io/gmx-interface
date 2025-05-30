@@ -105,7 +105,7 @@ export function useFilterSortPools({
     return sortedTokens.filter((token) => {
       const market = getByKey(marketsInfo, token?.address);
 
-      if (!market) {
+      if (!market || market.isDisabled) {
         return false;
       }
 

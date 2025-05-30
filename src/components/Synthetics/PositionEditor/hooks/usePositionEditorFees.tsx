@@ -5,13 +5,14 @@ import { usePositionEditorPosition } from "context/SyntheticsStateContext/hooks/
 import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectPositionEditorCollateralInputAmountAndUsd } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { GasPaymentParams } from "domain/synthetics/express";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
+  estimateOrderOraclePriceCount,
   getFeeItem,
   getTotalFeeItem,
 } from "domain/synthetics/fees";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import { TradeFees } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
@@ -21,10 +22,11 @@ import { Operation } from "../types";
 
 export type Options = {
   operation: Operation;
+  gasPaymentParams?: GasPaymentParams;
 };
 
 // todo make it a selector
-export function usePositionEditorFees({ operation }: Options) {
+export function usePositionEditorFees({ operation, gasPaymentParams }: Options) {
   const { chainId } = useChainId();
   const tokensData = useTokensData();
 
@@ -69,6 +71,7 @@ export function usePositionEditorFees({ operation }: Options) {
     return {
       fees,
       executionFee,
+      gasPaymentParams,
     };
-  }, [chainId, collateralDeltaUsd, gasLimits, gasPrice, isDeposit, position, tokensData]);
+  }, [chainId, collateralDeltaUsd, gasLimits, gasPrice, isDeposit, position, tokensData, gasPaymentParams]);
 }

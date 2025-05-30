@@ -23,7 +23,7 @@ import { MARKETS_ADJACENCY_GRAPH, REACHABLE_TOKENS, TOKEN_SWAP_PATHS } from "uti
 
 import { getSwapStats } from "./swapStats";
 
-export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstimator => {
+export const createSwapEstimator = (marketsInfoData: MarketsInfoData, isAtomicSwap: boolean): SwapEstimator => {
   return (e: MarketEdge, usdIn: bigint) => {
     const marketInfo = marketsInfoData[e.marketAddress];
 
@@ -39,6 +39,7 @@ export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstim
       tokenInAddress: e.from,
       tokenOutAddress: e.to,
       shouldApplyPriceImpact: true,
+      isAtomicSwap,
     });
 
     const isOutLiquidity = swapStats?.isOutLiquidity;
@@ -72,7 +73,10 @@ export const createMarketEdgeLiquidityGetter = (marketsInfoData: MarketsInfoData
   };
 };
 
-export const createNaiveSwapEstimator = (marketsInfoData: MarketsInfoData): NaiveSwapEstimator => {
+export const createNaiveSwapEstimator = (
+  marketsInfoData: MarketsInfoData,
+  isAtomicSwap: boolean
+): NaiveSwapEstimator => {
   return (e: MarketEdge, usdIn: bigint) => {
     let marketInfo = marketsInfoData[e.marketAddress];
 
@@ -86,6 +90,7 @@ export const createNaiveSwapEstimator = (marketsInfoData: MarketsInfoData): Naiv
       tokenInAddress: e.from,
       tokenOutAddress: e.to,
       shouldApplyPriceImpact: true,
+      isAtomicSwap,
     });
 
     const usdOut = swapStats?.usdOut;

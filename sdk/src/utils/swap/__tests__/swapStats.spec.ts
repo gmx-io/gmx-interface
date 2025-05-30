@@ -300,6 +300,7 @@ describe("getSwapPathStats", () => {
       usdIn: 100n * dollar,
       shouldUnwrapNativeToken: false,
       shouldApplyPriceImpact: true,
+      isAtomicSwap: false,
     });
 
     expect(result).toBeUndefined();
@@ -314,6 +315,7 @@ describe("getSwapPathStats", () => {
       usdIn: 100n * dollar,
       shouldUnwrapNativeToken: false,
       shouldApplyPriceImpact: true,
+      isAtomicSwap: false,
     });
 
     expect(result).toBeDefined();
@@ -337,6 +339,7 @@ describe("getSwapPathStats", () => {
       usdIn: 100n * dollar,
       shouldUnwrapNativeToken: false,
       shouldApplyPriceImpact: true,
+      isAtomicSwap: false,
     });
 
     expect(result).toBeDefined();
@@ -360,6 +363,7 @@ describe("getSwapPathStats", () => {
       usdIn: 100n * dollar,
       shouldUnwrapNativeToken: true,
       shouldApplyPriceImpact: true,
+      isAtomicSwap: false,
     });
 
     expect(result).toBeDefined();
@@ -375,6 +379,7 @@ describe("getSwapPathStats", () => {
       usdIn: 100n * dollar,
       shouldUnwrapNativeToken: false,
       shouldApplyPriceImpact: true,
+      isAtomicSwap: false,
     });
 
     expect(result).toBeUndefined();
@@ -389,6 +394,7 @@ describe("getSwapPathStats", () => {
       usdIn: 100n * dollar,
       shouldUnwrapNativeToken: false,
       shouldApplyPriceImpact: true,
+      isAtomicSwap: false,
     });
 
     const resultWithoutImpact = getSwapPathStats({
@@ -399,6 +405,7 @@ describe("getSwapPathStats", () => {
       usdIn: 100n * dollar,
       shouldUnwrapNativeToken: false,
       shouldApplyPriceImpact: false,
+      isAtomicSwap: false,
     });
 
     if (!resultWithImpact || !resultWithoutImpact) {
@@ -417,6 +424,7 @@ describe("getSwapPathStats", () => {
       usdIn: 100n * dollar,
       shouldUnwrapNativeToken: false,
       shouldApplyPriceImpact: true,
+      isAtomicSwap: false,
     });
 
     expect(result).toBeDefined();
@@ -447,6 +455,7 @@ describe("getSwapPathStats", () => {
       usdIn: 100n * dollar,
       shouldUnwrapNativeToken: false,
       shouldApplyPriceImpact: true,
+      isAtomicSwap: false,
     });
 
     expect(result).toBeUndefined();

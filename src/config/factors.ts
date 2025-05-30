@@ -1,4 +1,4 @@
-import { BASIS_POINTS_DIVISOR } from "./factors";
+import { BASIS_POINTS_DIVISOR } from "sdk/utils/numbers";
 
 export * from "sdk/configs/factors";
 

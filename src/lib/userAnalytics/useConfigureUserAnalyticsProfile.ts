@@ -7,6 +7,7 @@ import { isDevelopment } from "config/env";
 import { USD_DECIMALS } from "config/factors";
 import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useReferralCodeFromUrl } from "domain/referrals";
 import { useAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats";
 import { useUtmParams } from "domain/utm";
@@ -30,8 +31,10 @@ export function useConfigureUserAnalyticsProfile() {
   const { chainId } = useChainId();
   const { account, active } = useWallet();
   const { data: bowser } = useBowser();
+  const { subaccount } = useSubaccountContext();
   const {
     shouldShowPositionLines,
+    expressOrdersEnabled,
     isLeverageSliderEnabled,
     showPnlAfterFees,
     isPnlInLeverage,
@@ -113,6 +116,8 @@ export function useConfigureUserAnalyticsProfile() {
       isChartPositionsEnabled: shouldShowPositionLines,
       ref: referralCode,
       utm: utmParams?.utmString,
+      ExpressEnabled: expressOrdersEnabled,
+      Express1CTEnabled: Boolean(subaccount),
       showLeverageSlider: isLeverageSliderEnabled,
       displayPnLAfterFees: showPnlAfterFees,
       includePnlInLeverageDisplay: isPnlInLeverage,
@@ -126,6 +131,8 @@ export function useConfigureUserAnalyticsProfile() {
     referralCode,
     utmParams?.utmString,
     shouldShowPositionLines,
+    expressOrdersEnabled,
+    subaccount,
     isLeverageSliderEnabled,
     showPnlAfterFees,
     isPnlInLeverage,

@@ -1,57 +1,21 @@
-import { ethers } from "ethers";
-
 import { getSwapDebugSettings } from "config/externalSwaps";
 import { UserReferralInfo } from "domain/referrals";
+import { ErrorLike, parseError } from "lib/errors";
 import { applyFactor } from "lib/numbers";
-import { parseError } from "lib/parseError";
-import Token from "sdk/abis/Token.json";
-import { convertTokenAddress, getNativeToken } from "sdk/configs/tokens";
 import { MarketInfo } from "sdk/types/markets";
 import { PositionInfo } from "sdk/types/positions";
 import { TokenData } from "sdk/types/tokens";
-import { ExternalSwapInputs } from "sdk/types/trade";
+import { ExternalSwapInputs, ExternalSwapQuote, SwapAmounts } from "sdk/types/trade";
 import { getFeeItem, getPositionFee } from "sdk/utils/fees";
 import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
 
 import {
-  ExternalSwapQuote,
   FindSwapPath,
   getIncreasePositionPrices,
   getSwapAmountsByFromValue,
   getSwapAmountsByToValue,
   leverageBySizeValues,
 } from "../trade";
-
-const tokenContract = new ethers.Interface(Token.abi);
-
-export function getExternalCallsParams(chainId: number, account: string, quote: ExternalSwapQuote) {
-  if (!quote.txnData) {
-    return [];
-  }
-
-  const inTokenAddress = convertTokenAddress(chainId, quote.inTokenAddress, "wrapped");
-
-  const addresses: string[] = [];
-  const callData: string[] = [];
-
-  if (quote.needSpenderApproval) {
-    addresses.push(inTokenAddress);
-    callData.push(tokenContract.encodeFunctionData("approve", [quote.txnData.to, ethers.MaxUint256]));
-  }
-
-  if (getSwapDebugSettings()?.failExternalSwaps) {
-    addresses.push(quote.inTokenAddress);
-  } else {
-    addresses.push(quote.txnData.to);
-  }
-
-  callData.push(quote.txnData.data);
-
-  const refundTokens = [getNativeToken(chainId).wrappedAddress, inTokenAddress];
-  const refundReceivers = [account, account];
-
-  return [addresses, callData, refundTokens, refundReceivers];
-}
 
 export function getExternalSwapInputsByFromValue({
   tokenIn,
@@ -179,7 +143,7 @@ export function getExternalSwapInputsByLeverageSize({
   };
 }
 
-export function isPossibleExternalSwapError(error: Error) {
+export function getIsPossibleExternalSwapError(error: ErrorLike) {
   const parsedError = parseError(error);
 
   const isExternalCallError = parsedError?.contractError === "ExternalCallFailed";
@@ -187,4 +151,75 @@ export function isPossibleExternalSwapError(error: Error) {
   const isPayloadRelatedError = parsedError?.errorMessage?.includes("execution reverted");
 
   return isExternalCallError || isPayloadRelatedError;
+}
+
+export function getBestSwapStrategy({
+  internalSwapAmounts,
+  externalSwapQuote,
+}: {
+  internalSwapAmounts: SwapAmounts | undefined;
+  externalSwapQuote: ExternalSwapQuote | undefined;
+}) {
+  const forceExternalSwaps = getSwapDebugSettings()?.failExternalSwaps;
+
+  let amountIn: bigint;
+  let amountOut: bigint;
+  let usdIn: bigint;
+  let usdOut: bigint;
+
+  if (
+    externalSwapQuote &&
+    (externalSwapQuote.usdOut > (internalSwapAmounts?.swapPathStats?.usdOut ?? 0n) || forceExternalSwaps)
+  ) {
+    amountIn = externalSwapQuote.amountIn;
+    amountOut = externalSwapQuote.amountOut;
+    usdIn = externalSwapQuote.usdIn;
+    usdOut = externalSwapQuote.usdOut;
+
+    return {
+      amountIn,
+      amountOut,
+      usdIn,
+      usdOut,
+      externalSwapQuote,
+    };
+  } else if (internalSwapAmounts?.swapPathStats) {
+    amountIn = internalSwapAmounts.amountIn;
+    amountOut = internalSwapAmounts.amountOut;
+    usdIn = internalSwapAmounts.usdIn;
+    usdOut = internalSwapAmounts.usdOut;
+
+    return {
+      amountIn,
+      amountOut,
+      usdIn,
+      usdOut,
+      swapPath: internalSwapAmounts.swapPathStats.swapPath,
+    };
+  } else {
+    return undefined;
+  }
+}
+
+export function getIsInternalSwapBetter({
+  internalSwapAmounts,
+  externalSwapQuote,
+  forceExternalSwaps,
+}: {
+  internalSwapAmounts: SwapAmounts | undefined;
+  externalSwapQuote: ExternalSwapQuote | undefined;
+  forceExternalSwaps: boolean | undefined;
+}) {
+  if (externalSwapQuote?.usdOut == undefined) {
+    return true;
+  }
+
+  if (forceExternalSwaps) {
+    return false;
+  }
+
+  return (
+    internalSwapAmounts?.swapPathStats?.usdOut !== undefined &&
+    internalSwapAmounts!.swapPathStats!.usdOut! > (externalSwapQuote?.usdOut ?? 0n)
+  );
 }

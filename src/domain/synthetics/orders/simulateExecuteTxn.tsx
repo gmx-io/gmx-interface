@@ -3,6 +3,7 @@ import { BaseContract, ethers } from "ethers";
 import { ReactNode } from "react";
 import { withRetry } from "viem";
 
+import { CustomErrorsAbi } from "ab/testMultichain/getCustomErrorsAbi/getCustomErrorsAbi";
 import {
   getContract,
   getExchangeRouterContract,
@@ -12,20 +13,19 @@ import {
 } from "config/contracts";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
-import { extractDataFromError, getErrorMessage } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderSimulatedMetric, sendTxnErrorMetric } from "lib/metrics/utils";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
-import { abis } from "sdk/abis";
+import type { UiContractsChain } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { ExternalSwapQuote } from "sdk/types/trade";
-import { extractError } from "sdk/utils/contracts";
+import { CustomErrorName, ErrorData, extractDataFromError, extractTxnError, isContractError } from "sdk/utils/errors";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
 
-import { CustomErrorName } from "components/Synthetics/TradeHistory/TradeHistoryRow/utils/CustomErrorName";
+import { getErrorMessage } from "components/Errors/errorToasts";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
 import { isGlvEnabled } from "../markets/glv";
@@ -34,7 +34,7 @@ export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;
 };
 
-type SimulateExecuteParams = {
+export type SimulateExecuteParams = {
   account: string;
   createMulticallPayload: string[];
   primaryPriceOverrides: PriceOverrides;
@@ -58,7 +58,14 @@ type SimulateExecuteParams = {
   externalSwapQuote?: ExternalSwapQuote;
 };
 
-export async function simulateExecuteTxn(chainId: number, p: SimulateExecuteParams) {
+export function isSimulationPassed(errorData: ErrorData) {
+  return isContractError(errorData, CustomErrorName.EndOfOracleSimulation);
+}
+
+/**
+ * @deprecated use simulateExecution instead
+ */
+export async function simulateExecuteTxn(chainId: UiContractsChain, p: SimulateExecuteParams) {
   const provider = getProvider(undefined, chainId);
 
   const multicallAddress = getContract(chainId, "Multicall");
@@ -160,18 +167,17 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
         retryCount: 2,
         delay: 200,
         shouldRetry: ({ error }) => {
-          const [message] = extractError(error);
+          const [message] = extractTxnError(error);
           return message?.includes("unsupported block number") ?? false;
         },
       }
     );
   } catch (txnError) {
-    const customErrors = new ethers.Contract(ethers.ZeroAddress, abis.CustomErrors);
+    const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrorsAbi);
     let msg: React.ReactNode = undefined;
 
     try {
       const errorData = extractDataFromError(txnError?.info?.error?.message) ?? extractDataFromError(txnError?.message);
-
       const error = new Error("No data found in error.");
       error.cause = txnError;
       if (!errorData) throw error;
@@ -257,7 +263,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
   }
 }
 
-function getSimulationPrices(chainId: number, tokensData: TokensData, primaryPricesMap: PriceOverrides) {
+export function getSimulationPrices(chainId: number, tokensData: TokensData, primaryPricesMap: PriceOverrides) {
   const tokenAddresses = Object.keys(tokensData);
 
   const primaryTokens: string[] = [];

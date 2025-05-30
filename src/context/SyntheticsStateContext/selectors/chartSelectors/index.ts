@@ -1,45 +1,17 @@
-import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
-import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
-import { getTokenData } from "domain/synthetics/tokens";
-import { CHART_PERIODS } from "lib/legacy";
-import { getToken } from "sdk/configs/tokens";
-import { bigMath } from "sdk/utils/bigmath";
-
-import { createSelector } from "../../utils";
-import { selectChainId, selectTokensData } from "../globalSelectors";
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxFromTokenAddress,
   selectTradeboxMarketInfo,
   selectTradeboxToTokenAddress,
   selectTradeboxTradeFlags,
-} from "../tradeboxSelectors";
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { createSelector } from "context/SyntheticsStateContext/utils";
+import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
+import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
+import { CHART_PERIODS } from "lib/legacy";
+import { bigMath } from "sdk/utils/bigmath";
 
-export const selectChartToken = createSelector(function selectChartToken(q) {
-  const fromTokenAddress = q(selectTradeboxFromTokenAddress);
-  const toTokenAddress = q(selectTradeboxToTokenAddress);
-
-  if (!fromTokenAddress || !toTokenAddress) {
-    return {};
-  }
-
-  const chainId = q(selectChainId);
-  const { isSwap } = q(selectTradeboxTradeFlags);
-
-  try {
-    const fromToken = getToken(chainId, fromTokenAddress);
-    const toToken = getToken(chainId, toTokenAddress);
-    const chartToken = isSwap && toToken?.isStable && !fromToken?.isStable ? fromToken : toToken;
-    const tokensData = q(selectTokensData);
-
-    const symbol = chartToken.symbol;
-    const tokenData = getTokenData(tokensData, chartToken?.address);
-
-    return { chartToken: tokenData, symbol };
-  } catch (e) {
-    return {};
-  }
-});
+export { selectChartToken } from "../shared/marketSelectors";
 
 export const selectAvailableChartTokens = createSelector(function selectChartToken(q) {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);

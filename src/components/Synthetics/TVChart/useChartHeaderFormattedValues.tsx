@@ -3,7 +3,8 @@ import { useMemo } from "react";
 import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
-import { selectChartHeaderInfo, selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {

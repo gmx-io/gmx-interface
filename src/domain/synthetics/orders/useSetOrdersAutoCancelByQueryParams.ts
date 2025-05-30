@@ -80,6 +80,7 @@ export function useSetOrdersAutoCancelByQueryParams() {
             triggerPrice: order.triggerPrice,
             acceptablePrice: order.acceptablePrice,
             minOutputAmount: order.minOutputAmount,
+            orderType: order.orderType,
             executionFee: order.executionFee,
             setPendingTxns,
           })),

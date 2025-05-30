@@ -1,4 +1,4 @@
-import { TokenData } from "./tokens";
+import type { TokenData } from "./tokens";
 
 export type PnlFactorType = "FOR_DEPOSITS" | "FOR_WITHDRAWALS" | "FOR_TRADERS";
 
@@ -103,6 +103,7 @@ export type MarketInfo = Market &
 
     swapFeeFactorForPositiveImpact: bigint;
     swapFeeFactorForNegativeImpact: bigint;
+    atomicSwapFeeFactor: bigint;
     swapImpactFactorPositive: bigint;
     swapImpactFactorNegative: bigint;
     swapImpactExponentFactor: bigint;

@@ -49,7 +49,7 @@ export declare namespace DepositUtils {
     minMarketTokens: bigint,
     shouldUnwrapNativeToken: boolean,
     executionFee: bigint,
-    callbackGasLimit: bigint,
+    callbackGasLimit: bigint
   ] & {
     receiver: string;
     callbackContract: string;
@@ -84,7 +84,7 @@ export declare namespace IBaseOrderUtils {
     uiFeeReceiver: string,
     market: string,
     initialCollateralToken: string,
-    swapPath: string[],
+    swapPath: string[]
   ] & {
     receiver: string;
     cancellationReceiver: string;
@@ -114,7 +114,7 @@ export declare namespace IBaseOrderUtils {
     executionFee: bigint,
     callbackGasLimit: bigint,
     minOutputAmount: bigint,
-    validFromTime: bigint,
+    validFromTime: bigint
   ] & {
     sizeDeltaUsd: bigint;
     initialCollateralDeltaAmount: bigint;
@@ -145,7 +145,7 @@ export declare namespace IBaseOrderUtils {
     isLong: boolean,
     shouldUnwrapNativeToken: boolean,
     autoCancel: boolean,
-    referralCode: string,
+    referralCode: string
   ] & {
     addresses: IBaseOrderUtils.CreateOrderParamsAddressesStructOutput;
     numbers: IBaseOrderUtils.CreateOrderParamsNumbersStructOutput;
@@ -178,7 +178,7 @@ export declare namespace ShiftUtils {
     toMarket: string,
     minMarketTokens: bigint,
     executionFee: bigint,
-    callbackGasLimit: bigint,
+    callbackGasLimit: bigint
   ] & {
     receiver: string;
     callbackContract: string;
@@ -217,7 +217,7 @@ export declare namespace WithdrawalUtils {
     minShortTokenAmount: bigint,
     shouldUnwrapNativeToken: boolean,
     executionFee: bigint,
-    callbackGasLimit: bigint,
+    callbackGasLimit: bigint
   ] & {
     receiver: string;
     callbackContract: string;
@@ -240,11 +240,11 @@ export declare namespace OracleUtils {
     data: BytesLike[];
   };
 
-  export type SetPricesParamsStructOutput = [tokens: string[], providers: string[], data: string[]] & {
-    tokens: string[];
-    providers: string[];
-    data: string[];
-  };
+  export type SetPricesParamsStructOutput = [
+    tokens: string[],
+    providers: string[],
+    data: string[]
+  ] & { tokens: string[]; providers: string[]; data: string[] };
 
   export type SimulatePricesParamsStruct = {
     primaryTokens: AddressLike[];
@@ -257,7 +257,7 @@ export declare namespace OracleUtils {
     primaryTokens: string[],
     primaryPrices: Price.PropsStructOutput[],
     minTimestamp: bigint,
-    maxTimestamp: bigint,
+    maxTimestamp: bigint
   ] & {
     primaryTokens: string[];
     primaryPrices: Price.PropsStructOutput[];
@@ -318,10 +318,22 @@ export interface ExchangeRouterInterface extends Interface {
       | "withdrawalHandler"
   ): FunctionFragment;
 
-  encodeFunctionData(functionFragment: "cancelDeposit", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "cancelOrder", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "cancelShift", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "cancelWithdrawal", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "cancelDeposit",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "cancelOrder",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "cancelShift",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "cancelWithdrawal",
+    values: [BytesLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "claimAffiliateRewards",
     values: [AddressLike[], AddressLike[], AddressLike]
@@ -330,37 +342,88 @@ export interface ExchangeRouterInterface extends Interface {
     functionFragment: "claimCollateral",
     values: [AddressLike[], AddressLike[], BigNumberish[], AddressLike]
   ): string;
-  encodeFunctionData(functionFragment: "claimFundingFees", values: [AddressLike[], AddressLike[], AddressLike]): string;
-  encodeFunctionData(functionFragment: "claimUiFees", values: [AddressLike[], AddressLike[], AddressLike]): string;
-  encodeFunctionData(functionFragment: "createDeposit", values: [DepositUtils.CreateDepositParamsStruct]): string;
-  encodeFunctionData(functionFragment: "createOrder", values: [IBaseOrderUtils.CreateOrderParamsStruct]): string;
-  encodeFunctionData(functionFragment: "createShift", values: [ShiftUtils.CreateShiftParamsStruct]): string;
+  encodeFunctionData(
+    functionFragment: "claimFundingFees",
+    values: [AddressLike[], AddressLike[], AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "claimUiFees",
+    values: [AddressLike[], AddressLike[], AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "createDeposit",
+    values: [DepositUtils.CreateDepositParamsStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "createOrder",
+    values: [IBaseOrderUtils.CreateOrderParamsStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "createShift",
+    values: [ShiftUtils.CreateShiftParamsStruct]
+  ): string;
   encodeFunctionData(
     functionFragment: "createWithdrawal",
     values: [WithdrawalUtils.CreateWithdrawalParamsStruct]
   ): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
-  encodeFunctionData(functionFragment: "depositHandler", values?: undefined): string;
-  encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "depositHandler",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "eventEmitter",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "executeAtomicWithdrawal",
-    values: [WithdrawalUtils.CreateWithdrawalParamsStruct, OracleUtils.SetPricesParamsStruct]
+    values: [
+      WithdrawalUtils.CreateWithdrawalParamsStruct,
+      OracleUtils.SetPricesParamsStruct
+    ]
   ): string;
-  encodeFunctionData(functionFragment: "externalHandler", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "externalHandler",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "makeExternalCalls",
     values: [AddressLike[], BytesLike[], AddressLike[], AddressLike[]]
   ): string;
-  encodeFunctionData(functionFragment: "multicall", values: [BytesLike[]]): string;
-  encodeFunctionData(functionFragment: "orderHandler", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "multicall",
+    values: [BytesLike[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "orderHandler",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "roleStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "router", values?: undefined): string;
-  encodeFunctionData(functionFragment: "sendNativeToken", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "sendTokens", values: [AddressLike, AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "sendWnt", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "setSavedCallbackContract", values: [AddressLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "setUiFeeFactor", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "shiftHandler", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "sendNativeToken",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "sendTokens",
+    values: [AddressLike, AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "sendWnt",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setSavedCallbackContract",
+    values: [AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setUiFeeFactor",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "shiftHandler",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "simulateExecuteDeposit",
     values: [BytesLike, OracleUtils.SimulatePricesParamsStruct]
@@ -395,48 +458,155 @@ export interface ExchangeRouterInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "updateOrder",
-    values: [BytesLike, BigNumberish, BigNumberish, BigNumberish, BigNumberish, BigNumberish, boolean]
+    values: [
+      BytesLike,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      boolean
+    ]
   ): string;
-  encodeFunctionData(functionFragment: "withdrawalHandler", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "withdrawalHandler",
+    values?: undefined
+  ): string;
 
-  decodeFunctionResult(functionFragment: "cancelDeposit", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "cancelOrder", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "cancelShift", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "cancelWithdrawal", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "claimAffiliateRewards", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "claimCollateral", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "claimFundingFees", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "claimUiFees", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "createDeposit", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "createOrder", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "createShift", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "createWithdrawal", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "cancelDeposit",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "cancelOrder",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "cancelShift",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "cancelWithdrawal",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "claimAffiliateRewards",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "claimCollateral",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "claimFundingFees",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "claimUiFees",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "createDeposit",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "createOrder",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "createShift",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "createWithdrawal",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "depositHandler", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "eventEmitter", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "executeAtomicWithdrawal", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "externalHandler", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "makeExternalCalls", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "depositHandler",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "eventEmitter",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "executeAtomicWithdrawal",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "externalHandler",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "makeExternalCalls",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "multicall", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "orderHandler", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "orderHandler",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "roleStore", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "router", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "sendNativeToken", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "sendNativeToken",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "sendTokens", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendWnt", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setSavedCallbackContract", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setUiFeeFactor", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "shiftHandler", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "simulateExecuteDeposit", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "simulateExecuteLatestDeposit", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "simulateExecuteLatestOrder", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "simulateExecuteLatestShift", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "simulateExecuteLatestWithdrawal", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "simulateExecuteOrder", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "simulateExecuteShift", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "simulateExecuteWithdrawal", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "updateOrder", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "withdrawalHandler", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setSavedCallbackContract",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setUiFeeFactor",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "shiftHandler",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "simulateExecuteDeposit",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "simulateExecuteLatestDeposit",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "simulateExecuteLatestOrder",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "simulateExecuteLatestShift",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "simulateExecuteLatestWithdrawal",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "simulateExecuteOrder",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "simulateExecuteShift",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "simulateExecuteWithdrawal",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateOrder",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawalHandler",
+    data: BytesLike
+  ): Result;
 }
 
 export interface ExchangeRouter extends BaseContract {
@@ -456,21 +626,31 @@ export interface ExchangeRouter extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
   cancelDeposit: TypedContractMethod<[key: BytesLike], [void], "payable">;
 
@@ -497,7 +677,12 @@ export interface ExchangeRouter extends BaseContract {
   >;
 
   claimCollateral: TypedContractMethod<
-    [markets: AddressLike[], tokens: AddressLike[], timeKeys: BigNumberish[], receiver: AddressLike],
+    [
+      markets: AddressLike[],
+      tokens: AddressLike[],
+      timeKeys: BigNumberish[],
+      receiver: AddressLike
+    ],
     [bigint[]],
     "payable"
   >;
@@ -520,13 +705,29 @@ export interface ExchangeRouter extends BaseContract {
     "payable"
   >;
 
-  createDeposit: TypedContractMethod<[params: DepositUtils.CreateDepositParamsStruct], [string], "payable">;
+  createDeposit: TypedContractMethod<
+    [params: DepositUtils.CreateDepositParamsStruct],
+    [string],
+    "payable"
+  >;
 
-  createOrder: TypedContractMethod<[params: IBaseOrderUtils.CreateOrderParamsStruct], [string], "payable">;
+  createOrder: TypedContractMethod<
+    [params: IBaseOrderUtils.CreateOrderParamsStruct],
+    [string],
+    "payable"
+  >;
 
-  createShift: TypedContractMethod<[params: ShiftUtils.CreateShiftParamsStruct], [string], "payable">;
+  createShift: TypedContractMethod<
+    [params: ShiftUtils.CreateShiftParamsStruct],
+    [string],
+    "payable"
+  >;
 
-  createWithdrawal: TypedContractMethod<[params: WithdrawalUtils.CreateWithdrawalParamsStruct], [string], "payable">;
+  createWithdrawal: TypedContractMethod<
+    [params: WithdrawalUtils.CreateWithdrawalParamsStruct],
+    [string],
+    "payable"
+  >;
 
   dataStore: TypedContractMethod<[], [string], "view">;
 
@@ -535,7 +736,10 @@ export interface ExchangeRouter extends BaseContract {
   eventEmitter: TypedContractMethod<[], [string], "view">;
 
   executeAtomicWithdrawal: TypedContractMethod<
-    [params: WithdrawalUtils.CreateWithdrawalParamsStruct, oracleParams: OracleUtils.SetPricesParamsStruct],
+    [
+      params: WithdrawalUtils.CreateWithdrawalParamsStruct,
+      oracleParams: OracleUtils.SetPricesParamsStruct
+    ],
     [void],
     "payable"
   >;
@@ -547,7 +751,7 @@ export interface ExchangeRouter extends BaseContract {
       externalCallTargets: AddressLike[],
       externalCallDataList: BytesLike[],
       refundTokens: AddressLike[],
-      refundReceivers: AddressLike[],
+      refundReceivers: AddressLike[]
     ],
     [void],
     "nonpayable"
@@ -564,11 +768,23 @@ export interface ExchangeRouter extends BaseContract {
 
   router: TypedContractMethod<[], [string], "view">;
 
-  sendNativeToken: TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
+  sendNativeToken: TypedContractMethod<
+    [receiver: AddressLike, amount: BigNumberish],
+    [void],
+    "payable"
+  >;
 
-  sendTokens: TypedContractMethod<[token: AddressLike, receiver: AddressLike, amount: BigNumberish], [void], "payable">;
+  sendTokens: TypedContractMethod<
+    [token: AddressLike, receiver: AddressLike, amount: BigNumberish],
+    [void],
+    "payable"
+  >;
 
-  sendWnt: TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
+  sendWnt: TypedContractMethod<
+    [receiver: AddressLike, amount: BigNumberish],
+    [void],
+    "payable"
+  >;
 
   setSavedCallbackContract: TypedContractMethod<
     [market: AddressLike, callbackContract: AddressLike],
@@ -576,12 +792,19 @@ export interface ExchangeRouter extends BaseContract {
     "payable"
   >;
 
-  setUiFeeFactor: TypedContractMethod<[uiFeeFactor: BigNumberish], [void], "payable">;
+  setUiFeeFactor: TypedContractMethod<
+    [uiFeeFactor: BigNumberish],
+    [void],
+    "payable"
+  >;
 
   shiftHandler: TypedContractMethod<[], [string], "view">;
 
   simulateExecuteDeposit: TypedContractMethod<
-    [key: BytesLike, simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct],
+    [
+      key: BytesLike,
+      simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct
+    ],
     [void],
     "payable"
   >;
@@ -605,25 +828,38 @@ export interface ExchangeRouter extends BaseContract {
   >;
 
   simulateExecuteLatestWithdrawal: TypedContractMethod<
-    [simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct, swapPricingType: BigNumberish],
+    [
+      simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct,
+      swapPricingType: BigNumberish
+    ],
     [void],
     "payable"
   >;
 
   simulateExecuteOrder: TypedContractMethod<
-    [key: BytesLike, simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct],
+    [
+      key: BytesLike,
+      simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct
+    ],
     [void],
     "payable"
   >;
 
   simulateExecuteShift: TypedContractMethod<
-    [key: BytesLike, simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct],
+    [
+      key: BytesLike,
+      simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct
+    ],
     [void],
     "payable"
   >;
 
   simulateExecuteWithdrawal: TypedContractMethod<
-    [key: BytesLike, simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct, swapPricingType: BigNumberish],
+    [
+      key: BytesLike,
+      simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct,
+      swapPricingType: BigNumberish
+    ],
     [void],
     "payable"
   >;
@@ -636,7 +872,7 @@ export interface ExchangeRouter extends BaseContract {
       triggerPrice: BigNumberish,
       minOutputAmount: BigNumberish,
       validFromTime: BigNumberish,
-      autoCancel: boolean,
+      autoCancel: boolean
     ],
     [void],
     "payable"
@@ -644,51 +880,105 @@ export interface ExchangeRouter extends BaseContract {
 
   withdrawalHandler: TypedContractMethod<[], [string], "view">;
 
-  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  getFunction(nameOrSignature: "cancelDeposit"): TypedContractMethod<[key: BytesLike], [void], "payable">;
-  getFunction(nameOrSignature: "cancelOrder"): TypedContractMethod<[key: BytesLike], [void], "payable">;
-  getFunction(nameOrSignature: "cancelShift"): TypedContractMethod<[key: BytesLike], [void], "payable">;
-  getFunction(nameOrSignature: "cancelWithdrawal"): TypedContractMethod<[key: BytesLike], [void], "payable">;
+  getFunction(
+    nameOrSignature: "cancelDeposit"
+  ): TypedContractMethod<[key: BytesLike], [void], "payable">;
+  getFunction(
+    nameOrSignature: "cancelOrder"
+  ): TypedContractMethod<[key: BytesLike], [void], "payable">;
+  getFunction(
+    nameOrSignature: "cancelShift"
+  ): TypedContractMethod<[key: BytesLike], [void], "payable">;
+  getFunction(
+    nameOrSignature: "cancelWithdrawal"
+  ): TypedContractMethod<[key: BytesLike], [void], "payable">;
   getFunction(
     nameOrSignature: "claimAffiliateRewards"
-  ): TypedContractMethod<[markets: AddressLike[], tokens: AddressLike[], receiver: AddressLike], [bigint[]], "payable">;
+  ): TypedContractMethod<
+    [markets: AddressLike[], tokens: AddressLike[], receiver: AddressLike],
+    [bigint[]],
+    "payable"
+  >;
   getFunction(
     nameOrSignature: "claimCollateral"
   ): TypedContractMethod<
-    [markets: AddressLike[], tokens: AddressLike[], timeKeys: BigNumberish[], receiver: AddressLike],
+    [
+      markets: AddressLike[],
+      tokens: AddressLike[],
+      timeKeys: BigNumberish[],
+      receiver: AddressLike
+    ],
     [bigint[]],
     "payable"
   >;
   getFunction(
     nameOrSignature: "claimFundingFees"
-  ): TypedContractMethod<[markets: AddressLike[], tokens: AddressLike[], receiver: AddressLike], [bigint[]], "payable">;
+  ): TypedContractMethod<
+    [markets: AddressLike[], tokens: AddressLike[], receiver: AddressLike],
+    [bigint[]],
+    "payable"
+  >;
   getFunction(
     nameOrSignature: "claimUiFees"
-  ): TypedContractMethod<[markets: AddressLike[], tokens: AddressLike[], receiver: AddressLike], [bigint[]], "payable">;
+  ): TypedContractMethod<
+    [markets: AddressLike[], tokens: AddressLike[], receiver: AddressLike],
+    [bigint[]],
+    "payable"
+  >;
   getFunction(
     nameOrSignature: "createDeposit"
-  ): TypedContractMethod<[params: DepositUtils.CreateDepositParamsStruct], [string], "payable">;
+  ): TypedContractMethod<
+    [params: DepositUtils.CreateDepositParamsStruct],
+    [string],
+    "payable"
+  >;
   getFunction(
     nameOrSignature: "createOrder"
-  ): TypedContractMethod<[params: IBaseOrderUtils.CreateOrderParamsStruct], [string], "payable">;
+  ): TypedContractMethod<
+    [params: IBaseOrderUtils.CreateOrderParamsStruct],
+    [string],
+    "payable"
+  >;
   getFunction(
     nameOrSignature: "createShift"
-  ): TypedContractMethod<[params: ShiftUtils.CreateShiftParamsStruct], [string], "payable">;
+  ): TypedContractMethod<
+    [params: ShiftUtils.CreateShiftParamsStruct],
+    [string],
+    "payable"
+  >;
   getFunction(
     nameOrSignature: "createWithdrawal"
-  ): TypedContractMethod<[params: WithdrawalUtils.CreateWithdrawalParamsStruct], [string], "payable">;
-  getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "depositHandler"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
+  ): TypedContractMethod<
+    [params: WithdrawalUtils.CreateWithdrawalParamsStruct],
+    [string],
+    "payable"
+  >;
+  getFunction(
+    nameOrSignature: "dataStore"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "depositHandler"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "eventEmitter"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "executeAtomicWithdrawal"
   ): TypedContractMethod<
-    [params: WithdrawalUtils.CreateWithdrawalParamsStruct, oracleParams: OracleUtils.SetPricesParamsStruct],
+    [
+      params: WithdrawalUtils.CreateWithdrawalParamsStruct,
+      oracleParams: OracleUtils.SetPricesParamsStruct
+    ],
     [void],
     "payable"
   >;
-  getFunction(nameOrSignature: "externalHandler"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "externalHandler"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "makeExternalCalls"
   ): TypedContractMethod<
@@ -696,70 +986,126 @@ export interface ExchangeRouter extends BaseContract {
       externalCallTargets: AddressLike[],
       externalCallDataList: BytesLike[],
       refundTokens: AddressLike[],
-      refundReceivers: AddressLike[],
+      refundReceivers: AddressLike[]
     ],
     [void],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "multicall"): TypedContractMethod<[data: BytesLike[]], [string[]], "payable">;
-  getFunction(nameOrSignature: "orderHandler"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "roleStore"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "router"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "multicall"
+  ): TypedContractMethod<[data: BytesLike[]], [string[]], "payable">;
+  getFunction(
+    nameOrSignature: "orderHandler"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "roleStore"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "router"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "sendNativeToken"
-  ): TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
+  ): TypedContractMethod<
+    [receiver: AddressLike, amount: BigNumberish],
+    [void],
+    "payable"
+  >;
   getFunction(
     nameOrSignature: "sendTokens"
-  ): TypedContractMethod<[token: AddressLike, receiver: AddressLike, amount: BigNumberish], [void], "payable">;
+  ): TypedContractMethod<
+    [token: AddressLike, receiver: AddressLike, amount: BigNumberish],
+    [void],
+    "payable"
+  >;
   getFunction(
     nameOrSignature: "sendWnt"
-  ): TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
+  ): TypedContractMethod<
+    [receiver: AddressLike, amount: BigNumberish],
+    [void],
+    "payable"
+  >;
   getFunction(
     nameOrSignature: "setSavedCallbackContract"
-  ): TypedContractMethod<[market: AddressLike, callbackContract: AddressLike], [void], "payable">;
-  getFunction(nameOrSignature: "setUiFeeFactor"): TypedContractMethod<[uiFeeFactor: BigNumberish], [void], "payable">;
-  getFunction(nameOrSignature: "shiftHandler"): TypedContractMethod<[], [string], "view">;
+  ): TypedContractMethod<
+    [market: AddressLike, callbackContract: AddressLike],
+    [void],
+    "payable"
+  >;
+  getFunction(
+    nameOrSignature: "setUiFeeFactor"
+  ): TypedContractMethod<[uiFeeFactor: BigNumberish], [void], "payable">;
+  getFunction(
+    nameOrSignature: "shiftHandler"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "simulateExecuteDeposit"
   ): TypedContractMethod<
-    [key: BytesLike, simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct],
+    [
+      key: BytesLike,
+      simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct
+    ],
     [void],
     "payable"
   >;
   getFunction(
     nameOrSignature: "simulateExecuteLatestDeposit"
-  ): TypedContractMethod<[simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct], [void], "payable">;
+  ): TypedContractMethod<
+    [simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct],
+    [void],
+    "payable"
+  >;
   getFunction(
     nameOrSignature: "simulateExecuteLatestOrder"
-  ): TypedContractMethod<[simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct], [void], "payable">;
+  ): TypedContractMethod<
+    [simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct],
+    [void],
+    "payable"
+  >;
   getFunction(
     nameOrSignature: "simulateExecuteLatestShift"
-  ): TypedContractMethod<[simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct], [void], "payable">;
+  ): TypedContractMethod<
+    [simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct],
+    [void],
+    "payable"
+  >;
   getFunction(
     nameOrSignature: "simulateExecuteLatestWithdrawal"
   ): TypedContractMethod<
-    [simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct, swapPricingType: BigNumberish],
+    [
+      simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct,
+      swapPricingType: BigNumberish
+    ],
     [void],
     "payable"
   >;
   getFunction(
     nameOrSignature: "simulateExecuteOrder"
   ): TypedContractMethod<
-    [key: BytesLike, simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct],
+    [
+      key: BytesLike,
+      simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct
+    ],
     [void],
     "payable"
   >;
   getFunction(
     nameOrSignature: "simulateExecuteShift"
   ): TypedContractMethod<
-    [key: BytesLike, simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct],
+    [
+      key: BytesLike,
+      simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct
+    ],
     [void],
     "payable"
   >;
   getFunction(
     nameOrSignature: "simulateExecuteWithdrawal"
   ): TypedContractMethod<
-    [key: BytesLike, simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct, swapPricingType: BigNumberish],
+    [
+      key: BytesLike,
+      simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct,
+      swapPricingType: BigNumberish
+    ],
     [void],
     "payable"
   >;
@@ -773,12 +1119,14 @@ export interface ExchangeRouter extends BaseContract {
       triggerPrice: BigNumberish,
       minOutputAmount: BigNumberish,
       validFromTime: BigNumberish,
-      autoCancel: boolean,
+      autoCancel: boolean
     ],
     [void],
     "payable"
   >;
-  getFunction(nameOrSignature: "withdrawalHandler"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "withdrawalHandler"
+  ): TypedContractMethod<[], [string], "view">;
 
   filters: {};
 }

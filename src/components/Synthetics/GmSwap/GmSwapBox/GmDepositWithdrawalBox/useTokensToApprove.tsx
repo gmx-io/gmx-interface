@@ -97,14 +97,20 @@ export const useTokensToApprove = ({
       const shouldApproveMarketToken = getNeedTokenApprove(
         tokensAllowanceData,
         marketToken?.address,
-        marketTokenAmount
+        marketTokenAmount,
+        []
       );
 
-      const shouldApproveGlvToken = getNeedTokenApprove(tokensAllowanceData, glvToken?.address, glvTokenAmount);
+      const shouldApproveGlvToken = getNeedTokenApprove(tokensAllowanceData, glvToken?.address, glvTokenAmount, []);
 
-      const shouldApproveLongToken = getNeedTokenApprove(tokensAllowanceData, longToken?.address, longTokenAmount);
+      const shouldApproveLongToken = getNeedTokenApprove(tokensAllowanceData, longToken?.address, longTokenAmount, []);
 
-      const shouldApproveShortToken = getNeedTokenApprove(tokensAllowanceData, shortToken?.address, shortTokenAmount);
+      const shouldApproveShortToken = getNeedTokenApprove(
+        tokensAllowanceData,
+        shortToken?.address,
+        shortTokenAmount,
+        []
+      );
 
       if (operation === Operation.Deposit) {
         if (shouldApproveLongToken && longToken?.address) {

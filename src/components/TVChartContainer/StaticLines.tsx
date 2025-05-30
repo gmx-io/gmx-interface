@@ -9,5 +9,5 @@ export function StaticLines({
   chartLines: StaticChartLine[];
   tvWidgetRef: React.RefObject<IChartingLibraryWidget>;
 }) {
-  return chartLines.map((line) => <StaticLine key={line.title} tvWidgetRef={tvWidgetRef} {...line} />);
+  return chartLines.map((line, index) => <StaticLine key={`line-${index}`} tvWidgetRef={tvWidgetRef} {...line} />);
 }

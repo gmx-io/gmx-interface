@@ -1,7 +1,14 @@
 import { t, Trans } from "@lingui/macro";
 import { useEffect, useRef, useState } from "react";
+import { useAccount } from "wagmi";
 
+import { getChainName } from "config/chains";
 import { getSyntheticsDepositMarketKey } from "config/localStorage";
+import {
+  isSettlementChain,
+  isSourceChain,
+  MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING,
+} from "context/GmxAccountContext/config";
 import {
   selectDepositMarketTokensData,
   selectGlvAndMarketsInfoData,
@@ -14,7 +21,10 @@ import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
+import { switchNetwork } from "lib/wallets";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import Button from "components/Button/Button";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
@@ -30,6 +40,7 @@ import "./MarketPoolsPage.scss";
 
 export function MarketPoolsPage() {
   const { chainId } = useChainId();
+  const { chainId: walletChainId, isConnected } = useAccount();
   const gmSwapBoxRef = useRef<HTMLDivElement>(null);
 
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
@@ -91,6 +102,44 @@ export function MarketPoolsPage() {
               </Trans>
               <br />
               <Trans>Shift GM Tokens between eligible pools without paying buy/sell fees.</Trans>
+              {walletChainId && isSourceChain(walletChainId) && !isSettlementChain(walletChainId) && (
+                <AlertInfoCard type="info" className="mt-8">
+                  <div className="flex flex-wrap items-center justify-between">
+                    <div>
+                      {MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[walletChainId].length > 1 ? (
+                        <Trans>
+                          Liquidity providing is only available on{" "}
+                          {MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[walletChainId]
+                            .slice(0, -1)
+                            .map(getChainName)
+                            .join(", ")}{" "}
+                          and {getChainName(MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[walletChainId].slice(-1)[0])}
+                          . Switch to one of these networks to access earning opportunities.
+                        </Trans>
+                      ) : (
+                        <Trans>
+                          Liquidity providing is only available on{" "}
+                          {getChainName(MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[walletChainId][0])}. Switch to
+                          one of these networks to access earning opportunities.
+                        </Trans>
+                      )}
+                    </div>
+                    <div className="flex gap-12">
+                      {MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[walletChainId].map((chainId) => (
+                        <Button
+                          key={chainId}
+                          variant="link"
+                          onClick={() => {
+                            switchNetwork(chainId, isConnected);
+                          }}
+                        >
+                          Switch to {getChainName(chainId)}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </AlertInfoCard>
+              )}
             </>
           }
           qa="pools-page"
@@ -108,7 +157,6 @@ export function MarketPoolsPage() {
             marketToken={marketToken}
             glvTokensApyData={glvApyInfoData}
           />
-
           <div className="MarketPoolsPage-swap-box" ref={gmSwapBoxRef}>
             <GmSwapBox
               selectedMarketAddress={selectedMarketOrGlvKey}

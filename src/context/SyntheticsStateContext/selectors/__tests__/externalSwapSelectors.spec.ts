@@ -15,7 +15,7 @@ import {
   selectExternalSwapInputs,
   selectExternalSwapQuote,
   selectShouldRequestExternalSwapQuote,
-} from "../externalSwapSelectors";
+} from "../tradeboxSelectors";
 import * as tradeSelectors from "../tradeSelectors";
 
 const marketKey = "ETH-ETH-USDC";
@@ -235,6 +235,7 @@ describe("externalSwapSelectors", () => {
       expect(result?.strategy).toBe("byFromValue");
       expect(result?.internalSwapTotalFeesDeltaUsd).toBe(mockSwapPathStats.totalFeesDeltaUsd);
       expect(findSwapPathFn).toHaveBeenCalled();
+
       expect(vi.mocked(tradeSelectors.makeSelectFindSwapPath)).toHaveBeenCalledWith(
         tokensData.ETH.address,
         tokensData.USDC.address

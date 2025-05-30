@@ -116,6 +116,7 @@ const marketInfo: MarketInfo = {
   swapImpactFactorPositive: BigInt("0x0ad78ebc5ac6200000"),
   swapImpactFactorNegative: BigInt("0x0ad78ebc5ac6200000"),
   swapImpactExponentFactor: BigInt("0x193e5939a08ce9dbd480000000"),
+  atomicSwapFeeFactor: BigInt("0x00"),
   borrowingFactorPerSecondForLongs: BigInt("0x00"),
   borrowingFactorPerSecondForShorts: BigInt("0xd03c28208ed1247ad5"),
   fundingFactorPerSecond: BigInt("0xd731ac61a4dd60108e"),

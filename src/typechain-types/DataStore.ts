@@ -97,148 +97,499 @@ export interface DataStoreInterface extends Interface {
       | "uintValues"
   ): FunctionFragment;
 
-  encodeFunctionData(functionFragment: "addAddress", values: [BytesLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "addBytes32", values: [BytesLike, BytesLike]): string;
-  encodeFunctionData(functionFragment: "addUint", values: [BytesLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "addressArrayValues", values: [BytesLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "addressValues", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "applyBoundedDeltaToUint", values: [BytesLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "applyDeltaToInt", values: [BytesLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "applyDeltaToUint", values: [BytesLike, BigNumberish, string]): string;
-  encodeFunctionData(functionFragment: "boolArrayValues", values: [BytesLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "boolValues", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "bytes32ArrayValues", values: [BytesLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "bytes32Values", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "containsAddress", values: [BytesLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "containsBytes32", values: [BytesLike, BytesLike]): string;
-  encodeFunctionData(functionFragment: "containsUint", values: [BytesLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "decrementInt", values: [BytesLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "decrementUint", values: [BytesLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "getAddress", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "getAddressArray", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "getAddressCount", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "getAddressValuesAt", values: [BytesLike, BigNumberish, BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "addAddress",
+    values: [BytesLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addBytes32",
+    values: [BytesLike, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addUint",
+    values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addressArrayValues",
+    values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addressValues",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "applyBoundedDeltaToUint",
+    values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "applyDeltaToInt",
+    values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "applyDeltaToUint",
+    values: [BytesLike, BigNumberish, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "boolArrayValues",
+    values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "boolValues",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "bytes32ArrayValues",
+    values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "bytes32Values",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "containsAddress",
+    values: [BytesLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "containsBytes32",
+    values: [BytesLike, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "containsUint",
+    values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "decrementInt",
+    values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "decrementUint",
+    values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAddress",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAddressArray",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAddressCount",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAddressValuesAt",
+    values: [BytesLike, BigNumberish, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "getBool", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "getBoolArray", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "getBytes32", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "getBytes32Array", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "getBytes32Count", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "getBytes32ValuesAt", values: [BytesLike, BigNumberish, BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "getBoolArray",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBytes32",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBytes32Array",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBytes32Count",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBytes32ValuesAt",
+    values: [BytesLike, BigNumberish, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "getInt", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "getIntArray", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "getString", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "getStringArray", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "getIntArray",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getString",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getStringArray",
+    values: [BytesLike]
+  ): string;
   encodeFunctionData(functionFragment: "getUint", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "getUintArray", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "getUintCount", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "getUintValuesAt", values: [BytesLike, BigNumberish, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "incrementInt", values: [BytesLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "incrementUint", values: [BytesLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "intArrayValues", values: [BytesLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "intValues", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "removeAddress(bytes32,address)", values: [BytesLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "removeAddress(bytes32)", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "removeAddressArray", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "removeBool", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "removeBoolArray", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "removeBytes32(bytes32,bytes32)", values: [BytesLike, BytesLike]): string;
-  encodeFunctionData(functionFragment: "removeBytes32(bytes32)", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "removeBytes32Array", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "removeInt", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "removeIntArray", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "removeString", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "removeStringArray", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "removeUint(bytes32)", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "removeUint(bytes32,uint256)", values: [BytesLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "removeUintArray", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "getUintArray",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getUintCount",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getUintValuesAt",
+    values: [BytesLike, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "incrementInt",
+    values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "incrementUint",
+    values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "intArrayValues",
+    values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "intValues",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeAddress(bytes32,address)",
+    values: [BytesLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeAddress(bytes32)",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeAddressArray",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeBool",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeBoolArray",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeBytes32(bytes32,bytes32)",
+    values: [BytesLike, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeBytes32(bytes32)",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeBytes32Array",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeInt",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeIntArray",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeString",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeStringArray",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeUint(bytes32)",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeUint(bytes32,uint256)",
+    values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeUintArray",
+    values: [BytesLike]
+  ): string;
   encodeFunctionData(functionFragment: "roleStore", values?: undefined): string;
-  encodeFunctionData(functionFragment: "setAddress", values: [BytesLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "setAddressArray", values: [BytesLike, AddressLike[]]): string;
-  encodeFunctionData(functionFragment: "setBool", values: [BytesLike, boolean]): string;
-  encodeFunctionData(functionFragment: "setBoolArray", values: [BytesLike, boolean[]]): string;
-  encodeFunctionData(functionFragment: "setBytes32", values: [BytesLike, BytesLike]): string;
-  encodeFunctionData(functionFragment: "setBytes32Array", values: [BytesLike, BytesLike[]]): string;
-  encodeFunctionData(functionFragment: "setInt", values: [BytesLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "setIntArray", values: [BytesLike, BigNumberish[]]): string;
-  encodeFunctionData(functionFragment: "setString", values: [BytesLike, string]): string;
-  encodeFunctionData(functionFragment: "setStringArray", values: [BytesLike, string[]]): string;
-  encodeFunctionData(functionFragment: "setUint", values: [BytesLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "setUintArray", values: [BytesLike, BigNumberish[]]): string;
-  encodeFunctionData(functionFragment: "stringArrayValues", values: [BytesLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "stringValues", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "uintArrayValues", values: [BytesLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "uintValues", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "setAddress",
+    values: [BytesLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setAddressArray",
+    values: [BytesLike, AddressLike[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setBool",
+    values: [BytesLike, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setBoolArray",
+    values: [BytesLike, boolean[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setBytes32",
+    values: [BytesLike, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setBytes32Array",
+    values: [BytesLike, BytesLike[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setInt",
+    values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setIntArray",
+    values: [BytesLike, BigNumberish[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setString",
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setStringArray",
+    values: [BytesLike, string[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setUint",
+    values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setUintArray",
+    values: [BytesLike, BigNumberish[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "stringArrayValues",
+    values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "stringValues",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "uintArrayValues",
+    values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "uintValues",
+    values: [BytesLike]
+  ): string;
 
   decodeFunctionResult(functionFragment: "addAddress", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "addBytes32", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "addUint", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "addressArrayValues", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "addressValues", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "applyBoundedDeltaToUint", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "applyDeltaToInt", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "applyDeltaToUint", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "boolArrayValues", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "addressArrayValues",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "addressValues",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "applyBoundedDeltaToUint",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "applyDeltaToInt",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "applyDeltaToUint",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "boolArrayValues",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "boolValues", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "bytes32ArrayValues", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "bytes32Values", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "containsAddress", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "containsBytes32", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "containsUint", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "decrementInt", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "decrementUint", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "bytes32ArrayValues",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "bytes32Values",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "containsAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "containsBytes32",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "containsUint",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "decrementInt",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "decrementUint",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getAddress", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getAddressArray", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getAddressCount", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getAddressValuesAt", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getAddressArray",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAddressCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAddressValuesAt",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getBool", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getBoolArray", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getBoolArray",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getBytes32", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getBytes32Array", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getBytes32Count", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getBytes32ValuesAt", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getBytes32Array",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBytes32Count",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBytes32ValuesAt",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getInt", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getIntArray", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getIntArray",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getString", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getStringArray", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getStringArray",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getUint", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getUintArray", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getUintCount", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getUintValuesAt", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "incrementInt", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "incrementUint", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "intArrayValues", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getUintArray",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getUintCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getUintValuesAt",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "incrementInt",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "incrementUint",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "intArrayValues",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "intValues", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeAddress(bytes32,address)", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeAddress(bytes32)", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeAddressArray", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "removeAddress(bytes32,address)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeAddress(bytes32)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeAddressArray",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "removeBool", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeBoolArray", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeBytes32(bytes32,bytes32)", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeBytes32(bytes32)", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeBytes32Array", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "removeBoolArray",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeBytes32(bytes32,bytes32)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeBytes32(bytes32)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeBytes32Array",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "removeInt", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeIntArray", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeString", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeStringArray", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeUint(bytes32)", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeUint(bytes32,uint256)", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeUintArray", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "removeIntArray",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeString",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeStringArray",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeUint(bytes32)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeUint(bytes32,uint256)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeUintArray",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "roleStore", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setAddress", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setAddressArray", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setAddressArray",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setBool", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setBoolArray", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setBoolArray",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setBytes32", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setBytes32Array", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setBytes32Array",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setInt", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setIntArray", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setIntArray",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setString", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setStringArray", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setStringArray",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setUint", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setUintArray", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "stringArrayValues", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "stringValues", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "uintArrayValues", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setUintArray",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "stringArrayValues",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "stringValues",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "uintArrayValues",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "uintValues", data: BytesLike): Result;
 }
 
@@ -259,35 +610,69 @@ export interface DataStore extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-  addAddress: TypedContractMethod<[setKey: BytesLike, value: AddressLike], [void], "nonpayable">;
+  addAddress: TypedContractMethod<
+    [setKey: BytesLike, value: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
-  addBytes32: TypedContractMethod<[setKey: BytesLike, value: BytesLike], [void], "nonpayable">;
+  addBytes32: TypedContractMethod<
+    [setKey: BytesLike, value: BytesLike],
+    [void],
+    "nonpayable"
+  >;
 
-  addUint: TypedContractMethod<[setKey: BytesLike, value: BigNumberish], [void], "nonpayable">;
+  addUint: TypedContractMethod<
+    [setKey: BytesLike, value: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
-  addressArrayValues: TypedContractMethod<[arg0: BytesLike, arg1: BigNumberish], [string], "view">;
+  addressArrayValues: TypedContractMethod<
+    [arg0: BytesLike, arg1: BigNumberish],
+    [string],
+    "view"
+  >;
 
   addressValues: TypedContractMethod<[arg0: BytesLike], [string], "view">;
 
-  applyBoundedDeltaToUint: TypedContractMethod<[key: BytesLike, value: BigNumberish], [bigint], "nonpayable">;
+  applyBoundedDeltaToUint: TypedContractMethod<
+    [key: BytesLike, value: BigNumberish],
+    [bigint],
+    "nonpayable"
+  >;
 
-  applyDeltaToInt: TypedContractMethod<[key: BytesLike, value: BigNumberish], [bigint], "nonpayable">;
+  applyDeltaToInt: TypedContractMethod<
+    [key: BytesLike, value: BigNumberish],
+    [bigint],
+    "nonpayable"
+  >;
 
   applyDeltaToUint: TypedContractMethod<
     [key: BytesLike, value: BigNumberish, errorMessage: string],
@@ -295,23 +680,51 @@ export interface DataStore extends BaseContract {
     "nonpayable"
   >;
 
-  boolArrayValues: TypedContractMethod<[arg0: BytesLike, arg1: BigNumberish], [boolean], "view">;
+  boolArrayValues: TypedContractMethod<
+    [arg0: BytesLike, arg1: BigNumberish],
+    [boolean],
+    "view"
+  >;
 
   boolValues: TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
 
-  bytes32ArrayValues: TypedContractMethod<[arg0: BytesLike, arg1: BigNumberish], [string], "view">;
+  bytes32ArrayValues: TypedContractMethod<
+    [arg0: BytesLike, arg1: BigNumberish],
+    [string],
+    "view"
+  >;
 
   bytes32Values: TypedContractMethod<[arg0: BytesLike], [string], "view">;
 
-  containsAddress: TypedContractMethod<[setKey: BytesLike, value: AddressLike], [boolean], "view">;
+  containsAddress: TypedContractMethod<
+    [setKey: BytesLike, value: AddressLike],
+    [boolean],
+    "view"
+  >;
 
-  containsBytes32: TypedContractMethod<[setKey: BytesLike, value: BytesLike], [boolean], "view">;
+  containsBytes32: TypedContractMethod<
+    [setKey: BytesLike, value: BytesLike],
+    [boolean],
+    "view"
+  >;
 
-  containsUint: TypedContractMethod<[setKey: BytesLike, value: BigNumberish], [boolean], "view">;
+  containsUint: TypedContractMethod<
+    [setKey: BytesLike, value: BigNumberish],
+    [boolean],
+    "view"
+  >;
 
-  decrementInt: TypedContractMethod<[key: BytesLike, value: BigNumberish], [bigint], "nonpayable">;
+  decrementInt: TypedContractMethod<
+    [key: BytesLike, value: BigNumberish],
+    [bigint],
+    "nonpayable"
+  >;
 
-  decrementUint: TypedContractMethod<[key: BytesLike, value: BigNumberish], [bigint], "nonpayable">;
+  decrementUint: TypedContractMethod<
+    [key: BytesLike, value: BigNumberish],
+    [bigint],
+    "nonpayable"
+  >;
 
   getAddress: TypedContractMethod<[key: BytesLike], [string], "view">;
 
@@ -355,31 +768,71 @@ export interface DataStore extends BaseContract {
 
   getUintCount: TypedContractMethod<[setKey: BytesLike], [bigint], "view">;
 
-  getUintValuesAt: TypedContractMethod<[setKey: BytesLike, start: BigNumberish, end: BigNumberish], [bigint[]], "view">;
+  getUintValuesAt: TypedContractMethod<
+    [setKey: BytesLike, start: BigNumberish, end: BigNumberish],
+    [bigint[]],
+    "view"
+  >;
 
-  incrementInt: TypedContractMethod<[key: BytesLike, value: BigNumberish], [bigint], "nonpayable">;
+  incrementInt: TypedContractMethod<
+    [key: BytesLike, value: BigNumberish],
+    [bigint],
+    "nonpayable"
+  >;
 
-  incrementUint: TypedContractMethod<[key: BytesLike, value: BigNumberish], [bigint], "nonpayable">;
+  incrementUint: TypedContractMethod<
+    [key: BytesLike, value: BigNumberish],
+    [bigint],
+    "nonpayable"
+  >;
 
-  intArrayValues: TypedContractMethod<[arg0: BytesLike, arg1: BigNumberish], [bigint], "view">;
+  intArrayValues: TypedContractMethod<
+    [arg0: BytesLike, arg1: BigNumberish],
+    [bigint],
+    "view"
+  >;
 
   intValues: TypedContractMethod<[arg0: BytesLike], [bigint], "view">;
 
-  "removeAddress(bytes32,address)": TypedContractMethod<[setKey: BytesLike, value: AddressLike], [void], "nonpayable">;
+  "removeAddress(bytes32,address)": TypedContractMethod<
+    [setKey: BytesLike, value: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
-  "removeAddress(bytes32)": TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
+  "removeAddress(bytes32)": TypedContractMethod<
+    [key: BytesLike],
+    [void],
+    "nonpayable"
+  >;
 
-  removeAddressArray: TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
+  removeAddressArray: TypedContractMethod<
+    [key: BytesLike],
+    [void],
+    "nonpayable"
+  >;
 
   removeBool: TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
 
   removeBoolArray: TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
 
-  "removeBytes32(bytes32,bytes32)": TypedContractMethod<[setKey: BytesLike, value: BytesLike], [void], "nonpayable">;
+  "removeBytes32(bytes32,bytes32)": TypedContractMethod<
+    [setKey: BytesLike, value: BytesLike],
+    [void],
+    "nonpayable"
+  >;
 
-  "removeBytes32(bytes32)": TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
+  "removeBytes32(bytes32)": TypedContractMethod<
+    [key: BytesLike],
+    [void],
+    "nonpayable"
+  >;
 
-  removeBytes32Array: TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
+  removeBytes32Array: TypedContractMethod<
+    [key: BytesLike],
+    [void],
+    "nonpayable"
+  >;
 
   removeInt: TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
 
@@ -387,195 +840,481 @@ export interface DataStore extends BaseContract {
 
   removeString: TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
 
-  removeStringArray: TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
+  removeStringArray: TypedContractMethod<
+    [key: BytesLike],
+    [void],
+    "nonpayable"
+  >;
 
-  "removeUint(bytes32)": TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
+  "removeUint(bytes32)": TypedContractMethod<
+    [key: BytesLike],
+    [void],
+    "nonpayable"
+  >;
 
-  "removeUint(bytes32,uint256)": TypedContractMethod<[setKey: BytesLike, value: BigNumberish], [void], "nonpayable">;
+  "removeUint(bytes32,uint256)": TypedContractMethod<
+    [setKey: BytesLike, value: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   removeUintArray: TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
 
   roleStore: TypedContractMethod<[], [string], "view">;
 
-  setAddress: TypedContractMethod<[key: BytesLike, value: AddressLike], [string], "nonpayable">;
+  setAddress: TypedContractMethod<
+    [key: BytesLike, value: AddressLike],
+    [string],
+    "nonpayable"
+  >;
 
-  setAddressArray: TypedContractMethod<[key: BytesLike, value: AddressLike[]], [void], "nonpayable">;
+  setAddressArray: TypedContractMethod<
+    [key: BytesLike, value: AddressLike[]],
+    [void],
+    "nonpayable"
+  >;
 
-  setBool: TypedContractMethod<[key: BytesLike, value: boolean], [boolean], "nonpayable">;
+  setBool: TypedContractMethod<
+    [key: BytesLike, value: boolean],
+    [boolean],
+    "nonpayable"
+  >;
 
-  setBoolArray: TypedContractMethod<[key: BytesLike, value: boolean[]], [void], "nonpayable">;
+  setBoolArray: TypedContractMethod<
+    [key: BytesLike, value: boolean[]],
+    [void],
+    "nonpayable"
+  >;
 
-  setBytes32: TypedContractMethod<[key: BytesLike, value: BytesLike], [string], "nonpayable">;
+  setBytes32: TypedContractMethod<
+    [key: BytesLike, value: BytesLike],
+    [string],
+    "nonpayable"
+  >;
 
-  setBytes32Array: TypedContractMethod<[key: BytesLike, value: BytesLike[]], [void], "nonpayable">;
+  setBytes32Array: TypedContractMethod<
+    [key: BytesLike, value: BytesLike[]],
+    [void],
+    "nonpayable"
+  >;
 
-  setInt: TypedContractMethod<[key: BytesLike, value: BigNumberish], [bigint], "nonpayable">;
+  setInt: TypedContractMethod<
+    [key: BytesLike, value: BigNumberish],
+    [bigint],
+    "nonpayable"
+  >;
 
-  setIntArray: TypedContractMethod<[key: BytesLike, value: BigNumberish[]], [void], "nonpayable">;
+  setIntArray: TypedContractMethod<
+    [key: BytesLike, value: BigNumberish[]],
+    [void],
+    "nonpayable"
+  >;
 
-  setString: TypedContractMethod<[key: BytesLike, value: string], [string], "nonpayable">;
+  setString: TypedContractMethod<
+    [key: BytesLike, value: string],
+    [string],
+    "nonpayable"
+  >;
 
-  setStringArray: TypedContractMethod<[key: BytesLike, value: string[]], [void], "nonpayable">;
+  setStringArray: TypedContractMethod<
+    [key: BytesLike, value: string[]],
+    [void],
+    "nonpayable"
+  >;
 
-  setUint: TypedContractMethod<[key: BytesLike, value: BigNumberish], [bigint], "nonpayable">;
+  setUint: TypedContractMethod<
+    [key: BytesLike, value: BigNumberish],
+    [bigint],
+    "nonpayable"
+  >;
 
-  setUintArray: TypedContractMethod<[key: BytesLike, value: BigNumberish[]], [void], "nonpayable">;
+  setUintArray: TypedContractMethod<
+    [key: BytesLike, value: BigNumberish[]],
+    [void],
+    "nonpayable"
+  >;
 
-  stringArrayValues: TypedContractMethod<[arg0: BytesLike, arg1: BigNumberish], [string], "view">;
+  stringArrayValues: TypedContractMethod<
+    [arg0: BytesLike, arg1: BigNumberish],
+    [string],
+    "view"
+  >;
 
   stringValues: TypedContractMethod<[arg0: BytesLike], [string], "view">;
 
-  uintArrayValues: TypedContractMethod<[arg0: BytesLike, arg1: BigNumberish], [bigint], "view">;
+  uintArrayValues: TypedContractMethod<
+    [arg0: BytesLike, arg1: BigNumberish],
+    [bigint],
+    "view"
+  >;
 
   uintValues: TypedContractMethod<[arg0: BytesLike], [bigint], "view">;
 
-  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
   getFunction(
     nameOrSignature: "addAddress"
-  ): TypedContractMethod<[setKey: BytesLike, value: AddressLike], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [setKey: BytesLike, value: AddressLike],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "addBytes32"
-  ): TypedContractMethod<[setKey: BytesLike, value: BytesLike], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [setKey: BytesLike, value: BytesLike],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "addUint"
-  ): TypedContractMethod<[setKey: BytesLike, value: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [setKey: BytesLike, value: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "addressArrayValues"
-  ): TypedContractMethod<[arg0: BytesLike, arg1: BigNumberish], [string], "view">;
-  getFunction(nameOrSignature: "addressValues"): TypedContractMethod<[arg0: BytesLike], [string], "view">;
+  ): TypedContractMethod<
+    [arg0: BytesLike, arg1: BigNumberish],
+    [string],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "addressValues"
+  ): TypedContractMethod<[arg0: BytesLike], [string], "view">;
   getFunction(
     nameOrSignature: "applyBoundedDeltaToUint"
-  ): TypedContractMethod<[key: BytesLike, value: BigNumberish], [bigint], "nonpayable">;
+  ): TypedContractMethod<
+    [key: BytesLike, value: BigNumberish],
+    [bigint],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "applyDeltaToInt"
-  ): TypedContractMethod<[key: BytesLike, value: BigNumberish], [bigint], "nonpayable">;
+  ): TypedContractMethod<
+    [key: BytesLike, value: BigNumberish],
+    [bigint],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "applyDeltaToUint"
-  ): TypedContractMethod<[key: BytesLike, value: BigNumberish, errorMessage: string], [bigint], "nonpayable">;
+  ): TypedContractMethod<
+    [key: BytesLike, value: BigNumberish, errorMessage: string],
+    [bigint],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "boolArrayValues"
-  ): TypedContractMethod<[arg0: BytesLike, arg1: BigNumberish], [boolean], "view">;
-  getFunction(nameOrSignature: "boolValues"): TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
+  ): TypedContractMethod<
+    [arg0: BytesLike, arg1: BigNumberish],
+    [boolean],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "boolValues"
+  ): TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
   getFunction(
     nameOrSignature: "bytes32ArrayValues"
-  ): TypedContractMethod<[arg0: BytesLike, arg1: BigNumberish], [string], "view">;
-  getFunction(nameOrSignature: "bytes32Values"): TypedContractMethod<[arg0: BytesLike], [string], "view">;
+  ): TypedContractMethod<
+    [arg0: BytesLike, arg1: BigNumberish],
+    [string],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "bytes32Values"
+  ): TypedContractMethod<[arg0: BytesLike], [string], "view">;
   getFunction(
     nameOrSignature: "containsAddress"
-  ): TypedContractMethod<[setKey: BytesLike, value: AddressLike], [boolean], "view">;
+  ): TypedContractMethod<
+    [setKey: BytesLike, value: AddressLike],
+    [boolean],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "containsBytes32"
-  ): TypedContractMethod<[setKey: BytesLike, value: BytesLike], [boolean], "view">;
+  ): TypedContractMethod<
+    [setKey: BytesLike, value: BytesLike],
+    [boolean],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "containsUint"
-  ): TypedContractMethod<[setKey: BytesLike, value: BigNumberish], [boolean], "view">;
+  ): TypedContractMethod<
+    [setKey: BytesLike, value: BigNumberish],
+    [boolean],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "decrementInt"
-  ): TypedContractMethod<[key: BytesLike, value: BigNumberish], [bigint], "nonpayable">;
+  ): TypedContractMethod<
+    [key: BytesLike, value: BigNumberish],
+    [bigint],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "decrementUint"
-  ): TypedContractMethod<[key: BytesLike, value: BigNumberish], [bigint], "nonpayable">;
-  getFunction(nameOrSignature: "getAddress"): TypedContractMethod<[key: BytesLike], [string], "view">;
-  getFunction(nameOrSignature: "getAddressArray"): TypedContractMethod<[key: BytesLike], [string[]], "view">;
-  getFunction(nameOrSignature: "getAddressCount"): TypedContractMethod<[setKey: BytesLike], [bigint], "view">;
+  ): TypedContractMethod<
+    [key: BytesLike, value: BigNumberish],
+    [bigint],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "getAddress"
+  ): TypedContractMethod<[key: BytesLike], [string], "view">;
+  getFunction(
+    nameOrSignature: "getAddressArray"
+  ): TypedContractMethod<[key: BytesLike], [string[]], "view">;
+  getFunction(
+    nameOrSignature: "getAddressCount"
+  ): TypedContractMethod<[setKey: BytesLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "getAddressValuesAt"
-  ): TypedContractMethod<[setKey: BytesLike, start: BigNumberish, end: BigNumberish], [string[]], "view">;
-  getFunction(nameOrSignature: "getBool"): TypedContractMethod<[key: BytesLike], [boolean], "view">;
-  getFunction(nameOrSignature: "getBoolArray"): TypedContractMethod<[key: BytesLike], [boolean[]], "view">;
-  getFunction(nameOrSignature: "getBytes32"): TypedContractMethod<[key: BytesLike], [string], "view">;
-  getFunction(nameOrSignature: "getBytes32Array"): TypedContractMethod<[key: BytesLike], [string[]], "view">;
-  getFunction(nameOrSignature: "getBytes32Count"): TypedContractMethod<[setKey: BytesLike], [bigint], "view">;
+  ): TypedContractMethod<
+    [setKey: BytesLike, start: BigNumberish, end: BigNumberish],
+    [string[]],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getBool"
+  ): TypedContractMethod<[key: BytesLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "getBoolArray"
+  ): TypedContractMethod<[key: BytesLike], [boolean[]], "view">;
+  getFunction(
+    nameOrSignature: "getBytes32"
+  ): TypedContractMethod<[key: BytesLike], [string], "view">;
+  getFunction(
+    nameOrSignature: "getBytes32Array"
+  ): TypedContractMethod<[key: BytesLike], [string[]], "view">;
+  getFunction(
+    nameOrSignature: "getBytes32Count"
+  ): TypedContractMethod<[setKey: BytesLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "getBytes32ValuesAt"
-  ): TypedContractMethod<[setKey: BytesLike, start: BigNumberish, end: BigNumberish], [string[]], "view">;
-  getFunction(nameOrSignature: "getInt"): TypedContractMethod<[key: BytesLike], [bigint], "view">;
-  getFunction(nameOrSignature: "getIntArray"): TypedContractMethod<[key: BytesLike], [bigint[]], "view">;
-  getFunction(nameOrSignature: "getString"): TypedContractMethod<[key: BytesLike], [string], "view">;
-  getFunction(nameOrSignature: "getStringArray"): TypedContractMethod<[key: BytesLike], [string[]], "view">;
-  getFunction(nameOrSignature: "getUint"): TypedContractMethod<[key: BytesLike], [bigint], "view">;
-  getFunction(nameOrSignature: "getUintArray"): TypedContractMethod<[key: BytesLike], [bigint[]], "view">;
-  getFunction(nameOrSignature: "getUintCount"): TypedContractMethod<[setKey: BytesLike], [bigint], "view">;
+  ): TypedContractMethod<
+    [setKey: BytesLike, start: BigNumberish, end: BigNumberish],
+    [string[]],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getInt"
+  ): TypedContractMethod<[key: BytesLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getIntArray"
+  ): TypedContractMethod<[key: BytesLike], [bigint[]], "view">;
+  getFunction(
+    nameOrSignature: "getString"
+  ): TypedContractMethod<[key: BytesLike], [string], "view">;
+  getFunction(
+    nameOrSignature: "getStringArray"
+  ): TypedContractMethod<[key: BytesLike], [string[]], "view">;
+  getFunction(
+    nameOrSignature: "getUint"
+  ): TypedContractMethod<[key: BytesLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getUintArray"
+  ): TypedContractMethod<[key: BytesLike], [bigint[]], "view">;
+  getFunction(
+    nameOrSignature: "getUintCount"
+  ): TypedContractMethod<[setKey: BytesLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "getUintValuesAt"
-  ): TypedContractMethod<[setKey: BytesLike, start: BigNumberish, end: BigNumberish], [bigint[]], "view">;
+  ): TypedContractMethod<
+    [setKey: BytesLike, start: BigNumberish, end: BigNumberish],
+    [bigint[]],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "incrementInt"
-  ): TypedContractMethod<[key: BytesLike, value: BigNumberish], [bigint], "nonpayable">;
+  ): TypedContractMethod<
+    [key: BytesLike, value: BigNumberish],
+    [bigint],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "incrementUint"
-  ): TypedContractMethod<[key: BytesLike, value: BigNumberish], [bigint], "nonpayable">;
+  ): TypedContractMethod<
+    [key: BytesLike, value: BigNumberish],
+    [bigint],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "intArrayValues"
-  ): TypedContractMethod<[arg0: BytesLike, arg1: BigNumberish], [bigint], "view">;
-  getFunction(nameOrSignature: "intValues"): TypedContractMethod<[arg0: BytesLike], [bigint], "view">;
+  ): TypedContractMethod<
+    [arg0: BytesLike, arg1: BigNumberish],
+    [bigint],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "intValues"
+  ): TypedContractMethod<[arg0: BytesLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "removeAddress(bytes32,address)"
-  ): TypedContractMethod<[setKey: BytesLike, value: AddressLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "removeAddress(bytes32)"): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "removeAddressArray"): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "removeBool"): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "removeBoolArray"): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [setKey: BytesLike, value: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "removeAddress(bytes32)"
+  ): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "removeAddressArray"
+  ): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "removeBool"
+  ): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "removeBoolArray"
+  ): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "removeBytes32(bytes32,bytes32)"
-  ): TypedContractMethod<[setKey: BytesLike, value: BytesLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "removeBytes32(bytes32)"): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "removeBytes32Array"): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "removeInt"): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "removeIntArray"): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "removeString"): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "removeStringArray"): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "removeUint(bytes32)"): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [setKey: BytesLike, value: BytesLike],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "removeBytes32(bytes32)"
+  ): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "removeBytes32Array"
+  ): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "removeInt"
+  ): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "removeIntArray"
+  ): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "removeString"
+  ): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "removeStringArray"
+  ): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "removeUint(bytes32)"
+  ): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "removeUint(bytes32,uint256)"
-  ): TypedContractMethod<[setKey: BytesLike, value: BigNumberish], [void], "nonpayable">;
-  getFunction(nameOrSignature: "removeUintArray"): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "roleStore"): TypedContractMethod<[], [string], "view">;
+  ): TypedContractMethod<
+    [setKey: BytesLike, value: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "removeUintArray"
+  ): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "roleStore"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "setAddress"
-  ): TypedContractMethod<[key: BytesLike, value: AddressLike], [string], "nonpayable">;
+  ): TypedContractMethod<
+    [key: BytesLike, value: AddressLike],
+    [string],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setAddressArray"
-  ): TypedContractMethod<[key: BytesLike, value: AddressLike[]], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [key: BytesLike, value: AddressLike[]],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setBool"
-  ): TypedContractMethod<[key: BytesLike, value: boolean], [boolean], "nonpayable">;
+  ): TypedContractMethod<
+    [key: BytesLike, value: boolean],
+    [boolean],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setBoolArray"
-  ): TypedContractMethod<[key: BytesLike, value: boolean[]], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [key: BytesLike, value: boolean[]],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setBytes32"
-  ): TypedContractMethod<[key: BytesLike, value: BytesLike], [string], "nonpayable">;
+  ): TypedContractMethod<
+    [key: BytesLike, value: BytesLike],
+    [string],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setBytes32Array"
-  ): TypedContractMethod<[key: BytesLike, value: BytesLike[]], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [key: BytesLike, value: BytesLike[]],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setInt"
-  ): TypedContractMethod<[key: BytesLike, value: BigNumberish], [bigint], "nonpayable">;
+  ): TypedContractMethod<
+    [key: BytesLike, value: BigNumberish],
+    [bigint],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setIntArray"
-  ): TypedContractMethod<[key: BytesLike, value: BigNumberish[]], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [key: BytesLike, value: BigNumberish[]],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setString"
-  ): TypedContractMethod<[key: BytesLike, value: string], [string], "nonpayable">;
+  ): TypedContractMethod<
+    [key: BytesLike, value: string],
+    [string],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setStringArray"
-  ): TypedContractMethod<[key: BytesLike, value: string[]], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [key: BytesLike, value: string[]],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setUint"
-  ): TypedContractMethod<[key: BytesLike, value: BigNumberish], [bigint], "nonpayable">;
+  ): TypedContractMethod<
+    [key: BytesLike, value: BigNumberish],
+    [bigint],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setUintArray"
-  ): TypedContractMethod<[key: BytesLike, value: BigNumberish[]], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [key: BytesLike, value: BigNumberish[]],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "stringArrayValues"
-  ): TypedContractMethod<[arg0: BytesLike, arg1: BigNumberish], [string], "view">;
-  getFunction(nameOrSignature: "stringValues"): TypedContractMethod<[arg0: BytesLike], [string], "view">;
+  ): TypedContractMethod<
+    [arg0: BytesLike, arg1: BigNumberish],
+    [string],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "stringValues"
+  ): TypedContractMethod<[arg0: BytesLike], [string], "view">;
   getFunction(
     nameOrSignature: "uintArrayValues"
-  ): TypedContractMethod<[arg0: BytesLike, arg1: BigNumberish], [bigint], "view">;
-  getFunction(nameOrSignature: "uintValues"): TypedContractMethod<[arg0: BytesLike], [bigint], "view">;
+  ): TypedContractMethod<
+    [arg0: BytesLike, arg1: BigNumberish],
+    [bigint],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "uintValues"
+  ): TypedContractMethod<[arg0: BytesLike], [bigint], "view">;
 
   filters: {};
 }

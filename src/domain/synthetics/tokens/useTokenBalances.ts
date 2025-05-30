@@ -7,6 +7,7 @@ import {
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
+import type { UiContractsChain } from "sdk/configs/chains";
 import { getV2Tokens, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import { TokenBalancesData } from "./types";
@@ -17,13 +18,14 @@ type BalancesDataResult = {
 };
 
 export function useTokenBalances(
-  chainId: number,
+  chainId: UiContractsChain,
   overrideAccount?: string | undefined,
   overrideTokenList?: {
     address: string;
     isSynthetic?: boolean;
   }[],
-  refreshInterval?: number
+  refreshInterval?: number,
+  enabled = true
 ): BalancesDataResult {
   const { resetTokensBalancesUpdates } = useTokensBalancesUpdates();
 
@@ -32,7 +34,7 @@ export function useTokenBalances(
   const account = overrideAccount ?? currentAccount;
 
   const { data, error } = useMulticall(chainId, "useTokenBalances", {
-    key: account ? [account, ...(overrideTokenList || []).map((t) => t.address)] : null,
+    key: account && enabled ? [account, ...(overrideTokenList || []).map((t) => t.address)] : null,
 
     refreshInterval,
 
