@@ -108,9 +108,13 @@ export function MultichainTokenSelector({
   useEffect(() => {
     if (isModalVisible) {
       setSearchKeyword("");
-      setActiveFilter("pay");
+      if (isGmxAccountEmpty) {
+        setActiveFilter("deposit");
+      } else {
+        setActiveFilter("pay");
+      }
     }
-  }, [isModalVisible, setSearchKeyword]);
+  }, [isGmxAccountEmpty, isModalVisible, setSearchKeyword]);
 
   if (!token) {
     return null;
