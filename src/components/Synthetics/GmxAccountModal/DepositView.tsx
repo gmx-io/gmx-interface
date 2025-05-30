@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { Contract } from "ethers";
+import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
 import Skeleton from "react-loading-skeleton";
@@ -24,6 +25,7 @@ import {
 import { selectGmxAccountDepositViewTokenInputAmount } from "context/GmxAccountContext/selectors";
 import { IStargateAbi, StargateErrorsAbi } from "context/GmxAccountContext/stargatePools";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { useMultichainApprovalsActiveListener } from "context/SyntheticsEvents/useMultichainEvents";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -172,6 +174,8 @@ export const DepositView = () => {
       ? getContract(settlementChainId, "SyntheticsRouter")
       : selectedTokenSourceChainTokenId?.stargate;
 
+  useMultichainApprovalsActiveListener("multichain-deposit-view");
+
   const tokensAllowanceResult = useTokensAllowanceData(srcChainId, {
     spenderAddress,
     tokenAddresses: selectedTokenSourceChainTokenId ? [selectedTokenSourceChainTokenId.address] : [],
@@ -209,11 +213,18 @@ export const DepositView = () => {
       tokenAddress: selectedTokenSourceChainTokenId.address,
       signer: signer,
       spender: spenderAddress,
-      setIsApproving,
+      onApproveSubmitted: () => setIsApproving(true),
+      setIsApproving: noop,
       permitParams: undefined,
-      approveAmount: undefined,
+      approveAmount: inputAmount,
     });
   }, [srcChainId, depositViewTokenAddress, inputAmount, selectedTokenSourceChainTokenId, signer, spenderAddress]);
+
+  useEffect(() => {
+    if (!needTokenApprove && isApproving) {
+      setIsApproving(false);
+    }
+  }, [isApproving, needTokenApprove]);
 
   const isInputEmpty = inputAmount === undefined || inputAmount <= 0n;
 

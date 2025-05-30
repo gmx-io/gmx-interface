@@ -1,6 +1,7 @@
 import keyBy from "lodash/keyBy";
 import pickBy from "lodash/pickBy";
 import { useEffect, useMemo, useState } from "react";
+import { zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import {
@@ -13,19 +14,25 @@ import { useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hoo
 import { ENDPOINT_ID_TO_CHAIN_ID } from "context/GmxAccountContext/stargatePools";
 import {
   subscribeToComposeDeliveredEvents,
+  subscribeToMultichainApprovalEvents,
   subscribeToOftReceivedEvents,
   subscribeToOftSentEvents,
 } from "context/WebsocketContext/subscribeToEvents";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { useChainId } from "lib/chains";
-import { EMPTY_OBJECT } from "lib/objects";
+import { EMPTY_OBJECT, EMPTY_SET } from "lib/objects";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { CodecUiHelper } from "components/Synthetics/GmxAccountModal/codecs/CodecUiHelper";
 
-import type { PendingMultichainFunding, SubmittedDeposit } from "./types";
+import { useSyntheticsEvents } from "./SyntheticsEventsProvider";
+import type { ApprovalStatuses, PendingMultichainFunding, SubmittedDeposit } from "./types";
 
 export type MultichainEventsState = {
+  multichainSourceChainApprovalStatuses: ApprovalStatuses;
+  setMultichainSourceChainApprovalsActiveListener: (name: string) => void;
+  removeMultichainSourceChainApprovalsActiveListener: (name: string) => void;
+
   pendingMultichainFunding: PendingMultichainFunding;
   setMultichainSubmittedDeposit: (submittedDeposit: SubmittedDeposit) => string | undefined;
   multichainFundingPendingIds: Record<
@@ -45,7 +52,7 @@ const DEFAULT_MULTICHAIN_FUNDING_STATE: PendingMultichainFunding = {
   },
 };
 
-export function usePendingMultichainFunding({ hasPageLostFocus }: { hasPageLostFocus: boolean }) {
+export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: boolean }) {
   const [pendingMultichainFunding, setPendingMultichainFunding] = useState<PendingMultichainFunding>(
     DEFAULT_MULTICHAIN_FUNDING_STATE
   );
@@ -274,6 +281,55 @@ export function usePendingMultichainFunding({ hasPageLostFocus }: { hasPageLostF
     [chainId, hasPageLostFocus, pendingExecuteDepositGuids, wsProvider]
   );
 
+  // Approval statuses
+
+  const [sourceChainApprovalActiveListeners, setSourceChainApprovalActiveListeners] = useState<Set<string>>(EMPTY_SET);
+  const [sourceChainApprovalStatuses, setSourceChainApprovalStatuses] = useState<ApprovalStatuses>(EMPTY_OBJECT);
+
+  const shouldListenToMultichainApprovals = sourceChainApprovalActiveListeners.size > 0;
+  useEffect(
+    function subscribeMultichainApprovals() {
+      if (!wsSourceChainProvider || !currentAccount || !srcChainId || !shouldListenToMultichainApprovals) {
+        return;
+      }
+
+      const tokenIdMap = CHAIN_ID_TO_TOKEN_ID_MAP[srcChainId];
+      const tokenAddresses = Object.values(tokenIdMap)
+        .filter((tokenId) => tokenId.address !== zeroAddress)
+        .map((tokenId) => tokenId.address);
+      const stargates = Object.values(tokenIdMap)
+        .filter((tokenId) => tokenId.address !== zeroAddress)
+        .map((tokenId) => tokenId.stargate);
+
+      const unsubscribeApproval = subscribeToMultichainApprovalEvents(
+        wsSourceChainProvider,
+        currentAccount,
+        tokenAddresses,
+        stargates,
+        (tokenAddress, spender, value) => {
+          setSourceChainApprovalStatuses((old) => ({
+            ...old,
+            [tokenAddress]: {
+              ...old[tokenAddress],
+              [spender]: { value, createdAt: Date.now() },
+            },
+          }));
+          // userAnalytics.pushEvent<TokenApproveResultEvent>({
+          //   event: "TokenApproveAction",
+          //   data: {
+          //     action: "ApproveSuccess",
+          //   },
+          // });
+        }
+      );
+
+      return function cleanup() {
+        unsubscribeApproval();
+      };
+    },
+    [currentAccount, shouldListenToMultichainApprovals, srcChainId, wsSourceChainProvider]
+  );
+
   const multichainEventsState = useMemo(
     (): MultichainEventsState => ({
       pendingMultichainFunding,
@@ -313,9 +369,44 @@ export function usePendingMultichainFunding({ hasPageLostFocus }: { hasPageLostF
 
         return stubId;
       },
+      multichainSourceChainApprovalStatuses: sourceChainApprovalStatuses,
+      setMultichainSourceChainApprovalsActiveListener: (name: string) => {
+        setSourceChainApprovalActiveListeners((old) => {
+          const newSet = new Set(old);
+          newSet.add(name);
+          return newSet;
+        });
+      },
+      removeMultichainSourceChainApprovalsActiveListener: (name: string) => {
+        setSourceChainApprovalActiveListeners((old) => {
+          const newSet = new Set(old);
+          newSet.delete(name);
+          return newSet;
+        });
+      },
     }),
-    [chainId, currentAccount, pendingMultichainFunding, srcChainId, multichainFundingPendingIds]
+    [
+      pendingMultichainFunding,
+      multichainFundingPendingIds,
+      sourceChainApprovalStatuses,
+      currentAccount,
+      srcChainId,
+      chainId,
+    ]
   );
 
   return multichainEventsState;
+}
+
+export function useMultichainApprovalsActiveListener(name: string) {
+  const { setMultichainSourceChainApprovalsActiveListener, removeMultichainSourceChainApprovalsActiveListener } =
+    useSyntheticsEvents();
+
+  useEffect(() => {
+    setMultichainSourceChainApprovalsActiveListener(name);
+
+    return () => {
+      removeMultichainSourceChainApprovalsActiveListener(name);
+    };
+  }, [name, setMultichainSourceChainApprovalsActiveListener, removeMultichainSourceChainApprovalsActiveListener]);
 }

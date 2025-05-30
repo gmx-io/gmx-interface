@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { isSourceChain } from "context/GmxAccountContext/config";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { EMPTY_OBJECT } from "lib/objects";
@@ -27,7 +28,7 @@ export function useTokensAllowanceData(
 ): TokenAllowanceResult {
   const { spenderAddress, tokenAddresses, skip } = p;
   const { account } = useWallet();
-  const { approvalStatuses } = useSyntheticsEvents();
+  const { approvalStatuses, multichainSourceChainApprovalStatuses } = useSyntheticsEvents();
 
   const validAddresses = tokenAddresses.filter((address): address is string => address !== NATIVE_TOKEN_ADDRESS);
 
@@ -75,8 +76,13 @@ export function useTokensAllowanceData(
 
     const newData: TokensAllowanceData = {};
 
+    let statuses = approvalStatuses;
+    if (chainId !== undefined && !isSourceChain(chainId)) {
+      statuses = multichainSourceChainApprovalStatuses;
+    }
+
     for (const tokenAddress of validAddresses) {
-      const event = approvalStatuses[tokenAddress]?.[spenderAddress];
+      const event = statuses[tokenAddress]?.[spenderAddress];
       const eventValue: bigint | undefined = event?.value;
       const eventCreatedAt: number = event?.createdAt ?? 0;
 
@@ -91,7 +97,15 @@ export function useTokensAllowanceData(
     }
 
     return newData;
-  }, [spenderAddress, validAddresses, data, approvalStatuses]);
+  }, [
+    spenderAddress,
+    validAddresses,
+    approvalStatuses,
+    chainId,
+    multichainSourceChainApprovalStatuses,
+    data?.tokenAllowance,
+    data?.createdAt,
+  ]);
 
   const isLoaded = validAddresses.length > 0 && validAddresses.every((address) => mergedData?.[address] !== undefined);
   const isLoading = Boolean(key) && !isLoaded;

@@ -5,7 +5,7 @@ import { Abi, ContractEventArgsFromTopics, decodeEventLog, Hex } from "viem";
 import { getContract, tryGetContract } from "config/contracts";
 import type { EventLogData, EventTxnParams } from "context/SyntheticsEvents/types";
 import { abis } from "sdk/abis";
-import { UiContractsChain } from "sdk/configs/chains";
+import type { UiContractsChain } from "sdk/configs/chains";
 import { getTokens, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 const coder = AbiCoder.defaultAbiCoder();
@@ -426,6 +426,35 @@ export function subscribeToComposeDeliveredEvents(
 
   return () => {
     provider.off(providerFilter, handleComposeDeliveredLog);
+  };
+}
+
+export function subscribeToMultichainApprovalEvents(
+  provider: Provider,
+  account: string,
+  tokenAddresses: string[],
+  spenders: string[],
+  onApprove: (tokenAddress: string, spender: string, value: bigint) => void
+) {
+  const spenderTopics = spenders.map((spender) => AbiCoder.defaultAbiCoder().encode(["address"], [spender]));
+  const addressHash = AbiCoder.defaultAbiCoder().encode(["address"], [account]);
+
+  const approvalsFilter: ProviderEvent = {
+    address: tokenAddresses,
+    topics: [APPROVED_HASH, addressHash, spenderTopics],
+  };
+
+  const handleApprovalsLog = (log: LogParams) => {
+    const tokenAddress = log.address;
+    const spender = ethers.AbiCoder.defaultAbiCoder().decode(["address"], log.topics[2])[0];
+    const value = ethers.AbiCoder.defaultAbiCoder().decode(["uint256"], log.data)[0];
+    onApprove(tokenAddress, spender, value);
+  };
+
+  provider.on(approvalsFilter, handleApprovalsLog);
+
+  return () => {
+    provider.off(approvalsFilter, handleApprovalsLog);
   };
 }
 

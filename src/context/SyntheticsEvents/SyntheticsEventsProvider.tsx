@@ -85,7 +85,7 @@ import {
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
-import { usePendingMultichainFunding } from "./usePendingMultichainFunding";
+import { useMultichainEvents } from "./useMultichainEvents";
 import { getPendingOrderKey } from "./utils";
 
 export const SyntheticsEventsContext = createContext({});
@@ -963,7 +963,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     [chainId, currentAccount, wsProvider]
   );
 
-  const multichainEventsState = usePendingMultichainFunding({
+  const multichainEventsState = useMultichainEvents({
     hasPageLostFocus,
   });
 

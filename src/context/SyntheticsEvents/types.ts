@@ -8,7 +8,7 @@ import { OrderMetricId } from "lib/metrics/types";
 import { SignedTokenPermit } from "sdk/types/tokens";
 import { ExternalSwapQuote } from "sdk/types/trade";
 
-import { MultichainEventsState } from "./usePendingMultichainFunding";
+import { MultichainEventsState } from "./useMultichainEvents";
 
 export type MultiTransactionStatus<TEventData> = {
   key: string;
