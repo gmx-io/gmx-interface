@@ -114,26 +114,26 @@ export function useAvailableToTradeAssetSettlementChain(): {
   return { totalUsd, gmxAccountUsd, walletUsd };
 }
 
+export function getTotalUsdFromTokensData(tokensData: TokensData) {
+  let totalUsd = 0n;
+  for (const token of Object.values(tokensData)) {
+    if (token.balance === undefined || token.balance === 0n) {
+      continue;
+    }
+
+    totalUsd += convertToUsd(token.balance, token.decimals, getMidPrice(token.prices))!;
+  }
+  return totalUsd;
+}
+
 export function useAvailableToTradeAssetMultichain(): {
   gmxAccountUsd: bigint | undefined;
 } {
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
 
-  let gmxAccountUsd = 0n;
+  const gmxAccountUsd = getTotalUsdFromTokensData(gmxAccountTokensData);
 
-  let empty = true;
-
-  for (const token of Object.values(gmxAccountTokensData)) {
-    if (token.balance === undefined || token.balance === 0n) {
-      continue;
-    }
-
-    empty = false;
-
-    gmxAccountUsd += convertToUsd(token.balance, token.decimals, getMidPrice(token.prices))!;
-  }
-
-  if (empty) {
+  if (gmxAccountUsd === 0n) {
     return { gmxAccountUsd: undefined };
   }
 

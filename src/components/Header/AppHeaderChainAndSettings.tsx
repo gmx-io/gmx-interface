@@ -198,9 +198,7 @@ export function AppHeaderChainAndSettings({ small, menuToggle, openSettings, sho
 
       {showConnectionOptions ? (
         <>
-          <div data-qa="user-address" className="App-header-user-address">
-            <AddressDropdown account={account} />
-          </div>
+          <AddressDropdown account={account} />
           {!small && <OneClickButton openSettings={openSettings} />}
           <NetworkDropdown
             chainId={visualChainId}
