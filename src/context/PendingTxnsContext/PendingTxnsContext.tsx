@@ -50,6 +50,7 @@ export function usePendingTxns() {
 }
 
 export function PendingTxnsContextProvider({ children }: { children: ReactNode }) {
+  // TODO: probably for multichain we need to use just provider instead of signer
   const signer = useEthersSigner();
   const { chainId } = useChainId();
   const { setIsSettingsVisible, executionFeeBufferBps } = useSettings();
