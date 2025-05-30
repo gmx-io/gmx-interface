@@ -3317,6 +3317,7 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
+#: src/domain/synthetics/positions/utils.ts
 msgid "Market"
 msgstr "마켓"
 
@@ -6403,6 +6404,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Failed to download trade history CSV."
+msgstr ""
+
+#: src/domain/synthetics/positions/utils.ts
+msgid "market"
 msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.tsx

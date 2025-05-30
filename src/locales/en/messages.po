@@ -3317,6 +3317,7 @@ msgstr "No claims match the selected filters"
 #: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
+#: src/domain/synthetics/positions/utils.ts
 msgid "Market"
 msgstr "Market"
 
@@ -6407,6 +6408,10 @@ msgstr "OPEN INTEREST"
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Failed to download trade history CSV."
 msgstr "Failed to download trade history CSV."
+
+#: src/domain/synthetics/positions/utils.ts
+msgid "market"
+msgstr "market"
 
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"

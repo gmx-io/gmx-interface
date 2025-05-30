@@ -367,6 +367,18 @@ export function getNameByOrderType(
     return t`Limit`;
   }
 
+  if (
+    orderType === OrderType.MarketSwap ||
+    orderType === OrderType.MarketIncrease ||
+    orderType === OrderType.MarketDecrease
+  ) {
+    if (lower) {
+      return t`market`;
+    }
+
+    return t`Market`;
+  }
+
   if (abbr) {
     return t`T`;
   }

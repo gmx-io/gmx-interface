@@ -232,7 +232,10 @@ export function getOrderInfo(p: {
       isAtomicSwap: false,
     });
 
-    const triggerThresholdType = getOrderThresholdType(order.orderType, order.isLong);
+    let triggerThresholdType;
+    if (!isMarketOrderType(order.orderType)) {
+      triggerThresholdType = getOrderThresholdType(order.orderType, order.isLong);
+    }
 
     const orderInfo: PositionOrderInfo = {
       ...order,
@@ -253,7 +256,12 @@ export function getOrderInfo(p: {
 }
 
 export function isVisibleOrder(orderType: OrderType) {
-  return isLimitOrderType(orderType) || isTriggerDecreaseOrderType(orderType) || isLimitSwapOrderType(orderType);
+  return (
+    isLimitOrderType(orderType) ||
+    isTriggerDecreaseOrderType(orderType) ||
+    isLimitSwapOrderType(orderType) ||
+    isMarketOrderType(orderType)
+  );
 }
 
 export function isOrderForPosition(order: OrderInfo, positionKey: string): order is PositionOrderInfo {

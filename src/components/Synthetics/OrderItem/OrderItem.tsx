@@ -20,8 +20,10 @@ import {
   isIncreaseOrderType,
   isLimitOrderType,
   isLimitSwapOrderType,
+  isMarketOrderType,
   isStopIncreaseOrderType,
   isStopLossOrderType,
+  isSwapOrderType,
   isTwapOrder,
 } from "domain/synthetics/orders";
 import { PositionsInfoData, getNameByOrderType } from "domain/synthetics/positions";
@@ -307,12 +309,12 @@ function MarkPrice({ order }: { order: OrderInfo }) {
     });
   }, [markPrice, priceDecimals, positionOrder.indexToken?.visualMultiplier]);
 
-  if (isTwapOrder(order)) {
+  if (isTwapOrder(order) || isMarketOrderType(order.orderType)) {
     const { markSwapRatioText } = getSwapRatioText(order);
 
     return (
       <Tooltip
-        handle={isLimitSwapOrderType(order.orderType) ? markSwapRatioText : markPriceFormatted}
+        handle={isSwapOrderType(order.orderType) ? markSwapRatioText : markPriceFormatted}
         position="bottom-end"
         content={
           <Trans>
@@ -360,7 +362,7 @@ function MarkPrice({ order }: { order: OrderInfo }) {
 }
 
 function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: boolean | undefined }) {
-  if (isTwapOrder(order)) {
+  if (isTwapOrder(order) || isMarketOrderType(order.orderType)) {
     return <Trans>N/A</Trans>;
   }
 
@@ -550,7 +552,7 @@ function OrderItemLarge({
       {!hideActions && (
         <TableTd>
           <div className="inline-flex items-center">
-            {!isTwapOrder(order) && (
+            {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
               <button className="cursor-pointer p-6 text-slate-100 hover:text-white" onClick={setEditingOrderKey}>
                 <AiOutlineEdit title={t`Edit order`} fontSize={16} />
               </button>
@@ -687,7 +689,7 @@ function OrderItemSmall({
         <div className="App-card-actions">
           <div className="App-card-divider"></div>
           <div className="remove-top-margin">
-            {!isTwapOrder(order) && (
+            {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
               <Button variant="secondary" className="mr-15 mt-15" onClick={setEditingOrderKey}>
                 <Trans>Edit</Trans>
               </Button>
