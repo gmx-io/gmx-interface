@@ -103,7 +103,7 @@
     "reselect": "5.1.0",
     "sass": "1.55.0",
     "shallowequal": "1.1.0",
-    "swr": "2.2.1",
+    "swr": "2.3.3",
     "typescript": "5.4.2",
     "use-context-selector": "1.4.1",
     "viem": "2.26.2",

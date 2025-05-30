@@ -5,17 +5,15 @@ import { useChainId } from "lib/chains";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import "./VersionSwitch.scss";
 
-type Props = {
-  className?: string;
-};
-
-export function VersionSwitch({ className }: Props) {
+export function VersionSwitch() {
   const { chainId } = useChainId();
   const [currentVersion, setCurrentVersion] = useTradePageVersion();
 
+  const isV1Supported = getIsV1Supported(chainId);
+
   return (
-    <div className={cx("VersionSwitch text-body-medium", className)}>
-      {getIsV1Supported(chainId) && (
+    <div className={cx("VersionSwitch text-body-medium")}>
+      {isV1Supported && (
         <div
           className={cx("VersionSwitch-option v1", { active: currentVersion === 1 })}
           onClick={() => setCurrentVersion(1)}
@@ -24,7 +22,10 @@ export function VersionSwitch({ className }: Props) {
         </div>
       )}
       <div
-        className={cx("VersionSwitch-option v2", { active: currentVersion === 2 })}
+        className={cx("VersionSwitch-option v2", {
+          active: currentVersion === 2,
+          "col-span-2 rounded-3": !isV1Supported,
+        })}
         onClick={() => setCurrentVersion(2)}
       >
         V2

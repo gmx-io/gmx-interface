@@ -154,7 +154,7 @@ export function usePendingMultichainFunding({ hasPageLostFocus }: { hasPageLostF
               token: tokenAddress,
               sourceChainId: srcChainId,
               settlementChainId: chainId,
-              sentTimestamp: nowInSeconds(),
+              sentTimestamp: currentSubmittingDeposit.sentTimestamp,
 
               executedTimestamp: undefined,
               executedTxn: undefined,

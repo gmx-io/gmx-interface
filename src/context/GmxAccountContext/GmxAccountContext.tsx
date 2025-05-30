@@ -54,7 +54,7 @@ const DEFAULT_SETTLEMENT_CHAIN_ID: UiSettlementChain = ARBITRUM_SEPOLIA;
 export function GmxAccountContextProvider({ children }: PropsWithChildren) {
   const { chainId: walletChainId } = useAccount();
 
-  const [modalOpen, setModalOpen] = useState<GmxAccountContext["modalOpen"]>("main");
+  const [modalOpen, setModalOpen] = useState<GmxAccountContext["modalOpen"]>(false);
 
   const [settlementChainId, setSettlementChainId] =
     useState<GmxAccountContext["settlementChainId"]>(DEFAULT_SETTLEMENT_CHAIN_ID);

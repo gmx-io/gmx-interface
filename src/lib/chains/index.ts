@@ -136,7 +136,7 @@ export function useChainIdImpl(): {
 
   if (currentChainIdIsSettlement || currentChainIdIsSupported) {
     return {
-      chainId: displayedChainId as UiContractsChain,
+      chainId: unsanitizedChainId as UiContractsChain,
       isConnectedToChainId: displayedChainId === unsanitizedChainId,
       srcChainId,
     };
