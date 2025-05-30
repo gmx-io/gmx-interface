@@ -3,8 +3,9 @@ import cx from "classnames";
 import uniq from "lodash/uniq";
 import { startTransition, useCallback, useEffect, useMemo, useState } from "react";
 import { useMedia } from "react-use";
+import { useDisconnect } from "wagmi";
 
-import { getSyntheticsListSectionKey } from "config/localStorage";
+import { CURRENT_PROVIDER_LOCALSTORAGE_KEY, getSyntheticsListSectionKey, SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY } from "config/localStorage";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
@@ -46,6 +47,7 @@ import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
+import { AppHeader } from "components/AppHeader/AppHeader";
 import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
 import { InterviewModal } from "components/InterviewModal/InterviewModal";
@@ -112,7 +114,7 @@ export function SyntheticsPage(p: Props) {
   const positionsCount = useSelector((s) => Object.keys(selectPositionsInfoData(s) || {}).length);
   const totalClaimables = useSelector(selectClaimablesCount);
 
-  const { savedAllowedSlippage, shouldShowPositionLines, setShouldShowPositionLines } = useSettings();
+  const { savedAllowedSlippage, shouldShowPositionLines, setShouldShowPositionLines, setIsSettingsVisible } = useSettings();
 
   const {
     isCancelOrdersProcessing,
@@ -253,9 +255,19 @@ export function SyntheticsPage(p: Props) {
 
   useMeasureComponentMountTime({ metricType: "syntheticsPage", onlyForLocation: "#/trade" });
 
+  const { disconnect } = useDisconnect();
+
+  const disconnectAccountAndCloseSettings = () => {
+    disconnect();
+    localStorage.removeItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY);
+    localStorage.removeItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY);
+    setIsSettingsVisible(false);
+  };
+
   return (
-    <div className="flex flex-col">
-      <div className="grid grow grid-cols-[1fr_auto] gap-12 px-32 pt-0 max-[1100px]:grid-cols-1 max-[800px]:p-10">
+    <div className="flex flex-col gap-8">
+      <AppHeader disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings} openSettings={openSettings} />
+      <div className="grid grow grid-cols-[1fr_auto] gap-8 pt-0 max-[1100px]:grid-cols-1 max-[800px]:p-10">
         {isMobile && <TradeBoxOneClickTrading />}
         <div className="Exchange-left flex flex-col">
           <Chart />

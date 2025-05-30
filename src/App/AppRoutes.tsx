@@ -1,3 +1,4 @@
+import cx from "classnames";
 import { ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
@@ -123,20 +124,25 @@ export function AppRoutes() {
   return (
     <>
       <div className="App">
-        <div className="App-content">
-          <div className="flex h-full">
-            {!isHome && <SideNav />}
-            <div className="flex h-full flex-col overflow-y-auto">
-              <Header
-                disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-                openSettings={openSettings}
-                showRedirectModal={showRedirectModal}
-              />
-              {isHome && <HomeRoutes showRedirectModal={showRedirectModal} />}
-              {!isHome && <MainRoutes openSettings={openSettings} />}
+        {isHome ? (
+          <div className="App-content">
+            <Header
+              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+              openSettings={openSettings}
+              showRedirectModal={showRedirectModal}
+            />
+            <HomeRoutes showRedirectModal={showRedirectModal} />
+          </div>
+        ) : (
+          <div className={cx("App-content", "max-[1100px]:pb-52")}>
+            <div className="flex h-full">
+              <SideNav />
+              <div className="flex h-full flex-col overflow-y-auto">
+                <MainRoutes openSettings={openSettings} />
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
       <ToastContainer
         limit={1}

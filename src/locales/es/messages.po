@@ -2100,6 +2100,7 @@ msgstr "Tamaño"
 msgid "We value your experience and insights and invite you to participate in an anonymous one-on-one chat."
 msgstr ""
 
+#: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Header/AppHeaderUser.tsx
