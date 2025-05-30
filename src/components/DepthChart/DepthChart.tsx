@@ -720,17 +720,19 @@ function useDepthChartPricesData(
   let data: DataPoint[] = [];
   let leftMinExecutionPrice = 0;
   let rightMinExecutionPrice = 0;
+  const visualMultiplier = marketInfo.indexToken.visualMultiplier;
 
   if (isZeroPriceImpact) {
     // need to calculate only 2 points
     // left
 
-    const leftExecutionPrice = getNextPositionExecutionPrice({
+    const leftExecutionPrice = getDepthChartExecutionPrice({
       isIncrease: true,
       isLong: false,
       priceImpactUsd: 0n,
       sizeDeltaUsd: DOLLAR,
       triggerPrice: marketInfo.indexToken.prices.minPrice,
+      visualMultiplier,
     })!;
 
     data.push({
@@ -752,12 +754,13 @@ function useDepthChartPricesData(
 
     // right
 
-    const rightExecutionPrice = getNextPositionExecutionPrice({
+    const rightExecutionPrice = getDepthChartExecutionPrice({
       isIncrease: true,
       isLong: true,
       priceImpactUsd: 0n,
       sizeDeltaUsd: DOLLAR,
       triggerPrice: marketInfo.indexToken.prices.maxPrice,
+      visualMultiplier,
     })!;
 
     data.push({
@@ -784,12 +787,13 @@ function useDepthChartPricesData(
       for (let positionSize = leftMax; positionSize >= DOLLAR; positionSize -= leftInc) {
         const priceImpactUsd = getPriceImpactForPosition(marketInfo, positionSize, false, { fallbackToZero: true });
 
-        const executionPrice = getNextPositionExecutionPrice({
+        const executionPrice = getDepthChartExecutionPrice({
           isIncrease: true,
           isLong: false,
           priceImpactUsd,
           sizeDeltaUsd: positionSize,
           triggerPrice: marketInfo.indexToken.prices.minPrice,
+          visualMultiplier,
         })!;
 
         data.push({
@@ -813,12 +817,13 @@ function useDepthChartPricesData(
           const priceImpactUsd = getPriceImpactForPosition(marketInfo, leftMin, false, {
             fallbackToZero: true,
           });
-          const executionPrice = getNextPositionExecutionPrice({
+          const executionPrice = getDepthChartExecutionPrice({
             isIncrease: true,
             isLong: false,
             priceImpactUsd,
             sizeDeltaUsd: leftMin,
             triggerPrice: marketInfo.indexToken.prices.minPrice,
+            visualMultiplier,
           })!;
 
           leftMinExecutionPrice = bigintToNumber(executionPrice, USD_DECIMALS);
@@ -845,12 +850,13 @@ function useDepthChartPricesData(
         if (positionSize - leftInc < DOLLAR && positionSize > DOLLAR) {
           const priceImpactUsd = getPriceImpactForPosition(marketInfo, DOLLAR, false, { fallbackToZero: true });
 
-          const executionPrice = getNextPositionExecutionPrice({
+          const executionPrice = getDepthChartExecutionPrice({
             isIncrease: true,
             isLong: false,
             priceImpactUsd,
             sizeDeltaUsd: DOLLAR,
             triggerPrice: marketInfo.indexToken.prices.minPrice,
+            visualMultiplier,
           })!;
 
           data.push({
@@ -881,12 +887,13 @@ function useDepthChartPricesData(
       for (let positionSize = rightMax; positionSize >= DOLLAR; positionSize -= rightInc) {
         const priceImpactUsd = getPriceImpactForPosition(marketInfo, positionSize, true, { fallbackToZero: true });
 
-        const executionPrice = getNextPositionExecutionPrice({
+        const executionPrice = getDepthChartExecutionPrice({
           isIncrease: true,
           isLong: true,
           priceImpactUsd,
           sizeDeltaUsd: positionSize,
           triggerPrice: marketInfo.indexToken.prices.maxPrice,
+          visualMultiplier,
         })!;
 
         data.push({
@@ -911,12 +918,13 @@ function useDepthChartPricesData(
             fallbackToZero: true,
           });
 
-          const executionPrice = getNextPositionExecutionPrice({
+          const executionPrice = getDepthChartExecutionPrice({
             isIncrease: true,
             isLong: true,
             priceImpactUsd,
             sizeDeltaUsd: rightMin,
             triggerPrice: marketInfo.indexToken.prices.maxPrice,
+            visualMultiplier,
           })!;
 
           rightMinExecutionPrice = bigintToNumber(executionPrice, USD_DECIMALS);
@@ -943,12 +951,13 @@ function useDepthChartPricesData(
         if (positionSize - rightInc < DOLLAR && positionSize > DOLLAR) {
           const priceImpactUsd = getPriceImpactForPosition(marketInfo, DOLLAR, true, { fallbackToZero: true });
 
-          const executionPrice = getNextPositionExecutionPrice({
+          const executionPrice = getDepthChartExecutionPrice({
             isIncrease: true,
             isLong: true,
             priceImpactUsd,
             sizeDeltaUsd: DOLLAR,
             triggerPrice: marketInfo.indexToken.prices.maxPrice,
+            visualMultiplier,
           })!;
 
           data.push({
@@ -1111,12 +1120,13 @@ function useEdgePoints(
   {
     const priceImpactUsd = getPriceImpactForPosition(marketInfo, rightMax, true, { fallbackToZero: true });
 
-    const executionPrice = getNextPositionExecutionPrice({
+    const executionPrice = getDepthChartExecutionPrice({
       isIncrease: true,
       isLong: true,
       priceImpactUsd,
       sizeDeltaUsd: rightMax === 0n ? DOLLAR : rightMax,
       triggerPrice: marketInfo.indexToken.prices.maxPrice,
+      visualMultiplier: marketInfo.indexToken.visualMultiplier,
     })!;
 
     rightMaxExecutionPrice = executionPrice;
@@ -1125,12 +1135,13 @@ function useEdgePoints(
   {
     const priceImpactUsd = getPriceImpactForPosition(marketInfo, leftMax, false, { fallbackToZero: true });
 
-    const executionPrice = getNextPositionExecutionPrice({
+    const executionPrice = getDepthChartExecutionPrice({
       isIncrease: true,
       isLong: false,
       priceImpactUsd,
       sizeDeltaUsd: leftMax === 0n ? DOLLAR : leftMax,
       triggerPrice: marketInfo.indexToken.prices.minPrice,
+      visualMultiplier: marketInfo.indexToken.visualMultiplier,
     })!;
 
     leftMaxExecutionPrice = executionPrice;
@@ -1186,4 +1197,16 @@ function YAxisTick(
       {text}
     </Text>
   );
+}
+
+function getDepthChartExecutionPrice(
+  p: Parameters<typeof getNextPositionExecutionPrice>[0] & { visualMultiplier: number | undefined }
+) {
+  const executionPrice = getNextPositionExecutionPrice(p);
+
+  if (typeof executionPrice === "bigint" && p.visualMultiplier !== undefined && p.visualMultiplier !== 1) {
+    return executionPrice * BigInt(p.visualMultiplier);
+  }
+
+  return executionPrice;
 }
