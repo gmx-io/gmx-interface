@@ -33,32 +33,6 @@ type OrdersResult = {
 
 const DEFAULT_COUNT = 1000;
 
-const MOCK_ORDER = {
-  key: "0x59cd812920178a563e7f6562ca60d5599ab556ab3227ff082111b94cee5e29a9",
-  account: "0x2BE7f46c991dEFF90936fDbEdf987d6bb629BC51",
-  receiver: "0x2BE7f46c991dEFF90936fDbEdf987d6bb629BC51",
-  callbackContract: "0x0000000000000000000000000000000000000000",
-  marketAddress: "0xAC2c6C1b0cd1CabF78B4e8ad58aA9d43375318Cb",
-  initialCollateralTokenAddress: "0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
-  swapPath: [],
-  sizeDeltaUsd: 5990640732127527013560000000000n,
-  initialCollateralDeltaAmount: 3000000n,
-  contractTriggerPrice: 0n,
-  contractAcceptablePrice: 2077428363634606426373n,
-  executionFee: 8827500010700000n,
-  callbackGasLimit: 0n,
-  minOutputAmount: 0n,
-  updatedAtTime: 1748620704n,
-  isLong: true,
-  shouldUnwrapNativeToken: false,
-  isFrozen: false,
-  orderType: 2,
-  decreasePositionSwapType: 0,
-  autoCancel: false,
-  uiFeeReceiver: "0xff00000000000000000000000000000000000001",
-  validFromTime: 0n,
-};
-
 export function useOrders(
   chainId: number,
   {
@@ -124,7 +98,36 @@ export function useOrders(
   });
 
   const ordersData: OrdersData | undefined = useMemo(() => {
-    const filteredOrders = data?.orders.concat(MOCK_ORDER as any).filter((order) => {
+    const MOCK_ORDER = {
+      key: "0x59cd812920178a563e7f6562ca60d5599ab556ab3227ff082111b94cee5e29a9",
+      account: "0x2BE7f46c991dEFF90936fDbEdf987d6bb629BC51",
+      receiver: "0x2BE7f46c991dEFF90936fDbEdf987d6bb629BC51",
+      callbackContract: "0x0000000000000000000000000000000000000000",
+      marketAddress: "0xAC2c6C1b0cd1CabF78B4e8ad58aA9d43375318Cb",
+      initialCollateralTokenAddress: "0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
+      swapPath: [],
+      sizeDeltaUsd: 5990640732127527013560000000000n,
+      initialCollateralDeltaAmount: 3000000n,
+      contractTriggerPrice: 0n,
+      contractAcceptablePrice: 2077428363634606426373n,
+      executionFee: 8827500010700000n,
+      callbackGasLimit: 0n,
+      minOutputAmount: 0n,
+      updatedAtTime: (window as any).mockMarketOrder_updatedAtTime ?? 1748620704n,
+      isLong: true,
+      shouldUnwrapNativeToken: false,
+      isFrozen: false,
+      orderType: 2,
+      decreasePositionSwapType: 0,
+      autoCancel: false,
+      uiFeeReceiver: "0xff00000000000000000000000000000000000001",
+      validFromTime: 0n,
+    };
+
+    const shouldMockMarketOrder =
+      (window as any).mockMarketOrder_updatedAtTime !== undefined || (window as any).show_mockMarketOrder;
+
+    const filteredOrders = data?.orders.concat(shouldMockMarketOrder ? [MOCK_ORDER as any] : []).filter((order) => {
       if (isMarketOrderType(order.orderType)) {
         const is10SecondsPassedSinceOrderCreation = Date.now() - Number(order.updatedAtTime * 1000n) > 10000;
         if (!is10SecondsPassedSinceOrderCreation) {
