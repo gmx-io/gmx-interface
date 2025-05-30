@@ -34,6 +34,26 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "avalanche-issue",
+    title: "Avalanche congestion impact",
+    isActive: true,
+    startDate: "30 May 2025, 08:00",
+    endDate: "30 May 2026, 08:00",
+    chains: [AVALANCHE],
+    bodyText: (
+      <>
+        Avalanche’s recent upgrade may prevent some GMX V2 orders from executing during congestion. The Avalanche team
+        is investigating.
+        <br />
+        <br />
+        Arbitrum is unaffected and trading remains fully operational.
+        <br />
+        <br />
+        <ExternalLink href="https://t.me/GMX_Announcements/1076">Read more</ExternalLink>.
+      </>
+    ),
+  },
+  {
     id: "zro-listing",
     title: "LayerZero market added on Arbitrum",
     isActive: true,
