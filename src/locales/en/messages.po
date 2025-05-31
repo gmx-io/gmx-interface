@@ -662,7 +662,7 @@ msgstr "Insufficient staked tokens"
 msgid "Telegram contact (optional)"
 msgstr "Telegram contact (optional)"
 
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Market order will be cancellable in {minutesText}{seconds}s."
 msgstr "Market order will be cancellable in {minutesText}{seconds}s."
 

@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { AiOutlineEdit } from "react-icons/ai";
 import { MdClose } from "react-icons/md";
 
@@ -27,6 +27,7 @@ import {
   isSwapOrderType,
   isTwapOrder,
 } from "domain/synthetics/orders";
+import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
 import { PositionsInfoData, getNameByOrderType } from "domain/synthetics/positions";
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
@@ -741,35 +742,6 @@ function OrderItemSmall({
     </div>
   );
 }
-
-const useDisabledCancelMarketOrderMessage = (order: OrderInfo, oracleSettings: OracleSettingsData | undefined) => {
-  const [diff, setDiff] = useState(
-    Number(order.updatedAtTime) + Number(oracleSettings?.requestExpirationTime) - Date.now() / 1000
-  );
-
-  useEffect(() => {
-    if (!oracleSettings) return;
-    const interval = setInterval(() => {
-      if (diff > 0) {
-        const time = Date.now() / 1000;
-        setDiff(Number(order.updatedAtTime) + Number(oracleSettings.requestExpirationTime) - time);
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [order.updatedAtTime, oracleSettings, diff]);
-
-  if (!oracleSettings || !isMarketOrderType(order.orderType)) return undefined;
-
-  if (diff > 0) {
-    const minutes = Math.floor(diff / 60);
-    const seconds = Math.floor(diff % 60);
-
-    const minutesText = minutes > 0 ? `${minutes}m ` : "";
-    return t`Market order will be cancellable in ${minutesText}${seconds}s.`;
-  }
-
-  return undefined;
-};
 
 function getSwapRatioText(order: OrderInfo) {
   if (!isLimitOrderType(order.orderType)) return {};

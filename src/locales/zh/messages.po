@@ -662,7 +662,7 @@ msgstr ""
 msgid "Telegram contact (optional)"
 msgstr ""
 
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Market order will be cancellable in {minutesText}{seconds}s."
 msgstr ""
 
