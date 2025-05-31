@@ -10,6 +10,7 @@ import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/order
 import { useOrderErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { OracleSettingsData } from "domain/synthetics/common/useOracleSettingsData";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import {
   OrderInfo,
@@ -20,10 +21,13 @@ import {
   isIncreaseOrderType,
   isLimitOrderType,
   isLimitSwapOrderType,
+  isMarketOrderType,
   isStopIncreaseOrderType,
   isStopLossOrderType,
+  isSwapOrderType,
   isTwapOrder,
 } from "domain/synthetics/orders";
+import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
 import { PositionsInfoData, getNameByOrderType } from "domain/synthetics/positions";
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
@@ -40,6 +44,7 @@ import { SwapMarketLabel } from "components/SwapMarketLabel/SwapMarketLabel";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import TwapOrdersList from "./TwapOrdersList/TwapOrdersList";
 import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
@@ -56,6 +61,7 @@ type Props = {
   isLarge: boolean;
   positionsInfoData?: PositionsInfoData;
   setRef?: (el: HTMLElement | null, orderKey: string) => void;
+  oracleSettings: OracleSettingsData | undefined;
 };
 
 export function OrderItem(p: Props) {
@@ -78,6 +84,7 @@ export function OrderItem(p: Props) {
       isCanceling={p.isCanceling}
       isSelected={p.isSelected}
       setRef={p.setRef}
+      oracleSettings={p.oracleSettings}
     />
   ) : (
     <OrderItemSmall
@@ -89,6 +96,7 @@ export function OrderItem(p: Props) {
       isSelected={p.isSelected}
       onToggleOrder={p.onToggleOrder}
       setRef={p.setRef}
+      oracleSettings={p.oracleSettings}
     />
   );
 }
@@ -307,12 +315,12 @@ function MarkPrice({ order }: { order: OrderInfo }) {
     });
   }, [markPrice, priceDecimals, positionOrder.indexToken?.visualMultiplier]);
 
-  if (isTwapOrder(order)) {
+  if (isTwapOrder(order) || isMarketOrderType(order.orderType)) {
     const { markSwapRatioText } = getSwapRatioText(order);
 
     return (
       <Tooltip
-        handle={isLimitSwapOrderType(order.orderType) ? markSwapRatioText : markPriceFormatted}
+        handle={isSwapOrderType(order.orderType) ? markSwapRatioText : markPriceFormatted}
         position="bottom-end"
         content={
           <Trans>
@@ -360,7 +368,7 @@ function MarkPrice({ order }: { order: OrderInfo }) {
 }
 
 function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: boolean | undefined }) {
-  if (isTwapOrder(order)) {
+  if (isTwapOrder(order) || isMarketOrderType(order.orderType)) {
     return <Trans>N/A</Trans>;
   }
 
@@ -436,6 +444,7 @@ function OrderItemLarge({
   onCancelOrder,
   isCanceling,
   isSelected,
+  oracleSettings,
 }: {
   order: OrderInfo;
   setRef?: (el: HTMLElement | null, orderKey: string) => void;
@@ -446,6 +455,7 @@ function OrderItemLarge({
   onCancelOrder: undefined | (() => void);
   isCanceling: boolean | undefined;
   isSelected: boolean | undefined;
+  oracleSettings: OracleSettingsData | undefined;
 }) {
   const marketInfoData = useSelector(selectMarketsInfoData);
   const isSwap = isLimitSwapOrderType(order.orderType);
@@ -476,6 +486,20 @@ function OrderItemLarge({
       if (setRef) setRef(el, order.key);
     },
     [order.key, setRef]
+  );
+
+  const disabledCancelMarketOrderMessage = useDisabledCancelMarketOrderMessage(order, oracleSettings);
+
+  const cancelButton = (
+    <button
+      className={cx("cursor-pointer p-6 text-slate-100 disabled:cursor-wait", {
+        "hover:text-white": !isCanceling && !disabledCancelMarketOrderMessage,
+      })}
+      disabled={isCanceling || Boolean(disabledCancelMarketOrderMessage)}
+      onClick={onCancelOrder}
+    >
+      <MdClose fontSize={16} />
+    </button>
   );
 
   return (
@@ -550,20 +574,18 @@ function OrderItemLarge({
       {!hideActions && (
         <TableTd>
           <div className="inline-flex items-center">
-            {!isTwapOrder(order) && (
+            {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
               <button className="cursor-pointer p-6 text-slate-100 hover:text-white" onClick={setEditingOrderKey}>
                 <AiOutlineEdit title={t`Edit order`} fontSize={16} />
               </button>
             )}
-            {onCancelOrder && (
-              <button
-                className="cursor-pointer p-6 text-slate-100 hover:text-white disabled:cursor-wait"
-                disabled={isCanceling}
-                onClick={onCancelOrder}
-              >
-                <MdClose title={t`Close order`} fontSize={16} />
-              </button>
-            )}
+            {onCancelOrder ? (
+              disabledCancelMarketOrderMessage ? (
+                <TooltipWithPortal handle={cancelButton} content={disabledCancelMarketOrderMessage} />
+              ) : (
+                cancelButton
+              )
+            ) : null}
           </div>
         </TableTd>
       )}
@@ -580,6 +602,7 @@ function OrderItemSmall({
   isSelected,
   onToggleOrder,
   setRef,
+  oracleSettings,
 }: {
   showDebugValues: boolean;
   order: OrderInfo;
@@ -589,6 +612,7 @@ function OrderItemSmall({
   isSelected: boolean | undefined;
   onToggleOrder: undefined | (() => void);
   setRef?: (el: HTMLElement | null, orderKey: string) => void;
+  oracleSettings: OracleSettingsData | undefined;
 }) {
   const marketInfoData = useSelector(selectMarketsInfoData);
 
@@ -628,6 +652,18 @@ function OrderItemSmall({
       if (setRef) setRef(el, order.key);
     },
     [order.key, setRef]
+  );
+
+  const disabledCancelMarketOrderMessage = useDisabledCancelMarketOrderMessage(order, oracleSettings);
+  const cancelButton = (
+    <Button
+      variant="secondary"
+      className="mt-15 !text-white"
+      onClick={onCancelOrder}
+      disabled={Boolean(disabledCancelMarketOrderMessage)}
+    >
+      <Trans>Cancel</Trans>
+    </Button>
   );
 
   return (
@@ -687,17 +723,19 @@ function OrderItemSmall({
         <div className="App-card-actions">
           <div className="App-card-divider"></div>
           <div className="remove-top-margin">
-            {!isTwapOrder(order) && (
+            {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
               <Button variant="secondary" className="mr-15 mt-15" onClick={setEditingOrderKey}>
                 <Trans>Edit</Trans>
               </Button>
             )}
 
-            {onCancelOrder && (
-              <Button variant="secondary" className="mt-15" onClick={onCancelOrder}>
-                <Trans>Cancel</Trans>
-              </Button>
-            )}
+            {onCancelOrder ? (
+              disabledCancelMarketOrderMessage ? (
+                <TooltipWithPortal handle={cancelButton} content={disabledCancelMarketOrderMessage} />
+              ) : (
+                cancelButton
+              )
+            ) : null}
           </div>
         </div>
       )}

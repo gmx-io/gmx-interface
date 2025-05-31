@@ -10,7 +10,11 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
-import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectAccount,
+  selectChainId,
+  selectOracleSettings,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
@@ -20,6 +24,7 @@ import {
   SwapOrderInfo,
   TwapOrderInfo,
   isLimitOrderType,
+  isMarketOrderType,
   isPositionOrder,
   isSwapOrder,
   isTriggerDecreaseOrderType,
@@ -183,6 +188,8 @@ export function OrderList({
     }
   }, []);
 
+  const oracleSettings = useSelector(selectOracleSettings);
+
   return (
     <div ref={ref}>
       {(isContainerSmall || isScreenSmall) && !isLoading && (
@@ -228,6 +235,7 @@ export function OrderList({
                   positionsInfoData={positionsData}
                   hideActions={hideActions}
                   setRef={handleSetRef}
+                  oracleSettings={oracleSettings}
                 />
               ))}
             </div>
@@ -299,6 +307,7 @@ export function OrderList({
                   hideActions={hideActions}
                   positionsInfoData={positionsData}
                   setRef={(el) => (orderRefs.current[order.key] = el)}
+                  oracleSettings={oracleSettings}
                 />
               ))}
           </tbody>
@@ -335,7 +344,11 @@ function useFilteredOrders({
 
     const { swapOrders, positionOrders } = Object.values(ordersResponse.ordersInfoData || {}).reduce(
       (acc, order) => {
-        if (isLimitOrderType(order.orderType) || isTriggerDecreaseOrderType(order.orderType)) {
+        if (
+          isLimitOrderType(order.orderType) ||
+          isTriggerDecreaseOrderType(order.orderType) ||
+          isMarketOrderType(order.orderType)
+        ) {
           if (isSwapOrder(order)) {
             acc.swapOrders.push(order);
           } else if (isPositionOrder(order)) {
@@ -355,5 +368,6 @@ function useFilteredOrders({
       ...sortSwapOrders(swapOrders, sortedLongAndShortTokens),
     ];
   }, [availableTokensOptions, ordersResponse.ordersInfoData]);
+
   return orders;
 }

@@ -98,6 +98,7 @@ export const SUBACCOUNT_EXPIRES_AT = hashString("SUBACCOUNT_EXPIRES_AT");
 export const PRICE_FEED_KEY = hashString("PRICE_FEED");
 export const GASLESS_FEATURE_DISABLED_KEY = hashString("GASLESS_FEATURE_DISABLED");
 export const GELATO_RELAY_FEE_MULTIPLIER_FACTOR_KEY = hashString("GELATO_RELAY_FEE_MULTIPLIER_FACTOR");
+export const REQUEST_EXPIRATION_TIME_KEY = hashString("REQUEST_EXPIRATION_TIME");
 
 export const GMX_SIMULATION_ORIGIN = "0x" + keccakString("GMX SIMULATION ORIGIN").slice(-40);
 
@@ -381,4 +382,8 @@ export function priceFeedKey(token: string) {
 
 export function gaslessFeatureDisabledKey(module: string) {
   return hashData(["bytes32", "address"], [GASLESS_FEATURE_DISABLED_KEY, module]);
+}
+
+export function requestExpirationTimeKey(module: string) {
+  return hashData(["bytes32", "address"], [REQUEST_EXPIRATION_TIME_KEY, module]);
 }
