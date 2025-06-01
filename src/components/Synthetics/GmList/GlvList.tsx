@@ -1,6 +1,5 @@
 import { Trans, t } from "@lingui/macro";
 import { useMemo } from "react";
-import { useAccount } from "wagmi";
 
 import {
   selectChainId,
@@ -10,6 +9,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
+import useWallet from "lib/wallets/useWallet";
 
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import { TableTh, TableTheadTr } from "components/Table/Table";
@@ -36,7 +36,7 @@ export function GlvList({
   const glvsLoading = useSelector(selectGlvInfoLoading);
 
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit, withGlv: true });
-  const { isConnected } = useAccount();
+  const { active: isConnected } = useWallet();
 
   const userEarnings = useUserEarnings(chainId);
 
