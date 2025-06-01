@@ -198,10 +198,7 @@ export function SettingsModal({
     if (!subaccountState.subaccount) {
       const days = secondsToPeriod(DEFAULT_SUBACCOUNT_EXPIRY_DURATION, "1d");
 
-      return plural(Number(days), {
-        one: "1 day",
-        other: `${days} days`,
-      });
+      return `${days} days`;
     }
 
     const seconds = Number(getRemainingSubaccountSeconds(subaccountState.subaccount));
@@ -209,27 +206,22 @@ export function SettingsModal({
     const days = secondsToPeriod(seconds, "1d");
 
     if (days > 0) {
-      return plural(Number(days), {
-        one: "1 day",
-        other: `${days} days`,
-      });
+      return `${days + 1} days`;
     }
 
     const hours = secondsToPeriod(seconds, "1h");
 
     if (hours > 0) {
-      return plural(Number(hours), {
-        one: "1 hour",
-        other: `${hours} hours`,
-      });
+      return `${hours + 1} hours`;
     }
 
     const minutes = secondsToPeriod(seconds, "1m");
 
-    return plural(Number(minutes), {
-      one: "1 minute",
-      other: `${minutes} minutes`,
-    });
+    if (minutes > 0) {
+      return `${minutes + 1} minutes`;
+    }
+
+    return `0 minutes`;
   }, [subaccountState.subaccount]);
 
   return (
@@ -372,6 +364,7 @@ export function SettingsModal({
                 defaultValue={30}
                 value={parseFloat(String(settings.executionFeeBufferBps))}
                 onChange={onChangeExecutionFeeBufferBps}
+                maxValue={1000 * 100}
                 suggestions={EMPTY_ARRAY}
               />
             )}
@@ -466,6 +459,7 @@ function InputSetting({
   description,
   defaultValue,
   value,
+  maxValue,
   onChange,
   onBlur,
   className,
@@ -476,6 +470,7 @@ function InputSetting({
   description?: ReactNode;
   defaultValue: number;
   value?: number;
+  maxValue?: number;
   onChange: (value: number) => void;
   onBlur?: () => void;
   className?: string;
@@ -497,6 +492,7 @@ function InputSetting({
       <PercentageInput
         defaultValue={defaultValue}
         value={value}
+        maxValue={maxValue}
         onChange={onChange}
         tooltipPosition="bottom"
         suggestions={suggestions}
