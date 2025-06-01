@@ -54,6 +54,22 @@ export function SettingsModal({
 
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
 
+  const shouldShowGasPaymentTokenSwitchedBanner = useMemo(() => {
+    if (!settings.expressOrdersEnabled || isOutOfGasPaymentBalance) {
+      return false;
+    }
+
+    return (
+      settings.expressTradingGasTokenSwitched &&
+      settings.expressTradingGasTokenSwitched !== settings.gasPaymentTokenAddress
+    );
+  }, [
+    settings.expressOrdersEnabled,
+    settings.expressTradingGasTokenSwitched,
+    settings.gasPaymentTokenAddress,
+    isOutOfGasPaymentBalance,
+  ]);
+
   useEffect(() => {
     if (!isSettingsVisible) return;
 
@@ -278,13 +294,13 @@ export function SettingsModal({
 
                 {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
 
-                {settings.expressTradingGasTokenSwitched &&
-                  !isOutOfGasPaymentBalance &&
-                  settings.expressOrdersEnabled && (
-                    <ExpressTradingGasTokenSwitchedBanner
-                      onClose={() => settings.setExpressTradingGasTokenSwitched(false)}
-                    />
-                  )}
+                {shouldShowGasPaymentTokenSwitchedBanner && (
+                  <ExpressTradingGasTokenSwitchedBanner
+                    onClose={() => {
+                      settings.setExpressTradingGasTokenSwitched(null);
+                    }}
+                  />
+                )}
 
                 <OldSubaccountWithdraw />
 

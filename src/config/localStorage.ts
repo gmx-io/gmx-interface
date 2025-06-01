@@ -64,7 +64,7 @@ export const LP_INTERVIEW_INVITATION_SHOWN_TIME_KEY = "lp-interview-invitation-s
  */
 export const TOKEN_FAVORITE_PREFERENCE_SETTINGS_KEY = "token-favorite-preference";
 export const SETTINGS_WARNING_DOT_VISIBLE_KEY = "settings-warning-dot-visible";
-export const EXPRESS_TRADING_GAS_TOKEN_SWITCHED = "express-trading-gas-token-switched";
+export const EXPRESS_TRADING_GAS_TOKEN_SWITCHED = "gas-token-switched";
 
 export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
 export const METRICS_TIMERS_KEY = "metrics-timers-key";
@@ -191,12 +191,12 @@ export function getSortedMarketsAddressesKey(chainId: number) {
   return [SORTED_MARKETS_KEY, chainId].join(":");
 }
 
-export function getExpressOrdersEnabledKey(chainId: number) {
-  return [chainId, EXPRESS_ORDERS_ENABLED_KEY];
+export function getExpressOrdersEnabledKey(chainId: number, account: string | undefined) {
+  return [chainId, account, EXPRESS_ORDERS_ENABLED_KEY];
 }
 
-export function getGasPaymentTokenAddressKey(chainId: number) {
-  return [chainId, GAS_PAYMENT_TOKEN_ADDRESS_KEY];
+export function getGasPaymentTokenAddressKey(chainId: number, account: string | undefined) {
+  return [chainId, account, GAS_PAYMENT_TOKEN_ADDRESS_KEY];
 }
 
 export function getExpressTradingBannerDismissedKey(chainId: number) {
