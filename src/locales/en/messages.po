@@ -2708,8 +2708,8 @@ msgid "Fees (Incl. Swap)"
 msgstr "Fees (Incl. Swap)"
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "{0, plural, one {1 hour} other {{hours} hours}}"
-msgstr "{0, plural, one {1 hour} other {{hours} hours}}"
+#~ msgid "{0, plural, one {1 hour} other {{hours} hours}}"
+#~ msgstr "{0, plural, one {1 hour} other {{hours} hours}}"
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
 #~ msgid "Generate & Activate Subaccount"
@@ -4538,8 +4538,8 @@ msgstr "Select a token"
 #~ msgstr "Gas Payment Token changed due to insufficient balance."
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "{0, plural, one {1 minute} other {{minutes} minutes}}"
-msgstr "{0, plural, one {1 minute} other {{minutes} minutes}}"
+#~ msgid "{0, plural, one {1 minute} other {{minutes} minutes}}"
+#~ msgstr "{0, plural, one {1 minute} other {{minutes} minutes}}"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -6682,8 +6682,8 @@ msgstr "Buy GLP or GMX"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "{0, plural, one {1 day} other {{days} days}}"
-msgstr "{0, plural, one {1 day} other {{days} days}}"
+#~ msgid "{0, plural, one {1 day} other {{days} days}}"
+#~ msgstr "{0, plural, one {1 day} other {{days} days}}"
 
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Max Out"

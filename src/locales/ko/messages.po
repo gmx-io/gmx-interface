@@ -2708,8 +2708,8 @@ msgid "Fees (Incl. Swap)"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "{0, plural, one {1 hour} other {{hours} hours}}"
-msgstr ""
+#~ msgid "{0, plural, one {1 hour} other {{hours} hours}}"
+#~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
 #~ msgid "Generate & Activate Subaccount"
@@ -4535,8 +4535,8 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "{0, plural, one {1 minute} other {{minutes} minutes}}"
-msgstr ""
+#~ msgid "{0, plural, one {1 minute} other {{minutes} minutes}}"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -6679,8 +6679,8 @@ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "{0, plural, one {1 day} other {{days} days}}"
-msgstr ""
+#~ msgid "{0, plural, one {1 day} other {{days} days}}"
+#~ msgstr ""
 
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Max Out"
