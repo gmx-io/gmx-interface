@@ -25,7 +25,7 @@ import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
 import { GmxAccountModal } from "components/Synthetics/GmxAccountModal/GmxAccountModal";
-import { useMultichainFundingDepositToast } from "components/Synthetics/GmxAccountModal/useMultichainDepositToast";
+import { useMultichainFundingToast } from "components/Synthetics/GmxAccountModal/useMultichainFundingToast";
 
 import { HomeRoutes } from "./HomeRoutes";
 import { MainRoutes } from "./MainRoutes";
@@ -50,7 +50,7 @@ export function AppRoutes() {
   useOpenAppMetric();
   useAccountInitedMetric();
   useWalletConnectedUserAnalyticsEvent();
-  useMultichainFundingDepositToast();
+  useMultichainFundingToast();
 
   const query = useRouteQuery();
 

@@ -104,19 +104,32 @@ export type PendingOrdersUpdates = {
   [key: string]: OrderTxnType;
 };
 
-export type SubmittedDeposit = {
+export type SubmittedMultichainDeposit = {
   amount: bigint;
   settlementChainId: number;
   sourceChainId: number;
   tokenAddress: string;
   sentTxn: string;
 };
+
+export type SubmittedMultichainWithdrawal = {
+  amount: bigint;
+  settlementChainId: number;
+  sourceChainId: number;
+  tokenAddress: string;
+};
+
 export type PendingMultichainFunding = {
   deposits: {
     submitted: MultichainFundingHistoryItem[];
     sent: Record<string, MultichainFundingHistoryItem>;
     received: Record<string, MultichainFundingHistoryItem>;
     executed: Record<string, MultichainFundingHistoryItem>;
+  };
+  withdrawals: {
+    submitted: Record<string, MultichainFundingHistoryItem>;
+    sent: Record<string, MultichainFundingHistoryItem>;
+    received: Record<string, MultichainFundingHistoryItem>;
   };
 };
 

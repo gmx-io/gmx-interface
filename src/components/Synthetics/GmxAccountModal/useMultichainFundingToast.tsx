@@ -39,7 +39,7 @@ function useGmxAccountPendingFundingHistoryItems(
   return pendingItems;
 }
 
-export function useMultichainFundingDepositToast() {
+export function useMultichainFundingToast() {
   const { chainId } = useChainId();
   const { multichainFundingPendingIds } = useSyntheticsEvents();
 
@@ -57,12 +57,17 @@ export function useMultichainFundingDepositToast() {
       return;
     }
 
+    const hasDeposits = Object.values(pendingItems).some((item) => item?.operation === "deposit");
+    const hasWithdrawals = Object.values(pendingItems).some((item) => item?.operation === "withdrawal");
+
     window.clearTimeout(clearTimeout.current);
     clearTimeout.current = undefined;
 
     let content: ToastContent = (
       <div className="flex flex-col gap-8">
-        <Trans>Depositing Funds to GMX</Trans>
+        {hasDeposits && !hasWithdrawals && <Trans>Depositing Funds to GMX</Trans>}
+        {hasWithdrawals && !hasDeposits && <Trans>Withdrawing Funds from GMX</Trans>}
+        {hasDeposits && hasWithdrawals && <Trans>Depositing and Withdrawing Funds to/from GMX</Trans>}
         {Object.keys(multichainFundingPendingIds).map((staticId, index, array) => {
           const guid = multichainFundingPendingIds[staticId];
           const item = pendingItems[guid];
@@ -79,7 +84,7 @@ export function useMultichainFundingDepositToast() {
           return (
             <div key={staticId} className="flex items-center justify-between">
               <div className="text-white/50">
-                <Trans>Deposit</Trans>
+                {item.operation === "deposit" ? <Trans>Deposit</Trans> : <Trans>Withdraw</Trans>}
                 {array.length > 1 && <> {formattedAmount}</>}
               </div>
               {isLoading && <ImSpinner2 width={60} height={60} className="spin size-15 text-white" />}

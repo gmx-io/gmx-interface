@@ -1,15 +1,13 @@
 import { ethers } from "ethers";
 import sample from "lodash/sample";
-import { arbitrumSepolia, base, optimismSepolia, sepolia, sonic } from "viem/chains";
+import { arbitrumSepolia, optimismSepolia, sepolia } from "viem/chains";
 
 import {
   ARBITRUM_SEPOLIA,
-  BASE_MAINNET,
   OPTIMISM_SEPOLIA,
   SUPPORTED_CHAIN_IDS as SDK_SUPPORTED_CHAIN_IDS,
   SUPPORTED_CHAIN_IDS_DEV as SDK_SUPPORTED_CHAIN_IDS_DEV,
   SEPOLIA,
-  SONIC_MAINNET,
   UiContractsChain,
   UiSupportedChain,
 } from "sdk/configs/chains";
@@ -158,8 +156,8 @@ export const RPC_PROVIDERS: Record<UiSupportedChain | typeof ETH_MAINNET, string
     // "https://rpc.ankr.com/avalanche_fuji",
   ],
   [ARBITRUM_SEPOLIA]: [...arbitrumSepolia.rpcUrls.default.http],
-  [BASE_MAINNET]: [...base.rpcUrls.default.http],
-  [SONIC_MAINNET]: [...sonic.rpcUrls.default.http],
+  // [BASE_MAINNET]: [...base.rpcUrls.default.http],
+  // [SONIC_MAINNET]: [...sonic.rpcUrls.default.http],
   [OPTIMISM_SEPOLIA]: [...optimismSepolia.rpcUrls.default.http],
   [SEPOLIA]: [...sepolia.rpcUrls.default.http],
 };
@@ -173,8 +171,8 @@ export const FALLBACK_PROVIDERS: Record<UiSupportedChain, string[]> = {
     "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
   ],
   [ARBITRUM_SEPOLIA]: [],
-  [BASE_MAINNET]: [],
-  [SONIC_MAINNET]: [],
+  // [BASE_MAINNET]: [],
+  // [SONIC_MAINNET]: [],
   [OPTIMISM_SEPOLIA]: [],
   [SEPOLIA]: [],
 };
@@ -220,10 +218,10 @@ export function getExplorerUrl(chainId: number): string {
       return "https://arbiscan.io/";
     case AVALANCHE:
       return "https://snowtrace.io/";
-    case BASE_MAINNET:
-      return base.blockExplorers.default.url + "/";
-    case SONIC_MAINNET:
-      return sonic.blockExplorers.default.url + "/";
+    // case BASE_MAINNET:
+    //   return base.blockExplorers.default.url + "/";
+    // case SONIC_MAINNET:
+    //   return sonic.blockExplorers.default.url + "/";
     case AVALANCHE_FUJI:
       return "https://testnet.snowtrace.io/";
     case ARBITRUM_SEPOLIA:

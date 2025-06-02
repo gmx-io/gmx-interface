@@ -47,4 +47,24 @@ describe("LruCache", () => {
     const cache = new LRUCache<number>(2);
     expect(() => cache.set(123 as any, 1)).toThrow("Key must be a string");
   });
+
+  it("should delete a key and remove it from recent keys", () => {
+    const cache = new LRUCache<number>(2);
+    cache.set("a", 1);
+    cache.set("b", 2);
+    cache.delete("a");
+    expect(cache.has("a")).toBe(false);
+    expect(cache.get("a")).toBeUndefined();
+    cache.set("c", 3);
+    expect(cache.has("b")).toBe(true);
+    expect(cache.has("c")).toBe(true);
+  });
+
+  it("should handle deletion of non-existent key", () => {
+    const cache = new LRUCache<number>(2);
+    cache.set("a", 1);
+    cache.delete("x");
+    expect(cache.has("a")).toBe(true);
+    expect(cache.get("a")).toBe(1);
+  });
 });

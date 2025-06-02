@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
+import { getContract } from "config/contracts";
 import {
   CHAIN_ID_TO_TOKEN_ID_MAP,
   getMappedTokenId,
@@ -21,12 +22,18 @@ import {
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { useChainId } from "lib/chains";
 import { EMPTY_OBJECT, EMPTY_SET } from "lib/objects";
+import { LRUCache } from "sdk/utils/LruCache";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { CodecUiHelper } from "components/Synthetics/GmxAccountModal/codecs/CodecUiHelper";
 
 import { useSyntheticsEvents } from "./SyntheticsEventsProvider";
-import type { ApprovalStatuses, PendingMultichainFunding, SubmittedDeposit } from "./types";
+import type {
+  ApprovalStatuses,
+  PendingMultichainFunding,
+  SubmittedMultichainDeposit,
+  SubmittedMultichainWithdrawal,
+} from "./types";
 
 export type MultichainEventsState = {
   multichainSourceChainApprovalStatuses: ApprovalStatuses;
@@ -34,7 +41,11 @@ export type MultichainEventsState = {
   removeMultichainSourceChainApprovalsActiveListener: (name: string) => void;
 
   pendingMultichainFunding: PendingMultichainFunding;
-  setMultichainSubmittedDeposit: (submittedDeposit: SubmittedDeposit) => string | undefined;
+  setMultichainSubmittedDeposit: (submittedDeposit: SubmittedMultichainDeposit) => string | undefined;
+  setMultichainSubmittedWithdrawal: (submittedWithdrawal: SubmittedMultichainWithdrawal) => string | undefined;
+  setMultichainWithdrawalSentTxnHash: (mockId: string, txnHash: string) => void;
+  setMultichainWithdrawalSentError: (mockId: string) => void;
+
   multichainFundingPendingIds: Record<
     // Stub id for persistence
     string,
@@ -46,11 +57,18 @@ export type MultichainEventsState = {
 const DEFAULT_MULTICHAIN_FUNDING_STATE: PendingMultichainFunding = {
   deposits: {
     submitted: [],
-    received: {},
     sent: {},
+    received: {},
     executed: {},
   },
+  withdrawals: {
+    submitted: {},
+    sent: {},
+    received: {},
+  },
 };
+
+const UNCERTAIN_WITHDRAWALS_CACHE = new LRUCache<string>(1000);
 
 export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: boolean }) {
   const [pendingMultichainFunding, setPendingMultichainFunding] = useState<PendingMultichainFunding>(
@@ -78,8 +96,13 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unstablePendingExecuteDepositGuids.join(",")]);
 
+  const pendingReceiveWithdrawalGuids = useMemo(() => {
+    return Object.keys(pendingMultichainFunding.withdrawals.sent);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [Object.keys(pendingMultichainFunding.withdrawals.sent).join(",")]);
+
   useEffect(
-    function subscribeOftSentEvents() {
+    function subscribeSourceChainOftSentEvents() {
       if (
         srcChainId === undefined ||
         hasPageLostFocus ||
@@ -281,7 +304,170 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
     [chainId, hasPageLostFocus, pendingExecuteDepositGuids, wsProvider]
   );
 
-  // Approval statuses
+  //#region Withdrawals
+
+  useEffect(
+    function subscribeSettlementChainOftSentEvents() {
+      if (
+        hasPageLostFocus ||
+        !currentAccount ||
+        !wsProvider ||
+        !isSettlementChain(chainId) ||
+        srcChainId === undefined
+      ) {
+        return;
+      }
+
+      const tokenIdMap = CHAIN_ID_TO_TOKEN_ID_MAP[chainId];
+      const settlementChainStargates = Object.values(tokenIdMap).map((tokenId) => tokenId.stargate);
+      const tokenIdByStargate = keyBy(Object.values(tokenIdMap), (tokenId: MultichainTokenId) => tokenId.stargate);
+
+      const unsubscribeFromOftSentEvents = subscribeToOftSentEvents(
+        wsProvider,
+        getContract(chainId, "LayerZeroProvider"),
+        settlementChainStargates,
+        (info) => {
+          const sourceChainId = ENDPOINT_ID_TO_CHAIN_ID[info.dstEid];
+
+          if (sourceChainId !== srcChainId) {
+            return;
+          }
+
+          const stargatePoolAddress = info.sender;
+          const tokenId = tokenIdByStargate[stargatePoolAddress];
+
+          const tokenAddress = tokenId.address;
+
+          setPendingMultichainFunding((prev) => {
+            const newPendingMultichainFunding: PendingMultichainFunding = structuredClone(prev);
+
+            const currentSubmittingWithdrawal = Object.values(newPendingMultichainFunding.withdrawals.submitted).find(
+              (withdrawal) => withdrawal.sentTxn === info.txnHash
+            );
+
+            if (currentSubmittingWithdrawal === undefined) {
+              // If there were no submitted order from UI we can not be sure if this sent event is related to GMX without parsing the whole transaction for events
+              // If its really necessary we could fetch the tx to get PacketSent withing the same transaction event and parse the contents
+
+              // eslint-disable-next-line no-console
+              console.warn("Got OFTSent event but no withdrawals were submitted from UI");
+              UNCERTAIN_WITHDRAWALS_CACHE.set(info.txnHash, info.guid);
+              return prev;
+            }
+
+            delete newPendingMultichainFunding.withdrawals.submitted[currentSubmittingWithdrawal.id];
+
+            setSelectedTransferGuid((prev) => {
+              if (!prev || prev !== currentSubmittingWithdrawal.id) {
+                return prev;
+              }
+
+              return info.guid;
+            });
+
+            setMultichainFundingPendingIds((prev) => {
+              if (currentSubmittingWithdrawal.id in prev) {
+                return { ...prev, [currentSubmittingWithdrawal.id]: info.guid };
+              }
+
+              return prev;
+            });
+
+            newPendingMultichainFunding.withdrawals.sent[info.guid] = {
+              account: currentAccount,
+              sentAmount: info.amountSentLD,
+              id: info.guid,
+              sentTxn: info.txnHash,
+              operation: "withdrawal",
+              step: "sent",
+              token: tokenAddress,
+              sourceChainId: sourceChainId,
+              settlementChainId: chainId,
+              sentTimestamp: currentSubmittingWithdrawal.sentTimestamp,
+
+              executedTimestamp: undefined,
+              executedTxn: undefined,
+              isExecutionError: undefined,
+              receivedAmount: undefined,
+              receivedTimestamp: undefined,
+              receivedTxn: undefined,
+
+              isFromWs: true,
+            };
+
+            return newPendingMultichainFunding;
+          });
+        }
+      );
+
+      return function cleanup() {
+        unsubscribeFromOftSentEvents();
+      };
+    },
+    [chainId, currentAccount, hasPageLostFocus, setSelectedTransferGuid, srcChainId, wsProvider]
+  );
+
+  useEffect(
+    function subscribeSourceChainOftReceivedEvents() {
+      if (
+        hasPageLostFocus ||
+        !wsSourceChainProvider ||
+        !isSettlementChain(chainId) ||
+        srcChainId === undefined ||
+        pendingReceiveWithdrawalGuids.length === 0
+      ) {
+        return;
+      }
+
+      const tokenIdMap = CHAIN_ID_TO_TOKEN_ID_MAP[srcChainId];
+      const sourceChainStargates = Object.values(tokenIdMap).map((tokenId) => tokenId.stargate);
+
+      const unsubscribeFromOftReceivedEvents = subscribeToOftReceivedEvents(
+        wsSourceChainProvider,
+        sourceChainStargates,
+        pendingReceiveWithdrawalGuids,
+        (info) => {
+          setTimeout(() => {
+            setMultichainFundingPendingIds((prev) => {
+              return pickBy(prev, (value) => value !== info.guid);
+            });
+          }, 5000);
+
+          setPendingMultichainFunding((prev) => {
+            const newPendingMultichainFunding = structuredClone(prev);
+
+            const pendingSentWithdrawal = newPendingMultichainFunding.withdrawals.sent[info.guid];
+
+            if (!pendingSentWithdrawal) {
+              // eslint-disable-next-line no-console
+              console.warn("Got OFTReceive event but no pending withdrawals were sent from UI");
+
+              return newPendingMultichainFunding;
+            }
+
+            delete newPendingMultichainFunding.withdrawals.sent[info.guid];
+            newPendingMultichainFunding.withdrawals.received[info.guid] = pendingSentWithdrawal;
+
+            pendingSentWithdrawal.step = "received";
+            pendingSentWithdrawal.receivedAmount = info.amountReceivedLD;
+            pendingSentWithdrawal.receivedTimestamp = nowInSeconds();
+            pendingSentWithdrawal.receivedTxn = info.txnHash;
+
+            return newPendingMultichainFunding;
+          });
+        }
+      );
+
+      return function cleanup() {
+        unsubscribeFromOftReceivedEvents?.();
+      };
+    },
+    [chainId, hasPageLostFocus, pendingReceiveWithdrawalGuids, srcChainId, wsSourceChainProvider]
+  );
+
+  //#endregion Withdrawals
+
+  //#region Approval statuses
 
   const [sourceChainApprovalActiveListeners, setSourceChainApprovalActiveListeners] = useState<Set<string>>(EMPTY_SET);
   const [sourceChainApprovalStatuses, setSourceChainApprovalStatuses] = useState<ApprovalStatuses>(EMPTY_OBJECT);
@@ -314,12 +500,6 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
               [spender]: { value, createdAt: Date.now() },
             },
           }));
-          // userAnalytics.pushEvent<TokenApproveResultEvent>({
-          //   event: "TokenApproveAction",
-          //   data: {
-          //     action: "ApproveSuccess",
-          //   },
-          // });
         }
       );
 
@@ -360,6 +540,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
             isExecutionError: undefined,
             executedTxn: undefined,
             executedTimestamp: undefined,
+
             isFromWs: true,
           });
           return newPendingMultichainFunding;
@@ -368,6 +549,100 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         setMultichainFundingPendingIds((prev) => ({ ...prev, [stubId]: stubId }));
 
         return stubId;
+      },
+      setMultichainSubmittedWithdrawal: (submittedEvent) => {
+        if (!currentAccount || srcChainId === undefined) {
+          return;
+        }
+
+        const stubId = `<stub-${Date.now()}>`;
+        setPendingMultichainFunding((prev) => {
+          const newPendingMultichainFunding = structuredClone(prev);
+          newPendingMultichainFunding.withdrawals.submitted[stubId] = {
+            account: currentAccount,
+            id: stubId,
+            operation: "withdrawal",
+            step: "submitted",
+            settlementChainId: chainId,
+            sourceChainId: srcChainId,
+            token: submittedEvent.tokenAddress,
+            sentAmount: submittedEvent.amount,
+            sentTimestamp: nowInSeconds(),
+
+            sentTxn: undefined,
+            receivedAmount: undefined,
+            receivedTxn: undefined,
+            receivedTimestamp: undefined,
+            isExecutionError: undefined,
+            executedTxn: undefined,
+            executedTimestamp: undefined,
+
+            isFromWs: true,
+          };
+          return newPendingMultichainFunding;
+        });
+
+        setMultichainFundingPendingIds((prev) => ({ ...prev, [stubId]: stubId }));
+
+        return stubId;
+      },
+      setMultichainWithdrawalSentTxnHash: (mockId, txnHash) => {
+        setPendingMultichainFunding((prev) => {
+          const newPendingMultichainFunding = structuredClone(prev);
+          if (mockId in newPendingMultichainFunding.withdrawals.submitted) {
+            const submittedWithdrawal = newPendingMultichainFunding.withdrawals.submitted[mockId];
+            submittedWithdrawal.sentTxn = txnHash;
+            submittedWithdrawal.sentTimestamp = nowInSeconds();
+
+            if (UNCERTAIN_WITHDRAWALS_CACHE.has(txnHash)) {
+              const guid = UNCERTAIN_WITHDRAWALS_CACHE.get(txnHash)!;
+              delete newPendingMultichainFunding.withdrawals.submitted[mockId];
+              newPendingMultichainFunding.withdrawals.sent[guid] = submittedWithdrawal;
+              submittedWithdrawal.step = "sent";
+              submittedWithdrawal.id = guid;
+
+              setSelectedTransferGuid((prev) => {
+                if (!prev || prev !== mockId) {
+                  return prev;
+                }
+
+                return guid;
+              });
+
+              setMultichainFundingPendingIds((prev) => {
+                if (mockId in prev) {
+                  return { ...prev, [mockId]: guid };
+                }
+
+                return prev;
+              });
+
+              UNCERTAIN_WITHDRAWALS_CACHE.delete(txnHash);
+            }
+          }
+          return newPendingMultichainFunding;
+        });
+      },
+      setMultichainWithdrawalSentError: (mockId) => {
+        setPendingMultichainFunding((prev) => {
+          const newPendingMultichainFunding = structuredClone(prev);
+          delete newPendingMultichainFunding.withdrawals.submitted[mockId];
+          return newPendingMultichainFunding;
+        });
+
+        setMultichainFundingPendingIds((prev) => {
+          const newPendingIds = { ...prev };
+          delete newPendingIds[mockId];
+          return newPendingIds;
+        });
+
+        setSelectedTransferGuid((prev) => {
+          if (!prev || prev !== mockId) {
+            return prev;
+          }
+
+          return undefined;
+        });
       },
       multichainSourceChainApprovalStatuses: sourceChainApprovalStatuses,
       setMultichainSourceChainApprovalsActiveListener: (name: string) => {
@@ -392,8 +667,11 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       currentAccount,
       srcChainId,
       chainId,
+      setSelectedTransferGuid,
     ]
   );
+
+  //#endregion Approval statuses
 
   useEffect(
     function resetOnAccountChange() {

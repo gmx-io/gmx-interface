@@ -45,6 +45,11 @@ export class LRUCache<T> {
     }
   }
 
+  delete(key: string): void {
+    this.cache.delete(key);
+    this.recentKeys = this.recentKeys.filter((k) => k !== key);
+  }
+
   private updateRecentKeys(key: string): void {
     // Move the key to the end (most recently used) of recentKeys
     this.recentKeys = this.recentKeys.filter((k) => k !== key);

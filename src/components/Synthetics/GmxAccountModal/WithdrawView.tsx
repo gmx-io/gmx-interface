@@ -16,11 +16,13 @@ import {
   MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS,
 } from "context/GmxAccountContext/config";
 import {
+  useGmxAccountModalOpen,
   useGmxAccountWithdrawViewTokenAddress,
   useGmxAccountWithdrawViewTokenInputValue,
 } from "context/GmxAccountContext/hooks";
 import { IStargateAbi } from "context/GmxAccountContext/stargatePools";
 import { TokenChainData } from "context/GmxAccountContext/types";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { BridgeOutParams, buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
@@ -104,10 +106,13 @@ const useIsFirstWithdrawal = () => {
 export const WithdrawView = () => {
   const { chainId, srcChainId } = useChainId();
   const { address: account, isConnected } = useAccount();
+  const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   const [inputValue, setInputValue] = useGmxAccountWithdrawViewTokenInputValue();
   const [selectedTokenAddress, setSelectedTokenAddress] = useGmxAccountWithdrawViewTokenAddress();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isFirstWithdrawal = useIsFirstWithdrawal();
+  const { setMultichainSubmittedWithdrawal, setMultichainWithdrawalSentTxnHash, setMultichainWithdrawalSentError } =
+    useSyntheticsEvents();
 
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
   const networks = useGmxAccountWithdrawNetworks();
@@ -479,6 +484,13 @@ export const WithdrawView = () => {
         provider,
       });
 
+      const mockWithdrawalId = setMultichainSubmittedWithdrawal({
+        amount: bridgeOutParams.amount,
+        settlementChainId: chainId,
+        sourceChainId: srcChainId,
+        tokenAddress: selectedToken.address,
+      });
+
       const receipt = await sendExpressTransaction({
         chainId: chainId as UiSettlementChain,
         txnData: signedTxnData,
@@ -492,9 +504,12 @@ export const WithdrawView = () => {
 
       if (txResult.status === "success") {
         sendTxnSentMetric(metricData.metricId);
-        helperToast.success("Withdrawal successful");
-      } else if (txResult.status === "failed") {
-        helperToast.error("Withdrawal failed");
+        if (txResult.transactionHash && mockWithdrawalId) {
+          setMultichainWithdrawalSentTxnHash(mockWithdrawalId, txResult.transactionHash);
+        }
+        setIsVisibleOrView("main");
+      } else if (txResult.status === "failed" && mockWithdrawalId) {
+        setMultichainWithdrawalSentError(mockWithdrawalId);
       }
     } catch (error) {
       const prettyError = toastCustomOrStargateError(chainId, error);

@@ -57,9 +57,11 @@ export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvi
   }
 
   if (chainId === SEPOLIA) {
-    return new ethers.WebSocketProvider("wss://ethereum-sepolia-rpc.publicnode.com", network, {
+    const provider = new ethers.JsonRpcProvider("https://ethereum-sepolia-rpc.publicnode.com", network, {
       staticNetwork: network,
     });
+    provider.pollingInterval = 2000;
+    return provider;
   }
 }
 
