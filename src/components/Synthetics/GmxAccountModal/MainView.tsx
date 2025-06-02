@@ -45,6 +45,7 @@ import {
   useAvailableToTradeAssetSymbolsMultichain,
   useAvailableToTradeAssetSymbolsSettlementChain,
 } from "./hooks";
+import { ModalShrinkingContent } from "./ModalShrinkingContent";
 import { useGmxAccountFundingHistory } from "./useGmxAccountFundingHistory";
 
 const TokenIcons = ({ tokens }: { tokens: string[] }) => {
@@ -347,7 +348,9 @@ const FundingHistorySection = () => {
   return (
     <div className="flex grow flex-col gap-8 overflow-y-hidden">
       <div className="flex items-center justify-between px-16">
-        <div className="text-body-large">GMX Funding Activity</div>
+        <div className="text-body-large">
+          <Trans>GMX Funding Activity</Trans>
+        </div>
       </div>
       <div className="px-16">
         <input
@@ -380,19 +383,18 @@ const FundingHistorySection = () => {
             </div>
             <div className="text-right">
               <div>{formatBalanceAmount(transfer.sentAmount, transfer.token.decimals, transfer.token.symbol)}</div>
-              {/* <div className="text-body-small text-slate-100">{formatTradeActionTimestamp(transfer.timestamp)}</div> */}
             </div>
           </div>
         ))}
 
         {fundingHistory && fundingHistory.length === 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-8 px-16 text-slate-100">
+          <div className="flex h-full flex-col items-center justify-center gap-8 p-16 text-slate-100">
             <InfoIconComponent className="size-24" />
             <Trans>No funding activity</Trans>
           </div>
         )}
         {filteredFundingHistory?.length === 0 && fundingHistory && fundingHistory.length > 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-8 px-16 text-slate-100">
+          <div className="flex h-full flex-col items-center justify-center gap-8 p-16 text-slate-100">
             <InfoIconComponent className="size-24" />
             <Trans>No funding activity matching your search</Trans>
           </div>
@@ -404,13 +406,13 @@ const FundingHistorySection = () => {
 
 export const MainView = ({ account }: { account: string }) => {
   return (
-    <div className="text-body-medium flex grow flex-col gap-8 overflow-y-hidden">
+    <ModalShrinkingContent className="text-body-medium flex flex-col gap-8 overflow-y-hidden">
       <div className="flex flex-col gap-8 px-16 pb-20 pt-16">
         <Toolbar account={account} />
         <BalanceSection />
         <ActionButtons />
       </div>
       <FundingHistorySection />
-    </div>
+    </ModalShrinkingContent>
   );
 };

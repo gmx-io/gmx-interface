@@ -20,6 +20,9 @@ import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableSc
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import InfoIconComponent from "img/ic_info.svg?react";
+
+import { ModalShrinkingContent } from "./ModalShrinkingContent";
+
 type TokenListItemProps = {
   tokenChainData: DisplayTokenChainData;
   onClick?: () => void;
@@ -122,7 +125,7 @@ export const SelectAssetToDepositView = () => {
   }, [tokenChainDataArray, searchQuery, selectedNetwork]);
 
   return (
-    <div className="flex grow flex-col gap-8 overflow-y-hidden">
+    <ModalShrinkingContent className="gap-8 overflow-y-hidden">
       <div className="px-16 pt-16">
         <SearchInput
           placeholder="Search tokens..."
@@ -177,6 +180,6 @@ export const SelectAssetToDepositView = () => {
           </div>
         )}
       </div>
-    </div>
+    </ModalShrinkingContent>
   );
 };

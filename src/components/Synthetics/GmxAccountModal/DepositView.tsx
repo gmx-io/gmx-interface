@@ -59,6 +59,7 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { getSendParamsWithoutSlippage } from "./getSendParams";
 import { useAvailableToTradeAssetMultichain, useMultichainTokensRequest } from "./hooks";
+import { ModalShrinkingContent } from "./ModalShrinkingContent";
 import { SLIPPAGE_BPS, applySlippageBps } from "./slippage";
 import { useMultichainDepositNetworkComposeGas } from "./useMultichainDepositNetworkComposeGas";
 import { useMultichainQuoteFeeUsd } from "./useMultichainQuoteFeeUsd";
@@ -664,7 +665,7 @@ export const DepositView = () => {
   }
 
   return (
-    <div className="flex grow flex-col overflow-y-auto p-16">
+    <ModalShrinkingContent className="overflow-y-auto p-16">
       <div className="flex flex-col gap-20">
         <div className="flex flex-col gap-4">
           <div className="text-body-small text-slate-100">
@@ -810,6 +811,6 @@ export const DepositView = () => {
       <Button variant="primary" className="w-full" onClick={buttonState.onClick} disabled={buttonState.disabled}>
         {buttonState.text}
       </Button>
-    </div>
+    </ModalShrinkingContent>
   );
 };

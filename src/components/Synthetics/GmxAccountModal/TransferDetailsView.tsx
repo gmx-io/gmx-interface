@@ -16,6 +16,7 @@ import externalLink from "img/ic_new_link_20.svg";
 
 import { CHAIN_ID_TO_EXPLORER_NAME, CHAIN_ID_TO_TX_URL_BUILDER } from "../../../lib/chains/blockExplorers";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { ModalShrinkingContent } from "./ModalShrinkingContent";
 import { useGmxAccountFundingHistoryItem } from "./useGmxAccountFundingHistory";
 import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
 
@@ -54,93 +55,91 @@ export const TransferDetailsView = () => {
   const token = getToken(chainId, selectedTransfer.token);
 
   return (
-    <div className="text-body-medium flex grow flex-col gap-8 overflow-y-hidden">
-      <div className="flex flex-col gap-8 px-16 pt-16">
-        {selectedTransfer.isExecutionError ? (
-          <AlertInfoCard type="error">
-            <Trans>Your deposit of from {sourceChainName} was not executed due to an error</Trans>
-          </AlertInfoCard>
-        ) : null}
-        <SyntheticsInfoRow
-          label={<Trans>Date</Trans>}
-          value={formatTradeActionTimestamp(selectedTransfer.sentTimestamp)}
-        />
-        <SyntheticsInfoRow
-          label={<Trans>Type</Trans>}
-          value={selectedTransfer.operation === "deposit" ? <Trans>Deposit</Trans> : <Trans>Withdrawal</Trans>}
-        />
-        <SyntheticsInfoRow
-          label={<Trans>Wallet</Trans>}
-          value={
-            selectedTransfer.operation === "deposit" ? (
-              <Trans>GMX Balance</Trans>
-            ) : (
-              shortenAddressOrEns(selectedTransfer.account, 13)
-            )
-          }
-        />
-        <SyntheticsInfoRow
-          label={<Trans>Amount</Trans>}
-          value={formatBalanceAmount(selectedTransfer.sentAmount, token.decimals, token.symbol)}
-        />
-        {selectedTransfer.receivedAmount !== undefined && (
-          <>
-            <SyntheticsInfoRow
-              label={<Trans>Fee</Trans>}
-              value={formatBalanceAmount(
-                selectedTransfer.sentAmount - selectedTransfer.receivedAmount,
-                token.decimals,
-                token.symbol
-              )}
-            />
-          </>
-        )}
-        <SyntheticsInfoRow
-          label={selectedTransfer.operation === "deposit" ? <Trans>From Network</Trans> : <Trans>To Network</Trans>}
-          className="!items-center"
-          valueClassName="-my-5"
-          value={
-            <div className="flex items-center gap-8">
-              <img
-                src={CHAIN_ID_TO_NETWORK_ICON[selectedTransfer.sourceChainId]}
-                width={20}
-                height={20}
-                className="size-20 rounded-full"
-              />
-              {getChainName(selectedTransfer.sourceChainId)}
-            </div>
-          }
-        />
-        <SyntheticsInfoRow
-          label={selectedTransfer.operation === "deposit" ? <Trans>From Wallet</Trans> : <Trans>To Wallet</Trans>}
-          value={shortenAddressOrEns(selectedTransfer.account, 13)}
-        />
-        {selectedTransfer.sentTxn && (
+    <ModalShrinkingContent className="text-body-medium gap-8 p-16">
+      {selectedTransfer.isExecutionError ? (
+        <AlertInfoCard type="error">
+          <Trans>Your deposit of from {sourceChainName} was not executed due to an error</Trans>
+        </AlertInfoCard>
+      ) : null}
+      <SyntheticsInfoRow
+        label={<Trans>Date</Trans>}
+        value={formatTradeActionTimestamp(selectedTransfer.sentTimestamp)}
+      />
+      <SyntheticsInfoRow
+        label={<Trans>Type</Trans>}
+        value={selectedTransfer.operation === "deposit" ? <Trans>Deposit</Trans> : <Trans>Withdrawal</Trans>}
+      />
+      <SyntheticsInfoRow
+        label={<Trans>Wallet</Trans>}
+        value={
+          selectedTransfer.operation === "deposit" ? (
+            <Trans>GMX Balance</Trans>
+          ) : (
+            shortenAddressOrEns(selectedTransfer.account, 13)
+          )
+        }
+      />
+      <SyntheticsInfoRow
+        label={<Trans>Amount</Trans>}
+        value={formatBalanceAmount(selectedTransfer.sentAmount, token.decimals, token.symbol)}
+      />
+      {selectedTransfer.receivedAmount !== undefined && (
+        <>
           <SyntheticsInfoRow
-            label={
-              CHAIN_ID_TO_EXPLORER_NAME[
-                selectedTransfer.operation === "deposit"
-                  ? selectedTransfer.sourceChainId
-                  : selectedTransfer.settlementChainId
-              ]
-            }
-            value={
-              <ExternalLink
-                href={
-                  selectedTransfer.operation === "deposit"
-                    ? CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.sourceChainId](selectedTransfer.sentTxn)
-                    : CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.settlementChainId](selectedTransfer.sentTxn)
-                }
-              >
-                <div className="flex items-center gap-4">
-                  {shortenAddressOrEns(selectedTransfer.sentTxn, 13)}
-                  <img src={externalLink} alt="External Link" className="size-20" />
-                </div>
-              </ExternalLink>
-            }
+            label={<Trans>Fee</Trans>}
+            value={formatBalanceAmount(
+              selectedTransfer.sentAmount - selectedTransfer.receivedAmount,
+              token.decimals,
+              token.symbol
+            )}
           />
-        )}
-      </div>
-    </div>
+        </>
+      )}
+      <SyntheticsInfoRow
+        label={selectedTransfer.operation === "deposit" ? <Trans>From Network</Trans> : <Trans>To Network</Trans>}
+        className="!items-center"
+        valueClassName="-my-5"
+        value={
+          <div className="flex items-center gap-8">
+            <img
+              src={CHAIN_ID_TO_NETWORK_ICON[selectedTransfer.sourceChainId]}
+              width={20}
+              height={20}
+              className="size-20 rounded-full"
+            />
+            {getChainName(selectedTransfer.sourceChainId)}
+          </div>
+        }
+      />
+      <SyntheticsInfoRow
+        label={selectedTransfer.operation === "deposit" ? <Trans>From Wallet</Trans> : <Trans>To Wallet</Trans>}
+        value={shortenAddressOrEns(selectedTransfer.account, 13)}
+      />
+      {selectedTransfer.sentTxn && (
+        <SyntheticsInfoRow
+          label={
+            CHAIN_ID_TO_EXPLORER_NAME[
+              selectedTransfer.operation === "deposit"
+                ? selectedTransfer.sourceChainId
+                : selectedTransfer.settlementChainId
+            ]
+          }
+          value={
+            <ExternalLink
+              href={
+                selectedTransfer.operation === "deposit"
+                  ? CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.sourceChainId](selectedTransfer.sentTxn)
+                  : CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.settlementChainId](selectedTransfer.sentTxn)
+              }
+            >
+              <div className="flex items-center gap-4">
+                {shortenAddressOrEns(selectedTransfer.sentTxn, 13)}
+                <img src={externalLink} alt="External Link" className="size-20" />
+              </div>
+            </ExternalLink>
+          }
+        />
+      )}
+    </ModalShrinkingContent>
   );
 };

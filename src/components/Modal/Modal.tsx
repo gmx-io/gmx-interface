@@ -112,7 +112,7 @@ export default function Modal({
               onClick={() => setIsVisible(false)}
             />
             <div className={cx("Modal-content flex flex-col", contentClassName)} onClick={stopPropagation} data-qa={qa}>
-              <div className="Modal-header-wrapper">
+              <div className="Modal-header-wrapper bg-slate-800">
                 <div className="Modal-title-bar">
                   <div className="Modal-title">{label}</div>
                   <div className="Modal-close-button pb-5" onClick={() => setIsVisible(false)}>
