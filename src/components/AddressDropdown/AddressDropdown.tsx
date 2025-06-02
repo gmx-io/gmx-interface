@@ -55,7 +55,7 @@ function AddressDropdown({ account }: Props) {
       {!(isSmallScreen && showSideButton) && (
         <button
           data-qa="user-address"
-          className={cx("flex h-36 items-center gap-8 rounded-l-4 border border-stroke-primary px-12", {
+          className={cx("flex h-36 items-center gap-8 rounded-l-4 border border-stroke-primary px-12 text-slate-100", {
             "rounded-r-4": !showSideButton,
           })}
           onClick={handleOpenGmxAccountModal}
