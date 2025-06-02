@@ -85,7 +85,10 @@ const useIsFirstDeposit = () => {
     }
 
     setEnabled(false);
-    setIsFirstDeposit(true);
+    const hasDeposit = fundingHistory.some((funding) => funding.operation === "deposit");
+    if (!hasDeposit) {
+      setIsFirstDeposit(true);
+    }
   }, [fundingHistory]);
 
   return isFirstDeposit;
@@ -516,7 +519,6 @@ export const DepositView = () => {
         isFirstDeposit: latestIsFirstDeposit.current,
         settlementChain: settlementChainId,
         sourceChain: srcChainId,
-        amount: inputAmount,
       });
 
       sendOrderSubmittedMetric(metricData.metricId);

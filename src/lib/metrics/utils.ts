@@ -606,14 +606,12 @@ export function initMultichainDepositMetricData({
   settlementChain,
   assetSymbol,
   sizeInUsd,
-  amount,
   isFirstDeposit,
 }: {
   sourceChain: number;
   settlementChain: number;
   assetSymbol: string;
   sizeInUsd: bigint;
-  amount: bigint;
   isFirstDeposit: boolean;
 }) {
   return metrics.setCachedMetricData<MultichainDepositMetricData>({
@@ -621,7 +619,6 @@ export function initMultichainDepositMetricData({
       sourceChain,
       settlementChain,
       assetSymbol,
-      amount,
     }),
     metricType: "multichainDeposit",
     sourceChain,
@@ -636,15 +633,12 @@ export function initMultichainWithdrawalMetricData({
   sourceChain,
   settlementChain,
   assetSymbol,
-  amount,
   isFirstWithdrawal,
   sizeInUsd,
 }: {
   sourceChain: number;
   settlementChain: number;
   assetSymbol: string;
-  assetAddress: string;
-  amount: bigint;
   isFirstWithdrawal: boolean;
   sizeInUsd: bigint;
 }) {
@@ -653,7 +647,6 @@ export function initMultichainWithdrawalMetricData({
       sourceChain,
       settlementChain,
       assetSymbol,
-      amount,
     }),
     metricType: "multichainWithdrawal",
     sourceChain,
@@ -722,18 +715,16 @@ export function getMultichainDepositMetricId(p: {
   sourceChain: number;
   settlementChain: number;
   assetSymbol: string;
-  amount: bigint;
 }): MultichainDepositMetricData["metricId"] {
-  return `multichainDeposit:${[p.sourceChain, p.settlementChain, p.assetSymbol, p.amount.toString()].join(":")}`;
+  return `multichainDeposit:${[p.sourceChain, p.settlementChain, p.assetSymbol].join(":")}`;
 }
 
 export function getMultichainWithdrawalMetricId(p: {
   sourceChain: number;
   settlementChain: number;
   assetSymbol: string;
-  amount: bigint;
 }): MultichainWithdrawalMetricData["metricId"] {
-  return `multichainWithdrawal:${[p.sourceChain, p.settlementChain, p.assetSymbol, p.amount.toString()].join(":")}`;
+  return `multichainWithdrawal:${[p.sourceChain, p.settlementChain, p.assetSymbol].join(":")}`;
 }
 
 export function sendOrderSubmittedMetric(metricId: OrderMetricId) {

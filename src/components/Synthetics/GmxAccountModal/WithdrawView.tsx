@@ -30,6 +30,15 @@ import { convertToUsd, TokenData } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
 import { helperToast } from "lib/helperToast";
+import {
+  initMultichainWithdrawalMetricData,
+  sendOrderSimulatedMetric,
+  sendOrderSubmittedMetric,
+  sendOrderTxnSubmittedMetric,
+  sendTxnErrorMetric,
+  sendTxnSentMetric,
+  sendTxnValidationErrorMetric,
+} from "lib/metrics";
 import { bigintToNumber, formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
@@ -69,7 +78,28 @@ import { ModalShrinkingContent } from "./ModalShrinkingContent";
 import { Selector } from "./Selector";
 import { applySlippageBps, SLIPPAGE_BPS } from "./slippage";
 import { toastCustomOrStargateError } from "./toastCustomOrStargateError";
+import { useGmxAccountFundingHistory } from "./useGmxAccountFundingHistory";
 import { useMultichainQuoteFeeUsd } from "./useMultichainQuoteFeeUsd";
+
+const useIsFirstWithdrawal = () => {
+  const [enabled, setEnabled] = useState(true);
+  const [isFirstWithdrawal, setIsFirstWithdrawal] = useState(false);
+  const fundingHistory = useGmxAccountFundingHistory({ enabled });
+
+  useEffect(() => {
+    if (fundingHistory === undefined || fundingHistory.length !== 0) {
+      return;
+    }
+
+    setEnabled(false);
+    const hasWithdrawal = fundingHistory.some((funding) => funding.operation === "withdrawal");
+    if (!hasWithdrawal) {
+      setIsFirstWithdrawal(true);
+    }
+  }, [fundingHistory]);
+
+  return isFirstWithdrawal;
+};
 
 export const WithdrawView = () => {
   const { chainId, srcChainId } = useChainId();
@@ -77,6 +107,7 @@ export const WithdrawView = () => {
   const [inputValue, setInputValue] = useGmxAccountWithdrawViewTokenInputValue();
   const [selectedTokenAddress, setSelectedTokenAddress] = useGmxAccountWithdrawViewTokenAddress();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isFirstWithdrawal = useIsFirstWithdrawal();
 
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
   const networks = useGmxAccountWithdrawNetworks();
@@ -395,22 +426,29 @@ export const WithdrawView = () => {
   }, [bridgeNetworkFeeUsd, relayFeeAmount, relayerFeeToken]);
 
   const handleWithdraw = async () => {
-    if (
-      srcChainId === undefined ||
-      selectedTokenAddress === undefined ||
-      expressTxnParamsAsyncResult?.data === undefined
-    ) {
+    if (srcChainId === undefined || selectedToken === undefined) {
       return;
     }
+
+    const metricData = initMultichainWithdrawalMetricData({
+      settlementChain: chainId,
+      sourceChain: srcChainId,
+      assetSymbol: selectedToken.symbol,
+      sizeInUsd: inputAmountUsd!,
+      isFirstWithdrawal,
+    });
+
+    sendOrderSubmittedMetric(metricData.metricId);
 
     if (
       gasPaymentParams === undefined ||
       bridgeOutParams === undefined ||
       signer === undefined ||
-      provider === undefined
+      provider === undefined ||
+      expressTxnParamsAsyncResult?.data === undefined
     ) {
       helperToast.error("Missing required parameters");
-      // sendTxnValidationErrorMetric(metricsData.metricId);
+      sendTxnValidationErrorMetric(metricData.metricId);
       return;
     }
 
@@ -427,6 +465,8 @@ export const WithdrawView = () => {
         signer,
         provider,
       });
+
+      sendOrderSimulatedMetric(metricData.metricId);
 
       const signedTxnData: ExpressTxnData = await buildAndSignBridgeOutTxn({
         chainId: chainId as UiSettlementChain,
@@ -446,15 +486,19 @@ export const WithdrawView = () => {
         isSponsoredCall: false,
       });
 
+      sendOrderTxnSubmittedMetric(metricData.metricId);
+
       const txResult = await receipt.wait();
 
       if (txResult.status === "success") {
+        sendTxnSentMetric(metricData.metricId);
         helperToast.success("Withdrawal successful");
       } else if (txResult.status === "failed") {
         helperToast.error("Withdrawal failed");
       }
     } catch (error) {
-      toastCustomOrStargateError(chainId, error);
+      const prettyError = toastCustomOrStargateError(chainId, error);
+      sendTxnErrorMetric(metricData.metricId, prettyError, "unknown");
     } finally {
       setIsSubmitting(false);
     }

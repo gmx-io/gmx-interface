@@ -39,4 +39,9 @@ export function toastCustomOrStargateError(chainId: UiSupportedChain, error: Err
   helperToast.error(toastContext.errorContent, {
     autoClose: toastContext.autoCloseToast,
   });
+
+  const prettyError = new Error(prettyErrorMessage);
+  prettyError.name = prettyErrorName;
+
+  return prettyError;
 }
