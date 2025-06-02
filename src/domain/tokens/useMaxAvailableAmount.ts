@@ -9,24 +9,29 @@ export function useMaxAvailableAmount({
   nativeToken,
   fromTokenAmount,
   fromTokenInputValue,
+  minResidualAmount,
+  isLoading,
 }: {
   fromToken: TokenData | undefined;
   nativeToken: TokenData | undefined;
   fromTokenAmount: bigint;
   fromTokenInputValue: string;
+  minResidualAmount?: bigint;
+  isLoading: boolean;
 }): {
   formattedMaxAvailableAmount: string;
   showClickMax: boolean;
 } {
   const isMetamaskMobile = useIsMetamaskMobile();
 
-  if (fromToken === undefined || fromToken.balance === undefined || fromToken.balance === 0n) {
+  if (fromToken === undefined || fromToken.balance === undefined || fromToken.balance === 0n || isLoading) {
     return { formattedMaxAvailableAmount: "", showClickMax: false };
   }
 
-  const minResidualAmount = getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices.maxPrice);
+  const minNativeTokenBalance = getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices.maxPrice) ?? 0n;
+  const minResidualBalance = (fromToken.isNative ? minNativeTokenBalance : 0n) + (minResidualAmount ?? 0n);
 
-  let maxAvailableAmount = fromToken.isNative ? fromToken.balance - BigInt(minResidualAmount ?? 0n) : fromToken.balance;
+  let maxAvailableAmount = fromToken.balance - minResidualBalance;
 
   if (maxAvailableAmount < 0) {
     maxAvailableAmount = 0n;
@@ -42,7 +47,7 @@ export function useMaxAvailableAmount({
 
   const showClickMax = fromToken.isNative
     ? !isFromTokenInputValueNearMax
-    : fromTokenInputValue !== formattedMaxAvailableAmount;
+    : fromTokenInputValue !== formattedMaxAvailableAmount && maxAvailableAmount > 0n;
 
   return { formattedMaxAvailableAmount, showClickMax };
 }

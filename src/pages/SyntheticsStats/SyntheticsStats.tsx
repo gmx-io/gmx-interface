@@ -26,9 +26,9 @@ import { usePositionsConstantsRequest } from "domain/synthetics/positions";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS } from "lib/legacy";
-import { expandDecimals, formatAmount, formatFactor, formatUsd, PRECISION } from "lib/numbers";
+import { expandDecimals, formatAmount, formatFactor, formatUsd, getPlusOrMinusSymbol, PRECISION } from "lib/numbers";
 import { formatAmountHuman } from "lib/numbers";
-import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
+import { getPositiveOrNegativeClass } from "lib/utils";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { DownloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";

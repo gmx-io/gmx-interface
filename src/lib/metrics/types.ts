@@ -1,8 +1,8 @@
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
-import { TwapDuration } from "domain/synthetics/trade/twap/types";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { ErrorData } from "lib/parseError";
+import { ErrorData } from "lib/errors";
 import { TradeMode } from "sdk/types/trade";
+import { TwapDuration } from "sdk/types/twap";
 
 export type GlobalMetricData = {
   isMobileMetamask: boolean;
@@ -21,6 +21,7 @@ export type GlobalMetricData = {
 export enum OrderStage {
   Submitted = "submitted",
   Simulated = "simulated",
+  Signed = "signed",
   TxnSubmitted = "txnSubmitted",
   Sent = "sent",
   Created = "created",
@@ -54,16 +55,6 @@ export type OrderMetricType =
   | SwapGmMetricData["metricType"]
   | SwapGLVMetricData["metricType"]
   | ShiftGmMetricData["metricType"];
-
-export type OrderErrorContext =
-  | "simulation"
-  | "gasLimit"
-  | "gasPrice"
-  | "bestNonce"
-  | "sending"
-  | "pending"
-  | "minting"
-  | "execution";
 
 export type OrderEventName = `${OrderMetricType}.${OrderStage}`;
 export type MeasureEventName = `${MeasureMetricType}.${LoadingStage}`;
@@ -170,38 +161,46 @@ export type ValidationErrorEvent = {
   data: OrderMetricData & ErrorData;
 };
 
-export type OrderSentEvent = {
-  event: `${OrderMetricType}.${OrderStage.Sent}`;
-  isError: false;
-  time: number | undefined;
-  data: OrderMetricData;
+export type OrderStepTimings = {
+  timeFromSubmitted: number;
+  timeFromSimulated: number;
+  timeFromTxnSubmitted: number;
+  timeFromSent: number;
+  timeFromCreated: number;
 };
 
 export type OrderSimulatedEvent = {
   event: `${OrderMetricType}.${OrderStage.Simulated}`;
   isError: false;
   time: number;
-  data: OrderMetricData;
+  data: OrderMetricData & OrderStepTimings;
 };
 
 export type OrderTxnSubmittedEvent = {
   event: `${OrderMetricType}.${OrderStage.TxnSubmitted}`;
   isError: false;
   time: number;
-  data: OrderMetricData;
+  data: OrderMetricData & OrderStepTimings;
+};
+
+export type OrderSentEvent = {
+  event: `${OrderMetricType}.${OrderStage.Sent}`;
+  isError: false;
+  time: number | undefined;
+  data: OrderMetricData & OrderStepTimings;
 };
 
 export type OrderCreatedEvent = {
   event: `${OrderMetricType}.${OrderStage.Created}`;
   isError: false;
   time: number | undefined;
-  data: OrderMetricData;
+  data: OrderMetricData & OrderStepTimings;
 };
 
 export type OrderTxnFailedEvent = {
   event: `${OrderMetricType}.${OrderStage.Failed | OrderStage.Rejected}`;
   isError: true;
-  data: OrderMetricData & ErrorData;
+  data: Partial<OrderMetricData & ErrorData & OrderStepTimings>;
 };
 
 export type PendingTxnErrorEvent = {
@@ -258,12 +257,24 @@ export type ErrorEvent = {
   data: ErrorData;
 };
 
+export type ExpressOrderMetricData = {
+  isSponsoredCall: boolean;
+  approximateGasLimit: number;
+  approximateL1GasLimit: number;
+  gasPrice: number;
+  asyncGasLimit: number | undefined;
+  currentGasLimit: number;
+  currentEstimationMethod: string;
+  gasPaymentToken: string;
+};
+
 // Entities metric data
 export type SwapMetricData = {
   metricId: `swap:${string}`;
   metricType: "swap" | "limitSwap" | "twapSwap";
   requestId: string;
-  is1ct: boolean;
+  isExpress: boolean;
+  isExpress1CT: boolean;
   hasReferralCode: boolean | undefined;
   initialCollateralTokenAddress: string | undefined;
   initialCollateralSymbol: string | undefined;
@@ -282,6 +293,7 @@ export type SwapMetricData = {
   duration: TwapDuration | undefined;
   partsCount: number | undefined;
   tradeMode: TradeMode | undefined;
+  expressData: ExpressOrderMetricData | undefined;
 };
 
 export type IncreaseOrderMetricData = PositionOrderMetricParams & {
@@ -331,7 +343,8 @@ export type PositionOrderMetricParams = {
   isLong: boolean | undefined;
   orderType: OrderType | undefined;
   executionFee: number | undefined;
-  is1ct: boolean;
+  isExpress: boolean;
+  isExpress1CT: boolean;
   requestId: string;
   priceImpactDeltaUsd: number | undefined;
   priceImpactPercentage: number | undefined;
@@ -340,12 +353,14 @@ export type PositionOrderMetricParams = {
   duration: TwapDuration | undefined;
   partsCount: number | undefined;
   tradeMode: TradeMode | undefined;
+  expressData: ExpressOrderMetricData | undefined;
 };
 
 export type EditCollateralMetricData = {
   metricId: `position:${string}`;
   metricType: "depositCollateral" | "withdrawCollateral";
-  is1ct: boolean;
+  isExpress: boolean;
+  isExpress1CT: boolean;
   requestId: string;
   marketAddress: string | undefined;
   isStandalone: boolean | undefined;
@@ -357,6 +372,7 @@ export type EditCollateralMetricData = {
   isLong: boolean | undefined;
   orderType: OrderType | undefined;
   executionFee: number | undefined;
+  expressData: ExpressOrderMetricData | undefined;
 };
 
 export type SwapGmMetricData = {
@@ -431,6 +447,13 @@ export type MulticallRequestTiming = {
     requestType: string;
     rpcProvider: string;
     isLargeAccount: boolean;
+  };
+};
+
+export type GelatoPollingTiming = {
+  event: "express.pollGelatoTask.finalStatus";
+  data: {
+    status: string;
   };
 };
 

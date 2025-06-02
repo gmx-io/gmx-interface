@@ -81,7 +81,6 @@ export function Claims({
       <SettleAccruedFundingFeeModal
         isVisible={isSettling}
         allowedSlippage={allowedSlippage}
-        setPendingTxns={setPendingTxns}
         onClose={handleSettleCloseClick}
       />
       <AccruedPositionPriceImpactRebateModal

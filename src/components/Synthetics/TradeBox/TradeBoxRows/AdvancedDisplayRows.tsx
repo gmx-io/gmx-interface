@@ -7,7 +7,6 @@ import {
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxDefaultAllowedSwapSlippageBps,
   selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
-  selectTradeboxExecutionFee,
   selectTradeboxExecutionPrice,
   selectTradeboxFees,
   selectTradeboxIncreasePositionAmounts,
@@ -28,9 +27,11 @@ import {
 import { selectTradeboxCollateralSpreadInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxCollateralSpreadInfo";
 import { selectTradeboxLiquidityInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxLiquidityInfo";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { GasPaymentParams } from "domain/synthetics/express";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { formatUsd } from "lib/numbers";
+import { ExecutionFee } from "sdk/types/fees";
 import { isStopIncreaseOrderType } from "sdk/utils/orders";
 import { applySlippageToPrice } from "sdk/utils/trade";
 
@@ -186,7 +187,15 @@ function DecreaseOrderRow() {
   );
 }
 
-export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: string }) {
+export function TradeBoxAdvancedGroups({
+  slippageInputId,
+  gasPaymentParams,
+  totalExecutionFee,
+}: {
+  slippageInputId: string;
+  gasPaymentParams?: GasPaymentParams;
+  totalExecutionFee?: ExecutionFee;
+}) {
   const options = useSelector(selectTradeboxAdvancedOptions);
   const setOptions = useSelector(selectTradeboxSetAdvancedOptions);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
@@ -196,7 +205,6 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
 
   const fees = useSelector(selectTradeboxFees);
   const feesType = useSelector(selectTradeboxTradeFeesType);
-  const executionFee = useSelector(selectTradeboxExecutionFee);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const limitPrice = useSelector(selectTradeboxTriggerPrice);
@@ -283,7 +291,7 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
       {isIncrease && !isTwap && <IncreaseOrderRow />}
       {isTrigger && <DecreaseOrderRow />}
       <TradeFeesRow {...fees} feesType={feesType} />
-      <NetworkFeeRow executionFee={executionFee} />
+      <NetworkFeeRow executionFee={totalExecutionFee} gasPaymentParams={gasPaymentParams} />
 
       {isTwap && isSwap ? (
         <SyntheticsInfoRow label={<Trans>Acceptable Swap Impact</Trans>} value={<Trans>N/A</Trans>} />

@@ -3,7 +3,8 @@ import { ReactNode, useCallback, useEffect } from "react";
 
 import { getChainName } from "config/chains";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectAccountStats } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectAccountStats, selectSubaccountState } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectExpressOrdersEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAvailableMarketsOptions,
   selectTradeboxFromToken,
@@ -48,6 +49,8 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
   const { isLong, isIncrease, isLimit } = useSelector(selectTradeboxTradeFlags);
   const hasExistingPosition = useSelector(selectTradeboxHasExistingPosition);
   const hasExistingOrder = useSelector(selectTradeboxHasExistingLimitOrder);
+  const isExpressEnabled = useSelector(selectExpressOrdersEnabled);
+  const { subaccount } = useSelector(selectSubaccountState);
 
   const isSelectedMarket = useCallback(
     (market: Market) => {
@@ -172,6 +175,8 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
             message: "InsufficientLiquidity",
             pair: marketName,
             pool: marketPoolName,
+            isExpress1CT: Boolean(subaccount),
+            isExpress: isExpressEnabled,
             type: isLong ? "Long" : "Short",
             orderType: getAnalyticsOrderTypeByTradeMode(tradeMode),
             sizeDeltaUsd: formatAmountForMetrics(increaseAmounts?.sizeDeltaUsd) ?? 0,
@@ -194,6 +199,7 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
     increaseAmounts?.estimatedLeverage,
     increaseAmounts?.initialCollateralAmount,
     increaseAmounts?.sizeDeltaUsd,
+    isExpressEnabled,
     isFirstOrder,
     isLimit,
     isLong,
@@ -201,6 +207,7 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
     marketPoolName,
     showHasInsufficientLiquidityAndPositionWarning,
     showHasNoSufficientLiquidityInAnyMarketWarning,
+    subaccount,
     tradeMode,
   ]);
 

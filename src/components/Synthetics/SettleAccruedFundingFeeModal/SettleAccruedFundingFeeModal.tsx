@@ -1,22 +1,28 @@
 import { t, Trans } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import {
   usePositiveFeePositionsSortedByUsd,
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { estimateExecuteDecreaseOrderGasLimit, useGasLimits, useGasPrice } from "domain/synthetics/fees";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
+import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
+import {
+  estimateExecuteDecreaseOrderGasLimit,
+  estimateOrderOraclePriceCount,
+  useGasLimits,
+  useGasPrice,
+} from "domain/synthetics/fees";
 import { getTotalAccruedFundingUsd } from "domain/synthetics/markets";
-import { createDecreaseOrderTxn, DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
+import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useChainId } from "lib/chains";
 import { formatDeltaUsd, formatUsd } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
+import { buildDecreaseOrderPayload } from "sdk/utils/orderTransactions";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import Button from "components/Button/Button";
@@ -32,10 +38,9 @@ type Props = {
   allowedSlippage: number;
   isVisible: boolean;
   onClose: () => void;
-  setPendingTxns: (txns: any) => void;
 };
 
-export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClose, setPendingTxns }: Props) {
+export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClose }: Props) {
   const tokensData = useTokensData();
   const { account, signer } = useWallet();
   const { chainId } = useChainId();
@@ -44,7 +49,6 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
   const [isUntouched, setIsUntouched] = useState(true);
-  const blockTimestampData = useSelector(selectBlockTimestampData);
 
   const { executionFee, gasLimit, feeUsd } = useMemo(() => {
     if (!gasLimits || !tokensData || gasPrice === undefined) return {};
@@ -62,6 +66,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   }, [chainId, gasLimits, gasPrice, tokensData]);
 
   const positiveFeePositions = usePositiveFeePositionsSortedByUsd();
+  const { makeOrderTxnCallback } = useOrderTxnCallbacks();
 
   const preCheckedPositionKeys = useMemo(() => {
     return positiveFeePositions
@@ -82,6 +87,59 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   );
   const total = useMemo(() => getTotalAccruedFundingUsd(selectedPositions), [selectedPositions]);
   const totalStr = formatDeltaUsd(total);
+
+  const batchParams = useMemo(() => {
+    if (!account || !chainId || executionFee === undefined || gasLimit === undefined || !signer) {
+      return undefined;
+    }
+
+    return {
+      createOrderParams: selectedPositions.map((position) =>
+        buildDecreaseOrderPayload({
+          chainId,
+          receiver: signer?.address,
+          marketAddress: position.marketAddress,
+          indexTokenAddress: position.indexToken.address,
+          collateralTokenAddress: position.collateralTokenAddress,
+          collateralDeltaAmount: 1n,
+          receiveTokenAddress: position.collateralToken.address,
+          sizeDeltaUsd: 0n,
+          sizeDeltaInTokens: 0n,
+          acceptablePrice: position.isLong ? 2n ** 256n - 1n : 0n,
+          triggerPrice: undefined,
+          decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
+          orderType: OrderType.MarketDecrease,
+          executionFeeAmount: executionFee,
+          executionGasLimit: gasLimit,
+          referralCode: userReferralInfo?.referralCodeForTxn,
+          isLong: position.isLong,
+          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT,
+          allowedSlippage,
+          autoCancel: false,
+          swapPath: [],
+          externalSwapQuote: undefined,
+          minOutputUsd: 0n,
+          validFromTime: 0n,
+        })
+      ),
+      updateOrderParams: [],
+      cancelOrderParams: [],
+    };
+  }, [
+    account,
+    chainId,
+    executionFee,
+    gasLimit,
+    signer,
+    selectedPositions,
+    userReferralInfo?.referralCodeForTxn,
+    allowedSlippage,
+  ]);
+
+  const { expressParams } = useExpressOrdersParams({
+    orderParams: batchParams,
+    label: "Settle Funding Fee",
+  });
 
   const handleOnClose = useCallback(() => {
     setPositionKeys([]);
@@ -111,70 +169,30 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     [positionKeys, setPositionKeys]
   );
 
-  const { setPendingFundingFeeSettlement } = useSyntheticsEvents();
-
   const onSubmit = useCallback(() => {
-    if (!account || !signer || !chainId || executionFee === undefined || !tokensData) return;
+    if (!account || !signer?.provider || !chainId || !batchParams) {
+      return;
+    }
 
     setIsSubmitting(true);
 
-    createDecreaseOrderTxn(
+    sendBatchOrderTxn({
       chainId,
       signer,
-      null, // Decided don't use subaccount for this action
-      selectedPositions.map((position) => {
-        return {
-          account,
-          marketAddress: position.marketAddress,
-          initialCollateralAddress: position.collateralTokenAddress,
-          initialCollateralDeltaAmount: BigInt(1),
-          receiveTokenAddress: position.collateralToken.address,
-          swapPath: [],
-          sizeDeltaUsd: 0n,
-          sizeDeltaInTokens: 0n,
-          acceptablePrice: position.isLong ? 2n ** 256n - 1n : 0n,
-          triggerPrice: undefined,
-          decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
-          orderType: OrderType.MarketDecrease,
-          isLong: position.isLong,
-          minOutputUsd: 0n,
-          executionFee,
-          executionGasLimit: gasLimit,
-          allowedSlippage,
-          referralCode: userReferralInfo?.referralCodeForTxn,
-          indexToken: position.indexToken,
-          tokensData,
-          skipSimulation: true,
-          autoCancel: false,
-          slippageInputId: undefined,
-          isTwap: false,
-        };
+      batchParams,
+      expressParams,
+      simulationParams: undefined,
+      callback: makeOrderTxnCallback({
+        metricId: undefined,
+        slippageInputId: undefined,
+        isFundingFeeSettlement: true,
       }),
-      {
-        setPendingTxns,
-        setPendingFundingFeeSettlement,
-      },
-      blockTimestampData
-    )
+    })
       .then(handleOnClose)
       .finally(() => {
         setIsSubmitting(false);
       });
-  }, [
-    account,
-    allowedSlippage,
-    blockTimestampData,
-    chainId,
-    executionFee,
-    gasLimit,
-    handleOnClose,
-    selectedPositions,
-    setPendingFundingFeeSettlement,
-    setPendingTxns,
-    signer,
-    tokensData,
-    userReferralInfo?.referralCodeForTxn,
-  ]);
+  }, [account, batchParams, chainId, expressParams, handleOnClose, makeOrderTxnCallback, signer]);
 
   const renderTooltipContent = useCallback(
     () => (
