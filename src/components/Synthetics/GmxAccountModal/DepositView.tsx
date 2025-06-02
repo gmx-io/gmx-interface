@@ -260,7 +260,9 @@ export const DepositView = () => {
 
   const isInputEmpty = inputAmount === undefined || inputAmount <= 0n;
 
-  const { composeGas } = useMultichainDepositNetworkComposeGas();
+  const { composeGas } = useMultichainDepositNetworkComposeGas({
+    tokenAddress: depositViewTokenAddress,
+  });
 
   const sendParamsWithoutSlippage: SendParamStruct | undefined = useMemo(() => {
     if (
@@ -814,7 +816,7 @@ export const DepositView = () => {
       <div className="mb-16 flex flex-col gap-8">
         <SyntheticsInfoRow label="Allowed slippage" value={formatPercentage(SLIPPAGE_BPS, { bps: true })} />
         <SyntheticsInfoRow
-          label="Min receive"
+          label={<Trans>Min receive</Trans>}
           value={
             amountReceivedLD !== undefined && selectedTokenChainData !== undefined
               ? formatBalanceAmount(amountReceivedLD, selectedTokenChainData.sourceChainDecimals)
@@ -822,17 +824,20 @@ export const DepositView = () => {
           }
         />
 
-        <SyntheticsInfoRow label="Network Fee" value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."} />
         <SyntheticsInfoRow
-          label="Deposit Fee"
+          label={<Trans>Network Fee</Trans>}
+          value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."}
+        />
+        <SyntheticsInfoRow
+          label={<Trans>Deposit Fee</Trans>}
           value={protocolFeeUsd !== undefined ? formatUsd(protocolFeeUsd) : "..."}
         />
         <SyntheticsInfoRow
-          label={t`GMX Balance`}
+          label={<Trans>GMX Balance</Trans>}
           value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
         />
         <SyntheticsInfoRow
-          label={t`Asset Balance`}
+          label={<Trans>Asset Balance</Trans>}
           value={
             <ValueTransition
               from={

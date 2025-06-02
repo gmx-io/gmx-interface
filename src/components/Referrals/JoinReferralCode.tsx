@@ -115,9 +115,6 @@ function ReferralCodeForm({
     return true;
   }
 
-  // const { composeGas } = useMultichainDepositNetworkComposeGas({
-  //   enabled: srcChainId !== undefined,
-  // });
   const globalExpressParams = useSelector(selectExpressGlobalParams);
 
   const calcSelector = useCalcSelector();
@@ -195,7 +192,7 @@ function ReferralCodeForm({
           chainId,
           account,
           srcChainId,
-          depositViewTokenAddress: settlementChainTokenId.address,
+          tokenAddress: settlementChainTokenId.address,
           settlementChainPublicClient,
         });
 

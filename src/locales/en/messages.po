@@ -3112,6 +3112,7 @@ msgid "Total Staked"
 msgstr "Total Staked"
 
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -6485,6 +6486,10 @@ msgstr "Buy GLP or GMX"
 msgid "Deposit failed"
 msgstr "Deposit failed"
 
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "Min receive"
+msgstr "Min receive"
+
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Notifications"
 msgstr "Notifications"
@@ -8478,6 +8483,7 @@ msgid "Min leverage: 1.1x"
 msgstr "Min leverage: 1.1x"
 
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 msgid "Deposit Fee"
 msgstr "Deposit Fee"
 

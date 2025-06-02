@@ -2,29 +2,35 @@ import useSWR from "swr";
 import { AbiItemArgs, Address, PublicClient, StateOverride, toHex, zeroAddress } from "viem";
 import { useAccount, usePublicClient } from "wagmi";
 
-import type { UiContractsChain, UiSettlementChain, UiSourceChain } from "config/chains";
+import { ARBITRUM_SEPOLIA, type UiContractsChain, type UiSettlementChain, type UiSourceChain } from "config/chains";
 import { tryGetContract } from "config/contracts";
 import {
+  CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
   getLayerZeroEndpointId,
   getStargatePoolAddress,
   OVERRIDE_ERC20_BYTECODE,
 } from "context/GmxAccountContext/config";
-import { useGmxAccountDepositViewTokenAddress } from "context/GmxAccountContext/hooks";
 import { useChainId } from "lib/chains";
 import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
+import { numberToBigint } from "lib/numbers";
 import { abis } from "sdk/abis";
+import { getToken, getTokenBySymbol } from "sdk/configs/tokens";
 import { layerZeroProviderAbi } from "wagmi-generated";
 
 import { CodecUiHelper, MultichainAction } from "./codecs/CodecUiHelper";
 import { OFTComposeMsgCodec } from "./codecs/OFTComposeMsgCodec";
 
-const FAKE_INPUT_AMOUNT = 1n * 10n ** 18n;
-
-export function useMultichainDepositNetworkComposeGas(opts?: { enabled?: boolean; action?: MultichainAction }): {
+export function useMultichainDepositNetworkComposeGas(opts?: {
+  enabled?: boolean;
+  action?: MultichainAction;
+  tokenAddress?: string;
+}): {
   composeGas: bigint | undefined;
 } {
   const { chainId, srcChainId } = useChainId();
-  const [depositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
+
+  const tokenAddress: string | undefined = opts?.tokenAddress ?? CHAIN_ID_PREFERRED_DEPOSIT_TOKEN[chainId];
+
   const { address: account } = useAccount();
   const settlementChainPublicClient = usePublicClient({ chainId });
 
@@ -32,14 +38,14 @@ export function useMultichainDepositNetworkComposeGas(opts?: { enabled?: boolean
     settlementChainPublicClient &&
     account &&
     srcChainId &&
-    depositViewTokenAddress &&
-    getStargatePoolAddress(chainId, depositViewTokenAddress) !== undefined &&
+    tokenAddress !== undefined &&
+    getStargatePoolAddress(chainId, tokenAddress) !== undefined &&
     tryGetContract(chainId, "LayerZeroProvider") !== undefined &&
     srcChainId !== (chainId as UiSourceChain) &&
     opts?.enabled !== false;
 
   const composeGasQuery = useSWR<bigint | undefined>(
-    composeGasQueryCondition ? ["composeGas", account, chainId, srcChainId, depositViewTokenAddress] : null,
+    composeGasQueryCondition ? ["composeGas", account, chainId, srcChainId, tokenAddress] : null,
     {
       fetcher: async () => {
         if (!composeGasQueryCondition) {
@@ -51,7 +57,7 @@ export function useMultichainDepositNetworkComposeGas(opts?: { enabled?: boolean
           chainId,
           account,
           srcChainId,
-          depositViewTokenAddress,
+          tokenAddress,
           settlementChainPublicClient,
         });
       },
@@ -65,19 +71,24 @@ export function useMultichainDepositNetworkComposeGas(opts?: { enabled?: boolean
   };
 }
 
+const FAKE_INPUT_AMOUNT_MAP: Record<string, bigint> = {
+  "USDC.SG": numberToBigint(1, getTokenBySymbol(ARBITRUM_SEPOLIA, "USDC.SG").decimals),
+  ETH: numberToBigint(0.0015, getTokenBySymbol(ARBITRUM_SEPOLIA, "ETH").decimals),
+};
+
 export async function estimateMultichainDepositNetworkComposeGas({
   action,
   chainId,
   account,
   srcChainId,
-  depositViewTokenAddress,
+  tokenAddress,
   settlementChainPublicClient,
 }: {
   action?: MultichainAction;
   chainId: UiContractsChain;
   account: Address;
   srcChainId: UiSourceChain;
-  depositViewTokenAddress: string;
+  tokenAddress: string;
   settlementChainPublicClient: PublicClient;
 }) {
   const data = action ? CodecUiHelper.encodeMultichainActionData(action) : undefined;
@@ -94,9 +105,11 @@ export async function estimateMultichainDepositNetworkComposeGas({
     throw new Error("Stargate endpoint ID not found");
   }
 
-  const message = OFTComposeMsgCodec.encode(0, settlementChainEndpointId, FAKE_INPUT_AMOUNT, composeFromWithMsg);
+  const fakeAmount = FAKE_INPUT_AMOUNT_MAP[getToken(chainId, tokenAddress).symbol] ?? 10n ** 18n;
 
-  const stargatePool = getStargatePoolAddress(chainId, depositViewTokenAddress);
+  const message = OFTComposeMsgCodec.encode(0, settlementChainEndpointId, fakeAmount, composeFromWithMsg);
+
+  const stargatePool = getStargatePoolAddress(chainId, tokenAddress);
 
   if (!stargatePool) {
     throw new Error("Stargate pool not found");
@@ -110,16 +123,16 @@ export async function estimateMultichainDepositNetworkComposeGas({
 
   const stateOverride: StateOverride = [];
 
-  if (depositViewTokenAddress !== zeroAddress) {
+  if (tokenAddress !== zeroAddress) {
     const stateOverrideForErc20: StateOverride[number] = {
-      address: depositViewTokenAddress as Address,
+      address: tokenAddress as Address,
       code: OVERRIDE_ERC20_BYTECODE,
     };
     stateOverride.push(stateOverrideForErc20);
   } else {
     const stateOverrideForNative: StateOverride[number] = {
       address,
-      balance: FAKE_INPUT_AMOUNT * 10n,
+      balance: fakeAmount * 10n,
     };
     stateOverride.push(stateOverrideForNative);
   }
