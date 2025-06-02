@@ -426,6 +426,10 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.swapFeeFactorForNegativeImpact],
         },
+        atomicSwapFeeFactor: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.atomicSwapFeeFactor],
+        },
         swapImpactFactorPositive: {
           methodName: "getUint",
           params: [prebuiltHashedKeys.swapImpactFactorPositive],

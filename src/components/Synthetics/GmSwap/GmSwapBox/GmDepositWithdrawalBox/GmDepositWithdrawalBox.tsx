@@ -402,6 +402,8 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     fromTokenAmount: firstTokenAmount ?? 0n,
     fromTokenInputValue: firstTokenInputValue,
     nativeToken: nativeToken,
+    minResidualAmount: undefined,
+    isLoading: false,
   });
 
   const firstTokenShowMaxButton = isDeposit && firstTokenMaxDetails.showClickMax;
@@ -411,6 +413,8 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     fromTokenAmount: secondTokenAmount ?? 0n,
     fromTokenInputValue: secondTokenInputValue,
     nativeToken: nativeToken,
+    minResidualAmount: undefined,
+    isLoading: false,
   });
 
   const secondTokenShowMaxButton = isDeposit && secondTokenMaxDetails.showClickMax;
@@ -420,6 +424,8 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     fromTokenAmount: glvInfo ? glvTokenAmount : marketTokenAmount,
     fromTokenInputValue: marketOrGlvTokenInputValue,
     nativeToken: nativeToken,
+    minResidualAmount: undefined,
+    isLoading: false,
   });
 
   const marketTokenInputShowMaxButton = isWithdrawal && marketTokenMaxDetails.showClickMax;

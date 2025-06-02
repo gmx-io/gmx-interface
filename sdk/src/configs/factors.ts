@@ -1,7 +1,4 @@
-export const USD_DECIMALS = 30;
-
-export const BASIS_POINTS_DIVISOR = 10000;
-export const BASIS_POINTS_DIVISOR_BIGINT = 10000n;
+export { USD_DECIMALS, BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "utils/numbers";
 
 // V2
 export const HIGH_PRICE_IMPACT_BPS = 80; // 0.8%
