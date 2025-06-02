@@ -743,7 +743,7 @@ function OrderItemSmall({
 }
 
 function getSwapRatioText(order: OrderInfo) {
-  if (!isLimitOrderType(order.orderType)) return {};
+  if (!isLimitOrderType(order.orderType) && !isMarketOrderType(order.orderType)) return {};
 
   const fromToken = order.initialCollateralToken;
   const toToken = order.targetCollateralToken;
