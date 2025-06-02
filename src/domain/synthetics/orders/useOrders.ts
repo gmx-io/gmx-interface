@@ -129,7 +129,7 @@ export function useOrders(
 
     const filteredOrders = data?.orders.concat(shouldMockMarketOrder ? [MOCK_ORDER as any] : []).filter((order) => {
       if (isMarketOrderType(order.orderType)) {
-        const is10SecondsPassedSinceOrderCreation = Date.now() - Number(order.updatedAtTime * 1000n) > 10000;
+        const is10SecondsPassedSinceOrderCreation = Date.now() - Number(order.updatedAtTime * 1000n) > 10_000;
         if (!is10SecondsPassedSinceOrderCreation) {
           return false;
         }
