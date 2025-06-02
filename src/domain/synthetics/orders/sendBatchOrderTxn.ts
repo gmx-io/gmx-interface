@@ -1,5 +1,6 @@
 import { withRetry } from "viem";
 
+import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { buildAndSignExpressBatchOrderTxn } from "domain/synthetics/express/expressOrderUtils";
 import { isLimitSwapOrderType } from "domain/synthetics/orders";
@@ -37,6 +38,7 @@ export async function sendBatchOrderTxn({
   chainId,
   signer,
   batchParams,
+  noncesData,
   expressParams,
   simulationParams,
   callback,
@@ -45,6 +47,7 @@ export async function sendBatchOrderTxn({
   signer: WalletSigner;
   batchParams: BatchOrderTxnParams;
   expressParams: ExpressTxnParams | undefined;
+  noncesData?: NoncesData;
   simulationParams: BatchSimulationParams | undefined;
   callback: TxnCallback<BatchOrderTxnCtx> | undefined;
 }) {
@@ -74,7 +77,7 @@ export async function sendBatchOrderTxn({
         relayerFeeTokenAddress: expressParams.gasPaymentParams.relayerFeeTokenAddress,
         relayerFeeAmount: expressParams.gasPaymentParams.relayerFeeAmount,
         subaccount: expressParams.subaccount,
-        noncesData: undefined,
+        noncesData,
       });
 
       callback?.(eventBuilder.Sending());
