@@ -65,6 +65,7 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { useArbitraryRelayParamsAndPayload } from "./arbitraryRelayParams";
 import { getSendParamsWithoutSlippage } from "./getSendParams";
+import { ModalShrinkingContent } from "./ModalShrinkingContent";
 import { Selector } from "./Selector";
 import { applySlippageBps, SLIPPAGE_BPS } from "./slippage";
 import { toastCustomOrStargateError } from "./toastCustomOrStargateError";
@@ -530,7 +531,7 @@ export const WithdrawView = () => {
   );
 
   return (
-    <div className="grow overflow-y-auto p-16">
+    <ModalShrinkingContent className="overflow-y-auto p-16">
       <div className="flex flex-col gap-20">
         <div className="flex flex-col gap-4">
           <div className="text-body-small text-slate-100">Asset</div>
@@ -667,7 +668,7 @@ export const WithdrawView = () => {
       <Button variant="primary" className="w-full" onClick={buttonState.onClick} disabled={buttonState.disabled}>
         {buttonState.text}
       </Button>
-    </div>
+    </ModalShrinkingContent>
   );
 };
 
