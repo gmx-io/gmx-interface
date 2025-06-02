@@ -29,6 +29,7 @@ function useGmxAccountUsd() {
 }
 
 function AddressDropdown({ account }: Props) {
+  const { srcChainId } = useChainId();
   const { ensName } = useENS(account);
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
   const { gmxAccountUsd, isLoading } = useGmxAccountUsd();
@@ -46,41 +47,46 @@ function AddressDropdown({ account }: Props) {
     setGmxAccountModalOpen("deposit");
   }, [setGmxAccountModalOpen]);
 
-  const showDepositButton = !isLoading && gmxAccountUsd === 0n;
+  const showSideButton = srcChainId !== undefined;
+  const showDepositButton = !isLoading && gmxAccountUsd === 0n && srcChainId !== undefined;
 
   return (
     <div className="flex">
-      <button
-        data-qa="user-address"
-        className={cx("flex h-36 items-center gap-8 rounded-l-4 border border-stroke-primary px-12", {
-          hidden: isSmallScreen,
-        })}
-        onClick={handleOpenGmxAccountModal}
-      >
-        <div className="ml-1 mr-2">
-          <Avatar size={20} ensName={ensName} address={account} />
-        </div>
-        <span className="">{shortenAddressOrEns(ensName || account, displayAddressLength)}</span>
-      </button>
-      <button
-        className={cx(
-          "h-36 items-center border-stroke-primary px-12",
-          isSmallScreen ? "rounded-4" : "rounded-r-4 border-b border-r border-t",
-          showDepositButton && "bg-blue-600 active:bg-[--primary-btn-active] desktop-hover:bg-[--primary-btn-hover]",
-          isSmallScreen && !showDepositButton && "border"
-        )}
-        onClick={showDepositButton ? handleOpenDeposit : handleOpenGmxAccountModal}
-      >
-        <div className="relative -top-1">
-          {showDepositButton ? (
-            <Trans>Deposit</Trans>
-          ) : isLoading ? (
-            <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={55} height={16} />
-          ) : (
-            formatUsd(gmxAccountUsd)
+      {!(isSmallScreen && showSideButton) && (
+        <button
+          data-qa="user-address"
+          className={cx("flex h-36 items-center gap-8 rounded-l-4 border border-stroke-primary px-12", {
+            "rounded-r-4": !showSideButton,
+          })}
+          onClick={handleOpenGmxAccountModal}
+        >
+          <div className="ml-1 mr-2">
+            <Avatar size={20} ensName={ensName} address={account} />
+          </div>
+          <span className="">{shortenAddressOrEns(ensName || account, displayAddressLength)}</span>
+        </button>
+      )}
+      {showSideButton && (
+        <button
+          className={cx(
+            "h-36 items-center border-stroke-primary px-12",
+            isSmallScreen ? "rounded-4" : "rounded-r-4 border-b border-r border-t",
+            showDepositButton && "bg-blue-600 active:bg-[--primary-btn-active] desktop-hover:bg-[--primary-btn-hover]",
+            isSmallScreen && !showDepositButton && "border"
           )}
-        </div>
-      </button>
+          onClick={showDepositButton ? handleOpenDeposit : handleOpenGmxAccountModal}
+        >
+          <div className="relative -top-1">
+            {showDepositButton ? (
+              <Trans>Deposit</Trans>
+            ) : isLoading ? (
+              <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={55} height={16} />
+            ) : (
+              formatUsd(gmxAccountUsd)
+            )}
+          </div>
+        </button>
+      )}
     </div>
   );
 }

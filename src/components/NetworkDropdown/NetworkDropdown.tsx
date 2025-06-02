@@ -23,7 +23,7 @@ import SettingsIcon24 from "img/ic_settings_24.svg?react";
 import LanguageModalContent from "./LanguageModalContent";
 import ModalWithPortal from "../Modal/ModalWithPortal";
 
-import "./NetworkDropdown.css";
+import "./NetworkDropdown.scss";
 
 const LANGUAGE_MODAL_KEY = "LANGUAGE";
 const NETWORK_MODAL_KEY = "NETWORK";
