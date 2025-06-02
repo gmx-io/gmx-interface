@@ -567,7 +567,9 @@ function OrderItemLarge({
       <TableTd>
         <TriggerPrice order={order} hideActions={hideActions} />
       </TableTd>
-      <TableTd>{/* <MarkPrice order={order} /> */}</TableTd>
+      <TableTd>
+        <MarkPrice order={order} />
+      </TableTd>
       {!hideActions && (
         <TableTd>
           <div className="inline-flex items-center">
