@@ -54,6 +54,8 @@ export async function sendBatchOrderTxn({
   const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({ expressParams, batchParams, signer });
 
   try {
+    callback?.(eventBuilder.Submitted());
+
     const runSimulation = async () =>
       simulationParams
         ? makeBatchOrderSimulation({
