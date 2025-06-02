@@ -20,7 +20,6 @@ import {
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLimitOrderType,
-  isLimitSwapOrderType,
   isMarketOrderType,
   isStopIncreaseOrderType,
   isStopLossOrderType,
@@ -104,7 +103,7 @@ export function OrderItem(p: Props) {
 function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: boolean | undefined }) {
   const chainId = useSelector(selectChainId);
 
-  if (isLimitSwapOrderType(order.orderType)) {
+  if (isSwapOrderType(order.orderType)) {
     if (showDebugValues) {
       return (
         <Tooltip
@@ -227,7 +226,7 @@ export function TwapOrderProgress({ order, className }: { order: TwapOrderInfo; 
 }
 
 export function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?: boolean }) {
-  if (isLimitSwapOrderType(order.orderType)) {
+  if (isSwapOrderType(order.orderType)) {
     const { initialCollateralToken, targetCollateralToken, minOutputAmount, initialCollateralDeltaAmount } = order;
 
     const fromTokenText = formatBalanceAmount(initialCollateralDeltaAmount, initialCollateralToken.decimals);
@@ -288,7 +287,7 @@ export function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?
 
 function MarkPrice({ order }: { order: OrderInfo }) {
   const markPrice = useMemo(() => {
-    if (isLimitSwapOrderType(order.orderType)) {
+    if (isSwapOrderType(order.orderType)) {
       return undefined;
     }
 
@@ -332,7 +331,7 @@ function MarkPrice({ order }: { order: OrderInfo }) {
     );
   }
 
-  if (isLimitSwapOrderType(order.orderType)) {
+  if (isSwapOrderType(order.orderType)) {
     const { markSwapRatioText } = getSwapRatioText(order);
 
     return markSwapRatioText;
@@ -372,7 +371,7 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
     return <Trans>N/A</Trans>;
   }
 
-  if (isLimitSwapOrderType(order.orderType)) {
+  if (isSwapOrderType(order.orderType)) {
     const swapOrder = order as SwapOrderInfo;
     const toAmount = swapOrder.minOutputAmount;
     const toToken = order.targetCollateralToken;
@@ -458,7 +457,7 @@ function OrderItemLarge({
   oracleSettings: OracleSettingsData | undefined;
 }) {
   const marketInfoData = useSelector(selectMarketsInfoData);
-  const isSwap = isLimitSwapOrderType(order.orderType);
+  const isSwap = isSwapOrderType(order.orderType);
   const { indexName, poolName, tokenSymbol } = useMemo(() => {
     const marketInfo = marketInfoData?.[order.marketAddress];
 
@@ -568,9 +567,7 @@ function OrderItemLarge({
       <TableTd>
         <TriggerPrice order={order} hideActions={hideActions} />
       </TableTd>
-      <TableTd>
-        <MarkPrice order={order} />
-      </TableTd>
+      <TableTd>{/* <MarkPrice order={order} /> */}</TableTd>
       {!hideActions && (
         <TableTd>
           <div className="inline-flex items-center">
@@ -617,7 +614,7 @@ function OrderItemSmall({
   const marketInfoData = useSelector(selectMarketsInfoData);
 
   const title = useMemo(() => {
-    if (isLimitSwapOrderType(order.orderType)) {
+    if (isSwapOrderType(order.orderType)) {
       const swapPathTokenSymbols = getSwapPathTokenSymbols(
         marketInfoData,
         order.initialCollateralToken,

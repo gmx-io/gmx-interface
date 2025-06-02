@@ -383,7 +383,3 @@ export function priceFeedKey(token: string) {
 export function gaslessFeatureDisabledKey(module: string) {
   return hashData(["bytes32", "address"], [GASLESS_FEATURE_DISABLED_KEY, module]);
 }
-
-export function requestExpirationTimeKey(module: string) {
-  return hashData(["bytes32", "address"], [REQUEST_EXPIRATION_TIME_KEY, module]);
-}
