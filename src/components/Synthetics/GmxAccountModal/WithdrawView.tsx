@@ -121,12 +121,6 @@ export const WithdrawView = () => {
     setInputValue(formatAmountFree(selectedToken.balance, selectedToken.decimals));
   }, [selectedToken, setInputValue]);
 
-  // const gmxAccountTokenBalanceUsd = convertToUsd(
-  //   selectedToken?.balance,
-  //   selectedToken?.decimals,
-  //   selectedToken?.prices.maxPrice
-  // );
-
   const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
 
   const unwrappedSelectedTokenAddress =
@@ -378,7 +372,7 @@ export const WithdrawView = () => {
     return expressTransactionBuilder;
   }, [bridgeOutParams, chainId, provider, signer]);
 
-  const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload("withdraw", {
+  const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload("multichain-withdraw", {
     additionalNetworkFee: bridgeNetworkFee,
     expressTransactionBuilder,
   });
@@ -538,7 +532,7 @@ export const WithdrawView = () => {
           <Selector
             value={selectedTokenAddress}
             onChange={setSelectedTokenAddress}
-            placeholder="Select token"
+            placeholder={t`Select token`}
             button={
               selectedTokenAddress && selectedToken ? (
                 <div className="flex items-center gap-8">
@@ -562,7 +556,7 @@ export const WithdrawView = () => {
             onChange={(value) => {
               switchNetwork(Number(value), isConnected);
             }}
-            placeholder="Select network"
+            placeholder={t`Select network`}
             button={
               <div className="flex items-center gap-8">
                 {srcChainId !== undefined ? (
@@ -648,17 +642,20 @@ export const WithdrawView = () => {
       <div className="h-32" />
 
       <div className="mb-16 flex flex-col gap-8">
-        <SyntheticsInfoRow label="Network Fee" value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."} />
         <SyntheticsInfoRow
-          label="Withdraw Fee"
+          label={<Trans>Network Fee</Trans>}
+          value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."}
+        />
+        <SyntheticsInfoRow
+          label={<Trans>Withdraw Fee</Trans>}
           value={protocolFeeUsd !== undefined ? formatUsd(protocolFeeUsd) : "..."}
         />
         <SyntheticsInfoRow
-          label="GMX Balance"
+          label={<Trans>GMX Balance</Trans>}
           value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
         />
         <SyntheticsInfoRow
-          label="Asset Balance"
+          label={<Trans>Asset Balance</Trans>}
           value={
             <ValueTransition from={formatUsd(sourceChainTokenBalanceUsd)} to={formatUsd(nextSourceChainBalanceUsd)} />
           }

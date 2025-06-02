@@ -342,6 +342,10 @@ msgstr ""
 msgid "Confirm Settle"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+msgid "Select token"
+msgstr ""
+
 #: src/domain/synthetics/markets/createDepositTxn.ts
 #: src/domain/synthetics/markets/createGlvDepositTxn.ts
 msgid "Deposit error."
@@ -3108,6 +3112,7 @@ msgid "Total Staked"
 msgstr "质押总额"
 
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -6184,6 +6189,7 @@ msgid "Buy order executed"
 msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 msgid "Asset Balance"
 msgstr ""
 
@@ -6574,6 +6580,7 @@ msgstr "超过100倍的最大杠杆率，扣除损失和费用后的剩余抵押
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 msgid "GMX Balance"
 msgstr ""
 
@@ -6854,6 +6861,7 @@ msgstr ""
 msgid "Could not execute deposit into {0} {longOrShortText}"
 msgstr "无法执行存入 {0} {longOrShortText}"
 
+#: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
@@ -7449,6 +7457,10 @@ msgstr ""
 msgid "GLP to GM Airdrop"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+msgid "GMX Funding Activity"
+msgstr ""
+
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 msgid "GM token pricing includes price impact pool amounts, the pending PnL of open positions, and borrowing fees. It excludes funding fees, which are exchanged between traders.<0/><1/><2>Read more about GM token pricing</2>."
 msgstr ""
@@ -7871,6 +7883,10 @@ msgstr "NFT ID"
 msgid "Success claimings"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+msgid "Select network"
+msgstr ""
+
 #: src/lib/legacy.ts
 msgid "Decentralized Perpetual Exchange | GMX"
 msgstr ""
@@ -8024,6 +8040,10 @@ msgstr ""
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr "无效代币索引代币: \"{0}\" 抵押品代币: \"{1}\\"
+
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+msgid "Withdraw Fee"
+msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Alerts"

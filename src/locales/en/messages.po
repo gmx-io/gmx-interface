@@ -342,6 +342,10 @@ msgstr "Failed Take Profit"
 msgid "Confirm Settle"
 msgstr "Confirm Settle"
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+msgid "Select token"
+msgstr "Select token"
+
 #: src/domain/synthetics/markets/createDepositTxn.ts
 #: src/domain/synthetics/markets/createGlvDepositTxn.ts
 msgid "Deposit error."
@@ -3108,6 +3112,7 @@ msgid "Total Staked"
 msgstr "Total Staked"
 
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -6187,6 +6192,7 @@ msgid "Buy order executed"
 msgstr "Buy order executed"
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 msgid "Asset Balance"
 msgstr "Asset Balance"
 
@@ -6577,6 +6583,7 @@ msgstr "Max leverage of 100x was exceeded, the remaining collateral after deduct
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 msgid "GMX Balance"
 msgstr "GMX Balance"
 
@@ -6860,6 +6867,7 @@ msgstr "APRs are updated weekly on Wednesday and will depend on the fees collect
 msgid "Could not execute deposit into {0} {longOrShortText}"
 msgstr "Could not execute deposit into {0} {longOrShortText}"
 
+#: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
@@ -7455,6 +7463,10 @@ msgstr "shift"
 msgid "GLP to GM Airdrop"
 msgstr "GLP to GM Airdrop"
 
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+msgid "GMX Funding Activity"
+msgstr "GMX Funding Activity"
+
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 msgid "GM token pricing includes price impact pool amounts, the pending PnL of open positions, and borrowing fees. It excludes funding fees, which are exchanged between traders.<0/><1/><2>Read more about GM token pricing</2>."
 msgstr "GM token pricing includes price impact pool amounts, the pending PnL of open positions, and borrowing fees. It excludes funding fees, which are exchanged between traders.<0/><1/><2>Read more about GM token pricing</2>."
@@ -7877,6 +7889,10 @@ msgstr "NFT ID"
 msgid "Success claimings"
 msgstr "Success claimings"
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+msgid "Select network"
+msgstr "Select network"
+
 #: src/lib/legacy.ts
 msgid "Decentralized Perpetual Exchange | GMX"
 msgstr "Decentralized Perpetual Exchange | GMX"
@@ -8030,6 +8046,10 @@ msgstr "Rebates on V1"
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
+
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+msgid "Withdraw Fee"
+msgstr "Withdraw Fee"
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Alerts"

@@ -449,7 +449,7 @@ export function useArbitraryRelayParamsAndPayload(
     {
       leading: false,
       trailing: true,
-      throttleMs: 200,
+      throttleMs: 1000,
       params:
         account !== undefined &&
         provider !== undefined &&
