@@ -4,6 +4,7 @@ import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
 import Skeleton from "react-loading-skeleton";
+import { useLatest } from "react-use";
 import useSWR from "swr";
 import { Address, Hex, decodeErrorResult, encodeFunctionData, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
@@ -69,8 +70,26 @@ import { getSendParamsWithoutSlippage } from "./getSendParams";
 import { useAvailableToTradeAssetMultichain, useMultichainTokensRequest } from "./hooks";
 import { ModalShrinkingContent } from "./ModalShrinkingContent";
 import { SLIPPAGE_BPS, applySlippageBps } from "./slippage";
+import { useGmxAccountFundingHistory } from "./useGmxAccountFundingHistory";
 import { useMultichainDepositNetworkComposeGas } from "./useMultichainDepositNetworkComposeGas";
 import { useMultichainQuoteFeeUsd } from "./useMultichainQuoteFeeUsd";
+
+const useIsFirstDeposit = () => {
+  const [enabled, setEnabled] = useState(true);
+  const [isFirstDeposit, setIsFirstDeposit] = useState(false);
+  const fundingHistory = useGmxAccountFundingHistory({ enabled });
+
+  useEffect(() => {
+    if (fundingHistory === undefined || fundingHistory.length !== 0) {
+      return;
+    }
+
+    setEnabled(false);
+    setIsFirstDeposit(true);
+  }, [fundingHistory]);
+
+  return isFirstDeposit;
+};
 
 export const DepositView = () => {
   const { chainId: settlementChainId, srcChainId } = useChainId();
@@ -137,8 +156,7 @@ export const DepositView = () => {
   const inputAmountUsd = selectedToken
     ? convertToUsd(inputAmount, selectedToken.decimals, selectedTokenChainData?.sourceChainPrices?.maxPrice)
     : undefined;
-  const latestInputAmountUsd = useRef(inputAmountUsd);
-  latestInputAmountUsd.current = inputAmountUsd;
+  const latestInputAmountUsd = useLatest(inputAmountUsd);
 
   const handleMaxButtonClick = useCallback(() => {
     if (selectedToken === undefined || selectedTokenSourceChainBalance === undefined) {
@@ -397,6 +415,9 @@ export const DepositView = () => {
     unwrappedTokenAddress: unwrappedSelectedTokenAddress,
   });
 
+  const isFirstDeposit = useIsFirstDeposit();
+  const latestIsFirstDeposit = useLatest(isFirstDeposit);
+
   const handleDeposit = useCallback(async () => {
     if (DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT && (walletChainId as UiSettlementChain) === settlementChainId) {
       // #region DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT
@@ -492,7 +513,7 @@ export const DepositView = () => {
       const metricData = initMultichainDepositMetricData({
         assetSymbol: selectedToken!.symbol,
         sizeInUsd: latestInputAmountUsd.current!,
-        isFirstDeposit: false,
+        isFirstDeposit: latestIsFirstDeposit.current,
         settlementChain: settlementChainId,
         sourceChain: srcChainId,
         amount: inputAmount,
@@ -592,6 +613,8 @@ export const DepositView = () => {
     quoteSend,
     sendParamsWithSlippage,
     selectedTokenSourceChainTokenId,
+    latestInputAmountUsd,
+    latestIsFirstDeposit,
     setMultichainSubmittedDeposit,
   ]);
 

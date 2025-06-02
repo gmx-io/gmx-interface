@@ -395,6 +395,15 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
     ]
   );
 
+  useEffect(
+    function resetOnAccountChange() {
+      setPendingMultichainFunding(DEFAULT_MULTICHAIN_FUNDING_STATE);
+      setMultichainFundingPendingIds(EMPTY_OBJECT);
+      setSourceChainApprovalStatuses(EMPTY_OBJECT);
+    },
+    [currentAccount]
+  );
+
   return multichainEventsState;
 }
 
