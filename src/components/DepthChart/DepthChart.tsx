@@ -182,8 +182,9 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
     return getOraclePriceLabel();
   }, []);
   const oraclePrice = useMemo(() => {
-    return Number(
-      withVisualMultiplier(getMidPrice(marketInfo.indexToken.prices), marketInfo.indexToken.visualMultiplier)
+    return bigintToNumber(
+      withVisualMultiplier(getMidPrice(marketInfo.indexToken.prices), marketInfo.indexToken.visualMultiplier),
+      USD_DECIMALS
     );
   }, [marketInfo.indexToken.prices, marketInfo.indexToken.visualMultiplier]);
 
@@ -1006,7 +1007,10 @@ function useXAxis(
     isZeroPriceImpact: boolean;
   }
 ) {
-  const midPrice = getMidPrice(marketInfo.indexToken.prices);
+  const midPrice = withVisualMultiplier(
+    getMidPrice(marketInfo.indexToken.prices),
+    marketInfo.indexToken.visualMultiplier
+  );
 
   let lowPrice = isZeroPriceImpact ? addLeftPaddingForZeroPriceImpact(leftExecutionPrice) : leftExecutionPrice;
   let highPrice = isZeroPriceImpact ? addRightPaddingForZeroPriceImpact(rightExecutionPrice) : rightExecutionPrice;
