@@ -523,7 +523,6 @@ type MultichainFundingParams = {
   sourceChain: number;
   settlementChain: number;
   assetSymbol: string;
-  assetAddress: string;
   sizeInUsd: number;
 };
 

@@ -31,6 +31,14 @@ import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
 import { helperToast } from "lib/helperToast";
+import {
+  initMultichainDepositMetricData,
+  sendOrderSimulatedMetric,
+  sendOrderSubmittedMetric,
+  sendOrderTxnSubmittedMetric,
+  sendTxnErrorMetric,
+  sendTxnSentMetric,
+} from "lib/metrics";
 import { formatAmountFree, formatBalanceAmount, formatPercentage, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
@@ -129,6 +137,8 @@ export const DepositView = () => {
   const inputAmountUsd = selectedToken
     ? convertToUsd(inputAmount, selectedToken.decimals, selectedTokenChainData?.sourceChainPrices?.maxPrice)
     : undefined;
+  const latestInputAmountUsd = useRef(inputAmountUsd);
+  latestInputAmountUsd.current = inputAmountUsd;
 
   const handleMaxButtonClick = useCallback(() => {
     if (selectedToken === undefined || selectedTokenSourceChainBalance === undefined) {
@@ -479,14 +489,16 @@ export const DepositView = () => {
 
       setIsSubmitting(true);
 
-      // const metricData = initMultichainDepositMetricData({
-      //   assetAddress: depositViewTokenAddress,
-      //   assetSymbol: selectedToken!.symbol,
-      //   sizeInUsd: inputAmountUsd!,
-      //   isFirstDeposit: false,
-      //   settlementChain: settlementChainId,
-      //   sourceChain: depositViewChain,
-      // });
+      const metricData = initMultichainDepositMetricData({
+        assetSymbol: selectedToken!.symbol,
+        sizeInUsd: latestInputAmountUsd.current!,
+        isFirstDeposit: false,
+        settlementChain: settlementChainId,
+        sourceChain: srcChainId,
+        amount: inputAmount,
+      });
+
+      sendOrderSubmittedMetric(metricData.metricId);
 
       const sourceChainTokenAddress = selectedTokenSourceChainTokenId.address;
 
@@ -508,12 +520,17 @@ export const DepositView = () => {
         callback: (txnEvent) => {
           if (txnEvent.event === TxnEventName.Error) {
             setIsSubmitting(false);
+            let prettyError = txnEvent.data.error;
             const data = txnEvent.data.error.info?.error?.data as Hex | undefined;
+
             if (data) {
               const error = decodeErrorResult({
                 abi: StargateErrorsAbi,
                 data,
               });
+
+              prettyError = new Error(JSON.stringify(error, null, 2));
+              prettyError.name = error.errorName;
 
               const toastParams = getTxnErrorToast(
                 srcChainId,
@@ -537,9 +554,13 @@ export const DepositView = () => {
                 toastId: "gmx-account-deposit",
               });
             }
+
+            sendTxnErrorMetric(metricData.metricId, prettyError, "unknown");
           } else if (txnEvent.event === TxnEventName.Sent) {
             setIsVisibleOrView("main");
             setIsSubmitting(false);
+
+            sendTxnSentMetric(metricData.metricId);
 
             if (txnEvent.data.type === "wallet") {
               setMultichainSubmittedDeposit({
@@ -550,6 +571,10 @@ export const DepositView = () => {
                 sentTxn: txnEvent.data.transactionHash,
               });
             }
+          } else if (txnEvent.event === TxnEventName.Simulated) {
+            sendOrderSimulatedMetric(metricData.metricId);
+          } else if (txnEvent.event === TxnEventName.Sending) {
+            sendOrderTxnSubmittedMetric(metricData.metricId);
           }
         },
       });
@@ -562,7 +587,7 @@ export const DepositView = () => {
     inputAmount,
     signer,
     setIsVisibleOrView,
-    selectedToken?.wrappedAddress,
+    selectedToken,
     srcChainId,
     quoteSend,
     sendParamsWithSlippage,

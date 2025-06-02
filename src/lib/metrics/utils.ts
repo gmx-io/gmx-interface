@@ -605,7 +605,6 @@ export function initMultichainDepositMetricData({
   sourceChain,
   settlementChain,
   assetSymbol,
-  assetAddress,
   sizeInUsd,
   amount,
   isFirstDeposit,
@@ -613,7 +612,6 @@ export function initMultichainDepositMetricData({
   sourceChain: number;
   settlementChain: number;
   assetSymbol: string;
-  assetAddress: string;
   sizeInUsd: bigint;
   amount: bigint;
   isFirstDeposit: boolean;
@@ -622,14 +620,13 @@ export function initMultichainDepositMetricData({
     metricId: getMultichainDepositMetricId({
       sourceChain,
       settlementChain,
-      assetAddress,
+      assetSymbol,
       amount,
     }),
     metricType: "multichainDeposit",
     sourceChain,
     settlementChain,
     assetSymbol,
-    assetAddress,
     sizeInUsd: formatAmountForMetrics(sizeInUsd)!,
     isFirstDeposit,
   });
@@ -639,7 +636,6 @@ export function initMultichainWithdrawalMetricData({
   sourceChain,
   settlementChain,
   assetSymbol,
-  assetAddress,
   amount,
   isFirstWithdrawal,
   sizeInUsd,
@@ -656,14 +652,13 @@ export function initMultichainWithdrawalMetricData({
     metricId: getMultichainWithdrawalMetricId({
       sourceChain,
       settlementChain,
-      assetAddress,
+      assetSymbol,
       amount,
     }),
     metricType: "multichainWithdrawal",
     sourceChain,
     settlementChain,
     assetSymbol,
-    assetAddress,
     sizeInUsd: formatAmountForMetrics(sizeInUsd)!,
     isFirstWithdrawal,
   });
@@ -726,19 +721,19 @@ export function getPositionOrderMetricId(p: {
 export function getMultichainDepositMetricId(p: {
   sourceChain: number;
   settlementChain: number;
-  assetAddress: string;
+  assetSymbol: string;
   amount: bigint;
 }): MultichainDepositMetricData["metricId"] {
-  return `multichainDeposit:${[p.sourceChain, p.settlementChain, p.assetAddress, p.amount.toString()].join(":")}`;
+  return `multichainDeposit:${[p.sourceChain, p.settlementChain, p.assetSymbol, p.amount.toString()].join(":")}`;
 }
 
 export function getMultichainWithdrawalMetricId(p: {
   sourceChain: number;
   settlementChain: number;
-  assetAddress: string;
+  assetSymbol: string;
   amount: bigint;
 }): MultichainWithdrawalMetricData["metricId"] {
-  return `multichainWithdrawal:${[p.sourceChain, p.settlementChain, p.assetAddress, p.amount.toString()].join(":")}`;
+  return `multichainWithdrawal:${[p.sourceChain, p.settlementChain, p.assetSymbol, p.amount.toString()].join(":")}`;
 }
 
 export function sendOrderSubmittedMetric(metricId: OrderMetricId) {
