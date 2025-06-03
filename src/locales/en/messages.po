@@ -5207,6 +5207,7 @@ msgstr "Swap Order submitted!"
 #: src/components/Synthetics/Claims/Claims.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
@@ -5382,11 +5383,6 @@ msgstr "Min residual collateral: 10 USD"
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "GMX & Voting Power"
 msgstr "GMX & Voting Power"
-
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
-#~ msgid "Buy USDC or WETH"
-#~ msgstr "Buy USDC or WETH"
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Take profit and stop loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
@@ -9020,6 +9016,11 @@ msgstr "Price conditions are met"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeBank"
 msgstr "DeBank"
+
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+msgid "Insufficient balance"
+msgstr "Insufficient balance"
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "You have {balanceFormatted} remaining in your old version 1CT subaccount."

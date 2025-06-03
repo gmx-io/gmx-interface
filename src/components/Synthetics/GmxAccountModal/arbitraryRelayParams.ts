@@ -442,9 +442,10 @@ export function useArbitraryRelayParamsAndPayload(
       return expressParams;
     },
     {
-      leading: false,
+      leading: true,
       trailing: true,
-      throttleMs: 1000,
+      throttleMs: 5000,
+
       params:
         account !== undefined &&
         provider !== undefined &&

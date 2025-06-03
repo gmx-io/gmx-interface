@@ -5204,6 +5204,7 @@ msgstr "Обменный Ордер подан!"
 #: src/components/Synthetics/Claims/Claims.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
@@ -5379,11 +5380,6 @@ msgstr ""
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "GMX & Voting Power"
 msgstr ""
-
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
-#~ msgid "Buy USDC or WETH"
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Take profit and stop loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
@@ -9013,6 +9009,11 @@ msgstr "Ценовые условия выполнены"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeBank"
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+msgid "Insufficient balance"
 msgstr ""
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx

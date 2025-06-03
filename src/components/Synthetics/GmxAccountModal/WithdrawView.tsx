@@ -1,6 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { Contract, type Provider } from "ethers";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ImSpinner2 } from "react-icons/im";
 import Skeleton from "react-loading-skeleton";
 import useSWR from "swr";
 import { Address, BaseError, decodeErrorResult, encodeAbiParameters, Hex, zeroAddress } from "viem";
@@ -520,7 +521,7 @@ export const WithdrawView = () => {
   };
 
   let buttonState: {
-    text: string;
+    text: React.ReactNode;
     disabled?: boolean;
     onClick?: () => void;
   } = {
@@ -530,17 +531,37 @@ export const WithdrawView = () => {
 
   if (isSubmitting) {
     buttonState = {
-      text: t`Withdrawing...`,
+      text: (
+        <>
+          <Trans>Withdrawing...</Trans>
+          <ImSpinner2 className="ml-4 animate-spin" />
+        </>
+      ),
       disabled: true,
     };
-  } else if (expressTxnParamsAsyncResult?.data?.gasPaymentValidations?.isOutGasTokenBalance) {
+  } else if (expressTxnParamsAsyncResult.data?.gasPaymentValidations?.isOutGasTokenBalance) {
     buttonState = {
       text: t`Insufficient ${gasPaymentParams?.relayFeeToken.symbol} balance to pay for gas`,
+      disabled: true,
+    };
+  } else if (expressTxnParamsAsyncResult.isLoading) {
+    buttonState = {
+      text: (
+        <>
+          <Trans>Loading...</Trans>
+          <ImSpinner2 className="ml-4 animate-spin" />
+        </>
+      ),
       disabled: true,
     };
   } else if (inputAmount === undefined || inputAmount <= 0n) {
     buttonState = {
       text: t`Enter withdrawal amount`,
+      disabled: true,
+    };
+  } else if (selectedToken?.balance !== undefined && inputAmount > selectedToken.balance) {
+    buttonState = {
+      text: t`Insufficient balance`,
       disabled: true,
     };
   }

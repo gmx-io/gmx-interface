@@ -248,7 +248,7 @@ export const DepositView = () => {
       onApproveSubmitted: () => setIsApproving(true),
       setIsApproving: noop,
       permitParams: undefined,
-      approveAmount: inputAmount,
+      approveAmount: undefined,
     });
   }, [srcChainId, depositViewTokenAddress, inputAmount, selectedTokenSourceChainTokenId, signer, spenderAddress]);
 
@@ -706,8 +706,22 @@ export const DepositView = () => {
       return { text: t`Depositing...`, disabled: true };
     }
 
+    if (selectedTokenSourceChainBalance !== undefined && inputAmount > selectedTokenSourceChainBalance) {
+      return { text: t`Insufficient balance`, disabled: true };
+    }
+
     return { text: t`Deposit`, onClick: handleDeposit };
-  }, [isApproving, needTokenApprove, isInputEmpty, isSubmitting, handleDeposit, selectedToken?.symbol, handleApprove]);
+  }, [
+    isApproving,
+    needTokenApprove,
+    isInputEmpty,
+    isSubmitting,
+    handleDeposit,
+    selectedToken?.symbol,
+    handleApprove,
+    selectedTokenSourceChainBalance,
+    inputAmount,
+  ]);
 
   let placeholder = "";
   if (inputValue === "" && selectedToken?.symbol) {
