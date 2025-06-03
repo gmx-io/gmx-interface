@@ -3489,6 +3489,10 @@ msgstr "该网站是一个社区部署和维护的开放资源<0>GMX前端的实
 msgid "Deposit failed."
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+msgid "Enter withdrawal amount"
+msgstr ""
+
 #: src/pages/BuyGlp/BuyGlp.jsx
 msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
 msgstr ""

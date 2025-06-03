@@ -3489,6 +3489,10 @@ msgstr "The website is a community deployed and maintained instance of the open 
 msgid "Deposit failed."
 msgstr "Deposit failed."
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+msgid "Enter withdrawal amount"
+msgstr "Enter withdrawal amount"
+
 #: src/pages/BuyGlp/BuyGlp.jsx
 msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
 msgstr "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."

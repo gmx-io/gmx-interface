@@ -811,7 +811,7 @@ export const DepositView = () => {
           </Trans>
         </AlertInfoCard>
       )}
-      <div className="h-32 shrink-0" />
+      <div className="h-32 shrink-0 grow" />
 
       <div className="mb-16 flex flex-col gap-8">
         <SyntheticsInfoRow label="Allowed slippage" value={formatPercentage(SLIPPAGE_BPS, { bps: true })} />

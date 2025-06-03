@@ -279,7 +279,7 @@ function MobileSlideModal({
           </div>
 
           <div
-            className="grow overflow-y-auto"
+            className="flex grow flex-col overflow-y-auto"
             ref={scrollableContainerRef}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}

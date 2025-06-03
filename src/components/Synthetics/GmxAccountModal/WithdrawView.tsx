@@ -538,6 +538,11 @@ export const WithdrawView = () => {
       text: t`Insufficient ${gasPaymentParams?.relayFeeToken.symbol} balance to pay for gas`,
       disabled: true,
     };
+  } else if (inputAmount === undefined || inputAmount <= 0n) {
+    buttonState = {
+      text: t`Enter withdrawal amount`,
+      disabled: true,
+    };
   }
 
   const hasSelectedToken = selectedTokenAddress !== undefined;
@@ -698,7 +703,7 @@ export const WithdrawView = () => {
         </AlertInfoCard>
       )}
 
-      <div className="h-32" />
+      <div className="h-32 shrink-0 grow" />
 
       <div className="mb-16 flex flex-col gap-8">
         <SyntheticsInfoRow
