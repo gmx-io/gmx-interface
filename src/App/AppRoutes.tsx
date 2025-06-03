@@ -1,4 +1,3 @@
-import cx from "classnames";
 import { ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
@@ -123,7 +122,7 @@ export function AppRoutes() {
 
   return (
     <>
-      <div className="App">
+      <div className="App font-tthoves">
         {isHome ? (
           <div className="App-content">
             <Header
@@ -134,12 +133,10 @@ export function AppRoutes() {
             <HomeRoutes showRedirectModal={showRedirectModal} />
           </div>
         ) : (
-          <div className={cx("App-content", "max-[1100px]:pb-52")}>
-            <div className="flex h-full">
-              <SideNav />
-              <div className="flex h-full flex-col overflow-y-auto">
-                <MainRoutes openSettings={openSettings} />
-              </div>
+          <div className="flex h-full gap-8 p-8 max-[1100px]:pb-52">
+            <SideNav />
+            <div className="flex h-full grow flex-col overflow-y-auto">
+              <MainRoutes openSettings={openSettings} />
             </div>
           </div>
         )}

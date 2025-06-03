@@ -70,15 +70,14 @@ const colors = {
     primary: "#252A47",
   },
   fill: {
+    accent: "#363A59",
     tertiary: "#B4BBFF1A",
   },
-  new: {
-    gray: {
-      200: "#1E2033"
-    },
-    slate: {
-      900: "#090A14"
-    }
+  'new-gray': {
+    200: "#1E2033"
+  },
+  'new-slate': {
+    900: "#090A14"
   }
 };
 
@@ -223,6 +222,9 @@ module.exports = {
       gridTemplateColumns: fromPairs(
         range(200, 501, 50).map((space) => [`auto-fill-${space}`, `repeat(auto-fill, minmax(${space}px, 1fr))`])
       ),
+      fontFamily: {
+        'tthoves': ['TTHoves', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+      },
     },
   },
   plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin],

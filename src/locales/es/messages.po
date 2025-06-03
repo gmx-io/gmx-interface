@@ -3834,7 +3834,6 @@ msgid "Approval failed"
 msgstr "Aprobación fallida"
 
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
-#: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Home/Home.tsx
 msgid "Open Interest"
@@ -8542,6 +8541,7 @@ msgid "Partial Liquidation"
 msgstr "Liquidación Parcial"
 
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "24h Volume"
 msgstr "24h Volumen"
@@ -8788,6 +8788,10 @@ msgstr "Vendiendo..."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute as the max. allowed leverage is exceeded. Consider decreasing the order's leverage by editing and decreasing its size. <0>Read more</0>."
+msgstr ""
+
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+msgid "Open Interest ({longOIPercentage}/{shortOIPercentage})"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx

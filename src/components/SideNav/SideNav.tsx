@@ -25,7 +25,7 @@ function SideNav() {
   return (
     <nav
       className={cx("flex shrink-0 flex-col bg-new-slate-900", {
-        "w-[180px]": !isCollapsed,
+        "w-[164px]": !isCollapsed,
       })}
     >
       <div className={cx("flex w-full", { "justify-center": isCollapsed })}>
@@ -35,7 +35,7 @@ function SideNav() {
       <div className="flex flex-1 flex-col justify-between">
         <MenuSection isCollapsed={isCollapsed} />
 
-        <ul className={cx("flex list-none flex-col gap-8 px-8 pb-8")}>
+        <ul className={cx("flex list-none flex-col gap-8 px-0")}>
           <NavItem icon={<DocsIcon />} label={t`Docs`} isCollapsed={isCollapsed} to="https://docs.gmx.io" external />
           <NavItem
             icon={<CollapseIcon />}
@@ -131,7 +131,7 @@ function MenuSection({ isCollapsed }: { isCollapsed: boolean }) {
   const { pathname } = useLocation();
 
   return (
-    <ul className={cx("flex list-none flex-col gap-8 px-8")}>
+    <ul className={cx("flex list-none flex-col gap-8 px-0")}>
       {mainNavItems.map((item) => (
         <NavItem
           key={item.key}

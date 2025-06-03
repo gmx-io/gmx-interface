@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BiChevronDown, BiChevronLeft, BiChevronRight, BiChevronUp } from "react-icons/bi";
 import { useEffectOnce, useMedia } from "react-use";
 
@@ -276,66 +276,60 @@ function ChartHeaderInfoDesktop() {
     if (isSwap) {
       return (
         <>
-          <div className="text-body-small">
-            <div className="ExchangeChart-info-label mb-4">
-              <Trans>24h High</Trans>
-            </div>
-            <div className="Chart-header-value">${high24}</div>
-          </div>
-          <div>
-            <div className="ExchangeChart-info-label mb-4">
-              <Trans>24h Low</Trans>
-            </div>
-            <div className="Chart-header-value">${low24}</div>
-          </div>
+          <ChartHeaderItem label={<Trans>24h High</Trans>} value={<>${high24}</>} />
+          <ChartHeaderItem label={<Trans>24h Low</Trans>} value={<>${low24}</>} />
         </>
       );
     }
 
     return (
       <>
-        <div>
-          <div className="ExchangeChart-info-label mb-4">24h Volume</div>
-          <div className="Chart-header-value">{dailyVolume}</div>
-        </div>
-        <div>
-          <div className="ExchangeChart-info-label mb-4 whitespace-nowrap text-[1.25rem]">
-            <Trans>Open Interest</Trans>
-            {" ("}
-            <span className="positive">{longOIPercentage}</span>/<span className="negative">{shortOIPercentage}</span>
-            {")"}
-          </div>
-          <div className="Chart-header-value flex flex-row items-center gap-8">
-            <div className="flex flex-row items-center gap-4">{longOIValue}</div>
-            <div className="flex flex-row items-center gap-4">{shortOIValue}</div>
-          </div>
-        </div>
-        <div>
-          <div className="ExchangeChart-info-label mb-4">
-            <Trans>Available Liquidity</Trans>
-          </div>
-          <div className="Chart-header-value flex flex-row items-center gap-8">
-            <div className="flex flex-row items-center gap-4">{liquidityLong}</div>
-            <div className="flex flex-row items-center gap-4">{liquidityShort}</div>
-          </div>
-        </div>
-        <div>
-          <div className="ExchangeChart-info-label mb-4">
+        <ChartHeaderItem label={<Trans>24h Volume</Trans>} value={dailyVolume} />
+
+        <ChartHeaderItem
+          label={<Trans>Open Interest {`(${longOIPercentage}/${shortOIPercentage})`}</Trans>}
+          value={
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4">{longOIValue}</div>
+              <span className="text-slate-500">/</span>
+              <div className="flex items-center gap-4">{shortOIValue}</div>
+            </div>
+          }
+        />
+
+        <ChartHeaderItem
+          label={<Trans>Available Liquidity</Trans>}
+          value={
+            <div className="flex items-center gap-4">
+              <span>{liquidityLong}</span>
+              <span className="text-slate-500">/</span>
+              <span>{liquidityShort}</span>
+            </div>
+          }
+        />
+
+        <ChartHeaderItem
+          label={
             <TooltipWithPortal disableHandleStyle renderContent={renderNetFeeHeaderTooltipContent}>
               <Trans>Net Rate / 1h</Trans>
             </TooltipWithPortal>
-          </div>
-          <TooltipWithPortal
-            disableHandleStyle
-            as="div"
-            className="Chart-header-value flex flex-row items-center gap-8"
-            position="bottom-end"
-            content={<NetRate1hTooltip />}
-          >
-            <div>{netRateLong}</div>
-            <div>{netRateShort}</div>
-          </TooltipWithPortal>
-        </div>
+          }
+          value={
+            <TooltipWithPortal
+              disableHandleStyle
+              as="div"
+              className="Chart-header-value flex flex-row items-center gap-8"
+              position="bottom-end"
+              content={<NetRate1hTooltip />}
+            >
+              <div className="flex items-center gap-4">
+                <div>{netRateLong}</div>
+                <span className="text-slate-500">/</span>
+                <div>{netRateShort}</div>
+              </div>
+            </TooltipWithPortal>
+          }
+        />
       </>
     );
   }, [
@@ -409,9 +403,9 @@ function ChartHeaderInfoDesktop() {
   const scrollToRight = useCallback(() => scrollTo(1), [scrollTo]);
 
   return (
-    <div className="Chart-header mb-10 rounded-4 py-8 pr-8">
-      <div className="flex items-center justify-start pl-8">
-        <ChartTokenSelector selectedToken={selectedTokenOption} oneRowLabels={false} />
+    <div className="flex gap-16 rounded-4 py-8 pr-8">
+      <div className="flex items-center justify-start">
+        <ChartTokenSelector selectedToken={selectedTokenOption} oneRowLabels={true} />
       </div>
       <div className="relative flex overflow-hidden">
         <div className="pointer-events-none absolute z-40 flex h-full w-full flex-row justify-between">
@@ -438,9 +432,9 @@ function ChartHeaderInfoDesktop() {
             {scrollRight > 0 && <BiChevronRight className="text-slate-100" size={24} />}
           </div>
         </div>
-        <div className="Chart-top-scrollable" ref={scrollableRef}>
+        <div className="Chart-top-scrollable gap-20" ref={scrollableRef}>
           <div className="Chart-price">
-            <div className="text-body-medium mb-4">{avgPrice}</div>
+            <div className="mb-2 text-[13px]">{avgPrice}</div>
             <div className="text-body-small">{dayPriceDelta}</div>
           </div>
           {additionalInfo}
@@ -449,6 +443,15 @@ function ChartHeaderInfoDesktop() {
     </div>
   );
 }
+
+const ChartHeaderItem = ({ label, value }: { label: ReactNode; value: ReactNode }) => {
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="text-[11px] font-medium uppercase tracking-[0.08em] text-slate-100">{label}</div>
+      <div className="text-body-medium">{value}</div>
+    </div>
+  );
+};
 
 export function ChartHeader({ isMobile }: { isMobile: boolean }) {
   return isMobile ? <ChartHeaderInfoMobile /> : <ChartHeaderInfoDesktop />;

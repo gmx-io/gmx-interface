@@ -37,6 +37,7 @@ import useWallet from "lib/wallets/useWallet";
 import { getPriceDecimals, getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
+import { AppHeader } from "components/AppHeader/AppHeader";
 import Checkbox from "components/Checkbox/Checkbox";
 import ExchangeBanner from "components/Exchange/ExchangeBanner";
 import ExchangeTVChart, { getChartToken } from "components/Exchange/ExchangeTVChart";
@@ -1069,10 +1070,11 @@ export const Exchange = forwardRef(
     };
 
     return (
-      <div className="Exchange page-layout">
+      <div className="flex flex-col gap-8">
+        <AppHeader />
         {showBanner && <ExchangeBanner hideBanner={hideBanner} />}
-        <div className="Exchange-content">
-          <div className="Exchange-left">
+        <div className="flex gap-8">
+          <div className="grow">
             {renderChart()}
             <div className="Exchange-lists large">{getListSection()}</div>
           </div>

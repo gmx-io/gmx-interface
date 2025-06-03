@@ -80,25 +80,25 @@ export default function ChartTokenSelector(props: Props) {
       popoverPlacement="bottom-start"
       popoverYOffset={16}
       popoverXOffset={-8}
-      handleClassName={cx("group", { "mr-24": oneRowLabels === false })}
+      handleClassName={cx("rounded-8 bg-new-gray-200 py-10 pl-8 pr-12", { "mr-24": oneRowLabels === false })}
       chevronClassName={chevronClassName}
       desktopPanelClassName="w-[880px] max-w-[100vw]"
       label={
         selectedToken ? (
           <span
-            className={cx("inline-flex whitespace-nowrap pl-0 text-[20px] font-bold", {
+            className={cx("inline-flex whitespace-nowrap pl-0 text-[13px]", {
               "items-start": !oneRowLabels,
               "items-center": oneRowLabels,
             })}
           >
-            <TokenIcon className="mr-8 mt-2" symbol={selectedToken.symbol} displaySize={20} importSize={24} />
+            <TokenIcon className="mr-6" symbol={selectedToken.symbol} displaySize={20} importSize={24} />
             <span
-              className={cx("flex justify-start", {
+              className={cx("flex justify-start pr-8", {
                 "flex-col": !oneRowLabels,
                 "flex-row items-center": oneRowLabels,
               })}
             >
-              <span className="text-body-large">
+              <span className="text-[13px] font-medium">
                 {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
                 {selectedToken.symbol}/USD
               </span>

@@ -4,7 +4,7 @@ import { useLingui } from "@lingui/react";
 import cx from "classnames";
 import noop from "lodash/noop";
 import { useCallback, useState } from "react";
-import { BiChevronDown } from "react-icons/bi";
+import { FiChevronDown } from "react-icons/fi";
 
 import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";
@@ -95,12 +95,14 @@ function NavIcons({ selectorLabel }) {
 
   return (
     <>
-      <span className="text-body-small mr-7 inline-block h-fit rounded-4 bg-cold-blue-500 p-4">V{currentVersion}</span>
-      <button className="mr-4">
+      <span className="text-body-small inline-block h-fit rounded-4 bg-fill-accent px-7 py-3 font-medium">
+        V{currentVersion}
+      </span>
+      <button>
         <img className="network-dropdown-icon" src={icon} alt={selectorLabel} />
       </button>
       <button>
-        <BiChevronDown color="white" size={20} />
+        <FiChevronDown className="text-slate-100" size={20} />
       </button>
     </>
   );
@@ -108,9 +110,13 @@ function NavIcons({ selectorLabel }) {
 
 function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, openSettings }) {
   return (
-    <div className="App-header-network">
+    <div className="relative flex items-center gap-8">
       <Menu>
-        <Menu.Button as="div" className="network-dropdown px-6 py-5" data-qa="networks-dropdown-handle">
+        <Menu.Button
+          as="div"
+          className="flex cursor-pointer items-center gap-8 rounded-8 bg-new-gray-200 p-8 pr-10"
+          data-qa="networks-dropdown-handle"
+        >
           <NavIcons selectorLabel={selectorLabel} />
         </Menu.Button>
         <Menu.Items as="div" className="menu-items network-dropdown-items" data-qa="networks-dropdown">

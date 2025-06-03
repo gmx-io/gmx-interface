@@ -6,16 +6,16 @@ import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";
 import { getAccountUrl } from "lib/legacy";
+import { useNotifyModalState } from "lib/useNotifyModalState";
 import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 
 import connectWalletImg from "img/ic_wallet_24.svg";
+import BellIcon from "img/new-bell.svg?react";
 
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
-import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
-import { NotifyButton } from "../NotifyButton/NotifyButton";
 
 type Props = {
   openSettings: () => void;
@@ -46,10 +46,7 @@ if (isDevelopment()) {
   });
 }
 
-export function AppHeaderUser({
-  openSettings,
-  disconnectAccountAndCloseSettings,
-}: Props) {
+export function AppHeaderUser({ openSettings, disconnectAccountAndCloseSettings }: Props) {
   const { chainId } = useChainId();
   const { active, account } = useWallet();
   const { openConnectModal } = useConnectModal();
@@ -58,7 +55,7 @@ export function AppHeaderUser({
 
   if (!active || !account) {
     return (
-      <div className="">
+      <div className="flex items-center gap-8">
         {openConnectModal ? (
           <>
             <ConnectWalletButton
@@ -85,7 +82,7 @@ export function AppHeaderUser({
   const accountUrl = getAccountUrl(chainId, account);
 
   return (
-    <div>
+    <div className="flex items-center gap-8">
       <div data-qa="user-address">
         <AddressDropdown
           account={account}
@@ -94,11 +91,17 @@ export function AppHeaderUser({
         />
       </div>
       <NotifyButton />
-      <NetworkDropdown
-        networkOptions={NETWORK_OPTIONS}
-        selectorLabel={selectorLabel}
-        openSettings={openSettings}
-      />
+      <NetworkDropdown networkOptions={NETWORK_OPTIONS} selectorLabel={selectorLabel} openSettings={openSettings} />
     </div>
   );
 }
+
+const NotifyButton = () => {
+  const { openNotifyModal } = useNotifyModalState();
+
+  return (
+    <div className="cursor-pointer rounded-8 bg-new-gray-200 p-11" onClick={openNotifyModal}>
+      <BellIcon className="text-slate-100" />
+    </div>
+  );
+};

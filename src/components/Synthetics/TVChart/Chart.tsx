@@ -1,6 +1,5 @@
 import { Trans } from "@lingui/macro";
 import { Suspense, lazy } from "react";
-import { useMedia } from "react-use";
 
 import { isDevelopment } from "config/env";
 import {
@@ -16,7 +15,6 @@ import Tabs from "components/Tabs/Tabs";
 import AntennaBarsIcon from "img/ic_antenna_bars.svg?react";
 import CandlestickChartIcon from "img/ic_candlestick_chart.svg?react";
 
-import { ChartHeader } from "./ChartHeader";
 import { TVChart } from "./TVChart";
 
 import "./TVChart.scss";
@@ -65,14 +63,11 @@ const TABS_OPTIONS = TABS.map((tab) => ({
 }));
 
 export function Chart() {
-  const isMobile = useMedia("(max-width: 700px)");
   const [tab, setTab] = useLocalStorageSerializeKey("chart-tab", "PRICE");
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
   return (
     <div className="ExchangeChart tv flex h-[60rem] flex-col [@media(min-width:2560px)]:min-h-[780px] [@media(min-width:3840px)]:min-h-[1140px]">
-      <ChartHeader isMobile={isMobile} />
-
       <div className="flex grow flex-col overflow-hidden rounded-4 bg-slate-800 [@media(max-width:1920px)]:h-[53.6rem]">
         {isSwap ? (
           tab === "MARKET_GRAPH" ? (
