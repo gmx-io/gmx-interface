@@ -3,6 +3,7 @@ import { Contract } from "ethers";
 import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
+import { ImSpinner2 } from "react-icons/im";
 import Skeleton from "react-loading-skeleton";
 import { useLatest } from "react-use";
 import useSWR from "swr";
@@ -686,42 +687,51 @@ export const DepositView = () => {
     ]
   );
 
-  const buttonState: {
-    text: string;
+  let buttonState: {
+    text: React.ReactNode;
     disabled?: boolean;
     onClick?: () => void;
-  } = useMemo(() => {
-    if (isApproving) {
-      return { text: t`Approving`, disabled: true };
-    }
-    if (needTokenApprove) {
-      return { text: t`Allow ${selectedToken?.symbol} to be spent`, onClick: handleApprove };
-    }
+  } = {
+    text: t`Deposit`,
+    onClick: handleDeposit,
+  };
 
-    if (isInputEmpty) {
-      return { text: t`Enter deposit amount`, disabled: true };
-    }
-
-    if (isSubmitting) {
-      return { text: t`Depositing...`, disabled: true };
-    }
-
-    if (selectedTokenSourceChainBalance !== undefined && inputAmount > selectedTokenSourceChainBalance) {
-      return { text: t`Insufficient balance`, disabled: true };
-    }
-
-    return { text: t`Deposit`, onClick: handleDeposit };
-  }, [
-    isApproving,
-    needTokenApprove,
-    isInputEmpty,
-    isSubmitting,
-    handleDeposit,
-    selectedToken?.symbol,
-    handleApprove,
-    selectedTokenSourceChainBalance,
-    inputAmount,
-  ]);
+  if (isApproving) {
+    buttonState = {
+      text: (
+        <>
+          <Trans>Approving</Trans>
+          <ImSpinner2 className="ml-4 animate-spin" />
+        </>
+      ),
+      disabled: true,
+    };
+  } else if (needTokenApprove) {
+    buttonState = {
+      text: t`Allow ${selectedToken?.symbol} to be spent`,
+      onClick: handleApprove,
+    };
+  } else if (isSubmitting) {
+    buttonState = {
+      text: (
+        <>
+          <Trans>Depositing</Trans>
+          <ImSpinner2 className="ml-4 animate-spin" />
+        </>
+      ),
+      disabled: true,
+    };
+  } else if (isInputEmpty) {
+    buttonState = {
+      text: t`Enter deposit amount`,
+      disabled: true,
+    };
+  } else if (selectedTokenSourceChainBalance !== undefined && inputAmount > selectedTokenSourceChainBalance) {
+    buttonState = {
+      text: t`Insufficient balance`,
+      disabled: true,
+    };
+  }
 
   let placeholder = "";
   if (inputValue === "" && selectedToken?.symbol) {

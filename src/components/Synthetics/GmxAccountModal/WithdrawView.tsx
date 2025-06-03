@@ -25,7 +25,10 @@ import {
 import { IStargateAbi } from "context/GmxAccountContext/stargatePools";
 import { TokenChainData } from "context/GmxAccountContext/types";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectExpressGlobalParams,
+  selectGasPaymentToken,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { BridgeOutParams, buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTransactionBuilder, RawMultichainRelayParamsPayload } from "domain/synthetics/express/types";
@@ -43,7 +46,14 @@ import {
   sendTxnSentMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics";
-import { bigintToNumber, formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
+import {
+  bigintToNumber,
+  formatAmountFree,
+  formatBalanceAmount,
+  formatUsd,
+  parseValue,
+  USD_DECIMALS,
+} from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
@@ -51,9 +61,10 @@ import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExp
 import { switchNetwork, WalletSigner } from "lib/wallets";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { abis } from "sdk/abis";
+import { getGasPaymentTokens } from "sdk/configs/express";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { extendError, OrderErrorContext } from "sdk/utils/errors";
-import { getMidPrice } from "sdk/utils/tokens";
+import { convertToTokenAmount, getMidPrice } from "sdk/utils/tokens";
 import {
   IStargate,
   MessagingFeeStruct,
@@ -154,14 +165,6 @@ export const WithdrawView = () => {
         return bFloat - aFloat;
       });
   }, [gmxAccountTokensData, chainId]);
-
-  const handleMaxButtonClick = useCallback(() => {
-    if (selectedToken === undefined || selectedToken.balance === undefined || selectedToken.balance === 0n) {
-      return;
-    }
-
-    setInputValue(formatAmountFree(selectedToken.balance, selectedToken.decimals));
-  }, [selectedToken, setInputValue]);
 
   const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
 
@@ -533,6 +536,53 @@ export const WithdrawView = () => {
     }
   };
 
+  const gasPaymentToken = useSelector(selectGasPaymentToken);
+
+  const handleMaxButtonClick = useCallback(async () => {
+    if (
+      selectedToken === undefined ||
+      selectedToken.balance === undefined ||
+      selectedToken.balance === 0n ||
+      srcChainId === undefined ||
+      account === undefined
+    ) {
+      return;
+    }
+
+    const canSelectedTokenBeUsedAsGasPaymentToken = getGasPaymentTokens(chainId).includes(selectedToken.address);
+
+    if (!canSelectedTokenBeUsedAsGasPaymentToken) {
+      setInputValue(formatAmountFree(selectedToken.balance, selectedToken.decimals));
+      return;
+    }
+
+    if (gasPaymentToken?.address !== selectedToken.address) {
+      setInputValue(formatAmountFree(selectedToken.balance, selectedToken.decimals));
+      return;
+    }
+
+    const buffer = convertToTokenAmount(
+      10n * 10n ** BigInt(USD_DECIMALS),
+      gasPaymentToken.decimals,
+      getMidPrice(gasPaymentToken.prices)
+    )!;
+
+    const maxAmount = selectedToken.balance - buffer;
+
+    setInputValue(formatAmountFree(maxAmount, gasPaymentToken.decimals));
+  }, [
+    account,
+    chainId,
+    gasPaymentToken?.address,
+    gasPaymentToken?.decimals,
+    gasPaymentToken?.prices,
+    selectedToken,
+    setInputValue,
+    srcChainId,
+  ]);
+
+  const isInputEmpty = inputAmount === undefined || inputAmount <= 0n;
+
   let buttonState: {
     text: React.ReactNode;
     disabled?: boolean;
@@ -552,6 +602,16 @@ export const WithdrawView = () => {
       ),
       disabled: true,
     };
+  } else if (isInputEmpty) {
+    buttonState = {
+      text: t`Enter withdrawal amount`,
+      disabled: true,
+    };
+  } else if (selectedToken?.balance !== undefined && inputAmount > selectedToken.balance) {
+    buttonState = {
+      text: t`Insufficient balance`,
+      disabled: true,
+    };
   } else if (expressTxnParamsAsyncResult.data?.gasPaymentValidations?.isOutGasTokenBalance) {
     buttonState = {
       text: t`Insufficient ${gasPaymentParams?.relayFeeToken.symbol} balance to pay for gas`,
@@ -565,16 +625,6 @@ export const WithdrawView = () => {
           <ImSpinner2 className="ml-4 animate-spin" />
         </>
       ),
-      disabled: true,
-    };
-  } else if (inputAmount === undefined || inputAmount <= 0n) {
-    buttonState = {
-      text: t`Enter withdrawal amount`,
-      disabled: true,
-    };
-  } else if (selectedToken?.balance !== undefined && inputAmount > selectedToken.balance) {
-    buttonState = {
-      text: t`Insufficient balance`,
       disabled: true,
     };
   }
