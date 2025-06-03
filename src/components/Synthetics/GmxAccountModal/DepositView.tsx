@@ -41,14 +41,15 @@ import {
   sendTxnErrorMetric,
   sendTxnSentMetric,
 } from "lib/metrics";
-import { formatAmountFree, formatBalanceAmount, formatPercentage, formatUsd } from "lib/numbers";
+import { formatAmountFree, formatBalanceAmount, formatPercentage, formatUsd, USD_DECIMALS } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { TxnCallback, TxnEventName, WalletTxnCtx, sendWalletTransaction } from "lib/transactions";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { abis } from "sdk/abis";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
-import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
+import { bigMath } from "sdk/utils/bigmath";
+import { convertToTokenAmount, convertToUsd, getMidPrice } from "sdk/utils/tokens";
 import {
   IStargate,
   MessagingFeeStruct,
@@ -166,8 +167,30 @@ export const DepositView = () => {
     if (selectedToken === undefined || selectedTokenSourceChainBalance === undefined) {
       return;
     }
+
+    const isNative = depositViewTokenAddress === zeroAddress;
+    if (isNative) {
+      const buffer = convertToTokenAmount(
+        10n * 10n ** BigInt(USD_DECIMALS),
+        selectedToken.decimals,
+        getMidPrice(selectedTokenChainData?.sourceChainPrices ?? { minPrice: 0n, maxPrice: 0n })
+      )!;
+
+      const maxAmount = bigMath.max(selectedTokenSourceChainBalance - buffer, 0n);
+
+      if (maxAmount === 0n) {
+        helperToast.error(
+          t`It is suggested to keep at least 10 USD in the native token to be able to perform transactions.`
+        );
+        return;
+      }
+
+      setInputValue(formatAmountFree(maxAmount, selectedToken.decimals));
+      return;
+    }
+
     setInputValue(formatAmountFree(selectedTokenSourceChainBalance, selectedToken.decimals));
-  }, [selectedToken, selectedTokenSourceChainBalance, setInputValue]);
+  }, [selectedToken, selectedTokenSourceChainBalance, depositViewTokenAddress, setInputValue, selectedTokenChainData]);
 
   const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
 
