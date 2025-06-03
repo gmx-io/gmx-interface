@@ -4258,6 +4258,10 @@ msgid "Fulfilling order request"
 msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+msgid "It is suggested to keep at least 10 USD in the gas payment token to be able to perform transactions."
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance to pay for gas"
 msgstr ""
@@ -7277,6 +7281,10 @@ msgstr "감소 액티브: {0}, 실행 완료: {1} 취소 완료: {2}"
 msgid "Layer 1"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "Depositing"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.jsx
 msgid "{0}  {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
 msgstr ""
@@ -8328,7 +8336,6 @@ msgid "Accrued price impact rebates. They will become claimable after approximat
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Depositing..."
 msgstr "예치중..."

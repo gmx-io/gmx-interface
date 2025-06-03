@@ -4261,6 +4261,10 @@ msgid "Fulfilling order request"
 msgstr "Fulfilling order request"
 
 #: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+msgid "It is suggested to keep at least 10 USD in the gas payment token to be able to perform transactions."
+msgstr "It is suggested to keep at least 10 USD in the gas payment token to be able to perform transactions."
+
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance to pay for gas"
 msgstr "Insufficient {0} balance to pay for gas"
@@ -7283,6 +7287,10 @@ msgstr "Decrease active: {0}, executed: {1}, cancelled: {2}"
 msgid "Layer 1"
 msgstr "Layer 1"
 
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "Depositing"
+msgstr "Depositing"
+
 #: src/components/Exchange/TradeHistory.jsx
 msgid "{0}  {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
 msgstr "{0}  {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
@@ -8334,7 +8342,6 @@ msgid "Accrued price impact rebates. They will become claimable after approximat
 msgstr "Accrued price impact rebates. They will become claimable after approximately ten days.<0/><1/><2>Read more</2>."
 
 #: src/components/Exchange/PositionEditor.jsx
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Depositing..."
 msgstr "Depositing..."

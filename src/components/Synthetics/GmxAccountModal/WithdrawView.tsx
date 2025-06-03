@@ -63,6 +63,7 @@ import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { abis } from "sdk/abis";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { convertTokenAddress } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 import { extendError, OrderErrorContext } from "sdk/utils/errors";
 import { convertToTokenAmount, getMidPrice } from "sdk/utils/tokens";
 import {
@@ -567,7 +568,14 @@ export const WithdrawView = () => {
       getMidPrice(gasPaymentToken.prices)
     )!;
 
-    const maxAmount = selectedToken.balance - buffer;
+    const maxAmount = bigMath.max(selectedToken.balance - buffer, 0n);
+
+    if (maxAmount === 0n) {
+      helperToast.error(
+        t`It is suggested to keep at least 10 USD in the gas payment token to be able to perform transactions.`
+      );
+      return;
+    }
 
     setInputValue(formatAmountFree(maxAmount, gasPaymentToken.decimals));
   }, [
