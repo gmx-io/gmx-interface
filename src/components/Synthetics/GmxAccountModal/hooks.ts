@@ -137,9 +137,9 @@ export function useAvailableToTradeAssetMultichain(): {
   gmxAccountUsd: bigint | undefined;
 } {
   const { chainId } = useChainId();
-  const { tokensData } = useGmxAccountTokensDataRequest(chainId);
+  const { tokensData, isBalancesLoaded } = useGmxAccountTokensDataRequest(chainId);
 
-  if (!tokensData) {
+  if (!tokensData || !isBalancesLoaded) {
     return { gmxAccountUsd: undefined };
   }
 
