@@ -350,6 +350,22 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
     "0x9e79146b3A022Af44E0708c6794F03Ef798381A5": {
       enabled: true,
     },
+    // CRV/USD - [WETH-USDC]
+    "0x0e46941F9bfF8d0784BFfa3d0D7883CDb82D7aE7": {
+      enabled: true,
+    },
+    // XMR/USD [WBTC-USDC]
+    "0x7c54D547FAD72f8AFbf6E5b04403A0168b654C6f": {
+      enabled: true,
+    },
+    // MOODENG/USD [WBTC-USDC]
+    "0x2523B89298908FEf4c5e5bd6F55F20926e22058f": {
+      enabled: true,
+    },
+    // PI/USD [WBTC-USDC]
+    "0x39AC3C494950A4363D739201BA5A0861265C9ae5": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
