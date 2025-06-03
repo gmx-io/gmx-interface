@@ -5,7 +5,7 @@ import { buildUrl } from "lib/buildUrl";
 import { metrics } from "lib/metrics";
 import { formatTokenAmount, numberToBigint } from "lib/numbers";
 import type { UiContractsChain } from "sdk/configs/chains";
-import { getToken } from "sdk/configs/tokens";
+import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 
 type OpenOceanTxnResponse = {
   code: number;
@@ -78,8 +78,8 @@ export async function getOpenOceanTxnData({
   const gweiGasPrice = formatTokenAmount(gasPrice, 18 - 9, undefined, { displayDecimals: 8 });
 
   const url = buildUrl(getOpenOceanUrl(chainId), "/swap_quote", {
-    inTokenAddress: tokenInAddress,
-    outTokenAddress: tokenOutAddress,
+    inTokenAddress: convertTokenAddress(chainId, tokenInAddress, "wrapped"),
+    outTokenAddress: convertTokenAddress(chainId, tokenOutAddress, "wrapped"),
     amount: formatTokenAmount(amountIn, tokenIn.decimals, undefined, { showAllSignificant: true }),
     gasPrice: gweiGasPrice,
     slippage: (slippage / 100).toString(),
