@@ -3682,6 +3682,10 @@ msgstr "For trades on V1, this discount will be airdropped to your account every
 msgid "Fail External Swaps"
 msgstr "Fail External Swaps"
 
+#: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
+msgid "Repeat Transaction"
+msgstr "Repeat Transaction"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap {fromTokenText} for {toTokenText}"
 msgstr "Swap {fromTokenText} for {toTokenText}"

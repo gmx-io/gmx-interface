@@ -155,19 +155,23 @@ const Toolbar = ({ account }: { account: string }) => {
   };
 
   const handleNotificationsClick = () => {
-    setIsVisible(false);
     openNotifyModal();
+    setTimeout(() => {
+      setIsVisible(false);
+    }, 200);
   };
 
   const handleSettingsClick = () => {
-    setIsVisible(false);
     setIsSettingsVisible(true);
+    setTimeout(() => {
+      setIsVisible(false);
+    }, 200);
   };
 
   return (
     <div className="flex items-stretch justify-between gap-8">
       <button
-        className="text-body-medium inline-flex items-center justify-center rounded-4 border border-stroke-primary px-11 py-7 text-white hover:bg-[#808aff14] active:bg-slate-700"
+        className="text-body-medium inline-flex items-center justify-center rounded-4 border border-stroke-primary px-11 py-7 text-white hover:bg-slate-700 active:bg-[#808aff14]"
         onClick={handleCopyAddress}
       >
         <div className="flex items-center gap-8">
@@ -213,7 +217,7 @@ const Toolbar = ({ account }: { account: string }) => {
             className="flex size-36 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
             onClick={handleDisconnect}
           >
-            <img src={disconnectIcon} alt="Disconnect" />
+            <img src={disconnectIcon} alt="Disconnect" className="rotate-180" />
           </button>
         </TooltipWithPortal>
       </div>

@@ -3682,6 +3682,10 @@ msgstr ""
 msgid "Fail External Swaps"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
+msgid "Repeat Transaction"
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap {fromTokenText} for {toTokenText}"
 msgstr ""

@@ -1,15 +1,24 @@
 import { Trans } from "@lingui/macro";
 import { useEffect, useState } from "react";
+import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
-import { useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
+import {
+  useGmxAccountDepositViewTokenAddress,
+  useGmxAccountDepositViewTokenInputValue,
+  useGmxAccountModalOpen,
+  useGmxAccountSelectedTransferGuid,
+  useGmxAccountWithdrawViewTokenAddress,
+  useGmxAccountWithdrawViewTokenInputValue,
+} from "context/GmxAccountContext/hooks";
 import { useChainId } from "lib/chains";
-import { formatBalanceAmount } from "lib/numbers";
-import { shortenAddressOrEns } from "lib/wallets";
+import { formatAmountFree, formatBalanceAmount } from "lib/numbers";
+import { shortenAddressOrEns, switchNetwork } from "lib/wallets";
 import { getToken } from "sdk/configs/tokens";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import externalLink from "img/ic_new_link_20.svg";
@@ -22,6 +31,14 @@ import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/util
 
 export const TransferDetailsView = () => {
   const { chainId } = useChainId();
+  const { isConnected } = useAccount();
+
+  const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
+  const [, setGmxAccountDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
+  const [, setGmxAccountDepositViewTokenInputValue] = useGmxAccountDepositViewTokenInputValue();
+  const [, setGmxAccountWithdrawViewTokenAddress] = useGmxAccountWithdrawViewTokenAddress();
+  const [, setGmxAccountWithdrawViewTokenInputValue] = useGmxAccountWithdrawViewTokenInputValue();
+
   const [selectedTransferGuid] = useGmxAccountSelectedTransferGuid();
 
   const [isTransferPending, setIsTransferPending] = useState(false);
@@ -50,8 +67,31 @@ export const TransferDetailsView = () => {
 
   const token = selectedTransfer ? getToken(chainId, selectedTransfer.token) : undefined;
 
+  const handleRepeatTransaction = () => {
+    if (!selectedTransfer || !token) {
+      return;
+    }
+
+    if (selectedTransfer.operation === "deposit") {
+      switchNetwork(selectedTransfer.sourceChainId, isConnected).then(() => {
+        setGmxAccountDepositViewTokenAddress(selectedTransfer.token);
+        setGmxAccountDepositViewTokenInputValue(formatAmountFree(selectedTransfer.sentAmount, token.decimals));
+        setGmxAccountModalOpen("deposit");
+      });
+      return;
+    }
+
+    if (selectedTransfer.operation === "withdrawal") {
+      switchNetwork(selectedTransfer.sourceChainId, isConnected).then(() => {
+        setGmxAccountWithdrawViewTokenAddress(selectedTransfer.token);
+        setGmxAccountWithdrawViewTokenInputValue(formatAmountFree(selectedTransfer.sentAmount, token.decimals));
+        setGmxAccountModalOpen("withdraw");
+      });
+    }
+  };
+
   return (
-    <ModalShrinkingContent className="text-body-medium gap-8 p-16">
+    <ModalShrinkingContent className="text-body-medium min-h-[515px] gap-8 p-16">
       {selectedTransfer?.isExecutionError ? (
         <AlertInfoCard type="error">
           <Trans>Your deposit of from {sourceChainName} was not executed due to an error</Trans>
@@ -172,6 +212,10 @@ export const TransferDetailsView = () => {
           }
         />
       )}
+      <div className="grow" />
+      <Button variant="secondary" onClick={handleRepeatTransaction}>
+        <Trans>Repeat Transaction</Trans>
+      </Button>
     </ModalShrinkingContent>
   );
 };
