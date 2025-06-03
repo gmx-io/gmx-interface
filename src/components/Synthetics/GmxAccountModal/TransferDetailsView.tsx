@@ -46,76 +46,108 @@ export const TransferDetailsView = () => {
     }
   }, [selectedTransfer]);
 
-  if (!selectedTransfer) {
-    return null;
-  }
+  const sourceChainName = selectedTransfer ? getChainName(selectedTransfer.sourceChainId) : undefined;
 
-  const sourceChainName = getChainName(selectedTransfer.sourceChainId);
-
-  const token = getToken(chainId, selectedTransfer.token);
+  const token = selectedTransfer ? getToken(chainId, selectedTransfer.token) : undefined;
 
   return (
     <ModalShrinkingContent className="text-body-medium gap-8 p-16">
-      {selectedTransfer.isExecutionError ? (
+      {selectedTransfer?.isExecutionError ? (
         <AlertInfoCard type="error">
           <Trans>Your deposit of from {sourceChainName} was not executed due to an error</Trans>
         </AlertInfoCard>
       ) : null}
       <SyntheticsInfoRow
         label={<Trans>Date</Trans>}
-        value={formatTradeActionTimestamp(selectedTransfer.sentTimestamp)}
+        value={selectedTransfer ? formatTradeActionTimestamp(selectedTransfer.sentTimestamp) : undefined}
       />
       <SyntheticsInfoRow
         label={<Trans>Type</Trans>}
-        value={selectedTransfer.operation === "deposit" ? <Trans>Deposit</Trans> : <Trans>Withdrawal</Trans>}
+        value={
+          selectedTransfer ? (
+            selectedTransfer.operation === "deposit" ? (
+              <Trans>Deposit</Trans>
+            ) : (
+              <Trans>Withdrawal</Trans>
+            )
+          ) : undefined
+        }
       />
       <SyntheticsInfoRow
         label={<Trans>Wallet</Trans>}
         value={
-          selectedTransfer.operation === "deposit" ? (
-            <Trans>GMX Balance</Trans>
-          ) : (
-            shortenAddressOrEns(selectedTransfer.account, 13)
-          )
+          selectedTransfer ? (
+            selectedTransfer.operation === "deposit" ? (
+              <Trans>GMX Balance</Trans>
+            ) : (
+              shortenAddressOrEns(selectedTransfer.account, 13)
+            )
+          ) : undefined
         }
       />
       <SyntheticsInfoRow
         label={<Trans>Amount</Trans>}
-        value={formatBalanceAmount(selectedTransfer.sentAmount, token.decimals, token.symbol)}
+        value={
+          selectedTransfer && token
+            ? formatBalanceAmount(selectedTransfer.sentAmount, token.decimals, token.symbol)
+            : undefined
+        }
       />
-      {selectedTransfer.receivedAmount !== undefined && (
+      {selectedTransfer?.receivedAmount !== undefined && (
         <>
           <SyntheticsInfoRow
             label={<Trans>Fee</Trans>}
-            value={formatBalanceAmount(
-              selectedTransfer.sentAmount - selectedTransfer.receivedAmount,
-              token.decimals,
-              token.symbol
-            )}
+            value={
+              selectedTransfer && token
+                ? formatBalanceAmount(
+                    selectedTransfer.sentAmount - selectedTransfer.receivedAmount,
+                    token.decimals,
+                    token.symbol
+                  )
+                : undefined
+            }
           />
         </>
       )}
       <SyntheticsInfoRow
-        label={selectedTransfer.operation === "deposit" ? <Trans>From Network</Trans> : <Trans>To Network</Trans>}
+        label={
+          selectedTransfer ? (
+            selectedTransfer.operation === "deposit" ? (
+              <Trans>From Network</Trans>
+            ) : (
+              <Trans>To Network</Trans>
+            )
+          ) : undefined
+        }
         className="!items-center"
         valueClassName="-my-5"
         value={
-          <div className="flex items-center gap-8">
-            <img
-              src={CHAIN_ID_TO_NETWORK_ICON[selectedTransfer.sourceChainId]}
-              width={20}
-              height={20}
-              className="size-20 rounded-full"
-            />
-            {getChainName(selectedTransfer.sourceChainId)}
-          </div>
+          selectedTransfer && (
+            <div className="flex items-center gap-8">
+              <img
+                src={CHAIN_ID_TO_NETWORK_ICON[selectedTransfer.sourceChainId]}
+                width={20}
+                height={20}
+                className="size-20 rounded-full"
+              />
+              {getChainName(selectedTransfer.sourceChainId)}
+            </div>
+          )
         }
       />
       <SyntheticsInfoRow
-        label={selectedTransfer.operation === "deposit" ? <Trans>From Wallet</Trans> : <Trans>To Wallet</Trans>}
-        value={shortenAddressOrEns(selectedTransfer.account, 13)}
+        label={
+          selectedTransfer ? (
+            selectedTransfer.operation === "deposit" ? (
+              <Trans>From Wallet</Trans>
+            ) : (
+              <Trans>To Wallet</Trans>
+            )
+          ) : undefined
+        }
+        value={selectedTransfer ? shortenAddressOrEns(selectedTransfer.account, 13) : undefined}
       />
-      {selectedTransfer.sentTxn && (
+      {selectedTransfer?.sentTxn && (
         <SyntheticsInfoRow
           label={
             CHAIN_ID_TO_EXPLORER_NAME[

@@ -3728,6 +3728,7 @@ msgstr "Cancel Order"
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/Synthetics/GmxAccountModal/useMultichainFundingToast.tsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
@@ -6486,6 +6487,10 @@ msgstr "Buy GLP or GMX"
 msgid "Deposit failed"
 msgstr "Deposit failed"
 
+#: src/components/Synthetics/GmxAccountModal/useMultichainFundingToast.tsx
+msgid "Withdrawing Funds from GMX"
+msgstr "Withdrawing Funds from GMX"
+
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 msgid "Min receive"
 msgstr "Min receive"
@@ -6881,7 +6886,7 @@ msgstr "Could not execute deposit into {0} {longOrShortText}"
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
-#: src/components/Synthetics/GmxAccountModal/useMultichainDepositToast.tsx
+#: src/components/Synthetics/GmxAccountModal/useMultichainFundingToast.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
@@ -7374,7 +7379,7 @@ msgstr "Get fee discounts and earn rebates through the GMX referral program.<0/>
 msgid "Freeze"
 msgstr "Freeze"
 
-#: src/components/Synthetics/GmxAccountModal/useMultichainDepositToast.tsx
+#: src/components/Synthetics/GmxAccountModal/useMultichainFundingToast.tsx
 msgid "Depositing Funds to GMX"
 msgstr "Depositing Funds to GMX"
 
@@ -8178,6 +8183,7 @@ msgid "Enter a valid coin names"
 msgstr "Enter a valid coin names"
 
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "All assets"
 msgstr "All assets"
 
@@ -8835,6 +8841,10 @@ msgstr "You will receive at least {toAmountText} if this order is executed. This
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "Acceptable price does not apply to stop loss orders, as they will be executed regardless of any price impact."
 msgstr "Acceptable price does not apply to stop loss orders, as they will be executed regardless of any price impact."
+
+#: src/components/Synthetics/GmxAccountModal/useMultichainFundingToast.tsx
+msgid "Depositing and Withdrawing Funds to/from GMX"
+msgstr "Depositing and Withdrawing Funds to/from GMX"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We'll then schedule a chat or interview with you. As a thank you, you'll receive <0>100 <1/></0> for providing your feedback."

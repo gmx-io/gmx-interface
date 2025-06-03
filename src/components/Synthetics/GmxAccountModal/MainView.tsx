@@ -4,6 +4,7 @@ import cx from "classnames";
 import { useMemo, useState } from "react";
 import { IoArrowDown } from "react-icons/io5";
 import { TbLoader2 } from "react-icons/tb";
+import Skeleton from "react-loading-skeleton";
 import { useCopyToClipboard } from "react-use";
 import { useAccount, useDisconnect } from "wagmi";
 
@@ -234,19 +235,66 @@ function SettlementChainBalance() {
     <div className="flex flex-col gap-8 rounded-4 bg-cold-blue-900 p-12">
       <div className="text-body-small text-slate-100">Available to Trade</div>
       <div className="flex items-center justify-between gap-8">
-        <div className="text-24">{formatUsd(totalUsd)}</div>
+        {totalUsd !== undefined ? (
+          <div className="text-24">{formatUsd(totalUsd)}</div>
+        ) : (
+          <Skeleton
+            baseColor="#B4BBFF1A"
+            highlightColor="#B4BBFF1A"
+            width={100}
+            height={28}
+            className="!block"
+            inline={true}
+          />
+        )}
         <button
           className="flex items-center gap-4 rounded-4 bg-cold-blue-700 py-4 pl-8 pr-4 gmx-hover:bg-cold-blue-500"
           onClick={handleAvailableToTradeClick}
         >
-          <div>All assets</div>
+          <Trans>All assets</Trans>
           <TokenIcons tokens={availableToTradeAssetSymbols} />
           <IoArrowDown className="block size-16 -rotate-90 text-slate-100" />
         </button>
       </div>
       <div className="my-4 h-1 bg-stroke-primary" />
-      <SyntheticsInfoRow label="Wallet" value={formatUsd(walletUsd)} />
-      <SyntheticsInfoRow label="GMX Balance" value={formatUsd(gmxAccountUsd)} />
+      <SyntheticsInfoRow
+        label="Wallet"
+        className="h-23 !items-start"
+        valueClassName="leading-[21px]"
+        value={
+          walletUsd !== undefined ? (
+            formatUsd(walletUsd)
+          ) : (
+            <Skeleton
+              baseColor="#B4BBFF1A"
+              highlightColor="#B4BBFF1A"
+              width={54}
+              height={21}
+              className="!block"
+              inline={true}
+            />
+          )
+        }
+      />
+      <SyntheticsInfoRow
+        label="GMX Balance"
+        className="h-23 !items-start"
+        valueClassName="leading-[21px]"
+        value={
+          gmxAccountUsd !== undefined ? (
+            formatUsd(gmxAccountUsd)
+          ) : (
+            <Skeleton
+              baseColor="#B4BBFF1A"
+              highlightColor="#B4BBFF1A"
+              width={54}
+              height={21}
+              className="!block"
+              inline={true}
+            />
+          )
+        }
+      />
     </div>
   );
 }
@@ -267,7 +315,18 @@ function MultichainBalance() {
         <Trans>GMX Balance</Trans>
       </div>
       <div className="flex items-center justify-between gap-8">
-        <div className="text-24">{formatUsd(gmxAccountUsd)}</div>
+        {gmxAccountUsd !== undefined ? (
+          <div className="text-24 leading-[28px]">{formatUsd(gmxAccountUsd)}</div>
+        ) : (
+          <Skeleton
+            baseColor="#B4BBFF1A"
+            highlightColor="#B4BBFF1A"
+            width={100}
+            height={28}
+            className="!block"
+            inline={true}
+          />
+        )}
         <button
           className="flex items-center gap-4 rounded-4 bg-cold-blue-700 py-4 pl-8 pr-4 gmx-hover:bg-cold-blue-500"
           onClick={handleAvailableToTradeClick}

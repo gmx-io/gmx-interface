@@ -3728,6 +3728,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/Synthetics/GmxAccountModal/useMultichainFundingToast.tsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
@@ -6483,6 +6484,10 @@ msgstr ""
 msgid "Deposit failed"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/useMultichainFundingToast.tsx
+msgid "Withdrawing Funds from GMX"
+msgstr ""
+
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 msgid "Min receive"
 msgstr ""
@@ -6875,7 +6880,7 @@ msgstr "无法执行存入 {0} {longOrShortText}"
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
-#: src/components/Synthetics/GmxAccountModal/useMultichainDepositToast.tsx
+#: src/components/Synthetics/GmxAccountModal/useMultichainFundingToast.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
@@ -7368,7 +7373,7 @@ msgstr ""
 msgid "Freeze"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/useMultichainDepositToast.tsx
+#: src/components/Synthetics/GmxAccountModal/useMultichainFundingToast.tsx
 msgid "Depositing Funds to GMX"
 msgstr ""
 
@@ -8172,6 +8177,7 @@ msgid "Enter a valid coin names"
 msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "All assets"
 msgstr ""
 
@@ -8828,6 +8834,10 @@ msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "Acceptable price does not apply to stop loss orders, as they will be executed regardless of any price impact."
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/useMultichainFundingToast.tsx
+msgid "Depositing and Withdrawing Funds to/from GMX"
 msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx

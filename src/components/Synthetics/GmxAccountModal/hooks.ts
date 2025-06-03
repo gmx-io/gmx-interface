@@ -81,37 +81,44 @@ export function useAvailableToTradeAssetSymbolsMultichain(): string[] {
 }
 
 export function useAvailableToTradeAssetSettlementChain(): {
-  totalUsd: bigint;
-  gmxAccountUsd: bigint;
-  walletUsd: bigint;
+  totalUsd: bigint | undefined;
+  gmxAccountUsd: bigint | undefined;
+  walletUsd: bigint | undefined;
 } {
   const { chainId } = useChainId();
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
   const { tokensData } = useTokensDataRequest(chainId);
 
   let gmxAccountUsd = 0n;
+  let isGmxAccountUsdEmpty = true;
 
   for (const token of Object.values(gmxAccountTokensData)) {
     if (token.balance === undefined || token.balance === 0n) {
       continue;
     }
-
+    isGmxAccountUsdEmpty = false;
     gmxAccountUsd += convertToUsd(token.balance, token.decimals, getMidPrice(token.prices))!;
   }
 
   let walletUsd = 0n;
+  let isWalletUsdEmpty = true;
 
   for (const tokenData of Object.values(tokensData || {})) {
     if (tokenData.balance === undefined || tokenData.balance === 0n) {
       continue;
     }
 
+    isWalletUsdEmpty = false;
     walletUsd += convertToUsd(tokenData.balance, tokenData.decimals, getMidPrice(tokenData.prices))!;
   }
 
   const totalUsd = gmxAccountUsd + walletUsd;
 
-  return { totalUsd, gmxAccountUsd, walletUsd };
+  return {
+    totalUsd: isGmxAccountUsdEmpty || isWalletUsdEmpty ? undefined : totalUsd,
+    gmxAccountUsd: isGmxAccountUsdEmpty ? undefined : gmxAccountUsd,
+    walletUsd: isWalletUsdEmpty ? undefined : walletUsd,
+  };
 }
 
 export function getTotalUsdFromTokensData(tokensData: TokensData) {
@@ -129,9 +136,10 @@ export function getTotalUsdFromTokensData(tokensData: TokensData) {
 export function useAvailableToTradeAssetMultichain(): {
   gmxAccountUsd: bigint | undefined;
 } {
-  const gmxAccountTokensData = useGmxAccountTokensDataObject();
+  const { chainId } = useChainId();
+  const { tokensData = EMPTY_OBJECT as TokensData } = useGmxAccountTokensDataRequest(chainId);
 
-  const gmxAccountUsd = getTotalUsdFromTokensData(gmxAccountTokensData);
+  const gmxAccountUsd = getTotalUsdFromTokensData(tokensData);
 
   if (gmxAccountUsd === 0n) {
     return { gmxAccountUsd: undefined };
