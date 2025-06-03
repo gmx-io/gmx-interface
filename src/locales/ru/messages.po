@@ -1110,7 +1110,7 @@ msgstr "Фундаментальные показатели GMX"
 msgid "Referral Code"
 msgstr "Реферальный Код"
 
-#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.tsx
 msgid "Charts by TradingView"
 msgstr ""
 
@@ -4558,8 +4558,8 @@ msgstr "Ордер"
 msgid "Staked on Avalanche"
 msgstr ""
 
-#: src/components/Footer/constants.ts
-#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.tsx
+#: src/components/Footer/constants.tsx
 msgid "Media Kit"
 msgstr "Медиа-Кит"
 
@@ -7156,7 +7156,7 @@ msgstr "Введите Адрес Получателя"
 msgid "Additional reserve required"
 msgstr ""
 
-#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.tsx
 #: src/pages/TermsAndConditions/TermsAndConditions.jsx
 msgid "Terms and Conditions"
 msgstr "Правила и Условия"
@@ -7827,7 +7827,7 @@ msgstr "Комиссионные будут показаны после того
 msgid "GLP Vault"
 msgstr ""
 
-#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.tsx
 #: src/pages/ReferralTerms/ReferralTerms.jsx
 msgid "Referral Terms"
 msgstr "Реферальные Условия"

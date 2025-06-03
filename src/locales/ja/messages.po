@@ -1110,7 +1110,7 @@ msgstr "GMXの基本"
 msgid "Referral Code"
 msgstr "紹介コード"
 
-#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.tsx
 msgid "Charts by TradingView"
 msgstr ""
 
@@ -4558,8 +4558,8 @@ msgstr "注文"
 msgid "Staked on Avalanche"
 msgstr ""
 
-#: src/components/Footer/constants.ts
-#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.tsx
+#: src/components/Footer/constants.tsx
 msgid "Media Kit"
 msgstr "メディアキット"
 
@@ -7156,7 +7156,7 @@ msgstr "受け取りアドレスを入力"
 msgid "Additional reserve required"
 msgstr ""
 
-#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.tsx
 #: src/pages/TermsAndConditions/TermsAndConditions.jsx
 msgid "Terms and Conditions"
 msgstr "規約"
@@ -7827,7 +7827,7 @@ msgstr "注文フォームに額を入れると手数料が表示されます。
 msgid "GLP Vault"
 msgstr ""
 
-#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.tsx
 #: src/pages/ReferralTerms/ReferralTerms.jsx
 msgid "Referral Terms"
 msgstr "紹介の規約"

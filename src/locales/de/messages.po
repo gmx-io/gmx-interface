@@ -1110,7 +1110,7 @@ msgstr "GMX-Grundlagen"
 msgid "Referral Code"
 msgstr "Referral Code"
 
-#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.tsx
 msgid "Charts by TradingView"
 msgstr ""
 
@@ -4558,8 +4558,8 @@ msgstr "Order"
 msgid "Staked on Avalanche"
 msgstr ""
 
-#: src/components/Footer/constants.ts
-#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.tsx
+#: src/components/Footer/constants.tsx
 msgid "Media Kit"
 msgstr "Medienpaket"
 
@@ -7156,7 +7156,7 @@ msgstr "Empfängeradresse eingeben"
 msgid "Additional reserve required"
 msgstr ""
 
-#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.tsx
 #: src/pages/TermsAndConditions/TermsAndConditions.jsx
 msgid "Terms and Conditions"
 msgstr "Bedingungen und Konditionen"
@@ -7827,7 +7827,7 @@ msgstr "Die Gebühren werden angezeigt, sobald du einen Betrag in das Order-Form
 msgid "GLP Vault"
 msgstr ""
 
-#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.tsx
 #: src/pages/ReferralTerms/ReferralTerms.jsx
 msgid "Referral Terms"
 msgstr "Referralbedingungen"

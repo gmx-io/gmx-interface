@@ -1110,7 +1110,7 @@ msgstr "GMX fundamentals"
 msgid "Referral Code"
 msgstr "Referral Code"
 
-#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.tsx
 msgid "Charts by TradingView"
 msgstr "Charts by TradingView"
 
@@ -4561,8 +4561,8 @@ msgstr "Order"
 msgid "Staked on Avalanche"
 msgstr "Staked on Avalanche"
 
-#: src/components/Footer/constants.ts
-#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.tsx
+#: src/components/Footer/constants.tsx
 msgid "Media Kit"
 msgstr "Media Kit"
 
@@ -7162,7 +7162,7 @@ msgstr "Enter Receiver Address"
 msgid "Additional reserve required"
 msgstr "Additional reserve required"
 
-#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.tsx
 #: src/pages/TermsAndConditions/TermsAndConditions.jsx
 msgid "Terms and Conditions"
 msgstr "Terms and Conditions"
@@ -7833,7 +7833,7 @@ msgstr "Fees will be shown once you have entered an amount in the order form."
 msgid "GLP Vault"
 msgstr "GLP Vault"
 
-#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.tsx
 #: src/pages/ReferralTerms/ReferralTerms.jsx
 msgid "Referral Terms"
 msgstr "Referral Terms"

@@ -1,10 +1,10 @@
 import { t } from "@lingui/macro";
 
-import discordIcon from "img/ic_discord.svg";
-import githubIcon from "img/ic_github.svg";
-import substackIcon from "img/ic_substack.svg";
-import telegramIcon from "img/ic_telegram.svg";
-import xIcon from "img/ic_x.svg";
+import DiscordIcon from "img/ic_discord.svg?react";
+import GithubIcon from "img/ic_github.svg?react";
+import SubstackIcon from "img/ic_substack.svg?react";
+import TelegramIcon from "img/ic_telegram.svg?react";
+import XIcon from "img/ic_x.svg?react";
 
 type Link = {
   label: string;
@@ -16,7 +16,7 @@ type Link = {
 type SocialLink = {
   link: string;
   name: string;
-  icon: string;
+  icon: React.ReactNode;
 };
 
 export function getFooterLinks(isHome) {
@@ -37,9 +37,9 @@ export function getFooterLinks(isHome) {
 }
 
 export const SOCIAL_LINKS: SocialLink[] = [
-  { link: "https://twitter.com/GMX_IO", name: "Twitter", icon: xIcon },
-  { link: "https://gmxio.substack.com/", name: "Substack", icon: substackIcon },
-  { link: "https://github.com/gmx-io", name: "Github", icon: githubIcon },
-  { link: "https://t.me/GMX_IO", name: "Telegram", icon: telegramIcon },
-  { link: "https://discord.gg/H5PeQru3Aa", name: "Discord", icon: discordIcon },
+  { link: "https://twitter.com/GMX_IO", name: "Twitter", icon: <XIcon /> },
+  { link: "https://gmxio.substack.com/", name: "Substack", icon: <SubstackIcon /> },
+  { link: "https://github.com/gmx-io", name: "Github", icon: <GithubIcon /> },
+  { link: "https://t.me/GMX_IO", name: "Telegram", icon: <TelegramIcon /> },
+  { link: "https://discord.gg/H5PeQru3Aa", name: "Discord", icon: <DiscordIcon /> },
 ];

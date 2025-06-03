@@ -95,7 +95,7 @@ function NavIcons({ selectorLabel }) {
 
   return (
     <>
-      <span className="text-body-small inline-block h-fit rounded-4 bg-fill-accent px-7 py-3 font-medium">
+      <span className="text-body-small inline-block h-fit rounded-4 bg-fill-accent px-7 py-4 font-medium">
         V{currentVersion}
       </span>
       <button>

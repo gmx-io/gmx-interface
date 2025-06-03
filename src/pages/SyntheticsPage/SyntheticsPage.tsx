@@ -256,7 +256,7 @@ export function SyntheticsPage(p: Props) {
   useMeasureComponentMountTime({ metricType: "syntheticsPage", onlyForLocation: "#/trade" });
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex h-full flex-col gap-8">
       <AppHeader leftContent={<ChartHeader isMobile={isMobile} />} />
       <div className="grid grow grid-cols-[1fr_auto] gap-8 pt-0 max-[1100px]:grid-cols-1 max-[800px]:p-10">
         {isMobile && <TradeBoxOneClickTrading />}
@@ -386,11 +386,13 @@ export function SyntheticsPage(p: Props) {
           </div>
         )}
       </div>
-      <Footer isMobileTradePage={isMobile} />
-      <PositionSeller setPendingTxns={setPendingTxns} />
-      <PositionEditor />
-      <InterviewModal type="trader" isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />
-      <NpsModal />
+      <div className="mt-auto">
+        <Footer isMobileTradePage={isMobile} />
+        <PositionSeller setPendingTxns={setPendingTxns} />
+        <PositionEditor />
+        <InterviewModal type="trader" isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />
+        <NpsModal />
+      </div>
     </div>
   );
 }
