@@ -156,7 +156,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
     let config = subaccountConfig;
 
-    if (!config?.address || !config.isNew) {
+    if (!config?.address) {
       try {
         helperToast.success(
           <StatusNotification key="generateSubaccount" title={t`Generating 1CT (One-Click Trading) session`}>
@@ -219,6 +219,10 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       );
 
       setSignedApproval(defaultSubaccountApproval);
+
+      if (!config.isNew) {
+        setSubaccountConfig({ ...config, isNew: true });
+      }
 
       return true;
     } catch (error) {

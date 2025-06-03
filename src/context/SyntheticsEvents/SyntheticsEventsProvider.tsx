@@ -143,13 +143,11 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [pendingExpressTxnParams, setPendingExpressTxnParams] = useState<{
     [key: string]: Partial<PendingExpressTxnParams>;
   }>({});
-  const { refreshNonces, updateActionsCount } = useExpressNonces();
+  const { refreshNonces } = useExpressNonces();
   const eventLogHandlers = useRef({});
 
   const handleExpressTxnSuccess = useCallback(
     (pendingExpressTxn: Partial<PendingExpressTxnParams>) => {
-      const isSubaccount = Boolean(pendingExpressTxn.subaccountApproval);
-
       const key = pendingExpressTxn.key;
 
       if (!key) {
@@ -158,7 +156,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       refreshSubaccountData();
       refreshNonces();
-      updateActionsCount(isSubaccount ? "subaccountRelayRouter" : "relayRouter");
 
       if (
         pendingExpressTxn?.subaccountApproval &&
@@ -177,7 +174,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       setPendingExpressTxnParams((old) => deleteByKey(old, key));
     },
-    [refreshNonces, refreshSubaccountData, resetSubaccountApproval, resetTokenPermits, updateActionsCount]
+    [refreshNonces, refreshSubaccountData, resetSubaccountApproval, resetTokenPermits]
   );
 
   const updateNativeTokenBalance = useCallback(() => {

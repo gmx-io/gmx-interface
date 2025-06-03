@@ -10,7 +10,6 @@ export const SUBACCOUNT_MESSAGE =
 export const SUBACCOUNT_DOCS_URL = "https://docs.gmx.io/docs/trading/v2/#one-click-trading";
 
 export const DEFAULT_SUBACCOUNT_EXPIRY_DURATION = periodToSeconds(7, "1d"); // 1 week
-export const DEFAULT_SUBACCOUNT_DEADLINE_DURATION = periodToSeconds(1, "1h");
 export const DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT = 90;
 
 export const DEFAULT_PERMIT_DEADLINE_DURATION = periodToSeconds(1, "1h");

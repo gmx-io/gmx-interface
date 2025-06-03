@@ -263,11 +263,13 @@ export type ErrorEvent = {
 
 export type ExpressOrderMetricData = {
   isSponsoredCall: boolean;
-  approximateGas: number;
-  approximateL1Gas: number;
-  asyncGas: number | undefined;
-  currentGas: number;
-  currentEstimateMethod: string | undefined;
+  approximateGasLimit: number;
+  approximateL1GasLimit: number;
+  gasPrice: number;
+  asyncGasLimit: number | undefined;
+  currentGasLimit: number;
+  currentEstimationMethod: string;
+  gasPaymentToken: string;
 };
 
 // Entities metric data

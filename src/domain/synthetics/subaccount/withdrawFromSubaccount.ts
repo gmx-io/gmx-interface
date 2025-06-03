@@ -1,35 +1,33 @@
+import { Provider } from "ethers";
 import useSWR from "swr";
 
+import { useJsonRpcProvider } from "lib/rpc";
 import { bigMath } from "sdk/utils/bigmath";
 
-import { Subaccount } from "./types";
+import { SubaccountSerializedConfig } from "./types";
+import { getSubaccountSigner } from "./utils";
 
 export function useSubaccountWithdrawalAmount(
   chainId: number,
-  subaccount: Subaccount | undefined,
+  subaccountAddress: string | undefined,
   gasPrice: bigint | undefined
 ) {
+  const { provider } = useJsonRpcProvider(chainId);
+
   const { data: estimatedWithdrawalAmounts } = useSWR(
-    subaccount?.address && gasPrice !== undefined
-      ? ["useSubaccountWithdrawalAmount", chainId, subaccount?.address, gasPrice]
+    subaccountAddress && gasPrice !== undefined && provider
+      ? ["useSubaccountWithdrawalAmount", chainId, subaccountAddress, gasPrice]
       : null,
     {
-      fetcher: () => getEstimatedWithdrawalAmount(subaccount!, gasPrice!),
+      fetcher: () => getEstimatedWithdrawalAmount(provider!, subaccountAddress!, gasPrice!),
     }
   );
 
   return estimatedWithdrawalAmounts;
 }
 
-export async function getEstimatedWithdrawalAmount(subaccount: Subaccount, gasPrice: bigint) {
-  const subaccountAddress = subaccount.address;
-  let wallet = subaccount.signer;
-
-  if (!wallet.provider) {
-    return undefined;
-  }
-
-  const [value] = await Promise.all([wallet.provider!.getBalance(subaccountAddress)]);
+export async function getEstimatedWithdrawalAmount(provider: Provider, subaccountAddress: string, gasPrice: bigint) {
+  const [value] = await Promise.all([provider.getBalance(subaccountAddress)]);
 
   const result = {
     amountToSend: 0n,
@@ -38,8 +36,8 @@ export async function getEstimatedWithdrawalAmount(subaccount: Subaccount, gasPr
   };
 
   result.estimatedGas = bigMath.mulDiv(
-    (await wallet.estimateGas({
-      to: subaccount.address,
+    (await provider.estimateGas({
+      to: subaccountAddress,
       value,
     })) as bigint,
     13n,
@@ -56,19 +54,21 @@ export async function getEstimatedWithdrawalAmount(subaccount: Subaccount, gasPr
 }
 
 export async function withdrawFromSubaccount({
-  subaccount,
+  subaccountConfig,
   mainAccountAddress,
   gasPrice,
+  provider,
 }: {
-  subaccount: Subaccount;
+  subaccountConfig: SubaccountSerializedConfig;
   mainAccountAddress: string;
   gasPrice: bigint;
+  provider: Provider;
 }) {
-  let wallet = subaccount.signer;
+  const wallet = getSubaccountSigner(subaccountConfig, mainAccountAddress, provider);
 
   if (!wallet.provider) throw new Error("No provider available.");
 
-  const result = await getEstimatedWithdrawalAmount(subaccount, gasPrice);
+  const result = await getEstimatedWithdrawalAmount(provider, subaccountConfig.address, gasPrice);
 
   if (!result) {
     throw new Error("Insufficient funds to cover gas cost.");

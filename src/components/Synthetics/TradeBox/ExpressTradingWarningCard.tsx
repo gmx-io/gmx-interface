@@ -16,6 +16,7 @@ import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+import { useGasPaymentTokensText } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
 
 import ExpressIcon from "img/ic_express.svg?react";
 import OneClickIcon from "img/ic_one_click.svg?react";
@@ -75,6 +76,8 @@ export function ExpressTradingWarningCard({
     shouldShowOutOfGasPaymentBalanceWarning,
   } = useExpressTradingWarnings({ expressParams, payTokenAddress, isWrapOrUnwrap });
 
+  const { gasPaymentTokensText, gasPaymentTokenSymbols } = useGasPaymentTokensText(chainId);
+
   let content: ReactNode | undefined = undefined;
   let onCloseClick: undefined | (() => void) = undefined;
   let buttonText: ReactNode | undefined = undefined;
@@ -120,9 +123,10 @@ export function ExpressTradingWarningCard({
   } else if (shouldShowOutOfGasPaymentBalanceWarning) {
     icon = <ExpressIcon className="-mt-6 ml-2" />;
     content = <Trans>One-click and Express Trading are not available due to insufficient balance.</Trans>;
-    buttonText = <Trans>Buy USDC or WETH</Trans>;
+
+    buttonText = <Trans>Buy {gasPaymentTokensText}</Trans>;
     onClick = () => {
-      history.push(`/trade/swap?to=USDC`);
+      history.push(`/trade/swap?to=${gasPaymentTokenSymbols[0]}`);
     };
   } else {
     return null;

@@ -24,31 +24,28 @@ export function useSwitchGasPaymentTokenIfRequired({ expressParams }: { expressP
   useEffect(
     function switchGasPaymentToken() {
       if (expressParams?.gasPaymentValidations.isOutGasTokenBalance) {
-        const gasPaymentTokenData = getByKey(tokensData, expressParams!.gasPaymentParams.gasPaymentTokenAddress);
+        const { gasPaymentToken, gasPaymentTokenAmount } = expressParams.gasPaymentParams;
 
-        if (!gasPaymentTokenData) {
-          return;
-        }
+        const usdValue = convertToUsd(gasPaymentTokenAmount, gasPaymentToken.decimals, gasPaymentToken.prices.minPrice);
 
-        const anotherGasToken = getGasPaymentTokens(chainId).find((token) => {
-          const tokenData = getByKey(tokensData, token);
-
-          const usdValue = convertToUsd(
-            expressParams!.gasPaymentParams.gasPaymentTokenAmount,
-            gasPaymentTokenData?.decimals,
-            gasPaymentTokenData?.prices.minPrice
-          );
+        const anotherGasToken = getGasPaymentTokens(chainId).find((tokenAddress) => {
+          const tokenData = getByKey(tokensData, tokenAddress);
 
           const requiredTokenAmount = convertToTokenAmount(usdValue, tokenData?.decimals, tokenData?.prices.minPrice);
 
-          if (usdValue === undefined || requiredTokenAmount === undefined || tokenData?.balance === undefined) {
+          if (
+            tokenData?.address === gasPaymentToken.address ||
+            usdValue === undefined ||
+            requiredTokenAmount === undefined ||
+            tokenData?.balance === undefined
+          ) {
             return false;
           }
 
           return tokenData.balance > requiredTokenAmount;
         });
 
-        if (anotherGasToken) {
+        if (anotherGasToken && anotherGasToken !== expressParams!.gasPaymentParams.gasPaymentTokenAddress) {
           setSettingsWarningDotVisible(true);
           setGasPaymentTokenAddress(anotherGasToken);
           setExpressTradingGasTokenSwitched(true);

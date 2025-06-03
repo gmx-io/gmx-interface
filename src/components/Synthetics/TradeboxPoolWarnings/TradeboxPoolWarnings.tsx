@@ -176,7 +176,7 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
             pair: marketName,
             pool: marketPoolName,
             isExpress1CT: Boolean(subaccount),
-            IsExpress: isExpressEnabled,
+            isExpress: isExpressEnabled,
             type: isLong ? "Long" : "Short",
             orderType: getAnalyticsOrderTypeByTradeMode(tradeMode),
             sizeDeltaUsd: formatAmountForMetrics(increaseAmounts?.sizeDeltaUsd) ?? 0,

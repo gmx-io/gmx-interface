@@ -10,7 +10,7 @@ import { useChainId } from "lib/chains";
 import { throttleLog } from "lib/logging";
 import { roundBigIntToDecimals } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
-import { sleep } from "lib/sleep";
+import { usePrevious } from "lib/usePrevious";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import useWallet from "lib/wallets/useWallet";
 import {
@@ -18,7 +18,6 @@ import {
   getBatchExternalSwapGasLimit,
   getBatchIsNativePayment,
   getBatchRequiredActions,
-  getBatchSwapsCount,
   getBatchTotalExecutionFee,
   getIsEmptyBatch,
 } from "sdk/utils/orderTransactions";
@@ -31,6 +30,7 @@ export type ExpressOrdersParamsResult = {
   expressParams: ExpressTxnParams | undefined;
   fastExpressParams: ExpressTxnParams | undefined;
   asyncExpressParams: ExpressTxnParams | undefined;
+  expressParamsPromise: Promise<ExpressTxnParams | undefined> | undefined;
   isLoading: boolean;
 };
 
@@ -53,18 +53,22 @@ export function useExpressOrdersParams({
   const { signer } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
 
+  const requiredActions = orderParams ? getBatchRequiredActions(orderParams) : undefined;
   const executionFee =
     orderParams && globalExpressParams
       ? getBatchTotalExecutionFee({ batchParams: orderParams, chainId, tokensData: globalExpressParams.tokensData })
       : undefined;
   const executionFeeKey = executionFee
-    ? roundBigIntToDecimals(executionFee.feeTokenAmount, executionFee.feeToken.decimals, 2)
+    ? roundBigIntToDecimals(executionFee.feeTokenAmount, executionFee.feeToken.decimals, 6)
     : undefined;
   const externalSwapGasLimit = orderParams ? getBatchExternalSwapGasLimit(orderParams) : undefined;
-  const requiredActions = orderParams ? getBatchRequiredActions(orderParams) : undefined;
-  const swapsCount = orderParams ? getBatchSwapsCount(orderParams) : undefined;
 
-  const { data: fastExpressParams, isLoading: isFastExpressParamsLoading } = useThrottledAsync(
+  const estimationKey = `${executionFeeKey}:${requiredActions}:${externalSwapGasLimit}:${globalExpressParams?.gasPaymentTokenAddress}`;
+  const prevEstimationKey = usePrevious(estimationKey);
+
+  const forceRecalculate = estimationKey !== prevEstimationKey;
+
+  const { data: fastExpressParams, promise: fastExpressPromise } = useThrottledAsync(
     async ({ params: p }) => {
       const nextApproximateParams = await estimateBatchExpressParams({
         chainId: p.chainId,
@@ -89,26 +93,25 @@ export function useExpressOrdersParams({
               globalExpressParams,
             }
           : undefined,
+      forceRecalculate,
       throttleMs: 200,
       leading: true,
       trailing: false,
+      withLoading: true,
     }
   );
 
-  const { data: asyncExpressParams, isLoading: isAsyncExpressParamsLoading } = useThrottledAsync(
+  const { data: asyncExpressParams, promise: asyncExpressPromise } = useThrottledAsync(
     async ({ params: p }) => {
-      const expressParams = await Promise.race([
-        estimateBatchExpressParams({
-          chainId: p.chainId,
-          batchParams: p.orderParams,
-          signer: p.signer,
-          provider: p.provider,
-          globalExpressParams: p.globalExpressParams,
-          requireValidations: false,
-          estimationMethod: "estimateGas",
-        }),
-        sleep(1000).then(() => undefined),
-      ]);
+      const expressParams = estimateBatchExpressParams({
+        chainId: p.chainId,
+        batchParams: p.orderParams,
+        signer: p.signer,
+        provider: p.provider,
+        globalExpressParams: p.globalExpressParams,
+        requireValidations: false,
+        estimationMethod: "estimateGas",
+      });
 
       return expressParams;
     },
@@ -123,14 +126,8 @@ export function useExpressOrdersParams({
               globalExpressParams,
             }
           : undefined,
-      dataKey: [
-        executionFeeKey,
-        requiredActions,
-        swapsCount,
-        externalSwapGasLimit,
-        globalExpressParams?.gasPaymentTokenAddress,
-      ],
-      throttleMs: 2000,
+      forceRecalculate,
+      throttleMs: 5000,
       leading: true,
       trailing: false,
       withLoading: true,
@@ -145,16 +142,17 @@ export function useExpressOrdersParams({
         fastExpressParams: undefined,
         asyncExpressParams: undefined,
         isLoading: false,
+        expressParamsPromise: undefined,
       };
     }
 
-    let expressParams: ExpressTxnParams | undefined;
+    const expressParams = asyncExpressParams || fastExpressParams;
 
-    if (asyncExpressParams && !isAsyncExpressParamsLoading) {
-      expressParams = asyncExpressParams;
-    } else if (fastExpressParams && !isFastExpressParamsLoading) {
-      expressParams = fastExpressParams;
-    }
+    const expressParamsPromise = Promise.race([fastExpressPromise, asyncExpressPromise])
+      .then((result) => {
+        return result;
+      })
+      .catch(() => undefined);
 
     return {
       expressParams,
@@ -162,8 +160,9 @@ export function useExpressOrdersParams({
       fastExpressParams,
       asyncExpressParams,
       isLoading: !fastExpressParams,
+      expressParamsPromise,
     };
-  }, [isAvailable, asyncExpressParams, isAsyncExpressParamsLoading, fastExpressParams, isFastExpressParamsLoading]);
+  }, [isAvailable, asyncExpressParams, fastExpressParams, fastExpressPromise, asyncExpressPromise]);
 
   useSwitchGasPaymentTokenIfRequired({ expressParams: result.expressParams });
 

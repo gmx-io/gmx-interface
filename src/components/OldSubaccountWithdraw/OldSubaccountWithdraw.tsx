@@ -11,6 +11,7 @@ import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { formatTokenAmount } from "lib/numbers";
+import { useJsonRpcProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
 import { getNativeToken } from "sdk/configs/tokens";
 
@@ -28,12 +29,13 @@ export function OldSubaccountWithdraw() {
   const { chainId } = useChainId();
   const nativeToken = getNativeToken(chainId);
   const [isVisible, setIsVisible] = useState(true);
-  const { subaccount } = useSubaccountContext();
+  const { subaccountConfig } = useSubaccountContext();
   const gasPrice = useGasPrice(chainId);
+  const { provider } = useJsonRpcProvider(chainId);
 
   const [isWithdrawing, setIsWithdrawing] = useState(false);
 
-  const estimatedWithdrawalAmounts = useSubaccountWithdrawalAmount(chainId, subaccount, gasPrice);
+  const estimatedWithdrawalAmounts = useSubaccountWithdrawalAmount(chainId, subaccountConfig?.address, gasPrice);
 
   const balanceFormatted = formatTokenAmount(
     estimatedWithdrawalAmounts?.amountToSend ?? 0n,
@@ -45,7 +47,7 @@ export function OldSubaccountWithdraw() {
   );
 
   const withdrawWeth = useCallback(async () => {
-    if (!account || !subaccount || gasPrice === undefined) {
+    if (!account || !subaccountConfig?.address || gasPrice === undefined || !provider) {
       return;
     }
 
@@ -63,8 +65,9 @@ export function OldSubaccountWithdraw() {
 
       await withdrawFromSubaccount({
         mainAccountAddress: account,
-        subaccount,
+        subaccountConfig,
         gasPrice,
+        provider,
       });
 
       helperToast.success(
@@ -84,7 +87,7 @@ export function OldSubaccountWithdraw() {
     } finally {
       setIsWithdrawing(false);
     }
-  }, [account, subaccount, gasPrice, balanceFormatted]);
+  }, [account, subaccountConfig, gasPrice, provider, balanceFormatted]);
 
   if (
     !isVisible ||

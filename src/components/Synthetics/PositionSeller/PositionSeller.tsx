@@ -362,6 +362,7 @@ export function PositionSeller() {
   const {
     expressParams,
     isLoading: isExpressLoading,
+    expressParamsPromise,
     fastExpressParams,
     asyncExpressParams,
   } = useExpressOrdersParams({
@@ -468,7 +469,7 @@ export function PositionSeller() {
     numberOfParts,
   ]);
 
-  function onSubmit() {
+  async function onSubmit() {
     if (!account) {
       openConnectModal?.();
       return;
@@ -561,12 +562,15 @@ export function PositionSeller() {
 
     setIsSubmitting(true);
 
+    const fulfilledExpressParams = await expressParamsPromise;
+
     const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
       provider,
       batchParams,
-      expressParams: expressParams && getIsValidExpressParams(expressParams) ? expressParams : undefined,
+      expressParams:
+        fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
         : {

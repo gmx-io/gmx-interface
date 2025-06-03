@@ -22,11 +22,7 @@ import {
   subaccountIntegrationIdKey,
   subaccountListKey,
 } from "sdk/configs/dataStore";
-import {
-  DEFAULT_SUBACCOUNT_DEADLINE_DURATION,
-  DEFAULT_SUBACCOUNT_EXPIRY_DURATION,
-  DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT,
-} from "sdk/configs/express";
+import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
 import { bigMath } from "sdk/utils/bigmath";
 import { ZERO_DATA } from "sdk/utils/hash";
 import { nowInSeconds, secondsToPeriod } from "sdk/utils/time";
@@ -144,7 +140,10 @@ export function getIsApprovalExpired(subaccount: Subaccount): boolean {
   return now >= expiresAt || now >= deadline;
 }
 
-export function getIsSubaccountNonceExpired(subaccount: Subaccount): boolean {
+export function getIsSubaccountNonceExpired(subaccount: {
+  onchainData: SubaccountOnchainData;
+  signedApproval: SignedSubbacountApproval;
+}): boolean {
   if (getIsEmptySubaccountApproval(subaccount.signedApproval)) {
     return false;
   }
@@ -239,7 +238,6 @@ export async function getInitialSubaccountApproval({
       shouldAdd: !onchainData.active,
       expiresAt,
       maxAllowedCount,
-      deadline: BigInt(nowInSeconds() + DEFAULT_SUBACCOUNT_DEADLINE_DURATION),
     }
   );
 
@@ -266,6 +264,13 @@ export function getIsSubaccountApprovalSynced(subaccount: {
   onchainData: SubaccountOnchainData;
 }): boolean {
   const { signedApproval, onchainData } = subaccount;
+
+  /**
+   * If nonce is expired, we believe a newer settings have been applied in some other way e.g. different browser
+   */
+  if (getIsSubaccountNonceExpired(subaccount)) {
+    return true;
+  }
 
   return (
     onchainData.maxAllowedCount === signedApproval.maxAllowedCount &&
@@ -310,7 +315,6 @@ export async function signUpdatedSubaccountSettings({
   const nonce = await getSubaccountApprovalNonceForProvider(chainId, signer, provider);
 
   const signedSubaccountApproval = await createAndSignSubaccountApproval(chainId, signer, subaccount.address, nonce, {
-    deadline: BigInt(nowInSeconds() + DEFAULT_SUBACCOUNT_DEADLINE_DURATION),
     expiresAt: nextExpiresAt,
     maxAllowedCount: nextMaxAllowedCount,
     shouldAdd: !subaccount.onchainData.active,
@@ -328,7 +332,6 @@ export async function createAndSignSubaccountApproval(
     shouldAdd: boolean;
     expiresAt: bigint;
     maxAllowedCount: bigint;
-    deadline: bigint;
   }
 ): Promise<SignedSubbacountApproval> {
   let srcChainId = await getMultichainInfoFromSigner(mainAccountSigner, chainId);
@@ -358,7 +361,7 @@ export async function createAndSignSubaccountApproval(
     actionType: SUBACCOUNT_ORDER_ACTION,
     nonce,
     integrationId: chainId === ARBITRUM_SEPOLIA ? zeroHash : undefined,
-    deadline: params.deadline,
+    deadline: params.expiresAt,
   };
 
   const signature = await signTypedData({ signer: mainAccountSigner, domain, types, typedData });

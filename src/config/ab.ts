@@ -11,9 +11,8 @@ type AbStorage = {
 };
 
 const abFlagsConfig = {
-  // testExampleAb: 0.5,
   testMultichain: 1,
-  testSponsoredCall: 0,
+  testSponsoredCall: 1,
   testExampleAb: 0,
 };
 
