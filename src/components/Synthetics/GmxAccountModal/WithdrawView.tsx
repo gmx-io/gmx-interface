@@ -10,6 +10,7 @@ import { useAccount } from "wagmi";
 import { getChainName, UiSettlementChain } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import {
+  CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
   getLayerZeroEndpointId,
   getMultichainTokenId,
   getStargatePoolAddress,
@@ -585,9 +586,22 @@ export const WithdrawView = () => {
         return;
       }
 
-      // const tokenIdMap = MULTI_CHAIN_TOKEN_MAPPING[chainId]?.[srcChainId];
       const settlementChainWrappedTokenAddresses = MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS[chainId];
       if (!settlementChainWrappedTokenAddresses) {
+        return;
+      }
+
+      const preferredToken = settlementChainWrappedTokenAddresses.find((tokenAddress) => {
+        const tokenData = gmxAccountTokensData[tokenAddress];
+        return (
+          tokenData?.address === CHAIN_ID_PREFERRED_DEPOSIT_TOKEN[chainId] &&
+          tokenData?.balance !== undefined &&
+          tokenData.balance > 0n
+        );
+      });
+
+      if (preferredToken) {
+        setSelectedTokenAddress(preferredToken);
         return;
       }
 
