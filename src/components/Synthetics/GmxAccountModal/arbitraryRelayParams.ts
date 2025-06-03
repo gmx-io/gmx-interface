@@ -40,12 +40,12 @@ import { getSubaccountValidations } from "domain/synthetics/subaccount";
 import { SubaccountValidations } from "domain/synthetics/subaccount/types";
 import { convertToTokenAmount, TokenData } from "domain/tokens";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
-import { expandDecimals, roundBigIntToDecimals, USD_DECIMALS } from "lib/numbers";
+import { expandDecimals, USD_DECIMALS } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { ExpressTxnData } from "lib/transactions";
 import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
-import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION, DEFAULT_SUBACCOUNT_DEADLINE_DURATION } from "sdk/configs/express";
+import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
@@ -235,7 +235,7 @@ export async function estimateArbitraryRelayFee({
     relayParamsPayload: {
       ...rawRelayParamsPayload,
       userNonce,
-      deadline: BigInt(nowInSeconds() + DEFAULT_SUBACCOUNT_DEADLINE_DURATION),
+      deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
     },
     relayerFeeTokenAddress,
     relayerFeeAmount,
@@ -394,11 +394,6 @@ export function useArbitraryRelayParamsAndPayload(
   const globalExpressParams = useSelector(selectExpressGlobalParams);
   const { provider } = useJsonRpcProvider(chainId);
 
-  const additionalNetworkFeeKey =
-    additionalNetworkFee !== undefined && globalExpressParams !== undefined
-      ? roundBigIntToDecimals(additionalNetworkFee, globalExpressParams.relayerFeeToken.decimals, 2)
-      : undefined;
-
   const expressTxnParamsAsyncResult = useThrottledAsync(
     async ({ params: p }) => {
       const { baseRelayFeeSwapParams, rawBaseRelayParamsPayload } = getRawBaseRelayerParams({
@@ -463,7 +458,6 @@ export function useArbitraryRelayParamsAndPayload(
               expressTransactionBuilder,
             }
           : undefined,
-      dataKey: [name, additionalNetworkFeeKey, globalExpressParams?.gasPaymentTokenAddress],
     }
   );
 
