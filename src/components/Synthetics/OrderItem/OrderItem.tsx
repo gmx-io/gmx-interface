@@ -8,9 +8,12 @@ import { USD_DECIMALS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useOrderErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
-import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectChainId,
+  selectMarketsInfoData,
+  selectOracleSettings,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { OracleSettingsData } from "domain/synthetics/common/useOracleSettingsData";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import {
   OrderInfo,
@@ -60,7 +63,6 @@ type Props = {
   isLarge: boolean;
   positionsInfoData?: PositionsInfoData;
   setRef?: (el: HTMLElement | null, orderKey: string) => void;
-  oracleSettings: OracleSettingsData | undefined;
 };
 
 export function OrderItem(p: Props) {
@@ -83,7 +85,6 @@ export function OrderItem(p: Props) {
       isCanceling={p.isCanceling}
       isSelected={p.isSelected}
       setRef={p.setRef}
-      oracleSettings={p.oracleSettings}
     />
   ) : (
     <OrderItemSmall
@@ -95,7 +96,6 @@ export function OrderItem(p: Props) {
       isSelected={p.isSelected}
       onToggleOrder={p.onToggleOrder}
       setRef={p.setRef}
-      oracleSettings={p.oracleSettings}
     />
   );
 }
@@ -443,7 +443,6 @@ function OrderItemLarge({
   onCancelOrder,
   isCanceling,
   isSelected,
-  oracleSettings,
 }: {
   order: OrderInfo;
   setRef?: (el: HTMLElement | null, orderKey: string) => void;
@@ -454,7 +453,6 @@ function OrderItemLarge({
   onCancelOrder: undefined | (() => void);
   isCanceling: boolean | undefined;
   isSelected: boolean | undefined;
-  oracleSettings: OracleSettingsData | undefined;
 }) {
   const marketInfoData = useSelector(selectMarketsInfoData);
   const isSwap = isSwapOrderType(order.orderType);
@@ -487,6 +485,7 @@ function OrderItemLarge({
     [order.key, setRef]
   );
 
+  const oracleSettings = useSelector(selectOracleSettings);
   const disabledCancelMarketOrderMessage = useDisabledCancelMarketOrderMessage(order, oracleSettings);
 
   const cancelButton = (
@@ -601,7 +600,6 @@ function OrderItemSmall({
   isSelected,
   onToggleOrder,
   setRef,
-  oracleSettings,
 }: {
   showDebugValues: boolean;
   order: OrderInfo;
@@ -611,7 +609,6 @@ function OrderItemSmall({
   isSelected: boolean | undefined;
   onToggleOrder: undefined | (() => void);
   setRef?: (el: HTMLElement | null, orderKey: string) => void;
-  oracleSettings: OracleSettingsData | undefined;
 }) {
   const marketInfoData = useSelector(selectMarketsInfoData);
 
@@ -653,6 +650,7 @@ function OrderItemSmall({
     [order.key, setRef]
   );
 
+  const oracleSettings = useSelector(selectOracleSettings);
   const disabledCancelMarketOrderMessage = useDisabledCancelMarketOrderMessage(order, oracleSettings);
   const cancelButton = (
     <Button

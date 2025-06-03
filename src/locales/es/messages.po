@@ -9050,6 +9050,10 @@ msgstr ""
 msgid "Ecosystem Projects"
 msgstr ""
 
+#: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
+msgid "Market order will be cancellable in ..."
+msgstr ""
+
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Price Impact Rebate Claimed"
 msgstr ""

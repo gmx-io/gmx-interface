@@ -10,13 +10,15 @@ export const useDisabledCancelMarketOrderMessage = (
   oracleSettings: OracleSettingsData | undefined
 ) => {
   const [diff, setDiff] = useState(
-    Number(order.updatedAtTime) + Number(oracleSettings?.requestExpirationTime) - Date.now() / 1000
+    oracleSettings
+      ? Number(order.updatedAtTime) + Number(oracleSettings.requestExpirationTime) - Date.now() / 1000
+      : null
   );
 
   useEffect(() => {
     if (!oracleSettings) return;
     const interval = setInterval(() => {
-      if (diff > 0) {
+      if (diff && diff > 0) {
         const time = Date.now() / 1000;
         setDiff(Number(order.updatedAtTime) + Number(oracleSettings.requestExpirationTime) - time);
       }
@@ -26,13 +28,15 @@ export const useDisabledCancelMarketOrderMessage = (
 
   if (!oracleSettings || !isMarketOrderType(order.orderType)) return undefined;
 
-  if (diff > 0) {
+  if (diff && diff > 0) {
     const minutes = Math.floor(diff / 60);
     const seconds = Math.floor(diff % 60);
 
     const minutesText = minutes > 0 ? `${minutes}m ` : "";
     return t`Market order will be cancellable in ${minutesText}${seconds}s.`;
   }
+
+  if (diff === null) return t`Market order will be cancellable in ...`;
 
   return undefined;
 };

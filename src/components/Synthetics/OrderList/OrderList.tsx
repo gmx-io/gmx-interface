@@ -10,11 +10,7 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
-import {
-  selectAccount,
-  selectChainId,
-  selectOracleSettings,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
@@ -188,8 +184,6 @@ export function OrderList({
     }
   }, []);
 
-  const oracleSettings = useSelector(selectOracleSettings);
-
   return (
     <div ref={ref}>
       {(isContainerSmall || isScreenSmall) && !isLoading && (
@@ -235,7 +229,6 @@ export function OrderList({
                   positionsInfoData={positionsData}
                   hideActions={hideActions}
                   setRef={handleSetRef}
-                  oracleSettings={oracleSettings}
                 />
               ))}
             </div>
@@ -307,7 +300,6 @@ export function OrderList({
                   hideActions={hideActions}
                   positionsInfoData={positionsData}
                   setRef={(el) => (orderRefs.current[order.key] = el)}
-                  oracleSettings={oracleSettings}
                 />
               ))}
           </tbody>
