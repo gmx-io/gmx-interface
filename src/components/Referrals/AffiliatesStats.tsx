@@ -50,7 +50,7 @@ import "./AffiliatesStats.scss";
 type Props = {
   chainId: UiContractsChain;
   referralsData?: TotalReferralsStats;
-  handleCreateReferralCode: (code: string) => void;
+  handleCreateReferralCode: (code: string) => Promise<unknown>;
   setRecentlyAddedCodes: (codes: ReferralCodeStats[]) => void;
   recentlyAddedCodes?: ReferralCodeStats[];
 };

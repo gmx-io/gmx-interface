@@ -4,8 +4,8 @@ import { zeroAddress } from "viem";
 
 import { SUPPORTED_CHAIN_IDS, UiContractsChain } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
-import { getReferralCodeOwner } from "domain/referrals";
-import { MAX_REFERRAL_CODE_LENGTH, REFERRAL_CODE_QUERY_PARAM, getTwitterIntentURL, isAddressZero } from "lib/legacy";
+import { CodeOwnershipInfo, getReferralCodeOwner, ReferralCodeStats } from "domain/referrals";
+import { getTwitterIntentURL, isAddressZero, MAX_REFERRAL_CODE_LENGTH, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 import { deserializeBigIntsInObject, formatAmount, removeTrailingZeros } from "lib/numbers";
 import { getRootUrl } from "lib/url";
 import { bigMath } from "sdk/utils/bigmath";
@@ -114,7 +114,12 @@ export const tierDiscountInfo = {
   2: 10,
 };
 
-export function getSharePercentage(tierId, discountShare, totalRebate, isRebate) {
+export function getSharePercentage(
+  tierId: number | undefined,
+  discountShare: bigint | undefined,
+  totalRebate: bigint,
+  isRebate?: boolean
+) {
   if (tierId === undefined || totalRebate === undefined) return;
   if (discountShare === undefined || discountShare === 0n)
     return isRebate ? tierRebateInfo[tierId] : tierDiscountInfo[tierId];
@@ -145,7 +150,15 @@ export function deserializeSampleStats(input) {
     .filter(Boolean);
 }
 
-export const getSampleReferrarStat = (code = "", ownerOnOtherNetwork = "", account = "") => {
+export const getSampleReferrarStat = ({
+  code = "",
+  account = "",
+  takenInfo,
+}: {
+  code?: string;
+  takenInfo?: TakenInfo;
+  account?: string;
+} = {}): ReferralCodeStats => {
   return {
     discountUsd: 0n,
     referralCode: code,
@@ -154,25 +167,48 @@ export const getSampleReferrarStat = (code = "", ownerOnOtherNetwork = "", accou
     registeredReferralsCount: 0,
     trades: 0,
     volume: 0n,
-    time: Date.now(),
+    // time: Date.now(),
+
     v1Data: {
       volume: 0n,
       totalRebateUsd: 0n,
       discountUsd: 0n,
+      affiliateRebateUsd: 0n,
     },
     v2Data: {
       volume: 0n,
       totalRebateUsd: 0n,
       discountUsd: 0n,
+      affiliateRebateUsd: 0n,
     },
-    ownerOnOtherChain: {
-      code: encodeReferralCode(code),
-      codeString: code,
-      owner: undefined,
-      isTaken: !isAddressZero(ownerOnOtherNetwork),
-      isTakenByCurrentUser:
-        !isAddressZero(ownerOnOtherNetwork) && ownerOnOtherNetwork.toLowerCase() === account.toLowerCase(),
-    },
+    // ownerOnOtherChain: {
+    //   code: encodeReferralCode(code),
+    //   codeString: code,
+    //   owner: undefined,
+    //   isTaken: !isAddressZero(ownerOnOtherNetwork),
+    //   isTakenByCurrentUser:
+    //     !isAddressZero(ownerOnOtherNetwork) && ownerOnOtherNetwork.toLowerCase() === account.toLowerCase(),
+    // },
+    affiliateRebateUsd: 0n,
+    allOwnersOnOtherChains: takenInfo
+      ? Object.fromEntries(
+          SUPPORTED_CHAIN_IDS.map((chainId): [UiContractsChain, CodeOwnershipInfo] | undefined => {
+            const taken = takenInfo[chainId];
+            if (!taken) return undefined;
+
+            return [
+              chainId,
+              {
+                code: encodeReferralCode(code),
+                codeString: code,
+                owner: taken.owner,
+                isTaken: taken.taken,
+                isTakenByCurrentUser: taken.owner.toLowerCase() === account.toLowerCase(),
+              },
+            ];
+          }).filter(Boolean) as [UiContractsChain, CodeOwnershipInfo][]
+        )
+      : undefined,
   };
 };
 

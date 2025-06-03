@@ -33,16 +33,24 @@ export type UiSupportedChain = UiContractsChain | UiSettlementChain | UiSourceCh
 // | typeof OPTIMISM_SEPOLIA
 // | typeof SEPOLIA;
 
-export const CHAIN_NAMES_MAP: Record<UiSupportedChain, string> = {
+export type ChainName =
+  | "Arbitrum"
+  | "Avalanche"
+  | "Avalanche Fuji"
+  | "Arbitrum Sepolia"
+  | "Optimism Sepolia"
+  | "Sepolia";
+
+export const CHAIN_NAMES_MAP: Record<UiSupportedChain, ChainName> = {
   [ARBITRUM]: "Arbitrum",
   // [BASE_MAINNET]: base.name,
   // [SONIC_MAINNET]: sonic.name,
 
   [AVALANCHE]: "Avalanche",
   [AVALANCHE_FUJI]: "Avalanche Fuji",
-  [ARBITRUM_SEPOLIA]: arbitrumSepolia.name,
-  [OPTIMISM_SEPOLIA]: optimismSepolia.name,
-  [SEPOLIA]: sepolia.name,
+  [ARBITRUM_SEPOLIA]: "Arbitrum Sepolia",
+  [OPTIMISM_SEPOLIA]: "Optimism Sepolia",
+  [SEPOLIA]: "Sepolia",
 };
 
 export const HIGH_EXECUTION_FEES_MAP: Record<number, number> = {
@@ -111,7 +119,7 @@ const VIEM_CHAIN_BY_CHAIN_ID: Record<UiContractsChain, Chain> = {
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
 };
 
-export function getChainName(chainId: number): string {
+export function getChainName(chainId: number): ChainName {
   return CHAIN_NAMES_MAP[chainId];
 }
 

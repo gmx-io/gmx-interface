@@ -1,3 +1,4 @@
+import type { ChainName } from "config/chains";
 import { EditingOrderSource } from "domain/synthetics/orders/types";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
 
@@ -21,7 +22,7 @@ export type LandingPageProtocolTokenEvent = {
   event: "LandingPageAction";
   data: {
     action: "ProtocolTokenAction";
-    chain: "Arbitrum" | "Avalanche";
+    chain: ChainName;
     type: "GMX" | "GM" | "GLV" | "GLP";
   };
 };
@@ -195,7 +196,7 @@ export type TradeBoxWarningShownEvent = {
     isExpress1CT: boolean;
     sizeDeltaUsd: number;
     leverage: string;
-    chain: "Arbitrum" | "Avalanche";
+    chain: ChainName;
     isFirstOrder: boolean;
   };
 };

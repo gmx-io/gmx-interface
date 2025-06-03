@@ -5,6 +5,7 @@ import type { TransactionResponse } from "ethers";
 import { useEffect, useRef, useState } from "react";
 import { useAccount } from "wagmi";
 
+import type { ReferralCodeStats } from "domain/referrals/types";
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
@@ -52,17 +53,17 @@ export function AffiliateCodeForm({
   callAfterSuccess,
 }: {
   handleCreateReferralCode: (code: string) => Promise<unknown>;
-  recentlyAddedCodes: unknown[];
-  setRecentlyAddedCodes: (code: unknown) => void;
+  recentlyAddedCodes: ReferralCodeStats[] | undefined;
+  setRecentlyAddedCodes: (code: ReferralCodeStats[]) => void;
   callAfterSuccess: () => void;
 }) {
   const [referralCode, setReferralCode] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState("");
-  const inputRef = useRef<HTMLInputElement>();
+  const inputRef = useRef<HTMLInputElement>(null);
   const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState("ok");
   const debouncedReferralCode = useDebounce(referralCode, 300);
-  const { chainId, srcChainId } = useChainId();
+  const { chainId } = useChainId();
   const { address: account } = useAccount();
 
   useEffect(() => {
@@ -143,7 +144,7 @@ export function AffiliateCodeForm({
     }
 
     if (takenStatus === "none" || takenStatus === "other") {
-      const ownerOnOtherNetwork = takenInfo[chainId];
+      // const ownerOnOtherNetwork = takenInfo[chainId];
       try {
         const tx = (await handleCreateReferralCode(trimmedCode)) as TransactionResponse;
 
@@ -154,10 +155,11 @@ export function AffiliateCodeForm({
         const receipt = await tx.wait();
 
         if (receipt?.status === 1) {
-          recentlyAddedCodes.push(getSampleReferrarStat(trimmedCode, ownerOnOtherNetwork!.owner, account));
-
+          if (recentlyAddedCodes) {
+            recentlyAddedCodes.push(getSampleReferrarStat({ code: trimmedCode, takenInfo, account }));
+            setRecentlyAddedCodes(recentlyAddedCodes);
+          }
           helperToast.success(t`Referral code created!`);
-          setRecentlyAddedCodes(recentlyAddedCodes);
           setReferralCode("");
         }
       } catch (err) {

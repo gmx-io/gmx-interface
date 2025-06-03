@@ -3,11 +3,9 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
-  BASE_MAINNET,
-  SONIC_MAINNET,
   OPTIMISM_SEPOLIA,
-  UiSupportedChain,
   SEPOLIA,
+  UiSupportedChain,
 } from "config/chains";
 
 import gmIcon from "img/gm_icon.svg";
@@ -15,7 +13,6 @@ import arbitrum from "img/ic_arbitrum_24.svg";
 import arbitrumSepolia from "img/ic_arbitrum_sepolia_24.svg";
 import avalanche from "img/ic_avalanche_24.svg";
 import avalancheTestnet from "img/ic_avalanche_testnet_24.svg";
-import baseIcon from "img/ic_base_24.svg";
 import esGMXIcon from "img/ic_esgmx_40.svg";
 import esGMXArbitrumIcon from "img/ic_esgmx_arbitrum.svg";
 import esGMXAvaxIcon from "img/ic_esgmx_avalanche.svg";
@@ -30,7 +27,6 @@ import gmxArbitrum from "img/ic_gmx_arbitrum.svg";
 import gmxAvax from "img/ic_gmx_avax.svg";
 import gmxOutlineIcon from "img/ic_gmxv1flat.svg";
 import optimismSepolia from "img/ic_op_24.svg";
-import sonicIcon from "img/ic_s_24.svg";
 import sepolia from "img/ic_sepolia_24.svg";
 
 type ChainIcons = {
@@ -85,8 +81,8 @@ export const CHAIN_ID_TO_NETWORK_ICON: Record<UiSupportedChain | 0, string> = {
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
   0: gmxIcon,
-  [BASE_MAINNET]: baseIcon,
-  [SONIC_MAINNET]: sonicIcon,
+  // [BASE_MAINNET]: baseIcon,
+  // [SONIC_MAINNET]: sonicIcon,
 
   [AVALANCHE_FUJI]: avalancheTestnet,
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
