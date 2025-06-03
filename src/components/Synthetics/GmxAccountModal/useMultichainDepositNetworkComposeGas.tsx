@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { AbiItemArgs, Address, PublicClient, StateOverride, toHex, zeroAddress } from "viem";
+import { AbiItemArgs, Address, PublicClient, StateOverride, toHex, zeroAddress, zeroHash } from "viem";
 import { useAccount, usePublicClient } from "wagmi";
 
 import { ARBITRUM_SEPOLIA, type UiContractsChain, type UiSettlementChain, type UiSourceChain } from "config/chains";
@@ -13,7 +13,6 @@ import {
 import { useChainId } from "lib/chains";
 import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { numberToBigint } from "lib/numbers";
-import { abis } from "sdk/abis";
 import { getToken, getTokenBySymbol } from "sdk/configs/tokens";
 import { layerZeroProviderAbi } from "wagmi-generated";
 
@@ -90,7 +89,7 @@ export async function estimateMultichainDepositNetworkComposeGas({
   srcChainId: UiSourceChain;
   tokenAddress: string;
   settlementChainPublicClient: PublicClient;
-}) {
+}): Promise<bigint> {
   const data = action ? CodecUiHelper.encodeMultichainActionData(action) : undefined;
   const composeFromWithMsg = CodecUiHelper.composeDepositMessage(chainId as UiSettlementChain, account, data);
 
@@ -124,15 +123,23 @@ export async function estimateMultichainDepositNetworkComposeGas({
   const stateOverride: StateOverride = [];
 
   if (tokenAddress !== zeroAddress) {
+    const randomSlot = "0x23995301f0ea59f7cace2ae906341fc4662f3f5d23f124431ee3520d1070148c";
+
     const stateOverrideForErc20: StateOverride[number] = {
       address: tokenAddress as Address,
       code: OVERRIDE_ERC20_BYTECODE,
+      state: [
+        {
+          slot: randomSlot,
+          value: zeroHash,
+        },
+      ],
     };
     stateOverride.push(stateOverrideForErc20);
   } else {
     const stateOverrideForNative: StateOverride[number] = {
       address,
-      balance: fakeAmount * 10n,
+      balance: fakeAmount * 2n,
     };
     stateOverride.push(stateOverrideForNative);
   }
@@ -152,7 +159,7 @@ export async function estimateMultichainDepositNetworkComposeGas({
 
   const gas = await settlementChainPublicClient.estimateContractGas({
     address,
-    abi: abis.LayerZeroProviderArbitrumSepolia,
+    abi: layerZeroProviderAbi,
     functionName: "lzCompose",
     args,
     account: CodecUiHelper.getLzEndpoint(chainId),

@@ -71,24 +71,33 @@ const STEP_ORDER: Record<MultichainFundingHistoryItem["step"], number> = {
   executed: 4,
 };
 
-function isStepGreaterOrEqual(
+export function isStepGreaterOrEqual(
   step: MultichainFundingHistoryItem["step"],
   than: MultichainFundingHistoryItem["step"]
 ): boolean {
   return STEP_ORDER[step] - STEP_ORDER[than] >= 0;
 }
 
+export function isStepGreater(
+  step: MultichainFundingHistoryItem["step"],
+  than: MultichainFundingHistoryItem["step"]
+): boolean {
+  return STEP_ORDER[step] - STEP_ORDER[than] > 0;
+}
+
 export function useGmxAccountFundingHistory(opts?: { enabled?: boolean }): MultichainFundingHistoryItem[] | undefined {
   const { chainId } = useChainId();
   const { address: account } = useAccount();
-  const { pendingMultichainFunding } = useSyntheticsEvents();
+  const { pendingMultichainFunding, updateMultichainFunding } = useSyntheticsEvents();
 
   const { data } = useSWR<MultichainFundingHistoryItem[]>(
     account && opts?.enabled !== false ? ["gmx-account-funding-history", account] : null,
     {
       fetcher: () => fetchGmxAccountFundingHistory(chainId, { account }),
       refreshInterval: FREQUENT_UPDATE_INTERVAL,
-      // TODO: if websockets break, put data in event state from here
+      onSuccess(data) {
+        updateMultichainFunding(data);
+      },
     }
   );
 

@@ -174,7 +174,7 @@ export const SelectAssetToDepositView = () => {
           />
         ))}
         {filteredBalances.length === 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-8 px-16 text-slate-100">
+          <div className="flex h-full flex-col items-center justify-center gap-8 p-16 text-slate-100">
             <InfoIconComponent className="size-24" />
             No assets are available for deposit
           </div>

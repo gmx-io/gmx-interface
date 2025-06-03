@@ -13,7 +13,7 @@ import {
   getLayerZeroEndpointId,
   getMultichainTokenId,
   getStargatePoolAddress,
-  MULTI_CHAIN_TOKEN_MAPPING,
+  isSettlementChain,
   MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS,
 } from "context/GmxAccountContext/config";
 import {
@@ -43,7 +43,7 @@ import {
   sendTxnValidationErrorMetric,
 } from "lib/metrics";
 import { bigintToNumber, formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
-import { getByKey } from "lib/objects";
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
@@ -139,8 +139,12 @@ export const WithdrawView = () => {
     : undefined;
 
   const options = useMemo(() => {
-    return MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS[chainId]
-      .map((tokenAddress) => gmxAccountTokensData[tokenAddress])
+    if (!isSettlementChain(chainId)) {
+      return EMPTY_ARRAY;
+    }
+
+    return MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS[chainId as UiSettlementChain]
+      ?.map((tokenAddress) => gmxAccountTokensData[tokenAddress])
       .filter((token) => token.address !== zeroAddress)
       .sort((a, b) => {
         const aFloat = bigintToNumber(a.balance ?? 0n, a.decimals);
@@ -450,9 +454,17 @@ export const WithdrawView = () => {
       gasPaymentParams === undefined ||
       bridgeOutParams === undefined ||
       signer === undefined ||
-      provider === undefined ||
-      expressTxnParamsAsyncResult?.data === undefined
+      expressTxnParamsAsyncResult.promise === undefined ||
+      provider === undefined
     ) {
+      helperToast.error("Missing required parameters");
+      sendTxnValidationErrorMetric(metricData.metricId);
+      return;
+    }
+
+    const expressTxnParams = await expressTxnParamsAsyncResult.promise;
+
+    if (expressTxnParams === undefined) {
       helperToast.error("Missing required parameters");
       sendTxnValidationErrorMetric(metricData.metricId);
       return;
@@ -460,7 +472,7 @@ export const WithdrawView = () => {
 
     setIsSubmitting(true);
     try {
-      const relayParamsPayload = expressTxnParamsAsyncResult.data.relayParamsPayload;
+      const relayParamsPayload = expressTxnParams.relayParamsPayload;
 
       await simulateWithdraw({
         chainId: chainId as UiSettlementChain,
@@ -544,7 +556,7 @@ export const WithdrawView = () => {
       text: t`Insufficient ${gasPaymentParams?.relayFeeToken.symbol} balance to pay for gas`,
       disabled: true,
     };
-  } else if (expressTxnParamsAsyncResult.isLoading) {
+  } else if (expressTxnParamsAsyncResult.data === undefined) {
     buttonState = {
       text: (
         <>
@@ -569,21 +581,21 @@ export const WithdrawView = () => {
   const hasSelectedToken = selectedTokenAddress !== undefined;
   useEffect(
     function fallbackWithdrawTokens() {
-      if (hasSelectedToken || !srcChainId) {
+      if (hasSelectedToken || !srcChainId || !isSettlementChain(chainId)) {
         return;
       }
 
-      const tokenIdMap = MULTI_CHAIN_TOKEN_MAPPING[chainId]?.[srcChainId];
-      if (!tokenIdMap) {
+      // const tokenIdMap = MULTI_CHAIN_TOKEN_MAPPING[chainId]?.[srcChainId];
+      const settlementChainWrappedTokenAddresses = MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS[chainId];
+      if (!settlementChainWrappedTokenAddresses) {
         return;
       }
 
       let maxGmxAccountBalanceUsd = 0n;
-      let maxBalanceSettlementChainTokenAddress: Address | undefined = undefined;
+      let maxBalanceSettlementChainTokenAddress: string | undefined = undefined;
 
-      for (const sourceChainTokenAddress in tokenIdMap) {
-        const tokenId = tokenIdMap[sourceChainTokenAddress];
-        const tokenData = gmxAccountTokensData[tokenId.settlementChainTokenAddress];
+      for (const tokenAddress of settlementChainWrappedTokenAddresses) {
+        const tokenData = gmxAccountTokensData[tokenAddress];
         if (tokenData === undefined) {
           continue;
         }
@@ -598,7 +610,7 @@ export const WithdrawView = () => {
         const balanceUsd = convertToUsd(balance, tokenData.decimals, price)!;
         if (balanceUsd > maxGmxAccountBalanceUsd) {
           maxGmxAccountBalanceUsd = balanceUsd;
-          maxBalanceSettlementChainTokenAddress = tokenId.settlementChainTokenAddress;
+          maxBalanceSettlementChainTokenAddress = tokenAddress;
         }
       }
 
@@ -852,7 +864,6 @@ async function fallbackCustomError<T = void>(f: () => Promise<T>, errorContext: 
 
         customError.name = decodedError.errorName;
         customError.message = JSON.stringify(decodedError, null, 2);
-        // customError.cause = error;
 
         throw extendError(customError, {
           errorContext,

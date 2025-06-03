@@ -13,6 +13,7 @@ import {
 } from "context/GmxAccountContext/config";
 import { useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
 import { ENDPOINT_ID_TO_CHAIN_ID } from "context/GmxAccountContext/stargatePools";
+import { MultichainFundingHistoryItem } from "context/GmxAccountContext/types";
 import {
   subscribeToComposeDeliveredEvents,
   subscribeToMultichainApprovalEvents,
@@ -26,6 +27,7 @@ import { LRUCache } from "sdk/utils/LruCache";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { CodecUiHelper } from "components/Synthetics/GmxAccountModal/codecs/CodecUiHelper";
+import { isStepGreater } from "components/Synthetics/GmxAccountModal/useGmxAccountFundingHistory";
 
 import { useSyntheticsEvents } from "./SyntheticsEventsProvider";
 import type {
@@ -45,6 +47,7 @@ export type MultichainEventsState = {
   setMultichainSubmittedWithdrawal: (submittedWithdrawal: SubmittedMultichainWithdrawal) => string | undefined;
   setMultichainWithdrawalSentTxnHash: (mockId: string, txnHash: string) => void;
   setMultichainWithdrawalSentError: (mockId: string) => void;
+  updateMultichainFunding: (items: MultichainFundingHistoryItem[]) => void;
 
   multichainFundingPendingIds: Record<
     // Stub id for persistence
@@ -658,6 +661,81 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
           newSet.delete(name);
           return newSet;
         });
+      },
+      updateMultichainFunding: (items) => {
+        const pendingGuids = new Set<string>();
+
+        // pendingMultichainFunding.deposits.
+        for (const step of ["received", "sent"] as const) {
+          for (const pendingGuid in pendingMultichainFunding.deposits[step]) {
+            pendingGuids.add(pendingGuid);
+          }
+        }
+
+        for (const step of ["sent"] as const) {
+          for (const pendingGuid in pendingMultichainFunding.withdrawals[step]) {
+            pendingGuids.add(pendingGuid);
+          }
+        }
+
+        // const freshItems = items.filter((item) => pendingGuids.has(item.id));
+
+        const freshItems: Record<string, MultichainFundingHistoryItem> = {};
+        let hasFreshItems = false;
+
+        for (const item of items) {
+          if (pendingGuids.has(item.id)) {
+            freshItems[item.id] = item;
+            hasFreshItems = true;
+          }
+        }
+
+        if (hasFreshItems) {
+          setPendingMultichainFunding((prev) => {
+            const newPendingMultichainFunding = structuredClone(prev);
+
+            // if the items that came in ITEMS are in lower statuses in here pendingMultichainFunding, move them to the higher statuses
+
+            const executedGuids: string[] = [];
+
+            for (const step of ["received", "sent"] as const) {
+              for (const pendingGuid in newPendingMultichainFunding.deposits[step]) {
+                const freshItem = freshItems[pendingGuid];
+
+                if (isStepGreater(freshItem.step, step)) {
+                  delete newPendingMultichainFunding.deposits[step][pendingGuid];
+                  newPendingMultichainFunding.deposits[freshItem.step][pendingGuid] = freshItem;
+
+                  if (freshItem.step === "executed") {
+                    executedGuids.push(pendingGuid);
+                  }
+                }
+              }
+            }
+
+            for (const step of ["sent"] as const) {
+              for (const pendingGuid in newPendingMultichainFunding.withdrawals[step]) {
+                const freshItem = freshItems[pendingGuid];
+
+                if (isStepGreater(freshItem.step, step)) {
+                  delete newPendingMultichainFunding.withdrawals[step][pendingGuid];
+                  newPendingMultichainFunding.withdrawals[freshItem.step][pendingGuid] = freshItem;
+                  if (freshItem.step === "received") {
+                    executedGuids.push(pendingGuid);
+                  }
+                }
+              }
+            }
+
+            setTimeout(() => {
+              setMultichainFundingPendingIds((prev) => {
+                return pickBy(prev, (value) => !executedGuids.includes(value));
+              });
+            }, 5000);
+
+            return newPendingMultichainFunding;
+          });
+        }
       },
     }),
     [
