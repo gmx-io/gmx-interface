@@ -55,65 +55,182 @@ export interface TreasuryInterface extends Interface {
       | "withdrawToken"
   ): FunctionFragment;
 
-  encodeFunctionData(functionFragment: "addLiquidity", values?: undefined): string;
-  encodeFunctionData(functionFragment: "addWhitelists", values: [AddressLike[]]): string;
+  encodeFunctionData(
+    functionFragment: "addLiquidity",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addWhitelists",
+    values: [AddressLike[]]
+  ): string;
   encodeFunctionData(functionFragment: "busd", values?: undefined): string;
-  encodeFunctionData(functionFragment: "busdBasisPoints", values?: undefined): string;
-  encodeFunctionData(functionFragment: "busdHardCap", values?: undefined): string;
-  encodeFunctionData(functionFragment: "busdReceived", values?: undefined): string;
-  encodeFunctionData(functionFragment: "busdSlotCap", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "busdBasisPoints",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "busdHardCap",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "busdReceived",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "busdSlotCap",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "endSwap", values?: undefined): string;
-  encodeFunctionData(functionFragment: "extendUnlockTime", values: [BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "extendUnlockTime",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "fund", values?: undefined): string;
   encodeFunctionData(functionFragment: "gmt", values?: undefined): string;
-  encodeFunctionData(functionFragment: "gmtListingPrice", values?: undefined): string;
-  encodeFunctionData(functionFragment: "gmtPresalePrice", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "gmtListingPrice",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "gmtPresalePrice",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "gov", values?: undefined): string;
-  encodeFunctionData(functionFragment: "increaseBusdBasisPoints", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "initialize", values: [AddressLike[], BigNumberish[]]): string;
-  encodeFunctionData(functionFragment: "isInitialized", values?: undefined): string;
-  encodeFunctionData(functionFragment: "isLiquidityAdded", values?: undefined): string;
-  encodeFunctionData(functionFragment: "isSwapActive", values?: undefined): string;
-  encodeFunctionData(functionFragment: "removeWhitelists", values: [AddressLike[]]): string;
+  encodeFunctionData(
+    functionFragment: "increaseBusdBasisPoints",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initialize",
+    values: [AddressLike[], BigNumberish[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isInitialized",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isLiquidityAdded",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isSwapActive",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeWhitelists",
+    values: [AddressLike[]]
+  ): string;
   encodeFunctionData(functionFragment: "router", values?: undefined): string;
-  encodeFunctionData(functionFragment: "setFund", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "setFund",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(functionFragment: "setGov", values: [AddressLike]): string;
   encodeFunctionData(functionFragment: "swap", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "swapAmounts", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "swapWhitelist", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "unlockTime", values?: undefined): string;
-  encodeFunctionData(functionFragment: "updateWhitelist", values: [AddressLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "withdrawToken", values: [AddressLike, AddressLike, BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "swapAmounts",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "swapWhitelist",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "unlockTime",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateWhitelist",
+    values: [AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawToken",
+    values: [AddressLike, AddressLike, BigNumberish]
+  ): string;
 
-  decodeFunctionResult(functionFragment: "addLiquidity", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "addWhitelists", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "addLiquidity",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "addWhitelists",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "busd", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "busdBasisPoints", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "busdHardCap", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "busdReceived", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "busdSlotCap", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "busdBasisPoints",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "busdHardCap",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "busdReceived",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "busdSlotCap",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "endSwap", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "extendUnlockTime", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "extendUnlockTime",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "fund", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "gmt", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "gmtListingPrice", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "gmtPresalePrice", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "gmtListingPrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "gmtPresalePrice",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "gov", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "increaseBusdBasisPoints", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "increaseBusdBasisPoints",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "isInitialized", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "isLiquidityAdded", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "isSwapActive", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeWhitelists", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "isInitialized",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isLiquidityAdded",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isSwapActive",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeWhitelists",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "router", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setFund", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setGov", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "swap", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "swapAmounts", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "swapWhitelist", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "swapAmounts",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "swapWhitelist",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "unlockTime", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "updateWhitelist", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "withdrawToken", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "updateWhitelist",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawToken",
+    data: BytesLike
+  ): Result;
 }
 
 export interface Treasury extends BaseContract {
@@ -133,25 +250,39 @@ export interface Treasury extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
   addLiquidity: TypedContractMethod<[], [void], "nonpayable">;
 
-  addWhitelists: TypedContractMethod<[_accounts: AddressLike[]], [void], "nonpayable">;
+  addWhitelists: TypedContractMethod<
+    [_accounts: AddressLike[]],
+    [void],
+    "nonpayable"
+  >;
 
   busd: TypedContractMethod<[], [string], "view">;
 
@@ -165,7 +296,11 @@ export interface Treasury extends BaseContract {
 
   endSwap: TypedContractMethod<[], [void], "nonpayable">;
 
-  extendUnlockTime: TypedContractMethod<[_unlockTime: BigNumberish], [void], "nonpayable">;
+  extendUnlockTime: TypedContractMethod<
+    [_unlockTime: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   fund: TypedContractMethod<[], [string], "view">;
 
@@ -177,9 +312,17 @@ export interface Treasury extends BaseContract {
 
   gov: TypedContractMethod<[], [string], "view">;
 
-  increaseBusdBasisPoints: TypedContractMethod<[_busdBasisPoints: BigNumberish], [void], "nonpayable">;
+  increaseBusdBasisPoints: TypedContractMethod<
+    [_busdBasisPoints: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
-  initialize: TypedContractMethod<[_addresses: AddressLike[], _values: BigNumberish[]], [void], "nonpayable">;
+  initialize: TypedContractMethod<
+    [_addresses: AddressLike[], _values: BigNumberish[]],
+    [void],
+    "nonpayable"
+  >;
 
   isInitialized: TypedContractMethod<[], [boolean], "view">;
 
@@ -187,7 +330,11 @@ export interface Treasury extends BaseContract {
 
   isSwapActive: TypedContractMethod<[], [boolean], "view">;
 
-  removeWhitelists: TypedContractMethod<[_accounts: AddressLike[]], [void], "nonpayable">;
+  removeWhitelists: TypedContractMethod<
+    [_accounts: AddressLike[]],
+    [void],
+    "nonpayable"
+  >;
 
   router: TypedContractMethod<[], [string], "view">;
 
@@ -203,7 +350,11 @@ export interface Treasury extends BaseContract {
 
   unlockTime: TypedContractMethod<[], [bigint], "view">;
 
-  updateWhitelist: TypedContractMethod<[prevAccount: AddressLike, nextAccount: AddressLike], [void], "nonpayable">;
+  updateWhitelist: TypedContractMethod<
+    [prevAccount: AddressLike, nextAccount: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   withdrawToken: TypedContractMethod<
     [_token: AddressLike, _account: AddressLike, _amount: BigNumberish],
@@ -211,49 +362,113 @@ export interface Treasury extends BaseContract {
     "nonpayable"
   >;
 
-  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  getFunction(nameOrSignature: "addLiquidity"): TypedContractMethod<[], [void], "nonpayable">;
-  getFunction(nameOrSignature: "addWhitelists"): TypedContractMethod<[_accounts: AddressLike[]], [void], "nonpayable">;
-  getFunction(nameOrSignature: "busd"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "busdBasisPoints"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "busdHardCap"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "busdReceived"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "busdSlotCap"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "endSwap"): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "addLiquidity"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "addWhitelists"
+  ): TypedContractMethod<[_accounts: AddressLike[]], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "busd"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "busdBasisPoints"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "busdHardCap"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "busdReceived"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "busdSlotCap"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "endSwap"
+  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "extendUnlockTime"
   ): TypedContractMethod<[_unlockTime: BigNumberish], [void], "nonpayable">;
-  getFunction(nameOrSignature: "fund"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "gmt"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "gmtListingPrice"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "gmtPresalePrice"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "gov"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "fund"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "gmt"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "gmtListingPrice"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "gmtPresalePrice"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "gov"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "increaseBusdBasisPoints"
-  ): TypedContractMethod<[_busdBasisPoints: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_busdBasisPoints: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "initialize"
-  ): TypedContractMethod<[_addresses: AddressLike[], _values: BigNumberish[]], [void], "nonpayable">;
-  getFunction(nameOrSignature: "isInitialized"): TypedContractMethod<[], [boolean], "view">;
-  getFunction(nameOrSignature: "isLiquidityAdded"): TypedContractMethod<[], [boolean], "view">;
-  getFunction(nameOrSignature: "isSwapActive"): TypedContractMethod<[], [boolean], "view">;
+  ): TypedContractMethod<
+    [_addresses: AddressLike[], _values: BigNumberish[]],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "isInitialized"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "isLiquidityAdded"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "isSwapActive"
+  ): TypedContractMethod<[], [boolean], "view">;
   getFunction(
     nameOrSignature: "removeWhitelists"
   ): TypedContractMethod<[_accounts: AddressLike[]], [void], "nonpayable">;
-  getFunction(nameOrSignature: "router"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "setFund"): TypedContractMethod<[_fund: AddressLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "setGov"): TypedContractMethod<[_gov: AddressLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "swap"): TypedContractMethod<[_busdAmount: BigNumberish], [void], "nonpayable">;
-  getFunction(nameOrSignature: "swapAmounts"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "swapWhitelist"): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
-  getFunction(nameOrSignature: "unlockTime"): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "router"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "setFund"
+  ): TypedContractMethod<[_fund: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "setGov"
+  ): TypedContractMethod<[_gov: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "swap"
+  ): TypedContractMethod<[_busdAmount: BigNumberish], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "swapAmounts"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "swapWhitelist"
+  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "unlockTime"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "updateWhitelist"
-  ): TypedContractMethod<[prevAccount: AddressLike, nextAccount: AddressLike], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [prevAccount: AddressLike, nextAccount: AddressLike],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "withdrawToken"
-  ): TypedContractMethod<[_token: AddressLike, _account: AddressLike, _amount: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _account: AddressLike, _amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   filters: {};
 }

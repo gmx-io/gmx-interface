@@ -1,7 +1,11 @@
+import { FeaturesSettings } from "domain/synthetics/features/useDisabledFeatures";
+import { getIsInvalidSubaccount } from "domain/synthetics/subaccount";
+
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorDeprecated } from "../utils";
 
 export const selectAccount = (s: SyntheticsState) => s.globals.account;
+export const selectSigner = (s: SyntheticsState) => s.globals.signer;
 export const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.ordersInfoData;
 export const selectIsOrdersLoading = (s: SyntheticsState) => s.globals.ordersInfo.isLoading;
 export const selectPositionsInfoData = (s: SyntheticsState) => s.globals.positionsInfo.positionsInfoData;
@@ -15,12 +19,33 @@ export const selectUserReferralInfo = (s: SyntheticsState) => s.globals.userRefe
 export const selectChainId = (s: SyntheticsState) => s.globals.chainId;
 export const selectDepositMarketTokensData = (s: SyntheticsState) => s.globals.depositMarketTokensData;
 export const selectIsFirstOrder = (s: SyntheticsState) => s.globals.isFirstOrder;
+export const selectFeatures = (s: SyntheticsState) => s.features;
+export const selectIsSponsoredCallAvailable = (s: SyntheticsState) =>
+  s.sponsoredCallBalanceData?.isSponsoredCallAllowed ?? false;
+export const selectSubaccountState = (s: SyntheticsState) => s.subaccountState;
+export const selectRawSubaccount = (s: SyntheticsState) => s.subaccountState.subaccount;
+export const selectGasPaymentTokenAllowance = (s: SyntheticsState) => s.gasPaymentTokenAllowance;
+export const selectExpressNoncesData = (s: SyntheticsState) => s.expressNoncesData;
+
+export const selectUpdateSubaccountSettings = (s: SyntheticsState) => s.subaccountState.updateSubaccountSettings;
+export const selectL1ExpressOrderGasReference = (s: SyntheticsState) => s.l1ExpressOrderGasReference;
+
+export const makeSelectEnabledFeature = (feature: keyof FeaturesSettings) => {
+  return createSelector((q) => {
+    const features = q(selectFeatures);
+    return features?.[feature] ?? false;
+  });
+};
+
+export const selectIsRelayRouterEnabled = makeSelectEnabledFeature("relayRouterEnabled");
+export const selectIsSubaccountRelayRouterEnabled = makeSelectEnabledFeature("subaccountRelayRouterEnabled");
 
 export const selectBlockTimestampData = (s: SyntheticsState) => s.globals.blockTimestampData;
 
 export const selectGlvInfo = (s: SyntheticsState) => s.globals.glvInfo.glvData;
 export const selectGlvs = (s: SyntheticsState) => s.globals.glvInfo.glvs;
 export const selectGlvInfoLoading = (s: SyntheticsState) => s.globals.glvInfo.isLoading;
+
 export const selectGlvAndMarketsInfoData = createSelector((q) => {
   const glvsInfoData = q(selectGlvInfo);
   const marketsInfoData = q(selectMarketsInfoData);
@@ -77,4 +102,15 @@ export const selectPositiveFeePositionsSortedByUsd = createSelector((q) => {
   return positiveFeePositions.sort((a, b) =>
     a.pendingClaimableFundingFeesUsd > b.pendingClaimableFundingFeesUsd ? -1 : 1
   );
+});
+
+export const selectSubaccountForAction = createSelector((q) => {
+  const rawSubaccount = q(selectRawSubaccount);
+  const isEnabled = q(selectIsSubaccountRelayRouterEnabled);
+
+  if (!isEnabled || !rawSubaccount || getIsInvalidSubaccount(rawSubaccount, 1)) {
+    return undefined;
+  }
+
+  return rawSubaccount;
 });

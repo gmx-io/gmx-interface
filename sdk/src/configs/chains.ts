@@ -10,6 +10,14 @@ export const ETH_MAINNET = 1;
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 export const SUPPORTED_CHAIN_IDS_DEV = [...SUPPORTED_CHAIN_IDS, AVALANCHE_FUJI];
 
+export const CHAIN_NAMES_MAP = {
+  [BSС_MAINNET]: "BSC",
+  [BSС_TESTNET]: "BSC Testnet",
+  [ARBITRUM]: "Arbitrum",
+  [AVALANCHE]: "Avalanche",
+  [AVALANCHE_FUJI]: "Avalanche Fuji",
+};
+
 export const HIGH_EXECUTION_FEES_MAP: Record<number, number> = {
   [ARBITRUM]: 5, // 5 USD
   [AVALANCHE]: 5, // 5 USD
@@ -67,14 +75,18 @@ export const GAS_PRICE_BUFFER_MAP: Record<number, bigint> = {
   [ARBITRUM]: 2000n, // 20%
 };
 
-const CHAIN_BY_CHAIN_ID: Record<number, Chain> = {
+const VIEM_CHAIN_BY_CHAIN_ID: Record<number, Chain> = {
   [AVALANCHE_FUJI]: avalancheFuji,
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
 };
 
-export const getChain = (chainId: number): Chain => {
-  return CHAIN_BY_CHAIN_ID[chainId];
+export function getChainName(chainId: number) {
+  return CHAIN_NAMES_MAP[chainId];
+}
+
+export const getViemChain = (chainId: number): Chain => {
+  return VIEM_CHAIN_BY_CHAIN_ID[chainId];
 };
 
 export function getHighExecutionFee(chainId: number) {
@@ -106,5 +118,26 @@ export const EXECUTION_FEE_CONFIG_V2: {
   [ARBITRUM]: {
     shouldUseMaxPriorityFeePerGas: false,
     defaultBufferBps: 3000, // 30%
+  },
+};
+
+export const GAS_LIMITS_STATIC_CONFIG = {
+  [ARBITRUM]: {
+    createOrderGasLimit: 1_000_000n,
+    updateOrderGasLimit: 800_000n,
+    cancelOrderGasLimit: 700_000n,
+    tokenPermitGasLimit: 90_000n,
+  },
+  [AVALANCHE]: {
+    createOrderGasLimit: 1_000_000n,
+    updateOrderGasLimit: 800_000n,
+    cancelOrderGasLimit: 700_000n,
+    tokenPermitGasLimit: 90_000n,
+  },
+  [AVALANCHE_FUJI]: {
+    createOrderGasLimit: 1_000_000n,
+    updateOrderGasLimit: 800_000n,
+    cancelOrderGasLimit: 700_000n,
+    tokenPermitGasLimit: 90_000n,
   },
 };

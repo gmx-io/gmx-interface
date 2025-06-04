@@ -12,6 +12,9 @@ const CONTRACT_FETCHER_DEFAULT_FETCH_TIMEOUT = 2000;
 const CONTRACT_FETCHER_WORKER_TIMEOUT = 5000;
 const CONTRACT_FETCHER_MAIN_THREAD_TIMEOUT = 5000;
 
+/**
+ * @deprecated useMulticall
+ */
 export const contractFetcher =
   <T>(signer: Provider | Signer | undefined, abiId: AbiId, additionalArgs?: any[]) =>
   (args: any): Promise<T> => {

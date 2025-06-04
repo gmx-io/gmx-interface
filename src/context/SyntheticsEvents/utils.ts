@@ -1,6 +1,8 @@
 import type { PendingDepositData, PendingOrderData, PendingShiftData, PendingWithdrawalData } from "./types";
 
-export function getPendingOrderKey(data: Omit<PendingOrderData, "txnType">) {
+export function getPendingOrderKey(
+  data: Omit<PendingOrderData, "txnType" | "triggerPrice" | "acceptablePrice" | "autoCancel">
+) {
   return [
     data.account,
     data.marketAddress,
@@ -9,7 +11,6 @@ export function getPendingOrderKey(data: Omit<PendingOrderData, "txnType">) {
     data.shouldUnwrapNativeToken,
     data.isLong,
     data.orderType,
-    data.sizeDeltaUsd.toString(),
   ].join(":");
 }
 

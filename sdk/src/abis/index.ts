@@ -1,31 +1,13 @@
 import { Abi, erc20Abi } from "viem";
 
-/** Copied from ethers to enable compatibility with GMX UI */
-interface JsonFragmentType {
-  readonly name?: string;
-  readonly indexed?: boolean;
-  readonly type?: string;
-  readonly internalType?: string;
-  readonly components?: ReadonlyArray<JsonFragmentType>;
-}
-
-interface JsonFragment {
-  readonly name?: string;
-  readonly type?: string;
-  readonly anonymous?: boolean;
-  readonly payable?: boolean;
-  readonly constant?: boolean;
-  readonly stateMutability?: string;
-  readonly inputs?: ReadonlyArray<JsonFragmentType>;
-  readonly outputs?: ReadonlyArray<JsonFragmentType>;
-  readonly gas?: string;
-}
-
+import ArbitrumNodeInterface from "./ArbitrumNodeInterface.json";
 import CustomErrors from "./CustomErrors.json";
 import DataStore from "./DataStore.json";
+import ERC20PermitInterface from "./ERC20PermitInterface.json";
 import ERC721 from "./ERC721.json";
 import EventEmitter from "./EventEmitter.json";
 import ExchangeRouter from "./ExchangeRouter.json";
+import GelatoRelayRouter from "./GelatoRelayRouter.json";
 import GlpManager from "./GlpManager.json";
 import GlvReader from "./GlvReader.json";
 import GlvRouter from "./GlvRouter.json";
@@ -47,6 +29,7 @@ import RewardRouter from "./RewardRouter.json";
 import RewardTracker from "./RewardTracker.json";
 import RouterV2 from "./Router-v2.json";
 import Router from "./Router.json";
+import SubaccountGelatoRelayRouter from "./SubaccountGelatoRelayRouter.json";
 import SubaccountRouter from "./SubaccountRouter.json";
 import SyntheticsReader from "./SyntheticsReader.json";
 import SyntheticsRouter from "./SyntheticsRouter.json";
@@ -63,7 +46,6 @@ import Vester from "./Vester.json";
 import WETH from "./WETH.json";
 import YieldFarm from "./YieldFarm.json";
 import YieldToken from "./YieldToken.json";
-
 export type AbiId =
   | "CustomErrors"
   | "DataStore"
@@ -107,13 +89,39 @@ export type AbiId =
   | "Vester"
   | "WETH"
   | "YieldFarm"
-  | "YieldToken";
+  | "YieldToken"
+  | "SubaccountGelatoRelayRouter"
+  | "ERC20PermitInterface"
+  | "GelatoRelayRouter"
+  | "ArbitrumNodeInterface";
+
+/** Copied from ethers to enable compatibility with GMX UI */
+interface JsonFragmentType {
+  readonly name?: string;
+  readonly indexed?: boolean;
+  readonly type?: string;
+  readonly internalType?: string;
+  readonly components?: ReadonlyArray<JsonFragmentType>;
+}
+
+interface JsonFragment {
+  readonly name?: string;
+  readonly type?: string;
+  readonly anonymous?: boolean;
+  readonly payable?: boolean;
+  readonly constant?: boolean;
+  readonly stateMutability?: string;
+  readonly inputs?: ReadonlyArray<JsonFragmentType>;
+  readonly outputs?: ReadonlyArray<JsonFragmentType>;
+  readonly gas?: string;
+}
 
 export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   CustomErrors: CustomErrors.abi,
   DataStore: DataStore.abi,
   ERC721: ERC721.abi,
   ERC20: erc20Abi,
+  ERC20PermitInterface: ERC20PermitInterface.abi,
   EventEmitter: EventEmitter.abi,
   ExchangeRouter: ExchangeRouter.abi,
   GlpManager: GlpManager.abi,
@@ -153,4 +161,7 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   WETH: WETH.abi,
   YieldFarm: YieldFarm.abi,
   YieldToken: YieldToken.abi,
+  SubaccountGelatoRelayRouter: SubaccountGelatoRelayRouter.abi,
+  GelatoRelayRouter: GelatoRelayRouter.abi,
+  ArbitrumNodeInterface: ArbitrumNodeInterface.abi,
 } as any;

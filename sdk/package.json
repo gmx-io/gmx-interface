@@ -63,7 +63,9 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "@gelatonetwork/relay-sdk": "5.6.0",
     "cross-fetch": "4.0.0",
+    "crypto-js": "4.2.0",
     "graphql": "15.8.0",
     "isomorphic-performance": "5.1.1",
     "lodash": "4.17.21",

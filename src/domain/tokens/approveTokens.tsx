@@ -3,9 +3,10 @@ import { Signer, ethers } from "ethers";
 import { Link } from "react-router-dom";
 
 import { getChainName, getExplorerUrl } from "config/chains";
+import { AddTokenPermitFn } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { helperToast } from "lib/helperToast";
-import { abis } from "sdk/abis";
-import { getNativeToken } from "sdk/configs/tokens";
+import Token from "sdk/abis/Token.json";
+import { getNativeToken, getToken } from "sdk/configs/tokens";
 import { InfoTokens, TokenInfo } from "sdk/types/tokens";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -17,6 +18,11 @@ type Params = {
   tokenAddress: string;
   spender: string;
   chainId: number;
+  permitParams:
+    | {
+        addTokenPermit: AddTokenPermitFn;
+      }
+    | undefined;
   onApproveSubmitted?: () => void;
   onApproveFail?: (error: Error) => void;
   getTokenInfo?: (infoTokens: InfoTokens, tokenAddress: string) => TokenInfo;
@@ -24,10 +30,10 @@ type Params = {
   pendingTxns?: any[];
   setPendingTxns?: (txns: any[]) => void;
   includeMessage?: boolean;
-  approveAmount?: bigint;
+  approveAmount: bigint | undefined;
 };
 
-export function approveTokens({
+export async function approveTokens({
   setIsApproving,
   signer,
   tokenAddress,
@@ -41,9 +47,56 @@ export function approveTokens({
   setPendingTxns,
   includeMessage,
   approveAmount,
+  permitParams,
 }: Params) {
   setIsApproving(true);
-  const contract = new ethers.Contract(tokenAddress, abis.Token, signer);
+
+  if (approveAmount === undefined) {
+    approveAmount = ethers.MaxUint256;
+  }
+
+  let shouldUsePermit = false;
+  try {
+    const token = getToken(chainId, tokenAddress);
+    shouldUsePermit = Boolean(token?.isPermitSupported && !token.isPermitDisabled);
+  } catch (e) {
+    // ...ignore in case of glv / gm approval
+  }
+
+  if (permitParams?.addTokenPermit && shouldUsePermit) {
+    return await permitParams
+      .addTokenPermit(tokenAddress, spender, approveAmount)
+      .then(() => {
+        onApproveSubmitted?.();
+        helperToast.success(
+          <div>
+            <Trans>Permit signed!</Trans>
+            <br />
+          </div>
+        );
+      })
+      .catch((e) => {
+        onApproveFail?.(e);
+        let failMsg;
+        if (e.message.includes("user rejected")) {
+          failMsg = t`Permit signing was cancelled`;
+        } else {
+          failMsg = (
+            <>
+              <Trans>Permit signing failed</Trans>
+              <br />
+              <ToastifyDebug error={String(e)} />
+            </>
+          );
+        }
+        helperToast.error(failMsg);
+      })
+      .finally(() => {
+        setIsApproving(false);
+      });
+  }
+
+  const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
   const nativeToken = getNativeToken(chainId);
   const networkName = getChainName(chainId);
   contract

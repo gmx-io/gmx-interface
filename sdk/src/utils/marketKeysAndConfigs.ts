@@ -1,4 +1,5 @@
 import {
+  ATOMIC_SWAP_FEE_FACTOR_KEY,
   BORROWING_EXPONENT_FACTOR_KEY,
   BORROWING_FACTOR_KEY,
   FUNDING_DECREASE_FACTOR_PER_SECOND,
@@ -211,6 +212,10 @@ export function hashMarketConfigKeys(market: MarketConfig) {
     swapFeeFactorForNegativeImpact: [
       ["bytes32", "address", "bool"],
       [SWAP_FEE_FACTOR_KEY, marketAddress, false],
+    ],
+    atomicSwapFeeFactor: [
+      ["bytes32", "address"],
+      [ATOMIC_SWAP_FEE_FACTOR_KEY, marketAddress],
     ],
     swapImpactFactorPositive: [
       ["bytes32", "address", "bool"],

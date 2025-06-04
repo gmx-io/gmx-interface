@@ -13,6 +13,7 @@ import {
   isTriggerDecreaseOrderType,
   isVisibleOrder,
 } from "sdk/utils/orders";
+import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
 
 import type {
   MarketFilterLongShortDirection,
@@ -23,7 +24,6 @@ import type { MarketsInfoData } from "../markets/types";
 import { getSwapPathOutputAddresses } from "../trade";
 import { OrderTypeFilterValue, convertOrderTypeFilterValues } from "./ordersFilters";
 import { DecreasePositionSwapType, OrderType, OrdersData } from "./types";
-import { decodeTwapUiFeeReceiver } from "../trade/twap/uiFeeReceiver";
 
 type OrdersResult = {
   ordersData?: OrdersData;
