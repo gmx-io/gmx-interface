@@ -298,6 +298,8 @@ export type SwapMetricData = {
   partsCount: number | undefined;
   tradeMode: TradeMode | undefined;
   expressData: ExpressOrderMetricData | undefined;
+  chainId: number;
+  isCollateralFromMultichain: boolean;
 };
 
 export type IncreaseOrderMetricData = PositionOrderMetricParams & {

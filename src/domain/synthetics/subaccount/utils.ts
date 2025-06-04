@@ -11,7 +11,7 @@ import {
   SubaccountValidations,
 } from "domain/synthetics/subaccount/types";
 import { WalletSigner } from "lib/wallets";
-import { signTypedData } from "lib/wallets/signing";
+import { SignatureTypes, signTypedData } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import {
@@ -338,7 +338,7 @@ export async function createAndSignSubaccountApproval(
 
   const relayRouterAddress = getOrderRelayRouterAddress(chainId, true, srcChainId !== undefined);
 
-  const types = {
+  const types: SignatureTypes = {
     SubaccountApproval: [
       { name: "subaccount", type: "address" },
       { name: "shouldAdd", type: "bool" },
@@ -348,7 +348,7 @@ export async function createAndSignSubaccountApproval(
       { name: "nonce", type: "uint256" },
       { name: "deadline", type: "uint256" },
       chainId === ARBITRUM_SEPOLIA ? { name: "integrationId", type: "bytes32" } : undefined,
-    ].filter((type) => type !== undefined),
+    ].filter((type) => type !== undefined) as SignatureTypes[string],
   };
 
   const domain = getGelatoRelayRouterDomain(chainId, relayRouterAddress, true, srcChainId);
@@ -501,7 +501,9 @@ export async function getSubaccountOnchainData({
     functionName: "aggregate",
     args: [
       Object.values(calls)
-        .filter((call) => call !== undefined)
+        .filter(
+          (call): call is { contractAddress: string; abi: any; functionName: string; args: any[] } => call !== undefined
+        )
         .map((call) => ({
           target: call.contractAddress,
           callData: encodeFunctionData(call),

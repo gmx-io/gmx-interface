@@ -98,6 +98,8 @@ export function initSwapMetricData({
   expressParams,
   asyncExpressParams,
   fastExpressParams,
+  chainId,
+  isCollateralFromMultichain,
 }: {
   fromToken: TokenData | undefined;
   toToken: TokenData | undefined;
@@ -116,6 +118,8 @@ export function initSwapMetricData({
   expressParams: ExpressTxnParams | undefined;
   asyncExpressParams: ExpressTxnParams | undefined;
   fastExpressParams: ExpressTxnParams | undefined;
+  chainId: number;
+  isCollateralFromMultichain: boolean;
 }) {
   let metricType: SwapMetricData["metricType"] = "swap";
   if (tradeMode === TradeMode.Twap) {
@@ -161,6 +165,8 @@ export function initSwapMetricData({
     partsCount,
     tradeMode,
     expressData,
+    chainId,
+    isCollateralFromMultichain,
   });
 }
 

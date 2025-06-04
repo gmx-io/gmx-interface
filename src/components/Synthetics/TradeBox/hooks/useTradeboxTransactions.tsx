@@ -160,6 +160,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         expressParams,
         asyncExpressParams,
         fastExpressParams,
+        chainId: srcChainId ?? chainId,
+        isCollateralFromMultichain: srcChainId !== undefined,
       });
     }
 

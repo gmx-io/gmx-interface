@@ -13,9 +13,6 @@ export type Subaccount = {
   signer: Wallet;
   signedApproval: SignedSubbacountApproval;
   onchainData: SubaccountOnchainData;
-  optimisticActive: boolean;
-  optimisticMaxAllowedCount: bigint;
-  optimisticExpiresAt: bigint;
 };
 
 export type SubaccountApproval = {
