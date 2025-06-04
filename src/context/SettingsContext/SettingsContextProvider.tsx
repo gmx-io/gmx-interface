@@ -82,8 +82,8 @@ export type SettingsContextType = {
   settingsWarningDotVisible: boolean;
   setSettingsWarningDotVisible: (val: boolean) => void;
 
-  expressTradingGasTokenSwitched: boolean;
-  setExpressTradingGasTokenSwitched: (val: boolean) => void;
+  expressTradingGasTokenSwitched: string | null;
+  setExpressTradingGasTokenSwitched: (oldToken: string | null) => void;
 
   debugSwapMarketsConfig:
     | {
@@ -143,10 +143,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     )
   );
 
-  const [expressTradingGasTokenSwitched, setExpressTradingGasTokenSwitched] = useLocalStorageSerializeKey(
-    getExpressTradingGasTokenSwitchedKey(chainId, account),
-    false
-  );
+  const [expressTradingGasTokenSwitched, setExpressTradingGasTokenSwitched] = useLocalStorageSerializeKey<
+    string | null
+  >(getExpressTradingGasTokenSwitchedKey(chainId, account), null);
 
   const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(
     [chainId, SHOW_PNL_AFTER_FEES_KEY],
@@ -182,12 +181,12 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   >([chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY], undefined);
 
   const [expressOrdersEnabled, setExpressOrdersEnabled] = useLocalStorageSerializeKey(
-    getExpressOrdersEnabledKey(chainId),
+    getExpressOrdersEnabledKey(chainId, account),
     false
   );
 
   const [gasPaymentTokenAddress, setGasPaymentTokenAddress] = useLocalStorageSerializeKey(
-    getGasPaymentTokenAddressKey(chainId),
+    getGasPaymentTokenAddressKey(chainId, account),
     getDefaultGasPaymentToken(chainId)
   );
 

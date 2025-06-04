@@ -13,7 +13,11 @@ import {
   useOrderEditorTriggerPriceInputValueState,
   useOrderEditorTriggerRatioInputValueState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectExpressNoncesData,
+  selectMarketsInfoData,
+  selectTokensData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectOrderEditorAcceptablePrice,
   selectOrderEditorAcceptablePriceImpactBps,
@@ -139,6 +143,7 @@ export function OrderEditor(p: Props) {
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
   const markPrice = p.order.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
   const existingPosition = useSelector(selectOrderEditorExistingPosition);
+  const noncesData = useSelector(selectExpressNoncesData);
 
   const executionFee = useSelector(selectOrderEditorExecutionFee);
 
@@ -454,6 +459,7 @@ export function OrderEditor(p: Props) {
       chainId,
       signer,
       batchParams,
+      noncesData,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
       simulationParams: undefined,
