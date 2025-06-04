@@ -600,6 +600,34 @@ export const MARKETS: Record<number, Record<string, MarketConfig>> = {
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // CRV/USD - [WETH-USDC]
+    "0x0e46941F9bfF8d0784BFfa3d0D7883CDb82D7aE7": {
+      marketTokenAddress: "0x0e46941F9bfF8d0784BFfa3d0D7883CDb82D7aE7",
+      indexTokenAddress: "0xe5f01aeAcc8288E9838A60016AB00d7b6675900b",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // MOODENG/USD [WBTC-USDC]
+    "0x2523B89298908FEf4c5e5bd6F55F20926e22058f": {
+      marketTokenAddress: "0x2523B89298908FEf4c5e5bd6F55F20926e22058f",
+      indexTokenAddress: "0xd3898c6570974AEca38a8ACf22fd60739e528A99",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // XMR/USD [WBTC-USDC]
+    "0x7c54D547FAD72f8AFbf6E5b04403A0168b654C6f": {
+      marketTokenAddress: "0x7c54D547FAD72f8AFbf6E5b04403A0168b654C6f",
+      indexTokenAddress: "0x13674172E6E44D31d4bE489d5184f3457c40153A",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // PI/USD [WBTC-USDC]
+    "0x39AC3C494950A4363D739201BA5A0861265C9ae5": {
+      marketTokenAddress: "0x39AC3C494950A4363D739201BA5A0861265C9ae5",
+      indexTokenAddress: "0xd1738d37401a0A71f7E382d2cFeCD3ab69687017",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
