@@ -68,6 +68,7 @@ const colors = {
   black: "#000000",
   stroke: {
     primary: "#252A47",
+    accent: "#363A59",
   },
   fill: {
     accent: "#363A59",

@@ -1,5 +1,5 @@
 .theme-dark:root {
-  --dark-blue-bg: #16182e;
+  --dark-blue-bg: #121421;
   --color-blue-600: #2d42fc;
   --tv-color-pane-background: var(--dark-blue-bg);
   --tv-color-platform-background: var(--dark-blue-bg);
@@ -7,9 +7,9 @@
   --tv-color-toolbar-button-text-hover: #b2b5be;
   --tv-color-toolbar-button-background-hover: #272942;
   --tv-color-toolbar-button-text-active: #ffffff;
-  --tv-color-toolbar-toggle-button-background-active: #3a3e5e;
-  --tv-color-toolbar-toggle-button-background-active-hover: #3a3e5e;
-  --tv-color-toolbar-button-background-expanded: var(--dark-blue-bg);
+  --tv-color-toolbar-toggle-button-background-active: var(--color-blue-600);
+  --tv-color-toolbar-toggle-button-background-active-hover: var(--color-blue-600);
+  --tv-color-toolbar-button-background-expanded: var(--color-blue-600);
 
   --tv-color-popup-background: #20243f;
   --themed-color-bg-primary: #20243f;
@@ -71,14 +71,6 @@ html.theme-dark .chart-controls-bar {
   --tv-color-pane-background: var(--tv-color-toolbar-toggle-button-background-active);
   --themed-color-arrow-stroke: var(--dark-blue-bg);
 }
-
-[data-name="toolbar-drawing-toggle-button"][data-value="collapsed"]:hover,
-[data-name="toolbar-drawing-toggle-button"][data-value="visible"]:hover {
-  --tv-color-toolbar-toggle-button-background-active-hover: #464a6e;
-  --tv-color-platform-background: #464a6e;
-  --tv-color-pane-background: #464a6e;
-}
-
 /* Hide tooltip tail */
 html.theme-dark .common-tooltip__ear-holder-EJBD96zX:after {
   display: none;

@@ -53,7 +53,9 @@ function LogoSection({ isCollapsed }: { isCollapsed: boolean }) {
   return (
     <Link
       to="/"
-      className={cx("flex cursor-pointer items-center justify-center gap-5 py-16", { "px-20": !isCollapsed })}
+      className={cx("flex cursor-pointer items-center justify-center gap-5 pb-16 pl-12 pt-10", {
+        "px-20": !isCollapsed,
+      })}
     >
       <img src={logoIcon} alt="GMX Logo" />
       {!isCollapsed && <img src={logoText} alt="GMX" className="" />}

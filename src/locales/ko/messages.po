@@ -56,7 +56,6 @@ msgstr ""
 #: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/components/Synthetics/TVChart/Chart.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
 msgid "PRICE"
 msgstr "가격"
@@ -2537,6 +2536,10 @@ msgstr ""
 msgid "{actionDisplay} Order"
 msgstr "{actionDisplay} 주문"
 
+#: src/components/Synthetics/TVChart/Chart.tsx
+msgid "Market Graph"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "There are more longs than shorts, borrow fees for shorting is currently zero"
 msgstr "숏 포지션보다 롱 포지션이 더 많이 열려있기 때문에, 현재 숏 포지션에 적용되는 차용수수료는 0입니다"
@@ -4885,8 +4888,8 @@ msgid "There may not be sufficient liquidity to execute your order when the Min.
 msgstr ""
 
 #: src/components/Synthetics/TVChart/Chart.tsx
-msgid "DEPTH"
-msgstr ""
+#~ msgid "DEPTH"
+#~ msgstr ""
 
 #: src/pages/Earn/EarnV2.tsx
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
@@ -5324,6 +5327,7 @@ msgstr "추천인 코드 업데이트 실패."
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Synthetics/TVChart/Chart.tsx
 #: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
@@ -7188,6 +7192,10 @@ msgstr ""
 
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Vault Capacity"
+msgstr ""
+
+#: src/components/Synthetics/TVChart/Chart.tsx
+msgid "Depth"
 msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx

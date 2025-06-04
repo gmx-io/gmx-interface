@@ -166,7 +166,7 @@ function ChartHeaderInfoMobile() {
   ]);
 
   return (
-    <div className="mb-10 rounded-4 bg-slate-800 ">
+    <div className="bg-slate-800">
       <div className="p-16">
         <div className="flex items-start justify-between">
           <div className="inline-flex">
@@ -403,7 +403,7 @@ function ChartHeaderInfoDesktop() {
   const scrollToRight = useCallback(() => scrollTo(1), [scrollTo]);
 
   return (
-    <div className="flex gap-16 rounded-4 py-8 pr-8">
+    <div className="flex gap-16">
       <div className="flex items-center justify-start">
         <ChartTokenSelector selectedToken={selectedTokenOption} oneRowLabels={true} />
       </div>
