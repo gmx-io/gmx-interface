@@ -13,7 +13,7 @@ export function useExpressNonces(
     account: string;
   }
 ) {
-  const { data: onChainData, mutate } = useMulticall(chainId, "expressNonces", {
+  const { data: onChainData, mutate } = useMulticall(chainId, "expressNonces-hook", {
     key: [],
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
     request: {
