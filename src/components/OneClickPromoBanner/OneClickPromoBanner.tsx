@@ -4,6 +4,8 @@ import { useLocalStorage } from "react-use";
 
 import { getIsFlagEnabled } from "config/ab";
 import { getOneClickTradingPromoHiddenKey } from "config/localStorage";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
 import { useChainId } from "lib/chains";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
@@ -12,16 +14,25 @@ import OneClickIcon from "img/ic_one_click.svg?react";
 
 export function OneClickPromoBanner({ openSettings, isShort }: { openSettings: () => void; isShort?: boolean }) {
   const { chainId } = useChainId();
+  const { expressOrdersEnabled, setExpressOrdersEnabled } = useSettings();
   const [isOneClickPromoHidden, setIsOneClickPromoHidden] = useLocalStorage(
     getOneClickTradingPromoHiddenKey(chainId),
     false
   );
 
-  const shouldShow = getIsFlagEnabled("testOneClickPromo") && !isOneClickPromoHidden;
+  const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
+
+  const shouldShow = getIsFlagEnabled("testOneClickPromo") && !isOneClickPromoHidden && !expressOrdersEnabled;
 
   const onClickEnable = useCallback(() => {
     openSettings();
-  }, [openSettings]);
+    if (!isOutOfGasPaymentBalance) {
+      setTimeout(() => {
+        setExpressOrdersEnabled(true);
+        setIsOneClickPromoHidden(true);
+      }, 500);
+    }
+  }, [isOutOfGasPaymentBalance, openSettings, setExpressOrdersEnabled, setIsOneClickPromoHidden]);
 
   if (!shouldShow) {
     return null;
@@ -36,7 +47,7 @@ export function OneClickPromoBanner({ openSettings, isShort }: { openSettings: (
       className="min-w-[180px]"
     >
       <div className="clickable ml-6 mr-8">
-        {isShort ? <Trans>Try Express 1CT</Trans> : <Trans>Try Express One-Click Trading</Trans>}
+        {isShort ? <Trans>Try Express</Trans> : <Trans>Try Express Trading</Trans>}
       </div>
     </ColorfulBanner>
   );
