@@ -625,6 +625,11 @@ export const WithdrawView = () => {
       text: t`Insufficient ${gasPaymentParams?.relayFeeToken.symbol} balance to pay for gas`,
       disabled: true,
     };
+  } else if (expressTxnParamsAsyncResult.error) {
+    buttonState = {
+      text: expressTxnParamsAsyncResult.error.name.slice(0, 32) ?? t`Error simulating withdrawal`,
+      disabled: true,
+    };
   } else if (expressTxnParamsAsyncResult.data === undefined) {
     buttonState = {
       text: (

@@ -1,5 +1,5 @@
 import { Provider } from "ethers";
-import { Address, encodePacked, Hex } from "viem";
+import { Address, decodeErrorResult, encodePacked, Hex } from "viem";
 
 import { UiContractsChain, UiSourceChain } from "config/chains";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
@@ -45,6 +45,7 @@ import { EMPTY_OBJECT } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { ExpressTxnData } from "lib/transactions";
 import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
+import { abis } from "sdk/abis";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
@@ -407,39 +408,49 @@ export function useArbitraryRelayParamsAndPayload(
         throw new Error("Failed to get base relay params");
       }
 
-      const gasLimit = await estimateArbitraryGasLimit({
-        provider: p.provider,
-        expressTransactionBuilder: p.expressTransactionBuilder,
-        gasPaymentToken: p.globalExpressParams.gasPaymentToken,
-        relayerFeeToken: p.globalExpressParams.relayerFeeToken,
-        rawRelayParamsPayload: rawBaseRelayParamsPayload,
-        relayerFeeAmount: baseRelayFeeSwapParams.gasPaymentParams.relayerFeeAmount + (additionalNetworkFee ?? 0n),
-      });
+      let gasLimit: bigint | undefined;
+
+      try {
+        gasLimit = await estimateArbitraryGasLimit({
+          provider: p.provider,
+          expressTransactionBuilder: p.expressTransactionBuilder,
+          gasPaymentToken: p.globalExpressParams.gasPaymentToken,
+          relayerFeeToken: p.globalExpressParams.relayerFeeToken,
+          rawRelayParamsPayload: rawBaseRelayParamsPayload,
+          relayerFeeAmount: baseRelayFeeSwapParams.gasPaymentParams.relayerFeeAmount + (additionalNetworkFee ?? 0n),
+        });
+      } catch (error) {
+        rethrowCustomError(error);
+      }
 
       if (gasLimit === undefined) {
         throw new Error("Failed to estimate gas limit");
       }
 
-      const expressParams = await estimateExpressParams({
-        chainId,
-        srcChainId,
-        estimationMethod: "estimateGas",
-        globalExpressParams: p.globalExpressParams,
-        provider,
-        requireValidations: true,
-        transactionParams: {
-          account: p.account,
-          isValid: true,
-          transactionExternalCalls: EMPTY_EXTERNAL_CALLS,
-          executionFeeAmount: additionalNetworkFee ?? 0n,
-          gasPaymentTokenAsCollateralAmount: 0n,
-          subaccountActions: 0,
-          transactionPayloadGasLimit: gasLimit,
-          expressTransactionBuilder: p.expressTransactionBuilder,
-        },
-      });
+      try {
+        const expressParams = await estimateExpressParams({
+          chainId,
+          srcChainId,
+          estimationMethod: "estimateGas",
+          globalExpressParams: p.globalExpressParams,
+          provider,
+          requireValidations: true,
+          transactionParams: {
+            account: p.account,
+            isValid: true,
+            transactionExternalCalls: EMPTY_EXTERNAL_CALLS,
+            executionFeeAmount: additionalNetworkFee ?? 0n,
+            gasPaymentTokenAsCollateralAmount: 0n,
+            subaccountActions: 0,
+            transactionPayloadGasLimit: gasLimit,
+            expressTransactionBuilder: p.expressTransactionBuilder,
+          },
+        });
 
-      return expressParams;
+        return expressParams;
+      } catch (error) {
+        rethrowCustomError(error);
+      }
     },
     {
       leading: true,
@@ -463,4 +474,28 @@ export function useArbitraryRelayParamsAndPayload(
   );
 
   return expressTxnParamsAsyncResult;
+}
+
+function rethrowCustomError(error: Error): never {
+  const data = (error as any)?.info?.error?.data ?? (error as any)?.data;
+
+  let prettyErrorName = error.name;
+  let prettyErrorMessage = error.message;
+
+  try {
+    const parsedError = decodeErrorResult({
+      abi: abis.CustomErrorsArbitrumSepolia,
+      data: data,
+    });
+
+    prettyErrorName = parsedError.errorName;
+    prettyErrorMessage = JSON.stringify(parsedError, null, 2);
+  } catch (decodeError) {
+    throw error;
+  }
+
+  const prettyError = new Error(prettyErrorMessage);
+  prettyError.name = prettyErrorName;
+
+  throw prettyError;
 }

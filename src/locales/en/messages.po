@@ -7187,6 +7187,10 @@ msgstr "Update Limit"
 msgid "Edit order"
 msgstr "Edit order"
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+msgid "Error simulating withdrawal"
+msgstr "Error simulating withdrawal"
+
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
@@ -8302,6 +8306,10 @@ msgstr "Keep leverage is not available as Position exceeds max. allowed leverage
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Add {0} to Metamask"
 msgstr "Add {0} to Metamask"
+
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "It is suggested to keep at least 10 USD in the native token to be able to perform transactions."
+msgstr "It is suggested to keep at least 10 USD in the native token to be able to perform transactions."
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
