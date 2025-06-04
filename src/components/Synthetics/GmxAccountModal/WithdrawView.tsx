@@ -100,9 +100,13 @@ import { useMultichainQuoteFeeUsd } from "./useMultichainQuoteFeeUsd";
 const useIsFirstWithdrawal = () => {
   const [enabled, setEnabled] = useState(true);
   const [isFirstWithdrawal, setIsFirstWithdrawal] = useState(false);
-  const { fundingHistory } = useGmxAccountFundingHistory({ enabled });
+  const { fundingHistory, isLoading } = useGmxAccountFundingHistory({ enabled });
 
   useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+
     if (fundingHistory === undefined || fundingHistory.length !== 0) {
       return;
     }
@@ -112,7 +116,7 @@ const useIsFirstWithdrawal = () => {
     if (!hasWithdrawal) {
       setIsFirstWithdrawal(true);
     }
-  }, [fundingHistory]);
+  }, [fundingHistory, isLoading]);
 
   return isFirstWithdrawal;
 };

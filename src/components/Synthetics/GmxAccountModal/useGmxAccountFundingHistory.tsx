@@ -91,7 +91,7 @@ export function useGmxAccountFundingHistory(opts?: { enabled?: boolean }): {
 } {
   const { chainId } = useChainId();
   const { address: account } = useAccount();
-  const { pendingMultichainFunding, updateMultichainFunding } = useSyntheticsEvents();
+  const { pendingMultichainFunding, updatePendingMultichainFunding } = useSyntheticsEvents();
 
   const { data, isLoading } = useSWR<MultichainFundingHistoryItem[]>(
     account && opts?.enabled !== false ? ["gmx-account-funding-history", account] : null,
@@ -99,7 +99,7 @@ export function useGmxAccountFundingHistory(opts?: { enabled?: boolean }): {
       fetcher: () => fetchGmxAccountFundingHistory(chainId, { account }),
       refreshInterval: FREQUENT_UPDATE_INTERVAL,
       onSuccess(data) {
-        updateMultichainFunding(data);
+        updatePendingMultichainFunding(data);
       },
     }
   );

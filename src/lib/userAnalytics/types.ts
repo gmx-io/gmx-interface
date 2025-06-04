@@ -307,3 +307,15 @@ export type TradePageEditOrderEvent = {
     source: EditingOrderSource;
   };
 };
+
+export type MultichainActionEvent = {
+  event: "MultichainAction";
+  data: {
+    action: "DepositSuccess" | "WithdrawalSuccess";
+    settlementChain: ChainName;
+    sourceChain: ChainName;
+    sizeInUsd: number;
+    asset: string;
+    isFirstTime: boolean;
+  };
+};

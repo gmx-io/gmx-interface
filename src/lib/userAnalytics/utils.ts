@@ -1,6 +1,6 @@
 import debounce from "lodash/debounce";
 
-import { getChainName } from "config/chains";
+import { ChainName, getChainName } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { MarketInfo } from "domain/synthetics/markets";
 import {
@@ -37,6 +37,8 @@ import {
   TradePageEditOrderEvent,
 } from "lib/userAnalytics/types";
 import { getTwapDurationInSeconds } from "sdk/utils/twap";
+
+import type { MultichainActionEvent } from "./types";
 
 export function getTradeInteractionKey(pair: string) {
   return `trade-${pair}`;
@@ -469,3 +471,55 @@ export const sendEditOrderEvent = ({
     },
   });
 };
+
+export function sendMultichainDepositSuccessEvent({
+  settlementChain,
+  sourceChain,
+  sizeInUsd,
+  asset,
+  isFirstTime,
+}: {
+  settlementChain: ChainName;
+  sourceChain: ChainName;
+  sizeInUsd: number;
+  asset: string;
+  isFirstTime: boolean;
+}) {
+  userAnalytics.pushEvent<MultichainActionEvent>({
+    event: "MultichainAction",
+    data: {
+      action: "DepositSuccess",
+      settlementChain,
+      sourceChain,
+      sizeInUsd,
+      asset,
+      isFirstTime,
+    },
+  });
+}
+
+export function sendMultichainWithdrawalSuccessEvent({
+  settlementChain,
+  sourceChain,
+  sizeInUsd,
+  asset,
+  isFirstTime,
+}: {
+  settlementChain: ChainName;
+  sourceChain: ChainName;
+  sizeInUsd: number;
+  asset: string;
+  isFirstTime: boolean;
+}) {
+  userAnalytics.pushEvent<MultichainActionEvent>({
+    event: "MultichainAction",
+    data: {
+      action: "WithdrawalSuccess",
+      settlementChain,
+      sourceChain,
+      sizeInUsd,
+      asset,
+      isFirstTime,
+    },
+  });
+}
