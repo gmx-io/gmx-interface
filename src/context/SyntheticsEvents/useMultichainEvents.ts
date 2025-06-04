@@ -250,8 +250,24 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         }
       );
 
+      const timeoutId = setTimeout(
+        () => {
+          setPendingMultichainFunding((prev) => {
+            const newPendingMultichainFunding = structuredClone(prev);
+            for (const guid of pendingReceiveDepositGuids) {
+              if (guid in newPendingMultichainFunding.deposits.sent) {
+                delete newPendingMultichainFunding.deposits.sent[guid];
+              }
+            }
+            return newPendingMultichainFunding;
+          });
+        },
+        5 * 60 * 1000
+      );
+
       return function cleanup() {
         unsubscribeFromOftReceivedEvents?.();
+clearTimeout(timeoutId);
       };
     },
     [chainId, hasPageLostFocus, pendingReceiveDepositGuids, wsProvider]
@@ -300,8 +316,24 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         }
       );
 
+      const timeoutId = setTimeout(
+        () => {
+          setPendingMultichainFunding((prev) => {
+            const newPendingMultichainFunding = structuredClone(prev);
+            for (const guid of pendingExecuteDepositGuids) {
+              if (guid in newPendingMultichainFunding.deposits.received) {
+                delete newPendingMultichainFunding.deposits.received[guid];
+              }
+            }
+            return newPendingMultichainFunding;
+          });
+        },
+        5 * 60 * 1000
+      );
+
       return function cleanup() {
         unsubscribeFromComposeDeliveredEvents?.();
+clearTimeout(timeoutId);
       };
     },
     [chainId, hasPageLostFocus, pendingExecuteDepositGuids, wsProvider]
@@ -461,8 +493,25 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         }
       );
 
+      // in 5 minutes clean up pending withdrawals that are not received
+      const timeoutId = setTimeout(
+        () => {
+          setPendingMultichainFunding((prev) => {
+            const newPendingMultichainFunding = structuredClone(prev);
+            for (const guid of pendingReceiveWithdrawalGuids) {
+              if (guid in newPendingMultichainFunding.withdrawals.sent) {
+                delete newPendingMultichainFunding.withdrawals.sent[guid];
+              }
+            }
+            return newPendingMultichainFunding;
+          });
+        },
+        5 * 60 * 1000
+      );
+
       return function cleanup() {
         unsubscribeFromOftReceivedEvents?.();
+clearTimeout(timeoutId);
       };
     },
     [chainId, hasPageLostFocus, pendingReceiveWithdrawalGuids, srcChainId, wsSourceChainProvider]

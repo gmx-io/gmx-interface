@@ -62,7 +62,7 @@ interface TradeboxTransactionsProps {
 }
 
 export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactionsProps) {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { signer, account } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
   const tokensData = useTokensData();
@@ -201,6 +201,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         expressParams,
         asyncExpressParams,
         fastExpressParams,
+        chainId: srcChainId ?? chainId,
+        isCollateralFromMultichain: srcChainId !== undefined,
       });
     }
 
@@ -229,10 +231,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       expressParams,
       asyncExpressParams,
       fastExpressParams,
+      chainId: srcChainId ?? chainId,
+      isCollateralFromMultichain: srcChainId !== undefined,
     });
   }, [
     allowedSlippage,
     asyncExpressParams,
+    chainId,
     chartHeaderInfo?.fundingRateLong,
     chartHeaderInfo?.fundingRateShort,
     collateralToken,
@@ -256,6 +261,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     referralCodeForTxn,
     selectedPosition,
     sidecarOrderPayloads?.createPayloads,
+    srcChainId,
     swapAmounts,
     toToken,
     tradeMode,

@@ -358,6 +358,8 @@ export type PositionOrderMetricParams = {
   partsCount: number | undefined;
   tradeMode: TradeMode | undefined;
   expressData: ExpressOrderMetricData | undefined;
+  chainId: number;
+  isCollateralFromMultichain: boolean;
 };
 
 export type EditCollateralMetricData = {
@@ -377,6 +379,8 @@ export type EditCollateralMetricData = {
   orderType: OrderType | undefined;
   executionFee: number | undefined;
   expressData: ExpressOrderMetricData | undefined;
+  chainId: number;
+  isCollateralFromMultichain: boolean;
 };
 
 export type SwapGmMetricData = {
@@ -513,13 +517,6 @@ export type GetFeeDataBlockError = {
 export type SetAutoCloseOrdersAction = {
   event: "announcement.autoCloseOrders.updateExistingOrders";
 };
-
-// 1. To measure share of succesfull Deposits and Deposit time: Add new events in Datadog: multichainDeposit, multichainWithdrawal. Events should follow the same scheme as “increasePosition” events (executed, submitted and etc).
-//  Additionally, It should have fields for:
-//     1. SourceChain / TargetChain (chain that asset is deposited or, withdrawn to)
-//     2. Asset (BTC, ETH, USDC, etc)
-//     3. Size In usd
-//     4. Is First Deposit
 
 type MultichainFundingParams = {
   sourceChain: number;

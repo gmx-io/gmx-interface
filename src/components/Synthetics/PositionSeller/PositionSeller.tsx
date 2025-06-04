@@ -540,6 +540,8 @@ export function PositionSeller() {
       fastExpressParams,
       asyncExpressParams,
       expressParams,
+      chainId: srcChainId ?? chainId,
+      isCollateralFromMultichain: srcChainId !== undefined,
     });
 
     sendOrderSubmittedMetric(metricData.metricId);

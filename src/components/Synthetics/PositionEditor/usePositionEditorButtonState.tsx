@@ -89,7 +89,7 @@ export function usePositionEditorButtonState(operation: Operation): {
 } {
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const allowedSlippage = useSavedAllowedSlippage();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { shouldDisableValidationForTesting } = useSettings();
   const tokensData = useTokensData();
   const { account, signer } = useWallet();
@@ -477,6 +477,8 @@ export function usePositionEditorButtonState(operation: Operation): {
       expressParams,
       asyncExpressParams,
       fastExpressParams,
+      chainId: srcChainId ?? chainId,
+      isCollateralFromMultichain: srcChainId !== undefined,
     });
 
     sendOrderSubmittedMetric(metricData.metricId);

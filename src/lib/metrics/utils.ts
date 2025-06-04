@@ -194,6 +194,8 @@ export function initIncreaseOrderMetricData({
   expressParams,
   asyncExpressParams,
   fastExpressParams,
+  chainId,
+  isCollateralFromMultichain,
 }: {
   fromToken: TokenData | undefined;
   increaseAmounts: IncreasePositionAmounts | undefined;
@@ -225,6 +227,8 @@ export function initIncreaseOrderMetricData({
   expressParams: ExpressTxnParams | undefined;
   asyncExpressParams: ExpressTxnParams | undefined;
   fastExpressParams: ExpressTxnParams | undefined;
+  chainId: number;
+  isCollateralFromMultichain: boolean;
 }) {
   let metricType: IncreaseOrderMetricData["metricType"] = "increasePosition";
   if (tradeMode === TradeMode.Twap) {
@@ -291,6 +295,8 @@ export function initIncreaseOrderMetricData({
     partsCount,
     tradeMode,
     expressData: getExpressMetricData({ expressParams, asyncExpressParams, fastExpressParams }),
+    chainId,
+    isCollateralFromMultichain,
   });
 }
 
@@ -318,6 +324,8 @@ export function initDecreaseOrderMetricData({
   expressParams,
   asyncExpressParams,
   fastExpressParams,
+  chainId,
+  isCollateralFromMultichain,
 }: {
   collateralToken: TokenData | undefined;
   decreaseAmounts: DecreasePositionAmounts | undefined;
@@ -343,6 +351,8 @@ export function initDecreaseOrderMetricData({
   expressParams: ExpressTxnParams | undefined;
   asyncExpressParams: ExpressTxnParams | undefined;
   fastExpressParams: ExpressTxnParams | undefined;
+  chainId: number;
+  isCollateralFromMultichain: boolean;
 }) {
   let metricType: DecreaseOrderMetricData["metricType"] = "decreasePosition";
   if (tradeMode === TradeMode.Twap) {
@@ -400,6 +410,8 @@ export function initDecreaseOrderMetricData({
     partsCount,
     tradeMode,
     expressData: getExpressMetricData({ expressParams, asyncExpressParams, fastExpressParams }),
+    chainId,
+    isCollateralFromMultichain,
   });
 }
 
@@ -416,6 +428,8 @@ export function initEditCollateralMetricData({
   expressParams,
   asyncExpressParams,
   fastExpressParams,
+  chainId,
+  isCollateralFromMultichain,
 }: {
   collateralToken: TokenData | undefined;
   executionFee: ExecutionFee | undefined;
@@ -429,6 +443,8 @@ export function initEditCollateralMetricData({
   expressParams: ExpressTxnParams | undefined;
   asyncExpressParams: ExpressTxnParams | undefined;
   fastExpressParams: ExpressTxnParams | undefined;
+  chainId: number;
+  isCollateralFromMultichain: boolean;
 }) {
   return metrics.setCachedMetricData<EditCollateralMetricData>({
     metricId: getPositionOrderMetricId({
@@ -455,6 +471,8 @@ export function initEditCollateralMetricData({
     isExpress1CT: Boolean(subaccount),
     requestId: getRequestId(),
     expressData: getExpressMetricData({ expressParams, asyncExpressParams, fastExpressParams }),
+    chainId,
+    isCollateralFromMultichain,
   });
 }
 
