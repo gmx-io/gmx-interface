@@ -100,7 +100,7 @@ import { useMultichainQuoteFeeUsd } from "./useMultichainQuoteFeeUsd";
 const useIsFirstWithdrawal = () => {
   const [enabled, setEnabled] = useState(true);
   const [isFirstWithdrawal, setIsFirstWithdrawal] = useState(false);
-  const fundingHistory = useGmxAccountFundingHistory({ enabled });
+  const { fundingHistory } = useGmxAccountFundingHistory({ enabled });
 
   useEffect(() => {
     if (fundingHistory === undefined || fundingHistory.length !== 0) {
@@ -843,11 +843,11 @@ export const WithdrawView = () => {
   );
 };
 
-function networkItemKey(option: { id: number; name: string; fee: string }) {
+function networkItemKey(option: { id: number; name: string }) {
   return option.id;
 }
 
-function NetworkItem({ option }: { option: { id: number; name: string; fee: string } }) {
+function NetworkItem({ option }: { option: { id: number; name: string } }) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-8">

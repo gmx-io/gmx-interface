@@ -382,7 +382,7 @@ const FundingHistorySection = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [, setSelectedTransferGuid] = useGmxAccountSelectedTransferGuid();
 
-  const fundingHistory = useGmxAccountFundingHistory();
+  const { fundingHistory, isLoading } = useGmxAccountFundingHistory();
 
   const filteredFundingHistory: DisplayFundingHistoryItem[] | undefined = fundingHistory
     ?.map((transfer): DisplayFundingHistoryItem | undefined => {
@@ -430,7 +430,10 @@ const FundingHistorySection = () => {
             role="button"
             tabIndex={0}
             key={transfer.id}
-            className="flex w-full cursor-pointer items-center justify-between px-16 py-8 text-left -outline-offset-4 gmx-hover:bg-slate-700"
+            className={cx(
+              "flex w-full cursor-pointer items-center justify-between px-16 py-8 text-left -outline-offset-4 gmx-hover:bg-slate-700",
+              transfer.isFromWs && "!bg-red-500"
+            )}
             onClick={() => handleTransferClick(transfer)}
           >
             <div className="flex items-center gap-8">
@@ -450,16 +453,21 @@ const FundingHistorySection = () => {
           </div>
         ))}
 
-        {fundingHistory && fundingHistory.length === 0 && (
+        {!isLoading && fundingHistory && fundingHistory.length === 0 && (
           <div className="flex h-full flex-col items-center justify-center gap-8 p-16 text-slate-100">
             <InfoIconComponent className="size-24" />
             <Trans>No funding activity</Trans>
           </div>
         )}
-        {filteredFundingHistory?.length === 0 && fundingHistory && fundingHistory.length > 0 && (
+        {!isLoading && filteredFundingHistory?.length === 0 && fundingHistory && fundingHistory.length > 0 && (
           <div className="flex h-full flex-col items-center justify-center gap-8 p-16 text-slate-100">
             <InfoIconComponent className="size-24" />
             <Trans>No funding activity matching your search</Trans>
+          </div>
+        )}
+        {isLoading && (
+          <div className="flex h-[300px] flex-col items-center justify-center p-16 text-slate-100">
+            <TbLoader2 className="size-24 animate-spin" />
           </div>
         )}
       </div>

@@ -19,7 +19,7 @@ const TOAST_ID = "multichain-funding-toast";
 function useGmxAccountPendingFundingHistoryItems(
   guids: string[] | undefined
 ): Partial<Record<string, MultichainFundingHistoryItem>> | undefined {
-  const fundingHistory = useGmxAccountFundingHistory({ enabled: guids && guids.length > 0 });
+  const { fundingHistory } = useGmxAccountFundingHistory({ enabled: guids && guids.length > 0 });
 
   const pendingItems = useMemo((): Partial<Record<string, MultichainFundingHistoryItem>> => {
     if (!fundingHistory || fundingHistory.length === 0 || !guids || guids.length === 0) {

@@ -79,7 +79,7 @@ import { useMultichainQuoteFeeUsd } from "./useMultichainQuoteFeeUsd";
 const useIsFirstDeposit = () => {
   const [enabled, setEnabled] = useState(true);
   const [isFirstDeposit, setIsFirstDeposit] = useState(false);
-  const fundingHistory = useGmxAccountFundingHistory({ enabled });
+  const { fundingHistory } = useGmxAccountFundingHistory({ enabled });
 
   useEffect(() => {
     if (fundingHistory === undefined || fundingHistory.length !== 0) {

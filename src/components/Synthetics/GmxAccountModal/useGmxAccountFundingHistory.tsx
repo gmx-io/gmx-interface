@@ -85,12 +85,15 @@ export function isStepGreater(
   return STEP_ORDER[step] - STEP_ORDER[than] > 0;
 }
 
-export function useGmxAccountFundingHistory(opts?: { enabled?: boolean }): MultichainFundingHistoryItem[] | undefined {
+export function useGmxAccountFundingHistory(opts?: { enabled?: boolean }): {
+  fundingHistory: MultichainFundingHistoryItem[] | undefined;
+  isLoading: boolean;
+} {
   const { chainId } = useChainId();
   const { address: account } = useAccount();
   const { pendingMultichainFunding, updateMultichainFunding } = useSyntheticsEvents();
 
-  const { data } = useSWR<MultichainFundingHistoryItem[]>(
+  const { data, isLoading } = useSWR<MultichainFundingHistoryItem[]>(
     account && opts?.enabled !== false ? ["gmx-account-funding-history", account] : null,
     {
       fetcher: () => fetchGmxAccountFundingHistory(chainId, { account }),
@@ -169,7 +172,7 @@ export function useGmxAccountFundingHistory(opts?: { enabled?: boolean }): Multi
     return mergedData;
   }, [data, pendingMultichainFunding.deposits, pendingMultichainFunding.withdrawals]);
 
-  return mergedData;
+  return { fundingHistory: mergedData, isLoading };
 }
 
 export function useGmxAccountPendingFundingHistoryItem(

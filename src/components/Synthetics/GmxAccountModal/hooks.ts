@@ -401,7 +401,6 @@ export function useGmxAccountWithdrawNetworks() {
       return {
         id: sourceChainId,
         name: getChainName(sourceChainId),
-        fee: "0.13 USDC",
       };
     });
   }, [sourceChains]);
