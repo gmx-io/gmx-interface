@@ -224,6 +224,10 @@ msgstr ""
 msgid "Total size"
 msgstr ""
 
+#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
+msgid "Try Express Trading"
+msgstr ""
+
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if there is not enough available liquidity."
 msgstr ""
@@ -1868,8 +1872,8 @@ msgid "Close to execution price"
 msgstr "Près du prix d'exécution"
 
 #: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-msgid "Try Express 1CT"
-msgstr ""
+#~ msgid "Try Express 1CT"
+#~ msgstr ""
 
 #: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
@@ -2110,6 +2114,10 @@ msgstr ""
 
 #: src/pages/Earn/Vesting.tsx
 msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
+msgstr ""
+
+#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
+msgid "Try Express"
 msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
@@ -6895,8 +6903,8 @@ msgid "Protocol analytics"
 msgstr "Analyses du protocole"
 
 #: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-msgid "Try Express One-Click Trading"
-msgstr ""
+#~ msgid "Try Express One-Click Trading"
+#~ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
