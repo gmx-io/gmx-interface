@@ -34,79 +34,26 @@ export interface ArbitrumNodeInterfaceInterface extends Interface {
       | "nitroGenesisBlock"
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: "constructOutboxProof",
-    values: [BigNumberish, BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "constructOutboxProof", values: [BigNumberish, BigNumberish]): string;
   encodeFunctionData(
     functionFragment: "estimateRetryableTicket",
-    values: [
-      AddressLike,
-      BigNumberish,
-      AddressLike,
-      BigNumberish,
-      AddressLike,
-      AddressLike,
-      BytesLike
-    ]
+    values: [AddressLike, BigNumberish, AddressLike, BigNumberish, AddressLike, AddressLike, BytesLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "findBatchContainingBlock",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "gasEstimateComponents",
-    values: [AddressLike, boolean, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "gasEstimateL1Component",
-    values: [AddressLike, boolean, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getL1Confirmations",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "legacyLookupMessageBatchProof",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "nitroGenesisBlock",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "findBatchContainingBlock", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "gasEstimateComponents", values: [AddressLike, boolean, BytesLike]): string;
+  encodeFunctionData(functionFragment: "gasEstimateL1Component", values: [AddressLike, boolean, BytesLike]): string;
+  encodeFunctionData(functionFragment: "getL1Confirmations", values: [BytesLike]): string;
+  encodeFunctionData(functionFragment: "legacyLookupMessageBatchProof", values: [BigNumberish, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "nitroGenesisBlock", values?: undefined): string;
 
-  decodeFunctionResult(
-    functionFragment: "constructOutboxProof",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "estimateRetryableTicket",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "findBatchContainingBlock",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "gasEstimateComponents",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "gasEstimateL1Component",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getL1Confirmations",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "legacyLookupMessageBatchProof",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "nitroGenesisBlock",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "constructOutboxProof", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "estimateRetryableTicket", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "findBatchContainingBlock", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "gasEstimateComponents", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "gasEstimateL1Component", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getL1Confirmations", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "legacyLookupMessageBatchProof", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "nitroGenesisBlock", data: BytesLike): Result;
 }
 
 export interface ArbitrumNodeInterface extends BaseContract {
@@ -126,31 +73,21 @@ export interface ArbitrumNodeInterface extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(
-    event: TCEvent
-  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(
-    event?: TCEvent
-  ): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
   constructOutboxProof: TypedContractMethod<
     [size: BigNumberish, leaf: BigNumberish],
@@ -159,7 +96,7 @@ export interface ArbitrumNodeInterface extends BaseContract {
         send: string;
         root: string;
         proof: string[];
-      }
+      },
     ],
     "view"
   >;
@@ -172,17 +109,13 @@ export interface ArbitrumNodeInterface extends BaseContract {
       l2CallValue: BigNumberish,
       excessFeeRefundAddress: AddressLike,
       callValueRefundAddress: AddressLike,
-      data: BytesLike
+      data: BytesLike,
     ],
     [void],
     "nonpayable"
   >;
 
-  findBatchContainingBlock: TypedContractMethod<
-    [blockNum: BigNumberish],
-    [bigint],
-    "view"
-  >;
+  findBatchContainingBlock: TypedContractMethod<[blockNum: BigNumberish], [bigint], "view">;
 
   gasEstimateComponents: TypedContractMethod<
     [to: AddressLike, contractCreation: boolean, data: BytesLike],
@@ -192,7 +125,7 @@ export interface ArbitrumNodeInterface extends BaseContract {
         gasEstimateForL1: bigint;
         baseFee: bigint;
         l1BaseFeeEstimate: bigint;
-      }
+      },
     ],
     "payable"
   >;
@@ -204,31 +137,17 @@ export interface ArbitrumNodeInterface extends BaseContract {
         gasEstimateForL1: bigint;
         baseFee: bigint;
         l1BaseFeeEstimate: bigint;
-      }
+      },
     ],
     "payable"
   >;
 
-  getL1Confirmations: TypedContractMethod<
-    [blockHash: BytesLike],
-    [bigint],
-    "view"
-  >;
+  getL1Confirmations: TypedContractMethod<[blockHash: BytesLike], [bigint], "view">;
 
   legacyLookupMessageBatchProof: TypedContractMethod<
     [batchNum: BigNumberish, index: BigNumberish],
     [
-      [
-        string[],
-        bigint,
-        string,
-        string,
-        bigint,
-        bigint,
-        bigint,
-        bigint,
-        string
-      ] & {
+      [string[], bigint, string, string, bigint, bigint, bigint, bigint, string] & {
         proof: string[];
         path: bigint;
         l2Sender: string;
@@ -238,27 +157,23 @@ export interface ArbitrumNodeInterface extends BaseContract {
         timestamp: bigint;
         amount: bigint;
         calldataForL1: string;
-      }
+      },
     ],
     "view"
   >;
 
   nitroGenesisBlock: TypedContractMethod<[], [bigint], "view">;
 
-  getFunction<T extends ContractMethod = ContractMethod>(
-    key: string | FunctionFragment
-  ): T;
+  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
-  getFunction(
-    nameOrSignature: "constructOutboxProof"
-  ): TypedContractMethod<
+  getFunction(nameOrSignature: "constructOutboxProof"): TypedContractMethod<
     [size: BigNumberish, leaf: BigNumberish],
     [
       [string, string, string[]] & {
         send: string;
         root: string;
         proof: string[];
-      }
+      },
     ],
     "view"
   >;
@@ -272,7 +187,7 @@ export interface ArbitrumNodeInterface extends BaseContract {
       l2CallValue: BigNumberish,
       excessFeeRefundAddress: AddressLike,
       callValueRefundAddress: AddressLike,
-      data: BytesLike
+      data: BytesLike,
     ],
     [void],
     "nonpayable"
@@ -280,9 +195,7 @@ export interface ArbitrumNodeInterface extends BaseContract {
   getFunction(
     nameOrSignature: "findBatchContainingBlock"
   ): TypedContractMethod<[blockNum: BigNumberish], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "gasEstimateComponents"
-  ): TypedContractMethod<
+  getFunction(nameOrSignature: "gasEstimateComponents"): TypedContractMethod<
     [to: AddressLike, contractCreation: boolean, data: BytesLike],
     [
       [bigint, bigint, bigint, bigint] & {
@@ -290,42 +203,26 @@ export interface ArbitrumNodeInterface extends BaseContract {
         gasEstimateForL1: bigint;
         baseFee: bigint;
         l1BaseFeeEstimate: bigint;
-      }
+      },
     ],
     "payable"
   >;
-  getFunction(
-    nameOrSignature: "gasEstimateL1Component"
-  ): TypedContractMethod<
+  getFunction(nameOrSignature: "gasEstimateL1Component"): TypedContractMethod<
     [to: AddressLike, contractCreation: boolean, data: BytesLike],
     [
       [bigint, bigint, bigint] & {
         gasEstimateForL1: bigint;
         baseFee: bigint;
         l1BaseFeeEstimate: bigint;
-      }
+      },
     ],
     "payable"
   >;
-  getFunction(
-    nameOrSignature: "getL1Confirmations"
-  ): TypedContractMethod<[blockHash: BytesLike], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "legacyLookupMessageBatchProof"
-  ): TypedContractMethod<
+  getFunction(nameOrSignature: "getL1Confirmations"): TypedContractMethod<[blockHash: BytesLike], [bigint], "view">;
+  getFunction(nameOrSignature: "legacyLookupMessageBatchProof"): TypedContractMethod<
     [batchNum: BigNumberish, index: BigNumberish],
     [
-      [
-        string[],
-        bigint,
-        string,
-        string,
-        bigint,
-        bigint,
-        bigint,
-        bigint,
-        string
-      ] & {
+      [string[], bigint, string, string, bigint, bigint, bigint, bigint, string] & {
         proof: string[];
         path: bigint;
         l2Sender: string;
@@ -335,13 +232,11 @@ export interface ArbitrumNodeInterface extends BaseContract {
         timestamp: bigint;
         amount: bigint;
         calldataForL1: string;
-      }
+      },
     ],
     "view"
   >;
-  getFunction(
-    nameOrSignature: "nitroGenesisBlock"
-  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(nameOrSignature: "nitroGenesisBlock"): TypedContractMethod<[], [bigint], "view">;
 
   filters: {};
 }

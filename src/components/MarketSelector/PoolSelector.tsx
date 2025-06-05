@@ -100,19 +100,19 @@ export function PoolSelector({
           (isGlvInfo(market) ? true : market.indexToken) &&
           (showAllPools || getMarketIndexName(market) === selectedIndexName)
       )
-      .map((marketInfo) => {
-        const indexName = getMarketIndexName(marketInfo);
-        const poolName = getMarketPoolName(marketInfo);
-        const marketToken = getByKey(marketTokensData, getGlvOrMarketAddress(marketInfo));
+      .map((glvOrMarketInfo) => {
+        const indexName = getMarketIndexName(glvOrMarketInfo);
+        const poolName = getMarketPoolName(glvOrMarketInfo);
+        const marketToken = getByKey(marketTokensData, getGlvOrMarketAddress(glvOrMarketInfo));
         const gmBalance = marketToken?.balance;
         const gmBalanceUsd = convertToUsd(marketToken?.balance, marketToken?.decimals, marketToken?.prices.minPrice);
-        const state = getMarketState?.(marketInfo);
+        const state = getMarketState?.(glvOrMarketInfo);
 
         return {
           indexName,
           poolName,
-          name: isGlvInfo(marketInfo) ? marketInfo.name ?? "GLV" : marketInfo.name,
-          marketInfo,
+          name: isGlvInfo(glvOrMarketInfo) ? glvOrMarketInfo.name ?? "GLV" : glvOrMarketInfo.name,
+          glvOrMarketInfo,
           balance: gmBalance ?? 0n,
           balanceUsd: gmBalanceUsd ?? 0n,
           state,
@@ -138,7 +138,8 @@ export function PoolSelector({
 
   const marketInfo = useMemo(
     () =>
-      marketsOptions.find((option) => getGlvOrMarketAddress(option.marketInfo) === selectedMarketAddress)?.marketInfo,
+      marketsOptions.find((option) => getGlvOrMarketAddress(option.glvOrMarketInfo) === selectedMarketAddress)
+        ?.glvOrMarketInfo,
     [marketsOptions, selectedMarketAddress]
   );
 
@@ -147,9 +148,9 @@ export function PoolSelector({
       ? searchBy(
           marketsOptions,
           [
-            (item) => (isGlvInfo(item.marketInfo) ? getGlvDisplayName(item.marketInfo) : item.name),
-            (item) => stripBlacklistedWords(item.marketInfo.longToken.name),
-            (item) => stripBlacklistedWords(item.marketInfo.shortToken.name),
+            (item) => (isGlvInfo(item.glvOrMarketInfo) ? getGlvDisplayName(item.glvOrMarketInfo) : item.name),
+            (item) => stripBlacklistedWords(item.glvOrMarketInfo.longToken.name),
+            (item) => stripBlacklistedWords(item.glvOrMarketInfo.shortToken.name),
           ],
           searchKeyword
         )
@@ -158,25 +159,25 @@ export function PoolSelector({
     if (tab === "all") {
       return textMatched;
     } else if (tab === "favorites") {
-      return textMatched?.filter((item) => favoriteTokens?.includes(getGlvOrMarketAddress(item.marketInfo)));
+      return textMatched?.filter((item) => favoriteTokens?.includes(getGlvOrMarketAddress(item.glvOrMarketInfo)));
     } else {
       const categoryTokenAddresses = getCategoryTokenAddresses(chainId, tab);
       return textMatched?.filter((item) => {
-        if (isGlvInfo(item.marketInfo)) {
+        if (isGlvInfo(item.glvOrMarketInfo)) {
           return false;
         }
 
-        if (item.marketInfo.isSpotOnly) {
+        if (item.glvOrMarketInfo.isSpotOnly) {
           return false;
         }
 
-        return categoryTokenAddresses.includes(item.marketInfo.indexTokenAddress);
+        return categoryTokenAddresses.includes(item.glvOrMarketInfo.indexTokenAddress);
       });
     }
   }, [chainId, favoriteTokens, marketsOptions, searchKeyword, tab]);
 
   function onSelectOption(option: MarketOption) {
-    onSelectMarket(option.marketInfo);
+    onSelectMarket(option.glvOrMarketInfo);
     setIsModalVisible(false);
   }
 
@@ -223,10 +224,10 @@ export function PoolSelector({
           {filteredOptions.map((option, marketIndex) => {
             return (
               <PoolListItem
-                key={getGlvOrMarketAddress(option.marketInfo)}
+                key={getGlvOrMarketAddress(option.glvOrMarketInfo)}
                 {...option}
-                marketToken={getByKey(marketTokensData, getGlvOrMarketAddress(option.marketInfo))}
-                isFavorite={favoriteTokens?.includes(getGlvOrMarketAddress(option.marketInfo))}
+                marketToken={getByKey(marketTokensData, getGlvOrMarketAddress(option.glvOrMarketInfo))}
+                isFavorite={favoriteTokens?.includes(getGlvOrMarketAddress(option.glvOrMarketInfo))}
                 isInFirstHalf={marketIndex < filteredOptions.length / 2}
                 showAllPools={showAllPools}
                 showBalances={showBalances}

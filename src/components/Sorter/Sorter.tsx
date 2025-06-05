@@ -18,10 +18,13 @@ const directionSequence: SortDirection[] = ["desc", "asc", "unspecified"];
 export function Sorter(
   props: PropsWithChildren<{ direction: SortDirection; onChange: (direction: SortDirection) => void }>
 ) {
-  const handleClick = () => {
-    const currentIndex = directionSequence.indexOf(props.direction);
-    const nextIndex = (currentIndex + 1) % directionSequence.length;
-    props.onChange(directionSequence[nextIndex]);
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (e.currentTarget.contains(e.target as Node)) {
+      e.stopPropagation();
+      const currentIndex = directionSequence.indexOf(props.direction);
+      const nextIndex = (currentIndex + 1) % directionSequence.length;
+      props.onChange(directionSequence[nextIndex]);
+    }
   };
 
   const Icon = directionIconMap[props.direction];
@@ -31,7 +34,7 @@ export function Sorter(
       className={cx("inline-flex items-center [text-align:inherit] [text-transform:inherit]", {
         "text-blue-300": props.direction !== "unspecified",
       })}
-      onClick={handleClick}
+      onClickCapture={handleClick}
     >
       {props.children}
       <Icon />

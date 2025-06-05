@@ -1,3 +1,5 @@
+import cx from "classnames";
+
 import { USD_DECIMALS } from "config/factors";
 import { formatAmountHuman, formatBalanceAmount, formatUsd } from "lib/numbers";
 
@@ -7,12 +9,14 @@ export function AmountWithUsdHuman({
   usd,
   symbol,
   multiline = false,
+  usdOnTop = false,
 }: {
   amount: bigint | undefined;
   decimals: number | undefined;
   usd: bigint | undefined;
   symbol?: string;
   multiline?: boolean;
+  usdOnTop?: boolean;
 }) {
   if (amount === undefined || usd === undefined || decimals === undefined) {
     return "...";
@@ -25,11 +29,16 @@ export function AmountWithUsdHuman({
 
   const formattedUsd = formatAmountHuman(usd, USD_DECIMALS, true, 2);
 
+  const topValue = usdOnTop ? formattedUsd : formattedAmount;
+  const bottomValue = usdOnTop ? formattedAmount : formattedUsd;
+
   return (
     <span>
-      <span>{formattedAmount} </span>
+      <span>{topValue} </span>
       {multiline && <br />}
-      <span className="text-12 text-slate-100 group-hover/hoverable:text-[inherit]">({formattedUsd})</span>
+      <span className={cx("text-12 text-slate-100 group-hover/hoverable:text-[inherit]", { "ml-2": multiline })}>
+        ({bottomValue})
+      </span>
     </span>
   );
 }
@@ -41,6 +50,7 @@ export function AmountWithUsdBalance({
   usd,
   symbol,
   multiline = false,
+  usdOnTop = false,
 }: {
   className?: string;
   amount: bigint | undefined;
@@ -48,6 +58,7 @@ export function AmountWithUsdBalance({
   usd: bigint | undefined;
   symbol?: string;
   multiline?: boolean;
+  usdOnTop?: boolean;
 }) {
   if (amount === undefined || usd === undefined) {
     return "...";
@@ -57,11 +68,16 @@ export function AmountWithUsdBalance({
 
   const formattedUsd = formatUsd(usd);
 
+  const topValue = usdOnTop ? formattedUsd : formattedAmount;
+  const bottomValue = usdOnTop ? formattedAmount : formattedUsd;
+
   return (
     <span className={className}>
-      {formattedAmount}
-      {multiline ? <br /> : " "}
-      <span className="text-12 text-slate-100 group-hover/hoverable:text-[inherit]">({formattedUsd})</span>
+      <span>{topValue} </span>
+      {multiline && <br />}
+      <span className={cx("text-12 text-slate-100 group-hover/hoverable:text-[inherit]", { "ml-2": multiline })}>
+        ({bottomValue})
+      </span>
     </span>
   );
 }

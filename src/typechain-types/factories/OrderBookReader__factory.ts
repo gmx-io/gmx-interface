@@ -3,10 +3,7 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type {
-  OrderBookReader,
-  OrderBookReaderInterface,
-} from "../OrderBookReader";
+import type { OrderBookReader, OrderBookReaderInterface } from "../OrderBookReader";
 
 const _abi = [
   {
@@ -118,10 +115,7 @@ export class OrderBookReader__factory {
   static createInterface(): OrderBookReaderInterface {
     return new Interface(_abi) as OrderBookReaderInterface;
   }
-  static connect(
-    address: string,
-    runner?: ContractRunner | null
-  ): OrderBookReader {
+  static connect(address: string, runner?: ContractRunner | null): OrderBookReader {
     return new Contract(address, _abi, runner) as unknown as OrderBookReader;
   }
 }
