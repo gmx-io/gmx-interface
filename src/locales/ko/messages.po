@@ -168,8 +168,8 @@ msgid "Type"
 msgstr "타입"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "Close order"
-msgstr ""
+#~ msgid "Close order"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order submitted!"
@@ -664,6 +664,10 @@ msgstr ""
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Telegram contact (optional)"
+msgstr ""
+
+#: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
+msgid "Market order will be cancellable in {minutesText}{seconds}s."
 msgstr ""
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
@@ -3326,6 +3330,7 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
+#: src/domain/synthetics/positions/utils.ts
 msgid "Market"
 msgstr "마켓"
 
@@ -4779,6 +4784,10 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Price below Liq. Price"
 msgstr "청산가 미만 가격"
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#~ msgid "Market order will be cancellable in {minutes}m {seconds}s."
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take Profit / Stop Loss"
@@ -6412,6 +6421,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Failed to download trade history CSV."
+msgstr ""
+
+#: src/domain/synthetics/positions/utils.ts
+msgid "market"
 msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -9044,6 +9057,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Ecosystem Projects"
+msgstr ""
+
+#: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
+msgid "Market order will be cancellable in ..."
 msgstr ""
 
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
