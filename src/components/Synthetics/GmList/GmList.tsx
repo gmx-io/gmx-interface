@@ -1,6 +1,5 @@
 import { Trans, t } from "@lingui/macro";
 import { useMemo, useState } from "react";
-import { useAccount } from "wagmi";
 
 import { getIcons } from "config/icons";
 import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -9,6 +8,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { MarketTokensAPRData, getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
+import useWallet from "lib/wallets/useWallet";
 
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
@@ -48,7 +48,7 @@ export function GmList({
   const marketsInfo = useSelector(selectMarketsInfoData);
 
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit, withGlv: false });
-  const { isConnected: active } = useAccount();
+  const { active } = useWallet();
   const currentIcons = getIcons(chainId)!;
   const userEarnings = useUserEarnings(chainId);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("gm-list");

@@ -1,5 +1,3 @@
-import { useAccount } from "wagmi";
-
 import { getContract } from "config/contracts";
 import {
   useTokensBalancesUpdates,
@@ -7,6 +5,7 @@ import {
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
+import useWallet from "lib/wallets/useWallet";
 import { getV2Tokens, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import { TokenBalancesData } from "./types";
@@ -27,7 +26,7 @@ export function useTokenBalances(
 ): BalancesDataResult {
   const { resetTokensBalancesUpdates } = useTokensBalancesUpdates();
 
-  const { address: currentAccount } = useAccount();
+  const { account: currentAccount } = useWallet();
 
   const account = overrideAccount ?? currentAccount;
 

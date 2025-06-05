@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { getExpressContractAddress } from "domain/synthetics/express";
@@ -18,9 +18,32 @@ export type NoncesData = {
   };
 };
 
+export type LocalActions = {
+  relayRouter: {
+    actions: bigint;
+    lastEstimated: number;
+  };
+  subaccountRelayRouter: {
+    actions: bigint;
+    lastEstimated: number;
+  };
+};
+
+const defaultLocalActions: LocalActions = {
+  relayRouter: {
+    actions: 0n,
+    lastEstimated: 0,
+  },
+  subaccountRelayRouter: {
+    actions: 0n,
+    lastEstimated: 0,
+  },
+};
+
 type ExpressNoncesContextType = {
   noncesData?: NoncesData;
   refreshNonces: () => void;
+  updateLocalAction: (action: keyof LocalActions, actions: bigint) => void;
 };
 
 const ExpressNoncesContext = createContext<ExpressNoncesContextType | undefined>(undefined);
@@ -29,6 +52,7 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
   const { chainId } = useChainId();
   const { account } = useWallet();
   const { subaccount } = useSubaccountContext();
+  const [localActions, setLocalActions] = useState<LocalActions>(defaultLocalActions);
 
   const { data: onChainData, mutate } = useMulticall(chainId, "expressNonces-context", {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
@@ -64,6 +88,8 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
 
       const now = Date.now();
 
+      setLocalActions(defaultLocalActions);
+
       return {
         relayRouter: {
           nonce: relayRouterNonce,
@@ -79,20 +105,42 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
     },
   });
 
+  const updateLocalAction = useCallback((action: keyof LocalActions, actions: bigint) => {
+    setLocalActions((old) => ({
+      ...old,
+      [action]: {
+        actions,
+        lastEstimated: Date.now(),
+      },
+    }));
+  }, []);
+
   const value = useMemo(() => {
-    if (!onChainData) {
-      return {
-        noncesData: undefined,
-        refreshNonces: mutate,
-      };
+    let result: NoncesData | undefined;
+
+    if (onChainData) {
+      result = { ...onChainData };
+
+      if (localActions.relayRouter.lastEstimated > result.relayRouter.lastEstimated) {
+        result.relayRouter.nonce += localActions.relayRouter.actions;
+        result.relayRouter.lastEstimated = localActions.relayRouter.lastEstimated;
+      }
+
+      if (
+        result.subaccountRelayRouter &&
+        localActions.subaccountRelayRouter.lastEstimated > result.subaccountRelayRouter.lastEstimated
+      ) {
+        result.subaccountRelayRouter.nonce += localActions.subaccountRelayRouter.actions;
+        result.subaccountRelayRouter.lastEstimated = localActions.subaccountRelayRouter.lastEstimated;
+      }
     }
-    const result: NoncesData = onChainData;
 
     return {
       noncesData: result,
+      updateLocalAction,
       refreshNonces: mutate,
     };
-  }, [mutate, onChainData]);
+  }, [localActions, mutate, onChainData, updateLocalAction]);
 
   return <ExpressNoncesContext.Provider value={value}>{children}</ExpressNoncesContext.Provider>;
 }
