@@ -515,7 +515,7 @@ export const WithdrawView = () => {
       });
 
       const receipt = await sendExpressTransaction({
-        chainId: chainId as UiSettlementChain,
+        chainId,
         txnData: signedTxnData,
         // TODO
         isSponsoredCall: false,

@@ -15,7 +15,7 @@ import {
 import { isDevelopment } from "./env";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET, ETH_MAINNET } from "./static/chains";
 
-export { CHAIN_NAMES_MAP, getChainName } from "../../sdk/src/configs/chains";
+export { CHAIN_NAMES_MAP, getChainName } from "sdk/configs/chains";
 export * from "./static/chains";
 
 export const SUPPORTED_CHAIN_IDS = isDevelopment() ? SDK_SUPPORTED_CHAIN_IDS_DEV : SDK_SUPPORTED_CHAIN_IDS;
@@ -120,28 +120,12 @@ const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io"];
 
 export const RPC_PROVIDERS: Record<UiSupportedChain | typeof ETH_MAINNET, string[]> = {
   [ETH_MAINNET]: ["https://rpc.ankr.com/eth"],
-  // [BSС_MAINNET]: [
-  //   "https://bsc-dataseed.binance.org",
-  //   "https://bsc-dataseed1.defibit.io",
-  //   "https://bsc-dataseed1.ninicoin.io",
-  //   "https://bsc-dataseed2.defibit.io",
-  //   "https://bsc-dataseed3.defibit.io",
-  //   "https://bsc-dataseed4.defibit.io",
-  //   "https://bsc-dataseed2.ninicoin.io",
-  //   "https://bsc-dataseed3.ninicoin.io",
-  //   "https://bsc-dataseed4.ninicoin.io",
-  //   "https://bsc-dataseed1.binance.org",
-  //   "https://bsc-dataseed2.binance.org",
-  //   "https://bsc-dataseed3.binance.org",
-  //   "https://bsc-dataseed4.binance.org",
-  // ],
-  // [BSС_TESTNET]: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
   [ARBITRUM]: [
     "https://arb1.arbitrum.io/rpc",
     "https://arbitrum-one-rpc.publicnode.com",
     "https://1rpc.io/arb",
     "https://arbitrum-one.public.blastapi.io",
-    "https://arbitrum.drpc.org",
+    // "https://arbitrum.drpc.org",
     "https://rpc.ankr.com/arbitrum",
   ],
   [AVALANCHE]: [
