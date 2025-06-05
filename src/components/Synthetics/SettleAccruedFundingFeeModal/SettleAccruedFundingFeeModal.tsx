@@ -7,6 +7,8 @@ import {
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectExpressNoncesData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
   estimateExecuteDecreaseOrderGasLimit,
@@ -51,6 +53,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
   const [isUntouched, setIsUntouched] = useState(true);
+  const noncesData = useSelector(selectExpressNoncesData);
 
   const { executionFee, gasLimit, feeUsd } = useMemo(() => {
     if (!gasLimits || !tokensData || gasPrice === undefined) return {};
@@ -183,6 +186,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
       signer,
       batchParams,
       expressParams,
+      noncesData,
       simulationParams: undefined,
       callback: makeOrderTxnCallback({
         metricId: undefined,
@@ -195,7 +199,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
       .finally(() => {
         setIsSubmitting(false);
       });
-  }, [account, batchParams, chainId, expressParams, handleOnClose, makeOrderTxnCallback, provider, signer]);
+  }, [account, batchParams, chainId, expressParams, handleOnClose, makeOrderTxnCallback, noncesData, provider, signer]);
 
   const renderTooltipContent = useCallback(
     () => (

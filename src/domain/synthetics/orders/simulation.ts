@@ -70,7 +70,7 @@ export async function simulateExecution(chainId: UiContractsChain, p: SimulateEx
     blockTag = Number(result.blockNumber);
   }
 
-  const priceTimestamp = blockTimestamp + 10n;
+  const priceTimestamp = blockTimestamp + 30n;
   const method = p.method || "simulateExecuteLatestOrder";
 
   const isGlv = method === "simulateExecuteLatestGlvDeposit" || method === "simulateExecuteLatestGlvWithdrawal";

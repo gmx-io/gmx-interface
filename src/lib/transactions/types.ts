@@ -29,6 +29,7 @@ export type GelatoTaskStatus = {
 };
 
 export enum TxnEventName {
+  Submitted = "Submitted",
   Simulated = "Simulated",
   Sending = "Sending",
   Sent = "Sent",
@@ -63,6 +64,10 @@ export class TxnEventBuilder<TParams> {
 
   Error(error: ErrorLike) {
     return this._build(TxnEventName.Error, { error });
+  }
+
+  Submitted() {
+    return this._build(TxnEventName.Submitted, {});
   }
 
   Simulated() {

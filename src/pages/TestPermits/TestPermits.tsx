@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { encodeFunctionData } from "viem";
-import { useAccount } from "wagmi";
 
 import { getExplorerUrl } from "config/chains";
 import { createAndSignTokenPermit, getTokenPermitParams } from "domain/tokens/permitUtils";
@@ -18,7 +17,7 @@ import Modal from "components/Modal/Modal";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 export function TestPermits() {
-  const { address } = useAccount();
+  const { account } = useWallet();
   const { chainId } = useChainId();
   const { signer } = useWallet();
   const [selectedToken, setSelectedToken] = useState<Token | null>(null);
@@ -33,14 +32,14 @@ export function TestPermits() {
   const tokens = getV2Tokens(chainId).filter((token) => !token.isNative);
 
   useEffect(() => {
-    if (!signer?.provider || !address) return;
+    if (!signer?.provider || !account) return;
 
     tokens.forEach((token) => {
       if (onchainParams[token.address] || onchainLoading[token.address]) {
         return;
       }
       setOnchainLoading((prev) => ({ ...prev, [token.address]: true }));
-      getTokenPermitParams(chainId, address, token.address, signer.provider)
+      getTokenPermitParams(chainId, account, token.address, signer.provider)
         .then((params) => {
           setOnchainParams((prev) => ({
             ...prev,
@@ -58,16 +57,16 @@ export function TestPermits() {
         });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokens, signer, address, chainId]);
+  }, [tokens, signer, account, chainId]);
 
   const handleSignPermit = async () => {
-    if (!selectedToken || !address || !signer) return;
+    if (!selectedToken || !account || !signer) return;
 
     setIsLoading(true);
     try {
       const value = MaxUint256;
 
-      const permit = await createAndSignTokenPermit(chainId, signer, selectedToken.address, address, value);
+      const permit = await createAndSignTokenPermit(chainId, signer, selectedToken.address, account, value);
 
       setPermitData(permit);
       helperToast.success(`Permit signed successfully for ${selectedToken.symbol}`);
@@ -79,7 +78,7 @@ export function TestPermits() {
   };
 
   const handleSendPermit = async () => {
-    if (!selectedToken || !address || !permitData || !signer) return;
+    if (!selectedToken || !account || !permitData || !signer) return;
     setIsLoading(true);
 
     try {
@@ -256,12 +255,12 @@ export function TestPermits() {
               </div>
             )}
 
-            <Button onClick={handleSignPermit} disabled={!address || isLoading} className="w-full" variant="primary">
+            <Button onClick={handleSignPermit} disabled={!account || isLoading} className="w-full" variant="primary">
               {isLoading ? "Signing..." : "Sign Permit"}
             </Button>
 
             {permitData && (
-              <Button onClick={handleSendPermit} disabled={!address || isLoading} className="w-full" variant="primary">
+              <Button onClick={handleSendPermit} disabled={!account || isLoading} className="w-full" variant="primary">
                 {isLoading ? "Sending..." : "Send Permit"}
               </Button>
             )}

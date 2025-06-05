@@ -2,6 +2,7 @@ import { Provider } from "ethers";
 import { withRetry } from "viem";
 
 import { UiContractsChain } from "config/chains";
+import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import {
   buildAndSignExpressBatchOrderTxn,
@@ -45,6 +46,7 @@ export async function sendBatchOrderTxn({
   signer,
   provider,
   batchParams,
+  noncesData,
   expressParams,
   simulationParams,
   callback,
@@ -54,6 +56,7 @@ export async function sendBatchOrderTxn({
   provider: Provider | undefined;
   batchParams: BatchOrderTxnParams;
   expressParams: ExpressTxnParams | undefined;
+  noncesData?: NoncesData;
   simulationParams: BatchSimulationParams | undefined;
   callback: TxnCallback<BatchOrderTxnCtx> | undefined;
 }) {
@@ -69,6 +72,8 @@ export async function sendBatchOrderTxn({
     if (srcChainId && !provider) {
       throw new Error("provider is required for multichain txns");
     }
+    callback?.(eventBuilder.Submitted());
+
     let runSimulation: () => Promise<void> = DEFAULT_RUN_SIMULATION;
 
     if (simulationParams) {
@@ -95,7 +100,7 @@ export async function sendBatchOrderTxn({
         relayerFeeTokenAddress: expressParams.gasPaymentParams.relayerFeeTokenAddress,
         relayerFeeAmount: expressParams.gasPaymentParams.relayerFeeAmount,
         subaccount: expressParams.subaccount,
-        noncesData: undefined,
+        noncesData,
       });
 
       callback?.(eventBuilder.Sending());

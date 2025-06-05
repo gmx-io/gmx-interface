@@ -86,6 +86,7 @@ export function DynamicLines({
         signer,
         batchParams,
         expressParams,
+        noncesData: globalExpressParams?.noncesData,
         simulationParams: undefined,
         callback: makeOrderTxnCallback({}),
         provider,

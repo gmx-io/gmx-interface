@@ -6,6 +6,7 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import {
   selectBlockTimestampData,
+  selectExpressNoncesData,
   selectIsFirstOrder,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -89,6 +90,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const duration = useSelector(selectTradeboxTwapDuration);
   const numberOfParts = useSelector(selectTradeboxTwapNumberOfParts);
+  const noncesData = useSelector(selectExpressNoncesData);
 
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
 
@@ -290,6 +292,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       signer,
       provider,
       batchParams,
+      noncesData,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
       simulationParams: shouldDisableValidationForTesting
@@ -308,21 +311,22 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       }),
     });
   }, [
-    initOrderMetricData,
-    primaryCreateOrderParams,
-    signer,
-    tokensData,
     account,
-    marketsInfoData,
-    chainId,
-    provider,
-    expressParamsPromise,
     batchParams,
-    shouldDisableValidationForTesting,
     blockTimestampData,
+    chainId,
+    expressParamsPromise,
+    initOrderMetricData,
     makeOrderTxnCallback,
-    slippageInputId,
+    marketsInfoData,
+    noncesData,
+    primaryCreateOrderParams,
+    provider,
     setShouldFallbackToInternalSwap,
+    shouldDisableValidationForTesting,
+    signer,
+    slippageInputId,
+    tokensData,
   ]);
 
   function onSubmitWrapOrUnwrap() {

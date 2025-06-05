@@ -143,7 +143,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [pendingExpressTxnParams, setPendingExpressTxnParams] = useState<{
     [key: string]: Partial<PendingExpressTxnParams>;
   }>({});
-  const { refreshNonces } = useExpressNonces();
+  const { refreshNonces, updateLocalAction } = useExpressNonces();
   const eventLogHandlers = useRef({});
 
   const handleExpressTxnSuccess = useCallback(
@@ -156,6 +156,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       refreshSubaccountData();
       refreshNonces();
+      updateLocalAction(pendingExpressTxn.subaccountApproval ? "subaccountRelayRouter" : "relayRouter", 1n);
 
       if (
         pendingExpressTxn?.subaccountApproval &&
@@ -167,14 +168,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       if (pendingExpressTxn?.tokenPermits?.length) {
         resetTokenPermits();
       }
-
-      if (pendingExpressTxn?.successMessage) {
-        helperToast.success(pendingExpressTxn.successMessage);
-      }
-
-      setPendingExpressTxnParams((old) => deleteByKey(old, key));
     },
-    [refreshNonces, refreshSubaccountData, resetSubaccountApproval, resetTokenPermits]
+    [refreshNonces, refreshSubaccountData, resetSubaccountApproval, resetTokenPermits, updateLocalAction]
   );
 
   const updateNativeTokenBalance = useCallback(() => {
@@ -218,6 +213,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         isLong: eventData.boolItems.items.isLong,
         shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
         isFrozen: eventData.boolItems.items.isFrozen,
+        uiFeeReceiver: uiFeeReceiver,
         externalSwapQuote: undefined,
         key: eventData.bytes32Items.items.key,
         isTwap: twapParams !== undefined,
@@ -867,18 +863,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         }
       }
     },
-
-    // MultichainBridgeIn: (eventData: EventLogData, txnParams: EventTxnParams) => {
-    //   const assetAddress = eventData.addressItems.items.token;
-    //   sendOrderExecutedMetric(
-    //     getMultichainDepositMetricId({
-    //       sourceChain: Number(eventData.uintItems.items.srcChainId),
-    //       assetAddress,
-    //       settlementChain: chainId,
-    //       amount: eventData.uintItems.items.amount,
-    //     })
-    //   );
-    // },
   };
 
   useEffect(
@@ -958,6 +942,73 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       };
     },
     [chainId, currentAccount, wsProvider]
+  );
+
+  useEffect(() => {
+    const handler = async (taskStatus) => {
+      if (isDevelopment()) {
+        const { accountSlug, projectSlug } = getTenderlyAccountParams();
+        getGelatoTaskDebugInfo(taskStatus.taskId, accountSlug, projectSlug).then((debugInfo) =>
+          // eslint-disable-next-line no-console
+          console.log("gelatoDebugData", taskStatus, debugInfo)
+        );
+      }
+
+      switch (taskStatus.taskState) {
+        case TaskState.ExecSuccess:
+        case TaskState.ExecReverted:
+        case TaskState.Cancelled: {
+          gelatoRelay.unsubscribeTaskStatusUpdate(taskStatus.taskId);
+          setGelatoTaskStatuses((old) => setByKey(old, taskStatus.taskId, taskStatus.taskState));
+          break;
+        }
+        default:
+          break;
+      }
+    };
+
+    gelatoRelay.onTaskStatusUpdate(handler);
+
+    return () => {
+      gelatoRelay.offTaskStatusUpdate(handler);
+    };
+  }, []);
+
+  useEffect(
+    function notifyPendingExpressTxn() {
+      Object.values(pendingExpressTxnParams).forEach((pendingExpressTxn) => {
+        if (pendingExpressTxn.taskId && pendingExpressTxn.key && gelatoTaskStatuses[pendingExpressTxn.taskId]) {
+          const status = gelatoTaskStatuses[pendingExpressTxn.taskId];
+
+          if (status === TaskState.ExecSuccess && pendingExpressTxn.successMessage && !pendingExpressTxn.isViewed) {
+            helperToast.success(pendingExpressTxn.successMessage);
+            setPendingExpressTxnParams((old) => updateByKey(old, pendingExpressTxn.key!, { isViewed: true }));
+          }
+
+          if (status === TaskState.ExecReverted || status === TaskState.Cancelled) {
+            let isRelayerMetricSent = false;
+            let isViewed = false;
+
+            if (pendingExpressTxn.metricId && !pendingExpressTxn.isRelayerMetricSent) {
+              sendTxnErrorMetric(pendingExpressTxn.metricId, new Error("Gelato task cancelled"), "relayer");
+              isRelayerMetricSent = true;
+            }
+
+            if (pendingExpressTxn.errorMessage && !pendingExpressTxn.isViewed) {
+              helperToast.error(pendingExpressTxn.errorMessage);
+              isViewed = true;
+            }
+
+            if (isViewed || isRelayerMetricSent) {
+              setPendingExpressTxnParams((old) =>
+                updateByKey(old, pendingExpressTxn.key!, { isViewed, isRelayerMetricSent })
+              );
+            }
+          }
+        }
+      });
+    },
+    [gelatoTaskStatuses, pendingExpressTxnParams]
   );
 
   const multichainEventsState = useMultichainEvents({
@@ -1133,67 +1184,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     tokensData,
     glvAndGmMarketsData,
   ]);
-
-  useEffect(() => {
-    const handler = async (taskStatus) => {
-      if (isDevelopment()) {
-        const { accountSlug, projectSlug } = getTenderlyAccountParams();
-        getGelatoTaskDebugInfo(taskStatus.taskId, accountSlug, projectSlug).then((debugInfo) =>
-          // eslint-disable-next-line no-console
-          console.log("gelatoDebugData", taskStatus, debugInfo)
-        );
-      }
-
-      switch (taskStatus.taskState) {
-        case TaskState.ExecSuccess:
-        case TaskState.ExecReverted:
-        case TaskState.Cancelled: {
-          gelatoRelay.unsubscribeTaskStatusUpdate(taskStatus.taskId);
-          setGelatoTaskStatuses((old) => setByKey(old, taskStatus.taskId, taskStatus.taskState));
-          break;
-        }
-        default:
-          break;
-      }
-    };
-
-    gelatoRelay.onTaskStatusUpdate(handler);
-
-    return () => {
-      gelatoRelay.offTaskStatusUpdate(handler);
-    };
-  }, []);
-
-  useEffect(
-    function notifyPendingExpressTxn() {
-      Object.values(pendingExpressTxnParams).forEach((pendingExpressTxn) => {
-        if (
-          !pendingExpressTxn.isViewed &&
-          pendingExpressTxn.taskId &&
-          pendingExpressTxn.key &&
-          gelatoTaskStatuses[pendingExpressTxn.taskId] &&
-          (pendingExpressTxn.successMessage || pendingExpressTxn.errorMessage)
-        ) {
-          const status = gelatoTaskStatuses[pendingExpressTxn.taskId];
-
-          if (status === TaskState.ExecSuccess) {
-            helperToast.success(pendingExpressTxn.successMessage);
-          }
-
-          if (status === TaskState.ExecReverted || status === TaskState.Cancelled) {
-            const metricId = pendingExpressTxn?.metricId;
-
-            sendTxnErrorMetric(metricId, new Error("Gelato task cancelled"), "relayer");
-
-            helperToast.error(pendingExpressTxn.errorMessage);
-          }
-
-          setPendingExpressTxnParams((old) => updateByKey(old, pendingExpressTxn.key!, { isViewed: true }));
-        }
-      });
-    },
-    [gelatoTaskStatuses, pendingExpressTxnParams]
-  );
 
   return <SyntheticsEventsContext.Provider value={contextState}>{children}</SyntheticsEventsContext.Provider>;
 }

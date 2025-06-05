@@ -22,6 +22,7 @@ import {
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import {
   selectBlockTimestampData,
+  selectExpressNoncesData,
   selectGasPaymentTokenAllowance,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -149,6 +150,7 @@ export function PositionSeller() {
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const tokenPermits = useSelector(selectTokenPermits);
   const addTokenPermit = useSelector(selectAddTokenPermit);
+  const noncesData = useSelector(selectExpressNoncesData);
 
   const isVisible = Boolean(position);
 
@@ -571,6 +573,7 @@ export function PositionSeller() {
       signer,
       provider,
       batchParams,
+      noncesData,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
       simulationParams: shouldDisableValidationForTesting

@@ -1,9 +1,9 @@
 import useSWR from "swr";
-import { useAccount } from "wagmi";
 
 import { getContract } from "config/contracts";
 import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
+import useWallet from "lib/wallets/useWallet";
 import type { UiContractsChain } from "sdk/configs/chains";
 
 export function useGovTokenDelegates(chainId: UiContractsChain) {
@@ -15,7 +15,7 @@ export function useGovTokenDelegates(chainId: UiContractsChain) {
     govTokenAddress = null;
   }
 
-  const { address: account } = useAccount();
+  const { account } = useWallet();
 
   const { data: govTokenDelegate } = useSWR(
     govTokenAddress && [
