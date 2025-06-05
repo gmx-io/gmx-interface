@@ -9,10 +9,19 @@ export * from "./estimateOraclePriceCount";
 export * from "./executionFee";
 export * from "./priceImpact";
 
-export function getSwapFee(marketInfo: MarketInfo, swapAmount: bigint, forPositiveImpact: boolean) {
-  const factor = forPositiveImpact
-    ? marketInfo.swapFeeFactorForPositiveImpact
-    : marketInfo.swapFeeFactorForNegativeImpact;
+export function getSwapFee(
+  marketInfo: MarketInfo,
+  swapAmount: bigint,
+  forPositiveImpact: boolean,
+  isAtomicSwap: boolean
+) {
+  let factor: bigint;
+
+  if (isAtomicSwap) {
+    factor = marketInfo.atomicSwapFeeFactor;
+  } else {
+    factor = forPositiveImpact ? marketInfo.swapFeeFactorForPositiveImpact : marketInfo.swapFeeFactorForNegativeImpact;
+  }
 
   return applyFactor(swapAmount, factor);
 }

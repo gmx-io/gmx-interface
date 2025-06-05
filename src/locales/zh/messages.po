@@ -84,10 +84,6 @@ msgstr ""
 msgid "What would have made your rating a 9 or 10?"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount generation failed"
-msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
@@ -112,12 +108,12 @@ msgstr "同意"
 msgid "BonsaiDAO"
 msgstr ""
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-msgid "Daily Loss"
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Approval signed"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount activated"
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "Daily Loss"
 msgstr ""
 
 #: src/pages/Home/Home.tsx
@@ -203,10 +199,6 @@ msgstr "去中心化<0/>永续交易所"
 msgid "Current Reserved"
 msgstr ""
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Main Account {0} Balance is used to top up Subaccount Balance on each Action up to the set Max auto top-up amount. Use the \"Сonvert {1} to {2}\" field if the Main Account {3} Balance is low."
-msgstr ""
-
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -223,8 +215,17 @@ msgstr ""
 msgid "Total size"
 msgstr ""
 
+#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
+msgid "Try Express Trading"
+msgstr ""
+
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if there is not enough available liquidity."
+msgstr ""
+
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Buy {gasPaymentTokensText}"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
@@ -432,14 +433,6 @@ msgstr ""
 msgid "Funding Claimed"
 msgstr ""
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Subaccount Balance"
-msgstr ""
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Main Account Balance"
-msgstr ""
-
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code added!"
 msgstr "添加了推荐代码"
@@ -450,10 +443,6 @@ msgstr ""
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Treasury"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "View status"
 msgstr ""
 
 #: src/components/Glp/SwapErrorModal.tsx
@@ -483,10 +472,6 @@ msgstr "交易取消，等待 {0} 升级"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Increased {positionText}, +{0}"
-msgstr ""
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Convert this amount of {0} to {1} in your Main Account to allow for auto top-ups, as only {2} can be automatically transferred to your Subaccount. The {3} balance of your main account is shown above."
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -520,10 +505,6 @@ msgstr ""
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr "您可以使用以下任何一种方式将ETH从其他网络转移到Arbitrum："
-
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount deactivated"
-msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Created limit order for {0} {1}: {2} USD!"
@@ -565,6 +546,10 @@ msgstr ""
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price."
 msgstr ""
 
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
+msgid "{actionsCount, plural, one {Order} other {# Orders}}"
+msgstr ""
+
 #: src/config/bridging.tsx
 msgid "Buy APE on Arbitrum with <0>Camelot</0>."
 msgstr ""
@@ -577,10 +562,6 @@ msgstr "你需要在此页面上接受转让，<0>点击这里</0>，若需要�
 msgid "Don't show this message again for 30 days."
 msgstr "30天内不要再显示此信息"
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "This amount of {0} will be sent from your Main Account to your Subaccount to pay for transaction fees."
-msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "hide"
 msgstr "隐藏"
@@ -588,10 +569,6 @@ msgstr "隐藏"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "in liquidity"
 msgstr "流动性中"
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Max Network Fee buffer below {0}% may result in failed orders."
-msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Exit Price"
@@ -724,10 +701,6 @@ msgstr ""
 msgid "Rank"
 msgstr ""
 
-#: src/components/Synthetics/SubaccountModal/utils.ts
-msgid "Allow {wrappedTokenSymbol} to be spent"
-msgstr ""
-
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average position size."
 msgstr ""
@@ -800,10 +773,6 @@ msgstr ""
 msgid "You can check your claim history <0>here</0>."
 msgstr "你可以在这里查看你的提领历史<0></0>"
 
-#: src/components/Synthetics/SubaccountModal/utils.ts
-msgid "Maximum allowed actions is required"
-msgstr ""
-
 #: src/components/Synthetics/Claims/ClaimableCard.tsx
 msgid "Claimable positive funding fees.<0/><1/>They become available after modifying the position by increasing or decreasing it, depositing or withdrawing collateral, or settling the fees using the \"Settle\" button."
 msgstr ""
@@ -839,10 +808,6 @@ msgstr ""
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "MAX"
 msgstr "最大值"
-
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Activating Subaccount"
-msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
@@ -1125,12 +1090,8 @@ msgstr "估计的费用退款"
 msgid "GMX Swaps"
 msgstr ""
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivating..."
-msgstr ""
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Deactivate"
 msgstr ""
 
 #: src/components/Header/HomeHeaderLinks.tsx
@@ -1198,6 +1159,10 @@ msgstr ""
 msgid "Short Liq."
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading is disabled. Time limit expired."
+msgstr ""
+
 #: src/components/Synthetics/MarketStats/components/MarketDescription.tsx
 msgid "This token automatically accrues fees from leverage trading and swaps for the {0} market. It is also exposed to {composition} as per the composition displayed."
 msgstr ""
@@ -1228,6 +1193,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Invalid TWAP number of parts value"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -1274,10 +1243,6 @@ msgstr ""
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value of tokens in the GLP pools."
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Generating and activating Subaccount"
 msgstr ""
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
@@ -1352,10 +1317,6 @@ msgstr ""
 msgid "Wallet is not connected"
 msgstr "钱包未被连接"
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Withdrawing {0} to Main Account"
-msgstr ""
-
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "TWAP Swap"
 msgstr ""
@@ -1400,6 +1361,10 @@ msgstr "杠杆失效，等待{0}升级"
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "NFT Address"
 msgstr "NFT地址"
+
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
+msgid "{orderText} cancelled."
+msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
@@ -1464,6 +1429,10 @@ msgstr ""
 msgid "Transfer Submitted"
 msgstr "送出转移"
 
+#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading is disabled. Action limit exceeded."
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -1500,7 +1469,6 @@ msgstr "Avalanche上的价格"
 msgid "Swap Order creation failed."
 msgstr "创建交易订单失败"
 
-#: src/components/SettingsModal/SettingsModal.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Chart positions"
@@ -1755,8 +1723,8 @@ msgstr ""
 msgid "Account"
 msgstr "帐户"
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "For additional safety, subaccounts are only allowed to perform a specified number of actions before re-authorization from your main account is required."
+#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Express Trading is not available for wrapping or unwrapping native token {0}."
 msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
@@ -1783,6 +1751,11 @@ msgstr ""
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Close to execution price"
 msgstr "关闭执行价格"
+
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
@@ -1818,10 +1791,6 @@ msgstr ""
 msgid "Max {0} out"
 msgstr "最高{0}以外"
 
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Updating Subaccount"
-msgstr ""
-
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "There is no price impact. There is a single<0/>execution price for increasing shorts or<1/>decreasing longs for this size."
 msgstr ""
@@ -1846,10 +1815,6 @@ msgstr ""
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Keep leverage at {keepLeverageAtValue}"
 msgstr ""
-
-#: src/domain/synthetics/orders/updateOrderTxn.ts
-msgid "Update order executed"
-msgstr "更新指令已执行"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "not staked"
@@ -1943,6 +1908,10 @@ msgstr ""
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr ""
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Display PnL After Fees"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol risk explorer and stats"
 msgstr ""
@@ -2013,12 +1982,20 @@ msgstr ""
 msgid "Affiliates"
 msgstr ""
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Max allowed actions"
-msgstr ""
-
 #: src/pages/Earn/Vesting.tsx
 msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
+msgstr ""
+
+#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
+msgid "Try Express"
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Generating 1CT (One-Click Trading) session"
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Failed to deactivate"
 msgstr ""
 
 #: src/lib/legacy.ts
@@ -2131,10 +2108,6 @@ msgstr "<0>阅读更多</0>关于费用"
 msgid "You will receive at least {0} {1} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed."
 msgstr "如果该订单被执行，您将至少收到{0} {1} 确切的执行价格可能会根据订单执行时的交易费用而变化"
 
-#: src/pages/PoolsDetails/PoolsDetails.tsx
-#~ msgid "Direct exposure to tokens"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.jsx
 msgid "Limit order creation failed."
 msgstr "限价订单创建失败"
@@ -2169,6 +2142,10 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates are airdropped weekly."
 msgstr "回扣将在每周空投一次"
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Display Settings"
+msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
@@ -2229,11 +2206,13 @@ msgstr "去中心化金融仪表板"
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "GLP购买已禁止，等待{0}升级"
 
-#: src/lib/contracts/transactionErrors.tsx
+#: src/components/Errors/errorToasts.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "<0>Error submitting order.</0><1/><2>Signer address does not match receiver address.</2><3/><4>Please reload the page and try again.</4>"
 msgstr ""
 
-#: src/lib/contracts/transactionErrors.tsx
+#: src/components/Errors/errorToasts.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 msgstr ""
 
@@ -2250,20 +2229,12 @@ msgstr ""
 msgid "TOKEN"
 msgstr "代币"
 
-#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
-#~ msgid "This token automatically accrues fees from leverage trading and swaps for the {marketName} market. It is also exposed to {0} and {1} as per the composition displayed."
-#~ msgstr ""
-
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Transfer NFT"
 msgstr "转移NFT"
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Enable deposit failed."
-msgstr ""
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Expected Actions are based on the current Network Fee."
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -2285,13 +2256,11 @@ msgstr "流动性"
 msgid "Swaps"
 msgstr "交易"
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Initial top-up"
-msgstr ""
-
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 #: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Allow {0} to be spent"
@@ -2300,10 +2269,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 msgid "Swap Order created!"
 msgstr "创建了交易订单"
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Unknown"
-msgstr ""
 
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "POSITION"
@@ -2326,9 +2291,6 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-#: src/components/Synthetics/SubaccountModal/utils.ts
-#: src/components/Synthetics/SubaccountModal/utils.ts
-#: src/components/Synthetics/SubaccountModal/utils.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Update"
 msgstr "更新"
@@ -2352,14 +2314,6 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
-
-#: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
-msgid "Reduce wallet signing popups with One-Click Trading. This option is also available through the Wallet menu in the top right. <0>Read more</0>."
-msgstr "通过一键交易减少钱包签名弹出窗口。此选项也可通过右上角的钱包菜单获得。"
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
-msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order executed"
@@ -2394,7 +2348,8 @@ msgstr ""
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
 msgstr ""
 
-#: src/lib/contracts/transactionErrors.tsx
+#: src/components/Errors/errorToasts.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "标价已改变, 请考虑点击你地址旁的 \"...\" 图示来增加你的允许滑点"
 
@@ -2509,10 +2464,6 @@ msgstr ""
 msgid "Could not decrease {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}"
 msgstr "无法降低 {0} {longOrShortText}, +{1} USD, 能接受的价钱: {2}"
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Top-up"
-msgstr ""
-
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "NET RATE / 1 H"
 msgstr "净率/1小时"
@@ -2525,9 +2476,17 @@ msgstr "在Avalanche上授权GMX"
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take Profit / Stop Loss Orders."
 msgstr ""
 
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "Relayer request failed"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"
 msgstr "要求减少 {0} {longOrShortText}, -{1} USD, 可接受的价格: {2} {3} USD"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "settings updated"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "You have an existing position with {0} as collateral."
@@ -2571,10 +2530,6 @@ msgstr "年利率每周三更新一次，具体数量取决于当周收取的费
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees (Incl. Swap)"
-msgstr ""
-
-#: src/components/Synthetics/SubaccountModal/utils.ts
-msgid "Generate & Activate Subaccount"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -2663,8 +2618,9 @@ msgstr ""
 msgid "Creating..."
 msgstr "创建中..."
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing from Subaccount"
 msgstr ""
 
@@ -2701,6 +2657,10 @@ msgstr "无效的价格，请参阅警告"
 
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} only from your short position."
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Signing approval..."
 msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
@@ -2743,16 +2703,17 @@ msgstr "{0}GLP以{1}{2}售出 !"
 msgid "Stop Market - Long Inc."
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Pending Wallet message sign"
-msgstr ""
-
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to Claim Price Impact Rebate"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Only positions with over {0} in \"Capital Used\" are ranked."
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Generate 1CT (One-Click Trading) session"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
@@ -2779,10 +2740,6 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price or $1.00, with transactions involving multiple stablecoins may have multiple spreads."
-msgstr ""
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "Generate and activate a Subaccount for <0>One-Click Trading</0> to reduce signing popups."
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3002,10 +2959,6 @@ msgstr ""
 msgid "Please enter the names of the coins you'd like to see added:"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount created"
-msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Forfeit profit and Short"
 msgstr "没收收益并做空"
@@ -3024,6 +2977,10 @@ msgstr ""
 
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "Delegated to"
+msgstr ""
+
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
+msgid "{orderText} update failed."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
@@ -3050,6 +3007,14 @@ msgstr "esGMX（IOU）代币是可以转让的，如果你愿意，你可以把�
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Self-transfer not supported"
 msgstr "不支持自行转让"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Generating session..."
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "{actions, plural, one {1 action} other {{actions} actions}}"
+msgstr ""
 
 #: src/pages/Exchange/Exchange.tsx
 msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
@@ -3100,12 +3065,8 @@ msgstr "杠杆"
 msgid "Enable orders sent."
 msgstr "启用指令发送"
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "The subaccount has no funds."
-msgstr ""
-
 #: src/components/Exchange/PositionEditor.jsx
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing..."
 msgstr ""
 
@@ -3228,10 +3189,6 @@ msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap UI Fee"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Deactivating subaccount"
 msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -3381,10 +3338,6 @@ msgstr "订单无法执行，剩余头寸小于5美元"
 msgid "Claiming..."
 msgstr "领取中"
 
-#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-#~ msgid "Total Accrued Fees"
-#~ msgstr ""
-
 #. Filter option for tokens favorites
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "All"
@@ -3525,10 +3478,6 @@ msgstr "社区主导的Telegram群组"
 msgid "{longShortText} {0} Open Interest"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount activation failed"
-msgstr ""
-
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 msgid "COMP."
@@ -3559,6 +3508,10 @@ msgstr "存取失败"
 msgid "Request Market Swap"
 msgstr "要求市场交换"
 
+#: src/components/ExpressTradingGasTokenSwitchedBanner.ts/ExpressTradingGasTokenSwithedBanner.tsx
+msgid "Gas payment token changed due to insufficient balance in the selected token."
+msgstr ""
+
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.{1}"
 msgstr ""
@@ -3586,16 +3539,16 @@ msgstr "{0}GLP以{1}{2}买入!"
 msgid "Unstake"
 msgstr "解除质押"
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Debug Settings"
+msgstr ""
+
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "More Options"
 msgstr "更多选项"
 
 #: src/components/TokenCard/TokenCard.tsx
 msgid "GLV is the liquidity provider token for GMX V2 vaults. Consist of several GM tokens and accrues fees generated by them."
-msgstr ""
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"<0>Top-up</0>\" field to increase the Subaccount Balance."
 msgstr ""
 
 #: src/components/Synthetics/TwapRows/TwapRows.tsx
@@ -3606,6 +3559,7 @@ msgstr ""
 msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
 msgstr ""
 
+#: src/components/DebugExpressSettings/DebugSwapsSettings.tsx
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Fail External Swaps"
 msgstr ""
@@ -3634,14 +3588,14 @@ msgstr "交易送出"
 msgid "PnL"
 msgstr "PnL"
 
+#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Express Trading is not available using network's native token {0}. Consider using {1} instead."
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Increase"
 msgstr "市场增加"
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Include PnL in leverage display"
-msgstr "在杠杆显示中包括PnL"
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 msgid "No claims yet"
@@ -3654,8 +3608,8 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/pages/Earn/Vesting.tsx
 #: src/pages/Earn/Vesting.tsx
@@ -3743,6 +3697,10 @@ msgstr "核准失败"
 msgid "Open Interest"
 msgstr "开启利息"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Updating settings..."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
 msgstr "该仓位将在 {0} USD 开仓,最大滑点为{1}%.<0/><1/>滑点金额可在设置下配置, 在连接你的钱包后，点击页面右上方的地址即可找到<2/><3/><4>阅读更多</4>"
@@ -3751,16 +3709,16 @@ msgstr "该仓位将在 {0} USD 开仓,最大滑点为{1}%.<0/><1/>滑点金额�
 msgid "Active Referral Code"
 msgstr "有效推荐代码"
 
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Save One-Click Trading settings"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Please switch your network to Arbitrum."
 msgstr "请将您的网络切换到Arbitrum"
 
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "The position would be immediately liquidated upon order execution. Try reducing the size."
-msgstr ""
-
-#: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
-msgid "Enable"
 msgstr ""
 
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
@@ -3826,10 +3784,6 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "RPnL ($)"
-msgstr ""
-
-#: src/domain/synthetics/orders/updateOrderTxn.ts
-msgid "Updating order"
 msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
@@ -4160,6 +4114,10 @@ msgstr ""
 msgid "Fulfilling order request"
 msgstr ""
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient {0} balance to pay for gas"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "目前，您最多可以授权{0}个esGMX代币，比例为{1}个esGMX。 {stakingToken}对1esGMX"
@@ -4247,10 +4205,6 @@ msgstr ""
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmListItem.tsx
-#~ msgid "Your deposit"
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on 1inch.</4>"
 msgstr ""
@@ -4270,6 +4224,10 @@ msgstr ""
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Users"
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Gas Payment Token"
 msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
@@ -4302,6 +4260,7 @@ msgstr ""
 msgid "UI Fee"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Execute order simulation failed."
@@ -4378,7 +4337,6 @@ msgid "Failed Stop Market"
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Address copied to your clipboard"
 msgstr ""
 
@@ -4449,10 +4407,6 @@ msgstr "输入代码"
 
 #: src/components/Synthetics/GmList/GmListItem.tsx
 msgid "Details"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount is updated"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -4547,6 +4501,11 @@ msgstr ""
 msgid "Create Stop Loss"
 msgstr ""
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Failed to generate session"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "This competition has ended."
 msgstr ""
@@ -4618,7 +4577,7 @@ msgstr ""
 msgid "Stryke"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "External swap is temporarily disabled. Please try again."
 msgstr ""
 
@@ -4693,6 +4652,10 @@ msgstr "没有符合选定筛选条件的交易"
 msgid "Decreased"
 msgstr "已减少"
 
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
+msgid "Updating {orderText}."
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/OrdersList.jsx
@@ -4727,10 +4690,6 @@ msgstr "链接被复制到剪贴板上"
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max slippage precision is -0.01%"
 msgstr ""
-
-#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-#~ msgid "{daysConsidered}d Accrued Fees"
-#~ msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.jsx
 msgid "Dec."
@@ -4841,6 +4800,10 @@ msgstr ""
 msgid "Reason: {0}"
 msgstr "原因: {0}"
 
+#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Approval nonce expired. Please sign a new approval."
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -4934,11 +4897,6 @@ msgstr ""
 msgid "Swap submitted!"
 msgstr "交易送出!"
 
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Pending Wallet transaction sign"
-msgstr ""
-
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -4977,10 +4935,6 @@ msgstr ""
 
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 msgid "TVL/CAP"
-msgstr ""
-
-#: src/components/Synthetics/TradeBox/OneClickTradingInfo.tsx
-msgid "The previously authorized maximum number of actions has been reached for One-Click Trading."
 msgstr ""
 
 #: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
@@ -5048,10 +5002,12 @@ msgstr ""
 msgid "Affiliate Rewards Claimed"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
 msgstr ""
 
+#: src/components/DebugExpressSettings/DebugSwapsSettings.tsx
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Swap Price Impact for External Swap Threshold"
 msgstr ""
@@ -5090,7 +5046,7 @@ msgstr "交易订单送出"
 #: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
-#: src/components/Synthetics/SubaccountModal/utils.ts
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5100,8 +5056,8 @@ msgstr "交易订单送出"
 msgid "Loading..."
 msgstr "加载中..."
 
-#: src/components/Synthetics/TradeBox/OneClickTradingInfo.tsx
-msgid "There are insufficient funds in your subaccount for One-Click Trading"
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Include PnL In Leverage Display"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.jsx
@@ -5127,6 +5083,14 @@ msgstr "电报群"
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Search Action"
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Show Leverage Slider"
+msgstr ""
+
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
+msgid "Cancelling {orderText}."
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
@@ -5216,6 +5180,10 @@ msgstr "推荐代码更新失败"
 msgid "Price"
 msgstr "价钱"
 
+#: src/domain/tokens/approveTokens.tsx
+msgid "Permit signing was cancelled"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Realized PnL insufficient for Fees"
 msgstr ""
@@ -5230,6 +5198,10 @@ msgstr "网络错误"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Optimizer"
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Express Trading"
 msgstr ""
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
@@ -5371,6 +5343,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Close {longOrShortText} {0}"
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Disable validation for testing"
 msgstr ""
 
 #: src/pages/Earn/VesterDepositModal.tsx
@@ -5538,10 +5514,6 @@ msgstr ""
 msgid "Begin Transfer"
 msgstr "开始转移"
 
-#: src/components/Synthetics/TradeBox/OneClickTradingInfo.tsx
-msgid "One-Click Trading is not available for wrapping or unwrapping native token {0}."
-msgstr ""
-
 #: src/components/RatingToast/RatingToast.tsx
 msgid "How likely are you to recommend our service to a friend or colleague?"
 msgstr ""
@@ -5578,6 +5550,10 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr "取消"
+
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
+msgid "{orderText} updated."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Tradao"
@@ -5625,10 +5601,6 @@ msgstr "GMX上未平仓合约的电报机器人"
 #: src/components/Glp/GlpSwap.jsx
 msgid "Check the \"Save on Fees\" section below to get the lowest fee percentages."
 msgstr "检查下方的 \"节省费用 \"，以获得最低的费用百分比"
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Display PnL after fees"
-msgstr "收费后显示PnL"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -5779,10 +5751,6 @@ msgstr "订单触发价格"
 msgid "Epoch ending is not acknowledged"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount deactivation failed"
-msgstr ""
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
 msgstr ""
@@ -5850,6 +5818,10 @@ msgstr ""
 msgid "Order request sent"
 msgstr ""
 
+#: src/components/ExpressTradingEnabledBanner/ExpressTradingEnabledBanner.tsx
+msgid "Express Trading is enabled. Enjoy smoother, more reliable trades!"
+msgstr ""
+
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "Alternatively, you can select a different \"Collateral In\" token."
 msgstr "或者,您可选择\"Collateral In\" 代币"
@@ -5869,6 +5841,10 @@ msgstr "<0>返回 </0><1>主页</1> <2>or </2> <3>交易</3>"
 
 #: src/components/Synthetics/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} with"
+msgstr ""
+
+#: src/domain/tokens/approveTokens.tsx
+msgid "Permit signing failed"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6000,6 +5976,11 @@ msgstr ""
 msgid "GMX v2 Telegram & Discord Analytics"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
+#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Re-enable"
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "I do not want to transfer the Affiliate esGMX tokens"
 msgstr ""
@@ -6113,12 +6094,12 @@ msgstr ""
 msgid "Claim esGMX"
 msgstr "领取esGMX"
 
-#: src/components/Synthetics/TradeBox/OneClickTradingInfo.tsx
-msgid "Re-authorize"
-msgstr ""
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer ETH to Arbitrum"
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "The maximum percentage difference between your specified price and execution price when placing orders."
 msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
@@ -6164,16 +6145,16 @@ msgstr "执行限价交换"
 msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-#~ msgid "{daysConsidered}d accrued Fees"
-#~ msgstr ""
-
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submit"
 msgstr "送出"
+
+#: src/domain/tokens/approveTokens.tsx
+msgid "Permit signed!"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Request withdrawal from {0} {longOrShortText}"
@@ -6194,12 +6175,6 @@ msgstr "生态系统"
 #: src/components/Exchange/SwapBox.jsx
 msgid "High USDG Slippage, Long Anyway"
 msgstr "高 USDG 滑点，继续做多"
-
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Deactivation"
-msgstr ""
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "Next"
@@ -6350,6 +6325,10 @@ msgstr ""
 msgid "Annualized:"
 msgstr ""
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Failed to sign approval"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "Starts in"
 msgstr ""
@@ -6381,10 +6360,6 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Not enough Available Liquidity to fill the Order."
 msgstr "没有足够的可用流动性来填补订单。"
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Show leverage slider"
-msgstr ""
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -6433,10 +6408,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 msgid "Save on Fees"
 msgstr "节省费用"
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Allowed Slippage below {defaultSippageDisplay}% may result in failed orders. orders."
-msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Take Profit"
@@ -6489,6 +6460,10 @@ msgstr ""
 msgid "view"
 msgstr "查看"
 
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
+msgid "{orderText} cancel failed."
+msgstr ""
+
 #: src/components/Exchange/OrdersToa.jsx
 msgid "Accept terms to enable orders"
 msgstr "接受条款以開始指令"
@@ -6539,10 +6514,6 @@ msgstr ""
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr ""
 
-#: src/components/Synthetics/SubaccountModal/utils.ts
-msgid "Maximum auto top-up amount is required"
-msgstr ""
-
 #: src/pages/BuyGlp/BuyGlp.jsx
 msgid "Buy / Sell GLP"
 msgstr "购买/出售GLP"
@@ -6553,10 +6524,6 @@ msgstr ""
 
 #: src/components/MintableAmount/MintableAmount.tsx
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
-msgstr ""
-
-#: src/components/Synthetics/TradeBox/OneClickTradingInfo.tsx
-msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} instead."
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
@@ -6603,6 +6570,12 @@ msgstr ""
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 msgstr "看来你没有推荐代码可以分享。<0/> 创建一个，开始赚取回扣！"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Update 1CT (One-Click Trading) settings"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Kudai AI Agent"
 msgstr ""
@@ -6634,6 +6607,12 @@ msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "Pools providing liquidity to specific GMX markets, supporting single-asset and native asset options."
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Deactivate 1CT (One-Click Trading)"
 msgstr ""
 
 #: src/pages/Earn/GlpCard.tsx
@@ -6692,6 +6671,10 @@ msgstr "启用杠杆功能中..."
 msgid "There may not be sufficient liquidity to execute the swap to the receive token when the price conditions are met."
 msgstr ""
 
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
+msgid "Withdrawn {balanceFormatted} to Main Account"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Errors"
 msgstr ""
@@ -6733,10 +6716,6 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Receive"
 msgstr "收取"
-
-#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
-#~ msgid "All time Earned in Fees"
-#~ msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.jsx
 msgid "time to liq"
@@ -6795,10 +6774,6 @@ msgstr ""
 msgid "Transfer {nativeTokenSymbol}"
 msgstr ""
 
-#: src/context/SubaccountContext/SubaccountContext.tsx
-msgid "There are insufficient funds in your Subaccount for One-Click Trading. <0>Click here</0> to top-up."
-msgstr ""
-
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Meme"
 msgstr ""
@@ -6808,9 +6783,6 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftTransactions.tsx
 #: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
-#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
-#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
 msgid "Error submitting order"
 msgstr ""
@@ -6933,10 +6905,6 @@ msgstr ""
 msgid "Sell failed."
 msgstr "出售失败"
 
-#: src/components/Synthetics/SubaccountModal/utils.ts
-msgid "Insufficient {nativeTokenSymbol} balance"
-msgstr ""
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Limit"
 msgstr ""
@@ -6964,12 +6932,6 @@ msgstr "日期"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using FIAT gateways:"
-msgstr ""
-
-#: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
-#: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
-#: src/domain/synthetics/orders/createSwapOrderTxn.ts
-msgid "Order error."
 msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.jsx
@@ -7035,10 +6997,6 @@ msgstr "下载"
 msgid "Swap {0} for {1}"
 msgstr ""
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Max auto top-up amount"
-msgstr ""
-
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Vault Capacity"
 msgstr ""
@@ -7057,10 +7015,6 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Keep leverage at {0}x"
-msgstr ""
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "The amount left in the subaccount is not enough to cover network gas costs."
 msgstr ""
 
 #: src/pages/Earn/StakeModal.tsx
@@ -7096,6 +7050,10 @@ msgstr ""
 msgid "Swap failed."
 msgstr "交易失败"
 
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
+msgid "Failed to withdraw {balanceFormatted} to Main Account"
+msgstr ""
+
 #: src/components/Synthetics/MarketStats/components/MarketDescription.tsx
 msgid "This token automatically accrues fees from swaps for the {0}/{1} market. It is also exposed to {2} and {3} as per the composition displayed."
 msgstr ""
@@ -7105,10 +7063,6 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Page outdated, please refresh"
 msgstr "页面已过期，请刷新"
-
-#: src/pages/PoolsDetails/PoolsDetails.tsx
-#~ msgid "Market exposure to Trader PnL"
-#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals"
@@ -7157,6 +7111,12 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Freeze"
+msgstr ""
+
+#: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Express params loading..."
 msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
@@ -7245,10 +7205,6 @@ msgstr "产量库"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram Group (Portuguese)"
 msgstr "电报群（葡萄牙文）"
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Withdrawn {0} to Main Account"
-msgstr ""
 
 #: src/pages/Actions/SyntheticsActions.tsx
 msgid "GMX V2 Actions"
@@ -7498,6 +7454,10 @@ msgstr ""
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 msgstr ""
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Express Trading streamlines your trades on GMX by replacing on-chain transactions with secure off-chain message signing, helping reduce issues from network congestion and RPC errors.<0/><1/>These signed messages are processed on-chain for you, so a gas payment token is still required."
+msgstr ""
+
 #: src/pages/Earn/UnstakeModal.tsx
 msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"
 msgstr ""
@@ -7533,10 +7493,6 @@ msgstr "总供应量"
 msgid "{0} Pool Capacity Reached"
 msgstr "{0} 池子到达容量"
 
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Disable order validations"
-msgstr "关闭订单验证"
-
 #: src/components/Glp/GlpSwap.jsx
 #: src/pages/Earn/EscrowedGmxCard.tsx
 #: src/pages/Earn/GlpCard.tsx
@@ -7560,6 +7516,7 @@ msgstr ""
 msgid "take profit"
 msgstr ""
 
+#: src/components/DebugExpressSettings/DebugSwapsSettings.tsx
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Force External Swaps"
 msgstr ""
@@ -7576,11 +7533,12 @@ msgstr "大小"
 msgid "Create Limit Swap"
 msgstr "创建限价交换"
 
-#: src/lib/contracts/transactionErrors.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr ""
 
-#: src/lib/contracts/transactionErrors.tsx
+#: src/components/Errors/errorToasts.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "Transaction was cancelled."
 msgstr "交易已取消"
 
@@ -7731,17 +7689,14 @@ msgstr "至少为手续费留{0}{1}"
 msgid "staked"
 msgstr "已质押"
 
-#: src/lib/contracts/transactionErrors.tsx
+#: src/components/Errors/errorToasts.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "There is not enough {0} in your account on {1} to send this transaction.<0/><1/><2>Buy or Transfer {2} to {3}</2>"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Volume"
 msgstr "总量"
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Subaccount:"
-msgstr ""
 
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/OrderEditor.jsx
@@ -7769,10 +7724,6 @@ msgstr ""
 msgid "Failed TWAP Swap Part"
 msgstr ""
 
-#: src/domain/synthetics/orders/updateOrderTxn.ts
-msgid "Failed to update order"
-msgstr ""
-
 #: src/components/Exchange/ExchangeTVChart.jsx
 msgid "Open {0} {longOrShortText}"
 msgstr ""
@@ -7793,6 +7744,7 @@ msgstr ""
 msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr "无效代币索引代币: \"{0}\" 抵押品代币: \"{1}\\"
 
+#: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Alerts"
 msgstr ""
@@ -7913,9 +7865,7 @@ msgstr ""
 msgid "Enter a valid coin names"
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.tsx
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "One-Click Trading"
 msgstr ""
 
@@ -7948,6 +7898,10 @@ msgstr ""
 msgid "Stop Loss PnL"
 msgstr ""
 
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
+msgid "Withdrawing {balanceFormatted}  to Main Account"
+msgstr ""
+
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Settling..."
 msgstr ""
@@ -7978,12 +7932,12 @@ msgstr ""
 msgid "No data available"
 msgstr ""
 
-#: src/components/Synthetics/SubaccountModal/utils.ts
-msgid "{nativeTokenSymbol} is not available"
-msgstr ""
-
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "{prefix} <0>{text}</0>"
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Failed to update settings"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
@@ -8010,10 +7964,6 @@ msgstr ""
 msgid "Add {0} to Metamask"
 msgstr ""
 
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Save"
-msgstr "储存"
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
 msgstr ""
@@ -8034,7 +7984,8 @@ msgstr ""
 msgid "Max 110 symbols exceeded"
 msgstr ""
 
-#: src/lib/contracts/transactionErrors.tsx
+#: src/components/Errors/errorToasts.tsx
+#: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed"
 msgstr "交易失败"
 
@@ -8051,10 +8002,6 @@ msgstr ""
 msgid "Depositing..."
 msgstr "存款中..."
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Expected Available Actions"
-msgstr ""
-
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
@@ -8066,20 +8013,12 @@ msgstr "净率"
 msgid "2nd Place"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/OneClickTradingInfo.tsx
-msgid "Top-Up"
-msgstr ""
-
-#: src/components/Synthetics/MarketStats/MarketGraphs.tsx
-#~ msgid "Annualized performance"
-#~ msgstr ""
-
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LAST PRICE"
 msgstr ""
 
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
+#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Re-sign"
 msgstr ""
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -8114,10 +8053,6 @@ msgstr ""
 msgid "Execution Price"
 msgstr "执行价格"
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Subaccount {0} Balance is used to pay for the Network Fees. Use the \"Top-up\" field if you need to transfer {1} to your Subaccount."
-msgstr ""
-
 #: src/components/Exchange/OrdersList.jsx
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 msgstr "订单可以执行的价格可能与图表价格略有不同，因为市价订单可以改变价格，而限定/触发订单不能"
@@ -8135,10 +8070,6 @@ msgstr ""
 msgid "About"
 msgstr "关于"
 
-#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-#~ msgid "Total accrued Fees"
-#~ msgstr ""
-
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Accrued positive funding fees in positions not yet claimable.<0/><1/>They become available after modifying the position by increasing or decreasing it, depositing or withdrawing collateral, or settling the fees using the \"Settle\" button."
 msgstr ""
@@ -8153,10 +8084,6 @@ msgstr "生成推荐代码"
 
 #: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High Swap Price Impact"
-msgstr ""
-
-#: src/components/Synthetics/SubaccountModal/utils.ts
-msgid "Activate Subaccount"
 msgstr ""
 
 #: src/components/Exchange/OrdersList.jsx
@@ -8247,7 +8174,7 @@ msgstr ""
 msgid "No open positions at GMX currently"
 msgstr "目前在GMX没有未结头寸"
 
-#: src/context/SubaccountContext/SubaccountContext.tsx
+#: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Max Action Count Reached. <0>Click here</0> to update."
 msgstr ""
 
@@ -8273,10 +8200,6 @@ msgstr ""
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 30d"
 msgstr ""
-
-#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-#~ msgid "The fees' USD value is calculated at the time they are accrued and does not include incentives."
-#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Dashboards"
@@ -8433,10 +8356,6 @@ msgstr ""
 msgid "Edit {longOrShortText} {0}"
 msgstr ""
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Сonvert {0} to {1}"
-msgstr ""
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
 msgstr ""
@@ -8459,6 +8378,12 @@ msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche trading incentives"
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Signing 1CT (One-Click Trading) approval"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
@@ -8528,6 +8453,10 @@ msgstr ""
 msgid "Cancelling {ordersText}"
 msgstr ""
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Deactivated"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Ecosystem Projects"
 msgstr ""
@@ -8568,12 +8497,16 @@ msgstr ""
 msgid "We'll then schedule a chat or interview with you. As a thank you, you'll receive <0>100 <1/></0> for providing your feedback."
 msgstr ""
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
-msgstr ""
-
 #: src/domain/synthetics/positions/utils.ts
 msgid "limit"
+msgstr ""
+
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "One-Click Trading Settings"
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Trading Settings"
 msgstr ""
 
 #: src/components/Exchange/OrdersToa.jsx
@@ -8711,6 +8644,10 @@ msgstr ""
 msgid "Proof of Reserves"
 msgstr "储备证明"
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} or {remainingSubaccountDays}, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings\""
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "General Performance Details"
 msgstr ""
@@ -8729,6 +8666,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeBank"
+msgstr ""
+
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
+msgid "You have {balanceFormatted} remaining in your old version 1CT subaccount."
 msgstr ""
 
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx

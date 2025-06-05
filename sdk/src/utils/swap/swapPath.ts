@@ -5,6 +5,7 @@ import { MarketsInfoData } from "types/markets";
 import { TokensData } from "types/tokens";
 import { FindSwapPath, SwapPathStats } from "types/trade";
 import { LRUCache } from "utils/LruCache";
+import { getIsMarketAvailableForExpressSwaps } from "utils/markets";
 
 import { buildMarketsAdjacencyGraph, MarketsGraph } from "./buildMarketsAdjacencyGraph";
 import {
@@ -26,31 +27,28 @@ export const getWrappedAddress = (chainId: number, address: string | undefined) 
 };
 
 const DEBUG_MARKET_ADJACENCY_GRAPH_CACHE = new LRUCache<MarketsGraph>(100);
-function buildDebugMarketAdjacencyGraph(
-  chainId: number,
-  debugSwapMarketsConfig: {
-    disabledSwapMarkets?: string[] | undefined;
-    manualPath?: string[] | undefined;
-  }
-) {
-  if (!debugSwapMarketsConfig?.disabledSwapMarkets?.length) {
+
+function buildMarketAdjacencyGraph(chainId: number, disabledMarkets?: string[] | undefined) {
+  if (!disabledMarkets?.length) {
     return getMarketAdjacencyGraph(chainId);
   }
 
-  const cacheKey = `${chainId}-${JSON.stringify(debugSwapMarketsConfig)}`;
+  const cacheKey = `${chainId}-${JSON.stringify(disabledMarkets)}`;
 
   const cachedGraph = DEBUG_MARKET_ADJACENCY_GRAPH_CACHE.get(cacheKey);
+
   if (cachedGraph) {
     return cachedGraph;
   }
 
-  const disabledMarketAddresses = debugSwapMarketsConfig.disabledSwapMarkets;
+  const disabledMarketAddresses = disabledMarkets;
 
   const strippedMarkets = Object.fromEntries(
     Object.entries(MARKETS[chainId]).filter(([marketAddress]) => !disabledMarketAddresses.includes(marketAddress))
   );
 
   const graph = buildMarketsAdjacencyGraph(strippedMarkets);
+
   DEBUG_MARKET_ADJACENCY_GRAPH_CACHE.set(cacheKey, graph);
 
   return graph;
@@ -73,25 +71,54 @@ export const createFindSwapPath = (params: {
         tokensData: TokensData;
       }
     | undefined;
-  debugSwapMarketsConfig?: {
-    disabledSwapMarkets?: string[] | undefined;
-    manualPath?: string[] | undefined;
-  };
+  isExpressFeeSwap: boolean | undefined;
+  disabledMarkets?: string[] | undefined;
+  manualPath?: string[] | undefined;
+  maxSwapPathLength?: number | undefined;
 }): FindSwapPath => {
-  const { chainId, fromTokenAddress, toTokenAddress, marketsInfoData, debugSwapMarketsConfig, gasEstimationParams } =
-    params;
+  const {
+    chainId,
+    fromTokenAddress,
+    toTokenAddress,
+    marketsInfoData,
+    disabledMarkets,
+    manualPath,
+    gasEstimationParams,
+    isExpressFeeSwap,
+    maxSwapPathLength,
+  } = params;
   const wrappedFromAddress = getWrappedAddress(chainId, fromTokenAddress);
   const wrappedToAddress = getWrappedAddress(chainId, toTokenAddress);
   const wrappedToken = getWrappedToken(chainId);
 
-  const tokenSwapPaths =
+  let tokenSwapPaths =
     wrappedFromAddress && wrappedToAddress
       ? getTokenSwapPathsForTokenPairPrebuilt(chainId, wrappedFromAddress, wrappedToAddress)
       : [];
 
-  const marketAdjacencyGraph = debugSwapMarketsConfig?.disabledSwapMarkets?.length
-    ? buildDebugMarketAdjacencyGraph(chainId, debugSwapMarketsConfig)
-    : getMarketAdjacencyGraph(chainId);
+  if (maxSwapPathLength) {
+    /**
+     * As tokenSwapPath contains what tokens can we between input and output token,
+     * restricting intermediate tokens to 0 would mean we filter out any non-direct market swaps,
+     * length of 1 would mean all 2-step swaps
+     */
+    const nonDirectPathLength = maxSwapPathLength - 1;
+    tokenSwapPaths = tokenSwapPaths.filter((path) => path.length <= nonDirectPathLength);
+  }
+
+  const finalDisabledMarkets = [...(disabledMarkets ?? [])];
+
+  if (isExpressFeeSwap) {
+    const expressSwapUnavailableMarkets = Object.values(marketsInfoData ?? {})
+      .filter((market) => !getIsMarketAvailableForExpressSwaps(market))
+      .map((market) => market.marketTokenAddress);
+
+    finalDisabledMarkets.push(...expressSwapUnavailableMarkets);
+  }
+
+  const isAtomicSwap = Boolean(isExpressFeeSwap);
+
+  const marketAdjacencyGraph = buildMarketAdjacencyGraph(chainId, finalDisabledMarkets);
 
   const cache: Record<string, SwapPathStats | undefined> = {};
 
@@ -100,7 +127,7 @@ export const createFindSwapPath = (params: {
   }
 
   const marketEdgeLiquidityGetter = createMarketEdgeLiquidityGetter(marketsInfoData);
-  const naiveEstimator = createNaiveSwapEstimator(marketsInfoData);
+  const naiveEstimator = createNaiveSwapEstimator(marketsInfoData, isAtomicSwap);
   const naiveNetworkEstimator = gasEstimationParams
     ? createNaiveNetworkEstimator({
         gasLimits: gasEstimationParams.gasLimits,
@@ -109,7 +136,7 @@ export const createFindSwapPath = (params: {
         chainId,
       })
     : undefined;
-  const estimator = createSwapEstimator(marketsInfoData);
+  const estimator = createSwapEstimator(marketsInfoData, isAtomicSwap);
 
   const findSwapPath: FindSwapPath = (usdIn: bigint, opts?: { order?: ("liquidity" | "length")[] }) => {
     if (tokenSwapPaths.length === 0 || !fromTokenAddress || !wrappedFromAddress || !wrappedToAddress) {
@@ -123,8 +150,8 @@ export const createFindSwapPath = (params: {
 
     let swapPath: string[] | undefined = undefined;
 
-    if (debugSwapMarketsConfig?.manualPath !== undefined) {
-      swapPath = debugSwapMarketsConfig.manualPath;
+    if (manualPath !== undefined) {
+      swapPath = manualPath;
     } else if (opts?.order || usdIn === 0n) {
       const primaryOrder = opts?.order?.at(0) === "length" ? "length" : "liquidity";
 
@@ -190,6 +217,7 @@ export const createFindSwapPath = (params: {
       shouldUnwrapNativeToken: toTokenAddress === NATIVE_TOKEN_ADDRESS,
       shouldApplyPriceImpact: true,
       usdIn,
+      isAtomicSwap,
     });
 
     cache[cacheKey] = result;

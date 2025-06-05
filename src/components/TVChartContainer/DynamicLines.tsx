@@ -1,8 +1,6 @@
 import { useCallback } from "react";
 
 import { USD_DECIMALS } from "config/factors";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
 import {
   useCancellingOrdersKeysState,
@@ -10,6 +8,7 @@ import {
   useOrderEditorIsSubmittingState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { selectChartDynamicLines } from "context/SyntheticsStateContext/selectors/chartSelectors/selectChartDynamicLines";
+import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
   selectMarketsInfoData,
@@ -21,13 +20,16 @@ import {
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useMarkets } from "domain/synthetics/markets";
-import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
+import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
+import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { calculateDisplayDecimals, formatAmount, numberToBigint } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 import { PositionOrderInfo } from "sdk/types/orders";
+import { getOrderKeys } from "sdk/utils/orders";
 
 import { DynamicLine } from "./DynamicLine";
 import type { IChartingLibraryWidget } from "../../charting_library";
@@ -42,34 +44,55 @@ export function DynamicLines({
   const dynamicChartLines = useSelector(selectChartDynamicLines);
   const { signer } = useWallet();
   const chainId = useSelector(selectChainId);
-  const subaccount = useSubaccount(null);
   const [, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
-  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, 1);
+  const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const [isSubmitting] = useOrderEditorIsSubmittingState();
   const [editingOrderState, setEditingOrderState] = useEditingOrderState();
   const setTriggerPriceInputValue = useSelector(selectOrderEditorSetTriggerPriceInputValue);
   const ordersInfoData = useSelector(selectOrdersInfoData);
   const { marketsData } = useMarkets(chainId);
-  const { setPendingTxns } = usePendingTxns();
   const { pendingOrdersUpdates } = useSyntheticsEvents();
+  const globalExpressParams = useSelector(selectExpressGlobalParams);
 
   const onCancelOrder = useCallback(
-    (key: string) => {
+    async (key: string) => {
       if (!signer) return;
-      setCancellingOrdersKeys((prev) => [...prev, key]);
+      const order = getByKey(ordersInfoData, key);
 
-      const order = ordersInfoData?.[key];
       if (!order) return;
 
-      cancelOrdersTxn(chainId, signer, subaccount, {
-        orders: [order],
-        setPendingTxns: setPendingTxns,
-        detailsMsg: cancelOrdersDetailsMessage,
+      const orderKeys = getOrderKeys(order);
+      setCancellingOrdersKeys((prev) => [...prev, ...orderKeys]);
+
+      const batchParams = {
+        createOrderParams: [],
+        updateOrderParams: [],
+        cancelOrderParams: orderKeys.map((k) => ({ orderKey: k })),
+      };
+
+      const expressParams = await estimateBatchExpressParams({
+        signer,
+        chainId,
+        batchParams,
+        globalExpressParams,
+        requireValidations: true,
+        estimationMethod: "approximate",
+        provider: undefined,
+      });
+
+      sendBatchOrderTxn({
+        chainId,
+        signer,
+        batchParams,
+        expressParams,
+        noncesData: globalExpressParams?.noncesData,
+        simulationParams: undefined,
+        callback: makeOrderTxnCallback({}),
       }).finally(() => {
         setCancellingOrdersKeys((prev) => prev.filter((k) => k !== key));
       });
     },
-    [cancelOrdersDetailsMessage, chainId, setCancellingOrdersKeys, setPendingTxns, signer, subaccount, ordersInfoData]
+    [chainId, globalExpressParams, makeOrderTxnCallback, ordersInfoData, setCancellingOrdersKeys, signer]
   );
 
   const calcSelector = useCalcSelector();

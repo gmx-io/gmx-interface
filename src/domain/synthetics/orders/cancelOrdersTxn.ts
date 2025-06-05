@@ -3,13 +3,11 @@ import { Signer, ethers } from "ethers";
 import { ReactNode } from "react";
 
 import { getContract } from "config/contracts";
-import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { callContract } from "lib/contracts";
 import { abis } from "sdk/abis";
 import { isTwapOrder } from "sdk/utils/orders";
 
 import { OrderParams } from "./types";
-import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 
 export type CancelOrderParams = {
   orders: OrderParams[];
@@ -17,10 +15,8 @@ export type CancelOrderParams = {
   detailsMsg?: ReactNode;
 };
 
-export async function cancelOrdersTxn(chainId: number, signer: Signer, subaccount: Subaccount, p: CancelOrderParams) {
-  const router = subaccount
-    ? getSubaccountRouterContract(chainId, subaccount.signer)
-    : new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
+export async function cancelOrdersTxn(chainId: number, signer: Signer, p: CancelOrderParams) {
+  const router = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
 
   const orderKeys = p.orders.flatMap((o) => (isTwapOrder(o) ? o.orders.map((o) => o.key as string) : o.key));
 
@@ -39,7 +35,6 @@ export async function cancelOrdersTxn(chainId: number, signer: Signer, subaccoun
     failMsg: t`Failed to cancel ${ordersText}`,
     setPendingTxns: p.setPendingTxns,
     detailsMsg: p.detailsMsg,
-    customSigners: subaccount?.customSigners,
   });
 }
 

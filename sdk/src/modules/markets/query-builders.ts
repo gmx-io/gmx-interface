@@ -86,6 +86,13 @@ export async function buildMarketsValuesRequest(
 
   for (const marketAddress of marketsAddresses || []) {
     const market = getByKey(marketsData, marketAddress)!;
+
+    if (!market) {
+      // eslint-disable-next-line no-console
+      console.warn(`No market data found for ${marketAddress}, skipping market values request`);
+      continue;
+    }
+
     const marketPrices = getContractMarketPrices(tokensData!, market)!;
 
     if (!marketPrices) {
@@ -418,6 +425,10 @@ export async function buildMarketsConfigsRequest(
         swapFeeFactorForNegativeImpact: {
           methodName: "getUint",
           params: [prebuiltHashedKeys.swapFeeFactorForNegativeImpact],
+        },
+        atomicSwapFeeFactor: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.atomicSwapFeeFactor],
         },
         swapImpactFactorPositive: {
           methodName: "getUint",

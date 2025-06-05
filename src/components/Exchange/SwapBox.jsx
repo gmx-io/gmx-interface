@@ -1643,6 +1643,7 @@ export default function SwapBox(props) {
       getTokenInfo,
       pendingTxns,
       setPendingTxns,
+      permitParams: undefined,
     });
   }
 

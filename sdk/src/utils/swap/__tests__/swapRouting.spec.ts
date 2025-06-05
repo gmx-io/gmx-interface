@@ -597,7 +597,7 @@ describe("createSwapEstimator", () => {
       },
     });
 
-    const estimator = createSwapEstimator(marketsInfoData);
+    const estimator = createSwapEstimator(marketsInfoData, false);
     const result = estimator(
       {
         marketAddress: "ETH-ETH-USDC",
@@ -617,7 +617,7 @@ describe("createSwapEstimator", () => {
     const marketKeys = ["ETH-ETH-USDC"];
     const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys);
 
-    const estimator = createSwapEstimator(marketsInfoData);
+    const estimator = createSwapEstimator(marketsInfoData, false);
     const result = estimator(
       {
         marketAddress: "NON-EXISTENT",
@@ -679,7 +679,7 @@ describe("createNaiveSwapEstimator", () => {
       },
     });
 
-    const estimator = createNaiveSwapEstimator(marketsInfoData);
+    const estimator = createNaiveSwapEstimator(marketsInfoData, false);
     const result = estimator(
       {
         marketAddress: "ETH-ETH-USDC",
@@ -699,7 +699,7 @@ describe("createNaiveSwapEstimator", () => {
     const marketKeys = ["ETH-ETH-USDC"];
     const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys);
 
-    const estimator = createNaiveSwapEstimator(marketsInfoData);
+    const estimator = createNaiveSwapEstimator(marketsInfoData, false);
     const result = estimator(
       {
         marketAddress: "NON-EXISTENT",

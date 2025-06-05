@@ -19,6 +19,8 @@ type ProfileProps = {
   last30DVolume?: number;
   totalVolume?: number;
   languageCode: string;
+  ExpressEnabled: boolean;
+  Express1CTEnabled: boolean;
   ref?: string;
   utm?: string;
   isChartPositionsEnabled?: boolean;

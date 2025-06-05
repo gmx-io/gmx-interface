@@ -1,14 +1,14 @@
 import { MessageDescriptor } from "@lingui/core";
-import { Trans, msg, t } from "@lingui/macro";
+import { msg, t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { ImSpinner2 } from "react-icons/im";
 import { useKey, useLatest, useMedia } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   useClosingPositionKeyState,
   usePositionsConstants,
@@ -20,7 +20,12 @@ import {
   usePositionSellerKeepLeverage,
   usePositionSellerLeverageDisabledByCollateral,
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
-import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectBlockTimestampData,
+  selectExpressNoncesData,
+  selectGasPaymentTokenAllowance,
+  selectMarketsInfoData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectPositionSellerAvailableReceiveTokens,
   selectPositionSellerDecreaseAmounts,
@@ -36,29 +41,31 @@ import {
   selectPositionSellerTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import {
+  selectAddTokenPermit,
+  selectTokenPermits,
+} from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
-import { createTwapDecreaseOrderTxn } from "domain/synthetics/orders/createTwapDecreaseOrderTxn";
+import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
+import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
+import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage, formatLiquidationPrice, getNameByOrderType } from "domain/synthetics/positions";
+import { getApprovalRequirements } from "domain/synthetics/tokens";
 import { getPositionSellerTradeFlags } from "domain/synthetics/trade";
 import { TradeType } from "domain/synthetics/trade/types";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { ORDER_OPTION_TO_TRADE_MODE, OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
-import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/validation";
-import { Token } from "domain/tokens";
+import { getCommonError, getDecreaseError, getExpressError } from "domain/synthetics/trade/utils/validation";
+import { approveTokens, Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
-import {
-  initDecreaseOrderMetricData,
-  makeTxnErrorMetricsHandler,
-  makeTxnSentMetricsHandler,
-  sendOrderSubmittedMetric,
-  sendTxnValidationErrorMetric,
-} from "lib/metrics/utils";
+import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
 import {
   calculateDisplayDecimals,
   formatAmount,
@@ -70,9 +77,20 @@ import {
 } from "lib/numbers";
 import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { userAnalytics } from "lib/userAnalytics";
+import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
-import { convertTokenAddress, getTokenVisualMultiplier } from "sdk/configs/tokens";
+import { getContract } from "sdk/configs/contracts";
+import { convertTokenAddress, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
+import {
+  BatchOrderTxnParams,
+  buildDecreaseOrderPayload,
+  buildTwapOrdersPayloads,
+  CreateOrderTxnParams,
+  DecreasePositionOrderParams,
+} from "sdk/utils/orderTransactions";
+import { getIsValidTwapParams } from "sdk/utils/twap";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
@@ -88,9 +106,9 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
-
 import "./PositionSeller.scss";
 
 export type Props = {
@@ -103,9 +121,9 @@ const ORDER_OPTION_LABELS: Record<OrderOption, MessageDescriptor> = {
   [OrderOption.Twap]: msg`TWAP`,
 };
 
-export function PositionSeller(p: Props) {
-  const { setPendingTxns } = p;
+export function PositionSeller() {
   const [, setClosingPositionKey] = useClosingPositionKeyState();
+  const [isApproving, setIsApproving] = useState(false);
 
   const onClose = useCallback(() => {
     setClosingPositionKey(undefined);
@@ -125,10 +143,16 @@ export function PositionSeller(p: Props) {
   const { shouldDisableValidationForTesting } = useSettings();
   const localizedOrderOptionLabels = useLocalizedMap(ORDER_OPTION_LABELS);
   const blockTimestampData = useSelector(selectBlockTimestampData);
+  const marketsInfoData = useSelector(selectMarketsInfoData);
+  const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
+  const tokenPermits = useSelector(selectTokenPermits);
+  const addTokenPermit = useSelector(selectAddTokenPermit);
+  const noncesData = useSelector(selectExpressNoncesData);
 
   const isVisible = Boolean(position);
 
-  const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
+  const { makeOrderTxnCallback } = useOrderTxnCallbacks();
+
   const setDefaultReceiveToken = useSelector(selectPositionSellerSetDefaultReceiveToken);
   const marketDecimals = useSelector(makeSelectMarketPriceDecimals(position?.market.indexTokenAddress));
 
@@ -171,6 +195,7 @@ export function PositionSeller(p: Props) {
 
   const isTrigger = orderOption === OrderOption.Trigger;
   const isTwap = orderOption === OrderOption.Twap;
+  const isMarket = orderOption === OrderOption.Market;
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
   const maxCloseSize = position?.sizeInUsd || 0n;
 
@@ -237,6 +262,141 @@ export function PositionSeller(p: Props) {
     }
   }, [setIsDismissedLatestRef, isVisible, orderOption]);
 
+  const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: position?.key });
+
+  const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
+    let orderType = isTrigger ? decreaseAmounts?.triggerOrderType : OrderType.MarketDecrease;
+    orderType = isTwap ? OrderType.LimitDecrease : orderType;
+
+    // TODO findSwapPath considering decreasePositionSwapType?
+    const swapPath =
+      decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken
+        ? []
+        : swapAmounts?.swapPathStats?.swapPath || [];
+
+    if (
+      !account ||
+      !tokensData ||
+      !marketsInfoData ||
+      !position ||
+      executionFee?.feeTokenAmount == undefined ||
+      !receiveToken?.address ||
+      receiveUsd === undefined ||
+      decreaseAmounts?.acceptablePrice === undefined ||
+      !signer ||
+      !orderType
+    ) {
+      return undefined;
+    }
+
+    const decreaseOrderParams: DecreasePositionOrderParams = {
+      receiver: account,
+      chainId,
+      executionFeeAmount: executionFee.feeTokenAmount,
+      executionGasLimit: executionFee.gasLimit,
+      referralCode: userReferralInfo?.referralCodeForTxn,
+      allowedSlippage: isMarket ? allowedSlippage : 0,
+      autoCancel: isTrigger ? autoCancelOrdersLimit > 0 : false,
+      uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT,
+      orderType,
+      marketAddress: position.marketAddress,
+      indexTokenAddress: position.indexToken.address,
+      collateralTokenAddress: position.collateralTokenAddress,
+      collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
+      receiveTokenAddress: receiveToken.address,
+      swapPath,
+      sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+      sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
+      triggerPrice: isTrigger ? triggerPrice : undefined,
+      acceptablePrice: decreaseAmounts.acceptablePrice,
+      decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
+      externalSwapQuote: undefined,
+      isLong: position.isLong,
+      minOutputUsd: 0n,
+      validFromTime: 0n,
+    };
+
+    let createOrderParams: CreateOrderTxnParams<DecreasePositionOrderParams>[] = [];
+
+    if (isTwap && getIsValidTwapParams(duration, numberOfParts)) {
+      createOrderParams = buildTwapOrdersPayloads(decreaseOrderParams, { duration, numberOfParts });
+    } else {
+      createOrderParams = [buildDecreaseOrderPayload(decreaseOrderParams)];
+    }
+
+    return {
+      createOrderParams,
+      updateOrderParams: [],
+      cancelOrderParams: [],
+    };
+  }, [
+    account,
+    allowedSlippage,
+    autoCancelOrdersLimit,
+    chainId,
+    decreaseAmounts?.acceptablePrice,
+    decreaseAmounts?.collateralDeltaAmount,
+    decreaseAmounts?.decreaseSwapType,
+    decreaseAmounts?.sizeDeltaInTokens,
+    decreaseAmounts?.sizeDeltaUsd,
+    decreaseAmounts?.triggerOrderType,
+    duration,
+    executionFee?.feeTokenAmount,
+    executionFee?.gasLimit,
+    isMarket,
+    isTrigger,
+    isTwap,
+    marketsInfoData,
+    numberOfParts,
+    position,
+    receiveToken?.address,
+    receiveUsd,
+    signer,
+    swapAmounts?.swapPathStats?.swapPath,
+    tokensData,
+    triggerPrice,
+    userReferralInfo?.referralCodeForTxn,
+  ]);
+
+  const {
+    expressParams,
+    isLoading: isExpressLoading,
+    expressParamsPromise,
+    fastExpressParams,
+    asyncExpressParams,
+  } = useExpressOrdersParams({
+    orderParams: batchParams,
+  });
+
+  const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
+    if (!batchParams) {
+      return { tokensToApprove: [], isAllowanceLoaded: false };
+    }
+
+    const approvalRequirements = getApprovalRequirements({
+      chainId,
+      payTokenParamsList: [],
+      gasPaymentTokenParams: expressParams?.gasPaymentParams
+        ? {
+            tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
+            amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
+            allowanceData: gasPaymentTokenAllowance?.tokensAllowanceData,
+            isAllowanceLoaded: gasPaymentTokenAllowance?.isLoaded,
+          }
+        : undefined,
+      permits: expressParams && tokenPermits ? tokenPermits : [],
+    });
+
+    return approvalRequirements;
+  }, [
+    batchParams,
+    chainId,
+    expressParams,
+    gasPaymentTokenAllowance?.isLoaded,
+    gasPaymentTokenAllowance?.tokensAllowanceData,
+    tokenPermits,
+  ]);
+
   const error = useMemo(() => {
     if (!position) {
       return undefined;
@@ -246,6 +406,12 @@ export function PositionSeller(p: Props) {
       chainId,
       isConnected: Boolean(account),
       hasOutdatedUi,
+    });
+
+    const expressError = getExpressError({
+      chainId,
+      expressParams,
+      tokensData,
     });
 
     const decreaseError = getDecreaseError({
@@ -268,8 +434,8 @@ export function PositionSeller(p: Props) {
       numberOfParts,
     });
 
-    if (commonError[0] || decreaseError[0]) {
-      return commonError[0] || decreaseError[0];
+    if (commonError[0] || decreaseError[0] || expressError[0]) {
+      return commonError[0] || decreaseError[0] || expressError[0];
     }
 
     if (isSubmitting) {
@@ -280,6 +446,7 @@ export function PositionSeller(p: Props) {
     chainId,
     closeSizeUsd,
     decreaseAmounts?.sizeDeltaUsd,
+    expressParams,
     hasOutdatedUi,
     isNotEnoughReceiveTokenLiquidity,
     isSubmitting,
@@ -289,40 +456,68 @@ export function PositionSeller(p: Props) {
     nextPositionValues,
     position,
     receiveToken,
+    tokensData,
     triggerPrice,
     minPositionSizeUsd,
     isTwap,
     numberOfParts,
   ]);
 
-  const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: position?.key });
-
-  const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
-
-  function onSubmit() {
+  async function onSubmit() {
     if (!account) {
       openConnectModal?.();
       return;
     }
 
-    let orderType: OrderType | undefined = OrderType.MarketDecrease;
-    orderType = isTrigger ? decreaseAmounts?.triggerOrderType : orderType;
-    orderType = isTwap ? OrderType.LimitDecrease : orderType;
-    // TODO findSwapPath considering decreasePositionSwapType?
-    const swapPath =
-      decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken
-        ? []
-        : swapAmounts?.swapPathStats?.swapPath || [];
+    if (isAllowanceLoaded && tokensToApprove.length) {
+      if (!chainId || isApproving) return;
+
+      userAnalytics.pushEvent<TokenApproveClickEvent>({
+        event: "TokenApproveAction",
+        data: {
+          action: "ApproveClick",
+        },
+      });
+
+      approveTokens({
+        setIsApproving,
+        signer,
+        tokenAddress: tokensToApprove[0].tokenAddress,
+        spender: getContract(chainId, "SyntheticsRouter"),
+        pendingTxns: [],
+        setPendingTxns: () => null,
+        infoTokens: {},
+        chainId,
+        permitParams: expressParams
+          ? {
+              addTokenPermit,
+            }
+          : undefined,
+        approveAmount: undefined,
+        onApproveFail: () => {
+          userAnalytics.pushEvent<TokenApproveResultEvent>({
+            event: "TokenApproveAction",
+            data: {
+              action: "ApproveFail",
+            },
+          });
+        },
+      });
+
+      return;
+    }
+
+    const params = batchParams?.createOrderParams[0];
 
     const metricData = initDecreaseOrderMetricData({
       collateralToken: position?.collateralToken,
       decreaseAmounts,
       hasExistingPosition: true,
-      swapPath,
+      swapPath: params?.orderPayload.addresses.swapPath,
       executionFee,
-      orderType: orderType,
+      orderType: params?.orderPayload.orderType,
       hasReferralCode: Boolean(userReferralInfo?.referralCodeForTxn),
-      subaccount,
+      subaccount: expressParams?.subaccount,
       triggerPrice,
       marketInfo: position?.marketInfo,
       allowedSlippage,
@@ -332,22 +527,27 @@ export function PositionSeller(p: Props) {
       priceImpactDeltaUsd: undefined,
       priceImpactPercentage: undefined,
       netRate1h: undefined,
+      isExpress: Boolean(expressParams),
       duration,
       partsCount: numberOfParts,
       tradeMode: ORDER_OPTION_TO_TRADE_MODE[orderOption],
+      fastExpressParams,
+      asyncExpressParams,
+      expressParams,
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
 
     if (
+      !batchParams ||
       !tokensData ||
+      !marketsInfoData ||
       !position ||
       executionFee?.feeTokenAmount == undefined ||
       !receiveToken?.address ||
       receiveUsd === undefined ||
       decreaseAmounts?.acceptablePrice === undefined ||
-      !signer ||
-      !orderType
+      !signer
     ) {
       helperToast.error(t`Error submitting order`);
       sendTxnValidationErrorMetric(metricData.metricId);
@@ -356,78 +556,28 @@ export function PositionSeller(p: Props) {
 
     setIsSubmitting(true);
 
-    let txnPromise;
+    const fulfilledExpressParams = await expressParamsPromise;
 
-    const commonParams = {
-      account,
-      marketAddress: position.marketAddress,
-      initialCollateralAddress: position.collateralTokenAddress,
-      initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
-      receiveTokenAddress: receiveToken.address,
-      swapPath,
-      sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-      sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
-      isLong: position.isLong,
-      decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
-      referralCode: userReferralInfo?.referralCodeForTxn,
-      executionFee: executionFee.feeTokenAmount,
-      executionGasLimit: executionFee.gasLimit,
-      indexToken: position.indexToken,
-      minOutputUsd: 0n,
-      tokensData,
-    };
+    const txnPromise = sendBatchOrderTxn({
+      chainId,
+      signer,
+      batchParams,
+      noncesData,
+      expressParams:
+        fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
+      simulationParams: shouldDisableValidationForTesting
+        ? undefined
+        : {
+            tokensData,
+            blockTimestampData,
+          },
+      callback: makeOrderTxnCallback({
+        metricId: metricData.metricId,
+        slippageInputId,
+      }),
+    });
 
-    if (orderOption === OrderOption.Twap) {
-      txnPromise = createTwapDecreaseOrderTxn(
-        chainId,
-        signer,
-        subaccount,
-        {
-          ...commonParams,
-          autoCancel: false,
-          duration,
-          numberOfParts,
-          orderType,
-          isTwap: true,
-        },
-        {
-          setPendingOrder,
-          setPendingTxns,
-          setPendingPosition,
-        },
-        metricData.metricId
-      );
-    } else {
-      txnPromise = createDecreaseOrderTxn(
-        chainId,
-        signer,
-        subaccount,
-        {
-          ...commonParams,
-          acceptablePrice: decreaseAmounts.acceptablePrice,
-          triggerPrice: isTrigger ? triggerPrice : undefined,
-          orderType,
-          allowedSlippage,
-          skipSimulation: orderOption === OrderOption.Trigger || shouldDisableValidationForTesting,
-          autoCancel: orderOption === OrderOption.Trigger ? autoCancelOrdersLimit > 0 : false,
-          slippageInputId,
-          isTwap: false,
-        },
-        {
-          setPendingOrder,
-          setPendingTxns,
-          setPendingPosition,
-        },
-        blockTimestampData,
-        metricData.metricId
-      );
-    }
-
-    txnPromise
-      .then(makeTxnSentMetricsHandler(metricData.metricId))
-      .catch(makeTxnErrorMetricsHandler(metricData.metricId));
-
-    if (subaccount) {
+    if (expressParams?.subaccount) {
       onClose();
       setIsSubmitting(false);
       setDefaultReceiveToken(receiveToken.address);
@@ -465,6 +615,12 @@ export function PositionSeller(p: Props) {
       latestOnSubmit,
     ]
   );
+
+  useEffect(() => {
+    if (!tokensToApprove.length && isApproving) {
+      setIsApproving(false);
+    }
+  }, [isApproving, tokensToApprove.length]);
 
   useEffect(() => {
     if (
@@ -667,6 +823,68 @@ export function PositionSeller(p: Props) {
     }));
   }, [localizedOrderOptionLabels]);
 
+  const buttonState = useMemo(() => {
+    if (!isAllowanceLoaded) {
+      return {
+        text: t`Loading...`,
+        disabled: true,
+      };
+    }
+
+    if (isExpressLoading) {
+      return {
+        text: (
+          <>
+            {t`Express params loading...`}
+            <ImSpinner2 className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
+    if (isApproving) {
+      const tokenToApprove = tokensToApprove[0];
+      return {
+        text: (
+          <>
+            {t`Allow ${getToken(chainId, tokenToApprove.tokenAddress).symbol} to be spent`}{" "}
+            <ImSpinner2 className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
+    if (isAllowanceLoaded && tokensToApprove.length) {
+      const tokenToApprove = tokensToApprove[0];
+      return {
+        text: t`Allow ${getToken(chainId, tokenToApprove.tokenAddress).symbol} to be spent`,
+        disabled: false,
+      };
+    }
+
+    return {
+      text:
+        error ||
+        (isTrigger || isTwap
+          ? t`Create ${isTwap ? "TWAP Decrease" : getNameByOrderType(decreaseAmounts?.triggerOrderType, isTwap)} Order`
+          : t`Close`),
+      disabled: Boolean(error) && !shouldDisableValidationForTesting,
+    };
+  }, [
+    chainId,
+    decreaseAmounts?.triggerOrderType,
+    error,
+    isAllowanceLoaded,
+    isApproving,
+    isExpressLoading,
+    isTrigger,
+    isTwap,
+    shouldDisableValidationForTesting,
+    tokensToApprove,
+  ]);
+
   const isMobile = useMedia("(max-width: 1100px)");
 
   return (
@@ -795,18 +1013,22 @@ export function PositionSeller(p: Props) {
               <Button
                 className="w-full"
                 variant="primary-action"
-                disabled={Boolean(error) && !shouldDisableValidationForTesting}
+                disabled={buttonState.disabled}
                 onClick={onSubmit}
                 buttonRef={submitButtonRef}
                 qa="confirm-button"
               >
-                {error ||
-                  (isTrigger || isTwap
-                    ? t`Create ${isTwap ? "TWAP Decrease" : getNameByOrderType(decreaseAmounts?.triggerOrderType, isTwap)} Order`
-                    : t`Close`)}
+                {buttonState.text}
               </Button>
 
+              <ExpressTradingWarningCard
+                expressParams={expressParams}
+                payTokenAddress={undefined}
+                isWrapOrUnwrap={false}
+              />
+
               <div className="h-1 bg-stroke-primary" />
+
               {!isTwap && (
                 <>
                   {receiveTokenRow}
@@ -818,6 +1040,7 @@ export function PositionSeller(p: Props) {
               <PositionSellerAdvancedRows
                 triggerPriceInputValue={triggerPriceInputValue}
                 slippageInputId={slippageInputId}
+                gasPaymentParams={expressParams?.gasPaymentParams}
               />
             </div>
           </>

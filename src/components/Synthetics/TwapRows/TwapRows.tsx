@@ -7,10 +7,10 @@ import { useLocalStorage } from "react-use";
 
 import { TWAP_INFO_CARD_CLOSED_KEY } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { TwapDuration } from "domain/synthetics/trade/twap/types";
-import { changeTwapNumberOfPartsValue } from "domain/synthetics/trade/twap/utils";
 import { formatUsd } from "lib/numbers";
 import { MarketInfo } from "sdk/types/markets";
+import { TwapDuration } from "sdk/types/twap";
+import { changeTwapNumberOfPartsValue } from "sdk/utils/twap";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import NumberInput from "components/NumberInput/NumberInput";
@@ -169,7 +169,7 @@ const DurationField = ({
   );
 };
 
-const ValueInput = ({
+export const ValueInput = ({
   value,
   onChange,
   label,

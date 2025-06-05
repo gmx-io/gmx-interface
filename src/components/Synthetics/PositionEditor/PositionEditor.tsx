@@ -13,6 +13,7 @@ import {
 import { selectPositionEditorCollateralInputAmountAndUsd } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getMinResidualGasPaymentTokenAmount } from "domain/synthetics/express/expressOrderUtils";
 import { formatLiquidationPrice, getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { adaptToV1InfoTokens, convertToTokenAmount } from "domain/synthetics/tokens";
 import { getMinCollateralUsdForLeverage, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
@@ -40,8 +41,8 @@ import { OPERATION_LABELS, Operation } from "./types";
 import { usePositionEditorButtonState } from "./usePositionEditorButtonState";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-
 import "./PositionEditor.scss";
+import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 
 export function PositionEditor() {
   const { chainId } = useChainId();
@@ -130,7 +131,8 @@ export function PositionEditor() {
     operation,
   });
 
-  const { text, tooltipContent, onSubmit, disabled } = usePositionEditorButtonState(operation);
+  const { text, tooltipContent, onSubmit, disabled, expressParams, isExpressLoading } =
+    usePositionEditorButtonState(operation);
 
   useKey(
     "Enter",
@@ -181,6 +183,7 @@ export function PositionEditor() {
       {text}
     </Button>
   );
+
   const button = tooltipContent ? (
     <TooltipWithPortal
       className="w-full"
@@ -199,6 +202,11 @@ export function PositionEditor() {
     nativeToken,
     fromTokenAmount: collateralDeltaAmount ?? 0n,
     fromTokenInputValue: collateralInputValue,
+    minResidualAmount: getMinResidualGasPaymentTokenAmount({
+      expressParams,
+      payTokenAddress: collateralToken?.address,
+    }),
+    isLoading: isExpressLoading,
   });
 
   const showMaxButton = isDeposit
@@ -314,6 +322,12 @@ export function PositionEditor() {
 
               <div className="">{button}</div>
 
+              <ExpressTradingWarningCard
+                expressParams={expressParams}
+                payTokenAddress={undefined}
+                isWrapOrUnwrap={false}
+              />
+
               {!isDeposit && (
                 <SyntheticsInfoRow
                   label={t`Receive`}
@@ -347,7 +361,7 @@ export function PositionEditor() {
                 }
               />
 
-              <PositionEditorAdvancedRows operation={operation} />
+              <PositionEditorAdvancedRows operation={operation} gasPaymentParams={expressParams?.gasPaymentParams} />
             </div>
           </>
         )}

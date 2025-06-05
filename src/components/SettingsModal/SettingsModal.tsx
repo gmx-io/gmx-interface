@@ -1,33 +1,42 @@
-import { t, Trans } from "@lingui/macro";
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
-import { useKey } from "react-use";
+import { plural, t, Trans } from "@lingui/macro";
+import cx from "classnames";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 
-import { EXECUTION_FEE_CONFIG_V2 } from "config/chains";
 import { isDevelopment } from "config/env";
-import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { getIsExpressSupported } from "config/features";
 import { DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/twap";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
+import { useEnabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
 import {
-  changeTwapNumberOfPartsValue,
-  MAX_TWAP_NUMBER_OF_PARTS,
-  MIN_TWAP_NUMBER_OF_PARTS,
-} from "domain/synthetics/trade/twap/utils";
+  getIsSubaccountActive,
+  getRemainingSubaccountActions,
+  getRemainingSubaccountSeconds,
+} from "domain/synthetics/subaccount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { roundToTwoDecimals } from "lib/numbers";
+import { EMPTY_ARRAY } from "lib/objects";
+import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
+import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
+import { secondsToPeriod } from "sdk/utils/time";
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import Button from "components/Button/Button";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
+import { ExpressTradingGasTokenSwitchedBanner } from "components/ExpressTradingGasTokenSwitchedBanner.ts/ExpressTradingGasTokenSwithedBanner";
+import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
 import { SlideModal } from "components/Modal/SlideModal";
 import NumberInput from "components/NumberInput/NumberInput";
+import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubaccountWithdraw";
+import { OneClickAdvancedSettings } from "components/OneClickAdvancedSettings/OneClickAdvancedSettings";
+import PercentageInput from "components/PercentageInput/PercentageInput";
+import TenderlySettings from "components/TenderlySettings/TenderlySettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-
-const defaultSippageDisplay = (DEFAULT_SLIPPAGE_AMOUNT / BASIS_POINTS_DIVISOR) * 100;
 
 export function SettingsModal({
   isSettingsVisible,
@@ -36,63 +45,77 @@ export function SettingsModal({
   isSettingsVisible: boolean;
   setIsSettingsVisible: (value: boolean) => void;
 }) {
-  const settings = useSettings();
   const { chainId } = useChainId();
+  const settings = useSettings();
+  const { features } = useEnabledFeaturesRequest(chainId);
+  const subaccountState = useSubaccountContext();
 
-  const [slippageAmount, setSlippageAmount] = useState<string>("0");
-  const [executionFeeBufferBps, setExecutionFeeBufferBps] = useState<string>("0");
-  const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
-  const [isAutoCancelTPSL, setIsAutoCancelTPSL] = useState(true);
-  const [showPnlAfterFees, setShowPnlAfterFees] = useState(true);
-  const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
-  const [showDebugValues, setShowDebugValues] = useState(false);
-  const [isLeverageSliderEnabled, setIsLeverageSliderEnabled] = useState(false);
-  const [numberOfParts, setNumberOfParts] = useState<string>("0");
+  const [numberOfParts, setNumberOfParts] = useState<number>();
+
+  const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
+
+  const shouldShowGasPaymentTokenSwitchedBanner = useMemo(() => {
+    if (!settings.expressOrdersEnabled || isOutOfGasPaymentBalance) {
+      return false;
+    }
+
+    return (
+      settings.expressTradingGasTokenSwitched &&
+      settings.expressTradingGasTokenSwitched !== settings.gasPaymentTokenAddress
+    );
+  }, [
+    settings.expressOrdersEnabled,
+    settings.expressTradingGasTokenSwitched,
+    settings.gasPaymentTokenAddress,
+    isOutOfGasPaymentBalance,
+  ]);
 
   useEffect(() => {
     if (!isSettingsVisible) return;
 
-    const slippage = parseInt(String(settings.savedAllowedSlippage));
-    setSlippageAmount(String(roundToTwoDecimals((slippage / BASIS_POINTS_DIVISOR) * 100)));
-    if (settings.executionFeeBufferBps !== undefined) {
-      const bps = settings.executionFeeBufferBps;
-      setExecutionFeeBufferBps(String(roundToTwoDecimals((bps / BASIS_POINTS_DIVISOR) * 100)));
+    subaccountState.refreshSubaccountData();
+
+    if (settings.settingsWarningDotVisible) {
+      settings.setSettingsWarningDotVisible(false);
     }
-    setIsPnlInLeverage(settings.isPnlInLeverage);
-    setIsAutoCancelTPSL(settings.isAutoCancelTPSL);
-    setShowPnlAfterFees(settings.showPnlAfterFees);
-    setShowDebugValues(settings.showDebugValues);
-    setShouldDisableValidationForTesting(settings.shouldDisableValidationForTesting);
-    setIsLeverageSliderEnabled(settings.isLeverageSliderEnabled);
-    setNumberOfParts(String(settings.savedTwapNumberOfParts));
+
+    setNumberOfParts(settings.savedTwapNumberOfParts);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSettingsVisible]);
 
-  const saveAndCloseSettings = useCallback(() => {
-    const slippage = parseFloat(String(slippageAmount));
-    if (isNaN(slippage)) {
-      helperToast.error(t`Invalid slippage value`);
-      return;
-    }
-    if (slippage > 5) {
-      helperToast.error(t`Slippage should be less than -5%`);
-      return;
-    }
-    const basisPoints = roundToTwoDecimals((slippage * BASIS_POINTS_DIVISOR) / 100);
-    if (parseInt(String(basisPoints)) !== parseFloat(String(basisPoints))) {
-      helperToast.error(t`Max slippage precision is -0.01%`);
-      return;
-    }
+  const onChangeSlippage = useCallback(
+    (value: number) => {
+      const slippage = parseFloat(String(value));
+      if (isNaN(slippage)) {
+        helperToast.error(t`Invalid slippage value`);
+        return;
+      }
 
-    settings.setSavedAllowedSlippage(basisPoints);
+      if (slippage > 500) {
+        helperToast.error(t`Slippage should be less than -5%`);
+        return;
+      }
 
-    if (settings.shouldUseExecutionFeeBuffer) {
-      const executionFeeBuffer = parseFloat(String(executionFeeBufferBps));
+      const basisPoints = roundToTwoDecimals(slippage);
+      if (parseInt(String(basisPoints)) !== parseFloat(String(basisPoints))) {
+        helperToast.error(t`Max slippage precision is -0.01%`);
+        return;
+      }
+
+      settings.setSavedAllowedSlippage(basisPoints);
+    },
+    [settings]
+  );
+
+  const onChangeExecutionFeeBufferBps = useCallback(
+    (value: number) => {
+      const executionFeeBuffer = parseFloat(String(value));
+
       if (isNaN(executionFeeBuffer) || executionFeeBuffer < 0) {
         helperToast.error(t`Invalid network fee buffer value`);
         return;
       }
-      const nextExecutionBufferFeeBps = roundToTwoDecimals((executionFeeBuffer * BASIS_POINTS_DIVISOR) / 100);
+      const nextExecutionBufferFeeBps = roundToTwoDecimals(executionFeeBuffer);
 
       if (parseInt(String(nextExecutionBufferFeeBps)) !== parseFloat(String(nextExecutionBufferFeeBps))) {
         helperToast.error(t`Max network fee buffer precision is 0.01%`);
@@ -100,48 +123,106 @@ export function SettingsModal({
       }
 
       settings.setExecutionFeeBufferBps(nextExecutionBufferFeeBps);
-    }
+    },
+    [settings]
+  );
 
-    const numberOfPartsValue = parseInt(String(numberOfParts));
+  const onChangeTwapNumberOfParts = useCallback((value: number) => {
+    const parsedValue = parseInt(String(value));
 
-    if (numberOfPartsValue < MIN_TWAP_NUMBER_OF_PARTS || numberOfPartsValue > MAX_TWAP_NUMBER_OF_PARTS) {
-      helperToast.error(t`Number of parts must be between ${MIN_TWAP_NUMBER_OF_PARTS} and ${MAX_TWAP_NUMBER_OF_PARTS}`);
+    setNumberOfParts(parsedValue);
+  }, []);
+
+  const onBlurTwapNumberOfParts = useCallback(() => {
+    if (!numberOfParts || isNaN(numberOfParts) || numberOfParts < 0) {
+      helperToast.error(t`Invalid TWAP number of parts value`);
+      setNumberOfParts(settings.savedTwapNumberOfParts);
       return;
     }
 
-    settings.setIsPnlInLeverage(isPnlInLeverage);
-    settings.setIsAutoCancelTPSL(isAutoCancelTPSL);
-    settings.setShowPnlAfterFees(showPnlAfterFees);
-    settings.setShouldDisableValidationForTesting(shouldDisableValidationForTesting);
-    settings.setShowDebugValues(showDebugValues);
-    settings.setIsLeverageSliderEnabled(isLeverageSliderEnabled);
-    settings.setSavedTWAPNumberOfParts(numberOfPartsValue);
+    if (numberOfParts < MIN_TWAP_NUMBER_OF_PARTS || numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
+      helperToast.error(t`Number of parts must be between ${MIN_TWAP_NUMBER_OF_PARTS} and ${MAX_TWAP_NUMBER_OF_PARTS}`);
+      setNumberOfParts(settings.savedTwapNumberOfParts);
+      return;
+    }
 
+    settings.setSavedTWAPNumberOfParts(numberOfParts);
+  }, [numberOfParts, settings]);
+
+  const onClose = useCallback(() => {
     setIsSettingsVisible(false);
-  }, [
-    slippageAmount,
-    settings,
-    isPnlInLeverage,
-    isAutoCancelTPSL,
-    showPnlAfterFees,
-    shouldDisableValidationForTesting,
-    showDebugValues,
-    isLeverageSliderEnabled,
-    numberOfParts,
-    setIsSettingsVisible,
-    executionFeeBufferBps,
-  ]);
+  }, [setIsSettingsVisible]);
 
-  useKey(
-    "Enter",
-    () => {
-      if (isSettingsVisible) {
-        saveAndCloseSettings();
-      }
-    },
-    {},
-    [isSettingsVisible, saveAndCloseSettings]
-  );
+  const handleExpressOrdersToggle = (enabled: boolean) => {
+    settings.setExpressOrdersEnabled(enabled);
+
+    if (!enabled && subaccountState.subaccount) {
+      subaccountState.tryDisableSubaccount().then((success) => {
+        if (success) {
+          settings.setExpressOrdersEnabled(false);
+        } else {
+          settings.setExpressOrdersEnabled(true);
+        }
+      });
+    }
+  };
+
+  const handleOneClickTradingToggle = (enabled: boolean) => {
+    if (enabled) {
+      subaccountState.tryEnableSubaccount().then((success) => {
+        if (success) {
+          settings.setExpressOrdersEnabled(true);
+        } else {
+          settings.setExpressOrdersEnabled(false);
+        }
+      });
+    } else {
+      subaccountState.tryDisableSubaccount();
+    }
+  };
+
+  const remainingSubaccountActions = useMemo(() => {
+    const actions = Number(
+      subaccountState.subaccount
+        ? getRemainingSubaccountActions(subaccountState.subaccount)
+        : DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT
+    );
+
+    return plural(actions, {
+      one: "1 action",
+      other: `${actions} actions`,
+    });
+  }, [subaccountState.subaccount]);
+
+  const remainingSubaccountDays = useMemo(() => {
+    if (!subaccountState.subaccount) {
+      const days = secondsToPeriod(DEFAULT_SUBACCOUNT_EXPIRY_DURATION, "1d");
+
+      return `${days} days`;
+    }
+
+    const seconds = Number(getRemainingSubaccountSeconds(subaccountState.subaccount));
+
+    const days = secondsToPeriod(seconds, "1d");
+
+    if (days > 0) {
+      return `${days + 1} days`;
+    }
+
+    const hours = secondsToPeriod(seconds, "1h");
+
+    if (hours > 0) {
+      return `${hours + 1} hours`;
+    }
+
+    const minutes = secondsToPeriod(seconds, "1m");
+
+    if (minutes > 0) {
+      return `${minutes + 1} minutes`;
+    }
+
+    return `0 minutes`;
+  }, [subaccountState.subaccount]);
 
   return (
     <SlideModal
@@ -150,235 +231,285 @@ export function SettingsModal({
       label={t`Settings`}
       qa="settings-modal"
       className="text-body-medium"
-      desktopContentClassName="w-[380px]"
+      desktopContentClassName="w-[400px]"
     >
-      <div className="mb-8">
-        <div>
-          <Trans>Default Allowed Slippage</Trans>
-        </div>
-        <div className="relative">
-          <div className="absolute left-11 top-1/2 -translate-y-1/2 text-slate-100">-</div>
-          <NumberInput
-            className="mb-8 mt-8 w-full rounded-4 border border-gray-700 pl-25"
-            value={slippageAmount}
-            onValueChange={(e) => setSlippageAmount(e.target.value)}
-            placeholder={defaultSippageDisplay.toString()}
-          />
+      <div className="flex flex-col">
+        <h1 className="muted">
+          <Trans>Trading Settings</Trans>
+        </h1>
+        <div className="mt-16">
+          {getIsExpressSupported(chainId) && (
+            <>
+              <SettingsSection>
+                <ToggleSwitch
+                  disabled={
+                    !features?.relayRouterEnabled || (isOutOfGasPaymentBalance && !settings.expressOrdersEnabled)
+                  }
+                  isChecked={settings.expressOrdersEnabled}
+                  setIsChecked={handleExpressOrdersToggle}
+                >
+                  <TooltipWithPortal
+                    content={
+                      <Trans>
+                        Express Trading streamlines your trades on GMX by replacing on-chain transactions with secure
+                        off-chain message signing, helping reduce issues from network congestion and RPC errors.
+                        <br />
+                        <br />
+                        These signed messages are processed on-chain for you, so a gas payment token is still required.
+                      </Trans>
+                    }
+                    handle={<Trans>Express Trading</Trans>}
+                  />
+                </ToggleSwitch>
 
-          <div className="absolute right-11 top-1/2 -translate-y-1/2 text-right text-slate-100">%</div>
-        </div>
-        {parseFloat(slippageAmount) < defaultSippageDisplay && (
-          <AlertInfo type="warning">
-            <Trans>Allowed Slippage below {defaultSippageDisplay}% may result in failed orders. orders.</Trans>
-          </AlertInfo>
-        )}
-      </div>
+                <ToggleSwitch
+                  isChecked={Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount))}
+                  setIsChecked={handleOneClickTradingToggle}
+                  disabled={
+                    !features?.subaccountRelayRouterEnabled || (isOutOfGasPaymentBalance && !subaccountState.subaccount)
+                  }
+                >
+                  <TooltipWithPortal
+                    content={
+                      <Trans>
+                        One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to
+                        be enabled. Your 1CT session is valid for {remainingSubaccountActions} or{" "}
+                        {remainingSubaccountDays}, whichever comes first.
+                        <br />
+                        <br />
+                        You can adjust these settings anytime under "One-Click Trading Settings"
+                      </Trans>
+                    }
+                    handle={<Trans>One-Click Trading</Trans>}
+                  />
+                </ToggleSwitch>
 
-      <div className="mb-8">
-        <div>
-          <Tooltip
-            handle={<Trans>TWAP Number of Parts</Trans>}
-            content={<Trans>The default number of parts for Time-Weighted Average Price (TWAP) orders.</Trans>}
-          />
-        </div>
-        <div className="relative">
-          <NumberInput
-            className="mb-8 mt-8 w-full rounded-4 border border-gray-700"
-            value={numberOfParts}
-            onValueChange={(e) => setNumberOfParts(e.target.value ?? "0")}
-            placeholder={DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS.toString()}
-            onBlur={() => setNumberOfParts(changeTwapNumberOfPartsValue(parseInt(numberOfParts)).toString())}
-          />
-        </div>
-      </div>
+                {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
 
-      {settings.shouldUseExecutionFeeBuffer && (
-        <div className="mb-8">
-          <div>
-            <Tooltip
-              handle={<Trans>Max Network Fee Buffer</Trans>}
-              content={
-                <>
-                  <Trans>
-                    The Max Network Fee is set to a higher value to handle potential increases in gas price during order
-                    execution. Any excess network fee will be refunded to your account when the order is executed. Only
-                    applicable to GMX V2.
-                  </Trans>
-                  <br />
-                  <br />
-                  <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">Read more</ExternalLink>
-                </>
-              }
-            />
-          </div>
-          <div className="relative">
-            <NumberInput
-              className="mb-8 mt-8 w-full rounded-4 border border-gray-700"
-              value={executionFeeBufferBps}
-              onValueChange={(e) => setExecutionFeeBufferBps(e.target.value)}
-              placeholder="10"
-            />
-            <div className="absolute right-11 top-1/2 -translate-y-1/2 text-right text-slate-100">%</div>
-          </div>
-          {parseFloat(executionFeeBufferBps) <
-            (EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps! / BASIS_POINTS_DIVISOR) * 100 && (
-            <div className="mb-15">
-              <AlertInfo type="warning">
-                <Trans>
-                  Max Network Fee buffer below{" "}
-                  {(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps! / BASIS_POINTS_DIVISOR) * 100}% may result in
-                  failed orders.
-                </Trans>
-              </AlertInfo>
-            </div>
+                {shouldShowGasPaymentTokenSwitchedBanner && (
+                  <ExpressTradingGasTokenSwitchedBanner
+                    onClose={() => {
+                      settings.setExpressTradingGasTokenSwitched(null);
+                    }}
+                  />
+                )}
+
+                <OldSubaccountWithdraw />
+
+                {Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount)) && (
+                  <OneClickAdvancedSettings />
+                )}
+              </SettingsSection>
+
+              {settings.expressOrdersEnabled && (
+                <SettingsSection className="mt-2">
+                  <div>
+                    <Trans>Gas Payment Token</Trans>
+                  </div>
+                  <GasPaymentTokenSelector
+                    curentTokenAddress={settings.gasPaymentTokenAddress}
+                    onSelectToken={settings.setGasPaymentTokenAddress}
+                  />
+                </SettingsSection>
+              )}
+            </>
           )}
-        </div>
-      )}
-      <div className="flex flex-col gap-16">
-        <ToggleSwitch isChecked={isLeverageSliderEnabled} setIsChecked={setIsLeverageSliderEnabled}>
-          <Trans>Show leverage slider</Trans>
-        </ToggleSwitch>
 
-        <ToggleSwitch isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
-          <Trans>Display PnL after fees</Trans>
-        </ToggleSwitch>
-
-        <ToggleSwitch isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
-          <Trans>Include PnL in leverage display</Trans>
-        </ToggleSwitch>
-
-        <ToggleSwitch isChecked={isAutoCancelTPSL} setIsChecked={setIsAutoCancelTPSL}>
-          <TooltipWithPortal
-            handle={t`Auto-Cancel TP/SL`}
-            content={
-              <div onClick={(e) => e.stopPropagation()}>
+          <SettingsSection className="mt-2">
+            <InputSetting
+              title={<Trans>Default Allowed Slippage</Trans>}
+              description={
                 <Trans>
-                  Take Profit and Stop Loss orders will be automatically cancelled when the associated position is
-                  completely closed. This will only affect newly created TP/SL orders.
+                  The maximum percentage difference between your specified price and execution price when placing
+                  orders.
                 </Trans>
-                <br />
-                <br />
-                <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">Read more</ExternalLink>.
-              </div>
-            }
-          />
-        </ToggleSwitch>
+              }
+              defaultValue={DEFAULT_SLIPPAGE_AMOUNT}
+              value={parseFloat(String(settings.savedAllowedSlippage))}
+              onChange={onChangeSlippage}
+              suggestions={EMPTY_ARRAY}
+            />
 
-        <div className="hidden max-[1100px]:block">
-          <ToggleSwitch isChecked={settings.shouldShowPositionLines} setIsChecked={settings.setShouldShowPositionLines}>
-            <Trans>Chart positions</Trans>
-          </ToggleSwitch>
-        </div>
+            <InputSetting
+              title={<Trans>TWAP Number of Parts</Trans>}
+              description={
+                <div>
+                  <Trans>The default number of parts for Time-Weighted Average Price (TWAP) orders.</Trans>
+                </div>
+              }
+              defaultValue={DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS}
+              value={numberOfParts}
+              onChange={onChangeTwapNumberOfParts}
+              onBlur={onBlurTwapNumberOfParts}
+              type="number"
+            />
 
-        <div className="Exchange-settings-row">
-          <ToggleSwitch isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
-            <Trans>Enable external swaps</Trans>
-          </ToggleSwitch>
+            {settings.shouldUseExecutionFeeBuffer && (
+              <InputSetting
+                title={<Trans>Max Network Fee Buffer</Trans>}
+                description={
+                  <div>
+                    <Trans>
+                      The Max Network Fee is set to a higher value to handle potential increases in gas price during
+                      order execution. Any excess network fee will be refunded to your account when the order is
+                      executed. Only applicable to GMX V2.
+                    </Trans>
+                    <br />
+                    <br />
+                    <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#network-fee-buffer">
+                      Read more
+                    </ExternalLink>
+                  </div>
+                }
+                defaultValue={30}
+                value={parseFloat(String(settings.executionFeeBufferBps))}
+                onChange={onChangeExecutionFeeBufferBps}
+                maxValue={1000 * 100}
+                suggestions={EMPTY_ARRAY}
+              />
+            )}
+
+            <ToggleSwitch isChecked={settings.isAutoCancelTPSL} setIsChecked={settings.setIsAutoCancelTPSL}>
+              <TooltipWithPortal
+                content={
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <Trans>
+                      Take Profit and Stop Loss orders will be automatically cancelled when the associated position is
+                      completely closed. This will only affect newly created TP/SL orders.
+                    </Trans>
+                    <br />
+                    <br />
+                    <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">
+                      Read more
+                    </ExternalLink>
+                  </div>
+                }
+                handle={<Trans>Auto-Cancel TP/SL</Trans>}
+              />
+            </ToggleSwitch>
+
+            <ToggleSwitch isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
+              <Trans>Enable external swaps</Trans>
+            </ToggleSwitch>
+          </SettingsSection>
+
+          <div className="divider mt-16"></div>
+
+          <h1 className="muted mt-16">
+            <Trans>Display Settings</Trans>
+          </h1>
+
+          <SettingsSection className="mt-16 gap-16">
+            <ToggleSwitch
+              isChecked={settings.isLeverageSliderEnabled}
+              setIsChecked={settings.setIsLeverageSliderEnabled}
+            >
+              <Trans>Show Leverage Slider</Trans>
+            </ToggleSwitch>
+
+            <ToggleSwitch isChecked={settings.showPnlAfterFees} setIsChecked={settings.setShowPnlAfterFees}>
+              <Trans>Display PnL After Fees</Trans>
+            </ToggleSwitch>
+
+            <ToggleSwitch isChecked={settings.isPnlInLeverage} setIsChecked={settings.setIsPnlInLeverage}>
+              <Trans>Include PnL In Leverage Display</Trans>
+            </ToggleSwitch>
+          </SettingsSection>
         </div>
 
         {isDevelopment() && (
-          <ToggleSwitch
-            isChecked={shouldDisableValidationForTesting}
-            setIsChecked={setShouldDisableValidationForTesting}
-          >
-            <Trans>Disable order validations</Trans>
-          </ToggleSwitch>
+          <>
+            <div className="divider mt-16"></div>
+
+            <h1 className="muted mt-16">
+              <Trans>Debug Settings</Trans>
+            </h1>
+
+            <SettingsSection className="mt-16">
+              <ToggleSwitch isChecked={settings.showDebugValues} setIsChecked={settings.setShowDebugValues}>
+                <Trans>Show debug values</Trans>
+              </ToggleSwitch>
+
+              <ToggleSwitch
+                isChecked={settings.shouldDisableValidationForTesting}
+                setIsChecked={settings.setShouldDisableValidationForTesting}
+              >
+                <Trans>Disable validation for testing</Trans>
+              </ToggleSwitch>
+
+              <AbFlagSettings />
+
+              <DebugSwapsSettings />
+
+              <TenderlySettings isSettingsVisible={isSettingsVisible} />
+            </SettingsSection>
+          </>
         )}
-
-        {isDevelopment() && (
-          <ToggleSwitch isChecked={showDebugValues} setIsChecked={setShowDebugValues}>
-            <Trans>Show debug values</Trans>
-          </ToggleSwitch>
-        )}
-
-        {isDevelopment() && <AbFlagSettings />}
-
-        {isDevelopment() && <DebugSwapsSettings />}
-
-        {isDevelopment() && <TenderlySettings isSettingsVisible={isSettingsVisible} />}
       </div>
-
-      <Button variant="primary-action" className="mt-15 w-full" onClick={saveAndCloseSettings}>
-        <Trans>Save</Trans>
-      </Button>
     </SlideModal>
   );
 }
 
-function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boolean }) {
-  const {
-    tenderlyAccountSlug,
-    tenderlyProjectSlug,
-    tenderlyAccessKey,
-    tenderlySimulationEnabled,
-    setTenderlyAccessKey,
-    setTenderlyAccountSlug,
-    setTenderlyProjectSlug,
-    setTenderlySimulationEnabled,
-  } = useSettings();
-
-  const [accountSlug, setAccountSlug] = useState(tenderlyAccountSlug ?? "");
-  const [projectSlug, setProjectSlug] = useState(tenderlyProjectSlug ?? "");
-  const [accessKey, setAccessKey] = useState(tenderlyAccessKey ?? "");
-
-  useEffect(() => {
-    if (isSettingsVisible) {
-      setAccountSlug(tenderlyAccountSlug ?? "");
-      setProjectSlug(tenderlyProjectSlug ?? "");
-      setAccessKey(tenderlyAccessKey ?? "");
-    }
-  }, [isSettingsVisible, tenderlyAccessKey, tenderlyAccountSlug, tenderlyProjectSlug]);
-
-  return (
-    <div>
-      <br />
-      <h1>Tenderly Settings</h1>
-      <br />
-      <TenderlyInput name="Account" placeholder="account" value={accountSlug} onChange={setTenderlyAccountSlug} />
-      <TenderlyInput name="Project" placeholder="project" value={projectSlug} onChange={setTenderlyProjectSlug} />
-      <TenderlyInput name="Access Key" placeholder="xxxx-xxxx-xxxx" value={accessKey} onChange={setTenderlyAccessKey} />
-      <div className="">
-        <ToggleSwitch isChecked={Boolean(tenderlySimulationEnabled)} setIsChecked={setTenderlySimulationEnabled}>
-          <span className="">Simulate TXs</span>
-        </ToggleSwitch>
-      </div>
-      <br />
-      See{" "}
-      <ExternalLink href="https://docs.tenderly.co/tenderly-sdk/intro-to-tenderly-sdk#how-to-get-the-account-name-project-slug-and-secret-key">
-        Tenderly Docs
-      </ExternalLink>
-      .
-    </div>
-  );
+function SettingsSection({ children, className }: { children?: React.ReactNode; className?: string }) {
+  return <div className={cx("flex flex-col gap-16 rounded-4 bg-cold-blue-900 p-16", className)}>{children}</div>;
 }
 
-function TenderlyInput({
+function InputSetting({
+  title,
+  description,
+  defaultValue,
   value,
-  name,
-  placeholder,
+  maxValue,
   onChange,
+  onBlur,
+  className,
+  suggestions,
+  type = "percentage",
 }: {
-  value: string;
-  placeholder: string;
-  name: string;
-  onChange: (value: string) => void;
+  title: ReactNode;
+  description?: ReactNode;
+  defaultValue: number;
+  value?: number;
+  maxValue?: number;
+  onChange: (value: number) => void;
+  onBlur?: () => void;
+  className?: string;
+  suggestions?: number[];
+  type?: "percentage" | "number";
 }) {
-  const handleChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      onChange(e.target.value);
-    },
-    [onChange]
+  const titleComponent = <span className="text-14 font-medium">{title}</span>;
+
+  const titleWithDescription = description ? (
+    <TooltipWithPortal position="bottom" content={description}>
+      {titleComponent}
+    </TooltipWithPortal>
+  ) : (
+    titleComponent
   );
 
-  return (
-    <p className="mb-12 flex items-center justify-between gap-6">
-      <span>{name}</span>
-      <input
+  const Input =
+    type === "percentage" ? (
+      <PercentageInput
+        defaultValue={defaultValue}
         value={value}
-        onChange={handleChange}
-        placeholder={placeholder}
-        className="border-1 w-[280px] border border-stroke-primary px-5 py-4 text-12"
+        maxValue={maxValue}
+        onChange={onChange}
+        tooltipPosition="bottom"
+        suggestions={suggestions}
       />
-    </p>
+    ) : (
+      <NumberInput
+        className="w-60 rounded-4 border border-solid border-slate-700 bg-slate-700 px-4 py-2 text-right hover:border-cold-blue-700"
+        value={value}
+        onValueChange={(e) => onChange(Number(e.target.value))}
+        onBlur={onBlur}
+      />
+    );
+
+  return (
+    <div className={cx("flex items-center justify-between", className)}>
+      <div className="mr-8">{titleWithDescription}</div>
+      {Input}
+    </div>
   );
 }
