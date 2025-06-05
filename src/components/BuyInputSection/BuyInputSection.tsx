@@ -171,16 +171,7 @@ export default function BuyInputSection(props: Props) {
             >
               {topRightLabel && <span className="text-slate-100">{topRightLabel}:</span>}
               {topRightValue && <span>{topRightValue}</span>}
-              {onClickMax && maxButtonPosition === "top-right" && (
-                <button
-                  type="button"
-                  className="-my-4 rounded-4 bg-cold-blue-500 px-8 py-2 hover:bg-[#484e92] active:bg-[#505699]"
-                  onClick={handleMaxClick}
-                  data-qa="input-max"
-                >
-                  <Trans>MAX</Trans>
-                </button>
-              )}
+              {onClickMax && maxButtonPosition === "top-right" && <MaxButton onClick={handleMaxClick} />}
             </div>
           )}
         </div>
@@ -242,16 +233,7 @@ export default function BuyInputSection(props: Props) {
               {bottomRightLabel && <span className="text-slate-100">{bottomRightLabel}:</span>}
               {bottomRightValue && <span>{bottomRightValue}</span>}
 
-              {onClickMax && maxButtonPosition === "bottom-right" && (
-                <button
-                  type="button"
-                  className="-my-4 rounded-4 bg-cold-blue-500 px-8 py-2 hover:bg-[#484e92] active:bg-[#505699]"
-                  onClick={handleMaxClick}
-                  data-qa="input-max"
-                >
-                  <Trans>MAX</Trans>
-                </button>
-              )}
+              {onClickMax && maxButtonPosition === "bottom-right" && <MaxButton onClick={handleMaxClick} />}
             </div>
           </div>
         )}
@@ -259,3 +241,16 @@ export default function BuyInputSection(props: Props) {
     </div>
   );
 }
+
+const MaxButton = ({ onClick }: { onClick: (e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>) => void }) => {
+  return (
+    <button
+      type="button"
+      className="-my-4 rounded-full font-medium bg-fill-accent px-8 py-2"
+      onClick={onClick}
+      data-qa="input-max"
+    >
+      <Trans>Max</Trans>
+    </button>
+  );
+};

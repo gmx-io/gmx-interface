@@ -44,7 +44,7 @@ export function CollateralSelectorRow(p: Props) {
     <>
       <SyntheticsInfoRow
         label={
-          <TooltipWithPortal position="left-start" content={collateralInTooltipContent}>
+          <TooltipWithPortal position="left-start" content={collateralInTooltipContent} showInfoIcon>
             <Trans>Collateral In</Trans>
           </TooltipWithPortal>
         }

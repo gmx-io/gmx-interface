@@ -6,7 +6,7 @@ import { TradeMode, TradeType } from "sdk/types/trade";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Tooltip from "components/Tooltip/Tooltip";
 
-import InfoCircleOutlineIcon from "img/ic_info_circle_outline.svg?react";
+import InfoCircleIcon from "img/ic_info_circle.svg?react";
 
 type TradePlace = "tradebox" | "position-seller";
 
@@ -166,8 +166,9 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
       position={isMobile ? "bottom-end" : "top-end"}
       content={contentByTradeType[tradeType]}
       tooltipClassName="p-10"
+      className="flex"
     >
-      <InfoCircleOutlineIcon className="h-24 w-24 cursor-pointer text-slate-100 gmx-hover:text-white" />
+      <InfoCircleIcon className="h-16 w-16 p-8 box-content cursor-pointer text-slate-100 gmx-hover:text-white" />
     </Tooltip>
   );
 }

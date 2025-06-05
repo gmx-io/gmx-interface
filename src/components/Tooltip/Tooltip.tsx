@@ -30,6 +30,8 @@ import {
 import { DEFAULT_TOOLTIP_POSITION, TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
 import { usePrevious } from "lib/usePrevious";
 
+import InfoIcon from "img/ic_info_circle.svg?react";
+
 import "./Tooltip.scss";
 
 export type TooltipPosition = Placement;
@@ -70,6 +72,8 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
   shouldStopPropagation?: boolean;
   fitHandleWidth?: boolean;
   closeOnDoubleClick?: boolean;
+
+  showInfoIcon?: boolean;
 };
 
 export type TooltipProps<T extends ElementType | undefined> = InnerTooltipProps<T> &
@@ -97,6 +101,7 @@ export default function Tooltip<T extends ElementType>({
   shouldStopPropagation,
   fitHandleWidth,
   closeOnDoubleClick,
+  showInfoIcon,
   ...containerProps
 }: TooltipProps<T>) {
   const [visible, setVisible] = useState(false);
@@ -240,12 +245,15 @@ export default function Tooltip<T extends ElementType>({
           },
         })}
       >
+        <div className="flex items-center gap-2">
         {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
         {isHandlerDisabled ? (
           <div className="pointer-events-none w-full flex-none [text-decoration:inherit]">{handle ?? children}</div>
         ) : (
           <>{handle ?? children}</>
         )}
+        {showInfoIcon && <InfoIcon className="w-16 h-16" />}
+        </div>
       </span>
       {visible && withPortal && <FloatingPortal>{tooltipContent}</FloatingPortal>}
       {visible && !withPortal && tooltipContent}

@@ -80,11 +80,17 @@ export function LeverageSlider(p: Props) {
         min={0}
         max={max}
         step={0.1}
-        marks={marksLabel}
         handle={customHandle}
         onChange={handleChange}
         value={sliderKey}
       />
+      <div className="flex justify-between">
+        {Object.values(marksLabel).map((label, index) => (
+          <div key={index} className="text-xs text-gray-400 uppercase">
+            {label}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

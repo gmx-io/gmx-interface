@@ -74,9 +74,9 @@ export default function SuggestionInput({
   );
 
   return (
-    <div className={cx("Suggestion-input-wrapper", className)}>
+    <div className="Suggestion-input-wrapper">
       <div
-        className={cx("Suggestion-input flex items-baseline", { "input-error": isError })}
+        className={cx("Suggestion-input flex items-baseline", className, { "input-error": isError })}
         onClick={() => inputRef.current?.focus()}
       >
         <NumberInput

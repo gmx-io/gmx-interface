@@ -1,7 +1,9 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import { ReactNode, useCallback, useMemo, useState } from "react";
+import { ReactNode, useCallback, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
+
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import CollapseIcon from "img/collapse.svg?react";
 import DashboardIcon from "img/dashboard.svg?react";
@@ -16,11 +18,11 @@ import ReferralsIcon from "img/referrals.svg?react";
 import TradeIcon from "img/trade.svg?react";
 
 function SideNav() {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useLocalStorageSerializeKey("is-side-nav-collapsed", false);
 
   const handleCollapseToggle = useCallback(() => {
-    setIsCollapsed((prev) => !prev);
-  }, []);
+    setIsCollapsed(!isCollapsed);
+  }, [isCollapsed, setIsCollapsed]);
 
   return (
     <nav
@@ -49,12 +51,12 @@ function SideNav() {
   );
 }
 
-function LogoSection({ isCollapsed }: { isCollapsed: boolean }) {
+function LogoSection({ isCollapsed }: { isCollapsed: boolean | undefined }) {
   return (
     <Link
       to="/"
-      className={cx("flex cursor-pointer items-center justify-center gap-5 pb-16 pl-12 pt-10", {
-        "px-20": !isCollapsed,
+      className={cx("flex cursor-pointer items-center justify-center gap-5 pb-16 pt-10", {
+        "pl-12 pr-20": !isCollapsed,
       })}
     >
       <img src={logoIcon} alt="GMX Logo" />
@@ -116,7 +118,7 @@ type NavItemType = {
   to?: string;
 };
 
-function MenuSection({ isCollapsed }: { isCollapsed: boolean }) {
+function MenuSection({ isCollapsed }: { isCollapsed: boolean | undefined }) {
   const mainNavItems = useMemo(
     (): NavItemType[] => [
       { icon: <TradeIcon />, label: t`Trade`, key: "trade", to: "/trade" },

@@ -36,7 +36,7 @@ export default function NestedTab<V extends string | number>({
       <Menu.Button
         as="div"
         className={cx(`flex cursor-pointer items-center justify-center px-12
-          py-8 rounded-8 text-slate-100 hover:text-white gap-2`, commonOptionClassname, {
+          py-8 rounded-8 text-slate-100 hover:text-white gap-2 font-medium`, commonOptionClassname, {
           "text-white bg-cold-blue-900": !!selectedSubOption,
         })}
         ref={refs.setReference}
@@ -44,7 +44,7 @@ export default function NestedTab<V extends string | number>({
       >
         <span>{label}</span>
 
-        <FiChevronDown size={16} />
+        <FiChevronDown size={16} className="mt-1" />
       </Menu.Button>
       <FloatingPortal>
         <Menu.Items

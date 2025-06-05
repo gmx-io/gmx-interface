@@ -77,7 +77,7 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import SettingsIcon24 from "img/ic_settings_24.svg?react";
+import SettingsIcon from "img/ic_settings.svg?react";
 
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
@@ -844,7 +844,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   }, [availableTradeModes, localizedTradeModeLabels]);
 
   return (
-    <div className="p-12 pb-16 flex flex-col gap-12">
+    <div className="flex flex-col gap-12 p-12 pb-16">
       <div className="flex items-center justify-between">
         <Tabs
           options={tabsOptions}
@@ -854,11 +854,11 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           onChange={onSelectTradeMode}
           qa="trade-mode"
         />
-        <div className="flex gap-4">
+        <div className="flex items-center gap-4">
           <TradeInfoIcon isMobile={isMobile} tradeType={tradeType} tradePlace="tradebox" />
 
-          <SettingsIcon24
-            className="cursor-pointer text-slate-100 gmx-hover:text-white"
+          <SettingsIcon
+            className="box-content h-16 w-16 cursor-pointer p-8 text-slate-100 gmx-hover:text-white"
             onClick={() => setIsSettingsVisible(true)}
           />
         </div>
@@ -887,7 +887,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             {isPosition && (
               <>
                 {isIncrease && isLeverageSliderEnabled && (
-                  <div className="flex items-start gap-6">
+                  <div className="flex items-start gap-6 rounded-8 border border-stroke-primary p-8">
                     <LeverageSlider
                       className="grow"
                       marks={leverageSliderMarks}
@@ -897,7 +897,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                       isSlim
                     />
                     <SuggestionInput
-                      className="w-48"
+                      className="w-48 py-5 !rounded-8"
                       inputClassName="text-clip"
                       value={leverageInputValue}
                       setValue={setLeverageInputValue}
