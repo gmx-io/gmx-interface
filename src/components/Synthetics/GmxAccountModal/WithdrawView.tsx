@@ -1,6 +1,4 @@
 import { t, Trans } from "@lingui/macro";
-import { IStargateAbi } from "domain/multichain/stargatePools";
-import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { Contract, type Provider } from "ethers";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
@@ -33,7 +31,9 @@ import {
 } from "domain/multichain/config";
 import { MULTICHAIN_FUNDING_SLIPPAGE_BPS } from "domain/multichain/constants";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import { IStargateAbi } from "domain/multichain/stargatePools";
 import { BridgeOutParams, TokenChainData } from "domain/multichain/types";
+import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTransactionBuilder, RawMultichainRelayParamsPayload } from "domain/synthetics/express/types";

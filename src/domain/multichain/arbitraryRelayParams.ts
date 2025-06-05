@@ -1,7 +1,7 @@
 import type { Provider } from "ethers";
 import { Address, decodeErrorResult, encodePacked, Hex } from "viem";
 
-import type { UiContractsChain, UiSourceChain } from "config/chains";
+import type { UiContractsChain } from "config/chains";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 import {
   selectExpressFindSwapPath,
@@ -73,7 +73,6 @@ export const selectRawBasePreparedRelayParamsPayload = createSelector<
   }>
 >((q) => {
   const chainId = q(selectChainId);
-  const srcChainId = q(selectSrcChainId);
   const account = q(selectAccount);
   const expressGlobalParams = q(selectExpressGlobalParams);
 
@@ -83,7 +82,6 @@ export const selectRawBasePreparedRelayParamsPayload = createSelector<
 
   return getRawBaseRelayerParams({
     chainId,
-    srcChainId,
     account,
     expressGlobalParams,
   });
@@ -91,12 +89,10 @@ export const selectRawBasePreparedRelayParamsPayload = createSelector<
 
 function getRawBaseRelayerParams({
   chainId,
-  srcChainId,
   account,
   expressGlobalParams,
 }: {
   chainId: UiContractsChain;
-  srcChainId: UiSourceChain | undefined;
   account: string;
   expressGlobalParams: GlobalExpressParams;
 }): Partial<{
@@ -147,7 +143,6 @@ function getRawBaseRelayerParams({
     externalCalls: EMPTY_EXTERNAL_CALLS,
     tokenPermits: EMPTY_ARRAY,
     marketsInfoData,
-    // isMultichain: srcChainId !== undefined,
   });
 
   return { rawBaseRelayParamsPayload, baseRelayFeeSwapParams };
@@ -398,7 +393,6 @@ export function useArbitraryRelayParamsAndPayload(
     async ({ params: p }) => {
       const { baseRelayFeeSwapParams, rawBaseRelayParamsPayload } = getRawBaseRelayerParams({
         chainId,
-        srcChainId,
         account: p.account,
         expressGlobalParams: p.globalExpressParams,
       });

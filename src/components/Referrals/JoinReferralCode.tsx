@@ -1,6 +1,5 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import type { IStargateAbi } from "domain/multichain/stargatePools";
 import { Contract } from "ethers";
 import { useEffect, useRef, useState } from "react";
 import { encodeFunctionData } from "viem";
@@ -14,6 +13,7 @@ import { selectArbitraryRelayParamsAndPayload } from "domain/multichain/arbitrar
 import { type MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { TOKEN_GROUPS } from "domain/multichain/config";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import { IStargateAbi } from "domain/multichain/stargatePools";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/useMultichainDepositNetworkComposeGas";
 import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/referrals/hooks";
 import { getExpressContractAddress, MultichainRelayParamsPayload } from "domain/synthetics/express";

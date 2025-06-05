@@ -1,6 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import { IStargateAbi, StargateErrorsAbi } from "domain/multichain/stargatePools";
-import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { Contract } from "ethers";
 import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -31,6 +29,8 @@ import {
 } from "domain/multichain/config";
 import { MULTICHAIN_FUNDING_SLIPPAGE_BPS } from "domain/multichain/constants";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import { IStargateAbi, StargateErrorsAbi } from "domain/multichain/stargatePools";
+import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useMultichainDepositNetworkComposeGas } from "domain/multichain/useMultichainDepositNetworkComposeGas";
 import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";

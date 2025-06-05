@@ -1,6 +1,5 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useMemo, useState } from "react";
 import { IoArrowDown } from "react-icons/io5";
 import { TbLoader2 } from "react-icons/tb";
@@ -13,7 +12,8 @@ import { CURRENT_PROVIDER_LOCALSTORAGE_KEY, SHOULD_EAGER_CONNECT_LOCALSTORAGE_KE
 import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { isSettlementChain } from "domain/multichain/config";
-import { MultichainFundingHistoryItem } from "domain/multichain/types";
+import type { MultichainFundingHistoryItem } from "domain/multichain/types";
+import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";

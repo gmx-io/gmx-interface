@@ -1,5 +1,3 @@
-import { ENDPOINT_ID_TO_CHAIN_ID } from "domain/multichain/stargatePools";
-import { isStepGreater } from "domain/multichain/useGmxAccountFundingHistory";
 import keyBy from "lodash/keyBy";
 import pickBy from "lodash/pickBy";
 import { useEffect, useMemo, useState } from "react";
@@ -23,7 +21,9 @@ import {
   isSettlementChain,
   MultichainTokenId,
 } from "domain/multichain/config";
+import { ENDPOINT_ID_TO_CHAIN_ID } from "domain/multichain/stargatePools";
 import { MultichainFundingHistoryItem } from "domain/multichain/types";
+import { isStepGreater } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
 import {
   getMultichainDepositMetricId,
