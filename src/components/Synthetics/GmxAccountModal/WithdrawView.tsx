@@ -146,8 +146,12 @@ export const WithdrawView = () => {
     return getByKey(gmxAccountTokensData, selectedTokenAddress);
   }, [selectedTokenAddress, gmxAccountTokensData]);
 
-  const selectedTokenSettlementChainTokenId =
-    selectedTokenAddress && chainId !== undefined ? getMultichainTokenId(chainId, selectedTokenAddress) : undefined;
+  const unwrappedSelectedTokenAddress =
+    selectedTokenAddress !== undefined ? convertTokenAddress(chainId, selectedTokenAddress, "native") : undefined;
+
+  const selectedTokenSettlementChainTokenId = unwrappedSelectedTokenAddress
+    ? getMultichainTokenId(chainId, unwrappedSelectedTokenAddress)
+    : undefined;
 
   const realInputAmount =
     selectedToken && inputValue !== undefined ? parseValue(inputValue, selectedToken.decimals) : undefined;
@@ -173,9 +177,6 @@ export const WithdrawView = () => {
   }, [gmxAccountTokensData, chainId]);
 
   const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
-
-  const unwrappedSelectedTokenAddress =
-    selectedToken !== undefined ? convertTokenAddress(chainId, selectedToken.address, "native") : undefined;
 
   const sourceChainSelectedUnwrappedToken = useMemo((): TokenChainData | undefined => {
     if (srcChainId === undefined || selectedToken === undefined) {
@@ -368,6 +369,7 @@ export const WithdrawView = () => {
     if (
       srcChainId === undefined ||
       selectedTokenAddress === undefined ||
+      unwrappedSelectedTokenAddress === undefined ||
       inputAmount === undefined ||
       inputAmount <= 0n
     ) {
@@ -375,7 +377,7 @@ export const WithdrawView = () => {
     }
 
     const dstEid = getLayerZeroEndpointId(srcChainId);
-    const stargateAddress = getStargatePoolAddress(chainId, selectedTokenAddress);
+    const stargateAddress = getStargatePoolAddress(chainId, unwrappedSelectedTokenAddress);
 
     if (dstEid === undefined || stargateAddress === undefined) {
       return;
@@ -395,7 +397,7 @@ export const WithdrawView = () => {
       ),
       provider: stargateAddress,
     };
-  }, [srcChainId, selectedTokenAddress, chainId, inputAmount]);
+  }, [srcChainId, selectedTokenAddress, unwrappedSelectedTokenAddress, inputAmount, chainId]);
 
   const expressTransactionBuilder: ExpressTransactionBuilder | undefined = useMemo(() => {
     if (signer === undefined || bridgeOutParams === undefined || provider === undefined) {
