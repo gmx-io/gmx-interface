@@ -54,9 +54,9 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
   const { subaccount } = useSubaccountContext();
   const [localActions, setLocalActions] = useState<LocalActions>(defaultLocalActions);
 
-  const { data: onChainData, mutate } = useMulticall(chainId, "expressNonces", {
+  const { data: onChainData, mutate } = useMulticall(chainId, "expressNonces-context", {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
-    key: [account, subaccount?.address],
+    key: account && [account, subaccount?.address],
     request: {
       relayRouter: {
         contractAddress: getExpressContractAddress(chainId, { isSubaccount: false }),
