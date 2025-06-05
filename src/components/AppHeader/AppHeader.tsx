@@ -26,8 +26,8 @@ export function AppHeader({ leftContent }: Props) {
   };
 
   return (
-    <header data-qa="header" className="flex items-center justify-between">
-      <div className="">{leftContent}</div>
+    <header data-qa="header" className="grid grid-cols-[auto_auto] gap-16">
+      {leftContent}
 
       <AppHeaderUser
         disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}

@@ -1,5 +1,4 @@
 import { Trans } from "@lingui/macro";
-import cx from "classnames";
 import { Suspense, lazy } from "react";
 
 import { isDevelopment } from "config/env";
@@ -11,6 +10,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import { DepthChart } from "components/DepthChart/DepthChart";
+import Tabs from "components/Tabs/Tabs";
 
 import { TVChart } from "./TVChart";
 
@@ -46,11 +46,27 @@ const TAB_CONTENTS = {
   ),
 };
 
+const TABS_CLASSNAMES = {
+  PRICE: {
+    active: "border-b-2 border-b-blue-500",
+    regular: "border-b-2 border-b-[transparent]",
+  },
+  DEPTH: {
+    active: "border-b-2 border-b-blue-500",
+    regular: "border-b-2 border-b-[transparent]",
+  },
+  MARKET_GRAPH: {
+    active: "border-b-2 border-b-blue-500",
+    regular: "border-b-2 border-b-[transparent]",
+  },
+};
+
 const TABS = isDevelopment() ? ["PRICE", "DEPTH", "MARKET_GRAPH"] : ["PRICE", "DEPTH"];
 
 const TABS_OPTIONS = TABS.map((tab) => ({
   value: tab,
   label: TAB_LABELS[tab],
+  className: TABS_CLASSNAMES[tab],
 }));
 
 export function Chart() {
@@ -94,18 +110,12 @@ function DepthChartContainer() {
 
 const ChartTabs = ({ tab, setTab }: { tab: string | undefined; setTab: (tab: string) => void }) => {
   return (
-    <div className="flex w-full border-b border-stroke-accent">
-      {TABS_OPTIONS.map((option) => (
-        <button
-          key={option.value}
-          className={cx("text-body-medium cursor-pointer px-20 pb-10 pt-11 text-slate-100 hover:text-white", {
-            "-mb-1 border-b-2 border-blue-500 pb-9 text-white": tab === option.value,
-          })}
-          onClick={() => setTab(option.value)}
-        >
-          {option.label}
-        </button>
-      ))}
-    </div>
+    <Tabs 
+      options={TABS_OPTIONS}
+      selectedValue={tab}
+      onChange={setTab}
+      regularOptionClassname="grow-0 -mb-[0.5px]"
+      className="border-b border-stroke-primary"
+    />
   );
 };

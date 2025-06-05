@@ -403,7 +403,7 @@ function ChartHeaderInfoDesktop() {
   const scrollToRight = useCallback(() => scrollTo(1), [scrollTo]);
 
   return (
-    <div className="flex gap-16">
+    <div className="grid grid-cols-[auto_auto] gap-16">
       <div className="flex items-center justify-start">
         <ChartTokenSelector selectedToken={selectedTokenOption} oneRowLabels={true} />
       </div>
@@ -447,7 +447,7 @@ function ChartHeaderInfoDesktop() {
 const ChartHeaderItem = ({ label, value }: { label: ReactNode; value: ReactNode }) => {
   return (
     <div className="flex flex-col gap-2">
-      <div className="text-[11px] font-medium uppercase tracking-[0.08em] text-slate-100">{label}</div>
+      <div className="text-[11px] font-medium uppercase tracking-[0.08em] text-slate-100 whitespace-nowrap">{label}</div>
       <div className="text-body-medium">{value}</div>
     </div>
   );

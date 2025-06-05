@@ -27,7 +27,9 @@ export default function Tabs<V extends string | number>({
   qa,
 }: Props<V>) {
   return (
-    <div data-qa={qa} className={cx("Tab", `Tab__${type}`, `Tab__${size}`, className)}>
+    <div data-qa={qa} className={cx("flex w-full", className, {
+      "gap-8": type === "inline",
+    })}>
       {options.map((opt) =>
         isNestedOption(opt) ? (
           <NestedTab key={opt.label?.toString()} option={opt} selectedValue={selectedValue} onOptionClick={onChange} />
@@ -38,6 +40,7 @@ export default function Tabs<V extends string | number>({
             selectedValue={selectedValue}
             onOptionClick={onChange}
             regularOptionClassname={regularOptionClassname}
+            type={type}
           />
         )
       )}

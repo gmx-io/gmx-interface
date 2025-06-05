@@ -122,7 +122,7 @@ export function AppRoutes() {
 
   return (
     <>
-      <div className="App font-tthoves">
+      <div className="App font-tthoves w-full">
         {isHome ? (
           <div className="App-content">
             <Header
@@ -133,7 +133,7 @@ export function AppRoutes() {
             <HomeRoutes showRedirectModal={showRedirectModal} />
           </div>
         ) : (
-          <div className="flex h-full gap-8 p-8 max-[1100px]:pb-52">
+          <div className="grid h-full w-full grid-cols-[1fr_auto] gap-8 p-8 max-[1100px]:pb-52">
             <SideNav />
             <div className="flex h-full grow flex-col overflow-y-auto">
               <MainRoutes openSettings={openSettings} />

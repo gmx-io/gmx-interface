@@ -33,16 +33,16 @@ export const tradeTypeLabels = {
  */
 export const tradeTypeClassNames = {
   [TradeType.Long]: {
-    active: "!bg-[#1F3445] border-b border-b-green-500",
-    regular: "border-b border-b-[transparent]",
+    active: "!bg-[#1F3445] border-b-2 border-b-green-500 pb-9",
+    regular: "border-b border-b-stroke-primary",
   },
   [TradeType.Short]: {
-    active: "!bg-[#392A46] border-b border-b-red-500",
-    regular: "border-b border-b-[transparent]",
+    active: "!bg-[#392A46] border-b-2 border-b-red-500 pb-9",
+    regular: "border-b border-b-stroke-primary",
   },
   [TradeType.Swap]: {
-    active: "!bg-[#252B57] border-b border-b-blue-300",
-    regular: "border-b border-b-[transparent]",
+    active: "!bg-[#252B57] border-b-2 border-b-blue-300 pb-9",
+    regular: "border-b border-b-stroke-primary",
   },
 };
 

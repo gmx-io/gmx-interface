@@ -33,7 +33,6 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
       value: type,
       label: localizedTradeTypeLabels[type],
       className: tradeTypeClassNames[type],
-      icon: tradeTypeIcons[type],
     }));
   }, [localizedTradeTypeLabels]);
 
@@ -45,6 +44,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
         onChange={onTradeTypeChange}
         size="l"
         qa="trade-direction"
+        regularOptionClassname="hover:bg-new-gray-200 grow"
       />
     );
   }

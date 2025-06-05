@@ -20,7 +20,7 @@ const colors = {
   "cold-blue": {
     500: "#3a3f79",
     700: "#282b54",
-    900: "#1e203e",
+    900: "#1E2033",
   },
   "pale-blue": {
     100: "rgba(180,187,255, 0.1)",
@@ -67,8 +67,7 @@ const colors = {
   white: "#ffffff",
   black: "#000000",
   stroke: {
-    primary: "#252A47",
-    accent: "#363A59",
+    primary: "#363A59",
   },
   fill: {
     accent: "#363A59",

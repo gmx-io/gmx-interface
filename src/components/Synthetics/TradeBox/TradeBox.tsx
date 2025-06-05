@@ -844,7 +844,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   }, [availableTradeModes, localizedTradeModeLabels]);
 
   return (
-    <>
+    <div className="p-12 pb-16 flex flex-col gap-12">
       <div className="flex items-center justify-between">
         <Tabs
           options={tabsOptions}
@@ -1036,6 +1036,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           <TradeBoxAdvancedGroups slippageInputId={submitButtonState.slippageInputId} />
         </div>
       </form>
-    </>
+    </div>
   );
 }
