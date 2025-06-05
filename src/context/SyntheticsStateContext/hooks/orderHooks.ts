@@ -74,6 +74,7 @@ export function useCancelOrder(order: OrderInfo) {
         batchParams,
         expressParams,
         simulationParams: undefined,
+        noncesData: globalExpressParams?.noncesData,
         callback: makeOrderTxnCallback({}),
       }).finally(() => {
         setCancellingOrdersKeys((prev) => prev.filter((k) => k !== order.key));
