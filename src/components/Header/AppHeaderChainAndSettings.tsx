@@ -15,7 +15,7 @@ import {
 } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getChainIcon } from "config/icons";
-import { isSourceChain } from "context/GmxAccountContext/config";
+import { isSourceChain } from "domain/multichain/config";
 import { useChainId } from "lib/chains";
 import { isHomeSite, shouldShowRedirectModal } from "lib/legacy";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";

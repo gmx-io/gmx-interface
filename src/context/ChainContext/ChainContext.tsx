@@ -1,7 +1,7 @@
 import { createContext, PropsWithChildren, useContext, useMemo } from "react";
 
 import { isDevelopment } from "config/env";
-import { isContractsChain, isSourceChain } from "context/GmxAccountContext/config";
+import { isContractsChain, isSourceChain } from "domain/multichain/config";
 import { useChainIdImpl } from "lib/chains";
 import { getRealChainId } from "lib/chains/getRealChainId";
 import { ARBITRUM, ARBITRUM_SEPOLIA, UiContractsChain, UiSourceChain } from "sdk/configs/chains";

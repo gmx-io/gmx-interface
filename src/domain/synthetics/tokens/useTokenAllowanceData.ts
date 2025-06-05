@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
-import { isSourceChain } from "context/GmxAccountContext/config";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { isSourceChain } from "domain/multichain/config";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { EMPTY_OBJECT } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";

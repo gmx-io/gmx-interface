@@ -16,7 +16,7 @@ import {
   selectGmxAccountSettlementChainId,
   selectGmxAccountWithdrawViewTokenAddress,
   selectGmxAccountWithdrawViewTokenInputValue,
-} from "./selectors/pure";
+} from "./selectors";
 
 export function useGmxAccountSelector<Selected>(selector: (s: GmxAccountContext) => Selected) {
   return useContextSelector(context as Context<GmxAccountContext>, selector) as Selected;
@@ -39,8 +39,6 @@ export function useGmxAccountSettlementChainId() {
   ] as const;
 }
 
-// deposit view
-
 export function useGmxAccountDepositViewTokenAddress() {
   return [
     useGmxAccountSelector(selectGmxAccountDepositViewTokenAddress),
@@ -54,7 +52,6 @@ export function useGmxAccountDepositViewTokenInputValue() {
     useGmxAccountSelector(selectGmxAccountSetDepositViewTokenInputValue),
   ] as const;
 }
-// withdraw view
 
 export function useGmxAccountWithdrawViewTokenAddress() {
   return [
@@ -69,7 +66,6 @@ export function useGmxAccountWithdrawViewTokenInputValue() {
     useGmxAccountSelector(selectGmxAccountSetWithdrawViewTokenInputValue),
   ] as const;
 }
-// funding history
 
 export function useGmxAccountSelectedTransferGuid() {
   return [

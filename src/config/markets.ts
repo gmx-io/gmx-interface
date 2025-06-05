@@ -1,8 +1,9 @@
 import mapValues from "lodash/mapValues";
 
 import { isDevelopment } from "config/env";
+import { SETTLEMENT_CHAINS } from "domain/multichain/config";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, UiSettlementChain } from "./chains";
 import { MARKETS } from "./static/markets";
 
 export * from "./static/markets";
@@ -52,4 +53,23 @@ export const GLV_MARKETS: {
 
 export function getMarketUiConfig(chainId: number, marketAddress: string) {
   return MARKETS[chainId]?.[marketAddress];
+}
+
+const SETTLEMENT_CHAIN_TRADABLE_ASSETS_MAP: Record<UiSettlementChain, string[]> = {} as any;
+
+for (const chainId of SETTLEMENT_CHAINS) {
+  const tradableTokenAddressesSet = new Set<string>();
+
+  for (const marketAddress in MARKETS[chainId]) {
+    const marketConfig = MARKETS[chainId][marketAddress];
+
+    tradableTokenAddressesSet.add(marketConfig.longTokenAddress);
+    tradableTokenAddressesSet.add(marketConfig.shortTokenAddress);
+  }
+
+  SETTLEMENT_CHAIN_TRADABLE_ASSETS_MAP[chainId] = Array.from(tradableTokenAddressesSet);
+}
+
+export function getSettlementChainTradableTokenAddresses(chainId: UiSettlementChain) {
+  return SETTLEMENT_CHAIN_TRADABLE_ASSETS_MAP[chainId];
 }

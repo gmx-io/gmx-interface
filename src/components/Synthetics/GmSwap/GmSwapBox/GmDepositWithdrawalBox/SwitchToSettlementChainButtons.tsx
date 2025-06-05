@@ -5,7 +5,7 @@ import {
   MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING,
   isSettlementChain,
   isSourceChain,
-} from "context/GmxAccountContext/config";
+} from "domain/multichain/config";
 import { switchNetwork } from "lib/wallets";
 
 import Button from "components/Button/Button";

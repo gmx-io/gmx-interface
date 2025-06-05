@@ -1,5 +1,5 @@
 import { Contract, ethers, Provider, Wallet } from "ethers";
-import { Address, encodeAbiParameters, keccak256 } from "viem";
+import { encodeAbiParameters, keccak256 } from "viem";
 
 import type { UiContractsChain, UiSourceChain } from "config/chains";
 import { getBestSwapStrategy } from "domain/synthetics/externalSwaps/utils";
@@ -18,14 +18,6 @@ import {
   getExternalCallsPayload,
 } from "sdk/utils/orderTransactions";
 import { getSwapAmountsByToValue } from "sdk/utils/swap";
-import type { GelatoRelayRouter, SubaccountGelatoRelayRouter } from "typechain-types";
-import type {
-  MultichainClaimsRouter,
-  MultichainGlvRouter,
-  MultichainGmRouter,
-  MultichainOrderRouter,
-  MultichainTransferRouter,
-} from "typechain-types-arbitrum-sepolia";
 
 import { getOracleParamsForRelayParams } from "./oracleParamsUtils";
 import type {
@@ -87,7 +79,7 @@ export function getExpressContractAddress(
 // TODO: deal with isSubaccount
 export function getGelatoRelayRouterDomain(
   chainId: UiContractsChain,
-  relayRouterAddress: Address,
+  relayRouterAddress: string,
   isSubaccount: boolean,
   srcChainId?: UiSourceChain
 ): SignatureDomain {
@@ -219,7 +211,6 @@ export function getRawRelayerParams({
   externalCalls,
   tokenPermits,
   marketsInfoData,
-  isMultichain,
 }: {
   chainId: UiContractsChain;
   gasPaymentTokenAddress: string;
@@ -228,7 +219,6 @@ export function getRawRelayerParams({
   externalCalls: ExternalCallsPayload;
   tokenPermits: SignedTokenPermit[];
   marketsInfoData: MarketsInfoData;
-  isMultichain: boolean;
 }): RawRelayParamsPayload | RawMultichainRelayParamsPayload {
   const oracleParams = getOracleParamsForRelayParams({
     chainId,
@@ -244,7 +234,7 @@ export function getRawRelayerParams({
     tokenPermits,
     externalCalls,
     fee: feeParams,
-    desChainId: isMultichain ? BigInt(chainId) : undefined,
+    desChainId: BigInt(chainId),
   };
 
   return relayParamsPayload;
@@ -318,19 +308,12 @@ export async function getRelayRouterNonceForMultichain(
   provider: Provider,
   account: string,
   relayRouterAddress: string
-) {
+): Promise<bigint> {
   if (!provider) {
     throw new Error("provider is required");
   }
 
-  const abstractNonceable = new Contract(relayRouterAddress, abis.AbstractUserNonceable, provider) as unknown as
-    | GelatoRelayRouter
-    | SubaccountGelatoRelayRouter
-    | MultichainGmRouter
-    | MultichainGlvRouter
-    | MultichainOrderRouter
-    | MultichainClaimsRouter
-    | MultichainTransferRouter;
+  const abstractNonceable = new Contract(relayRouterAddress, abis.AbstractUserNonceable, provider);
 
   return await abstractNonceable.userNonces(account);
 }

@@ -3,17 +3,13 @@ import noop from "lodash/noop";
 
 import { sleep } from "./common";
 
-export function isFirefox() {
-  return window ? /Firefox/gi.test(window.navigator.userAgent) : false;
-}
-
 type ProxyGelatoRelay = {
   [field in keyof GelatoRelay]: GelatoRelay[field] extends (...args: infer A) => infer R
     ? (...args: A) => Promise<Awaited<R>>
     : never;
 };
 
-let inited = false;
+let initialized = false;
 const { promise, resolve } = Promise.withResolvers<GelatoRelay>();
 
 const gelatoRelayProxy = new Proxy<ProxyGelatoRelay>({} as ProxyGelatoRelay, {
@@ -22,12 +18,10 @@ const gelatoRelayProxy = new Proxy<ProxyGelatoRelay>({} as ProxyGelatoRelay, {
       throw new Error("Gelato proxy is only for firefox browser environment");
     }
 
-    if (!inited) {
-      inited = true;
+    if (!initialized) {
+      initialized = true;
 
-      // check current window state
       if (document.readyState === "complete") {
-        console.log("Gelato relay initialized. Resolved immediately.");
         const relay = new GelatoRelay();
         relay.onError(noop);
         resolve(relay);
@@ -35,8 +29,6 @@ const gelatoRelayProxy = new Proxy<ProxyGelatoRelay>({} as ProxyGelatoRelay, {
         window.addEventListener(
           "load",
           async () => {
-            await sleep(3000);
-            console.log("Gelato relay initialized. Resolved on load event.");
             const relay = new GelatoRelay();
             relay.onError(noop);
             resolve(relay);
@@ -63,9 +55,5 @@ const gelatoRelayProxy = new Proxy<ProxyGelatoRelay>({} as ProxyGelatoRelay, {
     };
   },
 });
-
-// export let gelatoRelay: ProxyGelatoRelay = isFirefox()
-//   ? gelatoRelayProxy
-//   : (new GelatoRelay() as unknown as ProxyGelatoRelay);
 
 export let gelatoRelay: ProxyGelatoRelay = gelatoRelayProxy;

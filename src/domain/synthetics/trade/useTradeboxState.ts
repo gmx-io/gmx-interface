@@ -11,6 +11,7 @@ import { UiContractsChain, UiSourceChain } from "config/chains";
 import { getKeepLeverageKey, getLeverageKey, getSyntheticsTradeOptionsKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { isSettlementChain } from "domain/multichain/config";
 import { MarketInfo } from "domain/synthetics/markets";
 import { getIsUnwrap, getIsWrap } from "domain/tokens";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -676,7 +677,10 @@ export function useTradeboxState(
       }
 
       const needFromAddressUpdate = !swapTokens.find((t) => t.address === fromTokenAddress);
-      const needFromIsGmxAccountUpdate = (srcChainId !== undefined) !== isFromTokenGmxAccount;
+      const canFromTokenBeGmxAccount = isSettlementChain(chainId);
+      const mustFromTokenBeGmxAccount = srcChainId !== undefined;
+      const needFromIsGmxAccountUpdate =
+        (!canFromTokenBeGmxAccount && isFromTokenGmxAccount) || (mustFromTokenBeGmxAccount && !isFromTokenGmxAccount);
 
       if (needFromAddressUpdate) {
         setFromTokenAddress(swapTokens[0].address);
@@ -693,6 +697,7 @@ export function useTradeboxState(
       }
     },
     [
+      chainId,
       enabled,
       fromTokenAddress,
       isFromTokenGmxAccount,
@@ -856,7 +861,12 @@ function fallbackPositionTokens({
   const isNextIndexTokenValid = nextIndexTokenAddress && allowedIndexTokens.has(nextIndexTokenAddress);
   const isNextMarketTokenValid =
     nextMarketTokenAdress && marketsMap[nextMarketTokenAdress]?.marketTokenAddress === nextMarketTokenAdress;
-  const isNextPayTokenSourceValid = (srcChainId !== undefined) === nextState.isFromTokenGmxAccount;
+  const canFromTokenBeGmxAccount = isSettlementChain(chainId);
+  const mustFromTokenBeGmxAccount = srcChainId !== undefined;
+  const isNextPayTokenSourceValid = !(
+    (!canFromTokenBeGmxAccount && nextState.isFromTokenGmxAccount) ||
+    (mustFromTokenBeGmxAccount && !nextState.isFromTokenGmxAccount)
+  );
 
   const fallbackPayToken = (fallbackPayToken?: string) => {
     return produce(nextState, (draft) => {

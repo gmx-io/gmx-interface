@@ -1,4 +1,6 @@
 import { t, Trans } from "@lingui/macro";
+import { IStargateAbi } from "domain/multichain/stargatePools";
+import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { Contract, type Provider } from "ethers";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
@@ -10,27 +12,30 @@ import { useAccount } from "wagmi";
 import { getChainName, UiSettlementChain } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import {
-  CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
-  getLayerZeroEndpointId,
-  getMultichainTokenId,
-  getStargatePoolAddress,
-  isSettlementChain,
-  MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS,
-} from "context/GmxAccountContext/config";
-import {
   useGmxAccountModalOpen,
   useGmxAccountWithdrawViewTokenAddress,
   useGmxAccountWithdrawViewTokenInputValue,
 } from "context/GmxAccountContext/hooks";
-import { IStargateAbi } from "context/GmxAccountContext/stargatePools";
-import { TokenChainData } from "context/GmxAccountContext/types";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   selectExpressGlobalParams,
   selectGasPaymentToken,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { BridgeOutParams, buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
+import { useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
+import {
+  CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
+  getLayerZeroEndpointId,
+  getMultichainTokenId,
+  getStargatePoolAddress,
+  isSettlementChain,
+  MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS,
+} from "domain/multichain/config";
+import { MULTICHAIN_FUNDING_SLIPPAGE_BPS } from "domain/multichain/constants";
+import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import { BridgeOutParams, TokenChainData } from "domain/multichain/types";
+import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
+import { buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTransactionBuilder, RawMultichainRelayParamsPayload } from "domain/synthetics/express/types";
 import { callRelayTransaction } from "domain/synthetics/gassless/txns/expressOrderDebug";
 import { convertToUsd, TokenData } from "domain/tokens";
@@ -66,7 +71,8 @@ import { convertTokenAddress } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { extendError, OrderErrorContext } from "sdk/utils/errors";
 import { convertToTokenAmount, getMidPrice } from "sdk/utils/tokens";
-import {
+import { applySlippageToMinOut } from "sdk/utils/trade";
+import type {
   IStargate,
   MessagingFeeStruct,
   OFTFeeDetailStruct,
@@ -77,6 +83,7 @@ import {
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import NumberInput from "components/NumberInput/NumberInput";
 import {
   useAvailableToTradeAssetMultichain,
@@ -88,14 +95,8 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { useArbitraryRelayParamsAndPayload } from "./arbitraryRelayParams";
-import { getSendParamsWithoutSlippage } from "./getSendParams";
 import { ModalShrinkingContent } from "./ModalShrinkingContent";
-import { Selector } from "./Selector";
-import { applySlippageBps, SLIPPAGE_BPS } from "./slippage";
 import { toastCustomOrStargateError } from "./toastCustomOrStargateError";
-import { useGmxAccountFundingHistory } from "./useGmxAccountFundingHistory";
-import { useMultichainQuoteFeeUsd } from "./useMultichainQuoteFeeUsd";
 
 const useIsFirstWithdrawal = () => {
   const [enabled, setEnabled] = useState(true);
@@ -216,7 +217,7 @@ export const WithdrawView = () => {
       return;
     }
 
-    return getSendParamsWithoutSlippage({
+    return getMultichainTransferSendParams({
       dstChainId: srcChainId,
       account,
       inputAmount,
@@ -304,7 +305,7 @@ export const WithdrawView = () => {
 
     const { receipt } = quoteOft;
 
-    const minAmountLD = applySlippageBps(receipt.amountReceivedLD as bigint, SLIPPAGE_BPS);
+    const minAmountLD = applySlippageToMinOut(MULTICHAIN_FUNDING_SLIPPAGE_BPS, receipt.amountReceivedLD as bigint);
 
     const newSendParams: SendParamStruct = {
       ...sendParamsWithoutSlippage,
@@ -707,7 +708,7 @@ export const WithdrawView = () => {
       <div className="flex flex-col gap-20">
         <div className="flex flex-col gap-4">
           <div className="text-body-small text-slate-100">Asset</div>
-          <Selector
+          <DropdownSelector
             value={selectedTokenAddress}
             onChange={setSelectedTokenAddress}
             placeholder={t`Select token`}
@@ -729,7 +730,7 @@ export const WithdrawView = () => {
           <div className="text-body-small text-slate-100">
             <Trans>To Network</Trans>
           </div>
-          <Selector
+          <DropdownSelector
             value={srcChainId}
             onChange={(value) => {
               switchNetwork(Number(value), isConnected);
@@ -941,12 +942,12 @@ async function fallbackCustomError<T = void>(f: () => Promise<T>, errorContext: 
           data: data as Hex,
         });
 
-        const customError = new Error();
+        const prettyError = new Error();
 
-        customError.name = decodedError.errorName;
-        customError.message = JSON.stringify(decodedError, null, 2);
+        prettyError.name = decodedError.errorName;
+        prettyError.message = JSON.stringify(decodedError, null, 2);
 
-        throw extendError(customError, {
+        throw extendError(prettyError, {
           errorContext,
         });
       }

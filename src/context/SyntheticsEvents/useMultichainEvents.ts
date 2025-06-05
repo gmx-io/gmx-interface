@@ -1,3 +1,5 @@
+import { ENDPOINT_ID_TO_CHAIN_ID } from "domain/multichain/stargatePools";
+import { isStepGreater } from "domain/multichain/useGmxAccountFundingHistory";
 import keyBy from "lodash/keyBy";
 import pickBy from "lodash/pickBy";
 import { useEffect, useMemo, useState } from "react";
@@ -6,15 +8,7 @@ import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
 import { getContract } from "config/contracts";
-import {
-  CHAIN_ID_TO_TOKEN_ID_MAP,
-  getMappedTokenId,
-  isSettlementChain,
-  MultichainTokenId,
-} from "context/GmxAccountContext/config";
 import { useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
-import { ENDPOINT_ID_TO_CHAIN_ID } from "context/GmxAccountContext/stargatePools";
-import { MultichainFundingHistoryItem } from "context/GmxAccountContext/types";
 import {
   subscribeToComposeDeliveredEvents,
   subscribeToMultichainApprovalEvents,
@@ -22,6 +16,14 @@ import {
   subscribeToOftSentEvents,
 } from "context/WebsocketContext/subscribeToEvents";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
+import { CodecUiHelper } from "domain/multichain/codecs/CodecUiHelper";
+import {
+  CHAIN_ID_TO_TOKEN_ID_MAP,
+  getMappedTokenId,
+  isSettlementChain,
+  MultichainTokenId,
+} from "domain/multichain/config";
+import { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useChainId } from "lib/chains";
 import {
   getMultichainDepositMetricId,
@@ -36,9 +38,6 @@ import { sendMultichainDepositSuccessEvent, sendMultichainWithdrawalSuccessEvent
 import { getToken } from "sdk/configs/tokens";
 import { LRUCache } from "sdk/utils/LruCache";
 import { nowInSeconds } from "sdk/utils/time";
-
-import { CodecUiHelper } from "components/Synthetics/GmxAccountModal/codecs/CodecUiHelper";
-import { isStepGreater } from "components/Synthetics/GmxAccountModal/useGmxAccountFundingHistory";
 
 import { useSyntheticsEvents } from "./SyntheticsEventsProvider";
 import type {

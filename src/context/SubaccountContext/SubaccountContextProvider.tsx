@@ -4,6 +4,12 @@ import { toast } from "react-toastify";
 
 import { getSubaccountApprovalKey, getSubaccountConfigKey } from "config/localStorage";
 import { useCalcSelector } from "context/SyntheticsStateContext/utils";
+import {
+  estimateArbitraryRelayFee,
+  PreparedGetTxnData,
+  selectArbitraryRelayParamsAndPayload,
+  selectRawBasePreparedRelayParamsPayload,
+} from "domain/multichain/arbitraryRelayParams";
 import { getExpressContractAddress } from "domain/synthetics/express";
 import { buildAndSignRemoveSubaccountTxn, removeSubaccountWalletTxn } from "domain/synthetics/subaccount";
 import { generateSubaccount } from "domain/synthetics/subaccount/generateSubaccount";
@@ -25,12 +31,6 @@ import { sendExpressTransaction } from "lib/transactions";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 
-import {
-  estimateArbitraryRelayFee,
-  PreparedGetTxnData,
-  selectArbitraryRelayParamsAndPayload,
-  selectRawBasePreparedRelayParamsPayload,
-} from "components/Synthetics/GmxAccountModal/arbitraryRelayParams";
 import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
 import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
 
@@ -90,10 +90,9 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         address: subaccountConfig.address,
         onchainData: subaccountData,
         signedApproval,
-        isMultichain: srcChainId !== undefined,
       }),
     } satisfies Subaccount;
-  }, [signedApproval, signer?.address, signer?.provider, srcChainId, subaccountConfig, subaccountData]);
+  }, [signedApproval, signer?.address, signer?.provider, subaccountConfig, subaccountData]);
 
   const updateSubaccountSettings = useCallback(
     async function updateSubaccountSettings({

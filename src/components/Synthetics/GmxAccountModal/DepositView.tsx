@@ -1,4 +1,6 @@
 import { Trans, t } from "@lingui/macro";
+import { IStargateAbi, StargateErrorsAbi } from "domain/multichain/stargatePools";
+import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { Contract } from "ethers";
 import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -14,20 +16,23 @@ import { UiContractsChain, UiSettlementChain, UiSourceChain, UiSupportedChain, g
 import { getContract } from "config/contracts";
 import { getChainIcon } from "config/icons";
 import {
-  CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
-  DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT,
-  getMappedTokenId,
-} from "context/GmxAccountContext/config";
-import {
   useGmxAccountDepositViewTokenAddress,
   useGmxAccountDepositViewTokenInputValue,
   useGmxAccountModalOpen,
   useGmxAccountSelector,
 } from "context/GmxAccountContext/hooks";
 import { selectGmxAccountDepositViewTokenInputAmount } from "context/GmxAccountContext/selectors";
-import { IStargateAbi, StargateErrorsAbi } from "context/GmxAccountContext/stargatePools";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useMultichainApprovalsActiveListener } from "context/SyntheticsEvents/useMultichainEvents";
+import {
+  CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
+  DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT,
+  getMappedTokenId,
+} from "domain/multichain/config";
+import { MULTICHAIN_FUNDING_SLIPPAGE_BPS } from "domain/multichain/constants";
+import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import { useMultichainDepositNetworkComposeGas } from "domain/multichain/useMultichainDepositNetworkComposeGas";
+import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -41,7 +46,7 @@ import {
   sendTxnErrorMetric,
   sendTxnSentMetric,
 } from "lib/metrics";
-import { formatAmountFree, formatBalanceAmount, formatPercentage, formatUsd, USD_DECIMALS } from "lib/numbers";
+import { USD_DECIMALS, formatAmountFree, formatBalanceAmount, formatPercentage, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { TxnCallback, TxnEventName, WalletTxnCtx, sendWalletTransaction } from "lib/transactions";
@@ -50,6 +55,7 @@ import { abis } from "sdk/abis";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "sdk/utils/tokens";
+import { applySlippageToMinOut } from "sdk/utils/trade";
 import {
   IStargate,
   MessagingFeeStruct,
@@ -58,23 +64,17 @@ import {
   OFTReceiptStruct,
   SendParamStruct,
 } from "typechain-types-stargate/interfaces/IStargate";
-import { multichainTransferRouterAbi } from "wagmi-generated";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 import NumberInput from "components/NumberInput/NumberInput";
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { getSendParamsWithoutSlippage } from "./getSendParams";
 import { useAvailableToTradeAssetMultichain, useMultichainTokensRequest } from "./hooks";
 import { ModalShrinkingContent } from "./ModalShrinkingContent";
-import { SLIPPAGE_BPS, applySlippageBps } from "./slippage";
-import { useGmxAccountFundingHistory } from "./useGmxAccountFundingHistory";
-import { useMultichainDepositNetworkComposeGas } from "./useMultichainDepositNetworkComposeGas";
-import { useMultichainQuoteFeeUsd } from "./useMultichainQuoteFeeUsd";
 
 const useIsFirstDeposit = () => {
   const [enabled, setEnabled] = useState(true);
@@ -303,7 +303,7 @@ export const DepositView = () => {
       return;
     }
 
-    return getSendParamsWithoutSlippage({
+    return getMultichainTransferSendParams({
       account,
       inputAmount,
       srcChainId,
@@ -392,7 +392,7 @@ export const DepositView = () => {
 
     const { receipt } = quoteOft;
 
-    const minAmountLD = applySlippageBps(receipt.amountReceivedLD as bigint, SLIPPAGE_BPS);
+    const minAmountLD = applySlippageToMinOut(MULTICHAIN_FUNDING_SLIPPAGE_BPS, receipt.amountReceivedLD as bigint);
 
     const newSendParams: SendParamStruct = {
       ...sendParamsWithoutSlippage,
@@ -487,12 +487,12 @@ export const DepositView = () => {
           callData: contract.interface.encodeFunctionData("multicall", [
             [
               encodeFunctionData({
-                abi: multichainTransferRouterAbi,
+                abi: abis.MultichainTransferRouterArbitrumSepolia,
                 functionName: "sendWnt",
                 args: [multichainVaultAddress, inputAmount],
               }),
               encodeFunctionData({
-                abi: multichainTransferRouterAbi,
+                abi: abis.MultichainTransferRouterArbitrumSepolia,
                 functionName: "bridgeIn",
                 args: [account, selectedToken.wrappedAddress as Address],
               }),
@@ -509,13 +509,13 @@ export const DepositView = () => {
           callData: contract.interface.encodeFunctionData("multicall", [
             [
               encodeFunctionData({
-                abi: multichainTransferRouterAbi,
+                abi: abis.MultichainTransferRouterArbitrumSepolia,
                 functionName: "sendTokens",
                 args: [depositViewTokenAddress as Address, multichainVaultAddress, inputAmount],
               }),
 
               encodeFunctionData({
-                abi: multichainTransferRouterAbi,
+                abi: abis.MultichainTransferRouterArbitrumSepolia,
                 functionName: "bridgeIn",
                 args: [account, depositViewTokenAddress as Address],
               }),
@@ -865,7 +865,10 @@ export const DepositView = () => {
       <div className="h-32 shrink-0 grow" />
 
       <div className="mb-16 flex flex-col gap-8">
-        <SyntheticsInfoRow label="Allowed slippage" value={formatPercentage(SLIPPAGE_BPS, { bps: true })} />
+        <SyntheticsInfoRow
+          label="Allowed slippage"
+          value={formatPercentage(BigInt(MULTICHAIN_FUNDING_SLIPPAGE_BPS), { bps: true })}
+        />
         <SyntheticsInfoRow
           label={<Trans>Min receive</Trans>}
           value={

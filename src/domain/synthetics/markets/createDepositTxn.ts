@@ -11,7 +11,6 @@ import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import type { UiContractsChain } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
-import { IDepositUtils } from "typechain-types-arbitrum-sepolia/ExchangeRouter";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
@@ -90,11 +89,8 @@ export async function createDepositTxn(chainId: UiContractsChain, signer: Signer
 
     {
       method: "createDeposit",
-      // TODO update to conform to arbitrum sepolia abi
       params: [
         {
-          // callbackGasLimit: 0n,
-
           addresses: {
             receiver: p.account,
             callbackContract: ethers.ZeroAddress,
@@ -110,8 +106,7 @@ export async function createDepositTxn(chainId: UiContractsChain, signer: Signer
           executionFee: p.executionFee,
           callbackGasLimit: 0,
           dataList: [],
-        } satisfies IDepositUtils.CreateDepositParamsStruct,
-        // satisfies DepositUtils.CreateDepositParamsStruct,
+        },
       ],
     },
   ];

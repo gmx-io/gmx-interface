@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
-import { isSettlementChain } from "context/GmxAccountContext/config";
+import { isSettlementChain } from "domain/multichain/config";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";

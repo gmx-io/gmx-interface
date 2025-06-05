@@ -15,6 +15,5 @@ export {
   extractTxnError,
   extractDataFromError,
 } from "sdk/utils/errors";
-// export {  } from "sdk/utils/errors/transactionsErrors";
 
 export const parseError = getIsFlagEnabled("testMultichain") ? parseErrorEnabled : parseErrorDisabled;

@@ -10,7 +10,7 @@ import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
 
 import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 
-import { useOrders } from "../../../ab/testMultichain/useOrders";
+import { useOrders } from "./useOrders";
 import { MarketsInfoData } from "../markets";
 import { TokensData } from "../tokens";
 import { OrderTypeFilterValue } from "./ordersFilters";

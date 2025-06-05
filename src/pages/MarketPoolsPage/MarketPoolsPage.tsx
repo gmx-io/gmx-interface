@@ -5,15 +5,15 @@ import { useAccount } from "wagmi";
 import { getChainName } from "config/chains";
 import { getSyntheticsDepositMarketKey } from "config/localStorage";
 import {
-  isSettlementChain,
-  isSourceChain,
-  MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING,
-} from "context/GmxAccountContext/config";
-import {
   selectDepositMarketTokensData,
   selectGlvAndMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import {
+  isSettlementChain,
+  isSourceChain,
+  MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING,
+} from "domain/multichain/config";
 import { useMarketTokensData } from "domain/synthetics/markets";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { getTokenData } from "domain/synthetics/tokens";

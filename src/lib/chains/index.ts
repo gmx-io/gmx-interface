@@ -5,8 +5,8 @@ import { useAccount } from "wagmi";
 import { DEFAULT_CHAIN_ID, isSupportedChain } from "config/chains";
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
 import { useChainContext } from "context/ChainContext/ChainContext";
-import { isSettlementChain, isSourceChain } from "context/GmxAccountContext/config";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
+import { isSettlementChain, isSourceChain } from "domain/multichain/config";
 import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 import type { UiContractsChain, UiSettlementChain, UiSourceChain } from "sdk/configs/chains";
 

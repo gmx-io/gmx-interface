@@ -2,9 +2,12 @@ import { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { createContext } from "use-context-selector";
 import { useAccount } from "wagmi";
 
+import {
+  DEFAULT_SETTLEMENT_CHAIN_ID_MAP,
+  MULTI_CHAIN_SUPPORTED_TOKEN_MAP,
+  isSourceChain,
+} from "domain/multichain/config";
 import { ARBITRUM_SEPOLIA, UiSettlementChain, UiSourceChain } from "sdk/configs/chains";
-
-import { DEFAULT_SETTLEMENT_CHAIN_ID_MAP, MULTI_CHAIN_SUPPORTED_TOKEN_MAP, isSourceChain } from "./config";
 
 export type GmxAccountModalView =
   | "main"

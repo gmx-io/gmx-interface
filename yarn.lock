@@ -3272,15 +3272,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@layerzerolabs/lz-definitions@npm:3.0.83":
-  version: 3.0.83
-  resolution: "@layerzerolabs/lz-definitions@npm:3.0.83"
-  dependencies:
-    tiny-invariant: ^1.3.1
-  checksum: cfde5ade7126a3a2739f46c6d0268c659d10712b1380a9abfaf797381153b1a9b0eff70b380d52bed084644e59718f64bca48363306f9be4812f2945b9aec3d3
-  languageName: node
-  linkType: hard
-
 "@layerzerolabs/lz-v2-utilities@npm:3.0.85":
   version: 3.0.85
   resolution: "@layerzerolabs/lz-v2-utilities@npm:3.0.85"
@@ -3294,15 +3285,6 @@ __metadata:
     bs58: ^5.0.0
     tiny-invariant: ^1.3.1
   checksum: eeafd093dc90c83ca213cb5c52c89690a8615e2d0af06309845c0c670169a8174bd5bf13d61e4ba76194f7b55018a085c4749e56bc45a1b27aead33981ac2ac7
-  languageName: node
-  linkType: hard
-
-"@layerzerolabs/scan-client@npm:0.0.8":
-  version: 0.0.8
-  resolution: "@layerzerolabs/scan-client@npm:0.0.8"
-  peerDependencies:
-    axios: "*"
-  checksum: 2cab3df81ea6ffe3c80fe74c33b244f8f9ca925e09dab2fd0f68780fe6bd3574011048b71b86b987deb2eac9a466f091c1acfcb86fba435188416a5136495e02
   languageName: node
   linkType: hard
 
@@ -10528,9 +10510,7 @@ __metadata:
     "@floating-ui/react": 0.26.19
     "@gelatonetwork/relay-sdk": 5.6.0
     "@headlessui/react": 1.7.19
-    "@layerzerolabs/lz-definitions": 3.0.83
     "@layerzerolabs/lz-v2-utilities": 3.0.85
-    "@layerzerolabs/scan-client": 0.0.8
     "@lingui/cli": 4.10.0
     "@lingui/core": 4.10.0
     "@lingui/loader": 4.10.0

@@ -1,18 +1,17 @@
 import { useMemo } from "react";
 import useSWRSubscription, { SWRSubscription } from "swr/subscription";
-import { Address, zeroAddress } from "viem";
+import { Address } from "viem";
 import { useAccount } from "wagmi";
 
 import { UiContractsChain, UiSettlementChain, getChainName } from "config/chains";
 import { multichainBalanceKey } from "config/dataStore";
-import { MARKETS } from "config/markets";
+import { getSettlementChainTradableTokenAddresses } from "config/markets";
 import {
   MULTI_CHAIN_SUPPORTED_TOKEN_MAP,
   MULTI_CHAIN_TOKEN_MAPPING,
-  SETTLEMENT_CHAINS,
   isSettlementChain,
-} from "context/GmxAccountContext/config";
-import { TokenChainData } from "context/GmxAccountContext/types";
+} from "domain/multichain/config";
+import type { TokenChainData } from "domain/multichain/types";
 import {
   TokensDataResult,
   convertToUsd,
@@ -31,7 +30,7 @@ import { getContract } from "sdk/configs/contracts";
 import { getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
-import { fetchMultichainTokenBalances } from "./fetchMultichainTokenBalances";
+import { fetchMultichainTokenBalances } from "../../../domain/multichain/fetchMultichainTokenBalances";
 
 export function useAvailableToTradeAssetSymbolsSettlementChain(): string[] {
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
@@ -264,26 +263,8 @@ export function useMultichainTokensRequest(): { tokenChainDataArray: TokenChainD
   return { tokenChainDataArray: tokenChainDataArray, isPriceDataLoading };
 }
 
-const TRADABLE_ASSETS_MAP: Record<UiSettlementChain, Address[]> = {} as any;
-
-for (const chainId of SETTLEMENT_CHAINS) {
-  const tradableTokenAddressesSet = new Set<Address>();
-
-  // TODO: somehow do not show it in the balances list, but keep in tokensData
-  tradableTokenAddressesSet.add(zeroAddress);
-
-  for (const marketAddress in MARKETS[chainId]) {
-    const marketConfig = MARKETS[chainId][marketAddress];
-
-    tradableTokenAddressesSet.add(marketConfig.longTokenAddress as Address);
-    tradableTokenAddressesSet.add(marketConfig.shortTokenAddress as Address);
-  }
-
-  TRADABLE_ASSETS_MAP[chainId] = Array.from(tradableTokenAddressesSet);
-}
-
 function buildGmxAccountTokenBalancesRequest(settlementChainId: UiSettlementChain, account: string) {
-  const tradableTokenAddresses: Address[] = TRADABLE_ASSETS_MAP[settlementChainId];
+  const tradableTokenAddresses: string[] = getSettlementChainTradableTokenAddresses(settlementChainId);
 
   const erc20Calls = Object.fromEntries(
     tradableTokenAddresses.map((tokenAddress) => [

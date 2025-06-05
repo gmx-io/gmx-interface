@@ -26,8 +26,7 @@ import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUN
 import { bigMath } from "sdk/utils/bigmath";
 import { ZERO_DATA } from "sdk/utils/hash";
 import { nowInSeconds, secondsToPeriod } from "sdk/utils/time";
-import { SubaccountGelatoRelayRouter } from "typechain-types";
-import type { MultichainSubaccountRouter } from "typechain-types-arbitrum-sepolia";
+import type { SubaccountGelatoRelayRouter } from "typechain-types";
 
 import { getExpressContractAddress, getGelatoRelayRouterDomain } from "../express";
 import { SubaccountOnchainData } from "./useSubaccountOnchainData";
@@ -176,7 +175,7 @@ export function getIsInvalidSubaccount(subaccount: Subaccount, requiredActions: 
   return isExpired || isNonceExpired || actionsExceeded;
 }
 
-export function getEmptySubaccountApproval(subaccountAddress: string, isMultichain: boolean): SignedSubbacountApproval {
+export function getEmptySubaccountApproval(subaccountAddress: string): SignedSubbacountApproval {
   return {
     subaccount: subaccountAddress,
     shouldAdd: false,
@@ -187,7 +186,7 @@ export function getEmptySubaccountApproval(subaccountAddress: string, isMulticha
     deadline: maxUint256,
     signature: ZERO_DATA,
     signedAt: 0,
-    integrationId: isMultichain ? zeroHash : undefined,
+    integrationId: zeroHash,
   };
 }
 
@@ -248,12 +247,11 @@ export function getActualApproval(subaccount: {
   address: string;
   signedApproval: SignedSubbacountApproval | undefined;
   onchainData: SubaccountOnchainData;
-  isMultichain: boolean;
 }): SignedSubbacountApproval {
-  const { signedApproval, address, onchainData, isMultichain } = subaccount;
+  const { signedApproval, address, onchainData } = subaccount;
 
   if (!signedApproval || getIsSubaccountApprovalSynced({ signedApproval, onchainData })) {
-    return getEmptySubaccountApproval(address, isMultichain);
+    return getEmptySubaccountApproval(address);
   }
 
   return signedApproval;
@@ -405,7 +403,7 @@ async function getSubaccountApprovalNonceForProvider(
   chainId: UiContractsChain,
   signer: WalletSigner,
   provider: Provider
-) {
+): Promise<bigint> {
   const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
 
   if (srcChainId !== undefined && provider === undefined) {
@@ -422,7 +420,7 @@ async function getSubaccountApprovalNonceForProvider(
     contractAddress,
     abis.AbstractSubaccountApprovalNonceable,
     provider
-  ) as unknown as SubaccountGelatoRelayRouter | MultichainSubaccountRouter;
+  ) as unknown as SubaccountGelatoRelayRouter;
 
   return await contract.subaccountApprovalNonces(signer.address);
 }

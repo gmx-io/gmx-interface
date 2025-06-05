@@ -3,8 +3,8 @@ import cx from "classnames";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
-import { UiContractsChain } from "config/chains";
-import { TokenChainData } from "context/GmxAccountContext/types";
+import type { UiContractsChain, UiSourceChain } from "config/chains";
+import type { TokenChainData } from "domain/multichain/types";
 import { convertToUsd } from "domain/synthetics/tokens";
 import type { Token, TokenData, TokensData } from "domain/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
@@ -23,6 +23,7 @@ import "./TokenSelector.scss";
 
 type Props = {
   chainId: UiContractsChain;
+  srcChainId: UiSourceChain | undefined;
 
   label?: string;
   size?: "m" | "l";
@@ -47,6 +48,7 @@ type Props = {
 
 export function MultichainTokenSelector({
   chainId,
+  srcChainId,
   walletTokensData,
   gmxAccountTokensData,
   selectedTokenLabel,
@@ -108,13 +110,18 @@ export function MultichainTokenSelector({
   useEffect(() => {
     if (isModalVisible) {
       setSearchKeyword("");
-      if (isGmxAccountEmpty) {
-        setActiveFilter("deposit");
-      } else {
+
+      if (srcChainId === undefined) {
         setActiveFilter("pay");
+      } else {
+        if (isGmxAccountEmpty) {
+          setActiveFilter("deposit");
+        } else {
+          setActiveFilter("pay");
+        }
       }
     }
-  }, [isGmxAccountEmpty, isModalVisible, setSearchKeyword]);
+  }, [isGmxAccountEmpty, isModalVisible, setSearchKeyword, srcChainId]);
 
   if (!token) {
     return null;
@@ -147,7 +154,7 @@ export function MultichainTokenSelector({
               setValue={setSearchKeyword}
               // onKeyDown={_handleKeyDown}
             />
-            {isGmxAccountEmpty ? (
+            {isGmxAccountEmpty && srcChainId !== undefined ? (
               <div className="text-body-medium mt-8 text-slate-100">
                 <Trans>To begin trading on GMX deposit assets into GMX account</Trans>
               </div>

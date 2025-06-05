@@ -2,7 +2,7 @@ import { zeroAddress } from "viem";
 
 import type { Token, TokenAddressTypesMap, TokenCategory } from "types/tokens";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, OPTIMISM_SEPOLIA } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 import { getContract } from "./contracts";
 
 export const NATIVE_TOKEN_ADDRESS = zeroAddress;
@@ -1617,6 +1617,7 @@ export const TOKEN_COLOR_MAP = {
 export const TOKENS_MAP: { [chainId: number]: { [address: string]: Token } } = {};
 export const V1_TOKENS: { [chainId: number]: Token[] } = {};
 export const V2_TOKENS: { [chainId: number]: Token[] } = {};
+export const V2_NONSYNTETIC_TOKENS: { [chainId: number]: Token[] } = {};
 export const SYNTHETIC_TOKENS: { [chainId: number]: Token[] } = {};
 export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: Token } } = {};
 export const WRAPPED_TOKENS_MAP: { [chainId: number]: Token } = {};
@@ -1632,6 +1633,7 @@ for (let j = 0; j < CHAIN_IDS.length; j++) {
   SYNTHETIC_TOKENS[chainId] = [];
   V1_TOKENS[chainId] = [];
   V2_TOKENS[chainId] = [];
+  V2_NONSYNTETIC_TOKENS[chainId] = [];
 
   let tokens = TOKENS[chainId];
   let wrappedTokenAddress: string | undefined;
@@ -1656,6 +1658,10 @@ for (let j = 0; j < CHAIN_IDS.length; j++) {
 
     if ((!token.isPlatformToken || (token.isPlatformToken && token.isPlatformTradingToken)) && !token.isTempHidden) {
       V2_TOKENS[chainId].push(token);
+
+      if (!token.isSynthetic) {
+        V2_NONSYNTETIC_TOKENS[chainId].push(token);
+      }
     }
 
     if (token.isSynthetic) {

@@ -1,6 +1,6 @@
-import { MessageDescriptor } from "@lingui/core";
-import { Trans, msg, t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
+import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useMemo, useState } from "react";
 import { IoArrowDown } from "react-icons/io5";
 import { TbLoader2 } from "react-icons/tb";
@@ -10,10 +10,10 @@ import { useAccount, useDisconnect } from "wagmi";
 
 import { getExplorerUrl } from "config/chains";
 import { CURRENT_PROVIDER_LOCALSTORAGE_KEY, SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY } from "config/localStorage";
-import { isSettlementChain } from "context/GmxAccountContext/config";
 import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
-import { MultichainFundingHistoryItem } from "context/GmxAccountContext/types";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { isSettlementChain } from "domain/multichain/config";
+import { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
@@ -46,8 +46,9 @@ import {
   useAvailableToTradeAssetSymbolsMultichain,
   useAvailableToTradeAssetSymbolsSettlementChain,
 } from "./hooks";
+import { isMultichainFundingItemLoading } from "./isMultichainFundingItemLoading";
+import { FUNDING_OPERATIONS_LABELS } from "./keys";
 import { ModalShrinkingContent } from "./ModalShrinkingContent";
-import { useGmxAccountFundingHistory } from "./useGmxAccountFundingHistory";
 
 const TokenIcons = ({ tokens }: { tokens: string[] }) => {
   const displayTokens = tokens.slice(0, 3);
@@ -75,23 +76,7 @@ const TokenIcons = ({ tokens }: { tokens: string[] }) => {
   );
 };
 
-export const FUNDING_OPERATIONS_LABELS = {
-  deposit: msg`Deposit`,
-  "deposit-failed": msg`Deposit failed`,
-  withdrawal: msg`Withdrawal`,
-} satisfies Partial<Record<`${"deposit" | "withdrawal"}${"" | "-failed"}`, MessageDescriptor>>;
-
-export function isMultichainFundingItemLoading({
-  step,
-  operation,
-  isExecutionError,
-}: Pick<MultichainFundingHistoryItem, "step" | "operation" | "isExecutionError">) {
-  return (
-    (step === "submitted" || step === "sent" || (operation === "deposit" && step === "received")) && !isExecutionError
-  );
-}
-
-export function FundingHistoryItemLabel({
+function FundingHistoryItemLabel({
   step,
   operation,
   isExecutionError,

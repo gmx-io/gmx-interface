@@ -1,11 +1,12 @@
 import { Provider, Signer, Wallet } from "ethers";
-import { AbiItemArgs, Address, encodeFunctionData, Hex, size, zeroAddress, zeroHash } from "viem";
+import { encodeFunctionData, size, zeroAddress, zeroHash } from "viem";
 
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
-import { isSourceChain } from "context/GmxAccountContext/config";
+import { isSourceChain } from "domain/multichain/config";
+import type { BridgeOutParams } from "domain/multichain/types";
 import {
   ExpressParamsEstimationMethod,
   ExpressTransactionBuilder,
@@ -64,8 +65,6 @@ import {
   getIsEmptyBatch,
 } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
-import { IRelayUtils } from "typechain-types-arbitrum-sepolia/MultichainTransferRouter";
-import { multichainOrderRouterAbi, multichainSubaccountRouterAbi, multichainTransferRouterAbi } from "wagmi-generated";
 
 import { approximateL1GasBuffer, estimateBatchGasLimit, estimateRelayerGasLimit, GasLimitsConfig } from "../fees";
 import { getNeedTokenApprove } from "../tokens";
@@ -281,7 +280,6 @@ export async function estimateExpressParams({
     externalCalls: baseRelayFeeParams.externalCalls,
     tokenPermits,
     marketsInfoData,
-    isMultichain: srcChainId !== undefined,
   });
 
   const baseTxn = await expressTransactionBuilder({
@@ -384,7 +382,6 @@ export async function estimateExpressParams({
     externalCalls: finalRelayFeeParams.externalCalls,
     tokenPermits,
     marketsInfoData,
-    isMultichain: srcChainId !== undefined,
   });
 
   const gasPaymentValidations = getGasPaymentValidations({
@@ -520,11 +517,7 @@ export async function buildAndSignExpressBatchOrderTxn({
   let userNonce: bigint;
   if (cachedNonce === undefined) {
     if (srcChainId) {
-      userNonce = await getRelayRouterNonceForMultichain(
-        provider!,
-        messageSigner.address as Address,
-        relayRouterAddress
-      );
+      userNonce = await getRelayRouterNonceForMultichain(provider!, messageSigner.address, relayRouterAddress);
     } else {
       userNonce = await getRelayRouterNonceForSigner({
         chainId,
@@ -546,7 +539,6 @@ export async function buildAndSignExpressBatchOrderTxn({
       ...relayParamsPayload,
       userNonce,
       deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
-      // desChainId: srcChainId || chainId === ARBITRUM_SEPOLIA ? BigInt(chainId) : undefined,
     } as RelayParamsPayload | MultichainRelayParamsPayload,
     subaccountApproval: subaccount?.signedApproval,
     paramsLists: getBatchParamsLists(batchParams),
@@ -569,13 +561,11 @@ export async function buildAndSignExpressBatchOrderTxn({
     signature = await signTypedData(signatureParams);
   }
 
-  let batchCalldata: Hex;
+  let batchCalldata: string;
   if (srcChainId) {
-    type MultichainBatchArgs = AbiItemArgs<typeof multichainSubaccountRouterAbi, "batch">;
-
     if (subaccount) {
       batchCalldata = encodeFunctionData({
-        abi: multichainSubaccountRouterAbi,
+        abi: abis.MultichainSubaccountRouterArbitrumSepolia,
         functionName: "batch",
         args: [
           {
@@ -587,12 +577,11 @@ export async function buildAndSignExpressBatchOrderTxn({
           BigInt(srcChainId),
           subaccount.signedApproval?.subaccount,
           params.paramsLists,
-        ] as MultichainBatchArgs,
+        ],
       });
     } else {
-      type MultichainBatchArgs = AbiItemArgs<typeof multichainOrderRouterAbi, "batch">;
       batchCalldata = encodeFunctionData({
-        abi: multichainOrderRouterAbi,
+        abi: abis.MultichainOrderRouterArbitrumSepolia,
         functionName: "batch",
         args: [
           {
@@ -602,7 +591,7 @@ export async function buildAndSignExpressBatchOrderTxn({
           params.account,
           BigInt(srcChainId),
           params.paramsLists,
-        ] as MultichainBatchArgs,
+        ],
       });
     }
   } else {
@@ -653,7 +642,7 @@ export async function getBatchSignatureParams({
   relayParams: RelayParamsPayload | MultichainRelayParamsPayload;
   batchParams: BatchOrderTxnParams;
   chainId: UiContractsChain;
-  relayRouterAddress: Address;
+  relayRouterAddress: string;
 }): Promise<SignTypedDataParams> {
   const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
 
@@ -780,7 +769,7 @@ export function getOrderRelayRouterAddress(
   chainId: UiContractsChain,
   isSubaccount: boolean,
   isMultichain: boolean
-): Address {
+): string {
   let contractName: ContractName;
   if (isMultichain) {
     if (isSubaccount) {
@@ -798,8 +787,6 @@ export function getOrderRelayRouterAddress(
 
   return getContract(chainId, contractName);
 }
-
-export type BridgeOutParams = AbiItemArgs<typeof multichainTransferRouterAbi, "bridgeOut">[3];
 
 export async function buildAndSignBridgeOutTxn({
   chainId,
@@ -866,20 +853,18 @@ export async function buildAndSignBridgeOutTxn({
     });
   }
 
-  type MultichainBridgeOutArgs = AbiItemArgs<typeof multichainTransferRouterAbi, "bridgeOut">;
-
   const bridgeOutCallData = encodeFunctionData({
-    abi: multichainTransferRouterAbi,
+    abi: abis.MultichainTransferRouterArbitrumSepolia,
     functionName: "bridgeOut",
     args: [
       {
         ...relayParams,
         signature,
       },
-      address as Address,
+      address,
       BigInt(srcChainId),
       params,
-    ] as MultichainBridgeOutArgs,
+    ],
   });
 
   return {
@@ -899,7 +884,7 @@ async function signBridgeOutPayload({
 }: {
   signer: WalletSigner;
   relayParams: MultichainRelayParamsPayload;
-  params: IRelayUtils.BridgeOutParamsStruct;
+  params: BridgeOutParams;
   chainId: UiSettlementChain;
   srcChainId: UiSourceChain;
 }): Promise<string> {
@@ -973,20 +958,18 @@ export async function buildAndSignSetTraderReferralCodeTxn({
     });
   }
 
-  type MultichainBridgeOutArgs = AbiItemArgs<typeof multichainTransferRouterAbi, "bridgeOut">;
-
   const bridgeOutCallData = encodeFunctionData({
-    abi: multichainTransferRouterAbi,
+    abi: abis.MultichainTransferRouterArbitrumSepolia,
     functionName: "bridgeOut",
     args: [
       {
         ...relayParamsPayload,
         signature,
       },
-      address as Address,
+      address,
       BigInt(srcChainId),
       params,
-    ] as MultichainBridgeOutArgs,
+    ],
   });
 
   return {

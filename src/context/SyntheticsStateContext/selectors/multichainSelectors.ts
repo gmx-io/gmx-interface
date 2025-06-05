@@ -1,4 +1,4 @@
-import { isSourceChain } from "context/GmxAccountContext/config";
+import { isSourceChain } from "domain/multichain/config";
 
 import { createSelector } from "../utils";
 import { selectSrcChainId } from "./globalSelectors";

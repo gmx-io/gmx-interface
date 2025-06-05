@@ -1,14 +1,14 @@
-import { TaskState } from "@gelatonetwork/relay-sdk";
-import { ReactNode } from "react";
+import type { TaskState } from "@gelatonetwork/relay-sdk";
+import type { ReactNode } from "react";
 
-import { MultichainFundingHistoryItem } from "context/GmxAccountContext/types";
-import { OrderTxnType, OrderType } from "domain/synthetics/orders";
-import { SignedSubbacountApproval } from "domain/synthetics/subaccount";
-import { OrderMetricId } from "lib/metrics/types";
-import { SignedTokenPermit } from "sdk/types/tokens";
-import { ExternalSwapQuote } from "sdk/types/trade";
+import type { MultichainFundingHistoryItem } from "domain/multichain/types";
+import type { OrderTxnType, OrderType } from "domain/synthetics/orders";
+import type { SignedSubbacountApproval } from "domain/synthetics/subaccount";
+import type { OrderMetricId } from "lib/metrics/types";
+import type { SignedTokenPermit } from "sdk/types/tokens";
+import type { ExternalSwapQuote } from "sdk/types/trade";
 
-import { MultichainEventsState } from "./useMultichainEvents";
+import type { MultichainEventsState } from "./useMultichainEvents";
 
 export type MultiTransactionStatus<TEventData> = {
   key: string;

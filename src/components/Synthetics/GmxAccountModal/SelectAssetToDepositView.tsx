@@ -4,9 +4,9 @@ import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
 import { getChainIcon } from "config/icons";
-import { MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "context/GmxAccountContext/config";
 import { useGmxAccountDepositViewTokenAddress, useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
-import { TokenChainData } from "context/GmxAccountContext/types";
+import { MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "domain/multichain/config";
+import { TokenChainData } from "domain/multichain/types";
 import { useChainId } from "lib/chains";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";

@@ -1,16 +1,20 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import type { IStargateAbi } from "domain/multichain/stargatePools";
 import { Contract } from "ethers";
 import { useEffect, useRef, useState } from "react";
 import { encodeFunctionData } from "viem";
 import { usePublicClient } from "wagmi";
 
-import { TOKEN_GROUPS } from "context/GmxAccountContext/config";
-import { IStargateAbi } from "context/GmxAccountContext/stargatePools";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
+import { selectArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
+import { type MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
+import { TOKEN_GROUPS } from "domain/multichain/config";
+import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/useMultichainDepositNetworkComposeGas";
 import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/referrals/hooks";
 import { getExpressContractAddress, MultichainRelayParamsPayload } from "domain/synthetics/express";
 import { signSetTraderReferralCode } from "domain/synthetics/express/expressOrderUtils";
@@ -22,14 +26,10 @@ import { sendWalletTransaction } from "lib/transactions";
 import useWallet from "lib/wallets/useWallet";
 import { encodeReferralCode } from "sdk/utils/referrals";
 import type { IStargate } from "typechain-types-stargate";
-import { SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
+import type { SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
 
 import Button from "components/Button/Button";
-import { selectArbitraryRelayParamsAndPayload } from "components/Synthetics/GmxAccountModal/arbitraryRelayParams";
-import { MultichainAction, MultichainActionType } from "components/Synthetics/GmxAccountModal/codecs/CodecUiHelper";
-import { getSendParamsWithoutSlippage } from "components/Synthetics/GmxAccountModal/getSendParams";
 import { toastCustomOrStargateError } from "components/Synthetics/GmxAccountModal/toastCustomOrStargateError";
-import { estimateMultichainDepositNetworkComposeGas } from "components/Synthetics/GmxAccountModal/useMultichainDepositNetworkComposeGas";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
 import { REFERRAL_CODE_REGEX } from "./referralsHelper";
@@ -196,7 +196,7 @@ function ReferralCodeForm({
           settlementChainPublicClient,
         });
 
-        const sendParamsWithRoughAmount: SendParamStruct = getSendParamsWithoutSlippage({
+        const sendParamsWithRoughAmount: SendParamStruct = getMultichainTransferSendParams({
           dstChainId: chainId,
           account,
           srcChainId,

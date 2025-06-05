@@ -11,12 +11,12 @@ import {
   AVALANCHE_FUJI,
   FALLBACK_PROVIDERS,
   RPC_PROVIDERS,
+  SUPPORTED_CHAIN_IDS,
   UiContractsChain,
   getFallbackRpcUrl,
 } from "config/chains";
 import { getContract, getDataStoreContract, getMulticallContract } from "config/contracts";
 import { getRpcProviderKey } from "config/localStorage";
-import { SOURCE_CHAINS } from "context/GmxAccountContext/config";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { isDebugMode } from "lib/localStorage";
 import { RpcTrackerRankingCounter } from "lib/metrics";
@@ -353,8 +353,7 @@ async function probeRpc(
 function initTrackerState() {
   const now = Date.now();
 
-  // here
-  return SOURCE_CHAINS.reduce<RpcTrackerState>((acc, chainId) => {
+  return SUPPORTED_CHAIN_IDS.reduce<RpcTrackerState>((acc, chainId) => {
     const prepareProviders = (urls: string[], { isPublic }: { isPublic: boolean }) => {
       return urls.reduce<Record<string, ProviderData>>((acc, rpcUrl) => {
         acc[rpcUrl] = {

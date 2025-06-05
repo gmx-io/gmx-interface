@@ -1,7 +1,7 @@
+import { StargateErrorsAbi } from "domain/multichain/stargatePools";
 import { decodeErrorResult } from "viem";
 
-import { UiSupportedChain } from "config/chains";
-import { StargateErrorsAbi } from "context/GmxAccountContext/stargatePools";
+import type { UiSupportedChain } from "config/chains";
 import { helperToast } from "lib/helperToast";
 import { abis } from "sdk/abis";
 
