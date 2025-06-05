@@ -1,4 +1,4 @@
-import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, Chain, optimismSepolia, sepolia } from "viem/chains";
+import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, Chain } from "viem/chains";
 
 import { GasLimitsConfig } from "types/fees";
 

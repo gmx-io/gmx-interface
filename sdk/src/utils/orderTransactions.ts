@@ -80,7 +80,7 @@ export type CreateOrderPayload = {
   autoCancel: boolean;
   referralCode: string;
   // TODO: force it in multichain
-  dataList?: string[];
+  dataList: string[];
 };
 
 export type UpdateOrderParams = {
