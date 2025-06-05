@@ -1810,10 +1810,6 @@ msgstr ""
 msgid "Close to execution price"
 msgstr "執行価格に近すぎます"
 
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-#~ msgid "Try Express 1CT"
-#~ msgstr ""
-
 #: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
@@ -2532,10 +2528,6 @@ msgstr "AvalancheでのAPR(実質年利)"
 msgid "Dune Analytics for GMX"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
-#~ msgid "One-click and Express Trading are not available due to insufficient balance."
-#~ msgstr ""
-
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Could not decrease {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}"
 msgstr "{0} {longOrShortText}を減らせませんでした  +{1} USD, 受け入れ可能な価格: {2}"
@@ -2611,10 +2603,6 @@ msgstr "APR(実質年利)は毎週水曜日に更新され、その前一週間�
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees (Incl. Swap)"
 msgstr ""
-
-#: src/components/SettingsModal/SettingsModal.tsx
-#~ msgid "{0, plural, one {1 hour} other {{hours} hours}}"
-#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -3213,7 +3201,7 @@ msgstr ""
 msgid "Stake failed."
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+#: src/components/Synthetics/GmxAccountModal/keys.ts
 #: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
 msgid "Withdrawal"
 msgstr ""
@@ -3750,11 +3738,11 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
-#: src/components/Synthetics/GmxAccountModal/useMultichainFundingToast.tsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/TradeHistory/keys.ts
+#: src/domain/multichain/useMultichainFundingToast.tsx
 #: src/pages/Earn/Vesting.tsx
 #: src/pages/Earn/Vesting.tsx
 #: src/pages/Earn/Vesting.tsx
@@ -4400,10 +4388,6 @@ msgstr "価格インパクト"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a token"
 msgstr ""
-
-#: src/components/SettingsModal/SettingsModal.tsx
-#~ msgid "{0, plural, one {1 minute} other {{minutes} minutes}}"
-#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -6502,11 +6486,11 @@ msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+#: src/components/Synthetics/GmxAccountModal/keys.ts
 msgid "Deposit failed"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/useMultichainFundingToast.tsx
+#: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing Funds from GMX"
 msgstr ""
 
@@ -6517,11 +6501,6 @@ msgstr ""
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Notifications"
 msgstr ""
-
-#: src/components/SettingsModal/SettingsModal.tsx
-#: src/components/SettingsModal/SettingsModal.tsx
-#~ msgid "{0, plural, one {1 day} other {{days} days}}"
-#~ msgstr ""
 
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Max Out"
@@ -6737,10 +6716,6 @@ msgstr "注文を有効にするため規約に同意する"
 msgid "Protocol analytics"
 msgstr "プロトコルの分析"
 
-#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-#~ msgid "Try Express One-Click Trading"
-#~ msgstr ""
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 #: src/pages/NftWallet/NftWallet.jsx
@@ -6900,12 +6875,12 @@ msgstr "{0} {longOrShortText}への入金を実行できませんでした"
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+#: src/components/Synthetics/GmxAccountModal/keys.ts
 #: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
-#: src/components/Synthetics/GmxAccountModal/useMultichainFundingToast.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/domain/multichain/useMultichainFundingToast.tsx
 #: src/pages/Earn/VesterDepositModal.tsx
 #: src/pages/Earn/VesterDepositModal.tsx
 #: src/pages/Earn/Vesting.tsx
@@ -7403,7 +7378,7 @@ msgstr ""
 msgid "Freeze"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/useMultichainFundingToast.tsx
+#: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing Funds to GMX"
 msgstr ""
 
@@ -8869,7 +8844,7 @@ msgstr ""
 msgid "Acceptable price does not apply to stop loss orders, as they will be executed regardless of any price impact."
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/useMultichainFundingToast.tsx
+#: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing and Withdrawing Funds to/from GMX"
 msgstr ""
 
