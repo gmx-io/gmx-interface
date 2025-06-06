@@ -200,7 +200,6 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const limitPrice = useSelector(selectTradeboxTriggerPrice);
-  const selectedPosition = useSelector(selectTradeboxSelectedPosition);
   const triggerRatioInputValue = useSelector(selectTradeboxTriggerRatioInputValue);
   const totalSwapImpactBps = useSelector(selectTradeboxTotalSwapImpactBps);
 
@@ -262,6 +261,7 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
       className="flex flex-col gap-14"
       contentClassName="flex flex-col gap-14"
       scrollIntoViewOnMobile
+      row={false}
     >
       {(isLimit || isTrigger || isTwap) && !isSwap && (
         <>
@@ -289,10 +289,6 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
         <SyntheticsInfoRow label={<Trans>Acceptable Swap Impact</Trans>} value={<Trans>N/A</Trans>} />
       ) : null}
 
-      {((isSwap && !isTwap) || isLimit || (isMarket && !isSwap) || isMarket) && (
-        <div className="h-1 shrink-0 bg-stroke-primary" />
-      )}
-
       {/* only when isSwap */}
       {isSwap && <SwapSpreadRow />}
       {/* only when isLimit */}
@@ -315,10 +311,6 @@ export function TradeBoxAdvancedGroups({ slippageInputId }: { slippageInputId: s
         <>
           {isMarket && !isSwap && <CollateralSpreadRow />}
           {isMarket && <AllowedSlippageRow slippageInputId={slippageInputId} />}
-
-          {((isIncrease && selectedPosition) || (isTrigger && selectedPosition)) && (
-            <div className="h-1 shrink-0 bg-stroke-primary" />
-          )}
 
           <LeverageInfoRows />
           <EntryPriceRow />

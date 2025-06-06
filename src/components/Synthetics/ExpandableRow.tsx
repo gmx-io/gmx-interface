@@ -62,6 +62,7 @@ interface Props {
   contentClassName?: string;
   scrollIntoViewOnMobile?: boolean;
   withToggleSwitch?: boolean;
+  row?: boolean;
 }
 
 export function ExpandableRow({
@@ -77,6 +78,7 @@ export function ExpandableRow({
   contentClassName,
   scrollIntoViewOnMobile = false,
   withToggleSwitch = false,
+  row = true,
 }: Props) {
   const previousHasError = usePrevious(hasError);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -112,28 +114,43 @@ export function ExpandableRow({
 
   const disabled = disableCollapseOnError && hasError;
 
+  const value = withToggleSwitch ? (
+    <ToggleSwitch isChecked={open} setIsChecked={onToggle} disabled={disabled} />
+  ) : open ? (
+    <BiChevronUp className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-gmx-hover:text-blue-300" />
+  ) : (
+    <BiChevronDown className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-gmx-hover:text-blue-300" />
+  );
+
   return (
     <div className={className}>
-      <SyntheticsInfoRow
-        className={cx("group relative -my-14 !items-center py-14 gmx-hover:text-blue-300", {
-          "cursor-not-allowed": disabled,
-        })}
-        onClick={disabled ? undefined : handleOnClick}
-        label={
-          <span className="flex flex-row justify-between align-middle group-gmx-hover:text-blue-300">{label}</span>
-        }
-        value={
-          withToggleSwitch ? (
-            <ToggleSwitch isChecked={open} setIsChecked={onToggle} disabled={disabled} />
-          ) : (
-            open ? (
-              <BiChevronUp className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-gmx-hover:text-blue-300" />
-            ) : (
-              <BiChevronDown className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-gmx-hover:text-blue-300" />
-            )
-          )
-        }
-      />
+      {row ? (
+        <SyntheticsInfoRow
+          className={cx("group relative -my-14 !items-center py-14 gmx-hover:text-blue-300", {
+            "cursor-not-allowed": disabled,
+          })}
+          onClick={disabled ? undefined : handleOnClick}
+          label={
+            <span className="flex flex-row justify-between align-middle group-gmx-hover:text-blue-300">{label}</span>
+          }
+          value={value}
+        />
+      ) : (
+        <div
+          className={cx(
+            `inline-flex w-fit cursor-pointer items-center gap-4 rounded-full
+            border-[0.5px] border-fill-accent px-12 py-8 align-middle
+            text-[13px] font-medium group-gmx-hover:text-blue-300`,
+            {
+              "cursor-not-allowed": disabled,
+            }
+          )}
+          onClick={disabled ? undefined : handleOnClick}
+        >
+          {label}
+          {value}
+        </div>
+      )}
 
       <AnimatePresence initial={false}>
         {open && (

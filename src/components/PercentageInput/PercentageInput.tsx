@@ -1,14 +1,12 @@
-import cx from "classnames";
-import { ChangeEvent, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useLatest } from "react-use";
 
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { roundToTwoDecimals } from "lib/numbers";
 
+import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import type { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-
-import "./PercentageInput.scss";
 
 export const NUMBER_WITH_TWO_DECIMALS = /^\d+(\.\d{0,2})?$/; // 0.00 ~ 99.99
 
@@ -51,13 +49,8 @@ export default function PercentageInput({
 }: Props) {
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState(() => (value === undefined ? "" : getValueText(value)));
-  const inputRef = useRef<HTMLInputElement>(null);
-  const handleSignClick = useCallback(() => {
-    inputRef.current?.focus();
-  }, []);
 
-  function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    const { value } = event.target;
+  function handleChange(value: string) {
     if (value === "") {
       setInputValue("");
       onChange(defaultValue);
@@ -121,58 +114,24 @@ export default function PercentageInput({
     }
   }, [inputValue, highValue, checkStrategy, lowValueWarningText, lowValue, highValueWarningText]);
 
-  const id = useMemo(() => inputId ?? Math.random().toString(36), [inputId]);
-
-  const shouldShowPanel = isPanelVisible && Boolean(suggestions.length);
-
-  const onSelectSuggestion = useCallback(
-    (suggestion: number) => () => {
-      onChange(suggestion * 100);
-      setIsPanelVisible(false);
-    },
-    [onChange, setIsPanelVisible]
-  );
-
   return (
-    <div className="Percentage-input-wrapper">
-      <TooltipWithPortal
-        disableHandleStyle
-        disabled={!error || shouldShowPanel}
-        renderContent={() => <div>{error}</div>}
-        position={tooltipPosition}
-      >
-        <div className={cx("Percentage-input", { "input-error": Boolean(error) })}>
-          {negativeSign && (
-            <span className="Percentage-input-negative-sign" onClick={handleSignClick}>
-              -
-            </span>
-          )}
-          <input
-            id={id}
-            ref={inputRef}
-            onFocus={() => setIsPanelVisible(true)}
-            onBlur={() => setIsPanelVisible(false)}
-            value={inputValue}
-            placeholder={getValueText(defaultValue)}
-            autoComplete="off"
-            onChange={handleChange}
-          />
-
-          <label htmlFor={id}>
-            <span>%</span>
-          </label>
-        </div>
-      </TooltipWithPortal>
-
-      {shouldShowPanel && (
-        <ul className="Percentage-list">
-          {suggestions.map((slippage) => (
-            <li key={slippage} onMouseDown={onSelectSuggestion(slippage)}>
-              {slippage}%
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+    <TooltipWithPortal
+      disableHandleStyle
+      disabled={!error || isPanelVisible}
+      renderContent={() => <div>{error}</div>}
+      position={tooltipPosition}
+    >
+      <SuggestionInput
+        className="w-80"
+        label={negativeSign ? "-" : undefined}
+        value={inputValue}
+        setValue={handleChange}
+        placeholder={getValueText(defaultValue)}
+        suggestionList={suggestions}
+        symbol="%"
+        onPanelVisibleChange={setIsPanelVisible}
+        inputId={inputId}
+      />
+    </TooltipWithPortal>
   );
 }

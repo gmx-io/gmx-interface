@@ -35,10 +35,14 @@ export default function NestedTab<V extends string | number>({
     <Menu as="div" className="flex items-center justify-center gap-8">
       <Menu.Button
         as="div"
-        className={cx(`flex cursor-pointer items-center justify-center px-12
-          py-8 rounded-8 text-slate-100 hover:text-white gap-2 font-medium`, commonOptionClassname, {
-          "text-white bg-cold-blue-900": !!selectedSubOption,
-        })}
+        className={cx(
+          `flex cursor-pointer items-center justify-center gap-2
+          rounded-8 px-12 py-8 font-medium text-slate-100 hover:text-white`,
+          commonOptionClassname,
+          {
+            "bg-cold-blue-900 text-white": !!selectedSubOption,
+          }
+        )}
         ref={refs.setReference}
         data-qa={qa ? `${qa}-tab-${option.label}` : undefined}
       >
@@ -49,7 +53,7 @@ export default function NestedTab<V extends string | number>({
       <FloatingPortal>
         <Menu.Items
           as="div"
-          className="z-[1000] mt-8 rounded-8 border border-stroke-primary overflow-hidden bg-slate-800 outline-none"
+          className="z-[1000] mt-8 overflow-hidden rounded-8 border border-stroke-primary bg-slate-800 outline-none"
           ref={refs.setFloating}
           style={floatingStyles}
         >
@@ -59,7 +63,7 @@ export default function NestedTab<V extends string | number>({
                 as="div"
                 key={subOpt.value}
                 className={cx(
-                  "hover:bg-new-gray-200 text-body-medium cursor-pointer p-8 text-slate-100 hover:text-white",
+                  "text-body-medium cursor-pointer p-8 font-medium text-slate-100 hover:bg-cold-blue-900 hover:text-white",
                   { "text-white": subOpt.value === selectedValue }
                 )}
                 onClick={() => onOptionClick?.(subOpt.value)}

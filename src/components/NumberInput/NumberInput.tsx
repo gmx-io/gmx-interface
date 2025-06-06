@@ -18,6 +18,7 @@ type Props = {
   placeholder?: string;
   qa?: string;
   isDisabled?: boolean;
+  inputId?: string;
 };
 
 function NumberInput({
@@ -30,6 +31,7 @@ function NumberInput({
   className,
   placeholder,
   qa,
+  inputId,
   isDisabled = false,
 }: Props) {
   function onChange(e: ChangeEvent<HTMLInputElement>) {
@@ -47,6 +49,7 @@ function NumberInput({
   }
   return (
     <input
+      id={inputId}
       data-qa={qa}
       type="text"
       inputMode="decimal"

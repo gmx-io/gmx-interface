@@ -1,6 +1,5 @@
 import { useCallback, useMemo, useRef } from "react";
 import { FaPlus } from "react-icons/fa6";
-import { useMedia } from "react-use";
 
 import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -98,8 +97,6 @@ function SideOrderEntry({
   );
 
   const onDeleteEntry = useCallback(() => deleteEntry(entry.id), [deleteEntry, entry.id]);
-
-  const isSmallMobile = useMedia("(max-width: 375px)");
 
   return (
     <div className="flex flex-row gap-4" key={entry.id}>

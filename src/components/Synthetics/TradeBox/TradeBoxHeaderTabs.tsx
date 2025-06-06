@@ -44,20 +44,23 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
         onChange={onTradeTypeChange}
         size="l"
         qa="trade-direction"
+        className="bg-slate-800"
         regularOptionClassname="hover:bg-new-gray-200 grow"
       />
     );
   }
 
   return (
-    <SwipeTabs
-      icons={tradeTypeIcons}
-      options={OPTIONS}
-      optionLabels={localizedTradeTypeLabels}
-      option={tradeType}
-      onChange={onTradeTypeChange}
-      optionClassnames={mobileTradeTypeClassNames}
-      qa="trade-direction"
-    />
+    <div className="bg-slate-800">
+      <SwipeTabs
+        icons={tradeTypeIcons}
+        options={OPTIONS}
+        optionLabels={localizedTradeTypeLabels}
+        option={tradeType}
+        onChange={onTradeTypeChange}
+        optionClassnames={mobileTradeTypeClassNames}
+        qa="trade-direction"
+      />
+    </div>
   );
 }

@@ -156,7 +156,7 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
 
 export function LimitAndTPSLRows({ hasExistingLimitOrder }: { hasExistingLimitOrder: boolean }) {
   return (
-    <div className="flex flex-col gap-14 py-14">
+    <div className="flex flex-col gap-14 pt-12">
       <SideOrders type="limit" />
       {hasExistingLimitOrder && <div className="h-[0.5px] bg-stroke-primary" />}
       <SideOrders type="takeProfit" />

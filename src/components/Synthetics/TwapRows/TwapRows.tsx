@@ -1,8 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import cx from "classnames";
 import { formatDuration, type Locale as DateLocale } from "date-fns";
-import { ChangeEvent, useEffect } from "react";
+import { useEffect } from "react";
 import { useLocalStorage } from "react-use";
 
 import { TWAP_INFO_CARD_CLOSED_KEY } from "config/localStorage";
@@ -13,7 +12,7 @@ import { formatUsd } from "lib/numbers";
 import { MarketInfo } from "sdk/types/markets";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
-import NumberInput from "components/NumberInput/NumberInput";
+import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
 import { LOCALE_DATE_LOCALE_MAP } from "../DateRangeSelect/DateRangeSelect";
@@ -115,7 +114,7 @@ const TwapRows = ({
 };
 
 const FrequencyField = ({ duration, numberOfParts }: { duration: TwapDuration; numberOfParts: number }) => {
-  const seconds = numberOfParts ? ((duration.hours * 60 + duration.minutes) * 60) / numberOfParts : 0;
+  const seconds = numberOfParts ? Math.round(((duration.hours * 60 + duration.minutes) * 60) / numberOfParts) : 0;
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(seconds / 3600);
 
@@ -180,8 +179,8 @@ const ValueInput = ({
   onBlur?: () => void;
   label?: string;
 }) => {
-  const onValueChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const parsedValue = parseInt(e.target.value);
+  const onValueChange = (value: string) => {
+    const parsedValue = parseInt(value);
 
     if (isNaN(parsedValue)) {
       onChange(0);
@@ -191,16 +190,13 @@ const ValueInput = ({
   };
 
   return (
-    <label
-      className={cx("w-[114px] rounded-2 bg-fill-tertiary px-6 py-3", label && "flex items-center", {
-        "grid grid-cols-[1fr_1fr]": label,
-      })}
-    >
-      {label && <span className="opacity-70">{label}</span>}
-      <div>
-        <NumberInput className="w-full p-0 text-right" value={value} onValueChange={onValueChange} onBlur={onBlur} />
-      </div>
-    </label>
+    <SuggestionInput
+      label={label}
+      className="w-[112px]"
+      value={value.toString()}
+      setValue={onValueChange}
+      onBlur={onBlur}
+    />
   );
 };
 

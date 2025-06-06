@@ -20,6 +20,7 @@ export default function Tabs<V extends string | number>({
   options,
   selectedValue,
   onChange,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   size = "m",
   type = "block",
   className,
@@ -27,9 +28,12 @@ export default function Tabs<V extends string | number>({
   qa,
 }: Props<V>) {
   return (
-    <div data-qa={qa} className={cx("flex w-full", className, {
-      "gap-8": type === "inline",
-    })}>
+    <div
+      data-qa={qa}
+      className={cx("flex w-full", className, {
+        "gap-8": type === "inline",
+      })}
+    >
       {options.map((opt) =>
         isNestedOption(opt) ? (
           <NestedTab key={opt.label?.toString()} option={opt} selectedValue={selectedValue} onOptionClick={onChange} />

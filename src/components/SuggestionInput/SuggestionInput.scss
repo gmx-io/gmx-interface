@@ -1,4 +1,5 @@
-$suggestion-input-hover-background: linear-gradient(0deg, #090A144D, #090A144D), linear-gradient(0deg, var(--color-fill-surfaceElevated), var(--color-fill-surfaceElevated));
+$suggestion-input-hover-background: linear-gradient(0deg, #090a144d, #090a144d),
+  linear-gradient(0deg, var(--color-fill-surfaceElevated), var(--color-fill-surfaceElevated));
 
 .Suggestion-input-wrapper {
   position: relative;
@@ -11,13 +12,16 @@ $suggestion-input-hover-background: linear-gradient(0deg, #090A144D, #090A144D),
     padding: 0;
     margin-top: 1.5px;
     top: 100%;
-    background-color: var(--color-slate-600);
+    background-color: var(--color-slate-800);
     z-index: 1002;
+    overflow: hidden;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid var(--color-stroke-primary);
 
     li {
       padding: 0.5rem 0.75rem;
       cursor: pointer;
-      border-radius: var(--border-radius-sm);
       text-align: center;
       &:hover {
         background: var(--color-slate-500);
@@ -39,7 +43,7 @@ $suggestion-input-hover-background: linear-gradient(0deg, #090A144D, #090A144D),
 
     &:hover {
       background: $suggestion-input-hover-background;
-      border: 1px solid #19192B;
+      border: 1px solid #19192b;
     }
     &:focus {
       border-color: var(--color-button-hovered);
