@@ -41,6 +41,7 @@ export function AmountWithUsdBalance({
   usd,
   symbol,
   multiline = false,
+  isStable = false,
 }: {
   className?: string;
   amount: bigint | undefined;
@@ -48,12 +49,13 @@ export function AmountWithUsdBalance({
   usd: bigint | undefined;
   symbol?: string;
   multiline?: boolean;
+  isStable?: boolean;
 }) {
   if (amount === undefined || usd === undefined) {
     return "...";
   }
 
-  const formattedAmount = formatBalanceAmount(amount, decimals, symbol, true);
+  const formattedAmount = formatBalanceAmount(amount, decimals, symbol, { showZero: true, isStable });
 
   const formattedUsd = formatUsd(usd);
 

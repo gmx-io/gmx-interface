@@ -34,10 +34,13 @@ export function getSwapOrderTitle(p: {
   const fromTokenText = formatTokenAmount(
     initialCollateralAmount,
     initialCollateralToken.decimals,
-    initialCollateralToken.symbol
+    initialCollateralToken.symbol,
+    { isStable: initialCollateralToken.isStable }
   );
 
-  const toTokenText = formatTokenAmount(minOutputAmount, targetCollateralToken.decimals, targetCollateralToken.symbol);
+  const toTokenText = formatTokenAmount(minOutputAmount, targetCollateralToken.decimals, targetCollateralToken.symbol, {
+    isStable: targetCollateralToken.isStable,
+  });
 
   return t`Swap ${fromTokenText} for ${toTokenText}`;
 }

@@ -295,6 +295,7 @@ const TableRow = memo(
                 decimals={collateralToken?.decimals ?? 0}
                 symbol={collateralToken?.symbol}
                 usd={position.collateralUsd}
+                isStable={collateralToken?.isStable}
               />
             }
           />

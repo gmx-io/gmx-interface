@@ -37,7 +37,7 @@ export function GasPaymentTokenOption({ tokenAddress, isSelected, onSelect, toke
         <div className="flex items-center">
           <span className="flex items-center text-12 font-medium">
             <span className="mr-4 inline-block max-w-60 truncate align-baseline">
-              {formatTokenAmount(tokenData?.balance, token.decimals)}
+              {formatTokenAmount(tokenData?.balance, token.decimals, undefined, { isStable: token.isStable })}
             </span>
             {token.symbol}
           </span>
