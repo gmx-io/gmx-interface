@@ -31,7 +31,7 @@ export type ExpressParamsEstimationMethod = "approximate" | "estimateGas";
 
 export type ExpressTxnParams = {
   subaccount: Subaccount | undefined;
-  relayParamsPayload: RawRelayParamsPayload;
+  relayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload;
   gasPaymentParams: GasPaymentParams;
   gasLimit: bigint;
   l1GasLimit: bigint;
@@ -84,7 +84,12 @@ export type RelayParamsPayload = {
   userNonce: bigint;
 };
 
+export type MultichainRelayParamsPayload = RelayParamsPayload & {
+  desChainId: bigint;
+};
+
 export type RawRelayParamsPayload = Omit<RelayParamsPayload, "userNonce" | "deadline">;
+export type RawMultichainRelayParamsPayload = Omit<MultichainRelayParamsPayload, "userNonce" | "deadline">;
 
 export type OracleParamsPayload = {
   tokens: string[];

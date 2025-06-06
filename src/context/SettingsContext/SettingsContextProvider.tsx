@@ -104,8 +104,9 @@ export function useSettings() {
 }
 
 export function SettingsContextProvider({ children }: { children: ReactNode }) {
+  const { chainId, srcChainId } = useChainId();
   const { account } = useWallet();
-  const { chainId } = useChainId();
+
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [showDebugValues, setShowDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const [savedAllowedSlippage, setSavedAllowedSlippage] = useLocalStorageSerializeKey(
@@ -130,6 +131,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     getExecutionFeeBufferBpsKey(chainId),
     EXECUTION_FEE_CONFIG_V2[chainId]?.defaultBufferBps
   );
+
   const shouldUseExecutionFeeBuffer = Boolean(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps);
 
   const [oracleKeeperInstancesConfig, setOracleKeeperInstancesConfig] = useLocalStorageSerializeKey(
@@ -231,6 +233,15 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setExecutionFeeBufferBps,
     setHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
   ]);
+
+  useEffect(
+    function fallbackMultichain() {
+      if (srcChainId && !expressOrdersEnabled) {
+        setExpressOrdersEnabled(true);
+      }
+    },
+    [expressOrdersEnabled, setExpressOrdersEnabled, srcChainId]
+  );
 
   const contextState: SettingsContextType = useMemo(() => {
     return {

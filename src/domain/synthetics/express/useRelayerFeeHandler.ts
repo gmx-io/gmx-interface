@@ -36,7 +36,6 @@ export type ExpressOrdersParamsResult = {
 
 export function useExpressOrdersParams({
   orderParams,
-
   label,
 }: {
   orderParams: BatchOrderTxnParams | undefined;
@@ -75,7 +74,7 @@ export function useExpressOrdersParams({
         chainId: p.chainId,
         batchParams: p.orderParams,
         signer: p.signer,
-        provider: undefined,
+        provider: p.provider,
         globalExpressParams: p.globalExpressParams,
         requireValidations: false,
         estimationMethod: "approximate",
@@ -85,7 +84,7 @@ export function useExpressOrdersParams({
     },
     {
       params:
-        isAvailable && globalExpressParams && signer && orderParams
+        isAvailable && globalExpressParams && signer && orderParams && provider
           ? {
               chainId,
               signer,

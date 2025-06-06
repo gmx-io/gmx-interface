@@ -211,6 +211,10 @@ export function getExpressTradingPromoHiddenKey(chainId: number) {
   return `${chainId}-${EXPRESS_TRADING_PROMO_HIDDEN_KEY}`;
 }
 
+export function getFromTokenIsGmxAccountKey(chainId: number) {
+  return [chainId, "from-token-is-gmx-account"];
+}
+
 export function getExpressTradingGasTokenSwitchedKey(chainId: number, account: string | undefined) {
   return `${chainId}-${account}-${EXPRESS_TRADING_GAS_TOKEN_SWITCHED}`;
 }

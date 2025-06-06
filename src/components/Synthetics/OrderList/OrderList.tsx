@@ -32,7 +32,9 @@ import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { EMPTY_ARRAY } from "lib/objects";
+import { useJsonRpcProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
+import { UiContractsChain } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
@@ -77,6 +79,8 @@ export function OrderList({
 
   const chainId = useSelector(selectChainId);
   const { signer } = useWallet();
+  const { provider } = useJsonRpcProvider(chainId);
+
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
 
   const account = useSelector(selectAccount);
@@ -141,7 +145,7 @@ export function OrderList({
   }
 
   async function onCancelOrder(order: OrderInfo) {
-    if (!signer) return;
+    if (!signer || !provider) return;
 
     const orderKeys = isTwapOrder(order) ? order.orders.map((o) => o.key) : [order.key];
     setCancellingOrdersKeys((prev) => [...prev, ...orderKeys]);
@@ -159,7 +163,7 @@ export function OrderList({
       requireValidations: true,
       globalExpressParams,
       estimationMethod: "approximate",
-      provider: undefined,
+      provider,
     });
 
     sendBatchOrderTxn({
@@ -170,6 +174,7 @@ export function OrderList({
       noncesData: globalExpressParams?.noncesData,
       simulationParams: undefined,
       callback: makeOrderTxnCallback({}),
+      provider,
     }).finally(() => {
       setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));
       setSelectedOrderKeys?.(EMPTY_ARRAY);
@@ -317,7 +322,7 @@ function useFilteredOrders({
   marketsDirectionsFilter,
   orderTypesFilter,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   account: string | undefined;
   marketsDirectionsFilter: MarketFilterLongShortItemData[];
   orderTypesFilter: OrderTypeFilterValue[];

@@ -3,20 +3,23 @@ import { useEffect, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
 import { hashedPositionKey } from "config/dataStore";
+import { ARBITRUM_SEPOLIA, UiContractsChain } from "config/static/chains";
 import {
   PendingPositionUpdate,
   PositionDecreaseEvent,
   PositionIncreaseEvent,
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
+import type { Position } from "domain/synthetics/positions/types";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
+import type { ContractMarketPrices, MarketsData } from "sdk/types/markets";
+import type { PositionsData } from "sdk/types/positions";
+import type { TokensData } from "sdk/types/tokens";
+import { getContractMarketPrices } from "sdk/utils/markets";
 import { getPositionKey, parsePositionKey } from "sdk/utils/positions";
-
-import { ContractMarketPrices, MarketsData, getContractMarketPrices } from "../markets";
-import { TokensData } from "../tokens";
-import { Position, PositionsData } from "./types";
+import type { SyntheticsReader } from "typechain-types/SyntheticsReader";
 
 const MAX_PENDING_UPDATE_AGE = 600 * 1000; // 10 minutes
 
@@ -26,8 +29,12 @@ type PositionsResult = {
   error?: Error;
 };
 
+// todo
+// sometimes there is an issue with decoding from abi
+// Multicall request failed: usePositionsData-multichain-421614 Error: Response error reader: positions: Bytes value "102,1,128,153,224,35,39,163,83,117,145" is not a valid boolean. The bytes array must contain a single byte of either a 0 or 1 value.;
+
 export function usePositions(
-  chainId: number,
+  chainId: UiContractsChain,
   p: {
     marketsData?: MarketsData;
     tokensData?: TokensData;
@@ -43,83 +50,90 @@ export function usePositions(
     account,
   });
 
+  // TODO: debug sometimes issues with decoding from abi
   const {
     data: positionsData,
     error: positionsError,
     isLoading,
-  } = useMulticall(chainId, "usePositionsData", {
-    key: account && keysAndPrices.marketsKeys.length ? [account, keysAndPrices.marketsKeys] : null,
+  } = useMulticall(
+    chainId,
+    chainId === ARBITRUM_SEPOLIA ? `usePositionsData-multichain-${chainId}` : "usePositionsData",
+    {
+      key: account && keysAndPrices.marketsKeys.length ? [account, keysAndPrices.marketsKeys] : null,
 
-    refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
-    clearUnusedKeys: true,
-    keepPreviousData: true,
-    disableBatching,
+      refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
+      clearUnusedKeys: true,
+      keepPreviousData: true,
+      disableBatching,
 
-    request: () => ({
-      reader: {
-        contractAddress: getContract(chainId, "SyntheticsReader"),
-        abiId: "SyntheticsReader",
-        calls: {
-          positions: {
-            methodName: "getAccountPositionInfoList",
-            params: [
-              getContract(chainId, "DataStore"),
-              getContract(chainId, "ReferralStorage"),
-              account,
-              keysAndPrices.marketsKeys,
-              keysAndPrices.marketsPrices,
-              // uiFeeReceiver
-              ethers.ZeroAddress,
-              0,
-              1000,
-            ],
+      request: (requestChainId) => {
+        return {
+          reader: {
+            contractAddress: getContract(requestChainId, "SyntheticsReader"),
+            abiId: requestChainId === ARBITRUM_SEPOLIA ? "SyntheticsReaderArbitrumSepolia" : "SyntheticsReader",
+            calls: {
+              positions: {
+                methodName: "getAccountPositionInfoList",
+                params: [
+                  getContract(requestChainId, "DataStore"),
+                  getContract(requestChainId, "ReferralStorage"),
+                  account!,
+                  keysAndPrices.marketsKeys,
+                  keysAndPrices.marketsPrices,
+                  // uiFeeReceiver
+                  ethers.ZeroAddress,
+                  0,
+                  1000,
+                ] satisfies Parameters<SyntheticsReader["getAccountPositionInfoList"]>,
+              },
+            },
           },
-        },
-      },
-    }),
-    parseResponse: (res) => {
-      const positions = res.data.reader.positions.returnValues;
-
-      return positions.reduce((positionsMap: PositionsData, positionInfo) => {
-        const { position, fees, basePnlUsd } = positionInfo;
-        const { addresses, numbers, flags, data } = position;
-        const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
-
-        // Empty position
-        if (numbers.increasedAtTime == 0n) {
-          return positionsMap;
-        }
-
-        const positionKey = getPositionKey(account, marketAddress, collateralTokenAddress, flags.isLong);
-        const contractPositionKey = hashedPositionKey(account, marketAddress, collateralTokenAddress, flags.isLong);
-
-        positionsMap[positionKey] = {
-          key: positionKey,
-          contractKey: contractPositionKey,
-          account,
-          marketAddress,
-          collateralTokenAddress,
-          sizeInUsd: numbers.sizeInUsd,
-          sizeInTokens: numbers.sizeInTokens,
-          collateralAmount: numbers.collateralAmount,
-          increasedAtTime: numbers.increasedAtTime,
-          decreasedAtTime: numbers.decreasedAtTime,
-          isLong: flags.isLong,
-          pendingBorrowingFeesUsd: fees.borrowing.borrowingFeeUsd,
-          fundingFeeAmount: fees.funding.fundingFeeAmount,
-          claimableLongTokenAmount: fees.funding.claimableLongTokenAmount,
-          claimableShortTokenAmount: fees.funding.claimableShortTokenAmount,
-          pnl: basePnlUsd,
-          positionFeeAmount: fees.positionFeeAmount,
-          traderDiscountAmount: fees.referral.traderDiscountAmount,
-          uiFeeAmount: fees.ui.uiFeeAmount,
-          data,
         };
+      },
+      parseResponse: (res) => {
+        const positions = res.data.reader.positions.returnValues;
 
-        return positionsMap;
-      }, {} as PositionsData);
-    },
-  });
+        return positions.reduce((positionsMap: PositionsData, positionInfo) => {
+          const { position, fees, basePnlUsd } = positionInfo;
+          const { addresses, numbers, flags } = position;
+          const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
+
+          // Empty position
+          if (numbers.increasedAtTime == 0n) {
+            return positionsMap;
+          }
+
+          const positionKey = getPositionKey(account, marketAddress, collateralTokenAddress, flags.isLong);
+          const contractPositionKey = hashedPositionKey(account, marketAddress, collateralTokenAddress, flags.isLong);
+
+          positionsMap[positionKey] = {
+            key: positionKey,
+            contractKey: contractPositionKey,
+            account,
+            marketAddress,
+            collateralTokenAddress,
+            sizeInUsd: numbers.sizeInUsd,
+            sizeInTokens: numbers.sizeInTokens,
+            collateralAmount: numbers.collateralAmount,
+            increasedAtTime: numbers.increasedAtTime,
+            decreasedAtTime: numbers.decreasedAtTime,
+            isLong: flags.isLong,
+            pendingBorrowingFeesUsd: fees.borrowing.borrowingFeeUsd,
+            fundingFeeAmount: fees.funding.fundingFeeAmount,
+            claimableLongTokenAmount: fees.funding.claimableLongTokenAmount,
+            claimableShortTokenAmount: fees.funding.claimableShortTokenAmount,
+            pnl: basePnlUsd,
+            positionFeeAmount: fees.positionFeeAmount,
+            traderDiscountAmount: fees.referral.traderDiscountAmount,
+            uiFeeAmount: fees.ui.uiFeeAmount,
+            data: "",
+          };
+
+          return positionsMap;
+        }, {} as PositionsData);
+      },
+    }
+  );
 
   useEffect(() => {
     if (positionsData && disableBatching) {
@@ -310,8 +324,13 @@ export function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Po
     uiFeeAmount: 0n,
     pnl: 0n,
     traderDiscountAmount: 0n,
+    pendingImpactAmount: 0n,
+    pendingImpactUsd: 0n,
+    borrowingFactor: 0n,
+    fundingFeeAmountPerSize: 0n,
+    longTokenClaimableFundingAmountPerSize: 0n,
+    shortTokenClaimableFundingAmountPerSize: 0n,
     data: "0x",
-
     isOpening: true,
     pendingUpdate: pendingUpdate,
   };

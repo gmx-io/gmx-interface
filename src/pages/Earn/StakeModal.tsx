@@ -3,7 +3,7 @@ import cx from "classnames";
 import { ZeroAddress, ethers } from "ethers";
 import { useCallback, useMemo, useState } from "react";
 
-import { ARBITRUM } from "config/chains";
+import { ARBITRUM, UiContractsChain } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIcons } from "config/icons";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
@@ -33,7 +33,7 @@ import { GMX_DAO_LINKS } from "./constants";
 export function StakeModal(props: {
   isVisible: boolean;
   setIsVisible: (isVisible: boolean) => void;
-  chainId: number;
+  chainId: UiContractsChain;
   title: string;
   maxAmount: bigint | undefined;
   value: string;

@@ -16,6 +16,10 @@ export type NoncesData = {
     nonce: bigint;
     lastEstimated: number;
   };
+  multichainTransferRouter?: {
+    nonce: bigint;
+    lastEstimated: number;
+  };
 };
 
 export type LocalActions = {
@@ -24,6 +28,10 @@ export type LocalActions = {
     lastEstimated: number;
   };
   subaccountRelayRouter: {
+    actions: bigint;
+    lastEstimated: number;
+  };
+  multichainTransferRouter: {
     actions: bigint;
     lastEstimated: number;
   };
@@ -38,6 +46,10 @@ const defaultLocalActions: LocalActions = {
     actions: 0n,
     lastEstimated: 0,
   },
+  multichainTransferRouter: {
+    actions: 0n,
+    lastEstimated: 0,
+  },
 };
 
 type ExpressNoncesContextType = {
@@ -49,7 +61,7 @@ type ExpressNoncesContextType = {
 const ExpressNoncesContext = createContext<ExpressNoncesContextType | undefined>(undefined);
 
 export function ExpressNoncesContextProvider({ children }: { children: React.ReactNode }) {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { account } = useWallet();
   const { subaccount } = useSubaccountContext();
   const [localActions, setLocalActions] = useState<LocalActions>(defaultLocalActions);
@@ -59,8 +71,12 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
     key: [account, subaccount?.address],
     request: {
       relayRouter: {
-        contractAddress: getExpressContractAddress(chainId, { isSubaccount: false }),
-        abiId: "GelatoRelayRouter",
+        contractAddress: getExpressContractAddress(chainId, {
+          isSubaccount: false,
+          isMultichain: srcChainId !== undefined,
+          scope: "order",
+        }),
+        abiId: "AbstractUserNonceable",
         calls: {
           nonce: {
             methodName: "userNonces",
@@ -69,8 +85,12 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
         },
       },
       subaccountRelayRouter: {
-        contractAddress: getExpressContractAddress(chainId, { isSubaccount: true }),
-        abiId: "SubaccountGelatoRelayRouter",
+        contractAddress: getExpressContractAddress(chainId, {
+          isSubaccount: true,
+          isMultichain: srcChainId !== undefined,
+          scope: "subaccount",
+        }),
+        abiId: "AbstractUserNonceable",
         calls: {
           nonce: subaccount?.address
             ? {
@@ -78,6 +98,22 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
                 params: [subaccount?.address],
               }
             : undefined,
+        },
+      },
+      multichainTransferRouter: {
+        contractAddress: getExpressContractAddress(chainId, {
+          isMultichain: true,
+          scope: "transfer",
+        }),
+        abiId: "AbstractUserNonceable",
+        calls: {
+          nonce:
+            srcChainId !== undefined
+              ? {
+                  methodName: "userNonces",
+                  params: [account],
+                }
+              : undefined,
         },
       },
     },
@@ -101,6 +137,13 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
               lastEstimated: now,
             }
           : undefined,
+        multichainTransferRouter:
+          srcChainId !== undefined
+            ? {
+                nonce: result.data.multichainTransferRouter.nonce.returnValues[0],
+                lastEstimated: now,
+              }
+            : undefined,
       };
     },
   });

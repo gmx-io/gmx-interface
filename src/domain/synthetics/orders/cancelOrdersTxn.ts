@@ -5,6 +5,7 @@ import { ReactNode } from "react";
 import { getContract } from "config/contracts";
 import { callContract } from "lib/contracts";
 import { abis } from "sdk/abis";
+import type { UiContractsChain } from "sdk/configs/chains";
 import { isTwapOrder } from "sdk/utils/orders";
 
 import { OrderParams } from "./types";
@@ -15,7 +16,7 @@ export type CancelOrderParams = {
   detailsMsg?: ReactNode;
 };
 
-export async function cancelOrdersTxn(chainId: number, signer: Signer, p: CancelOrderParams) {
+export async function cancelOrdersTxn(chainId: UiContractsChain, signer: Signer, p: CancelOrderParams) {
   const router = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
 
   const orderKeys = p.orders.flatMap((o) => (isTwapOrder(o) ? o.orders.map((o) => o.key as string) : o.key));

@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+import type { UiContractsChain } from "sdk/configs/chains";
 import { gaslessFeatureDisabledKey } from "sdk/configs/dataStore";
 
 export type FeaturesSettings = {
@@ -14,7 +15,7 @@ export type EnabledFeaturesResult = {
   features: FeaturesSettings | undefined;
 };
 
-export function useEnabledFeaturesRequest(chainId: number): EnabledFeaturesResult {
+export function useEnabledFeaturesRequest(chainId: UiContractsChain): EnabledFeaturesResult {
   const { data } = useMulticall(chainId, "useEnabledFeatures", {
     key: [],
     refreshInterval: CONFIG_UPDATE_INTERVAL,
@@ -23,6 +24,7 @@ export function useEnabledFeaturesRequest(chainId: number): EnabledFeaturesResul
         contractAddress: getContract(chainId, "DataStore"),
         abiId: "DataStore",
         calls: {
+          // TODO: make it work with multichain
           relayRouterDisabled: {
             methodName: "getBool",
             params: [gaslessFeatureDisabledKey(getContract(chainId, "GelatoRelayRouter"))],

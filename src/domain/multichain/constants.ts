@@ -1,0 +1,1 @@
+export const MULTICHAIN_FUNDING_SLIPPAGE_BPS = 50;

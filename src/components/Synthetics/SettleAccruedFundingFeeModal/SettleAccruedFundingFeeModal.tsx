@@ -22,6 +22,7 @@ import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useChainId } from "lib/chains";
 import { formatDeltaUsd, formatUsd } from "lib/numbers";
+import { useJsonRpcProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { buildDecreaseOrderPayload } from "sdk/utils/orderTransactions";
@@ -46,6 +47,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const tokensData = useTokensData();
   const { account, signer } = useWallet();
   const { chainId } = useChainId();
+  const { provider } = useJsonRpcProvider(chainId);
   const userReferralInfo = useUserReferralInfo();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const gasLimits = useGasLimits(chainId);
@@ -173,7 +175,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   );
 
   const onSubmit = useCallback(() => {
-    if (!account || !signer?.provider || !chainId || !batchParams) {
+    if (!account || !signer?.provider || !chainId || !batchParams || !provider) {
       return;
     }
 
@@ -191,12 +193,13 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
         slippageInputId: undefined,
         isFundingFeeSettlement: true,
       }),
+      provider,
     })
       .then(handleOnClose)
       .finally(() => {
         setIsSubmitting(false);
       });
-  }, [account, batchParams, chainId, expressParams, handleOnClose, makeOrderTxnCallback, noncesData, signer]);
+  }, [account, batchParams, chainId, expressParams, handleOnClose, makeOrderTxnCallback, noncesData, provider, signer]);
 
   const renderTooltipContent = useCallback(
     () => (

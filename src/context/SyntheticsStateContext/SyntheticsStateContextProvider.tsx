@@ -1,8 +1,8 @@
 import { ethers } from "ethers";
-import { ReactNode, useCallback, useMemo, useState } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 
+import type { UiContractsChain, UiSourceChain } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
 import { NoncesData, useExpressNonces } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -27,9 +27,9 @@ import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   MarketsInfoResult,
   MarketsResult,
-  useMarketTokensDataRequest,
   useMarkets,
   useMarketsInfoRequest,
+  useMarketTokensDataRequest,
 } from "domain/synthetics/markets";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
@@ -63,8 +63,11 @@ import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
 
+import { useGmxAccountTokensDataRequest } from "components/Synthetics/GmxAccountModal/hooks";
+
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
+import { latestStateRef, StateCtx } from "./utils";
 
 export type SyntheticsPageType =
   | "accounts"
@@ -75,12 +78,15 @@ export type SyntheticsPageType =
   | "dashboard"
   | "earn"
   | "buy"
-  | "home";
+  | "home"
+  | "gmxAccount"
+  | "referrals";
 
 export type SyntheticsState = {
   pageType: SyntheticsPageType;
   globals: {
-    chainId: number;
+    chainId: UiContractsChain;
+    srcChainId: UiSourceChain | undefined;
     markets: MarketsResult;
     marketsInfo: MarketsInfoResult;
     positionsInfo: PositionsInfoResult;
@@ -135,10 +141,6 @@ export type SyntheticsState = {
   expressNoncesData: NoncesData | undefined;
 };
 
-const StateCtx = createContext<SyntheticsState | null>(null);
-
-let latestState: SyntheticsState | null = null;
-
 export function SyntheticsStateContextProvider({
   children,
   skipLocalReferralCode,
@@ -148,11 +150,12 @@ export function SyntheticsStateContextProvider({
   children: ReactNode;
   skipLocalReferralCode: boolean;
   pageType: SyntheticsState["pageType"];
-  overrideChainId?: number;
+  overrideChainId?: UiContractsChain;
 }) {
-  const { chainId: selectedChainId } = useChainId();
+  const { chainId: selectedChainId, srcChainId } = useChainId();
 
   const { account: walletAccount, signer } = useWallet();
+
   const { account: paramsAccount } = useParams<{ account?: string }>();
 
   let checkSummedAccount: string | undefined;
@@ -170,7 +173,14 @@ export function SyntheticsStateContextProvider({
   const chainId = isLeaderboardPage ? leaderboard.chainId : overrideChainId ?? selectedChainId;
 
   const markets = useMarkets(chainId);
-  const { tokensData } = useTokensDataRequest(chainId);
+  const { tokensData: settlementChainTokensData } = useTokensDataRequest(chainId);
+  const { tokensData: gmxAccountTokensData } = useGmxAccountTokensDataRequest(chainId);
+
+  let tokensData = settlementChainTokensData;
+
+  if (srcChainId) {
+    tokensData = gmxAccountTokensData;
+  }
 
   const positionsResult = usePositions(chainId, {
     account,
@@ -178,7 +188,7 @@ export function SyntheticsStateContextProvider({
     tokensData,
   });
 
-  const marketsInfo = useMarketsInfoRequest(chainId);
+  const marketsInfo = useMarketsInfoRequest(chainId, srcChainId);
 
   const { isFirstOrder } = useIsFirstOrder(chainId, { account });
 
@@ -240,6 +250,7 @@ export function SyntheticsStateContextProvider({
     tokensData: marketsInfo.tokensData,
     positionsInfoData,
     ordersInfoData: ordersInfo.ordersInfoData,
+    srcChainId,
   });
 
   const orderEditor = useOrderEditorState(ordersInfo.ordersInfoData);
@@ -307,6 +318,7 @@ export function SyntheticsStateContextProvider({
       pageType,
       globals: {
         chainId,
+        srcChainId,
         account,
         signer,
         markets,
@@ -364,6 +376,7 @@ export function SyntheticsStateContextProvider({
   }, [
     pageType,
     chainId,
+    srcChainId,
     account,
     signer,
     markets,
@@ -408,22 +421,7 @@ export function SyntheticsStateContextProvider({
     expressNoncesData,
   ]);
 
-  latestState = state;
+  latestStateRef.current = state;
 
   return <StateCtx.Provider value={state}>{children}</StateCtx.Provider>;
-}
-
-export function useSyntheticsStateSelector<Selected>(selector: (s: SyntheticsState) => Selected) {
-  const value = useContext(StateCtx);
-  if (!value) {
-    throw new Error("Used useSyntheticsStateSelector outside of SyntheticsStateContextProvider");
-  }
-  return useContextSelector(StateCtx as Context<SyntheticsState>, selector) as Selected;
-}
-
-export function useCalcSelector() {
-  return useCallback(function useCalcSelector<Selected>(selector: (state: SyntheticsState) => Selected) {
-    if (!latestState) throw new Error("Used calcSelector outside of SyntheticsStateContextProvider");
-    return selector(latestState);
-  }, []);
 }

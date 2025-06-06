@@ -63,6 +63,7 @@ import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpa
 import { getCommonError, getDecreaseError, getExpressError } from "domain/synthetics/trade/utils/validation";
 import { approveTokens, Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
+import { useDebouncedInputValue } from "lib/debounce/useDebouncedInputValue";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
@@ -75,7 +76,7 @@ import {
   formatUsd,
   parseValue,
 } from "lib/numbers";
-import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
+import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
@@ -103,12 +104,13 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
+
 import "./PositionSeller.scss";
 
 export type Props = {
@@ -131,8 +133,9 @@ export function PositionSeller() {
   const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const availableReceiveTokens = useSelector(selectPositionSellerAvailableReceiveTokens);
   const tokensData = useTokensData();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { signer, account } = useWallet();
+  const { provider } = useJsonRpcProvider(chainId);
   const { openConnectModal } = useConnectModal();
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
@@ -369,6 +372,10 @@ export function PositionSeller() {
   });
 
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
+    if (srcChainId) {
+      return { tokensToApprove: [], isAllowanceLoaded: true };
+    }
+
     if (!batchParams) {
       return { tokensToApprove: [], isAllowanceLoaded: false };
     }
@@ -394,6 +401,7 @@ export function PositionSeller() {
     expressParams,
     gasPaymentTokenAllowance?.isLoaded,
     gasPaymentTokenAllowance?.tokensAllowanceData,
+    srcChainId,
     tokenPermits,
   ]);
 
@@ -534,6 +542,8 @@ export function PositionSeller() {
       fastExpressParams,
       asyncExpressParams,
       expressParams,
+      chainId: srcChainId ?? chainId,
+      isCollateralFromMultichain: srcChainId !== undefined,
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
@@ -547,7 +557,8 @@ export function PositionSeller() {
       !receiveToken?.address ||
       receiveUsd === undefined ||
       decreaseAmounts?.acceptablePrice === undefined ||
-      !signer
+      !signer ||
+      !provider
     ) {
       helperToast.error(t`Error submitting order`);
       sendTxnValidationErrorMetric(metricData.metricId);
@@ -561,6 +572,7 @@ export function PositionSeller() {
     const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
+      provider,
       batchParams,
       noncesData,
       expressParams:

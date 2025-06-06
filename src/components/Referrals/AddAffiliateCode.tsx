@@ -1,12 +1,14 @@
 import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
+import type { TransactionResponse } from "ethers";
 import { useEffect, useRef, useState } from "react";
+import { useAccount } from "wagmi";
 
-import { ARBITRUM } from "config/chains";
+import type { ReferralCodeStats } from "domain/referrals/types";
+import { useChainId } from "lib/chains";
+import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
-import { useDebounce } from "lib/useDebounce";
-import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
 
@@ -30,6 +32,9 @@ function AddAffiliateCode({ handleCreateReferralCode, active, setRecentlyAddedCo
             handleCreateReferralCode={handleCreateReferralCode}
             recentlyAddedCodes={recentlyAddedCodes}
             setRecentlyAddedCodes={setRecentlyAddedCodes}
+            callAfterSuccess={function (): void {
+              throw new Error("Function not implemented.");
+            }}
           />
         ) : (
           <Button variant="primary-action" className="w-full" onClick={openConnectModal}>
@@ -46,16 +51,23 @@ export function AffiliateCodeForm({
   recentlyAddedCodes,
   setRecentlyAddedCodes,
   callAfterSuccess,
+}: {
+  handleCreateReferralCode: (code: string) => Promise<unknown>;
+  recentlyAddedCodes: ReferralCodeStats[] | undefined;
+  setRecentlyAddedCodes: (code: ReferralCodeStats[]) => void;
+  callAfterSuccess: () => void;
 }) {
   const [referralCode, setReferralCode] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState("");
-  const inputRef = useRef("");
+  const inputRef = useRef<HTMLInputElement>(null);
   const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState("ok");
   const debouncedReferralCode = useDebounce(referralCode, 300);
-  const { account, chainId } = useWallet();
+  const { chainId } = useChainId();
+  const { address: account } = useAccount();
+
   useEffect(() => {
-    inputRef.current.focus();
+    inputRef.current?.focus();
   }, []);
 
   useEffect(() => {
@@ -65,7 +77,7 @@ export function AffiliateCodeForm({
         setReferralCodeCheckStatus("ok");
         return;
       }
-      const { status: takenStatus } = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
+      const { takenStatus: takenStatus } = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
       // ignore the result if the referral code to check has changed
       if (cancelled) {
         return;
@@ -110,6 +122,7 @@ export function AffiliateCodeForm({
 
     return t`Create`;
   }
+
   function isPrimaryEnabled() {
     if (buttonError) {
       return false;
@@ -120,28 +133,33 @@ export function AffiliateCodeForm({
     return true;
   }
 
-  async function handleSubmit(event) {
+  async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     setIsProcessing(true);
+
     const trimmedCode = referralCode.trim();
-    const { status: takenStatus, info: takenInfo } = await getReferralCodeTakenStatus(account, trimmedCode, chainId);
+    const { takenStatus, info: takenInfo } = await getReferralCodeTakenStatus(account, trimmedCode, chainId);
     if (["all", "current", "other"].includes(takenStatus)) {
       setIsProcessing(false);
     }
 
     if (takenStatus === "none" || takenStatus === "other") {
-      const ownerOnOtherNetwork = takenInfo[chainId === ARBITRUM ? "ownerAvax" : "ownerArbitrum"];
+      // const ownerOnOtherNetwork = takenInfo[chainId];
       try {
-        const tx = await handleCreateReferralCode(trimmedCode);
+        const tx = (await handleCreateReferralCode(trimmedCode)) as TransactionResponse;
+
         if (callAfterSuccess) {
           callAfterSuccess();
         }
-        const receipt = await tx.wait();
-        if (receipt.status === 1) {
-          recentlyAddedCodes.push(getSampleReferrarStat(trimmedCode, ownerOnOtherNetwork, account));
 
+        const receipt = await tx.wait();
+
+        if (receipt?.status === 1) {
+          if (recentlyAddedCodes) {
+            recentlyAddedCodes.push(getSampleReferrarStat({ code: trimmedCode, takenInfo, account }));
+            setRecentlyAddedCodes(recentlyAddedCodes);
+          }
           helperToast.success(t`Referral code created!`);
-          setRecentlyAddedCodes(recentlyAddedCodes);
           setReferralCode("");
         }
       } catch (err) {

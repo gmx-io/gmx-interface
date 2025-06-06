@@ -1,17 +1,22 @@
 import { ethers } from "ethers";
 import sample from "lodash/sample";
+import { arbitrumSepolia, optimismSepolia, sepolia } from "viem/chains";
 
-import type { NetworkMetadata } from "lib/wallets";
 import {
+  ARBITRUM_SEPOLIA,
+  OPTIMISM_SEPOLIA,
   SUPPORTED_CHAIN_IDS as SDK_SUPPORTED_CHAIN_IDS,
   SUPPORTED_CHAIN_IDS_DEV as SDK_SUPPORTED_CHAIN_IDS_DEV,
+  SEPOLIA,
+  UiContractsChain,
+  UiSupportedChain,
 } from "sdk/configs/chains";
 
 import { isDevelopment } from "./env";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET, ETH_MAINNET } from "./static/chains";
 
+export { CHAIN_NAMES_MAP, getChainName } from "sdk/configs/chains";
 export * from "./static/chains";
-export { getChainName, CHAIN_NAMES_MAP } from "../../sdk/src/configs/chains";
 
 export const SUPPORTED_CHAIN_IDS = isDevelopment() ? SDK_SUPPORTED_CHAIN_IDS_DEV : SDK_SUPPORTED_CHAIN_IDS;
 
@@ -24,10 +29,11 @@ export const ENV_AVALANCHE_RPC_URLS = import.meta.env.VITE_APP_AVALANCHE_RPC_URL
 export const DEFAULT_CHAIN_ID = ARBITRUM;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
-export const IS_NETWORK_DISABLED = {
+export const IS_NETWORK_DISABLED: Record<UiContractsChain, boolean> = {
   [ARBITRUM]: false,
   [AVALANCHE]: false,
-  [BSС_MAINNET]: false,
+  [ARBITRUM_SEPOLIA]: false,
+  [AVALANCHE_FUJI]: false,
 };
 
 export const NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR = {
@@ -94,34 +100,32 @@ const constants = {
     // contract requires that execution fee be strictly greater than instead of gte
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
   },
+
+  [ARBITRUM_SEPOLIA]: {
+    nativeTokenSymbol: "ETH",
+    wrappedTokenSymbol: "WETH",
+    defaultCollateralSymbol: "USDC",
+    defaultFlagOrdersEnabled: true,
+    positionReaderPropsLength: 9,
+    v2: true,
+
+    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
+    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
+    // contract requires that execution fee be strictly greater than instead of gte
+    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
+  },
 };
 
 const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io"];
 
-export const RPC_PROVIDERS = {
+export const RPC_PROVIDERS: Record<UiSupportedChain | typeof ETH_MAINNET, string[]> = {
   [ETH_MAINNET]: ["https://rpc.ankr.com/eth"],
-  [BSС_MAINNET]: [
-    "https://bsc-dataseed.binance.org",
-    "https://bsc-dataseed1.defibit.io",
-    "https://bsc-dataseed1.ninicoin.io",
-    "https://bsc-dataseed2.defibit.io",
-    "https://bsc-dataseed3.defibit.io",
-    "https://bsc-dataseed4.defibit.io",
-    "https://bsc-dataseed2.ninicoin.io",
-    "https://bsc-dataseed3.ninicoin.io",
-    "https://bsc-dataseed4.ninicoin.io",
-    "https://bsc-dataseed1.binance.org",
-    "https://bsc-dataseed2.binance.org",
-    "https://bsc-dataseed3.binance.org",
-    "https://bsc-dataseed4.binance.org",
-  ],
-  [BSС_TESTNET]: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
   [ARBITRUM]: [
     "https://arb1.arbitrum.io/rpc",
     "https://arbitrum-one-rpc.publicnode.com",
     "https://1rpc.io/arb",
     "https://arbitrum-one.public.blastapi.io",
-    "https://arbitrum.drpc.org",
+    // "https://arbitrum.drpc.org",
     "https://rpc.ankr.com/arbitrum",
   ],
   [AVALANCHE]: [
@@ -135,9 +139,14 @@ export const RPC_PROVIDERS = {
     // "https://ava-testnet.public.blastapi.io/v1/avax/fuji/public",
     // "https://rpc.ankr.com/avalanche_fuji",
   ],
+  [ARBITRUM_SEPOLIA]: [...arbitrumSepolia.rpcUrls.default.http],
+  // [BASE_MAINNET]: [...base.rpcUrls.default.http],
+  // [SONIC_MAINNET]: [...sonic.rpcUrls.default.http],
+  [OPTIMISM_SEPOLIA]: [...optimismSepolia.rpcUrls.default.http],
+  [SEPOLIA]: [...sepolia.rpcUrls.default.http],
 };
 
-export const FALLBACK_PROVIDERS = {
+export const FALLBACK_PROVIDERS: Record<UiSupportedChain, string[]> = {
   [ARBITRUM]: ENV_ARBITRUM_RPC_URLS ? JSON.parse(ENV_ARBITRUM_RPC_URLS) : [getAlchemyArbitrumHttpUrl()],
   [AVALANCHE]: ENV_AVALANCHE_RPC_URLS ? JSON.parse(ENV_AVALANCHE_RPC_URLS) : [getAlchemyAvalancheHttpUrl()],
   [AVALANCHE_FUJI]: [
@@ -145,64 +154,11 @@ export const FALLBACK_PROVIDERS = {
     "https://api.avax-test.network/ext/bc/C/rpc",
     "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
   ],
-};
-
-export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
-  [BSС_MAINNET]: {
-    chainId: "0x" + BSС_MAINNET.toString(16),
-    chainName: "BSC",
-    nativeCurrency: {
-      name: "BNB",
-      symbol: "BNB",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[BSС_MAINNET],
-    blockExplorerUrls: ["https://bscscan.com"],
-  },
-  [BSС_TESTNET]: {
-    chainId: "0x" + BSС_TESTNET.toString(16),
-    chainName: "BSC Testnet",
-    nativeCurrency: {
-      name: "BNB",
-      symbol: "BNB",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[BSС_TESTNET],
-    blockExplorerUrls: ["https://testnet.bscscan.com/"],
-  },
-  [ARBITRUM]: {
-    chainId: "0x" + ARBITRUM.toString(16),
-    chainName: "Arbitrum",
-    nativeCurrency: {
-      name: "ETH",
-      symbol: "ETH",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[ARBITRUM],
-    blockExplorerUrls: [getExplorerUrl(ARBITRUM)],
-  },
-  [AVALANCHE]: {
-    chainId: "0x" + AVALANCHE.toString(16),
-    chainName: "Avalanche",
-    nativeCurrency: {
-      name: "AVAX",
-      symbol: "AVAX",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[AVALANCHE],
-    blockExplorerUrls: [getExplorerUrl(AVALANCHE)],
-  },
-  [AVALANCHE_FUJI]: {
-    chainId: "0x" + AVALANCHE_FUJI.toString(16),
-    chainName: "Avalanche Fuji Testnet",
-    nativeCurrency: {
-      name: "AVAX",
-      symbol: "AVAX",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[AVALANCHE_FUJI],
-    blockExplorerUrls: [getExplorerUrl(AVALANCHE_FUJI)],
-  },
+  [ARBITRUM_SEPOLIA]: [],
+  // [BASE_MAINNET]: [],
+  // [SONIC_MAINNET]: [],
+  [OPTIMISM_SEPOLIA]: [],
+  [SEPOLIA]: [],
 };
 
 export const getConstant = (chainId: number, key: string) => {
@@ -240,23 +196,25 @@ export function getAlchemyArbitrumWsUrl() {
   return `wss://arb-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
 }
 
-export function getExplorerUrl(chainId) {
-  if (chainId === 3) {
-    return "https://ropsten.etherscan.io/";
-  } else if (chainId === 42) {
-    return "https://kovan.etherscan.io/";
-  } else if (chainId === BSС_MAINNET) {
-    return "https://bscscan.com/";
-  } else if (chainId === BSС_TESTNET) {
-    return "https://testnet.bscscan.com/";
-  } else if (chainId === ARBITRUM) {
-    return "https://arbiscan.io/";
-  } else if (chainId === AVALANCHE) {
-    return "https://snowtrace.io/";
-  } else if (chainId === AVALANCHE_FUJI) {
-    return "https://testnet.snowtrace.io/";
+export function getExplorerUrl(chainId: number): string {
+  switch (chainId as UiSupportedChain) {
+    case ARBITRUM:
+      return "https://arbiscan.io/";
+    case AVALANCHE:
+      return "https://snowtrace.io/";
+    // case BASE_MAINNET:
+    //   return base.blockExplorers.default.url + "/";
+    // case SONIC_MAINNET:
+    //   return sonic.blockExplorers.default.url + "/";
+    case AVALANCHE_FUJI:
+      return "https://testnet.snowtrace.io/";
+    case ARBITRUM_SEPOLIA:
+      return arbitrumSepolia.blockExplorers.default.url + "/";
+    case OPTIMISM_SEPOLIA:
+      return "https://sepolia-optimism.etherscan.io/";
+    case SEPOLIA:
+      return "https://sepolia.etherscan.io/";
   }
-  return "https://etherscan.io/";
 }
 
 export function getTokenExplorerUrl(chainId: number, tokenAddress: string) {

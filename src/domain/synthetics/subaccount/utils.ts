@@ -1,7 +1,8 @@
 import cryptoJs from "crypto-js";
-import { ethers, Provider, Signer } from "ethers";
+import { ethers, Provider } from "ethers";
 import { decodeFunctionResult, encodeAbiParameters, encodeFunctionData, keccak256, maxUint256, zeroHash } from "viem";
 
+import { ARBITRUM_SEPOLIA, UiContractsChain } from "config/static/chains";
 import {
   SignedSubbacountApproval,
   Subaccount,
@@ -9,9 +10,8 @@ import {
   SubaccountSerializedConfig,
   SubaccountValidations,
 } from "domain/synthetics/subaccount/types";
-import { SubaccountOnchainData } from "domain/synthetics/subaccount/useSubaccountOnchainData";
 import { WalletSigner } from "lib/wallets";
-import { signTypedData } from "lib/wallets/signing";
+import { SignatureTypes, signTypedData } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import {
@@ -19,14 +19,18 @@ import {
   SUBACCOUNT_ORDER_ACTION,
   subaccountActionCountKey,
   subaccountExpiresAtKey,
+  subaccountIntegrationIdKey,
   subaccountListKey,
 } from "sdk/configs/dataStore";
 import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
 import { bigMath } from "sdk/utils/bigmath";
 import { ZERO_DATA } from "sdk/utils/hash";
 import { nowInSeconds, secondsToPeriod } from "sdk/utils/time";
+import type { SubaccountGelatoRelayRouter } from "typechain-types";
 
 import { getExpressContractAddress, getGelatoRelayRouterDomain } from "../express";
+import { SubaccountOnchainData } from "./useSubaccountOnchainData";
+import { getMultichainInfoFromSigner, getOrderRelayRouterAddress } from "../express/expressOrderUtils";
 
 export function getSubaccountValidations({
   requiredActions,
@@ -182,6 +186,7 @@ export function getEmptySubaccountApproval(subaccountAddress: string): SignedSub
     deadline: maxUint256,
     signature: ZERO_DATA,
     signedAt: 0,
+    integrationId: zeroHash,
   };
 }
 
@@ -192,6 +197,7 @@ export function getIsEmptySubaccountApproval(subaccountApproval: SignedSubbacoun
     subaccountApproval.expiresAt === 0n &&
     subaccountApproval.maxAllowedCount === 0n &&
     subaccountApproval.shouldAdd === false
+    // TODO: Add integrationId check
   );
 }
 
@@ -201,7 +207,7 @@ export async function getInitialSubaccountApproval({
   provider,
   subaccountAddress,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   signer: WalletSigner;
   provider: Provider;
   subaccountAddress: string;
@@ -274,12 +280,14 @@ export function getIsSubaccountApprovalSynced(subaccount: {
 export async function signUpdatedSubaccountSettings({
   chainId,
   signer,
+  provider,
   subaccount,
   nextRemainigActions,
   nextRemainingSeconds,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   signer: WalletSigner;
+  provider: Provider;
   subaccount: Subaccount;
   nextRemainigActions: bigint | undefined;
   nextRemainingSeconds: bigint | undefined;
@@ -302,7 +310,7 @@ export async function signUpdatedSubaccountSettings({
     nextExpiresAt = oldExpiresAt + nextRemainingSeconds - oldRemainingSeconds;
   }
 
-  const nonce = await getSubaccountApprovalNonceForSigner(chainId, signer);
+  const nonce = await getSubaccountApprovalNonceForProvider(chainId, signer, provider);
 
   const signedSubaccountApproval = await createAndSignSubaccountApproval(chainId, signer, subaccount.address, nonce, {
     expiresAt: nextExpiresAt,
@@ -314,8 +322,8 @@ export async function signUpdatedSubaccountSettings({
 }
 
 export async function createAndSignSubaccountApproval(
-  chainId: number,
-  mainAccountSigner: Signer,
+  chainId: UiContractsChain,
+  mainAccountSigner: WalletSigner,
   subaccountAddress: string,
   nonce: bigint,
   params: {
@@ -324,7 +332,11 @@ export async function createAndSignSubaccountApproval(
     maxAllowedCount: bigint;
   }
 ): Promise<SignedSubbacountApproval> {
-  const types = {
+  let srcChainId = await getMultichainInfoFromSigner(mainAccountSigner, chainId);
+
+  const relayRouterAddress = getOrderRelayRouterAddress(chainId, true, srcChainId !== undefined);
+
+  const types: SignatureTypes = {
     SubaccountApproval: [
       { name: "subaccount", type: "address" },
       { name: "shouldAdd", type: "bool" },
@@ -333,18 +345,20 @@ export async function createAndSignSubaccountApproval(
       { name: "actionType", type: "bytes32" },
       { name: "nonce", type: "uint256" },
       { name: "deadline", type: "uint256" },
-    ],
+      chainId === ARBITRUM_SEPOLIA ? { name: "integrationId", type: "bytes32" } : undefined,
+    ].filter((type) => type !== undefined) as SignatureTypes[string],
   };
 
-  const domain = getGelatoRelayRouterDomain(chainId, true);
+  const domain = getGelatoRelayRouterDomain(chainId, relayRouterAddress, true, srcChainId);
 
   const typedData = {
     subaccount: subaccountAddress,
     shouldAdd: params.shouldAdd,
-    actionType: SUBACCOUNT_ORDER_ACTION,
     expiresAt: params.expiresAt,
     maxAllowedCount: params.maxAllowedCount,
+    actionType: SUBACCOUNT_ORDER_ACTION,
     nonce,
+    integrationId: chainId === ARBITRUM_SEPOLIA ? zeroHash : undefined,
     deadline: params.expiresAt,
   };
 
@@ -357,7 +371,7 @@ export async function createAndSignSubaccountApproval(
   };
 }
 
-export function hashSubaccountApproval(subaccountApproval: SignedSubbacountApproval) {
+export function hashSubaccountApproval(subaccountApproval: SignedSubbacountApproval, isNewContracts: boolean) {
   if (!subaccountApproval) {
     return zeroHash;
   }
@@ -374,8 +388,9 @@ export function hashSubaccountApproval(subaccountApproval: SignedSubbacountAppro
           { name: "actionType", type: "bytes32" },
           { name: "nonce", type: "uint256" },
           { name: "deadline", type: "uint256" },
+          isNewContracts ? { name: "integrationId", type: "bytes32" } : undefined,
           { name: "signature", type: "bytes" },
-        ],
+        ].filter((type) => type !== undefined),
       },
     ],
     [subaccountApproval as any]
@@ -384,11 +399,30 @@ export function hashSubaccountApproval(subaccountApproval: SignedSubbacountAppro
   return keccak256(encodedData);
 }
 
-export async function getSubaccountApprovalNonceForSigner(chainId: number, signer: WalletSigner) {
-  const contractAddress = getExpressContractAddress(chainId, { isSubaccount: true });
-  const contract = new ethers.Contract(contractAddress, abis.SubaccountGelatoRelayRouter, signer);
+async function getSubaccountApprovalNonceForProvider(
+  chainId: UiContractsChain,
+  signer: WalletSigner,
+  provider: Provider
+): Promise<bigint> {
+  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
 
-  return contract.subaccountApprovalNonces(signer.address);
+  if (srcChainId !== undefined && provider === undefined) {
+    throw new Error("Provider is required for multicall");
+  }
+
+  const contractAddress = getExpressContractAddress(chainId, {
+    isSubaccount: true,
+    isMultichain: srcChainId !== undefined,
+    scope: "subaccount",
+  });
+
+  const contract = new ethers.Contract(
+    contractAddress,
+    abis.AbstractSubaccountApprovalNonceable,
+    provider
+  ) as unknown as SubaccountGelatoRelayRouter;
+
+  return await contract.subaccountApprovalNonces(signer.address);
 }
 
 export async function getSubaccountOnchainData({
@@ -397,24 +431,31 @@ export async function getSubaccountOnchainData({
   provider,
   subaccountAddress,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   signer: WalletSigner;
   provider: Provider;
   subaccountAddress: string;
 }) {
+  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
   const account = signer.address;
 
   const calls: {
-    [key in keyof SubaccountOnchainData]: {
-      contractAddress: string;
-      abi: any;
-      functionName: string;
-      args: any[];
-    };
+    [key in keyof SubaccountOnchainData]:
+      | {
+          contractAddress: string;
+          abi: any;
+          functionName: string;
+          args: any[];
+        }
+      | undefined;
   } = {
     approvalNonce: {
-      contractAddress: getExpressContractAddress(chainId, { isSubaccount: true }),
-      abi: abis.SubaccountGelatoRelayRouter,
+      contractAddress: getExpressContractAddress(chainId, {
+        isSubaccount: true,
+        isMultichain: srcChainId !== undefined,
+        scope: "subaccount",
+      }),
+      abi: abis.AbstractSubaccountApprovalNonceable,
       functionName: "subaccountApprovalNonces",
       args: [account],
     },
@@ -442,16 +483,29 @@ export async function getSubaccountOnchainData({
       functionName: "getUint",
       args: [subaccountExpiresAtKey(account, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
     },
+    integrationId:
+      chainId === ARBITRUM_SEPOLIA
+        ? {
+            contractAddress: getContract(chainId, "DataStore"),
+            abi: abis.DataStore,
+            functionName: "getBytes32",
+            args: [subaccountIntegrationIdKey(account, subaccountAddress)],
+          }
+        : undefined,
   };
 
   const callData = encodeFunctionData({
     abi: abis.Multicall,
     functionName: "aggregate",
     args: [
-      Object.values(calls).map((call) => ({
-        target: call.contractAddress,
-        callData: encodeFunctionData(call),
-      })),
+      Object.values(calls)
+        .filter(
+          (call): call is { contractAddress: string; abi: any; functionName: string; args: any[] } => call !== undefined
+        )
+        .map((call) => ({
+          target: call.contractAddress,
+          callData: encodeFunctionData(call),
+        })),
     ],
   });
 
@@ -467,6 +521,10 @@ export async function getSubaccountOnchainData({
   }) as [bigint, string[]];
 
   const results: SubaccountOnchainData = Object.entries(calls).reduce((acc, [key, call], index) => {
+    if (call === undefined) {
+      return acc;
+    }
+
     acc[key] = decodeFunctionResult({
       abi: call.abi,
       functionName: call.functionName,

@@ -6,16 +6,16 @@ import orderBy from "lodash/orderBy";
 import { useEffect, useState } from "react";
 
 import {
-  RPC_PROVIDERS,
-  FALLBACK_PROVIDERS,
-  SUPPORTED_CHAIN_IDS,
   ARBITRUM,
   AVALANCHE,
   AVALANCHE_FUJI,
+  FALLBACK_PROVIDERS,
+  RPC_PROVIDERS,
+  SUPPORTED_CHAIN_IDS,
+  UiContractsChain,
   getFallbackRpcUrl,
 } from "config/chains";
-import { getMulticallContract, getDataStoreContract } from "config/contracts";
-import { getContract } from "config/contracts";
+import { getContract, getDataStoreContract, getMulticallContract } from "config/contracts";
 import { getRpcProviderKey } from "config/localStorage";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { isDebugMode } from "lib/localStorage";
@@ -33,7 +33,7 @@ const DISABLE_UNUSED_TRACKING_TIMEOUT = 1 * 60 * 1000; // 1 minute / Pause probi
 const BLOCK_FROM_FUTURE_THRESHOLD = 1000; // Omit RPC if block number is higher than average on this value
 const BLOCK_LAGGING_THRESHOLD = 50; // Omit RPC if block number is lower than highest valid on this value
 
-const RPC_TRACKER_UPDATE_EVENT = "rpc-tracker-update-event";
+export const RPC_TRACKER_UPDATE_EVENT = "rpc-tracker-update-event";
 
 // DataStore field used for probing
 const PROBE_SAMPLE_FIELD = "minCollateralFactor";
@@ -60,8 +60,8 @@ type ProviderData = {
 };
 
 type RpcTrackerState = {
-  [chainId: number]: {
-    chainId: number;
+  [chainId in UiContractsChain]: {
+    chainId: UiContractsChain;
     lastUsage: Date | null;
     currentPrimaryUrl: string;
     currentSecondaryUrl: string;
@@ -117,7 +117,7 @@ function trackRpcProviders({ warmUp = false } = {}) {
   });
 }
 
-async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerState[number]) {
+async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerState[UiContractsChain]) {
   const providersList = Object.values(providers);
 
   const providersToProbe = getIsLargeAccount() ? providersList : providersList.filter(({ isPublic }) => isPublic);
@@ -245,7 +245,7 @@ function setCurrentProviders(chainId: number, { primaryUrl, secondaryUrl, bestBe
 }
 
 async function probeRpc(
-  chainId: number,
+  chainId: UiContractsChain,
   provider: Provider,
   providerUrl: string,
   isPublic: boolean
@@ -405,10 +405,10 @@ function initTrackerState() {
     };
 
     return acc;
-  }, {});
+  }, {} as RpcTrackerState);
 }
 
-export function getCurrentRpcUrls(chainId: number) {
+export function getCurrentRpcUrls(chainId: number): { primary: string; secondary: string } {
   if (!RPC_PROVIDERS[chainId]?.length) {
     throw new Error(`No RPC providers found for chainId: ${chainId}`);
   }

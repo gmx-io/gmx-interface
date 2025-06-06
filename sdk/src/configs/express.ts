@@ -2,7 +2,7 @@ import { Token } from "types/tokens";
 import { USD_DECIMALS } from "utils/numbers";
 import { periodToSeconds } from "utils/time";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 import { getTokenBySymbol, getWrappedToken } from "./tokens";
 
 export const SUBACCOUNT_MESSAGE =
@@ -24,6 +24,10 @@ const GAS_PAYMENT_TOKENS = {
   [AVALANCHE_FUJI]: [
     getTokenBySymbol(AVALANCHE_FUJI, "USDC").address,
     getTokenBySymbol(AVALANCHE_FUJI, "WAVAX").address,
+  ],
+  [ARBITRUM_SEPOLIA]: [
+    getTokenBySymbol(ARBITRUM_SEPOLIA, "USDC.SG").address,
+    getTokenBySymbol(ARBITRUM_SEPOLIA, "WETH").address,
   ],
 };
 

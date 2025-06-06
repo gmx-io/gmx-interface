@@ -4,11 +4,20 @@ import cx from "classnames";
 import { useCallback } from "react";
 import { useRouteMatch } from "react-router-dom";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  OPTIMISM_SEPOLIA,
+  SEPOLIA,
+  getChainName,
+} from "config/chains";
 import { isDevelopment } from "config/env";
-import { getIcon } from "config/icons";
+import { getChainIcon } from "config/icons";
+import { isSourceChain } from "domain/multichain/config";
 import { useChainId } from "lib/chains";
-import { getAccountUrl, isHomeSite, shouldShowRedirectModal } from "lib/legacy";
+import { isHomeSite, shouldShowRedirectModal } from "lib/legacy";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
 import { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
 import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
@@ -30,44 +39,76 @@ import "./Header.scss";
 type Props = {
   openSettings: () => void;
   small?: boolean;
-  disconnectAccountAndCloseSettings: () => void;
   showRedirectModal: (to: string) => void;
   menuToggle?: React.ReactNode;
 };
 
-const NETWORK_OPTIONS = [
+export type NetworkOption = {
+  label: string;
+  value: number;
+  icon: string;
+  color: string;
+};
+
+const NETWORK_OPTIONS: NetworkOption[] = [
   {
     label: getChainName(ARBITRUM),
     value: ARBITRUM,
-    icon: getIcon(ARBITRUM, "network"),
+    icon: getChainIcon(ARBITRUM),
     color: "#264f79",
   },
   {
     label: getChainName(AVALANCHE),
     value: AVALANCHE,
-    icon: getIcon(AVALANCHE, "network"),
+    icon: getChainIcon(AVALANCHE),
     color: "#E841424D",
   },
+  // {
+  //   label: getChainName(BASE_MAINNET),
+  //   value: BASE_MAINNET,
+  //   icon: getChainIcon(BASE_MAINNET),
+  //   color: "#0052ff",
+  // },
+  // {
+  //   label: getChainName(SONIC_MAINNET),
+  //   value: SONIC_MAINNET,
+  //   icon: getChainIcon(SONIC_MAINNET),
+  //   color: "#ffffff",
+  // },
 ];
 
 if (isDevelopment()) {
-  NETWORK_OPTIONS.push({
-    label: getChainName(AVALANCHE_FUJI),
-    value: AVALANCHE_FUJI,
-    icon: getIcon(AVALANCHE_FUJI, "network"),
-    color: "#E841424D",
-  });
+  NETWORK_OPTIONS.push(
+    {
+      label: getChainName(AVALANCHE_FUJI),
+      value: AVALANCHE_FUJI,
+      icon: getChainIcon(AVALANCHE_FUJI),
+      color: "#E841424D",
+    },
+    {
+      label: getChainName(ARBITRUM_SEPOLIA),
+      value: ARBITRUM_SEPOLIA,
+      icon: getChainIcon(ARBITRUM_SEPOLIA),
+      color: "#0052ff",
+    },
+    {
+      label: getChainName(OPTIMISM_SEPOLIA),
+      value: OPTIMISM_SEPOLIA,
+      icon: getChainIcon(OPTIMISM_SEPOLIA),
+      color: "#ff0420",
+    },
+    {
+      label: getChainName(SEPOLIA),
+      value: SEPOLIA,
+      icon: getChainIcon(SEPOLIA),
+      color: "#aa00ff",
+    }
+  );
 }
 
-export function AppHeaderUser({
-  small,
-  menuToggle,
-  openSettings,
-  disconnectAccountAndCloseSettings,
-  showRedirectModal,
-}: Props) {
-  const { chainId } = useChainId();
-  const { active, account } = useWallet();
+export function AppHeaderChainAndSettings({ small, menuToggle, openSettings, showRedirectModal }: Props) {
+  const { chainId: settlementChainId } = useChainId();
+  const { active, account, chainId: walletChainId } = useWallet();
   const { openConnectModal } = useConnectModal();
   const showConnectionOptions = !isHomeSite();
   const [tradePageVersion] = useTradePageVersion();
@@ -78,7 +119,7 @@ export function AppHeaderUser({
   const isOnTradePageV2 = useRouteMatch("/trade");
   const shouldHideTradeButton = isOnTradePageV1 || isOnTradePageV2;
 
-  const selectorLabel = getChainName(chainId);
+  const visualChainId = walletChainId !== undefined && isSourceChain(walletChainId) ? walletChainId : settlementChainId;
 
   const trackLaunchApp = useCallback(() => {
     userAnalytics.pushEvent<LandingPageLaunchAppEvent>(
@@ -126,9 +167,9 @@ export function AppHeaderUser({
             </ConnectWalletButton>
             {!small && <OneClickButton openSettings={openSettings} />}
             <NetworkDropdown
+              chainId={visualChainId}
               small={small}
               networkOptions={NETWORK_OPTIONS}
-              selectorLabel={selectorLabel}
               openSettings={openSettings}
             />
           </>
@@ -139,8 +180,6 @@ export function AppHeaderUser({
       </div>
     );
   }
-
-  const accountUrl = getAccountUrl(chainId, account);
 
   return (
     <div className="App-header-user">
@@ -159,18 +198,12 @@ export function AppHeaderUser({
 
       {showConnectionOptions ? (
         <>
-          <div data-qa="user-address" className="App-header-user-address">
-            <AddressDropdown
-              account={account}
-              accountUrl={accountUrl}
-              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-            />
-          </div>
+          <AddressDropdown account={account} />
           {!small && <OneClickButton openSettings={openSettings} />}
           <NetworkDropdown
+            chainId={visualChainId}
             small={small}
             networkOptions={NETWORK_OPTIONS}
-            selectorLabel={selectorLabel}
             openSettings={openSettings}
           />
         </>

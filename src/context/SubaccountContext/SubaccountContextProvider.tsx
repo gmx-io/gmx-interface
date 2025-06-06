@@ -3,8 +3,16 @@ import React, { createContext, useCallback, useContext, useMemo } from "react";
 import { toast } from "react-toastify";
 
 import { getSubaccountApprovalKey, getSubaccountConfigKey } from "config/localStorage";
+import { useCalcSelector } from "context/SyntheticsStateContext/utils";
+import {
+  estimateArbitraryRelayFee,
+  PreparedGetTxnData,
+  selectArbitraryRelayParamsAndPayload,
+  selectRawBasePreparedRelayParamsPayload,
+} from "domain/multichain/arbitraryRelayParams";
+import { getExpressContractAddress } from "domain/synthetics/express";
+import { buildAndSignRemoveSubaccountTxn, removeSubaccountWalletTxn } from "domain/synthetics/subaccount";
 import { generateSubaccount } from "domain/synthetics/subaccount/generateSubaccount";
-import { removeSubaccountTxn } from "domain/synthetics/subaccount/removeSubaccount";
 import { SignedSubbacountApproval, Subaccount, SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
 import { useSubaccountOnchainData } from "domain/synthetics/subaccount/useSubaccountOnchainData";
 import {
@@ -17,7 +25,10 @@ import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { metrics } from "lib/metrics";
+import { useJsonRpcProvider } from "lib/rpc";
 import { sleep } from "lib/sleep";
+import { sendExpressTransaction } from "lib/transactions";
+import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 
 import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
@@ -44,8 +55,10 @@ export function useSubaccountContext() {
 }
 
 export function SubaccountContextProvider({ children }: { children: React.ReactNode }) {
-  const { chainId } = useChainId();
-  const { signer } = useWallet();
+  const { chainId, srcChainId } = useChainId();
+  const signer = useEthersSigner();
+  const { account } = useWallet();
+  const { provider } = useJsonRpcProvider(chainId);
 
   const {
     subaccountConfig,
@@ -59,6 +72,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
   const { subaccountData, refreshSubaccountData } = useSubaccountOnchainData(chainId, {
     account: signer?.address,
     subaccountAddress: subaccountConfig?.address,
+    srcChainId,
   });
 
   const subaccount: Subaccount | undefined = useMemo(() => {
@@ -77,7 +91,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         onchainData: subaccountData,
         signedApproval,
       }),
-    };
+    } satisfies Subaccount;
   }, [signedApproval, signer?.address, signer?.provider, subaccountConfig, subaccountData]);
 
   const updateSubaccountSettings = useCallback(
@@ -88,7 +102,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       nextRemainigActions?: bigint;
       nextRemainingSeconds?: bigint;
     }) {
-      if (!signer || !subaccount?.address) {
+      if (!signer || !subaccount?.address || !provider) {
         return;
       }
 
@@ -102,6 +116,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         const signedSubaccountApproval = await signUpdatedSubaccountSettings({
           chainId,
           signer,
+          provider,
           subaccount,
           nextRemainigActions,
           nextRemainingSeconds,
@@ -125,7 +140,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         );
       }
     },
-    [signer, subaccount, chainId, setSignedApproval]
+    [signer, subaccount, provider, chainId, setSignedApproval]
   );
 
   const resetSubaccountApproval = useCallback(() => {
@@ -134,7 +149,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
   }, [refreshSubaccountData, setSignedApproval]);
 
   const tryEnableSubaccount = useCallback(async () => {
-    if (!signer?.provider) {
+    if (!provider || !signer) {
       return false;
     }
 
@@ -192,7 +207,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       const defaultSubaccountApproval = await getInitialSubaccountApproval({
         chainId,
         signer,
-        provider: signer?.provider,
+        provider,
         subaccountAddress: config!.address,
       });
 
@@ -221,7 +236,9 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       );
       return false;
     }
-  }, [signer, subaccountConfig, setSubaccountConfig, resetStoredConfig, chainId, setSignedApproval]);
+  }, [provider, signer, subaccountConfig, setSubaccountConfig, resetStoredConfig, chainId, setSignedApproval]);
+
+  const calcSelector = useCalcSelector();
 
   const tryDisableSubaccount = useCallback(async () => {
     if (!signer || !subaccount?.address) {
@@ -234,8 +251,96 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       </StatusNotification>
     );
 
+    let removeSubaccount: () => Promise<void>;
+
+    if (srcChainId) {
+      removeSubaccount = async () => {
+        if (!provider || !account) {
+          throw new Error("No provider or account");
+        }
+
+        const relayRouterAddress = getExpressContractAddress(chainId, {
+          isSubaccount: true,
+          isMultichain: srcChainId !== undefined,
+          scope: "subaccount",
+        });
+
+        const { rawBaseRelayParamsPayload, baseRelayFeeSwapParams } = calcSelector(
+          selectRawBasePreparedRelayParamsPayload
+        );
+
+        if (!rawBaseRelayParamsPayload || !baseRelayFeeSwapParams) {
+          throw new Error("No base express params");
+        }
+
+        const getTxnData: PreparedGetTxnData = ({
+          emptySignature,
+          relayParamsPayload,
+          relayerFeeAmount,
+          relayerFeeTokenAddress,
+        }) =>
+          buildAndSignRemoveSubaccountTxn({
+            chainId,
+            signer,
+            subaccount,
+            relayParamsPayload,
+            relayerFeeAmount,
+            relayerFeeTokenAddress,
+            emptySignature,
+          });
+
+        const relayerFeeAmount = await estimateArbitraryRelayFee({
+          chainId,
+          relayRouterAddress,
+          provider,
+          account,
+          rawRelayParamsPayload: rawBaseRelayParamsPayload,
+          relayerFeeTokenAddress: baseRelayFeeSwapParams.gasPaymentParams.relayerFeeTokenAddress,
+          relayerFeeAmount: baseRelayFeeSwapParams.gasPaymentParams.totalRelayerFeeTokenAmount,
+          getTxnData,
+        });
+
+        if (relayerFeeAmount === undefined) {
+          throw new Error("No relay fee amount");
+        }
+
+        const getRelayParamsAndPayload = calcSelector(selectArbitraryRelayParamsAndPayload);
+
+        if (!getRelayParamsAndPayload) {
+          throw new Error("No get relay params and payload");
+        }
+
+        const { fetchRelayParamsPayload, relayFeeParams } = getRelayParamsAndPayload({
+          relayerFeeAmount,
+        });
+
+        if (!relayFeeParams || !fetchRelayParamsPayload) {
+          throw new Error("No get relayFeeParams or fetchRelayParamsPayload");
+        }
+
+        const txnData = await getTxnData({
+          emptySignature: false,
+          relayerFeeAmount: relayFeeParams.gasPaymentParams.relayerFeeAmount,
+          relayerFeeTokenAddress: relayFeeParams.gasPaymentParams.relayerFeeTokenAddress,
+          relayParamsPayload: await fetchRelayParamsPayload(provider, relayRouterAddress),
+        });
+
+        if (!txnData) {
+          throw new Error("No txnData");
+        }
+
+        await sendExpressTransaction({
+          chainId,
+          isSponsoredCall: false,
+          txnData,
+        });
+      };
+    } else {
+      removeSubaccount = () => removeSubaccountWalletTxn(chainId, signer, subaccount.address);
+    }
+
     try {
-      await removeSubaccountTxn(chainId, signer, subaccount.address);
+      await removeSubaccount();
 
       helperToast.success(
         <StatusNotification title={t`Deactivate 1CT (One-Click Trading)`}>
@@ -258,7 +363,18 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       );
       return false;
     }
-  }, [signer, subaccount, chainId, resetStoredApproval, resetStoredConfig, refreshSubaccountData]);
+  }, [
+    signer,
+    subaccount,
+    srcChainId,
+    calcSelector,
+    account,
+    chainId,
+    provider,
+    resetStoredApproval,
+    resetStoredConfig,
+    refreshSubaccountData,
+  ]);
 
   const state: SubaccountState = useMemo(() => {
     return {
@@ -340,6 +456,7 @@ function useStoredSubaccountData(chainId: number, account: string | undefined) {
             maxAllowedCount: BigInt(parsed.maxAllowedCount),
             expiresAt: BigInt(parsed.expiresAt),
             deadline: BigInt(parsed.deadline),
+            // TODO: what nonce is this?
             nonce: BigInt(parsed.nonce),
           };
         } catch (e) {

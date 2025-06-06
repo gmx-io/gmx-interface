@@ -21,6 +21,7 @@ import {
   AccountPositionsV1,
   usePositionsV1,
 } from "pages/Actions/ActionsV1/ActionsV1";
+import type { UiContractsChain } from "sdk/configs/chains";
 
 import { ClaimsHistory } from "components/Synthetics/Claims/ClaimsHistory";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
@@ -43,7 +44,7 @@ enum TabKeyV1 {
 }
 
 type Props = {
-  chainId: number;
+  chainId: UiContractsChain;
   account: Address;
 };
 
@@ -102,7 +103,7 @@ function useTabLabels(): Record<TabKey, React.ReactNode> {
 }
 
 function useTabLabelsV1(
-  chainId: number,
+  chainId: UiContractsChain,
   account: Address,
   signer: ethers.JsonRpcSigner | undefined,
   active: boolean

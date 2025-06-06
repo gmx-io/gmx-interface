@@ -10,8 +10,8 @@ import {
 } from "lib/oracleKeeperFetcher/types";
 import { sleep } from "lib/sleep";
 import { getAppVersion } from "lib/version";
-import { getWalletNames, WalletNames } from "lib/wallets/getWalletNames";
-import { parseError, ErrorLike } from "sdk/utils/errors";
+import { WalletNames, getWalletNames } from "lib/wallets/getWalletNames";
+import { ErrorLike, parseError } from "sdk/utils/errors";
 
 import {
   METRIC_COUNTER_DISPATCH_NAME,

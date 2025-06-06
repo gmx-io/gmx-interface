@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useAccount } from "wagmi";
 
 import { getContract } from "config/contracts";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -39,6 +40,10 @@ import { useShiftSubmitState } from "./useShiftSubmitState";
 import { useUpdateMarkets } from "./useUpdateMarkets";
 import { useUpdateTokens } from "./useUpdateTokens";
 import { GmFees } from "../../GmFees/GmFees";
+import {
+  SwitchToSettlementChainButtons,
+  needSwitchToSettlementChain,
+} from "../GmDepositWithdrawalBox/SwitchToSettlementChainButtons";
 import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
 import { Swap } from "../Swap";
 
@@ -61,6 +66,7 @@ export function GmShiftBox({
   const [focusedInput, setFocusedInput] = useState<"selectedMarket" | "toMarket" | undefined>(undefined);
 
   const chainId = useSelector(selectChainId);
+  const { chainId: walletChainId } = useAccount();
   const uiFeeFactor = useUiFeeFactor();
   const gasLimits = useSelector(selectGasLimits);
   const gasPrice = useSelector(selectGasPrice);
@@ -370,9 +376,13 @@ export function GmShiftBox({
           </div>
         )}
 
-        <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
-          {submitState.text}
-        </Button>
+        {needSwitchToSettlementChain(walletChainId) ? (
+          <SwitchToSettlementChainButtons />
+        ) : (
+          <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
+            {submitState.text}
+          </Button>
+        )}
       </form>
     </>
   );

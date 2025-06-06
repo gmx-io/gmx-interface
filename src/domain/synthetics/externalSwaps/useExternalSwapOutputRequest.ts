@@ -2,8 +2,9 @@ import { useMemo } from "react";
 import { usePrevious } from "react-use";
 import useSWR from "swr";
 
+import { useDebounce } from "lib/debounce/useDebounce";
 import { metrics, OpenOceanQuoteTiming } from "lib/metrics";
-import { useDebounce } from "lib/useDebounce";
+import { UiContractsChain } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/types/trade";
@@ -21,7 +22,7 @@ export function useExternalSwapOutputRequest({
   gasPrice,
   enabled = true,
 }: {
-  chainId: number;
+  chainId: UiContractsChain;
   tokenInAddress: string | undefined;
   tokenOutAddress: string | undefined;
   receiverAddress: string | undefined;

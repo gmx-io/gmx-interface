@@ -5,9 +5,13 @@ import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { isDevelopment } from "config/env";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { getIsExpressSupported } from "config/features";
+import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
+import { getChainName } from "config/static/chains";
 import { DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/twap";
+import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING } from "domain/multichain/config";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
 import { useEnabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
 import {
@@ -25,6 +29,7 @@ import { secondsToPeriod } from "sdk/utils/time";
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
+import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { ExpressTradingGasTokenSwitchedBanner } from "components/ExpressTradingGasTokenSwitchedBanner.ts/ExpressTradingGasTokenSwithedBanner";
 import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -45,7 +50,9 @@ export function SettingsModal({
   isSettingsVisible: boolean;
   setIsSettingsVisible: (value: boolean) => void;
 }) {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
+
+  const [settlementChainId, setSettlementChainId] = useGmxAccountSettlementChainId();
   const settings = useSettings();
   const { features } = useEnabledFeaturesRequest(chainId);
   const subaccountState = useSubaccountContext();
@@ -154,6 +161,11 @@ export function SettingsModal({
   }, [setIsSettingsVisible]);
 
   const handleExpressOrdersToggle = (enabled: boolean) => {
+    if (srcChainId) {
+      // eslint-disable-next-line no-console
+      console.error("Express trading can not be disabled for multichain");
+      return;
+    }
     settings.setExpressOrdersEnabled(enabled);
 
     if (!enabled && subaccountState.subaccount) {
@@ -241,26 +253,29 @@ export function SettingsModal({
           {getIsExpressSupported(chainId) && (
             <>
               <SettingsSection>
-                <ToggleSwitch
-                  disabled={
-                    !features?.relayRouterEnabled || (isOutOfGasPaymentBalance && !settings.expressOrdersEnabled)
-                  }
-                  isChecked={settings.expressOrdersEnabled}
-                  setIsChecked={handleExpressOrdersToggle}
-                >
-                  <TooltipWithPortal
-                    content={
-                      <Trans>
-                        Express Trading streamlines your trades on GMX by replacing on-chain transactions with secure
-                        off-chain message signing, helping reduce issues from network congestion and RPC errors.
-                        <br />
-                        <br />
-                        These signed messages are processed on-chain for you, so a gas payment token is still required.
-                      </Trans>
+                {!srcChainId && (
+                  <ToggleSwitch
+                    disabled={
+                      !features?.relayRouterEnabled || (isOutOfGasPaymentBalance && !settings.expressOrdersEnabled)
                     }
-                    handle={<Trans>Express Trading</Trans>}
-                  />
-                </ToggleSwitch>
+                    isChecked={settings.expressOrdersEnabled}
+                    setIsChecked={handleExpressOrdersToggle}
+                  >
+                    <TooltipWithPortal
+                      content={
+                        <Trans>
+                          Express Trading streamlines your trades on GMX by replacing on-chain transactions with secure
+                          off-chain message signing, helping reduce issues from network congestion and RPC errors.
+                          <br />
+                          <br />
+                          These signed messages are processed on-chain for you, so a gas payment token is still
+                          required.
+                        </Trans>
+                      }
+                      handle={<Trans>Express Trading</Trans>}
+                    />
+                  </ToggleSwitch>
+                )}
 
                 <ToggleSwitch
                   isChecked={Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount))}
@@ -307,9 +322,49 @@ export function SettingsModal({
                     <Trans>Gas Payment Token</Trans>
                   </div>
                   <GasPaymentTokenSelector
-                    curentTokenAddress={settings.gasPaymentTokenAddress}
+                    currentTokenAddress={settings.gasPaymentTokenAddress}
                     onSelectToken={settings.setGasPaymentTokenAddress}
                   />
+                </SettingsSection>
+              )}
+
+              {srcChainId && (
+                <SettingsSection className="mt-2">
+                  <div className="flex items-center justify-between">
+                    <TooltipWithPortal
+                      content={<Trans>Network for Cross-Chain Deposits and positions.</Trans>}
+                      handle={<Trans>Settlement Chain</Trans>}
+                    />
+                    <div>
+                      <DropdownSelector
+                        slim
+                        elevated
+                        value={settlementChainId}
+                        onChange={setSettlementChainId}
+                        options={MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[srcChainId]}
+                        item={({ option }) => (
+                          <div className="flex items-center gap-8">
+                            <img
+                              src={CHAIN_ID_TO_NETWORK_ICON[option]}
+                              alt={getChainName(option)}
+                              className="size-16"
+                            />
+                            <span>{getChainName(option)}</span>
+                          </div>
+                        )}
+                        button={
+                          <div className="flex items-center gap-4">
+                            <img
+                              src={CHAIN_ID_TO_NETWORK_ICON[settlementChainId]}
+                              alt={getChainName(settlementChainId)}
+                              className="size-16"
+                            />
+                            <span>{getChainName(settlementChainId)}</span>
+                          </div>
+                        }
+                      />
+                    </div>
+                  </div>
                 </SettingsSection>
               )}
             </>

@@ -63,6 +63,7 @@ import {
   selectUiFeeFactor,
   selectUserReferralInfo,
 } from "../globalSelectors";
+import { selectSourceChainId } from "../multichainSelectors";
 import { selectIsLeverageSliderEnabled, selectIsPnlInLeverage } from "../settingsSelectors";
 import { selectSelectedMarketVisualMultiplier } from "../shared/marketSelectors";
 import {
@@ -78,6 +79,7 @@ import { selectTradeboxGetMaxLongShortLiquidityPool } from "./selectTradeboxGetM
 export * from "./selectTradeboxAvailableAndDisabledTokensForCollateral";
 export * from "./selectTradeboxAvailableMarketsOptions";
 export * from "./selectTradeboxGetMaxLongShortLiquidityPool";
+export * from "./selectTradeboxRelatedMarketsStats";
 
 export const selectExternalSwapInputs = createSelector((q) => {
   const tradeMode = q(selectTradeboxTradeMode);
@@ -266,8 +268,6 @@ export const selectExternalSwapInputsByLeverageSize = createSelector((q) => {
     userReferralInfo,
   });
 });
-
-export * from "./selectTradeboxRelatedMarketsStats";
 
 const selectOnlyOnTradeboxPage = <T>(s: SyntheticsState, selection: T) =>
   s.pageType === "trade" ? selection : undefined;
@@ -1291,6 +1291,12 @@ export const selectTradeboxPayTokenAllowance = createSelector((q) => {
 });
 
 export const selectNeedTradeboxPayTokenApproval = createSelector((q) => {
+  const srcChainId = q(selectSourceChainId);
+
+  if (srcChainId) {
+    return false;
+  }
+
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const payAmount = q(selectTradeboxPayAmount);
   const tokensAllowance = q(selectTradeboxTokensAllowance);

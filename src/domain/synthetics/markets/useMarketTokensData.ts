@@ -5,7 +5,7 @@ import { MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } f
 import { getTokenBySymbol } from "sdk/configs/tokens";
 // Warning: do not import through reexport, it will break jest
 import { USD_DECIMALS } from "config/factors";
-import { useSyntheticsStateSelector as useSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
 import { ContractCallsConfig, useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
@@ -23,13 +23,14 @@ import {
 import { useMemo } from "react";
 import { isGlvEnabled } from "./glv";
 import { GlvInfoData } from "./types";
+import type { UiContractsChain } from "sdk/configs/chains";
 
 type MarketTokensDataResult = {
   marketTokensData?: TokensData;
 };
 
 export function useMarketTokensDataRequest(
-  chainId: number,
+  chainId: UiContractsChain,
   p: {
     isDeposit: boolean;
     account?: string;
@@ -184,7 +185,7 @@ export function useMarketTokensDataRequest(
 }
 
 export function useMarketTokensData(
-  chainId: number,
+  chainId: UiContractsChain,
   p: { isDeposit: boolean; withGlv?: boolean; glvData?: GlvInfoData }
 ): MarketTokensDataResult {
   const { isDeposit } = p;

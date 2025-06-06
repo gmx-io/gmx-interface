@@ -1,7 +1,7 @@
 import { TaskState } from "@gelatonetwork/relay-sdk";
 import { Address, encodePacked } from "viem";
 
-import { ARBITRUM, AVALANCHE } from "config/chains";
+import { ARBITRUM, AVALANCHE, UiContractsChain } from "config/chains";
 import { GelatoPollingTiming, metrics } from "lib/metrics";
 import { sleep } from "lib/sleep";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
@@ -21,7 +21,7 @@ export type ExpressTxnResult = {
 };
 
 export async function sendExpressTransaction(p: {
-  chainId: number;
+  chainId: UiContractsChain;
   txnData: ExpressTxnData;
   isSponsoredCall: boolean;
 }) {
@@ -32,7 +32,7 @@ export async function sendExpressTransaction(p: {
 
   let gelatoPromise: Promise<{ taskId: string }> | undefined;
 
-  const apiKey = apiKeys[p.chainId];
+  const apiKey = GELATO_API_KEYS[p.chainId];
 
   gelatoPromise = sendTxnToGelato({
     chainId: p.chainId,
@@ -90,7 +90,7 @@ function makeExpressTxnResultWaiter(res: { taskId: string }) {
 
 const GELATO_API = "https://api.gelato.digital";
 
-const apiKeys = {
+export const GELATO_API_KEYS: Partial<Record<UiContractsChain, string>> = {
   [ARBITRUM]: "6dE6kOa9pc1ap4dQQC2iaK9i6nBFp8eYxQlm00VreWc_",
   [AVALANCHE]: "FalsQh9loL6V0rwPy4gWgnQPR6uTHfWjSVT2qlTzUq4_",
 };
@@ -108,7 +108,7 @@ export async function sendTxnToGelato({
   target: string;
   data: string;
   feeToken: string;
-  sponsorApiKey: string;
+  sponsorApiKey: string | undefined;
   retries: number;
   isSponsoredCall: boolean;
 }) {

@@ -4,16 +4,27 @@ import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequ
 import { useChainId } from "lib/chains";
 import { getGasPaymentTokens } from "sdk/configs/express";
 
+import { useGmxAccountTokensDataRequest } from "components/Synthetics/GmxAccountModal/hooks";
+
 import { GasPaymentTokenOption } from "./GasPaymentTokenOptionCard";
 
 type Props = {
-  curentTokenAddress: string;
+  currentTokenAddress: string | undefined;
   onSelectToken: (address: string) => void;
 };
 
-export function GasPaymentTokenSelector({ curentTokenAddress, onSelectToken }: Props) {
-  const { chainId } = useChainId();
-  const { tokensData } = useTokensDataRequest(chainId);
+export function GasPaymentTokenSelector({ currentTokenAddress, onSelectToken }: Props) {
+  const { chainId, srcChainId } = useChainId();
+  // TODO: pick from synthetic state
+  const { tokensData: settlementChainTokensData } = useTokensDataRequest(chainId);
+  const { tokensData: gmxAccountTokensData } = useGmxAccountTokensDataRequest(chainId);
+
+  let tokensData = settlementChainTokensData;
+
+  if (srcChainId) {
+    tokensData = gmxAccountTokensData;
+  }
+
   const gasPaymentTokens = getGasPaymentTokens(chainId);
 
   const onSelectFactory = useCallback(
@@ -31,7 +42,7 @@ export function GasPaymentTokenSelector({ curentTokenAddress, onSelectToken }: P
             tokensData={tokensData}
             key={tokenAddress}
             tokenAddress={tokenAddress}
-            isSelected={curentTokenAddress === tokenAddress}
+            isSelected={currentTokenAddress === tokenAddress}
             onSelect={onSelectFactory(tokenAddress)}
           />
         ))}
