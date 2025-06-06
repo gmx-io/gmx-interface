@@ -444,6 +444,10 @@ msgstr "Funding Claimed"
 msgid "Referral code added!"
 msgstr "Referral code added!"
 
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+msgid "Available to Trade"
+msgstr "Available to Trade"
+
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "SELLABLE"
 msgstr "SELLABLE"
@@ -8187,7 +8191,6 @@ msgstr "Stabilize Protocol"
 msgid "Enter a valid coin names"
 msgstr "Enter a valid coin names"
 
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "All assets"
 msgstr "All assets"

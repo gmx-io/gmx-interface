@@ -444,6 +444,10 @@ msgstr ""
 msgid "Referral code added!"
 msgstr "紹介コードが追加されました!"
 
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+msgid "Available to Trade"
+msgstr ""
+
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "SELLABLE"
 msgstr ""
@@ -8181,7 +8185,6 @@ msgstr ""
 msgid "Enter a valid coin names"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "All assets"
 msgstr ""
