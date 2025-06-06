@@ -133,9 +133,9 @@ export function AppRoutes() {
             <HomeRoutes showRedirectModal={showRedirectModal} />
           </div>
         ) : (
-          <div className="h-full w-full flex gap-8 p-8 max-[1100px]:pb-52">
+          <div className="h-full w-full flex gap-8 p-8 pr-0 max-[1100px]:pb-52">
             <SideNav />
-            <div className="flex h-full grow flex-col overflow-y-auto">
+            <div className="flex h-full grow flex-col pr-8 overflow-y-auto">
               <MainRoutes openSettings={openSettings} />
             </div>
           </div>

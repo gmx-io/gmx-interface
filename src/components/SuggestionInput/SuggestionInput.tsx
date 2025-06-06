@@ -16,6 +16,7 @@ type Props = {
   onBlur?: () => void;
   onKeyDown?: (e: KeyboardEvent) => void;
   className?: string;
+  label?: React.ReactNode;
 };
 
 export default function SuggestionInput({
@@ -29,6 +30,7 @@ export default function SuggestionInput({
   onBlur,
   onKeyDown,
   className,
+  label,
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isPanelVisible, setIsPanelVisible] = useState(false);
@@ -76,9 +78,10 @@ export default function SuggestionInput({
   return (
     <div className="Suggestion-input-wrapper">
       <div
-        className={cx("Suggestion-input flex items-baseline", className, { "input-error": isError })}
+        className={cx("Suggestion-input flex items-baseline", className, { "input-error": isError, "pr-6": !symbol })}
         onClick={() => inputRef.current?.focus()}
       >
+        {label ? <span className="text-slate-100 pl-7 pr-7">{label}</span> : null}
         <NumberInput
           inputRef={inputRef}
           className={cx(inputClassName, "min-w-0 text-right outline-none")}
@@ -89,9 +92,11 @@ export default function SuggestionInput({
           onValueChange={handleChange}
           onKeyDown={handleKeyDown}
         />
-        <label className="text-slate-100">
-          <span>{symbol}</span>
-        </label>
+        {symbol && (
+          <div className="pr-7 text-slate-100">
+            <span>{symbol}</span>
+          </div>
+        )}
       </div>
       {suggestionList && isPanelVisible && (
         <ul className="Suggestion-list">

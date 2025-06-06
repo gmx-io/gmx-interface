@@ -1,6 +1,5 @@
-import cx from "classnames";
 import { useCallback, useMemo, useRef } from "react";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa6";
 import { useMedia } from "react-use";
 
 import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -11,7 +10,6 @@ import { TokenData } from "domain/synthetics/tokens";
 import { formatUsd, formatUsdPrice } from "lib/numbers";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
-import NumberInput from "components/NumberInput/NumberInput";
 import { NUMBER_WITH_TWO_DECIMALS } from "components/PercentageInput/PercentageInput";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -77,15 +75,15 @@ function SideOrderEntry({
     ) : null;
 
   const onPriceValueChange = useCallback(
-    (e) => {
-      updateEntry(entry.id, "price", e.target.value);
+    (value) => {
+      updateEntry(entry.id, "price", value);
     },
     [updateEntry, entry.id]
   );
 
   const onSizeUsdValueChange = useCallback(
-    (e) => {
-      updateEntry(entry.id, "sizeUsd", e.target.value);
+    (value) => {
+      updateEntry(entry.id, "sizeUsd", value);
     },
     [updateEntry, entry.id]
   );
@@ -103,13 +101,6 @@ function SideOrderEntry({
 
   const isSmallMobile = useMedia("(max-width: 375px)");
 
-  const handleIgnoreEnterKey = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  }, []);
-
   return (
     <div className="flex flex-row gap-4" key={entry.id}>
       <TooltipWithPortal
@@ -119,28 +110,14 @@ function SideOrderEntry({
         position="top-end"
         disableHandleStyle
       >
-        <div
-          className={cx("group relative rounded-4 border border-solid bg-cold-blue-900 pl-5 leading-1 ", {
-            "border-red-500": !!priceError,
-            "border-stroke-primary": !priceError,
-            "focus-within:border-cold-blue-500": !priceError,
-            "hover:border-cold-blue-700": !priceError,
-            "hover:focus-within:border-cold-blue-500": !priceError,
-          })}
-        >
-          <span className="cursor-pointer text-slate-100">$</span>
-
-          <NumberInput
-            value={entry.price.input}
-            onValueChange={onPriceValueChange}
-            onKeyDown={handleIgnoreEnterKey}
-            placeholder="Price"
-            className={cx("SideOrderInput text-body-medium rounded-4 py-2 pr-5 text-right", {
-              "max-w-60": isSmallMobile,
-              "max-w-90": !isSmallMobile,
-            })}
-          />
-        </div>
+        <SuggestionInput
+          label="$"
+          isError={!!priceError}
+          className="w-88"
+          value={entry.price.input}
+          setValue={onPriceValueChange}
+          placeholder="Price"
+        />
       </TooltipWithPortal>
       {displayMode === "percentage" && (
         <div className="group relative">
@@ -156,39 +133,30 @@ function SideOrderEntry({
               className="w-64"
               value={entry.percentage?.input ?? ""}
               setValue={onPercentageSetValue}
-              placeholder="Size"
               suggestionList={SUGGESTION_PERCENTAGE_LIST}
+              placeholder="Size"
               symbol="%"
             />
           </TooltipWithPortal>
         </div>
       )}
       {displayMode === "sizeUsd" && (
-        <div
-          className={cx("group relative rounded-4 border border-solid bg-cold-blue-900 pl-5 leading-1 ", {
-            "border-red-500": !!sizeError,
-            "border-stroke-primary": !sizeError,
-            "focus-within:border-cold-blue-500": !sizeError,
-            "hover:border-cold-blue-700": !sizeError,
-            "hover:focus-within:border-cold-blue-500": !sizeError,
-          })}
+        <TooltipWithPortal
+          disabled={!sizeTooltipMsg}
+          content={sizeTooltipMsg}
+          tooltipClassName="!min-w-[25rem]"
+          position="top-end"
+          disableHandleStyle
         >
-          <span className="cursor-pointer text-slate-100">$</span>
-          <TooltipWithPortal
-            disabled={!sizeTooltipMsg}
-            content={sizeTooltipMsg}
-            tooltipClassName="!min-w-[25rem]"
-            position="top-end"
-            disableHandleStyle
-          >
-            <NumberInput
-              value={entry.sizeUsd.input ?? ""}
-              onValueChange={onSizeUsdValueChange}
-              placeholder="Size"
-              className="w-81 rounded-4 py-2 pr-5 text-right text-14"
-            />
-          </TooltipWithPortal>
-        </div>
+          <SuggestionInput
+            isError={!!sizeError}
+            className="w-81"
+            value={entry.sizeUsd.input ?? ""}
+            setValue={onSizeUsdValueChange}
+            placeholder="Size"
+            label="$"
+          />
+        </TooltipWithPortal>
       )}
 
       <EntryButton

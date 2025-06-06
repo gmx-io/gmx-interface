@@ -864,7 +864,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         </div>
       </div>
       <form onSubmit={handleFormSubmit} ref={formRef} className="text-body-medium flex grow flex-col">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-4">
           {(isSwap || isIncrease) && renderTokenInputs()}
           {isTrigger && renderDecreaseSizeInput()}
           {isSwap && isLimit && renderTriggerRatioInput()}
@@ -978,7 +978,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         )}
         <div className="flex flex-col gap-14 pt-14">
           <div>{button}</div>
-          <div className="h-1 bg-stroke-primary" />
+          <div className="h-[0.5px] bg-stroke-primary" />
           {isSwap && !isTwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
           {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
             <SyntheticsInfoRow

@@ -841,8 +841,6 @@ msgstr "通过简单的互换界面开立头寸。方便地从任何币值换成
 msgid "Incentives Distribution History"
 msgstr ""
 
-#: src/components/BuyInputSection/BuyInputSection.tsx
-#: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/InputSection/InputSection.jsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "MAX"
@@ -2005,6 +2003,7 @@ msgstr "费用决于你出售GLP的资产可能有所不同。<0/>在订单中�
 msgid "{txnTypeText} {0} order for"
 msgstr ""
 
+#: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx

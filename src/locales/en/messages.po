@@ -841,8 +841,6 @@ msgstr "Open positions through a simple swap interface. Conveniently swap from a
 msgid "Incentives Distribution History"
 msgstr "Incentives Distribution History"
 
-#: src/components/BuyInputSection/BuyInputSection.tsx
-#: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/InputSection/InputSection.jsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "MAX"
@@ -2005,6 +2003,7 @@ msgstr "Fees may vary depending on which asset you sell GLP for. <0/>Enter the a
 msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} {0} order for"
 
+#: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx

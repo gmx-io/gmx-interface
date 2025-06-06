@@ -841,8 +841,6 @@ msgstr "Abre posiciones a través de una simple interfaz de intercambio. Interca
 msgid "Incentives Distribution History"
 msgstr ""
 
-#: src/components/BuyInputSection/BuyInputSection.tsx
-#: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/InputSection/InputSection.jsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "MAX"
@@ -2005,6 +2003,7 @@ msgstr "Las comisiones pueden variar dependiendo del activo por el que vendas GL
 msgid "{txnTypeText} {0} order for"
 msgstr ""
 
+#: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx

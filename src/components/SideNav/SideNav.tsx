@@ -90,7 +90,7 @@ function NavItem({ icon, label, isActive = false, isCollapsed = false, onClick, 
       onClick={onClick}
     >
       <div className="flex h-24 w-24 shrink-0 items-center justify-center">{icon}</div>
-      {!isCollapsed ? <span className="text-body-medium font-medium tracking-[-1.2%]">{label}</span> : null}
+      <span className={cx("text-body-medium font-medium tracking-[-1.2%]", { "hidden": isCollapsed })}>{label}</span>
     </button>
   );
 

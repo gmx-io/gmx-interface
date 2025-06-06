@@ -6,6 +6,7 @@ import { useMedia } from "react-use";
 
 import { usePrevious } from "lib/usePrevious";
 
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { SyntheticsInfoRow } from "./SyntheticsInfoRow";
@@ -60,6 +61,7 @@ interface Props {
   className?: string;
   contentClassName?: string;
   scrollIntoViewOnMobile?: boolean;
+  withToggleSwitch?: boolean;
 }
 
 export function ExpandableRow({
@@ -74,6 +76,7 @@ export function ExpandableRow({
   className,
   contentClassName,
   scrollIntoViewOnMobile = false,
+  withToggleSwitch = false,
 }: Props) {
   const previousHasError = usePrevious(hasError);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -120,10 +123,14 @@ export function ExpandableRow({
           <span className="flex flex-row justify-between align-middle group-gmx-hover:text-blue-300">{label}</span>
         }
         value={
-          open ? (
-            <BiChevronUp className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-gmx-hover:text-blue-300" />
+          withToggleSwitch ? (
+            <ToggleSwitch isChecked={open} setIsChecked={onToggle} disabled={disabled} />
           ) : (
-            <BiChevronDown className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-gmx-hover:text-blue-300" />
+            open ? (
+              <BiChevronUp className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-gmx-hover:text-blue-300" />
+            ) : (
+              <BiChevronDown className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-gmx-hover:text-blue-300" />
+            )
           )
         }
       />
