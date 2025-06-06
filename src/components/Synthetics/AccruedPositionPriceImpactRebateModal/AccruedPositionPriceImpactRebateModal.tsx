@@ -124,7 +124,11 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
         const tokenData = getTokenData(tokensData, rebateItem.tokenAddress);
         if (!tokenData) return null;
         return (
-          <div key={rebateItem.id}>{formatTokenAmount(rebateItem.value, tokenData?.decimals, tokenData?.symbol)}</div>
+          <div key={rebateItem.id}>
+            {formatTokenAmount(rebateItem.value, tokenData?.decimals, tokenData?.symbol, {
+              isStable: tokenData.isStable,
+            })}
+          </div>
         );
       }),
     [reducedByTokenItems, tokensData]

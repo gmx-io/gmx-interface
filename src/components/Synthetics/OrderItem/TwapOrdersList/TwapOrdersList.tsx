@@ -73,7 +73,9 @@ function TwapOrderItem({
   if (isSwapOrderType(order.orderType)) {
     const fromTokenText = formatBalanceAmount(
       order.initialCollateralDeltaAmount,
-      order.initialCollateralToken.decimals
+      order.initialCollateralToken.decimals,
+      undefined,
+      { isStable: order.initialCollateralToken.isStable }
     );
     const fromTokenIcon = <TokenIcon symbol={order.initialCollateralToken.symbol} displaySize={18} importSize={24} />;
     const toTokenIcon = <TokenIcon symbol={order.targetCollateralToken.symbol} displaySize={18} importSize={24} />;

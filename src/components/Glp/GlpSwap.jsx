@@ -1078,7 +1078,9 @@ export default function GlpSwap(props) {
                   <BuyInputSection
                     topLeftLabel={payLabel}
                     bottomRightLabel={t`Balance`}
-                    bottomRightValue={formatBalanceAmount(swapTokenBalance, swapToken.decimals)}
+                    bottomRightValue={formatBalanceAmount(swapTokenBalance, swapToken.decimals, undefined, {
+                      isStable: swapToken.isStable,
+                    })}
                     inputValue={swapValue}
                     onInputValueChange={onSwapValueChange}
                     showMaxButton={
@@ -1492,6 +1494,7 @@ export default function GlpSwap(props) {
                       decimals={tokenInfo.decimals}
                       symbol={tokenInfo.symbol}
                       usd={balanceUsd}
+                      isStable={token.isStable}
                     />
                   </td>
                   <td>{renderFees()}</td>
@@ -1669,6 +1672,7 @@ export default function GlpSwap(props) {
                         decimals={tokenInfo?.decimals ?? 0}
                         symbol={tokenInfo?.symbol}
                         usd={balanceUsd}
+                        isStable={token.isStable}
                       />
                     </div>
                   </div>

@@ -27,9 +27,12 @@ export function MinReceiveRow({ allowedSlippage }: { allowedSlippage: number }) 
         ? formatBalanceAmount(
             applySlippageToMinOut(allowedSlippage, swapAmounts.minOutputAmount),
             toToken.decimals,
-            toToken.symbol
+            toToken.symbol,
+            { isStable: toToken.isStable }
           )
-        : formatBalanceAmount(swapAmounts.minOutputAmount, toToken.decimals, toToken.symbol)}
+        : formatBalanceAmount(swapAmounts.minOutputAmount, toToken.decimals, toToken.symbol, {
+            isStable: toToken.isStable,
+          })}
     </SyntheticsInfoRow>
   );
 }

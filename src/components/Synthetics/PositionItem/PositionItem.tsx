@@ -186,6 +186,7 @@ export function PositionItem(p: Props) {
                       decimals={p.position.collateralToken.decimals}
                       symbol={p.position.collateralToken.symbol}
                       usd={p.position.collateralUsd}
+                      isStable={p.position.collateralToken.isStable}
                     />
                   }
                   showDollar={false}
@@ -254,7 +255,8 @@ export function PositionItem(p: Props) {
           {formatBalanceAmount(
             p.position.remainingCollateralAmount,
             p.position.collateralToken.decimals,
-            p.position.collateralToken.symbol
+            p.position.collateralToken.symbol,
+            { isStable: p.position.collateralToken.isStable }
           )}
           )
         </div>

@@ -119,6 +119,7 @@ function SizeTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) {
                       decimals={market.longToken.decimals}
                       symbol={market.longToken.symbol}
                       usd={longTokenAmountUsd}
+                      isStable={market.longToken.isStable}
                     />
                   </div>
                 )}
@@ -129,6 +130,7 @@ function SizeTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) {
                       decimals={market.shortToken.decimals}
                       symbol={market.shortToken.symbol}
                       usd={shortTokenAmountUsd}
+                      isStable={market.shortToken.isStable}
                     />
                   </div>
                 )}

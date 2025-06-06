@@ -147,7 +147,9 @@ const RebateGroupRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) => {
           {rebateGroup.factor > 0 ? `${formatAmount(rebateGroup.factor, 28, 2)}%` : "-"}{" "}
         </div>
         <div className="PriceImpactRebatesStatsPage-cell-usd">
-          {formatTokenAmountWithUsd(total, usd, rebateGroup.tokenData?.symbol, rebateGroup.tokenData?.decimals)}
+          {formatTokenAmountWithUsd(total, usd, rebateGroup.tokenData?.symbol, rebateGroup.tokenData?.decimals, {
+            isStable: rebateGroup.tokenData?.isStable,
+          })}
         </div>
         <div className="PriceImpactRebatesStatsPage-cell-actions">
           <button className="SubaccountModal-mini-button" onClick={handleCopyCommandClick}>
@@ -200,7 +202,8 @@ const RebateAccountsRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) =
                 rebateItem.value,
                 usd,
                 rebateItem.tokenData?.symbol,
-                rebateItem.tokenData?.decimals
+                rebateItem.tokenData?.decimals,
+                { isStable: rebateItem.tokenData?.isStable }
               )}
             </div>
             <div className="PriceImpactRebatesStatsPage-cell-actions"></div>
