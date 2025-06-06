@@ -83,15 +83,19 @@ export function useAvailableToTradeAssetSettlementChain(): {
   totalUsd: bigint | undefined;
   gmxAccountUsd: bigint | undefined;
   walletUsd: bigint | undefined;
+
+  isGmxAccountLoading: boolean;
+  isWalletLoading: boolean;
 } {
   const { chainId } = useChainId();
-  const gmxAccountTokensData = useGmxAccountTokensDataObject();
-  const { tokensData } = useTokensDataRequest(chainId);
+  const { tokensData: gmxAccountTokensData, isBalancesLoaded: isGmxAccountBalancesLoaded } =
+    useGmxAccountTokensDataRequest(chainId);
+  const { tokensData, isBalancesLoaded } = useTokensDataRequest(chainId);
 
   let gmxAccountUsd = 0n;
   let isGmxAccountUsdEmpty = true;
 
-  for (const token of Object.values(gmxAccountTokensData)) {
+  for (const token of Object.values(gmxAccountTokensData || {})) {
     if (token.balance === undefined) {
       continue;
     }
@@ -117,6 +121,9 @@ export function useAvailableToTradeAssetSettlementChain(): {
     totalUsd: isGmxAccountUsdEmpty || isWalletUsdEmpty ? undefined : totalUsd,
     gmxAccountUsd: isGmxAccountUsdEmpty ? undefined : gmxAccountUsd,
     walletUsd: isWalletUsdEmpty ? undefined : walletUsd,
+
+    isGmxAccountLoading: !isGmxAccountBalancesLoaded,
+    isWalletLoading: !isBalancesLoaded,
   };
 }
 

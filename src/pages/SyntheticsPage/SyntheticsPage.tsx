@@ -416,7 +416,7 @@ function useOrdersControl() {
 
   const onCancelSelectedOrders = useCallback(
     async function cancelSelectedOrders() {
-      if (!signer) return;
+      if (!signer || !provider) return;
       const orders = selectedOrderKeys.map((key) => getByKey(ordersInfoData, key)).filter(defined) as OrderInfo[];
       const orderKeys = orders.flatMap(getOrderKeys);
       setCanellingOrdersKeys((p) => uniq(p.concat(orderKeys)));
@@ -471,7 +471,7 @@ function useOrdersControl() {
 
   const onCancelOrder = useCallback(
     async function cancelOrder(key: string) {
-      if (!signer) return;
+      if (!signer || !provider) return;
       const order = getByKey(ordersInfoData, key);
       if (!order) return;
 

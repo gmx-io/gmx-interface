@@ -53,7 +53,7 @@ export async function sendBatchOrderTxn({
 }: {
   chainId: UiContractsChain;
   signer: WalletSigner;
-  provider: Provider | undefined;
+  provider: Provider;
   batchParams: BatchOrderTxnParams;
   expressParams: ExpressTxnParams | undefined;
   noncesData?: NoncesData;

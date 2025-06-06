@@ -175,7 +175,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   );
 
   const onSubmit = useCallback(() => {
-    if (!account || !signer?.provider || !chainId || !batchParams) {
+    if (!account || !signer?.provider || !chainId || !batchParams || !provider) {
       return;
     }
 

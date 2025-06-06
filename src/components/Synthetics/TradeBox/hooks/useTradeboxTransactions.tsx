@@ -279,7 +279,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
     sendOrderSubmittedMetric(metricData.metricId);
 
-    if (!primaryCreateOrderParams || !signer || !tokensData || !account || !marketsInfoData) {
+    if (!primaryCreateOrderParams || !signer || !provider || !tokensData || !account || !marketsInfoData) {
       helperToast.error(t`Error submitting order`);
       sendTxnValidationErrorMetric(metricData.metricId);
       return Promise.reject();

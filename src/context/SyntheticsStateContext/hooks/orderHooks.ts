@@ -46,7 +46,7 @@ export function useCancelOrder(order: OrderInfo) {
 
   const onCancelOrder = useCallback(
     async function cancelOrder() {
-      if (!signer) return;
+      if (!signer || !provider) return;
 
       setCancellingOrdersKeys((p) => uniq(p.concat(order.key)));
 

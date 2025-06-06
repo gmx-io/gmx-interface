@@ -80,7 +80,7 @@ export async function estimateBatchExpressParams({
 }: {
   chainId: UiContractsChain;
   signer: WalletSigner;
-  provider: Provider | undefined;
+  provider: Provider;
   batchParams: BatchOrderTxnParams;
   globalExpressParams: GlobalExpressParams | undefined;
   estimationMethod: ExpressParamsEstimationMethod;
@@ -119,7 +119,7 @@ export async function estimateBatchExpressParams({
   return expressParams;
 }
 
-export function getBatchExpressEstimatorParams({
+function getBatchExpressEstimatorParams({
   signer,
   provider,
   batchParams,
@@ -129,7 +129,7 @@ export function getBatchExpressEstimatorParams({
   tokensData,
 }: {
   signer: WalletSigner;
-  provider: Provider | undefined;
+  provider: Provider;
   batchParams: BatchOrderTxnParams;
   gasLimits: GasLimitsConfig;
   gasPaymentToken: TokenData;
@@ -198,7 +198,7 @@ export async function estimateExpressParams({
 }: {
   chainId: UiContractsChain;
   srcChainId: UiSourceChain | undefined;
-  provider: Provider | undefined;
+  provider: Provider;
   globalExpressParams: GlobalExpressParams;
   transactionParams: ExpressTransactionEstimatorParams;
   estimationMethod: "approximate" | "estimateGas";
@@ -505,7 +505,7 @@ export async function buildAndSignExpressBatchOrderTxn({
   noncesData: NoncesData | undefined;
   subaccount: Subaccount | undefined;
   emptySignature?: boolean;
-  provider: Provider | undefined;
+  provider: Provider;
 }): Promise<ExpressTxnData> {
   const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
   const messageSigner = subaccount ? subaccount!.signer : signer;

@@ -426,7 +426,7 @@ export function useArbitraryRelayParamsAndPayload(
           srcChainId,
           estimationMethod: "estimateGas",
           globalExpressParams: p.globalExpressParams,
-          provider,
+          provider: p.provider,
           requireValidations: true,
           transactionParams: {
             account: p.account,

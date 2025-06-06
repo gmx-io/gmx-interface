@@ -449,7 +449,7 @@ export function OrderEditor(p: Props) {
   }
 
   async function onSubmit() {
-    if (!batchParams || !signer || !tokensData || !marketsInfoData) {
+    if (!batchParams || !signer || !tokensData || !marketsInfoData || !provider) {
       return;
     }
 

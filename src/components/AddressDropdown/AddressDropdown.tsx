@@ -11,7 +11,7 @@ import { formatUsd } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 
 import { Avatar } from "components/Avatar/Avatar";
-import { getTotalUsdFromTokensData, useGmxAccountTokensDataRequest } from "components/Synthetics/GmxAccountModal/hooks";
+import { useAvailableToTradeAssetSettlementChain } from "components/Synthetics/GmxAccountModal/hooks";
 
 type Props = {
   account: string;
@@ -19,20 +19,11 @@ type Props = {
 
 const useBreakpoint = createBreakpoint({ L: 450, S: 0 }) as () => "L" | "S";
 
-function useGmxAccountUsd() {
-  const { chainId } = useChainId();
-  const { tokensData: tokensData, isBalancesLoaded } = useGmxAccountTokensDataRequest(chainId);
-
-  const gmxAccountUsd = tokensData ? getTotalUsdFromTokensData(tokensData) : undefined;
-
-  return { gmxAccountUsd, isLoading: !isBalancesLoaded };
-}
-
 function AddressDropdown({ account }: Props) {
   const { srcChainId } = useChainId();
   const { ensName } = useENS(account);
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
-  const { gmxAccountUsd, isLoading } = useGmxAccountUsd();
+  const { totalUsd, gmxAccountUsd, isGmxAccountLoading } = useAvailableToTradeAssetSettlementChain();
 
   const breakpoint = useBreakpoint();
   const isSmallScreen = breakpoint === "S";
@@ -47,8 +38,8 @@ function AddressDropdown({ account }: Props) {
     setGmxAccountModalOpen("deposit");
   }, [setGmxAccountModalOpen]);
 
-  const showSideButton = srcChainId !== undefined;
-  const showDepositButton = !isLoading && gmxAccountUsd === 0n && srcChainId !== undefined;
+  const showSideButton = srcChainId !== undefined || (gmxAccountUsd !== undefined && gmxAccountUsd > 0n);
+  const showDepositButton = !isGmxAccountLoading && gmxAccountUsd === 0n && srcChainId !== undefined;
 
   return (
     <div className="flex">
@@ -79,10 +70,10 @@ function AddressDropdown({ account }: Props) {
           <div className="relative -top-1">
             {showDepositButton ? (
               <Trans>Deposit</Trans>
-            ) : isLoading ? (
+            ) : isGmxAccountLoading ? (
               <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={55} height={16} />
             ) : (
-              formatUsd(gmxAccountUsd)
+              formatUsd(srcChainId ? gmxAccountUsd : totalUsd)
             )}
           </div>
         </button>

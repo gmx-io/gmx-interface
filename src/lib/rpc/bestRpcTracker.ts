@@ -33,7 +33,7 @@ const DISABLE_UNUSED_TRACKING_TIMEOUT = 1 * 60 * 1000; // 1 minute / Pause probi
 const BLOCK_FROM_FUTURE_THRESHOLD = 1000; // Omit RPC if block number is higher than average on this value
 const BLOCK_LAGGING_THRESHOLD = 50; // Omit RPC if block number is lower than highest valid on this value
 
-const RPC_TRACKER_UPDATE_EVENT = "rpc-tracker-update-event";
+export const RPC_TRACKER_UPDATE_EVENT = "rpc-tracker-update-event";
 
 // DataStore field used for probing
 const PROBE_SAMPLE_FIELD = "minCollateralFactor";
@@ -408,7 +408,7 @@ function initTrackerState() {
   }, {} as RpcTrackerState);
 }
 
-export function getCurrentRpcUrls(chainId: number) {
+export function getCurrentRpcUrls(chainId: number): { primary: string; secondary: string } {
   if (!RPC_PROVIDERS[chainId]?.length) {
     throw new Error(`No RPC providers found for chainId: ${chainId}`);
   }

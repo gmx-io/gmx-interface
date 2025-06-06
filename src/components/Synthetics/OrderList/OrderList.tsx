@@ -145,7 +145,7 @@ export function OrderList({
   }
 
   async function onCancelOrder(order: OrderInfo) {
-    if (!signer) return;
+    if (!signer || !provider) return;
 
     const orderKeys = isTwapOrder(order) ? order.orders.map((o) => o.key) : [order.key];
     setCancellingOrdersKeys((prev) => [...prev, ...orderKeys]);

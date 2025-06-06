@@ -485,7 +485,7 @@ export function usePositionEditorButtonState(operation: Operation): {
 
     sendOrderSubmittedMetric(metricData.metricId);
 
-    if (!batchParams || !tokensData || !signer) {
+    if (!batchParams || !tokensData || !signer || !provider) {
       helperToast.error(t`Error submitting order`);
       sendTxnValidationErrorMetric(metricData.metricId);
       return;

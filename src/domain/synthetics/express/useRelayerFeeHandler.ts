@@ -84,7 +84,7 @@ export function useExpressOrdersParams({
     },
     {
       params:
-        isAvailable && globalExpressParams && signer && orderParams
+        isAvailable && globalExpressParams && signer && orderParams && provider
           ? {
               chainId,
               signer,

@@ -557,7 +557,8 @@ export function PositionSeller() {
       !receiveToken?.address ||
       receiveUsd === undefined ||
       decreaseAmounts?.acceptablePrice === undefined ||
-      !signer
+      !signer ||
+      !provider
     ) {
       helperToast.error(t`Error submitting order`);
       sendTxnValidationErrorMetric(metricData.metricId);

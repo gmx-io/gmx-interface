@@ -57,7 +57,7 @@ export function DynamicLines({
 
   const onCancelOrder = useCallback(
     async (key: string) => {
-      if (!signer) return;
+      if (!signer || !provider) return;
       const order = getByKey(ordersInfoData, key);
 
       if (!order) return;

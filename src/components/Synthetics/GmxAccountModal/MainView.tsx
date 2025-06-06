@@ -160,10 +160,10 @@ const Toolbar = ({ account }: { account: string }) => {
         onClick={handleCopyAddress}
       >
         <div className="flex items-center gap-8">
-          <Avatar size={20} ensName={ensName} address={account} />
-
-          <span className="mx-8">{shortenAddressOrEns(ensName || account, 13)}</span>
-
+          <div className="max-[410px]:hidden">
+            <Avatar size={20} ensName={ensName} address={account} />
+          </div>
+          <span className="mx-8 max-[410px]:mx-0">{shortenAddressOrEns(ensName || account, 13)}</span>
           <img src={copy} alt="Copy" />
         </div>
       </button>
@@ -214,37 +214,12 @@ function SettlementChainBalance() {
   const { totalUsd, gmxAccountUsd, walletUsd } = useAvailableToTradeAssetSettlementChain();
   const availableToTradeAssetSymbols = useAvailableToTradeAssetSymbolsSettlementChain();
 
-  const [, setIsVisibleOrView] = useGmxAccountModalOpen();
-
-  const handleAvailableToTradeClick = () => {
-    setIsVisibleOrView("availableToTradeAssets");
-  };
-
   return (
     <div className="flex flex-col gap-8 rounded-4 bg-cold-blue-900 p-12">
-      <div className="text-body-small text-slate-100">Available to Trade</div>
-      <div className="flex items-center justify-between gap-8">
-        {totalUsd !== undefined ? (
-          <div className="text-24">{formatUsd(totalUsd)}</div>
-        ) : (
-          <Skeleton
-            baseColor="#B4BBFF1A"
-            highlightColor="#B4BBFF1A"
-            width={100}
-            height={28}
-            className="!block"
-            inline={true}
-          />
-        )}
-        <button
-          className="flex items-center gap-4 rounded-4 bg-cold-blue-700 py-4 pl-8 pr-4 gmx-hover:bg-cold-blue-500"
-          onClick={handleAvailableToTradeClick}
-        >
-          <Trans>All assets</Trans>
-          <TokenIcons tokens={availableToTradeAssetSymbols} />
-          <IoArrowDown className="block size-16 -rotate-90 text-slate-100" />
-        </button>
+      <div className="text-body-small text-slate-100">
+        <Trans>Available to Trade</Trans>
       </div>
+      <Balance usd={totalUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
       <div className="my-4 h-1 bg-stroke-primary" />
       <SyntheticsInfoRow
         label="Wallet"
@@ -292,6 +267,23 @@ function MultichainBalance() {
   const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
   const availableToTradeAssetSymbols = useAvailableToTradeAssetSymbolsMultichain();
 
+  return (
+    <div className="flex flex-col gap-8 rounded-4 bg-cold-blue-900 p-12">
+      <div className="text-body-small text-slate-100">
+        <Trans>GMX Balance</Trans>
+      </div>
+      <Balance usd={gmxAccountUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
+    </div>
+  );
+}
+
+function Balance({
+  usd,
+  availableToTradeAssetSymbols,
+}: {
+  usd: bigint | undefined;
+  availableToTradeAssetSymbols: string[];
+}) {
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
 
   const handleAvailableToTradeClick = () => {
@@ -299,32 +291,27 @@ function MultichainBalance() {
   };
 
   return (
-    <div className="flex flex-col gap-8 rounded-4 bg-cold-blue-900 p-12">
-      <div className="text-body-small text-slate-100">
-        <Trans>GMX Balance</Trans>
-      </div>
-      <div className="flex items-center justify-between gap-8">
-        {gmxAccountUsd !== undefined ? (
-          <div className="text-24 leading-[28px]">{formatUsd(gmxAccountUsd)}</div>
-        ) : (
-          <Skeleton
-            baseColor="#B4BBFF1A"
-            highlightColor="#B4BBFF1A"
-            width={100}
-            height={28}
-            className="!block"
-            inline={true}
-          />
-        )}
-        <button
-          className="flex items-center gap-4 rounded-4 bg-cold-blue-700 py-4 pl-8 pr-4 gmx-hover:bg-cold-blue-500"
-          onClick={handleAvailableToTradeClick}
-        >
-          <Trans>All assets</Trans>
-          <TokenIcons tokens={availableToTradeAssetSymbols} />
-          <IoArrowDown className="block size-16 -rotate-90 text-slate-100" />
-        </button>
-      </div>
+    <div className="flex flex-wrap items-center justify-between gap-8">
+      {usd !== undefined ? (
+        <div className="text-24 leading-[28px]">{formatUsd(usd)}</div>
+      ) : (
+        <Skeleton
+          baseColor="#B4BBFF1A"
+          highlightColor="#B4BBFF1A"
+          width={100}
+          height={28}
+          className="!block"
+          inline={true}
+        />
+      )}
+      <button
+        className="flex items-center gap-4 rounded-4 bg-cold-blue-700 py-4 pl-8 pr-4 gmx-hover:bg-cold-blue-500"
+        onClick={handleAvailableToTradeClick}
+      >
+        <Trans>All assets</Trans>
+        <TokenIcons tokens={availableToTradeAssetSymbols} />
+        <IoArrowDown className="block size-16 -rotate-90 text-slate-100" />
+      </button>
     </div>
   );
 }
@@ -415,10 +402,7 @@ const FundingHistorySection = () => {
             role="button"
             tabIndex={0}
             key={transfer.id}
-            className={cx(
-              "flex w-full cursor-pointer items-center justify-between px-16 py-8 text-left -outline-offset-4 gmx-hover:bg-slate-700",
-              transfer.isFromWs && "!bg-red-500"
-            )}
+            className="flex w-full cursor-pointer items-center justify-between px-16 py-8 text-left -outline-offset-4 gmx-hover:bg-slate-700"
             onClick={() => handleTransferClick(transfer)}
           >
             <div className="flex items-center gap-8">
