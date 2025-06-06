@@ -27,6 +27,7 @@ import {
 import { signerAddressError } from "components/Errors/errorToasts";
 
 import { getOrdersTriggerPriceOverrides, getSimulationPrices, simulateExecution } from "./simulation";
+import { callRelayTransaction } from "../gassless/txns/expressOrderDebug";
 
 export type BatchSimulationParams = {
   tokensData: TokensData;
@@ -80,12 +81,13 @@ export async function sendBatchOrderTxn({
       runSimulation = () =>
         makeBatchOrderSimulation({
           chainId,
-          // TODO: implement simulation for multichain
           signer,
           batchParams,
           blockTimestampData: simulationParams.blockTimestampData,
           tokensData: simulationParams.tokensData,
           expressParams,
+          provider,
+          noncesData,
         });
     }
 
@@ -159,19 +161,23 @@ export async function sendBatchOrderTxn({
 export const makeBatchOrderSimulation = async ({
   chainId,
   signer,
+  provider,
   batchParams,
   blockTimestampData,
   tokensData,
   expressParams,
+  noncesData,
 }: {
   chainId: UiContractsChain;
   signer: WalletSigner;
+  provider: Provider;
   batchParams: BatchOrderTxnParams;
 
   blockTimestampData: BlockTimestampData | undefined;
   tokensData: TokensData;
   expressParams: ExpressTxnParams | undefined;
-}) => {
+  noncesData: NoncesData | undefined;
+}): Promise<void> => {
   try {
     if (getIsInvalidBatchReceiver(batchParams, signer.address)) {
       throw extendError(new Error(signerAddressError), {
@@ -237,26 +243,55 @@ export const makeBatchOrderSimulation = async ({
       return Promise.resolve();
     }
 
-    const { encodedMulticall, value } = getBatchOrderMulticallPayload({
-      chainId,
-      params: {
-        ...batchParams,
-        createOrderParams: [batchParams.createOrderParams[0]],
-      },
-    });
+    const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
 
-    return simulateExecution(chainId, {
-      account: signer.address,
-      prices: getSimulationPrices(
+    if (srcChainId) {
+      if (!expressParams) {
+        throw new Error("Multichain orders are only supported with express params");
+      }
+
+      const { callData, feeAmount, feeToken, to } = await buildAndSignExpressBatchOrderTxn({
+        signer,
         chainId,
-        tokensData,
-        getOrdersTriggerPriceOverrides([batchParams.createOrderParams[0]])
-      ),
-      tokenPermits: expressParams?.relayParamsPayload.tokenPermits ?? [],
-      createMulticallPayload: encodedMulticall,
-      value,
-      blockTimestampData,
-    });
+        relayParamsPayload: expressParams.relayParamsPayload,
+        batchParams: batchParams,
+        subaccount: expressParams.subaccount,
+        emptySignature: true,
+        relayerFeeTokenAddress: expressParams.gasPaymentParams.relayerFeeTokenAddress,
+        relayerFeeAmount: expressParams.gasPaymentParams.relayerFeeAmount,
+        provider,
+        noncesData,
+      });
+
+      await callRelayTransaction({
+        relayRouterAddress: to,
+        gelatoRelayFeeToken: feeToken,
+        gelatoRelayFeeAmount: feeAmount,
+        provider,
+        calldata: callData,
+      });
+    } else {
+      const { encodedMulticall, value } = getBatchOrderMulticallPayload({
+        chainId,
+        params: {
+          ...batchParams,
+          createOrderParams: [batchParams.createOrderParams[0]],
+        },
+      });
+
+      await simulateExecution(chainId, {
+        account: signer.address,
+        prices: getSimulationPrices(
+          chainId,
+          tokensData,
+          getOrdersTriggerPriceOverrides([batchParams.createOrderParams[0]])
+        ),
+        tokenPermits: expressParams?.relayParamsPayload.tokenPermits ?? [],
+        createMulticallPayload: encodedMulticall,
+        value,
+        blockTimestampData,
+      });
+    }
   } catch (error) {
     throw extendError(error, {
       errorContext: "simulation",

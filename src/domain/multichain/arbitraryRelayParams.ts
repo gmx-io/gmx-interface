@@ -3,6 +3,7 @@ import { Address, decodeErrorResult, encodePacked, Hex } from "viem";
 
 import type { UiContractsChain } from "config/chains";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
+import type { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import {
   selectExpressFindSwapPath,
   selectExpressGlobalParams,
@@ -164,6 +165,7 @@ async function estimateArbitraryGasLimit({
   relayerFeeAmount,
   gasPaymentToken,
   expressTransactionBuilder,
+  noncesData,
 }: {
   provider: Provider;
   rawRelayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload;
@@ -171,6 +173,7 @@ async function estimateArbitraryGasLimit({
   gasPaymentToken: TokenData;
   relayerFeeAmount: bigint;
   expressTransactionBuilder: ExpressTransactionBuilder;
+  noncesData: NoncesData | undefined;
 }) {
   const gasPaymentParams: GasPaymentParams = {
     gasPaymentToken: gasPaymentToken,
@@ -186,7 +189,7 @@ async function estimateArbitraryGasLimit({
     relayParams: rawRelayParamsPayload,
     gasPaymentParams,
     subaccount: undefined,
-    noncesData: undefined,
+    noncesData,
   });
 
   const baseData = encodePacked(
@@ -411,6 +414,7 @@ export function useArbitraryRelayParamsAndPayload(
           relayerFeeToken: p.globalExpressParams.relayerFeeToken,
           rawRelayParamsPayload: rawBaseRelayParamsPayload,
           relayerFeeAmount: baseRelayFeeSwapParams.gasPaymentParams.relayerFeeAmount + (additionalNetworkFee ?? 0n),
+          noncesData: p.globalExpressParams.noncesData,
         });
       } catch (error) {
         rethrowCustomError(error);

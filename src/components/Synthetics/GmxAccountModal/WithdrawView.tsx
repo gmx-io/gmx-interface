@@ -9,6 +9,7 @@ import { useAccount } from "wagmi";
 
 import { getChainName, UiSettlementChain } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
+import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import {
   useGmxAccountModalOpen,
   useGmxAccountWithdrawViewTokenAddress,
@@ -493,6 +494,7 @@ export const WithdrawView = () => {
         params: bridgeOutParams,
         signer,
         provider,
+        noncesData: expressGlobalParams?.noncesData,
       });
 
       sendOrderSimulatedMetric(metricData.metricId);
@@ -504,7 +506,7 @@ export const WithdrawView = () => {
         params: bridgeOutParams,
         relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
         relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
-        noncesData: undefined,
+        noncesData: expressGlobalParams?.noncesData,
         provider,
       });
 
@@ -892,6 +894,7 @@ async function simulateWithdraw({
   relayerFeeTokenAddress,
   relayerFeeAmount,
   params,
+  noncesData,
 }: {
   provider: Provider;
   signer: WalletSigner;
@@ -900,6 +903,7 @@ async function simulateWithdraw({
   relayerFeeAmount: bigint;
   relayParamsPayload: RawMultichainRelayParamsPayload;
   params: BridgeOutParams;
+  noncesData: NoncesData | undefined;
 }): Promise<void> {
   if (!provider) {
     throw new Error("Provider is required");
@@ -914,7 +918,7 @@ async function simulateWithdraw({
     relayerFeeTokenAddress,
     relayerFeeAmount: relayerFeeAmount,
     provider,
-    noncesData: undefined,
+    noncesData,
   });
 
   await fallbackCustomError(async () => {

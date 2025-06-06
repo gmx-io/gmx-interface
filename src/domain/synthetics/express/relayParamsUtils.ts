@@ -1,5 +1,5 @@
 import { Contract, ethers, Provider, Wallet } from "ethers";
-import { encodeAbiParameters, keccak256 } from "viem";
+import { Address, encodeAbiParameters, keccak256 } from "viem";
 
 import type { UiContractsChain, UiSourceChain } from "config/chains";
 import { getBestSwapStrategy } from "domain/synthetics/externalSwaps/utils";
@@ -36,11 +36,11 @@ export function getExpressContractAddress(
     isMultichain,
     scope,
   }: {
-    isSubaccount: boolean;
-    isMultichain: boolean;
-    scope: "glv" | "gm" | "transfer" | "claims" | "order" | "subaccount";
+    isSubaccount?: boolean;
+    isMultichain?: boolean;
+    scope?: "glv" | "gm" | "transfer" | "claims" | "order" | "subaccount";
   }
-) {
+): Address {
   let contractName: ContractName;
   if (isMultichain) {
     switch (scope) {

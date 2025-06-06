@@ -16,16 +16,7 @@ export type NoncesData = {
     nonce: bigint;
     lastEstimated: number;
   };
-  // TODO: todo
   multichainTransferRouter?: {
-    nonce: bigint;
-    lastEstimated: number;
-  };
-  multichainOrderRouter?: {
-    nonce: bigint;
-    lastEstimated: number;
-  };
-  multichainSubaccountRouter?: {
     nonce: bigint;
     lastEstimated: number;
   };
@@ -40,6 +31,10 @@ export type LocalActions = {
     actions: bigint;
     lastEstimated: number;
   };
+  multichainTransferRouter: {
+    actions: bigint;
+    lastEstimated: number;
+  };
 };
 
 const defaultLocalActions: LocalActions = {
@@ -48,6 +43,10 @@ const defaultLocalActions: LocalActions = {
     lastEstimated: 0,
   },
   subaccountRelayRouter: {
+    actions: 0n,
+    lastEstimated: 0,
+  },
+  multichainTransferRouter: {
     actions: 0n,
     lastEstimated: 0,
   },
@@ -75,7 +74,6 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
         contractAddress: getExpressContractAddress(chainId, {
           isSubaccount: false,
           isMultichain: srcChainId !== undefined,
-          // todo call for each scope
           scope: "order",
         }),
         abiId: "AbstractUserNonceable",
@@ -102,6 +100,22 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
             : undefined,
         },
       },
+      multichainTransferRouter: {
+        contractAddress: getExpressContractAddress(chainId, {
+          isMultichain: true,
+          scope: "transfer",
+        }),
+        abiId: "AbstractUserNonceable",
+        calls: {
+          nonce:
+            srcChainId !== undefined
+              ? {
+                  methodName: "userNonces",
+                  params: [account],
+                }
+              : undefined,
+        },
+      },
     },
 
     parseResponse: (result) => {
@@ -123,6 +137,13 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
               lastEstimated: now,
             }
           : undefined,
+        multichainTransferRouter:
+          srcChainId !== undefined
+            ? {
+                nonce: result.data.multichainTransferRouter.nonce.returnValues[0],
+                lastEstimated: now,
+              }
+            : undefined,
       };
     },
   });
