@@ -118,7 +118,7 @@ export const GmxAccountModal = memo(() => {
       label={VIEW_TITLE[view]}
       isVisible={isVisible}
       setIsVisible={setIsVisibleOrView}
-      desktopContentClassName="!h-[640px] !w-[400px] !bg-[transparent]"
+      desktopContentClassName="!h-[640px] !w-[400px]"
       disableOverflowHandling={true}
       className="text-body-medium"
       contentPadding={false}

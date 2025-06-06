@@ -95,7 +95,6 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { ModalShrinkingContent } from "./ModalShrinkingContent";
 import { toastCustomOrStargateError } from "./toastCustomOrStargateError";
 
 const useIsFirstWithdrawal = () => {
@@ -706,7 +705,7 @@ export const WithdrawView = () => {
   );
 
   return (
-    <ModalShrinkingContent className="overflow-y-auto p-16">
+    <div className="flex grow flex-col overflow-y-auto p-16">
       <div className="flex flex-col gap-20">
         <div className="flex flex-col gap-4">
           <div className="text-body-small text-slate-100">Asset</div>
@@ -846,7 +845,7 @@ export const WithdrawView = () => {
       <Button variant="primary" className="w-full" onClick={buttonState.onClick} disabled={buttonState.disabled}>
         {buttonState.text}
       </Button>
-    </ModalShrinkingContent>
+    </div>
   );
 };
 

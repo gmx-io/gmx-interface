@@ -16,8 +16,6 @@ import Button from "components/Button/Button";
 import { useGmxAccountTokensDataObject } from "components/Synthetics/GmxAccountModal/hooks";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
-import { ModalShrinkingContent } from "./ModalShrinkingContent";
-
 type FilterType = "all" | "gmxBalance" | "wallet";
 
 const FILTERS: FilterType[] = ["all", "gmxBalance", "wallet"];
@@ -80,7 +78,7 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
   }, [sortedTokens, searchQuery, noChainFilter, activeFilter]);
 
   return (
-    <ModalShrinkingContent className="gap-8 overflow-y-hidden pt-16">
+    <div className="flex grow flex-col gap-8 overflow-y-hidden pt-16">
       {!noChainFilter && (
         <div className="flex gap-4 px-16">
           {FILTERS.map((filter) => (
@@ -135,7 +133,7 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
           </div>
         ))}
       </div>
-    </ModalShrinkingContent>
+    </div>
   );
 };
 

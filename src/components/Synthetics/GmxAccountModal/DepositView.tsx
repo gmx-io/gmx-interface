@@ -74,7 +74,6 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { useAvailableToTradeAssetMultichain, useMultichainTokensRequest } from "./hooks";
-import { ModalShrinkingContent } from "./ModalShrinkingContent";
 
 const useIsFirstDeposit = () => {
   const [enabled, setEnabled] = useState(true);
@@ -768,7 +767,7 @@ export const DepositView = () => {
   }
 
   return (
-    <ModalShrinkingContent className="overflow-y-auto p-16">
+    <div className="flex grow flex-col overflow-y-auto p-16">
       <div className="flex flex-col gap-20">
         <div className="flex flex-col gap-4">
           <div className="text-body-small text-slate-100">
@@ -920,6 +919,6 @@ export const DepositView = () => {
       <Button variant="primary" className="w-full" onClick={buttonState.onClick} disabled={buttonState.disabled}>
         {buttonState.text}
       </Button>
-    </ModalShrinkingContent>
+    </div>
   );
 };

@@ -23,10 +23,9 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import externalLink from "img/ic_new_link_20.svg";
 
+import { useGmxAccountFundingHistoryItem } from "../../../domain/multichain/useGmxAccountFundingHistory";
 import { CHAIN_ID_TO_EXPLORER_NAME, CHAIN_ID_TO_TX_URL_BUILDER } from "../../../lib/chains/blockExplorers";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { ModalShrinkingContent } from "./ModalShrinkingContent";
-import { useGmxAccountFundingHistoryItem } from "../../../domain/multichain/useGmxAccountFundingHistory";
 import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
 
 export const TransferDetailsView = () => {
@@ -91,7 +90,7 @@ export const TransferDetailsView = () => {
   };
 
   return (
-    <ModalShrinkingContent className="text-body-medium min-h-[515px] gap-8 p-16">
+    <div className="text-body-medium flex grow flex-col gap-8 p-16">
       {selectedTransfer?.isExecutionError ? (
         <AlertInfoCard type="error">
           <Trans>Your deposit of from {sourceChainName} was not executed due to an error</Trans>
@@ -216,6 +215,6 @@ export const TransferDetailsView = () => {
       <Button variant="secondary" onClick={handleRepeatTransaction}>
         <Trans>Repeat Transaction</Trans>
       </Button>
-    </ModalShrinkingContent>
+    </div>
   );
 };

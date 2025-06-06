@@ -48,7 +48,6 @@ import {
 } from "./hooks";
 import { isMultichainFundingItemLoading } from "./isMultichainFundingItemLoading";
 import { FUNDING_OPERATIONS_LABELS } from "./keys";
-import { ModalShrinkingContent } from "./ModalShrinkingContent";
 
 const TokenIcons = ({ tokens }: { tokens: string[] }) => {
   const displayTokens = tokens.slice(0, 3);
@@ -396,7 +395,7 @@ const FundingHistorySection = () => {
           className="w-full rounded-4 bg-slate-700 px-12 py-8 text-white placeholder:text-slate-100"
         />
       </div>
-      <div className="grow overflow-y-auto">
+      <div className="flex grow flex-col overflow-y-auto">
         {filteredFundingHistory?.map((transfer) => (
           <div
             role="button"
@@ -435,7 +434,7 @@ const FundingHistorySection = () => {
           </div>
         )}
         {isLoading && (
-          <div className="flex h-[300px] flex-col items-center justify-center p-16 text-slate-100">
+          <div className="flex grow items-center justify-center p-16 text-slate-100">
             <TbLoader2 className="size-24 animate-spin" />
           </div>
         )}
@@ -446,13 +445,13 @@ const FundingHistorySection = () => {
 
 export const MainView = ({ account }: { account: string }) => {
   return (
-    <ModalShrinkingContent className="text-body-medium flex flex-col gap-8 overflow-y-hidden">
+    <div className="text-body-medium flex grow flex-col gap-8 overflow-y-hidden">
       <div className="flex flex-col gap-8 px-16 pb-20 pt-16">
         <Toolbar account={account} />
         <BalanceSection />
         <ActionButtons />
       </div>
       <FundingHistorySection />
-    </ModalShrinkingContent>
+    </div>
   );
 };
