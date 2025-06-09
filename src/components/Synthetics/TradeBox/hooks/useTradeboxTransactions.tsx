@@ -8,6 +8,7 @@ import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/setting
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import {
   selectBlockTimestampData,
+  selectExpressNoncesData,
   selectIsFirstOrder,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -90,6 +91,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const showDebugValues = useShowDebugValues();
   const duration = useSelector(selectTradeboxTwapDuration);
   const numberOfParts = useSelector(selectTradeboxTwapNumberOfParts);
+  const noncesData = useSelector(selectExpressNoncesData);
 
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
 
@@ -281,6 +283,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       chainId,
       signer,
       batchParams,
+      noncesData,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
       simulationParams: shouldDisableValidationForTesting
@@ -299,6 +302,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       }),
     });
   }, [
+    expressParamsPromise,
     initOrderMetricData,
     primaryCreateOrderParams,
     signer,
@@ -306,8 +310,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     account,
     marketsInfoData,
     chainId,
-    expressParamsPromise,
     batchParams,
+    noncesData,
     shouldDisableValidationForTesting,
     blockTimestampData,
     makeOrderTxnCallback,

@@ -224,6 +224,10 @@ msgstr ""
 msgid "Total size"
 msgstr ""
 
+#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
+msgid "Try Express Trading"
+msgstr ""
+
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if there is not enough available liquidity."
 msgstr ""
@@ -1868,10 +1872,11 @@ msgid "Close to execution price"
 msgstr "집행 가격에 종료"
 
 #: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-msgid "Try Express 1CT"
-msgstr ""
+#~ msgid "Try Express 1CT"
+#~ msgstr ""
 
 #: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
 msgstr ""
 
@@ -2109,6 +2114,10 @@ msgstr ""
 
 #: src/pages/Earn/Vesting.tsx
 msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
+msgstr ""
+
+#: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
+msgid "Try Express"
 msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
@@ -2620,8 +2629,8 @@ msgid "Dune Analytics for GMX"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-click and Express Trading are not available due to insufficient balance."
-msgstr ""
+#~ msgid "One-click and Express Trading are not available due to insufficient balance."
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Could not decrease {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}"
@@ -2708,8 +2717,8 @@ msgid "Fees (Incl. Swap)"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "{0, plural, one {1 hour} other {{hours} hours}}"
-msgstr ""
+#~ msgid "{0, plural, one {1 hour} other {{hours} hours}}"
+#~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
 #~ msgid "Generate & Activate Subaccount"
@@ -4535,8 +4544,8 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "{0, plural, one {1 minute} other {{minutes} minutes}}"
-msgstr ""
+#~ msgid "{0, plural, one {1 minute} other {{minutes} minutes}}"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -6679,8 +6688,8 @@ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "{0, plural, one {1 day} other {{days} days}}"
-msgstr ""
+#~ msgid "{0, plural, one {1 day} other {{days} days}}"
+#~ msgstr ""
 
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Max Out"
@@ -6894,8 +6903,8 @@ msgid "Protocol analytics"
 msgstr "프로토콜 분석"
 
 #: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
-msgid "Try Express One-Click Trading"
-msgstr ""
+#~ msgid "Try Express One-Click Trading"
+#~ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx

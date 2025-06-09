@@ -45,10 +45,10 @@ export function useSwitchGasPaymentTokenIfRequired({ expressParams }: { expressP
           return tokenData.balance > requiredTokenAmount;
         });
 
-        if (anotherGasToken && anotherGasToken !== expressParams!.gasPaymentParams.gasPaymentTokenAddress) {
+        if (anotherGasToken && anotherGasToken !== expressParams.gasPaymentParams.gasPaymentTokenAddress) {
           setSettingsWarningDotVisible(true);
           setGasPaymentTokenAddress(anotherGasToken);
-          setExpressTradingGasTokenSwitched(true);
+          setExpressTradingGasTokenSwitched(expressParams.gasPaymentParams.gasPaymentTokenAddress);
         }
       }
     },
