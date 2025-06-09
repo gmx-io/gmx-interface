@@ -25,7 +25,6 @@ import { secondsToPeriod } from "sdk/utils/time";
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
-import { ExpressTradingGasTokenSwitchedBanner } from "components/ExpressTradingGasTokenSwitchedBanner.ts/ExpressTradingGasTokenSwithedBanner";
 import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
@@ -53,22 +52,6 @@ export function SettingsModal({
   const [numberOfParts, setNumberOfParts] = useState<number>();
 
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
-
-  const shouldShowGasPaymentTokenSwitchedBanner = useMemo(() => {
-    if (!settings.expressOrdersEnabled || isOutOfGasPaymentBalance) {
-      return false;
-    }
-
-    return (
-      settings.expressTradingGasTokenSwitched &&
-      settings.expressTradingGasTokenSwitched !== settings.gasPaymentTokenAddress
-    );
-  }, [
-    settings.expressOrdersEnabled,
-    settings.expressTradingGasTokenSwitched,
-    settings.gasPaymentTokenAddress,
-    isOutOfGasPaymentBalance,
-  ]);
 
   useEffect(() => {
     if (!isSettingsVisible) return;
@@ -285,14 +268,6 @@ export function SettingsModal({
                 </ToggleSwitch>
 
                 {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
-
-                {shouldShowGasPaymentTokenSwitchedBanner && (
-                  <ExpressTradingGasTokenSwitchedBanner
-                    onClose={() => {
-                      settings.setExpressTradingGasTokenSwitched(null);
-                    }}
-                  />
-                )}
 
                 <OldSubaccountWithdraw />
 

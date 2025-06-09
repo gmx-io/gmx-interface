@@ -3765,8 +3765,8 @@ msgid "Request Market Swap"
 msgstr "Solicitar intercambio del mercado"
 
 #: src/components/ExpressTradingGasTokenSwitchedBanner.ts/ExpressTradingGasTokenSwithedBanner.tsx
-msgid "Gas payment token changed due to insufficient balance in the selected token."
-msgstr ""
+#~ msgid "Gas payment token changed due to insufficient balance in the selected token."
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.{1}"
