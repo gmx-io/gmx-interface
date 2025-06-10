@@ -34,9 +34,9 @@ import { UnstakeModal } from "./UnstakeModal";
 import { useProcessedData } from "./useProcessedData";
 import { Vesting } from "./Vesting";
 
-import "./Earn.css";
+import "./Stake.css";
 
-export default function Earn() {
+export default function Stake() {
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
   const incentiveStats = useIncentiveStats(chainId);
@@ -186,7 +186,7 @@ export default function Earn() {
 
   return (
     <div className="default-container page-layout">
-      <SEO title={getPageTitle(t`Earn`)} />
+      <SEO title={getPageTitle(t`Stake`)} />
 
       <StakeModal
         isVisible={isStakeGmxModalVisible}
@@ -243,15 +243,14 @@ export default function Earn() {
 
       <PageTitle
         isTop
-        title={t`Earn`}
+        title={t`Stake`}
         qa="earn-page"
         subtitle={
           <div>
             <Trans>
-              Deposit <ExternalLink href="https://docs.gmx.io/docs/tokenomics/gmx-token">GMX</ExternalLink>,{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/gmx-token">esGMX</ExternalLink> and{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">GLP</ExternalLink> tokens to earn
-              rewards.
+              Deposit <ExternalLink href="https://docs.gmx.io/docs/tokenomics/gmx-token">GMX</ExternalLink> and{" "}
+              <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/gmx-token">esGMX</ExternalLink> tokens to
+              earn rewards.
             </Trans>
             {earnMsg && <div className="Page-description">{earnMsg}</div>}
             {incentivesMessage}
@@ -283,20 +282,19 @@ export default function Earn() {
 
         <Vesting processedData={processedData} />
 
-      <div className="mt-10">
-        <PageTitle
-          title={t`Incentives & Prizes`}
-          subtitle={
-            incentiveStats?.lp?.isActive || incentiveStats?.trading?.isActive ? (
-              <Trans>Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2.</Trans>
-            ) : (
-              <Trans>Earn prizes by participating in GMX Trading Competitions.</Trans>
-            )
-          }
-        />
-      </div>
-      <UserIncentiveDistributionList />
-      
+        <div className="mt-10">
+          <PageTitle
+            title={t`Incentives & Prizes`}
+            subtitle={
+              incentiveStats?.lp?.isActive || incentiveStats?.trading?.isActive ? (
+                <Trans>Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2.</Trans>
+              ) : (
+                <Trans>Earn prizes by participating in GMX Trading Competitions.</Trans>
+              )
+            }
+          />
+        </div>
+        <UserIncentiveDistributionList />
       </div>
 
       <Footer />
