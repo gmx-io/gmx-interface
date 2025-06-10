@@ -53,6 +53,7 @@ import {
 } from "sdk/configs/chains";
 import { ContractName } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
+import { getWrappedToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import {
@@ -344,6 +345,13 @@ export async function estimateExpressParams({
       l1GasLimit,
       transactionPayloadGasLimit,
     });
+
+    if (
+      srcChainId !== undefined &&
+      baseRelayFeeParams.gasPaymentParams.gasPaymentTokenAddress === getWrappedToken(chainId).address
+    ) {
+      gasLimit = (gasLimit * 12n) / 10n;
+    }
   }
 
   let relayerFeeAmount: bigint;

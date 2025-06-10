@@ -1,7 +1,7 @@
 import useSWR from "swr";
 import { decodeFunctionResult, encodeFunctionData, size } from "viem";
 
-import { ARBITRUM } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA } from "config/chains";
 import { useChainId } from "lib/chains";
 import { metrics } from "lib/metrics";
 import { useJsonRpcProvider } from "lib/rpc";
@@ -16,7 +16,7 @@ export function useL1ExpressOrderGasReference() {
   const { chainId } = useChainId();
   const { provider } = useJsonRpcProvider(chainId);
 
-  const hasL1Gas = chainId === ARBITRUM;
+  const hasL1Gas = chainId === ARBITRUM || chainId === ARBITRUM_SEPOLIA;
 
   const { data } = useSWR(hasL1Gas && provider ? [chainId, provider, "l1ExpressOrderGasReference"] : null, {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
