@@ -272,9 +272,11 @@ export function PositionEditor() {
                 isDeposit
                   ? formatTokenAmount(collateralToken?.balance, collateralToken?.decimals, "", {
                       useCommas: true,
+                      isStable: collateralToken?.isStable,
                     })
                   : formatTokenAmount(maxWithdrawAmount, position?.collateralToken?.decimals, "", {
                       useCommas: true,
+                      isStable: position?.collateralToken?.isStable,
                     })
               }
               inputValue={collateralInputValue}
@@ -336,7 +338,7 @@ export function PositionEditor() {
                     receiveUsd,
                     collateralToken?.symbol,
                     collateralToken?.decimals,
-                    { fallbackToZero: true }
+                    { fallbackToZero: true, isStable: collateralToken?.isStable }
                   )}
                 />
               )}

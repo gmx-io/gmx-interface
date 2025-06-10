@@ -730,6 +730,7 @@ export function OrderEditor(p: Props) {
                           networkFee.feeToken.decimals,
                           {
                             displayDecimals: 5,
+                            isStable: networkFee.feeToken.isStable,
                           }
                         )}
                         showDollar={false}
@@ -760,7 +761,8 @@ export function OrderEditor(p: Props) {
                 value={formatBalanceAmount(
                   minOutputAmount,
                   p.order.targetCollateralToken.decimals,
-                  p.order.targetCollateralToken.symbol
+                  p.order.targetCollateralToken.symbol,
+                  { isStable: p.order.targetCollateralToken.isStable }
                 )}
               />
             </>

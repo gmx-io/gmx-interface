@@ -197,16 +197,18 @@ export function formatTokenAmount(
     minThreshold?: string;
     maxThreshold?: string;
     displayPlus?: boolean;
+    isStable?: boolean;
   } = {}
 ) {
   const {
-    displayDecimals = 4,
     showAllSignificant = false,
     fallbackToZero = false,
     useCommas = false,
     minThreshold = "0",
     maxThreshold,
   } = opts;
+
+  const displayDecimals = opts.displayDecimals ?? (opts.isStable ? 2 : 4);
 
   const symbolStr = symbol ? ` ${symbol}` : "";
 
@@ -229,7 +231,7 @@ export function formatTokenAmount(
   } else {
     const exceedingInfo = getLimitedDisplay(amount, tokenDecimals, { maxThreshold, minThreshold });
     const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
-    amountStr = `${symbol}${sign}${formatAmount(exceedingInfo.value, tokenDecimals, displayDecimals, useCommas)}`;
+    amountStr = `${symbol}${sign}${formatAmount(exceedingInfo.value, tokenDecimals, displayDecimals, useCommas, undefined)}`;
   }
 
   return `${amountStr}${symbolStr}`;
@@ -244,6 +246,7 @@ export function formatTokenAmountWithUsd(
     fallbackToZero?: boolean;
     displayDecimals?: number;
     displayPlus?: boolean;
+    isStable?: boolean;
   } = {}
 ) {
   if (typeof tokenAmount !== "bigint" || typeof usdAmount !== "bigint" || !tokenSymbol || !tokenDecimals) {
@@ -345,15 +348,28 @@ export function formatBalanceAmount(
   amount: bigint,
   tokenDecimals: number,
   tokenSymbol?: string,
-  showZero = false,
-  toExponential = true
+  {
+    showZero = false,
+    toExponential = true,
+    isStable = false,
+  }: {
+    showZero?: boolean;
+    toExponential?: boolean;
+    isStable?: boolean;
+  } = {}
 ): string {
   if (amount === undefined) return "-";
 
   if (amount === 0n) {
     if (showZero === true) {
       if (tokenSymbol) {
+        if (isStable) {
+          return `0.00 ${tokenSymbol}`;
+        }
         return `0.0000 ${tokenSymbol}`;
+      }
+      if (isStable) {
+        return "0.00";
       }
       return "0.0000";
     }
@@ -366,10 +382,11 @@ export function formatBalanceAmount(
 
   let value = "";
 
-  if (absAmountFloat >= 1) value = formatAmount(amount, tokenDecimals, 4, true);
-  else if (absAmountFloat >= 0.1) value = formatAmount(amount, tokenDecimals, 5, true);
-  else if (absAmountFloat >= 0.01) value = formatAmount(amount, tokenDecimals, 6, true);
-  else if (absAmountFloat >= 0.001) value = formatAmount(amount, tokenDecimals, 7, true);
+  const baseDecimals = isStable ? 2 : 4;
+  if (absAmountFloat >= 1) value = formatAmount(amount, tokenDecimals, baseDecimals, true);
+  else if (absAmountFloat >= 0.1) value = formatAmount(amount, tokenDecimals, baseDecimals + 1, true);
+  else if (absAmountFloat >= 0.01) value = formatAmount(amount, tokenDecimals, baseDecimals + 2, true);
+  else if (absAmountFloat >= 0.001) value = formatAmount(amount, tokenDecimals, baseDecimals + 3, true);
   else if (absAmountFloat >= 1e-8) value = formatAmount(amount, tokenDecimals, 8, true);
   else {
     if (toExponential) {
@@ -385,25 +402,6 @@ export function formatBalanceAmount(
   }
 
   return value;
-}
-
-export function formatBalanceAmountWithUsd(
-  amount: bigint,
-  amountUsd: bigint,
-  tokenDecimals: number,
-  tokenSymbol?: string,
-  showZero = false
-) {
-  if (showZero === false && amount === 0n) {
-    return "-";
-  }
-
-  const value = formatBalanceAmount(amount, tokenDecimals, tokenSymbol, showZero);
-
-  const usd = formatUsd(amountUsd);
-
-  // Regular space
-  return `${value} (${usd})`;
 }
 
 export function formatFactor(factor: bigint) {
@@ -754,18 +752,34 @@ export function deserializeBigIntsInObject<T extends object>(obj: T): Deserializ
   return result;
 }
 
-export function calculateDisplayDecimals(price?: bigint, decimals = USD_DECIMALS, visualMultiplier = 1) {
+export function calculateDisplayDecimals(
+  price?: bigint,
+  decimals = USD_DECIMALS,
+  visualMultiplier = 1,
+  isStable = false
+) {
   if (price === undefined || price === 0n) return 2;
   const priceNumber = bigintToNumber(bigMath.abs(price) * BigInt(visualMultiplier), decimals);
 
   if (isNaN(priceNumber)) return 2;
-  if (priceNumber >= 1000) return 2;
-  if (priceNumber >= 100) return 3;
-  if (priceNumber >= 1) return 4;
-  if (priceNumber >= 0.1) return 5;
-  if (priceNumber >= 0.01) return 6;
-  if (priceNumber >= 0.0001) return 7;
-  if (priceNumber >= 0.00001) return 8;
+  if (isStable) {
+    if (priceNumber >= 0.1) return 2;
+    if (priceNumber >= 0.01) return 3;
+    if (priceNumber >= 0.001) return 4;
+    if (priceNumber >= 0.0001) return 5;
+    if (priceNumber >= 0.00001) return 6;
+    if (priceNumber >= 0.000001) return 7;
+    if (priceNumber >= 0.0000001) return 8;
+    if (priceNumber >= 0.00000001) return 9;
+  } else {
+    if (priceNumber >= 1000) return 2;
+    if (priceNumber >= 100) return 3;
+    if (priceNumber >= 1) return 4;
+    if (priceNumber >= 0.1) return 5;
+    if (priceNumber >= 0.01) return 6;
+    if (priceNumber >= 0.0001) return 7;
+    if (priceNumber >= 0.00001) return 8;
+  }
 
   return 9;
 }

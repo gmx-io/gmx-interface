@@ -167,6 +167,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
                         decimals={market.longToken.decimals}
                         symbol={market.longToken.symbol}
                         usd={longTokenAmountUsd}
+                        isStable={market.longToken.isStable}
                       />
                     </div>
                   )}
@@ -177,6 +178,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
                         decimals={market.shortToken.decimals}
                         symbol={market.shortToken.symbol}
                         usd={shortTokenAmountUsd}
+                        isStable={market.shortToken.isStable}
                       />
                     </div>
                   )}

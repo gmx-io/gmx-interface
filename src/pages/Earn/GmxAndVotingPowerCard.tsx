@@ -182,7 +182,7 @@ export function GmxAndVotingPowerCard({
                 <Tooltip
                   position="bottom-end"
                   className="nowrap"
-                  handle={formatBalanceAmount(govTokenAmount, 18, "GMX DAO", true)}
+                  handle={formatBalanceAmount(govTokenAmount, 18, "GMX DAO", { showZero: true })}
                   content={
                     <>
                       {govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount > 0 ? (

@@ -76,6 +76,7 @@ export function SwapCard(p: Props) {
                       decimals={toToken?.decimals ?? 0}
                       symbol={toToken?.symbol}
                       usd={maxLiquidityUsd}
+                      isStable={toToken?.isStable}
                     />
                   }
                   showDollar={false}

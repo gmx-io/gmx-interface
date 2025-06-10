@@ -738,7 +738,9 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
             bottomRightLabel={t`Balance`}
             bottomRightValue={
               firstToken && firstToken.balance !== undefined
-                ? formatBalanceAmount(firstToken.balance, firstToken.decimals)
+                ? formatBalanceAmount(firstToken.balance, firstToken.decimals, undefined, {
+                    isStable: firstToken.isStable,
+                  })
                 : undefined
             }
             onClickTopRightLabel={isDeposit ? onMaxClickFirstToken : undefined}
@@ -774,7 +776,9 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
               bottomRightLabel={t`Balance`}
               bottomRightValue={
                 secondToken && secondToken.balance !== undefined
-                  ? formatBalanceAmount(secondToken.balance, secondToken.decimals)
+                  ? formatBalanceAmount(secondToken.balance, secondToken.decimals, undefined, {
+                      isStable: secondToken.isStable,
+                    })
                   : undefined
               }
               inputValue={secondTokenInputValue}

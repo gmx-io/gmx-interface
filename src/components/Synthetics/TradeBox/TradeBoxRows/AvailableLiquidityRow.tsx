@@ -47,7 +47,9 @@ export function AvailableLiquidityRow() {
         handleClassName={isLiquidityRisk ? "negative" : ""}
         handle={
           isSwap
-            ? formatTokenAmount(availableLiquidityAmount, toToken?.decimals, toToken?.symbol)
+            ? formatTokenAmount(availableLiquidityAmount, toToken?.decimals, toToken?.symbol, {
+                isStable: toToken?.isStable,
+              })
             : formatUsd(availableLiquidityUsd)
         }
         renderContent={() => tooltipContent}

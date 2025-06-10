@@ -531,7 +531,12 @@ function AffiliatesStats({
                                         key={tokenAddress}
                                         showDollar={false}
                                         label={token.symbol}
-                                        value={formatBalanceAmount(amountsByTokens[tokenAddress], token.decimals)}
+                                        value={formatBalanceAmount(
+                                          amountsByTokens[tokenAddress],
+                                          token.decimals,
+                                          undefined,
+                                          { isStable: token.isStable }
+                                        )}
                                       />
                                     </>
                                   );
