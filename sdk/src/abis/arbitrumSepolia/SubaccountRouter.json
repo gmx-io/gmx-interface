@@ -77,43 +77,11 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "cancellationReceiver",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "expectedCancellationReceiver",
-          "type": "address"
-        }
-      ],
-      "name": "InvalidCancellationReceiverForSubaccountOrder",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
           "name": "msgSender",
           "type": "address"
         }
       ],
       "name": "InvalidNativeTokenSender",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "receiver",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "expectedReceiver",
-          "type": "address"
-        }
-      ],
-      "name": "InvalidReceiverForSubaccountOrder",
       "type": "error"
     },
     {

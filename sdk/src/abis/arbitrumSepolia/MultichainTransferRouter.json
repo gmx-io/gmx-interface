@@ -155,6 +155,11 @@
       "type": "error"
     },
     {
+      "inputs": [],
+      "name": "InvalidInitializer",
+      "type": "error"
+    },
+    {
       "inputs": [
         {
           "internalType": "address",

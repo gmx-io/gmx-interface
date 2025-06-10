@@ -111,6 +111,11 @@
       "type": "error"
     },
     {
+      "inputs": [],
+      "name": "BridgeOutNotSupportedDuringShift",
+      "type": "error"
+    },
+    {
       "inputs": [
         {
           "internalType": "address",
@@ -319,11 +324,6 @@
       "type": "error"
     },
     {
-      "inputs": [],
-      "name": "EmptyChainlinkPaymentToken",
-      "type": "error"
-    },
-    {
       "inputs": [
         {
           "internalType": "address",
@@ -385,6 +385,11 @@
     {
       "inputs": [],
       "name": "EmptyDepositAmountsAfterSwap",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "EmptyFundingAccount",
       "type": "error"
     },
     {
@@ -515,6 +520,11 @@
     {
       "inputs": [],
       "name": "EmptyReceiver",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "EmptyReduceLentAmount",
       "type": "error"
     },
     {
@@ -1257,6 +1267,22 @@
       "inputs": [
         {
           "internalType": "uint256",
+          "name": "gas",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "estimatedGasLimit",
+          "type": "uint256"
+        }
+      ],
+      "name": "InsufficientGasLeft",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
           "name": "gasToBeForwarded",
           "type": "uint256"
         },
@@ -1320,6 +1346,22 @@
         }
       ],
       "name": "InsufficientMarketTokens",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "minPositionImpactPoolAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "int256",
+          "name": "totalPendingImpactAmount",
+          "type": "int256"
+        }
+      ],
+      "name": "InsufficientMinPositionImpactPoolAmount",
       "type": "error"
     },
     {
@@ -1865,6 +1907,17 @@
       "inputs": [
         {
           "internalType": "uint256",
+          "name": "eid",
+          "type": "uint256"
+        }
+      ],
+      "name": "InvalidEid",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
           "name": "executionFee",
           "type": "uint256"
         },
@@ -2122,6 +2175,11 @@
         }
       ],
       "name": "InvalidHoldingAddress",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidInitializer",
       "type": "error"
     },
     {
@@ -2955,6 +3013,27 @@
       "inputs": [
         {
           "internalType": "uint256",
+          "name": "poolUsd",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "maxLendableUsd",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "lentUsd",
+          "type": "uint256"
+        }
+      ],
+      "name": "MaxLendableFactorForWithdrawalsExceeded",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
           "name": "openInterest",
           "type": "uint256"
         },
@@ -3610,6 +3689,22 @@
       "inputs": [
         {
           "internalType": "uint256",
+          "name": "lentAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "totalReductionAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "ReductionExceedsLentAmount",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
           "name": "calldataLength",
           "type": "uint256"
         }
@@ -3893,6 +3988,17 @@
         }
       ],
       "name": "SyncConfigUpdatesDisabledForParameter",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "target",
+          "type": "address"
+        }
+      ],
+      "name": "TargetIsNotAContract",
       "type": "error"
     },
     {

@@ -70,12 +70,39 @@
     {
       "inputs": [
         {
+          "internalType": "uint256",
+          "name": "gas",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "estimatedGasLimit",
+          "type": "uint256"
+        }
+      ],
+      "name": "InsufficientGasLeft",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "address",
           "name": "token",
           "type": "address"
         }
       ],
       "name": "InvalidBridgeOutToken",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "eid",
+          "type": "uint256"
+        }
+      ],
+      "name": "InvalidEid",
       "type": "error"
     },
     {
@@ -140,6 +167,11 @@
           "internalType": "address",
           "name": "account",
           "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "srcChainId",
+          "type": "uint256"
         },
         {
           "components": [
