@@ -19,10 +19,11 @@ import { TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import { ApyTooltipContent } from "./ApyTooltipContent";
+import { FeeApyLabel } from "./FeeApyLabel";
 import type { Props } from "./GmList";
 import { GmListItem } from "./GmListItem";
 import { GmTokensTotalBalanceInfo } from "./GmTokensTotalBalanceInfo";
+import { PerformanceLabel } from "./PerformanceLabel";
 import { sortGmTokensDefault } from "./sortGmTokensDefault";
 
 export function GlvList({
@@ -115,26 +116,11 @@ export function GlvList({
                     />
                   </TableTh>
                   <TableTh>
-                    <TooltipWithPortal
-                      handle={t`FEE APY`}
-                      className="normal-case"
-                      position="bottom-end"
-                      content={<ApyTooltipContent />}
-                    />
+                    <FeeApyLabel upperCase />
                   </TableTh>
 
                   <TableTh>
-                    <TooltipWithPortal
-                      handle={t`PERFORMANCE`}
-                      className="normal-case"
-                      position="bottom-end"
-                      content={
-                        <Trans>
-                          Pool returns compared to the benchmark, based on UNI V2-style rebalancing of the long-short
-                          token in the corresponding GM or GLV.
-                        </Trans>
-                      }
-                    />
+                    <PerformanceLabel upperCase />
                   </TableTh>
 
                   <TableTh>

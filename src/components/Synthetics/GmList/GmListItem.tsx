@@ -38,6 +38,8 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import { GmTokensBalanceInfo } from "./GmTokensTotalBalanceInfo";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { FeeApyLabel } from "./FeeApyLabel";
+import { PerformanceLabel } from "./PerformanceLabel";
 
 export const tokenAddressStyle = { fontSize: 5 };
 
@@ -192,11 +194,11 @@ export function GmListItem({
             }
           />
           <SyntheticsInfoRow
-            label={<Trans>Fee APY</Trans>}
+            label={<FeeApyLabel />}
             value={<AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />}
           />
           <SyntheticsInfoRow
-            label={<Trans>Performance</Trans>}
+            label={<PerformanceLabel />}
             value={performance ? formatPerformanceBps(performance) : "..."}
           />
         </div>

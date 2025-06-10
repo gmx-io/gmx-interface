@@ -23,9 +23,10 @@ import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table"
 import { ButtonRowScrollFadeContainer, TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import { ApyTooltipContent } from "./ApyTooltipContent";
+import { FeeApyLabel } from "./FeeApyLabel";
 import { GmListItem } from "./GmListItem";
 import { GmTokensTotalBalanceInfo } from "./GmTokensTotalBalanceInfo";
+import { PerformanceLabel } from "./PerformanceLabel";
 import { useFilterSortPools } from "./useFilterSortPools";
 
 export type Props = {
@@ -178,27 +179,12 @@ export function GmList({
                   </TableTh>
                   <TableTh>
                     <Sorter {...getSorterProps("apy")}>
-                      <TooltipWithPortal
-                        handle={t`FEE APY`}
-                        className="normal-case"
-                        position="bottom-end"
-                        renderContent={ApyTooltipContent}
-                      />
+                      <FeeApyLabel upperCase />
                     </Sorter>
                   </TableTh>
                   <TableTh>
                     <Sorter {...getSorterProps("performance")}>
-                      <TooltipWithPortal
-                        handle={t`PERFORMANCE`}
-                        className="normal-case"
-                        position="bottom-end"
-                        content={
-                          <Trans>
-                            Pool returns compared to the benchmark, based on UNI V2-style rebalancing of the long-short
-                            token in the corresponding GM or GLV.
-                          </Trans>
-                        }
-                      />
+                      <PerformanceLabel upperCase />
                     </Sorter>
                   </TableTh>
 
