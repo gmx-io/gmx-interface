@@ -6,7 +6,7 @@ import { GelatoPollingTiming, metrics } from "lib/metrics";
 import { sleep } from "lib/sleep";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 
-import { GelatoTaskStatus, TransactionWaiterResult } from "./types";
+import type { GelatoTaskStatus, TransactionWaiterResult } from "./types";
 
 export type ExpressTxnData = {
   callData: string;

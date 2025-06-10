@@ -1,6 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { memo, useCallback, useMemo, useState } from "react";
 
+import { getChainName } from "config/chains";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 import {
@@ -15,6 +16,7 @@ import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets
 import { getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
+import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -30,21 +32,21 @@ export function ClaimablePositionPriceImpactRebateModal({
   onClose: () => void;
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const total = useSelector(selectClaimsPriceImpactClaimableTotal);
   const totalUsd = useMemo(() => formatDeltaUsd(total), [total]);
-  const { signer, account } = useWallet();
+  const { signer, account, active } = useWallet();
   const groups = useSelector(selectClaimsGroupedPositionPriceImpactClaimableFees);
   const claimablePositionPriceImpactFees = useSelector(selectClaimablePositionPriceImpactFees);
-
-  const [buttonText, buttonDisabled] = useMemo(() => {
-    if (isSubmitting) return [t`Claiming...`, true];
-    return [t`Claim`, false];
-  }, [isSubmitting]);
 
   const handleSubmit = useCallback(async () => {
     if (!signer) throw new Error("No signer");
     if (!account) throw new Error("No account");
+
+    if (srcChainId !== undefined) {
+      switchNetwork(chainId, active);
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -57,7 +59,15 @@ export function ClaimablePositionPriceImpactRebateModal({
     } finally {
       setIsSubmitting(false);
     }
-  }, [account, chainId, claimablePositionPriceImpactFees, onClose, signer]);
+  }, [account, active, chainId, claimablePositionPriceImpactFees, onClose, signer, srcChainId]);
+
+  const [buttonText, buttonDisabled] = useMemo(() => {
+    if (srcChainId !== undefined) {
+      return [t`Switch to ${getChainName(chainId)}`, false];
+    }
+    if (isSubmitting) return [t`Claiming...`, true];
+    return [t`Claim`, false];
+  }, [chainId, isSubmitting, srcChainId]);
 
   return (
     <Modal

@@ -1,6 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { useState } from "react";
 
+import { getChainName } from "config/chains";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   MarketInfo,
@@ -12,6 +13,7 @@ import { claimFundingFeesTxn } from "domain/synthetics/markets/claimFundingFeesT
 import { convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
+import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
@@ -28,8 +30,8 @@ type Props = {
 
 export function ClaimModal(p: Props) {
   const { isVisible, onClose, setPendingTxns } = p;
-  const { account, signer } = useWallet();
-  const { chainId } = useChainId();
+  const { account, signer, active } = useWallet();
+  const { chainId, srcChainId } = useChainId();
   const marketsInfoData = useMarketsInfoData();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -132,6 +134,27 @@ export function ClaimModal(p: Props) {
       .finally(() => setIsSubmitting(false));
   }
 
+  let buttonState: { text: string; onClick?: () => void; disabled?: boolean } | undefined;
+  if (isSubmitting) {
+    buttonState = {
+      text: t`Claiming...`,
+      disabled: true,
+    };
+  } else if (srcChainId !== undefined) {
+    const settlementChainName = getChainName(chainId);
+    buttonState = {
+      text: t`Switch to ${settlementChainName}`,
+      onClick: () => {
+        switchNetwork(chainId, active);
+      },
+    };
+  } else {
+    buttonState = {
+      text: t`Claim`,
+      onClick: onSubmit,
+    };
+  }
+
   return (
     <Modal
       className="Confirmation-box ClaimableModal"
@@ -169,8 +192,8 @@ export function ClaimModal(p: Props) {
         </div>
       </div>
       <div className="ClaimModal-content">{markets.map(renderMarketSection)}</div>
-      <Button className="w-full" variant="primary-action" onClick={onSubmit} disabled={isSubmitting}>
-        {isSubmitting ? t`Claiming...` : t`Claim`}
+      <Button className="w-full" variant="primary-action" onClick={buttonState.onClick} disabled={buttonState.disabled}>
+        {buttonState.text}
       </Button>
     </Modal>
   );

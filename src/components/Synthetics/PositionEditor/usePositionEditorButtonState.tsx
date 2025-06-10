@@ -251,6 +251,10 @@ export function usePositionEditorButtonState(operation: Operation): {
   });
 
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
+    if (srcChainId !== undefined) {
+      return { tokensToApprove: [], isAllowanceLoaded: true };
+    }
+
     if (!selectedCollateralAddress || collateralDeltaAmount === undefined) {
       return { tokensToApprove: [], isAllowanceLoaded: false };
     }
@@ -278,6 +282,7 @@ export function usePositionEditorButtonState(operation: Operation): {
 
     return approvalRequirements;
   }, [
+    srcChainId,
     selectedCollateralAddress,
     collateralDeltaAmount,
     chainId,

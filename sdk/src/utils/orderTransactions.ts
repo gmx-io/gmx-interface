@@ -298,7 +298,6 @@ export function buildIncreaseOrderPayload(
     shouldUnwrapNativeToken: tokenTransfersParams.isNativePayment,
     autoCancel: p.autoCancel,
     referralCode: p.referralCode ?? zeroHash,
-    // TODO Add only in multichain
     dataList: [],
   };
 

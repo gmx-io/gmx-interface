@@ -143,13 +143,16 @@ export function useTradeboxButtonState({
   });
 
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
+    if (srcChainId !== undefined) {
+      return { tokensToApprove: [], isAllowanceLoaded: true };
+    }
+
     if (
       !fromToken ||
       payAmount === undefined ||
       !payTokenAllowance.tokensAllowanceData ||
       !payTokenAllowance.spenderAddress ||
-      !gasPaymentToken ||
-      srcChainId !== undefined
+      !gasPaymentToken
     ) {
       return { tokensToApprove: [], isAllowanceLoaded: false };
     }

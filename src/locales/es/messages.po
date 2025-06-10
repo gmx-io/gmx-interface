@@ -427,6 +427,11 @@ msgstr ""
 msgid "sell"
 msgstr ""
 
+#: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Switch to {0}"
+msgstr ""
+
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
 msgid "Positions"
@@ -2029,6 +2034,10 @@ msgstr ""
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Checking code..."
 msgstr "Comprobando código..."
+
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+msgid "Switch to {settlementChainName}"
+msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
