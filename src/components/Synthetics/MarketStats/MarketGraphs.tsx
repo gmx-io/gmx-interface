@@ -143,7 +143,15 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
 
   const graphTitleLabelMap = useLocalizedMap(MARKET_GRAPHS_TITLE_LABELS);
 
-  const poolsTabs = <PoolsTabs<PoolsTimeRange> tabs={timeRangeTabs} selected={timeRange} setSelected={setTimeRange} />;
+  const poolsTabs = (
+    <PoolsTabs<PoolsTimeRange>
+      tabs={timeRangeTabs}
+      selected={timeRange}
+      setSelected={setTimeRange}
+      className={isMobile ? "w-full gap-4" : undefined}
+      itemClassName={isMobile ? "text-center grow" : undefined}
+    />
+  );
 
   const marketGraphsTabsLabelMap = useLocalizedMap(MARKET_GRAPHS_TABS_LABELS);
 
@@ -180,6 +188,9 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
                 marketTokensData,
               })}
               label={graphTitleLabelMap[marketGraphType]}
+              valueClassName={cx({
+                "text-green-300": marketGraphType === "performance" && glvPerformance[address] > 0,
+              })}
             />
             {!isMobile ? <div className="ml-auto">{poolsTabs}</div> : null}
           </div>
@@ -305,7 +316,7 @@ const GraphChart = ({
   const axisTick = useMemo(() => ({ fill: "var(--color-slate-100)", fontSize: isMobile ? 12 : 14 }), [isMobile]);
   return (
     <div>
-      <ResponsiveContainer height={300} width="100%">
+      <ResponsiveContainer height={isMobile ? 260 : 300} width="100%">
         <LineChart data={data[marketGraphType]} margin={GRAPH_MARGIN}>
           <Line
             type="linear"
@@ -322,7 +333,7 @@ const GraphChart = ({
             tickLine={false}
             axisLine={false}
             tick={axisTick}
-            minTickGap={32}
+            minTickGap={isMobile ? 16 : 32}
           />
           <YAxis dataKey="value" tickFormatter={formatAxisValue} tickLine={false} axisLine={false} tick={axisTick} />
         </LineChart>
@@ -345,10 +356,18 @@ const GraphTooltip = ({ active, payload, formatValue }: any) => {
   return null;
 };
 
-const GraphValue = ({ value, label }: { value: string | undefined; label: ReactNode }) => {
+const GraphValue = ({
+  value,
+  label,
+  valueClassName,
+}: {
+  value: string | undefined;
+  label: ReactNode;
+  valueClassName?: string;
+}) => {
   return (
     <div className="flex items-center gap-8">
-      <span className="text-[24px]">{value ?? "..."}</span>
+      <span className={cx("text-[24px]", valueClassName)}>{value ?? "..."}</span>
       <span className="text-body-medium text-slate-100">{label}</span>
     </div>
   );

@@ -13,16 +13,18 @@ export function PoolsTabs<T extends string | number>({
   selected,
   setSelected,
   itemClassName,
+  className,
 }: {
   tabs: PoolTab<T>[];
   selected: T;
   setSelected: (tab: T) => void;
   itemClassName?: string;
+  className?: string;
 }) {
   const isMobile = usePoolsIsMobilePage();
 
   return (
-    <div className="flex flex-wrap gap-8">
+    <div className={cx("flex flex-wrap gap-8", className)}>
       {tabs.map((tab) => (
         <div
           key={tab.value as string}

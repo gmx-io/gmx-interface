@@ -130,7 +130,7 @@ export function PoolListItem(props: {
               ) : showAllPools ? (
                 <div className="flex items-center leading-1">
                   <span>{indexName && indexName}</span>
-                  <span className="subtext">[{getMarketPoolName(glvOrMarketInfo, "/")}]</span>
+                  <span className="subtext">[{getMarketPoolName(glvOrMarketInfo, "-")}]</span>
                 </div>
               ) : (
                 <div className="Token-text">{poolName}</div>

@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { Provider, ethers } from "ethers";
 import { Suspense, lazy, useEffect, useRef } from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import type { Address } from "viem";
 
 import { ARBITRUM } from "config/chains";
@@ -83,6 +83,13 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       unsubscribe();
     };
   }, [chainId, vaultAddress, positionRouterAddress, wsProvider, hasV1LostFocus]);
+
+  const { pathname } = useLocation();
+
+  // new page should be scrolled to top
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   return (
     <Switch>

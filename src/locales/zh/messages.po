@@ -240,7 +240,7 @@ msgstr "启用杠杆发送"
 msgid "Show error"
 msgstr ""
 
-#: src/components/MintableAmount/MintableAmount.tsx
+#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "{0} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
@@ -1680,6 +1680,11 @@ msgstr ""
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "MARKETS"
 msgstr "市场"
+
+#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
+#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
+msgid "Max {0}"
+msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "This token automatically accrues fees from leverage trading and swaps for the {marketName} market. It is also exposed to {exposedToLabel} as per the composition displayed."
@@ -3233,6 +3238,10 @@ msgstr "选择语言"
 msgid "Direction"
 msgstr ""
 
+#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
+msgid "GM can be sold for {0} and {1} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open positions."
+msgstr ""
+
 #: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "Graph showing performance vs benchmark over the selected period."
@@ -4735,6 +4744,10 @@ msgstr ""
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Price on Arbitrum"
 msgstr "Arbitrum上的价格"
+
+#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
+msgid "GM can be sold for {0} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open positions."
+msgstr ""
 
 #: src/components/Synthetics/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -6539,7 +6552,7 @@ msgstr "购买/出售GLP"
 msgid "Open {0} in Explorer"
 msgstr ""
 
-#: src/components/MintableAmount/MintableAmount.tsx
+#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 

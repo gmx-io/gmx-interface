@@ -92,15 +92,13 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
             }
           />
 
-          <PoolsDetailsMarketAmount
-            label={<Trans>Wallet</Trans>}
-            value={formatUsd(marketBalanceUsd)}
-            secondaryValue={
-              typeof marketBalance === "bigint" && typeof marketToken?.decimals === "number"
-                ? `${formatBalanceAmount(marketBalance, marketToken?.decimals, undefined, true)} ${isGlv ? "GLV" : "GM"}`
-                : undefined
-            }
-          />
+          {typeof marketBalance === "bigint" && typeof marketToken?.decimals === "number" ? (
+            <PoolsDetailsMarketAmount
+              label={<Trans>Wallet</Trans>}
+              value={formatUsd(marketBalanceUsd)}
+              secondaryValue={`${formatBalanceAmount(marketBalance, marketToken?.decimals, undefined, true)} ${isGlv ? "GLV" : "GM"}`}
+            />
+          ) : null}
 
           {marketEarnings ? (
             <PoolsDetailsMarketAmount

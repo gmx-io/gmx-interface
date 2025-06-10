@@ -7,9 +7,7 @@ import {
   selectGlvInfoLoading,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
-import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
-import useWallet from "lib/wallets/useWallet";
+import { useMarketTokensData } from "domain/synthetics/markets";
 import PoolsCard from "pages/Pools/PoolsCard";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
@@ -22,7 +20,6 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { FeeApyLabel } from "./FeeApyLabel";
 import type { Props } from "./GmList";
 import { GmListItem } from "./GmListItem";
-import { GmTokensTotalBalanceInfo } from "./GmTokensTotalBalanceInfo";
 import { PerformanceLabel } from "./PerformanceLabel";
 import { sortGmTokensDefault } from "./sortGmTokensDefault";
 
@@ -43,9 +40,6 @@ export function GlvList({
   const glvsLoading = useSelector(selectGlvInfoLoading);
 
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit, withGlv: true });
-  const { active: isConnected } = useWallet();
-
-  const userEarnings = useUserEarnings(chainId);
 
   const isLoading = !marketsInfo || !marketTokensData || glvsLoading;
 
@@ -56,11 +50,6 @@ export function GlvList({
 
     return sortGmTokensDefault(marketsInfo, marketTokensData);
   }, [marketsInfo, marketTokensData]);
-
-  const userTotalGmInfo = useMemo(() => {
-    if (!isConnected) return;
-    return getTotalGmInfo(marketTokensData);
-  }, [marketTokensData, isConnected]);
 
   const rows =
     sortedGlvTokens.length > 0 &&
@@ -108,12 +97,7 @@ export function GlvList({
                     <Trans>TVL (SUPPLY)</Trans>
                   </TableTh>
                   <TableTh>
-                    <GmTokensTotalBalanceInfo
-                      balance={userTotalGmInfo?.balance}
-                      balanceUsd={userTotalGmInfo?.balanceUsd}
-                      userEarnings={userEarnings}
-                      label={t`WALLET`}
-                    />
+                    <Trans>WALLET</Trans>
                   </TableTh>
                   <TableTh>
                     <FeeApyLabel upperCase />

@@ -10,7 +10,7 @@ import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { useMarketsInfoRequest } from "domain/synthetics/markets/useMarketsInfoRequest";
 import { convertPoolsTimeRangeToApyPeriod, usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
 import { convertPoolsTimeRangeToPeriod } from "domain/synthetics/markets/usePoolsTimeRange";
-import { usePoolsTvl } from "domain/synthetics/markets/usePoolsTvl";
+import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
@@ -115,7 +115,9 @@ export default function Pools() {
 
 function PoolsTvl() {
   const { chainId } = useChainId();
-  const tvl = usePoolsTvl({ chainId });
+  const v2Stats = useV2Stats(chainId);
+
+  const tvl = v2Stats?.totalGMLiquidity;
 
   return (
     <div className="flex flex-col">
