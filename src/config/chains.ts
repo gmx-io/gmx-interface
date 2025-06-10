@@ -1,14 +1,15 @@
 import { ethers } from "ethers";
 import sample from "lodash/sample";
 
-import type { NetworkMetadata } from "lib/wallets";
 import {
+  BOTANIX,
   SUPPORTED_CHAIN_IDS as SDK_SUPPORTED_CHAIN_IDS,
   SUPPORTED_CHAIN_IDS_DEV as SDK_SUPPORTED_CHAIN_IDS_DEV,
+  UiContractsChain,
 } from "sdk/configs/chains";
 
 import { isDevelopment } from "./env";
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET, ETH_MAINNET } from "./static/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ETH_MAINNET } from "./static/chains";
 
 export * from "./static/chains";
 export { getChainName, CHAIN_NAMES_MAP } from "../../sdk/src/configs/chains";
@@ -24,10 +25,11 @@ export const ENV_AVALANCHE_RPC_URLS = import.meta.env.VITE_APP_AVALANCHE_RPC_URL
 export const DEFAULT_CHAIN_ID = ARBITRUM;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
-export const IS_NETWORK_DISABLED = {
+export const IS_NETWORK_DISABLED: Record<UiContractsChain, boolean> = {
   [ARBITRUM]: false,
   [AVALANCHE]: false,
-  [BSС_MAINNET]: false,
+  [AVALANCHE_FUJI]: false,
+  [BOTANIX]: false,
 };
 
 export const NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR = {
@@ -37,22 +39,6 @@ export const NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR = {
 } as const;
 
 const constants = {
-  [BSС_MAINNET]: {
-    nativeTokenSymbol: "BNB",
-    defaultCollateralSymbol: "BUSD",
-    defaultFlagOrdersEnabled: false,
-    positionReaderPropsLength: 8,
-    v2: false,
-  },
-
-  [BSС_TESTNET]: {
-    nativeTokenSymbol: "BNB",
-    defaultCollateralSymbol: "BUSD",
-    defaultFlagOrdersEnabled: true,
-    positionReaderPropsLength: 8,
-    v2: false,
-  },
-
   [ARBITRUM]: {
     nativeTokenSymbol: "ETH",
     wrappedTokenSymbol: "WETH",
@@ -94,32 +80,31 @@ const constants = {
     // contract requires that execution fee be strictly greater than instead of gte
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
   },
+
+  [BOTANIX]: {
+    // TODO: check_botanix
+    nativeTokenSymbol: "BTC",
+    wrappedTokenSymbol: "WBTC",
+    defaultCollateralSymbol: "USDC",
+    defaultFlagOrdersEnabled: true,
+    positionReaderPropsLength: 9,
+    v2: true,
+
+    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
+    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
+    // contract requires that execution fee be strictly greater than instead of gte
+    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
+  },
 };
 
 const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io"];
 
-export const RPC_PROVIDERS = {
+export const RPC_PROVIDERS: Record<UiContractsChain | typeof ETH_MAINNET, string[]> = {
   [ETH_MAINNET]: ["https://rpc.ankr.com/eth"],
-  [BSС_MAINNET]: [
-    "https://bsc-dataseed.binance.org",
-    "https://bsc-dataseed1.defibit.io",
-    "https://bsc-dataseed1.ninicoin.io",
-    "https://bsc-dataseed2.defibit.io",
-    "https://bsc-dataseed3.defibit.io",
-    "https://bsc-dataseed4.defibit.io",
-    "https://bsc-dataseed2.ninicoin.io",
-    "https://bsc-dataseed3.ninicoin.io",
-    "https://bsc-dataseed4.ninicoin.io",
-    "https://bsc-dataseed1.binance.org",
-    "https://bsc-dataseed2.binance.org",
-    "https://bsc-dataseed3.binance.org",
-    "https://bsc-dataseed4.binance.org",
-  ],
-  [BSС_TESTNET]: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
   [ARBITRUM]: [
     "https://arb1.arbitrum.io/rpc",
     "https://arbitrum-one-rpc.publicnode.com",
-    "https://1rpc.io/arb",
+    // "https://1rpc.io/arb",
     "https://arbitrum-one.public.blastapi.io",
     "https://arbitrum.drpc.org",
     "https://rpc.ankr.com/arbitrum",
@@ -135,9 +120,10 @@ export const RPC_PROVIDERS = {
     // "https://ava-testnet.public.blastapi.io/v1/avax/fuji/public",
     // "https://rpc.ankr.com/avalanche_fuji",
   ],
+  [BOTANIX]: ["https://rpc.botanixlabs.com", "https://rpc.ankr.com/botanix_mainnet"],
 };
 
-export const FALLBACK_PROVIDERS = {
+export const FALLBACK_PROVIDERS: Record<UiContractsChain, string[]> = {
   [ARBITRUM]: ENV_ARBITRUM_RPC_URLS ? JSON.parse(ENV_ARBITRUM_RPC_URLS) : [getAlchemyArbitrumHttpUrl()],
   [AVALANCHE]: ENV_AVALANCHE_RPC_URLS ? JSON.parse(ENV_AVALANCHE_RPC_URLS) : [getAlchemyAvalancheHttpUrl()],
   [AVALANCHE_FUJI]: [
@@ -145,64 +131,7 @@ export const FALLBACK_PROVIDERS = {
     "https://api.avax-test.network/ext/bc/C/rpc",
     "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
   ],
-};
-
-export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
-  [BSС_MAINNET]: {
-    chainId: "0x" + BSС_MAINNET.toString(16),
-    chainName: "BSC",
-    nativeCurrency: {
-      name: "BNB",
-      symbol: "BNB",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[BSС_MAINNET],
-    blockExplorerUrls: ["https://bscscan.com"],
-  },
-  [BSС_TESTNET]: {
-    chainId: "0x" + BSС_TESTNET.toString(16),
-    chainName: "BSC Testnet",
-    nativeCurrency: {
-      name: "BNB",
-      symbol: "BNB",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[BSС_TESTNET],
-    blockExplorerUrls: ["https://testnet.bscscan.com/"],
-  },
-  [ARBITRUM]: {
-    chainId: "0x" + ARBITRUM.toString(16),
-    chainName: "Arbitrum",
-    nativeCurrency: {
-      name: "ETH",
-      symbol: "ETH",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[ARBITRUM],
-    blockExplorerUrls: [getExplorerUrl(ARBITRUM)],
-  },
-  [AVALANCHE]: {
-    chainId: "0x" + AVALANCHE.toString(16),
-    chainName: "Avalanche",
-    nativeCurrency: {
-      name: "AVAX",
-      symbol: "AVAX",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[AVALANCHE],
-    blockExplorerUrls: [getExplorerUrl(AVALANCHE)],
-  },
-  [AVALANCHE_FUJI]: {
-    chainId: "0x" + AVALANCHE_FUJI.toString(16),
-    chainName: "Avalanche Fuji Testnet",
-    nativeCurrency: {
-      name: "AVAX",
-      symbol: "AVAX",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[AVALANCHE_FUJI],
-    blockExplorerUrls: [getExplorerUrl(AVALANCHE_FUJI)],
-  },
+  [BOTANIX]: [], // TODO: check_botanix
 };
 
 export const getConstant = (chainId: number, key: string) => {
@@ -245,16 +174,14 @@ export function getExplorerUrl(chainId) {
     return "https://ropsten.etherscan.io/";
   } else if (chainId === 42) {
     return "https://kovan.etherscan.io/";
-  } else if (chainId === BSС_MAINNET) {
-    return "https://bscscan.com/";
-  } else if (chainId === BSС_TESTNET) {
-    return "https://testnet.bscscan.com/";
   } else if (chainId === ARBITRUM) {
     return "https://arbiscan.io/";
   } else if (chainId === AVALANCHE) {
     return "https://snowtrace.io/";
   } else if (chainId === AVALANCHE_FUJI) {
     return "https://testnet.snowtrace.io/";
+  } else if (chainId === BOTANIX) {
+    return "https://botanixscan.io/";
   }
   return "https://etherscan.io/";
 }

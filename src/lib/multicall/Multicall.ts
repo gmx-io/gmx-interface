@@ -1,7 +1,7 @@
-import { ClientConfig, createPublicClient, http } from "viem";
+import { Chain, ClientConfig, createPublicClient, http } from "viem";
 import { arbitrum, avalanche, avalancheFuji } from "viem/chains";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, UiContractsChain, getViemChain } from "config/chains";
 import { isWebWorker } from "config/env";
 import {
   MulticallErrorEvent,
@@ -21,19 +21,13 @@ import { serializeMulticallErrors } from "./utils";
 
 export const MAX_TIMEOUT = 20000;
 
-const CHAIN_BY_CHAIN_ID = {
-  [AVALANCHE_FUJI]: avalancheFuji,
-  [ARBITRUM]: arbitrum,
-  [AVALANCHE]: avalanche,
-};
-
 export type MulticallProviderUrls = {
   primary: string;
   secondary: string;
 };
 
 const BATCH_CONFIGS: Record<
-  number,
+  UiContractsChain,
   {
     http: {
       batchSize: number;
@@ -78,6 +72,18 @@ const BATCH_CONFIGS: Record<
       },
     },
   },
+  [BOTANIX]: {
+    http: {
+      batchSize: 0,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
+  }
 };
 
 export class Multicall {
@@ -108,7 +114,7 @@ export class Multicall {
       }),
       pollingInterval: undefined,
       batch: BATCH_CONFIGS[chainId].client,
-      chain: CHAIN_BY_CHAIN_ID[chainId],
+      chain: getViemChain(chainId) as Chain,
     });
   }
 

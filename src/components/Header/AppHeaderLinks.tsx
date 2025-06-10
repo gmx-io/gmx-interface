@@ -3,6 +3,8 @@ import { useCallback } from "react";
 import { FiX } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
+import { BOTANIX } from "config/chains";
+import { useChainId } from "lib/chains";
 import { isHomeSite } from "lib/legacy";
 import { useNotifyModalState } from "lib/useNotifyModalState";
 import { userAnalytics } from "lib/userAnalytics";
@@ -30,6 +32,11 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
     (match, location) => Boolean(match) || location.pathname.startsWith("/competitions"),
     []
   );
+
+  const { chainId } = useChainId();
+
+  const isBotanix = chainId === BOTANIX;
+
   return (
     <div className="App-header-links">
       {small && (
@@ -60,23 +67,25 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
           <Trans>Buy</Trans>
         </HeaderLink>
       </div>
-      <div className="App-header-link-container">
-        <HeaderLink
-          onClick={() => {
-            userAnalytics.pushEvent<ReferralTopMenuClickEvent>({
-              event: "ReferralCodeAction",
-              data: {
-                action: "ReferralTopMenuClick",
-              },
-            });
-          }}
-          qa="referrals"
-          to="/referrals"
-          showRedirectModal={showRedirectModal}
-        >
-          <Trans>Referrals</Trans>
-        </HeaderLink>
-      </div>
+      {!isBotanix && (
+        <div className="App-header-link-container">
+          <HeaderLink
+            onClick={() => {
+              userAnalytics.pushEvent<ReferralTopMenuClickEvent>({
+                event: "ReferralCodeAction",
+                data: {
+                  action: "ReferralTopMenuClick",
+                },
+              });
+            }}
+            qa="referrals"
+            to="/referrals"
+            showRedirectModal={showRedirectModal}
+          >
+            <Trans>Referrals</Trans>
+          </HeaderLink>
+        </div>
+      )}
       <div className="App-header-link-container">
         <HeaderLink
           qa="leaderboard"

@@ -4,6 +4,7 @@ import maxBy from "lodash/maxBy";
 import minBy from "lodash/minBy";
 import orderBy from "lodash/orderBy";
 import { useEffect, useState } from "react";
+import { Address } from "viem";
 
 import {
   RPC_PROVIDERS,
@@ -13,6 +14,8 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   getFallbackRpcUrl,
+  UiContractsChain,
+  BOTANIX,
 } from "config/chains";
 import { getMulticallContract, getDataStoreContract } from "config/contracts";
 import { getContract } from "config/contracts";
@@ -38,10 +41,11 @@ const RPC_TRACKER_UPDATE_EVENT = "rpc-tracker-update-event";
 // DataStore field used for probing
 const PROBE_SAMPLE_FIELD = "minCollateralFactor";
 // Markets used for `PROBE_SAMPLE_FIELD` reading
-const PROBE_SAMPLE_MARKET = {
+const PROBE_SAMPLE_MARKET: Record<UiContractsChain, Address> = {
   [ARBITRUM]: "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336", // ETH/USD
   [AVALANCHE]: "0xB7e69749E3d2EDd90ea59A4932EFEa2D41E245d7", // ETH/USD
   [AVALANCHE_FUJI]: "0xbf338a6C595f06B7Cfff2FA8c958d49201466374", // ETH/USD
+  [BOTANIX]: "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336", // ETH/USD
 };
 
 type ProbeData = {
@@ -60,8 +64,8 @@ type ProviderData = {
 };
 
 type RpcTrackerState = {
-  [chainId: number]: {
-    chainId: number;
+  [chainId in UiContractsChain]: {
+    chainId: UiContractsChain;
     lastUsage: Date | null;
     currentPrimaryUrl: string;
     currentSecondaryUrl: string;
@@ -117,7 +121,7 @@ function trackRpcProviders({ warmUp = false } = {}) {
   });
 }
 
-async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerState[number]) {
+async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerState[UiContractsChain]) {
   const providersList = Object.values(providers);
 
   const providersToProbe = getIsLargeAccount() ? providersList : providersList.filter(({ isPublic }) => isPublic);
@@ -245,7 +249,7 @@ function setCurrentProviders(chainId: number, { primaryUrl, secondaryUrl, bestBe
 }
 
 async function probeRpc(
-  chainId: number,
+  chainId: UiContractsChain,
   provider: Provider,
   providerUrl: string,
   isPublic: boolean
@@ -405,7 +409,7 @@ function initTrackerState() {
     };
 
     return acc;
-  }, {});
+  }, {} as RpcTrackerState);
 }
 
 export function getCurrentRpcUrls(chainId: number) {

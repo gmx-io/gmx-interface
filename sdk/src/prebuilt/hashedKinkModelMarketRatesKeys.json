@@ -1,4 +1,14 @@
 {
+  "3637": {
+    "0x6bFDD025827F7CE130BcfC446927AEF34ae2a98d": {
+      "optimalUsageFactorLong": "0xfa69cbf64ee47e4126c036bc70c223c711e39dba98ca9adb5d1114447692007c",
+      "optimalUsageFactorShort": "0xf9c2f103bc3d763b06ac92154847f3915e85a4b03a982ec69effecb40c0ae20f",
+      "baseBorrowingFactorLong": "0x4be52e9d009ab8bdbf6ad5524196e2d08a5e269af99218f8c7c7c9752093692f",
+      "baseBorrowingFactorShort": "0x068ee704d21753b16c63dcee8d3fd81e98e5124de0401ee6f1e0c4ee98938a0d",
+      "aboveOptimalUsageBorrowingFactorLong": "0x11697e736a0b59f616867fbe856c1c44dd826a785c7155fd4c5657ac4a92a7f7",
+      "aboveOptimalUsageBorrowingFactorShort": "0x9e1a14e48896d7b69cbcd1632d3dd4061324a789f9be86617408fe12ec5700e6"
+    }
+  },
   "42161": {
     "0x47c031236e19d024b42f8AE6780E44A573170703": {
       "optimalUsageFactorLong": "0x81cc37ff3833298b6114d8317fd6c5996dc7a8ab53fefd3edb9f415ca4267824",
