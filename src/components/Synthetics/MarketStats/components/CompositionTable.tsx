@@ -98,12 +98,13 @@ const CompositionTableRow = ({ item, sum }: { item: CompositionItem; sum: bigint
   return (
     <TableTr className="pointer-events-none !border-0">
       <TableTd>
-        <div className="flex flex-row items-center gap-8">
-          <span className="inline-block h-10 w-10 shrink-0 rounded-10" style={tokenCircleStyles} />
+        <div className="flex flex-row items-center gap-4">
+          <span className="mr-8 inline-block h-10 w-10 shrink-0 rounded-10" style={tokenCircleStyles} />
           <TokenIcon
             symbol={item.type === "market" ? item.market.indexToken.symbol : item.token.symbol}
             displaySize={24}
           />
+          {item.type === "backing" ? <span className="capitalize text-slate-100">{item.side}:</span> : null}
           <span className="overflow-hidden text-ellipsis whitespace-nowrap">
             {item.type === "market" ? <>{getMarketIndexName(item.market)}</> : item.token.symbol}
           </span>

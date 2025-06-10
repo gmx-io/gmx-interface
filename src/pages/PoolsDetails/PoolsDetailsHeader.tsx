@@ -77,7 +77,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
               />
             ) : null}
             <div className={cx("flex flex-col gap-4 pr-20")}>
-              <div className="text-body-large">{getMarketIndexName(glvOrMarketInfo)}</div>
+              <div className="text-body-large">{isGlv ? "GLV" : `GM: ${getMarketIndexName(glvOrMarketInfo)}`}</div>
               <div className="text-body-small text-slate-100">{`[${getMarketPoolName(glvOrMarketInfo)}]`}</div>
             </div>
           </div>
