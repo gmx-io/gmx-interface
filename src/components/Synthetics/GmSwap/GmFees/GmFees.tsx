@@ -46,16 +46,28 @@ export function GmFees(p: Props) {
         <Tooltip
           className="GmFees-tooltip"
           handle={
-            <span className={cx({ positive: totalFeesUsd !== undefined && totalFeesUsd > 0 })}>
-              {formatPercentage(p.swapPriceImpact?.precisePercentage, {
-                bps: false,
-                displayDecimals: 3,
-              })}
+            <span>
+              <span
+                className={cx({
+                  "text-green-300": p.swapPriceImpact?.deltaUsd !== undefined && p.swapPriceImpact.deltaUsd > 0,
+                })}
+              >
+                {p.swapPriceImpact?.deltaUsd !== undefined && p.swapPriceImpact.deltaUsd > 0 ? "+" : "-"}
+                {formatPercentage(p.swapPriceImpact?.precisePercentage, {
+                  bps: false,
+                  displayDecimals: 3,
+                })}
+              </span>
               {" / "}
-              {formatPercentage(p.totalFees?.precisePercentage, {
-                bps: false,
-                displayDecimals: 3,
-              })}
+              <span
+                className={cx({ "text-green-300": p.totalFees?.deltaUsd !== undefined && p.totalFees.deltaUsd > 0 })}
+              >
+                {p.totalFees?.deltaUsd !== undefined && p.totalFees.deltaUsd > 0 ? "+" : "-"}
+                {formatPercentage(p.totalFees?.precisePercentage, {
+                  bps: false,
+                  displayDecimals: 3,
+                })}
+              </span>
             </span>
           }
           position="top-end"
