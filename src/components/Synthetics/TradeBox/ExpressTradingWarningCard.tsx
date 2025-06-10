@@ -122,7 +122,7 @@ export function ExpressTradingWarningCard({
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowOutOfGasPaymentBalanceWarning) {
     icon = <ExpressIcon className="-mt-6 ml-2" />;
-    content = <Trans>One-click and Express Trading are not available due to insufficient balance.</Trans>;
+    content = <Trans>Express and One-Click Trading are unavailable due to insufficient gas balance.</Trans>;
 
     buttonText = <Trans>Buy {gasPaymentTokensText}</Trans>;
     onClick = () => {

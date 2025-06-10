@@ -441,6 +441,7 @@ function useOrdersControl() {
         expressParams,
         batchParams,
         simulationParams: undefined,
+        noncesData: globalExpressParams?.noncesData,
         callback: makeOrderTxnCallback({}),
       })
         .then(async (tx) => {
@@ -496,6 +497,7 @@ function useOrdersControl() {
         expressParams,
         batchParams,
         simulationParams: undefined,
+        noncesData: globalExpressParams?.noncesData,
         callback: makeOrderTxnCallback({}),
       }).finally(() => {
         setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key));

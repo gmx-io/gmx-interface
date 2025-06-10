@@ -180,7 +180,7 @@ export function useFastMarketsInfoRequest(chainId: number) {
             swapImpactPoolAmountLong: BigInt(mInfo.swapImpactPoolAmountLong),
             swapImpactPoolAmountShort: BigInt(mInfo.swapImpactPoolAmountShort),
 
-            atomicSwapFeeFactor: BigInt(mInfo.atomicSwapFeeFactor),
+            atomicSwapFeeFactor: 0n,
 
             maxPnlFactorForTradersLong: BigInt(mInfo.maxPnlFactorForTradersLong),
             maxPnlFactorForTradersShort: BigInt(mInfo.maxPnlFactorForTradersShort),
