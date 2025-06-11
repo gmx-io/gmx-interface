@@ -543,7 +543,7 @@ function SettingButton({
   return (
     <div
       className={cx(
-        `flex cursor-pointer select-none items-center border border-solid`,
+        `flex cursor-pointer select-none items-center rounded-4 border border-solid`,
         active ? "border-gray-400" : "border-stroke-primary",
         disabled && "muted"
       )}
