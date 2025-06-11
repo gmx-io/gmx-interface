@@ -3,12 +3,22 @@ import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-export function PerformanceLabel({ upperCase = false }: { upperCase?: boolean }) {
+export function PerformanceLabel({
+  upperCase = false,
+  short = true,
+  disableHandleStyle = false,
+}: {
+  upperCase?: boolean;
+  short?: boolean;
+  disableHandleStyle?: boolean;
+}) {
+  const label = short ? t`Ann. Performance` : t`Annualized Performance`;
   return (
     <TooltipWithPortal
-      handle={upperCase ? t`ANN. PERFORMANCE` : t`Ann. Performance`}
+      handle={upperCase ? label.toUpperCase() : label}
       className="normal-case"
       position="bottom-end"
+      disableHandleStyle={disableHandleStyle}
       content={
         <Trans>
           Annualized return of the pool or vault over the selected period, compared to a benchmark that follows Uniswap

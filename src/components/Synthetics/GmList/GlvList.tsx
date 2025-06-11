@@ -93,16 +93,16 @@ export function GlvList({
                   <TableTh className="!pl-0">
                     <Trans>VAULT</Trans>
                   </TableTh>
-                  <TableTh className="w-[12%]">
+                  <TableTh>
                     <Trans>TVL (SUPPLY)</Trans>
                   </TableTh>
-                  <TableTh className="w-[12%]">
+                  <TableTh>
                     <Trans>WALLET</Trans>
                   </TableTh>
-                  <TableTh className="w-[12%]">
+                  <TableTh>
                     <FeeApyLabel upperCase />
                   </TableTh>
-                  <TableTh className="w-[20%]">
+                  <TableTh>
                     <PerformanceLabel upperCase />
                   </TableTh>
                   <TableTh>
@@ -113,6 +113,7 @@ export function GlvList({
                       content={<Trans>Graph showing performance vs benchmark over the selected period.</Trans>}
                     />
                   </TableTh>
+                  <TableTh className="!pr-0" />
                 </TableTheadTr>
               </thead>
               <tbody>

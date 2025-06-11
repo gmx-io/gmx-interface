@@ -162,12 +162,12 @@ export function GmList({
                   <TableTh className="!pl-0">
                     <Trans>POOL</Trans>
                   </TableTh>
-                  <TableTh className="w-[12%]">
+                  <TableTh>
                     <Sorter {...getSorterProps("totalSupply")}>
                       <Trans>TVL (SUPPLY)</Trans>
                     </Sorter>
                   </TableTh>
-                  <TableTh className="w-[12%]">
+                  <TableTh>
                     <Sorter {...getSorterProps("wallet")}>
                       <GmTokensTotalBalanceInfo
                         balance={userTotalGmInfo?.balance}
@@ -177,17 +177,16 @@ export function GmList({
                       />
                     </Sorter>
                   </TableTh>
-                  <TableTh className="w-[12%]">
+                  <TableTh>
                     <Sorter {...getSorterProps("apy")}>
                       <FeeApyLabel upperCase />
                     </Sorter>
                   </TableTh>
-                  <TableTh className="w-[20%]">
+                  <TableTh>
                     <Sorter {...getSorterProps("performance")}>
                       <PerformanceLabel upperCase />
                     </Sorter>
                   </TableTh>
-
                   <TableTh>
                     <TooltipWithPortal
                       handle={t`SNAPSHOT`}
@@ -196,6 +195,7 @@ export function GmList({
                       content={<Trans>Graph showing performance vs benchmark over the selected period.</Trans>}
                     />
                   </TableTh>
+                  <TableTh className="!pr-0" />
                 </TableTheadTr>
               </thead>
               <tbody>

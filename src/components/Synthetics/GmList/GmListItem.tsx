@@ -1,7 +1,6 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import React from "react";
-import { useHistory } from "react-router-dom";
 import { Line, LineChart } from "recharts";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -29,6 +28,7 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import { AprInfo } from "components/AprInfo/AprInfo";
+import Button from "components/Button/Button";
 import ButtonLink from "components/Button/ButtonLink";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { TableTd, TableTr } from "components/Table/Table";
@@ -96,8 +96,6 @@ export function GmListItem({
   const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
   const isMobile = usePoolsIsMobilePage();
-
-  const history = useHistory();
 
   if (!token || !indexToken || !longToken || !shortToken || !marketOrGlv) {
     return null;
@@ -216,20 +214,13 @@ export function GmListItem({
   }
 
   return (
-    <TableTr
-      key={token.address}
-      hoverable={true}
-      bordered={false}
-      onClick={() => {
-        history.push(`/pools/details?market=${marketOrGlvTokenAddress}`);
-      }}
-    >
-      <TableTd className={cx({ "!pr-12": !onFavoriteClick, "!pl-8": onFavoriteClick })}>
+    <TableTr key={token.address} bordered={false} hoverable={false}>
+      <TableTd className="!pl-0">
         <div className="w-[220px]">
           <div className="flex items-start">
             {onFavoriteClick && (
               <div
-                className="ml-4 mr-4 cursor-pointer self-center rounded-4 p-8 text-16 hover:bg-cold-blue-700 active:bg-cold-blue-500"
+                className="mr-4 cursor-pointer self-center rounded-4 p-8 text-16 hover:bg-cold-blue-700 active:bg-cold-blue-500"
                 onClick={handleFavoriteClick}
               >
                 <FavoriteStar isFavorite={isFavorite} />
@@ -289,8 +280,18 @@ export function GmListItem({
 
       <TableTd>{performance ? <div>{formatPerformanceBps(performance)}</div> : "..."}</TableTd>
 
-      <TableTd className="flex justify-end">
+      <TableTd>
         <SnapshotGraph performanceSnapshots={performanceSnapshots ?? EMPTY_ARRAY} performance={performance ?? 0} />
+      </TableTd>
+
+      <TableTd className="!pr-0">
+        <Button
+          className="flex-grow !px-30 !py-12"
+          variant="secondary"
+          to={`/pools/details?market=${marketOrGlvTokenAddress}`}
+        >
+          <Trans>Details</Trans>
+        </Button>
       </TableTd>
     </TableTr>
   );

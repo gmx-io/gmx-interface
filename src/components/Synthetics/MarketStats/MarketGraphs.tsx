@@ -33,6 +33,8 @@ import { usePrevious } from "lib/usePrevious";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import { PoolsDetailsCard } from "pages/PoolsDetails/PoolsDetailsCard";
 
+import { FeeApyLabel } from "../GmList/FeeApyLabel";
+import { PerformanceLabel } from "../GmList/PerformanceLabel";
 import { PoolsTabs } from "../PoolsTabs/PoolsTabs";
 
 const MARKET_GRAPHS_TYPES = ["performance", "price", "feeApr"] as const;
@@ -43,12 +45,6 @@ const MARKET_GRAPHS_TABS_LABELS: Record<MarketGraphType, MessageDescriptor> = {
   performance: msg`Performance`,
   price: msg`Price`,
   feeApr: msg`Fee APR`,
-};
-
-const MARKET_GRAPHS_TITLE_LABELS: Record<MarketGraphType, MessageDescriptor> = {
-  performance: msg`Annualized Performance`,
-  price: msg`Current Price`,
-  feeApr: msg`Fee APY`,
 };
 
 const getGraphValue = ({
@@ -142,7 +138,11 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
     []
   );
 
-  const graphTitleLabelMap = useLocalizedMap(MARKET_GRAPHS_TITLE_LABELS);
+  const graphTitleLabelMap = {
+    performance: <PerformanceLabel short={false} disableHandleStyle />,
+    price: t`Current Price`,
+    feeApr: <FeeApyLabel disableHandleStyle />,
+  };
 
   const poolsTabs = (
     <PoolsTabs<PoolsTimeRange>
@@ -190,7 +190,8 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
               })}
               label={graphTitleLabelMap[marketGraphType]}
               valueClassName={cx({
-                "text-green-300": marketGraphType === "performance" && glvPerformance[address] > 0,
+                "text-green-300":
+                  marketGraphType === "performance" && (glvPerformance[address] > 0 || gmPerformance[address] > 0),
               })}
             />
             {!isMobile ? <div className="ml-auto">{poolsTabs}</div> : null}
