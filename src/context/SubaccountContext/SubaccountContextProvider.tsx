@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import React, { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
 import { getSubaccountApprovalKey, getSubaccountConfigKey } from "config/localStorage";
@@ -193,7 +193,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       }
     }
 
-    if (!config.address) {
+    if (!config?.address) {
       const error = "Missed subaccount config";
       // eslint-disable-next-line no-console
       console.error(error);
@@ -314,7 +314,6 @@ function SubaccountActivateNotification({ toastId }: { toastId: number }) {
   const generatingStatus = useMemo(() => {
     let text = t`Generating session...`;
     let status: TransactionStatusType = "loading";
-    let statusText: ReactNode | undefined;
 
     if (subaccountActivationState === SubaccountActivationState.GeneratingError) {
       status = "error";
@@ -324,13 +323,12 @@ function SubaccountActivateNotification({ toastId }: { toastId: number }) {
       text = t`Session generated`;
     }
 
-    return <TransactionStatus status={status} text={text} statusText={statusText} />;
+    return <TransactionStatus status={status} text={text} />;
   }, [subaccountActivationState]);
 
   const approvalSigningStatus = useMemo(() => {
     let status: TransactionStatusType = "muted";
     let text = t`Signing approval...`;
-    let statusText: ReactNode | undefined;
 
     if (subaccountActivationState === SubaccountActivationState.ApprovalSigning) {
       status = "loading";
@@ -342,7 +340,7 @@ function SubaccountActivateNotification({ toastId }: { toastId: number }) {
       text = t`Approval signed`;
     }
 
-    return <TransactionStatus status={status} text={text} statusText={statusText} />;
+    return <TransactionStatus status={status} text={text} />;
   }, [subaccountActivationState]);
 
   useEffect(
@@ -388,7 +386,6 @@ function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
   const deactivatingStatus = useMemo(() => {
     let text = t`Deactivating...`;
     let status: TransactionStatusType = "loading";
-    let statusText: ReactNode | undefined;
 
     if (subaccountDeactivationState === SubaccountDeactivationState.Error) {
       status = "error";
@@ -398,7 +395,7 @@ function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
       text = t`Deactivated`;
     }
 
-    return <TransactionStatus status={status} text={text} statusText={statusText} />;
+    return <TransactionStatus status={status} text={text} />;
   }, [subaccountDeactivationState]);
 
   useEffect(

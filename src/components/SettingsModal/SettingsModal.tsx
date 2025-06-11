@@ -33,6 +33,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ExpressIcon from "img/ic_express.svg?react";
 import HourGlassIcon from "img/ic_hourglass.svg?react";
+import InfoIcon from "img/ic_info.svg?react";
 import OneClickIcon from "img/ic_one_click.svg?react";
 
 enum TradingMode {
@@ -247,7 +248,13 @@ export function SettingsModal({
                 <SettingButton
                   title="Classic"
                   description="On-chain signing of every transaction"
-                  icon={<HourGlassIcon />}
+                  info={
+                    <Trans>
+                      Your wallet, your keys. You sign each transaction on-chain using your own RPC, typically provided
+                      by your wallet. Gas payments in ETH.
+                    </Trans>
+                  }
+                  icon={<HourGlassIcon className="opacity-50" />}
                   active={tradingMode === TradingMode.Classic}
                   onClick={() => handleTradingModeChange(TradingMode.Classic)}
                 />
@@ -255,7 +262,14 @@ export function SettingsModal({
                 <SettingButton
                   title="Express"
                   description="Imroved reliability with private RPCs"
+                  info={
+                    <Trans>
+                      Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs
+                      for reliability, even during network congestion. Gas payments in USDC or WETH.
+                    </Trans>
+                  }
                   icon={<ExpressIcon />}
+                  disabled={isOutOfGasPaymentBalance}
                   chip={
                     <Chip color="gray">
                       <Trans>Optimal</Trans>
@@ -269,6 +283,14 @@ export function SettingsModal({
                   title="Express + 1CT"
                   description="Instant trade without confirmation with Express reliability"
                   icon={<OneClickIcon />}
+                  disabled={isOutOfGasPaymentBalance}
+                  info={
+                    <Trans>
+                      Your wallet, your keys. GMX executes transactions for you without individual signing, providing a
+                      seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during
+                      network congestion. Gas payments in USDC or WETH.
+                    </Trans>
+                  }
                   chip={
                     <Chip color="blue">
                       <Trans>Fastest</Trans>
@@ -282,15 +304,18 @@ export function SettingsModal({
 
                 <OldSubaccountWithdraw />
 
-                <GasPaymentTokenSelector
-                  curentTokenAddress={settings.gasPaymentTokenAddress}
-                  onSelectToken={settings.setGasPaymentTokenAddress}
-                />
-
                 {Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount)) && (
+                  <OneClickAdvancedSettings />
+                )}
+
+                {settings.expressOrdersEnabled && (
                   <>
                     <div className="divider"></div>
-                    <OneClickAdvancedSettings />
+
+                    <GasPaymentTokenSelector
+                      curentTokenAddress={settings.gasPaymentTokenAddress}
+                      onSelectToken={settings.setGasPaymentTokenAddress}
+                    />
                   </>
                 )}
               </SettingsSection>
@@ -503,6 +528,8 @@ function SettingButton({
   onClick,
   active,
   chip,
+  info,
+  disabled,
 }: {
   title: string;
   icon: ReactNode;
@@ -510,19 +537,31 @@ function SettingButton({
   active?: boolean;
   chip?: ReactNode;
   onClick: () => void;
+  info?: ReactNode;
+  disabled?: boolean;
 }) {
   return (
     <div
       className={cx(
         `flex cursor-pointer select-none items-center border border-solid`,
-        active ? "border-gray-400" : "border-stroke-primary"
+        active ? "border-gray-400" : "border-stroke-primary",
+        disabled && "muted"
       )}
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
     >
       <div className="px-16 py-6">{icon}</div>
       <div className="flex py-6 ">
         <div className="flex flex-col border-l border-solid border-stroke-primary pl-12">
-          <div>{title}</div>
+          <div className="flex items-center gap-4">
+            <div>{title}</div>
+            {info && (
+              <TooltipWithPortal
+                content={info}
+                handleClassName="-mb-6"
+                handle={<InfoIcon className="muted size-12" />}
+              />
+            )}
+          </div>
           <div className="text-slate-100">{description}</div>
         </div>
         {chip ? <div className="mr-6 mt-4">{chip}</div> : null}
