@@ -147,7 +147,7 @@
   margin-bottom: 1.5rem;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1335px) {
   .buttons-group {
     grid-template-columns: repeat(2, 1fr);
   }
