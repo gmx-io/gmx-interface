@@ -543,9 +543,9 @@ function SettingButton({
   return (
     <div
       className={cx(
-        `flex cursor-pointer select-none items-center rounded-4 border border-solid`,
+        `flex select-none items-center rounded-4 border border-solid`,
         active ? "border-gray-400" : "border-stroke-primary",
-        disabled && "muted"
+        disabled ? "muted cursor-not-allowed" : "cursor-pointer"
       )}
       onClick={disabled ? undefined : onClick}
     >
