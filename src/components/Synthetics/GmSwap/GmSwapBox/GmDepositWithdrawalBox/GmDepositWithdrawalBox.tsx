@@ -30,7 +30,6 @@ import { formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "li
 import { getByKey } from "lib/objects";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { useBestGmPoolAddressForGlv } from "components/Synthetics/MarketStats/hooks/useBestGmPoolForGlv";
@@ -42,7 +41,7 @@ import { useGmWarningState } from "../useGmWarningState";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
 import { useGmDepositWithdrawalBoxState } from "./useGmDepositWithdrawalBoxState";
-import { useSubmitButtonState } from "./useSubmitButtonState";
+import { useGmSwapSubmitState } from "./useGmSwapSubmitState";
 import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
 import { useUpdateTokens } from "./useUpdateTokens";
 import type { GmSwapBoxProps } from "../GmSwapBox";
@@ -50,6 +49,7 @@ import { Swap } from "../Swap";
 import { Mode, Operation } from "../types";
 import { InfoRows } from "./InfoRows";
 import { GmSwapBoxPoolRow } from "../GmSwapBoxPoolRow";
+import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
 import { SelectedPool } from "../SelectedPool";
 
 export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
@@ -357,25 +357,17 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     isMarketTokenDeposit,
   });
 
-  const {
-    isAccepted,
-    setIsAccepted,
-    consentError,
-    shouldShowWarning,
-    shouldShowWarningForExecutionFee,
-    shouldShowWarningForPosition,
-  } = useGmWarningState({
+  const { shouldShowWarning, shouldShowWarningForExecutionFee, shouldShowWarningForPosition } = useGmWarningState({
     executionFee,
     fees,
   });
 
-  const submitState = useSubmitButtonState({
+  const submitState = useGmSwapSubmitState({
     routerAddress,
     amounts,
     executionFee,
     fees,
     isDeposit,
-    consentError,
     marketInfo,
     glvInfo,
     marketToken: marketToken!,
@@ -392,6 +384,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     selectedMarketInfoForGlv: getByKey(marketsInfoData, selectedMarketForGlv),
     isMarketTokenDeposit: isMarketTokenDeposit,
     marketsInfoData,
+    glvAndMarketsInfoData,
   });
 
   const firstTokenMaxDetails = useMaxAvailableAmount({
@@ -788,58 +781,28 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           </div>
         </div>
 
-        <GmSwapBoxPoolRow
-          indexName={indexName}
-          marketAddress={selectedGlvOrMarketAddress}
-          marketTokensData={marketTokensData}
-          isDeposit={isDeposit}
-          glvInfo={glvInfo}
-          selectedMarketForGlv={selectedMarketForGlv}
-          disablePoolSelector={fromMarketTokenInputState !== undefined}
-          onMarketChange={glvInfo ? onMarketChange : onGlvOrMarketChange}
-        />
+        <div className="flex flex-col gap-14">
+          <GmSwapBoxPoolRow
+            indexName={indexName}
+            marketAddress={selectedGlvOrMarketAddress}
+            marketTokensData={marketTokensData}
+            isDeposit={isDeposit}
+            glvInfo={glvInfo}
+            selectedMarketForGlv={selectedMarketForGlv}
+            disablePoolSelector={fromMarketTokenInputState !== undefined}
+            onMarketChange={glvInfo ? onMarketChange : onGlvOrMarketChange}
+          />
 
-        {submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && <div className="App-card-divider " />}
-
-        {submitState.isAllowanceLoaded && submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && (
-          <div>
-            {submitState.tokensToApprove.map((address) => {
-              const token = getTokenData(allTokensData, address)!;
-              const marketOrGlv = getByKey(glvAndMarketsInfoData, address);
-              let marketTokenData = address === marketToken?.address && getByKey(marketsInfoData, marketToken?.address);
-              return (
-                <div key={address}>
-                  <ApproveTokenButton
-                    key={address}
-                    tokenAddress={address}
-                    tokenSymbol={
-                      marketTokenData
-                        ? isGlvInfo(marketOrGlv)
-                          ? marketOrGlv.glvToken.contractSymbol
-                          : token.assetSymbol ?? token.symbol
-                        : token.assetSymbol ?? token.symbol
-                    }
-                    spenderAddress={routerAddress}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        )}
+          <GmSwapWarningsRow
+            shouldShowWarning={shouldShowWarning}
+            shouldShowWarningForPosition={shouldShowWarningForPosition}
+            shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
+          />
+        </div>
 
         <div className="Exchange-swap-button-container mb-14 border-b border-stroke-primary pb-14">{submitButton}</div>
 
-        <InfoRows
-          fees={fees}
-          executionFee={executionFee}
-          setIsAccepted={setIsAccepted}
-          shouldShowWarning={shouldShowWarning}
-          shouldShowWarningForPosition={shouldShowWarningForPosition}
-          shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
-          isAccepted={isAccepted}
-          isDeposit={isDeposit}
-          isSingle={isSingle}
-        />
+        <InfoRows fees={fees} executionFee={executionFee} isDeposit={isDeposit} />
       </form>
     </>
   );

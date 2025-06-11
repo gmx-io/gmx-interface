@@ -17,12 +17,10 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GlvOrMarketInfo, getGlvOrMarketAddress, getMarketIndexName } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
-import { getTokenData } from "domain/synthetics/tokens";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
@@ -115,14 +113,7 @@ export function GmShiftBox({
 
   const { fees, executionFee } = useShiftFees({ gasLimits, gasPrice, tokensData, amounts, chainId });
 
-  const {
-    isAccepted,
-    setIsAccepted,
-    consentError,
-    shouldShowWarning,
-    shouldShowWarningForExecutionFee,
-    shouldShowWarningForPosition,
-  } = useGmWarningState({
+  const { shouldShowWarning, shouldShowWarningForExecutionFee, shouldShowWarningForPosition } = useGmWarningState({
     executionFee,
     fees,
   });
@@ -148,13 +139,13 @@ export function GmShiftBox({
     toMarketInfo,
     toToken,
     fees,
-    consentError,
     shouldDisableValidationForTesting,
     tokensData,
     marketTokenUsd: amounts?.fromTokenUsd,
     executionFee,
     routerAddress,
     payTokenAddresses: [selectedToken?.address ?? ""],
+    glvOrMarketInfoData: glvAndMarketsInfoData,
   });
 
   useUpdateMarkets({
@@ -312,25 +303,12 @@ export function GmShiftBox({
             </BuyInputSection>
           </div>
         </div>
-        {submitState.isAllowanceLoaded && submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && (
-          <div>
-            {submitState.tokensToApprove.map((address) => {
-              const token = getTokenData(tokensData, address)!;
-              let marketTokenData =
-                address === selectedToken?.address && getByKey(glvAndMarketsInfoData, selectedToken?.address);
-              return (
-                <div key={address}>
-                  <ApproveTokenButton
-                    key={address}
-                    tokenAddress={address}
-                    tokenSymbol={marketTokenData ? `GM: ${marketTokenData.name}` : token.assetSymbol ?? token.symbol}
-                    spenderAddress={routerAddress}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        )}
+
+        <GmSwapWarningsRow
+          shouldShowWarning={shouldShowWarning}
+          shouldShowWarningForPosition={shouldShowWarningForPosition}
+          shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
+        />
 
         <div className="w-full border-b border-stroke-primary pb-14">
           <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
@@ -351,15 +329,6 @@ export function GmShiftBox({
               {isExecutionDetailsOpen ? <FaChevronUp size={10} /> : <FaChevronDown size={10} />}
             </SyntheticsInfoRow>
             {isExecutionDetailsOpen && <NetworkFeeRow rowPadding executionFee={executionFee} />}
-
-            <GmSwapWarningsRow
-              isSingle={false}
-              isAccepted={isAccepted}
-              shouldShowWarning={shouldShowWarning}
-              shouldShowWarningForPosition={shouldShowWarningForPosition}
-              shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
-              setIsAccepted={setIsAccepted}
-            />
           </div>
         </ExchangeInfo>
       </form>

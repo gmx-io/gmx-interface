@@ -817,8 +817,8 @@ msgid "Invalid slippage value"
 msgstr "Invalid slippage value"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
-msgid "price impact"
-msgstr "price impact"
+#~ msgid "price impact"
+#~ msgstr "price impact"
 
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/OrderEditor.jsx
@@ -932,7 +932,7 @@ msgstr "Swap Limit: Swap tokens when the trigger price is reached."
 msgid "{0} GLP have been reserved for vesting."
 msgstr "{0} GLP have been reserved for vesting."
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Selling {symbol}..."
 msgstr "Selling {symbol}..."
 
@@ -973,7 +973,7 @@ msgstr "Swap on 1inch"
 msgid "Open {0} in Coingecko"
 msgstr "Open {0} in Coingecko"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buy {operationTokenSymbol}"
 msgstr "Buy {operationTokenSymbol}"
 
@@ -1868,8 +1868,8 @@ msgstr "GMX Alerts"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
-msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
-msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
+#~ msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
+#~ msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Show details"
@@ -2015,7 +2015,7 @@ msgstr "No open position, order cannot be executed unless a position is opened"
 msgid "Short Positions"
 msgstr "Short Positions"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
 msgstr "Buying {symbol}..."
 
@@ -2056,7 +2056,7 @@ msgstr "We value your experience and insights and invite you to participate in a
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Referrals/AddAffiliateCode.jsx
 #: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2440,8 +2440,8 @@ msgid "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
 msgstr "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
-msgid "network fees"
-msgstr "network fees"
+#~ msgid "network fees"
+#~ msgstr "network fees"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has staked GMX/GLP before"
@@ -2555,8 +2555,8 @@ msgid "There may not be sufficient liquidity to execute the pay token to collate
 msgstr "There may not be sufficient liquidity to execute the pay token to collateral token swap when the price conditions are met."
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
-msgid "Acknowledge high {0} and {1}"
-msgstr "Acknowledge high {0} and {1}"
+#~ msgid "Acknowledge high {0} and {1}"
+#~ msgstr "Acknowledge high {0} and {1}"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "User Quests"
@@ -2908,6 +2908,13 @@ msgstr "SL"
 #: src/pages/Stake/StakeModal.tsx
 msgid "Stake"
 msgstr "Stake"
+
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+msgid "Allow {tokenSymbol} to be spent"
+msgstr "Allow {tokenSymbol} to be spent"
 
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Help us improve"
@@ -4803,8 +4810,8 @@ msgid "Referral code updated!"
 msgstr "Referral code updated!"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
-msgid "Acknowledge high {0}"
-msgstr "Acknowledge high {0}"
+#~ msgid "Acknowledge high {0}"
+#~ msgstr "Acknowledge high {0}"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Favorites"
@@ -5073,7 +5080,7 @@ msgstr "Swap Order submitted!"
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Synthetics/Claims/Claims.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
@@ -5469,6 +5476,7 @@ msgstr "Claim Affiliate Vault Rewards"
 msgid "Select different tokens"
 msgstr "Select different tokens"
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 #: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High Network Fees"
 msgstr "High Network Fees"
@@ -5527,8 +5535,8 @@ msgstr "Trade Confirmations"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
-msgid "Acknowledgment Required"
-msgstr "Acknowledgment Required"
+#~ msgid "Acknowledgment Required"
+#~ msgstr "Acknowledgment Required"
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
@@ -6119,6 +6127,7 @@ msgstr "Expected execution price for the order, including the current price impa
 msgid "Acknowledge epoch is ending in {minutes} minutes"
 msgstr "Acknowledge epoch is ending in {minutes} minutes"
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 #: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High Price Impact"
 msgstr "High Price Impact"
@@ -6390,7 +6399,7 @@ msgstr "Unknown shift GM order"
 msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
 msgstr "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Shifting {symbol}..."
 msgstr "Shifting {symbol}..."
 
@@ -7129,7 +7138,7 @@ msgstr "Telegram account"
 msgid "SOON"
 msgstr "SOON"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "Sell {operationTokenSymbol}"
 
@@ -8510,8 +8519,8 @@ msgid "Price Impact Rebate Claimed"
 msgstr "Price Impact Rebate Claimed"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
-msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
-msgstr "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
+#~ msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
+#~ msgstr "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX"

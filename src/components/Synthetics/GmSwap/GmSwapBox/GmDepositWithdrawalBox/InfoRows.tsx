@@ -9,31 +9,16 @@ import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
-import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
 import { Operation } from "../types";
 
 export function InfoRows({
   isDeposit,
   fees,
   executionFee,
-  isSingle,
-
-  shouldShowWarning,
-  shouldShowWarningForPosition,
-  shouldShowWarningForExecutionFee,
-  isAccepted,
-  setIsAccepted,
 }: {
   isDeposit: boolean;
   fees: GmSwapFees | undefined;
   executionFee: ExecutionFee | undefined;
-  isSingle: boolean;
-
-  shouldShowWarning: boolean;
-  shouldShowWarningForPosition: boolean;
-  shouldShowWarningForExecutionFee: boolean;
-  isAccepted: boolean;
-  setIsAccepted: (val: boolean) => void;
 }) {
   const [isExecutionDetailsOpen, setIsExecutionDetailsOpen] = useState(false);
 
@@ -57,15 +42,6 @@ export function InfoRows({
         </SyntheticsInfoRow>
         {isExecutionDetailsOpen ? <NetworkFeeRow rowPadding executionFee={executionFee} /> : null}
       </div>
-
-      <GmSwapWarningsRow
-        isSingle={isSingle}
-        isAccepted={isAccepted}
-        shouldShowWarning={shouldShowWarning}
-        shouldShowWarningForPosition={shouldShowWarningForPosition}
-        shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
-        setIsAccepted={setIsAccepted}
-      />
     </div>
   );
 }

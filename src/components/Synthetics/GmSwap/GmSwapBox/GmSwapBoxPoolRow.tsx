@@ -58,7 +58,6 @@ export function GmSwapBoxPoolRow({
             <GmPoolsSelectorForGlvMarket
               chainId={chainId}
               label={t`Pool`}
-              className="-mr-4"
               isDeposit={isDeposit}
               selectedIndexName={indexName}
               selectedMarketAddress={selectedMarketForGlv}
@@ -76,7 +75,6 @@ export function GmSwapBoxPoolRow({
             <PoolSelector
               chainId={chainId}
               label={t`Pool`}
-              className="-mr-4"
               selectedIndexName={indexName}
               selectedMarketAddress={marketAddress}
               markets={markets}

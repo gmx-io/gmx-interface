@@ -224,7 +224,7 @@ export function GmListItem({
         history.push(`/pools/details?market=${marketOrGlvTokenAddress}`);
       }}
     >
-      <TableTd className="!pl-8">
+      <TableTd className={cx({ "!pr-12": !onFavoriteClick, "!pl-8": onFavoriteClick })}>
         <div className="w-[220px]">
           <div className="flex items-start">
             {onFavoriteClick && (
