@@ -289,7 +289,7 @@ export function GmListItem({
 
       <TableTd>{performance ? <div>{formatPerformanceBps(performance)}</div> : "..."}</TableTd>
 
-      <TableTd>
+      <TableTd className="flex justify-end">
         <SnapshotGraph performanceSnapshots={performanceSnapshots ?? EMPTY_ARRAY} performance={performance ?? 0} />
       </TableTd>
     </TableTr>

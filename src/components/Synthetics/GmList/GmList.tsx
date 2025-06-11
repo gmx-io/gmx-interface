@@ -156,18 +156,18 @@ export function GmList({
           </div>
         ) : (
           <TableScrollFadeContainer>
-            <table className="w-[max(100%,1100px)]">
+            <table className="w-[max(100%,820px)]">
               <thead>
                 <TableTheadTr bordered>
                   <TableTh className="!pl-0">
                     <Trans>POOL</Trans>
                   </TableTh>
-                  <TableTh>
+                  <TableTh className="w-[12%]">
                     <Sorter {...getSorterProps("totalSupply")}>
                       <Trans>TVL (SUPPLY)</Trans>
                     </Sorter>
                   </TableTh>
-                  <TableTh>
+                  <TableTh className="w-[12%]">
                     <Sorter {...getSorterProps("wallet")}>
                       <GmTokensTotalBalanceInfo
                         balance={userTotalGmInfo?.balance}
@@ -177,12 +177,12 @@ export function GmList({
                       />
                     </Sorter>
                   </TableTh>
-                  <TableTh>
+                  <TableTh className="w-[12%]">
                     <Sorter {...getSorterProps("apy")}>
                       <FeeApyLabel upperCase />
                     </Sorter>
                   </TableTh>
-                  <TableTh>
+                  <TableTh className="w-[20%]">
                     <Sorter {...getSorterProps("performance")}>
                       <PerformanceLabel upperCase />
                     </Sorter>

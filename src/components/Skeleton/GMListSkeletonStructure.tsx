@@ -15,25 +15,22 @@ export default function GMListSkeletonStructure({ withFavorite = true }: { withF
           </div>
         </div>
       </TableTd>
-      <TableTd>
+      <TableTd className="w-[12%]">
         <Skeleton width={130} height={12} />
         <Skeleton width={100} height={12} />
       </TableTd>
-      <TableTd>
+      <TableTd className="w-[12%]">
         <Skeleton width={100} height={12} />
         <Skeleton width={80} height={12} />
       </TableTd>
-      <TableTd>
+      <TableTd className="w-[12%]">
         <Skeleton width={72} height={12} />
       </TableTd>
-      <TableTd>
+      <TableTd className="w-[20%]">
         <Skeleton width={140} count={1} />
       </TableTd>
       <TableTd>
-        <Skeleton width={210} count={1} />
-      </TableTd>
-      <TableTd className="w-[130px]">
-        <Skeleton containerClassName="flex justify-end gap-10" className="flex-grow" width={90} inline count={1} />
+        <Skeleton containerClassName="flex justify-end gap-10" className="flex-grow" width={210} inline count={1} />
       </TableTd>
     </TableTr>
   );
