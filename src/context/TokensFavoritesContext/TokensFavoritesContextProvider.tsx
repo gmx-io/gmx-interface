@@ -1,9 +1,10 @@
 import type { MessageDescriptor } from "@lingui/core";
 import { msg } from "@lingui/macro";
 import noop from "lodash/noop";
-import { PropsWithChildren, createContext, useCallback, useContext, useMemo, useState } from "react";
+import { PropsWithChildren, createContext, useCallback, useContext, useMemo } from "react";
 
-import { TOKEN_FAVORITE_PREFERENCE_SETTINGS_KEY } from "config/localStorage";
+import { TOKEN_FAVORITES_PREFERENCE_KEY } from "config/localStorage";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import type { TokenCategory } from "sdk/types/tokens";
 
@@ -66,10 +67,18 @@ const context = createContext<TokensFavoritesContextType>({
 
 const Provider = context.Provider;
 
-localStorage.removeItem(TOKEN_FAVORITE_PREFERENCE_SETTINGS_KEY);
-
 export function TokensFavoritesContextProvider({ children }: PropsWithChildren) {
-  const [settings, setSettings] = useState<TokensFavoritesStore>(DEFAULT_TOKENS_FAVORITES_STORE);
+  const [settings, changeSettings] = useLocalStorageSerializeKey<TokensFavoritesStore>(
+    TOKEN_FAVORITES_PREFERENCE_KEY,
+    DEFAULT_TOKENS_FAVORITES_STORE
+  );
+
+  const setSettings = useCallback(
+    (update: (prev: TokensFavoritesStore) => TokensFavoritesStore) => {
+      changeSettings(update(settings ?? DEFAULT_TOKENS_FAVORITES_STORE));
+    },
+    [changeSettings, settings]
+  );
 
   const setTab = useCallback(
     (key: TokenFavoriteKey, tab: TokenFavoritesTabOption) => {
