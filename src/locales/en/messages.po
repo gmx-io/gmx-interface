@@ -2121,8 +2121,8 @@ msgid "Try Express"
 msgstr "Try Express"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Generating 1CT (One-Click Trading) session"
-msgstr "Generating 1CT (One-Click Trading) session"
+#~ msgid "Generating 1CT (One-Click Trading) session"
+#~ msgstr "Generating 1CT (One-Click Trading) session"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to deactivate"
@@ -2353,6 +2353,10 @@ msgstr "GLP buy disabled, pending {0} upgrade"
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Error submitting order.</0><1/><2>Signer address does not match receiver address.</2><3/><4>Please reload the page and try again.</4>"
 msgstr "<0>Error submitting order.</0><1/><2>Signer address does not match receiver address.</2><3/><4>Please reload the page and try again.</4>"
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Trading Mode"
+msgstr "Trading Mode"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
@@ -2920,8 +2924,8 @@ msgstr "Only positions with over {0} in \"Capital Used\" are ranked."
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Generate 1CT (One-Click Trading) session"
-msgstr "Generate 1CT (One-Click Trading) session"
+#~ msgid "Generate 1CT (One-Click Trading) session"
+#~ msgstr "Generate 1CT (One-Click Trading) session"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Accept minimum and {action}"
@@ -3240,8 +3244,8 @@ msgid "Generating session..."
 msgstr "Generating session..."
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "{actions, plural, one {1 action} other {{actions} actions}}"
-msgstr "{actions, plural, one {1 action} other {{actions} actions}}"
+#~ msgid "{actions, plural, one {1 action} other {{actions} actions}}"
+#~ msgstr "{actions, plural, one {1 action} other {{actions} actions}}"
 
 #: src/pages/Exchange/Exchange.tsx
 msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
@@ -4519,7 +4523,8 @@ msgstr "Max 10 symbols in name"
 msgid "Users"
 msgstr "Users"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/GasPaymentTokenSelector/GasPaymentTokenSelector.tsx
+#: src/components/GasPaymentTokenSelector/GasPaymentTokenSelector.tsx
 msgid "Gas Payment Token"
 msgstr "Gas Payment Token"
 
@@ -4545,6 +4550,10 @@ msgstr "Select a token"
 #: src/components/ExpressTradingGasTokenSwitchedBanner.ts/ExpressTradingGasTokenSwithedBanner.tsx
 #~ msgid "Gas Payment Token changed due to insufficient balance."
 #~ msgstr "Gas Payment Token changed due to insufficient balance."
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Optimal"
+msgstr "Optimal"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 #~ msgid "{0, plural, one {1 minute} other {{minutes} minutes}}"
@@ -4811,7 +4820,6 @@ msgstr "This competition is held on the {0} network. <0>Change your network</0> 
 msgid "Create Stop Loss"
 msgstr "Create Stop Loss"
 
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to generate session"
 msgstr "Failed to generate session"
@@ -5559,8 +5567,8 @@ msgid "Yield Yak Optimizer"
 msgstr "Yield Yak Optimizer"
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "Express Trading"
-msgstr "Express Trading"
+#~ msgid "Express Trading"
+#~ msgstr "Express Trading"
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 msgid "Incorrect Account"
@@ -7059,8 +7067,6 @@ msgid "You"
 msgstr "You"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivate 1CT (One-Click Trading)"
 msgstr "Deactivate 1CT (One-Click Trading)"
 
@@ -7267,8 +7273,8 @@ msgid "Max GM buyable amount reached"
 msgstr "Max GM buyable amount reached"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-#~ msgid "Session generated"
-#~ msgstr "Session generated"
+msgid "Session generated"
+msgstr "Session generated"
 
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
@@ -7869,6 +7875,10 @@ msgstr "{title}"
 msgid "Increasing"
 msgstr "Increasing"
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Fastest"
+msgstr "Fastest"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Avg. Lev."
 msgstr "Avg. Lev."
@@ -7954,8 +7964,8 @@ msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 msgstr "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "Express Trading streamlines your trades on GMX by replacing on-chain transactions with secure off-chain message signing, helping reduce issues from network congestion and RPC errors.<0/><1/>These signed messages are processed on-chain for you, so a gas payment token is still required."
-msgstr "Express Trading streamlines your trades on GMX by replacing on-chain transactions with secure off-chain message signing, helping reduce issues from network congestion and RPC errors.<0/><1/>These signed messages are processed on-chain for you, so a gas payment token is still required."
+#~ msgid "Express Trading streamlines your trades on GMX by replacing on-chain transactions with secure off-chain message signing, helping reduce issues from network congestion and RPC errors.<0/><1/>These signed messages are processed on-chain for you, so a gas payment token is still required."
+#~ msgstr "Express Trading streamlines your trades on GMX by replacing on-chain transactions with secure off-chain message signing, helping reduce issues from network congestion and RPC errors.<0/><1/>These signed messages are processed on-chain for you, so a gas payment token is still required."
 
 #: src/pages/Earn/UnstakeModal.tsx
 msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"
@@ -8313,6 +8323,10 @@ msgstr "Escrowed GMX APR"
 msgid "Initial collateral"
 msgstr "Initial collateral"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Activate 1CT (One-Click Trading)"
+msgstr "Activate 1CT (One-Click Trading)"
+
 #: src/components/AprInfo/AprInfo.tsx
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
 msgstr "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
@@ -8395,8 +8409,8 @@ msgid "Enter a valid coin names"
 msgstr "Enter a valid coin names"
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "One-Click Trading"
-msgstr "One-Click Trading"
+#~ msgid "One-Click Trading"
+#~ msgstr "One-Click Trading"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Cumulative PnL: <0>{0}</0>"
@@ -8968,8 +8982,8 @@ msgstr "Avalanche trading incentives"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Signing 1CT (One-Click Trading) approval"
-msgstr "Signing 1CT (One-Click Trading) approval"
+#~ msgid "Signing 1CT (One-Click Trading) approval"
+#~ msgstr "Signing 1CT (One-Click Trading) approval"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Decrease"
@@ -9238,8 +9252,8 @@ msgid "Proof of Reserves"
 msgstr "Proof of Reserves"
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} or {remainingSubaccountDays}, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings\""
-msgstr "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} or {remainingSubaccountDays}, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings\""
+#~ msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} or {remainingSubaccountDays}, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings\""
+#~ msgstr "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} or {remainingSubaccountDays}, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings\""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "General Performance Details"

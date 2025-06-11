@@ -15,8 +15,9 @@ export async function removeSubaccountTxn(chainId: number, signer: Signer, subac
 
   return callContract(chainId, subaccountRouter, "removeSubaccount", [subaccountAddress], {
     value: 0n,
-    hideSentMsg: true,
     hideSuccessMsg: true,
+    hideSentMsg: true,
+    hideErrorMsg: true,
   });
 }
 
