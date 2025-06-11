@@ -4,8 +4,9 @@ import type { Address } from "viem";
 import { getWrappedToken } from "configs/tokens";
 import { MarketsInfoData } from "types/markets";
 import { OrderType } from "types/orders";
+import { TradeAction as SubsquidTradeAction } from "types/subsquid";
 import { TokensData } from "types/tokens";
-import { PositionTradeAction, RawTradeAction, TradeAction, TradeActionType } from "types/tradeHistory";
+import { PositionTradeAction, TradeAction, TradeActionType } from "types/tradeHistory";
 import graphqlFetcher from "utils/graphqlFetcher";
 import { isIncreaseOrderType, isLimitOrderType, isSwapOrderType, isTriggerDecreaseOrderType } from "utils/orders";
 import { GraphQlFilters, buildFiltersBody } from "utils/subgraph";
@@ -286,7 +287,7 @@ export async function fetchTradeActions({
         }
       }`;
 
-  const result = await graphqlFetcher<{ tradeActions: RawTradeAction[] }>(endpoint, query);
+  const result = await graphqlFetcher<{ tradeActions: SubsquidTradeAction[] }>(endpoint, query);
 
   const rawTradeActions = result?.tradeActions || [];
 
