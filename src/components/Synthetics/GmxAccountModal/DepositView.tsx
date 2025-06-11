@@ -760,7 +760,7 @@ export const DepositView = () => {
   }
 
   let placeholder = "";
-  if (inputValue === "" && selectedToken?.symbol) {
+  if ((inputValue === undefined || inputValue === "") && selectedToken?.symbol) {
     placeholder = `0.0 ${selectedToken.symbol}`;
   } else if (selectedToken?.symbol) {
     placeholder = selectedToken.symbol;
@@ -830,7 +830,7 @@ export const DepositView = () => {
             <div className="pointer-events-none absolute left-14 top-1/2 flex max-w-[calc(100%-72px)] -translate-y-1/2 overflow-hidden">
               <div className="invisible whitespace-pre font-[RelativeNumber]">
                 {inputValue}
-                {inputValue === "" ? "" : " "}
+                {inputValue === "" || inputValue === undefined ? "" : " "}
               </div>
               <div className="font-[RelativeNumber] text-slate-100">{placeholder}</div>
             </div>
