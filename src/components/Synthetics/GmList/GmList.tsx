@@ -196,8 +196,6 @@ export function GmList({
                       content={<Trans>Graph showing performance vs benchmark over the selected period.</Trans>}
                     />
                   </TableTh>
-
-                  <TableTh className="!pr-0" />
                 </TableTheadTr>
               </thead>
               <tbody>

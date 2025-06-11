@@ -4191,6 +4191,10 @@ msgstr ""
 msgid "PnL Analysis"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmListItem.tsx
+msgid "View Details"
+msgstr ""
+
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Longs"
@@ -4425,8 +4429,8 @@ msgid "Enter a code"
 msgstr "Einen Code eingeben"
 
 #: src/components/Synthetics/GmList/GmListItem.tsx
-msgid "Details"
-msgstr ""
+#~ msgid "Details"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Umami DAO"

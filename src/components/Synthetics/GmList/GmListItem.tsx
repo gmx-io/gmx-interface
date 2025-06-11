@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import React from "react";
-import { FaChevronRight } from "react-icons/fa";
+import { useHistory } from "react-router-dom";
 import { Line, LineChart } from "recharts";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -29,7 +29,6 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import { AprInfo } from "components/AprInfo/AprInfo";
-import Button from "components/Button/Button";
 import ButtonLink from "components/Button/ButtonLink";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { TableTd, TableTr } from "components/Table/Table";
@@ -98,6 +97,8 @@ export function GmListItem({
 
   const isMobile = usePoolsIsMobilePage();
 
+  const history = useHistory();
+
   if (!token || !indexToken || !longToken || !shortToken || !marketOrGlv) {
     return null;
   }
@@ -150,7 +151,7 @@ export function GmListItem({
               </div>
             </div>
           </div>
-          <div className="ml-auto flex items-center">
+          <div className="ml-auto flex items-center gap-8">
             <div className="py-12">
               <SnapshotGraph
                 performanceSnapshots={performanceSnapshots ?? EMPTY_ARRAY}
@@ -158,12 +159,14 @@ export function GmListItem({
               />
             </div>
 
-            <ButtonLink
-              className="ml-16 bg-[#252B57] p-16 pr-14"
-              to={`/pools/details?market=${marketOrGlvTokenAddress}`}
-            >
-              <FaChevronRight size={12} className="text-slate-100" />
-            </ButtonLink>
+            {onFavoriteClick && (
+              <div
+                className="cursor-pointer self-center rounded-4 bg-[#252B57] p-12 text-16"
+                onClick={handleFavoriteClick}
+              >
+                <FavoriteStar isFavorite={isFavorite} activeClassName="!text-white" />
+              </div>
+            )}
           </div>
         </div>
 
@@ -202,18 +205,31 @@ export function GmListItem({
             value={performance ? formatPerformanceBps(performance) : "..."}
           />
         </div>
+        <ButtonLink
+          className="mt-12 bg-[#252B57] p-8 text-center"
+          to={`/pools/details?market=${marketOrGlvTokenAddress}`}
+        >
+          <Trans>View Details</Trans>
+        </ButtonLink>
       </div>
     );
   }
 
   return (
-    <TableTr key={token.address} hoverable={false} bordered={false}>
-      <TableTd className="!pl-0">
+    <TableTr
+      key={token.address}
+      hoverable={true}
+      bordered={false}
+      onClick={() => {
+        history.push(`/pools/details?market=${marketOrGlvTokenAddress}`);
+      }}
+    >
+      <TableTd className="!pl-8">
         <div className="w-[220px]">
           <div className="flex items-start">
             {onFavoriteClick && (
               <div
-                className="mr-4 cursor-pointer self-center rounded-4 p-8 text-16 hover:bg-cold-blue-700 active:bg-cold-blue-500"
+                className="ml-4 mr-4 cursor-pointer self-center rounded-4 p-8 text-16 hover:bg-cold-blue-700 active:bg-cold-blue-500"
                 onClick={handleFavoriteClick}
               >
                 <FavoriteStar isFavorite={isFavorite} />
@@ -275,16 +291,6 @@ export function GmListItem({
 
       <TableTd>
         <SnapshotGraph performanceSnapshots={performanceSnapshots ?? EMPTY_ARRAY} performance={performance ?? 0} />
-      </TableTd>
-
-      <TableTd className="!pr-0">
-        <Button
-          className="flex-grow !px-30 !py-12"
-          variant="secondary"
-          to={`/pools/details?market=${marketOrGlvTokenAddress}`}
-        >
-          <Trans>Details</Trans>
-        </Button>
       </TableTd>
     </TableTr>
   );
