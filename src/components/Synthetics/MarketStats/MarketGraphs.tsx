@@ -2,7 +2,7 @@ import { MessageDescriptor } from "@lingui/core";
 import { msg, t } from "@lingui/macro";
 import cx from "classnames";
 import format from "date-fns/format";
-import { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { USD_DECIMALS } from "config/factors";
@@ -29,6 +29,7 @@ import { formatDate } from "lib/dates";
 import { useLocalizedMap } from "lib/i18n";
 import { bigintToNumber, formatPercentage, formatUsdPrice, parseValue } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { usePrevious } from "lib/usePrevious";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import { PoolsDetailsCard } from "pages/PoolsDetails/PoolsDetailsCard";
 
@@ -299,32 +300,44 @@ const GraphChart = ({
     [aprSnapshots]
   );
 
-  const data = useMemo(
-    (): Record<MarketGraphType, GraphData[]> => ({
-      performance: performanceData,
-      price: priceData,
-      feeApr: apyData,
-    }),
-    [performanceData, priceData, apyData]
-  );
-
   const formatValue = useMemo(() => valueFormatter(marketGraphType), [marketGraphType]);
   const formatAxisValue = useMemo(() => axisValueFormatter(marketGraphType), [marketGraphType]);
 
   const isMobile = usePoolsIsMobilePage();
 
   const axisTick = useMemo(() => ({ fill: "var(--color-slate-100)", fontSize: isMobile ? 12 : 14 }), [isMobile]);
+
+  const [data, setData] = useState<GraphData[]>([]);
+
+  const prevMarketGraphType = usePrevious(marketGraphType);
+
+  useEffect(() => {
+    const dataMap = {
+      performance: performanceData,
+      price: priceData,
+      feeApr: apyData,
+    };
+
+    if (prevMarketGraphType !== marketGraphType || dataMap[marketGraphType].length > 0) {
+      setData(dataMap[marketGraphType]);
+    }
+  }, [performanceData, priceData, apyData, marketGraphType, prevMarketGraphType]);
+
   return (
     <div>
       <ResponsiveContainer height={isMobile ? 260 : 300} width="100%">
-        <LineChart data={data[marketGraphType]} margin={GRAPH_MARGIN}>
+        <LineChart data={data} margin={GRAPH_MARGIN} key={marketGraphType}>
           <Line
+            key={marketGraphType}
             type="linear"
             dataKey="value"
             stroke="var(--color-blue-300)"
             strokeWidth={2}
             dot={DOT_PROPS}
             activeDot={ACTIVE_DOT_PROPS}
+            animationEasing="ease-in-out"
+            animationDuration={750}
+            animateNewValues={true}
           />
           <Tooltip cursor={false} content={<GraphTooltip formatValue={formatValue} />} />
           <XAxis
