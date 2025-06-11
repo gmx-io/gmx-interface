@@ -549,7 +549,7 @@ function SettingButton({
       )}
       onClick={disabled ? undefined : onClick}
     >
-      <div className="px-16 py-6">{icon}</div>
+      <div className={cx("px-16 py-6", disabled && "opacity-50")}>{icon}</div>
       <div className="flex py-6 ">
         <div className="flex flex-col border-l border-solid border-stroke-primary pl-12">
           <div className="flex items-center gap-4">
