@@ -89,7 +89,7 @@ export async function estimateMultichainDepositNetworkComposeGas({
 }: {
   action?: MultichainAction;
   chainId: UiContractsChain;
-  account: Address;
+  account: string;
   srcChainId: UiSourceChain;
   tokenAddress: string;
   settlementChainPublicClient: PublicClient;
@@ -110,7 +110,7 @@ export async function estimateMultichainDepositNetworkComposeGas({
 
   const fakeAmount = FAKE_INPUT_AMOUNT_MAP[getToken(chainId, tokenAddress).symbol] ?? 10n ** 18n;
 
-  const message = OFTComposeMsgCodec.encode(0, settlementChainEndpointId, fakeAmount, composeFromWithMsg);
+  const message = OFTComposeMsgCodec.encode(0, sourceChainEndpointId, fakeAmount, composeFromWithMsg);
 
   const stargatePool = getStargatePoolAddress(chainId, tokenAddress);
 

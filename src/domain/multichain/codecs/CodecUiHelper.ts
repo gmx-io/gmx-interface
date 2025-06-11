@@ -1,5 +1,5 @@
 import { addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
-import { AbiCoder, hexlify, ParamType } from "ethers";
+import { AbiCoder, hexlify, ParamType, isHexString } from "ethers";
 import { Address, concatHex, Hex } from "viem";
 
 import { MultichainRelayParamsPayload } from "domain/synthetics/express";
@@ -88,13 +88,13 @@ export class CodecUiHelper {
   }
 
   public static encodeComposeMsg(composeFromAddress: string, msg: string) {
-    if (!msg.startsWith("0x")) {
+    if (!isHexString(msg)) {
       throw new Error("msg must start with 0x");
     }
 
-    const composeFrom = hexlify(addressToBytes32(composeFromAddress));
+    const composeFrom = hexlify(addressToBytes32(composeFromAddress)) as Hex;
 
-    const composeFromWithMsg = concatHex([composeFrom as Hex, msg as Hex]);
+    const composeFromWithMsg = concatHex([composeFrom, msg]);
 
     return composeFromWithMsg;
   }

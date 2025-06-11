@@ -1,4 +1,4 @@
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, UiContractsChain } from "config/chains";
 import { getContract } from "config/contracts";
 
 const ARBITRUM_GMX = getContract(ARBITRUM, "GMX").toLowerCase();
@@ -10,7 +10,17 @@ type Exchange = {
   links: { [key: number]: string };
 };
 
-export const EXTERNAL_LINKS = {
+export const EXTERNAL_LINKS: Record<
+  UiContractsChain,
+  {
+    networkWebsite: string;
+    buyGmx: {
+      uniswap?: string;
+      gmx?: string;
+      traderjoe?: string;
+    };
+  }
+> = {
   [ARBITRUM]: {
     networkWebsite: "https://arbitrum.io/",
     buyGmx: {
@@ -29,6 +39,10 @@ export const EXTERNAL_LINKS = {
     buyGmx: {
       traderjoe: `https://traderjoexyz.com/trade?outputCurrency=${AVALANCHE_GMX}`,
     },
+  },
+  [ARBITRUM_SEPOLIA]: {
+    networkWebsite: "https://arbitrum.io/",
+    buyGmx: {},
   },
 };
 
@@ -113,6 +127,8 @@ export const TRANSFER_EXCHANGES: Exchange[] = [
     icon: "ic_arbitrum_24.svg",
     links: {
       [ARBITRUM]: "https://bridge.arbitrum.io/",
+      [ARBITRUM_SEPOLIA]:
+        "https://bridge.arbitrum.io/?amount=0.1&sourceChain=sepolia&destinationChain=arbitrum-sepolia&tab=bridge",
     },
   },
   {

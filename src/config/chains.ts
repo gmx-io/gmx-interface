@@ -13,7 +13,7 @@ import {
 } from "sdk/configs/chains";
 
 import { isDevelopment } from "./env";
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET, ETH_MAINNET } from "./static/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ETH_MAINNET } from "./static/chains";
 
 export { CHAIN_NAMES_MAP, getChainName } from "sdk/configs/chains";
 export * from "./static/chains";
@@ -43,22 +43,6 @@ export const NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR = {
 } as const;
 
 const constants = {
-  [BSС_MAINNET]: {
-    nativeTokenSymbol: "BNB",
-    defaultCollateralSymbol: "BUSD",
-    defaultFlagOrdersEnabled: false,
-    positionReaderPropsLength: 8,
-    v2: false,
-  },
-
-  [BSС_TESTNET]: {
-    nativeTokenSymbol: "BNB",
-    defaultCollateralSymbol: "BUSD",
-    defaultFlagOrdersEnabled: true,
-    positionReaderPropsLength: 8,
-    v2: false,
-  },
-
   [ARBITRUM]: {
     nativeTokenSymbol: "ETH",
     wrappedTokenSymbol: "WETH",
@@ -114,7 +98,7 @@ const constants = {
     // contract requires that execution fee be strictly greater than instead of gte
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
   },
-};
+} satisfies Record<UiContractsChain, Record<string, any>>;
 
 const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io"];
 
@@ -161,7 +145,12 @@ export const FALLBACK_PROVIDERS: Record<UiSupportedChain, string[]> = {
   [SEPOLIA]: [],
 };
 
-export const getConstant = (chainId: number, key: string) => {
+type ConstantName = keyof (typeof constants)[UiContractsChain];
+
+export const getConstant = <T extends UiContractsChain, K extends ConstantName>(
+  chainId: T,
+  key: K
+): (typeof constants)[T][K] => {
   if (!constants[chainId]) {
     throw new Error(`Unsupported chainId ${chainId}`);
   }

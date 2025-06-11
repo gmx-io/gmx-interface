@@ -2,6 +2,7 @@ import type { Provider } from "ethers";
 import { Address, decodeErrorResult, encodePacked, Hex } from "viem";
 
 import type { UiContractsChain } from "config/chains";
+import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 import type { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import {
@@ -13,6 +14,7 @@ import {
 import {
   selectAccount,
   selectChainId,
+  selectExpressNoncesData,
   selectGasPaymentTokenAllowance,
   selectMarketsInfoData,
   selectSrcChainId,
@@ -149,7 +151,7 @@ function getRawBaseRelayerParams({
   return { rawBaseRelayParamsPayload, baseRelayFeeSwapParams };
 }
 
-const EMPTY_EXTERNAL_CALLS: ExternalCallsPayload = {
+export const EMPTY_EXTERNAL_CALLS: ExternalCallsPayload = {
   sendTokens: EMPTY_ARRAY,
   sendAmounts: EMPTY_ARRAY,
   externalCallTargets: EMPTY_ARRAY,
@@ -269,6 +271,7 @@ export const selectArbitraryRelayParamsAndPayload = createSelector(function sele
         gasPaymentParams: GasPaymentParams;
       };
       relayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload;
+      latestParamsPayload: RelayParamsPayload | MultichainRelayParamsPayload;
       fetchRelayParamsPayload: (
         provider: Provider,
         relayRouterAddress: string
@@ -287,6 +290,7 @@ export const selectArbitraryRelayParamsAndPayload = createSelector(function sele
   const tokenPermits = q(selectTokenPermits);
   const gasPaymentAllowanceData = q(selectGasPaymentTokenAllowance);
   const findSwapPath = q(selectExpressFindSwapPath);
+  const noncesData = q(selectExpressNoncesData);
 
   if (!account || !gasPaymentToken || !relayerFeeToken || !marketsInfoData) {
     return undefined;
@@ -344,7 +348,11 @@ export const selectArbitraryRelayParamsAndPayload = createSelector(function sele
       provider: Provider,
       relayRouterAddress: string
     ): Promise<RelayParamsPayload | MultichainRelayParamsPayload> => {
-      const userNonce = await getRelayRouterNonceForMultichain(provider, account, relayRouterAddress);
+      const cache =
+        getContract(chainId, "MultichainTransferRouter") === relayRouterAddress
+          ? noncesData?.multichainTransferRouter?.nonce
+          : undefined;
+      const userNonce = cache ?? (await getRelayRouterNonceForMultichain(provider, account, relayRouterAddress));
 
       return {
         ...relayParamsPayload,

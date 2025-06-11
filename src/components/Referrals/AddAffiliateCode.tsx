@@ -5,11 +5,14 @@ import type { TransactionResponse } from "ethers";
 import { useEffect, useRef, useState } from "react";
 import { useAccount } from "wagmi";
 
+import { getChainName } from "config/chains";
 import type { ReferralCodeStats } from "domain/referrals/types";
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
+import { switchNetwork } from "lib/wallets";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 
 import { getCodeError, getReferralCodeTakenStatus, getSampleReferrarStat } from "./referralsHelper";
@@ -63,8 +66,8 @@ export function AffiliateCodeForm({
   const inputRef = useRef<HTMLInputElement>(null);
   const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState("ok");
   const debouncedReferralCode = useDebounce(referralCode, 300);
-  const { chainId } = useChainId();
-  const { address: account } = useAccount();
+  const { chainId, srcChainId } = useChainId();
+  const { address: account, isConnected } = useAccount();
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -94,44 +97,6 @@ export function AffiliateCodeForm({
       cancelled = true;
     };
   }, [account, debouncedReferralCode, error, chainId]);
-
-  function getButtonError() {
-    if (!debouncedReferralCode) {
-      return t`Enter a code`;
-    }
-    if (referralCodeCheckStatus === "taken") {
-      return t`Code already taken`;
-    }
-    if (referralCodeCheckStatus === "checking") {
-      return t`Checking code...`;
-    }
-
-    return false;
-  }
-
-  const buttonError = getButtonError();
-
-  function getPrimaryText() {
-    if (buttonError) {
-      return buttonError;
-    }
-
-    if (isProcessing) {
-      return t`Creating...`;
-    }
-
-    return t`Create`;
-  }
-
-  function isPrimaryEnabled() {
-    if (buttonError) {
-      return false;
-    }
-    if (error || isProcessing) {
-      return false;
-    }
-    return true;
-  }
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -171,8 +136,55 @@ export function AffiliateCodeForm({
     }
   }
 
+  let buttonState: {
+    text: string;
+    disabled?: boolean;
+    onSubmit?: (event: React.FormEvent) => void;
+  } = {
+    text: "",
+    disabled: false,
+    onSubmit: undefined,
+  };
+
+  if (srcChainId !== undefined) {
+    buttonState = {
+      text: t`Switch to ${getChainName(srcChainId)}`,
+      disabled: false,
+      onSubmit: (event: React.FormEvent) => {
+        event.preventDefault();
+        switchNetwork(chainId, isConnected);
+      },
+    };
+  } else if (!debouncedReferralCode) {
+    buttonState = {
+      text: t`Enter a code`,
+      disabled: true,
+    };
+  } else if (referralCodeCheckStatus === "taken") {
+    buttonState = {
+      text: t`Code already taken`,
+      disabled: true,
+    };
+  } else if (referralCodeCheckStatus === "checking") {
+    buttonState = {
+      text: t`Checking code...`,
+      disabled: true,
+    };
+  } else if (isProcessing) {
+    buttonState = {
+      text: t`Creating...`,
+      disabled: true,
+    };
+  } else {
+    buttonState = {
+      text: t`Create`,
+      disabled: false,
+      onSubmit: handleSubmit,
+    };
+  }
+
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={buttonState.onSubmit} className="max-w-[400px]">
       <input
         type="text"
         ref={inputRef}
@@ -187,8 +199,16 @@ export function AffiliateCodeForm({
         }}
       />
       {error && <p className="AffiliateCode-error">{error}</p>}
-      <Button variant="primary-action" className="w-full" type="submit" disabled={!isPrimaryEnabled()}>
-        {getPrimaryText()}
+      {srcChainId && (
+        <AlertInfoCard className="mb-15 text-left">
+          <Trans>
+            Please switch to {getChainName(chainId)} to create your referral code. It will work across all other
+            networks.
+          </Trans>
+        </AlertInfoCard>
+      )}
+      <Button variant="primary-action" className="w-full" type="submit" disabled={buttonState.disabled}>
+        {buttonState.text}
       </Button>
     </form>
   );

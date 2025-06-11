@@ -2,7 +2,15 @@ import { Trans, t } from "@lingui/macro";
 import { useCallback, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  getChainName,
+  getConstant,
+  UiContractsChain,
+} from "config/chains";
 import { getIcons } from "config/icons";
 import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";
@@ -31,9 +39,15 @@ import {
   TRANSFER_EXCHANGES,
 } from "./constants";
 
+const OPPOSITE_CHAIN_ID: Record<UiContractsChain, UiContractsChain> = {
+  [ARBITRUM]: AVALANCHE,
+  [AVALANCHE]: ARBITRUM,
+  [ARBITRUM_SEPOLIA]: AVALANCHE_FUJI,
+  [AVALANCHE_FUJI]: ARBITRUM_SEPOLIA,
+};
+
 export default function BuyGMX() {
   const { chainId } = useChainId();
-  const isArbitrum = chainId === ARBITRUM;
   const { active } = useWallet();
   const icons = getIcons(chainId);
   const chainName = getChainName(chainId);
@@ -42,7 +56,7 @@ export default function BuyGMX() {
   const location = useLocation();
 
   const onNetworkSelect = useCallback(
-    (value) => {
+    (value: UiContractsChain) => {
       if (value === chainId) {
         return;
       }
@@ -60,6 +74,9 @@ export default function BuyGMX() {
     }
   }, [location]);
 
+  const canBuyNativeToken = BUY_NATIVE_TOKENS.filter((e) => chainId in e.links).length > 0;
+  const canTransferNativeToken = TRANSFER_EXCHANGES.filter((e) => chainId in e.links).length > 0;
+
   return (
     <div className="BuyGMXGLP default-container page-layout">
       <div className="BuyGMXGLP-container">
@@ -73,8 +90,8 @@ export default function BuyGMX() {
               <Trans>Choose to buy from decentralized or centralized exchanges.</Trans>
               <br />
               <Trans>
-                To purchase GMX on the {isArbitrum ? "Avalanche" : "Arbitrum"} blockchain, please{" "}
-                <span onClick={() => onNetworkSelect(isArbitrum ? AVALANCHE : ARBITRUM)}>change your network</span>.
+                To purchase GMX on the {getChainName(OPPOSITE_CHAIN_ID[chainId])} blockchain, please{" "}
+                <span onClick={() => onNetworkSelect(OPPOSITE_CHAIN_ID[chainId])}>change your network</span>.
               </Trans>
             </div>
           </div>
@@ -83,102 +100,97 @@ export default function BuyGMX() {
           <DecentralisedExchanges chainId={chainId} externalLinks={externalLinks} />
           <CentralisedExchanges chainId={chainId} />
         </div>
-
-        {isArbitrum ? (
-          <div className="section-title-block mt-top" id="bridge">
-            <div className="section-title-content">
-              <div className="Page-title">
-                <Trans>Buy or Transfer ETH to Arbitrum</Trans>
-                <img className="Page-title-icon ml-5 inline-block" src={icons?.network} alt={chainName} />
-              </div>
-              <div className="Page-description">
-                <Trans>Buy ETH directly on Arbitrum or transfer it there.</Trans>
-              </div>
+        <div className="section-title-block mt-top" id="bridge">
+          <div className="section-title-content">
+            <div className="Page-title">
+              <Trans>
+                Buy or Transfer {nativeTokenSymbol} to {chainName}
+              </Trans>
+              <img className="Page-title-icon ml-5 inline-block" src={icons?.network} alt={chainName} />
+            </div>
+            <div className="Page-description">
+              <Trans>
+                Buy {nativeTokenSymbol} directly on {chainName} or transfer it there.
+              </Trans>
             </div>
           </div>
-        ) : (
-          <div className="section-title-block mt-top" id="bridge">
-            <div className="section-title-content">
-              <div className="Page-title">
-                <Trans>Buy or Transfer AVAX to Avalanche</Trans>
-                <img className="Page-title-icon ml-5 inline-block" src={icons?.network} alt={chainName} />
-              </div>
-              <div className="Page-description">
-                <Trans>Buy AVAX directly to Avalanche or transfer it there.</Trans>
-              </div>
-            </div>
-          </div>
-        )}
+        </div>
 
         <div className="cards-row">
           <Card title={t`Buy ${nativeTokenSymbol}`}>
-            <div className="App-card-content">
-              <div className="BuyGMXGLP-description">
-                {isArbitrum ? (
+            {canBuyNativeToken ? (
+              <div className="App-card-content">
+                <div className="BuyGMXGLP-description">
                   <Trans>
-                    You can buy ETH directly on{" "}
-                    <ExternalLink href={externalLinks.networkWebsite}>Arbitrum</ExternalLink> using these options:
+                    You can buy {nativeTokenSymbol} directly on{" "}
+                    <ExternalLink href={externalLinks.networkWebsite}>{chainName}</ExternalLink> using these options:
                   </Trans>
-                ) : (
-                  <Trans>
-                    You can buy AVAX directly on{" "}
-                    <ExternalLink href={externalLinks.networkWebsite}>Avalanche</ExternalLink> using these options:
-                  </Trans>
-                )}
+                </div>
+                <div className="buttons-group">
+                  {BUY_NATIVE_TOKENS.filter((e) => chainId in e.links).map((exchange) => {
+                    const icon = importImage(exchange.icon) || "";
+                    const link = exchange.links[chainId];
+                    return (
+                      <Button
+                        variant="secondary"
+                        textAlign="left"
+                        key={exchange.name}
+                        to={link}
+                        // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+                        imgSrc={icon}
+                        imgAlt={exchange.name}
+                        newTab
+                      >
+                        {exchange.name}
+                      </Button>
+                    );
+                  })}
+                </div>
               </div>
-              <div className="buttons-group">
-                {BUY_NATIVE_TOKENS.filter((e) => chainId in e.links).map((exchange) => {
-                  const icon = importImage(exchange.icon) || "";
-                  const link = exchange.links[chainId];
-                  return (
-                    <Button
-                      variant="secondary"
-                      textAlign="left"
-                      key={exchange.name}
-                      to={link}
-                      // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                      imgSrc={icon}
-                      imgAlt={exchange.name}
-                      newTab
-                    >
-                      {exchange.name}
-                    </Button>
-                  );
-                })}
+            ) : (
+              <div className="App-card-content tracking-normal text-slate-100">
+                <Trans>
+                  No options available to buy {nativeTokenSymbol} directly on {chainName}.
+                </Trans>
               </div>
-            </div>
+            )}
           </Card>
           <Card title={t`Transfer ${nativeTokenSymbol}`}>
-            <div className="App-card-content">
-              {isArbitrum ? (
+            {canTransferNativeToken ? (
+              <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
-                  <Trans>You can transfer ETH from other networks to Arbitrum using any of the below options:</Trans>
+                  <Trans>
+                    You can transfer {nativeTokenSymbol} from other networks to {chainName} using any of the below
+                    options:
+                  </Trans>
                 </div>
-              ) : (
-                <div className="BuyGMXGLP-description">
-                  <Trans>You can transfer AVAX from other networks to Avalanche using any of the below options:</Trans>
+                <div className="buttons-group">
+                  {TRANSFER_EXCHANGES.filter((e) => chainId in e.links).map((exchange) => {
+                    const icon = importImage(exchange.icon) || "";
+                    const link = exchange.links[chainId];
+                    return (
+                      <Button
+                        variant="secondary"
+                        textAlign="left"
+                        key={exchange.name}
+                        to={link}
+                        imgSrc={icon}
+                        imgAlt={exchange.name}
+                        newTab
+                      >
+                        {exchange.name}
+                      </Button>
+                    );
+                  })}
                 </div>
-              )}
-              <div className="buttons-group">
-                {TRANSFER_EXCHANGES.filter((e) => chainId in e.links).map((exchange) => {
-                  const icon = importImage(exchange.icon) || "";
-                  const link = exchange.links[chainId];
-                  return (
-                    <Button
-                      variant="secondary"
-                      textAlign="left"
-                      key={exchange.name}
-                      to={link}
-                      imgSrc={icon}
-                      imgAlt={exchange.name}
-                      newTab
-                    >
-                      {exchange.name}
-                    </Button>
-                  );
-                })}
               </div>
-            </div>
+            ) : (
+              <div className="App-card-content tracking-normal text-slate-100">
+                <Trans>
+                  No options available to transfer {nativeTokenSymbol} to {chainName}.
+                </Trans>
+              </div>
+            )}
           </Card>
         </div>
       </div>
@@ -187,8 +199,34 @@ export default function BuyGMX() {
   );
 }
 
-function DecentralisedExchanges({ chainId, externalLinks }) {
+function DecentralisedExchanges({
+  chainId,
+  externalLinks,
+}: {
+  chainId: UiContractsChain;
+  externalLinks: {
+    networkWebsite: string;
+    buyGmx: {
+      uniswap?: string;
+      gmx?: string;
+      traderjoe?: string;
+    };
+  };
+}) {
   const isArbitrum = chainId === ARBITRUM;
+
+  const isEmpty = !Object.values(externalLinks.buyGmx).some((value) => value !== undefined);
+
+  if (isEmpty) {
+    return (
+      <Card title={t`Buy GMX from decentralized exchanges`}>
+        <div className="App-card-content tracking-normal text-slate-100">
+          <Trans>No decentralized exchanges available for this network.</Trans>
+        </div>
+      </Card>
+    );
+  }
+
   return (
     <Card title={t`Buy GMX from decentralized exchanges`}>
       <div className="App-card-content">
@@ -313,6 +351,18 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
 }
 
 function CentralisedExchanges({ chainId }) {
+  const isEmpty = CENTRALISED_EXCHANGES.filter((e) => chainId in e.links).length === 0;
+
+  if (isEmpty) {
+    return (
+      <Card title={t`Buy GMX from centralized services`}>
+        <div className="App-card-content tracking-normal text-slate-100">
+          <Trans>No centralized exchanges available for this network.</Trans>
+        </div>
+      </Card>
+    );
+  }
+
   return (
     <Card title={t`Buy GMX from centralized services`}>
       <div className="App-card-content">

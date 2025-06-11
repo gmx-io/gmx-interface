@@ -38,6 +38,10 @@ msgstr "Available on your preferred network"
 msgid "Decentralized Trading Protocol"
 msgstr "Decentralized Trading Protocol"
 
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "You can transfer {nativeTokenSymbol} from other networks to {chainName} using any of the below options:"
+msgstr "You can transfer {nativeTokenSymbol} from other networks to {chainName} using any of the below options:"
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/Earn/ClaimModal.tsx
 msgid "Claim submitted!"
@@ -427,6 +431,7 @@ msgstr "Limit price below mark price"
 msgid "sell"
 msgstr "sell"
 
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Switch to {0}"
@@ -517,10 +522,6 @@ msgstr "Realized PnL"
 msgid "GMX V2 Data Analytics within Telegram"
 msgstr "GMX V2 Data Analytics within Telegram"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
-msgstr "You can transfer ETH from other networks to Arbitrum using any of the below options:"
-
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Network for Cross-Chain Deposits and positions."
 msgstr "Network for Cross-Chain Deposits and positions."
@@ -562,6 +563,10 @@ msgstr "The amount you are trying to deposit exceeds the limit. Please try an am
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Trade History"
 msgstr "Trade History"
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there."
+msgstr "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there."
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Tabs/NestedTab.tsx
@@ -841,6 +846,10 @@ msgstr "Incentives Distribution History"
 msgid "MAX"
 msgstr "MAX"
 
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "No centralized exchanges available for this network."
+msgstr "No centralized exchanges available for this network."
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
 msgstr "Invalid slippage value"
@@ -979,6 +988,7 @@ msgstr "Buy with {0}"
 msgid "Asset Management"
 msgstr "Asset Management"
 
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Adding..."
 msgstr "Adding..."
@@ -1623,10 +1633,6 @@ msgstr "GMX Proposals Voting page"
 msgid "Fees and Price Impact"
 msgstr "Fees and Price Impact"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "You can buy ETH directly on <0>Arbitrum</0> using these options:"
-msgstr "You can buy ETH directly on <0>Arbitrum</0> using these options:"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -2032,6 +2038,7 @@ msgstr "Max"
 
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Checking code..."
 msgstr "Checking code..."
 
@@ -2281,6 +2288,10 @@ msgstr "Decentralized Finance Dashboard"
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "GLP buy disabled, pending {0} upgrade"
 
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "No options available to buy {nativeTokenSymbol} directly on {chainName}."
+msgstr "No options available to buy {nativeTokenSymbol} directly on {chainName}."
+
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Error submitting order.</0><1/><2>Signer address does not match receiver address.</2><3/><4>Please reload the page and try again.</4>"
@@ -2365,6 +2376,7 @@ msgid "Reserved for Vesting"
 msgstr "Reserved for Vesting"
 
 #: src/components/Exchange/TradeHistory.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
@@ -2475,6 +2487,7 @@ msgstr "Saulius GMX Analytics"
 msgid "{0} Price"
 msgstr "{0} Price"
 
+#: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from centralized services"
 msgstr "Buy GMX from centralized services"
@@ -3805,10 +3818,6 @@ msgstr "You have multiple existing Increase {longOrShortText} {0} limit orders"
 msgid "After you scan, a connection prompt will appear for you to connect your wallet."
 msgstr "After you scan, a connection prompt will appear for you to connect your wallet."
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
-msgstr "You can transfer AVAX from other networks to Avalanche using any of the below options:"
-
 #: src/pages/Earn/Vesting.tsx
 msgid "Unsupported network"
 msgstr "Unsupported network"
@@ -4213,6 +4222,7 @@ msgid "Enter a price"
 msgstr "Enter a price"
 
 #: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Updating..."
 msgstr "Updating..."
 
@@ -4282,10 +4292,6 @@ msgstr "Insufficient {0} balance to pay for gas"
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy AVAX directly to Avalanche or transfer it there."
-msgstr "Buy AVAX directly to Avalanche or transfer it there."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Open Ocean"
@@ -5613,10 +5619,6 @@ msgstr "STIP.b Retroactive Bonus"
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right."
 msgstr "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right."
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "You can buy AVAX directly on <0>Avalanche</0> using these options:"
-msgstr "You can buy AVAX directly on <0>Avalanche</0> using these options:"
-
 #: src/components/Exchange/NetValueTooltip.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
@@ -5785,10 +5787,6 @@ msgstr "Execute TWAP Swap Part"
 #: src/components/Synthetics/TwapRows/TwapRows.tsx
 msgid "<0>every</0> {seconds} seconds"
 msgstr "<0>every</0> {seconds} seconds"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy or Transfer AVAX to Avalanche"
-msgstr "Buy or Transfer AVAX to Avalanche"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
@@ -6201,6 +6199,7 @@ msgid "Names could be separated by commas or spaces"
 msgstr "Names could be separated by commas or spaces"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from decentralized exchanges"
 msgstr "Buy GMX from decentralized exchanges"
 
@@ -6216,6 +6215,10 @@ msgstr "Buy order executed"
 #: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 msgid "Asset Balance"
 msgstr "Asset Balance"
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "No options available to transfer {nativeTokenSymbol} to {chainName}."
+msgstr "No options available to transfer {nativeTokenSymbol} to {chainName}."
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "The order's acceptable price includes the set acceptable price impact. The execution price must meet this condition for the order to be executed."
@@ -6241,6 +6244,7 @@ msgstr "OPEN INTEREST"
 msgid "Failed to download trade history CSV."
 msgstr "Failed to download trade history CSV."
 
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"
 msgstr "Same as current active code"
@@ -6310,10 +6314,6 @@ msgstr "We want your insights to help improve GMX. For security reasons, we won'
 msgid "Claim esGMX"
 msgstr "Claim esGMX"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy or Transfer ETH to Arbitrum"
-msgstr "Buy or Transfer ETH to Arbitrum"
-
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "The maximum percentage difference between your specified price and execution price when placing orders."
 msgstr "The maximum percentage difference between your specified price and execution price when placing orders."
@@ -6367,6 +6367,7 @@ msgstr "{daysConsidered}d accrued Fees"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 #: src/components/NpsModal/NpsModal.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submit"
@@ -6517,6 +6518,10 @@ msgstr "Min receive"
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Notifications"
 msgstr "Notifications"
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "No decentralized exchanges available for this network."
+msgstr "No decentralized exchanges available for this network."
 
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Max Out"
@@ -7393,6 +7398,10 @@ msgstr "Failed Withdraw"
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy or Transfer {nativeTokenSymbol} to {chainName}"
+msgstr "Buy or Transfer {nativeTokenSymbol} to {chainName}"
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Freeze"
 msgstr "Freeze"
@@ -7479,6 +7488,7 @@ msgstr "Swap {0} submitted!"
 msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 msgstr "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral Code does not exist"
 msgstr "Referral Code does not exist"
@@ -8315,6 +8325,10 @@ msgstr "Failed Stop Loss"
 msgid "Daily Profit"
 msgstr "Daily Profit"
 
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "You can buy {nativeTokenSymbol} directly on <0>{chainName}</0> using these options:"
+msgstr "You can buy {nativeTokenSymbol} directly on <0>{chainName}</0> using these options:"
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "The esGMX tokens can be staked or vested at any time."
 msgstr "The esGMX tokens can be staked or vested at any time."
@@ -8323,10 +8337,6 @@ msgstr "The esGMX tokens can be staked or vested at any time."
 #: src/pages/Earn/EarnV1.jsx
 msgid "Max: {0}"
 msgstr "Max: {0}"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy ETH directly on Arbitrum or transfer it there."
-msgstr "Buy ETH directly on Arbitrum or transfer it there."
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Max 110 symbols exceeded"
@@ -8588,6 +8598,7 @@ msgstr "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leve
 msgid "Claim GMX Rewards"
 msgstr "Claim GMX Rewards"
 
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Enter Referral Code"
@@ -8974,6 +8985,10 @@ msgstr "Update TWAP Swap Part"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update TWAP Part"
 msgstr "Update TWAP Part"
+
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Please switch to {0} to create your referral code. It will work across all other networks."
+msgstr "Please switch to {0} to create your referral code. It will work across all other networks."
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx

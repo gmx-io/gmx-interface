@@ -182,17 +182,20 @@ const subscribeMultichainTokenBalances: SWRSubscription<
   };
 };
 
-export function useMultichainTokensRequest(): { tokenChainDataArray: TokenChainData[]; isPriceDataLoading: boolean } {
+export function useMultichainTokensRequest(): {
+  tokenChainDataArray: TokenChainData[];
+  isPriceDataLoading: boolean;
+} {
   const { chainId } = useChainId();
   const { address: account } = useAccount();
 
   const { pricesData, isPriceDataLoading } = useTokenRecentPricesRequest(chainId);
 
-  const { data } = useSWRSubscription(
+  const { data: balanceData } = useSWRSubscription(
     account ? ["multichain-tokens", chainId, account] : null,
     subscribeMultichainTokenBalances
   );
-  const tokenBalances = data?.tokenBalances;
+  const tokenBalances = balanceData?.tokenBalances;
 
   const tokenChainDataArray: TokenChainData[] = useMemo(() => {
     const tokenChainDataArray: TokenChainData[] = [];
@@ -267,7 +270,10 @@ export function useMultichainTokensRequest(): { tokenChainDataArray: TokenChainD
     return tokenChainDataArray;
   }, [tokenBalances, chainId, pricesData]);
 
-  return { tokenChainDataArray: tokenChainDataArray, isPriceDataLoading };
+  return {
+    tokenChainDataArray: tokenChainDataArray,
+    isPriceDataLoading,
+  };
 }
 
 function buildGmxAccountTokenBalancesRequest(settlementChainId: UiSettlementChain, account: string) {

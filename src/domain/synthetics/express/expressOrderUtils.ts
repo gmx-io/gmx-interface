@@ -987,7 +987,7 @@ export async function signSetTraderReferralCode({
   chainId,
   srcChainId,
 }: {
-  signer: WalletSigner;
+  signer: WalletSigner | Wallet;
   relayParams: MultichainRelayParamsPayload;
   referralCode: string;
   chainId: UiContractsChain;
