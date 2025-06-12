@@ -816,10 +816,6 @@ msgstr "MAX"
 msgid "Invalid slippage value"
 msgstr "Ungültiger Slippagewert"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
-#~ msgid "price impact"
-#~ msgstr ""
-
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/OrderEditor.jsx
 msgid "{0} price"
@@ -1018,11 +1014,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 msgid "Insufficient Liquidity"
 msgstr ""
-
-#: src/components/Synthetics/GmList/GlvList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "Pool returns compared to the benchmark, based on UNI V2-style rebalancing of the long-short token in the corresponding GM or GLV."
-#~ msgstr ""
 
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "The max network fee is overestimated, including by the buffer set under settings. Upon execution, any excess network fee is sent back to your account."
@@ -1339,6 +1330,10 @@ msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead of the standard {0}% for Tier {1}."
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Your wallet, your keys. You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
@@ -1663,11 +1658,6 @@ msgstr ""
 msgid "No swap path found"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GlvList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "PERFORMANCE"
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Combined stop losses are at maximum (100%). Decrease existing values to add more orders."
 msgstr ""
@@ -1866,11 +1856,6 @@ msgstr "Die Adresse des esGMX (IOU)-Tokens lautet {esGmxIouAddress}"
 msgid "GMX Alerts"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
-#~ msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
-#~ msgstr ""
-
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Show details"
 msgstr ""
@@ -1996,10 +1981,6 @@ msgstr ""
 
 #: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
 msgid "Try Express"
-msgstr ""
-
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Generating 1CT (One-Click Trading) session"
 msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
@@ -2138,6 +2119,10 @@ msgstr "Genehmigung von {0}..."
 msgid "Deposited {0} into {positionText}"
 msgstr ""
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Your wallet, your keys. GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
+msgstr ""
+
 #: src/components/Glp/GlpSwap.jsx
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
@@ -2217,6 +2202,10 @@ msgstr "GLP-Kauf deaktiviert, {0} Aktualisierung steht noch aus"
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Error submitting order.</0><1/><2>Signer address does not match receiver address.</2><3/><4>Please reload the page and try again.</4>"
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Trading Mode"
 msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
@@ -2443,10 +2432,6 @@ msgstr "App starten"
 msgid "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
 msgstr "{0} USD in {tokenSymbol} {longOrShortText} eingezahlt"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
-#~ msgid "network fees"
-#~ msgstr ""
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has staked GMX/GLP before"
 msgstr ""
@@ -2557,10 +2542,6 @@ msgstr "Preis über Liq. Preis"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the pay token to collateral token swap when the price conditions are met."
 msgstr ""
-
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
-#~ msgid "Acknowledge high {0} and {1}"
-#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "User Quests"
@@ -2721,11 +2702,6 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Only positions with over {0} in \"Capital Used\" are ranked."
-msgstr ""
-
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Generate 1CT (One-Click Trading) session"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
@@ -3034,10 +3010,6 @@ msgstr "Selbstübertragungen werden nicht unterstützt"
 msgid "Generating session..."
 msgstr ""
 
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "{actions, plural, one {1 action} other {{actions} actions}}"
-msgstr ""
-
 #: src/pages/Exchange/Exchange.tsx
 msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "Verringert {tokenSymbol} {longOrShortText}, -{0} USD."
@@ -3167,10 +3139,6 @@ msgstr ""
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 msgstr ""
-
-#: src/components/Synthetics/GmList/PerformanceLabel.tsx
-#~ msgid "ANN. PERFORMANCE"
-#~ msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap {0} to {1}"
@@ -3538,10 +3506,6 @@ msgstr "Einzahlung fehlgeschlagen"
 msgid "Request Market Swap"
 msgstr "Markttausch anfordern"
 
-#: src/components/ExpressTradingGasTokenSwitchedBanner.ts/ExpressTradingGasTokenSwithedBanner.tsx
-msgid "Gas payment token changed due to insufficient balance in the selected token."
-msgstr ""
-
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.{1}"
 msgstr ""
@@ -3848,12 +3812,6 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} {3} USD"
 msgstr "Erhöhungsanfrage {0} {longOrShortText}, +{1} USD, Akzeptabler Preis: {2} {3} USD"
-
-#: src/components/Header/AppHeaderLinks.tsx
-#: src/pages/Earn/Earn.tsx
-#: src/pages/Earn/Earn.tsx
-#~ msgid "Earn"
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -4219,10 +4177,6 @@ msgstr ""
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or change the \"Collateral In\" token.</1>"
 msgstr ""
 
-#: src/components/Synthetics/GmList/ApyTooltipContent.tsx
-#~ msgid "<0>The APY is an estimate based on fees collected during the selected period. It excludes:</0><1><2>price changes of the underlying token(s)</2><3>traders' PnL, which is expected to be neutral in the long term</3><4>funding fees, which are exchanged between traders</4></1><5><6>Read more about GM token pricing</6>.</5><7>For detailed stats and comparisons, check the GMX V2 LP Dashboard. <8>GMX Dune Dashboard</8>.</7>"
-#~ msgstr ""
-
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
 msgstr ""
@@ -4260,7 +4214,8 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/GasPaymentTokenSelector/GasPaymentTokenSelector.tsx
+#: src/components/GasPaymentTokenSelector/GasPaymentTokenSelector.tsx
 msgid "Gas Payment Token"
 msgstr ""
 
@@ -4285,6 +4240,10 @@ msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to Market Traders’ PnL"
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Optimal"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
@@ -4535,7 +4494,6 @@ msgstr ""
 msgid "Create Stop Loss"
 msgstr ""
 
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to generate session"
 msgstr ""
@@ -4810,10 +4768,6 @@ msgstr ""
 msgid "Referral code updated!"
 msgstr "Referral Code aktualisiert!"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
-#~ msgid "Acknowledge high {0}"
-#~ msgstr ""
-
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Favorites"
 msgstr ""
@@ -5008,6 +4962,10 @@ msgstr ""
 #: src/pages/Dashboard/MarketsListV1.tsx
 msgid "UTILIZATION"
 msgstr "NUTZUNG"
+
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "One-Click Settings"
+msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -5240,10 +5198,6 @@ msgstr "Falsches Netzwerk"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Optimizer"
-msgstr ""
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Express Trading"
 msgstr ""
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
@@ -5531,13 +5485,6 @@ msgstr ""
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Confirmations"
 msgstr ""
-
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "Acknowledgment Required"
-#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
@@ -5835,10 +5782,6 @@ msgstr ""
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr ""
-
-#: src/components/Synthetics/GmList/FeeApyLabel.tsx
-#~ msgid "FEE APY"
-#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "SNTL esGMX Market"
@@ -6607,10 +6550,6 @@ msgstr "Gevestete GMX nicht abgehoben"
 msgid "FEES"
 msgstr "GEBÜHREN"
 
-#: src/components/Synthetics/GmList/FeeApyLabel.tsx
-#~ msgid "Fee APY: Estimated annualized fees generated by trading activity (open, close, borrow, liquidations, swaps) over the selected period. Does not include backing token price changes, trading PnL, or funding fees.<0/><1/>For detailed stats and comparisons, see the <2>GMX V2 LP Dashboard</2>."
-#~ msgstr ""
-
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -6660,8 +6599,6 @@ msgstr ""
 msgid "Pools providing liquidity to specific GMX markets, supporting single-asset and native asset options."
 msgstr ""
 
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivate 1CT (One-Click Trading)"
 msgstr ""
@@ -6865,6 +6802,10 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max GM buyable amount reached"
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Session generated"
 msgstr ""
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
@@ -7416,6 +7357,10 @@ msgstr ""
 msgid "Increasing"
 msgstr ""
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Fastest"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Avg. Lev."
 msgstr ""
@@ -7503,10 +7448,6 @@ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
-msgstr ""
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Express Trading streamlines your trades on GMX by replacing on-chain transactions with secure off-chain message signing, helping reduce issues from network congestion and RPC errors.<0/><1/>These signed messages are processed on-chain for you, so a gas payment token is still required."
 msgstr ""
 
 #: src/pages/Stake/UnstakeModal.tsx
@@ -7837,6 +7778,10 @@ msgstr "Escrowed GMX APR"
 msgid "Initial collateral"
 msgstr "Ursprüngliches Kollateral"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Activate 1CT (One-Click Trading)"
+msgstr ""
+
 #: src/components/AprInfo/AprInfo.tsx
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
 msgstr ""
@@ -7913,10 +7858,6 @@ msgstr ""
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Enter a valid coin names"
-msgstr ""
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "One-Click Trading"
 msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
@@ -8343,10 +8284,6 @@ msgstr ""
 msgid "Enable deposit sent."
 msgstr ""
 
-#: src/pages/Earn/Earn.tsx
-#~ msgid "Deposit <0>GMX</0>, <1>esGMX</1> and <2>GLP</2> tokens to earn rewards."
-#~ msgstr ""
-
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Withdrawing {0} from {positionText}"
 msgstr ""
@@ -8430,12 +8367,6 @@ msgstr ""
 msgid "Avalanche trading incentives"
 msgstr ""
 
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Signing 1CT (One-Click Trading) approval"
-msgstr ""
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Decrease"
 msgstr "Marktverringerungsanfrage"
@@ -8451,6 +8382,10 @@ msgstr "Preis ist über Mark Preis"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8515,10 +8450,6 @@ msgstr ""
 msgid "Price Impact Rebate Claimed"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
-#~ msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
-#~ msgstr ""
-
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX"
 msgstr ""
@@ -8549,10 +8480,6 @@ msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "limit"
-msgstr ""
-
-#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
-msgid "One-Click Trading Settings"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -8693,10 +8620,6 @@ msgstr ""
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of Reserves"
 msgstr "Reserve-Nachweis"
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to be enabled. Your 1CT session is valid for {remainingSubaccountActions} or {remainingSubaccountDays}, whichever comes first.<0/><1/>You can adjust these settings anytime under \"One-Click Trading Settings\""
-msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "General Performance Details"
