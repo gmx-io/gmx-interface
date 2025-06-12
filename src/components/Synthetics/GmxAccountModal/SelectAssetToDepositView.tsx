@@ -1,17 +1,19 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
-import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
 import { getChainIcon } from "config/icons";
-import { useGmxAccountDepositViewTokenAddress, useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
+import {
+  useGmxAccountDepositViewChain,
+  useGmxAccountDepositViewTokenAddress,
+  useGmxAccountModalOpen,
+} from "context/GmxAccountContext/hooks";
 import { MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "domain/multichain/config";
 import { TokenChainData } from "domain/multichain/types";
 import { useChainId } from "lib/chains";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
-import { switchNetwork } from "lib/wallets";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import Button from "components/Button/Button";
@@ -70,8 +72,7 @@ type DisplayTokenChainData = TokenChainData & {
 export const SelectAssetToDepositView = () => {
   const { chainId } = useChainId();
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
-  // const [, setDepositViewChain] = useGmxAccountDepositViewChain();
-  const { isConnected } = useAccount();
+  const [, setDepositViewChain] = useGmxAccountDepositViewChain();
   const [, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
 
   const [selectedNetwork, setSelectedNetwork] = useState<number | "all">("all");
@@ -166,7 +167,7 @@ export const SelectAssetToDepositView = () => {
             key={tokenChainData.symbol + "_" + tokenChainData.sourceChainId}
             tokenChainData={tokenChainData}
             onClick={() => {
-              switchNetwork(tokenChainData.sourceChainId, isConnected);
+              setDepositViewChain(tokenChainData.sourceChainId);
               setDepositViewTokenAddress(tokenChainData.address);
               setIsVisibleOrView("deposit");
             }}

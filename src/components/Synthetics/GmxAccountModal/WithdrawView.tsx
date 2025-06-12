@@ -363,6 +363,7 @@ export const WithdrawView = () => {
     quoteSend,
     quoteOft,
     unwrappedTokenAddress: unwrappedSelectedTokenAddress,
+    srcChainId,
   });
 
   const bridgeOutParams: BridgeOutParams | undefined = useMemo(() => {

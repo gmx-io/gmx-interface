@@ -17,6 +17,7 @@ export function useMultichainQuoteFeeUsd({
   quoteSend,
   quoteOft,
   unwrappedTokenAddress,
+  srcChainId,
 }: {
   quoteSend: MessagingFeeStruct | undefined;
   quoteOft:
@@ -27,6 +28,7 @@ export function useMultichainQuoteFeeUsd({
       }
     | undefined;
   unwrappedTokenAddress: string | undefined;
+  srcChainId: UiSourceChain | undefined;
 }): {
   networkFee: bigint | undefined;
   networkFeeUsd: bigint | undefined;
@@ -34,10 +36,10 @@ export function useMultichainQuoteFeeUsd({
   protocolFeeUsd: bigint | undefined;
   amountReceivedLD: bigint | undefined;
 } {
-  const { chainId, srcChainId } = useChainId();
+  const { chainId } = useChainId();
   const { pricesData: settlementChainTokenPricesData } = useTokenRecentPricesRequest(chainId);
 
-  if (!unwrappedTokenAddress) {
+  if (!unwrappedTokenAddress || srcChainId === undefined) {
     return {
       networkFee: undefined,
       networkFeeUsd: undefined,

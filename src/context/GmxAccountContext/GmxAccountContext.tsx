@@ -27,21 +27,21 @@ export type GmxAccountContext = {
   // deposit view
 
   depositViewChain: UiSourceChain | undefined;
-  setDepositViewChain: (chain: UiSourceChain) => void;
+  setDepositViewChain: (chain: UiSourceChain | undefined) => void;
 
   depositViewTokenAddress: string | undefined;
-  setDepositViewTokenAddress: (address: string) => void;
+  setDepositViewTokenAddress: (address: string | undefined) => void;
 
   depositViewTokenInputValue: string | undefined;
-  setDepositViewTokenInputValue: (value: string) => void;
+  setDepositViewTokenInputValue: (value: string | undefined) => void;
 
   // withdraw view
 
   withdrawViewTokenAddress: string | undefined;
-  setWithdrawViewTokenAddress: (address: string) => void;
+  setWithdrawViewTokenAddress: (address: string | undefined) => void;
 
   withdrawViewTokenInputValue: string | undefined;
-  setWithdrawViewTokenInputValue: (value: string) => void;
+  setWithdrawViewTokenInputValue: (value: string | undefined) => void;
 
   // funding history
 

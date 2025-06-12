@@ -4,6 +4,7 @@ import { useAccount, usePublicClient } from "wagmi";
 
 import { ARBITRUM_SEPOLIA, type UiContractsChain, type UiSettlementChain, type UiSourceChain } from "config/chains";
 import { tryGetContract } from "config/contracts";
+import { useGmxAccountDepositViewChain } from "context/GmxAccountContext/hooks";
 import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
   getLayerZeroEndpointId,
@@ -28,7 +29,8 @@ export function useMultichainDepositNetworkComposeGas(opts?: {
 }): {
   composeGas: bigint | undefined;
 } {
-  const { chainId, srcChainId } = useChainId();
+  const { chainId } = useChainId();
+  const [depositViewChain] = useGmxAccountDepositViewChain();
 
   const tokenAddress: string | undefined = opts?.tokenAddress ?? CHAIN_ID_PREFERRED_DEPOSIT_TOKEN[chainId];
 
@@ -38,15 +40,15 @@ export function useMultichainDepositNetworkComposeGas(opts?: {
   const composeGasQueryCondition =
     settlementChainPublicClient &&
     account &&
-    srcChainId &&
+    depositViewChain &&
     tokenAddress !== undefined &&
     getStargatePoolAddress(chainId, tokenAddress) !== undefined &&
     tryGetContract(chainId, "LayerZeroProvider") !== undefined &&
-    srcChainId !== (chainId as UiSourceChain) &&
+    depositViewChain !== (chainId as UiSourceChain) &&
     opts?.enabled !== false;
 
   const composeGasQuery = useSWR<bigint | undefined>(
-    composeGasQueryCondition ? ["composeGas", account, chainId, srcChainId, tokenAddress] : null,
+    composeGasQueryCondition ? ["composeGas", account, chainId, depositViewChain, tokenAddress] : null,
     {
       fetcher: async () => {
         if (!composeGasQueryCondition) {
@@ -57,7 +59,7 @@ export function useMultichainDepositNetworkComposeGas(opts?: {
           action: opts?.action,
           chainId,
           account,
-          srcChainId,
+          srcChainId: depositViewChain,
           tokenAddress,
           settlementChainPublicClient,
         });

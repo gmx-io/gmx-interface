@@ -6,6 +6,8 @@ import {
   selectGmxAccountDepositViewTokenInputValue,
   selectGmxAccountModalOpen,
   selectGmxAccountSelectedTransferGuid,
+  selectGmxAccountDepositViewChain,
+  selectGmxAccountSetDepositViewChain,
   selectGmxAccountSetDepositViewTokenAddress,
   selectGmxAccountSetDepositViewTokenInputValue,
   selectGmxAccountSetModalOpen,
@@ -36,6 +38,13 @@ export function useGmxAccountSettlementChainId() {
   return [
     useGmxAccountSelector(selectGmxAccountSettlementChainId),
     useGmxAccountSelector(selectGmxAccountSetSettlementChainId),
+  ] as const;
+}
+
+export function useGmxAccountDepositViewChain() {
+  return [
+    useGmxAccountSelector(selectGmxAccountDepositViewChain),
+    useGmxAccountSelector(selectGmxAccountSetDepositViewChain),
   ] as const;
 }
 

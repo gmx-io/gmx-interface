@@ -1,7 +1,8 @@
+import type { UiSourceChain } from "config/chains";
 import type { Token, TokenPrices } from "domain/tokens";
 
 export type TokenChainData = Token & {
-  sourceChainId: number;
+  sourceChainId: UiSourceChain;
   sourceChainDecimals: number;
   sourceChainPrices: TokenPrices | undefined;
   sourceChainBalance: bigint | undefined;

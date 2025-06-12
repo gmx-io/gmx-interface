@@ -21,6 +21,7 @@ import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { isDebugMode } from "lib/localStorage";
 import { RpcTrackerRankingCounter } from "lib/metrics";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
+import { EMPTY_OBJECT } from "lib/objects";
 import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 import { sleep } from "lib/sleep";
 import { HASHED_MARKET_CONFIG_KEYS } from "sdk/prebuilt";
@@ -423,20 +424,27 @@ export function getCurrentRpcUrls(chainId: number): { primary: string; secondary
   return { primary, secondary };
 }
 
-export function useCurrentRpcUrls(chainId: number) {
+export function useCurrentRpcUrls(chainId: number | undefined): { primary?: string; secondary?: string } {
   const [bestRpcUrls, setBestRpcUrls] = useState<{
-    primary: string;
+    primary?: string;
     secondary?: string;
-  }>(() => getCurrentRpcUrls(chainId));
+  }>(chainId ? () => getCurrentRpcUrls(chainId) : EMPTY_OBJECT);
 
   useEffect(() => {
+    if (!chainId) {
+      setBestRpcUrls(EMPTY_OBJECT);
+      return;
+    }
+
+    const closureChainId = chainId;
+
     let isMounted = true;
 
-    setBestRpcUrls(getCurrentRpcUrls(chainId));
+    setBestRpcUrls(getCurrentRpcUrls(closureChainId));
 
     function handleRpcUpdate() {
       if (isMounted) {
-        setBestRpcUrls(getCurrentRpcUrls(chainId));
+        setBestRpcUrls(getCurrentRpcUrls(closureChainId));
       }
     }
 

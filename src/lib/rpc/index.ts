@@ -77,12 +77,16 @@ export function getFallbackProvider(chainId: number) {
   });
 }
 
-export function useJsonRpcProvider(chainId: number) {
+export function useJsonRpcProvider(chainId: number | undefined) {
   const [provider, setProvider] = useState<JsonRpcProvider>();
 
   const { primary: primaryRpcUrl } = useCurrentRpcUrls(chainId);
 
   useEffect(() => {
+    if (!chainId) {
+      return;
+    }
+
     async function initializeProvider() {
       if (!primaryRpcUrl) return;
 

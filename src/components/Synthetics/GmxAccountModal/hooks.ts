@@ -3,7 +3,7 @@ import useSWRSubscription, { SWRSubscription } from "swr/subscription";
 import { Address } from "viem";
 import { useAccount } from "wagmi";
 
-import { UiContractsChain, UiSettlementChain, getChainName } from "config/chains";
+import { UiContractsChain, UiSettlementChain, UiSourceChain, getChainName } from "config/chains";
 import { multichainBalanceKey } from "config/dataStore";
 import { getSettlementChainTradableTokenAddresses } from "config/markets";
 import {
@@ -205,7 +205,7 @@ export function useMultichainTokensRequest(): {
     }
 
     for (const sourceChainIdString in tokenBalances) {
-      const sourceChainId = parseInt(sourceChainIdString);
+      const sourceChainId = parseInt(sourceChainIdString) as UiSourceChain;
       const tokensChainBalanceData = tokenBalances[sourceChainId];
 
       for (const sourceChainTokenAddress in tokensChainBalanceData) {
@@ -227,7 +227,7 @@ export function useMultichainTokensRequest(): {
 
         const tokenChainData: TokenChainData = {
           ...token,
-          sourceChainId,
+          sourceChainId: sourceChainId,
           sourceChainDecimals: mapping.sourceChainTokenDecimals,
           sourceChainPrices: undefined,
           sourceChainBalance: balance,
