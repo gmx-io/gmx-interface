@@ -409,7 +409,9 @@ export function getGasPaymentValidations({
   gasPaymentAllowanceData: TokensAllowanceData;
   tokenPermits: SignedTokenPermit[];
 }): GasPaymentValidations {
-  const totalGasPaymentTokenAmount = gasPaymentTokenAsCollateralAmount + gasPaymentTokenAmount;
+  // Add buffer to onchain avoid out of balance errors in case quick of network fee increase
+  const gasTokenAmountWithBuffer = (gasPaymentTokenAmount * 13n) / 10n;
+  const totalGasPaymentTokenAmount = gasPaymentTokenAsCollateralAmount + gasTokenAmountWithBuffer;
 
   const isOutGasTokenBalance =
     gasPaymentToken?.balance === undefined || totalGasPaymentTokenAmount > gasPaymentToken.balance;

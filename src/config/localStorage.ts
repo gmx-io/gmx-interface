@@ -61,7 +61,6 @@ export const NPS_SURVEY_SHOWN_TIME_KEY = "nps-survey-shown-time";
 export const LP_INTERVIEW_INVITATION_SHOWN_TIME_KEY = "lp-interview-invitation-shown-time";
 export const TOKEN_FAVORITES_PREFERENCE_KEY = "token-favorites-preference";
 export const SETTINGS_WARNING_DOT_VISIBLE_KEY = "settings-warning-dot-visible";
-export const EXPRESS_TRADING_GAS_TOKEN_SWITCHED = "express-trading-gas-token-switched-v2";
 
 export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
 export const METRICS_TIMERS_KEY = "metrics-timers-key";
@@ -206,8 +205,4 @@ export function getOneClickTradingPromoHiddenKey(chainId: number) {
 
 export function getExpressTradingPromoHiddenKey(chainId: number) {
   return `${chainId}-${EXPRESS_TRADING_PROMO_HIDDEN_KEY}`;
-}
-
-export function getExpressTradingGasTokenSwitchedKey(chainId: number, account: string | undefined) {
-  return `${chainId}-${account}-${EXPRESS_TRADING_GAS_TOKEN_SWITCHED}`;
 }
