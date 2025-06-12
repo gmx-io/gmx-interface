@@ -10,7 +10,7 @@ import { OrderInfo } from "sdk/types/orders";
 import { getOrderKeys } from "sdk/utils/orders";
 
 import { selectExpressGlobalParams } from "../selectors/expressSelectors";
-import { selectChainId } from "../selectors/globalSelectors";
+import { selectChainId, selectSrcChainId } from "../selectors/globalSelectors";
 import {
   makeSelectOrderErrorByOrderKey,
   makeSelectOrdersWithErrorsByPositionKey,
@@ -36,6 +36,7 @@ export const useOrderErrorsCount = () => useSelector(selectOrderErrorsCount);
 
 export function useCancelOrder(order: OrderInfo) {
   const chainId = useSelector(selectChainId);
+  const srcChainId = useSelector(selectSrcChainId);
   const signer = useEthersSigner();
   const { provider } = useJsonRpcProvider(chainId);
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
@@ -67,6 +68,7 @@ export function useCancelOrder(order: OrderInfo) {
             requireValidations: true,
             estimationMethod: "approximate",
             provider,
+            isGmxAccount: srcChainId !== undefined,
           })
         : undefined;
 
@@ -83,7 +85,7 @@ export function useCancelOrder(order: OrderInfo) {
         setCancellingOrdersKeys((prev) => prev.filter((k) => k !== order.key));
       });
     },
-    [chainId, globalExpressParams, makeOrderTxnCallback, order, provider, setCancellingOrdersKeys, signer]
+    [chainId, globalExpressParams, makeOrderTxnCallback, order, provider, setCancellingOrdersKeys, signer, srcChainId]
   );
 
   return [isCancelOrderProcessing, onCancelOrder] as const;

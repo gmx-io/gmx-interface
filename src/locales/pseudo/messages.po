@@ -6554,6 +6554,10 @@ msgstr ""
 msgid "Connect"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/SelectAssetToDepositView.tsx
+msgid "No assets are available for deposit"
+msgstr ""
+
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "Click here to give us your feedback on GMX."
 msgstr ""
@@ -7317,6 +7321,10 @@ msgstr ""
 msgid "Position close disabled, pending {0} upgrade"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/SelectAssetToDepositView.tsx
+msgid "No assets available for deposit on {0}"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Swapping..."
 msgstr ""
@@ -7526,6 +7534,10 @@ msgstr ""
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 msgid "Confirm Claim"
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
+msgid "GMX Account Balance"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx

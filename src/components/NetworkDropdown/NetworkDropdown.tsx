@@ -105,7 +105,7 @@ function ChainIcon({ chainId }: { chainId: number }) {
   return (
     <>
       <span className="text-body-small mr-7 inline-block h-fit rounded-4 bg-cold-blue-500 p-4">V{currentVersion}</span>
-      <button className="mr-4">
+      <button className="mr-4 shrink-0">
         <img className="network-dropdown-icon" src={icon} alt={chainName} />
       </button>
       <button>

@@ -10,7 +10,11 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
-import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectAccount,
+  selectChainId,
+  selectSrcChainId,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
@@ -78,6 +82,7 @@ export function OrderList({
   const isContainerSmall = width === 0 ? isScreenSmall : width < 1000;
 
   const chainId = useSelector(selectChainId);
+  const srcChainId = useSelector(selectSrcChainId);
   const { signer } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
 
@@ -164,6 +169,7 @@ export function OrderList({
       globalExpressParams,
       estimationMethod: "approximate",
       provider,
+      isGmxAccount: srcChainId !== undefined,
     });
 
     sendBatchOrderTxn({

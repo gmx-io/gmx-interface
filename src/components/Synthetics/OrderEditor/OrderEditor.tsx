@@ -118,7 +118,7 @@ type Props = {
 };
 
 export function OrderEditor(p: Props) {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { signer } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
   const tokensData = useSelector(selectTokensData);
@@ -346,6 +346,7 @@ export function OrderEditor(p: Props) {
   const { expressParams, expressParamsPromise } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Order Editor",
+    isGmxAccount: srcChainId !== undefined,
   });
 
   const networkFee = useMemo(() => {

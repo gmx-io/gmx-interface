@@ -74,11 +74,13 @@ export async function estimateBatchExpressParams({
   provider,
   chainId,
   batchParams,
+  isGmxAccount,
   globalExpressParams,
   requireValidations,
   estimationMethod = "approximate",
 }: {
   chainId: UiContractsChain;
+  isGmxAccount: boolean;
   signer: WalletSigner;
   provider: Provider;
   batchParams: BatchOrderTxnParams;
@@ -90,8 +92,6 @@ export async function estimateBatchExpressParams({
     return undefined;
   }
 
-  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
-
   const transactionParams = getBatchExpressEstimatorParams({
     signer,
     provider,
@@ -100,6 +100,7 @@ export async function estimateBatchExpressParams({
     gasPaymentToken: globalExpressParams.gasPaymentToken,
     chainId,
     tokensData: globalExpressParams.tokensData,
+    isGmxAccount,
   });
 
   if (!transactionParams) {
@@ -113,7 +114,7 @@ export async function estimateBatchExpressParams({
     globalExpressParams,
     estimationMethod,
     requireValidations,
-    srcChainId,
+    isGmxAccount,
   });
 
   return expressParams;
@@ -127,12 +128,14 @@ function getBatchExpressEstimatorParams({
   gasPaymentToken,
   chainId,
   tokensData,
+  isGmxAccount,
 }: {
   signer: WalletSigner;
   provider: Provider;
   batchParams: BatchOrderTxnParams;
   gasLimits: GasLimitsConfig;
   gasPaymentToken: TokenData;
+  isGmxAccount: boolean;
   chainId: UiContractsChain;
   tokensData: TokensData;
 }): ExpressTransactionEstimatorParams | undefined {
@@ -147,6 +150,7 @@ function getBatchExpressEstimatorParams({
     updateOrdersCount: batchParams.updateOrderParams.length,
     cancelOrdersCount: batchParams.cancelOrderParams.length,
     externalCallsGasLimit: getBatchExternalSwapGasLimit(batchParams),
+    isGmxAccount,
   });
 
   if (!executionFeeAmount) {
@@ -189,7 +193,7 @@ function getBatchExpressEstimatorParams({
 
 export async function estimateExpressParams({
   chainId,
-  srcChainId,
+  isGmxAccount,
   provider,
   transactionParams,
   globalExpressParams,
@@ -197,7 +201,7 @@ export async function estimateExpressParams({
   requireValidations = true,
 }: {
   chainId: UiContractsChain;
-  srcChainId: UiSourceChain | undefined;
+  isGmxAccount: boolean;
   provider: Provider;
   globalExpressParams: GlobalExpressParams;
   transactionParams: ExpressTransactionEstimatorParams;
@@ -303,7 +307,7 @@ export async function estimateExpressParams({
       gasPaymentTokenAsCollateralAmount,
       gasPaymentTokenAmount: baseRelayFeeParams.gasPaymentParams.gasPaymentTokenAmount,
       gasPaymentAllowanceData,
-      isMultichain: srcChainId !== undefined,
+      isGmxAccount,
       tokenPermits,
     });
 
@@ -389,7 +393,7 @@ export async function estimateExpressParams({
     gasPaymentTokenAmount: finalRelayFeeParams.gasPaymentParams.gasPaymentTokenAmount,
     gasPaymentTokenAsCollateralAmount,
     gasPaymentAllowanceData,
-    isMultichain: srcChainId !== undefined,
+    isGmxAccount,
     tokenPermits,
   });
 
@@ -427,21 +431,21 @@ export function getGasPaymentValidations({
   gasPaymentTokenAsCollateralAmount,
   gasPaymentAllowanceData,
   tokenPermits,
-  isMultichain,
+  isGmxAccount,
 }: {
   gasPaymentToken: TokenData;
   gasPaymentTokenAmount: bigint;
   gasPaymentTokenAsCollateralAmount: bigint;
   gasPaymentAllowanceData: TokensAllowanceData;
   tokenPermits: SignedTokenPermit[];
-  isMultichain: boolean;
+  isGmxAccount: boolean;
 }): GasPaymentValidations {
   const totalGasPaymentTokenAmount = gasPaymentTokenAsCollateralAmount + gasPaymentTokenAmount;
 
   const isOutGasTokenBalance =
     gasPaymentToken?.balance === undefined || totalGasPaymentTokenAmount > gasPaymentToken.balance;
 
-  const needGasPaymentTokenApproval = isMultichain
+  const needGasPaymentTokenApproval = isGmxAccount
     ? false
     : getNeedTokenApprove(gasPaymentAllowanceData, gasPaymentToken?.address, totalGasPaymentTokenAmount, tokenPermits);
 

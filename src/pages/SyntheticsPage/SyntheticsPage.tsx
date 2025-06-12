@@ -17,6 +17,7 @@ import {
   selectChainId,
   selectOrdersInfoData,
   selectPositionsInfoData,
+  selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import {
@@ -400,6 +401,7 @@ export function SyntheticsPage(p: Props) {
 
 function useOrdersControl() {
   const chainId = useSelector(selectChainId) as UiContractsChain;
+  const srcChainId = useSelector(selectSrcChainId);
   const signer = useEthersSigner();
   const { provider } = useJsonRpcProvider(chainId);
   const [cancellingOrdersKeys, setCanellingOrdersKeys] = useCancellingOrdersKeysState();
@@ -435,6 +437,7 @@ function useOrdersControl() {
         requireValidations: true,
         estimationMethod: "approximate",
         provider,
+        isGmxAccount: srcChainId !== undefined,
       });
 
       sendBatchOrderTxn({
@@ -466,6 +469,7 @@ function useOrdersControl() {
       selectedOrderKeys,
       setCanellingOrdersKeys,
       signer,
+      srcChainId,
     ]
   );
 
@@ -493,6 +497,7 @@ function useOrdersControl() {
         requireValidations: true,
         estimationMethod: "approximate",
         provider,
+        isGmxAccount: srcChainId !== undefined,
       });
 
       sendBatchOrderTxn({
@@ -509,7 +514,16 @@ function useOrdersControl() {
         setSelectedOrderKeys((prev) => prev.filter((k) => k !== key));
       });
     },
-    [chainId, globalExpressParams, makeOrderTxnCallback, ordersInfoData, provider, setCanellingOrdersKeys, signer]
+    [
+      chainId,
+      globalExpressParams,
+      makeOrderTxnCallback,
+      ordersInfoData,
+      provider,
+      setCanellingOrdersKeys,
+      signer,
+      srcChainId,
+    ]
   );
 
   return {

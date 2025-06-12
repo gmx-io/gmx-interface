@@ -56,6 +56,7 @@ const baseGasLimits: GasLimitsConfig = {
   cancelOrderGasLimit: 1000000n,
   gelatoRelayFeeMultiplierFactor: 1000000000000000000000000000000n,
   tokenPermitGasLimit: 1000000n,
+  gmxAccountCollateralOverhead: 0n,
 };
 
 const baseGasPrice = 1650000002n;

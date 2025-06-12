@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
@@ -174,7 +175,11 @@ export const SelectAssetToDepositView = () => {
         {filteredBalances.length === 0 && (
           <div className="flex h-full flex-col items-center justify-center gap-8 p-16 text-slate-100">
             <InfoIconComponent className="size-24" />
-            No assets are available for deposit
+            {selectedNetwork === "all" ? (
+              <Trans>No assets are available for deposit</Trans>
+            ) : (
+              <Trans>No assets available for deposit on {getChainName(selectedNetwork)}</Trans>
+            )}
           </div>
         )}
       </div>

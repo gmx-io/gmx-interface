@@ -248,6 +248,7 @@ export function usePositionEditorButtonState(operation: Operation): {
     expressParamsPromise,
   } = useExpressOrdersParams({
     orderParams: batchParams,
+    isGmxAccount: srcChainId !== undefined,
   });
 
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {

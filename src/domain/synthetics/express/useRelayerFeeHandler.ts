@@ -37,10 +37,12 @@ export type ExpressOrdersParamsResult = {
 export function useExpressOrdersParams({
   orderParams,
   label,
+  isGmxAccount,
 }: {
   orderParams: BatchOrderTxnParams | undefined;
   totalExecutionFee?: bigint;
   label?: string;
+  isGmxAccount: boolean;
 }): ExpressOrdersParamsResult {
   const { chainId } = useChainId();
 
@@ -78,6 +80,7 @@ export function useExpressOrdersParams({
         globalExpressParams: p.globalExpressParams,
         requireValidations: false,
         estimationMethod: "approximate",
+        isGmxAccount: p.isGmxAccount,
       });
 
       return nextApproximateParams;
@@ -91,6 +94,7 @@ export function useExpressOrdersParams({
               provider,
               orderParams,
               globalExpressParams,
+              isGmxAccount,
             }
           : undefined,
       forceRecalculate,
@@ -111,6 +115,7 @@ export function useExpressOrdersParams({
         globalExpressParams: p.globalExpressParams,
         requireValidations: false,
         estimationMethod: "estimateGas",
+        isGmxAccount: p.isGmxAccount,
       });
 
       return expressParams;
@@ -124,6 +129,7 @@ export function useExpressOrdersParams({
               provider,
               orderParams,
               globalExpressParams,
+              isGmxAccount,
             }
           : undefined,
       forceRecalculate,

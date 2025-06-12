@@ -276,6 +276,7 @@ export const selectTradeboxTradeType = (s: SyntheticsState) => s.tradebox.tradeT
 export const selectTradeboxTradeMode = (s: SyntheticsState) => s.tradebox.tradeMode;
 export const selectTradeboxIsWrapOrUnwrap = (s: SyntheticsState) => s.tradebox.isWrapOrUnwrap;
 export const selectTradeboxFromTokenAddress = (s: SyntheticsState) => s.tradebox.fromTokenAddress;
+export const selectTradeboxIsFromTokenGmxAccount = (s: SyntheticsState) => s.tradebox.isFromTokenGmxAccount;
 export const selectTradeboxToTokenAddress = (s: SyntheticsState) => s.tradebox.toTokenAddress;
 export const selectTradeboxMarketAddress = (s: SyntheticsState) =>
   selectOnlyOnTradeboxPage(s, s.tradebox.marketAddress);

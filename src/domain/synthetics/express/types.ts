@@ -1,12 +1,12 @@
-import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
-import { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
-import { ExpressTxnData } from "lib/transactions";
-import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
+import type { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
+import type { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
+import type { ExpressTxnData } from "lib/transactions";
+import type { ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
-import { GasLimitsConfig, L1ExpressOrderGasReference } from "../fees";
-import { MarketsInfoData } from "../markets";
-import { Subaccount, SubaccountValidations } from "../subaccount";
-import { FindSwapPath } from "../trade";
+import type { GasLimitsConfig, L1ExpressOrderGasReference } from "../fees";
+import type { MarketsInfoData } from "../markets";
+import type { Subaccount, SubaccountValidations } from "../subaccount";
+import type { FindSwapPath } from "../trade";
 
 export type GlobalExpressParams = {
   tokensData: TokensData;

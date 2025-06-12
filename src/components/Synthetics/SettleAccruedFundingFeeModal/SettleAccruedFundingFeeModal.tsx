@@ -146,6 +146,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const { expressParams } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Settle Funding Fee",
+    isGmxAccount: srcChainId !== undefined,
   });
 
   const handleOnClose = useCallback(() => {

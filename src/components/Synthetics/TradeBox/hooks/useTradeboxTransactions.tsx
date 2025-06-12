@@ -20,6 +20,7 @@ import {
   selectTradeboxFees,
   selectTradeboxFromTokenAddress,
   selectTradeboxIncreasePositionAmounts,
+  selectTradeboxIsFromTokenGmxAccount,
   selectTradeboxMarketInfo,
   selectTradeboxPayTokenAllowance,
   selectTradeboxSelectedPosition,
@@ -78,6 +79,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
+  const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
   const marketInfo = useSelector(selectTradeboxMarketInfo);
   const collateralToken = useSelector(selectTradeboxCollateralToken);
@@ -138,6 +140,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "TradeBox",
+    isGmxAccount: isFromTokenGmxAccount,
   });
 
   const initOrderMetricData = useCallback(() => {

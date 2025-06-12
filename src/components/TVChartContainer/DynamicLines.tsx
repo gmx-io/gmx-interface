@@ -13,6 +13,7 @@ import {
   selectChainId,
   selectMarketsInfoData,
   selectOrdersInfoData,
+  selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   makeSelectOrderEditorPositionOrderError,
@@ -44,6 +45,7 @@ export function DynamicLines({
   const dynamicChartLines = useSelector(selectChartDynamicLines);
   const { signer } = useWallet();
   const chainId = useSelector(selectChainId);
+  const srcChainId = useSelector(selectSrcChainId);
   const { provider } = useJsonRpcProvider(chainId);
   const [, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
@@ -79,6 +81,7 @@ export function DynamicLines({
         requireValidations: true,
         estimationMethod: "approximate",
         provider,
+        isGmxAccount: srcChainId !== undefined,
       });
 
       sendBatchOrderTxn({
@@ -94,7 +97,16 @@ export function DynamicLines({
         setCancellingOrdersKeys((prev) => prev.filter((k) => k !== key));
       });
     },
-    [chainId, globalExpressParams, makeOrderTxnCallback, ordersInfoData, provider, setCancellingOrdersKeys, signer]
+    [
+      chainId,
+      globalExpressParams,
+      makeOrderTxnCallback,
+      ordersInfoData,
+      provider,
+      setCancellingOrdersKeys,
+      signer,
+      srcChainId,
+    ]
   );
 
   const calcSelector = useCalcSelector();

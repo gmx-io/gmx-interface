@@ -6557,6 +6557,10 @@ msgstr "Enter an amount"
 msgid "Connect"
 msgstr "Connect"
 
+#: src/components/Synthetics/GmxAccountModal/SelectAssetToDepositView.tsx
+msgid "No assets are available for deposit"
+msgstr "No assets are available for deposit"
+
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "Click here to give us your feedback on GMX."
 msgstr "Click here to give us your feedback on GMX."
@@ -7323,6 +7327,10 @@ msgstr "Max {0} amount exceeded"
 msgid "Position close disabled, pending {0} upgrade"
 msgstr "Position close disabled, pending {0} upgrade"
 
+#: src/components/Synthetics/GmxAccountModal/SelectAssetToDepositView.tsx
+msgid "No assets available for deposit on {0}"
+msgstr "No assets available for deposit on {0}"
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Swapping..."
 msgstr "Swapping..."
@@ -7533,6 +7541,10 @@ msgstr "This code has been taken by someone else on {takenNetworkNames}, you wil
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 msgid "Confirm Claim"
 msgstr "Confirm Claim"
+
+#: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
+msgid "GMX Account Balance"
+msgstr "GMX Account Balance"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX community discussion"

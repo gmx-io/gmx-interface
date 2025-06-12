@@ -367,7 +367,7 @@ export const selectArbitraryRelayParamsAndPayload = createSelector(function sele
       gasPaymentTokenAsCollateralAmount: 0n,
       gasPaymentAllowanceData: gasPaymentAllowanceData?.tokensAllowanceData ?? EMPTY_OBJECT,
       tokenPermits,
-      isMultichain: srcChainId !== undefined,
+      isGmxAccount: srcChainId !== undefined,
     });
 
     const subaccountValidations =
@@ -435,7 +435,7 @@ export function useArbitraryRelayParamsAndPayload(
       try {
         const expressParams = await estimateExpressParams({
           chainId,
-          srcChainId,
+          isGmxAccount: srcChainId !== undefined,
           estimationMethod: "estimateGas",
           globalExpressParams: p.globalExpressParams,
           provider: p.provider,

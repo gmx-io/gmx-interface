@@ -5,6 +5,7 @@ import { IoArrowBack } from "react-icons/io5";
 import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 
 import { SlideModal } from "components/Modal/SlideModal";
@@ -17,7 +18,9 @@ import { TransferDetailsView } from "./TransferDetailsView";
 import { WithdrawView } from "./WithdrawView";
 
 const AvailableToTradeAssetsTitle = () => {
+  const { srcChainId } = useChainId();
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
+
   return (
     <div className="flex items-center gap-8">
       <IoArrowBack
@@ -26,7 +29,7 @@ const AvailableToTradeAssetsTitle = () => {
         role="button"
         onClick={() => setIsVisibleOrView("main")}
       />
-      <Trans>Available to Trade Assets</Trans>
+      {srcChainId !== undefined ? <Trans>GMX Account Balance</Trans> : <Trans>Available to Trade Assets</Trans>}
     </div>
   );
 };

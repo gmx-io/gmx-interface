@@ -369,6 +369,7 @@ export function PositionSeller() {
     asyncExpressParams,
   } = useExpressOrdersParams({
     orderParams: batchParams,
+    isGmxAccount: srcChainId !== undefined,
   });
 
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
