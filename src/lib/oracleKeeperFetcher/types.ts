@@ -84,6 +84,8 @@ export type ApyInfo = {
   glvs: { address: string; baseApy: number; bonusApy: number; apy: number }[];
 };
 
+export type ApyPeriod = "1d" | "7d" | "30d" | "90d" | "total";
+
 export interface OracleFetcher {
   readonly url: string;
   fetchTickers(): Promise<TickersResponse>;
@@ -93,8 +95,9 @@ export interface OracleFetcher {
   fetchPostBatchReport(body: BatchReportBody, debug?: boolean): Promise<Response>;
   fetchPostFeedback(body: UserFeedbackBody, debug?: boolean): Promise<Response>;
   fetchUiVersion(currentVersion: number, active: boolean): Promise<number>;
-  fetchApys(debug?: boolean): Promise<ApyInfo>;
+  fetchApys(period: ApyPeriod, debug?: boolean): Promise<ApyInfo>;
 }
+
 export type TickersResponse = {
   minPrice: string;
   maxPrice: string;
