@@ -1,6 +1,6 @@
 import { type Address, zeroAddress } from "viem";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, UiSupportedChain } from "./chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX } from "./chains";
 
 export const CONTRACTS = {
   [ARBITRUM]: {
@@ -225,10 +225,22 @@ export const CONTRACTS = {
     RewardRouter: zeroAddress,
     RewardReader: zeroAddress,
     GlpRewardRouter: zeroAddress,
-    NATIVE_TOKEN: zeroAddress,
+    StakedGmxTracker: zeroAddress,
+    FeeGmxTracker: zeroAddress,
+    NATIVE_TOKEN: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
     GLP: zeroAddress,
     GMX: zeroAddress,
     ES_GMX: zeroAddress,
+    BN_GMX: zeroAddress,
+    BonusGmxTracker: zeroAddress,
+    StakedGlpTracker: zeroAddress,
+    FeeGlpTracker: zeroAddress,
+    ExtendedGmxTracker: zeroAddress,
+    StakedGmxDistributor: zeroAddress,
+    StakedGlpDistributor: zeroAddress,
+    GmxVester: zeroAddress,
+    GlpVester: zeroAddress,
+    AffiliateVester: zeroAddress,
     Printer: "0x0Bca58850cF4e1e1Fd715337B07b3FaBF8de542d",
     ProtocolGovernor: "0xb2BD9CDAe7192dEaB39b1D887d336b4f80ED3C76",
     SyntheticsReader: "0x858922fe3F9871bFA80AEc47D4B1F87D39F9d9d0",
@@ -336,13 +348,7 @@ export const CONTRACTS = {
   },
 };
 
-type ExtractContractNames<T extends object> = {
-  [K in keyof T]: keyof T[K];
-}[keyof T];
-
-export type ContractName = ExtractContractNames<typeof CONTRACTS>;
-
-export function getContract(chainId: UiSupportedChain, name: ContractName): Address {
+export function getContract(chainId: number, name: string): Address {
   if (!CONTRACTS[chainId]) {
     throw new Error(`Unknown chainId ${chainId}`);
   }

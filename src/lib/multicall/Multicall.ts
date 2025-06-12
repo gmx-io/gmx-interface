@@ -1,5 +1,4 @@
 import { Chain, ClientConfig, createPublicClient, http } from "viem";
-import { arbitrum, avalanche, avalancheFuji } from "viem/chains";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, UiContractsChain, getViemChain } from "config/chains";
 import { isWebWorker } from "config/env";
@@ -83,7 +82,7 @@ const BATCH_CONFIGS: Record<
         wait: 0,
       },
     },
-  }
+  },
 };
 
 export class Multicall {

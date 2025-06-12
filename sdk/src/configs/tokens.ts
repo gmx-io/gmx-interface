@@ -1467,8 +1467,20 @@ export const TOKENS: { [chainId: number]: Token[] } = {
   ],
   [BOTANIX]: [
     {
-      name: "pBTC",
-      symbol: "PBTC",
+      name: "Bitcoin",
+      symbol: "BTC",
+      address: NATIVE_TOKEN_ADDRESS,
+      decimals: 18,
+      isNative: true,
+      isShortable: true,
+      categories: ["layer1"],
+      imageUrl: "https://assets.coingecko.com/coins/images/1/standard/bitcoin.png?1696501400",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
+      baseSymbol: "BTC",
+    },
+    {
+      name: "Pegged BTC",
+      symbol: "pBTC",
       address: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
       decimals: 18,
       isNative: true,
@@ -1476,8 +1488,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/1/standard/bitcoin.png?1696501400",
       coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
-      isWrapped: true,
       baseSymbol: "BTC",
+      isWrapped: true,
     },
     {
       name: "BTC",

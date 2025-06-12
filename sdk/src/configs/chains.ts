@@ -80,29 +80,29 @@ export const GAS_PRICE_BUFFER_MAP: Record<number, bigint> = {
   [ARBITRUM]: 2000n, // 20%
 };
 
-export const botanix = defineChain({
+export const botanix: Chain = defineChain({
   id: BOTANIX,
-  name: 'Botanix',
+  name: "Botanix",
   nativeCurrency: {
+    name: "Bitcoin",
+    symbol: "BTC",
     decimals: 18,
-    name: 'Botanix',
-    symbol: 'bBTC',
   },
   rpcUrls: {
-    default: { http: ['"https://rpc.botanixlabs.com'] },
+    default: { http: ["https://rpc.botanixlabs.com", "https://rpc.ankr.com/botanix_mainnet"] },
   },
   blockExplorers: {
     default: {
-      name: 'BotanixScan',
-      url: 'https://botanixscan.io',
+      name: "BotanixScan",
+      url: "https://botanixscan.io",
     },
   },
   contracts: {
     multicall3: {
-      address: '0x4BaA24f93a657f0c1b4A0Ffc72B91011E35cA46b',
+      address: "0x4BaA24f93a657f0c1b4A0Ffc72B91011E35cA46b",
     },
   },
-})
+});
 
 const VIEM_CHAIN_BY_CHAIN_ID: Record<UiSupportedChain, Chain> = {
   [AVALANCHE_FUJI]: avalancheFuji,
@@ -190,4 +190,3 @@ export const GAS_LIMITS_STATIC_CONFIG: Record<
     tokenPermitGasLimit: 90_000n,
   },
 };
-
