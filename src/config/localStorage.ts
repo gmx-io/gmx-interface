@@ -59,10 +59,7 @@ export const EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY = "express-trading-w
 export const INTERVIEW_INVITATION_SHOWN_TIME_KEY = "interview-invitation-shown-time";
 export const NPS_SURVEY_SHOWN_TIME_KEY = "nps-survey-shown-time";
 export const LP_INTERVIEW_INVITATION_SHOWN_TIME_KEY = "lp-interview-invitation-shown-time";
-/**
- * @deprecated
- */
-export const TOKEN_FAVORITE_PREFERENCE_SETTINGS_KEY = "token-favorite-preference";
+export const TOKEN_FAVORITES_PREFERENCE_KEY = "token-favorites-preference";
 export const SETTINGS_WARNING_DOT_VISIBLE_KEY = "settings-warning-dot-visible";
 
 export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";

@@ -3,10 +3,7 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type {
-  GelatoRelayRouter,
-  GelatoRelayRouterInterface,
-} from "../GelatoRelayRouter";
+import type { GelatoRelayRouter, GelatoRelayRouterInterface } from "../GelatoRelayRouter";
 
 const _abi = [
   {
@@ -490,8 +487,7 @@ const _abi = [
                     type: "address[]",
                   },
                 ],
-                internalType:
-                  "struct IBaseOrderUtils.CreateOrderParamsAddresses",
+                internalType: "struct IBaseOrderUtils.CreateOrderParamsAddresses",
                 name: "addresses",
                 type: "tuple",
               },
@@ -1436,10 +1432,7 @@ export class GelatoRelayRouter__factory {
   static createInterface(): GelatoRelayRouterInterface {
     return new Interface(_abi) as GelatoRelayRouterInterface;
   }
-  static connect(
-    address: string,
-    runner?: ContractRunner | null
-  ): GelatoRelayRouter {
+  static connect(address: string, runner?: ContractRunner | null): GelatoRelayRouter {
     return new Contract(address, _abi, runner) as unknown as GelatoRelayRouter;
   }
 }
