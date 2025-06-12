@@ -2456,6 +2456,10 @@ msgstr ""
 msgid "Shift Fee"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "Allowed slippage"
+msgstr ""
+
 #: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "GLP Pool"

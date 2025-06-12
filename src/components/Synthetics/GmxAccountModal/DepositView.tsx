@@ -863,9 +863,9 @@ export const DepositView = () => {
       )}
       <div className="h-32 shrink-0 grow" />
 
-      <div className="mb-16 flex flex-col gap-8">
+      <div className="mb-16 flex flex-col gap-14">
         <SyntheticsInfoRow
-          label="Allowed slippage"
+          label={<Trans>Allowed slippage</Trans>}
           value={formatPercentage(BigInt(MULTICHAIN_FUNDING_SLIPPAGE_BPS), { bps: true })}
         />
         <SyntheticsInfoRow

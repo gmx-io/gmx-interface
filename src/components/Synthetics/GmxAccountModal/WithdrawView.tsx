@@ -823,7 +823,7 @@ export const WithdrawView = () => {
 
       <div className="h-32 shrink-0 grow" />
 
-      <div className="mb-16 flex flex-col gap-8">
+      <div className="mb-16 flex flex-col gap-14">
         <SyntheticsInfoRow
           label={<Trans>Network Fee</Trans>}
           value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."}
