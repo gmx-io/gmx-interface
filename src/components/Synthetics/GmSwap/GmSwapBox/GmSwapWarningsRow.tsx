@@ -1,10 +1,8 @@
 import { Trans } from "@lingui/macro";
+import noop from "lodash/noop";
 import { ReactNode } from "react";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
-
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-const EMPTY_FUNCTION = () => {};
 
 export function GmSwapWarningsRow({
   shouldShowWarning,
@@ -22,7 +20,7 @@ export function GmSwapWarningsRow({
   const warnings: ReactNode[] = [];
   if (shouldShowWarningForPosition) {
     warnings.push(
-      <AlertInfoCard className="mb-14" type="warning" key="swapBoxHighPriceImpactWarning" onClose={EMPTY_FUNCTION}>
+      <AlertInfoCard className="mb-14" type="warning" key="swapBoxHighPriceImpactWarning" onClose={noop}>
         <Trans>High Price Impact</Trans>
       </AlertInfoCard>
     );
@@ -30,7 +28,7 @@ export function GmSwapWarningsRow({
 
   if (shouldShowWarningForExecutionFee) {
     warnings.push(
-      <AlertInfoCard className="mb-14" type="warning" key="swapBoxHighNetworkFeeWarning" onClose={EMPTY_FUNCTION}>
+      <AlertInfoCard className="mb-14" type="warning" key="swapBoxHighNetworkFeeWarning" onClose={noop}>
         <Trans>High Network Fees</Trans>
       </AlertInfoCard>
     );

@@ -5837,8 +5837,8 @@ msgid "Please only use this for full account transfers.<0/>This will transfer al
 msgstr ""
 
 #: src/components/Synthetics/GmList/FeeApyLabel.tsx
-msgid "FEE APY"
-msgstr ""
+#~ msgid "FEE APY"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "SNTL esGMX Market"

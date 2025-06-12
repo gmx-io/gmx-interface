@@ -5840,8 +5840,8 @@ msgid "Please only use this for full account transfers.<0/>This will transfer al
 msgstr "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 
 #: src/components/Synthetics/GmList/FeeApyLabel.tsx
-msgid "FEE APY"
-msgstr "FEE APY"
+#~ msgid "FEE APY"
+#~ msgstr "FEE APY"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "SNTL esGMX Market"

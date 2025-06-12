@@ -10,9 +10,10 @@ export function FeeApyLabel({
   upperCase?: boolean;
   disableHandleStyle?: boolean;
 }) {
+  const label = t`Fee APY`;
   return (
     <TooltipWithPortal
-      handle={upperCase ? t`FEE APY` : t`Fee APY`}
+      handle={upperCase ? label.toUpperCase() : label}
       className="normal-case"
       position="bottom-end"
       disableHandleStyle={disableHandleStyle}
