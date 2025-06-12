@@ -1504,10 +1504,6 @@ msgstr ""
 msgid "Shift GM"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-msgid "Pick a token and switch network"
-msgstr ""
-
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Requested withdrawal of {0} USD from {1} {longOrShortText}."
 msgstr ""
@@ -7968,6 +7964,10 @@ msgstr ""
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Enter unique coins"
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "Pick and asset to deposit"
 msgstr ""
 
 #: src/components/MarketSelector/MarketSelector.tsx
