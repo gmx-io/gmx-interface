@@ -247,7 +247,7 @@ export function SettingsModal({
 
                 <SettingButton
                   title="Classic"
-                  description="On-chain signing of every transaction"
+                  description="On-chain signing for every transaction"
                   info={
                     <Trans>
                       Your wallet, your keys. You sign each transaction on-chain using your own RPC, typically provided
@@ -261,7 +261,7 @@ export function SettingsModal({
 
                 <SettingButton
                   title="Express"
-                  description="Imroved reliability with private RPCs"
+                  description="High execution reliability using premium RPCs"
                   info={
                     <Trans>
                       Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs
@@ -280,8 +280,8 @@ export function SettingsModal({
                 />
 
                 <SettingButton
-                  title="Express + 1CT"
-                  description="Instant trade without confirmation with Express reliability"
+                  title="Express + One-Click"
+                  description="CEX-like experience with Express reliability"
                   icon={<OneClickIcon />}
                   disabled={isOutOfGasPaymentBalance}
                   info={
