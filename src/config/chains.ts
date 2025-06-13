@@ -174,6 +174,10 @@ export function getAlchemyBotanixHttpUrl() {
   return `https://botanix-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
 }
 
+export function getAlchemyBotanixWsUrl() {
+  return `wss://botanix-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
+}
+
 export function getExplorerUrl(chainId) {
   if (chainId === 3) {
     return "https://ropsten.etherscan.io/";
