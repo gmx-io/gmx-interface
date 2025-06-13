@@ -1,29 +1,28 @@
-/* eslint-disable import/order */
-import { getExplorerUrl } from "config/chains";
+import { useMemo } from "react";
+
+import { ARBITRUM_SEPOLIA, getExplorerUrl } from "config/chains";
 import { getContract } from "config/contracts";
 import { MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
-import { getTokenBySymbol } from "sdk/configs/tokens";
 // Warning: do not import through reexport, it will break jest
 import { USD_DECIMALS } from "config/factors";
+import { selectGlvInfo, selectGlvs } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import {
+  useTokensBalancesUpdates,
+  useUpdatedTokensBalances,
+} from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
 import { ContractCallsConfig, useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
+import type { ContractsChainId } from "sdk/configs/chains";
+import { getTokenBySymbol } from "sdk/configs/tokens";
 
-import { useMarkets } from "./useMarkets";
-import { getContractMarketPrices } from "./utils";
-
-import { selectGlvInfo, selectGlvs } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import {
-  useTokensBalancesUpdates,
-  useUpdatedTokensBalances,
-} from "context/TokensBalancesContext/TokensBalancesContextProvider";
-import { useMemo } from "react";
 import { isGlvEnabled } from "./glv";
 import { GlvInfoData } from "./types";
-import type { ContractsChainId } from "sdk/configs/chains";
+import { useMarkets } from "./useMarkets";
+import { getContractMarketPrices } from "./utils";
 
 type MarketTokensDataResult = {
   marketTokensData?: TokensData;
@@ -80,7 +79,7 @@ export function useMarketTokensDataRequest(
 
           requests[`${marketAddress}-prices`] = {
             contractAddress: getContract(chainId, "SyntheticsReader"),
-            abiId: "SyntheticsReader",
+            abiId: chainId === ARBITRUM_SEPOLIA ? "SyntheticsReaderArbitrumSepolia" : "SyntheticsReader",
             calls: {
               minPrice: {
                 methodName: "getMarketTokenPrice",

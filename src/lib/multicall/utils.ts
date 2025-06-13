@@ -1,4 +1,6 @@
-import { MulticallErrors } from "./types";
+import type { AbiId } from "sdk/abis";
+
+import type { MulticallErrors } from "./types";
 
 export function serializeMulticallErrors(errors: MulticallErrors<any>) {
   let errorString = "";
@@ -24,6 +26,18 @@ export function serializeMulticallErrors(errors: MulticallErrors<any>) {
   return errorString;
 }
 
-export function getCallId(contractAddress: string, methodName: string, params: any[]) {
-  return JSON.stringify([contractAddress, methodName, params]);
+export function getCallId(contractAddress: string, abiId: AbiId, methodName: string, params: any[]) {
+  return JSON.stringify([contractAddress, abiId, methodName, params]);
+}
+
+export function getContractAbiKey(contractAddress: string, abiId: AbiId) {
+  return `${contractAddress}-${abiId}`;
+}
+
+export function parseContractAbiKey(contractAbiKey: string) {
+  const firstHyphenIndex = contractAbiKey.indexOf("-");
+  const contractAddress = contractAbiKey.slice(0, firstHyphenIndex);
+  const abiId = contractAbiKey.slice(firstHyphenIndex + 1);
+
+  return { contractAddress, abiId };
 }

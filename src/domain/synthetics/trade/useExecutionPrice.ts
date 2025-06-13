@@ -1,3 +1,4 @@
+import { ARBITRUM_SEPOLIA } from "config/chains";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { formatDeltaUsd, formatUsd } from "lib/numbers";
@@ -46,7 +47,7 @@ export function useDebugExecutionPrice(
       return {
         reader: {
           contractAddress: getContract(chainId, "SyntheticsReader"),
-          abiId: "SyntheticsReader",
+          abiId: chainId === ARBITRUM_SEPOLIA ? "SyntheticsReaderArbitrumSepolia" : "SyntheticsReader",
           calls: {
             executionPrice: {
               methodName: "getExecutionPrice",
