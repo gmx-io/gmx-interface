@@ -332,7 +332,7 @@ export async function createAndSignSubaccountApproval(
     maxAllowedCount: bigint;
   }
 ): Promise<SignedSubbacountApproval> {
-  let srcChainId = await getMultichainInfoFromSigner(mainAccountSigner, chainId);
+  const srcChainId = await getMultichainInfoFromSigner(mainAccountSigner, chainId);
 
   const relayRouterAddress = getOrderRelayRouterAddress(chainId, true, srcChainId !== undefined);
 
@@ -349,7 +349,7 @@ export async function createAndSignSubaccountApproval(
     ].filter((type) => type !== undefined) as SignatureTypes[string],
   };
 
-  const domain = getGelatoRelayRouterDomain(chainId, relayRouterAddress, true, srcChainId);
+  const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, relayRouterAddress);
 
   const typedData = {
     subaccount: subaccountAddress,

@@ -576,6 +576,7 @@ export function PositionSeller() {
       provider,
       batchParams,
       noncesData,
+      isGmxAccount: srcChainId !== undefined,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
       simulationParams: shouldDisableValidationForTesting

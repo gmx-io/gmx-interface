@@ -169,6 +169,7 @@ function getBatchExpressEstimatorParams({
         provider,
         noncesData,
         emptySignature: true,
+        isGmxAccount,
       }),
     };
   };
@@ -492,6 +493,7 @@ export async function buildAndSignExpressBatchOrderTxn({
   relayerFeeAmount,
   subaccount,
   signer,
+  isGmxAccount,
   noncesData,
   emptySignature = false,
   provider,
@@ -502,28 +504,28 @@ export async function buildAndSignExpressBatchOrderTxn({
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
   relayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload;
+  isGmxAccount: boolean;
   noncesData: NoncesData | undefined;
   subaccount: Subaccount | undefined;
   emptySignature?: boolean;
   provider: Provider;
 }): Promise<ExpressTxnData> {
-  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
   const messageSigner = subaccount ? subaccount!.signer : signer;
 
-  const relayRouterAddress = getOrderRelayRouterAddress(chainId, subaccount !== undefined, srcChainId !== undefined);
+  const relayRouterAddress = getOrderRelayRouterAddress(chainId, subaccount !== undefined, isGmxAccount);
 
   const cachedNonce = subaccount ? noncesData?.subaccountRelayRouter?.nonce : noncesData?.relayRouter?.nonce;
 
   let userNonce: bigint;
   if (cachedNonce === undefined) {
-    if (srcChainId) {
+    if (isGmxAccount) {
       userNonce = await getRelayRouterNonceForMultichain(provider!, messageSigner.address, relayRouterAddress);
     } else {
       userNonce = await getRelayRouterNonceForSigner({
         chainId,
         signer: messageSigner,
         isSubaccount: subaccount?.signedApproval !== undefined,
-        isMultichain: srcChainId !== undefined,
+        isMultichain: false,
         scope: "order",
       });
     }
@@ -562,7 +564,13 @@ export async function buildAndSignExpressBatchOrderTxn({
   }
 
   let batchCalldata: string;
-  if (srcChainId) {
+  if (isGmxAccount) {
+    const srcChainId = (await getMultichainInfoFromSigner(signer, chainId)) ?? chainId;
+
+    if (!srcChainId) {
+      throw new Error("No srcChainId");
+    }
+
     if (subaccount) {
       batchCalldata = encodeFunctionData({
         abi: abis.MultichainSubaccountRouterArbitrumSepolia,
@@ -644,8 +652,6 @@ export async function getBatchSignatureParams({
   chainId: ContractsChainId;
   relayRouterAddress: string;
 }): Promise<SignTypedDataParams> {
-  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
-
   const types = {
     Batch: [
       { name: "account", type: "address" },
@@ -697,7 +703,8 @@ export async function getBatchSignatureParams({
     ],
   };
 
-  const domain = getGelatoRelayRouterDomain(chainId, relayRouterAddress, subaccountApproval !== undefined, srcChainId);
+  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
+  const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, relayRouterAddress);
 
   const paramsLists = getBatchParamsLists(batchParams);
 
@@ -762,7 +769,11 @@ export async function getMultichainInfoFromSigner(
 
   const isMultichain = srcChainId !== (chainId as SourceChainId);
 
-  return isMultichain ? srcChainId : undefined;
+  if (!isMultichain) {
+    return undefined;
+  }
+
+  return srcChainId;
 }
 
 export function getOrderRelayRouterAddress(
@@ -910,12 +921,7 @@ async function signBridgeOutPayload({
     relayParams: hashRelayParamsMultichain(relayParams),
   };
 
-  const domain = getGelatoRelayRouterDomain(
-    chainId,
-    getContract(chainId, "MultichainTransferRouter"),
-    false,
-    srcChainId
-  );
+  const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, getContract(chainId, "MultichainTransferRouter"));
 
   return signTypedData({ signer, domain, types, typedData });
 }
@@ -1000,7 +1006,7 @@ export async function signSetTraderReferralCode({
     ],
   };
 
-  const domain = getGelatoRelayRouterDomain(chainId, getContract(chainId, "MultichainOrderRouter"), false, srcChainId);
+  const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, getContract(chainId, "MultichainOrderRouter"));
   const typedData = {
     referralCode: referralCode,
     relayParams: hashRelayParamsMultichain(relayParams),

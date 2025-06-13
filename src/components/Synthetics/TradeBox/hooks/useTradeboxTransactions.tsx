@@ -296,6 +296,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       provider,
       batchParams,
       noncesData,
+      isGmxAccount: isFromTokenGmxAccount,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
       simulationParams: shouldDisableValidationForTesting
@@ -320,6 +321,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     chainId,
     expressParamsPromise,
     initOrderMetricData,
+    isFromTokenGmxAccount,
     makeOrderTxnCallback,
     marketsInfoData,
     noncesData,

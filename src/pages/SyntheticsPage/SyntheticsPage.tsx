@@ -449,6 +449,7 @@ function useOrdersControl() {
         provider,
         noncesData: globalExpressParams?.noncesData,
         callback: makeOrderTxnCallback({}),
+        isGmxAccount: srcChainId !== undefined,
       })
         .then(async (tx) => {
           const txnResult = await tx.wait();
@@ -509,6 +510,7 @@ function useOrdersControl() {
         simulationParams: undefined,
         noncesData: globalExpressParams?.noncesData,
         callback: makeOrderTxnCallback({}),
+        isGmxAccount: srcChainId !== undefined,
       }).finally(() => {
         setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key));
         setSelectedOrderKeys((prev) => prev.filter((k) => k !== key));

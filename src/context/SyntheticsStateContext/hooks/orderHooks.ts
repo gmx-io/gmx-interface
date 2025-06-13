@@ -81,6 +81,7 @@ export function useCancelOrder(order: OrderInfo) {
         noncesData: globalExpressParams?.noncesData,
         callback: makeOrderTxnCallback({}),
         provider,
+        isGmxAccount: srcChainId !== undefined,
       }).finally(() => {
         setCancellingOrdersKeys((prev) => prev.filter((k) => k !== order.key));
       });

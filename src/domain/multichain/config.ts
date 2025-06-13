@@ -159,7 +159,7 @@ export function isSettlementChain(chainId: number): chainId is SettlementChainId
   return SETTLEMENT_CHAINS.includes(chainId as SettlementChainId);
 }
 
-export function isSourceChain(chainId: number): chainId is SourceChainId {
+export function isSourceChain(chainId: number | undefined): chainId is SourceChainId {
   return SOURCE_CHAINS.includes(chainId as SourceChainId);
 }
 

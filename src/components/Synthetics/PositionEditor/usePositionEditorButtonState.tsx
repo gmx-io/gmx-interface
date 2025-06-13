@@ -507,6 +507,7 @@ export function usePositionEditorButtonState(operation: Operation): {
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
       noncesData,
+      isGmxAccount: srcChainId !== undefined,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
         : {

@@ -205,6 +205,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
         isFundingFeeSettlement: true,
       }),
       provider,
+      isGmxAccount: srcChainId !== undefined,
     })
       .then(handleOnClose)
       .finally(() => {

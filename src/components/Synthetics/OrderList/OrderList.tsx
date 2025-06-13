@@ -181,6 +181,7 @@ export function OrderList({
       simulationParams: undefined,
       callback: makeOrderTxnCallback({}),
       provider,
+      isGmxAccount: srcChainId !== undefined,
     }).finally(() => {
       setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));
       setSelectedOrderKeys?.(EMPTY_ARRAY);

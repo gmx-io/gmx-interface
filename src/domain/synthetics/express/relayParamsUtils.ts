@@ -76,26 +76,16 @@ export function getExpressContractAddress(
   return getContract(chainId, contractName);
 }
 
-// TODO: deal with isSubaccount
 export function getGelatoRelayRouterDomain(
-  chainId: ContractsChainId,
-  relayRouterAddress: string,
-  isSubaccount: boolean,
-  srcChainId?: SourceChainId
+  chainId: SourceChainId | ContractsChainId,
+  relayRouterAddress: string
 ): SignatureDomain {
   const name = "GmxBaseGelatoRelayRouter";
-
-  let domainChainId: number;
-  if (srcChainId) {
-    domainChainId = srcChainId;
-  } else {
-    domainChainId = chainId;
-  }
 
   return {
     name,
     version: "1",
-    chainId: domainChainId,
+    chainId,
     verifyingContract: relayRouterAddress,
   };
 }

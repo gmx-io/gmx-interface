@@ -113,7 +113,7 @@ async function signRemoveSubaccountPayload({
     ],
   };
 
-  const domain = getGelatoRelayRouterDomain(chainId, relayRouterAddress, true, srcChainId);
+  const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, relayRouterAddress);
 
   const typedData = {
     subaccount: subaccountAddress,

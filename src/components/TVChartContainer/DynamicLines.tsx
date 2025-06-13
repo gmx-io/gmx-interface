@@ -93,6 +93,7 @@ export function DynamicLines({
         simulationParams: undefined,
         callback: makeOrderTxnCallback({}),
         provider,
+        isGmxAccount: srcChainId !== undefined,
       }).finally(() => {
         setCancellingOrdersKeys((prev) => prev.filter((k) => k !== key));
       });

@@ -468,6 +468,7 @@ export function OrderEditor(p: Props) {
       simulationParams: undefined,
       callback: makeOrderTxnCallback({}),
       provider,
+      isGmxAccount: srcChainId !== undefined,
     });
 
     if (expressParams?.subaccount) {

@@ -4,10 +4,7 @@ import { withRetry } from "viem";
 import { ContractsChainId } from "config/chains";
 import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { ExpressTxnParams } from "domain/synthetics/express";
-import {
-  buildAndSignExpressBatchOrderTxn,
-  getMultichainInfoFromSigner,
-} from "domain/synthetics/express/expressOrderUtils";
+import { buildAndSignExpressBatchOrderTxn } from "domain/synthetics/express/expressOrderUtils";
 import { isLimitSwapOrderType } from "domain/synthetics/orders";
 import { TokensData } from "domain/tokens";
 import { extendError } from "lib/errors";
@@ -45,6 +42,7 @@ const DEFAULT_RUN_SIMULATION = () => Promise.resolve(undefined);
 export async function sendBatchOrderTxn({
   chainId,
   signer,
+  isGmxAccount,
   provider,
   batchParams,
   noncesData,
@@ -54,6 +52,7 @@ export async function sendBatchOrderTxn({
 }: {
   chainId: ContractsChainId;
   signer: WalletSigner;
+  isGmxAccount: boolean;
   provider: Provider;
   batchParams: BatchOrderTxnParams;
   expressParams: ExpressTxnParams | undefined;
@@ -61,16 +60,14 @@ export async function sendBatchOrderTxn({
   simulationParams: BatchSimulationParams | undefined;
   callback: TxnCallback<BatchOrderTxnCtx> | undefined;
 }) {
-  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
-
   const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({ expressParams, batchParams, signer });
 
   try {
-    if (srcChainId && !expressParams) {
+    if (isGmxAccount && !expressParams) {
       throw new Error("Multichain orders are only supported with express params");
     }
 
-    if (srcChainId && !provider) {
+    if (isGmxAccount && !provider) {
       throw new Error("provider is required for multichain txns");
     }
     callback?.(eventBuilder.Submitted());
@@ -78,8 +75,8 @@ export async function sendBatchOrderTxn({
     let runSimulation: () => Promise<void> = DEFAULT_RUN_SIMULATION;
 
     if (simulationParams) {
-      runSimulation = () =>
-        makeBatchOrderSimulation({
+      runSimulation = () => {
+        return makeBatchOrderSimulation({
           chainId,
           signer,
           batchParams,
@@ -88,7 +85,9 @@ export async function sendBatchOrderTxn({
           expressParams,
           provider,
           noncesData,
+          isGmxAccount,
         });
+      };
     }
 
     if (expressParams) {
@@ -103,6 +102,7 @@ export async function sendBatchOrderTxn({
         relayerFeeAmount: expressParams.gasPaymentParams.relayerFeeAmount,
         subaccount: expressParams.subaccount,
         noncesData,
+        isGmxAccount,
       });
 
       callback?.(eventBuilder.Sending());
@@ -161,6 +161,7 @@ export async function sendBatchOrderTxn({
 export const makeBatchOrderSimulation = async ({
   chainId,
   signer,
+  isGmxAccount,
   provider,
   batchParams,
   blockTimestampData,
@@ -170,9 +171,9 @@ export const makeBatchOrderSimulation = async ({
 }: {
   chainId: ContractsChainId;
   signer: WalletSigner;
+  isGmxAccount: boolean;
   provider: Provider;
   batchParams: BatchOrderTxnParams;
-
   blockTimestampData: BlockTimestampData | undefined;
   tokensData: TokensData;
   expressParams: ExpressTxnParams | undefined;
@@ -243,9 +244,7 @@ export const makeBatchOrderSimulation = async ({
       return Promise.resolve();
     }
 
-    const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
-
-    if (srcChainId) {
+    if (isGmxAccount) {
       if (!expressParams) {
         throw new Error("Multichain orders are only supported with express params");
       }
@@ -261,6 +260,7 @@ export const makeBatchOrderSimulation = async ({
         relayerFeeAmount: expressParams.gasPaymentParams.relayerFeeAmount,
         provider,
         noncesData,
+        isGmxAccount,
       });
 
       await callRelayTransaction({
