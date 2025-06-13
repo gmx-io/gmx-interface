@@ -11,6 +11,7 @@ import {
   MULTI_CHAIN_TOKEN_MAPPING,
   isSettlementChain,
 } from "domain/multichain/config";
+import { fetchMultichainTokenBalances } from "domain/multichain/fetchMultichainTokenBalances";
 import type { TokenChainData } from "domain/multichain/types";
 import {
   TokensDataResult,
@@ -29,8 +30,6 @@ import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { getContract } from "sdk/configs/contracts";
 import { getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
-
-import { fetchMultichainTokenBalances } from "../../../domain/multichain/fetchMultichainTokenBalances";
 
 export function useAvailableToTradeAssetSymbolsSettlementChain(): string[] {
   const gmxAccountTokensData = useGmxAccountTokensDataObject();

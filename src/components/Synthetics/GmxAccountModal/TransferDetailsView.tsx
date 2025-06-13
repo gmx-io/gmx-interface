@@ -12,7 +12,9 @@ import {
   useGmxAccountWithdrawViewTokenAddress,
   useGmxAccountWithdrawViewTokenInputValue,
 } from "context/GmxAccountContext/hooks";
+import { useGmxAccountFundingHistoryItem } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
+import { CHAIN_ID_TO_EXPLORER_NAME, CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
 import { formatAmountFree, formatBalanceAmount } from "lib/numbers";
 import { shortenAddressOrEns, switchNetwork } from "lib/wallets";
 import { getToken } from "sdk/configs/tokens";
@@ -23,8 +25,6 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import externalLink from "img/ic_new_link_20.svg";
 
-import { useGmxAccountFundingHistoryItem } from "../../../domain/multichain/useGmxAccountFundingHistory";
-import { CHAIN_ID_TO_EXPLORER_NAME, CHAIN_ID_TO_TX_URL_BUILDER } from "../../../lib/chains/blockExplorers";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
 

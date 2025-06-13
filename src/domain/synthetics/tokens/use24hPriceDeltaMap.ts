@@ -2,9 +2,8 @@ import { useMemo } from "react";
 import useSWR from "swr";
 import { Address } from "viem";
 
+import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { getToken } from "sdk/configs/tokens";
-
-import { useOracleKeeperFetcher } from "../../../lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 
 export type PriceDelta = {
   close: number;
