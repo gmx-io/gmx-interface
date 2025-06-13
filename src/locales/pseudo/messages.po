@@ -3711,6 +3711,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
@@ -3897,6 +3898,10 @@ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+msgid "Funding Activity"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -6093,6 +6098,7 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Balance"
 msgstr ""
 
@@ -6816,6 +6822,7 @@ msgstr ""
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/Synthetics/GmxAccountModal/keys.ts
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/TradeHistory/keys.ts
@@ -7412,10 +7419,6 @@ msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM Airdrop"
-msgstr ""
-
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
-msgid "GMX Funding Activity"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
