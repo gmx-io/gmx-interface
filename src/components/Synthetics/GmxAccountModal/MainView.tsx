@@ -240,7 +240,7 @@ function SettlementChainBalance() {
         }
       />
       <SyntheticsInfoRow
-        label="GMX Balance"
+        label={<Trans>GMX Balance</Trans>}
         className="h-23 !items-start"
         valueClassName="leading-[21px]"
         value={
@@ -269,7 +269,7 @@ function MultichainBalance() {
   return (
     <div className="flex flex-col gap-8 rounded-4 bg-cold-blue-900 p-12">
       <div className="text-body-small text-slate-100">
-        <Trans>GMX Balance</Trans>
+        <Trans>Balance</Trans>
       </div>
       <Balance usd={gmxAccountUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
     </div>
@@ -335,10 +335,10 @@ const ActionButtons = () => {
   return (
     <div className="flex gap-8">
       <Button variant="secondary" className="flex-1" onClick={handleDepositClick}>
-        Deposit
+        <Trans>Deposit</Trans>
       </Button>
       <Button variant="secondary" className="flex-1" onClick={handleWithdrawClick}>
-        Withdraw
+        <Trans>Withdraw</Trans>
       </Button>
     </div>
   );
@@ -383,7 +383,7 @@ const FundingHistorySection = () => {
     <div className="flex grow flex-col gap-8 overflow-y-hidden">
       <div className="flex items-center justify-between px-16">
         <div className="text-body-large">
-          <Trans>GMX Funding Activity</Trans>
+          <Trans>Funding Activity</Trans>
         </div>
       </div>
       <div className="px-16">
