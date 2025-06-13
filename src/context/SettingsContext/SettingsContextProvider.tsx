@@ -19,7 +19,6 @@ import {
   getAllowedSlippageKey,
   getExecutionFeeBufferBpsKey,
   getExpressOrdersEnabledKey,
-  getExpressTradingGasTokenSwitchedKey,
   getGasPaymentTokenAddressKey,
   getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
   getLeverageEnabledKey as getLeverageSliderEnabledKey,
@@ -82,9 +81,6 @@ export type SettingsContextType = {
   settingsWarningDotVisible: boolean;
   setSettingsWarningDotVisible: (val: boolean) => void;
 
-  expressTradingGasTokenSwitched: string | null;
-  setExpressTradingGasTokenSwitched: (oldToken: string | null) => void;
-
   debugSwapMarketsConfig:
     | {
         disabledSwapMarkets?: string[];
@@ -104,8 +100,9 @@ export function useSettings() {
 }
 
 export function SettingsContextProvider({ children }: { children: ReactNode }) {
+  const { chainId, srcChainId } = useChainId();
   const { account } = useWallet();
-  const { chainId } = useChainId();
+
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [showDebugValues, setShowDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const [savedAllowedSlippage, setSavedAllowedSlippage] = useLocalStorageSerializeKey(
@@ -130,6 +127,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     getExecutionFeeBufferBpsKey(chainId),
     EXECUTION_FEE_CONFIG_V2[chainId]?.defaultBufferBps
   );
+
   const shouldUseExecutionFeeBuffer = Boolean(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps);
 
   const [oracleKeeperInstancesConfig, setOracleKeeperInstancesConfig] = useLocalStorageSerializeKey(
@@ -142,10 +140,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       {} as { [chainId: number]: number }
     )
   );
-
-  const [expressTradingGasTokenSwitched, setExpressTradingGasTokenSwitched] = useLocalStorageSerializeKey<
-    string | null
-  >(getExpressTradingGasTokenSwitchedKey(chainId, account), null);
 
   const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(
     [chainId, SHOW_PNL_AFTER_FEES_KEY],
@@ -232,6 +226,15 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
   ]);
 
+  useEffect(
+    function fallbackMultichain() {
+      if (srcChainId && !expressOrdersEnabled) {
+        setExpressOrdersEnabled(true);
+      }
+    },
+    [expressOrdersEnabled, setExpressOrdersEnabled, srcChainId]
+  );
+
   const contextState: SettingsContextType = useMemo(() => {
     return {
       showDebugValues: isDevelopment() ? showDebugValues! : false,
@@ -284,9 +287,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       settingsWarningDotVisible: settingsWarningDotVisible!,
       setSettingsWarningDotVisible,
 
-      expressTradingGasTokenSwitched: expressTradingGasTokenSwitched!,
-      setExpressTradingGasTokenSwitched,
-
       savedTwapNumberOfParts: savedTwapNumberOfParts!,
       setSavedTWAPNumberOfParts,
     };
@@ -333,8 +333,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setDebugSwapMarketsConfig,
     settingsWarningDotVisible,
     setSettingsWarningDotVisible,
-    expressTradingGasTokenSwitched,
-    setExpressTradingGasTokenSwitched,
     savedTwapNumberOfParts,
     setSavedTWAPNumberOfParts,
   ]);

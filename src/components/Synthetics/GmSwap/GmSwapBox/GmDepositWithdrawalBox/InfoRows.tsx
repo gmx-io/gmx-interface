@@ -1,144 +1,47 @@
 import { t } from "@lingui/macro";
-import values from "lodash/values";
-import { useCallback } from "react";
+import { useState } from "react";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
-import { selectChainId, selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
-import { getGlvOrMarketAddress, GlvInfo, GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets";
-import { TokensData } from "domain/synthetics/tokens";
 import { GmSwapFees } from "domain/synthetics/trade";
 
-import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import { GmPoolsSelectorForGlvMarket } from "components/MarketSelector/GmPoolsSelectorForGlvMarket";
-import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
-import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
 import { Operation } from "../types";
 
 export function InfoRows({
-  indexName,
-  marketAddress,
-  marketTokensData,
   isDeposit,
   fees,
   executionFee,
-  glvInfo,
-  isSingle,
-  selectedMarketForGlv,
-  disablePoolSelector,
-  onMarketChange,
-
-  shouldShowWarning,
-  shouldShowWarningForPosition,
-  shouldShowWarningForExecutionFee,
-  isAccepted,
-  setIsAccepted,
 }: {
-  indexName: string | undefined;
-  marketAddress: string | undefined;
-  marketTokensData: TokensData | undefined;
   isDeposit: boolean;
   fees: GmSwapFees | undefined;
   executionFee: ExecutionFee | undefined;
-  glvInfo: GlvInfo | undefined;
-  isSingle: boolean;
-  selectedMarketForGlv?: string;
-  disablePoolSelector?: boolean;
-  onMarketChange: (marketAddress: string) => void;
-
-  shouldShowWarning: boolean;
-  shouldShowWarningForPosition: boolean;
-  shouldShowWarningForExecutionFee: boolean;
-  isAccepted: boolean;
-  setIsAccepted: (val: boolean) => void;
 }) {
-  const chainId = useSelector(selectChainId);
-  const markets = values(useSelector(selectGlvAndMarketsInfoData));
+  const [isExecutionDetailsOpen, setIsExecutionDetailsOpen] = useState(false);
 
-  const onSelectMarket = useCallback(
-    (marketInfo: MarketInfo) => {
-      onMarketChange?.(marketInfo.marketTokenAddress);
-    },
-    [onMarketChange]
-  );
-
-  const onSelectMarketOrGlv = useCallback(
-    (glvOrMarketInfo: GlvOrMarketInfo) => {
-      onMarketChange(getGlvOrMarketAddress(glvOrMarketInfo));
-    },
-    [onMarketChange]
-  );
+  const toggleExecutionDetails = () => {
+    setIsExecutionDetailsOpen(!isExecutionDetailsOpen);
+  };
 
   return (
-    <ExchangeInfo className="GmSwapBox-info-section" dividerClassName="App-card-divider">
-      <ExchangeInfo.Group>
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Pool`}
-          value={
-            glvInfo ? (
-              <GmPoolsSelectorForGlvMarket
-                chainId={chainId}
-                label={t`Pool`}
-                className="-mr-4"
-                isDeposit={isDeposit}
-                selectedIndexName={indexName}
-                selectedMarketAddress={selectedMarketForGlv}
-                markets={markets}
-                glvInfo={glvInfo}
-                marketTokensData={marketTokensData}
-                isSideMenu
-                showAllPools
-                showBalances
-                disablePoolSelector={disablePoolSelector}
-                onSelectMarket={onSelectMarket}
-                favoriteKey="gm-pool-selector"
-              />
-            ) : (
-              <PoolSelector
-                chainId={chainId}
-                label={t`Pool`}
-                className="-mr-4"
-                selectedIndexName={indexName}
-                selectedMarketAddress={marketAddress}
-                markets={markets}
-                marketTokensData={marketTokensData}
-                isSideMenu
-                showBalances
-                withFilters={false}
-                onSelectMarket={onSelectMarketOrGlv}
-                favoriteKey="gm-pool-selector"
-              />
-            )
-          }
+    <div className="flex flex-col gap-14">
+      <div className="flex w-full flex-col gap-14">
+        <GmFees
+          operation={isDeposit ? Operation.Deposit : Operation.Withdrawal}
+          totalFees={fees?.totalFees}
+          swapFee={fees?.swapFee}
+          swapPriceImpact={fees?.swapPriceImpact}
+          uiFee={fees?.uiFee}
         />
-      </ExchangeInfo.Group>
 
-      <ExchangeInfo.Group>
-        <div className="GmSwapBox-info-section">
-          <GmFees
-            operation={isDeposit ? Operation.Deposit : Operation.Withdrawal}
-            totalFees={fees?.totalFees}
-            swapFee={fees?.swapFee}
-            swapPriceImpact={fees?.swapPriceImpact}
-            uiFee={fees?.uiFee}
-          />
-          <NetworkFeeRow rowPadding executionFee={executionFee} />
-        </div>
-      </ExchangeInfo.Group>
-
-      <GmSwapWarningsRow
-        isSingle={isSingle}
-        isAccepted={isAccepted}
-        shouldShowWarning={shouldShowWarning}
-        shouldShowWarningForPosition={shouldShowWarningForPosition}
-        shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
-        setIsAccepted={setIsAccepted}
-      />
-    </ExchangeInfo>
+        <SyntheticsInfoRow label={t`Execution Details`} onClick={toggleExecutionDetails}>
+          {isExecutionDetailsOpen ? <FaChevronUp size={10} /> : <FaChevronDown size={10} />}
+        </SyntheticsInfoRow>
+        {isExecutionDetailsOpen ? <NetworkFeeRow rowPadding executionFee={executionFee} /> : null}
+      </div>
+    </div>
   );
 }

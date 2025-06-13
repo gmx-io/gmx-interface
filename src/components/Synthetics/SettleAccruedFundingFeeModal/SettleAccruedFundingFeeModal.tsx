@@ -1,6 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { getChainName } from "config/chains";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import {
   usePositiveFeePositionsSortedByUsd,
@@ -22,6 +23,8 @@ import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useChainId } from "lib/chains";
 import { formatDeltaUsd, formatUsd } from "lib/numbers";
+import { useJsonRpcProvider } from "lib/rpc";
+import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { buildDecreaseOrderPayload } from "sdk/utils/orderTransactions";
@@ -44,8 +47,9 @@ type Props = {
 
 export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClose }: Props) {
   const tokensData = useTokensData();
-  const { account, signer } = useWallet();
-  const { chainId } = useChainId();
+  const { account, signer, active } = useWallet();
+  const { chainId, srcChainId } = useChainId();
+  const { provider } = useJsonRpcProvider(chainId);
   const userReferralInfo = useUserReferralInfo();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const gasLimits = useGasLimits(chainId);
@@ -142,6 +146,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const { expressParams } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Settle Funding Fee",
+    isGmxAccount: srcChainId !== undefined,
   });
 
   const handleOnClose = useCallback(() => {
@@ -156,9 +161,12 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
   const [buttonText, buttonDisabled] = useMemo(() => {
     if (isSubmitting) return [t`Settling...`, true];
+    if (srcChainId !== undefined) {
+      return [t`Switch to ${getChainName(chainId)} to settle Funding Fees`, false];
+    }
     if (positionKeys.length === 0) return [t`Select Positions`, true];
     return [t`Settle`, false];
-  }, [isSubmitting, positionKeys.length]);
+  }, [chainId, isSubmitting, positionKeys.length, srcChainId]);
 
   const handleRowCheckboxChange = useCallback(
     (value: boolean, positionKey: string) => {
@@ -173,7 +181,12 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   );
 
   const onSubmit = useCallback(() => {
-    if (!account || !signer?.provider || !chainId || !batchParams) {
+    if (srcChainId !== undefined) {
+      switchNetwork(chainId, active);
+      return;
+    }
+
+    if (!account || !signer?.provider || !chainId || !batchParams || !provider) {
       return;
     }
 
@@ -191,12 +204,26 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
         slippageInputId: undefined,
         isFundingFeeSettlement: true,
       }),
+      provider,
+      isGmxAccount: srcChainId !== undefined,
     })
       .then(handleOnClose)
       .finally(() => {
         setIsSubmitting(false);
       });
-  }, [account, batchParams, chainId, expressParams, handleOnClose, makeOrderTxnCallback, noncesData, signer]);
+  }, [
+    account,
+    active,
+    batchParams,
+    chainId,
+    expressParams,
+    handleOnClose,
+    makeOrderTxnCallback,
+    noncesData,
+    provider,
+    signer,
+    srcChainId,
+  ]);
 
   const renderTooltipContent = useCallback(
     () => (

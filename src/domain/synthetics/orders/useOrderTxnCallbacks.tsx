@@ -78,6 +78,7 @@ export function useOrderTxnCallbacks() {
       }
 
       const { expressParams, batchParams } = e.data;
+      const isSubaccount = Boolean(expressParams?.subaccount);
 
       const actionsCount = getBatchRequiredActions(batchParams);
 
@@ -180,7 +181,7 @@ export function useOrderTxnCallbacks() {
 
       switch (e.event) {
         case TxnEventName.Submitted: {
-          if (expressParams) {
+          if (isSubaccount) {
             handleTxnSubmitted();
           }
           return;
@@ -196,6 +197,10 @@ export function useOrderTxnCallbacks() {
         case TxnEventName.Sending: {
           if (ctx.metricId) {
             sendOrderTxnSubmittedMetric(ctx.metricId);
+          }
+
+          if (expressParams && !isSubaccount) {
+            handleTxnSubmitted();
           }
 
           return;

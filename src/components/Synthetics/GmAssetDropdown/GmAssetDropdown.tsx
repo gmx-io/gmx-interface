@@ -55,6 +55,10 @@ function renderMarketName(market?: GlvOrMarketInfo) {
   );
 }
 
+const handleMenuItemsClick = (e: React.MouseEvent) => {
+  e.stopPropagation();
+};
+
 export default function GmAssetDropdown({ token, marketsInfoData, tokensData, position }: Props) {
   const { chainId } = useChainId();
   const { active, walletClient } = useWallet();
@@ -77,6 +81,7 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
   });
 
   const handleMenuButtonClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
     // Somehow headless ui prevents the touchend event before it can trigger the closure of already opened dropdowns
     if (headlessUiIsMobile()) {
       const parent = e.currentTarget.parentElement;
@@ -106,6 +111,7 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
           ref={refs.setFloating}
           style={floatingStyles}
           className="z-30 rounded-4 border border-stroke-primary bg-slate-800 outline-none"
+          onClick={handleMenuItemsClick}
         >
           {market && (
             <Menu.Item as="div">

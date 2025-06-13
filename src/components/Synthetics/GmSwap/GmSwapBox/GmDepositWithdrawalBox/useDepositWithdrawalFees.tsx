@@ -55,7 +55,7 @@ export const useDepositWithdrawalFees = ({
       shouldRoundUp: true,
     });
 
-    const totalFees = getTotalFeeItem([swapPriceImpact, swapFee, uiFee].filter(Boolean) as FeeItem[]);
+    const totalFees = getTotalFeeItem([swapFee, uiFee].filter(Boolean) as FeeItem[]);
     const fees: GmSwapFees = {
       swapFee,
       swapPriceImpact,

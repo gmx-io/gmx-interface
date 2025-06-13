@@ -987,7 +987,7 @@ table.Exchange-list-small td {
   }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1335px) {
   .Chart-24h-low {
     display: none;
   }

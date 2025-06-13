@@ -26,6 +26,3 @@ export const selectDebugSwapMarketsConfig = (s: SyntheticsState) => s.settings.d
 export const selectSetDebugSwapMarketsConfig = (s: SyntheticsState) => s.settings.setDebugSwapMarketsConfig;
 export const selectSettingsWarningDotVisible = (s: SyntheticsState) => s.settings.settingsWarningDotVisible;
 export const selectSetSettingsWarningDotVisible = (s: SyntheticsState) => s.settings.setSettingsWarningDotVisible;
-export const selectExpressTradingGasTokenSwitched = (s: SyntheticsState) => s.settings.expressTradingGasTokenSwitched;
-export const selectSetExpressTradingGasTokenSwitched = (s: SyntheticsState) =>
-  s.settings.setExpressTradingGasTokenSwitched;

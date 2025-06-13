@@ -1,4 +1,7 @@
-import { Signer } from "ethers";
+import type { Wallet } from "ethers";
+import type { Hex } from "viem";
+
+import type { WalletSigner } from ".";
 
 export type SignatureDomain = {
   name: string;
@@ -10,13 +13,13 @@ export type SignatureDomain = {
 export type SignatureTypes = Record<string, { name: string; type: string }[]>;
 
 export type SignTypedDataParams = {
-  signer: Signer;
+  signer: WalletSigner | Wallet;
   types: SignatureTypes;
   typedData: Record<string, any>;
   domain: SignatureDomain;
 };
 
-export async function signTypedData({ signer, domain, types, typedData }: SignTypedDataParams) {
+export async function signTypedData({ signer, domain, types, typedData }: SignTypedDataParams): Promise<string> {
   // filter inputs
   for (const [key, value] of Object.entries(domain)) {
     if (value === undefined) {
@@ -68,7 +71,7 @@ export async function signTypedData({ signer, domain, types, typedData }: SignTy
     message: typedData,
   };
 
-  const signature = await (provider as any).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]);
+  const signature: Hex = await (provider as any).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]);
 
   return signature;
 }

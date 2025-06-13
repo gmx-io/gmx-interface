@@ -9,7 +9,8 @@ import { getCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
 import { sleep } from "lib/sleep";
 
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
-import { MAX_TIMEOUT, MulticallProviderUrls } from "./Multicall";
+import { MulticallProviderUrls } from "./Multicall";
+import { MAX_TIMEOUT } from "./Multicall";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
 const executorWorker: Worker = new Worker(new URL("./multicall.worker", import.meta.url), { type: "module" });

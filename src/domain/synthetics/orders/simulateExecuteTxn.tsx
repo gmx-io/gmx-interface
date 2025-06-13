@@ -3,6 +3,7 @@ import { BaseContract, ethers } from "ethers";
 import { ReactNode } from "react";
 import { withRetry } from "viem";
 
+import { CustomErrorsAbi } from "ab/testMultichain/getCustomErrorsAbi/getCustomErrorsAbi";
 import {
   getContract,
   getExchangeRouterContract,
@@ -18,7 +19,7 @@ import { sendOrderSimulatedMetric, sendTxnErrorMetric } from "lib/metrics/utils"
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
-import { abis } from "sdk/abis";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { ExternalSwapQuote } from "sdk/types/trade";
 import { CustomErrorName, ErrorData, extractDataFromError, extractTxnError, isContractError } from "sdk/utils/errors";
@@ -64,7 +65,7 @@ export function isSimulationPassed(errorData: ErrorData) {
 /**
  * @deprecated use simulateExecution instead
  */
-export async function simulateExecuteTxn(chainId: number, p: SimulateExecuteParams) {
+export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateExecuteParams) {
   const provider = getProvider(undefined, chainId);
 
   const multicallAddress = getContract(chainId, "Multicall");
@@ -172,12 +173,11 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
       }
     );
   } catch (txnError) {
-    const customErrors = new ethers.Contract(ethers.ZeroAddress, abis.CustomErrors);
+    const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrorsAbi);
     let msg: React.ReactNode = undefined;
 
     try {
       const errorData = extractDataFromError(txnError?.info?.error?.message) ?? extractDataFromError(txnError?.message);
-
       const error = new Error("No data found in error.");
       error.cause = txnError;
       if (!errorData) throw error;

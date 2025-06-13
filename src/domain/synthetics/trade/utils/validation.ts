@@ -646,7 +646,6 @@ export function getGmSwapError(p: {
   longTokenLiquidityUsd: bigint | undefined;
   shortTokenLiquidityUsd: bigint | undefined;
   fees: GmSwapFees | undefined;
-  consentError: boolean;
   priceImpactUsd: bigint | undefined;
   glvInfo?: GlvInfo;
   marketTokensData?: TokensData;
@@ -669,7 +668,6 @@ export function getGmSwapError(p: {
     longTokenLiquidityUsd,
     shortTokenLiquidityUsd,
     fees,
-    consentError,
     priceImpactUsd,
     glvInfo,
     marketTokensData,
@@ -678,10 +676,6 @@ export function getGmSwapError(p: {
 
   if (!marketInfo || !marketToken) {
     return [t`Loading...`];
-  }
-
-  if (consentError) {
-    return [t`Acknowledgment Required`];
   }
 
   const glvTooltipMessage = t`The buyable cap for the pool GM: ${marketInfo.name} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens.`;
@@ -858,7 +852,6 @@ export function getGmShiftError({
   toToken,
   toTokenAmount,
   fees,
-  consentError,
   priceImpactUsd,
 }: {
   fromMarketInfo: MarketInfo | undefined;
@@ -871,17 +864,12 @@ export function getGmShiftError({
   toToken: TokenData | undefined;
   toTokenAmount: bigint | undefined;
   fees: GmSwapFees | undefined;
-  consentError: boolean;
   priceImpactUsd: bigint | undefined;
 }) {
   const isGlv = isGlvInfo(toMarketInfo);
 
   if (!fromMarketInfo || !fromToken || !toMarketInfo || !toToken) {
     return [t`Loading...`];
-  }
-
-  if (consentError) {
-    return [t`Acknowledgment Required`];
   }
 
   if (priceImpactUsd !== undefined && priceImpactUsd > 0) {

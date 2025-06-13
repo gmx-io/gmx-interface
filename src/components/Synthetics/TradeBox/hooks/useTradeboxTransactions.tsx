@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { t } from "@lingui/macro";
 import { useCallback, useId, useMemo } from "react";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import {
   selectBlockTimestampData,
@@ -22,6 +20,7 @@ import {
   selectTradeboxFees,
   selectTradeboxFromTokenAddress,
   selectTradeboxIncreasePositionAmounts,
+  selectTradeboxIsFromTokenGmxAccount,
   selectTradeboxMarketInfo,
   selectTradeboxPayTokenAllowance,
   selectTradeboxSelectedPosition,
@@ -53,6 +52,7 @@ import {
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
 import { getByKey } from "lib/objects";
+import { useJsonRpcProvider } from "lib/rpc";
 import { getTradeInteractionKey, sendUserAnalyticsOrderConfirmClickEvent, userAnalytics } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { BatchOrderTxnParams, getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
@@ -64,8 +64,9 @@ interface TradeboxTransactionsProps {
 }
 
 export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactionsProps) {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { signer, account } = useWallet();
+  const { provider } = useJsonRpcProvider(chainId);
   const tokensData = useTokensData();
   const { shouldDisableValidationForTesting } = useSettings();
 
@@ -78,6 +79,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
+  const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
   const marketInfo = useSelector(selectTradeboxMarketInfo);
   const collateralToken = useSelector(selectTradeboxCollateralToken);
@@ -88,7 +90,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const fees = useSelector(selectTradeboxFees);
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
   const marketsInfoData = useSelector(selectMarketsInfoData);
-  const showDebugValues = useShowDebugValues();
   const duration = useSelector(selectTradeboxTwapDuration);
   const numberOfParts = useSelector(selectTradeboxTwapNumberOfParts);
   const noncesData = useSelector(selectExpressNoncesData);
@@ -107,6 +108,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const sidecarOrderPayloads = useSidecarOrderPayloads();
 
   const primaryCreateOrderParams = useSelector(selectTradeBoxCreateOrderParams);
+
   const slippageInputId = useId();
 
   const batchParams: BatchOrderTxnParams = useMemo(() => {
@@ -138,6 +140,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "TradeBox",
+    isGmxAccount: isFromTokenGmxAccount,
   });
 
   const initOrderMetricData = useCallback(() => {
@@ -162,6 +165,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         expressParams,
         asyncExpressParams,
         fastExpressParams,
+        chainId: srcChainId ?? chainId,
+        isCollateralFromMultichain: srcChainId !== undefined,
       });
     }
 
@@ -203,6 +208,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         expressParams,
         asyncExpressParams,
         fastExpressParams,
+        chainId: srcChainId ?? chainId,
+        isCollateralFromMultichain: srcChainId !== undefined,
       });
     }
 
@@ -231,10 +238,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       expressParams,
       asyncExpressParams,
       fastExpressParams,
+      chainId: srcChainId ?? chainId,
+      isCollateralFromMultichain: srcChainId !== undefined,
     });
   }, [
     allowedSlippage,
     asyncExpressParams,
+    chainId,
     chartHeaderInfo?.fundingRateLong,
     chartHeaderInfo?.fundingRateShort,
     collateralToken,
@@ -258,6 +268,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     referralCodeForTxn,
     selectedPosition,
     sidecarOrderPayloads?.createPayloads,
+    srcChainId,
     swapAmounts,
     toToken,
     tradeMode,
@@ -271,7 +282,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
     sendOrderSubmittedMetric(metricData.metricId);
 
-    if (!primaryCreateOrderParams || !signer || !tokensData || !account || !marketsInfoData) {
+    if (!primaryCreateOrderParams || !signer || !provider || !tokensData || !account || !marketsInfoData) {
       helperToast.error(t`Error submitting order`);
       sendTxnValidationErrorMetric(metricData.metricId);
       return Promise.reject();
@@ -282,8 +293,10 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     return sendBatchOrderTxn({
       chainId,
       signer,
+      provider,
       batchParams,
       noncesData,
+      isGmxAccount: isFromTokenGmxAccount,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
       simulationParams: shouldDisableValidationForTesting
@@ -302,21 +315,23 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       }),
     });
   }, [
+    account,
+    batchParams,
+    blockTimestampData,
+    chainId,
     expressParamsPromise,
     initOrderMetricData,
-    primaryCreateOrderParams,
-    signer,
-    tokensData,
-    account,
-    marketsInfoData,
-    chainId,
-    batchParams,
-    noncesData,
-    shouldDisableValidationForTesting,
-    blockTimestampData,
+    isFromTokenGmxAccount,
     makeOrderTxnCallback,
-    slippageInputId,
+    marketsInfoData,
+    noncesData,
+    primaryCreateOrderParams,
+    provider,
     setShouldFallbackToInternalSwap,
+    shouldDisableValidationForTesting,
+    signer,
+    slippageInputId,
+    tokensData,
   ]);
 
   function onSubmitWrapOrUnwrap() {

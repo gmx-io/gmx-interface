@@ -1,5 +1,8 @@
 name: Update Testing
 
+permissions:
+  contents: write
+
 on:
   push:
     branches:

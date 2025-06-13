@@ -1,14 +1,15 @@
-import { JsonRpcProvider, Network, WebSocketProvider } from "ethers";
-import { Signer, ethers } from "ethers";
+import { ethers, JsonRpcProvider, Network, Signer, WebSocketProvider } from "ethers";
 import { useEffect, useState } from "react";
 
 import {
   ARBITRUM,
+  ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
   FALLBACK_PROVIDERS,
   getAlchemyArbitrumWsUrl,
   getFallbackRpcUrl,
+  SOURCE_SEPOLIA,
 } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getCurrentRpcUrls, useCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
@@ -48,6 +49,20 @@ export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvi
     provider.pollingInterval = 2000;
     return provider;
   }
+
+  if (chainId === ARBITRUM_SEPOLIA) {
+    return new ethers.WebSocketProvider("wss://arbitrum-sepolia-rpc.publicnode.com", network, {
+      staticNetwork: network,
+    });
+  }
+
+  if (chainId === SOURCE_SEPOLIA) {
+    const provider = new ethers.JsonRpcProvider("https://ethereum-sepolia-rpc.publicnode.com", network, {
+      staticNetwork: network,
+    });
+    provider.pollingInterval = 2000;
+    return provider;
+  }
 }
 
 export function getFallbackProvider(chainId: number) {
@@ -62,12 +77,16 @@ export function getFallbackProvider(chainId: number) {
   });
 }
 
-export function useJsonRpcProvider(chainId: number) {
+export function useJsonRpcProvider(chainId: number | undefined) {
   const [provider, setProvider] = useState<JsonRpcProvider>();
 
   const { primary: primaryRpcUrl } = useCurrentRpcUrls(chainId);
 
   useEffect(() => {
+    if (!chainId) {
+      return;
+    }
+
     async function initializeProvider() {
       if (!primaryRpcUrl) return;
 

@@ -4,7 +4,7 @@ import { ReactNode, useEffect, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
 import { getMarketUiConfig } from "config/markets";
-import { getMarketBadge, MarketsInfoData } from "domain/synthetics/markets";
+import { getMarketBadge, getMarketIndexName, getMarketPoolName, MarketsInfoData } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { InfoTokens, Token, TokenInfo } from "domain/tokens";
@@ -274,9 +274,11 @@ export default function TokenSelector(props: Props) {
                       badge={tokenBadge}
                     />
                   )}
-                  <div className="Token-symbol">
-                    <div className="Token-text">{token.isMarketToken ? "GM" : token.symbol}</div>
-                    <span className="text-accent">{token.name}</span>
+                  <div className="ml-8 flex items-center gap-4">
+                    <div className="Token-text">
+                      {token.isMarketToken && marketToken ? `GM: ${getMarketIndexName(marketToken)}` : token.symbol}
+                    </div>
+                    {marketToken && <span className="text-accent">[{getMarketPoolName(marketToken)}]</span>}
                   </div>
                 </div>
                 <div className="Token-balance">

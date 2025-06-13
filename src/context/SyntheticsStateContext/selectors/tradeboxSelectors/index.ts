@@ -63,6 +63,7 @@ import {
   selectUiFeeFactor,
   selectUserReferralInfo,
 } from "../globalSelectors";
+import { selectSourceChainId } from "../multichainSelectors";
 import { selectIsLeverageSliderEnabled, selectIsPnlInLeverage } from "../settingsSelectors";
 import { selectSelectedMarketVisualMultiplier } from "../shared/marketSelectors";
 import {
@@ -78,6 +79,7 @@ import { selectTradeboxGetMaxLongShortLiquidityPool } from "./selectTradeboxGetM
 export * from "./selectTradeboxAvailableAndDisabledTokensForCollateral";
 export * from "./selectTradeboxAvailableMarketsOptions";
 export * from "./selectTradeboxGetMaxLongShortLiquidityPool";
+export * from "./selectTradeboxRelatedMarketsStats";
 
 export const selectExternalSwapInputs = createSelector((q) => {
   const tradeMode = q(selectTradeboxTradeMode);
@@ -267,8 +269,6 @@ export const selectExternalSwapInputsByLeverageSize = createSelector((q) => {
   });
 });
 
-export * from "./selectTradeboxRelatedMarketsStats";
-
 const selectOnlyOnTradeboxPage = <T>(s: SyntheticsState, selection: T) =>
   s.pageType === "trade" ? selection : undefined;
 export const selectTradeboxState = (s: SyntheticsState) => s.tradebox;
@@ -276,6 +276,7 @@ export const selectTradeboxTradeType = (s: SyntheticsState) => s.tradebox.tradeT
 export const selectTradeboxTradeMode = (s: SyntheticsState) => s.tradebox.tradeMode;
 export const selectTradeboxIsWrapOrUnwrap = (s: SyntheticsState) => s.tradebox.isWrapOrUnwrap;
 export const selectTradeboxFromTokenAddress = (s: SyntheticsState) => s.tradebox.fromTokenAddress;
+export const selectTradeboxIsFromTokenGmxAccount = (s: SyntheticsState) => s.tradebox.isFromTokenGmxAccount;
 export const selectTradeboxToTokenAddress = (s: SyntheticsState) => s.tradebox.toTokenAddress;
 export const selectTradeboxMarketAddress = (s: SyntheticsState) =>
   selectOnlyOnTradeboxPage(s, s.tradebox.marketAddress);
@@ -1291,6 +1292,12 @@ export const selectTradeboxPayTokenAllowance = createSelector((q) => {
 });
 
 export const selectNeedTradeboxPayTokenApproval = createSelector((q) => {
+  const srcChainId = q(selectSourceChainId);
+
+  if (srcChainId) {
+    return false;
+  }
+
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const payAmount = q(selectTradeboxPayAmount);
   const tokensAllowance = q(selectTradeboxTokensAllowance);

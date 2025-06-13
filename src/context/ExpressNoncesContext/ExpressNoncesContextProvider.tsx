@@ -1,9 +1,10 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { isSettlementChain } from "domain/multichain/config";
 import { getExpressContractAddress } from "domain/synthetics/express";
 import { useChainId } from "lib/chains";
-import { useMulticall } from "lib/multicall";
+import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import useWallet from "lib/wallets/useWallet";
 
@@ -13,6 +14,10 @@ export type NoncesData = {
     lastEstimated: number;
   };
   subaccountRelayRouter?: {
+    nonce: bigint;
+    lastEstimated: number;
+  };
+  multichainTransferRouter?: {
     nonce: bigint;
     lastEstimated: number;
   };
@@ -27,6 +32,10 @@ export type LocalActions = {
     actions: bigint;
     lastEstimated: number;
   };
+  multichainTransferRouter: {
+    actions: bigint;
+    lastEstimated: number;
+  };
 };
 
 const defaultLocalActions: LocalActions = {
@@ -35,6 +44,10 @@ const defaultLocalActions: LocalActions = {
     lastEstimated: 0,
   },
   subaccountRelayRouter: {
+    actions: 0n,
+    lastEstimated: 0,
+  },
+  multichainTransferRouter: {
     actions: 0n,
     lastEstimated: 0,
   },
@@ -49,7 +62,7 @@ type ExpressNoncesContextType = {
 const ExpressNoncesContext = createContext<ExpressNoncesContextType | undefined>(undefined);
 
 export function ExpressNoncesContextProvider({ children }: { children: React.ReactNode }) {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { account } = useWallet();
   const { subaccount } = useSubaccountContext();
   const [localActions, setLocalActions] = useState<LocalActions>(defaultLocalActions);
@@ -57,29 +70,57 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
   const { data: onChainData, mutate } = useMulticall(chainId, "expressNonces", {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
     key: [account, subaccount?.address],
-    request: {
-      relayRouter: {
-        contractAddress: getExpressContractAddress(chainId, { isSubaccount: false }),
-        abiId: "GelatoRelayRouter",
-        calls: {
-          nonce: {
-            methodName: "userNonces",
-            params: [account],
+    request: (requestChainId) => {
+      const request: MulticallRequestConfig<any> = {
+        relayRouter: {
+          contractAddress: getExpressContractAddress(chainId, {
+            isSubaccount: false,
+            isMultichain: srcChainId !== undefined,
+            scope: "order",
+          }),
+          abiId: "AbstractUserNonceable",
+          calls: {
+            nonce: {
+              methodName: "userNonces",
+              params: [account],
+            },
           },
         },
-      },
-      subaccountRelayRouter: {
-        contractAddress: getExpressContractAddress(chainId, { isSubaccount: true }),
-        abiId: "SubaccountGelatoRelayRouter",
-        calls: {
-          nonce: subaccount?.address
-            ? {
-                methodName: "userNonces",
-                params: [subaccount?.address],
-              }
-            : undefined,
+        subaccountRelayRouter: {
+          contractAddress: getExpressContractAddress(chainId, {
+            isSubaccount: true,
+            isMultichain: srcChainId !== undefined,
+            scope: "subaccount",
+          }),
+          abiId: "AbstractUserNonceable",
+          calls: {
+            nonce: subaccount?.address
+              ? {
+                  methodName: "userNonces",
+                  params: [subaccount?.address],
+                }
+              : undefined,
+          },
         },
-      },
+      };
+
+      if (isSettlementChain(requestChainId) && srcChainId !== undefined) {
+        request.multichainTransferRouter = {
+          contractAddress: getExpressContractAddress(chainId, {
+            isMultichain: true,
+            scope: "transfer",
+          }),
+          abiId: "AbstractUserNonceable",
+          calls: {
+            nonce: {
+              methodName: "userNonces",
+              params: [account],
+            },
+          },
+        };
+      }
+
+      return request;
     },
 
     parseResponse: (result) => {
@@ -101,6 +142,13 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
               lastEstimated: now,
             }
           : undefined,
+        multichainTransferRouter:
+          srcChainId !== undefined
+            ? {
+                nonce: result.data.multichainTransferRouter.nonce.returnValues[0],
+                lastEstimated: now,
+              }
+            : undefined,
       };
     },
   });

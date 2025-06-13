@@ -1,4 +1,4 @@
-import { Provider } from "ethers";
+import type { Provider } from "ethers";
 
 import { extendError } from "lib/errors";
 

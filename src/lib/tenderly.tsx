@@ -66,7 +66,6 @@ export async function simulateCallDataWithTenderly({
   return processSimulation({
     chainId,
     config: tenderlyConfig,
-    account: tenderlyConfig.accountSlug,
     from,
     to,
     data,
@@ -126,7 +125,6 @@ export const simulateTxWithTenderly = async (
     gasPriceData,
     chainId,
     config,
-    account,
     gasLimit,
     value: opts.value ?? 0n,
     blockNumber,
@@ -139,7 +137,7 @@ export const simulateTxWithTenderly = async (
 async function processSimulation({
   chainId,
   config,
-  account,
+  from,
   data,
   value,
   to,
@@ -150,7 +148,6 @@ async function processSimulation({
 }: {
   config: TenderlyConfig;
   chainId: number;
-  account: string;
   from: string;
   to: string;
   data: string;
@@ -163,7 +160,7 @@ async function processSimulation({
   const simulationParams = buildSimulationRequest(
     chainId,
     {
-      from: account,
+      from,
       to,
       gas: gasLimit !== undefined ? BigInt(gasLimit) : undefined,
       input: data,

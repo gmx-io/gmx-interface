@@ -9,6 +9,7 @@ export const USD_DECIMALS = 30;
 
 export const BASIS_POINTS_DIVISOR = 10000;
 export const BASIS_POINTS_DIVISOR_BIGINT = 10000n;
+export const BASIS_POINTS_DECIMALS = 4;
 
 export const PRECISION_DECIMALS = 30;
 export const PRECISION = expandDecimals(1, PRECISION_DECIMALS);

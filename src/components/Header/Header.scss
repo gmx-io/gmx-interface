@@ -153,7 +153,7 @@
 
 .App-header .a.active,
 .App-header a.active {
-  pointer-events: none;
+  pointer-events: all;
   opacity: 1;
   color: var(--color-gray-50);
 }
@@ -207,7 +207,7 @@
   position: relative;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1335px) {
   .App-header-user-address {
     padding: 0 0px;
   }

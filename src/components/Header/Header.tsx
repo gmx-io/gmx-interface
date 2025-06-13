@@ -14,8 +14,8 @@ import { OneClickPromoBanner } from "components/OneClickPromoBanner/OneClickProm
 import logoImg from "img/logo_GMX.svg";
 import logoSmallImg from "img/logo_GMX_small.svg";
 
+import { AppHeaderChainAndSettings } from "./AppHeaderChainAndSettings";
 import { AppHeaderLinks } from "./AppHeaderLinks";
-import { AppHeaderUser } from "./AppHeaderUser";
 import { HeaderLink } from "./HeaderLink";
 import { HomeHeaderLinks } from "./HomeHeaderLinks";
 
@@ -39,13 +39,12 @@ const SLIDE_VARIANTS = {
 const TRANSITION = { duration: 0.2 };
 
 type Props = {
-  disconnectAccountAndCloseSettings: () => void;
   openSettings: () => void;
   showRedirectModal: (to: string) => void;
 };
 
-export function Header({ disconnectAccountAndCloseSettings, openSettings, showRedirectModal }: Props) {
-  const isMobile = useMedia("(max-width: 1200px)");
+export function Header({ openSettings, showRedirectModal }: Props) {
+  const isMobile = useMedia("(max-width: 1335px)");
 
   const shouldHide1CTBanner = useMedia("(max-width: 1100px)");
   const shouldShorten1CTBanner = useMedia("(max-width: 1590px)");
@@ -117,15 +116,10 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
               )}
             </div>
             <div className="App-header-container-right">
+              <AppHeaderChainAndSettings openSettings={openSettings} showRedirectModal={showRedirectModal} />
               <div className="mr-22">
                 <OneClickPromoBanner isShort={shouldShorten1CTBanner} openSettings={openSettings} />
               </div>
-
-              <AppHeaderUser
-                disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-                openSettings={openSettings}
-                showRedirectModal={showRedirectModal}
-              />
             </div>
           </div>
         )}
@@ -144,19 +138,16 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
               </div>
               <div className="App-header-container-right">
                 {!shouldHide1CTBanner && <OneClickPromoBanner openSettings={openSettings} />}
-                <div>
-                  <AppHeaderUser
-                    disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-                    openSettings={openSettings}
-                    small
-                    showRedirectModal={showRedirectModal}
-                    menuToggle={
-                      <div className="App-header-menu-icon-block" onClick={toggleDrawer}>
-                        <RiMenuLine className="App-header-menu-icon" />
-                      </div>
-                    }
-                  />
-                </div>
+                <AppHeaderChainAndSettings
+                  openSettings={openSettings}
+                  small
+                  showRedirectModal={showRedirectModal}
+                  menuToggle={
+                    <div className="App-header-menu-icon-block" onClick={toggleDrawer}>
+                      <RiMenuLine className="App-header-menu-icon" />
+                    </div>
+                  }
+                />
               </div>
             </div>
           </div>

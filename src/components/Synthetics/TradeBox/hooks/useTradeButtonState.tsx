@@ -17,6 +17,7 @@ import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/
 import {
   selectChainId,
   selectGasPaymentTokenAllowance,
+  selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -64,7 +65,7 @@ import { mustNeverExist } from "lib/types";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
-import useWallet from "lib/wallets/useWallet";
+import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { getContract } from "sdk/configs/contracts";
 import { getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/types/fees";
@@ -98,7 +99,8 @@ export function useTradeboxButtonState({
   setToTokenInputValue,
 }: TradeboxButtonStateOptions): TradeboxButtonState {
   const chainId = useSelector(selectChainId);
-  const { signer } = useWallet();
+  const srcChainId = useSelector(selectSrcChainId);
+  const signer = useEthersSigner();
 
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isSwap, isIncrease, isLimit, isMarket, isTwap } = tradeFlags;
@@ -141,6 +143,10 @@ export function useTradeboxButtonState({
   });
 
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
+    if (srcChainId !== undefined) {
+      return { tokensToApprove: [], isAllowanceLoaded: true };
+    }
+
     if (
       !fromToken ||
       payAmount === undefined ||
@@ -184,6 +190,7 @@ export function useTradeboxButtonState({
     payTokenAllowance.isLoaded,
     payTokenAllowance.spenderAddress,
     payTokenAllowance.tokensAllowanceData,
+    srcChainId,
     tokenPermits,
   ]);
 
@@ -296,7 +303,11 @@ export function useTradeboxButtonState({
       return;
     }
 
-    if (isAllowanceLoaded && tokensToApprove.length) {
+    if (!signer) {
+      return;
+    }
+
+    if (!srcChainId && isAllowanceLoaded && tokensToApprove.length) {
       const tokenToApprove = tokensToApprove[0];
 
       if (!chainId || isApproving || !tokenToApprove) return;
@@ -366,18 +377,19 @@ export function useTradeboxButtonState({
     });
   }, [
     account,
+    signer,
+    srcChainId,
     isAllowanceLoaded,
     tokensToApprove,
     setStage,
     isWrapOrUnwrap,
     isSwap,
     isIncrease,
+    expressParams,
     openConnectModal,
     chainId,
     isApproving,
-    signer,
     setPendingTxns,
-    expressParams,
     addTokenPermit,
     onSubmitWrapOrUnwrap,
     onSubmitSwap,
