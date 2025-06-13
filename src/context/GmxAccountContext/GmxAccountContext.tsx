@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect, useMemo, useState } from "react";
+import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
 import { createContext } from "use-context-selector";
 import { useAccount } from "wagmi";
 
@@ -76,6 +76,21 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
   const [selectedTransferGuid, setSelectedTransferGuid] =
     useState<GmxAccountContext["selectedTransferGuid"]>(undefined);
 
+  const handleSetModalOpen = useCallback((newModalOpen: boolean | GmxAccountModalView) => {
+    setModalOpen(newModalOpen);
+
+    if (newModalOpen === false) {
+      setDepositViewChain(undefined);
+      setDepositViewTokenAddress(undefined);
+      setDepositViewTokenInputValue(undefined);
+
+      setWithdrawViewTokenAddress(undefined);
+      setWithdrawViewTokenInputValue(undefined);
+
+      setSelectedTransferGuid(undefined);
+    }
+  }, []);
+
   useEffect(() => {
     if (walletChainId === undefined) {
       return;
@@ -92,7 +107,7 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
   const value = useMemo(
     () => ({
       modalOpen,
-      setModalOpen,
+      setModalOpen: handleSetModalOpen,
 
       settlementChainId,
       setSettlementChainId,
@@ -120,6 +135,7 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
     }),
     [
       modalOpen,
+      handleSetModalOpen,
       settlementChainId,
       depositViewChain,
       depositViewTokenAddress,

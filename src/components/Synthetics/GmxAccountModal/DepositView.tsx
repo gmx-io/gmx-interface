@@ -108,11 +108,11 @@ const useIsFirstDeposit = () => {
 export const DepositView = () => {
   const { chainId: settlementChainId, srcChainId } = useChainId();
   const { address: account, chainId: walletChainId } = useAccount();
-  const [depositViewChain] = useGmxAccountDepositViewChain();
+  const [depositViewChain, setDepositViewChain] = useGmxAccountDepositViewChain();
   const walletSigner = useEthersSigner({ chainId: srcChainId });
   const { provider: sourceChainProvider } = useJsonRpcProvider(depositViewChain);
 
-  const [, setIsVisibleOrView] = useGmxAccountModalOpen();
+  const [isVisibleOrView, setIsVisibleOrView] = useGmxAccountModalOpen();
 
   const [depositViewTokenAddress, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
   const [inputValue, setInputValue] = useGmxAccountDepositViewTokenInputValue();
@@ -688,7 +688,24 @@ export const DepositView = () => {
   ]);
 
   useEffect(
+    function fallbackDepositViewChain() {
+      if (depositViewChain !== undefined || isVisibleOrView === false) {
+        return;
+      }
+
+      if (srcChainId !== undefined) {
+        setDepositViewChain(srcChainId);
+      }
+    },
+    [depositViewChain, isVisibleOrView, setDepositViewChain, srcChainId, walletChainId]
+  );
+
+  useEffect(
     function fallbackTokenOnSourceChain() {
+      if (isVisibleOrView === false) {
+        return;
+      }
+
       if (
         depositViewTokenAddress === undefined &&
         depositViewChain !== undefined &&
@@ -748,6 +765,7 @@ export const DepositView = () => {
       setDepositViewTokenAddress,
       settlementChainId,
       depositViewChain,
+      isVisibleOrView,
     ]
   );
 

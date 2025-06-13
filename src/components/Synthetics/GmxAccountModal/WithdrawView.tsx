@@ -125,7 +125,7 @@ const useIsFirstWithdrawal = () => {
 export const WithdrawView = () => {
   const { chainId, srcChainId } = useChainId();
   const { address: account, isConnected } = useAccount();
-  const [, setIsVisibleOrView] = useGmxAccountModalOpen();
+  const [isVisibleOrView, setIsVisibleOrView] = useGmxAccountModalOpen();
   const [inputValue, setInputValue] = useGmxAccountWithdrawViewTokenInputValue();
   const [selectedTokenAddress, setSelectedTokenAddress] = useGmxAccountWithdrawViewTokenAddress();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -654,7 +654,7 @@ export const WithdrawView = () => {
   const hasSelectedToken = selectedTokenAddress !== undefined;
   useEffect(
     function fallbackWithdrawTokens() {
-      if (hasSelectedToken || !srcChainId || !isSettlementChain(chainId)) {
+      if (hasSelectedToken || !srcChainId || !isSettlementChain(chainId) || isVisibleOrView === false) {
         return;
       }
 
@@ -704,7 +704,7 @@ export const WithdrawView = () => {
         setSelectedTokenAddress(maxBalanceSettlementChainTokenAddress);
       }
     },
-    [chainId, gmxAccountTokensData, hasSelectedToken, setSelectedTokenAddress, srcChainId]
+    [chainId, gmxAccountTokensData, hasSelectedToken, isVisibleOrView, setSelectedTokenAddress, srcChainId]
   );
 
   return (

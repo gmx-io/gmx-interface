@@ -1,12 +1,12 @@
 import { Trans } from "@lingui/macro";
 import { memo, useEffect } from "react";
 import { IoArrowBack } from "react-icons/io5";
+import { useAccount } from "wagmi";
 
 import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useChainId } from "lib/chains";
-import useWallet from "lib/wallets/useWallet";
 
 import { SlideModal } from "components/Modal/SlideModal";
 
@@ -104,7 +104,7 @@ const VIEW_TITLE: Record<GmxAccountModalView, React.ReactNode> = {
 };
 
 export const GmxAccountModal = memo(() => {
-  const { account } = useWallet();
+  const { address: account } = useAccount();
   const [isVisibleOrView, setIsVisibleOrView] = useGmxAccountModalOpen();
 
   const isVisible = isVisibleOrView !== false && account !== undefined;
