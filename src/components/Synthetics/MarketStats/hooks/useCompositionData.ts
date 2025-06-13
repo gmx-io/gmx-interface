@@ -196,6 +196,10 @@ const getMarketBackingCompositionData = (marketInfo: MarketInfo): BackingComposi
 };
 
 export const getCompositionPercentage = <T extends bigint | number>(value: T, sum: T) => {
+  if (Number(sum) === 0 || Number(value) === 0) {
+    return 0;
+  }
+
   let bps: number;
   if (typeof value === "bigint") {
     bps = bigintToNumber(getBasisPoints(value as bigint, sum as bigint), BASIS_POINTS_DECIMALS);

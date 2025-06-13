@@ -20,6 +20,7 @@ const { parseEther } = ethers;
 
 export const ENV_ARBITRUM_RPC_URLS = import.meta.env.VITE_APP_ARBITRUM_RPC_URLS;
 export const ENV_AVALANCHE_RPC_URLS = import.meta.env.VITE_APP_AVALANCHE_RPC_URLS;
+export const ENV_BOTANIX_RPC_URLS = import.meta.env.VITE_APP_BOTANIX_RPC_URLS;
 
 // TODO take it from web3
 export const DEFAULT_CHAIN_ID = ARBITRUM;
@@ -131,7 +132,7 @@ export const FALLBACK_PROVIDERS: Record<UiContractsChain, string[]> = {
     "https://api.avax-test.network/ext/bc/C/rpc",
     "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
   ],
-  [BOTANIX]: [], // TODO: check_botanix
+  [BOTANIX]: ENV_BOTANIX_RPC_URLS ? JSON.parse(ENV_BOTANIX_RPC_URLS) : [getAlchemyBotanixHttpUrl()],
 };
 
 export const getConstant = (chainId: number, key: string) => {
@@ -167,6 +168,10 @@ export function getAlchemyAvalancheHttpUrl() {
 
 export function getAlchemyArbitrumWsUrl() {
   return `wss://arb-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
+}
+
+export function getAlchemyBotanixHttpUrl() {
+  return `https://botanix-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
 }
 
 export function getExplorerUrl(chainId) {

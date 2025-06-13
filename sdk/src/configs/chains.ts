@@ -150,7 +150,7 @@ export const EXECUTION_FEE_CONFIG_V2: {
     defaultBufferBps: 3000, // 30%
   },
   [BOTANIX]: {
-    shouldUseMaxPriorityFeePerGas: true, // TODO: check_botanix
+    shouldUseMaxPriorityFeePerGas: false, // TODO: check_botanix
     defaultBufferBps: 1000, // 10%
   },
 };
