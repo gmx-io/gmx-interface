@@ -10,7 +10,7 @@ import { GM_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { BN_ZERO, expandDecimals, numberToBigint, PRECISION } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
+import { ApyPeriod, useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { getTokenBySymbolSafe } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -234,7 +234,10 @@ function useIncentivesBonusApr(
   return marketAndGlvTokensAPRData;
 }
 
-export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
+export function useGmMarketsApy(
+  chainId: number,
+  { period }: { period: ApyPeriod } | undefined = { period: "total" }
+): GmGlvTokensAPRResult {
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false, withGlv: false });
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId);
@@ -258,7 +261,9 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
   const subsquidUrl = getSubgraphUrl(chainId, "subsquid");
 
   const key =
-    marketAddresses.length && marketTokensData && subsquidUrl ? marketAddresses.concat("apr-subsquid").join(",") : null;
+    marketAddresses.length && marketTokensData && subsquidUrl
+      ? marketAddresses.concat("apr-subsquid", period).join(",")
+      : null;
 
   const lidoApr = useLidoStakeApr();
 
@@ -266,7 +271,7 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
 
   const { data } = useSWR(key, {
     fetcher: async (): Promise<SwrResult> => {
-      const apys = await oracleKeeperFetcher.fetchApys();
+      const apys = await oracleKeeperFetcher.fetchApys(period);
       const wstEthToken = getTokenBySymbolSafe(chainId, "wstETH");
 
       const marketsTokensLidoAprData = marketAddresses.reduce((acc, marketAddress) => {

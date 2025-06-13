@@ -6,6 +6,7 @@ import { buildUrl } from "sdk/utils/buildUrl";
 
 import {
   ApyInfo,
+  ApyPeriod,
   BatchReportBody,
   DayPriceCandle,
   OracleFetcher,
@@ -152,8 +153,8 @@ export class OracleKeeperFetcher implements OracleFetcher {
     });
   }
 
-  fetchApys(): Promise<ApyInfo> {
-    return fetch(buildUrl(this.url!, "/apy"), {
+  fetchApys(period: ApyPeriod): Promise<ApyInfo> {
+    return fetch(buildUrl(this.url!, "/apy", { period }), {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
