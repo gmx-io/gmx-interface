@@ -6,6 +6,7 @@ import { OrderErrorContext } from "lib/errors";
 import { getGasPrice } from "lib/gas/gasPrice";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
+import { getProvider } from "lib/rpc";
 
 import { getErrorMessage } from "components/Errors/errorToasts";
 
@@ -28,11 +29,12 @@ export async function prepareOrderTxn(
     throw new Error("Provider is not defined");
   }
 
+  const provider = getProvider(undefined, chainId);
   const [gasLimit, gasPriceData] = await Promise.all([
     getGasLimit(contract, method, params, value).catch(
       makeCatchTransactionError(chainId, metricId, "gasLimit", additinalErrorContent)
     ),
-    getGasPrice(contract.runner.provider, chainId).catch(
+    getGasPrice(provider, chainId).catch(
       makeCatchTransactionError(chainId, metricId, "gasPrice", additinalErrorContent)
     ),
     // simulation

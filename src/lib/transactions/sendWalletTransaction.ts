@@ -4,6 +4,7 @@ import { extendError } from "lib/errors";
 import { additionalTxnErrorValidation } from "lib/errors/additionalValidation";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { GasPriceData, getGasPrice } from "lib/gas/gasPrice";
+import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateCallDataWithTenderly } from "lib/tenderly";
 import { WalletSigner } from "lib/wallets";
 
@@ -80,9 +81,10 @@ export async function sendWalletTransaction({
           value,
         }).catch(() => undefined);
 
+    const provider = getProvider(undefined, chainId);
     const gasPriceDataPromise = gasPriceData
       ? Promise.resolve(gasPriceData)
-      : getGasPrice(signer.provider!, chainId).catch(() => undefined);
+      : getGasPrice(provider, chainId).catch(() => undefined);
 
     const [gasLimitResult, gasPriceDataResult] = await Promise.all([
       gasLimitPromise,

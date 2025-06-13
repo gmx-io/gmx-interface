@@ -1,11 +1,10 @@
-import { ARBITRUM, AVALANCHE, BSС_MAINNET } from "./chains";
+import { ARBITRUM, AVALANCHE } from "./chains";
 
 export const GMX_STATS_API_URL = "https://stats.gmx.io/api";
 
 const BACKEND_URLS = {
   default: "https://gmx-server-mainnet.uw.r.appspot.com",
 
-  [BSС_MAINNET]: "https://gambit-server-staging.uc.r.appspot.com",
   [ARBITRUM]: "https://gmx-server-mainnet.uw.r.appspot.com",
   [AVALANCHE]: "https://gmx-avax-server.uc.r.appspot.com",
 };
