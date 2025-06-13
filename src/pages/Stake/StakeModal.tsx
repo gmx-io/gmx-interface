@@ -27,6 +27,8 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
+import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
+import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 
 import { GMX_DAO_LINKS } from "./constants";
 
@@ -239,10 +241,13 @@ export function StakeModal(props: {
           </AlertInfo>
         ) : null}
 
+        <SwitchToSettlementChainWarning topic="staking" />
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
-            {primaryText}
-          </Button>
+          <SwitchToSettlementChainButtons>
+            <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
+              {primaryText}
+            </Button>
+          </SwitchToSettlementChainButtons>
         </div>
       </Modal>
     </div>

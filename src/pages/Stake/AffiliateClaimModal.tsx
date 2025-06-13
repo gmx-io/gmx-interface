@@ -12,6 +12,8 @@ import type { ContractsChainId } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
+import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
+import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 
 export function AffiliateClaimModal(props: {
   isVisible: boolean;
@@ -65,10 +67,13 @@ export function AffiliateClaimModal(props: {
             <br />
           </div>
         </Trans>
+        <SwitchToSettlementChainWarning topic="staking" />
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
-            {primaryText}
-          </Button>
+          <SwitchToSettlementChainButtons>
+            <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
+              {primaryText}
+            </Button>
+          </SwitchToSettlementChainButtons>
         </div>
       </Modal>
     </div>

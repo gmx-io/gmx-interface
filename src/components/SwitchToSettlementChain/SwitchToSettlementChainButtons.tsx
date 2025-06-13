@@ -1,24 +1,19 @@
+import { Trans } from "@lingui/macro";
 import { useAccount } from "wagmi";
 
-import { SourceChainId, getChainName } from "config/chains";
-import {
-  MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING,
-  isSettlementChain,
-  isSourceChain,
-} from "domain/multichain/config";
+import { getChainName } from "config/chains";
+import { MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING } from "domain/multichain/config";
 import { switchNetwork } from "lib/wallets";
 
 import Button from "components/Button/Button";
 
-export function needSwitchToSettlementChain(walletChainId: number | undefined): walletChainId is SourceChainId {
-  return Boolean(walletChainId && isSourceChain(walletChainId) && !isSettlementChain(walletChainId));
-}
+import { needSwitchToSettlementChain } from "./needSwitchToSettlementChain";
 
-export function SwitchToSettlementChainButtons() {
+export function SwitchToSettlementChainButtons({ children }: { children: React.ReactNode }) {
   const { chainId: walletChainId, isConnected } = useAccount();
 
-  if (!walletChainId || isSettlementChain(walletChainId)) {
-    return null;
+  if (!needSwitchToSettlementChain(walletChainId)) {
+    return children;
   }
 
   return (
@@ -33,7 +28,7 @@ export function SwitchToSettlementChainButtons() {
             switchNetwork(chainId, isConnected);
           }}
         >
-          Switch to {getChainName(chainId)}
+          <Trans>Switch to {getChainName(chainId)}</Trans>
         </Button>
       ))}
     </div>

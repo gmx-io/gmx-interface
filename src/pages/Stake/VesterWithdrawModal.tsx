@@ -9,6 +9,8 @@ import { abis } from "sdk/abis";
 
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
+import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
+import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 
 export function VesterWithdrawModal(props: {
   isVisible: boolean;
@@ -56,10 +58,13 @@ export function VesterWithdrawModal(props: {
             <br />
           </div>
         </Trans>
+        <SwitchToSettlementChainWarning topic="vesting" />
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={isWithdrawing}>
-            {isWithdrawing ? "Confirming..." : "Confirm Withdraw"}
-          </Button>
+          <SwitchToSettlementChainButtons>
+            <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={isWithdrawing}>
+              {isWithdrawing ? "Confirming..." : "Confirm Withdraw"}
+            </Button>
+          </SwitchToSettlementChainButtons>
         </div>
       </Modal>
     </div>

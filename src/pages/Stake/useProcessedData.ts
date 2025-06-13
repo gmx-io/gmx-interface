@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import useSWR from "swr";
+import { zeroAddress } from "viem";
 
 import { getServerUrl } from "config/backend";
 import { ARBITRUM } from "config/chains";
@@ -73,14 +74,20 @@ export function useProcessedData() {
   const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
 
   const { data: stakedGmxSupply } = useSWR<bigint>(
-    [`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress],
+    gmxAddress !== zeroAddress && [
+      `StakeV2:stakedGmxSupply:${active}`,
+      chainId,
+      gmxAddress,
+      "balanceOf",
+      stakedGmxTrackerAddress,
+    ],
     {
       fetcher: contractFetcher<bigint>(signer, "Token"),
     }
   );
 
   const { data: aum } = useSWR<bigint | undefined>(
-    [`processedData:getAums:${active}`, chainId, glpManagerAddress, "getAums"],
+    glpManagerAddress !== zeroAddress && [`processedData:getAums:${active}`, chainId, glpManagerAddress, "getAums"],
     {
       fetcher: async (key: any[]) => {
         const aums = await contractFetcher<bigint[]>(signer, "GlpManager")(key);
@@ -95,7 +102,13 @@ export function useProcessedData() {
   );
 
   const { data: nativeTokenPrice } = useSWR<bigint>(
-    [`StakeV2:nativeTokenPrice:${active}`, chainId, vaultAddress, "getMinPrice", nativeTokenAddress],
+    vaultAddress !== zeroAddress && [
+      `StakeV2:nativeTokenPrice:${active}`,
+      chainId,
+      vaultAddress,
+      "getMinPrice",
+      nativeTokenAddress,
+    ],
     {
       fetcher: contractFetcher<bigint>(signer, "Vault"),
     }
@@ -106,7 +119,7 @@ export function useProcessedData() {
   });
 
   const balanceAndSupplyQuery = useSWR<ReturnType<typeof getBalanceAndSupplyData>>(
-    [
+    readerAddress !== zeroAddress && [
       `processedData:walletBalances:${active}`,
       chainId,
       readerAddress,
@@ -124,7 +137,7 @@ export function useProcessedData() {
   const { balanceData, supplyData } = balanceAndSupplyQuery.data ?? {};
 
   const { data: depositBalanceData } = useSWR<ReturnType<typeof getDepositBalanceData>>(
-    [
+    rewardReaderAddress !== zeroAddress && [
       `processedData:depositBalances:${active}`,
       chainId,
       rewardReaderAddress,
@@ -143,7 +156,7 @@ export function useProcessedData() {
   );
 
   const { data: stakingData } = useSWR<ReturnType<typeof getStakingData>>(
-    [
+    rewardReaderAddress !== zeroAddress && [
       `processedData:stakingInfo:${active}`,
       chainId,
       rewardReaderAddress,

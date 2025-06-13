@@ -14,6 +14,8 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Modal from "components/Modal/Modal";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
+import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -230,10 +232,13 @@ export function VesterDepositModal(props: {
             />
           )}
         </div>
+        <SwitchToSettlementChainWarning topic="vesting" />
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
-            {primaryText}
-          </Button>
+          <SwitchToSettlementChainButtons>
+            <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
+              {primaryText}
+            </Button>
+          </SwitchToSettlementChainButtons>
         </div>
       </Modal>
     </div>

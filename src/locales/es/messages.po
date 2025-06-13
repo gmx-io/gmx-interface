@@ -433,6 +433,7 @@ msgid "sell"
 msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
 msgid "Switch to {0}"
 msgstr ""
 
@@ -1470,6 +1471,10 @@ msgstr "Transferencia Enviada"
 
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading is disabled. Action limit exceeded."
+msgstr ""
+
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Staking is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
@@ -2964,6 +2969,10 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Invalid Liquidation Price"
+msgstr ""
+
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Staking is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
 msgstr ""
 
 #: src/pages/Home/Home.tsx
@@ -5185,6 +5194,10 @@ msgstr "Ejecutar"
 msgid "Trades"
 msgstr "Operaciones"
 
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Vesting is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Telegram Groups"
 msgstr "Grupos de Telegram"
@@ -6228,6 +6241,10 @@ msgstr ""
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Claim esGMX"
 msgstr "Reclamar esGMX"
+
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Vesting is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
+msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "The maximum percentage difference between your specified price and execution price when placing orders."
@@ -7539,7 +7556,7 @@ msgstr "Paneles y análisis de GMX."
 msgid "The amount you are trying to deposit is below the limit. Please try an amount larger than {lowerLimitFormatted}."
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/SwitchToSettlementChainWarning.tsx
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
 msgstr ""
 
@@ -8823,7 +8840,7 @@ msgstr ""
 msgid "Increase active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Incrementar activo: {0}, ejecutado: {1}, cancelado: {2}"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/SwitchToSettlementChainWarning.tsx
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
 msgstr ""
 

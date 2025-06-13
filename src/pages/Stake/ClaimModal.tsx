@@ -23,6 +23,8 @@ import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
+import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
+import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 
 import { GMX_DAO_LINKS } from "./constants";
 
@@ -270,10 +272,13 @@ export function ClaimModal(props: {
           </Trans>
         </AlertInfo>
       ) : null}
+      <SwitchToSettlementChainWarning topic="staking" />
       <div className="Exchange-swap-button-container">
-        <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
-          {primaryText}
-        </Button>
+        <SwitchToSettlementChainButtons>
+          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
+            {primaryText}
+          </Button>
+        </SwitchToSettlementChainButtons>
       </div>
     </ModalWithPortal>
   );

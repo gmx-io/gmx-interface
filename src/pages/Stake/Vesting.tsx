@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useState } from "react";
 import useSWR from "swr";
+import { zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
 import { getIcons } from "config/icons";
@@ -60,7 +61,13 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
   const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
 
   const { data: sbfGmxBalance } = useSWR(
-    [`StakeV2:sbfGmxBalance:${active}`, chainId, feeGmxTrackerAddress, "balanceOf", account ?? PLACEHOLDER_ACCOUNT],
+    feeGmxTrackerAddress !== zeroAddress && [
+      `StakeV2:sbfGmxBalance:${active}`,
+      chainId,
+      feeGmxTrackerAddress,
+      "balanceOf",
+      account ?? PLACEHOLDER_ACCOUNT,
+    ],
     {
       fetcher: contractFetcher(undefined, "Token"),
     }

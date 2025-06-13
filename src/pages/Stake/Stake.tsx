@@ -95,7 +95,13 @@ export default function Stake() {
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
 
   const { data: sbfGmxBalance } = useSWR(
-    [`StakeV2:sbfGmxBalance:${active}`, chainId, feeGmxTrackerAddress, "balanceOf", account ?? PLACEHOLDER_ACCOUNT],
+    feeGmxTrackerAddress !== zeroAddress && [
+      `StakeV2:sbfGmxBalance:${active}`,
+      chainId,
+      feeGmxTrackerAddress,
+      "balanceOf",
+      account ?? PLACEHOLDER_ACCOUNT,
+    ],
     {
       fetcher: contractFetcher(undefined, "Token"),
     }

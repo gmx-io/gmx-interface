@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import useSWR from "swr";
+import { zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
 import { useChainId } from "lib/chains";
@@ -18,7 +19,13 @@ export default function useVestingData(account?: string) {
     .filter(Boolean);
 
   const { data: vestingInfo } = useSWR(
-    [`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", account ?? PLACEHOLDER_ACCOUNT],
+    readerAddress !== zeroAddress && [
+      `StakeV2:vestingInfo:${active}`,
+      chainId,
+      readerAddress,
+      "getVestingInfo",
+      account ?? PLACEHOLDER_ACCOUNT,
+    ],
     {
       fetcher: contractFetcher(undefined, "ReaderV2", [vesterAddresses.filter(Boolean)]),
     }

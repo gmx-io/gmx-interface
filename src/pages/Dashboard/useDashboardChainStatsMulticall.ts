@@ -11,6 +11,9 @@ function buildDashboardRequest(chainId: ContractsChainId) {
   const gmxAddress = getContract(chainId, "GMX");
   const glpAddress = getContract(chainId, "GLP");
   const usdgAddress = getContract(chainId, "USDG");
+  const readerAddress = getContract(chainId, "Reader");
+  const vaultAddress = getContract(chainId, "Vault");
+  const glpManagerAddress = getContract(chainId, "GlpManager");
 
   const tokensForSupplyQuery = [gmxAddress, glpAddress, usdgAddress];
 
@@ -18,37 +21,49 @@ function buildDashboardRequest(chainId: ContractsChainId) {
 
   return {
     glp: {
-      contractAddress: getContract(chainId, "GlpManager"),
+      contractAddress: glpManagerAddress,
       abiId: "GlpManager",
       calls: {
-        getAums: {
-          methodName: "getAums",
-          params: [],
-        },
+        getAums:
+          glpManagerAddress === zeroAddress
+            ? undefined
+            : {
+                methodName: "getAums",
+                params: [],
+              },
       },
     },
     reader: {
-      contractAddress: getContract(chainId, "Reader"),
+      contractAddress: readerAddress,
       abiId: "ReaderV2",
       calls: {
-        getTokenBalancesWithSupplies: {
-          methodName: "getTokenBalancesWithSupplies",
-          params: [zeroAddress, tokensForSupplyQuery],
-        },
-        getFees: {
-          methodName: "getFees",
-          params: [getContract(chainId, "Vault"), whitelistedTokensAddresses],
-        },
+        getTokenBalancesWithSupplies:
+          readerAddress === zeroAddress
+            ? undefined
+            : {
+                methodName: "getTokenBalancesWithSupplies",
+                params: [zeroAddress, tokensForSupplyQuery],
+              },
+        getFees:
+          readerAddress === zeroAddress || vaultAddress === zeroAddress
+            ? undefined
+            : {
+                methodName: "getFees",
+                params: [vaultAddress, whitelistedTokensAddresses],
+              },
       },
     },
     vault: {
-      contractAddress: getContract(chainId, "Vault"),
+      contractAddress: vaultAddress,
       abiId: "VaultV2",
       calls: {
-        totalTokenWeights: {
-          methodName: "totalTokenWeights",
-          params: [],
-        },
+        totalTokenWeights:
+          vaultAddress === zeroAddress
+            ? undefined
+            : {
+                methodName: "totalTokenWeights",
+                params: [],
+              },
       },
     },
   } satisfies MulticallRequestConfig<any>;
