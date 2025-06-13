@@ -52,7 +52,7 @@ export function GasPaymentTokenSelector({ currentTokenAddress, onSelectToken }: 
           {currentToken && (
             <div className="flex items-center">
               <TokenIcon symbol={currentToken.symbol} className="mr-8" displaySize={16} />
-              <span className="mr-4 inline-block max-w-60 truncate align-baseline">
+              <span className="mr-4 inline-block align-baseline">
                 {formatTokenAmount(currentToken.balance, currentToken.decimals)}
               </span>
               {currentToken.symbol}
@@ -93,9 +93,7 @@ function GasTokenOption({ token, onClick }: { token?: TokenData; onClick: () => 
     >
       <div className="flex items-center">
         <TokenIcon symbol={token.symbol} className="mr-8" displaySize={20} />
-        <span className="mr-4 inline-block max-w-60 truncate align-baseline">
-          {formatTokenAmount(token.balance, token.decimals)}
-        </span>
+        <span className="mr-4 inline-block align-baseline">{formatTokenAmount(token.balance, token.decimals)}</span>
         {token.symbol}
       </div>
       <div className="text-right">{formatUsd(balanceUsd)}</div>
