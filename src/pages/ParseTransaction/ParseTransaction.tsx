@@ -10,7 +10,7 @@ import useSWR from "swr";
 import { Hash, PublicClient, isHash } from "viem";
 import { usePublicClient } from "wagmi";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, UiContractsChain, getExplorerUrl } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, ContractsChainId, getExplorerUrl } from "config/chains";
 import { getIcon } from "config/icons";
 import {
   getGlvDisplayName,
@@ -56,7 +56,7 @@ import {
 } from "./formatting";
 import { LogEntryComponentProps } from "./types";
 
-export const NETWORKS_BY_CHAIN_IDS: Record<UiContractsChain, string> = {
+export const NETWORKS_BY_CHAIN_IDS: Record<ContractsChainId, string> = {
   [ARBITRUM]: "arbitrum",
   [AVALANCHE]: "avalanche",
   [AVALANCHE_FUJI]: "fuji",
@@ -67,7 +67,7 @@ export const NETWORKS_BY_CHAIN_IDS: Record<UiContractsChain, string> = {
   // [SEPOLIA]: "sepolia",
 };
 
-const NETWORKS = mapValues(invert(NETWORKS_BY_CHAIN_IDS), Number) as Record<string, UiContractsChain>;
+const NETWORKS = mapValues(invert(NETWORKS_BY_CHAIN_IDS), Number) as Record<string, ContractsChainId>;
 
 export function ParseTransactionPage() {
   const { tx, network } = useParams<{ tx: string; network: string }>();

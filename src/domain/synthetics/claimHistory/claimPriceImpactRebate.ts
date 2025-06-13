@@ -4,7 +4,7 @@ import { Signer, ethers } from "ethers";
 import { getContract } from "config/contracts";
 import { callContract } from "lib/contracts";
 import { abis } from "sdk/abis";
-import { UiContractsChain } from "sdk/configs/chains";
+import { ContractsChainId } from "sdk/configs/chains";
 
 import { RebateInfoItem } from "../fees/useRebatesInfo";
 
@@ -14,7 +14,7 @@ export type ClaimPriceImpactRebateParams = {
 };
 
 export async function createClaimCollateralTxn(
-  chainId: UiContractsChain,
+  chainId: ContractsChainId,
   signer: Signer,
   { account, claimablePositionPriceImpactFees }: ClaimPriceImpactRebateParams
 ) {

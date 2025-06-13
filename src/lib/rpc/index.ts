@@ -9,7 +9,7 @@ import {
   FALLBACK_PROVIDERS,
   getAlchemyArbitrumWsUrl,
   getFallbackRpcUrl,
-  SEPOLIA,
+  SOURCE_SEPOLIA,
 } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getCurrentRpcUrls, useCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
@@ -56,7 +56,7 @@ export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvi
     });
   }
 
-  if (chainId === SEPOLIA) {
+  if (chainId === SOURCE_SEPOLIA) {
     const provider = new ethers.JsonRpcProvider("https://ethereum-sepolia-rpc.publicnode.com", network, {
       staticNetwork: network,
     });

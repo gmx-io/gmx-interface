@@ -5,7 +5,7 @@ import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsCo
 import type { SetPendingOrderUpdate } from "context/SyntheticsEvents";
 import { convertToContractPrice } from "domain/synthetics/tokens";
 import type { Token } from "domain/tokens";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 
 export type UpdateOrderParams = {
   orderKey: string;
@@ -36,7 +36,7 @@ export function createUpdateEncodedPayload({
   minOutputAmount,
   autoCancel,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   router: ethers.Contract;
   orderKey: string;
   sizeDeltaUsd: bigint;

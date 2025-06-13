@@ -6,12 +6,12 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
-  OPTIMISM_SEPOLIA,
-  SEPOLIA,
-  UiContractsChain,
-  UiSettlementChain,
-  UiSourceChain,
-  UiSupportedChain,
+  SOURCE_OPTIMISM_SEPOLIA,
+  SOURCE_SEPOLIA,
+  ContractsChainId,
+  SettlementChainId,
+  SourceChainId,
+  AnyChainId,
 } from "config/chains";
 import { isDevelopment } from "config/env";
 import { convertTokenAddress } from "sdk/configs/tokens";
@@ -29,10 +29,10 @@ import { LayerZeroEndpointId } from "./types";
 
 type MultichainTokenMapping = Record<
   // settlement chain id
-  UiSettlementChain,
+  SettlementChainId,
   Record<
     // source chain id
-    UiSourceChain,
+    SourceChainId,
     Record<
       // source chain token address
       string,
@@ -48,10 +48,10 @@ type MultichainTokenMapping = Record<
 
 type MultichainSupportedTokenMap = Record<
   // settlement chain id
-  UiSettlementChain,
+  SettlementChainId,
   Record<
     // source chain id
-    UiSourceChain,
+    SourceChainId,
     // source chain token address
     string[]
   >
@@ -59,15 +59,15 @@ type MultichainSupportedTokenMap = Record<
 
 type MultichainWithdrawSupportedTokens = Record<
   // settlement chain id
-  UiSettlementChain,
+  SettlementChainId,
   // settlement chain wrapped token address
   string[]
 >;
 
-type MultichainSourceToSettlementChainMapping = Record<UiSourceChain, UiSettlementChain[]>;
+type MultichainSourceToSettlementChainMapping = Record<SourceChainId, SettlementChainId[]>;
 
 export type MultichainTokenId = {
-  chainId: UiSettlementChain | UiSourceChain;
+  chainId: SettlementChainId | SourceChainId;
   address: string;
   decimals: number;
   stargate: string;
@@ -75,7 +75,7 @@ export type MultichainTokenId = {
 };
 
 export const TOKEN_GROUPS: Partial<
-  Record<string, Partial<Record<UiSourceChain | UiSettlementChain, MultichainTokenId>>>
+  Record<string, Partial<Record<SourceChainId | SettlementChainId, MultichainTokenId>>>
 > = {};
 
 if (isDevelopment()) {
@@ -87,17 +87,17 @@ if (isDevelopment()) {
       stargate: usdcSgPoolArbitrumSepolia,
       symbol: "USDC.SG",
     },
-    [OPTIMISM_SEPOLIA]: {
+    [SOURCE_OPTIMISM_SEPOLIA]: {
       address: "0x488327236B65C61A6c083e8d811a4E0D3d1D4268",
       decimals: 6,
-      chainId: OPTIMISM_SEPOLIA,
+      chainId: SOURCE_OPTIMISM_SEPOLIA,
       stargate: usdcSgPoolOptimismSepolia,
       symbol: "USDC.SG",
     },
-    [SEPOLIA]: {
+    [SOURCE_SEPOLIA]: {
       address: "0x2F6F07CDcf3588944Bf4C42aC74ff24bF56e7590",
       decimals: 6,
-      chainId: SEPOLIA,
+      chainId: SOURCE_SEPOLIA,
       stargate: usdcSgPoolSepolia,
       symbol: "USDC.SG",
     },
@@ -111,17 +111,17 @@ if (isDevelopment()) {
       stargate: ethPoolArbitrumSepolia,
       symbol: "ETH",
     },
-    [OPTIMISM_SEPOLIA]: {
+    [SOURCE_OPTIMISM_SEPOLIA]: {
       address: zeroAddress,
       decimals: 18,
-      chainId: OPTIMISM_SEPOLIA,
+      chainId: SOURCE_OPTIMISM_SEPOLIA,
       stargate: ethPoolOptimismSepolia,
       symbol: "ETH",
     },
-    [SEPOLIA]: {
+    [SOURCE_SEPOLIA]: {
       address: zeroAddress,
       decimals: 18,
-      chainId: SEPOLIA,
+      chainId: SOURCE_SEPOLIA,
       stargate: ethPoolSepolia,
       symbol: "ETH",
     },
@@ -130,37 +130,37 @@ if (isDevelopment()) {
 
 export const DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT = false;
 
-export const CONTRACTS_CHAINS: UiContractsChain[] = Object.keys({
+export const CONTRACTS_CHAINS: ContractsChainId[] = Object.keys({
   [ARBITRUM_SEPOLIA]: true,
   [ARBITRUM]: true,
   [AVALANCHE]: true,
   [AVALANCHE_FUJI]: true,
-} satisfies Record<UiContractsChain, true>).map(Number) as UiContractsChain[];
+} satisfies Record<ContractsChainId, true>).map(Number) as ContractsChainId[];
 
-export const SETTLEMENT_CHAINS: UiSettlementChain[] = Object.keys({
+export const SETTLEMENT_CHAINS: SettlementChainId[] = Object.keys({
   [ARBITRUM_SEPOLIA]: true,
-} satisfies Record<UiSettlementChain, true>).map(Number) as UiSettlementChain[];
+} satisfies Record<SettlementChainId, true>).map(Number) as SettlementChainId[];
 
 // To test bridge in from the same network add ARBITRUM_SEPOLIA to source chains
-export const SOURCE_CHAINS: UiSourceChain[] = Object.keys({
-  [OPTIMISM_SEPOLIA]: true,
-  [SEPOLIA]: true,
-} satisfies Record<UiSourceChain, true>).map(Number) as UiSourceChain[];
+export const SOURCE_CHAINS: SourceChainId[] = Object.keys({
+  [SOURCE_OPTIMISM_SEPOLIA]: true,
+  [SOURCE_SEPOLIA]: true,
+} satisfies Record<SourceChainId, true>).map(Number) as SourceChainId[];
 
 if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
-  SOURCE_CHAINS.push(ARBITRUM_SEPOLIA as UiSourceChain);
+  SOURCE_CHAINS.push(ARBITRUM_SEPOLIA as SourceChainId);
 }
 
-export function isContractsChain(chainId: number): chainId is UiContractsChain {
-  return CONTRACTS_CHAINS.includes(chainId as UiContractsChain);
+export function isContractsChain(chainId: number): chainId is ContractsChainId {
+  return CONTRACTS_CHAINS.includes(chainId as ContractsChainId);
 }
 
-export function isSettlementChain(chainId: number): chainId is UiSettlementChain {
-  return SETTLEMENT_CHAINS.includes(chainId as UiSettlementChain);
+export function isSettlementChain(chainId: number): chainId is SettlementChainId {
+  return SETTLEMENT_CHAINS.includes(chainId as SettlementChainId);
 }
 
-export function isSourceChain(chainId: number): chainId is UiSourceChain {
-  return SOURCE_CHAINS.includes(chainId as UiSourceChain);
+export function isSourceChain(chainId: number): chainId is SourceChainId {
+  return SOURCE_CHAINS.includes(chainId as SourceChainId);
 }
 
 export const MULTI_CHAIN_TOKEN_MAPPING = {} as MultichainTokenMapping;
@@ -170,7 +170,7 @@ export const MULTI_CHAIN_SUPPORTED_TOKEN_MAP = {} as MultichainSupportedTokenMap
 export const MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS = {} as MultichainWithdrawSupportedTokens;
 
 export const CHAIN_ID_TO_TOKEN_ID_MAP: Record<
-  UiSettlementChain | UiSourceChain,
+  SettlementChainId | SourceChainId,
   Record<string, MultichainTokenId>
 > = {} as any;
 
@@ -178,12 +178,12 @@ export const MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING: MultichainSourceToS
 
 for (const tokenSymbol in TOKEN_GROUPS) {
   for (const settlementChainIdString in TOKEN_GROUPS[tokenSymbol]) {
-    const settlementChainId = parseInt(settlementChainIdString) as UiSettlementChain | UiSourceChain;
+    const settlementChainId = parseInt(settlementChainIdString) as SettlementChainId | SourceChainId;
     if (!isSettlementChain(settlementChainId)) continue;
 
     let empty = true;
     for (const sourceChainIdString in TOKEN_GROUPS[tokenSymbol]) {
-      const sourceChainId = parseInt(sourceChainIdString) as UiSettlementChain | UiSourceChain;
+      const sourceChainId = parseInt(sourceChainIdString) as SettlementChainId | SourceChainId;
       if (!isSourceChain(sourceChainId)) continue;
 
       if (!isDevelopment() && (settlementChainId as number) === (sourceChainId as number)) continue;
@@ -231,7 +231,7 @@ for (const tokenSymbol in TOKEN_GROUPS) {
 
 for (const tokenSymbol in TOKEN_GROUPS) {
   for (const firstChainIdString in TOKEN_GROUPS[tokenSymbol]) {
-    const firstChainId = parseInt(firstChainIdString) as UiSettlementChain | UiSourceChain;
+    const firstChainId = parseInt(firstChainIdString) as SettlementChainId | SourceChainId;
 
     const firstTokenId = TOKEN_GROUPS[tokenSymbol]?.[firstChainId];
 
@@ -241,7 +241,7 @@ for (const tokenSymbol in TOKEN_GROUPS) {
     CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId][firstTokenId.address] = firstTokenId;
 
     for (const secondChainIdString in TOKEN_GROUPS[tokenSymbol]) {
-      const secondChainId = parseInt(secondChainIdString) as UiSettlementChain | UiSourceChain;
+      const secondChainId = parseInt(secondChainIdString) as SettlementChainId | SourceChainId;
       if (!isDevelopment() && firstChainId === secondChainId) continue;
 
       if (isSettlementChain(firstChainId) && isSourceChain(secondChainId)) {
@@ -273,14 +273,14 @@ for (const tokenSymbol in TOKEN_GROUPS) {
   }
 }
 
-export const DEFAULT_SETTLEMENT_CHAIN_ID_MAP: Record<UiSupportedChain, UiSettlementChain> = {
+export const DEFAULT_SETTLEMENT_CHAIN_ID_MAP: Record<AnyChainId, SettlementChainId> = {
   // TODO: fix
   // [BASE_MAINNET]: ARBITRUM_SEPOLIA, // ARBITRUM,
   // [SONIC_MAINNET]: ARBITRUM_SEPOLIA, // ARBITRUM,
 
   [ARBITRUM_SEPOLIA]: ARBITRUM_SEPOLIA,
-  [OPTIMISM_SEPOLIA]: ARBITRUM_SEPOLIA,
-  [SEPOLIA]: ARBITRUM_SEPOLIA,
+  [SOURCE_OPTIMISM_SEPOLIA]: ARBITRUM_SEPOLIA,
+  [SOURCE_SEPOLIA]: ARBITRUM_SEPOLIA,
 
   // Stubs
   // TODO: fix
@@ -306,9 +306,9 @@ export function getLayerZeroEndpointId(chainId: number): LayerZeroEndpointId | u
 }
 
 export function getMappedTokenId(
-  fromChainId: UiSettlementChain | UiSourceChain,
+  fromChainId: SettlementChainId | SourceChainId,
   fromChainTokenAddress: string,
-  toChainId: UiSettlementChain | UiSourceChain
+  toChainId: SettlementChainId | SourceChainId
 ): MultichainTokenId | undefined {
   const tokenId = getMultichainTokenId(fromChainId, fromChainTokenAddress);
 
@@ -321,18 +321,18 @@ export function getMappedTokenId(
   return mappedTokenId;
 }
 
-export const MULTICALLS_MAP: Record<UiSourceChain, string> = {
-  [OPTIMISM_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
-  [SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
+export const MULTICALLS_MAP: Record<SourceChainId, string> = {
+  [SOURCE_OPTIMISM_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
+  [SOURCE_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
 };
 
 if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
-  MULTICALLS_MAP[ARBITRUM_SEPOLIA as UiSourceChain] = "0xca11bde05977b3631167028862be2a173976ca11";
+  MULTICALLS_MAP[ARBITRUM_SEPOLIA as SourceChainId] = "0xca11bde05977b3631167028862be2a173976ca11";
 }
 
 export const OVERRIDE_ERC20_BYTECODE: Hex =
   "0x608060405234801561001057600080fd5b50600436106100835760003560e01c806306fdde0314610088578063095ea7b3146100ca57806318160ddd146100ed57806323b872dd14610103578063313ce5671461011657806370a082311461012557806395d89b4114610138578063a9059cbb14610157578063dd62ed3e1461016a575b600080fd5b60408051808201909152601481527326b7b1b5902ab73634b6b4ba32b2102a37b5b2b760611b60208201525b6040516100c191906103ae565b60405180910390f35b6100dd6100d8366004610418565b61017d565b60405190151581526020016100c1565b6100f56101ea565b6040519081526020016100c1565b6100dd610111366004610442565b6101fe565b604051601281526020016100c1565b6100f561013336600461047e565b6102c6565b60408051808201909152600381526213555560ea1b60208201526100b4565b6100dd610165366004610418565b6102fa565b6100f5610178366004610499565b610374565b3360008181526001602090815260408083206001600160a01b038716808552925280832085905551919290917f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925906101d89086815260200190565b60405180910390a35060015b92915050565b60006101f960026000196104e2565b905090565b60008161020b8533610374565b6102159190610504565b6001600160a01b038516600090815260016020908152604080832033845290915290205581610243856102c6565b61024d9190610504565b6001600160a01b03851660009081526020819052604090205581610270846102c6565b61027a9190610517565b6001600160a01b0384811660008181526020818152604091829020949094555185815290929187169160008051602061052b833981519152910160405180910390a35060019392505050565b6001600160a01b0381166000908152602081905260408120548082036101e4576102f360026000196104e2565b9392505050565b600081610306336102c6565b6103109190610504565b33600081815260208190526040902091909155829061032e906102c6565b6103389190610517565b6001600160a01b0384166000818152602081815260409182902093909355518481529091339160008051602061052b83398151915291016101d8565b6001600160a01b0380831660009081526001602090815260408083209385168352929052908120548082036102f3576000199150506101e4565b600060208083528351808285015260005b818110156103db578581018301518582016040015282016103bf565b506000604082860101526040601f19601f8301168501019250505092915050565b80356001600160a01b038116811461041357600080fd5b919050565b6000806040838503121561042b57600080fd5b610434836103fc565b946020939093013593505050565b60008060006060848603121561045757600080fd5b610460846103fc565b925061046e602085016103fc565b9150604084013590509250925092565b60006020828403121561049057600080fd5b6102f3826103fc565b600080604083850312156104ac57600080fd5b6104b5836103fc565b91506104c3602084016103fc565b90509250929050565b634e487b7160e01b600052601160045260246000fd5b6000826104ff57634e487b7160e01b600052601260045260246000fd5b500490565b818103818111156101e4576101e46104cc565b808201808211156101e4576101e46104cc56feddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3efa26469706673582212207e80951b693900018ccbef67c898d93845d4dd2e0d8bee24a96e72ecb4b5a8bd64736f6c63430008140033";
 
-export const CHAIN_ID_PREFERRED_DEPOSIT_TOKEN: Record<UiSettlementChain, string> = {
+export const CHAIN_ID_PREFERRED_DEPOSIT_TOKEN: Record<SettlementChainId, string> = {
   [ARBITRUM_SEPOLIA]: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773",
 };

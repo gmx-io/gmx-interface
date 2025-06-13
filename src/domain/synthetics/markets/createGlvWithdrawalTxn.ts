@@ -6,7 +6,7 @@ import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { callContract } from "lib/contracts";
 import { isAddressZero } from "lib/legacy";
 import { abis } from "sdk/abis";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
@@ -23,7 +23,7 @@ interface GlvWithdrawalParams extends Omit<CreateWithdrawalParams, "marketTokenA
   glvTokenAddress: string;
 }
 
-export async function createGlvWithdrawalTxn(chainId: UiContractsChain, signer: Signer, p: GlvWithdrawalParams) {
+export async function createGlvWithdrawalTxn(chainId: ContractsChainId, signer: Signer, p: GlvWithdrawalParams) {
   const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), abis.GlvRouter, signer);
   const withdrawalVaultAddress = getContract(chainId, "GlvVault");
 

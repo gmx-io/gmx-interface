@@ -1,13 +1,13 @@
 import { decodeErrorResult } from "viem";
 
-import type { UiSupportedChain } from "config/chains";
+import type { AnyChainId } from "config/chains";
 import { StargateErrorsAbi } from "domain/multichain/stargatePools";
 import { helperToast } from "lib/helperToast";
 import { abis } from "sdk/abis";
 
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 
-export function toastCustomOrStargateError(chainId: UiSupportedChain, error: Error) {
+export function toastCustomOrStargateError(chainId: AnyChainId, error: Error) {
   let prettyErrorName = error.name;
   let prettyErrorMessage = error.message;
 

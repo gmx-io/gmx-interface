@@ -4,7 +4,7 @@ import { getContract } from "config/contracts";
 import { MAX_AUTO_CANCEL_ORDERS_KEY, MIN_COLLATERAL_USD_KEY, MIN_POSITION_SIZE_USD_KEY } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 export type PositionsConstantsResult = {
   positionsConstants: {
     minCollateralUsd?: bigint;
@@ -14,7 +14,7 @@ export type PositionsConstantsResult = {
   error?: Error;
 };
 
-export function usePositionsConstantsRequest(chainId: UiContractsChain): PositionsConstantsResult {
+export function usePositionsConstantsRequest(chainId: ContractsChainId): PositionsConstantsResult {
   const { data, error } = useMulticall(chainId, "usePositionsConstants", {
     key: [],
 

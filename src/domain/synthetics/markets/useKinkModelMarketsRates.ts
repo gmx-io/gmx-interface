@@ -4,7 +4,7 @@ import { getContract } from "config/contracts";
 import { useMarkets } from "domain/synthetics/markets";
 import { ContractCallsConfig, useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import type { KinkModelMarketRateMulticallRequestConfig } from "sdk/modules/markets/types";
 import { HASHED_KINK_MODEL_MARKET_RATES_KEYS } from "sdk/prebuilt";
 
@@ -23,7 +23,7 @@ export type KinkModelMarketsRatesResult = {
   error?: Error;
 };
 
-export function useKinkModelMarketsRates(chainId: UiContractsChain): KinkModelMarketsRatesResult {
+export function useKinkModelMarketsRates(chainId: ContractsChainId): KinkModelMarketsRatesResult {
   const dataStoreAddress = getContract(chainId, "DataStore");
   const { marketsAddresses = [] } = useMarkets(chainId);
 

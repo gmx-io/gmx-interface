@@ -8,30 +8,22 @@ export const ARBITRUM = 42161;
 export const BSС_MAINNET = 56;
 export const BSС_TESTNET = 97;
 export const ETH_MAINNET = 1;
-export const BASE_MAINNET = 8453;
+export const SOURCE_BASE_MAINNET = 8453;
 // export const BASE_SEPOLIA = 84532;
-export const SONIC_MAINNET = 146;
+export const SOURCE_SONIC_MAINNET = 146;
 // export const SONIC_BLAZE = 57054;
 export const ARBITRUM_SEPOLIA = 421614;
-export const OPTIMISM_SEPOLIA = 11155420;
-export const SEPOLIA = 11155111;
+export const SOURCE_OPTIMISM_SEPOLIA = 11155420;
+export const SOURCE_SEPOLIA = 11155111;
 
-export const SUPPORTED_CHAIN_IDS: UiContractsChain[] = [ARBITRUM, AVALANCHE];
-export const SUPPORTED_CHAIN_IDS_DEV: UiContractsChain[] = [...SUPPORTED_CHAIN_IDS, AVALANCHE_FUJI, ARBITRUM_SEPOLIA];
+export const SUPPORTED_CHAIN_IDS: ContractsChainId[] = [ARBITRUM, AVALANCHE];
+export const SUPPORTED_CHAIN_IDS_DEV: ContractsChainId[] = [...SUPPORTED_CHAIN_IDS, AVALANCHE_FUJI, ARBITRUM_SEPOLIA];
 
-export type UiContractsChain = typeof ARBITRUM | typeof AVALANCHE | typeof AVALANCHE_FUJI | typeof ARBITRUM_SEPOLIA;
+export type ContractsChainId = typeof ARBITRUM | typeof AVALANCHE | typeof AVALANCHE_FUJI | typeof ARBITRUM_SEPOLIA;
 
-export type UiSettlementChain = typeof ARBITRUM_SEPOLIA;
-export type UiSourceChain = typeof OPTIMISM_SEPOLIA | typeof SEPOLIA;
-export type UiSupportedChain = UiContractsChain | UiSettlementChain | UiSourceChain;
-// | typeof ARBITRUM
-// | typeof AVALANCHE
-// | typeof AVALANCHE_FUJI
-// | typeof ARBITRUM_SEPOLIA
-// | typeof BASE_MAINNET
-// | typeof SONIC_MAINNET
-// | typeof OPTIMISM_SEPOLIA
-// | typeof SEPOLIA;
+export type SettlementChainId = typeof ARBITRUM_SEPOLIA;
+export type SourceChainId = typeof SOURCE_OPTIMISM_SEPOLIA | typeof SOURCE_SEPOLIA;
+export type AnyChainId = ContractsChainId | SettlementChainId | SourceChainId;
 
 export type ChainName =
   | "Arbitrum"
@@ -41,16 +33,13 @@ export type ChainName =
   | "Optimism Sepolia"
   | "Sepolia";
 
-export const CHAIN_NAMES_MAP: Record<UiSupportedChain, ChainName> = {
+export const CHAIN_NAMES_MAP: Record<AnyChainId, ChainName> = {
   [ARBITRUM]: "Arbitrum",
-  // [BASE_MAINNET]: base.name,
-  // [SONIC_MAINNET]: sonic.name,
-
   [AVALANCHE]: "Avalanche",
   [AVALANCHE_FUJI]: "Avalanche Fuji",
   [ARBITRUM_SEPOLIA]: "Arbitrum Sepolia",
-  [OPTIMISM_SEPOLIA]: "Optimism Sepolia",
-  [SEPOLIA]: "Sepolia",
+  [SOURCE_OPTIMISM_SEPOLIA]: "Optimism Sepolia",
+  [SOURCE_SEPOLIA]: "Sepolia",
 };
 
 export const HIGH_EXECUTION_FEES_MAP: Record<number, number> = {
@@ -112,7 +101,7 @@ export const GAS_PRICE_BUFFER_MAP: Record<number, bigint> = {
   [ARBITRUM]: 2000n, // 20%
 };
 
-const VIEM_CHAIN_BY_CHAIN_ID: Record<UiContractsChain, Chain> = {
+const VIEM_CHAIN_BY_CHAIN_ID: Record<ContractsChainId, Chain> = {
   [AVALANCHE_FUJI]: avalancheFuji,
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
@@ -136,11 +125,11 @@ export function getExcessiveExecutionFee(chainId: number) {
 }
 
 export function isSupportedChain(chainId: number, dev = false) {
-  return (dev ? SUPPORTED_CHAIN_IDS_DEV : SUPPORTED_CHAIN_IDS).includes(chainId as UiContractsChain);
+  return (dev ? SUPPORTED_CHAIN_IDS_DEV : SUPPORTED_CHAIN_IDS).includes(chainId as ContractsChainId);
 }
 
 export const EXECUTION_FEE_CONFIG_V2: {
-  [chainId in UiContractsChain]: {
+  [chainId in ContractsChainId]: {
     shouldUseMaxPriorityFeePerGas: boolean;
     defaultBufferBps?: number;
   };
@@ -172,7 +161,7 @@ type StaticGasLimitsConfig = Pick<
   | "gmxAccountCollateralOverhead"
 >;
 
-export const GAS_LIMITS_STATIC_CONFIG: Record<UiContractsChain, StaticGasLimitsConfig> = {
+export const GAS_LIMITS_STATIC_CONFIG: Record<ContractsChainId, StaticGasLimitsConfig> = {
   [ARBITRUM]: {
     createOrderGasLimit: 1_000_000n,
     updateOrderGasLimit: 800_000n,

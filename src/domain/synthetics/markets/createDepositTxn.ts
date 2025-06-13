@@ -9,7 +9,7 @@ import { callContract } from "lib/contracts";
 import { OrderMetricId } from "lib/metrics/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
@@ -40,7 +40,7 @@ export type CreateDepositParams = {
   setPendingDeposit: SetPendingDeposit;
 };
 
-export async function createDepositTxn(chainId: UiContractsChain, signer: Signer, p: CreateDepositParams) {
+export async function createDepositTxn(chainId: ContractsChainId, signer: Signer, p: CreateDepositParams) {
   const contract = new ethers.Contract(
     getContract(chainId, "ExchangeRouter"),
     chainId === ARBITRUM_SEPOLIA ? abis.ExchangeRouterArbitrumSepolia : abis.ExchangeRouter,

@@ -8,7 +8,7 @@ import { useInfoTokens } from "domain/tokens";
 import { GLP_DECIMALS } from "lib/legacy";
 import { formatAmount, formatAmountHuman } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { TOKEN_COLOR_MAP, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -23,7 +23,7 @@ export function GlpCard({
   glpMarketCap,
   adjustedUsdgSupply,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   glpPrice: bigint;
   glpSupply: bigint | undefined;
   glpMarketCap: bigint | undefined;

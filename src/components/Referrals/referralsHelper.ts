@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import identity from "lodash/identity";
 import { zeroAddress } from "viem";
 
-import { SUPPORTED_CHAIN_IDS, UiContractsChain } from "config/chains";
+import { SUPPORTED_CHAIN_IDS, ContractsChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { CodeOwnershipInfo, getReferralCodeOwner, ReferralCodeStats } from "domain/referrals";
 import { getTwitterIntentURL, isAddressZero, MAX_REFERRAL_CODE_LENGTH, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
@@ -24,7 +24,7 @@ export function isRecentReferralCodeNotExpired(referralCodeInfo) {
 type TakenStatus = "all" | "current" | "other" | "none";
 type TakenInfo = Partial<
   Record<
-    UiContractsChain,
+    ContractsChainId,
     {
       taken: boolean;
       owner: string;
@@ -37,7 +37,7 @@ type TakenInfo = Partial<
 export async function getReferralCodeTakenStatus(
   account: string | undefined,
   referralCode: string,
-  chainId: UiContractsChain
+  chainId: ContractsChainId
 ): Promise<{
   takenStatus: TakenStatus;
   info: TakenInfo;
@@ -48,7 +48,7 @@ export async function getReferralCodeTakenStatus(
   //   getReferralCodeOwner(AVALANCHE, referralCodeBytes32),
   // ]);
 
-  const ownerMap: Partial<Record<UiContractsChain, string>> = {};
+  const ownerMap: Partial<Record<ContractsChainId, string>> = {};
 
   await Promise.all(
     SUPPORTED_CHAIN_IDS.map((otherChainId) => {
@@ -58,7 +58,7 @@ export async function getReferralCodeTakenStatus(
     })
   );
 
-  const takenMap: Partial<Record<UiContractsChain, boolean>> = {};
+  const takenMap: Partial<Record<ContractsChainId, boolean>> = {};
 
   for (const otherChainId of SUPPORTED_CHAIN_IDS) {
     // const takenOnArb =
@@ -192,7 +192,7 @@ export const getSampleReferrarStat = ({
     affiliateRebateUsd: 0n,
     allOwnersOnOtherChains: takenInfo
       ? Object.fromEntries(
-          SUPPORTED_CHAIN_IDS.map((chainId): [UiContractsChain, CodeOwnershipInfo] | undefined => {
+          SUPPORTED_CHAIN_IDS.map((chainId): [ContractsChainId, CodeOwnershipInfo] | undefined => {
             const taken = takenInfo[chainId];
             if (!taken) return undefined;
 
@@ -206,7 +206,7 @@ export const getSampleReferrarStat = ({
                 isTakenByCurrentUser: taken.owner.toLowerCase() === account.toLowerCase(),
               },
             ];
-          }).filter(Boolean) as [UiContractsChain, CodeOwnershipInfo][]
+          }).filter(Boolean) as [ContractsChainId, CodeOwnershipInfo][]
         )
       : undefined,
   };

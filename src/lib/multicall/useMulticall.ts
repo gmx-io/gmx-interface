@@ -6,7 +6,7 @@ import { KeyedMutator, stableHash } from "swr/_internal";
 import type { ErrorEvent } from "lib/metrics";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
 import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
-import { UiContractsChain, UiSupportedChain } from "sdk/configs/chains";
+import { ContractsChainId, AnyChainId } from "sdk/configs/chains";
 
 import { debugLog } from "./debug";
 import { executeMulticall } from "./executeMulticall";
@@ -28,7 +28,7 @@ const mutateFlagsRef: { current: Record<string, boolean> } = { current: {} };
 export function useMulticall<
   TConfig extends MulticallRequestConfig<any>,
   TResult = MulticallResult<TConfig>,
-  TChainId extends UiSupportedChain = UiContractsChain,
+  TChainId extends AnyChainId = ContractsChainId,
 >(
   chainId: TChainId | undefined,
   name: string,

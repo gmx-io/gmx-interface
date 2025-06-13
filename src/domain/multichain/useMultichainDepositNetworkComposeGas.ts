@@ -2,7 +2,7 @@ import useSWR from "swr";
 import { Address, PublicClient, StateOverride, toHex, zeroAddress, zeroHash } from "viem";
 import { useAccount, usePublicClient } from "wagmi";
 
-import { ARBITRUM_SEPOLIA, type UiContractsChain, type UiSettlementChain, type UiSourceChain } from "config/chains";
+import { ARBITRUM_SEPOLIA, type ContractsChainId, type SettlementChainId, type SourceChainId } from "config/chains";
 import { tryGetContract } from "config/contracts";
 import { useGmxAccountDepositViewChain } from "context/GmxAccountContext/hooks";
 import {
@@ -44,7 +44,7 @@ export function useMultichainDepositNetworkComposeGas(opts?: {
     tokenAddress !== undefined &&
     getStargatePoolAddress(chainId, tokenAddress) !== undefined &&
     tryGetContract(chainId, "LayerZeroProvider") !== undefined &&
-    depositViewChain !== (chainId as UiSourceChain) &&
+    depositViewChain !== (chainId as SourceChainId) &&
     opts?.enabled !== false;
 
   const composeGasQuery = useSWR<bigint | undefined>(
@@ -90,14 +90,14 @@ export async function estimateMultichainDepositNetworkComposeGas({
   settlementChainPublicClient,
 }: {
   action?: MultichainAction;
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   account: string;
-  srcChainId: UiSourceChain;
+  srcChainId: SourceChainId;
   tokenAddress: string;
   settlementChainPublicClient: PublicClient;
 }): Promise<bigint> {
   const data = action ? CodecUiHelper.encodeMultichainActionData(action) : undefined;
-  const composeFromWithMsg = CodecUiHelper.composeDepositMessage(chainId as UiSettlementChain, account, data);
+  const composeFromWithMsg = CodecUiHelper.composeDepositMessage(chainId as SettlementChainId, account, data);
 
   const settlementChainEndpointId = getLayerZeroEndpointId(chainId);
   const sourceChainEndpointId = getLayerZeroEndpointId(srcChainId);

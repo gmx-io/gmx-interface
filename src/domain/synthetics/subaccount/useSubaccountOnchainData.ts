@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-import { ARBITRUM_SEPOLIA, UiContractsChain } from "sdk/configs/chains";
+import { ARBITRUM_SEPOLIA, ContractsChainId } from "sdk/configs/chains";
 import {
   maxAllowedSubaccountActionCountKey,
   SUBACCOUNT_ORDER_ACTION,
@@ -29,7 +29,7 @@ export type SubaccountOnchainDataResult = {
 };
 
 export function useSubaccountOnchainData(
-  chainId: UiContractsChain,
+  chainId: ContractsChainId,
   {
     account,
     subaccountAddress,

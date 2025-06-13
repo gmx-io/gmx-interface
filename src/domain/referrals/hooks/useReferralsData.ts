@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { BigNumberish, ethers } from "ethers";
 import { useEffect, useState } from "react";
 
-import { SUPPORTED_CHAIN_IDS, UiContractsChain } from "config/chains";
+import { SUPPORTED_CHAIN_IDS, ContractsChainId } from "config/chains";
 import { BN_ZERO } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { getReferralsGraphClient } from "lib/subgraph";
@@ -154,7 +154,7 @@ export function useReferralsData(account?: string | null) {
                 (
                   chainResult
                 ): chainResult is PromiseFulfilledResult<{
-                  chainId: UiContractsChain;
+                  chainId: ContractsChainId;
                   data: CodeOwnershipInfo[] | undefined;
                 }> => chainResult.status === "fulfilled"
               )

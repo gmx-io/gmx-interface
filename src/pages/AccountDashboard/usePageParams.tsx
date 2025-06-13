@@ -2,18 +2,18 @@ import { useEffect, useMemo } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { checksumAddress, isAddress, type Address } from "viem";
 
-import { SUPPORTED_CHAIN_IDS, UiContractsChain } from "config/chains";
+import { SUPPORTED_CHAIN_IDS, ContractsChainId } from "config/chains";
 import useSearchParams from "lib/useSearchParams";
 
 import { buildAccountDashboardUrl } from "./buildAccountDashboardUrl";
 import { NETWORK_SLUGS_ID_MAP } from "./constants";
 
-export function usePageParams(initialChainId: UiContractsChain) {
+export function usePageParams(initialChainId: ContractsChainId) {
   const history = useHistory();
 
   const params = useParams<{ account?: Address }>();
   const queryParams = useSearchParams<{ network?: string; v?: string }>();
-  const chainIdFromParams = NETWORK_SLUGS_ID_MAP[queryParams.network || ""] as UiContractsChain | undefined;
+  const chainIdFromParams = NETWORK_SLUGS_ID_MAP[queryParams.network || ""] as ContractsChainId | undefined;
   const chainId = chainIdFromParams ?? initialChainId;
   const accountFromParams = params.account || undefined;
   const account = useMemo(

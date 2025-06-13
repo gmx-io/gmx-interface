@@ -6,9 +6,9 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
-  OPTIMISM_SEPOLIA,
-  SEPOLIA,
-  UiSupportedChain,
+  SOURCE_OPTIMISM_SEPOLIA,
+  SOURCE_SEPOLIA,
+  AnyChainId,
 } from "config/chains";
 import { isWebWorker } from "config/env";
 import type {
@@ -28,7 +28,7 @@ import { abis as allAbis } from "sdk/abis";
 
 export const MAX_TIMEOUT = 20000;
 
-const CHAIN_BY_CHAIN_ID: Record<UiSupportedChain, Chain> = {
+const CHAIN_BY_CHAIN_ID: Record<AnyChainId, Chain> = {
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
   // [SONIC_MAINNET]: sonic,
@@ -36,8 +36,8 @@ const CHAIN_BY_CHAIN_ID: Record<UiSupportedChain, Chain> = {
 
   [AVALANCHE_FUJI]: avalancheFuji,
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
-  [OPTIMISM_SEPOLIA]: optimismSepolia,
-  [SEPOLIA]: sepolia,
+  [SOURCE_OPTIMISM_SEPOLIA]: optimismSepolia,
+  [SOURCE_SEPOLIA]: sepolia,
 };
 
 export type MulticallProviderUrls = {
@@ -46,7 +46,7 @@ export type MulticallProviderUrls = {
 };
 
 const BATCH_CONFIGS: Record<
-  UiSupportedChain,
+  AnyChainId,
   {
     http: HttpTransportConfig["batch"];
     client: ClientConfig["batch"];
@@ -125,7 +125,7 @@ const BATCH_CONFIGS: Record<
       },
     },
   },
-  [OPTIMISM_SEPOLIA]: {
+  [SOURCE_OPTIMISM_SEPOLIA]: {
     http: {
       batchSize: 40,
       wait: 100,
@@ -137,7 +137,7 @@ const BATCH_CONFIGS: Record<
       },
     },
   },
-  [SEPOLIA]: {
+  [SOURCE_SEPOLIA]: {
     http: {
       batchSize: 40,
       wait: 100,

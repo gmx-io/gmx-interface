@@ -38,7 +38,7 @@ import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallba
 import { EMPTY_ARRAY } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
-import { UiContractsChain } from "sdk/configs/chains";
+import { ContractsChainId } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
@@ -328,7 +328,7 @@ function useFilteredOrders({
   marketsDirectionsFilter,
   orderTypesFilter,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   account: string | undefined;
   marketsDirectionsFilter: MarketFilterLongShortItemData[];
   orderTypesFilter: OrderTypeFilterValue[];

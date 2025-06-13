@@ -16,6 +16,7 @@ export type GlobalExpressParams = {
   gasPaymentTokenAddress: string;
   relayerFeeTokenAddress: string;
   gasPaymentToken: TokenData;
+  // gmxAccountGasPaymentToken: TokenData;
   relayerFeeToken: TokenData;
   findFeeSwapPath: FindSwapPath;
   gasPrice: bigint;

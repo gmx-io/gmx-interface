@@ -7,7 +7,7 @@ import {
   MULTI_CHAIN_SUPPORTED_TOKEN_MAP,
   isSourceChain,
 } from "domain/multichain/config";
-import { ARBITRUM_SEPOLIA, UiSettlementChain, UiSourceChain } from "sdk/configs/chains";
+import { ARBITRUM_SEPOLIA, SettlementChainId, SourceChainId } from "sdk/configs/chains";
 
 export type GmxAccountModalView =
   | "main"
@@ -21,13 +21,13 @@ export type GmxAccountContext = {
   modalOpen: boolean | GmxAccountModalView;
   setModalOpen: (v: boolean | GmxAccountModalView) => void;
 
-  settlementChainId: UiSettlementChain;
-  setSettlementChainId: (chainId: UiSettlementChain) => void;
+  settlementChainId: SettlementChainId;
+  setSettlementChainId: (chainId: SettlementChainId) => void;
 
   // deposit view
 
-  depositViewChain: UiSourceChain | undefined;
-  setDepositViewChain: (chain: UiSourceChain | undefined) => void;
+  depositViewChain: SourceChainId | undefined;
+  setDepositViewChain: (chain: SourceChainId | undefined) => void;
 
   depositViewTokenAddress: string | undefined;
   setDepositViewTokenAddress: (address: string | undefined) => void;
@@ -52,7 +52,7 @@ export type GmxAccountContext = {
 export const context = createContext<GmxAccountContext | null>(null);
 
 // TODO: make it ARBITRUM when isDevelopment is false
-const DEFAULT_SETTLEMENT_CHAIN_ID: UiSettlementChain = ARBITRUM_SEPOLIA;
+const DEFAULT_SETTLEMENT_CHAIN_ID: SettlementChainId = ARBITRUM_SEPOLIA;
 
 export function GmxAccountContextProvider({ children }: PropsWithChildren) {
   const { chainId: walletChainId } = useAccount();

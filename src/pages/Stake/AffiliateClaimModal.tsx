@@ -8,7 +8,7 @@ import { callContract } from "lib/contracts";
 import { formatAmount } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import { abis } from "sdk/abis";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
@@ -17,7 +17,7 @@ export function AffiliateClaimModal(props: {
   isVisible: boolean;
   setIsVisible: (isVisible: boolean) => void;
   signer: UncheckedJsonRpcSigner | undefined;
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   setPendingTxns: SetPendingTransactions;
   totalVesterRewards: bigint | undefined;
 }) {

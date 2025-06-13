@@ -8,15 +8,15 @@ import { useChainContext } from "context/ChainContext/ChainContext";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { isSettlementChain, isSourceChain } from "domain/multichain/config";
 import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
-import type { UiContractsChain, UiSettlementChain, UiSourceChain } from "sdk/configs/chains";
+import type { ContractsChainId, SettlementChainId, SourceChainId } from "sdk/configs/chains";
 
 /**
  * This returns default chainId if chainId is not supported or not found
  */
 export function useChainIdImpl(): {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   isConnectedToChainId?: boolean;
-  srcChainId?: UiSourceChain;
+  srcChainId?: SourceChainId;
 } {
   let { chainId: unsanitizedChainId } = useAccount();
   const srcChainId =
@@ -124,7 +124,7 @@ export function useChainIdImpl(): {
 
   if (mustChangeChainId) {
     if (localStorageChainIdIsSettlement || localStorageChainIdIsSupported) {
-      return { chainId: chainIdFromLocalStorage as UiSettlementChain, srcChainId };
+      return { chainId: chainIdFromLocalStorage as SettlementChainId, srcChainId };
     }
 
     if (localStorageChainIdIsSource) {
@@ -136,14 +136,14 @@ export function useChainIdImpl(): {
 
   if (currentChainIdIsSettlement || currentChainIdIsSupported) {
     return {
-      chainId: unsanitizedChainId as UiContractsChain,
+      chainId: unsanitizedChainId as ContractsChainId,
       isConnectedToChainId: displayedChainId === unsanitizedChainId,
       srcChainId,
     };
   }
 
   if (currentChainIdIsSource) {
-    return { chainId: gmxAccountSettlementChainId as UiSettlementChain, isConnectedToChainId: true, srcChainId };
+    return { chainId: gmxAccountSettlementChainId as SettlementChainId, isConnectedToChainId: true, srcChainId };
   }
 
   return { chainId: DEFAULT_CHAIN_ID, isConnectedToChainId: false, srcChainId };

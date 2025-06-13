@@ -1,7 +1,7 @@
 import { Contract, ethers, Provider, Wallet } from "ethers";
 import { Address, encodeAbiParameters, keccak256 } from "viem";
 
-import type { UiContractsChain, UiSourceChain } from "config/chains";
+import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getBestSwapStrategy } from "domain/synthetics/externalSwaps/utils";
 import type { SignedTokenPermit, TokenData } from "domain/tokens";
 import type { WalletSigner } from "lib/wallets";
@@ -30,7 +30,7 @@ import type {
 } from "./types";
 
 export function getExpressContractAddress(
-  chainId: UiContractsChain,
+  chainId: ContractsChainId,
   {
     isSubaccount,
     isMultichain,
@@ -78,10 +78,10 @@ export function getExpressContractAddress(
 
 // TODO: deal with isSubaccount
 export function getGelatoRelayRouterDomain(
-  chainId: UiContractsChain,
+  chainId: ContractsChainId,
   relayRouterAddress: string,
   isSubaccount: boolean,
-  srcChainId?: UiSourceChain
+  srcChainId?: SourceChainId
 ): SignatureDomain {
   const name = "GmxBaseGelatoRelayRouter";
 
@@ -111,7 +111,7 @@ export function getRelayerFeeParams({
   feeExternalSwapQuote,
   findFeeSwapPath,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   account: string;
   relayerFeeAmount: bigint;
   totalRelayerFeeTokenAmount: bigint;
@@ -212,7 +212,7 @@ export function getRawRelayerParams({
   tokenPermits,
   marketsInfoData,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   gasPaymentTokenAddress: string;
   relayerFeeTokenAddress: string;
   feeParams: RelayFeePayload;
@@ -292,7 +292,7 @@ export async function getRelayRouterNonceForSigner({
   isMultichain,
   scope,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   signer: WalletSigner | Wallet;
   isSubaccount: boolean;
   isMultichain: boolean;

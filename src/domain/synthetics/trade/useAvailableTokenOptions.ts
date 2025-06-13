@@ -5,7 +5,7 @@ import { SORTED_MARKETS } from "config/static/sortedMarkets";
 import { GlvAndGmMarketsInfoData, Market, MarketInfo, MarketsData, isMarketInfo } from "domain/synthetics/markets";
 import { InfoTokens, Token, getMidPrice } from "domain/tokens";
 import { getByKey } from "lib/objects";
-import type { UiSourceChain } from "sdk/configs/chains";
+import type { SourceChainId } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, getTokensMap } from "sdk/configs/tokens";
 
 import { isGlvInfo } from "../markets/glv";
@@ -65,7 +65,7 @@ export function useAvailableTokenOptions(
     marketsData?: MarketsData;
     tokensData?: TokensData;
     marketTokens?: TokensData;
-    srcChainId: UiSourceChain | undefined;
+    srcChainId: SourceChainId | undefined;
   }
 ): AvailableTokenOptions {
   const { marketsInfoData, marketsData, tokensData, marketTokens, srcChainId } = p;

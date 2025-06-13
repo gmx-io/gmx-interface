@@ -4,9 +4,9 @@ import { getContract } from "config/contracts";
 import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 import useWallet from "lib/wallets/useWallet";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 
-export function useGovTokenAmount(chainId: UiContractsChain) {
+export function useGovTokenAmount(chainId: ContractsChainId) {
   let govTokenAddress;
 
   try {

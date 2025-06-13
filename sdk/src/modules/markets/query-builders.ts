@@ -1,4 +1,4 @@
-import { UiContractsChain } from "configs/chains";
+import { ContractsChainId } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { CLAIMABLE_FUNDING_AMOUNT, MAX_PNL_FACTOR_FOR_TRADERS_KEY } from "configs/dataStore";
 import { MarketsData } from "types/markets";
@@ -21,7 +21,7 @@ export function buildClaimableFundingDataRequest({
   marketsAddresses: string[] | undefined;
   marketsData: MarketsData | undefined;
   account: string;
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
 }) {
   if (!marketsAddresses) {
     return {};

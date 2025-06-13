@@ -6,7 +6,7 @@ import { WalletSigner } from "lib/wallets";
 import { signTypedData, splitSignature } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
 import ERC20PermitInterfaceAbi from "sdk/abis/ERC20PermitInterface.json";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { DEFAULT_PERMIT_DEADLINE_DURATION } from "sdk/configs/express";
 import { getToken } from "sdk/configs/tokens";
@@ -14,7 +14,7 @@ import { SignedTokenPermit } from "sdk/types/tokens";
 import { nowInSeconds } from "sdk/utils/time";
 
 export async function createAndSignTokenPermit(
-  chainId: UiContractsChain,
+  chainId: ContractsChainId,
   signer: WalletSigner,
   tokenAddress: string,
   spender: string,
@@ -70,7 +70,7 @@ export function getIsPermitExpired(permit: SignedTokenPermit) {
 }
 
 export async function getTokenPermitParams(
-  chainId: UiContractsChain,
+  chainId: ContractsChainId,
   owner: string,
   tokenAddress: string,
   provider: ethers.Provider

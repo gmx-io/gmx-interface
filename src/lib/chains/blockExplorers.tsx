@@ -5,30 +5,30 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
-  OPTIMISM_SEPOLIA,
-  SEPOLIA,
-  UiSupportedChain,
+  SOURCE_OPTIMISM_SEPOLIA,
+  SOURCE_SEPOLIA,
+  AnyChainId,
   getExplorerUrl,
 } from "config/chains";
 
-export const CHAIN_ID_TO_TX_URL_BUILDER: Record<UiSupportedChain, (txId: string) => string> = {
+export const CHAIN_ID_TO_TX_URL_BUILDER: Record<AnyChainId, (txId: string) => string> = {
   [ARBITRUM]: (txId: string) => `${getExplorerUrl(ARBITRUM)}tx/${txId}`,
   [AVALANCHE]: (txId: string) => `${getExplorerUrl(AVALANCHE)}tx/${txId}`,
   // [BASE_MAINNET]: (txId: string) => `${getExplorerUrl(BASE_MAINNET)}tx/${txId}`,
   // [SONIC_MAINNET]: (txId: string) => `${getExplorerUrl(SONIC_MAINNET)}tx/${txId}`,
-  [OPTIMISM_SEPOLIA]: (txId: string) => `${getExplorerUrl(OPTIMISM_SEPOLIA)}tx/${txId}`,
+  [SOURCE_OPTIMISM_SEPOLIA]: (txId: string) => `${getExplorerUrl(SOURCE_OPTIMISM_SEPOLIA)}tx/${txId}`,
   [ARBITRUM_SEPOLIA]: (txId: string) => `${getExplorerUrl(ARBITRUM_SEPOLIA)}tx/${txId}`,
   [AVALANCHE_FUJI]: (txId: string) => `${getExplorerUrl(AVALANCHE_FUJI)}tx/${txId}`,
-  [SEPOLIA]: (txId: string) => `${getExplorerUrl(SEPOLIA)}tx/${txId}`,
+  [SOURCE_SEPOLIA]: (txId: string) => `${getExplorerUrl(SOURCE_SEPOLIA)}tx/${txId}`,
 };
 
-export const CHAIN_ID_TO_EXPLORER_NAME: Record<UiSupportedChain, string> = {
+export const CHAIN_ID_TO_EXPLORER_NAME: Record<AnyChainId, string> = {
   [ARBITRUM]: "Arbiscan",
   [AVALANCHE]: "Snowtrace",
   [AVALANCHE_FUJI]: "Snowtrace",
   [ARBITRUM_SEPOLIA]: arbitrumSepolia.blockExplorers.default.name,
   // [BASE_MAINNET]: base.blockExplorers.default.name,
   // [SONIC_MAINNET]: sonic.blockExplorers.default.name,
-  [OPTIMISM_SEPOLIA]: "OP Sepolia Etherscan",
-  [SEPOLIA]: "Sepolia Etherscan",
+  [SOURCE_OPTIMISM_SEPOLIA]: "OP Sepolia Etherscan",
+  [SOURCE_SEPOLIA]: "Sepolia Etherscan",
 };

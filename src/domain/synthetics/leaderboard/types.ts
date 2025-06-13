@@ -1,4 +1,4 @@
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 
 import { LEADERBOARD_PAGES_ORDER } from "./constants";
 
@@ -39,7 +39,7 @@ export type LeaderboardPageConfig =
       key: LeaderboardPageKey;
       href: string;
       isCompetition: true;
-      chainId: UiContractsChain;
+      chainId: ContractsChainId;
       enabled: boolean;
       timeframe: LeaderboardTimeframe;
     };

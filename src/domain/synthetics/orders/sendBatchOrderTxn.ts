@@ -1,7 +1,7 @@
 import { Provider } from "ethers";
 import { withRetry } from "viem";
 
-import { UiContractsChain } from "config/chains";
+import { ContractsChainId } from "config/chains";
 import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import {
@@ -52,7 +52,7 @@ export async function sendBatchOrderTxn({
   simulationParams,
   callback,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   signer: WalletSigner;
   provider: Provider;
   batchParams: BatchOrderTxnParams;
@@ -94,7 +94,7 @@ export async function sendBatchOrderTxn({
     if (expressParams) {
       await runSimulation().then(() => callback?.(eventBuilder.Simulated()));
       const txnData = await buildAndSignExpressBatchOrderTxn({
-        chainId: chainId as UiContractsChain,
+        chainId: chainId as ContractsChainId,
         signer,
         provider,
         batchParams,
@@ -168,7 +168,7 @@ export const makeBatchOrderSimulation = async ({
   expressParams,
   noncesData,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   signer: WalletSigner;
   provider: Provider;
   batchParams: BatchOrderTxnParams;

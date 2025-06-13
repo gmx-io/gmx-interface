@@ -12,7 +12,7 @@ import {
   FALLBACK_PROVIDERS,
   RPC_PROVIDERS,
   SUPPORTED_CHAIN_IDS,
-  UiContractsChain,
+  ContractsChainId,
   getFallbackRpcUrl,
 } from "config/chains";
 import { getContract, getDataStoreContract, getMulticallContract } from "config/contracts";
@@ -61,8 +61,8 @@ type ProviderData = {
 };
 
 type RpcTrackerState = {
-  [chainId in UiContractsChain]: {
-    chainId: UiContractsChain;
+  [chainId in ContractsChainId]: {
+    chainId: ContractsChainId;
     lastUsage: Date | null;
     currentPrimaryUrl: string;
     currentSecondaryUrl: string;
@@ -118,7 +118,7 @@ function trackRpcProviders({ warmUp = false } = {}) {
   });
 }
 
-async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerState[UiContractsChain]) {
+async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerState[ContractsChainId]) {
   const providersList = Object.values(providers);
 
   const providersToProbe = getIsLargeAccount() ? providersList : providersList.filter(({ isPublic }) => isPublic);
@@ -246,7 +246,7 @@ function setCurrentProviders(chainId: number, { primaryUrl, secondaryUrl, bestBe
 }
 
 async function probeRpc(
-  chainId: UiContractsChain,
+  chainId: ContractsChainId,
   provider: Provider,
   providerUrl: string,
   isPublic: boolean

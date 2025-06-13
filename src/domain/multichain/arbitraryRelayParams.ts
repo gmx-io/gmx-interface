@@ -1,7 +1,7 @@
 import type { Provider } from "ethers";
 import { Address, decodeErrorResult, encodePacked, Hex } from "viem";
 
-import type { UiContractsChain } from "config/chains";
+import type { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 import type { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
@@ -95,7 +95,7 @@ function getRawBaseRelayerParams({
   account,
   expressGlobalParams,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   account: string;
   expressGlobalParams: GlobalExpressParams;
 }): Partial<{
@@ -219,7 +219,7 @@ export async function estimateArbitraryRelayFee({
   relayerFeeAmount,
   getTxnData,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   relayRouterAddress: string;
   provider: Provider;
   account: string;

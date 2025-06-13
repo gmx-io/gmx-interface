@@ -1,7 +1,7 @@
 import { Options, addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { toHex } from "viem";
 
-import type { UiContractsChain, UiSupportedChain } from "config/chains";
+import type { ContractsChainId, AnyChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { getLayerZeroEndpointId, isSettlementChain, isSourceChain } from "domain/multichain/config";
 import type { SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
@@ -21,9 +21,9 @@ export function getMultichainTransferSendParams({
   isDeposit,
   action,
 }: {
-  dstChainId: UiSupportedChain;
+  dstChainId: AnyChainId;
   account: string;
-  srcChainId?: UiSupportedChain;
+  srcChainId?: AnyChainId;
   inputAmount: bigint;
   composeGas?: bigint;
   isDeposit: boolean;
@@ -44,7 +44,7 @@ export function getMultichainTransferSendParams({
   let to: string;
 
   if (isDeposit) {
-    to = toHex(addressToBytes32(getContract(dstChainId as UiContractsChain, "LayerZeroProvider")));
+    to = toHex(addressToBytes32(getContract(dstChainId as ContractsChainId, "LayerZeroProvider")));
   } else {
     to = toHex(addressToBytes32(account));
   }

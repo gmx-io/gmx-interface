@@ -17,11 +17,11 @@ import {
 } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { GAS_LIMITS_STATIC_CONFIG } from "sdk/configs/chains";
 import type { GasLimitsConfig } from "sdk/types/fees";
 
-export function useGasLimits(chainId: UiContractsChain): GasLimitsConfig | undefined {
+export function useGasLimits(chainId: ContractsChainId): GasLimitsConfig | undefined {
   const { data } = useMulticall(chainId, "useGasLimitsConfig", {
     key: [],
 

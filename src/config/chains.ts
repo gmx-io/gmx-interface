@@ -4,12 +4,12 @@ import { arbitrumSepolia, optimismSepolia, sepolia } from "viem/chains";
 
 import {
   ARBITRUM_SEPOLIA,
-  OPTIMISM_SEPOLIA,
+  SOURCE_OPTIMISM_SEPOLIA,
   SUPPORTED_CHAIN_IDS as SDK_SUPPORTED_CHAIN_IDS,
   SUPPORTED_CHAIN_IDS_DEV as SDK_SUPPORTED_CHAIN_IDS_DEV,
-  SEPOLIA,
-  UiContractsChain,
-  UiSupportedChain,
+  SOURCE_SEPOLIA,
+  ContractsChainId,
+  AnyChainId,
 } from "sdk/configs/chains";
 
 import { isDevelopment } from "./env";
@@ -29,7 +29,7 @@ export const ENV_AVALANCHE_RPC_URLS = import.meta.env.VITE_APP_AVALANCHE_RPC_URL
 export const DEFAULT_CHAIN_ID = ARBITRUM;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
-export const IS_NETWORK_DISABLED: Record<UiContractsChain, boolean> = {
+export const IS_NETWORK_DISABLED: Record<ContractsChainId, boolean> = {
   [ARBITRUM]: false,
   [AVALANCHE]: false,
   [ARBITRUM_SEPOLIA]: false,
@@ -98,11 +98,11 @@ const constants = {
     // contract requires that execution fee be strictly greater than instead of gte
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
   },
-} satisfies Record<UiContractsChain, Record<string, any>>;
+} satisfies Record<ContractsChainId, Record<string, any>>;
 
 const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io"];
 
-export const RPC_PROVIDERS: Record<UiSupportedChain | typeof ETH_MAINNET, string[]> = {
+export const RPC_PROVIDERS: Record<AnyChainId | typeof ETH_MAINNET, string[]> = {
   [ETH_MAINNET]: ["https://rpc.ankr.com/eth"],
   [ARBITRUM]: [
     "https://arb1.arbitrum.io/rpc",
@@ -126,11 +126,11 @@ export const RPC_PROVIDERS: Record<UiSupportedChain | typeof ETH_MAINNET, string
   [ARBITRUM_SEPOLIA]: [...arbitrumSepolia.rpcUrls.default.http],
   // [BASE_MAINNET]: [...base.rpcUrls.default.http],
   // [SONIC_MAINNET]: [...sonic.rpcUrls.default.http],
-  [OPTIMISM_SEPOLIA]: [...optimismSepolia.rpcUrls.default.http],
-  [SEPOLIA]: [...sepolia.rpcUrls.default.http],
+  [SOURCE_OPTIMISM_SEPOLIA]: [...optimismSepolia.rpcUrls.default.http],
+  [SOURCE_SEPOLIA]: [...sepolia.rpcUrls.default.http],
 };
 
-export const FALLBACK_PROVIDERS: Record<UiSupportedChain, string[]> = {
+export const FALLBACK_PROVIDERS: Record<AnyChainId, string[]> = {
   [ARBITRUM]: ENV_ARBITRUM_RPC_URLS ? JSON.parse(ENV_ARBITRUM_RPC_URLS) : [getAlchemyArbitrumHttpUrl()],
   [AVALANCHE]: ENV_AVALANCHE_RPC_URLS ? JSON.parse(ENV_AVALANCHE_RPC_URLS) : [getAlchemyAvalancheHttpUrl()],
   [AVALANCHE_FUJI]: [
@@ -141,13 +141,13 @@ export const FALLBACK_PROVIDERS: Record<UiSupportedChain, string[]> = {
   [ARBITRUM_SEPOLIA]: [],
   // [BASE_MAINNET]: [],
   // [SONIC_MAINNET]: [],
-  [OPTIMISM_SEPOLIA]: [],
-  [SEPOLIA]: [],
+  [SOURCE_OPTIMISM_SEPOLIA]: [],
+  [SOURCE_SEPOLIA]: [],
 };
 
-type ConstantName = keyof (typeof constants)[UiContractsChain];
+type ConstantName = keyof (typeof constants)[ContractsChainId];
 
-export const getConstant = <T extends UiContractsChain, K extends ConstantName>(
+export const getConstant = <T extends ContractsChainId, K extends ConstantName>(
   chainId: T,
   key: K
 ): (typeof constants)[T][K] => {
@@ -186,7 +186,7 @@ export function getAlchemyArbitrumWsUrl() {
 }
 
 export function getExplorerUrl(chainId: number): string {
-  switch (chainId as UiSupportedChain) {
+  switch (chainId as AnyChainId) {
     case ARBITRUM:
       return "https://arbiscan.io/";
     case AVALANCHE:
@@ -199,9 +199,9 @@ export function getExplorerUrl(chainId: number): string {
       return "https://testnet.snowtrace.io/";
     case ARBITRUM_SEPOLIA:
       return arbitrumSepolia.blockExplorers.default.url + "/";
-    case OPTIMISM_SEPOLIA:
+    case SOURCE_OPTIMISM_SEPOLIA:
       return "https://sepolia-optimism.etherscan.io/";
-    case SEPOLIA:
+    case SOURCE_SEPOLIA:
       return "https://sepolia.etherscan.io/";
   }
 }

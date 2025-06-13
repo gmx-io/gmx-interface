@@ -9,7 +9,7 @@ import { RPC_PROVIDERS, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { SOURCE_CHAINS } from "domain/multichain/config";
 import { EMPTY_OBJECT } from "lib/objects";
 import { getCurrentRpcUrls, RPC_TRACKER_UPDATE_EVENT } from "lib/rpc/bestRpcTracker";
-import { UiSupportedChain } from "sdk/configs/chains";
+import { AnyChainId } from "sdk/configs/chains";
 
 export type JsonRpcProviderContext = {
   providers: Partial<Record<number, JsonRpcProvider>>;
@@ -21,7 +21,7 @@ export const context = createContext<JsonRpcProviderContext>({
 
 export function JsonRpcProviderContext({ children }: PropsWithChildren) {
   const [providers, setProviders] =
-    useState<Partial<Record<UiSupportedChain, { provider: JsonRpcProvider; url: string }>>>(EMPTY_OBJECT);
+    useState<Partial<Record<AnyChainId, { provider: JsonRpcProvider; url: string }>>>(EMPTY_OBJECT);
 
   const handleRpcUpdate = useCallback(() => {
     for (const listenedChainId of SUPPORTED_CHAIN_IDS) {
@@ -71,7 +71,7 @@ export function JsonRpcProviderContext({ children }: PropsWithChildren) {
   return <context.Provider value={value}>{children}</context.Provider>;
 }
 
-export function useJsonRpcProvider(chainId: UiSupportedChain): { provider: JsonRpcProvider | undefined } {
+export function useJsonRpcProvider(chainId: AnyChainId): { provider: JsonRpcProvider | undefined } {
   const { providers } = useContext(context);
   return { provider: providers[chainId]?.provider };
 }

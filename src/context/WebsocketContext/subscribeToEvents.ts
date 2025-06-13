@@ -5,7 +5,7 @@ import { Abi, ContractEventArgsFromTopics, decodeEventLog, Hex } from "viem";
 import { getContract, tryGetContract } from "config/contracts";
 import type { EventLogData, EventTxnParams } from "context/SyntheticsEvents/types";
 import { abis } from "sdk/abis";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { getTokens, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 const coder = AbiCoder.defaultAbiCoder();
@@ -126,7 +126,7 @@ export const COMPOSE_DELIVERED_ABI = [
 ] as const satisfies Abi;
 
 export function subscribeToV2Events(
-  chainId: UiContractsChain,
+  chainId: ContractsChainId,
   provider: Provider,
   account: string,
   eventLogHandlers: MutableRefObject<
@@ -192,7 +192,7 @@ export function subscribeToV2Events(
 }
 
 export function subscribeToTransferEvents(
-  chainId: UiContractsChain,
+  chainId: ContractsChainId,
   provider: Provider,
   account: string,
   marketTokensAddresses: string[],
@@ -264,7 +264,7 @@ export function subscribeToTransferEvents(
 }
 
 export function subscribeToApprovalEvents(
-  chainId: UiContractsChain,
+  chainId: ContractsChainId,
   provider: Provider,
   account: string,
   onApprove: (tokenAddress: string, spender: string, value: bigint) => void
@@ -483,7 +483,7 @@ function parseEventLogData(eventData): EventLogData {
   return ret as EventLogData;
 }
 
-function createV2EventFilters(chainId: UiContractsChain, account: string, wsProvider: Provider): ProviderEvent[] {
+function createV2EventFilters(chainId: ContractsChainId, account: string, wsProvider: Provider): ProviderEvent[] {
   const addressHash = AbiCoder.defaultAbiCoder().encode(["address"], [account]);
   const eventEmitter = new ethers.Contract(getContract(chainId, "EventEmitter"), abis.EventEmitter, wsProvider);
   const EVENT_LOG_TOPIC = eventEmitter.interface.getEvent("EventLog")?.topicHash ?? null;
@@ -577,7 +577,7 @@ function createV2EventFilters(chainId: UiContractsChain, account: string, wsProv
 }
 
 export function getTotalSubscribersEventsCount(
-  chainId: UiContractsChain,
+  chainId: ContractsChainId,
   provider: Provider,
   { v1, v2 }: { v1: boolean; v2: boolean }
 ) {

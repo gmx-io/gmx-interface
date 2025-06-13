@@ -9,7 +9,7 @@ import {
   AVALANCHE_FUJI,
   getChainName,
   getConstant,
-  UiContractsChain,
+  ContractsChainId,
 } from "config/chains";
 import { getIcons } from "config/icons";
 import { useChainId } from "lib/chains";
@@ -39,7 +39,7 @@ import {
   TRANSFER_EXCHANGES,
 } from "./constants";
 
-const OPPOSITE_CHAIN_ID: Record<UiContractsChain, UiContractsChain> = {
+const OPPOSITE_CHAIN_ID: Record<ContractsChainId, ContractsChainId> = {
   [ARBITRUM]: AVALANCHE,
   [AVALANCHE]: ARBITRUM,
   [ARBITRUM_SEPOLIA]: AVALANCHE_FUJI,
@@ -56,7 +56,7 @@ export default function BuyGMX() {
   const location = useLocation();
 
   const onNetworkSelect = useCallback(
-    (value: UiContractsChain) => {
+    (value: ContractsChainId) => {
       if (value === chainId) {
         return;
       }
@@ -203,7 +203,7 @@ function DecentralisedExchanges({
   chainId,
   externalLinks,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   externalLinks: {
     networkWebsite: string;
     buyGmx: {

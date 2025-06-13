@@ -44,13 +44,7 @@ import { ExpressTxnData } from "lib/transactions/sendExpressTransaction";
 import { WalletSigner } from "lib/wallets";
 import { signTypedData, SignTypedDataParams } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
-import {
-  ARBITRUM_SEPOLIA,
-  UiContractsChain,
-  UiSettlementChain,
-  UiSourceChain,
-  UiSupportedChain,
-} from "sdk/configs/chains";
+import { ARBITRUM_SEPOLIA, ContractsChainId, SettlementChainId, SourceChainId, AnyChainId } from "sdk/configs/chains";
 import { ContractName } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { bigMath } from "sdk/utils/bigmath";
@@ -79,7 +73,7 @@ export async function estimateBatchExpressParams({
   requireValidations,
   estimationMethod = "approximate",
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   isGmxAccount: boolean;
   signer: WalletSigner;
   provider: Provider;
@@ -136,7 +130,7 @@ function getBatchExpressEstimatorParams({
   gasLimits: GasLimitsConfig;
   gasPaymentToken: TokenData;
   isGmxAccount: boolean;
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   tokensData: TokensData;
 }): ExpressTransactionEstimatorParams | undefined {
   const payAmounts = getBatchTotalPayCollateralAmount(batchParams);
@@ -200,7 +194,7 @@ export async function estimateExpressParams({
   estimationMethod = "approximate",
   requireValidations = true,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   isGmxAccount: boolean;
   provider: Provider;
   globalExpressParams: GlobalExpressParams;
@@ -503,7 +497,7 @@ export async function buildAndSignExpressBatchOrderTxn({
   provider,
 }: {
   signer: WalletSigner;
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   batchParams: BatchOrderTxnParams;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
@@ -647,7 +641,7 @@ export async function getBatchSignatureParams({
   signer: WalletSigner | Wallet;
   relayParams: RelayParamsPayload | MultichainRelayParamsPayload;
   batchParams: BatchOrderTxnParams;
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   relayRouterAddress: string;
 }): Promise<SignTypedDataParams> {
   const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
@@ -758,21 +752,21 @@ function getBatchParamsLists(batchParams: BatchOrderTxnParams) {
 
 export async function getMultichainInfoFromSigner(
   signer: Signer,
-  chainId: UiContractsChain
-): Promise<UiSourceChain | undefined> {
-  const srcChainId = await signer.provider!.getNetwork().then((n) => Number(n.chainId) as UiSupportedChain);
+  chainId: ContractsChainId
+): Promise<SourceChainId | undefined> {
+  const srcChainId = await signer.provider!.getNetwork().then((n) => Number(n.chainId) as AnyChainId);
 
   if (!isSourceChain(srcChainId)) {
     return undefined;
   }
 
-  const isMultichain = srcChainId !== (chainId as UiSourceChain);
+  const isMultichain = srcChainId !== (chainId as SourceChainId);
 
   return isMultichain ? srcChainId : undefined;
 }
 
 export function getOrderRelayRouterAddress(
-  chainId: UiContractsChain,
+  chainId: ContractsChainId,
   isSubaccount: boolean,
   isMultichain: boolean
 ): string {
@@ -805,7 +799,7 @@ export async function buildAndSignBridgeOutTxn({
   relayerFeeAmount,
   noncesData,
 }: {
-  chainId: UiSettlementChain;
+  chainId: SettlementChainId;
   relayParamsPayload: RawMultichainRelayParamsPayload;
   params: BridgeOutParams;
   signer: WalletSigner;
@@ -891,8 +885,8 @@ async function signBridgeOutPayload({
   signer: WalletSigner;
   relayParams: MultichainRelayParamsPayload;
   params: BridgeOutParams;
-  chainId: UiSettlementChain;
-  srcChainId: UiSourceChain;
+  chainId: SettlementChainId;
+  srcChainId: SourceChainId;
 }): Promise<string> {
   if (relayParams.userNonce === undefined) {
     throw new Error("userNonce is required");
@@ -935,7 +929,7 @@ export async function buildAndSignSetTraderReferralCodeTxn({
   relayerFeeTokenAddress,
   relayerFeeAmount,
 }: {
-  chainId: UiSettlementChain;
+  chainId: SettlementChainId;
   relayParamsPayload: MultichainRelayParamsPayload;
   params: BridgeOutParams;
   signer: WalletSigner;
@@ -996,8 +990,8 @@ export async function signSetTraderReferralCode({
   signer: WalletSigner | Wallet;
   relayParams: MultichainRelayParamsPayload;
   referralCode: string;
-  chainId: UiContractsChain;
-  srcChainId: UiSourceChain;
+  chainId: ContractsChainId;
+  srcChainId: SourceChainId;
 }) {
   const types = {
     SetTraderReferralCode: [

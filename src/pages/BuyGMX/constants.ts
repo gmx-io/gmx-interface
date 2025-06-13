@@ -1,4 +1,4 @@
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, UiContractsChain } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 
 const ARBITRUM_GMX = getContract(ARBITRUM, "GMX").toLowerCase();
@@ -11,7 +11,7 @@ type Exchange = {
 };
 
 export const EXTERNAL_LINKS: Record<
-  UiContractsChain,
+  ContractsChainId,
   {
     networkWebsite: string;
     buyGmx: {

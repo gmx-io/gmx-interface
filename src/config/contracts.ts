@@ -7,7 +7,7 @@ import { DataStore__factory } from "typechain-types/factories/DataStore__factory
 import { ExchangeRouter__factory } from "typechain-types/factories/ExchangeRouter__factory";
 import { Multicall__factory } from "typechain-types/factories/Multicall__factory";
 
-import { UiContractsChain } from "./chains";
+import { ContractsChainId } from "./chains";
 
 const { ZeroAddress } = ethers;
 
@@ -24,7 +24,7 @@ function makeGetContract<T extends { abi: InterfaceAbi; connect: (address: strin
   name: ContractName,
   factory: T
 ) {
-  return (chainId: UiContractsChain, provider?: ContractRunner) =>
+  return (chainId: ContractsChainId, provider?: ContractRunner) =>
     new Contract(getContract(chainId, name), factory.abi, provider) as unknown as ReturnType<T["connect"]>;
 }
 
@@ -35,7 +35,7 @@ export const getGlvRouterContract = makeGetContract("GlvRouter", GlvRouter__fact
 
 export const getZeroAddressContract = (provider?: ContractRunner) => new Contract(ZeroAddress, [], provider);
 
-export function tryGetContract(chainId: UiContractsChain, name: ContractName): Address | undefined {
+export function tryGetContract(chainId: ContractsChainId, name: ContractName): Address | undefined {
   try {
     return getContract(chainId, name);
   } catch (e) {

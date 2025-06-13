@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import useSWR from "swr";
 import type { Address } from "viem";
 
-import { getChainName, type UiContractsChain } from "config/chains";
+import { getChainName, type ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useInfoTokens } from "domain/tokens";
@@ -25,7 +25,7 @@ import "./ActionsV1.css";
 
 const versionName = "V1";
 
-export default function ActionsPageV1({ chainId }: { chainId: UiContractsChain }) {
+export default function ActionsPageV1({ chainId }: { chainId: ContractsChainId }) {
   const { active, signer } = useWallet();
 
   return <ActionsV1 chainId={chainId} signer={signer} active={active} />;
@@ -36,7 +36,7 @@ function ActionsV1({
   signer,
   active,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   signer: ethers.JsonRpcSigner | undefined;
   active: boolean;
 }) {
@@ -94,7 +94,7 @@ function ActionsV1({
 }
 
 export function usePositionsV1(
-  chainId: UiContractsChain,
+  chainId: ContractsChainId,
   account: Address,
   signer: ethers.JsonRpcSigner | undefined,
   active: boolean
@@ -152,7 +152,7 @@ export function AccountPositionsV1({
   active,
 }: {
   account: Address;
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   signer: ethers.JsonRpcSigner | undefined;
   active: boolean;
 }) {
@@ -213,7 +213,7 @@ export function AccountOrdersV1({
   active,
 }: {
   account: Address;
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   signer: ethers.JsonRpcSigner | undefined;
   active: boolean;
 }) {
@@ -287,7 +287,7 @@ export function AccountActionsV1({
   active,
 }: {
   account: Address;
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   signer: ethers.JsonRpcSigner | undefined;
   active: boolean;
 }) {

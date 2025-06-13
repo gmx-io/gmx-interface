@@ -3,7 +3,7 @@ import cx from "classnames";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
-import type { UiContractsChain, UiSourceChain } from "config/chains";
+import type { ContractsChainId, SourceChainId } from "config/chains";
 import type { TokenChainData } from "domain/multichain/types";
 import { convertToUsd } from "domain/synthetics/tokens";
 import type { Token, TokenData, TokensData } from "domain/tokens";
@@ -22,8 +22,8 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import "./TokenSelector.scss";
 
 type Props = {
-  chainId: UiContractsChain;
-  srcChainId: UiSourceChain | undefined;
+  chainId: ContractsChainId;
+  srcChainId: SourceChainId | undefined;
 
   label?: string;
   size?: "m" | "l";
@@ -245,7 +245,7 @@ function AvailableToTradeTokenList({
   extendedSortSequence,
   onSelectTokenAddress,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   isModalVisible: boolean;
   setSearchKeyword: (searchKeyword: string) => void;
   searchKeyword: string;

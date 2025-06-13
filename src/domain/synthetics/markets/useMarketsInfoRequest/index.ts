@@ -4,7 +4,7 @@ import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL, FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
-import type { UiContractsChain, UiSourceChain } from "sdk/configs/chains";
+import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { MarketConfig, MarketValues } from "sdk/modules/markets/types";
 import type { MarketInfo, MarketsData, MarketsInfoData } from "sdk/types/markets";
@@ -28,7 +28,7 @@ export type MarketsInfoResult = {
   error?: Error;
 };
 
-export function useMarketsInfoRequest(chainId: UiContractsChain, srcChainId?: UiSourceChain): MarketsInfoResult {
+export function useMarketsInfoRequest(chainId: ContractsChainId, srcChainId?: SourceChainId): MarketsInfoResult {
   const { marketsData, marketsAddresses } = useMarkets(chainId);
 
   const settlementChainTokensDataResult = useTokensDataRequest(chainId);
@@ -140,7 +140,7 @@ function useMarketsValuesRequest({
   marketsData,
   tokensData,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   isDependenciesLoading: boolean;
   marketsAddresses: string[] | undefined;
   marketsData: MarketsData | undefined;
@@ -268,7 +268,7 @@ function useMarketsConfigsRequest({
   isDependenciesLoading,
   marketsAddresses,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   isDependenciesLoading: boolean;
   marketsAddresses: string[] | undefined;
 }) {

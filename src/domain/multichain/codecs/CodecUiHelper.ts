@@ -3,7 +3,7 @@ import { AbiCoder, hexlify, ParamType, isHexString } from "ethers";
 import { Address, concatHex, Hex } from "viem";
 
 import { MultichainRelayParamsPayload } from "domain/synthetics/express";
-import type { UiContractsChain, UiSettlementChain } from "sdk/configs/chains";
+import type { ContractsChainId, SettlementChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 
 export enum MultichainActionType {
@@ -99,12 +99,12 @@ export class CodecUiHelper {
     return composeFromWithMsg;
   }
 
-  public static composeDepositMessage(dstChainId: UiSettlementChain, account: string, data?: string) {
+  public static composeDepositMessage(dstChainId: SettlementChainId, account: string, data?: string) {
     const msg = CodecUiHelper.encodeDepositMessage(account, data);
     return CodecUiHelper.encodeComposeMsg(CodecUiHelper.getLzEndpoint(dstChainId), msg);
   }
 
-  public static getLzEndpoint(chainId: UiContractsChain): Address {
+  public static getLzEndpoint(chainId: ContractsChainId): Address {
     const layerZeroEndpoint = getContract(chainId, "LayerZeroEndpoint");
 
     return layerZeroEndpoint;

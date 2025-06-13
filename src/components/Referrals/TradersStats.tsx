@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { BiEditAlt } from "react-icons/bi";
 import { IoWarningOutline } from "react-icons/io5";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl, UiContractsChain } from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl, ContractsChainId } from "config/chains";
 import { isDevelopment } from "config/env";
 import { TotalReferralsStats, useTiers } from "domain/referrals";
 import { formatDate } from "lib/dates";
@@ -32,7 +32,7 @@ import "./TradersStats.scss";
 type Props = {
   referralsData?: TotalReferralsStats;
   traderTier?: number;
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   userReferralCodeString?: string;
   discountShare: bigint | undefined;
 };

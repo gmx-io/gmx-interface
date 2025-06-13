@@ -4,22 +4,24 @@ import { isDevelopment } from "config/env";
 import { isContractsChain, isSourceChain } from "domain/multichain/config";
 import { useChainIdImpl } from "lib/chains";
 import { getRealChainId } from "lib/chains/getRealChainId";
-import { ARBITRUM, ARBITRUM_SEPOLIA, UiContractsChain, UiSourceChain } from "sdk/configs/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, ContractsChainId, SourceChainId } from "sdk/configs/chains";
 
 export type ChainContext = {
-  chainId: UiContractsChain;
-  srcChainId: UiSourceChain | undefined;
+  chainId: ContractsChainId;
+  srcChainId: SourceChainId | undefined;
   isConnectedToChainId: boolean | undefined;
 };
 
 const realChainId = getRealChainId();
 
-const initialChainId =
-  realChainId !== undefined && isContractsChain(realChainId)
-    ? realChainId
-    : isDevelopment()
-      ? ARBITRUM_SEPOLIA
-      : ARBITRUM;
+let initialChainId: ContractsChainId;
+if (realChainId !== undefined && isContractsChain(realChainId)) {
+  initialChainId = realChainId;
+} else if (isDevelopment()) {
+  initialChainId = ARBITRUM_SEPOLIA;
+} else {
+  initialChainId = ARBITRUM;
+}
 
 const initialSrcChainId = realChainId !== undefined && isSourceChain(realChainId) ? realChainId : undefined;
 

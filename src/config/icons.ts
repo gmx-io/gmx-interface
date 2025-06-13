@@ -3,9 +3,9 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
-  OPTIMISM_SEPOLIA,
-  SEPOLIA,
-  UiSupportedChain,
+  SOURCE_OPTIMISM_SEPOLIA,
+  SOURCE_SEPOLIA,
+  AnyChainId,
 } from "config/chains";
 
 import gmIcon from "img/gm_icon.svg";
@@ -77,7 +77,7 @@ const ICONS: Record<number | "common", ChainIcons> = {
   },
 };
 
-export const CHAIN_ID_TO_NETWORK_ICON: Record<UiSupportedChain | 0, string> = {
+export const CHAIN_ID_TO_NETWORK_ICON: Record<AnyChainId | 0, string> = {
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
   0: gmxIcon,
@@ -86,8 +86,8 @@ export const CHAIN_ID_TO_NETWORK_ICON: Record<UiSupportedChain | 0, string> = {
 
   [AVALANCHE_FUJI]: avalancheTestnet,
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
-  [OPTIMISM_SEPOLIA]: optimismSepolia,
-  [SEPOLIA]: sepolia,
+  [SOURCE_OPTIMISM_SEPOLIA]: optimismSepolia,
+  [SOURCE_SEPOLIA]: sepolia,
 };
 
 export function getIcon(chainId: number | "common", label: keyof ChainIcons) {

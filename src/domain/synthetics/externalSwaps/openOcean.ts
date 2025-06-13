@@ -4,7 +4,7 @@ import { USD_DECIMALS } from "config/factors";
 import { buildUrl } from "lib/buildUrl";
 import { metrics } from "lib/metrics";
 import { formatTokenAmount, numberToBigint } from "lib/numbers";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 
 type OpenOceanTxnResponse = {
@@ -65,7 +65,7 @@ export async function getOpenOceanTxnData({
 }: {
   senderAddress: string;
   receiverAddress: string;
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   tokenInAddress: string;
   tokenOutAddress: string;
   amountIn: bigint;

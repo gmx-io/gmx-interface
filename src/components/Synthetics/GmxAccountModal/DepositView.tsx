@@ -11,7 +11,7 @@ import useSWR from "swr";
 import { Address, Hex, decodeErrorResult, encodeFunctionData, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import { UiContractsChain, UiSettlementChain, UiSupportedChain, getChainName } from "config/chains";
+import { ContractsChainId, SettlementChainId, AnyChainId, getChainName } from "config/chains";
 import { getContract } from "config/contracts";
 import { getChainIcon } from "config/icons";
 import {
@@ -127,7 +127,7 @@ export const DepositView = () => {
 
   const selectedTokenSourceChainTokenId =
     depositViewTokenAddress !== undefined && depositViewChain !== undefined
-      ? getMappedTokenId(settlementChainId as UiSettlementChain, depositViewTokenAddress, depositViewChain)
+      ? getMappedTokenId(settlementChainId as SettlementChainId, depositViewTokenAddress, depositViewChain)
       : undefined;
 
   const unwrappedSelectedTokenAddress =
@@ -237,7 +237,7 @@ export const DepositView = () => {
 
   const spenderAddress =
     // Only when DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT
-    (depositViewChain as UiSupportedChain) === settlementChainId
+    (depositViewChain as AnyChainId) === settlementChainId
       ? getContract(settlementChainId, "SyntheticsRouter")
       : selectedTokenSourceChainTokenId?.stargate;
 
@@ -331,7 +331,7 @@ export const DepositView = () => {
     sendParamsWithoutSlippage !== undefined &&
     depositViewTokenAddress !== undefined &&
     selectedTokenSourceChainTokenId !== undefined &&
-    (depositViewChain as UiSettlementChain) !== settlementChainId &&
+    (depositViewChain as SettlementChainId) !== settlementChainId &&
     sourceChainProvider !== undefined;
   const quoteOftQuery = useSWR<
     | {
@@ -422,7 +422,7 @@ export const DepositView = () => {
     depositViewChain !== undefined &&
     sendParamsWithSlippage !== undefined &&
     selectedTokenSourceChainTokenId !== undefined &&
-    (depositViewChain as UiSettlementChain) !== settlementChainId &&
+    (depositViewChain as SettlementChainId) !== settlementChainId &&
     sourceChainProvider !== undefined;
   const quoteSendQuery = useSWR<MessagingFeeStruct | undefined>(
     quoteSendCondition
@@ -469,7 +469,7 @@ export const DepositView = () => {
   const latestIsFirstDeposit = useLatest(isFirstDeposit);
 
   const handleDeposit = useCallback(async () => {
-    if (DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT && (walletChainId as UiSettlementChain) === settlementChainId) {
+    if (DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT && (walletChainId as SettlementChainId) === settlementChainId) {
       // #region DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT
       if (!account || !depositViewTokenAddress || inputAmount === undefined) {
         return;
@@ -498,7 +498,7 @@ export const DepositView = () => {
         }
 
         await sendWalletTransaction({
-          chainId: walletChainId as UiContractsChain,
+          chainId: walletChainId as ContractsChainId,
           signer: walletSigner!,
           to: await contract.getAddress(),
           callData: contract.interface.encodeFunctionData("multicall", [
@@ -520,7 +520,7 @@ export const DepositView = () => {
         });
       } else {
         await sendWalletTransaction({
-          chainId: walletChainId as UiContractsChain,
+          chainId: walletChainId as ContractsChainId,
           signer: walletSigner!,
           to: await contract.getAddress(),
           callData: contract.interface.encodeFunctionData("multicall", [

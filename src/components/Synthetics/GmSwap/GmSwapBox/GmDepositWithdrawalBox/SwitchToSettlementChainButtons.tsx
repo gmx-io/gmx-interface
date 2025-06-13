@@ -1,6 +1,6 @@
 import { useAccount } from "wagmi";
 
-import { UiSourceChain, getChainName } from "config/chains";
+import { SourceChainId, getChainName } from "config/chains";
 import {
   MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING,
   isSettlementChain,
@@ -10,7 +10,7 @@ import { switchNetwork } from "lib/wallets";
 
 import Button from "components/Button/Button";
 
-export function needSwitchToSettlementChain(walletChainId: number | undefined): walletChainId is UiSourceChain {
+export function needSwitchToSettlementChain(walletChainId: number | undefined): walletChainId is SourceChainId {
   return Boolean(walletChainId && isSourceChain(walletChainId) && !isSettlementChain(walletChainId));
 }
 

@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { ReactNode, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import type { UiContractsChain, UiSourceChain } from "config/chains";
+import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
 import { NoncesData, useExpressNonces } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -85,8 +85,8 @@ export type SyntheticsPageType =
 export type SyntheticsState = {
   pageType: SyntheticsPageType;
   globals: {
-    chainId: UiContractsChain;
-    srcChainId: UiSourceChain | undefined;
+    chainId: ContractsChainId;
+    srcChainId: SourceChainId | undefined;
     markets: MarketsResult;
     marketsInfo: MarketsInfoResult;
     positionsInfo: PositionsInfoResult;
@@ -150,7 +150,7 @@ export function SyntheticsStateContextProvider({
   children: ReactNode;
   skipLocalReferralCode: boolean;
   pageType: SyntheticsPageType;
-  overrideChainId?: UiContractsChain;
+  overrideChainId?: ContractsChainId;
 }) {
   const { chainId: selectedChainId, srcChainId } = useChainId();
 

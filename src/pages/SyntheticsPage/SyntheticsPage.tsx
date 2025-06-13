@@ -48,7 +48,7 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
-import { UiContractsChain } from "sdk/configs/chains";
+import { ContractsChainId } from "sdk/configs/chains";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getOrderKeys } from "sdk/utils/orders";
 
@@ -400,7 +400,7 @@ export function SyntheticsPage(p: Props) {
 }
 
 function useOrdersControl() {
-  const chainId = useSelector(selectChainId) as UiContractsChain;
+  const chainId = useSelector(selectChainId) as ContractsChainId;
   const srcChainId = useSelector(selectSrcChainId);
   const signer = useEthersSigner();
   const { provider } = useJsonRpcProvider(chainId);

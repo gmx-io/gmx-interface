@@ -2,7 +2,7 @@ import cryptoJs from "crypto-js";
 import { ethers, Provider } from "ethers";
 import { decodeFunctionResult, encodeAbiParameters, encodeFunctionData, keccak256, maxUint256, zeroHash } from "viem";
 
-import { ARBITRUM_SEPOLIA, UiContractsChain } from "config/static/chains";
+import { ARBITRUM_SEPOLIA, ContractsChainId } from "config/static/chains";
 import {
   SignedSubbacountApproval,
   Subaccount,
@@ -207,7 +207,7 @@ export async function getInitialSubaccountApproval({
   provider,
   subaccountAddress,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   signer: WalletSigner;
   provider: Provider;
   subaccountAddress: string;
@@ -285,7 +285,7 @@ export async function signUpdatedSubaccountSettings({
   nextRemainigActions,
   nextRemainingSeconds,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   signer: WalletSigner;
   provider: Provider;
   subaccount: Subaccount;
@@ -322,7 +322,7 @@ export async function signUpdatedSubaccountSettings({
 }
 
 export async function createAndSignSubaccountApproval(
-  chainId: UiContractsChain,
+  chainId: ContractsChainId,
   mainAccountSigner: WalletSigner,
   subaccountAddress: string,
   nonce: bigint,
@@ -400,7 +400,7 @@ export function hashSubaccountApproval(subaccountApproval: SignedSubbacountAppro
 }
 
 async function getSubaccountApprovalNonceForProvider(
-  chainId: UiContractsChain,
+  chainId: ContractsChainId,
   signer: WalletSigner,
   provider: Provider
 ): Promise<bigint> {
@@ -431,7 +431,7 @@ export async function getSubaccountOnchainData({
   provider,
   subaccountAddress,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   signer: WalletSigner;
   provider: Provider;
   subaccountAddress: string;

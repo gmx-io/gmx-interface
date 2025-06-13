@@ -3,7 +3,7 @@ import useSWR from "swr";
 import type { Address } from "viem";
 
 import { getSubsquidGraphClient } from "lib/subgraph/clients";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { getByKey } from "sdk/utils/objects";
 
 import { convertToUsd, useTokensDataRequest } from "../tokens";
@@ -17,7 +17,7 @@ const POSITIONS_COLLATERAL_QUERY = gql`
   }
 `;
 
-export function usePositionsTotalCollateral(chainId: UiContractsChain) {
+export function usePositionsTotalCollateral(chainId: ContractsChainId) {
   const { tokensData } = useTokensDataRequest(chainId);
 
   const { data } = useSWR<bigint | undefined>(

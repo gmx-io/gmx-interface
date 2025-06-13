@@ -11,7 +11,13 @@ import invert from "lodash/invert";
 import mapValues from "lodash/mapValues";
 import type { Abi } from "viem";
 
-import { ARBITRUM_SEPOLIA, OPTIMISM_SEPOLIA, SEPOLIA, UiSettlementChain, UiSourceChain } from "config/chains";
+import {
+  ARBITRUM_SEPOLIA,
+  SOURCE_OPTIMISM_SEPOLIA,
+  SOURCE_SEPOLIA,
+  SettlementChainId,
+  SourceChainId,
+} from "config/chains";
 
 import { LayerZeroEndpointId } from "./types";
 
@@ -27,11 +33,11 @@ export {
 
 export const StargateErrorsAbi = _StargateErrorsAbi as readonly (Abi[number] & JsonFragment)[];
 
-export const CHAIN_ID_TO_ENDPOINT_ID: Record<UiSettlementChain | UiSourceChain, LayerZeroEndpointId> = {
+export const CHAIN_ID_TO_ENDPOINT_ID: Record<SettlementChainId | SourceChainId, LayerZeroEndpointId> = {
   [ARBITRUM_SEPOLIA]: 40231,
-  [SEPOLIA]: 40161,
-  [OPTIMISM_SEPOLIA]: 40232,
+  [SOURCE_SEPOLIA]: 40161,
+  [SOURCE_OPTIMISM_SEPOLIA]: 40232,
 };
 
-export const ENDPOINT_ID_TO_CHAIN_ID: Partial<Record<LayerZeroEndpointId, UiSettlementChain | UiSourceChain>> =
+export const ENDPOINT_ID_TO_CHAIN_ID: Partial<Record<LayerZeroEndpointId, SettlementChainId | SourceChainId>> =
   mapValues(invert(CHAIN_ID_TO_ENDPOINT_ID), (value) => parseInt(value));

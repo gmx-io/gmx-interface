@@ -6,7 +6,7 @@ import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { EMPTY_OBJECT } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import useWallet from "lib/wallets/useWallet";
-import type { UiSupportedChain } from "sdk/configs/chains";
+import type { AnyChainId } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import type { TokensAllowanceData } from "./types";
@@ -19,7 +19,7 @@ export type TokenAllowanceResult = {
 };
 
 export function useTokensAllowanceData(
-  chainId: UiSupportedChain | undefined,
+  chainId: AnyChainId | undefined,
   p: {
     spenderAddress?: string;
     tokenAddresses: string[];

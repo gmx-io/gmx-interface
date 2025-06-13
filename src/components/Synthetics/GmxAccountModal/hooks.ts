@@ -3,7 +3,7 @@ import useSWRSubscription, { SWRSubscription } from "swr/subscription";
 import { Address } from "viem";
 import { useAccount } from "wagmi";
 
-import { UiContractsChain, UiSettlementChain, UiSourceChain, getChainName } from "config/chains";
+import { ContractsChainId, SettlementChainId, SourceChainId, getChainName } from "config/chains";
 import { multichainBalanceKey } from "config/dataStore";
 import { getSettlementChainTradableTokenAddresses } from "config/markets";
 import {
@@ -155,7 +155,7 @@ export function useAvailableToTradeAssetMultichain(): {
 }
 
 const subscribeMultichainTokenBalances: SWRSubscription<
-  [string, UiContractsChain, Address],
+  [string, ContractsChainId, Address],
   {
     tokenBalances: Record<number, Record<string, bigint>>;
     isLoading: boolean;
@@ -205,7 +205,7 @@ export function useMultichainTokensRequest(): {
     }
 
     for (const sourceChainIdString in tokenBalances) {
-      const sourceChainId = parseInt(sourceChainIdString) as UiSourceChain;
+      const sourceChainId = parseInt(sourceChainIdString) as SourceChainId;
       const tokensChainBalanceData = tokenBalances[sourceChainId];
 
       for (const sourceChainTokenAddress in tokensChainBalanceData) {
@@ -276,7 +276,7 @@ export function useMultichainTokensRequest(): {
   };
 }
 
-function buildGmxAccountTokenBalancesRequest(settlementChainId: UiSettlementChain, account: string) {
+function buildGmxAccountTokenBalancesRequest(settlementChainId: SettlementChainId, account: string) {
   const tradableTokenAddresses: string[] = getSettlementChainTradableTokenAddresses(settlementChainId);
 
   const erc20Calls = Object.fromEntries(
@@ -324,7 +324,7 @@ function parseGmxAccountTokenBalancesData(
   );
 }
 
-export function useGmxAccountTokensDataRequest(chainId: UiContractsChain): TokensDataResult {
+export function useGmxAccountTokensDataRequest(chainId: ContractsChainId): TokensDataResult {
   const { address: account } = useAccount();
   const { pricesData, error: pricesError, updatedAt: pricesUpdatedAt } = useTokenRecentPricesRequest(chainId);
   const { data: onchainConfigsData, error: onchainConfigsError } = useOnchainTokenConfigs(chainId);

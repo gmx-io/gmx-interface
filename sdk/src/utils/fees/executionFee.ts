@@ -1,4 +1,4 @@
-import { getExcessiveExecutionFee, getHighExecutionFee, UiContractsChain } from "configs/chains";
+import { getExcessiveExecutionFee, getHighExecutionFee, ContractsChainId } from "configs/chains";
 import { USD_DECIMALS } from "configs/factors";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { ExecutionFee, GasLimitsConfig, L1ExpressOrderGasReference } from "types/fees";
@@ -126,7 +126,7 @@ export function estimateBatchMinGasPaymentTokenAmount({
   cancelOrdersCount = 0,
   executionFeeAmount,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   isGmxAccount: boolean;
   gasLimits: GasLimitsConfig;
   gasPaymentToken: TokenData;

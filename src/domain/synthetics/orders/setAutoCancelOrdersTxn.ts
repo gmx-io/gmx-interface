@@ -6,7 +6,7 @@ import { getContract } from "config/contracts";
 import { Token } from "domain/tokens";
 import { callContract } from "lib/contracts";
 import { abis } from "sdk/abis";
-import { UiContractsChain } from "sdk/configs/chains";
+import { ContractsChainId } from "sdk/configs/chains";
 import { OrderType } from "sdk/types/orders";
 import {
   buildUpdateOrderMulticall,
@@ -31,7 +31,7 @@ type SetAutoCancelOrdersMeta = {
 };
 
 export function setAutoCancelOrdersTxn(
-  chainId: UiContractsChain,
+  chainId: ContractsChainId,
   signer: Signer,
   setPendingTxns: (txns: any) => void,
   ps: SetAutoCancelOrdersParams[],
@@ -68,7 +68,7 @@ export function setAutoCancelOrdersTxn(
         })
       );
 
-      const { encodedMulticall } = encodeExchangeRouterMulticall(chainId as UiContractsChain, multicall);
+      const { encodedMulticall } = encodeExchangeRouterMulticall(chainId as ContractsChainId, multicall);
 
       return encodedMulticall;
     })

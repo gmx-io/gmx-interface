@@ -1,7 +1,7 @@
 import { ethers, Signer } from "ethers";
 import { encodeFunctionData } from "viem";
 
-import { ARBITRUM_SEPOLIA, UiContractsChain } from "config/static/chains";
+import { ARBITRUM_SEPOLIA, ContractsChainId } from "config/static/chains";
 import { callContract } from "lib/contracts";
 import { ExpressTxnData } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
@@ -22,7 +22,7 @@ import { getMultichainInfoFromSigner, getOrderRelayRouterAddress } from "../expr
 import { Subaccount } from "../subaccount";
 
 export async function removeSubaccountWalletTxn(
-  chainId: UiContractsChain,
+  chainId: ContractsChainId,
   signer: Signer,
   subaccountAddress: string
 ): Promise<void> {
@@ -45,7 +45,7 @@ export async function buildAndSignRemoveSubaccountTxn({
   relayerFeeAmount,
   emptySignature,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   relayParamsPayload: RelayParamsPayload | MultichainRelayParamsPayload;
   subaccount: Subaccount;
   signer: WalletSigner;
@@ -100,7 +100,7 @@ async function signRemoveSubaccountPayload({
   signer: WalletSigner;
   relayParams: RelayParamsPayload | MultichainRelayParamsPayload;
   subaccountAddress: string;
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
 }) {
   const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
 

@@ -6,9 +6,9 @@ import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { useMulticall } from "lib/multicall";
 import { BN_ZERO } from "lib/numbers";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 
-export default function useUiFeeFactorRequest(chainId: UiContractsChain) {
+export default function useUiFeeFactorRequest(chainId: ContractsChainId) {
   const account = UI_FEE_RECEIVER_ACCOUNT;
   const { data: uiFeeFactor, error } = useMulticall(chainId, "uiFeeFactorForAccount", {
     key: account ? [account] : null,

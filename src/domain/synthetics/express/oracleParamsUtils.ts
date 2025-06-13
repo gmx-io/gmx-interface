@@ -1,6 +1,6 @@
 import uniq from "lodash/uniq";
 
-import { UiContractsChain } from "config/chains";
+import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { MarketsInfoData } from "domain/synthetics/markets/types";
 import { convertTokenAddress } from "sdk/configs/tokens";
@@ -8,7 +8,7 @@ import { getOppositeCollateral } from "sdk/utils/markets";
 import { getByKey } from "sdk/utils/objects";
 import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
-export function getOracleParams({ chainId, tokenAddresses }: { chainId: UiContractsChain; tokenAddresses: string[] }) {
+export function getOracleParams({ chainId, tokenAddresses }: { chainId: ContractsChainId; tokenAddresses: string[] }) {
   const uniqTokenAddresses = uniq(
     tokenAddresses.map((tokenAddress) => convertTokenAddress(chainId, tokenAddress, "wrapped"))
   );
@@ -29,7 +29,7 @@ export function getOracleParamsForRelayParams({
   externalCalls,
   marketsInfoData,
 }: {
-  chainId: UiContractsChain;
+  chainId: ContractsChainId;
   gasPaymentTokenAddress: string;
   relayerFeeTokenAddress: string;
   feeSwapPath: string[];

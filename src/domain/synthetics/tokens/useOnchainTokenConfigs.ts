@@ -3,10 +3,10 @@ import { zeroAddress } from "viem";
 import { getContract } from "config/contracts";
 import { priceFeedKey } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { getV2Tokens, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
-export function useOnchainTokenConfigs(chainId: UiContractsChain) {
+export function useOnchainTokenConfigs(chainId: ContractsChainId) {
   const tokens = getV2Tokens(chainId);
 
   const { data, error } = useMulticall(chainId, "useOnchainTokenConfigs", {

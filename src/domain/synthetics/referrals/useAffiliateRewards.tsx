@@ -3,7 +3,7 @@ import { affiliateRewardKey } from "config/dataStore";
 import { useMarkets } from "domain/synthetics/markets";
 import { useMulticall } from "lib/multicall";
 import useWallet from "lib/wallets/useWallet";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 
 import { AffiliateRewardsData } from "./types";
 
@@ -11,7 +11,7 @@ export type AffiliateRewardsResult = {
   affiliateRewardsData?: AffiliateRewardsData;
 };
 
-export function useAffiliateRewards(chainId: UiContractsChain) {
+export function useAffiliateRewards(chainId: ContractsChainId) {
   const { account } = useWallet();
   const { marketsData, marketsAddresses } = useMarkets(chainId);
 

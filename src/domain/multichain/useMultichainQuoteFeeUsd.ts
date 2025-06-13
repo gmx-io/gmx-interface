@@ -1,6 +1,6 @@
 import { zeroAddress } from "viem";
 
-import type { UiSettlementChain, UiSourceChain } from "config/chains";
+import type { SettlementChainId, SourceChainId } from "config/chains";
 import { getMappedTokenId } from "domain/multichain/config";
 import { useTokenRecentPricesRequest } from "domain/synthetics/tokens";
 import { convertToUsd } from "domain/tokens";
@@ -28,7 +28,7 @@ export function useMultichainQuoteFeeUsd({
       }
     | undefined;
   unwrappedTokenAddress: string | undefined;
-  srcChainId: UiSourceChain | undefined;
+  srcChainId: SourceChainId | undefined;
 }): {
   networkFee: bigint | undefined;
   networkFeeUsd: bigint | undefined;
@@ -50,9 +50,9 @@ export function useMultichainQuoteFeeUsd({
   }
 
   const sourceChainTokenId = getMappedTokenId(
-    chainId as UiSettlementChain,
+    chainId as SettlementChainId,
     unwrappedTokenAddress,
-    srcChainId as UiSourceChain
+    srcChainId as SourceChainId
   );
 
   if (!sourceChainTokenId) {

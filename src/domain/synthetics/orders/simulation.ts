@@ -17,7 +17,7 @@ import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { extendError } from "sdk/utils/errors";
 import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
@@ -43,7 +43,7 @@ export function isSimulationPassed(errorData: ErrorData) {
   return isContractError(errorData, CustomErrorName.EndOfOracleSimulation);
 }
 
-export async function simulateExecution(chainId: UiContractsChain, p: SimulateExecuteParams) {
+export async function simulateExecution(chainId: ContractsChainId, p: SimulateExecuteParams) {
   const provider = getProvider(undefined, chainId);
 
   const multicallAddress = getContract(chainId, "Multicall");

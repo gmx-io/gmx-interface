@@ -1,6 +1,6 @@
 import { zeroAddress } from "viem";
 
-import { UiSourceChain, getChainName } from "config/chains";
+import { SourceChainId, getChainName } from "config/chains";
 import { MULTICALLS_MAP, MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "domain/multichain/config";
 import { executeMulticall } from "lib/multicall/executeMulticall";
 import type { MulticallRequestConfig } from "lib/multicall/types";
@@ -36,7 +36,7 @@ export async function fetchMultichainTokenBalances(
       if (tokenAddress === zeroAddress) {
         requestConfig[tokenAddress] = {
           // TODO there might not be a multicall contract on the source chain
-          contractAddress: MULTICALLS_MAP[sourceChainId as UiSourceChain],
+          contractAddress: MULTICALLS_MAP[sourceChainId as SourceChainId],
           abiId: "Multicall",
           calls: {
             balanceOf: {

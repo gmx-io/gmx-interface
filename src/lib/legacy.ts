@@ -5,7 +5,7 @@ import useSWR from "swr";
 import { useEnsName } from "wagmi";
 
 import { getServerBaseUrl } from "config/backend";
-import { CHAIN_ID, ETH_MAINNET, getExplorerUrl, UiContractsChain } from "config/chains";
+import { CHAIN_ID, ETH_MAINNET, getExplorerUrl, ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { isLocal } from "config/env";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
@@ -880,7 +880,7 @@ export function getOrderKey(order) {
 export function useAccountOrders(
   flagOrdersEnabled: boolean,
   overrideAccount?: string,
-  overrideChainId?: UiContractsChain,
+  overrideChainId?: ContractsChainId,
   overrideSigner?: ethers.JsonRpcSigner,
   overrideActive?: boolean
 ) {

@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { gaslessFeatureDisabledKey } from "sdk/configs/dataStore";
 
 export type FeaturesSettings = {
@@ -15,7 +15,7 @@ export type EnabledFeaturesResult = {
   features: FeaturesSettings | undefined;
 };
 
-export function useEnabledFeaturesRequest(chainId: UiContractsChain): EnabledFeaturesResult {
+export function useEnabledFeaturesRequest(chainId: ContractsChainId): EnabledFeaturesResult {
   const { data } = useMulticall(chainId, "useEnabledFeatures", {
     key: [],
     refreshInterval: CONFIG_UPDATE_INTERVAL,

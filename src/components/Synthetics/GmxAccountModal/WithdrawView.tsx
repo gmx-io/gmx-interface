@@ -7,7 +7,7 @@ import useSWR from "swr";
 import { Address, BaseError, decodeErrorResult, encodeAbiParameters, Hex, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import { getChainName, UiSettlementChain } from "config/chains";
+import { getChainName, SettlementChainId } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import {
@@ -165,7 +165,7 @@ export const WithdrawView = () => {
       return EMPTY_ARRAY;
     }
 
-    return MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS[chainId as UiSettlementChain]
+    return MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS[chainId as SettlementChainId]
       ?.map((tokenAddress) => gmxAccountTokensData[tokenAddress])
       .filter((token) => token.address !== zeroAddress)
       .sort((a, b) => {
@@ -411,7 +411,7 @@ export const WithdrawView = () => {
       relayParams,
     }) => ({
       txnData: await buildAndSignBridgeOutTxn({
-        chainId: chainId as UiSettlementChain,
+        chainId: chainId as SettlementChainId,
         signer: signer,
         relayParamsPayload: relayParams as RawMultichainRelayParamsPayload,
         params: bridgeOutParams,
@@ -488,7 +488,7 @@ export const WithdrawView = () => {
       const relayParamsPayload = expressTxnParams.relayParamsPayload;
 
       await simulateWithdraw({
-        chainId: chainId as UiSettlementChain,
+        chainId: chainId as SettlementChainId,
         relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
         relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
         relayParamsPayload: relayParamsPayload as RawMultichainRelayParamsPayload,
@@ -501,7 +501,7 @@ export const WithdrawView = () => {
       sendOrderSimulatedMetric(metricData.metricId);
 
       const signedTxnData: ExpressTxnData = await buildAndSignBridgeOutTxn({
-        chainId: chainId as UiSettlementChain,
+        chainId: chainId as SettlementChainId,
         signer: signer,
         relayParamsPayload: relayParamsPayload as RawMultichainRelayParamsPayload,
         params: bridgeOutParams,
@@ -899,7 +899,7 @@ async function simulateWithdraw({
 }: {
   provider: Provider;
   signer: WalletSigner;
-  chainId: UiSettlementChain;
+  chainId: SettlementChainId;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
   relayParamsPayload: RawMultichainRelayParamsPayload;

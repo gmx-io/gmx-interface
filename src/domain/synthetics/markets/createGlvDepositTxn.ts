@@ -5,7 +5,7 @@ import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { callContract } from "lib/contracts";
 import { abis } from "sdk/abis";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
@@ -21,7 +21,7 @@ interface CreateGlvDepositParams extends CreateDepositParams {
   isMarketTokenDeposit: boolean;
 }
 
-export async function createGlvDepositTxn(chainId: UiContractsChain, signer: Signer, p: CreateGlvDepositParams) {
+export async function createGlvDepositTxn(chainId: ContractsChainId, signer: Signer, p: CreateGlvDepositParams) {
   const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), abis.GlvRouter, signer);
   const depositVaultAddress = getContract(chainId, "GlvVault");
 

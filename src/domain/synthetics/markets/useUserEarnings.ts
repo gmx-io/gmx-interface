@@ -6,7 +6,7 @@ import { getSubgraphUrl } from "config/subgraph";
 import { GMX_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { bigMath } from "sdk/utils/bigmath";
 import graphqlFetcher from "sdk/utils/graphqlFetcher";
 
@@ -88,7 +88,7 @@ function createQuery(marketAddress: string) {
 `;
 }
 
-export const useUserEarnings = (chainId: UiContractsChain) => {
+export const useUserEarnings = (chainId: ContractsChainId) => {
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
 

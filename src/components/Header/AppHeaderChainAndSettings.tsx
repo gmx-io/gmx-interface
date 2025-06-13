@@ -7,8 +7,8 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
-  OPTIMISM_SEPOLIA,
-  SEPOLIA,
+  SOURCE_OPTIMISM_SEPOLIA,
+  SOURCE_SEPOLIA,
   getChainName,
 } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -90,15 +90,15 @@ if (isDevelopment()) {
       color: "#0052ff",
     },
     {
-      label: getChainName(OPTIMISM_SEPOLIA),
-      value: OPTIMISM_SEPOLIA,
-      icon: getChainIcon(OPTIMISM_SEPOLIA),
+      label: getChainName(SOURCE_OPTIMISM_SEPOLIA),
+      value: SOURCE_OPTIMISM_SEPOLIA,
+      icon: getChainIcon(SOURCE_OPTIMISM_SEPOLIA),
       color: "#ff0420",
     },
     {
-      label: getChainName(SEPOLIA),
-      value: SEPOLIA,
-      icon: getChainIcon(SEPOLIA),
+      label: getChainName(SOURCE_SEPOLIA),
+      value: SOURCE_SEPOLIA,
+      icon: getChainIcon(SOURCE_SEPOLIA),
       color: "#aa00ff",
     }
   );

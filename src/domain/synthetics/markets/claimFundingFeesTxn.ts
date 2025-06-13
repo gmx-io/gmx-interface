@@ -4,7 +4,7 @@ import { Signer, ethers } from "ethers";
 import { getContract } from "config/contracts";
 import { callContract } from "lib/contracts";
 import { abis } from "sdk/abis";
-import { UiContractsChain } from "sdk/configs/chains";
+import { ContractsChainId } from "sdk/configs/chains";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
@@ -17,7 +17,7 @@ type Params = {
   setPendingTxns: (txns: any) => void;
 };
 
-export async function claimFundingFeesTxn(chainId: UiContractsChain, signer: Signer, p: Params) {
+export async function claimFundingFeesTxn(chainId: ContractsChainId, signer: Signer, p: Params) {
   const { setPendingTxns, fundingFees, account } = p;
 
   await validateSignerAddress(signer, account);

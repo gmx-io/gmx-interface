@@ -9,7 +9,7 @@ import { isAddressZero } from "lib/legacy";
 import { OrderMetricId } from "lib/metrics/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
@@ -41,7 +41,7 @@ export type CreateWithdrawalParams = {
   setPendingWithdrawal: SetPendingWithdrawal;
 };
 
-export async function createWithdrawalTxn(chainId: UiContractsChain, signer: Signer, p: CreateWithdrawalParams) {
+export async function createWithdrawalTxn(chainId: ContractsChainId, signer: Signer, p: CreateWithdrawalParams) {
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const withdrawalVaultAddress = getContract(chainId, "WithdrawalVault");
 

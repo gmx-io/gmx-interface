@@ -7,7 +7,7 @@ import {
   AVALANCHE_FUJI,
   BSС_MAINNET,
   BSС_TESTNET,
-  UiContractsChain,
+  ContractsChainId,
 } from "./chains";
 
 export const CONTRACTS = {
@@ -462,7 +462,7 @@ type ExtractContractNames<T extends object> = {
 
 export type ContractName = ExtractContractNames<typeof CONTRACTS>;
 
-export function getContract(chainId: UiContractsChain, name: ContractName): Address {
+export function getContract(chainId: ContractsChainId, name: ContractName): Address {
   if (!CONTRACTS[chainId]) {
     throw new Error(`Unknown chainId ${chainId}`);
   }

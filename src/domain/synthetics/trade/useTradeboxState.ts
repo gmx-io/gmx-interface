@@ -7,7 +7,7 @@ import set from "lodash/set";
 import values from "lodash/values";
 import { SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 
-import { UiContractsChain, UiSourceChain } from "config/chains";
+import { ContractsChainId, SourceChainId } from "config/chains";
 import { getKeepLeverageKey, getLeverageKey, getSyntheticsTradeOptionsKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -87,7 +87,7 @@ const INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE: StoredTradeOptions = {
 };
 
 export function useTradeboxState(
-  chainId: UiContractsChain,
+  chainId: ContractsChainId,
   enabled: boolean,
   p: {
     marketsData?: MarketsData;
@@ -95,7 +95,7 @@ export function useTradeboxState(
     positionsInfoData?: PositionsInfoData;
     ordersInfoData?: OrdersInfoData;
     tokensData?: TokensData;
-    srcChainId: UiSourceChain | undefined;
+    srcChainId: SourceChainId | undefined;
   }
 ) {
   const { marketsInfoData, marketsData, tokensData, positionsInfoData, ordersInfoData, srcChainId } = p;
@@ -840,7 +840,7 @@ function fallbackPositionTokens({
   allowedMarkets,
 }: {
   chainId: number;
-  srcChainId: UiSourceChain | undefined;
+  srcChainId: SourceChainId | undefined;
   prevState: StoredTradeOptions;
   nextState: StoredTradeOptions;
   allowedPayTokens: string[];

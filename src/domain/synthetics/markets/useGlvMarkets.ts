@@ -18,7 +18,7 @@ import {
 import { GM_DECIMALS } from "lib/legacy";
 import { ContractCallConfig, ContractCallsConfig, MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
-import type { UiContractsChain } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
 import { GlvInfoData, MarketsInfoData, getContractMarketPrices, getGlvMarketName } from ".";
@@ -50,7 +50,7 @@ export function useGlvMarketsInfo(
   deps: {
     marketsInfoData: MarketsInfoData | undefined;
     tokensData: TokensData | undefined;
-    chainId: UiContractsChain;
+    chainId: ContractsChainId;
     account: string | undefined;
   }
 ) {
