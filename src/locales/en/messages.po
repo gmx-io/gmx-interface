@@ -432,8 +432,6 @@ msgid "sell"
 msgstr "sell"
 
 #: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Switch to {0}"
 msgstr "Switch to {0}"
 
@@ -2038,10 +2036,6 @@ msgstr "Max"
 msgid "Checking code..."
 msgstr "Checking code..."
 
-#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-msgid "Switch to {settlementChainName}"
-msgstr "Switch to {settlementChainName}"
-
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "GM Pools"
@@ -3460,6 +3454,10 @@ msgstr "Order cannot be executed as the remaining position would be smaller than
 #: src/pages/Earn/ClaimModal.tsx
 msgid "Claiming..."
 msgstr "Claiming..."
+
+#: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+msgid "Switch to {0} to claim Price Impact Rebates"
+msgstr "Switch to {0} to claim Price Impact Rebates"
 
 #. Filter option for tokens favorites
 #: src/components/Synthetics/GmxAccountModal/AvailableToTradeAssetsView.tsx
@@ -6244,6 +6242,10 @@ msgstr "OPEN INTEREST"
 msgid "Failed to download trade history CSV."
 msgstr "Failed to download trade history CSV."
 
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+msgid "Switch to {settlementChainName} to claim Funding Fees"
+msgstr "Switch to {settlementChainName} to claim Funding Fees"
+
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"
@@ -8142,6 +8144,10 @@ msgstr "Escrowed GMX APR"
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Initial collateral"
 msgstr "Initial collateral"
+
+#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Switch to {0} to settle Funding Fees"
+msgstr "Switch to {0} to settle Funding Fees"
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."

@@ -432,8 +432,6 @@ msgid "sell"
 msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Switch to {0}"
 msgstr ""
 
@@ -2038,10 +2036,6 @@ msgstr ""
 msgid "Checking code..."
 msgstr ""
 
-#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-msgid "Switch to {settlementChainName}"
-msgstr ""
-
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "GM Pools"
@@ -3459,6 +3453,10 @@ msgstr ""
 #: src/pages/Earn/AffiliateClaimModal.tsx
 #: src/pages/Earn/ClaimModal.tsx
 msgid "Claiming..."
+msgstr ""
+
+#: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+msgid "Switch to {0} to claim Price Impact Rebates"
 msgstr ""
 
 #. Filter option for tokens favorites
@@ -6241,6 +6239,10 @@ msgstr ""
 msgid "Failed to download trade history CSV."
 msgstr ""
 
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+msgid "Switch to {settlementChainName} to claim Funding Fees"
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"
@@ -8135,6 +8137,10 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Initial collateral"
+msgstr ""
+
+#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Switch to {0} to settle Funding Fees"
 msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx

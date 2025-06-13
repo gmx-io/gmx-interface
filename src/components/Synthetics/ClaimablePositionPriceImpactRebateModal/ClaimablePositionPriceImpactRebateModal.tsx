@@ -63,7 +63,7 @@ export function ClaimablePositionPriceImpactRebateModal({
 
   const [buttonText, buttonDisabled] = useMemo(() => {
     if (srcChainId !== undefined) {
-      return [t`Switch to ${getChainName(chainId)}`, false];
+      return [t`Switch to ${getChainName(chainId)} to claim Price Impact Rebates`, false];
     }
     if (isSubmitting) return [t`Claiming...`, true];
     return [t`Claim`, false];

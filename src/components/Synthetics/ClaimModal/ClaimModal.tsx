@@ -143,7 +143,7 @@ export function ClaimModal(p: Props) {
   } else if (srcChainId !== undefined) {
     const settlementChainName = getChainName(chainId);
     buttonState = {
-      text: t`Switch to ${settlementChainName}`,
+      text: t`Switch to ${settlementChainName} to claim Funding Fees`,
       onClick: () => {
         switchNetwork(chainId, active);
       },

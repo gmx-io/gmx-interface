@@ -162,7 +162,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const [buttonText, buttonDisabled] = useMemo(() => {
     if (isSubmitting) return [t`Settling...`, true];
     if (srcChainId !== undefined) {
-      return [t`Switch to ${getChainName(chainId)}`, false];
+      return [t`Switch to ${getChainName(chainId)} to settle Funding Fees`, false];
     }
     if (positionKeys.length === 0) return [t`Select Positions`, true];
     return [t`Settle`, false];

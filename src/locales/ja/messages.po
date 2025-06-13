@@ -432,8 +432,6 @@ msgid "sell"
 msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Switch to {0}"
 msgstr ""
 
@@ -2038,10 +2036,6 @@ msgstr ""
 msgid "Checking code..."
 msgstr "コード確認中..."
 
-#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-msgid "Switch to {settlementChainName}"
-msgstr ""
-
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "GM Pools"
@@ -3460,6 +3454,10 @@ msgstr "ポジション金額が$5未満になるため注文を執行できま�
 #: src/pages/Earn/ClaimModal.tsx
 msgid "Claiming..."
 msgstr "請求中..."
+
+#: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+msgid "Switch to {0} to claim Price Impact Rebates"
+msgstr ""
 
 #. Filter option for tokens favorites
 #: src/components/Synthetics/GmxAccountModal/AvailableToTradeAssetsView.tsx
@@ -6241,6 +6239,10 @@ msgstr ""
 msgid "Failed to download trade history CSV."
 msgstr ""
 
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+msgid "Switch to {settlementChainName} to claim Funding Fees"
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"
@@ -8136,6 +8138,10 @@ msgstr "esGMXのAPR(実質年利)"
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Initial collateral"
 msgstr "最初の担保"
+
+#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Switch to {0} to settle Funding Fees"
+msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
