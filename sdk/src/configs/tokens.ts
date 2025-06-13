@@ -1502,6 +1502,29 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
       isSynthetic: true,
     },
+    {
+      name: "GMX",
+      symbol: "GMX",
+      address: "",
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
+      isPlatformToken: true,
+    },
+    {
+      name: "Escrowed GMX",
+      symbol: "ESGMX",
+      address: "",
+      decimals: 18,
+      isPlatformToken: true,
+    },
+    {
+      name: "GMX LP",
+      symbol: "GLP",
+      address: "",
+      decimals: 18,
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+      isPlatformToken: true,
+    },
     /** Placeholder tokens */
     {
       name: "GMX Market tokens",

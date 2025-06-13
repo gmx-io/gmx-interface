@@ -3,7 +3,7 @@ import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 import { zeroAddress } from "viem";
 
-import { AVALANCHE, getChainName } from "config/chains";
+import { AVALANCHE, BOTANIX, getChainName } from "config/chains";
 import { getContract } from "config/contracts";
 import { getIncentivesV2Url } from "config/links";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -194,6 +194,8 @@ export default function EarnV2() {
     );
   }
 
+  const isBotanix = chainId === BOTANIX;
+
   return (
     <div className="default-container page-layout">
       <StakeModal
@@ -254,60 +256,69 @@ export default function EarnV2() {
         title={t`Earn`}
         qa="earn-page"
         subtitle={
-          <div>
-            <Trans>
-              Stake <ExternalLink href="https://docs.gmx.io/docs/tokenomics/gmx-token">GMX</ExternalLink> and buy{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2">GM</ExternalLink> or{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">GLP</ExternalLink> to earn rewards.
-            </Trans>
-            {earnMsg && <div className="Page-descriptionж">{earnMsg}</div>}
-            {incentivesMessage}
-          </div>
+          !isBotanix ? (
+            <div>
+              <Trans>
+                Stake <ExternalLink href="https://docs.gmx.io/docs/tokenomics/gmx-token">GMX</ExternalLink> and buy{" "}
+                <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2">GM</ExternalLink> or{" "}
+                <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">GLP</ExternalLink> to earn rewards.
+              </Trans>
+              {earnMsg && <div className="Page-descriptionж">{earnMsg}</div>}
+              {incentivesMessage}
+            </div>
+          ) : null
         }
       />
 
-      <div className="StakeV2-content">
-        <div className="StakeV2-cards">
-          <GmxAndVotingPowerCard
-            processedData={processedData}
-            sbfGmxBalance={sbfGmxBalance}
-            setIsUnstakeModalVisible={setIsUnstakeModalVisible}
-            setUnstakeModalTitle={setUnstakeModalTitle}
-            setUnstakeModalMaxAmount={setUnstakeModalMaxAmount}
-            setUnstakeValue={setUnstakeValue}
-            setUnstakingTokenSymbol={setUnstakingTokenSymbol}
-            setUnstakeMethodName={setUnstakeMethodName}
-            showStakeGmxModal={showStakeGmxModal}
-          />
-          <TotalRewardsCard processedData={processedData} showStakeGmxModal={showStakeGmxModal} />
-          <GlpCard processedData={processedData} />
-          <EscrowedGmxCard
-            processedData={processedData}
-            showStakeEsGmxModal={showStakeEsGmxModal}
-            showUnstakeEsGmxModal={showUnstakeEsGmxModal}
-          />
+      {!isBotanix && (
+        <div className="StakeV2-content">
+          <div className="StakeV2-cards">
+            <GmxAndVotingPowerCard
+              processedData={processedData}
+              sbfGmxBalance={sbfGmxBalance}
+              setIsUnstakeModalVisible={setIsUnstakeModalVisible}
+              setUnstakeModalTitle={setUnstakeModalTitle}
+              setUnstakeModalMaxAmount={setUnstakeModalMaxAmount}
+              setUnstakeValue={setUnstakeValue}
+              setUnstakingTokenSymbol={setUnstakingTokenSymbol}
+              setUnstakeMethodName={setUnstakeMethodName}
+              showStakeGmxModal={showStakeGmxModal}
+            />
+            <TotalRewardsCard processedData={processedData} showStakeGmxModal={showStakeGmxModal} />
+            <GlpCard processedData={processedData} />
+            <EscrowedGmxCard
+              processedData={processedData}
+              showStakeEsGmxModal={showStakeEsGmxModal}
+              showUnstakeEsGmxModal={showUnstakeEsGmxModal}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="mt-15">
-        <PageTitle
-          title={<Trans>Select a GLV Vault</Trans>}
-          showNetworkIcon={false}
-          subtitle={
-            <Trans>
-              Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets.
-            </Trans>
-          }
-        />
-        <GlvList
-          marketsTokensApyData={marketsTokensApyData}
-          marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
-          glvTokensIncentiveAprData={glvTokensIncentiveAprData}
-          marketsTokensLidoAprData={marketsTokensLidoAprData}
-          glvTokensApyData={glvApyInfoData}
-          shouldScrollToTop
-          isDeposit={false}
-        />
+        {!isBotanix && (
+          <>
+            <PageTitle
+              title={<Trans>Select a GLV Vault</Trans>}
+              showNetworkIcon={false}
+              subtitle={
+                <Trans>
+                  Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in
+                  brackets.
+                </Trans>
+              }
+            />
+            <GlvList
+              marketsTokensApyData={marketsTokensApyData}
+              marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+              glvTokensIncentiveAprData={glvTokensIncentiveAprData}
+              marketsTokensLidoAprData={marketsTokensLidoAprData}
+              glvTokensApyData={glvApyInfoData}
+              shouldScrollToTop
+              isDeposit={false}
+            />
+          </>
+        )}
         <PageTitle
           title={t`Select a GM Pool`}
           showNetworkIcon={false}
@@ -326,7 +337,7 @@ export default function EarnV2() {
         />
       </div>
 
-      <Vesting processedData={processedData} />
+      {!isBotanix && <Vesting processedData={processedData} />}
 
       <div className="mt-10">
         <PageTitle

@@ -3,7 +3,6 @@ import { BaseContract, ethers } from "ethers";
 import { ReactNode } from "react";
 import { withRetry } from "viem";
 
-import { UiContractsChain } from "config/chains";
 import {
   getContract,
   getExchangeRouterContract,
@@ -65,7 +64,7 @@ export function isSimulationPassed(errorData: ErrorData) {
 /**
  * @deprecated use simulateExecution instead
  */
-export async function simulateExecuteTxn(chainId: UiContractsChain, p: SimulateExecuteParams) {
+export async function simulateExecuteTxn(chainId: number, p: SimulateExecuteParams) {
   const provider = getProvider(undefined, chainId);
 
   const multicallAddress = getContract(chainId, "Multicall");
