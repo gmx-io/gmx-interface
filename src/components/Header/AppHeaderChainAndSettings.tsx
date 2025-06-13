@@ -1,8 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import cx from "classnames";
 import { useCallback } from "react";
-import { useRouteMatch } from "react-router-dom";
 
 import {
   ARBITRUM,
@@ -115,9 +113,6 @@ export function AppHeaderChainAndSettings({ small, menuToggle, openSettings, sho
   const [redirectPopupTimestamp] = useRedirectPopupTimestamp();
 
   const tradeLink = tradePageVersion === 2 ? "/trade" : "/v1";
-  const isOnTradePageV1 = useRouteMatch("/v1");
-  const isOnTradePageV2 = useRouteMatch("/trade");
-  const shouldHideTradeButton = isOnTradePageV1 || isOnTradePageV2;
 
   const visualChainId = walletChainId !== undefined && isSourceChain(walletChainId) ? walletChainId : settlementChainId;
 
@@ -138,21 +133,18 @@ export function AppHeaderChainAndSettings({ small, menuToggle, openSettings, sho
   if (!active || !account) {
     return (
       <div className="App-header-user">
-        {shouldHideTradeButton ? null : (
-          <div
-            data-qa="trade"
-            className={cx("App-header-trade-link text-body-medium", { "homepage-header": isHomeSite() })}
-          >
+        {isHomeSite() ? (
+          <div data-qa="trade" className="App-header-trade-link homepage-header text-body-medium">
             <HeaderLink
               className="default-btn"
               onClick={trackLaunchApp}
-              to={`${tradeLink}?${isHomeSite() ? userAnalytics.getSessionIdUrlParams() : ""}`}
+              to={`${tradeLink}?${userAnalytics.getSessionIdUrlParams()}`}
               showRedirectModal={showRedirectModal}
             >
-              {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
+              <Trans>Launch App</Trans>
             </HeaderLink>
           </div>
-        )}
+        ) : null}
 
         {showConnectionOptions && openConnectModal ? (
           <>
@@ -183,18 +175,18 @@ export function AppHeaderChainAndSettings({ small, menuToggle, openSettings, sho
 
   return (
     <div className="App-header-user">
-      {shouldHideTradeButton ? null : (
+      {isHomeSite() ? (
         <div data-qa="trade" className="App-header-trade-link text-body-medium">
           <HeaderLink
             className="default-btn"
             onClick={trackLaunchApp}
-            to={`${tradeLink}?${isHomeSite() ? userAnalytics.getSessionIdUrlParams() : ""}`}
+            to={`${tradeLink}?${userAnalytics.getSessionIdUrlParams()}`}
             showRedirectModal={showRedirectModal}
           >
-            {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
+            <Trans>Launch App</Trans>
           </HeaderLink>
         </div>
-      )}
+      ) : null}
 
       {showConnectionOptions ? (
         <>

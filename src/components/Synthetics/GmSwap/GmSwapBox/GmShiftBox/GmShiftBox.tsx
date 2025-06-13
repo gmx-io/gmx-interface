@@ -1,5 +1,7 @@
 import { t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { FaChevronDown } from "react-icons/fa";
+import { FaChevronUp } from "react-icons/fa";
 import { useAccount } from "wagmi";
 
 import { getContract } from "config/contracts";
@@ -13,26 +15,24 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { GlvOrMarketInfo, getGlvOrMarketAddress, getMarketIndexName, isMarketInfo } from "domain/synthetics/markets";
+import { GlvOrMarketInfo, getGlvOrMarketAddress, getMarketIndexName } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
-import { getTokenData } from "domain/synthetics/tokens";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { MarketState } from "components/MarketSelector/types";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
-import { Mode, Operation } from "../types";
+import { Operation } from "../types";
 import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
 import { useGmWarningState } from "../useGmWarningState";
-import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
 import { useShiftAmounts } from "./useShiftAmounts";
 import { useShiftAvailableRelatedMarkets } from "./useShiftAvailableRelatedMarkets";
 import { useShiftFees } from "./useShiftFees";
@@ -44,19 +44,19 @@ import {
   SwitchToSettlementChainButtons,
   needSwitchToSettlementChain,
 } from "../GmDepositWithdrawalBox/SwitchToSettlementChainButtons";
+import { SwitchToSettlementChainWarning } from "../GmDepositWithdrawalBox/SwitchToSettlementChainWarning";
 import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
+import { SelectedPool } from "../SelectedPool";
 import { Swap } from "../Swap";
 
 export function GmShiftBox({
-  selectedMarketAddress,
-  onSelectMarket,
+  selectedGlvOrMarketAddress,
+  onSelectGlvOrMarket,
   onSelectedMarketForGlv,
-  onSetMode,
   onSetOperation,
 }: {
-  selectedMarketAddress: string | undefined;
-  onSelectMarket: (marketAddress: string) => void;
-  onSetMode: (mode: Mode) => void;
+  selectedGlvOrMarketAddress: string | undefined;
+  onSelectGlvOrMarket: (glvOrMarketAddress: string) => void;
   onSetOperation: (operation: Operation) => void;
   onSelectedMarketForGlv?: (marketAddress: string) => void;
 }) {
@@ -70,41 +70,40 @@ export function GmShiftBox({
   const uiFeeFactor = useUiFeeFactor();
   const gasLimits = useSelector(selectGasLimits);
   const gasPrice = useSelector(selectGasPrice);
-  const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
+  const glvAndMarketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const tokensData = useTokensData();
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketsInfo: sortedMarketsInfoByIndexToken } = useSortedPoolsWithIndexToken(
-    marketsInfoData,
+    glvAndMarketsInfoData,
     depositMarketTokensData
   );
 
-  const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
+  const shiftAvailableGlvOrMarkets = useSelector(selectShiftAvailableMarkets);
   const shiftAvailableRelatedMarkets = useShiftAvailableRelatedMarkets(
-    marketsInfoData,
+    glvAndMarketsInfoData,
     sortedMarketsInfoByIndexToken,
-    selectedMarketAddress
+    selectedGlvOrMarketAddress
   );
   const { shouldDisableValidationForTesting } = useSettings();
 
   const selectedMarketInfo = useMemo(() => {
-    const market = getByKey(marketsInfoData, selectedMarketAddress);
+    const market = getByKey(glvAndMarketsInfoData, selectedGlvOrMarketAddress);
     if (isGlvInfo(market)) {
       return undefined;
     }
 
     return market;
-  }, [selectedMarketAddress, marketsInfoData]);
-  const selectedIndexName = selectedMarketInfo ? getMarketIndexName(selectedMarketInfo) : "...";
-  const selectedToken = getByKey(depositMarketTokensData, selectedMarketAddress);
+  }, [selectedGlvOrMarketAddress, glvAndMarketsInfoData]);
+  const selectedToken = getByKey(depositMarketTokensData, selectedGlvOrMarketAddress);
   const toMarketInfo = useMemo(() => {
-    const market = getByKey(marketsInfoData, toMarketAddress);
+    const market = getByKey(glvAndMarketsInfoData, toMarketAddress);
 
     if (isGlvInfo(market)) {
       return undefined;
     }
 
     return market;
-  }, [toMarketAddress, marketsInfoData]);
+  }, [toMarketAddress, glvAndMarketsInfoData]);
   const toIndexName = toMarketInfo ? getMarketIndexName(toMarketInfo) : "...";
   const toToken = getByKey(depositMarketTokensData, toMarketAddress);
 
@@ -121,14 +120,7 @@ export function GmShiftBox({
 
   const { fees, executionFee } = useShiftFees({ gasLimits, gasPrice, tokensData, amounts, chainId });
 
-  const {
-    isAccepted,
-    setIsAccepted,
-    consentError,
-    shouldShowWarning,
-    shouldShowWarningForExecutionFee,
-    shouldShowWarningForPosition,
-  } = useGmWarningState({
+  const { shouldShowWarning, shouldShowWarningForExecutionFee, shouldShowWarningForPosition } = useGmWarningState({
     executionFee,
     fees,
   });
@@ -138,10 +130,12 @@ export function GmShiftBox({
   const hasBalance = selectedToken?.balance !== undefined && selectedToken.balance > 0n;
   const selectedTokenShowMaxButton = hasBalance && (noAmountSet || balanceNotEqualToAmount);
 
-  const selectedTokenDollarAmount =
-    amounts?.fromTokenUsd !== undefined && amounts.fromTokenUsd > 0n ? formatUsd(amounts.fromTokenUsd) : "";
-  const toTokenShowDollarAmount =
-    amounts?.toTokenUsd !== undefined && amounts.toTokenUsd > 0n ? formatUsd(amounts.toTokenUsd) : "";
+  const selectedTokenDollarAmount = formatUsd(
+    amounts?.fromTokenUsd !== undefined && amounts.fromTokenUsd > 0n ? amounts.fromTokenUsd : 0n
+  );
+  const toTokenShowDollarAmount = formatUsd(
+    amounts?.toTokenUsd !== undefined && amounts.toTokenUsd > 0n ? amounts.toTokenUsd : 0n
+  );
 
   const routerAddress = getContract(chainId, "SyntheticsRouter");
 
@@ -152,20 +146,20 @@ export function GmShiftBox({
     toMarketInfo,
     toToken,
     fees,
-    consentError,
     shouldDisableValidationForTesting,
     tokensData,
     marketTokenUsd: amounts?.fromTokenUsd,
     executionFee,
     routerAddress,
     payTokenAddresses: [selectedToken?.address ?? ""],
+    glvOrMarketInfoData: glvAndMarketsInfoData,
   });
 
   useUpdateMarkets({
-    marketsInfoData,
-    selectedMarketAddress,
-    shiftAvailableMarkets,
-    onSelectMarket,
+    glvAndMarketsInfoData,
+    selectedGlvOrMarketAddress,
+    shiftAvailableGlvOrMarkets,
+    onSelectGlvOrMarket,
     toMarketAddress,
     toMarketInfo,
     selectedMarketInfo,
@@ -176,13 +170,6 @@ export function GmShiftBox({
 
   const [glvForShiftAddress, setGlvForShiftAddress] = useState<string | undefined>(undefined);
   const [, setFirstTokenAddressForDeposit] = useDepositWithdrawalSetFirstTokenAddress(true, glvForShiftAddress);
-
-  useUpdateByQueryParams({
-    operation: Operation.Shift,
-    onSelectMarket,
-    setMode: onSetMode,
-    setOperation: onSetOperation,
-  });
 
   const handleFormSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
@@ -207,15 +194,6 @@ export function GmShiftBox({
     []
   );
   const handleSelectedTokenFocus = useCallback(() => setFocusedInput("selectedMarket"), []);
-  const handleSelectedTokenSelectMarket = useCallback(
-    (marketInfo: GlvOrMarketInfo): void => {
-      if (isMarketInfo(marketInfo)) {
-        onSelectMarket(marketInfo.marketTokenAddress);
-      }
-      handleClearValues();
-    },
-    [handleClearValues, onSelectMarket]
-  );
 
   const handleToTokenInputValueChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => setToMarketText(event.target.value),
@@ -223,11 +201,11 @@ export function GmShiftBox({
   );
   const handleToTokenFocus = useCallback(() => setFocusedInput("toMarket"), []);
   const handleToTokenSelectMarket = useCallback(
-    (marketInfo: GlvOrMarketInfo): void => {
-      if (isGlvInfo(marketInfo)) {
-        setGlvForShiftAddress(getGlvOrMarketAddress(marketInfo));
+    (glvOrMarketInfo: GlvOrMarketInfo): void => {
+      if (isGlvInfo(glvOrMarketInfo)) {
+        setGlvForShiftAddress(getGlvOrMarketAddress(glvOrMarketInfo));
       } else {
-        setToMarketAddress(marketInfo.marketTokenAddress);
+        setToMarketAddress(glvOrMarketInfo.marketTokenAddress);
         handleClearValues();
       }
     },
@@ -236,7 +214,7 @@ export function GmShiftBox({
 
   useEffect(() => {
     if (glvForShiftAddress && selectedMarketInfo) {
-      onSelectMarket(glvForShiftAddress);
+      onSelectGlvOrMarket(glvForShiftAddress);
       setFirstTokenAddressForDeposit(selectedMarketInfo.marketTokenAddress);
       onSetOperation(Operation.Deposit);
       onSelectedMarketForGlv?.(selectedMarketInfo.marketTokenAddress);
@@ -250,14 +228,14 @@ export function GmShiftBox({
   }, [
     glvForShiftAddress,
     onSelectedMarketForGlv,
-    onSelectMarket,
+    onSelectGlvOrMarket,
     onSetOperation,
     selectedMarketInfo,
     setFirstTokenAddressForDeposit,
   ]);
 
-  const getShiftReceiveMarketState = useCallback((marketInfo: GlvOrMarketInfo): MarketState => {
-    if (isGlvInfo(marketInfo)) {
+  const getShiftReceiveMarketState = useCallback((glvOrMarketInfo: GlvOrMarketInfo): MarketState => {
+    if (isGlvInfo(glvOrMarketInfo)) {
       return {
         warning:
           "Shifting From GM to GLV is similar to buying GLV with a GM token. You will be redirected to the buy GLV tab when selected.",
@@ -267,10 +245,16 @@ export function GmShiftBox({
     return {};
   }, []);
 
+  const [isExecutionDetailsOpen, setIsExecutionDetailsOpen] = useState(false);
+
+  const toggleExecutionDetails = () => {
+    setIsExecutionDetailsOpen(!isExecutionDetailsOpen);
+  };
+
   return (
     <>
       <form className="flex flex-col" onSubmit={handleFormSubmit}>
-        <div className="mb-12 flex flex-col gap-4">
+        <div className="mb-12 flex flex-col gap-2">
           <BuyInputSection
             topLeftLabel={t`Pay`}
             bottomLeftValue={selectedTokenDollarAmount}
@@ -280,25 +264,16 @@ export function GmShiftBox({
                 ? formatBalanceAmount(selectedToken.balance, selectedToken.decimals)
                 : undefined
             }
+            isBottomLeftValueMuted={amounts?.fromTokenUsd === undefined || amounts.fromTokenUsd === 0n}
             onClickBottomRightLabel={handleSelectedTokenClickMax}
             onClickMax={selectedTokenShowMaxButton ? handleSelectedTokenClickMax : undefined}
             inputValue={selectedMarketText}
             onInputValueChange={handleSelectedTokenInputValueChange}
             onFocus={handleSelectedTokenFocus}
           >
-            <PoolSelector
-              chainId={chainId}
-              size="l"
-              selectedMarketAddress={selectedMarketAddress}
-              markets={shiftAvailableMarkets}
-              onSelectMarket={handleSelectedTokenSelectMarket}
-              selectedIndexName={selectedIndexName}
-              showAllPools
-              isSideMenu
-              showIndexIcon
-              showBalances
-              marketTokensData={depositMarketTokensData}
-              favoriteKey="gm-token-selector"
+            <SelectedPool
+              selectedGlvOrMarketAddress={selectedGlvOrMarketAddress}
+              glvAndMarketsInfoData={glvAndMarketsInfoData}
             />
           </BuyInputSection>
           <div>
@@ -315,6 +290,7 @@ export function GmShiftBox({
               inputValue={toMarketText}
               onInputValueChange={handleToTokenInputValueChange}
               onFocus={handleToTokenFocus}
+              isBottomLeftValueMuted={amounts?.toTokenUsd === undefined || amounts.toTokenUsd === 0n}
             >
               <PoolSelector
                 chainId={chainId}
@@ -334,8 +310,27 @@ export function GmShiftBox({
             </BuyInputSection>
           </div>
         </div>
-        <ExchangeInfo className={shouldShowWarning ? undefined : "mb-10"} dividerClassName="App-card-divider">
-          <ExchangeInfo.Group>
+
+        <GmSwapWarningsRow
+          shouldShowWarning={shouldShowWarning}
+          shouldShowWarningForPosition={shouldShowWarningForPosition}
+          shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
+        />
+
+        <SwitchToSettlementChainWarning />
+
+        <div className="w-full border-b border-stroke-primary pb-14">
+          {needSwitchToSettlementChain(walletChainId) ? (
+            <SwitchToSettlementChainButtons />
+          ) : (
+            <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
+              {submitState.text}
+            </Button>
+          )}
+        </div>
+
+        <ExchangeInfo className={shouldShowWarning ? undefined : "mt-14"} dividerClassName="App-card-divider">
+          <div className="flex flex-col gap-14">
             <GmFees
               operation={Operation.Shift}
               totalFees={fees?.totalFees}
@@ -343,46 +338,12 @@ export function GmShiftBox({
               uiFee={fees?.uiFee}
               shiftFee={fees?.shiftFee}
             />
-            <NetworkFeeRow rowPadding executionFee={executionFee} />
-          </ExchangeInfo.Group>
-
-          <GmSwapWarningsRow
-            isSingle={false}
-            isAccepted={isAccepted}
-            shouldShowWarning={shouldShowWarning}
-            shouldShowWarningForPosition={shouldShowWarningForPosition}
-            shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
-            setIsAccepted={setIsAccepted}
-          />
-        </ExchangeInfo>
-
-        {submitState.isAllowanceLoaded && submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && (
-          <div>
-            {submitState.tokensToApprove.map((address) => {
-              const token = getTokenData(tokensData, address)!;
-              let marketTokenData =
-                address === selectedToken?.address && getByKey(marketsInfoData, selectedToken?.address);
-              return (
-                <div key={address}>
-                  <ApproveTokenButton
-                    key={address}
-                    tokenAddress={address}
-                    tokenSymbol={marketTokenData ? `GM: ${marketTokenData.name}` : token.assetSymbol ?? token.symbol}
-                    spenderAddress={routerAddress}
-                  />
-                </div>
-              );
-            })}
+            <SyntheticsInfoRow label={t`Execution Details`} onClick={toggleExecutionDetails}>
+              {isExecutionDetailsOpen ? <FaChevronUp size={10} /> : <FaChevronDown size={10} />}
+            </SyntheticsInfoRow>
+            {isExecutionDetailsOpen && <NetworkFeeRow rowPadding executionFee={executionFee} />}
           </div>
-        )}
-
-        {needSwitchToSettlementChain(walletChainId) ? (
-          <SwitchToSettlementChainButtons />
-        ) : (
-          <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
-            {submitState.text}
-          </Button>
-        )}
+        </ExchangeInfo>
       </form>
     </>
   );

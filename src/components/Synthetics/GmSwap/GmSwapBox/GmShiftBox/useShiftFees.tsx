@@ -40,7 +40,7 @@ export function useShiftFees({
     });
     const shiftFee = getFeeItem(0n, basisUsd);
 
-    const totalFees = getTotalFeeItem([swapPriceImpact, uiFee].filter(Boolean) as FeeItem[]);
+    const totalFees = getTotalFeeItem([uiFee, shiftFee].filter(Boolean) as FeeItem[]);
     const fees: GmSwapFees = {
       swapPriceImpact,
       totalFees,

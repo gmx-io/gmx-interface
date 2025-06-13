@@ -10,18 +10,18 @@ import { GM_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { BN_ZERO, expandDecimals, numberToBigint, PRECISION } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
+import { ApyPeriod, useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import type { UiContractsChain } from "sdk/configs/chains";
 import { getTokenBySymbolSafe } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
+import { useLiquidityProvidersIncentives } from "../common/useIncentiveStats";
+import { useTokensDataRequest } from "../tokens";
 import { isGlvEnabled, isGlvInfo } from "./glv";
 import { GlvAndGmMarketsInfoData, MarketTokensAPRData } from "./types";
 import { useGlvMarketsInfo } from "./useGlvMarkets";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
 import { useMarketTokensData } from "./useMarketTokensData";
-import { useLiquidityProvidersIncentives } from "../common/useIncentiveStats";
-import { useTokensDataRequest } from "../tokens";
 import { convertToUsd } from "../tokens/utils";
 
 type GmGlvTokensAPRResult = {
@@ -235,7 +235,10 @@ function useIncentivesBonusApr(
   return marketAndGlvTokensAPRData;
 }
 
-export function useGmMarketsApy(chainId: UiContractsChain): GmGlvTokensAPRResult {
+export function useGmMarketsApy(
+  chainId: UiContractsChain,
+  { period }: { period: ApyPeriod } | undefined = { period: "total" }
+): GmGlvTokensAPRResult {
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false, withGlv: false });
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId);
@@ -259,7 +262,9 @@ export function useGmMarketsApy(chainId: UiContractsChain): GmGlvTokensAPRResult
   const subsquidUrl = getSubgraphUrl(chainId, "subsquid");
 
   const key =
-    marketAddresses.length && marketTokensData && subsquidUrl ? marketAddresses.concat("apr-subsquid").join(",") : null;
+    marketAddresses.length && marketTokensData && subsquidUrl
+      ? marketAddresses.concat("apr-subsquid", period).join(",")
+      : null;
 
   const lidoApr = useLidoStakeApr();
 
@@ -267,7 +272,7 @@ export function useGmMarketsApy(chainId: UiContractsChain): GmGlvTokensAPRResult
 
   const { data } = useSWR(key, {
     fetcher: async (): Promise<SwrResult> => {
-      const apys = await oracleKeeperFetcher.fetchApys();
+      const apys = await oracleKeeperFetcher.fetchApys(period);
       const wstEthToken = getTokenBySymbolSafe(chainId, "wstETH");
 
       const marketsTokensLidoAprData = marketAddresses.reduce((acc, marketAddress) => {

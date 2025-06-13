@@ -30,8 +30,9 @@ export async function removeSubaccountWalletTxn(
 
   return callContract(chainId, subaccountRouter, "removeSubaccount", [subaccountAddress], {
     value: 0n,
-    hideSentMsg: true,
     hideSuccessMsg: true,
+    hideSentMsg: true,
+    hideErrorMsg: true,
   });
 }
 

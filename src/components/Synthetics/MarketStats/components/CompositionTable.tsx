@@ -1,180 +1,126 @@
 import { t, Trans } from "@lingui/macro";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 import { USD_DECIMALS } from "config/factors";
-import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getPoolUsdWithoutPnl, GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets";
-import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { TokenData } from "domain/synthetics/tokens";
-import { bigintToNumber, formatAmountHuman } from "lib/numbers";
+import { getMarketIndexName } from "domain/synthetics/markets/utils";
+import { formatAmountHuman } from "lib/numbers";
+import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
 
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
-import { getGlvOrMarketAddress, getMarketIndexName } from "../../../../domain/synthetics/markets/utils";
-import { useGlvGmMarketsWithComposition } from "../hooks/useMarketGlvGmMarketsCompositions";
+import { CompositionItem, CompositionType, getCompositionPercentage } from "../hooks/useCompositionData";
 
-interface CompositionTableGmProps {
-  marketInfo?: GlvOrMarketInfo;
+interface Props<T extends CompositionType> {
+  composition: CompositionItem[];
+  compositionType: T;
 }
 
-interface GmTableConfig {
-  type: "gm";
-  data: {
-    token: TokenData;
-    amount: bigint;
-    prefix: string;
-    composition: number;
-  }[];
-}
-interface GlvTableConfig {
-  type: "glv";
-  data: {
-    market: MarketInfo;
-    tvl: readonly [used: bigint, available: bigint];
-    composition: number;
-  }[];
-}
+const CLOSED_COUNT = 5;
 
-export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
-  const marketsInfoData = useSelector(selectMarketsInfoData);
-  const tokensData = useSelector(selectTokensData);
-  const isGlv = marketInfo && isGlvInfo(marketInfo);
+export function CompositionTable<T extends CompositionType>({ composition, compositionType }: Props<T>) {
+  const [isOpen, setIsOpen] = useState(false);
 
-  const selectGmComposition = useGlvGmMarketsWithComposition(true, marketInfo && getGlvOrMarketAddress(marketInfo));
-
-  const [col1, col2, col3] = useMemo(() => {
-    if (isGlv) {
-      return [t`MARKET`, t`TVL`, t`COMP.`];
+  const columns = useMemo(() => {
+    if (compositionType === "market") {
+      return [t`MARKET`, t`TVL/CAP`, t`COMP.`];
     }
 
-    return [t`COLLATERAL`, t`AMOUNT`, t`COMP.`];
-  }, [isGlv]);
+    return [t`COLLATERAL`, t`COMP.`];
+  }, [compositionType]);
 
-  const table: GmTableConfig | GlvTableConfig | undefined = useMemo(() => {
-    if (!marketInfo) {
-      return undefined;
+  const sum = useMemo(() => {
+    return composition.reduce(
+      (acc, item) => (item.type === "market" ? acc + item.gmBalanceUsd : acc + item.amount),
+      0n
+    );
+  }, [composition]);
+
+  const toggleOpen = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const isMobile = usePoolsIsMobilePage();
+
+  const filteredComposition = useMemo(() => {
+    if (isMobile && !isOpen) {
+      return composition.slice(0, CLOSED_COUNT);
     }
 
-    if (isGlv) {
-      if (!marketsInfoData || !tokensData) {
-        return undefined;
-      }
-
-      return {
-        type: "glv",
-        data: selectGmComposition,
-      };
-    }
-
-    const { longToken, shortToken, longPoolAmount, shortPoolAmount } = marketInfo;
-    const longPoolAmountUsd = marketInfo ? getPoolUsdWithoutPnl(marketInfo, true, "midPrice") : undefined;
-    const shortPoolAmountUsd = marketInfo ? getPoolUsdWithoutPnl(marketInfo, false, "midPrice") : undefined;
-
-    const sum = bigintToNumber((longPoolAmountUsd ?? 0n) + (shortPoolAmountUsd ?? 0n), USD_DECIMALS);
-
-    const compLong = sum > 0 ? (bigintToNumber(longPoolAmountUsd ?? 0n, USD_DECIMALS) * 100) / sum : 0;
-    const compShort = sum > 0 ? (bigintToNumber(shortPoolAmountUsd ?? 0n, USD_DECIMALS) * 100) / sum : 0;
-
-    return {
-      type: "gm",
-      data: [
-        {
-          token: longToken,
-          amount: longPoolAmount,
-          composition: compLong,
-          prefix: "Long",
-        },
-        {
-          token: shortToken,
-          amount: shortPoolAmount,
-          composition: compShort,
-          prefix: "Short",
-        },
-      ],
-    };
-  }, [marketInfo, marketsInfoData, isGlv, tokensData, selectGmComposition]);
-
-  const rows = useMemo(() => {
-    if (!table) {
-      return null;
-    }
-
-    if (table.type === "glv") {
-      return table.data.map(({ composition, market, tvl }, index) => {
-        if (composition === undefined || composition === undefined || !market?.indexToken) {
-          return null;
-        }
-
-        return (
-          <TableTr key={`comp-data-${market.longTokenAddress}-${index}`} hoverable={false} bordered={false}>
-            <TableTd className="!py-8">
-              <span className="flex flex-row items-center gap-8">
-                <span
-                  className="inline-block h-10 w-10 rounded-10"
-                  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                  style={{ backgroundColor: TOKEN_COLOR_MAP[market.indexToken.symbol] ?? TOKEN_COLOR_MAP.default }}
-                />
-                <TokenIcon symbol={market.indexToken.symbol} displaySize={24} />
-                <span>{getMarketIndexName(market)}</span>
-              </span>
-            </TableTd>
-            <TableTd className="!py-8">
-              {formatAmountHuman(tvl[0], USD_DECIMALS, true, 1)}/{formatAmountHuman(tvl[1], USD_DECIMALS, true, 1)}
-            </TableTd>
-            <TableTd className="!py-8">{composition.toFixed(2)}%</TableTd>
-          </TableTr>
-        );
-      });
-    }
-
-    if (table.type === "gm") {
-      return table.data.map(({ amount, composition, token, prefix }, index) => {
-        if (amount === undefined || composition === undefined || !token) {
-          return null;
-        }
-
-        return (
-          <TableTr key={`comp-data-${token.address}-${index}`} hoverable={false} bordered={false}>
-            <TableTd className="!py-8">
-              <span className="flex flex-row items-center gap-8">
-                <span
-                  className="inline-block h-10 w-10 rounded-10"
-                  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                  style={{ backgroundColor: TOKEN_COLOR_MAP[token.symbol] ?? TOKEN_COLOR_MAP.default }}
-                />
-                <TokenIcon symbol={token.symbol} displaySize={24} />
-                <span>
-                  <span className="text-slate-100">{prefix}:</span> {token.symbol}
-                </span>
-              </span>
-            </TableTd>
-            <TableTd className="!py-8">{formatAmountHuman(amount, token.decimals, false, 3)}</TableTd>
-            <TableTd className="!py-8">{composition.toFixed(2)}%</TableTd>
-          </TableTr>
-        );
-      });
-    }
-  }, [table]);
+    return composition;
+  }, [composition, isMobile, isOpen]);
 
   return (
-    <table className="w-full">
-      <thead>
-        <TableTheadTr bordered>
-          <TableTh className="sticky top-0 bg-slate-800">
-            <Trans>{col1}</Trans>
-          </TableTh>
-          <TableTh className="sticky top-0 bg-slate-800">
-            <Trans>{col2}</Trans>
-          </TableTh>
-          <TableTh className="sticky top-0 bg-slate-800">
-            <Trans>{col3}</Trans>
-          </TableTh>
-        </TableTheadTr>
-      </thead>
-      <tbody>{rows}</tbody>
-    </table>
+    <div className="w-full">
+      <table className="w-full">
+        <thead>
+          <TableTheadTr bordered>
+            {columns.map((column) => (
+              <TableTh key={column} className="sticky top-0 bg-slate-800">
+                <Trans>{column}</Trans>
+              </TableTh>
+            ))}
+          </TableTheadTr>
+        </thead>
+        <tbody>
+          {filteredComposition.map((item) => (
+            <CompositionTableRow
+              key={item.type === "market" ? item.market.marketTokenAddress : `${item.token.address}-${item.side}`}
+              item={item}
+              sum={sum}
+            />
+          ))}
+        </tbody>
+      </table>
+      {isMobile && composition.length > CLOSED_COUNT ? (
+        <div className="flex flex-row items-center justify-between px-16 pb-20" onClick={toggleOpen}>
+          <span className="text-slate-100">{isOpen ? <Trans>Show less</Trans> : <Trans>Show more</Trans>}</span>
+          {isOpen ? <FaChevronUp size={8} /> : <FaChevronDown size={8} />}
+        </div>
+      ) : null}
+    </div>
   );
 }
+
+const CompositionTableRow = ({ item, sum }: { item: CompositionItem; sum: bigint }) => {
+  const tokenColor =
+    TOKEN_COLOR_MAP[item.type === "market" ? item.market.indexToken.symbol : item.token.symbol] ??
+    TOKEN_COLOR_MAP.default;
+
+  const tokenCircleStyles = useMemo(() => {
+    return {
+      backgroundColor: tokenColor,
+    };
+  }, [tokenColor]);
+
+  return (
+    <TableTr className="pointer-events-none !border-0">
+      <TableTd>
+        <div className="flex flex-row items-center gap-4">
+          <span className="mr-8 inline-block h-10 w-10 shrink-0 rounded-10" style={tokenCircleStyles} />
+          <TokenIcon
+            symbol={item.type === "market" ? item.market.indexToken.symbol : item.token.symbol}
+            displaySize={24}
+          />
+          {item.type === "backing" ? <span className="capitalize text-slate-100">{item.side}:</span> : null}
+          <span className="overflow-hidden text-ellipsis whitespace-nowrap">
+            {item.type === "market" ? <>{getMarketIndexName(item.market)}</> : item.token.symbol}
+          </span>
+        </div>
+      </TableTd>
+      {item.type === "market" ? (
+        <TableTd>
+          {formatAmountHuman(item.tvl[0], USD_DECIMALS, true, 1)}/
+          {formatAmountHuman(item.tvl[1], USD_DECIMALS, true, 1)}
+        </TableTd>
+      ) : null}
+      <TableTd>
+        {item.type === "market"
+          ? `${getCompositionPercentage(item.gmBalanceUsd, sum)}%`
+          : `${getCompositionPercentage(item.amount, sum)}%`}
+      </TableTd>
+    </TableTr>
+  );
+};

@@ -75,8 +75,8 @@ export type SyntheticsPageType =
   | "pools"
   | "leaderboard"
   | "competitions"
-  | "dashboard"
-  | "earn"
+  | "stats"
+  | "stake"
   | "buy"
   | "home"
   | "gmxAccount"
@@ -149,7 +149,7 @@ export function SyntheticsStateContextProvider({
 }: {
   children: ReactNode;
   skipLocalReferralCode: boolean;
-  pageType: SyntheticsState["pageType"];
+  pageType: SyntheticsPageType;
   overrideChainId?: UiContractsChain;
 }) {
   const { chainId: selectedChainId, srcChainId } = useChainId();
@@ -193,7 +193,7 @@ export function SyntheticsStateContextProvider({
   const { isFirstOrder } = useIsFirstOrder(chainId, { account });
 
   const shouldFetchGlvMarkets =
-    isGlvEnabled(chainId) && (pageType === "pools" || pageType === "earn" || pageType === "buy");
+    isGlvEnabled(chainId) && (pageType === "pools" || pageType === "buy" || pageType === "stake");
   const glvInfo = useGlvMarketsInfo(shouldFetchGlvMarkets, {
     marketsInfoData: marketsInfo.marketsInfoData,
     tokensData: marketsInfo.tokensData,

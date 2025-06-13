@@ -37,10 +37,7 @@ export declare namespace EventUtils {
     value: AddressLike[];
   };
 
-  export type AddressArrayKeyValueStructOutput = [
-    key: string,
-    value: string[]
-  ] & { key: string; value: string[] };
+  export type AddressArrayKeyValueStructOutput = [key: string, value: string[]] & { key: string; value: string[] };
 
   export type AddressItemsStruct = {
     items: EventUtils.AddressKeyValueStruct[];
@@ -49,7 +46,7 @@ export declare namespace EventUtils {
 
   export type AddressItemsStructOutput = [
     items: EventUtils.AddressKeyValueStructOutput[],
-    arrayItems: EventUtils.AddressArrayKeyValueStructOutput[]
+    arrayItems: EventUtils.AddressArrayKeyValueStructOutput[],
   ] & {
     items: EventUtils.AddressKeyValueStructOutput[];
     arrayItems: EventUtils.AddressArrayKeyValueStructOutput[];
@@ -76,7 +73,7 @@ export declare namespace EventUtils {
 
   export type UintItemsStructOutput = [
     items: EventUtils.UintKeyValueStructOutput[],
-    arrayItems: EventUtils.UintArrayKeyValueStructOutput[]
+    arrayItems: EventUtils.UintArrayKeyValueStructOutput[],
   ] & {
     items: EventUtils.UintKeyValueStructOutput[];
     arrayItems: EventUtils.UintArrayKeyValueStructOutput[];
@@ -103,7 +100,7 @@ export declare namespace EventUtils {
 
   export type IntItemsStructOutput = [
     items: EventUtils.IntKeyValueStructOutput[],
-    arrayItems: EventUtils.IntArrayKeyValueStructOutput[]
+    arrayItems: EventUtils.IntArrayKeyValueStructOutput[],
   ] & {
     items: EventUtils.IntKeyValueStructOutput[];
     arrayItems: EventUtils.IntArrayKeyValueStructOutput[];
@@ -118,10 +115,7 @@ export declare namespace EventUtils {
 
   export type BoolArrayKeyValueStruct = { key: string; value: boolean[] };
 
-  export type BoolArrayKeyValueStructOutput = [
-    key: string,
-    value: boolean[]
-  ] & { key: string; value: boolean[] };
+  export type BoolArrayKeyValueStructOutput = [key: string, value: boolean[]] & { key: string; value: boolean[] };
 
   export type BoolItemsStruct = {
     items: EventUtils.BoolKeyValueStruct[];
@@ -130,7 +124,7 @@ export declare namespace EventUtils {
 
   export type BoolItemsStructOutput = [
     items: EventUtils.BoolKeyValueStructOutput[],
-    arrayItems: EventUtils.BoolArrayKeyValueStructOutput[]
+    arrayItems: EventUtils.BoolArrayKeyValueStructOutput[],
   ] & {
     items: EventUtils.BoolKeyValueStructOutput[];
     arrayItems: EventUtils.BoolArrayKeyValueStructOutput[];
@@ -145,10 +139,7 @@ export declare namespace EventUtils {
 
   export type Bytes32ArrayKeyValueStruct = { key: string; value: BytesLike[] };
 
-  export type Bytes32ArrayKeyValueStructOutput = [
-    key: string,
-    value: string[]
-  ] & { key: string; value: string[] };
+  export type Bytes32ArrayKeyValueStructOutput = [key: string, value: string[]] & { key: string; value: string[] };
 
   export type Bytes32ItemsStruct = {
     items: EventUtils.Bytes32KeyValueStruct[];
@@ -157,7 +148,7 @@ export declare namespace EventUtils {
 
   export type Bytes32ItemsStructOutput = [
     items: EventUtils.Bytes32KeyValueStructOutput[],
-    arrayItems: EventUtils.Bytes32ArrayKeyValueStructOutput[]
+    arrayItems: EventUtils.Bytes32ArrayKeyValueStructOutput[],
   ] & {
     items: EventUtils.Bytes32KeyValueStructOutput[];
     arrayItems: EventUtils.Bytes32ArrayKeyValueStructOutput[];
@@ -172,10 +163,7 @@ export declare namespace EventUtils {
 
   export type BytesArrayKeyValueStruct = { key: string; value: BytesLike[] };
 
-  export type BytesArrayKeyValueStructOutput = [
-    key: string,
-    value: string[]
-  ] & { key: string; value: string[] };
+  export type BytesArrayKeyValueStructOutput = [key: string, value: string[]] & { key: string; value: string[] };
 
   export type BytesItemsStruct = {
     items: EventUtils.BytesKeyValueStruct[];
@@ -184,7 +172,7 @@ export declare namespace EventUtils {
 
   export type BytesItemsStructOutput = [
     items: EventUtils.BytesKeyValueStructOutput[],
-    arrayItems: EventUtils.BytesArrayKeyValueStructOutput[]
+    arrayItems: EventUtils.BytesArrayKeyValueStructOutput[],
   ] & {
     items: EventUtils.BytesKeyValueStructOutput[];
     arrayItems: EventUtils.BytesArrayKeyValueStructOutput[];
@@ -199,10 +187,7 @@ export declare namespace EventUtils {
 
   export type StringArrayKeyValueStruct = { key: string; value: string[] };
 
-  export type StringArrayKeyValueStructOutput = [
-    key: string,
-    value: string[]
-  ] & { key: string; value: string[] };
+  export type StringArrayKeyValueStructOutput = [key: string, value: string[]] & { key: string; value: string[] };
 
   export type StringItemsStruct = {
     items: EventUtils.StringKeyValueStruct[];
@@ -211,7 +196,7 @@ export declare namespace EventUtils {
 
   export type StringItemsStructOutput = [
     items: EventUtils.StringKeyValueStructOutput[],
-    arrayItems: EventUtils.StringArrayKeyValueStructOutput[]
+    arrayItems: EventUtils.StringArrayKeyValueStructOutput[],
   ] & {
     items: EventUtils.StringKeyValueStructOutput[];
     arrayItems: EventUtils.StringArrayKeyValueStructOutput[];
@@ -234,7 +219,7 @@ export declare namespace EventUtils {
     boolItems: EventUtils.BoolItemsStructOutput,
     bytes32Items: EventUtils.Bytes32ItemsStructOutput,
     bytesItems: EventUtils.BytesItemsStructOutput,
-    stringItems: EventUtils.StringItemsStructOutput
+    stringItems: EventUtils.StringItemsStructOutput,
   ] & {
     addressItems: EventUtils.AddressItemsStructOutput;
     uintItems: EventUtils.UintItemsStructOutput;
@@ -259,30 +244,16 @@ export interface EventEmitterInterface extends Interface {
       | "roleStore"
   ): FunctionFragment;
 
-  getEvent(
-    nameOrSignatureOrTopic: "EventLog" | "EventLog1" | "EventLog2"
-  ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "EventLog" | "EventLog1" | "EventLog2"): EventFragment;
 
-  encodeFunctionData(
-    functionFragment: "emitDataLog1",
-    values: [BytesLike, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "emitDataLog2",
-    values: [BytesLike, BytesLike, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "emitDataLog3",
-    values: [BytesLike, BytesLike, BytesLike, BytesLike]
-  ): string;
+  encodeFunctionData(functionFragment: "emitDataLog1", values: [BytesLike, BytesLike]): string;
+  encodeFunctionData(functionFragment: "emitDataLog2", values: [BytesLike, BytesLike, BytesLike]): string;
+  encodeFunctionData(functionFragment: "emitDataLog3", values: [BytesLike, BytesLike, BytesLike, BytesLike]): string;
   encodeFunctionData(
     functionFragment: "emitDataLog4",
     values: [BytesLike, BytesLike, BytesLike, BytesLike, BytesLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "emitEventLog",
-    values: [string, EventUtils.EventLogDataStruct]
-  ): string;
+  encodeFunctionData(functionFragment: "emitEventLog", values: [string, EventUtils.EventLogDataStruct]): string;
   encodeFunctionData(
     functionFragment: "emitEventLog1",
     values: [string, BytesLike, EventUtils.EventLogDataStruct]
@@ -293,34 +264,13 @@ export interface EventEmitterInterface extends Interface {
   ): string;
   encodeFunctionData(functionFragment: "roleStore", values?: undefined): string;
 
-  decodeFunctionResult(
-    functionFragment: "emitDataLog1",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "emitDataLog2",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "emitDataLog3",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "emitDataLog4",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "emitEventLog",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "emitEventLog1",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "emitEventLog2",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "emitDataLog1", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "emitDataLog2", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "emitDataLog3", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "emitDataLog4", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "emitEventLog", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "emitEventLog1", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "emitEventLog2", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "roleStore", data: BytesLike): Result;
 }
 
@@ -329,13 +279,13 @@ export namespace EventLogEvent {
     msgSender: AddressLike,
     eventName: string,
     eventNameHash: string,
-    eventData: EventUtils.EventLogDataStruct
+    eventData: EventUtils.EventLogDataStruct,
   ];
   export type OutputTuple = [
     msgSender: string,
     eventName: string,
     eventNameHash: string,
-    eventData: EventUtils.EventLogDataStructOutput
+    eventData: EventUtils.EventLogDataStructOutput,
   ];
   export interface OutputObject {
     msgSender: string;
@@ -355,14 +305,14 @@ export namespace EventLog1Event {
     eventName: string,
     eventNameHash: string,
     topic1: BytesLike,
-    eventData: EventUtils.EventLogDataStruct
+    eventData: EventUtils.EventLogDataStruct,
   ];
   export type OutputTuple = [
     msgSender: string,
     eventName: string,
     eventNameHash: string,
     topic1: string,
-    eventData: EventUtils.EventLogDataStructOutput
+    eventData: EventUtils.EventLogDataStructOutput,
   ];
   export interface OutputObject {
     msgSender: string;
@@ -384,7 +334,7 @@ export namespace EventLog2Event {
     eventNameHash: string,
     topic1: BytesLike,
     topic2: BytesLike,
-    eventData: EventUtils.EventLogDataStruct
+    eventData: EventUtils.EventLogDataStruct,
   ];
   export type OutputTuple = [
     msgSender: string,
@@ -392,7 +342,7 @@ export namespace EventLog2Event {
     eventNameHash: string,
     topic1: string,
     topic2: string,
-    eventData: EventUtils.EventLogDataStructOutput
+    eventData: EventUtils.EventLogDataStructOutput,
   ];
   export interface OutputObject {
     msgSender: string;
@@ -425,43 +375,25 @@ export interface EventEmitter extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(
-    event: TCEvent
-  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(
-    event?: TCEvent
-  ): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
-  emitDataLog1: TypedContractMethod<
-    [topic1: BytesLike, data: BytesLike],
-    [void],
-    "nonpayable"
-  >;
+  emitDataLog1: TypedContractMethod<[topic1: BytesLike, data: BytesLike], [void], "nonpayable">;
 
-  emitDataLog2: TypedContractMethod<
-    [topic1: BytesLike, topic2: BytesLike, data: BytesLike],
-    [void],
-    "nonpayable"
-  >;
+  emitDataLog2: TypedContractMethod<[topic1: BytesLike, topic2: BytesLike, data: BytesLike], [void], "nonpayable">;
 
   emitDataLog3: TypedContractMethod<
     [topic1: BytesLike, topic2: BytesLike, topic3: BytesLike, data: BytesLike],
@@ -470,13 +402,7 @@ export interface EventEmitter extends BaseContract {
   >;
 
   emitDataLog4: TypedContractMethod<
-    [
-      topic1: BytesLike,
-      topic2: BytesLike,
-      topic3: BytesLike,
-      topic4: BytesLike,
-      data: BytesLike
-    ],
+    [topic1: BytesLike, topic2: BytesLike, topic3: BytesLike, topic4: BytesLike, data: BytesLike],
     [void],
     "nonpayable"
   >;
@@ -488,46 +414,27 @@ export interface EventEmitter extends BaseContract {
   >;
 
   emitEventLog1: TypedContractMethod<
-    [
-      eventName: string,
-      topic1: BytesLike,
-      eventData: EventUtils.EventLogDataStruct
-    ],
+    [eventName: string, topic1: BytesLike, eventData: EventUtils.EventLogDataStruct],
     [void],
     "nonpayable"
   >;
 
   emitEventLog2: TypedContractMethod<
-    [
-      eventName: string,
-      topic1: BytesLike,
-      topic2: BytesLike,
-      eventData: EventUtils.EventLogDataStruct
-    ],
+    [eventName: string, topic1: BytesLike, topic2: BytesLike, eventData: EventUtils.EventLogDataStruct],
     [void],
     "nonpayable"
   >;
 
   roleStore: TypedContractMethod<[], [string], "view">;
 
-  getFunction<T extends ContractMethod = ContractMethod>(
-    key: string | FunctionFragment
-  ): T;
+  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
   getFunction(
     nameOrSignature: "emitDataLog1"
-  ): TypedContractMethod<
-    [topic1: BytesLike, data: BytesLike],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[topic1: BytesLike, data: BytesLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "emitDataLog2"
-  ): TypedContractMethod<
-    [topic1: BytesLike, topic2: BytesLike, data: BytesLike],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[topic1: BytesLike, topic2: BytesLike, data: BytesLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "emitDataLog3"
   ): TypedContractMethod<
@@ -538,71 +445,38 @@ export interface EventEmitter extends BaseContract {
   getFunction(
     nameOrSignature: "emitDataLog4"
   ): TypedContractMethod<
-    [
-      topic1: BytesLike,
-      topic2: BytesLike,
-      topic3: BytesLike,
-      topic4: BytesLike,
-      data: BytesLike
-    ],
+    [topic1: BytesLike, topic2: BytesLike, topic3: BytesLike, topic4: BytesLike, data: BytesLike],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "emitEventLog"
-  ): TypedContractMethod<
-    [eventName: string, eventData: EventUtils.EventLogDataStruct],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[eventName: string, eventData: EventUtils.EventLogDataStruct], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "emitEventLog1"
   ): TypedContractMethod<
-    [
-      eventName: string,
-      topic1: BytesLike,
-      eventData: EventUtils.EventLogDataStruct
-    ],
+    [eventName: string, topic1: BytesLike, eventData: EventUtils.EventLogDataStruct],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "emitEventLog2"
   ): TypedContractMethod<
-    [
-      eventName: string,
-      topic1: BytesLike,
-      topic2: BytesLike,
-      eventData: EventUtils.EventLogDataStruct
-    ],
+    [eventName: string, topic1: BytesLike, topic2: BytesLike, eventData: EventUtils.EventLogDataStruct],
     [void],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "roleStore"
-  ): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "roleStore"): TypedContractMethod<[], [string], "view">;
 
   getEvent(
     key: "EventLog"
-  ): TypedContractEvent<
-    EventLogEvent.InputTuple,
-    EventLogEvent.OutputTuple,
-    EventLogEvent.OutputObject
-  >;
+  ): TypedContractEvent<EventLogEvent.InputTuple, EventLogEvent.OutputTuple, EventLogEvent.OutputObject>;
   getEvent(
     key: "EventLog1"
-  ): TypedContractEvent<
-    EventLog1Event.InputTuple,
-    EventLog1Event.OutputTuple,
-    EventLog1Event.OutputObject
-  >;
+  ): TypedContractEvent<EventLog1Event.InputTuple, EventLog1Event.OutputTuple, EventLog1Event.OutputObject>;
   getEvent(
     key: "EventLog2"
-  ): TypedContractEvent<
-    EventLog2Event.InputTuple,
-    EventLog2Event.OutputTuple,
-    EventLog2Event.OutputObject
-  >;
+  ): TypedContractEvent<EventLog2Event.InputTuple, EventLog2Event.OutputTuple, EventLog2Event.OutputObject>;
 
   filters: {
     "EventLog(address,string,string,tuple)": TypedContractEvent<
@@ -610,32 +484,20 @@ export interface EventEmitter extends BaseContract {
       EventLogEvent.OutputTuple,
       EventLogEvent.OutputObject
     >;
-    EventLog: TypedContractEvent<
-      EventLogEvent.InputTuple,
-      EventLogEvent.OutputTuple,
-      EventLogEvent.OutputObject
-    >;
+    EventLog: TypedContractEvent<EventLogEvent.InputTuple, EventLogEvent.OutputTuple, EventLogEvent.OutputObject>;
 
     "EventLog1(address,string,string,bytes32,tuple)": TypedContractEvent<
       EventLog1Event.InputTuple,
       EventLog1Event.OutputTuple,
       EventLog1Event.OutputObject
     >;
-    EventLog1: TypedContractEvent<
-      EventLog1Event.InputTuple,
-      EventLog1Event.OutputTuple,
-      EventLog1Event.OutputObject
-    >;
+    EventLog1: TypedContractEvent<EventLog1Event.InputTuple, EventLog1Event.OutputTuple, EventLog1Event.OutputObject>;
 
     "EventLog2(address,string,string,bytes32,bytes32,tuple)": TypedContractEvent<
       EventLog2Event.InputTuple,
       EventLog2Event.OutputTuple,
       EventLog2Event.OutputObject
     >;
-    EventLog2: TypedContractEvent<
-      EventLog2Event.InputTuple,
-      EventLog2Event.OutputTuple,
-      EventLog2Event.OutputObject
-    >;
+    EventLog2: TypedContractEvent<EventLog2Event.InputTuple, EventLog2Event.OutputTuple, EventLog2Event.OutputObject>;
   };
 }

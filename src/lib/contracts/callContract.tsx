@@ -37,6 +37,7 @@ export async function callContract(
     successMsg?: string;
     successDetailsMsg?: ReactNode;
     hideSentMsg?: boolean;
+    hideErrorMsg?: boolean;
     hideSuccessMsg?: boolean;
     showPreliminaryMsg?: boolean;
     failMsg?: string;
@@ -175,9 +176,11 @@ export async function callContract(
 
     return res;
   } catch (e) {
-    const { failMsg, autoCloseToast } = getErrorMessage(chainId, e, opts?.failMsg);
+    if (!opts.hideErrorMsg) {
+      const { failMsg, autoCloseToast } = getErrorMessage(chainId, e, opts?.failMsg);
+      helperToast.error(failMsg, { autoClose: autoCloseToast });
+    }
 
-    helperToast.error(failMsg, { autoClose: autoCloseToast });
     throw e;
   }
 }

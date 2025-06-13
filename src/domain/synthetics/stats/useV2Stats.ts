@@ -8,7 +8,7 @@ import { useMarketsInfoRequest } from "../markets";
 import useUsers from "../stats/useUsers";
 import useVolumeInfo from "../stats/useVolumeInfo";
 
-type DashboardOverview = {
+export type DashboardOverview = {
   totalGMLiquidity: bigint;
   totalLongPositionSizes: bigint;
   totalShortPositionSizes: bigint;

@@ -168,6 +168,8 @@ async function sendUserAnalyticsProtocolReadMoreEvent() {
   }
 }
 
+const PERIOD = "90d";
+
 export default function TokenCard({ showRedirectModal }: Props) {
   const { chainId } = useChainId();
   const { active, account } = useWallet();
@@ -193,13 +195,13 @@ export default function TokenCard({ showRedirectModal }: Props) {
     marketsTokensIncentiveAprData: arbIncentiveApr,
     glvTokensIncentiveAprData: arbGlvIncentiveApr,
     glvApyInfoData: arbGlvApy,
-  } = useGmMarketsApy(ARBITRUM);
+  } = useGmMarketsApy(ARBITRUM, { period: PERIOD });
   const {
     marketsTokensApyData: avaxApy,
     marketsTokensIncentiveAprData: avaxIncentiveApr,
     glvTokensIncentiveAprData: avaxGlvIncentiveApr,
     glvApyInfoData: avaxGlvApy,
-  } = useGmMarketsApy(AVALANCHE);
+  } = useGmMarketsApy(AVALANCHE, { period: PERIOD });
 
   const maxMarketApyText = useMemo(() => {
     if (!arbApy || !arbIncentiveApr || !avaxApy || !avaxIncentiveApr)

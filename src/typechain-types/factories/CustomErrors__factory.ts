@@ -3855,10 +3855,7 @@ export class CustomErrors__factory {
   static createInterface(): CustomErrorsInterface {
     return new Interface(_abi) as CustomErrorsInterface;
   }
-  static connect(
-    address: string,
-    runner?: ContractRunner | null
-  ): CustomErrors {
+  static connect(address: string, runner?: ContractRunner | null): CustomErrors {
     return new Contract(address, _abi, runner) as unknown as CustomErrors;
   }
 }

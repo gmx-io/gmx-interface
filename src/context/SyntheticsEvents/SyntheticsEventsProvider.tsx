@@ -990,7 +990,11 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             let isViewed = false;
 
             if (pendingExpressTxn.metricId && !pendingExpressTxn.isRelayerMetricSent) {
-              sendTxnErrorMetric(pendingExpressTxn.metricId, new Error("Gelato task cancelled"), "relayer");
+              sendTxnErrorMetric(
+                pendingExpressTxn.metricId,
+                new Error(`Gelato task cancelled, ${pendingExpressTxn.taskId}`),
+                "relayer"
+              );
               isRelayerMetricSent = true;
             }
 
