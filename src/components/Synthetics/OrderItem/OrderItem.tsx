@@ -367,8 +367,34 @@ function MarkPrice({ order }: { order: OrderInfo }) {
 }
 
 function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: boolean | undefined }) {
-  if (isTwapOrder(order) || isMarketOrderType(order.orderType)) {
+  if (isTwapOrder(order)) {
     return <Trans>N/A</Trans>;
+  }
+
+  if (isMarketOrderType(order.orderType)) {
+    const positionOrder = order as PositionOrderInfo;
+    const priceDecimals = calculateDisplayDecimals(
+      positionOrder?.indexToken?.prices?.minPrice,
+      undefined,
+      positionOrder?.indexToken?.visualMultiplier
+    );
+
+    return (
+      <Tooltip
+        position="bottom-end"
+        handle={<Trans>N/A</Trans>}
+        content={
+          <StatsTooltipRow
+            label={t`Acceptable Price`}
+            value={formatUsd(positionOrder.acceptablePrice, {
+              displayDecimals: priceDecimals,
+              visualMultiplier: positionOrder.indexToken?.visualMultiplier,
+            })}
+            showDollar={false}
+          />
+        }
+      />
+    );
   }
 
   if (isSwapOrderType(order.orderType)) {
