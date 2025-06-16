@@ -4,7 +4,7 @@ import gmIcon from "img/gm_icon.svg";
 import arbitrum from "img/ic_arbitrum_24.svg";
 import avalanche from "img/ic_avalanche_24.svg";
 import avalancheTestnet from "img/ic_avalanche_testnet_24.svg";
-import botanix from "img/ic_botanix_40.svg";
+import botanix from "img/ic_botanix_24.svg";
 import esGMXIcon from "img/ic_esgmx_40.svg";
 import esGMXArbitrumIcon from "img/ic_esgmx_arbitrum.svg";
 import esGMXAvaxIcon from "img/ic_esgmx_avalanche.svg";

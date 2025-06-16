@@ -23,6 +23,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
 import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import PageTitle from "components/PageTitle/PageTitle";
+import { BotanixBanner } from "components/Synthetics/BotanixBanner/BotanixBanner";
 import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
 
 import { EscrowedGmxCard } from "./EscrowedGmxCard";
@@ -186,10 +187,8 @@ export default function Stake() {
 
   const isBotanix = chainId === BOTANIX;
 
-  return (
-    <div className="default-container page-layout">
-      <SEO title={getPageTitle(t`Stake`)} />
-
+  const stakePageContent = (
+    <>
       <StakeModal
         isVisible={isStakeGmxModalVisible}
         setIsVisible={setIsStakeGmxModalVisible}
@@ -243,51 +242,30 @@ export default function Stake() {
         processedData={processedData}
       />
 
-      <PageTitle
-        isTop
-        title={t`Stake`}
-        qa="earn-page"
-        subtitle={
-          isBotanix ? (
-            <div>
-              <Trans>
-                Deposit <ExternalLink href="https://docs.gmx.io/docs/tokenomics/gmx-token">GMX</ExternalLink> and{" "}
-                <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/gmx-token">esGMX</ExternalLink> tokens
-                to earn rewards.
-              </Trans>
-              {earnMsg && <div className="Page-description">{earnMsg}</div>}
-              {incentivesMessage}
-            </div>
-          ) : undefined
-        }
-      />
-
-      {!isBotanix && (
-        <div className="StakeV2-content">
-          <div className="StakeV2-cards">
-            <GmxAndVotingPowerCard
-              processedData={processedData}
-              sbfGmxBalance={sbfGmxBalance}
-              setIsUnstakeModalVisible={setIsUnstakeModalVisible}
-              setUnstakeModalTitle={setUnstakeModalTitle}
-              setUnstakeModalMaxAmount={setUnstakeModalMaxAmount}
-              setUnstakeValue={setUnstakeValue}
-              setUnstakingTokenSymbol={setUnstakingTokenSymbol}
-              setUnstakeMethodName={setUnstakeMethodName}
-              showStakeGmxModal={showStakeGmxModal}
-            />
-            <TotalRewardsCard processedData={processedData} showStakeGmxModal={showStakeGmxModal} />
-            <GlpCard processedData={processedData} />
-            <EscrowedGmxCard
-              processedData={processedData}
-              showStakeEsGmxModal={showStakeEsGmxModal}
-              showUnstakeEsGmxModal={showUnstakeEsGmxModal}
-            />
-          </div>
+      <div className="StakeV2-content">
+        <div className="StakeV2-cards">
+          <GmxAndVotingPowerCard
+            processedData={processedData}
+            sbfGmxBalance={sbfGmxBalance}
+            setIsUnstakeModalVisible={setIsUnstakeModalVisible}
+            setUnstakeModalTitle={setUnstakeModalTitle}
+            setUnstakeModalMaxAmount={setUnstakeModalMaxAmount}
+            setUnstakeValue={setUnstakeValue}
+            setUnstakingTokenSymbol={setUnstakingTokenSymbol}
+            setUnstakeMethodName={setUnstakeMethodName}
+            showStakeGmxModal={showStakeGmxModal}
+          />
+          <TotalRewardsCard processedData={processedData} showStakeGmxModal={showStakeGmxModal} />
+          <GlpCard processedData={processedData} />
+          <EscrowedGmxCard
+            processedData={processedData}
+            showStakeEsGmxModal={showStakeEsGmxModal}
+            showUnstakeEsGmxModal={showUnstakeEsGmxModal}
+          />
         </div>
-      )}
+      </div>
 
-      {!isBotanix && <Vesting processedData={processedData} />}
+      <Vesting processedData={processedData} />
 
       <div className="mt-10">
         <PageTitle
@@ -302,9 +280,35 @@ export default function Stake() {
         />
       </div>
       <UserIncentiveDistributionList />
-      <Footer />
 
       <InterviewModal type="lp" isVisible={isLpInterviewModalVisible} setIsVisible={setIsLpInterviewModalVisible} />
+    </>
+  );
+  return (
+    <div className="default-container page-layout">
+      <SEO title={getPageTitle(t`Stake`)} />
+
+      <PageTitle
+        isTop
+        title={t`Stake`}
+        qa="earn-page"
+        subtitle={
+          !isBotanix ? (
+            <div>
+              <Trans>
+                Deposit <ExternalLink href="https://docs.gmx.io/docs/tokenomics/gmx-token">GMX</ExternalLink> and{" "}
+                <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/gmx-token">esGMX</ExternalLink> tokens
+                to earn rewards.
+              </Trans>
+              {earnMsg && <div className="Page-description">{earnMsg}</div>}
+              {incentivesMessage}
+            </div>
+          ) : undefined
+        }
+      />
+
+      {!isBotanix ? stakePageContent : <BotanixBanner />}
+      <Footer />
     </div>
   );
 }

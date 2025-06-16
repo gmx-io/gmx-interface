@@ -132,6 +132,13 @@ msgstr "Capacidad de Reserva Máx."
 msgid "Yield Optimizer on Avalanche"
 msgstr "Optimizador de rendimientos en Avalanche"
 
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum"
+msgstr ""
+
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -609,6 +616,10 @@ msgstr ""
 msgid "Telegram contact (optional)"
 msgstr ""
 
+#: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
+msgid "providing liquidity"
+msgstr ""
+
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Tap [Create Wallet] to start using your Web3 Wallet."
 msgstr "Toca [Crear cartera] para empezar a usar tu cartera Web3."
@@ -902,6 +913,10 @@ msgstr ""
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Stop Price"
+msgstr ""
+
+#: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
+msgid "using GLV and GM tokens. Buying or staking GMX, or using referrals, is not supported at this time."
 msgstr ""
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -1274,6 +1289,13 @@ msgstr "Total"
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Intercambio activo: {0}, ejecutado: {1}, cancelado: {2}"
+
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Buy token on:"
+msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -2638,6 +2660,10 @@ msgstr ""
 msgid "High Impact on Collateral"
 msgstr ""
 
+#: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
+msgid "and"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GLV liquidity"
 msgstr ""
@@ -2869,6 +2895,13 @@ msgstr ""
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "V1 Arbitrum"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Avalanche"
 msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketGraphs.tsx
@@ -3206,6 +3239,10 @@ msgstr "Liquidado"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Blueberry Pulse"
+msgstr ""
+
+#: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
+msgid "Please switch to the <0><1/><2>Arbitrum</2></0> or <3><4/><5>Avalanche</5></3> deployment for those features."
 msgstr ""
 
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
@@ -3621,13 +3658,6 @@ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol}"
-msgstr ""
-
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-msgid "View on Avalanche"
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
@@ -4078,6 +4108,10 @@ msgstr "Tu recibirás al menos {0} {1} si esta orden se ejecuta. El precio exact
 msgid "GMX | Decentralized Perpetual Exchange"
 msgstr ""
 
+#: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
+msgid "<0>Botanix</0> currently only supports"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "No position"
 msgstr "No hay posición"
@@ -4460,6 +4494,11 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 msgid "Reserved"
 msgstr "Reservado"
+
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Botanix"
+msgstr ""
 
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
@@ -6446,6 +6485,10 @@ msgstr ""
 msgid "Start Unrealized Fees"
 msgstr ""
 
+#: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
+msgid "V2 trading"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "view"
 msgstr "vista"
@@ -7222,13 +7265,6 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GM"
-msgstr ""
-
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-msgid "View on Arbitrum"
 msgstr ""
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
