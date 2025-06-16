@@ -1,11 +1,9 @@
 import { Menu } from "@headlessui/react";
 import { Trans, t } from "@lingui/macro";
-import { useCallback } from "react";
 import { Link } from "react-router-dom";
 import { createBreakpoint, useCopyToClipboard } from "react-use";
 import type { Address } from "viem";
 
-import { useSubaccountModalOpen } from "context/SubaccountContext/SubaccountContext";
 import { helperToast } from "lib/helperToast";
 import { useENS } from "lib/legacy";
 import { userAnalytics } from "lib/userAnalytics";
@@ -20,7 +18,6 @@ import copy from "img/ic_copy_20.svg";
 import externalLink from "img/ic_new_link_20.svg";
 import PnlAnalysisIcon from "img/ic_pnl_analysis_20.svg?react";
 import disconnect from "img/ic_sign_out_20.svg";
-import oneClickTradingIcon from "img/one_click_trading_20.svg";
 
 import "./AddressDropdown.scss";
 
@@ -37,10 +34,6 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
   const [, copyToClipboard] = useCopyToClipboard();
   const { ensName } = useENS(account);
   const displayAddressLength = breakpoint === "S" ? 9 : 13;
-  const [, setOneClickModalOpen] = useSubaccountModalOpen();
-  const handleSubaccountClick = useCallback(() => {
-    setOneClickModalOpen(true);
-  }, [setOneClickModalOpen]);
 
   return (
     <div className="relative">
@@ -85,14 +78,6 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
                   <Trans>View in Explorer</Trans>
                 </p>
               </ExternalLink>
-            </Menu.Item>
-            <Menu.Item>
-              <div className="menu-item" onClick={handleSubaccountClick}>
-                <img width={20} className="size-20" src={oneClickTradingIcon} alt="Open One-click Trading settings" />
-                <p>
-                  <Trans>One-Click Trading</Trans>
-                </p>
-              </div>
             </Menu.Item>
             <Menu.Item>
               <div

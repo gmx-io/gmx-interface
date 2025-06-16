@@ -8,6 +8,7 @@
     "start-home": "yarn lingui:prepare && VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e development-home vite --port 3010",
     "start-app": "yarn lingui:prepare && VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e development-app vite --port 3011",
     "build": "VITE_APP_VERSION=$(git rev-parse HEAD) vite build",
+    "build:analyze": "VITE_APP_VERSION=$(git rev-parse HEAD) vite build --mode analyze",
     "build-home": "VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-home vite build",
     "build-app": "VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-app vite build",
     "test": "vitest",
@@ -36,6 +37,7 @@
     "@ensdomains/ens-avatar": "1.0.0-alpha.0.ethers.6",
     "@floating-ui/dom": "1.6.7",
     "@floating-ui/react": "0.26.19",
+    "@gelatonetwork/relay-sdk": "5.6.0",
     "@headlessui/react": "1.7.19",
     "@lingui/core": "4.10.0",
     "@lingui/macro": "4.11.3",
@@ -164,6 +166,7 @@
     "tsx": "4.19.0",
     "typechain": "8.3.2",
     "vite": "5.4.0",
+    "vite-bundle-analyzer": "0.20.1",
     "vite-plugin-svgr": "4.2.0",
     "vite-tsconfig-paths": "5.0.1",
     "vitest": "2.0.5"

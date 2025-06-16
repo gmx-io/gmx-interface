@@ -20,7 +20,8 @@ import { definedOrThrow } from "lib/guards";
 import { EMPTY_ARRAY } from "lib/objects";
 import { getSubsquidGraphClient } from "lib/subgraph";
 import { getWrappedToken } from "sdk/configs/tokens";
-import { PositionTradeAction, RawTradeAction, TradeAction, TradeActionType } from "sdk/types/tradeHistory";
+import { TradeAction as SubsquidTradeAction } from "sdk/types/subsquid";
+import { PositionTradeAction, TradeAction, TradeActionType } from "sdk/types/tradeHistory";
 import { GraphQlFilters, buildFiltersBody } from "sdk/utils/subgraph";
 import { createRawTradeActionTransformer } from "sdk/utils/tradeHistory";
 
@@ -310,7 +311,7 @@ export async function fetchTradeActions({
         tradeActions(
             offset: ${offset},
             limit: ${limit},
-            orderBy: transaction_timestamp_DESC,
+            orderBy: timestamp_DESC,
             ${whereClause}
         ) {
             id
@@ -362,7 +363,7 @@ export async function fetchTradeActions({
 
   const result = await client!.query({ query, fetchPolicy: "no-cache" });
 
-  const rawTradeActions = (result.data?.tradeActions || []) as RawTradeAction[];
+  const rawTradeActions = (result.data?.tradeActions || []) as SubsquidTradeAction[];
 
   if (!marketsInfoData || !tokensData) {
     return undefined;

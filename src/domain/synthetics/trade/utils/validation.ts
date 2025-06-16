@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 
 import { IS_NETWORK_DISABLED, getChainName } from "config/chains";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { ExpressTxnParams } from "domain/synthetics/express/types";
 import {
   GlvInfo,
   MarketInfo,
@@ -18,6 +19,9 @@ import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "dom
 import { TokenData, TokensData, TokensRatio, getIsEquivalentTokens } from "domain/synthetics/tokens";
 import { DUST_USD, isAddressZero } from "lib/legacy";
 import { PRECISION, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
+import { getByKey } from "lib/objects";
+import { getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import {
   ExternalSwapQuote,
   GmSwapFees,
@@ -29,7 +33,6 @@ import {
 import { bigMath } from "sdk/utils/bigmath";
 
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
-import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "../twap/utils";
 
 export type ValidationTooltipName = "maxLeverage";
 export type ValidationResult =
@@ -50,6 +53,31 @@ export function getCommonError(p: { chainId: number; isConnected: boolean; hasOu
 
   if (!isConnected) {
     return [t`Connect Wallet`];
+  }
+
+  return [undefined];
+}
+
+export function getExpressError(p: {
+  chainId: number;
+  expressParams: ExpressTxnParams | undefined;
+  tokensData: TokensData | undefined;
+}): ValidationResult {
+  const { chainId, expressParams, tokensData } = p;
+
+  if (!expressParams) {
+    return [undefined];
+  }
+
+  const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
+
+  const isInsufficientNativeTokenBalance =
+    nativeToken?.balance === undefined || nativeToken.balance < expressParams?.gasPaymentParams.gasPaymentTokenAmount;
+
+  if (expressParams.gasPaymentValidations.isOutGasTokenBalance && isInsufficientNativeTokenBalance) {
+    return [
+      t`Insufficient ${getToken(chainId, expressParams?.gasPaymentParams.gasPaymentTokenAddress)?.symbol} balance to pay for gas`,
+    ];
   }
 
   return [undefined];
@@ -618,7 +646,6 @@ export function getGmSwapError(p: {
   longTokenLiquidityUsd: bigint | undefined;
   shortTokenLiquidityUsd: bigint | undefined;
   fees: GmSwapFees | undefined;
-  consentError: boolean;
   priceImpactUsd: bigint | undefined;
   glvInfo?: GlvInfo;
   marketTokensData?: TokensData;
@@ -641,7 +668,6 @@ export function getGmSwapError(p: {
     longTokenLiquidityUsd,
     shortTokenLiquidityUsd,
     fees,
-    consentError,
     priceImpactUsd,
     glvInfo,
     marketTokensData,
@@ -650,10 +676,6 @@ export function getGmSwapError(p: {
 
   if (!marketInfo || !marketToken) {
     return [t`Loading...`];
-  }
-
-  if (consentError) {
-    return [t`Acknowledgment Required`];
   }
 
   const glvTooltipMessage = t`The buyable cap for the pool GM: ${marketInfo.name} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens.`;
@@ -830,7 +852,6 @@ export function getGmShiftError({
   toToken,
   toTokenAmount,
   fees,
-  consentError,
   priceImpactUsd,
 }: {
   fromMarketInfo: MarketInfo | undefined;
@@ -843,17 +864,12 @@ export function getGmShiftError({
   toToken: TokenData | undefined;
   toTokenAmount: bigint | undefined;
   fees: GmSwapFees | undefined;
-  consentError: boolean;
   priceImpactUsd: bigint | undefined;
 }) {
   const isGlv = isGlvInfo(toMarketInfo);
 
   if (!fromMarketInfo || !fromToken || !toMarketInfo || !toToken) {
     return [t`Loading...`];
-  }
-
-  if (consentError) {
-    return [t`Acknowledgment Required`];
   }
 
   if (priceImpactUsd !== undefined && priceImpactUsd > 0) {

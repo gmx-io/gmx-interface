@@ -1,16 +1,82 @@
-import { BaseContract } from "ethers";
+import { BaseContract, Provider } from "ethers";
 
 import { isDevelopment } from "config/env";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-import { getGasLimit, getGasPrice } from "./contracts";
+import { getGasLimit } from "./contracts";
+import { estimateGasLimit } from "./gas/estimateGasLimit";
+import { GasPriceData, getGasPrice } from "./gas/gasPrice";
 import { helperToast } from "./helperToast";
+
+type TenderlyConfig = {
+  accountSlug: string;
+  projectSlug: string;
+  accessKey: string;
+  enabled: boolean;
+};
 
 const sentReports: {
   url: string;
   comment: string;
 }[] = [];
+
+export async function simulateCallDataWithTenderly({
+  chainId,
+  tenderlyConfig,
+  provider,
+  to,
+  data,
+  from,
+  value,
+  blockNumber,
+  gasPriceData,
+  gasLimit,
+  comment,
+}: {
+  chainId: number;
+  tenderlyConfig: TenderlyConfig;
+  provider: Provider;
+  to: string;
+  data: string;
+  from: string;
+  value: bigint | number | undefined;
+  blockNumber: number | undefined;
+  gasPriceData: GasPriceData | undefined;
+  gasLimit: bigint | number | undefined;
+  comment: string | undefined;
+}) {
+  if (!blockNumber) {
+    blockNumber = await provider.getBlockNumber();
+  }
+
+  if (!gasPriceData) {
+    gasPriceData = await getGasPrice(provider, chainId);
+  }
+
+  if (gasLimit === undefined) {
+    gasLimit = await estimateGasLimit(provider, {
+      to,
+      data,
+      from,
+      value,
+    });
+  }
+
+  return processSimulation({
+    chainId,
+    config: tenderlyConfig,
+    account: tenderlyConfig.accountSlug,
+    from,
+    to,
+    data,
+    value,
+    gasLimit,
+    gasPriceData,
+    blockNumber,
+    comment,
+  });
+}
 
 export const simulateTxWithTenderly = async (
   chainId: number,
@@ -42,24 +108,66 @@ export const simulateTxWithTenderly = async (
 
   const gasPriceData = await getGasPrice(contract.runner.provider, chainId);
 
-  let gas: undefined | bigint = undefined;
+  let gasLimit: bigint | undefined;
 
   // estimateGas might fail cos of incorrect tx params,
   // have to simulate tx without gasLimit in that case
   try {
-    gas = opts.gasLimit ? opts.gasLimit : await getGasLimit(contract, method, params, opts.value);
+    gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(contract, method, params, opts.value);
   } catch (e) {
+    gasLimit = undefined;
     //
   }
 
+  const result = await processSimulation({
+    from: account,
+    to: typeof contract.target === "string" ? contract.target : await contract.target.getAddress(),
+    data: await contract.interface.encodeFunctionData(method, params),
+    gasPriceData,
+    chainId,
+    config,
+    account,
+    gasLimit,
+    value: opts.value ?? 0n,
+    blockNumber,
+    comment: opts.comment,
+  });
+
+  return result;
+};
+
+async function processSimulation({
+  chainId,
+  config,
+  account,
+  data,
+  value,
+  to,
+  gasLimit,
+  gasPriceData,
+  blockNumber,
+  comment,
+}: {
+  config: TenderlyConfig;
+  chainId: number;
+  account: string;
+  from: string;
+  to: string;
+  data: string;
+  value: bigint | number | undefined;
+  gasLimit: bigint | number | undefined;
+  gasPriceData: GasPriceData;
+  blockNumber: number;
+  comment: string | undefined;
+}) {
   const simulationParams = buildSimulationRequest(
     chainId,
     {
       from: account,
-      to: typeof contract.target === "string" ? contract.target : await contract.target.getAddress(),
-      gas,
-      input: await contract.interface.encodeFunctionData(method, params),
-      value: opts.value ? Number(opts.value) : 0,
+      to,
+      gas: gasLimit !== undefined ? BigInt(gasLimit) : undefined,
+      input: data,
+      value: Number(value),
       ...gasPriceData,
     },
     blockNumber
@@ -87,7 +195,7 @@ export const simulateTxWithTenderly = async (
 
     const json = await response.json();
     const url = `https://dashboard.tenderly.co/${config.accountSlug}/${config.projectSlug}/simulator/${json.simulation.id}`;
-    sentReports.push({ url, comment: opts.comment });
+    sentReports.push({ url, comment: comment ?? "" });
     success = json.simulation.status;
     helperToast.info(
       <>
@@ -117,7 +225,7 @@ export const simulateTxWithTenderly = async (
   }
 
   return { success };
-};
+}
 
 // https://docs.tenderly.co/reference/api#/operations/simulateTransaction
 function buildSimulationRequest(
@@ -164,12 +272,14 @@ export const tenderlyLsKeys = {
   enabled: "tenderlySimulationEnabled",
 };
 
-export const getTenderlyConfig = (): {
-  accountSlug: string;
-  projectSlug: string;
-  accessKey: string;
-  enabled: boolean;
-} | null => {
+export function getTenderlyAccountParams() {
+  return {
+    accountSlug: JSON.parse(localStorage.getItem(JSON.stringify(tenderlyLsKeys.accountSlug)) ?? '""'),
+    projectSlug: JSON.parse(localStorage.getItem(JSON.stringify(tenderlyLsKeys.projectSlug)) ?? '""'),
+  };
+}
+
+export const getTenderlyConfig = (): TenderlyConfig | null => {
   if (!isDevelopment()) return null;
 
   try {

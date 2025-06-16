@@ -7,12 +7,12 @@ import { useMedia } from "react-use";
 import { getSyntheticsListSectionKey } from "config/localStorage";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import { useClosingPositionKeyState, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectClaimablesCount } from "context/SyntheticsStateContext/selectors/claimsSelectors";
+import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
   selectOrdersInfoData,
@@ -27,9 +27,12 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
-import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
+import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
+import type { OrderInfo } from "domain/synthetics/orders/types";
+import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
 import { TradeMode } from "domain/synthetics/trade";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
@@ -45,12 +48,14 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
+import { getOrderKeys } from "sdk/utils/orders";
 
 import { AppHeader } from "components/AppHeader/AppHeader";
 import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
 import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import { NpsModal } from "components/NpsModal/NpsModal";
+import { OneClickPromoBanner } from "components/OneClickPromoBanner/OneClickPromoBanner";
 import { Claims } from "components/Synthetics/Claims/Claims";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
@@ -60,7 +65,6 @@ import { SwapCard } from "components/Synthetics/SwapCard/SwapCard";
 import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { useIsCurtainOpen } from "components/Synthetics/TradeBox/Curtain";
 import { TradeBoxResponsiveContainer } from "components/Synthetics/TradeBox/TradeBoxResponsiveContainer";
-import { TradeBoxOneClickTrading } from "components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import { Chart } from "components/Synthetics/TVChart/Chart";
 import { ChartHeader } from "components/Synthetics/TVChart/ChartHeader";
@@ -259,7 +263,7 @@ export function SyntheticsPage(p: Props) {
     <div className="flex h-full flex-col gap-8">
       <AppHeader leftContent={<ChartHeader isMobile={isMobile} />} />
       <div className="grid grow grid-cols-[1fr_auto] gap-8 pt-0 max-[1100px]:grid-cols-1 max-[800px]:p-10">
-        {isMobile && <TradeBoxOneClickTrading />}
+        {isMobile && <OneClickPromoBanner openSettings={openSettings} />}
         <div className="Exchange-left flex flex-col">
           <Chart />
           {!isMobile && (
@@ -309,7 +313,6 @@ export function SyntheticsPage(p: Props) {
                 <OrderList
                   selectedOrdersKeys={selectedOrderKeys}
                   setSelectedOrderKeys={setSelectedOrderKeys}
-                  setPendingTxns={setPendingTxns}
                   selectedPositionOrderKey={selectedPositionOrderKey}
                   setSelectedPositionOrderKey={setSelectedPositionOrderKey}
                   marketsDirectionsFilter={marketsDirectionsFilter}
@@ -342,7 +345,6 @@ export function SyntheticsPage(p: Props) {
               {isSwap && !isTwap && (
                 <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
               )}
-              <TradeBoxOneClickTrading />
             </div>
           </div>
         )}
@@ -371,7 +373,6 @@ export function SyntheticsPage(p: Props) {
               <OrderList
                 selectedOrdersKeys={selectedOrderKeys}
                 setSelectedOrderKeys={setSelectedOrderKeys}
-                setPendingTxns={setPendingTxns}
                 selectedPositionOrderKey={selectedPositionOrderKey}
                 setSelectedPositionOrderKey={setSelectedPositionOrderKey}
                 marketsDirectionsFilter={marketsDirectionsFilter}
@@ -388,7 +389,7 @@ export function SyntheticsPage(p: Props) {
       </div>
       <div className="mt-auto">
         <Footer isMobileTradePage={isMobile} />
-        <PositionSeller setPendingTxns={setPendingTxns} />
+        <PositionSeller />
         <PositionEditor />
         <InterviewModal type="trader" isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />
         <NpsModal />
@@ -401,66 +402,110 @@ function useOrdersControl() {
   const chainId = useSelector(selectChainId);
   const signer = useEthersSigner();
   const [cancellingOrdersKeys, setCanellingOrdersKeys] = useCancellingOrdersKeysState();
-  const { setPendingTxns } = usePendingTxns();
   const [selectedOrderKeys, setSelectedOrderKeys] = useState<string[]>(EMPTY_ARRAY);
-  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, selectedOrderKeys.length);
-  const subaccount = useSubaccount(null, selectedOrderKeys.length);
+
+  const { makeOrderTxnCallback } = useOrderTxnCallbacks();
+
   const isCancelOrdersProcessing = cancellingOrdersKeys.length > 0;
 
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [orderTypesFilter, setOrderTypesFilter] = useState<OrderTypeFilterValue[]>([]);
   const ordersInfoData = useSelector(selectOrdersInfoData);
+  const globalExpressParams = useSelector(selectExpressGlobalParams);
 
   const onCancelSelectedOrders = useCallback(
-    function cancelSelectedOrders() {
+    async function cancelSelectedOrders() {
       if (!signer) return;
-      const keys = selectedOrderKeys;
-      setCanellingOrdersKeys((p) => uniq(p.concat(keys)));
-      const orders = keys.map((k) => ordersInfoData?.[k]).filter(defined);
-      cancelOrdersTxn(chainId, signer, subaccount, {
-        orders,
-        setPendingTxns: setPendingTxns,
-        detailsMsg: cancelOrdersDetailsMessage,
+      const orders = selectedOrderKeys.map((key) => getByKey(ordersInfoData, key)).filter(defined) as OrderInfo[];
+      const orderKeys = orders.flatMap(getOrderKeys);
+      setCanellingOrdersKeys((p) => uniq(p.concat(orderKeys)));
+
+      const batchParams = {
+        createOrderParams: [],
+        updateOrderParams: [],
+        cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
+      };
+
+      const expressParams = await estimateBatchExpressParams({
+        signer,
+        chainId,
+        batchParams,
+        globalExpressParams,
+        requireValidations: true,
+        estimationMethod: "approximate",
+        provider: undefined,
+      });
+
+      sendBatchOrderTxn({
+        chainId,
+        signer,
+        expressParams,
+        batchParams,
+        simulationParams: undefined,
+        noncesData: globalExpressParams?.noncesData,
+        callback: makeOrderTxnCallback({}),
       })
         .then(async (tx) => {
-          const receipt = await tx.wait();
-          if (receipt.status === 1) {
+          const txnResult = await tx.wait();
+          if (txnResult?.status === "success") {
             setSelectedOrderKeys(EMPTY_ARRAY);
           }
         })
         .finally(() => {
-          setCanellingOrdersKeys((p) => p.filter((e) => !keys.includes(e)));
+          setCanellingOrdersKeys((p) => p.filter((e) => !orderKeys.includes(e)));
         });
     },
     [
-      cancelOrdersDetailsMessage,
       chainId,
+      globalExpressParams,
+      makeOrderTxnCallback,
+      ordersInfoData,
       selectedOrderKeys,
       setCanellingOrdersKeys,
-      setPendingTxns,
       signer,
-      subaccount,
-      ordersInfoData,
     ]
   );
 
   const onCancelOrder = useCallback(
-    function cancelOrder(key: string) {
+    async function cancelOrder(key: string) {
       if (!signer) return;
-
-      setCanellingOrdersKeys((p) => uniq(p.concat(key)));
-      const order = ordersInfoData?.[key];
+      const order = getByKey(ordersInfoData, key);
       if (!order) return;
-      cancelOrdersTxn(chainId, signer, subaccount, {
-        orders: [order],
-        setPendingTxns: setPendingTxns,
-        detailsMsg: cancelOrdersDetailsMessage,
+
+      const orderKeys = getOrderKeys(order);
+
+      setCanellingOrdersKeys((p) => uniq(p.concat(orderKeys)));
+
+      const batchParams = {
+        createOrderParams: [],
+        updateOrderParams: [],
+        cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
+      };
+
+      const expressParams = await estimateBatchExpressParams({
+        signer,
+        chainId,
+        batchParams,
+        globalExpressParams,
+        requireValidations: true,
+        estimationMethod: "approximate",
+        provider: undefined,
+      });
+
+      sendBatchOrderTxn({
+        chainId,
+        signer,
+        expressParams,
+        batchParams,
+        simulationParams: undefined,
+        noncesData: globalExpressParams?.noncesData,
+        callback: makeOrderTxnCallback({}),
       }).finally(() => {
         setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key));
         setSelectedOrderKeys((prev) => prev.filter((k) => k !== key));
       });
     },
-    [cancelOrdersDetailsMessage, chainId, setCanellingOrdersKeys, setPendingTxns, signer, subaccount, ordersInfoData]
+    [chainId, globalExpressParams, makeOrderTxnCallback, ordersInfoData, setCanellingOrdersKeys, signer]
   );
 
   return {

@@ -9,11 +9,11 @@ import {
   getMinimumExecutionFeeBufferBps,
 } from "domain/synthetics/fees/utils/executionFee";
 import { useChainId } from "lib/chains";
-import { getCallStaticError } from "lib/contracts/transactionErrors";
+import { parseError } from "lib/errors";
+import { getCallStaticError } from "lib/errors/additionalValidation";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
 import { formatPercentage } from "lib/numbers";
-import { parseError } from "lib/parseError";
 import { sendUserAnalyticsOrderResultEvent } from "lib/userAnalytics";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 
@@ -27,7 +27,7 @@ export type PendingTransactionData = {
 
 export type PendingTransaction = {
   hash: string;
-  message: string;
+  message: ReactNode | undefined;
   messageDetails?: ReactNode;
   metricId?: OrderMetricId;
   data?: PendingTransactionData;

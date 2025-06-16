@@ -1,16 +1,20 @@
-import { t, Trans } from "@lingui/macro";
-import { useCallback, useId } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { t } from "@lingui/macro";
+import { useCallback, useId, useMemo } from "react";
 
-import { getContract } from "config/contracts";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import { selectSetShouldFallbackToInternalSwap } from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
-import { selectBlockTimestampData, selectIsFirstOrder } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectBlockTimestampData,
+  selectExpressNoncesData,
+  selectIsFirstOrder,
+  selectMarketsInfoData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
+  selectSetShouldFallbackToInternalSwap,
   selectTradeboxAllowedSlippage,
   selectTradeboxCollateralToken,
   selectTradeboxDecreasePositionAmounts,
@@ -19,263 +23,175 @@ import {
   selectTradeboxFromTokenAddress,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxMarketInfo,
+  selectTradeboxPayTokenAllowance,
   selectTradeboxSelectedPosition,
   selectTradeboxSwapAmounts,
   selectTradeboxToTokenAddress,
   selectTradeboxTradeFlags,
   selectTradeboxTradeMode,
-  selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
   selectTradeboxTwapDuration,
   selectTradeboxTwapNumberOfParts,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectTradeBoxCreateOrderParams } from "context/SyntheticsStateContext/selectors/transactionsSelectors/tradeBoxOrdersSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUserReferralCode } from "domain/referrals";
-import { isPossibleExternalSwapError } from "domain/synthetics/externalSwaps/utils";
-import {
-  createDecreaseOrderTxn,
-  createIncreaseOrderTxn,
-  createSwapOrderTxn,
-  OrderType,
-} from "domain/synthetics/orders";
-import { createTwapIncreaseOrderTxn } from "domain/synthetics/orders/createTwapIncreaseOrderTxn";
-import { createTwapSwapOrderTxn } from "domain/synthetics/orders/createTwapSwapOrderTxn";
+import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
+import { OrderType } from "domain/synthetics/orders";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
+import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
+import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage } from "domain/synthetics/positions/utils";
-import { useTokensAllowanceData } from "domain/synthetics/tokens";
-import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import {
   initDecreaseOrderMetricData,
   initIncreaseOrderMetricData,
   initSwapMetricData,
-  makeTxnErrorMetricsHandler,
-  makeTxnSentMetricsHandler,
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
 import { getByKey } from "lib/objects";
-import {
-  getTradeInteractionKey,
-  makeUserAnalyticsOrderFailResultHandler,
-  sendUserAnalyticsOrderConfirmClickEvent,
-  userAnalytics,
-} from "lib/userAnalytics";
+import { getTradeInteractionKey, sendUserAnalyticsOrderConfirmClickEvent, userAnalytics } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
+import { BatchOrderTxnParams, getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
 
-import { useRequiredActions } from "./useRequiredActions";
-import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
+import { useSidecarOrderPayloads } from "./useSidecarOrderPayloads";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
 }
 
-const EMPTY_TRIGGER_RATIO = {
-  ratio: 0n,
-  largestToken: undefined,
-  smallestToken: undefined,
-};
-
 export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactionsProps) {
   const { chainId } = useChainId();
+  const { signer, account } = useWallet();
   const tokensData = useTokensData();
+  const { shouldDisableValidationForTesting } = useSettings();
+
+  const { makeOrderTxnCallback } = useOrderTxnCallbacks();
+
+  const isFirstOrder = useSelector(selectIsFirstOrder);
+  const blockTimestampData = useSelector(selectBlockTimestampData);
+  const isLeverageSliderEnabled = useSelector(selectIsLeverageSliderEnabled);
+  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
+  const swapAmounts = useSelector(selectTradeboxSwapAmounts);
+  const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
+  const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
+  const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
   const marketInfo = useSelector(selectTradeboxMarketInfo);
   const collateralToken = useSelector(selectTradeboxCollateralToken);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isLong, isLimit, isTwap } = tradeFlags;
+  const tradeMode = useSelector(selectTradeboxTradeMode);
+  const { isLong, isSwap, isIncrease } = tradeFlags;
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
-  const isLeverageSliderEnabled = useSelector(selectIsLeverageSliderEnabled);
-  const isFirstOrder = useSelector(selectIsFirstOrder);
-  const blockTimestampData = useSelector(selectBlockTimestampData);
   const fees = useSelector(selectTradeboxFees);
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
-  const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
-  const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
+  const marketsInfoData = useSelector(selectMarketsInfoData);
+  const showDebugValues = useShowDebugValues();
   const duration = useSelector(selectTradeboxTwapDuration);
   const numberOfParts = useSelector(selectTradeboxTwapNumberOfParts);
-
-  const swapAmounts = useSelector(selectTradeboxSwapAmounts);
-  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
-  const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
+  const noncesData = useSelector(selectExpressNoncesData);
 
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
 
-  const { shouldDisableValidationForTesting } = useSettings();
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
-  const { triggerRatio = EMPTY_TRIGGER_RATIO } = useSelector(selectTradeboxTradeRatios);
-  const { account, signer } = useWallet();
   const { referralCodeForTxn } = useUserReferralCode(signer, chainId, account);
 
   const fromToken = getByKey(tokensData, fromTokenAddress);
   const toToken = getByKey(tokensData, toTokenAddress);
 
-  const { requiredActions, createSltpEntries, cancelSltpEntries, updateSltpEntries } = useRequiredActions();
-  const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
+  const initialCollateralAllowance = useSelector(selectTradeboxPayTokenAllowance);
+  const sidecarOrderPayloads = useSidecarOrderPayloads();
 
-  const { summaryExecutionFee, getExecutionFeeAmountForEntry } = useTPSLSummaryExecutionFee();
-
-  const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: selectedPosition?.key });
-
-  const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, requiredActions);
-
-  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
-    spenderAddress: getContract(chainId, "SyntheticsRouter"),
-    tokenAddresses: fromToken ? [fromToken.address] : [],
-  });
-
-  const initialCollateralAllowance = getByKey(tokensAllowanceData, fromToken?.address);
-
-  const tradeMode = useSelector(selectTradeboxTradeMode);
-
+  const primaryCreateOrderParams = useSelector(selectTradeBoxCreateOrderParams);
   const slippageInputId = useId();
 
-  const onSubmitSwap = useCallback(
-    function onSubmitSwap() {
-      const orderType = isLimit || isTwap ? OrderType.LimitSwap : OrderType.MarketSwap;
+  const batchParams: BatchOrderTxnParams = useMemo(() => {
+    if (!primaryCreateOrderParams) {
+      return {
+        createOrderParams: [],
+        updateOrderParams: [],
+        cancelOrderParams: [],
+      };
+    }
 
-      const metricData = initSwapMetricData({
+    return {
+      createOrderParams: [...primaryCreateOrderParams, ...(sidecarOrderPayloads?.createPayloads ?? [])],
+      updateOrderParams: sidecarOrderPayloads?.updatePayloads ?? [],
+      cancelOrderParams: sidecarOrderPayloads?.cancelPayloads ?? [],
+    };
+  }, [primaryCreateOrderParams, sidecarOrderPayloads]);
+
+  const totalExecutionFee = useMemo(() => {
+    return tokensData ? getBatchTotalExecutionFee({ batchParams, chainId, tokensData }) : undefined;
+  }, [batchParams, chainId, tokensData]);
+
+  const {
+    expressParams,
+    fastExpressParams,
+    asyncExpressParams,
+    expressParamsPromise,
+    isLoading: isExpressLoading,
+  } = useExpressOrdersParams({
+    orderParams: batchParams,
+    label: "TradeBox",
+  });
+
+  const initOrderMetricData = useCallback(() => {
+    const primaryOrder = primaryCreateOrderParams?.[0];
+
+    if (isSwap) {
+      return initSwapMetricData({
         fromToken,
         toToken,
         hasReferralCode: Boolean(referralCodeForTxn),
         swapAmounts,
+        isExpress: Boolean(expressParams),
         executionFee,
         allowedSlippage,
-        orderType,
-        subaccount,
+        orderType: primaryOrder?.orderPayload.orderType,
+        subaccount: expressParams?.subaccount,
         isFirstOrder,
         initialCollateralAllowance,
         duration,
         partsCount: numberOfParts,
         tradeMode,
+        expressParams,
+        asyncExpressParams,
+        fastExpressParams,
       });
+    }
 
-      sendOrderSubmittedMetric(metricData.metricId);
-
-      if (
-        !account ||
-        !tokensData ||
-        !swapAmounts?.swapPathStats ||
-        !fromToken ||
-        !toToken ||
-        !executionFee ||
-        !signer ||
-        typeof allowedSlippage !== "number"
-      ) {
-        helperToast.error(t`Error submitting order`);
-        sendTxnValidationErrorMetric(metricData.metricId);
-        return Promise.reject();
-      }
-
-      sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
-
-      let txnPromise: Promise<void>;
-
-      const commonParams = {
-        account,
-        fromTokenAddress: fromToken.address,
-        fromTokenAmount: swapAmounts.amountIn,
-        swapPath: swapAmounts.swapPathStats?.swapPath,
-        toTokenAddress: toToken.address,
-        referralCode: referralCodeForTxn,
-        executionFee: executionFee.feeTokenAmount,
-        executionGasLimit: executionFee.gasLimit,
-        setPendingTxns,
-        setPendingOrder,
-        metricId: metricData.metricId,
-        blockTimestampData,
-      };
-
-      if (isTwap) {
-        txnPromise = createTwapSwapOrderTxn(chainId, signer, subaccount, {
-          ...commonParams,
-          duration,
-          numberOfParts,
-        });
-      } else {
-        txnPromise = createSwapOrderTxn(chainId, signer, subaccount, {
-          ...commonParams,
-          orderType,
-          minOutputAmount: swapAmounts.minOutputAmount,
-          triggerRatio: triggerRatio?.ratio ?? 0n,
-          allowedSlippage,
-          skipSimulation: shouldDisableValidationForTesting,
-          slippageInputId,
-          tokensData,
-        });
-      }
-
-      return txnPromise
-        .then(makeTxnSentMetricsHandler(metricData.metricId))
-        .catch(makeTxnErrorMetricsHandler(metricData.metricId))
-        .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
-    },
-    [
-      isLimit,
-      fromToken,
-      toToken,
-      referralCodeForTxn,
-      swapAmounts,
-      executionFee,
-      allowedSlippage,
-      subaccount,
-      isFirstOrder,
-      initialCollateralAllowance,
-      duration,
-      numberOfParts,
-      tradeMode,
-      account,
-      tokensData,
-      signer,
-      chainId,
-      isTwap,
-      setPendingTxns,
-      setPendingOrder,
-      blockTimestampData,
-      triggerRatio?.ratio,
-      shouldDisableValidationForTesting,
-      slippageInputId,
-    ]
-  );
-
-  const onSubmitIncreaseOrder = useCallback(
-    function onSubmitIncreaseOrder() {
-      if (!increaseAmounts) {
-        helperToast.error(t`Error submitting order`);
-        return Promise.reject();
-      }
-
-      let orderType: OrderType | undefined = OrderType.MarketIncrease;
-      orderType = isLimit ? increaseAmounts.limitOrderType! : orderType;
-      orderType = isTwap ? OrderType.LimitIncrease : orderType;
-
-      const metricData = initIncreaseOrderMetricData({
-        chainId,
+    if (isIncrease) {
+      return initIncreaseOrderMetricData({
         fromToken,
         increaseAmounts,
-        collateralToken,
+        orderPayload: primaryOrder?.orderPayload,
         hasExistingPosition: Boolean(selectedPosition),
-        leverage: formatLeverage(increaseAmounts.estimatedLeverage) ?? "",
+        leverage: formatLeverage(increaseAmounts?.estimatedLeverage) ?? "",
         executionFee,
-        orderType,
+        orderType: primaryOrder?.orderPayload.orderType ?? OrderType.MarketIncrease,
         hasReferralCode: Boolean(referralCodeForTxn),
-        subaccount,
+        subaccount: expressParams?.subaccount,
         triggerPrice,
         allowedSlippage,
         marketInfo,
         isLong,
         isFirstOrder,
+        isExpress: Boolean(expressParams),
         isLeverageEnabled: isLeverageSliderEnabled,
         initialCollateralAllowance,
-        isTPSLCreated: createSltpEntries.length > 0,
-        slCount: createSltpEntries.filter(
-          (entry) => entry.decreaseAmounts.triggerOrderType === OrderType.StopLossDecrease
+        isTPSLCreated: Boolean(sidecarOrderPayloads?.createPayloads?.length),
+        slCount: sidecarOrderPayloads?.createPayloads.filter(
+          (entry) => entry.orderPayload.orderType === OrderType.StopLossDecrease
         ).length,
-        tpCount: createSltpEntries.filter((entry) => entry.decreaseAmounts.triggerOrderType === OrderType.LimitDecrease)
-          .length,
-        priceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
+        tpCount: sidecarOrderPayloads?.createPayloads.filter(
+          (entry) => entry.orderPayload.orderType === OrderType.LimitDecrease
+        ).length,
+        priceImpactDeltaUsd: increaseAmounts?.positionPriceImpactDeltaUsd,
         priceImpactPercentage: fees?.positionPriceImpact?.precisePercentage,
         netRate1h: isLong ? chartHeaderInfo?.fundingRateLong : chartHeaderInfo?.fundingRateShort,
         interactionId: marketInfo?.name
@@ -284,322 +200,124 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         duration,
         partsCount: numberOfParts,
         tradeMode: tradeMode,
+        expressParams,
+        asyncExpressParams,
+        fastExpressParams,
       });
+    }
 
-      sendOrderSubmittedMetric(metricData.metricId);
-
-      if (
-        !tokensData ||
-        !account ||
-        !fromToken ||
-        !collateralToken ||
-        increaseAmounts.acceptablePrice === undefined ||
-        !executionFee ||
-        !marketInfo ||
-        !signer ||
-        typeof allowedSlippage !== "number"
-      ) {
-        helperToast.error(t`Error submitting order`);
-        sendTxnValidationErrorMetric(metricData.metricId);
-        return Promise.reject();
-      }
-
-      const commonSecondaryOrderParams = {
-        account,
-        marketAddress: marketInfo.marketTokenAddress,
-        swapPath: [],
-        allowedSlippage,
-        initialCollateralAddress: collateralToken.address,
-        receiveTokenAddress: collateralToken.address,
-        isLong,
-        indexToken: marketInfo.indexToken,
-      };
-
-      sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
-
-      const additionalErrorContent = increaseAmounts.externalSwapQuote ? (
-        <>
-          <br />
-          <br />
-          <Trans>External swap is temporarily disabled. Please try again.</Trans>
-        </>
-      ) : undefined;
-
-      let txnPromise: Promise<void>;
-
-      const commonParams = {
-        account,
-        marketAddress: marketInfo.marketTokenAddress,
-        initialCollateralAddress: fromToken?.address,
-        initialCollateralAmount: increaseAmounts.initialCollateralAmount,
-        targetCollateralAddress: collateralToken.address,
-        collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
-        swapPath: increaseAmounts.swapPathStats?.swapPath || [],
-        externalSwapQuote: increaseAmounts.externalSwapQuote,
-        sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
-        sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
-        isLong,
-        executionFee: executionFee.feeTokenAmount,
-        executionGasLimit: executionFee.gasLimit,
-        referralCode: referralCodeForTxn,
-        indexToken: marketInfo.indexToken,
-        tokensData,
-        setPendingTxns: setPendingTxns,
-        setPendingOrder,
-        setPendingPosition,
-      };
-
-      if (isTwap) {
-        txnPromise = createTwapIncreaseOrderTxn({
-          chainId,
-          signer,
-          subaccount,
-          metricId: metricData.metricId,
-          additionalErrorContent,
-          createTwapIncreaseOrderParams: {
-            ...commonParams,
-            duration,
-            numberOfParts,
-          },
-        });
-      } else {
-        txnPromise = createIncreaseOrderTxn({
-          chainId,
-          signer,
-          subaccount,
-          metricId: metricData.metricId,
-          blockTimestampData,
-          additionalErrorContent,
-          createIncreaseOrderParams: {
-            ...commonParams,
-            triggerPrice: isLimit ? triggerPrice : undefined,
-            acceptablePrice: increaseAmounts.acceptablePrice,
-            orderType: isLimit ? increaseAmounts.limitOrderType! : OrderType.MarketIncrease,
-            allowedSlippage,
-            skipSimulation: isLimit || shouldDisableValidationForTesting,
-            slippageInputId,
-          },
-          createDecreaseOrderParams: createSltpEntries.map((entry, i) => {
-            return {
-              ...commonSecondaryOrderParams,
-              initialCollateralDeltaAmount: entry.decreaseAmounts.collateralDeltaAmount ?? 0n,
-              sizeDeltaUsd: entry.decreaseAmounts.sizeDeltaUsd,
-              sizeDeltaInTokens: entry.decreaseAmounts.sizeDeltaInTokens,
-              acceptablePrice: entry.decreaseAmounts.acceptablePrice,
-              triggerPrice: entry.decreaseAmounts.triggerPrice,
-              minOutputUsd: 0n,
-              decreasePositionSwapType: entry.decreaseAmounts.decreaseSwapType,
-              orderType: entry.decreaseAmounts.triggerOrderType!,
-              referralCode: referralCodeForTxn,
-              executionFee: getExecutionFeeAmountForEntry(entry) ?? 0n,
-              executionGasLimit: 0n, // Don't need for tp/sl entries
-              tokensData,
-              txnType: entry.txnType!,
-              skipSimulation: isLimit || shouldDisableValidationForTesting,
-              autoCancel: i < autoCancelOrdersLimit,
-              slippageInputId,
-              isTwap: false,
-            };
-          }),
-          cancelOrderParams: cancelSltpEntries.map((entry) => ({
-            ...commonSecondaryOrderParams,
-            orderKey: entry.order!.key,
-            orderType: entry.order!.orderType,
-            minOutputAmount: 0n,
-            sizeDeltaUsd: entry.order!.sizeDeltaUsd,
-            txnType: entry.txnType!,
-            initialCollateralDeltaAmount: entry.order?.initialCollateralDeltaAmount ?? 0n,
-          })),
-          updateOrderParams: updateSltpEntries.map((entry) => ({
-            ...commonSecondaryOrderParams,
-            orderKey: entry.order!.key,
-            orderType: entry.order!.orderType,
-            sizeDeltaUsd: (entry.increaseAmounts?.sizeDeltaUsd || entry.decreaseAmounts?.sizeDeltaUsd)!,
-            acceptablePrice: (entry.increaseAmounts?.acceptablePrice || entry.decreaseAmounts?.acceptablePrice)!,
-            triggerPrice: (entry.increaseAmounts?.triggerPrice || entry.decreaseAmounts?.triggerPrice)!,
-            executionFee: getExecutionFeeAmountForEntry(entry) ?? 0n,
-            minOutputAmount: 0n,
-            txnType: entry.txnType!,
-            initialCollateralDeltaAmount: entry.order?.initialCollateralDeltaAmount ?? 0n,
-            autoCancel: entry.order!.autoCancel,
-          })),
-        });
-      }
-
-      return txnPromise
-        .then(makeTxnSentMetricsHandler(metricData.metricId))
-        .catch(makeTxnErrorMetricsHandler(metricData.metricId))
-        .catch((e) => {
-          if (isPossibleExternalSwapError(e) && increaseAmounts.externalSwapQuote) {
-            setShouldFallbackToInternalSwap(true);
-          }
-
-          throw e;
-        })
-        .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
-    },
-    [
-      increaseAmounts,
-      isLimit,
-      chainId,
-      fromToken,
-      collateralToken,
-      selectedPosition,
-      executionFee,
-      referralCodeForTxn,
-      subaccount,
-      triggerPrice,
-      allowedSlippage,
-      marketInfo,
-      isLong,
-      isFirstOrder,
-      isLeverageSliderEnabled,
-      initialCollateralAllowance,
-      createSltpEntries,
-      fees?.positionPriceImpact?.precisePercentage,
-      chartHeaderInfo?.fundingRateLong,
-      chartHeaderInfo?.fundingRateShort,
-      duration,
-      numberOfParts,
-      tradeMode,
-      tokensData,
-      account,
-      signer,
-      isTwap,
-      setPendingTxns,
-      setPendingOrder,
-      setPendingPosition,
-      blockTimestampData,
-      shouldDisableValidationForTesting,
-      slippageInputId,
-      cancelSltpEntries,
-      updateSltpEntries,
-      getExecutionFeeAmountForEntry,
-      autoCancelOrdersLimit,
-      setShouldFallbackToInternalSwap,
-    ]
-  );
-
-  const onSubmitDecreaseOrder = useCallback(
-    function onSubmitDecreaseOrder() {
-      const metricData = initDecreaseOrderMetricData({
-        collateralToken,
-        decreaseAmounts,
-        hasExistingPosition: Boolean(selectedPosition),
-        executionFee,
-        swapPath: [],
-        orderType: decreaseAmounts?.triggerOrderType,
-        hasReferralCode: Boolean(referralCodeForTxn),
-        subaccount,
-        triggerPrice,
-        marketInfo,
-        allowedSlippage,
-        isLong,
-        place: "tradeBox",
-        interactionId: marketInfo?.name ? userAnalytics.getInteractionId(getTradeInteractionKey(marketInfo.name)) : "",
-        priceImpactDeltaUsd: decreaseAmounts?.positionPriceImpactDeltaUsd,
-        priceImpactPercentage: fees?.positionPriceImpact?.precisePercentage,
-        netRate1h: isLong ? chartHeaderInfo?.fundingRateLong : chartHeaderInfo?.fundingRateShort,
-        duration,
-        partsCount: numberOfParts,
-        tradeMode,
-      });
-
-      sendOrderSubmittedMetric(metricData.metricId);
-
-      if (
-        !account ||
-        !marketInfo ||
-        !collateralToken ||
-        decreaseAmounts?.triggerOrderType === undefined ||
-        decreaseAmounts?.triggerThresholdType === undefined ||
-        decreaseAmounts?.acceptablePrice === undefined ||
-        decreaseAmounts?.triggerPrice === undefined ||
-        !executionFee ||
-        !tokensData ||
-        !signer ||
-        typeof allowedSlippage !== "number"
-      ) {
-        helperToast.error(t`Error submitting order`);
-        sendTxnValidationErrorMetric(metricData.metricId);
-        return Promise.reject();
-      }
-
-      sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
-
-      return createDecreaseOrderTxn(
-        chainId,
-        signer,
-        subaccount,
-        {
-          account,
-          marketAddress: marketInfo.marketTokenAddress,
-          swapPath: [],
-          initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
-          initialCollateralAddress: collateralToken.address,
-          receiveTokenAddress: collateralToken.address,
-          triggerPrice: decreaseAmounts.triggerPrice,
-          acceptablePrice: decreaseAmounts.acceptablePrice,
-          sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-          sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
-          minOutputUsd: BigInt(0),
-          isLong,
-          decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
-          orderType: decreaseAmounts?.triggerOrderType,
-          executionFee: executionFee.feeTokenAmount,
-          executionGasLimit: executionFee.gasLimit,
-          allowedSlippage,
-          referralCode: referralCodeForTxn,
-          // Skip simulation to avoid EmptyPosition error
-          // skipSimulation: !existingPosition || shouldDisableValidation,
-          skipSimulation: true,
-          indexToken: marketInfo.indexToken,
-          tokensData,
-          autoCancel: autoCancelOrdersLimit > 0,
-          slippageInputId,
-          isTwap: false,
-        },
-        {
-          setPendingTxns,
-          setPendingOrder,
-          setPendingPosition,
-        },
-        blockTimestampData,
-        metricData.metricId
-      )
-        .then(makeTxnSentMetricsHandler(metricData.metricId))
-        .catch(makeTxnErrorMetricsHandler(metricData.metricId))
-        .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
-    },
-    [
+    return initDecreaseOrderMetricData({
       collateralToken,
       decreaseAmounts,
-      selectedPosition,
+      hasExistingPosition: Boolean(selectedPosition),
       executionFee,
-      referralCodeForTxn,
-      subaccount,
+      swapPath: [],
+      orderType: primaryOrder?.orderPayload.orderType,
+      hasReferralCode: Boolean(referralCodeForTxn),
+      subaccount: expressParams?.subaccount,
       triggerPrice,
       marketInfo,
       allowedSlippage,
       isLong,
-      fees?.positionPriceImpact?.precisePercentage,
-      chartHeaderInfo?.fundingRateLong,
-      chartHeaderInfo?.fundingRateShort,
-      duration,
-      numberOfParts,
+      place: "tradeBox",
+      isExpress: Boolean(expressParams),
+      interactionId: marketInfo?.name ? userAnalytics.getInteractionId(getTradeInteractionKey(marketInfo.name)) : "",
+      priceImpactDeltaUsd: decreaseAmounts?.positionPriceImpactDeltaUsd,
+      priceImpactPercentage: fees?.positionPriceImpact?.precisePercentage,
+      netRate1h: isLong ? chartHeaderInfo?.fundingRateLong : chartHeaderInfo?.fundingRateShort,
       tradeMode,
-      account,
-      tokensData,
-      signer,
+      duration,
+      partsCount: numberOfParts,
+      expressParams,
+      asyncExpressParams,
+      fastExpressParams,
+    });
+  }, [
+    allowedSlippage,
+    asyncExpressParams,
+    chartHeaderInfo?.fundingRateLong,
+    chartHeaderInfo?.fundingRateShort,
+    collateralToken,
+    decreaseAmounts,
+    duration,
+    executionFee,
+    expressParams,
+    fastExpressParams,
+    fees?.positionPriceImpact?.precisePercentage,
+    fromToken,
+    increaseAmounts,
+    initialCollateralAllowance,
+    isFirstOrder,
+    isIncrease,
+    isLeverageSliderEnabled,
+    isLong,
+    isSwap,
+    marketInfo,
+    numberOfParts,
+    primaryCreateOrderParams,
+    referralCodeForTxn,
+    selectedPosition,
+    sidecarOrderPayloads?.createPayloads,
+    swapAmounts,
+    toToken,
+    tradeMode,
+    triggerPrice,
+  ]);
+
+  const onSubmitOrder = useCallback(async () => {
+    const fulfilledExpressParams = await expressParamsPromise;
+
+    const metricData = initOrderMetricData();
+
+    sendOrderSubmittedMetric(metricData.metricId);
+
+    if (!primaryCreateOrderParams || !signer || !tokensData || !account || !marketsInfoData) {
+      helperToast.error(t`Error submitting order`);
+      sendTxnValidationErrorMetric(metricData.metricId);
+      return Promise.reject();
+    }
+
+    sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
+
+    return sendBatchOrderTxn({
       chainId,
-      autoCancelOrdersLimit,
-      slippageInputId,
-      setPendingTxns,
-      setPendingOrder,
-      setPendingPosition,
-      blockTimestampData,
-    ]
-  );
+      signer,
+      batchParams,
+      noncesData,
+      expressParams:
+        fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
+      simulationParams: shouldDisableValidationForTesting
+        ? undefined
+        : {
+            tokensData,
+            blockTimestampData,
+          },
+      callback: makeOrderTxnCallback({
+        metricId: metricData.metricId,
+        slippageInputId,
+        additionalErrorContent: undefined,
+        onInternalSwapFallback: () => {
+          setShouldFallbackToInternalSwap(true);
+        },
+      }),
+    });
+  }, [
+    expressParamsPromise,
+    initOrderMetricData,
+    primaryCreateOrderParams,
+    signer,
+    tokensData,
+    account,
+    marketsInfoData,
+    chainId,
+    batchParams,
+    noncesData,
+    shouldDisableValidationForTesting,
+    blockTimestampData,
+    makeOrderTxnCallback,
+    slippageInputId,
+    setShouldFallbackToInternalSwap,
+  ]);
 
   function onSubmitWrapOrUnwrap() {
     if (!account || !swapAmounts || !fromToken || !signer) {
@@ -614,10 +332,14 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   }
 
   return {
-    onSubmitSwap,
-    onSubmitIncreaseOrder,
-    onSubmitDecreaseOrder,
+    onSubmitSwap: onSubmitOrder,
+    onSubmitIncreaseOrder: onSubmitOrder,
+    onSubmitDecreaseOrder: onSubmitOrder,
     onSubmitWrapOrUnwrap,
     slippageInputId,
+    expressParams,
+    batchParams,
+    isExpressLoading,
+    totalExecutionFee,
   };
 }

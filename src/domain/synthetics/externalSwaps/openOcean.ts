@@ -4,7 +4,7 @@ import { USD_DECIMALS } from "config/factors";
 import { buildUrl } from "lib/buildUrl";
 import { metrics } from "lib/metrics";
 import { formatTokenAmount, numberToBigint } from "lib/numbers";
-import { getToken } from "sdk/configs/tokens";
+import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 
 type OpenOceanTxnResponse = {
   code: number;
@@ -38,6 +38,20 @@ type OpenOceanTxnResponse = {
   };
 };
 
+export type OpenOceanQuote = {
+  to: string;
+  data: string;
+  value: bigint;
+  estimatedGas: bigint;
+  usdIn: bigint;
+  usdOut: bigint;
+  priceIn: bigint;
+  priceOut: bigint;
+  gasPrice: bigint;
+  amountIn: bigint;
+  outputAmount: bigint;
+};
+
 export async function getOpenOceanTxnData({
   chainId,
   tokenInAddress,
@@ -56,15 +70,15 @@ export async function getOpenOceanTxnData({
   amountIn: bigint;
   gasPrice: bigint;
   slippage: number;
-}) {
+}): Promise<OpenOceanQuote | undefined> {
   const disabledDexIds = DISABLED_OPEN_OCEAN_DEXES[chainId] ?? [];
   const tokenIn = getToken(chainId, tokenInAddress);
 
   const gweiGasPrice = formatTokenAmount(gasPrice, 18 - 9, undefined, { displayDecimals: 8 });
 
   const url = buildUrl(getOpenOceanUrl(chainId), "/swap_quote", {
-    inTokenAddress: tokenInAddress,
-    outTokenAddress: tokenOutAddress,
+    inTokenAddress: convertTokenAddress(chainId, tokenInAddress, "wrapped"),
+    outTokenAddress: convertTokenAddress(chainId, tokenOutAddress, "wrapped"),
     amount: formatTokenAmount(amountIn, tokenIn.decimals, undefined, { showAllSignificant: true }),
     gasPrice: gweiGasPrice,
     slippage: (slippage / 100).toString(),
@@ -101,6 +115,7 @@ export async function getOpenOceanTxnData({
       priceIn: numberToBigint(parseFloat(parsed.data.inToken.usd), USD_DECIMALS),
       priceOut: numberToBigint(parseFloat(parsed.data.outToken.usd), USD_DECIMALS),
       gasPrice: BigInt(parsed.data.gasPrice),
+      amountIn,
       outputAmount: BigInt(parsed.data.minOutAmount),
     };
   } catch (e) {

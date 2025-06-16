@@ -27,10 +27,10 @@ export function getMarketIndexName(p: ({ indexToken: Token } | { glvToken: Token
   return `${prefix}${firstToken.baseSymbol || firstToken.symbol}/USD`;
 }
 
-export function getMarketPoolName(p: { longToken: Token; shortToken: Token }) {
+export function getMarketPoolName(p: { longToken: Token; shortToken: Token }, separator = "-") {
   const { longToken, shortToken } = p;
 
-  return `${longToken.symbol}-${shortToken.symbol}`;
+  return `${longToken.symbol}${separator}${shortToken.symbol}`;
 }
 
 export function getContractMarketPrices(tokensData: TokensData, market: Market): ContractMarketPrices | undefined {
@@ -211,4 +211,10 @@ export function getPriceForPnl(prices: TokenPrices, isLong: boolean, maximize: b
   }
 
   return maximize ? prices.minPrice : prices.maxPrice;
+}
+
+export function getIsMarketAvailableForExpressSwaps(marketInfo: MarketInfo) {
+  return [marketInfo.indexToken, marketInfo.longToken, marketInfo.shortToken].every(
+    (token) => token.hasPriceFeedProvider
+  );
 }

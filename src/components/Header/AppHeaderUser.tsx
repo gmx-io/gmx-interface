@@ -1,8 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import cx from "classnames";
 import { useCallback } from "react";
-import { useRouteMatch } from "react-router-dom";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -15,6 +13,8 @@ import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import useWallet from "lib/wallets/useWallet";
 
+import { OneClickButton } from "components/OneClickButton/OneClickButton";
+
 import connectWalletImg from "img/ic_wallet_24.svg";
 
 import { HeaderLink } from "./HeaderLink";
@@ -22,7 +22,6 @@ import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
-import { NotifyButton } from "../NotifyButton/NotifyButton";
 
 import "./Header.scss";
 
@@ -73,9 +72,6 @@ export function AppHeaderUser({
   const [redirectPopupTimestamp] = useRedirectPopupTimestamp();
 
   const tradeLink = tradePageVersion === 2 ? "/trade" : "/v1";
-  const isOnTradePageV1 = useRouteMatch("/v1");
-  const isOnTradePageV2 = useRouteMatch("/trade");
-  const shouldHideTradeButton = isOnTradePageV1 || isOnTradePageV2;
 
   const selectorLabel = getChainName(chainId);
 
@@ -96,21 +92,18 @@ export function AppHeaderUser({
   if (!active || !account) {
     return (
       <div className="App-header-user">
-        {shouldHideTradeButton ? null : (
-          <div
-            data-qa="trade"
-            className={cx("App-header-trade-link text-body-medium", { "homepage-header": isHomeSite() })}
-          >
+        {isHomeSite() ? (
+          <div data-qa="trade" className="App-header-trade-link homepage-header text-body-medium">
             <HeaderLink
               className="default-btn"
               onClick={trackLaunchApp}
-              to={`${tradeLink}?${isHomeSite() ? userAnalytics.getSessionIdUrlParams() : ""}`}
+              to={`${tradeLink}?${userAnalytics.getSessionIdUrlParams()}`}
               showRedirectModal={showRedirectModal}
             >
-              {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
+              <Trans>Launch App</Trans>
             </HeaderLink>
           </div>
-        )}
+        ) : null}
 
         {showConnectionOptions && openConnectModal ? (
           <>
@@ -123,7 +116,7 @@ export function AppHeaderUser({
             >
               {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
             </ConnectWalletButton>
-            {!small && <NotifyButton />}
+            {!small && <OneClickButton openSettings={openSettings} />}
             <NetworkDropdown
               small={small}
               networkOptions={NETWORK_OPTIONS}
@@ -143,18 +136,18 @@ export function AppHeaderUser({
 
   return (
     <div className="App-header-user">
-      <div data-qa="trade" className="App-header-trade-link text-body-medium">
-        {shouldHideTradeButton ? null : (
+      {isHomeSite() ? (
+        <div data-qa="trade" className="App-header-trade-link text-body-medium">
           <HeaderLink
             className="default-btn"
             onClick={trackLaunchApp}
-            to={`${tradeLink}?${isHomeSite() ? userAnalytics.getSessionIdUrlParams() : ""}`}
+            to={`${tradeLink}?${userAnalytics.getSessionIdUrlParams()}`}
             showRedirectModal={showRedirectModal}
           >
-            {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
+            <Trans>Launch App</Trans>
           </HeaderLink>
-        )}
-      </div>
+        </div>
+      ) : null}
 
       {showConnectionOptions ? (
         <>
@@ -165,7 +158,7 @@ export function AppHeaderUser({
               disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
             />
           </div>
-          {!small && <NotifyButton />}
+          {!small && <OneClickButton openSettings={openSettings} />}
           <NetworkDropdown
             small={small}
             networkOptions={NETWORK_OPTIONS}

@@ -6,9 +6,12 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 import { useExecutionFeeBufferBps } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { GasPaymentParams } from "domain/synthetics/express";
 import { getExecutionFeeWarning, type ExecutionFee } from "domain/synthetics/fees";
-import { convertToUsd } from "domain/synthetics/tokens/utils";
+import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens/utils";
+import { TokenData } from "domain/tokens";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { bigMath } from "sdk/utils/bigmath";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
@@ -20,6 +23,7 @@ import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
 type Props = {
   executionFee?: ExecutionFee;
+  gasPaymentParams?: GasPaymentParams;
   isAdditionOrdersMsg?: boolean;
   rowPadding?: boolean;
 };
@@ -30,10 +34,12 @@ type Props = {
  */
 const ESTIMATED_REFUND_BPS = 10 * 100;
 
-export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = false }: Props) {
+export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrdersMsg, rowPadding = false }: Props) {
   const executionFeeBufferBps = useExecutionFeeBufferBps();
-  const tokenData = useTokensData();
+  const tokensData = useTokensData();
   const chainId = useSelector(selectChainId);
+  const gasPaymentToken = getByKey(tokensData, gasPaymentParams?.gasPaymentTokenAddress);
+  const executionFeeToken = getByKey(tokensData, executionFee?.feeToken.address);
 
   let displayDecimals = executionFee?.feeToken.priceDecimals;
   if (displayDecimals !== undefined) {
@@ -41,16 +47,6 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
   } else {
     displayDecimals = 5;
   }
-
-  const executionFeeText = formatTokenAmountWithUsd(
-    executionFee?.feeTokenAmount === undefined ? undefined : -executionFee.feeTokenAmount,
-    executionFee?.feeUsd === undefined ? undefined : -executionFee.feeUsd,
-    executionFee?.feeToken.symbol,
-    executionFee?.feeToken.decimals,
-    {
-      displayDecimals,
-    }
-  );
 
   const additionalOrdersMsg = useMemo(
     () =>
@@ -64,72 +60,99 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
     [isAdditionOrdersMsg]
   );
 
-  const estimatedRefund = useMemo(() => {
-    let estimatedRefundTokenAmount: bigint | undefined;
-    if (!executionFee || executionFeeBufferBps === undefined) {
-      estimatedRefundTokenAmount = undefined;
-    } else {
-      const fee = executionFee.feeTokenAmount;
-      const feeBeforeBuffer = bigMath.mulDiv(
-        fee,
-        BASIS_POINTS_DIVISOR_BIGINT,
-        BigInt(BASIS_POINTS_DIVISOR + executionFeeBufferBps)
-      );
-      estimatedRefundTokenAmount =
-        bigMath.mulDiv(feeBeforeBuffer, BigInt(ESTIMATED_REFUND_BPS), BASIS_POINTS_DIVISOR_BIGINT) +
-        (fee - feeBeforeBuffer);
-    }
+  const networkFee = useMemo(() => {
+    let feeUsd: bigint;
+    let feeAmount: bigint;
+    let feeToken: TokenData;
 
-    let estimatedRefundUsd: bigint | undefined;
-
-    if (executionFeeBufferBps === undefined || !executionFee || !tokenData) {
-      estimatedRefundUsd = undefined;
+    if (gasPaymentToken && gasPaymentParams?.gasPaymentTokenAmount !== undefined) {
+      feeToken = gasPaymentToken;
+      feeAmount = gasPaymentParams.gasPaymentTokenAmount;
+      feeUsd = convertToUsd(
+        gasPaymentParams.gasPaymentTokenAmount,
+        gasPaymentToken.decimals,
+        gasPaymentToken.prices.minPrice
+      )!;
+    } else if (executionFee && executionFeeToken) {
+      feeUsd = executionFee.feeUsd;
+      feeAmount = executionFee.feeTokenAmount;
+      feeToken = executionFeeToken;
     } else {
-      estimatedRefundUsd = convertToUsd(
-        estimatedRefundTokenAmount,
-        executionFee.feeToken.decimals,
-        tokenData[executionFee.feeToken.address].prices.minPrice
-      );
+      return undefined;
     }
 
     return {
-      estimatedRefundTokenAmount,
-      estimatedRefundUsd,
+      feeUsd,
+      feeAmount,
+      feeToken,
     };
-  }, [executionFee, executionFeeBufferBps, tokenData]);
+  }, [executionFee, executionFeeToken, gasPaymentToken, gasPaymentParams]);
 
-  const estimatedRefundText = useMemo(() => {
-    const { estimatedRefundTokenAmount, estimatedRefundUsd } = estimatedRefund;
+  const { estimatedRefundText, estimatedRefundUsd } = useMemo(() => {
+    let estimatedRefundUsd: bigint | undefined;
+
+    if (!networkFee || executionFeeBufferBps === undefined) {
+      estimatedRefundUsd = undefined;
+    } else {
+      const feeUsBeforeBuffer = bigMath.mulDiv(
+        networkFee.feeUsd,
+        BASIS_POINTS_DIVISOR_BIGINT,
+        BigInt(BASIS_POINTS_DIVISOR + executionFeeBufferBps)
+      );
+
+      estimatedRefundUsd =
+        bigMath.mulDiv(feeUsBeforeBuffer, BigInt(ESTIMATED_REFUND_BPS), BASIS_POINTS_DIVISOR_BIGINT) +
+        (networkFee.feeUsd - feeUsBeforeBuffer);
+    }
+
+    const estimatedRefundTokenAmount = convertToTokenAmount(
+      estimatedRefundUsd,
+      executionFeeToken?.decimals,
+      executionFeeToken?.prices.minPrice
+    );
+
     const estimatedRefundText = formatTokenAmountWithUsd(
       estimatedRefundTokenAmount,
       estimatedRefundUsd,
-      executionFee?.feeToken.symbol,
-      executionFee?.feeToken.decimals,
+      executionFeeToken?.symbol,
+      executionFeeToken?.decimals,
       {
         displayPlus: true,
         displayDecimals,
       }
     );
 
-    return estimatedRefundText;
-  }, [displayDecimals, executionFee, estimatedRefund]);
-
-  const executionFeeAfterUsd = useMemo(() => {
-    if (!executionFee || estimatedRefund.estimatedRefundUsd === undefined) {
-      return undefined;
-    }
-
-    const feeWithRefundUsd = executionFee.feeUsd - estimatedRefund.estimatedRefundUsd;
-
-    return feeWithRefundUsd;
-  }, [executionFee, estimatedRefund.estimatedRefundUsd]);
+    return {
+      estimatedRefundText,
+      estimatedRefundUsd,
+    };
+  }, [
+    displayDecimals,
+    executionFeeBufferBps,
+    executionFeeToken?.decimals,
+    executionFeeToken?.prices.minPrice,
+    executionFeeToken?.symbol,
+    networkFee,
+  ]);
 
   const value: ReactNode = useMemo(() => {
-    if (executionFee?.feeUsd === undefined) {
+    if (networkFee === undefined) {
       return "-";
     }
 
-    const warning = getExecutionFeeWarning(chainId, executionFee);
+    const maxNetworkFeeText = formatTokenAmountWithUsd(
+      -networkFee.feeAmount,
+      networkFee.feeUsd,
+      networkFee.feeToken.symbol,
+      networkFee.feeToken.decimals,
+      {
+        displayDecimals,
+      }
+    );
+
+    const feeUsdAfterRefund = networkFee.feeUsd - (estimatedRefundUsd ?? 0n);
+
+    const warning = executionFee ? getExecutionFeeWarning(chainId, executionFee) : undefined;
 
     return (
       <TooltipWithPortal
@@ -137,7 +160,7 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
         position="left-start"
         content={
           <>
-            <StatsTooltipRow label={t`Max Network Fee`} showDollar={false} value={executionFeeText} />
+            <StatsTooltipRow label={t`Max Network Fee`} showDollar={false} value={maxNetworkFeeText} />
             <div className="h-8" />
             <p>
               <Trans>
@@ -161,10 +184,18 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
           </>
         }
       >
-        {formatUsd(executionFeeAfterUsd !== undefined ? executionFeeAfterUsd * -1n : undefined)}
+        {formatUsd(-feeUsdAfterRefund)}
       </TooltipWithPortal>
     );
-  }, [executionFee, chainId, executionFeeText, estimatedRefundText, additionalOrdersMsg, executionFeeAfterUsd]);
+  }, [
+    networkFee,
+    displayDecimals,
+    estimatedRefundUsd,
+    executionFee,
+    chainId,
+    estimatedRefundText,
+    additionalOrdersMsg,
+  ]);
 
   if (rowPadding) {
     return (

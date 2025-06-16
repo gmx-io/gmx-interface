@@ -13,12 +13,13 @@ type Props = {
   status: TransactionStatusType;
   text: ReactNode;
   txnHash?: string;
+  txnLink?: string;
 };
 
-export function TransactionStatus({ status, text, txnHash }: Props) {
+export function TransactionStatus({ status, text, txnHash, txnLink }: Props) {
   const { chainId } = useChainId();
 
-  const txnLink = `${getExplorerUrl(chainId)}tx/${txnHash}`;
+  const _txnLink = txnLink ?? (txnHash ? `${getExplorerUrl(chainId)}tx/${txnHash}` : undefined);
 
   return (
     <div className="text-sm flex w-full items-center justify-between gap-8 py-2 text-14">
@@ -31,7 +32,7 @@ export function TransactionStatus({ status, text, txnHash }: Props) {
       </div>
       <div className="flex flex-shrink-0 items-center justify-center">
         {status === "loading" && <ImSpinner2 width={60} height={60} className="spin size-15 text-white" />}
-        {status !== "loading" && txnHash && <ExternalLink href={txnLink}>View</ExternalLink>}
+        {status !== "loading" && _txnLink && <ExternalLink href={_txnLink}>View</ExternalLink>}
       </div>
     </div>
   );

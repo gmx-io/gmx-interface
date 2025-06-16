@@ -40,7 +40,9 @@ export function isDecreaseOrderType(orderType: OrderType) {
   return [OrderType.MarketDecrease, OrderType.LimitDecrease, OrderType.StopLossDecrease].includes(orderType);
 }
 
-export function isIncreaseOrderType(orderType: OrderType) {
+export function isIncreaseOrderType(
+  orderType: OrderType
+): orderType is OrderType.MarketIncrease | OrderType.LimitIncrease | OrderType.StopIncrease {
   return [OrderType.MarketIncrease, OrderType.LimitIncrease, OrderType.StopIncrease].includes(orderType);
 }
 
@@ -92,6 +94,10 @@ export function isPositionOrder(orderInfo: OrderInfo): orderInfo is PositionOrde
   return !orderInfo.isSwap;
 }
 
+export function getOrderKeys(order: OrderInfo) {
+  return isTwapOrder(order) ? order.orders.map((o) => o.key) : [order.key];
+}
+
 export function getOrderInfo(p: {
   marketsInfoData: MarketsInfoData;
   tokensData: TokensData;
@@ -129,6 +135,7 @@ export function getOrderInfo(p: {
       )!,
       shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
       shouldApplyPriceImpact: true,
+      isAtomicSwap: false,
     });
 
     const priceImpactAmount = convertToTokenAmount(
@@ -222,6 +229,7 @@ export function getOrderInfo(p: {
       )!,
       shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
       shouldApplyPriceImpact: true,
+      isAtomicSwap: false,
     });
 
     const triggerThresholdType = getOrderThresholdType(order.orderType, order.isLong);

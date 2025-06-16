@@ -1,6 +1,6 @@
 {
   "name": "@gmx-io/sdk",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "type": "module",
   "main": "./build/cjs/src/index.js",
   "module": "./build/esm/src/index.js",
@@ -51,9 +51,10 @@
     "build:cjs": "tsc -p tsconfig.cjs.json && echo '{\"type\": \"commonjs\"}' > build/cjs/src/package.json",
     "build:esm": "tsc -p tsconfig.esm.json && echo '{\"type\": \"module\"}' > build/esm/src/package.json",
     "build:types": "tsc -p tsconfig.json --emitDeclarationOnly",
+    "build:subsquid": "./node_modules/@graphql-codegen/cli/cjs/bin.js -c subsquid-codegen.ts",
     "tscheck": "tsc -p tsconfig.json --noEmit",
     "clean": "rm -rf build/**/*.tsbuildinfo",
-    "build": "rm -rf build && yarn build:types && yarn build:cjs && yarn build:esm && yarn clean"
+    "build": "rm -rf build && yarn build:subsquid && yarn build:types && yarn build:cjs && yarn build:esm && yarn clean"
   },
   "publishConfig": {
     "access": "public"
@@ -62,7 +63,9 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "@gelatonetwork/relay-sdk": "5.6.0",
     "cross-fetch": "4.0.0",
+    "crypto-js": "4.2.0",
     "graphql": "15.8.0",
     "isomorphic-performance": "5.1.1",
     "lodash": "4.17.21",
@@ -73,6 +76,10 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
+    "@graphql-codegen/cli": "5.0.6",
+    "@graphql-codegen/client-preset": "4.8.1",
+    "@graphql-codegen/typescript": "4.1.6",
+    "@graphql-codegen/typescript-operations": "4.6.1",
     "@types/lodash": "4.14.198",
     "@types/node": "18.7.13",
     "lint-staged": "12.3.4",

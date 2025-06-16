@@ -113,6 +113,7 @@ export function mockExternalSwapQuote(overrides: Partial<ExternalSwapQuote> = {}
     aggregator: ExternalSwapAggregator.OpenOcean,
     inTokenAddress: getTokenBySymbol(AVALANCHE, "BTC").address,
     outTokenAddress: getTokenBySymbol(AVALANCHE, "USDC").address,
+    receiver: "0x1234567890123456789012345678901234567890",
     amountIn: 1000000n,
     amountOut: 900000n,
     usdIn: 1000000n,
@@ -121,7 +122,10 @@ export function mockExternalSwapQuote(overrides: Partial<ExternalSwapQuote> = {}
     priceOut: 900000n,
     feesUsd: 100000n,
     needSpenderApproval: false,
-    txnData: MOCK_TXN_DATA,
+    txnData: {
+      ...MOCK_TXN_DATA,
+      estimatedExecutionFee: 100000n,
+    },
     ...overrides,
   };
 }

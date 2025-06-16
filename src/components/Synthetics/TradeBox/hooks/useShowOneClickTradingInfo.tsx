@@ -1,62 +1,58 @@
 import {
-  ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN,
-  ONE_CLICK_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN,
+  EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY,
+  EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY,
 } from "config/localStorage";
-import {
-  useIsSubaccountActive,
-  useSubaccountActionCounts,
-  useSubaccountInsufficientFunds,
-} from "context/SubaccountContext/SubaccountContext";
-import {
-  selectTradeboxExecutionFee,
-  selectTradeboxFromToken,
-  selectTradeboxIsWrapOrUnwrap,
-  selectTradeboxTradeFlags,
-} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectIsExpressTransactionAvailable } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectRawSubaccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { ExpressTxnParams } from "domain/synthetics/express";
+import {
+  getIsSubaccountActionsExceeded,
+  getIsSubaccountExpired,
+  getIsSubaccountNonceExpired,
+} from "domain/synthetics/subaccount";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
-import { useRequiredActions } from "./useRequiredActions";
-
-export function useShowOneClickTradingInfo() {
-  const executionFee = useSelector(selectTradeboxExecutionFee);
-  const fromToken = useSelector(selectTradeboxFromToken);
-  const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
+export function useExpressTradingWarnings({
+  isWrapOrUnwrap,
+  expressParams,
+  payTokenAddress,
+}: {
+  isWrapOrUnwrap: boolean;
+  payTokenAddress: string | undefined;
+  expressParams: ExpressTxnParams | undefined;
+}) {
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { requiredActions } = useRequiredActions();
+  const isExpressTransactionAvailable = useSelector(selectIsExpressTransactionAvailable);
+  const rawSubaccount = useSelector(selectRawSubaccount);
 
-  const isSubaccountActive = useIsSubaccountActive();
+  const isNativePayment = payTokenAddress === NATIVE_TOKEN_ADDRESS;
 
-  const insufficientFunds = useSubaccountInsufficientFunds(executionFee?.feeTokenAmount);
+  const [nativeTokenWarningHidden] = useLocalStorageSerializeKey(EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY, false);
+  const [wrapOrUnwrapWarningHidden] = useLocalStorageSerializeKey(
+    EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY,
+    false
+  );
 
-  const [nativeTokenWarningHidden] = useLocalStorageSerializeKey(ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN, false);
+  const conditions = {
+    shouldShowWrapOrUnwrapWarning: isExpressTransactionAvailable && isWrapOrUnwrap && !wrapOrUnwrapWarningHidden,
+    shouldShowNativeTokenWarning:
+      !tradeFlags?.isTrigger && isExpressTransactionAvailable && isNativePayment && !nativeTokenWarningHidden,
+    shouldShowExpiredSubaccountWarning:
+      isExpressTransactionAvailable && rawSubaccount && getIsSubaccountExpired(rawSubaccount),
+    shouldShowNonceExpiredWarning:
+      isExpressTransactionAvailable && rawSubaccount && getIsSubaccountNonceExpired(rawSubaccount),
+    shouldShowAllowedActionsWarning:
+      isExpressTransactionAvailable && rawSubaccount && getIsSubaccountActionsExceeded(rawSubaccount, 1),
+    shouldShowOutOfGasPaymentBalanceWarning: expressParams?.gasPaymentValidations.isOutGasTokenBalance,
+  };
 
-  const [wrapOrUnwrapWarningHidden] = useLocalStorageSerializeKey(ONE_CLICK_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN, false);
-
-  const { remaining } = useSubaccountActionCounts();
-
-  const isNativeToken = fromToken?.isNative;
-
-  const shouldShowInsufficientFundsButton = isSubaccountActive && insufficientFunds && !isNativeToken;
-
-  const shouldShowAllowedActionsWarning =
-    isSubaccountActive && (remaining === 0n || remaining < requiredActions) && !isNativeToken;
-  const shouldShowWrapOrUnwrapWarning =
-    !tradeFlags?.isTrigger && isSubaccountActive && !wrapOrUnwrapWarningHidden && isWrapOrUnwrap;
-  const shouldShowNativeTokenWarning =
-    !tradeFlags?.isTrigger && isSubaccountActive && !nativeTokenWarningHidden && isNativeToken;
-
-  const shouldShowWarning =
-    shouldShowWrapOrUnwrapWarning ||
-    shouldShowNativeTokenWarning ||
-    shouldShowAllowedActionsWarning ||
-    shouldShowInsufficientFundsButton;
+  const shouldShowWarning = Object.values(conditions).some(Boolean);
 
   return {
-    shouldShowWrapOrUnwrapWarning,
-    shouldShowNativeTokenWarning,
-    shouldShowAllowedActionsWarning,
-    shouldShowInsufficientFundsButton,
+    ...conditions,
     shouldShowWarning,
   };
 }

@@ -114,7 +114,7 @@ export function createDecreaseEncodedPayload({
           callbackContract: zeroAddress,
           market: p.marketAddress,
           swapPath: p.swapPath,
-          uiFeeReceiver: zeroAddress,
+          uiFeeReceiver: sdk.config.settings?.uiFeeReceiverAccount || zeroAddress,
         },
         numbers: {
           sizeDeltaUsd: p.sizeDeltaUsd,

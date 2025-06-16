@@ -30,7 +30,6 @@ import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
 import SideNav from "components/SideNav/SideNav";
-import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 
 import { HomeRoutes } from "./HomeRoutes";
 import { MainRoutes } from "./MainRoutes";
@@ -122,7 +121,7 @@ export function AppRoutes() {
 
   return (
     <>
-      <div className="App font-tthoves w-full">
+      <div className="App w-full font-tthoves">
         {isHome ? (
           <div className="App-content">
             <Header
@@ -133,9 +132,9 @@ export function AppRoutes() {
             <HomeRoutes showRedirectModal={showRedirectModal} />
           </div>
         ) : (
-          <div className="h-full w-full flex gap-8 p-8 pr-0 max-[1100px]:pb-52">
+          <div className="flex h-full w-full gap-8 p-8 pr-0 max-[1100px]:pb-52">
             <SideNav />
-            <div className="flex h-full grow flex-col pr-8 overflow-y-auto">
+            <div className="flex h-full grow flex-col overflow-y-auto pr-8">
               <MainRoutes openSettings={openSettings} />
             </div>
           </div>
@@ -163,7 +162,6 @@ export function AppRoutes() {
         shouldHideRedirectModal={shouldHideRedirectModal}
       />
       <SettingsModal isSettingsVisible={isSettingsVisible} setIsSettingsVisible={setIsSettingsVisible} />
-      <SubaccountModal />
       <NotifyModal />
     </>
   );

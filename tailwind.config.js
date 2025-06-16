@@ -74,6 +74,9 @@ const colors = {
     400: "#8CF3CB",
     500: "#0FDE8D",
     700: "#178969",
+    600: "#1F3445",
+    700: "#0FDE8D",
+    800: "#178969",
     //
     strong: "#0fde8d",
     secondary: "#a4f9d8",
@@ -166,7 +169,8 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
 
   addUtilities({
     ".text-input-bg": {
-      background: "linear-gradient(90deg, var(--color-cold-blue-900) 0%, color-mix(in srgb, var(--color-slate-500) 40%, transparent) 100%)",
+      background:
+        "linear-gradient(90deg, var(--color-cold-blue-900) 0%, color-mix(in srgb, var(--color-slate-500) 40%, transparent) 100%)",
     },
   });
 }
@@ -218,7 +222,7 @@ function fontComponentsPlugin({ addComponents, addBase }) {
     ".text-caption": {
       fontSize: "1rem",
       lineHeight: "1.4rem",
-    },
+    }
   });
 }
 
