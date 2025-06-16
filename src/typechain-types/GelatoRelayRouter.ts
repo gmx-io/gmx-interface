@@ -36,7 +36,7 @@ export type ExternalCallsStructOutput = [
   externalCallTargets: string[],
   externalCallDataList: string[],
   refundTokens: string[],
-  refundReceivers: string[]
+  refundReceivers: string[],
 ] & {
   sendTokens: string[];
   sendAmounts: bigint[];
@@ -65,7 +65,7 @@ export type TokenPermitStructOutput = [
   v: bigint,
   r: string,
   s: string,
-  token: string
+  token: string,
 ] & {
   owner: string;
   spender: string;
@@ -83,11 +83,11 @@ export type FeeParamsStruct = {
   feeSwapPath: AddressLike[];
 };
 
-export type FeeParamsStructOutput = [
-  feeToken: string,
-  feeAmount: bigint,
-  feeSwapPath: string[]
-] & { feeToken: string; feeAmount: bigint; feeSwapPath: string[] };
+export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
+  feeToken: string;
+  feeAmount: bigint;
+  feeSwapPath: string[];
+};
 
 export type RelayParamsStruct = {
   oracleParams: OracleUtils.SetPricesParamsStruct;
@@ -106,7 +106,7 @@ export type RelayParamsStructOutput = [
   fee: FeeParamsStructOutput,
   userNonce: bigint,
   deadline: bigint,
-  signature: string
+  signature: string,
 ] & {
   oracleParams: OracleUtils.SetPricesParamsStructOutput;
   externalCalls: ExternalCallsStructOutput;
@@ -136,7 +136,7 @@ export type UpdateOrderParamsStructOutput = [
   minOutputAmount: bigint,
   validFromTime: bigint,
   autoCancel: boolean,
-  executionFeeIncrease: bigint
+  executionFeeIncrease: bigint,
 ] & {
   key: string;
   sizeDeltaUsd: bigint;
@@ -157,7 +157,7 @@ export type BatchParamsStruct = {
 export type BatchParamsStructOutput = [
   createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[],
   updateOrderParamsList: UpdateOrderParamsStructOutput[],
-  cancelOrderKeys: string[]
+  cancelOrderKeys: string[],
 ] & {
   createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[];
   updateOrderParamsList: UpdateOrderParamsStructOutput[];
@@ -171,11 +171,11 @@ export declare namespace OracleUtils {
     data: BytesLike[];
   };
 
-  export type SetPricesParamsStructOutput = [
-    tokens: string[],
-    providers: string[],
-    data: string[]
-  ] & { tokens: string[]; providers: string[]; data: string[] };
+  export type SetPricesParamsStructOutput = [tokens: string[], providers: string[], data: string[]] & {
+    tokens: string[];
+    providers: string[];
+    data: string[];
+  };
 }
 
 export declare namespace IBaseOrderUtils {
@@ -196,7 +196,7 @@ export declare namespace IBaseOrderUtils {
     uiFeeReceiver: string,
     market: string,
     initialCollateralToken: string,
-    swapPath: string[]
+    swapPath: string[],
   ] & {
     receiver: string;
     cancellationReceiver: string;
@@ -226,7 +226,7 @@ export declare namespace IBaseOrderUtils {
     executionFee: bigint,
     callbackGasLimit: bigint,
     minOutputAmount: bigint,
-    validFromTime: bigint
+    validFromTime: bigint,
   ] & {
     sizeDeltaUsd: bigint;
     initialCollateralDeltaAmount: bigint;
@@ -257,7 +257,7 @@ export declare namespace IBaseOrderUtils {
     isLong: boolean,
     shouldUnwrapNativeToken: boolean,
     autoCancel: boolean,
-    referralCode: string
+    referralCode: string,
   ] & {
     addresses: IBaseOrderUtils.CreateOrderParamsAddressesStructOutput;
     numbers: IBaseOrderUtils.CreateOrderParamsNumbersStructOutput;
@@ -290,103 +290,42 @@ export interface GelatoRelayRouterInterface extends Interface {
       | "userNonces"
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: "DOMAIN_SEPARATOR_NAME_HASH",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "DOMAIN_SEPARATOR_TYPEHASH",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "batch",
-    values: [RelayParamsStruct, AddressLike, BatchParamsStruct]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "cancelOrder",
-    values: [RelayParamsStruct, AddressLike, BytesLike]
-  ): string;
+  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_NAME_HASH", values?: undefined): string;
+  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_TYPEHASH", values?: undefined): string;
+  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH", values?: undefined): string;
+  encodeFunctionData(functionFragment: "batch", values: [RelayParamsStruct, AddressLike, BatchParamsStruct]): string;
+  encodeFunctionData(functionFragment: "cancelOrder", values: [RelayParamsStruct, AddressLike, BytesLike]): string;
   encodeFunctionData(
     functionFragment: "createOrder",
-    values: [
-      RelayParamsStruct,
-      AddressLike,
-      IBaseOrderUtils.CreateOrderParamsStruct
-    ]
+    values: [RelayParamsStruct, AddressLike, IBaseOrderUtils.CreateOrderParamsStruct]
   ): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "eventEmitter",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "externalHandler",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
+  encodeFunctionData(functionFragment: "externalHandler", values?: undefined): string;
   encodeFunctionData(functionFragment: "oracle", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "orderHandler",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "orderVault",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "orderHandler", values?: undefined): string;
+  encodeFunctionData(functionFragment: "orderVault", values?: undefined): string;
   encodeFunctionData(functionFragment: "router", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "updateOrder",
     values: [RelayParamsStruct, AddressLike, UpdateOrderParamsStruct]
   ): string;
-  encodeFunctionData(
-    functionFragment: "userNonces",
-    values: [AddressLike]
-  ): string;
+  encodeFunctionData(functionFragment: "userNonces", values: [AddressLike]): string;
 
-  decodeFunctionResult(
-    functionFragment: "DOMAIN_SEPARATOR_NAME_HASH",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "DOMAIN_SEPARATOR_TYPEHASH",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_NAME_HASH", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_TYPEHASH", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR_VERSION_HASH", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "batch", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "cancelOrder",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "createOrder",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "cancelOrder", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "createOrder", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "eventEmitter",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "externalHandler",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "eventEmitter", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "externalHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "oracle", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "orderHandler",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "orderHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "orderVault", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "router", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "updateOrder",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "updateOrder", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "userNonces", data: BytesLike): Result;
 }
 
@@ -407,31 +346,21 @@ export interface GelatoRelayRouter extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(
-    event: TCEvent
-  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(
-    event?: TCEvent
-  ): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
   DOMAIN_SEPARATOR_NAME_HASH: TypedContractMethod<[], [string], "view">;
 
@@ -440,11 +369,7 @@ export interface GelatoRelayRouter extends BaseContract {
   DOMAIN_SEPARATOR_VERSION_HASH: TypedContractMethod<[], [string], "view">;
 
   batch: TypedContractMethod<
-    [
-      relayParams: RelayParamsStruct,
-      account: AddressLike,
-      params: BatchParamsStruct
-    ],
+    [relayParams: RelayParamsStruct, account: AddressLike, params: BatchParamsStruct],
     [string[]],
     "nonpayable"
   >;
@@ -456,11 +381,7 @@ export interface GelatoRelayRouter extends BaseContract {
   >;
 
   createOrder: TypedContractMethod<
-    [
-      relayParams: RelayParamsStruct,
-      account: AddressLike,
-      params: IBaseOrderUtils.CreateOrderParamsStruct
-    ],
+    [relayParams: RelayParamsStruct, account: AddressLike, params: IBaseOrderUtils.CreateOrderParamsStruct],
     [string],
     "nonpayable"
   >;
@@ -480,94 +401,50 @@ export interface GelatoRelayRouter extends BaseContract {
   router: TypedContractMethod<[], [string], "view">;
 
   updateOrder: TypedContractMethod<
-    [
-      relayParams: RelayParamsStruct,
-      account: AddressLike,
-      params: UpdateOrderParamsStruct
-    ],
+    [relayParams: RelayParamsStruct, account: AddressLike, params: UpdateOrderParamsStruct],
     [void],
     "nonpayable"
   >;
 
   userNonces: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
-  getFunction<T extends ContractMethod = ContractMethod>(
-    key: string | FunctionFragment
-  ): T;
+  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
-  getFunction(
-    nameOrSignature: "DOMAIN_SEPARATOR_NAME_HASH"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "DOMAIN_SEPARATOR_TYPEHASH"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "DOMAIN_SEPARATOR_VERSION_HASH"
-  ): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_NAME_HASH"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_TYPEHASH"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "DOMAIN_SEPARATOR_VERSION_HASH"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "batch"
   ): TypedContractMethod<
-    [
-      relayParams: RelayParamsStruct,
-      account: AddressLike,
-      params: BatchParamsStruct
-    ],
+    [relayParams: RelayParamsStruct, account: AddressLike, params: BatchParamsStruct],
     [string[]],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "cancelOrder"
-  ): TypedContractMethod<
-    [relayParams: RelayParamsStruct, account: AddressLike, key: BytesLike],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[relayParams: RelayParamsStruct, account: AddressLike, key: BytesLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "createOrder"
   ): TypedContractMethod<
-    [
-      relayParams: RelayParamsStruct,
-      account: AddressLike,
-      params: IBaseOrderUtils.CreateOrderParamsStruct
-    ],
+    [relayParams: RelayParamsStruct, account: AddressLike, params: IBaseOrderUtils.CreateOrderParamsStruct],
     [string],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "dataStore"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "eventEmitter"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "externalHandler"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "oracle"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "orderHandler"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "orderVault"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "router"
-  ): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "externalHandler"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "oracle"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "orderHandler"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "orderVault"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "router"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "updateOrder"
   ): TypedContractMethod<
-    [
-      relayParams: RelayParamsStruct,
-      account: AddressLike,
-      params: UpdateOrderParamsStruct
-    ],
+    [relayParams: RelayParamsStruct, account: AddressLike, params: UpdateOrderParamsStruct],
     [void],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "userNonces"
-  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(nameOrSignature: "userNonces"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
   filters: {};
 }

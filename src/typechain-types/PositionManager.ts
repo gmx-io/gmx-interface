@@ -87,69 +87,26 @@ export interface PositionManagerInterface extends Interface {
       | "WithdrawFees"
   ): EventFragment;
 
-  encodeFunctionData(
-    functionFragment: "BASIS_POINTS_DIVISOR",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "BASIS_POINTS_DIVISOR", values?: undefined): string;
   encodeFunctionData(functionFragment: "admin", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "approve",
-    values: [AddressLike, AddressLike, BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "approve", values: [AddressLike, AddressLike, BigNumberish]): string;
   encodeFunctionData(
     functionFragment: "decreasePosition",
-    values: [
-      AddressLike,
-      AddressLike,
-      BigNumberish,
-      BigNumberish,
-      boolean,
-      AddressLike,
-      BigNumberish
-    ]
+    values: [AddressLike, AddressLike, BigNumberish, BigNumberish, boolean, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "decreasePositionAndSwap",
-    values: [
-      AddressLike[],
-      AddressLike,
-      BigNumberish,
-      BigNumberish,
-      boolean,
-      AddressLike,
-      BigNumberish,
-      BigNumberish
-    ]
+    values: [AddressLike[], AddressLike, BigNumberish, BigNumberish, boolean, AddressLike, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "decreasePositionAndSwapETH",
-    values: [
-      AddressLike[],
-      AddressLike,
-      BigNumberish,
-      BigNumberish,
-      boolean,
-      AddressLike,
-      BigNumberish,
-      BigNumberish
-    ]
+    values: [AddressLike[], AddressLike, BigNumberish, BigNumberish, boolean, AddressLike, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "decreasePositionETH",
-    values: [
-      AddressLike,
-      AddressLike,
-      BigNumberish,
-      BigNumberish,
-      boolean,
-      AddressLike,
-      BigNumberish
-    ]
+    values: [AddressLike, AddressLike, BigNumberish, BigNumberish, boolean, AddressLike, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "depositFee",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "depositFee", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "executeDecreaseOrder",
     values: [AddressLike, BigNumberish, AddressLike]
@@ -158,261 +115,93 @@ export interface PositionManagerInterface extends Interface {
     functionFragment: "executeIncreaseOrder",
     values: [AddressLike, BigNumberish, AddressLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "executeSwapOrder",
-    values: [AddressLike, BigNumberish, AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "feeReserves",
-    values: [AddressLike]
-  ): string;
+  encodeFunctionData(functionFragment: "executeSwapOrder", values: [AddressLike, BigNumberish, AddressLike]): string;
+  encodeFunctionData(functionFragment: "feeReserves", values: [AddressLike]): string;
   encodeFunctionData(functionFragment: "gov", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "inLegacyMode",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "inLegacyMode", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "increasePosition",
-    values: [
-      AddressLike[],
-      AddressLike,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      boolean,
-      BigNumberish
-    ]
+    values: [AddressLike[], AddressLike, BigNumberish, BigNumberish, BigNumberish, boolean, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "increasePositionBufferBps",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "increasePositionBufferBps", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "increasePositionETH",
-    values: [
-      AddressLike[],
-      AddressLike,
-      BigNumberish,
-      BigNumberish,
-      boolean,
-      BigNumberish
-    ]
+    values: [AddressLike[], AddressLike, BigNumberish, BigNumberish, boolean, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "isLiquidator",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isOrderKeeper",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isPartner",
-    values: [AddressLike]
-  ): string;
+  encodeFunctionData(functionFragment: "isLiquidator", values: [AddressLike]): string;
+  encodeFunctionData(functionFragment: "isOrderKeeper", values: [AddressLike]): string;
+  encodeFunctionData(functionFragment: "isPartner", values: [AddressLike]): string;
   encodeFunctionData(
     functionFragment: "liquidatePosition",
     values: [AddressLike, AddressLike, AddressLike, boolean, AddressLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "maxGlobalLongSizes",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "maxGlobalShortSizes",
-    values: [AddressLike]
-  ): string;
+  encodeFunctionData(functionFragment: "maxGlobalLongSizes", values: [AddressLike]): string;
+  encodeFunctionData(functionFragment: "maxGlobalShortSizes", values: [AddressLike]): string;
   encodeFunctionData(functionFragment: "orderBook", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "referralStorage",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "referralStorage", values?: undefined): string;
   encodeFunctionData(functionFragment: "router", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "sendValue",
-    values: [AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setAdmin",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setDepositFee",
-    values: [BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "sendValue", values: [AddressLike, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "setAdmin", values: [AddressLike]): string;
+  encodeFunctionData(functionFragment: "setDepositFee", values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: "setGov", values: [AddressLike]): string;
-  encodeFunctionData(
-    functionFragment: "setInLegacyMode",
-    values: [boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setIncreasePositionBufferBps",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setLiquidator",
-    values: [AddressLike, boolean]
-  ): string;
+  encodeFunctionData(functionFragment: "setInLegacyMode", values: [boolean]): string;
+  encodeFunctionData(functionFragment: "setIncreasePositionBufferBps", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "setLiquidator", values: [AddressLike, boolean]): string;
   encodeFunctionData(
     functionFragment: "setMaxGlobalSizes",
     values: [AddressLike[], BigNumberish[], BigNumberish[]]
   ): string;
-  encodeFunctionData(
-    functionFragment: "setOrderKeeper",
-    values: [AddressLike, boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setPartner",
-    values: [AddressLike, boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setReferralStorage",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setShouldValidateIncreaseOrder",
-    values: [boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "shouldValidateIncreaseOrder",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "setOrderKeeper", values: [AddressLike, boolean]): string;
+  encodeFunctionData(functionFragment: "setPartner", values: [AddressLike, boolean]): string;
+  encodeFunctionData(functionFragment: "setReferralStorage", values: [AddressLike]): string;
+  encodeFunctionData(functionFragment: "setShouldValidateIncreaseOrder", values: [boolean]): string;
+  encodeFunctionData(functionFragment: "shouldValidateIncreaseOrder", values?: undefined): string;
   encodeFunctionData(functionFragment: "vault", values?: undefined): string;
   encodeFunctionData(functionFragment: "weth", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "withdrawFees",
-    values: [AddressLike, AddressLike]
-  ): string;
+  encodeFunctionData(functionFragment: "withdrawFees", values: [AddressLike, AddressLike]): string;
 
-  decodeFunctionResult(
-    functionFragment: "BASIS_POINTS_DIVISOR",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "BASIS_POINTS_DIVISOR", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "admin", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "decreasePosition",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "decreasePositionAndSwap",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "decreasePositionAndSwapETH",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "decreasePositionETH",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "decreasePosition", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "decreasePositionAndSwap", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "decreasePositionAndSwapETH", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "decreasePositionETH", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "depositFee", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "executeDecreaseOrder",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "executeIncreaseOrder",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "executeSwapOrder",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "feeReserves",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "executeDecreaseOrder", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "executeIncreaseOrder", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "executeSwapOrder", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "feeReserves", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "gov", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "inLegacyMode",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "increasePosition",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "increasePositionBufferBps",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "increasePositionETH",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isLiquidator",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isOrderKeeper",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "inLegacyMode", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "increasePosition", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "increasePositionBufferBps", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "increasePositionETH", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "isLiquidator", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "isOrderKeeper", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "isPartner", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "liquidatePosition",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "maxGlobalLongSizes",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "maxGlobalShortSizes",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "liquidatePosition", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "maxGlobalLongSizes", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "maxGlobalShortSizes", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "orderBook", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "referralStorage",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "referralStorage", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "router", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendValue", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setAdmin", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "setDepositFee",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "setDepositFee", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setGov", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "setInLegacyMode",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setIncreasePositionBufferBps",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setLiquidator",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setMaxGlobalSizes",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setOrderKeeper",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "setInLegacyMode", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setIncreasePositionBufferBps", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setLiquidator", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setMaxGlobalSizes", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setOrderKeeper", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setPartner", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "setReferralStorage",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setShouldValidateIncreaseOrder",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "shouldValidateIncreaseOrder",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "setReferralStorage", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setShouldValidateIncreaseOrder", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "shouldValidateIncreaseOrder", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "vault", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "weth", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "withdrawFees",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "withdrawFees", data: BytesLike): Result;
 }
 
 export namespace DecreasePositionReferralEvent {
@@ -421,14 +210,14 @@ export namespace DecreasePositionReferralEvent {
     sizeDelta: BigNumberish,
     marginFeeBasisPoints: BigNumberish,
     referralCode: BytesLike,
-    referrer: AddressLike
+    referrer: AddressLike,
   ];
   export type OutputTuple = [
     account: string,
     sizeDelta: bigint,
     marginFeeBasisPoints: bigint,
     referralCode: string,
-    referrer: string
+    referrer: string,
   ];
   export interface OutputObject {
     account: string;
@@ -449,14 +238,14 @@ export namespace IncreasePositionReferralEvent {
     sizeDelta: BigNumberish,
     marginFeeBasisPoints: BigNumberish,
     referralCode: BytesLike,
-    referrer: AddressLike
+    referrer: AddressLike,
   ];
   export type OutputTuple = [
     account: string,
     sizeDelta: bigint,
     marginFeeBasisPoints: bigint,
     referralCode: string,
-    referrer: string
+    referrer: string,
   ];
   export interface OutputObject {
     account: string;
@@ -533,16 +322,8 @@ export namespace SetLiquidatorEvent {
 }
 
 export namespace SetMaxGlobalSizesEvent {
-  export type InputTuple = [
-    tokens: AddressLike[],
-    longSizes: BigNumberish[],
-    shortSizes: BigNumberish[]
-  ];
-  export type OutputTuple = [
-    tokens: string[],
-    longSizes: bigint[],
-    shortSizes: bigint[]
-  ];
+  export type InputTuple = [tokens: AddressLike[], longSizes: BigNumberish[], shortSizes: BigNumberish[]];
+  export type OutputTuple = [tokens: string[], longSizes: bigint[], shortSizes: bigint[]];
   export interface OutputObject {
     tokens: string[];
     longSizes: bigint[];
@@ -605,11 +386,7 @@ export namespace SetShouldValidateIncreaseOrderEvent {
 }
 
 export namespace WithdrawFeesEvent {
-  export type InputTuple = [
-    token: AddressLike,
-    receiver: AddressLike,
-    amount: BigNumberish
-  ];
+  export type InputTuple = [token: AddressLike, receiver: AddressLike, amount: BigNumberish];
   export type OutputTuple = [token: string, receiver: string, amount: bigint];
   export interface OutputObject {
     token: string;
@@ -639,31 +416,21 @@ export interface PositionManager extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(
-    event: TCEvent
-  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(
-    event?: TCEvent
-  ): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
   BASIS_POINTS_DIVISOR: TypedContractMethod<[], [bigint], "view">;
 
@@ -683,7 +450,7 @@ export interface PositionManager extends BaseContract {
       _sizeDelta: BigNumberish,
       _isLong: boolean,
       _receiver: AddressLike,
-      _price: BigNumberish
+      _price: BigNumberish,
     ],
     [void],
     "nonpayable"
@@ -698,7 +465,7 @@ export interface PositionManager extends BaseContract {
       _isLong: boolean,
       _receiver: AddressLike,
       _price: BigNumberish,
-      _minOut: BigNumberish
+      _minOut: BigNumberish,
     ],
     [void],
     "nonpayable"
@@ -713,7 +480,7 @@ export interface PositionManager extends BaseContract {
       _isLong: boolean,
       _receiver: AddressLike,
       _price: BigNumberish,
-      _minOut: BigNumberish
+      _minOut: BigNumberish,
     ],
     [void],
     "nonpayable"
@@ -727,7 +494,7 @@ export interface PositionManager extends BaseContract {
       _sizeDelta: BigNumberish,
       _isLong: boolean,
       _receiver: AddressLike,
-      _price: BigNumberish
+      _price: BigNumberish,
     ],
     [void],
     "nonpayable"
@@ -736,31 +503,19 @@ export interface PositionManager extends BaseContract {
   depositFee: TypedContractMethod<[], [bigint], "view">;
 
   executeDecreaseOrder: TypedContractMethod<
-    [
-      _account: AddressLike,
-      _orderIndex: BigNumberish,
-      _feeReceiver: AddressLike
-    ],
+    [_account: AddressLike, _orderIndex: BigNumberish, _feeReceiver: AddressLike],
     [void],
     "nonpayable"
   >;
 
   executeIncreaseOrder: TypedContractMethod<
-    [
-      _account: AddressLike,
-      _orderIndex: BigNumberish,
-      _feeReceiver: AddressLike
-    ],
+    [_account: AddressLike, _orderIndex: BigNumberish, _feeReceiver: AddressLike],
     [void],
     "nonpayable"
   >;
 
   executeSwapOrder: TypedContractMethod<
-    [
-      _account: AddressLike,
-      _orderIndex: BigNumberish,
-      _feeReceiver: AddressLike
-    ],
+    [_account: AddressLike, _orderIndex: BigNumberish, _feeReceiver: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -779,7 +534,7 @@ export interface PositionManager extends BaseContract {
       _minOut: BigNumberish,
       _sizeDelta: BigNumberish,
       _isLong: boolean,
-      _price: BigNumberish
+      _price: BigNumberish,
     ],
     [void],
     "nonpayable"
@@ -794,7 +549,7 @@ export interface PositionManager extends BaseContract {
       _minOut: BigNumberish,
       _sizeDelta: BigNumberish,
       _isLong: boolean,
-      _price: BigNumberish
+      _price: BigNumberish,
     ],
     [void],
     "payable"
@@ -812,23 +567,15 @@ export interface PositionManager extends BaseContract {
       _collateralToken: AddressLike,
       _indexToken: AddressLike,
       _isLong: boolean,
-      _feeReceiver: AddressLike
+      _feeReceiver: AddressLike,
     ],
     [void],
     "nonpayable"
   >;
 
-  maxGlobalLongSizes: TypedContractMethod<
-    [arg0: AddressLike],
-    [bigint],
-    "view"
-  >;
+  maxGlobalLongSizes: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
-  maxGlobalShortSizes: TypedContractMethod<
-    [arg0: AddressLike],
-    [bigint],
-    "view"
-  >;
+  maxGlobalShortSizes: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
   orderBook: TypedContractMethod<[], [string], "view">;
 
@@ -836,73 +583,33 @@ export interface PositionManager extends BaseContract {
 
   router: TypedContractMethod<[], [string], "view">;
 
-  sendValue: TypedContractMethod<
-    [_receiver: AddressLike, _amount: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+  sendValue: TypedContractMethod<[_receiver: AddressLike, _amount: BigNumberish], [void], "nonpayable">;
 
   setAdmin: TypedContractMethod<[_admin: AddressLike], [void], "nonpayable">;
 
-  setDepositFee: TypedContractMethod<
-    [_depositFee: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+  setDepositFee: TypedContractMethod<[_depositFee: BigNumberish], [void], "nonpayable">;
 
   setGov: TypedContractMethod<[_gov: AddressLike], [void], "nonpayable">;
 
-  setInLegacyMode: TypedContractMethod<
-    [_inLegacyMode: boolean],
-    [void],
-    "nonpayable"
-  >;
+  setInLegacyMode: TypedContractMethod<[_inLegacyMode: boolean], [void], "nonpayable">;
 
-  setIncreasePositionBufferBps: TypedContractMethod<
-    [_increasePositionBufferBps: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+  setIncreasePositionBufferBps: TypedContractMethod<[_increasePositionBufferBps: BigNumberish], [void], "nonpayable">;
 
-  setLiquidator: TypedContractMethod<
-    [_account: AddressLike, _isActive: boolean],
-    [void],
-    "nonpayable"
-  >;
+  setLiquidator: TypedContractMethod<[_account: AddressLike, _isActive: boolean], [void], "nonpayable">;
 
   setMaxGlobalSizes: TypedContractMethod<
-    [
-      _tokens: AddressLike[],
-      _longSizes: BigNumberish[],
-      _shortSizes: BigNumberish[]
-    ],
+    [_tokens: AddressLike[], _longSizes: BigNumberish[], _shortSizes: BigNumberish[]],
     [void],
     "nonpayable"
   >;
 
-  setOrderKeeper: TypedContractMethod<
-    [_account: AddressLike, _isActive: boolean],
-    [void],
-    "nonpayable"
-  >;
+  setOrderKeeper: TypedContractMethod<[_account: AddressLike, _isActive: boolean], [void], "nonpayable">;
 
-  setPartner: TypedContractMethod<
-    [_account: AddressLike, _isActive: boolean],
-    [void],
-    "nonpayable"
-  >;
+  setPartner: TypedContractMethod<[_account: AddressLike, _isActive: boolean], [void], "nonpayable">;
 
-  setReferralStorage: TypedContractMethod<
-    [_referralStorage: AddressLike],
-    [void],
-    "nonpayable"
-  >;
+  setReferralStorage: TypedContractMethod<[_referralStorage: AddressLike], [void], "nonpayable">;
 
-  setShouldValidateIncreaseOrder: TypedContractMethod<
-    [_shouldValidateIncreaseOrder: boolean],
-    [void],
-    "nonpayable"
-  >;
+  setShouldValidateIncreaseOrder: TypedContractMethod<[_shouldValidateIncreaseOrder: boolean], [void], "nonpayable">;
 
   shouldValidateIncreaseOrder: TypedContractMethod<[], [boolean], "view">;
 
@@ -910,29 +617,15 @@ export interface PositionManager extends BaseContract {
 
   weth: TypedContractMethod<[], [string], "view">;
 
-  withdrawFees: TypedContractMethod<
-    [_token: AddressLike, _receiver: AddressLike],
-    [void],
-    "nonpayable"
-  >;
+  withdrawFees: TypedContractMethod<[_token: AddressLike, _receiver: AddressLike], [void], "nonpayable">;
 
-  getFunction<T extends ContractMethod = ContractMethod>(
-    key: string | FunctionFragment
-  ): T;
+  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
-  getFunction(
-    nameOrSignature: "BASIS_POINTS_DIVISOR"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "admin"
-  ): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "BASIS_POINTS_DIVISOR"): TypedContractMethod<[], [bigint], "view">;
+  getFunction(nameOrSignature: "admin"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "approve"
-  ): TypedContractMethod<
-    [_token: AddressLike, _spender: AddressLike, _amount: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[_token: AddressLike, _spender: AddressLike, _amount: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "decreasePosition"
   ): TypedContractMethod<
@@ -943,7 +636,7 @@ export interface PositionManager extends BaseContract {
       _sizeDelta: BigNumberish,
       _isLong: boolean,
       _receiver: AddressLike,
-      _price: BigNumberish
+      _price: BigNumberish,
     ],
     [void],
     "nonpayable"
@@ -959,7 +652,7 @@ export interface PositionManager extends BaseContract {
       _isLong: boolean,
       _receiver: AddressLike,
       _price: BigNumberish,
-      _minOut: BigNumberish
+      _minOut: BigNumberish,
     ],
     [void],
     "nonpayable"
@@ -975,7 +668,7 @@ export interface PositionManager extends BaseContract {
       _isLong: boolean,
       _receiver: AddressLike,
       _price: BigNumberish,
-      _minOut: BigNumberish
+      _minOut: BigNumberish,
     ],
     [void],
     "nonpayable"
@@ -990,56 +683,36 @@ export interface PositionManager extends BaseContract {
       _sizeDelta: BigNumberish,
       _isLong: boolean,
       _receiver: AddressLike,
-      _price: BigNumberish
+      _price: BigNumberish,
     ],
     [void],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "depositFee"
-  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(nameOrSignature: "depositFee"): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "executeDecreaseOrder"
   ): TypedContractMethod<
-    [
-      _account: AddressLike,
-      _orderIndex: BigNumberish,
-      _feeReceiver: AddressLike
-    ],
+    [_account: AddressLike, _orderIndex: BigNumberish, _feeReceiver: AddressLike],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "executeIncreaseOrder"
   ): TypedContractMethod<
-    [
-      _account: AddressLike,
-      _orderIndex: BigNumberish,
-      _feeReceiver: AddressLike
-    ],
+    [_account: AddressLike, _orderIndex: BigNumberish, _feeReceiver: AddressLike],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "executeSwapOrder"
   ): TypedContractMethod<
-    [
-      _account: AddressLike,
-      _orderIndex: BigNumberish,
-      _feeReceiver: AddressLike
-    ],
+    [_account: AddressLike, _orderIndex: BigNumberish, _feeReceiver: AddressLike],
     [void],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "feeReserves"
-  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "gov"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "inLegacyMode"
-  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(nameOrSignature: "feeReserves"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(nameOrSignature: "gov"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "inLegacyMode"): TypedContractMethod<[], [boolean], "view">;
   getFunction(
     nameOrSignature: "increasePosition"
   ): TypedContractMethod<
@@ -1050,14 +723,12 @@ export interface PositionManager extends BaseContract {
       _minOut: BigNumberish,
       _sizeDelta: BigNumberish,
       _isLong: boolean,
-      _price: BigNumberish
+      _price: BigNumberish,
     ],
     [void],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "increasePositionBufferBps"
-  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(nameOrSignature: "increasePositionBufferBps"): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "increasePositionETH"
   ): TypedContractMethod<
@@ -1067,20 +738,14 @@ export interface PositionManager extends BaseContract {
       _minOut: BigNumberish,
       _sizeDelta: BigNumberish,
       _isLong: boolean,
-      _price: BigNumberish
+      _price: BigNumberish,
     ],
     [void],
     "payable"
   >;
-  getFunction(
-    nameOrSignature: "isLiquidator"
-  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
-  getFunction(
-    nameOrSignature: "isOrderKeeper"
-  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
-  getFunction(
-    nameOrSignature: "isPartner"
-  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  getFunction(nameOrSignature: "isLiquidator"): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  getFunction(nameOrSignature: "isOrderKeeper"): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  getFunction(nameOrSignature: "isPartner"): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
   getFunction(
     nameOrSignature: "liquidatePosition"
   ): TypedContractMethod<
@@ -1089,110 +754,54 @@ export interface PositionManager extends BaseContract {
       _collateralToken: AddressLike,
       _indexToken: AddressLike,
       _isLong: boolean,
-      _feeReceiver: AddressLike
+      _feeReceiver: AddressLike,
     ],
     [void],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "maxGlobalLongSizes"
-  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "maxGlobalShortSizes"
-  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "orderBook"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "referralStorage"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "router"
-  ): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "maxGlobalLongSizes"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(nameOrSignature: "maxGlobalShortSizes"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(nameOrSignature: "orderBook"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "referralStorage"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "router"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "sendValue"
-  ): TypedContractMethod<
-    [_receiver: AddressLike, _amount: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "setAdmin"
-  ): TypedContractMethod<[_admin: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "setDepositFee"
-  ): TypedContractMethod<[_depositFee: BigNumberish], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "setGov"
-  ): TypedContractMethod<[_gov: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "setInLegacyMode"
-  ): TypedContractMethod<[_inLegacyMode: boolean], [void], "nonpayable">;
+  ): TypedContractMethod<[_receiver: AddressLike, _amount: BigNumberish], [void], "nonpayable">;
+  getFunction(nameOrSignature: "setAdmin"): TypedContractMethod<[_admin: AddressLike], [void], "nonpayable">;
+  getFunction(nameOrSignature: "setDepositFee"): TypedContractMethod<[_depositFee: BigNumberish], [void], "nonpayable">;
+  getFunction(nameOrSignature: "setGov"): TypedContractMethod<[_gov: AddressLike], [void], "nonpayable">;
+  getFunction(nameOrSignature: "setInLegacyMode"): TypedContractMethod<[_inLegacyMode: boolean], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setIncreasePositionBufferBps"
-  ): TypedContractMethod<
-    [_increasePositionBufferBps: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[_increasePositionBufferBps: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setLiquidator"
-  ): TypedContractMethod<
-    [_account: AddressLike, _isActive: boolean],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[_account: AddressLike, _isActive: boolean], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setMaxGlobalSizes"
   ): TypedContractMethod<
-    [
-      _tokens: AddressLike[],
-      _longSizes: BigNumberish[],
-      _shortSizes: BigNumberish[]
-    ],
+    [_tokens: AddressLike[], _longSizes: BigNumberish[], _shortSizes: BigNumberish[]],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "setOrderKeeper"
-  ): TypedContractMethod<
-    [_account: AddressLike, _isActive: boolean],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[_account: AddressLike, _isActive: boolean], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setPartner"
-  ): TypedContractMethod<
-    [_account: AddressLike, _isActive: boolean],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[_account: AddressLike, _isActive: boolean], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setReferralStorage"
   ): TypedContractMethod<[_referralStorage: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setShouldValidateIncreaseOrder"
-  ): TypedContractMethod<
-    [_shouldValidateIncreaseOrder: boolean],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "shouldValidateIncreaseOrder"
-  ): TypedContractMethod<[], [boolean], "view">;
-  getFunction(
-    nameOrSignature: "vault"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "weth"
-  ): TypedContractMethod<[], [string], "view">;
+  ): TypedContractMethod<[_shouldValidateIncreaseOrder: boolean], [void], "nonpayable">;
+  getFunction(nameOrSignature: "shouldValidateIncreaseOrder"): TypedContractMethod<[], [boolean], "view">;
+  getFunction(nameOrSignature: "vault"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "weth"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "withdrawFees"
-  ): TypedContractMethod<
-    [_token: AddressLike, _receiver: AddressLike],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[_token: AddressLike, _receiver: AddressLike], [void], "nonpayable">;
 
   getEvent(
     key: "DecreasePositionReferral"
@@ -1210,18 +819,10 @@ export interface PositionManager extends BaseContract {
   >;
   getEvent(
     key: "SetAdmin"
-  ): TypedContractEvent<
-    SetAdminEvent.InputTuple,
-    SetAdminEvent.OutputTuple,
-    SetAdminEvent.OutputObject
-  >;
+  ): TypedContractEvent<SetAdminEvent.InputTuple, SetAdminEvent.OutputTuple, SetAdminEvent.OutputObject>;
   getEvent(
     key: "SetDepositFee"
-  ): TypedContractEvent<
-    SetDepositFeeEvent.InputTuple,
-    SetDepositFeeEvent.OutputTuple,
-    SetDepositFeeEvent.OutputObject
-  >;
+  ): TypedContractEvent<SetDepositFeeEvent.InputTuple, SetDepositFeeEvent.OutputTuple, SetDepositFeeEvent.OutputObject>;
   getEvent(
     key: "SetInLegacyMode"
   ): TypedContractEvent<
@@ -1238,11 +839,7 @@ export interface PositionManager extends BaseContract {
   >;
   getEvent(
     key: "SetLiquidator"
-  ): TypedContractEvent<
-    SetLiquidatorEvent.InputTuple,
-    SetLiquidatorEvent.OutputTuple,
-    SetLiquidatorEvent.OutputObject
-  >;
+  ): TypedContractEvent<SetLiquidatorEvent.InputTuple, SetLiquidatorEvent.OutputTuple, SetLiquidatorEvent.OutputObject>;
   getEvent(
     key: "SetMaxGlobalSizes"
   ): TypedContractEvent<
@@ -1259,11 +856,7 @@ export interface PositionManager extends BaseContract {
   >;
   getEvent(
     key: "SetPartner"
-  ): TypedContractEvent<
-    SetPartnerEvent.InputTuple,
-    SetPartnerEvent.OutputTuple,
-    SetPartnerEvent.OutputObject
-  >;
+  ): TypedContractEvent<SetPartnerEvent.InputTuple, SetPartnerEvent.OutputTuple, SetPartnerEvent.OutputObject>;
   getEvent(
     key: "SetReferralStorage"
   ): TypedContractEvent<
@@ -1280,11 +873,7 @@ export interface PositionManager extends BaseContract {
   >;
   getEvent(
     key: "WithdrawFees"
-  ): TypedContractEvent<
-    WithdrawFeesEvent.InputTuple,
-    WithdrawFeesEvent.OutputTuple,
-    WithdrawFeesEvent.OutputObject
-  >;
+  ): TypedContractEvent<WithdrawFeesEvent.InputTuple, WithdrawFeesEvent.OutputTuple, WithdrawFeesEvent.OutputObject>;
 
   filters: {
     "DecreasePositionReferral(address,uint256,uint256,bytes32,address)": TypedContractEvent<
@@ -1314,11 +903,7 @@ export interface PositionManager extends BaseContract {
       SetAdminEvent.OutputTuple,
       SetAdminEvent.OutputObject
     >;
-    SetAdmin: TypedContractEvent<
-      SetAdminEvent.InputTuple,
-      SetAdminEvent.OutputTuple,
-      SetAdminEvent.OutputObject
-    >;
+    SetAdmin: TypedContractEvent<SetAdminEvent.InputTuple, SetAdminEvent.OutputTuple, SetAdminEvent.OutputObject>;
 
     "SetDepositFee(uint256)": TypedContractEvent<
       SetDepositFeeEvent.InputTuple,

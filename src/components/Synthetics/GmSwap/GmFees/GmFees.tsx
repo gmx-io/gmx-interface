@@ -7,12 +7,12 @@ import { getPositiveOrNegativeClass } from "lib/utils";
 import { FeeItem } from "sdk/types/fees";
 import { bigMath } from "sdk/utils/bigmath";
 
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
-import "./GmFees.scss";
 import { Operation } from "../GmSwapBox/types";
+import "./GmFees.scss";
 
 type Props = {
   totalFees?: FeeItem;
@@ -46,8 +46,28 @@ export function GmFees(p: Props) {
         <Tooltip
           className="GmFees-tooltip"
           handle={
-            <span className={cx({ positive: totalFeesUsd !== undefined && totalFeesUsd > 0 })}>
-              {formatDeltaUsd(totalFeesUsd)}
+            <span>
+              <span
+                className={cx({
+                  "text-green-300": p.swapPriceImpact?.deltaUsd !== undefined && p.swapPriceImpact.deltaUsd > 0,
+                })}
+              >
+                {p.swapPriceImpact?.deltaUsd !== undefined && p.swapPriceImpact.deltaUsd > 0 ? "+" : "-"}
+                {formatPercentage(p.swapPriceImpact?.precisePercentage, {
+                  bps: false,
+                  displayDecimals: 3,
+                })}
+              </span>
+              {" / "}
+              <span
+                className={cx({ "text-green-300": p.totalFees?.deltaUsd !== undefined && p.totalFees.deltaUsd > 0 })}
+              >
+                {p.totalFees?.deltaUsd !== undefined && p.totalFees.deltaUsd > 0 ? "+" : "-"}
+                {formatPercentage(p.totalFees?.precisePercentage, {
+                  bps: false,
+                  displayDecimals: 3,
+                })}
+              </span>
             </span>
           }
           position="top-end"
@@ -146,7 +166,15 @@ export function GmFees(p: Props) {
     }
     return (
       <span className={cx({ positive: totalFeesUsd !== undefined && totalFeesUsd > 0 })}>
-        {formatDeltaUsd(totalFeesUsd)}
+        {formatPercentage(p.swapPriceImpact?.precisePercentage, {
+          bps: false,
+          displayDecimals: 3,
+        })}
+        {" / "}
+        {formatPercentage(p.totalFees?.precisePercentage, {
+          bps: false,
+          displayDecimals: 3,
+        })}
       </span>
     );
   }, [
@@ -155,10 +183,11 @@ export function GmFees(p: Props) {
     p.swapFee,
     p.swapPriceImpact,
     p.totalFees?.deltaUsd,
+    p.totalFees?.precisePercentage,
     p.uiFee?.precisePercentage,
     p.uiFee?.deltaUsd,
     totalFeesUsd,
   ]);
 
-  return <ExchangeInfoRow label={<Trans>Fees and Price Impact</Trans>} value={value} />;
+  return <SyntheticsInfoRow label={<Trans>Price Impact / Fees</Trans>} value={value} />;
 }
