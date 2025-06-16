@@ -8,6 +8,7 @@ import { getGasLimit } from "./contracts";
 import { estimateGasLimit } from "./gas/estimateGasLimit";
 import { GasPriceData, getGasPrice } from "./gas/gasPrice";
 import { helperToast } from "./helperToast";
+import { getProvider } from "./rpc";
 
 type TenderlyConfig = {
   accountSlug: string;
@@ -51,6 +52,7 @@ export async function simulateCallDataWithTenderly({
   }
 
   if (!gasPriceData) {
+    const provider = getProvider(undefined, chainId);
     gasPriceData = await getGasPrice(provider, chainId);
   }
 
@@ -106,7 +108,8 @@ export const simulateTxWithTenderly = async (
     throw new Error("No block number found");
   }
 
-  const gasPriceData = await getGasPrice(contract.runner.provider, chainId);
+  const provider = getProvider(undefined, chainId);
+  const gasPriceData = await getGasPrice(provider, chainId);
 
   let gasLimit: bigint | undefined;
 

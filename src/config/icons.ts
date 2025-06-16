@@ -1,9 +1,10 @@
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX } from "config/chains";
 
 import gmIcon from "img/gm_icon.svg";
 import arbitrum from "img/ic_arbitrum_24.svg";
 import avalanche from "img/ic_avalanche_24.svg";
 import avalancheTestnet from "img/ic_avalanche_testnet_24.svg";
+import botanix from "img/ic_botanix_24.svg";
 import esGMXIcon from "img/ic_esgmx_40.svg";
 import esGMXArbitrumIcon from "img/ic_esgmx_arbitrum.svg";
 import esGMXAvaxIcon from "img/ic_esgmx_avalanche.svg";
@@ -48,6 +49,13 @@ const ICONS: Record<number | "common", ChainIcons> = {
     gm: gmAvax,
     gmx: gmxAvax,
     glp: glpAvax,
+  },
+  [BOTANIX]: {
+    network: botanix,
+    glp: glpIcon,
+    gmx: gmxIcon,
+    gm: gmIcon,
+    esgmx: esGMXIcon,
   },
   common: {
     gmx: gmxIcon,

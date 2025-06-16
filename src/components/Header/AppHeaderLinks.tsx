@@ -71,6 +71,7 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
           <Trans>Buy</Trans>
         </HeaderLink>
       </div>
+
       <div className="App-header-link-container">
         <HeaderLink
           onClick={() => {
@@ -88,6 +89,7 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
           <Trans>Referrals</Trans>
         </HeaderLink>
       </div>
+
       <div className="App-header-link-container">
         <HeaderLink
           qa="leaderboard"

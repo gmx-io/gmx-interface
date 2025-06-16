@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useLocalStorage } from "react-use";
 
+import { BOTANIX } from "config/chains";
 import { REFERRALS_SELECTED_TAB_KEY } from "config/localStorage";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import {
@@ -32,6 +33,7 @@ import AffiliatesStats from "components/Referrals/AffiliatesStats";
 import JoinReferralCode from "components/Referrals/JoinReferralCode";
 import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "components/Referrals/referralsHelper";
 import TradersStats from "components/Referrals/TradersStats";
+import { BotanixBanner } from "components/Synthetics/BotanixBanner/BotanixBanner";
 import Tabs from "components/Tabs/Tabs";
 
 import "./Referrals.css";
@@ -78,6 +80,8 @@ function Referrals() {
       pendingTxns,
     });
   }
+
+  const isBotanix = chainId === BOTANIX;
 
   function renderAffiliatesTab() {
     const ownsSomeChainCode = Boolean(referralsData?.chains?.[chainId]?.codes?.length);
@@ -138,19 +142,27 @@ function Referrals() {
           isTop
           title={t`Referrals`}
           subtitle={
-            <Trans>
-              Get fee discounts and earn rebates through the GMX referral program.
-              <br />
-              For more information, please read the{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/referrals">referral program details</ExternalLink>.
-            </Trans>
+            !isBotanix ? (
+              <Trans>
+                Get fee discounts and earn rebates through the GMX referral program.
+                <br />
+                For more information, please read the{" "}
+                <ExternalLink href="https://docs.gmx.io/docs/referrals">referral program details</ExternalLink>.
+              </Trans>
+            ) : undefined
           }
           qa="referrals-page"
         />
-        <div className="referral-tab-container">
-          <Tabs options={tabsOptions} selectedValue={activeTab} onChange={setActiveTab} />
-        </div>
-        {activeTab === AFFILIATES ? renderAffiliatesTab() : renderTradersTab()}
+        {isBotanix ? (
+          <BotanixBanner />
+        ) : (
+          <>
+            <div className="referral-tab-container">
+              <Tabs options={tabsOptions} selectedValue={activeTab} onChange={setActiveTab} />
+            </div>
+            {activeTab === AFFILIATES ? renderAffiliatesTab() : renderTradersTab()}
+          </>
+        )}
       </div>
       <Footer />
     </SEO>

@@ -1,7 +1,8 @@
-import { Provider } from "ethers";
+import { JsonRpcProvider } from "ethers";
 import { withRetry } from "viem";
 
 import {
+  BOTANIX,
   GAS_PRICE_BUFFER_MAP,
   GAS_PRICE_PREMIUM_MAP,
   MAX_FEE_PER_GAS_MAP,
@@ -23,24 +24,41 @@ export type GasPriceData =
       maxPriorityFeePerGas: bigint;
     };
 
-export async function getGasPrice(provider: Provider, chainId: number): Promise<GasPriceData> {
+export async function getGasPrice(provider: JsonRpcProvider, chainId: number): Promise<GasPriceData> {
   try {
     let maxFeePerGas = MAX_FEE_PER_GAS_MAP[chainId];
     const premium: bigint = GAS_PRICE_PREMIUM_MAP[chainId] ?? 0n;
 
-    const feeData = await withRetry(() => provider.getFeeData(), {
-      delay: 200,
-      retryCount: 2,
-      shouldRetry: ({ error }) => {
-        const isInvalidBlockError = error?.message?.includes("invalid value for value.hash");
+    const useEip1559 = chainId === BOTANIX;
 
-        if (isInvalidBlockError) {
-          emitMetricCounter<GetFeeDataBlockError>({ event: "error.getFeeData.value.hash" });
+    const feeData = await withRetry(
+      async () => {
+        if (useEip1559) {
+          const [block, maxPriorityFeePerGasHex] = await Promise.all([
+            provider.getBlock("latest"),
+            provider.send("eth_maxPriorityFeePerGas", []),
+          ]);
+          const baseFeePerGas = block?.baseFeePerGas ?? 0n;
+          const maxPriorityFeePerGas = BigInt(maxPriorityFeePerGasHex);
+          return { gasPrice: baseFeePerGas, maxPriorityFeePerGas };
+        } else {
+          return provider.getFeeData();
         }
-
-        return isInvalidBlockError;
       },
-    });
+      {
+        delay: 200,
+        retryCount: 2,
+        shouldRetry: ({ error }) => {
+          const isInvalidBlockError = error?.message?.includes("invalid value for value.hash");
+
+          if (isInvalidBlockError) {
+            emitMetricCounter<GetFeeDataBlockError>({ event: "error.getFeeData.value.hash" });
+          }
+
+          return isInvalidBlockError;
+        },
+      }
+    );
 
     const gasPrice = feeData.gasPrice;
 

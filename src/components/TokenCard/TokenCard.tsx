@@ -1,10 +1,12 @@
 import { Trans } from "@lingui/macro";
+import cx from "classnames";
 import keys from "lodash/keys";
 import uniq from "lodash/uniq";
 import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { useMedia } from "react-use";
 
-import { ARBITRUM, AVALANCHE } from "config/chains";
+import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
 import { getIcon } from "config/icons";
 import { getIncentivesV2Url } from "config/links";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
@@ -28,12 +30,21 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { HeaderLink } from "components/Header/HeaderLink";
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
+import ArbitrumIcon from "img/ic_arbitrum_24.svg?react";
+import AvalancheIcon from "img/ic_avalanche_24.svg?react";
+import BotanixIcon from "img/ic_botanix_24.svg?react";
 import sparkleIcon from "img/sparkle.svg";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
 const gmIcon = getIcon("common", "gm");
 const glvIcon = getIcon("common", "glv");
+
+const networkIcons = {
+  [ARBITRUM]: ArbitrumIcon,
+  [AVALANCHE]: AvalancheIcon,
+  [BOTANIX]: BotanixIcon,
+};
 
 function calculateMaxApr(apr: MarketTokensAPRData, incentiveApr: MarketTokensAPRData) {
   const allKeys = uniq(keys(apr).concat(keys(incentiveApr)));
@@ -68,7 +79,6 @@ type Props = {
 const BuyLink = ({
   chainId,
   active,
-  className,
   to,
   children,
   network,
@@ -77,7 +87,6 @@ const BuyLink = ({
 }: {
   chainId: number;
   active: boolean;
-  className: string;
   to: string;
   children: React.ReactNode;
   network: number;
@@ -101,10 +110,15 @@ const BuyLink = ({
     [chainId, active]
   );
 
+  const Icon = networkIcons[network];
+  const className = `flex cursor-pointer justify-center gap-8 rounded-3 text-white bg-slate-700
+        px-16 py-10 leading-[1.4em] hover:bg-cold-blue-700 active:bg-cold-blue-500`;
+
   const isHome = isHomeSite();
   if (isHome && showRedirectModal) {
     return (
       <HeaderLink onClick={trackLinkHandler} to={to} className={className} showRedirectModal={showRedirectModal}>
+        <Icon className="h-20 w-20" />
         {children}
       </HeaderLink>
     );
@@ -112,6 +126,7 @@ const BuyLink = ({
 
   const LinkComponent = (
     <Link to={to} className={className} onClick={() => changeNetwork(network)}>
+      <Icon className="h-20 w-20" />
       {children}
     </Link>
   );
@@ -124,8 +139,8 @@ const BuyLink = ({
 };
 
 async function sendUserAnalyticsProtocolTokenEvent(
-  chain: "Arbitrum" | "Avalanche",
-  type: "GMX" | "GM" | "GLV" | "GLP"
+  chain: LandingPageProtocolTokenEvent["data"]["chain"],
+  type: LandingPageProtocolTokenEvent["data"]["type"]
 ) {
   await userAnalytics.pushEvent<LandingPageProtocolTokenEvent>(
     {
@@ -146,8 +161,10 @@ const trackGLPBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("Arbitrum"
 const trackGLPBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GLP");
 const trackGLVBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GLV");
 const trackGLVBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GLV");
+const trackGLVBuyBotanix = () => sendUserAnalyticsProtocolTokenEvent("Botanix", "GLV");
 const trackGMBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GM");
 const trackGMBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GM");
+const trackGMBuyBotanix = () => sendUserAnalyticsProtocolTokenEvent("Botanix", "GM");
 
 function getTrackingLink(link: string) {
   if (!isHomeSite()) {
@@ -277,6 +294,8 @@ export default function TokenCard({ showRedirectModal }: Props) {
     }
   }, [glvArb, glvAvax, arbitrumIncentiveState, avalancheIncentiveState]);
 
+  const isMobile = useMedia("(max-width: 1000px)");
+
   return (
     <div className="Home-token-card-options">
       <div className="Home-token-card-option">
@@ -297,41 +316,42 @@ export default function TokenCard({ showRedirectModal }: Props) {
             </div>
           </div>
         </div>
-        <div className="Home-token-card-option-action">
-          <div className="buy">
-            <BuyLink
-              chainId={chainId}
-              active={active}
-              className="default-btn"
-              to={getTrackingLink("/buy_gmx")}
-              network={ARBITRUM}
-              showRedirectModal={showRedirectModal}
-              trackLinkHandler={trackGMXBuyArbitrum}
-            >
-              <Trans>View on Arbitrum</Trans>
-            </BuyLink>
-            <BuyLink
-              chainId={chainId}
-              active={active}
-              className="default-btn"
-              to={getTrackingLink("/buy_gmx")}
-              network={AVALANCHE}
-              showRedirectModal={showRedirectModal}
-              trackLinkHandler={trackGMXBuyAvalanche}
-            >
-              <Trans>View on Avalanche</Trans>
-            </BuyLink>
+        <div className="mt-50 flex flex-col gap-15 text-slate-100">
+          <Trans>Buy token on:</Trans>
+          <div className={cx("flex justify-between", { "flex-col gap-15": isMobile })}>
+            <div className={cx("buy flex gap-15", { "flex-col": isMobile })}>
+              <BuyLink
+                chainId={chainId}
+                active={active}
+                to={getTrackingLink("/buy_gmx")}
+                network={ARBITRUM}
+                showRedirectModal={showRedirectModal}
+                trackLinkHandler={trackGMXBuyArbitrum}
+              >
+                <Trans>Arbitrum</Trans>
+              </BuyLink>
+              <BuyLink
+                chainId={chainId}
+                active={active}
+                to={getTrackingLink("/buy_gmx")}
+                network={AVALANCHE}
+                showRedirectModal={showRedirectModal}
+                trackLinkHandler={trackGMXBuyAvalanche}
+              >
+                <Trans>Avalanche</Trans>
+              </BuyLink>
+            </div>
+            <TrackingLink onClick={sendUserAnalyticsProtocolReadMoreEvent}>
+              <Button
+                className="!py-11 tracking-normal"
+                newTab
+                variant="secondary"
+                to="https://docs.gmx.io/docs/category/tokenomics"
+              >
+                <Trans>Read more</Trans>
+              </Button>
+            </TrackingLink>
           </div>
-          <TrackingLink onClick={sendUserAnalyticsProtocolReadMoreEvent}>
-            <Button
-              className="!py-11 tracking-normal"
-              newTab
-              variant="secondary"
-              to="https://docs.gmx.io/docs/category/tokenomics"
-            >
-              <Trans>Read more</Trans>
-            </Button>
-          </TrackingLink>
         </div>
       </div>
       <div className="Home-token-card-option">
@@ -360,43 +380,56 @@ export default function TokenCard({ showRedirectModal }: Props) {
           </div>
         </div>
 
-        <div className="Home-token-card-option-action Token-card-buy">
-          <div className="buy">
-            <BuyLink
-              to={getTrackingLink("/pools?pickBestGlv=1")}
-              className="default-btn"
-              network={ARBITRUM}
-              chainId={chainId}
-              active={active}
-              showRedirectModal={showRedirectModal}
-              trackLinkHandler={trackGLVBuyArbitrum}
-            >
-              <Trans>View on Arbitrum</Trans>
-            </BuyLink>
-            {isGlvEnabled(AVALANCHE) && (
+        <div className="mt-50 flex flex-col gap-15 text-slate-100">
+          <Trans>Buy token on:</Trans>
+          <div className={cx("flex justify-between", { "flex-col gap-15": isMobile })}>
+            <div className={cx("buy flex gap-15", { "flex-col": isMobile })}>
               <BuyLink
                 to={getTrackingLink("/pools?pickBestGlv=1")}
-                className="default-btn"
-                network={AVALANCHE}
+                network={ARBITRUM}
                 chainId={chainId}
                 active={active}
                 showRedirectModal={showRedirectModal}
-                trackLinkHandler={trackGLVBuyAvalanche}
+                trackLinkHandler={trackGLVBuyArbitrum}
               >
-                <Trans>View on Avalanche</Trans>
+                <Trans>Arbitrum</Trans>
               </BuyLink>
-            )}
+
+              {isGlvEnabled(AVALANCHE) && (
+                <BuyLink
+                  to={getTrackingLink("/pools?pickBestGlv=1")}
+                  network={AVALANCHE}
+                  chainId={chainId}
+                  active={active}
+                  showRedirectModal={showRedirectModal}
+                  trackLinkHandler={trackGLVBuyAvalanche}
+                >
+                  <Trans>Avalanche</Trans>
+                </BuyLink>
+              )}
+
+              <BuyLink
+                to={getTrackingLink("/pools?pickBestGlv=1")}
+                network={BOTANIX}
+                chainId={chainId}
+                active={active}
+                showRedirectModal={showRedirectModal}
+                trackLinkHandler={trackGLVBuyBotanix}
+              >
+                <Trans>Botanix</Trans>
+              </BuyLink>
+            </div>
+            <TrackingLink onClick={sendUserAnalyticsProtocolReadMoreEvent}>
+              <Button
+                className="!py-11 tracking-normal"
+                newTab
+                variant="secondary"
+                to="https://docs.gmx.io/docs/providing-liquidity/v2/#glv-pools"
+              >
+                <Trans>Read more</Trans>
+              </Button>
+            </TrackingLink>
           </div>
-          <TrackingLink onClick={sendUserAnalyticsProtocolReadMoreEvent}>
-            <Button
-              className="!py-11 tracking-normal"
-              newTab
-              variant="secondary"
-              to="https://docs.gmx.io/docs/providing-liquidity/v2/#glv-pools"
-            >
-              <Trans>Read more</Trans>
-            </Button>
-          </TrackingLink>
         </div>
       </div>
       <div className="Home-token-card-option">
@@ -420,42 +453,54 @@ export default function TokenCard({ showRedirectModal }: Props) {
           </div>
         </div>
 
-        <div className="Home-token-card-option-action Token-card-buy">
-          <div className="buy">
-            <BuyLink
-              to={getTrackingLink("/pools")}
-              className="default-btn"
-              network={ARBITRUM}
-              chainId={chainId}
-              active={active}
-              showRedirectModal={showRedirectModal}
-              trackLinkHandler={trackGMBuyArbitrum}
-            >
-              <Trans>View on Arbitrum</Trans>
-            </BuyLink>
+        <div className="mt-50 flex flex-col gap-15 text-slate-100">
+          <Trans>Buy token on:</Trans>
+          <div className={cx("flex justify-between", { "flex-col gap-15": isMobile })}>
+            <div className={cx("buy flex gap-15", { "flex-col": isMobile })}>
+              <BuyLink
+                to={getTrackingLink("/pools")}
+                network={ARBITRUM}
+                chainId={chainId}
+                active={active}
+                showRedirectModal={showRedirectModal}
+                trackLinkHandler={trackGMBuyArbitrum}
+              >
+                <Trans>Arbitrum</Trans>
+              </BuyLink>
 
-            <BuyLink
-              to={getTrackingLink("/pools")}
-              className="default-btn"
-              network={AVALANCHE}
-              chainId={chainId}
-              active={active}
-              showRedirectModal={showRedirectModal}
-              trackLinkHandler={trackGMBuyAvalanche}
-            >
-              <Trans>View on Avalanche</Trans>
-            </BuyLink>
+              <BuyLink
+                to={getTrackingLink("/pools")}
+                network={AVALANCHE}
+                chainId={chainId}
+                active={active}
+                showRedirectModal={showRedirectModal}
+                trackLinkHandler={trackGMBuyAvalanche}
+              >
+                <Trans>Avalanche</Trans>
+              </BuyLink>
+
+              <BuyLink
+                to={getTrackingLink("/pools")}
+                network={BOTANIX}
+                chainId={chainId}
+                active={active}
+                showRedirectModal={showRedirectModal}
+                trackLinkHandler={trackGMBuyBotanix}
+              >
+                <Trans>Botanix</Trans>
+              </BuyLink>
+            </div>
+            <TrackingLink onClick={sendUserAnalyticsProtocolReadMoreEvent}>
+              <Button
+                className="!py-11 tracking-normal"
+                newTab
+                variant="secondary"
+                to="https://docs.gmx.io/docs/providing-liquidity/v2"
+              >
+                <Trans>Read more</Trans>
+              </Button>
+            </TrackingLink>
           </div>
-          <TrackingLink onClick={sendUserAnalyticsProtocolReadMoreEvent}>
-            <Button
-              className="!py-11 tracking-normal"
-              newTab
-              variant="secondary"
-              to="https://docs.gmx.io/docs/providing-liquidity/v2"
-            >
-              <Trans>Read more</Trans>
-            </Button>
-          </TrackingLink>
         </div>
       </div>
       <div className="Home-token-card-option">
@@ -482,41 +527,42 @@ export default function TokenCard({ showRedirectModal }: Props) {
             </div>
           </div>
         </div>
-        <div className="Home-token-card-option-action">
-          <div className="buy">
-            <BuyLink
-              to={getTrackingLink("/buy_glp")}
-              className="default-btn"
-              network={ARBITRUM}
-              chainId={chainId}
-              active={active}
-              showRedirectModal={showRedirectModal}
-              trackLinkHandler={trackGLPBuyArbitrum}
-            >
-              <Trans>View on Arbitrum</Trans>
-            </BuyLink>
-            <BuyLink
-              to={getTrackingLink("/buy_glp")}
-              className="default-btn"
-              network={AVALANCHE}
-              chainId={chainId}
-              active={active}
-              showRedirectModal={showRedirectModal}
-              trackLinkHandler={trackGLPBuyAvalanche}
-            >
-              <Trans>View on Avalanche</Trans>
-            </BuyLink>
+        <div className="mt-50 flex flex-col gap-15 text-slate-100">
+          <Trans>Buy token on:</Trans>
+          <div className={cx("flex justify-between", { "flex-col gap-15": isMobile })}>
+            <div className={cx("buy flex gap-15", { "flex-col": isMobile })}>
+              <BuyLink
+                to={getTrackingLink("/buy_glp")}
+                network={ARBITRUM}
+                chainId={chainId}
+                active={active}
+                showRedirectModal={showRedirectModal}
+                trackLinkHandler={trackGLPBuyArbitrum}
+              >
+                <Trans>Arbitrum</Trans>
+              </BuyLink>
+              <BuyLink
+                to={getTrackingLink("/buy_glp")}
+                network={AVALANCHE}
+                chainId={chainId}
+                active={active}
+                showRedirectModal={showRedirectModal}
+                trackLinkHandler={trackGLPBuyAvalanche}
+              >
+                <Trans>Avalanche</Trans>
+              </BuyLink>
+            </div>
+            <TrackingLink onClick={sendUserAnalyticsProtocolReadMoreEvent}>
+              <Button
+                className="!py-11 tracking-normal"
+                newTab
+                variant="secondary"
+                to="https://docs.gmx.io/docs/providing-liquidity/v1"
+              >
+                <Trans>Read more</Trans>
+              </Button>
+            </TrackingLink>
           </div>
-          <TrackingLink onClick={sendUserAnalyticsProtocolReadMoreEvent}>
-            <Button
-              className="!py-11 tracking-normal"
-              newTab
-              variant="secondary"
-              to="https://docs.gmx.io/docs/providing-liquidity/v1"
-            >
-              <Trans>Read more</Trans>
-            </Button>
-          </TrackingLink>
         </div>
       </div>
     </div>
