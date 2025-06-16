@@ -86,6 +86,7 @@ export type PendingExpressTxnParams = {
   successMessage?: ReactNode;
   errorMessage?: ReactNode;
   isViewed?: boolean;
+  isRelayerMetricSent?: boolean;
 };
 
 export type ExpressHandlers = {
@@ -193,6 +194,7 @@ export type OrderCreatedEventData = {
   isLong: boolean;
   shouldUnwrapNativeToken: boolean;
   externalSwapQuote: undefined;
+  uiFeeReceiver: string;
   isFrozen: boolean;
   isTwap: boolean;
 };

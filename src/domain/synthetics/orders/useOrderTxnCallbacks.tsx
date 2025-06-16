@@ -26,6 +26,7 @@ import {
 } from "lib/metrics";
 import { getByKey } from "lib/objects";
 import { TxnEvent, TxnEventName } from "lib/transactions";
+import { useBlockNumber } from "lib/useBlockNumber";
 import { OrderInfo, OrdersInfoData } from "sdk/types/orders";
 import { isIncreaseOrderType, isMarketOrderType } from "sdk/utils/orders";
 import {
@@ -67,6 +68,7 @@ export function useOrderTxnCallbacks() {
   const { showDebugValues, setIsSettingsVisible } = useSettings();
   const ordersInfoData = useSelector(selectOrdersInfoData);
   const tokensData = useSelector(selectTokensData);
+  const blockNumber = useBlockNumber(chainId);
 
   const batchTxnCallback = useCallback(
     (ctx: CallbackUiCtx, e: TxnEvent<BatchOrderTxnCtx>) => {
@@ -76,6 +78,7 @@ export function useOrderTxnCallbacks() {
       }
 
       const { expressParams, batchParams } = e.data;
+      const isSubaccount = Boolean(expressParams?.subaccount);
 
       const actionsCount = getBatchRequiredActions(batchParams);
 
@@ -94,7 +97,6 @@ export function useOrderTxnCallbacks() {
 
       const handleTxnSubmitted = async () => {
         const createdAt = Date.now();
-        const blockNumber = BigInt(await e.data.signer.provider.getBlockNumber());
 
         const pendingOrders = getBatchPendingOrders(e.data.batchParams, ordersInfoData);
 
@@ -109,7 +111,7 @@ export function useOrderTxnCallbacks() {
           .map((cp) =>
             getPendingPositionFromParams({
               createOrderParams: cp,
-              blockNumber,
+              blockNumber: blockNumber ?? 0n,
               timestamp: createdAt,
             })
           );
@@ -178,6 +180,13 @@ export function useOrderTxnCallbacks() {
       };
 
       switch (e.event) {
+        case TxnEventName.Submitted: {
+          if (isSubaccount) {
+            handleTxnSubmitted();
+          }
+          return;
+        }
+
         case TxnEventName.Simulated: {
           if (ctx.metricId) {
             sendOrderSimulatedMetric(ctx.metricId);
@@ -190,9 +199,10 @@ export function useOrderTxnCallbacks() {
             sendOrderTxnSubmittedMetric(ctx.metricId);
           }
 
-          if (expressParams) {
+          if (expressParams && !isSubaccount) {
             handleTxnSubmitted();
           }
+
           return;
         }
 
@@ -282,6 +292,7 @@ export function useOrderTxnCallbacks() {
       }
     },
     [
+      blockNumber,
       chainId,
       ordersInfoData,
       setIsSettingsVisible,

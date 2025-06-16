@@ -19,7 +19,6 @@ import {
   getAllowedSlippageKey,
   getExecutionFeeBufferBpsKey,
   getExpressOrdersEnabledKey,
-  getExpressTradingGasTokenSwitchedKey,
   getGasPaymentTokenAddressKey,
   getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
   getLeverageEnabledKey as getLeverageSliderEnabledKey,
@@ -82,9 +81,6 @@ export type SettingsContextType = {
   settingsWarningDotVisible: boolean;
   setSettingsWarningDotVisible: (val: boolean) => void;
 
-  expressTradingGasTokenSwitched: boolean;
-  setExpressTradingGasTokenSwitched: (val: boolean) => void;
-
   debugSwapMarketsConfig:
     | {
         disabledSwapMarkets?: string[];
@@ -143,11 +139,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     )
   );
 
-  const [expressTradingGasTokenSwitched, setExpressTradingGasTokenSwitched] = useLocalStorageSerializeKey(
-    getExpressTradingGasTokenSwitchedKey(chainId, account),
-    false
-  );
-
   const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(
     [chainId, SHOW_PNL_AFTER_FEES_KEY],
     true
@@ -182,12 +173,12 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   >([chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY], undefined);
 
   const [expressOrdersEnabled, setExpressOrdersEnabled] = useLocalStorageSerializeKey(
-    getExpressOrdersEnabledKey(chainId),
+    getExpressOrdersEnabledKey(chainId, account),
     false
   );
 
   const [gasPaymentTokenAddress, setGasPaymentTokenAddress] = useLocalStorageSerializeKey(
-    getGasPaymentTokenAddressKey(chainId),
+    getGasPaymentTokenAddressKey(chainId, account),
     getDefaultGasPaymentToken(chainId)
   );
 
@@ -285,9 +276,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       settingsWarningDotVisible: settingsWarningDotVisible!,
       setSettingsWarningDotVisible,
 
-      expressTradingGasTokenSwitched: expressTradingGasTokenSwitched!,
-      setExpressTradingGasTokenSwitched,
-
       savedTwapNumberOfParts: savedTwapNumberOfParts!,
       setSavedTWAPNumberOfParts,
     };
@@ -334,8 +322,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setDebugSwapMarketsConfig,
     settingsWarningDotVisible,
     setSettingsWarningDotVisible,
-    expressTradingGasTokenSwitched,
-    setExpressTradingGasTokenSwitched,
     savedTwapNumberOfParts,
     setSavedTWAPNumberOfParts,
   ]);

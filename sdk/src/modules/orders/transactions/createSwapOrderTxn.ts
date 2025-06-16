@@ -74,7 +74,7 @@ async function getParams(sdk: GmxSdk, p: SwapOrderParams) {
       callbackContract: zeroAddress,
       market: zeroAddress,
       swapPath: p.swapPath,
-      uiFeeReceiver: zeroAddress,
+      uiFeeReceiver: sdk.config.settings?.uiFeeReceiverAccount || zeroAddress,
     },
     numbers: {
       sizeDeltaUsd: 0n,

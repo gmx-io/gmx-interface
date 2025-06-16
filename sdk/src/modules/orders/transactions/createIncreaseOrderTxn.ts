@@ -114,6 +114,7 @@ export async function createIncreaseOrderTxn({
     acceptablePrice,
     isNativePayment,
     initialCollateralTokenAddress,
+    uiFeeReceiver: sdk.config.settings?.uiFeeReceiverAccount,
   });
 
   const simulationEncodedPayload = await createEncodedPayload({
@@ -124,6 +125,7 @@ export async function createIncreaseOrderTxn({
     acceptablePrice,
     isNativePayment,
     initialCollateralTokenAddress,
+    uiFeeReceiver: sdk.config.settings?.uiFeeReceiverAccount,
   });
 
   const decreaseEncodedPayload = createDecreaseEncodedPayload({
@@ -190,6 +192,7 @@ async function createEncodedPayload({
   acceptablePrice,
   isNativePayment,
   initialCollateralTokenAddress,
+  uiFeeReceiver,
 }: {
   routerAbi: Abi;
   orderVaultAddress: string;
@@ -198,12 +201,14 @@ async function createEncodedPayload({
   acceptablePrice: bigint;
   isNativePayment: boolean;
   initialCollateralTokenAddress: string;
+  uiFeeReceiver: string | undefined;
 }) {
   const orderParams = createOrderParams({
     p,
     acceptablePrice,
     initialCollateralTokenAddress,
     isNativePayment,
+    uiFeeReceiver,
   });
   const multicall = [
     { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
@@ -231,11 +236,13 @@ function createOrderParams({
   acceptablePrice,
   initialCollateralTokenAddress,
   isNativePayment,
+  uiFeeReceiver,
 }: {
   p: IncreaseOrderParams;
   acceptablePrice: bigint;
   initialCollateralTokenAddress: string;
   isNativePayment: boolean;
+  uiFeeReceiver: string | undefined;
 }) {
   return {
     addresses: {
@@ -245,7 +252,7 @@ function createOrderParams({
       callbackContract: zeroAddress,
       market: p.marketAddress,
       swapPath: p.swapPath,
-      uiFeeReceiver: zeroAddress,
+      uiFeeReceiver: uiFeeReceiver || zeroAddress,
     },
     numbers: {
       sizeDeltaUsd: p.sizeDeltaUsd,

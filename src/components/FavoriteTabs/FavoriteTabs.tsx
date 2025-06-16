@@ -10,7 +10,15 @@ import { useLocalizedMap } from "lib/i18n";
 
 import Button from "components/Button/Button";
 
-export function FavoriteTabs({ favoritesKey }: { favoritesKey: TokenFavoriteKey }) {
+export function FavoriteTabs({
+  favoritesKey,
+  className,
+  activeClassName = "",
+}: {
+  favoritesKey: TokenFavoriteKey;
+  className?: string;
+  activeClassName?: string;
+}) {
   const { tab, setTab } = useTokensFavorites(favoritesKey);
 
   const localizedTabOptionLabels = useLocalizedMap(tokensFavoritesTabOptionLabels);
@@ -22,8 +30,9 @@ export function FavoriteTabs({ favoritesKey }: { favoritesKey: TokenFavoriteKey 
           key={option}
           type="button"
           variant={"ghost"}
-          className={cx("!text-body-medium !py-7", {
+          className={cx("!text-body-medium !py-7", className, {
             "!bg-cold-blue-500": tab === option,
+            [activeClassName]: activeClassName && tab === option,
           })}
           onClick={() => setTab(option)}
           data-selected={tab === option}
