@@ -157,6 +157,7 @@ export const useDepositWithdrawalTransactions = ({
           tokensData,
           blockTimestampData,
           isMarketTokenDeposit: isMarketTokenDeposit ?? false,
+          isFirstDeposit: glvInfo.glvToken.totalSupply === 0n,
           setPendingTxns,
           setPendingDeposit,
         })

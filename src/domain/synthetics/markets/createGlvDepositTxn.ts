@@ -1,6 +1,8 @@
 import { t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
+import { numberToHex } from "viem";
 
+import { ARBITRUM_SEPOLIA } from "config/chains";
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { callContract } from "lib/contracts";
@@ -19,10 +21,15 @@ interface CreateGlvDepositParams extends CreateDepositParams {
   glvAddress: string;
   marketTokenAmount: bigint;
   isMarketTokenDeposit: boolean;
+  isFirstDeposit: boolean;
 }
 
 export async function createGlvDepositTxn(chainId: ContractsChainId, signer: Signer, p: CreateGlvDepositParams) {
-  const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), abis.GlvRouter, signer);
+  const contract = new ethers.Contract(
+    getContract(chainId, "GlvRouter"),
+    chainId === ARBITRUM_SEPOLIA ? abis.GlvRouterArbitrumSepolia : abis.GlvRouter,
+    signer
+  );
   const depositVaultAddress = getContract(chainId, "GlvVault");
 
   const isNativeLongDeposit = Boolean(
@@ -71,22 +78,42 @@ export async function createGlvDepositTxn(chainId: ContractsChainId, signer: Sig
     {
       method: "createGlvDeposit",
       params: [
-        {
-          glv: p.glvAddress,
-          market: p.marketTokenAddress,
-          receiver: p.account,
-          callbackContract: ethers.ZeroAddress,
-          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
-          initialLongToken: p.isMarketTokenDeposit ? ethers.ZeroAddress : initialLongTokenAddress,
-          initialShortToken: p.isMarketTokenDeposit ? ethers.ZeroAddress : initialShortTokenAddress,
-          longTokenSwapPath: [],
-          shortTokenSwapPath: [],
-          minGlvTokens: minGlvTokens,
-          executionFee: p.executionFee,
-          callbackGasLimit: 0n,
-          shouldUnwrapNativeToken,
-          isMarketTokenDeposit: p.isMarketTokenDeposit,
-        },
+        chainId === ARBITRUM_SEPOLIA
+          ? {
+              addresses: {
+                glv: p.glvAddress,
+                market: p.marketTokenAddress,
+                receiver: p.isFirstDeposit ? numberToHex(1, { size: 20 }) : p.account,
+                callbackContract: ethers.ZeroAddress,
+                uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
+                initialLongToken: p.isMarketTokenDeposit ? ethers.ZeroAddress : initialLongTokenAddress,
+                initialShortToken: p.isMarketTokenDeposit ? ethers.ZeroAddress : initialShortTokenAddress,
+                longTokenSwapPath: [],
+                shortTokenSwapPath: [],
+              },
+              minGlvTokens: minGlvTokens,
+              executionFee: p.executionFee,
+              callbackGasLimit: 0n,
+              shouldUnwrapNativeToken,
+              isMarketTokenDeposit: p.isMarketTokenDeposit,
+              dataList: [],
+            }
+          : {
+              glv: p.glvAddress,
+              market: p.marketTokenAddress,
+              receiver: p.account,
+              callbackContract: ethers.ZeroAddress,
+              uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
+              initialLongToken: p.isMarketTokenDeposit ? ethers.ZeroAddress : initialLongTokenAddress,
+              initialShortToken: p.isMarketTokenDeposit ? ethers.ZeroAddress : initialShortTokenAddress,
+              longTokenSwapPath: [],
+              shortTokenSwapPath: [],
+              minGlvTokens: minGlvTokens,
+              executionFee: p.executionFee,
+              callbackGasLimit: 0n,
+              shouldUnwrapNativeToken,
+              isMarketTokenDeposit: p.isMarketTokenDeposit,
+            },
       ],
     },
   ];
