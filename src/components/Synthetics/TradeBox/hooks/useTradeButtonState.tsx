@@ -17,7 +17,6 @@ import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/
 import {
   selectChainId,
   selectGasPaymentTokenAllowance,
-  selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -32,6 +31,7 @@ import {
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
   selectTradeboxIncreasePositionAmounts,
+  selectTradeboxIsFromTokenGmxAccount,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxMaxLeverage,
   selectTradeboxPayAmount,
@@ -99,7 +99,6 @@ export function useTradeboxButtonState({
   setToTokenInputValue,
 }: TradeboxButtonStateOptions): TradeboxButtonState {
   const chainId = useSelector(selectChainId);
-  const srcChainId = useSelector(selectSrcChainId);
   const signer = useEthersSigner();
 
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
@@ -122,6 +121,7 @@ export function useTradeboxButtonState({
   const payTokenAllowance = useSelector(selectTradeboxTokensAllowance);
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const tokenPermits = useSelector(selectTokenPermits);
+  const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
 
   const { setPendingTxns } = usePendingTxns();
   const { openConnectModal } = useConnectModal();
@@ -143,7 +143,7 @@ export function useTradeboxButtonState({
   });
 
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
-    if (srcChainId !== undefined) {
+    if (isFromTokenGmxAccount) {
       return { tokensToApprove: [], isAllowanceLoaded: true };
     }
 
@@ -186,11 +186,11 @@ export function useTradeboxButtonState({
     gasPaymentToken,
     gasPaymentTokenAllowance?.isLoaded,
     gasPaymentTokenAllowance?.tokensAllowanceData,
+    isFromTokenGmxAccount,
     payAmount,
     payTokenAllowance.isLoaded,
     payTokenAllowance.spenderAddress,
     payTokenAllowance.tokensAllowanceData,
-    srcChainId,
     tokenPermits,
   ]);
 
@@ -199,6 +199,8 @@ export function useTradeboxButtonState({
   const detectAndSetAvailableMaxLeverage = useDetectAndSetAvailableMaxLeverage({ setToTokenInputValue });
 
   const tradeError = useSelector(selectTradeboxTradeTypeError);
+
+  // console.log("tokensToApprove", tokensToApprove);
 
   const { buttonErrorText, tooltipContent } = useMemo(() => {
     const commonError = getCommonError({
@@ -307,7 +309,7 @@ export function useTradeboxButtonState({
       return;
     }
 
-    if (!srcChainId && isAllowanceLoaded && tokensToApprove.length) {
+    if (!isFromTokenGmxAccount && isAllowanceLoaded && tokensToApprove.length) {
       const tokenToApprove = tokensToApprove[0];
 
       if (!chainId || isApproving || !tokenToApprove) return;
@@ -378,7 +380,7 @@ export function useTradeboxButtonState({
   }, [
     account,
     signer,
-    srcChainId,
+    isFromTokenGmxAccount,
     isAllowanceLoaded,
     tokensToApprove,
     setStage,

@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
+import { ARBITRUM_SEPOLIA } from "config/chains";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { isSettlementChain } from "domain/multichain/config";
 import { getExpressContractAddress } from "domain/synthetics/express";
@@ -21,6 +22,14 @@ export type NoncesData = {
     nonce: bigint;
     lastEstimated: number;
   };
+  multichainOrderRouter?: {
+    nonce: bigint;
+    lastEstimated: number;
+  };
+  multichainSubaccountRelayRouter?: {
+    nonce: bigint;
+    lastEstimated: number;
+  };
 };
 
 export type LocalActions = {
@@ -33,6 +42,14 @@ export type LocalActions = {
     lastEstimated: number;
   };
   multichainTransferRouter: {
+    actions: bigint;
+    lastEstimated: number;
+  };
+  multichainOrderRouter: {
+    actions: bigint;
+    lastEstimated: number;
+  };
+  multichainSubaccountRelayRouter: {
     actions: bigint;
     lastEstimated: number;
   };
@@ -51,6 +68,14 @@ const defaultLocalActions: LocalActions = {
     actions: 0n,
     lastEstimated: 0,
   },
+  multichainOrderRouter: {
+    actions: 0n,
+    lastEstimated: 0,
+  },
+  multichainSubaccountRelayRouter: {
+    actions: 0n,
+    lastEstimated: 0,
+  },
 };
 
 type ExpressNoncesContextType = {
@@ -62,7 +87,7 @@ type ExpressNoncesContextType = {
 const ExpressNoncesContext = createContext<ExpressNoncesContextType | undefined>(undefined);
 
 export function ExpressNoncesContextProvider({ children }: { children: React.ReactNode }) {
-  const { chainId, srcChainId } = useChainId();
+  const { chainId } = useChainId();
   const { account } = useWallet();
   const { subaccount } = useSubaccountContext();
   const [localActions, setLocalActions] = useState<LocalActions>(defaultLocalActions);
@@ -74,8 +99,6 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
       const request: MulticallRequestConfig<any> = {
         relayRouter: {
           contractAddress: getExpressContractAddress(chainId, {
-            isSubaccount: false,
-            isMultichain: srcChainId !== undefined,
             scope: "order",
           }),
           abiId: "AbstractUserNonceable",
@@ -89,7 +112,6 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
         subaccountRelayRouter: {
           contractAddress: getExpressContractAddress(chainId, {
             isSubaccount: true,
-            isMultichain: srcChainId !== undefined,
             scope: "subaccount",
           }),
           abiId: "AbstractUserNonceable",
@@ -104,7 +126,7 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
         },
       };
 
-      if (isSettlementChain(requestChainId) && srcChainId !== undefined) {
+      if (isSettlementChain(requestChainId)) {
         request.multichainTransferRouter = {
           contractAddress: getExpressContractAddress(chainId, {
             isMultichain: true,
@@ -116,6 +138,38 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
               methodName: "userNonces",
               params: [account],
             },
+          },
+        };
+        request.multichainOrderRouter = {
+          contractAddress: getExpressContractAddress(chainId, {
+            isMultichain: true,
+            scope: "order",
+          }),
+          abiId: "AbstractUserNonceable",
+          calls: {
+            nonce:
+              chainId === ARBITRUM_SEPOLIA
+                ? {
+                    methodName: "userNonces",
+                    params: [account],
+                  }
+                : undefined,
+          },
+        };
+        request.multichainSubaccountRelayRouter = {
+          contractAddress: getExpressContractAddress(chainId, {
+            isMultichain: true,
+            scope: "subaccount",
+          }),
+          abiId: "AbstractUserNonceable",
+          calls: {
+            nonce:
+              chainId === ARBITRUM_SEPOLIA
+                ? {
+                    methodName: "userNonces",
+                    params: [account],
+                  }
+                : undefined,
           },
         };
       }
@@ -142,8 +196,22 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
               lastEstimated: now,
             }
           : undefined,
+        multichainOrderRouter:
+          chainId === ARBITRUM_SEPOLIA
+            ? {
+                nonce: result.data.multichainOrderRouter.nonce.returnValues[0],
+                lastEstimated: now,
+              }
+            : undefined,
+        multichainSubaccountRelayRouter:
+          chainId === ARBITRUM_SEPOLIA
+            ? {
+                nonce: result.data.multichainSubaccountRelayRouter.nonce.returnValues[0],
+                lastEstimated: now,
+              }
+            : undefined,
         multichainTransferRouter:
-          srcChainId !== undefined
+          chainId === ARBITRUM_SEPOLIA
             ? {
                 nonce: result.data.multichainTransferRouter.nonce.returnValues[0],
                 lastEstimated: now,

@@ -514,7 +514,16 @@ export async function buildAndSignExpressBatchOrderTxn({
 
   const relayRouterAddress = getOrderRelayRouterAddress(chainId, subaccount !== undefined, isGmxAccount);
 
-  const cachedNonce = subaccount ? noncesData?.subaccountRelayRouter?.nonce : noncesData?.relayRouter?.nonce;
+  let cachedNonce: bigint | undefined;
+  if (isGmxAccount && subaccount) {
+    cachedNonce = noncesData?.multichainSubaccountRelayRouter?.nonce;
+  } else if (isGmxAccount && !subaccount) {
+    cachedNonce = noncesData?.multichainOrderRouter?.nonce;
+  } else if (!isGmxAccount && subaccount) {
+    cachedNonce = noncesData?.subaccountRelayRouter?.nonce;
+  } else if (!isGmxAccount && !subaccount) {
+    cachedNonce = noncesData?.relayRouter?.nonce;
+  }
 
   let userNonce: bigint;
   if (cachedNonce === undefined) {

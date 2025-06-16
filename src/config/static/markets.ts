@@ -516,6 +516,10 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
     "0x3A83246bDDD60c4e71c91c10D9A66Fd64399bBCf": {
       enabled: true,
     },
+    // CRV/USD [WETH-USDC]
+    "0xAde9D177B9E060D2064ee9F798125e6539fDaA1c": {
+      enabled: true,
+    },
   },
 };
 

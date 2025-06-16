@@ -886,5 +886,12 @@ export const MARKETS: Record<number, Record<string, MarketConfig>> = {
       longTokenAddress: "0xF79cE1Cf38A09D572b021B4C5548b75A14082F12",
       shortTokenAddress: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773",
     },
+    // CRV/USD [WETH-USDC]
+    "0xAde9D177B9E060D2064ee9F798125e6539fDaA1c": {
+      marketTokenAddress: "0xAde9D177B9E060D2064ee9F798125e6539fDaA1c",
+      indexTokenAddress: "0xD5DdAED48B09fa1D7944bd662CB05265FCD7077C",
+      longTokenAddress: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
+      shortTokenAddress: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773",
+    },
   },
 };

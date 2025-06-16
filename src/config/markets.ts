@@ -3,7 +3,7 @@ import mapValues from "lodash/mapValues";
 import { isDevelopment } from "config/env";
 import { SETTLEMENT_CHAINS } from "domain/multichain/config";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, SettlementChainId } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, SettlementChainId } from "./chains";
 import { MARKETS } from "./static/markets";
 
 export * from "./static/markets";
@@ -44,6 +44,13 @@ export const GLV_MARKETS: {
   },
   [AVALANCHE_FUJI]: {
     "0xc519a5b8e5e93D3ec85D62231C1681c44952689d": {
+      name: "High Caps",
+      subtitle: "Core ETH Markets Vault",
+      shortening: "HC",
+    },
+  },
+  [ARBITRUM_SEPOLIA]: {
+    "0xAb3567e55c205c62B141967145F37b7695a9F854": {
       name: "High Caps",
       subtitle: "Core ETH Markets Vault",
       shortening: "HC",

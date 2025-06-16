@@ -485,7 +485,7 @@ function ReferralCodeFormMultichain({
       }) as RawMultichainRelayParamsPayload;
 
       const userNonce =
-        globalExpressParams.noncesData?.relayRouter?.nonce ??
+        globalExpressParams.noncesData?.multichainOrderRouter?.nonce ??
         (await getRelayRouterNonceForMultichain(provider, account, getContract(chainId, "MultichainOrderRouter")));
 
       const relayParamsPayload: MultichainRelayParamsPayload = {

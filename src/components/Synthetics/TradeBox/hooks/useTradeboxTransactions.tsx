@@ -18,7 +18,7 @@ import {
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxExecutionFee,
   selectTradeboxFees,
-  selectTradeboxFromTokenAddress,
+  selectTradeboxFromToken,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsFromTokenGmxAccount,
   selectTradeboxMarketInfo,
@@ -78,7 +78,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
-  const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
+  const fromToken = useSelector(selectTradeboxFromToken);
   const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
   const marketInfo = useSelector(selectTradeboxMarketInfo);
@@ -101,7 +101,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
   const { referralCodeForTxn } = useUserReferralCode(signer, chainId, account);
 
-  const fromToken = getByKey(tokensData, fromTokenAddress);
+  // const fromToken = getByKey(tokensData, fromTokenAddress);
   const toToken = getByKey(tokensData, toTokenAddress);
 
   const initialCollateralAllowance = useSelector(selectTradeboxPayTokenAllowance);

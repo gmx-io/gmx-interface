@@ -1850,6 +1850,21 @@
       "longInterestInTokensUsingShortToken": "0x71bb78048905f09a82839779926db8aff078392c82b239b5b1551d323e7a50bf",
       "shortInterestInTokensUsingLongToken": "0x2dad3d52c3bfd9b175fd4422536a36576d5a7b719800cf33f82c2891345fc168",
       "shortInterestInTokensUsingShortToken": "0x2102a3bee36639520696b3d223cd869c7b21925f61e77331cf32335c4dae4362"
+    },
+    "0xAde9D177B9E060D2064ee9F798125e6539fDaA1c": {
+      "longPoolAmount": "0x50d0f68f6a4fecbc901e4a8082d9317f682e4b2f5a87c11e368abf51c37ae5a6",
+      "shortPoolAmount": "0xfacfa0c2d3c3056986b1c7ef2727d911129f7d4169bf668f9570e8998bd2ad08",
+      "positionImpactPoolAmount": "0xa28e40173205226b450ee3f66e740ac1e123b81eed4198899746b45993480b0b",
+      "swapImpactPoolAmountLong": "0xe80d5b6847cd87925fc341da9e3982e056ef5308ee6735242877c46b36630f33",
+      "swapImpactPoolAmountShort": "0xe0f8ac8f75912883b35bd29b9ccdc044d9b58db259776e40024578264ba5e245",
+      "longInterestUsingLongToken": "0xaead92698f3316bb52e70fd394f1944f87bf576e5ffb2b4a4a1d0c7fdcf8f8b6",
+      "longInterestUsingShortToken": "0x99a8e43d4a6c016b51f0562ca4ff9e5b1fe08e7027c4dd4683ced9ae2f0a4470",
+      "shortInterestUsingLongToken": "0xc81070e2b6a9277ea42887805edb202fdbd227668ea67024d66f69439358c671",
+      "shortInterestUsingShortToken": "0xa0980940eb86bfbe3a5a9a1c03c397b15064c09dba8e4cff7d6add6671f9ce51",
+      "longInterestInTokensUsingLongToken": "0x4087fbc85522f334dc81f3fb0c97490d2bf309131eb503ea550960057037dc3a",
+      "longInterestInTokensUsingShortToken": "0xf61da26292dbce9b746fcc8438f02fab8e8a28a0d610791c191d64038ece27fc",
+      "shortInterestInTokensUsingLongToken": "0x4e9ca5ca185f24d2f633d7bc31c3203b976717299efa1596032b0ffab3e8ff32",
+      "shortInterestInTokensUsingShortToken": "0xfa0bb36ec3ca4732de1401392424dff4ce738063ac80315a014d3fffc4f7bd60"
     }
   }
 }

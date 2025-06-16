@@ -1526,6 +1526,15 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
       coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     },
+    {
+      name: "CRV",
+      symbol: "CRV",
+      address: "0xD5DdAED48B09fa1D7944bd662CB05265FCD7077C",
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/12134/small/curve.png?1596358786",
+      isSynthetic: true,
+      coingeckoUrl: "https://www.coingecko.com/en/coins/curve-dao-token",
+    },
     /** Placeholder tokens */
     {
       name: "GMX",

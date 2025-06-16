@@ -23,6 +23,7 @@ export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   walletTokensData?: TokensData;
+  gmxAccountTokensData?: TokensData;
   pricesUpdatedAt?: number;
   isBalancesLoaded?: boolean;
   error?: Error;
@@ -37,6 +38,7 @@ export function useMarketsInfoRequest(chainId: ContractsChainId, srcChainId?: So
   const walletTokensDataResult: TokensDataResult | undefined =
     srcChainId === undefined ? settlementChainTokensDataResult : undefined;
   const walletTokensData = walletTokensDataResult?.tokensData;
+  const gmxAccountTokensData = gmxAccountTokensDataResult?.tokensData;
 
   const {
     tokensData,
@@ -91,7 +93,6 @@ export function useMarketsInfoRequest(chainId: ContractsChainId, srcChainId?: So
       const marketInfoFields = marketValues && marketConfig ? { ...marketValues, ...marketConfig } : fastMarketInfo;
 
       if (!marketInfoFields) {
-        // console.log("market info error 2", marketAddress, marketInfoFields);
         continue;
       }
 
@@ -127,6 +128,7 @@ export function useMarketsInfoRequest(chainId: ContractsChainId, srcChainId?: So
     marketsInfoData: isDependenciesLoading ? undefined : mergedData,
     tokensData,
     walletTokensData,
+    gmxAccountTokensData,
     pricesUpdatedAt,
     error,
     isBalancesLoaded,
