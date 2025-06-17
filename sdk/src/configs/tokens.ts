@@ -1468,7 +1468,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
   [BOTANIX]: [
     {
       name: "Bitcoin",
-      symbol: "BTC",
+      symbol: "bBTC",
       address: NATIVE_TOKEN_ADDRESS,
       decimals: 18,
       isNative: true,
@@ -1483,13 +1483,23 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       symbol: "pBTC",
       address: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
       decimals: 18,
-      isNative: true,
       isShortable: true,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/1/standard/bitcoin.png?1696501400",
       coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
       baseSymbol: "BTC",
       isWrapped: true,
+    },
+    {
+      name: "Staked BTC",
+      symbol: "stBTC",
+      address: "0xF4586028FFdA7Eca636864F80f8a3f2589E33795",
+      decimals: 18,
+      isShortable: true,
+      categories: ["layer1"],
+      imageUrl: "https://assets.coingecko.com/coins/images/1/standard/bitcoin.png?1696501400",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
+      baseSymbol: "BTC",
     },
     {
       name: "BTC",

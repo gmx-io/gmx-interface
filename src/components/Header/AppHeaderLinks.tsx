@@ -25,7 +25,6 @@ type Props = {
 
 export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedirectModal }: Props) {
   const { openNotifyModal } = useNotifyModalState();
-
   const isLeaderboardActive = useCallback(
     (match, location) => Boolean(match) || location.pathname.startsWith("/competitions"),
     []

@@ -103,7 +103,7 @@ export function useReferralsData(account?: string | null) {
       if (!graphClient) return undefined;
 
       return getReferralsGraphClient(chainId)
-        .query({
+        ?.query({
           query: REFERRALS_GQL,
           variables: {
             typeIds: Object.values(RebateDistributionType),

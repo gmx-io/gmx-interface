@@ -311,7 +311,7 @@ export function useAffiliateCodes(chainId, account) {
   useEffect(() => {
     if (!chainId) return;
     getReferralsGraphClient(chainId)
-      .query({ query, variables: { account: account?.toLowerCase() } })
+      ?.query({ query, variables: { account: account?.toLowerCase() } })
       .then((res) => {
         const parsedAffiliateCodes = res?.data?.affiliateStats.map((c) => decodeReferralCode(c?.referralCode));
         setAffiliateCodes({ code: parsedAffiliateCodes[0], success: true });
