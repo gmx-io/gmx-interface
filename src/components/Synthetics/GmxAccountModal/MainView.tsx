@@ -29,6 +29,7 @@ import { Token } from "sdk/types/tokens";
 import { Avatar } from "components/Avatar/Avatar";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -395,7 +396,7 @@ const FundingHistorySection = () => {
           className="w-full rounded-4 bg-slate-700 px-12 py-8 text-white placeholder:text-slate-100"
         />
       </div>
-      <div className="flex grow flex-col overflow-y-auto">
+      <VerticalScrollFadeContainer className="flex grow flex-col">
         {filteredFundingHistory?.map((transfer) => (
           <div
             role="button"
@@ -438,7 +439,7 @@ const FundingHistorySection = () => {
             <TbLoader2 className="size-24 animate-spin" />
           </div>
         )}
-      </div>
+      </VerticalScrollFadeContainer>
     </div>
   );
 };
