@@ -49,7 +49,7 @@ export type ExpressTransactionBuilder = ({
   subaccount,
   noncesData,
 }: {
-  relayParams: RawRelayParamsPayload;
+  relayParams: RawRelayParamsPayload | RawMultichainRelayParamsPayload;
   gasPaymentParams: GasPaymentParams;
   subaccount: Subaccount | undefined;
   noncesData: NoncesData | undefined;

@@ -30,6 +30,10 @@ export type NoncesData = {
     nonce: bigint;
     lastEstimated: number;
   };
+  multichainClaimsRouter?: {
+    nonce: bigint;
+    lastEstimated: number;
+  };
 };
 
 export type LocalActions = {
@@ -53,6 +57,10 @@ export type LocalActions = {
     actions: bigint;
     lastEstimated: number;
   };
+  multichainClaimsRouter: {
+    actions: bigint;
+    lastEstimated: number;
+  };
 };
 
 const defaultLocalActions: LocalActions = {
@@ -73,6 +81,10 @@ const defaultLocalActions: LocalActions = {
     lastEstimated: 0,
   },
   multichainSubaccountRelayRouter: {
+    actions: 0n,
+    lastEstimated: 0,
+  },
+  multichainClaimsRouter: {
     actions: 0n,
     lastEstimated: 0,
   },
@@ -172,6 +184,19 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
                 : undefined,
           },
         };
+        request.multichainClaimsRouter = {
+          contractAddress: getExpressContractAddress(chainId, {
+            isMultichain: true,
+            scope: "claims",
+          }),
+          abiId: "AbstractUserNonceable",
+          calls: {
+            nonce: {
+              methodName: "userNonces",
+              params: [account],
+            },
+          },
+        };
       }
 
       return request;
@@ -214,6 +239,13 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
           chainId === ARBITRUM_SEPOLIA
             ? {
                 nonce: result.data.multichainTransferRouter.nonce.returnValues[0],
+                lastEstimated: now,
+              }
+            : undefined,
+        multichainClaimsRouter:
+          chainId === ARBITRUM_SEPOLIA
+            ? {
+                nonce: result.data.multichainClaimsRouter.nonce.returnValues[0],
                 lastEstimated: now,
               }
             : undefined,
