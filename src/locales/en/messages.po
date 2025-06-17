@@ -3416,6 +3416,7 @@ msgstr "Order cannot be executed as the remaining position would be smaller than
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/Stake/AffiliateClaimModal.tsx
 #: src/pages/Stake/ClaimModal.tsx
@@ -6180,10 +6181,6 @@ msgstr "OPEN INTEREST"
 msgid "Failed to download trade history CSV."
 msgstr "Failed to download trade history CSV."
 
-#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-msgid "Switch to {settlementChainName} to claim Funding Fees"
-msgstr "Switch to {settlementChainName} to claim Funding Fees"
-
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"
@@ -6394,6 +6391,7 @@ msgstr "trigger price"
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/Claims/ClaimableCard.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
