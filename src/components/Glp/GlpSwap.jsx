@@ -1176,7 +1176,9 @@ export default function GlpSwap(props) {
                       topLeftLabel={receiveLabel}
                       bottomRightLabel={t`Balance`}
                       bottomLeftValue={receiveBalance}
-                      bottomRightValue={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
+                      bottomRightValue={formatBalanceAmount(swapTokenBalance, swapToken.decimals, undefined, {
+                        isStable: swapToken.isStable,
+                      })}
                       inputValue={swapValue}
                       onInputValueChange={onSwapValueChange}
                       selectedToken={swapToken}

@@ -742,6 +742,7 @@ export function PositionSeller() {
                   decimals={receiveToken.decimals}
                   symbol={receiveToken.symbol}
                   usd={receiveUsd}
+                  isStable={receiveToken.isStable}
                 />
               </span>
             }

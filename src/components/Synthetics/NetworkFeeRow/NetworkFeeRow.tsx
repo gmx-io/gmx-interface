@@ -86,7 +86,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
     executionDisplayDecimals += 1;
   } else {
     if (executionFeeToken?.isStable) {
-      executionDisplayDecimals = 3;
+      executionDisplayDecimals = 2;
     } else {
       executionDisplayDecimals = 5;
     }
@@ -97,7 +97,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
     networkFeeDisplayDecimals += 1;
   } else {
     if (networkFee?.feeToken.isStable) {
-      networkFeeDisplayDecimals = 3;
+      networkFeeDisplayDecimals = 2;
     } else {
       networkFeeDisplayDecimals = 5;
     }
