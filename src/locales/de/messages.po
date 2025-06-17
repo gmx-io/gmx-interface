@@ -8041,10 +8041,6 @@ msgstr "Escrowed GMX APR"
 msgid "Initial collateral"
 msgstr "Ursprüngliches Kollateral"
 
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-msgid "Switch to {0} to settle Funding Fees"
-msgstr ""
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Activate 1CT (One-Click Trading)"
 msgstr ""

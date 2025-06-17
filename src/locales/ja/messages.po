@@ -8041,10 +8041,6 @@ msgstr "esGMXのAPR(実質年利)"
 msgid "Initial collateral"
 msgstr "最初の担保"
 
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-msgid "Switch to {0} to settle Funding Fees"
-msgstr ""
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Activate 1CT (One-Click Trading)"
 msgstr ""
