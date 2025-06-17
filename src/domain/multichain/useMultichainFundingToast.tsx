@@ -42,7 +42,7 @@ function useGmxAccountPendingFundingHistoryItems(
 
 export function useMultichainFundingToast() {
   const { chainId } = useChainId();
-  const { multichainFundingPendingIds } = useSyntheticsEvents();
+  const { multichainFundingPendingIds, removeMultichainFundingPendingIds } = useSyntheticsEvents();
 
   const clearTimeout = useRef<number | undefined>();
   const dymanicIds = useMemo(() => Object.values(multichainFundingPendingIds), [multichainFundingPendingIds]);
@@ -98,13 +98,19 @@ export function useMultichainFundingToast() {
     if (toast.isActive(TOAST_ID)) {
       toast.update(TOAST_ID, {
         render: content,
+        onClose: () => {
+          removeMultichainFundingPendingIds(Object.keys(multichainFundingPendingIds));
+        },
       });
     } else {
       toast(content, {
         toastId: TOAST_ID,
         type: "success",
         autoClose: false,
+        onClose: () => {
+          removeMultichainFundingPendingIds(Object.keys(multichainFundingPendingIds));
+        },
       });
     }
-  }, [chainId, labels, multichainFundingPendingIds, pendingItems]);
+  }, [chainId, labels, multichainFundingPendingIds, pendingItems, removeMultichainFundingPendingIds]);
 }

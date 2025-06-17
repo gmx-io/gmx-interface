@@ -65,6 +65,8 @@ export type MultichainEventsState = {
     // Stub id or real guid
     string
   >;
+
+  removeMultichainFundingPendingIds: (id: string | string[]) => void;
 };
 
 const DEFAULT_MULTICHAIN_FUNDING_STATE: PendingMultichainFunding = {
@@ -794,6 +796,16 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
             return newPendingMultichainFunding;
           });
         }
+      },
+      removeMultichainFundingPendingIds: (ids: string | string[]) => {
+        ids = typeof ids === "string" ? [ids] : ids;
+        setMultichainFundingPendingIds((prev) => {
+          const newIds = { ...prev };
+          for (const id of ids) {
+            delete newIds[id];
+          }
+          return newIds;
+        });
       },
     }),
     [
