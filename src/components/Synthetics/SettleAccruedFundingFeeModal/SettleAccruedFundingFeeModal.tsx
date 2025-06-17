@@ -1,7 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { getChainName } from "config/chains";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import {
   usePositiveFeePositionsSortedByUsd,
@@ -24,7 +23,6 @@ import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallba
 import { useChainId } from "lib/chains";
 import { formatDeltaUsd, formatUsd } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
-import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { buildDecreaseOrderPayload } from "sdk/utils/orderTransactions";
@@ -47,7 +45,7 @@ type Props = {
 
 export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClose }: Props) {
   const tokensData = useTokensData();
-  const { account, signer, active } = useWallet();
+  const { account, signer } = useWallet();
   const { chainId, srcChainId } = useChainId();
   const { provider } = useJsonRpcProvider(chainId);
   const userReferralInfo = useUserReferralInfo();
@@ -161,12 +159,10 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
   const [buttonText, buttonDisabled] = useMemo(() => {
     if (isSubmitting) return [t`Settling...`, true];
-    if (srcChainId !== undefined) {
-      return [t`Switch to ${getChainName(chainId)} to settle Funding Fees`, false];
-    }
+
     if (positionKeys.length === 0) return [t`Select Positions`, true];
     return [t`Settle`, false];
-  }, [chainId, isSubmitting, positionKeys.length, srcChainId]);
+  }, [isSubmitting, positionKeys.length]);
 
   const handleRowCheckboxChange = useCallback(
     (value: boolean, positionKey: string) => {
@@ -181,11 +177,6 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   );
 
   const onSubmit = useCallback(() => {
-    if (srcChainId !== undefined) {
-      switchNetwork(chainId, active);
-      return;
-    }
-
     if (!account || !signer?.provider || !chainId || !batchParams || !provider) {
       return;
     }
@@ -213,7 +204,6 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
       });
   }, [
     account,
-    active,
     batchParams,
     chainId,
     expressParams,
