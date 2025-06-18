@@ -1,11 +1,7 @@
 import { useEffect } from "react";
 
 import { selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import {
-  selectSetExpressTradingGasTokenSwitched,
-  selectSetGasPaymentTokenAddress,
-  selectSetSettingsWarningDotVisible,
-} from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import { selectSetGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { convertToTokenAmount, convertToUsd } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -18,8 +14,6 @@ export function useSwitchGasPaymentTokenIfRequired({ expressParams }: { expressP
   const { chainId } = useChainId();
   const setGasPaymentTokenAddress = useSelector(selectSetGasPaymentTokenAddress);
   const tokensData = useSelector(selectTokensData);
-  const setSettingsWarningDotVisible = useSelector(selectSetSettingsWarningDotVisible);
-  const setExpressTradingGasTokenSwitched = useSelector(selectSetExpressTradingGasTokenSwitched);
 
   useEffect(
     function switchGasPaymentToken() {
@@ -46,19 +40,10 @@ export function useSwitchGasPaymentTokenIfRequired({ expressParams }: { expressP
         });
 
         if (anotherGasToken && anotherGasToken !== expressParams.gasPaymentParams.gasPaymentTokenAddress) {
-          setSettingsWarningDotVisible(true);
           setGasPaymentTokenAddress(anotherGasToken);
-          setExpressTradingGasTokenSwitched(expressParams.gasPaymentParams.gasPaymentTokenAddress);
         }
       }
     },
-    [
-      chainId,
-      expressParams,
-      setExpressTradingGasTokenSwitched,
-      setGasPaymentTokenAddress,
-      setSettingsWarningDotVisible,
-      tokensData,
-    ]
+    [chainId, expressParams, setGasPaymentTokenAddress, tokensData]
   );
 }

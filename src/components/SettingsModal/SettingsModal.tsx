@@ -1,6 +1,6 @@
-import { plural, t, Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 
 import { isDevelopment } from "config/env";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
@@ -9,23 +9,16 @@ import { DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/twap";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
-import { useEnabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
-import {
-  getIsSubaccountActive,
-  getRemainingSubaccountActions,
-  getRemainingSubaccountSeconds,
-} from "domain/synthetics/subaccount";
+import { getIsSubaccountActive } from "domain/synthetics/subaccount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { roundToTwoDecimals } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
-import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
+import { mustNeverExist } from "lib/types";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
-import { secondsToPeriod } from "sdk/utils/time";
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
-import { ExpressTradingGasTokenSwitchedBanner } from "components/ExpressTradingGasTokenSwitchedBanner.ts/ExpressTradingGasTokenSwithedBanner";
 import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
@@ -38,6 +31,17 @@ import TenderlySettings from "components/TenderlySettings/TenderlySettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import ExpressIcon from "img/ic_express.svg?react";
+import HourGlassIcon from "img/ic_hourglass.svg?react";
+import InfoIcon from "img/ic_info.svg?react";
+import OneClickIcon from "img/ic_one_click.svg?react";
+
+enum TradingMode {
+  Classic = "classic",
+  Express = "express",
+  Express1CT = "express-1ct",
+}
+
 export function SettingsModal({
   isSettingsVisible,
   setIsSettingsVisible,
@@ -47,28 +51,13 @@ export function SettingsModal({
 }) {
   const { chainId } = useChainId();
   const settings = useSettings();
-  const { features } = useEnabledFeaturesRequest(chainId);
   const subaccountState = useSubaccountContext();
 
+  const [tradingMode, setTradingMode] = useState<TradingMode | undefined>(undefined);
+  const [isTradningModeChanging, setIsTradningModeChanging] = useState(false);
+
   const [numberOfParts, setNumberOfParts] = useState<number>();
-
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
-
-  const shouldShowGasPaymentTokenSwitchedBanner = useMemo(() => {
-    if (!settings.expressOrdersEnabled || isOutOfGasPaymentBalance) {
-      return false;
-    }
-
-    return (
-      settings.expressTradingGasTokenSwitched &&
-      settings.expressTradingGasTokenSwitched !== settings.gasPaymentTokenAddress
-    );
-  }, [
-    settings.expressOrdersEnabled,
-    settings.expressTradingGasTokenSwitched,
-    settings.gasPaymentTokenAddress,
-    isOutOfGasPaymentBalance,
-  ]);
 
   useEffect(() => {
     if (!isSettingsVisible) return;
@@ -153,76 +142,87 @@ export function SettingsModal({
     setIsSettingsVisible(false);
   }, [setIsSettingsVisible]);
 
-  const handleExpressOrdersToggle = (enabled: boolean) => {
-    settings.setExpressOrdersEnabled(enabled);
+  const handleTradingModeChange = useCallback(
+    async (mode: TradingMode) => {
+      const prevMode = tradingMode;
+      setIsTradningModeChanging(true);
+      setTradingMode(mode);
 
-    if (!enabled && subaccountState.subaccount) {
-      subaccountState.tryDisableSubaccount().then((success) => {
-        if (success) {
+      switch (mode) {
+        case TradingMode.Classic: {
+          if (subaccountState.subaccount) {
+            const isSubaccountDeactivated = await subaccountState.tryDisableSubaccount();
+
+            if (!isSubaccountDeactivated) {
+              setTradingMode(prevMode);
+              setIsTradningModeChanging(false);
+              return;
+            }
+          }
+
           settings.setExpressOrdersEnabled(false);
-        } else {
-          settings.setExpressOrdersEnabled(true);
+          setIsTradningModeChanging(false);
+          break;
         }
-      });
-    }
-  };
+        case TradingMode.Express: {
+          if (subaccountState.subaccount) {
+            const isSubaccountDeactivated = await subaccountState.tryDisableSubaccount();
 
-  const handleOneClickTradingToggle = (enabled: boolean) => {
-    if (enabled) {
-      subaccountState.tryEnableSubaccount().then((success) => {
-        if (success) {
+            if (!isSubaccountDeactivated) {
+              setTradingMode(prevMode);
+              setIsTradningModeChanging(false);
+              return;
+            }
+          }
+
           settings.setExpressOrdersEnabled(true);
-        } else {
-          settings.setExpressOrdersEnabled(false);
+          setIsTradningModeChanging(false);
+          break;
         }
-      });
-    } else {
-      subaccountState.tryDisableSubaccount();
-    }
-  };
+        case TradingMode.Express1CT: {
+          const isSubaccountActivated = await subaccountState.tryEnableSubaccount();
 
-  const remainingSubaccountActions = useMemo(() => {
-    const actions = Number(
-      subaccountState.subaccount
-        ? getRemainingSubaccountActions(subaccountState.subaccount)
-        : DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT
-    );
+          if (!isSubaccountActivated) {
+            setTradingMode(prevMode);
+            setIsTradningModeChanging(false);
+            return;
+          }
 
-    return plural(actions, {
-      one: "1 action",
-      other: `${actions} actions`,
-    });
-  }, [subaccountState.subaccount]);
+          settings.setExpressOrdersEnabled(true);
+          setIsTradningModeChanging(false);
+          break;
+        }
+        default: {
+          mustNeverExist(mode);
+          break;
+        }
+      }
+    },
+    [settings, subaccountState, tradingMode]
+  );
 
-  const remainingSubaccountDays = useMemo(() => {
-    if (!subaccountState.subaccount) {
-      const days = secondsToPeriod(DEFAULT_SUBACCOUNT_EXPIRY_DURATION, "1d");
+  useEffect(
+    function defineTradingMode() {
+      if (isTradningModeChanging) {
+        return;
+      }
 
-      return `${days} days`;
-    }
+      let nextTradingMode = tradingMode;
 
-    const seconds = Number(getRemainingSubaccountSeconds(subaccountState.subaccount));
+      if (subaccountState.subaccount) {
+        nextTradingMode = TradingMode.Express1CT;
+      } else if (settings.expressOrdersEnabled) {
+        nextTradingMode = TradingMode.Express;
+      } else {
+        nextTradingMode = TradingMode.Classic;
+      }
 
-    const days = secondsToPeriod(seconds, "1d");
-
-    if (days > 0) {
-      return `${days + 1} days`;
-    }
-
-    const hours = secondsToPeriod(seconds, "1h");
-
-    if (hours > 0) {
-      return `${hours + 1} hours`;
-    }
-
-    const minutes = secondsToPeriod(seconds, "1m");
-
-    if (minutes > 0) {
-      return `${minutes + 1} minutes`;
-    }
-
-    return `0 minutes`;
-  }, [subaccountState.subaccount]);
+      if (nextTradingMode !== tradingMode) {
+        setTradingMode(nextTradingMode);
+      }
+    },
+    [isTradningModeChanging, settings.expressOrdersEnabled, subaccountState.subaccount, tradingMode]
+  );
 
   return (
     <SlideModal
@@ -231,7 +231,7 @@ export function SettingsModal({
       label={t`Settings`}
       qa="settings-modal"
       className="text-body-medium"
-      desktopContentClassName="w-[400px]"
+      desktopContentClassName="w-[420px]"
     >
       <div className="flex flex-col">
         <h1 className="muted">
@@ -241,77 +241,84 @@ export function SettingsModal({
           {getIsExpressSupported(chainId) && (
             <>
               <SettingsSection>
-                <ToggleSwitch
-                  disabled={
-                    !features?.relayRouterEnabled || (isOutOfGasPaymentBalance && !settings.expressOrdersEnabled)
-                  }
-                  isChecked={settings.expressOrdersEnabled}
-                  setIsChecked={handleExpressOrdersToggle}
-                >
-                  <TooltipWithPortal
-                    content={
-                      <Trans>
-                        Express Trading streamlines your trades on GMX by replacing on-chain transactions with secure
-                        off-chain message signing, helping reduce issues from network congestion and RPC errors.
-                        <br />
-                        <br />
-                        These signed messages are processed on-chain for you, so a gas payment token is still required.
-                      </Trans>
-                    }
-                    handle={<Trans>Express Trading</Trans>}
-                  />
-                </ToggleSwitch>
+                <div className="text-14 font-medium">
+                  <Trans>Trading Mode</Trans>
+                </div>
 
-                <ToggleSwitch
-                  isChecked={Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount))}
-                  setIsChecked={handleOneClickTradingToggle}
-                  disabled={
-                    !features?.subaccountRelayRouterEnabled || (isOutOfGasPaymentBalance && !subaccountState.subaccount)
+                <SettingButton
+                  title="Classic"
+                  description="On-chain signing for every transaction"
+                  info={
+                    <Trans>
+                      Your wallet, your keys. You sign each transaction on-chain using your own RPC, typically provided
+                      by your wallet. Gas payments in ETH.
+                    </Trans>
                   }
-                >
-                  <TooltipWithPortal
-                    content={
-                      <Trans>
-                        One-Click Trading (1CT) lets you trade without signing pop-ups and requires Express Trading to
-                        be enabled. Your 1CT session is valid for {remainingSubaccountActions} or{" "}
-                        {remainingSubaccountDays}, whichever comes first.
-                        <br />
-                        <br />
-                        You can adjust these settings anytime under "One-Click Trading Settings"
-                      </Trans>
-                    }
-                    handle={<Trans>One-Click Trading</Trans>}
-                  />
-                </ToggleSwitch>
+                  icon={<HourGlassIcon className="opacity-50" />}
+                  active={tradingMode === TradingMode.Classic}
+                  onClick={() => handleTradingModeChange(TradingMode.Classic)}
+                />
+
+                <SettingButton
+                  title="Express"
+                  description="High execution reliability using premium RPCs"
+                  info={
+                    <Trans>
+                      Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs
+                      for reliability, even during network congestion. Gas payments in USDC or WETH.
+                    </Trans>
+                  }
+                  icon={<ExpressIcon />}
+                  disabled={isOutOfGasPaymentBalance}
+                  chip={
+                    <Chip color="gray">
+                      <Trans>Optimal</Trans>
+                    </Chip>
+                  }
+                  active={tradingMode === TradingMode.Express}
+                  onClick={() => handleTradingModeChange(TradingMode.Express)}
+                />
+
+                <SettingButton
+                  title="Express + One-Click"
+                  description="CEX-like experience with Express reliability"
+                  icon={<OneClickIcon />}
+                  disabled={isOutOfGasPaymentBalance}
+                  info={
+                    <Trans>
+                      Your wallet, your keys. GMX executes transactions for you without individual signing, providing a
+                      seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during
+                      network congestion. Gas payments in USDC or WETH.
+                    </Trans>
+                  }
+                  chip={
+                    <Chip color="blue">
+                      <Trans>Fastest</Trans>
+                    </Chip>
+                  }
+                  active={tradingMode === TradingMode.Express1CT}
+                  onClick={() => handleTradingModeChange(TradingMode.Express1CT)}
+                />
 
                 {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
-
-                {shouldShowGasPaymentTokenSwitchedBanner && (
-                  <ExpressTradingGasTokenSwitchedBanner
-                    onClose={() => {
-                      settings.setExpressTradingGasTokenSwitched(null);
-                    }}
-                  />
-                )}
 
                 <OldSubaccountWithdraw />
 
                 {Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount)) && (
                   <OneClickAdvancedSettings />
                 )}
-              </SettingsSection>
 
-              {settings.expressOrdersEnabled && (
-                <SettingsSection className="mt-2">
-                  <div>
-                    <Trans>Gas Payment Token</Trans>
-                  </div>
-                  <GasPaymentTokenSelector
-                    curentTokenAddress={settings.gasPaymentTokenAddress}
-                    onSelectToken={settings.setGasPaymentTokenAddress}
-                  />
-                </SettingsSection>
-              )}
+                {settings.expressOrdersEnabled && (
+                  <>
+                    <div className="divider"></div>
+
+                    <GasPaymentTokenSelector
+                      curentTokenAddress={settings.gasPaymentTokenAddress}
+                      onSelectToken={settings.setGasPaymentTokenAddress}
+                    />
+                  </>
+                )}
+              </SettingsSection>
             </>
           )}
 
@@ -512,4 +519,62 @@ function InputSetting({
       {Input}
     </div>
   );
+}
+
+function SettingButton({
+  title,
+  icon,
+  description,
+  onClick,
+  active,
+  chip,
+  info,
+  disabled,
+}: {
+  title: string;
+  icon: ReactNode;
+  description: string;
+  active?: boolean;
+  chip?: ReactNode;
+  onClick: () => void;
+  info?: ReactNode;
+  disabled?: boolean;
+}) {
+  return (
+    <div
+      className={cx(
+        `flex select-none items-center rounded-4 border border-solid`,
+        active ? "border-gray-400" : "border-stroke-primary",
+        disabled ? "muted cursor-not-allowed" : "cursor-pointer"
+      )}
+      onClick={disabled ? undefined : onClick}
+    >
+      <div className={cx("px-16 py-6", disabled && "opacity-50")}>{icon}</div>
+      <div className="flex py-6 ">
+        <div className="flex flex-col border-l border-solid border-stroke-primary pl-12">
+          <div className="flex items-center gap-4">
+            <div>{title}</div>
+            {info && (
+              <TooltipWithPortal
+                content={info}
+                handleClassName="-mb-6"
+                handle={<InfoIcon className="muted size-12" />}
+              />
+            )}
+          </div>
+          <div className="text-slate-100">{description}</div>
+        </div>
+        {chip ? <div className="mr-6 mt-4">{chip}</div> : null}
+      </div>
+    </div>
+  );
+}
+
+function Chip({ children, color }: { children: ReactNode; color: "blue" | "gray" }) {
+  const colorClass = {
+    blue: "bg-blue-600",
+    gray: "bg-slate-500",
+  }[color];
+
+  return <div className={cx(`rounded-full px-8 py-4 text-[10px]`, colorClass)}>{children}</div>;
 }

@@ -199,7 +199,7 @@ export async function increaseOrderHelper(
     referralCodeForTxn: params.referralCodeForTxn,
     triggerPrice: params.limitPrice,
     collateralTokenAddress: collateralToken.address,
-    isLong: true,
+    isLong: params.isLong,
     receiveTokenAddress: collateralTokenAddress,
     indexToken: marketInfo.indexToken,
     marketInfo,

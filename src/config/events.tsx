@@ -38,7 +38,7 @@ export const appEventsData: EventData[] = [
     title: "CRV, MOODENG, PI and XMR markets added on Arbitrum",
     isActive: true,
     startDate: "03 Jun 2025, 10:00",
-    endDate: "09 Jun 2025, 16:00",
+    endDate: "26 Jun 2025, 16:00",
     bodyText: (
       <>
         Trade{" "}
@@ -65,6 +65,19 @@ export const appEventsData: EventData[] = [
         <TokenSymbolWithIcon symbol="WBTC" /> or <TokenSymbolWithIcon symbol="USDC" />.
       </>
     ),
+  },
+  {
+    id: "twap-announcement",
+    title: "TWAP orders on GMX",
+    bodyText: (
+      <>
+        Time-Weighted Average Price (TWAP) orders are now available for both perps and spot. Execute large trades with
+        less price impact.
+      </>
+    ),
+    isActive: true,
+    startDate: "16 Jun 2025, 00:00",
+    endDate: "26 Jun 2025, 00:00",
   },
   {
     id: "avalanche-issue",

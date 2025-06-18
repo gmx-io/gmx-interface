@@ -45,7 +45,7 @@ type Props = {
 };
 
 export function Header({ disconnectAccountAndCloseSettings, openSettings, showRedirectModal }: Props) {
-  const isMobile = useMedia("(max-width: 1200px)");
+  const isMobile = useMedia("(max-width: 1335px)");
 
   const shouldHide1CTBanner = useMedia("(max-width: 1100px)");
   const shouldShorten1CTBanner = useMedia("(max-width: 1590px)");

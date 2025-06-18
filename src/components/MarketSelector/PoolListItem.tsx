@@ -3,7 +3,13 @@ import { useCallback } from "react";
 
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getGlvDisplayName, getMarketBadge, getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
+import {
+  getGlvDisplayName,
+  getMarketBadge,
+  getGlvOrMarketAddress,
+  GlvOrMarketInfo,
+  getMarketPoolName,
+} from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData } from "domain/synthetics/tokens";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
@@ -16,7 +22,7 @@ import { MarketOption, MarketState } from "./types";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 
 export function PoolListItem(props: {
-  marketInfo: GlvOrMarketInfo;
+  glvOrMarketInfo: GlvOrMarketInfo;
   marketToken?: TokenData;
   poolName: string;
   balance: bigint;
@@ -31,7 +37,7 @@ export function PoolListItem(props: {
   onSelectOption: (option: MarketOption) => void;
 }) {
   const {
-    marketInfo,
+    glvOrMarketInfo,
     poolName,
     balance,
     balanceUsd,
@@ -45,16 +51,18 @@ export function PoolListItem(props: {
     onFavoriteClick,
     onSelectOption,
   } = props;
-  const { longToken, shortToken } = marketInfo;
+  const { longToken, shortToken } = glvOrMarketInfo;
   const chainId = useSelector(selectChainId);
 
-  const indexTokenImage = marketInfo.isSpotOnly
+  const indexTokenImage = glvOrMarketInfo.isSpotOnly
     ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
-    : getNormalizedTokenSymbol(isGlvInfo(marketInfo) ? marketInfo.glvToken.symbol : marketInfo.indexToken.symbol);
+    : getNormalizedTokenSymbol(
+        isGlvInfo(glvOrMarketInfo) ? glvOrMarketInfo.glvToken.symbol : glvOrMarketInfo.indexToken.symbol
+      );
 
   const handleFavoriteClick = (event: React.MouseEvent) => {
     event.stopPropagation();
-    onFavoriteClick(getGlvOrMarketAddress(marketInfo));
+    onFavoriteClick(getGlvOrMarketAddress(glvOrMarketInfo));
   };
 
   const handleClick = useCallback(() => {
@@ -63,17 +71,17 @@ export function PoolListItem(props: {
     }
 
     onSelectOption({
-      marketInfo,
+      glvOrMarketInfo: glvOrMarketInfo,
       indexName,
       poolName,
       balance,
       balanceUsd,
       state,
-      name: isGlvInfo(marketInfo) ? marketInfo.name ?? "GLV" : marketInfo.name,
+      name: isGlvInfo(glvOrMarketInfo) ? glvOrMarketInfo.name ?? "GLV" : glvOrMarketInfo.name,
     });
-  }, [balance, balanceUsd, indexName, marketInfo, onSelectOption, poolName, state]);
+  }, [balance, balanceUsd, indexName, glvOrMarketInfo, onSelectOption, poolName, state]);
 
-  const tokenBadge = getMarketBadge(chainId, marketInfo);
+  const tokenBadge = getMarketBadge(chainId, glvOrMarketInfo);
 
   return (
     <>
@@ -114,15 +122,15 @@ export function PoolListItem(props: {
           </div>
           <div className="Token-symbol">
             <div className="Token-text">
-              {isGlvInfo(marketInfo) ? (
+              {isGlvInfo(glvOrMarketInfo) ? (
                 <div className="flex items-center leading-1">
-                  <span>{getGlvDisplayName(marketInfo)}</span>
+                  <span>{getGlvDisplayName(glvOrMarketInfo)}</span>
                   <span className="subtext">[{poolName}]</span>
                 </div>
               ) : showAllPools ? (
                 <div className="flex items-center leading-1">
                   <span>{indexName && indexName}</span>
-                  <span className="subtext">{poolName && `[${poolName}]`}</span>
+                  <span className="subtext">[{getMarketPoolName(glvOrMarketInfo, "-")}]</span>
                 </div>
               ) : (
                 <div className="Token-text">{poolName}</div>

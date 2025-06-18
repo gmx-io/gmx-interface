@@ -120,7 +120,6 @@ export const useBestGmPoolAddressForGlv = ({
         longTokenLiquidityUsd,
         shortTokenLiquidityUsd,
         fees,
-        consentError: false,
         priceImpactUsd: fees?.swapPriceImpact?.deltaUsd,
         marketTokensData,
       });

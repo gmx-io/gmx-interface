@@ -8,19 +8,19 @@ import { getByKey } from "lib/objects";
 import { getShiftAvailableRelatedMarkets } from "./getShiftAvailableRelatedMarkets";
 
 export function useUpdateMarkets({
-  marketsInfoData,
-  selectedMarketAddress,
-  shiftAvailableMarkets,
-  onSelectMarket,
+  glvAndMarketsInfoData,
+  selectedGlvOrMarketAddress,
+  shiftAvailableGlvOrMarkets,
+  onSelectGlvOrMarket,
   toMarketAddress,
   toMarketInfo,
   selectedMarketInfo,
   setToMarketAddress,
 }: {
-  marketsInfoData: GlvAndGmMarketsInfoData | undefined;
-  selectedMarketAddress: string | undefined;
-  shiftAvailableMarkets: GlvOrMarketInfo[];
-  onSelectMarket: (marketAddress: string) => void;
+  glvAndMarketsInfoData: GlvAndGmMarketsInfoData | undefined;
+  selectedGlvOrMarketAddress: string | undefined;
+  shiftAvailableGlvOrMarkets: GlvOrMarketInfo[];
+  onSelectGlvOrMarket: (glvOrMarketAddress: string) => void;
   toMarketAddress: string | undefined;
   toMarketInfo: MarketInfo | undefined;
   selectedMarketInfo: MarketInfo | undefined;
@@ -28,33 +28,33 @@ export function useUpdateMarkets({
 }): void {
   useEffect(
     function updateMarkets() {
-      if (!marketsInfoData) {
+      if (!glvAndMarketsInfoData) {
         return;
       }
 
-      let newSelectedMarketAddress = selectedMarketAddress;
+      let newSelectedGlvOrMarketAddress = selectedGlvOrMarketAddress;
 
-      const isSelectedMarketValid = Boolean(
-        selectedMarketAddress &&
-          shiftAvailableMarkets.find((market) => getGlvOrMarketAddress(market) === selectedMarketAddress)
+      const isSelectedGlvOrMarketValid = Boolean(
+        selectedGlvOrMarketAddress &&
+          shiftAvailableGlvOrMarkets.find((market) => getGlvOrMarketAddress(market) === selectedGlvOrMarketAddress)
       );
 
-      if (!isSelectedMarketValid) {
-        const someAvailableMarket = shiftAvailableMarkets[0];
+      if (!isSelectedGlvOrMarketValid) {
+        const someAvailableGlvOrMarket = shiftAvailableGlvOrMarkets[0];
 
-        if (!someAvailableMarket) {
+        if (!someAvailableGlvOrMarket) {
           return;
         }
 
-        newSelectedMarketAddress = getGlvOrMarketAddress(someAvailableMarket);
-        onSelectMarket(newSelectedMarketAddress);
+        newSelectedGlvOrMarketAddress = getGlvOrMarketAddress(someAvailableGlvOrMarket);
+        onSelectGlvOrMarket(newSelectedGlvOrMarketAddress);
       }
 
-      const isToMarketAvailable = Boolean(toMarketAddress && getByKey(marketsInfoData, toMarketAddress));
+      const isToMarketAvailable = Boolean(toMarketAddress && getByKey(glvAndMarketsInfoData, toMarketAddress));
       const isToMarketRelated =
         toMarketInfo?.longTokenAddress === selectedMarketInfo?.longTokenAddress &&
         toMarketInfo?.shortTokenAddress === selectedMarketInfo?.shortTokenAddress;
-      const isToMarketSameAsSelected = toMarketAddress === newSelectedMarketAddress;
+      const isToMarketSameAsSelected = toMarketAddress === newSelectedGlvOrMarketAddress;
       const isToMarketValid = isToMarketAvailable && isToMarketRelated && !isToMarketSameAsSelected;
 
       if (toMarketInfo && isGlvInfo(toMarketInfo)) {
@@ -63,9 +63,9 @@ export function useUpdateMarkets({
 
       if (!isToMarketValid) {
         const someAvailableMarket = getShiftAvailableRelatedMarkets({
-          marketsInfoData,
-          sortedMarketsInfoByIndexToken: shiftAvailableMarkets,
-          marketTokenAddress: newSelectedMarketAddress,
+          marketsInfoData: glvAndMarketsInfoData,
+          sortedMarketsInfoByIndexToken: shiftAvailableGlvOrMarkets,
+          marketTokenAddress: newSelectedGlvOrMarketAddress,
         })[0];
 
         if (!someAvailableMarket) {
@@ -76,13 +76,13 @@ export function useUpdateMarkets({
       }
     },
     [
-      marketsInfoData,
-      onSelectMarket,
-      selectedMarketAddress,
+      glvAndMarketsInfoData,
+      onSelectGlvOrMarket,
+      selectedGlvOrMarketAddress,
       selectedMarketInfo?.longTokenAddress,
       selectedMarketInfo?.shortTokenAddress,
       setToMarketAddress,
-      shiftAvailableMarkets,
+      shiftAvailableGlvOrMarkets,
       toMarketAddress,
       toMarketInfo,
     ]

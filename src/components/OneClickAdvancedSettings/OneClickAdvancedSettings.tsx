@@ -96,7 +96,7 @@ export function OneClickAdvancedSettings() {
       <ExpandableRow
         open={isExpanded}
         onToggle={setIsExpanded}
-        title={<Trans>One-Click Trading Settings</Trans>}
+        title={<Trans>One-Click Settings</Trans>}
         className="mb-4"
       >
         <div className="mt-12">

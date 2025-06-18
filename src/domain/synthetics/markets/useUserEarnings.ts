@@ -102,7 +102,7 @@ export const useUserEarnings = (chainId: number) => {
 
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { account } = useWallet();
-  const marketsTokensAPRData = useGmMarketsApy(chainId).marketsTokensApyData;
+  const marketsTokensAPRData = useGmMarketsApy(chainId, { period: "7d" }).marketsTokensApyData;
 
   const { data } = useSWR<UserEarningsData | null>(key, {
     fetcher: async (): Promise<UserEarningsData | null> => {

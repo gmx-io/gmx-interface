@@ -1,70 +1,38 @@
-import { t, Trans } from "@lingui/macro";
-import { useMemo } from "react";
+import { Trans } from "@lingui/macro";
+import noop from "lodash/noop";
+import { ReactNode } from "react";
 
-import Checkbox from "components/Checkbox/Checkbox";
-import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
-import Tooltip from "components/Tooltip/Tooltip";
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 
 export function GmSwapWarningsRow({
-  isSingle,
-  isAccepted,
   shouldShowWarning,
   shouldShowWarningForPosition,
   shouldShowWarningForExecutionFee,
-  setIsAccepted,
 }: {
-  isSingle: boolean;
-  isAccepted: boolean;
   shouldShowWarning: boolean;
   shouldShowWarningForPosition: boolean;
   shouldShowWarningForExecutionFee: boolean;
-  setIsAccepted: (val: boolean) => void;
 }) {
-  const warnings = useMemo(() => {
-    const warnings: string[] = [];
-    if (shouldShowWarningForPosition) {
-      warnings.push(t`price impact`);
-    }
-
-    if (shouldShowWarningForExecutionFee) {
-      warnings.push(t`network fees`);
-    }
-
-    return warnings;
-  }, [shouldShowWarningForPosition, shouldShowWarningForExecutionFee]);
-
-  const warningText = useMemo(() => {
-    return (
-      <span className="text-14 text-yellow-500">
-        {warnings.length > 1 ? (
-          <Trans>
-            Acknowledge high {warnings.slice(0, -1).join(", ")} and {warnings.slice(-1)}
-          </Trans>
-        ) : (
-          <Trans>Acknowledge high {warnings[0]}</Trans>
-        )}
-      </span>
-    );
-  }, [warnings]);
-
   if (!shouldShowWarning) {
     return null;
   }
 
-  return (
-    <ExchangeInfo.Group>
-      <Checkbox className="GmSwapBox-warning" asRow isChecked={isAccepted} setIsChecked={setIsAccepted}>
-        {isSingle && shouldShowWarningForPosition ? (
-          <Tooltip
-            className="warning-tooltip"
-            handle={warningText}
-            position="top-start"
-            content={<Trans>Consider selecting and using the "Pair" option to reduce the Price Impact.</Trans>}
-          />
-        ) : (
-          warningText
-        )}
-      </Checkbox>
-    </ExchangeInfo.Group>
-  );
+  const warnings: ReactNode[] = [];
+  if (shouldShowWarningForPosition) {
+    warnings.push(
+      <AlertInfoCard className="mb-14" type="warning" key="swapBoxHighPriceImpactWarning" onClose={noop}>
+        <Trans>High Price Impact</Trans>
+      </AlertInfoCard>
+    );
+  }
+
+  if (shouldShowWarningForExecutionFee) {
+    warnings.push(
+      <AlertInfoCard className="mb-14" type="warning" key="swapBoxHighNetworkFeeWarning" onClose={noop}>
+        <Trans>High Network Fees</Trans>
+      </AlertInfoCard>
+    );
+  }
+
+  return <div className="flex flex-col">{warnings}</div>;
 }

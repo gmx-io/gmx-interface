@@ -83,7 +83,7 @@ export function TotalRewardsCard({
     // glvTokensIncentiveAprData,
     // marketsTokensLidoAprData,
     // glvApyInfoData,
-  } = useGmMarketsApy(chainId);
+  } = useGmMarketsApy(chainId, { period: "90d" });
 
   const gmxMarketApyDataText = useMemo(() => {
     if (!gmxMarketAddress || chainId !== ARBITRUM) return;

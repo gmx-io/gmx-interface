@@ -1,20 +1,26 @@
-import { plural, t } from "@lingui/macro";
+import { t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { ImSpinner2 } from "react-icons/im";
 
+import { getContract } from "config/contracts";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
-import { GlvInfo, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
-import { getTokenData, TokenData, TokensData } from "domain/synthetics/tokens";
+import { GlvAndGmMarketsInfoData, GlvInfo, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
+import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
+import { approveTokens } from "domain/tokens";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { userAnalytics } from "lib/userAnalytics";
+import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
 import { useDepositWithdrawalTransactions } from "./useDepositWithdrawalTransactions";
 import { useTokensToApprove } from "./useTokensToApprove";
+import { getGmSwapBoxApproveTokenSymbol } from "../getGmSwapBoxApproveToken";
 import { Operation } from "../types";
 
 interface Props {
@@ -32,8 +38,6 @@ interface Props {
   longTokenLiquidityUsd?: bigint | undefined;
   shortTokenLiquidityUsd?: bigint | undefined;
 
-  consentError: boolean;
-
   shouldDisableValidation?: boolean;
 
   tokensData: TokensData | undefined;
@@ -42,6 +46,7 @@ interface Props {
   selectedMarketForGlv?: string;
   isMarketTokenDeposit?: boolean;
   marketsInfoData?: MarketsInfoData;
+  glvAndMarketsInfoData: GlvAndGmMarketsInfoData;
   selectedMarketInfoForGlv?: MarketInfo;
 }
 
@@ -51,7 +56,7 @@ const processingTextMap = {
   [Operation.Shift]: (symbol: string) => t`Shifting ${symbol}...`,
 };
 
-export const useSubmitButtonState = ({
+export const useGmSwapSubmitState = ({
   isDeposit,
   routerAddress,
   amounts,
@@ -65,8 +70,6 @@ export const useSubmitButtonState = ({
   longTokenLiquidityUsd,
   shortTokenLiquidityUsd,
 
-  consentError,
-
   shouldDisableValidation,
 
   tokensData,
@@ -76,11 +79,12 @@ export const useSubmitButtonState = ({
   selectedMarketInfoForGlv,
   glvInfo,
   isMarketTokenDeposit,
+  glvAndMarketsInfoData,
 }: Props) => {
   const chainId = useSelector(selectChainId);
   const hasOutdatedUi = useHasOutdatedUi();
   const { openConnectModal } = useConnectModal();
-  const { account } = useWallet();
+  const { account, signer } = useWallet();
 
   const {
     glvTokenAmount = 0n,
@@ -146,7 +150,6 @@ export const useSubmitButtonState = ({
     longTokenLiquidityUsd: longTokenLiquidityUsd,
     shortTokenLiquidityUsd: shortTokenLiquidityUsd,
     fees,
-    consentError,
     priceImpactUsd: fees?.swapPriceImpact?.deltaUsd,
     marketTokensData,
     isMarketTokenDeposit,
@@ -169,14 +172,19 @@ export const useSubmitButtonState = ({
     isMarketTokenDeposit,
   });
 
+  const [isApproving, setIsApproving] = useState(false);
+
+  useEffect(() => {
+    if (!tokensToApprove.length && isApproving) {
+      setIsApproving(false);
+    }
+  }, [isApproving, tokensToApprove]);
+
   return useMemo(() => {
     if (!account) {
       return {
         text: t`Connect Wallet`,
         onSubmit: onConnectAccount,
-        tokensToApprove,
-        isAllowanceLoaded,
-        isAllowanceLoading,
       };
     }
 
@@ -184,9 +192,6 @@ export const useSubmitButtonState = ({
       return {
         text: t`Loading...`,
         disabled: true,
-        tokensToApprove,
-        isAllowanceLoaded,
-        isAllowanceLoading,
       };
     }
 
@@ -195,10 +200,63 @@ export const useSubmitButtonState = ({
         text: error,
         disabled: !shouldDisableValidation,
         onClick: onSubmit,
-        tokensToApprove,
-        isAllowanceLoaded,
-        isAllowanceLoading,
         errorDescription: swapErrorDescription,
+      };
+    }
+
+    if (isApproving && tokensToApprove.length) {
+      const tokenSymbol = getGmSwapBoxApproveTokenSymbol(tokensToApprove[0], tokensData, glvAndMarketsInfoData);
+
+      return {
+        text: (
+          <>
+            {t`Allow ${tokenSymbol} to be spent`} <ImSpinner2 className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
+    if (isAllowanceLoaded && tokensToApprove.length > 0) {
+      const onApprove = () => {
+        const tokenAddress = tokensToApprove[0];
+
+        if (!chainId || isApproving || !tokenAddress) return;
+
+        userAnalytics.pushEvent<TokenApproveClickEvent>({
+          event: "TokenApproveAction",
+          data: {
+            action: "ApproveClick",
+          },
+        });
+
+        approveTokens({
+          setIsApproving,
+          signer,
+          tokenAddress,
+          spender: getContract(chainId, "SyntheticsRouter"),
+          pendingTxns: [],
+          setPendingTxns: () => null,
+          infoTokens: {},
+          chainId,
+          approveAmount: undefined,
+          onApproveFail: () => {
+            userAnalytics.pushEvent<TokenApproveResultEvent>({
+              event: "TokenApproveAction",
+              data: {
+                action: "ApproveFail",
+              },
+            });
+          },
+          permitParams: undefined,
+        });
+      };
+
+      const tokenSymbol = getGmSwapBoxApproveTokenSymbol(tokensToApprove[0], tokensData, glvAndMarketsInfoData);
+
+      return {
+        text: t`Allow ${tokenSymbol} to be spent`,
+        onSubmit: onApprove,
       };
     }
 
@@ -208,64 +266,31 @@ export const useSubmitButtonState = ({
       return {
         text: processingTextMap[operation](operationTokenSymbol),
         disabled: true,
-        isAllowanceLoaded,
-        isAllowanceLoading,
-      };
-    }
-
-    if (consentError) {
-      return {
-        text: t`Acknowledgment Required`,
-        disabled: true,
-        isAllowanceLoaded,
-        isAllowanceLoading,
-      };
-    }
-
-    if (isAllowanceLoaded && tokensToApprove.length > 0 && marketToken) {
-      const symbols = tokensToApprove.map((address) => {
-        const token = getTokenData(tokensData, address) || getTokenData(marketTokensData, address);
-        return token?.symbol;
-      });
-
-      const symbolsText = symbols.join(", ");
-
-      return {
-        text: plural(symbols.length, {
-          one: `Pending ${symbolsText} approval`,
-          other: `Pending ${symbolsText} approvals`,
-        }),
-        disabled: true,
-        tokensToApprove,
-        isAllowanceLoaded,
-        isAllowanceLoading,
       };
     }
 
     return {
       text: isDeposit ? t`Buy ${operationTokenSymbol}` : t`Sell ${operationTokenSymbol}`,
       onSubmit,
-      tokensToApprove,
-      isAllowanceLoading,
-      isAllowanceLoaded,
     };
   }, [
     account,
     isAllowanceLoading,
-    isAllowanceLoaded,
     error,
+    isApproving,
+    tokensToApprove,
+    isAllowanceLoaded,
     glvInfo,
     isSubmitting,
-    consentError,
-    tokensToApprove,
-    marketToken,
     isDeposit,
     onSubmit,
     onConnectAccount,
     shouldDisableValidation,
     swapErrorDescription,
-    operation,
+    chainId,
     tokensData,
-    marketTokensData,
+    glvAndMarketsInfoData,
+    signer,
+    operation,
   ]);
 };

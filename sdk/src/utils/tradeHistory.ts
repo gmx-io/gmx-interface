@@ -1,24 +1,25 @@
 import { getAddress } from "viem";
 
 import type { MarketsInfoData } from "types/markets";
+import type { TradeAction as SubsquidTradeAction } from "types/subsquid";
 import { Token, TokensData } from "types/tokens";
 import type { PositionTradeAction } from "types/tradeHistory";
-import type { RawTradeAction } from "types/tradeHistory";
 import type { SwapTradeAction } from "types/tradeHistory";
 
 import { getByKey } from "./objects";
 import { isIncreaseOrderType, isSwapOrderType } from "./orders";
 import { getSwapPathOutputAddresses } from "./swap/swapStats";
 import { parseContractPrice } from "./tokens";
+import { TradeActionType } from "../types/tradeHistory";
 
 export function createRawTradeActionTransformer(
   marketsInfoData: MarketsInfoData,
   wrappedToken: Token,
   tokensData: TokensData
 ): (
-  value: RawTradeAction,
+  value: SubsquidTradeAction,
   index: number,
-  array: RawTradeAction[]
+  array: SubsquidTradeAction[]
 ) => SwapTradeAction | PositionTradeAction | undefined {
   return (rawAction) => {
     const orderType = Number(rawAction.orderType);
@@ -45,7 +46,7 @@ export function createRawTradeActionTransformer(
 
       const tradeAction: SwapTradeAction = {
         id: rawAction.id,
-        eventName: rawAction.eventName,
+        eventName: rawAction.eventName as TradeActionType,
         account: rawAction.account,
         swapPath,
         orderType,
@@ -59,8 +60,8 @@ export function createRawTradeActionTransformer(
         initialCollateralToken,
         timestamp: rawAction.timestamp,
         transaction: rawAction.transaction,
-        reason: rawAction.reason,
-        reasonBytes: rawAction.reasonBytes,
+        reason: rawAction.reason ?? undefined,
+        reasonBytes: rawAction.reasonBytes ?? undefined,
         twapParams:
           rawAction.twapGroupId && rawAction.numberOfParts
             ? {
@@ -94,7 +95,7 @@ export function createRawTradeActionTransformer(
 
       const tradeAction: PositionTradeAction = {
         id: rawAction.id,
-        eventName: rawAction.eventName,
+        eventName: rawAction.eventName as TradeActionType,
         account: rawAction.account,
         marketAddress,
         marketInfo,
@@ -142,8 +143,8 @@ export function createRawTradeActionTransformer(
         fundingFeeAmount: rawAction.fundingFeeAmount ? BigInt(rawAction.fundingFeeAmount) : undefined,
         liquidationFeeAmount: rawAction.liquidationFeeAmount ? BigInt(rawAction.liquidationFeeAmount) : undefined,
 
-        reason: rawAction.reason,
-        reasonBytes: rawAction.reasonBytes,
+        reason: rawAction.reason ?? undefined,
+        reasonBytes: rawAction.reasonBytes ?? undefined,
 
         transaction: rawAction.transaction,
         timestamp: rawAction.timestamp,

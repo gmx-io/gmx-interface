@@ -1,12 +1,13 @@
 import { Trans } from "@lingui/macro";
 import { Provider, ethers } from "ethers";
 import { Suspense, lazy, useEffect, useRef } from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import type { Address } from "viem";
 
 import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
+import { PoolsDetailsContextProvider } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { subscribeToV1Events } from "context/WebsocketContext/subscribeToEvents";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
@@ -23,20 +24,21 @@ import BuyGMX from "pages/BuyGMX/BuyGMX";
 import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
-import Earn from "pages/Earn/Earn";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import { Exchange } from "pages/Exchange/Exchange";
 import Jobs from "pages/Jobs/Jobs";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
-import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import NftWallet from "pages/NftWallet/NftWallet";
 import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import { ParseTransactionPage } from "pages/ParseTransaction/ParseTransaction";
+import Pools from "pages/Pools/Pools";
+import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
 import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import Referrals from "pages/Referrals/Referrals";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
+import Stake from "pages/Stake/Stake";
 import Stats from "pages/Stats/Stats";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
@@ -82,6 +84,13 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
     };
   }, [chainId, vaultAddress, positionRouterAddress, wsProvider, hasV1LostFocus]);
 
+  const { pathname } = useLocation();
+
+  // new page should be scrolled to top
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
   return (
     <Switch>
       <Route exact path="/">
@@ -93,23 +102,27 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       <Route exact path="/v1/:tradeType?">
         <Exchange ref={exchangeRef} openSettings={openSettings} />
       </Route>
-      <Route exact path="/dashboard">
-        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="dashboard">
+      <Route exact path="/stats">
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="stats">
           <DashboardV2 />
         </SyntheticsStateContextProvider>
       </Route>
-      <Route exact path="/stats/v1">
+      {/* redirect from previous dashboard url */}
+      <Redirect exact from="/dashboard" to="/stats" />
+      <Route exact path="/monitor/v1">
         <Stats />
       </Route>
-      <Redirect exact from="/stats/v2" to="/stats" />
-      <Route exact path="/stats">
+      <Redirect exact from="/monitor/v2" to="/monitor" />
+      <Route exact path="/monitor">
         <SyntheticsStats />
       </Route>
-      <Route exact path="/earn">
-        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
-          <Earn />
+      <Route exact path="/stake">
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="stake">
+          <Stake />
         </SyntheticsStateContextProvider>
       </Route>
+      {/* redirect from previous stake(earn) url */}
+      <Redirect exact from="/earn" to="/stake" />
       <Route exact path="/buy">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="buy">
           <Buy />
@@ -117,7 +130,14 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       </Route>
       <Route exact path="/pools">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
-          <MarketPoolsPage />
+          <Pools />
+        </SyntheticsStateContextProvider>
+      </Route>
+      <Route exact path="/pools/details">
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
+          <PoolsDetailsContextProvider>
+            <PoolsDetails />
+          </PoolsDetailsContextProvider>
         </SyntheticsStateContextProvider>
       </Route>
 
@@ -189,7 +209,7 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       <Route exact path="/referrals-tier">
         <ReferralsTier />
       </Route>
-      <Route exact path="/stats">
+      <Route exact path="/monitor">
         <Stats />
       </Route>
       <Route exact path="/orders_overview">

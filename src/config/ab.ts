@@ -13,7 +13,7 @@ type AbStorage = {
 const abFlagsConfig = {
   testSponsoredCall: 1,
   testExampleAb: 0,
-  testOneClickPromo: 0.1,
+  testOneClickPromo: 0.25,
 };
 
 export type AbFlag = keyof typeof abFlagsConfig;
