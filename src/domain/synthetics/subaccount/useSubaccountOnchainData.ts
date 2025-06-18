@@ -100,11 +100,6 @@ export function useSubaccountOnchainData(
       const currentActionsCount = BigInt(res.data.dataStore.currentActionsCount.returnValues[0]);
       const expiresAt = BigInt(res.data.dataStore.expiresAt.returnValues[0]);
       const approvalNonce = BigInt(res.data.subaccountRelayRouter.subaccountApproval.returnValues[0]);
-      const multichainApprovalNonce =
-        chainId === ARBITRUM_SEPOLIA
-          ? BigInt(res.data.subaccountRelayRouter.subaccountApproval.returnValues[0])
-          : undefined;
-
       const integrationId = chainId === ARBITRUM_SEPOLIA ? res.data.dataStore.integrationId.returnValues[0] : undefined;
 
       return {
@@ -113,7 +108,6 @@ export function useSubaccountOnchainData(
         currentActionsCount,
         expiresAt,
         approvalNonce,
-        multichainApprovalNonce,
         integrationId,
       };
     },

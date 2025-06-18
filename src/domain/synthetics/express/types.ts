@@ -1,4 +1,4 @@
-import type { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
+import type { LocalActions, NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import type { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
 import type { ExpressTxnData } from "lib/transactions";
 import type { ExternalCallsPayload } from "sdk/utils/orderTransactions";
@@ -41,6 +41,7 @@ export type ExpressTxnParams = {
   gasPaymentValidations: GasPaymentValidations;
   subaccountValidations: SubaccountValidations | undefined;
   isSponsoredCall: boolean;
+  localAction: keyof LocalActions;
 };
 
 export type ExpressTransactionBuilder = ({

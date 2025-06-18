@@ -176,10 +176,10 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
           abiId: "AbstractUserNonceable",
           calls: {
             nonce:
-              chainId === ARBITRUM_SEPOLIA
+              chainId === ARBITRUM_SEPOLIA && subaccount?.address
                 ? {
                     methodName: "userNonces",
-                    params: [account],
+                    params: [subaccount.address],
                   }
                 : undefined,
           },
@@ -275,11 +275,45 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
       }
 
       if (
+        result.multichainOrderRouter !== undefined &&
+        localActions.multichainOrderRouter.lastEstimated > result.multichainOrderRouter.lastEstimated
+      ) {
+        result.multichainOrderRouter.nonce += localActions.multichainOrderRouter.actions;
+        result.multichainOrderRouter.lastEstimated = localActions.multichainOrderRouter.lastEstimated;
+      }
+
+      if (
         result.subaccountRelayRouter &&
         localActions.subaccountRelayRouter.lastEstimated > result.subaccountRelayRouter.lastEstimated
       ) {
         result.subaccountRelayRouter.nonce += localActions.subaccountRelayRouter.actions;
         result.subaccountRelayRouter.lastEstimated = localActions.subaccountRelayRouter.lastEstimated;
+      }
+
+      if (
+        result.multichainSubaccountRelayRouter !== undefined &&
+        localActions.multichainSubaccountRelayRouter.lastEstimated >
+          result.multichainSubaccountRelayRouter.lastEstimated
+      ) {
+        result.multichainSubaccountRelayRouter.nonce += localActions.multichainSubaccountRelayRouter.actions;
+        result.multichainSubaccountRelayRouter.lastEstimated =
+          localActions.multichainSubaccountRelayRouter.lastEstimated;
+      }
+
+      if (
+        result.multichainTransferRouter !== undefined &&
+        localActions.multichainTransferRouter.lastEstimated > result.multichainTransferRouter.lastEstimated
+      ) {
+        result.multichainTransferRouter.nonce += localActions.multichainTransferRouter.actions;
+        result.multichainTransferRouter.lastEstimated = localActions.multichainTransferRouter.lastEstimated;
+      }
+
+      if (
+        result.multichainClaimsRouter !== undefined &&
+        localActions.multichainClaimsRouter.lastEstimated > result.multichainClaimsRouter.lastEstimated
+      ) {
+        result.multichainClaimsRouter.nonce += localActions.multichainClaimsRouter.actions;
+        result.multichainClaimsRouter.lastEstimated = localActions.multichainClaimsRouter.lastEstimated;
       }
     }
 

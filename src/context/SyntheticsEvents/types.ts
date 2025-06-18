@@ -1,6 +1,7 @@
 import type { TaskState } from "@gelatonetwork/relay-sdk";
 import type { ReactNode } from "react";
 
+import type { LocalActions } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import type { OrderTxnType, OrderType } from "domain/synthetics/orders";
 import type { SignedSubbacountApproval } from "domain/synthetics/subaccount";
@@ -90,6 +91,7 @@ export type PendingExpressTxnParams = {
   errorMessage?: ReactNode;
   isViewed?: boolean;
   isRelayerMetricSent?: boolean;
+  localAction: keyof LocalActions;
 };
 
 export type ExpressHandlers = {

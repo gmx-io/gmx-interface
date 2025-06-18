@@ -4,7 +4,7 @@ import { encodeFunctionData, size, zeroAddress, zeroHash } from "viem";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
-import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
+import { LocalActions, NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { isSourceChain } from "domain/multichain/config";
 import type { BridgeOutParams } from "domain/multichain/types";
 import {
@@ -44,7 +44,16 @@ import { ExpressTxnData } from "lib/transactions/sendExpressTransaction";
 import { WalletSigner } from "lib/wallets";
 import { signTypedData, SignTypedDataParams } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
-import { ARBITRUM_SEPOLIA, ContractsChainId, SettlementChainId, SourceChainId, AnyChainId } from "sdk/configs/chains";
+import {
+  ARBITRUM_SEPOLIA,
+  ContractsChainId,
+  SettlementChainId,
+  SourceChainId,
+  AnyChainId,
+  ARBITRUM,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+} from "sdk/configs/chains";
 import { ContractName } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { bigMath } from "sdk/utils/bigmath";
@@ -185,6 +194,26 @@ function getBatchExpressEstimatorParams({
     expressTransactionBuilder,
   };
 }
+
+const ROUTER_ADDRESS_TO_LOCAL_ACTION: Record<ContractsChainId, Record<string, keyof LocalActions>> = {
+  [ARBITRUM_SEPOLIA]: {
+    [getContract(ARBITRUM_SEPOLIA, "GelatoRelayRouter")]: "relayRouter",
+    [getContract(ARBITRUM_SEPOLIA, "SubaccountGelatoRelayRouter")]: "subaccountRelayRouter",
+    [getContract(ARBITRUM_SEPOLIA, "MultichainOrderRouter")]: "multichainOrderRouter",
+    [getContract(ARBITRUM_SEPOLIA, "MultichainSubaccountRouter")]: "multichainSubaccountRelayRouter",
+    [getContract(ARBITRUM_SEPOLIA, "MultichainClaimsRouter")]: "multichainClaimsRouter",
+    [getContract(ARBITRUM_SEPOLIA, "MultichainTransferRouter")]: "multichainTransferRouter",
+  },
+  [ARBITRUM]: {
+    [getContract(ARBITRUM, "GelatoRelayRouter")]: "relayRouter",
+    [getContract(ARBITRUM, "SubaccountGelatoRelayRouter")]: "subaccountRelayRouter",
+  },
+  [AVALANCHE]: {
+    [getContract(AVALANCHE, "GelatoRelayRouter")]: "relayRouter",
+    [getContract(AVALANCHE, "SubaccountGelatoRelayRouter")]: "subaccountRelayRouter",
+  },
+  [AVALANCHE_FUJI]: {},
+};
 
 export async function estimateExpressParams({
   chainId,
@@ -396,6 +425,8 @@ export async function estimateExpressParams({
     return undefined;
   }
 
+  const localAction = ROUTER_ADDRESS_TO_LOCAL_ACTION[chainId][baseTxn.txnData.to] ?? "relayRouter";
+
   return {
     subaccount,
     relayParamsPayload: finalRelayParams,
@@ -407,6 +438,7 @@ export async function estimateExpressParams({
     gasPrice,
     subaccountValidations,
     gasPaymentValidations,
+    localAction,
   };
 }
 

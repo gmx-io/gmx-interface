@@ -156,7 +156,14 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       refreshSubaccountData();
       refreshNonces();
-      updateLocalAction(pendingExpressTxn.subaccountApproval ? "subaccountRelayRouter" : "relayRouter", 1n);
+
+      let action = pendingExpressTxn.localAction;
+      if (!action && pendingExpressTxn.subaccountApproval) {
+        action = "subaccountRelayRouter";
+      } else {
+        action = "relayRouter";
+      }
+      updateLocalAction(action, 1n);
 
       if (
         pendingExpressTxn?.subaccountApproval &&
