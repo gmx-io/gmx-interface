@@ -1531,6 +1531,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       symbol: "CRV",
       address: "0xD5DdAED48B09fa1D7944bd662CB05265FCD7077C",
       decimals: 18,
+      priceDecimals: 5,
       imageUrl: "https://assets.coingecko.com/coins/images/12134/small/curve.png?1596358786",
       isSynthetic: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/curve-dao-token",
