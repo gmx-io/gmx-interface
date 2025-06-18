@@ -11,7 +11,7 @@ import useSWR from "swr";
 import { Address, Hex, decodeErrorResult, encodeFunctionData, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import { ContractsChainId, SettlementChainId, AnyChainId, getChainName } from "config/chains";
+import { AnyChainId, ContractsChainId, SettlementChainId, getChainName } from "config/chains";
 import { getContract } from "config/contracts";
 import { getChainIcon } from "config/icons";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
@@ -50,7 +50,7 @@ import {
   sendTxnErrorMetric,
   sendTxnSentMetric,
 } from "lib/metrics";
-import { USD_DECIMALS, formatAmountFree, formatBalanceAmount, formatPercentage, formatUsd } from "lib/numbers";
+import { USD_DECIMALS, formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
@@ -462,7 +462,7 @@ export const DepositView = () => {
   );
   const quoteSend = quoteSendQuery.data;
 
-  const { networkFeeUsd, protocolFeeUsd, amountReceivedLD } = useMultichainQuoteFeeUsd({
+  const { networkFeeUsd, protocolFeeUsd } = useMultichainQuoteFeeUsd({
     quoteSend,
     quoteOft,
     unwrappedTokenAddress: unwrappedSelectedTokenAddress,
@@ -924,19 +924,6 @@ export const DepositView = () => {
       <div className="h-32 shrink-0 grow" />
 
       <div className="mb-16 flex flex-col gap-14">
-        <SyntheticsInfoRow
-          label={<Trans>Allowed slippage</Trans>}
-          value={formatPercentage(BigInt(MULTICHAIN_FUNDING_SLIPPAGE_BPS), { bps: true })}
-        />
-        <SyntheticsInfoRow
-          label={<Trans>Min receive</Trans>}
-          value={
-            amountReceivedLD !== undefined && selectedTokenChainData !== undefined
-              ? formatBalanceAmount(amountReceivedLD, selectedTokenChainData.sourceChainDecimals)
-              : "..."
-          }
-        />
-
         <SyntheticsInfoRow
           label={<Trans>Network Fee</Trans>}
           value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."}
