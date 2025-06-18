@@ -231,6 +231,7 @@ export const makeBatchOrderSimulation = async ({
       createMulticallPayload: encodedMulticall,
       value,
       blockTimestampData,
+      isExpress: Boolean(expressParams),
     });
   } catch (error) {
     throw extendError(error, {

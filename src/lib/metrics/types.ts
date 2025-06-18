@@ -275,6 +275,8 @@ export type SwapMetricData = {
   requestId: string;
   isExpress: boolean;
   isExpress1CT: boolean;
+  isTwap: boolean;
+  executionFeeBufferBps: number | undefined;
   hasReferralCode: boolean | undefined;
   initialCollateralTokenAddress: string | undefined;
   initialCollateralSymbol: string | undefined;
@@ -335,9 +337,11 @@ export type PositionOrderMetricParams = {
   initialCollateralTokenAddress: string | undefined;
   initialCollateralSymbol: string | undefined;
   initialCollateralDeltaAmount: number | undefined;
+  executionFeeBufferBps: number | undefined;
   swapPath: string[] | undefined;
   sizeDeltaUsd: number | undefined;
   sizeDeltaInTokens: number | undefined;
+  isTwap: boolean;
   triggerPrice: number | undefined;
   acceptablePrice: number | undefined;
   isLong: boolean | undefined;
