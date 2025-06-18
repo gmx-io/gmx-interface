@@ -9,6 +9,7 @@ import { useAccount } from "wagmi";
 
 import { getChainName, SettlementChainId } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
+import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import {
   useGmxAccountModalOpen,
@@ -583,7 +584,10 @@ export const WithdrawView = () => {
 
     if (maxAmount === 0n) {
       helperToast.error(
-        t`It is suggested to keep at least 10 USD in the gas payment token to be able to perform transactions.`
+        t`It is suggested to keep at least 10 USD in the gas payment token to be able to perform transactions.`,
+        {
+          autoClose: TOAST_AUTO_CLOSE_TIME,
+        }
       );
       return;
     }
