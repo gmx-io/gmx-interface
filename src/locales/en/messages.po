@@ -2439,8 +2439,8 @@ msgid "Shift Fee"
 msgstr "Shift Fee"
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-msgid "Allowed slippage"
-msgstr "Allowed slippage"
+#~ msgid "Allowed slippage"
+#~ msgstr "Allowed slippage"
 
 #: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -6457,8 +6457,8 @@ msgid "Withdrawing Funds from GMX"
 msgstr "Withdrawing Funds from GMX"
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-msgid "Min receive"
-msgstr "Min receive"
+#~ msgid "Min receive"
+#~ msgstr "Min receive"
 
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Notifications"
