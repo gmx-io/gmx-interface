@@ -5876,6 +5876,7 @@ msgstr "Collateral at Liquidation"
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
 
+#: src/lib/dates.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Today"
 msgstr "Today"
@@ -8730,6 +8731,7 @@ msgstr "Net rate combines funding and borrowing fees but excludes open, swap or 
 msgid "Accrued Price Impact Rebates"
 msgstr "Accrued Price Impact Rebates"
 
+#: src/lib/dates.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Yesterday"
 msgstr "Yesterday"
