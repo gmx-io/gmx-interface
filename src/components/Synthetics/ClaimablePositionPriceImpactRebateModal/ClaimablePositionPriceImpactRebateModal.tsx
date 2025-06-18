@@ -1,7 +1,7 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { memo, useCallback, useMemo, useState } from "react";
 
-import { getChainName } from "config/chains";
+import { getContract } from "config/contracts";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 import {
@@ -9,16 +9,30 @@ import {
   selectClaimsGroupedPositionPriceImpactClaimableFees,
   selectClaimsPriceImpactClaimableTotal,
 } from "context/SyntheticsStateContext/selectors/claimsSelectors";
+import { selectExpressNoncesData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { createClaimCollateralTxn } from "domain/synthetics/claimHistory/claimPriceImpactRebate";
+import { useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
+import {
+  buildAndSignClaimPositionPriceImpactFeesTxn,
+  createClaimCollateralTxn,
+} from "domain/synthetics/claimHistory/claimPriceImpactRebate";
+import {
+  ExpressTransactionBuilder,
+  getRelayRouterNonceForMultichain,
+  RawMultichainRelayParamsPayload,
+} from "domain/synthetics/express";
 import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
+import { useJsonRpcProvider } from "lib/rpc";
+import { sendExpressTransaction } from "lib/transactions";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
+import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { bigMath } from "sdk/utils/bigmath";
+import { nowInSeconds } from "sdk/utils/time";
 
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
@@ -31,12 +45,25 @@ export function ClaimablePositionPriceImpactRebateModal({
   isVisible: boolean;
   onClose: () => void;
 }) {
+  const { srcChainId } = useChainId();
+
+  return srcChainId !== undefined ? (
+    <ClaimablePositionPriceImpactRebateModalMultichain isVisible={isVisible} onClose={onClose} />
+  ) : (
+    <ClaimablePositionPriceImpactRebateModalSettlementChain isVisible={isVisible} onClose={onClose} />
+  );
+}
+
+function ClaimablePositionPriceImpactRebateModalSettlementChain({
+  isVisible,
+  onClose,
+}: {
+  isVisible: boolean;
+  onClose: () => void;
+}) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { chainId, srcChainId } = useChainId();
-  const total = useSelector(selectClaimsPriceImpactClaimableTotal);
-  const totalUsd = useMemo(() => formatDeltaUsd(total), [total]);
   const { signer, account, active } = useWallet();
-  const groups = useSelector(selectClaimsGroupedPositionPriceImpactClaimableFees);
   const claimablePositionPriceImpactFees = useSelector(selectClaimablePositionPriceImpactFees);
 
   const handleSubmit = useCallback(async () => {
@@ -61,13 +88,174 @@ export function ClaimablePositionPriceImpactRebateModal({
     }
   }, [account, active, chainId, claimablePositionPriceImpactFees, onClose, signer, srcChainId]);
 
-  const [buttonText, buttonDisabled] = useMemo(() => {
-    if (srcChainId !== undefined) {
-      return [t`Switch to ${getChainName(chainId)} to claim Price Impact Rebates`, false];
+  const buttonState: {
+    text: string;
+    disabled?: boolean;
+    onSubmit?: () => void;
+  } = useMemo(() => {
+    if (isSubmitting) {
+      return { text: t`Claiming...`, disabled: true };
     }
-    if (isSubmitting) return [t`Claiming...`, true];
-    return [t`Claim`, false];
-  }, [chainId, isSubmitting, srcChainId]);
+    return { text: t`Claim`, disabled: false, onSubmit: handleSubmit };
+  }, [handleSubmit, isSubmitting]);
+
+  return (
+    <ClaimablePositionPriceImpactRebateModalComponent
+      isVisible={isVisible}
+      onClose={onClose}
+      buttonState={buttonState}
+    />
+  );
+}
+
+function ClaimablePositionPriceImpactRebateModalMultichain({
+  isVisible,
+  onClose,
+}: {
+  isVisible: boolean;
+  onClose: () => void;
+}) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { chainId, srcChainId } = useChainId();
+  const { signer, account } = useWallet();
+  const claimablePositionPriceImpactFees = useSelector(selectClaimablePositionPriceImpactFees);
+  const { provider } = useJsonRpcProvider(chainId);
+
+  const expressTransactionBuilder = useMemo((): ExpressTransactionBuilder | undefined => {
+    if (srcChainId === undefined || account === undefined || signer === undefined || provider === undefined) {
+      return undefined;
+    }
+
+    return async (params) => {
+      let userNonce: bigint | undefined = params.noncesData?.multichainClaimsRouter?.nonce;
+      if (userNonce === undefined) {
+        userNonce = await getRelayRouterNonceForMultichain(
+          provider,
+          account,
+          getContract(chainId, "MultichainClaimsRouter")
+        );
+      }
+      const txnData = await buildAndSignClaimPositionPriceImpactFeesTxn({
+        signer,
+        relayParams: {
+          ...(params.relayParams as RawMultichainRelayParamsPayload),
+          deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
+          userNonce,
+        },
+        account,
+        claimablePositionPriceImpactFees,
+        receiver: account,
+        chainId,
+        emptySignature: true,
+        relayerFeeTokenAddress: params.gasPaymentParams.relayerFeeTokenAddress,
+        relayerFeeAmount: params.gasPaymentParams.relayerFeeAmount,
+      });
+
+      return {
+        txnData,
+      };
+    };
+  }, [account, chainId, claimablePositionPriceImpactFees, provider, signer, srcChainId]);
+
+  const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload("claimPositionPriceImpactFees", {
+    expressTransactionBuilder,
+  });
+  const noncesData = useSelector(selectExpressNoncesData);
+
+  const handleSubmit = useCallback(async () => {
+    if (!expressTxnParamsAsyncResult.promise) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    expressTxnParamsAsyncResult.promise
+      .then(async (params) => {
+        if (!params || !signer || !account || !provider) {
+          throw new Error("No params");
+        }
+
+        let userNonce: bigint | undefined = noncesData?.multichainClaimsRouter?.nonce;
+        if (userNonce === undefined) {
+          userNonce = await getRelayRouterNonceForMultichain(
+            provider,
+            account,
+            getContract(chainId, "MultichainClaimsRouter")
+          );
+        }
+
+        const txnData = await buildAndSignClaimPositionPriceImpactFeesTxn({
+          signer,
+          relayParams: {
+            ...(params.relayParamsPayload as RawMultichainRelayParamsPayload),
+            deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
+            userNonce,
+          },
+          account,
+          claimablePositionPriceImpactFees,
+          receiver: account,
+          chainId,
+          relayerFeeTokenAddress: params.gasPaymentParams.relayerFeeTokenAddress,
+          relayerFeeAmount: params.gasPaymentParams.relayerFeeAmount,
+        });
+
+        await sendExpressTransaction({
+          chainId,
+          isSponsoredCall: params.isSponsoredCall,
+          txnData,
+        });
+
+        onClose();
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
+  }, [
+    account,
+    chainId,
+    claimablePositionPriceImpactFees,
+    expressTxnParamsAsyncResult.promise,
+    noncesData?.multichainClaimsRouter?.nonce,
+    onClose,
+    provider,
+    signer,
+  ]);
+
+  const buttonState: {
+    text: string;
+    disabled?: boolean;
+    onSubmit?: () => void;
+  } = useMemo(() => {
+    if (isSubmitting) {
+      return { text: t`Claiming...`, disabled: true };
+    }
+    return { text: t`Claim`, disabled: false, onSubmit: handleSubmit };
+  }, [handleSubmit, isSubmitting]);
+
+  return (
+    <ClaimablePositionPriceImpactRebateModalComponent
+      isVisible={isVisible}
+      onClose={onClose}
+      buttonState={buttonState}
+    />
+  );
+}
+
+function ClaimablePositionPriceImpactRebateModalComponent({
+  isVisible,
+  onClose,
+  buttonState,
+}: {
+  isVisible: boolean;
+  onClose: () => void;
+  buttonState: {
+    text: string;
+    disabled?: boolean;
+    onSubmit?: () => void;
+  };
+}) {
+  const total = useSelector(selectClaimsPriceImpactClaimableTotal);
+  const totalUsd = useMemo(() => formatDeltaUsd(total), [total]);
+  const groups = useSelector(selectClaimsGroupedPositionPriceImpactClaimableFees);
 
   return (
     <Modal
@@ -97,8 +285,13 @@ export function ClaimablePositionPriceImpactRebateModal({
           ))}
         </div>
       </div>
-      <Button className="w-full" variant="primary-action" disabled={buttonDisabled} onClick={handleSubmit}>
-        {buttonText}
+      <Button
+        className="w-full"
+        variant="primary-action"
+        disabled={buttonState.disabled}
+        onClick={buttonState.onSubmit}
+      >
+        {buttonState.text}
       </Button>
     </Modal>
   );
