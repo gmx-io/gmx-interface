@@ -15,6 +15,7 @@ import { isSettlementChain } from "domain/multichain/config";
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
+import { formatDateWithComma } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useENS } from "lib/legacy";
@@ -418,6 +419,7 @@ const FundingHistorySection = () => {
             </div>
             <div className="text-right">
               <div>{formatBalanceAmount(transfer.sentAmount, transfer.token.decimals, transfer.token.symbol)}</div>
+              <div className="text-body-small text-slate-100">{formatDateWithComma(transfer.sentTimestamp)}</div>
             </div>
           </div>
         ))}

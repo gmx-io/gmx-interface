@@ -9,6 +9,10 @@ export function formatDate(time: number) {
   return formatDateFn(time * 1000, "dd MMM yyyy");
 }
 
+export function formatDateWithComma(time: number) {
+  return formatDateFn(time * 1000, "dd MMM, yyyy");
+}
+
 export function formatTVDate(date: Date) {
   return formatDateFn(date, "dd MMM yyyy");
 }
