@@ -34,6 +34,19 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "twap-announcement",
+    title: "TWAP orders on GMX",
+    bodyText: (
+      <>
+        Time-Weighted Average Price (TWAP) orders are now available for both perps and spot. Execute large trades with
+        less price impact.
+      </>
+    ),
+    isActive: true,
+    startDate: "16 Jun 2025, 00:00",
+    endDate: "26 Jun 2025, 00:00",
+  },
+  {
     id: "avalanche-issue",
     title: "Avalanche congestion impact",
     isActive: true,
