@@ -42,7 +42,9 @@ import { GELATO_RELAY_ADDRESS } from "domain/synthetics/gassless/txns/expressOrd
 import { getSubaccountValidations } from "domain/synthetics/subaccount";
 import type { SubaccountValidations } from "domain/synthetics/subaccount/types";
 import { convertToTokenAmount, TokenData } from "domain/tokens";
+import { extendError } from "lib/errors";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
+import { metrics } from "lib/metrics";
 import { expandDecimals, USD_DECIMALS } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
@@ -176,7 +178,7 @@ async function estimateArbitraryGasLimit({
   relayerFeeAmount: bigint;
   expressTransactionBuilder: ExpressTransactionBuilder;
   noncesData: NoncesData | undefined;
-}) {
+}): Promise<bigint> {
   const gasPaymentParams: GasPaymentParams = {
     gasPaymentToken: gasPaymentToken,
     relayFeeToken: relayerFeeToken,
@@ -341,7 +343,6 @@ export const selectArbitraryRelayParamsAndPayload = createSelector(function sele
       externalCalls: EMPTY_EXTERNAL_CALLS,
       tokenPermits: [],
       marketsInfoData,
-      // isMultichain: srcChainId !== undefined,
     });
 
     const fetchRelayParamsPayload = async (
@@ -409,7 +410,7 @@ export function useArbitraryRelayParamsAndPayload(
       });
 
       if (baseRelayFeeSwapParams === undefined || rawBaseRelayParamsPayload === undefined) {
-        throw new Error("Failed to get base relay params");
+        return undefined;
       }
 
       let gasLimit: bigint | undefined;
@@ -425,11 +426,15 @@ export function useArbitraryRelayParamsAndPayload(
           noncesData: p.globalExpressParams.noncesData,
         });
       } catch (error) {
-        rethrowCustomError(error);
-      }
+        const customError = getCustomError(error);
+        const extendedError = extendError(customError, {
+          data: {
+            estimationMethod: "estimateGas",
+          },
+        });
 
-      if (gasLimit === undefined) {
-        throw new Error("Failed to estimate gas limit");
+        metrics.pushError(extendedError, "expressArbitrary.estimateGas");
+        return undefined;
       }
 
       try {
@@ -454,7 +459,7 @@ export function useArbitraryRelayParamsAndPayload(
 
         return expressParams;
       } catch (error) {
-        rethrowCustomError(error);
+        return undefined;
       }
     },
     {
@@ -481,7 +486,7 @@ export function useArbitraryRelayParamsAndPayload(
   return expressTxnParamsAsyncResult;
 }
 
-function rethrowCustomError(error: Error): never {
+function getCustomError(error: Error): Error {
   const data = (error as any)?.info?.error?.data ?? (error as any)?.data;
 
   let prettyErrorName = error.name;
@@ -496,11 +501,11 @@ function rethrowCustomError(error: Error): never {
     prettyErrorName = parsedError.errorName;
     prettyErrorMessage = JSON.stringify(parsedError, null, 2);
   } catch (decodeError) {
-    throw error;
+    return error;
   }
 
   const prettyError = new Error(prettyErrorMessage);
   prettyError.name = prettyErrorName;
 
-  throw prettyError;
+  return prettyError;
 }

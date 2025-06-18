@@ -201,8 +201,6 @@ const ROUTER_ADDRESS_TO_LOCAL_ACTION: Record<ContractsChainId, Record<string, ke
     [getContract(ARBITRUM_SEPOLIA, "SubaccountGelatoRelayRouter")]: "subaccountRelayRouter",
     [getContract(ARBITRUM_SEPOLIA, "MultichainOrderRouter")]: "multichainOrderRouter",
     [getContract(ARBITRUM_SEPOLIA, "MultichainSubaccountRouter")]: "multichainSubaccountRelayRouter",
-    [getContract(ARBITRUM_SEPOLIA, "MultichainClaimsRouter")]: "multichainClaimsRouter",
-    [getContract(ARBITRUM_SEPOLIA, "MultichainTransferRouter")]: "multichainTransferRouter",
   },
   [ARBITRUM]: {
     [getContract(ARBITRUM, "GelatoRelayRouter")]: "relayRouter",

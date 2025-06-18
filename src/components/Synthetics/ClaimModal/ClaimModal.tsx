@@ -1,7 +1,10 @@
 import { Trans, t } from "@lingui/macro";
 import { useCallback, useMemo, useState } from "react";
+import { ImSpinner2 } from "react-icons/im";
+import { toast } from "react-toastify";
 
 import { getContract } from "config/contracts";
+import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectExpressNoncesData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -20,6 +23,8 @@ import {
 import { buildAndSignClaimFundingFeesTxn, claimFundingFeesTxn } from "domain/synthetics/markets/claimFundingFeesTxn";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
+import { helperToast } from "lib/helperToast";
+import { metrics } from "lib/metrics";
 import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendExpressTransaction } from "lib/transactions";
@@ -156,7 +161,7 @@ export function ClaimModalMultichain(p: Props) {
   }, [isVisible, marketsInfoData]);
 
   const expressTransactionBuilder: ExpressTransactionBuilder | undefined = useMemo(() => {
-    if (!account || !signer || !provider || fundingMarketAddresses.length === 0) {
+    if (!account || !signer || !provider || fundingMarketAddresses.length === 0 || isSubmitting) {
       return undefined;
     }
 
@@ -191,7 +196,7 @@ export function ClaimModalMultichain(p: Props) {
         txnData,
       };
     };
-  }, [account, chainId, fundingMarketAddresses, fundingTokenAddresses, provider, signer]);
+  }, [account, chainId, fundingMarketAddresses, fundingTokenAddresses, isSubmitting, provider, signer]);
 
   const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload("claimFundingFees", {
     expressTransactionBuilder,
@@ -200,8 +205,14 @@ export function ClaimModalMultichain(p: Props) {
   const noncesData = useSelector(selectExpressNoncesData);
 
   const onSubmit = useCallback(() => {
+    const onMissingParams = () => {
+      helperToast.error(t`No necessary params to claim. Retry in a few seconds.`);
+      metrics.pushError(new Error("No necessary params to claim"), "expressClaimFundingFees");
+    };
+
     if (!account || !signer || !expressTxnParamsAsyncResult.promise || !provider) {
-      throw new Error("Missing parameters for express transaction builder");
+      onMissingParams();
+      return;
     }
 
     setIsSubmitting(true);
@@ -209,7 +220,8 @@ export function ClaimModalMultichain(p: Props) {
     expressTxnParamsAsyncResult.promise
       .then(async (expressTxnParams) => {
         if (!expressTxnParams) {
-          throw new Error("Express transaction parameters are not available");
+          onMissingParams();
+          return;
         }
 
         let userNonce = noncesData?.multichainClaimsRouter?.nonce;
@@ -237,13 +249,39 @@ export function ClaimModalMultichain(p: Props) {
           relayerFeeTokenAddress: expressTxnParams.gasPaymentParams.relayerFeeTokenAddress,
         });
 
-        sendExpressTransaction({
+        const request = await sendExpressTransaction({
           chainId,
           isSponsoredCall: expressTxnParams.isSponsoredCall,
           txnData,
         });
+
+        helperToast.success(
+          <div className="flex items-center justify-between">
+            <div className="text-white/50">
+              <Trans>Claiming funding fees</Trans>
+            </div>
+            <ImSpinner2 width={60} height={60} className="spin size-15 text-white" />
+          </div>,
+          { autoClose: false, toastId: "funding-claimed" }
+        );
+        request.wait().then((res) => {
+          if (res.status === "success") {
+            toast.update("funding-claimed", {
+              render: t`Success claiming funding fees`,
+              type: "success",
+              autoClose: TOAST_AUTO_CLOSE_TIME,
+            });
+          } else if (res.status === "failed") {
+            toast.update("funding-claimed", {
+              render: t`Claiming funding fees failed`,
+              type: "error",
+              autoClose: TOAST_AUTO_CLOSE_TIME,
+            });
+          }
+        });
+
+        onClose();
       })
-      .then(onClose)
       .finally(() => {
         setIsSubmitting(false);
       });

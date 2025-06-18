@@ -1,7 +1,10 @@
 import { t, Trans } from "@lingui/macro";
 import { memo, useCallback, useMemo, useState } from "react";
+import { ImSpinner2 } from "react-icons/im";
+import { toast } from "react-toastify";
 
 import { getContract } from "config/contracts";
+import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 import {
@@ -25,6 +28,8 @@ import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
+import { helperToast } from "lib/helperToast";
+import { metrics } from "lib/metrics";
 import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendExpressTransaction } from "lib/transactions";
@@ -122,7 +127,13 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
   const { provider } = useJsonRpcProvider(chainId);
 
   const expressTransactionBuilder = useMemo((): ExpressTransactionBuilder | undefined => {
-    if (srcChainId === undefined || account === undefined || signer === undefined || provider === undefined) {
+    if (
+      srcChainId === undefined ||
+      account === undefined ||
+      signer === undefined ||
+      provider === undefined ||
+      isSubmitting
+    ) {
       return undefined;
     }
 
@@ -155,7 +166,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
         txnData,
       };
     };
-  }, [account, chainId, claimablePositionPriceImpactFees, provider, signer, srcChainId]);
+  }, [account, chainId, claimablePositionPriceImpactFees, isSubmitting, provider, signer, srcChainId]);
 
   const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload("claimPositionPriceImpactFees", {
     expressTransactionBuilder,
@@ -163,7 +174,13 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
   const noncesData = useSelector(selectExpressNoncesData);
 
   const handleSubmit = useCallback(async () => {
+    const onMissingParams = () => {
+      helperToast.error(t`No necessary params to claim. Retry in a few seconds.`);
+      metrics.pushError(new Error("No necessary params to claim"), "expressClaimPositionPriceImpactFees");
+    };
+
     if (!expressTxnParamsAsyncResult.promise) {
+      onMissingParams();
       return;
     }
 
@@ -171,7 +188,8 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
     expressTxnParamsAsyncResult.promise
       .then(async (params) => {
         if (!params || !signer || !account || !provider) {
-          throw new Error("No params");
+          onMissingParams();
+          return;
         }
 
         let userNonce: bigint | undefined = noncesData?.multichainClaimsRouter?.nonce;
@@ -198,10 +216,38 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
           relayerFeeAmount: params.gasPaymentParams.relayerFeeAmount,
         });
 
-        await sendExpressTransaction({
+        const request = await sendExpressTransaction({
           chainId,
           isSponsoredCall: params.isSponsoredCall,
           txnData,
+        });
+
+        helperToast.success(
+          <div className="flex items-center justify-between">
+            <div className="text-white/50">
+              <Trans>Claiming position price impact fees</Trans>
+            </div>
+            <ImSpinner2 width={60} height={60} className="spin size-15 text-white" />
+          </div>,
+          {
+            autoClose: false,
+            toastId: "position-price-impact-fees",
+          }
+        );
+        request.wait().then((res) => {
+          if (res.status === "success") {
+            toast.update("position-price-impact-fees", {
+              render: t`Success claiming position price impact fees`,
+              type: "success",
+              autoClose: TOAST_AUTO_CLOSE_TIME,
+            });
+          } else if (res.status === "failed") {
+            toast.update("position-price-impact-fees", {
+              render: t`Claiming position price impact fees failed`,
+              type: "error",
+              autoClose: TOAST_AUTO_CLOSE_TIME,
+            });
+          }
         });
 
         onClose();

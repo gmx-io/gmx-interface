@@ -45,19 +45,11 @@ export type LocalActions = {
     actions: bigint;
     lastEstimated: number;
   };
-  multichainTransferRouter: {
-    actions: bigint;
-    lastEstimated: number;
-  };
   multichainOrderRouter: {
     actions: bigint;
     lastEstimated: number;
   };
   multichainSubaccountRelayRouter: {
-    actions: bigint;
-    lastEstimated: number;
-  };
-  multichainClaimsRouter: {
     actions: bigint;
     lastEstimated: number;
   };
@@ -72,19 +64,11 @@ const defaultLocalActions: LocalActions = {
     actions: 0n,
     lastEstimated: 0,
   },
-  multichainTransferRouter: {
-    actions: 0n,
-    lastEstimated: 0,
-  },
   multichainOrderRouter: {
     actions: 0n,
     lastEstimated: 0,
   },
   multichainSubaccountRelayRouter: {
-    actions: 0n,
-    lastEstimated: 0,
-  },
-  multichainClaimsRouter: {
     actions: 0n,
     lastEstimated: 0,
   },
@@ -298,22 +282,6 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
         result.multichainSubaccountRelayRouter.nonce += localActions.multichainSubaccountRelayRouter.actions;
         result.multichainSubaccountRelayRouter.lastEstimated =
           localActions.multichainSubaccountRelayRouter.lastEstimated;
-      }
-
-      if (
-        result.multichainTransferRouter !== undefined &&
-        localActions.multichainTransferRouter.lastEstimated > result.multichainTransferRouter.lastEstimated
-      ) {
-        result.multichainTransferRouter.nonce += localActions.multichainTransferRouter.actions;
-        result.multichainTransferRouter.lastEstimated = localActions.multichainTransferRouter.lastEstimated;
-      }
-
-      if (
-        result.multichainClaimsRouter !== undefined &&
-        localActions.multichainClaimsRouter.lastEstimated > result.multichainClaimsRouter.lastEstimated
-      ) {
-        result.multichainClaimsRouter.nonce += localActions.multichainClaimsRouter.actions;
-        result.multichainClaimsRouter.lastEstimated = localActions.multichainClaimsRouter.lastEstimated;
       }
     }
 
