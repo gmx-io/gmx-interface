@@ -155,12 +155,12 @@ export function ClaimModalMultichain(p: Props) {
     };
   }, [isVisible, marketsInfoData]);
 
-  const expressTransactionBuilder: ExpressTransactionBuilder = useCallback(
-    async (params) => {
-      if (!account || !signer || !provider) {
-        throw new Error("Missing parameters for express transaction builder");
-      }
+  const expressTransactionBuilder: ExpressTransactionBuilder | undefined = useMemo(() => {
+    if (!account || !signer || !provider || fundingMarketAddresses.length === 0) {
+      return undefined;
+    }
 
+    return async (params) => {
       let userNonce: bigint | undefined = params.noncesData?.multichainClaimsRouter?.nonce;
       if (userNonce === undefined) {
         userNonce = await getRelayRouterNonceForMultichain(
@@ -190,9 +190,8 @@ export function ClaimModalMultichain(p: Props) {
       return {
         txnData,
       };
-    },
-    [account, chainId, fundingMarketAddresses, fundingTokenAddresses, provider, signer]
-  );
+    };
+  }, [account, chainId, fundingMarketAddresses, fundingTokenAddresses, provider, signer]);
 
   const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload("claimFundingFees", {
     expressTransactionBuilder,

@@ -106,8 +106,8 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
 
   const { data: onChainData, mutate } = useMulticall(chainId, "expressNonces", {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
-    key: [account, subaccount?.address],
-    request: (requestChainId) => {
+    key: account && [account, subaccount?.address],
+    request: (chainId) => {
       const request: MulticallRequestConfig<any> = {
         relayRouter: {
           contractAddress: getExpressContractAddress(chainId, {
@@ -138,7 +138,7 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
         },
       };
 
-      if (isSettlementChain(requestChainId)) {
+      if (isSettlementChain(chainId)) {
         request.multichainTransferRouter = {
           contractAddress: getExpressContractAddress(chainId, {
             isMultichain: true,
@@ -202,7 +202,7 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
       return request;
     },
 
-    parseResponse: (result) => {
+    parseResponse: (result, chainId) => {
       const relayRouterNonce = result.data.relayRouter.nonce.returnValues[0];
       const subaccountRelayRouterNonce = result.data.subaccountRelayRouter?.nonce?.returnValues[0];
 
@@ -229,7 +229,7 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
               }
             : undefined,
         multichainSubaccountRelayRouter:
-          chainId === ARBITRUM_SEPOLIA
+          chainId === ARBITRUM_SEPOLIA && subaccount?.address
             ? {
                 nonce: result.data.multichainSubaccountRelayRouter.nonce.returnValues[0],
                 lastEstimated: now,
