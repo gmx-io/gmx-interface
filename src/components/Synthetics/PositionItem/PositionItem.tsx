@@ -11,12 +11,20 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useCancelOrder, usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
+import { selectOracleSettings } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { selectTradeboxSelectedPositionKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
-import { OrderErrors, PositionOrderInfo, isIncreaseOrderType, isTwapOrder } from "domain/synthetics/orders";
+import {
+  OrderErrors,
+  PositionOrderInfo,
+  isIncreaseOrderType,
+  isMarketOrderType,
+  isTwapOrder,
+} from "domain/synthetics/orders";
+import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
 import {
   PositionInfo,
   formatEstimatedLiquidationTime,
@@ -25,7 +33,7 @@ import {
   getEstimatedLiquidationTimeInHours,
   getNameByOrderType,
 } from "domain/synthetics/positions";
-import { TradeMode, getOrderThresholdType } from "domain/synthetics/trade";
+import { TradeMode } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
 import { calculateDisplayDecimals, formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
@@ -38,9 +46,11 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import { TwapOrderProgress } from "../OrderItem/OrderItem";
 
 import "./PositionItem.scss";
-import { TwapOrderProgress } from "../OrderItem/OrderItem";
 
 export type Props = {
   position: PositionInfo;
@@ -793,6 +803,24 @@ function PositionItemOrder({
     setEditingOrderState({ orderKey: order.key, source: "PositionsList" });
   }, [order.key, setEditingOrderState]);
 
+  const oracleSettings = useSelector(selectOracleSettings);
+  const disabledCancelMarketOrderMessage = useDisabledCancelMarketOrderMessage(order, oracleSettings);
+
+  const isDisabled = isCancelling || Boolean(disabledCancelMarketOrderMessage);
+
+  const cancelButton = (
+    <Button
+      variant="secondary"
+      className={cx("!bg-slate-100 !bg-opacity-15 !p-6", {
+        "hover:!bg-opacity-20 active:!bg-opacity-25": !isDisabled,
+      })}
+      disabled={isDisabled}
+      onClick={cancel}
+    >
+      <MdClose fontSize={16} className={cx({ "text-slate-100": isDisabled, "text-white": !isDisabled })} />
+    </Button>
+  );
+
   return (
     <div key={order.key}>
       <div className="flex items-start justify-between gap-6">
@@ -806,7 +834,7 @@ function PositionItemOrder({
             <FaAngleRight fontSize={16} className="ml-5" />
           </div>
         </Button>
-        {!isTwapOrder(order) && (
+        {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
           <Button
             variant="secondary"
             className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
@@ -815,14 +843,11 @@ function PositionItemOrder({
             <AiOutlineEdit fontSize={16} />
           </Button>
         )}
-        <Button
-          variant="secondary"
-          className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
-          disabled={isCancelling}
-          onClick={cancel}
-        >
-          <MdClose fontSize={16} />
-        </Button>
+        {disabledCancelMarketOrderMessage ? (
+          <TooltipWithPortal handle={cancelButton} content={disabledCancelMarketOrderMessage} />
+        ) : (
+          cancelButton
+        )}
       </div>
 
       {errors.length !== 0 && (
@@ -845,14 +870,14 @@ function PositionItemOrder({
 }
 
 function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
-  const triggerThresholdType = getOrderThresholdType(order.orderType, order.isLong);
+  const triggerThresholdType = order.triggerThresholdType;
   const isIncrease = isIncreaseOrderType(order.orderType);
   const isTwap = isTwapOrder(order);
 
   return (
     <div key={order.key} className="text-start">
       {getNameByOrderType(order.orderType, order.isTwap, { abbr: true })}
-      {!isTwap
+      {!isTwap && !isMarketOrderType(order.orderType)
         ? `: ${triggerThresholdType} ` +
           formatUsd(order.triggerPrice, {
             displayDecimals: calculateDisplayDecimals(

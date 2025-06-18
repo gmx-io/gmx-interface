@@ -9,6 +9,7 @@ import { getWrappedToken } from "sdk/configs/tokens";
 import {
   isIncreaseOrderType,
   isLimitOrderType,
+  isMarketOrderType,
   isSwapOrderType,
   isTriggerDecreaseOrderType,
   isVisibleOrder,
@@ -98,6 +99,13 @@ export function useOrders(
 
   const ordersData: OrdersData | undefined = useMemo(() => {
     const filteredOrders = data?.orders.filter((order) => {
+      if (isMarketOrderType(order.orderType)) {
+        const is10SecondsPassedSinceOrderCreation = Date.now() - Number(order.updatedAtTime * 1000n) > 10_000;
+        if (!is10SecondsPassedSinceOrderCreation) {
+          return false;
+        }
+      }
+
       if (!isVisibleOrder(order.orderType)) {
         return false;
       }

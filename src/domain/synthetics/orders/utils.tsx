@@ -6,6 +6,7 @@ import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import {
   isDecreaseOrderType,
   isIncreaseOrderType,
+  isMarketOrderType,
   isOrderForPosition,
   isSwapOrder,
   isSwapOrderType,
@@ -256,7 +257,7 @@ export function getOrderErrors(p: {
       }
     }
 
-    if (!position) {
+    if (!position && !isMarketOrderType(order.orderType)) {
       const collateralSymbol = order.targetCollateralToken.symbol;
       const sameMarketPosition = Object.values(positionsInfoData || {}).find(
         (pos) => pos.marketAddress === order.marketAddress && pos.isLong === order.isLong
@@ -285,7 +286,7 @@ export function getOrderErrors(p: {
           ? undefined
           : position.liquidationPrice < triggerPrice;
 
-      if (isInvalidTriggerPrice) {
+      if (isInvalidTriggerPrice && !isMarketOrderType(order.orderType)) {
         errors.push({
           msg: t`The order will not be executed as its trigger price is beyond the position's liquidation price.`,
           level: "error",
