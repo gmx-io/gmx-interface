@@ -68,7 +68,7 @@ import { switchNetwork, WalletSigner } from "lib/wallets";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { abis } from "sdk/abis";
 import { getGasPaymentTokens } from "sdk/configs/express";
-import { convertTokenAddress } from "sdk/configs/tokens";
+import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { extendError, OrderErrorContext } from "sdk/utils/errors";
 import { convertToTokenAmount, getMidPrice } from "sdk/utils/tokens";
@@ -148,6 +148,9 @@ export const WithdrawView = () => {
 
   const unwrappedSelectedTokenAddress =
     selectedTokenAddress !== undefined ? convertTokenAddress(chainId, selectedTokenAddress, "native") : undefined;
+  const unwrappedSelectedTokenSymbol = unwrappedSelectedTokenAddress
+    ? getToken(chainId, unwrappedSelectedTokenAddress).symbol
+    : undefined;
 
   const selectedTokenSettlementChainTokenId = unwrappedSelectedTokenAddress
     ? getMultichainTokenId(chainId, unwrappedSelectedTokenAddress)
@@ -456,7 +459,7 @@ export const WithdrawView = () => {
     const metricData = initMultichainWithdrawalMetricData({
       settlementChain: chainId,
       sourceChain: srcChainId,
-      assetSymbol: selectedToken.symbol,
+      assetSymbol: unwrappedSelectedTokenSymbol ?? selectedToken.symbol,
       sizeInUsd: inputAmountUsd!,
       isFirstWithdrawal,
     });
@@ -515,14 +518,13 @@ export const WithdrawView = () => {
         amount: bridgeOutParams.amount,
         settlementChainId: chainId,
         sourceChainId: srcChainId,
-        tokenAddress: selectedToken.address,
+        tokenAddress: unwrappedSelectedTokenAddress ?? selectedToken.address,
       });
 
       const receipt = await sendExpressTransaction({
         chainId,
         txnData: signedTxnData,
-        // TODO
-        isSponsoredCall: false,
+        isSponsoredCall: expressTxnParams.isSponsoredCall,
       });
 
       sendOrderTxnSubmittedMetric(metricData.metricId);

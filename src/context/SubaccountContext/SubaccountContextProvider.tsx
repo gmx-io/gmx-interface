@@ -3,6 +3,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useR
 import { toast } from "react-toastify";
 
 import { getSubaccountApprovalKey, getSubaccountConfigKey } from "config/localStorage";
+import { selectIsSponsoredCallAvailable } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/utils";
 import {
   estimateArbitraryRelayFee,
@@ -341,9 +342,11 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           throw new Error("No txnData");
         }
 
+        const isSponsoredCallAvailable = calcSelector(selectIsSponsoredCallAvailable);
+
         await sendExpressTransaction({
           chainId,
-          isSponsoredCall: false,
+          isSponsoredCall: isSponsoredCallAvailable,
           txnData,
         });
       };
