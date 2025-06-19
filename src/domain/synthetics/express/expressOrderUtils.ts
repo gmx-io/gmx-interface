@@ -840,9 +840,11 @@ export function getOrderRelayRouterAddress(
 
 export async function buildAndSignBridgeOutTxn({
   chainId,
+  srcChainId,
   relayParamsPayload,
   params,
   signer,
+  account,
   provider,
   emptySignature = false,
   relayerFeeTokenAddress,
@@ -850,27 +852,24 @@ export async function buildAndSignBridgeOutTxn({
   noncesData,
 }: {
   chainId: SettlementChainId;
+  srcChainId: SourceChainId;
   relayParamsPayload: RawMultichainRelayParamsPayload;
   params: BridgeOutParams;
-  signer: WalletSigner;
+  signer: WalletSigner | undefined;
+  account: string;
   provider: Provider;
   emptySignature?: boolean;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
   noncesData: NoncesData | undefined;
 }): Promise<ExpressTxnData> {
-  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
-  if (!srcChainId) {
-    throw new Error("No srcChainId");
-  }
-
   const cachedNonce = noncesData?.multichainTransferRouter?.nonce;
 
   let userNonce: bigint;
   if (cachedNonce === undefined) {
     userNonce = await getRelayRouterNonceForMultichain(
       provider,
-      signer.address,
+      account,
       getExpressContractAddress(chainId, {
         isMultichain: true,
         isSubaccount: false,
@@ -880,8 +879,6 @@ export async function buildAndSignBridgeOutTxn({
   } else {
     userNonce = cachedNonce;
   }
-
-  const address = signer.address;
 
   let signature: string;
 
@@ -894,6 +891,10 @@ export async function buildAndSignBridgeOutTxn({
   if (emptySignature) {
     signature = "0x";
   } else {
+    if (!signer) {
+      throw new Error("Signer is required");
+    }
+
     signature = await signBridgeOutPayload({
       relayParams,
       params,
@@ -911,7 +912,7 @@ export async function buildAndSignBridgeOutTxn({
         ...relayParams,
         signature,
       },
-      address,
+      account,
       BigInt(srcChainId),
       params,
     ],
@@ -960,7 +961,7 @@ async function signBridgeOutPayload({
     relayParams: hashRelayParamsMultichain(relayParams),
   };
 
-  const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, getContract(chainId, "MultichainTransferRouter"));
+  const domain = getGelatoRelayRouterDomain(srcChainId, getContract(chainId, "MultichainTransferRouter"));
 
   return signTypedData({ signer, domain, types, typedData });
 }

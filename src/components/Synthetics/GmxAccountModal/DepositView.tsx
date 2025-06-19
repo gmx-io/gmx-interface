@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import { getWalletClient } from "@wagmi/core";
 import { Contract } from "ethers";
 import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -28,7 +27,6 @@ import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
   DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT,
   getMappedTokenId,
-  isSourceChain,
 } from "domain/multichain/config";
 import { MULTICHAIN_FUNDING_SLIPPAGE_BPS } from "domain/multichain/constants";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
@@ -54,9 +52,7 @@ import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { TxnCallback, TxnEventName, WalletTxnCtx, sendWalletTransaction } from "lib/transactions";
-import { switchNetwork } from "lib/wallets";
-import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
-import { clientToSigner, useEthersSigner } from "lib/wallets/useEthersSigner";
+import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { abis } from "sdk/abis";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
@@ -80,6 +76,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { useAvailableToTradeAssetMultichain, useMultichainTokensRequest } from "./hooks";
+import { wrapChainAction } from "./wrapChainAction";
 
 const useIsFirstDeposit = () => {
   const [enabled, setEnabled] = useState(true);
@@ -251,7 +248,7 @@ export const DepositView = () => {
   );
 
   const handleApprove = useCallback(async () => {
-    if (!walletChainId || !depositViewTokenAddress || inputAmount === undefined || !spenderAddress) {
+    if (!depositViewTokenAddress || inputAmount === undefined || !spenderAddress || !depositViewChain) {
       helperToast.error("Approve failed");
       return;
     }
@@ -268,24 +265,19 @@ export const DepositView = () => {
       return;
     }
 
-    await approveTokens({
-      chainId: walletChainId,
-      tokenAddress: selectedTokenSourceChainTokenId.address,
-      signer: walletSigner,
-      spender: spenderAddress,
-      onApproveSubmitted: () => setIsApproving(true),
-      setIsApproving: noop,
-      permitParams: undefined,
-      approveAmount: undefined,
+    await wrapChainAction(depositViewChain, async (signer) => {
+      await approveTokens({
+        chainId: depositViewChain,
+        tokenAddress: selectedTokenSourceChainTokenId.address,
+        signer: signer,
+        spender: spenderAddress,
+        onApproveSubmitted: () => setIsApproving(true),
+        setIsApproving: noop,
+        permitParams: undefined,
+        approveAmount: undefined,
+      });
     });
-  }, [
-    walletChainId,
-    depositViewTokenAddress,
-    inputAmount,
-    spenderAddress,
-    selectedTokenSourceChainTokenId,
-    walletSigner,
-  ]);
+  }, [depositViewTokenAddress, inputAmount, spenderAddress, selectedTokenSourceChainTokenId, depositViewChain]);
 
   useEffect(() => {
     if (!needTokenApprove && isApproving) {
@@ -551,13 +543,6 @@ export const DepositView = () => {
         return;
       }
 
-      const shouldSwitchNetwork = walletChainId !== depositViewChain;
-
-      if (shouldSwitchNetwork && !walletSigner) {
-        helperToast.error("Deposit failed");
-        return;
-      }
-
       setIsSubmitting(true);
 
       const metricData = initMultichainDepositMetricData({
@@ -577,90 +562,83 @@ export const DepositView = () => {
       const isNative = sourceChainTokenAddress === zeroAddress;
       const value = isNative ? inputAmount : 0n;
 
-      const initialChain = walletChainId && isSourceChain(walletChainId) ? walletChainId : settlementChainId;
+      await wrapChainAction(depositViewChain, async (signer) => {
+        await sendWalletTransaction({
+          chainId: depositViewChain,
+          to: sourceChainStargateAddress,
+          signer: signer,
+          callData: encodeFunctionData({
+            abi: IStargateAbi,
+            functionName: "sendToken",
+            args: [
+              sendParamsWithSlippage,
+              { nativeFee: quoteSend.nativeFee, lzTokenFee: quoteSend.lzTokenFee },
+              account,
+            ],
+          }),
+          value: (quoteSend.nativeFee as bigint) + value,
+          callback: (txnEvent) => {
+            if (txnEvent.event === TxnEventName.Error) {
+              setIsSubmitting(false);
+              let prettyError = txnEvent.data.error;
+              const data = txnEvent.data.error.info?.error?.data as Hex | undefined;
 
-      let sourceChainWalletSigner = walletSigner;
-      if (shouldSwitchNetwork) {
-        await switchNetwork(depositViewChain, true);
-        const walletClient = await getWalletClient(getRainbowKitConfig());
-        sourceChainWalletSigner = clientToSigner(walletClient, account);
-      }
+              if (data) {
+                const error = decodeErrorResult({
+                  abi: StargateErrorsAbi,
+                  data,
+                });
 
-      await sendWalletTransaction({
-        chainId: depositViewChain,
-        to: sourceChainStargateAddress,
-        signer: sourceChainWalletSigner!,
-        callData: encodeFunctionData({
-          abi: IStargateAbi,
-          functionName: "sendToken",
-          args: [sendParamsWithSlippage, { nativeFee: quoteSend.nativeFee, lzTokenFee: quoteSend.lzTokenFee }, account],
-        }),
-        value: (quoteSend.nativeFee as bigint) + value,
-        callback: (txnEvent) => {
-          if (txnEvent.event === TxnEventName.Error) {
-            setIsSubmitting(false);
-            let prettyError = txnEvent.data.error;
-            const data = txnEvent.data.error.info?.error?.data as Hex | undefined;
+                prettyError = new Error(JSON.stringify(error, null, 2));
+                prettyError.name = error.errorName;
 
-            if (data) {
-              const error = decodeErrorResult({
-                abi: StargateErrorsAbi,
-                data,
-              });
+                const toastParams = getTxnErrorToast(
+                  depositViewChain,
+                  {
+                    errorMessage: JSON.stringify(error, null, 2),
+                  },
+                  { defaultMessage: t`Deposit failed` }
+                );
 
-              prettyError = new Error(JSON.stringify(error, null, 2));
-              prettyError.name = error.errorName;
+                helperToast.error(toastParams.errorContent, {
+                  autoClose: toastParams.autoCloseToast,
+                  toastId: "gmx-account-deposit",
+                });
+              } else {
+                const toastParams = getTxnErrorToast(depositViewChain, txnEvent.data.error, {
+                  defaultMessage: t`Deposit failed`,
+                });
 
-              const toastParams = getTxnErrorToast(
-                depositViewChain,
-                {
-                  errorMessage: JSON.stringify(error, null, 2),
-                },
-                { defaultMessage: t`Deposit failed` }
-              );
+                helperToast.error(toastParams.errorContent, {
+                  autoClose: toastParams.autoCloseToast,
+                  toastId: "gmx-account-deposit",
+                });
+              }
 
-              helperToast.error(toastParams.errorContent, {
-                autoClose: toastParams.autoCloseToast,
-                toastId: "gmx-account-deposit",
-              });
-            } else {
-              const toastParams = getTxnErrorToast(depositViewChain, txnEvent.data.error, {
-                defaultMessage: t`Deposit failed`,
-              });
+              sendTxnErrorMetric(metricData.metricId, prettyError, "unknown");
+            } else if (txnEvent.event === TxnEventName.Sent) {
+              setIsVisibleOrView("main");
+              setIsSubmitting(false);
 
-              helperToast.error(toastParams.errorContent, {
-                autoClose: toastParams.autoCloseToast,
-                toastId: "gmx-account-deposit",
-              });
+              sendTxnSentMetric(metricData.metricId);
+
+              if (txnEvent.data.type === "wallet") {
+                setMultichainSubmittedDeposit({
+                  amount: sendParamsWithSlippage.amountLD as bigint,
+                  settlementChainId,
+                  sourceChainId: depositViewChain,
+                  tokenAddress: depositViewTokenAddress,
+                  sentTxn: txnEvent.data.transactionHash,
+                });
+              }
+            } else if (txnEvent.event === TxnEventName.Simulated) {
+              sendOrderSimulatedMetric(metricData.metricId);
+            } else if (txnEvent.event === TxnEventName.Sending) {
+              sendOrderTxnSubmittedMetric(metricData.metricId);
             }
-
-            sendTxnErrorMetric(metricData.metricId, prettyError, "unknown");
-          } else if (txnEvent.event === TxnEventName.Sent) {
-            setIsVisibleOrView("main");
-            setIsSubmitting(false);
-
-            sendTxnSentMetric(metricData.metricId);
-
-            if (txnEvent.data.type === "wallet") {
-              setMultichainSubmittedDeposit({
-                amount: sendParamsWithSlippage.amountLD as bigint,
-                settlementChainId,
-                sourceChainId: depositViewChain,
-                tokenAddress: depositViewTokenAddress,
-                sentTxn: txnEvent.data.transactionHash,
-              });
-            }
-          } else if (txnEvent.event === TxnEventName.Simulated) {
-            sendOrderSimulatedMetric(metricData.metricId);
-          } else if (txnEvent.event === TxnEventName.Sending) {
-            sendOrderTxnSubmittedMetric(metricData.metricId);
-          }
-        },
+          },
+        });
       });
-
-      if (shouldSwitchNetwork) {
-        await switchNetwork(initialChain, true);
-      }
     }
   }, [
     walletChainId,

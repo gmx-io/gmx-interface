@@ -20,6 +20,8 @@ export const selectGmxAccountSetDepositViewTokenAddress = (s: GmxAccountContext)
 export const selectGmxAccountDepositViewTokenInputValue = (s: GmxAccountContext) => s.depositViewTokenInputValue;
 export const selectGmxAccountSetDepositViewTokenInputValue = (s: GmxAccountContext) => s.setDepositViewTokenInputValue;
 
+export const selectGmxAccountWithdrawViewChainId = (s: GmxAccountContext) => s.withdrawViewChainId;
+export const selectGmxAccountSetWithdrawViewChainId = (s: GmxAccountContext) => s.setWithdrawViewChainId;
 export const selectGmxAccountWithdrawViewTokenAddress = (s: GmxAccountContext) => s.withdrawViewTokenAddress;
 export const selectGmxAccountSetWithdrawViewTokenAddress = (s: GmxAccountContext) => s.setWithdrawViewTokenAddress;
 export const selectGmxAccountWithdrawViewTokenInputValue = (s: GmxAccountContext) => s.withdrawViewTokenInputValue;

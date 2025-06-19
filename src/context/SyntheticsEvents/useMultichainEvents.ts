@@ -579,7 +579,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       pendingMultichainFunding,
       multichainFundingPendingIds,
       setMultichainSubmittedDeposit: (submittedEvent) => {
-        if (!currentAccount || srcChainId === undefined) {
+        if (!currentAccount) {
           return;
         }
 
@@ -592,7 +592,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
             operation: "deposit",
             step: "submitted",
             settlementChainId: chainId,
-            sourceChainId: srcChainId,
+            sourceChainId: submittedEvent.sourceChainId,
             token: submittedEvent.tokenAddress,
             sentAmount: submittedEvent.amount,
             sentTxn: submittedEvent.sentTxn,
@@ -615,7 +615,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         return stubId;
       },
       setMultichainSubmittedWithdrawal: (submittedEvent) => {
-        if (!currentAccount || srcChainId === undefined) {
+        if (!currentAccount) {
           return;
         }
 
@@ -628,7 +628,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
             operation: "withdrawal",
             step: "submitted",
             settlementChainId: chainId,
-            sourceChainId: srcChainId,
+            sourceChainId: submittedEvent.sourceChainId,
             token: submittedEvent.tokenAddress,
             sentAmount: submittedEvent.amount,
             sentTimestamp: nowInSeconds(),
@@ -813,7 +813,6 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       multichainFundingPendingIds,
       sourceChainApprovalStatuses,
       currentAccount,
-      srcChainId,
       chainId,
       setSelectedTransferGuid,
     ]

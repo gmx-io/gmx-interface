@@ -48,7 +48,7 @@ export async function approveTokens({
   includeMessage,
   approveAmount,
   permitParams,
-}: Params) {
+}: Params): Promise<void> {
   setIsApproving(true);
 
   if (approveAmount === undefined) {
@@ -99,7 +99,7 @@ export async function approveTokens({
   const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
   const nativeToken = getNativeToken(chainId);
   const networkName = getChainName(chainId);
-  contract
+  return await contract
     .approve(spender, approveAmount ?? ethers.MaxUint256)
     .then(async (res) => {
       const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;

@@ -2,20 +2,22 @@ import { Context, useContextSelector } from "use-context-selector";
 
 import { GmxAccountContext, context } from "./GmxAccountContext";
 import {
+  selectGmxAccountDepositViewChain,
   selectGmxAccountDepositViewTokenAddress,
   selectGmxAccountDepositViewTokenInputValue,
   selectGmxAccountModalOpen,
   selectGmxAccountSelectedTransferGuid,
-  selectGmxAccountDepositViewChain,
   selectGmxAccountSetDepositViewChain,
   selectGmxAccountSetDepositViewTokenAddress,
   selectGmxAccountSetDepositViewTokenInputValue,
   selectGmxAccountSetModalOpen,
   selectGmxAccountSetSelectedTransferGuid,
   selectGmxAccountSetSettlementChainId,
+  selectGmxAccountSetWithdrawViewChainId,
   selectGmxAccountSetWithdrawViewTokenAddress,
   selectGmxAccountSetWithdrawViewTokenInputValue,
   selectGmxAccountSettlementChainId,
+  selectGmxAccountWithdrawViewChainId,
   selectGmxAccountWithdrawViewTokenAddress,
   selectGmxAccountWithdrawViewTokenInputValue,
 } from "./selectors";
@@ -59,6 +61,13 @@ export function useGmxAccountDepositViewTokenInputValue() {
   return [
     useGmxAccountSelector(selectGmxAccountDepositViewTokenInputValue),
     useGmxAccountSelector(selectGmxAccountSetDepositViewTokenInputValue),
+  ] as const;
+}
+
+export function useGmxAccountWithdrawViewChainId() {
+  return [
+    useGmxAccountSelector(selectGmxAccountWithdrawViewChainId),
+    useGmxAccountSelector(selectGmxAccountSetWithdrawViewChainId),
   ] as const;
 }
 
