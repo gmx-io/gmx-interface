@@ -254,7 +254,6 @@ export function sendUserAnalyticsOrderResultEvent(
   const isUserError = Boolean(parseError(error)?.isUserError);
 
   switch (metricData.metricType) {
-    case "twapIncreaseOrder":
     case "increasePosition":
       userAnalytics.pushEvent<TradeBoxResultEvent>(
         {
@@ -287,7 +286,6 @@ export function sendUserAnalyticsOrderResultEvent(
         { dedupKey }
       );
       break;
-    case "twapDecreaseOrder":
     case "decreasePosition":
     case "stopLossOrder":
     case "takeProfitOrder":
