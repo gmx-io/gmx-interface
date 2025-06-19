@@ -1,31 +1,20 @@
-import entries from "lodash/entries";
-import values from "lodash/values";
-import type { Address } from "viem";
-
 import type { GlvAndGmMarketsInfoData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
 
 /**
  * Sorts GM tokens by:
- * 1. Non-zero / zero balance
- * 2. If non-zero balance, by balance descending
- * 3. If zero balance, by total supply USD descending
+ * 1. User owned wallet balance descending
+ * 2. Simply descending on TVL in dollars for the pool
  */
 export function sortGmTokensDefault(marketsInfoData: GlvAndGmMarketsInfoData, marketTokensData: TokensData) {
   if (marketsInfoData === undefined || marketTokensData === undefined) {
     return [];
   }
 
-  const groupedTokens: {
-    [group in Address | "nonZero"]: {
-      tokens: { tokenData: TokenData; totalSupplyUsd: bigint }[];
-      totalSupplyUsd: bigint;
-      isGlv: boolean;
-    };
-  } = {} as any;
+  const tokens: { tokenData: TokenData; totalSupplyUsd: bigint; balanceUsd: bigint }[] = [];
 
-  for (const market of values(marketsInfoData)) {
+  for (const market of Object.values(marketsInfoData)) {
     if (market.isDisabled) {
       continue;
     }
@@ -42,74 +31,29 @@ export function sortGmTokensDefault(marketsInfoData: GlvAndGmMarketsInfoData, ma
       marketTokenData.prices.minPrice
     )!;
 
-    const isGlv = isGlvInfo(market);
+    const balanceUsd = convertToUsd(
+      marketTokenData.balance,
+      marketTokenData.decimals,
+      marketTokenData.prices.minPrice
+    )!;
 
-    let groupKey: Address | "nonZero";
-    if (marketTokenData.balance !== undefined && marketTokenData.balance !== 0n) {
-      groupKey = "nonZero";
-    } else if (!isGlv && market.isSpotOnly) {
-      groupKey = market.marketTokenAddress as Address;
-    } else {
-      groupKey = isGlv ? (market.glvTokenAddress as Address) : (market.indexTokenAddress as Address);
-    }
-
-    if (!groupedTokens[groupKey]) {
-      groupedTokens[groupKey] = {
-        tokens: [],
-        totalSupplyUsd: 0n,
-        isGlv: isGlv,
-      };
-    }
-
-    groupedTokens[groupKey].tokens.push({
+    tokens.push({
       tokenData: marketTokenData,
       totalSupplyUsd: totalSupplyUsd,
+      balanceUsd: balanceUsd,
     });
-    groupedTokens[groupKey].totalSupplyUsd += totalSupplyUsd;
   }
 
-  // sort withing each group
-  for (const [groupKey, indexTokenGroup] of entries(groupedTokens)) {
-    if (groupKey === "nonZero") {
-      // by balance usd descending
-      indexTokenGroup.tokens.sort((a, b) => {
-        const aUsd = convertToUsd(a.tokenData.balance, a.tokenData.decimals, a.tokenData.prices.minPrice)!;
-        const bUsd = convertToUsd(b.tokenData.balance, b.tokenData.decimals, b.tokenData.prices.minPrice)!;
-        return aUsd > bUsd ? -1 : 1;
-      });
-      continue;
+  // Sort by user balance first (descending), then by TVL (descending)
+  tokens.sort((a, b) => {
+    // Compare balances directly - tokens with higher balance come first
+    if (a.balanceUsd !== b.balanceUsd) {
+      return a.balanceUsd > b.balanceUsd ? -1 : 1;
     }
 
-    // by total supply descending
-    indexTokenGroup.tokens.sort((a, b) => {
-      return a.totalSupplyUsd > b.totalSupplyUsd ? -1 : 1;
-    });
-  }
+    // If balances are equal, sort by total supply descending
+    return a.totalSupplyUsd > b.totalSupplyUsd ? -1 : 1;
+  });
 
-  // sort and unwrap groups
-  const sortedTokens = entries(groupedTokens)
-    .sort(([aKey, a], [bKey, b]) => {
-      // nonZero first
-      if (aKey === "nonZero") {
-        return -1;
-      }
-      if (bKey === "nonZero") {
-        return 1;
-      }
-
-      // GLV second
-      if (a.isGlv && !b.isGlv) {
-        return -1;
-      }
-      if (!a.isGlv && b.isGlv) {
-        return 1;
-      }
-
-      // by total supply descending
-      return a.totalSupplyUsd > b.totalSupplyUsd ? -1 : 1;
-    })
-    .flatMap((groupEntree) => groupEntree[1].tokens)
-    .map((token) => token.tokenData);
-
-  return sortedTokens;
+  return tokens.map((token) => token.tokenData);
 }
