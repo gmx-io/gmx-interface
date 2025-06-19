@@ -300,7 +300,7 @@ export type SwapMetricData = {
 
 export type IncreaseOrderMetricData = PositionOrderMetricParams & {
   metricId: `position:${string}`;
-  metricType: "increasePosition" | "limitOrder" | "twapIncreaseOrder";
+  metricType: "increasePosition" | "limitOrder";
   leverage: string | undefined;
   isFirstOrder: boolean | undefined;
   isLeverageEnabled: boolean | undefined;
@@ -320,7 +320,7 @@ export type IncreaseOrderMetricData = PositionOrderMetricParams & {
 
 export type DecreaseOrderMetricData = PositionOrderMetricParams & {
   metricId: `position:${string}`;
-  metricType: "decreasePosition" | "takeProfitOrder" | "stopLossOrder" | "twapDecreaseOrder";
+  metricType: "decreasePosition" | "takeProfitOrder" | "stopLossOrder";
   place: "tradeBox" | "positionSeller";
   isFullClose: boolean | undefined;
   decreaseSwapType: DecreasePositionSwapType | undefined;

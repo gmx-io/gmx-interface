@@ -234,9 +234,7 @@ export function initIncreaseOrderMetricData({
   fastExpressParams: ExpressTxnParams | undefined;
 }) {
   let metricType: IncreaseOrderMetricData["metricType"] = "increasePosition";
-  if (tradeMode === TradeMode.Twap) {
-    metricType = "twapIncreaseOrder";
-  } else if (orderType === OrderType.LimitIncrease) {
+  if (orderType === OrderType.LimitIncrease) {
     metricType = "limitOrder";
   }
 
@@ -358,9 +356,7 @@ export function initDecreaseOrderMetricData({
   fastExpressParams: ExpressTxnParams | undefined;
 }) {
   let metricType: DecreaseOrderMetricData["metricType"] = "decreasePosition";
-  if (tradeMode === TradeMode.Twap) {
-    metricType = "twapDecreaseOrder";
-  } else if (orderType === OrderType.LimitDecrease) {
+  if (orderType === OrderType.LimitDecrease) {
     metricType = "takeProfitOrder";
   } else if (orderType === OrderType.StopLossDecrease) {
     metricType = "stopLossOrder";
