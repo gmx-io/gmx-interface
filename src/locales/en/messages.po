@@ -2438,10 +2438,6 @@ msgstr "TVL"
 msgid "Shift Fee"
 msgstr "Shift Fee"
 
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-#~ msgid "Allowed slippage"
-#~ msgstr "Allowed slippage"
-
 #: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "GLP Pool"
@@ -4240,10 +4236,6 @@ msgstr "{daysConsidered}d Earned Fees"
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Fulfilling order request"
 msgstr "Fulfilling order request"
-
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
-msgid "It is suggested to keep at least 10 USD in the gas payment token to be able to perform transactions."
-msgstr "It is suggested to keep at least 10 USD in the gas payment token to be able to perform transactions."
 
 #: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6456,10 +6448,6 @@ msgstr "Deposit failed"
 msgid "Withdrawing Funds from GMX"
 msgstr "Withdrawing Funds from GMX"
 
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-#~ msgid "Min receive"
-#~ msgstr "Min receive"
-
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Notifications"
 msgstr "Notifications"
@@ -8258,10 +8246,6 @@ msgstr "Keep leverage is not available as Position exceeds max. allowed leverage
 msgid "Add {0} to Metamask"
 msgstr "Add {0} to Metamask"
 
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-msgid "It is suggested to keep at least 10 USD in the native token to be able to perform transactions."
-msgstr "It is suggested to keep at least 10 USD in the native token to be able to perform transactions."
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
 msgstr "Failed Stop Loss"
@@ -8446,6 +8430,10 @@ msgstr "Share Position"
 #: src/components/Exchange/SwapBox.jsx
 msgid "Min leverage: 1.1x"
 msgstr "Min leverage: 1.1x"
+
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+msgid "You’re withdrawing {0}, your gas token. It’s recommended to keep $10 in {1} for transactions, or switch your gas token in settings."
+msgstr "You’re withdrawing {0}, your gas token. It’s recommended to keep $10 in {1} for transactions, or switch your gas token in settings."
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx

@@ -9,7 +9,6 @@ import { useAccount } from "wagmi";
 
 import { getChainName, SettlementChainId } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
-import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import {
   useGmxAccountModalOpen,
@@ -582,16 +581,6 @@ export const WithdrawView = () => {
 
     const maxAmount = bigMath.max(selectedToken.balance - buffer, 0n);
 
-    if (maxAmount === 0n) {
-      helperToast.error(
-        t`It is suggested to keep at least 10 USD in the gas payment token to be able to perform transactions.`,
-        {
-          autoClose: TOAST_AUTO_CLOSE_TIME,
-        }
-      );
-      return;
-    }
-
     setInputValue(formatAmountFree(maxAmount, gasPaymentToken.decimals));
   }, [
     account,
@@ -601,6 +590,49 @@ export const WithdrawView = () => {
     gasPaymentToken?.prices,
     selectedToken,
     setInputValue,
+    srcChainId,
+  ]);
+
+  const shouldShowMinRecommendedAmount = useMemo(() => {
+    if (
+      selectedToken === undefined ||
+      selectedToken.balance === undefined ||
+      selectedToken.balance === 0n ||
+      srcChainId === undefined ||
+      account === undefined ||
+      inputAmount === undefined ||
+      inputAmount <= 0n
+    ) {
+      return false;
+    }
+
+    const canSelectedTokenBeUsedAsGasPaymentToken = getGasPaymentTokens(chainId).includes(selectedToken.address);
+
+    if (!canSelectedTokenBeUsedAsGasPaymentToken) {
+      return false;
+    }
+
+    if (gasPaymentToken?.address !== selectedToken.address) {
+      return false;
+    }
+
+    const buffer = convertToTokenAmount(
+      10n * 10n ** BigInt(USD_DECIMALS),
+      gasPaymentToken.decimals,
+      getMidPrice(gasPaymentToken.prices)
+    )!;
+
+    const maxAmount = bigMath.max(selectedToken.balance - inputAmount - buffer, 0n);
+
+    return maxAmount === 0n;
+  }, [
+    account,
+    chainId,
+    gasPaymentToken?.address,
+    gasPaymentToken?.decimals,
+    gasPaymentToken?.prices,
+    inputAmount,
+    selectedToken,
     srcChainId,
   ]);
 
@@ -824,6 +856,15 @@ export const WithdrawView = () => {
           <Trans>
             The amount you are trying to withdraw is below the limit. Please try an amount larger than{" "}
             {lowerLimitFormatted}.
+          </Trans>
+        </AlertInfoCard>
+      )}
+
+      {shouldShowMinRecommendedAmount && (
+        <AlertInfoCard type="info" className="my-4">
+          <Trans>
+            You’re withdrawing {selectedToken?.symbol}, your gas token. It’s recommended to keep $10 in{" "}
+            {selectedToken?.symbol} for transactions, or switch your gas token in settings.
           </Trans>
         </AlertInfoCard>
       )}

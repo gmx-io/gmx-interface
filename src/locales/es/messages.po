@@ -2438,10 +2438,6 @@ msgstr "TVL"
 msgid "Shift Fee"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-#~ msgid "Allowed slippage"
-#~ msgstr ""
-
 #: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "GLP Pool"
@@ -4236,10 +4232,6 @@ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Fulfilling order request"
-msgstr ""
-
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
-msgid "It is suggested to keep at least 10 USD in the gas payment token to be able to perform transactions."
 msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
@@ -6453,10 +6445,6 @@ msgstr ""
 msgid "Withdrawing Funds from GMX"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-#~ msgid "Min receive"
-#~ msgstr ""
-
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Notifications"
 msgstr ""
@@ -8252,10 +8240,6 @@ msgstr ""
 msgid "Add {0} to Metamask"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-msgid "It is suggested to keep at least 10 USD in the native token to be able to perform transactions."
-msgstr ""
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
 msgstr ""
@@ -8440,6 +8424,10 @@ msgstr "Compartir Posición"
 #: src/components/Exchange/SwapBox.jsx
 msgid "Min leverage: 1.1x"
 msgstr "Apalancamiento Mín.: 1.1x"
+
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+msgid "You’re withdrawing {0}, your gas token. It’s recommended to keep $10 in {1} for transactions, or switch your gas token in settings."
+msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx

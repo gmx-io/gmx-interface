@@ -14,7 +14,6 @@ import { useAccount } from "wagmi";
 import { AnyChainId, ContractsChainId, SettlementChainId, getChainName } from "config/chains";
 import { getContract } from "config/contracts";
 import { getChainIcon } from "config/icons";
-import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import {
   useGmxAccountDepositViewChain,
   useGmxAccountDepositViewTokenAddress,
@@ -189,16 +188,6 @@ export const DepositView = () => {
       )!;
 
       const maxAmount = bigMath.max(selectedTokenSourceChainBalance - buffer, 0n);
-
-      if (maxAmount === 0n) {
-        helperToast.error(
-          t`It is suggested to keep at least 10 USD in the native token to be able to perform transactions.`,
-          {
-            autoClose: TOAST_AUTO_CLOSE_TIME,
-          }
-        );
-        return;
-      }
 
       setInputValue(formatAmountFree(maxAmount, selectedToken.decimals));
       return;
