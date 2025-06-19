@@ -96,7 +96,9 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
             <PoolsDetailsMarketAmount
               label={<Trans>Wallet</Trans>}
               value={formatUsd(marketBalanceUsd)}
-              secondaryValue={`${formatBalanceAmount(marketBalance, marketToken?.decimals, undefined, true)} ${isGlv ? "GLV" : "GM"}`}
+              secondaryValue={`${formatBalanceAmount(marketBalance, marketToken?.decimals, undefined, {
+                showZero: true,
+              })} ${isGlv ? "GLV" : "GM"}`}
             />
           ) : null}
 

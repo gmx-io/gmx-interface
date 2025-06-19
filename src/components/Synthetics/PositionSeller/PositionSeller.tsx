@@ -710,6 +710,7 @@ export function PositionSeller() {
           decimals={position?.collateralToken.decimals ?? 0}
           symbol={position?.collateralToken.symbol}
           usd={decreaseAmounts?.receiveUsd}
+          isStable={position?.collateralToken.isStable}
         />
       }
     />
@@ -741,6 +742,7 @@ export function PositionSeller() {
                   decimals={receiveToken.decimals}
                   symbol={receiveToken.symbol}
                   usd={receiveUsd}
+                  isStable={receiveToken.isStable}
                 />
               </span>
             }

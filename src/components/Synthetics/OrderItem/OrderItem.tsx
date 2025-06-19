@@ -165,7 +165,8 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
     const tokenAmountText = formatBalanceAmount(
       signedTargetCollateralAmount,
       positionOrder.targetCollateralToken.decimals,
-      positionOrder.targetCollateralToken.isNative ? wrappedToken.symbol : positionOrder.targetCollateralToken.symbol
+      positionOrder.targetCollateralToken.isNative ? wrappedToken.symbol : positionOrder.targetCollateralToken.symbol,
+      { isStable: positionOrder.targetCollateralToken.isStable }
     );
 
     return `${tokenAmountText}`;
@@ -193,7 +194,8 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
                     positionOrder.initialCollateralToken.decimals,
                     positionOrder.initialCollateralToken[
                       positionOrder.shouldUnwrapNativeToken ? "baseSymbol" : "symbol"
-                    ]
+                    ],
+                    { isStable: positionOrder.initialCollateralToken.isStable }
                   )}{" "}
                   will be swapped to{" "}
                   {positionOrder.targetCollateralToken.isNative
@@ -229,10 +231,19 @@ export function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?
   if (isSwapOrderType(order.orderType)) {
     const { initialCollateralToken, targetCollateralToken, minOutputAmount, initialCollateralDeltaAmount } = order;
 
-    const fromTokenText = formatBalanceAmount(initialCollateralDeltaAmount, initialCollateralToken.decimals);
+    const fromTokenText = formatBalanceAmount(
+      initialCollateralDeltaAmount,
+      initialCollateralToken.decimals,
+      undefined,
+      {
+        isStable: initialCollateralToken.isStable,
+      }
+    );
     const fromTokenIcon = <TokenIcon symbol={initialCollateralToken.symbol} displaySize={18} importSize={24} />;
 
-    const toTokenText = formatBalanceAmount(minOutputAmount, targetCollateralToken.decimals);
+    const toTokenText = formatBalanceAmount(minOutputAmount, targetCollateralToken.decimals, undefined, {
+      isStable: targetCollateralToken.isStable,
+    });
     const toTokenIcon = <TokenIcon symbol={targetCollateralToken.symbol} displaySize={18} importSize={24} />;
 
     const handle = (
@@ -401,7 +412,9 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
     const swapOrder = order as SwapOrderInfo;
     const toAmount = swapOrder.minOutputAmount;
     const toToken = order.targetCollateralToken;
-    const toAmountText = formatBalanceAmount(toAmount, toToken.decimals, toToken.symbol);
+    const toAmountText = formatBalanceAmount(toAmount, toToken.decimals, toToken.symbol, {
+      isStable: toToken.isStable,
+    });
     const { swapRatioText, acceptablePriceText } = getSwapRatioText(order);
 
     return (
