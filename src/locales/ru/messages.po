@@ -158,8 +158,8 @@ msgid "Type"
 msgstr "Вид"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "Close order"
-msgstr ""
+#~ msgid "Close order"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order submitted!"
@@ -607,6 +607,10 @@ msgstr ""
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Telegram contact (optional)"
+msgstr ""
+
+#: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
+msgid "Market order will be cancellable in {minutesText}{seconds}s."
 msgstr ""
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
@@ -3083,6 +3087,7 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
+#: src/domain/synthetics/positions/utils.ts
 msgid "Market"
 msgstr "Рынок"
 
@@ -4465,6 +4470,10 @@ msgstr "Зарезервировано"
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Price below Liq. Price"
 msgstr "Цена ниже Ликв. Цены"
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#~ msgid "Market order will be cancellable in {minutes}m {seconds}s."
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take Profit / Stop Loss"
@@ -5913,6 +5922,7 @@ msgid "Max {0} long exceeded"
 msgstr "Максимальное {0} превышение лонга"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6020,6 +6030,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Failed to download trade history CSV."
+msgstr ""
+
+#: src/domain/synthetics/positions/utils.ts
+msgid "market"
 msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -6633,6 +6647,7 @@ msgid "Trigger price below highest limit price"
 msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
@@ -8444,6 +8459,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Ecosystem Projects"
+msgstr ""
+
+#: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
+msgid "Market order will be cancellable in ..."
 msgstr ""
 
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts

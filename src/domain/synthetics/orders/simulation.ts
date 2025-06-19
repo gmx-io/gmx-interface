@@ -24,6 +24,7 @@ import {
   extractTxnError,
   isContractError,
   parseError,
+  TxErrorType,
 } from "sdk/utils/errors";
 import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
@@ -33,6 +34,7 @@ export type SimulateExecuteParams = {
   prices: SimulationPrices;
   value: bigint;
   tokenPermits: SignedTokenPermit[];
+  isExpress: boolean;
   method?:
     | "simulateExecuteLatestDeposit"
     | "simulateExecuteLatestWithdrawal"
@@ -188,7 +190,10 @@ export async function simulateExecution(chainId: number, p: SimulateExecuteParam
   } catch (txnError) {
     const errorData = parseError(txnError);
 
-    if (errorData && isSimulationPassed(errorData)) {
+    const isPassed = errorData && isSimulationPassed(errorData);
+    const shouldIgnoreExpressNativeTokenBalance = errorData?.txErrorType === TxErrorType.NotEnoughFunds && p.isExpress;
+
+    if (isPassed || shouldIgnoreExpressNativeTokenBalance) {
       return;
     } else {
       throw extendError(txnError, {

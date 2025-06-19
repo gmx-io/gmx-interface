@@ -79,7 +79,10 @@ export async function getOpenOceanTxnData({
   const url = buildUrl(getOpenOceanUrl(chainId), "/swap_quote", {
     inTokenAddress: convertTokenAddress(chainId, tokenInAddress, "wrapped"),
     outTokenAddress: convertTokenAddress(chainId, tokenOutAddress, "wrapped"),
-    amount: formatTokenAmount(amountIn, tokenIn.decimals, undefined, { showAllSignificant: true }),
+    amount: formatTokenAmount(amountIn, tokenIn.decimals, undefined, {
+      showAllSignificant: true,
+      isStable: tokenIn.isStable,
+    }),
     gasPrice: gweiGasPrice,
     slippage: (slippage / 100).toString(),
     sender: senderAddress,
