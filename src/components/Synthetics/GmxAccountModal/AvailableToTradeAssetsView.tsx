@@ -35,34 +35,30 @@ type DisplayToken = {
   decimals: number;
 };
 
+const tokenSorter = (a: DisplayToken, b: DisplayToken): 1 | -1 | 0 => {
+  if (a.balanceUsd !== undefined && b.balanceUsd === undefined) {
+    return -1;
+  }
+
+  if (a.balanceUsd === undefined && b.balanceUsd !== undefined) {
+    return 1;
+  }
+
+  if (a.balanceUsd !== undefined && b.balanceUsd !== undefined) {
+    // sort by balanceUsd
+    return b.balanceUsd - a.balanceUsd > 0n ? 1 : -1;
+  }
+
+  return 0;
+};
+
 const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChainFilter?: boolean }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const titles = useLocalizedMap(FILTER_TITLE_MAP);
 
-  const sortedTokens = useMemo(() => {
-    return tokens.sort((a, b) => {
-      if (a.balanceUsd !== undefined && b.balanceUsd === undefined) {
-        // a first
-        return -1;
-      }
-
-      if (a.balanceUsd === undefined && b.balanceUsd !== undefined) {
-        // b first
-        return 1;
-      }
-
-      if (a.balanceUsd !== undefined && b.balanceUsd !== undefined) {
-        // sort by balanceUsd
-        return b.balanceUsd - a.balanceUsd > 0n ? 1 : -1;
-      }
-
-      return 0;
-    });
-  }, [tokens]);
-
   const sortedFilteredTokens = useMemo(() => {
-    const filteredTokens = sortedTokens.filter((token) => {
+    const filteredTokens = tokens.filter((token) => {
       const matchesSearch = token.symbol.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesChainFilter =
@@ -75,7 +71,7 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
     });
 
     return filteredTokens;
-  }, [sortedTokens, searchQuery, noChainFilter, activeFilter]);
+  }, [tokens, searchQuery, noChainFilter, activeFilter]);
 
   return (
     <div className="flex grow flex-col gap-8 overflow-y-hidden pt-16">
@@ -142,7 +138,7 @@ const AssetListMultichain = () => {
 
   const displayTokens = useMemo(() => {
     return Object.values(gmxAccountTokensData)
-      .filter((token) => !token.isNative)
+      .filter((token) => !token.isNative && token.balance !== 0n && token.balance !== undefined)
       .map(
         (token): DisplayToken => ({
           chainId: 0,
@@ -152,7 +148,8 @@ const AssetListMultichain = () => {
           balanceUsd: convertToUsd(token.balance, token.decimals, getMidPrice(token.prices)),
           decimals: token.decimals,
         })
-      );
+      )
+      .sort(tokenSorter);
   }, [gmxAccountTokensData]);
 
   return <AssetsList noChainFilter tokens={displayTokens} />;
@@ -164,16 +161,18 @@ const AssetListSettlementChain = () => {
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
 
   const displayTokens = useMemo(() => {
-    const gmxAccountDisplayTokens = Object.values(gmxAccountTokensData).map(
-      (token): DisplayToken => ({
-        chainId: 0,
-        symbol: token.symbol,
-        isGmxAccountBalance: true,
-        balance: token.balance,
-        balanceUsd: convertToUsd(token.balance, token.decimals, getMidPrice(token.prices)),
-        decimals: token.decimals,
-      })
-    );
+    const gmxAccountDisplayTokens = Object.values(gmxAccountTokensData)
+      .filter((token) => token.balance !== undefined && token.balance > 0n)
+      .map(
+        (token): DisplayToken => ({
+          chainId: 0,
+          symbol: token.symbol,
+          isGmxAccountBalance: true,
+          balance: token.balance,
+          balanceUsd: convertToUsd(token.balance, token.decimals, getMidPrice(token.prices)),
+          decimals: token.decimals,
+        })
+      );
 
     const settlementChainDisplayTokens = Object.values(tokensData || {})
       .map(
@@ -188,7 +187,9 @@ const AssetListSettlementChain = () => {
       )
       .filter((token) => token.balance !== undefined && token.balance > 0n);
 
-    const displayTokens: DisplayToken[] = [...gmxAccountDisplayTokens, ...settlementChainDisplayTokens];
+    const displayTokens: DisplayToken[] = [...gmxAccountDisplayTokens, ...settlementChainDisplayTokens].sort(
+      tokenSorter
+    );
 
     return displayTokens;
   }, [chainId, gmxAccountTokensData, tokensData]);
