@@ -4,29 +4,49 @@ import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL, FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
+import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { MarketConfig, MarketValues } from "sdk/modules/markets/types";
 import type { MarketInfo, MarketsData, MarketsInfoData } from "sdk/types/markets";
 
-import { buildMarketsConfigsRequest } from "./buildMarketsConfigsRequest";
-import { buildMarketsValuesRequest } from "./buildMarketsValuesRequest";
-import { TokensData, useTokensDataRequest } from "../../tokens";
+import { useGmxAccountTokensDataRequest } from "components/Synthetics/GmxAccountModal/hooks";
+
+import { TokensData, TokensDataResult, useTokensDataRequest } from "../../tokens";
 import { useClaimableFundingDataRequest } from "../useClaimableFundingDataRequest";
 import { useMarkets } from "../useMarkets";
-import { useFastMarketsInfoRequest } from "./useFastMarketsInfoRequest";
 import { getMarketDivisor } from "../utils";
+import { buildMarketsConfigsRequest } from "./buildMarketsConfigsRequest";
+import { buildMarketsValuesRequest } from "./buildMarketsValuesRequest";
+import { useFastMarketsInfoRequest } from "./useFastMarketsInfoRequest";
 
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
+  walletTokensData?: TokensData;
+  gmxAccountTokensData?: TokensData;
   pricesUpdatedAt?: number;
   isBalancesLoaded?: boolean;
   error?: Error;
 };
 
-export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
+export function useMarketsInfoRequest(chainId: ContractsChainId, srcChainId?: SourceChainId): MarketsInfoResult {
   const { marketsData, marketsAddresses } = useMarkets(chainId);
-  const { tokensData, pricesUpdatedAt, error: tokensDataError, isBalancesLoaded } = useTokensDataRequest(chainId);
+
+  const settlementChainTokensDataResult = useTokensDataRequest(chainId);
+  const gmxAccountTokensDataResult = useGmxAccountTokensDataRequest(chainId);
+
+  const walletTokensDataResult: TokensDataResult | undefined =
+    srcChainId === undefined ? settlementChainTokensDataResult : undefined;
+  const walletTokensData = walletTokensDataResult?.tokensData;
+  const gmxAccountTokensData = gmxAccountTokensDataResult?.tokensData;
+
+  const {
+    tokensData,
+    pricesUpdatedAt,
+    error: tokensDataError,
+    isBalancesLoaded,
+  } = srcChainId ? gmxAccountTokensDataResult : settlementChainTokensDataResult;
+
   const { claimableFundingData } = useClaimableFundingDataRequest(chainId);
   const { fastMarketInfoData } = useFastMarketsInfoRequest(chainId);
 
@@ -107,6 +127,8 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
   return {
     marketsInfoData: isDependenciesLoading ? undefined : mergedData,
     tokensData,
+    walletTokensData,
+    gmxAccountTokensData,
     pricesUpdatedAt,
     error,
     isBalancesLoaded,
@@ -120,7 +142,7 @@ function useMarketsValuesRequest({
   marketsData,
   tokensData,
 }: {
-  chainId: number;
+  chainId: ContractsChainId;
   isDependenciesLoading: boolean;
   marketsAddresses: string[] | undefined;
   marketsData: MarketsData | undefined;
@@ -129,7 +151,7 @@ function useMarketsValuesRequest({
   const dataStoreAddress = getContract(chainId, "DataStore");
   const syntheticsReaderAddress = getContract(chainId, "SyntheticsReader");
 
-  const marketsValuesQuery = useMulticall(chainId, "useMarketsValuesRequest", {
+  const marketsValuesQuery = useMulticall(chainId, `useMarketsValuesRequest-${chainId}`, {
     key:
       !isDependenciesLoading && marketsAddresses?.length && marketsAddresses.length > 0 ? [...marketsAddresses] : null,
 
@@ -248,7 +270,7 @@ function useMarketsConfigsRequest({
   isDependenciesLoading,
   marketsAddresses,
 }: {
-  chainId: number;
+  chainId: ContractsChainId;
   isDependenciesLoading: boolean;
   marketsAddresses: string[] | undefined;
 }) {

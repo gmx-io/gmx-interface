@@ -1,7 +1,6 @@
 import { t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { FaChevronDown } from "react-icons/fa";
-import { FaChevronUp } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 import { getContract } from "config/contracts";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -26,9 +25,15 @@ import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { MarketState } from "components/MarketSelector/types";
+import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
+import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
+import { GmFees } from "../../GmFees/GmFees";
+import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
+import { SelectedPool } from "../SelectedPool";
+import { Swap } from "../Swap";
 import { Operation } from "../types";
 import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
 import { useGmWarningState } from "../useGmWarningState";
@@ -38,10 +43,6 @@ import { useShiftFees } from "./useShiftFees";
 import { useShiftSubmitState } from "./useShiftSubmitState";
 import { useUpdateMarkets } from "./useUpdateMarkets";
 import { useUpdateTokens } from "./useUpdateTokens";
-import { GmFees } from "../../GmFees/GmFees";
-import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
-import { SelectedPool } from "../SelectedPool";
-import { Swap } from "../Swap";
 
 export function GmShiftBox({
   selectedGlvOrMarketAddress,
@@ -310,10 +311,14 @@ export function GmShiftBox({
           shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
         />
 
+        <SwitchToSettlementChainWarning topic="liquidity" />
+
         <div className="w-full border-b border-stroke-primary pb-14">
-          <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
-            {submitState.text}
-          </Button>
+          <SwitchToSettlementChainButtons>
+            <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
+              {submitState.text}
+            </Button>
+          </SwitchToSettlementChainButtons>
         </div>
 
         <ExchangeInfo className={shouldShowWarning ? undefined : "mt-14"} dividerClassName="App-card-divider">

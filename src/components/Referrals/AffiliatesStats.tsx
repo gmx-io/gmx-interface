@@ -5,7 +5,7 @@ import { FiPlus, FiTwitter } from "react-icons/fi";
 import { IoWarningOutline } from "react-icons/io5";
 import { useCopyToClipboard } from "react-use";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl, ContractsChainId } from "config/chains";
 import { isDevelopment } from "config/env";
 import { RebateDistributionType, ReferralCodeStats, TotalReferralsStats, useTiers } from "domain/referrals";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
@@ -48,9 +48,9 @@ import usePagination, { DEFAULT_PAGE_SIZE } from "./usePagination";
 import "./AffiliatesStats.scss";
 
 type Props = {
-  chainId: number;
+  chainId: ContractsChainId;
   referralsData?: TotalReferralsStats;
-  handleCreateReferralCode: (code: string) => void;
+  handleCreateReferralCode: (code: string) => Promise<unknown>;
   setRecentlyAddedCodes: (codes: ReferralCodeStats[]) => void;
   recentlyAddedCodes?: ReferralCodeStats[];
 };

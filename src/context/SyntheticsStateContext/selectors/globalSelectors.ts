@@ -1,5 +1,5 @@
-import { FeaturesSettings } from "domain/synthetics/features/useDisabledFeatures";
-import { getIsInvalidSubaccount } from "domain/synthetics/subaccount";
+import type { FeaturesSettings } from "domain/synthetics/features/useDisabledFeatures";
+import { getIsInvalidSubaccount } from "domain/synthetics/subaccount/utils";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorDeprecated } from "../utils";
@@ -12,11 +12,14 @@ export const selectPositionsInfoData = (s: SyntheticsState) => s.globals.positio
 export const selectIsPositionsLoading = (s: SyntheticsState) => s.globals.positionsInfo.isLoading;
 export const selectMarketsInfoData = (s: SyntheticsState) => s.globals.marketsInfo.marketsInfoData;
 export const selectTokensData = (s: SyntheticsState) => s.globals.marketsInfo.tokensData;
+export const selectWalletTokensData = (s: SyntheticsState) => s.globals.marketsInfo.walletTokensData;
+export const selectGmxAccountTokensData = (s: SyntheticsState) => s.globals.marketsInfo.gmxAccountTokensData;
 export const selectPricesUpdatedAt = (s: SyntheticsState) => s.globals.marketsInfo.pricesUpdatedAt;
 export const selectGmMarkets = (s: SyntheticsState) => s.globals.markets.marketsData;
 export const selectUiFeeFactor = (s: SyntheticsState) => s.globals.uiFeeFactor;
 export const selectUserReferralInfo = (s: SyntheticsState) => s.globals.userReferralInfo;
 export const selectChainId = (s: SyntheticsState) => s.globals.chainId;
+export const selectSrcChainId = (s: SyntheticsState) => s.globals.srcChainId;
 export const selectDepositMarketTokensData = (s: SyntheticsState) => s.globals.depositMarketTokensData;
 export const selectIsFirstOrder = (s: SyntheticsState) => s.globals.isFirstOrder;
 export const selectFeatures = (s: SyntheticsState) => s.features;
@@ -30,7 +33,7 @@ export const selectExpressNoncesData = (s: SyntheticsState) => s.expressNoncesDa
 export const selectUpdateSubaccountSettings = (s: SyntheticsState) => s.subaccountState.updateSubaccountSettings;
 export const selectL1ExpressOrderGasReference = (s: SyntheticsState) => s.l1ExpressOrderGasReference;
 
-export const makeSelectEnabledFeature = (feature: keyof FeaturesSettings) => {
+const makeSelectEnabledFeature = (feature: keyof FeaturesSettings) => {
   return createSelector((q) => {
     const features = q(selectFeatures);
     return features?.[feature] ?? false;

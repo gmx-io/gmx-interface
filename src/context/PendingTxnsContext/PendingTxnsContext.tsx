@@ -1,6 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useMemo, useState } from "react";
 
+import { parseError } from "ab/testMultichain/parseError";
 import { getExplorerUrl } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
@@ -9,7 +10,6 @@ import {
   getMinimumExecutionFeeBufferBps,
 } from "domain/synthetics/fees/utils/executionFee";
 import { useChainId } from "lib/chains";
-import { parseError } from "lib/errors";
 import { getCallStaticError } from "lib/errors/additionalValidation";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
@@ -50,6 +50,7 @@ export function usePendingTxns() {
 }
 
 export function PendingTxnsContextProvider({ children }: { children: ReactNode }) {
+  // TODO: probably for multichain we need to use just provider instead of signer
   const signer = useEthersSigner();
   const { chainId } = useChainId();
   const { setIsSettingsVisible, executionFeeBufferBps } = useSettings();
@@ -75,7 +76,7 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
               undefined,
               pendingTxn.hash
             );
-            const errorData = onchainError ? parseError(onchainError) : undefined;
+            const errorData = onchainError ? parseError(onchainError as any) : undefined;
 
             let toastMsg: ReactNode;
 

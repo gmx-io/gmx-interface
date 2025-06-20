@@ -1,12 +1,12 @@
-import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
-import { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
-import { ExpressTxnData } from "lib/transactions";
-import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
+import type { LocalActions, NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
+import type { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
+import type { ExpressTxnData } from "lib/transactions";
+import type { ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
-import { GasLimitsConfig, L1ExpressOrderGasReference } from "../fees";
-import { MarketsInfoData } from "../markets";
-import { Subaccount, SubaccountValidations } from "../subaccount";
-import { FindSwapPath } from "../trade";
+import type { GasLimitsConfig, L1ExpressOrderGasReference } from "../fees";
+import type { MarketsInfoData } from "../markets";
+import type { Subaccount, SubaccountValidations } from "../subaccount";
+import type { FindSwapPath } from "../trade";
 
 export type GlobalExpressParams = {
   tokensData: TokensData;
@@ -16,6 +16,7 @@ export type GlobalExpressParams = {
   gasPaymentTokenAddress: string;
   relayerFeeTokenAddress: string;
   gasPaymentToken: TokenData;
+  // gmxAccountGasPaymentToken: TokenData;
   relayerFeeToken: TokenData;
   findFeeSwapPath: FindSwapPath;
   gasPrice: bigint;
@@ -31,7 +32,7 @@ export type ExpressParamsEstimationMethod = "approximate" | "estimateGas";
 
 export type ExpressTxnParams = {
   subaccount: Subaccount | undefined;
-  relayParamsPayload: RawRelayParamsPayload;
+  relayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload;
   gasPaymentParams: GasPaymentParams;
   gasLimit: bigint;
   l1GasLimit: bigint;
@@ -40,6 +41,7 @@ export type ExpressTxnParams = {
   gasPaymentValidations: GasPaymentValidations;
   subaccountValidations: SubaccountValidations | undefined;
   isSponsoredCall: boolean;
+  localAction: keyof LocalActions;
 };
 
 export type ExpressTransactionBuilder = ({
@@ -48,7 +50,7 @@ export type ExpressTransactionBuilder = ({
   subaccount,
   noncesData,
 }: {
-  relayParams: RawRelayParamsPayload;
+  relayParams: RawRelayParamsPayload | RawMultichainRelayParamsPayload;
   gasPaymentParams: GasPaymentParams;
   subaccount: Subaccount | undefined;
   noncesData: NoncesData | undefined;
@@ -84,7 +86,12 @@ export type RelayParamsPayload = {
   userNonce: bigint;
 };
 
+export type MultichainRelayParamsPayload = RelayParamsPayload & {
+  desChainId: bigint;
+};
+
 export type RawRelayParamsPayload = Omit<RelayParamsPayload, "userNonce" | "deadline">;
+export type RawMultichainRelayParamsPayload = Omit<MultichainRelayParamsPayload, "userNonce" | "deadline">;
 
 export type OracleParamsPayload = {
   tokens: string[];

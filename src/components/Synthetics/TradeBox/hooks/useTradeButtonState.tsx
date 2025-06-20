@@ -31,6 +31,7 @@ import {
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
   selectTradeboxIncreasePositionAmounts,
+  selectTradeboxIsFromTokenGmxAccount,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxMaxLeverage,
   selectTradeboxPayAmount,
@@ -64,7 +65,7 @@ import { mustNeverExist } from "lib/types";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
-import useWallet from "lib/wallets/useWallet";
+import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { getContract } from "sdk/configs/contracts";
 import { getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/types/fees";
@@ -98,7 +99,7 @@ export function useTradeboxButtonState({
   setToTokenInputValue,
 }: TradeboxButtonStateOptions): TradeboxButtonState {
   const chainId = useSelector(selectChainId);
-  const { signer } = useWallet();
+  const signer = useEthersSigner();
 
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isSwap, isIncrease, isLimit, isMarket, isTwap } = tradeFlags;
@@ -120,6 +121,7 @@ export function useTradeboxButtonState({
   const payTokenAllowance = useSelector(selectTradeboxTokensAllowance);
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const tokenPermits = useSelector(selectTokenPermits);
+  const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
 
   const { setPendingTxns } = usePendingTxns();
   const { openConnectModal } = useConnectModal();
@@ -141,6 +143,10 @@ export function useTradeboxButtonState({
   });
 
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
+    if (isFromTokenGmxAccount) {
+      return { tokensToApprove: [], isAllowanceLoaded: true };
+    }
+
     if (
       !fromToken ||
       payAmount === undefined ||
@@ -180,6 +186,7 @@ export function useTradeboxButtonState({
     gasPaymentToken,
     gasPaymentTokenAllowance?.isLoaded,
     gasPaymentTokenAllowance?.tokensAllowanceData,
+    isFromTokenGmxAccount,
     payAmount,
     payTokenAllowance.isLoaded,
     payTokenAllowance.spenderAddress,
@@ -192,6 +199,8 @@ export function useTradeboxButtonState({
   const detectAndSetAvailableMaxLeverage = useDetectAndSetAvailableMaxLeverage({ setToTokenInputValue });
 
   const tradeError = useSelector(selectTradeboxTradeTypeError);
+
+  // console.log("tokensToApprove", tokensToApprove);
 
   const { buttonErrorText, tooltipContent } = useMemo(() => {
     const commonError = getCommonError({
@@ -296,7 +305,11 @@ export function useTradeboxButtonState({
       return;
     }
 
-    if (isAllowanceLoaded && tokensToApprove.length) {
+    if (!signer) {
+      return;
+    }
+
+    if (!isFromTokenGmxAccount && isAllowanceLoaded && tokensToApprove.length) {
       const tokenToApprove = tokensToApprove[0];
 
       if (!chainId || isApproving || !tokenToApprove) return;
@@ -366,18 +379,19 @@ export function useTradeboxButtonState({
     });
   }, [
     account,
+    signer,
+    isFromTokenGmxAccount,
     isAllowanceLoaded,
     tokensToApprove,
     setStage,
     isWrapOrUnwrap,
     isSwap,
     isIncrease,
+    expressParams,
     openConnectModal,
     chainId,
     isApproving,
-    signer,
     setPendingTxns,
-    expressParams,
     addTokenPermit,
     onSubmitWrapOrUnwrap,
     onSubmitSwap,

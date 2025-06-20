@@ -85,6 +85,7 @@ import {
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
+import { useMultichainEvents } from "./useMultichainEvents";
 import { getPendingOrderKey } from "./utils";
 
 export const SyntheticsEventsContext = createContext({});
@@ -155,7 +156,14 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       refreshSubaccountData();
       refreshNonces();
-      updateLocalAction(pendingExpressTxn.subaccountApproval ? "subaccountRelayRouter" : "relayRouter", 1n);
+
+      let action = pendingExpressTxn.localAction;
+      if (!action && pendingExpressTxn.subaccountApproval) {
+        action = "subaccountRelayRouter";
+      } else {
+        action = "relayRouter";
+      }
+      updateLocalAction(action, 1n);
 
       if (
         pendingExpressTxn?.subaccountApproval &&
@@ -1020,6 +1028,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     [gelatoTaskStatuses, pendingExpressTxnParams]
   );
 
+  const multichainEventsState = useMultichainEvents({
+    hasPageLostFocus,
+  });
+
   const contextState: SyntheticsEventsContextType = useMemo(() => {
     return {
       orderStatuses,
@@ -1168,6 +1180,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       setShiftStatusViewed(key: string) {
         setShiftStatuses((old) => updateByKey(old, key, { isViewed: true }));
       },
+
+      ...multichainEventsState,
     };
   }, [
     orderStatuses,
@@ -1182,6 +1196,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     positionDecreaseEvents,
     pendingExpressTxnParams,
     gelatoTaskStatuses,
+    multichainEventsState,
     marketsInfoData,
     tokensData,
     glvAndGmMarketsData,

@@ -59,6 +59,7 @@ import {
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
 import { expandDecimals, formatAmountFree } from "lib/numbers";
+import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
@@ -89,10 +90,11 @@ export function usePositionEditorButtonState(operation: Operation): {
 } {
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const allowedSlippage = useSavedAllowedSlippage();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { shouldDisableValidationForTesting } = useSettings();
   const tokensData = useTokensData();
   const { account, signer } = useWallet();
+  const { provider } = useJsonRpcProvider(chainId);
   const { openConnectModal } = useConnectModal();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
   const { minCollateralUsd } = usePositionsConstants();
@@ -246,9 +248,14 @@ export function usePositionEditorButtonState(operation: Operation): {
     expressParamsPromise,
   } = useExpressOrdersParams({
     orderParams: batchParams,
+    isGmxAccount: srcChainId !== undefined,
   });
 
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
+    if (srcChainId !== undefined) {
+      return { tokensToApprove: [], isAllowanceLoaded: true };
+    }
+
     if (!selectedCollateralAddress || collateralDeltaAmount === undefined) {
       return { tokensToApprove: [], isAllowanceLoaded: false };
     }
@@ -276,6 +283,7 @@ export function usePositionEditorButtonState(operation: Operation): {
 
     return approvalRequirements;
   }, [
+    srcChainId,
     selectedCollateralAddress,
     collateralDeltaAmount,
     chainId,
@@ -477,11 +485,13 @@ export function usePositionEditorButtonState(operation: Operation): {
       expressParams,
       asyncExpressParams,
       fastExpressParams,
+      chainId: srcChainId ?? chainId,
+      isCollateralFromMultichain: srcChainId !== undefined,
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
 
-    if (!batchParams || !tokensData || !signer) {
+    if (!batchParams || !tokensData || !signer || !provider) {
       helperToast.error(t`Error submitting order`);
       sendTxnValidationErrorMetric(metricData.metricId);
       return;
@@ -492,10 +502,12 @@ export function usePositionEditorButtonState(operation: Operation): {
     const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
+      provider,
       batchParams,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
       noncesData,
+      isGmxAccount: srcChainId !== undefined,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
         : {

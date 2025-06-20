@@ -2,8 +2,9 @@ import uniq from "lodash/uniq";
 import { encodeFunctionData, zeroAddress, zeroHash } from "viem";
 
 import ExchangeRouterAbi from "abis/ExchangeRouter.json";
+import { abis } from "abis/index";
 import ERC20ABI from "abis/Token.json";
-import { getExcessiveExecutionFee, getHighExecutionFee } from "configs/chains";
+import { ARBITRUM_SEPOLIA, getExcessiveExecutionFee, getHighExecutionFee, ContractsChainId } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { convertTokenAddress, getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { ExecutionFee } from "types/fees";
@@ -78,10 +79,11 @@ export type CreateOrderPayload = {
   shouldUnwrapNativeToken: boolean;
   autoCancel: boolean;
   referralCode: string;
+  dataList: string[];
 };
 
 export type UpdateOrderParams = {
-  chainId: number;
+  chainId: ContractsChainId;
   indexTokenAddress: string;
   orderKey: string;
   orderType: OrderType;
@@ -139,7 +141,7 @@ export type ExternalCallsPayload = {
 };
 
 export type CommonOrderParams = {
-  chainId: number;
+  chainId: ContractsChainId;
   receiver: string;
   executionFeeAmount: bigint;
   executionGasLimit: bigint;
@@ -230,6 +232,7 @@ export function buildSwapOrderPayload(p: SwapOrderParams): CreateOrderTxnParams<
     shouldUnwrapNativeToken: tokenTransfersParams.isNativePayment || tokenTransfersParams.isNativeReceive,
     autoCancel: p.autoCancel,
     referralCode: p.referralCode ?? zeroHash,
+    dataList: [],
   };
 
   return {
@@ -293,6 +296,7 @@ export function buildIncreaseOrderPayload(
     shouldUnwrapNativeToken: tokenTransfersParams.isNativePayment,
     autoCancel: p.autoCancel,
     referralCode: p.referralCode ?? zeroHash,
+    dataList: [],
   };
 
   return {
@@ -351,6 +355,7 @@ export function buildDecreaseOrderPayload(
     shouldUnwrapNativeToken: p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS,
     autoCancel: p.autoCancel,
     referralCode: p.referralCode ?? zeroHash,
+    dataList: [],
   };
 
   return {
@@ -562,7 +567,7 @@ export function buildTokenTransfersParamsForDecrease({
   minOutputUsd,
   receiveTokenAddress,
 }: {
-  chainId: number;
+  chainId: ContractsChainId;
   executionFeeAmount: bigint;
   collateralTokenAddress: string;
   collateralDeltaAmount: bigint;
@@ -606,7 +611,7 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
   minOutputAmount,
   swapPath,
 }: {
-  chainId: number;
+  chainId: ContractsChainId;
   receiver: string;
   payTokenAddress: string;
   payTokenAmount: bigint;
@@ -786,7 +791,13 @@ function combineTransfers(tokenTransfers: TokenTransfer[]) {
   return { tokenTransfers: Object.values(transfersMap), value };
 }
 
-export function getBatchOrderMulticallPayload({ params }: { params: BatchOrderTxnParams }) {
+export function getBatchOrderMulticallPayload({
+  params,
+  chainId,
+}: {
+  params: BatchOrderTxnParams;
+  chainId: ContractsChainId;
+}) {
   const { createOrderParams, updateOrderParams, cancelOrderParams } = params;
 
   const multicall: ExchangeRouterCall[] = [];
@@ -810,7 +821,7 @@ export function getBatchOrderMulticallPayload({ params }: { params: BatchOrderTx
     value += cancelValue;
   }
 
-  const { encodedMulticall, callData } = encodeExchangeRouterMulticall(multicall);
+  const { encodedMulticall, callData } = encodeExchangeRouterMulticall(chainId, multicall);
 
   return { multicall, value, encodedMulticall, callData };
 }
@@ -898,10 +909,10 @@ export function buildCancelOrderMulticall({ params }: { params: CancelOrderTxnPa
   };
 }
 
-export function encodeExchangeRouterMulticall(multicall: ExchangeRouterCall[]) {
+export function encodeExchangeRouterMulticall(chainId: ContractsChainId, multicall: ExchangeRouterCall[]) {
   const encodedMulticall = multicall.map((call) =>
     encodeFunctionData({
-      abi: ExchangeRouterAbi.abi,
+      abi: chainId === ARBITRUM_SEPOLIA ? abis.ExchangeRouterArbitrumSepolia : abis.ExchangeRouter,
       functionName: call.method,
       args: call.params,
     })
