@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
 import { Contract } from "ethers";
 import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -838,7 +839,7 @@ export const DepositView = () => {
           </div>
         )}
 
-        <div className="flex flex-col gap-4">
+        <div className={cx("flex flex-col gap-4", { invisible: depositViewTokenAddress === undefined })}>
           <div className="text-body-small flex items-center justify-between gap-4 text-slate-100">
             <Trans>Deposit</Trans>
             {selectedTokenSourceChainBalance !== undefined && selectedToken !== undefined && (
