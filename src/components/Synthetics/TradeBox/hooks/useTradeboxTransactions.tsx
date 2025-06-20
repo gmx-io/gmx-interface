@@ -286,12 +286,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       noncesData,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
-      simulationParams: shouldDisableValidationForTesting
-        ? undefined
-        : {
-            tokensData,
-            blockTimestampData,
-          },
+      simulationParams: undefined,
       callback: makeOrderTxnCallback({
         metricId: metricData.metricId,
         slippageInputId,
@@ -300,7 +295,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           setShouldFallbackToInternalSwap(true);
         },
       }),
-    });
+    })
   }, [
     expressParamsPromise,
     initOrderMetricData,

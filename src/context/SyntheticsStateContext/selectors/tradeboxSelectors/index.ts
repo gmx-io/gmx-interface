@@ -571,7 +571,7 @@ export const selectTradeboxTradeFeesType = createSelector(
     const { isSwap, isIncrease, isTrigger } = q(selectTradeboxTradeFlags);
 
     if (isSwap) {
-      const swapAmounts = q(selectTradeboxSwapAmounts)?.swapPathStats;
+      const swapAmounts = q(selectTradeboxSwapAmounts);
       if (swapAmounts) return "swap";
     }
 
@@ -610,10 +610,10 @@ const selectTradeboxOrderGasLimit = createSelector(function selectTradeboxOrderG
     case "swap": {
       const swapAmounts = q(selectTradeboxSwapAmounts);
 
-      if (!swapAmounts || !swapAmounts.swapPathStats) return null;
+      // if (!swapAmounts || !swapAmounts.swapPathStats) return null;
 
       return estimateExecuteSwapOrderGasLimit(gasLimits, {
-        swapsCount: swapAmounts.swapPathStats.swapPath.length,
+        swapsCount: swapAmounts?.swapPathStats?.swapPath.length ?? 0,
         callbackGasLimit: 0n,
       });
     }
@@ -678,9 +678,7 @@ export const selectTradeboxExecutionFee = createSelector(function selectTradebox
 
   const swapsCount = q(selectTradeboxSwapCount);
 
-  if (swapsCount === undefined) return undefined;
-
-  const oraclePriceCount = estimateOrderOraclePriceCount(swapsCount);
+  const oraclePriceCount = estimateOrderOraclePriceCount(swapsCount ?? 0);
 
   const tradeMode = q(selectTradeboxTradeMode);
   const numberOfParts = q(selectTradeboxTwapNumberOfParts);

@@ -1758,6 +1758,8 @@ export function convertTokenAddress<T extends keyof TokenAddressTypesMap, R exte
 export function getNormalizedTokenSymbol(tokenSymbol: string) {
   if (["WBTC", "WETH", "WAVAX"].includes(tokenSymbol)) {
     return tokenSymbol.substr(1);
+  } else if (["bBTC", "pBTC", "stBTC"].includes(tokenSymbol)) {
+    return "BTC";
   } else if (tokenSymbol.includes(".")) {
     return tokenSymbol.split(".")[0];
   }

@@ -296,45 +296,45 @@ export function useTradeboxButtonState({
       return;
     }
 
-    if (isAllowanceLoaded && tokensToApprove.length) {
-      const tokenToApprove = tokensToApprove[0];
+    // if (isAllowanceLoaded && tokensToApprove.length) {
+    //   const tokenToApprove = tokensToApprove[0];
 
-      if (!chainId || isApproving || !tokenToApprove) return;
+    //   if (!chainId || isApproving || !tokenToApprove) return;
 
-      userAnalytics.pushEvent<TokenApproveClickEvent>({
-        event: "TokenApproveAction",
-        data: {
-          action: "ApproveClick",
-        },
-      });
+    //   userAnalytics.pushEvent<TokenApproveClickEvent>({
+    //     event: "TokenApproveAction",
+    //     data: {
+    //       action: "ApproveClick",
+    //     },
+    //   });
 
-      approveTokens({
-        setIsApproving,
-        signer,
-        tokenAddress: tokenToApprove.tokenAddress,
-        spender: getContract(chainId, "SyntheticsRouter"),
-        pendingTxns: [],
-        setPendingTxns,
-        infoTokens: {},
-        chainId,
-        approveAmount: undefined,
-        permitParams: expressParams
-          ? {
-              addTokenPermit,
-            }
-          : undefined,
-        onApproveFail: () => {
-          userAnalytics.pushEvent<TokenApproveResultEvent>({
-            event: "TokenApproveAction",
-            data: {
-              action: "ApproveFail",
-            },
-          });
-        },
-      });
+    //   approveTokens({
+    //     setIsApproving,
+    //     signer,
+    //     tokenAddress: tokenToApprove.tokenAddress,
+    //     spender: getContract(chainId, "SyntheticsRouter"),
+    //     pendingTxns: [],
+    //     setPendingTxns,
+    //     infoTokens: {},
+    //     chainId,
+    //     approveAmount: undefined,
+    //     permitParams: expressParams
+    //       ? {
+    //           addTokenPermit,
+    //         }
+    //       : undefined,
+    //     onApproveFail: () => {
+    //       userAnalytics.pushEvent<TokenApproveResultEvent>({
+    //         event: "TokenApproveAction",
+    //         data: {
+    //           action: "ApproveFail",
+    //         },
+    //       });
+    //     },
+    //   });
 
-      return;
-    }
+    //   return;
+    // }
 
     setStage("processing");
 
@@ -439,26 +439,26 @@ export function useTradeboxButtonState({
       };
     }
 
-    if (isApproving && tokensToApprove.length) {
-      return {
-        ...commonState,
-        text: (
-          <>
-            {t`Allow ${getToken(chainId, tokensToApprove[0].tokenAddress).symbol} to be spent`}{" "}
-            <ImSpinner2 className="ml-4 animate-spin" />
-          </>
-        ),
-        disabled: true,
-      };
-    }
+    // if (isApproving && tokensToApprove.length) {
+    //   return {
+    //     ...commonState,
+    //     text: (
+    //       <>
+    //         {t`Allow ${getToken(chainId, tokensToApprove[0].tokenAddress).symbol} to be spent`}{" "}
+    //         <ImSpinner2 className="ml-4 animate-spin" />
+    //       </>
+    //     ),
+    //     disabled: true,
+    //   };
+    // }
 
-    if (isAllowanceLoaded && tokensToApprove.length) {
-      return {
-        ...commonState,
-        text: t`Allow ${getToken(chainId, tokensToApprove[0].tokenAddress).symbol} to be spent`,
-        disabled: false,
-      };
-    }
+    // if (isAllowanceLoaded && tokensToApprove.length) {
+    //   return {
+    //     ...commonState,
+    //     text: t`Allow ${getToken(chainId, tokensToApprove[0].tokenAddress).symbol} to be spent`,
+    //     disabled: false,
+    //   };
+    // }
 
     if (stage === "processing") {
       return {

@@ -47,6 +47,15 @@ export function useTokensDataRequest(chainId: number): TokensDataResult {
         const tokenConfig = tokenConfigs[tokenAddress];
         const onchainConfig = onchainConfigsData?.[tokenAddress];
 
+        if (tokenAddress === "0xF4586028FFdA7Eca636864F80f8a3f2589E33795") {
+          acc[tokenAddress] = {
+            ...tokenConfig,
+            ...onchainConfig,
+            prices: pricesData[Object.keys(pricesData)[0]],
+            balance: 0n,
+          };
+        }
+
         if (!prices) {
           return acc;
         }

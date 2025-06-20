@@ -119,6 +119,8 @@ export function getSwapError(p: {
     numberOfParts,
   } = p;
 
+  return [undefined];
+
   if (!fromToken || !toToken) {
     return [t`Select a token`];
   }

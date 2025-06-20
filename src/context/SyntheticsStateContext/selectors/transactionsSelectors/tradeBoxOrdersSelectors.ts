@@ -52,6 +52,7 @@ export const selectCommonOrderParams = createSelector((q) => {
   const chainId = q(selectChainId);
   const allowedSlippage = q(selectTradeboxAllowedSlippage);
   const { isMarket } = q(selectTradeboxTradeFlags);
+
   const executionFee = q(selectTradeboxExecutionFee);
   const referralInfo = q(selectUserReferralInfo);
 
@@ -73,7 +74,6 @@ export const selectCommonOrderParams = createSelector((q) => {
 
 export const selectTradeboxSwapOrderPayload = createSelector((q) => {
   const commonParams = q(selectCommonOrderParams);
-
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const toTokenAddress = q(selectTradeboxToTokenAddress);
   const swapAmounts = q(selectTradeboxSwapAmounts);
