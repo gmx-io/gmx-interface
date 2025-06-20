@@ -45,14 +45,14 @@ import { WalletSigner } from "lib/wallets";
 import { signTypedData, SignTypedDataParams } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
 import {
+  AnyChainId,
+  ARBITRUM,
   ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
   ContractsChainId,
   SettlementChainId,
   SourceChainId,
-  AnyChainId,
-  ARBITRUM,
-  AVALANCHE,
-  AVALANCHE_FUJI,
 } from "sdk/configs/chains";
 import { ContractName } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
@@ -544,33 +544,20 @@ export async function buildAndSignExpressBatchOrderTxn({
 
   const relayRouterAddress = getOrderRelayRouterAddress(chainId, subaccount !== undefined, isGmxAccount);
 
-  let cachedNonce: bigint | undefined;
-  if (isGmxAccount && subaccount) {
-    cachedNonce = noncesData?.multichainSubaccountRelayRouter?.nonce;
-  } else if (isGmxAccount && !subaccount) {
-    cachedNonce = noncesData?.multichainOrderRouter?.nonce;
-  } else if (!isGmxAccount && subaccount) {
-    cachedNonce = noncesData?.subaccountRelayRouter?.nonce;
-  } else if (!isGmxAccount && !subaccount) {
-    cachedNonce = noncesData?.relayRouter?.nonce;
-  }
-
-  let userNonce: bigint;
-  if (cachedNonce === undefined) {
-    if (isGmxAccount) {
-      userNonce = await getRelayRouterNonceForMultichain(provider!, messageSigner.address, relayRouterAddress);
-    } else {
-      userNonce = await getRelayRouterNonceForSigner({
+  const userNonce = isGmxAccount
+    ? await ensureNonceMultichain({
+        noncesData,
+        isSubaccount: subaccount?.signedApproval !== undefined,
+        provider,
+        account: messageSigner.address,
+        relayRouterAddress,
+      })
+    : await ensureNonce({
+        isSubaccount: subaccount?.signedApproval !== undefined,
+        noncesData,
         chainId,
         signer: messageSigner,
-        isSubaccount: subaccount?.signedApproval !== undefined,
-        isMultichain: false,
-        scope: "order",
       });
-    }
-  } else {
-    userNonce = cachedNonce;
-  }
 
   const params = {
     account: signer.address,
@@ -836,6 +823,67 @@ export function getOrderRelayRouterAddress(
   }
 
   return getContract(chainId, contractName);
+}
+
+async function ensureNonceMultichain({
+  noncesData,
+  isSubaccount,
+  provider,
+  account,
+  relayRouterAddress,
+}: {
+  noncesData: NoncesData | undefined;
+  isSubaccount: boolean;
+  provider: Provider;
+  account: string;
+  relayRouterAddress: string;
+}): Promise<bigint> {
+  let cachedNonce: bigint | undefined;
+  if (isSubaccount) {
+    cachedNonce = noncesData?.multichainSubaccountRelayRouter?.nonce;
+  } else {
+    cachedNonce = noncesData?.multichainOrderRouter?.nonce;
+  }
+
+  if (cachedNonce !== undefined) {
+    return cachedNonce;
+  }
+
+  const userNonce = await getRelayRouterNonceForMultichain(provider!, account, relayRouterAddress);
+  return userNonce;
+}
+
+async function ensureNonce({
+  isSubaccount,
+  noncesData,
+  chainId,
+  signer,
+}: {
+  isSubaccount: boolean;
+  noncesData: NoncesData | undefined;
+  chainId: ContractsChainId;
+  signer: WalletSigner | Wallet;
+}): Promise<bigint> {
+  let cachedNonce: bigint | undefined;
+  if (isSubaccount) {
+    cachedNonce = noncesData?.subaccountRelayRouter?.nonce;
+  } else {
+    cachedNonce = noncesData?.relayRouter?.nonce;
+  }
+
+  if (cachedNonce !== undefined) {
+    return cachedNonce;
+  }
+
+  const userNonce = await getRelayRouterNonceForSigner({
+    chainId,
+    signer,
+    isSubaccount,
+    isMultichain: false,
+    scope: "order",
+  });
+
+  return userNonce;
 }
 
 export async function buildAndSignBridgeOutTxn({

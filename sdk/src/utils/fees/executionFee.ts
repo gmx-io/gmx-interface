@@ -105,7 +105,7 @@ export function estimateBatchGasLimit({
   const createOrdersGasLimit = gasLimits.createOrderGasLimit * BigInt(createOrdersCount);
   const updateOrdersGasLimit = gasLimits.updateOrderGasLimit * BigInt(updateOrdersCount);
   const cancelOrdersGasLimit = gasLimits.cancelOrderGasLimit * BigInt(cancelOrdersCount);
-  const gmxAccountOverhead = isGmxAccount ? gasLimits.gmxAccountCollateralOverhead : 0n;
+  const gmxAccountOverhead = isGmxAccount ? gasLimits.gmxAccountCollateralGasLimit : 0n;
 
   return (
     createOrdersGasLimit + updateOrdersGasLimit + cancelOrdersGasLimit + externalCallsGasLimit + gmxAccountOverhead

@@ -158,7 +158,7 @@ type StaticGasLimitsConfig = Pick<
   | "updateOrderGasLimit"
   | "cancelOrderGasLimit"
   | "tokenPermitGasLimit"
-  | "gmxAccountCollateralOverhead"
+  | "gmxAccountCollateralGasLimit"
 >;
 
 export const GAS_LIMITS_STATIC_CONFIG: Record<ContractsChainId, StaticGasLimitsConfig> = {
@@ -167,27 +167,27 @@ export const GAS_LIMITS_STATIC_CONFIG: Record<ContractsChainId, StaticGasLimitsC
     updateOrderGasLimit: 800_000n,
     cancelOrderGasLimit: 700_000n,
     tokenPermitGasLimit: 90_000n,
-    gmxAccountCollateralOverhead: 0n,
+    gmxAccountCollateralGasLimit: 0n,
   },
   [AVALANCHE]: {
     createOrderGasLimit: 1_000_000n,
     updateOrderGasLimit: 800_000n,
     cancelOrderGasLimit: 700_000n,
     tokenPermitGasLimit: 90_000n,
-    gmxAccountCollateralOverhead: 0n,
+    gmxAccountCollateralGasLimit: 0n,
   },
   [AVALANCHE_FUJI]: {
     createOrderGasLimit: 1_000_000n,
     updateOrderGasLimit: 800_000n,
     cancelOrderGasLimit: 700_000n,
     tokenPermitGasLimit: 90_000n,
-    gmxAccountCollateralOverhead: 0n,
+    gmxAccountCollateralGasLimit: 0n,
   },
   [ARBITRUM_SEPOLIA]: {
     createOrderGasLimit: 1_000_000n,
     updateOrderGasLimit: 800_000n,
     cancelOrderGasLimit: 1_500_000n,
     tokenPermitGasLimit: 90_000n,
-    gmxAccountCollateralOverhead: 400_000n,
+    gmxAccountCollateralGasLimit: 400_000n,
   },
 };

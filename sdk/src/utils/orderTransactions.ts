@@ -79,7 +79,6 @@ export type CreateOrderPayload = {
   shouldUnwrapNativeToken: boolean;
   autoCancel: boolean;
   referralCode: string;
-  // TODO: force it in multichain
   dataList: string[];
 };
 
@@ -233,7 +232,6 @@ export function buildSwapOrderPayload(p: SwapOrderParams): CreateOrderTxnParams<
     shouldUnwrapNativeToken: tokenTransfersParams.isNativePayment || tokenTransfersParams.isNativeReceive,
     autoCancel: p.autoCancel,
     referralCode: p.referralCode ?? zeroHash,
-    // TODO add only in multichain
     dataList: [],
   };
 
@@ -357,7 +355,6 @@ export function buildDecreaseOrderPayload(
     shouldUnwrapNativeToken: p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS,
     autoCancel: p.autoCancel,
     referralCode: p.referralCode ?? zeroHash,
-    // TODO add only in multichain
     dataList: [],
   };
 
@@ -605,7 +602,6 @@ export function buildTokenTransfersParamsForDecrease({
 
 export function buildTokenTransfersParamsForIncreaseOrSwap({
   chainId,
-  // srcChainId,
   receiver,
   payTokenAddress,
   payTokenAmount,
@@ -616,7 +612,6 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
   swapPath,
 }: {
   chainId: ContractsChainId;
-  // srcChainId: number | undefined;
   receiver: string;
   payTokenAddress: string;
   payTokenAmount: bigint;
@@ -627,9 +622,6 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
   swapPath: string[];
   orderType: OrderType;
 }): TokenTransfersParams {
-  // const nativeOrWntTokenAddress = srcChainId
-  //   ? convertTokenAddress(srcChainId, NATIVE_TOKEN_ADDRESS, "wrapped")
-  //   : NATIVE_TOKEN_ADDRESS;
   const isNativePayment = payTokenAddress === NATIVE_TOKEN_ADDRESS;
   const isNativeReceive = receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
   const orderVaultAddress = getContract(chainId, "OrderVault");
