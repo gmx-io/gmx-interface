@@ -49,7 +49,7 @@ import {
   sendTxnSentMetric,
 } from "lib/metrics";
 import { USD_DECIMALS, formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
-import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
+import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { TxnCallback, TxnEventName, WalletTxnCtx, sendWalletTransaction } from "lib/transactions";
@@ -76,7 +76,7 @@ import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import { useAvailableToTradeAssetMultichain, useMultichainTokensRequest } from "./hooks";
+import { useAvailableToTradeAssetMultichain, useGmxAccountTokensDataObject, useMultichainTokensRequest } from "./hooks";
 import { wrapChainAction } from "./wrapChainAction";
 
 const useIsFirstDeposit = () => {
@@ -123,6 +123,9 @@ export const DepositView = () => {
   const selectedToken =
     depositViewTokenAddress !== undefined ? getToken(settlementChainId, depositViewTokenAddress) : undefined;
 
+  const gmxAccountTokensData = useGmxAccountTokensDataObject();
+  const selectedTokenGmxAccountData = getByKey(gmxAccountTokensData, depositViewTokenAddress);
+
   const selectedTokenSourceChainTokenId =
     depositViewTokenAddress !== undefined && depositViewChain !== undefined
       ? getMappedTokenId(settlementChainId as SettlementChainId, depositViewTokenAddress, depositViewChain)
@@ -140,26 +143,7 @@ export const DepositView = () => {
     );
   }, [selectedToken, multichainTokens, depositViewChain]);
 
-  const { selectedTokenSourceChainBalance, selectedTokenSourceChainBalanceUsd } = useMemo((): {
-    selectedTokenSourceChainBalance?: bigint;
-    selectedTokenSourceChainBalanceUsd?: bigint;
-  } => {
-    if (selectedToken === undefined) return EMPTY_OBJECT;
-
-    if (selectedTokenChainData === undefined) return EMPTY_OBJECT;
-
-    const balance = selectedTokenChainData.sourceChainBalance;
-    const balanceUsd =
-      convertToUsd(
-        balance,
-        selectedTokenChainData.sourceChainDecimals,
-        selectedTokenChainData.sourceChainPrices?.maxPrice
-      ) ?? 0n;
-    return {
-      selectedTokenSourceChainBalance: balance,
-      selectedTokenSourceChainBalanceUsd: balanceUsd,
-    };
-  }, [selectedToken, selectedTokenChainData]);
+  const selectedTokenSourceChainBalance = selectedTokenChainData?.sourceChainBalance;
 
   const realInputAmount = useGmxAccountSelector(selectGmxAccountDepositViewTokenInputAmount);
 
@@ -196,35 +180,22 @@ export const DepositView = () => {
 
   const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
 
-  const { nextGmxAccountBalanceUsd, nextSourceChainBalance } = useMemo((): {
+  const { nextGmxAccountBalanceUsd, nextTokenGmxAccountBalance } = useMemo((): {
     nextGmxAccountBalanceUsd?: bigint;
-    nextSourceChainBalance?: bigint;
+    nextTokenGmxAccountBalance?: bigint;
   } => {
-    if (
-      selectedToken === undefined ||
-      selectedTokenSourceChainBalance === undefined ||
-      selectedTokenSourceChainBalanceUsd === undefined ||
-      inputAmount === undefined ||
-      inputAmountUsd === undefined
-    ) {
+    if (inputAmount === undefined || inputAmountUsd === undefined) {
       return EMPTY_OBJECT;
     }
 
-    const nextSourceChainBalance = selectedTokenSourceChainBalance - inputAmount;
     const nextGmxAccountBalanceUsd = (gmxAccountUsd ?? 0n) + inputAmountUsd;
+    const nextTokenGmxAccountBalance = (selectedTokenGmxAccountData?.balance ?? 0n) + inputAmount;
 
     return {
       nextGmxAccountBalanceUsd,
-      nextSourceChainBalance,
+      nextTokenGmxAccountBalance,
     };
-  }, [
-    gmxAccountUsd,
-    inputAmount,
-    inputAmountUsd,
-    selectedToken,
-    selectedTokenSourceChainBalance,
-    selectedTokenSourceChainBalanceUsd,
-  ]);
+  }, [gmxAccountUsd, inputAmount, inputAmountUsd, selectedTokenGmxAccountData?.balance]);
 
   const spenderAddress =
     // Only when DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT
@@ -909,20 +880,20 @@ export const DepositView = () => {
           value={
             <ValueTransition
               from={
-                selectedTokenSourceChainBalance !== undefined && selectedTokenSourceChainTokenId !== undefined
+                selectedTokenGmxAccountData !== undefined && selectedTokenGmxAccountData.balance !== undefined
                   ? formatBalanceAmount(
-                      selectedTokenSourceChainBalance,
-                      selectedTokenSourceChainTokenId.decimals,
-                      selectedTokenSourceChainTokenId.symbol
+                      selectedTokenGmxAccountData.balance,
+                      selectedTokenGmxAccountData.decimals,
+                      selectedTokenGmxAccountData.symbol
                     )
                   : undefined
               }
               to={
-                nextSourceChainBalance !== undefined && selectedTokenSourceChainTokenId !== undefined
+                nextTokenGmxAccountBalance !== undefined && selectedTokenGmxAccountData !== undefined
                   ? formatBalanceAmount(
-                      nextSourceChainBalance,
-                      selectedTokenSourceChainTokenId.decimals,
-                      selectedTokenSourceChainTokenId.symbol
+                      nextTokenGmxAccountBalance,
+                      selectedTokenGmxAccountData.decimals,
+                      selectedTokenGmxAccountData.symbol
                     )
                   : undefined
               }

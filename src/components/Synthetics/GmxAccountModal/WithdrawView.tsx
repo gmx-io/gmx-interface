@@ -34,7 +34,7 @@ import {
 import { MULTICHAIN_FUNDING_SLIPPAGE_BPS } from "domain/multichain/constants";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { IStargateAbi } from "domain/multichain/stargatePools";
-import { BridgeOutParams, TokenChainData } from "domain/multichain/types";
+import { BridgeOutParams } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
@@ -90,7 +90,6 @@ import {
   useAvailableToTradeAssetMultichain,
   useGmxAccountTokensDataObject,
   useGmxAccountWithdrawNetworks,
-  useMultichainTokensRequest,
 } from "components/Synthetics/GmxAccountModal/hooks";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
@@ -137,7 +136,6 @@ export const WithdrawView = () => {
 
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
   const networks = useGmxAccountWithdrawNetworks();
-  const { tokenChainDataArray: multichainTokens } = useMultichainTokensRequest();
   const expressGlobalParams = useSelector(selectExpressGlobalParams);
   const relayerFeeToken = getByKey(gmxAccountTokensData, expressGlobalParams?.relayerFeeTokenAddress);
 
@@ -182,40 +180,16 @@ export const WithdrawView = () => {
 
   const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
 
-  const sourceChainSelectedUnwrappedToken = useMemo((): TokenChainData | undefined => {
-    if (withdrawalViewChain === undefined || selectedToken === undefined) {
-      return undefined;
-    }
-
-    const sourceChainToken = multichainTokens.find(
-      (token) => token.address === unwrappedSelectedTokenAddress && token.sourceChainId === withdrawalViewChain
-    );
-
-    return sourceChainToken;
-  }, [multichainTokens, selectedToken, unwrappedSelectedTokenAddress, withdrawalViewChain]);
-
-  const sourceChainTokenBalanceUsd = useMemo(() => {
-    if (sourceChainSelectedUnwrappedToken === undefined) {
-      return 0n;
-    }
-
-    return convertToUsd(
-      sourceChainSelectedUnwrappedToken.sourceChainBalance,
-      sourceChainSelectedUnwrappedToken.sourceChainDecimals,
-      sourceChainSelectedUnwrappedToken.sourceChainPrices?.maxPrice
-    );
-  }, [sourceChainSelectedUnwrappedToken]);
-
-  const { nextGmxAccountBalanceUsd, nextSourceChainBalanceUsd } = useMemo(() => {
+  const { nextGmxAccountBalanceUsd, nextTokenGmxAccountBalance } = useMemo(() => {
     if (selectedToken === undefined || inputAmount === undefined || inputAmountUsd === undefined) {
-      return { nextGmxAccountBalanceUsd: undefined, nextSourceChainBalanceUsd: undefined };
+      return { nextGmxAccountBalanceUsd: undefined, nextTokenGmxAccountBalance: undefined };
     }
 
     const nextGmxAccountBalanceUsd = (gmxAccountUsd ?? 0n) - inputAmountUsd;
-    const nextSourceChainBalanceUsd = (sourceChainTokenBalanceUsd ?? 0n) + inputAmountUsd;
+    const nextTokenGmxAccountBalance = (selectedToken.balance ?? 0n) - inputAmount;
 
-    return { nextGmxAccountBalanceUsd, nextSourceChainBalanceUsd };
-  }, [selectedToken, inputAmount, inputAmountUsd, gmxAccountUsd, sourceChainTokenBalanceUsd]);
+    return { nextGmxAccountBalanceUsd, nextTokenGmxAccountBalance };
+  }, [selectedToken, inputAmount, inputAmountUsd, gmxAccountUsd]);
 
   const sendParamsWithoutSlippage: SendParamStruct | undefined = useMemo(() => {
     if (!account || inputAmount === undefined || inputAmount <= 0n || withdrawalViewChain === undefined) {
@@ -899,7 +873,18 @@ export const WithdrawView = () => {
         <SyntheticsInfoRow
           label={<Trans>Asset Balance</Trans>}
           value={
-            <ValueTransition from={formatUsd(sourceChainTokenBalanceUsd)} to={formatUsd(nextSourceChainBalanceUsd)} />
+            <ValueTransition
+              from={
+                selectedToken !== undefined && selectedToken.balance !== undefined
+                  ? formatBalanceAmount(selectedToken.balance, selectedToken.decimals, selectedToken.symbol)
+                  : undefined
+              }
+              to={
+                nextTokenGmxAccountBalance !== undefined && selectedToken !== undefined
+                  ? formatBalanceAmount(nextTokenGmxAccountBalance, selectedToken.decimals, selectedToken.symbol)
+                  : undefined
+              }
+            />
           }
         />
       </div>
