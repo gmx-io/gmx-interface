@@ -296,6 +296,8 @@ export type SwapMetricData = {
   requestId: string;
   isExpress: boolean;
   isExpress1CT: boolean;
+  isTwap: boolean;
+  executionFeeBufferBps: number | undefined;
   hasReferralCode: boolean | undefined;
   initialCollateralTokenAddress: string | undefined;
   initialCollateralSymbol: string | undefined;
@@ -321,7 +323,7 @@ export type SwapMetricData = {
 
 export type IncreaseOrderMetricData = PositionOrderMetricParams & {
   metricId: `position:${string}`;
-  metricType: "increasePosition" | "limitOrder" | "twapIncreaseOrder";
+  metricType: "increasePosition" | "limitOrder";
   leverage: string | undefined;
   isFirstOrder: boolean | undefined;
   isLeverageEnabled: boolean | undefined;
@@ -341,7 +343,7 @@ export type IncreaseOrderMetricData = PositionOrderMetricParams & {
 
 export type DecreaseOrderMetricData = PositionOrderMetricParams & {
   metricId: `position:${string}`;
-  metricType: "decreasePosition" | "takeProfitOrder" | "stopLossOrder" | "twapDecreaseOrder";
+  metricType: "decreasePosition" | "takeProfitOrder" | "stopLossOrder";
   place: "tradeBox" | "positionSeller";
   isFullClose: boolean | undefined;
   decreaseSwapType: DecreasePositionSwapType | undefined;
@@ -358,9 +360,11 @@ export type PositionOrderMetricParams = {
   initialCollateralTokenAddress: string | undefined;
   initialCollateralSymbol: string | undefined;
   initialCollateralDeltaAmount: number | undefined;
+  executionFeeBufferBps: number | undefined;
   swapPath: string[] | undefined;
   sizeDeltaUsd: number | undefined;
   sizeDeltaInTokens: number | undefined;
+  isTwap: boolean;
   triggerPrice: number | undefined;
   acceptablePrice: number | undefined;
   isLong: boolean | undefined;

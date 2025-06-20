@@ -174,7 +174,8 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
               size: formatTokenAmount(
                 claimItem.longTokenAmount,
                 claimItem.marketInfo.longToken.decimals,
-                claimItem.marketInfo.longToken.symbol
+                claimItem.marketInfo.longToken.symbol,
+                { isStable: claimItem.marketInfo.longToken.isStable }
               ),
             },
             claimItem.shortTokenAmount > 0 && {
@@ -185,7 +186,8 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
               size: formatTokenAmount(
                 claimItem.shortTokenAmount,
                 claimItem.marketInfo.shortToken.decimals,
-                claimItem.marketInfo.shortToken.symbol
+                claimItem.marketInfo.shortToken.symbol,
+                { isStable: claimItem.marketInfo.shortToken.isStable }
               ),
             },
           ].filter(Boolean);
@@ -204,7 +206,8 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
             : formatTokenAmount(
                 claimAction.amounts[index],
                 claimAction.tokens[index].decimals,
-                claimAction.tokens[index].symbol
+                claimAction.tokens[index].symbol,
+                { isStable: claimAction.tokens[index].isStable }
               ),
       }));
     });

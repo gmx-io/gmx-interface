@@ -347,11 +347,17 @@ function ClaimModalComponent(p: {
     const claimableAmountsItems: string[] = [];
 
     if (fundingLongAmount !== undefined) {
-      claimableAmountsItems.push(formatTokenAmount(fundingLongAmount, longToken.decimals, longToken.symbol)!);
+      claimableAmountsItems.push(
+        formatTokenAmount(fundingLongAmount, longToken.decimals, longToken.symbol, { isStable: longToken.isStable })!
+      );
     }
 
     if (fundingShortAmount !== undefined) {
-      claimableAmountsItems.push(formatTokenAmount(fundingShortAmount, shortToken.decimals, shortToken.symbol)!);
+      claimableAmountsItems.push(
+        formatTokenAmount(fundingShortAmount, shortToken.decimals, shortToken.symbol, {
+          isStable: shortToken.isStable,
+        })!
+      );
     }
 
     return (

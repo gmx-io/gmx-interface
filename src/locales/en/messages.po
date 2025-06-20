@@ -163,8 +163,8 @@ msgid "Type"
 msgstr "Type"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "Close order"
-msgstr "Close order"
+#~ msgid "Close order"
+#~ msgstr "Close order"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order submitted!"
@@ -639,6 +639,10 @@ msgstr "Insufficient staked tokens"
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Telegram contact (optional)"
 msgstr "Telegram contact (optional)"
+
+#: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
+msgid "Market order will be cancellable in {minutesText}{seconds}s."
+msgstr "Market order will be cancellable in {minutesText}{seconds}s."
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Tap [Create Wallet] to start using your Web3 Wallet."
@@ -3165,6 +3169,7 @@ msgstr "No claims match the selected filters"
 #: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
+#: src/domain/synthetics/positions/utils.ts
 msgid "Market"
 msgstr "Market"
 
@@ -4597,6 +4602,10 @@ msgstr "Reserved"
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Price below Liq. Price"
 msgstr "Price below Liq. Price"
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#~ msgid "Market order will be cancellable in {minutes}m {seconds}s."
+#~ msgstr "Market order will be cancellable in {minutes}m {seconds}s."
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take Profit / Stop Loss"
@@ -6072,6 +6081,7 @@ msgid "Max {0} long exceeded"
 msgstr "Max {0} long exceeded"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6191,6 +6201,10 @@ msgstr "OPEN INTEREST"
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Failed to download trade history CSV."
 msgstr "Failed to download trade history CSV."
+
+#: src/domain/synthetics/positions/utils.ts
+msgid "market"
+msgstr "market"
 
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -6857,6 +6871,7 @@ msgid "Trigger price below highest limit price"
 msgstr "Trigger price below highest limit price"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
@@ -8747,6 +8762,10 @@ msgstr "Deactivated"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Ecosystem Projects"
 msgstr "Ecosystem Projects"
+
+#: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
+msgid "Market order will be cancellable in ..."
+msgstr "Market order will be cancellable in ..."
 
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Price Impact Rebate Claimed"

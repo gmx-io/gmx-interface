@@ -24,6 +24,7 @@ import {
   SwapOrderInfo,
   TwapOrderInfo,
   isLimitOrderType,
+  isMarketOrderType,
   isPositionOrder,
   isSwapOrder,
   isTriggerDecreaseOrderType,
@@ -348,7 +349,11 @@ function useFilteredOrders({
 
     const { swapOrders, positionOrders } = Object.values(ordersResponse.ordersInfoData || {}).reduce(
       (acc, order) => {
-        if (isLimitOrderType(order.orderType) || isTriggerDecreaseOrderType(order.orderType)) {
+        if (
+          isLimitOrderType(order.orderType) ||
+          isTriggerDecreaseOrderType(order.orderType) ||
+          isMarketOrderType(order.orderType)
+        ) {
           if (isSwapOrder(order)) {
             acc.swapOrders.push(order);
           } else if (isPositionOrder(order)) {
@@ -368,5 +373,6 @@ function useFilteredOrders({
       ...sortSwapOrders(swapOrders, sortedLongAndShortTokens),
     ];
   }, [availableTokensOptions, ordersResponse.ordersInfoData]);
+
   return orders;
 }

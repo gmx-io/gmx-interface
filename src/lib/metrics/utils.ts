@@ -92,7 +92,9 @@ export function initSwapMetricData({
   allowedSlippage,
   isFirstOrder,
   isExpress,
+  isTwap,
   duration,
+  executionFeeBufferBps,
   partsCount,
   tradeMode,
   expressParams,
@@ -110,6 +112,8 @@ export function initSwapMetricData({
   allowedSlippage: number | undefined;
   hasReferralCode: boolean | undefined;
   subaccount: Subaccount | undefined;
+  isTwap: boolean;
+  executionFeeBufferBps: number | undefined;
   isExpress: boolean | undefined;
   isFirstOrder: boolean | undefined;
   duration: TwapDuration | undefined;
@@ -157,11 +161,13 @@ export function initSwapMetricData({
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
     allowedSlippage,
     orderType,
+    isTwap,
     isExpress: isExpress ?? false,
     isExpress1CT: Boolean(subaccount),
     requestId: getRequestId(),
     isFirstOrder,
     duration,
+    executionFeeBufferBps,
     partsCount,
     tradeMode,
     expressData,
@@ -191,9 +197,11 @@ export function initIncreaseOrderMetricData({
   priceImpactDeltaUsd,
   orderPayload,
   priceImpactPercentage,
+  executionFeeBufferBps,
   netRate1h,
   interactionId,
   isExpress,
+  isTwap,
   duration,
   partsCount,
   tradeMode,
@@ -226,8 +234,10 @@ export function initIncreaseOrderMetricData({
   priceImpactPercentage: bigint | undefined;
   netRate1h: bigint | undefined;
   isExpress: boolean;
+  isTwap: boolean;
   interactionId: string | undefined;
   duration: TwapDuration | undefined;
+  executionFeeBufferBps: number | undefined;
   partsCount: number | undefined;
   tradeMode: TradeMode | undefined;
   expressParams: ExpressTxnParams | undefined;
@@ -237,9 +247,7 @@ export function initIncreaseOrderMetricData({
   isCollateralFromMultichain: boolean;
 }) {
   let metricType: IncreaseOrderMetricData["metricType"] = "increasePosition";
-  if (tradeMode === TradeMode.Twap) {
-    metricType = "twapIncreaseOrder";
-  } else if (orderType === OrderType.LimitIncrease) {
+  if (orderType === OrderType.LimitIncrease) {
     metricType = "limitOrder";
   }
 
@@ -255,6 +263,7 @@ export function initIncreaseOrderMetricData({
     }),
     requestId: getRequestId(),
     isExpress,
+    isTwap,
     isExpress1CT: Boolean(subaccount),
     isTPSLCreated,
     slCount,
@@ -279,6 +288,7 @@ export function initIncreaseOrderMetricData({
     acceptablePrice: formatAmountForMetrics(increaseAmounts?.acceptablePrice, USD_DECIMALS, false),
     isLong,
     orderType,
+    executionFeeBufferBps,
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
     isFirstOrder,
     isLeverageEnabled,
@@ -323,9 +333,11 @@ export function initDecreaseOrderMetricData({
   priceImpactPercentage,
   netRate1h,
   interactionId,
+  isTwap,
   isExpress,
   duration,
   partsCount,
+  executionFeeBufferBps,
   tradeMode,
   expressParams,
   asyncExpressParams,
@@ -350,7 +362,9 @@ export function initDecreaseOrderMetricData({
   priceImpactPercentage: bigint | undefined;
   netRate1h: bigint | undefined;
   interactionId: string | undefined;
+  executionFeeBufferBps: number | undefined;
   isExpress: boolean;
+  isTwap: boolean;
   duration: TwapDuration | undefined;
   partsCount: number | undefined;
   tradeMode: TradeMode | undefined;
@@ -361,9 +375,7 @@ export function initDecreaseOrderMetricData({
   isCollateralFromMultichain: boolean;
 }) {
   let metricType: DecreaseOrderMetricData["metricType"] = "decreasePosition";
-  if (tradeMode === TradeMode.Twap) {
-    metricType = "twapDecreaseOrder";
-  } else if (orderType === OrderType.LimitDecrease) {
+  if (orderType === OrderType.LimitDecrease) {
     metricType = "takeProfitOrder";
   } else if (orderType === OrderType.StopLossDecrease) {
     metricType = "stopLossOrder";
@@ -402,10 +414,12 @@ export function initDecreaseOrderMetricData({
     acceptablePrice: formatAmountForMetrics(decreaseAmounts?.acceptablePrice, USD_DECIMALS, false),
     isLong,
     orderType,
+    executionFeeBufferBps,
     decreaseSwapType: decreaseAmounts?.decreaseSwapType,
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
     isExpress,
     isExpress1CT: Boolean(subaccount),
+    isTwap,
     requestId: getRequestId(),
     priceImpactDeltaUsd:
       priceImpactDeltaUsd !== undefined ? bigintToNumber(roundToOrder(priceImpactDeltaUsd, 2), USD_DECIMALS) : 0,

@@ -70,7 +70,13 @@ export function formatAmountByField(tokenField: string | TokenGetter) {
     if (typeof tokenField === "function") {
       const token = tokenField(props);
       if (token) {
-        return formatBalanceAmount(t, token.decimals, token.symbol, true, false) ?? t.toString();
+        return (
+          formatBalanceAmount(t, token.decimals, token.symbol, {
+            showZero: true,
+            toExponential: false,
+            isStable: token.isStable,
+          }) ?? t.toString()
+        );
       }
     }
 
@@ -79,7 +85,13 @@ export function formatAmountByField(tokenField: string | TokenGetter) {
     if (field) {
       const token = getByKey(tokensData, field.value as string);
       if (token) {
-        return formatBalanceAmount(t, token.decimals, token.symbol, true, false) ?? t.toString();
+        return (
+          formatBalanceAmount(t, token.decimals, token.symbol, {
+            showZero: true,
+            toExponential: false,
+            isStable: token.isStable,
+          }) ?? t.toString()
+        );
       }
     }
 
@@ -103,7 +115,7 @@ export function formatByMarketLongOrShortToken(isLong: boolean) {
     if (market) {
       let tokenData = getByKey(tokensData, isLong ? market.longTokenAddress : market.shortTokenAddress);
       if (tokenData) {
-        return formatBalanceAmount(t, tokenData.decimals, tokenData.symbol, true, false);
+        return formatBalanceAmount(t, tokenData.decimals, tokenData.symbol, { showZero: true, toExponential: false });
       }
     }
 
@@ -132,7 +144,7 @@ export function formatAmountByEvent(cfg: { [eventName: string]: string | Formatt
     if (field) {
       const token = getByKey(tokensData, field.value as string);
       if (token) {
-        return formatBalanceAmount(t, token.decimals, token.symbol, true, false);
+        return formatBalanceAmount(t, token.decimals, token.symbol, { showZero: true, toExponential: false });
       }
     }
 
@@ -222,7 +234,7 @@ export const formatAmountByEventField = (eventName: string, field: string | Toke
       const token = typeof field === "function" ? (entry as Token) : getByKey(props.tokensData, entry as string);
 
       if (token) {
-        return formatBalanceAmount(t, token.decimals, token.symbol, true, false);
+        return formatBalanceAmount(t, token.decimals, token.symbol, { showZero: true, toExponential: false });
       }
     }
 

@@ -1,7 +1,7 @@
 import { BaseContract } from "ethers";
 import { encodeFunctionData, withRetry } from "viem";
 
-import { CustomErrorName, ErrorData, extractTxnError, isContractError, parseError } from "ab/testMultichain/parseError";
+import { parseError } from "ab/testMultichain/parseError";
 import {
   getContract,
   getExchangeRouterContract,
@@ -19,7 +19,14 @@ import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampR
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { extendError } from "sdk/utils/errors";
+import {
+  CustomErrorName,
+  ErrorData,
+  TxErrorType,
+  extendError,
+  extractTxnError,
+  isContractError,
+} from "sdk/utils/errors";
 import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
 export type SimulateExecuteParams = {
@@ -28,6 +35,7 @@ export type SimulateExecuteParams = {
   prices: SimulationPrices;
   value: bigint;
   tokenPermits: SignedTokenPermit[];
+  isExpress: boolean;
   method?:
     | "simulateExecuteLatestDeposit"
     | "simulateExecuteLatestWithdrawal"
@@ -183,7 +191,10 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
   } catch (txnError) {
     const errorData = parseError(txnError);
 
-    if (errorData && isSimulationPassed(errorData)) {
+    const isPassed = errorData && isSimulationPassed(errorData);
+    const shouldIgnoreExpressNativeTokenBalance = errorData?.txErrorType === TxErrorType.NotEnoughFunds && p.isExpress;
+
+    if (isPassed || shouldIgnoreExpressNativeTokenBalance) {
       return;
     } else {
       throw extendError(txnError, {

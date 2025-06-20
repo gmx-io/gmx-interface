@@ -40,6 +40,7 @@ import {
   selectPositionSellerSwapAmounts,
   selectPositionSellerTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
+import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
   selectAddTokenPermit,
@@ -151,6 +152,7 @@ export function PositionSeller() {
   const tokenPermits = useSelector(selectTokenPermits);
   const addTokenPermit = useSelector(selectAddTokenPermit);
   const noncesData = useSelector(selectExpressNoncesData);
+  const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
 
   const isVisible = Boolean(position);
 
@@ -529,6 +531,8 @@ export function PositionSeller() {
       subaccount: expressParams?.subaccount,
       triggerPrice,
       marketInfo: position?.marketInfo,
+      executionFeeBufferBps,
+      isTwap,
       allowedSlippage,
       isLong: position?.isLong,
       place: "positionSeller",
@@ -724,6 +728,7 @@ export function PositionSeller() {
           decimals={position?.collateralToken.decimals ?? 0}
           symbol={position?.collateralToken.symbol}
           usd={decreaseAmounts?.receiveUsd}
+          isStable={position?.collateralToken.isStable}
         />
       }
     />
@@ -755,6 +760,7 @@ export function PositionSeller() {
                   decimals={receiveToken.decimals}
                   symbol={receiveToken.symbol}
                   usd={receiveUsd}
+                  isStable={receiveToken.isStable}
                 />
               </span>
             }

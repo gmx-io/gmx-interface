@@ -18,9 +18,10 @@ const TX_ERROR_PATTERNS: { [key in TxErrorType]: ErrorPattern[] } = {
   [TxErrorType.UserDenied]: [
     { msg: "User denied transaction signature" },
     { msg: "User rejected" },
+    { msg: "User cancelled" },
     { msg: "user rejected action" },
     { msg: "ethers-user-denied" },
-    { msg: "User canceled" },
+    { msg: "Action cancelled by user" },
     { msg: "Signing aborted by user" },
   ],
   [TxErrorType.Slippage]: [

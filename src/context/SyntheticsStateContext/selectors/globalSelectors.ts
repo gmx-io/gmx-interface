@@ -117,3 +117,5 @@ export const selectSubaccountForAction = createSelector((q) => {
 
   return rawSubaccount;
 });
+
+export const selectOracleSettings = (s: SyntheticsState) => s.globals.oracleSettings;

@@ -631,7 +631,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           isBottomLeftValueMuted={payUsd === undefined || payUsd === 0n}
           bottomRightValue={
             fromToken && fromToken.balance !== undefined && fromToken.balance > 0n
-              ? formatBalanceAmount(fromToken.balance, fromToken.decimals, fromToken.symbol)
+              ? formatBalanceAmount(fromToken.balance, fromToken.decimals, fromToken.symbol, {
+                  isStable: fromToken.isStable,
+                })
               : undefined
           }
           inputValue={fromTokenInputValue}
@@ -680,7 +682,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 }
                 bottomRightValue={
                   !isTwap && toToken && toToken.balance !== undefined && toToken.balance > 0n
-                    ? formatBalanceAmount(toToken.balance, toToken.decimals, toToken.symbol)
+                    ? formatBalanceAmount(toToken.balance, toToken.decimals, toToken.symbol, {
+                        isStable: toToken.isStable,
+                      })
                     : undefined
                 }
                 isBottomLeftValueMuted={swapAmounts?.usdOut === undefined || swapAmounts.usdOut === 0n}
@@ -1068,7 +1072,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 decreaseAmounts.receiveTokenAmount,
                 decreaseAmounts.receiveUsd,
                 collateralToken?.symbol,
-                collateralToken?.decimals
+                collateralToken?.decimals,
+                { isStable: collateralToken?.isStable }
               )}
             />
           )}
