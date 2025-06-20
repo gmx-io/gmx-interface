@@ -115,11 +115,9 @@ export function Header({ openSettings, showRedirectModal }: Props) {
                 <AppHeaderLinks showRedirectModal={showRedirectModal} />
               )}
             </div>
-            <div className="App-header-container-right">
+            <div className="flex items-center gap-16">
               <AppHeaderChainAndSettings openSettings={openSettings} showRedirectModal={showRedirectModal} />
-              <div className="mr-22">
-                <OneClickPromoBanner isShort={shouldShorten1CTBanner} openSettings={openSettings} />
-              </div>
+              <OneClickPromoBanner isShort={shouldShorten1CTBanner} openSettings={openSettings} />
             </div>
           </div>
         )}
@@ -136,7 +134,7 @@ export function Header({ openSettings, showRedirectModal }: Props) {
                   <img src={logoSmallImg} className="small" alt="GMX Logo" />
                 </div>
               </div>
-              <div className="App-header-container-right">
+              <div className="flex items-center gap-16">
                 {!shouldHide1CTBanner && <OneClickPromoBanner openSettings={openSettings} />}
                 <AppHeaderChainAndSettings
                   openSettings={openSettings}

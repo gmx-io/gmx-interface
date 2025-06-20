@@ -183,11 +183,6 @@
   color: var(--color-white);
 }
 
-.App-header-container-right {
-  display: flex;
-  align-items: center;
-}
-
 .App-header-user {
   display: flex;
   align-items: center;
@@ -222,11 +217,6 @@
 
   .App-header-user {
     padding-bottom: 0;
-  }
-
-  .App-header-container-right {
-    display: flex;
-    align-items: center;
   }
 
   .App-header-link-desktop {
