@@ -1,10 +1,10 @@
 import keyBy from "lodash/keyBy";
 import pickBy from "lodash/pickBy";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import { getChainName } from "config/chains";
+import { getChainName, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
 import {
@@ -13,7 +13,7 @@ import {
   subscribeToOftReceivedEvents,
   subscribeToOftSentEvents,
 } from "context/WebsocketContext/subscribeToEvents";
-import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
+import { useWebsocketProvider, useWsAdditionalSourceChains } from "context/WebsocketContext/WebsocketContextProvider";
 import { CodecUiHelper } from "domain/multichain/codecs/CodecUiHelper";
 import {
   CHAIN_ID_TO_TOKEN_ID_MAP,
@@ -33,7 +33,7 @@ import {
   MultichainWithdrawalMetricData,
   sendOrderExecutedMetric,
 } from "lib/metrics";
-import { EMPTY_OBJECT, EMPTY_SET } from "lib/objects";
+import { EMPTY_OBJECT } from "lib/objects";
 import { sendMultichainDepositSuccessEvent, sendMultichainWithdrawalSuccessEvent } from "lib/userAnalytics/utils";
 import { getToken } from "sdk/configs/tokens";
 import { LRUCache } from "sdk/utils/LruCache";
@@ -49,8 +49,8 @@ import type {
 
 export type MultichainEventsState = {
   multichainSourceChainApprovalStatuses: ApprovalStatuses;
-  setMultichainSourceChainApprovalsActiveListener: (name: string) => void;
-  removeMultichainSourceChainApprovalsActiveListener: (name: string) => void;
+  setMultichainSourceChainApprovalsActiveListener: (chainId: SourceChainId, name: string) => void;
+  removeMultichainSourceChainApprovalsActiveListener: (chainId: SourceChainId, name: string) => void;
 
   pendingMultichainFunding: PendingMultichainFunding;
   setMultichainSubmittedDeposit: (submittedDeposit: SubmittedMultichainDeposit) => string | undefined;
@@ -87,6 +87,15 @@ const UNCERTAIN_WITHDRAWALS_CACHE = new LRUCache<string>(1000);
 
 const FINISHED_FUNDING_ITEM_CLEARING_DELAY_MS = 5000;
 const SUBSCRIPTION_MAX_TTL_MS = 5 * 60 * 1000;
+const SOURCE_CHAIN_APPROVAL_LISTENER_CLEANUP_DELAY_MS = 1 * 60 * 1000;
+const DEBUG_MULTICHAIN_EVENTS_LOGGING = false;
+
+const debugLog = (...args: any[]) => {
+  if (DEBUG_MULTICHAIN_EVENTS_LOGGING) {
+    // eslint-disable-next-line no-console
+    console.log("[multichain]", ...args);
+  }
+};
 
 export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: boolean }) {
   const [pendingMultichainFunding, setPendingMultichainFunding] = useState<PendingMultichainFunding>(
@@ -96,7 +105,8 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
   const { address: currentAccount } = useAccount();
 
-  const { wsProvider, wsSourceChainProvider } = useWebsocketProvider();
+  const { wsProvider, wsSourceChainProviders } = useWebsocketProvider();
+  const wsSourceChainProvider = srcChainId ? wsSourceChainProviders[srcChainId] : undefined;
 
   const [, setSelectedTransferGuid] = useGmxAccountSelectedTransferGuid();
   const [multichainFundingPendingIds, setMultichainFundingPendingIds] = useState<Record<string, string>>(EMPTY_OBJECT);
@@ -533,45 +543,107 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
   //#region Approval statuses
 
-  const [sourceChainApprovalActiveListeners, setSourceChainApprovalActiveListeners] = useState<Set<string>>(EMPTY_SET);
+  const [sourceChainApprovalActiveListeners, setSourceChainApprovalActiveListeners] =
+    useState<Partial<Record<SourceChainId, string[]>>>(EMPTY_OBJECT);
   const [sourceChainApprovalStatuses, setSourceChainApprovalStatuses] = useState<ApprovalStatuses>(EMPTY_OBJECT);
 
-  const shouldListenToMultichainApprovals = sourceChainApprovalActiveListeners.size > 0;
+  const sourceChainApprovalUnsubscribersRef = useRef<Partial<Record<SourceChainId, () => void>>>({});
+  const sourceChainApprovalCleanupTimersRef = useRef<Partial<Record<SourceChainId, number>>>({});
+
   useEffect(
     function subscribeMultichainApprovals() {
-      if (!wsSourceChainProvider || !currentAccount || !srcChainId || !shouldListenToMultichainApprovals) {
+      if (!currentAccount) {
         return;
       }
 
-      const tokenIdMap = CHAIN_ID_TO_TOKEN_ID_MAP[srcChainId];
-      const tokenAddresses = Object.values(tokenIdMap)
-        .filter((tokenId) => tokenId.address !== zeroAddress)
-        .map((tokenId) => tokenId.address);
-      const stargates = Object.values(tokenIdMap)
-        .filter((tokenId) => tokenId.address !== zeroAddress)
-        .map((tokenId) => tokenId.stargate);
+      const newUnsubscribers: Partial<Record<SourceChainId, () => void>> = {};
 
-      const unsubscribeApproval = subscribeToMultichainApprovalEvents(
-        wsSourceChainProvider,
-        currentAccount,
-        tokenAddresses,
-        stargates,
-        (tokenAddress, spender, value) => {
-          setSourceChainApprovalStatuses((old) => ({
-            ...old,
-            [tokenAddress]: {
-              ...old[tokenAddress],
-              [spender]: { value, createdAt: Date.now() },
-            },
-          }));
+      for (const chainIdString of Object.keys(sourceChainApprovalActiveListeners)) {
+        if (
+          !sourceChainApprovalActiveListeners[chainIdString] ||
+          sourceChainApprovalActiveListeners[chainIdString].length === 0
+        ) {
+          continue;
         }
-      );
+
+        const someSourceChainId = parseInt(chainIdString) as SourceChainId;
+
+        if (sourceChainApprovalCleanupTimersRef.current[someSourceChainId]) {
+          debugLog("[multichain] clearing timeout for source chain approval listener", someSourceChainId);
+
+          clearTimeout(sourceChainApprovalCleanupTimersRef.current[someSourceChainId]);
+          delete sourceChainApprovalCleanupTimersRef.current[someSourceChainId];
+        }
+
+        if (sourceChainApprovalUnsubscribersRef.current[someSourceChainId]) {
+          debugLog(
+            "[multichain] skipping source chain approval listener creation as it already exists",
+            someSourceChainId
+          );
+          continue;
+        }
+
+        const wsSomeSourceChainProvider = wsSourceChainProviders[someSourceChainId];
+        if (!wsSomeSourceChainProvider) {
+          debugLog("[multichain] no ws source chain provider for source chain approval listener", someSourceChainId);
+          continue;
+        }
+
+        const tokenIdMap = CHAIN_ID_TO_TOKEN_ID_MAP[someSourceChainId];
+        const tokenAddresses = Object.values(tokenIdMap)
+          .filter((tokenId) => tokenId.address !== zeroAddress)
+          .map((tokenId) => tokenId.address);
+        const stargates = Object.values(tokenIdMap)
+          .filter((tokenId) => tokenId.address !== zeroAddress)
+          .map((tokenId) => tokenId.stargate);
+
+        debugLog("[multichain] subscribing to source chain approval events for", someSourceChainId);
+        const unsubscribeApproval = subscribeToMultichainApprovalEvents(
+          wsSomeSourceChainProvider,
+          currentAccount,
+          tokenAddresses,
+          stargates,
+          (tokenAddress, spender, value) => {
+            debugLog("[multichain] got approval event for", someSourceChainId, tokenAddress, spender, value);
+
+            setSourceChainApprovalStatuses((old) => ({
+              ...old,
+              [tokenAddress]: {
+                ...old[tokenAddress],
+                [spender]: { value, createdAt: Date.now() },
+              },
+            }));
+          }
+        );
+
+        newUnsubscribers[someSourceChainId] = unsubscribeApproval;
+      }
+
+      sourceChainApprovalUnsubscribersRef.current = {
+        ...sourceChainApprovalUnsubscribersRef.current,
+        ...newUnsubscribers,
+      };
 
       return function cleanup() {
-        unsubscribeApproval();
+        for (const chainIdString of Object.keys(newUnsubscribers)) {
+          const someSourceChainId = parseInt(chainIdString) as SourceChainId;
+
+          debugLog("[multichain] scheduling timeout for source chain approval listener", someSourceChainId);
+
+          const timerId = window.setTimeout(() => {
+            debugLog("[multichain] clearing source chain approval listener", someSourceChainId);
+            newUnsubscribers[someSourceChainId]?.();
+            delete sourceChainApprovalUnsubscribersRef.current[someSourceChainId];
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            delete sourceChainApprovalCleanupTimersRef.current[someSourceChainId];
+          }, SOURCE_CHAIN_APPROVAL_LISTENER_CLEANUP_DELAY_MS);
+
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+          sourceChainApprovalCleanupTimersRef.current[someSourceChainId] = timerId;
+        }
       };
     },
-    [currentAccount, shouldListenToMultichainApprovals, srcChainId, wsSourceChainProvider]
+    [currentAccount, sourceChainApprovalActiveListeners, wsSourceChainProviders]
   );
 
   const multichainEventsState = useMemo(
@@ -709,18 +781,18 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         });
       },
       multichainSourceChainApprovalStatuses: sourceChainApprovalStatuses,
-      setMultichainSourceChainApprovalsActiveListener: (name: string) => {
+      setMultichainSourceChainApprovalsActiveListener: (chainId: SourceChainId, name: string) => {
         setSourceChainApprovalActiveListeners((old) => {
-          const newSet = new Set(old);
-          newSet.add(name);
-          return newSet;
+          const newListeners = structuredClone(old);
+          newListeners[chainId] = [...(newListeners[chainId] || []), name];
+          return newListeners;
         });
       },
-      removeMultichainSourceChainApprovalsActiveListener: (name: string) => {
+      removeMultichainSourceChainApprovalsActiveListener: (chainId: SourceChainId, name: string) => {
         setSourceChainApprovalActiveListeners((old) => {
-          const newSet = new Set(old);
-          newSet.delete(name);
-          return newSet;
+          const newListeners = structuredClone(old);
+          newListeners[chainId] = newListeners[chainId]?.filter((listener) => listener !== name) || [];
+          return newListeners;
         });
       },
       updatePendingMultichainFunding: (items) => {
@@ -876,15 +948,26 @@ function queueSendWithdrawalReceivedMetric(withdrawal: MultichainFundingHistoryI
   sendOrderExecutedMetric(metricId);
 }
 
-export function useMultichainApprovalsActiveListener(name: string) {
+export function useMultichainApprovalsActiveListener(chainId: SourceChainId | undefined, name: string) {
   const { setMultichainSourceChainApprovalsActiveListener, removeMultichainSourceChainApprovalsActiveListener } =
     useSyntheticsEvents();
 
+  useWsAdditionalSourceChains(chainId, name);
+
   useEffect(() => {
-    setMultichainSourceChainApprovalsActiveListener(name);
+    if (!chainId) {
+      return;
+    }
+
+    setMultichainSourceChainApprovalsActiveListener(chainId, name);
 
     return () => {
-      removeMultichainSourceChainApprovalsActiveListener(name);
+      removeMultichainSourceChainApprovalsActiveListener(chainId, name);
     };
-  }, [name, setMultichainSourceChainApprovalsActiveListener, removeMultichainSourceChainApprovalsActiveListener]);
+  }, [
+    chainId,
+    name,
+    setMultichainSourceChainApprovalsActiveListener,
+    removeMultichainSourceChainApprovalsActiveListener,
+  ]);
 }

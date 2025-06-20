@@ -1,8 +1,9 @@
-import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
-import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { ErrorData } from "lib/errors";
-import { TradeMode } from "sdk/types/trade";
-import { TwapDuration } from "sdk/types/twap";
+import type { SourceChainId } from "config/chains";
+import type { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import type { MissedCoinsPlace } from "domain/synthetics/userFeedback";
+import type { ErrorData } from "lib/errors";
+import type { TradeMode } from "sdk/types/trade";
+import type { TwapDuration } from "sdk/types/twap";
 
 export type GlobalMetricData = {
   isMobileMetamask: boolean;
@@ -108,6 +109,22 @@ export type WsProviderHealthCheckFailed = {
   data: {
     requiredListenerCount: number;
     listenerCount: number;
+  };
+};
+
+export type WsSourceChainProviderConnected = {
+  event: "wsSourceChainProvider.connected";
+  isError: false;
+  data: {
+    chainId: SourceChainId;
+  };
+};
+
+export type WsSourceChainProviderDisconnected = {
+  event: "wsSourceChainProvider.disconnected";
+  isError: false;
+  data: {
+    chainId: SourceChainId;
   };
 };
 

@@ -231,7 +231,7 @@ export const DepositView = () => {
       ? getContract(settlementChainId, "SyntheticsRouter")
       : selectedTokenSourceChainTokenId?.stargate;
 
-  useMultichainApprovalsActiveListener("multichain-deposit-view");
+  useMultichainApprovalsActiveListener(depositViewChain, "multichain-deposit-view");
 
   const tokensAllowanceResult = useTokensAllowanceData(depositViewChain, {
     spenderAddress,
