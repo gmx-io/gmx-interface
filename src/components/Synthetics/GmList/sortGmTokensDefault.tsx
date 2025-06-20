@@ -29,18 +29,14 @@ export function sortGmTokensDefault(marketsInfoData: GlvAndGmMarketsInfoData, ma
       marketTokenData.totalSupply,
       marketTokenData.decimals,
       marketTokenData.prices.minPrice
-    )!;
+    );
 
-    const balanceUsd = convertToUsd(
-      marketTokenData.balance,
-      marketTokenData.decimals,
-      marketTokenData.prices.minPrice
-    )!;
+    const balanceUsd = convertToUsd(marketTokenData.balance, marketTokenData.decimals, marketTokenData.prices.minPrice);
 
     tokens.push({
       tokenData: marketTokenData,
-      totalSupplyUsd: totalSupplyUsd,
-      balanceUsd: balanceUsd,
+      totalSupplyUsd: totalSupplyUsd ?? 0n,
+      balanceUsd: balanceUsd ?? 0n,
     });
   }
 
