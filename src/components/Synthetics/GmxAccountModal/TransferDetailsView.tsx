@@ -128,7 +128,9 @@ export const TransferDetailsView = () => {
         label={<Trans>Amount</Trans>}
         value={
           selectedTransfer && token
-            ? formatBalanceAmount(selectedTransfer.sentAmount, token.decimals, token.symbol)
+            ? formatBalanceAmount(selectedTransfer.sentAmount, token.decimals, token.symbol, {
+                isStable: token.isStable,
+              })
             : undefined
         }
       />
@@ -141,7 +143,10 @@ export const TransferDetailsView = () => {
                 ? formatBalanceAmount(
                     selectedTransfer.sentAmount - selectedTransfer.receivedAmount,
                     token.decimals,
-                    token.symbol
+                    token.symbol,
+                    {
+                      isStable: token.isStable,
+                    }
                   )
                 : undefined
             }
