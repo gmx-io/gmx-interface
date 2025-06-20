@@ -162,10 +162,6 @@ msgstr ""
 msgid "Type"
 msgstr "Type"
 
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-#~ msgid "Close order"
-#~ msgstr ""
-
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order submitted!"
 msgstr ""
@@ -4600,10 +4596,6 @@ msgstr "Réservé"
 msgid "Price below Liq. Price"
 msgstr "Prix inférieur au prix de liq."
 
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-#~ msgid "Market order will be cancellable in {minutes}m {seconds}s."
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take Profit / Stop Loss"
 msgstr ""
@@ -5954,6 +5946,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "Pick an asset to deposit"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -7898,10 +7894,6 @@ msgstr "Termes de parrainage"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Enter unique coins"
-msgstr ""
-
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-msgid "Pick and asset to deposit"
 msgstr ""
 
 #: src/components/Synthetics/GmList/FeeApyLabel.tsx

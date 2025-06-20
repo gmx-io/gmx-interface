@@ -162,10 +162,6 @@ msgstr "stop loss"
 msgid "Type"
 msgstr "Type"
 
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-#~ msgid "Close order"
-#~ msgstr "Close order"
-
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order submitted!"
 msgstr "Order submitted!"
@@ -4603,10 +4599,6 @@ msgstr "Reserved"
 msgid "Price below Liq. Price"
 msgstr "Price below Liq. Price"
 
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-#~ msgid "Market order will be cancellable in {minutes}m {seconds}s."
-#~ msgstr "Market order will be cancellable in {minutes}m {seconds}s."
-
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take Profit / Stop Loss"
 msgstr "Take Profit / Stop Loss"
@@ -5958,6 +5950,10 @@ msgstr "Tier {0} ({currentTierDiscount}% discount)"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
 msgstr "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
+
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "Pick an asset to deposit"
+msgstr "Pick an asset to deposit"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Generative Market eXplore - AIGMX Agent"
@@ -7905,10 +7901,6 @@ msgstr "Referral Terms"
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Enter unique coins"
 msgstr "Enter unique coins"
-
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-msgid "Pick and asset to deposit"
-msgstr "Pick and asset to deposit"
 
 #: src/components/Synthetics/GmList/FeeApyLabel.tsx
 msgid "Fee APY"

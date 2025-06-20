@@ -795,7 +795,7 @@ export const DepositView = () => {
                 </>
               ) : (
                 <span className="text-slate-100">
-                  <Trans>Pick and asset to deposit</Trans>
+                  <Trans>Pick an asset to deposit</Trans>
                 </span>
               )}
             </div>
