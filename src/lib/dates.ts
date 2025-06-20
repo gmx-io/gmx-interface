@@ -60,14 +60,14 @@ const INCLUDING_CURRENT_DAY_DURATION = {
   milliseconds: 0,
 };
 
-export function normalizeDateRange(
-  start: Date | undefined,
-  end: Date | undefined
-): [number | undefined, number | undefined] {
+export function normalizeDateRange<S extends Date | undefined, E extends Date | undefined>(
+  start: S,
+  end: E
+): [S extends Date ? number : undefined, E extends Date ? number : undefined] {
   const fromTxTimestamp = start ? toSeconds(setTime(start, START_OF_DAY_DURATION)) : undefined;
   const toTxTimestamp = end ? toSeconds(setTime(end, INCLUDING_CURRENT_DAY_DURATION)) : undefined;
 
-  return [fromTxTimestamp, toTxTimestamp];
+  return [fromTxTimestamp, toTxTimestamp] as [S extends Date ? number : undefined, E extends Date ? number : undefined];
 }
 
 /**
