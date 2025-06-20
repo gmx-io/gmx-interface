@@ -54,6 +54,7 @@ export const getRainbowKitConfig = once(() =>
       [arbitrum.id]: http(),
       [avalanche.id]: http(),
       [avalancheFuji.id]: http(),
+      [botanix.id]: http(),
     },
     wallets: [...popularWalletList, ...othersWalletList],
   })
