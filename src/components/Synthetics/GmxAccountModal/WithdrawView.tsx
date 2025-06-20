@@ -12,7 +12,7 @@ import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import {
   useGmxAccountModalOpen,
-  useGmxAccountWithdrawViewChainId,
+  useGmxAccountWithdrawViewChain,
   useGmxAccountWithdrawViewTokenAddress,
   useGmxAccountWithdrawViewTokenInputValue,
 } from "context/GmxAccountContext/hooks";
@@ -124,7 +124,7 @@ const useIsFirstWithdrawal = () => {
 
 export const WithdrawView = () => {
   const { chainId } = useChainId();
-  const [withdrawalViewChain, setWithdrawalViewChain] = useGmxAccountWithdrawViewChainId();
+  const [withdrawalViewChain, setWithdrawalViewChain] = useGmxAccountWithdrawViewChain();
   const { address: account } = useAccount();
   const [isVisibleOrView, setIsVisibleOrView] = useGmxAccountModalOpen();
   const [inputValue, setInputValue] = useGmxAccountWithdrawViewTokenInputValue();

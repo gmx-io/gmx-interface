@@ -13,11 +13,11 @@ import {
   selectGmxAccountSetModalOpen,
   selectGmxAccountSetSelectedTransferGuid,
   selectGmxAccountSetSettlementChainId,
-  selectGmxAccountSetWithdrawViewChainId,
+  selectGmxAccountSetWithdrawViewChain,
   selectGmxAccountSetWithdrawViewTokenAddress,
   selectGmxAccountSetWithdrawViewTokenInputValue,
   selectGmxAccountSettlementChainId,
-  selectGmxAccountWithdrawViewChainId,
+  selectGmxAccountWithdrawViewChain,
   selectGmxAccountWithdrawViewTokenAddress,
   selectGmxAccountWithdrawViewTokenInputValue,
 } from "./selectors";
@@ -64,10 +64,10 @@ export function useGmxAccountDepositViewTokenInputValue() {
   ] as const;
 }
 
-export function useGmxAccountWithdrawViewChainId() {
+export function useGmxAccountWithdrawViewChain() {
   return [
-    useGmxAccountSelector(selectGmxAccountWithdrawViewChainId),
-    useGmxAccountSelector(selectGmxAccountSetWithdrawViewChainId),
+    useGmxAccountSelector(selectGmxAccountWithdrawViewChain),
+    useGmxAccountSelector(selectGmxAccountSetWithdrawViewChain),
   ] as const;
 }
 

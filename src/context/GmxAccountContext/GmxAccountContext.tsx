@@ -37,8 +37,8 @@ export type GmxAccountContext = {
 
   // withdraw view
 
-  withdrawViewChainId: SourceChainId | undefined;
-  setWithdrawViewChainId: (chain: SourceChainId | undefined) => void;
+  withdrawViewChain: SourceChainId | undefined;
+  setWithdrawViewChain: (chain: SourceChainId | undefined) => void;
 
   withdrawViewTokenAddress: string | undefined;
   setWithdrawViewTokenAddress: (address: string | undefined) => void;
@@ -71,7 +71,7 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
   const [depositViewTokenInputValue, setDepositViewTokenInputValue] =
     useState<GmxAccountContext["depositViewTokenInputValue"]>(undefined);
 
-  const [withdrawViewChainId, setWithdrawViewChainId] = useState<GmxAccountContext["withdrawViewChainId"]>(undefined);
+  const [withdrawViewChain, setWithdrawViewChain] = useState<GmxAccountContext["withdrawViewChain"]>(undefined);
   const [withdrawViewTokenAddress, setWithdrawViewTokenAddress] =
     useState<GmxAccountContext["withdrawViewTokenAddress"]>(undefined);
   const [withdrawViewTokenInputValue, setWithdrawViewTokenInputValue] =
@@ -127,8 +127,8 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
 
       // withdraw view
 
-      withdrawViewChainId,
-      setWithdrawViewChainId,
+      withdrawViewChain,
+      setWithdrawViewChain,
       withdrawViewTokenAddress,
       setWithdrawViewTokenAddress,
       withdrawViewTokenInputValue,
@@ -146,7 +146,7 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
       depositViewChain,
       depositViewTokenAddress,
       depositViewTokenInputValue,
-      withdrawViewChainId,
+      withdrawViewChain,
       withdrawViewTokenAddress,
       withdrawViewTokenInputValue,
       selectedTransferGuid,
