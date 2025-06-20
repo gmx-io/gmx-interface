@@ -157,10 +157,6 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-#~ msgid "Close order"
-#~ msgstr ""
-
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order submitted!"
 msgstr ""
@@ -4471,10 +4467,6 @@ msgstr ""
 msgid "Price below Liq. Price"
 msgstr ""
 
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-#~ msgid "Market order will be cancellable in {minutes}m {seconds}s."
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take Profit / Stop Loss"
 msgstr ""
@@ -6139,7 +6131,7 @@ msgstr ""
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Create {0} Order"
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Limit Swap"
@@ -6420,7 +6412,7 @@ msgstr ""
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Active Orders"
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "You have set a high acceptable price impact. The current price impact is {0}."
