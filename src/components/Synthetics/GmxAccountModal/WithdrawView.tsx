@@ -266,7 +266,9 @@ export const WithdrawView = () => {
       : false;
   const lowerLimitFormatted =
     isBelowLimit && selectedTokenSettlementChainTokenId && lastMinAmountLD.current !== undefined
-      ? formatBalanceAmount(lastMinAmountLD.current, selectedTokenSettlementChainTokenId?.decimals)
+      ? formatBalanceAmount(lastMinAmountLD.current, selectedTokenSettlementChainTokenId?.decimals, undefined, {
+          isStable: selectedToken?.isStable,
+        })
       : undefined;
   const isAboveLimit =
     lastMaxAmountLD.current !== undefined && inputAmount !== undefined && inputAmount > 0n
@@ -274,7 +276,9 @@ export const WithdrawView = () => {
       : false;
   const upperLimitFormatted =
     isAboveLimit && selectedTokenSettlementChainTokenId && lastMaxAmountLD.current !== undefined
-      ? formatBalanceAmount(lastMaxAmountLD.current, selectedTokenSettlementChainTokenId?.decimals)
+      ? formatBalanceAmount(lastMaxAmountLD.current, selectedTokenSettlementChainTokenId?.decimals, undefined, {
+          isStable: selectedToken?.isStable,
+        })
       : undefined;
 
   const sendParamsWithSlippage: SendParamStruct | undefined = useMemo(() => {
@@ -801,7 +805,9 @@ export const WithdrawView = () => {
             {selectedToken !== undefined && selectedToken.balance !== undefined && selectedToken !== undefined && (
               <div>
                 <Trans>Available:</Trans>{" "}
-                {formatBalanceAmount(selectedToken.balance, selectedToken.decimals, selectedToken.symbol)}
+                {formatBalanceAmount(selectedToken.balance, selectedToken.decimals, selectedToken.symbol, {
+                  isStable: selectedToken.isStable,
+                })}
               </div>
             )}
           </div>
@@ -876,12 +882,16 @@ export const WithdrawView = () => {
             <ValueTransition
               from={
                 selectedToken !== undefined && selectedToken.balance !== undefined
-                  ? formatBalanceAmount(selectedToken.balance, selectedToken.decimals, selectedToken.symbol)
+                  ? formatBalanceAmount(selectedToken.balance, selectedToken.decimals, selectedToken.symbol, {
+                      isStable: selectedToken.isStable,
+                    })
                   : undefined
               }
               to={
                 nextTokenGmxAccountBalance !== undefined && selectedToken !== undefined
-                  ? formatBalanceAmount(nextTokenGmxAccountBalance, selectedToken.decimals, selectedToken.symbol)
+                  ? formatBalanceAmount(nextTokenGmxAccountBalance, selectedToken.decimals, selectedToken.symbol, {
+                      isStable: selectedToken.isStable,
+                    })
                   : undefined
               }
             />
@@ -921,7 +931,11 @@ function WithdrawAssetItem({ option }: { option: TokenData }) {
         </span>
       </div>
       <div className="text-slate-100">
-        {option.balance !== undefined ? formatBalanceAmount(option.balance, option.decimals) : "-"}
+        {option.balance !== undefined
+          ? formatBalanceAmount(option.balance, option.decimals, undefined, {
+              isStable: option.isStable,
+            })
+          : "-"}
       </div>
     </div>
   );

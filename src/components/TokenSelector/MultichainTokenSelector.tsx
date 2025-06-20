@@ -43,7 +43,7 @@ type Props = {
   gmxAccountTokensData: TokensData | undefined;
   multichainTokens: TokenChainData[] | undefined;
 
-  onDepositTokenAddress: (tokenAddress: string, chainId: number) => void;
+  onDepositTokenAddress: (tokenAddress: string, chainId: SourceChainId) => void;
 };
 
 export function MultichainTokenSelector({
@@ -73,7 +73,7 @@ export function MultichainTokenSelector({
     propsOnSelectTokenAddress(tokenAddress, isGmxAccount);
   };
 
-  const onDepositTokenAddress = (tokenAddress: string, chainId: number) => {
+  const onDepositTokenAddress = (tokenAddress: string, chainId: SourceChainId) => {
     setIsModalVisible(false);
     propsOnDepositTokenAddress(tokenAddress, chainId);
   };
@@ -355,7 +355,10 @@ function AvailableToTradeTokenList({
             </div>
             <div className="text-right">
               <div className="text-body-large">
-                {token.balance > 0n && formatBalanceAmount(token.balance, token.decimals)}
+                {token.balance > 0n &&
+                  formatBalanceAmount(token.balance, token.decimals, undefined, {
+                    isStable: token.isStable,
+                  })}
                 {token.balance == 0n && "-"}
               </div>
 
@@ -383,7 +386,7 @@ function MultichainTokenList({
   searchKeyword: string;
   multichainTokens: TokenChainData[];
   extendedSortSequence?: string[];
-  onDepositTokenAddress: (tokenAddress: string, chainId: number) => void;
+  onDepositTokenAddress: (tokenAddress: string, chainId: SourceChainId) => void;
 }) {
   useEffect(() => {
     if (isModalVisible) {
@@ -476,7 +479,9 @@ function MultichainTokenList({
               {(token.sourceChainBalance !== undefined && (
                 <div className="text-body-large">
                   {token.sourceChainBalance > 0 &&
-                    formatBalanceAmount(token.sourceChainBalance, token.sourceChainDecimals)}
+                    formatBalanceAmount(token.sourceChainBalance, token.sourceChainDecimals, undefined, {
+                      isStable: token.isStable,
+                    })}
                   {token.sourceChainBalance == 0n && "-"}
                 </div>
               )) ||

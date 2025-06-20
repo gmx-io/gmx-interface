@@ -346,7 +346,9 @@ export const DepositView = () => {
       : false;
   const lowerLimitFormatted =
     isBelowLimit && selectedTokenSourceChainTokenId && lastMinAmountLD.current !== undefined
-      ? formatBalanceAmount(lastMinAmountLD.current, selectedTokenSourceChainTokenId?.decimals)
+      ? formatBalanceAmount(lastMinAmountLD.current, selectedTokenSourceChainTokenId?.decimals, undefined, {
+          isStable: selectedToken?.isStable,
+        })
       : undefined;
   const isAboveLimit =
     lastMaxAmountLD.current !== undefined && inputAmount !== undefined && inputAmount > 0n
@@ -354,7 +356,9 @@ export const DepositView = () => {
       : false;
   const upperLimitFormatted =
     isAboveLimit && selectedTokenSourceChainTokenId && lastMaxAmountLD.current !== undefined
-      ? formatBalanceAmount(lastMaxAmountLD.current, selectedTokenSourceChainTokenId?.decimals)
+      ? formatBalanceAmount(lastMaxAmountLD.current, selectedTokenSourceChainTokenId?.decimals, undefined, {
+          isStable: selectedToken?.isStable,
+        })
       : undefined;
 
   const sendParamsWithSlippage: SendParamStruct | undefined = useMemo(() => {
@@ -816,7 +820,9 @@ export const DepositView = () => {
             {selectedTokenSourceChainBalance !== undefined && selectedToken !== undefined && (
               <div>
                 <Trans>Available:</Trans>{" "}
-                {formatBalanceAmount(selectedTokenSourceChainBalance, selectedToken.decimals, selectedToken.symbol)}
+                {formatBalanceAmount(selectedTokenSourceChainBalance, selectedToken.decimals, selectedToken.symbol, {
+                  isStable: selectedToken.isStable,
+                })}
               </div>
             )}
           </div>
@@ -884,7 +890,8 @@ export const DepositView = () => {
                   ? formatBalanceAmount(
                       selectedTokenGmxAccountData.balance,
                       selectedTokenGmxAccountData.decimals,
-                      selectedTokenGmxAccountData.symbol
+                      selectedTokenGmxAccountData.symbol,
+                      { isStable: selectedTokenGmxAccountData.isStable }
                     )
                   : undefined
               }
@@ -893,7 +900,8 @@ export const DepositView = () => {
                   ? formatBalanceAmount(
                       nextTokenGmxAccountBalance,
                       selectedTokenGmxAccountData.decimals,
-                      selectedTokenGmxAccountData.symbol
+                      selectedTokenGmxAccountData.symbol,
+                      { isStable: selectedTokenGmxAccountData.isStable }
                     )
                   : undefined
               }

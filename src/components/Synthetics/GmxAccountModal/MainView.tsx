@@ -418,7 +418,11 @@ const FundingHistorySection = () => {
               </div>
             </div>
             <div className="text-right">
-              <div>{formatBalanceAmount(transfer.sentAmount, transfer.token.decimals, transfer.token.symbol)}</div>
+              <div>
+                {formatBalanceAmount(transfer.sentAmount, transfer.token.decimals, transfer.token.symbol, {
+                  isStable: transfer.token.isStable,
+                })}
+              </div>
               <div className="text-body-small text-slate-100">
                 {formatRelativeDateWithComma(transfer.sentTimestamp)}
               </div>

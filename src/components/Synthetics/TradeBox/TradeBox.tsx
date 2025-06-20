@@ -3,9 +3,10 @@ import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useMemo, useRef } f
 import { IoArrowDown } from "react-icons/io5";
 import { useKey, useLatest, usePrevious } from "react-use";
 
+import { SourceChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import {
-  // useGmxAccountDepositViewChain,
+  useGmxAccountDepositViewChain,
   useGmxAccountDepositViewTokenAddress,
   useGmxAccountModalOpen,
 } from "context/GmxAccountContext/hooks";
@@ -76,7 +77,6 @@ import {
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
-import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { TradeMode } from "sdk/types/trade";
@@ -146,23 +146,22 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
-  const { account, active } = useWallet();
+  const { account } = useWallet();
 
   const { shouldDisableValidationForTesting: shouldDisableValidation } = useSettings();
 
-  // const [, setDepositViewChain] = useGmxAccountDepositViewChain();
-  const [, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
+  const [, setDepositViewChain] = useGmxAccountDepositViewChain();
+  const [, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
 
   const onDepositTokenAddress = useCallback(
-    (tokenAddress: string, chainId: number) => {
-      // setDepositViewChain(chainId);
-      switchNetwork(chainId, active);
+    (tokenAddress: string, chainId: SourceChainId) => {
+      setDepositViewChain(chainId);
       setDepositViewTokenAddress(tokenAddress);
 
       setIsVisibleOrView("deposit");
     },
-    [active, setDepositViewTokenAddress, setIsVisibleOrView]
+    [setDepositViewChain, setDepositViewTokenAddress, setIsVisibleOrView]
   );
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);

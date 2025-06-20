@@ -54,7 +54,8 @@ const TokenListItem = ({ tokenChainData, onClick, className }: TokenListItemProp
           {formatBalanceAmount(
             tokenChainData.sourceChainBalance ?? 0n,
             tokenChainData.sourceChainDecimals,
-            tokenChainData.symbol
+            tokenChainData.symbol,
+            { isStable: tokenChainData.isStable }
           )}
         </div>
         <div className="text-body-small text-slate-100">
