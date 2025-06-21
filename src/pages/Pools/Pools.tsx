@@ -1,6 +1,7 @@
 import cx from "classnames";
 import { useMemo } from "react";
 
+import { BOTANIX } from "config/chains";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
@@ -60,6 +61,8 @@ export default function Pools() {
 
   const isMobile = usePoolsIsMobilePage();
 
+  const isBotanix = chainId === BOTANIX;
+
   return (
     <div className="default-container page-layout">
       <div
@@ -81,18 +84,20 @@ export default function Pools() {
       </div>
 
       <div className="flex flex-col gap-16">
-        <GlvList
-          marketsTokensApyData={marketsTokensApyData}
-          marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
-          glvTokensIncentiveAprData={glvTokensIncentiveAprData}
-          marketsTokensLidoAprData={marketsTokensLidoAprData}
-          glvTokensApyData={glvApyInfoData}
-          glvPerformance={glvPerformance}
-          gmPerformance={gmPerformance}
-          glvPerformanceSnapshots={glvPerformanceSnapshots}
-          gmPerformanceSnapshots={gmPerformanceSnapshots}
-          isDeposit
-        />
+        {!isBotanix && (
+          <GlvList
+            marketsTokensApyData={marketsTokensApyData}
+            marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+            glvTokensIncentiveAprData={glvTokensIncentiveAprData}
+            marketsTokensLidoAprData={marketsTokensLidoAprData}
+            glvTokensApyData={glvApyInfoData}
+            glvPerformance={glvPerformance}
+            gmPerformance={gmPerformance}
+            glvPerformanceSnapshots={glvPerformanceSnapshots}
+            gmPerformanceSnapshots={gmPerformanceSnapshots}
+            isDeposit
+          />
+        )}
 
         <GmList
           glvTokensApyData={glvApyInfoData}

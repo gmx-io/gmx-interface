@@ -6,7 +6,7 @@
 */
 import { MARKETS as SDK_MARKETS } from "sdk/configs/markets";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, UiContractsChain } from "./chains";
 
 type MarketUiConfig = {
   enabled: boolean;
@@ -16,7 +16,7 @@ type MarketUiConfig = {
   ATTENTION
   When adding new markets, please add them also to the end of the list in ./sortedMarkets.ts
 */
-const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
+const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig>> = {
   [ARBITRUM]: {
     // BTC/USD [WBTC.e-USDC]
     "0x47c031236e19d024b42f8AE6780E44A573170703": {
@@ -496,6 +496,12 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
     },
     // WBTC/USD [WBTC]
     "0x3b649015Fe0a4d15617e57aA11c0FbbfA03A9e11": {
+      enabled: true,
+    },
+  },
+  [BOTANIX]: {
+    // BTC/USD [pBTC-pBTC]
+    "0x6bFDD025827F7CE130BcfC446927AEF34ae2a98d": {
       enabled: true,
     },
   },

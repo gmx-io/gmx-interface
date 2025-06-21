@@ -267,7 +267,7 @@ export function useGmMarketsApy(
 
   const lidoApr = useLidoStakeApr();
 
-  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId); 
+  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
 
   const { data } = useSWR(key, {
     fetcher: async (): Promise<SwrResult> => {

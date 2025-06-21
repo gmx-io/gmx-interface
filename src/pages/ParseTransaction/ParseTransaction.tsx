@@ -8,7 +8,7 @@ import useSWR from "swr";
 import { Hash, isHash, PublicClient } from "viem";
 import { usePublicClient } from "wagmi";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, UiContractsChain, getExplorerUrl } from "config/chains";
 import { getIcon } from "config/icons";
 import {
   getGlvDisplayName,
@@ -57,18 +57,21 @@ const NETWORKS = {
   arbitrum: ARBITRUM,
   avalanche: AVALANCHE,
   fuji: AVALANCHE_FUJI,
+  botanix: BOTANIX,
 };
 
-export const NETWORKS_BY_CHAIN_IDS = {
+export const NETWORKS_BY_CHAIN_IDS: Record<UiContractsChain, string> = {
   [ARBITRUM]: "arbitrum",
   [AVALANCHE]: "avalanche",
   [AVALANCHE_FUJI]: "fuji",
+  [BOTANIX]: "botanix",
 };
 
-const EXPLORER_TX_URLS = {
+const EXPLORER_TX_URLS: Record<UiContractsChain, string> = {
   [ARBITRUM]: getExplorerUrl(ARBITRUM) + "tx/",
   [AVALANCHE]: getExplorerUrl(AVALANCHE) + "tx/",
   [AVALANCHE_FUJI]: getExplorerUrl(AVALANCHE_FUJI) + "tx/",
+  [BOTANIX]: getExplorerUrl(BOTANIX) + "tx/",
 };
 
 export function ParseTransactionPage() {
@@ -78,7 +81,7 @@ export function ParseTransactionPage() {
   /** Default is Arbitrum to prevent page crashes in hooks, wrong networks handled on :207 */
   const chainId = NETWORKS[network as string] ?? ARBITRUM;
 
-  const client = usePublicClient({ chainId });
+  const client = usePublicClient({});
 
   const { data, isLoading, error } = useSWR([chainId, tx], async function fetchTransaction() {
     try {
@@ -109,7 +112,7 @@ export function ParseTransactionPage() {
   if (!network || typeof network !== "string" || !NETWORKS[network as string]) {
     return (
       <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
-        Specify network: arbitrum, avalanche, fuji
+        Specify network: arbitrum, avalanche, fuji, botanix
       </div>
     );
   }

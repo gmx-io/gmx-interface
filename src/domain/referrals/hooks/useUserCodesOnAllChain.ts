@@ -24,7 +24,7 @@ export async function getCodeOwnersData(
     return undefined;
   }
   return getReferralsGraphClient(chainId)
-    .query({ query: CODE_OWNERS_GQL, variables: { codes } })
+    ?.query({ query: CODE_OWNERS_GQL, variables: { codes } })
     .then(({ data }) => {
       const { referralCodes } = data;
       const codeOwners = referralCodes.reduce((acc, cv) => {
