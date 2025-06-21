@@ -157,10 +157,6 @@ msgstr ""
 msgid "Type"
 msgstr "타입"
 
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-#~ msgid "Close order"
-#~ msgstr ""
-
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order submitted!"
 msgstr ""
@@ -3772,6 +3768,10 @@ msgstr ""
 msgid "Prev"
 msgstr "이전"
 
+#: src/pages/Pools/PoolsTimeRangeFilter.tsx
+msgid "Last 180d"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown buy GM order"
 msgstr ""
@@ -4470,10 +4470,6 @@ msgstr "리저브 완료"
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Price below Liq. Price"
 msgstr "청산가 미만 가격"
-
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-#~ msgid "Market order will be cancellable in {minutes}m {seconds}s."
-#~ msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take Profit / Stop Loss"
