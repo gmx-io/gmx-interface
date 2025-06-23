@@ -1513,6 +1513,15 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
     },
     {
+      name: "USDC.E",
+      symbol: "USDC.E",
+      address: "0x325eEb3AA50014f35861e3374f54B3997Aa8357d",
+      decimals: 6,
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/bridged-usdc-arbitrum",
+    },
+    {
       name: "GMX",
       symbol: "GMX",
       address: "",

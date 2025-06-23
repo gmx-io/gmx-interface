@@ -504,6 +504,14 @@ const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig
     "0x6bFDD025827F7CE130BcfC446927AEF34ae2a98d": {
       enabled: true,
     },
+    // BTC/USD [stBTC-stBTC]
+    "0x6682BB60590a045A956541B1433f016Ed22E361d": {
+      enabled: true,
+    },
+    // BTC/USD [stBTC-USDC.E]
+    "0xEbEEcdb96237A10234d34c2de182aCCF1c3B31c9": {
+      enabled: true,
+    },
   },
 };
 
