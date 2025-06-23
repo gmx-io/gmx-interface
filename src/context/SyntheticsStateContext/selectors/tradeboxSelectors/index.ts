@@ -46,8 +46,10 @@ import { getPositionKey } from "lib/legacy";
 import { PRECISION, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
+import { BOTANIX } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
+import { getBotanixParams } from "sdk/utils/botanixParams";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { createTradeFlags } from "sdk/utils/trade";
 
@@ -501,7 +503,14 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
     return undefined;
   }
 
-  if (isWrapOrUnwrap) {
+  const { isBotanixDeposit, isBotanixRedeem } = getBotanixParams({
+    chainId: q(selectChainId),
+    payTokenAddress: fromToken.address,
+    receiveTokenAddress: toToken.address,
+    isSwap: tradeFlags.isSwap,
+  });
+
+  if (isWrapOrUnwrap || isBotanixDeposit || isBotanixRedeem) {
     const tokenAmount = amountBy === "from" ? fromTokenAmount : toTokenAmount;
     const usdAmount = convertToUsd(tokenAmount, fromToken.decimals, fromTokenPrice)!;
     const price = fromTokenPrice;
@@ -570,9 +579,13 @@ export const selectTradeboxTradeFeesType = createSelector(
   function selectTradeboxTradeFeesType(q): TradeFeesType | null {
     const { isSwap, isIncrease, isTrigger } = q(selectTradeboxTradeFlags);
 
+    const chainId = q(selectChainId);
+    const isBotanix = chainId === BOTANIX;
+
     if (isSwap) {
-      const swapAmounts = q(selectTradeboxSwapAmounts)?.swapPathStats;
-      if (swapAmounts) return "swap";
+      const swapAmounts = q(selectTradeboxSwapAmounts);
+      const swapPathStats = swapAmounts?.swapPathStats;
+      if (swapPathStats || (isBotanix && swapAmounts)) return "swap";
     }
 
     if (isIncrease) {
@@ -606,14 +619,21 @@ const selectTradeboxOrderGasLimit = createSelector(function selectTradeboxOrderG
 
   if (!gasLimits) return null;
 
+  const { isBotanixSwap } = getBotanixParams({
+    chainId: q(selectChainId),
+    payTokenAddress: q(selectTradeboxFromTokenAddress)!,
+    receiveTokenAddress: q(selectTradeboxToTokenAddress),
+    isSwap: tradeFeesType === "swap",
+  });
+
   switch (tradeFeesType) {
     case "swap": {
       const swapAmounts = q(selectTradeboxSwapAmounts);
 
-      if (!swapAmounts || !swapAmounts.swapPathStats) return null;
+      if ((!swapAmounts || !swapAmounts.swapPathStats) && !isBotanixSwap) return null;
 
       return estimateExecuteSwapOrderGasLimit(gasLimits, {
-        swapsCount: swapAmounts.swapPathStats.swapPath.length,
+        swapsCount: swapAmounts?.swapPathStats?.swapPath.length ?? 0,
         callbackGasLimit: 0n,
       });
     }

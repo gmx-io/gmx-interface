@@ -1,4 +1,4 @@
-import { selectPositionConstants } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectChainId, selectPositionConstants } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxCloseSizeUsd,
   selectTradeboxCollateralToken,
@@ -44,6 +44,7 @@ export const selectTradeboxSwapTradeError = createSelector((q) => {
   const { triggerRatio, markRatio } = q(selectTradeboxTradeRatios);
   const fees = q(selectTradeboxFees);
   const numberOfParts = q(selectTradeboxTwapNumberOfParts);
+  const chainId = q(selectChainId);
 
   return getSwapError({
     fromToken,
@@ -62,6 +63,7 @@ export const selectTradeboxSwapTradeError = createSelector((q) => {
     fees,
     isTwap,
     numberOfParts,
+    chainId,
   });
 });
 
@@ -83,6 +85,7 @@ export const selectTradeboxIncreaseTradeError = createSelector((q) => {
   const nextPositionValues = q(selectTradeboxNextPositionValues);
   const nextLeverageWithoutPnl = q(selectTradeboxNextLeverageWithoutPnl);
   const numberOfParts = q(selectTradeboxTwapNumberOfParts);
+  const chainId = q(selectChainId);
 
   return getIncreaseError({
     marketInfo,
@@ -111,6 +114,7 @@ export const selectTradeboxIncreaseTradeError = createSelector((q) => {
     numberOfParts,
     isTwap,
     minPositionSizeUsd,
+    chainId,
   });
 });
 

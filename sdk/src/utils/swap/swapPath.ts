@@ -1,10 +1,11 @@
 import { BOTANIX } from "configs/chains";
 import { MarketConfig, MARKETS } from "configs/markets";
-import { convertTokenAddress, getTokenBySymbol, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { convertTokenAddress, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { GasLimitsConfig } from "types/fees";
 import { MarketsInfoData } from "types/markets";
 import { TokensData } from "types/tokens";
 import { FindSwapPath, SwapPathStats } from "types/trade";
+import { getBotanixParams } from "utils/botanixParams";
 import { LRUCache } from "utils/LruCache";
 import { getIsMarketAvailableForExpressSwaps } from "utils/markets";
 
@@ -145,14 +146,13 @@ export const createFindSwapPath = (params: {
     }
 
     if (chainId === BOTANIX) {
-      const isBotanixRedeem =
-        fromTokenAddress === getTokenBySymbol(BOTANIX, "stBTC").address &&
-        toTokenAddress === getTokenBySymbol(BOTANIX, "pBTC").address;
-      const isBotanixDeposit =
-        (fromTokenAddress === getTokenBySymbol(BOTANIX, "pBTC").address ||
-          fromTokenAddress === getTokenBySymbol(BOTANIX, "bBTC").address) &&
-        toTokenAddress === getTokenBySymbol(BOTANIX, "stBTC").address;
-        
+      const { isBotanixRedeem, isBotanixDeposit } = getBotanixParams({
+        chainId,
+        payTokenAddress: fromTokenAddress,
+        receiveTokenAddress: toTokenAddress,
+        isSwap: false,
+      });
+
       if (isBotanixRedeem || isBotanixDeposit) {
         return undefined;
       }

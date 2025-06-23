@@ -4,15 +4,16 @@ import { encodeFunctionData, zeroAddress, zeroHash } from "viem";
 import ExchangeRouterAbi from "abis/ExchangeRouter.json";
 import StBTCABI from "abis/StBTC.json";
 import ERC20ABI from "abis/Token.json";
-import { BOTANIX, getExcessiveExecutionFee, getHighExecutionFee } from "configs/chains";
+import { getExcessiveExecutionFee, getHighExecutionFee } from "configs/chains";
 import { getContract } from "configs/contracts";
-import { convertTokenAddress, getToken, getTokenBySymbol, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { convertTokenAddress, getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { ExecutionFee } from "types/fees";
 import { DecreasePositionSwapType, OrderType } from "types/orders";
 import { ContractPrice, ERC20Address, TokensData } from "types/tokens";
 import { ExternalSwapQuote } from "types/trade";
 import { TwapOrderParams } from "types/twap";
 
+import { getBotanixParams } from "./botanixParams";
 import { expandDecimals, MaxUint256, USD_DECIMALS } from "./numbers";
 import { getByKey } from "./objects";
 import { isIncreaseOrderType, isSwapOrderType } from "./orders";
@@ -597,10 +598,6 @@ export function buildTokenTransfersParamsForDecrease({
   };
 }
 
-const PBTC_TOKEN = getTokenBySymbol(BOTANIX, "pBTC");
-const BBTC_TOKEN = getTokenBySymbol(BOTANIX, "bBTC");
-const STBTC_TOKEN = getTokenBySymbol(BOTANIX, "stBTC");
-
 export function buildTokenTransfersParamsForIncreaseOrSwap({
   chainId,
   receiver,
@@ -631,16 +628,12 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
 
   let finalPayTokenAmount = payTokenAmount;
 
-  let isBotanixDeposit = false;
-  let isBotanixRedeem = false;
-
-  if (chainId === BOTANIX && (payTokenAddress === PBTC_TOKEN.address || payTokenAddress === BBTC_TOKEN.address)) {
-    isBotanixDeposit = true;
-  }
-
-  if (chainId === BOTANIX && payTokenAddress === STBTC_TOKEN.address && receiveTokenAddress === PBTC_TOKEN.address) {
-    isBotanixRedeem = true;
-  }
+  const { isBotanixDeposit, isBotanixRedeem } = getBotanixParams({
+    chainId,
+    payTokenAddress,
+    receiveTokenAddress,
+    isSwap: isSwapOrderType(orderType),
+  });
 
   const skipOrderCreation = (isBotanixDeposit || isBotanixRedeem) && isSwapOrderType(orderType);
 
@@ -747,6 +740,7 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
     swapPath,
     value,
     externalCalls,
+    skipOrderCreation,
   };
 }
 

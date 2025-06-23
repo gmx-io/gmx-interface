@@ -55,6 +55,7 @@ import {
 import { getByKey } from "lib/objects";
 import { getTradeInteractionKey, sendUserAnalyticsOrderConfirmClickEvent, userAnalytics } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
+import { BOTANIX } from "sdk/configs/chains";
 import { BatchOrderTxnParams, getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
 
 import { useSidecarOrderPayloads } from "./useSidecarOrderPayloads";
@@ -279,6 +280,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
     sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
+    const isBotanix = chainId === BOTANIX;
+
     return sendBatchOrderTxn({
       chainId,
       signer,
@@ -286,12 +289,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       noncesData,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
-      simulationParams: shouldDisableValidationForTesting
-        ? undefined
-        : {
-            tokensData,
-            blockTimestampData,
-          },
+      simulationParams:
+        shouldDisableValidationForTesting || isBotanix
+          ? undefined
+          : {
+              tokensData,
+              blockTimestampData,
+            },
       callback: makeOrderTxnCallback({
         metricId: metricData.metricId,
         slippageInputId,
