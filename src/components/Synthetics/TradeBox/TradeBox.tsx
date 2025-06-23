@@ -107,7 +107,6 @@ import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
-import { BotanixDeposit } from "./BotanixDeposit";
 
 export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
@@ -1008,7 +1007,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           </div>
         )}
         <div className="flex flex-col gap-14 pt-14">
-          <BotanixDeposit fromTokenAddress={fromTokenAddress} fromTokenAmount={fromTokenAmount} />
           <div>{button}</div>
           <ExpressTradingWarningCard
             expressParams={submitButtonState.expressParams}

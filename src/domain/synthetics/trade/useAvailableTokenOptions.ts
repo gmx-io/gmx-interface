@@ -5,7 +5,7 @@ import { SORTED_MARKETS } from "config/static/sortedMarkets";
 import { GlvAndGmMarketsInfoData, Market, MarketInfo, MarketsData, isMarketInfo } from "domain/synthetics/markets";
 import { InfoTokens, Token, getMidPrice } from "domain/tokens";
 import { getByKey } from "lib/objects";
-import { NATIVE_TOKEN_ADDRESS, getTokenBySymbol, getTokensMap } from "sdk/configs/tokens";
+import { NATIVE_TOKEN_ADDRESS, getTokensMap } from "sdk/configs/tokens";
 
 import { isGlvInfo } from "../markets/glv";
 import { TokenData, TokensData, adaptToV1InfoTokens, convertToUsd } from "../tokens";
@@ -188,11 +188,6 @@ export function useAvailableTokenOptions(
     });
 
     const sortedLongAndShortTokens = sortedLongTokens.concat(sortedShortTokens);
-
-    const stBTC = tokensData?.[getTokenBySymbol(chainId, "stBTC").address];
-    if (stBTC) {
-      collaterals.add(stBTC);
-    }
 
     return {
       tokensMap,

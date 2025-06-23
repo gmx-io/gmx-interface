@@ -122,6 +122,7 @@ export type TokenTransfersParams = {
   minOutputAmount: bigint;
   swapPath: string[];
   externalCalls: ExternalCallsPayload | undefined;
+  skipOrderCreation?: boolean;
 };
 
 export type TokenTransfer = {
@@ -637,29 +638,38 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
     isBotanixDeposit = true;
   }
 
-  if (chainId === BOTANIX && (payTokenAddress === STBTC_TOKEN.address) && receiveTokenAddress === PBTC_TOKEN.address) {
+  if (chainId === BOTANIX && payTokenAddress === STBTC_TOKEN.address && receiveTokenAddress === PBTC_TOKEN.address) {
     isBotanixRedeem = true;
   }
 
   const skipOrderCreation = (isBotanixDeposit || isBotanixRedeem) && isSwapOrderType(orderType);
 
-  const { tokenTransfers, value } = combineTransfers([
-    ...(!skipOrderCreation ? [{
-      tokenAddress: NATIVE_TOKEN_ADDRESS,
-      destination: orderVaultAddress,
-      amount: executionFeeAmount,
-    },
-    {
-      tokenAddress: payTokenAddress,
-      destination: externalSwapQuote ? externalHandlerAddress : orderVaultAddress,
-      amount: payTokenAmount,
-    }] : []),
-    isBotanixDeposit || isBotanixRedeem ? {
-      tokenAddress: payTokenAddress,
-      destination: externalHandlerAddress,
-      amount: payTokenAmount,
-    } : null,
-  ].filter(Boolean) as TokenTransfer[]);
+  const { tokenTransfers, value } = combineTransfers(
+    [
+      ...(!skipOrderCreation
+        ? [
+            {
+              tokenAddress: NATIVE_TOKEN_ADDRESS,
+              destination: orderVaultAddress,
+              amount: executionFeeAmount,
+            },
+            {
+              tokenAddress: payTokenAddress,
+              destination: externalSwapQuote ? externalHandlerAddress : orderVaultAddress,
+              amount: payTokenAmount,
+            },
+          ]
+        : []),
+      isBotanixDeposit || isBotanixRedeem
+        ? {
+            tokenAddress: payTokenAddress,
+            destination: externalHandlerAddress,
+            amount: payTokenAmount,
+            skipOrderCreation: skipOrderCreation,
+          }
+        : null,
+    ].filter(Boolean) as TokenTransfer[]
+  );
 
   let initialCollateralTokenAddress = convertTokenAddress(chainId, payTokenAddress, "wrapped");
   let initialCollateralDeltaAmount = payTokenAmount;
@@ -708,9 +718,9 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
       externalCallTargets: [getContract(chainId, "StBTC"), getContract(chainId, "StBTC")],
       externalCallDataList: [
         encodeFunctionData({
-          abi: ERC20ABI.abi,
-          functionName: "approve",
-          args: [getContract(chainId, "SyntheticsRouter"), payTokenAmount],
+          abi: StBTCABI.abi,
+          functionName: "allowance",
+          args: [receiver, getContract(chainId, "SyntheticsRouter")],
         }),
         encodeFunctionData({
           abi: StBTCABI.abi,
@@ -885,7 +895,12 @@ export function getBatchOrderMulticallPayload({ params }: { params: BatchOrderTx
 
 export function buildCreateOrderMulticall(params: CreateOrderTxnParams<any>) {
   const { tokenTransfersParams, orderPayload } = params;
-  const { tokenTransfers = [], value = 0n, externalCalls = undefined } = tokenTransfersParams ?? {};
+  const {
+    tokenTransfers = [],
+    value = 0n,
+    externalCalls = undefined,
+    skipOrderCreation = false,
+  } = tokenTransfersParams ?? {};
 
   const multicall: ExchangeRouterCall[] = [];
 
@@ -909,12 +924,12 @@ export function buildCreateOrderMulticall(params: CreateOrderTxnParams<any>) {
     });
   }
 
-  // multicall.push({
-  //   method: "createOrder",
-  //   params: [orderPayload],
-  // });
-
-  console.log("multicall", multicall);
+  if (!skipOrderCreation) {
+    multicall.push({
+      method: "createOrder",
+      params: [orderPayload],
+    });
+  }
 
   return {
     multicall,
