@@ -111,26 +111,33 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
   const [, setSelectedTransferGuid] = useGmxAccountSelectedTransferGuid();
   const [multichainFundingPendingIds, setMultichainFundingPendingIds] = useState<Record<string, string>>(EMPTY_OBJECT);
 
-  const pendingReceiveDepositGuids = useMemo(() => {
-    return Object.keys(pendingMultichainFunding.deposits.sent);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Object.keys(pendingMultichainFunding.deposits.sent).join(",")]);
+  const pendingReceiveDepositGuidsRef = useRef<string[]>([]);
+  const pendingExecuteDepositGuidsRef = useRef<string[]>([]);
+  const pendingReceiveWithdrawalGuidsRef = useRef<string[]>([]);
 
-  const unstablePendingExecuteDepositGuids = Object.keys(pendingMultichainFunding.deposits.received).concat(
-    Object.keys(pendingMultichainFunding.deposits.sent)
-  );
-  const pendingExecuteDepositGuids = useMemo(() => {
-    return unstablePendingExecuteDepositGuids;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [unstablePendingExecuteDepositGuids.join(",")]);
+  const pendingReceiveDepositGuidsKey = useMemo(() => {
+    const guids = Object.keys(pendingMultichainFunding.deposits.sent);
+    pendingReceiveDepositGuidsRef.current = guids;
+    return guids.join(",");
+  }, [pendingMultichainFunding.deposits.sent]);
 
-  const pendingReceiveWithdrawalGuids = useMemo(() => {
-    return Object.keys(pendingMultichainFunding.withdrawals.sent);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Object.keys(pendingMultichainFunding.withdrawals.sent).join(",")]);
+  const pendingExecuteDepositGuidsKey = useMemo(() => {
+    const receivedGuids = Object.keys(pendingMultichainFunding.deposits.received);
+    const sentGuids = Object.keys(pendingMultichainFunding.deposits.sent);
+    const allGuids = [...receivedGuids, ...sentGuids];
+    pendingExecuteDepositGuidsRef.current = allGuids;
+    return allGuids.join(",");
+  }, [pendingMultichainFunding.deposits.received, pendingMultichainFunding.deposits.sent]);
+
+  const pendingReceiveWithdrawalGuidsKey = useMemo(() => {
+    const guids = Object.keys(pendingMultichainFunding.withdrawals.sent);
+    pendingReceiveWithdrawalGuidsRef.current = guids;
+    return guids.join(",");
+  }, [pendingMultichainFunding.withdrawals.sent]);
 
   //#region Deposits
 
+  // TODO MLTCH: make send events listening regardless of srcChainId
   useEffect(
     function subscribeSourceChainOftSentEvents() {
       if (
@@ -146,6 +153,8 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       const tokenIdMap = CHAIN_ID_TO_TOKEN_ID_MAP[srcChainId];
       const sourceChainStargates = Object.values(tokenIdMap).map((tokenId) => tokenId.stargate);
       const tokenIdByStargate = keyBy(Object.values(tokenIdMap), (tokenId: MultichainTokenId) => tokenId.stargate);
+
+      debugLog("subscribing to OFTSent events for", srcChainId);
 
       const unsubscribeFromOftSentEvents = subscribeToOftSentEvents(
         wsSourceChainProvider,
@@ -167,6 +176,8 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
           if (!tokenAddress) {
             throw new Error("No settlement chain token address for OFTSent event");
           }
+
+          debugLog("got OFTSent event for", srcChainId, tokenAddress, info.txnHash);
 
           setPendingMultichainFunding((prev) => {
             const newPendingMultichainFunding: PendingMultichainFunding = structuredClone(prev);
@@ -232,6 +243,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       );
 
       return function cleanup() {
+        debugLog("unsubscribing from OFTSent events for", srcChainId);
         unsubscribeFromOftSentEvents();
       };
     },
@@ -240,7 +252,12 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
   useEffect(
     function subscribeOftReceivedEvents() {
-      if (hasPageLostFocus || !wsProvider || !isSettlementChain(chainId) || pendingReceiveDepositGuids.length === 0) {
+      if (
+        hasPageLostFocus ||
+        !wsProvider ||
+        !isSettlementChain(chainId) ||
+        pendingReceiveDepositGuidsRef.current.length === 0
+      ) {
         return;
       }
 
@@ -250,7 +267,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       const unsubscribeFromOftReceivedEvents = subscribeToOftReceivedEvents(
         wsProvider,
         settlementChainStargates,
-        pendingReceiveDepositGuids,
+        pendingReceiveDepositGuidsRef.current,
         (info) => {
           setPendingMultichainFunding((prev) => {
             const newPendingMultichainFunding = structuredClone(prev);
@@ -263,6 +280,8 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
               return newPendingMultichainFunding;
             }
+
+            debugLog("got OFTReceive event for", chainId, pendingSentDeposit.token, info.txnHash);
 
             delete newPendingMultichainFunding.deposits.sent[info.guid];
             newPendingMultichainFunding.deposits.received[info.guid] = pendingSentDeposit;
@@ -280,7 +299,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       const timeoutId = setTimeout(() => {
         setPendingMultichainFunding((prev) => {
           const newPendingMultichainFunding = structuredClone(prev);
-          for (const guid of pendingReceiveDepositGuids) {
+          for (const guid of pendingReceiveDepositGuidsRef.current) {
             if (guid in newPendingMultichainFunding.deposits.sent) {
               delete newPendingMultichainFunding.deposits.sent[guid];
             }
@@ -294,12 +313,17 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         clearTimeout(timeoutId);
       };
     },
-    [chainId, hasPageLostFocus, pendingReceiveDepositGuids, wsProvider]
+    [chainId, hasPageLostFocus, pendingReceiveDepositGuidsKey, wsProvider]
   );
 
   useEffect(
     function subscribeComposeDeliveredEvents() {
-      if (hasPageLostFocus || !wsProvider || !isSettlementChain(chainId) || pendingExecuteDepositGuids.length === 0) {
+      if (
+        hasPageLostFocus ||
+        !wsProvider ||
+        !isSettlementChain(chainId) ||
+        pendingExecuteDepositGuidsRef.current.length === 0
+      ) {
         return;
       }
 
@@ -308,7 +332,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       const unsubscribeFromComposeDeliveredEvents = subscribeToComposeDeliveredEvents(
         wsProvider,
         lzEndpoint,
-        pendingExecuteDepositGuids,
+        pendingExecuteDepositGuidsRef.current,
         (info) => {
           setTimeout(() => {
             setMultichainFundingPendingIds((prev) => {
@@ -326,6 +350,8 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
               console.warn("[multichain] Got ComposeDelivered event but no pending deposits were received from UI");
               return newPendingMultichainFunding;
             }
+
+            debugLog("got ComposeDelivered event for", chainId, pendingExecuteDeposit.token, info.txnHash);
 
             delete newPendingMultichainFunding.deposits.received[info.guid];
             newPendingMultichainFunding.deposits.executed[info.guid] = pendingExecuteDeposit;
@@ -345,7 +371,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       const timeoutId = setTimeout(() => {
         setPendingMultichainFunding((prev) => {
           const newPendingMultichainFunding = structuredClone(prev);
-          for (const guid of pendingExecuteDepositGuids) {
+          for (const guid of pendingExecuteDepositGuidsRef.current) {
             if (guid in newPendingMultichainFunding.deposits.received) {
               delete newPendingMultichainFunding.deposits.received[guid];
             }
@@ -359,7 +385,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         clearTimeout(timeoutId);
       };
     },
-    [chainId, hasPageLostFocus, pendingExecuteDepositGuids, wsProvider]
+    [chainId, hasPageLostFocus, pendingExecuteDepositGuidsKey, wsProvider]
   );
 
   //#endregion Deposits
@@ -474,7 +500,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         !wsSourceChainProvider ||
         !isSettlementChain(chainId) ||
         srcChainId === undefined ||
-        pendingReceiveWithdrawalGuids.length === 0
+        pendingReceiveWithdrawalGuidsRef.current.length === 0
       ) {
         return;
       }
@@ -485,7 +511,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       const unsubscribeFromOftReceivedEvents = subscribeToOftReceivedEvents(
         wsSourceChainProvider,
         sourceChainStargates,
-        pendingReceiveWithdrawalGuids,
+        pendingReceiveWithdrawalGuidsRef.current,
         (info) => {
           setTimeout(() => {
             setMultichainFundingPendingIds((prev) => {
@@ -522,7 +548,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       const timeoutId = setTimeout(() => {
         setPendingMultichainFunding((prev) => {
           const newPendingMultichainFunding = structuredClone(prev);
-          for (const guid of pendingReceiveWithdrawalGuids) {
+          for (const guid of pendingReceiveWithdrawalGuidsRef.current) {
             if (guid in newPendingMultichainFunding.withdrawals.sent) {
               delete newPendingMultichainFunding.withdrawals.sent[guid];
             }
@@ -536,7 +562,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         clearTimeout(timeoutId);
       };
     },
-    [chainId, hasPageLostFocus, pendingReceiveWithdrawalGuids, srcChainId, wsSourceChainProvider]
+    [chainId, hasPageLostFocus, pendingReceiveWithdrawalGuidsKey, srcChainId, wsSourceChainProvider]
   );
 
   //#endregion Withdrawals
@@ -569,23 +595,20 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         const someSourceChainId = parseInt(chainIdString) as SourceChainId;
 
         if (sourceChainApprovalCleanupTimersRef.current[someSourceChainId]) {
-          debugLog("[multichain] clearing timeout for source chain approval listener", someSourceChainId);
+          debugLog("clearing timeout for source chain approval listener", someSourceChainId);
 
           clearTimeout(sourceChainApprovalCleanupTimersRef.current[someSourceChainId]);
           delete sourceChainApprovalCleanupTimersRef.current[someSourceChainId];
         }
 
         if (sourceChainApprovalUnsubscribersRef.current[someSourceChainId]) {
-          debugLog(
-            "[multichain] skipping source chain approval listener creation as it already exists",
-            someSourceChainId
-          );
+          debugLog("skipping source chain approval listener creation as it already exists", someSourceChainId);
           continue;
         }
 
         const wsSomeSourceChainProvider = wsSourceChainProviders[someSourceChainId];
         if (!wsSomeSourceChainProvider) {
-          debugLog("[multichain] no ws source chain provider for source chain approval listener", someSourceChainId);
+          debugLog("no ws source chain provider for source chain approval listener", someSourceChainId);
           continue;
         }
 
@@ -597,14 +620,14 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
           .filter((tokenId) => tokenId.address !== zeroAddress)
           .map((tokenId) => tokenId.stargate);
 
-        debugLog("[multichain] subscribing to source chain approval events for", someSourceChainId);
+        debugLog("subscribing to source chain approval events for", someSourceChainId);
         const unsubscribeApproval = subscribeToMultichainApprovalEvents(
           wsSomeSourceChainProvider,
           currentAccount,
           tokenAddresses,
           stargates,
           (tokenAddress, spender, value) => {
-            debugLog("[multichain] got approval event for", someSourceChainId, tokenAddress, spender, value);
+            debugLog("got approval event for", someSourceChainId, tokenAddress, spender, value);
 
             setSourceChainApprovalStatuses((old) => ({
               ...old,
@@ -628,10 +651,10 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         for (const chainIdString of Object.keys(newUnsubscribers)) {
           const someSourceChainId = parseInt(chainIdString) as SourceChainId;
 
-          debugLog("[multichain] scheduling timeout for source chain approval listener", someSourceChainId);
+          debugLog("scheduling timeout for source chain approval listener", someSourceChainId);
 
           const timerId = window.setTimeout(() => {
-            debugLog("[multichain] clearing source chain approval listener", someSourceChainId);
+            debugLog("clearing source chain approval listener", someSourceChainId);
             newUnsubscribers[someSourceChainId]?.();
             delete sourceChainApprovalUnsubscribersRef.current[someSourceChainId];
             // eslint-disable-next-line react-hooks/exhaustive-deps
