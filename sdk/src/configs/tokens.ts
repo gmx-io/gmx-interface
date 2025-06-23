@@ -1520,6 +1520,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
       coingeckoUrl: "https://www.coingecko.com/en/coins/bridged-usdc-arbitrum",
+      isPermitSupported: true,
     },
     {
       name: "GMX",

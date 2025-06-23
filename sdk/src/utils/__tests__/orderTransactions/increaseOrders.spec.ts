@@ -118,6 +118,7 @@ describe("Increase Order Payloads", () => {
           swapPath: [ETH_MARKET.marketTokenAddress],
           value: EXECUTION_FEE_AMOUNT + parseValue("1", WETH.decimals)!,
           externalCalls: undefined,
+          skipOrderCreation: false,
         },
       });
     });
@@ -179,6 +180,7 @@ describe("Increase Order Payloads", () => {
           swapPath: [ETH_MARKET.marketTokenAddress],
           value: EXECUTION_FEE_AMOUNT + parseValue("1", WETH.decimals)!,
           externalCalls: undefined,
+          skipOrderCreation: false,
         },
       });
     });
@@ -244,6 +246,7 @@ describe("Increase Order Payloads", () => {
           swapPath: [ETH_MARKET.marketTokenAddress],
           value: EXECUTION_FEE_AMOUNT,
           externalCalls: undefined,
+          skipOrderCreation: false,
         },
       });
     });
@@ -311,6 +314,7 @@ describe("Increase Order Payloads", () => {
           swapPath: [ETH_MARKET.marketTokenAddress],
           value: EXECUTION_FEE_AMOUNT,
           externalCalls: undefined,
+          skipOrderCreation: false,
         },
       });
     });
@@ -393,6 +397,7 @@ describe("Increase Order Payloads", () => {
             sendAmounts: [parseValue("1", WETH.decimals)!],
             sendTokens: [WETH.address],
           },
+          skipOrderCreation: false,
         },
       });
     });
@@ -476,6 +481,7 @@ describe("Increase Order Payloads", () => {
             sendAmounts: [parseValue("1000", USDC.decimals)!],
             sendTokens: [USDC.address],
           },
+          skipOrderCreation: false,
         },
       });
     });
@@ -538,6 +544,7 @@ describe("Increase Order Payloads", () => {
           swapPath: [ETH_MARKET.marketTokenAddress],
           value: EXECUTION_FEE_AMOUNT + parseValue("1", WETH.decimals)!,
           externalCalls: undefined,
+          skipOrderCreation: false,
         },
       });
     });
@@ -636,6 +643,7 @@ describe("Increase Order Payloads", () => {
             swapPath: [ETH_MARKET.marketTokenAddress],
             value: EXECUTION_FEE_AMOUNT / 4n + parseValue("0.25", WETH.decimals)!,
             externalCalls: undefined,
+            skipOrderCreation: false,
           },
         };
       });
@@ -738,6 +746,7 @@ describe("Increase Order Payloads", () => {
             swapPath: [ETH_MARKET.marketTokenAddress],
             value: EXECUTION_FEE_AMOUNT / 4n + params.payTokenAmount / 4n,
             externalCalls: undefined,
+            skipOrderCreation: false,
           },
         };
       });
@@ -806,6 +815,7 @@ describe("Increase Order Payloads", () => {
           swapPath: [ETH_MARKET.marketTokenAddress],
           value: EXECUTION_FEE_AMOUNT + parseValue("1", WETH.decimals)!,
           externalCalls: undefined,
+          skipOrderCreation: false,
         },
       });
     });

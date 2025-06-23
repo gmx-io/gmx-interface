@@ -113,6 +113,7 @@ describe("Swap Order Payloads", () => {
           swapPath: [ETH_MARKET.marketTokenAddress],
           value: EXECUTION_FEE_AMOUNT + parseValue("1", WETH.decimals)!,
           externalCalls: undefined,
+          skipOrderCreation: false,
         },
       });
     });
@@ -183,6 +184,7 @@ describe("Swap Order Payloads", () => {
           swapPath: [ETH_MARKET.marketTokenAddress],
           value: EXECUTION_FEE_AMOUNT,
           externalCalls: undefined,
+          skipOrderCreation: false,
         },
       });
     });
@@ -253,6 +255,7 @@ describe("Swap Order Payloads", () => {
           swapPath: [ETH_MARKET.marketTokenAddress],
           value: EXECUTION_FEE_AMOUNT,
           externalCalls: undefined,
+          skipOrderCreation: false,
         },
       });
     });
@@ -324,6 +327,7 @@ describe("Swap Order Payloads", () => {
           swapPath: [ETH_MARKET.marketTokenAddress],
           value: EXECUTION_FEE_AMOUNT,
           externalCalls: undefined,
+          skipOrderCreation: false,
         },
       });
     });
@@ -424,6 +428,7 @@ describe("Swap Order Payloads", () => {
             swapPath: [ETH_MARKET.marketTokenAddress],
             value: EXECUTION_FEE_AMOUNT / 4n + params.payTokenAmount / 4n,
             externalCalls: undefined,
+            skipOrderCreation: false,
           },
         };
       });
@@ -496,6 +501,7 @@ describe("Swap Order Payloads", () => {
           swapPath: [ETH_MARKET.marketTokenAddress],
           value: EXECUTION_FEE_AMOUNT + parseValue("1", WETH.decimals)!,
           externalCalls: undefined,
+          skipOrderCreation: false,
         },
       });
     });
