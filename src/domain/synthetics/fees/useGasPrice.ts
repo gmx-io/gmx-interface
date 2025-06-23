@@ -1,6 +1,5 @@
 import useSWR from "swr";
 
-import { BOTANIX } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getProvider } from "lib/rpc";
 
@@ -14,8 +13,6 @@ import {
 export function useGasPrice(chainId: number) {
   const settings = useSettings();
 
-  const useEip1559 = chainId === BOTANIX;
-
   const { data: gasPrice } = useSWR<bigint | undefined>(["gasPrice", chainId, settings.executionFeeBufferBps], {
     fetcher: () => {
       return new Promise<bigint | undefined>(async (resolve, reject) => {
@@ -27,26 +24,11 @@ export function useGasPrice(chainId: number) {
         }
 
         try {
-          let baseFeePerGas = 0n;
-          let maxPriorityFeePerGas = 0n;
-
-          if (useEip1559) {
-            const [block, maxPriorityFeePerGasHex] = await Promise.all([
-              provider.getBlock("latest"),
-              provider.send("eth_maxPriorityFeePerGas", []),
-            ]);
-            baseFeePerGas = block?.baseFeePerGas ?? 0n;
-            maxPriorityFeePerGas = BigInt(maxPriorityFeePerGasHex);
-          } else {
-            const feeData = await provider.getFeeData();
-
-            baseFeePerGas = feeData.gasPrice ?? 0n;
-            maxPriorityFeePerGas = feeData?.maxPriorityFeePerGas ?? 0n;
-          }
+          const feeData = await provider.getFeeData();
 
           const gasPrice = estimateExecutionGasPrice({
-            rawGasPrice: baseFeePerGas,
-            maxPriorityFeePerGas: getMaxPriorityFeePerGas(chainId, maxPriorityFeePerGas),
+            rawGasPrice: feeData.gasPrice ?? 0n,
+            maxPriorityFeePerGas: getMaxPriorityFeePerGas(chainId, feeData?.maxPriorityFeePerGas),
             bufferBps: getExecutionFeeBufferBps(chainId, settings.executionFeeBufferBps),
             premium: getGasPremium(chainId),
           });

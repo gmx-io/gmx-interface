@@ -1468,7 +1468,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
   [BOTANIX]: [
     {
       name: "Bitcoin",
-      symbol: "bBTC",
+      symbol: "BBTC",
       address: NATIVE_TOKEN_ADDRESS,
       decimals: 18,
       isNative: true,
@@ -1480,7 +1480,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "Pegged BTC",
-      symbol: "pBTC",
+      symbol: "PBTC",
       address: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
       decimals: 18,
       isShortable: true,
@@ -1492,7 +1492,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "Staked BTC",
-      symbol: "stBTC",
+      symbol: "STBTC",
       address: "0xF4586028FFdA7Eca636864F80f8a3f2589E33795",
       decimals: 18,
       isShortable: true,

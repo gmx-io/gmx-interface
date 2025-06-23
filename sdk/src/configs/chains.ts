@@ -150,8 +150,8 @@ export const EXECUTION_FEE_CONFIG_V2: {
     defaultBufferBps: 3000, // 30%
   },
   [BOTANIX]: {
-    shouldUseMaxPriorityFeePerGas: false, // TODO: check_botanix
-    defaultBufferBps: 1000, // 10%
+    shouldUseMaxPriorityFeePerGas: false,
+    defaultBufferBps: 3000, // 30%
   },
 };
 
@@ -183,7 +183,6 @@ export const GAS_LIMITS_STATIC_CONFIG: Record<
     tokenPermitGasLimit: 90_000n,
   },
   [BOTANIX]: {
-    // TODO: check_botanix
     createOrderGasLimit: 1_000_000n,
     updateOrderGasLimit: 800_000n,
     cancelOrderGasLimit: 700_000n,

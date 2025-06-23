@@ -83,10 +83,9 @@ const constants = {
   },
 
   [BOTANIX]: {
-    // TODO: check_botanix
     nativeTokenSymbol: "BTC",
-    wrappedTokenSymbol: "WBTC",
-    defaultCollateralSymbol: "USDC",
+    wrappedTokenSymbol: "PBTC",
+    defaultCollateralSymbol: "USDC.E",
     defaultFlagOrdersEnabled: true,
     positionReaderPropsLength: 9,
     v2: true,
@@ -105,7 +104,7 @@ export const RPC_PROVIDERS: Record<UiContractsChain | typeof ETH_MAINNET, string
   [ARBITRUM]: [
     "https://arb1.arbitrum.io/rpc",
     "https://arbitrum-one-rpc.publicnode.com",
-    // "https://1rpc.io/arb",
+    "https://1rpc.io/arb",
     "https://arbitrum-one.public.blastapi.io",
     "https://arbitrum.drpc.org",
     "https://rpc.ankr.com/arbitrum",
