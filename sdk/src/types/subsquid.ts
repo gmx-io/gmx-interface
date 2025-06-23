@@ -1152,6 +1152,213 @@ export interface CollectedFeesInfosConnection {
   totalCount: Scalars["Int"]["output"];
 }
 
+export interface CumulativePnl {
+  __typename?: "CumulativePnl";
+  address: Scalars["String"]["output"];
+  cumulativeRealizedPnlLong: Scalars["BigInt"]["output"];
+  cumulativeRealizedPnlShort: Scalars["BigInt"]["output"];
+  cumulativeUnrealizedPnlLong: Scalars["BigInt"]["output"];
+  cumulativeUnrealizedPnlShort: Scalars["BigInt"]["output"];
+  entityType: EntityType;
+  id: Scalars["String"]["output"];
+  isSnapshot: Scalars["Boolean"]["output"];
+  lastUnrealizedPnlLong?: Maybe<Scalars["BigInt"]["output"]>;
+  lastUnrealizedPnlShort?: Maybe<Scalars["BigInt"]["output"]>;
+  snapshotTimestamp?: Maybe<Scalars["Int"]["output"]>;
+}
+
+export interface CumulativePnlEdge {
+  __typename?: "CumulativePnlEdge";
+  cursor: Scalars["String"]["output"];
+  node: CumulativePnl;
+}
+
+export enum CumulativePnlOrderByInput {
+  address_ASC = "address_ASC",
+  address_ASC_NULLS_FIRST = "address_ASC_NULLS_FIRST",
+  address_ASC_NULLS_LAST = "address_ASC_NULLS_LAST",
+  address_DESC = "address_DESC",
+  address_DESC_NULLS_FIRST = "address_DESC_NULLS_FIRST",
+  address_DESC_NULLS_LAST = "address_DESC_NULLS_LAST",
+  cumulativeRealizedPnlLong_ASC = "cumulativeRealizedPnlLong_ASC",
+  cumulativeRealizedPnlLong_ASC_NULLS_FIRST = "cumulativeRealizedPnlLong_ASC_NULLS_FIRST",
+  cumulativeRealizedPnlLong_ASC_NULLS_LAST = "cumulativeRealizedPnlLong_ASC_NULLS_LAST",
+  cumulativeRealizedPnlLong_DESC = "cumulativeRealizedPnlLong_DESC",
+  cumulativeRealizedPnlLong_DESC_NULLS_FIRST = "cumulativeRealizedPnlLong_DESC_NULLS_FIRST",
+  cumulativeRealizedPnlLong_DESC_NULLS_LAST = "cumulativeRealizedPnlLong_DESC_NULLS_LAST",
+  cumulativeRealizedPnlShort_ASC = "cumulativeRealizedPnlShort_ASC",
+  cumulativeRealizedPnlShort_ASC_NULLS_FIRST = "cumulativeRealizedPnlShort_ASC_NULLS_FIRST",
+  cumulativeRealizedPnlShort_ASC_NULLS_LAST = "cumulativeRealizedPnlShort_ASC_NULLS_LAST",
+  cumulativeRealizedPnlShort_DESC = "cumulativeRealizedPnlShort_DESC",
+  cumulativeRealizedPnlShort_DESC_NULLS_FIRST = "cumulativeRealizedPnlShort_DESC_NULLS_FIRST",
+  cumulativeRealizedPnlShort_DESC_NULLS_LAST = "cumulativeRealizedPnlShort_DESC_NULLS_LAST",
+  cumulativeUnrealizedPnlLong_ASC = "cumulativeUnrealizedPnlLong_ASC",
+  cumulativeUnrealizedPnlLong_ASC_NULLS_FIRST = "cumulativeUnrealizedPnlLong_ASC_NULLS_FIRST",
+  cumulativeUnrealizedPnlLong_ASC_NULLS_LAST = "cumulativeUnrealizedPnlLong_ASC_NULLS_LAST",
+  cumulativeUnrealizedPnlLong_DESC = "cumulativeUnrealizedPnlLong_DESC",
+  cumulativeUnrealizedPnlLong_DESC_NULLS_FIRST = "cumulativeUnrealizedPnlLong_DESC_NULLS_FIRST",
+  cumulativeUnrealizedPnlLong_DESC_NULLS_LAST = "cumulativeUnrealizedPnlLong_DESC_NULLS_LAST",
+  cumulativeUnrealizedPnlShort_ASC = "cumulativeUnrealizedPnlShort_ASC",
+  cumulativeUnrealizedPnlShort_ASC_NULLS_FIRST = "cumulativeUnrealizedPnlShort_ASC_NULLS_FIRST",
+  cumulativeUnrealizedPnlShort_ASC_NULLS_LAST = "cumulativeUnrealizedPnlShort_ASC_NULLS_LAST",
+  cumulativeUnrealizedPnlShort_DESC = "cumulativeUnrealizedPnlShort_DESC",
+  cumulativeUnrealizedPnlShort_DESC_NULLS_FIRST = "cumulativeUnrealizedPnlShort_DESC_NULLS_FIRST",
+  cumulativeUnrealizedPnlShort_DESC_NULLS_LAST = "cumulativeUnrealizedPnlShort_DESC_NULLS_LAST",
+  entityType_ASC = "entityType_ASC",
+  entityType_ASC_NULLS_FIRST = "entityType_ASC_NULLS_FIRST",
+  entityType_ASC_NULLS_LAST = "entityType_ASC_NULLS_LAST",
+  entityType_DESC = "entityType_DESC",
+  entityType_DESC_NULLS_FIRST = "entityType_DESC_NULLS_FIRST",
+  entityType_DESC_NULLS_LAST = "entityType_DESC_NULLS_LAST",
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  isSnapshot_ASC = "isSnapshot_ASC",
+  isSnapshot_ASC_NULLS_FIRST = "isSnapshot_ASC_NULLS_FIRST",
+  isSnapshot_ASC_NULLS_LAST = "isSnapshot_ASC_NULLS_LAST",
+  isSnapshot_DESC = "isSnapshot_DESC",
+  isSnapshot_DESC_NULLS_FIRST = "isSnapshot_DESC_NULLS_FIRST",
+  isSnapshot_DESC_NULLS_LAST = "isSnapshot_DESC_NULLS_LAST",
+  lastUnrealizedPnlLong_ASC = "lastUnrealizedPnlLong_ASC",
+  lastUnrealizedPnlLong_ASC_NULLS_FIRST = "lastUnrealizedPnlLong_ASC_NULLS_FIRST",
+  lastUnrealizedPnlLong_ASC_NULLS_LAST = "lastUnrealizedPnlLong_ASC_NULLS_LAST",
+  lastUnrealizedPnlLong_DESC = "lastUnrealizedPnlLong_DESC",
+  lastUnrealizedPnlLong_DESC_NULLS_FIRST = "lastUnrealizedPnlLong_DESC_NULLS_FIRST",
+  lastUnrealizedPnlLong_DESC_NULLS_LAST = "lastUnrealizedPnlLong_DESC_NULLS_LAST",
+  lastUnrealizedPnlShort_ASC = "lastUnrealizedPnlShort_ASC",
+  lastUnrealizedPnlShort_ASC_NULLS_FIRST = "lastUnrealizedPnlShort_ASC_NULLS_FIRST",
+  lastUnrealizedPnlShort_ASC_NULLS_LAST = "lastUnrealizedPnlShort_ASC_NULLS_LAST",
+  lastUnrealizedPnlShort_DESC = "lastUnrealizedPnlShort_DESC",
+  lastUnrealizedPnlShort_DESC_NULLS_FIRST = "lastUnrealizedPnlShort_DESC_NULLS_FIRST",
+  lastUnrealizedPnlShort_DESC_NULLS_LAST = "lastUnrealizedPnlShort_DESC_NULLS_LAST",
+  snapshotTimestamp_ASC = "snapshotTimestamp_ASC",
+  snapshotTimestamp_ASC_NULLS_FIRST = "snapshotTimestamp_ASC_NULLS_FIRST",
+  snapshotTimestamp_ASC_NULLS_LAST = "snapshotTimestamp_ASC_NULLS_LAST",
+  snapshotTimestamp_DESC = "snapshotTimestamp_DESC",
+  snapshotTimestamp_DESC_NULLS_FIRST = "snapshotTimestamp_DESC_NULLS_FIRST",
+  snapshotTimestamp_DESC_NULLS_LAST = "snapshotTimestamp_DESC_NULLS_LAST",
+}
+
+export interface CumulativePnlWhereInput {
+  AND?: InputMaybe<Array<CumulativePnlWhereInput>>;
+  OR?: InputMaybe<Array<CumulativePnlWhereInput>>;
+  address_contains?: InputMaybe<Scalars["String"]["input"]>;
+  address_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  address_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  address_eq?: InputMaybe<Scalars["String"]["input"]>;
+  address_gt?: InputMaybe<Scalars["String"]["input"]>;
+  address_gte?: InputMaybe<Scalars["String"]["input"]>;
+  address_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  address_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  address_lt?: InputMaybe<Scalars["String"]["input"]>;
+  address_lte?: InputMaybe<Scalars["String"]["input"]>;
+  address_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  address_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  address_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  address_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  address_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  address_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  address_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  cumulativeRealizedPnlLong_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeRealizedPnlLong_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeRealizedPnlLong_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeRealizedPnlLong_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  cumulativeRealizedPnlLong_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  cumulativeRealizedPnlLong_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeRealizedPnlLong_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeRealizedPnlLong_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeRealizedPnlLong_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  cumulativeRealizedPnlShort_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeRealizedPnlShort_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeRealizedPnlShort_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeRealizedPnlShort_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  cumulativeRealizedPnlShort_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  cumulativeRealizedPnlShort_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeRealizedPnlShort_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeRealizedPnlShort_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeRealizedPnlShort_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  cumulativeUnrealizedPnlLong_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeUnrealizedPnlLong_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeUnrealizedPnlLong_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeUnrealizedPnlLong_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  cumulativeUnrealizedPnlLong_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  cumulativeUnrealizedPnlLong_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeUnrealizedPnlLong_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeUnrealizedPnlLong_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeUnrealizedPnlLong_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  cumulativeUnrealizedPnlShort_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeUnrealizedPnlShort_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeUnrealizedPnlShort_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeUnrealizedPnlShort_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  cumulativeUnrealizedPnlShort_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  cumulativeUnrealizedPnlShort_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeUnrealizedPnlShort_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeUnrealizedPnlShort_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  cumulativeUnrealizedPnlShort_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  entityType_eq?: InputMaybe<EntityType>;
+  entityType_in?: InputMaybe<Array<EntityType>>;
+  entityType_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  entityType_not_eq?: InputMaybe<EntityType>;
+  entityType_not_in?: InputMaybe<Array<EntityType>>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  isSnapshot_eq?: InputMaybe<Scalars["Boolean"]["input"]>;
+  isSnapshot_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  isSnapshot_not_eq?: InputMaybe<Scalars["Boolean"]["input"]>;
+  lastUnrealizedPnlLong_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  lastUnrealizedPnlLong_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  lastUnrealizedPnlLong_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  lastUnrealizedPnlLong_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  lastUnrealizedPnlLong_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  lastUnrealizedPnlLong_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  lastUnrealizedPnlLong_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  lastUnrealizedPnlLong_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  lastUnrealizedPnlLong_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  lastUnrealizedPnlShort_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  lastUnrealizedPnlShort_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  lastUnrealizedPnlShort_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  lastUnrealizedPnlShort_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  lastUnrealizedPnlShort_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  lastUnrealizedPnlShort_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  lastUnrealizedPnlShort_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  lastUnrealizedPnlShort_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  lastUnrealizedPnlShort_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  snapshotTimestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  snapshotTimestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  snapshotTimestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+}
+
+export interface CumulativePnlsConnection {
+  __typename?: "CumulativePnlsConnection";
+  edges: Array<CumulativePnlEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
+}
+
 export interface CumulativePoolValue {
   __typename?: "CumulativePoolValue";
   address: Scalars["String"]["output"];
@@ -1393,6 +1600,23 @@ export enum GlvOrderByInput {
   shortTokenAddress_DESC = "shortTokenAddress_DESC",
   shortTokenAddress_DESC_NULLS_FIRST = "shortTokenAddress_DESC_NULLS_FIRST",
   shortTokenAddress_DESC_NULLS_LAST = "shortTokenAddress_DESC_NULLS_LAST",
+}
+
+export interface GlvPnlApr {
+  __typename?: "GlvPnlApr";
+  apr: Scalars["BigInt"]["output"];
+  glvAddress: Scalars["String"]["output"];
+  periodRealizedPnlLong: Scalars["BigInt"]["output"];
+  periodRealizedPnlShort: Scalars["BigInt"]["output"];
+  periodUnrealizedPnlLong: Scalars["BigInt"]["output"];
+  periodUnrealizedPnlShort: Scalars["BigInt"]["output"];
+  timeWeightedPoolValue: Scalars["BigInt"]["output"];
+}
+
+export interface GlvPnlAprsWhereInputWhereInput {
+  glvAddresses?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  periodEnd: Scalars["Float"]["input"];
+  periodStart: Scalars["Float"]["input"];
 }
 
 export interface GlvWhereInput {
@@ -3055,6 +3279,23 @@ export enum MarketOrderByInput {
   shortToken_DESC_NULLS_LAST = "shortToken_DESC_NULLS_LAST",
 }
 
+export interface MarketPnlApr {
+  __typename?: "MarketPnlApr";
+  apr: Scalars["BigInt"]["output"];
+  marketAddress: Scalars["String"]["output"];
+  periodRealizedPnlLong: Scalars["BigInt"]["output"];
+  periodRealizedPnlShort: Scalars["BigInt"]["output"];
+  periodUnrealizedPnlLong: Scalars["BigInt"]["output"];
+  periodUnrealizedPnlShort: Scalars["BigInt"]["output"];
+  timeWeightedPoolValue: Scalars["BigInt"]["output"];
+}
+
+export interface MarketPnlAprsWhereInput {
+  marketAddresses?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  periodEnd: Scalars["Float"]["input"];
+  periodStart: Scalars["Float"]["input"];
+}
+
 export interface MarketWhereInput {
   AND?: InputMaybe<Array<MarketWhereInput>>;
   OR?: InputMaybe<Array<MarketWhereInput>>;
@@ -3929,6 +4170,123 @@ export interface PeriodAccountStatObject {
   sumMaxSize: Scalars["BigInt"]["output"];
   volume: Scalars["BigInt"]["output"];
   wins: Scalars["Float"]["output"];
+}
+
+export interface PnlAprSnapshot {
+  __typename?: "PnlAprSnapshot";
+  address: Scalars["String"]["output"];
+  apr: Scalars["BigInt"]["output"];
+  entityType: EntityType;
+  id: Scalars["String"]["output"];
+  snapshotTimestamp: Scalars["Int"]["output"];
+}
+
+export interface PnlAprSnapshotEdge {
+  __typename?: "PnlAprSnapshotEdge";
+  cursor: Scalars["String"]["output"];
+  node: PnlAprSnapshot;
+}
+
+export enum PnlAprSnapshotOrderByInput {
+  address_ASC = "address_ASC",
+  address_ASC_NULLS_FIRST = "address_ASC_NULLS_FIRST",
+  address_ASC_NULLS_LAST = "address_ASC_NULLS_LAST",
+  address_DESC = "address_DESC",
+  address_DESC_NULLS_FIRST = "address_DESC_NULLS_FIRST",
+  address_DESC_NULLS_LAST = "address_DESC_NULLS_LAST",
+  apr_ASC = "apr_ASC",
+  apr_ASC_NULLS_FIRST = "apr_ASC_NULLS_FIRST",
+  apr_ASC_NULLS_LAST = "apr_ASC_NULLS_LAST",
+  apr_DESC = "apr_DESC",
+  apr_DESC_NULLS_FIRST = "apr_DESC_NULLS_FIRST",
+  apr_DESC_NULLS_LAST = "apr_DESC_NULLS_LAST",
+  entityType_ASC = "entityType_ASC",
+  entityType_ASC_NULLS_FIRST = "entityType_ASC_NULLS_FIRST",
+  entityType_ASC_NULLS_LAST = "entityType_ASC_NULLS_LAST",
+  entityType_DESC = "entityType_DESC",
+  entityType_DESC_NULLS_FIRST = "entityType_DESC_NULLS_FIRST",
+  entityType_DESC_NULLS_LAST = "entityType_DESC_NULLS_LAST",
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  snapshotTimestamp_ASC = "snapshotTimestamp_ASC",
+  snapshotTimestamp_ASC_NULLS_FIRST = "snapshotTimestamp_ASC_NULLS_FIRST",
+  snapshotTimestamp_ASC_NULLS_LAST = "snapshotTimestamp_ASC_NULLS_LAST",
+  snapshotTimestamp_DESC = "snapshotTimestamp_DESC",
+  snapshotTimestamp_DESC_NULLS_FIRST = "snapshotTimestamp_DESC_NULLS_FIRST",
+  snapshotTimestamp_DESC_NULLS_LAST = "snapshotTimestamp_DESC_NULLS_LAST",
+}
+
+export interface PnlAprSnapshotWhereInput {
+  AND?: InputMaybe<Array<PnlAprSnapshotWhereInput>>;
+  OR?: InputMaybe<Array<PnlAprSnapshotWhereInput>>;
+  address_contains?: InputMaybe<Scalars["String"]["input"]>;
+  address_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  address_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  address_eq?: InputMaybe<Scalars["String"]["input"]>;
+  address_gt?: InputMaybe<Scalars["String"]["input"]>;
+  address_gte?: InputMaybe<Scalars["String"]["input"]>;
+  address_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  address_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  address_lt?: InputMaybe<Scalars["String"]["input"]>;
+  address_lte?: InputMaybe<Scalars["String"]["input"]>;
+  address_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  address_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  address_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  address_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  address_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  address_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  address_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  apr_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  apr_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  apr_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  apr_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  apr_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  apr_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  apr_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  apr_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  apr_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  entityType_eq?: InputMaybe<EntityType>;
+  entityType_in?: InputMaybe<Array<EntityType>>;
+  entityType_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  entityType_not_eq?: InputMaybe<EntityType>;
+  entityType_not_in?: InputMaybe<Array<EntityType>>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  snapshotTimestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  snapshotTimestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  snapshotTimestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+}
+
+export interface PnlAprSnapshotsConnection {
+  __typename?: "PnlAprSnapshotsConnection";
+  edges: Array<PnlAprSnapshotEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
 }
 
 export interface Position {
@@ -5414,6 +5772,9 @@ export interface Query {
   collectedFeesInfoById?: Maybe<CollectedFeesInfo>;
   collectedFeesInfos: Array<CollectedFeesInfo>;
   collectedFeesInfosConnection: CollectedFeesInfosConnection;
+  cumulativePnlById?: Maybe<CumulativePnl>;
+  cumulativePnls: Array<CumulativePnl>;
+  cumulativePnlsConnection: CumulativePnlsConnection;
   cumulativePoolValueById?: Maybe<CumulativePoolValue>;
   cumulativePoolValues: Array<CumulativePoolValue>;
   cumulativePoolValuesConnection: CumulativePoolValuesConnection;
@@ -5421,6 +5782,7 @@ export interface Query {
   glvs: Array<Glv>;
   glvsAprByPeriod: Array<GlvApr>;
   glvsConnection: GlvsConnection;
+  glvsPnlAprByPeriod: Array<GlvPnlApr>;
   marketById?: Maybe<Market>;
   marketInfoById?: Maybe<MarketInfo>;
   marketInfos: Array<MarketInfo>;
@@ -5428,6 +5790,7 @@ export interface Query {
   markets: Array<Market>;
   marketsAprByPeriod: Array<MarketApr>;
   marketsConnection: MarketsConnection;
+  marketsPnlAprByPeriod: Array<MarketPnlApr>;
   onChainSettingById?: Maybe<OnChainSetting>;
   onChainSettings: Array<OnChainSetting>;
   onChainSettingsConnection: OnChainSettingsConnection;
@@ -5435,6 +5798,9 @@ export interface Query {
   orders: Array<Order>;
   ordersConnection: OrdersConnection;
   periodAccountStats: Array<PeriodAccountStatObject>;
+  pnlAprSnapshotById?: Maybe<PnlAprSnapshot>;
+  pnlAprSnapshots: Array<PnlAprSnapshot>;
+  pnlAprSnapshotsConnection: PnlAprSnapshotsConnection;
   positionById?: Maybe<Position>;
   positionChangeById?: Maybe<PositionChange>;
   positionChanges: Array<PositionChange>;
@@ -5598,6 +5964,24 @@ export interface QuerycollectedFeesInfosConnectionArgs {
   where?: InputMaybe<CollectedFeesInfoWhereInput>;
 }
 
+export interface QuerycumulativePnlByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
+export interface QuerycumulativePnlsArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<CumulativePnlOrderByInput>>;
+  where?: InputMaybe<CumulativePnlWhereInput>;
+}
+
+export interface QuerycumulativePnlsConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<CumulativePnlOrderByInput>;
+  where?: InputMaybe<CumulativePnlWhereInput>;
+}
+
 export interface QuerycumulativePoolValueByIdArgs {
   id: Scalars["String"]["input"];
 }
@@ -5636,6 +6020,10 @@ export interface QueryglvsConnectionArgs {
   first?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy: Array<GlvOrderByInput>;
   where?: InputMaybe<GlvWhereInput>;
+}
+
+export interface QueryglvsPnlAprByPeriodArgs {
+  where?: InputMaybe<GlvPnlAprsWhereInputWhereInput>;
 }
 
 export interface QuerymarketByIdArgs {
@@ -5678,6 +6066,10 @@ export interface QuerymarketsConnectionArgs {
   where?: InputMaybe<MarketWhereInput>;
 }
 
+export interface QuerymarketsPnlAprByPeriodArgs {
+  where?: InputMaybe<MarketPnlAprsWhereInput>;
+}
+
 export interface QueryonChainSettingByIdArgs {
   id: Scalars["String"]["input"];
 }
@@ -5718,6 +6110,24 @@ export interface QueryperiodAccountStatsArgs {
   limit?: InputMaybe<Scalars["Float"]["input"]>;
   offset?: InputMaybe<Scalars["Float"]["input"]>;
   where?: InputMaybe<WhereInput>;
+}
+
+export interface QuerypnlAprSnapshotByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
+export interface QuerypnlAprSnapshotsArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<PnlAprSnapshotOrderByInput>>;
+  where?: InputMaybe<PnlAprSnapshotWhereInput>;
+}
+
+export interface QuerypnlAprSnapshotsConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<PnlAprSnapshotOrderByInput>;
+  where?: InputMaybe<PnlAprSnapshotWhereInput>;
 }
 
 export interface QuerypositionByIdArgs {

@@ -64,8 +64,6 @@ import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
 
-import { useGmxAccountTokensDataRequest } from "components/Synthetics/GmxAccountModal/hooks";
-
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
 import { latestStateRef, StateCtx } from "./utils";
@@ -177,13 +175,9 @@ export function SyntheticsStateContextProvider({
 
   const markets = useMarkets(chainId);
   const { tokensData: settlementChainTokensData } = useTokensDataRequest(chainId);
-  const { tokensData: gmxAccountTokensData } = useGmxAccountTokensDataRequest(chainId);
+  const { tokensData: gmxAccountTokensData } = useTokensDataRequest(chainId, { isGmxAccount: true });
 
-  let tokensData = settlementChainTokensData;
-
-  if (srcChainId) {
-    tokensData = gmxAccountTokensData;
-  }
+  const tokensData = srcChainId ? gmxAccountTokensData : settlementChainTokensData;
 
   const positionsResult = usePositions(chainId, {
     account,

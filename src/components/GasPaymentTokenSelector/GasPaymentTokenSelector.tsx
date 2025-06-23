@@ -8,7 +8,6 @@ import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getGasPaymentTokens } from "sdk/configs/express";
 
-import { useGmxAccountTokensDataRequest } from "components/Synthetics/GmxAccountModal/hooks";
 import { SelectorBase, useSelectorClose } from "components/Synthetics/SelectorBase/SelectorBase";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -19,9 +18,9 @@ type Props = {
 
 export function GasPaymentTokenSelector({ currentTokenAddress, onSelectToken }: Props) {
   const { chainId, srcChainId } = useChainId();
-  // TODO: pick from synthetic state
+  // TODO MLTCH: pick from synthetic state
   const { tokensData: settlementChainTokensData } = useTokensDataRequest(chainId);
-  const { tokensData: gmxAccountTokensData } = useGmxAccountTokensDataRequest(chainId);
+  const { tokensData: gmxAccountTokensData } = useTokensDataRequest(chainId, { isGmxAccount: true });
 
   let tokensData = settlementChainTokensData;
 

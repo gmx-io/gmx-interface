@@ -9,8 +9,6 @@ import { convertTokenAddress } from "sdk/configs/tokens";
 import { MarketConfig, MarketValues } from "sdk/modules/markets/types";
 import type { MarketInfo, MarketsData, MarketsInfoData } from "sdk/types/markets";
 
-import { useGmxAccountTokensDataRequest } from "components/Synthetics/GmxAccountModal/hooks";
-
 import { TokensData, TokensDataResult, useTokensDataRequest } from "../../tokens";
 import { useClaimableFundingDataRequest } from "../useClaimableFundingDataRequest";
 import { useMarkets } from "../useMarkets";
@@ -33,7 +31,7 @@ export function useMarketsInfoRequest(chainId: ContractsChainId, srcChainId?: So
   const { marketsData, marketsAddresses } = useMarkets(chainId);
 
   const settlementChainTokensDataResult = useTokensDataRequest(chainId);
-  const gmxAccountTokensDataResult = useGmxAccountTokensDataRequest(chainId);
+  const gmxAccountTokensDataResult = useTokensDataRequest(chainId, { isGmxAccount: true });
 
   const walletTokensDataResult: TokensDataResult | undefined =
     srcChainId === undefined ? settlementChainTokensDataResult : undefined;

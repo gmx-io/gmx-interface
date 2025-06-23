@@ -1,15 +1,10 @@
 import type { Token } from "domain/tokens";
 
+export type { TokenData, TokensData } from "sdk/types/tokens";
+
 export type TokenPrices = {
   minPrice: bigint;
   maxPrice: bigint;
-};
-
-export type TokenData = Token & {
-  prices: TokenPrices;
-  balance?: bigint;
-  totalSupply?: bigint;
-  hasPriceFeedProvider?: boolean;
 };
 
 export type TokensRatio = {
@@ -35,8 +30,4 @@ export type TokenPricesData = {
 
 export type TokensAllowanceData = {
   [tokenAddress: string]: bigint;
-};
-
-export type TokensData = {
-  [address: string]: TokenData;
 };

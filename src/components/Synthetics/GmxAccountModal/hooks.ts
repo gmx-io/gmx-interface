@@ -3,9 +3,7 @@ import useSWRSubscription, { SWRSubscription } from "swr/subscription";
 import { Address } from "viem";
 import { useAccount } from "wagmi";
 
-import { ContractsChainId, SettlementChainId, SourceChainId, getChainName } from "config/chains";
-import { multichainBalanceKey } from "config/dataStore";
-import { getSettlementChainTradableTokenAddresses } from "config/markets";
+import { ContractsChainId, SourceChainId, getChainName } from "config/chains";
 import {
   MULTI_CHAIN_SUPPORTED_TOKEN_MAP,
   MULTI_CHAIN_TOKEN_MAPPING,
@@ -14,20 +12,16 @@ import {
 import { fetchMultichainTokenBalances } from "domain/multichain/fetchMultichainTokenBalances";
 import type { TokenChainData } from "domain/multichain/types";
 import {
-  TokensDataResult,
   convertToUsd,
   getMidPrice,
   useTokenBalances,
   useTokenRecentPricesRequest,
   useTokensDataRequest,
 } from "domain/synthetics/tokens";
-import { useOnchainTokenConfigs } from "domain/synthetics/tokens/useOnchainTokenConfigs";
 import { TokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
-import { MulticallRequestConfig, MulticallResult, useMulticall } from "lib/multicall";
 import { EMPTY_OBJECT } from "lib/objects";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-import { getContract } from "sdk/configs/contracts";
 import { getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -36,13 +30,10 @@ export function useAvailableToTradeAssetSymbolsSettlementChain(): string[] {
   const { chainId } = useChainId();
   const { address: account } = useAccount();
 
-  const currentChainTokenBalances = useTokenBalances(
-    chainId,
-    account,
-    undefined,
-    undefined,
-    isSettlementChain(chainId!)
-  );
+  const currentChainTokenBalances = useTokenBalances(chainId, {
+    overrideAccount: account,
+    enabled: isSettlementChain(chainId),
+  });
 
   const tokenSymbols = new Set<string>();
 
@@ -87,8 +78,10 @@ export function useAvailableToTradeAssetSettlementChain(): {
   isWalletLoading: boolean;
 } {
   const { chainId } = useChainId();
-  const { tokensData: gmxAccountTokensData, isBalancesLoaded: isGmxAccountBalancesLoaded } =
-    useGmxAccountTokensDataRequest(chainId);
+  const { tokensData: gmxAccountTokensData, isBalancesLoaded: isGmxAccountBalancesLoaded } = useTokensDataRequest(
+    chainId,
+    { isGmxAccount: true }
+  );
   const { tokensData, isBalancesLoaded } = useTokensDataRequest(chainId);
 
   let gmxAccountUsd = 0n;
@@ -142,7 +135,7 @@ export function useAvailableToTradeAssetMultichain(): {
   gmxAccountUsd: bigint | undefined;
 } {
   const { chainId } = useChainId();
-  const { tokensData, isBalancesLoaded } = useGmxAccountTokensDataRequest(chainId);
+  const { tokensData, isBalancesLoaded } = useTokensDataRequest(chainId, { isGmxAccount: true });
 
   if (!tokensData || !isBalancesLoaded) {
     return { gmxAccountUsd: undefined };
@@ -275,111 +268,9 @@ export function useMultichainTokensRequest(): {
   };
 }
 
-function buildGmxAccountTokenBalancesRequest(settlementChainId: SettlementChainId, account: string) {
-  const tradableTokenAddresses: string[] = getSettlementChainTradableTokenAddresses(settlementChainId);
-
-  const erc20Calls = Object.fromEntries(
-    tradableTokenAddresses.map((tokenAddress) => [
-      tokenAddress,
-      {
-        methodName: "getUint",
-        params: [multichainBalanceKey(account, tokenAddress)],
-      },
-    ])
-  );
-
-  const request: MulticallRequestConfig<
-    Record<
-      string,
-      {
-        calls: Record<string, { methodName: "getUint"; params: [string] }>;
-      }
-    >
-  > = {
-    DataStore: {
-      abiId: "DataStoreArbitrumSepolia",
-      contractAddress: getContract(settlementChainId, "DataStore"),
-      calls: erc20Calls,
-    },
-  };
-
-  return request;
-}
-
-function parseGmxAccountTokenBalancesData(
-  data: MulticallResult<
-    MulticallRequestConfig<
-      Record<
-        string,
-        {
-          calls: Record<string, { methodName: "getUint"; params: [string] }>;
-        }
-      >
-    >
-  >
-): Record<string, bigint> {
-  return Object.fromEntries(
-    Object.entries(data.data.DataStore).map(([tokenAddress, callResult]) => [tokenAddress, callResult.returnValues[0]])
-  );
-}
-
-export function useGmxAccountTokensDataRequest(chainId: ContractsChainId): TokensDataResult {
-  const { address: account } = useAccount();
-  const { pricesData, error: pricesError, updatedAt: pricesUpdatedAt } = useTokenRecentPricesRequest(chainId);
-  const { data: onchainConfigsData, error: onchainConfigsError } = useOnchainTokenConfigs(chainId);
-
-  const queryCondition = account && isSettlementChain(chainId);
-
-  const { data: tokenBalances, error: tokenBalancesError } = useMulticall(chainId, "gmx-account-tokens", {
-    key: queryCondition ? ["gmx-account-tokens", chainId, account] : null,
-    request: queryCondition ? buildGmxAccountTokenBalancesRequest(chainId, account!) : {},
-    parseResponse: parseGmxAccountTokenBalancesData,
-  });
-
-  const error = tokenBalancesError || pricesError || onchainConfigsError;
-
-  const gmxAccountTokensData: TokensData | undefined = useMemo(() => {
-    if (!pricesData) {
-      return undefined;
-    }
-
-    const gmxAccountTokensData: TokensData = {};
-
-    for (const tokenAddress in pricesData) {
-      const token = getToken(chainId, tokenAddress);
-      const onchainConfig = onchainConfigsData?.[tokenAddress];
-
-      // TODO: decide whether to block the token if prices are not available
-      if (!pricesData || !(tokenAddress in pricesData)) {
-        continue;
-      }
-
-      // if (tokenBalances[tokenAddress] <= 0n) {
-      //   continue;
-      // }
-
-      gmxAccountTokensData[tokenAddress] = {
-        ...token,
-        ...onchainConfig,
-        prices: pricesData[tokenAddress],
-        balance: tokenBalances?.[tokenAddress],
-      };
-    }
-
-    return gmxAccountTokensData;
-  }, [onchainConfigsData, pricesData, chainId, tokenBalances]);
-
-  return {
-    tokensData: gmxAccountTokensData,
-    error,
-    pricesUpdatedAt,
-    isBalancesLoaded: Boolean(tokenBalances),
-  };
-}
-
 export function useGmxAccountTokensDataObject(): TokensData {
   const { chainId } = useChainId();
-  const { tokensData = EMPTY_OBJECT as TokensData } = useGmxAccountTokensDataRequest(chainId);
+  const { tokensData = EMPTY_OBJECT as TokensData } = useTokensDataRequest(chainId, { isGmxAccount: true });
 
   return tokensData;
 }

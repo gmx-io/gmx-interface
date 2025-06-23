@@ -103,7 +103,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   const { resetTokenPermits } = useTokenPermitsContext();
   const { refreshSubaccountData, resetSubaccountApproval } = useSubaccountContext();
-  const { tokensData } = useTokensDataRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId, { isGmxAccount: true });
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
   const { glvData } = useGlvMarketsInfo(isGlvEnabled(chainId), {

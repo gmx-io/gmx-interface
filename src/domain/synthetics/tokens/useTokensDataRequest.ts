@@ -15,9 +15,12 @@ export type TokensDataResult = {
   error?: Error;
 };
 
-export function useTokensDataRequest(chainId: ContractsChainId): TokensDataResult {
+export function useTokensDataRequest(
+  chainId: ContractsChainId,
+  { isGmxAccount }: { isGmxAccount?: boolean } = {}
+): TokensDataResult {
   const tokenConfigs = getTokensMap(chainId);
-  const { balancesData, error: balancesError } = useTokenBalances(chainId);
+  const { balancesData, error: balancesError } = useTokenBalances(chainId, { isGmxAccount });
   const { pricesData, updatedAt: pricesUpdatedAt, error: pricesError } = useTokenRecentPricesRequest(chainId);
   const { data: onchainConfigsData, error: onchainConfigsError } = useOnchainTokenConfigs(chainId);
 
@@ -57,6 +60,7 @@ export function useTokensDataRequest(chainId: ContractsChainId): TokensDataResul
           ...onchainConfig,
           prices,
           balance,
+          isGmxAccount: Boolean(isGmxAccount),
         };
 
         return acc;
@@ -64,5 +68,5 @@ export function useTokensDataRequest(chainId: ContractsChainId): TokensDataResul
       pricesUpdatedAt,
       isBalancesLoaded,
     };
-  }, [error, chainId, pricesData, pricesUpdatedAt, balancesData, tokenConfigs, onchainConfigsData]);
+  }, [error, chainId, pricesData, balancesData, pricesUpdatedAt, tokenConfigs, onchainConfigsData, isGmxAccount]);
 }
