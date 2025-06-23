@@ -372,6 +372,7 @@ export function getPendingCancelOrder(params: CancelOrderTxnParams, order: Order
     shouldUnwrapNativeToken: false,
     externalSwapQuote: undefined,
     orderKey: params.orderKey,
+    expectedOutputAmount: 0n,
     minOutputAmount: 0n,
     isTwap: order.isTwap,
   };
@@ -422,6 +423,7 @@ export function getPendingUpdateOrder(updateOrderParams: UpdateOrderTxnParams, o
     acceptablePrice: "acceptablePrice" in order ? order.acceptablePrice : 0n,
     autoCancel: "autoCancel" in order ? order.autoCancel : false,
     sizeDeltaUsd: order.sizeDeltaUsd,
+    expectedOutputAmount: order.minOutputAmount,
     minOutputAmount: order.minOutputAmount,
     isLong: order.isLong,
     orderType: order.orderType,
@@ -444,6 +446,8 @@ export function getPendingCreateOrder(
     swapPath: createOrderPayload.orderPayload.addresses.swapPath,
     sizeDeltaUsd: createOrderPayload.orderPayload.numbers.sizeDeltaUsd,
     minOutputAmount: createOrderPayload.orderPayload.numbers.minOutputAmount,
+    expectedOutputAmount:
+      "expectedOutputAmount" in createOrderPayload.params ? createOrderPayload.params.expectedOutputAmount : 0n,
     triggerPrice: createOrderPayload.orderPayload.numbers.triggerPrice,
     acceptablePrice: createOrderPayload.orderPayload.numbers.acceptablePrice,
     autoCancel: createOrderPayload.orderPayload.autoCancel,
