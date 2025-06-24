@@ -6448,6 +6448,11 @@ msgstr "Order execution price takes into account price impact."
 msgid "Buy GLP or GMX"
 msgstr "Buy GLP or GMX"
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+msgid "You're withdrawing {0}, your gas token. It's recommended to keep $10 in {1} for transactions, or switch your gas token in settings."
+msgstr "You're withdrawing {0}, your gas token. It's recommended to keep $10 in {1} for transactions, or switch your gas token in settings."
+
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/keys.ts
@@ -8439,8 +8444,8 @@ msgid "Min leverage: 1.1x"
 msgstr "Min leverage: 1.1x"
 
 #: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
-msgid "You’re withdrawing {0}, your gas token. It’s recommended to keep $10 in {1} for transactions, or switch your gas token in settings."
-msgstr "You’re withdrawing {0}, your gas token. It’s recommended to keep $10 in {1} for transactions, or switch your gas token in settings."
+#~ msgid "You’re withdrawing {0}, your gas token. It’s recommended to keep $10 in {1} for transactions, or switch your gas token in settings."
+#~ msgstr "You’re withdrawing {0}, your gas token. It’s recommended to keep $10 in {1} for transactions, or switch your gas token in settings."
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx

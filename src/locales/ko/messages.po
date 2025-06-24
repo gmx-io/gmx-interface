@@ -6445,6 +6445,11 @@ msgstr "주문 체결 가격은 가격 영향을 고려합니다."
 msgid "Buy GLP or GMX"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+msgid "You're withdrawing {0}, your gas token. It's recommended to keep $10 in {1} for transactions, or switch your gas token in settings."
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/keys.ts
@@ -8433,8 +8438,8 @@ msgid "Min leverage: 1.1x"
 msgstr "최소 레버리지: 1.1x"
 
 #: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
-msgid "You’re withdrawing {0}, your gas token. It’s recommended to keep $10 in {1} for transactions, or switch your gas token in settings."
-msgstr ""
+#~ msgid "You’re withdrawing {0}, your gas token. It’s recommended to keep $10 in {1} for transactions, or switch your gas token in settings."
+#~ msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
