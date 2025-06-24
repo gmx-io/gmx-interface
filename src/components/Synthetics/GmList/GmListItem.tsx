@@ -332,7 +332,7 @@ const SnapshotGraph = ({
       <LineChart width={size.width} height={size.height} data={performanceSnapshots}>
         <Line
           dataKey="performance"
-          stroke={isNegative ? "var(--color-red-500)" : "var(--color-green-500)"}
+          stroke={isNegative ? "var(--color-blue-300)" : "var(--color-green-500)"}
           dot={false}
         />
       </LineChart>
