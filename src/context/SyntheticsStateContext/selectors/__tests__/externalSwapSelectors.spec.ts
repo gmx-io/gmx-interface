@@ -69,6 +69,9 @@ describe("externalSwapSelectors", () => {
         marketsInfo: {
           marketsInfoData,
         },
+        tokensDataResult: {
+          tokensData,
+        },
         positionsInfo: {
           positionsInfoData: {},
         },
