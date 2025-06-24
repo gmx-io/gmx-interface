@@ -16,4 +16,6 @@ export {
   extractDataFromError,
 } from "sdk/utils/errors";
 
+export { getCustomError } from "./enabled";
+
 export const parseError = getIsFlagEnabled("testMultichain") ? parseErrorEnabled : parseErrorDisabled;

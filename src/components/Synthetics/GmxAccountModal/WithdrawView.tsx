@@ -1,14 +1,22 @@
 import { t, Trans } from "@lingui/macro";
-import { Contract, type Provider } from "ethers";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type Provider } from "ethers";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
 import Skeleton from "react-loading-skeleton";
-import useSWR from "swr";
 import { Address, BaseError, decodeErrorResult, encodeAbiParameters, Hex, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import { getChainName, SettlementChainId, SourceChainId } from "config/chains";
+import { ContractsChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
+import {
+  CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
+  getLayerZeroEndpointId,
+  getMultichainTokenId,
+  getStargatePoolAddress,
+  isSettlementChain,
+  MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS,
+  MULTICHAIN_FUNDING_SLIPPAGE_BPS,
+} from "config/multichain";
 import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import {
   useGmxAccountModalOpen,
@@ -23,23 +31,16 @@ import {
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
-import {
-  CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
-  getLayerZeroEndpointId,
-  getMultichainTokenId,
-  getStargatePoolAddress,
-  isSettlementChain,
-  MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS,
-} from "domain/multichain/config";
-import { MULTICHAIN_FUNDING_SLIPPAGE_BPS } from "domain/multichain/constants";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
-import { IStargateAbi } from "domain/multichain/stargatePools";
 import { BridgeOutParams } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
+import { useQuoteOft } from "domain/multichain/useQuoteOft";
+import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
+import { useQuoteSend } from "domain/multichain/useQuoteSend";
+import { callRelayTransaction } from "domain/synthetics/express/callRelayTransaction";
 import { buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTransactionBuilder, RawMultichainRelayParamsPayload } from "domain/synthetics/express/types";
-import { callRelayTransaction } from "domain/synthetics/gassless/txns/expressOrderDebug";
 import { convertToUsd, TokenData } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
@@ -63,7 +64,6 @@ import {
 } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
-import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
 import { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
@@ -73,14 +73,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { extendError, OrderErrorContext } from "sdk/utils/errors";
 import { convertToTokenAmount, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
-import type {
-  IStargate,
-  MessagingFeeStruct,
-  OFTFeeDetailStruct,
-  OFTLimitStruct,
-  OFTReceiptStruct,
-  SendParamStruct,
-} from "typechain-types-stargate/interfaces/IStargate";
+import type { SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
@@ -136,8 +129,8 @@ export const WithdrawView = () => {
 
   const gmxAccountTokensData = useGmxAccountTokensDataObject();
   const networks = useGmxAccountWithdrawNetworks();
-  const expressGlobalParams = useSelector(selectExpressGlobalParams);
-  const relayerFeeToken = getByKey(gmxAccountTokensData, expressGlobalParams?.relayerFeeTokenAddress);
+  const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const relayerFeeToken = getByKey(gmxAccountTokensData, globalExpressParams?.relayerFeeTokenAddress);
 
   const { provider } = useJsonRpcProvider(chainId);
 
@@ -204,82 +197,20 @@ export const WithdrawView = () => {
     });
   }, [account, inputAmount, withdrawalViewChain]);
 
-  const quoteOftCondition =
-    sendParamsWithoutSlippage !== undefined &&
-    selectedTokenSettlementChainTokenId !== undefined &&
-    provider !== undefined &&
-    selectedTokenAddress !== undefined;
-  const quoteOftQuery = useSWR<
-    | {
-        limit: OFTLimitStruct;
-        oftFeeDetails: OFTFeeDetailStruct[];
-        receipt: OFTReceiptStruct;
-      }
-    | undefined
-  >(
-    quoteOftCondition
-      ? [
-          "quoteOft",
-          sendParamsWithoutSlippage.dstEid,
-          sendParamsWithoutSlippage.to,
-          sendParamsWithoutSlippage.amountLD,
-          selectedTokenSettlementChainTokenId?.stargate,
-        ]
-      : null,
-    {
-      fetcher: async () => {
-        if (!quoteOftCondition) {
-          return;
-        }
+  const quoteOft = useQuoteOft({
+    sendParams: sendParamsWithoutSlippage,
+    fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
+    fromChainProvider: provider,
+    fromChainId: chainId,
+    toChainId: withdrawalViewChain,
+  });
 
-        const settlementChainStargateAddress = selectedTokenSettlementChainTokenId!.stargate;
-
-        const stargateInstance = new Contract(
-          settlementChainStargateAddress,
-          IStargateAbi,
-          provider
-        ) as unknown as IStargate;
-
-        const [limit, oftFeeDetails, receipt]: [OFTLimitStruct, OFTFeeDetailStruct[], OFTReceiptStruct] =
-          await stargateInstance.quoteOFT(sendParamsWithoutSlippage);
-
-        return {
-          limit,
-          oftFeeDetails,
-          receipt,
-        };
-      },
-      refreshInterval: CONFIG_UPDATE_INTERVAL,
-    }
-  );
-  const quoteOft = quoteOftQuery.data;
-
-  const lastMinAmountLD = useRef<bigint | undefined>(undefined);
-  const lastMaxAmountLD = useRef<bigint | undefined>(undefined);
-  if (quoteOft && quoteOft.limit.maxAmountLD && quoteOft.limit.minAmountLD) {
-    lastMaxAmountLD.current = quoteOft.limit.maxAmountLD as bigint;
-    lastMinAmountLD.current = quoteOft.limit.minAmountLD as bigint;
-  }
-  const isBelowLimit =
-    lastMinAmountLD.current !== undefined && inputAmount !== undefined && inputAmount > 0n
-      ? inputAmount < lastMinAmountLD.current
-      : false;
-  const lowerLimitFormatted =
-    isBelowLimit && selectedTokenSettlementChainTokenId && lastMinAmountLD.current !== undefined
-      ? formatBalanceAmount(lastMinAmountLD.current, selectedTokenSettlementChainTokenId?.decimals, undefined, {
-          isStable: selectedToken?.isStable,
-        })
-      : undefined;
-  const isAboveLimit =
-    lastMaxAmountLD.current !== undefined && inputAmount !== undefined && inputAmount > 0n
-      ? inputAmount > lastMaxAmountLD.current
-      : false;
-  const upperLimitFormatted =
-    isAboveLimit && selectedTokenSettlementChainTokenId && lastMaxAmountLD.current !== undefined
-      ? formatBalanceAmount(lastMaxAmountLD.current, selectedTokenSettlementChainTokenId?.decimals, undefined, {
-          isStable: selectedToken?.isStable,
-        })
-      : undefined;
+  const { isBelowLimit, lowerLimitFormatted, isAboveLimit, upperLimitFormatted } = useQuoteOftLimits({
+    quoteOft,
+    inputAmount,
+    isStable: selectedToken?.isStable,
+    decimals: selectedTokenSettlementChainTokenId?.decimals,
+  });
 
   const sendParamsWithSlippage: SendParamStruct | undefined = useMemo(() => {
     if (!quoteOft || !sendParamsWithoutSlippage) {
@@ -298,44 +229,13 @@ export const WithdrawView = () => {
     return newSendParams;
   }, [sendParamsWithoutSlippage, quoteOft]);
 
-  const quoteSendCondition =
-    selectedTokenAddress !== undefined &&
-    withdrawalViewChain !== undefined &&
-    sendParamsWithSlippage !== undefined &&
-    selectedTokenSettlementChainTokenId !== undefined &&
-    provider !== undefined;
-  const quoteSendQuery = useSWR<MessagingFeeStruct | undefined>(
-    quoteSendCondition
-      ? [
-          "quoteSend",
-          sendParamsWithSlippage.dstEid,
-          sendParamsWithSlippage.to,
-          sendParamsWithSlippage.amountLD,
-          selectedTokenSettlementChainTokenId?.stargate,
-        ]
-      : null,
-    {
-      fetcher: async () => {
-        if (!quoteSendCondition) {
-          return;
-        }
-
-        const sourceChainStargateAddress = selectedTokenSettlementChainTokenId.stargate;
-
-        const iStargateInstance = new Contract(
-          sourceChainStargateAddress,
-          IStargateAbi,
-          provider
-        ) as unknown as IStargate;
-
-        const result = await iStargateInstance.quoteSend(sendParamsWithSlippage, false);
-
-        return result;
-      },
-      refreshInterval: CONFIG_UPDATE_INTERVAL,
-    }
-  );
-  const quoteSend = quoteSendQuery.data;
+  const quoteSend = useQuoteSend({
+    sendParams: sendParamsWithSlippage,
+    fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
+    fromChainProvider: provider,
+    fromChainId: chainId,
+    toChainId: withdrawalViewChain,
+  });
 
   const {
     networkFeeUsd: bridgeNetworkFeeUsd,
@@ -484,7 +384,7 @@ export const WithdrawView = () => {
           params: bridgeOutParams,
           signer,
           provider,
-          noncesData: expressGlobalParams?.noncesData,
+          noncesData: globalExpressParams?.noncesData,
           srcChainId: withdrawalViewChain,
         });
 
@@ -498,7 +398,7 @@ export const WithdrawView = () => {
           params: bridgeOutParams,
           relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
           relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
-          noncesData: expressGlobalParams?.noncesData,
+          noncesData: globalExpressParams?.noncesData,
           provider,
           srcChainId: withdrawalViewChain,
         });
@@ -855,7 +755,7 @@ export const WithdrawView = () => {
       {shouldShowMinRecommendedAmount && (
         <AlertInfoCard type="info" className="my-4">
           <Trans>
-            You’re withdrawing {selectedToken?.symbol}, your gas token. It’s recommended to keep $10 in{" "}
+            You're withdrawing {selectedToken?.symbol}, your gas token. It's recommended to keep $10 in{" "}
             {selectedToken?.symbol} for transactions, or switch your gas token in settings.
           </Trans>
         </AlertInfoCard>
@@ -986,6 +886,7 @@ async function simulateWithdraw({
 
   await fallbackCustomError(async () => {
     await callRelayTransaction({
+      chainId: chainId as ContractsChainId,
       calldata: callData,
       provider,
       gelatoRelayFeeAmount: feeAmount,

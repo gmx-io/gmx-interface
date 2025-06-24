@@ -9,9 +9,9 @@ import { SetStateAction, useCallback, useEffect, useMemo, useState } from "react
 
 import { ContractsChainId, SourceChainId } from "config/chains";
 import { getKeepLeverageKey, getLeverageKey, getSyntheticsTradeOptionsKey } from "config/localStorage";
+import { isSettlementChain } from "config/multichain";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { isSettlementChain } from "domain/multichain/config";
 import { MarketInfo } from "domain/synthetics/markets";
 import { getIsUnwrap, getIsWrap } from "domain/tokens";
 import { useLocalStorageSerializeKey } from "lib/localStorage";

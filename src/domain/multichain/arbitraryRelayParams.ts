@@ -1,7 +1,9 @@
 import type { Provider } from "ethers";
-import { Address, decodeErrorResult, encodePacked, Hex } from "viem";
+import { Address, encodePacked, Hex } from "viem";
 
+import { getCustomError } from "ab/testMultichain/parseError/enabled";
 import type { ContractsChainId } from "config/chains";
+import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 import type { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
@@ -10,25 +12,21 @@ import {
   selectChainId,
   selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   ExpressTransactionBuilder,
   ExpressTxnParams,
   GasPaymentParams,
-  GasPaymentValidations,
   getRawRelayerParams,
   getRelayerFeeParams,
   GlobalExpressParams,
-  MultichainRelayParamsPayload,
   RawMultichainRelayParamsPayload,
   RawRelayParamsPayload,
   RelayFeePayload,
-  RelayParamsPayload,
 } from "domain/synthetics/express";
 import { estimateExpressParams, getGasPaymentValidations } from "domain/synthetics/express/expressOrderUtils";
-import { GELATO_RELAY_ADDRESS } from "domain/synthetics/gassless/txns/expressOrderDebug";
 import { getSubaccountValidations } from "domain/synthetics/subaccount";
-import type { Subaccount, SubaccountValidations } from "domain/synthetics/subaccount/types";
+import type { Subaccount } from "domain/synthetics/subaccount/types";
 import { convertToTokenAmount } from "domain/tokens";
 import { extendError } from "lib/errors";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
@@ -37,47 +35,17 @@ import { expandDecimals, USD_DECIMALS } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
-import { abis } from "sdk/abis";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
-import type { ExternalCallsPayload } from "sdk/utils/orderTransactions";
-
-/**
- * Just a dummy relay params payload with hardcoded fee
- */
-export const selectRawBasePreparedRelayParamsPayload = createSelector<
-  Partial<{
-    rawBaseRelayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload | undefined;
-    baseRelayFeeSwapParams: {
-      feeParams: RelayFeePayload;
-      externalCalls: ExternalCallsPayload;
-      feeExternalSwapGasLimit: bigint;
-      gasPaymentParams: GasPaymentParams;
-    };
-  }>
->((q) => {
-  const chainId = q(selectChainId);
-  const account = q(selectAccount);
-  const expressGlobalParams = q(selectExpressGlobalParams);
-
-  if (!expressGlobalParams || !account) {
-    return EMPTY_OBJECT;
-  }
-
-  return getRawBaseRelayerParams({
-    chainId,
-    account,
-    expressGlobalParams,
-  });
-});
+import { getEmptyExternalCallsPayload, type ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
 export function getRawBaseRelayerParams({
   chainId,
   account,
-  expressGlobalParams,
+  globalExpressParams,
 }: {
   chainId: ContractsChainId;
   account: string;
-  expressGlobalParams: GlobalExpressParams;
+  globalExpressParams: GlobalExpressParams;
 }): Partial<{
   rawBaseRelayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload;
   baseRelayFeeSwapParams: {
@@ -88,7 +56,7 @@ export function getRawBaseRelayerParams({
   };
 }> {
   const { gasPaymentToken, relayerFeeToken, tokensData, marketsInfoData, gasPrice, findFeeSwapPath } =
-    expressGlobalParams;
+    globalExpressParams;
 
   if (!gasPaymentToken || !relayerFeeToken || !account || !tokensData || !marketsInfoData || gasPrice === undefined) {
     return EMPTY_OBJECT;
@@ -110,7 +78,7 @@ export function getRawBaseRelayerParams({
     totalRelayerFeeTokenAmount: baseRelayerFeeAmount,
     findFeeSwapPath: findFeeSwapPath,
 
-    transactionExternalCalls: EMPTY_EXTERNAL_CALLS,
+    transactionExternalCalls: getEmptyExternalCallsPayload(),
     feeExternalSwapQuote: undefined,
   });
 
@@ -123,22 +91,13 @@ export function getRawBaseRelayerParams({
     gasPaymentTokenAddress: baseRelayFeeSwapParams.gasPaymentParams.gasPaymentTokenAddress,
     relayerFeeTokenAddress: baseRelayFeeSwapParams.gasPaymentParams.relayerFeeTokenAddress,
     feeParams: baseRelayFeeSwapParams.feeParams,
-    externalCalls: EMPTY_EXTERNAL_CALLS,
+    externalCalls: getEmptyExternalCallsPayload(),
     tokenPermits: EMPTY_ARRAY,
     marketsInfoData,
   });
 
   return { rawBaseRelayParamsPayload, baseRelayFeeSwapParams };
 }
-
-export const EMPTY_EXTERNAL_CALLS: ExternalCallsPayload = {
-  sendTokens: EMPTY_ARRAY,
-  sendAmounts: EMPTY_ARRAY,
-  externalCallTargets: EMPTY_ARRAY,
-  externalCallDataList: EMPTY_ARRAY,
-  refundTokens: EMPTY_ARRAY,
-  refundReceivers: EMPTY_ARRAY,
-};
 
 async function estimateArbitraryGasLimit({
   provider,
@@ -147,7 +106,9 @@ async function estimateArbitraryGasLimit({
   expressTransactionBuilder,
   noncesData,
   subaccount,
+  chainId,
 }: {
+  chainId: ContractsChainId;
   provider: Provider;
   rawRelayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload;
   gasPaymentParams: GasPaymentParams;
@@ -164,7 +125,12 @@ async function estimateArbitraryGasLimit({
 
   const baseData = encodePacked(
     ["bytes", "address", "address", "uint256"],
-    [baseTxnData.callData as Hex, GELATO_RELAY_ADDRESS, baseTxnData.feeToken as Address, baseTxnData.feeAmount]
+    [
+      baseTxnData.callData as Hex,
+      getContract(chainId, "GelatoRelayAddress"),
+      baseTxnData.feeToken as Address,
+      baseTxnData.feeAmount,
+    ]
   );
 
   const gasLimit = await estimateGasLimit(provider, {
@@ -195,6 +161,7 @@ export async function estimateArbitraryRelayFee({
   subaccount: Subaccount | undefined;
 }) {
   const gasLimit = await estimateArbitraryGasLimit({
+    chainId,
     provider,
     rawRelayParamsPayload,
     gasPaymentParams,
@@ -219,14 +186,14 @@ export function getArbitraryRelayParamsAndPayload({
   isGmxAccount,
   relayerFeeAmount,
   additionalNetworkFee,
-  expressGlobalParams,
+  globalExpressParams,
 }: {
   chainId: ContractsChainId;
   isGmxAccount: boolean;
   account: string;
   relayerFeeAmount: bigint;
   additionalNetworkFee?: bigint;
-  expressGlobalParams: GlobalExpressParams;
+  globalExpressParams: GlobalExpressParams;
 }) {
   if (relayerFeeAmount === undefined) {
     return {
@@ -243,13 +210,13 @@ export function getArbitraryRelayParamsAndPayload({
     chainId: chainId,
     account: account,
 
-    gasPaymentToken: expressGlobalParams.gasPaymentToken,
-    relayerFeeToken: expressGlobalParams.relayerFeeToken,
+    gasPaymentToken: globalExpressParams.gasPaymentToken,
+    relayerFeeToken: globalExpressParams.relayerFeeToken,
     relayerFeeAmount: relayerFeeAmount,
     totalRelayerFeeTokenAmount: networkFee,
-    findFeeSwapPath: expressGlobalParams.findFeeSwapPath,
+    findFeeSwapPath: globalExpressParams.findFeeSwapPath,
 
-    transactionExternalCalls: EMPTY_EXTERNAL_CALLS,
+    transactionExternalCalls: getEmptyExternalCallsPayload(),
     feeExternalSwapQuote: undefined,
   });
 
@@ -267,25 +234,25 @@ export function getArbitraryRelayParamsAndPayload({
     gasPaymentTokenAddress: relayFeeParams.gasPaymentParams.gasPaymentTokenAddress,
     relayerFeeTokenAddress: relayFeeParams.gasPaymentParams.relayerFeeTokenAddress,
     feeParams: relayFeeParams.feeParams,
-    externalCalls: EMPTY_EXTERNAL_CALLS,
+    externalCalls: getEmptyExternalCallsPayload(),
     tokenPermits: [],
-    marketsInfoData: expressGlobalParams.marketsInfoData,
+    marketsInfoData: globalExpressParams.marketsInfoData,
   });
 
   const gasPaymentValidations = getGasPaymentValidations({
-    gasPaymentToken: expressGlobalParams.gasPaymentToken,
+    gasPaymentToken: globalExpressParams.gasPaymentToken,
     gasPaymentTokenAmount: relayFeeParams.gasPaymentParams.totalRelayerFeeTokenAmount,
     gasPaymentTokenAsCollateralAmount: 0n,
-    gasPaymentAllowanceData: expressGlobalParams.gasPaymentAllowanceData ?? EMPTY_OBJECT,
-    tokenPermits: expressGlobalParams.tokenPermits,
+    gasPaymentAllowanceData: globalExpressParams.gasPaymentAllowanceData ?? EMPTY_OBJECT,
+    tokenPermits: globalExpressParams.tokenPermits,
     isGmxAccount,
   });
 
   const subaccountValidations =
-    expressGlobalParams.subaccount &&
+    globalExpressParams.subaccount &&
     getSubaccountValidations({
       requiredActions: 1,
-      subaccount: expressGlobalParams.subaccount,
+      subaccount: globalExpressParams.subaccount,
     });
 
   return {
@@ -295,48 +262,6 @@ export function getArbitraryRelayParamsAndPayload({
     subaccountValidations,
   };
 }
-
-export const selectArbitraryRelayParamsAndPayload = createSelector(function selectArbitraruRelayParamsAndPayload(q):
-  | ((dynamicFees: { relayerFeeAmount: bigint; additionalNetworkFee?: bigint; isGmxAccount: boolean }) => Partial<{
-      relayFeeParams: {
-        feeParams: RelayFeePayload;
-        externalCalls: ExternalCallsPayload;
-        feeExternalSwapGasLimit: bigint;
-        gasPaymentParams: GasPaymentParams;
-      };
-      relayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload;
-      latestParamsPayload: RelayParamsPayload | MultichainRelayParamsPayload;
-      gasPaymentValidations: GasPaymentValidations;
-      subaccountValidations: SubaccountValidations;
-    }>)
-  | undefined {
-  const chainId = q(selectChainId);
-  const account = q(selectAccount);
-  const expressGlobalParams = q(selectExpressGlobalParams);
-
-  if (!account || !expressGlobalParams) {
-    return undefined;
-  }
-
-  return ({
-    relayerFeeAmount,
-    additionalNetworkFee,
-    isGmxAccount,
-  }: {
-    relayerFeeAmount: bigint;
-    additionalNetworkFee?: bigint;
-    isGmxAccount: boolean;
-  }) => {
-    return getArbitraryRelayParamsAndPayload({
-      chainId,
-      account,
-      isGmxAccount,
-      relayerFeeAmount,
-      additionalNetworkFee,
-      expressGlobalParams,
-    });
-  };
-});
 
 export function useArbitraryRelayParamsAndPayload({
   additionalNetworkFee,
@@ -356,7 +281,7 @@ export function useArbitraryRelayParamsAndPayload({
       const { baseRelayFeeSwapParams, rawBaseRelayParamsPayload } = getRawBaseRelayerParams({
         chainId,
         account: p.account,
-        expressGlobalParams: p.globalExpressParams,
+        globalExpressParams: p.globalExpressParams,
       });
 
       if (baseRelayFeeSwapParams === undefined || rawBaseRelayParamsPayload === undefined) {
@@ -367,6 +292,7 @@ export function useArbitraryRelayParamsAndPayload({
 
       try {
         gasLimit = await estimateArbitraryGasLimit({
+          chainId,
           provider: p.provider,
           expressTransactionBuilder: p.expressTransactionBuilder,
           rawRelayParamsPayload: rawBaseRelayParamsPayload,
@@ -397,7 +323,7 @@ export function useArbitraryRelayParamsAndPayload({
           transactionParams: {
             account: p.account,
             isValid: true,
-            transactionExternalCalls: EMPTY_EXTERNAL_CALLS,
+            transactionExternalCalls: getEmptyExternalCallsPayload(),
             executionFeeAmount: additionalNetworkFee ?? 0n,
             gasPaymentTokenAsCollateralAmount: 0n,
             subaccountActions: 0,
@@ -433,28 +359,4 @@ export function useArbitraryRelayParamsAndPayload({
   );
 
   return expressTxnParamsAsyncResult;
-}
-
-function getCustomError(error: Error): Error {
-  const data = (error as any)?.info?.error?.data ?? (error as any)?.data;
-
-  let prettyErrorName = error.name;
-  let prettyErrorMessage = error.message;
-
-  try {
-    const parsedError = decodeErrorResult({
-      abi: abis.CustomErrorsArbitrumSepolia,
-      data: data,
-    });
-
-    prettyErrorName = parsedError.errorName;
-    prettyErrorMessage = JSON.stringify(parsedError, null, 2);
-  } catch (decodeError) {
-    return error;
-  }
-
-  const prettyError = new Error(prettyErrorMessage);
-  prettyError.name = prettyErrorName;
-
-  return prettyError;
 }

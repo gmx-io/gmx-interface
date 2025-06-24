@@ -149,3 +149,27 @@ function hasStack(error: unknown): error is { stack: string } {
 function hasName(error: unknown): error is { name: string } {
   return !!error && typeof error === "object" && typeof (error as { name: string }).name === "string";
 }
+
+export function getCustomError(error: Error): Error {
+  const data = (error as any)?.info?.error?.data ?? (error as any)?.data;
+
+  let prettyErrorName = error.name;
+  let prettyErrorMessage = error.message;
+
+  try {
+    const parsedError = decodeErrorResult({
+      abi: abis.CustomErrorsArbitrumSepolia,
+      data: data,
+    });
+
+    prettyErrorName = parsedError.errorName;
+    prettyErrorMessage = JSON.stringify(parsedError, null, 2);
+  } catch (decodeError) {
+    return error;
+  }
+
+  const prettyError = new Error(prettyErrorMessage);
+  prettyError.name = prettyErrorName;
+
+  return prettyError;
+}

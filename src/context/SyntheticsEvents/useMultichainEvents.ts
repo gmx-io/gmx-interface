@@ -6,6 +6,8 @@ import { useAccount } from "wagmi";
 
 import { getChainName, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
+import { CHAIN_ID_TO_TOKEN_ID_MAP, getMappedTokenId, isSettlementChain, MultichainTokenId } from "config/multichain";
+import { ENDPOINT_ID_TO_CHAIN_ID } from "config/multichain";
 import { useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
 import {
   subscribeToComposeDeliveredEvents,
@@ -15,13 +17,6 @@ import {
 } from "context/WebsocketContext/subscribeToEvents";
 import { useWebsocketProvider, useWsAdditionalSourceChains } from "context/WebsocketContext/WebsocketContextProvider";
 import { CodecUiHelper } from "domain/multichain/codecs/CodecUiHelper";
-import {
-  CHAIN_ID_TO_TOKEN_ID_MAP,
-  getMappedTokenId,
-  isSettlementChain,
-  MultichainTokenId,
-} from "domain/multichain/config";
-import { ENDPOINT_ID_TO_CHAIN_ID } from "domain/multichain/stargatePools";
 import { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { isStepGreater } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";

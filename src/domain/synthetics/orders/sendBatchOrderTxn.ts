@@ -24,7 +24,7 @@ import {
 import { signerAddressError } from "components/Errors/errorToasts";
 
 import { getOrdersTriggerPriceOverrides, getSimulationPrices, simulateExecution } from "./simulation";
-import { callRelayTransaction } from "../gassless/txns/expressOrderDebug";
+import { callRelayTransaction } from "../express/callRelayTransaction";
 
 export type BatchSimulationParams = {
   tokensData: TokensData;
@@ -264,6 +264,7 @@ export const makeBatchOrderSimulation = async ({
       });
 
       await callRelayTransaction({
+        chainId,
         relayRouterAddress: to,
         gelatoRelayFeeToken: feeToken,
         gelatoRelayFeeAmount: feeAmount,

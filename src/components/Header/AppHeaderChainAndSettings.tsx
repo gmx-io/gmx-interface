@@ -13,7 +13,7 @@ import {
 } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getChainIcon } from "config/icons";
-import { isSourceChain } from "domain/multichain/config";
+import { isSourceChain } from "config/multichain";
 import { useChainId } from "lib/chains";
 import { isHomeSite, shouldShowRedirectModal } from "lib/legacy";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";

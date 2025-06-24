@@ -1,5 +1,10 @@
 import type { SourceChainId } from "config/chains";
 import type { Token, TokenPrices } from "domain/tokens";
+import type {
+  OFTFeeDetailStruct,
+  OFTLimitStruct,
+  OFTReceiptStruct,
+} from "typechain-types-stargate/interfaces/IStargate";
 
 export type TokenChainData = Token & {
   sourceChainId: SourceChainId;
@@ -38,3 +43,14 @@ export type BridgeOutParams = {
 };
 
 export type LayerZeroEndpointId = 40161 | 40231 | 40232;
+
+export type QuoteOft = {
+  limit: OFTLimitStruct;
+  oftFeeDetails: OFTFeeDetailStruct[];
+  receipt: OFTReceiptStruct;
+};
+
+export type QuoteSend = {
+  nativeFee: bigint;
+  lzTokenFee: bigint;
+};

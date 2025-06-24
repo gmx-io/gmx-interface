@@ -1,17 +1,19 @@
 import type { Provider } from "ethers";
 import { Hex, encodePacked, type Address } from "viem";
 
+import { ContractsChainId } from "config/chains";
+import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 
-export const GELATO_RELAY_ADDRESS = "0xcd565435e0d2109feFde337a66491541Df0D1420";
-
 export async function callRelayTransaction({
+  chainId,
   calldata,
   gelatoRelayFeeToken,
   gelatoRelayFeeAmount,
   provider,
   relayRouterAddress,
 }: {
+  chainId: ContractsChainId;
   calldata: string;
   gelatoRelayFeeToken: string;
   gelatoRelayFeeAmount: bigint;
@@ -24,7 +26,12 @@ export async function callRelayTransaction({
       from: GMX_SIMULATION_ORIGIN,
       data: encodePacked(
         ["bytes", "address", "address", "uint256"],
-        [calldata as Hex, GELATO_RELAY_ADDRESS, gelatoRelayFeeToken as Address, gelatoRelayFeeAmount]
+        [
+          calldata as Hex,
+          getContract(chainId, "GelatoRelayAddress"),
+          gelatoRelayFeeToken as Address,
+          gelatoRelayFeeAmount,
+        ]
       ),
     });
   } catch (ex) {

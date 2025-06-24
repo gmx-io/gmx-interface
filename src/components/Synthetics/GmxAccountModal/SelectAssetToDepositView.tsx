@@ -4,12 +4,12 @@ import { useMemo, useState } from "react";
 
 import { getChainName } from "config/chains";
 import { getChainIcon } from "config/icons";
+import { MULTI_CHAIN_TOKEN_MAPPING } from "config/multichain";
 import {
   useGmxAccountDepositViewChain,
   useGmxAccountDepositViewTokenAddress,
   useGmxAccountModalOpen,
 } from "context/GmxAccountContext/hooks";
-import { MULTI_CHAIN_TOKEN_MAPPING } from "domain/multichain/config";
 import { TokenChainData } from "domain/multichain/types";
 import { useChainId } from "lib/chains";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";

@@ -6,7 +6,7 @@ import { createContext, PropsWithChildren, useCallback, useContext, useEffect, u
 import { useLatest } from "react-use";
 
 import { RPC_PROVIDERS, SUPPORTED_CHAIN_IDS } from "config/chains";
-import { SOURCE_CHAINS } from "domain/multichain/config";
+import { SOURCE_CHAINS } from "config/multichain";
 import { EMPTY_OBJECT } from "lib/objects";
 import { getCurrentRpcUrls, RPC_TRACKER_UPDATE_EVENT } from "lib/rpc/bestRpcTracker";
 import { AnyChainId } from "sdk/configs/chains";

@@ -1,6 +1,5 @@
 import { addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
-import { AbiCoder, hexlify, ParamType, isHexString } from "ethers";
-import { Address, concatHex, Hex } from "viem";
+import { Address, concatHex, encodeAbiParameters, Hex, isHex, toHex } from "viem";
 
 import { MultichainRelayParamsPayload } from "domain/synthetics/express";
 import type { ContractsChainId, SettlementChainId } from "sdk/configs/chains";
@@ -28,7 +27,7 @@ type SetTraderReferralCodeAction = {
   actionData: SetTraderReferralCodeActionData;
 };
 
-const RELAY_PARAMS_TYPE = ParamType.from({
+const RELAY_PARAMS_TYPE = {
   type: "tuple",
   name: "",
   components: [
@@ -78,21 +77,21 @@ const RELAY_PARAMS_TYPE = ParamType.from({
     { type: "bytes", name: "signature" },
     { type: "uint256", name: "desChainId" },
   ],
-});
+} as const;
 
 export type MultichainAction = SetTraderReferralCodeAction;
 
 export class CodecUiHelper {
   public static encodeDepositMessage(account: string, data?: string): string {
-    return AbiCoder.defaultAbiCoder().encode(["address", "bytes"], [account, data ?? "0x"]);
+    return encodeAbiParameters([{ type: "address" }, { type: "bytes" }], [account as Address, (data as Hex) ?? "0x"]);
   }
 
   public static encodeComposeMsg(composeFromAddress: string, msg: string) {
-    if (!isHexString(msg)) {
+    if (!isHex(msg)) {
       throw new Error("msg must start with 0x");
     }
 
-    const composeFrom = hexlify(addressToBytes32(composeFromAddress)) as Hex;
+    const composeFrom = toHex(addressToBytes32(composeFromAddress));
 
     const composeFromWithMsg = concatHex([composeFrom, msg]);
 
@@ -112,12 +111,15 @@ export class CodecUiHelper {
 
   public static encodeMultichainActionData(action: MultichainAction): string {
     if (action.actionType === MultichainActionType.SetTraderReferralCode) {
-      const actionData = AbiCoder.defaultAbiCoder().encode(
-        [RELAY_PARAMS_TYPE, "bytes32"],
-        [{ ...action.actionData.relayParams, signature: action.actionData.signature }, action.actionData.referralCode]
+      const actionData = encodeAbiParameters(
+        [RELAY_PARAMS_TYPE, { type: "bytes32" }],
+        [
+          { ...(action.actionData.relayParams as any), signature: action.actionData.signature as Hex },
+          action.actionData.referralCode as Hex,
+        ]
       );
 
-      const data = AbiCoder.defaultAbiCoder().encode(["uint8", "bytes"], [action.actionType, actionData]);
+      const data = encodeAbiParameters([{ type: "uint8" }, { type: "bytes" }], [action.actionType, actionData]);
 
       return data;
     }

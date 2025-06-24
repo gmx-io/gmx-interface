@@ -4,8 +4,8 @@ import { encodeFunctionData, size, zeroAddress, zeroHash } from "viem";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { isSourceChain } from "config/multichain";
 import { LocalActions, NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
-import { isSourceChain } from "domain/multichain/config";
 import type { BridgeOutParams } from "domain/multichain/types";
 import {
   ExpressParamsEstimationMethod,

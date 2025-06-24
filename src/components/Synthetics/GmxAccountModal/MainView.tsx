@@ -9,9 +9,10 @@ import { useAccount, useDisconnect } from "wagmi";
 
 import { getExplorerUrl } from "config/chains";
 import { CURRENT_PROVIDER_LOCALSTORAGE_KEY, SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY } from "config/localStorage";
+import { isSettlementChain } from "config/multichain";
 import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { isSettlementChain } from "domain/multichain/config";
+import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFundingItemLoading";
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
@@ -48,7 +49,6 @@ import {
   useAvailableToTradeAssetSymbolsMultichain,
   useAvailableToTradeAssetSymbolsSettlementChain,
 } from "./hooks";
-import { isMultichainFundingItemLoading } from "./isMultichainFundingItemLoading";
 import { FUNDING_OPERATIONS_LABELS } from "./keys";
 
 const TokenIcons = ({ tokens }: { tokens: string[] }) => {

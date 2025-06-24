@@ -1,5 +1,4 @@
-import { BigNumberish, BytesLike, getBytes, solidityPacked, toBigInt } from "ethers";
-import type { Hex } from "viem";
+import { encodePacked, Hex, toBytes, bytesToBigInt, bytesToHex } from "viem";
 
 export class OFTComposeMsgCodec {
   // Offset constants for decoding composed messages
@@ -16,13 +15,8 @@ export class OFTComposeMsgCodec {
    * @param _composeMsg The composed message. `0x[composeFrom][composeMsg]`
    * @return _msg The encoded Composed message.
    */
-  public static encode(
-    _nonce: BigNumberish,
-    _srcEid: BigNumberish,
-    _amountLD: BigNumberish,
-    _composeMsg: BytesLike
-  ): Hex {
-    return solidityPacked(["uint64", "uint32", "uint256", "bytes"], [_nonce, _srcEid, _amountLD, _composeMsg]) as Hex;
+  public static encode(_nonce: bigint, _srcEid: number, _amountLD: bigint, _composeMsg: string): Hex {
+    return encodePacked(["uint64", "uint32", "uint256", "bytes"], [_nonce, _srcEid, _amountLD, _composeMsg as Hex]);
   }
 
   /**
@@ -30,9 +24,9 @@ export class OFTComposeMsgCodec {
    * @param _msg The message.
    * @return The nonce value.
    */
-  public static nonce(_msg: BytesLike): bigint {
-    const bytes = getBytes(_msg);
-    return toBigInt(bytes.slice(0, OFTComposeMsgCodec.NONCE_OFFSET));
+  public static nonce(_msg: Hex): bigint {
+    const bytes = toBytes(_msg);
+    return bytesToBigInt(bytes.slice(0, OFTComposeMsgCodec.NONCE_OFFSET));
   }
 
   /**
@@ -40,9 +34,9 @@ export class OFTComposeMsgCodec {
    * @param _msg The message.
    * @return The source endpoint ID.
    */
-  public static srcEid(_msg: BytesLike): bigint {
-    const bytes = getBytes(_msg);
-    return toBigInt(bytes.slice(OFTComposeMsgCodec.NONCE_OFFSET, OFTComposeMsgCodec.SRC_EID_OFFSET));
+  public static srcEid(_msg: Hex): bigint {
+    const bytes = toBytes(_msg);
+    return bytesToBigInt(bytes.slice(OFTComposeMsgCodec.NONCE_OFFSET, OFTComposeMsgCodec.SRC_EID_OFFSET));
   }
 
   /**
@@ -50,9 +44,9 @@ export class OFTComposeMsgCodec {
    * @param _msg The message.
    * @return The amount in local decimals.
    */
-  public static amountLD(_msg: BytesLike): bigint {
-    const bytes = getBytes(_msg);
-    return toBigInt(bytes.slice(OFTComposeMsgCodec.SRC_EID_OFFSET, OFTComposeMsgCodec.AMOUNT_LD_OFFSET));
+  public static amountLD(_msg: Hex): bigint {
+    const bytes = toBytes(_msg);
+    return bytesToBigInt(bytes.slice(OFTComposeMsgCodec.SRC_EID_OFFSET, OFTComposeMsgCodec.AMOUNT_LD_OFFSET));
   }
 
   /**
@@ -60,9 +54,9 @@ export class OFTComposeMsgCodec {
    * @param _msg The message.
    * @return The composeFrom value.
    */
-  public static composeFrom(_msg: BytesLike): BytesLike {
-    const bytes = getBytes(_msg);
-    return bytes.slice(OFTComposeMsgCodec.AMOUNT_LD_OFFSET, OFTComposeMsgCodec.COMPOSE_FROM_OFFSET);
+  public static composeFrom(_msg: Hex): Hex {
+    const bytes = toBytes(_msg);
+    return bytesToHex(bytes.slice(OFTComposeMsgCodec.AMOUNT_LD_OFFSET, OFTComposeMsgCodec.COMPOSE_FROM_OFFSET));
   }
 
   /**
@@ -70,8 +64,8 @@ export class OFTComposeMsgCodec {
    * @param _msg The message.
    * @return The composed message.
    */
-  public static composeMsg(_msg: BytesLike): BytesLike {
-    const bytes = getBytes(_msg);
-    return bytes.slice(OFTComposeMsgCodec.COMPOSE_FROM_OFFSET);
+  public static composeMsg(_msg: Hex): Hex {
+    const bytes = toBytes(_msg);
+    return bytesToHex(bytes.slice(OFTComposeMsgCodec.COMPOSE_FROM_OFFSET));
   }
 }

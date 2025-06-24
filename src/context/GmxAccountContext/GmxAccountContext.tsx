@@ -2,7 +2,7 @@ import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from "re
 import { createContext } from "use-context-selector";
 import { useAccount } from "wagmi";
 
-import { DEFAULT_SETTLEMENT_CHAIN_ID_MAP, MULTI_CHAIN_TOKEN_MAPPING, isSourceChain } from "domain/multichain/config";
+import { DEFAULT_SETTLEMENT_CHAIN_ID_MAP, MULTI_CHAIN_TOKEN_MAPPING, isSourceChain } from "config/multichain";
 import { ARBITRUM_SEPOLIA, SettlementChainId, SourceChainId } from "sdk/configs/chains";
 
 export type GmxAccountModalView =

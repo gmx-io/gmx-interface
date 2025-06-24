@@ -1,7 +1,8 @@
 import { createContext, PropsWithChildren, useContext, useMemo } from "react";
 
 import { isDevelopment } from "config/env";
-import { useChainIdImpl } from "lib/chains";
+import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
+import { useChainIdImpl } from "lib/chains/useChainIdImpl";
 import { ARBITRUM, ARBITRUM_SEPOLIA, ContractsChainId, SourceChainId } from "sdk/configs/chains";
 
 export type ChainContext = {
@@ -24,7 +25,9 @@ export const context = createContext<ChainContext>({
 });
 
 export function ChainContextProvider({ children }: PropsWithChildren) {
-  const { chainId, srcChainId, isConnectedToChainId } = useChainIdImpl();
+  const [gmxAccountSettlementChainId] = useGmxAccountSettlementChainId();
+
+  const { chainId, srcChainId, isConnectedToChainId } = useChainIdImpl(gmxAccountSettlementChainId);
 
   const value = useMemo(
     () => ({

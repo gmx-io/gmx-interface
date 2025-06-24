@@ -1,7 +1,7 @@
 import mapValues from "lodash/mapValues";
 
 import { isDevelopment } from "config/env";
-import { SETTLEMENT_CHAINS } from "domain/multichain/config";
+import { SETTLEMENT_CHAINS } from "config/multichain";
 
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, SettlementChainId } from "./chains";
 import { MARKETS } from "./static/markets";

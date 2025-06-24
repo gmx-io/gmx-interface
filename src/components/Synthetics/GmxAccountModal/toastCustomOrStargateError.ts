@@ -1,7 +1,7 @@
 import { decodeErrorResult } from "viem";
 
 import type { AnyChainId } from "config/chains";
-import { StargateErrorsAbi } from "domain/multichain/stargatePools";
+import { StargateErrorsAbi } from "config/multichain";
 import { helperToast } from "lib/helperToast";
 import { abis } from "sdk/abis";
 

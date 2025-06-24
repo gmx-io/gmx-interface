@@ -1,7 +1,7 @@
 import { zeroAddress } from "viem";
 
 import { SettlementChainId, SourceChainId, getChainName } from "config/chains";
-import { MULTICALLS_MAP, MULTI_CHAIN_TOKEN_MAPPING } from "domain/multichain/config";
+import { MULTICALLS_MAP, MULTI_CHAIN_TOKEN_MAPPING } from "config/multichain";
 import { executeMulticall } from "lib/multicall/executeMulticall";
 import type { MulticallRequestConfig } from "lib/multicall/types";
 
@@ -15,7 +15,6 @@ export async function fetchMultichainTokenBalances(
     tokensChainData: Record<string, bigint>;
   }>[] = [];
 
-  // const sourceChainMap = MULTI_CHAIN_SUPPORTED_TOKEN_MAP[currentSettlementChainId];
   const sourceChainTokenIdMap = MULTI_CHAIN_TOKEN_MAPPING[currentSettlementChainId];
 
   const result: Record<number, Record<string, bigint>> = {};
@@ -33,7 +32,6 @@ export async function fetchMultichainTokenBalances(
       >
     > = {};
 
-    // TODO MLTCH merge this into request with many calls
     for (const tokenAddress of tokenAddresses) {
       if (tokenAddress === zeroAddress) {
         requestConfig[tokenAddress] = {
@@ -65,7 +63,6 @@ export async function fetchMultichainTokenBalances(
     const request = executeMulticall(
       sourceChainId,
       requestConfig,
-      // TODO MLTCH pass priority from args
       "urgent",
       `fetchMultichainTokens-${getChainName(sourceChainId)}`
     ).then((res) => {

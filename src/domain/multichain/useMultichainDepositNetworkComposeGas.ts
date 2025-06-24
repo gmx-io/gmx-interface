@@ -4,13 +4,13 @@ import { useAccount, usePublicClient } from "wagmi";
 
 import { ARBITRUM_SEPOLIA, type ContractsChainId, type SettlementChainId, type SourceChainId } from "config/chains";
 import { tryGetContract } from "config/contracts";
-import { useGmxAccountDepositViewChain } from "context/GmxAccountContext/hooks";
 import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
   getLayerZeroEndpointId,
   getStargatePoolAddress,
   OVERRIDE_ERC20_BYTECODE,
-} from "domain/multichain/config";
+} from "config/multichain";
+import { useGmxAccountDepositViewChain } from "context/GmxAccountContext/hooks";
 import { useChainId } from "lib/chains";
 import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { numberToBigint } from "lib/numbers";
@@ -112,7 +112,7 @@ export async function estimateMultichainDepositNetworkComposeGas({
 
   const fakeAmount = FAKE_INPUT_AMOUNT_MAP[getToken(chainId, tokenAddress).symbol] ?? 10n ** 18n;
 
-  const message = OFTComposeMsgCodec.encode(0, sourceChainEndpointId, fakeAmount, composeFromWithMsg);
+  const message = OFTComposeMsgCodec.encode(0n, sourceChainEndpointId, fakeAmount, composeFromWithMsg);
 
   const stargatePool = getStargatePoolAddress(chainId, tokenAddress);
 

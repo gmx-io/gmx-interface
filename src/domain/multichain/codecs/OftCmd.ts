@@ -1,4 +1,4 @@
-import { solidityPacked } from "ethers";
+import { encodePacked } from "viem";
 
 export const SEND_MODE_TAXI = 0;
 
@@ -12,7 +12,7 @@ export class OftCmd {
     if (this.sendMode === SEND_MODE_TAXI) {
       return "0x";
     } else {
-      return solidityPacked(["uint8"], [this.sendMode]);
+      return encodePacked(["uint8"], [this.sendMode]);
     }
   }
 }

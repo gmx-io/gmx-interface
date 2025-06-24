@@ -6,15 +6,14 @@ import { encodeFunctionData, zeroAddress } from "viem";
 import { usePublicClient } from "wagmi";
 
 import { getContract } from "config/contracts";
+import { CHAIN_ID_PREFERRED_DEPOSIT_TOKEN, getMappedTokenId, isSettlementChain } from "config/multichain";
+import { IStargateAbi } from "config/multichain";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { EMPTY_EXTERNAL_CALLS } from "domain/multichain/arbitraryRelayParams";
 import { type MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
-import { CHAIN_ID_PREFERRED_DEPOSIT_TOKEN, getMappedTokenId, isSettlementChain } from "domain/multichain/config";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
-import { IStargateAbi } from "domain/multichain/stargatePools";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/useMultichainDepositNetworkComposeGas";
 import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/referrals/hooks";
 import {
@@ -34,6 +33,7 @@ import { sendWalletTransaction } from "lib/transactions";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import useWallet from "lib/wallets/useWallet";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
+import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { encodeReferralCode } from "sdk/utils/referrals";
 import { nowInSeconds } from "sdk/utils/time";
 import type { IStargate } from "typechain-types-stargate";
@@ -302,7 +302,7 @@ function ReferralCodeFormMultichain({
         totalRelayerFeeTokenAmount: 0n,
         findFeeSwapPath: p.globalExpressParams.findFeeSwapPath,
 
-        transactionExternalCalls: EMPTY_EXTERNAL_CALLS,
+        transactionExternalCalls: getEmptyExternalCallsPayload(),
         feeExternalSwapQuote: undefined,
       });
 
@@ -315,7 +315,7 @@ function ReferralCodeFormMultichain({
         gasPaymentTokenAddress: relayFeeParams.gasPaymentParams.gasPaymentTokenAddress,
         relayerFeeTokenAddress: relayFeeParams.gasPaymentParams.relayerFeeTokenAddress,
         feeParams: relayFeeParams.feeParams,
-        externalCalls: EMPTY_EXTERNAL_CALLS,
+        externalCalls: getEmptyExternalCallsPayload(),
         tokenPermits: [],
         marketsInfoData: p.globalExpressParams.marketsInfoData,
       }) as RawMultichainRelayParamsPayload;
@@ -466,7 +466,7 @@ function ReferralCodeFormMultichain({
         totalRelayerFeeTokenAmount: 0n,
         findFeeSwapPath: globalExpressParams.findFeeSwapPath,
 
-        transactionExternalCalls: EMPTY_EXTERNAL_CALLS,
+        transactionExternalCalls: getEmptyExternalCallsPayload(),
         feeExternalSwapQuote: undefined,
       });
 
@@ -479,7 +479,7 @@ function ReferralCodeFormMultichain({
         gasPaymentTokenAddress: relayFeeParams.gasPaymentParams.gasPaymentTokenAddress,
         relayerFeeTokenAddress: relayFeeParams.gasPaymentParams.relayerFeeTokenAddress,
         feeParams: relayFeeParams.feeParams,
-        externalCalls: EMPTY_EXTERNAL_CALLS,
+        externalCalls: getEmptyExternalCallsPayload(),
         tokenPermits: [],
         marketsInfoData: globalExpressParams.marketsInfoData,
       }) as RawMultichainRelayParamsPayload;

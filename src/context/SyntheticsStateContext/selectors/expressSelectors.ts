@@ -1,9 +1,9 @@
 import { ARBITRUM } from "config/chains";
 import { isDevelopment } from "config/env";
-import { GlobalExpressParams } from "domain/synthetics/express";
+import type { GlobalExpressParams } from "domain/synthetics/express";
 import { getByKey } from "lib/objects";
 import { getRelayerFeeToken } from "sdk/configs/express";
-import { FindSwapPath } from "sdk/types/trade";
+import type { FindSwapPath } from "sdk/types/trade";
 import { createFindSwapPath } from "sdk/utils/swap/swapPath";
 
 import { createSelector } from "../utils";

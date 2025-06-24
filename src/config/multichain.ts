@@ -1,5 +1,17 @@
+import { errors as _StargateErrorsAbi } from "@stargatefinance/stg-evm-sdk-v2";
+import { abi as IStargateAbi } from "@stargatefinance/stg-evm-sdk-v2/artifacts/src/interfaces/IStargate.sol/IStargate.json";
+import { address as ethPoolArbitrumSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbsep-testnet/StargatePoolNative.json";
+import { address as usdcSgPoolArbitrumSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbsep-testnet/StargatePoolUSDC.json";
+import { address as ethPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolNative.json";
+import { address as usdcSgPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolUSDC.json";
+import { address as ethPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolNative.json";
+import { address as usdcSgPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolUSDC.json";
+import type { JsonFragment } from "ethers";
+import invert from "lodash/invert";
+import mapValues from "lodash/mapValues";
 import uniq from "lodash/uniq";
 import { Hex, zeroAddress } from "viem";
+import type { Abi } from "viem";
 
 import {
   AnyChainId,
@@ -14,18 +26,18 @@ import {
   SourceChainId,
 } from "config/chains";
 import { isDevelopment } from "config/env";
+import { LayerZeroEndpointId } from "domain/multichain/types";
 import { convertTokenAddress } from "sdk/configs/tokens";
 
-import {
-  CHAIN_ID_TO_ENDPOINT_ID,
+export {
   ethPoolArbitrumSepolia,
   ethPoolOptimismSepolia,
   ethPoolSepolia,
+  IStargateAbi,
   usdcSgPoolArbitrumSepolia,
   usdcSgPoolOptimismSepolia,
   usdcSgPoolSepolia,
-} from "./stargatePools";
-import { LayerZeroEndpointId } from "./types";
+};
 
 type MultichainTokenMapping = Record<
   // settlement chain id
@@ -306,3 +318,16 @@ export const OVERRIDE_ERC20_BYTECODE: Hex =
 export const CHAIN_ID_PREFERRED_DEPOSIT_TOKEN: Record<SettlementChainId, string> = {
   [ARBITRUM_SEPOLIA]: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773",
 };
+
+export const MULTICHAIN_FUNDING_SLIPPAGE_BPS = 50;
+
+export const StargateErrorsAbi = _StargateErrorsAbi as readonly (Abi[number] & JsonFragment)[];
+
+export const CHAIN_ID_TO_ENDPOINT_ID: Record<SettlementChainId | SourceChainId, LayerZeroEndpointId> = {
+  [ARBITRUM_SEPOLIA]: 40231,
+  [SOURCE_SEPOLIA]: 40161,
+  [SOURCE_OPTIMISM_SEPOLIA]: 40232,
+};
+
+export const ENDPOINT_ID_TO_CHAIN_ID: Partial<Record<LayerZeroEndpointId, SettlementChainId | SourceChainId>> =
+  mapValues(invert(CHAIN_ID_TO_ENDPOINT_ID), (value) => parseInt(value));

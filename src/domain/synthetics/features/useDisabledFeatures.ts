@@ -24,7 +24,6 @@ export function useEnabledFeaturesRequest(chainId: ContractsChainId): EnabledFea
         contractAddress: getContract(chainId, "DataStore"),
         abiId: "DataStore",
         calls: {
-          // TODO: make it work with multichain
           relayRouterDisabled: {
             methodName: "getBool",
             params: [gaslessFeatureDisabledKey(getContract(chainId, "GelatoRelayRouter"))],

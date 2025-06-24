@@ -3,7 +3,7 @@ import { toHex } from "viem";
 
 import type { ContractsChainId, AnyChainId } from "config/chains";
 import { getContract } from "config/contracts";
-import { getLayerZeroEndpointId, isSettlementChain, isSourceChain } from "domain/multichain/config";
+import { getLayerZeroEndpointId, isSettlementChain, isSourceChain } from "config/multichain";
 import type { SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
 
 import { CodecUiHelper, MultichainAction } from "./codecs/CodecUiHelper";

@@ -11,9 +11,10 @@ import { formatBalanceAmount } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
 import { getToken } from "sdk/configs/tokens";
 
+import { FUNDING_OPERATIONS_LABELS } from "components/Synthetics/GmxAccountModal/keys";
+
+import { isMultichainFundingItemLoading } from "./isMultichainFundingItemLoading";
 import { useGmxAccountFundingHistory } from "./useGmxAccountFundingHistory";
-import { isMultichainFundingItemLoading } from "../../components/Synthetics/GmxAccountModal/isMultichainFundingItemLoading";
-import { FUNDING_OPERATIONS_LABELS } from "../../components/Synthetics/GmxAccountModal/keys";
 
 const TOAST_ID = "multichain-funding-toast";
 

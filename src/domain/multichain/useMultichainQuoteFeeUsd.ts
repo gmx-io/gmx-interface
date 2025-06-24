@@ -1,17 +1,13 @@
 import { zeroAddress } from "viem";
 
 import type { SettlementChainId, SourceChainId } from "config/chains";
-import { getMappedTokenId } from "domain/multichain/config";
+import { getMappedTokenId } from "config/multichain";
 import { useTokenRecentPricesRequest } from "domain/synthetics/tokens";
 import { convertToUsd } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { getToken } from "sdk/configs/tokens";
-import type {
-  MessagingFeeStruct,
-  OFTFeeDetailStruct,
-  OFTLimitStruct,
-  OFTReceiptStruct,
-} from "typechain-types-stargate/interfaces/IStargate";
+
+import type { QuoteOft, QuoteSend } from "./types";
 
 export function useMultichainQuoteFeeUsd({
   quoteSend,
@@ -19,14 +15,8 @@ export function useMultichainQuoteFeeUsd({
   unwrappedTokenAddress,
   srcChainId,
 }: {
-  quoteSend: MessagingFeeStruct | undefined;
-  quoteOft:
-    | {
-        limit: OFTLimitStruct;
-        oftFeeDetails: OFTFeeDetailStruct[];
-        receipt: OFTReceiptStruct;
-      }
-    | undefined;
+  quoteSend: QuoteSend | undefined;
+  quoteOft: QuoteOft | undefined;
   unwrappedTokenAddress: string | undefined;
   srcChainId: SourceChainId | undefined;
 }): {

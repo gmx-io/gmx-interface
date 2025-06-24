@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
-import { MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "domain/multichain/config";
+import { MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "config/multichain";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 

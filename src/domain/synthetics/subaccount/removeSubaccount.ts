@@ -148,7 +148,7 @@ export async function removeSubaccountExpressTxn({
   srcChainId,
   signer,
   subaccount,
-  expressGlobalParams,
+  globalExpressParams,
   isSponsoredCallAvailable,
 }: {
   chainId: ContractsChainId;
@@ -157,7 +157,7 @@ export async function removeSubaccountExpressTxn({
   srcChainId: SourceChainId;
   signer: WalletSigner;
   subaccount: Subaccount;
-  expressGlobalParams: GlobalExpressParams;
+  globalExpressParams: GlobalExpressParams;
   isSponsoredCallAvailable: boolean;
 }) {
   if (!provider || !account) {
@@ -173,7 +173,7 @@ export async function removeSubaccountExpressTxn({
   const { rawBaseRelayParamsPayload, baseRelayFeeSwapParams } = getRawBaseRelayerParams({
     chainId,
     account,
-    expressGlobalParams,
+    globalExpressParams: globalExpressParams,
   });
 
   if (!rawBaseRelayParamsPayload || !baseRelayFeeSwapParams) {
@@ -214,7 +214,7 @@ export async function removeSubaccountExpressTxn({
     rawRelayParamsPayload: rawBaseRelayParamsPayload,
     expressTransactionBuilder: getTxnData,
     gasPaymentParams: baseRelayFeeSwapParams.gasPaymentParams,
-    noncesData: expressGlobalParams.noncesData,
+    noncesData: globalExpressParams.noncesData,
     subaccount: subaccount,
   });
 
@@ -228,7 +228,7 @@ export async function removeSubaccountExpressTxn({
     isGmxAccount: srcChainId !== undefined,
     relayerFeeAmount,
     additionalNetworkFee: 0n,
-    expressGlobalParams,
+    globalExpressParams: globalExpressParams,
   });
 
   if (!relayFeeParams || !relayParamsPayload) {
@@ -236,7 +236,7 @@ export async function removeSubaccountExpressTxn({
   }
 
   const userNonce =
-    expressGlobalParams.noncesData?.multichainSubaccountRelayRouter?.nonceForMainAccount ??
+    globalExpressParams.noncesData?.multichainSubaccountRelayRouter?.nonceForMainAccount ??
     (await getRelayRouterNonceForMultichain(provider, account, relayRouterAddress));
 
   const txnData = await buildAndSignRemoveSubaccountTxn({

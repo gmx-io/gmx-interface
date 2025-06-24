@@ -426,6 +426,8 @@ export const CONTRACTS = {
     NATIVE_TOKEN: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
     LayerZeroEndpoint: "0x6EDCE65403992e310A62460808c4b910D972f10f",
     ArbitrumNodeInterface: "0x00000000000000000000000000000000000000C8",
+    GelatoRelayAddress: "0xcd565435e0d2109feFde337a66491541Df0D1420",
+
     GLP: zeroAddress,
     GMX: zeroAddress,
     ES_GMX: zeroAddress,

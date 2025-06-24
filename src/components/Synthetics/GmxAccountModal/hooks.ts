@@ -4,7 +4,7 @@ import { Address } from "viem";
 import { useAccount } from "wagmi";
 
 import { ContractsChainId, SettlementChainId, SourceChainId, getChainName } from "config/chains";
-import { MULTI_CHAIN_TOKEN_MAPPING, isSettlementChain } from "domain/multichain/config";
+import { MULTI_CHAIN_TOKEN_MAPPING, isSettlementChain } from "config/multichain";
 import { fetchMultichainTokenBalances } from "domain/multichain/fetchMultichainTokenBalances";
 import type { TokenChainData } from "domain/multichain/types";
 import {

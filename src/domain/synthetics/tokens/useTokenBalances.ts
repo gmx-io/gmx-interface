@@ -4,11 +4,11 @@ import { useAccount } from "wagmi";
 import { getContract } from "config/contracts";
 import { multichainBalanceKey } from "config/dataStore";
 import { getSettlementChainTradableTokenAddresses } from "config/markets";
+import { isSettlementChain } from "config/multichain";
 import {
   useTokensBalancesUpdates,
   useUpdatedTokensBalances,
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
-import { isSettlementChain } from "domain/multichain/config";
 import { Token } from "domain/tokens";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 import { CacheKey, MulticallRequestConfig, MulticallResult, useMulticall } from "lib/multicall";

@@ -1,8 +1,8 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 import { ARBITRUM_SEPOLIA } from "config/chains";
+import { isSettlementChain } from "config/multichain";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
-import { isSettlementChain } from "domain/multichain/config";
 import { getExpressContractAddress } from "domain/synthetics/express";
 import { useChainId } from "lib/chains";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
