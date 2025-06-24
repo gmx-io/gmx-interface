@@ -167,7 +167,7 @@ export function mockSwapPathStats(params: {
 }): SwapPathStats {
   const marketAdjacencyGraph = buildMarketsAdjacencyGraph(params.marketsInfoData);
   const swapPaths = findSwapPathsBetweenTokens(marketAdjacencyGraph);
-  const swapPath = swapPaths[params.fromToken.address] ? .[params.toToken.address] ? .[0];
+  const swapPath = swapPaths[params.fromToken.address]?.[params.toToken.address]?.[0];
 
   if (!swapPath) {
     throw new Error(
