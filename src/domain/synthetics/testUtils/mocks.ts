@@ -1,15 +1,28 @@
 import { expect } from "vitest";
 
 import { AVALANCHE } from "config/chains";
-import { MarketInfo, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { convertToTokenAmount } from "domain/synthetics/tokens/utils";
+import { MarketInfo, MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { convertToTokenAmount, getTokenData } from "domain/synthetics/tokens/utils";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import type { PositionInfo } from "sdk/types/positions";
 import { bigMath } from "sdk/utils/bigmath";
 import { getLeverage } from "sdk/utils/positions";
 
 import { getPositionKey } from "../positions";
-import { ExternalSwapAggregator, ExternalSwapQuote, getMarkPrice } from "../trade";
+import { ExternalSwapAggregator, ExternalSwapQuote, FindSwapPath, getMarkPrice, SwapPathStats } from "../trade";
+import { MOCK_GAS_PRICE, mockMarketKeys, mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
+import { GlobalExpressParams } from "../express";
+import { expandDecimals } from "sdk/utils/numbers";
+import { findSwapPathsBetweenTokens } from "sdk/utils/swap/findSwapPathsBetweenTokens";
+import { TokenData } from "domain/tokens";
+import { buildMarketsAdjacencyGraph } from "sdk/utils/swap/buildMarketsAdjacencyGraph";
+import {
+  SwapPathStats,
+  SwapStep
+} from "../trade/types";
+import {
+  FindSwapPath
+} from "../trade";
 
 export function mockPositionInfo(
   {
@@ -144,4 +157,140 @@ export function expectEqualWithPrecision(
   const diffPrecision = (diff * (precision * 1000n)) / expected;
 
   expect(diffPrecision).toBeLessThanOrEqual(1n);
+}
+
+export function mockSwapPathStats(params: {
+  fromToken: TokenData;
+  toToken: TokenData;
+  marketsInfoData: MarketsInfoData;
+  usdOut ? : bigint;
+}): SwapPathStats {
+  const marketAdjacencyGraph = buildMarketsAdjacencyGraph(params.marketsInfoData);
+  const swapPaths = findSwapPathsBetweenTokens(marketAdjacencyGraph);
+  const swapPath = swapPaths[params.fromToken.address] ? .[params.toToken.address] ? .[0];
+
+  if (!swapPath) {
+    throw new Error(
+      `No swap path found between ${params.fromToken.symbol} and ${params.toToken.symbol}`
+    );
+  }
+
+  const swapSteps: SwapStep[] = [];
+  let currentTokenInAddress = params.fromToken.address;
+
+  for (const marketAddress of swapPath) {
+    const marketInfo = params.marketsInfoData.find(
+      (market) => market.marketTokenAddress === marketAddress
+    );
+
+    if (!marketInfo) {
+      throw new Error(`Market info not found for ${marketAddress}`);
+    }
+
+    const tokenOutAddress =
+      currentTokenInAddress === marketInfo.longTokenAddress ?
+      marketInfo.shortTokenAddress :
+      marketInfo.longTokenAddress;
+
+    swapSteps.push({
+      marketAddress,
+      tokenInAddress: currentTokenInAddress,
+      tokenOutAddress,
+    });
+
+    currentTokenInAddress = tokenOutAddress;
+  }
+
+  const amountOut =
+    params.usdOut && params.toToken.prices ?
+    convertToTokenAmount(
+      params.usdOut,
+      params.toToken.decimals,
+      params.toToken.prices.minPrice
+    ) :
+    0n;
+
+  return {
+    swapPath,
+    swapSteps,
+    amountOut,
+    targetMarketAddress: undefined,
+    totalSwapPriceImpactDeltaUsd: 0n,
+    totalSwapFeeUsd: 0n,
+    totalFeesDeltaUsd: 0n,
+    tokenInAddress: params.fromToken.address,
+    tokenOutAddress: params.toToken.address,
+    usdOut: params.usdOut || 0n,
+  };
+}
+
+export function mockFindSwapPath(
+  marketsInfoData: MarketsInfoData,
+  fromToken: TokenData,
+  toToken: TokenData
+): FindSwapPath {
+ (usdIn, {
+    order = ["liquidity", "length"]
+  } = {}) => {
+    try {
+      return mockSwapPathStats({
+        fromToken,
+        toToken,
+        marketsInfoData,
+        usdOut: usdIn,
+      });
+    } catch (e) {
+      return undefined;
+    }
+  };
+}
+
+export function mockGlobalExpressParams(
+  overrides: Partial<GlobalExpressParams> = {},
+  params: { 
+    gasPaymentTokenAllowance?: bigint
+    findSwapPathMock?: FindSwapPath
+   } = {}
+): GlobalExpressParams {
+  const tokensData = mockTokensData();
+  const marketKeys = mockMarketKeys();
+  const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys);
+  const gasPaymentToken = getTokenData(tokensData, "USDC")!;
+  const relayerFeeToken = getTokenData(tokensData, "AVAX")!;
+
+  const defaultValues: GlobalExpressParams = {
+    tokensData,
+    marketsInfoData,
+    subaccount: undefined,
+    tokenPermits: [],
+    gasPaymentTokenAddress: gasPaymentToken.address,
+    relayerFeeTokenAddress: relayerFeeToken.address,
+    gasPaymentToken,
+    relayerFeeToken,
+    findFeeSwapPath: params.findSwapPathMock ?? ,
+    gasPrice: MOCK_GAS_PRICE,
+    gasPaymentAllowanceData: {
+      [gasPaymentToken.address]: params.gasPaymentTokenAllowance ?? expandDecimals(1000, gasPaymentToken.decimals),
+    },
+    gasLimits: {
+      deposit: 500000n,
+      withdrawal: 500000n,
+      singleSwap: 600000n,
+      createOrder: 700000n,
+      updateOrder: 400000n,
+      cancelOrder: 300000n,
+      approve: 100000n,
+      sendToken: 120000n,
+    },
+    l1Reference: undefined,
+    bufferBps: 500, // 5%
+    isSponsoredCall: false,
+    noncesData: {
+      userNonce: 0n,
+      subaccountNonce: 0n,
+    },
+    ...overrides,
+  };
+
+  return defaultValues;
 }

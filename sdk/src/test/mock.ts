@@ -135,10 +135,10 @@ export function mockTokensData(overrides: { [symbol: string]: Partial<TokenData>
 
   return tokens;
 }
+
 /**
  * @param marketKeys - array of market keys in the following format: indexToken-longToken-shortToken
  */
-
 export function mockMarketsData(marketKeys: string[]): MarketsData {
   return marketKeys.reduce((acc, key) => {
     const [indexTokenAddress, longTokenAddress, shortTokenAddress] = key.split("-");
