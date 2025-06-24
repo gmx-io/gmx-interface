@@ -6135,7 +6135,7 @@ msgstr "{fromText}から{toExecutionText}へ"
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Create {0} Order"
-msgstr "{0}の注文を作成する<<<<<<< HEAD"
+msgstr "{0}の注文を作成する"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Limit Swap"
@@ -6416,7 +6416,7 @@ msgstr ""
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Active Orders"
-msgstr "アクティブな注文<<<<<<< HEAD"
+msgstr "アクティブな注文"
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "You have set a high acceptable price impact. The current price impact is {0}."
