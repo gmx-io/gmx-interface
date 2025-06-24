@@ -25,7 +25,7 @@ import { usePoolsIsMobilePage } from "./usePoolsIsMobilePage";
 export default function Pools() {
   const { timeRange, setTimeRange } = usePoolsTimeRange();
 
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
 
   const period = useMemo(() => convertPoolsTimeRangeToPeriod(timeRange), [timeRange]);
 
@@ -39,8 +39,8 @@ export default function Pools() {
     glvApyInfoData,
   } = useGmMarketsApy(chainId, { period: apyPeriod });
 
-  const { tokensData } = useTokensDataRequest(chainId);
-  const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const enabledGlv = isGlvEnabled(chainId);
   const account = useSelector(selectAccount);
 

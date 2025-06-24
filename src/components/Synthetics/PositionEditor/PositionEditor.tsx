@@ -34,15 +34,16 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
+import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
+import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 import { PositionEditorAdvancedRows } from "./PositionEditorAdvancedRows";
 import { OPERATION_LABELS, Operation } from "./types";
 import { usePositionEditorButtonState } from "./usePositionEditorButtonState";
-import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
-import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+
 import "./PositionEditor.scss";
-import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 
 export function PositionEditor() {
   const { chainId } = useChainId();
@@ -296,6 +297,7 @@ export function PositionEditor() {
               qa="amount-input"
             >
               {availableSwapTokens ? (
+                // TODO MLTCH: implement multichain
                 <TokenSelector
                   label={localizedOperationLabels[operation]}
                   chainId={chainId}

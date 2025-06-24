@@ -23,7 +23,7 @@ import {
 } from "domain/synthetics/markets";
 import { useKinkModelMarketsRates } from "domain/synthetics/markets/useKinkModelMarketsRates";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions";
-import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
+import { convertToUsd, getMidPrice, useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS } from "lib/legacy";
 import { expandDecimals, formatAmount, formatFactor, formatUsd, getPlusOrMinusSymbol, PRECISION } from "lib/numbers";
@@ -55,9 +55,10 @@ const CSV_EXCLUDED_FIELDS: (keyof MarketInfo)[] = [
 ];
 
 export function SyntheticsStats() {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
 
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { kinkMarketsBorrowingRatesData } = useKinkModelMarketsRates(chainId);
   const {
     positionsConstants: { minCollateralUsd, minPositionSizeUsd },

@@ -121,8 +121,14 @@ export type TokenPrices = {
 
 export type TokenData = Token & {
   prices: TokenPrices;
-  balance?: bigint;
   isGmxAccount?: boolean;
+  walletBalance?: bigint;
+  gmxAccountBalance?: bigint;
+  /**
+   * If isGmxAccount is true, then this is the gmx account balance
+   * If isGmxAccount is false, then this is the wallet balance
+   */
+  balance?: bigint;
   totalSupply?: bigint;
   hasPriceFeedProvider?: boolean;
 };

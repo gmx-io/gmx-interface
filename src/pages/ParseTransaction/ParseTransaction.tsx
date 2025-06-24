@@ -91,7 +91,7 @@ export function ParseTransactionPage() {
   const isDeposit = data ? data.some((event) => event.name.toLowerCase().includes("deposit")) : false;
 
   const { tokensData } = useTokensDataRequest(chainId);
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { glvData } = useGlvMarketsInfo(true, {
     marketsInfoData,
     tokensData,

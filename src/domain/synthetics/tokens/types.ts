@@ -31,3 +31,8 @@ export type TokenPricesData = {
 export type TokensAllowanceData = {
   [tokenAddress: string]: bigint;
 };
+
+export type BalancesDataResult = {
+  balancesData?: TokenBalancesData;
+  error?: Error;
+};

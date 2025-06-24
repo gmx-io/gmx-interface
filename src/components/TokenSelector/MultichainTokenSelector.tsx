@@ -32,7 +32,7 @@ type Props = {
   tokenAddress: string;
   isGmxAccount: boolean;
 
-  walletTokensData: TokensData | undefined;
+  tokensData: TokensData | undefined;
   selectedTokenLabel?: ReactNode | string;
 
   onSelectTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
@@ -40,7 +40,6 @@ type Props = {
 
   footerContent?: ReactNode;
   qa?: string;
-  gmxAccountTokensData: TokensData | undefined;
   multichainTokens: TokenChainData[] | undefined;
 
   onDepositTokenAddress: (tokenAddress: string, chainId: SourceChainId) => void;
@@ -49,8 +48,7 @@ type Props = {
 export function MultichainTokenSelector({
   chainId,
   srcChainId,
-  walletTokensData,
-  gmxAccountTokensData,
+  tokensData,
   selectedTokenLabel,
   extendedSortSequence,
   footerContent,
@@ -96,14 +94,14 @@ export function MultichainTokenSelector({
   // };
 
   const isGmxAccountEmpty = useMemo(() => {
-    if (!gmxAccountTokensData) return true;
+    if (!tokensData) return true;
 
-    const allEmpty = Object.values(gmxAccountTokensData).every(
-      (token) => token.balance === undefined || token.balance === 0n
+    const allEmpty = Object.values(tokensData).every(
+      (token) => token.gmxAccountBalance === undefined || token.gmxAccountBalance === 0n
     );
 
     return allEmpty;
-  }, [gmxAccountTokensData]);
+  }, [tokensData]);
 
   const [activeFilter, setActiveFilter] = useState<"pay" | "deposit">("pay");
 
@@ -195,8 +193,7 @@ export function MultichainTokenSelector({
             setSearchKeyword={setSearchKeyword}
             onSelectTokenAddress={onSelectTokenAddress}
             searchKeyword={searchKeyword}
-            walletTokensData={walletTokensData}
-            gmxAccountTokensData={gmxAccountTokensData}
+            tokensData={tokensData}
             extendedSortSequence={extendedSortSequence}
             chainId={chainId}
           />
@@ -240,8 +237,7 @@ function AvailableToTradeTokenList({
   isModalVisible,
   setSearchKeyword,
   searchKeyword,
-  walletTokensData,
-  gmxAccountTokensData,
+  tokensData,
   extendedSortSequence,
   onSelectTokenAddress,
 }: {
@@ -249,8 +245,7 @@ function AvailableToTradeTokenList({
   isModalVisible: boolean;
   setSearchKeyword: (searchKeyword: string) => void;
   searchKeyword: string;
-  walletTokensData: TokensData | undefined;
-  gmxAccountTokensData: TokensData | undefined;
+  tokensData: TokensData | undefined;
   extendedSortSequence?: string[];
   onSelectTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
 }) {
@@ -264,11 +259,10 @@ function AvailableToTradeTokenList({
     type DisplayToken = TokenData & { balance: bigint; balanceUsd: bigint; isGmxAccount: boolean };
 
     const concatenatedTokens: DisplayToken[] = [];
-    for (const token of Object.values(walletTokensData ?? (EMPTY_OBJECT as TokensData))) {
-      concatenatedTokens.push({ ...token, isGmxAccount: false, balance: token.balance ?? 0n, balanceUsd: 0n });
-    }
-    for (const token of Object.values(gmxAccountTokensData ?? (EMPTY_OBJECT as TokensData))) {
-      concatenatedTokens.push({ ...token, isGmxAccount: true, balance: token.balance ?? 0n, balanceUsd: 0n });
+
+    for (const token of Object.values(tokensData ?? (EMPTY_OBJECT as TokensData))) {
+      concatenatedTokens.push({ ...token, isGmxAccount: true, balance: token.gmxAccountBalance ?? 0n, balanceUsd: 0n });
+      concatenatedTokens.push({ ...token, isGmxAccount: false, balance: token.walletBalance ?? 0n, balanceUsd: 0n });
     }
 
     let filteredTokens: DisplayToken[];
@@ -293,9 +287,7 @@ function AvailableToTradeTokenList({
     const tokensWithoutBalance: DisplayToken[] = [];
 
     for (const token of filteredTokens) {
-      const balance = token.isGmxAccount
-        ? gmxAccountTokensData?.[token.address]?.balance
-        : walletTokensData?.[token.address]?.balance;
+      const balance = token.isGmxAccount ? token.gmxAccountBalance : token.walletBalance;
 
       if (balance !== undefined && balance > 0n) {
         const balanceUsd = convertToUsd(balance, token.decimals, token.prices.maxPrice) ?? 0n;
@@ -328,7 +320,7 @@ function AvailableToTradeTokenList({
     });
 
     return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
-  }, [walletTokensData, gmxAccountTokensData, searchKeyword, extendedSortSequence]);
+  }, [searchKeyword, tokensData, extendedSortSequence]);
 
   return (
     <div>

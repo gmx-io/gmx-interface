@@ -19,10 +19,7 @@ type Props = {
 export function GasPaymentTokenSelector({ currentTokenAddress, onSelectToken }: Props) {
   const { chainId, srcChainId } = useChainId();
   // TODO MLTCH: pick from synthetic state
-  const { tokensData: settlementChainTokensData } = useTokensDataRequest(chainId);
-  const { tokensData: gmxAccountTokensData } = useTokensDataRequest(chainId, { isGmxAccount: true });
-
-  const tokensData = srcChainId ? gmxAccountTokensData : settlementChainTokensData;
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
 
   const gasPaymentTokens = getGasPaymentTokens(chainId);
 

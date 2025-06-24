@@ -46,6 +46,7 @@ import {
 import {
   TokenAllowanceResult,
   TokensData,
+  TokensDataResult,
   useTokensAllowanceData,
   useTokensDataRequest,
 } from "domain/synthetics/tokens";
@@ -89,6 +90,7 @@ export type SyntheticsState = {
     markets: MarketsResult;
     marketsInfo: MarketsInfoResult;
     positionsInfo: PositionsInfoResult;
+    tokensDataResult: TokensDataResult;
     account: string | undefined;
     signer: WalletSigner | undefined;
     ordersInfo: AggregatedOrdersDataResult;
@@ -174,18 +176,15 @@ export function SyntheticsStateContextProvider({
   const chainId = isLeaderboardPage ? leaderboard.chainId : overrideChainId ?? selectedChainId;
 
   const markets = useMarkets(chainId);
-  const { tokensData: settlementChainTokensData } = useTokensDataRequest(chainId);
-  const { tokensData: gmxAccountTokensData } = useTokensDataRequest(chainId, { isGmxAccount: true });
-
-  const tokensData = srcChainId ? gmxAccountTokensData : settlementChainTokensData;
+  const tokensDataResult = useTokensDataRequest(chainId, srcChainId);
 
   const positionsResult = usePositions(chainId, {
     account,
     marketsData: markets.marketsData,
-    tokensData,
+    tokensData: tokensDataResult.tokensData,
   });
 
-  const marketsInfo = useMarketsInfoRequest(chainId, srcChainId);
+  const marketsInfo = useMarketsInfoRequest(chainId, { tokensData: tokensDataResult.tokensData });
 
   const { isFirstOrder } = useIsFirstOrder(chainId, { account });
 
@@ -193,7 +192,7 @@ export function SyntheticsStateContextProvider({
     isGlvEnabled(chainId) && (pageType === "pools" || pageType === "buy" || pageType === "stake");
   const glvInfo = useGlvMarketsInfo(shouldFetchGlvMarkets, {
     marketsInfoData: marketsInfo.marketsInfoData,
-    tokensData: marketsInfo.tokensData,
+    tokensData: tokensDataResult.tokensData,
     chainId: chainId,
     account: account,
   });
@@ -234,19 +233,19 @@ export function SyntheticsStateContextProvider({
     positionsError: positionsResult.error,
     marketsData: markets.marketsData,
     skipLocalReferralCode,
-    tokensData,
+    tokensData: tokensDataResult.tokensData,
   });
 
   const ordersInfo = useOrdersInfoRequest(chainId, {
     account,
     marketsInfoData: marketsInfo.marketsInfoData,
-    tokensData: marketsInfo.tokensData,
+    tokensData: tokensDataResult.tokensData,
   });
 
   const tradeboxState = useTradeboxState(chainId, isTradePage, {
     marketsInfoData: marketsInfo.marketsInfoData,
     marketsData: markets.marketsData,
-    tokensData: marketsInfo.tokensData,
+    tokensData: tokensDataResult.tokensData,
     positionsInfoData,
     ordersInfoData: ordersInfo.ordersInfoData,
     srcChainId,
@@ -291,6 +290,7 @@ export function SyntheticsStateContextProvider({
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
   useCollectSyntheticsMetrics({
+    tokensDataResult,
     marketsInfo,
     isPositionsInfoLoading: isLoading,
     positionsInfoData,
@@ -302,7 +302,7 @@ export function SyntheticsStateContextProvider({
   const externalSwapState = useInitExternalSwapState();
   const tokenPermitsState = useTokenPermitsContext();
   const sponsoredCallBalanceData = useIsSponsoredCallBalanceAvailable(chainId, {
-    tokensData: marketsInfo.tokensData,
+    tokensData: tokensDataResult.tokensData,
   });
 
   const gasPaymentTokenAllowance = useTokensAllowanceData(chainId, {
@@ -329,6 +329,7 @@ export function SyntheticsStateContextProvider({
           isLoading,
           positionsInfoData,
         },
+        tokensDataResult,
         uiFeeFactor,
         userReferralInfo,
         depositMarketTokensData,
@@ -387,6 +388,7 @@ export function SyntheticsStateContextProvider({
     glvInfo,
     isLoading,
     positionsInfoData,
+    tokensDataResult,
     uiFeeFactor,
     userReferralInfo,
     depositMarketTokensData,
@@ -403,6 +405,7 @@ export function SyntheticsStateContextProvider({
     isLargeAccount,
     isFirstOrder,
     blockTimestampData,
+    oracleSettings,
     accruedPositionPriceImpactFees,
     claimablePositionPriceImpactFees,
     leaderboard,
@@ -420,7 +423,6 @@ export function SyntheticsStateContextProvider({
     gasPaymentTokenAllowance,
     l1ExpressOrderGasReference,
     expressNoncesData,
-    oracleSettings,
   ]);
 
   latestStateRef.current = state;

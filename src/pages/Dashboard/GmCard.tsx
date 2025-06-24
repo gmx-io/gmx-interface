@@ -10,7 +10,7 @@ import {
   useMarketTokensData,
   useMarketsInfoRequest,
 } from "domain/synthetics/markets";
-import { convertToUsd } from "domain/synthetics/tokens";
+import { convertToUsd, useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { BN_ZERO, formatAmountHuman } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
@@ -25,7 +25,8 @@ export function GmCard() {
   const { chainId } = useChainId();
   const currentIcons = getIcons(chainId)!;
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true, withGlv: false });
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
 
   const totalGMSupply = useMemo(
     () =>

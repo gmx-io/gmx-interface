@@ -115,6 +115,7 @@ const useIsFirstWithdrawal = () => {
   return isFirstWithdrawal;
 };
 
+// TODO MLTCH: rename to WithdrawalView
 export const WithdrawView = () => {
   const { chainId } = useChainId();
   const [withdrawalViewChain, setWithdrawalViewChain] = useGmxAccountWithdrawViewChain();

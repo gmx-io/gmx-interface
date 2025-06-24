@@ -4,12 +4,12 @@ import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL, FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
-import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { MarketConfig, MarketValues } from "sdk/modules/markets/types";
+import type { MarketConfig, MarketValues } from "sdk/modules/markets/types";
 import type { MarketInfo, MarketsData, MarketsInfoData } from "sdk/types/markets";
 
-import { TokensData, TokensDataResult, useTokensDataRequest } from "../../tokens";
+import type { TokensData } from "../../tokens";
 import { useClaimableFundingDataRequest } from "../useClaimableFundingDataRequest";
 import { useMarkets } from "../useMarkets";
 import { getMarketDivisor } from "../utils";
@@ -19,31 +19,14 @@ import { useFastMarketsInfoRequest } from "./useFastMarketsInfoRequest";
 
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
-  tokensData?: TokensData;
-  walletTokensData?: TokensData;
-  gmxAccountTokensData?: TokensData;
-  pricesUpdatedAt?: number;
-  isBalancesLoaded?: boolean;
   error?: Error;
 };
 
-export function useMarketsInfoRequest(chainId: ContractsChainId, srcChainId?: SourceChainId): MarketsInfoResult {
+export function useMarketsInfoRequest(
+  chainId: ContractsChainId,
+  { tokensData }: { tokensData: TokensData | undefined }
+): MarketsInfoResult {
   const { marketsData, marketsAddresses } = useMarkets(chainId);
-
-  const settlementChainTokensDataResult = useTokensDataRequest(chainId);
-  const gmxAccountTokensDataResult = useTokensDataRequest(chainId, { isGmxAccount: true });
-
-  const walletTokensDataResult: TokensDataResult | undefined =
-    srcChainId === undefined ? settlementChainTokensDataResult : undefined;
-  const walletTokensData = walletTokensDataResult?.tokensData;
-  const gmxAccountTokensData = gmxAccountTokensDataResult?.tokensData;
-
-  const {
-    tokensData,
-    pricesUpdatedAt,
-    error: tokensDataError,
-    isBalancesLoaded,
-  } = srcChainId ? gmxAccountTokensDataResult : settlementChainTokensDataResult;
 
   const { claimableFundingData } = useClaimableFundingDataRequest(chainId);
   const { fastMarketInfoData } = useFastMarketsInfoRequest(chainId);
@@ -120,16 +103,11 @@ export function useMarketsInfoRequest(chainId: ContractsChainId, srcChainId?: So
     claimableFundingData,
   ]);
 
-  const error = tokensDataError || marketsValues.error || marketsConfigs.error;
+  const error = marketsValues.error || marketsConfigs.error;
 
   return {
     marketsInfoData: isDependenciesLoading ? undefined : mergedData,
-    tokensData,
-    walletTokensData,
-    gmxAccountTokensData,
-    pricesUpdatedAt,
     error,
-    isBalancesLoaded,
   };
 }
 

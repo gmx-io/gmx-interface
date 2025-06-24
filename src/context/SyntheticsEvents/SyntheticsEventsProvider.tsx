@@ -95,7 +95,7 @@ export function useSyntheticsEvents(): SyntheticsEventsContextType {
 }
 
 export function SyntheticsEventsProvider({ children }: { children: ReactNode }) {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { account: currentAccount } = useWallet();
   const provider = getProvider(undefined, chainId);
   const { wsProvider } = useWebsocketProvider();
@@ -103,8 +103,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   const { resetTokenPermits } = useTokenPermitsContext();
   const { refreshSubaccountData, resetSubaccountApproval } = useSubaccountContext();
-  const { tokensData } = useTokensDataRequest(chainId, { isGmxAccount: true });
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
 
   const { glvData } = useGlvMarketsInfo(isGlvEnabled(chainId), {
     marketsInfoData,

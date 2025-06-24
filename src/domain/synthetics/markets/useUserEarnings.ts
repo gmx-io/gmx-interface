@@ -15,6 +15,7 @@ import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useGmMarketsApy } from "./useGmMarketsApy";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
 import { useMarketTokensData } from "./useMarketTokensData";
+import { useTokensDataRequest } from "../tokens";
 
 type RawBalanceChange = {
   cumulativeIncome: string;
@@ -89,7 +90,9 @@ function createQuery(marketAddress: string) {
 }
 
 export const useUserEarnings = (chainId: ContractsChainId) => {
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  // TODO MLTCH add srcChainId
+  const { tokensData } = useTokensDataRequest(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
 
   const subgraphUrl = getSubgraphUrl(chainId, "syntheticsStats");

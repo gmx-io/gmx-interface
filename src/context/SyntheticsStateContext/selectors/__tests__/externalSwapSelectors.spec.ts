@@ -68,7 +68,6 @@ describe("externalSwapSelectors", () => {
         chainId: AVALANCHE,
         marketsInfo: {
           marketsInfoData,
-          tokensData,
         },
         positionsInfo: {
           positionsInfoData: {},

@@ -66,6 +66,7 @@ export type MultichainEventsState = {
 
 const DEFAULT_MULTICHAIN_FUNDING_STATE: PendingMultichainFunding = {
   deposits: {
+    // TODO MLTCH: make object
     submitted: [],
     sent: {},
     received: {},

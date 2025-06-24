@@ -73,34 +73,30 @@ export function useAvailableToTradeAssetSettlementChain(): {
   isGmxAccountLoading: boolean;
   isWalletLoading: boolean;
 } {
-  const { chainId } = useChainId();
-  const { tokensData: gmxAccountTokensData, isBalancesLoaded: isGmxAccountBalancesLoaded } = useTokensDataRequest(
-    chainId,
-    { isGmxAccount: true }
-  );
-  const { tokensData, isBalancesLoaded } = useTokensDataRequest(chainId);
+  const { chainId, srcChainId } = useChainId();
+  const { tokensData, isGmxAccountBalancesLoaded, isWalletBalancesLoaded } = useTokensDataRequest(chainId, srcChainId);
 
   let gmxAccountUsd = 0n;
   let isGmxAccountUsdEmpty = true;
 
-  for (const token of Object.values(gmxAccountTokensData || {})) {
-    if (token.balance === undefined) {
+  for (const token of Object.values(tokensData || {})) {
+    if (token.gmxAccountBalance === undefined) {
       continue;
     }
     isGmxAccountUsdEmpty = false;
-    gmxAccountUsd += convertToUsd(token.balance, token.decimals, getMidPrice(token.prices))!;
+    gmxAccountUsd += convertToUsd(token.gmxAccountBalance, token.decimals, getMidPrice(token.prices))!;
   }
 
   let walletUsd = 0n;
   let isWalletUsdEmpty = true;
 
   for (const tokenData of Object.values(tokensData || {})) {
-    if (tokenData.balance === undefined) {
+    if (tokenData.walletBalance === undefined) {
       continue;
     }
 
     isWalletUsdEmpty = false;
-    walletUsd += convertToUsd(tokenData.balance, tokenData.decimals, getMidPrice(tokenData.prices))!;
+    walletUsd += convertToUsd(tokenData.walletBalance, tokenData.decimals, getMidPrice(tokenData.prices))!;
   }
 
   const totalUsd = gmxAccountUsd + walletUsd;
@@ -111,7 +107,7 @@ export function useAvailableToTradeAssetSettlementChain(): {
     walletUsd: isWalletUsdEmpty ? undefined : walletUsd,
 
     isGmxAccountLoading: !isGmxAccountBalancesLoaded,
-    isWalletLoading: !isBalancesLoaded,
+    isWalletLoading: !isWalletBalancesLoaded,
   };
 }
 
@@ -130,8 +126,8 @@ export function getTotalUsdFromTokensData(tokensData: TokensData) {
 export function useAvailableToTradeAssetMultichain(): {
   gmxAccountUsd: bigint | undefined;
 } {
-  const { chainId } = useChainId();
-  const { tokensData, isBalancesLoaded } = useTokensDataRequest(chainId, { isGmxAccount: true });
+  const { chainId, srcChainId } = useChainId();
+  const { tokensData, isBalancesLoaded } = useTokensDataRequest(chainId, srcChainId);
 
   if (!tokensData || !isBalancesLoaded) {
     return { gmxAccountUsd: undefined };
@@ -264,9 +260,10 @@ export function useMultichainTokensRequest(): {
   };
 }
 
+// TODO MLTCH: possibly replace with useSelector(selectTokensData)
 export function useGmxAccountTokensDataObject(): TokensData {
-  const { chainId } = useChainId();
-  const { tokensData = EMPTY_OBJECT as TokensData } = useTokensDataRequest(chainId, { isGmxAccount: true });
+  const { chainId, srcChainId } = useChainId();
+  const { tokensData = EMPTY_OBJECT as TokensData } = useTokensDataRequest(chainId, srcChainId);
 
   return tokensData;
 }

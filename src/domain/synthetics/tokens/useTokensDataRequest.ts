@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 
-import { ContractsChainId } from "sdk/configs/chains";
+import { useGmxAccountTokenBalances } from "domain/multichain/useGmxAccountTokenBalances";
+import { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokensMap, getV2Tokens } from "sdk/configs/tokens";
 
 import { TokensData } from "./types";
@@ -9,27 +10,36 @@ import { useTokenBalances } from "./useTokenBalances";
 import { useTokenRecentPricesRequest } from "./useTokenRecentPricesData";
 
 export type TokensDataResult = {
-  tokensData?: TokensData;
-  pricesUpdatedAt?: number;
-  isBalancesLoaded?: boolean;
-  error?: Error;
+  tokensData: TokensData | undefined;
+  pricesUpdatedAt: number | undefined;
+  isGmxAccountBalancesLoaded: boolean;
+  isWalletBalancesLoaded: boolean;
+  /**
+   * If srcChainId is undefined, then this is the wallet balances loaded
+   * If srcChainId is defined, then this is the gmx account balances loaded
+   */
+  isBalancesLoaded: boolean;
+  error: Error | undefined;
 };
 
-export function useTokensDataRequest(
-  chainId: ContractsChainId,
-  { isGmxAccount }: { isGmxAccount?: boolean } = {}
-): TokensDataResult {
+export function useTokensDataRequest(chainId: ContractsChainId, srcChainId?: SourceChainId): TokensDataResult {
   const tokenConfigs = getTokensMap(chainId);
-  const { balancesData, error: balancesError } = useTokenBalances(chainId, { isGmxAccount });
+  const { balancesData: walletBalancesData, error: walletBalancesError } = useTokenBalances(chainId);
+  const { balancesData: gmxAccountBalancesData, error: gmxAccountBalancesError } = useGmxAccountTokenBalances(chainId);
   const { pricesData, updatedAt: pricesUpdatedAt, error: pricesError } = useTokenRecentPricesRequest(chainId);
   const { data: onchainConfigsData, error: onchainConfigsError } = useOnchainTokenConfigs(chainId);
 
-  const error = balancesError || pricesError || onchainConfigsError;
+  const error = walletBalancesError || pricesError || onchainConfigsError || gmxAccountBalancesError;
 
-  return useMemo(() => {
+  return useMemo((): TokensDataResult => {
     if (error) {
       return {
         error,
+        tokensData: undefined,
+        pricesUpdatedAt: undefined,
+        isGmxAccountBalancesLoaded: false,
+        isWalletBalancesLoaded: false,
+        isBalancesLoaded: false,
       };
     }
 
@@ -39,15 +49,23 @@ export function useTokensDataRequest(
       return {
         tokensData: undefined,
         pricesUpdatedAt: undefined,
+        isGmxAccountBalancesLoaded: false,
+        isWalletBalancesLoaded: false,
+        isBalancesLoaded: false,
+        error: undefined,
       };
     }
 
-    const isBalancesLoaded = Boolean(balancesData);
+    const isWalletBalancesLoaded = Boolean(walletBalancesData);
+    const isGmxAccountBalancesLoaded = Boolean(gmxAccountBalancesData);
+
+    const isBalancesLoaded = srcChainId !== undefined ? isGmxAccountBalancesLoaded : isWalletBalancesLoaded;
 
     return {
       tokensData: tokenAddresses.reduce((acc: TokensData, tokenAddress) => {
         const prices = pricesData[tokenAddress];
-        const balance = balancesData?.[tokenAddress];
+        const walletBalance = walletBalancesData?.[tokenAddress];
+        const gmxAccountBalance = gmxAccountBalancesData?.[tokenAddress];
         const tokenConfig = tokenConfigs[tokenAddress];
         const onchainConfig = onchainConfigsData?.[tokenAddress];
 
@@ -59,14 +77,29 @@ export function useTokensDataRequest(
           ...tokenConfig,
           ...onchainConfig,
           prices,
-          balance,
-          isGmxAccount: Boolean(isGmxAccount),
+          walletBalance,
+          gmxAccountBalance,
+          balance: srcChainId !== undefined ? gmxAccountBalance : walletBalance,
+          isGmxAccount: srcChainId !== undefined,
         };
 
         return acc;
       }, {} as TokensData),
       pricesUpdatedAt,
       isBalancesLoaded,
+      isGmxAccountBalancesLoaded,
+      isWalletBalancesLoaded,
+      error: undefined,
     };
-  }, [error, chainId, pricesData, balancesData, pricesUpdatedAt, tokenConfigs, onchainConfigsData, isGmxAccount]);
+  }, [
+    walletBalancesData,
+    chainId,
+    error,
+    gmxAccountBalancesData,
+    onchainConfigsData,
+    pricesData,
+    pricesUpdatedAt,
+    srcChainId,
+    tokenConfigs,
+  ]);
 }

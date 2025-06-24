@@ -235,13 +235,15 @@ function useIncentivesBonusApr(
   return marketAndGlvTokensAPRData;
 }
 
+// TODO MLTCH add srcChainId
 export function useGmMarketsApy(
   chainId: ContractsChainId,
   { period }: { period: ApyPeriod } | undefined = { period: "total" }
 ): GmGlvTokensAPRResult {
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false, withGlv: false });
+  // TODO MLTCH add srcChainId
   const { tokensData } = useTokensDataRequest(chainId);
-  const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId);
+  const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const enabledGlv = isGlvEnabled(chainId);
   const account = useSelector(selectAccount);
 

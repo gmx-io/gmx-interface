@@ -59,7 +59,6 @@ import {
   selectChainId,
   selectGasLimits,
   selectGasPrice,
-  selectGmxAccountTokensData,
   selectOrdersInfoData,
   selectPositionsInfoData,
   selectTokensData,
@@ -1186,15 +1185,31 @@ export const selectTradeboxToToken = createSelector((q) => {
   return q((state) => getByKey(selectTokensData(state), toToken));
 });
 
-export const selectTradeboxFromToken = createSelector((q) => {
+export const selectTradeboxFromToken = createSelector((q): TokenData | undefined => {
   const fromToken = q(selectTradeboxFromTokenAddress);
   const isFromTokenGmxAccount = q(selectTradeboxIsFromTokenGmxAccount);
 
-  if (isFromTokenGmxAccount) {
-    return q((state) => getByKey(selectGmxAccountTokensData(state), fromToken));
+  const token = q((state) => getByKey(selectTokensData(state), fromToken));
+
+  if (token === undefined) {
+    return undefined;
   }
 
-  return q((state) => getByKey(selectTokensData(state), fromToken));
+  if (isFromTokenGmxAccount && !token.isGmxAccount) {
+    return {
+      ...token,
+      isGmxAccount: true,
+      balance: token.gmxAccountBalance,
+    };
+  } else if (!isFromTokenGmxAccount && token.isGmxAccount) {
+    return {
+      ...token,
+      isGmxAccount: false,
+      balance: token.walletBalance,
+    };
+  }
+
+  return token;
 });
 
 export const selectTradeboxSwapToTokenAddress = createSelector((q) => {
