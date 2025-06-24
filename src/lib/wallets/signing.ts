@@ -1,4 +1,4 @@
-import { Signer } from "ethers";
+import { Signer, TypedDataEncoder } from "ethers";
 
 export type SignatureDomain = {
   name: string;
@@ -38,9 +38,16 @@ export async function signTypedData({ signer, domain, types, typedData }: SignTy
 
   const primaryType = Object.keys(types).filter((t) => t !== "EIP712Domain")[0];
 
+  const digest = TypedDataEncoder.hash(domain, types, typedData);
+  const minifiedTypes = {
+    Minified: [{ name: "digest", type: "bytes32" }],
+  };
+
   if (signer.signTypedData) {
     try {
-      return await signer.signTypedData(domain, types, typedData);
+      return await signer.signTypedData(domain, minifiedTypes, {
+        digest,
+      });
     } catch (e) {
       if (e.message.includes("requires a provider")) {
         // ignore and try to send request directly to provider
@@ -65,7 +72,9 @@ export async function signTypedData({ signer, domain, types, typedData }: SignTy
     },
     primaryType,
     domain,
-    message: typedData,
+    message: {
+      digest,
+    },
   };
 
   const signature = await (provider as any).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]);
