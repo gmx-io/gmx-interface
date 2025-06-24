@@ -22,11 +22,7 @@ export function GasPaymentTokenSelector({ currentTokenAddress, onSelectToken }: 
   const { tokensData: settlementChainTokensData } = useTokensDataRequest(chainId);
   const { tokensData: gmxAccountTokensData } = useTokensDataRequest(chainId, { isGmxAccount: true });
 
-  let tokensData = settlementChainTokensData;
-
-  if (srcChainId) {
-    tokensData = gmxAccountTokensData;
-  }
+  const tokensData = srcChainId ? gmxAccountTokensData : settlementChainTokensData;
 
   const gasPaymentTokens = getGasPaymentTokens(chainId);
 

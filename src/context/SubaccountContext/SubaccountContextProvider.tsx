@@ -3,16 +3,10 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useR
 import { toast } from "react-toastify";
 
 import { getSubaccountApprovalKey, getSubaccountConfigKey } from "config/localStorage";
+import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { selectIsSponsoredCallAvailable } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/utils";
-import {
-  estimateArbitraryRelayFee,
-  PreparedGetTxnData,
-  selectArbitraryRelayParamsAndPayload,
-  selectRawBasePreparedRelayParamsPayload,
-} from "domain/multichain/arbitraryRelayParams";
-import { getExpressContractAddress } from "domain/synthetics/express";
-import { buildAndSignRemoveSubaccountTxn, removeSubaccountWalletTxn } from "domain/synthetics/subaccount";
+import { removeSubaccountExpressTxn, removeSubaccountWalletTxn } from "domain/synthetics/subaccount";
 import { generateSubaccount } from "domain/synthetics/subaccount/generateSubaccount";
 import { SignedSubbacountApproval, Subaccount, SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
 import { useSubaccountOnchainData } from "domain/synthetics/subaccount/useSubaccountOnchainData";
@@ -28,7 +22,6 @@ import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { metrics } from "lib/metrics";
 import { useJsonRpcProvider } from "lib/rpc";
-import { sendExpressTransaction } from "lib/transactions";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 
@@ -250,8 +243,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
   const calcSelector = useCalcSelector();
 
-  const tryDisableSubaccount = useCallback(async () => {
-    if (!signer || !subaccount?.address) {
+  const tryDisableSubaccount = useCallback(async (): Promise<boolean> => {
+    if (!signer || !subaccount?.address || !account) {
       return false;
     }
 
@@ -267,89 +260,24 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     let removeSubaccount: () => Promise<void>;
 
     if (srcChainId) {
-      removeSubaccount = async () => {
-        if (!provider || !account) {
-          throw new Error("No provider or account");
-        }
+      const expressGlobalParams = calcSelector(selectExpressGlobalParams);
+      const isSponsoredCallAvailable = calcSelector(selectIsSponsoredCallAvailable);
 
-        const relayRouterAddress = getExpressContractAddress(chainId, {
-          isSubaccount: true,
-          isMultichain: srcChainId !== undefined,
-          scope: "subaccount",
-        });
+      if (!provider || !expressGlobalParams) {
+        return false;
+      }
 
-        const { rawBaseRelayParamsPayload, baseRelayFeeSwapParams } = calcSelector(
-          selectRawBasePreparedRelayParamsPayload
-        );
-
-        if (!rawBaseRelayParamsPayload || !baseRelayFeeSwapParams) {
-          throw new Error("No base express params");
-        }
-
-        const getTxnData: PreparedGetTxnData = ({
-          emptySignature,
-          relayParamsPayload,
-          relayerFeeAmount,
-          relayerFeeTokenAddress,
-        }) =>
-          buildAndSignRemoveSubaccountTxn({
-            chainId,
-            signer,
-            subaccount,
-            relayParamsPayload,
-            relayerFeeAmount,
-            relayerFeeTokenAddress,
-            emptySignature,
-          });
-
-        const relayerFeeAmount = await estimateArbitraryRelayFee({
+      removeSubaccount = () =>
+        removeSubaccountExpressTxn({
           chainId,
-          relayRouterAddress,
           provider,
           account,
-          rawRelayParamsPayload: rawBaseRelayParamsPayload,
-          relayerFeeTokenAddress: baseRelayFeeSwapParams.gasPaymentParams.relayerFeeTokenAddress,
-          relayerFeeAmount: baseRelayFeeSwapParams.gasPaymentParams.totalRelayerFeeTokenAmount,
-          getTxnData,
+          srcChainId,
+          signer,
+          subaccount,
+          expressGlobalParams,
+          isSponsoredCallAvailable,
         });
-
-        if (relayerFeeAmount === undefined) {
-          throw new Error("No relay fee amount");
-        }
-
-        const getRelayParamsAndPayload = calcSelector(selectArbitraryRelayParamsAndPayload);
-
-        if (!getRelayParamsAndPayload) {
-          throw new Error("No get relay params and payload");
-        }
-
-        const { fetchRelayParamsPayload, relayFeeParams } = getRelayParamsAndPayload({
-          relayerFeeAmount,
-        });
-
-        if (!relayFeeParams || !fetchRelayParamsPayload) {
-          throw new Error("No get relayFeeParams or fetchRelayParamsPayload");
-        }
-
-        const txnData = await getTxnData({
-          emptySignature: false,
-          relayerFeeAmount: relayFeeParams.gasPaymentParams.relayerFeeAmount,
-          relayerFeeTokenAddress: relayFeeParams.gasPaymentParams.relayerFeeTokenAddress,
-          relayParamsPayload: await fetchRelayParamsPayload(provider, relayRouterAddress),
-        });
-
-        if (!txnData) {
-          throw new Error("No txnData");
-        }
-
-        const isSponsoredCallAvailable = calcSelector(selectIsSponsoredCallAvailable);
-
-        await sendExpressTransaction({
-          chainId,
-          isSponsoredCall: isSponsoredCallAvailable,
-          txnData,
-        });
-      };
     } else {
       removeSubaccount = () => removeSubaccountWalletTxn(chainId, signer, subaccount.address);
     }
@@ -373,11 +301,11 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
   }, [
     signer,
     subaccount,
+    account,
     srcChainId,
     calcSelector,
-    account,
-    chainId,
     provider,
+    chainId,
     resetStoredApproval,
     resetStoredConfig,
     refreshSubaccountData,
@@ -599,7 +527,6 @@ function useStoredSubaccountData(chainId: number, account: string | undefined) {
             maxAllowedCount: BigInt(parsed.maxAllowedCount),
             expiresAt: BigInt(parsed.expiresAt),
             deadline: BigInt(parsed.deadline),
-            // TODO: what nonce is this?
             nonce: BigInt(parsed.nonce),
           };
         } catch (e) {

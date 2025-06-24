@@ -168,7 +168,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
     };
   }, [account, chainId, claimablePositionPriceImpactFees, isSubmitting, provider, signer, srcChainId]);
 
-  const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload("claimPositionPriceImpactFees", {
+  const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload({
     expressTransactionBuilder,
   });
   const noncesData = useSelector(selectExpressNoncesData);

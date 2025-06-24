@@ -3,12 +3,8 @@ import useSWRSubscription, { SWRSubscription } from "swr/subscription";
 import { Address } from "viem";
 import { useAccount } from "wagmi";
 
-import { ContractsChainId, SourceChainId, getChainName } from "config/chains";
-import {
-  MULTI_CHAIN_SUPPORTED_TOKEN_MAP,
-  MULTI_CHAIN_TOKEN_MAPPING,
-  isSettlementChain,
-} from "domain/multichain/config";
+import { ContractsChainId, SettlementChainId, SourceChainId, getChainName } from "config/chains";
+import { MULTI_CHAIN_TOKEN_MAPPING, isSettlementChain } from "domain/multichain/config";
 import { fetchMultichainTokenBalances } from "domain/multichain/fetchMultichainTokenBalances";
 import type { TokenChainData } from "domain/multichain/types";
 import {
@@ -153,7 +149,7 @@ const subscribeMultichainTokenBalances: SWRSubscription<
     isLoading: boolean;
   }
 > = (key, options) => {
-  const [, settlementChainId, account] = key;
+  const [, settlementChainId, account] = key as [string, SettlementChainId, string];
 
   let tokenBalances: Record<number, Record<string, bigint>> | undefined;
   let isLoaded = false;
@@ -278,7 +274,7 @@ export function useGmxAccountTokensDataObject(): TokensData {
 export function useGmxAccountWithdrawNetworks() {
   const { chainId } = useChainId();
 
-  const sourceChains = Object.keys(MULTI_CHAIN_SUPPORTED_TOKEN_MAP[chainId] || {}).map(Number);
+  const sourceChains = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId] || {}).map(Number);
 
   const networks = useMemo(() => {
     return sourceChains.map((sourceChainId) => {

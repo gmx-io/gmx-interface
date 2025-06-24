@@ -11,7 +11,7 @@ import { DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/twap";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
-import { MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING } from "domain/multichain/config";
+import { MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "domain/multichain/config";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
 import { getIsSubaccountActive } from "domain/synthetics/subaccount";
 import { useChainId } from "lib/chains";
@@ -350,7 +350,7 @@ export function SettingsModal({
                     elevated
                     value={settlementChainId}
                     onChange={setSettlementChainId}
-                    options={MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[srcChainId]}
+                    options={MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[srcChainId]}
                     item={({ option }) => (
                       <div className="flex items-center gap-8">
                         <img src={CHAIN_ID_TO_NETWORK_ICON[option]} alt={getChainName(option)} className="size-16" />

@@ -2,12 +2,12 @@ import { Trans } from "@lingui/macro";
 import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
-import { MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING } from "domain/multichain/config";
+import { MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "domain/multichain/config";
 import { switchNetwork } from "lib/wallets";
 
 import Button from "components/Button/Button";
 
-import { needSwitchToSettlementChain } from "./needSwitchToSettlementChain";
+import { needSwitchToSettlementChain } from "./utils";
 
 export function SwitchToSettlementChainButtons({ children }: { children: React.ReactNode }) {
   const { chainId: walletChainId, isConnected } = useAccount();
@@ -18,7 +18,7 @@ export function SwitchToSettlementChainButtons({ children }: { children: React.R
 
   return (
     <div className="flex flex-col gap-8">
-      {MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[walletChainId].map((chainId) => (
+      {MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[walletChainId].map((chainId) => (
         <Button
           key={chainId}
           type="button"

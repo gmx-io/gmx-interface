@@ -9,7 +9,7 @@ import {
   useGmxAccountDepositViewTokenAddress,
   useGmxAccountModalOpen,
 } from "context/GmxAccountContext/hooks";
-import { MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "domain/multichain/config";
+import { MULTI_CHAIN_TOKEN_MAPPING } from "domain/multichain/config";
 import { TokenChainData } from "domain/multichain/types";
 import { useChainId } from "lib/chains";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
@@ -84,7 +84,7 @@ export const SelectAssetToDepositView = () => {
   const NETWORKS_FILTER = useMemo(() => {
     const wildCard = { id: "all" as const, name: "All Networks" };
 
-    const chainFilters = Object.keys(MULTI_CHAIN_SUPPORTED_TOKEN_MAP[chainId] ?? EMPTY_OBJECT).map((sourceChainId) => ({
+    const chainFilters = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId] ?? EMPTY_OBJECT).map((sourceChainId) => ({
       id: parseInt(sourceChainId),
       name: getChainName(parseInt(sourceChainId)),
     }));

@@ -198,7 +198,7 @@ export function ClaimModalMultichain(p: Props) {
     };
   }, [account, chainId, fundingMarketAddresses, fundingTokenAddresses, isSubmitting, provider, signer]);
 
-  const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload("claimFundingFees", {
+  const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload({
     expressTransactionBuilder,
   });
 

@@ -1,6 +1,6 @@
 import keyBy from "lodash/keyBy";
 import pickBy from "lodash/pickBy";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
@@ -110,6 +110,17 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
   const [, setSelectedTransferGuid] = useGmxAccountSelectedTransferGuid();
   const [multichainFundingPendingIds, setMultichainFundingPendingIds] = useState<Record<string, string>>(EMPTY_OBJECT);
+
+  const scheduleMultichainFundingItemClearing = useCallback(
+    (executedGuids: string[]) => {
+      setTimeout(() => {
+        setMultichainFundingPendingIds((prev) => {
+          return pickBy(prev, (value) => !executedGuids.includes(value));
+        });
+      }, FINISHED_FUNDING_ITEM_CLEARING_DELAY_MS);
+    },
+    [setMultichainFundingPendingIds]
+  );
 
   const pendingReceiveDepositGuidsRef = useRef<string[]>([]);
   const pendingExecuteDepositGuidsRef = useRef<string[]>([]);
@@ -334,11 +345,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         lzEndpoint,
         pendingExecuteDepositGuidsRef.current,
         (info) => {
-          setTimeout(() => {
-            setMultichainFundingPendingIds((prev) => {
-              return pickBy(prev, (value) => value !== info.guid);
-            });
-          }, FINISHED_FUNDING_ITEM_CLEARING_DELAY_MS);
+          scheduleMultichainFundingItemClearing([info.guid]);
 
           setPendingMultichainFunding((prev) => {
             const newPendingMultichainFunding = structuredClone(prev);
@@ -385,7 +392,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         clearTimeout(timeoutId);
       };
     },
-    [chainId, hasPageLostFocus, pendingExecuteDepositGuidsKey, wsProvider]
+    [chainId, hasPageLostFocus, pendingExecuteDepositGuidsKey, scheduleMultichainFundingItemClearing, wsProvider]
   );
 
   //#endregion Deposits
@@ -513,11 +520,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         sourceChainStargates,
         pendingReceiveWithdrawalGuidsRef.current,
         (info) => {
-          setTimeout(() => {
-            setMultichainFundingPendingIds((prev) => {
-              return pickBy(prev, (value) => value !== info.guid);
-            });
-          }, FINISHED_FUNDING_ITEM_CLEARING_DELAY_MS);
+          scheduleMultichainFundingItemClearing([info.guid]);
 
           setPendingMultichainFunding((prev) => {
             const newPendingMultichainFunding = structuredClone(prev);
@@ -562,7 +565,14 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         clearTimeout(timeoutId);
       };
     },
-    [chainId, hasPageLostFocus, pendingReceiveWithdrawalGuidsKey, srcChainId, wsSourceChainProvider]
+    [
+      chainId,
+      hasPageLostFocus,
+      pendingReceiveWithdrawalGuidsKey,
+      scheduleMultichainFundingItemClearing,
+      srcChainId,
+      wsSourceChainProvider,
+    ]
   );
 
   //#endregion Withdrawals
@@ -819,74 +829,28 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         });
       },
       updatePendingMultichainFunding: (items) => {
-        const pendingGuids = new Set<string>();
+        const intermediateStepGuids = getIntermediateStepGuids(pendingMultichainFunding);
 
-        for (const step of ["received", "sent"] as const) {
-          for (const pendingGuid in pendingMultichainFunding.deposits[step]) {
-            pendingGuids.add(pendingGuid);
-          }
-        }
-
-        for (const step of ["sent"] as const) {
-          for (const pendingGuid in pendingMultichainFunding.withdrawals[step]) {
-            pendingGuids.add(pendingGuid);
-          }
-        }
-
-        const freshItems: Record<string, MultichainFundingHistoryItem> = {};
-        let hasFreshItems = false;
+        const updatedPendingItems: Record<string, MultichainFundingHistoryItem> = {};
+        let hasUpdatedPendingUpdates = false;
 
         for (const item of items) {
-          if (pendingGuids.has(item.id)) {
-            freshItems[item.id] = item;
-            hasFreshItems = true;
+          if (intermediateStepGuids.has(item.id)) {
+            updatedPendingItems[item.id] = item;
+            hasUpdatedPendingUpdates = true;
           }
         }
 
-        if (hasFreshItems) {
+        if (hasUpdatedPendingUpdates) {
           setPendingMultichainFunding((prev) => {
             const newPendingMultichainFunding = structuredClone(prev);
 
-            // if the items that came in ITEMS are in lower statuses in here pendingMultichainFunding, move them to the higher statuses
+            const executedGuids = progressMultichainFundingItems({
+              pendingMultichainFunding: newPendingMultichainFunding,
+              updatedPendingItems,
+            });
 
-            const executedGuids: string[] = [];
-
-            for (const intermediateDepositStep of ["received", "sent"] as const) {
-              for (const pendingGuid in newPendingMultichainFunding.deposits[intermediateDepositStep]) {
-                const freshItem = freshItems[pendingGuid];
-
-                if (isStepGreater(freshItem.step, intermediateDepositStep)) {
-                  delete newPendingMultichainFunding.deposits[intermediateDepositStep][pendingGuid];
-                  newPendingMultichainFunding.deposits[freshItem.step][pendingGuid] = freshItem;
-
-                  if (freshItem.step === "executed") {
-                    executedGuids.push(pendingGuid);
-                    queueSendDepositExecutedMetric(freshItem);
-                  }
-                }
-              }
-            }
-
-            for (const intermediateWithdrawalStep of ["sent"] as const) {
-              for (const pendingGuid in newPendingMultichainFunding.withdrawals[intermediateWithdrawalStep]) {
-                const freshItem = freshItems[pendingGuid];
-
-                if (isStepGreater(freshItem.step, intermediateWithdrawalStep)) {
-                  delete newPendingMultichainFunding.withdrawals[intermediateWithdrawalStep][pendingGuid];
-                  newPendingMultichainFunding.withdrawals[freshItem.step][pendingGuid] = freshItem;
-                  if (freshItem.step === "received") {
-                    executedGuids.push(pendingGuid);
-                    queueSendWithdrawalReceivedMetric(freshItem);
-                  }
-                }
-              }
-            }
-
-            setTimeout(() => {
-              setMultichainFundingPendingIds((prev) => {
-                return pickBy(prev, (value) => !executedGuids.includes(value));
-              });
-            }, FINISHED_FUNDING_ITEM_CLEARING_DELAY_MS);
+            scheduleMultichainFundingItemClearing(executedGuids);
 
             return newPendingMultichainFunding;
           });
@@ -910,6 +874,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       currentAccount,
       chainId,
       setSelectedTransferGuid,
+      scheduleMultichainFundingItemClearing,
     ]
   );
 
@@ -925,6 +890,67 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
   );
 
   return multichainEventsState;
+}
+
+function getIntermediateStepGuids(pendingMultichainFunding: PendingMultichainFunding): Set<string> {
+  const intermediateStepGuids = new Set<string>();
+
+  for (const step of ["received", "sent"] as const) {
+    for (const pendingGuid in pendingMultichainFunding.deposits[step]) {
+      intermediateStepGuids.add(pendingGuid);
+    }
+  }
+
+  for (const step of ["sent"] as const) {
+    for (const pendingGuid in pendingMultichainFunding.withdrawals[step]) {
+      intermediateStepGuids.add(pendingGuid);
+    }
+  }
+
+  return intermediateStepGuids;
+}
+
+function progressMultichainFundingItems({
+  pendingMultichainFunding,
+  updatedPendingItems,
+}: {
+  pendingMultichainFunding: PendingMultichainFunding;
+  updatedPendingItems: Record<string, MultichainFundingHistoryItem>;
+}) {
+  const executedGuids: string[] = [];
+
+  for (const intermediateDepositStep of ["received", "sent"] as const) {
+    for (const pendingGuid in pendingMultichainFunding.deposits[intermediateDepositStep]) {
+      const freshItem = updatedPendingItems[pendingGuid];
+
+      if (isStepGreater(freshItem.step, intermediateDepositStep)) {
+        delete pendingMultichainFunding.deposits[intermediateDepositStep][pendingGuid];
+        pendingMultichainFunding.deposits[freshItem.step][pendingGuid] = freshItem;
+
+        if (freshItem.step === "executed") {
+          executedGuids.push(pendingGuid);
+          queueSendDepositExecutedMetric(freshItem);
+        }
+      }
+    }
+  }
+
+  for (const intermediateWithdrawalStep of ["sent"] as const) {
+    for (const pendingGuid in pendingMultichainFunding.withdrawals[intermediateWithdrawalStep]) {
+      const freshItem = updatedPendingItems[pendingGuid];
+
+      if (isStepGreater(freshItem.step, intermediateWithdrawalStep)) {
+        delete pendingMultichainFunding.withdrawals[intermediateWithdrawalStep][pendingGuid];
+        pendingMultichainFunding.withdrawals[freshItem.step][pendingGuid] = freshItem;
+        if (freshItem.step === "received") {
+          executedGuids.push(pendingGuid);
+          queueSendWithdrawalReceivedMetric(freshItem);
+        }
+      }
+    }
+  }
+
+  return executedGuids;
 }
 
 function queueSendDepositExecutedMetric(deposit: MultichainFundingHistoryItem) {

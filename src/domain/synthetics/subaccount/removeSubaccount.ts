@@ -1,18 +1,28 @@
-import { ethers, Signer } from "ethers";
+import { ethers, Provider, Signer } from "ethers";
 import { encodeFunctionData } from "viem";
 
-import { ARBITRUM_SEPOLIA, ContractsChainId } from "config/static/chains";
+import { ARBITRUM_SEPOLIA, ContractsChainId, SourceChainId } from "config/static/chains";
+import {
+  estimateArbitraryRelayFee,
+  getArbitraryRelayParamsAndPayload,
+  getRawBaseRelayerParams,
+} from "domain/multichain/arbitraryRelayParams";
 import { callContract } from "lib/contracts";
-import { ExpressTxnData } from "lib/transactions";
+import { ExpressTxnData, sendExpressTransaction } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
 import SubaccountRouter from "sdk/abis/SubaccountRouter.json";
 import { getContract } from "sdk/configs/contracts";
+import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
+import { nowInSeconds } from "sdk/utils/time";
 
 import {
+  ExpressTransactionBuilder,
   getExpressContractAddress,
   getGelatoRelayRouterDomain,
+  getRelayRouterNonceForMultichain,
+  GlobalExpressParams,
   hashRelayParams,
   hashRelayParamsMultichain,
   MultichainRelayParamsPayload,
@@ -128,5 +138,128 @@ async function signRemoveSubaccountPayload({
     types,
     typedData,
     domain,
+  });
+}
+
+export async function removeSubaccountExpressTxn({
+  chainId,
+  provider,
+  account,
+  srcChainId,
+  signer,
+  subaccount,
+  expressGlobalParams,
+  isSponsoredCallAvailable,
+}: {
+  chainId: ContractsChainId;
+  provider: Provider;
+  account: string;
+  srcChainId: SourceChainId;
+  signer: WalletSigner;
+  subaccount: Subaccount;
+  expressGlobalParams: GlobalExpressParams;
+  isSponsoredCallAvailable: boolean;
+}) {
+  if (!provider || !account) {
+    throw new Error("No provider or account");
+  }
+
+  const relayRouterAddress = getExpressContractAddress(chainId, {
+    isSubaccount: true,
+    isMultichain: srcChainId !== undefined,
+    scope: "subaccount",
+  });
+
+  const { rawBaseRelayParamsPayload, baseRelayFeeSwapParams } = getRawBaseRelayerParams({
+    chainId,
+    account,
+    expressGlobalParams,
+  });
+
+  if (!rawBaseRelayParamsPayload || !baseRelayFeeSwapParams) {
+    throw new Error("No base express params");
+  }
+
+  const getTxnData: ExpressTransactionBuilder = async ({ relayParams, gasPaymentParams, subaccount, noncesData }) => {
+    const userNonce =
+      noncesData?.multichainSubaccountRelayRouter?.nonceForMainAccount ??
+      (await getRelayRouterNonceForMultichain(provider, account, relayRouterAddress));
+
+    if (!subaccount) {
+      throw new Error("No subaccount");
+    }
+
+    const txnData = await buildAndSignRemoveSubaccountTxn({
+      chainId,
+      signer,
+      subaccount,
+      relayParamsPayload: {
+        ...relayParams,
+        userNonce,
+        deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
+      },
+      relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
+      relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
+      emptySignature: true,
+    });
+
+    return {
+      txnData,
+    };
+  };
+
+  const relayerFeeAmount = await estimateArbitraryRelayFee({
+    chainId,
+    provider,
+    rawRelayParamsPayload: rawBaseRelayParamsPayload,
+    expressTransactionBuilder: getTxnData,
+    gasPaymentParams: baseRelayFeeSwapParams.gasPaymentParams,
+    noncesData: expressGlobalParams.noncesData,
+    subaccount: subaccount,
+  });
+
+  if (relayerFeeAmount === undefined) {
+    throw new Error("No relay fee amount");
+  }
+
+  const { relayFeeParams, relayParamsPayload } = getArbitraryRelayParamsAndPayload({
+    chainId,
+    account,
+    isGmxAccount: srcChainId !== undefined,
+    relayerFeeAmount,
+    additionalNetworkFee: 0n,
+    expressGlobalParams,
+  });
+
+  if (!relayFeeParams || !relayParamsPayload) {
+    throw new Error("No relayFeeParams or relayParamsPayload");
+  }
+
+  const userNonce =
+    expressGlobalParams.noncesData?.multichainSubaccountRelayRouter?.nonceForMainAccount ??
+    (await getRelayRouterNonceForMultichain(provider, account, relayRouterAddress));
+
+  const txnData = await buildAndSignRemoveSubaccountTxn({
+    chainId,
+    signer,
+    subaccount: subaccount!,
+    relayParamsPayload: {
+      ...relayParamsPayload,
+      userNonce,
+      deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
+    },
+    relayerFeeAmount: relayFeeParams.gasPaymentParams.relayerFeeAmount,
+    relayerFeeTokenAddress: relayFeeParams.gasPaymentParams.relayerFeeTokenAddress,
+    emptySignature: false,
+  });
+
+  if (!txnData) {
+    throw new Error("No txnData");
+  }
+
+  await sendExpressTransaction({
+    chainId,
+    isSponsoredCall: isSponsoredCallAvailable,
+    txnData,
   });
 }

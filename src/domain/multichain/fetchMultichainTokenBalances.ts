@@ -1,12 +1,12 @@
 import { zeroAddress } from "viem";
 
-import { SourceChainId, getChainName } from "config/chains";
-import { MULTICALLS_MAP, MULTI_CHAIN_SUPPORTED_TOKEN_MAP } from "domain/multichain/config";
+import { SettlementChainId, SourceChainId, getChainName } from "config/chains";
+import { MULTICALLS_MAP, MULTI_CHAIN_TOKEN_MAPPING } from "domain/multichain/config";
 import { executeMulticall } from "lib/multicall/executeMulticall";
 import type { MulticallRequestConfig } from "lib/multicall/types";
 
 export async function fetchMultichainTokenBalances(
-  currentSettlementChainId: number,
+  currentSettlementChainId: SettlementChainId,
   account: string,
   progressCallback?: (chainId: number, tokensChainData: Record<string, bigint>) => void
 ): Promise<Record<number, Record<string, bigint>>> {
@@ -15,13 +15,14 @@ export async function fetchMultichainTokenBalances(
     tokensChainData: Record<string, bigint>;
   }>[] = [];
 
-  const sourceChainMap = MULTI_CHAIN_SUPPORTED_TOKEN_MAP[currentSettlementChainId];
+  // const sourceChainMap = MULTI_CHAIN_SUPPORTED_TOKEN_MAP[currentSettlementChainId];
+  const sourceChainTokenIdMap = MULTI_CHAIN_TOKEN_MAPPING[currentSettlementChainId];
 
   const result: Record<number, Record<string, bigint>> = {};
 
-  for (const sourceChainIdString in sourceChainMap) {
-    const sourceChainId = parseInt(sourceChainIdString);
-    const tokenAddresses = sourceChainMap[sourceChainId];
+  for (const sourceChainIdString in sourceChainTokenIdMap) {
+    const sourceChainId = parseInt(sourceChainIdString) as SourceChainId;
+    const tokenAddresses = Object.keys(sourceChainTokenIdMap[sourceChainId] ?? {});
 
     const requestConfig: MulticallRequestConfig<
       Record<
@@ -32,10 +33,11 @@ export async function fetchMultichainTokenBalances(
       >
     > = {};
 
+    // TODO MLTCH merge this into request with many calls
     for (const tokenAddress of tokenAddresses) {
       if (tokenAddress === zeroAddress) {
         requestConfig[tokenAddress] = {
-          // TODO there might not be a multicall contract on the source chain
+          // TODO MLTCH there might not be a multicall contract on the source chain
           contractAddress: MULTICALLS_MAP[sourceChainId as SourceChainId],
           abiId: "Multicall",
           calls: {
@@ -63,7 +65,7 @@ export async function fetchMultichainTokenBalances(
     const request = executeMulticall(
       sourceChainId,
       requestConfig,
-      // TODO pass priority from args
+      // TODO MLTCH pass priority from args
       "urgent",
       `fetchMultichainTokens-${getChainName(sourceChainId)}`
     ).then((res) => {

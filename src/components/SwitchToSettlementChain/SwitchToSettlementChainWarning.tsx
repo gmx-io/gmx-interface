@@ -2,11 +2,11 @@ import { Trans } from "@lingui/macro";
 import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
-import { MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING } from "domain/multichain/config";
+import { MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "domain/multichain/config";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 
-import { needSwitchToSettlementChain } from "./needSwitchToSettlementChain";
+import { needSwitchToSettlementChain } from "./utils";
 
 export function SwitchToSettlementChainWarning({ topic }: { topic: "liquidity" | "staking" | "vesting" }) {
   const { chainId: walletChainId } = useAccount();
@@ -15,11 +15,11 @@ export function SwitchToSettlementChainWarning({ topic }: { topic: "liquidity" |
     return null;
   }
 
-  const multipleChains = MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[walletChainId].length > 1;
+  const multipleChains = MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[walletChainId].length > 1;
   const chainNames = multipleChains
-    ? MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[walletChainId].slice(0, -1).map(getChainName).join(", ")
-    : getChainName(MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[walletChainId][0]);
-  const lastChainName = getChainName(MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[walletChainId].slice(-1)[0]);
+    ? MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[walletChainId].slice(0, -1).map(getChainName).join(", ")
+    : getChainName(MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[walletChainId][0]);
+  const lastChainName = getChainName(MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[walletChainId].slice(-1)[0]);
 
   let message: React.ReactNode = "";
   if (topic === "liquidity") {

@@ -2,16 +2,16 @@ import uniq from "lodash/uniq";
 import { Hex, zeroAddress } from "viem";
 
 import {
+  AnyChainId,
   ARBITRUM,
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
-  SOURCE_OPTIMISM_SEPOLIA,
-  SOURCE_SEPOLIA,
   ContractsChainId,
   SettlementChainId,
+  SOURCE_OPTIMISM_SEPOLIA,
+  SOURCE_SEPOLIA,
   SourceChainId,
-  AnyChainId,
 } from "config/chains";
 import { isDevelopment } from "config/env";
 import { convertTokenAddress } from "sdk/configs/tokens";
@@ -46,17 +46,6 @@ type MultichainTokenMapping = Record<
   >
 >;
 
-type MultichainSupportedTokenMap = Record<
-  // settlement chain id
-  SettlementChainId,
-  Record<
-    // source chain id
-    SourceChainId,
-    // source chain token address
-    string[]
-  >
->;
-
 type MultichainWithdrawSupportedTokens = Record<
   // settlement chain id
   SettlementChainId,
@@ -64,7 +53,7 @@ type MultichainWithdrawSupportedTokens = Record<
   string[]
 >;
 
-type MultichainSourceToSettlementChainMapping = Record<SourceChainId, SettlementChainId[]>;
+type MultichainSourceToSettlementsMap = Record<SourceChainId, SettlementChainId[]>;
 
 export type MultichainTokenId = {
   chainId: SettlementChainId | SourceChainId;
@@ -130,22 +119,25 @@ if (isDevelopment()) {
 
 export const DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT = false;
 
-export const CONTRACTS_CHAINS: ContractsChainId[] = Object.keys({
+function ensureExhaustive<T extends number>(value: Record<T, true>): T[] {
+  return Object.keys(value).map(Number) as T[];
+}
+
+export const CONTRACTS_CHAINS: ContractsChainId[] = ensureExhaustive<ContractsChainId>({
   [ARBITRUM_SEPOLIA]: true,
   [ARBITRUM]: true,
   [AVALANCHE]: true,
   [AVALANCHE_FUJI]: true,
-} satisfies Record<ContractsChainId, true>).map(Number) as ContractsChainId[];
+});
 
-export const SETTLEMENT_CHAINS: SettlementChainId[] = Object.keys({
+export const SETTLEMENT_CHAINS: SettlementChainId[] = ensureExhaustive<SettlementChainId>({
   [ARBITRUM_SEPOLIA]: true,
-} satisfies Record<SettlementChainId, true>).map(Number) as SettlementChainId[];
+});
 
-// To test bridge in from the same network add ARBITRUM_SEPOLIA to source chains
-export const SOURCE_CHAINS: SourceChainId[] = Object.keys({
+export const SOURCE_CHAINS: SourceChainId[] = ensureExhaustive<SourceChainId>({
   [SOURCE_OPTIMISM_SEPOLIA]: true,
   [SOURCE_SEPOLIA]: true,
-} satisfies Record<SourceChainId, true>).map(Number) as SourceChainId[];
+});
 
 if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
   SOURCE_CHAINS.push(ARBITRUM_SEPOLIA as SourceChainId);
@@ -165,8 +157,6 @@ export function isSourceChain(chainId: number | undefined): chainId is SourceCha
 
 export const MULTI_CHAIN_TOKEN_MAPPING = {} as MultichainTokenMapping;
 
-export const MULTI_CHAIN_SUPPORTED_TOKEN_MAP = {} as MultichainSupportedTokenMap;
-
 export const MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS = {} as MultichainWithdrawSupportedTokens;
 
 export const CHAIN_ID_TO_TOKEN_ID_MAP: Record<
@@ -174,26 +164,40 @@ export const CHAIN_ID_TO_TOKEN_ID_MAP: Record<
   Record<string, MultichainTokenId>
 > = {} as any;
 
-export const MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING: MultichainSourceToSettlementChainMapping = {} as any;
+export const MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING: MultichainSourceToSettlementsMap = {} as any;
 
 for (const tokenSymbol in TOKEN_GROUPS) {
-  for (const settlementChainIdString in TOKEN_GROUPS[tokenSymbol]) {
-    const settlementChainId = parseInt(settlementChainIdString) as SettlementChainId | SourceChainId;
-    if (!isSettlementChain(settlementChainId)) continue;
+  for (const chainIdString in TOKEN_GROUPS[tokenSymbol]) {
+    const chainId = parseInt(chainIdString) as SettlementChainId | SourceChainId;
+
+    const tokenId = TOKEN_GROUPS[tokenSymbol]?.[chainId];
+    if (tokenId) {
+      CHAIN_ID_TO_TOKEN_ID_MAP[chainId] = CHAIN_ID_TO_TOKEN_ID_MAP[chainId] || {};
+      CHAIN_ID_TO_TOKEN_ID_MAP[chainId][tokenId.address] = tokenId;
+    }
+
+    if (!isSettlementChain(chainId)) {
+      continue;
+    }
+
+    const settlementChainId = chainId;
 
     let empty = true;
     for (const sourceChainIdString in TOKEN_GROUPS[tokenSymbol]) {
       const sourceChainId = parseInt(sourceChainIdString) as SettlementChainId | SourceChainId;
-      if (!isSourceChain(sourceChainId)) continue;
+      if (!isSourceChain(sourceChainId)) {
+        continue;
+      }
 
-      if (!isDevelopment() && (settlementChainId as number) === (sourceChainId as number)) continue;
+      if (!isDevelopment() && (settlementChainId as number) === (sourceChainId as number)) {
+        continue;
+      }
       empty = false;
 
-      MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[sourceChainId] =
-        MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[sourceChainId] || [];
-      MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[sourceChainId].push(settlementChainId);
-      MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[sourceChainId] = uniq(
-        MULTI_CHAIN_SOURCE_TO_SETTLEMENT_CHAIN_MAPPING[sourceChainId]
+      MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId] =
+        MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId] || [];
+      MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId] = uniq(
+        MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId].concat(settlementChainId)
       );
 
       MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] = MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] || {};
@@ -202,11 +206,15 @@ for (const tokenSymbol in TOKEN_GROUPS) {
 
       const settlementToken = TOKEN_GROUPS[tokenSymbol]?.[settlementChainId];
 
-      if (!settlementToken) continue;
+      if (!settlementToken) {
+        continue;
+      }
 
       const sourceChainToken = TOKEN_GROUPS[tokenSymbol]?.[sourceChainId];
 
-      if (!sourceChainToken) continue;
+      if (!sourceChainToken) {
+        continue;
+      }
 
       MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString][sourceChainToken.address] = {
         settlementChainTokenAddress: settlementToken.address,
@@ -218,57 +226,15 @@ for (const tokenSymbol in TOKEN_GROUPS) {
     if (!empty) {
       const settlementToken = TOKEN_GROUPS[tokenSymbol]?.[settlementChainId];
 
-      if (!settlementToken) continue;
+      if (!settlementToken) {
+        continue;
+      }
 
       MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS[settlementChainId] =
         MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS[settlementChainId] || [];
       MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS[settlementChainId].push(
         convertTokenAddress(settlementChainId, settlementToken.address, "wrapped")
       );
-    }
-  }
-}
-
-for (const tokenSymbol in TOKEN_GROUPS) {
-  for (const firstChainIdString in TOKEN_GROUPS[tokenSymbol]) {
-    const firstChainId = parseInt(firstChainIdString) as SettlementChainId | SourceChainId;
-
-    const firstTokenId = TOKEN_GROUPS[tokenSymbol]?.[firstChainId];
-
-    if (!firstTokenId) continue;
-
-    CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId] = CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId] || {};
-    CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId][firstTokenId.address] = firstTokenId;
-
-    for (const secondChainIdString in TOKEN_GROUPS[tokenSymbol]) {
-      const secondChainId = parseInt(secondChainIdString) as SettlementChainId | SourceChainId;
-      if (!isDevelopment() && firstChainId === secondChainId) continue;
-
-      if (isSettlementChain(firstChainId) && isSourceChain(secondChainId)) {
-        const secondTokenId = TOKEN_GROUPS[tokenSymbol]?.[secondChainId];
-
-        if (!secondTokenId) continue;
-
-        MULTI_CHAIN_SUPPORTED_TOKEN_MAP[firstChainId] = MULTI_CHAIN_SUPPORTED_TOKEN_MAP[firstChainId] || {};
-        MULTI_CHAIN_SUPPORTED_TOKEN_MAP[firstChainId][secondChainId] =
-          MULTI_CHAIN_SUPPORTED_TOKEN_MAP[firstChainId][secondChainId] || [];
-
-        MULTI_CHAIN_SUPPORTED_TOKEN_MAP[firstChainId][secondChainId].push(secondTokenId.address);
-        MULTI_CHAIN_SUPPORTED_TOKEN_MAP[firstChainId][secondChainId] = uniq(
-          MULTI_CHAIN_SUPPORTED_TOKEN_MAP[firstChainId][secondChainId]
-        );
-      }
-
-      if (isSourceChain(firstChainId) && isSettlementChain(secondChainId)) {
-        MULTI_CHAIN_SUPPORTED_TOKEN_MAP[secondChainId] = MULTI_CHAIN_SUPPORTED_TOKEN_MAP[secondChainId] || {};
-        MULTI_CHAIN_SUPPORTED_TOKEN_MAP[secondChainId][firstChainId] =
-          MULTI_CHAIN_SUPPORTED_TOKEN_MAP[secondChainId][firstChainId] || [];
-
-        MULTI_CHAIN_SUPPORTED_TOKEN_MAP[secondChainId][firstChainId].push(firstTokenId.address);
-        MULTI_CHAIN_SUPPORTED_TOKEN_MAP[secondChainId][firstChainId] = uniq(
-          MULTI_CHAIN_SUPPORTED_TOKEN_MAP[secondChainId][firstChainId]
-        );
-      }
     }
   }
 }
@@ -330,6 +296,10 @@ if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
   MULTICALLS_MAP[ARBITRUM_SEPOLIA as SourceChainId] = "0xca11bde05977b3631167028862be2a173976ca11";
 }
 
+/**
+ * Compiled bytecode for MockUnlimitedToken
+ * @see https://github.com/gmx-io/gmx-synthetics/blob/updates/contracts/mock/MockUnlimitedToken.sol
+ */
 export const OVERRIDE_ERC20_BYTECODE: Hex =
   "0x608060405234801561001057600080fd5b50600436106100835760003560e01c806306fdde0314610088578063095ea7b3146100ca57806318160ddd146100ed57806323b872dd14610103578063313ce5671461011657806370a082311461012557806395d89b4114610138578063a9059cbb14610157578063dd62ed3e1461016a575b600080fd5b60408051808201909152601481527326b7b1b5902ab73634b6b4ba32b2102a37b5b2b760611b60208201525b6040516100c191906103ae565b60405180910390f35b6100dd6100d8366004610418565b61017d565b60405190151581526020016100c1565b6100f56101ea565b6040519081526020016100c1565b6100dd610111366004610442565b6101fe565b604051601281526020016100c1565b6100f561013336600461047e565b6102c6565b60408051808201909152600381526213555560ea1b60208201526100b4565b6100dd610165366004610418565b6102fa565b6100f5610178366004610499565b610374565b3360008181526001602090815260408083206001600160a01b038716808552925280832085905551919290917f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925906101d89086815260200190565b60405180910390a35060015b92915050565b60006101f960026000196104e2565b905090565b60008161020b8533610374565b6102159190610504565b6001600160a01b038516600090815260016020908152604080832033845290915290205581610243856102c6565b61024d9190610504565b6001600160a01b03851660009081526020819052604090205581610270846102c6565b61027a9190610517565b6001600160a01b0384811660008181526020818152604091829020949094555185815290929187169160008051602061052b833981519152910160405180910390a35060019392505050565b6001600160a01b0381166000908152602081905260408120548082036101e4576102f360026000196104e2565b9392505050565b600081610306336102c6565b6103109190610504565b33600081815260208190526040902091909155829061032e906102c6565b6103389190610517565b6001600160a01b0384166000818152602081815260409182902093909355518481529091339160008051602061052b83398151915291016101d8565b6001600160a01b0380831660009081526001602090815260408083209385168352929052908120548082036102f3576000199150506101e4565b600060208083528351808285015260005b818110156103db578581018301518582016040015282016103bf565b506000604082860101526040601f19601f8301168501019250505092915050565b80356001600160a01b038116811461041357600080fd5b919050565b6000806040838503121561042b57600080fd5b610434836103fc565b946020939093013593505050565b60008060006060848603121561045757600080fd5b610460846103fc565b925061046e602085016103fc565b9150604084013590509250925092565b60006020828403121561049057600080fd5b6102f3826103fc565b600080604083850312156104ac57600080fd5b6104b5836103fc565b91506104c3602084016103fc565b90509250929050565b634e487b7160e01b600052601160045260246000fd5b6000826104ff57634e487b7160e01b600052601260045260246000fd5b500490565b818103818111156101e4576101e46104cc565b808201808211156101e4576101e46104cc56feddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3efa26469706673582212207e80951b693900018ccbef67c898d93845d4dd2e0d8bee24a96e72ecb4b5a8bd64736f6c63430008140033";
 

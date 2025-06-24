@@ -43,6 +43,5 @@ export function useGasPrice(chainId: number) {
     },
   });
 
-  // return 100_000_000n;
   return gasPrice === undefined ? undefined : BigInt(gasPrice);
 }

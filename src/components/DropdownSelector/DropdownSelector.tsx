@@ -2,7 +2,12 @@ import { Listbox } from "@headlessui/react";
 import cx from "classnames";
 import { BiChevronDown } from "react-icons/bi";
 
-export const DropdownSelector = <V extends string | number, T>({
+type Primitive = string | number;
+type WithConditionalItemKey<Id extends Primitive, Option> = Id extends Primitive
+  ? { itemKey?: (option: Option) => Id }
+  : { itemKey: (option: Option) => Id };
+
+export const DropdownSelector = <Id extends Primitive, Option>({
   value,
   onChange,
   button,
@@ -13,15 +18,15 @@ export const DropdownSelector = <V extends string | number, T>({
   slim = false,
   elevated = false,
 }: {
-  value: V | undefined;
-  onChange: (value: V) => void;
+  value: Id | undefined;
+  onChange: (value: Id) => void;
   button: React.JSX.Element | undefined;
-  options: T[];
-  item: ({ option }: { option: T }) => React.JSX.Element;
+  options: Option[];
+  item: ({ option }: { option: Option }) => React.JSX.Element;
   placeholder?: string;
   slim?: boolean;
   elevated?: boolean;
-} & (V extends string | number ? { itemKey?: (option: T) => V } : { itemKey: (option: T) => V })) => {
+} & WithConditionalItemKey<Id, Option>) => {
   return (
     <Listbox value={value ?? null} onChange={onChange}>
       <div className="relative">
@@ -46,8 +51,8 @@ export const DropdownSelector = <V extends string | number, T>({
         >
           {options.map((option) => (
             <Listbox.Option
-              key={itemKey ? itemKey(option) : (option as string | number)}
-              value={itemKey ? itemKey(option) : (option as string | number)}
+              key={itemKey ? itemKey(option) : (option as Primitive)}
+              value={itemKey ? itemKey(option) : (option as Primitive)}
               className={({ active, selected }) =>
                 cx(
                   "cursor-pointer",

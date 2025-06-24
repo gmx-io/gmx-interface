@@ -42,7 +42,7 @@ if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
 
-function KeydSwrConfig({ children }: { children: React.ReactNode }) {
+function SWRConfigWithKey({ children }: { children: React.ReactNode }) {
   const { chainId } = useChainId();
   return (
     <SWRConfig key={chainId} value={SWRConfigProp}>
@@ -71,7 +71,7 @@ function App() {
   app = <I18nProvider i18n={i18n as any}>{app}</I18nProvider>;
   app = <PendingTxnsContextProvider>{app}</PendingTxnsContextProvider>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
-  app = <KeydSwrConfig>{app}</KeydSwrConfig>;
+  app = <SWRConfigWithKey>{app}</SWRConfigWithKey>;
   app = <GlobalStateProvider>{app}</GlobalStateProvider>;
   app = <ChainContextProvider>{app}</ChainContextProvider>;
   app = <GmxAccountContextProvider>{app}</GmxAccountContextProvider>;

@@ -39,7 +39,6 @@ const Zoom = cssTransition({
 });
 
 export function AppRoutes() {
-  // const { disconnect } = useDisconnect();
   const isHome = isHomeSite();
   const location = useLocation();
   const history = useHistory();

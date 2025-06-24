@@ -415,7 +415,7 @@ export const WithdrawView = () => {
     return expressTransactionBuilder;
   }, [account, bridgeOutParams, chainId, provider, withdrawalViewChain]);
 
-  const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload("multichain-withdraw", {
+  const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload({
     additionalNetworkFee: bridgeNetworkFee,
     expressTransactionBuilder,
   });

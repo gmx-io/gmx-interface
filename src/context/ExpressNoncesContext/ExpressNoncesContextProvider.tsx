@@ -28,6 +28,7 @@ export type NoncesData = {
   };
   multichainSubaccountRelayRouter?: {
     nonce: bigint;
+    nonceForMainAccount: bigint;
     lastEstimated: number;
   };
   multichainClaimsRouter?: {
@@ -166,6 +167,13 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
                     params: [subaccount.address],
                   }
                 : undefined,
+            nonceForMainAccount:
+              chainId === ARBITRUM_SEPOLIA
+                ? {
+                    methodName: "userNonces",
+                    params: [account],
+                  }
+                : undefined,
           },
         };
         request.multichainClaimsRouter = {
@@ -214,10 +222,11 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
             : undefined,
         multichainSubaccountRelayRouter:
           chainId === ARBITRUM_SEPOLIA && subaccount?.address
-            ? {
+            ? ({
                 nonce: result.data.multichainSubaccountRelayRouter.nonce.returnValues[0],
+                nonceForMainAccount: result.data.multichainSubaccountRelayRouter.nonceForMainAccount.returnValues[0],
                 lastEstimated: now,
-              }
+              } satisfies NoncesData["multichainSubaccountRelayRouter"])
             : undefined,
         multichainTransferRouter:
           chainId === ARBITRUM_SEPOLIA
