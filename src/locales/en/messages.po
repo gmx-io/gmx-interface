@@ -3950,6 +3950,7 @@ msgstr "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
+#: src/components/Synthetics/CollateralSelector/PositionEditorCollateralSelector.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "Collateral In"
 msgstr "Collateral In"
@@ -8442,10 +8443,6 @@ msgstr "Share Position"
 #: src/components/Exchange/SwapBox.jsx
 msgid "Min leverage: 1.1x"
 msgstr "Min leverage: 1.1x"
-
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
-#~ msgid "You’re withdrawing {0}, your gas token. It’s recommended to keep $10 in {1} for transactions, or switch your gas token in settings."
-#~ msgstr "You’re withdrawing {0}, your gas token. It’s recommended to keep $10 in {1} for transactions, or switch your gas token in settings."
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx

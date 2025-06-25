@@ -35,16 +35,12 @@ export const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY = "synthetics-accepta
 export const SYNTHETICS_DEPOSIT_INDEX_TOKEN_KEY = "synthetics-deposit-index-token";
 export const SYNTHETICS_DEPOSIT_MARKET_KEY = "synthetics-market-deposit-market";
 
-export const SYNTHETICS_GLV_MARKET_DEPOSIT_TOKEN_KEY = "synthetics-glv-market-deposit-token";
 export const SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY = "synthetics-market-deposit-token";
-export const SYNTHETICS_COLLATERAL_DEPOSIT_TOKEN_KEY = "synthetics-collateral-deposit-token";
 export const SYNTHETICS_LIST_SECTION_KEY = "synthetics-list-section";
 export const ACCOUNT_DASHBOARD_TAB_KEY = "account-dashboard-tab";
-/**
- * @deprecated
- */
-export const SYNTHETICS_COLLATERAL_EDIT_TOKEN_KEY = "synthetics-collateral-edit-token";
 export const SYNTHETICS_COLLATERAL_EDIT_TOKEN_MAP_KEY = "synthetics-collateral-edit-token-map";
+export const SYNTHETICS_COLLATERAL_EDIT_TOKEN_IS_FROM_GMX_ACCOUNT_KEY =
+  "synthetics-collateral-edit-token-is-from-gmx-account";
 export const PRODUCTION_PREVIEW_KEY = "production-preview";
 export const REQUIRED_UI_VERSION_KEY = "required-ui-version";
 export const DEBUG_SWAP_SETTINGS_KEY = "debug-swap-settings";
@@ -121,15 +117,12 @@ export function getSyntheticsTradeOptionsKey(chainId: number) {
   return [chainId, SYNTHETICS_TRADE_OPTIONS];
 }
 
-/**
- * @deprecated
- */
-export function getSyntheticsCollateralEditAddressKey(chainId: number, positionCollateralAddress?: string) {
-  return [chainId, SYNTHETICS_COLLATERAL_EDIT_TOKEN_KEY, positionCollateralAddress];
-}
-
 export function getSyntheticsCollateralEditAddressMapKey(chainId: number) {
   return [chainId, SYNTHETICS_COLLATERAL_EDIT_TOKEN_MAP_KEY];
+}
+
+export function getSyntheticsCollateralEditTokenIsFromGmxAccountMapKey(chainId: number) {
+  return [chainId, SYNTHETICS_COLLATERAL_EDIT_TOKEN_IS_FROM_GMX_ACCOUNT_KEY];
 }
 
 export function getLeverageKey(chainId: number) {

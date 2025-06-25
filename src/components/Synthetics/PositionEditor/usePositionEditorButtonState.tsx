@@ -25,6 +25,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectPositionEditorCollateralInputAmountAndUsd,
+  selectPositionEditorIsCollateralTokenFromGmxAccount,
   selectPositionEditorSelectedCollateralAddress,
   selectPositionEditorSelectedCollateralToken,
   selectPositionEditorSetCollateralInputValue,
@@ -104,6 +105,7 @@ export function usePositionEditorButtonState(operation: Operation): {
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const selectedCollateralAddress = useSelector(selectPositionEditorSelectedCollateralAddress);
+  const isCollateralTokenFromGmxAccount = useSelector(selectPositionEditorIsCollateralTokenFromGmxAccount);
   const selectedCollateralToken = useSelector(selectPositionEditorSelectedCollateralToken);
   const setCollateralInputValue = useSelector(selectPositionEditorSetCollateralInputValue);
   const { collateralDeltaAmount, collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
@@ -248,11 +250,11 @@ export function usePositionEditorButtonState(operation: Operation): {
     expressParamsPromise,
   } = useExpressOrdersParams({
     orderParams: batchParams,
-    isGmxAccount: srcChainId !== undefined,
+    isGmxAccount: isCollateralTokenFromGmxAccount,
   });
 
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
-    if (srcChainId !== undefined) {
+    if (isCollateralTokenFromGmxAccount) {
       return { tokensToApprove: [], isAllowanceLoaded: true };
     }
 
@@ -283,7 +285,7 @@ export function usePositionEditorButtonState(operation: Operation): {
 
     return approvalRequirements;
   }, [
-    srcChainId,
+    isCollateralTokenFromGmxAccount,
     selectedCollateralAddress,
     collateralDeltaAmount,
     chainId,
@@ -486,7 +488,7 @@ export function usePositionEditorButtonState(operation: Operation): {
       asyncExpressParams,
       fastExpressParams,
       chainId: srcChainId ?? chainId,
-      isCollateralFromMultichain: srcChainId !== undefined,
+      isCollateralFromMultichain: isCollateralTokenFromGmxAccount,
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
@@ -507,7 +509,7 @@ export function usePositionEditorButtonState(operation: Operation): {
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
       noncesData,
-      isGmxAccount: srcChainId !== undefined,
+      isGmxAccount: isCollateralTokenFromGmxAccount,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
         : {

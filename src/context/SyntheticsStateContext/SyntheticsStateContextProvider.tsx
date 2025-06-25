@@ -280,7 +280,7 @@ export function SyntheticsStateContextProvider({
 
   // TODO move closingPositionKey to positionSellerState
   const positionSellerState = usePositionSellerState(chainId, positionsInfoData?.[closingPositionKey ?? ""]);
-  const positionEditorState = usePositionEditorState(chainId);
+  const positionEditorState = usePositionEditorState(chainId, srcChainId);
   const confirmationBoxState = useConfirmationBoxState();
 
   const gasLimits = useGasLimits(chainId);

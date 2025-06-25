@@ -172,7 +172,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         asyncExpressParams,
         fastExpressParams,
         chainId: srcChainId ?? chainId,
-        isCollateralFromMultichain: srcChainId !== undefined,
+        isCollateralFromMultichain: isFromTokenGmxAccount,
       });
     }
 
@@ -217,7 +217,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         asyncExpressParams,
         fastExpressParams,
         chainId: srcChainId ?? chainId,
-        isCollateralFromMultichain: srcChainId !== undefined,
+        isCollateralFromMultichain: isFromTokenGmxAccount,
       });
     }
 
@@ -249,7 +249,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       asyncExpressParams,
       fastExpressParams,
       chainId: srcChainId ?? chainId,
-      isCollateralFromMultichain: srcChainId !== undefined,
+      isCollateralFromMultichain: isFromTokenGmxAccount,
     });
   }, [
     allowedSlippage,
@@ -269,6 +269,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     increaseAmounts,
     initialCollateralAllowance,
     isFirstOrder,
+    isFromTokenGmxAccount,
     isIncrease,
     isLeverageSliderEnabled,
     isLong,

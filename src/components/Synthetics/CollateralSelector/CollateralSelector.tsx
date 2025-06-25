@@ -9,9 +9,7 @@ import {
   selectTradeboxTradeType,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import type { MarketInfo } from "domain/synthetics/markets";
 import type { TokenData } from "domain/synthetics/tokens/types";
-import type { TradeType } from "domain/synthetics/trade";
 import { helperToast } from "lib/helperToast";
 
 import { TableTd } from "components/Table/Table";
@@ -37,7 +35,7 @@ type Props = {
   onSelect: (tokenAddress: string) => void;
 };
 
-export function CollateralSelector(props: Props & { marketInfo?: MarketInfo; tradeType: TradeType }) {
+export function CollateralSelector(props: Props) {
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
 
   return (

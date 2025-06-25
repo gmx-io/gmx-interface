@@ -196,6 +196,7 @@ export function MultichainTokenSelector({
             tokensData={tokensData}
             extendedSortSequence={extendedSortSequence}
             chainId={chainId}
+            srcChainId={srcChainId}
           />
         )}
         {activeFilter === "deposit" && multichainTokens && (
@@ -234,6 +235,7 @@ export function MultichainTokenSelector({
 
 function AvailableToTradeTokenList({
   chainId,
+  srcChainId,
   isModalVisible,
   setSearchKeyword,
   searchKeyword,
@@ -242,6 +244,7 @@ function AvailableToTradeTokenList({
   onSelectTokenAddress,
 }: {
   chainId: ContractsChainId;
+  srcChainId: SourceChainId | undefined;
   isModalVisible: boolean;
   setSearchKeyword: (searchKeyword: string) => void;
   searchKeyword: string;
@@ -261,8 +264,12 @@ function AvailableToTradeTokenList({
     const concatenatedTokens: DisplayToken[] = [];
 
     for (const token of Object.values(tokensData ?? (EMPTY_OBJECT as TokensData))) {
-      concatenatedTokens.push({ ...token, isGmxAccount: true, balance: token.gmxAccountBalance ?? 0n, balanceUsd: 0n });
-      concatenatedTokens.push({ ...token, isGmxAccount: false, balance: token.walletBalance ?? 0n, balanceUsd: 0n });
+      if (token.gmxAccountBalance !== undefined) {
+        concatenatedTokens.push({ ...token, isGmxAccount: true, balance: token.gmxAccountBalance, balanceUsd: 0n });
+      }
+      if (token.walletBalance !== undefined && srcChainId === undefined) {
+        concatenatedTokens.push({ ...token, isGmxAccount: false, balance: token.walletBalance, balanceUsd: 0n });
+      }
     }
 
     let filteredTokens: DisplayToken[];
@@ -320,7 +327,7 @@ function AvailableToTradeTokenList({
     });
 
     return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
-  }, [searchKeyword, tokensData, extendedSortSequence]);
+  }, [searchKeyword, tokensData, srcChainId, extendedSortSequence]);
 
   return (
     <div>
