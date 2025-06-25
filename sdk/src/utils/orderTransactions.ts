@@ -2,7 +2,6 @@ import uniq from "lodash/uniq";
 import { encodeFunctionData, zeroAddress, zeroHash } from "viem";
 
 import ExchangeRouterAbi from "abis/ExchangeRouter.json";
-import StBTCABI from "abis/StBTC.json";
 import ERC20ABI from "abis/Token.json";
 import { getExcessiveExecutionFee, getHighExecutionFee } from "configs/chains";
 import { getContract } from "configs/contracts";
@@ -13,7 +12,6 @@ import { ContractPrice, ERC20Address, TokensData } from "types/tokens";
 import { ExternalSwapQuote } from "types/trade";
 import { TwapOrderParams } from "types/twap";
 
-import { getBotanixParams } from "./botanixParams";
 import { expandDecimals, MaxUint256, USD_DECIMALS } from "./numbers";
 import { getByKey } from "./objects";
 import { isIncreaseOrderType, isSwapOrderType } from "./orders";
@@ -22,7 +20,7 @@ import { applySlippageToMinOut, applySlippageToPrice } from "./trade";
 import { getTwapValidFromTime } from "./twap";
 import { createTwapUiFeeReceiver } from "./twap/uiFeeReceiver";
 
-type ExchangeRouterCall = {
+export type ExchangeRouterCall = {
   method: string;
   params: any[];
 };
@@ -123,7 +121,6 @@ export type TokenTransfersParams = {
   minOutputAmount: bigint;
   swapPath: string[];
   externalCalls: ExternalCallsPayload | undefined;
-  skipOrderCreation?: boolean;
 };
 
 export type TokenTransfer = {
@@ -608,7 +605,6 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
   externalSwapQuote,
   minOutputAmount,
   swapPath,
-  orderType,
 }: {
   chainId: number;
   receiver: string;
@@ -619,7 +615,6 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
   externalSwapQuote: ExternalSwapQuote | undefined;
   minOutputAmount: bigint;
   swapPath: string[];
-  orderType: OrderType;
 }): TokenTransfersParams {
   const isNativePayment = payTokenAddress === NATIVE_TOKEN_ADDRESS;
   const isNativeReceive = receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
@@ -628,41 +623,18 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
 
   let finalPayTokenAmount = payTokenAmount;
 
-  const { isBotanixDeposit, isBotanixRedeem } = getBotanixParams({
-    chainId,
-    payTokenAddress,
-    receiveTokenAddress,
-    isSwap: isSwapOrderType(orderType),
-  });
-
-  const skipOrderCreation = (isBotanixDeposit || isBotanixRedeem) && isSwapOrderType(orderType);
-
-  const { tokenTransfers, value } = combineTransfers(
-    [
-      ...(!skipOrderCreation
-        ? [
-            {
-              tokenAddress: NATIVE_TOKEN_ADDRESS,
-              destination: orderVaultAddress,
-              amount: executionFeeAmount,
-            },
-            {
-              tokenAddress: payTokenAddress,
-              destination: externalSwapQuote ? externalHandlerAddress : orderVaultAddress,
-              amount: payTokenAmount,
-            },
-          ]
-        : []),
-      isBotanixDeposit || isBotanixRedeem
-        ? {
-            tokenAddress: payTokenAddress,
-            destination: externalHandlerAddress,
-            amount: payTokenAmount,
-            skipOrderCreation: skipOrderCreation,
-          }
-        : null,
-    ].filter(Boolean) as TokenTransfer[]
-  );
+  const { tokenTransfers, value } = combineTransfers([
+    {
+      tokenAddress: NATIVE_TOKEN_ADDRESS,
+      destination: orderVaultAddress,
+      amount: executionFeeAmount,
+    },
+    {
+      tokenAddress: payTokenAddress,
+      destination: externalSwapQuote ? externalHandlerAddress : orderVaultAddress,
+      amount: payTokenAmount,
+    },
+  ]);
 
   let initialCollateralTokenAddress = convertTokenAddress(chainId, payTokenAddress, "wrapped");
   let initialCollateralDeltaAmount = payTokenAmount;
@@ -684,50 +656,6 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
     finalPayTokenAmount = externalSwapQuote.amountIn;
   }
 
-  if (isBotanixDeposit) {
-    externalCalls = {
-      externalCallTargets: [getContract(chainId, "PBTC"), getContract(chainId, "StBTC")],
-      externalCallDataList: [
-        encodeFunctionData({
-          abi: ERC20ABI.abi,
-          functionName: "approve",
-          args: [getContract(chainId, "StBTC"), payTokenAmount],
-        }),
-        encodeFunctionData({
-          abi: StBTCABI.abi,
-          functionName: "deposit",
-          args: [payTokenAmount, receiver],
-        }),
-      ],
-      sendTokens: [],
-      sendAmounts: [],
-      refundTokens: [],
-      refundReceivers: [],
-    };
-  }
-
-  if (isBotanixRedeem) {
-    externalCalls = {
-      externalCallTargets: [getContract(chainId, "StBTC"), getContract(chainId, "StBTC")],
-      externalCallDataList: [
-        encodeFunctionData({
-          abi: StBTCABI.abi,
-          functionName: "allowance",
-          args: [receiver, getContract(chainId, "SyntheticsRouter")],
-        }),
-        encodeFunctionData({
-          abi: StBTCABI.abi,
-          functionName: "redeem",
-          args: [payTokenAmount, receiver, externalHandlerAddress],
-        }),
-      ],
-      sendTokens: [],
-      sendAmounts: [],
-      refundTokens: [],
-      refundReceivers: [],
-    };
-  }
-
   return {
     isNativePayment,
     isNativeReceive,
@@ -740,7 +668,6 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
     swapPath,
     value,
     externalCalls,
-    skipOrderCreation,
   };
 }
 
@@ -889,12 +816,7 @@ export function getBatchOrderMulticallPayload({ params }: { params: BatchOrderTx
 
 export function buildCreateOrderMulticall(params: CreateOrderTxnParams<any>) {
   const { tokenTransfersParams, orderPayload } = params;
-  const {
-    tokenTransfers = [],
-    value = 0n,
-    externalCalls = undefined,
-    skipOrderCreation = false,
-  } = tokenTransfersParams ?? {};
+  const { tokenTransfers = [], value = 0n, externalCalls = undefined } = tokenTransfersParams ?? {};
 
   const multicall: ExchangeRouterCall[] = [];
 
@@ -918,12 +840,10 @@ export function buildCreateOrderMulticall(params: CreateOrderTxnParams<any>) {
     });
   }
 
-  if (!skipOrderCreation) {
-    multicall.push({
-      method: "createOrder",
-      params: [orderPayload],
-    });
-  }
+  multicall.push({
+    method: "createOrder",
+    params: [orderPayload],
+  });
 
   return {
     multicall,

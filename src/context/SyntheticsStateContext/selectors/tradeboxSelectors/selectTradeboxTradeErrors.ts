@@ -23,6 +23,7 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
+  selectTradeboxIsStakeOrUnstake,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import {
@@ -41,6 +42,7 @@ export const selectTradeboxSwapTradeError = createSelector((q) => {
   const { maxLiquidity: swapOutLiquidity } = q(selectTradeboxMaxLiquidityPath);
   const { isLimit, isTwap } = q(selectTradeboxTradeFlags);
   const isWrapOrUnwrap = q(selectTradeboxIsWrapOrUnwrap);
+  const isStakeOrUnstake = q(selectTradeboxIsStakeOrUnstake);
   const { triggerRatio, markRatio } = q(selectTradeboxTradeRatios);
   const fees = q(selectTradeboxFees);
   const numberOfParts = q(selectTradeboxTwapNumberOfParts);
@@ -58,6 +60,7 @@ export const selectTradeboxSwapTradeError = createSelector((q) => {
     externalSwapQuote: undefined,
     isLimit,
     isWrapOrUnwrap,
+    isStakeOrUnstake,
     triggerRatio,
     markRatio,
     fees,

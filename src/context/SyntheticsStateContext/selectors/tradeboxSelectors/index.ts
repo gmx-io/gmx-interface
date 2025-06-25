@@ -26,6 +26,10 @@ import {
   convertToTokenAmount,
   convertToUsd,
   getIsEquivalentTokens,
+  getIsStake,
+  getIsUnstake,
+  getIsUnwrap,
+  getIsWrap,
   getNeedTokenApprove,
   getTokensRatioByPrice,
 } from "domain/synthetics/tokens";
@@ -49,7 +53,6 @@ import { mustNeverExist } from "lib/types";
 import { BOTANIX } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
-import { getBotanixParams } from "sdk/utils/botanixParams";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { createTradeFlags } from "sdk/utils/trade";
 
@@ -276,7 +279,6 @@ const selectOnlyOnTradeboxPage = <T>(s: SyntheticsState, selection: T) =>
 export const selectTradeboxState = (s: SyntheticsState) => s.tradebox;
 export const selectTradeboxTradeType = (s: SyntheticsState) => s.tradebox.tradeType;
 export const selectTradeboxTradeMode = (s: SyntheticsState) => s.tradebox.tradeMode;
-export const selectTradeboxIsWrapOrUnwrap = (s: SyntheticsState) => s.tradebox.isWrapOrUnwrap;
 export const selectTradeboxFromTokenAddress = (s: SyntheticsState) => s.tradebox.fromTokenAddress;
 export const selectTradeboxToTokenAddress = (s: SyntheticsState) => s.tradebox.toTokenAddress;
 export const selectTradeboxMarketAddress = (s: SyntheticsState) =>
@@ -325,6 +327,20 @@ export const selectTradeboxTokensAllowance = (s: SyntheticsState) => s.tradebox.
 export const selectTradeBoxTokensAllowanceLoaded = (s: SyntheticsState) => s.tradebox.tokensAllowance.isLoaded;
 export const selectTradeboxTwapDuration = (s: SyntheticsState) => s.tradebox.duration;
 export const selectTradeboxTwapNumberOfParts = (s: SyntheticsState) => s.tradebox.numberOfParts;
+
+export const selectTradeboxIsWrapOrUnwrap = createSelector((q) => {
+  const fromToken = q(selectTradeboxFromToken);
+  const toToken = q(selectTradeboxToToken);
+
+  return Boolean(fromToken && toToken && (getIsWrap(fromToken, toToken) || getIsUnwrap(fromToken, toToken)));
+});
+
+export const selectTradeboxIsStakeOrUnstake = createSelector((q) => {
+  const fromToken = q(selectTradeboxFromToken);
+  const toToken = q(selectTradeboxToToken);
+
+  return Boolean(fromToken && toToken && (getIsStake(fromToken, toToken) || getIsUnstake(fromToken, toToken)));
+});
 
 export const selectTradeboxTotalSwapImpactBps = createSelector((q) => {
   const fees = q(selectTradeboxFees);
@@ -503,14 +519,7 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
     return undefined;
   }
 
-  const { isBotanixDeposit, isBotanixRedeem } = getBotanixParams({
-    chainId: q(selectChainId),
-    payTokenAddress: fromToken.address,
-    receiveTokenAddress: toToken.address,
-    isSwap: tradeFlags.isSwap,
-  });
-
-  if (isWrapOrUnwrap || isBotanixDeposit || isBotanixRedeem) {
+  if (isWrapOrUnwrap) {
     const tokenAmount = amountBy === "from" ? fromTokenAmount : toTokenAmount;
     const usdAmount = convertToUsd(tokenAmount, fromToken.decimals, fromTokenPrice)!;
     const price = fromTokenPrice;
@@ -619,18 +628,11 @@ const selectTradeboxOrderGasLimit = createSelector(function selectTradeboxOrderG
 
   if (!gasLimits) return null;
 
-  const { isBotanixSwap } = getBotanixParams({
-    chainId: q(selectChainId),
-    payTokenAddress: q(selectTradeboxFromTokenAddress)!,
-    receiveTokenAddress: q(selectTradeboxToTokenAddress),
-    isSwap: tradeFeesType === "swap",
-  });
-
   switch (tradeFeesType) {
     case "swap": {
       const swapAmounts = q(selectTradeboxSwapAmounts);
 
-      if ((!swapAmounts || !swapAmounts.swapPathStats) && !isBotanixSwap) return null;
+      if (!swapAmounts || !swapAmounts.swapPathStats) return null;
 
       return estimateExecuteSwapOrderGasLimit(gasLimits, {
         swapsCount: swapAmounts?.swapPathStats?.swapPath.length ?? 0,

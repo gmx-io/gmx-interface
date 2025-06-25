@@ -1500,6 +1500,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/1/standard/bitcoin.png?1696501400",
       coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
       baseSymbol: "BTC",
+      isStaking: true,
     },
     {
       name: "BTC",

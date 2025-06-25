@@ -1,11 +1,9 @@
-import { BOTANIX } from "configs/chains";
 import { MarketConfig, MARKETS } from "configs/markets";
 import { convertTokenAddress, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { GasLimitsConfig } from "types/fees";
 import { MarketsInfoData } from "types/markets";
 import { TokensData } from "types/tokens";
 import { FindSwapPath, SwapPathStats } from "types/trade";
-import { getBotanixParams } from "utils/botanixParams";
 import { LRUCache } from "utils/LruCache";
 import { getIsMarketAvailableForExpressSwaps } from "utils/markets";
 
@@ -143,19 +141,6 @@ export const createFindSwapPath = (params: {
   const findSwapPath: FindSwapPath = (usdIn: bigint, opts?: { order?: ("liquidity" | "length")[] }) => {
     if (tokenSwapPaths.length === 0 || !fromTokenAddress || !wrappedFromAddress || !wrappedToAddress) {
       return undefined;
-    }
-
-    if (chainId === BOTANIX) {
-      const { isBotanixRedeem, isBotanixDeposit } = getBotanixParams({
-        chainId,
-        payTokenAddress: fromTokenAddress,
-        receiveTokenAddress: toTokenAddress,
-        isSwap: false,
-      });
-
-      if (isBotanixRedeem || isBotanixDeposit) {
-        return undefined;
-      }
     }
 
     const cacheKey = `${usdIn}-${opts?.order?.join("-") || "none"}`;

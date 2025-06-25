@@ -31,6 +31,7 @@ import {
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
   selectTradeboxIncreasePositionAmounts,
+  selectTradeboxIsStakeOrUnstake,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxMaxLeverage,
   selectTradeboxPayAmount,
@@ -116,6 +117,7 @@ export function useTradeboxButtonState({
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const tokensData = useSelector(selectTokensData);
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
+  const isStakeOrUnstake = useSelector(selectTradeboxIsStakeOrUnstake);
   const payAmount = useSelector(selectTradeboxPayAmount);
   const payTokenAllowance = useSelector(selectTradeboxTokensAllowance);
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
@@ -128,6 +130,7 @@ export function useTradeboxButtonState({
 
   const {
     onSubmitWrapOrUnwrap,
+    onSubmitStakeOrUnstake,
     onSubmitSwap,
     onSubmitIncreaseOrder,
     onSubmitDecreaseOrder,
@@ -340,7 +343,9 @@ export function useTradeboxButtonState({
 
     let txnPromise: Promise<any>;
 
-    if (isWrapOrUnwrap) {
+    if (isStakeOrUnstake) {
+      txnPromise = onSubmitStakeOrUnstake();
+    } else if (isWrapOrUnwrap) {
       txnPromise = onSubmitWrapOrUnwrap();
     } else if (isSwap) {
       txnPromise = onSubmitSwap();
@@ -369,16 +374,18 @@ export function useTradeboxButtonState({
     isAllowanceLoaded,
     tokensToApprove,
     setStage,
+    isStakeOrUnstake,
     isWrapOrUnwrap,
     isSwap,
     isIncrease,
+    expressParams,
     openConnectModal,
     chainId,
     isApproving,
     signer,
     setPendingTxns,
-    expressParams,
     addTokenPermit,
+    onSubmitStakeOrUnstake,
     onSubmitWrapOrUnwrap,
     onSubmitSwap,
     onSubmitIncreaseOrder,
@@ -476,7 +483,13 @@ export function useTradeboxButtonState({
 
       if (isMarket) {
         if (isSwap) {
-          submitButtonText = t`Swap ${fromToken?.symbol}`;
+          if (fromToken?.isStaking) {
+            submitButtonText = t`Unstake ${fromToken?.symbol}`;
+          } else if (toToken?.isStaking) {
+            submitButtonText = t`Stake ${toToken?.symbol}`;
+          } else {
+            submitButtonText = t`Swap ${fromToken?.symbol}`;
+          }
         } else {
           if (!toToken?.symbol) {
             submitButtonText = `${localizedTradeTypeLabels[tradeType!]} ...`;
@@ -520,11 +533,11 @@ export function useTradeboxButtonState({
     expressParams,
     batchParams,
     totalExecutionFee,
+    isExpressLoading,
     account,
     buttonErrorText,
     stopLoss.error?.percentage,
     takeProfit.error?.percentage,
-    isExpressLoading,
     isApproving,
     tokensToApprove,
     isAllowanceLoaded,
@@ -536,6 +549,7 @@ export function useTradeboxButtonState({
     isLimit,
     isTwap,
     isSwap,
+    fromToken?.isStaking,
     fromToken?.symbol,
     toToken,
     localizedTradeTypeLabels,

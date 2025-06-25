@@ -219,6 +219,14 @@ export function getIsUnwrap(token1: Token, token2: Token) {
   return token1.isWrapped && token2.isNative;
 }
 
+export function getIsStake(token1: Token, token2: Token) {
+  return (token1.isWrapped || token1.isNative) && token2.isStaking;
+}
+
+export function getIsUnstake(token1: Token, token2: Token) {
+  return token1.isStaking && (token2.isWrapped || token2.isNative);
+}
+
 export function getTokensRatioByPrice(p: {
   fromToken: Token;
   toToken: Token;

@@ -31,7 +31,6 @@ import {
   TriggerThresholdType,
 } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
-import { getBotanixParams } from "sdk/utils/botanixParams";
 
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
 
@@ -99,6 +98,7 @@ export function getSwapError(p: {
   swapPathStats: SwapPathStats | undefined;
   externalSwapQuote: ExternalSwapQuote | undefined;
   isWrapOrUnwrap: boolean;
+  isStakeOrUnstake: boolean;
   swapLiquidity: bigint | undefined;
   isTwap: boolean;
   numberOfParts: number;
@@ -114,12 +114,12 @@ export function getSwapError(p: {
     markRatio,
     fees,
     isWrapOrUnwrap,
+    isStakeOrUnstake,
     swapLiquidity,
     swapPathStats,
     externalSwapQuote,
     isTwap,
     numberOfParts,
-    chainId,
   } = p;
 
   if (!fromToken || !toToken) {
@@ -142,18 +142,11 @@ export function getSwapError(p: {
     return [t`Insufficient ${fromToken?.symbol} balance`];
   }
 
-  if (isWrapOrUnwrap) {
+  if (isWrapOrUnwrap || isStakeOrUnstake) {
     return [undefined];
   }
 
-  const { isBotanixDeposit, isBotanixRedeem, isBotanixSwap } = getBotanixParams({
-    chainId,
-    payTokenAddress: fromToken.address,
-    receiveTokenAddress: toToken.address,
-    isSwap: true,
-  });
-
-  if (!isLimit && (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd) && !isBotanixSwap) {
+  if (!isLimit && (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd)) {
     return [t`Insufficient liquidity`];
   }
 
@@ -162,12 +155,12 @@ export function getSwapError(p: {
 
   const noExternalSwap = !externalSwapQuote;
 
-  if (noInternalSwap && noExternalSwap && !isBotanixDeposit && !isBotanixRedeem) {
+  if (noInternalSwap && noExternalSwap) {
     return [t`Couldn't find a swap path with enough liquidity`];
   }
 
   if (
-    (!fees?.payTotalFees && !isBotanixSwap) ||
+    !fees?.payTotalFees ||
     (fees?.payTotalFees && fees.payTotalFees.deltaUsd < 0 && bigMath.abs(fees.payTotalFees.deltaUsd) > (fromUsd ?? 0))
   ) {
     return [t`Fees exceed Pay amount`];
@@ -259,7 +252,6 @@ export function getIncreaseError(p: {
     isTwap,
     numberOfParts,
     minPositionSizeUsd,
-    chainId,
   } = p;
 
   if (!marketInfo || !indexToken) {
@@ -293,14 +285,7 @@ export function getIncreaseError(p: {
   const noInternalSwap = !swapPathStats?.swapPath?.length;
   const noExternalSwap = !externalSwapQuote;
 
-  const { isBotanixDeposit } = getBotanixParams({
-    chainId,
-    payTokenAddress: initialCollateralToken.address,
-    receiveTokenAddress: undefined,
-    isSwap: false,
-  });
-
-  if (isNeedSwap && isBotanixDeposit) {
+  if (isNeedSwap) {
     if (noInternalSwap && noExternalSwap) {
       return [t`No swap path found`, "noSwapPath"];
     }
