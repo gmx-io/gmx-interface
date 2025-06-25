@@ -6961,6 +6961,10 @@ msgstr "Edit order"
 msgid "Claims"
 msgstr "Claims"
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Stake {0}"
+msgstr "Stake {0}"
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
@@ -8359,6 +8363,10 @@ msgstr "Fees are higher than Collateral"
 #: src/components/Referrals/TradersStats.tsx
 msgid "You will receive a {currentTierDiscount}% discount on opening and closing fees."
 msgstr "You will receive a {currentTierDiscount}% discount on opening and closing fees."
+
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Unstake {0}"
+msgstr "Unstake {0}"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"
