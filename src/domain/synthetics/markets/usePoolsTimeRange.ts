@@ -24,7 +24,6 @@ function getStartDate(days: number) {
 
 const TIME_RANGE_TO_DAYS = {
   total: new Date(0),
-  "7d": getStartDate(7),
   "30d": getStartDate(30),
   "90d": getStartDate(90),
   "180d": getStartDate(180),
