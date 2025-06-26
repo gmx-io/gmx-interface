@@ -33,6 +33,13 @@ export const IS_NETWORK_DISABLED: Record<UiContractsChain, boolean> = {
   [BOTANIX]: false,
 };
 
+export const ABI_VERSION: Record<UiContractsChain, "latest" | "2.1"> = {
+  [ARBITRUM]: "latest",
+  [AVALANCHE]: "latest",
+  [AVALANCHE_FUJI]: "latest",
+  [BOTANIX]: "2.1",
+};
+
 export const NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR = {
   [ARBITRUM]: 10n ** 29n * 5n,
   [AVALANCHE]: 10n ** 29n * 35n,
