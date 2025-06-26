@@ -42,8 +42,6 @@ export const convertPoolsTimeRangeToApyPeriod = (timeRange: PoolsTimeRange): Apy
   switch (timeRange) {
     case "total":
       return "total";
-    case "7d":
-      return "7d";
     case "30d":
       return "30d";
     case "90d":
