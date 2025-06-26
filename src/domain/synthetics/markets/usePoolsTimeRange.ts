@@ -24,7 +24,6 @@ function getStartDate(days: number) {
 
 const TIME_RANGE_TO_DAYS = {
   total: new Date(0),
-  "7d": getStartDate(7),
   "30d": getStartDate(30),
   "90d": getStartDate(90),
   "180d": getStartDate(180),
@@ -42,8 +41,6 @@ export const convertPoolsTimeRangeToApyPeriod = (timeRange: PoolsTimeRange): Apy
   switch (timeRange) {
     case "total":
       return "total";
-    case "7d":
-      return "7d";
     case "30d":
       return "30d";
     case "90d":
