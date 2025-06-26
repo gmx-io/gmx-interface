@@ -357,7 +357,7 @@ msgstr ""
 msgid "Confirm Settle"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "Select token"
 msgstr ""
 
@@ -840,7 +840,7 @@ msgstr ""
 #: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/InputSection/InputSection.jsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "MAX"
 msgstr "МАКС"
@@ -1349,7 +1349,7 @@ msgid "This token automatically accrues fees from leverage trading and swaps for
 msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "To Network"
 msgstr ""
 
@@ -3111,7 +3111,7 @@ msgstr "Всего Ставок"
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -3142,7 +3142,7 @@ msgstr "Активировать отправку ордера."
 
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawing..."
 msgstr ""
 
@@ -3216,7 +3216,7 @@ msgstr ""
 msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets."
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than {upperLimitFormatted}."
 msgstr ""
 
@@ -3490,7 +3490,7 @@ msgstr "Сайт представляет собой развернутый и �
 msgid "Deposit failed."
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "Enter withdrawal amount"
 msgstr ""
 
@@ -3613,7 +3613,7 @@ msgstr "Запрос на рыночный обмен"
 msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.{1}"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "The amount you are trying to withdraw is below the limit. Please try an amount larger than {lowerLimitFormatted}."
 msgstr ""
 
@@ -3728,8 +3728,8 @@ msgstr ""
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/domain/multichain/useMultichainFundingToast.tsx
@@ -4236,7 +4236,7 @@ msgstr ""
 msgid "Fulfilling order request"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance to pay for gas"
 msgstr ""
@@ -5176,7 +5176,7 @@ msgstr "Обменный Ордер подан!"
 #: src/components/Synthetics/Claims/Claims.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
@@ -6164,7 +6164,7 @@ msgid "Buy order executed"
 msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "Asset Balance"
 msgstr ""
 
@@ -6446,7 +6446,7 @@ msgstr "Цена исполнения ордера учитывает влиян
 msgid "Buy GLP or GMX"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "You're withdrawing {0}, your gas token. It's recommended to keep $10 in {1} for transactions, or switch your gas token in settings."
 msgstr ""
 
@@ -6560,7 +6560,7 @@ msgstr "Максимальное кредитное плечо 100x было п�
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "GMX Balance"
 msgstr ""
 
@@ -7142,7 +7142,7 @@ msgstr ""
 msgid "Edit order"
 msgstr "Редактирование ордера"
 
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "Error simulating withdrawal"
 msgstr ""
 
@@ -7869,7 +7869,7 @@ msgstr "NFT ID"
 msgid "Success claimings"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "Select network"
 msgstr ""
 
@@ -8024,7 +8024,7 @@ msgstr ""
 msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr "Неверный токен индексТокен: \"{0}\" займТокен: \"{1}\""
 
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdraw Fee"
 msgstr ""
 
@@ -8792,7 +8792,7 @@ msgid "We'll then schedule a chat or interview with you. As a thank you, you'll 
 msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "Available:"
 msgstr ""
 
@@ -8964,7 +8964,7 @@ msgid "DeBank"
 msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-#: src/components/Synthetics/GmxAccountModal/WithdrawView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "Insufficient balance"
 msgstr ""
 
