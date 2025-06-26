@@ -9,7 +9,6 @@ import { PoolsTabs } from "components/Synthetics/PoolsTabs/PoolsTabs";
 
 const LABEL_BY_POOLS_TIME_RANGE: Record<PoolsTimeRange, MessageDescriptor> = {
   total: msg`Total`,
-  "7d": msg`Last 7d`,
   "30d": msg`Last 30d`,
   "90d": msg`Last 90d`,
   "180d": msg`Last 180d`,
