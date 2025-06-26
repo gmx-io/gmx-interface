@@ -3,7 +3,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { ApyPeriod } from "lib/oracleKeeperFetcher";
 import { mustNeverExist } from "lib/types";
 
-export const POOLS_TIME_RANGE_OPTIONS = ["total", "180d", "90d", "30d"] as const;
+export const POOLS_TIME_RANGE_OPTIONS = ["total", "180d", "90d", "30d", "7d"] as const;
 
 export type PoolsTimeRange = (typeof POOLS_TIME_RANGE_OPTIONS)[number];
 
