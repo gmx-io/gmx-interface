@@ -77,7 +77,7 @@ export async function simulateExecution(chainId: number, p: SimulateExecuteParam
     blockTag = Number(result.blockNumber);
   }
 
-  const priceTimestamp = blockTimestamp + 30n;
+  const priceTimestamp = blockTimestamp + 120n;
   const method = p.method || "simulateExecuteLatestOrder";
 
   const isGlv = method === "simulateExecuteLatestGlvDeposit" || method === "simulateExecuteLatestGlvWithdrawal";
