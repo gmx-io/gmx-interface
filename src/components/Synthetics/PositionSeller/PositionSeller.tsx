@@ -370,6 +370,7 @@ export function PositionSeller() {
     fastExpressParams,
     asyncExpressParams,
   } = useExpressOrdersParams({
+    label: "Position Seller",
     orderParams: batchParams,
     isGmxAccount: srcChainId !== undefined,
   });

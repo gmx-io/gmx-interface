@@ -9,9 +9,9 @@ import {
   useGmxAccountDepositViewTokenInputValue,
   useGmxAccountModalOpen,
   useGmxAccountSelectedTransferGuid,
-  useGmxAccountWithdrawViewChain,
-  useGmxAccountWithdrawViewTokenAddress,
-  useGmxAccountWithdrawViewTokenInputValue,
+  useGmxAccountWithdrawalViewChain,
+  useGmxAccountWithdrawalViewTokenAddress,
+  useGmxAccountWithdrawalViewTokenInputValue,
 } from "context/GmxAccountContext/hooks";
 import { useGmxAccountFundingHistoryItem } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
@@ -33,12 +33,12 @@ export const TransferDetailsView = () => {
   const { chainId } = useChainId();
 
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
-  const [, setDepositViewChain] = useGmxAccountDepositViewChain();
-  const [, setWithdrawViewChain] = useGmxAccountWithdrawViewChain();
+  const [, setGmxAccountDepositViewChain] = useGmxAccountDepositViewChain();
+  const [, setGmxAccountWithdrawalViewChain] = useGmxAccountWithdrawalViewChain();
   const [, setGmxAccountDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
   const [, setGmxAccountDepositViewTokenInputValue] = useGmxAccountDepositViewTokenInputValue();
-  const [, setGmxAccountWithdrawViewTokenAddress] = useGmxAccountWithdrawViewTokenAddress();
-  const [, setGmxAccountWithdrawViewTokenInputValue] = useGmxAccountWithdrawViewTokenInputValue();
+  const [, setGmxAccountWithdrawalViewTokenAddress] = useGmxAccountWithdrawalViewTokenAddress();
+  const [, setGmxAccountWithdrawalViewTokenInputValue] = useGmxAccountWithdrawalViewTokenInputValue();
 
   const [selectedTransferGuid] = useGmxAccountSelectedTransferGuid();
 
@@ -74,7 +74,7 @@ export const TransferDetailsView = () => {
     }
 
     if (selectedTransfer.operation === "deposit") {
-      setDepositViewChain(selectedTransfer.sourceChainId as SourceChainId);
+      setGmxAccountDepositViewChain(selectedTransfer.sourceChainId as SourceChainId);
       setGmxAccountDepositViewTokenAddress(selectedTransfer.token);
       setGmxAccountDepositViewTokenInputValue(formatAmountFree(selectedTransfer.sentAmount, token.decimals));
       setGmxAccountModalOpen("deposit");
@@ -82,9 +82,9 @@ export const TransferDetailsView = () => {
     }
 
     if (selectedTransfer.operation === "withdrawal") {
-      setWithdrawViewChain(selectedTransfer.sourceChainId as SourceChainId);
-      setGmxAccountWithdrawViewTokenAddress(selectedTransfer.token);
-      setGmxAccountWithdrawViewTokenInputValue(formatAmountFree(selectedTransfer.sentAmount, token.decimals));
+      setGmxAccountWithdrawalViewChain(selectedTransfer.sourceChainId as SourceChainId);
+      setGmxAccountWithdrawalViewTokenAddress(selectedTransfer.token);
+      setGmxAccountWithdrawalViewTokenInputValue(formatAmountFree(selectedTransfer.sentAmount, token.decimals));
       setGmxAccountModalOpen("withdraw");
     }
   };

@@ -27,7 +27,8 @@ import {
 } from "config/chains";
 import { isDevelopment } from "config/env";
 import { LayerZeroEndpointId } from "domain/multichain/types";
-import { convertTokenAddress } from "sdk/configs/tokens";
+import { numberToBigint } from "lib/numbers";
+import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
 
 export {
   ethPoolArbitrumSepolia,
@@ -331,3 +332,10 @@ export const CHAIN_ID_TO_ENDPOINT_ID: Record<SettlementChainId | SourceChainId, 
 
 export const ENDPOINT_ID_TO_CHAIN_ID: Partial<Record<LayerZeroEndpointId, SettlementChainId | SourceChainId>> =
   mapValues(invert(CHAIN_ID_TO_ENDPOINT_ID), (value) => parseInt(value));
+
+export const FAKE_INPUT_AMOUNT_MAP: Record<string, bigint> = {
+  "USDC.SG": numberToBigint(1, getTokenBySymbol(ARBITRUM_SEPOLIA, "USDC.SG").decimals),
+  ETH: numberToBigint(0.0015, getTokenBySymbol(ARBITRUM_SEPOLIA, "ETH").decimals),
+};
+
+export const RANDOM_SLOT = "0x23995301f0ea59f7cace2ae906341fc4662f3f5d23f124431ee3520d1070148c";

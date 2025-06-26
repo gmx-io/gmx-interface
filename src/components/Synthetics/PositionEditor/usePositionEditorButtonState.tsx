@@ -249,6 +249,7 @@ export function usePositionEditorButtonState(operation: Operation): {
     asyncExpressParams,
     expressParamsPromise,
   } = useExpressOrdersParams({
+    label: "Position Editor",
     orderParams: batchParams,
     isGmxAccount: isCollateralTokenFromGmxAccount,
   });

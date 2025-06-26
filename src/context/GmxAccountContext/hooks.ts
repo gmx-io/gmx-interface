@@ -13,13 +13,13 @@ import {
   selectGmxAccountSetModalOpen,
   selectGmxAccountSetSelectedTransferGuid,
   selectGmxAccountSetSettlementChainId,
-  selectGmxAccountSetWithdrawViewChain,
-  selectGmxAccountSetWithdrawViewTokenAddress,
-  selectGmxAccountSetWithdrawViewTokenInputValue,
+  selectGmxAccountsetWithdrawalViewChain,
+  selectGmxAccountSetWithdrawalViewTokenAddress,
+  selectGmxAccountSetWithdrawalViewTokenInputValue,
   selectGmxAccountSettlementChainId,
-  selectGmxAccountWithdrawViewChain,
-  selectGmxAccountWithdrawViewTokenAddress,
-  selectGmxAccountWithdrawViewTokenInputValue,
+  selectGmxAccountWithdrawalViewChain,
+  selectGmxAccountWithdrawalViewTokenAddress,
+  selectGmxAccountWithdrawalViewTokenInputValue,
 } from "./selectors";
 
 export function useGmxAccountSelector<Selected>(selector: (s: GmxAccountContext) => Selected) {
@@ -64,24 +64,24 @@ export function useGmxAccountDepositViewTokenInputValue() {
   ] as const;
 }
 
-export function useGmxAccountWithdrawViewChain() {
+export function useGmxAccountWithdrawalViewChain() {
   return [
-    useGmxAccountSelector(selectGmxAccountWithdrawViewChain),
-    useGmxAccountSelector(selectGmxAccountSetWithdrawViewChain),
+    useGmxAccountSelector(selectGmxAccountWithdrawalViewChain),
+    useGmxAccountSelector(selectGmxAccountsetWithdrawalViewChain),
   ] as const;
 }
 
-export function useGmxAccountWithdrawViewTokenAddress() {
+export function useGmxAccountWithdrawalViewTokenAddress() {
   return [
-    useGmxAccountSelector(selectGmxAccountWithdrawViewTokenAddress),
-    useGmxAccountSelector(selectGmxAccountSetWithdrawViewTokenAddress),
+    useGmxAccountSelector(selectGmxAccountWithdrawalViewTokenAddress),
+    useGmxAccountSelector(selectGmxAccountSetWithdrawalViewTokenAddress),
   ] as const;
 }
 
-export function useGmxAccountWithdrawViewTokenInputValue() {
+export function useGmxAccountWithdrawalViewTokenInputValue() {
   return [
-    useGmxAccountSelector(selectGmxAccountWithdrawViewTokenInputValue),
-    useGmxAccountSelector(selectGmxAccountSetWithdrawViewTokenInputValue),
+    useGmxAccountSelector(selectGmxAccountWithdrawalViewTokenInputValue),
+    useGmxAccountSelector(selectGmxAccountSetWithdrawalViewTokenInputValue),
   ] as const;
 }
 

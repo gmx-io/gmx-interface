@@ -2,20 +2,21 @@ import useSWR from "swr";
 import { Address, PublicClient, StateOverride, toHex, zeroAddress, zeroHash } from "viem";
 import { useAccount, usePublicClient } from "wagmi";
 
-import { ARBITRUM_SEPOLIA, type ContractsChainId, type SettlementChainId, type SourceChainId } from "config/chains";
+import { type ContractsChainId, type SettlementChainId, type SourceChainId } from "config/chains";
 import { tryGetContract } from "config/contracts";
 import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
+  FAKE_INPUT_AMOUNT_MAP,
   getLayerZeroEndpointId,
   getStargatePoolAddress,
   OVERRIDE_ERC20_BYTECODE,
+  RANDOM_SLOT,
 } from "config/multichain";
 import { useGmxAccountDepositViewChain } from "context/GmxAccountContext/hooks";
 import { useChainId } from "lib/chains";
 import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
-import { numberToBigint } from "lib/numbers";
 import { abis } from "sdk/abis";
-import { getToken, getTokenBySymbol } from "sdk/configs/tokens";
+import { getToken } from "sdk/configs/tokens";
 
 import { CodecUiHelper, MultichainAction } from "./codecs/CodecUiHelper";
 import { OFTComposeMsgCodec } from "./codecs/OFTComposeMsgCodec";
@@ -73,13 +74,6 @@ export function useMultichainDepositNetworkComposeGas(opts?: {
     composeGas,
   };
 }
-
-const FAKE_INPUT_AMOUNT_MAP: Record<string, bigint> = {
-  "USDC.SG": numberToBigint(1, getTokenBySymbol(ARBITRUM_SEPOLIA, "USDC.SG").decimals),
-  ETH: numberToBigint(0.0015, getTokenBySymbol(ARBITRUM_SEPOLIA, "ETH").decimals),
-};
-
-const RANDOM_SLOT = "0x23995301f0ea59f7cace2ae906341fc4662f3f5d23f124431ee3520d1070148c";
 
 export async function estimateMultichainDepositNetworkComposeGas({
   action,

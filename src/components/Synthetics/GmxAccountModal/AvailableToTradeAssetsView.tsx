@@ -13,7 +13,6 @@ import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import Button from "components/Button/Button";
-import { useGmxAccountTokensDataObject } from "components/Synthetics/GmxAccountModal/hooks";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 type FilterType = "all" | "gmxBalance" | "wallet";
@@ -29,7 +28,7 @@ const FILTER_TITLE_MAP: Record<FilterType, MessageDescriptor> = {
 type DisplayToken = {
   chainId: number;
   symbol: string;
-  isGmxAccountBalance: boolean;
+  isGmxAccount: boolean;
   balance: bigint | undefined;
   balanceUsd: bigint | undefined;
   decimals: number;
@@ -64,8 +63,8 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
       const matchesChainFilter =
         noChainFilter ||
         activeFilter === "all" ||
-        (activeFilter === "gmxBalance" && token.isGmxAccountBalance) ||
-        (activeFilter === "wallet" && !token.isGmxAccountBalance);
+        (activeFilter === "gmxBalance" && token.isGmxAccount) ||
+        (activeFilter === "wallet" && !token.isGmxAccount);
 
       return matchesSearch && matchesChainFilter;
     });
@@ -134,23 +133,24 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
 };
 
 const AssetListMultichain = () => {
-  const gmxAccountTokensData = useGmxAccountTokensDataObject();
+  const { chainId, srcChainId } = useChainId();
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
 
   const displayTokens = useMemo(() => {
-    return Object.values(gmxAccountTokensData)
-      .filter((token) => !token.isNative && token.balance !== 0n && token.balance !== undefined)
+    return Object.values(tokensData || {})
+      .filter((token) => !token.isNative && token.gmxAccountBalance !== 0n && token.gmxAccountBalance !== undefined)
       .map(
         (token): DisplayToken => ({
           chainId: 0,
           symbol: token.symbol,
-          isGmxAccountBalance: true,
-          balance: token.balance,
-          balanceUsd: convertToUsd(token.balance, token.decimals, getMidPrice(token.prices)),
+          isGmxAccount: true,
+          balance: token.gmxAccountBalance,
+          balanceUsd: convertToUsd(token.gmxAccountBalance, token.decimals, getMidPrice(token.prices)),
           decimals: token.decimals,
         })
       )
       .sort(tokenSorter);
-  }, [gmxAccountTokensData]);
+  }, [tokensData]);
 
   return <AssetsList noChainFilter tokens={displayTokens} />;
 };
@@ -158,41 +158,30 @@ const AssetListMultichain = () => {
 const AssetListSettlementChain = () => {
   const { chainId } = useChainId();
   const { tokensData } = useTokensDataRequest(chainId);
-  const gmxAccountTokensData = useGmxAccountTokensDataObject();
 
   const displayTokens = useMemo(() => {
-    const gmxAccountDisplayTokens = Object.values(gmxAccountTokensData)
-      .filter((token) => token.balance !== undefined && token.balance > 0n)
-      .map(
-        (token): DisplayToken => ({
+    const displayTokens: DisplayToken[] = Object.values(tokensData || {})
+      .flatMap((tokenData): DisplayToken[] => [
+        {
+          ...tokenData,
+          isGmxAccount: true,
+          balance: tokenData.gmxAccountBalance,
+          balanceUsd: convertToUsd(tokenData.gmxAccountBalance, tokenData.decimals, getMidPrice(tokenData.prices)),
           chainId: 0,
-          symbol: token.symbol,
-          isGmxAccountBalance: true,
-          balance: token.balance,
-          balanceUsd: convertToUsd(token.balance, token.decimals, getMidPrice(token.prices)),
-          decimals: token.decimals,
-        })
-      );
-
-    const settlementChainDisplayTokens = Object.values(tokensData || {})
-      .map(
-        (token): DisplayToken => ({
-          chainId: chainId!,
-          symbol: token.symbol,
-          isGmxAccountBalance: false,
-          balance: token.balance,
-          balanceUsd: convertToUsd(token.balance, token.decimals, getMidPrice(token.prices)),
-          decimals: token.decimals,
-        })
-      )
-      .filter((token) => token.balance !== undefined && token.balance > 0n);
-
-    const displayTokens: DisplayToken[] = [...gmxAccountDisplayTokens, ...settlementChainDisplayTokens].sort(
-      tokenSorter
-    );
+        },
+        {
+          ...tokenData,
+          isGmxAccount: false,
+          balance: tokenData.walletBalance,
+          balanceUsd: convertToUsd(tokenData.walletBalance, tokenData.decimals, getMidPrice(tokenData.prices)),
+          chainId: chainId,
+        },
+      ])
+      .filter((token) => token.balance !== undefined && token.balance > 0n)
+      .sort(tokenSorter);
 
     return displayTokens;
-  }, [chainId, gmxAccountTokensData, tokensData]);
+  }, [chainId, tokensData]);
 
   return <AssetsList tokens={displayTokens} />;
 };

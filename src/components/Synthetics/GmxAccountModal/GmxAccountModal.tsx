@@ -15,7 +15,7 @@ import { DepositView } from "./DepositView";
 import { MainView } from "./MainView";
 import { SelectAssetToDepositView } from "./SelectAssetToDepositView";
 import { TransferDetailsView } from "./TransferDetailsView";
-import { WithdrawView } from "./WithdrawView";
+import { WithdrawalView } from "./WithdrawalView";
 
 const AvailableToTradeAssetsTitle = () => {
   const { srcChainId } = useChainId();
@@ -133,7 +133,7 @@ export const GmxAccountModal = memo(() => {
       {view === "selectAssetToDeposit" && <SelectAssetToDepositView />}
       {view === "withdraw" && (
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="gmxAccount">
-          <WithdrawView />
+          <WithdrawalView />
         </SyntheticsStateContextProvider>
       )}
     </SlideModal>

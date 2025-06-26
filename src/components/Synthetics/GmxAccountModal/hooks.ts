@@ -4,47 +4,28 @@ import { Address } from "viem";
 import { useAccount } from "wagmi";
 
 import { ContractsChainId, SettlementChainId, SourceChainId, getChainName } from "config/chains";
-import { MULTI_CHAIN_TOKEN_MAPPING, isSettlementChain } from "config/multichain";
+import { MULTI_CHAIN_TOKEN_MAPPING } from "config/multichain";
 import { fetchMultichainTokenBalances } from "domain/multichain/fetchMultichainTokenBalances";
 import type { TokenChainData } from "domain/multichain/types";
-import {
-  convertToUsd,
-  getMidPrice,
-  useTokenBalances,
-  useTokenRecentPricesRequest,
-  useTokensDataRequest,
-} from "domain/synthetics/tokens";
+import { convertToUsd, getMidPrice, useTokenRecentPricesRequest, useTokensDataRequest } from "domain/synthetics/tokens";
 import { TokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
-import { EMPTY_OBJECT } from "lib/objects";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 export function useAvailableToTradeAssetSymbolsSettlementChain(): string[] {
-  const gmxAccountTokensData = useGmxAccountTokensDataObject();
-  const { chainId } = useChainId();
-  const { address: account } = useAccount();
-
-  const currentChainTokenBalances = useTokenBalances(chainId, {
-    overrideAccount: account,
-    enabled: isSettlementChain(chainId),
-  });
+  const { chainId, srcChainId } = useChainId();
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
 
   const tokenSymbols = new Set<string>();
 
-  for (const token of Object.values(gmxAccountTokensData)) {
-    if (token.balance !== undefined && token.balance > 0n) {
+  for (const token of Object.values(tokensData ?? {})) {
+    if (token.walletBalance !== undefined && token.walletBalance > 0n) {
       tokenSymbols.add(token.symbol);
     }
-  }
-
-  if (chainId) {
-    for (const [tokenAddress, balance] of Object.entries(currentChainTokenBalances.balancesData || {})) {
-      if (balance !== undefined && balance > 0n) {
-        const token = getToken(chainId, tokenAddress);
-        tokenSymbols.add(token.symbol);
-      }
+    if (token.gmxAccountBalance !== undefined && token.gmxAccountBalance > 0n) {
+      tokenSymbols.add(token.symbol);
     }
   }
 
@@ -52,12 +33,13 @@ export function useAvailableToTradeAssetSymbolsSettlementChain(): string[] {
 }
 
 export function useAvailableToTradeAssetSymbolsMultichain(): string[] {
-  const gmxAccountTokensData = useGmxAccountTokensDataObject();
+  const { chainId, srcChainId } = useChainId();
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
 
   const tokenSymbols = new Set<string>();
 
-  for (const token of Object.values(gmxAccountTokensData)) {
-    if (token.balance !== undefined && token.balance > 0n) {
+  for (const token of Object.values(tokensData ?? {})) {
+    if (token.gmxAccountBalance !== undefined && token.gmxAccountBalance > 0n) {
       tokenSymbols.add(token.symbol);
     }
   }
@@ -258,14 +240,6 @@ export function useMultichainTokensRequest(): {
     tokenChainDataArray: tokenChainDataArray,
     isPriceDataLoading,
   };
-}
-
-// TODO MLTCH: possibly replace with useSelector(selectTokensData)
-export function useGmxAccountTokensDataObject(): TokensData {
-  const { chainId, srcChainId } = useChainId();
-  const { tokensData = EMPTY_OBJECT as TokensData } = useTokensDataRequest(chainId, srcChainId);
-
-  return tokensData;
 }
 
 export function useGmxAccountWithdrawNetworks() {

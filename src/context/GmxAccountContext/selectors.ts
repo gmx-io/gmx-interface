@@ -20,13 +20,13 @@ export const selectGmxAccountSetDepositViewTokenAddress = (s: GmxAccountContext)
 export const selectGmxAccountDepositViewTokenInputValue = (s: GmxAccountContext) => s.depositViewTokenInputValue;
 export const selectGmxAccountSetDepositViewTokenInputValue = (s: GmxAccountContext) => s.setDepositViewTokenInputValue;
 
-export const selectGmxAccountWithdrawViewChain = (s: GmxAccountContext) => s.withdrawViewChain;
-export const selectGmxAccountSetWithdrawViewChain = (s: GmxAccountContext) => s.setWithdrawViewChain;
-export const selectGmxAccountWithdrawViewTokenAddress = (s: GmxAccountContext) => s.withdrawViewTokenAddress;
-export const selectGmxAccountSetWithdrawViewTokenAddress = (s: GmxAccountContext) => s.setWithdrawViewTokenAddress;
-export const selectGmxAccountWithdrawViewTokenInputValue = (s: GmxAccountContext) => s.withdrawViewTokenInputValue;
-export const selectGmxAccountSetWithdrawViewTokenInputValue = (s: GmxAccountContext) =>
-  s.setWithdrawViewTokenInputValue;
+export const selectGmxAccountWithdrawalViewChain = (s: GmxAccountContext) => s.withdrawalViewChain;
+export const selectGmxAccountsetWithdrawalViewChain = (s: GmxAccountContext) => s.setWithdrawalViewChain;
+export const selectGmxAccountWithdrawalViewTokenAddress = (s: GmxAccountContext) => s.withdrawalViewTokenAddress;
+export const selectGmxAccountSetWithdrawalViewTokenAddress = (s: GmxAccountContext) => s.setWithdrawalViewTokenAddress;
+export const selectGmxAccountWithdrawalViewTokenInputValue = (s: GmxAccountContext) => s.withdrawalViewTokenInputValue;
+export const selectGmxAccountSetWithdrawalViewTokenInputValue = (s: GmxAccountContext) =>
+  s.setWithdrawalViewTokenInputValue;
 
 export const selectGmxAccountSelectedTransferGuid = (s: GmxAccountContext) => s.selectedTransferGuid;
 export const selectGmxAccountSetSelectedTransferGuid = (s: GmxAccountContext) => s.setSelectedTransferGuid;

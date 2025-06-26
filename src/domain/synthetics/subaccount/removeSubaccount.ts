@@ -227,7 +227,6 @@ export async function removeSubaccountExpressTxn({
     account,
     isGmxAccount: srcChainId !== undefined,
     relayerFeeAmount,
-    additionalNetworkFee: 0n,
     globalExpressParams: globalExpressParams,
   });
 

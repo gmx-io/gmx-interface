@@ -38,7 +38,7 @@ import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFe
 import { useQuoteOft } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSend } from "domain/multichain/useQuoteSend";
-import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
+import { getNeedTokenApprove, useTokensAllowanceData, useTokensDataRequest } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
@@ -71,7 +71,7 @@ import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import { useAvailableToTradeAssetMultichain, useGmxAccountTokensDataObject, useMultichainTokensRequest } from "./hooks";
+import { useAvailableToTradeAssetMultichain, useMultichainTokensRequest } from "./hooks";
 import { wrapChainAction } from "./wrapChainAction";
 
 const useIsFirstDeposit = () => {
@@ -118,8 +118,8 @@ export const DepositView = () => {
   const selectedToken =
     depositViewTokenAddress !== undefined ? getToken(settlementChainId, depositViewTokenAddress) : undefined;
 
-  const gmxAccountTokensData = useGmxAccountTokensDataObject();
-  const selectedTokenGmxAccountData = getByKey(gmxAccountTokensData, depositViewTokenAddress);
+  const { tokensData } = useTokensDataRequest(settlementChainId, depositViewChain);
+  const selectedTokenData = getByKey(tokensData, depositViewTokenAddress);
 
   const selectedTokenSourceChainTokenId =
     depositViewTokenAddress !== undefined && depositViewChain !== undefined
@@ -184,13 +184,13 @@ export const DepositView = () => {
     }
 
     const nextGmxAccountBalanceUsd = (gmxAccountUsd ?? 0n) + inputAmountUsd;
-    const nextTokenGmxAccountBalance = (selectedTokenGmxAccountData?.balance ?? 0n) + inputAmount;
+    const nextTokenGmxAccountBalance = (selectedTokenData?.gmxAccountBalance ?? 0n) + inputAmount;
 
     return {
       nextGmxAccountBalanceUsd,
       nextTokenGmxAccountBalance,
     };
-  }, [gmxAccountUsd, inputAmount, inputAmountUsd, selectedTokenGmxAccountData?.balance]);
+  }, [gmxAccountUsd, inputAmount, inputAmountUsd, selectedTokenData?.gmxAccountBalance]);
 
   const spenderAddress =
     // Only when DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT
@@ -746,22 +746,22 @@ export const DepositView = () => {
           value={
             <ValueTransition
               from={
-                selectedTokenGmxAccountData !== undefined && selectedTokenGmxAccountData.balance !== undefined
+                selectedTokenData !== undefined && selectedTokenData.gmxAccountBalance !== undefined
                   ? formatBalanceAmount(
-                      selectedTokenGmxAccountData.balance,
-                      selectedTokenGmxAccountData.decimals,
-                      selectedTokenGmxAccountData.symbol,
-                      { isStable: selectedTokenGmxAccountData.isStable }
+                      selectedTokenData.gmxAccountBalance,
+                      selectedTokenData.decimals,
+                      selectedTokenData.symbol,
+                      { isStable: selectedTokenData.isStable }
                     )
                   : undefined
               }
               to={
-                nextTokenGmxAccountBalance !== undefined && selectedTokenGmxAccountData !== undefined
+                nextTokenGmxAccountBalance !== undefined && selectedTokenData !== undefined
                   ? formatBalanceAmount(
                       nextTokenGmxAccountBalance,
-                      selectedTokenGmxAccountData.decimals,
-                      selectedTokenGmxAccountData.symbol,
-                      { isStable: selectedTokenGmxAccountData.isStable }
+                      selectedTokenData.decimals,
+                      selectedTokenData.symbol,
+                      { isStable: selectedTokenData.isStable }
                     )
                   : undefined
               }

@@ -38,14 +38,18 @@ import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { getEmptyExternalCallsPayload, type ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
+const DEBUG_ARBITRARY_RELAY_PARAMS = true;
+
 export function getRawBaseRelayerParams({
   chainId,
   account,
   globalExpressParams,
+  additionalNetworkFee,
 }: {
   chainId: ContractsChainId;
   account: string;
   globalExpressParams: GlobalExpressParams;
+  additionalNetworkFee?: bigint;
 }): Partial<{
   rawBaseRelayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload;
   baseRelayFeeSwapParams: {
@@ -75,7 +79,7 @@ export function getRawBaseRelayerParams({
     gasPaymentToken,
     relayerFeeToken,
     relayerFeeAmount: baseRelayerFeeAmount,
-    totalRelayerFeeTokenAmount: baseRelayerFeeAmount,
+    totalRelayerFeeTokenAmount: baseRelayerFeeAmount + (additionalNetworkFee ?? 0n),
     findFeeSwapPath: findFeeSwapPath,
 
     transactionExternalCalls: getEmptyExternalCallsPayload(),
@@ -282,9 +286,13 @@ export function useArbitraryRelayParamsAndPayload({
         chainId,
         account: p.account,
         globalExpressParams: p.globalExpressParams,
+        additionalNetworkFee: additionalNetworkFee,
       });
 
       if (baseRelayFeeSwapParams === undefined || rawBaseRelayParamsPayload === undefined) {
+        if (DEBUG_ARBITRARY_RELAY_PARAMS) {
+          throw new Error("no baseRelayFeeSwapParams or rawBaseRelayParamsPayload");
+        }
         return undefined;
       }
 
@@ -309,6 +317,9 @@ export function useArbitraryRelayParamsAndPayload({
         });
 
         metrics.pushError(extendedError, "expressArbitrary.estimateGas");
+        if (DEBUG_ARBITRARY_RELAY_PARAMS) {
+          throw extendedError;
+        }
         return undefined;
       }
 
@@ -324,7 +335,7 @@ export function useArbitraryRelayParamsAndPayload({
             account: p.account,
             isValid: true,
             transactionExternalCalls: getEmptyExternalCallsPayload(),
-            executionFeeAmount: additionalNetworkFee ?? 0n,
+            executionFeeAmount: p.additionalNetworkFee ?? 0n,
             gasPaymentTokenAsCollateralAmount: 0n,
             subaccountActions: 0,
             transactionPayloadGasLimit: gasLimit,
@@ -334,6 +345,9 @@ export function useArbitraryRelayParamsAndPayload({
 
         return expressParams;
       } catch (error) {
+        if (DEBUG_ARBITRARY_RELAY_PARAMS) {
+          throw new Error("no expressParams");
+        }
         return undefined;
       }
     },
@@ -353,6 +367,7 @@ export function useArbitraryRelayParamsAndPayload({
               provider,
               globalExpressParams,
               expressTransactionBuilder,
+              additionalNetworkFee,
             }
           : undefined,
     }
