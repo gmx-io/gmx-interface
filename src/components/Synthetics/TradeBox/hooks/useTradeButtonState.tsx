@@ -361,7 +361,7 @@ export function useTradeboxButtonState({
       return;
     }
 
-    txnPromise.finally(() => {
+    return txnPromise.finally(() => {
       setStage("trade");
     });
   }, [
