@@ -1,14 +1,6 @@
 import { Chain, ClientConfig, createPublicClient, http } from "viem";
 
-import {
-  ABI_VERSION,
-  ARBITRUM,
-  AVALANCHE,
-  AVALANCHE_FUJI,
-  BOTANIX,
-  UiContractsChain,
-  getViemChain,
-} from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, UiContractsChain, getViemChain } from "config/chains";
 import { isWebWorker } from "config/env";
 import {
   MulticallErrorEvent,
@@ -21,8 +13,7 @@ import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metric
 import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 import { sleep } from "lib/sleep";
 import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
-import { abis as allAbisLatest } from "sdk/abis";
-import { abis as allAbisV21 } from "sdk/abis-v2.1";
+import { abis as allAbis } from "sdk/abis";
 
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 import { serializeMulticallErrors } from "./utils";
@@ -186,7 +177,6 @@ export class Multicall {
           return;
         }
 
-        const allAbis = ABI_VERSION[this.chainId] === "2.1" ? allAbisV21 : allAbisLatest;
         // Add Errors ABI to each contract ABI to correctly parse errors
         abis[contractCallConfig.contractAddress] = abis[contractCallConfig.contractAddress] || [
           ...allAbis[contractCallConfig.abiId],
