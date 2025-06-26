@@ -1,0 +1,1801 @@
+{
+  "address": "0x69C527fC77291722b52649E45c838e41be8Bf5d5",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "contract Router",
+          "name": "_router",
+          "type": "address"
+        },
+        {
+          "internalType": "contract RoleStore",
+          "name": "_roleStore",
+          "type": "address"
+        },
+        {
+          "internalType": "contract DataStore",
+          "name": "_dataStore",
+          "type": "address"
+        },
+        {
+          "internalType": "contract EventEmitter",
+          "name": "_eventEmitter",
+          "type": "address"
+        },
+        {
+          "internalType": "contract IDepositHandler",
+          "name": "_depositHandler",
+          "type": "address"
+        },
+        {
+          "internalType": "contract IWithdrawalHandler",
+          "name": "_withdrawalHandler",
+          "type": "address"
+        },
+        {
+          "internalType": "contract IShiftHandler",
+          "name": "_shiftHandler",
+          "type": "address"
+        },
+        {
+          "internalType": "contract IOrderHandler",
+          "name": "_orderHandler",
+          "type": "address"
+        },
+        {
+          "internalType": "contract IExternalHandler",
+          "name": "_externalHandler",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "adjustedClaimableAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "claimedAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "CollateralAlreadyClaimed",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "key",
+          "type": "bytes32"
+        }
+      ],
+      "name": "DisabledFeature",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "market",
+          "type": "address"
+        }
+      ],
+      "name": "DisabledMarket",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "market",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "EmptyAddressInMarketTokenBalanceValidation",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "EmptyDeposit",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "EmptyHoldingAddress",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "EmptyMarket",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "EmptyOrder",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "EmptyReceiver",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "EmptyTokenTranferGasLimit",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "marketsLength",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokensLength",
+          "type": "uint256"
+        }
+      ],
+      "name": "InvalidClaimAffiliateRewardsInput",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "marketsLength",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokensLength",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "timeKeysLength",
+          "type": "uint256"
+        }
+      ],
+      "name": "InvalidClaimCollateralInput",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "marketsLength",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokensLength",
+          "type": "uint256"
+        }
+      ],
+      "name": "InvalidClaimFundingFeesInput",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "marketsLength",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokensLength",
+          "type": "uint256"
+        }
+      ],
+      "name": "InvalidClaimUiFeesInput",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "InvalidClaimableFactor",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "market",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "balance",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "expectedMinBalance",
+          "type": "uint256"
+        }
+      ],
+      "name": "InvalidMarketTokenBalance",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "market",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "balance",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "claimableFundingFeeAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "InvalidMarketTokenBalanceForClaimableFunding",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "market",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "balance",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "collateralAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "InvalidMarketTokenBalanceForCollateralAmount",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "uiFeeFactor",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "maxUiFeeFactor",
+          "type": "uint256"
+        }
+      ],
+      "name": "InvalidUiFeeFactor",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "TokenTransferError",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "msgSender",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "role",
+          "type": "string"
+        }
+      ],
+      "name": "Unauthorized",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "key",
+          "type": "bytes32"
+        }
+      ],
+      "name": "cancelDeposit",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "key",
+          "type": "bytes32"
+        }
+      ],
+      "name": "cancelOrder",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "key",
+          "type": "bytes32"
+        }
+      ],
+      "name": "cancelShift",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "key",
+          "type": "bytes32"
+        }
+      ],
+      "name": "cancelWithdrawal",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "markets",
+          "type": "address[]"
+        },
+        {
+          "internalType": "address[]",
+          "name": "tokens",
+          "type": "address[]"
+        },
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        }
+      ],
+      "name": "claimAffiliateRewards",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "markets",
+          "type": "address[]"
+        },
+        {
+          "internalType": "address[]",
+          "name": "tokens",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "timeKeys",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        }
+      ],
+      "name": "claimCollateral",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "markets",
+          "type": "address[]"
+        },
+        {
+          "internalType": "address[]",
+          "name": "tokens",
+          "type": "address[]"
+        },
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        }
+      ],
+      "name": "claimFundingFees",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "markets",
+          "type": "address[]"
+        },
+        {
+          "internalType": "address[]",
+          "name": "tokens",
+          "type": "address[]"
+        },
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        }
+      ],
+      "name": "claimUiFees",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "receiver",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "callbackContract",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "uiFeeReceiver",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "market",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "initialLongToken",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "initialShortToken",
+              "type": "address"
+            },
+            {
+              "internalType": "address[]",
+              "name": "longTokenSwapPath",
+              "type": "address[]"
+            },
+            {
+              "internalType": "address[]",
+              "name": "shortTokenSwapPath",
+              "type": "address[]"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minMarketTokens",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "shouldUnwrapNativeToken",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "executionFee",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "callbackGasLimit",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct DepositUtils.CreateDepositParams",
+          "name": "params",
+          "type": "tuple"
+        }
+      ],
+      "name": "createDeposit",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "receiver",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "cancellationReceiver",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "callbackContract",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "uiFeeReceiver",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "market",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "initialCollateralToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address[]",
+                  "name": "swapPath",
+                  "type": "address[]"
+                }
+              ],
+              "internalType": "struct IBaseOrderUtils.CreateOrderParamsAddresses",
+              "name": "addresses",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "sizeDeltaUsd",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "initialCollateralDeltaAmount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "triggerPrice",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "acceptablePrice",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "executionFee",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "callbackGasLimit",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "minOutputAmount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "validFromTime",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct IBaseOrderUtils.CreateOrderParamsNumbers",
+              "name": "numbers",
+              "type": "tuple"
+            },
+            {
+              "internalType": "enum Order.OrderType",
+              "name": "orderType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum Order.DecreasePositionSwapType",
+              "name": "decreasePositionSwapType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "bool",
+              "name": "isLong",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "shouldUnwrapNativeToken",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "autoCancel",
+              "type": "bool"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "referralCode",
+              "type": "bytes32"
+            }
+          ],
+          "internalType": "struct IBaseOrderUtils.CreateOrderParams",
+          "name": "params",
+          "type": "tuple"
+        }
+      ],
+      "name": "createOrder",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "receiver",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "callbackContract",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "uiFeeReceiver",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "fromMarket",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "toMarket",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minMarketTokens",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "executionFee",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "callbackGasLimit",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct ShiftUtils.CreateShiftParams",
+          "name": "params",
+          "type": "tuple"
+        }
+      ],
+      "name": "createShift",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "receiver",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "callbackContract",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "uiFeeReceiver",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "market",
+              "type": "address"
+            },
+            {
+              "internalType": "address[]",
+              "name": "longTokenSwapPath",
+              "type": "address[]"
+            },
+            {
+              "internalType": "address[]",
+              "name": "shortTokenSwapPath",
+              "type": "address[]"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minLongTokenAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minShortTokenAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "shouldUnwrapNativeToken",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "executionFee",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "callbackGasLimit",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct WithdrawalUtils.CreateWithdrawalParams",
+          "name": "params",
+          "type": "tuple"
+        }
+      ],
+      "name": "createWithdrawal",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "dataStore",
+      "outputs": [
+        {
+          "internalType": "contract DataStore",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "depositHandler",
+      "outputs": [
+        {
+          "internalType": "contract IDepositHandler",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "eventEmitter",
+      "outputs": [
+        {
+          "internalType": "contract EventEmitter",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "receiver",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "callbackContract",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "uiFeeReceiver",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "market",
+              "type": "address"
+            },
+            {
+              "internalType": "address[]",
+              "name": "longTokenSwapPath",
+              "type": "address[]"
+            },
+            {
+              "internalType": "address[]",
+              "name": "shortTokenSwapPath",
+              "type": "address[]"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minLongTokenAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minShortTokenAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "shouldUnwrapNativeToken",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "executionFee",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "callbackGasLimit",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct WithdrawalUtils.CreateWithdrawalParams",
+          "name": "params",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address[]",
+              "name": "tokens",
+              "type": "address[]"
+            },
+            {
+              "internalType": "address[]",
+              "name": "providers",
+              "type": "address[]"
+            },
+            {
+              "internalType": "bytes[]",
+              "name": "data",
+              "type": "bytes[]"
+            }
+          ],
+          "internalType": "struct OracleUtils.SetPricesParams",
+          "name": "oracleParams",
+          "type": "tuple"
+        }
+      ],
+      "name": "executeAtomicWithdrawal",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "externalHandler",
+      "outputs": [
+        {
+          "internalType": "contract IExternalHandler",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "externalCallTargets",
+          "type": "address[]"
+        },
+        {
+          "internalType": "bytes[]",
+          "name": "externalCallDataList",
+          "type": "bytes[]"
+        },
+        {
+          "internalType": "address[]",
+          "name": "refundTokens",
+          "type": "address[]"
+        },
+        {
+          "internalType": "address[]",
+          "name": "refundReceivers",
+          "type": "address[]"
+        }
+      ],
+      "name": "makeExternalCalls",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes[]",
+          "name": "data",
+          "type": "bytes[]"
+        }
+      ],
+      "name": "multicall",
+      "outputs": [
+        {
+          "internalType": "bytes[]",
+          "name": "results",
+          "type": "bytes[]"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "orderHandler",
+      "outputs": [
+        {
+          "internalType": "contract IOrderHandler",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "roleStore",
+      "outputs": [
+        {
+          "internalType": "contract RoleStore",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "router",
+      "outputs": [
+        {
+          "internalType": "contract Router",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "sendNativeToken",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "sendTokens",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "sendWnt",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "market",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "callbackContract",
+          "type": "address"
+        }
+      ],
+      "name": "setSavedCallbackContract",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "uiFeeFactor",
+          "type": "uint256"
+        }
+      ],
+      "name": "setUiFeeFactor",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "shiftHandler",
+      "outputs": [
+        {
+          "internalType": "contract IShiftHandler",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "key",
+          "type": "bytes32"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address[]",
+              "name": "primaryTokens",
+              "type": "address[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "min",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "max",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct Price.Props[]",
+              "name": "primaryPrices",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxTimestamp",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct OracleUtils.SimulatePricesParams",
+          "name": "simulatedOracleParams",
+          "type": "tuple"
+        }
+      ],
+      "name": "simulateExecuteDeposit",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address[]",
+              "name": "primaryTokens",
+              "type": "address[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "min",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "max",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct Price.Props[]",
+              "name": "primaryPrices",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxTimestamp",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct OracleUtils.SimulatePricesParams",
+          "name": "simulatedOracleParams",
+          "type": "tuple"
+        }
+      ],
+      "name": "simulateExecuteLatestDeposit",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address[]",
+              "name": "primaryTokens",
+              "type": "address[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "min",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "max",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct Price.Props[]",
+              "name": "primaryPrices",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxTimestamp",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct OracleUtils.SimulatePricesParams",
+          "name": "simulatedOracleParams",
+          "type": "tuple"
+        }
+      ],
+      "name": "simulateExecuteLatestOrder",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address[]",
+              "name": "primaryTokens",
+              "type": "address[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "min",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "max",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct Price.Props[]",
+              "name": "primaryPrices",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxTimestamp",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct OracleUtils.SimulatePricesParams",
+          "name": "simulatedOracleParams",
+          "type": "tuple"
+        }
+      ],
+      "name": "simulateExecuteLatestShift",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address[]",
+              "name": "primaryTokens",
+              "type": "address[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "min",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "max",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct Price.Props[]",
+              "name": "primaryPrices",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxTimestamp",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct OracleUtils.SimulatePricesParams",
+          "name": "simulatedOracleParams",
+          "type": "tuple"
+        },
+        {
+          "internalType": "enum ISwapPricingUtils.SwapPricingType",
+          "name": "swapPricingType",
+          "type": "uint8"
+        }
+      ],
+      "name": "simulateExecuteLatestWithdrawal",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "key",
+          "type": "bytes32"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address[]",
+              "name": "primaryTokens",
+              "type": "address[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "min",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "max",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct Price.Props[]",
+              "name": "primaryPrices",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxTimestamp",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct OracleUtils.SimulatePricesParams",
+          "name": "simulatedOracleParams",
+          "type": "tuple"
+        }
+      ],
+      "name": "simulateExecuteOrder",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "key",
+          "type": "bytes32"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address[]",
+              "name": "primaryTokens",
+              "type": "address[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "min",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "max",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct Price.Props[]",
+              "name": "primaryPrices",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxTimestamp",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct OracleUtils.SimulatePricesParams",
+          "name": "simulatedOracleParams",
+          "type": "tuple"
+        }
+      ],
+      "name": "simulateExecuteShift",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "key",
+          "type": "bytes32"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address[]",
+              "name": "primaryTokens",
+              "type": "address[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "min",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "max",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct Price.Props[]",
+              "name": "primaryPrices",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxTimestamp",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct OracleUtils.SimulatePricesParams",
+          "name": "simulatedOracleParams",
+          "type": "tuple"
+        },
+        {
+          "internalType": "enum ISwapPricingUtils.SwapPricingType",
+          "name": "swapPricingType",
+          "type": "uint8"
+        }
+      ],
+      "name": "simulateExecuteWithdrawal",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "key",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "sizeDeltaUsd",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "acceptablePrice",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "triggerPrice",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "minOutputAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "validFromTime",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "autoCancel",
+          "type": "bool"
+        }
+      ],
+      "name": "updateOrder",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "withdrawalHandler",
+      "outputs": [
+        {
+          "internalType": "contract IWithdrawalHandler",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x723bba33993a46238da285f8900a6c411564432b8af409c3dc8d3b1f6d5c7167",
+  "receipt": {
+    "to": null,
+    "from": "0xE7BfFf2aB721264887230037940490351700a068",
+    "contractAddress": "0x69C527fC77291722b52649E45c838e41be8Bf5d5",
+    "transactionIndex": 6,
+    "gasUsed": "6362339",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0xd18c90532e420963f4dc93793b032a792fdde7171138710bc41c4088e2aa5d59",
+    "transactionHash": "0x723bba33993a46238da285f8900a6c411564432b8af409c3dc8d3b1f6d5c7167",
+    "logs": [],
+    "blockNumber": 222747030,
+    "cumulativeGasUsed": "6942059",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [
+    "0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6",
+    "0x3c3d99FD298f679DBC2CEcd132b4eC4d0F5e6e72",
+    "0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8",
+    "0xC8ee91A54287DB53897056e12D9819156D3822Fb",
+    "0x321f3739983CC3E911fd67a83d1ee76238894Bd0",
+    "0xA19fA3F0D8E7b7A8963420De504b624167e709B2",
+    "0xEa90EC1228F7D1b3D47D84d1c9D46dBDFEfF7709",
+    "0xB0Fc2a48b873da40e7bc25658e5E6137616AC2Ee",
+    "0x389CEf541397e872dC04421f166B5Bc2E0b374a5"
+  ],
+  "numDeployments": 6,
+  "solcInputHash": "292dd15f99d7c1e4e4b27476672071d7",
+  "libraries": {
+    "CallbackUtils": "0x501e34E31f1594ffbd3D0C17634D6de6C6C5c7A3",
+    "DepositStoreUtils": "0x3063A99D2df2A871068D47041eB8d089E5DE1Cdc",
+    "FeeUtils": "0x7Fd8d13A778a22F5c2acB67226A193C7d0b0a336",
+    "MarketEventUtils": "0x1F493E17bcF5390d3e5E49eE0bce17d4d068f90b",
+    "MarketStoreUtils": "0xbbf05cF8e1c6548092A6a02c4c5330E76BF0fE2D",
+    "OrderStoreUtils": "0x67040c411C1b3195361801E9Ad8a91D1Fe9C0BC2",
+    "ReferralUtils": "0x27346Fdab142e2b8B6C6d2ecFe73e75B5e249A57",
+    "ShiftStoreUtils": "0xCfad9CB2a681b63884AEf98af28458692137c9E3",
+    "WithdrawalStoreUtils": "0xD521Cb31B14bB9F70D9a59b47D8763336CAD0395"
+  },
+  "devdoc": {
+    "details": "Router for exchange functions, supports functions which require token transfers from the user IMPORTANT: PayableMulticall uses delegatecall, msg.value will be the same for each delegatecall extra care should be taken when using msg.value in any of the functions in this contract To avoid front-running issues, most actions require two steps to execute: - User sends transaction with request details, e.g. deposit / withdraw liquidity, swap, increase / decrease position - Keepers listen for the transactions, include the prices for the request then send a transaction to execute the request Prices are provided by an off-chain oracle system: - Oracle keepers continually check the latest blocks - When there is a new block, oracle keepers fetch the latest prices from reference exchanges - Oracle keepers then sign the median price for each token together with the block hash - Oracle keepers then send the data and signature to archive nodes - Archive nodes display this information for anyone to query Example: - Block 100 is finalized on the blockchain - Oracle keepers observe this block - Oracle keepers pull the latest prices from reference exchanges, token A: price 20,000, token B: price 80,000 - Oracle keepers sign [chainId, blockhash(100), 20,000], [chainId, blockhash(100), 80,000] - If in block 100, there was a market order to open a long position for token A, the market order would have a block number of 100 - The prices signed at block 100 can be used to execute this order - Order keepers would bundle the signature and price data for token A then execute the order",
+    "kind": "dev",
+    "methods": {
+      "cancelOrder(bytes32)": {
+        "details": "Cancels the given order. The `cancelOrder()` feature must be enabled for the given order type. The caller must be the owner of the order, and the order must not be a market order. The order is cancelled by calling the `cancelOrder()` function in the `OrderUtils` contract. This function also records the starting gas amount and the reason for cancellation, which is passed to the `cancelOrder()` function.",
+        "params": {
+          "key": "The unique ID of the order to be cancelled"
+        }
+      },
+      "claimAffiliateRewards(address[],address[],address)": {
+        "details": "Claims affiliate rewards for the given markets and tokens on behalf of the caller, and sends the rewards to the specified receiver. The length of the `markets` and `tokens` arrays must be the same. For each market-token pair, the `claimAffiliateReward()` function in the `ReferralUtils` contract is called to claim the rewards for the caller.",
+        "params": {
+          "markets": "An array of market addresses",
+          "receiver": "The address to which the claimed rewards should be sent",
+          "tokens": "An array of token addresses, corresponding to the given markets"
+        }
+      },
+      "claimFundingFees(address[],address[],address)": {
+        "details": "Claims funding fees for the given markets and tokens on behalf of the caller, and sends the fees to the specified receiver. The length of the `markets` and `tokens` arrays must be the same. For each market-token pair, the `claimFundingFees()` function in the `MarketUtils` contract is called to claim the fees for the caller.",
+        "params": {
+          "markets": "An array of market addresses",
+          "receiver": "The address to which the claimed fees should be sent",
+          "tokens": "An array of token addresses, corresponding to the given markets"
+        }
+      },
+      "createDeposit((address,address,address,address,address,address,address[],address[],uint256,bool,uint256,uint256))": {
+        "details": "Creates a new deposit with the given long token, short token, long token amount, short token amount, and deposit parameters. The deposit is created by transferring the specified amounts of long and short tokens from the caller's account to the deposit store, and then calling the `createDeposit()` function on the deposit handler contract.",
+        "params": {
+          "params": "The deposit parameters, as specified in the `DepositUtils.CreateDepositParams` struct"
+        },
+        "returns": {
+          "_0": "The unique ID of the newly created deposit"
+        }
+      },
+      "createOrder(((address,address,address,address,address,address,address[]),(uint256,uint256,uint256,uint256,uint256,uint256,uint256),uint8,uint8,bool,bool,bool,bytes32))": {
+        "details": "Creates a new order with the given amount, order parameters. The order is created by transferring the specified amount of collateral tokens from the caller's account to the order store, and then calling the `createOrder()` function on the order handler contract. The referral code is also set on the caller's account using the referral storage contract."
+      },
+      "multicall(bytes[])": {
+        "details": "Receives and executes a batch of function calls on this contract."
+      },
+      "updateOrder(bytes32,uint256,uint256,uint256,uint256,bool)": {
+        "details": "Updates the given order with the specified size delta, acceptable price, and trigger price. The `updateOrder()` feature must be enabled for the given order type. The caller must be the owner of the order, and the order must not be a market order. The size delta, trigger price, and acceptable price are updated on the order, and the order is unfrozen. Any additional WNT that is transferred to the contract is added to the order's execution fee. The updated order is then saved in the order store, and an `OrderUpdated` event is emitted.",
+        "params": {
+          "acceptablePrice": "The new acceptable price for the order",
+          "key": "The unique ID of the order to be updated",
+          "sizeDeltaUsd": "The new size delta for the order",
+          "triggerPrice": "The new trigger price for the order"
+        }
+      }
+    },
+    "title": "ExchangeRouter",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 115,
+        "contract": "contracts/router/ExchangeRouter.sol:ExchangeRouter",
+        "label": "_status",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_uint256"
+      }
+    ],
+    "types": {
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      }
+    }
+  }
+}
