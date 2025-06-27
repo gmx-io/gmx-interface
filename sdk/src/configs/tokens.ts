@@ -1468,7 +1468,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
   [BOTANIX]: [
     {
       name: "Bitcoin",
-      symbol: "BBTC",
+      symbol: "BTC",
+      assetSymbol: "bBTC",
       address: NATIVE_TOKEN_ADDRESS,
       decimals: 18,
       isNative: true,
@@ -1481,6 +1482,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Pegged BTC",
       symbol: "PBTC",
+      assetSymbol: "pBTC",
       address: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
       decimals: 18,
       isShortable: true,
@@ -1493,6 +1495,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Staked BTC",
       symbol: "STBTC",
+      assetSymbol: "stBTC",
       address: "0xF4586028FFdA7Eca636864F80f8a3f2589E33795",
       decimals: 18,
       isShortable: true,
@@ -1516,6 +1519,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "USDC.E",
       symbol: "USDC.E",
+      assetSymbol: "USDC.e",
       address: "0x325eEb3AA50014f35861e3374f54B3997Aa8357d",
       decimals: 6,
       isStable: true,
@@ -1769,7 +1773,7 @@ export function convertTokenAddress<T extends keyof TokenAddressTypesMap, R exte
 export function getNormalizedTokenSymbol(tokenSymbol: string) {
   if (["WBTC", "WETH", "WAVAX"].includes(tokenSymbol)) {
     return tokenSymbol.substr(1);
-  } else if (["BBTC", "PBTC", "STBTC"].includes(tokenSymbol)) {
+  } else if (["PBTC", "STBTC"].includes(tokenSymbol)) {
     return "BTC";
   } else if (tokenSymbol.includes(".")) {
     return tokenSymbol.split(".")[0];

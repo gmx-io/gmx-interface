@@ -6,7 +6,7 @@ import "./TokenIcon.scss";
 function getIconUrlPath(symbol, size: 24 | 40) {
   if (!symbol || !size) return;
 
-  if (symbol === "BBTC" || symbol === "PBTC" || symbol === "STBTC") {
+  if (symbol === "BTC" || symbol === "PBTC" || symbol === "STBTC") {
     return `ic_btc_${size}.svg`;
   }
 
