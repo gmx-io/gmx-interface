@@ -137,7 +137,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
 
-  const [externalIsCurtainOpen, setExternalIsCurtainOpen] = useIsCurtainOpen();
+  const [_, setExternalIsCurtainOpen] = useIsCurtainOpen();
 
   const {
     fromTokenInputValue,
