@@ -212,7 +212,7 @@ export type PendingOrderData = {
   acceptablePrice: bigint;
   autoCancel: boolean;
   minOutputAmount: bigint;
-  expectedOutputAmount: bigint;
+  expectedOutputAmount?: bigint;
   sizeDeltaUsd: bigint;
   isLong: boolean;
   shouldUnwrapNativeToken: boolean;

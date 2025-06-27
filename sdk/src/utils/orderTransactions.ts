@@ -169,7 +169,7 @@ export type SwapOrderParams = CommonOrderParams & {
   swapPath: string[];
   externalSwapQuote: ExternalSwapQuote | undefined;
   minOutputAmount: bigint;
-  expectedOutputAmount: bigint;
+  expectedOutputAmount?: bigint;
   orderType: OrderType.MarketSwap | OrderType.LimitSwap;
   triggerRatio: bigint | undefined;
 };
@@ -383,7 +383,9 @@ export function buildTwapOrdersPayloads<
         referralCode: params.referralCode,
         autoCancel: params.autoCancel,
         allowedSlippage: 0,
-        expectedOutputAmount: params.expectedOutputAmount / BigInt(twapParams.numberOfParts),
+        ...(params.expectedOutputAmount !== undefined && {
+          expectedOutputAmount: params.expectedOutputAmount / BigInt(twapParams.numberOfParts),
+        }),
         payTokenAmount: params.payTokenAmount / BigInt(twapParams.numberOfParts),
         executionFeeAmount: params.executionFeeAmount / BigInt(twapParams.numberOfParts),
         validFromTime: getTwapValidFromTime(twapParams.duration, twapParams.numberOfParts, i),
