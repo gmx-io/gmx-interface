@@ -13,8 +13,8 @@ export type Period = {
 
 export function usePoolsTimeRange() {
   const [timeRange, setTimeRange] = useLocalStorageSerializeKey<PoolsTimeRange>("pools-time-range", "90d");
-
-  return { timeRange: timeRange ?? "90d", setTimeRange };
+  const isValidTimeRange = timeRange && POOLS_TIME_RANGE_OPTIONS.includes(timeRange);
+  return { timeRange: isValidTimeRange ? timeRange : "90d", setTimeRange };
 }
 
 function getStartDate(days: number) {
