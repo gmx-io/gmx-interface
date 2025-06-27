@@ -1,5 +1,4 @@
 import { Trans } from "@lingui/macro";
-import { useHistory } from "react-router-dom";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { switchNetwork } from "lib/wallets";
@@ -12,18 +11,15 @@ import AvalancheIcon from "img/ic_avalanche_24.svg?react";
 import BotanixIcon from "img/ic_botanix_24.svg?react";
 
 export function BotanixBanner() {
-  const { active } = useWallet();
-  const history = useHistory();
+  const { active, chainId } = useWallet();
 
-  const makeOnChainClickHandler = (chainId: number) => {
+  const makeOnChainClickHandler = (nextChainId: number) => {
     return () => {
-      if (chainId === chainId) {
+      if (nextChainId === chainId) {
         return;
       } else {
-        switchNetwork(chainId, active);
+        switchNetwork(nextChainId, active);
       }
-
-      history.push("/");
     };
   };
 
