@@ -4,7 +4,7 @@ import { SwapRoute } from "types/trade";
 import type { FindSwapPath, SwapAmounts, SwapOptimizationOrderArray } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { getTotalSwapVolumeFromSwapStats } from "utils/fees";
-import { applyFactor, expandDecimals, formatAmount, formatUsd, PRECISION } from "utils/numbers";
+import { applyFactor } from "utils/numbers";
 import {
   convertToTokenAmount,
   convertToUsd,
