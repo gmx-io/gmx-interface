@@ -5,9 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { encodeFunctionData, zeroAddress } from "viem";
 import { usePublicClient } from "wagmi";
 
-import { getContract } from "config/contracts";
-import { CHAIN_ID_PREFERRED_DEPOSIT_TOKEN, getMappedTokenId, isSettlementChain } from "config/multichain";
-import { IStargateAbi } from "config/multichain";
+import { CHAIN_ID_PREFERRED_DEPOSIT_TOKEN, getMappedTokenId, isSettlementChain, IStargateAbi } from "config/multichain";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
@@ -19,9 +17,8 @@ import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/
 import {
   getRawRelayerParams,
   getRelayerFeeParams,
-  getRelayRouterNonceForMultichain,
-  MultichainRelayParamsPayload,
-  RawMultichainRelayParamsPayload,
+  RawRelayParamsPayloadArbitrumSepolia,
+  RelayParamsPayloadArbitrumSepolia,
 } from "domain/synthetics/express";
 import { signSetTraderReferralCode } from "domain/synthetics/express/expressOrderUtils";
 import { convertToUsd, getMidPrice } from "domain/tokens";
@@ -318,17 +315,10 @@ function ReferralCodeFormMultichain({
         externalCalls: getEmptyExternalCallsPayload(),
         tokenPermits: [],
         marketsInfoData: p.globalExpressParams.marketsInfoData,
-      }) as RawMultichainRelayParamsPayload;
+      }) as RawRelayParamsPayloadArbitrumSepolia;
 
-      const userNonce = await getRelayRouterNonceForMultichain(
-        p.provider,
-        p.simulationSigner.address,
-        getContract(chainId, "MultichainTransferRouter")
-      );
-
-      const relayParams: MultichainRelayParamsPayload = {
+      const relayParams: RelayParamsPayloadArbitrumSepolia = {
         ...rawRelayParamsPayload,
-        userNonce,
         deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
       };
 
@@ -482,15 +472,10 @@ function ReferralCodeFormMultichain({
         externalCalls: getEmptyExternalCallsPayload(),
         tokenPermits: [],
         marketsInfoData: globalExpressParams.marketsInfoData,
-      }) as RawMultichainRelayParamsPayload;
+      });
 
-      const userNonce =
-        globalExpressParams.noncesData?.multichainOrderRouter?.nonce ??
-        (await getRelayRouterNonceForMultichain(provider, account, getContract(chainId, "MultichainOrderRouter")));
-
-      const relayParamsPayload: MultichainRelayParamsPayload = {
+      const relayParamsPayload: RelayParamsPayloadArbitrumSepolia = {
         ...rawRelayParamsPayload,
-        userNonce: userNonce,
         deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
       };
 

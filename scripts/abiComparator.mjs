@@ -5,8 +5,8 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const mainAbisDir = path.join(__dirname, "sdk/src/abis");
-const arbitrumSepoliaDir = path.join(__dirname, "sdk/src/abis/arbitrumSepolia");
+const mainAbisDir = path.join(__dirname, "..", "sdk/src/abis");
+const arbitrumSepoliaDir = path.join(__dirname, "..", "sdk/src/abis/arbitrumSepolia");
 
 // Get all JSON files from arbitrumSepolia directory
 const arbitrumSepoliaFiles = fs.readdirSync(arbitrumSepoliaDir).filter((file) => file.endsWith(".json"));
@@ -17,6 +17,8 @@ arbitrumSepoliaFiles.forEach((file) => {
 
   if (!fs.existsSync(mainPath)) {
     console.log(`${file} exists in arbitrumSepolia but not in main abis directory`);
+    // delete file
+    // fs.unlinkSync(arbitrumSepoliaPath);
     return;
   }
 

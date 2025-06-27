@@ -183,17 +183,12 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "storedUserNonce",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "userNonce",
-        type: "uint256",
+        internalType: "bytes32",
+        name: "digest",
+        type: "bytes32",
       },
     ],
-    name: "InvalidUserNonce",
+    name: "InvalidUserDigest",
     type: "error",
   },
   {
@@ -446,11 +441,6 @@ const _abi = [
             internalType: "struct IRelayUtils.FeeParams",
             name: "fee",
             type: "tuple",
-          },
-          {
-            internalType: "uint256",
-            name: "userNonce",
-            type: "uint256",
           },
           {
             internalType: "uint256",
@@ -813,11 +803,6 @@ const _abi = [
           },
           {
             internalType: "uint256",
-            name: "userNonce",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
             name: "deadline",
             type: "uint256",
           },
@@ -983,11 +968,6 @@ const _abi = [
             internalType: "struct IRelayUtils.FeeParams",
             name: "fee",
             type: "tuple",
-          },
-          {
-            internalType: "uint256",
-            name: "userNonce",
-            type: "uint256",
           },
           {
             internalType: "uint256",
@@ -1165,6 +1145,25 @@ const _abi = [
         internalType: "contract DataStore",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    name: "digests",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
       },
     ],
     stateMutability: "view",
@@ -1486,11 +1485,6 @@ const _abi = [
           },
           {
             internalType: "uint256",
-            name: "userNonce",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
             name: "deadline",
             type: "uint256",
           },
@@ -1565,25 +1559,6 @@ const _abi = [
     name: "updateOrder",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    name: "userNonces",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
 ] as const;

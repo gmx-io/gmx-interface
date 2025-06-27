@@ -150,7 +150,6 @@ export declare namespace IRelayUtils {
     externalCalls: IRelayUtils.ExternalCallsStruct;
     tokenPermits: IRelayUtils.TokenPermitStruct[];
     fee: IRelayUtils.FeeParamsStruct;
-    userNonce: BigNumberish;
     deadline: BigNumberish;
     signature: BytesLike;
     desChainId: BigNumberish;
@@ -161,7 +160,6 @@ export declare namespace IRelayUtils {
     externalCalls: IRelayUtils.ExternalCallsStructOutput,
     tokenPermits: IRelayUtils.TokenPermitStructOutput[],
     fee: IRelayUtils.FeeParamsStructOutput,
-    userNonce: bigint,
     deadline: bigint,
     signature: string,
     desChainId: bigint,
@@ -170,7 +168,6 @@ export declare namespace IRelayUtils {
     externalCalls: IRelayUtils.ExternalCallsStructOutput;
     tokenPermits: IRelayUtils.TokenPermitStructOutput[];
     fee: IRelayUtils.FeeParamsStructOutput;
-    userNonce: bigint;
     deadline: bigint;
     signature: string;
     desChainId: bigint;
@@ -317,6 +314,7 @@ export interface MultichainGlvRouterInterface extends Interface {
       | "createGlvDeposit"
       | "createGlvWithdrawal"
       | "dataStore"
+      | "digests"
       | "eventEmitter"
       | "externalHandler"
       | "glvDepositHandler"
@@ -333,7 +331,6 @@ export interface MultichainGlvRouterInterface extends Interface {
       | "sendTokens"
       | "sendWnt"
       | "swapHandler"
-      | "userNonces"
   ): FunctionFragment;
 
   getEvent(nameOrSignatureOrTopic: "TokenTransferReverted"): EventFragment;
@@ -359,6 +356,7 @@ export interface MultichainGlvRouterInterface extends Interface {
     ]
   ): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
+  encodeFunctionData(functionFragment: "digests", values: [BytesLike]): string;
   encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
   encodeFunctionData(functionFragment: "externalHandler", values?: undefined): string;
   encodeFunctionData(functionFragment: "glvDepositHandler", values?: undefined): string;
@@ -375,11 +373,11 @@ export interface MultichainGlvRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "sendTokens", values: [AddressLike, AddressLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "sendWnt", values: [AddressLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "swapHandler", values?: undefined): string;
-  encodeFunctionData(functionFragment: "userNonces", values: [AddressLike]): string;
 
   decodeFunctionResult(functionFragment: "createGlvDeposit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "createGlvWithdrawal", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "digests", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "eventEmitter", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "externalHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "glvDepositHandler", data: BytesLike): Result;
@@ -396,7 +394,6 @@ export interface MultichainGlvRouterInterface extends Interface {
   decodeFunctionResult(functionFragment: "sendTokens", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendWnt", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "swapHandler", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "userNonces", data: BytesLike): Result;
 }
 
 export namespace TokenTransferRevertedEvent {
@@ -471,6 +468,8 @@ export interface MultichainGlvRouter extends BaseContract {
 
   dataStore: TypedContractMethod<[], [string], "view">;
 
+  digests: TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
+
   eventEmitter: TypedContractMethod<[], [string], "view">;
 
   externalHandler: TypedContractMethod<[], [string], "view">;
@@ -503,8 +502,6 @@ export interface MultichainGlvRouter extends BaseContract {
 
   swapHandler: TypedContractMethod<[], [string], "view">;
 
-  userNonces: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-
   getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
   getFunction(
@@ -534,6 +531,7 @@ export interface MultichainGlvRouter extends BaseContract {
     "nonpayable"
   >;
   getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "digests"): TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
   getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "externalHandler"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "glvDepositHandler"): TypedContractMethod<[], [string], "view">;
@@ -556,7 +554,6 @@ export interface MultichainGlvRouter extends BaseContract {
     nameOrSignature: "sendWnt"
   ): TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
   getFunction(nameOrSignature: "swapHandler"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "userNonces"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
   getEvent(
     key: "TokenTransferReverted"

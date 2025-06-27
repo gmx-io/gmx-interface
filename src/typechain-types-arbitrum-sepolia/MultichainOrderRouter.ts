@@ -150,7 +150,6 @@ export declare namespace IRelayUtils {
     externalCalls: IRelayUtils.ExternalCallsStruct;
     tokenPermits: IRelayUtils.TokenPermitStruct[];
     fee: IRelayUtils.FeeParamsStruct;
-    userNonce: BigNumberish;
     deadline: BigNumberish;
     signature: BytesLike;
     desChainId: BigNumberish;
@@ -161,7 +160,6 @@ export declare namespace IRelayUtils {
     externalCalls: IRelayUtils.ExternalCallsStructOutput,
     tokenPermits: IRelayUtils.TokenPermitStructOutput[],
     fee: IRelayUtils.FeeParamsStructOutput,
-    userNonce: bigint,
     deadline: bigint,
     signature: string,
     desChainId: bigint,
@@ -170,7 +168,6 @@ export declare namespace IRelayUtils {
     externalCalls: IRelayUtils.ExternalCallsStructOutput;
     tokenPermits: IRelayUtils.TokenPermitStructOutput[];
     fee: IRelayUtils.FeeParamsStructOutput;
-    userNonce: bigint;
     deadline: bigint;
     signature: string;
     desChainId: bigint;
@@ -326,6 +323,7 @@ export interface MultichainOrderRouterInterface extends Interface {
       | "cancelOrder"
       | "createOrder"
       | "dataStore"
+      | "digests"
       | "eventEmitter"
       | "externalHandler"
       | "multicall"
@@ -342,7 +340,6 @@ export interface MultichainOrderRouterInterface extends Interface {
       | "setTraderReferralCode"
       | "swapHandler"
       | "updateOrder"
-      | "userNonces"
   ): FunctionFragment;
 
   getEvent(nameOrSignatureOrTopic: "TokenTransferReverted"): EventFragment;
@@ -360,6 +357,7 @@ export interface MultichainOrderRouterInterface extends Interface {
     values: [IRelayUtils.RelayParamsStruct, AddressLike, BigNumberish, IBaseOrderUtils.CreateOrderParamsStruct]
   ): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
+  encodeFunctionData(functionFragment: "digests", values: [BytesLike]): string;
   encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
   encodeFunctionData(functionFragment: "externalHandler", values?: undefined): string;
   encodeFunctionData(functionFragment: "multicall", values: [BytesLike[]]): string;
@@ -382,12 +380,12 @@ export interface MultichainOrderRouterInterface extends Interface {
     functionFragment: "updateOrder",
     values: [IRelayUtils.RelayParamsStruct, AddressLike, BigNumberish, IRelayUtils.UpdateOrderParamsStruct]
   ): string;
-  encodeFunctionData(functionFragment: "userNonces", values: [AddressLike]): string;
 
   decodeFunctionResult(functionFragment: "batch", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "cancelOrder", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "createOrder", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "digests", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "eventEmitter", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "externalHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "multicall", data: BytesLike): Result;
@@ -404,7 +402,6 @@ export interface MultichainOrderRouterInterface extends Interface {
   decodeFunctionResult(functionFragment: "setTraderReferralCode", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "swapHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "updateOrder", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "userNonces", data: BytesLike): Result;
 }
 
 export namespace TokenTransferRevertedEvent {
@@ -483,6 +480,8 @@ export interface MultichainOrderRouter extends BaseContract {
 
   dataStore: TypedContractMethod<[], [string], "view">;
 
+  digests: TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
+
   eventEmitter: TypedContractMethod<[], [string], "view">;
 
   externalHandler: TypedContractMethod<[], [string], "view">;
@@ -533,8 +532,6 @@ export interface MultichainOrderRouter extends BaseContract {
     "nonpayable"
   >;
 
-  userNonces: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-
   getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
   getFunction(
@@ -569,6 +566,7 @@ export interface MultichainOrderRouter extends BaseContract {
     "nonpayable"
   >;
   getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "digests"): TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
   getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "externalHandler"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "multicall"): TypedContractMethod<[data: BytesLike[]], [string[]], "payable">;
@@ -613,7 +611,6 @@ export interface MultichainOrderRouter extends BaseContract {
     [void],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "userNonces"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
   getEvent(
     key: "TokenTransferReverted"

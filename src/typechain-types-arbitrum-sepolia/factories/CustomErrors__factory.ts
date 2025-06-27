@@ -309,6 +309,17 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "EdgeDataStreamIdAlreadyExistsForToken",
+    type: "error",
+  },
+  {
     inputs: [],
     name: "EmptyAccount",
     type: "error",
@@ -1352,22 +1363,6 @@ const _abi = [
       },
     ],
     name: "InsufficientMarketTokens",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "minPositionImpactPoolAmount",
-        type: "uint256",
-      },
-      {
-        internalType: "int256",
-        name: "totalPendingImpactAmount",
-        type: "int256",
-      },
-    ],
-    name: "InsufficientMinPositionImpactPoolAmount",
     type: "error",
   },
   {
@@ -2634,6 +2629,32 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "string",
+        name: "signatureType",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "recovered",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "recoveredFromMinified",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "expectedSigner",
+        type: "address",
+      },
+    ],
+    name: "InvalidRecoveredSigner",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "tokensLength",
         type: "uint256",
@@ -2821,17 +2842,12 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "storedUserNonce",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "userNonce",
-        type: "uint256",
+        internalType: "bytes32",
+        name: "digest",
+        type: "bytes32",
       },
     ],
-    name: "InvalidUserNonce",
+    name: "InvalidUserDigest",
     type: "error",
   },
   {
@@ -3994,17 +4010,6 @@ const _abi = [
       },
     ],
     name: "SyncConfigUpdatesDisabledForParameter",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "target",
-        type: "address",
-      },
-    ],
-    name: "TargetIsNotAContract",
     type: "error",
   },
   {

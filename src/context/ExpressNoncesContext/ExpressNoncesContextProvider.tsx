@@ -1,7 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 import { ARBITRUM_SEPOLIA } from "config/chains";
-import { isSettlementChain } from "config/multichain";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { getExpressContractAddress } from "domain/synthetics/express";
 import { useChainId } from "lib/chains";
@@ -18,23 +17,6 @@ export type NoncesData = {
     nonce: bigint;
     lastEstimated: number;
   };
-  multichainTransferRouter?: {
-    nonce: bigint;
-    lastEstimated: number;
-  };
-  multichainOrderRouter?: {
-    nonce: bigint;
-    lastEstimated: number;
-  };
-  multichainSubaccountRelayRouter?: {
-    nonce: bigint;
-    nonceForMainAccount: bigint;
-    lastEstimated: number;
-  };
-  multichainClaimsRouter?: {
-    nonce: bigint;
-    lastEstimated: number;
-  };
 };
 
 export type LocalActions = {
@@ -46,14 +28,6 @@ export type LocalActions = {
     actions: bigint;
     lastEstimated: number;
   };
-  multichainOrderRouter: {
-    actions: bigint;
-    lastEstimated: number;
-  };
-  multichainSubaccountRelayRouter: {
-    actions: bigint;
-    lastEstimated: number;
-  };
 };
 
 const defaultLocalActions: LocalActions = {
@@ -62,14 +36,6 @@ const defaultLocalActions: LocalActions = {
     lastEstimated: 0,
   },
   subaccountRelayRouter: {
-    actions: 0n,
-    lastEstimated: 0,
-  },
-  multichainOrderRouter: {
-    actions: 0n,
-    lastEstimated: 0,
-  },
-  multichainSubaccountRelayRouter: {
     actions: 0n,
     lastEstimated: 0,
   },
@@ -91,7 +57,7 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
 
   const { data: onChainData, mutate } = useMulticall(chainId, "expressNonces-context", {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
-    key: account && [account, subaccount?.address],
+    key: account && chainId !== ARBITRUM_SEPOLIA && [account, subaccount?.address],
     request: (chainId) => {
       const request: MulticallRequestConfig<any> = {
         relayRouter: {
@@ -123,78 +89,10 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
         },
       };
 
-      if (isSettlementChain(chainId)) {
-        request.multichainTransferRouter = {
-          contractAddress: getExpressContractAddress(chainId, {
-            isMultichain: true,
-            scope: "transfer",
-          }),
-          abiId: "AbstractUserNonceable",
-          calls: {
-            nonce: {
-              methodName: "userNonces",
-              params: [account],
-            },
-          },
-        };
-        request.multichainOrderRouter = {
-          contractAddress: getExpressContractAddress(chainId, {
-            isMultichain: true,
-            scope: "order",
-          }),
-          abiId: "AbstractUserNonceable",
-          calls: {
-            nonce:
-              chainId === ARBITRUM_SEPOLIA
-                ? {
-                    methodName: "userNonces",
-                    params: [account],
-                  }
-                : undefined,
-          },
-        };
-        request.multichainSubaccountRelayRouter = {
-          contractAddress: getExpressContractAddress(chainId, {
-            isMultichain: true,
-            scope: "subaccount",
-          }),
-          abiId: "AbstractUserNonceable",
-          calls: {
-            nonce:
-              chainId === ARBITRUM_SEPOLIA && subaccount?.address
-                ? {
-                    methodName: "userNonces",
-                    params: [subaccount.address],
-                  }
-                : undefined,
-            nonceForMainAccount:
-              chainId === ARBITRUM_SEPOLIA
-                ? {
-                    methodName: "userNonces",
-                    params: [account],
-                  }
-                : undefined,
-          },
-        };
-        request.multichainClaimsRouter = {
-          contractAddress: getExpressContractAddress(chainId, {
-            isMultichain: true,
-            scope: "claims",
-          }),
-          abiId: "AbstractUserNonceable",
-          calls: {
-            nonce: {
-              methodName: "userNonces",
-              params: [account],
-            },
-          },
-        };
-      }
-
       return request;
     },
 
-    parseResponse: (result, chainId) => {
+    parseResponse: (result) => {
       const relayRouterNonce = result.data.relayRouter.nonce.returnValues[0];
       const subaccountRelayRouterNonce = result.data.subaccountRelayRouter?.nonce?.returnValues[0];
 
@@ -213,35 +111,6 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
               lastEstimated: now,
             }
           : undefined,
-        multichainOrderRouter:
-          chainId === ARBITRUM_SEPOLIA
-            ? {
-                nonce: result.data.multichainOrderRouter.nonce.returnValues[0],
-                lastEstimated: now,
-              }
-            : undefined,
-        multichainSubaccountRelayRouter:
-          chainId === ARBITRUM_SEPOLIA && subaccount?.address
-            ? ({
-                nonce: result.data.multichainSubaccountRelayRouter.nonce.returnValues[0],
-                nonceForMainAccount: result.data.multichainSubaccountRelayRouter.nonceForMainAccount.returnValues[0],
-                lastEstimated: now,
-              } satisfies NoncesData["multichainSubaccountRelayRouter"])
-            : undefined,
-        multichainTransferRouter:
-          chainId === ARBITRUM_SEPOLIA
-            ? {
-                nonce: result.data.multichainTransferRouter.nonce.returnValues[0],
-                lastEstimated: now,
-              }
-            : undefined,
-        multichainClaimsRouter:
-          chainId === ARBITRUM_SEPOLIA
-            ? {
-                nonce: result.data.multichainClaimsRouter.nonce.returnValues[0],
-                lastEstimated: now,
-              }
-            : undefined,
       };
     },
   });
@@ -268,29 +137,11 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
       }
 
       if (
-        result.multichainOrderRouter !== undefined &&
-        localActions.multichainOrderRouter.lastEstimated > result.multichainOrderRouter.lastEstimated
-      ) {
-        result.multichainOrderRouter.nonce += localActions.multichainOrderRouter.actions;
-        result.multichainOrderRouter.lastEstimated = localActions.multichainOrderRouter.lastEstimated;
-      }
-
-      if (
         result.subaccountRelayRouter &&
         localActions.subaccountRelayRouter.lastEstimated > result.subaccountRelayRouter.lastEstimated
       ) {
         result.subaccountRelayRouter.nonce += localActions.subaccountRelayRouter.actions;
         result.subaccountRelayRouter.lastEstimated = localActions.subaccountRelayRouter.lastEstimated;
-      }
-
-      if (
-        result.multichainSubaccountRelayRouter !== undefined &&
-        localActions.multichainSubaccountRelayRouter.lastEstimated >
-          result.multichainSubaccountRelayRouter.lastEstimated
-      ) {
-        result.multichainSubaccountRelayRouter.nonce += localActions.multichainSubaccountRelayRouter.actions;
-        result.multichainSubaccountRelayRouter.lastEstimated =
-          localActions.multichainSubaccountRelayRouter.lastEstimated;
       }
     }
 

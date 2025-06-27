@@ -1,7 +1,7 @@
 import { addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { Address, concatHex, encodeAbiParameters, Hex, isHex, toHex } from "viem";
 
-import { MultichainRelayParamsPayload } from "domain/synthetics/express";
+import { RelayParamsPayloadArbitrumSepolia } from "domain/synthetics/express";
 import type { ContractsChainId, SettlementChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 
@@ -14,7 +14,7 @@ export enum MultichainActionType {
 }
 
 type CommonActionData = {
-  relayParams: MultichainRelayParamsPayload;
+  relayParams: RelayParamsPayloadArbitrumSepolia;
   signature: string;
 };
 

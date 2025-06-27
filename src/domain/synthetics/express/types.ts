@@ -16,7 +16,6 @@ export type GlobalExpressParams = {
   gasPaymentTokenAddress: string;
   relayerFeeTokenAddress: string;
   gasPaymentToken: TokenData;
-  // gmxAccountGasPaymentToken: TokenData;
   relayerFeeToken: TokenData;
   findFeeSwapPath: FindSwapPath;
   gasPrice: bigint;
@@ -32,7 +31,7 @@ export type ExpressParamsEstimationMethod = "approximate" | "estimateGas";
 
 export type ExpressTxnParams = {
   subaccount: Subaccount | undefined;
-  relayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload;
+  relayParamsPayload: RawRelayParamsPayload | RawRelayParamsPayloadArbitrumSepolia;
   gasPaymentParams: GasPaymentParams;
   gasLimit: bigint;
   l1GasLimit: bigint;
@@ -50,7 +49,7 @@ export type ExpressTransactionBuilder = ({
   subaccount,
   noncesData,
 }: {
-  relayParams: RawRelayParamsPayload | RawMultichainRelayParamsPayload;
+  relayParams: RawRelayParamsPayload | RawRelayParamsPayloadArbitrumSepolia;
   gasPaymentParams: GasPaymentParams;
   subaccount: Subaccount | undefined;
   noncesData: NoncesData | undefined;
@@ -86,12 +85,17 @@ export type RelayParamsPayload = {
   userNonce: bigint;
 };
 
-export type MultichainRelayParamsPayload = RelayParamsPayload & {
+export type RelayParamsPayloadArbitrumSepolia = {
+  oracleParams: OracleParamsPayload;
+  tokenPermits: SignedTokenPermit[];
+  externalCalls: ExternalCallsPayload;
+  fee: RelayFeePayload;
+  deadline: bigint;
   desChainId: bigint;
 };
 
 export type RawRelayParamsPayload = Omit<RelayParamsPayload, "userNonce" | "deadline">;
-export type RawMultichainRelayParamsPayload = Omit<MultichainRelayParamsPayload, "userNonce" | "deadline">;
+export type RawRelayParamsPayloadArbitrumSepolia = Omit<RelayParamsPayloadArbitrumSepolia, "deadline">;
 
 export type OracleParamsPayload = {
   tokens: string[];

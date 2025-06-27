@@ -95,7 +95,6 @@ export async function sendBatchOrderTxn({
       const txnData = await buildAndSignExpressBatchOrderTxn({
         chainId: chainId as ContractsChainId,
         signer,
-        provider,
         batchParams,
         relayParamsPayload: expressParams.relayParamsPayload,
         relayerFeeTokenAddress: expressParams.gasPaymentParams.relayerFeeTokenAddress,
@@ -258,7 +257,6 @@ export const makeBatchOrderSimulation = async ({
         emptySignature: true,
         relayerFeeTokenAddress: expressParams.gasPaymentParams.relayerFeeTokenAddress,
         relayerFeeAmount: expressParams.gasPaymentParams.relayerFeeAmount,
-        provider,
         noncesData,
         isGmxAccount,
       });

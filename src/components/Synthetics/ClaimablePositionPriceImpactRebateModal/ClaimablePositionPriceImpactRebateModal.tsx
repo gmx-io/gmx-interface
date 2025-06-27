@@ -3,7 +3,6 @@ import { memo, useCallback, useMemo, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
 import { toast } from "react-toastify";
 
-import { getContract } from "config/contracts";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
@@ -12,18 +11,13 @@ import {
   selectClaimsGroupedPositionPriceImpactClaimableFees,
   selectClaimsPriceImpactClaimableTotal,
 } from "context/SyntheticsStateContext/selectors/claimsSelectors";
-import { selectExpressNoncesData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
 import {
   buildAndSignClaimPositionPriceImpactFeesTxn,
   createClaimCollateralTxn,
 } from "domain/synthetics/claimHistory/claimPriceImpactRebate";
-import {
-  ExpressTransactionBuilder,
-  getRelayRouterNonceForMultichain,
-  RawMultichainRelayParamsPayload,
-} from "domain/synthetics/express";
+import { ExpressTransactionBuilder, RawRelayParamsPayloadArbitrumSepolia } from "domain/synthetics/express";
 import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getTokenData } from "domain/synthetics/tokens";
@@ -138,20 +132,11 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
     }
 
     return async (params) => {
-      let userNonce: bigint | undefined = params.noncesData?.multichainClaimsRouter?.nonce;
-      if (userNonce === undefined) {
-        userNonce = await getRelayRouterNonceForMultichain(
-          provider,
-          account,
-          getContract(chainId, "MultichainClaimsRouter")
-        );
-      }
       const txnData = await buildAndSignClaimPositionPriceImpactFeesTxn({
         signer,
         relayParams: {
-          ...(params.relayParams as RawMultichainRelayParamsPayload),
+          ...(params.relayParams as RawRelayParamsPayloadArbitrumSepolia),
           deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
-          userNonce,
         },
         account,
         claimablePositionPriceImpactFees,
@@ -171,7 +156,6 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
   const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload({
     expressTransactionBuilder,
   });
-  const noncesData = useSelector(selectExpressNoncesData);
 
   const handleSubmit = useCallback(async () => {
     const onMissingParams = () => {
@@ -192,21 +176,11 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
           return;
         }
 
-        let userNonce: bigint | undefined = noncesData?.multichainClaimsRouter?.nonce;
-        if (userNonce === undefined) {
-          userNonce = await getRelayRouterNonceForMultichain(
-            provider,
-            account,
-            getContract(chainId, "MultichainClaimsRouter")
-          );
-        }
-
         const txnData = await buildAndSignClaimPositionPriceImpactFeesTxn({
           signer,
           relayParams: {
-            ...(params.relayParamsPayload as RawMultichainRelayParamsPayload),
+            ...(params.relayParamsPayload as RawRelayParamsPayloadArbitrumSepolia),
             deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
-            userNonce,
           },
           account,
           claimablePositionPriceImpactFees,
@@ -260,7 +234,6 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
     chainId,
     claimablePositionPriceImpactFees,
     expressTxnParamsAsyncResult.promise,
-    noncesData?.multichainClaimsRouter?.nonce,
     onClose,
     provider,
     signer,

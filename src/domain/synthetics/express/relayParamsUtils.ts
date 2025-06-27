@@ -1,4 +1,4 @@
-import { Contract, ethers, Provider, Wallet } from "ethers";
+import { ethers, Wallet } from "ethers";
 import { Address, encodeAbiParameters, keccak256 } from "viem";
 
 import type { ContractsChainId, SourceChainId } from "config/chains";
@@ -22,11 +22,10 @@ import { getSwapAmountsByToValue } from "sdk/utils/swap";
 import { getOracleParamsForRelayParams } from "./oracleParamsUtils";
 import type {
   GasPaymentParams,
-  MultichainRelayParamsPayload,
-  RawMultichainRelayParamsPayload,
-  RawRelayParamsPayload,
+  RawRelayParamsPayloadArbitrumSepolia,
   RelayFeePayload,
   RelayParamsPayload,
+  RelayParamsPayloadArbitrumSepolia,
 } from "./types";
 
 export function getExpressContractAddress(
@@ -209,7 +208,7 @@ export function getRawRelayerParams({
   externalCalls: ExternalCallsPayload;
   tokenPermits: SignedTokenPermit[];
   marketsInfoData: MarketsInfoData;
-}): RawRelayParamsPayload | RawMultichainRelayParamsPayload {
+}): RawRelayParamsPayloadArbitrumSepolia {
   const oracleParams = getOracleParamsForRelayParams({
     chainId,
     externalCalls,
@@ -219,7 +218,7 @@ export function getRawRelayerParams({
     marketsInfoData,
   });
 
-  const relayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload = {
+  const relayParamsPayload: RawRelayParamsPayloadArbitrumSepolia = {
     oracleParams,
     tokenPermits,
     externalCalls,
@@ -252,7 +251,7 @@ export function hashRelayParams(relayParams: RelayParamsPayload) {
   return hash;
 }
 
-export function hashRelayParamsMultichain(relayParams: MultichainRelayParamsPayload) {
+export function hashRelayParamsMultichain(relayParams: RelayParamsPayloadArbitrumSepolia) {
   const encoded = encodeAbiParameters(abis.RelayParamsArbitrumSepolia, [
     [relayParams.oracleParams.tokens, relayParams.oracleParams.providers, relayParams.oracleParams.data],
     [
@@ -265,7 +264,6 @@ export function hashRelayParamsMultichain(relayParams: MultichainRelayParamsPayl
     ],
     relayParams.tokenPermits,
     [relayParams.fee.feeToken, relayParams.fee.feeAmount, relayParams.fee.feeSwapPath],
-    relayParams.userNonce,
     relayParams.deadline,
     relayParams.desChainId,
   ]);
@@ -292,18 +290,4 @@ export async function getRelayRouterNonceForSigner({
   const contract = new ethers.Contract(contractAddress, abis.AbstractUserNonceable, signer);
 
   return contract.userNonces(signer.address);
-}
-
-export async function getRelayRouterNonceForMultichain(
-  provider: Provider,
-  account: string,
-  relayRouterAddress: string
-): Promise<bigint> {
-  if (!provider) {
-    throw new Error("provider is required");
-  }
-
-  const abstractNonceable = new Contract(relayRouterAddress, abis.AbstractUserNonceable, provider);
-
-  return await abstractNonceable.userNonces(account);
 }

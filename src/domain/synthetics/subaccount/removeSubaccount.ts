@@ -21,12 +21,12 @@ import {
   ExpressTransactionBuilder,
   getExpressContractAddress,
   getGelatoRelayRouterDomain,
-  getRelayRouterNonceForMultichain,
   GlobalExpressParams,
   hashRelayParams,
   hashRelayParamsMultichain,
-  MultichainRelayParamsPayload,
+  RelayParamsPayloadArbitrumSepolia,
   RelayParamsPayload,
+  RawRelayParamsPayloadArbitrumSepolia,
 } from "../express";
 import { getMultichainInfoFromSigner, getOrderRelayRouterAddress } from "../express/expressOrderUtils";
 import { Subaccount } from "../subaccount";
@@ -56,7 +56,7 @@ export async function buildAndSignRemoveSubaccountTxn({
   emptySignature,
 }: {
   chainId: ContractsChainId;
-  relayParamsPayload: RelayParamsPayload | MultichainRelayParamsPayload;
+  relayParamsPayload: RelayParamsPayloadArbitrumSepolia;
   subaccount: Subaccount;
   signer: WalletSigner;
   relayerFeeTokenAddress: string;
@@ -108,7 +108,7 @@ async function signRemoveSubaccountPayload({
   chainId,
 }: {
   signer: WalletSigner;
-  relayParams: RelayParamsPayload | MultichainRelayParamsPayload;
+  relayParams: RelayParamsPayload | RelayParamsPayloadArbitrumSepolia;
   subaccountAddress: string;
   chainId: ContractsChainId;
 }) {
@@ -129,8 +129,8 @@ async function signRemoveSubaccountPayload({
     subaccount: subaccountAddress,
     relayParams:
       chainId === ARBITRUM_SEPOLIA
-        ? hashRelayParamsMultichain({ desChainId: BigInt(chainId), ...relayParams })
-        : hashRelayParams(relayParams),
+        ? hashRelayParamsMultichain(relayParams as RelayParamsPayloadArbitrumSepolia)
+        : hashRelayParams(relayParams as RelayParamsPayload),
   };
 
   return signTypedData({
@@ -164,12 +164,6 @@ export async function removeSubaccountExpressTxn({
     throw new Error("No provider or account");
   }
 
-  const relayRouterAddress = getExpressContractAddress(chainId, {
-    isSubaccount: true,
-    isMultichain: srcChainId !== undefined,
-    scope: "subaccount",
-  });
-
   const { rawBaseRelayParamsPayload, baseRelayFeeSwapParams } = getRawBaseRelayerParams({
     chainId,
     account,
@@ -180,11 +174,7 @@ export async function removeSubaccountExpressTxn({
     throw new Error("No base express params");
   }
 
-  const getTxnData: ExpressTransactionBuilder = async ({ relayParams, gasPaymentParams, subaccount, noncesData }) => {
-    const userNonce =
-      noncesData?.multichainSubaccountRelayRouter?.nonceForMainAccount ??
-      (await getRelayRouterNonceForMultichain(provider, account, relayRouterAddress));
-
+  const getTxnData: ExpressTransactionBuilder = async ({ relayParams, gasPaymentParams, subaccount }) => {
     if (!subaccount) {
       throw new Error("No subaccount");
     }
@@ -194,8 +184,7 @@ export async function removeSubaccountExpressTxn({
       signer,
       subaccount,
       relayParamsPayload: {
-        ...relayParams,
-        userNonce,
+        ...(relayParams as RawRelayParamsPayloadArbitrumSepolia),
         deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
       },
       relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
@@ -234,17 +223,12 @@ export async function removeSubaccountExpressTxn({
     throw new Error("No relayFeeParams or relayParamsPayload");
   }
 
-  const userNonce =
-    globalExpressParams.noncesData?.multichainSubaccountRelayRouter?.nonceForMainAccount ??
-    (await getRelayRouterNonceForMultichain(provider, account, relayRouterAddress));
-
   const txnData = await buildAndSignRemoveSubaccountTxn({
     chainId,
     signer,
     subaccount: subaccount!,
     relayParamsPayload: {
       ...relayParamsPayload,
-      userNonce,
       deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
     },
     relayerFeeAmount: relayFeeParams.gasPaymentParams.relayerFeeAmount,

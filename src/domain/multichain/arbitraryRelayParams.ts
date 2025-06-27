@@ -20,7 +20,7 @@ import {
   getRawRelayerParams,
   getRelayerFeeParams,
   GlobalExpressParams,
-  RawMultichainRelayParamsPayload,
+  RawRelayParamsPayloadArbitrumSepolia,
   RawRelayParamsPayload,
   RelayFeePayload,
 } from "domain/synthetics/express";
@@ -51,7 +51,7 @@ export function getRawBaseRelayerParams({
   globalExpressParams: GlobalExpressParams;
   additionalNetworkFee?: bigint;
 }): Partial<{
-  rawBaseRelayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload;
+  rawBaseRelayParamsPayload: RawRelayParamsPayload | RawRelayParamsPayloadArbitrumSepolia;
   baseRelayFeeSwapParams: {
     feeParams: RelayFeePayload;
     externalCalls: ExternalCallsPayload;
@@ -114,7 +114,7 @@ async function estimateArbitraryGasLimit({
 }: {
   chainId: ContractsChainId;
   provider: Provider;
-  rawRelayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload;
+  rawRelayParamsPayload: RawRelayParamsPayload | RawRelayParamsPayloadArbitrumSepolia;
   gasPaymentParams: GasPaymentParams;
   expressTransactionBuilder: ExpressTransactionBuilder;
   noncesData: NoncesData | undefined;
@@ -158,7 +158,7 @@ export async function estimateArbitraryRelayFee({
 }: {
   chainId: ContractsChainId;
   provider: Provider;
-  rawRelayParamsPayload: RawRelayParamsPayload | RawMultichainRelayParamsPayload;
+  rawRelayParamsPayload: RawRelayParamsPayload | RawRelayParamsPayloadArbitrumSepolia;
   expressTransactionBuilder: ExpressTransactionBuilder;
   gasPaymentParams: GasPaymentParams;
   noncesData: NoncesData | undefined;
@@ -241,7 +241,8 @@ export function getArbitraryRelayParamsAndPayload({
     externalCalls: getEmptyExternalCallsPayload(),
     tokenPermits: [],
     marketsInfoData: globalExpressParams.marketsInfoData,
-  });
+    // TODO MLTCH: remove "as" when contracts are deployed to prod
+  }) as RawRelayParamsPayloadArbitrumSepolia;
 
   const gasPaymentValidations = getGasPaymentValidations({
     gasPaymentToken: globalExpressParams.gasPaymentToken,

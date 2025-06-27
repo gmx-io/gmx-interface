@@ -11,7 +11,11 @@ import { abis } from "sdk/abis";
 import { ContractsChainId } from "sdk/configs/chains";
 import type { SourceChainId } from "sdk/configs/chains";
 
-import { type MultichainRelayParamsPayload, getGelatoRelayRouterDomain, hashRelayParamsMultichain } from "../express";
+import {
+  type RelayParamsPayloadArbitrumSepolia,
+  getGelatoRelayRouterDomain,
+  hashRelayParamsMultichain,
+} from "../express";
 import { getMultichainInfoFromSigner } from "../express/expressOrderUtils";
 import { RebateInfoItem } from "../fees/useRebatesInfo";
 
@@ -56,7 +60,7 @@ export async function buildAndSignClaimPositionPriceImpactFeesTxn({
   relayerFeeAmount,
 }: {
   signer: WalletSigner;
-  relayParams: MultichainRelayParamsPayload;
+  relayParams: RelayParamsPayloadArbitrumSepolia;
   account: string;
   claimablePositionPriceImpactFees: RebateInfoItem[];
   receiver: string;
@@ -121,7 +125,7 @@ async function signClaimCollateralPayload({
   srcChainId,
 }: {
   signer: WalletSigner;
-  relayParams: MultichainRelayParamsPayload;
+  relayParams: RelayParamsPayloadArbitrumSepolia;
   markets: string[];
   tokens: string[];
   timeKeys: bigint[];

@@ -18,7 +18,6 @@ import {
   MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS,
   MULTICHAIN_FUNDING_SLIPPAGE_BPS,
 } from "config/multichain";
-import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import {
   useGmxAccountModalOpen,
   useGmxAccountWithdrawalViewChain,
@@ -41,7 +40,7 @@ import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSend } from "domain/multichain/useQuoteSend";
 import { callRelayTransaction } from "domain/synthetics/express/callRelayTransaction";
 import { buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
-import { ExpressTransactionBuilder, RawMultichainRelayParamsPayload } from "domain/synthetics/express/types";
+import { ExpressTransactionBuilder, RawRelayParamsPayloadArbitrumSepolia } from "domain/synthetics/express/types";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { convertToUsd, TokenData } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -328,22 +327,16 @@ export const WithdrawalView = () => {
       return;
     }
 
-    const expressTransactionBuilder: ExpressTransactionBuilder = async ({
-      gasPaymentParams,
-      noncesData,
-      relayParams,
-    }) => ({
+    const expressTransactionBuilder: ExpressTransactionBuilder = async ({ gasPaymentParams, relayParams }) => ({
       txnData: await buildAndSignBridgeOutTxn({
         chainId: chainId as SettlementChainId,
         signer: undefined,
         account,
-        relayParamsPayload: relayParams as RawMultichainRelayParamsPayload,
+        relayParamsPayload: relayParams as RawRelayParamsPayloadArbitrumSepolia,
         params: bridgeOutParams,
         emptySignature: true,
         relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
         relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
-        noncesData,
-        provider,
         srcChainId: withdrawalViewChain,
       }),
     });
@@ -415,11 +408,10 @@ export const WithdrawalView = () => {
           chainId: chainId as SettlementChainId,
           relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
           relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
-          relayParamsPayload: relayParamsPayload as RawMultichainRelayParamsPayload,
+          relayParamsPayload: relayParamsPayload as RawRelayParamsPayloadArbitrumSepolia,
           params: bridgeOutParams,
           signer,
           provider,
-          noncesData: globalExpressParams?.noncesData,
           srcChainId: withdrawalViewChain,
         });
 
@@ -429,12 +421,10 @@ export const WithdrawalView = () => {
           chainId: chainId as SettlementChainId,
           signer,
           account,
-          relayParamsPayload: relayParamsPayload as RawMultichainRelayParamsPayload,
+          relayParamsPayload: relayParamsPayload as RawRelayParamsPayloadArbitrumSepolia,
           params: bridgeOutParams,
           relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
           relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
-          noncesData: globalExpressParams?.noncesData,
-          provider,
           srcChainId: withdrawalViewChain,
         });
 
@@ -899,7 +889,6 @@ async function simulateWithdraw({
   relayerFeeTokenAddress,
   relayerFeeAmount,
   params,
-  noncesData,
 }: {
   provider: Provider;
   signer: WalletSigner;
@@ -907,9 +896,8 @@ async function simulateWithdraw({
   srcChainId: SourceChainId;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
-  relayParamsPayload: RawMultichainRelayParamsPayload;
+  relayParamsPayload: RawRelayParamsPayloadArbitrumSepolia;
   params: BridgeOutParams;
-  noncesData: NoncesData | undefined;
 }): Promise<void> {
   if (!provider) {
     throw new Error("Provider is required");
@@ -925,8 +913,6 @@ async function simulateWithdraw({
     emptySignature: true,
     relayerFeeTokenAddress,
     relayerFeeAmount: relayerFeeAmount,
-    provider,
-    noncesData,
   });
 
   await fallbackCustomError(async () => {

@@ -150,7 +150,6 @@ export declare namespace IRelayUtils {
     externalCalls: IRelayUtils.ExternalCallsStruct;
     tokenPermits: IRelayUtils.TokenPermitStruct[];
     fee: IRelayUtils.FeeParamsStruct;
-    userNonce: BigNumberish;
     deadline: BigNumberish;
     signature: BytesLike;
     desChainId: BigNumberish;
@@ -161,7 +160,6 @@ export declare namespace IRelayUtils {
     externalCalls: IRelayUtils.ExternalCallsStructOutput,
     tokenPermits: IRelayUtils.TokenPermitStructOutput[],
     fee: IRelayUtils.FeeParamsStructOutput,
-    userNonce: bigint,
     deadline: bigint,
     signature: string,
     desChainId: bigint,
@@ -170,7 +168,6 @@ export declare namespace IRelayUtils {
     externalCalls: IRelayUtils.ExternalCallsStructOutput;
     tokenPermits: IRelayUtils.TokenPermitStructOutput[];
     fee: IRelayUtils.FeeParamsStructOutput;
-    userNonce: bigint;
     deadline: bigint;
     signature: string;
     desChainId: bigint;
@@ -198,6 +195,7 @@ export interface MultichainTransferRouterInterface extends Interface {
       | "bridgeOut"
       | "bridgeOutFromController"
       | "dataStore"
+      | "digests"
       | "eventEmitter"
       | "externalHandler"
       | "initialize"
@@ -214,7 +212,6 @@ export interface MultichainTransferRouterInterface extends Interface {
       | "sendWnt"
       | "swapHandler"
       | "transferOut"
-      | "userNonces"
   ): FunctionFragment;
 
   getEvent(nameOrSignatureOrTopic: "Initialized" | "TokenTransferReverted"): EventFragment;
@@ -226,9 +223,10 @@ export interface MultichainTransferRouterInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "bridgeOutFromController",
-    values: [IRelayUtils.RelayParamsStruct, AddressLike, BigNumberish, IRelayUtils.BridgeOutParamsStruct]
+    values: [AddressLike, BigNumberish, BigNumberish, BigNumberish, IRelayUtils.BridgeOutParamsStruct]
   ): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
+  encodeFunctionData(functionFragment: "digests", values: [BytesLike]): string;
   encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
   encodeFunctionData(functionFragment: "externalHandler", values?: undefined): string;
   encodeFunctionData(functionFragment: "initialize", values: [AddressLike]): string;
@@ -245,12 +243,12 @@ export interface MultichainTransferRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "sendWnt", values: [AddressLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "swapHandler", values?: undefined): string;
   encodeFunctionData(functionFragment: "transferOut", values: [IRelayUtils.BridgeOutParamsStruct]): string;
-  encodeFunctionData(functionFragment: "userNonces", values: [AddressLike]): string;
 
   decodeFunctionResult(functionFragment: "bridgeIn", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "bridgeOut", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "bridgeOutFromController", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "digests", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "eventEmitter", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "externalHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
@@ -267,7 +265,6 @@ export interface MultichainTransferRouterInterface extends Interface {
   decodeFunctionResult(functionFragment: "sendWnt", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "swapHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "transferOut", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "userNonces", data: BytesLike): Result;
 }
 
 export namespace InitializedEvent {
@@ -343,9 +340,10 @@ export interface MultichainTransferRouter extends BaseContract {
 
   bridgeOutFromController: TypedContractMethod<
     [
-      relayParams: IRelayUtils.RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
+      desChainId: BigNumberish,
+      deadline: BigNumberish,
       params: IRelayUtils.BridgeOutParamsStruct,
     ],
     [void],
@@ -353,6 +351,8 @@ export interface MultichainTransferRouter extends BaseContract {
   >;
 
   dataStore: TypedContractMethod<[], [string], "view">;
+
+  digests: TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
 
   eventEmitter: TypedContractMethod<[], [string], "view">;
 
@@ -386,8 +386,6 @@ export interface MultichainTransferRouter extends BaseContract {
 
   transferOut: TypedContractMethod<[params: IRelayUtils.BridgeOutParamsStruct], [void], "nonpayable">;
 
-  userNonces: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-
   getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
   getFunction(
@@ -409,15 +407,17 @@ export interface MultichainTransferRouter extends BaseContract {
     nameOrSignature: "bridgeOutFromController"
   ): TypedContractMethod<
     [
-      relayParams: IRelayUtils.RelayParamsStruct,
       account: AddressLike,
       srcChainId: BigNumberish,
+      desChainId: BigNumberish,
+      deadline: BigNumberish,
       params: IRelayUtils.BridgeOutParamsStruct,
     ],
     [void],
     "nonpayable"
   >;
   getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "digests"): TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
   getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "externalHandler"): TypedContractMethod<[], [string], "view">;
   getFunction(
@@ -444,7 +444,6 @@ export interface MultichainTransferRouter extends BaseContract {
   getFunction(
     nameOrSignature: "transferOut"
   ): TypedContractMethod<[params: IRelayUtils.BridgeOutParamsStruct], [void], "nonpayable">;
-  getFunction(nameOrSignature: "userNonces"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
   getEvent(
     key: "Initialized"

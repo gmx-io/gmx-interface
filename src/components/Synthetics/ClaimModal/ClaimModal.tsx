@@ -3,17 +3,10 @@ import { useCallback, useMemo, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
 import { toast } from "react-toastify";
 
-import { getContract } from "config/contracts";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectExpressNoncesData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
-import {
-  ExpressTransactionBuilder,
-  RawMultichainRelayParamsPayload,
-  getRelayRouterNonceForMultichain,
-} from "domain/synthetics/express";
+import { ExpressTransactionBuilder, RawRelayParamsPayloadArbitrumSepolia } from "domain/synthetics/express";
 import {
   MarketInfo,
   getMarketIndexName,
@@ -166,15 +159,6 @@ export function ClaimModalMultichain(p: Props) {
     }
 
     return async (params) => {
-      let userNonce: bigint | undefined = params.noncesData?.multichainClaimsRouter?.nonce;
-      if (userNonce === undefined) {
-        userNonce = await getRelayRouterNonceForMultichain(
-          provider,
-          account,
-          getContract(chainId, "MultichainClaimsRouter")
-        );
-      }
-
       const txnData = await buildAndSignClaimFundingFeesTxn({
         chainId,
         markets: fundingMarketAddresses,
@@ -183,8 +167,7 @@ export function ClaimModalMultichain(p: Props) {
         account,
         signer,
         relayParams: {
-          ...(params.relayParams as RawMultichainRelayParamsPayload),
-          userNonce,
+          ...(params.relayParams as RawRelayParamsPayloadArbitrumSepolia),
           deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
         },
         relayerFeeAmount: params.gasPaymentParams.relayerFeeAmount,
@@ -201,8 +184,6 @@ export function ClaimModalMultichain(p: Props) {
   const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload({
     expressTransactionBuilder,
   });
-
-  const noncesData = useSelector(selectExpressNoncesData);
 
   const onSubmit = useCallback(() => {
     const onMissingParams = () => {
@@ -224,15 +205,6 @@ export function ClaimModalMultichain(p: Props) {
           return;
         }
 
-        let userNonce = noncesData?.multichainClaimsRouter?.nonce;
-        if (userNonce === undefined) {
-          userNonce = await getRelayRouterNonceForMultichain(
-            provider,
-            account,
-            getContract(chainId, "MultichainClaimsRouter")
-          );
-        }
-
         const txnData = await buildAndSignClaimFundingFeesTxn({
           chainId,
           markets: fundingMarketAddresses,
@@ -241,8 +213,7 @@ export function ClaimModalMultichain(p: Props) {
           signer,
           account,
           relayParams: {
-            ...(expressTxnParams.relayParamsPayload as RawMultichainRelayParamsPayload),
-            userNonce,
+            ...(expressTxnParams.relayParamsPayload as RawRelayParamsPayloadArbitrumSepolia),
             deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
           },
           relayerFeeAmount: expressTxnParams.gasPaymentParams.relayerFeeAmount,
@@ -291,7 +262,6 @@ export function ClaimModalMultichain(p: Props) {
     expressTxnParamsAsyncResult.promise,
     fundingMarketAddresses,
     fundingTokenAddresses,
-    noncesData?.multichainClaimsRouter?.nonce,
     onClose,
     provider,
     signer,

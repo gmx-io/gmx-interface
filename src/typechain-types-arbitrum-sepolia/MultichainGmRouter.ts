@@ -150,7 +150,6 @@ export declare namespace IRelayUtils {
     externalCalls: IRelayUtils.ExternalCallsStruct;
     tokenPermits: IRelayUtils.TokenPermitStruct[];
     fee: IRelayUtils.FeeParamsStruct;
-    userNonce: BigNumberish;
     deadline: BigNumberish;
     signature: BytesLike;
     desChainId: BigNumberish;
@@ -161,7 +160,6 @@ export declare namespace IRelayUtils {
     externalCalls: IRelayUtils.ExternalCallsStructOutput,
     tokenPermits: IRelayUtils.TokenPermitStructOutput[],
     fee: IRelayUtils.FeeParamsStructOutput,
-    userNonce: bigint,
     deadline: bigint,
     signature: string,
     desChainId: bigint,
@@ -170,7 +168,6 @@ export declare namespace IRelayUtils {
     externalCalls: IRelayUtils.ExternalCallsStructOutput;
     tokenPermits: IRelayUtils.TokenPermitStructOutput[];
     fee: IRelayUtils.FeeParamsStructOutput;
-    userNonce: bigint;
     deadline: bigint;
     signature: string;
     desChainId: bigint;
@@ -357,6 +354,7 @@ export interface MultichainGmRouterInterface extends Interface {
       | "dataStore"
       | "depositHandler"
       | "depositVault"
+      | "digests"
       | "eventEmitter"
       | "externalHandler"
       | "multicall"
@@ -372,7 +370,6 @@ export interface MultichainGmRouterInterface extends Interface {
       | "shiftHandler"
       | "shiftVault"
       | "swapHandler"
-      | "userNonces"
       | "withdrawalHandler"
       | "withdrawalVault"
   ): FunctionFragment;
@@ -412,6 +409,7 @@ export interface MultichainGmRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "depositHandler", values?: undefined): string;
   encodeFunctionData(functionFragment: "depositVault", values?: undefined): string;
+  encodeFunctionData(functionFragment: "digests", values: [BytesLike]): string;
   encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
   encodeFunctionData(functionFragment: "externalHandler", values?: undefined): string;
   encodeFunctionData(functionFragment: "multicall", values: [BytesLike[]]): string;
@@ -427,7 +425,6 @@ export interface MultichainGmRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "shiftHandler", values?: undefined): string;
   encodeFunctionData(functionFragment: "shiftVault", values?: undefined): string;
   encodeFunctionData(functionFragment: "swapHandler", values?: undefined): string;
-  encodeFunctionData(functionFragment: "userNonces", values: [AddressLike]): string;
   encodeFunctionData(functionFragment: "withdrawalHandler", values?: undefined): string;
   encodeFunctionData(functionFragment: "withdrawalVault", values?: undefined): string;
 
@@ -437,6 +434,7 @@ export interface MultichainGmRouterInterface extends Interface {
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "depositHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "depositVault", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "digests", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "eventEmitter", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "externalHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "multicall", data: BytesLike): Result;
@@ -452,7 +450,6 @@ export interface MultichainGmRouterInterface extends Interface {
   decodeFunctionResult(functionFragment: "shiftHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "shiftVault", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "swapHandler", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "userNonces", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdrawalHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdrawalVault", data: BytesLike): Result;
 }
@@ -545,6 +542,8 @@ export interface MultichainGmRouter extends BaseContract {
 
   depositVault: TypedContractMethod<[], [string], "view">;
 
+  digests: TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
+
   eventEmitter: TypedContractMethod<[], [string], "view">;
 
   externalHandler: TypedContractMethod<[], [string], "view">;
@@ -574,8 +573,6 @@ export interface MultichainGmRouter extends BaseContract {
   shiftVault: TypedContractMethod<[], [string], "view">;
 
   swapHandler: TypedContractMethod<[], [string], "view">;
-
-  userNonces: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
   withdrawalHandler: TypedContractMethod<[], [string], "view">;
 
@@ -625,6 +622,7 @@ export interface MultichainGmRouter extends BaseContract {
   getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "depositHandler"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "depositVault"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "digests"): TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
   getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "externalHandler"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "multicall"): TypedContractMethod<[data: BytesLike[]], [string[]], "payable">;
@@ -646,7 +644,6 @@ export interface MultichainGmRouter extends BaseContract {
   getFunction(nameOrSignature: "shiftHandler"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "shiftVault"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "swapHandler"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "userNonces"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
   getFunction(nameOrSignature: "withdrawalHandler"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "withdrawalVault"): TypedContractMethod<[], [string], "view">;
 

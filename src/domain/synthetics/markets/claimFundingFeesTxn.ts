@@ -12,7 +12,7 @@ import { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
-import { MultichainRelayParamsPayload, getGelatoRelayRouterDomain, hashRelayParamsMultichain } from "../express";
+import { RelayParamsPayloadArbitrumSepolia, getGelatoRelayRouterDomain, hashRelayParamsMultichain } from "../express";
 import { getMultichainInfoFromSigner } from "../express/expressOrderUtils";
 
 type Params = {
@@ -59,7 +59,7 @@ export async function buildAndSignClaimFundingFeesTxn({
   relayerFeeAmount,
 }: {
   signer: WalletSigner;
-  relayParams: MultichainRelayParamsPayload;
+  relayParams: RelayParamsPayloadArbitrumSepolia;
   account: string;
   markets: string[];
   tokens: string[];
@@ -114,7 +114,7 @@ async function signClaimFundingFeesPayload({
   srcChainId,
 }: {
   signer: WalletSigner | Wallet;
-  relayParams: MultichainRelayParamsPayload;
+  relayParams: RelayParamsPayloadArbitrumSepolia;
   markets: string[];
   tokens: string[];
   receiver: string;
