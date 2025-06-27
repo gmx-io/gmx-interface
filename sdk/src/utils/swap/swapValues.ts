@@ -4,7 +4,7 @@ import { SwapRoute } from "types/trade";
 import type { FindSwapPath, SwapAmounts, SwapOptimizationOrderArray } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { getTotalSwapVolumeFromSwapStats } from "utils/fees";
-import { applyFactor, expandDecimals, PRECISION } from "utils/numbers";
+import { applyFactor, expandDecimals, formatAmount, formatUsd, PRECISION } from "utils/numbers";
 import {
   convertToTokenAmount,
   convertToUsd,
@@ -79,7 +79,7 @@ export function getSwapAmountsByFromValue(p: {
   }
 
   if (getIsStake(tokenIn, tokenOut) || getIsUnstake(tokenIn, tokenOut)) {
-    return getSwapAmountsByRateByFromToken(tokenIn, tokenOut, amountIn);
+    return getPlainSwapAmountsByFromToken(tokenIn, tokenOut, amountIn);
   }
 
   const swapPathStats = findSwapPath(defaultAmounts.usdIn, { order: swapOptimizationOrder });
@@ -199,7 +199,7 @@ export function getSwapAmountsByToValue(p: {
   }
 
   if (getIsStake(tokenIn, tokenOut) || getIsUnstake(tokenIn, tokenOut)) {
-    return getSwapAmountsByRateByToToken(tokenIn, tokenOut, amountOut);
+    return getPlainSwapAmountsByToToken(tokenIn, tokenOut, amountOut);
   }
 
   const baseUsdIn = usdOut;
@@ -273,13 +273,10 @@ export function getSwapPathComparator(order?: SwapOptimizationOrderArray | undef
   };
 }
 
-function getSwapAmountsByRateByFromToken(tokenIn: TokenData, tokenOut: TokenData, amountIn: bigint): SwapAmounts {
+function getPlainSwapAmountsByFromToken(tokenIn: TokenData, tokenOut: TokenData, amountIn: bigint): SwapAmounts {
   const usdIn = convertToUsd(amountIn, tokenIn.decimals, tokenIn.prices.minPrice)!;
-  const rate =
-    (tokenOut.prices.maxPrice * expandDecimals(1, tokenOut.decimals) * PRECISION) /
-    (tokenIn.prices.minPrice * expandDecimals(1, tokenIn.decimals));
-  const amountOut = bigMath.mulDiv(amountIn, PRECISION, rate);
-  const usdOut = convertToUsd(amountOut, tokenOut.decimals, tokenOut.prices.maxPrice)!;
+  const usdOut = usdIn;
+  const amountOut = convertToTokenAmount(usdOut, tokenOut.decimals, tokenOut.prices.maxPrice)!;
   const priceIn = tokenIn.prices.minPrice;
   const priceOut = tokenOut.prices.maxPrice;
 
@@ -295,16 +292,12 @@ function getSwapAmountsByRateByFromToken(tokenIn: TokenData, tokenOut: TokenData
   };
 }
 
-function getSwapAmountsByRateByToToken(tokenIn: TokenData, tokenOut: TokenData, amountOut: bigint): SwapAmounts {
+function getPlainSwapAmountsByToToken(tokenIn: TokenData, tokenOut: TokenData, amountOut: bigint): SwapAmounts {
   const priceIn = tokenIn.prices.minPrice;
   const priceOut = tokenOut.prices.maxPrice;
-
   const usdOut = convertToUsd(amountOut, tokenOut.decimals, priceOut)!;
-  const rate =
-    (tokenOut.prices.maxPrice * expandDecimals(1, tokenOut.decimals) * PRECISION) /
-    (tokenIn.prices.minPrice * expandDecimals(1, tokenIn.decimals));
-  const amountIn = bigMath.mulDiv(amountOut, rate, PRECISION);
-  const usdIn = convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
+  const usdIn = usdOut;
+  const amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
 
   return {
     amountIn,
