@@ -1,9 +1,10 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
+import { ARBITRUM_SEPOLIA } from "config/chains";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { getExpressContractAddress } from "domain/synthetics/express";
 import { useChainId } from "lib/chains";
-import { useMulticall } from "lib/multicall";
+import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import useWallet from "lib/wallets/useWallet";
 
@@ -56,30 +57,39 @@ export function ExpressNoncesContextProvider({ children }: { children: React.Rea
 
   const { data: onChainData, mutate } = useMulticall(chainId, "expressNonces-context", {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
-    key: account && [account, subaccount?.address],
-    request: {
-      relayRouter: {
-        contractAddress: getExpressContractAddress(chainId, { isSubaccount: false }),
-        abiId: "GelatoRelayRouter",
-        calls: {
-          nonce: {
-            methodName: "userNonces",
-            params: [account],
+    key: account && chainId !== ARBITRUM_SEPOLIA && [account, subaccount?.address],
+    request: (chainId) => {
+      const request: MulticallRequestConfig<any> = {
+        relayRouter: {
+          contractAddress: getExpressContractAddress(chainId, {
+            scope: "order",
+          }),
+          abiId: "AbstractUserNonceable",
+          calls: {
+            nonce: {
+              methodName: "userNonces",
+              params: [account],
+            },
           },
         },
-      },
-      subaccountRelayRouter: {
-        contractAddress: getExpressContractAddress(chainId, { isSubaccount: true }),
-        abiId: "SubaccountGelatoRelayRouter",
-        calls: {
-          nonce: subaccount?.address
-            ? {
-                methodName: "userNonces",
-                params: [subaccount?.address],
-              }
-            : undefined,
+        subaccountRelayRouter: {
+          contractAddress: getExpressContractAddress(chainId, {
+            isSubaccount: true,
+            scope: "subaccount",
+          }),
+          abiId: "AbstractUserNonceable",
+          calls: {
+            nonce: subaccount?.address
+              ? {
+                  methodName: "userNonces",
+                  params: [subaccount?.address],
+                }
+              : undefined,
+          },
         },
-      },
+      };
+
+      return request;
     },
 
     parseResponse: (result) => {

@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import useSWR from "swr";
+import { zeroAddress } from "viem";
 
 import { ARBITRUM, getConstant } from "config/chains";
 import { getContract } from "config/contracts";
@@ -54,7 +55,7 @@ export function TotalRewardsCard({
     (processedData?.totalNativeTokenRewardsUsd ?? 0n) > 10n ** BigInt(USD_DECIMALS) / 100n;
 
   const { mutate: refetchBalances } = useSWR(
-    [
+    readerAddress !== zeroAddress && [
       `StakeV2:walletBalances:${active}`,
       chainId,
       readerAddress,

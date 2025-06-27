@@ -6,7 +6,7 @@ import { claimAffiliateRewardsTxn } from "domain/synthetics/referrals/claimAffil
 import { AffiliateReward } from "domain/synthetics/referrals/types";
 import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
 import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
-import { convertToUsd } from "domain/synthetics/tokens";
+import { convertToUsd, useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -27,9 +27,10 @@ type Props = {
 export function ClaimAffiliatesModal(p: Props) {
   const { onClose, setPendingTxns = () => null } = p;
   const { account, signer } = useWallet();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
 
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { affiliateRewardsData } = useAffiliateRewards(chainId);
   const [isSubmitting, setIsSubmitting] = useState(false);
 

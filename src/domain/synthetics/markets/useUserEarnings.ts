@@ -6,6 +6,7 @@ import { getSubgraphUrl } from "config/subgraph";
 import { GMX_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { bigMath } from "sdk/utils/bigmath";
 import graphqlFetcher from "sdk/utils/graphqlFetcher";
 
@@ -14,6 +15,7 @@ import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useGmMarketsApy } from "./useGmMarketsApy";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
 import { useMarketTokensData } from "./useMarketTokensData";
+import { useTokensDataRequest } from "../tokens";
 
 type RawBalanceChange = {
   cumulativeIncome: string;
@@ -87,8 +89,10 @@ function createQuery(marketAddress: string) {
 `;
 }
 
-export const useUserEarnings = (chainId: number) => {
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+export const useUserEarnings = (chainId: ContractsChainId) => {
+  // TODO MLTCH add srcChainId
+  const { tokensData } = useTokensDataRequest(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
 
   const subgraphUrl = getSubgraphUrl(chainId, "syntheticsStats");

@@ -3,8 +3,11 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useR
 import { toast } from "react-toastify";
 
 import { getSubaccountApprovalKey, getSubaccountConfigKey } from "config/localStorage";
+import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectIsSponsoredCallAvailable } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useCalcSelector } from "context/SyntheticsStateContext/utils";
+import { removeSubaccountExpressTxn, removeSubaccountWalletTxn } from "domain/synthetics/subaccount";
 import { generateSubaccount } from "domain/synthetics/subaccount/generateSubaccount";
-import { removeSubaccountTxn } from "domain/synthetics/subaccount/removeSubaccount";
 import { SignedSubbacountApproval, Subaccount, SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
 import { useSubaccountOnchainData } from "domain/synthetics/subaccount/useSubaccountOnchainData";
 import {
@@ -18,6 +21,8 @@ import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { metrics } from "lib/metrics";
+import { useJsonRpcProvider } from "lib/rpc";
+import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 
 import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
@@ -60,8 +65,10 @@ export function useSubaccountContext() {
 }
 
 export function SubaccountContextProvider({ children }: { children: React.ReactNode }) {
-  const { chainId } = useChainId();
-  const { signer } = useWallet();
+  const { chainId, srcChainId } = useChainId();
+  const signer = useEthersSigner();
+  const { account } = useWallet();
+  const { provider } = useJsonRpcProvider(chainId);
 
   const {
     subaccountConfig,
@@ -83,6 +90,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
   const { subaccountData, refreshSubaccountData } = useSubaccountOnchainData(chainId, {
     account: signer?.address,
     subaccountAddress: subaccountConfig?.address,
+    srcChainId,
   });
 
   const subaccount: Subaccount | undefined = useMemo(() => {
@@ -118,7 +126,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       nextRemainigActions?: bigint;
       nextRemainingSeconds?: bigint;
     }) {
-      if (!signer || !subaccount?.address) {
+      if (!signer || !subaccount?.address || !provider) {
         return;
       }
 
@@ -132,6 +140,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         const signedSubaccountApproval = await signUpdatedSubaccountSettings({
           chainId,
           signer,
+          provider,
           subaccount,
           nextRemainigActions,
           nextRemainingSeconds,
@@ -155,7 +164,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         );
       }
     },
-    [signer, subaccount, chainId, setSignedApproval]
+    [signer, subaccount, provider, chainId, setSignedApproval]
   );
 
   const resetSubaccountApproval = useCallback(() => {
@@ -164,7 +173,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
   }, [refreshSubaccountData, setSignedApproval]);
 
   const tryEnableSubaccount = useCallback(async () => {
-    if (!signer?.provider) {
+    if (!provider || !signer) {
       return false;
     }
 
@@ -210,7 +219,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       const defaultSubaccountApproval = await getInitialSubaccountApproval({
         chainId,
         signer,
-        provider: signer?.provider,
+        provider,
         subaccountAddress: config!.address,
       });
 
@@ -230,10 +239,12 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       metrics.pushError(error, "subaccount.signDefaultApproval");
       return false;
     }
-  }, [signer, subaccountConfig, setSubaccountConfig, resetStoredConfig, chainId, setSignedApproval]);
+  }, [provider, signer, subaccountConfig, setSubaccountConfig, resetStoredConfig, chainId, setSignedApproval]);
 
-  const tryDisableSubaccount = useCallback(async () => {
-    if (!signer || !subaccount?.address) {
+  const calcSelector = useCalcSelector();
+
+  const tryDisableSubaccount = useCallback(async (): Promise<boolean> => {
+    if (!signer || !subaccount?.address || !account) {
       return false;
     }
 
@@ -246,8 +257,33 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
     setSubaccountDeactivationState(SubaccountDeactivationState.Deactivating);
 
+    let removeSubaccount: () => Promise<void>;
+
+    if (srcChainId) {
+      const globalExpressParams = calcSelector(selectExpressGlobalParams);
+      const isSponsoredCallAvailable = calcSelector(selectIsSponsoredCallAvailable);
+
+      if (!provider || !globalExpressParams) {
+        return false;
+      }
+
+      removeSubaccount = () =>
+        removeSubaccountExpressTxn({
+          chainId,
+          provider,
+          account,
+          srcChainId,
+          signer,
+          subaccount,
+          globalExpressParams,
+          isSponsoredCallAvailable,
+        });
+    } else {
+      removeSubaccount = () => removeSubaccountWalletTxn(chainId, signer, subaccount.address);
+    }
+
     try {
-      await removeSubaccountTxn(chainId, signer, subaccount.address);
+      await removeSubaccount();
 
       setSubaccountDeactivationState(SubaccountDeactivationState.Success);
 
@@ -262,7 +298,18 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       setSubaccountDeactivationState(SubaccountDeactivationState.Error);
       return false;
     }
-  }, [signer, subaccount, chainId, resetStoredApproval, resetStoredConfig, refreshSubaccountData]);
+  }, [
+    signer,
+    subaccount,
+    account,
+    srcChainId,
+    calcSelector,
+    provider,
+    chainId,
+    resetStoredApproval,
+    resetStoredConfig,
+    refreshSubaccountData,
+  ]);
 
   useEffect(
     function notifySubaccountActivation() {
