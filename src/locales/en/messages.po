@@ -309,8 +309,8 @@ msgid "Buyable"
 msgstr "Buyable"
 
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
-msgstr "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
+#~ msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
+#~ msgstr "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "TWAP Number of Parts"
@@ -3360,6 +3360,10 @@ msgstr "Limit - Short Inc."
 msgid "Sending settle request"
 msgstr "Sending settle request"
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No swap path available. <0>Swap {0} to stBTC</0> to use {1} as collateral."
+msgstr "No swap path available. <0>Swap {0} to stBTC</0> to use {1} as collateral."
+
 #: src/lib/legacy.ts
 msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
 msgstr "Order cannot be executed as the remaining position would be smaller than $5.00"
@@ -4951,6 +4955,10 @@ msgstr "V1 Avalanche"
 msgid "Collateral ({0})"
 msgstr "Collateral ({0})"
 
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing max network fee buffer to {0} in <3>Settings</3>."
+msgstr "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing max network fee buffer to {0} in <3>Settings</3>."
+
 #: src/pages/Stake/StakeModal.tsx
 msgid "You will earn {0}% more rewards with this action."
 msgstr "You will earn {0}% more rewards with this action."
@@ -5117,6 +5125,10 @@ msgstr "Execute"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
 msgstr "Trades"
+
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No swap path available."
+msgstr "No swap path available."
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Telegram Groups"
@@ -7960,6 +7972,10 @@ msgstr "The PnL ($) compared to the capital used.<0/><1/>The capital used is cal
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Accrued"
 msgstr "Accrued"
+
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "<0>Swap {0} to STBTC</0> to trade with <1/> or <2/> as collateral."
+msgstr "<0>Swap {0} to STBTC</0> to trade with <1/> or <2/> as collateral."
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Liquidation price is influenced by fees and collateral value."

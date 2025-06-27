@@ -309,8 +309,8 @@ msgid "Buyable"
 msgstr ""
 
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
-msgstr ""
+#~ msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
+#~ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "TWAP Number of Parts"
@@ -3360,6 +3360,10 @@ msgstr ""
 msgid "Sending settle request"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No swap path available. <0>Swap {0} to stBTC</0> to use {1} as collateral."
+msgstr ""
+
 #: src/lib/legacy.ts
 msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
 msgstr ""
@@ -4948,6 +4952,10 @@ msgstr ""
 msgid "Collateral ({0})"
 msgstr ""
 
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing max network fee buffer to {0} in <3>Settings</3>."
+msgstr ""
+
 #: src/pages/Stake/StakeModal.tsx
 msgid "You will earn {0}% more rewards with this action."
 msgstr ""
@@ -5113,6 +5121,10 @@ msgstr ""
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No swap path available."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
@@ -7953,6 +7965,10 @@ msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Accrued"
+msgstr ""
+
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "<0>Swap {0} to STBTC</0> to trade with <1/> or <2/> as collateral."
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx

@@ -35,7 +35,6 @@ import {
 } from "domain/synthetics/tokens";
 import {
   ExternalSwapQuote,
-  SwapAmounts,
   SwapOptimizationOrderArray,
   TradeFeesType,
   TradeMode,
@@ -512,30 +511,10 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
   const allowedSwapSlippageBps = q(selectTradeboxSelectedAllowedSwapSlippageBps);
 
   const tradeFlags = createTradeFlags(TradeType.Swap, tradeMode);
-  const isWrapOrUnwrap = q(selectTradeboxIsWrapOrUnwrap);
   const fromTokenPrice = fromToken?.prices.minPrice;
 
   if (!fromToken || !toToken || fromTokenPrice === undefined) {
     return undefined;
-  }
-
-  if (isWrapOrUnwrap) {
-    const tokenAmount = amountBy === "from" ? fromTokenAmount : toTokenAmount;
-    const usdAmount = convertToUsd(tokenAmount, fromToken.decimals, fromTokenPrice)!;
-    const price = fromTokenPrice;
-
-    const swapAmounts: SwapAmounts = {
-      amountIn: tokenAmount,
-      usdIn: usdAmount!,
-      amountOut: tokenAmount,
-      usdOut: usdAmount!,
-      swapPathStats: undefined,
-      priceIn: price,
-      priceOut: price,
-      minOutputAmount: tokenAmount,
-    };
-
-    return swapAmounts;
   }
 
   const toSwapToken = q(selectTradeboxSwapToTokenAddress);

@@ -224,7 +224,8 @@ export function getIsStake(token1: Token, token2: Token) {
 }
 
 export function getIsUnstake(token1: Token, token2: Token) {
-  return token1.isStaking && (token2.isWrapped || token2.isNative);
+  // can't unstake straight to native token
+  return token1.isStaking && token2.isWrapped;
 }
 
 export function getTokensRatioByPrice(p: {

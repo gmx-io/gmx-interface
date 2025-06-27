@@ -4,8 +4,15 @@ import { SwapRoute } from "types/trade";
 import type { FindSwapPath, SwapAmounts, SwapOptimizationOrderArray } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { getTotalSwapVolumeFromSwapStats } from "utils/fees";
-import { applyFactor } from "utils/numbers";
-import { convertToTokenAmount, convertToUsd, getAmountByRatio, getIsEquivalentTokens } from "utils/tokens";
+import { applyFactor, expandDecimals, PRECISION } from "utils/numbers";
+import {
+  convertToTokenAmount,
+  convertToUsd,
+  getAmountByRatio,
+  getIsEquivalentTokens,
+  getIsStake,
+  getIsUnstake,
+} from "utils/tokens";
 
 export function getSwapAmountsByFromValue(p: {
   tokenIn: TokenData;
@@ -69,6 +76,10 @@ export function getSwapAmountsByFromValue(p: {
       priceOut,
       swapPathStats: undefined,
     };
+  }
+
+  if (getIsStake(tokenIn, tokenOut) || getIsUnstake(tokenIn, tokenOut)) {
+    return getSwapAmountsByRateByFromToken(tokenIn, tokenOut, amountIn);
   }
 
   const swapPathStats = findSwapPath(defaultAmounts.usdIn, { order: swapOptimizationOrder });
@@ -187,6 +198,10 @@ export function getSwapAmountsByToValue(p: {
     };
   }
 
+  if (getIsStake(tokenIn, tokenOut) || getIsUnstake(tokenIn, tokenOut)) {
+    return getSwapAmountsByRateByToToken(tokenIn, tokenOut, amountOut);
+  }
+
   const baseUsdIn = usdOut;
   const swapPathStats = findSwapPath(baseUsdIn, { order: swapOptimizationOrder });
 
@@ -255,5 +270,50 @@ export function getSwapPathComparator(order?: SwapOptimizationOrderArray | undef
     }
 
     return 0;
+  };
+}
+
+function getSwapAmountsByRateByFromToken(tokenIn: TokenData, tokenOut: TokenData, amountIn: bigint): SwapAmounts {
+  const usdIn = convertToUsd(amountIn, tokenIn.decimals, tokenIn.prices.minPrice)!;
+  const rate =
+    (tokenOut.prices.maxPrice * expandDecimals(1, tokenOut.decimals) * PRECISION) /
+    (tokenIn.prices.minPrice * expandDecimals(1, tokenIn.decimals));
+  const amountOut = bigMath.mulDiv(amountIn, PRECISION, rate);
+  const usdOut = convertToUsd(amountOut, tokenOut.decimals, tokenOut.prices.maxPrice)!;
+  const priceIn = tokenIn.prices.minPrice;
+  const priceOut = tokenOut.prices.maxPrice;
+
+  return {
+    amountIn,
+    usdIn,
+    amountOut,
+    usdOut,
+    minOutputAmount: amountOut,
+    priceIn,
+    priceOut,
+    swapPathStats: undefined,
+  };
+}
+
+function getSwapAmountsByRateByToToken(tokenIn: TokenData, tokenOut: TokenData, amountOut: bigint): SwapAmounts {
+  const priceIn = tokenIn.prices.minPrice;
+  const priceOut = tokenOut.prices.maxPrice;
+
+  const usdOut = convertToUsd(amountOut, tokenOut.decimals, priceOut)!;
+  const rate =
+    (tokenOut.prices.maxPrice * expandDecimals(1, tokenOut.decimals) * PRECISION) /
+    (tokenIn.prices.minPrice * expandDecimals(1, tokenIn.decimals));
+  const amountIn = bigMath.mulDiv(amountOut, rate, PRECISION);
+  const usdIn = convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
+
+  return {
+    amountIn,
+    usdIn,
+    amountOut,
+    usdOut,
+    minOutputAmount: amountOut,
+    priceIn,
+    priceOut,
+    swapPathStats: undefined,
   };
 }
