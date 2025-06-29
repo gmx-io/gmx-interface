@@ -51,7 +51,7 @@ export const MAX_PRIORITY_FEE_PER_GAS_MAP: Record<UiSupportedChain, bigint | und
   [ARBITRUM]: 1500000000n,
   [AVALANCHE]: 1500000000n,
   [AVALANCHE_FUJI]: 1500000000n,
-  [BOTANIX]: 1500000000n,
+  [BOTANIX]: 7n,
 };
 
 export const EXCESSIVE_EXECUTION_FEES_MAP: Record<UiSupportedChain, number> = {
@@ -161,7 +161,7 @@ export const EXECUTION_FEE_CONFIG_V2: {
     defaultBufferBps: 3000, // 30%
   },
   [BOTANIX]: {
-    shouldUseMaxPriorityFeePerGas: false,
+    shouldUseMaxPriorityFeePerGas: true,
     defaultBufferBps: 3000, // 30%
   },
 };
