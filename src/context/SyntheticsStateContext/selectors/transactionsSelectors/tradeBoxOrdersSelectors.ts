@@ -73,8 +73,8 @@ export const selectCommonOrderParams = createSelector((q) => {
 
 export const selectTradeboxSwapOrderPayload = createSelector((q) => {
   const commonParams = q(selectCommonOrderParams);
-
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
+
   const toTokenAddress = q(selectTradeboxToTokenAddress);
   const swapAmounts = q(selectTradeboxSwapAmounts);
   const { triggerRatio } = q(selectTradeboxTradeRatios);

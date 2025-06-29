@@ -6,7 +6,7 @@ import { OracleFetcher, OracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 
 export function useOracleKeeperFetcher(chainId: number): OracleFetcher {
   const { oracleKeeperInstancesConfig, setOracleKeeperInstancesConfig } = useSettings();
-  const oracleKeeperIndex = oracleKeeperInstancesConfig[chainId];
+  const oracleKeeperIndex = oracleKeeperInstancesConfig?.[chainId] ?? 0;
   const [forceIncentivesActive] = useLocalStorageSerializeKey([chainId, "forceIncentivesActive"], false);
 
   return useMemo(() => {

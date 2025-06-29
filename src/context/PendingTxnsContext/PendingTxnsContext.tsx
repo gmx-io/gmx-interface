@@ -97,7 +97,7 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
                     .
                     <br />
                     <br />
-                    Please try increasing execution fee buffer to{" "}
+                    Please try increasing max network fee buffer to{" "}
                     {formatPercentage(requiredBufferBps, { displayDecimals: 0 })} in{" "}
                     <div
                       className=" muted inline-block cursor-pointer underline"

@@ -78,7 +78,6 @@ describe("externalSwapSelectors", () => {
       tradebox: {
         tradeType: TradeType.Long,
         tradeMode: TradeMode.Market,
-        isWrapOrUnwrap: false,
         fromTokenAddress: tokensData.ETH.address,
         toTokenAddress: tokensData.USDC.address,
         marketAddress: marketsInfoData[marketKey].marketTokenAddress,

@@ -2,6 +2,7 @@ import isMatch from "lodash/isMatch";
 import { useEffect, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, UiSupportedChain } from "config/chains";
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxSetTradeConfig,
@@ -12,6 +13,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { getMatchingValueFromObject } from "lib/objects";
 import useSearchParams from "lib/useSearchParams";
+import { switchNetwork } from "lib/wallets";
 import { getTokenBySymbolSafe, isTokenInList } from "sdk/configs/tokens";
 import { TradeMode, TradeSearchParams, TradeType } from "sdk/types/trade";
 
@@ -24,6 +26,13 @@ type TradeOptions = {
   tradeType?: TradeType;
   tradeMode?: TradeMode;
   collateralAddress?: string;
+};
+
+const validChainIds: Record<UiSupportedChain, true> = {
+  [ARBITRUM]: true,
+  [AVALANCHE]: true,
+  [AVALANCHE_FUJI]: true,
+  [BOTANIX]: true,
 };
 
 export function useTradeParamsProcessor() {
@@ -50,7 +59,20 @@ export function useTradeParamsProcessor() {
 
   useEffect(() => {
     const { tradeType } = params;
-    const { mode: tradeMode, from: fromToken, to, market, pool, collateral: collateralToken } = searchParams;
+    const {
+      mode: tradeMode,
+      from: fromToken,
+      to,
+      market,
+      pool,
+      collateral: collateralToken,
+      chainId: chainIdFromParams,
+    } = searchParams;
+
+    if (chainIdFromParams && validChainIds[chainIdFromParams]) {
+      switchNetwork(Number(chainIdFromParams), true);
+    }
+
     const toToken = to ?? market;
 
     const tradeOptions: TradeOptions = {};

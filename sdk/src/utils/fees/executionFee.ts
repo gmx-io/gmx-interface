@@ -1,11 +1,12 @@
-import { getExcessiveExecutionFee, getHighExecutionFee } from "configs/chains";
+import { getExcessiveExecutionFee, getHighExecutionFee, MIN_EXECUTION_FEE_USD } from "configs/chains";
 import { USD_DECIMALS } from "configs/factors";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { ExecutionFee, GasLimitsConfig, L1ExpressOrderGasReference } from "types/fees";
 import { DecreasePositionSwapType } from "types/orders";
 import { TokenData, TokensData } from "types/tokens";
+import { bigMath } from "utils/bigmath";
 import { applyFactor, expandDecimals } from "utils/numbers";
-import { convertBetweenTokens, convertToUsd, getTokenData } from "utils/tokens";
+import { convertBetweenTokens, convertToTokenAmount, convertToUsd, getTokenData } from "utils/tokens";
 
 export function getExecutionFee(
   chainId: number,
@@ -28,7 +29,17 @@ export function getExecutionFee(
   const gasLimit = baseGasLimit + applyFactor(estimatedGasLimit, multiplierFactor);
   // #endregion
 
-  const feeTokenAmount = gasLimit * gasPrice * BigInt(numberOfParts ?? 1);
+  // avoid botanix gas spikes when chain is not actively used
+  const minGasCostUsd = MIN_EXECUTION_FEE_USD[chainId];
+  const minGasCost = convertToTokenAmount(minGasCostUsd, nativeToken.decimals, nativeToken.prices.minPrice);
+
+  let feeTokenAmountPerExecution = gasLimit * gasPrice;
+
+  if (minGasCost) {
+    feeTokenAmountPerExecution = bigMath.max(feeTokenAmountPerExecution, minGasCost);
+  }
+
+  const feeTokenAmount = feeTokenAmountPerExecution * BigInt(numberOfParts ?? 1);
 
   const feeUsd = convertToUsd(feeTokenAmount, nativeToken.decimals, nativeToken.prices.minPrice)!;
 

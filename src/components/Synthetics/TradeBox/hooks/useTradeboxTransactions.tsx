@@ -39,6 +39,7 @@ import { useUserReferralCode } from "domain/referrals";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import { OrderType } from "domain/synthetics/orders";
+import { createStakeOrUnstakeTxn } from "domain/synthetics/orders/createStakeOrUnStakeTxn";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
@@ -55,6 +56,7 @@ import {
 import { getByKey } from "lib/objects";
 import { getTradeInteractionKey, sendUserAnalyticsOrderConfirmClickEvent, userAnalytics } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
+import { BOTANIX } from "sdk/configs/chains";
 import { BatchOrderTxnParams, getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
 
 import { useSidecarOrderPayloads } from "./useSidecarOrderPayloads";
@@ -279,6 +281,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
     sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
+    const isBotanix = chainId === BOTANIX;
+
     return sendBatchOrderTxn({
       chainId,
       signer,
@@ -286,12 +290,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       noncesData,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
-      simulationParams: shouldDisableValidationForTesting
-        ? undefined
-        : {
-            tokensData,
-            blockTimestampData,
-          },
+      simulationParams:
+        shouldDisableValidationForTesting || isBotanix
+          ? undefined
+          : {
+              tokensData,
+              blockTimestampData,
+            },
       callback: makeOrderTxnCallback({
         metricId: metricData.metricId,
         slippageInputId,
@@ -331,11 +336,26 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     });
   }
 
+  function onSubmitStakeOrUnstake() {
+    if (!account || !swapAmounts || !fromToken || !signer || !toToken) {
+      return Promise.reject();
+    }
+
+    return createStakeOrUnstakeTxn(chainId, signer, {
+      amount: swapAmounts.amountIn,
+      isStake: Boolean(toToken.isStaking),
+      isWrapBeforeStake: Boolean(fromToken.isNative),
+      isUnwrapAfterStake: Boolean(toToken.isNative),
+      setPendingTxns,
+    });
+  }
+
   return {
     onSubmitSwap: onSubmitOrder,
     onSubmitIncreaseOrder: onSubmitOrder,
     onSubmitDecreaseOrder: onSubmitOrder,
     onSubmitWrapOrUnwrap,
+    onSubmitStakeOrUnstake,
     slippageInputId,
     expressParams,
     batchParams,

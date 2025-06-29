@@ -327,4 +327,5 @@ export type TradeSearchParams = {
   pool?: string;
   collateral?: string;
   market?: string;
+  chainId?: string;
 };
