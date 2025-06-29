@@ -308,10 +308,6 @@ msgstr "View status."
 msgid "Buyable"
 msgstr "Buyable"
 
-#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-#~ msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
-#~ msgstr "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
-
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "TWAP Number of Parts"
 msgstr "TWAP Number of Parts"
