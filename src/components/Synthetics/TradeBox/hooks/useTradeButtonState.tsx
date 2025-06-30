@@ -246,7 +246,12 @@ export function useTradeboxButtonState({
 
         case "noSwapPath":
           tooltipContent = (
-            <NoSwapPathTooltipContent collateralToken={collateralToken} fromToken={fromToken} chainId={chainId} />
+            <NoSwapPathTooltipContent
+              collateralToken={collateralToken}
+              fromToken={fromToken}
+              chainId={chainId}
+              toToken={toToken}
+            />
           );
           break;
 
@@ -265,6 +270,7 @@ export function useTradeboxButtonState({
     tradeError,
     collateralToken,
     fromToken,
+    toToken,
     isLeverageSliderEnabled,
     detectAndSetAvailableMaxLeverage,
   ]);
@@ -678,10 +684,12 @@ function NoSwapPathTooltipContent({
   collateralToken,
   fromToken,
   chainId,
+  toToken,
 }: {
   collateralToken: TokenData | undefined;
   fromToken: TokenData | undefined;
   chainId: number;
+  toToken: TokenData | undefined;
 }) {
   const { setFromTokenAddress, setToTokenAddress, setTradeType, setTradeMode } = useSelector(selectTradeboxState);
   const handleBotanixClick = useCallback(() => {
@@ -690,6 +698,25 @@ function NoSwapPathTooltipContent({
     setFromTokenAddress(fromToken?.address);
     setToTokenAddress(getTokenBySymbol(chainId, "STBTC")?.address);
   }, [chainId, fromToken?.address, setFromTokenAddress, setToTokenAddress, setTradeMode, setTradeType]);
+
+  const handleBotanixStBtcToPBtcClick = useCallback(() => {
+    setTradeType(TradeType.Swap);
+    setTradeMode(TradeMode.Market);
+    setFromTokenAddress(getTokenBySymbol(chainId, "STBTC")?.address);
+    setToTokenAddress(getTokenBySymbol(chainId, "PBTC")?.address);
+  }, [chainId, setFromTokenAddress, setToTokenAddress, setTradeMode, setTradeType]);
+
+  if (fromToken?.symbol === "STBTC" && toToken?.symbol === "BTC") {
+    return (
+      <Trans>
+        No swap path available.{" "}
+        <span onClick={handleBotanixStBtcToPBtcClick} className="Tradebox-handle">
+          Swap STBTC to PBTC
+        </span>
+        , then to BTC
+      </Trans>
+    );
+  }
 
   if (!fromToken || !collateralToken) {
     return <Trans>No swap path available.</Trans>;
