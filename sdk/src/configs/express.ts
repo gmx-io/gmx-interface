@@ -25,7 +25,7 @@ const GAS_PAYMENT_TOKENS: Record<UiContractsChain, string[]> = {
     getTokenBySymbol(AVALANCHE_FUJI, "USDC").address,
     getTokenBySymbol(AVALANCHE_FUJI, "WAVAX").address,
   ],
-  [BOTANIX]: [getTokenBySymbol(BOTANIX, "pBTC").address],
+  [BOTANIX]: [getTokenBySymbol(BOTANIX, "pBTC").address, getTokenBySymbol(BOTANIX, "USDC.E").address],
 };
 
 export function getGasPaymentTokens(chainId: number): string[] {
