@@ -500,7 +500,7 @@ export async function buildAndSignExpressBatchOrderTxn({
     chainId,
     relayPayload: {
       ...relayParamsPayload,
-      userNonce,
+      userNonce: userNonce + 1n,
       deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
     },
     paramsLists: getBatchParamsLists(batchParams),
