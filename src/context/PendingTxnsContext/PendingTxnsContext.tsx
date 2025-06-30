@@ -92,12 +92,14 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
 
               const botanixDisclaimer =
                 chainId === BOTANIX ? (
-                  <div>
+                  <>
+                    <br />
                     <Trans>
-                      Rabby Wallet is currently experiencing network fee issues on Botanix. Please switch to another
-                      wallet if you're using it.
+                      Rabby Wallet is currently experiencing network fee issues on Botanix. Please try another wallet if
+                      you're using it.
                     </Trans>
-                  </div>
+                    <br />
+                  </>
                 ) : null;
 
               toastMsg = (

@@ -1698,6 +1698,10 @@ msgstr "Max {0}"
 msgid "This token automatically accrues fees from leverage trading and swaps for the {marketName} market. It is also exposed to {exposedToLabel} as per the composition displayed."
 msgstr "This token automatically accrues fees from leverage trading and swaps for the {marketName} market. It is also exposed to {exposedToLabel} as per the composition displayed."
 
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+#~ msgid "Rabby Wallet is currently experiencing network fee issues on Botanix. Please switch to another wallet if you're using it."
+#~ msgstr "Rabby Wallet is currently experiencing network fee issues on Botanix. Please switch to another wallet if you're using it."
+
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Withdrew {0} from {positionText}"
 msgstr "Withdrew {0} from {positionText}"
@@ -2854,6 +2858,10 @@ msgstr "Not enough Available Liquidity to fill the Order. The Order will get fil
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized data based on the past 7 days."
 msgstr "Annualized data based on the past 7 days."
+
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/>{botanixDisclaimer}<2/>Please try increasing max network fee buffer to {0} in <3>Settings</3>."
+msgstr "Transaction failed due to execution fee validation. <0>View</0>.<1/>{botanixDisclaimer}<2/>Please try increasing max network fee buffer to {0} in <3>Settings</3>."
 
 #: src/components/Exchange/OrdersToa.jsx
 #: src/components/Exchange/OrdersToa.jsx
@@ -4952,8 +4960,8 @@ msgid "Collateral ({0})"
 msgstr "Collateral ({0})"
 
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing max network fee buffer to {0} in <3>Settings</3>."
-msgstr "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing max network fee buffer to {0} in <3>Settings</3>."
+#~ msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing max network fee buffer to {0} in <3>Settings</3>."
+#~ msgstr "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing max network fee buffer to {0} in <3>Settings</3>."
 
 #: src/pages/Stake/StakeModal.tsx
 msgid "You will earn {0}% more rewards with this action."
@@ -8065,6 +8073,10 @@ msgstr "2nd Place"
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LAST PRICE"
 msgstr "LAST PRICE"
+
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+msgid "Rabby Wallet is currently experiencing network fee issues on Botanix. Please try another wallet if you're using it."
+msgstr "Rabby Wallet is currently experiencing network fee issues on Botanix. Please try another wallet if you're using it."
 
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
