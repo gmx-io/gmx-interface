@@ -1,10 +1,9 @@
 import { Trans } from "@lingui/macro";
+import { Link } from "react-router-dom";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
-
-import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import ArbitrumIcon from "img/ic_arbitrum_24.svg?react";
 import AvalancheIcon from "img/ic_avalanche_24.svg?react";
@@ -30,13 +29,13 @@ export function BotanixBanner() {
         <Trans>
           <span className="text-[#fccd0d]">Botanix</span> currently only supports
         </Trans>{" "}
-        <ExternalLink href="https://docs.gmx.io/docs/trading/v2" className="!text-white">
+        <Link to="/trade" className="underline">
           <Trans>V2 trading</Trans>
-        </ExternalLink>{" "}
+        </Link>{" "}
         <Trans>and</Trans>{" "}
-        <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2" className="!text-white">
+        <Link to="/pools" className="underline">
           <Trans>providing liquidity</Trans>
-        </ExternalLink>{" "}
+        </Link>{" "}
         <Trans>
           using GLV and GM tokens. Buying or staking GMX, or using referrals, is not supported at this time.
         </Trans>
