@@ -700,9 +700,9 @@ function NoSwapPathTooltipContent({
       <Trans>
         No swap path available.{" "}
         <span onClick={handleBotanixClick} className="Tradebox-handle">
-          Swap {fromToken.assetSymbol ?? fromToken.symbol} to stBTC
+          Swap {fromToken.symbol} to STBTC
         </span>{" "}
-        to use {collateralToken.assetSymbol ?? collateralToken.symbol} as collateral.
+        to use {collateralToken.symbol} as collateral.
       </Trans>
     );
   }
