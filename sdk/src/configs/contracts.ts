@@ -232,6 +232,7 @@ export const CONTRACTS = {
     GMX: zeroAddress,
     ES_GMX: zeroAddress,
     BN_GMX: zeroAddress,
+    USDG: zeroAddress,
     BonusGmxTracker: zeroAddress,
     StakedGlpTracker: zeroAddress,
     FeeGlpTracker: zeroAddress,

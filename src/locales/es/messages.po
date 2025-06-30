@@ -2170,6 +2170,10 @@ msgstr "Total:"
 msgid "{0} Approved!"
 msgstr "¡{0} Aprobado!"
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No swap path available. <0>Swap {0} to STBTC</0> to use {1} as collateral."
+msgstr ""
+
 #: src/pages/Stake/TotalRewardsCard.tsx
 msgid "<0>Provide liquidity</0> and earn {gmxMarketApyDataText} APY"
 msgstr ""
@@ -3365,8 +3369,8 @@ msgid "Sending settle request"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No swap path available. <0>Swap {0} to stBTC</0> to use {1} as collateral."
-msgstr ""
+#~ msgid "No swap path available. <0>Swap {0} to stBTC</0> to use {1} as collateral."
+#~ msgstr ""
 
 #: src/lib/legacy.ts
 msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
