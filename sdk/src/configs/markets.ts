@@ -858,13 +858,6 @@ export const MARKETS: Record<UiContractsChain, Record<string, MarketConfig>> = {
     },
   },
   [BOTANIX]: {
-    // BTC/USD [pBTC-pBTC]
-    "0x6bFDD025827F7CE130BcfC446927AEF34ae2a98d": {
-      marketTokenAddress: "0x6bFDD025827F7CE130BcfC446927AEF34ae2a98d",
-      indexTokenAddress: "0x1B9e25f54225bcdCf347569E38C41Ade9BB686e5",
-      longTokenAddress: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
-      shortTokenAddress: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
-    },
     // BTC/USD [stBTC-stBTC]
     "0x6682BB60590a045A956541B1433f016Ed22E361d": {
       marketTokenAddress: "0x6682BB60590a045A956541B1433f016Ed22E361d",
