@@ -785,7 +785,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           text = t`Deposited ${formatTokenAmount(
             data.collateralDeltaAmount,
             collateralToken.decimals,
-            collateralToken.symbol
+            collateralToken.symbol,
+            {
+              isStable: collateralToken.isStable,
+            }
           )} into ${positionText}`;
         } else {
           text = t`Increased ${positionText}, +${formatUsd(data.sizeDeltaUsd)}`;
@@ -848,7 +851,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           text = t`Withdrew ${formatTokenAmount(
             data.collateralDeltaAmount,
             collateralToken.decimals,
-            collateralToken.symbol
+            collateralToken.symbol,
+            {
+              isStable: collateralToken.isStable,
+            }
           )} from ${positionText}`;
         } else {
           const orderTypeLabel = isLiquidationOrderType(data.orderType) ? t`Liquidated` : t`Decreased`;

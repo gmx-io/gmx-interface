@@ -1,7 +1,7 @@
 import type { PendingDepositData, PendingOrderData, PendingShiftData, PendingWithdrawalData } from "./types";
 
 export function getPendingOrderKey(
-  data: Omit<PendingOrderData, "txnType" | "triggerPrice" | "acceptablePrice" | "autoCancel">
+  data: Omit<PendingOrderData, "txnType" | "triggerPrice" | "acceptablePrice" | "autoCancel" | "expectedOutputAmount">
 ) {
   return [
     data.account,

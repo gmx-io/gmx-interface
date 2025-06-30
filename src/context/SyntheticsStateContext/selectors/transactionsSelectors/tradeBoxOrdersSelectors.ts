@@ -95,6 +95,7 @@ export const selectTradeboxSwapOrderPayload = createSelector((q) => {
     payTokenAmount: swapAmounts.amountIn,
     receiveTokenAddress: toTokenAddress,
     minOutputAmount: swapAmounts.minOutputAmount,
+    expectedOutputAmount: swapAmounts.amountOut,
     swapPath: swapAmounts.swapPathStats?.swapPath ?? [],
     triggerRatio: triggerRatio?.ratio ?? undefined,
     externalSwapQuote: undefined,

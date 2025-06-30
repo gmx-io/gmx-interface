@@ -34,6 +34,52 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "listing-xmr-crv-moodeng-pi",
+    title: "CRV, MOODENG, PI and XMR markets added on Arbitrum",
+    isActive: true,
+    startDate: "20 Jun 2025, 00:00",
+    endDate: "27 Jun 2025, 00:00",
+    bodyText: (
+      <>
+        Trade{" "}
+        <Link to="/trade/long/?mode=market&to=CRV">
+          <TokenSymbolWithIcon symbol="CRV" />
+          /USD
+        </Link>
+        ,{" "}
+        <Link to="/trade/long/?mode=market&to=MOODENG">
+          <TokenSymbolWithIcon symbol="MOODENG" />
+          /USD
+        </Link>
+        ,{" "}
+        <Link to="/trade/long/?mode=market&to=PI">
+          <TokenSymbolWithIcon symbol="PI" />
+          /USD
+        </Link>
+        , and{" "}
+        <Link to="/trade/long/?mode=market&to=XMR">
+          <TokenSymbolWithIcon symbol="XMR" />
+          /USD
+        </Link>
+        , or <Link to="/pools">provide liquidity</Link> to these pools by using <TokenSymbolWithIcon symbol="WETH" />,{" "}
+        <TokenSymbolWithIcon symbol="WBTC" /> or <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
+  {
+    id: "twap-announcement",
+    title: "TWAP orders on GMX",
+    bodyText: (
+      <>
+        Time-Weighted Average Price (TWAP) orders are now available for both perps and spot. Execute large trades with
+        less price impact.
+      </>
+    ),
+    isActive: true,
+    startDate: "16 Jun 2025, 00:00",
+    endDate: "26 Jun 2025, 00:00",
+  },
+  {
     id: "avalanche-issue",
     title: "Avalanche congestion impact",
     isActive: true,

@@ -77,9 +77,8 @@ describe("getTriggerThresholdType", () => {
     expect(result).toBe(TriggerThresholdType.Below);
   });
 
-  it("throws error for invalid order type", () => {
-    expect(() => getOrderThresholdType("SomeInvalidType" as unknown as OrderType, true)).toThrow(
-      "Invalid trigger order type"
-    );
+  it("returns undefined for invalid order type", () => {
+    const result = getOrderThresholdType("SomeInvalidType" as unknown as OrderType, true);
+    expect(result).toBeUndefined();
   });
 });

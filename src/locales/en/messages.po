@@ -164,10 +164,6 @@ msgstr "stop loss"
 msgid "Type"
 msgstr "Type"
 
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "Close order"
-msgstr "Close order"
-
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order submitted!"
 msgstr "Order submitted!"
@@ -611,6 +607,10 @@ msgstr "Insufficient staked tokens"
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Telegram contact (optional)"
 msgstr "Telegram contact (optional)"
+
+#: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
+msgid "Market order will be cancellable in {minutesText}{seconds}s."
+msgstr "Market order will be cancellable in {minutesText}{seconds}s."
 
 #: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
 msgid "providing liquidity"
@@ -1697,10 +1697,6 @@ msgstr "Max {0}"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "This token automatically accrues fees from leverage trading and swaps for the {marketName} market. It is also exposed to {exposedToLabel} as per the composition displayed."
 msgstr "This token automatically accrues fees from leverage trading and swaps for the {marketName} market. It is also exposed to {exposedToLabel} as per the composition displayed."
-
-#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-#~ msgid "Rabby Wallet is currently experiencing network fee issues on Botanix. Please switch to another wallet if you're using it."
-#~ msgstr "Rabby Wallet is currently experiencing network fee issues on Botanix. Please switch to another wallet if you're using it."
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Withdrew {0} from {positionText}"
@@ -3124,6 +3120,7 @@ msgstr "No claims match the selected filters"
 #: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
+#: src/domain/synthetics/positions/utils.ts
 msgid "Market"
 msgstr "Market"
 
@@ -3367,10 +3364,6 @@ msgstr "Limit - Short Inc."
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Sending settle request"
 msgstr "Sending settle request"
-
-#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "No swap path available. <0>Swap {0} to stBTC</0> to use {1} as collateral."
-#~ msgstr "No swap path available. <0>Swap {0} to stBTC</0> to use {1} as collateral."
 
 #: src/lib/legacy.ts
 msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
@@ -3808,6 +3801,10 @@ msgstr "Shorts"
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "Prev"
 msgstr "Prev"
+
+#: src/pages/Pools/PoolsTimeRangeFilter.tsx
+msgid "Last 180d"
+msgstr "Last 180d"
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown buy GM order"
@@ -4963,10 +4960,6 @@ msgstr "V1 Avalanche"
 msgid "Collateral ({0})"
 msgstr "Collateral ({0})"
 
-#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-#~ msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing max network fee buffer to {0} in <3>Settings</3>."
-#~ msgstr "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing max network fee buffer to {0} in <3>Settings</3>."
-
 #: src/pages/Stake/StakeModal.tsx
 msgid "You will earn {0}% more rewards with this action."
 msgstr "You will earn {0}% more rewards with this action."
@@ -5975,6 +5968,7 @@ msgid "Max {0} long exceeded"
 msgstr "Max {0} long exceeded"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6083,6 +6077,10 @@ msgstr "OPEN INTEREST"
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Failed to download trade history CSV."
 msgstr "Failed to download trade history CSV."
+
+#: src/domain/synthetics/positions/utils.ts
+msgid "market"
+msgstr "market"
 
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"
@@ -6246,7 +6244,6 @@ msgstr "Limit order submitted!"
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-#: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 7d"
 msgstr "Last 7d"
 
@@ -6702,6 +6699,7 @@ msgid "Trigger price below highest limit price"
 msgstr "Trigger price below highest limit price"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
@@ -8523,6 +8521,10 @@ msgstr "Deactivated"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Ecosystem Projects"
 msgstr "Ecosystem Projects"
+
+#: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
+msgid "Market order will be cancellable in ..."
+msgstr "Market order will be cancellable in ..."
 
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Price Impact Rebate Claimed"

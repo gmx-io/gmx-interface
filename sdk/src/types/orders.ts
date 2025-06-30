@@ -88,7 +88,7 @@ export type PositionOrderInfo = Order & {
   targetCollateralToken: TokenData;
   acceptablePrice: bigint;
   triggerPrice: bigint;
-  triggerThresholdType: TriggerThresholdType;
+  triggerThresholdType: TriggerThresholdType | undefined;
 };
 
 export type TwapOrderInfo<T extends PositionOrderInfo | SwapOrderInfo = PositionOrderInfo | SwapOrderInfo> = Omit<

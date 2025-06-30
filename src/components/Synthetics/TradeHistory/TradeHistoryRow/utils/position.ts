@@ -150,7 +150,13 @@ export const formatPositionMessage = (
     collateralToken.symbol,
     {
       useCommas: true,
-      displayDecimals: calculateDisplayDecimals(collateralDeltaAmount, collateralToken.decimals),
+      displayDecimals: calculateDisplayDecimals(
+        collateralDeltaAmount,
+        collateralToken.decimals,
+        undefined,
+        collateralToken.isStable
+      ),
+      isStable: collateralToken.isStable,
     }
   );
 
@@ -612,8 +618,11 @@ export const formatPositionMessage = (
       {
         displayDecimals: calculateDisplayDecimals(
           tradeAction.initialCollateralDeltaAmount,
-          tradeAction.initialCollateralToken?.decimals
+          tradeAction.initialCollateralToken?.decimals,
+          undefined,
+          tradeAction.initialCollateralToken?.isStable
         ),
+        isStable: tradeAction.initialCollateralToken?.isStable,
       }
     );
 

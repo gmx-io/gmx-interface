@@ -84,7 +84,7 @@ export type ApyInfo = {
   glvs: { address: string; baseApy: number; bonusApy: number; apy: number }[];
 };
 
-export type ApyPeriod = "1d" | "7d" | "30d" | "90d" | "total";
+export type ApyPeriod = "1d" | "7d" | "30d" | "90d" | "180d" | "total";
 
 export interface OracleFetcher {
   readonly url: string;

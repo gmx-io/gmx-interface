@@ -112,8 +112,13 @@ export function OrderStatusNotification({
     }
 
     if (isSwapOrderType(orderData.orderType)) {
-      const { initialCollateralToken, targetCollateralToken, initialCollateralDeltaAmount, minOutputAmount } =
-        orderData;
+      const {
+        initialCollateralToken,
+        targetCollateralToken,
+        initialCollateralDeltaAmount,
+        minOutputAmount,
+        expectedOutputAmount,
+      } = orderData;
 
       let orderTypeText = isLimitSwapOrderType(orderData.orderType) ? t`Limit Swap` : t`Swap`;
 
@@ -121,11 +126,17 @@ export function OrderStatusNotification({
         orderTypeText = t`TWAP Swap`;
       }
 
+      const outputAmount =
+        expectedOutputAmount !== undefined && expectedOutputAmount > 0n ? expectedOutputAmount : minOutputAmount;
+
       return t`${orderTypeText} ${formatTokenAmount(
         initialCollateralDeltaAmount,
         initialCollateralToken?.decimals,
-        initialCollateralToken?.symbol
-      )} for ${formatTokenAmount(minOutputAmount, targetCollateralToken?.decimals, targetCollateralToken?.symbol)}`;
+        initialCollateralToken?.symbol,
+        { isStable: initialCollateralToken?.isStable }
+      )} for ${formatTokenAmount(outputAmount, targetCollateralToken?.decimals, targetCollateralToken?.symbol, {
+        isStable: targetCollateralToken?.isStable,
+      })}`;
     } else {
       const {
         txnType,
@@ -150,13 +161,15 @@ export function OrderStatusNotification({
           return t`Depositing ${formatTokenAmount(
             initialCollateralDeltaAmount,
             initialCollateralToken?.decimals,
-            symbol
+            symbol,
+            { isStable: initialCollateralToken?.isStable }
           )} to ${positionText}`;
         } else {
           return t`Withdrawing ${formatTokenAmount(
             initialCollateralDeltaAmount,
             initialCollateralToken?.decimals,
-            symbol
+            symbol,
+            { isStable: initialCollateralToken?.isStable }
           )} from ${positionText}`;
         }
       } else {
@@ -195,11 +208,13 @@ export function OrderStatusNotification({
     let text = t`Swap ${formatTokenAmount(
       orderData.externalSwapQuote.amountIn,
       orderData.externalSwapFromToken?.decimals,
-      orderData.externalSwapFromToken?.symbol
+      orderData.externalSwapFromToken?.symbol,
+      { isStable: orderData.externalSwapFromToken?.isStable }
     )} for ${formatTokenAmount(
       orderData.externalSwapQuote.amountOut,
       orderData.externalSwapToToken?.decimals,
-      orderData.externalSwapToToken?.symbol
+      orderData.externalSwapToToken?.symbol,
+      { isStable: orderData.externalSwapToToken?.isStable }
     )}`;
 
     if (orderStatus?.createdTxnHash) {

@@ -43,7 +43,9 @@ export function GasPaymentTokenSelector({ curentTokenAddress, onSelectToken }: P
             <div className="flex items-center">
               <TokenIcon symbol={currentToken.symbol} className="mr-8" displaySize={16} />
               <span className="mr-4 inline-block max-w-60 truncate align-baseline">
-                {formatTokenAmount(currentToken.balance, currentToken.decimals)}
+                {formatTokenAmount(currentToken.balance, currentToken.decimals, undefined, {
+                  isStable: currentToken.isStable,
+                })}
               </span>
               {currentToken.symbol}
             </div>

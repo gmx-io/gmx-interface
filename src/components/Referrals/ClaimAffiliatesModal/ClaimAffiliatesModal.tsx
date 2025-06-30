@@ -68,11 +68,15 @@ export function ClaimAffiliatesModal(p: Props) {
     const claimableAmountsItems: string[] = [];
 
     if (longTokenAmount > 0) {
-      claimableAmountsItems.push(formatTokenAmount(longTokenAmount, longToken.decimals, longToken.symbol)!);
+      claimableAmountsItems.push(
+        formatTokenAmount(longTokenAmount, longToken.decimals, longToken.symbol, { isStable: longToken.isStable })!
+      );
     }
 
     if (!isSameCollaterals && shortTokenAmount > 0) {
-      claimableAmountsItems.push(formatTokenAmount(shortTokenAmount, shortToken.decimals, shortToken.symbol)!);
+      claimableAmountsItems.push(
+        formatTokenAmount(shortTokenAmount, shortToken.decimals, shortToken.symbol, { isStable: shortToken.isStable })!
+      );
     }
 
     return (
