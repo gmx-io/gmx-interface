@@ -34,6 +34,7 @@ export const HIGH_EXECUTION_FEES_MAP: Record<UiContractsChain, number> = {
 // is not applied to execution fee calculation
 export const MAX_FEE_PER_GAS_MAP: Record<number, bigint> = {
   [AVALANCHE]: 200000000000n, // 200 gwei
+  [BOTANIX]: 20n,
 };
 
 // added to maxPriorityFeePerGas

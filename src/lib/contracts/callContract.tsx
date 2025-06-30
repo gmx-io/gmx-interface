@@ -131,6 +131,7 @@ export async function callContract(
         } else {
           txnInstance.maxFeePerGas = gasPriceData.maxFeePerGas;
           txnInstance.maxPriorityFeePerGas = gasPriceData.maxPriorityFeePerGas;
+          txnInstance.type = 2;
         }
       });
 
