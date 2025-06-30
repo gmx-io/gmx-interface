@@ -444,6 +444,11 @@ export function getPendingCreateOrder(
     swapPath: createOrderPayload.orderPayload.addresses.swapPath,
     sizeDeltaUsd: createOrderPayload.orderPayload.numbers.sizeDeltaUsd,
     minOutputAmount: createOrderPayload.orderPayload.numbers.minOutputAmount,
+    expectedOutputAmount:
+      "expectedOutputAmount" in createOrderPayload.params &&
+      createOrderPayload.params.expectedOutputAmount !== undefined
+        ? createOrderPayload.params.expectedOutputAmount
+        : 0n,
     triggerPrice: createOrderPayload.orderPayload.numbers.triggerPrice,
     acceptablePrice: createOrderPayload.orderPayload.numbers.acceptablePrice,
     autoCancel: createOrderPayload.orderPayload.autoCancel,
