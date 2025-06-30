@@ -1469,7 +1469,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Bitcoin",
       symbol: "BTC",
-      assetSymbol: "bBTC",
+      assetSymbol: "BTC",
       address: NATIVE_TOKEN_ADDRESS,
       decimals: 18,
       isNative: true,

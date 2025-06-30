@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useMemo, useState } from "react";
 
-import { getExplorerUrl } from "config/chains";
+import { BOTANIX, getExplorerUrl } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   getExecutionFeeBufferBps,
@@ -90,12 +90,23 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
                 gasLimit: pendingTxn.data?.estimatedExecutionGasLimit ?? 1n,
               });
 
+              const botanixDisclaimer =
+                chainId === BOTANIX ? (
+                  <div>
+                    <Trans>
+                      Rabby Wallet is currently experiencing network fee issues on Botanix. Please switch to another
+                      wallet if you're using it.
+                    </Trans>
+                  </div>
+                ) : null;
+
               toastMsg = (
                 <div>
                   <Trans>
                     Transaction failed due to execution fee validation. <ExternalLink href={txUrl}>View</ExternalLink>
                     .
                     <br />
+                    {botanixDisclaimer}
                     <br />
                     Please try increasing max network fee buffer to{" "}
                     {formatPercentage(requiredBufferBps, { displayDecimals: 0 })} in{" "}

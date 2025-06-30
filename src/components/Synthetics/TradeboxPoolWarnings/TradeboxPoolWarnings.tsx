@@ -423,7 +423,7 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
       <AlertInfoCard key="botanixSwapWarning">
         <Trans>
           <span onClick={handleBotanixSwapClick} className="clickable muted underline">
-            Swap {fromToken?.assetSymbol ?? fromToken?.symbol} to STBTC
+            Swap {fromToken?.symbol} to STBTC
           </span>{" "}
           to trade with <TokenSymbolWithIcon symbol="STBTC" /> or <TokenSymbolWithIcon symbol="USDC" /> as collateral.
         </Trans>
