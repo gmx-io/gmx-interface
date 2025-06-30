@@ -1,8 +1,6 @@
 import { defineChain } from "viem";
 import { arbitrum, avalanche, avalancheFuji, Chain } from "viem/chains";
 
-import { expandDecimals } from "utils/numbers";
-
 export const AVALANCHE = 43114;
 export const AVALANCHE_FUJI = 43113;
 export const ARBITRUM = 42161;
@@ -68,7 +66,7 @@ export const MIN_EXECUTION_FEE_USD: Record<UiSupportedChain, bigint | undefined>
   [ARBITRUM]: undefined,
   [AVALANCHE]: undefined,
   [AVALANCHE_FUJI]: undefined,
-  [BOTANIX]: expandDecimals(1, 27), // $0.001
+  [BOTANIX]: 1000000000000000000000000000n, // 1e27 $0.001
 };
 
 // added to gasPrice
