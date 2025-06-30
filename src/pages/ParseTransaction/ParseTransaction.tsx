@@ -90,7 +90,7 @@ export function ParseTransactionPage() {
 
   const isDeposit = data ? data.some((event) => event.name.toLowerCase().includes("deposit")) : false;
 
-  const { tokensData } = useTokensDataRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId, undefined);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { glvData } = useGlvMarketsInfo(true, {
     marketsInfoData,
@@ -98,7 +98,7 @@ export function ParseTransactionPage() {
     chainId,
     account: undefined,
   });
-  const { marketTokensData } = useMarketTokensDataRequest(chainId, {
+  const { marketTokensData } = useMarketTokensDataRequest(chainId, undefined, {
     isDeposit,
     withGlv: true,
     glvData,

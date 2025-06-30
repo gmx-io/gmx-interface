@@ -37,7 +37,7 @@ export default function Pools() {
     glvTokensIncentiveAprData,
     marketsTokensLidoAprData,
     glvApyInfoData,
-  } = useGmMarketsApy(chainId, { period: apyPeriod });
+  } = useGmMarketsApy(chainId, srcChainId, { period: apyPeriod });
 
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });

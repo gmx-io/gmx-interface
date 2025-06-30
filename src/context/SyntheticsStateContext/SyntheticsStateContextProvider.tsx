@@ -197,7 +197,7 @@ export function SyntheticsStateContextProvider({
     account: account,
   });
 
-  const { marketTokensData: depositMarketTokensData } = useMarketTokensDataRequest(chainId, {
+  const { marketTokensData: depositMarketTokensData } = useMarketTokensDataRequest(chainId, srcChainId, {
     isDeposit: true,
     account,
     glvData: glvInfo.glvData,

@@ -16,7 +16,7 @@ import { ContractCallsConfig, useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
-import type { ContractsChainId } from "sdk/configs/chains";
+import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
 import { isGlvEnabled } from "./glv";
@@ -30,6 +30,7 @@ type MarketTokensDataResult = {
 
 export function useMarketTokensDataRequest(
   chainId: ContractsChainId,
+  srcChainId: SourceChainId | undefined,
   p: {
     isDeposit: boolean;
     account?: string;
@@ -41,7 +42,7 @@ export function useMarketTokensDataRequest(
   }
 ): MarketTokensDataResult {
   const { isDeposit, account, glvData = {}, withGlv = true } = p;
-  const { tokensData } = useTokensDataRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);
   const { resetTokensBalancesUpdates } = useTokensBalancesUpdates();
 
@@ -185,6 +186,7 @@ export function useMarketTokensDataRequest(
 
 export function useMarketTokensData(
   chainId: ContractsChainId,
+  srcChainId: SourceChainId | undefined,
   p: { isDeposit: boolean; withGlv?: boolean; glvData?: GlvInfoData }
 ): MarketTokensDataResult {
   const { isDeposit } = p;
@@ -194,7 +196,7 @@ export function useMarketTokensData(
 
   const glvData = p.glvData || storedGlvData;
 
-  return useMarketTokensDataRequest(chainId, {
+  return useMarketTokensDataRequest(chainId, srcChainId, {
     isDeposit,
     account,
     glvData: glvData,

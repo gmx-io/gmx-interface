@@ -33,7 +33,7 @@ export function TotalRewardsCard({
   showStakeGmxModal: () => void;
 }) {
   const { active, account, signer } = useWallet();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { openConnectModal } = useConnectModal();
   const { setPendingTxns } = usePendingTxns();
 
@@ -84,7 +84,7 @@ export function TotalRewardsCard({
     // glvTokensIncentiveAprData,
     // marketsTokensLidoAprData,
     // glvApyInfoData,
-  } = useGmMarketsApy(chainId, { period: "90d" });
+  } = useGmMarketsApy(chainId, srcChainId, { period: "90d" });
 
   const gmxMarketApyDataText = useMemo(() => {
     if (!gmxMarketAddress || chainId !== ARBITRUM) return;

@@ -5,7 +5,7 @@ import { FiPlus, FiTwitter } from "react-icons/fi";
 import { IoWarningOutline } from "react-icons/io5";
 import { useCopyToClipboard } from "react-use";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ContractsChainId, getExplorerUrl } from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ContractsChainId, getExplorerUrl, SourceChainId } from "config/chains";
 import { isDevelopment } from "config/env";
 import { RebateDistributionType, ReferralCodeStats, TotalReferralsStats, useTiers } from "domain/referrals";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
@@ -51,6 +51,7 @@ import "./AffiliatesStats.scss";
 
 type Props = {
   chainId: ContractsChainId;
+  srcChainId: SourceChainId | undefined;
   referralsData?: TotalReferralsStats;
   handleCreateReferralCode: (code: string) => Promise<unknown>;
   setRecentlyAddedCodes: (codes: ReferralCodeStats[]) => void;
@@ -59,6 +60,7 @@ type Props = {
 
 function AffiliatesStats({
   chainId,
+  srcChainId,
   referralsData,
   recentlyAddedCodes,
   handleCreateReferralCode,
@@ -68,7 +70,7 @@ function AffiliatesStats({
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
   const addNewModalRef = useRef<HTMLDivElement>(null);
 
-  const { tokensData } = useTokensDataRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { affiliateRewardsData } = useAffiliateRewards(chainId);
 

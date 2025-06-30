@@ -11,7 +11,7 @@ import { useL1ExpressOrderGasReference } from "./useL1ExpressGasReference";
 
 export function useIsOutOfGasPaymentBalance() {
   const { chainId, srcChainId } = useChainId();
-  const { tokensData } = useTokensDataRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const gasPrice = useGasPrice(chainId);
   const gasLimits = useGasLimits(chainId);
   const l1Reference = useL1ExpressOrderGasReference();

@@ -50,7 +50,7 @@ function Referrals() {
   } else {
     account = walletAccount;
   }
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const [activeTab, setActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, TRADERS);
   const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey<ReferralCodeStats[]>(
     [chainId, "REFERRAL", account],
@@ -94,6 +94,7 @@ function Referrals() {
           setRecentlyAddedCodes={setRecentlyAddedCodes}
           recentlyAddedCodes={recentlyAddedCodes}
           chainId={chainId}
+          srcChainId={srcChainId}
         />
       );
     } else {

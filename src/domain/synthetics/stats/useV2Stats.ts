@@ -1,7 +1,7 @@
 // current v2
 import { useMemo } from "react";
 
-import { ContractsChainId } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 
 import useV2FeesInfo from "./useV2FeesInfo";
 import { useMarketsInfoRequest } from "../markets";

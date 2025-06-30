@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 
 import { HIGH_LIQUIDITY_FOR_FEEDBACK, TIME_SPENT_ON_EARN_PAGE_FOR_INVITATION_TOAST } from "config/constants";
 import { LP_INTERVIEW_INVITATION_SHOWN_TIME_KEY } from "config/localStorage";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -16,7 +16,8 @@ import { getTotalGlvInfo, getTotalGmInfo } from "../markets/utils";
 
 function useTotalProvidedLiquidityUsd() {
   const chainId = useSelector(selectChainId);
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false, withGlv: true });
+  const srcChainId = useSelector(selectSrcChainId);
+  const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
 
   return useMemo(() => {
     const totalGmInfo = getTotalGmInfo(marketTokensData);

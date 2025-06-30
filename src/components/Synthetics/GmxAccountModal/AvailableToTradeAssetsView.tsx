@@ -156,8 +156,8 @@ const AssetListMultichain = () => {
 };
 
 const AssetListSettlementChain = () => {
-  const { chainId } = useChainId();
-  const { tokensData } = useTokensDataRequest(chainId);
+  const { chainId, srcChainId } = useChainId();
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
 
   const displayTokens = useMemo(() => {
     const displayTokens: DisplayToken[] = Object.values(tokensData || {})
