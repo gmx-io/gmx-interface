@@ -37,7 +37,7 @@ import { Vesting } from "./Vesting";
 
 import "./Stake.css";
 
-export default function Stake() {
+function StakeContent() {
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
   const incentiveStats = useIncentiveStats(chainId);
@@ -185,10 +185,27 @@ export default function Stake() {
     );
   }
 
-  const isBotanix = chainId === BOTANIX;
+  return (
+    <div className="default-container page-layout">
+      <SEO title={getPageTitle(t`Stake`)} />
 
-  const stakePageContent = (
-    <>
+      <PageTitle
+        isTop
+        title={t`Stake`}
+        qa="earn-page"
+        subtitle={
+          <div>
+            <Trans>
+              Deposit <ExternalLink href="https://docs.gmx.io/docs/tokenomics/gmx-token">GMX</ExternalLink> and{" "}
+              <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/gmx-token">esGMX</ExternalLink> tokens to
+              earn rewards.
+            </Trans>
+            {earnMsg && <div className="Page-description">{earnMsg}</div>}
+            {incentivesMessage}
+          </div>
+        }
+      />
+
       <StakeModal
         isVisible={isStakeGmxModalVisible}
         setIsVisible={setIsStakeGmxModalVisible}
@@ -282,33 +299,25 @@ export default function Stake() {
       <UserIncentiveDistributionList />
 
       <InterviewModal type="lp" isVisible={isLpInterviewModalVisible} setIsVisible={setIsLpInterviewModalVisible} />
-    </>
+      <Footer />
+    </div>
   );
-  return (
+}
+
+export default function Stake() {
+  const { chainId } = useChainId();
+  const isBotanix = chainId === BOTANIX;
+
+  return isBotanix ? (
     <div className="default-container page-layout">
       <SEO title={getPageTitle(t`Stake`)} />
 
-      <PageTitle
-        isTop
-        title={t`Stake`}
-        qa="earn-page"
-        subtitle={
-          !isBotanix ? (
-            <div>
-              <Trans>
-                Deposit <ExternalLink href="https://docs.gmx.io/docs/tokenomics/gmx-token">GMX</ExternalLink> and{" "}
-                <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/gmx-token">esGMX</ExternalLink> tokens
-                to earn rewards.
-              </Trans>
-              {earnMsg && <div className="Page-description">{earnMsg}</div>}
-              {incentivesMessage}
-            </div>
-          ) : undefined
-        }
-      />
+      <PageTitle isTop title={t`Stake`} qa="earn-page" />
 
-      {!isBotanix ? stakePageContent : <BotanixBanner />}
+      <BotanixBanner />
       <Footer />
     </div>
+  ) : (
+    <StakeContent />
   );
 }

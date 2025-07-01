@@ -2926,6 +2926,8 @@ msgstr ""
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 #: src/pages/Stake/Stake.tsx
 #: src/pages/Stake/Stake.tsx
+#: src/pages/Stake/Stake.tsx
+#: src/pages/Stake/Stake.tsx
 #: src/pages/Stake/StakeModal.tsx
 #: src/pages/Stake/StakeModal.tsx
 msgid "Stake"
