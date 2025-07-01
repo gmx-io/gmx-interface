@@ -6105,6 +6105,10 @@ msgstr ""
 msgid "Min position size: {0}"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotification/StakeNotification.tsx
+#~ msgid "Transaction request sent"
+#~ msgstr ""
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/sidecarOrders/utils.ts
@@ -6582,6 +6586,7 @@ msgid "{0} and {1} can be used to buy GM for this market up to the specified buy
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/StakeNotification.tsx
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/lib/contracts/notifications.tsx
@@ -6994,6 +6999,10 @@ msgstr "날짜"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using FIAT gateways:"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/StakeNotification.tsx
+msgid "{0} {fromAmount} for {toAmount}"
 msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.jsx

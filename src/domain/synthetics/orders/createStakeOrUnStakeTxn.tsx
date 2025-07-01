@@ -10,7 +10,9 @@ import StBTCABI from "sdk/abis/StBTC.json";
 import ERC20ABI from "sdk/abis/Token.json";
 import { encodeExchangeRouterMulticall, ExchangeRouterCall, ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
-type StakeOrUnstakeParams = {
+import { StakeNotification } from "components/Synthetics/StatusNotification/StakeNotification";
+
+export type StakeOrUnstakeParams = {
   amount: bigint;
   isStake: boolean;
   isWrapBeforeStake: boolean;
@@ -74,6 +76,8 @@ export async function createStakeOrUnstakeTxn(chainId: number, signer: Signer, p
     const tx = await stBTC.withdraw(p.amount, address, address);
     await signer.provider?.waitForTransaction(tx.hash, 0);
 
+    helperToast.success(<StakeNotification txnHash={tx.hash} {...p} />);
+
     return;
   }
 
@@ -107,7 +111,7 @@ export async function createStakeOrUnstakeTxn(chainId: number, signer: Signer, p
               await signer.provider?.waitForTransaction(event.data.transactionHash, 0);
               resolve(undefined);
 
-              helperToast.success("Done");
+              helperToast.success(<StakeNotification txnHash={event.data.transactionHash} {...p} />);
             } else {
               // FIXME?
               await sleep(1000);
