@@ -124,9 +124,16 @@ export function AppRoutes() {
   useEffect(() => {
     const chainId = urlParams.chainId;
     if (chainId && SUPPORTED_CHAIN_IDS.includes(Number(chainId) as UiContractsChain)) {
-      switchNetwork(Number(chainId), true);
+      switchNetwork(Number(chainId), true).then(() => {
+        const searchParams = new URLSearchParams(history.location.search);
+        searchParams.delete("chainId");
+        history.replace({
+          pathname: history.location.pathname,
+          search: searchParams.toString(),
+        });
+      });
     }
-  }, [urlParams]);
+  }, [urlParams, history]);
 
   useRealChainIdWarning();
 
