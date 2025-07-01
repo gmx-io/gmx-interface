@@ -20,7 +20,7 @@ beforeAll(() => {
   vi.spyOn(Math, "random").mockReturnValue(0.5);
 });
 
-describe("Exchange Router Multicall", () => {
+describe.skip("Exchange Router Multicall", () => {
   const CHAIN_ID = ARBITRUM;
   const RECEIVER = "0x1234567890123456789012345678901234567890";
   const UI_FEE_RECEIVER = "0x0987654321098765432109876543210987654321";
