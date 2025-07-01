@@ -242,7 +242,7 @@ function SettlementChainBalance() {
         }
       />
       <SyntheticsInfoRow
-        label={<Trans>GMX Balance</Trans>}
+        label={<Trans>GMX Account Balance</Trans>}
         className="h-23 !items-start"
         valueClassName="leading-[21px]"
         value={
