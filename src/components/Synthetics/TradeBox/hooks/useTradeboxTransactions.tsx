@@ -6,7 +6,6 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import {
   selectBlockTimestampData,
-  selectExpressNoncesData,
   selectIsFirstOrder,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -97,7 +96,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
   const duration = useSelector(selectTradeboxTwapDuration);
   const numberOfParts = useSelector(selectTradeboxTwapNumberOfParts);
-  const noncesData = useSelector(selectExpressNoncesData);
 
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
 
@@ -307,7 +305,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       signer,
       provider,
       batchParams,
-      noncesData,
       isGmxAccount: isFromTokenGmxAccount,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
@@ -336,7 +333,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     isFromTokenGmxAccount,
     makeOrderTxnCallback,
     marketsInfoData,
-    noncesData,
     primaryCreateOrderParams,
     provider,
     setShouldFallbackToInternalSwap,

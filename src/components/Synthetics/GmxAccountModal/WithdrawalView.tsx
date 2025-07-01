@@ -40,7 +40,7 @@ import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSend } from "domain/multichain/useQuoteSend";
 import { callRelayTransaction } from "domain/synthetics/express/callRelayTransaction";
 import { buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
-import { ExpressTransactionBuilder, RawRelayParamsPayloadArbitrumSepolia } from "domain/synthetics/express/types";
+import { ExpressTransactionBuilder, RawRelayParamsPayload } from "domain/synthetics/express/types";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { convertToUsd, TokenData } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -332,7 +332,7 @@ export const WithdrawalView = () => {
         chainId: chainId as SettlementChainId,
         signer: undefined,
         account,
-        relayParamsPayload: relayParams as RawRelayParamsPayloadArbitrumSepolia,
+        relayParamsPayload: relayParams as RawRelayParamsPayload,
         params: bridgeOutParams,
         emptySignature: true,
         relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
@@ -408,7 +408,7 @@ export const WithdrawalView = () => {
           chainId: chainId as SettlementChainId,
           relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
           relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
-          relayParamsPayload: relayParamsPayload as RawRelayParamsPayloadArbitrumSepolia,
+          relayParamsPayload: relayParamsPayload as RawRelayParamsPayload,
           params: bridgeOutParams,
           signer,
           provider,
@@ -421,7 +421,7 @@ export const WithdrawalView = () => {
           chainId: chainId as SettlementChainId,
           signer,
           account,
-          relayParamsPayload: relayParamsPayload as RawRelayParamsPayloadArbitrumSepolia,
+          relayParamsPayload: relayParamsPayload as RawRelayParamsPayload,
           params: bridgeOutParams,
           relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
           relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
@@ -896,7 +896,7 @@ async function simulateWithdraw({
   srcChainId: SourceChainId;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
-  relayParamsPayload: RawRelayParamsPayloadArbitrumSepolia;
+  relayParamsPayload: RawRelayParamsPayload;
   params: BridgeOutParams;
 }): Promise<void> {
   if (!provider) {
@@ -938,7 +938,7 @@ async function fallbackCustomError<T = void>(f: () => Promise<T>, errorContext: 
         const data = errorWithData.data;
 
         const decodedError = decodeErrorResult({
-          abi: abis.CustomErrorsArbitrumSepolia,
+          abi: abis.CustomErrors,
           data: data as Hex,
         });
 

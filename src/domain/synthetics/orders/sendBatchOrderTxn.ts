@@ -2,7 +2,6 @@ import { Provider } from "ethers";
 import { withRetry } from "viem";
 
 import { ContractsChainId } from "config/chains";
-import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { buildAndSignExpressBatchOrderTxn } from "domain/synthetics/express/expressOrderUtils";
 import { isLimitSwapOrderType } from "domain/synthetics/orders";
@@ -45,7 +44,6 @@ export async function sendBatchOrderTxn({
   isGmxAccount,
   provider,
   batchParams,
-  noncesData,
   expressParams,
   simulationParams,
   callback,
@@ -56,7 +54,6 @@ export async function sendBatchOrderTxn({
   provider: Provider;
   batchParams: BatchOrderTxnParams;
   expressParams: ExpressTxnParams | undefined;
-  noncesData?: NoncesData;
   simulationParams: BatchSimulationParams | undefined;
   callback: TxnCallback<BatchOrderTxnCtx> | undefined;
 }) {
@@ -84,7 +81,6 @@ export async function sendBatchOrderTxn({
           tokensData: simulationParams.tokensData,
           expressParams,
           provider,
-          noncesData,
           isGmxAccount,
         });
       };
@@ -100,7 +96,6 @@ export async function sendBatchOrderTxn({
         relayerFeeTokenAddress: expressParams.gasPaymentParams.relayerFeeTokenAddress,
         relayerFeeAmount: expressParams.gasPaymentParams.relayerFeeAmount,
         subaccount: expressParams.subaccount,
-        noncesData,
         isGmxAccount,
       });
 
@@ -166,7 +161,6 @@ export const makeBatchOrderSimulation = async ({
   blockTimestampData,
   tokensData,
   expressParams,
-  noncesData,
 }: {
   chainId: ContractsChainId;
   signer: WalletSigner;
@@ -176,7 +170,6 @@ export const makeBatchOrderSimulation = async ({
   blockTimestampData: BlockTimestampData | undefined;
   tokensData: TokensData;
   expressParams: ExpressTxnParams | undefined;
-  noncesData: NoncesData | undefined;
 }): Promise<void> => {
   try {
     if (getIsInvalidBatchReceiver(batchParams, signer.address)) {
@@ -257,7 +250,6 @@ export const makeBatchOrderSimulation = async ({
         emptySignature: true,
         relayerFeeTokenAddress: expressParams.gasPaymentParams.relayerFeeTokenAddress,
         relayerFeeAmount: expressParams.gasPaymentParams.relayerFeeAmount,
-        noncesData,
         isGmxAccount,
       });
 

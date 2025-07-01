@@ -12,7 +12,7 @@ import { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
-import { RelayParamsPayloadArbitrumSepolia, getGelatoRelayRouterDomain, hashRelayParamsMultichain } from "../express";
+import { RelayParamsPayload, getGelatoRelayRouterDomain, hashRelayParams } from "../express";
 import { getMultichainInfoFromSigner } from "../express/expressOrderUtils";
 
 type Params = {
@@ -59,7 +59,7 @@ export async function buildAndSignClaimFundingFeesTxn({
   relayerFeeAmount,
 }: {
   signer: WalletSigner;
-  relayParams: RelayParamsPayloadArbitrumSepolia;
+  relayParams: RelayParamsPayload;
   account: string;
   markets: string[];
   tokens: string[];
@@ -91,7 +91,7 @@ export async function buildAndSignClaimFundingFeesTxn({
   }
 
   const claimFundingFeesCallData = encodeFunctionData({
-    abi: abis.MultichainClaimsRouterArbitrumSepolia,
+    abi: abis.MultichainClaimsRouter,
     functionName: "claimFundingFees",
     args: [{ ...relayParams, signature }, account, srcChainId, markets, tokens, receiver],
   });
@@ -114,7 +114,7 @@ async function signClaimFundingFeesPayload({
   srcChainId,
 }: {
   signer: WalletSigner | Wallet;
-  relayParams: RelayParamsPayloadArbitrumSepolia;
+  relayParams: RelayParamsPayload;
   markets: string[];
   tokens: string[];
   receiver: string;
@@ -135,7 +135,7 @@ async function signClaimFundingFeesPayload({
     markets,
     tokens,
     receiver,
-    relayParams: hashRelayParamsMultichain(relayParams),
+    relayParams: hashRelayParams(relayParams),
   };
 
   return signTypedData({ signer, domain, types, typedData });

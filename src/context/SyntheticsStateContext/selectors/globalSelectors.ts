@@ -26,7 +26,6 @@ export const selectIsSponsoredCallAvailable = (s: SyntheticsState) =>
 export const selectSubaccountState = (s: SyntheticsState) => s.subaccountState;
 export const selectRawSubaccount = (s: SyntheticsState) => s.subaccountState.subaccount;
 export const selectGasPaymentTokenAllowance = (s: SyntheticsState) => s.gasPaymentTokenAllowance;
-export const selectExpressNoncesData = (s: SyntheticsState) => s.expressNoncesData;
 
 export const selectUpdateSubaccountSettings = (s: SyntheticsState) => s.subaccountState.updateSubaccountSettings;
 export const selectL1ExpressOrderGasReference = (s: SyntheticsState) => s.l1ExpressOrderGasReference;

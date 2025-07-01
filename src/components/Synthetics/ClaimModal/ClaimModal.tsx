@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
-import { ExpressTransactionBuilder, RawRelayParamsPayloadArbitrumSepolia } from "domain/synthetics/express";
+import { ExpressTransactionBuilder, RawRelayParamsPayload } from "domain/synthetics/express";
 import {
   MarketInfo,
   getMarketIndexName,
@@ -167,7 +167,7 @@ export function ClaimModalMultichain(p: Props) {
         account,
         signer,
         relayParams: {
-          ...(params.relayParams as RawRelayParamsPayloadArbitrumSepolia),
+          ...(params.relayParams as RawRelayParamsPayload),
           deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
         },
         relayerFeeAmount: params.gasPaymentParams.relayerFeeAmount,
@@ -213,7 +213,7 @@ export function ClaimModalMultichain(p: Props) {
           signer,
           account,
           relayParams: {
-            ...(expressTxnParams.relayParamsPayload as RawRelayParamsPayloadArbitrumSepolia),
+            ...(expressTxnParams.relayParamsPayload as RawRelayParamsPayload),
             deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
           },
           relayerFeeAmount: expressTxnParams.gasPaymentParams.relayerFeeAmount,

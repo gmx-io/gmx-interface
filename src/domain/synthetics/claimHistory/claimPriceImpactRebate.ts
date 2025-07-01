@@ -11,11 +11,7 @@ import { abis } from "sdk/abis";
 import { ContractsChainId } from "sdk/configs/chains";
 import type { SourceChainId } from "sdk/configs/chains";
 
-import {
-  type RelayParamsPayloadArbitrumSepolia,
-  getGelatoRelayRouterDomain,
-  hashRelayParamsMultichain,
-} from "../express";
+import { type RelayParamsPayload, getGelatoRelayRouterDomain, hashRelayParams } from "../express";
 import { getMultichainInfoFromSigner } from "../express/expressOrderUtils";
 import { RebateInfoItem } from "../fees/useRebatesInfo";
 
@@ -60,7 +56,7 @@ export async function buildAndSignClaimPositionPriceImpactFeesTxn({
   relayerFeeAmount,
 }: {
   signer: WalletSigner;
-  relayParams: RelayParamsPayloadArbitrumSepolia;
+  relayParams: RelayParamsPayload;
   account: string;
   claimablePositionPriceImpactFees: RebateInfoItem[];
   receiver: string;
@@ -101,7 +97,7 @@ export async function buildAndSignClaimPositionPriceImpactFeesTxn({
   }
 
   const claimCollateralCallData = encodeFunctionData({
-    abi: abis.MultichainClaimsRouterArbitrumSepolia,
+    abi: abis.MultichainClaimsRouter,
     functionName: "claimCollateral",
     args: [{ ...relayParams, signature }, account, srcChainId, markets, tokens, timeKeys, receiver],
   });
@@ -125,7 +121,7 @@ async function signClaimCollateralPayload({
   srcChainId,
 }: {
   signer: WalletSigner;
-  relayParams: RelayParamsPayloadArbitrumSepolia;
+  relayParams: RelayParamsPayload;
   markets: string[];
   tokens: string[];
   timeKeys: bigint[];
@@ -152,7 +148,7 @@ async function signClaimCollateralPayload({
     tokens,
     timeKeys,
     receiver,
-    relayParams: hashRelayParamsMultichain(relayParams),
+    relayParams: hashRelayParams(relayParams),
   };
 
   return signTypedData({ signer, domain, types, typedData });

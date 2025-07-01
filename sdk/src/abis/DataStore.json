@@ -1,7 +1,4 @@
 {
-  "_format": "hh-sol-artifact-1",
-  "contractName": "DataStore",
-  "sourceName": "contracts/data/DataStore.sol",
   "abi": [
     {
       "inputs": [
@@ -191,6 +188,30 @@
           "internalType": "string",
           "name": "errorMessage",
           "type": "string"
+        }
+      ],
+      "name": "applyDeltaToUint",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "key",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
         }
       ],
       "name": "applyDeltaToUint",
@@ -1434,7 +1455,5 @@
       "stateMutability": "view",
       "type": "function"
     }
-  ],
-  "linkReferences": {},
-  "deployedLinkReferences": {}
+  ]
 }

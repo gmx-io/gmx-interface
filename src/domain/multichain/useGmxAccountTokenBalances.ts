@@ -32,7 +32,7 @@ function buildGmxAccountTokenBalancesRequest(chainId: SettlementChainId, key: Ca
     >
   > = {
     DataStore: {
-      abiId: "DataStoreArbitrumSepolia",
+      abiId: "DataStore",
       contractAddress: getContract(chainId, "DataStore"),
       calls: erc20Calls,
     },

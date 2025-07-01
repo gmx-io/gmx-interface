@@ -1,5 +1,4 @@
 import { MAX_PNL_FACTOR_FOR_TRADERS_KEY } from "config/dataStore";
-import { ARBITRUM_SEPOLIA } from "config/static/chains";
 import { MarketsData } from "domain/synthetics/markets/types";
 import { getContractMarketPrices } from "domain/synthetics/markets/utils";
 import { TokensData } from "domain/synthetics/tokens/types";
@@ -45,7 +44,7 @@ export async function buildMarketsValuesRequest(
 
     request[`${marketAddress}-reader`] = {
       contractAddress: syntheticsReaderAddress,
-      abiId: chainId === ARBITRUM_SEPOLIA ? "SyntheticsReaderArbitrumSepolia" : "SyntheticsReader",
+      abiId: "SyntheticsReader",
       calls: {
         marketInfo: {
           methodName: "getMarketInfo",

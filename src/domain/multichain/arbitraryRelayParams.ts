@@ -5,7 +5,6 @@ import { getCustomError } from "ab/testMultichain/parseError/enabled";
 import type { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
-import type { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectAccount,
@@ -20,7 +19,6 @@ import {
   getRawRelayerParams,
   getRelayerFeeParams,
   GlobalExpressParams,
-  RawRelayParamsPayloadArbitrumSepolia,
   RawRelayParamsPayload,
   RelayFeePayload,
 } from "domain/synthetics/express";
@@ -51,7 +49,7 @@ export function getRawBaseRelayerParams({
   globalExpressParams: GlobalExpressParams;
   additionalNetworkFee?: bigint;
 }): Partial<{
-  rawBaseRelayParamsPayload: RawRelayParamsPayload | RawRelayParamsPayloadArbitrumSepolia;
+  rawBaseRelayParamsPayload: RawRelayParamsPayload | RawRelayParamsPayload;
   baseRelayFeeSwapParams: {
     feeParams: RelayFeePayload;
     externalCalls: ExternalCallsPayload;
@@ -108,23 +106,20 @@ async function estimateArbitraryGasLimit({
   rawRelayParamsPayload,
   gasPaymentParams,
   expressTransactionBuilder,
-  noncesData,
   subaccount,
   chainId,
 }: {
   chainId: ContractsChainId;
   provider: Provider;
-  rawRelayParamsPayload: RawRelayParamsPayload | RawRelayParamsPayloadArbitrumSepolia;
+  rawRelayParamsPayload: RawRelayParamsPayload | RawRelayParamsPayload;
   gasPaymentParams: GasPaymentParams;
   expressTransactionBuilder: ExpressTransactionBuilder;
-  noncesData: NoncesData | undefined;
   subaccount: Subaccount | undefined;
 }): Promise<bigint> {
   const { txnData: baseTxnData } = await expressTransactionBuilder({
     relayParams: rawRelayParamsPayload,
     gasPaymentParams,
     subaccount,
-    noncesData,
   });
 
   const baseData = encodePacked(
@@ -152,16 +147,14 @@ export async function estimateArbitraryRelayFee({
   provider,
   rawRelayParamsPayload,
   expressTransactionBuilder,
-  noncesData,
   gasPaymentParams,
   subaccount,
 }: {
   chainId: ContractsChainId;
   provider: Provider;
-  rawRelayParamsPayload: RawRelayParamsPayload | RawRelayParamsPayloadArbitrumSepolia;
+  rawRelayParamsPayload: RawRelayParamsPayload | RawRelayParamsPayload;
   expressTransactionBuilder: ExpressTransactionBuilder;
   gasPaymentParams: GasPaymentParams;
-  noncesData: NoncesData | undefined;
   subaccount: Subaccount | undefined;
 }) {
   const gasLimit = await estimateArbitraryGasLimit({
@@ -170,7 +163,6 @@ export async function estimateArbitraryRelayFee({
     rawRelayParamsPayload,
     gasPaymentParams,
     expressTransactionBuilder,
-    noncesData,
     subaccount,
   });
 
@@ -242,7 +234,7 @@ export function getArbitraryRelayParamsAndPayload({
     tokenPermits: [],
     marketsInfoData: globalExpressParams.marketsInfoData,
     // TODO MLTCH: remove "as" when contracts are deployed to prod
-  }) as RawRelayParamsPayloadArbitrumSepolia;
+  }) as RawRelayParamsPayload;
 
   const gasPaymentValidations = getGasPaymentValidations({
     gasPaymentToken: globalExpressParams.gasPaymentToken,
@@ -307,7 +299,6 @@ export function useArbitraryRelayParamsAndPayload({
           rawRelayParamsPayload: rawBaseRelayParamsPayload,
           gasPaymentParams: baseRelayFeeSwapParams.gasPaymentParams,
           subaccount: p.globalExpressParams.subaccount,
-          noncesData: p.globalExpressParams.noncesData,
         });
       } catch (error) {
         const customError = getCustomError(error);

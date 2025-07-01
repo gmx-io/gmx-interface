@@ -157,7 +157,7 @@ export async function estimateMultichainDepositNetworkComposeGas({
 
   const gas = await settlementChainPublicClient.estimateContractGas({
     address,
-    abi: abis.LayerZeroProviderArbitrumSepolia,
+    abi: abis.LayerZeroProvider,
     functionName: "lzCompose",
     args,
     account: CodecUiHelper.getLzEndpoint(chainId),

@@ -17,7 +17,7 @@ import {
   buildAndSignClaimPositionPriceImpactFeesTxn,
   createClaimCollateralTxn,
 } from "domain/synthetics/claimHistory/claimPriceImpactRebate";
-import { ExpressTransactionBuilder, RawRelayParamsPayloadArbitrumSepolia } from "domain/synthetics/express";
+import { ExpressTransactionBuilder, RawRelayParamsPayload } from "domain/synthetics/express";
 import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getTokenData } from "domain/synthetics/tokens";
@@ -135,7 +135,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
       const txnData = await buildAndSignClaimPositionPriceImpactFeesTxn({
         signer,
         relayParams: {
-          ...(params.relayParams as RawRelayParamsPayloadArbitrumSepolia),
+          ...(params.relayParams as RawRelayParamsPayload),
           deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
         },
         account,
@@ -179,7 +179,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
         const txnData = await buildAndSignClaimPositionPriceImpactFeesTxn({
           signer,
           relayParams: {
-            ...(params.relayParamsPayload as RawRelayParamsPayloadArbitrumSepolia),
+            ...(params.relayParamsPayload as RawRelayParamsPayload),
             deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
           },
           account,

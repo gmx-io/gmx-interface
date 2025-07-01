@@ -7,109 +7,141 @@ import type { RelayParams, RelayParamsInterface } from "../RelayParams";
 
 const _abi = [
   {
-    type: "tuple",
     components: [
       {
-        type: "address[]",
+        internalType: "address[]",
         name: "tokens",
+        type: "address[]",
       },
       {
-        type: "address[]",
+        internalType: "address[]",
         name: "providers",
+        type: "address[]",
       },
       {
-        type: "bytes[]",
+        internalType: "bytes[]",
         name: "data",
-      },
-    ],
-  },
-  {
-    type: "tuple",
-    components: [
-      {
-        type: "address[]",
-        name: "sendTokens",
-      },
-      {
-        type: "uint256[]",
-        name: "sendAmounts",
-      },
-      {
-        type: "address[]",
-        name: "externalCallTargets",
-      },
-      {
         type: "bytes[]",
-        name: "externalCallDataList",
-      },
-      {
-        type: "address[]",
-        name: "refundTokens",
-      },
-      {
-        type: "address[]",
-        name: "refundReceivers",
       },
     ],
-  },
-  {
-    type: "tuple[]",
-    components: [
-      {
-        type: "address",
-        name: "owner",
-      },
-      {
-        type: "address",
-        name: "spender",
-      },
-      {
-        type: "uint256",
-        name: "value",
-      },
-      {
-        type: "uint256",
-        name: "deadline",
-      },
-      {
-        type: "uint8",
-        name: "v",
-      },
-      {
-        type: "bytes32",
-        name: "r",
-      },
-      {
-        type: "bytes32",
-        name: "s",
-      },
-      {
-        type: "address",
-        name: "token",
-      },
-    ],
-  },
-  {
+    internalType: "struct OracleUtils.SetPricesParams",
+    name: "oracleParams",
     type: "tuple",
-    components: [
-      {
-        type: "address",
-        name: "feeToken",
-      },
-      {
-        type: "uint256",
-        name: "feeAmount",
-      },
-      {
-        type: "address[]",
-        name: "feeSwapPath",
-      },
-    ],
   },
   {
+    components: [
+      {
+        internalType: "address[]",
+        name: "sendTokens",
+        type: "address[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "sendAmounts",
+        type: "uint256[]",
+      },
+      {
+        internalType: "address[]",
+        name: "externalCallTargets",
+        type: "address[]",
+      },
+      {
+        internalType: "bytes[]",
+        name: "externalCallDataList",
+        type: "bytes[]",
+      },
+      {
+        internalType: "address[]",
+        name: "refundTokens",
+        type: "address[]",
+      },
+      {
+        internalType: "address[]",
+        name: "refundReceivers",
+        type: "address[]",
+      },
+    ],
+    internalType: "struct ExternalCalls",
+    name: "externalCalls",
+    type: "tuple",
+  },
+  {
+    components: [
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "spender",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "deadline",
+        type: "uint256",
+      },
+      {
+        internalType: "uint8",
+        name: "v",
+        type: "uint8",
+      },
+      {
+        internalType: "bytes32",
+        name: "r",
+        type: "bytes32",
+      },
+      {
+        internalType: "bytes32",
+        name: "s",
+        type: "bytes32",
+      },
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
+    internalType: "struct TokenPermit[]",
+    name: "tokenPermits",
+    type: "tuple[]",
+  },
+  {
+    components: [
+      {
+        internalType: "address",
+        name: "feeToken",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "feeAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "address[]",
+        name: "feeSwapPath",
+        type: "address[]",
+      },
+    ],
+    internalType: "struct FeeParams",
+    name: "fee",
+    type: "tuple",
+  },
+  {
+    internalType: "uint256",
+    name: "deadline",
     type: "uint256",
   },
   {
+    internalType: "uint256",
+    name: "desChainId",
     type: "uint256",
   },
 ] as const;

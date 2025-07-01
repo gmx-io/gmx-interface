@@ -4,7 +4,7 @@ import { encodeFunctionData, zeroAddress, zeroHash } from "viem";
 import ExchangeRouterAbi from "abis/ExchangeRouter.json";
 import { abis } from "abis/index";
 import ERC20ABI from "abis/Token.json";
-import { ARBITRUM_SEPOLIA, getExcessiveExecutionFee, getHighExecutionFee, ContractsChainId } from "configs/chains";
+import { ContractsChainId, getExcessiveExecutionFee, getHighExecutionFee } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { convertTokenAddress, getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { ExecutionFee } from "types/fees";
@@ -912,7 +912,7 @@ export function buildCancelOrderMulticall({ params }: { params: CancelOrderTxnPa
 export function encodeExchangeRouterMulticall(chainId: ContractsChainId, multicall: ExchangeRouterCall[]) {
   const encodedMulticall = multicall.map((call) =>
     encodeFunctionData({
-      abi: chainId === ARBITRUM_SEPOLIA ? abis.ExchangeRouterArbitrumSepolia : abis.ExchangeRouter,
+      abi: abis.ExchangeRouter,
       functionName: call.method,
       args: call.params,
     })

@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-import { ARBITRUM_SEPOLIA, ContractsChainId } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import {
   maxAllowedSubaccountActionCountKey,
   SUBACCOUNT_ORDER_ACTION,
@@ -55,7 +55,7 @@ export function useSubaccountOnchainData(
           contractAddress: srcChainId
             ? getContract(chainId, "MultichainSubaccountRouter")
             : getContract(chainId, "SubaccountGelatoRelayRouter"),
-          abiId: srcChainId ? "MultichainSubaccountRouterArbitrumSepolia" : "SubaccountGelatoRelayRouter",
+          abiId: "SubaccountGelatoRelayRouter",
           calls: {
             subaccountApproval: {
               methodName: "subaccountApprovalNonces",
@@ -83,13 +83,10 @@ export function useSubaccountOnchainData(
               methodName: "getUint",
               params: [subaccountExpiresAtKey(account!, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
             },
-            integrationId:
-              chainId === ARBITRUM_SEPOLIA
-                ? {
-                    methodName: "getBytes32",
-                    params: [subaccountIntegrationIdKey(account!, subaccountAddress)],
-                  }
-                : null,
+            integrationId: {
+              methodName: "getBytes32",
+              params: [subaccountIntegrationIdKey(account!, subaccountAddress)],
+            },
           },
         },
       } satisfies MulticallRequestConfig<any>;
@@ -100,7 +97,7 @@ export function useSubaccountOnchainData(
       const currentActionsCount = BigInt(res.data.dataStore.currentActionsCount.returnValues[0]);
       const expiresAt = BigInt(res.data.dataStore.expiresAt.returnValues[0]);
       const approvalNonce = BigInt(res.data.subaccountRelayRouter.subaccountApproval.returnValues[0]);
-      const integrationId = chainId === ARBITRUM_SEPOLIA ? res.data.dataStore.integrationId.returnValues[0] : undefined;
+      const integrationId = res.data.dataStore.integrationId.returnValues[0];
 
       return {
         active: isSubaccountActive,

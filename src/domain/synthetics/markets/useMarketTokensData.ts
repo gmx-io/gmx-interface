@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { ARBITRUM_SEPOLIA, getExplorerUrl } from "config/chains";
+import { getExplorerUrl } from "config/chains";
 import { getContract } from "config/contracts";
 import { MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
 // Warning: do not import through reexport, it will break jest
@@ -80,7 +80,7 @@ export function useMarketTokensDataRequest(
 
           requests[`${marketAddress}-prices`] = {
             contractAddress: getContract(chainId, "SyntheticsReader"),
-            abiId: chainId === ARBITRUM_SEPOLIA ? "SyntheticsReaderArbitrumSepolia" : "SyntheticsReader",
+            abiId: "SyntheticsReader",
             calls: {
               minPrice: {
                 methodName: "getMarketTokenPrice",

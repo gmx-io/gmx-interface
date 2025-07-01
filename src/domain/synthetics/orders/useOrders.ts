@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import { Address, isAddressEqual } from "viem";
 
-import { ARBITRUM_SEPOLIA, ContractsChainId } from "config/chains";
+import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { accountOrderListKey } from "config/dataStore";
 import type { MarketsInfoData } from "domain/synthetics/markets/types";
 import { OrderTypeFilterValue, convertOrderTypeFilterValues } from "domain/synthetics/orders/ordersFilters";
-import { DecreasePositionSwapType, OrderType, OrdersData } from "domain/synthetics/orders/types";
+import { DecreasePositionSwapType, Order, OrderType, OrdersData } from "domain/synthetics/orders/types";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { CacheKey, MulticallRequestConfig, MulticallResult, useMulticall } from "lib/multicall";
 import { EMPTY_ARRAY } from "lib/objects";
@@ -20,6 +20,7 @@ import {
   isVisibleOrder,
 } from "sdk/utils/orders";
 import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
+import { ReaderUtils } from "typechain-types/SyntheticsReader";
 
 import type {
   MarketFilterLongShortDirection,
@@ -178,7 +179,7 @@ function buildUseOrdersMulticall(chainId: ContractsChainId, key: CacheKey) {
     },
     reader: {
       contractAddress: getContract(chainId, "SyntheticsReader"),
-      abiId: chainId === ARBITRUM_SEPOLIA ? "SyntheticsReaderArbitrumSepolia" : "SyntheticsReader",
+      abiId: "SyntheticsReader",
       calls: {
         orders: {
           methodName: "getAccountOrders",
@@ -189,82 +190,44 @@ function buildUseOrdersMulticall(chainId: ContractsChainId, key: CacheKey) {
   } satisfies MulticallRequestConfig<any>;
 }
 
-function parseResponse(res: MulticallResult<ReturnType<typeof buildUseOrdersMulticall>>, chainId: number) {
+function parseResponse(res: MulticallResult<ReturnType<typeof buildUseOrdersMulticall>>) {
   const count = Number(res.data.dataStore.count.returnValues[0]);
   const orderKeys = res.data.dataStore.keys.returnValues;
   const orders = res.data.reader.orders.returnValues as any[];
-
-  if (chainId === ARBITRUM_SEPOLIA) {
-    return {
-      count,
-      orders: orders.map((order, i) => {
-        const key = orderKeys[i];
-        const orderData = order.order;
-
-        return {
-          key,
-          account: orderData.addresses.account as Address,
-          receiver: orderData.addresses.receiver as Address,
-          cancellationReceiver: orderData.addresses.cancellationReceiver as Address,
-          callbackContract: orderData.addresses.callbackContract as Address,
-          uiFeeReceiver: orderData.addresses.uiFeeReceiver as Address,
-          marketAddress: orderData.addresses.market as Address,
-          initialCollateralTokenAddress: orderData.addresses.initialCollateralToken as Address,
-          swapPath: orderData.addresses.swapPath as Address[],
-          sizeDeltaUsd: BigInt(orderData.numbers.sizeDeltaUsd),
-          initialCollateralDeltaAmount: BigInt(orderData.numbers.initialCollateralDeltaAmount),
-          contractTriggerPrice: BigInt(orderData.numbers.triggerPrice),
-          contractAcceptablePrice: BigInt(orderData.numbers.acceptablePrice),
-          executionFee: BigInt(orderData.numbers.executionFee),
-          callbackGasLimit: BigInt(orderData.numbers.callbackGasLimit),
-          minOutputAmount: BigInt(orderData.numbers.minOutputAmount),
-          updatedAtTime: orderData.numbers.updatedAtTime,
-          validFromTime: orderData.numbers.validFromTime,
-          srcChainId: orderData.numbers.srcChainId,
-          isLong: orderData.flags.isLong as boolean,
-          shouldUnwrapNativeToken: orderData.flags.shouldUnwrapNativeToken as boolean,
-          isFrozen: orderData.flags.isFrozen as boolean,
-          orderType: orderData.numbers.orderType as OrderType,
-          decreasePositionSwapType: orderData.numbers.decreasePositionSwapType as DecreasePositionSwapType,
-          autoCancel: orderData.flags.autoCancel as boolean,
-          data: orderData._dataList,
-        };
-      }),
-    };
-  }
 
   return {
     count,
     orders: orders.map((order, i) => {
       const key = orderKeys[i];
-      const { data } = order;
+      const orderData = order.order as ReaderUtils.OrderInfoStructOutput["order"];
 
       return {
         key,
-        account: order.addresses.account as Address,
-        receiver: order.addresses.receiver as Address,
-        callbackContract: order.addresses.callbackContract as Address,
-        marketAddress: order.addresses.market as Address,
-        initialCollateralTokenAddress: order.addresses.initialCollateralToken as Address,
-        swapPath: order.addresses.swapPath as Address[],
-        sizeDeltaUsd: BigInt(order.numbers.sizeDeltaUsd),
-        initialCollateralDeltaAmount: BigInt(order.numbers.initialCollateralDeltaAmount),
-        contractTriggerPrice: BigInt(order.numbers.triggerPrice),
-        contractAcceptablePrice: BigInt(order.numbers.acceptablePrice),
-        executionFee: BigInt(order.numbers.executionFee),
-        callbackGasLimit: BigInt(order.numbers.callbackGasLimit),
-        minOutputAmount: BigInt(order.numbers.minOutputAmount),
-        updatedAtTime: order.numbers.updatedAtTime,
-        isLong: order.flags.isLong as boolean,
-        shouldUnwrapNativeToken: order.flags.shouldUnwrapNativeToken as boolean,
-        isFrozen: order.flags.isFrozen as boolean,
-        orderType: order.numbers.orderType as OrderType,
-        decreasePositionSwapType: order.numbers.decreasePositionSwapType as DecreasePositionSwapType,
-        autoCancel: order.flags.autoCancel as boolean,
-        uiFeeReceiver: order.addresses.uiFeeReceiver as Address,
-        validFromTime: BigInt(order.numbers.validFromTime),
-        data,
-      };
+        account: orderData.addresses.account as Address,
+        receiver: orderData.addresses.receiver as Address,
+        // cancellationReceiver: orderData.addresses.cancellationReceiver as Address,
+        callbackContract: orderData.addresses.callbackContract as Address,
+        uiFeeReceiver: orderData.addresses.uiFeeReceiver as Address,
+        marketAddress: orderData.addresses.market as Address,
+        initialCollateralTokenAddress: orderData.addresses.initialCollateralToken as Address,
+        swapPath: orderData.addresses.swapPath as Address[],
+        sizeDeltaUsd: BigInt(orderData.numbers.sizeDeltaUsd),
+        initialCollateralDeltaAmount: BigInt(orderData.numbers.initialCollateralDeltaAmount),
+        contractTriggerPrice: BigInt(orderData.numbers.triggerPrice),
+        contractAcceptablePrice: BigInt(orderData.numbers.acceptablePrice),
+        executionFee: BigInt(orderData.numbers.executionFee),
+        callbackGasLimit: BigInt(orderData.numbers.callbackGasLimit),
+        minOutputAmount: BigInt(orderData.numbers.minOutputAmount),
+        updatedAtTime: orderData.numbers.updatedAtTime,
+        validFromTime: orderData.numbers.validFromTime,
+        isLong: orderData.flags.isLong as boolean,
+        shouldUnwrapNativeToken: orderData.flags.shouldUnwrapNativeToken as boolean,
+        isFrozen: orderData.flags.isFrozen as boolean,
+        orderType: orderData.numbers.orderType as unknown as OrderType,
+        decreasePositionSwapType: orderData.numbers.decreasePositionSwapType as unknown as DecreasePositionSwapType,
+        autoCancel: orderData.flags.autoCancel as boolean,
+        data: orderData._dataList,
+      } satisfies Order;
     }),
   };
 }

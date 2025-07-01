@@ -15,7 +15,7 @@ export function toastCustomOrStargateError(chainId: AnyChainId, error: Error) {
   if (data) {
     try {
       const parsedError = decodeErrorResult({
-        abi: abis.CustomErrorsArbitrumSepolia.concat(StargateErrorsAbi),
+        abi: abis.CustomErrors.concat(StargateErrorsAbi),
         data,
       });
 

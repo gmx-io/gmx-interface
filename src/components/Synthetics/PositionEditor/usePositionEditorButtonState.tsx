@@ -19,7 +19,6 @@ import {
 import { useSavedAllowedSlippage } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import {
   selectBlockTimestampData,
-  selectExpressNoncesData,
   selectGasPaymentTokenAllowance,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -111,7 +110,6 @@ export function usePositionEditorButtonState(operation: Operation): {
   const { collateralDeltaAmount, collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const marketsInfoData = useSelector(selectMarketsInfoData);
-  const noncesData = useSelector(selectExpressNoncesData);
 
   const collateralTokenAllowance = useTokensAllowanceData(chainId, {
     spenderAddress: routerAddress,
@@ -509,7 +507,6 @@ export function usePositionEditorButtonState(operation: Operation): {
       batchParams,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
-      noncesData,
       isGmxAccount: isCollateralTokenFromGmxAccount,
       simulationParams: shouldDisableValidationForTesting
         ? undefined

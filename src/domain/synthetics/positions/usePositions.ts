@@ -3,7 +3,7 @@ import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
 import { hashedPositionKey } from "config/dataStore";
-import { ARBITRUM_SEPOLIA, ContractsChainId } from "config/static/chains";
+import { ContractsChainId } from "config/static/chains";
 import {
   PendingPositionUpdate,
   PositionDecreaseEvent,
@@ -54,84 +54,80 @@ export function usePositions(
     data: positionsData,
     error: positionsError,
     isLoading,
-  } = useMulticall(
-    chainId,
-    chainId === ARBITRUM_SEPOLIA ? `usePositionsData-multichain-${chainId}` : "usePositionsData",
-    {
-      key: account && keysAndPrices.marketsKeys.length ? [account, keysAndPrices.marketsKeys] : null,
+  } = useMulticall(chainId, "usePositionsData", {
+    key: account && keysAndPrices.marketsKeys.length ? [account, keysAndPrices.marketsKeys] : null,
 
-      refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
-      clearUnusedKeys: true,
-      keepPreviousData: true,
+    refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
+    clearUnusedKeys: true,
+    keepPreviousData: true,
 
-      request: (requestChainId) => {
-        return {
-          reader: {
-            contractAddress: getContract(requestChainId, "SyntheticsReader"),
-            abiId: requestChainId === ARBITRUM_SEPOLIA ? "SyntheticsReaderArbitrumSepolia" : "SyntheticsReader",
-            calls: {
-              positions: {
-                methodName: "getAccountPositionInfoList",
-                params: [
-                  getContract(requestChainId, "DataStore"),
-                  getContract(requestChainId, "ReferralStorage"),
-                  account!,
-                  keysAndPrices.marketsKeys,
-                  keysAndPrices.marketsPrices,
-                  // uiFeeReceiver
-                  ethers.ZeroAddress,
-                  0,
-                  1000,
-                ] satisfies Parameters<SyntheticsReader["getAccountPositionInfoList"]>,
-              },
+    request: (requestChainId) => {
+      return {
+        reader: {
+          contractAddress: getContract(requestChainId, "SyntheticsReader"),
+          abiId: "SyntheticsReader",
+          calls: {
+            positions: {
+              methodName: "getAccountPositionInfoList",
+              params: [
+                getContract(requestChainId, "DataStore"),
+                getContract(requestChainId, "ReferralStorage"),
+                account!,
+                keysAndPrices.marketsKeys,
+                keysAndPrices.marketsPrices,
+                // uiFeeReceiver
+                ethers.ZeroAddress,
+                0,
+                1000,
+              ] satisfies Parameters<SyntheticsReader["getAccountPositionInfoList"]>,
             },
           },
-        };
-      },
-      parseResponse: (res) => {
-        const positions = res.data.reader.positions.returnValues;
+        },
+      };
+    },
+    parseResponse: (res) => {
+      const positions = res.data.reader.positions.returnValues;
 
-        return positions.reduce((positionsMap: PositionsData, positionInfo) => {
-          const { position, fees, basePnlUsd } = positionInfo;
-          const { addresses, numbers, flags } = position;
-          const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
+      return positions.reduce((positionsMap: PositionsData, positionInfo) => {
+        const { position, fees, basePnlUsd } = positionInfo;
+        const { addresses, numbers, flags } = position;
+        const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
 
-          // Empty position
-          if (numbers.increasedAtTime == 0n) {
-            return positionsMap;
-          }
-
-          const positionKey = getPositionKey(account, marketAddress, collateralTokenAddress, flags.isLong);
-          const contractPositionKey = hashedPositionKey(account, marketAddress, collateralTokenAddress, flags.isLong);
-
-          positionsMap[positionKey] = {
-            key: positionKey,
-            contractKey: contractPositionKey,
-            account,
-            marketAddress,
-            collateralTokenAddress,
-            sizeInUsd: numbers.sizeInUsd,
-            sizeInTokens: numbers.sizeInTokens,
-            collateralAmount: numbers.collateralAmount,
-            increasedAtTime: numbers.increasedAtTime,
-            decreasedAtTime: numbers.decreasedAtTime,
-            isLong: flags.isLong,
-            pendingBorrowingFeesUsd: fees.borrowing.borrowingFeeUsd,
-            fundingFeeAmount: fees.funding.fundingFeeAmount,
-            claimableLongTokenAmount: fees.funding.claimableLongTokenAmount,
-            claimableShortTokenAmount: fees.funding.claimableShortTokenAmount,
-            pnl: basePnlUsd,
-            positionFeeAmount: fees.positionFeeAmount,
-            traderDiscountAmount: fees.referral.traderDiscountAmount,
-            uiFeeAmount: fees.ui.uiFeeAmount,
-            data: "",
-          };
-
+        // Empty position
+        if (numbers.increasedAtTime == 0n) {
           return positionsMap;
-        }, {} as PositionsData);
-      },
-    }
-  );
+        }
+
+        const positionKey = getPositionKey(account, marketAddress, collateralTokenAddress, flags.isLong);
+        const contractPositionKey = hashedPositionKey(account, marketAddress, collateralTokenAddress, flags.isLong);
+
+        positionsMap[positionKey] = {
+          key: positionKey,
+          contractKey: contractPositionKey,
+          account,
+          marketAddress,
+          collateralTokenAddress,
+          sizeInUsd: numbers.sizeInUsd,
+          sizeInTokens: numbers.sizeInTokens,
+          collateralAmount: numbers.collateralAmount,
+          increasedAtTime: numbers.increasedAtTime,
+          decreasedAtTime: numbers.decreasedAtTime,
+          isLong: flags.isLong,
+          pendingBorrowingFeesUsd: fees.borrowing.borrowingFeeUsd,
+          fundingFeeAmount: fees.funding.fundingFeeAmount,
+          claimableLongTokenAmount: fees.funding.claimableLongTokenAmount,
+          claimableShortTokenAmount: fees.funding.claimableShortTokenAmount,
+          pnl: basePnlUsd,
+          positionFeeAmount: fees.positionFeeAmount,
+          traderDiscountAmount: fees.referral.traderDiscountAmount,
+          uiFeeAmount: fees.ui.uiFeeAmount,
+          data: "",
+        };
+
+        return positionsMap;
+      }, {} as PositionsData);
+    },
+  });
 
   const optimisticPositionsData = useOptimisticPositions({
     positionsData: positionsData,

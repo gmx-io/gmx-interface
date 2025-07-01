@@ -1,26 +1,6 @@
 import { Abi, erc20Abi } from "viem";
 
 import ArbitrumNodeInterface from "./ArbitrumNodeInterface.json";
-import CustomErrorsArbitrumSepolia from "./arbitrumSepolia/CustomErrors.json";
-import DataStoreArbitrumSepolia from "./arbitrumSepolia/DataStore.json";
-import ExchangeRouterArbitrumSepolia from "./arbitrumSepolia/ExchangeRouter.json";
-import GelatoRelayRouterArbitrumSepolia from "./arbitrumSepolia/GelatoRelayRouter.json";
-import GlvReaderArbitrumSepolia from "./arbitrumSepolia/GlvReader.json";
-import GlvRouterArbitrumSepolia from "./arbitrumSepolia/GlvRouter.json";
-import LayerZeroProviderArbitrumSepolia from "./arbitrumSepolia/LayerZeroProvider.json";
-import MultichainClaimsRouterArbitrumSepolia from "./arbitrumSepolia/MultichainClaimsRouter.json";
-import MultichainGlvRouterArbitrumSepolia from "./arbitrumSepolia/MultichainGlvRouter.json";
-import MultichainGmRouterArbitrumSepolia from "./arbitrumSepolia/MultichainGmRouter.json";
-import MultichainOrderRouterArbitrumSepolia from "./arbitrumSepolia/MultichainOrderRouter.json";
-import MultichainSubaccountRouterArbitrumSepolia from "./arbitrumSepolia/MultichainSubaccountRouter.json";
-import MultichainTransferRouterArbitrumSepolia from "./arbitrumSepolia/MultichainTransferRouter.json";
-import MultichainUtilsArbitrumSepolia from "./arbitrumSepolia/MultichainUtils.json";
-import MultichainVaultArbitrumSepolia from "./arbitrumSepolia/MultichainVault.json";
-import ReferralStorageArbitrumSepolia from "./arbitrumSepolia/ReferralStorage.json";
-import RelayParamsArbitrumSepolia from "./arbitrumSepolia/RelayParams.json";
-import SubaccountGelatoRelayRouterArbitrumSepolia from "./arbitrumSepolia/SubaccountGelatoRelayRouter.json";
-import SubaccountRouterArbitrumSepolia from "./arbitrumSepolia/SubaccountRouter.json";
-import SyntheticsReaderArbitrumSepolia from "./arbitrumSepolia/SyntheticsReader.json";
 import CustomErrors from "./CustomErrors.json";
 import DataStore from "./DataStore.json";
 import ERC20PermitInterface from "./ERC20PermitInterface.json";
@@ -34,8 +14,17 @@ import GlvRouter from "./GlvRouter.json";
 import GMT from "./GMT.json";
 import GmxMigrator from "./GmxMigrator.json";
 import GovToken from "./GovToken.json";
+import LayerZeroProvider from "./LayerZeroProvider.json";
 import MintableBaseToken from "./MintableBaseToken.json";
 import Multicall from "./Multicall.json";
+import MultichainClaimsRouter from "./MultichainClaimsRouter.json";
+import MultichainGlvRouter from "./MultichainGlvRouter.json";
+import MultichainGmRouter from "./MultichainGmRouter.json";
+import MultichainOrderRouter from "./MultichainOrderRouter.json";
+import MultichainSubaccountRouter from "./MultichainSubaccountRouter.json";
+import MultichainTransferRouter from "./MultichainTransferRouter.json";
+import MultichainUtils from "./MultichainUtils.json";
+import MultichainVault from "./MultichainVault.json";
 import OrderBook from "./OrderBook.json";
 import OrderBookReader from "./OrderBookReader.json";
 import OrderExecutor from "./OrderExecutor.json";
@@ -44,6 +33,7 @@ import PositionRouter from "./PositionRouter.json";
 import Reader from "./Reader.json";
 import ReaderV2 from "./ReaderV2.json";
 import ReferralStorage from "./ReferralStorage.json";
+import RelayParams from "./RelayParams.json";
 import RewardReader from "./RewardReader.json";
 import RewardRouter from "./RewardRouter.json";
 import RewardTracker from "./RewardTracker.json";
@@ -70,36 +60,30 @@ import YieldToken from "./YieldToken.json";
 export type AbiId =
   | "ArbitrumNodeInterface"
   | "CustomErrors"
-  | "CustomErrorsArbitrumSepolia"
   | "DataStore"
-  | "DataStoreArbitrumSepolia"
   | "ERC20"
   | "ERC20PermitInterface"
   | "ERC721"
   | "EventEmitter"
   | "ExchangeRouter"
-  | "ExchangeRouterArbitrumSepolia"
   | "GelatoRelayRouter"
-  | "GelatoRelayRouterArbitrumSepolia"
   | "GlpManager"
   | "GlvReader"
-  | "GlvReaderArbitrumSepolia"
   | "GlvRouter"
-  | "GlvRouterArbitrumSepolia"
   | "GMT"
   | "GmxMigrator"
   | "GovToken"
-  | "LayerZeroProviderArbitrumSepolia"
+  | "LayerZeroProvider"
   | "MintableBaseToken"
   | "Multicall"
-  | "MultichainClaimsRouterArbitrumSepolia"
-  | "MultichainGlvRouterArbitrumSepolia"
-  | "MultichainGmRouterArbitrumSepolia"
-  | "MultichainOrderRouterArbitrumSepolia"
-  | "MultichainSubaccountRouterArbitrumSepolia"
-  | "MultichainTransferRouterArbitrumSepolia"
-  | "MultichainUtilsArbitrumSepolia"
-  | "MultichainVaultArbitrumSepolia"
+  | "MultichainClaimsRouter"
+  | "MultichainGlvRouter"
+  | "MultichainGmRouter"
+  | "MultichainOrderRouter"
+  | "MultichainSubaccountRouter"
+  | "MultichainTransferRouter"
+  | "MultichainUtils"
+  | "MultichainVault"
   | "OrderBook"
   | "OrderBookReader"
   | "OrderExecutor"
@@ -108,19 +92,15 @@ export type AbiId =
   | "Reader"
   | "ReaderV2"
   | "ReferralStorage"
-  | "ReferralStorageArbitrumSepolia"
-  | "RelayParamsArbitrumSepolia"
+  | "RelayParams"
   | "RewardReader"
   | "RewardRouter"
   | "RewardTracker"
   | "Router"
   | "RouterV2"
   | "SubaccountGelatoRelayRouter"
-  | "SubaccountGelatoRelayRouterArbitrumSepolia"
   | "SubaccountRouter"
-  | "SubaccountRouterArbitrumSepolia"
   | "SyntheticsReader"
-  | "SyntheticsReaderArbitrumSepolia"
   | "SyntheticsRouter"
   | "Timelock"
   | "Token"
@@ -135,7 +115,6 @@ export type AbiId =
   | "WETH"
   | "YieldFarm"
   | "YieldToken"
-  | "AbstractUserNonceable"
   | "AbstractSubaccountApprovalNonceable";
 
 /** Copied from ethers to enable compatibility with GMX UI */
@@ -162,36 +141,30 @@ interface JsonFragment {
 export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   ArbitrumNodeInterface: ArbitrumNodeInterface.abi,
   CustomErrors: CustomErrors.abi,
-  CustomErrorsArbitrumSepolia: CustomErrorsArbitrumSepolia.abi,
   DataStore: DataStore.abi,
-  DataStoreArbitrumSepolia: DataStoreArbitrumSepolia.abi,
   ERC20: erc20Abi,
   ERC20PermitInterface: ERC20PermitInterface.abi,
   ERC721: ERC721.abi,
   EventEmitter: EventEmitter.abi,
   ExchangeRouter: ExchangeRouter.abi,
-  ExchangeRouterArbitrumSepolia: ExchangeRouterArbitrumSepolia.abi,
   GelatoRelayRouter: GelatoRelayRouter.abi,
-  GelatoRelayRouterArbitrumSepolia: GelatoRelayRouterArbitrumSepolia.abi,
   GlpManager: GlpManager.abi,
   GlvReader: GlvReader.abi,
-  GlvReaderArbitrumSepolia: GlvReaderArbitrumSepolia.abi,
   GlvRouter: GlvRouter.abi,
-  GlvRouterArbitrumSepolia: GlvRouterArbitrumSepolia.abi,
   GMT: GMT.abi,
   GmxMigrator: GmxMigrator.abi,
   GovToken: GovToken.abi,
-  LayerZeroProviderArbitrumSepolia: LayerZeroProviderArbitrumSepolia.abi,
+  LayerZeroProvider: LayerZeroProvider.abi,
   MintableBaseToken: MintableBaseToken.abi,
   Multicall: Multicall.abi,
-  MultichainClaimsRouterArbitrumSepolia: MultichainClaimsRouterArbitrumSepolia.abi,
-  MultichainGlvRouterArbitrumSepolia: MultichainGlvRouterArbitrumSepolia.abi,
-  MultichainGmRouterArbitrumSepolia: MultichainGmRouterArbitrumSepolia.abi,
-  MultichainOrderRouterArbitrumSepolia: MultichainOrderRouterArbitrumSepolia.abi,
-  MultichainSubaccountRouterArbitrumSepolia: MultichainSubaccountRouterArbitrumSepolia.abi,
-  MultichainTransferRouterArbitrumSepolia: MultichainTransferRouterArbitrumSepolia.abi,
-  MultichainUtilsArbitrumSepolia: MultichainUtilsArbitrumSepolia.abi,
-  MultichainVaultArbitrumSepolia: MultichainVaultArbitrumSepolia.abi,
+  MultichainClaimsRouter: MultichainClaimsRouter.abi,
+  MultichainGlvRouter: MultichainGlvRouter.abi,
+  MultichainGmRouter: MultichainGmRouter.abi,
+  MultichainOrderRouter: MultichainOrderRouter.abi,
+  MultichainSubaccountRouter: MultichainSubaccountRouter.abi,
+  MultichainTransferRouter: MultichainTransferRouter.abi,
+  MultichainUtils: MultichainUtils.abi,
+  MultichainVault: MultichainVault.abi,
   OrderBook: OrderBook.abi,
   OrderBookReader: OrderBookReader.abi,
   OrderExecutor: OrderExecutor.abi,
@@ -200,19 +173,15 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   Reader: Reader.abi,
   ReaderV2: ReaderV2.abi,
   ReferralStorage: ReferralStorage.abi,
-  ReferralStorageArbitrumSepolia: ReferralStorageArbitrumSepolia.abi,
-  RelayParamsArbitrumSepolia: RelayParamsArbitrumSepolia.abi,
+  RelayParams: RelayParams.abi,
   RewardReader: RewardReader.abi,
   RewardRouter: RewardRouter.abi,
   RewardTracker: RewardTracker.abi,
   Router: Router.abi,
   RouterV2: RouterV2.abi,
   SubaccountGelatoRelayRouter: SubaccountGelatoRelayRouter.abi,
-  SubaccountGelatoRelayRouterArbitrumSepolia: SubaccountGelatoRelayRouterArbitrumSepolia.abi,
   SubaccountRouter: SubaccountRouter.abi,
-  SubaccountRouterArbitrumSepolia: SubaccountRouterArbitrumSepolia.abi,
   SyntheticsReader: SyntheticsReader.abi,
-  SyntheticsReaderArbitrumSepolia: SyntheticsReaderArbitrumSepolia.abi,
   SyntheticsRouter: SyntheticsRouter.abi,
   Timelock: Timelock.abi,
   Token: Token.abi,
@@ -227,27 +196,6 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   WETH: WETH.abi,
   YieldFarm: YieldFarm.abi,
   YieldToken: YieldToken.abi,
-  AbstractUserNonceable: [
-    {
-      inputs: [
-        {
-          internalType: "address",
-          name: "",
-          type: "address",
-        },
-      ],
-      name: "userNonces",
-      outputs: [
-        {
-          internalType: "uint256",
-          name: "",
-          type: "uint256",
-        },
-      ],
-      stateMutability: "view",
-      type: "function",
-    },
-  ],
   AbstractSubaccountApprovalNonceable: [
     {
       inputs: [

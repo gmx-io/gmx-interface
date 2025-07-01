@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
-import { NoncesData, useExpressNonces } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { SubaccountState, useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { TokenPermitsState, useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
@@ -141,7 +140,6 @@ export type SyntheticsState = {
   gasPaymentTokenAllowance: TokenAllowanceResult | undefined;
   sponsoredCallBalanceData: SponsoredCallBalanceData | undefined;
   l1ExpressOrderGasReference: L1ExpressOrderGasReference | undefined;
-  expressNoncesData: NoncesData | undefined;
 };
 
 export function SyntheticsStateContextProvider({
@@ -310,8 +308,6 @@ export function SyntheticsStateContextProvider({
     tokenAddresses: [convertTokenAddress(chainId, settings.gasPaymentTokenAddress, "wrapped")],
   });
 
-  const { noncesData: expressNoncesData } = useExpressNonces();
-
   const state = useMemo(() => {
     const s: SyntheticsState = {
       pageType,
@@ -371,7 +367,6 @@ export function SyntheticsStateContextProvider({
       sponsoredCallBalanceData,
       gasPaymentTokenAllowance,
       l1ExpressOrderGasReference,
-      expressNoncesData,
     };
 
     return s;
@@ -422,7 +417,6 @@ export function SyntheticsStateContextProvider({
     sponsoredCallBalanceData,
     gasPaymentTokenAllowance,
     l1ExpressOrderGasReference,
-    expressNoncesData,
   ]);
 
   latestStateRef.current = state;

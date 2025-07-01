@@ -78,7 +78,6 @@ export function useCancelOrder(order: OrderInfo) {
         batchParams,
         expressParams,
         simulationParams: undefined,
-        noncesData: globalExpressParams?.noncesData,
         callback: makeOrderTxnCallback({}),
         provider,
         isGmxAccount: srcChainId !== undefined,

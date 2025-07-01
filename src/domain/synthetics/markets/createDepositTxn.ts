@@ -1,7 +1,6 @@
 import { t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
 
-import { ARBITRUM_SEPOLIA } from "config/chains";
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { SetPendingDeposit } from "context/SyntheticsEvents";
@@ -41,11 +40,7 @@ export type CreateDepositParams = {
 };
 
 export async function createDepositTxn(chainId: ContractsChainId, signer: Signer, p: CreateDepositParams) {
-  const contract = new ethers.Contract(
-    getContract(chainId, "ExchangeRouter"),
-    chainId === ARBITRUM_SEPOLIA ? abis.ExchangeRouterArbitrumSepolia : abis.ExchangeRouter,
-    signer
-  );
+  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const depositVaultAddress = getContract(chainId, "DepositVault");
 
   await validateSignerAddress(signer, p.account);

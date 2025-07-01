@@ -17,8 +17,8 @@ import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/
 import {
   getRawRelayerParams,
   getRelayerFeeParams,
-  RawRelayParamsPayloadArbitrumSepolia,
-  RelayParamsPayloadArbitrumSepolia,
+  RawRelayParamsPayload,
+  RelayParamsPayload,
 } from "domain/synthetics/express";
 import { signSetTraderReferralCode } from "domain/synthetics/express/expressOrderUtils";
 import { convertToUsd, getMidPrice } from "domain/tokens";
@@ -315,9 +315,9 @@ function ReferralCodeFormMultichain({
         externalCalls: getEmptyExternalCallsPayload(),
         tokenPermits: [],
         marketsInfoData: p.globalExpressParams.marketsInfoData,
-      }) as RawRelayParamsPayloadArbitrumSepolia;
+      }) as RawRelayParamsPayload;
 
-      const relayParams: RelayParamsPayloadArbitrumSepolia = {
+      const relayParams: RelayParamsPayload = {
         ...rawRelayParamsPayload,
         deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
       };
@@ -474,7 +474,7 @@ function ReferralCodeFormMultichain({
         marketsInfoData: globalExpressParams.marketsInfoData,
       });
 
-      const relayParamsPayload: RelayParamsPayloadArbitrumSepolia = {
+      const relayParamsPayload: RelayParamsPayload = {
         ...rawRelayParamsPayload,
         deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
       };

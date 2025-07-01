@@ -3,7 +3,6 @@ import { t } from "@lingui/macro";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import { isDevelopment } from "config/env";
-import { useExpressNonces } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { useTokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
@@ -143,7 +142,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [pendingExpressTxnParams, setPendingExpressTxnParams] = useState<{
     [key: string]: Partial<PendingExpressTxnParams>;
   }>({});
-  const { refreshNonces, updateLocalAction } = useExpressNonces();
   const eventLogHandlers = useRef({});
 
   const handleExpressTxnSuccess = useCallback(
@@ -155,15 +153,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       }
 
       refreshSubaccountData();
-      refreshNonces();
-
-      let action = pendingExpressTxn.localAction;
-      if (!action && pendingExpressTxn.subaccountApproval) {
-        action = "subaccountRelayRouter";
-      } else {
-        action = "relayRouter";
-      }
-      updateLocalAction(action, 1n);
 
       if (
         pendingExpressTxn?.subaccountApproval &&
@@ -176,7 +165,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         resetTokenPermits();
       }
     },
-    [refreshNonces, refreshSubaccountData, resetSubaccountApproval, resetTokenPermits, updateLocalAction]
+    [refreshSubaccountData, resetSubaccountApproval, resetTokenPermits]
   );
 
   const updateNativeTokenBalance = useCallback(() => {

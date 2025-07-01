@@ -27,7 +27,7 @@ export async function sendSameChainDepositTxn({
 
   const contract = new Contract(
     getContract(chainId, "MultichainTransferRouter")!,
-    abis.MultichainTransferRouterArbitrumSepolia,
+    abis.MultichainTransferRouter,
     signer
   );
 
@@ -46,12 +46,12 @@ export async function sendSameChainDepositTxn({
       callData: contract.interface.encodeFunctionData("multicall", [
         [
           encodeFunctionData({
-            abi: abis.MultichainTransferRouterArbitrumSepolia,
+            abi: abis.MultichainTransferRouter,
             functionName: "sendWnt",
             args: [multichainVaultAddress, amount],
           }),
           encodeFunctionData({
-            abi: abis.MultichainTransferRouterArbitrumSepolia,
+            abi: abis.MultichainTransferRouter,
             functionName: "bridgeIn",
             args: [account, wrappedAddress as Address],
           }),
@@ -68,13 +68,13 @@ export async function sendSameChainDepositTxn({
       callData: contract.interface.encodeFunctionData("multicall", [
         [
           encodeFunctionData({
-            abi: abis.MultichainTransferRouterArbitrumSepolia,
+            abi: abis.MultichainTransferRouter,
             functionName: "sendTokens",
             args: [tokenAddress as Address, multichainVaultAddress, amount],
           }),
 
           encodeFunctionData({
-            abi: abis.MultichainTransferRouterArbitrumSepolia,
+            abi: abis.MultichainTransferRouter,
             functionName: "bridgeIn",
             args: [account, tokenAddress as Address],
           }),

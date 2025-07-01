@@ -1,13 +1,10 @@
-import { ethers, Wallet } from "ethers";
 import { Address, encodeAbiParameters, keccak256 } from "viem";
 
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getBestSwapStrategy } from "domain/synthetics/externalSwaps/utils";
 import type { SignedTokenPermit, TokenData } from "domain/tokens";
-import type { WalletSigner } from "lib/wallets";
 import type { SignatureDomain } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
-import RelayParamsAbi from "sdk/abis/RelayParams.json";
 import { ContractName, getContract } from "sdk/configs/contracts";
 import { MarketsInfoData } from "sdk/types/markets";
 import { ExternalSwapQuote, FindSwapPath, SwapAmounts } from "sdk/types/trade";
@@ -20,13 +17,7 @@ import {
 import { getSwapAmountsByToValue } from "sdk/utils/swap";
 
 import { getOracleParamsForRelayParams } from "./oracleParamsUtils";
-import type {
-  GasPaymentParams,
-  RawRelayParamsPayloadArbitrumSepolia,
-  RelayFeePayload,
-  RelayParamsPayload,
-  RelayParamsPayloadArbitrumSepolia,
-} from "./types";
+import type { GasPaymentParams, RawRelayParamsPayload, RelayFeePayload, RelayParamsPayload } from "./types";
 
 export function getExpressContractAddress(
   chainId: ContractsChainId,
@@ -208,7 +199,7 @@ export function getRawRelayerParams({
   externalCalls: ExternalCallsPayload;
   tokenPermits: SignedTokenPermit[];
   marketsInfoData: MarketsInfoData;
-}): RawRelayParamsPayloadArbitrumSepolia {
+}): RawRelayParamsPayload {
   const oracleParams = getOracleParamsForRelayParams({
     chainId,
     externalCalls,
@@ -218,7 +209,7 @@ export function getRawRelayerParams({
     marketsInfoData,
   });
 
-  const relayParamsPayload: RawRelayParamsPayloadArbitrumSepolia = {
+  const relayParamsPayload: RawRelayParamsPayload = {
     oracleParams,
     tokenPermits,
     externalCalls,
@@ -230,29 +221,7 @@ export function getRawRelayerParams({
 }
 
 export function hashRelayParams(relayParams: RelayParamsPayload) {
-  const encoded = encodeAbiParameters(RelayParamsAbi.abi, [
-    [relayParams.oracleParams.tokens, relayParams.oracleParams.providers, relayParams.oracleParams.data],
-    [
-      relayParams.externalCalls.sendTokens,
-      relayParams.externalCalls.sendAmounts,
-      relayParams.externalCalls.externalCallTargets,
-      relayParams.externalCalls.externalCallDataList,
-      relayParams.externalCalls.refundTokens,
-      relayParams.externalCalls.refundReceivers,
-    ],
-    relayParams.tokenPermits,
-    [relayParams.fee.feeToken, relayParams.fee.feeAmount, relayParams.fee.feeSwapPath],
-    relayParams.userNonce,
-    relayParams.deadline,
-  ]);
-
-  const hash = keccak256(encoded);
-
-  return hash;
-}
-
-export function hashRelayParamsMultichain(relayParams: RelayParamsPayloadArbitrumSepolia) {
-  const encoded = encodeAbiParameters(abis.RelayParamsArbitrumSepolia, [
+  const encoded = encodeAbiParameters(abis.RelayParams, [
     [relayParams.oracleParams.tokens, relayParams.oracleParams.providers, relayParams.oracleParams.data],
     [
       relayParams.externalCalls.sendTokens,
@@ -271,23 +240,4 @@ export function hashRelayParamsMultichain(relayParams: RelayParamsPayloadArbitru
   const hash = keccak256(encoded);
 
   return hash;
-}
-
-export async function getRelayRouterNonceForSigner({
-  chainId,
-  signer,
-  isSubaccount,
-  isMultichain,
-  scope,
-}: {
-  chainId: ContractsChainId;
-  signer: WalletSigner | Wallet;
-  isSubaccount: boolean;
-  isMultichain: boolean;
-  scope: "glv" | "gm" | "transfer" | "claims" | "order" | "subaccount";
-}): Promise<bigint> {
-  const contractAddress = getExpressContractAddress(chainId, { isSubaccount, isMultichain, scope });
-  const contract = new ethers.Contract(contractAddress, abis.AbstractUserNonceable, signer);
-
-  return contract.userNonces(signer.address);
 }

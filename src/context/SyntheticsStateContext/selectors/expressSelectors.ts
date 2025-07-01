@@ -9,7 +9,6 @@ import { createFindSwapPath } from "sdk/utils/swap/swapPath";
 import { createSelector } from "../utils";
 import {
   selectChainId,
-  selectExpressNoncesData,
   selectGasLimits,
   selectGasPaymentTokenAllowance,
   selectGasPrice,
@@ -58,7 +57,6 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
 
   const chainId = q(selectChainId);
   const marketsInfoData = q(selectMarketsInfoData);
-  const noncesData = q(selectExpressNoncesData);
   const relayerFeeTokenAddress = getRelayerFeeToken(chainId).address;
   const gasPaymentTokenAddress = q(selectGasPaymentTokenAddress);
   const l1Reference = q(selectL1ExpressOrderGasReference);
@@ -96,7 +94,6 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
     l1Reference,
     tokensData,
     marketsInfoData,
-    noncesData,
     isSponsoredCall: isSponsoredCallAvailable,
     subaccount,
     findFeeSwapPath,

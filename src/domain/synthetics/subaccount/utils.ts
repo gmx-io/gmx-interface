@@ -2,7 +2,7 @@ import cryptoJs from "crypto-js";
 import { ethers, Provider } from "ethers";
 import { decodeFunctionResult, encodeAbiParameters, encodeFunctionData, keccak256, maxUint256, zeroHash } from "viem";
 
-import { ARBITRUM_SEPOLIA, ContractsChainId } from "config/static/chains";
+import { ContractsChainId } from "config/static/chains";
 import {
   SignedSubbacountApproval,
   Subaccount,
@@ -345,7 +345,7 @@ export async function createAndSignSubaccountApproval(
       { name: "actionType", type: "bytes32" },
       { name: "nonce", type: "uint256" },
       { name: "deadline", type: "uint256" },
-      chainId === ARBITRUM_SEPOLIA ? { name: "integrationId", type: "bytes32" } : undefined,
+      { name: "integrationId", type: "bytes32" },
     ].filter((type) => type !== undefined) as SignatureTypes[string],
   };
 
@@ -358,7 +358,7 @@ export async function createAndSignSubaccountApproval(
     maxAllowedCount: params.maxAllowedCount,
     actionType: SUBACCOUNT_ORDER_ACTION,
     nonce,
-    integrationId: chainId === ARBITRUM_SEPOLIA ? zeroHash : undefined,
+    integrationId: zeroHash,
     deadline: params.expiresAt,
   };
 
@@ -371,7 +371,7 @@ export async function createAndSignSubaccountApproval(
   };
 }
 
-export function hashSubaccountApproval(subaccountApproval: SignedSubbacountApproval, isNewContracts: boolean) {
+export function hashSubaccountApproval(subaccountApproval: SignedSubbacountApproval) {
   if (!subaccountApproval) {
     return zeroHash;
   }
@@ -388,9 +388,9 @@ export function hashSubaccountApproval(subaccountApproval: SignedSubbacountAppro
           { name: "actionType", type: "bytes32" },
           { name: "nonce", type: "uint256" },
           { name: "deadline", type: "uint256" },
-          isNewContracts ? { name: "integrationId", type: "bytes32" } : undefined,
+          { name: "integrationId", type: "bytes32" },
           { name: "signature", type: "bytes" },
-        ].filter((type) => type !== undefined),
+        ],
       },
     ],
     [subaccountApproval as any]
@@ -483,15 +483,12 @@ export async function getSubaccountOnchainData({
       functionName: "getUint",
       args: [subaccountExpiresAtKey(account, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
     },
-    integrationId:
-      chainId === ARBITRUM_SEPOLIA
-        ? {
-            contractAddress: getContract(chainId, "DataStore"),
-            abi: abis.DataStore,
-            functionName: "getBytes32",
-            args: [subaccountIntegrationIdKey(account, subaccountAddress)],
-          }
-        : undefined,
+    integrationId: {
+      contractAddress: getContract(chainId, "DataStore"),
+      abi: abis.DataStore,
+      functionName: "getBytes32",
+      args: [subaccountIntegrationIdKey(account, subaccountAddress)],
+    },
   };
 
   const callData = encodeFunctionData({

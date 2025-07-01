@@ -5,7 +5,6 @@ import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { isSourceChain } from "config/multichain";
-import { LocalActions, NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import type { BridgeOutParams } from "domain/multichain/types";
 import {
   ExpressParamsEstimationMethod,
@@ -16,14 +15,11 @@ import {
   getGelatoRelayRouterDomain,
   getRawRelayerParams,
   getRelayerFeeParams,
-  getRelayRouterNonceForSigner,
   GlobalExpressParams,
   hashRelayParams,
-  hashRelayParamsMultichain,
   RawRelayParamsPayload,
-  RawRelayParamsPayloadArbitrumSepolia,
   RelayParamsPayload,
-  RelayParamsPayloadArbitrumSepolia,
+  RelayParamsPayloadWithSignature,
 } from "domain/synthetics/express";
 import {
   getSubaccountValidations,
@@ -42,16 +38,7 @@ import { ExpressTxnData } from "lib/transactions/sendExpressTransaction";
 import { WalletSigner } from "lib/wallets";
 import { signTypedData, SignTypedDataParams } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
-import {
-  AnyChainId,
-  ARBITRUM,
-  ARBITRUM_SEPOLIA,
-  AVALANCHE,
-  AVALANCHE_FUJI,
-  ContractsChainId,
-  SettlementChainId,
-  SourceChainId,
-} from "sdk/configs/chains";
+import { AnyChainId, ContractsChainId, SettlementChainId, SourceChainId } from "sdk/configs/chains";
 import { ContractName } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { bigMath } from "sdk/utils/bigmath";
@@ -66,8 +53,7 @@ import {
   getIsEmptyBatch,
 } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
-import { MultichainOrderRouter } from "typechain-types-arbitrum-sepolia";
-import { IRelayUtils } from "typechain-types-arbitrum-sepolia/GelatoRelayRouter";
+import { MultichainOrderRouter } from "typechain-types/MultichainOrderRouter";
 
 import { approximateL1GasBuffer, estimateBatchGasLimit, estimateRelayerGasLimit, GasLimitsConfig } from "../fees";
 import { getNeedTokenApprove } from "../tokens";
@@ -161,7 +147,6 @@ function getBatchExpressEstimatorParams({
     relayParams,
     gasPaymentParams,
     subaccount,
-    noncesData,
   }) => {
     return {
       txnData: await buildAndSignExpressBatchOrderTxn({
@@ -172,7 +157,6 @@ function getBatchExpressEstimatorParams({
         relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
         subaccount,
         signer,
-        noncesData,
         emptySignature: true,
         isGmxAccount,
       }),
@@ -190,22 +174,6 @@ function getBatchExpressEstimatorParams({
     expressTransactionBuilder,
   };
 }
-
-const ROUTER_ADDRESS_TO_LOCAL_ACTION: Record<ContractsChainId, Record<string, keyof LocalActions>> = {
-  [ARBITRUM_SEPOLIA]: {
-    [getContract(ARBITRUM_SEPOLIA, "GelatoRelayRouter")]: "relayRouter",
-    [getContract(ARBITRUM_SEPOLIA, "SubaccountGelatoRelayRouter")]: "subaccountRelayRouter",
-  },
-  [ARBITRUM]: {
-    [getContract(ARBITRUM, "GelatoRelayRouter")]: "relayRouter",
-    [getContract(ARBITRUM, "SubaccountGelatoRelayRouter")]: "subaccountRelayRouter",
-  },
-  [AVALANCHE]: {
-    [getContract(AVALANCHE, "GelatoRelayRouter")]: "relayRouter",
-    [getContract(AVALANCHE, "SubaccountGelatoRelayRouter")]: "subaccountRelayRouter",
-  },
-  [AVALANCHE_FUJI]: {},
-};
 
 export async function estimateExpressParams({
   chainId,
@@ -240,7 +208,6 @@ export async function estimateExpressParams({
     bufferBps,
     marketsInfoData,
     gasPaymentAllowanceData,
-    noncesData,
   } = globalExpressParams;
 
   const {
@@ -306,7 +273,6 @@ export async function estimateExpressParams({
     relayParams: baseRelayParams,
     gasPaymentParams: baseRelayFeeParams.gasPaymentParams,
     subaccount,
-    noncesData,
   });
 
   const l1GasLimit = l1Reference
@@ -417,8 +383,6 @@ export async function estimateExpressParams({
     return undefined;
   }
 
-  const localAction = ROUTER_ADDRESS_TO_LOCAL_ACTION[chainId][baseTxn.txnData.to] ?? "relayRouter";
-
   return {
     subaccount,
     relayParamsPayload: finalRelayParams,
@@ -430,7 +394,6 @@ export async function estimateExpressParams({
     gasPrice,
     subaccountValidations,
     gasPaymentValidations,
-    localAction,
   };
 }
 
@@ -518,7 +481,6 @@ export async function buildAndSignExpressBatchOrderTxn({
   subaccount,
   signer,
   isGmxAccount,
-  noncesData,
   emptySignature = false,
 }: {
   signer: WalletSigner;
@@ -526,9 +488,8 @@ export async function buildAndSignExpressBatchOrderTxn({
   batchParams: BatchOrderTxnParams;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
-  relayParamsPayload: RawRelayParamsPayload | RawRelayParamsPayloadArbitrumSepolia;
+  relayParamsPayload: RawRelayParamsPayload | RawRelayParamsPayload;
   isGmxAccount: boolean;
-  noncesData: NoncesData | undefined;
   subaccount: Subaccount | undefined;
   emptySignature?: boolean;
 }): Promise<ExpressTxnData> {
@@ -536,25 +497,14 @@ export async function buildAndSignExpressBatchOrderTxn({
 
   const relayRouterAddress = getOrderRelayRouterAddress(chainId, subaccount !== undefined, isGmxAccount);
 
-  const userNonce =
-    isGmxAccount || chainId === ARBITRUM_SEPOLIA
-      ? 0n
-      : await ensureNonce({
-          isSubaccount: subaccount?.signedApproval !== undefined,
-          noncesData,
-          chainId,
-          signer: messageSigner,
-        });
-
   const params = {
     account: signer.address,
     messageSigner,
     chainId,
     relayPayload: {
-      ...(relayParamsPayload as RelayParamsPayload & RelayParamsPayloadArbitrumSepolia),
-      userNonce,
+      ...(relayParamsPayload as RelayParamsPayload & RelayParamsPayload),
       deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
-    } satisfies RelayParamsPayload & RelayParamsPayloadArbitrumSepolia,
+    } satisfies RelayParamsPayload & RelayParamsPayload,
     subaccountApproval: subaccount?.signedApproval,
     paramsLists: getBatchParamsLists(batchParams),
   };
@@ -586,13 +536,13 @@ export async function buildAndSignExpressBatchOrderTxn({
 
     if (subaccount) {
       batchCalldata = encodeFunctionData({
-        abi: abis.MultichainSubaccountRouterArbitrumSepolia,
+        abi: abis.MultichainSubaccountRouter,
         functionName: "batch",
         args: [
           {
             ...params.relayPayload,
             signature,
-          } satisfies IRelayUtils.RelayParamsStruct,
+          } satisfies RelayParamsPayloadWithSignature,
           subaccount.signedApproval,
           params.account,
           BigInt(srcChainId),
@@ -602,7 +552,7 @@ export async function buildAndSignExpressBatchOrderTxn({
       });
     } else {
       batchCalldata = encodeFunctionData({
-        abi: abis.MultichainOrderRouterArbitrumSepolia,
+        abi: abis.MultichainOrderRouter,
         functionName: "batch",
         args: [
           {
@@ -618,16 +568,12 @@ export async function buildAndSignExpressBatchOrderTxn({
   } else {
     if (subaccount) {
       batchCalldata = encodeFunctionData({
-        abi:
-          chainId === ARBITRUM_SEPOLIA
-            ? abis.SubaccountGelatoRelayRouterArbitrumSepolia
-            : abis.SubaccountGelatoRelayRouter,
+        abi: abis.SubaccountGelatoRelayRouter,
         functionName: "batch",
         args: [
           {
             ...params.relayPayload,
             signature,
-            userNonce: chainId === ARBITRUM_SEPOLIA ? undefined : userNonce,
           },
           subaccount.signedApproval,
           params.account,
@@ -637,13 +583,12 @@ export async function buildAndSignExpressBatchOrderTxn({
       });
     } else {
       batchCalldata = encodeFunctionData({
-        abi: chainId === ARBITRUM_SEPOLIA ? abis.GelatoRelayRouterArbitrumSepolia : abis.GelatoRelayRouter,
+        abi: abis.GelatoRelayRouter,
         functionName: "batch",
         args: [
           {
             ...params.relayPayload,
             signature,
-            userNonce: chainId === ARBITRUM_SEPOLIA ? undefined : userNonce,
           },
           params.account,
           params.paramsLists,
@@ -672,7 +617,7 @@ export async function getBatchSignatureParams({
   account: string;
   subaccountApproval: SignedSubbacountApproval | undefined;
   signer: WalletSigner | Wallet;
-  relayParams: RelayParamsPayload | RelayParamsPayloadArbitrumSepolia;
+  relayParams: RelayParamsPayload | RelayParamsPayload;
   batchParams: BatchOrderTxnParams;
   chainId: ContractsChainId;
   relayRouterAddress: string;
@@ -695,7 +640,7 @@ export async function getBatchSignatureParams({
       { name: "shouldUnwrapNativeToken", type: "bool" },
       { name: "autoCancel", type: "bool" },
       { name: "referralCode", type: "bytes32" },
-      chainId === ARBITRUM_SEPOLIA ? { name: "dataList", type: "bytes32[]" } : undefined,
+      { name: "dataList", type: "bytes32[]" },
     ].filter<{ name: string; type: string }>(Boolean as any),
     CreateOrderAddresses: [
       { name: "receiver", type: "address" },
@@ -738,14 +683,8 @@ export async function getBatchSignatureParams({
     createOrderParamsList: paramsLists.createOrderParamsList,
     updateOrderParamsList: paramsLists.updateOrderParamsList,
     cancelOrderKeys: paramsLists.cancelOrderKeys,
-    relayParams:
-      chainId === ARBITRUM_SEPOLIA
-        ? // ? hashRelayParamsMultichain({ ...relayParams, desChainId: BigInt(chainId) })
-          hashRelayParamsMultichain(relayParams as RelayParamsPayloadArbitrumSepolia)
-        : hashRelayParams(relayParams as RelayParamsPayload),
-    subaccountApproval: subaccountApproval
-      ? hashSubaccountApproval(subaccountApproval, chainId === ARBITRUM_SEPOLIA)
-      : zeroHash,
+    relayParams: hashRelayParams(relayParams as RelayParamsPayload),
+    subaccountApproval: subaccountApproval ? hashSubaccountApproval(subaccountApproval) : zeroHash,
   };
 
   return {
@@ -825,39 +764,6 @@ export function getOrderRelayRouterAddress(
   return getContract(chainId, contractName);
 }
 
-async function ensureNonce({
-  isSubaccount,
-  noncesData,
-  chainId,
-  signer,
-}: {
-  isSubaccount: boolean;
-  noncesData: NoncesData | undefined;
-  chainId: ContractsChainId;
-  signer: WalletSigner | Wallet;
-}): Promise<bigint> {
-  let cachedNonce: bigint | undefined;
-  if (isSubaccount) {
-    cachedNonce = noncesData?.subaccountRelayRouter?.nonce;
-  } else {
-    cachedNonce = noncesData?.relayRouter?.nonce;
-  }
-
-  if (cachedNonce !== undefined) {
-    return cachedNonce;
-  }
-
-  const userNonce = await getRelayRouterNonceForSigner({
-    chainId,
-    signer,
-    isSubaccount,
-    isMultichain: false,
-    scope: "order",
-  });
-
-  return userNonce;
-}
-
 export async function buildAndSignBridgeOutTxn({
   chainId,
   srcChainId,
@@ -871,7 +777,7 @@ export async function buildAndSignBridgeOutTxn({
 }: {
   chainId: SettlementChainId;
   srcChainId: SourceChainId;
-  relayParamsPayload: RawRelayParamsPayloadArbitrumSepolia;
+  relayParamsPayload: RawRelayParamsPayload;
   params: BridgeOutParams;
   signer: WalletSigner | undefined;
   account: string;
@@ -881,7 +787,7 @@ export async function buildAndSignBridgeOutTxn({
 }): Promise<ExpressTxnData> {
   let signature: string;
 
-  const relayParams: RelayParamsPayloadArbitrumSepolia = {
+  const relayParams: RelayParamsPayload = {
     ...relayParamsPayload,
     deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
   };
@@ -903,7 +809,7 @@ export async function buildAndSignBridgeOutTxn({
   }
 
   const bridgeOutCallData = encodeFunctionData({
-    abi: abis.MultichainTransferRouterArbitrumSepolia,
+    abi: abis.MultichainTransferRouter,
     functionName: "bridgeOut",
     args: [
       {
@@ -932,7 +838,7 @@ async function signBridgeOutPayload({
   srcChainId,
 }: {
   signer: WalletSigner;
-  relayParams: RelayParamsPayloadArbitrumSepolia;
+  relayParams: RelayParamsPayload;
   params: BridgeOutParams;
   chainId: SettlementChainId;
   srcChainId: SourceChainId;
@@ -952,7 +858,7 @@ async function signBridgeOutPayload({
     amount: params.amount,
     provider: params.provider,
     data: params.data,
-    relayParams: hashRelayParamsMultichain(relayParams),
+    relayParams: hashRelayParams(relayParams),
   };
 
   const domain = getGelatoRelayRouterDomain(srcChainId, getContract(chainId, "MultichainTransferRouter"));
@@ -970,7 +876,7 @@ export async function buildAndSignSetTraderReferralCodeTxn({
   relayerFeeAmount,
 }: {
   chainId: SettlementChainId;
-  relayParamsPayload: RelayParamsPayloadArbitrumSepolia;
+  relayParamsPayload: RelayParamsPayload;
   params: BridgeOutParams;
   signer: WalletSigner;
   emptySignature?: boolean;
@@ -999,7 +905,7 @@ export async function buildAndSignSetTraderReferralCodeTxn({
   }
 
   const bridgeOutCallData = encodeFunctionData({
-    abi: abis.MultichainTransferRouterArbitrumSepolia,
+    abi: abis.MultichainTransferRouter,
     functionName: "bridgeOut",
     args: [
       {
@@ -1028,7 +934,7 @@ export async function signSetTraderReferralCode({
   srcChainId,
 }: {
   signer: WalletSigner | Wallet;
-  relayParams: RelayParamsPayloadArbitrumSepolia;
+  relayParams: RelayParamsPayload;
   referralCode: string;
   chainId: ContractsChainId;
   srcChainId: SourceChainId;
@@ -1043,7 +949,7 @@ export async function signSetTraderReferralCode({
   const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, getContract(chainId, "MultichainOrderRouter"));
   const typedData = {
     referralCode: referralCode,
-    relayParams: hashRelayParamsMultichain(relayParams),
+    relayParams: hashRelayParams(relayParams),
   };
 
   return signTypedData({ signer, domain, types, typedData });

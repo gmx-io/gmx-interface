@@ -80,7 +80,7 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
       const errorData = extractDataFromError(errorMessage) ?? extractDataFromError((error as any)?.message);
       if (errorData) {
         const parsedError = decodeErrorResult({
-          abi: abis.CustomErrorsArbitrumSepolia as Abi,
+          abi: abis.CustomErrors as Abi,
           data: errorData as Address,
         });
 
@@ -158,7 +158,7 @@ export function getCustomError(error: Error): Error {
 
   try {
     const parsedError = decodeErrorResult({
-      abi: abis.CustomErrorsArbitrumSepolia,
+      abi: abis.CustomErrors,
       data: data,
     });
 

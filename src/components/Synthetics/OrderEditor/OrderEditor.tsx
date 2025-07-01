@@ -13,11 +13,7 @@ import {
   useOrderEditorTriggerPriceInputValueState,
   useOrderEditorTriggerRatioInputValueState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import {
-  selectExpressNoncesData,
-  selectMarketsInfoData,
-  selectTokensData,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectOrderEditorAcceptablePrice,
   selectOrderEditorAcceptablePriceImpactBps,
@@ -46,8 +42,7 @@ import {
   selectOrderEditorTriggerPrice,
   selectOrderEditorTriggerRatio,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
-import { useCalcSelector } from "context/SyntheticsStateContext/utils";
-import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
@@ -145,7 +140,6 @@ export function OrderEditor(p: Props) {
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
   const markPrice = p.order.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
   const existingPosition = useSelector(selectOrderEditorExistingPosition);
-  const noncesData = useSelector(selectExpressNoncesData);
 
   const executionFee = useSelector(selectOrderEditorExecutionFee);
 
@@ -462,7 +456,6 @@ export function OrderEditor(p: Props) {
       chainId,
       signer,
       batchParams,
-      noncesData,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
       simulationParams: undefined,

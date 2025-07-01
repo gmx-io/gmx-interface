@@ -447,7 +447,6 @@ function useOrdersControl() {
         batchParams,
         simulationParams: undefined,
         provider,
-        noncesData: globalExpressParams?.noncesData,
         callback: makeOrderTxnCallback({}),
         isGmxAccount: srcChainId !== undefined,
       })
@@ -508,7 +507,6 @@ function useOrdersControl() {
         expressParams,
         batchParams,
         simulationParams: undefined,
-        noncesData: globalExpressParams?.noncesData,
         callback: makeOrderTxnCallback({}),
         isGmxAccount: srcChainId !== undefined,
       }).finally(() => {
