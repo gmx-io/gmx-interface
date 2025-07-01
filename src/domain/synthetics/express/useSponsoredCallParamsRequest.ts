@@ -19,7 +19,7 @@ export function useIsSponsoredCallBalanceAvailable(
   const { data: isSponsoredCallAllowed } = useSWR<boolean>(tokensData ? ["isSponsoredCallAllowed"] : null, {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
     fetcher: async () => {
-      if (!getIsFlagEnabled("testSponsoredCall")) {
+      if (!getIsFlagEnabled("testSponsoredCall2")) {
         return false;
       }
 
