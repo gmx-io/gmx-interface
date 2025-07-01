@@ -218,6 +218,10 @@ module.exports = {
       gridTemplateColumns: fromPairs(
         range(200, 501, 50).map((space) => [`auto-fill-${space}`, `repeat(auto-fill, minmax(${space}px, 1fr))`])
       ),
+      fontFamily: {
+        sans: ["TTHoves", "sans-serif"],
+        mono: ["TTHovesMono", "monospace"],
+      },
     },
   },
   plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin],
