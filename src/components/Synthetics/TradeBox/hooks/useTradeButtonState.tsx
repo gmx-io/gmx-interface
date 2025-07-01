@@ -706,23 +706,23 @@ function NoSwapPathTooltipContent({
     setToTokenAddress(getTokenBySymbol(chainId, "PBTC")?.address);
   }, [chainId, setFromTokenAddress, setToTokenAddress, setTradeMode, setTradeType]);
 
-  if (fromToken?.symbol === "STBTC" && toToken?.symbol === "BTC") {
-    return (
-      <Trans>
-        No swap path available.{" "}
-        <span onClick={handleBotanixStBtcToPBtcClick} className="Tradebox-handle">
-          Swap STBTC to PBTC
-        </span>
-        , then to BTC
-      </Trans>
-    );
-  }
-
   if (!fromToken || !collateralToken) {
     return <Trans>No swap path available.</Trans>;
   }
 
   if (chainId === BOTANIX) {
+    if (fromToken?.symbol === "STBTC" && toToken?.symbol === "BTC") {
+      return (
+        <Trans>
+          No swap path available.{" "}
+          <span onClick={handleBotanixStBtcToPBtcClick} className="Tradebox-handle">
+            Swap STBTC to PBTC
+          </span>
+          , then to BTC
+        </Trans>
+      );
+    }
+
     return (
       <Trans>
         No swap path available.{" "}

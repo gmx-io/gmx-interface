@@ -292,8 +292,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
     sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
-    const isBotanix = chainId === BOTANIX;
-
     return sendBatchOrderTxn({
       chainId,
       signer,
@@ -301,13 +299,12 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       noncesData,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
-      simulationParams:
-        shouldDisableValidationForTesting || isBotanix
-          ? undefined
-          : {
-              tokensData,
-              blockTimestampData,
-            },
+      simulationParams: shouldDisableValidationForTesting
+        ? undefined
+        : {
+            tokensData,
+            blockTimestampData,
+          },
       callback: makeOrderTxnCallback({
         metricId: metricData.metricId,
         slippageInputId,
