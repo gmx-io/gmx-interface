@@ -77,11 +77,13 @@ export async function getCallStaticError(
   try {
     const executionFeeConfig = EXECUTION_FEE_CONFIG_V2[chainId];
 
-    if (executionFeeConfig.shouldUseMaxPriorityFeePerGas) {
-      delete txnData.gasPrice;
-    } else {
-      delete txnData.maxPriorityFeePerGas;
-      delete txnData.maxFeePerGas;
+    if (txnData.gasPrice && (txnData.maxPriorityFeePerGas || txnData.maxFeePerGas)) {
+      if (executionFeeConfig.shouldUseMaxPriorityFeePerGas) {
+        delete txnData.gasPrice;
+      } else {
+        delete txnData.maxPriorityFeePerGas;
+        delete txnData.maxFeePerGas;
+      }
     }
 
     await provider.call(txnData);
