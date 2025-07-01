@@ -466,13 +466,7 @@ export function useTradeboxButtonState({
 
       if (isMarket) {
         if (isSwap) {
-          if (fromToken?.isStaking) {
-            submitButtonText = t`Unstake ${fromToken?.symbol}`;
-          } else if (toToken?.isStaking) {
-            submitButtonText = t`Stake ${toToken?.symbol}`;
-          } else {
-            submitButtonText = t`Swap ${fromToken?.symbol}`;
-          }
+          submitButtonText = t`Swap ${fromToken?.symbol}`;
         } else {
           if (!toToken?.symbol) {
             submitButtonText = `${localizedTradeTypeLabels[tradeType!]} ...`;
@@ -532,7 +526,6 @@ export function useTradeboxButtonState({
     isLimit,
     isTwap,
     isSwap,
-    fromToken?.isStaking,
     fromToken?.symbol,
     toToken,
     localizedTradeTypeLabels,

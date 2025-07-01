@@ -64,6 +64,14 @@ export function getAvailableTradeModes({
     }
 
     if (chainId === BOTANIX) {
+      if (fromTokenAddress === BOTANIX_BTC_TOKEN_ADDRESS && toTokenAddress === BOTANIX_PBTC_TOKEN_ADDRESS) {
+        return ONLY_MARKET_TRADE_MODES;
+      }
+
+      if (fromTokenAddress === BOTANIX_PBTC_TOKEN_ADDRESS && toTokenAddress === BOTANIX_BTC_TOKEN_ADDRESS) {
+        return ONLY_MARKET_TRADE_MODES;
+      }
+
       if (
         (fromTokenAddress === BOTANIX_BTC_TOKEN_ADDRESS || fromTokenAddress === BOTANIX_PBTC_TOKEN_ADDRESS) &&
         toTokenAddress === BOTANIX_STBTC_TOKEN_ADDRESS

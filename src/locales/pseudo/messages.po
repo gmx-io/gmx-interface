@@ -6255,6 +6255,10 @@ msgstr ""
 msgid "Last 7d"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotification/StakeNotification.tsx
+msgid "Swap {fromAmount} for {toAmount}"
+msgstr ""
+
 #: src/components/Exchange/PositionShare.tsx
 msgid "Copy"
 msgstr ""
@@ -6986,8 +6990,8 @@ msgid "Claims"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Stake {0}"
-msgstr ""
+#~ msgid "Stake {0}"
+#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -7004,8 +7008,8 @@ msgid "Buy GMX using FIAT gateways:"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/StakeNotification.tsx
-msgid "{0} {fromAmount} for {toAmount}"
-msgstr ""
+#~ msgid "{0} {fromAmount} for {toAmount}"
+#~ msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Referral code created!"
@@ -8401,8 +8405,8 @@ msgid "You will receive a {currentTierDiscount}% discount on opening and closing
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Unstake {0}"
-msgstr ""
+#~ msgid "Unstake {0}"
+#~ msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"

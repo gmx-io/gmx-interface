@@ -6258,6 +6258,10 @@ msgstr "Limit order submitted!"
 msgid "Last 7d"
 msgstr "Last 7d"
 
+#: src/components/Synthetics/StatusNotification/StakeNotification.tsx
+msgid "Swap {fromAmount} for {toAmount}"
+msgstr "Swap {fromAmount} for {toAmount}"
+
 #: src/components/Exchange/PositionShare.tsx
 msgid "Copy"
 msgstr "Copy"
@@ -6992,8 +6996,8 @@ msgid "Claims"
 msgstr "Claims"
 
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Stake {0}"
-msgstr "Stake {0}"
+#~ msgid "Stake {0}"
+#~ msgstr "Stake {0}"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -7010,8 +7014,8 @@ msgid "Buy GMX using FIAT gateways:"
 msgstr "Buy GMX using FIAT gateways:"
 
 #: src/components/Synthetics/StatusNotification/StakeNotification.tsx
-msgid "{0} {fromAmount} for {toAmount}"
-msgstr "{0} {fromAmount} for {toAmount}"
+#~ msgid "{0} {fromAmount} for {toAmount}"
+#~ msgstr "{0} {fromAmount} for {toAmount}"
 
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Referral code created!"
@@ -8407,8 +8411,8 @@ msgid "You will receive a {currentTierDiscount}% discount on opening and closing
 msgstr "You will receive a {currentTierDiscount}% discount on opening and closing fees."
 
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Unstake {0}"
-msgstr "Unstake {0}"
+#~ msgid "Unstake {0}"
+#~ msgstr "Unstake {0}"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"

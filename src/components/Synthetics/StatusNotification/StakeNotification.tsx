@@ -20,7 +20,7 @@ export function StakeNotification({
   return (
     <span className="flex justify-between font-bold">
       <Trans>
-        {isStake ? "Stake" : "Unstake"} {fromAmount} for {toAmount}
+        Swap {fromAmount} for {toAmount}
       </Trans>
 
       <ExternalLink href={`${getExplorerUrl(BOTANIX)}tx/${txnHash}`}>
