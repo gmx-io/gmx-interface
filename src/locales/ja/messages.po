@@ -1673,6 +1673,7 @@ msgid "Receive (Approximate)"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
 msgstr ""
 
@@ -2666,6 +2667,10 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GLV liquidity"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No swap path available. <0>Swap STBTC to PBTC</0>, then to BTC"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
