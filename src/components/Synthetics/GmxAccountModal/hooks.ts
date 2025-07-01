@@ -93,14 +93,14 @@ export function useAvailableToTradeAssetSettlementChain(): {
   };
 }
 
-export function getTotalUsdFromTokensData(tokensData: TokensData) {
+function getTotalGmxAccountUsdFromTokensData(tokensData: TokensData) {
   let totalUsd = 0n;
   for (const token of Object.values(tokensData)) {
-    if (token.balance === undefined || token.balance === 0n) {
+    if (token.gmxAccountBalance === undefined || token.gmxAccountBalance === 0n) {
       continue;
     }
 
-    totalUsd += convertToUsd(token.balance, token.decimals, getMidPrice(token.prices))!;
+    totalUsd += convertToUsd(token.gmxAccountBalance, token.decimals, getMidPrice(token.prices))!;
   }
   return totalUsd;
 }
@@ -109,13 +109,13 @@ export function useAvailableToTradeAssetMultichain(): {
   gmxAccountUsd: bigint | undefined;
 } {
   const { chainId, srcChainId } = useChainId();
-  const { tokensData, isBalancesLoaded } = useTokensDataRequest(chainId, srcChainId);
+  const { tokensData, isGmxAccountBalancesLoaded } = useTokensDataRequest(chainId, srcChainId);
 
-  if (!tokensData || !isBalancesLoaded) {
+  if (!tokensData || !isGmxAccountBalancesLoaded) {
     return { gmxAccountUsd: undefined };
   }
 
-  const gmxAccountUsd = getTotalUsdFromTokensData(tokensData);
+  const gmxAccountUsd = getTotalGmxAccountUsdFromTokensData(tokensData);
 
   return { gmxAccountUsd };
 }
