@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useMemo, useState } from "react";
 
-import { BOTANIX, getExplorerUrl } from "config/chains";
+import { getExplorerUrl } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   getExecutionFeeBufferBps,
@@ -89,18 +89,6 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
                 premium: getGasPremium(chainId),
                 gasLimit: pendingTxn.data?.estimatedExecutionGasLimit ?? 1n,
               });
-
-              const botanixDisclaimer =
-                chainId === BOTANIX ? (
-                  <>
-                    <br />
-                    <Trans>
-                      Rabby Wallet is currently experiencing network fee issues on Botanix. Please try another wallet if
-                      you're using it.
-                    </Trans>
-                    <br />
-                  </>
-                ) : null;
 
               toastMsg = (
                 <div>
