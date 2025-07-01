@@ -2,7 +2,7 @@
   This files is used to pre-build data during the build process.
   Avoid adding client-side code here, as it can break the build process.
 */
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, UiContractsChain } from "./chains";
 
 export const SWAP_GRAPH_MAX_MARKETS_PER_TOKEN = 5;
 
@@ -17,7 +17,7 @@ export type MarketConfig = {
   ATTENTION
   When adding new markets, please add them also to the end of the list in ./src/configs/static/sortedMarkets.ts
 */
-export const MARKETS: Record<number, Record<string, MarketConfig>> = {
+export const MARKETS: Record<UiContractsChain, Record<string, MarketConfig>> = {
   [ARBITRUM]: {
     // BTC/USD [WBTC.e-USDC]
     "0x47c031236e19d024b42f8AE6780E44A573170703": {
@@ -883,6 +883,22 @@ export const MARKETS: Record<number, Record<string, MarketConfig>> = {
       indexTokenAddress: "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
       longTokenAddress: "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
       shortTokenAddress: "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
+    },
+  },
+  [BOTANIX]: {
+    // BTC/USD [stBTC-stBTC]
+    "0x6682BB60590a045A956541B1433f016Ed22E361d": {
+      marketTokenAddress: "0x6682BB60590a045A956541B1433f016Ed22E361d",
+      indexTokenAddress: "0x1B9e25f54225bcdCf347569E38C41Ade9BB686e5",
+      longTokenAddress: "0xF4586028FFdA7Eca636864F80f8a3f2589E33795",
+      shortTokenAddress: "0xF4586028FFdA7Eca636864F80f8a3f2589E33795",
+    },
+    // BTC/USD [stBTC-USDC.E]
+    "0xEbEEcdb96237A10234d34c2de182aCCF1c3B31c9": {
+      marketTokenAddress: "0xEbEEcdb96237A10234d34c2de182aCCF1c3B31c9",
+      indexTokenAddress: "0x1B9e25f54225bcdCf347569E38C41Ade9BB686e5",
+      longTokenAddress: "0xF4586028FFdA7Eca636864F80f8a3f2589E33795",
+      shortTokenAddress: "0x325eEb3AA50014f35861e3374f54B3997Aa8357d",
     },
   },
 };

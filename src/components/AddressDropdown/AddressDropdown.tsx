@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import { createBreakpoint, useCopyToClipboard } from "react-use";
 import type { Address } from "viem";
 
+import { BOTANIX } from "config/chains";
+import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useENS } from "lib/legacy";
 import { useNotifyModalState } from "lib/useNotifyModalState";
@@ -38,6 +40,9 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
   const { openNotifyModal } = useNotifyModalState();
   const { ensName } = useENS(account);
   const displayAddressLength = breakpoint === "S" ? 9 : 13;
+
+  const { chainId } = useChainId();
+  const isBotanix = chainId === BOTANIX;
 
   return (
     <Menu>
@@ -82,14 +87,16 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
               </p>
             </ExternalLink>
           </Menu.Item>
-          <Menu.Item>
-            <div className="menu-item" onClick={openNotifyModal}>
-              <BellIcon className="ml-2 size-20 pt-2" />
-              <p>
-                <Trans>Alerts</Trans>
-              </p>
-            </div>
-          </Menu.Item>
+          {!isBotanix ? (
+            <Menu.Item>
+              <div className="menu-item" onClick={openNotifyModal}>
+                <BellIcon className="ml-2 size-20 pt-2" />
+                <p>
+                  <Trans>Alerts</Trans>
+                </p>
+              </div>
+            </Menu.Item>
+          ) : null}
           <Menu.Item>
             <div
               className="menu-item"

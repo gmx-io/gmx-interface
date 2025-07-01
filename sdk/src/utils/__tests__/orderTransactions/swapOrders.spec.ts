@@ -405,6 +405,7 @@ describe("Swap Order Payloads", () => {
             ...params,
             payTokenAmount: params.payTokenAmount / 4n,
             executionFeeAmount: EXECUTION_FEE_AMOUNT / 4n,
+            expectedOutputAmount: params.expectedOutputAmount / 4n,
             minOutputAmount: 0n,
             orderType: OrderType.LimitSwap,
             allowedSlippage: 0,
