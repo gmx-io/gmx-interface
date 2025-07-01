@@ -120,7 +120,11 @@ export const RPC_PROVIDERS: Record<UiContractsChain | typeof ETH_MAINNET, string
     // "https://ava-testnet.public.blastapi.io/v1/avax/fuji/public",
     // "https://rpc.ankr.com/avalanche_fuji",
   ],
-  [BOTANIX]: ["https://rpc.botanixlabs.com", "https://rpc.ankr.com/botanix_mainnet"],
+  [BOTANIX]: [
+    // returns incorrect gas price
+    // "https://rpc.botanixlabs.com",
+    "https://rpc.ankr.com/botanix_mainnet",
+  ],
 };
 
 export const FALLBACK_PROVIDERS: Record<UiContractsChain, string[]> = {

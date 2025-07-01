@@ -99,7 +99,14 @@ export const botanix: Chain = defineChain({
     decimals: 18,
   },
   rpcUrls: {
-    default: { http: ["https://rpc.botanixlabs.com", "https://rpc.ankr.com/botanix_mainnet"] },
+    default: {
+      http: [
+        // this rpc returns incorrect gas price
+        // "https://rpc.botanixlabs.com",
+
+        "https://rpc.ankr.com/botanix_mainnet",
+      ],
+    },
   },
   blockExplorers: {
     default: {
