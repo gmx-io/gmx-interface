@@ -158,7 +158,7 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
 
   const showBotanixSwapWarning =
     chainId === BOTANIX &&
-    (fromToken?.assetSymbol === "pBTC" || fromToken?.assetSymbol === "bBTC") &&
+    (fromToken?.assetSymbol === "pBTC" || fromToken?.assetSymbol === "BTC") &&
     (tradeType !== TradeType.Swap || tradeMode !== TradeMode.Market);
 
   const { setFromTokenAddress, setToTokenAddress, setTradeType, setTradeMode } = useSelector(selectTradeboxState);
