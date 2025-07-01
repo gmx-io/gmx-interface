@@ -1,6 +1,5 @@
 import { BaseContract, Overrides, Provider, TransactionRequest } from "ethers";
 
-import { EXECUTION_FEE_CONFIG_V2 } from "config/chains";
 import { ErrorLike, parseError } from "lib/errors";
 import { ErrorEvent } from "lib/metrics";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
@@ -75,15 +74,15 @@ export async function getCallStaticError(
   }
 
   try {
-    const executionFeeConfig = EXECUTION_FEE_CONFIG_V2[chainId];
+    // avalanche could return both gasPrice and maxPriorityFeePerGas/maxFeePerGas
+    // which is not allowed, so we need to delete gasPrice
 
-    if (txnData.gasPrice && (txnData.maxPriorityFeePerGas || txnData.maxFeePerGas)) {
-      if (executionFeeConfig.shouldUseMaxPriorityFeePerGas) {
-        delete txnData.gasPrice;
-      } else {
-        delete txnData.maxPriorityFeePerGas;
-        delete txnData.maxFeePerGas;
-      }
+    // EIP-1559
+    if (txnData.maxPriorityFeePerGas && txnData.maxFeePerGas) {
+      delete txnData.gasPrice;
+    } else {
+      delete txnData.maxPriorityFeePerGas;
+      delete txnData.maxFeePerGas;
     }
 
     await provider.call(txnData);
