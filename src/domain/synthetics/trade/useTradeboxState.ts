@@ -11,7 +11,6 @@ import { getKeepLeverageKey, getLeverageKey, getSyntheticsTradeOptionsKey } from
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { MarketInfo } from "domain/synthetics/markets";
-import { getIsUnwrap, getIsWrap } from "domain/tokens";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useSafeState } from "lib/useSafeState";
@@ -28,6 +27,7 @@ import { PositionInfo, PositionsInfoData } from "../positions";
 import { TokensData, useTokensAllowanceData } from "../tokens";
 import { useAvailableTokenOptions } from "./useAvailableTokenOptions";
 import { useSidecarOrdersState } from "./useSidecarOrdersState";
+import { getAvailableTradeModes } from "./utils/availableTradeModes";
 
 export type TradeStage = "trade" | "processing";
 
@@ -261,41 +261,14 @@ export function useTradeboxState(
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
   const [leverageInputValue, setLeverageInputValue] = useState<string>(() => leverageOption?.toString() ?? "");
 
-  const availableTradeModes = useMemo(() => {
-    if (!tradeType) {
-      return [];
-    }
-
-    return {
-      [TradeType.Long]: [
-        TradeMode.Market,
-        TradeMode.Limit,
-        [TradeMode.Trigger, TradeMode.StopMarket, TradeMode.Twap],
-      ] as const,
-      [TradeType.Short]: [
-        TradeMode.Market,
-        TradeMode.Limit,
-        [TradeMode.Trigger, TradeMode.StopMarket, TradeMode.Twap],
-      ] as const,
-      [TradeType.Swap]: [TradeMode.Market, TradeMode.Limit, TradeMode.Twap] as const,
-    }[tradeType];
-  }, [tradeType]);
-
   const tradeFlags = useMemo(() => createTradeFlags(tradeType, tradeMode), [tradeType, tradeMode]);
   const { isSwap } = tradeFlags;
 
   const fromTokenAddress = storedOptions?.tokens.fromTokenAddress;
-  const fromToken = getByKey(tokensData, fromTokenAddress);
 
   const toTokenAddress = tradeFlags.isSwap
     ? storedOptions?.tokens.swapToTokenAddress
     : storedOptions?.tokens.indexTokenAddress;
-
-  const toToken = getByKey(tokensData, toTokenAddress);
-
-  const isWrapOrUnwrap = Boolean(
-    isSwap && fromToken && toToken && (getIsWrap(fromToken, toToken) || getIsUnwrap(fromToken, toToken))
-  );
 
   const longOrShort = tradeFlags.isLong ? "long" : "short";
   const marketAddress = toTokenAddress ? storedOptions?.markets[toTokenAddress]?.[longOrShort] : undefined;
@@ -308,6 +281,13 @@ export function useTradeboxState(
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokenAddresses: fromTokenAddress ? [fromTokenAddress] : [],
   });
+  const availableTradeModes = useMemo(() => {
+    if (!tradeType) {
+      return [];
+    }
+
+    return getAvailableTradeModes({ chainId, tradeType, fromTokenAddress, toTokenAddress });
+  }, [chainId, tradeType, fromTokenAddress, toTokenAddress]);
 
   const getMaxLongShortLiquidityPool = useMemo(
     () => createGetMaxLongShortLiquidityPool(availableTokensOptions.sortedAllMarkets || []),
@@ -689,7 +669,6 @@ export function useTradeboxState(
   return {
     tradeType,
     tradeMode,
-    isWrapOrUnwrap,
     fromTokenAddress,
     toTokenAddress,
     marketAddress,

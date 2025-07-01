@@ -1,4 +1,4 @@
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ETH_MAINNET } from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ETH_MAINNET } from "config/chains";
 
 import { createClient } from "./utils";
 
@@ -15,10 +15,12 @@ export const avalancheFujiReferralsGraphClient = createClient(AVALANCHE_FUJI, "r
 export const arbitrumSyntheticsStatsClient = createClient(ARBITRUM, "syntheticsStats");
 export const avalancheSyntheticsStatsClient = createClient(AVALANCHE, "syntheticsStats");
 export const avalancheFujiSyntheticsStatsClient = createClient(AVALANCHE_FUJI, "syntheticsStats");
+export const botanixSyntheticsStatsClient = createClient(BOTANIX, "syntheticsStats");
 
 export const arbitrumSubsquidClient = createClient(ARBITRUM, "subsquid");
 export const avalancheSubsquidClient = createClient(AVALANCHE, "subsquid");
 export const avalancheFujiSubsquidClient = createClient(AVALANCHE_FUJI, "subsquid");
+export const botanixSubsquidClient = createClient(BOTANIX, "subsquid");
 
 export function getSyntheticsGraphClient(chainId: number) {
   if (chainId === ARBITRUM) {
@@ -31,6 +33,10 @@ export function getSyntheticsGraphClient(chainId: number) {
 
   if (chainId === AVALANCHE_FUJI) {
     return avalancheFujiSyntheticsStatsClient;
+  }
+
+  if (chainId === BOTANIX) {
+    return botanixSyntheticsStatsClient;
   }
 
   return null;
@@ -49,6 +55,10 @@ export function getSubsquidGraphClient(chainId: number) {
     return avalancheFujiSubsquidClient;
   }
 
+  if (chainId === BOTANIX) {
+    return botanixSubsquidClient;
+  }
+
   return null;
 }
 
@@ -58,6 +68,8 @@ export function getGmxGraphClient(chainId: number) {
   } else if (chainId === AVALANCHE) {
     return avalancheGraphClient;
   } else if (chainId === AVALANCHE_FUJI) {
+    return null;
+  } else if (chainId === BOTANIX) {
     return null;
   }
 
@@ -71,6 +83,8 @@ export function getReferralsGraphClient(chainId) {
     return avalancheReferralsGraphClient;
   } else if (chainId === AVALANCHE_FUJI) {
     return avalancheFujiReferralsGraphClient;
+  } else if (chainId === BOTANIX) {
+    return null;
   }
   throw new Error(`Unsupported chain ${chainId}`);
 }
