@@ -39,11 +39,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "30 Jun 2025, 0:00",
     endDate: "8 Jul 2025, 0:00",
-    bodyText: (
-      <>
-        GMX is now natively deployed on the Botanix network. <br /> Use the network switcher to connect.
-      </>
-    ),
+    bodyText: <>GMX is now natively deployed on the Botanix network. Use the network switcher to connect.</>,
   },
   {
     id: "listing-xmr-crv-moodeng-pi",
