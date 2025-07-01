@@ -8101,8 +8101,8 @@ msgid "LAST PRICE"
 msgstr "LAST PRICE"
 
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-msgid "Rabby Wallet is currently experiencing network fee issues on Botanix. Please try another wallet if you're using it."
-msgstr "Rabby Wallet is currently experiencing network fee issues on Botanix. Please try another wallet if you're using it."
+#~ msgid "Rabby Wallet is currently experiencing network fee issues on Botanix. Please try another wallet if you're using it."
+#~ msgstr "Rabby Wallet is currently experiencing network fee issues on Botanix. Please try another wallet if you're using it."
 
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
