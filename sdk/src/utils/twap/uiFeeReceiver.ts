@@ -1,16 +1,18 @@
 import { isAddress } from "viem";
 
 const VERSION = "01";
-const PREFIX = "0xff";
+const PREFIX = "0xff0000";
 
 /**
  * Ui fee receiver structure:
- * 0..3 bytes - PREFIX (0xff)
- * 4..5 bytes - isExpress flag (00 = false, 01 = true)
- * 6..33 bytes - buffer/reserved space (28 bytes)
- * 34..35 bytes - numberOfParts (hex encoded)
- * 36..39 bytes - twapId (hex encoded)
- * 40..41 bytes - VERSION (01)
+ * 0..3 bytes (0..7 chars) - PREFIX
+ * 4..14 bytes (8..27 chars) - 10 bytes buffer
+ * 15 byte (27..29 chars) - isExpress flag
+ * 16 byte (30..32 chars) - numberOfParts (hex encoded)
+ * 17..18 bytes (32..36 chars) - twapId
+ * 19 byte (37..39 chars) - VERSION
+ *
+ * Total: 20 bytes (40 hex characters)
  */
 
 export function generateTwapId() {
@@ -23,20 +25,26 @@ export function createTwapUiFeeReceiver({ numberOfParts }: { numberOfParts: numb
   const twapId = generateTwapId();
 
   const numberOfPartsInHex = numberOfParts.toString(16).padStart(2, "0");
+  const isExpressHex = "00";
 
-  return `${PREFIX}00${"00".repeat(14)}${numberOfPartsInHex}${twapId}${VERSION}`;
+  const buffer = "00".repeat(11);
+
+  return `${PREFIX}${buffer}${isExpressHex}${numberOfPartsInHex}${twapId}00${VERSION}`;
 }
 
-export function decodeTwapUiFeeReceiver(address: string): { twapId: string; numberOfParts: number } | void {
-  const twapId = address.slice(36, 40);
+export function decodeTwapUiFeeReceiver(
+  address: string
+): { twapId: string; numberOfParts: number; isExpress: boolean } | void {
+  const twapId = address.slice(32, 36);
+  const isExpress = address.slice(36, 38) === "01";
 
   if (!isValidTwapUiFeeReceiver(address) || twapId === "0000") {
     return;
   }
 
-  const numberOfParts = parseInt(address.slice(34, 36), 16);
+  const numberOfParts = parseInt(address.slice(30, 32), 16);
 
-  return { twapId, numberOfParts };
+  return { twapId, numberOfParts, isExpress };
 }
 
 export function isValidTwapUiFeeReceiver(address: string) {
@@ -46,6 +54,5 @@ export function isValidTwapUiFeeReceiver(address: string) {
 export function setUiFeeReceiverIsExpress(uiFeeReceiver: string, isExpress: boolean): string {
   const isExpressInHex = isExpress ? "01" : "00";
 
-  // Replace the byte at position 4-6 (after PREFIX) with the express flag
-  return `${PREFIX}${isExpressInHex}${uiFeeReceiver.slice(6)}`;
+  return `${uiFeeReceiver.slice(0, 27)}${isExpressInHex}${uiFeeReceiver.slice(29)}`;
 }
