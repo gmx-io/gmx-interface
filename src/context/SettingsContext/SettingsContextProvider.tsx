@@ -1,7 +1,7 @@
 import noop from "lodash/noop";
 import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useMemo, useState } from "react";
 
-import { ARBITRUM, EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/chains";
+import { ARBITRUM, BOTANIX, EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
@@ -25,7 +25,7 @@ import {
   getSyntheticsAcceptablePriceImpactBufferKey,
 } from "config/localStorage";
 import { useChainId } from "lib/chains";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { tenderlyLsKeys } from "lib/tenderly";
 import useWallet from "lib/wallets/useWallet";
 import { getDefaultGasPaymentToken } from "sdk/configs/express";
@@ -109,6 +109,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     DEFAULT_SLIPPAGE_AMOUNT
   );
 
+  const isBotanix = chainId === BOTANIX;
+
   const [savedAcceptablePriceImpactBuffer, setSavedAcceptablePriceImpactBuffer] = useLocalStorageSerializeKey(
     getSyntheticsAcceptablePriceImpactBufferKey(chainId),
     DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER
@@ -167,7 +169,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     false
   );
 
-  const [externalSwapsEnabled, setExternalSwapsEnabled] = useLocalStorageSerializeKey(EXTERNAL_SWAPS_ENABLED_KEY, true);
+  const [externalSwapsEnabled, setExternalSwapsEnabled] = useLocalStorageByChainId(
+    chainId,
+    EXTERNAL_SWAPS_ENABLED_KEY,
+    false
+  );
   const [debugSwapMarketsConfig, setDebugSwapMarketsConfig] = useLocalStorageSerializeKey<
     undefined | { disabledSwapMarkets?: string[]; manualPath?: string[] }
   >([chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY], undefined);
@@ -267,7 +273,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       gasPaymentTokenAddress: gasPaymentTokenAddress!,
       setGasPaymentTokenAddress,
 
-      externalSwapsEnabled: externalSwapsEnabled!,
+      externalSwapsEnabled: isBotanix ? false : externalSwapsEnabled!,
       setExternalSwapsEnabled,
 
       debugSwapMarketsConfig: debugSwapMarketsConfig!,
@@ -316,6 +322,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setExpressOrdersEnabled,
     gasPaymentTokenAddress,
     setGasPaymentTokenAddress,
+    isBotanix,
     externalSwapsEnabled,
     setExternalSwapsEnabled,
     debugSwapMarketsConfig,

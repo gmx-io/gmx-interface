@@ -12,6 +12,7 @@ import { makeTransactionErrorHandler } from "lib/errors/additionalValidation";
 import { GasPriceData, getGasPrice } from "lib/gas/gasPrice";
 import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
+import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 
 import { getErrorMessage } from "components/Errors/errorToasts";
@@ -114,9 +115,10 @@ export async function callContract(
       }
 
       async function retrieveGasPrice() {
+        const provider = getProvider(undefined, chainId);
         return customGasPrices[i] !== undefined
           ? (customGasPrices[i] as GasPriceData)
-          : await getGasPrice(cntrct.runner!.provider!, chainId);
+          : await getGasPrice(provider, chainId);
       }
 
       const gasLimitPromise = retrieveGasLimit().then((gasLimit) => {
@@ -129,6 +131,7 @@ export async function callContract(
         } else {
           txnInstance.maxFeePerGas = gasPriceData.maxFeePerGas;
           txnInstance.maxPriorityFeePerGas = gasPriceData.maxPriorityFeePerGas;
+          txnInstance.type = 2;
         }
       });
 
