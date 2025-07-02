@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import { getServerUrl } from "config/backend";
-import { ARBITRUM, AVALANCHE } from "config/chains";
+import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useGmxPrice, useTotalGmxStaked } from "domain/legacy";
 import { useV1FeesInfo, useVolumeInfo } from "domain/stats";
@@ -38,6 +38,7 @@ export function OverviewCard({
 
   const v2ArbitrumOverview = useV2Stats(ARBITRUM);
   const v2AvalancheOverview = useV2Stats(AVALANCHE);
+  const v2BotanixOverview = useV2Stats(BOTANIX);
 
   const { data: positionStats } = useSWR<
     {
@@ -66,6 +67,7 @@ export function OverviewCard({
 
   const arbitrumPositionsCollateralUsd = usePositionsTotalCollateral(ARBITRUM);
   const avalanchePositionsCollateralUsd = usePositionsTotalCollateral(AVALANCHE);
+  const botanixPositionsCollateralUsd = usePositionsTotalCollateral(BOTANIX);
 
   // #region TVL and GLP Pool
   const glpTvlArbitrum = statsArbitrum?.glp.aum;
@@ -99,11 +101,13 @@ export function OverviewCard({
 
   const gmTvlArbitrum = v2ArbitrumOverview.totalGMLiquidity;
   const gmTvlAvalanche = v2AvalancheOverview.totalGMLiquidity;
+  const gmTvlBotanix = v2BotanixOverview.totalGMLiquidity;
 
-  const totalGmTvl = gmTvlArbitrum + gmTvlAvalanche;
+  const totalGmTvl = gmTvlArbitrum + gmTvlAvalanche + gmTvlBotanix;
 
   let displayTvlArbitrum: bigint | undefined = undefined;
   let displayTvlAvalanche: bigint | undefined = undefined;
+  let displayTvlBotanix: bigint | undefined = undefined;
   let displayTvl: bigint | undefined = undefined;
   if (
     gmxPrice !== undefined &&
@@ -112,7 +116,8 @@ export function OverviewCard({
     glpMarketCapArbitrum !== undefined &&
     glpMarketCapAvalanche !== undefined &&
     arbitrumPositionsCollateralUsd !== undefined &&
-    avalanchePositionsCollateralUsd !== undefined
+    avalanchePositionsCollateralUsd !== undefined &&
+    botanixPositionsCollateralUsd !== undefined
   ) {
     const stakedGmxUsdArbitrum = bigMath.mulDiv(gmxPrice, stakedGmxArbitrum, expandDecimals(1, GMX_DECIMALS));
     const stakedGmxUsdAvalanche = bigMath.mulDiv(gmxPrice, stakedGmxAvalanche, expandDecimals(1, GMX_DECIMALS));
@@ -121,6 +126,7 @@ export function OverviewCard({
     displayTvlArbitrum = stakedGmxUsdArbitrum + glpMarketCapArbitrum + gmTvlArbitrum + arbitrumPositionsCollateralUsd;
     displayTvlAvalanche =
       stakedGmxUsdAvalanche + glpMarketCapAvalanche + gmTvlAvalanche + avalanchePositionsCollateralUsd;
+    displayTvlBotanix = gmTvlBotanix + botanixPositionsCollateralUsd;
     displayTvl = displayTvlArbitrum + displayTvlAvalanche;
   }
 
@@ -133,12 +139,14 @@ export function OverviewCard({
 
   const v2ArbitrumDailyVolume = v2ArbitrumOverview.dailyVolume;
   const v2AvalancheDailyVolume = v2AvalancheOverview.dailyVolume;
+  const v2BotanixDailyVolume = v2BotanixOverview.dailyVolume;
 
   const totalDailyVolume = sumBigInts(
     v1ArbitrumDailyVolume,
     v1AvalancheDailyVolume,
     v2ArbitrumDailyVolume,
-    v2AvalancheDailyVolume
+    v2AvalancheDailyVolume,
+    v2BotanixDailyVolume
   );
   // #endregion Daily Volume
 
@@ -147,12 +155,14 @@ export function OverviewCard({
   const v1AvalancheOpenInterest = positionStatsInfo?.[AVALANCHE]?.openInterest;
   const v2ArbitrumOpenInterest = v2ArbitrumOverview.openInterest;
   const v2AvalancheOpenInterest = v2AvalancheOverview.openInterest;
+  const v2BotanixOpenInterest = v2BotanixOverview.openInterest;
 
   const totalOpenInterest = sumBigInts(
     v1ArbitrumOpenInterest,
     v1AvalancheOpenInterest,
     v2ArbitrumOpenInterest,
-    v2AvalancheOpenInterest
+    v2AvalancheOpenInterest,
+    v2BotanixOpenInterest
   );
   // #endregion Open Interest
 
@@ -162,12 +172,14 @@ export function OverviewCard({
 
   const v2ArbitrumLongPositionSizes = v2ArbitrumOverview.totalLongPositionSizes;
   const v2AvalancheLongPositionSizes = v2AvalancheOverview.totalLongPositionSizes;
+  const v2BotanixLongPositionSizes = v2BotanixOverview.totalLongPositionSizes;
 
   const totalLongPositionSizes = sumBigInts(
     v1ArbitrumLongPositionSizes,
     v1AvalancheLongPositionSizes,
     v2ArbitrumLongPositionSizes,
-    v2AvalancheLongPositionSizes
+    v2AvalancheLongPositionSizes,
+    v2BotanixLongPositionSizes
   );
   // #endregion Long Position Sizes
 
@@ -177,12 +189,14 @@ export function OverviewCard({
 
   const v2ArbitrumShortPositionSizes = v2ArbitrumOverview.totalShortPositionSizes;
   const v2AvalancheShortPositionSizes = v2AvalancheOverview.totalShortPositionSizes;
+  const v2BotanixShortPositionSizes = v2BotanixOverview.totalShortPositionSizes;
 
   const totalShortPositionSizes = sumBigInts(
     v1ArbitrumShortPositionSizes,
     v1AvalancheShortPositionSizes,
     v2ArbitrumShortPositionSizes,
-    v2AvalancheShortPositionSizes
+    v2AvalancheShortPositionSizes,
+    v2BotanixShortPositionSizes
   );
   // #endregion Short Position Sizes
 
@@ -192,12 +206,14 @@ export function OverviewCard({
 
   const v2ArbitrumEpochFees = v2ArbitrumOverview?.epochFees;
   const v2AvalancheEpochFees = v2AvalancheOverview?.epochFees;
+  const v2BotanixEpochFees = v2BotanixOverview?.epochFees;
 
   const totalEpochFeesUsd = sumBigInts(
     v1ArbitrumEpochFees,
     v1AvalancheEpochFees,
     v2ArbitrumEpochFees,
-    v2AvalancheEpochFees
+    v2AvalancheEpochFees,
+    v2BotanixEpochFees
   );
 
   const v1ArbitrumWeeklyFees = v1ArbitrumFees?.weeklyFees;
@@ -205,12 +221,14 @@ export function OverviewCard({
 
   const v2ArbitrumWeeklyFees = v2ArbitrumOverview?.weeklyFees;
   const v2AvalancheWeeklyFees = v2AvalancheOverview?.weeklyFees;
+  const v2BotanixWeeklyFees = v2BotanixOverview?.weeklyFees;
 
   const totalWeeklyFeesUsd = sumBigInts(
     v1ArbitrumWeeklyFees,
     v1AvalancheWeeklyFees,
     v2ArbitrumWeeklyFees,
-    v2AvalancheWeeklyFees
+    v2AvalancheWeeklyFees,
+    v2BotanixWeeklyFees
   );
 
   // #endregion Fees
@@ -221,8 +239,15 @@ export function OverviewCard({
       "V2 Arbitrum": v2ArbitrumOverview?.dailyVolume,
       "V1 Avalanche": v1AvalancheDailyVolume,
       "V2 Avalanche": v2AvalancheOverview?.dailyVolume,
+      "V2 Botanix": v2BotanixOverview?.dailyVolume,
     }),
-    [v1ArbitrumDailyVolume, v1AvalancheDailyVolume, v2ArbitrumOverview?.dailyVolume, v2AvalancheOverview?.dailyVolume]
+    [
+      v1ArbitrumDailyVolume,
+      v1AvalancheDailyVolume,
+      v2ArbitrumOverview?.dailyVolume,
+      v2AvalancheOverview?.dailyVolume,
+      v2BotanixOverview?.dailyVolume,
+    ]
   );
 
   const openInterestEntries = useMemo(
@@ -231,8 +256,15 @@ export function OverviewCard({
       "V2 Arbitrum": v2ArbitrumOpenInterest,
       "V1 Avalanche": v1AvalancheOpenInterest,
       "V2 Avalanche": v2AvalancheOpenInterest,
+      "V2 Botanix": v2BotanixOpenInterest,
     }),
-    [v1ArbitrumOpenInterest, v1AvalancheOpenInterest, v2ArbitrumOpenInterest, v2AvalancheOpenInterest]
+    [
+      v1ArbitrumOpenInterest,
+      v1AvalancheOpenInterest,
+      v2ArbitrumOpenInterest,
+      v2AvalancheOpenInterest,
+      v2BotanixOpenInterest,
+    ]
   );
 
   const totalLongPositionSizesEntries = useMemo(
@@ -241,12 +273,14 @@ export function OverviewCard({
       "V2 Arbitrum": v2ArbitrumLongPositionSizes,
       "V1 Avalanche": v1AvalancheLongPositionSizes,
       "V2 Avalanche": v2AvalancheLongPositionSizes,
+      "V2 Botanix": v2BotanixLongPositionSizes,
     }),
     [
       v1ArbitrumLongPositionSizes,
       v1AvalancheLongPositionSizes,
       v2ArbitrumLongPositionSizes,
       v2AvalancheLongPositionSizes,
+      v2BotanixLongPositionSizes,
     ]
   );
 
@@ -256,12 +290,14 @@ export function OverviewCard({
       "V2 Arbitrum": v2ArbitrumShortPositionSizes,
       "V1 Avalanche": v1AvalancheShortPositionSizes,
       "V2 Avalanche": v2AvalancheShortPositionSizes,
+      "V2 Botanix": v2BotanixShortPositionSizes,
     }),
     [
       v1ArbitrumShortPositionSizes,
       v1AvalancheShortPositionSizes,
       v2ArbitrumShortPositionSizes,
       v2AvalancheShortPositionSizes,
+      v2BotanixShortPositionSizes,
     ]
   );
 
@@ -271,8 +307,9 @@ export function OverviewCard({
       "V2 Arbitrum": v2ArbitrumEpochFees,
       "V1 Avalanche": v1AvalancheEpochFees,
       "V2 Avalanche": v2AvalancheEpochFees,
+      "V2 Botanix": v2BotanixEpochFees,
     }),
-    [v1ArbitrumEpochFees, v1AvalancheEpochFees, v2ArbitrumEpochFees, v2AvalancheEpochFees]
+    [v1ArbitrumEpochFees, v1AvalancheEpochFees, v2ArbitrumEpochFees, v2AvalancheEpochFees, v2BotanixEpochFees]
   );
 
   const [formattedDuration, setFormattedDuration] = useState(() => getFormattedFeesDuration());
@@ -286,7 +323,8 @@ export function OverviewCard({
 
   const feesSubtotal = useMemo(() => {
     const v1BuyingPressure = (((v1ArbitrumWeeklyFees ?? 0n) + (v1AvalancheWeeklyFees ?? 0n)) * 30n) / 100n;
-    const v2BuyingPressure = (((v2ArbitrumWeeklyFees ?? 0n) + (v2AvalancheWeeklyFees ?? 0n)) * 27n) / 100n;
+    const v2BuyingPressure =
+      (((v2ArbitrumWeeklyFees ?? 0n) + (v2AvalancheWeeklyFees ?? 0n) + (v2BotanixWeeklyFees ?? 0n)) * 27n) / 100n;
     const annualizedTotal = (totalWeeklyFeesUsd * 365n) / 7n;
     const totalBuyingPressure = v1BuyingPressure + v2BuyingPressure;
     const annualizedTotalBuyingPressure = (totalBuyingPressure * 365n) / 7n;
@@ -311,7 +349,14 @@ export function OverviewCard({
         </p>
       </>
     );
-  }, [v1ArbitrumWeeklyFees, v1AvalancheWeeklyFees, v2ArbitrumWeeklyFees, v2AvalancheWeeklyFees, totalWeeklyFeesUsd]);
+  }, [
+    v1ArbitrumWeeklyFees,
+    v1AvalancheWeeklyFees,
+    v2ArbitrumWeeklyFees,
+    v2AvalancheWeeklyFees,
+    v2BotanixWeeklyFees,
+    totalWeeklyFeesUsd,
+  ]);
 
   return (
     <div className="App-card">
@@ -347,6 +392,11 @@ export function OverviewCard({
                     label="Avalanche"
                     showDollar={false}
                     value={formatAmountHuman(displayTvlAvalanche, USD_DECIMALS, true, 2)}
+                  />
+                  <StatsTooltipRow
+                    label="Botanix"
+                    showDollar={false}
+                    value={formatAmountHuman(displayTvlBotanix, USD_DECIMALS, true, 2)}
                   />
                   <div className="!my-8 h-1 bg-gray-800" />
                   <StatsTooltipRow
@@ -420,6 +470,11 @@ export function OverviewCard({
                     label="Avalanche"
                     showDollar={false}
                     value={formatAmountHuman(gmTvlAvalanche, USD_DECIMALS, true, 2)}
+                  />
+                  <StatsTooltipRow
+                    label="Botanix"
+                    showDollar={false}
+                    value={formatAmountHuman(gmTvlBotanix, USD_DECIMALS, true, 2)}
                   />
                   <div className="!my-8 h-1 bg-gray-800" />
                   <StatsTooltipRow

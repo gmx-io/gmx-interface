@@ -1,4 +1,4 @@
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX } from "./chains";
 
 /*
   A temporary solution before positions sorting logic is updated
@@ -127,4 +127,5 @@ export const SORTED_MARKETS = {
     "0xE446E8f7074c0A97bb7cd448fA2CC3346045F514",
     "0xD996ff47A1F763E1e55415BC4437c59292D1F415",
   ],
+  [BOTANIX]: ["0x6682BB60590a045A956541B1433f016Ed22E361d", "0xEbEEcdb96237A10234d34c2de182aCCF1c3B31c9"],
 };

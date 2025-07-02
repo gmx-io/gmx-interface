@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { ReactNode, useCallback, useEffect } from "react";
 
-import { getChainName } from "config/chains";
+import { BOTANIX, getChainName } from "config/chains";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectAccountStats, selectSubaccountState } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectExpressOrdersEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -14,6 +14,7 @@ import {
   selectTradeboxState,
   selectTradeboxTradeFlags,
   selectTradeboxTradeMode,
+  selectTradeboxTradeType,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getFeeItem } from "domain/synthetics/fees";
@@ -30,8 +31,11 @@ import {
   TradeBoxWarningShownEvent,
   TradeBoxWarningSwitchPoolClickEvent,
 } from "lib/userAnalytics/types";
+import { getTokenBySymbol } from "sdk/configs/tokens";
+import { TradeMode, TradeType } from "sdk/types/trade";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { TokenSymbolWithIcon } from "components/TokenSymbolWithIcon/TokenSymbolWithIcon";
 
 const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = 1; // +0.01%
 
@@ -150,6 +154,20 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
   const marketPoolName = marketInfo ? getMarketPoolName(marketInfo) : "";
 
   const tradeMode = useSelector(selectTradeboxTradeMode);
+  const tradeType = useSelector(selectTradeboxTradeType);
+
+  const showBotanixSwapWarning =
+    chainId === BOTANIX &&
+    (fromToken?.assetSymbol === "pBTC" || fromToken?.assetSymbol === "BTC") &&
+    (tradeType !== TradeType.Swap || tradeMode !== TradeMode.Market);
+
+  const { setFromTokenAddress, setToTokenAddress, setTradeType, setTradeMode } = useSelector(selectTradeboxState);
+  const handleBotanixSwapClick = useCallback(() => {
+    setTradeType(TradeType.Swap);
+    setTradeMode(TradeMode.Market);
+    setFromTokenAddress(fromToken?.address);
+    setToTokenAddress(getTokenBySymbol(chainId, "STBTC")?.address);
+  }, [chainId, fromToken?.address, setFromTokenAddress, setToTokenAddress, setTradeMode, setTradeType]);
 
   useEffect(() => {
     if (
@@ -243,7 +261,8 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
     !showHasExistingOrderWarning &&
     !showHasBetterOpenFeesWarning &&
     !showHasExistingPositionButNotEnoughLiquidityWarning &&
-    !showHasExistingOrderButNoLiquidityWarning
+    !showHasExistingOrderButNoLiquidityWarning &&
+    !showBotanixSwapWarning
   ) {
     return null;
   }
@@ -394,6 +413,19 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
             </span>
             .
           </WithActon>
+        </Trans>
+      </AlertInfoCard>
+    );
+  }
+
+  if (showBotanixSwapWarning) {
+    warning.push(
+      <AlertInfoCard key="botanixSwapWarning">
+        <Trans>
+          <span onClick={handleBotanixSwapClick} className="clickable muted underline">
+            Swap {fromToken?.symbol} to STBTC
+          </span>{" "}
+          to trade with <TokenSymbolWithIcon symbol="STBTC" /> or <TokenSymbolWithIcon symbol="USDC.E" /> as collateral.
         </Trans>
       </AlertInfoCard>
     );
