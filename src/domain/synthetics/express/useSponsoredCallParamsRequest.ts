@@ -32,14 +32,13 @@ export function useIsSponsoredCallBalanceAvailable(
       const mainBalance = gelatoBalanceData.sponsor.mainBalance;
       const mainBalanceToken = mainBalance.token;
       const remainingBalance = BigInt(mainBalance.remainingBalance);
+      const amountInExecution = BigInt(mainBalance.amountInExecution);
+
+      const balanceLeft = remainingBalance - amountInExecution;
 
       const mainBalanceTokenData = getByKey(tokensData, getTokenBySymbol(chainId, mainBalanceToken.symbol).address);
 
-      const usdBalance = convertToUsd(
-        remainingBalance,
-        mainBalanceToken.decimals,
-        mainBalanceTokenData?.prices.minPrice
-      );
+      const usdBalance = convertToUsd(balanceLeft, mainBalanceToken.decimals, mainBalanceTokenData?.prices.minPrice);
 
       return usdBalance !== undefined && usdBalance > MIN_GELATO_USD_BALANCE_FOR_SPONSORED_CALL;
     },
