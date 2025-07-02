@@ -11,7 +11,6 @@ const PREFIX = "0xff";
  * 34..35 bytes - numberOfParts (hex encoded)
  * 36..39 bytes - twapId (hex encoded)
  * 40..41 bytes - VERSION (01)
- *
  */
 
 export function generateTwapId() {
@@ -48,6 +47,5 @@ export function setUiFeeReceiverIsExpress(uiFeeReceiver: string, isExpress: bool
   const isExpressInHex = isExpress ? "01" : "00";
 
   // Replace the byte at position 4-6 (after PREFIX) with the express flag
-  // Structure: PREFIX + expressFlag + restOfData (keeping total length at 40 chars)
   return `${PREFIX}${isExpressInHex}${uiFeeReceiver.slice(6)}`;
 }
