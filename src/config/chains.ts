@@ -104,7 +104,7 @@ export const RPC_PROVIDERS: Record<UiContractsChain | typeof ETH_MAINNET, string
   [ARBITRUM]: [
     "https://arb1.arbitrum.io/rpc",
     "https://arbitrum-one-rpc.publicnode.com",
-    "https://1rpc.io/arb",
+    // "https://1rpc.io/arb", has CORS issue
     "https://arbitrum-one.public.blastapi.io",
     "https://arbitrum.drpc.org",
     "https://rpc.ankr.com/arbitrum",
