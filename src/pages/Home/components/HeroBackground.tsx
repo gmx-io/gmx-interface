@@ -8,7 +8,7 @@ const styleSecondImage = {
 };
 export function HeroBackground() {
   return (
-    <div className="pointer-events-none absolute -bottom-42 left-83 h-[724px] w-[1547px]">
+    <div className="pointer-events-none absolute -right-[620px] h-[724px] w-[1547px] sm:-bottom-42 sm:left-83">
       <div
         style={styleFirstImage}
         className="absolute right-[419px] top-62 h-[620px] w-[1128px] opacity-80 blur-[180px]"
