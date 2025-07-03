@@ -14,6 +14,11 @@ const _abi = [
         type: "address",
       },
       {
+        internalType: "contract RoleStore",
+        name: "_roleStore",
+        type: "address",
+      },
+      {
         internalType: "contract DataStore",
         name: "_dataStore",
         type: "address",
@@ -24,7 +29,7 @@ const _abi = [
         type: "address",
       },
       {
-        internalType: "contract Oracle",
+        internalType: "contract IOracle",
         name: "_oracle",
         type: "address",
       },
@@ -36,6 +41,11 @@ const _abi = [
       {
         internalType: "contract OrderVault",
         name: "_orderVault",
+        type: "address",
+      },
+      {
+        internalType: "contract ISwapHandler",
+        name: "_swapHandler",
         type: "address",
       },
       {
@@ -76,6 +86,11 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "EmptyHoldingAddress",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "EmptyOrder",
     type: "error",
   },
@@ -85,8 +100,14 @@ const _abi = [
     type: "error",
   },
   {
-    inputs: [],
-    name: "EmptyRelayFeeAddress",
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "EmptyTokenTranferGasLimit",
     type: "error",
   },
   {
@@ -103,6 +124,17 @@ const _abi = [
       },
     ],
     name: "InsufficientRelayFee",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "desChainId",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidDestinationChainId",
     type: "error",
   },
   {
@@ -140,28 +172,23 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "string",
-        name: "signatureType",
-        type: "string",
+        internalType: "uint256",
+        name: "srcChainId",
+        type: "uint256",
       },
     ],
-    name: "InvalidSignature",
+    name: "InvalidSrcChainId",
     type: "error",
   },
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "storedUserNonce",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "userNonce",
-        type: "uint256",
+        internalType: "bytes32",
+        name: "digest",
+        type: "bytes32",
       },
     ],
-    name: "InvalidUserNonce",
+    name: "InvalidUserDigest",
     type: "error",
   },
   {
@@ -186,19 +213,34 @@ const _abi = [
     type: "error",
   },
   {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "calldataLength",
-        type: "uint256",
-      },
-    ],
-    name: "RelayCalldataTooLong",
+    inputs: [],
+    name: "RelayEmptyBatch",
     type: "error",
   },
   {
     inputs: [],
-    name: "RelayEmptyBatch",
+    name: "TokenPermitsNotAllowedForMultichain",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "receiver",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "TokenTransferError",
     type: "error",
   },
   {
@@ -250,43 +292,23 @@ const _abi = [
     type: "error",
   },
   {
-    inputs: [],
-    name: "DOMAIN_SEPARATOR_NAME_HASH",
-    outputs: [
+    anonymous: false,
+    inputs: [
       {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
+        indexed: false,
+        internalType: "string",
+        name: "reason",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "bytes",
+        name: "returndata",
+        type: "bytes",
       },
     ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "DOMAIN_SEPARATOR_TYPEHASH",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "DOMAIN_SEPARATOR_VERSION_HASH",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
+    name: "TokenTransferReverted",
+    type: "event",
   },
   {
     inputs: [
@@ -347,7 +369,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct ExternalCalls",
+            internalType: "struct IRelayUtils.ExternalCalls",
             name: "externalCalls",
             type: "tuple",
           },
@@ -394,7 +416,7 @@ const _abi = [
                 type: "address",
               },
             ],
-            internalType: "struct TokenPermit[]",
+            internalType: "struct IRelayUtils.TokenPermit[]",
             name: "tokenPermits",
             type: "tuple[]",
           },
@@ -416,14 +438,9 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct FeeParams",
+            internalType: "struct IRelayUtils.FeeParams",
             name: "fee",
             type: "tuple",
-          },
-          {
-            internalType: "uint256",
-            name: "userNonce",
-            type: "uint256",
           },
           {
             internalType: "uint256",
@@ -435,8 +452,13 @@ const _abi = [
             name: "signature",
             type: "bytes",
           },
+          {
+            internalType: "uint256",
+            name: "desChainId",
+            type: "uint256",
+          },
         ],
-        internalType: "struct RelayParams",
+        internalType: "struct IRelayUtils.RelayParams",
         name: "relayParams",
         type: "tuple",
       },
@@ -568,6 +590,11 @@ const _abi = [
                 name: "referralCode",
                 type: "bytes32",
               },
+              {
+                internalType: "bytes32[]",
+                name: "dataList",
+                type: "bytes32[]",
+              },
             ],
             internalType: "struct IBaseOrderUtils.CreateOrderParams[]",
             name: "createOrderParamsList",
@@ -616,7 +643,7 @@ const _abi = [
                 type: "uint256",
               },
             ],
-            internalType: "struct UpdateOrderParams[]",
+            internalType: "struct IRelayUtils.UpdateOrderParams[]",
             name: "updateOrderParamsList",
             type: "tuple[]",
           },
@@ -626,7 +653,7 @@ const _abi = [
             type: "bytes32[]",
           },
         ],
-        internalType: "struct BatchParams",
+        internalType: "struct IRelayUtils.BatchParams",
         name: "params",
         type: "tuple",
       },
@@ -701,7 +728,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct ExternalCalls",
+            internalType: "struct IRelayUtils.ExternalCalls",
             name: "externalCalls",
             type: "tuple",
           },
@@ -748,7 +775,7 @@ const _abi = [
                 type: "address",
               },
             ],
-            internalType: "struct TokenPermit[]",
+            internalType: "struct IRelayUtils.TokenPermit[]",
             name: "tokenPermits",
             type: "tuple[]",
           },
@@ -770,14 +797,9 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct FeeParams",
+            internalType: "struct IRelayUtils.FeeParams",
             name: "fee",
             type: "tuple",
-          },
-          {
-            internalType: "uint256",
-            name: "userNonce",
-            type: "uint256",
           },
           {
             internalType: "uint256",
@@ -789,8 +811,13 @@ const _abi = [
             name: "signature",
             type: "bytes",
           },
+          {
+            internalType: "uint256",
+            name: "desChainId",
+            type: "uint256",
+          },
         ],
-        internalType: "struct RelayParams",
+        internalType: "struct IRelayUtils.RelayParams",
         name: "relayParams",
         type: "tuple",
       },
@@ -869,7 +896,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct ExternalCalls",
+            internalType: "struct IRelayUtils.ExternalCalls",
             name: "externalCalls",
             type: "tuple",
           },
@@ -916,7 +943,7 @@ const _abi = [
                 type: "address",
               },
             ],
-            internalType: "struct TokenPermit[]",
+            internalType: "struct IRelayUtils.TokenPermit[]",
             name: "tokenPermits",
             type: "tuple[]",
           },
@@ -938,14 +965,9 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct FeeParams",
+            internalType: "struct IRelayUtils.FeeParams",
             name: "fee",
             type: "tuple",
-          },
-          {
-            internalType: "uint256",
-            name: "userNonce",
-            type: "uint256",
           },
           {
             internalType: "uint256",
@@ -957,8 +979,13 @@ const _abi = [
             name: "signature",
             type: "bytes",
           },
+          {
+            internalType: "uint256",
+            name: "desChainId",
+            type: "uint256",
+          },
         ],
-        internalType: "struct RelayParams",
+        internalType: "struct IRelayUtils.RelayParams",
         name: "relayParams",
         type: "tuple",
       },
@@ -1088,6 +1115,11 @@ const _abi = [
             name: "referralCode",
             type: "bytes32",
           },
+          {
+            internalType: "bytes32[]",
+            name: "dataList",
+            type: "bytes32[]",
+          },
         ],
         internalType: "struct IBaseOrderUtils.CreateOrderParams",
         name: "params",
@@ -1113,6 +1145,25 @@ const _abi = [
         internalType: "contract DataStore",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    name: "digests",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
       },
     ],
     stateMutability: "view",
@@ -1145,11 +1196,30 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "bytes[]",
+        name: "data",
+        type: "bytes[]",
+      },
+    ],
+    name: "multicall",
+    outputs: [
+      {
+        internalType: "bytes[]",
+        name: "results",
+        type: "bytes[]",
+      },
+    ],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "oracle",
     outputs: [
       {
-        internalType: "contract Oracle",
+        internalType: "contract IOracle",
         name: "",
         type: "address",
       },
@@ -1185,10 +1255,95 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "roleStore",
+    outputs: [
+      {
+        internalType: "contract RoleStore",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "router",
     outputs: [
       {
         internalType: "contract Router",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "receiver",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "sendNativeToken",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "receiver",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "sendTokens",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "receiver",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "sendWnt",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "swapHandler",
+    outputs: [
+      {
+        internalType: "contract ISwapHandler",
         name: "",
         type: "address",
       },
@@ -1255,7 +1410,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct ExternalCalls",
+            internalType: "struct IRelayUtils.ExternalCalls",
             name: "externalCalls",
             type: "tuple",
           },
@@ -1302,7 +1457,7 @@ const _abi = [
                 type: "address",
               },
             ],
-            internalType: "struct TokenPermit[]",
+            internalType: "struct IRelayUtils.TokenPermit[]",
             name: "tokenPermits",
             type: "tuple[]",
           },
@@ -1324,14 +1479,9 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct FeeParams",
+            internalType: "struct IRelayUtils.FeeParams",
             name: "fee",
             type: "tuple",
-          },
-          {
-            internalType: "uint256",
-            name: "userNonce",
-            type: "uint256",
           },
           {
             internalType: "uint256",
@@ -1343,8 +1493,13 @@ const _abi = [
             name: "signature",
             type: "bytes",
           },
+          {
+            internalType: "uint256",
+            name: "desChainId",
+            type: "uint256",
+          },
         ],
-        internalType: "struct RelayParams",
+        internalType: "struct IRelayUtils.RelayParams",
         name: "relayParams",
         type: "tuple",
       },
@@ -1396,7 +1551,7 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct UpdateOrderParams",
+        internalType: "struct IRelayUtils.UpdateOrderParams",
         name: "params",
         type: "tuple",
       },
@@ -1404,25 +1559,6 @@ const _abi = [
     name: "updateOrder",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    name: "userNonces",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
 ] as const;

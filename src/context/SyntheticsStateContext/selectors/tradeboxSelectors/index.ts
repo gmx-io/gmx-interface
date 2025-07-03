@@ -1,3 +1,5 @@
+import { maxUint256 } from "viem";
+
 import { getSwapDebugSettings, getSwapPriceImpactForExternalSwapThresholdBps } from "config/externalSwaps";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
@@ -78,6 +80,7 @@ import { selectTradeboxGetMaxLongShortLiquidityPool } from "./selectTradeboxGetM
 export * from "./selectTradeboxAvailableAndDisabledTokensForCollateral";
 export * from "./selectTradeboxAvailableMarketsOptions";
 export * from "./selectTradeboxGetMaxLongShortLiquidityPool";
+export * from "./selectTradeboxRelatedMarketsStats";
 
 export const selectExternalSwapInputs = createSelector((q) => {
   const tradeMode = q(selectTradeboxTradeMode);
@@ -267,8 +270,6 @@ export const selectExternalSwapInputsByLeverageSize = createSelector((q) => {
   });
 });
 
-export * from "./selectTradeboxRelatedMarketsStats";
-
 const selectOnlyOnTradeboxPage = <T>(s: SyntheticsState, selection: T) =>
   s.pageType === "trade" ? selection : undefined;
 export const selectTradeboxState = (s: SyntheticsState) => s.tradebox;
@@ -276,6 +277,7 @@ export const selectTradeboxTradeType = (s: SyntheticsState) => s.tradebox.tradeT
 export const selectTradeboxTradeMode = (s: SyntheticsState) => s.tradebox.tradeMode;
 export const selectTradeboxIsWrapOrUnwrap = (s: SyntheticsState) => s.tradebox.isWrapOrUnwrap;
 export const selectTradeboxFromTokenAddress = (s: SyntheticsState) => s.tradebox.fromTokenAddress;
+export const selectTradeboxIsFromTokenGmxAccount = (s: SyntheticsState) => s.tradebox.isFromTokenGmxAccount;
 export const selectTradeboxToTokenAddress = (s: SyntheticsState) => s.tradebox.toTokenAddress;
 export const selectTradeboxMarketAddress = (s: SyntheticsState) =>
   selectOnlyOnTradeboxPage(s, s.tradebox.marketAddress);
@@ -406,7 +408,7 @@ export const selectTradeboxLeverageStrategy = createSelector((q) => {
 });
 
 export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
-  const tokensData = q(selectTokensData);
+  // const tokensData = q(selectTokensData);
   const tradeMode = q(selectTradeboxTradeMode);
   const tradeType = q(selectTradeboxTradeType);
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
@@ -420,7 +422,8 @@ export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
   const triggerPrice = q(selectTradeboxTriggerPrice);
   const externalSwapQuote = q(selectExternalSwapQuote);
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
-  const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
+  // const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
+  const fromToken = q(selectTradeboxFromToken);
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
 
   const positionKey = q(selectTradeboxSelectedPositionKey);
@@ -796,7 +799,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
 
 const selectNextValuesForIncrease = createSelector(
   (q): Parameters<typeof makeSelectNextPositionValuesForIncrease>[0] => {
-    const tokensData = q(selectTokensData);
+    // const tokensData = q(selectTokensData);
     const tradeMode = q(selectTradeboxTradeMode);
     const tradeType = q(selectTradeboxTradeType);
     const fromTokenAddress = q(selectTradeboxFromTokenAddress);
@@ -813,13 +816,16 @@ const selectNextValuesForIncrease = createSelector(
     const positionKey = q(selectTradeboxSelectedPositionKey);
 
     const tradeFlags = createTradeFlags(tradeType, tradeMode);
-    const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
+    // const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
+    const fromToken = q(selectTradeboxFromToken);
     const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
     const leverage = BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
     const isPnlInLeverage = q(selectIsPnlInLeverage);
+    const isFromTokenGmxAccount = q(selectTradeboxIsFromTokenGmxAccount);
 
     const externalSwapQuote = q(selectExternalSwapQuote);
-    const isExpressTxn = fromTokenAddress !== NATIVE_TOKEN_ADDRESS && q(selectIsExpressTransactionAvailable);
+    const isExpressTxn =
+      isFromTokenGmxAccount || (fromTokenAddress !== NATIVE_TOKEN_ADDRESS && q(selectIsExpressTransactionAvailable));
 
     return {
       collateralTokenAddress,
@@ -1043,11 +1049,12 @@ export const selectTradeboxTradeRatios = createSelector(function selectTradeboxT
 
   if (!isSwap) return {};
 
-  const fromTokenAddress = q(selectTradeboxFromTokenAddress);
+  // const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const triggerRatioValue = q(selectTradeboxTriggerRatioValue);
   const toTokenAddress = q(selectTradeboxToTokenAddress);
   const toToken = q((s) => (toTokenAddress ? selectTokensData(s)?.[toTokenAddress] : undefined));
-  const fromToken = q((s) => (fromTokenAddress ? selectTokensData(s)?.[fromTokenAddress] : undefined));
+  // const fromToken = q((s) => (fromTokenAddress ? selectTokensData(s)?.[fromTokenAddress] : undefined));
+  const fromToken = q(selectTradeboxFromToken);
   const fromTokenPrice = fromToken?.prices.minPrice;
   const markPrice = q(selectTradeboxMarkPrice);
 
@@ -1178,10 +1185,31 @@ export const selectTradeboxToToken = createSelector((q) => {
   return q((state) => getByKey(selectTokensData(state), toToken));
 });
 
-export const selectTradeboxFromToken = createSelector((q) => {
+export const selectTradeboxFromToken = createSelector((q): TokenData | undefined => {
   const fromToken = q(selectTradeboxFromTokenAddress);
+  const isFromTokenGmxAccount = q(selectTradeboxIsFromTokenGmxAccount);
 
-  return q((state) => getByKey(selectTokensData(state), fromToken));
+  const token = q((state) => getByKey(selectTokensData(state), fromToken));
+
+  if (token === undefined) {
+    return undefined;
+  }
+
+  if (isFromTokenGmxAccount && !token.isGmxAccount) {
+    return {
+      ...token,
+      isGmxAccount: true,
+      balance: token.gmxAccountBalance,
+    };
+  } else if (!isFromTokenGmxAccount && token.isGmxAccount) {
+    return {
+      ...token,
+      isGmxAccount: false,
+      balance: token.walletBalance,
+    };
+  }
+
+  return token;
 });
 
 export const selectTradeboxSwapToTokenAddress = createSelector((q) => {
@@ -1284,6 +1312,10 @@ export const selectTradeboxPayAmount = createSelector((q) => {
 });
 
 export const selectTradeboxPayTokenAllowance = createSelector((q) => {
+  if (q(selectTradeboxIsFromTokenGmxAccount)) {
+    return maxUint256;
+  }
+
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const tokensAllowance = q(selectTradeboxTokensAllowance);
 
@@ -1291,6 +1323,12 @@ export const selectTradeboxPayTokenAllowance = createSelector((q) => {
 });
 
 export const selectNeedTradeboxPayTokenApproval = createSelector((q) => {
+  const isFromTokenGmxAccount = q(selectTradeboxIsFromTokenGmxAccount);
+
+  if (isFromTokenGmxAccount) {
+    return false;
+  }
+
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const payAmount = q(selectTradeboxPayAmount);
   const tokensAllowance = q(selectTradeboxTokensAllowance);

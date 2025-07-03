@@ -34,143 +34,165 @@ const _abi = [
       {
         components: [
           {
-            components: [
-              {
-                internalType: "address",
-                name: "account",
-                type: "address",
-              },
-              {
-                internalType: "address",
-                name: "receiver",
-                type: "address",
-              },
-              {
-                internalType: "address",
-                name: "cancellationReceiver",
-                type: "address",
-              },
-              {
-                internalType: "address",
-                name: "callbackContract",
-                type: "address",
-              },
-              {
-                internalType: "address",
-                name: "uiFeeReceiver",
-                type: "address",
-              },
-              {
-                internalType: "address",
-                name: "market",
-                type: "address",
-              },
-              {
-                internalType: "address",
-                name: "initialCollateralToken",
-                type: "address",
-              },
-              {
-                internalType: "address[]",
-                name: "swapPath",
-                type: "address[]",
-              },
-            ],
-            internalType: "struct Order.Addresses",
-            name: "addresses",
-            type: "tuple",
+            internalType: "bytes32",
+            name: "orderKey",
+            type: "bytes32",
           },
           {
             components: [
               {
-                internalType: "enum Order.OrderType",
-                name: "orderType",
-                type: "uint8",
+                components: [
+                  {
+                    internalType: "address",
+                    name: "account",
+                    type: "address",
+                  },
+                  {
+                    internalType: "address",
+                    name: "receiver",
+                    type: "address",
+                  },
+                  {
+                    internalType: "address",
+                    name: "cancellationReceiver",
+                    type: "address",
+                  },
+                  {
+                    internalType: "address",
+                    name: "callbackContract",
+                    type: "address",
+                  },
+                  {
+                    internalType: "address",
+                    name: "uiFeeReceiver",
+                    type: "address",
+                  },
+                  {
+                    internalType: "address",
+                    name: "market",
+                    type: "address",
+                  },
+                  {
+                    internalType: "address",
+                    name: "initialCollateralToken",
+                    type: "address",
+                  },
+                  {
+                    internalType: "address[]",
+                    name: "swapPath",
+                    type: "address[]",
+                  },
+                ],
+                internalType: "struct Order.Addresses",
+                name: "addresses",
+                type: "tuple",
               },
               {
-                internalType: "enum Order.DecreasePositionSwapType",
-                name: "decreasePositionSwapType",
-                type: "uint8",
+                components: [
+                  {
+                    internalType: "enum Order.OrderType",
+                    name: "orderType",
+                    type: "uint8",
+                  },
+                  {
+                    internalType: "enum Order.DecreasePositionSwapType",
+                    name: "decreasePositionSwapType",
+                    type: "uint8",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "sizeDeltaUsd",
+                    type: "uint256",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "initialCollateralDeltaAmount",
+                    type: "uint256",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "triggerPrice",
+                    type: "uint256",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "acceptablePrice",
+                    type: "uint256",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "executionFee",
+                    type: "uint256",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "callbackGasLimit",
+                    type: "uint256",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "minOutputAmount",
+                    type: "uint256",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "updatedAtTime",
+                    type: "uint256",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "validFromTime",
+                    type: "uint256",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "srcChainId",
+                    type: "uint256",
+                  },
+                ],
+                internalType: "struct Order.Numbers",
+                name: "numbers",
+                type: "tuple",
               },
               {
-                internalType: "uint256",
-                name: "sizeDeltaUsd",
-                type: "uint256",
+                components: [
+                  {
+                    internalType: "bool",
+                    name: "isLong",
+                    type: "bool",
+                  },
+                  {
+                    internalType: "bool",
+                    name: "shouldUnwrapNativeToken",
+                    type: "bool",
+                  },
+                  {
+                    internalType: "bool",
+                    name: "isFrozen",
+                    type: "bool",
+                  },
+                  {
+                    internalType: "bool",
+                    name: "autoCancel",
+                    type: "bool",
+                  },
+                ],
+                internalType: "struct Order.Flags",
+                name: "flags",
+                type: "tuple",
               },
               {
-                internalType: "uint256",
-                name: "initialCollateralDeltaAmount",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "triggerPrice",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "acceptablePrice",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "executionFee",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "callbackGasLimit",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "minOutputAmount",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "updatedAtTime",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "validFromTime",
-                type: "uint256",
+                internalType: "bytes32[]",
+                name: "_dataList",
+                type: "bytes32[]",
               },
             ],
-            internalType: "struct Order.Numbers",
-            name: "numbers",
-            type: "tuple",
-          },
-          {
-            components: [
-              {
-                internalType: "bool",
-                name: "isLong",
-                type: "bool",
-              },
-              {
-                internalType: "bool",
-                name: "shouldUnwrapNativeToken",
-                type: "bool",
-              },
-              {
-                internalType: "bool",
-                name: "isFrozen",
-                type: "bool",
-              },
-              {
-                internalType: "bool",
-                name: "autoCancel",
-                type: "bool",
-              },
-            ],
-            internalType: "struct Order.Flags",
-            name: "flags",
+            internalType: "struct Order.Props",
+            name: "order",
             type: "tuple",
           },
         ],
-        internalType: "struct Order.Props[]",
+        internalType: "struct ReaderUtils.OrderInfo[]",
         name: "",
         type: "tuple[]",
       },
@@ -279,6 +301,11 @@ const _abi = [
       {
         components: [
           {
+            internalType: "bytes32",
+            name: "positionKey",
+            type: "bytes32",
+          },
+          {
             components: [
               {
                 components: [
@@ -318,6 +345,11 @@ const _abi = [
                     internalType: "uint256",
                     name: "collateralAmount",
                     type: "uint256",
+                  },
+                  {
+                    internalType: "int256",
+                    name: "pendingImpactAmount",
+                    type: "int256",
                   },
                   {
                     internalType: "uint256",
@@ -646,13 +678,13 @@ const _abi = [
               },
               {
                 internalType: "uint256",
-                name: "priceImpactDiffUsd",
+                name: "executionPrice",
                 type: "uint256",
               },
               {
-                internalType: "uint256",
-                name: "executionPrice",
-                type: "uint256",
+                internalType: "bool",
+                name: "balanceWasImproved",
+                type: "bool",
               },
             ],
             internalType: "struct ReaderPricingUtils.ExecutionPriceResult",
@@ -750,6 +782,11 @@ const _abi = [
                 type: "uint256",
               },
               {
+                internalType: "int256",
+                name: "pendingImpactAmount",
+                type: "int256",
+              },
+              {
                 internalType: "uint256",
                 name: "borrowingFactor",
                 type: "uint256",
@@ -800,6 +837,108 @@ const _abi = [
         internalType: "struct Position.Props[]",
         name: "",
         type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract DataStore",
+        name: "dataStore",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "market",
+        type: "address",
+      },
+      {
+        internalType: "bool",
+        name: "isLong",
+        type: "bool",
+      },
+      {
+        components: [
+          {
+            components: [
+              {
+                internalType: "uint256",
+                name: "min",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "max",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct Price.Props",
+            name: "indexTokenPrice",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "uint256",
+                name: "min",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "max",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct Price.Props",
+            name: "longTokenPrice",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "uint256",
+                name: "min",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "max",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct Price.Props",
+            name: "shortTokenPrice",
+            type: "tuple",
+          },
+        ],
+        internalType: "struct MarketUtils.MarketPrices",
+        name: "prices",
+        type: "tuple",
+      },
+    ],
+    name: "getAdlState",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+      {
+        internalType: "int256",
+        name: "",
+        type: "int256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -906,6 +1045,11 @@ const _abi = [
                 name: "callbackGasLimit",
                 type: "uint256",
               },
+              {
+                internalType: "uint256",
+                name: "srcChainId",
+                type: "uint256",
+              },
             ],
             internalType: "struct Deposit.Numbers",
             name: "numbers",
@@ -922,6 +1066,11 @@ const _abi = [
             internalType: "struct Deposit.Flags",
             name: "flags",
             type: "tuple",
+          },
+          {
+            internalType: "bytes32[]",
+            name: "_dataList",
+            type: "bytes32[]",
           },
         ],
         internalType: "struct Deposit.Props",
@@ -1076,18 +1225,59 @@ const _abi = [
       {
         components: [
           {
-            internalType: "uint256",
-            name: "min",
-            type: "uint256",
+            components: [
+              {
+                internalType: "uint256",
+                name: "min",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "max",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct Price.Props",
+            name: "indexTokenPrice",
+            type: "tuple",
           },
           {
-            internalType: "uint256",
-            name: "max",
-            type: "uint256",
+            components: [
+              {
+                internalType: "uint256",
+                name: "min",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "max",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct Price.Props",
+            name: "longTokenPrice",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "uint256",
+                name: "min",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "max",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct Price.Props",
+            name: "shortTokenPrice",
+            type: "tuple",
           },
         ],
-        internalType: "struct Price.Props",
-        name: "indexTokenPrice",
+        internalType: "struct MarketUtils.MarketPrices",
+        name: "prices",
         type: "tuple",
       },
       {
@@ -1122,13 +1312,13 @@ const _abi = [
           },
           {
             internalType: "uint256",
-            name: "priceImpactDiffUsd",
+            name: "executionPrice",
             type: "uint256",
           },
           {
-            internalType: "uint256",
-            name: "executionPrice",
-            type: "uint256",
+            internalType: "bool",
+            name: "balanceWasImproved",
+            type: "bool",
           },
         ],
         internalType: "struct ReaderPricingUtils.ExecutionPriceResult",
@@ -2078,6 +2268,11 @@ const _abi = [
             name: "impactPoolAmount",
             type: "uint256",
           },
+          {
+            internalType: "uint256",
+            name: "lentImpactPoolAmount",
+            type: "uint256",
+          },
         ],
         internalType: "struct MarketPoolValueInfo.Props",
         name: "",
@@ -2400,6 +2595,11 @@ const _abi = [
                 name: "validFromTime",
                 type: "uint256",
               },
+              {
+                internalType: "uint256",
+                name: "srcChainId",
+                type: "uint256",
+              },
             ],
             internalType: "struct Order.Numbers",
             name: "numbers",
@@ -2432,10 +2632,44 @@ const _abi = [
             name: "flags",
             type: "tuple",
           },
+          {
+            internalType: "bytes32[]",
+            name: "_dataList",
+            type: "bytes32[]",
+          },
         ],
         internalType: "struct Order.Props",
         name: "",
         type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract DataStore",
+        name: "dataStore",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "market",
+        type: "address",
+      },
+    ],
+    name: "getPendingPositionImpactPoolDistributionAmount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -2663,6 +2897,11 @@ const _abi = [
                 type: "uint256",
               },
               {
+                internalType: "int256",
+                name: "pendingImpactAmount",
+                type: "int256",
+              },
+              {
                 internalType: "uint256",
                 name: "borrowingFactor",
                 type: "uint256",
@@ -2814,6 +3053,11 @@ const _abi = [
       {
         components: [
           {
+            internalType: "bytes32",
+            name: "positionKey",
+            type: "bytes32",
+          },
+          {
             components: [
               {
                 components: [
@@ -2853,6 +3097,11 @@ const _abi = [
                     internalType: "uint256",
                     name: "collateralAmount",
                     type: "uint256",
+                  },
+                  {
+                    internalType: "int256",
+                    name: "pendingImpactAmount",
+                    type: "int256",
                   },
                   {
                     internalType: "uint256",
@@ -3181,13 +3430,13 @@ const _abi = [
               },
               {
                 internalType: "uint256",
-                name: "priceImpactDiffUsd",
+                name: "executionPrice",
                 type: "uint256",
               },
               {
-                internalType: "uint256",
-                name: "executionPrice",
-                type: "uint256",
+                internalType: "bool",
+                name: "balanceWasImproved",
+                type: "bool",
               },
             ],
             internalType: "struct ReaderPricingUtils.ExecutionPriceResult",
@@ -3304,6 +3553,11 @@ const _abi = [
       {
         components: [
           {
+            internalType: "bytes32",
+            name: "positionKey",
+            type: "bytes32",
+          },
+          {
             components: [
               {
                 components: [
@@ -3343,6 +3597,11 @@ const _abi = [
                     internalType: "uint256",
                     name: "collateralAmount",
                     type: "uint256",
+                  },
+                  {
+                    internalType: "int256",
+                    name: "pendingImpactAmount",
+                    type: "int256",
                   },
                   {
                     internalType: "uint256",
@@ -3671,13 +3930,13 @@ const _abi = [
               },
               {
                 internalType: "uint256",
-                name: "priceImpactDiffUsd",
+                name: "executionPrice",
                 type: "uint256",
               },
               {
-                internalType: "uint256",
-                name: "executionPrice",
-                type: "uint256",
+                internalType: "bool",
+                name: "balanceWasImproved",
+                type: "bool",
               },
             ],
             internalType: "struct ReaderPricingUtils.ExecutionPriceResult",
@@ -3913,10 +4172,20 @@ const _abi = [
                 name: "callbackGasLimit",
                 type: "uint256",
               },
+              {
+                internalType: "uint256",
+                name: "srcChainId",
+                type: "uint256",
+              },
             ],
             internalType: "struct Shift.Numbers",
             name: "numbers",
             type: "tuple",
+          },
+          {
+            internalType: "bytes32[]",
+            name: "_dataList",
+            type: "bytes32[]",
           },
         ],
         internalType: "struct Shift.Props",
@@ -4262,6 +4531,11 @@ const _abi = [
                 name: "callbackGasLimit",
                 type: "uint256",
               },
+              {
+                internalType: "uint256",
+                name: "srcChainId",
+                type: "uint256",
+              },
             ],
             internalType: "struct Withdrawal.Numbers",
             name: "numbers",
@@ -4278,6 +4552,11 @@ const _abi = [
             internalType: "struct Withdrawal.Flags",
             name: "flags",
             type: "tuple",
+          },
+          {
+            internalType: "bytes32[]",
+            name: "_dataList",
+            type: "bytes32[]",
           },
         ],
         internalType: "struct Withdrawal.Props",
@@ -4517,6 +4796,11 @@ const _abi = [
       {
         internalType: "bool",
         name: "shouldValidateMinCollateralUsd",
+        type: "bool",
+      },
+      {
+        internalType: "bool",
+        name: "forLiquidation",
         type: "bool",
       },
     ],

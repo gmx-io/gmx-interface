@@ -1,10 +1,10 @@
 import * as ethers from "ethers";
 import { Abi, Hash, parseEventLogs, ParseEventLogsReturnType, PublicClient } from "viem";
 
+import { CustomErrorsAbi } from "ab/testMultichain/getCustomErrorsAbi/getCustomErrorsAbi";
 import { expandDecimals } from "lib/numbers";
+import { LogEntry } from "pages/ParseTransaction/types";
 import { abis } from "sdk/abis";
-
-import { LogEntry } from "./types";
 
 const PANIC_SIGNATURE4 = ethers.id("Panic(uint256)").slice(0, 10);
 const PANIC_MAP = {
@@ -20,7 +20,7 @@ const PANIC_MAP = {
   0x51: "call a zero-initialized variable of internal function type.",
 };
 
-const errorsInterface = new ethers.Interface(abis.CustomErrors);
+const errorsInterface = new ethers.Interface(CustomErrorsAbi);
 const eventEmitterInterface = new ethers.Interface(abis.EventEmitter);
 const defaultAbiCoder = new ethers.AbiCoder();
 

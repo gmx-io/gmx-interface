@@ -1,19 +1,15 @@
 import { ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { ToastContainer, cssTransition } from "react-toastify";
+import { cssTransition, ToastContainer } from "react-toastify";
 import { Hash } from "viem";
-import { useDisconnect } from "wagmi";
 
-import {
-  CURRENT_PROVIDER_LOCALSTORAGE_KEY,
-  REFERRAL_CODE_KEY,
-  SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
-} from "config/localStorage";
+import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useMultichainFundingToast } from "domain/multichain/useMultichainFundingToast";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
-import { REFERRAL_CODE_QUERY_PARAM, getAppBaseUrl, isHomeSite } from "lib/legacy";
+import { getAppBaseUrl, isHomeSite, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
 import { LandingPageAgreementConfirmationEvent } from "lib/userAnalytics/types";
@@ -29,6 +25,7 @@ import { Header } from "components/Header/Header";
 import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
+import { GmxAccountModal } from "components/Synthetics/GmxAccountModal/GmxAccountModal";
 
 import { HomeRoutes } from "./HomeRoutes";
 import { MainRoutes } from "./MainRoutes";
@@ -42,7 +39,6 @@ const Zoom = cssTransition({
 });
 
 export function AppRoutes() {
-  const { disconnect } = useDisconnect();
   const isHome = isHomeSite();
   const location = useLocation();
   const history = useHistory();
@@ -53,6 +49,7 @@ export function AppRoutes() {
   useOpenAppMetric();
   useAccountInitedMetric();
   useWalletConnectedUserAnalyticsEvent();
+  useMultichainFundingToast();
 
   const query = useRouteQuery();
 
@@ -77,13 +74,6 @@ export function AppRoutes() {
       }
     }
   }, [query, history, location]);
-
-  const disconnectAccountAndCloseSettings = () => {
-    disconnect();
-    localStorage.removeItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY);
-    localStorage.removeItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY);
-    setIsSettingsVisible(false);
-  };
 
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
@@ -122,11 +112,7 @@ export function AppRoutes() {
     <>
       <div className="App">
         <div className="App-content">
-          <Header
-            disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-            openSettings={openSettings}
-            showRedirectModal={showRedirectModal}
-          />
+          <Header openSettings={openSettings} showRedirectModal={showRedirectModal} />
           {isHome && <HomeRoutes showRedirectModal={showRedirectModal} />}
           {!isHome && <MainRoutes openSettings={openSettings} />}
         </div>
@@ -152,6 +138,7 @@ export function AppRoutes() {
         setShouldHideRedirectModal={setShouldHideRedirectModal}
         shouldHideRedirectModal={shouldHideRedirectModal}
       />
+      <GmxAccountModal />
       <SettingsModal isSettingsVisible={isSettingsVisible} setIsSettingsVisible={setIsSettingsVisible} />
       <NotifyModal />
     </>

@@ -3,7 +3,7 @@ import cx from "classnames";
 import { ZeroAddress, ethers } from "ethers";
 import { useCallback, useMemo, useState } from "react";
 
-import { ARBITRUM } from "config/chains";
+import { ARBITRUM, ContractsChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIcons } from "config/icons";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
@@ -27,13 +27,15 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
+import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
+import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 
 import { GMX_DAO_LINKS } from "./constants";
 
 export function StakeModal(props: {
   isVisible: boolean;
   setIsVisible: (isVisible: boolean) => void;
-  chainId: number;
+  chainId: ContractsChainId;
   title: string;
   maxAmount: bigint | undefined;
   value: string;
@@ -239,10 +241,13 @@ export function StakeModal(props: {
           </AlertInfo>
         ) : null}
 
+        <SwitchToSettlementChainWarning topic="staking" />
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
-            {primaryText}
-          </Button>
+          <SwitchToSettlementChainButtons>
+            <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
+              {primaryText}
+            </Button>
+          </SwitchToSettlementChainButtons>
         </div>
       </Modal>
     </div>

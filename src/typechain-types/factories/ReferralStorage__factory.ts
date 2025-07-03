@@ -7,6 +7,22 @@ import type { ReferralStorage, ReferralStorageInterface } from "../ReferralStora
 
 const _abi = [
   {
+    inputs: [
+      {
+        internalType: "address",
+        name: "msgSender",
+        type: "address",
+      },
+      {
+        internalType: "string",
+        name: "role",
+        type: "string",
+      },
+    ],
+    name: "Unauthorized",
+    type: "error",
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -67,6 +83,25 @@ const _abi = [
       },
     ],
     name: "SetCodeOwner",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "prevGov",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "nextGov",
+        type: "address",
+      },
+    ],
+    name: "SetGov",
     type: "event",
   },
   {
@@ -184,6 +219,13 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "acceptOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "bytes32",
@@ -277,6 +319,19 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "pendingGov",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -341,19 +396,6 @@ const _abi = [
       },
     ],
     name: "setCodeOwner",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "_gov",
-        type: "address",
-      },
-    ],
-    name: "setGov",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -502,6 +544,19 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_newGov",
+        type: "address",
+      },
+    ],
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
 ] as const;

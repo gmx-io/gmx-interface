@@ -5,6 +5,7 @@ import {
   selectChainId,
   selectGlvInfo,
   selectGlvInfoLoading,
+  selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarketTokensData } from "domain/synthetics/markets";
@@ -36,10 +37,11 @@ export function GlvList({
   gmPerformanceSnapshots,
 }: Props) {
   const chainId = useSelector(selectChainId);
+  const srcChainId = useSelector(selectSrcChainId);
   const marketsInfo = useSelector(selectGlvInfo);
   const glvsLoading = useSelector(selectGlvInfoLoading);
 
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit, withGlv: true });
+  const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit, withGlv: true });
 
   const isLoading = !marketsInfo || !marketTokensData || glvsLoading;
 

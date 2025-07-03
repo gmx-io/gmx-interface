@@ -8,6 +8,7 @@ import type {
   FunctionFragment,
   Result,
   Interface,
+  EventFragment,
   AddressLike,
   ContractRunner,
   ContractMethod,
@@ -17,12 +18,13 @@ import type {
   TypedContractEvent,
   TypedDeferredTopicFilter,
   TypedEventLog,
+  TypedLogDescription,
   TypedListener,
   TypedContractMethod,
 } from "./common";
 
-export declare namespace GlvDepositUtils {
-  export type CreateGlvDepositParamsStruct = {
+export declare namespace IGlvDepositUtils {
+  export type CreateGlvDepositParamsAddressesStruct = {
     glv: AddressLike;
     market: AddressLike;
     receiver: AddressLike;
@@ -32,14 +34,9 @@ export declare namespace GlvDepositUtils {
     initialShortToken: AddressLike;
     longTokenSwapPath: AddressLike[];
     shortTokenSwapPath: AddressLike[];
-    minGlvTokens: BigNumberish;
-    executionFee: BigNumberish;
-    callbackGasLimit: BigNumberish;
-    shouldUnwrapNativeToken: boolean;
-    isMarketTokenDeposit: boolean;
   };
 
-  export type CreateGlvDepositParamsStructOutput = [
+  export type CreateGlvDepositParamsAddressesStructOutput = [
     glv: string,
     market: string,
     receiver: string,
@@ -49,11 +46,6 @@ export declare namespace GlvDepositUtils {
     initialShortToken: string,
     longTokenSwapPath: string[],
     shortTokenSwapPath: string[],
-    minGlvTokens: bigint,
-    executionFee: bigint,
-    callbackGasLimit: bigint,
-    shouldUnwrapNativeToken: boolean,
-    isMarketTokenDeposit: boolean,
   ] & {
     glv: string;
     market: string;
@@ -64,16 +56,39 @@ export declare namespace GlvDepositUtils {
     initialShortToken: string;
     longTokenSwapPath: string[];
     shortTokenSwapPath: string[];
+  };
+
+  export type CreateGlvDepositParamsStruct = {
+    addresses: IGlvDepositUtils.CreateGlvDepositParamsAddressesStruct;
+    minGlvTokens: BigNumberish;
+    executionFee: BigNumberish;
+    callbackGasLimit: BigNumberish;
+    shouldUnwrapNativeToken: boolean;
+    isMarketTokenDeposit: boolean;
+    dataList: BytesLike[];
+  };
+
+  export type CreateGlvDepositParamsStructOutput = [
+    addresses: IGlvDepositUtils.CreateGlvDepositParamsAddressesStructOutput,
+    minGlvTokens: bigint,
+    executionFee: bigint,
+    callbackGasLimit: bigint,
+    shouldUnwrapNativeToken: boolean,
+    isMarketTokenDeposit: boolean,
+    dataList: string[],
+  ] & {
+    addresses: IGlvDepositUtils.CreateGlvDepositParamsAddressesStructOutput;
     minGlvTokens: bigint;
     executionFee: bigint;
     callbackGasLimit: bigint;
     shouldUnwrapNativeToken: boolean;
     isMarketTokenDeposit: boolean;
+    dataList: string[];
   };
 }
 
-export declare namespace GlvWithdrawalUtils {
-  export type CreateGlvWithdrawalParamsStruct = {
+export declare namespace IGlvWithdrawalUtils {
+  export type CreateGlvWithdrawalParamsAddressesStruct = {
     receiver: AddressLike;
     callbackContract: AddressLike;
     uiFeeReceiver: AddressLike;
@@ -81,14 +96,9 @@ export declare namespace GlvWithdrawalUtils {
     glv: AddressLike;
     longTokenSwapPath: AddressLike[];
     shortTokenSwapPath: AddressLike[];
-    minLongTokenAmount: BigNumberish;
-    minShortTokenAmount: BigNumberish;
-    shouldUnwrapNativeToken: boolean;
-    executionFee: BigNumberish;
-    callbackGasLimit: BigNumberish;
   };
 
-  export type CreateGlvWithdrawalParamsStructOutput = [
+  export type CreateGlvWithdrawalParamsAddressesStructOutput = [
     receiver: string,
     callbackContract: string,
     uiFeeReceiver: string,
@@ -96,11 +106,6 @@ export declare namespace GlvWithdrawalUtils {
     glv: string,
     longTokenSwapPath: string[],
     shortTokenSwapPath: string[],
-    minLongTokenAmount: bigint,
-    minShortTokenAmount: bigint,
-    shouldUnwrapNativeToken: boolean,
-    executionFee: bigint,
-    callbackGasLimit: bigint,
   ] & {
     receiver: string;
     callbackContract: string;
@@ -109,11 +114,34 @@ export declare namespace GlvWithdrawalUtils {
     glv: string;
     longTokenSwapPath: string[];
     shortTokenSwapPath: string[];
+  };
+
+  export type CreateGlvWithdrawalParamsStruct = {
+    addresses: IGlvWithdrawalUtils.CreateGlvWithdrawalParamsAddressesStruct;
+    minLongTokenAmount: BigNumberish;
+    minShortTokenAmount: BigNumberish;
+    shouldUnwrapNativeToken: boolean;
+    executionFee: BigNumberish;
+    callbackGasLimit: BigNumberish;
+    dataList: BytesLike[];
+  };
+
+  export type CreateGlvWithdrawalParamsStructOutput = [
+    addresses: IGlvWithdrawalUtils.CreateGlvWithdrawalParamsAddressesStructOutput,
+    minLongTokenAmount: bigint,
+    minShortTokenAmount: bigint,
+    shouldUnwrapNativeToken: boolean,
+    executionFee: bigint,
+    callbackGasLimit: bigint,
+    dataList: string[],
+  ] & {
+    addresses: IGlvWithdrawalUtils.CreateGlvWithdrawalParamsAddressesStructOutput;
     minLongTokenAmount: bigint;
     minShortTokenAmount: bigint;
     shouldUnwrapNativeToken: boolean;
     executionFee: bigint;
     callbackGasLimit: bigint;
+    dataList: string[];
   };
 }
 
@@ -157,7 +185,8 @@ export interface GlvRouterInterface extends Interface {
       | "dataStore"
       | "eventEmitter"
       | "externalHandler"
-      | "glvHandler"
+      | "glvDepositHandler"
+      | "glvWithdrawalHandler"
       | "makeExternalCalls"
       | "multicall"
       | "roleStore"
@@ -171,20 +200,23 @@ export interface GlvRouterInterface extends Interface {
       | "simulateExecuteLatestGlvWithdrawal"
   ): FunctionFragment;
 
+  getEvent(nameOrSignatureOrTopic: "TokenTransferReverted"): EventFragment;
+
   encodeFunctionData(functionFragment: "cancelGlvDeposit", values: [BytesLike]): string;
   encodeFunctionData(functionFragment: "cancelGlvWithdrawal", values: [BytesLike]): string;
   encodeFunctionData(
     functionFragment: "createGlvDeposit",
-    values: [GlvDepositUtils.CreateGlvDepositParamsStruct]
+    values: [IGlvDepositUtils.CreateGlvDepositParamsStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "createGlvWithdrawal",
-    values: [GlvWithdrawalUtils.CreateGlvWithdrawalParamsStruct]
+    values: [IGlvWithdrawalUtils.CreateGlvWithdrawalParamsStruct]
   ): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
   encodeFunctionData(functionFragment: "externalHandler", values?: undefined): string;
-  encodeFunctionData(functionFragment: "glvHandler", values?: undefined): string;
+  encodeFunctionData(functionFragment: "glvDepositHandler", values?: undefined): string;
+  encodeFunctionData(functionFragment: "glvWithdrawalHandler", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "makeExternalCalls",
     values: [AddressLike[], BytesLike[], AddressLike[], AddressLike[]]
@@ -219,7 +251,8 @@ export interface GlvRouterInterface extends Interface {
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "eventEmitter", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "externalHandler", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "glvHandler", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "glvDepositHandler", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "glvWithdrawalHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "makeExternalCalls", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "multicall", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "roleStore", data: BytesLike): Result;
@@ -231,6 +264,19 @@ export interface GlvRouterInterface extends Interface {
   decodeFunctionResult(functionFragment: "simulateExecuteGlvWithdrawal", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "simulateExecuteLatestGlvDeposit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "simulateExecuteLatestGlvWithdrawal", data: BytesLike): Result;
+}
+
+export namespace TokenTransferRevertedEvent {
+  export type InputTuple = [reason: string, returndata: BytesLike];
+  export type OutputTuple = [reason: string, returndata: string];
+  export interface OutputObject {
+    reason: string;
+    returndata: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
 
 export interface GlvRouter extends BaseContract {
@@ -270,10 +316,10 @@ export interface GlvRouter extends BaseContract {
 
   cancelGlvWithdrawal: TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
 
-  createGlvDeposit: TypedContractMethod<[params: GlvDepositUtils.CreateGlvDepositParamsStruct], [string], "payable">;
+  createGlvDeposit: TypedContractMethod<[params: IGlvDepositUtils.CreateGlvDepositParamsStruct], [string], "payable">;
 
   createGlvWithdrawal: TypedContractMethod<
-    [params: GlvWithdrawalUtils.CreateGlvWithdrawalParamsStruct],
+    [params: IGlvWithdrawalUtils.CreateGlvWithdrawalParamsStruct],
     [string],
     "payable"
   >;
@@ -284,7 +330,9 @@ export interface GlvRouter extends BaseContract {
 
   externalHandler: TypedContractMethod<[], [string], "view">;
 
-  glvHandler: TypedContractMethod<[], [string], "view">;
+  glvDepositHandler: TypedContractMethod<[], [string], "view">;
+
+  glvWithdrawalHandler: TypedContractMethod<[], [string], "view">;
 
   makeExternalCalls: TypedContractMethod<
     [
@@ -294,7 +342,7 @@ export interface GlvRouter extends BaseContract {
       refundReceivers: AddressLike[],
     ],
     [void],
-    "nonpayable"
+    "payable"
   >;
 
   multicall: TypedContractMethod<[data: BytesLike[]], [string[]], "payable">;
@@ -339,14 +387,15 @@ export interface GlvRouter extends BaseContract {
   getFunction(nameOrSignature: "cancelGlvWithdrawal"): TypedContractMethod<[key: BytesLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "createGlvDeposit"
-  ): TypedContractMethod<[params: GlvDepositUtils.CreateGlvDepositParamsStruct], [string], "payable">;
+  ): TypedContractMethod<[params: IGlvDepositUtils.CreateGlvDepositParamsStruct], [string], "payable">;
   getFunction(
     nameOrSignature: "createGlvWithdrawal"
-  ): TypedContractMethod<[params: GlvWithdrawalUtils.CreateGlvWithdrawalParamsStruct], [string], "payable">;
+  ): TypedContractMethod<[params: IGlvWithdrawalUtils.CreateGlvWithdrawalParamsStruct], [string], "payable">;
   getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "externalHandler"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "glvHandler"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "glvDepositHandler"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "glvWithdrawalHandler"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "makeExternalCalls"
   ): TypedContractMethod<
@@ -357,7 +406,7 @@ export interface GlvRouter extends BaseContract {
       refundReceivers: AddressLike[],
     ],
     [void],
-    "nonpayable"
+    "payable"
   >;
   getFunction(nameOrSignature: "multicall"): TypedContractMethod<[data: BytesLike[]], [string[]], "payable">;
   getFunction(nameOrSignature: "roleStore"): TypedContractMethod<[], [string], "view">;
@@ -392,5 +441,24 @@ export interface GlvRouter extends BaseContract {
     nameOrSignature: "simulateExecuteLatestGlvWithdrawal"
   ): TypedContractMethod<[simulatedOracleParams: OracleUtils.SimulatePricesParamsStruct], [void], "payable">;
 
-  filters: {};
+  getEvent(
+    key: "TokenTransferReverted"
+  ): TypedContractEvent<
+    TokenTransferRevertedEvent.InputTuple,
+    TokenTransferRevertedEvent.OutputTuple,
+    TokenTransferRevertedEvent.OutputObject
+  >;
+
+  filters: {
+    "TokenTransferReverted(string,bytes)": TypedContractEvent<
+      TokenTransferRevertedEvent.InputTuple,
+      TokenTransferRevertedEvent.OutputTuple,
+      TokenTransferRevertedEvent.OutputObject
+    >;
+    TokenTransferReverted: TypedContractEvent<
+      TokenTransferRevertedEvent.InputTuple,
+      TokenTransferRevertedEvent.OutputTuple,
+      TokenTransferRevertedEvent.OutputObject
+    >;
+  };
 }

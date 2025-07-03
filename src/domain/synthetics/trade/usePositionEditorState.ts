@@ -1,44 +1,46 @@
+import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Address } from "viem";
 
-import { getSyntheticsCollateralEditAddressKey, getSyntheticsCollateralEditAddressMapKey } from "config/localStorage";
+import { ContractsChainId, SourceChainId } from "config/chains";
+import {
+  getSyntheticsCollateralEditAddressMapKey,
+  getSyntheticsCollateralEditTokenIsFromGmxAccountMapKey,
+} from "config/localStorage";
+import { isSettlementChain } from "config/multichain";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { SUPPORTED_CHAIN_IDS } from "sdk/configs/chains";
-import { getTokens } from "sdk/configs/tokens";
 
 import { parsePositionKey } from "../positions";
-
 export type PositionEditorState = ReturnType<typeof usePositionEditorState>;
 
-// start script to migrate getSyntheticsCollateralEditAddressKey to getSyntheticsCollateralEditAddressMapKey
-
-for (const chainId of SUPPORTED_CHAIN_IDS) {
-  const mapKey = getSyntheticsCollateralEditAddressMapKey(chainId);
-  const alreadyExists = localStorage.getItem(JSON.stringify(mapKey));
-  if (alreadyExists) {
-    continue;
-  }
-  const map = {};
-  for (const token of getTokens(chainId)) {
-    const key = getSyntheticsCollateralEditAddressKey(chainId, token.address);
-    const rawValue = localStorage.getItem(JSON.stringify(key));
-    if (!rawValue) {
-      continue;
-    }
-    map[token.address] = JSON.parse(rawValue);
-
-    localStorage.removeItem(JSON.stringify(key));
-  }
-
-  localStorage.setItem(JSON.stringify(mapKey), JSON.stringify(map));
-}
-
-export function usePositionEditorState(chainId: number) {
+export function usePositionEditorState(chainId: ContractsChainId, srcChainId: SourceChainId | undefined) {
   const [editingPositionKey, setEditingPositionKey] = useState<string>();
   const [collateralInputValue, setCollateralInputValue] = useState("");
   const [selectedCollateralAddressMap, setSelectedCollateralAddressMap] = useLocalStorageSerializeKey<
     Partial<Record<Address, Address>>
   >(getSyntheticsCollateralEditAddressMapKey(chainId), {});
+  const [_isCollateralTokenFromGmxAccount, _setIsCollateralTokenFromGmxAccount] = useLocalStorageSerializeKey<boolean>(
+    getSyntheticsCollateralEditTokenIsFromGmxAccountMapKey(chainId),
+    false
+  );
+
+  let isCollateralTokenFromGmxAccount = false;
+  if (srcChainId !== undefined) {
+    isCollateralTokenFromGmxAccount = true;
+  } else if (!isSettlementChain(chainId)) {
+    isCollateralTokenFromGmxAccount = false;
+  } else {
+    isCollateralTokenFromGmxAccount = Boolean(_isCollateralTokenFromGmxAccount);
+  }
+
+  let setIsCollateralTokenFromGmxAccount: (value: boolean) => void;
+  if (srcChainId !== undefined) {
+    setIsCollateralTokenFromGmxAccount = noop;
+  } else if (!isSettlementChain(chainId)) {
+    setIsCollateralTokenFromGmxAccount = noop;
+  } else {
+    setIsCollateralTokenFromGmxAccount = _setIsCollateralTokenFromGmxAccount;
+  }
 
   const setSelectedCollateralAddress = useCallback(
     (selectedCollateralAddress: Address) => {
@@ -56,7 +58,8 @@ export function usePositionEditorState(chainId: number) {
   useEffect(() => {
     setEditingPositionKey(undefined);
     setCollateralInputValue("");
-  }, [chainId]);
+    _setIsCollateralTokenFromGmxAccount(srcChainId !== undefined);
+  }, [_setIsCollateralTokenFromGmxAccount, chainId, srcChainId]);
 
   return useMemo(
     () => ({
@@ -66,7 +69,16 @@ export function usePositionEditorState(chainId: number) {
       setCollateralInputValue,
       selectedCollateralAddressMap,
       setSelectedCollateralAddress,
+      isCollateralTokenFromGmxAccount,
+      setIsCollateralTokenFromGmxAccount,
     }),
-    [collateralInputValue, editingPositionKey, selectedCollateralAddressMap, setSelectedCollateralAddress]
+    [
+      collateralInputValue,
+      editingPositionKey,
+      selectedCollateralAddressMap,
+      setSelectedCollateralAddress,
+      isCollateralTokenFromGmxAccount,
+      setIsCollateralTokenFromGmxAccount,
+    ]
   );
 }

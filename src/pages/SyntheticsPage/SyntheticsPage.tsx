@@ -17,6 +17,7 @@ import {
   selectChainId,
   selectOrdersInfoData,
   selectPositionsInfoData,
+  selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import {
@@ -25,8 +26,7 @@ import {
   selectTradeboxState,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
@@ -45,8 +45,10 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMeasureComponentMountTime } from "lib/metrics/useMeasureComponentMountTime";
 import { formatUsdPrice } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { useJsonRpcProvider } from "lib/rpc";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
+import { ContractsChainId } from "sdk/configs/chains";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getOrderKeys } from "sdk/utils/orders";
 
@@ -398,8 +400,10 @@ export function SyntheticsPage(p: Props) {
 }
 
 function useOrdersControl() {
-  const chainId = useSelector(selectChainId);
+  const chainId = useSelector(selectChainId) as ContractsChainId;
+  const srcChainId = useSelector(selectSrcChainId);
   const signer = useEthersSigner();
+  const { provider } = useJsonRpcProvider(chainId);
   const [cancellingOrdersKeys, setCanellingOrdersKeys] = useCancellingOrdersKeysState();
   const [selectedOrderKeys, setSelectedOrderKeys] = useState<string[]>(EMPTY_ARRAY);
 
@@ -414,7 +418,7 @@ function useOrdersControl() {
 
   const onCancelSelectedOrders = useCallback(
     async function cancelSelectedOrders() {
-      if (!signer) return;
+      if (!signer || !provider) return;
       const orders = selectedOrderKeys.map((key) => getByKey(ordersInfoData, key)).filter(defined) as OrderInfo[];
       const orderKeys = orders.flatMap(getOrderKeys);
       setCanellingOrdersKeys((p) => uniq(p.concat(orderKeys)));
@@ -432,7 +436,8 @@ function useOrdersControl() {
         globalExpressParams,
         requireValidations: true,
         estimationMethod: "approximate",
-        provider: undefined,
+        provider,
+        isGmxAccount: srcChainId !== undefined,
       });
 
       sendBatchOrderTxn({
@@ -441,8 +446,9 @@ function useOrdersControl() {
         expressParams,
         batchParams,
         simulationParams: undefined,
-        noncesData: globalExpressParams?.noncesData,
+        provider,
         callback: makeOrderTxnCallback({}),
+        isGmxAccount: srcChainId !== undefined,
       })
         .then(async (tx) => {
           const txnResult = await tx.wait();
@@ -459,15 +465,17 @@ function useOrdersControl() {
       globalExpressParams,
       makeOrderTxnCallback,
       ordersInfoData,
+      provider,
       selectedOrderKeys,
       setCanellingOrdersKeys,
       signer,
+      srcChainId,
     ]
   );
 
   const onCancelOrder = useCallback(
     async function cancelOrder(key: string) {
-      if (!signer) return;
+      if (!signer || !provider) return;
       const order = getByKey(ordersInfoData, key);
       if (!order) return;
 
@@ -488,23 +496,34 @@ function useOrdersControl() {
         globalExpressParams,
         requireValidations: true,
         estimationMethod: "approximate",
-        provider: undefined,
+        provider,
+        isGmxAccount: srcChainId !== undefined,
       });
 
       sendBatchOrderTxn({
         chainId,
         signer,
+        provider,
         expressParams,
         batchParams,
         simulationParams: undefined,
-        noncesData: globalExpressParams?.noncesData,
         callback: makeOrderTxnCallback({}),
+        isGmxAccount: srcChainId !== undefined,
       }).finally(() => {
         setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key));
         setSelectedOrderKeys((prev) => prev.filter((k) => k !== key));
       });
     },
-    [chainId, globalExpressParams, makeOrderTxnCallback, ordersInfoData, setCanellingOrdersKeys, signer]
+    [
+      chainId,
+      globalExpressParams,
+      makeOrderTxnCallback,
+      ordersInfoData,
+      provider,
+      setCanellingOrdersKeys,
+      signer,
+      srcChainId,
+    ]
   );
 
   return {

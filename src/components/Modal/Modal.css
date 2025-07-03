@@ -1,6 +1,10 @@
+:root {
+  --modal-z-index: 1001;
+}
+
 .Modal {
   position: fixed;
-  z-index: 1001;
+  z-index: var(--modal-z-index);
   top: 0;
   left: 0;
   right: 0;
@@ -49,7 +53,7 @@
 }
 
 .Modal-header-wrapper {
-  margin: 1.5rem;
+  padding: 1.5rem;
 }
 
 .Modal-title-bar {

@@ -6,12 +6,15 @@ import { getContract } from "configs/contracts";
 import { MARKETS } from "configs/markets";
 import { getTokenBySymbol, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { DecreasePositionSwapType, OrderType } from "types/orders";
+import { ContractPrice, ERC20Address } from "types/tokens";
 import { MaxUint256, parseValue, USD_DECIMALS } from "utils/numbers";
 import {
   buildIncreaseOrderPayload,
   buildTwapOrdersPayloads,
   CreateOrderPayload,
+  CreateOrderTxnParams,
   getIsTwapOrderPayload,
+  IncreasePositionOrderParams,
 } from "utils/orderTransactions";
 import { decodeTwapUiFeeReceiver } from "utils/twap/uiFeeReceiver";
 
@@ -58,7 +61,7 @@ describe("Increase Order Payloads", () => {
     acceptablePrice: parseValue("1200", USD_DECIMALS)!, // $1200 base price
     triggerPrice: 0n,
     externalSwapQuote: undefined,
-  };
+  } satisfies Partial<IncreasePositionOrderParams>;
 
   describe("buildIncreaseOrderPayload", () => {
     it("Market Increase Long Pay with Native Token", () => {
@@ -79,14 +82,14 @@ describe("Increase Order Payloads", () => {
             callbackContract: zeroAddress,
             uiFeeReceiver: UI_FEE_RECEIVER,
             market: params.marketAddress,
-            initialCollateralToken: WETH.address,
+            initialCollateralToken: WETH.address as ERC20Address,
             swapPath: [ETH_MARKET.marketTokenAddress],
           },
           numbers: {
             sizeDeltaUsd: parseValue("1000", USD_DECIMALS)!,
             initialCollateralDeltaAmount: parseValue("1", WETH.decimals)!,
             triggerPrice: 0n,
-            acceptablePrice: parseValue("1206", USD_DECIMALS - WETH.decimals)!, // $1200 + 0.5% slippage
+            acceptablePrice: parseValue("1206", USD_DECIMALS - WETH.decimals)! as ContractPrice, // $1200 + 0.5% slippage
             executionFee: EXECUTION_FEE_AMOUNT,
             callbackGasLimit: 0n,
             minOutputAmount: 0n,
@@ -98,12 +101,13 @@ describe("Increase Order Payloads", () => {
           shouldUnwrapNativeToken: true,
           autoCancel: false,
           referralCode: REFERRAL_CODE,
+          dataList: [],
         },
         params,
         tokenTransfersParams: {
           isNativePayment: true,
           isNativeReceive: false,
-          initialCollateralTokenAddress: WETH.address,
+          initialCollateralTokenAddress: WETH.address as ERC20Address,
           initialCollateralDeltaAmount: parseValue("1", WETH.decimals)!,
           tokenTransfers: [
             {
@@ -119,7 +123,7 @@ describe("Increase Order Payloads", () => {
           value: EXECUTION_FEE_AMOUNT + parseValue("1", WETH.decimals)!,
           externalCalls: undefined,
         },
-      });
+      } satisfies CreateOrderTxnParams<IncreasePositionOrderParams>);
     });
 
     it("Market Increase Short Pay with Native Token", () => {
@@ -140,14 +144,14 @@ describe("Increase Order Payloads", () => {
             callbackContract: zeroAddress,
             uiFeeReceiver: UI_FEE_RECEIVER,
             market: params.marketAddress,
-            initialCollateralToken: WETH.address,
+            initialCollateralToken: WETH.address as ERC20Address,
             swapPath: [ETH_MARKET.marketTokenAddress],
           },
           numbers: {
             sizeDeltaUsd: parseValue("1000", USD_DECIMALS)!,
             initialCollateralDeltaAmount: parseValue("1", WETH.decimals)!,
             triggerPrice: 0n,
-            acceptablePrice: parseValue("1194", USD_DECIMALS - WETH.decimals)!, // $1200 - 0.5% slippage
+            acceptablePrice: parseValue("1194", USD_DECIMALS - WETH.decimals)! as ContractPrice, // $1200 - 0.5% slippage
             executionFee: EXECUTION_FEE_AMOUNT,
             callbackGasLimit: 0n,
             minOutputAmount: 0n,
@@ -159,12 +163,13 @@ describe("Increase Order Payloads", () => {
           shouldUnwrapNativeToken: true,
           autoCancel: false,
           referralCode: REFERRAL_CODE,
+          dataList: [],
         },
         params,
         tokenTransfersParams: {
           isNativePayment: true,
           isNativeReceive: false,
-          initialCollateralTokenAddress: WETH.address,
+          initialCollateralTokenAddress: WETH.address as ERC20Address,
           initialCollateralDeltaAmount: parseValue("1", WETH.decimals)!,
           tokenTransfers: [
             {
@@ -180,7 +185,7 @@ describe("Increase Order Payloads", () => {
           value: EXECUTION_FEE_AMOUNT + parseValue("1", WETH.decimals)!,
           externalCalls: undefined,
         },
-      });
+      } satisfies CreateOrderTxnParams<IncreasePositionOrderParams>);
     });
 
     it("Market Increase Pay with ERC20", () => {
@@ -200,14 +205,14 @@ describe("Increase Order Payloads", () => {
             callbackContract: zeroAddress,
             uiFeeReceiver: UI_FEE_RECEIVER,
             market: params.marketAddress,
-            initialCollateralToken: USDC.address,
+            initialCollateralToken: USDC.address as ERC20Address,
             swapPath: [ETH_MARKET.marketTokenAddress],
           },
           numbers: {
             sizeDeltaUsd: parseValue("1000", USD_DECIMALS)!,
             initialCollateralDeltaAmount: parseValue("1000", USDC.decimals)!,
             triggerPrice: 0n,
-            acceptablePrice: parseValue("1206", USD_DECIMALS - WETH.decimals)!,
+            acceptablePrice: parseValue("1206", USD_DECIMALS - WETH.decimals)! as ContractPrice,
             executionFee: EXECUTION_FEE_AMOUNT,
             callbackGasLimit: 0n,
             minOutputAmount: 0n,
@@ -219,12 +224,13 @@ describe("Increase Order Payloads", () => {
           shouldUnwrapNativeToken: false,
           autoCancel: false,
           referralCode: REFERRAL_CODE,
+          dataList: [],
         },
         params,
         tokenTransfersParams: {
           isNativePayment: false,
           isNativeReceive: false,
-          initialCollateralTokenAddress: USDC.address,
+          initialCollateralTokenAddress: USDC.address as ERC20Address,
           initialCollateralDeltaAmount: parseValue("1000", USDC.decimals)!,
           tokenTransfers: [
             {
@@ -245,7 +251,7 @@ describe("Increase Order Payloads", () => {
           value: EXECUTION_FEE_AMOUNT,
           externalCalls: undefined,
         },
-      });
+      } satisfies CreateOrderTxnParams<IncreasePositionOrderParams>);
     });
 
     it("Market Increase with Internal Swap", () => {
@@ -267,14 +273,14 @@ describe("Increase Order Payloads", () => {
             callbackContract: zeroAddress,
             uiFeeReceiver: UI_FEE_RECEIVER,
             market: params.marketAddress,
-            initialCollateralToken: USDC.address,
+            initialCollateralToken: USDC.address as ERC20Address,
             swapPath: [ETH_MARKET.marketTokenAddress],
           },
           numbers: {
             sizeDeltaUsd: parseValue("1000", USD_DECIMALS)!,
             initialCollateralDeltaAmount: parseValue("1000", USDC.decimals)!,
             triggerPrice: 0n,
-            acceptablePrice: parseValue("1206", USD_DECIMALS - WETH.decimals)!,
+            acceptablePrice: parseValue("1206", USD_DECIMALS - WETH.decimals)! as ContractPrice,
             executionFee: EXECUTION_FEE_AMOUNT,
             callbackGasLimit: 0n,
             minOutputAmount: 0n,
@@ -286,12 +292,13 @@ describe("Increase Order Payloads", () => {
           shouldUnwrapNativeToken: false,
           autoCancel: false,
           referralCode: REFERRAL_CODE,
+          dataList: [],
         },
         params,
         tokenTransfersParams: {
           isNativePayment: false,
           isNativeReceive: false,
-          initialCollateralTokenAddress: USDC.address,
+          initialCollateralTokenAddress: USDC.address as ERC20Address,
           initialCollateralDeltaAmount: parseValue("1000", USDC.decimals)!,
           tokenTransfers: [
             {
@@ -312,7 +319,7 @@ describe("Increase Order Payloads", () => {
           value: EXECUTION_FEE_AMOUNT,
           externalCalls: undefined,
         },
-      });
+      } satisfies CreateOrderTxnParams<IncreasePositionOrderParams>);
     });
 
     it("Market Increase with External Swap, Pay With Native Token", () => {
@@ -342,14 +349,14 @@ describe("Increase Order Payloads", () => {
             callbackContract: zeroAddress,
             uiFeeReceiver: UI_FEE_RECEIVER,
             market: params.marketAddress,
-            initialCollateralToken: USDC.address,
+            initialCollateralToken: USDC.address as ERC20Address,
             swapPath: [],
           },
           numbers: {
             sizeDeltaUsd: parseValue("1000", USD_DECIMALS)!,
             initialCollateralDeltaAmount: 0n,
             triggerPrice: 0n,
-            acceptablePrice: parseValue("1206", USD_DECIMALS - WETH.decimals)!,
+            acceptablePrice: parseValue("1206", USD_DECIMALS - WETH.decimals)! as ContractPrice,
             executionFee: EXECUTION_FEE_AMOUNT,
             callbackGasLimit: 0n,
             minOutputAmount: 0n,
@@ -361,12 +368,13 @@ describe("Increase Order Payloads", () => {
           shouldUnwrapNativeToken: true,
           autoCancel: false,
           referralCode: REFERRAL_CODE,
+          dataList: [],
         },
         params,
         tokenTransfersParams: {
           isNativePayment: true,
           isNativeReceive: false,
-          initialCollateralTokenAddress: USDC.address,
+          initialCollateralTokenAddress: USDC.address as ERC20Address,
           initialCollateralDeltaAmount: 0n,
           tokenTransfers: [
             {
@@ -391,10 +399,10 @@ describe("Increase Order Payloads", () => {
             refundReceivers: [RECEIVER, RECEIVER],
             refundTokens: [WETH.address, USDC.address],
             sendAmounts: [parseValue("1", WETH.decimals)!],
-            sendTokens: [WETH.address],
+            sendTokens: [WETH.address as ERC20Address],
           },
         },
-      });
+      } satisfies CreateOrderTxnParams<IncreasePositionOrderParams>);
     });
 
     it("Market Increase with External Swap, Pay With ERC20", () => {
@@ -424,14 +432,14 @@ describe("Increase Order Payloads", () => {
             callbackContract: zeroAddress,
             uiFeeReceiver: UI_FEE_RECEIVER,
             market: params.marketAddress,
-            initialCollateralToken: WETH.address,
+            initialCollateralToken: WETH.address as ERC20Address,
             swapPath: [],
           },
           numbers: {
             sizeDeltaUsd: parseValue("1000", USD_DECIMALS)!,
             initialCollateralDeltaAmount: 0n,
             triggerPrice: 0n,
-            acceptablePrice: parseValue("1206", USD_DECIMALS - WETH.decimals)!,
+            acceptablePrice: parseValue("1206", USD_DECIMALS - WETH.decimals)! as ContractPrice,
             executionFee: EXECUTION_FEE_AMOUNT,
             callbackGasLimit: 0n,
             minOutputAmount: 0n,
@@ -443,12 +451,13 @@ describe("Increase Order Payloads", () => {
           shouldUnwrapNativeToken: false,
           autoCancel: false,
           referralCode: REFERRAL_CODE,
+          dataList: [],
         },
         params,
         tokenTransfersParams: {
           isNativePayment: false,
           isNativeReceive: false,
-          initialCollateralTokenAddress: WETH.address,
+          initialCollateralTokenAddress: WETH.address as ERC20Address,
           initialCollateralDeltaAmount: 0n,
           tokenTransfers: [
             {
@@ -474,10 +483,10 @@ describe("Increase Order Payloads", () => {
             refundReceivers: [RECEIVER, RECEIVER],
             refundTokens: [USDC.address, WETH.address],
             sendAmounts: [parseValue("1000", USDC.decimals)!],
-            sendTokens: [USDC.address],
+            sendTokens: [USDC.address as ERC20Address],
           },
         },
-      });
+      } satisfies CreateOrderTxnParams<IncreasePositionOrderParams>);
     });
 
     it("Limit Increase", () => {
@@ -499,14 +508,14 @@ describe("Increase Order Payloads", () => {
             callbackContract: zeroAddress,
             uiFeeReceiver: UI_FEE_RECEIVER,
             market: params.marketAddress,
-            initialCollateralToken: WETH.address,
+            initialCollateralToken: WETH.address as ERC20Address,
             swapPath: [ETH_MARKET.marketTokenAddress],
           },
           numbers: {
             sizeDeltaUsd: parseValue("1000", USD_DECIMALS)!,
             initialCollateralDeltaAmount: parseValue("1", WETH.decimals)!,
-            triggerPrice: parseValue("1200", USD_DECIMALS - WETH.decimals)!,
-            acceptablePrice: parseValue("1206", USD_DECIMALS - WETH.decimals)!,
+            triggerPrice: parseValue("1200", USD_DECIMALS - WETH.decimals)! as ContractPrice,
+            acceptablePrice: parseValue("1206", USD_DECIMALS - WETH.decimals)! as ContractPrice,
             executionFee: EXECUTION_FEE_AMOUNT,
             callbackGasLimit: 0n,
             minOutputAmount: 0n,
@@ -518,12 +527,13 @@ describe("Increase Order Payloads", () => {
           shouldUnwrapNativeToken: true,
           autoCancel: false,
           referralCode: REFERRAL_CODE,
+          dataList: [],
         },
         params,
         tokenTransfersParams: {
           isNativePayment: true,
           isNativeReceive: false,
-          initialCollateralTokenAddress: WETH.address,
+          initialCollateralTokenAddress: WETH.address as ERC20Address,
           initialCollateralDeltaAmount: parseValue("1", WETH.decimals)!,
           tokenTransfers: [
             {
@@ -539,7 +549,7 @@ describe("Increase Order Payloads", () => {
           value: EXECUTION_FEE_AMOUNT + parseValue("1", WETH.decimals)!,
           externalCalls: undefined,
         },
-      });
+      } satisfies CreateOrderTxnParams<IncreasePositionOrderParams>);
     });
 
     it("TWAP Increase Long Pay with Native Token", () => {
@@ -584,14 +594,14 @@ describe("Increase Order Payloads", () => {
               callbackContract: zeroAddress,
               uiFeeReceiver,
               market: params.marketAddress,
-              initialCollateralToken: WETH.address,
+              initialCollateralToken: WETH.address as ERC20Address,
               swapPath: [ETH_MARKET.marketTokenAddress],
             },
             numbers: {
               sizeDeltaUsd: parseValue("250", USD_DECIMALS)!, // 1000/4
               initialCollateralDeltaAmount: params.payTokenAmount / 4n, // 1/4
-              triggerPrice: MaxUint256,
-              acceptablePrice: MaxUint256,
+              triggerPrice: MaxUint256 as ContractPrice,
+              acceptablePrice: MaxUint256 as ContractPrice,
               executionFee: EXECUTION_FEE_AMOUNT / 4n,
               callbackGasLimit: 0n,
               minOutputAmount: 0n,
@@ -603,6 +613,7 @@ describe("Increase Order Payloads", () => {
             shouldUnwrapNativeToken: true,
             autoCancel: false,
             referralCode: REFERRAL_CODE,
+            dataList: [],
           },
           params: {
             ...params,
@@ -621,7 +632,7 @@ describe("Increase Order Payloads", () => {
           tokenTransfersParams: {
             isNativePayment: true,
             isNativeReceive: false,
-            initialCollateralTokenAddress: WETH.address,
+            initialCollateralTokenAddress: WETH.address as ERC20Address,
             initialCollateralDeltaAmount: parseValue("0.25", WETH.decimals)!,
             tokenTransfers: [
               {
@@ -637,7 +648,7 @@ describe("Increase Order Payloads", () => {
             value: EXECUTION_FEE_AMOUNT / 4n + parseValue("0.25", WETH.decimals)!,
             externalCalls: undefined,
           },
-        };
+        } satisfies CreateOrderTxnParams<IncreasePositionOrderParams>;
       });
 
       expect(result).toEqual(expectedOrders);
@@ -686,7 +697,7 @@ describe("Increase Order Payloads", () => {
               callbackContract: zeroAddress,
               uiFeeReceiver,
               market: params.marketAddress,
-              initialCollateralToken: WETH.address,
+              initialCollateralToken: WETH.address as ERC20Address,
               swapPath: [ETH_MARKET.marketTokenAddress],
             },
             numbers: {
@@ -705,6 +716,7 @@ describe("Increase Order Payloads", () => {
             shouldUnwrapNativeToken: true,
             autoCancel: false,
             referralCode: REFERRAL_CODE,
+            dataList: [],
           },
           params: {
             ...params,
@@ -723,7 +735,7 @@ describe("Increase Order Payloads", () => {
           tokenTransfersParams: {
             isNativePayment: true,
             isNativeReceive: false,
-            initialCollateralTokenAddress: WETH.address,
+            initialCollateralTokenAddress: WETH.address as ERC20Address,
             initialCollateralDeltaAmount: params.payTokenAmount / 4n,
             tokenTransfers: [
               {
@@ -739,7 +751,7 @@ describe("Increase Order Payloads", () => {
             value: EXECUTION_FEE_AMOUNT / 4n + params.payTokenAmount / 4n,
             externalCalls: undefined,
           },
-        };
+        } satisfies CreateOrderTxnParams<IncreasePositionOrderParams>;
       });
 
       expect(result).toEqual(expectedOrders);
@@ -767,14 +779,14 @@ describe("Increase Order Payloads", () => {
             callbackContract: zeroAddress,
             uiFeeReceiver: zeroAddress,
             market: params.marketAddress,
-            initialCollateralToken: WETH.address,
+            initialCollateralToken: WETH.address as ERC20Address,
             swapPath: [ETH_MARKET.marketTokenAddress],
           },
           numbers: {
             sizeDeltaUsd: parseValue("1000", USD_DECIMALS)!,
             initialCollateralDeltaAmount: parseValue("1", WETH.decimals)!,
             triggerPrice: 0n,
-            acceptablePrice: parseValue("1206", USD_DECIMALS - WETH.decimals)!,
+            acceptablePrice: parseValue("1206", USD_DECIMALS - WETH.decimals)! as ContractPrice,
             executionFee: EXECUTION_FEE_AMOUNT,
             callbackGasLimit: 0n,
             minOutputAmount: 0n,
@@ -786,12 +798,13 @@ describe("Increase Order Payloads", () => {
           shouldUnwrapNativeToken: true,
           autoCancel: false,
           referralCode: zeroHash,
+          dataList: [],
         },
         params,
         tokenTransfersParams: {
           isNativePayment: true,
           isNativeReceive: false,
-          initialCollateralTokenAddress: WETH.address,
+          initialCollateralTokenAddress: WETH.address as ERC20Address,
           initialCollateralDeltaAmount: parseValue("1", WETH.decimals)!,
           tokenTransfers: [
             {
@@ -807,7 +820,7 @@ describe("Increase Order Payloads", () => {
           value: EXECUTION_FEE_AMOUNT + parseValue("1", WETH.decimals)!,
           externalCalls: undefined,
         },
-      });
+      } satisfies CreateOrderTxnParams<IncreasePositionOrderParams>);
     });
   });
 });
