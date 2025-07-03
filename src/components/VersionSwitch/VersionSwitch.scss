@@ -12,7 +12,6 @@
   text-decoration: none;
   font-size: var(--font-size-body-medium);
   line-height: var(--line-height-body-medium);
-  cursor: pointer;
   color: var(--color-slate-100);
   line-height: 1;
 
@@ -24,10 +23,6 @@
   &.v2 {
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
-  }
-
-  &:hover {
-    background: var(--color-cold-blue-700);
   }
 
   &.active {

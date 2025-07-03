@@ -6,8 +6,10 @@ import {
   ARBITRUM,
   AVALANCHE,
   AVALANCHE_FUJI,
+  BOTANIX,
   FALLBACK_PROVIDERS,
   getAlchemyArbitrumWsUrl,
+  getAlchemyBotanixWsUrl,
   getFallbackRpcUrl,
 } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -47,6 +49,10 @@ export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvi
     });
     provider.pollingInterval = 2000;
     return provider;
+  }
+
+  if (chainId === BOTANIX) {
+    return new ethers.WebSocketProvider(getAlchemyBotanixWsUrl(), network, { staticNetwork: network });
   }
 }
 

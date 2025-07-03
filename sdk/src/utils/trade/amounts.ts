@@ -158,7 +158,6 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       swapOptimizationOrder,
     });
     values.swapPathStats = swapAmounts.swapPathStats;
-
     const swapAmountOut = values.externalSwapQuote?.amountOut ?? swapAmounts.amountOut;
     const baseCollateralUsd = convertToUsd(swapAmountOut, collateralToken.decimals, values.collateralPrice)!;
     const baseSizeDeltaUsd = bigMath.mulDiv(baseCollateralUsd, leverage, BASIS_POINTS_DIVISOR_BIGINT);

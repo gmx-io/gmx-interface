@@ -1,7 +1,7 @@
 import { TaskState } from "@gelatonetwork/relay-sdk";
 import { Address, encodePacked } from "viem";
 
-import { ARBITRUM, AVALANCHE } from "config/chains";
+import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
 import { GelatoPollingTiming, metrics } from "lib/metrics";
 import { sleep } from "lib/sleep";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
@@ -93,6 +93,7 @@ const GELATO_API = "https://api.gelato.digital";
 const apiKeys = {
   [ARBITRUM]: "6dE6kOa9pc1ap4dQQC2iaK9i6nBFp8eYxQlm00VreWc_",
   [AVALANCHE]: "FalsQh9loL6V0rwPy4gWgnQPR6uTHfWjSVT2qlTzUq4_",
+  [BOTANIX]: "s5GgkfX7dvd_2uYqsRSCjzMekUrXh0dibUvfLab1Anc_",
 };
 
 export async function sendTxnToGelato({
