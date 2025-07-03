@@ -521,7 +521,7 @@ const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig
       enabled: true,
     },
     // BTC/USD [stBTC-USDC.E]
-    "0xEbEEcdb96237A10234d34c2de182aCCF1c3B31c9": {
+    "0x2f95a2529328E427d3204555F164B1102086690E": {
       enabled: true,
     },
   },
