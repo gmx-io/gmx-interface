@@ -126,6 +126,7 @@ export type TradeBoxConfirmClickEvent = {
     tpCount?: number;
     chain: string;
     isFirstOrder: boolean;
+    requestId: string;
     priceImpactDeltaUsd: number | undefined;
     priceImpactPercentage: number | undefined;
     netRate1h: number | undefined;
@@ -162,6 +163,7 @@ export type TradeBoxResultEvent = {
     tpCount?: number;
     chain: string;
     isFirstOrder: boolean;
+    requestId: string;
     isLeverageEnabled?: boolean;
     isUserError: boolean;
     priceImpactDeltaUsd: number | undefined;

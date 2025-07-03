@@ -19,7 +19,8 @@ import { useBowser } from "lib/useBowser";
 import useRouteQuery from "lib/useRouteQuery";
 import useWallet from "lib/wallets/useWallet";
 
-import { SESSION_ID_KEY, userAnalytics } from "./UserAnalytics";
+import { SESSION_ID_KEY, setSessionId } from "./sessionId";
+import { userAnalytics } from "./UserAnalytics";
 
 export function useConfigureUserAnalyticsProfile() {
   const history = useHistory();
@@ -67,7 +68,7 @@ export function useConfigureUserAnalyticsProfile() {
       const sessionIdParam = query.get(SESSION_ID_KEY);
 
       if (sessionIdParam) {
-        userAnalytics.setSessionId(sessionIdParam);
+        setSessionId(sessionIdParam);
         query.delete(SESSION_ID_KEY);
         isUrlParamsChanged = true;
       }
