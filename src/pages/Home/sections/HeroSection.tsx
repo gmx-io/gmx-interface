@@ -15,7 +15,7 @@ export function HeroSection() {
   return (
     <section className="overflow-hidden bg-fiord-700">
       <div className="mx-auto px-16 sm:max-w-[1360px] sm:px-80">
-        <div className="relative h-screen py-80 ">
+        <div className="relative py-80 sm:h-[860px] ">
           <HeroBackground />
           <div className="relative flex h-full flex-col justify-end">
             <h1 className="text-heading-1 mb-64">
