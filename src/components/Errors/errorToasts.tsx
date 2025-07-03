@@ -144,10 +144,16 @@ export function getTxnErrorToast(
             <br />
             <br />
             Please enable{" "}
-            <Button variant="link" onClick={() => setIsSettingsVisible(true)}>
+            <Button variant="link" className="link-underline" onClick={() => setIsSettingsVisible(true)}>
               Express trading
             </Button>{" "}
             under settings, which should offer a better experience.
+          </Trans>
+          <br />
+          <br />
+          <Trans>
+            Otherwise, try changing the RPC url in your wallet settings with the help of{" "}
+            <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>.
           </Trans>
           <br />
           <br />
