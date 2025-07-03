@@ -228,10 +228,3 @@ function hasStack(error: unknown): error is { stack: string } {
 function hasName(error: unknown): error is { name: string } {
   return !!error && typeof error === "object" && typeof (error as { name: string }).name === "string";
 }
-
-console.log(
-  "parseError",
-  parseError(
-    'data="0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001a454950323631323a20696e76616c6964207369676e6174757265000000000000"'
-  )
-);
