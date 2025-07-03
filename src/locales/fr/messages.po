@@ -30,10 +30,6 @@ msgstr ""
 msgid "Not likely"
 msgstr ""
 
-#: src/pages/Home/Home.tsx
-msgid "Available on your preferred network"
-msgstr "Disponible sur le réseau de votre choix"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Trading Protocol"
 msgstr "Protocole d'échange décentralisé"
@@ -116,10 +112,6 @@ msgstr ""
 msgid "Daily Loss"
 msgstr ""
 
-#: src/pages/Home/Home.tsx
-msgid "GMX is currently live on Arbitrum and Avalanche."
-msgstr "GMX est en émission direct sur Arbitrum et Avalanche."
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Create TWAP Swap"
 msgstr ""
@@ -196,10 +188,6 @@ msgstr ""
 #: src/components/Synthetics/GmList/PerformanceLabel.tsx
 msgid "Annualized return of the pool or vault over the selected period, compared to a benchmark that follows Uniswap V2–style rebalancing of the backing tokens in the same GM pool or GLV vault.<0/><1/>Annualized figures based on short periods may be distorted by short-term volatility.<2/><3/>For detailed stats and comparisons, see the <4>GMX V2 LP Dashboard</4>."
 msgstr ""
-
-#: src/pages/Home/Home.tsx
-msgid "Decentralized<0/>Perpetual Exchange"
-msgstr "Décentralisé <0/>Bourse perpétuelle"
 
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Current Reserved"
@@ -803,10 +791,6 @@ msgstr ""
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Cross-chain one-click deposits into GM"
 msgstr ""
-
-#: src/pages/Home/Home.tsx
-msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
-msgstr "Ouvrez ces positions dans une interface d'échange simple. Échangez facilement n'importe quel actif, pris en charge à la position de votre choix."
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Incentives Distribution History"
@@ -1789,10 +1773,6 @@ msgstr ""
 msgid "Trigger price above liq. price"
 msgstr ""
 
-#: src/pages/Home/Home.tsx
-msgid "Simple Swaps"
-msgstr "Échanges simples"
-
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No results found"
@@ -2092,10 +2072,6 @@ msgstr ""
 msgid "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
 msgstr "Augmentation requise de {tokenSymbol} {longOrShortText} par {0} USD."
 
-#: src/pages/Home/Home.tsx
-msgid "Enter and exit positions with minimal spread and low price impact. Get the optimal price without incurring additional costs."
-msgstr ""
-
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b trading incentives"
 msgstr ""
@@ -2192,10 +2168,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 msgid "Liquidity data not loaded"
 msgstr "Les données de liquidité ne sont pas chargées"
-
-#: src/pages/Home/Home.tsx
-msgid "Total Trading Volume"
-msgstr "Volume total des échanges"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSpreadRow.tsx
@@ -2339,6 +2311,10 @@ msgstr ""
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr "{existingTriggerOrderLength, plural, one {Vous avez une commande de déclenchement active qui pourrait affecter cette position.} other {Vous avez # commandes de déclenchement actives qui pourraient affecter cette position.}}"
 
+#: src/pages/Home/sections/HeroSection.tsx
+msgid "Trade with"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order executed"
 msgstr ""
@@ -2447,7 +2423,6 @@ msgstr ""
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.tsx
-#: src/pages/Home/Home.tsx
 msgid "Launch App"
 msgstr "Lancer l'application"
 
@@ -2537,6 +2512,10 @@ msgstr "Somme à réclamer"
 #: src/pages/Jobs/Jobs.jsx
 msgid "Job openings at GMX."
 msgstr "Offres d'emploi chez GMX."
+
+#: src/pages/Home/sections/HeroSection.tsx
+msgid "Trade from your wallet"
+msgstr ""
 
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -2887,6 +2866,10 @@ msgstr ""
 msgid "Trade"
 msgstr "Echanger"
 
+#: src/pages/Home/sections/HeroSection.tsx
+msgid "No deposits required"
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Adding referral code failed."
 msgstr "L'ajout du code/ID de référence a échoué."
@@ -2897,6 +2880,10 @@ msgstr ""
 
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
 msgid "V2 doesn't currently support this network"
+msgstr ""
+
+#: src/pages/Home/sections/HeroSection.tsx
+msgid "100x leverage from your wallet"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -2948,10 +2935,6 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Invalid Liquidation Price"
 msgstr ""
-
-#: src/pages/Home/Home.tsx
-msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
-msgstr "Un agrégat de flux de prix de qualité supérieure détermine quand les liquidations ont lieu. Cela protège les positions des oscillations temporaires."
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Swap amount from {0} to {1} exceeds {2} available liquidity. Choose a different \"Receive\" token."
@@ -3729,7 +3712,6 @@ msgstr "Approbation rejetée"
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
-#: src/pages/Home/Home.tsx
 msgid "Open Interest"
 msgstr "Intérêt ouvert"
 
@@ -3930,6 +3912,10 @@ msgstr ""
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "Vesting Status"
+msgstr ""
+
+#: src/pages/Home/sections/HeroSection.tsx
+msgid "Guaranteed Liquidity"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
@@ -4309,6 +4295,10 @@ msgstr ""
 msgid "Execute order simulation failed."
 msgstr ""
 
+#: src/pages/Home/sections/HeroSection.tsx
+msgid "Support for"
+msgstr ""
+
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 msgid "Invalid Transfer Addresses: Please check the url."
 msgstr ""
@@ -4443,6 +4433,10 @@ msgstr "Transfert déjà initié"
 msgid "Withdraw submitted."
 msgstr ""
 
+#: src/pages/Home/sections/HeroSection.tsx
+msgid "Non-Custodial, Secure & Permissionless"
+msgstr ""
+
 #: src/components/Referrals/AddAffiliateCode.jsx
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Enter a code"
@@ -4470,12 +4464,12 @@ msgstr ""
 msgid "Media Kit"
 msgstr "Kit Média"
 
-#: src/pages/Home/Home.tsx
-msgid "Reduce Liquidation Risks"
-msgstr "Réduire les risques de liquidation"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "UniDex Leverage"
+msgstr ""
+
+#: src/pages/Home/sections/HeroSection.tsx
+msgid "Numerous Assets"
 msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.jsx
@@ -4880,9 +4874,9 @@ msgstr "Sélectionnez votre option de vesting ci-dessous, puis cliquez sur \"Ré
 msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
 msgstr ""
 
-#: src/pages/Home/Home.tsx
+#: src/pages/Home/sections/HeroSection.tsx
 msgid "Save on Costs"
-msgstr "Économiser sur les coûts"
+msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Buy order cancelled"
@@ -5423,6 +5417,10 @@ msgstr "Max {0} dans"
 msgid "Stop Loss Decrease"
 msgstr ""
 
+#: src/pages/Home/sections/HeroSection.tsx
+msgid "Trade with confidence"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Diff"
 msgstr "Diff"
@@ -5761,7 +5759,6 @@ msgid "Limit size is required"
 msgstr ""
 
 #: src/pages/Buy/Buy.tsx
-#: src/pages/Home/Home.tsx
 msgid "Protocol Tokens"
 msgstr ""
 
@@ -5852,6 +5849,11 @@ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
+msgstr ""
+
+#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection.tsx
+msgid "Trade Now"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -6724,6 +6726,10 @@ msgstr ""
 msgid "DeFi Margin Protocol"
 msgstr ""
 
+#: src/pages/Home/sections/HeroSection.tsx
+msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/PositionSeller.jsx
@@ -6829,6 +6835,10 @@ msgstr ""
 
 #: src/pages/Stake/Stake.tsx
 msgid "Liquidity incentives program is live on {avalancheLink}."
+msgstr ""
+
+#: src/pages/Home/sections/HeroSection.tsx
+msgid "keep more of what you earn"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -7447,6 +7457,10 @@ msgstr ""
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>There is no price impact. There is a single<3/>execution price for decreasing longs for<4/>this size."
 msgstr ""
 
+#: src/pages/Home/sections/HeroSection.tsx
+msgid "Seamless Trading"
+msgstr ""
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche LP incentives"
 msgstr ""
@@ -7664,6 +7678,10 @@ msgstr ""
 
 #: src/lib/legacy.ts
 msgid "Decentralized Perpetual Exchange | GMX"
+msgstr ""
+
+#: src/pages/Home/sections/HeroSection.tsx
+msgid "No loss of fund ownership"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
@@ -8207,10 +8225,6 @@ msgstr "Langue"
 msgid "Complete Transfer"
 msgstr "Transfert complet"
 
-#: src/pages/Home/Home.tsx
-msgid "Total Users"
-msgstr "Nombre total d'utilisateurs"
-
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee"
 msgstr ""
@@ -8267,6 +8281,10 @@ msgstr ""
 msgid "{column}"
 msgstr ""
 
+#: src/pages/Home/sections/HeroSection.tsx
+msgid "Stay Safe from <0/> Liquidations"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You do not have any eligible trade during the competition window."
@@ -8300,10 +8318,6 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"
-msgstr ""
-
-#: src/pages/Home/Home.tsx
-msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"
 msgstr ""
 
 #: src/pages/Stake/ClaimModal.tsx
