@@ -38,15 +38,15 @@ export function HeroSection() {
               <div className="flex flex-row gap-36 sm:gap-60">
                 <div className="flex flex-col gap-4">
                   <div className="text-nowrap text-12 text-secondary sm:text-14">Traders</div>
-                  <div className="text-[30px] tracking-tight sm:text-[40px] sm:font-semibold">701K</div>
+                  <div className="text-[30px] tracking-tight sm:text-[40px]">701K</div>
                 </div>
                 <div className="flex flex-col gap-4">
                   <div className="text-nowrap text-12 text-secondary sm:text-14">Open Interest</div>
-                  <div className="text-[30px] tracking-tight sm:text-[40px] sm:font-semibold">$137M</div>
+                  <div className="text-[30px] tracking-tight sm:text-[40px]">$137M</div>
                 </div>
                 <div className="flex flex-col gap-4">
                   <div className="text-nowrap text-12 text-secondary sm:text-14">Total Volume</div>
-                  <div className="text-[30px] tracking-tight sm:text-[40px] sm:font-semibold">$285B</div>
+                  <div className="text-[30px] tracking-tight sm:text-[40px]">$285B</div>
                 </div>
               </div>
             </div>
