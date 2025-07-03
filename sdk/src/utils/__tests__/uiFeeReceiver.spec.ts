@@ -15,13 +15,23 @@ describe("uiFeeReceiver", () => {
       expect(decodeTwapUiFeeReceiver("0xff00000000000000000000000000000000000001")).toBeUndefined();
     });
 
+    it("should correctly decode isExpress", () => {
+      expect(decodeTwapUiFeeReceiver("0xff0000000000000000000000000000010a123401")).toEqual({
+        isExpress: true,
+        twapId: "1234",
+        numberOfParts: 10,
+      });
+    });
+
     it("should return the twapId and numberOfParts if the uiFeeReceiver is valid twap", () => {
       expect(decodeTwapUiFeeReceiver("0xff0000000000000000000000000000000a123401")).toEqual({
+        isExpress: false,
         twapId: "1234",
         numberOfParts: 10,
       });
 
       expect(decodeTwapUiFeeReceiver("0xff000000000000000000000000000000153a4f01")).toEqual({
+        isExpress: false,
         twapId: "3a4f",
         numberOfParts: 21,
       });
