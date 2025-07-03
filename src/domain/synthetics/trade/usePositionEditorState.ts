@@ -8,12 +8,15 @@ import {
   getSyntheticsCollateralEditTokenIsFromGmxAccountMapKey,
 } from "config/localStorage";
 import { isSettlementChain } from "config/multichain";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import { parsePositionKey } from "../positions";
 export type PositionEditorState = ReturnType<typeof usePositionEditorState>;
 
 export function usePositionEditorState(chainId: ContractsChainId, srcChainId: SourceChainId | undefined) {
+  // const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
+  const { expressOrdersEnabled } = useSettings();
   const [editingPositionKey, setEditingPositionKey] = useState<string>();
   const [collateralInputValue, setCollateralInputValue] = useState("");
   const [selectedCollateralAddressMap, setSelectedCollateralAddressMap] = useLocalStorageSerializeKey<
@@ -60,6 +63,19 @@ export function usePositionEditorState(chainId: ContractsChainId, srcChainId: So
     setCollateralInputValue("");
     _setIsCollateralTokenFromGmxAccount(srcChainId !== undefined);
   }, [_setIsCollateralTokenFromGmxAccount, chainId, srcChainId]);
+
+  useEffect(
+    function fallbackIsCollateralTokenFromGmxAccount() {
+      if (expressOrdersEnabled) {
+        return;
+      }
+
+      if (isCollateralTokenFromGmxAccount && !expressOrdersEnabled) {
+        setIsCollateralTokenFromGmxAccount(false);
+      }
+    },
+    [expressOrdersEnabled, isCollateralTokenFromGmxAccount, setIsCollateralTokenFromGmxAccount]
+  );
 
   return useMemo(
     () => ({

@@ -5,6 +5,7 @@ import { useKey } from "react-use";
 import { Address } from "viem";
 
 import { isSettlementChain } from "config/multichain";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   usePositionEditorCollateralInputValue,
@@ -19,6 +20,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { getMinResidualGasPaymentTokenAmount } from "domain/synthetics/express/expressOrderUtils";
 import { formatLiquidationPrice, getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { convertToTokenAmount } from "domain/synthetics/tokens";
@@ -44,6 +46,7 @@ import Tabs from "components/Tabs/Tabs";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
+import { PositionEditorCollateralSelector } from "../CollateralSelector/PositionEditorCollateralSelector";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
@@ -52,12 +55,12 @@ import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 import { PositionEditorAdvancedRows } from "./PositionEditorAdvancedRows";
 import { OPERATION_LABELS, Operation } from "./types";
 import { usePositionEditorButtonState } from "./usePositionEditorButtonState";
-import { PositionEditorCollateralSelector } from "../CollateralSelector/PositionEditorCollateralSelector";
 
 import "./PositionEditor.scss";
 
 export function PositionEditor() {
   const { chainId, srcChainId } = useChainId();
+  const { expressOrdersEnabled, setExpressOrdersEnabled, setIsSettingsVisible } = useSettings();
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const tokensData = useTokensData();
   const { minCollateralUsd } = usePositionsConstants();
@@ -77,6 +80,28 @@ export function PositionEditor() {
   const [selectedCollateralAddress, setSelectedCollateralAddress] = usePositionEditorSelectedCollateralAddress();
   const [isCollateralTokenFromGmxAccount, setIsCollateralTokenFromGmxAccount] =
     usePositionEditorIsCollateralTokenFromGmxAccount();
+
+  const handleSetCollateralAddress = useCallback(
+    (tokenAddress: string, isGmxAccount?: boolean) => {
+      if (isGmxAccount && !expressOrdersEnabled) {
+        setExpressOrdersEnabled(true);
+        toastEnableExpress(() => setIsSettingsVisible(true));
+      }
+
+      setSelectedCollateralAddress(tokenAddress as Address);
+      if (isGmxAccount !== undefined) {
+        setIsCollateralTokenFromGmxAccount(isGmxAccount);
+      }
+    },
+    [
+      expressOrdersEnabled,
+      setSelectedCollateralAddress,
+      setExpressOrdersEnabled,
+      setIsSettingsVisible,
+      setIsCollateralTokenFromGmxAccount,
+    ]
+  );
+
   const collateralToken = useSelector(selectPositionEditorSelectedCollateralToken);
 
   const filteredTokensData = useMemo(() => {
@@ -218,10 +243,10 @@ export function PositionEditor() {
       }
 
       if (!selectedCollateralAddress || !filteredTokensData[selectedCollateralAddress]) {
-        setSelectedCollateralAddress(position.collateralTokenAddress as Address);
+        handleSetCollateralAddress(position.collateralTokenAddress as Address);
       }
     },
-    [filteredTokensData, position, selectedCollateralAddress, setSelectedCollateralAddress]
+    [filteredTokensData, handleSetCollateralAddress, position, selectedCollateralAddress, setSelectedCollateralAddress]
   );
 
   useEffect(
@@ -363,10 +388,7 @@ export function PositionEditor() {
                   selectedTokenSymbol={collateralToken?.symbol}
                   isCollateralTokenFromGmxAccount={isCollateralTokenFromGmxAccount}
                   options={options}
-                  onSelect={(tokenAddress, isGmxAccount) => {
-                    setSelectedCollateralAddress(tokenAddress as Address);
-                    setIsCollateralTokenFromGmxAccount(isGmxAccount);
-                  }}
+                  onSelect={handleSetCollateralAddress}
                   withBalance={isDeposit}
                 />
               ) : (

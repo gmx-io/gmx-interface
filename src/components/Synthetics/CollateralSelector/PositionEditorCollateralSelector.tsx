@@ -68,7 +68,7 @@ function CollateralSelectorDesktop(props: Props) {
       <tbody>
         {props.options?.map((option) => (
           <CollateralListItemDesktop
-            key={option.address}
+            key={`${option.address}-${option.isGmxAccount}`}
             onSelect={() => {
               props.onSelect(option.address, Boolean(option.isGmxAccount));
               close();
@@ -140,7 +140,7 @@ function CollateralSelectorMobile(props: Props) {
     <SelectorBaseMobileList>
       {props.options?.map((option) => (
         <CollateralListItemMobile
-          key={option.address}
+          key={`${option.address}-${option.isGmxAccount}`}
           onSelect={() => {
             props.onSelect(option.address, Boolean(option.isGmxAccount));
             close();

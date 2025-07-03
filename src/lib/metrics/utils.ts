@@ -1,4 +1,3 @@
-import { ErrorLike } from "ab/testMultichain/parseError";
 import { USD_DECIMALS } from "config/factors";
 import { EventLogData } from "context/SyntheticsEvents";
 import { ExpressTxnParams } from "domain/synthetics/express";
@@ -8,7 +7,7 @@ import { OrderType } from "domain/synthetics/orders";
 import { Subaccount } from "domain/synthetics/subaccount";
 import { TokenData } from "domain/synthetics/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts, TradeMode } from "domain/synthetics/trade";
-import { extendError, OrderErrorContext, parseError } from "lib/errors";
+import { ErrorLike, extendError, OrderErrorContext, parseError } from "lib/errors";
 import { bigintToNumber, formatPercentage, formatRatePercentage, getBasisPoints, roundToOrder } from "lib/numbers";
 import { TwapDuration } from "sdk/types/twap";
 import { CreateOrderPayload } from "sdk/utils/orderTransactions";

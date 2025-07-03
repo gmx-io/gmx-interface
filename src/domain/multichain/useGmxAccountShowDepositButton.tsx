@@ -5,7 +5,7 @@ import { useAvailableToTradeAssetSettlementChain } from "components/Synthetics/G
 export function useGmxAccountShowDepositButton() {
   const { srcChainId } = useChainId();
   const { gmxAccountUsd, isGmxAccountLoading } = useAvailableToTradeAssetSettlementChain();
-  const showDepositButton = !isGmxAccountLoading && gmxAccountUsd === 0n && srcChainId !== undefined;
+  const shouldShowDepositButton = !isGmxAccountLoading && gmxAccountUsd === 0n && srcChainId !== undefined;
 
-  return { showDepositButton };
+  return { shouldShowDepositButton };
 }

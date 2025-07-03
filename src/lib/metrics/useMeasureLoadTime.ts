@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
-import { parseError } from "ab/testMultichain/parseError";
 import { DATA_LOAD_TIMEOUT_FOR_METRICS } from "config/ui";
+import { parseError } from "lib/errors";
 import { metrics } from "lib/metrics";
 import {
   LoadingFailedEvent,

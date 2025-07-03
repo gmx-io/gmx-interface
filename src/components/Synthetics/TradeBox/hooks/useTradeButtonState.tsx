@@ -111,7 +111,7 @@ export function useTradeboxButtonState({
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
   const { stage, collateralToken, tradeType, setStage } = useSelector(selectTradeboxState);
   const { isLeverageSliderEnabled } = useSettings();
-  const { showDepositButton } = useGmxAccountShowDepositButton();
+  const { shouldShowDepositButton } = useGmxAccountShowDepositButton();
   const [, setGmxAccountDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
 
@@ -312,7 +312,7 @@ export function useTradeboxButtonState({
       return;
     }
 
-    if (showDepositButton) {
+    if (shouldShowDepositButton) {
       if (fromToken) {
         setGmxAccountDepositViewTokenAddress(fromToken.address);
       }
@@ -393,7 +393,7 @@ export function useTradeboxButtonState({
   }, [
     account,
     signer,
-    showDepositButton,
+    shouldShowDepositButton,
     isFromTokenGmxAccount,
     isAllowanceLoaded,
     tokensToApprove,
@@ -441,7 +441,7 @@ export function useTradeboxButtonState({
       };
     }
 
-    if (showDepositButton) {
+    if (shouldShowDepositButton) {
       return {
         ...commonState,
         text: t`Deposit`,
@@ -562,7 +562,7 @@ export function useTradeboxButtonState({
     isExpressLoading,
     account,
     buttonErrorText,
-    showDepositButton,
+    shouldShowDepositButton,
     stopLoss.error?.percentage,
     takeProfit.error?.percentage,
     isApproving,

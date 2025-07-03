@@ -16,6 +16,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectExpressOrdersEnabled,
+  selectSetExpressOrdersEnabled,
   selectSettingsWarningDotVisible,
   selectShowDebugValues,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -46,6 +47,7 @@ import {
   selectTradeboxTradeRatios,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { getMinResidualGasPaymentTokenAmount } from "domain/synthetics/express/expressOrderUtils";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
@@ -184,7 +186,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     setNumberOfParts,
     setDuration,
   } = useSelector(selectTradeboxState);
-  const { showDepositButton } = useGmxAccountShowDepositButton();
 
   const fromToken = useSelector(selectTradeboxFromToken);
   const toToken = getByKey(tokensData, toTokenAddress);
@@ -204,7 +205,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
   const fees = useSelector(selectTradeboxFees);
   const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
+  const setExpressOrdersEnabled = useSelector(selectSetExpressOrdersEnabled);
   const { subaccount } = useSelector(selectSubaccountState);
+  const { shouldShowDepositButton } = useGmxAccountShowDepositButton();
+  const { setIsSettingsVisible, isLeverageSliderEnabled } = useSettings();
 
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const { markRatio } = useSelector(selectTradeboxTradeRatios);
@@ -494,10 +498,22 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   );
   const handleSelectFromTokenAddress = useCallback(
     (tokenAddress: string, isGmxAccount: boolean) => {
+      if (isGmxAccount && !expressOrdersEnabled) {
+        setExpressOrdersEnabled(true);
+
+        toastEnableExpress(() => setIsSettingsVisible(true));
+      }
+
       onSelectFromTokenAddress(tokenAddress);
       setIsFromTokenGmxAccount(isGmxAccount);
     },
-    [onSelectFromTokenAddress, setIsFromTokenGmxAccount]
+    [
+      expressOrdersEnabled,
+      onSelectFromTokenAddress,
+      setExpressOrdersEnabled,
+      setIsFromTokenGmxAccount,
+      setIsSettingsVisible,
+    ]
   );
   const handleSelectToTokenAddress = useCallback(
     (token: Token) => onSelectToTokenAddress(token.address),
@@ -864,8 +880,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const setKeepLeverage = useSelector(selectTradeboxSetKeepLeverage);
   const settingsWarningDotVisible = useSelector(selectSettingsWarningDotVisible);
 
-  const { setIsSettingsVisible, isLeverageSliderEnabled } = useSettings();
-
   const { shouldShowWarning: shouldShowOneClickTradingWarning } = useExpressTradingWarnings({
     expressParams: submitButtonState.expressParams,
     payTokenAddress: fromTokenAddress,
@@ -1037,7 +1051,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             expressParams={submitButtonState.expressParams}
             payTokenAddress={!tradeFlags.isTrigger ? fromTokenAddress : undefined}
             isWrapOrUnwrap={!tradeFlags.isTrigger && isWrapOrUnwrap}
-            disabled={showDepositButton}
+            disabled={shouldShowDepositButton}
           />
           <div className="h-1 bg-stroke-primary" />
           {isSwap && !isTwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}

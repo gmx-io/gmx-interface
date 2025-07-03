@@ -1,7 +1,6 @@
 import { BaseContract } from "ethers";
 import { encodeFunctionData, withRetry } from "viem";
 
-import { parseError } from "ab/testMultichain/parseError";
 import {
   getContract,
   getExchangeRouterContract,
@@ -26,6 +25,7 @@ import {
   extendError,
   extractTxnError,
   isContractError,
+  parseError,
 } from "sdk/utils/errors";
 import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
 

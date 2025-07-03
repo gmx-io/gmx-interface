@@ -1,7 +1,6 @@
 import type { Provider } from "ethers";
 import { Address, encodePacked, Hex } from "viem";
 
-import { getCustomError } from "ab/testMultichain/parseError/enabled";
 import type { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
@@ -26,7 +25,7 @@ import { estimateExpressParams, getGasPaymentValidations } from "domain/syntheti
 import { getSubaccountValidations } from "domain/synthetics/subaccount";
 import type { Subaccount } from "domain/synthetics/subaccount/types";
 import { convertToTokenAmount } from "domain/tokens";
-import { extendError } from "lib/errors";
+import { extendError, getCustomError } from "lib/errors";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
 import { expandDecimals, USD_DECIMALS } from "lib/numbers";

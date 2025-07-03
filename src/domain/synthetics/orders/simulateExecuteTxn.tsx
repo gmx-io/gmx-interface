@@ -3,7 +3,6 @@ import { BaseContract, ethers } from "ethers";
 import { ReactNode } from "react";
 import { withRetry } from "viem";
 
-import { CustomErrorsAbi } from "ab/testMultichain/getCustomErrorsAbi/getCustomErrorsAbi";
 import {
   getContract,
   getExchangeRouterContract,
@@ -19,6 +18,7 @@ import { sendOrderSimulatedMetric, sendTxnErrorMetric } from "lib/metrics/utils"
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
+import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { ExternalSwapQuote } from "sdk/types/trade";
@@ -173,7 +173,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
       }
     );
   } catch (txnError) {
-    const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrorsAbi);
+    const customErrors = new ethers.Contract(ethers.ZeroAddress, abis.CustomErrors);
     let msg: React.ReactNode = undefined;
 
     try {

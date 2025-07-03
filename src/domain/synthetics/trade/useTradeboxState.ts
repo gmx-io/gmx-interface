@@ -156,7 +156,7 @@ export function useTradeboxState(
     [chainId]
   );
 
-  const { savedAllowedSlippage, savedTwapNumberOfParts } = useSettings();
+  const { savedAllowedSlippage, savedTwapNumberOfParts, expressOrdersEnabled } = useSettings();
   const [syncedChainId, setSyncedChainId] = useState<number | undefined>(undefined);
   const [allowedSlippage, setAllowedSlippage] = useState<number>(savedAllowedSlippage);
 
@@ -727,6 +727,19 @@ export function useTradeboxState(
       };
     });
   }, [advancedOptions, setStoredOptionsOnChain, storedOptions.advanced]);
+
+  useEffect(
+    function fallbackIsFromTokenGmxAccount() {
+      if (expressOrdersEnabled) {
+        return;
+      }
+
+      if (isFromTokenGmxAccount && !expressOrdersEnabled) {
+        setIsFromTokenGmxAccount(false);
+      }
+    },
+    [expressOrdersEnabled, isFromTokenGmxAccount, setIsFromTokenGmxAccount]
+  );
 
   return {
     tradeType,

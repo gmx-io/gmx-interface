@@ -1,7 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useMemo, useState } from "react";
 
-import { parseError } from "ab/testMultichain/parseError";
 import { getExplorerUrl } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
@@ -10,6 +9,7 @@ import {
   getMinimumExecutionFeeBufferBps,
 } from "domain/synthetics/fees/utils/executionFee";
 import { useChainId } from "lib/chains";
+import { parseError } from "lib/errors";
 import { getCallStaticError } from "lib/errors/additionalValidation";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";

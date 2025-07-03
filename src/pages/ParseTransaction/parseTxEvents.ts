@@ -1,7 +1,6 @@
 import * as ethers from "ethers";
 import { Abi, Hash, parseEventLogs, ParseEventLogsReturnType, PublicClient } from "viem";
 
-import { CustomErrorsAbi } from "ab/testMultichain/getCustomErrorsAbi/getCustomErrorsAbi";
 import { expandDecimals } from "lib/numbers";
 import { LogEntry } from "pages/ParseTransaction/types";
 import { abis } from "sdk/abis";
@@ -20,7 +19,7 @@ const PANIC_MAP = {
   0x51: "call a zero-initialized variable of internal function type.",
 };
 
-const errorsInterface = new ethers.Interface(CustomErrorsAbi);
+const errorsInterface = new ethers.Interface(abis.CustomErrors);
 const eventEmitterInterface = new ethers.Interface(abis.EventEmitter);
 const defaultAbiCoder = new ethers.AbiCoder();
 

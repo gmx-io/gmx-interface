@@ -25,7 +25,7 @@ function AddressDropdown({ account }: Props) {
   const { ensName } = useENS(account);
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
   const { totalUsd, gmxAccountUsd, isGmxAccountLoading } = useAvailableToTradeAssetSettlementChain();
-  const { showDepositButton } = useGmxAccountShowDepositButton();
+  const { shouldShowDepositButton } = useGmxAccountShowDepositButton();
 
   const breakpoint = useBreakpoint();
   const isSmallScreen = breakpoint === "S";
@@ -63,13 +63,14 @@ function AddressDropdown({ account }: Props) {
           className={cx(
             "h-36 items-center border-stroke-primary px-12",
             isSmallScreen ? "rounded-4" : "rounded-r-4 border-b border-r border-t",
-            showDepositButton && "bg-blue-600 active:bg-[--primary-btn-active] desktop-hover:bg-[--primary-btn-hover]",
-            isSmallScreen && !showDepositButton && "border"
+            shouldShowDepositButton &&
+              "bg-blue-600 active:bg-[--primary-btn-active] desktop-hover:bg-[--primary-btn-hover]",
+            isSmallScreen && !shouldShowDepositButton && "border"
           )}
-          onClick={showDepositButton ? handleOpenDeposit : handleOpenGmxAccountModal}
+          onClick={shouldShowDepositButton ? handleOpenDeposit : handleOpenGmxAccountModal}
         >
           <div className="relative -top-1">
-            {showDepositButton ? (
+            {shouldShowDepositButton ? (
               <Trans>Deposit</Trans>
             ) : isGmxAccountLoading ? (
               <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={55} height={16} />
