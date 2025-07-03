@@ -6,6 +6,7 @@ import { ImSpinner2 } from "react-icons/im";
 import { getBridgingOptionsForToken } from "config/bridging";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { get1InchSwapUrlFromAddresses } from "config/links";
+import { useGmxAccountDepositViewTokenAddress, useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
@@ -45,6 +46,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { getNameByOrderType, substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
@@ -109,6 +111,9 @@ export function useTradeboxButtonState({
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
   const { stage, collateralToken, tradeType, setStage } = useSelector(selectTradeboxState);
   const { isLeverageSliderEnabled } = useSettings();
+  const { showDepositButton } = useGmxAccountShowDepositButton();
+  const [, setGmxAccountDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
+  const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
 
   const fromToken = useSelector(selectTradeboxFromToken);
   const toToken = useSelector(selectTradeboxToToken);
@@ -199,8 +204,6 @@ export function useTradeboxButtonState({
   const detectAndSetAvailableMaxLeverage = useDetectAndSetAvailableMaxLeverage({ setToTokenInputValue });
 
   const tradeError = useSelector(selectTradeboxTradeTypeError);
-
-  // console.log("tokensToApprove", tokensToApprove);
 
   const { buttonErrorText, tooltipContent } = useMemo(() => {
     const commonError = getCommonError({
@@ -309,6 +312,16 @@ export function useTradeboxButtonState({
       return;
     }
 
+    if (showDepositButton) {
+      if (fromToken) {
+        setGmxAccountDepositViewTokenAddress(fromToken.address);
+      }
+
+      setGmxAccountModalOpen("deposit");
+
+      return;
+    }
+
     if (!isFromTokenGmxAccount && isAllowanceLoaded && tokensToApprove.length) {
       const tokenToApprove = tokensToApprove[0];
 
@@ -380,6 +393,7 @@ export function useTradeboxButtonState({
   }, [
     account,
     signer,
+    showDepositButton,
     isFromTokenGmxAccount,
     isAllowanceLoaded,
     tokensToApprove,
@@ -389,6 +403,9 @@ export function useTradeboxButtonState({
     isIncrease,
     expressParams,
     openConnectModal,
+    fromToken,
+    setGmxAccountModalOpen,
+    setGmxAccountDepositViewTokenAddress,
     chainId,
     isApproving,
     setPendingTxns,
@@ -420,6 +437,14 @@ export function useTradeboxButtonState({
       return {
         ...commonState,
         text: buttonErrorText,
+        disabled: false,
+      };
+    }
+
+    if (showDepositButton) {
+      return {
+        ...commonState,
+        text: t`Deposit`,
         disabled: false,
       };
     }
@@ -534,11 +559,12 @@ export function useTradeboxButtonState({
     expressParams,
     batchParams,
     totalExecutionFee,
+    isExpressLoading,
     account,
     buttonErrorText,
+    showDepositButton,
     stopLoss.error?.percentage,
     takeProfit.error?.percentage,
-    isExpressLoading,
     isApproving,
     tokensToApprove,
     isAllowanceLoaded,

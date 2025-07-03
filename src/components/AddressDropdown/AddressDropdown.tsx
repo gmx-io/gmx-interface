@@ -5,6 +5,7 @@ import Skeleton from "react-loading-skeleton";
 import { createBreakpoint } from "react-use";
 
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
+import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { useChainId } from "lib/chains";
 import { useENS } from "lib/legacy";
 import { formatUsd } from "lib/numbers";
@@ -24,6 +25,7 @@ function AddressDropdown({ account }: Props) {
   const { ensName } = useENS(account);
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
   const { totalUsd, gmxAccountUsd, isGmxAccountLoading } = useAvailableToTradeAssetSettlementChain();
+  const { showDepositButton } = useGmxAccountShowDepositButton();
 
   const breakpoint = useBreakpoint();
   const isSmallScreen = breakpoint === "S";
@@ -39,7 +41,6 @@ function AddressDropdown({ account }: Props) {
   }, [setGmxAccountModalOpen]);
 
   const showSideButton = srcChainId !== undefined || (gmxAccountUsd !== undefined && gmxAccountUsd > 0n);
-  const showDepositButton = !isGmxAccountLoading && gmxAccountUsd === 0n && srcChainId !== undefined;
 
   return (
     <div className="flex">

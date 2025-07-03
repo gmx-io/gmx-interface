@@ -27,10 +27,12 @@ export function ExpressTradingWarningCard({
   expressParams,
   payTokenAddress,
   isWrapOrUnwrap,
+  disabled,
 }: {
   expressParams: ExpressTxnParams | undefined;
   payTokenAddress: string | undefined;
   isWrapOrUnwrap: boolean;
+  disabled?: boolean;
 }) {
   const [isVisible, setIsVisible] = useState(true);
   const updateSubaccountSettings = useSelector(selectUpdateSubaccountSettings);
@@ -85,7 +87,7 @@ export function ExpressTradingWarningCard({
 
   let onClick: undefined | (() => void) = undefined;
 
-  if (!isVisible) {
+  if (!isVisible || disabled) {
     return null;
   } else if (shouldShowWrapOrUnwrapWarning) {
     onCloseClick = handleCloseWrapOrUnwrapWarningClick;
