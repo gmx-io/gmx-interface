@@ -435,6 +435,10 @@ msgstr ""
 msgid "Funding Claimed"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Transaction failed due to RPC error.<0/><1/>Please enable <2>Express trading</2> under settings, which should offer a better experience."
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code added!"
 msgstr "Referral Code hinzugefügt!"
@@ -2231,7 +2235,6 @@ msgstr ""
 msgid "Trading Mode"
 msgstr ""
 
-#: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 msgstr ""

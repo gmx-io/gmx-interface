@@ -1,4 +1,12 @@
-import type { PendingDepositData, PendingOrderData, PendingShiftData, PendingWithdrawalData } from "./types";
+import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
+
+import type {
+  GelatoTaskStatus,
+  PendingDepositData,
+  PendingOrderData,
+  PendingShiftData,
+  PendingWithdrawalData,
+} from "./types";
 
 export function getPendingOrderKey(
   data: Omit<PendingOrderData, "txnType" | "triggerPrice" | "acceptablePrice" | "autoCancel">
@@ -72,4 +80,23 @@ export function getPendingShiftKey(data: PendingShiftData) {
     data.toMarket,
     data.minMarketTokens.toString(),
   ].join(":");
+}
+
+const BYTECODE_REGEXP = /0x[a-fA-F0-9]+/;
+
+export async function sendGelatoTaskStatusMetric(metricId: OrderMetricId, gelatoTaskStatus: GelatoTaskStatus) {
+  const bytecodeMatch = gelatoTaskStatus.lastCheckMessage?.match(BYTECODE_REGEXP);
+
+  if (bytecodeMatch) {
+    const bytecode = bytecodeMatch[0];
+    const error = new Error(`data="${bytecode}"`);
+    sendTxnErrorMetric(metricId, error, "relayer");
+    return;
+  }
+
+  sendTxnErrorMetric(
+    metricId,
+    new Error(`Gelato task cancelled, unknown reason ${gelatoTaskStatus.taskId}`),
+    "relayer"
+  );
 }
