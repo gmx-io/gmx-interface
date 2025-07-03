@@ -11,6 +11,7 @@ import { switchNetwork } from "lib/wallets";
 import { getNativeToken } from "sdk/configs/tokens";
 import { CustomErrorName, extractTxnError, TxError, TxErrorType } from "sdk/utils/errors/transactionsErrors";
 
+import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
@@ -19,6 +20,7 @@ export type AdditionalErrorParams = {
   slippageInputId?: string;
   defaultMessage?: ReactNode;
   isInternalSwapFallback?: boolean;
+  setIsSettingsVisible: (isVisible: boolean) => void;
 };
 
 export function getTxnErrorToast(
@@ -29,6 +31,7 @@ export function getTxnErrorToast(
     slippageInputId,
     defaultMessage = getDefaultErrorMessage(errorData),
     isInternalSwapFallback,
+    setIsSettingsVisible,
   }: AdditionalErrorParams
 ) {
   const nativeToken = getNativeToken(chainId);
@@ -140,11 +143,11 @@ export function getTxnErrorToast(
             Transaction failed due to RPC error.
             <br />
             <br />
-            Please try changing the RPC url in your wallet settings with the help of{" "}
-            <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>.
-            <br />
-            <br />
-            <ExternalLink href="https://docs.gmx.io/docs/trading/v1#rpc-urls">Read more</ExternalLink>.
+            Please enable{" "}
+            <Button variant="link" onClick={() => setIsSettingsVisible(true)}>
+              Express trading
+            </Button>{" "}
+            under settings, which should offer a better experience.
           </Trans>
           <br />
           <br />

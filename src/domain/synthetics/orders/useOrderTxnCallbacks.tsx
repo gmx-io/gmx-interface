@@ -291,6 +291,7 @@ export function useOrderTxnCallbacks() {
             slippageInputId: ctx.slippageInputId,
             additionalContent: ctx.additionalErrorContent,
             isInternalSwapFallback: Boolean(fallbackToInternalSwap),
+            setIsSettingsVisible,
           });
 
           helperToast.error(toastParams.errorContent, {
