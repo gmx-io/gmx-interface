@@ -6846,6 +6846,7 @@ msgstr "{0} {longOrShortText}의 입글을 실행시키지 못했습니다"
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/domain/multichain/useMultichainFundingToast.tsx
