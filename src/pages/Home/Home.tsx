@@ -19,7 +19,7 @@ export default function Home(_) {
   }, []);
 
   return (
-    <div>
+    <div className="proportional-nums">
       <HeroSection />
     </div>
   );

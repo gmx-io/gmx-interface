@@ -14,7 +14,7 @@ import { ProtectionBackground } from "../components/ProtectionBackground";
 export function HeroSection() {
   return (
     <section className="bg-fiord-700">
-      <div className="mx-auto max-w-[1360px] px-16 sm:px-80">
+      <div className="mx-auto overflow-hidden px-16 sm:max-w-[1360px] sm:px-80">
         <div className="relative h-screen py-80 ">
           <HeroBackground />
           <div className="relative flex h-full flex-col justify-end">
@@ -37,16 +37,16 @@ export function HeroSection() {
               </div>
               <div className="flex flex-row gap-36 sm:gap-60">
                 <div className="flex flex-col gap-4">
-                  <div className="text-14 text-secondary">Traders</div>
-                  <div className="text-[40px] font-semibold">701K</div>
+                  <div className="text-nowrap text-12 text-secondary sm:text-14">Traders</div>
+                  <div className="text-[30px] tracking-tight sm:text-[40px] sm:font-semibold">701K</div>
                 </div>
                 <div className="flex flex-col gap-4">
-                  <div className="text-14 text-secondary">Open Interest</div>
-                  <div className="text-[40px] font-semibold">$137M</div>
+                  <div className="text-nowrap text-12 text-secondary sm:text-14">Open Interest</div>
+                  <div className="text-[30px] tracking-tight sm:text-[40px] sm:font-semibold">$137M</div>
                 </div>
                 <div className="flex flex-col gap-4">
-                  <div className="text-14 text-secondary">Total Volume</div>
-                  <div className="text-[40px] font-semibold">$285B</div>
+                  <div className="text-nowrap text-12 text-secondary sm:text-14">Total Volume</div>
+                  <div className="text-[30px] tracking-tight sm:text-[40px] sm:font-semibold">$285B</div>
                 </div>
               </div>
             </div>
@@ -54,7 +54,7 @@ export function HeroSection() {
         </div>
 
         {/* Features */}
-        <div className="grid grid-cols-1 grid-rows-6 gap-24 py-[120px] sm:grid-cols-3 sm:grid-rows-3">
+        <div className="relative grid grid-cols-1 grid-rows-6 gap-24 py-[120px] sm:grid-cols-3 sm:grid-rows-3">
           {/* Trade with confidence */}
           <div className="h-full rounded-20 bg-fiord-600 p-20 sm:col-start-1 sm:col-end-2 sm:row-start-1 sm:row-end-2 sm:min-h-[180px]">
             <div className="mb-18 flex flex-row items-center gap-20 border-b border-fiord-500 pb-20">
