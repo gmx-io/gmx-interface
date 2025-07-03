@@ -33,14 +33,24 @@ export type EventData = {
 export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
-  // {
-  //   id: "botanix-launch",
-  //   title: "GMX is live on Botanix",
-  //   isActive: true,
-  //   startDate: "30 Jun 2025, 0:00",
-  //   endDate: "8 Jul 2025, 0:00",
-  //   bodyText: <>GMX is now natively deployed on the Botanix network. Use the network switcher to connect.</>,
-  // },
+  {
+    id: "botanix-launch-event",
+    title: "GMX is live on Botanix",
+    isActive: true,
+    startDate: "2 Jul 2025, 0:00",
+    endDate: "10 Jul 2025, 0:00",
+    bodyText: (
+      <>
+        GMX is now natively deployed on the Botanix network. Use the network switcher to connect.
+        <br />
+        <br />
+        <ExternalLink href="https://x.com/GMX_IO/status/1940367677190762617">
+          Learn how to trade and provide liquidity
+        </ExternalLink>
+        .
+      </>
+    ),
+  },
   {
     id: "listing-xmr-crv-moodeng-pi",
     title: "CRV, MOODENG, PI and XMR markets added on Arbitrum",
