@@ -389,7 +389,7 @@ export function PositionEditor() {
                   isCollateralTokenFromGmxAccount={isCollateralTokenFromGmxAccount}
                   options={options}
                   onSelect={handleSetCollateralAddress}
-                  withBalance={isDeposit}
+                  variant={isDeposit ? "balance" : "destination"}
                 />
               ) : (
                 collateralToken?.symbol

@@ -1,9 +1,11 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import React, { useCallback, useEffect } from "react";
+import { TbArrowRight } from "react-icons/tb";
 import { toast } from "react-toastify";
 import { useMedia } from "react-use";
 
-import { ContractsChainId } from "config/chains";
+import { ContractsChainId, getChainName } from "config/chains";
+import { getChainIcon } from "config/icons";
 import type { TokenData } from "domain/synthetics/tokens/types";
 import { formatBalanceAmount } from "lib/numbers";
 
@@ -29,7 +31,7 @@ type Props = {
   isCollateralTokenFromGmxAccount: boolean;
   options: TokenData[] | undefined;
   onSelect: (tokenAddress: string, isGmxAccount: boolean) => void;
-  withBalance?: boolean;
+  variant?: "balance" | "destination";
 };
 
 export function PositionEditorCollateralSelector(props: Props) {
@@ -75,7 +77,7 @@ function CollateralSelectorDesktop(props: Props) {
             }}
             chainId={props.chainId}
             tokenData={option}
-            withBalance={props.withBalance}
+            variant={props.variant}
           />
         ))}
       </tbody>
@@ -84,12 +86,12 @@ function CollateralSelectorDesktop(props: Props) {
 }
 
 function CollateralListItemDesktop({
-  withBalance,
+  variant,
   chainId,
   tokenData,
   onSelect,
 }: {
-  withBalance?: boolean;
+  variant?: "balance" | "destination";
   chainId: ContractsChainId;
   tokenData: TokenData;
   onSelect: () => void;
@@ -107,20 +109,36 @@ function CollateralListItemDesktop({
   return (
     <SelectorBaseDesktopRow onClick={handleClick}>
       <TableTd
-        padding={withBalance ? "compact" : "compact-one-column"}
+        padding={variant === "balance" ? "compact" : "compact-one-column"}
         data-qa={`collateral-in-selector-row-${tokenData.symbol}`}
       >
-        <div className="flex items-center gap-8">
-          <TokenIcon
-            symbol={tokenData.symbol}
-            displaySize={28}
-            importSize={24}
-            chainIdBadge={tokenData.isGmxAccount ? 0 : chainId}
-          />
-          {tokenData.symbol}
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
+            <TokenIcon
+              symbol={tokenData.symbol}
+              displaySize={variant === "destination" ? 16 : 28}
+              importSize={24}
+              chainIdBadge={variant === "destination" ? undefined : tokenData.isGmxAccount ? 0 : chainId}
+            />
+            {tokenData.symbol}
+          </div>
+
+          {variant === "destination" && (
+            <>
+              <TbArrowRight className="text-slate-100" />
+              <div className="flex items-center gap-4">
+                <img
+                  src={getChainIcon(tokenData.isGmxAccount ? 0 : chainId)}
+                  alt={getChainName(tokenData.isGmxAccount ? 0 : chainId)}
+                  className="size-16"
+                />
+                {tokenData.isGmxAccount ? <Trans>GMX Balance</Trans> : getChainName(chainId)}
+              </div>
+            </>
+          )}
         </div>
       </TableTd>
-      {withBalance && (
+      {variant === "balance" && (
         <TableTd padding="compact">
           {tokenData.balance !== undefined
             ? formatBalanceAmount(tokenData.balance, tokenData.decimals, undefined, {
@@ -147,7 +165,7 @@ function CollateralSelectorMobile(props: Props) {
           }}
           chainId={props.chainId}
           tokenData={option}
-          withBalance={props.withBalance}
+          variant={props.variant}
         />
       ))}
     </SelectorBaseMobileList>
@@ -155,12 +173,12 @@ function CollateralSelectorMobile(props: Props) {
 }
 
 function CollateralListItemMobile({
-  withBalance,
+  variant,
   chainId,
   tokenData,
   onSelect,
 }: {
-  withBalance?: boolean;
+  variant?: "balance" | "destination";
   chainId: ContractsChainId;
   tokenData: TokenData;
   onSelect: () => void;
@@ -187,7 +205,7 @@ function CollateralListItemMobile({
         />
         <div>{tokenData.symbol}</div>
       </div>
-      {withBalance &&
+      {variant === "balance" &&
         (tokenData.balance !== undefined
           ? formatBalanceAmount(tokenData.balance, tokenData.decimals, undefined, {
               isStable: tokenData.isStable,
