@@ -36,9 +36,10 @@ export function useIsSponsoredCallBalanceAvailable(
         const mainBalanceToken = mainBalance.token;
         const remainingBalance = BigInt(mainBalance.remainingBalance);
         const amountInExecution = BigInt(mainBalance.amountInExecution);
-        const balanceLeft = remainingBalance - amountInExecution;
 
+        const balanceLeft = remainingBalance - amountInExecution;
         const mainTokenSymbol = chainId === BOTANIX ? "USDC.E" : mainBalanceToken.symbol;
+
 
         const mainBalanceTokenData = getByKey(tokensData, getTokenBySymbol(chainId, mainTokenSymbol).address);
 

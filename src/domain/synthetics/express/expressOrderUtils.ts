@@ -52,6 +52,7 @@ import {
   getIsEmptyBatch,
 } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
+import { setUiFeeReceiverIsExpress } from "sdk/utils/twap/uiFeeReceiver";
 
 import { approximateL1GasBuffer, estimateBatchGasLimit, estimateRelayerGasLimit, GasLimitsConfig } from "../fees";
 import { getNeedTokenApprove } from "../tokens";
