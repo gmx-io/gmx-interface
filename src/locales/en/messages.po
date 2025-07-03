@@ -132,6 +132,13 @@ msgstr "Max Pool Capacity"
 msgid "Yield Optimizer on Avalanche"
 msgstr "Yield Optimizer on Avalanche"
 
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum"
+msgstr "Arbitrum"
+
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -296,10 +303,6 @@ msgstr "View status."
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buyable"
 msgstr "Buyable"
-
-#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
-msgstr "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "TWAP Number of Parts"
@@ -609,6 +612,10 @@ msgstr "Telegram contact (optional)"
 msgid "Market order will be cancellable in {minutesText}{seconds}s."
 msgstr "Market order will be cancellable in {minutesText}{seconds}s."
 
+#: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
+msgid "providing liquidity"
+msgstr "providing liquidity"
+
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Tap [Create Wallet] to start using your Web3 Wallet."
 msgstr "Tap [Create Wallet] to start using your Web3 Wallet."
@@ -903,6 +910,10 @@ msgstr "Decentralized Money Market"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Stop Price"
 msgstr "Stop Price"
+
+#: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
+msgid "using GLV and GM tokens. Buying or staking GMX, or using referrals, is not supported at this time."
+msgstr "using GLV and GM tokens. Buying or staking GMX, or using referrals, is not supported at this time."
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 msgid "Positions ({positionsCount})"
@@ -1274,6 +1285,13 @@ msgstr "Total"
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Swap active: {0}, executed: {1}, cancelled: {2}"
+
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Buy token on:"
+msgstr "Buy token on:"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -1654,6 +1672,7 @@ msgstr "Yield Optimizations"
 msgid "Receive (Approximate)"
 msgstr "Receive (Approximate)"
 
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
 msgstr "No swap path found"
@@ -2148,6 +2167,10 @@ msgstr "Total:"
 msgid "{0} Approved!"
 msgstr "{0} Approved!"
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No swap path available. <0>Swap {0} to STBTC</0> to use {1} as collateral."
+msgstr "No swap path available. <0>Swap {0} to STBTC</0> to use {1} as collateral."
+
 #: src/pages/Stake/TotalRewardsCard.tsx
 msgid "<0>Provide liquidity</0> and earn {gmxMarketApyDataText} APY"
 msgstr "<0>Provide liquidity</0> and earn {gmxMarketApyDataText} APY"
@@ -2638,9 +2661,17 @@ msgstr "Enter your feedback here"
 msgid "High Impact on Collateral"
 msgstr "High Impact on Collateral"
 
+#: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
+msgid "and"
+msgstr "and"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GLV liquidity"
 msgstr "Insufficient GLV liquidity"
+
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No swap path available. <0>Swap STBTC to PBTC</0>, then to BTC"
+msgstr "No swap path available. <0>Swap STBTC to PBTC</0>, then to BTC"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/OrderEditor.jsx
@@ -2833,6 +2864,10 @@ msgstr "Not enough Available Liquidity to fill the Order. The Order will get fil
 msgid "Annualized data based on the past 7 days."
 msgstr "Annualized data based on the past 7 days."
 
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+#~ msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/>{botanixDisclaimer}<2/>Please try increasing max network fee buffer to {0} in <3>Settings</3>."
+#~ msgstr "Transaction failed due to execution fee validation. <0>View</0>.<1/>{botanixDisclaimer}<2/>Please try increasing max network fee buffer to {0} in <3>Settings</3>."
+
 #: src/components/Exchange/OrdersToa.jsx
 #: src/components/Exchange/OrdersToa.jsx
 #: src/components/Exchange/PositionSeller.jsx
@@ -2871,6 +2906,13 @@ msgstr "V2 doesn't currently support this network"
 msgid "V1 Arbitrum"
 msgstr "V1 Arbitrum"
 
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Avalanche"
+msgstr "Avalanche"
+
 #: src/components/Synthetics/MarketStats/MarketGraphs.tsx
 msgid "Fee APR"
 msgstr "Fee APR"
@@ -2882,6 +2924,8 @@ msgstr "SL"
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/Stake.tsx
+#: src/pages/Stake/Stake.tsx
 #: src/pages/Stake/Stake.tsx
 #: src/pages/Stake/Stake.tsx
 #: src/pages/Stake/StakeModal.tsx
@@ -3208,6 +3252,10 @@ msgstr "Liquidated"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Blueberry Pulse"
 msgstr "Blueberry Pulse"
+
+#: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
+msgid "Please switch to the <0><1/><2>Arbitrum</2></0> or <3><4/><5>Avalanche</5></3> deployment for those features."
+msgstr "Please switch to the <0><1/><2>Arbitrum</2></0> or <3><4/><5>Avalanche</5></3> deployment for those features."
 
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -3623,13 +3671,6 @@ msgstr "Vested Claimable GMX"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol}"
 msgstr "Buy {nativeTokenSymbol}"
-
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-msgid "View on Avalanche"
-msgstr "View on Avalanche"
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "View in Explorer"
@@ -4086,6 +4127,10 @@ msgstr "You will receive at least {0} {1} if this order is executed. The exact e
 msgid "GMX | Decentralized Perpetual Exchange"
 msgstr "GMX | Decentralized Perpetual Exchange"
 
+#: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
+msgid "<0>Botanix</0> currently only supports"
+msgstr "<0>Botanix</0> currently only supports"
+
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "No position"
 msgstr "No position"
@@ -4468,6 +4513,11 @@ msgstr "Total value of tokens in GM Pools."
 #: src/components/Glp/GlpSwap.jsx
 msgid "Reserved"
 msgstr "Reserved"
+
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Botanix"
+msgstr "Botanix"
 
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
@@ -5083,6 +5133,10 @@ msgstr "Execute"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
 msgstr "Trades"
+
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No swap path available."
+msgstr "No swap path available."
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Telegram Groups"
@@ -6056,6 +6110,10 @@ msgstr "V1 rebates are airdropped weekly. V2 rebates are automatically applied a
 msgid "Min position size: {0}"
 msgstr "Min position size: {0}"
 
+#: src/components/Synthetics/StatusNotification/StakeNotification.tsx
+#~ msgid "Transaction request sent"
+#~ msgstr "Transaction request sent"
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/sidecarOrders/utils.ts
@@ -6199,6 +6257,10 @@ msgstr "Limit order submitted!"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Last 7d"
 msgstr "Last 7d"
+
+#: src/components/Synthetics/StatusNotification/StakeNotification.tsx
+msgid "Swap {fromAmount} for {toAmount}"
+msgstr "Swap {fromAmount} for {toAmount}"
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Copy"
@@ -6458,6 +6520,10 @@ msgstr "Minute(s)"
 msgid "Start Unrealized Fees"
 msgstr "Start Unrealized Fees"
 
+#: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
+msgid "V2 trading"
+msgstr "V2 trading"
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "view"
 msgstr "view"
@@ -6532,6 +6598,7 @@ msgid "{0} and {1} can be used to buy GM for this market up to the specified buy
 msgstr "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/StakeNotification.tsx
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/lib/contracts/notifications.tsx
@@ -6928,6 +6995,10 @@ msgstr "Edit order"
 msgid "Claims"
 msgstr "Claims"
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+#~ msgid "Stake {0}"
+#~ msgstr "Stake {0}"
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
@@ -6941,6 +7012,10 @@ msgstr "Date"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using FIAT gateways:"
 msgstr "Buy GMX using FIAT gateways:"
+
+#: src/components/Synthetics/StatusNotification/StakeNotification.tsx
+#~ msgid "{0} {fromAmount} for {toAmount}"
+#~ msgstr "{0} {fromAmount} for {toAmount}"
 
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Referral code created!"
@@ -7239,13 +7314,6 @@ msgstr "{arbitrumLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GM"
 msgstr "Sell GM"
-
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-msgid "View on Arbitrum"
-msgstr "View on Arbitrum"
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power."
@@ -7679,6 +7747,10 @@ msgstr "Fulfilling shift request"
 msgid "Referral code submitted!"
 msgstr "Referral code submitted!"
 
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please <3>enable Express trading</3> under settings, which should offer a better experience.<4/><5/>Otherwise, try increasing the max network fee buffer to {0} in <6>settings</6>."
+msgstr "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please <3>enable Express trading</3> under settings, which should offer a better experience.<4/><5/>Otherwise, try increasing the max network fee buffer to {0} in <6>settings</6>."
+
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "APY"
 msgstr "APY"
@@ -7931,6 +8003,10 @@ msgstr "The PnL ($) compared to the capital used.<0/><1/>The capital used is cal
 msgid "Accrued"
 msgstr "Accrued"
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "<0>Swap {0} to STBTC</0> to trade with <1/> or <2/> as collateral."
+msgstr "<0>Swap {0} to STBTC</0> to trade with <1/> or <2/> as collateral."
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Liquidation price is influenced by fees and collateral value."
 msgstr "Liquidation price is influenced by fees and collateral value."
@@ -8023,6 +8099,10 @@ msgstr "2nd Place"
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LAST PRICE"
 msgstr "LAST PRICE"
+
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+#~ msgid "Rabby Wallet is currently experiencing network fee issues on Botanix. Please try another wallet if you're using it."
+#~ msgstr "Rabby Wallet is currently experiencing network fee issues on Botanix. Please try another wallet if you're using it."
 
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
@@ -8333,6 +8413,10 @@ msgstr "Fees are higher than Collateral"
 #: src/components/Referrals/TradersStats.tsx
 msgid "You will receive a {currentTierDiscount}% discount on opening and closing fees."
 msgstr "You will receive a {currentTierDiscount}% discount on opening and closing fees."
+
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+#~ msgid "Unstake {0}"
+#~ msgstr "Unstake {0}"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"

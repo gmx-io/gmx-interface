@@ -1,4 +1,4 @@
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX } from "config/chains";
 import { getContract } from "config/contracts";
 
 const ARBITRUM_GMX = getContract(ARBITRUM, "GMX").toLowerCase();
@@ -28,6 +28,12 @@ export const EXTERNAL_LINKS = {
     networkWebsite: "https://www.avax.network/",
     buyGmx: {
       traderjoe: `https://traderjoexyz.com/trade?outputCurrency=${AVALANCHE_GMX}`,
+    },
+  },
+  [BOTANIX]: {
+    networkWebsite: "https://botanixlabs.com/",
+    buyGmx: {
+      uniswap: undefined,
     },
   },
 };

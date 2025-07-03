@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { BigNumberish, ethers } from "ethers";
 import { useEffect, useState } from "react";
 
-import { SUPPORTED_CHAIN_IDS } from "config/chains";
+import { SUPPORTED_CHAIN_IDS, UiContractsChain } from "config/chains";
 import { BN_ZERO } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { getReferralsGraphClient } from "lib/subgraph";
@@ -103,7 +103,7 @@ export function useReferralsData(account?: string | null) {
       if (!graphClient) return undefined;
 
       return getReferralsGraphClient(chainId)
-        .query({
+        ?.query({
           query: REFERRALS_GQL,
           variables: {
             typeIds: Object.values(RebateDistributionType),
@@ -154,7 +154,7 @@ export function useReferralsData(account?: string | null) {
                 (
                   chainResult
                 ): chainResult is PromiseFulfilledResult<{
-                  chainId: number;
+                  chainId: UiContractsChain;
                   data: CodeOwnershipInfo[] | undefined;
                 }> => chainResult.status === "fulfilled"
               )

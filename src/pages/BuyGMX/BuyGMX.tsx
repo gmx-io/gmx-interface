@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import { useCallback, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";
+import { ARBITRUM, AVALANCHE, BOTANIX, getChainName, getConstant } from "config/chains";
 import { getIcons } from "config/icons";
 import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";
@@ -59,6 +59,12 @@ export default function BuyGMX() {
       }
     }
   }, [location]);
+
+  useEffect(() => {
+    if (chainId === BOTANIX) {
+      onNetworkSelect(ARBITRUM);
+    }
+  }, [chainId, onNetworkSelect]);
 
   return (
     <div className="BuyGMXGLP default-container page-layout">
