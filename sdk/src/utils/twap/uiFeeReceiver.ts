@@ -6,11 +6,11 @@ const PREFIX = "0xff0000";
 /**
  * Ui fee receiver structure:
  * 0..3 bytes (0..7 chars) - PREFIX
- * 4..14 bytes (8..27 chars) - 12 bytes buffer
- * 15 byte (27..29 chars) - isExpress flag
- * 16 byte (30..32 chars) - numberOfParts (hex encoded)
- * 17..18 bytes (32..38 chars) - twapId
- * 19 byte (37..39 chars) - VERSION
+ * 4..16 bytes (8..27 chars) - 12 bytes buffer
+ * 17 byte (27..29 chars) - isExpress flag
+ * 18 byte (30..32 chars) - numberOfParts (hex encoded)
+ * 19..20 bytes (34..38 chars) - twapId
+ * 20 byte (38..40 chars) - VERSION
  *
  * Total: 20 bytes (40 hex characters)
  */
