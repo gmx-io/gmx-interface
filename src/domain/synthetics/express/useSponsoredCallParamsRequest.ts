@@ -45,7 +45,6 @@ export function useIsSponsoredCallBalanceAvailable(
 
         const usdBalance = convertToUsd(balanceLeft, mainBalanceToken.decimals, mainBalanceTokenData?.prices.minPrice);
 
-
         return usdBalance !== undefined && usdBalance > MIN_GELATO_USD_BALANCE_FOR_SPONSORED_CALL;
       } catch (error) {
         metrics.pushError(error, "expressOrders.useIsSponsoredCallBalanceAvailable");

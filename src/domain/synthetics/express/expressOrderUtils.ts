@@ -56,6 +56,7 @@ import { setUiFeeReceiverIsExpress } from "sdk/utils/twap/uiFeeReceiver";
 
 import { approximateL1GasBuffer, estimateBatchGasLimit, estimateRelayerGasLimit, GasLimitsConfig } from "../fees";
 import { getNeedTokenApprove } from "../tokens";
+import { setUiFeeReceiverIsExpress } from "sdk/utils/twap/uiFeeReceiver";
 
 export async function estimateBatchExpressParams({
   signer,
