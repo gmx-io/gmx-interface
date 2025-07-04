@@ -204,6 +204,10 @@
   background-image: url("img/btn_big_avalanche.png");
 }
 
+.Home-cta-option-botanix {
+  background-image: url("img/btn_big_botanix.png");
+}
+
 .Home-token-card-section {
   padding-top: 7.75rem;
   padding-bottom: 7.75rem;

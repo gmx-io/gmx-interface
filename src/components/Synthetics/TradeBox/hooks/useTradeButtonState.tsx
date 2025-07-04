@@ -685,44 +685,42 @@ function NoSwapPathTooltipContent({
   toToken: TokenData | undefined;
 }) {
   const { setFromTokenAddress, setToTokenAddress, setTradeType, setTradeMode } = useSelector(selectTradeboxState);
-  const handleBotanixClick = useCallback(() => {
-    setTradeType(TradeType.Swap);
-    setTradeMode(TradeMode.Market);
-    setFromTokenAddress(fromToken?.address);
-    setToTokenAddress(getTokenBySymbol(chainId, "STBTC")?.address);
-  }, [chainId, fromToken?.address, setFromTokenAddress, setToTokenAddress, setTradeMode, setTradeType]);
 
-  const handleBotanixStBtcToPBtcClick = useCallback(() => {
-    setTradeType(TradeType.Swap);
-    setTradeMode(TradeMode.Market);
-    setFromTokenAddress(getTokenBySymbol(chainId, "STBTC")?.address);
-    setToTokenAddress(getTokenBySymbol(chainId, "PBTC")?.address);
-  }, [chainId, setFromTokenAddress, setToTokenAddress, setTradeMode, setTradeType]);
+  const makeHandleSwapClick = useCallback(
+    (fromTokenSymbol: string, toTokenSymbol: string) => () => {
+      setTradeType(TradeType.Swap);
+      setTradeMode(TradeMode.Market);
+      setFromTokenAddress(getTokenBySymbol(chainId, fromTokenSymbol)?.address);
+      setToTokenAddress(getTokenBySymbol(chainId, toTokenSymbol)?.address);
+    },
+    [chainId, setFromTokenAddress, setToTokenAddress, setTradeMode, setTradeType]
+  );
 
-  if (!fromToken || !collateralToken) {
+  if (!fromToken) {
     return <Trans>No swap path available.</Trans>;
   }
 
   if (chainId === BOTANIX) {
-    if (fromToken?.symbol === "STBTC" && toToken?.symbol === "BTC") {
+    if (collateralToken) {
       return (
         <Trans>
           No swap path available.{" "}
-          <span onClick={handleBotanixStBtcToPBtcClick} className="Tradebox-handle">
-            Swap STBTC to PBTC
-          </span>
-          , then to BTC
+          <span onClick={makeHandleSwapClick(fromToken.symbol, "STBTC")} className="Tradebox-handle">
+            Swap {fromToken.symbol} to STBTC
+          </span>{" "}
+          to use {collateralToken.symbol} as collateral.
         </Trans>
       );
     }
 
+    const swapToTokenSymbol = fromToken.symbol === "STBTC" ? "PBTC" : "STBTC";
     return (
       <Trans>
         No swap path available.{" "}
-        <span onClick={handleBotanixClick} className="Tradebox-handle">
-          Swap {fromToken.symbol} to STBTC
-        </span>{" "}
-        to use {collateralToken.symbol} as collateral.
+        <span onClick={makeHandleSwapClick(fromToken.symbol, swapToTokenSymbol)} className="Tradebox-handle">
+          Swap {fromToken.symbol} to {swapToTokenSymbol}
+        </span>
+        , then to {toToken?.symbol}
       </Trans>
     );
   }
