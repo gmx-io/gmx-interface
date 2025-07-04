@@ -16,6 +16,7 @@ import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
   DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT,
   MULTICHAIN_FUNDING_SLIPPAGE_BPS,
+  MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS,
   StargateErrorsAbi,
   getMappedTokenId,
 } from "config/multichain";
@@ -39,7 +40,7 @@ import { useQuoteOft } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSend } from "domain/multichain/useQuoteSend";
 import { getNeedTokenApprove, useTokensAllowanceData, useTokensDataRequest } from "domain/synthetics/tokens";
-import { approveTokens } from "domain/tokens";
+import { NativeTokenSupportedAddress, approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
 import { helperToast } from "lib/helperToast";
@@ -57,7 +58,7 @@ import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
-import { convertTokenAddress, getToken } from "sdk/configs/tokens";
+import { convertTokenAddress, getNativeToken, getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
@@ -139,6 +140,10 @@ export const DepositView = () => {
   }, [selectedToken, multichainTokens, depositViewChain]);
 
   const selectedTokenSourceChainBalance = selectedTokenChainData?.sourceChainBalance;
+  const nativeTokenSourceChainBalance = useMemo(() => {
+    if (multichainTokens === undefined) return undefined;
+    return multichainTokens.find((token) => token.address === zeroAddress)?.sourceChainBalance;
+  }, [multichainTokens]);
 
   const realInputAmount = useGmxAccountSelector(selectGmxAccountDepositViewTokenInputAmount);
 
@@ -156,7 +161,7 @@ export const DepositView = () => {
       return;
     }
 
-    const isNative = depositViewTokenAddress === zeroAddress;
+    const isNative = unwrappedSelectedTokenAddress === zeroAddress;
     if (isNative) {
       const buffer = convertToTokenAmount(
         10n * 10n ** BigInt(USD_DECIMALS),
@@ -171,7 +176,13 @@ export const DepositView = () => {
     }
 
     setInputValue(formatAmountFree(selectedTokenSourceChainBalance, selectedToken.decimals));
-  }, [selectedToken, selectedTokenSourceChainBalance, depositViewTokenAddress, setInputValue, selectedTokenChainData]);
+  }, [
+    selectedToken,
+    selectedTokenChainData?.sourceChainPrices,
+    selectedTokenSourceChainBalance,
+    setInputValue,
+    unwrappedSelectedTokenAddress,
+  ]);
 
   const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
 
@@ -513,11 +524,17 @@ export const DepositView = () => {
         return;
       }
 
+      const isInvalidTokenAddress =
+        depositViewTokenAddress === undefined ||
+        !MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId as SettlementChainId]
+          .map((token) => convertTokenAddress(settlementChainId, token, "native"))
+          .includes(depositViewTokenAddress as NativeTokenSupportedAddress);
+
       if (
-        depositViewTokenAddress === undefined &&
-        depositViewChain !== undefined &&
+        !isPriceDataLoading &&
         multichainTokens.length > 0 &&
-        !isPriceDataLoading
+        depositViewChain !== undefined &&
+        isInvalidTokenAddress
       ) {
         const preferredToken = multichainTokens.find(
           (sourceChainToken) =>
@@ -620,7 +637,20 @@ export const DepositView = () => {
       text: t`Insufficient balance`,
       disabled: true,
     };
+  } else if (nativeTokenSourceChainBalance !== undefined && quoteSend !== undefined) {
+    const isNative = unwrappedSelectedTokenAddress === zeroAddress;
+    const value = isNative ? inputAmount : 0n;
+
+    if (quoteSend.nativeFee + value > nativeTokenSourceChainBalance) {
+      const nativeTokenSymbol = getNativeToken(settlementChainId)?.symbol;
+      buttonState = {
+        text: t`Insufficient ${nativeTokenSymbol} balance`,
+        disabled: true,
+      };
+    }
   }
+
+  // console.log({ nativeTokenSourceChainBalance });
 
   let placeholder = "";
   if ((inputValue === undefined || inputValue === "") && selectedToken?.symbol) {

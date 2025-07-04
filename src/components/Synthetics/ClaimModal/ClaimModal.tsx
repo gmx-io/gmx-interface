@@ -117,7 +117,7 @@ export function ClaimModalSettlementChain(p: Props) {
 export function ClaimModalMultichain(p: Props) {
   const { isVisible, onClose } = p;
   const { account, signer } = useWallet();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const marketsInfoData = useMarketsInfoData();
   const { provider } = useJsonRpcProvider(chainId);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -183,6 +183,7 @@ export function ClaimModalMultichain(p: Props) {
 
   const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload({
     expressTransactionBuilder,
+    isGmxAccount: srcChainId !== undefined,
   });
 
   const onSubmit = useCallback(() => {

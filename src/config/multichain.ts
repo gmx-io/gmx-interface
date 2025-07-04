@@ -170,7 +170,7 @@ export function isSourceChain(chainId: number | undefined): chainId is SourceCha
 
 export const MULTI_CHAIN_TOKEN_MAPPING = {} as MultichainTokenMapping;
 
-export const MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS = {} as MultichainWithdrawSupportedTokens;
+export const MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS = {} as MultichainWithdrawSupportedTokens;
 
 export const CHAIN_ID_TO_TOKEN_ID_MAP: Record<
   SettlementChainId | SourceChainId,
@@ -243,9 +243,9 @@ for (const tokenSymbol in TOKEN_GROUPS) {
         continue;
       }
 
-      MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS[settlementChainId] =
-        MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS[settlementChainId] || [];
-      MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS[settlementChainId].push(
+      MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId] =
+        MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId] || [];
+      MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId].push(
         convertTokenAddress(settlementChainId, settlementToken.address, "wrapped")
       );
     }

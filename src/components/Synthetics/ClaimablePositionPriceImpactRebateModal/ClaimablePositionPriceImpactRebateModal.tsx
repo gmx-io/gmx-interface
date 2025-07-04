@@ -155,6 +155,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
 
   const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload({
     expressTransactionBuilder,
+    isGmxAccount: srcChainId !== undefined,
   });
 
   const handleSubmit = useCallback(async () => {

@@ -3,7 +3,8 @@ import { type Provider } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
 import Skeleton from "react-loading-skeleton";
-import { Address, BaseError, decodeErrorResult, encodeAbiParameters, Hex, zeroAddress } from "viem";
+import { useHistory } from "react-router-dom";
+import { Address, encodeAbiParameters, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import { ContractsChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
@@ -15,10 +16,12 @@ import {
   getMultichainTokenId,
   getStargatePoolAddress,
   isSettlementChain,
-  MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS,
+  MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS,
   MULTICHAIN_FUNDING_SLIPPAGE_BPS,
 } from "config/multichain";
 import {
+  useGmxAccountDepositViewTokenAddress,
+  useGmxAccountDepositViewTokenInputValue,
   useGmxAccountModalOpen,
   useGmxAccountWithdrawalViewChain,
   useGmxAccountWithdrawalViewTokenAddress,
@@ -30,7 +33,7 @@ import {
   selectGasPaymentToken,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
+import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { BridgeOutParams } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
@@ -41,6 +44,7 @@ import { useQuoteSend } from "domain/multichain/useQuoteSend";
 import { callRelayTransaction } from "domain/synthetics/express/callRelayTransaction";
 import { buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTransactionBuilder, RawRelayParamsPayload } from "domain/synthetics/express/types";
+import { useSwitchGasPaymentTokenIfRequired } from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { convertToUsd, TokenData } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -67,11 +71,9 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
 import { WalletSigner } from "lib/wallets";
-import { abis } from "sdk/abis";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
-import { extendError, OrderErrorContext } from "sdk/utils/errors";
 import { convertToTokenAmount, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
 import type { SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
@@ -87,6 +89,7 @@ import {
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
+import { fallbackCustomError } from "../../../domain/multichain/fallbackCustomError";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { toastCustomOrStargateError } from "./toastCustomOrStargateError";
 import { wrapChainAction } from "./wrapChainAction";
@@ -116,9 +119,12 @@ const useIsFirstWithdrawal = () => {
 };
 
 export const WithdrawalView = () => {
+  const history = useHistory();
   const { chainId } = useChainId();
   const [withdrawalViewChain, setWithdrawalViewChain] = useGmxAccountWithdrawalViewChain();
   const { address: account } = useAccount();
+  const [, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
+  const [, setDepositViewTokenInputValue] = useGmxAccountDepositViewTokenInputValue();
   const [isVisibleOrView, setIsVisibleOrView] = useGmxAccountModalOpen();
   const [inputValue, setInputValue] = useGmxAccountWithdrawalViewTokenInputValue();
   const [selectedTokenAddress, setSelectedTokenAddress] = useGmxAccountWithdrawalViewTokenAddress();
@@ -160,7 +166,7 @@ export const WithdrawalView = () => {
       return EMPTY_ARRAY;
     }
 
-    return MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS[chainId as SettlementChainId]
+    return MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS[chainId as SettlementChainId]
       ?.map((tokenAddress) => tokensData[tokenAddress])
       .filter((token) => token.address !== zeroAddress)
       .sort((a, b) => {
@@ -346,6 +352,24 @@ export const WithdrawalView = () => {
 
   const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload({
     expressTransactionBuilder,
+    isGmxAccount: true,
+  });
+
+  const errors = useArbitraryError(expressTxnParamsAsyncResult.error);
+
+  const isOutOfTokenErrorToken = useMemo(() => {
+    if (errors?.isOutOfTokenError?.tokenAddress) {
+      return getByKey(tokensData, errors?.isOutOfTokenError?.tokenAddress);
+    }
+  }, [errors, tokensData]);
+
+  useSwitchGasPaymentTokenIfRequired({
+    gasPaymentToken: globalExpressParams?.gasPaymentToken,
+    isOutGasTokenBalance: errors?.isOutOfTokenError?.isGasPaymentToken,
+    gasPaymentTokenAmount: errors?.isOutOfTokenError
+      ? errors.isOutOfTokenError.requiredAmount - errors.isOutOfTokenError.balance
+      : undefined,
+    isGmxAccount: true,
   });
 
   const relayFeeAmount = expressTxnParamsAsyncResult?.data?.gasPaymentParams.relayerFeeAmount;
@@ -588,17 +612,26 @@ export const WithdrawalView = () => {
       text: t`Insufficient balance`,
       disabled: true,
     };
-  } else if (expressTxnParamsAsyncResult.data?.gasPaymentValidations?.isOutGasTokenBalance) {
+  } else if (
+    (expressTxnParamsAsyncResult.data?.gasPaymentValidations.isOutGasTokenBalance ||
+      errors?.isOutOfTokenError?.isGasPaymentToken) &&
+    !expressTxnParamsAsyncResult.isLoading
+  ) {
     buttonState = {
       text: t`Insufficient ${gasPaymentParams?.relayFeeToken.symbol} balance to pay for gas`,
       disabled: true,
     };
-  } else if (expressTxnParamsAsyncResult.error) {
+  } else if (errors?.isOutOfTokenError && !expressTxnParamsAsyncResult.isLoading) {
+    buttonState = {
+      text: t`Insufficient ${isOutOfTokenErrorToken?.symbol} balance`,
+      disabled: true,
+    };
+  } else if (expressTxnParamsAsyncResult.error && !expressTxnParamsAsyncResult.isLoading) {
     buttonState = {
       text: expressTxnParamsAsyncResult.error.name.slice(0, 32) ?? t`Error simulating withdrawal`,
       disabled: true,
     };
-  } else if (expressTxnParamsAsyncResult.data === undefined) {
+  } else if (!expressTxnParamsAsyncResult.data) {
     buttonState = {
       text: (
         <>
@@ -617,7 +650,7 @@ export const WithdrawalView = () => {
         return;
       }
 
-      const settlementChainWrappedTokenAddresses = MULTI_CHAIN_WITHDRAW_SUPPORTED_TOKENS[chainId];
+      const settlementChainWrappedTokenAddresses = MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS[chainId];
       if (!settlementChainWrappedTokenAddresses) {
         return;
       }
@@ -796,6 +829,59 @@ export const WithdrawalView = () => {
         </AlertInfoCard>
       )}
 
+      {errors?.isOutOfTokenError &&
+        !errors.isOutOfTokenError.isGasPaymentToken &&
+        isOutOfTokenErrorToken !== undefined && (
+          <AlertInfoCard type="error" className="my-4">
+            <Trans>
+              Withdrawing requires{" "}
+              {formatBalanceAmount(
+                errors.isOutOfTokenError.requiredAmount,
+                isOutOfTokenErrorToken?.decimals,
+                isOutOfTokenErrorToken?.symbol,
+                {
+                  isStable: isOutOfTokenErrorToken?.isStable,
+                }
+              )}{" "}
+              while you have{" "}
+              {formatBalanceAmount(
+                isOutOfTokenErrorToken.gmxAccountBalance ?? 0n,
+                isOutOfTokenErrorToken?.decimals,
+                isOutOfTokenErrorToken?.symbol,
+                {
+                  isStable: isOutOfTokenErrorToken?.isStable,
+                }
+              )}
+              . Please{" "}
+              <Button
+                variant="link"
+                onClick={() => {
+                  setIsVisibleOrView(false);
+                  history.push(`/trade/swap?to=${isOutOfTokenErrorToken.symbol}`);
+                }}
+              >
+                swap
+              </Button>{" "}
+              or{" "}
+              <Button
+                variant="link"
+                onClick={() => {
+                  setDepositViewTokenAddress(convertTokenAddress(chainId, isOutOfTokenErrorToken.address, "native"));
+                  if (errors?.isOutOfTokenError?.requiredAmount !== undefined) {
+                    setDepositViewTokenInputValue(
+                      formatAmountFree(errors.isOutOfTokenError.requiredAmount, isOutOfTokenErrorToken.decimals)
+                    );
+                  }
+                  setIsVisibleOrView("deposit");
+                }}
+              >
+                deposit
+              </Button>{" "}
+              more {isOutOfTokenErrorToken?.symbol} to your GMX account.
+            </Trans>
+          </AlertInfoCard>
+        )}
+
       <div className="h-32 shrink-0 grow" />
 
       <div className="mb-16 flex flex-col gap-14">
@@ -925,36 +1011,4 @@ async function simulateWithdraw({
       relayRouterAddress: to as Address,
     });
   }, "simulation");
-}
-
-async function fallbackCustomError<T = void>(f: () => Promise<T>, errorContext: OrderErrorContext) {
-  try {
-    return await f();
-  } catch (error) {
-    if ("walk" in error && typeof error.walk === "function") {
-      const errorWithData = (error as BaseError).walk((e) => "data" in (e as any)) as (Error & { data: string }) | null;
-
-      if (errorWithData && errorWithData.data) {
-        const data = errorWithData.data;
-
-        const decodedError = decodeErrorResult({
-          abi: abis.CustomErrors,
-          data: data as Hex,
-        });
-
-        const prettyError = new Error();
-
-        prettyError.name = decodedError.errorName;
-        prettyError.message = JSON.stringify(decodedError, null, 2);
-
-        throw extendError(prettyError, {
-          errorContext,
-        });
-      }
-    }
-
-    throw extendError(error, {
-      errorContext,
-    });
-  }
 }

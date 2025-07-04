@@ -49,7 +49,6 @@ export function usePositions(
     account,
   });
 
-  // TODO: debug sometimes issues with decoding from abi
   const {
     data: positionsData,
     error: positionsError,

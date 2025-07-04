@@ -24,7 +24,7 @@ import {
 
 import { ExpressTxnParams } from ".";
 import { estimateBatchExpressParams } from "./expressOrderUtils";
-import { useSwitchGasPaymentTokenIfRequired } from "./useSwitchGasPaymentTokenIfRequired";
+import { useSwitchGasPaymentTokenIfRequiredFromExpressParams } from "./useSwitchGasPaymentTokenIfRequired";
 
 export type ExpressOrdersParamsResult = {
   expressParams: ExpressTxnParams | undefined;
@@ -170,7 +170,10 @@ export function useExpressOrdersParams({
     };
   }, [isAvailable, asyncExpressParams, fastExpressParams, fastExpressPromise, asyncExpressPromise]);
 
-  useSwitchGasPaymentTokenIfRequired({ expressParams: result.expressParams });
+  useSwitchGasPaymentTokenIfRequiredFromExpressParams({
+    expressParams: result.expressParams,
+    isGmxAccount,
+  });
 
   if (showDebugValues && label && result.expressParams) {
     throttleLog(`${label} express params`, {
