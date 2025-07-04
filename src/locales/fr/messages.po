@@ -7142,6 +7142,10 @@ msgstr ""
 msgid "Sell failed."
 msgstr "Vente échouée."
 
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "Insufficient {nativeTokenSymbol} balance"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Limit"
 msgstr ""
