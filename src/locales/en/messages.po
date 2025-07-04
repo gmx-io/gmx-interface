@@ -435,6 +435,10 @@ msgstr "{0} can not be sent to smart contract addresses. Select another token."
 msgid "Funding Claimed"
 msgstr "Funding Claimed"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Transaction failed due to RPC error.<0/><1/>Please enable <2>Express trading</2> under settings, which should offer a better experience."
+msgstr "Transaction failed due to RPC error.<0/><1/>Please enable <2>Express trading</2> under settings, which should offer a better experience."
+
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code added!"
 msgstr "Referral code added!"
@@ -2232,7 +2236,6 @@ msgid "Trading Mode"
 msgstr "Trading Mode"
 
 #: src/components/Errors/errorToasts.tsx
-#: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 msgstr "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 
@@ -2556,6 +2559,10 @@ msgstr "Fees (Incl. Swap)"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
 msgstr "{fromText} to {toMinText}"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Otherwise, try changing the RPC url in your wallet settings with the help of <0>chainlist.org</0>."
+msgstr "Otherwise, try changing the RPC url in your wallet settings with the help of <0>chainlist.org</0>."
 
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx

@@ -35,16 +35,15 @@ export function useIsSponsoredCallBalanceAvailable(
         const mainBalance = gelatoBalanceData.sponsor.mainBalance;
         const mainBalanceToken = mainBalance.token;
         const remainingBalance = BigInt(mainBalance.remainingBalance);
+        const amountInExecution = BigInt(mainBalance.amountInExecution);
 
+        const balanceLeft = remainingBalance - amountInExecution;
         const mainTokenSymbol = chainId === BOTANIX ? "USDC.E" : mainBalanceToken.symbol;
+
 
         const mainBalanceTokenData = getByKey(tokensData, getTokenBySymbol(chainId, mainTokenSymbol).address);
 
-        const usdBalance = convertToUsd(
-          remainingBalance,
-          mainBalanceToken.decimals,
-          mainBalanceTokenData?.prices.minPrice
-        );
+        const usdBalance = convertToUsd(balanceLeft, mainBalanceToken.decimals, mainBalanceTokenData?.prices.minPrice);
 
         return usdBalance !== undefined && usdBalance > MIN_GELATO_USD_BALANCE_FOR_SPONSORED_CALL;
       } catch (error) {
