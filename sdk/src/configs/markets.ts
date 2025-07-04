@@ -894,11 +894,11 @@ export const MARKETS: Record<UiContractsChain, Record<string, MarketConfig>> = {
       shortTokenAddress: "0xF4586028FFdA7Eca636864F80f8a3f2589E33795",
     },
     // BTC/USD [stBTC-USDC.E]
-    "0xEbEEcdb96237A10234d34c2de182aCCF1c3B31c9": {
-      marketTokenAddress: "0xEbEEcdb96237A10234d34c2de182aCCF1c3B31c9",
+    "0x2f95a2529328E427d3204555F164B1102086690E": {
+      marketTokenAddress: "0x2f95a2529328E427d3204555F164B1102086690E",
       indexTokenAddress: "0x1B9e25f54225bcdCf347569E38C41Ade9BB686e5",
       longTokenAddress: "0xF4586028FFdA7Eca636864F80f8a3f2589E33795",
-      shortTokenAddress: "0x325eEb3AA50014f35861e3374f54B3997Aa8357d",
+      shortTokenAddress: "0x29eE6138DD4C9815f46D34a4A1ed48F46758A402",
     },
   },
 };

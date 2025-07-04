@@ -1560,7 +1560,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "USDC.E",
       symbol: "USDC.E",
       assetSymbol: "USDC.e",
-      address: "0x325eEb3AA50014f35861e3374f54B3997Aa8357d",
+      address: "0x29eE6138DD4C9815f46D34a4A1ed48F46758A402",
       decimals: 6,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
