@@ -6,10 +6,11 @@ import IcChecked from "img/ic_new_checked.svg?react";
 import IcNewLink from "img/ic_new_link_20.svg?react";
 import IcProtection from "img/ic_protection.svg?react";
 
-import { ChainIcons } from "../components/ChainIcons";
-import { HeroBackground } from "../components/HeroBackground";
-import { IconBox } from "../components/IconBox";
-import { ProtectionBackground } from "../components/ProtectionBackground";
+import { IconBox } from "./../../components/IconBox";
+import { ChainIcons } from "./components/ChainIcons";
+import { HeroBackground } from "./components/HeroBackground";
+import { ProtectionBackground } from "./components/ProtectionBackground";
+import { SeamlessBackground } from "./components/SeamlessBackground";
 
 export function HeroSection() {
   return (
@@ -149,6 +150,7 @@ export function HeroSection() {
           </div>
 
           <div className="relative h-full overflow-hidden rounded-20 bg-fiord-600 p-20 sm:col-start-2 sm:col-end-4 sm:row-start-3 sm:row-end-4 sm:min-h-[180px] sm:p-28">
+            <SeamlessBackground />
             <div className="relative flex h-full flex-col items-stretch justify-between gap-20 sm:flex-row sm:items-end">
               <div className="w-[360px]">
                 <p className="text-heading-4 sm:text-heading-3 mb-12">
