@@ -78,6 +78,7 @@ export type RelayParamsPayload = {
   fee: RelayFeePayload;
   deadline: bigint;
   desChainId: bigint;
+  userNonce: bigint | number;
 };
 
 export type RelayParamsPayloadWithSignature = RelayParamsPayload & {

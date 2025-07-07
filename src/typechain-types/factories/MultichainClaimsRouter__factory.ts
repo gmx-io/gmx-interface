@@ -592,6 +592,11 @@ const _abi = [
           },
           {
             internalType: "uint256",
+            name: "userNonce",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
             name: "deadline",
             type: "uint256",
           },
@@ -778,6 +783,11 @@ const _abi = [
             internalType: "struct IRelayUtils.FeeParams",
             name: "fee",
             type: "tuple",
+          },
+          {
+            internalType: "uint256",
+            name: "userNonce",
+            type: "uint256",
           },
           {
             internalType: "uint256",
@@ -972,6 +982,11 @@ const _abi = [
             internalType: "struct IRelayUtils.FeeParams",
             name: "fee",
             type: "tuple",
+          },
+          {
+            internalType: "uint256",
+            name: "userNonce",
+            type: "uint256",
           },
           {
             internalType: "uint256",

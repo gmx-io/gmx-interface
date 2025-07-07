@@ -450,6 +450,11 @@
             },
             {
               "internalType": "uint256",
+              "name": "userNonce",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
               "name": "deadline",
               "type": "uint256"
             },
@@ -871,6 +876,11 @@
             },
             {
               "internalType": "uint256",
+              "name": "userNonce",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
               "name": "deadline",
               "type": "uint256"
             },
@@ -1098,6 +1108,11 @@
               "internalType": "struct IRelayUtils.FeeParams",
               "name": "fee",
               "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "userNonce",
+              "type": "uint256"
             },
             {
               "internalType": "uint256",
@@ -1592,6 +1607,11 @@
             },
             {
               "internalType": "uint256",
+              "name": "userNonce",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
               "name": "deadline",
               "type": "uint256"
             },
@@ -1879,6 +1899,11 @@
               "internalType": "struct IRelayUtils.FeeParams",
               "name": "fee",
               "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "userNonce",
+              "type": "uint256"
             },
             {
               "internalType": "uint256",

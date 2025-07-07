@@ -184,6 +184,7 @@ export declare namespace IRelayUtils {
     externalCalls: IRelayUtils.ExternalCallsStruct;
     tokenPermits: IRelayUtils.TokenPermitStruct[];
     fee: IRelayUtils.FeeParamsStruct;
+    userNonce: BigNumberish;
     deadline: BigNumberish;
     signature: BytesLike;
     desChainId: BigNumberish;
@@ -194,6 +195,7 @@ export declare namespace IRelayUtils {
     externalCalls: IRelayUtils.ExternalCallsStructOutput,
     tokenPermits: IRelayUtils.TokenPermitStructOutput[],
     fee: IRelayUtils.FeeParamsStructOutput,
+    userNonce: bigint,
     deadline: bigint,
     signature: string,
     desChainId: bigint,
@@ -202,6 +204,7 @@ export declare namespace IRelayUtils {
     externalCalls: IRelayUtils.ExternalCallsStructOutput;
     tokenPermits: IRelayUtils.TokenPermitStructOutput[];
     fee: IRelayUtils.FeeParamsStructOutput;
+    userNonce: bigint;
     deadline: bigint;
     signature: string;
     desChainId: bigint;

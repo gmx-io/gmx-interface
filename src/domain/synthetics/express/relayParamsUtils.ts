@@ -15,6 +15,7 @@ import {
   getExternalCallsPayload,
 } from "sdk/utils/orderTransactions";
 import { getSwapAmountsByToValue } from "sdk/utils/swap";
+import { nowInSeconds } from "sdk/utils/time";
 
 import { getOracleParamsForRelayParams } from "./oracleParamsUtils";
 import type { GasPaymentParams, RawRelayParamsPayload, RelayFeePayload, RelayParamsPayload } from "./types";
@@ -215,6 +216,7 @@ export function getRawRelayerParams({
     externalCalls,
     fee: feeParams,
     desChainId: BigInt(chainId),
+    userNonce: nowInSeconds(),
   };
 
   return relayParamsPayload;
@@ -233,6 +235,7 @@ export function hashRelayParams(relayParams: RelayParamsPayload) {
     ],
     relayParams.tokenPermits,
     [relayParams.fee.feeToken, relayParams.fee.feeAmount, relayParams.fee.feeSwapPath],
+    relayParams.userNonce,
     relayParams.deadline,
     relayParams.desChainId,
   ]);

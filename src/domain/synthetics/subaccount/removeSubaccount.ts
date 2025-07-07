@@ -88,12 +88,17 @@ export async function buildAndSignRemoveSubaccountTxn({
     functionName: "removeSubaccount",
     args:
       srcChainId !== undefined
-        ? ([{ ...relayParamsPayload, signature }, signer.address, srcChainId, subaccount.address] satisfies Parameters<
-            MultichainSubaccountRouter["removeSubaccount"]
-          >)
-        : ([{ ...relayParamsPayload, signature }, signer.address, subaccount.address] satisfies Parameters<
-            SubaccountGelatoRelayRouter["removeSubaccount"]
-          >),
+        ? ([
+            { ...relayParamsPayload, signature, userNonce: nowInSeconds() },
+            signer.address,
+            srcChainId,
+            subaccount.address,
+          ] satisfies Parameters<MultichainSubaccountRouter["removeSubaccount"]>)
+        : ([
+            { ...relayParamsPayload, signature, userNonce: nowInSeconds() },
+            signer.address,
+            subaccount.address,
+          ] satisfies Parameters<SubaccountGelatoRelayRouter["removeSubaccount"]>),
   });
 
   return {

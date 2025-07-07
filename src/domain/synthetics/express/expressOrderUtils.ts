@@ -488,7 +488,7 @@ export async function buildAndSignExpressBatchOrderTxn({
   batchParams: BatchOrderTxnParams;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
-  relayParamsPayload: RawRelayParamsPayload | RawRelayParamsPayload;
+  relayParamsPayload: RawRelayParamsPayload;
   isGmxAccount: boolean;
   subaccount: Subaccount | undefined;
   emptySignature?: boolean;
@@ -502,9 +502,10 @@ export async function buildAndSignExpressBatchOrderTxn({
     messageSigner,
     chainId,
     relayPayload: {
-      ...(relayParamsPayload as RelayParamsPayload & RelayParamsPayload),
+      ...(relayParamsPayload as RelayParamsPayload),
       deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
-    } satisfies RelayParamsPayload & RelayParamsPayload,
+      userNonce: nowInSeconds(),
+    } satisfies RelayParamsPayload,
     subaccountApproval: subaccount?.signedApproval,
     paramsLists: getBatchParamsLists(batchParams),
   };
