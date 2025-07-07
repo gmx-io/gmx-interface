@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageViewEvent } from "lib/userAnalytics/types";
 
-import { HeroSection } from "./sections/HeroSection";
+import { HeroSection } from "./sections/HeroSection/HeroSection";
 
 export default function Home(_) {
   useEffect(() => {
