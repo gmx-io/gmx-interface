@@ -2311,7 +2311,7 @@ msgstr ""
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Trade with"
 msgstr ""
 
@@ -2513,7 +2513,7 @@ msgstr "수령할 양"
 msgid "Job openings at GMX."
 msgstr "GMX의 구인"
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Trade from your wallet"
 msgstr ""
 
@@ -2866,7 +2866,7 @@ msgstr ""
 msgid "Trade"
 msgstr "트레이드"
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "No deposits required"
 msgstr ""
 
@@ -2882,7 +2882,7 @@ msgstr ""
 msgid "V2 doesn't currently support this network"
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "100x leverage from your wallet"
 msgstr ""
 
@@ -3914,7 +3914,7 @@ msgstr ""
 msgid "Vesting Status"
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Guaranteed Liquidity"
 msgstr ""
 
@@ -4295,7 +4295,7 @@ msgstr ""
 msgid "Execute order simulation failed."
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Support for"
 msgstr ""
 
@@ -4433,7 +4433,7 @@ msgstr "이전이 이미 시작됐습니다"
 msgid "Withdraw submitted."
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Non-Custodial, Secure & Permissionless"
 msgstr ""
 
@@ -4468,7 +4468,7 @@ msgstr "미디어 키트"
 msgid "UniDex Leverage"
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Numerous Assets"
 msgstr ""
 
@@ -4874,7 +4874,7 @@ msgstr "베스팅 옵션을 선택한 후 \"수령하기\" 버튼을 클릭해�
 msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Save on Costs"
 msgstr ""
 
@@ -5417,7 +5417,7 @@ msgstr "최대 {0} in"
 msgid "Stop Loss Decrease"
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Trade with confidence"
 msgstr ""
 
@@ -5851,8 +5851,8 @@ msgstr ""
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection.tsx
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Trade Now"
 msgstr ""
 
@@ -6726,7 +6726,7 @@ msgstr ""
 msgid "DeFi Margin Protocol"
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
 msgstr ""
 
@@ -6837,7 +6837,7 @@ msgstr ""
 msgid "Liquidity incentives program is live on {avalancheLink}."
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "keep more of what you earn"
 msgstr ""
 
@@ -7457,7 +7457,7 @@ msgstr ""
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>There is no price impact. There is a single<3/>execution price for decreasing longs for<4/>this size."
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Seamless Trading"
 msgstr ""
 
@@ -7680,7 +7680,7 @@ msgstr ""
 msgid "Decentralized Perpetual Exchange | GMX"
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "No loss of fund ownership"
 msgstr ""
 
@@ -8281,7 +8281,7 @@ msgstr ""
 msgid "{column}"
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Stay Safe from <0/> Liquidations"
 msgstr ""
 

@@ -2311,7 +2311,7 @@ msgstr "{positionName} Fees settling"
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Trade with"
 msgstr "Trade with"
 
@@ -2513,7 +2513,7 @@ msgstr "Amount to claim"
 msgid "Job openings at GMX."
 msgstr "Job openings at GMX."
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Trade from your wallet"
 msgstr "Trade from your wallet"
 
@@ -2866,7 +2866,7 @@ msgstr "No liquidity is available for increasing shorts for<0/>this size. Max sh
 msgid "Trade"
 msgstr "Trade"
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "No deposits required"
 msgstr "No deposits required"
 
@@ -2882,7 +2882,7 @@ msgstr "Max leverage without PnL: {0}x"
 msgid "V2 doesn't currently support this network"
 msgstr "V2 doesn't currently support this network"
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "100x leverage from your wallet"
 msgstr "100x leverage from your wallet"
 
@@ -3917,7 +3917,7 @@ msgstr ""
 msgid "Vesting Status"
 msgstr "Vesting Status"
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Guaranteed Liquidity"
 msgstr "Guaranteed Liquidity"
 
@@ -4298,7 +4298,7 @@ msgstr "UI Fee"
 msgid "Execute order simulation failed."
 msgstr "Execute order simulation failed."
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Support for"
 msgstr "Support for"
 
@@ -4436,7 +4436,7 @@ msgstr "Transfer already initiated"
 msgid "Withdraw submitted."
 msgstr "Withdraw submitted."
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Non-Custodial, Secure & Permissionless"
 msgstr "Non-Custodial, Secure & Permissionless"
 
@@ -4471,7 +4471,7 @@ msgstr "Media Kit"
 msgid "UniDex Leverage"
 msgstr "UniDex Leverage"
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Numerous Assets"
 msgstr "Numerous Assets"
 
@@ -4877,7 +4877,7 @@ msgstr "Select your vesting option below then click \"Claim\"."
 msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
 msgstr "The default number of parts for Time-Weighted Average Price (TWAP) orders."
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Save on Costs"
 msgstr "Save on Costs"
 
@@ -5420,7 +5420,7 @@ msgstr "Max {0} in"
 msgid "Stop Loss Decrease"
 msgstr "Stop Loss Decrease"
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Trade with confidence"
 msgstr "Trade with confidence"
 
@@ -5854,8 +5854,8 @@ msgstr "Tier {0} ({currentTierDiscount}% discount)"
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
 msgstr "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
 
-#: src/pages/Home/sections/HeroSection.tsx
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Trade Now"
 msgstr "Trade Now"
 
@@ -6732,7 +6732,7 @@ msgstr "Sell request sent"
 msgid "DeFi Margin Protocol"
 msgstr "DeFi Margin Protocol"
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
 msgstr "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
 
@@ -6843,7 +6843,7 @@ msgstr "Stop Loss"
 msgid "Liquidity incentives program is live on {avalancheLink}."
 msgstr "Liquidity incentives program is live on {avalancheLink}."
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "keep more of what you earn"
 msgstr "keep more of what you earn"
 
@@ -7463,7 +7463,7 @@ msgstr "Avg. Lev."
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>There is no price impact. There is a single<3/>execution price for decreasing longs for<4/>this size."
 msgstr "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>There is no price impact. There is a single<3/>execution price for decreasing longs for<4/>this size."
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Seamless Trading"
 msgstr "Seamless Trading"
 
@@ -7686,7 +7686,7 @@ msgstr "Success claimings"
 msgid "Decentralized Perpetual Exchange | GMX"
 msgstr "Decentralized Perpetual Exchange | GMX"
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "No loss of fund ownership"
 msgstr "No loss of fund ownership"
 
@@ -8287,7 +8287,7 @@ msgstr "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay}
 msgid "{column}"
 msgstr "{column}"
 
-#: src/pages/Home/sections/HeroSection.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Stay Safe from <0/> Liquidations"
 msgstr "Stay Safe from <0/> Liquidations"
 
