@@ -439,7 +439,6 @@ export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
   const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
-
   const positionKey = q(selectTradeboxSelectedPositionKey);
   const strategy = q(selectTradeboxLeverageStrategy);
   const isExpressTxn = fromTokenAddress !== NATIVE_TOKEN_ADDRESS && q(selectIsExpressTransactionAvailable);

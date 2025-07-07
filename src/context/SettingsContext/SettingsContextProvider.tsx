@@ -1,7 +1,7 @@
 import noop from "lodash/noop";
 import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useMemo, useState } from "react";
 
-import { ARBITRUM, BOTANIX, EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/chains";
+import { ARBITRUM, EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
@@ -108,8 +108,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     getAllowedSlippageKey(chainId),
     DEFAULT_SLIPPAGE_AMOUNT
   );
-
-  const isBotanix = chainId === BOTANIX;
 
   const [savedAcceptablePriceImpactBuffer, setSavedAcceptablePriceImpactBuffer] = useLocalStorageSerializeKey(
     getSyntheticsAcceptablePriceImpactBufferKey(chainId),
@@ -273,7 +271,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       gasPaymentTokenAddress: gasPaymentTokenAddress!,
       setGasPaymentTokenAddress,
 
-      externalSwapsEnabled: isBotanix ? false : externalSwapsEnabled!,
+      externalSwapsEnabled: externalSwapsEnabled!,
       setExternalSwapsEnabled,
 
       debugSwapMarketsConfig: debugSwapMarketsConfig!,
@@ -322,7 +320,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setExpressOrdersEnabled,
     gasPaymentTokenAddress,
     setGasPaymentTokenAddress,
-    isBotanix,
     externalSwapsEnabled,
     setExternalSwapsEnabled,
     debugSwapMarketsConfig,

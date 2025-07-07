@@ -2,7 +2,6 @@ import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useCallback, useEffect, useState } from "react";
 
-import { BOTANIX } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { getIsExpressSupported } from "config/features";
@@ -225,8 +224,6 @@ export function SettingsModal({
     [isTradningModeChanging, settings.expressOrdersEnabled, subaccountState.subaccount, tradingMode]
   );
 
-  const isBotanix = chainId === BOTANIX;
-
   return (
     <SlideModal
       isVisible={isSettingsVisible}
@@ -398,11 +395,9 @@ export function SettingsModal({
               />
             </ToggleSwitch>
 
-            {!isBotanix && (
-              <ToggleSwitch isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
-                <Trans>Enable external swaps</Trans>
-              </ToggleSwitch>
-            )}
+            <ToggleSwitch isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
+              <Trans>Enable external swaps</Trans>
+            </ToggleSwitch>
           </SettingsSection>
 
           <div className="divider mt-16"></div>

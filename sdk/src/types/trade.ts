@@ -254,6 +254,7 @@ export type TradeFeesType = "swap" | "increase" | "decrease" | "edit";
 
 export enum ExternalSwapAggregator {
   OpenOcean = "openOcean",
+  BotanixStaking = "botanixStaking",
 }
 
 export type ExternalSwapQuote = {

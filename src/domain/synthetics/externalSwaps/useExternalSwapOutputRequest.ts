@@ -2,6 +2,8 @@ import { useMemo } from "react";
 import { usePrevious } from "react-use";
 import useSWR from "swr";
 
+import { BOTANIX } from "config/chains";
+import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { metrics, OpenOceanQuoteTiming } from "lib/metrics";
 import { useDebounce } from "lib/useDebounce";
 import { getContract } from "sdk/configs/contracts";
@@ -9,6 +11,7 @@ import { convertTokenAddress } from "sdk/configs/tokens";
 import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/types/trade";
 
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
+import { getBotanixStakingExternalSwapQuota } from "./botanixStaking";
 import { getOpenOceanTxnData, OpenOceanQuote } from "./openOcean";
 
 export function useExternalSwapOutputRequest({
@@ -48,7 +51,7 @@ export function useExternalSwapOutputRequest({
   const prevTokensKey = usePrevious(tokensKey);
   const prevAmountIn = usePrevious(amountIn);
 
-  const { data } = useSWR<OpenOceanQuote>(debouncedKey, {
+  const { data } = useSWR<OpenOceanQuote | undefined>(debouncedKey, {
     keepPreviousData: enabled && prevTokensKey === tokensKey && prevAmountIn === amountIn,
     fetcher: async () => {
       try {
@@ -64,6 +67,10 @@ export function useExternalSwapOutputRequest({
         }
 
         const startTime = Date.now();
+
+        if (chainId === BOTANIX) {
+          return undefined;
+        }
 
         const result = await getOpenOceanTxnData({
           chainId,
@@ -97,14 +104,37 @@ export function useExternalSwapOutputRequest({
     tokenAddresses: tokenInAddress ? [convertTokenAddress(chainId, tokenInAddress, "wrapped")] : [],
   });
 
-  return useMemo(() => {
+  const tokensData = useTokensData();
+
+  return useMemo(() => {    
     if (
-      !data ||
       amountIn === undefined ||
       !tokenInAddress ||
       !tokenOutAddress ||
       gasPrice === undefined ||
       !receiverAddress
+    ) {
+      return {};
+    }
+
+    const botanixStakingQuote = tokensData ? getBotanixStakingExternalSwapQuota({
+      chainId,
+      tokenInAddress,
+      tokenOutAddress,
+      amountIn,
+      gasPrice,
+      receiverAddress,
+      tokensData
+    }) : undefined;
+
+    if (botanixStakingQuote) {
+      return {
+        quote: botanixStakingQuote,
+      };
+    }
+
+    if (
+      !data
     ) {
       return {};
     }
@@ -141,5 +171,6 @@ export function useExternalSwapOutputRequest({
     return {
       quote,
     };
-  }, [data, amountIn, tokenInAddress, tokenOutAddress, gasPrice, receiverAddress, tokensAllowanceData, chainId]);
+  }, [data, amountIn, tokenInAddress, tokenOutAddress, gasPrice, receiverAddress, tokensAllowanceData, chainId, tokensData]);
 }
+
