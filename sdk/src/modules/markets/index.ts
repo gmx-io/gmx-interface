@@ -248,6 +248,8 @@ export class Markets extends Module {
             minCollateralFactorForOpenInterestShort:
               dataStoreValues.minCollateralFactorForOpenInterestShort.returnValues[0],
 
+            minCollateralFactorForLiquidation: dataStoreValues.minCollateralFactorForLiquidation.returnValues[0],
+
             positionFeeFactorForPositiveImpact: dataStoreValues.positionFeeFactorForPositiveImpact.returnValues[0],
             positionFeeFactorForNegativeImpact: dataStoreValues.positionFeeFactorForNegativeImpact.returnValues[0],
             positionImpactFactorPositive: dataStoreValues.positionImpactFactorPositive.returnValues[0],

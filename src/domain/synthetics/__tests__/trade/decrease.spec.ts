@@ -98,6 +98,7 @@ const marketInfo: MarketInfo = {
   maxPnlFactorForTradersLong: BigInt("0x0b5c0e8d21d902d61fa0000000"),
   maxPnlFactorForTradersShort: BigInt("0x0b5c0e8d21d902d61fa0000000"),
   minCollateralFactor: BigInt("0x204fce5e3e25026110000000"),
+  minCollateralFactorForLiquidation: BigInt("0x204fce5e3e25026110000000"),
   minCollateralFactorForOpenInterestLong: BigInt("0x0ad78ebc5ac6200000"),
   minCollateralFactorForOpenInterestShort: BigInt("0x0ad78ebc5ac6200000"),
   claimableFundingAmountLong: BigInt("0x1cefb332ff83"),

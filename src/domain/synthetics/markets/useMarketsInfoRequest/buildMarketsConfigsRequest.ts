@@ -173,6 +173,10 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.minCollateralFactor],
         },
+        minCollateralFactorForLiquidation: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.minCollateralFactorForLiquidation],
+        },
         minCollateralFactorForOpenInterestLong: {
           methodName: "getUint",
           params: [prebuiltHashedKeys.minCollateralFactorForOpenInterestLong],

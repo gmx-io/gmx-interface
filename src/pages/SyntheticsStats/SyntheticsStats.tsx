@@ -1141,6 +1141,11 @@ export function SyntheticsStats() {
                               showDollar={false}
                             />
                             <StatsTooltipRow
+                              label="Min Collateral Factor for Liquidation"
+                              value={formatFactor(market.minCollateralFactorForLiquidation)}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
                               label="Min Collateral Factor OI Long"
                               value={formatFactor(market.minCollateralFactorForOpenInterestLong)}
                               showDollar={false}

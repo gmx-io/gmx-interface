@@ -311,6 +311,8 @@ function useMarketsConfigsRequest({
             maxPnlFactorForTradersShort: dataStoreValues.maxPnlFactorForTradersShort.returnValues[0],
 
             minCollateralFactor: dataStoreValues.minCollateralFactor.returnValues[0],
+            minCollateralFactorForLiquidation: dataStoreValues.minCollateralFactorForLiquidation.returnValues[0],
+
             minCollateralFactorForOpenInterestLong:
               dataStoreValues.minCollateralFactorForOpenInterestLong.returnValues[0],
 

@@ -251,6 +251,7 @@ export function mockMarketsInfoData(
 
       totalBorrowingFees: 0n,
       minCollateralFactor: 0n,
+      minCollateralFactorForLiquidation: 0n,
 
       minCollateralFactorForOpenInterestLong: 0n,
       minCollateralFactorForOpenInterestShort: 0n,

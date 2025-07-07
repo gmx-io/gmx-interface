@@ -174,6 +174,7 @@ export function useFastMarketsInfoRequest(chainId: number) {
             positionImpactPoolDistributionRate: BigInt(mInfo.positionImpactPoolDistributionRate),
 
             minCollateralFactor: BigInt(mInfo.minCollateralFactor),
+            minCollateralFactorForLiquidation: BigInt(mInfo.minCollateralFactor),
             minCollateralFactorForOpenInterestLong: BigInt(mInfo.minCollateralFactorForOpenInterestLong),
             minCollateralFactorForOpenInterestShort: BigInt(mInfo.minCollateralFactorForOpenInterestShort),
 
