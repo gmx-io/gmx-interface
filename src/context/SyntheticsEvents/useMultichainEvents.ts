@@ -64,20 +64,7 @@ export type MultichainEventsState = {
   removeMultichainFundingPendingIds: (id: string | string[]) => void;
 };
 
-const DEFAULT_MULTICHAIN_FUNDING_STATE: PendingMultichainFunding = {
-  deposits: {
-    // TODO MLTCH: make object
-    submitted: [],
-    sent: {},
-    received: {},
-    executed: {},
-  },
-  withdrawals: {
-    submitted: {},
-    sent: {},
-    received: {},
-  },
-};
+const DEFAULT_MULTICHAIN_FUNDING_STATE: PendingMultichainFunding = [];
 
 const UNCERTAIN_WITHDRAWALS_CACHE = new LRUCache<string>(1000);
 
@@ -123,24 +110,28 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
   const pendingReceiveWithdrawalGuidsRef = useRef<string[]>([]);
 
   const pendingReceiveDepositGuidsKey = useMemo(() => {
-    const guids = Object.keys(pendingMultichainFunding.deposits.sent);
+    const guids = pendingMultichainFunding
+      .filter((item) => item.operation === "deposit" && item.step === "sent")
+      .map((item) => item.id);
     pendingReceiveDepositGuidsRef.current = guids;
     return guids.join(",");
-  }, [pendingMultichainFunding.deposits.sent]);
+  }, [pendingMultichainFunding]);
 
   const pendingExecuteDepositGuidsKey = useMemo(() => {
-    const receivedGuids = Object.keys(pendingMultichainFunding.deposits.received);
-    const sentGuids = Object.keys(pendingMultichainFunding.deposits.sent);
-    const allGuids = [...receivedGuids, ...sentGuids];
+    const allGuids = pendingMultichainFunding
+      .filter((item) => item.operation === "deposit" && (item.step === "sent" || item.step === "received"))
+      .map((item) => item.id);
     pendingExecuteDepositGuidsRef.current = allGuids;
     return allGuids.join(",");
-  }, [pendingMultichainFunding.deposits.received, pendingMultichainFunding.deposits.sent]);
+  }, [pendingMultichainFunding]);
 
   const pendingReceiveWithdrawalGuidsKey = useMemo(() => {
-    const guids = Object.keys(pendingMultichainFunding.withdrawals.sent);
+    const guids = pendingMultichainFunding
+      .filter((item) => item.operation === "withdrawal" && item.step === "sent")
+      .map((item) => item.id);
     pendingReceiveWithdrawalGuidsRef.current = guids;
     return guids.join(",");
-  }, [pendingMultichainFunding.withdrawals.sent]);
+  }, [pendingMultichainFunding]);
 
   //#region Deposits
 
@@ -189,8 +180,8 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
           setPendingMultichainFunding((prev) => {
             const newPendingMultichainFunding: PendingMultichainFunding = structuredClone(prev);
 
-            const currentSubmittingDepositIndex = newPendingMultichainFunding.deposits.submitted.findIndex(
-              (deposit) => deposit.sentTxn === info.txnHash
+            const currentSubmittingDepositIndex = newPendingMultichainFunding.findIndex(
+              (item) => item.sentTxn === info.txnHash && item.step === "submitted"
             );
 
             if (currentSubmittingDepositIndex === -1) {
@@ -202,9 +193,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
               return prev;
             }
 
-            const currentSubmittingDeposit =
-              newPendingMultichainFunding.deposits.submitted[currentSubmittingDepositIndex];
-            newPendingMultichainFunding.deposits.submitted.splice(currentSubmittingDepositIndex, 1);
+            const currentSubmittingDeposit = newPendingMultichainFunding[currentSubmittingDepositIndex];
 
             setSelectedTransferGuid((prev) => {
               if (!prev || prev !== currentSubmittingDeposit.id) {
@@ -222,7 +211,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
               return prev;
             });
 
-            newPendingMultichainFunding.deposits.sent[info.guid] = {
+            newPendingMultichainFunding[currentSubmittingDepositIndex] = {
               account: currentAccount,
               sentAmount: info.amountSentLD,
               id: info.guid,
@@ -279,7 +268,9 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
           setPendingMultichainFunding((prev) => {
             const newPendingMultichainFunding = structuredClone(prev);
 
-            const pendingSentDeposit = newPendingMultichainFunding.deposits.sent[info.guid];
+            const pendingSentDeposit = newPendingMultichainFunding.find(
+              (item) => item.operation === "deposit" && item.step === "sent" && item.id === info.guid
+            );
 
             if (!pendingSentDeposit) {
               // eslint-disable-next-line no-console
@@ -289,9 +280,6 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
             }
 
             debugLog("got OFTReceive event for", chainId, pendingSentDeposit.token, info.txnHash);
-
-            delete newPendingMultichainFunding.deposits.sent[info.guid];
-            newPendingMultichainFunding.deposits.received[info.guid] = pendingSentDeposit;
 
             pendingSentDeposit.step = "received";
             pendingSentDeposit.receivedAmount = info.amountReceivedLD;
@@ -307,8 +295,9 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         setPendingMultichainFunding((prev) => {
           const newPendingMultichainFunding = structuredClone(prev);
           for (const guid of pendingReceiveDepositGuidsRef.current) {
-            if (guid in newPendingMultichainFunding.deposits.sent) {
-              delete newPendingMultichainFunding.deposits.sent[guid];
+            const pendingSentDepositIndex = newPendingMultichainFunding.findIndex((item) => item.id === guid);
+            if (pendingSentDepositIndex !== -1) {
+              newPendingMultichainFunding.splice(pendingSentDepositIndex, 1);
             }
           }
           return newPendingMultichainFunding;
@@ -346,7 +335,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
           setPendingMultichainFunding((prev) => {
             const newPendingMultichainFunding = structuredClone(prev);
 
-            const pendingExecuteDeposit = newPendingMultichainFunding.deposits.received[info.guid];
+            const pendingExecuteDeposit = newPendingMultichainFunding.find((item) => item.id === info.guid);
 
             if (!pendingExecuteDeposit) {
               // eslint-disable-next-line no-console
@@ -355,9 +344,6 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
             }
 
             debugLog("got ComposeDelivered event for", chainId, pendingExecuteDeposit.token, info.txnHash);
-
-            delete newPendingMultichainFunding.deposits.received[info.guid];
-            newPendingMultichainFunding.deposits.executed[info.guid] = pendingExecuteDeposit;
 
             pendingExecuteDeposit.step = "executed";
             pendingExecuteDeposit.executedTimestamp = nowInSeconds();
@@ -375,8 +361,9 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         setPendingMultichainFunding((prev) => {
           const newPendingMultichainFunding = structuredClone(prev);
           for (const guid of pendingExecuteDepositGuidsRef.current) {
-            if (guid in newPendingMultichainFunding.deposits.received) {
-              delete newPendingMultichainFunding.deposits.received[guid];
+            const pendingExecuteDepositIndex = newPendingMultichainFunding.findIndex((item) => item.id === guid);
+            if (pendingExecuteDepositIndex !== -1) {
+              newPendingMultichainFunding.splice(pendingExecuteDepositIndex, 1);
             }
           }
           return newPendingMultichainFunding;
@@ -422,6 +409,8 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
             return;
           }
 
+          debugLog("withdrawal got OFTSent event for", srcChainId, info.txnHash);
+
           const stargatePoolAddress = info.sender;
           const tokenId = tokenIdByStargate[stargatePoolAddress];
 
@@ -430,21 +419,24 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
           setPendingMultichainFunding((prev) => {
             const newPendingMultichainFunding: PendingMultichainFunding = structuredClone(prev);
 
-            const currentSubmittingWithdrawal = Object.values(newPendingMultichainFunding.withdrawals.submitted).find(
-              (withdrawal) => withdrawal.sentTxn === info.txnHash
+            const currentSubmittingWithdrawalIndex = newPendingMultichainFunding.findIndex(
+              (item) => item.sentTxn === info.txnHash && item.step === "submitted"
             );
 
-            if (currentSubmittingWithdrawal === undefined) {
+            if (currentSubmittingWithdrawalIndex === -1) {
               // If there were no submitted order from UI we can not be sure if this sent event is related to GMX without parsing the whole transaction for events
               // If its really necessary we could fetch the tx to get PacketSent withing the same transaction event and parse the contents
 
               // eslint-disable-next-line no-console
-              console.warn("[multichain] Got OFTSent event but no withdrawals were submitted from UI");
+              console.warn(
+                "[multichain] Got OFTSent event but no withdrawals were submitted from UI",
+                newPendingMultichainFunding
+              );
               UNCERTAIN_WITHDRAWALS_CACHE.set(info.txnHash, info.guid);
               return prev;
             }
 
-            delete newPendingMultichainFunding.withdrawals.submitted[currentSubmittingWithdrawal.id];
+            const currentSubmittingWithdrawal = newPendingMultichainFunding[currentSubmittingWithdrawalIndex];
 
             setSelectedTransferGuid((prev) => {
               if (!prev || prev !== currentSubmittingWithdrawal.id) {
@@ -462,7 +454,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
               return prev;
             });
 
-            newPendingMultichainFunding.withdrawals.sent[info.guid] = {
+            newPendingMultichainFunding[currentSubmittingWithdrawalIndex] = {
               account: currentAccount,
               sentAmount: info.amountSentLD,
               id: info.guid,
@@ -498,12 +490,14 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
   useEffect(
     function subscribeSourceChainOftReceivedEvents() {
+      const guids = pendingReceiveWithdrawalGuidsRef.current;
+
       if (
         hasPageLostFocus ||
         !wsSourceChainProvider ||
         !isSettlementChain(chainId) ||
         srcChainId === undefined ||
-        pendingReceiveWithdrawalGuidsRef.current.length === 0
+        guids.length === 0
       ) {
         return;
       }
@@ -511,17 +505,23 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       const tokenIdMap = CHAIN_ID_TO_TOKEN_ID_MAP[srcChainId];
       const sourceChainStargates = Object.values(tokenIdMap).map((tokenId) => tokenId.stargate);
 
+      debugLog("subscribing to source chain OFTReceive events for", srcChainId, guids);
+
       const unsubscribeFromOftReceivedEvents = subscribeToOftReceivedEvents(
         wsSourceChainProvider,
         sourceChainStargates,
-        pendingReceiveWithdrawalGuidsRef.current,
+        guids,
         (info) => {
+          debugLog("withdrawal on source chain got OFTReceive event for", srcChainId, info.txnHash);
+
           scheduleMultichainFundingItemClearing([info.guid]);
 
           setPendingMultichainFunding((prev) => {
             const newPendingMultichainFunding = structuredClone(prev);
 
-            const pendingSentWithdrawal = newPendingMultichainFunding.withdrawals.sent[info.guid];
+            const pendingSentWithdrawal = newPendingMultichainFunding.find(
+              (item) => item.id === info.guid && item.step === "sent"
+            );
 
             if (!pendingSentWithdrawal) {
               // eslint-disable-next-line no-console
@@ -529,9 +529,6 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
               return newPendingMultichainFunding;
             }
-
-            delete newPendingMultichainFunding.withdrawals.sent[info.guid];
-            newPendingMultichainFunding.withdrawals.received[info.guid] = pendingSentWithdrawal;
 
             pendingSentWithdrawal.step = "received";
             pendingSentWithdrawal.receivedAmount = info.amountReceivedLD;
@@ -547,9 +544,10 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       const timeoutId = setTimeout(() => {
         setPendingMultichainFunding((prev) => {
           const newPendingMultichainFunding = structuredClone(prev);
-          for (const guid of pendingReceiveWithdrawalGuidsRef.current) {
-            if (guid in newPendingMultichainFunding.withdrawals.sent) {
-              delete newPendingMultichainFunding.withdrawals.sent[guid];
+          for (const guid of guids) {
+            const pendingSentWithdrawalIndex = newPendingMultichainFunding.findIndex((item) => item.id === guid);
+            if (pendingSentWithdrawalIndex !== -1) {
+              newPendingMultichainFunding.splice(pendingSentWithdrawalIndex, 1);
             }
           }
           return newPendingMultichainFunding;
@@ -687,7 +685,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         const stubId = `<stub-${Date.now()}>`;
         setPendingMultichainFunding((prev) => {
           const newPendingMultichainFunding = structuredClone(prev);
-          newPendingMultichainFunding.deposits.submitted.push({
+          newPendingMultichainFunding.push({
             account: currentAccount,
             id: stubId,
             operation: "deposit",
@@ -723,7 +721,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         const stubId = `<stub-${Date.now()}>`;
         setPendingMultichainFunding((prev) => {
           const newPendingMultichainFunding = structuredClone(prev);
-          newPendingMultichainFunding.withdrawals.submitted[stubId] = {
+          newPendingMultichainFunding.push({
             account: currentAccount,
             id: stubId,
             operation: "withdrawal",
@@ -743,7 +741,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
             executedTimestamp: undefined,
 
             isFromWs: true,
-          };
+          });
           return newPendingMultichainFunding;
         });
 
@@ -754,15 +752,17 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       setMultichainWithdrawalSentTxnHash: (mockId, txnHash) => {
         setPendingMultichainFunding((prev) => {
           const newPendingMultichainFunding = structuredClone(prev);
-          if (mockId in newPendingMultichainFunding.withdrawals.submitted) {
-            const submittedWithdrawal = newPendingMultichainFunding.withdrawals.submitted[mockId];
+          const submittedWithdrawalIndex = newPendingMultichainFunding.findIndex((item) => item.id === mockId);
+          debugLog("Setting multichain withdrawal sent txn hash");
+          if (submittedWithdrawalIndex !== -1) {
+            const submittedWithdrawal = newPendingMultichainFunding[submittedWithdrawalIndex];
             submittedWithdrawal.sentTxn = txnHash;
             submittedWithdrawal.sentTimestamp = nowInSeconds();
+            debugLog("Found submitted withdrawal", submittedWithdrawal, UNCERTAIN_WITHDRAWALS_CACHE.get(txnHash));
 
             if (UNCERTAIN_WITHDRAWALS_CACHE.has(txnHash)) {
+              debugLog("Found uncertain withdrawal in cache", txnHash);
               const guid = UNCERTAIN_WITHDRAWALS_CACHE.get(txnHash)!;
-              delete newPendingMultichainFunding.withdrawals.submitted[mockId];
-              newPendingMultichainFunding.withdrawals.sent[guid] = submittedWithdrawal;
               submittedWithdrawal.step = "sent";
               submittedWithdrawal.id = guid;
 
@@ -791,7 +791,10 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       setMultichainWithdrawalSentError: (mockId) => {
         setPendingMultichainFunding((prev) => {
           const newPendingMultichainFunding = structuredClone(prev);
-          delete newPendingMultichainFunding.withdrawals.submitted[mockId];
+          const submittedWithdrawalIndex = newPendingMultichainFunding.findIndex((item) => item.id === mockId);
+          if (submittedWithdrawalIndex !== -1) {
+            newPendingMultichainFunding.splice(submittedWithdrawalIndex, 1);
+          }
           return newPendingMultichainFunding;
         });
 
@@ -891,15 +894,15 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 function getIntermediateStepGuids(pendingMultichainFunding: PendingMultichainFunding): Set<string> {
   const intermediateStepGuids = new Set<string>();
 
-  for (const step of ["received", "sent"] as const) {
-    for (const pendingGuid in pendingMultichainFunding.deposits[step]) {
-      intermediateStepGuids.add(pendingGuid);
-    }
-  }
-
-  for (const step of ["sent"] as const) {
-    for (const pendingGuid in pendingMultichainFunding.withdrawals[step]) {
-      intermediateStepGuids.add(pendingGuid);
+  for (const item of pendingMultichainFunding) {
+    if (item.operation === "deposit") {
+      if (item.step === "received" || item.step === "sent") {
+        intermediateStepGuids.add(item.id);
+      }
+    } else if (item.operation === "withdrawal") {
+      if (item.step === "sent") {
+        intermediateStepGuids.add(item.id);
+      }
     }
   }
 
@@ -915,32 +918,34 @@ function progressMultichainFundingItems({
 }) {
   const executedGuids: string[] = [];
 
-  for (const intermediateDepositStep of ["received", "sent"] as const) {
-    for (const pendingGuid in pendingMultichainFunding.deposits[intermediateDepositStep]) {
-      const freshItem = updatedPendingItems[pendingGuid];
+  for (let index = 0; index < pendingMultichainFunding.length; index++) {
+    const item = pendingMultichainFunding[index];
+    const freshItem = updatedPendingItems[item.id];
 
-      if (isStepGreater(freshItem.step, intermediateDepositStep)) {
-        delete pendingMultichainFunding.deposits[intermediateDepositStep][pendingGuid];
-        pendingMultichainFunding.deposits[freshItem.step][pendingGuid] = freshItem;
+    if (!freshItem) {
+      continue;
+    }
 
-        if (freshItem.step === "executed") {
-          executedGuids.push(pendingGuid);
-          queueSendDepositExecutedMetric(freshItem);
+    if (item.operation === "deposit") {
+      if (item.step === "received" || item.step === "sent") {
+        if (isStepGreater(freshItem.step, item.step)) {
+          pendingMultichainFunding[index] = freshItem;
+
+          if (freshItem.step === "executed") {
+            executedGuids.push(item.id);
+            queueSendDepositExecutedMetric(freshItem);
+          }
         }
       }
-    }
-  }
+    } else if (item.operation === "withdrawal") {
+      if (item.step === "sent") {
+        if (isStepGreater(freshItem.step, item.step)) {
+          pendingMultichainFunding[index] = freshItem;
 
-  for (const intermediateWithdrawalStep of ["sent"] as const) {
-    for (const pendingGuid in pendingMultichainFunding.withdrawals[intermediateWithdrawalStep]) {
-      const freshItem = updatedPendingItems[pendingGuid];
-
-      if (isStepGreater(freshItem.step, intermediateWithdrawalStep)) {
-        delete pendingMultichainFunding.withdrawals[intermediateWithdrawalStep][pendingGuid];
-        pendingMultichainFunding.withdrawals[freshItem.step][pendingGuid] = freshItem;
-        if (freshItem.step === "received") {
-          executedGuids.push(pendingGuid);
-          queueSendWithdrawalReceivedMetric(freshItem);
+          if (freshItem.step === "received") {
+            executedGuids.push(item.id);
+            queueSendWithdrawalReceivedMetric(freshItem);
+          }
         }
       }
     }

@@ -120,19 +120,7 @@ export type SubmittedMultichainWithdrawal = {
   tokenAddress: string;
 };
 
-export type PendingMultichainFunding = {
-  deposits: {
-    submitted: MultichainFundingHistoryItem[];
-    sent: Record<string, MultichainFundingHistoryItem>;
-    received: Record<string, MultichainFundingHistoryItem>;
-    executed: Record<string, MultichainFundingHistoryItem>;
-  };
-  withdrawals: {
-    submitted: Record<string, MultichainFundingHistoryItem>;
-    sent: Record<string, MultichainFundingHistoryItem>;
-    received: Record<string, MultichainFundingHistoryItem>;
-  };
-};
+export type PendingMultichainFunding = MultichainFundingHistoryItem[];
 
 export type EventLogItems<T> = {
   [key: string]: T;

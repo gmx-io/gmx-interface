@@ -115,62 +115,41 @@ export function useGmxAccountFundingHistory(opts?: { enabled?: boolean }): {
 
     const dataToUnshift: MultichainFundingHistoryItem[] = [];
 
-    for (const step of ["executed", "received", "sent"] as const) {
-      for (const pendingGuid in pendingMultichainFunding.deposits[step]) {
-        const currentIndex = guidToIndex[pendingGuid];
-
-        if (currentIndex === undefined) {
-          dataToUnshift.unshift(pendingMultichainFunding.deposits[step][pendingGuid]);
-          continue;
-        }
-
-        const current = mergedData[currentIndex];
-
-        if (isStepGreaterOrEqual(current.step, step)) {
-          continue;
-        }
-
-        mergedData[currentIndex] = pendingMultichainFunding.deposits[step][pendingGuid];
+    for (const item of pendingMultichainFunding) {
+      if (item.step === "submitted") {
+        continue;
       }
-    }
 
-    for (const step of ["received", "sent"] as const) {
-      for (const pendingGuid in pendingMultichainFunding.withdrawals[step]) {
-        const currentIndex = guidToIndex[pendingGuid];
+      const currentIndex = guidToIndex[item.id];
 
-        if (currentIndex === undefined) {
-          dataToUnshift.unshift(pendingMultichainFunding.withdrawals[step][pendingGuid]);
-          continue;
-        }
-
-        const current = mergedData[currentIndex];
-
-        if (isStepGreaterOrEqual(current.step, step)) {
-          continue;
-        }
-
-        mergedData[currentIndex] = pendingMultichainFunding.withdrawals[step][pendingGuid];
+      if (currentIndex === undefined) {
+        dataToUnshift.unshift(item);
+        continue;
       }
+
+      const current = mergedData[currentIndex];
+
+      if (isStepGreaterOrEqual(current.step, item.step)) {
+        continue;
+      }
+
+      mergedData[currentIndex] = item;
     }
 
     mergedData = dataToUnshift.concat(mergedData);
 
     const alreadySentTxns = mergedData.filter((item) => item.sentTxn !== undefined).map((item) => item.sentTxn!);
 
-    const filteredSubmittedEvents = pendingMultichainFunding.deposits.submitted
-      .filter((item) => !item.sentTxn || !alreadySentTxns.includes(item.sentTxn))
-      .concat(
-        Object.values(pendingMultichainFunding.withdrawals.submitted).filter(
-          (item) => !item.sentTxn || !alreadySentTxns.includes(item.sentTxn)
-        )
-      );
+    const filteredSubmittedEvents = pendingMultichainFunding.filter(
+      (item) => item.step === "submitted" && (!item.sentTxn || !alreadySentTxns.includes(item.sentTxn))
+    );
 
     mergedData = [...filteredSubmittedEvents, ...mergedData];
 
     mergedData.sort((a, b) => b.sentTimestamp - a.sentTimestamp);
 
     return mergedData;
-  }, [data, pendingMultichainFunding.deposits, pendingMultichainFunding.withdrawals]);
+  }, [data, pendingMultichainFunding]);
 
   return { fundingHistory: mergedData, isLoading };
 }
@@ -182,19 +161,11 @@ function useGmxAccountPendingFundingHistoryItem(guid: string | undefined): Multi
     if (!guid) {
       return undefined;
     }
-    return (
-      pendingMultichainFunding.deposits.submitted.find((item) => item.id === guid) ??
-      pendingMultichainFunding.deposits.sent[guid] ??
-      pendingMultichainFunding.deposits.received[guid] ??
-      pendingMultichainFunding.deposits.executed[guid]
-    );
-  }, [
-    guid,
-    pendingMultichainFunding.deposits.executed,
-    pendingMultichainFunding.deposits.received,
-    pendingMultichainFunding.deposits.sent,
-    pendingMultichainFunding.deposits.submitted,
-  ]);
+
+    const pendingItem = pendingMultichainFunding.find((item) => item.id === guid);
+
+    return pendingItem;
+  }, [guid, pendingMultichainFunding]);
 
   return pendingItem;
 }
