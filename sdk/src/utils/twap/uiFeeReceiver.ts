@@ -5,16 +5,15 @@ const PREFIX = "0xff0000";
 
 /**
  * Ui fee receiver structure:
- * 0..3 bytes (0..7 chars) - PREFIX
- * 4..16 bytes (8..27 chars) - 12 bytes buffer
- * 17 byte (27..29 chars) - isExpress flag
- * 18 byte (30..32 chars) - numberOfParts (hex encoded)
- * 19..20 bytes (34..38 chars) - twapId
- * 20 byte (38..40 chars) - VERSION
+ * 0-3 (4) bytes (0-7 chars) - PREFIX
+ * 4-15 (12) bytes (8-32 chars) - 12 bytes buffer
+ * 16 (1) byte (33-34 chars) - isExpress flag
+ * 17 (1) byte (35-36 chars) - numberOfParts (hex encoded)
+ * 18-19 (2) bytes (37-40 chars) - twapId
+ * 20 (1) byte (41-42 chars) - VERSION
  *
- * Total: 20 bytes (40 hex characters)
+ * Total: 0x + 20 bytes (41 hex characters)
  */
-
 export function generateTwapId() {
   return Math.floor(Math.random() * 256 * 256)
     .toString(16)
@@ -25,9 +24,9 @@ export function createTwapUiFeeReceiver({ numberOfParts }: { numberOfParts: numb
   const twapId = generateTwapId();
 
   const numberOfPartsInHex = numberOfParts.toString(16).padStart(2, "0");
-  const isExpressHex = "00";
 
   const buffer = "00".repeat(12);
+  const isExpressHex = "00";
 
   return `${PREFIX}${buffer}${isExpressHex}${numberOfPartsInHex}${twapId}${VERSION}`;
 }
@@ -55,5 +54,5 @@ export function isValidTwapUiFeeReceiver(address: string) {
 export function setUiFeeReceiverIsExpress(uiFeeReceiver: string, isExpress: boolean): string {
   const isExpressInHex = isExpress ? "01" : "00";
 
-  return `${uiFeeReceiver.slice(0, 27)}${isExpressInHex}${uiFeeReceiver.slice(29)}`;
+  return `${uiFeeReceiver.slice(0, 16 * 2)}${isExpressInHex}${uiFeeReceiver.slice(17 * 2)}`;
 }
