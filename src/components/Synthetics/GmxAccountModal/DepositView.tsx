@@ -650,8 +650,6 @@ export const DepositView = () => {
     }
   }
 
-  // console.log({ nativeTokenSourceChainBalance });
-
   let placeholder = "";
   if ((inputValue === undefined || inputValue === "") && selectedToken?.symbol) {
     placeholder = `0.0 ${selectedToken.symbol}`;

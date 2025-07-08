@@ -4,9 +4,15 @@ import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
 
 import { getBridgingOptionsForToken } from "config/bridging";
+import { SettlementChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { get1InchSwapUrlFromAddresses } from "config/links";
-import { useGmxAccountDepositViewTokenAddress, useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
+import { MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS } from "config/multichain";
+import {
+  useGmxAccountDepositViewTokenAddress,
+  useGmxAccountDepositViewTokenInputValue,
+  useGmxAccountModalOpen,
+} from "context/GmxAccountContext/hooks";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
@@ -69,7 +75,7 @@ import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/use
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { getContract } from "sdk/configs/contracts";
-import { getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
+import { convertTokenAddress, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/types/fees";
 import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
 
@@ -113,6 +119,7 @@ export function useTradeboxButtonState({
   const { isLeverageSliderEnabled } = useSettings();
   const { shouldShowDepositButton } = useGmxAccountShowDepositButton();
   const [, setGmxAccountDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
+  const [, setGmxAccountDepositViewTokenInputValue] = useGmxAccountDepositViewTokenInputValue();
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
 
   const fromToken = useSelector(selectTradeboxFromToken);
@@ -314,7 +321,16 @@ export function useTradeboxButtonState({
 
     if (shouldShowDepositButton) {
       if (fromToken) {
-        setGmxAccountDepositViewTokenAddress(fromToken.address);
+        const wrappedAddress = convertTokenAddress(chainId, fromToken.address, "wrapped");
+        const isSupportedToDeposit =
+          MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS[chainId as SettlementChainId].includes(wrappedAddress);
+
+        if (isSupportedToDeposit) {
+          setGmxAccountDepositViewTokenAddress(fromToken.address);
+          if (payAmount !== undefined) {
+            setGmxAccountDepositViewTokenInputValue(formatAmountFree(payAmount, fromToken.decimals));
+          }
+        }
       }
 
       setGmxAccountModalOpen("deposit");
@@ -405,8 +421,10 @@ export function useTradeboxButtonState({
     openConnectModal,
     fromToken,
     setGmxAccountModalOpen,
-    setGmxAccountDepositViewTokenAddress,
     chainId,
+    setGmxAccountDepositViewTokenAddress,
+    payAmount,
+    setGmxAccountDepositViewTokenInputValue,
     isApproving,
     setPendingTxns,
     addTokenPermit,
