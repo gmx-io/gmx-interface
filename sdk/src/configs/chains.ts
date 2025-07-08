@@ -1,5 +1,5 @@
 import { defineChain } from "viem";
-import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, Chain } from "viem/chains";
+import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, Chain, optimismSepolia, sepolia } from "viem/chains";
 
 import { GasLimitsConfig } from "types/fees";
 
@@ -152,12 +152,14 @@ export const botanix: Chain = defineChain({
   },
 });
 
-const VIEM_CHAIN_BY_CHAIN_ID: Record<ContractsChainId, Chain> = {
+const VIEM_CHAIN_BY_CHAIN_ID: Record<AnyChainId, Chain> = {
   [AVALANCHE_FUJI]: avalancheFuji,
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
   [BOTANIX]: botanix,
+  [SOURCE_OPTIMISM_SEPOLIA]: optimismSepolia,
+  [SOURCE_SEPOLIA]: sepolia,
 };
 
 export function getChainName(chainId: number): ChainName {
