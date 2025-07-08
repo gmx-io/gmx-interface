@@ -45,6 +45,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import {
   BatchOrderTxnParams,
+  CreateOrderPayload,
   getBatchExternalCalls,
   getBatchExternalSwapGasLimit,
   getBatchRequiredActions,
@@ -53,6 +54,7 @@ import {
   getIsEmptyBatch,
 } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
+import { setUiFeeReceiverIsExpress } from "sdk/utils/twap/uiFeeReceiver";
 import { MultichainOrderRouter } from "typechain-types/MultichainOrderRouter";
 
 import { approximateL1GasBuffer, estimateBatchGasLimit, estimateRelayerGasLimit, GasLimitsConfig } from "../fees";
@@ -699,7 +701,7 @@ export async function getBatchSignatureParams({
 function getBatchParamsLists(batchParams: BatchOrderTxnParams) {
   return {
     createOrderParamsList: batchParams.createOrderParams.map((p) => ({
-      addresses: p.orderPayload.addresses,
+      addresses: updateExpressOrdersAddresses(p.orderPayload.addresses),
       numbers: p.orderPayload.numbers,
       orderType: p.orderPayload.orderType,
       decreasePositionSwapType: p.orderPayload.decreasePositionSwapType,
@@ -954,4 +956,11 @@ export async function signSetTraderReferralCode({
   };
 
   return signTypedData({ signer, domain, types, typedData });
+}
+
+function updateExpressOrdersAddresses(addressess: CreateOrderPayload["addresses"]): CreateOrderPayload["addresses"] {
+  return {
+    ...addressess,
+    uiFeeReceiver: setUiFeeReceiverIsExpress(addressess.uiFeeReceiver, true),
+  };
 }

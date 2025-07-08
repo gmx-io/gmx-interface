@@ -93,17 +93,26 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
               toastMsg = (
                 <div>
                   <Trans>
-                    Transaction failed due to execution fee validation. <ExternalLink href={txUrl}>View</ExternalLink>
-                    .
+                    Transaction failed due to execution fee validation. <ExternalLink href={txUrl}>View</ExternalLink>.
                     <br />
                     <br />
-                    Please try increasing execution fee buffer to{" "}
+                    Please{" "}
+                    <div
+                      className=" muted inline-block cursor-pointer underline"
+                      onClick={() => setIsSettingsVisible(true)}
+                    >
+                      enable Express trading
+                    </div>{" "}
+                    under settings, which should offer a better experience.
+                    <br />
+                    <br />
+                    Otherwise, try increasing the max network fee buffer to{" "}
                     {formatPercentage(requiredBufferBps, { displayDecimals: 0 })} in{" "}
                     <div
                       className=" muted inline-block cursor-pointer underline"
                       onClick={() => setIsSettingsVisible(true)}
                     >
-                      Settings
+                      settings
                     </div>
                     .
                   </Trans>

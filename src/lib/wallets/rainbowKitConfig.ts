@@ -1,4 +1,4 @@
-import { getDefaultConfig, WalletList } from "@rainbow-me/rainbowkit";
+import { Chain, getDefaultConfig, WalletList } from "@rainbow-me/rainbowkit";
 import {
   coinbaseWallet,
   coreWallet,
@@ -12,17 +12,9 @@ import {
 } from "@rainbow-me/rainbowkit/wallets";
 import once from "lodash/once";
 import { http } from "viem";
-import {
-  arbitrum,
-  avalanche,
-  avalancheFuji,
-  arbitrumSepolia,
-  base,
-  sonic,
-  optimismSepolia,
-  sepolia,
-} from "viem/chains";
+import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, base, optimismSepolia, sepolia } from "viem/chains";
 
+import { botanix } from "config/chains";
 import { isDevelopment } from "config/env";
 
 import binanceWallet from "./connecters/binanceW3W/binanceWallet";
@@ -60,8 +52,8 @@ export const getRainbowKitConfig = once(() =>
     chains: [
       arbitrum,
       avalanche,
+      botanix as Chain,
       base,
-      sonic,
       ...(isDevelopment() ? [avalancheFuji, arbitrumSepolia, optimismSepolia, sepolia] : []),
     ],
     transports: {
@@ -70,9 +62,9 @@ export const getRainbowKitConfig = once(() =>
       [avalancheFuji.id]: http(),
       [arbitrumSepolia.id]: http(),
       [base.id]: http(),
-      [sonic.id]: http(),
       [optimismSepolia.id]: http(),
       [sepolia.id]: http(),
+      [botanix.id]: http(),
     },
     wallets: [...popularWalletList, ...othersWalletList],
   })

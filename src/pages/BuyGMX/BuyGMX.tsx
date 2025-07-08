@@ -7,9 +7,10 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
+  BOTANIX,
+  ContractsChainId,
   getChainName,
   getConstant,
-  ContractsChainId,
 } from "config/chains";
 import { getIcons } from "config/icons";
 import { useChainId } from "lib/chains";
@@ -44,6 +45,7 @@ const OPPOSITE_CHAIN_ID: Record<ContractsChainId, ContractsChainId> = {
   [AVALANCHE]: ARBITRUM,
   [ARBITRUM_SEPOLIA]: AVALANCHE_FUJI,
   [AVALANCHE_FUJI]: ARBITRUM_SEPOLIA,
+  [BOTANIX]: ARBITRUM,
 };
 
 export default function BuyGMX() {
@@ -73,6 +75,12 @@ export default function BuyGMX() {
       }
     }
   }, [location]);
+
+  useEffect(() => {
+    if (chainId === BOTANIX) {
+      onNetworkSelect(ARBITRUM);
+    }
+  }, [chainId, onNetworkSelect]);
 
   const canBuyNativeToken = BUY_NATIVE_TOKENS.filter((e) => chainId in e.links).length > 0;
   const canTransferNativeToken = TRANSFER_EXCHANGES.filter((e) => chainId in e.links).length > 0;

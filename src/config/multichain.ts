@@ -19,6 +19,7 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
+  BOTANIX,
   ContractsChainId,
   SettlementChainId,
   SOURCE_OPTIMISM_SEPOLIA,
@@ -141,6 +142,7 @@ export const CONTRACTS_CHAINS: ContractsChainId[] = ensureExhaustive<ContractsCh
   [ARBITRUM]: true,
   [AVALANCHE]: true,
   [AVALANCHE_FUJI]: true,
+  [BOTANIX]: true,
 });
 
 export const SETTLEMENT_CHAINS: SettlementChainId[] = ensureExhaustive<SettlementChainId>({
@@ -256,16 +258,15 @@ export const DEFAULT_SETTLEMENT_CHAIN_ID_MAP: Record<AnyChainId, SettlementChain
   // TODO: fix
   // [BASE_MAINNET]: ARBITRUM_SEPOLIA, // ARBITRUM,
   // [SONIC_MAINNET]: ARBITRUM_SEPOLIA, // ARBITRUM,
-
   [ARBITRUM_SEPOLIA]: ARBITRUM_SEPOLIA,
   [SOURCE_OPTIMISM_SEPOLIA]: ARBITRUM_SEPOLIA,
   [SOURCE_SEPOLIA]: ARBITRUM_SEPOLIA,
 
   // Stubs
-  // TODO: fix
   [ARBITRUM]: ARBITRUM_SEPOLIA, // ARBITRUM,
   [AVALANCHE]: ARBITRUM_SEPOLIA, // AVALANCHE,
-  [AVALANCHE_FUJI]: ARBITRUM_SEPOLIA, // AVALANCHE_FUJI,
+  [AVALANCHE_FUJI]: ARBITRUM_SEPOLIA,
+  [BOTANIX]: ARBITRUM_SEPOLIA,
 };
 
 export function getMultichainTokenId(chainId: number, tokenAddress: string): MultichainTokenId | undefined {

@@ -7,12 +7,13 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
+  BOTANIX,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
   getChainName,
 } from "config/chains";
 import { isDevelopment } from "config/env";
-import { getChainIcon } from "config/icons";
+import { getChainIcon, getIcon } from "config/icons";
 import { isSourceChain } from "config/multichain";
 import { useChainId } from "lib/chains";
 import { isHomeSite, shouldShowRedirectModal } from "lib/legacy";
@@ -61,17 +62,17 @@ const NETWORK_OPTIONS: NetworkOption[] = [
     icon: getChainIcon(AVALANCHE),
     color: "#E841424D",
   },
+  {
+    label: getChainName(BOTANIX),
+    value: BOTANIX,
+    icon: getIcon(BOTANIX, "network"),
+    color: "#F7931A",
+  },
   // {
   //   label: getChainName(BASE_MAINNET),
   //   value: BASE_MAINNET,
   //   icon: getChainIcon(BASE_MAINNET),
   //   color: "#0052ff",
-  // },
-  // {
-  //   label: getChainName(SONIC_MAINNET),
-  //   value: SONIC_MAINNET,
-  //   icon: getChainIcon(SONIC_MAINNET),
-  //   color: "#ffffff",
   // },
 ];
 

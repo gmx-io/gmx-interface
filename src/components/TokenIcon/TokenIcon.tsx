@@ -7,6 +7,7 @@ import "./TokenIcon.scss";
 
 function getIconUrlPath(symbol, size: 24 | 40) {
   if (!symbol || !size) return;
+
   return `ic_${symbol.toLowerCase()}_${size}.svg`;
 }
 

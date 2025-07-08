@@ -39,7 +39,6 @@ import {
   sendOrderCancelledMetric,
   sendOrderCreatedMetric,
   sendOrderExecutedMetric,
-  sendTxnErrorMetric,
 } from "lib/metrics/utils";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { deleteByKey, getByKey, setByKey, updateByKey } from "lib/objects";
@@ -64,6 +63,7 @@ import {
   DepositStatuses,
   EventLogData,
   EventTxnParams,
+  GelatoTaskStatus,
   GLVDepositCreatedEventData,
   OrderCreatedEventData,
   OrderStatuses,
@@ -85,7 +85,7 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { useMultichainEvents } from "./useMultichainEvents";
-import { getPendingOrderKey } from "./utils";
+import { getPendingOrderKey, sendGelatoTaskStatusMetric } from "./utils";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -131,14 +131,14 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [withdrawalStatuses, setWithdrawalStatuses] = useState<WithdrawalStatuses>({});
   const [shiftStatuses, setShiftStatuses] = useState<ShiftStatuses>({});
 
-  const { tokensBalancesUpdates, setTokensBalancesUpdates } = useTokensBalancesUpdates();
+  const { setWebsocketTokenBalancesUpdates, setOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
   const [approvalStatuses, setApprovalStatuses] = useState<ApprovalStatuses>({});
 
   const [pendingOrdersUpdates, setPendingOrdersUpdates] = useState<PendingOrdersUpdates>({});
   const [pendingPositionsUpdates, setPendingPositionsUpdates] = useState<PendingPositionsUpdates>({});
   const [positionIncreaseEvents, setPositionIncreaseEvents] = useState<PositionIncreaseEvent[]>([]);
   const [positionDecreaseEvents, setPositionDecreaseEvents] = useState<PositionDecreaseEvent[]>([]);
-  const [gelatoTaskStatuses, setGelatoTaskStatuses] = useState<{ [taskId: string]: TaskState }>({});
+  const [gelatoTaskStatuses, setGelatoTaskStatuses] = useState<{ [taskId: string]: GelatoTaskStatus }>({});
   const [pendingExpressTxnParams, setPendingExpressTxnParams] = useState<{
     [key: string]: Partial<PendingExpressTxnParams>;
   }>({});
@@ -174,13 +174,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     }
 
     provider.getBalance(currentAccount, "pending").then((balance) => {
-      setTokensBalancesUpdates((old) =>
+      setWebsocketTokenBalancesUpdates((old) =>
         setByKey(old, NATIVE_TOKEN_ADDRESS, {
           balance,
         })
       );
     });
-  }, [currentAccount, provider, setTokensBalancesUpdates]);
+  }, [currentAccount, provider, setWebsocketTokenBalancesUpdates]);
 
   // use ref to avoid re-subscribing on state changes
   eventLogHandlers.current = {
@@ -894,12 +894,16 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         currentAccount,
         marketTokensAddressesString.split("-"),
         (tokenAddress, amount) => {
-          setTokensBalancesUpdates((old) => {
+          setWebsocketTokenBalancesUpdates((old) => {
             const oldDiff = old[tokenAddress]?.diff || 0n;
 
             return setByKey(old, tokenAddress, {
               diff: oldDiff + amount,
             });
+          });
+
+          setOptimisticTokensBalancesUpdates((old) => {
+            return updateByKey(old, tokenAddress, { isPending: false });
           });
         }
       );
@@ -909,7 +913,15 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       };
     },
 
-    [chainId, currentAccount, hasPageLostFocus, marketTokensAddressesString, setTokensBalancesUpdates, wsProvider]
+    [
+      chainId,
+      currentAccount,
+      hasPageLostFocus,
+      marketTokensAddressesString,
+      setOptimisticTokensBalancesUpdates,
+      setWebsocketTokenBalancesUpdates,
+      wsProvider,
+    ]
   );
 
   useEffect(
@@ -961,7 +973,14 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         case TaskState.ExecReverted:
         case TaskState.Cancelled: {
           gelatoRelay.unsubscribeTaskStatusUpdate(taskStatus.taskId);
-          setGelatoTaskStatuses((old) => setByKey(old, taskStatus.taskId, taskStatus.taskState));
+          setGelatoTaskStatuses((old) =>
+            setByKey(old, taskStatus.taskId, {
+              taskId: taskStatus.taskId,
+              taskState: taskStatus.taskState,
+              lastCheckMessage: taskStatus.lastCheckMessage,
+              transactionHash: taskStatus.transactionHash,
+            })
+          );
           break;
         }
         default:
@@ -980,7 +999,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     function notifyPendingExpressTxn() {
       Object.values(pendingExpressTxnParams).forEach((pendingExpressTxn) => {
         if (pendingExpressTxn.taskId && pendingExpressTxn.key && gelatoTaskStatuses[pendingExpressTxn.taskId]) {
-          const status = gelatoTaskStatuses[pendingExpressTxn.taskId];
+          const status = gelatoTaskStatuses[pendingExpressTxn.taskId].taskState;
 
           if (status === TaskState.ExecSuccess && pendingExpressTxn.successMessage && !pendingExpressTxn.isViewed) {
             helperToast.success(pendingExpressTxn.successMessage);
@@ -992,11 +1011,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             let isViewed = false;
 
             if (pendingExpressTxn.metricId && !pendingExpressTxn.isRelayerMetricSent) {
-              sendTxnErrorMetric(
-                pendingExpressTxn.metricId,
-                new Error(`Gelato task cancelled, ${pendingExpressTxn.taskId}`),
-                "relayer"
-              );
+              sendGelatoTaskStatusMetric(pendingExpressTxn.metricId, gelatoTaskStatuses[pendingExpressTxn.taskId]);
               isRelayerMetricSent = true;
             }
 
@@ -1009,12 +1024,20 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
               setPendingExpressTxnParams((old) =>
                 updateByKey(old, pendingExpressTxn.key!, { isViewed, isRelayerMetricSent })
               );
+              setOptimisticTokensBalancesUpdates((old) => {
+                const newState = { ...old };
+                pendingExpressTxn.payTokenAddresses?.forEach((tokenAddress) => {
+                  delete newState[tokenAddress];
+                });
+                return newState;
+              });
+              setPendingPositionsUpdates({});
             }
           }
         }
       });
     },
-    [gelatoTaskStatuses, pendingExpressTxnParams]
+    [gelatoTaskStatuses, pendingExpressTxnParams, provider, setOptimisticTokensBalancesUpdates]
   );
 
   const multichainEventsState = useMultichainEvents({
@@ -1027,7 +1050,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       depositStatuses,
       withdrawalStatuses,
       shiftStatuses,
-      tokensBalancesUpdates,
       approvalStatuses,
       pendingOrdersUpdates,
       pendingPositionsUpdates,
@@ -1177,7 +1199,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     depositStatuses,
     withdrawalStatuses,
     shiftStatuses,
-    tokensBalancesUpdates,
     approvalStatuses,
     pendingOrdersUpdates,
     pendingPositionsUpdates,

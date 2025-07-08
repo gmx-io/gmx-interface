@@ -68,7 +68,7 @@ export function setAutoCancelOrdersTxn(
         })
       );
 
-      const { encodedMulticall } = encodeExchangeRouterMulticall(chainId as ContractsChainId, multicall);
+      const { encodedMulticall } = encodeExchangeRouterMulticall(multicall);
 
       return encodedMulticall;
     })

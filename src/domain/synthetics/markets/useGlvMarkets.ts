@@ -54,7 +54,7 @@ export function useGlvMarketsInfo(
     account: string | undefined;
   }
 ) {
-  const { tokensBalancesUpdates, resetTokensBalancesUpdates } = useTokensBalancesUpdates();
+  const { websocketTokenBalancesUpdates, resetTokensBalancesUpdates } = useTokensBalancesUpdates();
   const { marketsInfoData, tokensData, chainId, account } = deps;
 
   const dataStoreAddress = enabled ? getContract(chainId, "DataStore") : "";
@@ -330,7 +330,7 @@ export function useGlvMarketsInfo(
     }
 
     const result = structuredClone(glvData);
-    const updateEntries = entries(tokensBalancesUpdates);
+    const updateEntries = entries(websocketTokenBalancesUpdates);
 
     for (const [tokenAddress, balanceUpdate] of updateEntries) {
       if (!result[tokenAddress] || !balanceUpdate) {
@@ -345,7 +345,7 @@ export function useGlvMarketsInfo(
     }
 
     return result;
-  }, [glvData, tokensBalancesUpdates]);
+  }, [glvData, websocketTokenBalancesUpdates]);
 
   return {
     glvs,

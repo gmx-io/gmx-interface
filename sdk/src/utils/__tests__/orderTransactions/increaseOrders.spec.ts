@@ -582,6 +582,7 @@ describe("Increase Order Payloads", () => {
         const decoded = decodeTwapUiFeeReceiver(uiFeeReceiver);
 
         expect(decoded).toEqual({
+          isExpress: false,
           twapId: "8000",
           numberOfParts: twapParams.numberOfParts,
         });
@@ -685,6 +686,7 @@ describe("Increase Order Payloads", () => {
 
         const decoded = decodeTwapUiFeeReceiver(uiFeeReceiver);
         expect(decoded).toEqual({
+          isExpress: false,
           twapId: "8000",
           numberOfParts: twapParams.numberOfParts,
         });

@@ -1,3 +1,4 @@
+import { defineChain } from "viem";
 import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, Chain } from "viem/chains";
 
 import { GasLimitsConfig } from "types/fees";
@@ -5,9 +6,8 @@ import { GasLimitsConfig } from "types/fees";
 export const AVALANCHE = 43114;
 export const AVALANCHE_FUJI = 43113;
 export const ARBITRUM = 42161;
-export const BSС_MAINNET = 56;
-export const BSС_TESTNET = 97;
 export const ETH_MAINNET = 1;
+export const BOTANIX = 3637;
 export const SOURCE_BASE_MAINNET = 8453;
 // export const BASE_SEPOLIA = 84532;
 export const SOURCE_SONIC_MAINNET = 146;
@@ -16,10 +16,15 @@ export const ARBITRUM_SEPOLIA = 421614;
 export const SOURCE_OPTIMISM_SEPOLIA = 11155420;
 export const SOURCE_SEPOLIA = 11155111;
 
-export const SUPPORTED_CHAIN_IDS: ContractsChainId[] = [ARBITRUM, AVALANCHE];
+export const SUPPORTED_CHAIN_IDS: ContractsChainId[] = [ARBITRUM, AVALANCHE, BOTANIX];
 export const SUPPORTED_CHAIN_IDS_DEV: ContractsChainId[] = [...SUPPORTED_CHAIN_IDS, AVALANCHE_FUJI, ARBITRUM_SEPOLIA];
 
-export type ContractsChainId = typeof ARBITRUM | typeof AVALANCHE | typeof AVALANCHE_FUJI | typeof ARBITRUM_SEPOLIA;
+export type ContractsChainId =
+  | typeof ARBITRUM
+  | typeof AVALANCHE
+  | typeof AVALANCHE_FUJI
+  | typeof BOTANIX
+  | typeof ARBITRUM_SEPOLIA;
 
 export type SettlementChainId = typeof ARBITRUM_SEPOLIA;
 export type SourceChainId = typeof SOURCE_OPTIMISM_SEPOLIA | typeof SOURCE_SEPOLIA;
@@ -31,21 +36,24 @@ export type ChainName =
   | "Avalanche Fuji"
   | "Arbitrum Sepolia"
   | "Optimism Sepolia"
-  | "Sepolia";
+  | "Sepolia"
+  | "Botanix";
 
 export const CHAIN_NAMES_MAP: Record<AnyChainId, ChainName> = {
   [ARBITRUM]: "Arbitrum",
   [AVALANCHE]: "Avalanche",
   [AVALANCHE_FUJI]: "Avalanche Fuji",
+  [BOTANIX]: "Botanix",
   [ARBITRUM_SEPOLIA]: "Arbitrum Sepolia",
   [SOURCE_OPTIMISM_SEPOLIA]: "Optimism Sepolia",
   [SOURCE_SEPOLIA]: "Sepolia",
 };
 
-export const HIGH_EXECUTION_FEES_MAP: Record<number, number> = {
+export const HIGH_EXECUTION_FEES_MAP: Record<ContractsChainId, number> = {
   [ARBITRUM]: 5, // 5 USD
   [AVALANCHE]: 5, // 5 USD
   [AVALANCHE_FUJI]: 5, // 5 USD
+  [BOTANIX]: 5, // 5 USD
   [ARBITRUM_SEPOLIA]: 5, // 5 USD
 };
 
@@ -54,6 +62,7 @@ export const HIGH_EXECUTION_FEES_MAP: Record<number, number> = {
 // is not applied to execution fee calculation
 export const MAX_FEE_PER_GAS_MAP: Record<number, bigint> = {
   [AVALANCHE]: 200000000000n, // 200 gwei
+  [BOTANIX]: 20n,
 };
 
 // added to maxPriorityFeePerGas
@@ -67,17 +76,28 @@ export const GAS_PRICE_PREMIUM_MAP: Record<number, bigint> = {
 /*
   that was a constant value in ethers v5, after ethers v6 migration we use it as a minimum for maxPriorityFeePerGas
 */
-export const MAX_PRIORITY_FEE_PER_GAS_MAP: Record<number, bigint | undefined> = {
+export const MAX_PRIORITY_FEE_PER_GAS_MAP: Record<ContractsChainId, bigint | undefined> = {
   [ARBITRUM]: 1500000000n,
   [AVALANCHE]: 1500000000n,
   [AVALANCHE_FUJI]: 1500000000n,
   [ARBITRUM_SEPOLIA]: 1500000000n,
+  [BOTANIX]: 7n,
 };
 
-export const EXCESSIVE_EXECUTION_FEES_MAP: Record<number, number> = {
+export const EXCESSIVE_EXECUTION_FEES_MAP: Partial<Record<ContractsChainId, number>> = {
   [ARBITRUM]: 10, // 10 USD
   [AVALANCHE]: 10, // 10 USD
   [AVALANCHE_FUJI]: 10, // 10 USD
+  [BOTANIX]: 10, // 10 USD
+};
+
+// avoid botanix gas spikes when chain is not actively used
+// if set, execution fee value should not be less than this in USD equivalent
+export const MIN_EXECUTION_FEE_USD: Partial<Record<ContractsChainId, bigint | undefined>> = {
+  [ARBITRUM]: undefined,
+  [AVALANCHE]: undefined,
+  [AVALANCHE_FUJI]: undefined,
+  [BOTANIX]: 1000000000000000000000000000n, // 1e27 $0.001
 };
 
 // added to gasPrice
@@ -101,11 +121,43 @@ export const GAS_PRICE_BUFFER_MAP: Record<number, bigint> = {
   [ARBITRUM]: 2000n, // 20%
 };
 
+export const botanix: Chain = defineChain({
+  id: BOTANIX,
+  name: "Botanix",
+  nativeCurrency: {
+    name: "Bitcoin",
+    symbol: "BTC",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+      http: [
+        // this rpc returns incorrect gas price
+        // "https://rpc.botanixlabs.com",
+
+        "https://rpc.ankr.com/botanix_mainnet",
+      ],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "BotanixScan",
+      url: "https://botanixscan.io",
+    },
+  },
+  contracts: {
+    multicall3: {
+      address: "0x4BaA24f93a657f0c1b4A0Ffc72B91011E35cA46b",
+    },
+  },
+});
+
 const VIEM_CHAIN_BY_CHAIN_ID: Record<ContractsChainId, Chain> = {
   [AVALANCHE_FUJI]: avalancheFuji,
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
+  [BOTANIX]: botanix,
 };
 
 export function getChainName(chainId: number): ChainName {
@@ -150,6 +202,10 @@ export const EXECUTION_FEE_CONFIG_V2: {
     shouldUseMaxPriorityFeePerGas: false,
     defaultBufferBps: 1000, // 10%
   },
+  [BOTANIX]: {
+    shouldUseMaxPriorityFeePerGas: true,
+    defaultBufferBps: 3000, // 30%
+  },
 };
 
 type StaticGasLimitsConfig = Pick<
@@ -189,5 +245,12 @@ export const GAS_LIMITS_STATIC_CONFIG: Record<ContractsChainId, StaticGasLimitsC
     cancelOrderGasLimit: 1_500_000n,
     tokenPermitGasLimit: 90_000n,
     gmxAccountCollateralGasLimit: 400_000n,
+  },
+  [BOTANIX]: {
+    createOrderGasLimit: 1_000_000n,
+    updateOrderGasLimit: 800_000n,
+    cancelOrderGasLimit: 700_000n,
+    tokenPermitGasLimit: 90_000n,
+    gmxAccountCollateralGasLimit: 0n,
   },
 };

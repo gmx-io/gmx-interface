@@ -6,7 +6,7 @@
 */
 import { MARKETS as SDK_MARKETS } from "sdk/configs/markets";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "./chains";
 
 type MarketUiConfig = {
   enabled: boolean;
@@ -16,7 +16,7 @@ type MarketUiConfig = {
   ATTENTION
   When adding new markets, please add them also to the end of the list in ./sortedMarkets.ts
 */
-const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
+const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig>> = {
   [ARBITRUM]: {
     // BTC/USD [WBTC.e-USDC]
     "0x47c031236e19d024b42f8AE6780E44A573170703": {
@@ -534,6 +534,16 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
     },
     // CRV/USD [WETH-USDC]
     "0xAde9D177B9E060D2064ee9F798125e6539fDaA1c": {
+      enabled: true,
+    },
+  },
+  [BOTANIX]: {
+    // BTC/USD [stBTC-stBTC]
+    "0x6682BB60590a045A956541B1433f016Ed22E361d": {
+      enabled: true,
+    },
+    // BTC/USD [stBTC-USDC.E]
+    "0x2f95a2529328E427d3204555F164B1102086690E": {
       enabled: true,
     },
   },

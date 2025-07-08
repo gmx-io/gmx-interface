@@ -90,6 +90,7 @@ export async function getOpenOceanTxnData({
     account: receiverAddress,
     referrer: OPEN_OCEAN_REFERRER,
     disabledDexIds: disabledDexIds.join(","),
+    disableRfq: true,
   });
 
   try {

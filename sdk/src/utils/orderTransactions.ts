@@ -21,7 +21,7 @@ import { applySlippageToMinOut, applySlippageToPrice } from "./trade";
 import { getTwapValidFromTime } from "./twap";
 import { createTwapUiFeeReceiver } from "./twap/uiFeeReceiver";
 
-type ExchangeRouterCall = {
+export type ExchangeRouterCall = {
   method: string;
   params: any[];
 };
@@ -171,6 +171,7 @@ export type SwapOrderParams = CommonOrderParams & {
   swapPath: string[];
   externalSwapQuote: ExternalSwapQuote | undefined;
   minOutputAmount: bigint;
+  expectedOutputAmount?: bigint;
   orderType: OrderType.MarketSwap | OrderType.LimitSwap;
   triggerRatio: bigint | undefined;
 };
@@ -387,6 +388,9 @@ export function buildTwapOrdersPayloads<
         referralCode: params.referralCode,
         autoCancel: params.autoCancel,
         allowedSlippage: 0,
+        ...(params.expectedOutputAmount !== undefined && {
+          expectedOutputAmount: params.expectedOutputAmount / BigInt(twapParams.numberOfParts),
+        }),
         payTokenAmount: params.payTokenAmount / BigInt(twapParams.numberOfParts),
         executionFeeAmount: params.executionFeeAmount / BigInt(twapParams.numberOfParts),
         validFromTime: getTwapValidFromTime(twapParams.duration, twapParams.numberOfParts, i),
@@ -620,7 +624,6 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
   externalSwapQuote: ExternalSwapQuote | undefined;
   minOutputAmount: bigint;
   swapPath: string[];
-  orderType: OrderType;
 }): TokenTransfersParams {
   const isNativePayment = payTokenAddress === NATIVE_TOKEN_ADDRESS;
   const isNativeReceive = receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
@@ -791,13 +794,7 @@ function combineTransfers(tokenTransfers: TokenTransfer[]) {
   return { tokenTransfers: Object.values(transfersMap), value };
 }
 
-export function getBatchOrderMulticallPayload({
-  params,
-  chainId,
-}: {
-  params: BatchOrderTxnParams;
-  chainId: ContractsChainId;
-}) {
+export function getBatchOrderMulticallPayload({ params }: { params: BatchOrderTxnParams }) {
   const { createOrderParams, updateOrderParams, cancelOrderParams } = params;
 
   const multicall: ExchangeRouterCall[] = [];
@@ -821,7 +818,7 @@ export function getBatchOrderMulticallPayload({
     value += cancelValue;
   }
 
-  const { encodedMulticall, callData } = encodeExchangeRouterMulticall(chainId, multicall);
+  const { encodedMulticall, callData } = encodeExchangeRouterMulticall(multicall);
 
   return { multicall, value, encodedMulticall, callData };
 }
@@ -909,7 +906,7 @@ export function buildCancelOrderMulticall({ params }: { params: CancelOrderTxnPa
   };
 }
 
-export function encodeExchangeRouterMulticall(chainId: ContractsChainId, multicall: ExchangeRouterCall[]) {
+export function encodeExchangeRouterMulticall(multicall: ExchangeRouterCall[]) {
   const encodedMulticall = multicall.map((call) =>
     encodeFunctionData({
       abi: abis.ExchangeRouter,

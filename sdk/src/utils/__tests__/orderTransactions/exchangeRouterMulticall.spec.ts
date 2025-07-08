@@ -74,7 +74,7 @@ describe.skip("Exchange Router Multicall", () => {
         cancelOrderParams: [],
       };
 
-      const result = getBatchOrderMulticallPayload({ chainId: commonParams.chainId, params: batchParams });
+      const result = getBatchOrderMulticallPayload({ params: batchParams });
 
       expect(result.multicall).toEqual([
         {
@@ -111,7 +111,7 @@ describe.skip("Exchange Router Multicall", () => {
         cancelOrderParams: [],
       };
 
-      const result = getBatchOrderMulticallPayload({ chainId: commonParams.chainId, params: batchParams });
+      const result = getBatchOrderMulticallPayload({ params: batchParams });
 
       expect(result.multicall).toEqual([
         {
@@ -163,7 +163,7 @@ describe.skip("Exchange Router Multicall", () => {
         cancelOrderParams: [],
       };
 
-      const result = getBatchOrderMulticallPayload({ chainId: updateParams.chainId, params: batchParams });
+      const result = getBatchOrderMulticallPayload({ params: batchParams });
 
       expect(result.multicall).toEqual([
         {
@@ -250,7 +250,7 @@ describe.skip("Exchange Router Multicall", () => {
         cancelOrderParams: [{ orderKey: CANCEL_ORDER_KEY }],
       };
 
-      const result = getBatchOrderMulticallPayload({ chainId: updateParams.chainId, params: batchParams });
+      const result = getBatchOrderMulticallPayload({ params: batchParams });
 
       expect(result.multicall).toEqual([
         {

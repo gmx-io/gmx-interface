@@ -68,10 +68,10 @@ export function OrderStatusNotification({
   const pendingExpressTxn = getByKey(pendingExpressTxns, pendingExpressTxnKey);
 
   const isGelatoTaskFailed = useMemo(() => {
-    const status = getByKey(gelatoTaskStatuses, pendingExpressTxn?.taskId);
+    const gelatoTaskStatus = getByKey(gelatoTaskStatuses, pendingExpressTxn?.taskId);
 
-    return status && [TaskState.Cancelled, TaskState.ExecReverted].includes(status);
-  }, [gelatoTaskStatuses, pendingExpressTxn]);
+    return gelatoTaskStatus && [TaskState.Cancelled, TaskState.ExecReverted].includes(gelatoTaskStatus.taskState);
+  }, [gelatoTaskStatuses, pendingExpressTxn?.taskId]);
 
   const hasError =
     isGelatoTaskFailed || (Boolean(orderStatus?.cancelledTxnHash) && pendingOrderData.txnType !== "cancel");
@@ -112,8 +112,13 @@ export function OrderStatusNotification({
     }
 
     if (isSwapOrderType(orderData.orderType)) {
-      const { initialCollateralToken, targetCollateralToken, initialCollateralDeltaAmount, minOutputAmount } =
-        orderData;
+      const {
+        initialCollateralToken,
+        targetCollateralToken,
+        initialCollateralDeltaAmount,
+        minOutputAmount,
+        expectedOutputAmount,
+      } = orderData;
 
       let orderTypeText = isLimitSwapOrderType(orderData.orderType) ? t`Limit Swap` : t`Swap`;
 
@@ -121,12 +126,15 @@ export function OrderStatusNotification({
         orderTypeText = t`TWAP Swap`;
       }
 
+      const outputAmount =
+        expectedOutputAmount !== undefined && expectedOutputAmount > 0n ? expectedOutputAmount : minOutputAmount;
+
       return t`${orderTypeText} ${formatTokenAmount(
         initialCollateralDeltaAmount,
         initialCollateralToken?.decimals,
         initialCollateralToken?.symbol,
         { isStable: initialCollateralToken?.isStable }
-      )} for ${formatTokenAmount(minOutputAmount, targetCollateralToken?.decimals, targetCollateralToken?.symbol, {
+      )} for ${formatTokenAmount(outputAmount, targetCollateralToken?.decimals, targetCollateralToken?.symbol, {
         isStable: targetCollateralToken?.isStable,
       })}`;
     } else {

@@ -10,6 +10,7 @@ import {
   SOURCE_SEPOLIA,
   ContractsChainId,
   AnyChainId,
+  BOTANIX,
 } from "sdk/configs/chains";
 
 import { isDevelopment } from "./env";
@@ -24,6 +25,7 @@ const { parseEther } = ethers;
 
 export const ENV_ARBITRUM_RPC_URLS = import.meta.env.VITE_APP_ARBITRUM_RPC_URLS;
 export const ENV_AVALANCHE_RPC_URLS = import.meta.env.VITE_APP_AVALANCHE_RPC_URLS;
+export const ENV_BOTANIX_RPC_URLS = import.meta.env.VITE_APP_BOTANIX_RPC_URLS;
 
 // TODO take it from web3
 export const DEFAULT_CHAIN_ID = ARBITRUM;
@@ -34,6 +36,7 @@ export const IS_NETWORK_DISABLED: Record<ContractsChainId, boolean> = {
   [AVALANCHE]: false,
   [ARBITRUM_SEPOLIA]: false,
   [AVALANCHE_FUJI]: false,
+  [BOTANIX]: false,
 };
 
 export const NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR = {
@@ -98,6 +101,19 @@ const constants = {
     // contract requires that execution fee be strictly greater than instead of gte
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
   },
+  [BOTANIX]: {
+    nativeTokenSymbol: "BTC",
+    wrappedTokenSymbol: "PBTC",
+    defaultCollateralSymbol: "USDC.E",
+    defaultFlagOrdersEnabled: true,
+    positionReaderPropsLength: 9,
+    v2: true,
+
+    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
+    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
+    // contract requires that execution fee be strictly greater than instead of gte
+    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
+  },
 } satisfies Record<ContractsChainId, Record<string, any>>;
 
 const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io"];
@@ -107,7 +123,7 @@ export const RPC_PROVIDERS: Record<AnyChainId | typeof ETH_MAINNET, string[]> = 
   [ARBITRUM]: [
     "https://arb1.arbitrum.io/rpc",
     "https://arbitrum-one-rpc.publicnode.com",
-    "https://1rpc.io/arb",
+    // "https://1rpc.io/arb", has CORS issue
     "https://arbitrum-one.public.blastapi.io",
     // "https://arbitrum.drpc.org",
     "https://rpc.ankr.com/arbitrum",
@@ -128,6 +144,11 @@ export const RPC_PROVIDERS: Record<AnyChainId | typeof ETH_MAINNET, string[]> = 
   // [SONIC_MAINNET]: [...sonic.rpcUrls.default.http],
   [SOURCE_OPTIMISM_SEPOLIA]: [...optimismSepolia.rpcUrls.default.http],
   [SOURCE_SEPOLIA]: [...sepolia.rpcUrls.default.http],
+  [BOTANIX]: [
+    // returns incorrect gas price
+    // "https://rpc.botanixlabs.com",
+    "https://rpc.ankr.com/botanix_mainnet",
+  ],
 };
 
 export const FALLBACK_PROVIDERS: Record<AnyChainId, string[]> = {
@@ -143,6 +164,7 @@ export const FALLBACK_PROVIDERS: Record<AnyChainId, string[]> = {
   // [SONIC_MAINNET]: [],
   [SOURCE_OPTIMISM_SEPOLIA]: [],
   [SOURCE_SEPOLIA]: [],
+  [BOTANIX]: ENV_BOTANIX_RPC_URLS ? JSON.parse(ENV_BOTANIX_RPC_URLS) : [getAlchemyBotanixHttpUrl()],
 };
 
 type ConstantName = keyof (typeof constants)[ContractsChainId];
@@ -185,6 +207,14 @@ export function getAlchemyArbitrumWsUrl() {
   return `wss://arb-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
 }
 
+export function getAlchemyBotanixHttpUrl() {
+  return `https://botanix-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
+}
+
+export function getAlchemyBotanixWsUrl() {
+  return `wss://botanix-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
+}
+
 export function getExplorerUrl(chainId: number): string {
   switch (chainId as AnyChainId) {
     case ARBITRUM:
@@ -193,8 +223,6 @@ export function getExplorerUrl(chainId: number): string {
       return "https://snowtrace.io/";
     // case BASE_MAINNET:
     //   return base.blockExplorers.default.url + "/";
-    // case SONIC_MAINNET:
-    //   return sonic.blockExplorers.default.url + "/";
     case AVALANCHE_FUJI:
       return "https://testnet.snowtrace.io/";
     case ARBITRUM_SEPOLIA:
@@ -203,6 +231,8 @@ export function getExplorerUrl(chainId: number): string {
       return "https://sepolia-optimism.etherscan.io/";
     case SOURCE_SEPOLIA:
       return "https://sepolia.etherscan.io/";
+    case BOTANIX:
+      return "https://botanixscan.io/";
   }
 }
 

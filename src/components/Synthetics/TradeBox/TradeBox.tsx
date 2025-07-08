@@ -97,6 +97,7 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
 
+import { useIsCurtainOpen } from "./Curtain";
 import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
 import { useMultichainTokensRequest } from "../GmxAccountModal/hooks";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
@@ -149,6 +150,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const onDepositTokenAddress = useOpenMultichainDepositModal();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
+
+  const [_, setExternalIsCurtainOpen] = useIsCurtainOpen();
 
   const {
     fromTokenInputValue,
@@ -270,6 +273,13 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     account,
     setToTokenInputValue,
   });
+
+  const wrappedOnSubmit = useCallback(async () => {
+    await submitButtonState.onSubmit();
+    if (isMobile) {
+      setExternalIsCurtainOpen(false);
+    }
+  }, [submitButtonState, isMobile, setExternalIsCurtainOpen]);
 
   const { formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
     fromToken,
@@ -577,10 +587,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     (e) => {
       e.preventDefault();
       if (!isCursorInside && (!submitButtonState.disabled || shouldDisableValidation)) {
-        submitButtonState.onSubmit();
+        wrappedOnSubmit();
       }
     },
-    [isCursorInside, submitButtonState, shouldDisableValidation]
+    [isCursorInside, wrappedOnSubmit, submitButtonState, shouldDisableValidation]
   );
 
   const handleLeverageInputBlur = useCallback(() => {
@@ -818,11 +828,11 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     "Enter",
     () => {
       if (isCursorInside && (!submitButtonState.disabled || shouldDisableValidation)) {
-        submitButtonState.onSubmit();
+        wrappedOnSubmit();
       }
     },
     {},
-    [submitButtonState.disabled, shouldDisableValidation, isCursorInside, submitButtonState.onSubmit]
+    [submitButtonState.disabled, shouldDisableValidation, isCursorInside, wrappedOnSubmit]
   );
 
   const buttonContent = (
@@ -830,7 +840,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       qa="confirm-trade-button"
       variant="primary-action"
       className="w-full [text-decoration:inherit]"
-      onClick={submitButtonState.onSubmit}
+      onClick={wrappedOnSubmit}
       disabled={submitButtonState.disabled && !shouldDisableValidation}
     >
       {submitButtonState.text}

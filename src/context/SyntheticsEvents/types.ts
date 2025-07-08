@@ -82,6 +82,7 @@ export type PendingExpressTxnParams = {
   isSponsoredCall: boolean;
   subaccountApproval?: SignedSubbacountApproval;
   tokenPermits?: SignedTokenPermit[];
+  payTokenAddresses?: string[];
   pendingOrdersKeys?: string[];
   pendingPositionsKeys?: string[];
   createdAt: number;
@@ -90,6 +91,13 @@ export type PendingExpressTxnParams = {
   errorMessage?: ReactNode;
   isViewed?: boolean;
   isRelayerMetricSent?: boolean;
+};
+
+export type GelatoTaskStatus = {
+  taskId: string;
+  taskState: TaskState;
+  lastCheckMessage?: string;
+  transactionHash?: string;
 };
 
 export type ExpressHandlers = {
@@ -165,7 +173,7 @@ export type SyntheticsEventsContextType = MultichainEventsState & {
   positionIncreaseEvents: PositionIncreaseEvent[] | undefined;
   positionDecreaseEvents: PositionDecreaseEvent[] | undefined;
   pendingExpressTxns: PendingExpressTxns;
-  gelatoTaskStatuses: { [taskId: string]: TaskState };
+  gelatoTaskStatuses: { [taskId: string]: GelatoTaskStatus };
   setPendingExpressTxn: (params: PendingExpressTxnParams) => void;
   updatePendingExpressTxn: (params: Partial<PendingExpressTxnParams>) => void;
   setPendingOrder: SetPendingOrder;
@@ -232,6 +240,7 @@ export type PendingOrderData = {
   acceptablePrice: bigint;
   autoCancel: boolean;
   minOutputAmount: bigint;
+  expectedOutputAmount?: bigint;
   sizeDeltaUsd: bigint;
   isLong: boolean;
   shouldUnwrapNativeToken: boolean;

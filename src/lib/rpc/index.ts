@@ -7,8 +7,10 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
+  BOTANIX,
   FALLBACK_PROVIDERS,
   getAlchemyArbitrumWsUrl,
+  getAlchemyBotanixWsUrl,
   getFallbackRpcUrl,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
@@ -91,6 +93,10 @@ export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcP
     provider.pollingInterval = 1000;
     WS_PROVIDER_CACHE[chainId] = provider;
     return provider;
+  }
+
+  if (chainId === BOTANIX) {
+    return new ethers.WebSocketProvider(getAlchemyBotanixWsUrl(), network, { staticNetwork: network });
   }
 
   throw new Error(`Unsupported websocket provider for chain id: ${chainId}`);

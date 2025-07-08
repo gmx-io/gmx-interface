@@ -273,25 +273,6 @@
   margin-top: 1.9375rem;
 }
 
-.Home-token-card-option-action {
-  margin-top: 2rem;
-  display: flex;
-  justify-content: space-between;
-}
-
-.Token-card-buy {
-  margin-top: 3rem;
-}
-
-.Home-token-card-option-action > .buy a:first-child,
-.Home-token-card-option-action > .buy .a:first-child {
-  margin-right: 1.5rem;
-}
-
-/* .Home-token-card-option-action .read-more {
-  float: right;
-} */
-
 .Home-latest-info-container {
   display: flex;
   justify-content: space-between;
