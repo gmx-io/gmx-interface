@@ -201,6 +201,7 @@ module.exports = {
       14: "1.4rem",
       15: "1.5rem",
       16: "1.6rem",
+      18: "1.8rem",
       24: "2.4rem",
       32: "3.2rem",
       34: "3.4rem",
@@ -211,10 +212,10 @@ module.exports = {
     lineHeight: {
       1: "1",
       2: "2",
-      text: "136%",
-      heading: "98%",
-      title: "108%",
-      small: "144%",
+      'text-sm': "136%",
+      'text-md': "144%",
+      'heading-lg': "98%",
+      'heading-md': "108%",
       // Normal is browser dependent. See https://developer.mozilla.org/en-US/docs/Web/CSS/line-height#normal
       base: "normal",
     },
