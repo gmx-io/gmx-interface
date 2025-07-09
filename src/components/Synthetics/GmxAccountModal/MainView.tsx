@@ -309,14 +309,26 @@ function Balance({
           inline={true}
         />
       )}
-      <button
-        className="flex items-center gap-4 rounded-4 bg-cold-blue-700 py-4 pl-8 pr-4 gmx-hover:bg-cold-blue-500"
-        onClick={handleAvailableToTradeClick}
-      >
-        <Trans>All assets</Trans>
-        <TokenIcons tokens={availableToTradeAssetSymbols} />
-        <IoArrowDown className="block size-16 -rotate-90 text-slate-100" />
-      </button>
+      {usd !== undefined && usd !== 0n && (
+        <button
+          className="flex items-center gap-4 rounded-4 bg-cold-blue-700 py-4 pl-8 pr-4 gmx-hover:bg-cold-blue-500"
+          onClick={handleAvailableToTradeClick}
+        >
+          <Trans>All assets</Trans>
+          <TokenIcons tokens={availableToTradeAssetSymbols} />
+          <IoArrowDown className="block size-16 -rotate-90 text-slate-100" />
+        </button>
+      )}
+      {usd === undefined && (
+        <Skeleton
+          baseColor="#B4BBFF1A"
+          highlightColor="#B4BBFF1A"
+          width={134}
+          height={28}
+          className="!block"
+          inline={true}
+        />
+      )}
     </div>
   );
 }
@@ -392,15 +404,17 @@ const FundingHistorySection = () => {
           <Trans>Funding Activity</Trans>
         </div>
       </div>
-      <div className="px-16">
-        <input
-          type="text"
-          placeholder="Search"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full rounded-4 bg-slate-700 px-12 py-8 text-white placeholder:text-slate-100"
-        />
-      </div>
+      {Boolean(fundingHistory?.length) && (
+        <div className="px-16">
+          <input
+            type="text"
+            placeholder="Search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-4 bg-slate-700 px-12 py-8 text-white placeholder:text-slate-100"
+          />
+        </div>
+      )}
       <VerticalScrollFadeContainer className="flex grow flex-col">
         {filteredFundingHistory?.map((transfer) => (
           <div
