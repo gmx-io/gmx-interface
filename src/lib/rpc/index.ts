@@ -35,20 +35,11 @@ export function getProvider(signer: Signer | undefined, chainId: number): ethers
   return new ethers.JsonRpcProvider(url, chainId, { staticNetwork: network });
 }
 
-const WS_PROVIDER_CACHE: Partial<Record<AnyChainId, WebSocketProvider | JsonRpcProvider>> = {};
-
 export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcProvider {
   const network = Network.from(chainId);
 
-  const cachedProvider = WS_PROVIDER_CACHE[chainId];
-
-  if (cachedProvider) {
-    return cachedProvider;
-  }
-
   if (chainId === ARBITRUM) {
     const provider = new ethers.WebSocketProvider(getAlchemyArbitrumWsUrl(), network, { staticNetwork: network });
-    WS_PROVIDER_CACHE[chainId] = provider;
     return provider;
   }
 
@@ -56,7 +47,6 @@ export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcP
     const provider = new ethers.WebSocketProvider("wss://api.avax.network/ext/bc/C/ws", network, {
       staticNetwork: network,
     });
-    WS_PROVIDER_CACHE[chainId] = provider;
     return provider;
   }
 
@@ -65,7 +55,6 @@ export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcP
       staticNetwork: network,
     });
     provider.pollingInterval = 2000;
-    WS_PROVIDER_CACHE[chainId] = provider;
     return provider;
   }
 
@@ -73,7 +62,6 @@ export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcP
     const provider = new ethers.WebSocketProvider("wss://arbitrum-sepolia-rpc.publicnode.com", network, {
       staticNetwork: network,
     });
-    WS_PROVIDER_CACHE[chainId] = provider;
     return provider;
   }
 
@@ -82,7 +70,6 @@ export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcP
       staticNetwork: network,
     });
 
-    WS_PROVIDER_CACHE[chainId] = provider;
     return provider;
   }
 
@@ -91,7 +78,6 @@ export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcP
       staticNetwork: network,
     });
     provider.pollingInterval = 1000;
-    WS_PROVIDER_CACHE[chainId] = provider;
     return provider;
   }
 
@@ -178,4 +164,5 @@ export function closeWsConnection(wsProvider: WebSocketProvider) {
 
   wsProvider.removeAllListeners();
   wsProvider.websocket.close();
+  wsProvider.destroy();
 }
