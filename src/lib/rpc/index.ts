@@ -164,5 +164,4 @@ export function closeWsConnection(wsProvider: WebSocketProvider) {
 
   wsProvider.removeAllListeners();
   wsProvider.websocket.close();
-  wsProvider.destroy();
 }
