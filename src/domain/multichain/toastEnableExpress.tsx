@@ -2,17 +2,16 @@ import { Trans } from "@lingui/macro";
 
 import { helperToast } from "lib/helperToast";
 
+import Button from "components/Button/Button";
+
 export function toastEnableExpress(openSettings: () => void) {
   helperToast.error(
     <Trans>
-      You can only use collateral from your balance through{" "}
-      <span className="cursor-pointer underline" onClick={openSettings}>
-        GMX Express
-      </span>
-      . Proceeding to open this order will activate{" "}
-      <span className="cursor-pointer underline" onClick={openSettings}>
-        GMX Express
-      </span>
+      Express trading was enabled to allow the use of collateral from your GMX account balance. You can disable it in
+      the{" "}
+      <Button variant="link" onClick={openSettings}>
+        settings
+      </Button>
       .
     </Trans>
   );

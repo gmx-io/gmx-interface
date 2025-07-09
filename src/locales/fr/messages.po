@@ -7138,10 +7138,6 @@ msgstr ""
 msgid "What areas can we improve to make your experience better?"
 msgstr ""
 
-#: src/domain/multichain/toastEnableExpress.tsx
-msgid "You can only use collateral from your balance through <0>GMX Express</0>. Proceeding to open this order will activate <1>GMX Express</1>."
-msgstr ""
-
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Market: {0} a long position at the current price."
 msgstr ""
@@ -7247,6 +7243,10 @@ msgstr "Date"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using FIAT gateways:"
+msgstr ""
+
+#: src/domain/multichain/toastEnableExpress.tsx
+msgid "Express trading was enabled to allow the use of collateral from your GMX account balance. You can disable it in the <0>settings</0>."
 msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.tsx
