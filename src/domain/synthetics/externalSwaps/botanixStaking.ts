@@ -1,5 +1,7 @@
 import { encodeFunctionData } from "viem";
 
+import { getMidPrice } from "domain/tokens";
+import { BASIS_POINTS_DIVISOR_BIGINT, getBasisPoints } from "lib/numbers";
 import StBTCABI from "sdk/abis/StBTC.json";
 import { BOTANIX } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
@@ -7,6 +9,7 @@ import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import { TokensData } from "sdk/types/tokens";
 import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/types/trade";
+import { bigMath } from "sdk/utils/bigmath";
 
 import { convertToUsd, getTokenData } from "../tokens";
 
@@ -31,6 +34,8 @@ const AVAILABLE_BOTANIX_WITHDRAW_PAIRS = [
   },
 ];
 
+const COEF_REDUCER = getBasisPoints(1n, 10000n);
+
 export const getBotanixStakingExternalSwapQuota = ({
   chainId,
   tokenInAddress,
@@ -39,6 +44,7 @@ export const getBotanixStakingExternalSwapQuota = ({
   gasPrice,
   receiverAddress,
   tokensData,
+  assetsPerShare,
 }: {
   chainId: number;
   tokenInAddress: string;
@@ -47,22 +53,36 @@ export const getBotanixStakingExternalSwapQuota = ({
   gasPrice: bigint;
   receiverAddress: string;
   tokensData: TokensData;
+  assetsPerShare: bigint;
 }): ExternalSwapQuote | undefined => {
   if (chainId === BOTANIX) {
     const inTokenData = getTokenData(tokensData, tokenInAddress);
-    if (inTokenData && AVAILABLE_BOTANIX_DEPOSIT_PAIRS.some((pair) => pair.from === tokenInAddress && pair.to === tokenOutAddress)) {
-      const usdIn = convertToUsd(amountIn, inTokenData.decimals, inTokenData.prices.minPrice);
+    const outTokenData = getTokenData(tokensData, tokenOutAddress);
+
+    const assetsPerShareRate = getBasisPoints(assetsPerShare, 10n ** 18n) - COEF_REDUCER;
+    const sharesPerAssetRate = getBasisPoints(10n ** 18n, assetsPerShare) - COEF_REDUCER;
+
+    if (!inTokenData || !outTokenData) {
+      return undefined;
+    }
+
+    if (AVAILABLE_BOTANIX_DEPOSIT_PAIRS.some((pair) => pair.from === tokenInAddress && pair.to === tokenOutAddress)) {
+      const priceIn = getMidPrice(inTokenData.prices);
+      const priceOut = bigMath.mulDiv(priceIn, sharesPerAssetRate, BASIS_POINTS_DIVISOR_BIGINT);
+      const usdIn = convertToUsd(amountIn, inTokenData.decimals, priceIn);
+      const amountOut = bigMath.mulDiv(amountIn, sharesPerAssetRate, BASIS_POINTS_DIVISOR_BIGINT) - gasPrice;
+      const usdOut = convertToUsd(amountOut, outTokenData.decimals, priceOut);
       return {
         aggregator: ExternalSwapAggregator.BotanixStaking,
         inTokenAddress: tokenInAddress,
         outTokenAddress: tokenOutAddress,
         receiver: receiverAddress,
         amountIn,
-        amountOut: amountIn,
+        amountOut,
         usdIn: usdIn!,
-        usdOut: usdIn! - gasPrice,
-        priceIn: 0n,
-        priceOut: 0n,
+        usdOut: usdOut!,
+        priceIn,
+        priceOut,
         feesUsd: gasPrice,
         needSpenderApproval: true,
         txnData: {
@@ -79,19 +99,24 @@ export const getBotanixStakingExternalSwapQuota = ({
       };
     }
 
-    if (inTokenData && AVAILABLE_BOTANIX_WITHDRAW_PAIRS.some((pair) => pair.from === tokenInAddress && pair.to === tokenOutAddress)) {
-      const usdIn = convertToUsd(amountIn, inTokenData.decimals, inTokenData.prices.minPrice);
+    if (AVAILABLE_BOTANIX_WITHDRAW_PAIRS.some((pair) => pair.from === tokenInAddress && pair.to === tokenOutAddress)) {
+      const priceIn = getMidPrice(inTokenData.prices);
+      const priceOut = bigMath.mulDiv(priceIn, assetsPerShareRate, BASIS_POINTS_DIVISOR_BIGINT);
+      const usdIn = convertToUsd(amountIn, inTokenData.decimals, priceIn);
+      const amountOut = bigMath.mulDiv(amountIn, assetsPerShareRate, BASIS_POINTS_DIVISOR_BIGINT) - gasPrice;
+      const usdOut = convertToUsd(amountOut, outTokenData.decimals, priceOut);
+
       return {
         aggregator: ExternalSwapAggregator.BotanixStaking,
         inTokenAddress: tokenInAddress,
         outTokenAddress: tokenOutAddress,
         receiver: receiverAddress,
         amountIn,
-        amountOut: amountIn,
+        amountOut,
         usdIn: usdIn!,
-        usdOut: usdIn! - gasPrice,
-        priceIn: 0n,
-        priceOut: 0n,
+        usdOut: usdOut!,
+        priceIn,
+        priceOut,
         feesUsd: gasPrice,
         needSpenderApproval: true,
         txnData: {
