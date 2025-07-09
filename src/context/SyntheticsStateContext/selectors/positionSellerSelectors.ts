@@ -221,7 +221,7 @@ export const selectPositionSellerFees = createSelector((q) => {
     return {};
   }
 
-  const swapPathLength = swapAmounts?.swapPathStats?.swapPath?.length || 0;
+  const swapPathLength = swapAmounts?.swapSettings.swapPathStats?.swapPath?.length || 0;
 
   const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
     swapsCount: swapPathLength,
@@ -241,10 +241,10 @@ export const selectPositionSellerFees = createSelector((q) => {
       initialCollateralUsd: position.collateralUsd,
       collateralDeltaUsd,
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-      swapSteps: swapAmounts?.swapPathStats?.swapSteps || [],
-      externalSwapQuote: undefined,
+      swapSteps: swapAmounts?.swapSettings.swapPathStats?.swapSteps || [],
+      externalSwapQuote: swapAmounts?.swapSettings.externalSwapQuote,
       positionFeeUsd: decreaseAmounts.positionFeeUsd,
-      swapPriceImpactDeltaUsd: swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd || 0n,
+      swapPriceImpactDeltaUsd: swapAmounts?.swapSettings.swapPathStats?.totalSwapPriceImpactDeltaUsd || 0n,
       positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,
       priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
       borrowingFeeUsd: decreaseAmounts.borrowingFeeUsd,

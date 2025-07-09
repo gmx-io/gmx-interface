@@ -233,7 +233,7 @@ export class Orders extends Module {
         initialCollateralAmount: increaseAmounts.initialCollateralAmount,
         targetCollateralAddress: collateralToken.address,
         collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
-        swapPath: increaseAmounts.swapPathStats?.swapPath || [],
+        swapPath: increaseAmounts.swapSettings.swapPathStats?.swapPath || [],
         sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
         sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
         triggerPrice: isLimit ? triggerPrice : undefined,
@@ -399,14 +399,14 @@ export class Orders extends Module {
       swapAmounts,
     });
 
-    if (!swapAmounts?.swapPathStats || !executionFee) {
+    if (!swapAmounts?.swapSettings.swapPathStats || !executionFee) {
       throw new Error("Swap data is not defined");
     }
 
     return createSwapOrderTxn(this.sdk, {
       fromTokenAddress: fromToken.address,
       fromTokenAmount: swapAmounts.amountIn,
-      swapPath: swapAmounts.swapPathStats?.swapPath,
+      swapPath: swapAmounts.swapSettings.swapPathStats?.swapPath,
       toTokenAddress: toToken.address,
       orderType,
       minOutputAmount: swapAmounts.minOutputAmount,

@@ -76,8 +76,10 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     collateralDeltaAmount: 0n,
     collateralDeltaUsd: 0n,
 
-    swapPathStats: undefined,
-    externalSwapQuote: undefined,
+    swapSettings: {
+      externalSwapQuote: undefined,
+      swapPathStats: undefined,
+    },
 
     indexTokenAmount: 0n,
 
@@ -147,7 +149,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       values.initialCollateralPrice
     )!;
 
-    values.externalSwapQuote = externalSwapQuote;
+    values.swapSettings.externalSwapQuote = externalSwapQuote;
     const swapAmounts = getSwapAmountsByFromValue({
       tokenIn: initialCollateralToken,
       tokenOut: collateralToken,
@@ -157,8 +159,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       uiFeeFactor,
       swapOptimizationOrder,
     });
-    values.swapPathStats = swapAmounts.swapPathStats;
-    const swapAmountOut = values.externalSwapQuote?.amountOut ?? swapAmounts.amountOut;
+    const swapAmountOut = values.swapSettings.externalSwapQuote?.amountOut ?? swapAmounts.amountOut;
     const baseCollateralUsd = convertToUsd(swapAmountOut, collateralToken.decimals, values.collateralPrice)!;
     const baseSizeDeltaUsd = bigMath.mulDiv(baseCollateralUsd, leverage, BASIS_POINTS_DIVISOR_BIGINT);
     const basePriceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, baseSizeDeltaUsd, isLong);
@@ -169,8 +170,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       userReferralInfo
     );
     const baseUiFeeUsd = applyFactor(baseSizeDeltaUsd, uiFeeFactor);
-    const totalSwapVolumeUsd = !values.externalSwapQuote
-      ? getTotalSwapVolumeFromSwapStats(values.swapPathStats?.swapSteps)
+    const totalSwapVolumeUsd = !values.swapSettings.externalSwapQuote
+      ? getTotalSwapVolumeFromSwapStats(values.swapSettings.swapPathStats?.swapSteps)
       : 0n;
     values.swapUiFeeUsd = applyFactor(totalSwapVolumeUsd, uiFeeFactor);
 
@@ -244,7 +245,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     values.collateralDeltaUsd = collateralDeltaUsd;
     values.collateralDeltaAmount = collateralDeltaAmount;
 
-    values.externalSwapQuote = externalSwapQuote;
+    values.swapSettings.externalSwapQuote = externalSwapQuote;
 
     const swapAmounts = getSwapAmountsByToValue({
       tokenIn: initialCollateralToken,
@@ -254,8 +255,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       findSwapPath,
       uiFeeFactor,
     });
-    values.swapPathStats = swapAmounts.swapPathStats;
-    const swapAmountIn = values.externalSwapQuote?.amountIn ?? swapAmounts.amountIn;
+    values.swapSettings.swapPathStats = swapAmounts.swapSettings.swapPathStats;
+    const swapAmountIn = values.swapSettings.externalSwapQuote?.amountIn ?? swapAmounts.amountIn;
 
     values.initialCollateralAmount = swapAmountIn;
     values.initialCollateralUsd = convertToUsd(
@@ -289,7 +290,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         values.initialCollateralPrice
       )!;
 
-      values.externalSwapQuote = externalSwapQuote;
+      values.swapSettings.externalSwapQuote = externalSwapQuote;
 
       const swapAmounts = getSwapAmountsByFromValue({
         tokenIn: initialCollateralToken,
@@ -301,8 +302,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         swapOptimizationOrder,
       });
 
-      values.swapPathStats = swapAmounts.swapPathStats;
-      const swapAmountIn = values.externalSwapQuote?.amountIn ?? swapAmounts.amountIn;
+      values.swapSettings.swapPathStats = swapAmounts.swapSettings.swapPathStats;
+      const swapAmountIn = values.swapSettings.externalSwapQuote?.amountIn ?? swapAmounts.amountIn;
       const baseCollateralUsd = convertToUsd(
         swapAmountIn,
         initialCollateralToken.decimals,

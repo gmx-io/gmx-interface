@@ -39,8 +39,8 @@ export function getExternalSwapInputsByFromValue({
     uiFeeFactor,
   });
 
-  const internalSwapTotalFeesDeltaUsd = swapAmounts.swapPathStats
-    ? swapAmounts.swapPathStats.totalFeesDeltaUsd
+  const internalSwapTotalFeesDeltaUsd = swapAmounts.swapSettings.swapPathStats
+    ? swapAmounts.swapSettings.swapPathStats.totalFeesDeltaUsd
     : undefined;
 
   const internalSwapTotalFeeItem = getFeeItem(internalSwapTotalFeesDeltaUsd, swapAmounts.usdIn);
@@ -124,8 +124,8 @@ export function getExternalSwapInputsByLeverageSize({
     uiFeeFactor,
   });
 
-  const internalSwapTotalFeesDeltaUsd = swapAmounts.swapPathStats
-    ? swapAmounts.swapPathStats.totalFeesDeltaUsd
+  const internalSwapTotalFeesDeltaUsd = swapAmounts.swapSettings.swapPathStats
+    ? swapAmounts.swapSettings.swapPathStats.totalFeesDeltaUsd
     : undefined;
 
   const internalSwapTotalFeeItem = getFeeItem(internalSwapTotalFeesDeltaUsd, swapAmounts.usdIn);
@@ -169,7 +169,7 @@ export function getBestSwapStrategy({
 
   if (
     externalSwapQuote &&
-    (externalSwapQuote.usdOut > (internalSwapAmounts?.swapPathStats?.usdOut ?? 0n) || forceExternalSwaps)
+    (externalSwapQuote.usdOut > (internalSwapAmounts?.swapSettings.swapPathStats?.usdOut ?? 0n) || forceExternalSwaps)
   ) {
     amountIn = externalSwapQuote.amountIn;
     amountOut = externalSwapQuote.amountOut;
@@ -183,7 +183,7 @@ export function getBestSwapStrategy({
       usdOut,
       externalSwapQuote,
     };
-  } else if (internalSwapAmounts?.swapPathStats) {
+  } else if (internalSwapAmounts?.swapSettings.swapPathStats) {
     amountIn = internalSwapAmounts.amountIn;
     amountOut = internalSwapAmounts.amountOut;
     usdIn = internalSwapAmounts.usdIn;
@@ -194,7 +194,7 @@ export function getBestSwapStrategy({
       amountOut,
       usdIn,
       usdOut,
-      swapPath: internalSwapAmounts.swapPathStats.swapPath,
+      swapPath: internalSwapAmounts.swapSettings.swapPathStats.swapPath,
     };
   } else {
     return undefined;
@@ -219,7 +219,7 @@ export function getIsInternalSwapBetter({
   }
 
   return (
-    internalSwapAmounts?.swapPathStats?.usdOut !== undefined &&
-    internalSwapAmounts!.swapPathStats!.usdOut! > (externalSwapQuote?.usdOut ?? 0n)
+    internalSwapAmounts?.swapSettings.swapPathStats?.usdOut !== undefined &&
+    internalSwapAmounts!.swapSettings.swapPathStats!.usdOut! > (externalSwapQuote?.usdOut ?? 0n)
   );
 }

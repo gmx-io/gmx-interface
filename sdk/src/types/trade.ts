@@ -44,9 +44,14 @@ export type SwapAmounts = {
   usdOut: bigint;
   priceIn: bigint;
   priceOut: bigint;
-  swapPathStats: SwapPathStats | undefined;
+  swapSettings: SwapSettings;
   minOutputAmount: bigint;
   uiFeeUsd?: bigint;
+};
+
+export type SwapSettings = {
+  externalSwapQuote: ExternalSwapQuote | undefined;
+  swapPathStats: SwapPathStats | undefined;
 };
 
 export type IncreasePositionAmounts = {
@@ -56,8 +61,7 @@ export type IncreasePositionAmounts = {
   collateralDeltaAmount: bigint;
   collateralDeltaUsd: bigint;
 
-  swapPathStats: SwapPathStats | undefined;
-  externalSwapQuote: ExternalSwapQuote | undefined;
+  swapSettings: SwapSettings;
   indexTokenAmount: bigint;
 
   sizeDeltaUsd: bigint;

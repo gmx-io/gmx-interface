@@ -54,7 +54,10 @@ export function getSwapAmountsByFromValue(p: {
     minOutputAmount,
     priceIn,
     priceOut,
-    swapPathStats: undefined,
+    swapSettings: {
+      externalSwapQuote: undefined,
+      swapPathStats: undefined,
+    },
   };
 
   if (amountIn <= 0) {
@@ -74,7 +77,10 @@ export function getSwapAmountsByFromValue(p: {
       minOutputAmount,
       priceIn,
       priceOut,
-      swapPathStats: undefined,
+      swapSettings: {
+        externalSwapQuote: undefined,
+        swapPathStats: undefined,
+      },
     };
   }
 
@@ -129,7 +135,10 @@ export function getSwapAmountsByFromValue(p: {
     priceIn,
     priceOut,
     minOutputAmount,
-    swapPathStats,
+    swapSettings: {
+      externalSwapQuote: undefined,
+      swapPathStats,
+    },
   };
 }
 
@@ -175,7 +184,10 @@ export function getSwapAmountsByToValue(p: {
     minOutputAmount,
     priceIn,
     priceOut,
-    swapPathStats: undefined,
+    swapSettings: {
+      externalSwapQuote: undefined,
+      swapPathStats: undefined,
+    },
   };
 
   if (amountOut <= 0) {
@@ -194,7 +206,10 @@ export function getSwapAmountsByToValue(p: {
       minOutputAmount,
       priceIn,
       priceOut,
-      swapPathStats: undefined,
+      swapSettings: {
+        externalSwapQuote: undefined,
+        swapPathStats: undefined,
+      },
     };
   }
 
@@ -249,7 +264,10 @@ export function getSwapAmountsByToValue(p: {
     minOutputAmount,
     priceIn,
     priceOut,
-    swapPathStats,
+    swapSettings: {
+      externalSwapQuote: undefined,
+      swapPathStats,
+    },
   };
 }
 
@@ -288,7 +306,10 @@ function getPlainSwapAmountsByFromToken(tokenIn: TokenData, tokenOut: TokenData,
     minOutputAmount: amountOut,
     priceIn,
     priceOut,
-    swapPathStats: undefined,
+    swapSettings: {
+      externalSwapQuote: undefined,
+      swapPathStats: undefined,
+    },
   };
 }
 
@@ -307,6 +328,9 @@ function getPlainSwapAmountsByToToken(tokenIn: TokenData, tokenOut: TokenData, a
     minOutputAmount: amountOut,
     priceIn,
     priceOut,
-    swapPathStats: undefined,
+    swapSettings: {
+      externalSwapQuote: undefined,
+      swapPathStats: undefined,
+    },
   };
 }
