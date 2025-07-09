@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import { ReactNode, useCallback, useMemo } from "react";
 
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { getMarketIndexName, getGlvOrMarketAddress, getMarketPoolName } from "domain/synthetics/markets/utils";
@@ -39,7 +39,8 @@ export function MarketFilterBase({
 }: MarketFilterBaseProps) {
   const marketsInfoData = useMarketsInfoData();
   const chainId = useSelector(selectChainId);
-  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, {
+  const srcChainId = useSelector(selectSrcChainId);
+  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, srcChainId, {
     isDeposit: true,
     withGlv: false,
   });

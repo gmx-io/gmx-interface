@@ -20,7 +20,7 @@ export type AdditionalErrorParams = {
   slippageInputId?: string;
   defaultMessage?: ReactNode;
   isInternalSwapFallback?: boolean;
-  setIsSettingsVisible: (isVisible: boolean) => void;
+  setIsSettingsVisible?: (isVisible: boolean) => void;
 };
 
 export function getTxnErrorToast(
@@ -144,7 +144,7 @@ export function getTxnErrorToast(
             <br />
             <br />
             Please enable{" "}
-            <Button variant="link" className="link-underline" onClick={() => setIsSettingsVisible(true)}>
+            <Button variant="link" className="link-underline" onClick={() => setIsSettingsVisible?.(true)}>
               Express trading
             </Button>{" "}
             under settings, which should offer a better experience.

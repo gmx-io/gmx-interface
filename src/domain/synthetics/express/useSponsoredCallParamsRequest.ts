@@ -40,7 +40,6 @@ export function useIsSponsoredCallBalanceAvailable(
         const balanceLeft = remainingBalance - amountInExecution;
         const mainTokenSymbol = chainId === BOTANIX ? "USDC.E" : mainBalanceToken.symbol;
 
-
         const mainBalanceTokenData = getByKey(tokensData, getTokenBySymbol(chainId, mainTokenSymbol).address);
 
         const usdBalance = convertToUsd(balanceLeft, mainBalanceToken.decimals, mainBalanceTokenData?.prices.minPrice);

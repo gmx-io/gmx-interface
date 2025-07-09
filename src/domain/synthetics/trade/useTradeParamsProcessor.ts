@@ -2,7 +2,7 @@ import isMatch from "lodash/isMatch";
 import { useEffect, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, UiSupportedChain } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "config/chains";
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxSetTradeConfig,
@@ -28,11 +28,12 @@ type TradeOptions = {
   collateralAddress?: string;
 };
 
-const validChainIds: Record<UiSupportedChain, true> = {
+const validChainIds: Record<ContractsChainId, true> = {
   [ARBITRUM]: true,
   [AVALANCHE]: true,
   [AVALANCHE_FUJI]: true,
   [BOTANIX]: true,
+  [ARBITRUM_SEPOLIA]: true,
 };
 
 export function useTradeParamsProcessor() {

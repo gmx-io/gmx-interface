@@ -4,12 +4,13 @@ import { useCallback, useMemo } from "react";
 import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
+import { useJsonRpcProvider } from "lib/rpc";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { OrderInfo } from "sdk/types/orders";
 import { getOrderKeys } from "sdk/utils/orders";
 
 import { selectExpressGlobalParams } from "../selectors/expressSelectors";
-import { selectChainId } from "../selectors/globalSelectors";
+import { selectChainId, selectSrcChainId } from "../selectors/globalSelectors";
 import {
   makeSelectOrderErrorByOrderKey,
   makeSelectOrdersWithErrorsByPositionKey,
@@ -35,7 +36,9 @@ export const useOrderErrorsCount = () => useSelector(selectOrderErrorsCount);
 
 export function useCancelOrder(order: OrderInfo) {
   const chainId = useSelector(selectChainId);
+  const srcChainId = useSelector(selectSrcChainId);
   const signer = useEthersSigner();
+  const { provider } = useJsonRpcProvider(chainId);
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
@@ -44,7 +47,7 @@ export function useCancelOrder(order: OrderInfo) {
 
   const onCancelOrder = useCallback(
     async function cancelOrder() {
-      if (!signer) return;
+      if (!signer || !provider) return;
 
       setCancellingOrdersKeys((p) => uniq(p.concat(order.key)));
 
@@ -64,7 +67,8 @@ export function useCancelOrder(order: OrderInfo) {
             globalExpressParams,
             requireValidations: true,
             estimationMethod: "approximate",
-            provider: undefined,
+            provider,
+            isGmxAccount: srcChainId !== undefined,
           })
         : undefined;
 
@@ -74,13 +78,14 @@ export function useCancelOrder(order: OrderInfo) {
         batchParams,
         expressParams,
         simulationParams: undefined,
-        noncesData: globalExpressParams?.noncesData,
         callback: makeOrderTxnCallback({}),
+        provider,
+        isGmxAccount: srcChainId !== undefined,
       }).finally(() => {
         setCancellingOrdersKeys((prev) => prev.filter((k) => k !== order.key));
       });
     },
-    [chainId, globalExpressParams, makeOrderTxnCallback, order, setCancellingOrdersKeys, signer]
+    [chainId, globalExpressParams, makeOrderTxnCallback, order, provider, setCancellingOrdersKeys, signer, srcChainId]
   );
 
   return [isCancelOrderProcessing, onCancelOrder] as const;

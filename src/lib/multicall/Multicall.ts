@@ -1,8 +1,18 @@
-import { Chain, ClientConfig, createPublicClient, http } from "viem";
+import { Chain, ClientConfig, HttpTransportConfig, createPublicClient, http } from "viem";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, UiContractsChain, getViemChain } from "config/chains";
-import { isWebWorker } from "config/env";
 import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  AnyChainId,
+  BOTANIX,
+  SOURCE_OPTIMISM_SEPOLIA,
+  SOURCE_SEPOLIA,
+  getViemChain,
+} from "config/chains";
+import { isWebWorker } from "config/env";
+import type {
   MulticallErrorEvent,
   MulticallFallbackRpcModeCounter,
   MulticallRequestCounter,
@@ -10,13 +20,12 @@ import {
   MulticallTimeoutEvent,
 } from "lib/metrics";
 import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metrics/emitMetricEvent";
+import type { MulticallRequestConfig, MulticallResult } from "lib/multicall/types";
+import { serializeMulticallErrors } from "lib/multicall/utils";
 import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 import { sleep } from "lib/sleep";
 import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
-import { abis as allAbis } from "sdk/abis";
-
-import type { MulticallRequestConfig, MulticallResult } from "./types";
-import { serializeMulticallErrors } from "./utils";
+import { AbiId, abis as allAbis } from "sdk/abis";
 
 export const MAX_TIMEOUT = 20000;
 
@@ -26,12 +35,9 @@ export type MulticallProviderUrls = {
 };
 
 const BATCH_CONFIGS: Record<
-  UiContractsChain,
+  AnyChainId,
   {
-    http: {
-      batchSize: number;
-      wait: number;
-    };
+    http: HttpTransportConfig["batch"];
     client: ClientConfig["batch"];
   }
 > = {
@@ -59,6 +65,20 @@ const BATCH_CONFIGS: Record<
       },
     },
   },
+
+  // [BASE_MAINNET]: {
+  //   http: {
+  //     batchSize: 0,
+  //     wait: 0,
+  //   },
+  //   client: {
+  //     multicall: {
+  //       batchSize: 1024 * 1024,
+  //       wait: 0,
+  //     },
+  //   },
+  // },
+
   [AVALANCHE_FUJI]: {
     http: {
       batchSize: 40,
@@ -80,6 +100,42 @@ const BATCH_CONFIGS: Record<
       multicall: {
         batchSize: 1024 * 1024,
         wait: 0,
+      },
+    },
+  },
+  [ARBITRUM_SEPOLIA]: {
+    http: {
+      batchSize: 40,
+      wait: 100,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 100,
+      },
+    },
+  },
+  [SOURCE_OPTIMISM_SEPOLIA]: {
+    http: {
+      batchSize: 40,
+      wait: 100,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 100,
+      },
+    },
+  },
+  [SOURCE_SEPOLIA]: {
+    http: {
+      batchSize: 40,
+      wait: 100,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 100,
       },
     },
   },
@@ -157,7 +213,7 @@ export class Multicall {
       callKey: string;
     }[] = [];
 
-    const abis: any = {};
+    const abiWithErrorsMap: Partial<Record<AbiId, any>> = {};
 
     const encodedPayload: { address: string; abi: any; functionName: string; args: any }[] = [];
 
@@ -178,12 +234,11 @@ export class Multicall {
         }
 
         // Add Errors ABI to each contract ABI to correctly parse errors
-        abis[contractCallConfig.contractAddress] = abis[contractCallConfig.contractAddress] || [
-          ...allAbis[contractCallConfig.abiId],
-          ...allAbis.CustomErrors,
-        ];
+        if (!abiWithErrorsMap[contractCallConfig.abiId]) {
+          abiWithErrorsMap[contractCallConfig.abiId] = [...allAbis[contractCallConfig.abiId], ...allAbis.CustomErrors];
+        }
 
-        const abi = abis[contractCallConfig.contractAddress];
+        const abi = abiWithErrorsMap[contractCallConfig.abiId];
 
         originalKeys.push({
           contractKey,
