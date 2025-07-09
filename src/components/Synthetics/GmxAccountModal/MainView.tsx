@@ -7,7 +7,7 @@ import Skeleton from "react-loading-skeleton";
 import { useCopyToClipboard } from "react-use";
 import { useAccount, useDisconnect } from "wagmi";
 
-import { getExplorerUrl } from "config/chains";
+import { BOTANIX, getExplorerUrl } from "config/chains";
 import { CURRENT_PROVIDER_LOCALSTORAGE_KEY, SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY } from "config/localStorage";
 import { isSettlementChain } from "config/multichain";
 import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
@@ -154,6 +154,8 @@ const Toolbar = ({ account }: { account: string }) => {
     }, 200);
   };
 
+  const showNotify = settlementChainId !== BOTANIX;
+
   return (
     <div className="flex items-stretch justify-between gap-8">
       <button
@@ -182,14 +184,16 @@ const Toolbar = ({ account }: { account: string }) => {
             <img src={externalLink} alt="External Link" />
           </ExternalLink>
         </TooltipWithPortal>
-        <TooltipWithPortal content={t`Notifications`} position="bottom" tooltipClassName="!min-w-max">
-          <button
-            className="flex size-36 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
-            onClick={handleNotificationsClick}
-          >
-            <BellIcon className="text-slate-100" />
-          </button>
-        </TooltipWithPortal>
+        {showNotify && (
+          <TooltipWithPortal content={t`Notifications`} position="bottom" tooltipClassName="!min-w-max">
+            <button
+              className="flex size-36 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
+              onClick={handleNotificationsClick}
+            >
+              <BellIcon className="text-slate-100" />
+            </button>
+          </TooltipWithPortal>
+        )}
         <TooltipWithPortal content={t`Settings`} position="bottom" tooltipClassName="!min-w-max">
           <button
             className="flex size-36 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
