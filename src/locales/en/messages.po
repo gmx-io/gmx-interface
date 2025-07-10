@@ -3693,6 +3693,10 @@ msgstr "Unsupported network"
 msgid "Opening..."
 msgstr "Opening..."
 
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
+msgid "Secure & Permissionless"
+msgstr "Secure & Permissionless"
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred on Avalanche"
 msgstr "Traders Referred on Avalanche"
@@ -3712,6 +3716,7 @@ msgstr "Approval failed"
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Open Interest"
 msgstr "Open Interest"
 
@@ -4437,8 +4442,8 @@ msgid "Withdraw submitted."
 msgstr "Withdraw submitted."
 
 #: src/pages/Home/sections/HeroSection/HeroSection.tsx
-msgid "Non-Custodial, Secure & Permissionless"
-msgstr "Non-Custodial, Secure & Permissionless"
+#~ msgid "Non-Custodial, Secure & Permissionless"
+#~ msgstr "Non-Custodial, Secure & Permissionless"
 
 #: src/components/Referrals/AddAffiliateCode.jsx
 #: src/components/Referrals/AddAffiliateCode.jsx
@@ -7586,6 +7591,7 @@ msgstr "Staked"
 msgid "Leave feedback"
 msgstr "Leave feedback"
 
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
 msgstr "Traders"
@@ -7784,6 +7790,7 @@ msgid "There is not enough {0} in your account on {1} to send this transaction.<
 msgstr "There is not enough {0} in your account on {1} to send this transaction.<0/><1/><2>Buy or Transfer {2} to {3}</2>"
 
 #: src/components/Referrals/AffiliatesStats.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Total Volume"
 msgstr "Total Volume"
 

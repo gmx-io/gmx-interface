@@ -3693,6 +3693,10 @@ msgstr ""
 msgid "Opening..."
 msgstr "开仓中"
 
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
+msgid "Secure & Permissionless"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred on Avalanche"
 msgstr ""
@@ -3712,6 +3716,7 @@ msgstr "核准失败"
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Open Interest"
 msgstr "开启利息"
 
@@ -4434,8 +4439,8 @@ msgid "Withdraw submitted."
 msgstr ""
 
 #: src/pages/Home/sections/HeroSection/HeroSection.tsx
-msgid "Non-Custodial, Secure & Permissionless"
-msgstr ""
+#~ msgid "Non-Custodial, Secure & Permissionless"
+#~ msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.jsx
 #: src/components/Referrals/AddAffiliateCode.jsx
@@ -7580,6 +7585,7 @@ msgstr "质押完成"
 msgid "Leave feedback"
 msgstr ""
 
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
 msgstr ""
@@ -7778,6 +7784,7 @@ msgid "There is not enough {0} in your account on {1} to send this transaction.<
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
+#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Total Volume"
 msgstr "总量"
 

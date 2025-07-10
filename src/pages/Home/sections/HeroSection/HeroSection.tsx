@@ -55,9 +55,9 @@ export function HeroSection() {
                   <div className="text-[30px] font-medium tracking-tight sm:text-[40px]">$137M</div>
                 </div>
                 <div className="flex flex-col gap-4">
-                  <span className="inline-flex items-center text-nowrap text-12 text-secondary sm:text-14">
+                  <a href="/" className="inline-flex items-center text-nowrap text-12 text-secondary sm:text-14">
                     <Trans>Total Volume</Trans> <IcMidChevron className="size-16" />
-                  </span>
+                  </a>
                   <div className="text-[30px] font-medium tracking-tight sm:text-[40px]">$285B</div>
                 </div>
               </div>
