@@ -34,6 +34,24 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "v1-trading-disabled",
+    title: "GMX V1 disabled",
+    isActive: true,
+    bodyText: (
+      <>
+        <Trans>
+          Increasing positions (market or limit), adding collateral, and swapping on GMX V1 are now disabled. You can
+          still close existing positions.
+        </Trans>
+        <br />
+        <br />
+        <Trans>Please migrate your positions to GMX V2.</Trans>
+      </>
+    ),
+    startDate: "10 Jul 2025, 00:00",
+    endDate: "10 Aug 2025, 00:00",
+  },
+  {
     id: "botanix-launch-event",
     title: "GMX is live on Botanix",
     isActive: true,

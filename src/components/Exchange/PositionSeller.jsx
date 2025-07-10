@@ -1,4 +1,4 @@
-import { Trans, t, msg } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ethers } from "ethers";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -16,15 +16,14 @@ import {
   EXCESSIVE_SLIPPAGE_AMOUNT,
   MAX_ALLOWED_LEVERAGE,
   MAX_LEVERAGE,
+  USD_DECIMALS,
 } from "config/factors";
-import { USD_DECIMALS } from "config/factors";
 import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { createDecreaseOrder } from "domain/legacy";
 import { getTokenAmountFromUsd } from "domain/tokens";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { callContract } from "lib/contracts";
-import { useLocalizedMap } from "lib/i18n";
 import {
   DECREASE,
   DUST_USD,
@@ -42,13 +41,13 @@ import {
 } from "lib/legacy";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import {
+  PRECISION,
   bigNumberify,
   expandDecimals,
   formatAmount,
   formatAmountFree,
   formatPercentage,
   parseValue,
-  PRECISION,
 } from "lib/numbers";
 import { getLeverage } from "lib/positions/getLeverage";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
@@ -61,7 +60,6 @@ import { bigMath } from "sdk/utils/bigmath";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import PercentageInput from "components/PercentageInput/PercentageInput";
-import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -78,13 +76,6 @@ import "./PositionSeller.css";
 
 const { ZeroAddress } = ethers;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
-
-const ORDER_OPTION_LABELS = {
-  [MARKET]: msg`Market`,
-  [STOP]: msg`Trigger`,
-};
-
-const ORDER_OPTIONS = [MARKET, STOP];
 
 function applySpread(amount, spread) {
   if (!amount || !spread) {
@@ -208,7 +199,6 @@ export default function PositionSeller(props) {
     signer,
     infoTokens,
     setPendingTxns,
-    flagOrdersEnabled,
     savedIsPnlInLeverage,
     chainId,
     nativeTokenAddress,
@@ -217,10 +207,8 @@ export default function PositionSeller(props) {
     isPluginApproving,
     orderBookApproved,
     setOrdersToaOpen,
-    positionRouterApproved,
     isWaitingForPositionRouterApproval,
     isPositionRouterApproving,
-    approvePositionRouter,
     isHigherSlippageAllowed,
     minExecutionFee,
     minExecutionFeeErrorMessage,
@@ -238,7 +226,6 @@ export default function PositionSeller(props) {
   const [allowedSlippage, setAllowedSlippage] = useState(savedSlippageAmount);
   const positionPriceDecimal = getPriceDecimals(chainId, position?.indexToken?.symbol);
   const submitButtonRef = useRef(null);
-  const localizedOrderOptionLabels = useLocalizedMap(ORDER_OPTION_LABELS);
 
   useEffect(() => {
     setAllowedSlippage(savedSlippageAmount);
@@ -247,7 +234,7 @@ export default function PositionSeller(props) {
     }
   }, [savedSlippageAmount, isHigherSlippageAllowed]);
 
-  const positionRouterAddress = getContract(chainId, "PositionRouter");
+  const vaultAddress = getContract(chainId, "Vault");
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const longOrShortText = position?.isLong ? t`Long` : t`Short`;
 
@@ -263,17 +250,7 @@ export default function PositionSeller(props) {
     savedRecieveTokenAddress ? toTokens.find((token) => token.address === savedRecieveTokenAddress) : undefined
   );
 
-  let [orderOption, setOrderOption] = useState(MARKET);
-
-  if (!flagOrdersEnabled) {
-    orderOption = MARKET;
-  }
-
-  const needPositionRouterApproval = !positionRouterApproved && orderOption === MARKET;
-
-  const onOrderOptionChange = (option) => {
-    setOrderOption(option);
-  };
+  const orderOption = MARKET;
 
   const onTriggerPriceChange = (evt) => {
     setTriggerPriceValue(evt.target.value || "");
@@ -743,10 +720,13 @@ export default function PositionSeller(props) {
     if (isPluginApproving) {
       return false;
     }
-    if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
+    if (isWaitingForPositionRouterApproval) {
       return false;
     }
     if (isPositionRouterApproving) {
+      return false;
+    }
+    if (orderOption === STOP) {
       return false;
     }
 
@@ -756,37 +736,21 @@ export default function PositionSeller(props) {
   const hasPendingProfit = MIN_PROFIT_TIME > 0 && position.delta == 0n && position.pendingDelta > 0;
 
   const getPrimaryText = () => {
+    if (orderOption === STOP) {
+      return t`Only market orders are available`;
+    }
+
     const [error] = getError();
     if (error) {
       return error;
     }
 
-    if (orderOption === STOP) {
-      if (isSubmitting) return t`Creating Order...`;
-
-      if (needOrderBookApproval && isWaitingForPluginApproval) {
-        return t`Enabling Orders...`;
-      }
-      if (isPluginApproving) {
-        return t`Enabling Orders...`;
-      }
-      if (needOrderBookApproval) {
-        return t`Enable Orders`;
-      }
-
-      return t`Create Order`;
-    }
-
-    if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
+    if (isWaitingForPositionRouterApproval) {
       return t`Enabling Leverage...`;
     }
 
     if (isPositionRouterApproving) {
       return t`Enabling Leverage...`;
-    }
-
-    if (needPositionRouterApproval) {
-      return t`Enable Leverage`;
     }
 
     if (hasPendingProfit) {
@@ -846,14 +810,6 @@ export default function PositionSeller(props) {
       return;
     }
 
-    if (needPositionRouterApproval) {
-      approvePositionRouter({
-        sentMsg: t`Enable leverage sent.`,
-        failMsg: t`Enable leverage failed.`,
-      });
-      return;
-    }
-
     setIsSubmitting(true);
 
     const collateralTokenAddress = position.collateralToken.isNative
@@ -862,18 +818,15 @@ export default function PositionSeller(props) {
     const indexTokenAddress = position.indexToken.isNative ? nativeTokenAddress : position.indexToken.address;
 
     if (orderOption === STOP) {
-      const triggerAboveThreshold = triggerPriceUsd > position.markPrice;
-
       createDecreaseOrder(
         chainId,
         signer,
+        account,
         indexTokenAddress,
         sizeDelta,
         collateralTokenAddress,
         collateralDelta,
         position.isLong,
-        triggerPriceUsd,
-        triggerAboveThreshold,
         {
           sentMsg: t`Order submitted!`,
           successMsg: t`Order created!`,
@@ -925,28 +878,22 @@ export default function PositionSeller(props) {
       }
     }
 
-    const withdrawETH = isUnwrap && !isContractAccount;
-
-    const params = [
-      path, // _path
-      indexTokenAddress, // _indexToken
-      collateralDelta, // _collateralDelta
-      sizeDelta, // _sizeDelta
-      position.isLong, // _isLong
-      account, // _receiver
-      priceLimit, // _acceptablePrice
-      0, // _minOut
-      minExecutionFee, // _executionFee
-      withdrawETH, // _withdrawETH
-      ZeroAddress, // _callbackTarget
-    ];
     const sizeDeltaUsd = formatAmount(sizeDelta, USD_DECIMALS, 2);
     const successMsg = t`Requested decrease of ${position.indexToken.symbol} ${longOrShortText} by ${sizeDeltaUsd} USD.`;
 
-    const contract = new ethers.Contract(positionRouterAddress, abis.PositionRouter, signer);
+    const contract = new ethers.Contract(vaultAddress, abis.Vault, signer);
 
-    callContract(chainId, contract, "createDecreasePosition", params, {
-      value: minExecutionFee,
+    const params = [
+      account,
+      collateralTokenAddress,
+      indexTokenAddress,
+      collateralDelta,
+      sizeDelta,
+      position.isLong,
+      account,
+    ];
+
+    callContract(chainId, contract, "decreasePosition", params, {
       sentMsg: t`Close submitted!`,
       successMsg,
       failMsg: t`Close failed.`,
@@ -1094,20 +1041,10 @@ export default function PositionSeller(props) {
     );
   }
 
-  const tabsOptions = useMemo(() => {
-    return ORDER_OPTIONS.map((option) => ({
-      value: option,
-      label: localizedOrderOptionLabels[option],
-    }));
-  }, [localizedOrderOptionLabels]);
-
   return (
     <div className="PositionEditor">
       {position && (
         <Modal className="PositionSeller-modal" isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
-          {flagOrdersEnabled && (
-            <Tabs options={tabsOptions} selectedValue={orderOption} onChange={onOrderOptionChange} />
-          )}
           <div className="mb-12 flex flex-col gap-4">
             <BuyInputSection
               inputValue={fromValue}
@@ -1143,6 +1080,11 @@ export default function PositionSeller(props) {
                 USD
               </BuyInputSection>
             )}
+          </div>
+          <div className="Confirmation-box-info">
+            <Trans>
+              GMX V1 only supports closing positions using market orders. For advanced trading features, use GMX V2.
+            </Trans>
           </div>
           {renderReceiveSpreadWarning()}
           {shouldShowExistingOrderWarning && renderExistingOrderWarning()}
