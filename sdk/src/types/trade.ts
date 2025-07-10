@@ -1,5 +1,6 @@
 import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "./fees";
 import { DecreasePositionSwapType, OrderType } from "./orders";
+import { SwapStrategy } from "./swapStrategy";
 
 export enum TradeType {
   Long = "Long",
@@ -44,14 +45,9 @@ export type SwapAmounts = {
   usdOut: bigint;
   priceIn: bigint;
   priceOut: bigint;
-  swapSettings: SwapSettings;
+  swapStrategy: SwapStrategy;
   minOutputAmount: bigint;
   uiFeeUsd?: bigint;
-};
-
-export type SwapSettings = {
-  externalSwapQuote: ExternalSwapQuote | undefined;
-  swapPathStats: SwapPathStats | undefined;
 };
 
 export type IncreasePositionAmounts = {
@@ -61,7 +57,7 @@ export type IncreasePositionAmounts = {
   collateralDeltaAmount: bigint;
   collateralDeltaUsd: bigint;
 
-  swapSettings: SwapSettings;
+  swapStrategy: SwapStrategy;
   indexTokenAmount: bigint;
 
   sizeDeltaUsd: bigint;
@@ -282,6 +278,22 @@ export type ExternalSwapQuote = {
     estimatedExecutionFee: bigint;
   };
 };
+
+export type ExternalSwapPath = {
+  aggregator: ExternalSwapAggregator;
+  inTokenAddress: string;
+  outTokenAddress: string;
+};
+
+export type GetExternalSwapQuoteByPath = ({
+  amountIn,
+  externalSwapPath,
+  receiverAddress,
+}: {
+  amountIn: bigint;
+  externalSwapPath: ExternalSwapPath;
+  receiverAddress: string;
+}) => ExternalSwapQuote | undefined;
 
 export type ExternalSwapCalculationStrategy = "byFromValue" | "leverageBySize";
 

@@ -666,6 +666,8 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
   const sizeDeltaUsd = q(selectOrderEditorSizeDeltaUsd);
   const userReferralInfo = q(selectUserReferralInfo);
   const uiFeeFactor = q(selectUiFeeFactor);
+  const marketsInfoData = q(selectMarketsInfoData);
+  const chainId = q(selectChainId);
 
   const positionOrder = order as PositionOrderInfo;
   const indexTokenAmount = convertToTokenAmount(sizeDeltaUsd, positionOrder.indexToken.decimals, triggerPrice);
@@ -687,6 +689,9 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
     userReferralInfo,
     uiFeeFactor,
     strategy: "independent",
+    marketsInfoData,
+    chainId,
+    getExternalSwapQuoteByPath: undefined,
   });
 });
 

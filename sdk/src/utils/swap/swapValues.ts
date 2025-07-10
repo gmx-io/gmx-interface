@@ -1,7 +1,9 @@
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
+import { MarketsInfoData } from "types/markets";
+import { InternalSwapStrategy, NoSwapStrategy } from "types/swapStrategy";
 import type { TokenData, TokensRatio } from "types/tokens";
 import { SwapRoute } from "types/trade";
-import type { FindSwapPath, SwapAmounts, SwapOptimizationOrderArray } from "types/trade";
+import type { FindSwapPath, GetExternalSwapQuoteByPath, SwapAmounts, SwapOptimizationOrderArray } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { getTotalSwapVolumeFromSwapStats } from "utils/fees";
 import { applyFactor } from "utils/numbers";
@@ -14,7 +16,230 @@ import {
   getIsUnstake,
 } from "utils/tokens";
 
+import { buildReverseSwapStrategy, buildSwapStrategy } from "./buildSwapStrategy";
+
 export function getSwapAmountsByFromValue(p: {
+  tokenIn: TokenData;
+  tokenOut: TokenData;
+  amountIn: bigint;
+  triggerRatio?: TokensRatio;
+  isLimit: boolean;
+  swapOptimizationOrder?: SwapOptimizationOrderArray;
+  allowedSwapSlippageBps?: bigint;
+  uiFeeFactor: bigint;
+  marketsInfoData: MarketsInfoData | undefined;
+  chainId: number;
+  getExternalSwapQuoteByPath: GetExternalSwapQuoteByPath | undefined;
+  findSwapPath: FindSwapPath;
+}): SwapAmounts {
+  const {
+    tokenIn,
+    tokenOut,
+    amountIn,
+    triggerRatio,
+    isLimit,
+    swapOptimizationOrder,
+    uiFeeFactor,
+    allowedSwapSlippageBps,
+    marketsInfoData,
+    chainId,
+    getExternalSwapQuoteByPath,
+  } = p;
+
+  if (!getExternalSwapQuoteByPath) {
+    return getSwapAmountsByFromValueDefault(p);
+  }
+
+  const swapStrategy = buildSwapStrategy({
+    amountIn,
+    tokenIn,
+    tokenOut,
+    marketsInfoData,
+    chainId,
+    swapOptimizationOrder,
+    getExternalSwapQuoteByPath,
+  });
+
+  const swapPathStats = swapStrategy.swapPathStats;
+
+  const totalSwapVolume = getTotalSwapVolumeFromSwapStats(swapPathStats?.swapSteps);
+  const swapUiFeeUsd = applyFactor(totalSwapVolume, uiFeeFactor);
+  const swapUiFeeAmount = convertToTokenAmount(swapUiFeeUsd, tokenOut.decimals, swapStrategy.priceOut)!;
+
+  const defaultAmounts: SwapAmounts = {
+    amountIn,
+    usdIn: swapStrategy.usdIn,
+    amountOut: swapStrategy.amountOut,
+    usdOut: swapStrategy.usdOut,
+    minOutputAmount: swapStrategy.amountOut,
+    priceIn: swapStrategy.priceIn,
+    priceOut: swapStrategy.priceOut,
+    swapStrategy,
+  };
+
+  let amountOut = swapStrategy.amountOut;
+  let usdOut = swapStrategy.usdOut;
+  let minOutputAmount = 0n;
+
+  if (isLimit) {
+    if (!triggerRatio) {
+      return defaultAmounts;
+    }
+
+    amountOut = getAmountByRatio({
+      fromToken: tokenIn,
+      toToken: tokenOut,
+      fromTokenAmount: amountIn,
+      ratio: triggerRatio.ratio,
+      shouldInvertRatio: triggerRatio.largestToken.address === tokenOut.address,
+      allowedSwapSlippageBps,
+    });
+
+    usdOut = convertToUsd(amountOut, tokenOut.decimals, swapStrategy.priceOut)!;
+    amountOut = convertToTokenAmount(usdOut, tokenOut.decimals, swapStrategy.priceOut)!;
+    minOutputAmount = amountOut;
+  } else {
+    usdOut = swapStrategy.usdOut - swapUiFeeUsd;
+    amountOut = swapStrategy.amountOut - swapUiFeeAmount;
+    minOutputAmount = amountOut;
+  }
+
+  if (amountOut < 0) {
+    amountOut = 0n;
+    usdOut = 0n;
+    minOutputAmount = 0n;
+  }
+
+  return {
+    amountIn,
+    usdIn: swapStrategy.usdIn,
+    amountOut,
+    usdOut,
+    priceIn: swapStrategy.priceIn,
+    priceOut: swapStrategy.priceOut,
+    minOutputAmount,
+    swapStrategy,
+  };
+}
+
+export function getSwapAmountsByToValue(p: {
+  tokenIn: TokenData;
+  tokenOut: TokenData;
+  amountOut: bigint;
+  triggerRatio?: TokensRatio;
+  isLimit: boolean;
+  swapOptimizationOrder?: SwapOptimizationOrderArray;
+  allowedSwapSlippageBps?: bigint;
+  uiFeeFactor: bigint;
+  marketsInfoData: MarketsInfoData | undefined;
+  chainId: number;
+  getExternalSwapQuoteByPath: GetExternalSwapQuoteByPath | undefined;
+  findSwapPath: FindSwapPath;
+}): SwapAmounts {
+  const {
+    tokenIn,
+    tokenOut,
+    amountOut,
+    triggerRatio,
+    isLimit,
+    uiFeeFactor,
+    swapOptimizationOrder,
+    allowedSwapSlippageBps,
+    marketsInfoData,
+    chainId,
+    getExternalSwapQuoteByPath,
+  } = p;
+
+  if (!getExternalSwapQuoteByPath) {
+    return getSwapAmountsByToValueDefault(p);
+  }
+
+  const reverseSwapStrategy = buildReverseSwapStrategy({
+    amountIn: amountOut,
+    tokenIn,
+    tokenOut,
+    marketsInfoData,
+    chainId,
+    getExternalSwapQuoteByPath,
+    swapOptimizationOrder,
+  });
+
+  const swapStrategy = buildSwapStrategy({
+    amountIn: reverseSwapStrategy.amountOut,
+    tokenIn,
+    tokenOut,
+    marketsInfoData,
+    chainId,
+    getExternalSwapQuoteByPath,
+    swapOptimizationOrder,
+  });
+
+  const uiFeeUsd = applyFactor(swapStrategy.usdIn, uiFeeFactor);
+
+  const defaultAmounts: SwapAmounts = {
+    amountIn: swapStrategy.amountIn,
+    usdIn: swapStrategy.usdIn,
+    amountOut: swapStrategy.amountOut,
+    usdOut: swapStrategy.usdOut,
+    minOutputAmount: swapStrategy.amountOut,
+    priceIn: swapStrategy.priceIn,
+    priceOut: swapStrategy.priceOut,
+    swapStrategy,
+  };
+
+  if (!swapStrategy.swapPathStats) {
+    return defaultAmounts;
+  }
+
+  let amountIn = swapStrategy.amountIn;
+  let usdIn = swapStrategy.usdIn;
+  let minOutputAmount = 0n;
+
+  if (isLimit) {
+    if (!triggerRatio) {
+      return defaultAmounts;
+    }
+
+    amountIn = getAmountByRatio({
+      fromToken: tokenOut,
+      toToken: tokenIn,
+      fromTokenAmount: amountOut,
+      ratio: triggerRatio.ratio,
+      shouldInvertRatio: triggerRatio.largestToken.address === tokenIn.address,
+    });
+
+    usdIn = convertToUsd(amountIn, tokenIn.decimals, swapStrategy.priceIn)!;
+    if (allowedSwapSlippageBps !== undefined) {
+      usdIn += bigMath.mulDiv(usdIn, allowedSwapSlippageBps ?? 0n, BASIS_POINTS_DIVISOR_BIGINT);
+    } else {
+      usdIn = usdIn + swapStrategy.swapPathStats.totalSwapFeeUsd + uiFeeUsd - swapStrategy.swapPathStats.totalSwapPriceImpactDeltaUsd;
+    }
+    amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, swapStrategy.priceIn)!;
+  } else {
+    const adjustedUsdIn = swapStrategy.usdOut > 0 ? bigMath.mulDiv(usdIn, swapStrategy.usdOut, swapStrategy.usdOut) : 0n;
+
+    usdIn = adjustedUsdIn + uiFeeUsd;
+    amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, swapStrategy.priceIn)!;
+  }
+
+  if (amountIn < 0) {
+    amountIn = 0n;
+    usdIn = 0n;
+  }
+
+  return {
+    amountIn,
+    amountOut,
+    usdIn,
+    minOutputAmount,
+    usdOut: swapStrategy.usdOut,
+    priceIn: swapStrategy.priceIn,
+    priceOut: swapStrategy.priceOut,
+    swapStrategy,
+  };
+}
+
+function getSwapAmountsByFromValueDefault(p: {
   tokenIn: TokenData;
   tokenOut: TokenData;
   amountIn: bigint;
@@ -46,6 +271,19 @@ export function getSwapAmountsByFromValue(p: {
   let usdOut = 0n;
   let minOutputAmount = 0n;
 
+  const defaultSwapStrategy: NoSwapStrategy = {
+    type: "noSwap",
+    externalSwapQuote: undefined,
+    swapPathStats: undefined,
+    amountIn,
+    amountOut,
+    usdIn,
+    usdOut,
+    priceIn,
+    priceOut,
+    feesUsd: 0n,
+  };
+
   const defaultAmounts: SwapAmounts = {
     amountIn,
     usdIn,
@@ -54,10 +292,7 @@ export function getSwapAmountsByFromValue(p: {
     minOutputAmount,
     priceIn,
     priceOut,
-    swapSettings: {
-      externalSwapQuote: undefined,
-      swapPathStats: undefined,
-    },
+    swapStrategy: defaultSwapStrategy,
   };
 
   if (amountIn <= 0) {
@@ -69,6 +304,19 @@ export function getSwapAmountsByFromValue(p: {
     usdOut = usdIn;
     minOutputAmount = amountOut;
 
+    const swapStrategy: NoSwapStrategy = {
+      type: "noSwap",
+      externalSwapQuote: undefined,
+      swapPathStats: undefined,
+      amountIn,
+      amountOut,
+      usdIn,
+      usdOut,
+      priceIn,
+      priceOut,
+      feesUsd: 0n,
+    };
+
     return {
       amountIn,
       usdIn,
@@ -77,10 +325,7 @@ export function getSwapAmountsByFromValue(p: {
       minOutputAmount,
       priceIn,
       priceOut,
-      swapSettings: {
-        externalSwapQuote: undefined,
-        swapPathStats: undefined,
-      },
+      swapStrategy,
     };
   }
 
@@ -127,6 +372,19 @@ export function getSwapAmountsByFromValue(p: {
     minOutputAmount = 0n;
   }
 
+  const swapStrategy: InternalSwapStrategy = {
+    type: "internalSwap",
+    externalSwapQuote: undefined,
+    swapPathStats,
+    amountIn,
+    amountOut,
+    usdIn,
+    usdOut,
+    priceIn,
+    priceOut,
+    feesUsd: usdIn - usdOut,
+  };
+
   return {
     amountIn,
     usdIn,
@@ -135,14 +393,11 @@ export function getSwapAmountsByFromValue(p: {
     priceIn,
     priceOut,
     minOutputAmount,
-    swapSettings: {
-      externalSwapQuote: undefined,
-      swapPathStats,
-    },
+    swapStrategy,
   };
 }
 
-export function getSwapAmountsByToValue(p: {
+function getSwapAmountsByToValueDefault(p: {
   tokenIn: TokenData;
   tokenOut: TokenData;
   amountOut: bigint;
@@ -176,6 +431,19 @@ export function getSwapAmountsByToValue(p: {
   let amountIn = 0n;
   let usdIn = 0n;
 
+  const defaultSwapStrategy: NoSwapStrategy = {
+    type: "noSwap",
+    externalSwapQuote: undefined,
+    swapPathStats: undefined,
+    amountIn,
+    amountOut,
+    usdIn,
+    usdOut,
+    priceIn,
+    priceOut,
+    feesUsd: 0n,
+  };
+
   const defaultAmounts: SwapAmounts = {
     amountIn,
     usdIn,
@@ -184,10 +452,7 @@ export function getSwapAmountsByToValue(p: {
     minOutputAmount,
     priceIn,
     priceOut,
-    swapSettings: {
-      externalSwapQuote: undefined,
-      swapPathStats: undefined,
-    },
+    swapStrategy: defaultSwapStrategy,
   };
 
   if (amountOut <= 0) {
@@ -198,6 +463,19 @@ export function getSwapAmountsByToValue(p: {
     amountIn = amountOut;
     usdIn = usdOut;
 
+    const swapStrategy: NoSwapStrategy = {
+      type: "noSwap",
+      externalSwapQuote: undefined,
+      swapPathStats: undefined,
+      amountIn,
+      amountOut,
+      usdIn,
+      usdOut,
+      priceIn,
+      priceOut,
+      feesUsd: 0n,
+    };
+
     return {
       amountIn,
       usdIn,
@@ -206,10 +484,7 @@ export function getSwapAmountsByToValue(p: {
       minOutputAmount,
       priceIn,
       priceOut,
-      swapSettings: {
-        externalSwapQuote: undefined,
-        swapPathStats: undefined,
-      },
+      swapStrategy,
     };
   }
 
@@ -256,6 +531,19 @@ export function getSwapAmountsByToValue(p: {
     usdIn = 0n;
   }
 
+  const swapStrategy: InternalSwapStrategy = {
+    type: "internalSwap",
+    externalSwapQuote: undefined,
+    swapPathStats,
+    amountIn,
+    amountOut,
+    usdIn,
+    usdOut,
+    priceIn,
+    priceOut,
+    feesUsd: usdIn - usdOut,
+  };
+
   return {
     amountIn,
     usdIn,
@@ -264,10 +552,7 @@ export function getSwapAmountsByToValue(p: {
     minOutputAmount,
     priceIn,
     priceOut,
-    swapSettings: {
-      externalSwapQuote: undefined,
-      swapPathStats,
-    },
+    swapStrategy,
   };
 }
 
@@ -298,6 +583,19 @@ function getPlainSwapAmountsByFromToken(tokenIn: TokenData, tokenOut: TokenData,
   const priceIn = tokenIn.prices.minPrice;
   const priceOut = tokenOut.prices.maxPrice;
 
+  const swapStrategy: NoSwapStrategy = {
+    type: "noSwap",
+    externalSwapQuote: undefined,
+    swapPathStats: undefined,
+    amountIn,
+    amountOut,
+    usdIn,
+    usdOut,
+    priceIn,
+    priceOut,
+    feesUsd: 0n,
+  };
+
   return {
     amountIn,
     usdIn,
@@ -306,10 +604,7 @@ function getPlainSwapAmountsByFromToken(tokenIn: TokenData, tokenOut: TokenData,
     minOutputAmount: amountOut,
     priceIn,
     priceOut,
-    swapSettings: {
-      externalSwapQuote: undefined,
-      swapPathStats: undefined,
-    },
+    swapStrategy,
   };
 }
 
@@ -320,6 +615,19 @@ function getPlainSwapAmountsByToToken(tokenIn: TokenData, tokenOut: TokenData, a
   const usdIn = usdOut;
   const amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
 
+  const swapStrategy: NoSwapStrategy = {
+    type: "noSwap",
+    externalSwapQuote: undefined,
+    swapPathStats: undefined,
+    amountIn,
+    amountOut,
+    usdIn,
+    usdOut,
+    priceIn,
+    priceOut,
+    feesUsd: 0n,
+  };
+
   return {
     amountIn,
     usdIn,
@@ -328,9 +636,6 @@ function getPlainSwapAmountsByToToken(tokenIn: TokenData, tokenOut: TokenData, a
     minOutputAmount: amountOut,
     priceIn,
     priceOut,
-    swapSettings: {
-      externalSwapQuote: undefined,
-      swapPathStats: undefined,
-    },
+    swapStrategy,
   };
 }

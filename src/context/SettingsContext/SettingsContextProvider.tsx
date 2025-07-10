@@ -1,7 +1,7 @@
 import noop from "lodash/noop";
 import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useMemo, useState } from "react";
 
-import { ARBITRUM, EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/chains";
+import { ARBITRUM, BOTANIX, EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
@@ -170,16 +170,32 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const [externalSwapsEnabled, setExternalSwapsEnabled] = useLocalStorageByChainId(
     chainId,
     EXTERNAL_SWAPS_ENABLED_KEY,
-    false
+    true
   );
   const [debugSwapMarketsConfig, setDebugSwapMarketsConfig] = useLocalStorageSerializeKey<
     undefined | { disabledSwapMarkets?: string[]; manualPath?: string[] }
   >([chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY], undefined);
 
+  const [externalSwapsWasForceEnabled, setExternalSwapsWasForceEnabled] = useLocalStorageByChainId(
+    chainId,
+    EXTERNAL_SWAPS_ENABLED_KEY,
+    false
+  );
+
+  useEffect(() => {
+    // Force enable external swaps for Botanix
+    // We need this for existing users who have disabled external swaps in local storage
+    if (chainId === BOTANIX && !externalSwapsWasForceEnabled) {
+      setExternalSwapsEnabled(true);
+      setExternalSwapsWasForceEnabled(true);
+    }
+  }, [chainId, externalSwapsEnabled, externalSwapsWasForceEnabled, setExternalSwapsEnabled, setExternalSwapsWasForceEnabled]);
+
   const [expressOrdersEnabled, setExpressOrdersEnabled] = useLocalStorageSerializeKey(
     getExpressOrdersEnabledKey(chainId, account),
     false
   );
+
 
   const [gasPaymentTokenAddress, setGasPaymentTokenAddress] = useLocalStorageSerializeKey(
     getGasPaymentTokenAddressKey(chainId, account),

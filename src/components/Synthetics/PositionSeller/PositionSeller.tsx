@@ -274,7 +274,7 @@ export function PositionSeller() {
     const swapPath =
       decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken
         ? []
-        : swapAmounts?.swapSettings.swapPathStats?.swapPath || [];
+        : swapAmounts?.swapStrategy.swapPathStats?.swapPath || [];
 
     if (
       !account ||
@@ -354,7 +354,7 @@ export function PositionSeller() {
     receiveToken?.address,
     receiveUsd,
     signer,
-    swapAmounts?.swapSettings.swapPathStats?.swapPath,
+    swapAmounts?.swapStrategy.swapPathStats?.swapPath,
     tokensData,
     triggerPrice,
     userReferralInfo?.referralCodeForTxn,

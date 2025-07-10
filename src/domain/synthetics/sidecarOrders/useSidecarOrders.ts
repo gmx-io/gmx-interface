@@ -5,6 +5,7 @@ import {
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxCollateralToken,
   selectTradeboxFindSwapPath,
@@ -23,6 +24,7 @@ import {
   selectTradeboxSidecarOrdersExistingSlEntries,
   selectTradeboxSidecarOrdersExistingTpEntries,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxSidecarOrders";
+import { selectGetExternalSwapQuoteByPath } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
 import { getDecreasePositionAmounts, getIncreasePositionAmounts } from "domain/synthetics/trade";
@@ -159,6 +161,9 @@ export function useSidecarOrders() {
   });
 
   const mockPositionInfo = useSelector(selectTradeboxMockPosition);
+  const marketsInfoData = useSelector(selectMarketsInfoData);
+  const chainId = useSelector(selectChainId);
+  const getExternalSwapQuoteByPath = useSelector(selectGetExternalSwapQuoteByPath);
 
   const getIncreaseAmountsFromEntry = useCallback(
     ({ sizeUsd, price, order }: SidecarOrderEntry) => {
@@ -193,9 +198,21 @@ export function useSidecarOrders() {
         userReferralInfo,
         uiFeeFactor,
         strategy: "independent",
+        marketsInfoData,
+        chainId,
+        getExternalSwapQuoteByPath,
       });
     },
-    [marketInfo, mockPositionInfo, findSwapPath, uiFeeFactor, userReferralInfo]
+    [
+      marketInfo,
+      mockPositionInfo,
+      findSwapPath,
+      uiFeeFactor,
+      userReferralInfo,
+      marketsInfoData,
+      chainId,
+      getExternalSwapQuoteByPath,
+    ]
   );
 
   const limit = useMemo(() => {

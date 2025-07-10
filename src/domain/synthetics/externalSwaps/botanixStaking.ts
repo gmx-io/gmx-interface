@@ -5,38 +5,16 @@ import { BASIS_POINTS_DIVISOR_BIGINT, getBasisPoints } from "lib/numbers";
 import StBTCABI from "sdk/abis/StBTC.json";
 import { BOTANIX } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
-import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
-import { getTokenBySymbol } from "sdk/configs/tokens";
 import { TokensData } from "sdk/types/tokens";
 import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
+import { AVAILABLE_BOTANIX_DEPOSIT_PAIRS, AVAILABLE_BOTANIX_WITHDRAW_PAIRS } from "sdk/utils/swap/externalSwapPath";
 
 import { convertToUsd, getTokenData } from "../tokens";
 
-const BBTC_ADDRESS = NATIVE_TOKEN_ADDRESS;
-const PBTC_ADDRESS = getTokenBySymbol(BOTANIX, "PBTC").address;
-const STBTC_ADDRESS = getTokenBySymbol(BOTANIX, "STBTC").address;
-const AVAILABLE_BOTANIX_DEPOSIT_PAIRS = [
-  {
-    from: BBTC_ADDRESS,
-    to: STBTC_ADDRESS,
-  },
-  {
-    from: PBTC_ADDRESS,
-    to: STBTC_ADDRESS,
-  },
-];
-
-const AVAILABLE_BOTANIX_WITHDRAW_PAIRS = [
-  {
-    from: STBTC_ADDRESS,
-    to: PBTC_ADDRESS,
-  },
-];
-
 const COEF_REDUCER = getBasisPoints(1n, 10000n);
 
-export const getBotanixStakingExternalSwapQuota = ({
+export const getBotanixStakingExternalSwapQuote = ({
   chainId,
   tokenInAddress,
   tokenOutAddress,
@@ -70,8 +48,9 @@ export const getBotanixStakingExternalSwapQuota = ({
       const priceIn = getMidPrice(inTokenData.prices);
       const priceOut = bigMath.mulDiv(priceIn, sharesPerAssetRate, BASIS_POINTS_DIVISOR_BIGINT);
       const usdIn = convertToUsd(amountIn, inTokenData.decimals, priceIn);
-      const amountOut = bigMath.mulDiv(amountIn, sharesPerAssetRate, BASIS_POINTS_DIVISOR_BIGINT) - gasPrice;
-      const usdOut = convertToUsd(amountOut, outTokenData.decimals, priceOut);
+      const amountOut =
+        amountIn > 0n ? bigMath.mulDiv(amountIn, sharesPerAssetRate, BASIS_POINTS_DIVISOR_BIGINT) - gasPrice : 0n;
+      const usdOut = amountOut > 0n ? convertToUsd(amountOut, outTokenData.decimals, priceOut) : 0n;
       return {
         aggregator: ExternalSwapAggregator.BotanixStaking,
         inTokenAddress: tokenInAddress,
@@ -103,8 +82,9 @@ export const getBotanixStakingExternalSwapQuota = ({
       const priceIn = getMidPrice(inTokenData.prices);
       const priceOut = bigMath.mulDiv(priceIn, assetsPerShareRate, BASIS_POINTS_DIVISOR_BIGINT);
       const usdIn = convertToUsd(amountIn, inTokenData.decimals, priceIn);
-      const amountOut = bigMath.mulDiv(amountIn, assetsPerShareRate, BASIS_POINTS_DIVISOR_BIGINT) - gasPrice;
-      const usdOut = convertToUsd(amountOut, outTokenData.decimals, priceOut);
+      const amountOut =
+        amountIn > 0n ? bigMath.mulDiv(amountIn, assetsPerShareRate, BASIS_POINTS_DIVISOR_BIGINT) - gasPrice : 0n;
+      const usdOut = amountOut > 0n ? convertToUsd(amountOut, outTokenData.decimals, priceOut) : 0n;
 
       return {
         aggregator: ExternalSwapAggregator.BotanixStaking,

@@ -1,5 +1,7 @@
 import { UiContractsChain } from "config/chains";
+import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
+import { getBotanixStakingExternalSwapQuote } from "domain/synthetics/externalSwaps/botanixStaking";
 import { OrderType } from "domain/synthetics/orders";
 import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { marketsInfoData2IndexTokenStatsMap } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
@@ -16,7 +18,7 @@ import {
 import { calculateDisplayDecimals } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { MARKETS } from "sdk/configs/markets";
-import { ExternalSwapQuote } from "sdk/types/trade";
+import { ExternalSwapAggregator, ExternalSwapPath, ExternalSwapQuote, GetExternalSwapQuoteByPath } from "sdk/types/trade";
 import { buildMarketsAdjacencyGraph } from "sdk/utils/swap/buildMarketsAdjacencyGraph";
 import { createFindSwapPath, getWrappedAddress } from "sdk/utils/swap/swapPath";
 import {
@@ -29,6 +31,7 @@ import { createTradeFlags } from "sdk/utils/trade";
 
 import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
 import {
+  selectBotanixStakingAssetsPerShare,
   selectChainId,
   selectGasLimits,
   selectGasPrice,
@@ -273,17 +276,19 @@ export const makeSelectIncreasePositionAmounts = ({
     tokenTypeForSwapRoute === "indexToken" ? indexTokenAddress : collateralTokenAddress
   );
   return createSelector((q) => {
+    const marketsInfoData = q(selectMarketsInfoData);
     const indexToken = q((state) => getByKey(selectTokensData(state), indexTokenAddress));
     const initialCollateralToken = q((state) => getByKey(selectTokensData(state), initialCollateralTokenAddress));
     const collateralToken = q((state) => getByKey(selectTokensData(state), collateralTokenAddress));
-    const marketInfo = q((state) => getByKey(selectMarketsInfoData(state), marketAddress));
+    const marketInfo = getByKey(marketsInfoData, marketAddress);
     const position = q((state) => getByKey(selectPositionsInfoData(state), positionKey));
 
     const acceptablePriceImpactBuffer = q(selectSavedAcceptablePriceImpactBuffer);
     const findSwapPath = q(selectFindSwapPath);
     const userReferralInfo = q(selectUserReferralInfo);
     const uiFeeFactor = q(selectUiFeeFactor);
-
+    const getExternalSwapQuoteByPath = q(selectGetExternalSwapQuoteByPath);
+    const chainId = q(selectChainId);
     const tradeFlags = createTradeFlags(tradeType, tradeMode);
 
     let limitOrderType: OrderType | undefined = undefined;
@@ -325,6 +330,9 @@ export const makeSelectIncreasePositionAmounts = ({
       userReferralInfo,
       uiFeeFactor,
       strategy,
+      marketsInfoData,
+      chainId,
+      getExternalSwapQuoteByPath,
     });
   });
 };
@@ -607,3 +615,32 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
       }
     })
 );
+
+export const selectGetExternalSwapQuoteByPath = createSelector((q): GetExternalSwapQuoteByPath => {
+  const botanixStakingAssetsPerShare = q(selectBotanixStakingAssetsPerShare);
+  const chainId = q(selectChainId);
+  const tokensData = q(selectTokensData);
+  const gasPrice = q(selectGasPrice);
+
+  return ({amountIn, externalSwapPath}: {amountIn: bigint, externalSwapPath: ExternalSwapPath, receiverAddress: string}): ExternalSwapQuote | undefined => {
+    if (amountIn === undefined || gasPrice === undefined) {
+      return undefined;
+    }
+
+    const botanixStakingQuote =
+      tokensData && typeof botanixStakingAssetsPerShare === "bigint" && externalSwapPath.aggregator === ExternalSwapAggregator.BotanixStaking
+        ? getBotanixStakingExternalSwapQuote({
+            chainId,
+            tokenInAddress: externalSwapPath.inTokenAddress,
+            tokenOutAddress: externalSwapPath.outTokenAddress,
+            amountIn,
+            gasPrice,
+            receiverAddress: getContract(chainId, "OrderVault"),
+            tokensData,
+            assetsPerShare: botanixStakingAssetsPerShare,
+          })
+        : undefined;
+
+    return botanixStakingQuote;
+  }
+});

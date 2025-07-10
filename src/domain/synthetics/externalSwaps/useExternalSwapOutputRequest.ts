@@ -5,15 +5,15 @@ import useSWR from "swr";
 import { BOTANIX } from "config/chains";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { metrics, OpenOceanQuoteTiming } from "lib/metrics";
-import { useMulticall } from "lib/multicall";
 import { useDebounce } from "lib/useDebounce";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/types/trade";
 
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
-import { getBotanixStakingExternalSwapQuota } from "./botanixStaking";
+import { getBotanixStakingExternalSwapQuote } from "./botanixStaking";
 import { getOpenOceanTxnData, OpenOceanQuote } from "./openOcean";
+import { useBotanixStakingAssetsPerShare } from "./useBotanixStakingAssetsPerShare";
 
 export function useExternalSwapOutputRequest({
   chainId,
@@ -51,6 +51,7 @@ export function useExternalSwapOutputRequest({
   const tokensKey = `${tokenInAddress}:${tokenOutAddress};`;
   const prevTokensKey = usePrevious(tokensKey);
   const prevAmountIn = usePrevious(amountIn);
+  const botanixAssetsPerShare = useBotanixStakingAssetsPerShare({ chainId });
 
   const { data } = useSWR<OpenOceanQuote | undefined>(debouncedKey, {
     keepPreviousData: enabled && prevTokensKey === tokensKey && prevAmountIn === amountIn,
@@ -100,31 +101,6 @@ export function useExternalSwapOutputRequest({
     },
   });
 
-  const { data: botanixData } = useMulticall(chainId, "useExternalSwapOutputRequest_StBTC", {
-    key: chainId !== BOTANIX ? null : [],
-    request: () => {
-      return {
-        stbtc: {
-          contractAddress: getContract(chainId, "StBTC"),
-          abiId: "StBTC",
-          calls: {
-            assetsPerShare: {
-              methodName: "assetsPerShare",
-              params: [],
-            },
-          },
-        },
-      };
-    },
-    parseResponse: (res) => {
-      const returnValues = res.data.stbtc.assetsPerShare.returnValues;
-
-      return {
-        assetsPerShare: returnValues[0],
-      };
-    },
-  });
-
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: data?.to,
     tokenAddresses: tokenInAddress ? [convertTokenAddress(chainId, tokenInAddress, "wrapped")] : [],
@@ -138,8 +114,8 @@ export function useExternalSwapOutputRequest({
     }
 
     const botanixStakingQuote =
-      tokensData && botanixData
-        ? getBotanixStakingExternalSwapQuota({
+      tokensData && typeof botanixAssetsPerShare === "bigint"
+        ? getBotanixStakingExternalSwapQuote({
             chainId,
             tokenInAddress,
             tokenOutAddress,
@@ -147,7 +123,7 @@ export function useExternalSwapOutputRequest({
             gasPrice,
             receiverAddress,
             tokensData,
-            assetsPerShare: botanixData?.assetsPerShare,
+            assetsPerShare: botanixAssetsPerShare,
           })
         : undefined;
 
@@ -200,7 +176,7 @@ export function useExternalSwapOutputRequest({
     gasPrice,
     receiverAddress,
     tokensData,
-    botanixData,
+    botanixAssetsPerShare,
     chainId,
     data,
     tokensAllowanceData,

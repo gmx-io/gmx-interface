@@ -252,6 +252,9 @@ export function OrderEditor(p: Props) {
           externalSwapQuote: undefined,
           leverage,
           triggerPrice,
+          marketsInfoData,
+          chainId,
+          getExternalSwapQuoteByPath: undefined,
         });
 
         const nextPositionValues = getNextPositionValuesForIncreaseTrade({

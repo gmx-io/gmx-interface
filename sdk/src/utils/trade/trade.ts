@@ -43,10 +43,10 @@ export function getSwapCount({
 }) {
   if (isSwap) {
     if (!swapAmounts) return undefined;
-    return swapAmounts.swapSettings.swapPathStats?.swapPath.length ?? 0;
+    return swapAmounts.swapStrategy.swapPathStats?.swapPath.length ?? 0;
   } else if (isIncrease) {
     if (!increaseAmounts) return undefined;
-    return increaseAmounts.swapSettings.swapPathStats?.swapPath.length ?? 0;
+    return increaseAmounts.swapStrategy.swapPathStats?.swapPath.length ?? 0;
   } else {
     if (decreaseAmounts?.decreaseSwapType === undefined) return undefined;
     return decreaseAmounts.decreaseSwapType !== DecreasePositionSwapType.NoSwap ? 1 : 0;

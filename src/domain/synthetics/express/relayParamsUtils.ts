@@ -100,6 +100,9 @@ export function getRelayerFeeParams({
         isLimit: false,
         findSwapPath: findFeeSwapPath,
         uiFeeFactor: 0n,
+        marketsInfoData: undefined,
+        chainId,
+        getExternalSwapQuoteByPath: undefined,
       });
     }
 
