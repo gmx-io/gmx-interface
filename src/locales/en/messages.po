@@ -2670,6 +2670,10 @@ msgstr "Signing approval..."
 msgid "The current price impact is {0}. Consider using -0.30% acceptable price impact so the order is more likely to be processed."
 msgstr "The current price impact is {0}. Consider using -0.30% acceptable price impact so the order is more likely to be processed."
 
+#: src/pages/Home/sections/LaunchSection/LaunchSection.tsx
+msgid "Runs entirely on public chains"
+msgstr "Runs entirely on public chains"
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Auto-Cancel TP/SL"
 msgstr "Auto-Cancel TP/SL"
@@ -2842,10 +2846,6 @@ msgstr "Not enough Available Liquidity to fill the Order. The Order will get fil
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized data based on the past 7 days."
 msgstr "Annualized data based on the past 7 days."
-
-#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-#~ msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/>{botanixDisclaimer}<2/>Please try increasing max network fee buffer to {0} in <3>Settings</3>."
-#~ msgstr "Transaction failed due to execution fee validation. <0>View</0>.<1/>{botanixDisclaimer}<2/>Please try increasing max network fee buffer to {0} in <3>Settings</3>."
 
 #: src/components/Exchange/OrdersToa.jsx
 #: src/components/Exchange/OrdersToa.jsx
@@ -5463,6 +5463,10 @@ msgstr "Close {0} {1}{2}"
 msgid "Sell GLV"
 msgstr "Sell GLV"
 
+#: src/pages/Home/sections/LaunchSection/LaunchSection.tsx
+msgid "Operates on open, permissionless networks to ensure transparency, decentralisation, and unrestricted access"
+msgstr "Operates on open, permissionless networks to ensure transparency, decentralisation, and unrestricted access"
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b Retroactive Bonus"
 msgstr "STIP.b Retroactive Bonus"
@@ -6111,10 +6115,6 @@ msgstr "V1 rebates are airdropped weekly. V2 rebates are automatically applied a
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min position size: {0}"
 msgstr "Min position size: {0}"
-
-#: src/components/Synthetics/StatusNotification/StakeNotification.tsx
-#~ msgid "Transaction request sent"
-#~ msgstr "Transaction request sent"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -7005,10 +7005,6 @@ msgstr "Edit order"
 msgid "Claims"
 msgstr "Claims"
 
-#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "Stake {0}"
-#~ msgstr "Stake {0}"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
@@ -7022,10 +7018,6 @@ msgstr "Date"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using FIAT gateways:"
 msgstr "Buy GMX using FIAT gateways:"
-
-#: src/components/Synthetics/StatusNotification/StakeNotification.tsx
-#~ msgid "{0} {fromAmount} for {toAmount}"
-#~ msgstr "{0} {fromAmount} for {toAmount}"
 
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Referral code created!"
@@ -8118,10 +8110,6 @@ msgstr "2nd Place"
 msgid "LAST PRICE"
 msgstr "LAST PRICE"
 
-#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-#~ msgid "Rabby Wallet is currently experiencing network fee issues on Botanix. Please try another wallet if you're using it."
-#~ msgstr "Rabby Wallet is currently experiencing network fee issues on Botanix. Please try another wallet if you're using it."
-
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
 msgstr "Re-sign"
@@ -8322,6 +8310,10 @@ msgstr "Leftover collateral below {0} USD"
 msgid "trigger"
 msgstr "trigger"
 
+#: src/pages/Home/sections/LaunchSection/LaunchSection.tsx
+msgid "Open App"
+msgstr "Open App"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"
 msgstr "Rage Trade"
@@ -8427,10 +8419,6 @@ msgstr "Fees are higher than Collateral"
 #: src/components/Referrals/TradersStats.tsx
 msgid "You will receive a {currentTierDiscount}% discount on opening and closing fees."
 msgstr "You will receive a {currentTierDiscount}% discount on opening and closing fees."
-
-#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "Unstake {0}"
-#~ msgstr "Unstake {0}"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"
