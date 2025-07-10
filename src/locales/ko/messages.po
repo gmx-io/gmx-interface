@@ -2657,6 +2657,10 @@ msgstr ""
 msgid "The current price impact is {0}. Consider using -0.30% acceptable price impact so the order is more likely to be processed."
 msgstr ""
 
+#: src/pages/Home/sections/LaunchSection/LaunchSection.tsx
+msgid "Runs entirely on public chains"
+msgstr ""
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Auto-Cancel TP/SL"
 msgstr ""
@@ -5413,6 +5417,10 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GLV"
+msgstr ""
+
+#: src/pages/Home/sections/LaunchSection/LaunchSection.tsx
+msgid "Operates on open, permissionless networks to ensure transparency, decentralisation, and unrestricted access"
 msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
