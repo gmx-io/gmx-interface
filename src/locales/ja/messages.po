@@ -242,6 +242,10 @@ msgstr ""
 msgid "Show error"
 msgstr ""
 
+#: src/components/Exchange/SwapBox.jsx
+msgid "Trigger orders, increasing positions (market or limit), adding collateral, and swapping on GMX V1 are now disabled. You can still close existing positions using market orders."
+msgstr ""
+
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "{0} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
@@ -420,6 +424,7 @@ msgstr ""
 msgid "sell"
 msgstr ""
 
+#: src/components/Exchange/SwapBox.jsx
 #: src/config/events.tsx
 msgid "Please migrate your positions to GMX V2."
 msgstr ""
@@ -571,8 +576,8 @@ msgid "Don't show this message again for 30 days."
 msgstr "30日間このメッセージを表示しない"
 
 #: src/components/Exchange/PositionSeller.jsx
-msgid "Only market orders are available"
-msgstr ""
+#~ msgid "Only market orders are available"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "hide"
@@ -1984,6 +1989,10 @@ msgstr "コード確認中..."
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "GM Pools"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.jsx
+msgid "There is a \"Close\" button on each position row, clicking it will display the option to close positions via market orders."
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
@@ -7008,8 +7017,8 @@ msgid "Referral code created!"
 msgstr "紹介コードが作成されました!"
 
 #: src/components/Exchange/SwapBox.jsx
-msgid "There is a \"Close\" button on each position row; clicking it will display the option to close positions via market orders.<0/>Trigger orders, increasing positions (market or limit), adding collateral, and swapping on GMX V1 are now disabled. You can still close existing positions using market orders.<1/>Please migrate your positions to GMX V2."
-msgstr ""
+#~ msgid "There is a \"Close\" button on each position row; clicking it will display the option to close positions via market orders.<0/>Trigger orders, increasing positions (market or limit), adding collateral, and swapping on GMX V1 are now disabled. You can still close existing positions using market orders.<1/>Please migrate your positions to GMX V2."
+#~ msgstr ""
 
 #: src/components/Exchange/OrderEditor.jsx
 msgid "Price above Mark Price"

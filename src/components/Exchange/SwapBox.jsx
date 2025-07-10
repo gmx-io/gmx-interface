@@ -1720,14 +1720,18 @@ export default function SwapBox(props) {
           {isStopOrder && (
             <div className="Exchange-swap-section Exchange-trigger-order-info">
               <Trans>
-                There is a "Close" button on each position row; clicking it will display the option to close positions
+                There is a "Close" button on each position row, clicking it will display the option to close positions
                 via market orders.
-                <br />
+              </Trans>
+              <br />
+              <br />
+              <Trans>
                 Trigger orders, increasing positions (market or limit), adding collateral, and swapping on GMX V1 are
                 now disabled. You can still close existing positions using market orders.
-                <br />
-                Please migrate your positions to GMX V2.
               </Trans>
+              <br />
+              <br />
+              <Trans>Please migrate your positions to GMX V2.</Trans>
             </div>
           )}
           <div className="Exchange-swap-button-container">{renderPrimaryButton()}</div>
