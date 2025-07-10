@@ -59,7 +59,6 @@ import {
 import { getLeverage } from "lib/positions/getLeverage";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { usePrevious } from "lib/usePrevious";
-import { useTradePageVersion } from "lib/useTradePageVersion";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
@@ -183,7 +182,6 @@ export default function SwapBox(props) {
   const history = useHistory();
   const localizedSwapLabels = useLocalizedMap(SWAP_LABELS);
   const localizedOrderOptionLabels = useLocalizedMap(ORDER_OPTION_LABELS);
-  const [, setCurrentVersion] = useTradePageVersion();
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
@@ -1722,18 +1720,13 @@ export default function SwapBox(props) {
           {isStopOrder && (
             <div className="Exchange-swap-section Exchange-trigger-order-info">
               <Trans>
-                There is a "Close" button on each position row; clicking it will display the option to set trigger
-                orders.
+                There is a "Close" button on each position row; clicking it will display the option to close positions
+                via market orders.
                 <br />
+                Trigger orders, increasing positions (market or limit), adding collateral, and swapping on GMX V1 are
+                now disabled. You can still close existing positions using market orders.
                 <br />
-                <Trans>
-                  {" "}
-                  GMX V1 position opening is permanently disabled, so it's recommended to close all V1 positions and{" "}
-                  <span className="cursor-pointer underline" onClick={() => setCurrentVersion(2)}>
-                    migrate to V2
-                  </span>
-                  .
-                </Trans>
+                Please migrate your positions to GMX V2.
               </Trans>
             </div>
           )}

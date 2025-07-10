@@ -736,10 +736,6 @@ export default function PositionSeller(props) {
   const hasPendingProfit = MIN_PROFIT_TIME > 0 && position.delta == 0n && position.pendingDelta > 0;
 
   const getPrimaryText = () => {
-    if (orderOption === STOP) {
-      return t`Only market orders are available`;
-    }
-
     const [error] = getError();
     if (error) {
       return error;

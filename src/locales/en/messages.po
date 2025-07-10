@@ -3840,8 +3840,8 @@ msgid "Impact+Fees"
 msgstr "Impact+Fees"
 
 #: src/components/Exchange/SwapBox.jsx
-msgid "There is a \"Close\" button on each position row; clicking it will display the option to set trigger orders.<0/><1/>GMX V1 position opening is permanently disabled, so it's recommended to close all V1 positions and <2>migrate to V2</2>."
-msgstr "There is a \"Close\" button on each position row; clicking it will display the option to set trigger orders.<0/><1/>GMX V1 position opening is permanently disabled, so it's recommended to close all V1 positions and <2>migrate to V2</2>."
+#~ msgid "There is a \"Close\" button on each position row; clicking it will display the option to set trigger orders.<0/><1/>GMX V1 position opening is permanently disabled, so it's recommended to close all V1 positions and <2>migrate to V2</2>."
+#~ msgstr "There is a \"Close\" button on each position row; clicking it will display the option to set trigger orders.<0/><1/>GMX V1 position opening is permanently disabled, so it's recommended to close all V1 positions and <2>migrate to V2</2>."
 
 #: src/components/TVChartContainer/constants.ts
 msgid "TP - Short Dec."
@@ -7012,6 +7012,10 @@ msgstr "Buy GMX using FIAT gateways:"
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Referral code created!"
 msgstr "Referral code created!"
+
+#: src/components/Exchange/SwapBox.jsx
+msgid "There is a \"Close\" button on each position row; clicking it will display the option to close positions via market orders.<0/>Trigger orders, increasing positions (market or limit), adding collateral, and swapping on GMX V1 are now disabled. You can still close existing positions using market orders.<1/>Please migrate your positions to GMX V2."
+msgstr "There is a \"Close\" button on each position row; clicking it will display the option to close positions via market orders.<0/>Trigger orders, increasing positions (market or limit), adding collateral, and swapping on GMX V1 are now disabled. You can still close existing positions using market orders.<1/>Please migrate your positions to GMX V2."
 
 #: src/components/Exchange/OrderEditor.jsx
 msgid "Price above Mark Price"
