@@ -31,7 +31,6 @@ code {
 *::before,
 *::after {
   box-sizing: border-box;
-  letter-spacing: 0.05rem;
 }
 
 @supports (scrollbar-width: auto) {
