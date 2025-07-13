@@ -54,7 +54,7 @@ export function LaunchSection({ showRedirectModal }: Props) {
             </Trans>
           </p>
           <button
-            className="btn-landing-bg mb-36 rounded-8 px-16 py-10 text-16 text-white sm:mb-0"
+            className="btn-landing-bg mb-36 rounded-8 px-16 py-12 text-16 text-white sm:mb-0"
             onClick={goToTradeArbitrum}
           >
             <Trans>Open App</Trans>
