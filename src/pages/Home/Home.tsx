@@ -4,8 +4,13 @@ import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageViewEvent } from "lib/userAnalytics/types";
 
 import { HeroSection } from "./sections/HeroSection/HeroSection";
+import { LaunchSection } from "./sections/LaunchSection/LaunchSection";
 
-export default function Home(_) {
+type Props = {
+  showRedirectModal: (to: string) => void;
+};
+
+export default function Home({ showRedirectModal }: Props) {
   useEffect(() => {
     userAnalytics.pushEvent<LandingPageViewEvent>(
       {
@@ -19,8 +24,9 @@ export default function Home(_) {
   }, []);
 
   return (
-    <div className="proportional-nums">
-      <HeroSection />
+    <div className="proportional-nums text-white">
+      <HeroSection showRedirectModal={showRedirectModal} />
+      <LaunchSection showRedirectModal={showRedirectModal} />
     </div>
   );
 }
