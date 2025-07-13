@@ -13,12 +13,23 @@ import { ChainIcons } from "./components/ChainIcons";
 import { HeroBackground } from "./components/HeroBackground";
 import { ProtectionBackground } from "./components/ProtectionBackground";
 import { SeamlessBackground } from "./components/SeamlessBackground";
+import { useGoToTrade } from "../LaunchSection/hooks/useGoToTrade";
 
 const assetsBgStyle = {
   backgroundImage: `url(${AsssetsBg})`,
 };
 
-export function HeroSection() {
+type Props = {
+  showRedirectModal: (to: string) => void;
+};
+
+export function HeroSection({ showRedirectModal }: Props) {
+  const goToTradeArbitrum = useGoToTrade({
+    showRedirectModal,
+    buttonPosition: "HeroSection",
+    chain: "arb",
+  });
+
   return (
     <section className="overflow-hidden bg-fiord-700">
       <div className="mx-auto px-16 sm:max-w-[1360px] sm:px-80">
@@ -31,7 +42,10 @@ export function HeroSection() {
             {/* Stats and description */}
             <div className="flex flex-wrap items-end justify-between gap-56 ">
               <div className="flex flex-1 flex-col-reverse items-stretch gap-36 sm:flex-row">
-                <button className="btn-landing-bg flex w-full flex-col items-start gap-4 rounded-12 pb-12 pl-12 pr-8 pt-8 text-16 font-medium sm:w-[200px]">
+                <button
+                  className="btn-landing-bg flex w-full flex-col items-start gap-4 rounded-12 pb-12 pl-12 pr-8 pt-8 text-16 font-medium sm:w-[200px]"
+                  onClick={goToTradeArbitrum}
+                >
                   <IcLinkArrow className="size-16 self-end rounded-full bg-white text-blue-600" />
                   <Trans>Trade Now</Trans>
                 </button>
@@ -180,7 +194,7 @@ export function HeroSection() {
                   GMX Express
                 </p>
               </div>
-              <button className="btn-landing-bg rounded-6 px-16 py-10 text-16 font-medium">
+              <button className="btn-landing-bg rounded-6 px-16 py-10 text-16 font-medium" onClick={goToTradeArbitrum}>
                 <Trans>Trade Now</Trans>
               </button>
             </div>
