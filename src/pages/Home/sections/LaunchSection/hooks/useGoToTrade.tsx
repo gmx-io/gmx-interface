@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import { shouldShowRedirectModal } from "lib/legacy";
+import { getAppBaseUrl, shouldShowRedirectModal } from "lib/legacy";
 import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
 import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
@@ -28,7 +28,8 @@ export function useGoToTrade({ showRedirectModal, buttonPosition, chain }: Props
     if (chain === "solana") {
       showRedirectModal("https://gmxsol.io/");
     } else {
-      showRedirectModal(`/trade?${userAnalytics.getSessionIdUrlParams()}&chain=${chain}`);
+      const baseUrl = getAppBaseUrl();
+      showRedirectModal(`${baseUrl}/trade?${userAnalytics.getSessionIdUrlParams()}&chain=${chain}`);
     }
   }, [showRedirectModal, redirectPopupTimestamp, buttonPosition, chain]);
 }
