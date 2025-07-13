@@ -16,6 +16,7 @@ const colors = {
     500: "#3C4067",
     600: "#171827",
     700: "#090A14",
+    800: "#121421",
   },
   blue: {
     300: "#7885ff",
@@ -119,6 +120,17 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
         display: "none",
       },
     },
+    ".sr-only": {
+      position: "absolute",
+      width: "1px",
+      height: "1px",
+      padding: "0",
+      margin: "-1px",
+      overflow: "hidden",
+      clip: "rect(0, 0, 0, 0)",
+      whiteSpace: "nowrap",
+      border: "0",
+    },
   });
 
   addVariant("desktop-hover", [`@media (hover: hover) {&:not(:active):hover}`]);
@@ -218,6 +230,10 @@ module.exports = {
       'heading-md': "108%",
       // Normal is browser dependent. See https://developer.mozilla.org/en-US/docs/Web/CSS/line-height#normal
       base: "normal",
+    },
+    letterSpacing: {
+      ...defaultConfig.theme.letterSpacing,
+      body: "0.028px",
     },
     // @see https://tailwindcss.com/docs/customizing-colors
     colors: colors,
