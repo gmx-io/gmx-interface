@@ -73,8 +73,8 @@ export const selectCommonOrderParams = createSelector((q) => {
 
 export const selectTradeboxSwapOrderPayload = createSelector((q) => {
   const commonParams = q(selectCommonOrderParams);
-
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
+
   const toTokenAddress = q(selectTradeboxToTokenAddress);
   const swapAmounts = q(selectTradeboxSwapAmounts);
   const { triggerRatio } = q(selectTradeboxTradeRatios);
@@ -95,6 +95,7 @@ export const selectTradeboxSwapOrderPayload = createSelector((q) => {
     payTokenAmount: swapAmounts.amountIn,
     receiveTokenAddress: toTokenAddress,
     minOutputAmount: swapAmounts.minOutputAmount,
+    expectedOutputAmount: swapAmounts.amountOut,
     swapPath: swapAmounts.swapPathStats?.swapPath ?? [],
     triggerRatio: triggerRatio?.ratio ?? undefined,
     externalSwapQuote: undefined,

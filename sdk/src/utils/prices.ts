@@ -45,7 +45,7 @@ export function getOrderThresholdType(orderType: OrderType, isLong: boolean) {
     return isLong ? TriggerThresholdType.Below : TriggerThresholdType.Above;
   }
 
-  throw new Error("Invalid trigger order type");
+  return undefined;
 }
 
 export function getAcceptablePriceInfo(p: {

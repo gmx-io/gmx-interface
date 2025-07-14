@@ -12,7 +12,10 @@ import {
   selectIsFirstOrder,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import {
+  selectExecutionFeeBufferBps,
+  selectIsLeverageSliderEnabled,
+} from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectSetShouldFallbackToInternalSwap,
   selectTradeboxAllowedSlippage,
@@ -39,10 +42,12 @@ import { useUserReferralCode } from "domain/referrals";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import { OrderType } from "domain/synthetics/orders";
+import { createStakeOrUnstakeTxn } from "domain/synthetics/orders/createStakeOrUnStakeTxn";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage } from "domain/synthetics/positions/utils";
+import { TradeMode } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import {
@@ -55,6 +60,7 @@ import {
 import { getByKey } from "lib/objects";
 import { getTradeInteractionKey, sendUserAnalyticsOrderConfirmClickEvent, userAnalytics } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
+import { BOTANIX } from "sdk/configs/chains";
 import { BatchOrderTxnParams, getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
 
 import { useSidecarOrderPayloads } from "./useSidecarOrderPayloads";
@@ -88,7 +94,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const fees = useSelector(selectTradeboxFees);
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
   const marketsInfoData = useSelector(selectMarketsInfoData);
-  const showDebugValues = useShowDebugValues();
+  const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
   const duration = useSelector(selectTradeboxTwapDuration);
   const numberOfParts = useSelector(selectTradeboxTwapNumberOfParts);
   const noncesData = useSelector(selectExpressNoncesData);
@@ -152,10 +158,12 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         isExpress: Boolean(expressParams),
         executionFee,
         allowedSlippage,
+        executionFeeBufferBps,
         orderType: primaryOrder?.orderPayload.orderType,
         subaccount: expressParams?.subaccount,
         isFirstOrder,
         initialCollateralAllowance,
+        isTwap: tradeMode === TradeMode.Twap,
         duration,
         partsCount: numberOfParts,
         tradeMode,
@@ -173,6 +181,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         hasExistingPosition: Boolean(selectedPosition),
         leverage: formatLeverage(increaseAmounts?.estimatedLeverage) ?? "",
         executionFee,
+        executionFeeBufferBps,
         orderType: primaryOrder?.orderPayload.orderType ?? OrderType.MarketIncrease,
         hasReferralCode: Boolean(referralCodeForTxn),
         subaccount: expressParams?.subaccount,
@@ -182,6 +191,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         isLong,
         isFirstOrder,
         isExpress: Boolean(expressParams),
+        isTwap: tradeMode === TradeMode.Twap,
         isLeverageEnabled: isLeverageSliderEnabled,
         initialCollateralAllowance,
         isTPSLCreated: Boolean(sidecarOrderPayloads?.createPayloads?.length),
@@ -212,6 +222,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       hasExistingPosition: Boolean(selectedPosition),
       executionFee,
       swapPath: [],
+      executionFeeBufferBps,
       orderType: primaryOrder?.orderPayload.orderType,
       hasReferralCode: Boolean(referralCodeForTxn),
       subaccount: expressParams?.subaccount,
@@ -221,6 +232,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       isLong,
       place: "tradeBox",
       isExpress: Boolean(expressParams),
+      isTwap: tradeMode === TradeMode.Twap,
       interactionId: marketInfo?.name ? userAnalytics.getInteractionId(getTradeInteractionKey(marketInfo.name)) : "",
       priceImpactDeltaUsd: decreaseAmounts?.positionPriceImpactDeltaUsd,
       priceImpactPercentage: fees?.positionPriceImpact?.precisePercentage,
@@ -241,6 +253,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     decreaseAmounts,
     duration,
     executionFee,
+    executionFeeBufferBps,
     expressParams,
     fastExpressParams,
     fees?.positionPriceImpact?.precisePercentage,
@@ -331,11 +344,26 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     });
   }
 
+  function onSubmitStakeOrUnstake() {
+    if (!account || !swapAmounts || !fromToken || !signer || !toToken) {
+      return Promise.reject();
+    }
+
+    return createStakeOrUnstakeTxn(chainId, signer, {
+      amount: swapAmounts.amountIn,
+      isStake: Boolean(toToken.isStaking),
+      isWrapBeforeStake: Boolean(fromToken.isNative),
+      isUnwrapAfterStake: Boolean(toToken.isNative),
+      setPendingTxns,
+    });
+  }
+
   return {
     onSubmitSwap: onSubmitOrder,
     onSubmitIncreaseOrder: onSubmitOrder,
     onSubmitDecreaseOrder: onSubmitOrder,
     onSubmitWrapOrUnwrap,
+    onSubmitStakeOrUnstake,
     slippageInputId,
     expressParams,
     batchParams,

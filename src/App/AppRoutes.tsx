@@ -5,6 +5,7 @@ import { ToastContainer, cssTransition } from "react-toastify";
 import { Hash } from "viem";
 import { useDisconnect } from "wagmi";
 
+import { SUPPORTED_CHAIN_IDS, UiContractsChain } from "config/chains";
 import {
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
   REFERRAL_CODE_KEY,
@@ -21,6 +22,8 @@ import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigure
 import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
 import { useWalletConnectedUserAnalyticsEvent } from "lib/userAnalytics/useWalletConnectedEvent";
 import useRouteQuery from "lib/useRouteQuery";
+import useSearchParams from "lib/useSearchParams";
+import { switchNetwork } from "lib/wallets";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 
 import EventToastContainer from "components/EventToast/EventToastContainer";
@@ -116,6 +119,22 @@ export function AppRoutes() {
     setRedirectModalVisible(true);
     setSelectedToPage(to);
   }, []);
+
+  const urlParams = useSearchParams<{ chainId: string }>();
+
+  useEffect(() => {
+    const chainId = urlParams.chainId;
+    if (chainId && SUPPORTED_CHAIN_IDS.includes(Number(chainId) as UiContractsChain)) {
+      switchNetwork(Number(chainId), true).then(() => {
+        const searchParams = new URLSearchParams(history.location.search);
+        searchParams.delete("chainId");
+        history.replace({
+          pathname: history.location.pathname,
+          search: searchParams.toString(),
+        });
+      });
+    }
+  }, [urlParams, history]);
 
   useRealChainIdWarning();
 

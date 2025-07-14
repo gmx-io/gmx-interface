@@ -199,7 +199,7 @@ export async function increaseOrderHelper(
     referralCodeForTxn: params.referralCodeForTxn,
     triggerPrice: params.limitPrice,
     collateralTokenAddress: collateralToken.address,
-    isLong: true,
+    isLong: params.isLong,
     receiveTokenAddress: collateralTokenAddress,
     indexToken: marketInfo.indexToken,
     marketInfo,
@@ -296,25 +296,13 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
     fromToken && toToken && (getIsWrap(fromToken, toToken) || getIsUnwrap(fromToken, toToken))
   );
 
-  const swapOptimizationOrder: SwapOptimizationOrderArray | undefined = isLimit ? ["length", "liquidity"] : undefined;
-
-  let swapAmounts: SwapAmounts | undefined;
-
-  const fromTokenPrice = fromToken.prices.minPrice;
-  const triggerRatio = params.triggerPrice
-    ? getTriggerRatio({
-        fromToken,
-        toToken,
-        triggerPrice: params.triggerPrice,
-      })
-    : undefined;
-
   if (isWrapOrUnwrap) {
+    const fromTokenPrice = fromToken.prices.minPrice;
     const tokenAmount = "fromAmount" in params ? params.fromAmount : params.toAmount;
     const usdAmount = convertToUsd(tokenAmount, fromToken.decimals, fromTokenPrice)!;
     const price = fromTokenPrice;
 
-    swapAmounts = {
+    return {
       amountIn: tokenAmount,
       usdIn: usdAmount!,
       amountOut: tokenAmount,
@@ -324,9 +312,21 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
       priceOut: price,
       minOutputAmount: tokenAmount,
     };
+  }
 
-    return swapAmounts;
-  } else if ("fromAmount" in params) {
+  const swapOptimizationOrder: SwapOptimizationOrderArray | undefined = isLimit ? ["length", "liquidity"] : undefined;
+
+  let swapAmounts: SwapAmounts | undefined;
+
+  const triggerRatio = params.triggerPrice
+    ? getTriggerRatio({
+        fromToken,
+        toToken,
+        triggerPrice: params.triggerPrice,
+      })
+    : undefined;
+
+  if ("fromAmount" in params) {
     swapAmounts = getSwapAmountsByFromValue({
       tokenIn: fromToken,
       tokenOut: toToken,

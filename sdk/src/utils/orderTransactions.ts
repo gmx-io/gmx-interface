@@ -20,7 +20,7 @@ import { applySlippageToMinOut, applySlippageToPrice } from "./trade";
 import { getTwapValidFromTime } from "./twap";
 import { createTwapUiFeeReceiver } from "./twap/uiFeeReceiver";
 
-type ExchangeRouterCall = {
+export type ExchangeRouterCall = {
   method: string;
   params: any[];
 };
@@ -169,6 +169,7 @@ export type SwapOrderParams = CommonOrderParams & {
   swapPath: string[];
   externalSwapQuote: ExternalSwapQuote | undefined;
   minOutputAmount: bigint;
+  expectedOutputAmount?: bigint;
   orderType: OrderType.MarketSwap | OrderType.LimitSwap;
   triggerRatio: bigint | undefined;
 };
@@ -382,6 +383,9 @@ export function buildTwapOrdersPayloads<
         referralCode: params.referralCode,
         autoCancel: params.autoCancel,
         allowedSlippage: 0,
+        ...(params.expectedOutputAmount !== undefined && {
+          expectedOutputAmount: params.expectedOutputAmount / BigInt(twapParams.numberOfParts),
+        }),
         payTokenAmount: params.payTokenAmount / BigInt(twapParams.numberOfParts),
         executionFeeAmount: params.executionFeeAmount / BigInt(twapParams.numberOfParts),
         validFromTime: getTwapValidFromTime(twapParams.duration, twapParams.numberOfParts, i),
@@ -615,7 +619,6 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
   externalSwapQuote: ExternalSwapQuote | undefined;
   minOutputAmount: bigint;
   swapPath: string[];
-  orderType: OrderType;
 }): TokenTransfersParams {
   const isNativePayment = payTokenAddress === NATIVE_TOKEN_ADDRESS;
   const isNativeReceive = receiveTokenAddress === NATIVE_TOKEN_ADDRESS;

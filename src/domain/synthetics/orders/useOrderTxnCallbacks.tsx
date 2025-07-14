@@ -11,6 +11,7 @@ import {
 } from "context/SyntheticsEvents";
 import { selectOrdersInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useTokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { getIsPossibleExternalSwapError } from "domain/synthetics/externalSwaps/utils";
 import { getPositionKey } from "domain/synthetics/positions/utils";
 import { getRemainingSubaccountActions, Subaccount } from "domain/synthetics/subaccount";
@@ -36,6 +37,7 @@ import {
   DecreasePositionOrderParams,
   getBatchRequiredActions,
   getBatchTotalExecutionFee,
+  getBatchTotalPayCollateralAmount,
   getIsTwapOrderPayload,
   IncreasePositionOrderParams,
   SwapOrderParams,
@@ -62,11 +64,13 @@ export function useOrderTxnCallbacks() {
     setPendingPosition,
     setPendingOrderUpdate,
     updatePendingExpressTxn,
+    setPendingExpressTxn,
     setPendingFundingFeeSettlement,
   } = useSyntheticsEvents();
   const { chainId } = useChainId();
   const { showDebugValues, setIsSettingsVisible } = useSettings();
   const ordersInfoData = useSelector(selectOrdersInfoData);
+  const { setOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
   const tokensData = useSelector(selectTokensData);
   const blockNumber = useBlockNumber(chainId);
 
@@ -99,6 +103,16 @@ export function useOrderTxnCallbacks() {
         const createdAt = Date.now();
 
         const pendingOrders = getBatchPendingOrders(e.data.batchParams, ordersInfoData);
+
+        const optimisticBatchPayAmounts = getOptimisticBatchPayAmounts(e.data);
+
+        setOptimisticTokensBalancesUpdates((old) => {
+          const newState = { ...old };
+          Object.entries(optimisticBatchPayAmounts).forEach(([tokenAddress, amount]) => {
+            newState[tokenAddress] = { diff: -amount, isPending: true };
+          });
+          return newState;
+        });
 
         if (mainActionType === "update" && batchParams.updateOrderParams[0]) {
           const updateOrderParams = batchParams.updateOrderParams[0];
@@ -164,15 +178,19 @@ export function useOrderTxnCallbacks() {
         );
 
         if (expressParams) {
-          updatePendingExpressTxn({
+          setPendingExpressTxn({
             key: getExpressParamsKey(expressParams),
             subaccountApproval: expressParams.subaccount?.signedApproval,
             isSponsoredCall: expressParams.isSponsoredCall,
             tokenPermits: expressParams.relayParamsPayload.tokenPermits,
+            payTokenAddresses: Object.keys(optimisticBatchPayAmounts),
             pendingOrdersKeys: pendingOrders.map(getPendingOrderKey),
             pendingPositionsKeys: pendingPositions.map((p) => p.positionKey),
             metricId: ctx.metricId,
             createdAt: Date.now(),
+            taskId: undefined,
+            isViewed: false,
+            isRelayerMetricSent: false,
             successMessage,
             errorMessage,
           });
@@ -273,6 +291,7 @@ export function useOrderTxnCallbacks() {
             slippageInputId: ctx.slippageInputId,
             additionalContent: ctx.additionalErrorContent,
             isInternalSwapFallback: Boolean(fallbackToInternalSwap),
+            setIsSettingsVisible,
           });
 
           helperToast.error(toastParams.errorContent, {
@@ -296,6 +315,8 @@ export function useOrderTxnCallbacks() {
       chainId,
       ordersInfoData,
       setIsSettingsVisible,
+      setOptimisticTokensBalancesUpdates,
+      setPendingExpressTxn,
       setPendingFundingFeeSettlement,
       setPendingOrder,
       setPendingOrderUpdate,
@@ -432,6 +453,27 @@ export function getPendingUpdateOrder(updateOrderParams: UpdateOrderTxnParams, o
   };
 }
 
+export function getOptimisticBatchPayAmounts({
+  expressParams,
+  batchParams,
+}: {
+  expressParams: ExpressTxnParams | undefined;
+  batchParams: BatchOrderTxnParams;
+}) {
+  const batchPayAmounts = getBatchTotalPayCollateralAmount(batchParams);
+
+  if (expressParams) {
+    const { gasPaymentTokenAddress, gasPaymentTokenAmount } = expressParams.gasPaymentParams;
+    if (gasPaymentTokenAddress in batchPayAmounts) {
+      batchPayAmounts[gasPaymentTokenAddress] += gasPaymentTokenAmount;
+    } else {
+      batchPayAmounts[gasPaymentTokenAddress] = gasPaymentTokenAmount;
+    }
+  }
+
+  return batchPayAmounts;
+}
+
 export function getPendingCreateOrder(
   createOrderPayload: CreateOrderTxnParams<IncreasePositionOrderParams | DecreasePositionOrderParams | SwapOrderParams>,
   isTwap = false
@@ -444,6 +486,11 @@ export function getPendingCreateOrder(
     swapPath: createOrderPayload.orderPayload.addresses.swapPath,
     sizeDeltaUsd: createOrderPayload.orderPayload.numbers.sizeDeltaUsd,
     minOutputAmount: createOrderPayload.orderPayload.numbers.minOutputAmount,
+    expectedOutputAmount:
+      "expectedOutputAmount" in createOrderPayload.params &&
+      createOrderPayload.params.expectedOutputAmount !== undefined
+        ? createOrderPayload.params.expectedOutputAmount
+        : 0n,
     triggerPrice: createOrderPayload.orderPayload.numbers.triggerPrice,
     acceptablePrice: createOrderPayload.orderPayload.numbers.acceptablePrice,
     autoCancel: createOrderPayload.orderPayload.autoCancel,
@@ -571,5 +618,5 @@ function hasExternalSwap(expressParams: ExpressTxnParams | undefined, batchParam
 }
 
 function getExpressParamsKey(expressParams: ExpressTxnParams) {
-  return `${expressParams.gasPaymentParams.totalRelayerFeeTokenAmount}`;
+  return `${expressParams.gasPaymentParams.gasPaymentTokenAmount}${expressParams.gasLimit}`;
 }

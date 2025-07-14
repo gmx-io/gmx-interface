@@ -34,24 +34,86 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
-    id: "avalanche-issue",
-    title: "Avalanche congestion impact",
+    id: "v1-trading-disabled",
+    title: "GMX V1 disabled",
     isActive: true,
-    startDate: "30 May 2025, 08:00",
-    endDate: "30 May 2026, 08:00",
-    chains: [AVALANCHE],
     bodyText: (
       <>
-        Avalanche’s recent upgrade may prevent some GMX V2 orders from executing during congestion. The Avalanche team
-        is investigating.
+        <Trans>
+          Increasing positions (market or limit), adding collateral, and swapping on GMX V1 are now disabled. You can
+          still close existing positions.
+        </Trans>
         <br />
         <br />
-        Arbitrum is unaffected and trading remains fully operational.
-        <br />
-        <br />
-        <ExternalLink href="https://t.me/GMX_Announcements/1076">Read more</ExternalLink>.
+        <Trans>Please migrate your positions to GMX V2.</Trans>
       </>
     ),
+    startDate: "10 Jul 2025, 00:00",
+    endDate: "10 Aug 2025, 00:00",
+  },
+  {
+    id: "botanix-launch-event",
+    title: "GMX is live on Botanix",
+    isActive: true,
+    startDate: "2 Jul 2025, 0:00",
+    endDate: "10 Jul 2025, 0:00",
+    bodyText: (
+      <>
+        GMX is now natively deployed on the Botanix network. Use the network switcher to connect.
+        <br />
+        <br />
+        <ExternalLink href="https://x.com/GMX_IO/status/1940367677190762617">
+          Learn how to trade and provide liquidity
+        </ExternalLink>
+        .
+      </>
+    ),
+  },
+  {
+    id: "listing-xmr-crv-moodeng-pi",
+    title: "CRV, MOODENG, PI and XMR markets added on Arbitrum",
+    isActive: true,
+    startDate: "20 Jun 2025, 00:00",
+    endDate: "27 Jun 2025, 00:00",
+    bodyText: (
+      <>
+        Trade{" "}
+        <Link to="/trade/long/?mode=market&to=CRV">
+          <TokenSymbolWithIcon symbol="CRV" />
+          /USD
+        </Link>
+        ,{" "}
+        <Link to="/trade/long/?mode=market&to=MOODENG">
+          <TokenSymbolWithIcon symbol="MOODENG" />
+          /USD
+        </Link>
+        ,{" "}
+        <Link to="/trade/long/?mode=market&to=PI">
+          <TokenSymbolWithIcon symbol="PI" />
+          /USD
+        </Link>
+        , and{" "}
+        <Link to="/trade/long/?mode=market&to=XMR">
+          <TokenSymbolWithIcon symbol="XMR" />
+          /USD
+        </Link>
+        , or <Link to="/pools">provide liquidity</Link> to these pools by using <TokenSymbolWithIcon symbol="WETH" />,{" "}
+        <TokenSymbolWithIcon symbol="WBTC" /> or <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
+  {
+    id: "twap-announcement",
+    title: "TWAP orders on GMX",
+    bodyText: (
+      <>
+        Time-Weighted Average Price (TWAP) orders are now available for both perps and spot. Execute large trades with
+        less price impact.
+      </>
+    ),
+    isActive: true,
+    startDate: "16 Jun 2025, 00:00",
+    endDate: "26 Jun 2025, 00:00",
   },
   {
     id: "zro-listing",

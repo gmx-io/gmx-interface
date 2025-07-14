@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import React, { useState } from "react";
-import { AiOutlineEdit } from "react-icons/ai";
 import { FaAngleRight } from "react-icons/fa";
 import { ImSpinner2 } from "react-icons/im";
 
@@ -80,7 +79,6 @@ export default function PositionsList(props) {
     isPluginApproving,
     isWaitingForPluginApproval,
     orderBookApproved,
-    positionRouterApproved,
     isWaitingForPositionRouterApproval,
     isPositionRouterApproving,
     approvePositionRouter,
@@ -94,23 +92,16 @@ export default function PositionsList(props) {
     hideActions,
     openSettings,
   } = props;
-  const [positionToEditKey, setPositionToEditKey] = useState(undefined);
+
   const [positionToSellKey, setPositionToSellKey] = useState(undefined);
   const [positionToShare, setPositionToShare] = useState(null);
   const [isPositionEditorVisible, setIsPositionEditorVisible] = useState(undefined);
   const [isPositionSellerVisible, setIsPositionSellerVisible] = useState(undefined);
-  const [collateralTokenAddress, setCollateralTokenAddress] = useState(undefined);
   const [isPositionShareModalOpen, setIsPositionShareModalOpen] = useState(false);
   const [ordersToaOpen, setOrdersToaOpen] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
   const accountType = useAccountType();
   const isContractAccount = accountType === AccountType.CONTRACT;
-
-  const editPosition = (position) => {
-    setCollateralTokenAddress(position.collateralToken.address);
-    setPositionToEditKey(position.key);
-    setIsPositionEditorVisible(true);
-  };
 
   const sellPosition = (position) => {
     setPositionToSellKey(position.key);
@@ -134,19 +125,18 @@ export default function PositionsList(props) {
         pendingPositions={pendingPositions}
         setPendingPositions={setPendingPositions}
         positionsMap={positionsMap}
-        positionKey={positionToEditKey}
+        positionKey={undefined}
         isVisible={isPositionEditorVisible}
         setIsVisible={setIsPositionEditorVisible}
         infoTokens={infoTokens}
         active={active}
         account={account}
         signer={signer}
-        collateralTokenAddress={collateralTokenAddress}
+        collateralTokenAddress={undefined}
         pendingTxns={pendingTxns}
         setPendingTxns={setPendingTxns}
         getUsd={getUsd}
         savedIsPnlInLeverage={savedIsPnlInLeverage}
-        positionRouterApproved={positionRouterApproved}
         isPositionRouterApproving={isPositionRouterApproving}
         isWaitingForPositionRouterApproval={isWaitingForPositionRouterApproval}
         approvePositionRouter={approvePositionRouter}
@@ -210,7 +200,6 @@ export default function PositionsList(props) {
           chainId={chainId}
           nativeTokenAddress={nativeTokenAddress}
           setOrdersToaOpen={setOrdersToaOpen}
-          positionRouterApproved={positionRouterApproved}
           isPositionRouterApproving={isPositionRouterApproving}
           isWaitingForPositionRouterApproval={isWaitingForPositionRouterApproval}
           approvePositionRouter={approvePositionRouter}
@@ -356,11 +345,6 @@ export default function PositionsList(props) {
                               );
                             }}
                           />
-                          {!hideActions && (
-                            <span className="edit-icon" onClick={() => editPosition(position)}>
-                              <AiOutlineEdit fontSize={16} />
-                            </span>
-                          )}
                         </div>
                       </div>
                     </div>
@@ -432,14 +416,6 @@ export default function PositionsList(props) {
                           onClick={() => sellPosition(position)}
                         >
                           <Trans>Close</Trans>
-                        </Button>
-                        <Button
-                          variant="secondary"
-                          className="mr-15 mt-15"
-                          disabled={position.size == 0n}
-                          onClick={() => editPosition(position)}
-                        >
-                          <Trans>Edit Collateral</Trans>
                         </Button>
                         <Button
                           variant="secondary"
@@ -691,11 +667,6 @@ export default function PositionsList(props) {
                         );
                       }}
                     />
-                    {!hideActions && (
-                      <span className="edit-icon" onClick={() => editPosition(position)}>
-                        <AiOutlineEdit fontSize={16} />
-                      </span>
-                    )}
                   </div>
                 </td>
                 <td>${formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}</td>
@@ -716,9 +687,6 @@ export default function PositionsList(props) {
                 {!hideActions && (
                   <td>
                     <PositionDropdown
-                      handleEditCollateral={() => {
-                        editPosition(position);
-                      }}
                       handleShare={() => {
                         setPositionToShare(position);
                         setIsPositionShareModalOpen(true);
