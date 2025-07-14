@@ -4,8 +4,11 @@ import { Link } from "react-router-dom";
 import { createBreakpoint, useCopyToClipboard } from "react-use";
 import type { Address } from "viem";
 
+import { BOTANIX } from "config/chains";
+import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useENS } from "lib/legacy";
+import { useNotifyModalState } from "lib/useNotifyModalState";
 import { userAnalytics } from "lib/userAnalytics";
 import { DisconnectWalletEvent } from "lib/userAnalytics/types";
 import { shortenAddressOrEns } from "lib/wallets";
@@ -14,6 +17,7 @@ import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDas
 import { Avatar } from "components/Avatar/Avatar";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
+import BellIcon from "img/bell.svg?react";
 import copy from "img/ic_copy_20.svg";
 import externalLink from "img/ic_new_link_20.svg";
 import PnlAnalysisIcon from "img/ic_pnl_analysis_20.svg?react";
@@ -32,8 +36,12 @@ const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
 function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSettings }: Props) {
   const breakpoint = useBreakpoint();
   const [, copyToClipboard] = useCopyToClipboard();
+  const { openNotifyModal } = useNotifyModalState();
   const { ensName } = useENS(account);
   const displayAddressLength = breakpoint === "S" ? 9 : 13;
+
+  const { chainId } = useChainId();
+  const isBotanix = chainId === BOTANIX;
 
   return (
     <div className="relative">
@@ -79,6 +87,16 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
                 </p>
               </ExternalLink>
             </Menu.Item>
+            {!isBotanix ? (
+              <Menu.Item>
+                <div className="menu-item" onClick={openNotifyModal}>
+                  <BellIcon className="ml-2 size-20 pt-2" />
+                  <p>
+                    <Trans>Alerts</Trans>
+                  </p>
+                </div>
+              </Menu.Item>
+            ) : null}
             <Menu.Item>
               <div
                 className="menu-item"

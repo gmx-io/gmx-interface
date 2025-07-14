@@ -16,6 +16,7 @@ import {
   useAccountStats,
   usePeriodAccountStats,
 } from "domain/synthetics/accountStats";
+import { OracleSettingsData, useOracleSettingsData } from "domain/synthetics/common/useOracleSettingsData";
 import { SponsoredCallBalanceData, useIsSponsoredCallBalanceAvailable } from "domain/synthetics/express";
 import { useL1ExpressOrderGasReference } from "domain/synthetics/express/useL1ExpressGasReference";
 import { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
@@ -113,6 +114,8 @@ export type SyntheticsState = {
     isLargeAccount?: boolean;
     isFirstOrder: boolean;
     blockTimestampData: BlockTimestampData | undefined;
+
+    oracleSettings: OracleSettingsData | undefined;
   };
   claims: {
     accruedPositionPriceImpactFees: RebateInfoItem[];
@@ -206,6 +209,8 @@ export function SyntheticsStateContextProvider({
     chainId,
     isTradePage
   );
+
+  const oracleSettings = useOracleSettingsData();
 
   const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace>();
 
@@ -341,6 +346,8 @@ export function SyntheticsStateContextProvider({
         isLargeAccount,
         isFirstOrder,
         blockTimestampData,
+
+        oracleSettings,
       },
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
@@ -406,6 +413,7 @@ export function SyntheticsStateContextProvider({
     gasPaymentTokenAllowance,
     l1ExpressOrderGasReference,
     expressNoncesData,
+    oracleSettings,
   ]);
 
   latestState = state;

@@ -59,7 +59,7 @@ export function GmSwapBoxHeader(p: Props) {
 
   const availableOperations = useMemo(() => {
     if (shiftAvailableMarkets.length === 0) {
-      return OPERATIONS;
+      return [Operation.Deposit, Operation.Withdrawal];
     }
 
     const isSelectedMarketShiftAvailable = Boolean(

@@ -90,6 +90,8 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import SettingsIcon from "img/ic_settings.svg?react";
 
+import { useIsCurtainOpen } from "./Curtain";
+import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
@@ -99,13 +101,13 @@ import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAccep
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
-import "./TradeBox.scss";
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
+import "./TradeBox.scss";
 
 export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
@@ -134,6 +136,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const { shouldDisableValidationForTesting: shouldDisableValidation } = useSettings();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
+
+  const [_, setExternalIsCurtainOpen] = useIsCurtainOpen();
 
   const {
     fromTokenInputValue,
@@ -250,6 +254,13 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     account,
     setToTokenInputValue,
   });
+
+  const wrappedOnSubmit = useCallback(async () => {
+    await submitButtonState.onSubmit();
+    if (isMobile) {
+      setExternalIsCurtainOpen(false);
+    }
+  }, [submitButtonState, isMobile, setExternalIsCurtainOpen]);
 
   const { formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
     fromToken,
@@ -539,10 +550,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     (e) => {
       e.preventDefault();
       if (!isCursorInside && (!submitButtonState.disabled || shouldDisableValidation)) {
-        submitButtonState.onSubmit();
+        wrappedOnSubmit();
       }
     },
-    [isCursorInside, submitButtonState, shouldDisableValidation]
+    [isCursorInside, wrappedOnSubmit, submitButtonState, shouldDisableValidation]
   );
 
   const handleLeverageInputBlur = useCallback(() => {
@@ -585,7 +596,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           isBottomLeftValueMuted={payUsd === undefined || payUsd === 0n}
           bottomRightValue={
             fromToken && fromToken.balance !== undefined && fromToken.balance > 0n
-              ? formatBalanceAmount(fromToken.balance, fromToken.decimals, fromToken.symbol)
+              ? formatBalanceAmount(fromToken.balance, fromToken.decimals, fromToken.symbol, {
+                  isStable: fromToken.isStable,
+                })
               : undefined
           }
           inputValue={fromTokenInputValue}
@@ -633,7 +646,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 }
                 bottomRightValue={
                   !isTwap && toToken && toToken.balance !== undefined && toToken.balance > 0n
-                    ? formatBalanceAmount(toToken.balance, toToken.decimals, toToken.symbol)
+                    ? formatBalanceAmount(toToken.balance, toToken.decimals, toToken.symbol, {
+                        isStable: toToken.isStable,
+                      })
                     : undefined
                 }
                 isBottomLeftValueMuted={swapAmounts?.usdOut === undefined || swapAmounts.usdOut === 0n}
@@ -776,11 +791,11 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     "Enter",
     () => {
       if (isCursorInside && (!submitButtonState.disabled || shouldDisableValidation)) {
-        submitButtonState.onSubmit();
+        wrappedOnSubmit();
       }
     },
     {},
-    [submitButtonState.disabled, shouldDisableValidation, isCursorInside, submitButtonState.onSubmit]
+    [submitButtonState.disabled, shouldDisableValidation, isCursorInside, wrappedOnSubmit]
   );
 
   const buttonContent = (
@@ -788,7 +803,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       qa="confirm-trade-button"
       variant="primary-action"
       className="w-full [text-decoration:inherit]"
-      onClick={submitButtonState.onSubmit}
+      onClick={wrappedOnSubmit}
       disabled={submitButtonState.disabled && !shouldDisableValidation}
     >
       {submitButtonState.text}
@@ -1012,6 +1027,11 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             )}
             <div className="flex flex-col gap-14 pt-14">
               <div>{button}</div>
+              <ExpressTradingWarningCard
+                expressParams={submitButtonState.expressParams}
+                payTokenAddress={!tradeFlags.isTrigger ? fromTokenAddress : undefined}
+                isWrapOrUnwrap={!tradeFlags.isTrigger && isWrapOrUnwrap}
+              />
               <div className="h-1 bg-stroke-primary" />
               {isSwap && !isTwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
               {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (

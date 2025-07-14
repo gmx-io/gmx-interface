@@ -134,6 +134,7 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           slCount: metricData.slCount,
           tpCount: metricData.tpCount,
           isTPSLCreated: metricData.isTPSLCreated ?? false,
+          requestId: metricData.requestId,
           chain: getChainName(chainId),
           isFirstOrder: metricData.isFirstOrder ?? false,
           interactionId: metricData.interactionId,
@@ -164,6 +165,7 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           leverage: "",
           isExpress: metricData.isExpress,
           isExpress1CT: metricData.isExpress1CT,
+          requestId: metricData.requestId,
           chain: getChainName(chainId),
           isFirstOrder: false,
           interactionId: metricData.interactionId,
@@ -194,6 +196,7 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           isExpress1CT: metricData.isExpress1CT,
           chain: getChainName(chainId),
           isFirstOrder: metricData.isFirstOrder ?? false,
+          requestId: metricData.requestId,
           interactionId: undefined,
           priceImpactDeltaUsd: undefined,
           priceImpactPercentage: undefined,
@@ -254,7 +257,6 @@ export function sendUserAnalyticsOrderResultEvent(
   const isUserError = Boolean(parseError(error)?.isUserError);
 
   switch (metricData.metricType) {
-    case "twapIncreaseOrder":
     case "increasePosition":
       userAnalytics.pushEvent<TradeBoxResultEvent>(
         {
@@ -278,6 +280,7 @@ export function sendUserAnalyticsOrderResultEvent(
             isLeverageEnabled: Boolean(metricData.isLeverageEnabled),
             isUserError,
             interactionId: metricData.interactionId,
+            requestId: metricData.requestId,
             priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
             priceImpactPercentage: metricData.priceImpactPercentage,
             netRate1h: metricData.netRate1h,
@@ -287,7 +290,6 @@ export function sendUserAnalyticsOrderResultEvent(
         { dedupKey }
       );
       break;
-    case "twapDecreaseOrder":
     case "decreasePosition":
     case "stopLossOrder":
     case "takeProfitOrder":
@@ -309,6 +311,7 @@ export function sendUserAnalyticsOrderResultEvent(
             isFirstOrder: false,
             isUserError,
             interactionId: metricData.interactionId,
+            requestId: metricData.requestId,
             priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
             priceImpactPercentage: metricData.priceImpactPercentage,
             netRate1h: metricData.netRate1h,
@@ -338,6 +341,7 @@ export function sendUserAnalyticsOrderResultEvent(
             isFirstOrder: metricData.isFirstOrder ?? false,
             isUserError,
             interactionId: undefined,
+            requestId: metricData.requestId,
             priceImpactDeltaUsd: undefined,
             priceImpactPercentage: undefined,
             netRate1h: undefined,

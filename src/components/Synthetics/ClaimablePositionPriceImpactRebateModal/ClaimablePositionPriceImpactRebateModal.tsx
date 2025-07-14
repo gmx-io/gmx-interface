@@ -168,7 +168,9 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
         if (!tokenData) return null;
         return (
           <div key={rebateItem.id}>
-            {formatTokenAmount(rebateItem.valueByFactor, tokenData?.decimals, tokenData?.symbol)}
+            {formatTokenAmount(rebateItem.valueByFactor, tokenData?.decimals, tokenData?.symbol, {
+              isStable: tokenData.isStable,
+            })}
           </div>
         );
       }),
