@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { BigNumberish, ethers, isAddress, Signer } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
-import { Hash } from "viem";
+import { Hash, zeroAddress } from "viem";
 
 import { BOTANIX } from "config/chains";
 import { getContract } from "config/contracts";
@@ -160,6 +160,9 @@ export async function setTraderReferralCodeByUser(chainId, referralCode, signer,
 
 export async function getReferralCodeOwner(chainId: ContractsChainId, referralCode: string): Promise<string> {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  if (referralStorageAddress === zeroAddress) {
+    return zeroAddress;
+  }
   const provider = getProvider(undefined, chainId);
   const contract = new ethers.Contract(referralStorageAddress, abis.ReferralStorage, provider);
   const codeOwner = await contract.codeOwners(referralCode);
@@ -289,7 +292,7 @@ export function useReferrerDiscountShare(library, chainId, owner) {
   };
 }
 
-export async function validateReferralCodeExists(referralCode, chainId) {
+export async function validateReferralCodeExists(referralCode: string, chainId: ContractsChainId) {
   const referralCodeBytes32 = encodeReferralCode(referralCode);
   const referralCodeOwner = await getReferralCodeOwner(chainId, referralCodeBytes32);
   return !isAddressZero(referralCodeOwner);
