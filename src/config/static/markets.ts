@@ -367,7 +367,7 @@ const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig
       enabled: true,
     },
     // PUMP/USD [WBTC-USDC]
-    "0x4c0bb704529fa49a26bd854802d70206982c6f1b": {
+    "0x4C0Bb704529Fa49A26bD854802d70206982c6f1B": {
       enabled: true,
     },
   },

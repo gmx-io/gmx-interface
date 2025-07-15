@@ -1337,7 +1337,7 @@
       "shortInterestInTokensUsingLongToken": "0xba25770c0d2c19cb82136ca008f7f59e3f0a6273159a121852ef001e7fcf5cd4",
       "shortInterestInTokensUsingShortToken": "0x434a95fd250b7b15239714a1a92599a7706c946310e7cc999a66202318a3b9d5"
     },
-    "0x4c0bb704529fa49a26bd854802d70206982c6f1b": {
+    "0x4C0Bb704529Fa49A26bD854802d70206982c6f1B": {
       "longPoolAmount": "0xc996bc9829549ec431dc6686d166b850c834ca57d6d13eef76878eb034346f49",
       "shortPoolAmount": "0x73576063b41f5bfab75ba59775beae18756d9a05d1934205cd5c1c8ba136c37f",
       "positionImpactPoolAmount": "0x336c51bf0ded13ba7909d73214583e37c9b26efea4938aceda45c44e8a3daf11",
