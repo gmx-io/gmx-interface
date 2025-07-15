@@ -781,7 +781,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         externalSwapQuote: undefined,
         positionFeeUsd: decreaseAmounts.positionFeeUsd,
         swapPriceImpactDeltaUsd: 0n,
-        positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,
+        positionPriceImpactDeltaUsd: decreaseAmounts.totalPendingImpactDeltaUsd,
         priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
         borrowingFeeUsd: decreaseAmounts.borrowingFeeUsd,
         fundingFeeUsd: decreaseAmounts.fundingFeeUsd,

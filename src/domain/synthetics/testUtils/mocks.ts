@@ -56,6 +56,7 @@ export function mockPositionInfo(
     collateralAmount: convertToTokenAmount(collateralUsd, collateralToken.decimals, collateralToken.prices?.minPrice)!,
     increasedAtTime: BigInt((Date.now() / 1000) >> 0),
     decreasedAtTime: BigInt((Date.now() / 1000) >> 0),
+    pendingImpactAmount: 0n,
     isLong: true,
     pendingBorrowingFeesUsd: 0n,
     fundingFeeAmount: 0n,

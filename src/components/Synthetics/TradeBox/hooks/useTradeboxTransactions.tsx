@@ -237,7 +237,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       isExpress: Boolean(expressParams),
       isTwap: tradeMode === TradeMode.Twap,
       interactionId: marketInfo?.name ? userAnalytics.getInteractionId(getTradeInteractionKey(marketInfo.name)) : "",
-      priceImpactDeltaUsd: decreaseAmounts?.positionPriceImpactDeltaUsd,
+      priceImpactDeltaUsd: decreaseAmounts?.totalPendingImpactDeltaUsd,
       priceImpactPercentage: fees?.positionPriceImpact?.precisePercentage,
       netRate1h: isLong ? chartHeaderInfo?.fundingRateLong : chartHeaderInfo?.fundingRateShort,
       tradeMode,

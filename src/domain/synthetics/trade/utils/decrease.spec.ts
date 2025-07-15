@@ -144,6 +144,7 @@ const position: PositionInfoLoaded = {
   isLong: true,
   pendingBorrowingFeesUsd: BigInt("0x01f7685a27fa507f04c467a667"),
   fundingFeeAmount: BigInt("0x059624"),
+  pendingImpactAmount: BigInt("0x00"),
   claimableLongTokenAmount: BigInt("0x00"),
   claimableShortTokenAmount: BigInt("0x00"),
   marketInfo,

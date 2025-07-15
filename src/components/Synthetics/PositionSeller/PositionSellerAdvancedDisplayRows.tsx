@@ -1,10 +1,9 @@
 import { Trans, t } from "@lingui/macro";
-import React, { useMemo } from "react";
+import React from "react";
 
 import { usePositionSeller } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import {
   selectPositionSellerDecreaseAmounts,
-  selectPositionSellerExecutionPrice,
   selectPositionSellerFees,
   selectPositionSellerNextPositionValuesForDecrease,
   selectPositionSellerPosition,
@@ -15,14 +14,12 @@ import { GasPaymentParams } from "domain/synthetics/express";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
-import { applySlippageToPrice } from "domain/synthetics/trade/utils";
 import { formatUsd } from "lib/numbers";
 
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
-import { ExecutionPriceRow } from "../ExecutionPriceRow";
 import { ExpandableRow } from "../ExpandableRow";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
@@ -95,34 +92,9 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
     }
   }
 
-  const toToken = position?.indexToken;
-
-  const executionPrice = useSelector(selectPositionSellerExecutionPrice);
-
-  const executionPriceFlags = useMemo(
-    () => ({
-      isLimit: false,
-      isMarket: orderOption === OrderOption.Market,
-      isIncrease: false,
-      isLong: !!position?.isLong,
-      isShort: !position?.isLong,
-      isSwap: false,
-      isPosition: true,
-      isTrigger: orderOption === OrderOption.Trigger,
-      isTwap: false,
-    }),
-    [position?.isLong, orderOption]
-  );
-
   if (!position) {
     return null;
   }
-
-  const shouldApplySlippage = orderOption === OrderOption.Market;
-  const acceptablePrice =
-    shouldApplySlippage && decreaseAmounts?.acceptablePrice && position
-      ? applySlippageToPrice(allowedSlippage, decreaseAmounts.acceptablePrice, false, position.isLong)
-      : decreaseAmounts?.acceptablePrice;
 
   return (
     <ExpandableRow
@@ -131,17 +103,6 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
       onToggle={setOpen}
       contentClassName="flex flex-col gap-14 pt-14"
     >
-      {!isTwap && (
-        <ExecutionPriceRow
-          tradeFlags={executionPriceFlags}
-          fees={fees}
-          executionPrice={executionPrice ?? undefined}
-          acceptablePrice={acceptablePrice}
-          triggerOrderType={decreaseAmounts?.triggerOrderType}
-          visualMultiplier={toToken?.visualMultiplier}
-        />
-      )}
-
       <TradeFeesRow {...fees} feesType="decrease" />
       <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} />
 
@@ -158,7 +119,6 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
       {!isTwap && (
         <>
           <div className="h-1 bg-stroke-primary" />
-
           <SyntheticsInfoRow label={t`Leverage`} value={leverageValue} />
           {sizeRow}
           <SyntheticsInfoRow

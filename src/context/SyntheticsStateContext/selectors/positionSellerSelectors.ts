@@ -236,6 +236,7 @@ export const selectPositionSellerFees = createSelector((q) => {
   const collateralDeltaUsd = bigMath.mulDiv(position.collateralUsd, sizeReductionBps, BASIS_POINTS_DIVISOR_BIGINT);
 
   const oraclePriceCount = estimateOrderOraclePriceCount(swapPathLength);
+
   return {
     fees: getTradeFees({
       initialCollateralUsd: position.collateralUsd,
@@ -245,7 +246,7 @@ export const selectPositionSellerFees = createSelector((q) => {
       externalSwapQuote: undefined,
       positionFeeUsd: decreaseAmounts.positionFeeUsd,
       swapPriceImpactDeltaUsd: swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd || 0n,
-      positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,
+      positionPriceImpactDeltaUsd: decreaseAmounts.totalPendingImpactDeltaUsd,
       priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
       borrowingFeeUsd: decreaseAmounts.borrowingFeeUsd,
       fundingFeeUsd: decreaseAmounts.fundingFeeUsd,

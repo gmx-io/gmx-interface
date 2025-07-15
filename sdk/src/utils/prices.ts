@@ -9,7 +9,6 @@ import { getPriceImpactByAcceptablePrice } from "./fees";
 import { getCappedPositionImpactUsd } from "./fees";
 import { expandDecimals, getBasisPoints } from "./numbers";
 import { roundUpMagnitudeDivision } from "./numbers";
-import { applyFactor } from "./numbers";
 import { convertToTokenAmount } from "./tokens";
 
 export function getMarkPrice(p: { prices: TokenPrices; isIncrease: boolean; isLong: boolean }) {
@@ -62,6 +61,8 @@ export function getAcceptablePriceInfo(p: {
   const values = {
     acceptablePrice: 0n,
     acceptablePriceDeltaBps: 0n,
+    cappedPriceImpactDeltaUsd: 0n,
+    cappedPriceImpactDeltaAmount: 0n,
     priceImpactDeltaAmount: 0n,
     priceImpactDeltaUsd: 0n,
     priceImpactDiffUsd: 0n,
@@ -95,23 +96,10 @@ export function getAcceptablePriceInfo(p: {
     return values;
   }
 
-  values.priceImpactDeltaUsd = getCappedPositionImpactUsd(
-    marketInfo,
-    isIncrease ? sizeDeltaUsd : sizeDeltaUsd * -1n,
-    isLong,
-    {
-      fallbackToZero: !isIncrease,
-    }
-  );
-
-  if (!isIncrease && values.priceImpactDeltaUsd < 0) {
-    const minPriceImpactUsd = applyFactor(sizeDeltaUsd, marketInfo.maxPositionImpactFactorNegative) * -1n;
-
-    if (values.priceImpactDeltaUsd < minPriceImpactUsd) {
-      values.priceImpactDiffUsd = minPriceImpactUsd - values.priceImpactDeltaUsd;
-      values.priceImpactDeltaUsd = minPriceImpactUsd;
-    }
-  }
+  values.priceImpactDeltaUsd = getCappedPositionImpactUsd(marketInfo, sizeDeltaUsd, isLong, isIncrease, {
+    fallbackToZero: !isIncrease,
+    shouldCapNegativeImpact: isIncrease,
+  });
 
   if (values.priceImpactDeltaUsd > 0) {
     values.priceImpactDeltaAmount = convertToTokenAmount(
@@ -126,12 +114,24 @@ export function getAcceptablePriceInfo(p: {
     );
   }
 
+  // Use uncapped price impact for the acceptable price calculation
+  const priceImpactDeltaUsdForAcceptablePrice = getCappedPositionImpactUsd(
+    marketInfo,
+    sizeDeltaUsd,
+    isLong,
+    isIncrease,
+    {
+      fallbackToZero: !isIncrease,
+      shouldCapNegativeImpact: false,
+    }
+  );
+
   const acceptablePriceValues = getAcceptablePriceByPriceImpact({
     isIncrease,
     isLong,
     indexPrice,
     sizeDeltaUsd,
-    priceImpactDeltaUsd: values.priceImpactDeltaUsd,
+    priceImpactDeltaUsd: priceImpactDeltaUsdForAcceptablePrice,
   });
 
   values.acceptablePrice = acceptablePriceValues.acceptablePrice;

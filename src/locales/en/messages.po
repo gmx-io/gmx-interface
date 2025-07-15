@@ -2234,6 +2234,10 @@ msgstr "Winner:"
 msgid "Liquidity data not loaded"
 msgstr "Liquidity data not loaded"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Price impact rebates for closing trades are claimable inder this claims tab. <0>Read more</0>"
+msgstr "Price impact rebates for closing trades are claimable inder this claims tab. <0>Read more</0>"
+
 #: src/pages/Home/Home.tsx
 msgid "Total Trading Volume"
 msgstr "Total Trading Volume"
@@ -4530,6 +4534,10 @@ msgstr "Transfer already initiated"
 #: src/pages/Stake/VesterWithdrawModal.tsx
 msgid "Withdraw submitted."
 msgstr "Withdraw submitted."
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Net Price Impact"
+msgstr "Net Price Impact"
 
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
@@ -8014,6 +8022,7 @@ msgstr "Image generation error, please refresh and try again."
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price Impact Rebates"
 msgstr "Price Impact Rebates"
 
@@ -8344,6 +8353,10 @@ msgstr "Limit - Long Inc."
 #: src/pages/Stake/ClaimModal.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming."
 msgstr "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming."
+
+#: src/components/Synthetics/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
+msgid "Net Price Impact / Fees"
+msgstr "Net Price Impact / Fees"
 
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, as well as from your {collateralSymbol} collateral. The liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price."

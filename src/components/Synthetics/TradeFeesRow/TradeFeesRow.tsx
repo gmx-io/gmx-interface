@@ -291,6 +291,50 @@ export function TradeFeesRow(p: Props) {
         }
       : undefined;
 
+    const netPriceImpactRow =
+      p.positionPriceImpact?.deltaUsd !== undefined && p.positionPriceImpact.deltaUsd !== 0n
+        ? {
+            id: "netPriceImpact",
+            label: (
+              <>
+                <div className="text-white">{t`Net Price Impact`}:</div>
+                <div>
+                  (
+                  {formatPercentage(bigMath.abs(p.positionPriceImpact.precisePercentage), {
+                    displayDecimals: 3,
+                    bps: false,
+                  })}{" "}
+                  of position size)
+                </div>
+              </>
+            ),
+            value: formatDeltaUsd(p.positionPriceImpact.deltaUsd),
+            className: getPositiveOrNegativeClass(p.positionPriceImpact.deltaUsd, "text-green-500"),
+          }
+        : undefined;
+
+    const priceImpactDiffRow =
+      p.priceImpactDiff?.deltaUsd !== undefined && p.priceImpactDiff.deltaUsd !== 0n
+        ? {
+            id: "priceImpactDiff",
+            label: (
+              <>
+                <div className="text-white">{t`Price Impact Rebates`}:</div>
+                <div>
+                  (
+                  {formatPercentage(bigMath.abs(p.priceImpactDiff.precisePercentage), {
+                    displayDecimals: 3,
+                    bps: false,
+                  })}{" "}
+                  of position size)
+                </div>
+              </>
+            ),
+            value: formatDeltaUsd(p.priceImpactDiff.deltaUsd),
+            className: getPositiveOrNegativeClass(p.priceImpactDiff.deltaUsd, "text-green-500"),
+          }
+        : undefined;
+
     const rebateRow =
       tradingIncentives && rebateIsApplicable
         ? {
@@ -341,6 +385,8 @@ export function TradeFeesRow(p: Props) {
 
     if (p.feesType === "decrease") {
       return [
+        netPriceImpactRow,
+        priceImpactDiffRow,
         borrowFeeRow,
         fundingFeeRow,
         positionFeeRow,
@@ -417,6 +463,21 @@ export function TradeFeesRow(p: Props) {
     );
   }, [chainId, incentivesTokenTitle, rebateIsApplicable, tradingIncentives?.maxRebatePercent]);
 
+  const priceImpactRebatesInfo = useMemo(() => {
+    if (p.priceImpactDiff?.deltaUsd === undefined || p.priceImpactDiff.deltaUsd === 0n) {
+      return null;
+    }
+
+    return (
+      <Trans>
+        Price impact rebates for closing trades are claimable inder this claims tab.{" "}
+        <ExternalLink href={"https://docs.gmx.io/docs/trading/v2#price-impact-rebates"} newTab>
+          Read more
+        </ExternalLink>
+      </Trans>
+    );
+  }, [p.priceImpactDiff?.deltaUsd]);
+
   const swapRouteMsg = useMemo(() => {
     if (p.swapFees && p.swapFees.length <= 2) return;
     return (
@@ -463,14 +524,16 @@ export function TradeFeesRow(p: Props) {
                 />
               ))}
               {incentivesBottomText && <br />}
-              {incentivesBottomText}
+              {incentivesBottomText && <br />}
+              {priceImpactRebatesInfo && <br />}
+              {swapRouteMsg && <br />}
               {swapRouteMsg}
             </div>
           }
         />
       );
     }
-  }, [totalFeeUsd, feeRows, incentivesBottomText, shouldShowWarning, swapRouteMsg]);
+  }, [totalFeeUsd, feeRows, incentivesBottomText, shouldShowWarning, priceImpactRebatesInfo, swapRouteMsg]);
 
   return <SyntheticsInfoRow label={title} value={value} />;
 }

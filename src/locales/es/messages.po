@@ -2234,6 +2234,10 @@ msgstr ""
 msgid "Liquidity data not loaded"
 msgstr "Datos de liquidez no cargados"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Price impact rebates for closing trades are claimable inder this claims tab. <0>Read more</0>"
+msgstr ""
+
 #: src/pages/Home/Home.tsx
 msgid "Total Trading Volume"
 msgstr "Volumen Total de Operaciones"
@@ -4526,6 +4530,10 @@ msgstr "Transferencia ya iniciada"
 #: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
 #: src/pages/Stake/VesterWithdrawModal.tsx
 msgid "Withdraw submitted."
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Net Price Impact"
 msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.tsx
@@ -8008,6 +8016,7 @@ msgstr "Error de generación de imagen, por favor actualice e intente de nuevo"
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price Impact Rebates"
 msgstr ""
 
@@ -8337,6 +8346,10 @@ msgstr ""
 
 #: src/pages/Stake/ClaimModal.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming."
+msgstr ""
+
+#: src/components/Synthetics/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
+msgid "Net Price Impact / Fees"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx

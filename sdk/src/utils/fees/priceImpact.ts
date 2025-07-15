@@ -65,42 +65,82 @@ export function applySwapImpactWithCap(marketInfo: MarketInfo, token: TokenData,
   return { impactDeltaAmount, cappedDiffUsd };
 }
 
+export function getCappedPositionPriceImpactUsdForIncrease(
+  marketInfo: MarketInfo,
+  sizeDeltaUsd: bigint,
+  isLong: boolean
+) {
+  const priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, sizeDeltaUsd, isLong);
+
+  const cappedImpactUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, priceImpactDeltaUsd);
+
+  return cappedImpactUsd;
+}
+
 export function getCappedPositionImpactUsd(
   marketInfo: MarketInfo,
   sizeDeltaUsd: bigint,
   isLong: boolean,
-  opts: { fallbackToZero?: boolean } = {}
+  isIncrease: boolean,
+  opts: { fallbackToZero?: boolean; shouldCapNegativeImpact?: boolean } = {}
 ) {
+  sizeDeltaUsd = isIncrease ? sizeDeltaUsd : sizeDeltaUsd * -1n;
   const priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, sizeDeltaUsd, isLong, opts);
 
-  if (priceImpactDeltaUsd < 0) {
+  if (priceImpactDeltaUsd < 0 && !opts.shouldCapNegativeImpact) {
     return priceImpactDeltaUsd;
   }
 
+  const cappedImpactUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, priceImpactDeltaUsd);
+
+  return cappedImpactUsd;
+}
+
+export function capPositionImpactUsdByMaxImpactPool(marketInfo: MarketInfo, positionImpactDeltaUsd: bigint) {
+  if (positionImpactDeltaUsd < 0) {
+    return positionImpactDeltaUsd;
+  }
+
   const { indexToken } = marketInfo;
-
-  const impactPoolAmount = marketInfo?.positionImpactPoolAmount;
-
+  const impactPoolAmount = marketInfo.positionImpactPoolAmount;
   const maxPriceImpactUsdBasedOnImpactPool = convertToUsd(
     impactPoolAmount,
     indexToken.decimals,
     indexToken.prices.minPrice
   )!;
 
-  let cappedImpactUsd = priceImpactDeltaUsd;
-
-  if (cappedImpactUsd > maxPriceImpactUsdBasedOnImpactPool) {
-    cappedImpactUsd = maxPriceImpactUsdBasedOnImpactPool;
+  if (positionImpactDeltaUsd > maxPriceImpactUsdBasedOnImpactPool) {
+    positionImpactDeltaUsd = maxPriceImpactUsdBasedOnImpactPool;
   }
 
-  const maxPriceImpactFactor = marketInfo.maxPositionImpactFactorPositive;
-  const maxPriceImpactUsdBasedOnMaxPriceImpactFactor = applyFactor(bigMath.abs(sizeDeltaUsd), maxPriceImpactFactor);
+  return positionImpactDeltaUsd;
+}
 
-  if (cappedImpactUsd > maxPriceImpactUsdBasedOnMaxPriceImpactFactor) {
-    cappedImpactUsd = maxPriceImpactUsdBasedOnMaxPriceImpactFactor;
+export function capPositionImpactUsdByMaxPriceImpactFactor(marketInfo: MarketInfo, positionImpactDeltaUsd: bigint) {
+  const { maxPositiveImpactFactor, maxNegativeImpactFactor } = getMaxPositionImpactFactors(marketInfo);
+  const maxPriceImpactFactor = positionImpactDeltaUsd > 0 ? maxPositiveImpactFactor : maxNegativeImpactFactor;
+
+  const maxPriceImpactUsdBasedOnMaxPriceImpactFactor = applyFactor(
+    bigMath.abs(positionImpactDeltaUsd),
+    maxPriceImpactFactor
+  );
+
+  if (bigMath.abs(positionImpactDeltaUsd) > bigMath.abs(maxPriceImpactUsdBasedOnMaxPriceImpactFactor)) {
+    positionImpactDeltaUsd = maxPriceImpactUsdBasedOnMaxPriceImpactFactor;
   }
 
-  return cappedImpactUsd;
+  return positionImpactDeltaUsd;
+}
+
+export function getMaxPositionImpactFactors(marketInfo: MarketInfo) {
+  let maxPositiveImpactFactor = marketInfo.maxPositionImpactFactorPositive;
+  const maxNegativeImpactFactor = marketInfo.maxPositionImpactFactorNegative;
+
+  if (maxPositiveImpactFactor > maxNegativeImpactFactor) {
+    maxPositiveImpactFactor = maxNegativeImpactFactor;
+  }
+
+  return { maxPositiveImpactFactor, maxNegativeImpactFactor };
 }
 
 export function getPriceImpactForPosition(
@@ -155,6 +195,29 @@ export function getPriceImpactForPosition(
   });
 
   return priceImpactUsdForVirtualInventory < priceImpactUsd! ? priceImpactUsdForVirtualInventory : priceImpactUsd;
+}
+
+export function getProportionalPendingImpactValues({
+  sizeInUsd,
+  pendingImpactAmount,
+  sizeDeltaUsd,
+  indexToken,
+}: {
+  sizeInUsd: bigint;
+  pendingImpactAmount: bigint;
+  sizeDeltaUsd: bigint;
+  indexToken: TokenData;
+}) {
+  // TODO: round up magnitude division
+  const proportionalPendingImpactDeltaAmount = bigMath.mulDiv(pendingImpactAmount, sizeDeltaUsd, sizeInUsd);
+
+  const proportionalPendingImpactDeltaUsd = convertToUsd(
+    proportionalPendingImpactDeltaAmount,
+    indexToken.decimals,
+    proportionalPendingImpactDeltaAmount > 0 ? indexToken.prices.minPrice : indexToken.prices.maxPrice
+  )!;
+
+  return { proportionalPendingImpactDeltaAmount, proportionalPendingImpactDeltaUsd };
 }
 
 export function getPriceImpactForSwap(

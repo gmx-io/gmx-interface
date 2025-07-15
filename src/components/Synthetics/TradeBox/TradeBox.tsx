@@ -399,7 +399,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           priceImpactPercentage = fees?.swapPriceImpact?.precisePercentage ?? 0n;
         } else if (isTrigger && decreaseAmounts) {
           sizeDeltaUsd = decreaseAmounts.sizeDeltaUsd;
-          priceImpactDeltaUsd = decreaseAmounts.positionPriceImpactDeltaUsd;
+          priceImpactDeltaUsd = decreaseAmounts.totalPendingImpactDeltaUsd;
           priceImpactPercentage = fees?.positionPriceImpact?.precisePercentage ?? 0n;
         }
 

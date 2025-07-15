@@ -18,7 +18,7 @@ export function getIsHighSwapImpact(swapPriceImpact?: FeeItem) {
 
 export function getIsHighPositionImpact(positionImpact?: FeeItem) {
   return Boolean(
-    positionImpact && positionImpact.deltaUsd < 0 && bigMath.abs(positionImpact.bps) >= HIGH_POSITION_IMPACT_BPS
+    positionImpact && positionImpact.deltaUsd < 0 && bigMath.abs(positionImpact.bps) > HIGH_POSITION_IMPACT_BPS
   );
 }
 

@@ -135,32 +135,6 @@ function ExistingPositionInfoRows() {
   );
 }
 
-function IncreaseOrderRow() {
-  const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isMarket, isLong } = tradeFlags;
-  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
-  const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
-  const fees = useSelector(selectTradeboxFees);
-  const executionPrice = useSelector(selectTradeboxExecutionPrice);
-  const toToken = useSelector(selectTradeboxToToken);
-
-  const acceptablePrice =
-    isMarket && increaseAmounts?.acceptablePrice
-      ? applySlippageToPrice(allowedSlippage, increaseAmounts.acceptablePrice, true, isLong)
-      : increaseAmounts?.acceptablePrice;
-
-  return (
-    <ExecutionPriceRow
-      tradeFlags={tradeFlags}
-      fees={fees}
-      acceptablePrice={acceptablePrice}
-      executionPrice={executionPrice ?? undefined}
-      visualMultiplier={toToken?.visualMultiplier}
-      triggerOrderType={increaseAmounts?.limitOrderType}
-    />
-  );
-}
-
 function DecreaseOrderRow() {
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isMarket, isLong } = tradeFlags;
@@ -288,7 +262,6 @@ export function TradeBoxAdvancedGroups({
         </>
       )}
 
-      {isIncrease && !isTwap && <IncreaseOrderRow />}
       {isTrigger && <DecreaseOrderRow />}
       <TradeFeesRow {...fees} feesType={feesType} />
       <NetworkFeeRow executionFee={totalExecutionFee} gasPaymentParams={gasPaymentParams} />

@@ -181,6 +181,7 @@ export class Positions extends Module {
           collateralAmount: numbers.collateralAmount,
           increasedAtTime: numbers.increasedAtTime,
           decreasedAtTime: numbers.decreasedAtTime,
+          pendingImpactAmount: numbers.pendingImpactAmount,
           isLong: flags.isLong,
           pendingBorrowingFeesUsd: fees.borrowing.borrowingFeeUsd,
           fundingFeeAmount: fees.funding.fundingFeeAmount,

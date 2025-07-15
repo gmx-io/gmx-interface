@@ -195,7 +195,9 @@ export function getMinPriceImpactMarket(
     const liquidity = getAvailableUsdLiquidityForPosition(marketInfo, isLong);
 
     if (isMarketIndexToken(marketInfo, indexTokenAddress) && liquidity > sizeDeltaUsd) {
-      const priceImpactDeltaUsd = getCappedPositionImpactUsd(marketInfo, sizeDeltaUsd, isLong);
+      const priceImpactDeltaUsd = getCappedPositionImpactUsd(marketInfo, sizeDeltaUsd, isLong, true, {
+        shouldCapNegativeImpact: true,
+      });
 
       if (bestImpactDeltaUsd === undefined || priceImpactDeltaUsd > bestImpactDeltaUsd) {
         bestMarket = marketInfo;
