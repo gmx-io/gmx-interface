@@ -16,7 +16,6 @@ import { getIncentivesV2Url } from "config/links";
 import { GLP_PRICE_DECIMALS, MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useGmxPrice } from "domain/legacy";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { getFeeItem } from "domain/synthetics/fees";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
@@ -32,7 +31,6 @@ import {
   getSellGlpToAmount,
   GLP_DECIMALS,
   PLACEHOLDER_ACCOUNT,
-  SECONDS_PER_YEAR,
   USDG_DECIMALS,
 } from "lib/legacy";
 import { useLocalStorageByChainId } from "lib/localStorage";
@@ -43,25 +41,18 @@ import {
   formatAmount,
   formatAmountFree,
   formatAmountHuman,
+  formatBalanceAmount,
   formatDeltaUsd,
   formatUsdPrice,
   limitDecimals,
   parseValue,
 } from "lib/numbers";
-import { formatBalanceAmount } from "lib/numbers";
 import useSearchParams from "lib/useSearchParams";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { abis } from "sdk/abis";
-import {
-  getNativeToken,
-  getToken,
-  getTokenBySymbolSafe,
-  getV1Tokens,
-  getWhitelistedV1Tokens,
-  getWrappedToken,
-} from "sdk/configs/tokens";
+import { getToken, getTokenBySymbolSafe, getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { AmountWithUsdBalance, AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
@@ -114,29 +105,6 @@ function getMinutesToNextEpochIfLessThanHour() {
   return null;
 }
 
-function getStakingData(stakingInfo) {
-  if (!stakingInfo || stakingInfo.length === 0) {
-    return;
-  }
-
-  const keys = ["stakedGlpTracker", "feeGlpTracker"];
-  const data = {};
-  const propsLength = 5;
-
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i];
-    data[key] = {
-      claimable: stakingInfo[i * propsLength],
-      tokensPerInterval: stakingInfo[i * propsLength + 1],
-      averageStakedAmounts: stakingInfo[i * propsLength + 2],
-      cumulativeRewards: stakingInfo[i * propsLength + 3],
-      totalSupply: stakingInfo[i * propsLength + 4],
-    };
-  }
-
-  return data;
-}
-
 function getTooltipContent(managedUsd, tokenInfo, token) {
   return (
     <>
@@ -170,8 +138,8 @@ export default function GlpSwap(props) {
   const tabOptionClassNames = useMemo(
     () => ({
       [tabOptions[0]]: {
-        active: "!bg-[#1F3445] border-b border-b-green-500",
-        regular: "border-b border-b-[transparent]",
+        regular:
+          "border-b border-b-[transparent] !cursor-not-allowed !bg-[#1b1e32] text-slate-500 !hover:bg-[#1b1e32] hover:!text-slate-500",
       },
       [tabOptions[1]]: {
         active: "!bg-[#392A46] border-b border-b-red-500",
@@ -216,7 +184,6 @@ export default function GlpSwap(props) {
   const [isEpochAcknowledgeSelected, setIsEpochAcknowledgeSelected] = useState(false);
 
   const readerAddress = getContract(chainId, "Reader");
-  const rewardReaderAddress = getContract(chainId, "RewardReader");
   const vaultAddress = getContract(chainId, "Vault");
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
   const stakedGlpTrackerAddress = getContract(chainId, "StakedGlpTracker");
@@ -305,18 +272,6 @@ export default function GlpSwap(props) {
     }
   );
 
-  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
-
-  const rewardTrackersForStakingInfo = [stakedGlpTrackerAddress, feeGlpTrackerAddress];
-  const { data: stakingInfo } = useSWR(
-    [`GlpSwap:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT],
-    {
-      fetcher: contractFetcher(signer, "RewardReader", [rewardTrackersForStakingInfo]),
-    }
-  );
-
-  const stakingData = getStakingData(stakingInfo);
-
   const redemptionTime = lastPurchaseTime;
   const inCooldownWindow = redemptionTime && parseInt(Date.now() / 1000) < redemptionTime;
 
@@ -393,51 +348,6 @@ export default function GlpSwap(props) {
     setSwapTokenAddress(token.address);
     setIsWaitingForApproval(false);
   };
-
-  const nativeToken = getTokenInfo(infoTokens, ZeroAddress);
-
-  let totalApr = 0n;
-
-  let feeGlpTrackerAnnualRewardsUsd;
-  let feeGlpTrackerApr;
-  if (
-    stakingData &&
-    stakingData.feeGlpTracker &&
-    stakingData.feeGlpTracker.tokensPerInterval &&
-    nativeToken &&
-    nativeToken.minPrice !== undefined &&
-    glpSupplyUsd !== undefined &&
-    glpSupplyUsd > 0
-  ) {
-    feeGlpTrackerAnnualRewardsUsd = bigMath.mulDiv(
-      stakingData.feeGlpTracker.tokensPerInterval * SECONDS_PER_YEAR,
-      nativeToken.minPrice,
-      expandDecimals(1, 18)
-    );
-    feeGlpTrackerApr = bigMath.mulDiv(feeGlpTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, glpSupplyUsd);
-    totalApr = totalApr + feeGlpTrackerApr;
-  }
-
-  let stakedGlpTrackerAnnualRewardsUsd;
-  let stakedGlpTrackerApr;
-
-  if (
-    gmxPrice !== undefined &&
-    gmxPrice > 0n &&
-    stakingData &&
-    stakingData.stakedGlpTracker !== undefined &&
-    stakingData.stakedGlpTracker.tokensPerInterval !== undefined &&
-    glpSupplyUsd !== undefined &&
-    glpSupplyUsd > 0
-  ) {
-    stakedGlpTrackerAnnualRewardsUsd = bigMath.mulDiv(
-      stakingData.stakedGlpTracker.tokensPerInterval * BigInt(SECONDS_PER_YEAR),
-      gmxPrice,
-      expandDecimals(1, 18)
-    );
-    stakedGlpTrackerApr = bigMath.mulDiv(stakedGlpTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, glpSupplyUsd);
-    totalApr = totalApr + stakedGlpTrackerApr;
-  }
 
   useEffect(() => {
     const updateSwapAmounts = () => {
@@ -868,9 +778,6 @@ export default function GlpSwap(props) {
     feePercentageText += "%";
   }
 
-  const wrappedTokenSymbol = getWrappedToken(chainId).symbol;
-  const nativeTokenSymbol = getNativeToken(chainId).symbol;
-
   const onSwapOptionChange = (opt) => {
     if (opt === t`Sell GLP`) {
       switchSwapOption("redeem");
@@ -1022,33 +929,6 @@ export default function GlpSwap(props) {
                 </div>
               </div>
             )}
-            <div className="App-card-row">
-              <div className="label">
-                <Trans>APR</Trans>
-              </div>
-              <div className="value">
-                <Tooltip
-                  handle={`${formatAmount(totalApr, 2, 2, true)}%`}
-                  position="bottom-end"
-                  renderContent={() => {
-                    return (
-                      <>
-                        <StatsTooltipRow
-                          label={t`${nativeTokenSymbol} (${wrappedTokenSymbol}) APR`}
-                          value={`${formatAmount(feeGlpTrackerApr, 2, 2, false)}%`}
-                          showDollar={false}
-                        />
-                        <StatsTooltipRow
-                          label={t`Escrowed GMX APR`}
-                          value={`${formatAmount(stakedGlpTrackerApr, 2, 2, false)}%`}
-                          showDollar={false}
-                        />
-                      </>
-                    );
-                  }}
-                />
-              </div>
-            </div>
             <div className="App-card-row">
               <div className="label">
                 <Trans>Total Supply</Trans>
@@ -1258,9 +1138,33 @@ export default function GlpSwap(props) {
             </div>
             {minutesToNextEpoch && renderEpochEndingCheckbox(minutesToNextEpoch)}
             <div className="GlpSwap-cta Exchange-swap-button-container">
-              <Button type="submit" variant="primary-action" className="w-full" disabled={!isPrimaryEnabled()}>
-                {getPrimaryText()}
-              </Button>
+              {chainId === ARBITRUM ? (
+                <Tooltip
+                  handleClassName="w-full"
+                  content={
+                    <>
+                      <Trans>Due to the recent incident on GMX V1 Arbitrum, GLP on Arbitrum is not sellable.</Trans>
+                      <br />
+                      <br />
+                      <Trans>
+                        Please{" "}
+                        <ExternalLink href="https://x.com/GMX_IO/status/1943336664102756471" newTab>
+                          read here
+                        </ExternalLink>{" "}
+                        for more information.
+                      </Trans>
+                    </>
+                  }
+                >
+                  <Button type="submit" variant="primary-action" className="w-full" disabled>
+                    <Trans>GLP is not sellable</Trans>
+                  </Button>
+                </Tooltip>
+              ) : (
+                <Button type="submit" variant="primary-action" className="w-full" disabled={!isPrimaryEnabled()}>
+                  {getPrimaryText()}
+                </Button>
+              )}
             </div>
           </form>
         </div>

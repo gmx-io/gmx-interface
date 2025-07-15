@@ -203,6 +203,14 @@ export const CONTRACTS = {
     GmxVester: zeroAddress,
     GlpVester: zeroAddress,
     AffiliateVester: zeroAddress,
+    Router: zeroAddress,
+    GovToken: zeroAddress,
+    ES_GMX_IOU: zeroAddress,
+    OrderBook: zeroAddress,
+    OrderExecutor: zeroAddress,
+    OrderBookReader: zeroAddress,
+    PositionManager: zeroAddress,
+    UniswapGmxEthPool: zeroAddress,
 
     // botanix specific
     NATIVE_TOKEN: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",

@@ -28,6 +28,7 @@ export type GlobalExpressParams = {
 export type ExpressParamsEstimationMethod = "approximate" | "estimateGas";
 
 export type ExpressTxnParams = {
+  chainId: number;
   subaccount: Subaccount | undefined;
   relayParamsPayload: RawRelayParamsPayload;
   gasPaymentParams: GasPaymentParams;
