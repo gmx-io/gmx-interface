@@ -366,6 +366,10 @@ const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig
     "0x39AC3C494950A4363D739201BA5A0861265C9ae5": {
       enabled: true,
     },
+    // PUMP/USD [WBTC-USDC]
+    "0x4c0bb704529fa49a26bd854802d70206982c6f1b": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

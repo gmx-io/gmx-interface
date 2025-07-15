@@ -628,6 +628,13 @@ export const MARKETS: Record<UiContractsChain, Record<string, MarketConfig>> = {
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // PUMP/USD [WBTC-USDC]
+    "0x4c0bb704529fa49a26bd854802d70206982c6f1b": {
+      marketTokenAddress: "0x4c0bb704529fa49a26bd854802d70206982c6f1b",
+      indexTokenAddress: "0x9c060B2fA953b5f69879a8B7B81f62BFfEF360be",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

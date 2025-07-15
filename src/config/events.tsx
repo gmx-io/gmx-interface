@@ -34,6 +34,20 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "pump-listing",
+    isActive: true,
+    startDate: "14 Jul 2025, 12:00",
+    endDate: "21 Jul 2025, 12:00",
+    title: "PUMP market added on Arbitrum",
+    bodyText: (
+      <>
+        <Link to="/trade/long?to=PUMP">Trade</Link> <TokenSymbolWithIcon symbol="PUMP" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools by using{" "}
+        <TokenSymbolWithIcon symbol="WBTC" />, or <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
+  {
     id: "v1-trading-disabled",
     title: "GMX V1 disabled",
     isActive: true,
