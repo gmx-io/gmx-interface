@@ -5,6 +5,7 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
+  SOURCE_BASE_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
 } from "config/chains";
@@ -14,6 +15,7 @@ import arbitrum from "img/ic_arbitrum_24.svg";
 import arbitrumSepolia from "img/ic_arbitrum_sepolia_24.svg";
 import avalanche from "img/ic_avalanche_24.svg";
 import avalancheTestnet from "img/ic_avalanche_testnet_24.svg";
+import base from "img/ic_base_24.svg";
 import botanix from "img/ic_botanix_24.svg";
 import esGMXIcon from "img/ic_esgmx_40.svg";
 import esGMXArbitrumIcon from "img/ic_esgmx_arbitrum.svg";
@@ -90,9 +92,7 @@ export const CHAIN_ID_TO_NETWORK_ICON: Record<AnyChainId | 0, string> = {
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
   0: gmxIcon,
-  // [BASE_MAINNET]: baseIcon,
-  // [SONIC_MAINNET]: sonicIcon,
-
+  [SOURCE_BASE_MAINNET]: base,
   [AVALANCHE_FUJI]: avalancheTestnet,
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
   [SOURCE_OPTIMISM_SEPOLIA]: optimismSepolia,

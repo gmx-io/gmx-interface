@@ -143,7 +143,15 @@ export function useTradeParamsProcessor() {
       }
       setTimeout(() => {
         if (history.location.search) {
-          history.replace({ search: "" });
+          const query = new URLSearchParams(history.location.search);
+          query.delete("mode");
+          query.delete("from");
+          query.delete("to");
+          query.delete("market");
+          query.delete("pool");
+          query.delete("collateral");
+          query.delete("chainId");
+          history.replace({ search: query.toString() });
         }
       }, 2000);
     }
@@ -156,7 +164,15 @@ export function useTradeParamsProcessor() {
     if (history.location.search && !toToken && !pool) {
       setTimeout(() => {
         if (history.location.search) {
-          history.replace({ search: "" });
+          const query = new URLSearchParams(history.location.search);
+          query.delete("mode");
+          query.delete("from");
+          query.delete("to");
+          query.delete("market");
+          query.delete("pool");
+          query.delete("collateral");
+          query.delete("chainId");
+          history.replace({ search: query.toString() });
           prevTradeOptions.current = {};
         }
       }, 2000);

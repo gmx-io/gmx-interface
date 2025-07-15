@@ -12,6 +12,7 @@ import {
   getAlchemyArbitrumWsUrl,
   getAlchemyBotanixWsUrl,
   getFallbackRpcUrl,
+  SOURCE_BASE_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
 } from "config/chains";
@@ -83,6 +84,12 @@ export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcP
 
   if (chainId === BOTANIX) {
     return new ethers.WebSocketProvider(getAlchemyBotanixWsUrl(), network, { staticNetwork: network });
+  }
+
+  if (chainId === SOURCE_BASE_MAINNET) {
+    return new ethers.WebSocketProvider("wss://base-rpc.publicnode.com", network, {
+      staticNetwork: network,
+    });
   }
 
   throw new Error(`Unsupported websocket provider for chain id: ${chainId}`);

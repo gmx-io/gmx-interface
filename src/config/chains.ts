@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import sample from "lodash/sample";
-import { arbitrumSepolia, optimismSepolia, sepolia } from "viem/chains";
+import { arbitrumSepolia, base, optimismSepolia, sepolia } from "viem/chains";
 
 import {
   ARBITRUM_SEPOLIA,
@@ -11,6 +11,7 @@ import {
   ContractsChainId,
   AnyChainId,
   BOTANIX,
+  SOURCE_BASE_MAINNET,
 } from "sdk/configs/chains";
 
 import { isDevelopment } from "./env";
@@ -140,8 +141,7 @@ export const RPC_PROVIDERS: Record<AnyChainId | typeof ETH_MAINNET, string[]> = 
     // "https://rpc.ankr.com/avalanche_fuji",
   ],
   [ARBITRUM_SEPOLIA]: [...arbitrumSepolia.rpcUrls.default.http],
-  // [BASE_MAINNET]: [...base.rpcUrls.default.http],
-  // [SONIC_MAINNET]: [...sonic.rpcUrls.default.http],
+  [SOURCE_BASE_MAINNET]: [...base.rpcUrls.default.http],
   [SOURCE_OPTIMISM_SEPOLIA]: [...optimismSepolia.rpcUrls.default.http],
   [SOURCE_SEPOLIA]: [...sepolia.rpcUrls.default.http],
   [BOTANIX]: [
@@ -160,8 +160,7 @@ export const FALLBACK_PROVIDERS: Record<AnyChainId, string[]> = {
     "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
   ],
   [ARBITRUM_SEPOLIA]: [],
-  // [BASE_MAINNET]: [],
-  // [SONIC_MAINNET]: [],
+  [SOURCE_BASE_MAINNET]: [],
   [SOURCE_OPTIMISM_SEPOLIA]: [],
   [SOURCE_SEPOLIA]: [],
   [BOTANIX]: ENV_BOTANIX_RPC_URLS ? JSON.parse(ENV_BOTANIX_RPC_URLS) : [getAlchemyBotanixHttpUrl()],
@@ -233,6 +232,8 @@ export function getExplorerUrl(chainId: number): string {
       return "https://sepolia.etherscan.io/";
     case BOTANIX:
       return "https://botanixscan.io/";
+    case SOURCE_BASE_MAINNET:
+      return "https://basescan.org/";
   }
 }
 

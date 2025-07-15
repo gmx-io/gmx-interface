@@ -7,6 +7,7 @@ import {
   AVALANCHE_FUJI,
   AnyChainId,
   BOTANIX,
+  SOURCE_BASE_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
   getViemChain,
@@ -66,18 +67,18 @@ const BATCH_CONFIGS: Record<
     },
   },
 
-  // [BASE_MAINNET]: {
-  //   http: {
-  //     batchSize: 0,
-  //     wait: 0,
-  //   },
-  //   client: {
-  //     multicall: {
-  //       batchSize: 1024 * 1024,
-  //       wait: 0,
-  //     },
-  //   },
-  // },
+  [SOURCE_BASE_MAINNET]: {
+    http: {
+      batchSize: 0,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
+  },
 
   [AVALANCHE_FUJI]: {
     http: {

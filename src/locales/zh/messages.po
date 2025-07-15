@@ -6518,6 +6518,10 @@ msgstr ""
 msgid "You're withdrawing {0}, your gas token. It's recommended to keep $10 in {1} for transactions, or switch your gas token in settings."
 msgstr ""
 
+#: src/context/GmxAccountContext/GmxAccountContext.tsx
+msgid "Source Base is now available on GMX"
+msgstr ""
+
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx

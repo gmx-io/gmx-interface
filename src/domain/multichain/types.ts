@@ -42,7 +42,7 @@ export type BridgeOutParams = {
   data: string;
 };
 
-export type LayerZeroEndpointId = 40161 | 40231 | 40232;
+export type LayerZeroEndpointId = 40161 | 40231 | 40232 | 30184 | 30110;
 
 export type QuoteOft = {
   limit: OFTLimitStruct;

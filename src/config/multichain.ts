@@ -1,7 +1,11 @@
 import { errors as _StargateErrorsAbi } from "@stargatefinance/stg-evm-sdk-v2";
 import { abi as IStargateAbi } from "@stargatefinance/stg-evm-sdk-v2/artifacts/src/interfaces/IStargate.sol/IStargate.json";
+import { address as ethPoolArbitrum } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbitrum-mainnet/StargatePoolNative.json";
+import { address as usdcSgPoolArbitrum } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbitrum-mainnet/StargatePoolUSDC.json";
 import { address as ethPoolArbitrumSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbsep-testnet/StargatePoolNative.json";
 import { address as usdcSgPoolArbitrumSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbsep-testnet/StargatePoolUSDC.json";
+import { address as ethPoolBase } from "@stargatefinance/stg-evm-sdk-v2/deployments/base-mainnet/StargatePoolNative.json";
+import { address as usdcSgPoolBase } from "@stargatefinance/stg-evm-sdk-v2/deployments/base-mainnet/StargatePoolUSDC.json";
 import { address as ethPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolNative.json";
 import { address as usdcSgPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolUSDC.json";
 import { address as ethPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolNative.json";
@@ -10,8 +14,8 @@ import type { JsonFragment } from "ethers";
 import invert from "lodash/invert";
 import mapValues from "lodash/mapValues";
 import uniq from "lodash/uniq";
-import { Hex, zeroAddress } from "viem";
 import type { Abi } from "viem";
+import { Hex, zeroAddress } from "viem";
 
 import {
   AnyChainId,
@@ -22,6 +26,7 @@ import {
   BOTANIX,
   ContractsChainId,
   SettlementChainId,
+  SOURCE_BASE_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
   SourceChainId,
@@ -30,6 +35,8 @@ import { isDevelopment } from "config/env";
 import { LayerZeroEndpointId } from "domain/multichain/types";
 import { numberToBigint } from "lib/numbers";
 import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
+
+import { IS_SOURCE_BASE_ALLOWED_KEY } from "./localStorage";
 
 export {
   ethPoolArbitrumSepolia,
@@ -79,10 +86,44 @@ export type MultichainTokenId = {
 
 export const TOKEN_GROUPS: Partial<
   Record<string, Partial<Record<SourceChainId | SettlementChainId, MultichainTokenId>>>
-> = {};
+> = {
+  ["USDC"]: {
+    [ARBITRUM]: {
+      address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      decimals: 6,
+      chainId: ARBITRUM,
+      stargate: usdcSgPoolArbitrum,
+      symbol: "USDC",
+    },
+    [SOURCE_BASE_MAINNET]: {
+      address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      decimals: 6,
+      chainId: SOURCE_BASE_MAINNET,
+      stargate: usdcSgPoolBase,
+      symbol: "USDC",
+    },
+  },
+  ["ETH"]: {
+    [ARBITRUM]: {
+      address: zeroAddress,
+      decimals: 18,
+      chainId: ARBITRUM,
+      stargate: ethPoolArbitrum,
+      symbol: "ETH",
+    },
+    [SOURCE_BASE_MAINNET]: {
+      address: zeroAddress,
+      decimals: 18,
+      chainId: SOURCE_BASE_MAINNET,
+      stargate: ethPoolBase,
+      symbol: "ETH",
+    },
+  },
+};
 
 if (isDevelopment()) {
   TOKEN_GROUPS["USDC.SG"] = {
+    ...TOKEN_GROUPS["USDC.SG"],
     [ARBITRUM_SEPOLIA]: {
       address: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773",
       decimals: 6,
@@ -107,6 +148,7 @@ if (isDevelopment()) {
   };
 
   TOKEN_GROUPS["ETH"] = {
+    ...TOKEN_GROUPS["ETH"],
     [ARBITRUM_SEPOLIA]: {
       address: zeroAddress,
       decimals: 18,
@@ -132,6 +174,7 @@ if (isDevelopment()) {
 }
 
 export const DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT = false;
+export const IS_SOURCE_BASE_ALLOWED = localStorage.getItem(IS_SOURCE_BASE_ALLOWED_KEY) === "1";
 
 function ensureExhaustive<T extends number>(value: Record<T, true>): T[] {
   return Object.keys(value).map(Number) as T[];
@@ -147,12 +190,19 @@ export const CONTRACTS_CHAINS: ContractsChainId[] = ensureExhaustive<ContractsCh
 
 export const SETTLEMENT_CHAINS: SettlementChainId[] = ensureExhaustive<SettlementChainId>({
   [ARBITRUM_SEPOLIA]: true,
+  [ARBITRUM]: true,
 });
 
+// TODO MLTCH remove this
+// @ts-ignore
 export const SOURCE_CHAINS: SourceChainId[] = ensureExhaustive<SourceChainId>({
   [SOURCE_OPTIMISM_SEPOLIA]: true,
   [SOURCE_SEPOLIA]: true,
 });
+
+if (IS_SOURCE_BASE_ALLOWED) {
+  SOURCE_CHAINS.push(SOURCE_BASE_MAINNET);
+}
 
 if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
   SOURCE_CHAINS.push(ARBITRUM_SEPOLIA as SourceChainId);
@@ -255,18 +305,16 @@ for (const tokenSymbol in TOKEN_GROUPS) {
 }
 
 export const DEFAULT_SETTLEMENT_CHAIN_ID_MAP: Record<AnyChainId, SettlementChainId> = {
-  // TODO: fix
-  // [BASE_MAINNET]: ARBITRUM_SEPOLIA, // ARBITRUM,
-  // [SONIC_MAINNET]: ARBITRUM_SEPOLIA, // ARBITRUM,
   [ARBITRUM_SEPOLIA]: ARBITRUM_SEPOLIA,
   [SOURCE_OPTIMISM_SEPOLIA]: ARBITRUM_SEPOLIA,
   [SOURCE_SEPOLIA]: ARBITRUM_SEPOLIA,
+  [SOURCE_BASE_MAINNET]: ARBITRUM,
+  [BOTANIX]: ARBITRUM,
 
   // Stubs
-  [ARBITRUM]: ARBITRUM_SEPOLIA, // ARBITRUM,
-  [AVALANCHE]: ARBITRUM_SEPOLIA, // AVALANCHE,
+  [ARBITRUM]: ARBITRUM, // ARBITRUM,
+  [AVALANCHE]: ARBITRUM, // AVALANCHE,
   [AVALANCHE_FUJI]: ARBITRUM_SEPOLIA,
-  [BOTANIX]: ARBITRUM_SEPOLIA,
 };
 
 export function getMultichainTokenId(chainId: number, tokenAddress: string): MultichainTokenId | undefined {
@@ -304,6 +352,7 @@ export function getMappedTokenId(
 export const MULTICALLS_MAP: Record<SourceChainId, string> = {
   [SOURCE_OPTIMISM_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
+  [SOURCE_BASE_MAINNET]: "0xca11bde05977b3631167028862be2a173976ca11",
 };
 
 if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
@@ -319,6 +368,7 @@ export const OVERRIDE_ERC20_BYTECODE: Hex =
 
 export const CHAIN_ID_PREFERRED_DEPOSIT_TOKEN: Record<SettlementChainId, string> = {
   [ARBITRUM_SEPOLIA]: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773",
+  [ARBITRUM]: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
 };
 
 export const MULTICHAIN_FUNDING_SLIPPAGE_BPS = 50;
@@ -329,6 +379,8 @@ export const CHAIN_ID_TO_ENDPOINT_ID: Record<SettlementChainId | SourceChainId, 
   [ARBITRUM_SEPOLIA]: 40231,
   [SOURCE_SEPOLIA]: 40161,
   [SOURCE_OPTIMISM_SEPOLIA]: 40232,
+  [ARBITRUM]: 30110,
+  [SOURCE_BASE_MAINNET]: 30184,
 };
 
 export const ENDPOINT_ID_TO_CHAIN_ID: Partial<Record<LayerZeroEndpointId, SettlementChainId | SourceChainId>> =
@@ -337,6 +389,7 @@ export const ENDPOINT_ID_TO_CHAIN_ID: Partial<Record<LayerZeroEndpointId, Settle
 export const FAKE_INPUT_AMOUNT_MAP: Record<string, bigint> = {
   "USDC.SG": numberToBigint(1, getTokenBySymbol(ARBITRUM_SEPOLIA, "USDC.SG").decimals),
   ETH: numberToBigint(0.0015, getTokenBySymbol(ARBITRUM_SEPOLIA, "ETH").decimals),
+  USDC: numberToBigint(1, getTokenBySymbol(ARBITRUM, "USDC").decimals),
 };
 
 export const RANDOM_SLOT = "0x23995301f0ea59f7cace2ae906341fc4662f3f5d23f124431ee3520d1070148c";

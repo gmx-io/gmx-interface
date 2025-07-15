@@ -8,13 +8,14 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
+  SOURCE_BASE_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
   getChainName,
 } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getChainIcon, getIcon } from "config/icons";
-import { isSourceChain } from "config/multichain";
+import { IS_SOURCE_BASE_ALLOWED, isSourceChain } from "config/multichain";
 import { useChainId } from "lib/chains";
 import { isHomeSite, shouldShowRedirectModal } from "lib/legacy";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
@@ -68,13 +69,16 @@ const NETWORK_OPTIONS: NetworkOption[] = [
     icon: getIcon(BOTANIX, "network"),
     color: "#F7931A",
   },
-  // {
-  //   label: getChainName(BASE_MAINNET),
-  //   value: BASE_MAINNET,
-  //   icon: getChainIcon(BASE_MAINNET),
-  //   color: "#0052ff",
-  // },
 ];
+
+if (IS_SOURCE_BASE_ALLOWED) {
+  NETWORK_OPTIONS.push({
+    label: getChainName(SOURCE_BASE_MAINNET),
+    value: SOURCE_BASE_MAINNET,
+    icon: getChainIcon(SOURCE_BASE_MAINNET),
+    color: "#0052ff",
+  });
+}
 
 if (isDevelopment()) {
   NETWORK_OPTIONS.push(

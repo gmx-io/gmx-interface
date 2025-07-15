@@ -1,5 +1,14 @@
 import { defineChain } from "viem";
-import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, Chain, optimismSepolia, sepolia } from "viem/chains";
+import {
+  arbitrum,
+  arbitrumSepolia,
+  avalanche,
+  avalancheFuji,
+  base,
+  Chain,
+  optimismSepolia,
+  sepolia,
+} from "viem/chains";
 
 import { GasLimitsConfig } from "types/fees";
 
@@ -26,8 +35,8 @@ export type ContractsChainId =
   | typeof BOTANIX
   | typeof ARBITRUM_SEPOLIA;
 
-export type SettlementChainId = typeof ARBITRUM_SEPOLIA;
-export type SourceChainId = typeof SOURCE_OPTIMISM_SEPOLIA | typeof SOURCE_SEPOLIA;
+export type SettlementChainId = typeof ARBITRUM_SEPOLIA | typeof ARBITRUM;
+export type SourceChainId = typeof SOURCE_OPTIMISM_SEPOLIA | typeof SOURCE_SEPOLIA | typeof SOURCE_BASE_MAINNET;
 export type AnyChainId = ContractsChainId | SettlementChainId | SourceChainId;
 
 export type ChainName =
@@ -37,7 +46,8 @@ export type ChainName =
   | "Arbitrum Sepolia"
   | "Optimism Sepolia"
   | "Sepolia"
-  | "Botanix";
+  | "Botanix"
+  | "Base";
 
 export const CHAIN_NAMES_MAP: Record<AnyChainId, ChainName> = {
   [ARBITRUM]: "Arbitrum",
@@ -47,6 +57,7 @@ export const CHAIN_NAMES_MAP: Record<AnyChainId, ChainName> = {
   [ARBITRUM_SEPOLIA]: "Arbitrum Sepolia",
   [SOURCE_OPTIMISM_SEPOLIA]: "Optimism Sepolia",
   [SOURCE_SEPOLIA]: "Sepolia",
+  [SOURCE_BASE_MAINNET]: "Base",
 };
 
 export const HIGH_EXECUTION_FEES_MAP: Record<ContractsChainId, number> = {
@@ -160,6 +171,7 @@ const VIEM_CHAIN_BY_CHAIN_ID: Record<AnyChainId, Chain> = {
   [BOTANIX]: botanix,
   [SOURCE_OPTIMISM_SEPOLIA]: optimismSepolia,
   [SOURCE_SEPOLIA]: sepolia,
+  [SOURCE_BASE_MAINNET]: base,
 };
 
 export function getChainName(chainId: number): ChainName {
