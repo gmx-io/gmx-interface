@@ -41,7 +41,7 @@ export async function sendExpressTransaction(p: {
     feeToken: p.txnData.feeToken,
     sponsorApiKey: apiKey,
     retries: 0,
-    isSponsoredCall: p.isSponsoredCall,
+    isSponsoredCall: apiKey ? p.isSponsoredCall : false,
   });
 
   return gelatoPromise.then((res) => {
@@ -113,6 +113,10 @@ export async function sendTxnToGelato({
   retries: number;
   isSponsoredCall: boolean;
 }) {
+  if (isSponsoredCall && !sponsorApiKey) {
+    throw new Error("Sponsor API key is required for sponsored call");
+  }
+
   const url = isSponsoredCall ? `${GELATO_API}/relays/v2/sponsored-call` : `${GELATO_API}/relays/v2/call-with-sync-fee`;
 
   const res = await fetch(url, {

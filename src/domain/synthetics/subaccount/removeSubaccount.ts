@@ -84,7 +84,7 @@ export async function buildAndSignRemoveSubaccountTxn({
   }
 
   const removeSubaccountCallData = encodeFunctionData({
-    abi: abis.SubaccountGelatoRelayRouter,
+    abi: srcChainId !== undefined ? abis.MultichainSubaccountRouter : abis.SubaccountGelatoRelayRouter,
     functionName: "removeSubaccount",
     args:
       srcChainId !== undefined
