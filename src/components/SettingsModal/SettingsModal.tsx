@@ -567,7 +567,7 @@ function SettingButton({
               />
             )}
           </div>
-          <div className="text-slate-100">{description}</div>
+          <div className="text-slate-500">{description}</div>
         </div>
         {chip ? <div className="mr-6 mt-4">{chip}</div> : null}
       </div>

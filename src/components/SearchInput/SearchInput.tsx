@@ -72,7 +72,7 @@ export default function SearchInput({
           width={16}
           onClick={handleClick}
           className={cx("relative -top-1 ", {
-            "text-slate-100": !isFocused,
+            "text-slate-500": !isFocused,
             "text-white": isFocused,
           })}
         />
@@ -87,7 +87,7 @@ export default function SearchInput({
         onKeyDown={onKeyDown}
         onFocus={handleFocus}
         autoFocus={autoFocus ?? !isSmallerScreen}
-        className={cx("block w-full rounded-4 border  placeholder-slate-100", {
+        className={cx("block w-full rounded-4 border  placeholder-slate-500", {
           "border-cold-blue-500": isFocused,
           "border-gray-800": !isFocused,
           "py-10 pl-40 pr-34 text-16": size === "m",
@@ -104,14 +104,14 @@ export default function SearchInput({
         >
           <div
             className={cx(
-              "rounded-4 p-4 text-slate-100",
-              "group-hover:bg-[#50577e99] group-hover:text-slate-100 ",
-              "group-active:bg-[#50577eb3] group-active:text-slate-100"
+              "rounded-4 p-4 text-slate-500",
+              "group-hover:bg-[#50577e99] group-hover:text-slate-500 ",
+              "group-active:bg-[#50577eb3] group-active:text-slate-500"
             )}
           >
             <CrossIconComponent
               className={cx("w-16", {
-                "text-slate-100": !isFocused,
+                "text-slate-500": !isFocused,
                 "text-white": isFocused,
               })}
             />

@@ -47,7 +47,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
     <div className="relative">
       <Menu>
         <Menu.Button as="div">
-          <button className="flex items-center gap-8 rounded-8 bg-new-gray-200 px-16 py-10">
+          <button className="flex items-center gap-8 rounded-8 bg-slate-700 px-16 py-10">
             <Avatar size={20} ensName={ensName} address={account} />
 
             <span className="text-body-medium font-medium">

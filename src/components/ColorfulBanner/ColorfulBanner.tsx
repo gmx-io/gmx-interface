@@ -16,7 +16,7 @@ const colorSchemas = {
     bg: "bg-cold-blue-700",
   },
   slate: {
-    border: "border-l-slate-100",
+    border: "border-l-slate-500",
     bg: "bg-slate-600",
   },
 };

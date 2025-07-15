@@ -104,14 +104,14 @@ function ChartHeaderInfoMobile() {
 
         <div>
           <div className="mb-4 whitespace-nowrap">
-            <span className="text-body-small whitespace-nowrap text-slate-100">
+            <span className="text-body-small whitespace-nowrap text-slate-500">
               <Trans>Open Interest</Trans>
             </span>
-            <span className="text-slate-100">{" ("}</span>
+            <span className="text-slate-500">{" ("}</span>
             <span className="positive">{longOIPercentage}</span>
-            <span className="text-slate-100">/</span>
+            <span className="text-slate-500">/</span>
             <span className="negative">{shortOIPercentage}</span>
-            <span className="text-slate-100">{")"}</span>
+            <span className="text-slate-500">{")"}</span>
           </div>
           <div className="flex flex-row items-center gap-8">
             <div className="flex flex-row items-center gap-8">{longOIValue}</div>
@@ -418,7 +418,7 @@ function ChartHeaderInfoDesktop() {
             style={leftStyles}
             onClick={scrollToLeft}
           >
-            {scrollLeft > 0 && <BiChevronLeft className="text-slate-100" size={24} />}
+            {scrollLeft > 0 && <BiChevronLeft className="text-slate-500" size={24} />}
           </div>
           <div
             className={cx("Chart-top-scrollable-fade-right", {
@@ -429,7 +429,7 @@ function ChartHeaderInfoDesktop() {
             style={rightStyles}
             onClick={scrollToRight}
           >
-            {scrollRight > 0 && <BiChevronRight className="text-slate-100" size={24} />}
+            {scrollRight > 0 && <BiChevronRight className="text-slate-500" size={24} />}
           </div>
         </div>
         <div className="Chart-top-scrollable gap-20" ref={scrollableRef}>
@@ -447,7 +447,9 @@ function ChartHeaderInfoDesktop() {
 const ChartHeaderItem = ({ label, value }: { label: ReactNode; value: ReactNode }) => {
   return (
     <div className="flex flex-col gap-2">
-      <div className="text-[11px] font-medium uppercase tracking-[0.08em] text-slate-100 whitespace-nowrap">{label}</div>
+      <div className="whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.08em] text-slate-500">
+        {label}
+      </div>
       <div className="text-body-medium">{value}</div>
     </div>
   );

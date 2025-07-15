@@ -11,6 +11,6 @@ export default function FavoriteStar({
   return isFavorite ? (
     <FaStar className={cx("text-yellow-300", activeClassName)} />
   ) : (
-    <FaRegStar className="text-slate-100" />
+    <FaRegStar className="text-slate-500" />
   );
 }

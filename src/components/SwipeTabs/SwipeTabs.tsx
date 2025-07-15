@@ -206,7 +206,7 @@ export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, 
     <motion.div
       ref={containerRef}
       data-qa={qa}
-      className="text-body-medium relative flex touch-none select-none overflow-hidden rounded-3 bg-cold-blue-900 text-slate-100 shadow-[inset_0px_0px_30px_5px_rgba(255,255,255,0.01)]"
+      className="text-body-medium relative flex touch-none select-none overflow-hidden rounded-3 bg-cold-blue-900 text-slate-500 shadow-[inset_0px_0px_30px_5px_rgba(255,255,255,0.01)]"
       onPanStart={handlePanStart}
       onPan={handlePan}
       onPanEnd={handlePanEnd}

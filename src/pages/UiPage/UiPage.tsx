@@ -78,7 +78,7 @@ const colors = {
     "900": "bg-cold-blue-900",
   },
   slate: {
-    "100": "bg-slate-100",
+    "100": "bg-slate-500",
     "500": "bg-slate-500",
     "600": "bg-slate-600",
     "700": "bg-slate-700",

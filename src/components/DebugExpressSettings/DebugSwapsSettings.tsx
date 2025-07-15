@@ -57,7 +57,7 @@ export function DebugSwapsSettings() {
                 <Trans>Swap Price Impact for External Swap Threshold</Trans>
               </div>
               <div className="relative">
-                <div className="absolute left-11 top-1/2 -translate-y-1/2 text-slate-100">-</div>
+                <div className="absolute left-11 top-1/2 -translate-y-1/2 text-slate-500">-</div>
                 <NumberInput
                   className="mb-8 mt-8 w-full rounded-4 border border-gray-700 pl-25"
                   value={(-debugSettings.swapPriceImpactForExternalSwapThresholdBps).toString()}
@@ -68,7 +68,7 @@ export function DebugSwapsSettings() {
                   }}
                   placeholder={SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS.toString()}
                 />
-                <div className="absolute right-11 top-1/2 -translate-y-1/2 text-right text-slate-100">bps</div>
+                <div className="absolute right-11 top-1/2 -translate-y-1/2 text-right text-slate-500">bps</div>
               </div>
             </div>
             <div className="divider"></div>

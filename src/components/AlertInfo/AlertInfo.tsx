@@ -12,9 +12,9 @@ type Props = {
   noMargin?: boolean;
   onClick?: () => void;
   /**
-   * @default "text-slate-100"
+   * @default "text-slate-500"
    */
-  textColor?: "text-slate-100" | "text-yellow-500";
+  textColor?: "text-slate-500" | "text-yellow-500";
 };
 
 export function AlertInfo({
@@ -22,7 +22,7 @@ export function AlertInfo({
   noMargin = false,
   children,
   type,
-  textColor = "text-slate-100",
+  textColor = "text-slate-500",
   className,
   onClick,
 }: Props) {

@@ -10,7 +10,7 @@
 
   .Dropdown-current-arrow {
     font-size: var(--font-size-body-small);
-    color: var(--color-slate-100);
+    color: var(--color-slate-500);
     margin-left: 1rem;
     margin-top: -2px;
   }
@@ -72,12 +72,12 @@
 
 .Chart-top-scrollable-fade-left {
   justify-content: flex-start;
-  background: linear-gradient(to left, transparent, var(--color-new-slate-900) 50%, var(--color-new-slate-900));
+  background: linear-gradient(to left, transparent, var(--color-slate-900) 50%, var(--color-slate-900));
 }
 
 .Chart-top-scrollable-fade-right {
   justify-content: flex-end;
-  background: linear-gradient(to right, transparent, var(--color-new-slate-900) 50%, var(--color-new-slate-900));
+  background: linear-gradient(to right, transparent, var(--color-slate-900) 50%, var(--color-slate-900));
 }
 
 .Chart-header-value {

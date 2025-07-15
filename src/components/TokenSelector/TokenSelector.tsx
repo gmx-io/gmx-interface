@@ -301,7 +301,7 @@ export default function TokenSelector(props: Props) {
           })}
         </div>
         {sortedFilteredTokens.length === 0 && (
-          <div className="text-16 text-slate-100">
+          <div className="text-16 text-slate-500">
             <Trans>No tokens matched.</Trans>
           </div>
         )}

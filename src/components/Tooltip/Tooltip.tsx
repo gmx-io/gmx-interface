@@ -206,7 +206,7 @@ export default function Tooltip<T extends ElementType>({
       {...getFloatingProps()}
       className={cx("Tooltip-popup", tooltipClassName)}
     >
-      <FloatingArrow ref={arrowRef} context={context} className="fill-new-gray-200" />
+      <FloatingArrow ref={arrowRef} context={context} className="fill-slate-700" />
       {finalContent}
     </div>
   ) : undefined;
@@ -246,13 +246,13 @@ export default function Tooltip<T extends ElementType>({
         })}
       >
         <div className="flex items-center gap-2">
-        {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
-        {isHandlerDisabled ? (
-          <div className="pointer-events-none w-full flex-none [text-decoration:inherit]">{handle ?? children}</div>
-        ) : (
-          <>{handle ?? children}</>
-        )}
-        {showInfoIcon && <InfoIcon className="w-16 h-16" />}
+          {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
+          {isHandlerDisabled ? (
+            <div className="pointer-events-none w-full flex-none [text-decoration:inherit]">{handle ?? children}</div>
+          ) : (
+            <>{handle ?? children}</>
+          )}
+          {showInfoIcon && <InfoIcon className="h-16 w-16" />}
         </div>
       </span>
       {visible && withPortal && <FloatingPortal>{tooltipContent}</FloatingPortal>}

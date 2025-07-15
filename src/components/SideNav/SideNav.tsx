@@ -26,7 +26,7 @@ function SideNav() {
 
   return (
     <nav
-      className={cx("flex shrink-0 flex-col bg-new-slate-900", {
+      className={cx("flex shrink-0 flex-col bg-slate-900", {
         "w-[164px]": !isCollapsed,
       })}
     >
@@ -80,17 +80,17 @@ function NavItem({ icon, label, isActive = false, isCollapsed = false, onClick, 
     <button
       className={cx(
         `flex cursor-pointer items-center gap-8
-        rounded-8 px-16 py-8 text-slate-100 transition-colors
-        hover:bg-new-gray-200 hover:text-white`,
+        rounded-8 px-16 py-8 text-slate-500 transition-colors
+        hover:bg-slate-700 hover:text-white`,
         {
-          "bg-new-gray-200 text-white": isActive,
+          "bg-slate-700 text-white": isActive,
           "w-full": !isCollapsed,
         }
       )}
       onClick={onClick}
     >
       <div className="flex h-24 w-24 shrink-0 items-center justify-center">{icon}</div>
-      <span className={cx("text-body-medium font-medium tracking-[-1.2%]", { "hidden": isCollapsed })}>{label}</span>
+      <span className={cx("text-body-medium font-medium tracking-[-1.2%]", { hidden: isCollapsed })}>{label}</span>
     </button>
   );
 

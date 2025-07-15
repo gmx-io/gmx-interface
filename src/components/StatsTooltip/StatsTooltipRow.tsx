@@ -16,7 +16,7 @@ export default function StatsTooltipRow({
   label,
   value,
   textClassName = "text-white",
-  labelClassName = "text-slate-100",
+  labelClassName = "text-slate-500",
   showDollar = true,
   unit,
   showColon = true,

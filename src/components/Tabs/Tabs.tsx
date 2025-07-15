@@ -30,7 +30,7 @@ export default function Tabs<V extends string | number>({
   return (
     <div
       data-qa={qa}
-      className={cx("flex w-full", className, {
+      className={cx("flex w-full rounded-t-8", className, {
         "gap-8": type === "inline",
       })}
     >

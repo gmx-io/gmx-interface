@@ -267,7 +267,7 @@ function MobileSlideModal({
             <div className="flex touch-none select-none items-stretch justify-between gap-4 px-14 pb-14 pt-14">
               <div className="text-body-large grow">{label}</div>
 
-              <MdClose fontSize={20} className="cursor-pointer text-slate-100 hover:opacity-90" onClick={handleClose} />
+              <MdClose fontSize={20} className="cursor-pointer text-slate-500 hover:opacity-90" onClick={handleClose} />
             </div>
             {headerRef ? (
               <div className="px-14 last:*:mb-14" ref={headerRef} />

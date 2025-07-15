@@ -74,10 +74,10 @@ code {
 }
 
 :root {
-  --main-bg-color: var(--color-new-slate-900);
+  --main-bg-color: var(--color-slate-900);
   --dark-blue: var(--color-slate-800);
   --dark-blue-bg: var(--color-slate-800);
-  --dark-blue-accent: var(--color-slate-100);
+  --dark-blue-accent: var(--color-slate-500);
   --primary-btn-bg: var(--color-blue-600);
   --primary-btn-hover: var(--color-blue-400);
   --primary-btn-active: color-mix(in srgb, var(--color-blue-300), var(--color-blue-400) 90%);
@@ -158,7 +158,7 @@ tr {
 }
 
 .muted {
-  color: var(--color-slate-100);
+  color: var(--color-slate-500);
 }
 
 .strong {
@@ -176,7 +176,7 @@ tr {
 
 .label,
 .label a {
-  color: var(--color-slate-100);
+  color: var(--color-slate-500);
 }
 
 ul {
@@ -399,7 +399,7 @@ button.btn-link:hover .logout-icon {
 
 .subtext {
   font-size: 1.2rem;
-  color: var(--color-slate-100);
+  color: var(--color-slate-500);
   margin-left: 0.25rem;
 }
 

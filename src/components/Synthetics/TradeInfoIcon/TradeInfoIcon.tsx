@@ -168,7 +168,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
       tooltipClassName="p-10"
       className="flex"
     >
-      <InfoCircleIcon className="h-16 w-16 p-8 box-content cursor-pointer text-slate-100 gmx-hover:text-white" />
+      <InfoCircleIcon className="box-content h-16 w-16 cursor-pointer p-8 text-slate-500 gmx-hover:text-white" />
     </Tooltip>
   );
 }

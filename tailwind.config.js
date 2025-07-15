@@ -11,16 +11,12 @@ const flattenColorPalette = require("tailwindcss/lib/util/flattenColorPalette");
  */
 const colors = {
   blue: {
-    300: "#7885ff",
-    400: "#4d5ffa",
+    100: "#A4C3F9",
+    300: "#7885FF",
+    400: "#2D42FC",
     500: "#3d51ff",
     600: "#2d42fc",
     700: "#2e3dcd",
-    //
-    strong: "#7885ff",
-    secondary: "#a4c3f9",
-    backgroundBase: "#1e223c",
-    backgroundBase20: "#7885FF33",
   },
   "cold-blue": {
     500: "#3a3f79",
@@ -32,14 +28,15 @@ const colors = {
     600: "rgba(180,187,255, 0.6)",
   },
   slate: {
-    100: "#a0a3c4",
-    500: "#3e4361",
-    600: "#373c58",
-    700: "#23263b",
+    400: "#BEC0DA",
+    500: "#a0a3c4",
+    600: "#3C4067",
+    650: "#3C40677f",
+    700: "#1E2033",
     750: "#17182c",
-    800: "#121421",
-    900: "#101124",
-    950: "#08091b",
+    800: "#171827",
+    900: "#090a14",
+    950: "#090a147f",
   },
   gray: {
     50: "rgba(255, 255, 255, 0.95)",
@@ -57,17 +54,11 @@ const colors = {
   yellow: {
     300: "#ffe166",
     500: "#f3b50c",
-    //
-    strong: "#FFE166",
-    backgroundBase12: "#FFE1661F",
   },
   red: {
     400: "#ff637a",
     500: "#FF506A",
     700: "#B33055",
-    //
-    secondary: "#f9a4a5",
-    backgroundBase: "#2d192d",
   },
   green: {
     300: "#56dba8",
@@ -77,10 +68,6 @@ const colors = {
     600: "#1F3445",
     700: "#0FDE8D",
     800: "#178969",
-    //
-    strong: "#0fde8d",
-    secondary: "#a4f9d8",
-    backgroundBase: "#1f3445",
   },
   white: "#ffffff",
   black: "#000000",
@@ -98,11 +85,6 @@ const colors = {
     accent: "#FFFFFF",
   },
   fill: {
-    background: "#090A14",
-    surfaceBase: "#121421",
-    surfaceBase88: "#12142188",
-    surfaceElevated: "#1E2033",
-    surfaceElevated50: "#1E203350",
     surfaceHover: "#A0A3C4",
     accent: "#363A59",
     tertiary: "#B4BBFF1A",
@@ -114,12 +96,6 @@ const colors = {
     inactive: "#3e4361",
     onButton: "#FFFFFF",
   },
-  'new-gray': {
-    200: "#1E2033"
-  },
-  'new-slate': {
-    900: "#090A14"
-  }
 };
 
 /**

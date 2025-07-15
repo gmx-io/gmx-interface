@@ -36,7 +36,7 @@ export function AmountWithUsdHuman({
     <span>
       <span>{topValue} </span>
       {multiline && <br />}
-      <span className={cx("text-12 text-slate-100 group-hover/hoverable:text-[inherit]", { "ml-2": multiline })}>
+      <span className={cx("text-12 text-slate-500 group-hover/hoverable:text-[inherit]", { "ml-2": multiline })}>
         ({bottomValue})
       </span>
     </span>
@@ -77,7 +77,7 @@ export function AmountWithUsdBalance({
     <span className={className}>
       <span>{topValue} </span>
       {multiline && <br />}
-      <span className={cx("text-12 text-slate-100 group-hover/hoverable:text-[inherit]", { "ml-2": multiline })}>
+      <span className={cx("text-12 text-slate-500 group-hover/hoverable:text-[inherit]", { "ml-2": multiline })}>
         ({bottomValue})
       </span>
     </span>

@@ -14,7 +14,7 @@ export function TokenValuesInfoCell({
     <>
       {usd && <div className="whitespace-nowrap ">{usd}</div>}
       {value && (
-        <div className="whitespace-nowrap text-12 text-slate-100">
+        <div className="whitespace-nowrap text-12 text-slate-500">
           ({symbol && isNumber ? `${value} ${symbol}` : value})
         </div>
       )}

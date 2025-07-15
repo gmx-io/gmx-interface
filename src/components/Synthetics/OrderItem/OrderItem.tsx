@@ -254,7 +254,7 @@ export function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?
           <span> to </span>
           {isTwapOrder(order) ? null : <span>{toTokenText} </span>}
           {toTokenIcon}
-          {isTwapOrder(order) ? <TwapOrderProgress order={order} className="text-slate-100" /> : null}
+          {isTwapOrder(order) ? <TwapOrderProgress order={order} className="text-slate-500" /> : null}
         </Trans>
       </span>
     );
@@ -291,7 +291,7 @@ export function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?
         "cursor-help border-b border-dashed border-b-gray-400": bordered,
       })}
     >
-      {sizeText} {isTwapOrder(order) && <TwapOrderProgress order={order} className="text-slate-100" />}
+      {sizeText} {isTwapOrder(order) && <TwapOrderProgress order={order} className="text-slate-500" />}
     </span>
   );
 }
@@ -529,7 +529,7 @@ function OrderItemLarge({
 
   const cancelButton = (
     <button
-      className={cx("cursor-pointer p-6 text-slate-100 disabled:cursor-wait", {
+      className={cx("cursor-pointer p-6 text-slate-500 disabled:cursor-wait", {
         "hover:text-white": !isCanceling && !disabledCancelMarketOrderMessage,
       })}
       disabled={isCanceling || Boolean(disabledCancelMarketOrderMessage)}
@@ -612,7 +612,7 @@ function OrderItemLarge({
         <TableTd>
           <div className="inline-flex items-center">
             {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
-              <button className="cursor-pointer p-6 text-slate-100 hover:text-white" onClick={setEditingOrderKey}>
+              <button className="cursor-pointer p-6 text-slate-500 hover:text-white" onClick={setEditingOrderKey}>
                 <AiOutlineEdit title={t`Edit order`} fontSize={16} />
               </button>
             )}

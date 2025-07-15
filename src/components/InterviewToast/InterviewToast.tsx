@@ -18,7 +18,7 @@ export function InterviewToast({ type, onButtonClick }: Props) {
         </Trans>
         <br />
         <br />
-        <div onClick={onButtonClick} className="text-xl cursor-pointer text-slate-100 underline">
+        <div onClick={onButtonClick} className="text-xl cursor-pointer text-slate-500 underline">
           <Trans>Give us your feedback on GMX.</Trans>
         </div>
         <br />
@@ -51,7 +51,7 @@ export function InterviewToast({ type, onButtonClick }: Props) {
         </Trans>
         <br />
         <br />
-        <div onClick={onButtonClick} className="text-xl cursor-pointer text-slate-100 underline">
+        <div onClick={onButtonClick} className="text-xl cursor-pointer text-slate-500 underline">
           <Trans>Click here to give us your feedback on GMX.</Trans>
         </div>
       </div>

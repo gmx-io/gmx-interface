@@ -226,10 +226,10 @@ function DebugMarketGraph() {
             <div className="flex grow items-center gap-8">
               {swapPath.swapSteps.map((step, index) => (
                 <Fragment key={`${step.marketAddress}-${index}`}>
-                  {index > 0 && <div className="text-slate-100">→</div>}
+                  {index > 0 && <div className="text-slate-500">→</div>}
                   <div>
                     <div className="flex items-center gap-4">
-                      <div className="text-body-small text-slate-100">{tokens[step.tokenInAddress].symbol}</div>
+                      <div className="text-body-small text-slate-500">{tokens[step.tokenInAddress].symbol}</div>
                       <button
                         className={cx(
                           "flex cursor-pointer gap-4 rounded-4 px-4 py-2",
@@ -242,7 +242,7 @@ function DebugMarketGraph() {
                       >
                         {marketsInfoData ? getMarketFullName(marketsInfoData[step.marketAddress]) : step.marketAddress}
                       </button>
-                      <div className="text-body-small text-slate-100">{tokens[step.tokenOutAddress].symbol}</div>
+                      <div className="text-body-small text-slate-500">{tokens[step.tokenOutAddress].symbol}</div>
                     </div>
                     <div>
                       L: {step.isOutLiquidity ? "🔴" : "✔️"} C: {step.isOutCapacity ? "🔴" : "✔️"}
@@ -274,7 +274,7 @@ function DebugMarketGraph() {
                   >
                     {marketsInfoData ? getMarketFullName(marketsInfoData[marketAddress]) : marketAddress}
                   </div>
-                  {index < arr.length - 1 && <div className="text-slate-100">→</div>}
+                  {index < arr.length - 1 && <div className="text-slate-500">→</div>}
                 </Fragment>
               ))}
             </div>
@@ -288,7 +288,7 @@ function DebugMarketGraph() {
           <div>Disabled markets</div>
           <div className="flex flex-wrap gap-8">
             {!debugSwapMarketsConfig?.disabledSwapMarkets?.length ? (
-              <span className="py-2 text-slate-100">No disabled markets</span>
+              <span className="py-2 text-slate-500">No disabled markets</span>
             ) : (
               debugSwapMarketsConfig?.disabledSwapMarkets?.map((m) => (
                 <button
@@ -314,7 +314,7 @@ function DebugMarketGraph() {
             .sort((a, b) => a[0].localeCompare(b[0]))
             .map(([letter, markets]) => (
               <div key={letter} className="flex flex-col gap-8">
-                <div className="text-slate-100">{letter}</div>
+                <div className="text-slate-500">{letter}</div>
                 {markets
                   .sort((a, b) => a.name.localeCompare(b.name))
                   .map((m) => (

@@ -306,7 +306,7 @@ const GraphChart = ({
 
   const isMobile = usePoolsIsMobilePage();
 
-  const axisTick = useMemo(() => ({ fill: "var(--color-slate-100)", fontSize: isMobile ? 12 : 14 }), [isMobile]);
+  const axisTick = useMemo(() => ({ fill: "var(--color-slate-500)", fontSize: isMobile ? 12 : 14 }), [isMobile]);
 
   const [data, setData] = useState<GraphData[]>([]);
 
@@ -382,7 +382,7 @@ const GraphValue = ({
   return (
     <div className="flex items-center gap-8">
       <span className={cx("text-[24px]", valueClassName)}>{value ?? "..."}</span>
-      <span className="text-body-medium text-slate-100">{label}</span>
+      <span className="text-body-medium text-slate-500">{label}</span>
     </div>
   );
 };

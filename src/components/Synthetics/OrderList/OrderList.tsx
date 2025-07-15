@@ -239,7 +239,7 @@ export function OrderList({
       )}
 
       {isContainerSmall && orders.length === 0 && (
-        <div className="rounded-4 bg-slate-800 p-14 text-slate-100">
+        <div className="rounded-4 bg-slate-800 p-14 text-slate-500">
           {isLoading ? t`Loading...` : t`No open orders`}
         </div>
       )}
@@ -283,7 +283,7 @@ export function OrderList({
           <tbody>
             {orders.length === 0 && (
               <TableTr hoverable={false} bordered={false}>
-                <TableTd colSpan={7} className="text-slate-100">
+                <TableTd colSpan={7} className="text-slate-500">
                   {isLoading ? t`Loading...` : t`No open orders`}
                 </TableTd>
               </TableTr>

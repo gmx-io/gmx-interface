@@ -893,18 +893,19 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           <div className="flex items-center justify-between">
             <Tabs
               options={tabsOptions}
-              regularOptionClassname="py-10"
               type="inline"
               selectedValue={tradeMode}
               onChange={onSelectTradeMode}
               qa="trade-mode"
+              className="bg-slate-800"
+              regularOptionClassname="py-10 hover:bg-slate-700 grow"
             />
             <div className="flex items-center gap-4">
               <TradeInfoIcon isMobile={isMobile} tradeType={tradeType} tradePlace="tradebox" />
 
               <div className="relative">
                 <SettingsIcon
-                  className="cursor-pointer text-slate-100 gmx-hover:text-white"
+                  className="cursor-pointer text-slate-500 gmx-hover:text-white"
                   onClick={() => setIsSettingsVisible(true)}
                 />
                 {settingsWarningDotVisible && (
@@ -990,7 +991,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                         setIsChecked={setKeepLeverage}
                         disabled={decreaseAmounts?.isFullClose}
                       >
-                        <span className="text-14 text-slate-100">
+                        <span className="text-14 text-slate-500">
                           <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
                         </span>
                       </ToggleSwitch>

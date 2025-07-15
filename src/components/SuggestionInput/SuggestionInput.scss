@@ -1,5 +1,5 @@
 $suggestion-input-hover-background: linear-gradient(0deg, #090a144d, #090a144d),
-  linear-gradient(0deg, var(--color-fill-surfaceElevated), var(--color-fill-surfaceElevated));
+  linear-gradient(0deg, var(--color-fill-slate-700), var(--color-fill-slate-700));
 
 .Suggestion-input-wrapper {
   position: relative;
@@ -63,7 +63,7 @@ $suggestion-input-hover-background: linear-gradient(0deg, #090a144d, #090a144d),
       border-radius: 4px;
       color: var(--color-white);
       &::placeholder {
-        color: var(--color-slate-100);
+        color: var(--color-slate-500);
       }
     }
   }

@@ -127,7 +127,7 @@ export function TradeFeesRow(p: Props) {
                 Swap {getToken(chainId, swap.tokenInAddress).symbol} to {getToken(chainId, swap.tokenOutAddress).symbol}
               </Trans>
               {showDebugValues && (
-                <span className="text-slate-100">
+                <span className="text-slate-500">
                   {" "}
                   in {getToken(chainId, MARKETS[chainId][swap.marketAddress].indexTokenAddress).symbol}
                 </span>

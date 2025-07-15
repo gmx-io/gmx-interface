@@ -31,7 +31,7 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMo
   const isVerySmall = useMedia("(max-width: 580px)");
 
   const linkClassName = cx(
-    "flex cursor-pointer items-center gap-4 px-12 py-8 text-[13px] !text-slate-100 !no-underline hover:!text-white",
+    "flex cursor-pointer items-center gap-4 px-12 py-8 text-[13px] !text-slate-500 !no-underline hover:!text-white",
     {
       "text-body-medium": !isVerySmall,
       "text-body-small": isVerySmall,

@@ -45,7 +45,7 @@
 .chart-token-menu-items .menu-item {
   font-size: var(--font-size-body-small);
   height: 3.4rem;
-  color: var(--color-slate-100);
+  color: var(--color-slate-500);
 }
 
 .chart-token-list {
@@ -90,7 +90,7 @@
         font-weight: 400;
 
         &.token-item {
-          color: var(--color-slate-100);
+          color: var(--color-slate-500);
 
           .ChartToken-list-icon {
             margin-right: 0.75rem;
@@ -113,7 +113,7 @@
         }
 
         &.token-item {
-          color: var(--color-slate-100);
+          color: var(--color-slate-500);
 
           .ChartToken-list-icon {
             margin-right: 0.75rem;

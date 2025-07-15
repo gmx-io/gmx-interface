@@ -128,7 +128,7 @@ export function ClaimsHistory() {
               )}
               {isEmpty && !hasFilters && (
                 <TableTr hoverable={false} bordered={false}>
-                  <TableTd colSpan={3} className="text-slate-100">
+                  <TableTd colSpan={3} className="text-slate-500">
                     <Trans>No claims yet</Trans>
                   </TableTd>
                 </TableTr>
@@ -136,7 +136,7 @@ export function ClaimsHistory() {
 
               {isEmpty && hasFilters && (
                 <TableTr hoverable={false} bordered={false}>
-                  <TableTd colSpan={3} className="text-slate-100">
+                  <TableTd colSpan={3} className="text-slate-500">
                     <Trans>No claims match the selected filters</Trans>
                   </TableTd>
                 </TableTr>
