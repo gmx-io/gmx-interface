@@ -984,6 +984,16 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       categories: ["defi"],
     },
     {
+      name: "Pump",
+      symbol: "PUMP",
+      address: "0x9c060B2fA953b5f69879a8B7B81f62BFfEF360be",
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/67164/standard/pump.jpg?1751949376",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/pump-fun",
+      isSynthetic: true,
+      categories: ["meme"],
+    },
+    {
       name: "GMX LP",
       symbol: "GLP",
       address: getContract(ARBITRUM, "GLP"),
