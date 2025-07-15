@@ -988,6 +988,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       symbol: "PUMP",
       address: "0x9c060B2fA953b5f69879a8B7B81f62BFfEF360be",
       decimals: 18,
+      priceDecimals: 6,
       imageUrl: "https://assets.coingecko.com/coins/images/67164/standard/pump.jpg?1751949376",
       coingeckoUrl: "https://www.coingecko.com/en/coins/pump-fun",
       isSynthetic: true,
