@@ -116,7 +116,7 @@ describe("getPositionNetValue", () => {
       closingFeeUsd: 5n,
       uiFeeUsd: 20n,
       pnl: 200n,
-      totalPendingImpactDeltaUsd: 100n,
+      totalPendingImpactDeltaUsd: -100n,
       priceImpactDiffUsd: 50n,
     });
     // netValue = 1000n - (10n+15n) -5n -20n -100n + 50n + 200n = 1000n -25n -5n -20n +200n=1150n
@@ -206,8 +206,10 @@ describe("getLiquidationPrice", () => {
         decimals: 8,
         prices: { minPrice: expandDecimals(1, USD_DECIMALS), maxPrice: expandDecimals(1, USD_DECIMALS) },
       },
-      minCollateralFactor: 1000n, // 0.001
+      minCollateralFactorForLiquidation: 1000n, // 0.001
       maxPositionImpactFactorForLiquidations: 500n, // 0.005
+      maxPositionImpactFactorPositive: 1000n, // 0.01
+      maxPositionImpactFactorNegative: 1000n, // 0.01
     } as unknown as MarketInfo;
 
     const result = getLiquidationPrice({
