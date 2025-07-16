@@ -151,6 +151,7 @@ const subscribeMultichainTokenBalances: SWRSubscription<
 export function useMultichainTokensRequest(): {
   tokenChainDataArray: TokenChainData[];
   isPriceDataLoading: boolean;
+  isBalanceDataLoading: boolean;
 } {
   const { chainId } = useChainId();
   const { address: account } = useAccount();
@@ -162,6 +163,7 @@ export function useMultichainTokensRequest(): {
     subscribeMultichainTokenBalances
   );
   const tokenBalances = balanceData?.tokenBalances;
+  const isBalanceDataLoading = balanceData?.isLoading === undefined ? true : balanceData.isLoading;
 
   const tokenChainDataArray: TokenChainData[] = useMemo(() => {
     const tokenChainDataArray: TokenChainData[] = [];
@@ -239,6 +241,7 @@ export function useMultichainTokensRequest(): {
   return {
     tokenChainDataArray: tokenChainDataArray,
     isPriceDataLoading,
+    isBalanceDataLoading,
   };
 }
 

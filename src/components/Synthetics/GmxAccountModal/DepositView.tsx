@@ -110,7 +110,11 @@ export const DepositView = () => {
 
   const [depositViewTokenAddress, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
   const [inputValue, setInputValue] = useGmxAccountDepositViewTokenInputValue();
-  const { tokenChainDataArray: multichainTokens, isPriceDataLoading } = useMultichainTokensRequest();
+  const {
+    tokenChainDataArray: multichainTokens,
+    isPriceDataLoading,
+    isBalanceDataLoading,
+  } = useMultichainTokensRequest();
   const [isApproving, setIsApproving] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -676,6 +680,14 @@ export const DepositView = () => {
                   <TokenIcon symbol={selectedToken.symbol} displaySize={20} importSize={40} />
                   <span className="text-body-large">{selectedToken.symbol}</span>
                 </>
+              ) : !isBalanceDataLoading && multichainTokens.length === 0 ? (
+                <span className="text-slate-100">
+                  {depositViewChain !== undefined ? (
+                    <Trans>No assets available for deposit on {getChainName(depositViewChain)}</Trans>
+                  ) : (
+                    <Trans>No assets available for deposit</Trans>
+                  )}
+                </span>
               ) : depositViewChain !== undefined ? (
                 <>
                   <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={20} height={20} borderRadius={10} />

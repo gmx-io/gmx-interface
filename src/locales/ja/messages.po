@@ -1844,6 +1844,10 @@ msgstr ""
 msgid "Max {0} out"
 msgstr "最大 {0} out"
 
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "No assets available for deposit"
+msgstr ""
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "There is no price impact. There is a single<0/>execution price for increasing shorts or<1/>decreasing longs for this size."
 msgstr ""
@@ -7251,6 +7255,7 @@ msgstr ""
 msgid "Position close disabled, pending {0} upgrade"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No assets available for deposit on {0}"
 msgstr ""
