@@ -46,27 +46,16 @@ const TAB_CONTENTS = {
   ),
 };
 
-const TABS_CLASSNAMES = {
-  PRICE: {
-    active: "border-b-2 border-b-blue-500",
-    regular: "border-b-2 border-b-[transparent]",
-  },
-  DEPTH: {
-    active: "border-b-2 border-b-blue-500",
-    regular: "border-b-2 border-b-[transparent]",
-  },
-  MARKET_GRAPH: {
-    active: "border-b-2 border-b-blue-500",
-    regular: "border-b-2 border-b-[transparent]",
-  },
+const TABS_CLASSNAME = {
+  active: "border-b-2 border-b-blue-500",
+  regular: "border-b-2 border-b-[transparent]",
 };
-
 const TABS = isDevelopment() ? ["PRICE", "DEPTH", "MARKET_GRAPH"] : ["PRICE", "DEPTH"];
 
 const TABS_OPTIONS = TABS.map((tab) => ({
   value: tab,
   label: TAB_LABELS[tab],
-  className: TABS_CLASSNAMES[tab],
+  className: TABS_CLASSNAME,
 }));
 
 export function Chart() {
@@ -75,7 +64,7 @@ export function Chart() {
 
   return (
     <div className="ExchangeChart tv flex h-[60rem] flex-col [@media(min-width:2560px)]:min-h-[780px] [@media(min-width:3840px)]:min-h-[1140px]">
-      <div className="flex grow flex-col overflow-hidden rounded-8 bg-slate-800 [@media(max-width:1920px)]:h-[53.6rem]">
+      <div className="flex grow flex-col overflow-hidden rounded-8 bg-fill-surfaceBase [@media(max-width:1920px)]:h-[53.6rem]">
         {isSwap ? (
           tab === "MARKET_GRAPH" ? (
             TAB_CONTENTS.MARKET_GRAPH
@@ -110,7 +99,7 @@ function DepthChartContainer() {
 
 const ChartTabs = ({ tab, setTab }: { tab: string | undefined; setTab: (tab: string) => void }) => {
   return (
-    <Tabs 
+    <Tabs
       options={TABS_OPTIONS}
       selectedValue={tab}
       onChange={setTab}

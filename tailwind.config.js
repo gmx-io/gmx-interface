@@ -88,6 +88,9 @@ const colors = {
     surfaceHover: "#A0A3C4",
     accent: "#363A59",
     tertiary: "#B4BBFF1A",
+    surfaceBase: "#121421",
+    surfaceElevated: "#1E2033",
+    surfaceElevated50: "#1E20337f",
   },
   textIcon: {
     primary: "#ffffff",
@@ -242,6 +245,7 @@ module.exports = {
       ),
       fontFamily: {
         'tthoves': ['TTHoves', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        "tthoves-mono": ['TTHovesMono', 'TTHoves', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
     },
   },

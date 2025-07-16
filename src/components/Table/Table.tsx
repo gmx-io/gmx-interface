@@ -8,7 +8,7 @@ interface TableTdThProps extends PropsWithChildren, React.HTMLProps<HTMLTableCel
 }
 
 export function Table(props: PropsWithChildren & React.HTMLProps<HTMLTableElement>) {
-  return <table {...props} className={cx("w-full rounded-4 bg-slate-800", props.className)} />;
+  return <table {...props} className={cx("w-full rounded-4 bg-fill-surfaceBase", props.className)} />;
 }
 export function TableTh(props: TableTdThProps) {
   const { padding = "all", ...rest } = props;
@@ -16,11 +16,15 @@ export function TableTh(props: TableTdThProps) {
   return (
     <th
       {...rest}
-      className={cx("text-left font-normal uppercase text-slate-500 last-of-type:text-right", props.className, {
-        "px-4 py-12 first-of-type:pl-16 last-of-type:pr-16": padding === "all",
-        "px-4 py-8 first-of-type:pl-12 last-of-type:pr-12": padding === "compact",
-        "px-8 py-8": padding === "compact-one-column",
-      })}
+      className={cx(
+        "text-left text-[11px] font-medium uppercase text-slate-500 last-of-type:text-right",
+        props.className,
+        {
+          "px-4 py-12 pb-8 first-of-type:pl-16 last-of-type:pr-16": padding === "all",
+          "px-4 py-8 first-of-type:pl-12 last-of-type:pr-12": padding === "compact",
+          "px-8 py-8": padding === "compact-one-column",
+        }
+      )}
     />
   );
 }
@@ -47,7 +51,7 @@ export const TableTr = forwardRef<
     <tr
       {...props}
       ref={ref}
-      className={cx(className, {
+      className={cx("odd:bg-fill-surfaceElevated50", className, {
         "border-b border-slate-700 last-of-type:border-b-0": bordered,
         "hover:bg-cold-blue-900": hoverable,
         "cursor-pointer": !!props.onClick,

@@ -44,14 +44,14 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
         onChange={onTradeTypeChange}
         size="l"
         qa="trade-direction"
-        className="bg-slate-800"
+        className="bg-fill-surfaceBase"
         regularOptionClassname="hover:bg-slate-700 grow"
       />
     );
   }
 
   return (
-    <div className="bg-slate-800">
+    <div className="bg-fill-surfaceBase">
       <SwipeTabs
         icons={tradeTypeIcons}
         options={OPTIONS}

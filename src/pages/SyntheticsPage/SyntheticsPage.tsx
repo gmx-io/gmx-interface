@@ -51,6 +51,7 @@ import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getOrderKeys } from "sdk/utils/orders";
 
 import { AppHeader } from "components/AppHeader/AppHeader";
+import Badge, { BadgeIndicator } from "components/Badge/Badge";
 import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
 import { InterviewModal } from "components/InterviewModal/InterviewModal";
@@ -80,6 +81,11 @@ enum ListSection {
   Trades = "Trades",
   Claims = "Claims",
 }
+
+const TAB_CLASSNAME = {
+  active: "border-b-2 border-b-blue-500",
+  regular: "border-b-2 border-b-[transparent]",
+};
 
 export function SyntheticsPage(p: Props) {
   const { openSettings } = p;
@@ -202,25 +208,43 @@ export function SyntheticsPage(p: Props) {
       );
     }
 
+    let indicator: BadgeIndicator | undefined = undefined;
+
+    if (ordersWarningsCount > 0 && !ordersErrorsCount) {
+      indicator = "warning";
+    }
+
+    if (ordersErrorsCount > 0) {
+      indicator = "error";
+    }
+
     return (
-      <div className="flex">
-        <Trans>Orders ({ordersCount})</Trans>
-        <div
-          className={cx("relative top-3 size-6 rounded-full", {
-            "bg-yellow-500": ordersWarningsCount > 0 && !ordersErrorsCount,
-            "bg-red-500": ordersErrorsCount > 0,
-          })}
-        />
+      <div className="flex gap-4">
+        <Trans>Orders</Trans>
+        <Badge value={ordersCount} indicator={indicator} />
       </div>
     );
   }, [ordersCount, ordersErrorsCount, ordersWarningsCount]);
 
   const tabLabels = useMemo(
     () => ({
-      [ListSection.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
+      [ListSection.Positions]: (
+        <div className="flex gap-4">
+          <Trans>Positions</Trans>
+          <Badge value={positionsCount} />
+        </div>
+      ),
       [ListSection.Orders]: renderOrdersTabTitle(),
       [ListSection.Trades]: t`Trades`,
-      [ListSection.Claims]: totalClaimables > 0 ? t`Claims (${totalClaimables})` : t`Claims`,
+      [ListSection.Claims]:
+        totalClaimables > 0 ? (
+          <div className="flex gap-4">
+            <Trans>Claims</Trans>
+            <Badge value={totalClaimables} />
+          </div>
+        ) : (
+          t`Claims`
+        ),
     }),
     [positionsCount, renderOrdersTabTitle, totalClaimables]
   );
@@ -229,6 +253,7 @@ export function SyntheticsPage(p: Props) {
       Object.values(ListSection).map((value) => ({
         value,
         label: tabLabels[value],
+        className: TAB_CLASSNAME,
       })),
     [tabLabels]
   );
@@ -264,18 +289,31 @@ export function SyntheticsPage(p: Props) {
       <AppHeader leftContent={<ChartHeader isMobile={isMobile} />} />
       <div className="grid grow grid-cols-[1fr_auto] gap-8 pt-0 max-[1100px]:grid-cols-1 max-[800px]:p-10">
         {isMobile && <OneClickPromoBanner openSettings={openSettings} />}
-        <div className="Exchange-left flex flex-col">
+        <div className="Exchange-left flex flex-col gap-8">
           <Chart />
           {!isMobile && (
             <div className="Exchange-lists large" data-qa="trade-table-large">
-              <div className="Exchange-list-tab-container">
+              <div className="">
                 <Tabs
                   options={tabsOptions}
                   selectedValue={listSection}
                   onChange={handleTabChange}
-                  type="inline"
-                  className="Exchange-list-tabs"
+                  type="block"
+                  className="border-b border-stroke-primary bg-fill-surfaceBase"
                   qa="exchange-list-tabs"
+                  rightContent={
+                    <div className="shrink-0 px-12">
+                      <Checkbox
+                        isChecked={shouldShowPositionLines}
+                        setIsChecked={setShouldShowPositionLines}
+                        className={cx("muted chart-positions", { active: shouldShowPositionLines })}
+                      >
+                        <span className="font-medium">
+                          <Trans>Chart positions</Trans>
+                        </span>
+                      </Checkbox>
+                    </div>
+                  }
                 />
                 <div className="align-right Exchange-should-show-position-lines">
                   {listSection === ListSection.Orders && selectedOrderKeys.length > 0 && (
@@ -288,15 +326,6 @@ export function SyntheticsPage(p: Props) {
                       <Plural value={selectedOrderKeys.length} one="Cancel order" other="Cancel # orders" />
                     </button>
                   )}
-                  <Checkbox
-                    isChecked={shouldShowPositionLines}
-                    setIsChecked={setShouldShowPositionLines}
-                    className={cx("muted chart-positions", { active: shouldShowPositionLines })}
-                  >
-                    <span>
-                      <Trans>Chart positions</Trans>
-                    </span>
-                  </Checkbox>
                 </div>
               </div>
 

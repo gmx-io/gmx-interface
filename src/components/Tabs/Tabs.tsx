@@ -1,8 +1,10 @@
 import cx from "classnames";
+import { ReactNode } from "react";
 
 import NestedTab from "./NestedTab";
 import RegularTab from "./RegularTab";
 import { isNestedOption, Option, BaseOptionValue } from "./types";
+
 import "./Tabs.css";
 
 type Props<V extends BaseOptionValue> = {
@@ -14,6 +16,7 @@ type Props<V extends BaseOptionValue> = {
   className?: string;
   regularOptionClassname?: string;
   qa?: string;
+  rightContent?: ReactNode;
 };
 
 export default function Tabs<V extends string | number>({
@@ -26,28 +29,37 @@ export default function Tabs<V extends string | number>({
   className,
   regularOptionClassname,
   qa,
+  rightContent,
 }: Props<V>) {
   return (
-    <div
-      data-qa={qa}
-      className={cx("flex w-full rounded-t-8", className, {
-        "gap-8": type === "inline",
-      })}
-    >
-      {options.map((opt) =>
-        isNestedOption(opt) ? (
-          <NestedTab key={opt.label?.toString()} option={opt} selectedValue={selectedValue} onOptionClick={onChange} />
-        ) : (
-          <RegularTab
-            key={opt.value}
-            option={opt}
-            selectedValue={selectedValue}
-            onOptionClick={onChange}
-            regularOptionClassname={regularOptionClassname}
-            type={type}
-          />
-        )
-      )}
+    <div data-qa={qa} className={cx("flex items-center justify-between rounded-t-8", className)}>
+      <div
+        className={cx("flex w-full", {
+          "gap-8": type === "inline",
+        })}
+      >
+        {options.map((opt) =>
+          isNestedOption(opt) ? (
+            <NestedTab
+              key={opt.label?.toString()}
+              option={opt}
+              selectedValue={selectedValue}
+              onOptionClick={onChange}
+            />
+          ) : (
+            <RegularTab
+              key={opt.value}
+              option={opt}
+              selectedValue={selectedValue}
+              onOptionClick={onChange}
+              regularOptionClassname={regularOptionClassname}
+              type={type}
+            />
+          )
+        )}
+      </div>
+
+      {rightContent}
     </div>
   );
 }

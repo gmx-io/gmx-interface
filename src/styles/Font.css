@@ -139,6 +139,16 @@
 
 @font-face {
   font-family: "TTHovesMono";
+  font-style: normal;
+  font-weight: 500;
+  src: url("fonts/tthoves/tt-hoves-pro-mono-trial-medium.ttf");
+  src:
+    local(""),
+    url("fonts/tthoves/tt-hoves-pro-mono-trial-medium.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "TTHovesMono";
   src: url("fonts/tthoves/tt-hoves-pro-trial-regular.ttf");
   src:
     local(""),

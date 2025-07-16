@@ -426,6 +426,7 @@ msgstr "Please migrate your positions to GMX V2."
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Positions"
 msgstr "Positions"
 
@@ -470,6 +471,7 @@ msgstr "No pools matched."
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Orders"
 msgstr "Orders"
@@ -3168,7 +3170,6 @@ msgid "Claim failed."
 msgstr "Claim failed."
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Positions{0}"
 msgstr "Positions{0}"
 
@@ -6317,8 +6318,8 @@ msgid "Scan the QR code"
 msgstr "Scan the QR code"
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
-msgid "Claims ({totalClaimables})"
-msgstr "Claims ({totalClaimables})"
+#~ msgid "Claims ({totalClaimables})"
+#~ msgstr "Claims ({totalClaimables})"
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
@@ -6899,6 +6900,7 @@ msgid "Edit order"
 msgstr "Edit order"
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
 msgstr "Claims"
@@ -7995,7 +7997,6 @@ msgstr "Re-sign"
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Orders ({ordersCount})"
 msgstr "Orders ({ordersCount})"
 

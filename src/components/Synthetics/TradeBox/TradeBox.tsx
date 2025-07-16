@@ -888,7 +888,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   return (
     <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef}>
-      <div className="flex flex-col rounded-b-8 bg-slate-800 pb-16">
+      <div className="flex flex-col rounded-b-8 bg-fill-surfaceBase pb-16">
         <div className="flex flex-col gap-12 p-12">
           <div className="flex items-center justify-between">
             <Tabs
@@ -897,7 +897,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               selectedValue={tradeMode}
               onChange={onSelectTradeMode}
               qa="trade-mode"
-              className="bg-slate-800"
+              className="bg-fill-surfaceBase"
               regularOptionClassname="py-10 hover:bg-slate-700 grow"
             />
             <div className="flex items-center gap-4">
