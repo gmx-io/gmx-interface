@@ -10,11 +10,10 @@ import { createFindSwapPath } from "./swapPath";
 
 /*
   Order/Priority of getting swap strategy:
-  1. Check if it need a swap and return noSwap if tokens are equivalent, stake or unstake [noSwap]
-  2. Check if preferExternalSwap is true and return externalSwap if it is [externalSwap]
-  3. Check if there is a swap path stats for the internal swap quote and return internalSwap if there is [internalSwap]
-  4. Check if there is a combined swap strategy and return combinedSwap if there is [combinedSwap]
-  6. Return undefined if there is no other swap strategy [undefined]
+  1. Check if it needs a swap and return noSwap if tokens are equivalent, stake or unstake [noSwap]
+  2. Check if there is a swap path stats for the internal swap quote and return internalSwap if there is [internalSwap]
+  3. Check if there is a combined swap strategy and return combinedSwap if there is [combinedSwap]
+  4. Return defaultSwapStrategy (noSwap) if there is no other swap strategy [noSwap]
 */
 
 export function buildSwapStrategy({
