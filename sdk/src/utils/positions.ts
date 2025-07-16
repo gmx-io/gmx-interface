@@ -99,7 +99,7 @@ export function getPositionNetValue(p: {
   const pendingFeesUsd = getPositionPendingFeesUsd(p);
 
   return (
-    collateralUsd - pendingFeesUsd - closingFeeUsd - uiFeeUsd + pnl - totalPendingImpactDeltaUsd + priceImpactDiffUsd
+    collateralUsd - pendingFeesUsd - closingFeeUsd - uiFeeUsd + pnl + totalPendingImpactDeltaUsd + priceImpactDiffUsd
   );
 }
 

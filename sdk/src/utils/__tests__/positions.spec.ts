@@ -2,6 +2,7 @@ import { describe, expect, it, vi, beforeEach, Mock } from "vitest";
 
 import { MarketInfo } from "types/markets";
 import { Token } from "types/tokens";
+import { expandDecimals, USD_DECIMALS } from "utils/numbers";
 
 import { bigMath } from "../bigmath";
 import { getPositionFee, getPriceImpactForPosition } from "../fees";
@@ -158,7 +159,12 @@ describe("getLiquidationPrice", () => {
   });
 
   it("returns undefined if sizeInUsd <= 0 or sizeInTokens <= 0", () => {
-    const marketInfo = { indexToken: { decimals: 18 } } as unknown as MarketInfo;
+    const marketInfo = {
+      indexToken: {
+        decimals: 18,
+        prices: { minPrice: expandDecimals(1, USD_DECIMALS), maxPrice: expandDecimals(1, USD_DECIMALS) },
+      },
+    } as unknown as MarketInfo;
     expect(
       getLiquidationPrice({
         sizeInUsd: 0n,
@@ -196,7 +202,10 @@ describe("getLiquidationPrice", () => {
   it("computes liquidation price for non-equivalent tokens and isLong=true", () => {
     (getIsEquivalentTokens as Mock).mockReturnValue(false);
     const marketInfo = {
-      indexToken: { decimals: 8 },
+      indexToken: {
+        decimals: 8,
+        prices: { minPrice: expandDecimals(1, USD_DECIMALS), maxPrice: expandDecimals(1, USD_DECIMALS) },
+      },
       minCollateralFactor: 1000n, // 0.001
       maxPositionImpactFactorForLiquidations: 500n, // 0.005
     } as unknown as MarketInfo;
