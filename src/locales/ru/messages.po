@@ -6314,10 +6314,6 @@ msgstr "Комиссии сети в настоящее время высоки�
 msgid "Scan the QR code"
 msgstr "Отсканируйте QR-код"
 
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#~ msgid "Claims ({totalClaimables})"
-#~ msgstr ""
-
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
 msgstr ""

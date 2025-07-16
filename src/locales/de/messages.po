@@ -6314,10 +6314,6 @@ msgstr "Die Netzwerkgebühren sind derzeit hoch, was auf eine vorüber vorüberg
 msgid "Scan the QR code"
 msgstr "Scanne den QR-Code"
 
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#~ msgid "Claims ({totalClaimables})"
-#~ msgstr ""
-
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
 msgstr ""

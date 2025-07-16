@@ -6314,10 +6314,6 @@ msgstr "Las tasas de red son altas actualmente, lo que puede deberse a un aument
 msgid "Scan the QR code"
 msgstr "Escanear el código QR"
 
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#~ msgid "Claims ({totalClaimables})"
-#~ msgstr ""
-
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
 msgstr ""

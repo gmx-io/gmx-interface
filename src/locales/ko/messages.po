@@ -6314,10 +6314,6 @@ msgstr "현재 네트워크 수수료가 높습니다. 이는 {chainName} 네트
 msgid "Scan the QR code"
 msgstr "QR 코드 스캔"
 
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#~ msgid "Claims ({totalClaimables})"
-#~ msgstr ""
-
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
 msgstr ""

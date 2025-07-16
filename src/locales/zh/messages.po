@@ -6314,10 +6314,6 @@ msgstr "当前网络费用较高，这可能是由于{chainName}网络上的交�
 msgid "Scan the QR code"
 msgstr "扫描二维码"
 
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#~ msgid "Claims ({totalClaimables})"
-#~ msgstr ""
-
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
 msgstr ""
