@@ -74,6 +74,7 @@ const hasGlvRewards = (stats: RawIncentivesStats | null, glvs: GlvList | undefin
 
 type Props = {
   showRedirectModal?: (to: string) => void;
+  showGlp?: boolean;
 };
 
 const BuyLink = ({
@@ -187,7 +188,7 @@ async function sendUserAnalyticsProtocolReadMoreEvent() {
 
 const PERIOD = "90d";
 
-export default function TokenCard({ showRedirectModal }: Props) {
+export default function TokenCard({ showRedirectModal, showGlp = true }: Props) {
   const { chainId } = useChainId();
   const { active, account } = useWallet();
   const arbitrumIncentiveState = useIncentiveStats(ARBITRUM);
@@ -503,68 +504,66 @@ export default function TokenCard({ showRedirectModal }: Props) {
           </div>
         </div>
       </div>
-      <div className="Home-token-card-option">
-        <div>
-          <div className="Home-token-card-option-icon">
-            <img src={glpIcon} width="40" alt="GLP Icon" /> GLP
-          </div>
-          <div className="Home-token-card-option-info">
-            <div className="Home-token-card-option-title">
-              <Trans>
-                GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees.
-              </Trans>
-              {arbitrumIncentiveState?.migration?.isActive && (
-                <BannerButton
-                  className="mt-15"
-                  label="Migrating from GLP to GM is incentivized in Arbitrum."
-                  link={getIncentivesV2Url(ARBITRUM)}
-                />
-              )}
+      {showGlp && (
+        <div className="Home-token-card-option">
+          <div>
+            <div className="Home-token-card-option-icon">
+              <img src={glpIcon} width="40" alt="GLP Icon" /> GLP
             </div>
-            <div className="Home-token-card-option-apr">
-              <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" />,{" "}
-              <Trans>Avalanche APR:</Trans> <APRLabel chainId={AVALANCHE} label="glpAprTotal" key="AVALANCHE" />
+            <div className="Home-token-card-option-info">
+              <div className="Home-token-card-option-title">
+                <Trans>
+                  GMX V1 markets are disabled. GLP is being phased out and no longer supports GMX V1 markets.
+                </Trans>
+                {arbitrumIncentiveState?.migration?.isActive && (
+                  <BannerButton
+                    className="mt-15"
+                    label="Migrating from GLP to GM is incentivized in Arbitrum."
+                    link={getIncentivesV2Url(ARBITRUM)}
+                  />
+                )}
+              </div>
             </div>
           </div>
-        </div>
-        <div className="mt-50 flex flex-col gap-15 text-slate-100">
-          <Trans>Buy token on:</Trans>
-          <div className={cx("flex justify-between", { "flex-col gap-15": isMobile })}>
-            <div className={cx("buy flex gap-15", { "flex-col": isMobile })}>
-              <BuyLink
-                to={getTrackingLink("/buy_glp")}
-                network={ARBITRUM}
-                chainId={chainId}
-                active={active}
-                showRedirectModal={showRedirectModal}
-                trackLinkHandler={trackGLPBuyArbitrum}
-              >
-                <Trans>Arbitrum</Trans>
-              </BuyLink>
-              <BuyLink
-                to={getTrackingLink("/buy_glp")}
-                network={AVALANCHE}
-                chainId={chainId}
-                active={active}
-                showRedirectModal={showRedirectModal}
-                trackLinkHandler={trackGLPBuyAvalanche}
-              >
-                <Trans>Avalanche</Trans>
-              </BuyLink>
+          <div className="mt-50 flex flex-col gap-15 text-slate-100">
+            <Trans>Sell token on:</Trans>
+            <div className={cx("flex justify-between", { "flex-col gap-15": isMobile })}>
+              <div className={cx("buy flex gap-15", { "flex-col": isMobile })}>
+                <BuyLink
+                  to={getTrackingLink("/buy_glp#redeem")}
+                  network={ARBITRUM}
+                  chainId={chainId}
+                  active={active}
+                  showRedirectModal={showRedirectModal}
+                  trackLinkHandler={trackGLPBuyArbitrum}
+                >
+                  <Trans>Arbitrum</Trans>
+                </BuyLink>
+                <BuyLink
+                  to={getTrackingLink("/buy_glp#redeem")}
+                  network={AVALANCHE}
+                  chainId={chainId}
+                  active={active}
+                  showRedirectModal={showRedirectModal}
+                  trackLinkHandler={trackGLPBuyAvalanche}
+                >
+                  <Trans>Avalanche</Trans>
+                </BuyLink>
+              </div>
+              <TrackingLink onClick={sendUserAnalyticsProtocolReadMoreEvent}>
+                <Button
+                  className="!py-11 tracking-normal"
+                  newTab
+                  variant="secondary"
+                  to="https://docs.gmx.io/docs/providing-liquidity/v1"
+                >
+                  <Trans>Read more</Trans>
+                </Button>
+              </TrackingLink>
             </div>
-            <TrackingLink onClick={sendUserAnalyticsProtocolReadMoreEvent}>
-              <Button
-                className="!py-11 tracking-normal"
-                newTab
-                variant="secondary"
-                to="https://docs.gmx.io/docs/providing-liquidity/v1"
-              >
-                <Trans>Read more</Trans>
-              </Button>
-            </TrackingLink>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

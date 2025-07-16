@@ -313,7 +313,7 @@ export default function Home({ showRedirectModal }) {
             </div>
           </div>
           <SyntheticsStateContextProvider pageType="home" skipLocalReferralCode={false}>
-            <TokenCard showRedirectModal={showRedirectModal} />
+            <TokenCard showRedirectModal={showRedirectModal} showGlp={false} />
           </SyntheticsStateContextProvider>
         </div>
       </div>
