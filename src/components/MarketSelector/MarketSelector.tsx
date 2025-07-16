@@ -293,7 +293,7 @@ function MarketListItem(props: {
         />
       )}
       <div className="Token-info">
-        <img src={assetImage} alt={indexName} className="token-logo" />
+        <img src={assetImage} alt={indexName} className="token-logo rounded-full" />
         <div className="Token-symbol">
           <div className="Token-text">{indexName}</div>
         </div>
