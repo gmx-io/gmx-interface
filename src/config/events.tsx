@@ -34,6 +34,38 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "pump-listing",
+    isActive: true,
+    startDate: "14 Jul 2025, 12:00",
+    endDate: "21 Jul 2025, 12:00",
+    title: "PUMP market added on Arbitrum",
+    bodyText: (
+      <>
+        <Link to="/trade/long?to=PUMP">Trade</Link> <TokenSymbolWithIcon symbol="PUMP" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools by using{" "}
+        <TokenSymbolWithIcon symbol="WBTC" />, or <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
+  {
+    id: "v1-trading-disabled",
+    title: "GMX V1 disabled",
+    isActive: true,
+    bodyText: (
+      <>
+        <Trans>
+          Increasing positions (market or limit), adding collateral, and swapping on GMX V1 are now disabled. You can
+          still close existing positions.
+        </Trans>
+        <br />
+        <br />
+        <Trans>Please migrate your positions to GMX V2.</Trans>
+      </>
+    ),
+    startDate: "10 Jul 2025, 00:00",
+    endDate: "10 Aug 2025, 00:00",
+  },
+  {
     id: "botanix-launch-event",
     title: "GMX is live on Botanix",
     isActive: true,
@@ -96,26 +128,6 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "16 Jun 2025, 00:00",
     endDate: "26 Jun 2025, 00:00",
-  },
-  {
-    id: "avalanche-issue",
-    title: "Avalanche congestion impact",
-    isActive: true,
-    startDate: "30 May 2025, 08:00",
-    endDate: "30 May 2026, 08:00",
-    chains: [AVALANCHE],
-    bodyText: (
-      <>
-        Avalanche’s recent upgrade may prevent some GMX V2 orders from executing during congestion. The Avalanche team
-        is investigating.
-        <br />
-        <br />
-        Arbitrum is unaffected and trading remains fully operational.
-        <br />
-        <br />
-        <ExternalLink href="https://t.me/GMX_Announcements/1076">Read more</ExternalLink>.
-      </>
-    ),
   },
   {
     id: "zro-listing",

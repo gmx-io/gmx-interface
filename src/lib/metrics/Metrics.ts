@@ -9,9 +9,10 @@ import {
   TimingPayload,
 } from "lib/oracleKeeperFetcher/types";
 import { sleep } from "lib/sleep";
+import { getRawSessionId } from "lib/userAnalytics/sessionId";
 import { getAppVersion } from "lib/version";
 import { getWalletNames, WalletNames } from "lib/wallets/getWalletNames";
-import { parseError, ErrorLike } from "sdk/utils/errors";
+import { ErrorLike, parseError } from "sdk/utils/errors";
 
 import {
   METRIC_COUNTER_DISPATCH_NAME,
@@ -122,6 +123,8 @@ export class Metrics {
         ...(data ? this.serializeCustomFields(data) : {}),
         ...this.globalMetricData,
         wallets: this.wallets,
+        sessionId: getRawSessionId(),
+        uiTimestamp: Date.now(),
       },
     };
 

@@ -1,14 +1,15 @@
 import { Provider, Wallet } from "ethers";
 import { encodeFunctionData, size, zeroAddress, zeroHash } from "viem";
 
+import { BOTANIX } from "config/chains";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import {
-  ExpressTransactionEstimatorParams,
   ExpressParamsEstimationMethod,
   ExpressTransactionBuilder,
+  ExpressTransactionEstimatorParams,
   ExpressTxnParams,
   GasPaymentValidations,
   getGelatoRelayRouterDomain,
@@ -43,6 +44,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import {
   BatchOrderTxnParams,
+  CreateOrderPayload,
   getBatchExternalCalls,
   getBatchExternalSwapGasLimit,
   getBatchRequiredActions,
@@ -51,6 +53,7 @@ import {
   getIsEmptyBatch,
 } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
+import { setUiFeeReceiverIsExpress } from "sdk/utils/twap/uiFeeReceiver";
 
 import { approximateL1GasBuffer, estimateBatchGasLimit, estimateRelayerGasLimit, GasLimitsConfig } from "../fees";
 import { getNeedTokenApprove } from "../tokens";
@@ -368,11 +371,15 @@ export async function estimateExpressParams({
     tokenPermits,
   });
 
-  if (requireValidations && !getIsValidExpressParams({ gasPaymentValidations, subaccountValidations })) {
+  if (
+    requireValidations &&
+    !getIsValidExpressParams({ chainId, gasPaymentValidations, subaccountValidations, isSponsoredCall })
+  ) {
     return undefined;
   }
 
   return {
+    chainId,
     subaccount,
     relayParamsPayload: finalRelayParams,
     isSponsoredCall,
@@ -387,12 +394,20 @@ export async function estimateExpressParams({
 }
 
 export function getIsValidExpressParams({
+  chainId,
   gasPaymentValidations,
   subaccountValidations,
+  isSponsoredCall,
 }: {
+  chainId: number;
+  isSponsoredCall: boolean;
   gasPaymentValidations: GasPaymentValidations;
   subaccountValidations: SubaccountValidations | undefined;
 }): boolean {
+  if (chainId === BOTANIX && !isSponsoredCall) {
+    return false;
+  }
+
   return gasPaymentValidations.isValid && (!subaccountValidations || subaccountValidations.isValid);
 }
 
@@ -641,7 +656,7 @@ export function getBatchSignatureParams({
 function getBatchParamsLists(batchParams: BatchOrderTxnParams) {
   return {
     createOrderParamsList: batchParams.createOrderParams.map((p) => ({
-      addresses: p.orderPayload.addresses,
+      addresses: updateExpressOrdersAddresses(p.orderPayload.addresses),
       numbers: p.orderPayload.numbers,
       orderType: p.orderPayload.orderType,
       decreasePositionSwapType: p.orderPayload.decreasePositionSwapType,
@@ -661,5 +676,12 @@ function getBatchParamsLists(batchParams: BatchOrderTxnParams) {
       executionFeeIncrease: p.updatePayload.executionFeeTopUp,
     })),
     cancelOrderKeys: batchParams.cancelOrderParams.map((p) => p.orderKey),
+  };
+}
+
+function updateExpressOrdersAddresses(addressess: CreateOrderPayload["addresses"]): CreateOrderPayload["addresses"] {
+  return {
+    ...addressess,
+    uiFeeReceiver: setUiFeeReceiverIsExpress(addressess.uiFeeReceiver, true),
   };
 }

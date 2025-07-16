@@ -572,7 +572,7 @@ export function useDetectAndSetAvailableMaxLeverage({
   const getExternalSwapQuoteByPath = useSelector(selectGetExternalSwapQuoteByPath);
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useSelector(selectMarketsInfoData);
-  
+
   return useCallback(() => {
     if (!collateralToken || !toToken || !fromToken || !marketInfo || minCollateralUsd === undefined) return;
 
@@ -664,6 +664,9 @@ export function useDetectAndSetAvailableMaxLeverage({
     findSwapPath,
     fromToken,
     externalSwapQuote,
+    getExternalSwapQuoteByPath,
+    chainId,
+    marketsInfoData,
     fromTokenAmount,
     isLeverageSliderEnabled,
     isLong,

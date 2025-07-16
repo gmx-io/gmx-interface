@@ -62,7 +62,6 @@ describe("Swap Order Payloads", () => {
         minOutputAmount: parseValue("1000", USDC.decimals)!, // 1000 USDC
         orderType: OrderType.MarketSwap as const,
         allowedSlippage: SLIPPAGE,
-        expectedOutputAmount: parseValue("1000", USDC.decimals)!,
       };
 
       const result = buildSwapOrderPayload(params);
@@ -126,7 +125,6 @@ describe("Swap Order Payloads", () => {
         receiveTokenAddress: NATIVE_TOKEN_ADDRESS,
         swapPath: [ETH_MARKET.marketTokenAddress],
         minOutputAmount: parseValue("0.5", WETH.decimals)!, // 0.5 ETH
-        expectedOutputAmount: parseValue("0.5", WETH.decimals)!,
         orderType: OrderType.MarketSwap as const,
         allowedSlippage: SLIPPAGE,
       };
@@ -197,7 +195,6 @@ describe("Swap Order Payloads", () => {
         receiveTokenAddress: BTC.address,
         swapPath: [ETH_MARKET.marketTokenAddress],
         minOutputAmount: parseValue("0.001", BTC.decimals)!, // 0.01 BTC
-        expectedOutputAmount: parseValue("0.001", BTC.decimals)!,
         orderType: OrderType.MarketSwap as const,
         allowedSlippage: SLIPPAGE,
       };
@@ -268,7 +265,6 @@ describe("Swap Order Payloads", () => {
         receiveTokenAddress: WETH.address,
         swapPath: [ETH_MARKET.marketTokenAddress],
         minOutputAmount: parseValue("0.5", WETH.decimals)!,
-        expectedOutputAmount: parseValue("0.5", WETH.decimals)!,
         orderType: OrderType.LimitSwap as const,
         allowedSlippage: SLIPPAGE,
         triggerRatio: parseValue("1", 30)!, // 1:1 ratio
@@ -337,7 +333,6 @@ describe("Swap Order Payloads", () => {
         ...commonParams,
         payTokenAddress: NATIVE_TOKEN_ADDRESS,
         payTokenAmount: parseValue("1", WETH.decimals)!, // 1 ETH
-        expectedOutputAmount: parseValue("1000", USDC.decimals)!,
         orderType: OrderType.MarketSwap as const,
         triggerRatio: parseValue("1", 30)!,
         allowedSlippage: SLIPPAGE,
@@ -371,6 +366,7 @@ describe("Swap Order Payloads", () => {
         expect(decoded).toEqual({
           twapId: "8000",
           numberOfParts: twapParams.numberOfParts,
+          isExpress: false,
         });
 
         return {
@@ -405,7 +401,6 @@ describe("Swap Order Payloads", () => {
             ...params,
             payTokenAmount: params.payTokenAmount / 4n,
             executionFeeAmount: EXECUTION_FEE_AMOUNT / 4n,
-            expectedOutputAmount: params.expectedOutputAmount / 4n,
             minOutputAmount: 0n,
             orderType: OrderType.LimitSwap,
             allowedSlippage: 0,
@@ -446,7 +441,6 @@ describe("Swap Order Payloads", () => {
         receiveTokenAddress: USDC.address,
         swapPath: [ETH_MARKET.marketTokenAddress],
         minOutputAmount: parseValue("1000", USDC.decimals)!, // 1000 USDC
-        expectedOutputAmount: parseValue("1000", USDC.decimals)!,
         orderType: OrderType.MarketSwap as const,
         allowedSlippage: SLIPPAGE,
         uiFeeReceiver: undefined,
