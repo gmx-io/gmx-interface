@@ -14,12 +14,7 @@ import { type MultichainAction, MultichainActionType } from "domain/multichain/c
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/useMultichainDepositNetworkComposeGas";
 import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/referrals/hooks";
-import {
-  getRawRelayerParams,
-  getRelayerFeeParams,
-  RawRelayParamsPayload,
-  RelayParamsPayload,
-} from "domain/synthetics/express";
+import { getRawRelayerParams, RawRelayParamsPayload, RelayParamsPayload } from "domain/synthetics/express";
 import { signSetTraderReferralCode } from "domain/synthetics/express/expressOrderUtils";
 import { convertToUsd, getMidPrice } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -290,28 +285,15 @@ function ReferralCodeFormMultichain({
         throw new Error("sourceChainTokenId is undefined");
       }
 
-      const relayFeeParams = getRelayerFeeParams({
-        chainId: p.chainId,
-        account: p.simulationSigner.address,
-        gasPaymentToken: p.globalExpressParams.gasPaymentToken,
-        relayerFeeToken: p.globalExpressParams.relayerFeeToken,
-        relayerFeeAmount: 0n,
-        totalRelayerFeeTokenAmount: 0n,
-        findFeeSwapPath: p.globalExpressParams.findFeeSwapPath,
-
-        transactionExternalCalls: getEmptyExternalCallsPayload(),
-        feeExternalSwapQuote: undefined,
-      });
-
-      if (relayFeeParams === undefined) {
-        return;
-      }
-
       const rawRelayParamsPayload = getRawRelayerParams({
         chainId: p.chainId,
-        gasPaymentTokenAddress: relayFeeParams.gasPaymentParams.gasPaymentTokenAddress,
-        relayerFeeTokenAddress: relayFeeParams.gasPaymentParams.relayerFeeTokenAddress,
-        feeParams: relayFeeParams.feeParams,
+        gasPaymentTokenAddress: p.globalExpressParams.gasPaymentTokenAddress,
+        relayerFeeTokenAddress: p.globalExpressParams.relayerFeeTokenAddress,
+        feeParams: {
+          feeToken: p.globalExpressParams.relayerFeeTokenAddress,
+          feeAmount: 0n,
+          feeSwapPath: [],
+        },
         externalCalls: getEmptyExternalCallsPayload(),
         tokenPermits: [],
         marketsInfoData: p.globalExpressParams.marketsInfoData,
@@ -447,28 +429,15 @@ function ReferralCodeFormMultichain({
         throw new Error("Missing required parameters");
       }
 
-      const relayFeeParams = getRelayerFeeParams({
-        chainId: chainId,
-        account: account,
-        gasPaymentToken: globalExpressParams.gasPaymentToken,
-        relayerFeeToken: globalExpressParams.relayerFeeToken,
-        relayerFeeAmount: 0n,
-        totalRelayerFeeTokenAmount: 0n,
-        findFeeSwapPath: globalExpressParams.findFeeSwapPath,
-
-        transactionExternalCalls: getEmptyExternalCallsPayload(),
-        feeExternalSwapQuote: undefined,
-      });
-
-      if (relayFeeParams === undefined) {
-        return;
-      }
-
       const rawRelayParamsPayload = getRawRelayerParams({
         chainId: chainId,
-        gasPaymentTokenAddress: relayFeeParams.gasPaymentParams.gasPaymentTokenAddress,
-        relayerFeeTokenAddress: relayFeeParams.gasPaymentParams.relayerFeeTokenAddress,
-        feeParams: relayFeeParams.feeParams,
+        gasPaymentTokenAddress: globalExpressParams.gasPaymentTokenAddress,
+        relayerFeeTokenAddress: globalExpressParams.relayerFeeTokenAddress,
+        feeParams: {
+          feeToken: globalExpressParams.relayerFeeTokenAddress,
+          feeAmount: 0n,
+          feeSwapPath: [],
+        },
         externalCalls: getEmptyExternalCallsPayload(),
         tokenPermits: [],
         marketsInfoData: globalExpressParams.marketsInfoData,
