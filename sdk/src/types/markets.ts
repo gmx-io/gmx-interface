@@ -93,8 +93,8 @@ export type MarketInfo = Market &
     longInterestInTokens: bigint;
     shortInterestInTokens: bigint;
 
-    positionFeeFactorForPositiveImpact: bigint;
-    positionFeeFactorForNegativeImpact: bigint;
+    positionFeeFactorForBalanceWasImproved: bigint;
+    positionFeeFactorForBalanceWasNotImproved: bigint;
     positionImpactFactorPositive: bigint;
     positionImpactFactorNegative: bigint;
     maxPositionImpactFactorPositive: bigint;
@@ -102,8 +102,8 @@ export type MarketInfo = Market &
     maxPositionImpactFactorForLiquidations: bigint;
     positionImpactExponentFactor: bigint;
 
-    swapFeeFactorForPositiveImpact: bigint;
-    swapFeeFactorForNegativeImpact: bigint;
+    swapFeeFactorForBalanceWasImproved: bigint;
+    swapFeeFactorForBalanceWasNotImproved: bigint;
     atomicSwapFeeFactor: bigint;
     swapImpactFactorPositive: bigint;
     swapImpactFactorNegative: bigint;

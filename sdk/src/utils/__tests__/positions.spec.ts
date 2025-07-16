@@ -115,9 +115,11 @@ describe("getPositionNetValue", () => {
       closingFeeUsd: 5n,
       uiFeeUsd: 20n,
       pnl: 200n,
+      totalPendingImpactDeltaUsd: 100n,
+      priceImpactDiffUsd: 50n,
     });
-    // netValue = 1000n - (10n+15n) -5n -20n + 200n = 1000n -25n -5n -20n +200n=1150n
-    expect(result).toBe(1150n);
+    // netValue = 1000n - (10n+15n) -5n -20n -100n + 50n + 200n = 1000n -25n -5n -20n +200n=1150n
+    expect(result).toBe(1200n);
   });
 });
 
@@ -167,6 +169,7 @@ describe("getLiquidationPrice", () => {
         marketInfo,
         pendingFundingFeesUsd: 0n,
         pendingBorrowingFeesUsd: 0n,
+        pendingImpactAmount: 0n,
         minCollateralUsd: 100n,
         isLong: true,
         userReferralInfo: undefined,
@@ -182,6 +185,7 @@ describe("getLiquidationPrice", () => {
         marketInfo,
         pendingFundingFeesUsd: 0n,
         pendingBorrowingFeesUsd: 0n,
+        pendingImpactAmount: 0n,
         minCollateralUsd: 100n,
         isLong: true,
         userReferralInfo: undefined,
@@ -206,6 +210,7 @@ describe("getLiquidationPrice", () => {
       marketInfo,
       pendingFundingFeesUsd: 0n,
       pendingBorrowingFeesUsd: 0n,
+      pendingImpactAmount: 0n,
       minCollateralUsd: 200n,
       isLong: true,
       userReferralInfo: undefined,

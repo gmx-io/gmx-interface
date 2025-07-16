@@ -13,7 +13,7 @@ import { OrderInfo } from "types/orders";
 import { Position, PositionsData, PositionsInfoData } from "types/positions";
 import { UserReferralInfo } from "types/referrals";
 import { TokensData } from "types/tokens";
-import { getPositionFee, getPriceImpactForPosition } from "utils/fees";
+import { getPositionFee } from "utils/fees";
 import {
   getContractMarketPrices,
   getMarketIndexName,
@@ -27,12 +27,13 @@ import {
   getEntryPrice,
   getLeverage,
   getLiquidationPrice,
+  getNetPriceImpactDeltaUsdForDecrease,
   getPositionKey,
   getPositionNetValue,
+  getPositionPendingFeesUsd,
   getPositionPnlUsd,
 } from "utils/positions";
-import { getPositionPendingFeesUsd } from "utils/positions";
-import { getMarkPrice } from "utils/prices";
+import { getAcceptablePriceInfo, getMarkPrice } from "utils/prices";
 import { decodeReferralCode } from "utils/referrals";
 import { convertToTokenAmount, convertToUsd } from "utils/tokens";
 
@@ -544,17 +545,20 @@ export class Positions extends Module {
         pendingFundingFeesUsd,
       });
 
-      const closingPriceImpactDeltaUsd = getPriceImpactForPosition(
-        marketInfo,
-        position.sizeInUsd * -1n,
-        position.isLong,
-        { fallbackToZero: true }
-      );
+      const closeAcceptablePriceInfo = marketInfo
+        ? getAcceptablePriceInfo({
+            marketInfo,
+            isIncrease: false,
+            isLong: position.isLong,
+            indexPrice: getMarkPrice({ prices: indexToken.prices, isLong: position.isLong, isIncrease: false }),
+            sizeDeltaUsd: position.sizeInUsd,
+          })
+        : undefined;
 
       const positionFeeInfo = getPositionFee(
         marketInfo,
         position.sizeInUsd,
-        closingPriceImpactDeltaUsd > 0,
+        closeAcceptablePriceInfo?.balanceWasImproved ?? false,
         userReferralInfo,
         uiFeeFactor
       );
@@ -583,6 +587,17 @@ export class Positions extends Module {
       const pnlPercentage =
         collateralUsd !== undefined && collateralUsd != 0n ? getBasisPoints(pnl, collateralUsd) : 0n;
 
+      const netPriceImapctValues =
+        marketInfo && closeAcceptablePriceInfo
+          ? getNetPriceImpactDeltaUsdForDecrease({
+              marketInfo,
+              sizeInUsd: position.sizeInUsd,
+              pendingImpactAmount: position.pendingImpactAmount,
+              sizeDeltaUsd: position.sizeInUsd,
+              priceImpactDeltaUsd: closeAcceptablePriceInfo.priceImpactDeltaUsd,
+            })
+          : undefined;
+
       const netValue = getPositionNetValue({
         collateralUsd: collateralUsd,
         pnl,
@@ -590,9 +605,18 @@ export class Positions extends Module {
         pendingFundingFeesUsd: pendingFundingFeesUsd,
         closingFeeUsd,
         uiFeeUsd,
+        totalPendingImpactDeltaUsd: netPriceImapctValues?.totalImpactDeltaUsd ?? 0n,
+        priceImpactDiffUsd: netPriceImapctValues?.priceImpactDiffUsd ?? 0n,
       });
 
-      const pnlAfterFees = pnl - totalPendingFeesUsd - closingFeeUsd - uiFeeUsd;
+      const pnlAfterFees =
+        pnl -
+        totalPendingFeesUsd -
+        closingFeeUsd -
+        uiFeeUsd -
+        (netPriceImapctValues?.totalImpactDeltaUsd ?? 0n) +
+        (netPriceImapctValues?.priceImpactDiffUsd ?? 0n);
+
       const pnlAfterFeesPercentage =
         collateralUsd != 0n ? getBasisPoints(pnlAfterFees, collateralUsd + closingFeeUsd) : 0n;
 
@@ -623,6 +647,7 @@ export class Positions extends Module {
         sizeInTokens: position.sizeInTokens,
         collateralUsd,
         collateralAmount: position.collateralAmount,
+        pendingImpactAmount: position.pendingImpactAmount,
         userReferralInfo,
         minCollateralUsd,
         pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
@@ -658,6 +683,8 @@ export class Positions extends Module {
         pnlAfterFees,
         pnlAfterFeesPercentage,
         netValue,
+        netPriceImapctDeltaUsd: netPriceImapctValues?.totalImpactDeltaUsd ?? 0n,
+        priceImpactDiffUsd: netPriceImapctValues?.priceImpactDiffUsd ?? 0n,
         closingFeeUsd,
         uiFeeUsd,
         pendingFundingFeesUsd,

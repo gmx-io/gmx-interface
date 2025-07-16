@@ -2,13 +2,7 @@ import { ethers } from "ethers";
 
 import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
-import {
-  capPositionImpactUsdByMaxImpactPool,
-  capPositionImpactUsdByMaxPriceImpactFactor,
-  getMaxPositionImpactFactors,
-  getPositionFee,
-  getProportionalPendingImpactValues,
-} from "domain/synthetics/fees";
+import { getPositionFee } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import {
@@ -24,6 +18,7 @@ import { DUST_USD } from "lib/legacy";
 import { applyFactor, getBasisPoints, roundUpDivision } from "lib/numbers";
 import { DecreasePositionAmounts, NextPositionValues } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
+import { getNetPriceImpactDeltaUsdForDecrease } from "sdk/utils/positions";
 import { getSwapStats } from "sdk/utils/swap/swapStats";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
@@ -382,54 +377,6 @@ export function getDecreasePositionAmounts(p: {
   return values;
 }
 
-function getTotalImpactDeltaUsd({
-  marketInfo,
-  sizeInUsd,
-  pendingImpactAmount,
-  sizeDeltaUsd,
-  priceImpactDeltaUsd,
-}: {
-  marketInfo: MarketInfo;
-  sizeInUsd: bigint;
-  pendingImpactAmount: bigint;
-  sizeDeltaUsd: bigint;
-  priceImpactDeltaUsd: bigint;
-}) {
-  const { proportionalPendingImpactDeltaUsd } = getProportionalPendingImpactValues({
-    sizeInUsd,
-    pendingImpactAmount,
-    sizeDeltaUsd,
-    indexToken: marketInfo.indexToken,
-  });
-
-  let totalImpactDeltaUsd = priceImpactDeltaUsd + proportionalPendingImpactDeltaUsd;
-  let priceImpactDiffUsd = 0n;
-
-  if (totalImpactDeltaUsd < 0) {
-    const { maxNegativeImpactFactor } = getMaxPositionImpactFactors(marketInfo);
-    const maxPriceImpactFactor = applyFactor(sizeDeltaUsd, maxNegativeImpactFactor);
-
-    const minPriceImpactUsd = -applyFactor(sizeDeltaUsd, maxPriceImpactFactor);
-
-    if (totalImpactDeltaUsd < minPriceImpactUsd) {
-      priceImpactDiffUsd = minPriceImpactUsd - totalImpactDeltaUsd;
-      totalImpactDeltaUsd = minPriceImpactUsd;
-    }
-  }
-
-  if (totalImpactDeltaUsd > 0) {
-    totalImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, totalImpactDeltaUsd);
-  }
-
-  totalImpactDeltaUsd = capPositionImpactUsdByMaxImpactPool(marketInfo, totalImpactDeltaUsd);
-
-  return {
-    totalImpactDeltaUsd,
-    proportionalPendingImpactDeltaUsd,
-    priceImpactDiffUsd,
-  };
-}
-
 export function getIsFullClose(p: {
   position: PositionInfoLoaded;
   sizeDeltaUsd: bigint;
@@ -572,7 +519,7 @@ function applyAcceptablePrice(p: {
   values.acceptablePrice = acceptablePriceInfo.acceptablePrice;
   values.acceptablePriceDeltaBps = acceptablePriceInfo.acceptablePriceDeltaBps;
 
-  const totalImpactValues = getTotalImpactDeltaUsd({
+  const totalImpactValues = getNetPriceImpactDeltaUsdForDecrease({
     marketInfo,
     sizeInUsd: position?.sizeInUsd ?? 0n,
     pendingImpactAmount: position?.pendingImpactAmount ?? 0n,
@@ -708,6 +655,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     collateralAmount: nextCollateralAmount,
     minCollateralUsd,
     userReferralInfo,
+    pendingImpactAmount: existingPosition?.pendingImpactAmount ?? 0n,
     pendingBorrowingFeesUsd: 0n, // deducted on order
     pendingFundingFeesUsd: 0n, // deducted on order
     isLong: isLong,

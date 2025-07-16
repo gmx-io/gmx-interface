@@ -90,6 +90,8 @@ export function mockPositionInfo(
     pnlPercentage: 0n,
     pnlAfterFees: 0n,
     pnlAfterFeesPercentage: 0n,
+    netPriceImapctDeltaUsd: 0n,
+    priceImpactDiffUsd: 0n,
     netValue: 0n,
     closingFeeUsd: 0n,
     uiFeeUsd: 0n,

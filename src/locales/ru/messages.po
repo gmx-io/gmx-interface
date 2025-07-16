@@ -311,8 +311,8 @@ msgid "TWAP Number of Parts"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
-msgstr ""
+#~ msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
@@ -1911,6 +1911,10 @@ msgstr "Адрес токена esGMX называется {esGmxIouAddress}."
 msgid "GMX Alerts"
 msgstr ""
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - Net Price Impact + Price Impact Rebates"
+msgstr ""
+
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Show details"
 msgstr ""
@@ -3054,6 +3058,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order creation failed."
+msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee - Net Price Impact + Price Impact Rebates"
 msgstr ""
 
 #: src/components/Synthetics/MissedCoinsHint/MissedCoinsHint.tsx
@@ -4532,6 +4540,7 @@ msgstr "Перевод уже начат"
 msgid "Withdraw submitted."
 msgstr ""
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Net Price Impact"
 msgstr ""
@@ -8016,6 +8025,7 @@ msgstr "Ошибка генерации изображения, пожалуйс
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price Impact Rebates"
 msgstr ""
@@ -8448,8 +8458,8 @@ msgid "Total Users"
 msgstr "Всего Пользователей"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee"
-msgstr ""
+#~ msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee"
+#~ msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Trigger price below lowest limit price"

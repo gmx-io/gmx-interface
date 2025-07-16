@@ -2,7 +2,6 @@ import { t } from "@lingui/macro";
 import { ethers } from "ethers";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { UserReferralInfo } from "domain/referrals";
 import {
   MarketInfo,
   getCappedPoolPnl,
@@ -13,20 +12,24 @@ import {
 import { Token } from "domain/tokens";
 import { CHART_PERIODS } from "lib/legacy";
 import {
+  PRECISION,
   applyFactor,
+  calculateDisplayDecimals,
   expandDecimals,
   formatAmount,
   formatUsd,
-  calculateDisplayDecimals,
-  PRECISION,
   formatUsdPrice,
 } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
-import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
-import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceImpactForPosition } from "../fees";
+import {
+  capPositionImpactUsdByMaxPriceImpactFactor,
+  getBorrowingFeeRateUsd,
+  getFundingFeeRateUsd,
+  getPriceImpactForPosition,
+} from "../fees";
 import { OrderType } from "../orders/types";
-import { TokenData, convertToUsd } from "../tokens";
+import { convertToUsd } from "../tokens";
 import { PositionInfo, PositionInfoLoaded } from "./types";
 
 export * from "sdk/utils/positions";
@@ -41,21 +44,6 @@ export function getPositionPendingFeesUsd(p: { pendingFundingFeesUsd: bigint; pe
   const { pendingFundingFeesUsd, pendingBorrowingFeesUsd } = p;
 
   return pendingBorrowingFeesUsd + pendingFundingFeesUsd;
-}
-
-export function getPositionNetValue(p: {
-  collateralUsd: bigint;
-  pendingFundingFeesUsd: bigint;
-  pendingBorrowingFeesUsd: bigint;
-  pnl: bigint;
-  closingFeeUsd: bigint;
-  uiFeeUsd: bigint;
-}) {
-  const { pnl, closingFeeUsd, collateralUsd, uiFeeUsd } = p;
-
-  const pendingFeesUsd = getPositionPendingFeesUsd(p);
-
-  return collateralUsd - pendingFeesUsd - closingFeeUsd - uiFeeUsd + pnl;
 }
 
 export function getPositionPnlUsd(p: {
@@ -92,118 +80,6 @@ export function getPositionPnlUsd(p: {
   }
 
   return totalPnl;
-}
-
-export function getLiquidationPrice(p: {
-  sizeInUsd: bigint;
-  sizeInTokens: bigint;
-  collateralAmount: bigint;
-  collateralUsd: bigint;
-  collateralToken: TokenData;
-  marketInfo: MarketInfo | undefined;
-  pendingFundingFeesUsd: bigint;
-  pendingBorrowingFeesUsd: bigint;
-  minCollateralUsd: bigint;
-  isLong: boolean;
-  useMaxPriceImpact?: boolean;
-  userReferralInfo: UserReferralInfo | undefined;
-}) {
-  const {
-    sizeInUsd,
-    sizeInTokens,
-    collateralUsd,
-    collateralAmount,
-    marketInfo,
-    collateralToken,
-    pendingFundingFeesUsd,
-    pendingBorrowingFeesUsd,
-    minCollateralUsd,
-    isLong,
-    userReferralInfo,
-    useMaxPriceImpact,
-  } = p;
-
-  if (sizeInUsd <= 0 || sizeInTokens <= 0 || !marketInfo) {
-    return undefined;
-  }
-
-  const { indexToken } = marketInfo;
-
-  const closingFeeUsd = getPositionFee(marketInfo, sizeInUsd, false, userReferralInfo).positionFeeUsd;
-  const totalPendingFeesUsd = getPositionPendingFeesUsd({ pendingFundingFeesUsd, pendingBorrowingFeesUsd });
-  const totalFeesUsd = totalPendingFeesUsd + closingFeeUsd;
-
-  const maxNegativePriceImpactUsd = -1n * applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations);
-
-  let priceImpactDeltaUsd = 0n;
-
-  if (useMaxPriceImpact) {
-    priceImpactDeltaUsd = maxNegativePriceImpactUsd;
-  } else {
-    priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, { fallbackToZero: true });
-
-    if (priceImpactDeltaUsd < maxNegativePriceImpactUsd) {
-      priceImpactDeltaUsd = maxNegativePriceImpactUsd;
-    }
-
-    // Ignore positive price impact
-    if (priceImpactDeltaUsd > 0) {
-      priceImpactDeltaUsd = 0n;
-    }
-  }
-
-  let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
-  if (liquidationCollateralUsd < minCollateralUsd) {
-    liquidationCollateralUsd = minCollateralUsd;
-  }
-
-  let liquidationPrice: bigint;
-
-  if (getIsEquivalentTokens(collateralToken, indexToken)) {
-    if (isLong) {
-      const denominator = sizeInTokens + collateralAmount;
-
-      if (denominator == 0n) {
-        return undefined;
-      }
-
-      liquidationPrice =
-        ((sizeInUsd + liquidationCollateralUsd - priceImpactDeltaUsd + totalFeesUsd) / denominator) *
-        expandDecimals(1, indexToken.decimals);
-    } else {
-      const denominator = sizeInTokens - collateralAmount;
-
-      if (denominator == 0n) {
-        return undefined;
-      }
-
-      liquidationPrice =
-        ((sizeInUsd - liquidationCollateralUsd + priceImpactDeltaUsd - totalFeesUsd) / denominator) *
-        expandDecimals(1, indexToken.decimals);
-    }
-  } else {
-    if (sizeInTokens == 0n) {
-      return undefined;
-    }
-
-    const remainingCollateralUsd = collateralUsd + priceImpactDeltaUsd - totalPendingFeesUsd - closingFeeUsd;
-
-    if (isLong) {
-      liquidationPrice =
-        ((liquidationCollateralUsd - remainingCollateralUsd + sizeInUsd) / sizeInTokens) *
-        expandDecimals(1, indexToken.decimals);
-    } else {
-      liquidationPrice =
-        ((liquidationCollateralUsd - remainingCollateralUsd - sizeInUsd) / -sizeInTokens) *
-        expandDecimals(1, indexToken.decimals);
-    }
-  }
-
-  if (liquidationPrice <= 0) {
-    return undefined;
-  }
-
-  return liquidationPrice;
 }
 
 export function formatLiquidationPrice(
@@ -273,18 +149,29 @@ export function getEstimatedLiquidationTimeInHours(
   const borrowFeePerHour = getBorrowingFeeRateUsd(marketInfo, isLong, sizeInUsd, CHART_PERIODS["1h"]);
   const fundingFeePerHour = getFundingFeeRateUsd(marketInfo, isLong, sizeInUsd, CHART_PERIODS["1h"]);
   const maxNegativePriceImpactUsd = -1n * applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations);
-  let priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
+  let { priceImpactDeltaUsd } = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
     fallbackToZero: true,
   });
 
-  if (priceImpactDeltaUsd < maxNegativePriceImpactUsd) {
+  if (priceImpactDeltaUsd > 0) {
+    priceImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, priceImpactDeltaUsd);
+  }
+
+  const pendingImpactUsd = convertToUsd(
+    position.pendingImpactAmount,
+    marketInfo.indexToken.decimals,
+    position.pendingImpactAmount > 0 ? marketInfo.indexToken.prices.minPrice : marketInfo.indexToken.prices.maxPrice
+  )!;
+
+  priceImpactDeltaUsd = priceImpactDeltaUsd + pendingImpactUsd;
+
+  if (priceImpactDeltaUsd > 0) {
+    priceImpactDeltaUsd = 0n;
+  } else if (priceImpactDeltaUsd < maxNegativePriceImpactUsd) {
     priceImpactDeltaUsd = maxNegativePriceImpactUsd;
   }
 
   // Ignore positive price impact
-  if (priceImpactDeltaUsd > 0) {
-    priceImpactDeltaUsd = 0n;
-  }
 
   const totalFeesPerHour =
     bigMath.abs(borrowFeePerHour) + (fundingFeePerHour < 0 ? bigMath.abs(fundingFeePerHour) : 0n);

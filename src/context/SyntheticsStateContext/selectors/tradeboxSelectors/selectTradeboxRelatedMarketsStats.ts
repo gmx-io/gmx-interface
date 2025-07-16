@@ -82,7 +82,7 @@ export const selectTradeboxRelatedMarketsStats = createSelector((q) => {
         marketIncreasePositionAmounts.sizeDeltaUsd
       );
 
-      const priceImpactDeltaUsd = getCappedPositionImpactUsd(
+      const { priceImpactDeltaUsd } = getCappedPositionImpactUsd(
         relatedMarket,
         marketIncreasePositionAmounts.sizeDeltaUsd,
         isLong,

@@ -162,11 +162,11 @@ export function hashMarketConfigKeys(market: MarketConfig) {
       ["bytes32", "bytes32", "address", "bool"],
       [MAX_PNL_FACTOR_KEY, MAX_PNL_FACTOR_FOR_TRADERS_KEY, marketAddress, false],
     ],
-    positionFeeFactorForPositiveImpact: [
+    positionFeeFactorForBalanceWasImproved: [
       ["bytes32", "address", "bool"],
       [POSITION_FEE_FACTOR_KEY, marketAddress, true],
     ],
-    positionFeeFactorForNegativeImpact: [
+    positionFeeFactorForBalanceWasNotImproved: [
       ["bytes32", "address", "bool"],
       [POSITION_FEE_FACTOR_KEY, marketAddress, false],
     ],
@@ -210,11 +210,11 @@ export function hashMarketConfigKeys(market: MarketConfig) {
       ["bytes32", "address"],
       [POSITION_IMPACT_EXPONENT_FACTOR_KEY, marketAddress],
     ],
-    swapFeeFactorForPositiveImpact: [
+    swapFeeFactorForBalanceWasImproved: [
       ["bytes32", "address", "bool"],
       [SWAP_FEE_FACTOR_KEY, marketAddress, true],
     ],
-    swapFeeFactorForNegativeImpact: [
+    swapFeeFactorForBalanceWasNotImproved: [
       ["bytes32", "address", "bool"],
       [SWAP_FEE_FACTOR_KEY, marketAddress, false],
     ],

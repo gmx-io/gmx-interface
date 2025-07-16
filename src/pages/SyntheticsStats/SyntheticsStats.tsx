@@ -769,7 +769,7 @@ export function SyntheticsStats() {
                       ) * 100n
                     : undefined;
 
-                const reservedPositivePriceImpactUsd = getPriceImpactUsd({
+                const { priceImpactDeltaUsd: reservedPositivePriceImpactUsd } = getPriceImpactUsd({
                   currentLongUsd: market.longInterestUsd - market.shortInterestUsd,
                   currentShortUsd: 0n,
                   nextLongUsd: 0n,
@@ -1072,22 +1072,22 @@ export function SyntheticsStats() {
                             <br />
                             <StatsTooltipRow
                               label="Swap Fee Factor (Positive PI)"
-                              value={formatFactor(market.swapFeeFactorForPositiveImpact)}
+                              value={formatFactor(market.swapFeeFactorForBalanceWasImproved)}
                               showDollar={false}
                             />
                             <StatsTooltipRow
                               label="Swap Fee Factor (Negative PI)"
-                              value={formatFactor(market.swapFeeFactorForNegativeImpact)}
+                              value={formatFactor(market.swapFeeFactorForBalanceWasNotImproved)}
                               showDollar={false}
                             />
                             <StatsTooltipRow
                               label="Position Fee Factor (Positive PI)"
-                              value={formatFactor(market.positionFeeFactorForPositiveImpact)}
+                              value={formatFactor(market.positionFeeFactorForBalanceWasImproved)}
                               showDollar={false}
                             />
                             <StatsTooltipRow
                               label="Position Fee Factor (Negative PI)"
-                              value={formatFactor(market.positionFeeFactorForNegativeImpact)}
+                              value={formatFactor(market.positionFeeFactorForBalanceWasNotImproved)}
                               showDollar={false}
                             />
                             <StatsTooltipRow

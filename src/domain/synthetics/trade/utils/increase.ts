@@ -10,7 +10,7 @@ import {
 import { TokenData } from "domain/synthetics/tokens";
 import { NextPositionValues } from "sdk/types/trade";
 
-export * from "sdk/utils/trade/amounts";
+export * from "sdk/utils/trade/increase";
 
 export function getNextPositionValuesForIncreaseTrade(p: {
   existingPosition?: PositionInfo;
@@ -85,6 +85,7 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     minCollateralUsd,
     pendingBorrowingFeesUsd: 0n, // deducted on order
     pendingFundingFeesUsd: 0n, // deducted on order
+    pendingImpactAmount: existingPosition?.pendingImpactAmount ?? 0n,
     isLong: isLong,
     userReferralInfo,
   });

@@ -216,8 +216,8 @@ export function mockMarketsInfoData(
       swapImpactPoolAmountLong: usdToToken(1000, longToken),
       swapImpactPoolAmountShort: usdToToken(1000, shortToken),
 
-      positionFeeFactorForPositiveImpact: expandDecimals(5, 26),
-      positionFeeFactorForNegativeImpact: expandDecimals(5, 26),
+      positionFeeFactorForBalanceWasImproved: expandDecimals(5, 26),
+      positionFeeFactorForBalanceWasNotImproved: expandDecimals(5, 26),
       positionImpactFactorPositive: expandDecimals(2, 23),
       positionImpactFactorNegative: expandDecimals(1, 23),
       maxPositionImpactFactorPositive: expandDecimals(2, 23),
@@ -225,8 +225,8 @@ export function mockMarketsInfoData(
       maxPositionImpactFactorForLiquidations: expandDecimals(1, 23),
       positionImpactExponentFactor: expandDecimals(2, 30),
 
-      swapFeeFactorForPositiveImpact: expandDecimals(2, 27),
-      swapFeeFactorForNegativeImpact: expandDecimals(2, 27),
+      swapFeeFactorForBalanceWasImproved: expandDecimals(2, 27),
+      swapFeeFactorForBalanceWasNotImproved: expandDecimals(2, 27),
 
       atomicSwapFeeFactor: expandDecimals(2, 27),
 

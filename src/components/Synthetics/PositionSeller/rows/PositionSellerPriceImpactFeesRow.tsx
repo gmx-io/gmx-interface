@@ -11,17 +11,18 @@ import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 export function PositionSellerPriceImpactFeesRow() {
   const { fees } = useSelector(selectPositionSellerFees);
 
-  const formattedPriceImpactPercentage =
-    fees?.positionPriceImpact?.precisePercentage === undefined
-      ? "..."
-      : formatPercentage(fees?.positionPriceImpact?.precisePercentage, {
-          bps: false,
-          signed: true,
-          displayDecimals: 3,
-        });
+  const totalPriceImpactPercentage =
+    (fees?.positionPriceImpact?.precisePercentage ?? 0n) + (fees?.priceImpactDiff?.precisePercentage ?? 0n);
 
-  const isPriceImpactPositive =
-    fees?.positionPriceImpact?.deltaUsd !== undefined && fees.positionPriceImpact.deltaUsd > 0;
+  const formattedPriceImpactPercentage = totalPriceImpactPercentage
+    ? "..."
+    : formatPercentage(totalPriceImpactPercentage, {
+        bps: false,
+        signed: true,
+        displayDecimals: 3,
+      });
+
+  const isPriceImpactPositive = totalPriceImpactPercentage > 0;
 
   const feesPercentage = fees?.positionFee?.precisePercentage ?? 0n;
 

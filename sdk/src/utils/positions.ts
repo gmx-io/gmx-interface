@@ -4,7 +4,14 @@ import { UserReferralInfo } from "types/referrals";
 import { Token, TokenData } from "types/tokens";
 
 import { bigMath } from "./bigmath";
-import { getPositionFee, getPriceImpactForPosition } from "./fees";
+import {
+  capPositionImpactUsdByMaxImpactPool,
+  capPositionImpactUsdByMaxPriceImpactFactor,
+  getMaxPositionImpactFactors,
+  getPositionFee,
+  getPriceImpactForPosition,
+  getProportionalPendingImpactValues,
+} from "./fees";
 import { getCappedPoolPnl, getMarketPnl, getPoolUsdWithoutPnl } from "./markets";
 import { applyFactor, expandDecimals } from "./numbers";
 import { convertToUsd, getIsEquivalentTokens } from "./tokens";
@@ -78,6 +85,8 @@ export function getPositionPendingFeesUsd(p: { pendingFundingFeesUsd: bigint; pe
 }
 
 export function getPositionNetValue(p: {
+  totalPendingImpactDeltaUsd: bigint;
+  priceImpactDiffUsd: bigint;
   collateralUsd: bigint;
   pendingFundingFeesUsd: bigint;
   pendingBorrowingFeesUsd: bigint;
@@ -85,11 +94,13 @@ export function getPositionNetValue(p: {
   closingFeeUsd: bigint;
   uiFeeUsd: bigint;
 }) {
-  const { pnl, closingFeeUsd, collateralUsd, uiFeeUsd } = p;
+  const { pnl, closingFeeUsd, collateralUsd, uiFeeUsd, totalPendingImpactDeltaUsd, priceImpactDiffUsd } = p;
 
   const pendingFeesUsd = getPositionPendingFeesUsd(p);
 
-  return collateralUsd - pendingFeesUsd - closingFeeUsd - uiFeeUsd + pnl;
+  return (
+    collateralUsd - pendingFeesUsd - closingFeeUsd - uiFeeUsd + pnl - totalPendingImpactDeltaUsd + priceImpactDiffUsd
+  );
 }
 
 export function getLeverage(p: {
@@ -121,6 +132,7 @@ export function getLiquidationPrice(p: {
   marketInfo: MarketInfo;
   pendingFundingFeesUsd: bigint;
   pendingBorrowingFeesUsd: bigint;
+  pendingImpactAmount: bigint;
   minCollateralUsd: bigint;
   isLong: boolean;
   useMaxPriceImpact?: boolean;
@@ -135,6 +147,7 @@ export function getLiquidationPrice(p: {
     collateralToken,
     pendingFundingFeesUsd,
     pendingBorrowingFeesUsd,
+    pendingImpactAmount,
     minCollateralUsd,
     isLong,
     userReferralInfo,
@@ -158,19 +171,29 @@ export function getLiquidationPrice(p: {
   if (useMaxPriceImpact) {
     priceImpactDeltaUsd = maxNegativePriceImpactUsd;
   } else {
-    priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, { fallbackToZero: true });
+    const priceImapctForPosition = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, { fallbackToZero: true });
+    priceImpactDeltaUsd = priceImapctForPosition.priceImpactDeltaUsd;
 
-    if (priceImpactDeltaUsd < maxNegativePriceImpactUsd) {
-      priceImpactDeltaUsd = maxNegativePriceImpactUsd;
+    if (priceImpactDeltaUsd > 0) {
+      priceImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, priceImpactDeltaUsd);
     }
 
-    // Ignore positive price impact
+    const pendingImpactUsd = convertToUsd(
+      pendingImpactAmount,
+      marketInfo.indexToken.decimals,
+      pendingImpactAmount > 0 ? marketInfo.indexToken.prices.minPrice : marketInfo.indexToken.prices.maxPrice
+    )!;
+
+    priceImpactDeltaUsd = priceImpactDeltaUsd + pendingImpactUsd;
+
     if (priceImpactDeltaUsd > 0) {
       priceImpactDeltaUsd = 0n;
+    } else if (priceImpactDeltaUsd < maxNegativePriceImpactUsd) {
+      priceImpactDeltaUsd = maxNegativePriceImpactUsd;
     }
   }
 
-  let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
+  let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactorForLiquidation);
   if (liquidationCollateralUsd < minCollateralUsd) {
     liquidationCollateralUsd = minCollateralUsd;
   }
@@ -222,4 +245,52 @@ export function getLiquidationPrice(p: {
   }
 
   return liquidationPrice;
+}
+
+export function getNetPriceImpactDeltaUsdForDecrease({
+  marketInfo,
+  sizeInUsd,
+  pendingImpactAmount,
+  priceImpactDeltaUsd,
+  sizeDeltaUsd,
+}: {
+  marketInfo: MarketInfo;
+  sizeInUsd: bigint;
+  pendingImpactAmount: bigint;
+  sizeDeltaUsd: bigint;
+  priceImpactDeltaUsd: bigint;
+}) {
+  const { proportionalPendingImpactDeltaUsd } = getProportionalPendingImpactValues({
+    sizeInUsd,
+    pendingImpactAmount,
+    sizeDeltaUsd,
+    indexToken: marketInfo.indexToken,
+  });
+
+  let totalImpactDeltaUsd = priceImpactDeltaUsd + proportionalPendingImpactDeltaUsd;
+  let priceImpactDiffUsd = 0n;
+
+  if (totalImpactDeltaUsd < 0) {
+    const { maxNegativeImpactFactor } = getMaxPositionImpactFactors(marketInfo);
+    const maxPriceImpactFactor = applyFactor(sizeDeltaUsd, maxNegativeImpactFactor);
+
+    const minPriceImpactUsd = -applyFactor(sizeDeltaUsd, maxPriceImpactFactor);
+
+    if (totalImpactDeltaUsd < minPriceImpactUsd) {
+      priceImpactDiffUsd = minPriceImpactUsd - totalImpactDeltaUsd;
+      totalImpactDeltaUsd = minPriceImpactUsd;
+    }
+  }
+
+  if (totalImpactDeltaUsd > 0) {
+    totalImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, totalImpactDeltaUsd);
+  }
+
+  totalImpactDeltaUsd = capPositionImpactUsdByMaxImpactPool(marketInfo, totalImpactDeltaUsd);
+
+  return {
+    totalImpactDeltaUsd,
+    proportionalPendingImpactDeltaUsd,
+    priceImpactDiffUsd,
+  };
 }
