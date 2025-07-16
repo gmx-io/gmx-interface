@@ -63,7 +63,7 @@
   line-height: var(--line-height-body-large);
   font-weight: normal;
   letter-spacing: 0.1px;
-  color: var(--color-slate-500);
+  color: var(--color-slate-100);
   padding: 1.5rem 1.6rem;
   text-decoration: none;
   display: block;
@@ -168,7 +168,7 @@
 .App-header-container-left a {
   padding: 1.8rem 1.7rem;
   display: block;
-  color: var(--color-slate-500);
+  color: var(--color-slate-100);
   font-size: var(--font-size-body-large);
   line-height: var(--line-height-body-large);
   font-weight: normal;
@@ -198,7 +198,7 @@
 }
 
 .App-header-user-address {
-  border: 1px solid var(--color-stroke-primary);
+  border: 1px solid var(--color-slate-600);
   height: 3.6rem;
   border-radius: 0.4rem;
   display: inline-flex;

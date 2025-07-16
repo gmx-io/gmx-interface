@@ -1594,7 +1594,7 @@ export default function SwapBox(props) {
                             onClick={() => {
                               setShortCollateralAddress(existingCurrentIndexCollateralToken?.address);
                             }}
-                            className="cursor-pointer text-slate-500 underline"
+                            className="cursor-pointer text-slate-100 underline"
                           >
                             <Trans>Switch to {existingCurrentIndexCollateralToken?.symbol} collateral.</Trans>
                           </div>

@@ -64,7 +64,7 @@ export function Chart() {
 
   return (
     <div className="ExchangeChart tv flex h-[60rem] flex-col [@media(min-width:2560px)]:min-h-[780px] [@media(min-width:3840px)]:min-h-[1140px]">
-      <div className="flex grow flex-col overflow-hidden rounded-8 bg-fill-surfaceBase [@media(max-width:1920px)]:h-[53.6rem]">
+      <div className="flex grow flex-col overflow-hidden rounded-8 bg-slate-900 [@media(max-width:1920px)]:h-[53.6rem]">
         {isSwap ? (
           tab === "MARKET_GRAPH" ? (
             TAB_CONTENTS.MARKET_GRAPH
@@ -104,7 +104,7 @@ const ChartTabs = ({ tab, setTab }: { tab: string | undefined; setTab: (tab: str
       selectedValue={tab}
       onChange={setTab}
       regularOptionClassname="grow-0 -mb-[0.5px]"
-      className="border-b border-stroke-primary"
+      className="border-b border-slate-600"
     />
   );
 };

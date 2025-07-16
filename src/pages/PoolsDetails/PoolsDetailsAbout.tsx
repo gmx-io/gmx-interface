@@ -53,7 +53,7 @@ export function PoolsDetailsAbout({
 
   return (
     <div className="flex flex-col gap-16">
-      <div className="text-body-medium text-slate-500">
+      <div className="text-body-medium text-slate-100">
         {isGlv ? (
           <Trans>
             This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps
@@ -213,7 +213,7 @@ const BuyableTooltipContent = ({
           decimals={marketInfo?.longToken?.decimals}
           usd={(mintableInfo?.longDepositCapacityUsd ?? 0n) + (mintableInfo?.shortDepositCapacityUsd ?? 0n)}
         />,
-        <span key="longTokenMaxValue-isSameCollaterals-ratio" className="text-body-small text-slate-500">
+        <span key="longTokenMaxValue-isSameCollaterals-ratio" className="text-body-small text-slate-100">
           ({poolUsd} / {maxPoolUsd})
         </span>,
       ];
@@ -230,7 +230,7 @@ const BuyableTooltipContent = ({
         usd={mintableInfo?.longDepositCapacityUsd}
         symbol={marketInfo?.longToken?.symbol}
       />,
-      <span key="longTokenMaxValue-ratio" className="text-body-small text-slate-500">
+      <span key="longTokenMaxValue-ratio" className="text-body-small text-slate-100">
         ({poolUsd} / {maxPoolUsd})
       </span>,
     ];
@@ -258,7 +258,7 @@ const BuyableTooltipContent = ({
         usd={mintableInfo?.shortDepositCapacityUsd}
         symbol={marketInfo?.shortToken?.symbol}
       />,
-      <span key="shortTokenMaxValue-ratio" className="text-body-small text-slate-500">
+      <span key="shortTokenMaxValue-ratio" className="text-body-small text-slate-100">
         ({poolUsd} / {maxPoolUsd})
       </span>,
     ];

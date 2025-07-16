@@ -10,7 +10,7 @@
 
   .Dropdown-current-arrow {
     font-size: var(--font-size-body-small);
-    color: var(--color-slate-500);
+    color: var(--color-slate-100);
     margin-left: 1rem;
     margin-top: -2px;
   }
@@ -37,7 +37,7 @@
 .Chart-header {
   display: grid;
   grid-template-columns: minmax(auto, max-content) auto;
-  background-color: var(--color-slate-800);
+  background-color: var(--color-slate-900);
 }
 
 .Chart-top-scrollable {

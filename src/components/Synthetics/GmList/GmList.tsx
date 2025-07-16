@@ -137,7 +137,7 @@ export function GmList({
             <ButtonRowScrollFadeContainer>
               <FavoriteTabs
                 favoritesKey="gm-list"
-                className="!text-slate-500 hover:!text-white"
+                className="!text-slate-100 hover:!text-white"
                 activeClassName="!text-white"
               />
             </ButtonRowScrollFadeContainer>
@@ -147,7 +147,7 @@ export function GmList({
           <div className="flex flex-col gap-4">
             {rows}
             {!currentData.length && !isLoading && (
-              <div className="text-body-medium text-slate-500">
+              <div className="text-body-medium text-slate-100">
                 <Trans>No pools matched.</Trans>
               </div>
             )}
@@ -204,7 +204,7 @@ export function GmList({
                 {!currentData.length && !isLoading && (
                   <TableTr hoverable={false} bordered={false} className="h-[64.5px]">
                     <TableTd colSpan={7} className="align-top">
-                      <div className="text-body-medium text-slate-500">
+                      <div className="text-body-medium text-slate-100">
                         <Trans>No pools matched.</Trans>
                       </div>
                     </TableTd>

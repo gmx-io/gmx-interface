@@ -101,7 +101,7 @@ const NotifyButton = () => {
 
   return (
     <div className="cursor-pointer rounded-8 bg-slate-700 p-11" onClick={openNotifyModal}>
-      <BellIcon className="text-slate-500" />
+      <BellIcon className="text-slate-100" />
     </div>
   );
 };

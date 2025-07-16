@@ -91,7 +91,7 @@ export default function SuggestionInput({
         className={cx("Suggestion-input flex items-baseline", className, { "input-error": isError, "pr-6": !symbol })}
         onClick={() => inputRef.current?.focus()}
       >
-        {label ? <span className="pl-7 pr-7 text-slate-500">{label}</span> : null}
+        {label ? <span className="pl-7 pr-7 text-slate-100">{label}</span> : null}
         <NumberInput
           inputId={inputId}
           inputRef={inputRef}
@@ -104,7 +104,7 @@ export default function SuggestionInput({
           onKeyDown={handleKeyDown}
         />
         {symbol && (
-          <div className="pr-7 text-slate-500">
+          <div className="pr-7 text-slate-100">
             <span>{symbol}</span>
           </div>
         )}

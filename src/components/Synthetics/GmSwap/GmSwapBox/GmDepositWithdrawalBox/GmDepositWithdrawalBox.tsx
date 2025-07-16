@@ -804,7 +804,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           />
         </div>
 
-        <div className="Exchange-swap-button-container mb-14 border-b border-stroke-primary pb-14">{submitButton}</div>
+        <div className="Exchange-swap-button-container mb-14 border-b border-slate-600 pb-14">{submitButton}</div>
 
         <InfoRows fees={fees} executionFee={executionFee} isDeposit={isDeposit} />
       </form>

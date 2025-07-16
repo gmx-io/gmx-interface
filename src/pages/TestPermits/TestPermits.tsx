@@ -230,7 +230,7 @@ export function TestPermits() {
 
             {permitData && (
               <div className="rounded-xl text-slate-200 text-base bg-slate-800 p-6 shadow-inner">
-                <h2 className="text-lg mb-4 font-bold tracking-wide text-slate-500">Permit Details</h2>
+                <h2 className="text-lg mb-4 font-bold tracking-wide text-slate-100">Permit Details</h2>
                 <div className="space-y-2">
                   <div>
                     <span className="font-semibold">Deadline:</span>{" "}

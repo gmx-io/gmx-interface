@@ -17,14 +17,14 @@ $suggestion-input-hover-background: linear-gradient(0deg, #090a144d, #090a144d),
     overflow: hidden;
     font-size: 13px;
     font-weight: 500;
-    border: 1px solid var(--color-stroke-primary);
+    border: 1px solid var(--color-slate-600);
 
     li {
       padding: 0.5rem 0.75rem;
       cursor: pointer;
       text-align: center;
       &:hover {
-        background: var(--color-slate-500);
+        background: var(--color-slate-100);
       }
     }
   }
@@ -46,10 +46,10 @@ $suggestion-input-hover-background: linear-gradient(0deg, #090a144d, #090a144d),
       border: 1px solid #19192b;
     }
     &:focus {
-      border-color: var(--color-button-hovered);
+      border-color: var(--color-blue-300);
     }
     &:focus-within {
-      border-color: var(--color-button-hovered);
+      border-color: var(--color-blue-300);
     }
 
     &.input-error {
@@ -63,7 +63,7 @@ $suggestion-input-hover-background: linear-gradient(0deg, #090a144d, #090a144d),
       border-radius: 4px;
       color: var(--color-white);
       &::placeholder {
-        color: var(--color-slate-500);
+        color: var(--color-slate-100);
       }
     }
   }

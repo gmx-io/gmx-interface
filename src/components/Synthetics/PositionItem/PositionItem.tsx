@@ -255,7 +255,7 @@ export function PositionItem(p: Props) {
 
           {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
             <span className="edit-icon" onClick={p.onEditCollateralClick} data-qa="position-edit-button">
-              <AiOutlineEdit className="text-slate-500" fontSize={16} />
+              <AiOutlineEdit className="text-slate-100" fontSize={16} />
             </span>
           )}
         </div>
@@ -765,7 +765,7 @@ function PositionItemOrdersLarge({
           "Exchange-list-info-label",
           "Exchange-position-list-orders",
           "clickable",
-          "text-slate-500",
+          "text-slate-100",
         ])}
         maxAllowedWidth={370}
         tooltipClassName="!z-10 w-[370px]"
@@ -813,13 +813,13 @@ function PositionItemOrder({
   const cancelButton = (
     <Button
       variant="secondary"
-      className={cx("!bg-slate-500 !bg-opacity-15 !p-6", {
+      className={cx("!bg-slate-100 !bg-opacity-15 !p-6", {
         "hover:!bg-opacity-20 active:!bg-opacity-25": !isDisabled,
       })}
       disabled={isDisabled}
       onClick={cancel}
     >
-      <MdClose fontSize={16} className={cx({ "text-slate-500": isDisabled, "text-white": !isDisabled })} />
+      <MdClose fontSize={16} className={cx({ "text-slate-100": isDisabled, "text-white": !isDisabled })} />
     </Button>
   );
 
@@ -828,7 +828,7 @@ function PositionItemOrder({
       <div className="flex items-start justify-between gap-6">
         <Button
           variant="secondary"
-          className="!block w-full !bg-slate-500 !bg-opacity-15 !p-5 hover:!bg-opacity-20 active:!bg-opacity-25"
+          className="!block w-full !bg-slate-100 !bg-opacity-15 !p-5 hover:!bg-opacity-20 active:!bg-opacity-25"
           onClick={handleOrdersClick}
         >
           <div className="flex items-center justify-between">
@@ -839,7 +839,7 @@ function PositionItemOrder({
         {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
           <Button
             variant="secondary"
-            className="!bg-slate-500 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
+            className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
             onClick={handleEditClick}
           >
             <AiOutlineEdit fontSize={16} />

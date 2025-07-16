@@ -1,5 +1,5 @@
 $blue: var(--color-blue-300);
-$gray: var(--color-stroke-primary);
+$gray: var(--color-slate-600);
 
 .LeverageSlider {
   margin-top: 1.5rem;
@@ -47,7 +47,7 @@ $gray: var(--color-stroke-primary);
     border-radius: 50%;
     width: 4px;
     height: 4px;
-    background: var(--color-fill-surfaceBase);
+    background: var(--color-slate-900);
     box-sizing: content-box;
     top: -1px;
   }
@@ -69,7 +69,7 @@ $gray: var(--color-stroke-primary);
 
   .rc-slider-mark-text,
   .rc-slider-mark-text-active {
-    color: var(--color-slate-500);
+    color: var(--color-slate-100);
     opacity: 0.7;
     font-size: 11px;
     font-weight: 500;
@@ -99,7 +99,7 @@ $gray: var(--color-stroke-primary);
 //   width: "4px",
 //   height: "4px",
 //   borderRadius: "50%",
-//   backgroundColor: "var(--color-fill-surfaceBase)",
+//   backgroundColor: "var(--color-slate-900)",
 //   boxSizing: "content-box",
 //   top: "-1px",
 // }}

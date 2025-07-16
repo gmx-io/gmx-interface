@@ -59,7 +59,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
       {glvOrMarketInfo ? (
         <>
           <div
-            className={cx("flex items-center gap-20 border-stroke-primary", {
+            className={cx("flex items-center gap-20 border-slate-600", {
               "border-r": !isMobile,
               "mb-12 border-b pb-14": isMobile,
             })}
@@ -78,7 +78,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
             ) : null}
             <div className={cx("flex flex-col gap-4 pr-20")}>
               <div className="text-body-large">{isGlv ? "GLV" : `GM: ${getMarketIndexName(glvOrMarketInfo)}`}</div>
-              <div className="text-body-small text-slate-500">{`[${getMarketPoolName(glvOrMarketInfo)}]`}</div>
+              <div className="text-body-small text-slate-100">{`[${getMarketPoolName(glvOrMarketInfo)}]`}</div>
             </div>
           </div>
 

@@ -27,7 +27,7 @@ export default function RegularTab<V extends string | number>({
     <button
       className={cx(
         `flex items-center justify-center gap-8 font-medium
-        text-slate-500 first:rounded-tl-8 last:rounded-tr-8 hover:text-white`,
+        text-slate-100 first:rounded-tl-8 last:rounded-tr-8 hover:text-white`,
         optionClassName,
         regularOptionClassname,
         {

@@ -310,7 +310,7 @@ export function GmShiftBox({
           shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
         />
 
-        <div className="w-full border-b border-stroke-primary pb-14">
+        <div className="w-full border-b border-slate-600 pb-14">
           <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
             {submitState.text}
           </Button>

@@ -317,7 +317,7 @@ export default function TokenCard({ showRedirectModal, showGlp = true }: Props) 
             </div>
           </div>
         </div>
-        <div className="mt-50 flex flex-col gap-15 text-slate-500">
+        <div className="mt-50 flex flex-col gap-15 text-slate-100">
           <Trans>Buy token on:</Trans>
           <div className={cx("flex justify-between", { "flex-col gap-15": isMobile })}>
             <div className={cx("buy flex gap-15", { "flex-col": isMobile })}>
@@ -381,7 +381,7 @@ export default function TokenCard({ showRedirectModal, showGlp = true }: Props) 
           </div>
         </div>
 
-        <div className="mt-50 flex flex-col gap-15 text-slate-500">
+        <div className="mt-50 flex flex-col gap-15 text-slate-100">
           <Trans>Buy token on:</Trans>
           <div className={cx("flex justify-between", { "flex-col gap-15": isMobile })}>
             <div className={cx("buy flex gap-15", { "flex-col": isMobile })}>
@@ -454,7 +454,7 @@ export default function TokenCard({ showRedirectModal, showGlp = true }: Props) 
           </div>
         </div>
 
-        <div className="mt-50 flex flex-col gap-15 text-slate-500">
+        <div className="mt-50 flex flex-col gap-15 text-slate-100">
           <Trans>Buy token on:</Trans>
           <div className={cx("flex justify-between", { "flex-col gap-15": isMobile })}>
             <div className={cx("buy flex gap-15", { "flex-col": isMobile })}>
@@ -525,7 +525,7 @@ export default function TokenCard({ showRedirectModal, showGlp = true }: Props) 
               </div>
             </div>
           </div>
-          <div className="mt-50 flex flex-col gap-15 text-slate-500">
+          <div className="mt-50 flex flex-col gap-15 text-slate-100">
             <Trans>Sell token on:</Trans>
             <div className={cx("flex justify-between", { "flex-col gap-15": isMobile })}>
               <div className={cx("buy flex gap-15", { "flex-col": isMobile })}>

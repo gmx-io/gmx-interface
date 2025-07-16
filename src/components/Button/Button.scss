@@ -1,7 +1,7 @@
 $button-primary-hover: linear-gradient(0deg, #090a141a, #090a141a),
-  linear-gradient(0deg, var(--color-button-primary), var(--color-button-primary));
+  linear-gradient(0deg, var(--color-blue-400), var(--color-blue-400));
 $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
-  linear-gradient(0deg, var(--color-button-primary), var(--color-button-primary));
+  linear-gradient(0deg, var(--color-blue-400), var(--color-blue-400));
 
 .button {
   cursor: pointer;
@@ -119,7 +119,7 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
   }
 
   &.link {
-    color: var(--color-slate-500);
+    color: var(--color-slate-100);
     text-decoration: underline;
     padding: 0;
 
@@ -139,13 +139,13 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
 
     &.primary-action,
     &.primary {
-      background-color: var(--color-button-primaryDisabled);
-      color: var(--color-textIcon-disabled);
+      background-color: var(--color-slate-800);
+      color: var(--color-slate-500);
     }
 
     &.secondary {
       background-color: #1b1e32;
-      color: var(--color-slate-500);
+      color: var(--color-slate-100);
     }
   }
 

@@ -104,7 +104,7 @@ export default function ChartTokenSelector(props: Props) {
               </span>
               {poolName && (
                 <span
-                  className={cx("text-body-small font-normal text-slate-500 group-hover:text-blue-300", {
+                  className={cx("text-body-small font-normal text-slate-100 group-hover:text-blue-300", {
                     "ml-8": oneRowLabels,
                   })}
                 >
@@ -229,7 +229,7 @@ function MarketsList() {
     ? cx("px-2 first-of-type:pl-5 last-of-type:pr-8")
     : cx("px-5 first-of-type:pl-16 last-of-type:pr-16");
   const thClassName = cx(
-    "text-body-medium sticky top-0 z-10 whitespace-nowrap border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-slate-500",
+    "text-body-medium sticky top-0 z-10 whitespace-nowrap border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-slate-100",
     "first-of-type:text-left",
     isMobile ? "first-of-type:!pl-40" : "first-of-type:!pl-37",
     rowVerticalPadding,
@@ -367,7 +367,7 @@ function MarketsList() {
             )}
             {options && options.length > 0 && !sortedTokens?.length && (
               <TableTr hoverable={false} bordered={false}>
-                <TableTd colSpan={isSwap ? 2 : 3} className="text-body-medium text-slate-500">
+                <TableTd colSpan={isSwap ? 2 : 3} className="text-body-medium text-slate-100">
                   <Trans>No markets matched.</Trans>
                 </TableTd>
               </TableTr>
@@ -564,7 +564,7 @@ function MarketListItem({
           className={cx("text-body-medium w-full", rowVerticalPadding, rowHorizontalPadding)}
           onClick={handleSelectLargePosition}
         >
-          <span className="inline-flex items-center text-slate-500">
+          <span className="inline-flex items-center text-slate-100">
             <TokenIcon
               className="ChartToken-list-icon -my-5 mr-8"
               symbol={token.symbol}

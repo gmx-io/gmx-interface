@@ -237,7 +237,7 @@ export function GmPoolsSelectorForGlvMarket({
           ))}
         </div>
         {filteredOptions.length === 0 && (
-          <div className="text-body-medium text-slate-500">
+          <div className="text-body-medium text-slate-100">
             <Trans>No pools matched.</Trans>
           </div>
         )}

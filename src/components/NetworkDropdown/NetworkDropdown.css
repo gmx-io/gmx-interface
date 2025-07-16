@@ -1,6 +1,6 @@
 .App-header-network {
   position: relative;
-  border: 1px solid var(--color-stroke-primary);
+  border: 1px solid var(--color-slate-600);
   border-radius: var(--border-radius-sm);
   height: 3.6rem;
   display: inline-flex;
@@ -25,7 +25,7 @@
 
 .network-dropdown-divider {
   margin-bottom: 0.8rem;
-  border-bottom: 1px solid var(--color-stroke-primary);
+  border-bottom: 1px solid var(--color-slate-600);
 }
 .App-header-network:hover {
   background: var(--dark-blue-hover);
@@ -71,7 +71,7 @@
 .network-option {
   cursor: pointer;
   background: var(--dark-blue);
-  border: 1px solid var(--color-stroke-primary);
+  border: 1px solid var(--color-slate-600);
   border-radius: 0.4rem;
   padding: 0.8rem 1.5rem;
   display: flex;
@@ -104,7 +104,7 @@
 }
 
 .dropdown-label {
-  color: var(--color-slate-500);
+  color: var(--color-slate-100);
   padding: 0.8rem;
   font-size: var(--font-size-body-small);
   line-height: var(--line-height-body-small);

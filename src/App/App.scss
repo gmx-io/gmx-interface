@@ -105,7 +105,7 @@ $app-card-padding: 1.5rem;
 .App-box-solid {
   position: relative;
   border-radius: 0.4rem;
-  background: var(--color-slate-800);
+  background: var(--color-slate-900);
   font-size: var(--font-size-body-medium);
 }
 
@@ -136,7 +136,7 @@ $app-card-padding: 1.5rem;
 .App-card-divider-vertical {
   width: 1px;
   height: 8.8rem;
-  background: var(--color-slate-500);
+  background: var(--color-slate-100);
 }
 
 .App-card-title-block {
@@ -188,7 +188,7 @@ $app-card-padding: 1.5rem;
   background: var(--dark-blue);
   height: 5.1rem;
   width: 26.35rem;
-  border: 1px solid var(--color-stroke-primary);
+  border: 1px solid var(--color-slate-600);
   border-radius: 0.3rem;
   position: relative;
   color: var(--color-white);
@@ -253,7 +253,7 @@ button.App-connect-wallet:hover {
 }
 
 .App-header-user-address {
-  border: 1px solid var(--color-stroke-primary);
+  border: 1px solid var(--color-slate-600);
   height: 3.6rem;
   border-radius: 0.4rem;
   display: inline-flex;
@@ -264,7 +264,7 @@ button.App-connect-wallet:hover {
 
 .mobile-menu-divider {
   height: 1px;
-  background: var(--color-slate-500);
+  background: var(--color-slate-100);
 }
 
 .App-card-divider {
@@ -341,7 +341,7 @@ button.App-connect-wallet:hover {
   font-size: 1.8rem;
   line-height: 2.3rem;
   letter-spacing: 0px;
-  color: var(--color-slate-500);
+  color: var(--color-slate-100);
   margin-top: 0.4rem;
   max-width: 62rem;
 }
@@ -376,7 +376,7 @@ button.App-connect-wallet:hover {
 }
 
 .Page-description {
-  color: var(--color-slate-500);
+  color: var(--color-slate-100);
   font-size: var(--font-size-body-medium);
   line-height: var(--line-height-body-medium);
 }
@@ -538,7 +538,7 @@ button.App-connect-wallet:hover {
 .App-header-container-left a {
   padding: 1.8rem 1.7rem;
   display: block;
-  color: var(--color-slate-500);
+  color: var(--color-slate-100);
   font-size: var(--font-size-body-medium);
   line-height: 1.8rem;
   font-weight: normal;
@@ -996,7 +996,7 @@ button.App-button {
 
 .App-slider .rc-slider-mark-text,
 .App-slider .rc-slider-mark-text-active {
-  color: var(--color-slate-500);
+  color: var(--color-slate-100);
   opacity: 0.5;
 }
 

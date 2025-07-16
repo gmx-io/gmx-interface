@@ -34,7 +34,7 @@
   border-radius: 0.4rem;
   overflow: hidden;
   background: var(--color-slate-800);
-  border: 1px solid var(--color-stroke-primary);
+  border: 1px solid var(--color-slate-600);
   list-style: none;
   cursor: pointer;
   outline: none;
@@ -43,7 +43,7 @@
   .menu-item {
     display: flex !important;
     align-items: center;
-    color: var(--color-slate-500);
+    color: var(--color-slate-100);
     padding-bottom: 1.5rem;
     font-size: var(--font-size-body-medium);
     padding: 0.85rem 0.8rem;

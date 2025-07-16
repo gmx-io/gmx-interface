@@ -157,7 +157,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
 
       {!isTwap && (
         <>
-          <div className="h-1 bg-stroke-primary" />
+          <div className="h-1 bg-slate-600" />
 
           <SyntheticsInfoRow label={t`Leverage`} value={leverageValue} />
           {sizeRow}

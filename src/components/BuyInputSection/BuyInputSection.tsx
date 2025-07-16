@@ -148,16 +148,16 @@ export default function BuyInputSection(props: Props) {
       <div
         className={cx(
           `flex cursor-text flex-col justify-between gap-8 rounded-8 border
-          border-cold-blue-900 bg-cold-blue-900 px-14 pb-16 pt-12 text-12 leading-[16px] shadow-[inset_0_0_0_1px] shadow-[transparent]`,
+          border-slate-800 bg-slate-800 px-14 pb-16 pt-12 text-12 leading-[16px] shadow-[inset_0_0_0_1px] shadow-[transparent]`,
           {
-            "border-2 border-cold-blue-900 bg-opacity-70": isDisabled,
+            "bg-opacity-70": isDisabled,
             "focus-within:border-blue-300 hover:border-blue-300": !isDisabled,
           }
         )}
         onClick={handleBoxClick}
       >
         <div className="flex justify-between">
-          <div data-label="left" className="text-slate-500">
+          <div data-label="left" className="text-slate-100">
             {topLeftLabel}
           </div>
           {(topRightLabel || topRightValue || (onClickMax && maxButtonPosition === "top-right")) && (
@@ -169,7 +169,7 @@ export default function BuyInputSection(props: Props) {
               )}
               onClick={handleTopRightClick}
             >
-              {topRightLabel && <span className="text-slate-500">{topRightLabel}:</span>}
+              {topRightLabel && <span className="text-slate-100">{topRightLabel}:</span>}
               {topRightValue && <span>{topRightValue}</span>}
               {onClickMax && maxButtonPosition === "top-right" && <MaxButton onClick={handleMaxClick} />}
             </div>
@@ -189,7 +189,7 @@ export default function BuyInputSection(props: Props) {
               qa={qa ? qa + "-input" : undefined}
               isDisabled={isDisabled}
             />
-            <div className="absolute right-0 top-0 h-full w-8 bg-gradient-to-r from-[rgba(0,0,0,0)] to-cold-blue-900" />
+            <div className="absolute right-0 top-0 h-full w-8 bg-gradient-to-r from-[rgba(0,0,0,0)] to-slate-900" />
 
             {showPercentSelector && isPercentSelectorVisible && onPercentChange && (
               <ul className="PercentSelector">
@@ -217,7 +217,7 @@ export default function BuyInputSection(props: Props) {
           <div className="flex justify-between">
             <div
               className={cx({
-                "text-slate-500": isBottomLeftValueMuted,
+                "text-slate-100": isBottomLeftValueMuted,
                 "text-white": !isBottomLeftValueMuted,
               })}
             >
@@ -230,7 +230,7 @@ export default function BuyInputSection(props: Props) {
               )}
               onClick={handleBottomRightClick}
             >
-              {bottomRightLabel && <span className="text-slate-500">{bottomRightLabel}:</span>}
+              {bottomRightLabel && <span className="text-slate-100">{bottomRightLabel}:</span>}
               {bottomRightValue && <span>{bottomRightValue}</span>}
 
               {onClickMax && maxButtonPosition === "bottom-right" && <MaxButton onClick={handleMaxClick} />}
@@ -246,7 +246,7 @@ const MaxButton = ({ onClick }: { onClick: (e: React.MouseEvent<HTMLButtonElemen
   return (
     <button
       type="button"
-      className="-my-4 rounded-full bg-fill-accent px-8 py-2 font-medium"
+      className="-my-4 rounded-full bg-slate-600 px-8 py-2 font-medium"
       onClick={onClick}
       data-qa="input-max"
     >

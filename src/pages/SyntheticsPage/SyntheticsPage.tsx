@@ -299,7 +299,7 @@ export function SyntheticsPage(p: Props) {
                   selectedValue={listSection}
                   onChange={handleTabChange}
                   type="block"
-                  className="border-b border-stroke-primary bg-fill-surfaceBase"
+                  className="border-b border-slate-600 bg-slate-900"
                   qa="exchange-list-tabs"
                   rightContent={
                     <div className="shrink-0 px-12">

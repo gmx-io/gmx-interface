@@ -56,7 +56,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
   );
 
   return (
-    <div className="my-15 rounded-4 bg-slate-800 text-left">
+    <div className="my-15 rounded-4 bg-slate-900 text-left">
       <div className="flex items-center px-16 py-8 text-16">
         <Trans>GM Pools</Trans>
         <img className="ml-5 mr-10" src={getIcon(chainId, "network")} width="16" alt="Network Icon" />
@@ -111,7 +111,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
 
             {indexTokensStats.length > 0 && !currentData.length && (
               <TableTr hoverable={false} bordered={false} className="h-[64.5px]">
-                <TableTd colSpan={6} className="text-body-medium align-top text-slate-500">
+                <TableTd colSpan={6} className="text-body-medium align-top text-slate-100">
                   <Trans>No markets found.</Trans>
                 </TableTd>
               </TableTr>

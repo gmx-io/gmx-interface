@@ -755,7 +755,7 @@ export function OrderEditor(p: Props) {
                 recommendedAllowedSwapSlippageBps={defaultAllowedSwapSlippageBps}
                 setAllowedSwapSlippageBps={setSelectedAllowedSwapSlippageBps}
               />
-              <div className="h-1 bg-stroke-primary" />
+              <div className="h-1 bg-slate-600" />
               <SyntheticsInfoRow
                 label={t`Min. Receive`}
                 value={formatBalanceAmount(

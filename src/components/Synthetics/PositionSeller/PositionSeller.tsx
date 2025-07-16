@@ -1007,7 +1007,7 @@ export function PositionSeller() {
               />
               {!isTwap && (
                 <ToggleSwitch
-                  textClassName="text-slate-500"
+                  textClassName="text-slate-100"
                   isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
                   setIsChecked={setKeepLeverage}
                   disabled={leverageCheckboxDisabledByCollateral || decreaseAmounts?.isFullClose}
@@ -1033,7 +1033,7 @@ export function PositionSeller() {
                 isWrapOrUnwrap={false}
               />
 
-              <div className="h-1 bg-stroke-primary" />
+              <div className="h-1 bg-slate-600" />
 
               {!isTwap && (
                 <>

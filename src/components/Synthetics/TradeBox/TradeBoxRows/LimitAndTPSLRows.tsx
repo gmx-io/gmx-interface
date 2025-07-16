@@ -158,9 +158,9 @@ export function LimitAndTPSLRows({ hasExistingLimitOrder }: { hasExistingLimitOr
   return (
     <div className="flex flex-col gap-14 pt-12">
       <SideOrders type="limit" />
-      {hasExistingLimitOrder && <div className="h-[0.5px] bg-stroke-primary" />}
+      {hasExistingLimitOrder && <div className="h-[0.5px] bg-slate-600" />}
       <SideOrders type="takeProfit" />
-      <div className="h-[0.5px] bg-stroke-primary" />
+      <div className="h-[0.5px] bg-slate-600" />
       <SideOrders type="stopLoss" />
     </div>
   );

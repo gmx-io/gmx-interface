@@ -95,14 +95,14 @@ function NavIcons({ selectorLabel }) {
 
   return (
     <>
-      <span className="text-body-small inline-block h-fit rounded-4 bg-fill-accent px-7 py-4 font-medium">
+      <span className="text-body-small inline-block h-fit rounded-4 bg-slate-600 px-7 py-4 font-medium">
         V{currentVersion}
       </span>
       <button>
         <img className="network-dropdown-icon" src={icon} alt={selectorLabel} />
       </button>
       <button>
-        <FiChevronDown className="text-slate-500" size={20} />
+        <FiChevronDown className="text-slate-100" size={20} />
       </button>
     </>
   );
@@ -138,7 +138,7 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, openSe
             >
               <div className="menu-item-group">
                 <div className="menu-item-icon">
-                  <SettingsIcon16 className="network-dropdown-icon text-slate-500" />
+                  <SettingsIcon16 className="network-dropdown-icon text-slate-100" />
                 </div>
                 <span className="network-dropdown-item-label">
                   <Trans>Settings</Trans>
@@ -234,7 +234,7 @@ function NetworkModalContent({ networkOptions, selectorLabel, setActiveModal, op
           }}
         >
           <div className="menu-item-group">
-            <SettingsIcon24 className="mr-16 text-slate-500" />
+            <SettingsIcon24 className="mr-16 text-slate-100" />
             <span className="network-option-img-label">
               <Trans>Settings</Trans>
             </span>

@@ -139,7 +139,7 @@ export function ExpandableRow({
         <div
           className={cx(
             `inline-flex w-fit cursor-pointer items-center gap-4 rounded-full
-            border-[0.5px] border-fill-accent px-12 py-8 align-middle
+            border-[0.5px] border-slate-600 px-12 py-8 align-middle
             text-[13px] font-medium group-gmx-hover:text-blue-300`,
             {
               "cursor-not-allowed": disabled,

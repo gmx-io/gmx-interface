@@ -35,16 +35,16 @@ export default function ToggleSwitch({
         {beforeSwitchContent}
         <div
           className={cx("group w-36 cursor-pointer rounded-full border transition-all duration-300", {
-            "border-button-primary bg-button-primary": isChecked,
-            "bg-fill-slate-700 border-stroke-primary": !isChecked,
+            "border-blue-400 bg-blue-400": isChecked,
+            "bg-fill-slate-700 border-slate-600": !isChecked,
             "pointer-events-none": disabled,
           })}
           onClick={handleToggle}
         >
           <div
             className={cx("h-18 w-18 rounded-full shadow-[0px_2px_4px_0px_#00000040] transition-all duration-300", {
-              "translate-x bg-textIcon-secondary opacity-60 group-hover:opacity-100": !isChecked,
-              "translate-x-[19px] bg-textIcon-primary": isChecked,
+              "translate-x bg-slate-100 opacity-60 group-hover:opacity-100": !isChecked,
+              "translate-x-[19px] bg-white": isChecked,
             })}
           />
         </div>

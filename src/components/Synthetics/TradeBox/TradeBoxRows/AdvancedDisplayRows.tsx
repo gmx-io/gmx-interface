@@ -284,7 +284,7 @@ export function TradeBoxAdvancedGroups({
             priceImpactFeeBps={fees?.positionPriceImpact?.bps}
             setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
           />
-          {!isTwap && <div className="h-1 shrink-0 bg-stroke-primary" />}
+          {!isTwap && <div className="h-1 shrink-0 bg-slate-600" />}
         </>
       )}
 

@@ -46,7 +46,7 @@ export function SwapCard(p: Props) {
       <div className="text-[15px]">
         <Trans>Swap</Trans>
       </div>
-      <div className="my-15 h-1 bg-stroke-primary" />
+      <div className="my-15 h-1 bg-slate-600" />
 
       <div className="flex flex-col gap-14">
         <SyntheticsInfoRow

@@ -888,7 +888,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   return (
     <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef}>
-      <div className="flex flex-col rounded-b-8 bg-fill-surfaceBase pb-16">
+      <div className="flex flex-col rounded-b-8 bg-slate-900 pb-16">
         <div className="flex flex-col gap-12 p-12">
           <div className="flex items-center justify-between">
             <Tabs
@@ -897,7 +897,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               selectedValue={tradeMode}
               onChange={onSelectTradeMode}
               qa="trade-mode"
-              className="bg-fill-surfaceBase"
+              className="bg-slate-900"
               regularOptionClassname="py-10 hover:bg-slate-700 grow"
             />
             <div className="flex items-center gap-4">
@@ -905,7 +905,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
               <div className="relative">
                 <SettingsIcon
-                  className="cursor-pointer text-slate-500 gmx-hover:text-white"
+                  className="cursor-pointer text-slate-100 gmx-hover:text-white"
                   onClick={() => setIsSettingsVisible(true)}
                 />
                 {settingsWarningDotVisible && (
@@ -991,7 +991,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                         setIsChecked={setKeepLeverage}
                         disabled={decreaseAmounts?.isFullClose}
                       >
-                        <span className="text-14 text-slate-500">
+                        <span className="text-14 text-slate-100">
                           <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
                         </span>
                       </ToggleSwitch>
@@ -1033,7 +1033,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 payTokenAddress={!tradeFlags.isTrigger ? fromTokenAddress : undefined}
                 isWrapOrUnwrap={!tradeFlags.isTrigger && isWrapOrUnwrap}
               />
-              <div className="h-1 bg-stroke-primary" />
+              <div className="h-1 bg-slate-600" />
               {isSwap && !isTwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
               {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
                 <SyntheticsInfoRow

@@ -30,7 +30,7 @@
 
 .Exchange-empty-positions-list-note {
   padding-bottom: 0.5rem;
-  color: var(--color-slate-500);
+  color: var(--color-slate-100);
 }
 
 .Exchange-empty-positions-list-note.small {
@@ -272,7 +272,7 @@
 }
 
 .ExchangeChart-info-label {
-  color: var(--color-slate-500);
+  color: var(--color-slate-100);
   font-size: var(--font-size-body-small);
   line-height: var(--line-height-body-small);
   white-space: nowrap;
@@ -404,14 +404,14 @@ body.dragging .ExchangeChart iframe {
 }
 
 .active-order-tooltip {
-  background-color: color-mix(in srgb, var(--color-slate-500) 15%, transparent);
+  background-color: color-mix(in srgb, var(--color-slate-100) 15%, transparent);
   padding: 1rem;
   border-radius: var(--border-radius-sm);
   white-space: normal;
 }
 
 .active-order-tooltip:hover {
-  background-color: color-mix(in srgb, var(--color-slate-500) 25%, transparent);
+  background-color: color-mix(in srgb, var(--color-slate-100) 25%, transparent);
 }
 
 .active-order-tooltip > .active-order-error {
@@ -576,7 +576,7 @@ table.Position-list .Exchange-list-item-active {
 }
 
 .Exchange-info-label {
-  color: var(--color-slate-500);
+  color: var(--color-slate-100);
   margin-right: 0.8rem;
 }
 .Exchange-info-value-warning {
@@ -666,7 +666,7 @@ table.Position-list .Exchange-list-item-active {
   background: linear-gradient(
     90deg,
     var(--color-cold-blue-900) 0%,
-    color-mix(in srgb, var(--color-slate-500) 40%, transparent) 100%
+    color-mix(in srgb, var(--color-slate-100) 40%, transparent) 100%
   );
   outline: 0.05rem solid transparent;
   outline-offset: -0.1rem;
