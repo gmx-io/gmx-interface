@@ -73,7 +73,7 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
   fitHandleWidth?: boolean;
   closeOnDoubleClick?: boolean;
 
-  showInfoIcon?: boolean;
+  styleType?: "icon" | "underline";
 };
 
 export type TooltipProps<T extends ElementType | undefined> = InnerTooltipProps<T> &
@@ -101,7 +101,7 @@ export default function Tooltip<T extends ElementType>({
   shouldStopPropagation,
   fitHandleWidth,
   closeOnDoubleClick,
-  showInfoIcon,
+  styleType = "underline",
   ...containerProps
 }: TooltipProps<T>) {
   const [visible, setVisible] = useState(false);
@@ -236,7 +236,10 @@ export default function Tooltip<T extends ElementType>({
     <span {...containerProps} className={cx("Tooltip", className)} style={style}>
       <span
         ref={refs.setReference}
-        className={cx({ "Tooltip-handle": !disableHandleStyle }, handleClassName)}
+        className={cx(
+          { "Tooltip-handle": !disableHandleStyle, "Tooltip-underline": styleType === "underline" },
+          handleClassName
+        )}
         style={handleStyle}
         {...getReferenceProps({
           onClick: (e: MouseEvent) => {
@@ -252,7 +255,7 @@ export default function Tooltip<T extends ElementType>({
           ) : (
             <>{handle ?? children}</>
           )}
-          {showInfoIcon && <InfoIcon className="h-16 w-16" />}
+          {styleType === "icon" && <InfoIcon className="h-16 w-16" />}
         </div>
       </span>
       {visible && withPortal && <FloatingPortal>{tooltipContent}</FloatingPortal>}

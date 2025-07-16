@@ -6,7 +6,7 @@ import { forwardRef, useCallback, useEffect, useMemo } from "react";
 import "rc-slider/assets/index.css";
 import "./LeverageSlider.scss";
 
-const defaultMarks = [1.1, 2, 5, 10, 15, 20, 25, 30, 35, 40, 50];
+const defaultMarks = [0.1, 25, 50];
 const DEFAULT_LEVERAGE_KEY = 20;
 
 type Props = {
@@ -28,7 +28,7 @@ type HandleProps = {
 function getMarksWithLabel(marks: number[]) {
   return marks.reduce(
     (marks, value, index) => {
-      marks[index * 10] = `${value}x`;
+      marks[index === 0 ? 0.1 : index * 10] = `${value}x`;
       return marks;
     },
     {} as { [key: number]: string }
@@ -63,6 +63,22 @@ export function LeverageSlider(p: Props) {
     return (props: any) => <LeverageSliderHandle {...props} displayValue={value} />;
   }, [value]);
 
+  const leverageSliderMarks = useMemo(() => {
+    return Object.fromEntries(
+      Object.entries(marksLabel)
+        .sort((a, b) => Number(a[0]) - Number(b[0]))
+        .map(([key, value], index) => [
+          key,
+          {
+            label: value,
+            style: {
+              display: index % 2 === 1 ? "none" : "block",
+            },
+          },
+        ])
+    );
+  }, [marksLabel]);
+
   return (
     <div
       className={cx(
@@ -83,14 +99,8 @@ export function LeverageSlider(p: Props) {
         handle={customHandle}
         onChange={handleChange}
         value={sliderKey}
+        marks={leverageSliderMarks}
       />
-      <div className="flex justify-between">
-        {Object.values(marksLabel).map((label, index) => (
-          <div key={index} className="text-xs text-gray-400 uppercase">
-            {label}
-          </div>
-        ))}
-      </div>
     </div>
   );
 }

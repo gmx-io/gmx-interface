@@ -937,7 +937,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 {isPosition && (
                   <>
                     {isIncrease && isLeverageSliderEnabled && (
-                      <div className="flex items-start gap-6 rounded-8 border border-stroke-primary p-8">
+                      <div className="flex items-start gap-12">
                         <LeverageSlider
                           className="grow"
                           marks={leverageSliderMarks}
