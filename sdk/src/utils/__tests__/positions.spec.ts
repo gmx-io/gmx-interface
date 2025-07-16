@@ -119,8 +119,8 @@ describe("getPositionNetValue", () => {
       totalPendingImpactDeltaUsd: -100n,
       priceImpactDiffUsd: 50n,
     });
-    // netValue = 1000n - (10n+15n) -5n -20n -100n + 50n + 200n = 1000n -25n -5n -20n +200n=1150n
-    expect(result).toBe(1200n);
+    // netValue = 1000n - (10n+15n) -5n -20n + 200n -100n + 50n = 1100n
+    expect(result).toBe(1100);
   });
 });
 
