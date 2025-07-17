@@ -150,14 +150,6 @@ export function getSwapError(p: {
     return [t`Insufficient liquidity`];
   }
 
-  if (fromToken.symbol === "STBTC" && toToken.symbol === "BTC") {
-    return [t`No swap path found`, "noSwapPath"];
-  }
-
-  if ((fromToken.symbol === "PBTC" || fromToken.symbol === "BTC") && toToken.symbol === "USDC.E") {
-    return [t`No swap path found`, "noSwapPath"];
-  }
-
   if (fromToken.symbol === "USDC.E" && (toToken.symbol === "BTC" || toToken.symbol === "PBTC")) {
     return [t`No swap path found`, "noSwapPath"];
   }
@@ -355,13 +347,6 @@ export function getIncreaseError(p: {
     if (!isLong && (shortLiquidity === undefined || shortLiquidity < sizeDeltaUsd)) {
       return [t`Max ${indexToken.symbol} short exceeded`];
     }
-  }
-
-  if (
-    (initialCollateralToken.symbol === "PBTC" || initialCollateralToken.symbol === "BTC") &&
-    (targetCollateralToken.symbol === "STBTC" || targetCollateralToken.symbol === "USDC.E")
-  ) {
-    return [t`No swap path found`, "noSwapPath"];
   }
 
   if (isLimit) {

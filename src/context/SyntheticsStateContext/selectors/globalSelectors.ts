@@ -79,6 +79,8 @@ export const selectLastWeekAccountStats = (s: SyntheticsState) => s.globals.last
 export const selectLastMonthAccountStats = (s: SyntheticsState) => s.globals.lastMonthAccountStats;
 export const selectAccountStats = (s: SyntheticsState) => s.globals.accountStats;
 
+export const selectBotanixStakingAssetsPerShare = (s: SyntheticsState) => s.globals.botanixStakingAssetsPerShare;
+
 export const selectPositionConstants = createSelectorDeprecated(
   [selectMinCollateralUsd, selectMinPositionSizeUsd],
   (minCollateralUsd, minPositionSizeUsd) => ({
