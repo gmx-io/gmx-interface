@@ -1,6 +1,6 @@
 import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "./fees";
 import { DecreasePositionSwapType, OrderType } from "./orders";
-import { SwapStrategy } from "./swapStrategy";
+import { SwapStrategyForIncreaseOrders } from "./swapStrategy";
 
 export enum TradeType {
   Long = "Long",
@@ -45,7 +45,7 @@ export type SwapAmounts = {
   usdOut: bigint;
   priceIn: bigint;
   priceOut: bigint;
-  swapStrategy: SwapStrategy;
+  swapStrategy: SwapStrategyForIncreaseOrders;
   minOutputAmount: bigint;
   uiFeeUsd?: bigint;
 };
@@ -57,7 +57,7 @@ export type IncreasePositionAmounts = {
   collateralDeltaAmount: bigint;
   collateralDeltaUsd: bigint;
 
-  swapStrategy: SwapStrategy;
+  swapStrategy: SwapStrategyForIncreaseOrders;
   indexTokenAmount: bigint;
 
   sizeDeltaUsd: bigint;

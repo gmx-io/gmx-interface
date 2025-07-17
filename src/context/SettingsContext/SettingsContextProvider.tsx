@@ -189,13 +189,18 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       setExternalSwapsEnabled(true);
       setExternalSwapsWasForceEnabled(true);
     }
-  }, [chainId, externalSwapsEnabled, externalSwapsWasForceEnabled, setExternalSwapsEnabled, setExternalSwapsWasForceEnabled]);
+  }, [
+    chainId,
+    externalSwapsEnabled,
+    externalSwapsWasForceEnabled,
+    setExternalSwapsEnabled,
+    setExternalSwapsWasForceEnabled,
+  ]);
 
   const [expressOrdersEnabled, setExpressOrdersEnabled] = useLocalStorageSerializeKey(
     getExpressOrdersEnabledKey(chainId, account),
     false
   );
-
 
   const [gasPaymentTokenAddress, setGasPaymentTokenAddress] = useLocalStorageSerializeKey(
     getGasPaymentTokenAddressKey(chainId, account),
@@ -287,7 +292,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       gasPaymentTokenAddress: gasPaymentTokenAddress!,
       setGasPaymentTokenAddress,
 
-      externalSwapsEnabled: externalSwapsEnabled!,
+      // External swaps are enabled by default on Botanix
+      externalSwapsEnabled: chainId === BOTANIX || externalSwapsEnabled!,
       setExternalSwapsEnabled,
 
       debugSwapMarketsConfig: debugSwapMarketsConfig!,
@@ -344,6 +350,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSettingsWarningDotVisible,
     savedTwapNumberOfParts,
     setSavedTWAPNumberOfParts,
+    chainId,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

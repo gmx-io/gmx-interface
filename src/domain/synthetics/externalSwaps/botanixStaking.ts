@@ -15,7 +15,6 @@ import { convertToUsd, getTokenData } from "../tokens";
 const COEF_REDUCER = getBasisPoints(1n, 10000n);
 
 export const getBotanixStakingExternalSwapQuote = ({
-  chainId,
   tokenInAddress,
   tokenOutAddress,
   amountIn,
@@ -24,7 +23,6 @@ export const getBotanixStakingExternalSwapQuote = ({
   tokensData,
   assetsPerShare,
 }: {
-  chainId: number;
   tokenInAddress: string;
   tokenOutAddress: string;
   amountIn: bigint;
@@ -33,84 +31,82 @@ export const getBotanixStakingExternalSwapQuote = ({
   tokensData: TokensData;
   assetsPerShare: bigint;
 }): ExternalSwapQuote | undefined => {
-  if (chainId === BOTANIX) {
-    const inTokenData = getTokenData(tokensData, tokenInAddress);
-    const outTokenData = getTokenData(tokensData, tokenOutAddress);
+  const inTokenData = getTokenData(tokensData, tokenInAddress);
+  const outTokenData = getTokenData(tokensData, tokenOutAddress);
 
-    const assetsPerShareRate = getBasisPoints(assetsPerShare, 10n ** 18n) - COEF_REDUCER;
-    const sharesPerAssetRate = getBasisPoints(10n ** 18n, assetsPerShare) - COEF_REDUCER;
+  const assetsPerShareRate = getBasisPoints(assetsPerShare, 10n ** 18n) - COEF_REDUCER;
+  const sharesPerAssetRate = getBasisPoints(10n ** 18n, assetsPerShare) - COEF_REDUCER;
 
-    if (!inTokenData || !outTokenData) {
-      return undefined;
-    }
+  if (!inTokenData || !outTokenData) {
+    return undefined;
+  }
 
-    if (AVAILABLE_BOTANIX_DEPOSIT_PAIRS.some((pair) => pair.from === tokenInAddress && pair.to === tokenOutAddress)) {
-      const priceIn = getMidPrice(inTokenData.prices);
-      const priceOut = bigMath.mulDiv(priceIn, sharesPerAssetRate, BASIS_POINTS_DIVISOR_BIGINT);
-      const usdIn = convertToUsd(amountIn, inTokenData.decimals, priceIn);
-      const amountOut =
-        amountIn > 0n ? bigMath.mulDiv(amountIn, sharesPerAssetRate, BASIS_POINTS_DIVISOR_BIGINT) - gasPrice : 0n;
-      const usdOut = amountOut > 0n ? convertToUsd(amountOut, outTokenData.decimals, priceOut) : 0n;
-      return {
-        aggregator: ExternalSwapAggregator.BotanixStaking,
-        inTokenAddress: tokenInAddress,
-        outTokenAddress: tokenOutAddress,
-        receiver: receiverAddress,
-        amountIn,
-        amountOut,
-        usdIn: usdIn!,
-        usdOut: usdOut!,
-        priceIn,
-        priceOut,
-        feesUsd: gasPrice,
-        needSpenderApproval: true,
-        txnData: {
-          to: getContract(BOTANIX, "StBTC"),
-          data: encodeFunctionData({
-            abi: StBTCABI.abi,
-            functionName: "deposit",
-            args: [amountIn, receiverAddress],
-          }),
-          value: 0n,
-          estimatedGas: gasPrice,
-          estimatedExecutionFee: gasPrice,
-        },
-      };
-    }
+  if (AVAILABLE_BOTANIX_DEPOSIT_PAIRS.some((pair) => pair.from === tokenInAddress && pair.to === tokenOutAddress)) {
+    const priceIn = getMidPrice(inTokenData.prices);
+    const priceOut = bigMath.mulDiv(priceIn, sharesPerAssetRate, BASIS_POINTS_DIVISOR_BIGINT);
+    const usdIn = convertToUsd(amountIn, inTokenData.decimals, priceIn);
+    const amountOut =
+      amountIn > 0n ? bigMath.mulDiv(amountIn, sharesPerAssetRate, BASIS_POINTS_DIVISOR_BIGINT) - gasPrice : 0n;
+    const usdOut = amountOut > 0n ? convertToUsd(amountOut, outTokenData.decimals, priceOut) : 0n;
+    return {
+      aggregator: ExternalSwapAggregator.BotanixStaking,
+      inTokenAddress: tokenInAddress,
+      outTokenAddress: tokenOutAddress,
+      receiver: receiverAddress,
+      amountIn,
+      amountOut,
+      usdIn: usdIn!,
+      usdOut: usdOut!,
+      priceIn,
+      priceOut,
+      feesUsd: gasPrice,
+      needSpenderApproval: true,
+      txnData: {
+        to: getContract(BOTANIX, "StBTC"),
+        data: encodeFunctionData({
+          abi: StBTCABI.abi,
+          functionName: "deposit",
+          args: [amountIn, receiverAddress],
+        }),
+        value: 0n,
+        estimatedGas: gasPrice,
+        estimatedExecutionFee: gasPrice,
+      },
+    };
+  }
 
-    if (AVAILABLE_BOTANIX_WITHDRAW_PAIRS.some((pair) => pair.from === tokenInAddress && pair.to === tokenOutAddress)) {
-      const priceIn = getMidPrice(inTokenData.prices);
-      const priceOut = bigMath.mulDiv(priceIn, assetsPerShareRate, BASIS_POINTS_DIVISOR_BIGINT);
-      const usdIn = convertToUsd(amountIn, inTokenData.decimals, priceIn);
-      const amountOut =
-        amountIn > 0n ? bigMath.mulDiv(amountIn, assetsPerShareRate, BASIS_POINTS_DIVISOR_BIGINT) - gasPrice : 0n;
-      const usdOut = amountOut > 0n ? convertToUsd(amountOut, outTokenData.decimals, priceOut) : 0n;
+  if (AVAILABLE_BOTANIX_WITHDRAW_PAIRS.some((pair) => pair.from === tokenInAddress && pair.to === tokenOutAddress)) {
+    const priceIn = getMidPrice(inTokenData.prices);
+    const priceOut = bigMath.mulDiv(priceIn, assetsPerShareRate, BASIS_POINTS_DIVISOR_BIGINT);
+    const usdIn = convertToUsd(amountIn, inTokenData.decimals, priceIn);
+    const amountOut =
+      amountIn > 0n ? bigMath.mulDiv(amountIn, assetsPerShareRate, BASIS_POINTS_DIVISOR_BIGINT) - gasPrice : 0n;
+    const usdOut = amountOut > 0n ? convertToUsd(amountOut, outTokenData.decimals, priceOut) : 0n;
 
-      return {
-        aggregator: ExternalSwapAggregator.BotanixStaking,
-        inTokenAddress: tokenInAddress,
-        outTokenAddress: tokenOutAddress,
-        receiver: receiverAddress,
-        amountIn,
-        amountOut,
-        usdIn: usdIn!,
-        usdOut: usdOut!,
-        priceIn,
-        priceOut,
-        feesUsd: gasPrice,
-        needSpenderApproval: true,
-        txnData: {
-          to: getContract(BOTANIX, "StBTC"),
-          data: encodeFunctionData({
-            abi: StBTCABI.abi,
-            functionName: "withdraw",
-            args: [amountIn, receiverAddress, getContract(BOTANIX, "ExternalHandler")],
-          }),
-          value: 0n,
-          estimatedGas: gasPrice,
-          estimatedExecutionFee: gasPrice,
-        },
-      };
-    }
+    return {
+      aggregator: ExternalSwapAggregator.BotanixStaking,
+      inTokenAddress: tokenInAddress,
+      outTokenAddress: tokenOutAddress,
+      receiver: receiverAddress,
+      amountIn,
+      amountOut,
+      usdIn: usdIn!,
+      usdOut: usdOut!,
+      priceIn,
+      priceOut,
+      feesUsd: gasPrice,
+      needSpenderApproval: true,
+      txnData: {
+        to: getContract(BOTANIX, "StBTC"),
+        data: encodeFunctionData({
+          abi: StBTCABI.abi,
+          functionName: "withdraw",
+          args: [amountIn, receiverAddress, getContract(BOTANIX, "ExternalHandler")],
+        }),
+        value: 0n,
+        estimatedGas: gasPrice,
+        estimatedExecutionFee: gasPrice,
+      },
+    };
   }
 };

@@ -34,6 +34,10 @@ export type CombinedSwapStrategy = BaseSwapStrategy & {
   swapPathStats: SwapPathStats;
 };
 
-export type SwapStrategy = NoSwapStrategy | ExternalSwapStrategy | InternalSwapStrategy | CombinedSwapStrategy;
+export type SwapStrategyForIncreaseOrders =
+  | NoSwapStrategy
+  | ExternalSwapStrategy
+  | InternalSwapStrategy
+  | CombinedSwapStrategy;
 
-export type SwapStrategyForSwaps = NoSwapStrategy | InternalSwapStrategy | CombinedSwapStrategy;
+export type SwapStrategyForSwapOrders = NoSwapStrategy | InternalSwapStrategy | CombinedSwapStrategy;

@@ -114,9 +114,8 @@ export function useExternalSwapOutputRequest({
     }
 
     const botanixStakingQuote =
-      tokensData && typeof botanixAssetsPerShare === "bigint"
+      tokensData && botanixAssetsPerShare !== undefined && chainId === BOTANIX
         ? getBotanixStakingExternalSwapQuote({
-            chainId,
             tokenInAddress,
             tokenOutAddress,
             amountIn,

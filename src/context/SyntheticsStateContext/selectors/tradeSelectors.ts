@@ -18,7 +18,12 @@ import {
 import { calculateDisplayDecimals } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { MARKETS } from "sdk/configs/markets";
-import { ExternalSwapAggregator, ExternalSwapPath, ExternalSwapQuote, GetExternalSwapQuoteByPath } from "sdk/types/trade";
+import {
+  ExternalSwapAggregator,
+  ExternalSwapPath,
+  ExternalSwapQuote,
+  GetExternalSwapQuoteByPath,
+} from "sdk/types/trade";
 import { buildMarketsAdjacencyGraph } from "sdk/utils/swap/buildMarketsAdjacencyGraph";
 import { createFindSwapPath, getWrappedAddress } from "sdk/utils/swap/swapPath";
 import {
@@ -622,15 +627,23 @@ export const selectGetExternalSwapQuoteByPath = createSelector((q): GetExternalS
   const tokensData = q(selectTokensData);
   const gasPrice = q(selectGasPrice);
 
-  return ({amountIn, externalSwapPath}: {amountIn: bigint, externalSwapPath: ExternalSwapPath, receiverAddress: string}): ExternalSwapQuote | undefined => {
+  return ({
+    amountIn,
+    externalSwapPath,
+  }: {
+    amountIn: bigint;
+    externalSwapPath: ExternalSwapPath;
+    receiverAddress: string;
+  }): ExternalSwapQuote | undefined => {
     if (amountIn === undefined || gasPrice === undefined) {
       return undefined;
     }
 
     const botanixStakingQuote =
-      tokensData && typeof botanixStakingAssetsPerShare === "bigint" && externalSwapPath.aggregator === ExternalSwapAggregator.BotanixStaking
+      tokensData &&
+      botanixStakingAssetsPerShare !== undefined &&
+      externalSwapPath.aggregator === ExternalSwapAggregator.BotanixStaking
         ? getBotanixStakingExternalSwapQuote({
-            chainId,
             tokenInAddress: externalSwapPath.inTokenAddress,
             tokenOutAddress: externalSwapPath.outTokenAddress,
             amountIn,
@@ -642,5 +655,5 @@ export const selectGetExternalSwapQuoteByPath = createSelector((q): GetExternalS
         : undefined;
 
     return botanixStakingQuote;
-  }
+  };
 });

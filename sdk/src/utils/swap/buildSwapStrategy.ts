@@ -1,9 +1,9 @@
 import { getContract } from "configs/contracts";
 import { MarketsInfoData } from "types/markets";
-import { SwapStrategyForSwaps } from "types/swapStrategy";
+import { SwapStrategyForSwapOrders } from "types/swapStrategy";
 import { TokenData } from "types/tokens";
 import { GetExternalSwapQuoteByPath, SwapOptimizationOrderArray } from "types/trade";
-import { convertToUsd, getIsEquivalentTokens, getIsStake, getIsUnstake, getMidPrice } from "utils/tokens";
+import { convertToUsd, getIsEquivalentTokens, getIsStake, getIsUnstake } from "utils/tokens";
 
 import { getAvailableExternalSwapPaths } from "./externalSwapPath";
 import { createFindSwapPath } from "./swapPath";
@@ -32,7 +32,7 @@ export function buildSwapStrategy({
   marketsInfoData: MarketsInfoData | undefined;
   getExternalSwapQuoteByPath: GetExternalSwapQuoteByPath;
   swapOptimizationOrder: SwapOptimizationOrderArray | undefined;
-}): SwapStrategyForSwaps {
+}): SwapStrategyForSwapOrders {
   const priceIn = tokenIn.prices.minPrice;
   const usdIn = convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
 
@@ -40,7 +40,7 @@ export function buildSwapStrategy({
     amountIn = 0n;
   }
 
-  const defaultSwapStrategy: SwapStrategyForSwaps = {
+  const defaultSwapStrategy: SwapStrategyForSwapOrders = {
     type: "noSwap",
     externalSwapQuote: undefined,
     swapPathStats: undefined,
@@ -49,7 +49,7 @@ export function buildSwapStrategy({
     usdIn,
     usdOut: usdIn,
     priceIn,
-    priceOut: getMidPrice(tokenOut.prices),
+    priceOut: tokenOut.prices.maxPrice,
     feesUsd: 0n,
   };
 
@@ -77,7 +77,7 @@ export function buildSwapStrategy({
       usdIn: usdIn,
       usdOut: swapPathStats.usdOut,
       priceIn: priceIn,
-      priceOut: getMidPrice(tokenOut.prices),
+      priceOut: tokenOut.prices.maxPrice,
       feesUsd: usdIn - swapPathStats.usdOut,
     };
   }
@@ -126,7 +126,7 @@ export function buildSwapStrategy({
           usdIn: externalSwapQuoteForCombinedSwap.usdIn,
           usdOut: swapPathStatsForCombinedSwap.usdOut,
           priceIn: externalSwapQuoteForCombinedSwap.priceIn,
-          priceOut: getMidPrice(tokenOut.prices),
+          priceOut: tokenOut.prices.maxPrice,
           feesUsd: externalSwapQuoteForCombinedSwap.usdIn - swapPathStatsForCombinedSwap.usdOut,
         }
       : defaultSwapStrategy;
@@ -152,7 +152,7 @@ export function buildReverseSwapStrategy({
   marketsInfoData: MarketsInfoData | undefined;
   getExternalSwapQuoteByPath: GetExternalSwapQuoteByPath;
   swapOptimizationOrder: SwapOptimizationOrderArray | undefined;
-}): SwapStrategyForSwaps {
+}): SwapStrategyForSwapOrders {
   const priceIn = tokenIn.prices.minPrice;
   const usdIn = convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
 
@@ -160,7 +160,7 @@ export function buildReverseSwapStrategy({
     amountIn = 0n;
   }
 
-  const defaultSwapStrategy: SwapStrategyForSwaps = {
+  const defaultSwapStrategy: SwapStrategyForSwapOrders = {
     type: "noSwap",
     externalSwapQuote: undefined,
     swapPathStats: undefined,
@@ -169,7 +169,7 @@ export function buildReverseSwapStrategy({
     usdIn,
     usdOut: usdIn,
     priceIn,
-    priceOut: getMidPrice(tokenOut.prices),
+    priceOut: tokenOut.prices.maxPrice,
     feesUsd: 0n,
   };
 
@@ -197,7 +197,7 @@ export function buildReverseSwapStrategy({
       usdIn: usdIn,
       usdOut: swapPathStats.usdOut,
       priceIn: priceIn,
-      priceOut: getMidPrice(tokenOut.prices),
+      priceOut: tokenOut.prices.maxPrice,
       feesUsd: usdIn - swapPathStats.usdOut,
     };
   }
@@ -248,7 +248,7 @@ export function buildReverseSwapStrategy({
           usdIn: externalSwapQuoteForCombinedSwap.usdIn,
           usdOut: swapPathStatsForCombinedSwap.usdOut,
           priceIn: externalSwapQuoteForCombinedSwap.priceIn,
-          priceOut: getMidPrice(tokenOut.prices),
+          priceOut: tokenOut.prices.maxPrice,
           feesUsd: externalSwapQuoteForCombinedSwap.usdIn - swapPathStatsForCombinedSwap.usdOut,
         }
       : defaultSwapStrategy;
