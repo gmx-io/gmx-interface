@@ -39,8 +39,8 @@ export default function PositionDropdown({
   return (
     <Menu>
       <Menu.Button as="div" ref={refs.setReference}>
-        <button className="PositionDropdown-dots-icon">
-          <HiDotsVertical fontSize={20} fontWeight={700} />
+        <button>
+          <HiDotsVertical fontSize={13} fontWeight={500} className="text-slate-100" />
         </button>
       </Menu.Button>
       <FloatingPortal>

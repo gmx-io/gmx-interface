@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
-import { AiOutlineEdit } from "react-icons/ai";
+import { FaPen } from "react-icons/fa6";
 import { MdClose } from "react-icons/md";
 
 import { USD_DECIMALS } from "config/factors";
@@ -179,6 +179,7 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
       position="bottom-start"
       tooltipClassName={isTwapOrder(order) ? "!p-0" : undefined}
       maxAllowedWidth={400}
+      styleType="none"
       content={
         isTwapOrder(order) ? (
           <TwapOrdersList order={order} />
@@ -247,14 +248,14 @@ export function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?
     const toTokenIcon = <TokenIcon symbol={targetCollateralToken.symbol} displaySize={18} importSize={24} />;
 
     const handle = (
-      <span>
+      <span className="font-medium">
         <Trans>
           <span>{fromTokenText} </span>
           {fromTokenIcon}
           <span> to </span>
           {isTwapOrder(order) ? null : <span>{toTokenText} </span>}
           {toTokenIcon}
-          {isTwapOrder(order) ? <TwapOrderProgress order={order} className="text-slate-100" /> : null}
+          {isTwapOrder(order) ? <TwapOrderProgress order={order} className="font-normal text-slate-100" /> : null}
         </Trans>
       </span>
     );
@@ -272,6 +273,7 @@ export function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?
             content={<TwapOrdersList order={order} />}
             tooltipClassName="!p-0"
             maxAllowedWidth={450}
+            styleType="none"
           />
         ) : (
           handle
@@ -287,7 +289,7 @@ export function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?
 
   return (
     <span
-      className={cx({
+      className={cx("font-medium", {
         "cursor-help border-b border-dashed border-b-gray-400": bordered,
       })}
     >
@@ -330,7 +332,11 @@ function MarkPrice({ order }: { order: OrderInfo }) {
 
     return (
       <Tooltip
-        handle={isSwapOrderType(order.orderType) ? markSwapRatioText : markPriceFormatted}
+        handle={
+          <span className="font-medium">
+            {isSwapOrderType(order.orderType) ? markSwapRatioText : markPriceFormatted}
+          </span>
+        }
         position="bottom-end"
         content={
           <Trans>
@@ -345,13 +351,13 @@ function MarkPrice({ order }: { order: OrderInfo }) {
   if (isSwapOrderType(order.orderType)) {
     const { markSwapRatioText } = getSwapRatioText(order);
 
-    return markSwapRatioText;
+    return <span className="font-medium">{markSwapRatioText}</span>;
   } else {
     const positionOrder = order as PositionOrderInfo;
 
     return (
       <Tooltip
-        handle={markPriceFormatted}
+        handle={<span className="font-medium">{markPriceFormatted}</span>}
         position="bottom-end"
         renderContent={() => {
           return (
@@ -379,7 +385,11 @@ function MarkPrice({ order }: { order: OrderInfo }) {
 
 function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: boolean | undefined }) {
   if (isTwapOrder(order)) {
-    return <Trans>N/A</Trans>;
+    return (
+      <span className="font-medium">
+        <Trans>N/A</Trans>
+      </span>
+    );
   }
 
   if (isMarketOrderType(order.orderType)) {
@@ -393,7 +403,11 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
     return (
       <Tooltip
         position="bottom-end"
-        handle={<Trans>N/A</Trans>}
+        handle={
+          <span className="font-medium">
+            <Trans>N/A</Trans>
+          </span>
+        }
         content={
           <StatsTooltipRow
             label={t`Acceptable Price`}
@@ -422,7 +436,7 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
         {!hideActions ? (
           <Tooltip
             position="bottom-end"
-            handle={swapRatioText}
+            handle={<span className="font-medium">{swapRatioText}</span>}
             renderContent={() => (
               <>
                 <div className="pb-8">
@@ -446,10 +460,14 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
     );
     return (
       <Tooltip
-        handle={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice, {
-          displayDecimals: priceDecimals,
-          visualMultiplier: positionOrder.indexToken?.visualMultiplier,
-        })}`}
+        handle={
+          <span className="font-medium">
+            {`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice, {
+              displayDecimals: priceDecimals,
+              visualMultiplier: positionOrder.indexToken?.visualMultiplier,
+            })}`}
+          </span>
+        }
         position="bottom-end"
         renderContent={() => (
           <>
@@ -535,7 +553,7 @@ function OrderItemLarge({
       disabled={isCanceling || Boolean(disabledCancelMarketOrderMessage)}
       onClick={onCancelOrder}
     >
-      <MdClose fontSize={16} />
+      <MdClose fontSize={20} />
     </button>
   );
 
@@ -570,29 +588,7 @@ function OrderItemLarge({
             disableHandleStyle
           />
         ) : (
-          <Tooltip
-            handle={
-              <MarketWithDirectionLabel
-                bordered
-                indexName={indexName}
-                isLong={order.isLong}
-                tokenSymbol={tokenSymbol}
-              />
-            }
-            content={
-              <StatsTooltipRow
-                label={t`Market`}
-                value={
-                  <div className="flex items-center">
-                    <span>{indexName && indexName}</span>
-                    <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
-                  </div>
-                }
-                showDollar={false}
-              />
-            }
-            disableHandleStyle
-          />
+          <OrderItemMarket indexName={indexName} isLong={order.isLong} tokenSymbol={tokenSymbol} poolName={poolName} />
         )}
       </TableTd>
       <TableTd>
@@ -613,7 +609,7 @@ function OrderItemLarge({
           <div className="inline-flex items-center">
             {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
               <button className="cursor-pointer p-6 text-slate-100 hover:text-white" onClick={setEditingOrderKey}>
-                <AiOutlineEdit title={t`Edit order`} fontSize={16} />
+                <FaPen title={t`Edit order`} fontSize={12} />
               </button>
             )}
             {onCancelOrder ? (
@@ -816,7 +812,7 @@ function getSwapRatioText(order: OrderInfo) {
 function OrderItemTypeLabel({ order }: { order: OrderInfo }) {
   const { errors, level } = useOrderErrors(order.key);
 
-  const handle = getNameByOrderType(order.orderType, order.isTwap);
+  const handle = <span className="font-medium">{getNameByOrderType(order.orderType, order.isTwap)}</span>;
 
   if (errors.length === 0) {
     return <>{handle}</>;
@@ -854,5 +850,40 @@ function OrderItemTypeLabel({ order }: { order: OrderInfo }) {
         ) : null
       }
     />
+  );
+}
+
+function OrderItemMarket({
+  indexName,
+  isLong,
+  tokenSymbol,
+  poolName,
+}: {
+  indexName: string;
+  isLong: boolean;
+  tokenSymbol: string;
+  poolName: string | undefined;
+}) {
+  return (
+    <div className={cx("flex items-center gap-4")}>
+      <TokenIcon className="size-20 !align-[-3px]" displaySize={20} symbol={tokenSymbol} />
+      <Tooltip
+        handle={<span className="font-medium">{indexName}</span>}
+        content={
+          <StatsTooltipRow
+            label={t`Market`}
+            value={
+              <div className="flex items-center">
+                <span>{indexName && indexName}</span>
+                <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
+              </div>
+            }
+            showDollar={false}
+          />
+        }
+        disableHandleStyle
+      />
+      <span className={cx(isLong ? "text-green-500" : "text-red-500")}>{isLong ? t`Long` : t`Short`}</span>
+    </div>
   );
 }

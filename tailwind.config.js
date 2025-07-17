@@ -80,6 +80,8 @@ const colors = {
   },
   fill: {
     surfaceElevated50: "#1E20337f",
+    surfaceHover: "rgba(160, 163, 196, 0.10)",
+    surfaceHover50: "linear-gradient(0deg, rgba(160, 163, 196, 0.10) 0%, rgba(160, 163, 196, 0.10) 100%), rgba(30, 32, 51, 0.50)",
   },
 };
 

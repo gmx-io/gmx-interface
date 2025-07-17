@@ -835,7 +835,6 @@ table.Exchange-list-small td {
 }
 
 .Exchange-list-info-label {
-  font-size: var(--font-size-body-medium);
   margin-top: 0.31rem;
 }
 
@@ -903,9 +902,6 @@ table.Exchange-list-small td {
   opacity: 0.6;
 }
 
-.chart-positions:hover {
-  color: var(--color-white);
-}
 .position-list-collateral {
   display: flex;
   align-items: flex-end;

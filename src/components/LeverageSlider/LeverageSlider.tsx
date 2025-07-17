@@ -28,7 +28,7 @@ type HandleProps = {
 function getMarksWithLabel(marks: number[]) {
   return marks.reduce(
     (marks, value, index) => {
-      marks[index === 0 ? 0.1 : index * 10] = `${value}x`;
+      marks[index * 10] = `${value}x`;
       return marks;
     },
     {} as { [key: number]: string }

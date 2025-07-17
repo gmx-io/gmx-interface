@@ -53,7 +53,7 @@ export const TableTr = forwardRef<
       ref={ref}
       className={cx("odd:bg-fill-surfaceElevated50", className, {
         "border-b border-slate-700 last-of-type:border-b-0": bordered,
-        "hover:bg-cold-blue-900": hoverable,
+        "hover:bg-fill-surfaceHover": hoverable,
         "cursor-pointer": !!props.onClick,
       })}
     />
@@ -65,8 +65,8 @@ export function TableTd(props: TableTdThProps) {
   return (
     <td
       {...rest}
-      className={cx("last-of-type:[&:not(:first-of-type)]:text-right", props.className, {
-        "px-4 py-12 first-of-type:pl-16 last-of-type:pr-16": padding === "all",
+      className={cx("text-[13px] last-of-type:[&:not(:first-of-type)]:text-right", props.className, {
+        "px-4 py-8 first-of-type:pl-16 last-of-type:pr-16": padding === "all",
         "px-4 py-8 first-of-type:pl-12 last-of-type:pr-12": padding === "compact",
         "px-8 py-8": padding === "compact-one-column",
       })}

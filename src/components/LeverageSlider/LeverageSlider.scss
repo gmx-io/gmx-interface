@@ -33,7 +33,7 @@ $gray: var(--color-slate-600);
   .rc-slider-rail {
     border-radius: 0;
     height: 4px;
-    background: var(--color-fill-surfaceElevated);
+    background: var(--color-slate-800);
   }
 
   .rc-slider-track {
@@ -43,7 +43,7 @@ $gray: var(--color-slate-600);
   }
 
   .rc-slider-dot {
-    border: 1.5px solid var(--color-fill-surfaceElevated);
+    border: 1.5px solid var(--color-slate-800);
     border-radius: 50%;
     width: 4px;
     height: 4px;

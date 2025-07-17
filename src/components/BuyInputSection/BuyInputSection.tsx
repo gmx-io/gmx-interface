@@ -148,7 +148,7 @@ export default function BuyInputSection(props: Props) {
       <div
         className={cx(
           `flex cursor-text flex-col justify-between gap-8 rounded-8 border
-          border-slate-800 bg-slate-800 px-14 pb-16 pt-12 text-12 leading-[16px] shadow-[inset_0_0_0_1px] shadow-[transparent]`,
+          border-slate-800 bg-slate-800 px-14 pb-16 pt-12 text-12 leading-[16px]`,
           {
             "bg-opacity-70": isDisabled,
             "focus-within:border-blue-300 hover:border-blue-300": !isDisabled,
@@ -189,7 +189,6 @@ export default function BuyInputSection(props: Props) {
               qa={qa ? qa + "-input" : undefined}
               isDisabled={isDisabled}
             />
-            <div className="absolute right-0 top-0 h-full w-8 bg-gradient-to-r from-[rgba(0,0,0,0)] to-slate-900" />
 
             {showPercentSelector && isPercentSelectorVisible && onPercentChange && (
               <ul className="PercentSelector">

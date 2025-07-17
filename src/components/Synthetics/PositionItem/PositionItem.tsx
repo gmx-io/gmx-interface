@@ -80,7 +80,7 @@ export function PositionItem(p: Props) {
   function renderNetValue() {
     return (
       <Tooltip
-        handle={formatUsd(p.position.netValue)}
+        handle={<span className="font-medium">{formatUsd(p.position.netValue)}</span>}
         position={p.isLarge ? "bottom-start" : "bottom-end"}
         renderContent={() => (
           <div>
@@ -172,7 +172,11 @@ export function PositionItem(p: Props) {
       <>
         <div className={cx("position-list-collateral", { isSmall: !p.isLarge })}>
           <Tooltip
-            handle={<span data-qa="position-collateral-value">{formatUsd(p.position.remainingCollateralUsd)}</span>}
+            handle={
+              <span data-qa="position-collateral-value" className="font-medium">
+                {formatUsd(p.position.remainingCollateralUsd)}
+              </span>
+            }
             position={p.isLarge ? "bottom-start" : "bottom-end"}
             className="PositionItem-collateral-tooltip"
             handleClassName={cx({ negative: p.position.hasLowCollateral })}
@@ -339,10 +343,14 @@ export function PositionItem(p: Props) {
       return (
         <Tooltip
           handle={
-            formatLiquidationPrice(p.position.liquidationPrice, {
-              displayDecimals: marketDecimals,
-              visualMultiplier: p.position.indexToken.visualMultiplier,
-            }) || "..."
+            (
+              <span className="font-medium">
+                {formatLiquidationPrice(p.position.liquidationPrice, {
+                  displayDecimals: marketDecimals,
+                  visualMultiplier: p.position.indexToken.visualMultiplier,
+                })}
+              </span>
+            ) || "..."
           }
           position="bottom-end"
           handleClassName={cx({
@@ -387,7 +395,9 @@ export function PositionItem(p: Props) {
                       displaySize={20}
                       importSize={24}
                     />
-                    {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
+                    <span className="font-medium">
+                      {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
+                    </span>
                   </>
                 }
                 position="bottom-start"
@@ -444,7 +454,7 @@ export function PositionItem(p: Props) {
           </div>
         </TableTd>
         <TableTd>
-          {formatUsd(p.position.sizeInUsd)}
+          <span className="font-medium">{formatUsd(p.position.sizeInUsd)}</span>
           <PositionItemOrdersLarge positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
         </TableTd>
         <TableTd>
@@ -475,19 +485,27 @@ export function PositionItem(p: Props) {
         </TableTd>
         <TableTd>
           {/* entryPrice */}
-          {p.position.isOpening
-            ? t`Opening...`
-            : formatUsd(p.position.entryPrice, {
+          {p.position.isOpening ? (
+            t`Opening...`
+          ) : (
+            <span className="font-medium">
+              {formatUsd(p.position.entryPrice, {
                 displayDecimals: marketDecimals,
                 visualMultiplier: p.position.indexToken.visualMultiplier,
               })}
+            </span>
+          )}
         </TableTd>
         <TableTd>
           {/* markPrice */}
-          {formatUsd(p.position.markPrice, {
-            displayDecimals: marketDecimals,
-            visualMultiplier: p.position.indexToken.visualMultiplier,
-          })}
+          {
+            <span className="font-medium">
+              {formatUsd(p.position.markPrice, {
+                displayDecimals: marketDecimals,
+                visualMultiplier: p.position.indexToken.visualMultiplier,
+              })}
+            </span>
+          }
         </TableTd>
         <TableTd>
           {/* liqPrice */}
@@ -500,7 +518,7 @@ export function PositionItem(p: Props) {
               <>
                 <TableTd>
                   <button
-                    className="Exchange-list-action"
+                    className="font-medium text-slate-100"
                     onClick={p.onClosePositionClick}
                     disabled={p.position.sizeInUsd == 0n}
                     data-qa="position-close-button"

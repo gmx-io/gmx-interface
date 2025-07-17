@@ -302,11 +302,21 @@ export function SyntheticsPage(p: Props) {
                   className="border-b border-slate-600 bg-slate-900"
                   qa="exchange-list-tabs"
                   rightContent={
-                    <div className="shrink-0 px-12">
+                    <div className="flex shrink-0 items-center gap-16 px-12">
+                      {listSection === ListSection.Orders && selectedOrderKeys.length > 0 && (
+                        <button
+                          className="text-[13px] font-medium text-slate-100 hover:text-slate-400"
+                          disabled={isCancelOrdersProcessing}
+                          type="button"
+                          onClick={onCancelSelectedOrders}
+                        >
+                          <Plural value={selectedOrderKeys.length} one="Cancel order" other="Cancel # orders" />
+                        </button>
+                      )}
                       <Checkbox
                         isChecked={shouldShowPositionLines}
                         setIsChecked={setShouldShowPositionLines}
-                        className={cx("muted chart-positions", { active: shouldShowPositionLines })}
+                        className={cx("muted chart-positions text-[13px]", { active: shouldShowPositionLines })}
                       >
                         <span className="font-medium">
                           <Trans>Chart positions</Trans>
@@ -315,18 +325,7 @@ export function SyntheticsPage(p: Props) {
                     </div>
                   }
                 />
-                <div className="align-right Exchange-should-show-position-lines">
-                  {listSection === ListSection.Orders && selectedOrderKeys.length > 0 && (
-                    <button
-                      className="muted cancel-order-btn text-body-medium"
-                      disabled={isCancelOrdersProcessing}
-                      type="button"
-                      onClick={onCancelSelectedOrders}
-                    >
-                      <Plural value={selectedOrderKeys.length} one="Cancel order" other="Cancel # orders" />
-                    </button>
-                  )}
-                </div>
+                <div className="align-right Exchange-should-show-position-lines"></div>
               </div>
 
               {listSection === ListSection.Positions && (

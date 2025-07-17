@@ -73,7 +73,7 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
   fitHandleWidth?: boolean;
   closeOnDoubleClick?: boolean;
 
-  styleType?: "icon" | "underline";
+  styleType?: "icon" | "underline" | "none";
 };
 
 export type TooltipProps<T extends ElementType | undefined> = InnerTooltipProps<T> &
