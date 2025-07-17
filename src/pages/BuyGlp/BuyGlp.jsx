@@ -1,13 +1,5 @@
-import { Trans, t } from "@lingui/macro";
-import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { t } from "@lingui/macro";
 
-import { getIncentivesV2Url } from "config/links";
-import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
-import { useChainId } from "lib/chains";
-import { getNativeToken } from "sdk/configs/tokens";
-
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
 import GlpSwap from "components/Glp/GlpSwap";
 import PageTitle from "components/PageTitle/PageTitle";
@@ -15,42 +7,15 @@ import PageTitle from "components/PageTitle/PageTitle";
 import "./BuyGlp.css";
 
 export default function BuyGlp() {
-  const { chainId } = useChainId();
-  const history = useHistory();
-  const [isBuying, setIsBuying] = useState(true);
-  const nativeTokenSymbol = getNativeToken(chainId).symbol;
-  const incentiveState = useIncentiveStats();
-
-  useEffect(() => {
-    const hash = history.location.hash.replace("#", "");
-    const buying = hash === "redeem" ? false : true;
-    setIsBuying(buying);
-  }, [history.location.hash]);
-
   return (
     <div className="default-container page-layout">
       <PageTitle
-        title={t`Buy / Sell GLP`}
+        title={t`Sell GLP`}
+        subtitle={t`GMX V1 markets are disabled and only allow for position closing. GLP is being phased out and no longer supports GMX V1 markets.`}
         isTop
         qa="buy-glp-page"
-        subtitle={
-          <div>
-            {incentiveState?.migration?.isActive && (
-              <div>
-                <Trans>
-                  GLP to GM migration has reduced Fees due to STIP incentives.{" "}
-                  <ExternalLink href={getIncentivesV2Url(chainId)}>Read more</ExternalLink>.
-                </Trans>
-              </div>
-            )}
-            <Trans>
-              Purchase <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">GLP tokens</ExternalLink> to
-              earn {nativeTokenSymbol} fees from swaps and leverage trading.
-            </Trans>
-          </div>
-        }
       />
-      <GlpSwap isBuying={isBuying} setIsBuying={setIsBuying} />
+      <GlpSwap isBuying={false} />
       <Footer />
     </div>
   );
