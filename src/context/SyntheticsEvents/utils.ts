@@ -7,6 +7,7 @@ import type {
   PendingShiftData,
   PendingWithdrawalData,
 } from "./types";
+import { extendError } from "lib/errors";
 
 export function getPendingOrderKey(
   data: Omit<PendingOrderData, "txnType" | "triggerPrice" | "acceptablePrice" | "autoCancel">
@@ -89,7 +90,9 @@ export async function sendGelatoTaskStatusMetric(metricId: OrderMetricId, gelato
 
   if (bytecodeMatch) {
     const bytecode = bytecodeMatch[0];
-    const error = new Error(`data="${bytecode}"`);
+    const error = extendError(new Error(`data="${bytecode}"`), {
+      data: { taskId: gelatoTaskStatus.taskId },
+    });
     sendTxnErrorMetric(metricId, error, "relayer");
     return;
   }
