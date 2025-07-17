@@ -34,44 +34,21 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
-    id: "avax-pump-listing",
+    id: "avax-pump-and-arb-listing",
     isActive: true,
     startDate: "17 Jul 2025, 10:00",
     endDate: "24 Jul 2025, 12:00",
-    title: "PUMP market added on Avalanche",
+    title: "PUMP and ARB markets added",
     bodyText: (
       <>
         <Link to="/trade/long?to=PUMP">Trade</Link> <TokenSymbolWithIcon symbol="PUMP" />
-        /USD, or <Link to="/pools">provide liquidity</Link> to these pools by using{" "}
-        <TokenSymbolWithIcon symbol="WAVAX" />, or <TokenSymbolWithIcon symbol="USDC" />.
-      </>
-    ),
-  },
-  {
-    id: "arb-abb-listing",
-    isActive: true,
-    startDate: "17 Jul 2025, 10:00",
-    endDate: "24 Jul 2025, 12:00",
-    title: "ARB market added on Arbitrum",
-    bodyText: (
-      <>
-        <Link to="/trade/long?to=ARB">Trade</Link> <TokenSymbolWithIcon symbol="ARB" />
-        /USD, or <Link to="/pools">provide liquidity</Link> to these pools by using <TokenSymbolWithIcon symbol="ARB" />
-        .
-      </>
-    ),
-  },
-  {
-    id: "pump-listing",
-    isActive: true,
-    startDate: "14 Jul 2025, 12:00",
-    endDate: "21 Jul 2025, 12:00",
-    title: "PUMP market added on Arbitrum",
-    bodyText: (
-      <>
-        <Link to="/trade/long?to=PUMP">Trade</Link> <TokenSymbolWithIcon symbol="PUMP" />
-        /USD, or <Link to="/pools">provide liquidity</Link> to these pools by using{" "}
-        <TokenSymbolWithIcon symbol="WBTC" />, or <TokenSymbolWithIcon symbol="USDC" />.
+        /USD on Arbitrum or Avalanche, or <Link to="/pools">provide liquidity</Link> using{" "}
+        <TokenSymbolWithIcon symbol="WBTC" />, <TokenSymbolWithIcon symbol="USDC" />, or{" "}
+        <TokenSymbolWithIcon symbol="WAVAX" />.
+        <br />
+        <br />
+        <Link to="/pools">Provide liquidity</Link> to GM: ARB/USD <span className="text-slate-100">[ARB-ARB]</span>{" "}
+        using <TokenSymbolWithIcon symbol="ARB" />.
       </>
     ),
   },
