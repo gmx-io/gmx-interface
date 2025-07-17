@@ -1,14 +1,15 @@
 import { Provider, Wallet } from "ethers";
 import { encodeFunctionData, size, zeroAddress, zeroHash } from "viem";
 
+import { BOTANIX } from "config/chains";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import {
-  ExpressTransactionEstimatorParams,
   ExpressParamsEstimationMethod,
   ExpressTransactionBuilder,
+  ExpressTransactionEstimatorParams,
   ExpressTxnParams,
   GasPaymentValidations,
   getGelatoRelayRouterDomain,
@@ -370,11 +371,15 @@ export async function estimateExpressParams({
     tokenPermits,
   });
 
-  if (requireValidations && !getIsValidExpressParams({ gasPaymentValidations, subaccountValidations })) {
+  if (
+    requireValidations &&
+    !getIsValidExpressParams({ chainId, gasPaymentValidations, subaccountValidations, isSponsoredCall })
+  ) {
     return undefined;
   }
 
   return {
+    chainId,
     subaccount,
     relayParamsPayload: finalRelayParams,
     isSponsoredCall,
@@ -389,12 +394,20 @@ export async function estimateExpressParams({
 }
 
 export function getIsValidExpressParams({
+  chainId,
   gasPaymentValidations,
   subaccountValidations,
+  isSponsoredCall,
 }: {
+  chainId: number;
+  isSponsoredCall: boolean;
   gasPaymentValidations: GasPaymentValidations;
   subaccountValidations: SubaccountValidations | undefined;
 }): boolean {
+  if (chainId === BOTANIX && !isSponsoredCall) {
+    return false;
+  }
+
   return gasPaymentValidations.isValid && (!subaccountValidations || subaccountValidations.isValid);
 }
 

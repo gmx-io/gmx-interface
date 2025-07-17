@@ -20,7 +20,7 @@ type Props = {
 
 function TokenIcon({ className, symbol, displaySize, importSize = 24, badge }: Props) {
   const iconPath = getIconUrlPath(symbol, importSize);
-  const classNames = cx("Token-icon inline", className);
+  const classNames = cx("Token-icon inline rounded-full", className);
 
   if (!iconPath) return <></>;
 
