@@ -1252,6 +1252,17 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
     },
     {
+      name: "Pump",
+      symbol: "PUMP",
+      address: "0xdA598795DfE56388ca3D35e2ccFA96EFf83eC306",
+      decimals: 18,
+      priceDecimals: 6,
+      imageUrl: "https://assets.coingecko.com/coins/images/67164/standard/pump.jpg?1751949376",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/pump-fun",
+      isSynthetic: true,
+      categories: ["meme"],
+    },
+    {
       name: "Escrowed GMX",
       symbol: "ESGMX",
       address: getContract(AVALANCHE, "ES_GMX"),
