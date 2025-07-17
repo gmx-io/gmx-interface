@@ -5,7 +5,9 @@ import { LandingPageViewEvent } from "lib/userAnalytics/types";
 
 import { HeroSection } from "./sections/HeroSection/HeroSection";
 import { LaunchSection } from "./sections/LaunchSection/LaunchSection";
+import { LiqiuditySection } from "./sections/LiqiuditySection/LiqiuditySection";
 import { RedirectModal } from "./sections/RedirectModal/RedirectModal";
+import { SponsorsSection } from "./sections/SponsorsSection/SponsorsSection";
 
 export default function Home(_) {
   useEffect(() => {
@@ -27,9 +29,11 @@ export default function Home(_) {
   };
 
   return (
-    <div className="proportional-nums text-white">
+    <div className="overflow-hidden proportional-nums text-white">
       <HeroSection showRedirectModal={showRedirectModal} />
       <LaunchSection showRedirectModal={showRedirectModal} />
+      <LiqiuditySection />
+      <SponsorsSection />
       {redirectModalTo && <RedirectModal onClose={() => setRedirectModalTo(null)} to={redirectModalTo} />}
     </div>
   );
