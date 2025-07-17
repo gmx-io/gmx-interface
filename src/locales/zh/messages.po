@@ -462,6 +462,7 @@ msgid "Transaction failed due to RPC error.<0/><1/>Please enable <2>Express trad
 msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code added!"
 msgstr "添加了推荐代码"
 
@@ -745,6 +746,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{0} <0/><1> to </1>{1} <2/>"
+msgstr ""
+
+#: src/components/Referrals/JoinReferralCode.tsx
+msgid "Sent referral code transaction"
 msgstr ""
 
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
@@ -8457,6 +8462,10 @@ msgstr ""
 msgid "Execution prices for increasing longs and<0/>decreasing shorts."
 msgstr ""
 
+#: src/components/Referrals/JoinReferralCode.tsx
+msgid "It will take a couple of minutes to be reflected. Please check back later."
+msgstr ""
+
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
@@ -8737,6 +8746,10 @@ msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX"
+msgstr ""
+
+#: src/components/Referrals/JoinReferralCode.tsx
+msgid "Loading"
 msgstr ""
 
 #: src/components/Exchange/OrdersList.jsx

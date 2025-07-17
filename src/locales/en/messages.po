@@ -462,6 +462,7 @@ msgid "Transaction failed due to RPC error.<0/><1/>Please enable <2>Express trad
 msgstr "Transaction failed due to RPC error.<0/><1/>Please enable <2>Express trading</2> under settings, which should offer a better experience."
 
 #: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code added!"
 msgstr "Referral code added!"
 
@@ -746,6 +747,10 @@ msgstr "Average position size."
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{0} <0/><1> to </1>{1} <2/>"
 msgstr "{0} <0/><1> to </1>{1} <2/>"
+
+#: src/components/Referrals/JoinReferralCode.tsx
+msgid "Sent referral code transaction"
+msgstr "Sent referral code transaction"
 
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Market: {0} a short position at the current price."
@@ -8463,6 +8468,10 @@ msgstr "You do not have any eligible trade during the competition window."
 msgid "Execution prices for increasing longs and<0/>decreasing shorts."
 msgstr "Execution prices for increasing longs and<0/>decreasing shorts."
 
+#: src/components/Referrals/JoinReferralCode.tsx
+msgid "It will take a couple of minutes to be reflected. Please check back later."
+msgstr "It will take a couple of minutes to be reflected. Please check back later."
+
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
@@ -8744,6 +8753,10 @@ msgstr "Price Impact Rebate Claimed"
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX"
 msgstr "Anonymous chat with GMX"
+
+#: src/components/Referrals/JoinReferralCode.tsx
+msgid "Loading"
+msgstr "Loading"
 
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/OrdersList.jsx
