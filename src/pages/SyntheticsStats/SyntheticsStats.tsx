@@ -39,7 +39,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import "./SyntheticsStats.scss";
 
 function pow(bn: bigint, exponent: bigint) {
-  // this is just aproximation
+  // this is just approximation
   const n = Number(bn.toString()) / 1e30;
   const e = Number(exponent.toString()) / 1e30;
   const afterExponent = Math.pow(n, e);
