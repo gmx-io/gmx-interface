@@ -65,7 +65,7 @@ export function buildSwapStrategy({
     isExpressFeeSwap: false,
   });
 
-  const swapPathStats = findSwapPath(amountIn, { order: swapOptimizationOrder });
+  const swapPathStats = findSwapPath(usdIn, { order: swapOptimizationOrder });
 
   if (swapPathStats) {
     return {
@@ -185,7 +185,7 @@ export function buildReverseSwapStrategy({
     isExpressFeeSwap: false,
   });
 
-  const swapPathStats = findSwapPath(amountIn, { order: swapOptimizationOrder });
+  const swapPathStats = findSwapPath(usdIn, { order: swapOptimizationOrder });
 
   if (swapPathStats) {
     return {

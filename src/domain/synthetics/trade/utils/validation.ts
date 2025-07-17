@@ -146,12 +146,12 @@ export function getSwapError(p: {
     return [undefined];
   }
 
-  if (!isLimit && (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd)) {
-    return [t`Insufficient liquidity`];
-  }
-
   if (fromToken.symbol === "USDC.E" && (toToken.symbol === "BTC" || toToken.symbol === "PBTC")) {
     return [t`No swap path found`, "noSwapPath"];
+  }
+
+  if (!isLimit && (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd)) {
+    return [t`Insufficient liquidity`];
   }
 
   const noInternalSwap =
