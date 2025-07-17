@@ -1,7 +1,6 @@
 import { UiContractsChain } from "config/chains";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
-import { getBotanixStakingExternalSwapQuote } from "domain/synthetics/externalSwaps/botanixStaking";
 import { OrderType } from "domain/synthetics/orders";
 import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { marketsInfoData2IndexTokenStatsMap } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
@@ -18,12 +17,7 @@ import {
 import { calculateDisplayDecimals } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { MARKETS } from "sdk/configs/markets";
-import {
-  ExternalSwapAggregator,
-  ExternalSwapPath,
-  ExternalSwapQuote,
-  GetExternalSwapQuoteByPath,
-} from "sdk/types/trade";
+import { ExternalSwapQuote, ExternalSwapQuoteParams } from "sdk/types/trade";
 import { buildMarketsAdjacencyGraph } from "sdk/utils/swap/buildMarketsAdjacencyGraph";
 import { createFindSwapPath, getWrappedAddress } from "sdk/utils/swap/swapPath";
 import {
@@ -292,7 +286,7 @@ export const makeSelectIncreasePositionAmounts = ({
     const findSwapPath = q(selectFindSwapPath);
     const userReferralInfo = q(selectUserReferralInfo);
     const uiFeeFactor = q(selectUiFeeFactor);
-    const getExternalSwapQuoteByPath = q(selectGetExternalSwapQuoteByPath);
+    const externalSwapQuoteParams = q(selectExternalSwapQuoteParams);
     const chainId = q(selectChainId);
     const tradeFlags = createTradeFlags(tradeType, tradeMode);
 
@@ -337,7 +331,7 @@ export const makeSelectIncreasePositionAmounts = ({
       strategy,
       marketsInfoData,
       chainId,
-      getExternalSwapQuoteByPath,
+      externalSwapQuoteParams,
     });
   });
 };
@@ -621,39 +615,17 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
     })
 );
 
-export const selectGetExternalSwapQuoteByPath = createSelector((q): GetExternalSwapQuoteByPath => {
+export const selectExternalSwapQuoteParams = createSelector((q): ExternalSwapQuoteParams => {
   const botanixStakingAssetsPerShare = q(selectBotanixStakingAssetsPerShare);
   const chainId = q(selectChainId);
   const tokensData = q(selectTokensData);
   const gasPrice = q(selectGasPrice);
 
-  return ({
-    amountIn,
-    externalSwapPath,
-  }: {
-    amountIn: bigint;
-    externalSwapPath: ExternalSwapPath;
-    receiverAddress: string;
-  }): ExternalSwapQuote | undefined => {
-    if (amountIn === undefined || gasPrice === undefined) {
-      return undefined;
-    }
-
-    const botanixStakingQuote =
-      tokensData &&
-      botanixStakingAssetsPerShare !== undefined &&
-      externalSwapPath.aggregator === ExternalSwapAggregator.BotanixStaking
-        ? getBotanixStakingExternalSwapQuote({
-            tokenInAddress: externalSwapPath.inTokenAddress,
-            tokenOutAddress: externalSwapPath.outTokenAddress,
-            amountIn,
-            gasPrice,
-            receiverAddress: getContract(chainId, "OrderVault"),
-            tokensData,
-            assetsPerShare: botanixStakingAssetsPerShare,
-          })
-        : undefined;
-
-    return botanixStakingQuote;
+  return {
+    botanixStakingAssetsPerShare,
+    chainId,
+    gasPrice,
+    tokensData,
+    receiverAddress: getContract(chainId, "OrderVault"),
   };
 });

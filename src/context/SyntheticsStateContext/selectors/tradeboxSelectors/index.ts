@@ -77,7 +77,7 @@ import {
   makeSelectMaxLiquidityPath,
   makeSelectNextPositionValuesForDecrease,
   makeSelectNextPositionValuesForIncrease,
-  selectGetExternalSwapQuoteByPath,
+  selectExternalSwapQuoteParams,
 } from "../tradeSelectors";
 import { selectTradeboxGetMaxLongShortLiquidityPool } from "./selectTradeboxGetMaxLongShortLiquidityPool";
 
@@ -552,7 +552,7 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
   const allowedSwapSlippageBps = q(selectTradeboxSelectedAllowedSwapSlippageBps);
   const marketsInfoData = q(selectMarketsInfoData);
   const chainId = q(selectChainId);
-  const getExternalSwapQuoteByPath = q(selectGetExternalSwapQuoteByPath);
+  const externalSwapQuoteParams = q(selectExternalSwapQuoteParams);
 
   const tradeFlags = createTradeFlags(TradeType.Swap, tradeMode);
   const fromTokenPrice = fromToken?.prices.minPrice;
@@ -582,7 +582,7 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
       allowedSwapSlippageBps: tradeFlags.isLimit && tradeFlags.isSwap ? allowedSwapSlippageBps : undefined,
       marketsInfoData,
       chainId,
-      getExternalSwapQuoteByPath,
+      externalSwapQuoteParams,
     });
   } else {
     return getSwapAmountsByToValue({
@@ -597,7 +597,7 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
       allowedSwapSlippageBps: tradeFlags.isLimit && tradeFlags.isSwap ? allowedSwapSlippageBps : undefined,
       marketsInfoData,
       chainId,
-      getExternalSwapQuoteByPath,
+      externalSwapQuoteParams,
     });
   }
 });

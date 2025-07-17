@@ -1,11 +1,11 @@
-import { getContract } from "configs/contracts";
 import { MarketsInfoData } from "types/markets";
 import { SwapStrategyForSwapOrders } from "types/swapStrategy";
 import { TokenData } from "types/tokens";
-import { GetExternalSwapQuoteByPath, SwapOptimizationOrderArray } from "types/trade";
+import { ExternalSwapQuoteParams, SwapOptimizationOrderArray } from "types/trade";
 import { convertToUsd, getIsEquivalentTokens, getIsStake, getIsUnstake } from "utils/tokens";
 
 import { getAvailableExternalSwapPaths } from "./externalSwapPath";
+import { getExternalSwapQuoteByPath } from "./externalSwapQuoteByPath";
 import { createFindSwapPath } from "./swapPath";
 
 /*
@@ -22,16 +22,16 @@ export function buildSwapStrategy({
   tokenOut,
   marketsInfoData,
   chainId,
-  getExternalSwapQuoteByPath,
   swapOptimizationOrder,
+  externalSwapQuoteParams,
 }: {
   chainId: number;
   amountIn: bigint;
   tokenIn: TokenData;
   tokenOut: TokenData;
   marketsInfoData: MarketsInfoData | undefined;
-  getExternalSwapQuoteByPath: GetExternalSwapQuoteByPath;
   swapOptimizationOrder: SwapOptimizationOrderArray | undefined;
+  externalSwapQuoteParams: ExternalSwapQuoteParams;
 }): SwapStrategyForSwapOrders {
   const priceIn = tokenIn.prices.minPrice;
   const usdIn = convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
@@ -102,7 +102,7 @@ export function buildSwapStrategy({
     const externalSwapQuoteForCombinedSwap = getExternalSwapQuoteByPath({
       amountIn,
       externalSwapPath: suitableSwapPath,
-      receiverAddress: getContract(chainId, "OrderVault"),
+      externalSwapQuoteParams,
     });
     const findSwapPathForSuitableSwapPath = createFindSwapPath({
       chainId,
@@ -142,7 +142,7 @@ export function buildReverseSwapStrategy({
   tokenOut,
   marketsInfoData,
   chainId,
-  getExternalSwapQuoteByPath,
+  externalSwapQuoteParams,
   swapOptimizationOrder,
 }: {
   chainId: number;
@@ -150,7 +150,7 @@ export function buildReverseSwapStrategy({
   tokenIn: TokenData;
   tokenOut: TokenData;
   marketsInfoData: MarketsInfoData | undefined;
-  getExternalSwapQuoteByPath: GetExternalSwapQuoteByPath;
+  externalSwapQuoteParams: ExternalSwapQuoteParams;
   swapOptimizationOrder: SwapOptimizationOrderArray | undefined;
 }): SwapStrategyForSwapOrders {
   const priceIn = tokenIn.prices.minPrice;
@@ -224,7 +224,7 @@ export function buildReverseSwapStrategy({
     const externalSwapQuoteForCombinedSwap = getExternalSwapQuoteByPath({
       amountIn,
       externalSwapPath: suitableSwapPath,
-      receiverAddress: getContract(chainId, "OrderVault"),
+      externalSwapQuoteParams,
     });
     const findSwapPathForSuitableSwapPath = createFindSwapPath({
       chainId,

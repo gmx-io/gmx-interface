@@ -102,7 +102,7 @@ export function getRelayerFeeParams({
         uiFeeFactor: 0n,
         marketsInfoData: undefined,
         chainId,
-        getExternalSwapQuoteByPath: undefined,
+        externalSwapQuoteParams: undefined,
       });
     }
 

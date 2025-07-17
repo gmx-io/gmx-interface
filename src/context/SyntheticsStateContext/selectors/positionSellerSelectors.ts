@@ -387,7 +387,7 @@ export const selectPositionSellerSwapAmounts = createSelector((q) => {
     uiFeeFactor,
     marketsInfoData,
     chainId,
-    getExternalSwapQuoteByPath: undefined,
+    externalSwapQuoteParams: undefined,
   });
 });
 

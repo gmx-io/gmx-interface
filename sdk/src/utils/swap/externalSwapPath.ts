@@ -24,11 +24,7 @@ export const AVAILABLE_BOTANIX_WITHDRAW_PAIRS = [
   },
 ];
 
-const getBotanixStakingExternalSwapPaths = ({
-  fromTokenAddress,
-}: {
-  fromTokenAddress: string;
-}): ExternalSwapPath[] => {
+const getBotanixStakingExternalSwapPaths = ({ fromTokenAddress }: { fromTokenAddress: string }): ExternalSwapPath[] => {
   return [...AVAILABLE_BOTANIX_DEPOSIT_PAIRS, ...AVAILABLE_BOTANIX_WITHDRAW_PAIRS]
     .filter((pair) => pair.from === fromTokenAddress)
     .map((pair) => ({

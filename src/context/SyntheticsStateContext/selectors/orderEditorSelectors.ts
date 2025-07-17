@@ -691,7 +691,7 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
     strategy: "independent",
     marketsInfoData,
     chainId,
-    getExternalSwapQuoteByPath: undefined,
+    externalSwapQuoteParams: undefined,
   });
 });
 

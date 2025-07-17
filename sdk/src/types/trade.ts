@@ -1,6 +1,7 @@
 import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "./fees";
 import { DecreasePositionSwapType, OrderType } from "./orders";
 import { SwapStrategyForIncreaseOrders } from "./swapStrategy";
+import { TokensData } from "./tokens";
 
 export enum TradeType {
   Long = "Long",
@@ -285,15 +286,13 @@ export type ExternalSwapPath = {
   outTokenAddress: string;
 };
 
-export type GetExternalSwapQuoteByPath = ({
-  amountIn,
-  externalSwapPath,
-  receiverAddress,
-}: {
-  amountIn: bigint;
-  externalSwapPath: ExternalSwapPath;
+export type ExternalSwapQuoteParams = {
+  chainId: number;
   receiverAddress: string;
-}) => ExternalSwapQuote | undefined;
+  gasPrice: bigint | undefined;
+  tokensData: TokensData | undefined;
+  botanixStakingAssetsPerShare: bigint | undefined;
+};
 
 export type ExternalSwapCalculationStrategy = "byFromValue" | "leverageBySize";
 

@@ -1,16 +1,14 @@
 import { encodeFunctionData } from "viem";
 
-import { getMidPrice } from "domain/tokens";
-import { BASIS_POINTS_DIVISOR_BIGINT, getBasisPoints } from "lib/numbers";
-import StBTCABI from "sdk/abis/StBTC.json";
-import { BOTANIX } from "sdk/configs/chains";
-import { getContract } from "sdk/configs/contracts";
-import { TokensData } from "sdk/types/tokens";
-import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/types/trade";
-import { bigMath } from "sdk/utils/bigmath";
-import { AVAILABLE_BOTANIX_DEPOSIT_PAIRS, AVAILABLE_BOTANIX_WITHDRAW_PAIRS } from "sdk/utils/swap/externalSwapPath";
-
-import { convertToUsd, getTokenData } from "../tokens";
+import StBTCABI from "abis/StBTC.json";
+import { BOTANIX } from "configs/chains";
+import { getContract } from "configs/contracts";
+import { TokensData } from "types/tokens";
+import { ExternalSwapAggregator, ExternalSwapQuote } from "types/trade";
+import { bigMath } from "utils/bigmath";
+import { BASIS_POINTS_DIVISOR_BIGINT, getBasisPoints } from "utils/numbers";
+import { AVAILABLE_BOTANIX_DEPOSIT_PAIRS, AVAILABLE_BOTANIX_WITHDRAW_PAIRS } from "utils/swap/externalSwapPath";
+import { convertToUsd, getMidPrice, getTokenData } from "utils/tokens";
 
 const COEF_REDUCER = getBasisPoints(1n, 10000n);
 

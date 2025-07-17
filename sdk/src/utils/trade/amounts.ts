@@ -9,8 +9,8 @@ import { ExternalSwapStrategy, NoSwapStrategy } from "types/swapStrategy";
 import { TokenData, TokensRatio } from "types/tokens";
 import {
   ExternalSwapQuote,
+  ExternalSwapQuoteParams,
   FindSwapPath,
-  GetExternalSwapQuoteByPath,
   IncreasePositionAmounts,
   SwapOptimizationOrderArray,
   TriggerThresholdType,
@@ -49,7 +49,7 @@ type IncreasePositionParams = {
   uiFeeFactor: bigint;
   marketsInfoData: MarketsInfoData | undefined;
   chainId: number;
-  getExternalSwapQuoteByPath: GetExternalSwapQuoteByPath | undefined;
+  externalSwapQuoteParams: ExternalSwapQuoteParams | undefined;
 };
 
 export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreasePositionAmounts {
@@ -74,7 +74,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     strategy,
     marketsInfoData,
     chainId,
-    getExternalSwapQuoteByPath,
+    externalSwapQuoteParams,
   } = p;
 
   const swapStrategy: NoSwapStrategy = {
@@ -88,7 +88,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     priceIn: 0n,
     priceOut: 0n,
     feesUsd: 0n,
-  }
+  };
 
   const values: IncreasePositionAmounts = {
     initialCollateralAmount: 0n,
@@ -173,21 +173,21 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         externalSwapQuote,
         swapPathStats: undefined,
         ...externalSwapQuote,
-      }
+      };
 
       values.swapStrategy = swapStrategy;
     } else {
-    const swapAmounts = getSwapAmountsByFromValue({
-      tokenIn: initialCollateralToken,
-      tokenOut: collateralToken,
-      amountIn: initialCollateralAmount,
-      isLimit: false,
-      findSwapPath,
-      uiFeeFactor,
-      swapOptimizationOrder,
-      marketsInfoData,
+      const swapAmounts = getSwapAmountsByFromValue({
+        tokenIn: initialCollateralToken,
+        tokenOut: collateralToken,
+        amountIn: initialCollateralAmount,
+        isLimit: false,
+        findSwapPath,
+        uiFeeFactor,
+        swapOptimizationOrder,
+        marketsInfoData,
         chainId,
-        getExternalSwapQuoteByPath,
+        externalSwapQuoteParams,
       });
 
       values.swapStrategy = swapAmounts.swapStrategy;
@@ -204,7 +204,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       userReferralInfo
     );
     const baseUiFeeUsd = applyFactor(baseSizeDeltaUsd, uiFeeFactor);
-    const totalSwapVolumeUsd = getTotalSwapVolumeFromSwapStats(values.swapStrategy.swapPathStats?.swapSteps)
+    const totalSwapVolumeUsd = getTotalSwapVolumeFromSwapStats(values.swapStrategy.swapPathStats?.swapSteps);
     values.swapUiFeeUsd = applyFactor(totalSwapVolumeUsd, uiFeeFactor);
 
     values.sizeDeltaUsd = bigMath.mulDiv(
@@ -283,9 +283,9 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         externalSwapQuote,
         swapPathStats: undefined,
         ...externalSwapQuote,
-      }
+      };
 
-      values.swapStrategy = swapStrategy; 
+      values.swapStrategy = swapStrategy;
     } else {
       const swapAmounts = getSwapAmountsByToValue({
         tokenIn: initialCollateralToken,
@@ -296,7 +296,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         uiFeeFactor,
         marketsInfoData,
         chainId,
-        getExternalSwapQuoteByPath,
+        externalSwapQuoteParams,
       });
       values.swapStrategy = swapAmounts.swapStrategy;
     }
@@ -341,7 +341,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
           externalSwapQuote,
           swapPathStats: undefined,
           ...externalSwapQuote,
-        }
+        };
 
         values.swapStrategy = swapStrategy;
       } else {
@@ -355,7 +355,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
           swapOptimizationOrder,
           marketsInfoData,
           chainId,
-          getExternalSwapQuoteByPath,
+          externalSwapQuoteParams,
         });
         values.swapStrategy = swapAmounts.swapStrategy;
       }

@@ -188,7 +188,7 @@ export async function increaseOrderHelper(
     externalSwapQuote: undefined,
     marketsInfoData,
     chainId: sdk.chainId,
-    getExternalSwapQuoteByPath: undefined,
+    externalSwapQuoteParams: undefined,
   });
 
   const createIncreaseOrderParams: Parameters<typeof sdk.orders.createIncreaseOrder>[0] = {
@@ -342,7 +342,7 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
       allowedSwapSlippageBps: isLimit ? BigInt(params.allowedSlippageBps ?? 100) : undefined,
       marketsInfoData,
       chainId: sdk.chainId,
-      getExternalSwapQuoteByPath: undefined,
+      externalSwapQuoteParams: undefined,
     });
   } else {
     swapAmounts = getSwapAmountsByToValue({
@@ -357,7 +357,7 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
       allowedSwapSlippageBps: isLimit ? BigInt(params.allowedSlippageBps ?? 100) : undefined,
       marketsInfoData,
       chainId: sdk.chainId,
-      getExternalSwapQuoteByPath: undefined,
+      externalSwapQuoteParams: undefined,
     });
   }
 

@@ -46,7 +46,7 @@ import {
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
-import { selectGetExternalSwapQuoteByPath } from "context/SyntheticsStateContext/selectors/tradeSelectors";
+import { selectExternalSwapQuoteParams } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { getNameByOrderType, substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
@@ -569,7 +569,7 @@ export function useDetectAndSetAvailableMaxLeverage({
   const userReferralInfo = useUserReferralInfo();
   const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
   const externalSwapQuote = useSelector(selectExternalSwapQuote);
-  const getExternalSwapQuoteByPath = useSelector(selectGetExternalSwapQuoteByPath);
+  const externalSwapQuoteParams = useSelector(selectExternalSwapQuoteParams);
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useSelector(selectMarketsInfoData);
 
@@ -602,7 +602,7 @@ export function useDetectAndSetAvailableMaxLeverage({
           triggerPrice,
           marketsInfoData,
           chainId,
-          getExternalSwapQuoteByPath,
+          externalSwapQuoteParams,
         });
 
         const nextPositionValues = getNextPositionValuesForIncreaseTrade({
@@ -664,7 +664,7 @@ export function useDetectAndSetAvailableMaxLeverage({
     findSwapPath,
     fromToken,
     externalSwapQuote,
-    getExternalSwapQuoteByPath,
+    externalSwapQuoteParams,
     chainId,
     marketsInfoData,
     fromTokenAmount,

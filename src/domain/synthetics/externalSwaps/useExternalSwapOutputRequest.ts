@@ -10,10 +10,10 @@ import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/types/trade";
 
-import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
-import { getBotanixStakingExternalSwapQuote } from "./botanixStaking";
 import { getOpenOceanTxnData, OpenOceanQuote } from "./openOcean";
 import { useBotanixStakingAssetsPerShare } from "./useBotanixStakingAssetsPerShare";
+import { getBotanixStakingExternalSwapQuote } from "../../../../sdk/src/utils/swap/botanixStaking";
+import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
 
 export function useExternalSwapOutputRequest({
   chainId,
