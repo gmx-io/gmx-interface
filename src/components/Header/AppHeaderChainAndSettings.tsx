@@ -1,6 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCallback } from "react";
+import { useChainId as useWagmiChainId } from "wagmi";
 
 import {
   ARBITRUM,
@@ -111,7 +112,8 @@ if (isDevelopment()) {
 
 export function AppHeaderChainAndSettings({ small, menuToggle, openSettings, showRedirectModal }: Props) {
   const { chainId: settlementChainId } = useChainId();
-  const { active, account, chainId: walletChainId } = useWallet();
+  const walletChainId = useWagmiChainId();
+  const { active, account } = useWallet();
   const { openConnectModal } = useConnectModal();
   const showConnectionOptions = !isHomeSite();
   const [tradePageVersion] = useTradePageVersion();
