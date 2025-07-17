@@ -7,7 +7,7 @@ import IcBotanix from "img/ic_botanix_landing.svg?react";
 import IcSol from "img/ic_sol_24.svg?react";
 
 import LaunchButton from "./components/LaunchButton";
-import { useGoToTrade } from "./hooks/useGoToTrade";
+import { useGoToTrade } from "../../hooks/useGoToTrade";
 
 type Props = {
   showRedirectModal: (to: string) => void;

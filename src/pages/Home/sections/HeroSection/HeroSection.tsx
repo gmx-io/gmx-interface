@@ -13,7 +13,7 @@ import { ChainIcons } from "./components/ChainIcons";
 import { HeroBackground } from "./components/HeroBackground";
 import { ProtectionBackground } from "./components/ProtectionBackground";
 import { SeamlessBackground } from "./components/SeamlessBackground";
-import { useGoToTrade } from "../LaunchSection/hooks/useGoToTrade";
+import { useGoToTrade } from "../../hooks/useGoToTrade";
 
 const assetsBgStyle = {
   backgroundImage: `url(${AsssetsBg})`,
@@ -46,7 +46,9 @@ export function HeroSection({ showRedirectModal }: Props) {
                   className="btn-landing-bg flex w-full flex-col items-start gap-4 rounded-12 pb-12 pl-12 pr-8 pt-8 text-16 font-medium sm:w-[200px]"
                   onClick={goToTradeArbitrum}
                 >
-                  <IcLinkArrow className="size-16 self-end rounded-full bg-white text-blue-600" />
+                  <div className="self-end rounded-full bg-white p-4">
+                    <IcLinkArrow className="size-8 text-blue-600" />
+                  </div>
                   <Trans>Trade Now</Trans>
                 </button>
                 <div className="text-subheadline sm:w-[226px]">
