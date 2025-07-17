@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0
+
+- Added: PUMP/USD [WBTC-USDC] and ARB/USD [ARB-ARB] in Arbitrum and PUMP/USD [WAVAX-USDC] in Avalanche
+
 ## 1.1.0
 
 - Added: CRV, XMR, MOODENG, PI
