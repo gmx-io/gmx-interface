@@ -1,14 +1,14 @@
 import { ARBITRUM } from "config/chains";
 import { isDevelopment } from "config/env";
-import { GlobalExpressParams } from "domain/synthetics/express";
+import type { GlobalExpressParams } from "domain/synthetics/express";
 import { getByKey } from "lib/objects";
 import { getRelayerFeeToken } from "sdk/configs/express";
+import type { FindSwapPath } from "sdk/types/trade";
 import { createFindSwapPath } from "sdk/utils/swap/swapPath";
 
 import { createSelector } from "../utils";
 import {
   selectChainId,
-  selectExpressNoncesData,
   selectGasLimits,
   selectGasPaymentTokenAllowance,
   selectGasPrice,
@@ -29,10 +29,14 @@ import { selectTokenPermits } from "./tokenPermitsSelectors";
 import { selectGasEstimationParams } from "./tradeSelectors";
 
 export const selectGasPaymentToken = createSelector((q) => {
-  const gasPaymnetTokenAddress = q(selectGasPaymentTokenAddress);
-  const tokensData = q(selectTokensData);
+  const gasPaymentTokenAddress = q(selectGasPaymentTokenAddress);
+  return q((state) => getByKey(selectTokensData(state), gasPaymentTokenAddress));
+});
 
-  return getByKey(tokensData, gasPaymnetTokenAddress);
+export const selectRelayerFeeToken = createSelector((q) => {
+  const chainId = q(selectChainId);
+  const relayerFeeTokenAddress = getRelayerFeeToken(chainId).address;
+  return q((state) => getByKey(selectTokensData(state), relayerFeeTokenAddress));
 });
 
 export const selectIsExpressTransactionAvailable = createSelector((q) => {
@@ -53,8 +57,6 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
 
   const chainId = q(selectChainId);
   const marketsInfoData = q(selectMarketsInfoData);
-  const gasEstimationParams = q(selectGasEstimationParams);
-  const noncesData = q(selectExpressNoncesData);
   const relayerFeeTokenAddress = getRelayerFeeToken(chainId).address;
   const gasPaymentTokenAddress = q(selectGasPaymentTokenAddress);
   const l1Reference = q(selectL1ExpressOrderGasReference);
@@ -86,6 +88,34 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
     return undefined;
   }
 
+  const findFeeSwapPath = q(selectExpressFindSwapPath);
+
+  return {
+    l1Reference,
+    tokensData,
+    marketsInfoData,
+    isSponsoredCall: isSponsoredCallAvailable,
+    subaccount,
+    findFeeSwapPath,
+    tokenPermits,
+    gasPaymentAllowanceData: gasPaymentAllowance?.tokensAllowanceData,
+    bufferBps,
+    gasPrice,
+    gasLimits,
+    gasPaymentTokenAddress,
+    relayerFeeTokenAddress,
+    gasPaymentToken,
+    relayerFeeToken,
+  };
+});
+
+export const selectExpressFindSwapPath = createSelector(function selectExpressFindSwapPath(q): FindSwapPath {
+  const chainId = q(selectChainId);
+  const marketsInfoData = q(selectMarketsInfoData);
+  const gasEstimationParams = q(selectGasEstimationParams);
+  const relayerFeeTokenAddress = getRelayerFeeToken(chainId).address;
+  const gasPaymentTokenAddress = q(selectGasPaymentTokenAddress);
+
   const _debugSwapMarketsConfig = isDevelopment() ? q(selectDebugSwapMarketsConfig) : undefined;
 
   const findFeeSwapPath = createFindSwapPath({
@@ -100,22 +130,5 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
     maxSwapPathLength: 1,
   });
 
-  return {
-    l1Reference,
-    tokensData,
-    marketsInfoData,
-    noncesData,
-    isSponsoredCall: isSponsoredCallAvailable,
-    subaccount,
-    findFeeSwapPath,
-    tokenPermits,
-    gasPaymentAllowanceData: gasPaymentAllowance?.tokensAllowanceData,
-    bufferBps,
-    gasPrice,
-    gasLimits,
-    gasPaymentTokenAddress,
-    relayerFeeTokenAddress,
-    gasPaymentToken,
-    relayerFeeToken,
-  };
+  return findFeeSwapPath;
 });

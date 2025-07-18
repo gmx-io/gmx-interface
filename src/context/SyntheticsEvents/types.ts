@@ -1,11 +1,14 @@
-import { TaskState } from "@gelatonetwork/relay-sdk";
-import { ReactNode } from "react";
+import type { TaskState } from "@gelatonetwork/relay-sdk";
+import type { ReactNode } from "react";
 
-import { OrderTxnType, OrderType } from "domain/synthetics/orders";
-import { SignedSubbacountApproval } from "domain/synthetics/subaccount";
-import { OrderMetricId } from "lib/metrics/types";
-import { SignedTokenPermit } from "sdk/types/tokens";
-import { ExternalSwapQuote } from "sdk/types/trade";
+import type { MultichainFundingHistoryItem } from "domain/multichain/types";
+import type { OrderTxnType, OrderType } from "domain/synthetics/orders";
+import type { SignedSubbacountApproval } from "domain/synthetics/subaccount";
+import type { OrderMetricId } from "lib/metrics/types";
+import type { SignedTokenPermit } from "sdk/types/tokens";
+import type { ExternalSwapQuote } from "sdk/types/trade";
+
+import type { MultichainEventsState } from "./useMultichainEvents";
 
 export type MultiTransactionStatus<TEventData> = {
   key: string;
@@ -110,6 +113,23 @@ export type PendingOrdersUpdates = {
   [key: string]: OrderTxnType;
 };
 
+export type SubmittedMultichainDeposit = {
+  amount: bigint;
+  settlementChainId: number;
+  sourceChainId: number;
+  tokenAddress: string;
+  sentTxn: string;
+};
+
+export type SubmittedMultichainWithdrawal = {
+  amount: bigint;
+  settlementChainId: number;
+  sourceChainId: number;
+  tokenAddress: string;
+};
+
+export type PendingMultichainFunding = MultichainFundingHistoryItem[];
+
 export type EventLogItems<T> = {
   [key: string]: T;
 };
@@ -142,7 +162,7 @@ export type EventTxnParams = {
   blockNumber: number;
 };
 
-export type SyntheticsEventsContextType = {
+export type SyntheticsEventsContextType = MultichainEventsState & {
   orderStatuses: OrderStatuses;
   depositStatuses: DepositStatuses;
   withdrawalStatuses: WithdrawalStatuses;

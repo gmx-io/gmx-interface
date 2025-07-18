@@ -1,4 +1,4 @@
-import { UiContractsChain } from "config/chains";
+import { ContractsChainId } from "config/chains";
 import { isDevelopment } from "config/env";
 import { OrderType } from "domain/synthetics/orders";
 import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
@@ -134,7 +134,7 @@ export const selectMarketAdjacencyGraph = isDevelopment()
       const disabledMarketAddresses = debugSwapMarketsConfig.disabledSwapMarkets;
 
       const strippedMarkets = Object.fromEntries(
-        Object.entries(MARKETS[chainId as UiContractsChain]).filter(
+        Object.entries(MARKETS[chainId as ContractsChainId]).filter(
           ([marketAddress]) => !disabledMarketAddresses.includes(marketAddress)
         )
       );

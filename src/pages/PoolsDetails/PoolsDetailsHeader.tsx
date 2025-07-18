@@ -28,7 +28,7 @@ type Props = {
 };
 
 export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const isGlv = glvOrMarketInfo && isGlvInfo(glvOrMarketInfo);
   const iconName = glvOrMarketInfo?.isSpotOnly
     ? getNormalizedTokenSymbol(glvOrMarketInfo.longToken.symbol) +
@@ -44,7 +44,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
   const marketTotalSupply = marketToken?.totalSupply;
   const marketTotalSupplyUsd = convertToUsd(marketTotalSupply, marketToken?.decimals, marketPrice);
 
-  const userEarnings = useUserEarnings(chainId);
+  const userEarnings = useUserEarnings(chainId, srcChainId);
   const marketEarnings = getByKey(userEarnings?.byMarketAddress, marketToken?.address);
 
   const isMobile = usePoolsIsMobilePage();

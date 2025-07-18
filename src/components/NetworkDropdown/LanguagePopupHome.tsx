@@ -9,7 +9,8 @@ import language24Icon from "img/ic_language24.svg";
 
 import LanguageModalContent from "./LanguageModalContent";
 import ModalWithPortal from "../Modal/ModalWithPortal";
-import "./NetworkDropdown.css";
+
+import "./NetworkDropdown.scss";
 
 export default function LanguagePopupHome() {
   const currentLanguage = useLingui().i18n.locale;

@@ -3,10 +3,12 @@ import { useEffect, useState } from "react";
 
 import { MarketsInfoResult } from "domain/synthetics/markets";
 import { PositionsInfoData } from "domain/synthetics/positions";
+import { TokensDataResult } from "domain/synthetics/tokens";
 import { useMeasureLoadTime } from "lib/metrics";
 import useWallet from "lib/wallets/useWallet";
 
 export function useCollectSyntheticsMetrics({
+  tokensDataResult,
   marketsInfo,
   isCandlesLoaded,
   positionsInfoData,
@@ -14,6 +16,7 @@ export function useCollectSyntheticsMetrics({
   isPositionsInfoLoading,
   pageType,
 }: {
+  tokensDataResult: TokensDataResult;
   marketsInfo: MarketsInfoResult;
   positionsInfoData: PositionsInfoData | undefined;
   isPositionsInfoLoading: boolean;
@@ -43,9 +46,9 @@ export function useCollectSyntheticsMetrics({
     isLoaded: Boolean(
       marketsInfo.marketsInfoData &&
         account &&
-        marketsInfo.pricesUpdatedAt &&
-        marketsInfo.tokensData &&
-        marketsInfo.isBalancesLoaded &&
+        tokensDataResult.pricesUpdatedAt &&
+        tokensDataResult.tokensData &&
+        tokensDataResult.isBalancesLoaded &&
         isCandlesLoaded
     ),
     error: marketsInfo.error,

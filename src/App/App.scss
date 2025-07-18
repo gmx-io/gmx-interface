@@ -731,11 +731,6 @@ button.App-button-option:disabled {
   cursor: not-allowed;
 }
 
-.App-header-container-right {
-  display: flex;
-  align-items: center;
-}
-
 .App-header-user {
   display: flex;
   align-items: center;
@@ -1098,11 +1093,6 @@ button.App-button {
 
   .App-header-user {
     padding-bottom: 0;
-  }
-
-  .App-header-container-right {
-    display: flex;
-    align-items: center;
   }
 
   .App-header-link-desktop {

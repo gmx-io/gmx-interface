@@ -24,7 +24,7 @@ import {
 
 import { ExpressTxnParams } from ".";
 import { estimateBatchExpressParams } from "./expressOrderUtils";
-import { useSwitchGasPaymentTokenIfRequired } from "./useSwitchGasPaymentTokenIfRequired";
+import { useSwitchGasPaymentTokenIfRequiredFromExpressParams } from "./useSwitchGasPaymentTokenIfRequired";
 
 export type ExpressOrdersParamsResult = {
   expressParams: ExpressTxnParams | undefined;
@@ -36,12 +36,13 @@ export type ExpressOrdersParamsResult = {
 
 export function useExpressOrdersParams({
   orderParams,
-
   label,
+  isGmxAccount,
 }: {
   orderParams: BatchOrderTxnParams | undefined;
   totalExecutionFee?: bigint;
   label?: string;
+  isGmxAccount: boolean;
 }): ExpressOrdersParamsResult {
   const { chainId } = useChainId();
 
@@ -75,23 +76,25 @@ export function useExpressOrdersParams({
         chainId: p.chainId,
         batchParams: p.orderParams,
         signer: p.signer,
-        provider: undefined,
+        provider: p.provider,
         globalExpressParams: p.globalExpressParams,
         requireValidations: false,
         estimationMethod: "approximate",
+        isGmxAccount: p.isGmxAccount,
       });
 
       return nextApproximateParams;
     },
     {
       params:
-        isAvailable && globalExpressParams && signer && orderParams
+        isAvailable && globalExpressParams && signer && orderParams && provider
           ? {
               chainId,
               signer,
               provider,
               orderParams,
               globalExpressParams,
+              isGmxAccount,
             }
           : undefined,
       forceRecalculate,
@@ -112,6 +115,7 @@ export function useExpressOrdersParams({
         globalExpressParams: p.globalExpressParams,
         requireValidations: false,
         estimationMethod: "estimateGas",
+        isGmxAccount: p.isGmxAccount,
       });
 
       return expressParams;
@@ -125,6 +129,7 @@ export function useExpressOrdersParams({
               provider,
               orderParams,
               globalExpressParams,
+              isGmxAccount,
             }
           : undefined,
       forceRecalculate,
@@ -165,7 +170,10 @@ export function useExpressOrdersParams({
     };
   }, [isAvailable, asyncExpressParams, fastExpressParams, fastExpressPromise, asyncExpressPromise]);
 
-  useSwitchGasPaymentTokenIfRequired({ expressParams: result.expressParams });
+  useSwitchGasPaymentTokenIfRequiredFromExpressParams({
+    expressParams: result.expressParams,
+    isGmxAccount,
+  });
 
   if (showDebugValues && label && result.expressParams) {
     throttleLog(`${label} express params`, {

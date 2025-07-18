@@ -4,12 +4,16 @@ import { getContract } from "config/contracts";
 import { MulticallRequestConfig } from "lib/multicall/types";
 import { useMulticall } from "lib/multicall/useMulticall";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
 
-function buildDashboardRequest(chainId: number) {
+function buildDashboardRequest(chainId: ContractsChainId) {
   const gmxAddress = getContract(chainId, "GMX");
   const glpAddress = getContract(chainId, "GLP");
   const usdgAddress = getContract(chainId, "USDG");
+  const readerAddress = getContract(chainId, "Reader");
+  const vaultAddress = getContract(chainId, "Vault");
+  const glpManagerAddress = getContract(chainId, "GlpManager");
 
   const tokensForSupplyQuery = [gmxAddress, glpAddress, usdgAddress];
 
@@ -17,37 +21,49 @@ function buildDashboardRequest(chainId: number) {
 
   return {
     glp: {
-      contractAddress: getContract(chainId, "GlpManager"),
+      contractAddress: glpManagerAddress,
       abiId: "GlpManager",
       calls: {
-        getAums: {
-          methodName: "getAums",
-          params: [],
-        },
+        getAums:
+          glpManagerAddress === zeroAddress
+            ? undefined
+            : {
+                methodName: "getAums",
+                params: [],
+              },
       },
     },
     reader: {
-      contractAddress: getContract(chainId, "Reader"),
+      contractAddress: readerAddress,
       abiId: "ReaderV2",
       calls: {
-        getTokenBalancesWithSupplies: {
-          methodName: "getTokenBalancesWithSupplies",
-          params: [zeroAddress, tokensForSupplyQuery],
-        },
-        getFees: {
-          methodName: "getFees",
-          params: [getContract(chainId, "Vault"), whitelistedTokensAddresses],
-        },
+        getTokenBalancesWithSupplies:
+          readerAddress === zeroAddress
+            ? undefined
+            : {
+                methodName: "getTokenBalancesWithSupplies",
+                params: [zeroAddress, tokensForSupplyQuery],
+              },
+        getFees:
+          readerAddress === zeroAddress || vaultAddress === zeroAddress
+            ? undefined
+            : {
+                methodName: "getFees",
+                params: [vaultAddress, whitelistedTokensAddresses],
+              },
       },
     },
     vault: {
-      contractAddress: getContract(chainId, "Vault"),
+      contractAddress: vaultAddress,
       abiId: "VaultV2",
       calls: {
-        totalTokenWeights: {
-          methodName: "totalTokenWeights",
-          params: [],
-        },
+        totalTokenWeights:
+          vaultAddress === zeroAddress
+            ? undefined
+            : {
+                methodName: "totalTokenWeights",
+                params: [],
+              },
       },
     },
   } satisfies MulticallRequestConfig<any>;
@@ -78,7 +94,7 @@ function parseDashboardResponse(result) {
 
 export type ChainStats = ReturnType<typeof parseDashboardResponse>;
 
-export function useDashboardChainStatsMulticall(chainId: number) {
+export function useDashboardChainStatsMulticall(chainId: ContractsChainId) {
   const { data } = useMulticall(chainId, `useDashboardChainStatsMulticall`, {
     key: [chainId],
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,

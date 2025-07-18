@@ -1,12 +1,11 @@
-import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
-import { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
-import { ExpressTxnData } from "lib/transactions";
-import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
+import type { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
+import type { ExpressTxnData } from "lib/transactions";
+import type { ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
-import { GasLimitsConfig, L1ExpressOrderGasReference } from "../fees";
-import { MarketsInfoData } from "../markets";
-import { Subaccount, SubaccountValidations } from "../subaccount";
-import { FindSwapPath } from "../trade";
+import type { GasLimitsConfig, L1ExpressOrderGasReference } from "../fees";
+import type { MarketsInfoData } from "../markets";
+import type { Subaccount, SubaccountValidations } from "../subaccount";
+import type { FindSwapPath } from "../trade";
 
 export type GlobalExpressParams = {
   tokensData: TokensData;
@@ -24,7 +23,6 @@ export type GlobalExpressParams = {
   l1Reference: L1ExpressOrderGasReference | undefined;
   bufferBps: number;
   isSponsoredCall: boolean;
-  noncesData: NoncesData | undefined;
 };
 
 export type ExpressParamsEstimationMethod = "approximate" | "estimateGas";
@@ -47,12 +45,10 @@ export type ExpressTransactionBuilder = ({
   relayParams,
   gasPaymentParams,
   subaccount,
-  noncesData,
 }: {
-  relayParams: RawRelayParamsPayload;
+  relayParams: RawRelayParamsPayload | RawRelayParamsPayload;
   gasPaymentParams: GasPaymentParams;
   subaccount: Subaccount | undefined;
-  noncesData: NoncesData | undefined;
 }) => Promise<{ txnData: ExpressTxnData }>;
 
 export type ExpressTransactionEstimatorParams = {
@@ -82,10 +78,15 @@ export type RelayParamsPayload = {
   externalCalls: ExternalCallsPayload;
   fee: RelayFeePayload;
   deadline: bigint;
-  userNonce: bigint;
+  desChainId: bigint;
+  userNonce: bigint | number;
 };
 
-export type RawRelayParamsPayload = Omit<RelayParamsPayload, "userNonce" | "deadline">;
+export type RelayParamsPayloadWithSignature = RelayParamsPayload & {
+  signature: string;
+};
+
+export type RawRelayParamsPayload = Omit<RelayParamsPayload, "deadline">;
 
 export type OracleParamsPayload = {
   tokens: string[];
