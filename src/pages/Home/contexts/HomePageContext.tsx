@@ -1,7 +1,7 @@
 import noop from "lodash/noop";
 import { createContext, useContext, useMemo, useState } from "react";
 
-import { RedirectModal } from "../sections/RedirectModal/RedirectModal";
+import { LeaveHomepageRedirectModal } from "../sections/RedirectModal/LeaveHompageRedirectModal";
 
 type HomePageContextType = {
   showRedirectModal: (to: string) => void;
@@ -24,7 +24,7 @@ export function HomePageContextProvider({ children }: { children: React.ReactNod
   return (
     <HomePageContext.Provider value={value}>
       {children}
-      {redirectModalTo && <RedirectModal to={redirectModalTo} onClose={() => setRedirectModalTo(null)} />}
+      {redirectModalTo && <LeaveHomepageRedirectModal to={redirectModalTo} onClose={() => setRedirectModalTo(null)} />}
     </HomePageContext.Provider>
   );
 }
