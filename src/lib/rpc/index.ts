@@ -9,9 +9,12 @@ import {
   AVALANCHE_FUJI,
   BOTANIX,
   FALLBACK_PROVIDERS,
+  getAlchemyArbitrumSepoliaHttpUrl,
   getAlchemyArbitrumWsUrl,
   getAlchemyBaseMainnetWsUrl,
+  getAlchemyBaseSepoliaHttpUrl,
   getAlchemyBotanixWsUrl,
+  getAlchemyOptimismSepoliaHttpUrl,
   getFallbackRpcUrl,
   SOURCE_BASE_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
@@ -61,7 +64,7 @@ export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcP
   }
 
   if (chainId === ARBITRUM_SEPOLIA) {
-    const provider = new ethers.JsonRpcProvider(getCurrentRpcUrls(ARBITRUM_SEPOLIA).primary, network, {
+    const provider = new ethers.JsonRpcProvider(getAlchemyArbitrumSepoliaHttpUrl(), network, {
       staticNetwork: network,
     });
     provider.pollingInterval = 2000;
@@ -69,7 +72,7 @@ export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcP
   }
 
   if (chainId === SOURCE_SEPOLIA) {
-    const provider = new ethers.JsonRpcProvider(getCurrentRpcUrls(SOURCE_SEPOLIA).primary, network, {
+    const provider = new ethers.JsonRpcProvider(getAlchemyBaseSepoliaHttpUrl(), network, {
       staticNetwork: network,
     });
     provider.pollingInterval = 2000;
@@ -77,7 +80,7 @@ export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcP
   }
 
   if (chainId === SOURCE_OPTIMISM_SEPOLIA) {
-    const provider = new ethers.JsonRpcProvider(getCurrentRpcUrls(SOURCE_OPTIMISM_SEPOLIA).primary, network, {
+    const provider = new ethers.JsonRpcProvider(getAlchemyOptimismSepoliaHttpUrl(), network, {
       staticNetwork: network,
     });
     provider.pollingInterval = 2000;
