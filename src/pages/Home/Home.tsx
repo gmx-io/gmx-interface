@@ -22,7 +22,7 @@ export default function Home(_) {
 
   return (
     <HomePageContextProvider>
-      <div className="proportional-nums text-white">
+      <div className="overflow-hidden proportional-nums text-white">
         <HeroSection />
         <LaunchSection />
       </div>

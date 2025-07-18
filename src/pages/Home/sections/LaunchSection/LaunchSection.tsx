@@ -14,7 +14,7 @@ export function LaunchSection() {
   });
   return (
     <section className="flex w-full items-center justify-center px-16 py-80 text-fiord-700 sm:px-80 sm:py-[120px]">
-      <div className="flex max-w-[1200px] flex-col items-stretch justify-center gap-24 sm:flex-row sm:items-center">
+      <div className="flex max-w-[1200px] flex-col items-stretch justify-center gap-24 sm:items-center lg:flex-row">
         <div className="flex flex-1 flex-col items-stretch sm:items-start">
           <h2 className="text-heading-2 mb-20 sm:mb-24">
             <Trans>Runs entirely on public chains</Trans>
