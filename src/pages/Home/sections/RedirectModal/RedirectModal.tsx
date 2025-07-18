@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { userAnalytics } from "lib/userAnalytics";
@@ -31,11 +31,13 @@ export function RedirectModal({ onClose, to }: RedirectModalProps) {
     }
     window.location.href = to;
   };
-  userAnalytics.pushEvent<LandingPageAgreementConfirmationEvent>({
-    event: "LandingPageAction",
-    data: {
-      action: "AgreementConfirmationDialogShown",
-    },
+  useEffect(() => {
+    userAnalytics.pushEvent<LandingPageAgreementConfirmationEvent>({
+      event: "LandingPageAction",
+      data: {
+        action: "AgreementConfirmationDialogShown",
+      },
+    });
   });
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -45,7 +47,7 @@ export function RedirectModal({ onClose, to }: RedirectModalProps) {
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex h-screen w-screen bg-fiord-700/50 text-white" onClick={handleBackdropClick}>
-      <div className="bg-fiord-800 m-auto flex w-[351px] flex-col rounded-8 border-[0.5px] border-[#363A59] sm:w-[420px] ">
+      <div className="m-auto flex w-[351px] flex-col rounded-8 border-[0.5px] border-[#363A59] bg-fiord-800 sm:w-[420px] ">
         <div className="flex justify-between gap-20 border-b-[0.5px] border-[#363A59] p-20 pt-24">
           <h3 className="text-16 font-medium leading-[125%] tracking-[-0.192px]">
             <Trans>Launch App</Trans>
@@ -54,7 +56,7 @@ export function RedirectModal({ onClose, to }: RedirectModalProps) {
             <IcCross className="size-20" />
           </button>
         </div>
-        <div className="tracking-body flex flex-col gap-16 p-20 text-14 font-normal leading-[130%]">
+        <div className="flex flex-col gap-16 p-20 text-14 font-normal leading-[130%] tracking-body">
           <div className="flex flex-col gap-12">
             <p>
               <Trans>You are leaving GMX.io and will be redirected to a third party, independent website.</Trans>
