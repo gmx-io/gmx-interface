@@ -10,6 +10,7 @@ import {
   BOTANIX,
   FALLBACK_PROVIDERS,
   getAlchemyArbitrumWsUrl,
+  getAlchemyBaseMainnetWsUrl,
   getAlchemyBotanixWsUrl,
   getFallbackRpcUrl,
   SOURCE_BASE_MAINNET,
@@ -60,25 +61,26 @@ export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcP
   }
 
   if (chainId === ARBITRUM_SEPOLIA) {
-    const provider = new ethers.WebSocketProvider("wss://arbitrum-sepolia-rpc.publicnode.com", network, {
+    const provider = new ethers.JsonRpcProvider(getCurrentRpcUrls(ARBITRUM_SEPOLIA).primary, network, {
       staticNetwork: network,
     });
+    provider.pollingInterval = 2000;
     return provider;
   }
 
   if (chainId === SOURCE_SEPOLIA) {
-    const provider = new ethers.WebSocketProvider("wss://0xrpc.io/sep", network, {
+    const provider = new ethers.JsonRpcProvider(getCurrentRpcUrls(SOURCE_SEPOLIA).primary, network, {
       staticNetwork: network,
     });
-
+    provider.pollingInterval = 2000;
     return provider;
   }
 
   if (chainId === SOURCE_OPTIMISM_SEPOLIA) {
-    const provider = new ethers.JsonRpcProvider("https://sepolia.optimism.io", network, {
+    const provider = new ethers.JsonRpcProvider(getCurrentRpcUrls(SOURCE_OPTIMISM_SEPOLIA).primary, network, {
       staticNetwork: network,
     });
-    provider.pollingInterval = 1000;
+    provider.pollingInterval = 2000;
     return provider;
   }
 
@@ -87,7 +89,7 @@ export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcP
   }
 
   if (chainId === SOURCE_BASE_MAINNET) {
-    return new ethers.WebSocketProvider("wss://base-rpc.publicnode.com", network, {
+    return new ethers.WebSocketProvider(getAlchemyBaseMainnetWsUrl(), network, {
       staticNetwork: network,
     });
   }

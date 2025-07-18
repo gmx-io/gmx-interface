@@ -159,10 +159,10 @@ export const FALLBACK_PROVIDERS: Record<AnyChainId, string[]> = {
     "https://api.avax-test.network/ext/bc/C/rpc",
     "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
   ],
-  [ARBITRUM_SEPOLIA]: [],
-  [SOURCE_BASE_MAINNET]: [],
-  [SOURCE_OPTIMISM_SEPOLIA]: [],
-  [SOURCE_SEPOLIA]: [],
+  [ARBITRUM_SEPOLIA]: [getAlchemyArbitrumSepoliaHttpUrl()],
+  [SOURCE_BASE_MAINNET]: [getAlchemyBaseMainnetHttpUrl()],
+  [SOURCE_OPTIMISM_SEPOLIA]: [getAlchemyOptimismSepoliaHttpUrl()],
+  [SOURCE_SEPOLIA]: [getAlchemyBaseSepoliaHttpUrl()],
   [BOTANIX]: ENV_BOTANIX_RPC_URLS ? JSON.parse(ENV_BOTANIX_RPC_URLS) : [getAlchemyBotanixHttpUrl()],
 };
 
@@ -214,14 +214,32 @@ export function getAlchemyBotanixWsUrl() {
   return `wss://botanix-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
 }
 
+export function getAlchemyOptimismSepoliaHttpUrl() {
+  return `https://opt-sepolia.g.alchemy.com/v2/${getAlchemyKey()}`;
+}
+
+export function getAlchemyArbitrumSepoliaHttpUrl() {
+  return `https://arb-sepolia.g.alchemy.com/v2/${getAlchemyKey()}`;
+}
+
+export function getAlchemyBaseMainnetHttpUrl() {
+  return `https://base-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
+}
+
+export function getAlchemyBaseMainnetWsUrl() {
+  return `wss://base-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
+}
+
+export function getAlchemyBaseSepoliaHttpUrl() {
+  return `https://base-sepolia.g.alchemy.com/v2/${getAlchemyKey()}`;
+}
+
 export function getExplorerUrl(chainId: number): string {
   switch (chainId as AnyChainId) {
     case ARBITRUM:
       return "https://arbiscan.io/";
     case AVALANCHE:
       return "https://snowtrace.io/";
-    // case BASE_MAINNET:
-    //   return base.blockExplorers.default.url + "/";
     case AVALANCHE_FUJI:
       return "https://testnet.snowtrace.io/";
     case ARBITRUM_SEPOLIA:
